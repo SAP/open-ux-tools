@@ -1,5 +1,13 @@
 # @sap-ux/nodejs-utils
 
+## 0.2.23
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/btp-utils@1.1.16
+
 ## 0.2.22
 
 ### Patch Changes

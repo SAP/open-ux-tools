@@ -1,5 +1,19 @@
 # @sap-ux/app-config-writer
 
+## 0.6.145
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/store@1.5.14
+    - @sap-ux/ui5-application-writer@1.8.9
+    - @sap-ux/ui5-config@0.30.5
+
 ## 0.6.144
 
 ### Patch Changes

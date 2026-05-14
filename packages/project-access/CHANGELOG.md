@@ -1,5 +1,14 @@
 # @sap-ux/project-access
 
+## 1.36.5
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/i18n@0.3.12
+    - @sap-ux/ui5-config@0.30.5
+
 ## 1.36.4
 
 ### Patch Changes

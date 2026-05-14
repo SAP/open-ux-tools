@@ -1,5 +1,13 @@
 # @sap-ux/ui5-info
 
+## 0.13.22
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/logger@0.8.6
+
 ## 0.13.21
 
 ### Patch Changes

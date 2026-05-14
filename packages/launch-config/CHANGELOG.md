@@ -1,5 +1,15 @@
 # @sap-ux/launch-config
 
+## 0.10.92
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/ui5-config@0.30.5
+    - @sap-ux/ui5-info@0.13.22
+
 ## 0.10.91
 
 ### Patch Changes

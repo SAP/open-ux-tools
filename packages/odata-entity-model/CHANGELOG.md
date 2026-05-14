@@ -1,5 +1,11 @@
 # @sap-ux/odata-entity-model
 
+## 0.3.8
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
 ## 0.3.7
 
 ### Patch Changes

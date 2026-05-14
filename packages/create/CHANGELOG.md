@@ -1,5 +1,28 @@
 # @sap-ux/create
 
+## 0.15.97
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/abap-deploy-config-inquirer@1.8.22
+    - @sap-ux/abap-deploy-config-writer@0.3.18
+    - @sap-ux/adp-tooling@0.18.132
+    - @sap-ux/app-config-writer@0.6.145
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/cap-config-writer@0.12.100
+    - @sap-ux/flp-config-inquirer@0.4.192
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/mockserver-config-writer@0.9.78
+    - @sap-ux/nodejs-utils@0.2.23
+    - @sap-ux/odata-service-writer@0.31.14
+    - @sap-ux/preview-middleware@0.25.45
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/system-access@0.7.13
+    - @sap-ux/ui5-config@0.30.5
+
 ## 0.15.96
 
 ### Patch Changes
