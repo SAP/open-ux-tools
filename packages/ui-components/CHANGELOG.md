@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.1.16
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
 ## 2.1.15
 
 ### Patch Changes

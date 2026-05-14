@@ -1,5 +1,11 @@
 # @sap-ux/text-document-utils
 
+## 0.3.5
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
 ## 0.3.4
 
 ### Patch Changes

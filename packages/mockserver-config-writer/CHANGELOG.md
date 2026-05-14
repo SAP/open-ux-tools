@@ -1,5 +1,21 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.9.78
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/ui5-config@0.30.5
+
+## 0.9.77
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+
 ## 0.9.76
 
 ### Patch Changes

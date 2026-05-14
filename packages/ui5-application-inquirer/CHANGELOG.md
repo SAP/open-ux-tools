@@ -1,5 +1,25 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.17.24
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/inquirer-common@0.11.47
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/project-input-validator@0.6.84
+    - @sap-ux/ui5-info@0.13.22
+
+## 0.17.23
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/inquirer-common@0.11.46
+    - @sap-ux/project-input-validator@0.6.83
+
 ## 0.17.22
 
 ### Patch Changes

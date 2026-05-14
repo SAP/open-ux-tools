@@ -26,7 +26,7 @@ jobs:
               uses: pnpm/action-setup@v4.1.0
               with:
                   run_install: |
-                      - args: [--frozen-lockfile]
+                      - args: [--frozen-lockfile, --ignore-scripts]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
@@ -41,7 +41,7 @@ jobs:
               with:
                   node-version: ${{ matrix.node-version }}
             - name: Install pnpm modules
-              run: pnpm install --frozen-lockfile
+              run: pnpm install --frozen-lockfile --ignore-scripts
             - name: Run build
               run: pnpm run build
               env:
@@ -91,10 +91,14 @@ jobs:
             - name: Run SonarCloud scan
               if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
               shell: bash
+              env:
+                  PR_NUMBER: ${{ github.event.pull_request.number }}
+                  PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+                  PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
               run: |
-                  echo ${{ github.event.pull_request.number }} >> pr-event.txt
-                  echo ${{ github.event.pull_request.head.ref }} >> pr-event.txt
-                  echo ${{ github.event.pull_request.base.ref }} >> pr-event.txt
+                  echo "$PR_NUMBER" >> pr-event.txt
+                  echo "$PR_HEAD_REF" >> pr-event.txt
+                  echo "$PR_BASE_REF" >> pr-event.txt
 
             - name: 'Prepare output artifact'
               if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
@@ -128,7 +132,7 @@ jobs:
               uses: pnpm/action-setup@v4.1.0
               with:
                   run_install: |
-                      - args: [--frozen-lockfile]
+                      - args: [--frozen-lockfile, --ignore-scripts]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
@@ -170,6 +174,9 @@ jobs:
         if: github.repository == 'SAP/open-ux-tools' && github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.version.outputs.changes == 'false'
         runs-on: ubuntu-latest
         needs: version
+        permissions:
+            id-token: write
+            contents: write
         outputs:
             published: ${{ steps.changesetPublish.outputs.published }}
             publishedPackages: ${{ steps.changesetPublish.outputs.publishedPackages }}
@@ -180,7 +187,7 @@ jobs:
               uses: pnpm/action-setup@v4.1.0
               with:
                   run_install: |
-                      - args: [--frozen-lockfile]
+                      - args: [--frozen-lockfile, --ignore-scripts]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
@@ -194,6 +201,7 @@ jobs:
               uses: actions/setup-node@v6
               with:
                   node-version: 20.x
+                  registry-url: 'https://registry.npmjs.org'
             - name: Install pnpm modules
               run: pnpm install --frozen-lockfile
             - name: Set instrumentation key in fiori-mcp-server
@@ -219,8 +227,6 @@ jobs:
                   regex: false
             - name: Run build
               run: pnpm run build
-            - name: Setup npmrc with npmjs.com token
-              run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPMJS_TOKEN }}" > .npmrc
             - name: 'Publish to npmjs'
               id: changesetPublish
               uses: changesets/action@v1.7.0

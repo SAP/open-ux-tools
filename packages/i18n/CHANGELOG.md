@@ -1,5 +1,13 @@
 # @sap-ux/i18n
 
+## 0.3.12
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/text-document-utils@0.3.5
+
 ## 0.3.11
 
 ### Patch Changes

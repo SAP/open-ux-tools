@@ -1,5 +1,24 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.43.30
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/fiori-annotation-api@0.9.50
+    - @sap-ux/i18n@0.3.12
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/project-access@1.36.5
+
+## 0.43.29
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/fiori-annotation-api@0.9.49
+
 ## 0.43.28
 
 ### Patch Changes
