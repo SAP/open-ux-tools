@@ -8,6 +8,7 @@ import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { readHashFromFlpSandbox } from './flpSandboxUtils';
 import { getAllUi5YamlFileNames, readUi5Yaml, FileName } from '@sap-ux/project-access';
+import type { TestConfig, MiddlewareConfig } from '@sap-ux/preview-middleware';
 
 /** Relative path from the test output directory to opaTests.qunit.js */
 const OPA_QUNIT_FILE = join('integration', 'opaTests.qunit.js');
@@ -312,18 +313,6 @@ export function addPagesToJourneyRunner(pages: JourneyRunnerPage[], testOutDirPa
     }
 }
 
-/** Shape of one entry in the `test` array of a `fiori-tools-preview` middleware configuration */
-interface PreviewTestEntry {
-    framework?: string;
-    path?: string;
-    pattern?: string;
-}
-
-/** Shape of the `fiori-tools-preview` middleware configuration relevant to OPA5 detection */
-interface PreviewMiddlewareConfig {
-    test?: PreviewTestEntry[];
-}
-
 /**
  * Returns true if any UI5 yaml file in the project contains a `fiori-tools-preview`
  * middleware whose `test` array includes an entry with `framework: OPA5`.
@@ -336,7 +325,7 @@ export async function hasVirtualOPA5(basePath: string): Promise<boolean> {
     for (const fileName of yamlFileNames) {
         try {
             const ui5Config = await readUi5Yaml(basePath, fileName);
-            const previewMiddleware = ui5Config.findCustomMiddleware<PreviewMiddlewareConfig>('fiori-tools-preview');
+            const previewMiddleware = ui5Config.findCustomMiddleware<MiddlewareConfig>('fiori-tools-preview');
             const testEntries = previewMiddleware?.configuration?.test;
             if (testEntries?.some((entry) => entry.framework === 'OPA5')) {
                 return true;
@@ -356,17 +345,13 @@ export async function hasVirtualOPA5(basePath: string): Promise<boolean> {
  * @param testFrameworks - the test framework entries to add to ui5-mock.yaml
  * @param fs - the memfs editor instance
  */
-export async function addVirtualTestConfig(
-    basePath: string,
-    testFrameworks: PreviewTestEntry[],
-    fs: Editor
-): Promise<void> {
+export async function addVirtualTestConfig(basePath: string, testFrameworks: TestConfig[], fs: Editor): Promise<void> {
     const yamlPath = join(basePath, FileName.Ui5MockYaml);
     if (!fs.exists(yamlPath)) {
         return;
     }
     const yamlConfig = await readUi5Yaml(basePath, FileName.Ui5MockYaml, fs);
-    const previewMiddleware = yamlConfig.findCustomMiddleware<PreviewMiddlewareConfig>('fiori-tools-preview');
+    const previewMiddleware = yamlConfig.findCustomMiddleware<MiddlewareConfig>('fiori-tools-preview');
     if (previewMiddleware?.configuration && !previewMiddleware.configuration.test?.length) {
         previewMiddleware.configuration.test = [...testFrameworks];
         yamlConfig.updateCustomMiddleware(previewMiddleware);

@@ -691,7 +691,7 @@ server:
             fs.write(join(basePath, 'ui5-local.yaml'), previewYaml);
             fs.write(join(basePath, 'ui5-mock.yaml'), mockYaml);
 
-            const testFrameworks = [{ framework: 'OPA5', path: '/test/integration/opaTests.qunit.html' }];
+            const testFrameworks = [{ framework: 'OPA5' as const, path: '/test/integration/opaTests.qunit.html' }];
             await addVirtualTestConfig(basePath, testFrameworks, fs);
 
             expect(fs.read(join(basePath, 'ui5-mock.yaml'))).toContain('framework: OPA5');
