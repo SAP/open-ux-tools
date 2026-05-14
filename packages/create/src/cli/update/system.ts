@@ -3,6 +3,7 @@ import { prompt } from 'prompts';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
+// BackendSystem properties are readonly; patch is built as a plain record and cast
 import { getLogger } from '../../tracing';
 
 /**
@@ -81,6 +82,9 @@ async function updateSystem(params: {
             patchRecord.username = params.username;
             // Resolve password securely — never from a CLI flag to avoid shell history exposure
             const password = process.env.SAP_UX_SYSTEM_PASSWORD ?? (await promptPassword(params.username));
+            if (!password) {
+                logger.warn('No password provided; credentials will not be updated.');
+            }
             patchRecord.password = password || undefined;
         }
 
@@ -93,7 +97,12 @@ async function updateSystem(params: {
 
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
         const key = new BackendSystemKey({ url: params.url, client: params.client });
-        await service.partialUpdate(key, patch as Partial<BackendSystem>);
+        const existing = await service.read(key);
+        if (!existing) {
+            logger.error(`System not found: ${key.getId()}`);
+            return;
+        }
+        await service.partialUpdate(key, patch);
         logger.info(`System '${key.getId()}' updated successfully.`);
     } catch (error) {
         logger.error((error as Error).message);

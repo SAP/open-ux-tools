@@ -37,6 +37,8 @@ describe('update/system', () => {
         jest.spyOn(logger, 'getLogger').mockReturnValue(loggerMock);
         isAppStudioMock.mockReturnValue(false);
         mockedService.partialUpdate.mockResolvedValue(undefined);
+        // Default: system exists
+        mockedService.read.mockResolvedValue({ name: 'My System' });
     });
 
     test('should update system name', async () => {
@@ -130,7 +132,8 @@ describe('update/system', () => {
 
     test('should log error when partialUpdate throws', async () => {
         // Given
-        mockedService.partialUpdate.mockRejectedValueOnce(new Error('System not found'));
+        mockedService.read.mockResolvedValueOnce({ name: 'existing' });
+        mockedService.partialUpdate.mockRejectedValueOnce(new Error('Store error'));
         const command = new Command('update');
         addUpdateSystemCommand(command);
 
@@ -138,6 +141,35 @@ describe('update/system', () => {
         await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--name', 'New Name']));
 
         // Then
-        expect(loggerMock.error).toHaveBeenCalledWith('System not found');
+        expect(loggerMock.error).toHaveBeenCalledWith('Store error');
+    });
+
+    test('should log error when system does not exist', async () => {
+        // Given
+        mockedService.read.mockResolvedValueOnce(undefined);
+        const command = new Command('update');
+        addUpdateSystemCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['system', '--url', 'https://unknown.example.com', '--name', 'New Name']));
+
+        // Then
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('not found'));
+        expect(mockedService.partialUpdate).not.toHaveBeenCalled();
+    });
+
+    test('should warn when username provided but password prompt is empty', async () => {
+        // Given
+        mockPrompt.mockResolvedValueOnce({ password: '' });
+        mockedService.read.mockResolvedValueOnce({ name: 'existing' });
+        const command = new Command('update');
+        addUpdateSystemCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--username', 'newuser']));
+
+        // Then
+        expect(loggerMock.warn).toHaveBeenCalledWith(expect.stringContaining('No password provided'));
+        expect(mockedService.partialUpdate).toHaveBeenCalledTimes(1);
     });
 });

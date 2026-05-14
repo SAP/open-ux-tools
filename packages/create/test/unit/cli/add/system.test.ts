@@ -129,4 +129,66 @@ describe('add/system', () => {
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith('System already exists');
     });
+
+    test('should log error for invalid --type value', async () => {
+        // Given
+        const command = new Command('add');
+        addSystemCommand(command);
+
+        // When
+        await command.parseAsync(
+            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--type', 'FooBar'])
+        );
+
+        // Then
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining("Invalid system type 'FooBar'"));
+        expect(mockedService.write).not.toHaveBeenCalled();
+    });
+
+    test('should log error for invalid --auth value', async () => {
+        // Given
+        const command = new Command('add');
+        addSystemCommand(command);
+
+        // When
+        await command.parseAsync(
+            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--auth', 'notAnAuthType'])
+        );
+
+        // Then
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining("Invalid auth type 'notAnAuthType'"));
+        expect(mockedService.write).not.toHaveBeenCalled();
+    });
+
+    test('should log error for invalid --connection-type value', async () => {
+        // Given
+        const command = new Command('add');
+        addSystemCommand(command);
+
+        // When
+        await command.parseAsync(
+            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--connection-type', 'bad_type'])
+        );
+
+        // Then
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining("Invalid connection type 'bad_type'"));
+        expect(mockedService.write).not.toHaveBeenCalled();
+    });
+
+    test('should warn when username provided but password prompt is cancelled/empty', async () => {
+        // Given
+        mockPrompt.mockResolvedValueOnce({ password: '' });
+        const command = new Command('add');
+        addSystemCommand(command);
+
+        // When
+        await command.parseAsync(
+            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--username', 'user1'])
+        );
+
+        // Then
+        expect(loggerMock.warn).toHaveBeenCalledWith(expect.stringContaining('No password provided'));
+        // System is still written (without credentials)
+        expect(mockedService.write).toHaveBeenCalledTimes(1);
+    });
 });

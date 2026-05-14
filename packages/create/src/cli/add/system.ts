@@ -87,6 +87,26 @@ async function addSystem(params: {
             return;
         }
 
+        const validSystemTypes = Object.values(SystemType) as string[];
+        if (!validSystemTypes.includes(params.systemType)) {
+            logger.error(`Invalid system type '${params.systemType}'. Valid values: ${validSystemTypes.join(', ')}`);
+            return;
+        }
+        const validAuthTypes = Object.values(AuthenticationType) as string[];
+        if (!validAuthTypes.includes(params.authenticationType)) {
+            logger.error(
+                `Invalid auth type '${params.authenticationType}'. Valid values: ${validAuthTypes.join(', ')}`
+            );
+            return;
+        }
+        const validConnectionTypes = Object.values(ConnectionType) as string[];
+        if (!validConnectionTypes.includes(params.connectionType)) {
+            logger.error(
+                `Invalid connection type '${params.connectionType}'. Valid values: ${validConnectionTypes.join(', ')}`
+            );
+            return;
+        }
+
         // Resolve password securely — never from a CLI flag to avoid shell history exposure
         let password: string | undefined;
         if (params.username) {
@@ -98,6 +118,9 @@ async function addSystem(params: {
                     message: `Password for user '${params.username}':`
                 });
                 password = result.password || undefined;
+                if (!password) {
+                    logger.warn('No password provided; the system will be saved without credentials.');
+                }
             }
         }
 

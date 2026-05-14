@@ -1,7 +1,7 @@
 import type { Command } from 'commander';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
-import { getService, ConnectionType } from '@sap-ux/store';
+import { getService } from '@sap-ux/store';
 import { getLogger } from '../../tracing';
 
 /**
@@ -44,11 +44,8 @@ async function listSystems(asJson: boolean): Promise<void> {
         }
 
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
-        // Retrieve all systems regardless of connection type
-        const allConnectionTypes = Object.values(ConnectionType);
-        const systems = await service.getAll({
-            backendSystemFilter: { connectionType: allConnectionTypes }
-        });
+        // Pass no filter so all systems are returned regardless of connection type
+        const systems = await service.getAll();
 
         if (asJson) {
             logger.info(JSON.stringify(systems.map(toPublicView), null, 2));
