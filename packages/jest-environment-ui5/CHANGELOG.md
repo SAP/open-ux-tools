@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.3.21
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
 ## 5.3.20
 
 ### Patch Changes

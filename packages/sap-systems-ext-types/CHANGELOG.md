@@ -1,5 +1,11 @@
 # @sap-ux/sap-systems-ext-types
 
+## 0.1.1
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
 ## 0.1.0
 
 ### Minor Changes
