@@ -1,5 +1,20 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.59
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/fiori-docs-embeddings@0.4.19
+    - @sap-ux/store@1.5.14
+
+## 0.6.58
+
+### Patch Changes
+
+- 4101c21: fix: connect stdio transport before telemetry init to fix Claude Desktop extension disconnect
+
 ## 0.6.57
 
 ### Patch Changes

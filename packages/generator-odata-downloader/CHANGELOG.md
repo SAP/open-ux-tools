@@ -1,5 +1,11 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.1.2
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
 ## 0.1.1
 
 ### Patch Changes

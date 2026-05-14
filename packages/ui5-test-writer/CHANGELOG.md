@@ -1,5 +1,16 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.114
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/fiori-generator-shared@0.14.2
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/ui5-application-writer@1.8.9
+
 ## 0.7.113
 
 ### Patch Changes

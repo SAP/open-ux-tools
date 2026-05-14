@@ -1,5 +1,16 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.12.10
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/store@1.5.14
+
 ## 0.12.9
 
 ### Patch Changes

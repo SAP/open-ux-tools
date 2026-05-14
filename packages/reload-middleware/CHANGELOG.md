@@ -1,5 +1,14 @@
 # @sap-ux/reload-middleware
 
+## 0.3.27
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/logger@0.8.6
+
 ## 0.3.26
 
 ### Patch Changes
