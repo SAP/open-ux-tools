@@ -4,18 +4,11 @@ import { addSystemAddCommand } from '../../../../src/cli/system/add';
 import * as logger from '../../../../src/tracing/logger';
 import * as btpUtils from '@sap-ux/btp-utils';
 import * as store from '@sap-ux/store';
-import * as prompts from 'prompts';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn().mockReturnValue(false)
 }));
 
-jest.mock('prompts', () => ({
-    ...jest.requireActual('prompts'),
-    prompt: jest.fn()
-}));
-
-const mockPrompt = prompts.prompt as jest.Mock;
 const { mockedService } = store as unknown as { mockedService: Record<string, jest.Mock> };
 const isAppStudioMock = btpUtils.isAppStudio as jest.Mock;
 
@@ -26,7 +19,6 @@ describe('system/add', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        delete process.env.SAP_UX_SYSTEM_PASSWORD;
 
         loggerMock = {
             debug: jest.fn(),
@@ -56,42 +48,23 @@ describe('system/add', () => {
         expect(loggerMock.error).not.toHaveBeenCalled();
     });
 
-    test('should prompt for password when username is provided', async () => {
+    test('should add a system with username and password', async () => {
         // Given
-        mockPrompt.mockResolvedValueOnce({ password: 'secret' });
         const command = new Command('system');
         addSystemAddCommand(command);
 
         // When
         await command.parseAsync(
-            getArgv(['add', '--name', 'My System', '--url', 'https://example.com', '--username', 'user1'])
+            getArgv(['add', '--name', 'My System', '--url', 'https://example.com', '--username', 'user1', '--password', 'secret'])
         );
 
         // Then
-        expect(mockPrompt).toHaveBeenCalledWith(expect.objectContaining({ type: 'password' }));
         const written = mockedService.write.mock.calls[0][0];
         expect(written.username).toBe('user1');
         expect(written.password).toBe('secret');
     });
 
-    test('should read password from env var and skip prompt', async () => {
-        // Given
-        process.env.SAP_UX_SYSTEM_PASSWORD = 'envpassword';
-        const command = new Command('system');
-        addSystemAddCommand(command);
-
-        // When
-        await command.parseAsync(
-            getArgv(['add', '--name', 'My System', '--url', 'https://example.com', '--username', 'user1'])
-        );
-
-        // Then
-        expect(mockPrompt).not.toHaveBeenCalled();
-        const written = mockedService.write.mock.calls[0][0];
-        expect(written.password).toBe('envpassword');
-    });
-
-    test('should not prompt for password when no username given', async () => {
+    test('should add a system without credentials', async () => {
         // Given
         const command = new Command('system');
         addSystemAddCommand(command);
@@ -100,7 +73,9 @@ describe('system/add', () => {
         await command.parseAsync(getArgv(['add', '--name', 'My System', '--url', 'https://example.com']));
 
         // Then
-        expect(mockPrompt).not.toHaveBeenCalled();
+        const written = mockedService.write.mock.calls[0][0];
+        expect(written.username).toBeUndefined();
+        expect(written.password).toBeUndefined();
     });
 
     test('should log error and exit when running in BAS', async () => {
@@ -173,22 +148,5 @@ describe('system/add', () => {
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining("Invalid connection type 'bad_type'"));
         expect(mockedService.write).not.toHaveBeenCalled();
-    });
-
-    test('should warn when username provided but password prompt is cancelled/empty', async () => {
-        // Given
-        mockPrompt.mockResolvedValueOnce({ password: '' });
-        const command = new Command('system');
-        addSystemAddCommand(command);
-
-        // When
-        await command.parseAsync(
-            getArgv(['add', '--name', 'My System', '--url', 'https://example.com', '--username', 'user1'])
-        );
-
-        // Then
-        expect(loggerMock.warn).toHaveBeenCalledWith(expect.stringContaining('No password provided'));
-        // System is still written (without credentials)
-        expect(mockedService.write).toHaveBeenCalledTimes(1);
     });
 });

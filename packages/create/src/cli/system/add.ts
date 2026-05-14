@@ -1,5 +1,4 @@
 import type { Command } from 'commander';
-import { prompt } from 'prompts';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { BackendSystemKey } from '@sap-ux/store';
 import { getService, BackendSystem, SystemType, AuthenticationType, ConnectionType } from '@sap-ux/store';
@@ -40,10 +39,8 @@ Example:
             `Connection type (${Object.values(ConnectionType).join(' | ')})`,
             ConnectionType.AbapCatalog
         )
-        .option(
-            '--username <string>',
-            'Username for basic authentication (password will be prompted or read from SAP_UX_SYSTEM_PASSWORD env var)'
-        )
+        .option('--username <string>', 'Username for basic authentication')
+        .option('--password <string>', 'Password for basic authentication')
         .action(async (options) => {
             await addSystem({
                 name: options.name,
@@ -52,7 +49,8 @@ Example:
                 systemType: options.type,
                 authenticationType: options.auth,
                 connectionType: options.connectionType,
-                username: options.username
+                username: options.username,
+                password: options.password
             });
         });
 }
@@ -68,6 +66,7 @@ Example:
  * @param params.authenticationType - authentication type
  * @param params.connectionType - connection type
  * @param params.username - optional username for basic auth
+ * @param params.password - optional password for basic auth
  */
 async function addSystem(params: {
     name: string;
@@ -77,6 +76,7 @@ async function addSystem(params: {
     authenticationType: string;
     connectionType: string;
     username?: string;
+    password?: string;
 }): Promise<void> {
     const logger = getLogger();
     try {
@@ -107,23 +107,6 @@ async function addSystem(params: {
             return;
         }
 
-        // Resolve password securely — never from a CLI flag to avoid shell history exposure
-        let password: string | undefined;
-        if (params.username) {
-            password = process.env.SAP_UX_SYSTEM_PASSWORD;
-            if (!password) {
-                const result = await prompt({
-                    type: 'password',
-                    name: 'password',
-                    message: `Password for user '${params.username}':`
-                });
-                password = result.password || undefined;
-                if (!password) {
-                    logger.warn('No password provided; the system will be saved without credentials.');
-                }
-            }
-        }
-
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
 
         const system = new BackendSystem({
@@ -135,7 +118,7 @@ async function addSystem(params: {
                 params.authenticationType as (typeof AuthenticationType)[keyof typeof AuthenticationType],
             connectionType: params.connectionType as (typeof ConnectionType)[keyof typeof ConnectionType],
             username: params.username,
-            password
+            password: params.password
         });
 
         await service.write(system);

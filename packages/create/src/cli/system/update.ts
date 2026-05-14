@@ -1,5 +1,4 @@
 import type { Command } from 'commander';
-import { prompt } from 'prompts';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
@@ -26,10 +25,8 @@ Example:
         .requiredOption('--url <string>', 'URL of the backend system to update')
         .option('--client <string>', 'SAP client number to identify the system (optional)')
         .option('--name <string>', 'New display name for the system')
-        .option(
-            '--username <string>',
-            'New username (password will be prompted or read from SAP_UX_SYSTEM_PASSWORD env var)'
-        )
+        .option('--username <string>', 'New username')
+        .option('--password <string>', 'New password')
         .option('--clear-credentials', 'Remove stored credentials from the system')
         .action(async (options) => {
             await updateSystem({
@@ -37,6 +34,7 @@ Example:
                 client: options.client,
                 name: options.name,
                 username: options.username,
+                password: options.password,
                 clearCredentials: !!options.clearCredentials
             });
         });
@@ -50,6 +48,7 @@ Example:
  * @param params.client - optional SAP client identifying the system
  * @param params.name - optional new display name
  * @param params.username - optional new username
+ * @param params.password - optional new password
  * @param params.clearCredentials - if true, clears stored credentials
  */
 async function updateSystem(params: {
@@ -57,6 +56,7 @@ async function updateSystem(params: {
     client?: string;
     name?: string;
     username?: string;
+    password?: string;
     clearCredentials: boolean;
 }): Promise<void> {
     const logger = getLogger();
@@ -78,20 +78,19 @@ async function updateSystem(params: {
         if (params.clearCredentials) {
             patchRecord.username = undefined;
             patchRecord.password = undefined;
-        } else if (params.username !== undefined) {
-            patchRecord.username = params.username;
-            // Resolve password securely — never from a CLI flag to avoid shell history exposure
-            const password = process.env.SAP_UX_SYSTEM_PASSWORD ?? (await promptPassword(params.username));
-            if (!password) {
-                logger.warn('No password provided; credentials will not be updated.');
+        } else if (params.username !== undefined || params.password !== undefined) {
+            if (params.username !== undefined) {
+                patchRecord.username = params.username;
             }
-            patchRecord.password = password || undefined;
+            if (params.password !== undefined) {
+                patchRecord.password = params.password;
+            }
         }
 
         const patch = patchRecord as Partial<BackendSystem>;
 
         if (!Object.keys(patchRecord).length) {
-            logger.error('No fields to update. Provide at least one of: --name, --username, --clear-credentials');
+            logger.error('No fields to update. Provide at least one of: --name, --username, --password, --clear-credentials');
             return;
         }
 
@@ -108,19 +107,4 @@ async function updateSystem(params: {
         logger.error((error as Error).message);
         logger.debug(error);
     }
-}
-
-/**
- * Prompts the user for a password interactively (hidden input).
- *
- * @param username - username for display in the prompt
- * @returns entered password or undefined if cancelled
- */
-async function promptPassword(username: string): Promise<string | undefined> {
-    const result = await prompt({
-        type: 'password',
-        name: 'password',
-        message: `New password for user '${username}':`
-    });
-    return result.password || undefined;
 }

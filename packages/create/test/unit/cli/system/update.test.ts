@@ -4,18 +4,11 @@ import { addSystemUpdateCommand } from '../../../../src/cli/system/update';
 import * as logger from '../../../../src/tracing/logger';
 import * as btpUtils from '@sap-ux/btp-utils';
 import * as store from '@sap-ux/store';
-import * as prompts from 'prompts';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn().mockReturnValue(false)
 }));
 
-jest.mock('prompts', () => ({
-    ...jest.requireActual('prompts'),
-    prompt: jest.fn()
-}));
-
-const mockPrompt = prompts.prompt as jest.Mock;
 const { mockedService } = store as unknown as { mockedService: Record<string, jest.Mock> };
 const isAppStudioMock = btpUtils.isAppStudio as jest.Mock;
 
@@ -26,7 +19,6 @@ describe('system/update', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        delete process.env.SAP_UX_SYSTEM_PASSWORD;
 
         loggerMock = {
             debug: jest.fn(),
@@ -57,35 +49,32 @@ describe('system/update', () => {
         expect(loggerMock.error).not.toHaveBeenCalled();
     });
 
-    test('should update username and prompt for password', async () => {
+    test('should update username and password', async () => {
         // Given
-        mockPrompt.mockResolvedValueOnce({ password: 'newpassword' });
         const command = new Command('system');
         addSystemUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['update', '--url', 'https://example.com', '--username', 'newuser']));
+        await command.parseAsync(getArgv(['update', '--url', 'https://example.com', '--username', 'newuser', '--password', 'newpassword']));
 
         // Then
-        expect(mockPrompt).toHaveBeenCalledWith(expect.objectContaining({ type: 'password' }));
         const [, patch] = mockedService.partialUpdate.mock.calls[0];
         expect(patch.username).toBe('newuser');
         expect(patch.password).toBe('newpassword');
     });
 
-    test('should read new password from env var and skip prompt', async () => {
+    test('should update password only', async () => {
         // Given
-        process.env.SAP_UX_SYSTEM_PASSWORD = 'newenvpwd';
         const command = new Command('system');
         addSystemUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['update', '--url', 'https://example.com', '--username', 'newuser']));
+        await command.parseAsync(getArgv(['update', '--url', 'https://example.com', '--password', 'newpassword']));
 
         // Then
-        expect(mockPrompt).not.toHaveBeenCalled();
         const [, patch] = mockedService.partialUpdate.mock.calls[0];
-        expect(patch.password).toBe('newenvpwd');
+        expect(patch.password).toBe('newpassword');
+        expect(patch.username).toBeUndefined();
     });
 
     test('should clear credentials when --clear-credentials is passed', async () => {
@@ -158,18 +147,4 @@ describe('system/update', () => {
         expect(mockedService.partialUpdate).not.toHaveBeenCalled();
     });
 
-    test('should warn when username provided but password prompt is empty', async () => {
-        // Given
-        mockPrompt.mockResolvedValueOnce({ password: '' });
-        mockedService.read.mockResolvedValueOnce({ name: 'existing' });
-        const command = new Command('system');
-        addSystemUpdateCommand(command);
-
-        // When
-        await command.parseAsync(getArgv(['update', '--url', 'https://example.com', '--username', 'newuser']));
-
-        // Then
-        expect(loggerMock.warn).toHaveBeenCalledWith(expect.stringContaining('No password provided'));
-        expect(mockedService.partialUpdate).toHaveBeenCalledTimes(1);
-    });
 });

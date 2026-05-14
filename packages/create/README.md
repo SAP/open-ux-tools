@@ -417,7 +417,8 @@ Options:
 - `--type <string>` - System type (AbapCloud | OnPrem | Generic) _(default: `OnPrem`)_
 - `--auth <string>` - Authentication type (basic | reentranceTicket | oauth2 | oauth2ClientCredential) _(default: `basic`)_
 - `--connection-type <string>` - Connection type (abap_catalog | generic_host | odata_service) _(default: `abap_catalog`)_
-- `--username <string>` - Username for basic authentication (password will be prompted or read from SAP_UX_SYSTEM_PASSWORD env var)
+- `--username <string>` - Username for basic authentication
+- `--password <string>` - Password for basic authentication
 
 --------------------------------
 
@@ -472,7 +473,8 @@ Options:
 - `--url <string>` _(required)_ - URL of the backend system to update
 - `--client <string>` - SAP client number to identify the system (optional)
 - `--name <string>` - New display name for the system
-- `--username <string>` - New username (password will be prompted or read from SAP_UX_SYSTEM_PASSWORD env var)
+- `--username <string>` - New username
+- `--password <string>` - New password
 - `--clear-credentials` - Remove stored credentials from the system
 
 --------------------------------
