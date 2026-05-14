@@ -55,7 +55,17 @@ describe('system/add', () => {
 
         // When
         await command.parseAsync(
-            getArgv(['add', '--name', 'My System', '--url', 'https://example.com', '--username', 'user1', '--password', 'secret'])
+            getArgv([
+                'add',
+                '--name',
+                'My System',
+                '--url',
+                'https://example.com',
+                '--username',
+                'user1',
+                '--password',
+                'secret'
+            ])
         );
 
         // Then

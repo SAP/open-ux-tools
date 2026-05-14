@@ -55,7 +55,9 @@ describe('system/update', () => {
         addSystemUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['update', '--url', 'https://example.com', '--username', 'newuser', '--password', 'newpassword']));
+        await command.parseAsync(
+            getArgv(['update', '--url', 'https://example.com', '--username', 'newuser', '--password', 'newpassword'])
+        );
 
         // Then
         const [, patch] = mockedService.partialUpdate.mock.calls[0];
@@ -146,5 +148,4 @@ describe('system/update', () => {
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('not found'));
         expect(mockedService.partialUpdate).not.toHaveBeenCalled();
     });
-
 });

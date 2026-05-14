@@ -90,7 +90,9 @@ async function updateSystem(params: {
         const patch = patchRecord as Partial<BackendSystem>;
 
         if (!Object.keys(patchRecord).length) {
-            logger.error('No fields to update. Provide at least one of: --name, --username, --password, --clear-credentials');
+            logger.error(
+                'No fields to update. Provide at least one of: --name, --username, --password, --clear-credentials'
+            );
             return;
         }
 
