@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.133
+
+### Patch Changes
+
+- 8c4185a: fix: change used change type for inbounds
+
 ## 0.18.132
 
 ### Patch Changes
