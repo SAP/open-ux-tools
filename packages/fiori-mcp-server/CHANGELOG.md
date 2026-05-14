@@ -1,5 +1,22 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.60
+
+### Patch Changes
+
+- 59537d3: chore: override sharp to >=0.33.5 to fix CI build on darwin-arm64
+- Updated dependencies [59537d3]
+    - @sap-ux/fiori-docs-embeddings@0.4.20
+
+## 0.6.59
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/fiori-docs-embeddings@0.4.19
+    - @sap-ux/store@1.5.14
+
 ## 0.6.58
 
 ### Patch Changes

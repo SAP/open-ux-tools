@@ -1,5 +1,16 @@
 # @sap-ux/cds-annotation-parser
 
+## 0.2.37
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/odata-annotation-core@0.2.19
+    - @sap-ux/odata-entity-model@0.3.8
+    - @sap-ux/odata-vocabularies@0.4.32
+    - @sap-ux/text-document-utils@0.3.5
+
 ## 0.2.36
 
 ### Patch Changes
