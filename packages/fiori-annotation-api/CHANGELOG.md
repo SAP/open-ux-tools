@@ -1,5 +1,29 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.9.50
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/cds-annotation-parser@0.2.37
+    - @sap-ux/cds-odata-annotation-converter@0.7.18
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/odata-annotation-core@0.2.19
+    - @sap-ux/odata-annotation-core-types@0.5.9
+    - @sap-ux/odata-entity-model@0.3.8
+    - @sap-ux/odata-vocabularies@0.4.32
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/xml-odata-annotation-converter@0.4.14
+
+## 0.9.49
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/cds-odata-annotation-converter@0.7.17
+
 ## 0.9.48
 
 ### Patch Changes

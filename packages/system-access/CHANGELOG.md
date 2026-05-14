@@ -1,5 +1,23 @@
 # @sap-ux/system-access
 
+## 0.7.13
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/store@1.5.14
+
+## 0.7.12
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/axios-extension@1.25.36
+
 ## 0.7.11
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @sap-ux/ui5-application-writer
 
+## 1.8.9
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/ui5-config@0.30.5
+
 ## 1.8.8
 
 ### Patch Changes

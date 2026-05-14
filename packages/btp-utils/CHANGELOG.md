@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 1.1.16
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
 ## 1.1.15
 
 ### Patch Changes

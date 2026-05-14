@@ -1,5 +1,21 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.1.127
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/fiori-generator-shared@0.14.2
+    - @sap-ux/nodejs-utils@0.2.23
+
+## 0.1.126
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.14.1
+
 ## 0.1.125
 
 ### Patch Changes

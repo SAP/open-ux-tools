@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.17.8
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
 ## 0.17.7
 
 ### Patch Changes

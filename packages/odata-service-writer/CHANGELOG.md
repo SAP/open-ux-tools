@@ -1,5 +1,24 @@
 # @sap-ux/odata-service-writer
 
+## 0.31.14
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/mockserver-config-writer@0.9.78
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/ui5-config@0.30.5
+
+## 0.31.13
+
+### Patch Changes
+
+- 21abda3: chore: upgrade fast-xml-parser 5.7.2 → 5.8.0 (fixes fast-xml-builder CVE-2025-47916)
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/mockserver-config-writer@0.9.77
+
 ## 0.31.12
 
 ### Patch Changes
