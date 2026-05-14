@@ -7,9 +7,7 @@ import { getRemoveCommands } from './remove';
 import { getGenerateCommands } from './generate';
 import { getChangeCommands } from './change';
 import { getConvertCommands } from './convert';
-import { getListCommands } from './list';
-import { getGetCommands } from './get';
-import { getUpdateCommands } from './update';
+import { getSystemCommands } from './system';
 
 /*
  * We've chosen 'commander' over 'minimist' and 'yargs' for this CLI implementation. Reasons:
@@ -112,32 +110,14 @@ function getCommanderProgram(): Command {
     );
     program.addCommand(changeCommands);
 
-    // Handler for sap-ux list <feature> ..
-    const listCommands = getListCommands();
-    listCommands.description(
-        `Command group for listing SAP Fiori resources. A subcommand is required.
-                    Usage: \`npx --yes @sap-ux/create@latest list [subcommand] [options]\`
-                    The available subcommands are: ${getFeatureSummary(listCommands.commands)}\n`
+    // Handler for sap-ux system <action> ..
+    const systemCommands = getSystemCommands();
+    systemCommands.description(
+        `Command group for managing saved backend systems. A subcommand is required.
+                    Usage: \`npx --yes @sap-ux/create@latest system [subcommand] [options]\`
+                    The available subcommands are: ${getFeatureSummary(systemCommands.commands)}\n`
     );
-    program.addCommand(listCommands);
-
-    // Handler for sap-ux get <feature> ..
-    const getCommands = getGetCommands();
-    getCommands.description(
-        `Command group for retrieving SAP Fiori resources. A subcommand is required.
-                    Usage: \`npx --yes @sap-ux/create@latest get [subcommand] [options]\`
-                    The available subcommands are: ${getFeatureSummary(getCommands.commands)}\n`
-    );
-    program.addCommand(getCommands);
-
-    // Handler for sap-ux update <feature> ..
-    const updateCommands = getUpdateCommands();
-    updateCommands.description(
-        `Command group for updating SAP Fiori resources. A subcommand is required.
-                    Usage: \`npx --yes @sap-ux/create@latest update [subcommand] [options]\`
-                    The available subcommands are: ${getFeatureSummary(updateCommands.commands)}\n`
-    );
-    program.addCommand(updateCommands);
+    program.addCommand(systemCommands);
 
     return program;
 }

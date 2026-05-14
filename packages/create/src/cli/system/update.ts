@@ -7,21 +7,21 @@ import { getService, BackendSystemKey } from '@sap-ux/store';
 import { getLogger } from '../../tracing';
 
 /**
- * Add the "update system" command to a passed command.
+ * Add the "system update" subcommand to a passed command.
  * Updates an existing backend system in the saved systems store (~/.fioritools).
  * The system is identified by URL and optional SAP client.
  *
- * @param cmd - commander command to attach the system sub-command to
+ * @param cmd - commander command to attach the update subcommand to
  */
-export function addUpdateSystemCommand(cmd: Command): void {
-    cmd.command('system')
+export function addSystemUpdateCommand(cmd: Command): void {
+    cmd.command('update')
         .description(
             `Update an existing backend system in the saved systems store (~/.fioritools).
 The system is identified by its URL and optional SAP client.
 
 Example:
-    \`npx --yes @sap-ux/create@latest update system --url https://my-sap.example.com --name "New Name"\`
-    \`npx --yes @sap-ux/create@latest update system --url https://my-sap.example.com --client 100 --username newuser\``
+    \`npx --yes @sap-ux/create@latest system update --url https://my-sap.example.com --name "New Name"\`
+    \`npx --yes @sap-ux/create@latest system update --url https://my-sap.example.com --client 100 --username newuser\``
         )
         .requiredOption('--url <string>', 'URL of the backend system to update')
         .option('--client <string>', 'SAP client number to identify the system (optional)')

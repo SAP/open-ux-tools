@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { addListSystemCommand } from '../../../../src/cli/list/system';
+import { addSystemListCommand } from '../../../../src/cli/system/list';
 import * as logger from '../../../../src/tracing/logger';
 import * as btpUtils from '@sap-ux/btp-utils';
 import * as store from '@sap-ux/store';
@@ -24,7 +24,7 @@ const mockSystem = new BackendSystem({
     password: 'secret'
 });
 
-describe('list/system', () => {
+describe('system/list', () => {
     let loggerMock: ToolsLogger;
 
     const getArgv = (args: string[]) => ['', '', ...args];
@@ -45,11 +45,11 @@ describe('list/system', () => {
 
     test('should list systems in human-readable format', async () => {
         // Given
-        const command = new Command('list');
-        addListSystemCommand(command);
+        const command = new Command('system');
+        addSystemListCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system']));
+        await command.parseAsync(getArgv(['list']));
 
         // Then
         expect(mockedService.getAll).toHaveBeenCalledTimes(1);
@@ -63,11 +63,11 @@ describe('list/system', () => {
 
     test('should list systems as JSON', async () => {
         // Given
-        const command = new Command('list');
-        addListSystemCommand(command);
+        const command = new Command('system');
+        addSystemListCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--json']));
+        await command.parseAsync(getArgv(['list', '--json']));
 
         // Then
         const jsonCall = (loggerMock.info as jest.Mock).mock.calls.find((args) => {
@@ -88,11 +88,11 @@ describe('list/system', () => {
     test('should show message when no systems found', async () => {
         // Given
         mockedService.getAll.mockResolvedValue([]);
-        const command = new Command('list');
-        addListSystemCommand(command);
+        const command = new Command('system');
+        addSystemListCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system']));
+        await command.parseAsync(getArgv(['list']));
 
         // Then
         expect(loggerMock.info).toHaveBeenCalledWith('No systems found.');
@@ -101,11 +101,11 @@ describe('list/system', () => {
     test('should log error and exit when running in BAS', async () => {
         // Given
         isAppStudioMock.mockReturnValue(true);
-        const command = new Command('list');
-        addListSystemCommand(command);
+        const command = new Command('system');
+        addSystemListCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system']));
+        await command.parseAsync(getArgv(['list']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('Business Application Studio'));
@@ -115,11 +115,11 @@ describe('list/system', () => {
     test('should log error when getAll throws', async () => {
         // Given
         mockedService.getAll.mockRejectedValueOnce(new Error('Store error'));
-        const command = new Command('list');
-        addListSystemCommand(command);
+        const command = new Command('system');
+        addSystemListCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system']));
+        await command.parseAsync(getArgv(['list']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith('Store error');

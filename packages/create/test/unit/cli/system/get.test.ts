@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { addGetSystemCommand } from '../../../../src/cli/get/system';
+import { addSystemGetCommand } from '../../../../src/cli/system/get';
 import * as logger from '../../../../src/tracing/logger';
 import * as btpUtils from '@sap-ux/btp-utils';
 import * as store from '@sap-ux/store';
@@ -23,7 +23,7 @@ const mockSystem = new BackendSystem({
     password: 'secret'
 });
 
-describe('get/system', () => {
+describe('system/get', () => {
     let loggerMock: ToolsLogger;
 
     const getArgv = (args: string[]) => ['', '', ...args];
@@ -44,11 +44,11 @@ describe('get/system', () => {
 
     test('should print system details in human-readable format', async () => {
         // Given
-        const command = new Command('get');
-        addGetSystemCommand(command);
+        const command = new Command('system');
+        addSystemGetCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://my-sap.example.com']));
+        await command.parseAsync(getArgv(['get', '--url', 'https://my-sap.example.com']));
 
         // Then
         expect(mockedService.read).toHaveBeenCalledTimes(1);
@@ -61,11 +61,11 @@ describe('get/system', () => {
 
     test('should output system as JSON', async () => {
         // Given
-        const command = new Command('get');
-        addGetSystemCommand(command);
+        const command = new Command('system');
+        addSystemGetCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://my-sap.example.com', '--json']));
+        await command.parseAsync(getArgv(['get', '--url', 'https://my-sap.example.com', '--json']));
 
         // Then
         const jsonCall = (loggerMock.info as jest.Mock).mock.calls.find((args) => {
@@ -86,11 +86,11 @@ describe('get/system', () => {
     test('should log error when system not found', async () => {
         // Given
         mockedService.read.mockResolvedValue(undefined);
-        const command = new Command('get');
-        addGetSystemCommand(command);
+        const command = new Command('system');
+        addSystemGetCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://unknown.example.com']));
+        await command.parseAsync(getArgv(['get', '--url', 'https://unknown.example.com']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('not found'));
@@ -99,11 +99,11 @@ describe('get/system', () => {
     test('should log error and exit when running in BAS', async () => {
         // Given
         isAppStudioMock.mockReturnValue(true);
-        const command = new Command('get');
-        addGetSystemCommand(command);
+        const command = new Command('system');
+        addSystemGetCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://my-sap.example.com']));
+        await command.parseAsync(getArgv(['get', '--url', 'https://my-sap.example.com']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('Business Application Studio'));

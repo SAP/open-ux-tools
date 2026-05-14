@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { addRemoveSystemCommand } from '../../../../src/cli/remove/system';
+import { addSystemRemoveCommand } from '../../../../src/cli/system/remove';
 import * as logger from '../../../../src/tracing/logger';
 import * as btpUtils from '@sap-ux/btp-utils';
 import * as store from '@sap-ux/store';
@@ -21,7 +21,7 @@ const mockSystem = new BackendSystem({
     authenticationType: AuthenticationType.Basic
 });
 
-describe('remove/system', () => {
+describe('system/remove', () => {
     let loggerMock: ToolsLogger;
 
     const getArgv = (args: string[]) => ['', '', ...args];
@@ -43,11 +43,11 @@ describe('remove/system', () => {
 
     test('should remove an existing system', async () => {
         // Given
-        const command = new Command('remove');
-        addRemoveSystemCommand(command);
+        const command = new Command('system');
+        addSystemRemoveCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://my-sap.example.com']));
+        await command.parseAsync(getArgv(['remove', '--url', 'https://my-sap.example.com']));
 
         // Then
         expect(mockedService.read).toHaveBeenCalledTimes(1);
@@ -59,11 +59,11 @@ describe('remove/system', () => {
     test('should log error when system not found', async () => {
         // Given
         mockedService.read.mockResolvedValue(undefined);
-        const command = new Command('remove');
-        addRemoveSystemCommand(command);
+        const command = new Command('system');
+        addSystemRemoveCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://unknown.example.com']));
+        await command.parseAsync(getArgv(['remove', '--url', 'https://unknown.example.com']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('not found'));
@@ -73,11 +73,11 @@ describe('remove/system', () => {
     test('should log error when delete returns false', async () => {
         // Given
         mockedService.delete.mockResolvedValue(false);
-        const command = new Command('remove');
-        addRemoveSystemCommand(command);
+        const command = new Command('system');
+        addSystemRemoveCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://my-sap.example.com']));
+        await command.parseAsync(getArgv(['remove', '--url', 'https://my-sap.example.com']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('Failed to remove'));
@@ -86,11 +86,11 @@ describe('remove/system', () => {
     test('should log error and exit when running in BAS', async () => {
         // Given
         isAppStudioMock.mockReturnValue(true);
-        const command = new Command('remove');
-        addRemoveSystemCommand(command);
+        const command = new Command('system');
+        addSystemRemoveCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://my-sap.example.com']));
+        await command.parseAsync(getArgv(['remove', '--url', 'https://my-sap.example.com']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('Business Application Studio'));
@@ -100,11 +100,11 @@ describe('remove/system', () => {
     test('should log error when delete throws', async () => {
         // Given
         mockedService.delete.mockRejectedValueOnce(new Error('Keychain error'));
-        const command = new Command('remove');
-        addRemoveSystemCommand(command);
+        const command = new Command('system');
+        addSystemRemoveCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://my-sap.example.com']));
+        await command.parseAsync(getArgv(['remove', '--url', 'https://my-sap.example.com']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith('Keychain error');

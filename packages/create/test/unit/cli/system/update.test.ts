@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { addUpdateSystemCommand } from '../../../../src/cli/update/system';
+import { addSystemUpdateCommand } from '../../../../src/cli/system/update';
 import * as logger from '../../../../src/tracing/logger';
 import * as btpUtils from '@sap-ux/btp-utils';
 import * as store from '@sap-ux/store';
@@ -19,7 +19,7 @@ const mockPrompt = prompts.prompt as jest.Mock;
 const { mockedService } = store as unknown as { mockedService: Record<string, jest.Mock> };
 const isAppStudioMock = btpUtils.isAppStudio as jest.Mock;
 
-describe('update/system', () => {
+describe('system/update', () => {
     let loggerMock: ToolsLogger;
 
     const getArgv = (args: string[]) => ['', '', ...args];
@@ -43,11 +43,11 @@ describe('update/system', () => {
 
     test('should update system name', async () => {
         // Given
-        const command = new Command('update');
-        addUpdateSystemCommand(command);
+        const command = new Command('system');
+        addSystemUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://my-sap.example.com', '--name', 'Updated Name']));
+        await command.parseAsync(getArgv(['update', '--url', 'https://my-sap.example.com', '--name', 'Updated Name']));
 
         // Then
         expect(mockedService.partialUpdate).toHaveBeenCalledTimes(1);
@@ -60,11 +60,11 @@ describe('update/system', () => {
     test('should update username and prompt for password', async () => {
         // Given
         mockPrompt.mockResolvedValueOnce({ password: 'newpassword' });
-        const command = new Command('update');
-        addUpdateSystemCommand(command);
+        const command = new Command('system');
+        addSystemUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--username', 'newuser']));
+        await command.parseAsync(getArgv(['update', '--url', 'https://example.com', '--username', 'newuser']));
 
         // Then
         expect(mockPrompt).toHaveBeenCalledWith(expect.objectContaining({ type: 'password' }));
@@ -76,11 +76,11 @@ describe('update/system', () => {
     test('should read new password from env var and skip prompt', async () => {
         // Given
         process.env.SAP_UX_SYSTEM_PASSWORD = 'newenvpwd';
-        const command = new Command('update');
-        addUpdateSystemCommand(command);
+        const command = new Command('system');
+        addSystemUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--username', 'newuser']));
+        await command.parseAsync(getArgv(['update', '--url', 'https://example.com', '--username', 'newuser']));
 
         // Then
         expect(mockPrompt).not.toHaveBeenCalled();
@@ -90,11 +90,11 @@ describe('update/system', () => {
 
     test('should clear credentials when --clear-credentials is passed', async () => {
         // Given
-        const command = new Command('update');
-        addUpdateSystemCommand(command);
+        const command = new Command('system');
+        addSystemUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--clear-credentials']));
+        await command.parseAsync(getArgv(['update', '--url', 'https://example.com', '--clear-credentials']));
 
         // Then
         const [, patch] = mockedService.partialUpdate.mock.calls[0];
@@ -105,11 +105,11 @@ describe('update/system', () => {
 
     test('should log error when no fields to update', async () => {
         // Given
-        const command = new Command('update');
-        addUpdateSystemCommand(command);
+        const command = new Command('system');
+        addSystemUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://example.com']));
+        await command.parseAsync(getArgv(['update', '--url', 'https://example.com']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('No fields to update'));
@@ -119,11 +119,11 @@ describe('update/system', () => {
     test('should log error and exit when running in BAS', async () => {
         // Given
         isAppStudioMock.mockReturnValue(true);
-        const command = new Command('update');
-        addUpdateSystemCommand(command);
+        const command = new Command('system');
+        addSystemUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--name', 'New Name']));
+        await command.parseAsync(getArgv(['update', '--url', 'https://example.com', '--name', 'New Name']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('Business Application Studio'));
@@ -134,11 +134,11 @@ describe('update/system', () => {
         // Given
         mockedService.read.mockResolvedValueOnce({ name: 'existing' });
         mockedService.partialUpdate.mockRejectedValueOnce(new Error('Store error'));
-        const command = new Command('update');
-        addUpdateSystemCommand(command);
+        const command = new Command('system');
+        addSystemUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--name', 'New Name']));
+        await command.parseAsync(getArgv(['update', '--url', 'https://example.com', '--name', 'New Name']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith('Store error');
@@ -147,11 +147,11 @@ describe('update/system', () => {
     test('should log error when system does not exist', async () => {
         // Given
         mockedService.read.mockResolvedValueOnce(undefined);
-        const command = new Command('update');
-        addUpdateSystemCommand(command);
+        const command = new Command('system');
+        addSystemUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://unknown.example.com', '--name', 'New Name']));
+        await command.parseAsync(getArgv(['update', '--url', 'https://unknown.example.com', '--name', 'New Name']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('not found'));
@@ -162,11 +162,11 @@ describe('update/system', () => {
         // Given
         mockPrompt.mockResolvedValueOnce({ password: '' });
         mockedService.read.mockResolvedValueOnce({ name: 'existing' });
-        const command = new Command('update');
-        addUpdateSystemCommand(command);
+        const command = new Command('system');
+        addSystemUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--username', 'newuser']));
+        await command.parseAsync(getArgv(['update', '--url', 'https://example.com', '--username', 'newuser']));
 
         // Then
         expect(loggerMock.warn).toHaveBeenCalledWith(expect.stringContaining('No password provided'));

@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { addSystemCommand } from '../../../../src/cli/add/system';
+import { addSystemAddCommand } from '../../../../src/cli/system/add';
 import * as logger from '../../../../src/tracing/logger';
 import * as btpUtils from '@sap-ux/btp-utils';
 import * as store from '@sap-ux/store';
@@ -19,7 +19,7 @@ const mockPrompt = prompts.prompt as jest.Mock;
 const { mockedService } = store as unknown as { mockedService: Record<string, jest.Mock> };
 const isAppStudioMock = btpUtils.isAppStudio as jest.Mock;
 
-describe('add/system', () => {
+describe('system/add', () => {
     let loggerMock: ToolsLogger;
 
     const getArgv = (args: string[]) => ['', '', ...args];
@@ -41,11 +41,11 @@ describe('add/system', () => {
 
     test('should add a system with required options', async () => {
         // Given
-        const command = new Command('add');
-        addSystemCommand(command);
+        const command = new Command('system');
+        addSystemAddCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--name', 'My System', '--url', 'https://my-sap.example.com']));
+        await command.parseAsync(getArgv(['add', '--name', 'My System', '--url', 'https://my-sap.example.com']));
 
         // Then
         expect(mockedService.write).toHaveBeenCalledTimes(1);
@@ -59,12 +59,12 @@ describe('add/system', () => {
     test('should prompt for password when username is provided', async () => {
         // Given
         mockPrompt.mockResolvedValueOnce({ password: 'secret' });
-        const command = new Command('add');
-        addSystemCommand(command);
+        const command = new Command('system');
+        addSystemAddCommand(command);
 
         // When
         await command.parseAsync(
-            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--username', 'user1'])
+            getArgv(['add', '--name', 'My System', '--url', 'https://example.com', '--username', 'user1'])
         );
 
         // Then
@@ -77,12 +77,12 @@ describe('add/system', () => {
     test('should read password from env var and skip prompt', async () => {
         // Given
         process.env.SAP_UX_SYSTEM_PASSWORD = 'envpassword';
-        const command = new Command('add');
-        addSystemCommand(command);
+        const command = new Command('system');
+        addSystemAddCommand(command);
 
         // When
         await command.parseAsync(
-            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--username', 'user1'])
+            getArgv(['add', '--name', 'My System', '--url', 'https://example.com', '--username', 'user1'])
         );
 
         // Then
@@ -93,11 +93,11 @@ describe('add/system', () => {
 
     test('should not prompt for password when no username given', async () => {
         // Given
-        const command = new Command('add');
-        addSystemCommand(command);
+        const command = new Command('system');
+        addSystemAddCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--name', 'My System', '--url', 'https://example.com']));
+        await command.parseAsync(getArgv(['add', '--name', 'My System', '--url', 'https://example.com']));
 
         // Then
         expect(mockPrompt).not.toHaveBeenCalled();
@@ -106,11 +106,11 @@ describe('add/system', () => {
     test('should log error and exit when running in BAS', async () => {
         // Given
         isAppStudioMock.mockReturnValue(true);
-        const command = new Command('add');
-        addSystemCommand(command);
+        const command = new Command('system');
+        addSystemAddCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--name', 'My System', '--url', 'https://example.com']));
+        await command.parseAsync(getArgv(['add', '--name', 'My System', '--url', 'https://example.com']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('Business Application Studio'));
@@ -120,11 +120,11 @@ describe('add/system', () => {
     test('should log error when write throws', async () => {
         // Given
         mockedService.write.mockRejectedValueOnce(new Error('System already exists'));
-        const command = new Command('add');
-        addSystemCommand(command);
+        const command = new Command('system');
+        addSystemAddCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--name', 'My System', '--url', 'https://example.com']));
+        await command.parseAsync(getArgv(['add', '--name', 'My System', '--url', 'https://example.com']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith('System already exists');
@@ -132,12 +132,12 @@ describe('add/system', () => {
 
     test('should log error for invalid --type value', async () => {
         // Given
-        const command = new Command('add');
-        addSystemCommand(command);
+        const command = new Command('system');
+        addSystemAddCommand(command);
 
         // When
         await command.parseAsync(
-            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--type', 'FooBar'])
+            getArgv(['add', '--name', 'My System', '--url', 'https://example.com', '--type', 'FooBar'])
         );
 
         // Then
@@ -147,12 +147,12 @@ describe('add/system', () => {
 
     test('should log error for invalid --auth value', async () => {
         // Given
-        const command = new Command('add');
-        addSystemCommand(command);
+        const command = new Command('system');
+        addSystemAddCommand(command);
 
         // When
         await command.parseAsync(
-            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--auth', 'notAnAuthType'])
+            getArgv(['add', '--name', 'My System', '--url', 'https://example.com', '--auth', 'notAnAuthType'])
         );
 
         // Then
@@ -162,12 +162,12 @@ describe('add/system', () => {
 
     test('should log error for invalid --connection-type value', async () => {
         // Given
-        const command = new Command('add');
-        addSystemCommand(command);
+        const command = new Command('system');
+        addSystemAddCommand(command);
 
         // When
         await command.parseAsync(
-            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--connection-type', 'bad_type'])
+            getArgv(['add', '--name', 'My System', '--url', 'https://example.com', '--connection-type', 'bad_type'])
         );
 
         // Then
@@ -178,12 +178,12 @@ describe('add/system', () => {
     test('should warn when username provided but password prompt is cancelled/empty', async () => {
         // Given
         mockPrompt.mockResolvedValueOnce({ password: '' });
-        const command = new Command('add');
-        addSystemCommand(command);
+        const command = new Command('system');
+        addSystemAddCommand(command);
 
         // When
         await command.parseAsync(
-            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--username', 'user1'])
+            getArgv(['add', '--name', 'My System', '--url', 'https://example.com', '--username', 'user1'])
         );
 
         // Then

@@ -6,14 +6,14 @@ import { getService, BackendSystem, SystemType, AuthenticationType, ConnectionTy
 import { getLogger } from '../../tracing';
 
 /**
- * Add the "add system" command to a passed command.
+ * Add the "system add" subcommand to a passed command.
  * Adds a new backend system to the saved systems store (~/.fioritools).
  * Credentials are stored securely in the OS keychain.
  *
- * @param cmd - commander command to attach the system sub-command to
+ * @param cmd - commander command to attach the add subcommand to
  */
-export function addSystemCommand(cmd: Command): void {
-    cmd.command('system')
+export function addSystemAddCommand(cmd: Command): void {
+    cmd.command('add')
         .description(
             `Add a new backend system to the saved systems store (~/.fioritools).
 Credentials are stored securely in the OS keychain.
@@ -23,8 +23,8 @@ Auth types:   ${Object.values(AuthenticationType).join(' | ')}
 Connection types: ${Object.values(ConnectionType).join(' | ')}
 
 Example:
-    \`npx --yes @sap-ux/create@latest add system --name "My System" --url https://my-sap.example.com\`
-    \`npx --yes @sap-ux/create@latest add system --name "My System" --url https://my-sap.example.com --client 100 --username myuser\``
+    \`npx --yes @sap-ux/create@latest system add --name "My System" --url https://my-sap.example.com\`
+    \`npx --yes @sap-ux/create@latest system add --name "My System" --url https://my-sap.example.com --client 100 --username myuser\``
         )
         .requiredOption('--name <string>', 'Display name for the system')
         .requiredOption('--url <string>', 'URL of the backend system')
