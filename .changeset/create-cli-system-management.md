@@ -4,6 +4,10 @@
 
 feat(create): add CLI commands for managing saved backend systems (#37734)
 
+Adds `sap-ux system` command group with five subcommands: `add`, `list`, `get`, `update`, `remove`.
+Systems are stored in `~/.fioritools`; credentials are stored securely in the OS keychain.
+Sensitive data is never included in CLI output. Commands are disabled in SAP Business Application Studio.
+
 Introduces five new commands for IDE-agnostic management of saved systems:
 
 - `sap-ux add system` — add a backend system to ~/.fioritools; credentials stored securely in OS keychain
