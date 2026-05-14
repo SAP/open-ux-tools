@@ -1305,7 +1305,7 @@ export class FlpSandbox {
             }
 
             const response = await provider.get(req.url);
-            const responseData = JSON.parse(response.data as string);
+            const responseData = typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
 
             const filtered = stripLocalModulesFromLrepResponse(
                 responseData as Record<string, unknown>,
