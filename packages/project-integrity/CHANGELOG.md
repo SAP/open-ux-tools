@@ -1,5 +1,13 @@
 # @sap-ux/project-integrity
 
+## 0.2.74
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/project-access@1.36.5
+
 ## 0.2.73
 
 ### Patch Changes

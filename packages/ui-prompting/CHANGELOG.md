@@ -1,5 +1,13 @@
 # @sap-ux/ui-prompting
 
+## 0.6.29
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/ui-components@2.1.16
+
 ## 0.6.28
 
 ### Patch Changes

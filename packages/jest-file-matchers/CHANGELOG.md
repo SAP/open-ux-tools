@@ -1,5 +1,11 @@
 # @sap-ux/jest-file-matchers
 
+## 0.2.12
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
 ## 0.2.11
 
 ### Patch Changes

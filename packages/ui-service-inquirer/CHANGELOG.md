@@ -1,5 +1,20 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.2.173
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/abap-deploy-config-inquirer@1.8.22
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/guided-answers-helper@0.4.3
+    - @sap-ux/inquirer-common@0.11.47
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/odata-service-inquirer@2.20.24
+    - @sap-ux/telemetry@0.6.106
+
 ## 0.2.172
 
 ### Patch Changes

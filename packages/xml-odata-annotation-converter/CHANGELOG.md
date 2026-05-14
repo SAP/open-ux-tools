@@ -1,5 +1,13 @@
 # @sap-ux/xml-odata-annotation-converter
 
+## 0.4.14
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/odata-annotation-core@0.2.19
+
 ## 0.4.13
 
 ### Patch Changes

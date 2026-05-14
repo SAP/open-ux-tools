@@ -1,5 +1,14 @@
 # @sap-ux/odata-annotation-core
 
+## 0.2.19
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/odata-annotation-core-types@0.5.9
+    - @sap-ux/text-document-utils@0.3.5
+
 ## 0.2.18
 
 ### Patch Changes

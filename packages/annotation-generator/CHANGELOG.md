@@ -1,5 +1,16 @@
 # @sap-ux/annotation-generator
 
+## 0.4.57
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/fiori-annotation-api@0.9.50
+    - @sap-ux/odata-annotation-core-types@0.5.9
+    - @sap-ux/odata-entity-model@0.3.8
+    - @sap-ux/project-access@1.36.5
+
 ## 0.4.56
 
 ### Patch Changes
