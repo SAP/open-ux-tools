@@ -452,7 +452,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     });
 
     describe('useVirtualPreviewEndpoints yaml updates', () => {
-        test('sets flp.path on all yaml files and adds test entries to ui5-mock.yaml (javascript)', async () => {
+        test('adds test entries to ui5-mock.yaml (javascript)', async () => {
             const fs = create(createStorage());
             const testPath = join(curTestOutPath, 'virtual_endpoints_yaml_js');
             await generate(
@@ -468,9 +468,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             const ui5LocalYaml = fs.read(join(testPath, 'ui5-local.yaml'));
             const ui5MockYaml = fs.read(join(testPath, 'ui5-mock.yaml'));
 
-            expect(ui5Yaml).toContain('path: test/flp.html');
-            expect(ui5LocalYaml).toContain('path: test/flp.html');
-            expect(ui5MockYaml).toContain('path: test/flp.html');
+            expect(ui5Yaml).not.toContain('framework: OPA5');
+            expect(ui5LocalYaml).not.toContain('framework: OPA5');
             expect(ui5MockYaml).toContain('framework: OPA5');
             expect(ui5MockYaml).toContain('path: /test/integration/opaTests.qunit.html');
             expect(ui5MockYaml).toContain('pattern: /test/**/AllJourneys.*');
@@ -480,7 +479,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             expect(ui5MockYaml).toContain('pattern: /test/unit/controller/*.{js,ts}');
         });
 
-        test('sets flp.path on all yaml files and adds test entries to ui5-mock.yaml (typescript)', async () => {
+        test('adds test entries to ui5-mock.yaml (typescript)', async () => {
             const fs = create(createStorage());
             const testPath = join(curTestOutPath, 'virtual_endpoints_yaml_ts');
             await generate(
@@ -499,7 +498,6 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
 
             const ui5MockYaml = fs.read(join(testPath, 'ui5-mock.yaml'));
 
-            expect(ui5MockYaml).toContain('path: test/flp.html');
             expect(ui5MockYaml).toContain('framework: OPA5');
             expect(ui5MockYaml).toContain('path: /test/integration/opaTests.qunit.html');
             expect(ui5MockYaml).toContain('pattern: /test/**/*Journey.*');
@@ -509,7 +507,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             expect(ui5MockYaml).toContain('pattern: /test/unit/controller/*.{js,ts}');
         });
 
-        test('does not update flp.path when useVirtualPreviewEndpoints is false', async () => {
+        test('does not add test entries when useVirtualPreviewEndpoints is false', async () => {
             const fs = create(createStorage());
             const testPath = join(curTestOutPath, 'no_virtual_endpoints_yaml');
             await generate(
@@ -521,7 +519,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 fs
             );
 
-            expect(fs.read(join(testPath, 'ui5.yaml'))).not.toContain('path: test/flp.html');
+            expect(fs.read(join(testPath, 'ui5-mock.yaml'))).not.toContain('framework: OPA5');
         });
     });
 });

@@ -29,7 +29,6 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: test/flp.html
         test:
           - framework: OPA5
             path: /test/integration/opaTests.qunit.html

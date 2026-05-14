@@ -26,7 +26,7 @@ export async function renameSandbox(fs: Editor, basePath: string, path: string, 
     if (fs.exists(filePath)) {
         if (path.endsWith('unitTests.qunit.html')) {
             logger?.warn(
-                `Unit test files will be discovered automatically using the default pattern '/test/**/*Test.{js,ts}'. If your unit test files do not match this pattern, add a 'pattern' property to the QUnit test entry in your UI5 YAML configuration (e.g. pattern: '/test/unit/controller/*.{js,ts}').`
+                `Unit test files will be discovered automatically using the default pattern '/test/**/*Test.{js,ts}'. If your unit test files do not match this pattern, add a 'pattern' property to the QUnit test entry in your UI5 YAML configuration (e.g. pattern: '/test/unit/controller/*.{js,ts}'). For more details see https://github.com/SAP/open-ux-tools/blob/main/packages/preview-middleware/README.md#configuration-option-test`
             );
         }
         fs.move(filePath, filePath.replace('.html', '_old.html'));

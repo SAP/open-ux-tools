@@ -29,4 +29,3 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: test/flp.html

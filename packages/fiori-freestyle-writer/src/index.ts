@@ -203,6 +203,8 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
     }
 
     if (isEdmxProjectType && addTests && ffApp.appOptions?.useVirtualPreviewEndpoints) {
+        // Explicit patterns are required because the freestyle template uses AllJourneys.js (JS) or *Journey.ts (TS)
+        // rather than the preview-middleware default pattern, and unit tests live under controller/ not the default path.
         await addVirtualTestConfig(
             basePath,
             [

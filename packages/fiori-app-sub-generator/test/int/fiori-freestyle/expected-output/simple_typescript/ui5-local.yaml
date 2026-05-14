@@ -33,7 +33,6 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: test/flp.html
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:

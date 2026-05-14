@@ -77,10 +77,7 @@ function getOpaConfig(
 ): { htmlTarget: string; useVirtualPreviewEndpoints?: boolean } {
     const flpTarget = useVirtualPreviewEndpoints ? 'flp' : 'flpSandbox';
     const htmlTarget = `test/${flpTarget}.html#${flpAppId}`;
-    return {
-        htmlTarget,
-        useVirtualPreviewEndpoints: useVirtualPreviewEndpoints
-    };
+    return { htmlTarget, useVirtualPreviewEndpoints };
 }
 
 /**

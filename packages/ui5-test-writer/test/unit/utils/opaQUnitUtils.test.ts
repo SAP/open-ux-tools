@@ -684,7 +684,7 @@ server:
             );
         });
 
-        it('sets flp.path and test entries on all yaml files that have fiori-tools-preview', async () => {
+        it('adds test entries to ui5-mock.yaml', async () => {
             const fs = create(createStorage());
             const basePath = '/test/project';
             fs.write(join(basePath, 'ui5.yaml'), previewYaml);
@@ -694,21 +694,16 @@ server:
             const testFrameworks = [{ framework: 'OPA5', path: '/test/integration/opaTests.qunit.html' }];
             await addVirtualTestConfig(basePath, testFrameworks, fs);
 
-            expect(fs.read(join(basePath, 'ui5.yaml'))).toContain('path: test/flp.html');
-            expect(fs.read(join(basePath, 'ui5.yaml'))).not.toContain('framework: OPA5');
-            expect(fs.read(join(basePath, 'ui5-local.yaml'))).toContain('path: test/flp.html');
-            expect(fs.read(join(basePath, 'ui5-mock.yaml'))).toContain('path: test/flp.html');
             expect(fs.read(join(basePath, 'ui5-mock.yaml'))).toContain('framework: OPA5');
         });
 
-        it('skips yaml files that do not exist', async () => {
+        it('skips when ui5-mock.yaml does not exist', async () => {
             const fs = create(createStorage());
             const basePath = '/test/project-no-mock';
             fs.write(join(basePath, 'ui5.yaml'), previewYaml);
             fs.write(join(basePath, 'ui5-local.yaml'), previewYaml);
 
             await expect(addVirtualTestConfig(basePath, [{ framework: 'OPA5' }], fs)).resolves.not.toThrow();
-            expect(fs.read(join(basePath, 'ui5.yaml'))).toContain('path: test/flp.html');
             expect(fs.exists(join(basePath, 'ui5-mock.yaml'))).toBe(false);
         });
 
@@ -720,7 +715,7 @@ server:
             fs.write(join(basePath, 'ui5-mock.yaml'), noPreviewYaml);
 
             await addVirtualTestConfig(basePath, [{ framework: 'OPA5' }], fs);
-            expect(fs.read(join(basePath, 'ui5.yaml'))).not.toContain('path: test/flp.html');
+            expect(fs.read(join(basePath, 'ui5-mock.yaml'))).not.toContain('framework: OPA5');
         });
     });
 });

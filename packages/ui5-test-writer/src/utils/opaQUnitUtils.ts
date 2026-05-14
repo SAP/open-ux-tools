@@ -321,7 +321,6 @@ interface PreviewTestEntry {
 
 /** Shape of the `fiori-tools-preview` middleware configuration relevant to OPA5 detection */
 interface PreviewMiddlewareConfig {
-    flp?: { path?: string };
     test?: PreviewTestEntry[];
 }
 
@@ -350,8 +349,8 @@ export async function hasVirtualOPA5(basePath: string): Promise<boolean> {
 }
 
 /**
- * Updates the fiori-tools-preview middleware in all UI5 yaml config files to support virtual OPA test endpoints.
- * Sets flp.path on all yaml files and adds test framework entries to ui5-mock.yaml.
+ * Updates the fiori-tools-preview middleware in ui5-mock.yaml to support virtual OPA test endpoints.
+ * Adds test framework entries to ui5-mock.yaml.
  *
  * @param basePath - the absolute target path of the application
  * @param testFrameworks - the test framework entries to add to ui5-mock.yaml
@@ -362,20 +361,15 @@ export async function addVirtualTestConfig(
     testFrameworks: PreviewTestEntry[],
     fs: Editor
 ): Promise<void> {
-    for (const yamlFile of [FileName.Ui5Yaml, FileName.Ui5LocalYaml, FileName.Ui5MockYaml]) {
-        const yamlPath = join(basePath, yamlFile);
-        if (!fs.exists(yamlPath)) {
-            continue;
-        }
-        const yamlConfig = await readUi5Yaml(basePath, yamlFile, fs);
-        const previewMiddleware = yamlConfig.findCustomMiddleware<PreviewMiddlewareConfig>('fiori-tools-preview');
-        if (previewMiddleware?.configuration?.flp) {
-            previewMiddleware.configuration.flp.path = 'test/flp.html';
-            if (yamlFile === FileName.Ui5MockYaml && !previewMiddleware.configuration.test?.length) {
-                previewMiddleware.configuration.test = [...testFrameworks];
-            }
-            yamlConfig.updateCustomMiddleware(previewMiddleware);
-            fs.write(yamlPath, yamlConfig.toString());
-        }
+    const yamlPath = join(basePath, FileName.Ui5MockYaml);
+    if (!fs.exists(yamlPath)) {
+        return;
+    }
+    const yamlConfig = await readUi5Yaml(basePath, FileName.Ui5MockYaml, fs);
+    const previewMiddleware = yamlConfig.findCustomMiddleware<PreviewMiddlewareConfig>('fiori-tools-preview');
+    if (previewMiddleware?.configuration && !previewMiddleware.configuration.test?.length) {
+        previewMiddleware.configuration.test = [...testFrameworks];
+        yamlConfig.updateCustomMiddleware(previewMiddleware);
+        fs.write(yamlPath, yamlConfig.toString());
     }
 }
