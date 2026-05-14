@@ -90,4 +90,4 @@
 "sap-ux-sap-systems-ext": patch
 ---
 
-chore: fresh release
+chore: fresh release after workflow updates
