@@ -1,5 +1,11 @@
 # @sap-ux/guided-answers-helper
 
+## 0.4.3
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
 ## 0.4.2
 
 ### Patch Changes

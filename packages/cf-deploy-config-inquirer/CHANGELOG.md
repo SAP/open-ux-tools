@@ -1,5 +1,15 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.129
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/inquirer-common@0.11.47
+    - @sap-ux/logger@0.8.6
+
 ## 0.5.128
 
 ### Patch Changes

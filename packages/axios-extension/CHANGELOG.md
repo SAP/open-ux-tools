@@ -1,5 +1,15 @@
 # @sap-ux/axios-extension
 
+## 1.25.37
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/feature-toggle@0.3.9
+    - @sap-ux/logger@0.8.6
+
 ## 1.25.36
 
 ### Patch Changes

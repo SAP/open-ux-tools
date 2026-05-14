@@ -1,5 +1,11 @@
 # @sap-ux/fiori-tools-settings
 
+## 0.2.4
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
 ## 0.2.3
 
 ### Patch Changes

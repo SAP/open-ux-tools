@@ -1,5 +1,15 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.3.18
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/system-access@0.7.13
+    - @sap-ux/ui5-config@0.30.5
+
 ## 0.3.17
 
 ### Patch Changes

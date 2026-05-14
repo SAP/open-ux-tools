@@ -1,5 +1,13 @@
 # @sap-ux/odata-vocabularies
 
+## 0.4.32
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/odata-annotation-core-types@0.5.9
+
 ## 0.4.31
 
 ### Patch Changes

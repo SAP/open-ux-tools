@@ -1,5 +1,11 @@
 # @sap-ux/logger
 
+## 0.8.6
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
 ## 0.8.5
 
 ### Patch Changes

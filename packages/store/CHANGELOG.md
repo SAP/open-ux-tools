@@ -1,5 +1,13 @@
 # @sap-ux/store
 
+## 1.5.14
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/logger@0.8.6
+
 ## 1.5.13
 
 ### Patch Changes
