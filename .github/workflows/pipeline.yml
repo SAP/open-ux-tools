@@ -201,6 +201,7 @@ jobs:
               uses: actions/setup-node@v6
               with:
                   node-version: 20.x
+                  registry-url: 'https://registry.npmjs.org'
             - name: Install pnpm modules
               run: pnpm install --frozen-lockfile
             - name: Set instrumentation key in fiori-mcp-server
