@@ -30,7 +30,7 @@ function getOdataVersionFromMetadata(metadata: string): string | undefined {
     // Scan only the first 500 chars to avoid processing large metadata strings.
     // The XML declaration (<?xml ...?>) may precede the root <edmx:Edmx Version="..."> tag,
     // so we cannot stop at the first '>'.
-    const match = metadata.slice(0, 500).match(/Version="([^"]+)"/);
+    const match = /Version="([^"]+)"/.exec(metadata.slice(0, 500));
     return match?.[1] === '4.01' ? '4.01' : undefined;
 }
 
