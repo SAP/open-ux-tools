@@ -1,7 +1,6 @@
 import Generator from 'yeoman-generator';
 import RepoAppDownloadLogger from '../utils/logger.js';
-import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
-import { MessageType } from '@sap-devx/yeoman-ui-types';
+import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import type { Logger } from '@sap-ux/logger';
 import {

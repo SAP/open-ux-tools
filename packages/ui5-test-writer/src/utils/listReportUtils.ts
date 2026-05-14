@@ -1,5 +1,9 @@
 import type { Logger } from '@sap-ux/logger';
-import type { TreeAggregation, TreeAggregations, TreeModel } from '@sap/ux-specification/dist/types/src/parser/index.js';
+import type {
+    TreeAggregation,
+    TreeAggregations,
+    TreeModel
+} from '@sap/ux-specification/dist/types/src/parser/index.js';
 import type {
     ActionButtonsResult,
     ActionButtonState,
@@ -19,7 +23,7 @@ import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 import type { Manifest } from '@sap-ux/project-access';
-import { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
+import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
 
 /**
  * Builds a button state object from button visibility result.

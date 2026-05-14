@@ -1,5 +1,4 @@
-import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
-import { MessageType } from '@sap-devx/yeoman-ui-types';
+import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import type { AbapServiceProvider, UiServiceGenerator } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';

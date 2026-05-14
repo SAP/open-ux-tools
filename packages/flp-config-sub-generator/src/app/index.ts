@@ -1,8 +1,7 @@
 import { join } from 'node:path';
 import Generator from 'yeoman-generator';
 import FlpGenLogger from '../utils/logger.js';
-import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
-import { MessageType } from '@sap-devx/yeoman-ui-types';
+import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import { handleErrorMessage, getExtensionGenPromptOpts } from '@sap-ux/deploy-config-generator-shared';
 import { getPrompts, promptNames } from '@sap-ux/flp-config-inquirer';
 import { generateInboundNavigationConfig } from '@sap-ux/app-config-writer';
