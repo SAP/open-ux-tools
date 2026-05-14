@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.5.3
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
 ## 0.5.2
 
 ### Patch Changes

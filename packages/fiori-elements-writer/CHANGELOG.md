@@ -1,5 +1,21 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.139
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/annotation-generator@0.4.57
+    - @sap-ux/cap-config-writer@0.12.100
+    - @sap-ux/fe-fpm-writer@0.43.30
+    - @sap-ux/fiori-generator-shared@0.14.2
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/odata-service-writer@0.31.14
+    - @sap-ux/ui5-application-writer@1.8.9
+    - @sap-ux/ui5-config@0.30.5
+    - @sap-ux/ui5-test-writer@0.7.114
+
 ## 2.8.138
 
 ### Patch Changes

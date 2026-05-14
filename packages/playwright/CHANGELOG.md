@@ -1,5 +1,13 @@
 # @sap-ux-private/playwright
 
+## 0.2.16
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/logger@0.8.6
+
 ## 0.2.15
 
 ### Patch Changes

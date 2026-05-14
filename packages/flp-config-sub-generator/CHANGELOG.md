@@ -1,5 +1,20 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.3.204
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/app-config-writer@0.6.145
+    - @sap-ux/deploy-config-generator-shared@0.1.127
+    - @sap-ux/feature-toggle@0.3.9
+    - @sap-ux/fiori-generator-shared@0.14.2
+    - @sap-ux/flp-config-inquirer@0.4.192
+    - @sap-ux/i18n@0.3.12
+    - @sap-ux/inquirer-common@0.11.47
+    - @sap-ux/project-access@1.36.5
+
 ## 0.3.203
 
 ### Patch Changes
