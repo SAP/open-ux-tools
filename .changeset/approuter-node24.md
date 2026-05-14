@@ -1,5 +1,6 @@
 ---
-"@sap-ux/backend-proxy-middleware-cf": patch
+"@sap-ux/backend-proxy-middleware-cf": minor
 ---
 
-chore(backend-proxy-middleware-cf): upgrade @sap/approuter ^20.8.0 → ^21.5.0 for Node 24 support
+chore: upgrade @sap/approuter ^20.8.0 → ^21.5.0 for Node 24 support
+and drop Node 20 support as it is no longer maintained

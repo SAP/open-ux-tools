@@ -10,7 +10,6 @@
 "@sap-ux/annotation-generator": minor
 "@sap-ux/app-config-writer": minor
 "@sap-ux/axios-extension": minor
-"@sap-ux/backend-proxy-middleware-cf": minor
 "@sap-ux/backend-proxy-middleware": minor
 "@sap-ux/btp-utils": minor
 "@sap-ux/cap-config-writer": minor
