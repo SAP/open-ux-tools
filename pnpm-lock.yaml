@@ -424,7 +424,7 @@ importers:
         version: 9.5.4(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.25.12))
       ts-node:
         specifier: 10.9.2
-        version: 10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)
+        version: 10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -1071,8 +1071,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       '@sap/approuter':
-        specifier: ^20.8.0
-        version: 20.10.0(undici@6.24.1)
+        specifier: ^21.5.0
+        version: 21.5.0(undici@6.24.1)
       content-type:
         specifier: ^1.0.5
         version: 1.0.5
@@ -1524,7 +1524,7 @@ importers:
         version: 3.0.0(typescript@5.9.3)
       ts-jest:
         specifier: 29.4.9
-        version: 29.4.9(@babel/core@7.29.0)(@jest/transform@30.3.0)(@jest/types@30.3.0)(babel-jest@30.3.0(@babel/core@7.29.0))(esbuild@0.27.4)(jest-util@30.3.0)(jest@30.3.0(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)))(typescript@5.9.3)
+        version: 29.4.9(@babel/core@7.29.0)(@jest/transform@30.3.0)(@jest/types@30.3.0)(babel-jest@30.3.0(@babel/core@7.29.0))(esbuild@0.27.4)(jest-util@30.3.0)(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
       uuid:
         specifier: 11.1.1
         version: 11.1.1
@@ -1542,7 +1542,7 @@ importers:
         version: 6.1.3
       ts-jest:
         specifier: 29.4.9
-        version: 29.4.9(@babel/core@7.29.0)(@jest/transform@30.3.0)(@jest/types@30.3.0)(babel-jest@30.3.0(@babel/core@7.29.0))(esbuild@0.27.4)(jest-util@30.3.0)(jest@30.3.0(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)))(typescript@5.9.3)
+        version: 29.4.9(@babel/core@7.29.0)(@jest/transform@30.3.0)(@jest/types@30.3.0)(babel-jest@30.3.0(@babel/core@7.29.0))(esbuild@0.27.4)(jest-util@30.3.0)(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
 
   packages/create:
     dependencies:
@@ -2065,7 +2065,7 @@ importers:
         version: 1.110.0
       jest-when:
         specifier: 4.0.1
-        version: 4.0.1(jest@30.3.0(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)))
+        version: 4.0.1(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))
       rimraf:
         specifier: 6.1.3
         version: 6.1.3
@@ -2638,10 +2638,10 @@ importers:
         version: 4.0.1
       promptfoo:
         specifier: 0.121.3
-        version: 0.121.3(@cfworker/json-schema@4.1.1)(@langchain/core@1.1.40(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(@noble/hashes@1.8.0)(@swc/helpers@0.5.19)(@types/json-schema@7.0.15)(@types/node@22.13.14)(@types/react@16.14.69)(babel-plugin-macros@3.1.0)(encoding@0.1.13)(pg@8.18.0)(playwright-core@1.58.2)(socks@2.8.7)(typescript@5.9.3)
+        version: 0.121.3(@cfworker/json-schema@4.1.1)(@langchain/core@1.1.40(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(@noble/hashes@1.8.0)(@swc/helpers@0.5.19)(@types/json-schema@7.0.15)(@types/node@22.19.10)(@types/react@16.14.69)(babel-plugin-macros@3.1.0)(encoding@0.1.13)(pg@8.18.0)(playwright-core@1.58.2)(socks@2.8.7)(typescript@5.9.3)
       ts-node:
         specifier: 10.9.2
-        version: 10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)
+        version: 10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)
       zod:
         specifier: 4.3.6
         version: 4.3.6
@@ -3008,7 +3008,7 @@ importers:
         version: 8.0.4
       ts-node:
         specifier: 10.9.2
-        version: 10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)
+        version: 10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)
 
   packages/inquirer-common:
     dependencies:
@@ -3090,7 +3090,7 @@ importers:
         version: 7.7.1
       jest-extended:
         specifier: 7.0.0
-        version: 7.0.0(jest@30.3.0(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)))(typescript@5.9.3)
+        version: 7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
 
   packages/jest-environment-ui5:
     dependencies:
@@ -3214,7 +3214,7 @@ importers:
         version: 1.110.0
       jest-extended:
         specifier: 7.0.0
-        version: 7.0.0(jest@30.3.0(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)))(typescript@5.9.3)
+        version: 7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
       logform:
         specifier: 2.7.0
         version: 2.7.0
@@ -3494,7 +3494,7 @@ importers:
         version: 3.8.1
       ts-node:
         specifier: 10.9.2
-        version: 10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)
+        version: 10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)
 
   packages/playwright:
     dependencies:
@@ -3732,7 +3732,7 @@ importers:
         version: 4.0.2
       jest-extended:
         specifier: 7.0.0
-        version: 7.0.0(jest@30.3.0(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)))(typescript@5.9.3)
+        version: 7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
 
   packages/project-integrity:
     dependencies:
@@ -4111,7 +4111,7 @@ importers:
         version: 2.25.0
       jest-extended:
         specifier: 7.0.0
-        version: 7.0.0(jest@30.3.0(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)))(typescript@5.9.3)
+        version: 7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
       memfs:
         specifier: 3.4.13
         version: 3.4.13
@@ -4192,7 +4192,7 @@ importers:
         version: 17.4.2
       jest-extended:
         specifier: 7.0.0
-        version: 7.0.0(jest@30.3.0(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)))(typescript@5.9.3)
+        version: 7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
       memfs:
         specifier: 3.4.13
         version: 3.4.13
@@ -4452,7 +4452,7 @@ importers:
         version: 9.5.4(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4))
       ts-node:
         specifier: 10.9.2
-        version: 10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)
+        version: 10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)
 
   packages/ui-service-inquirer:
     dependencies:
@@ -4567,7 +4567,7 @@ importers:
         version: 25.10.10(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.13.14))
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
     devDependencies:
       '@sap-ux/jest-file-matchers':
         specifier: workspace:*
@@ -4601,7 +4601,7 @@ importers:
         version: 2.0.9
       jest-extended:
         specifier: 7.0.0
-        version: 7.0.0(jest@30.3.0(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)))(typescript@5.9.3)
+        version: 7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -4613,10 +4613,10 @@ importers:
         version: 6.1.3
       yeoman-environment:
         specifier: 3.19.3
-        version: 3.19.3(@types/node@22.13.14)
+        version: 3.19.3(@types/node@22.19.10)
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(@types/node@22.13.14)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.13.14))(yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.13.14)))
+        version: 6.3.0(@types/node@22.19.10)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))(yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10)))
 
   packages/ui5-application-inquirer:
     dependencies:
@@ -4951,7 +4951,7 @@ importers:
         version: 25.10.10(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.13.14))
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))
     devDependencies:
       '@jest/types':
         specifier: 30.3.0
@@ -4976,7 +4976,7 @@ importers:
         version: 2.0.9
       jest-extended:
         specifier: 7.0.0
-        version: 7.0.0(jest@30.3.0(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)))(typescript@5.9.3)
+        version: 7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
@@ -4985,7 +4985,7 @@ importers:
         version: 6.1.3
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(@types/node@22.13.14)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.13.14))(yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.13.14)))
+        version: 6.3.0(@types/node@22.19.10)(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10))(yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3(@types/node@22.19.10)))
 
   packages/ui5-library-writer:
     dependencies:
@@ -8799,9 +8799,9 @@ packages:
     resolution: {integrity: sha512-RSQ8bC0kFplhAqWQoQKp8VL+R89xxl+rxT5OH+5AIob1m0xGfaMWkB4SYIujIlWbZOBlSaGJwy99NOH+HvFyYA==}
     engines: {node: '>=20.x'}
 
-  '@sap/approuter@20.10.0':
-    resolution: {integrity: sha512-YnZWC2Z7+FhcuxuiAf1HIuoHFlgvjszojiFHQ62YPmdiwqyETjKWNrqFZ2U7oC854Py3CbnyNhGaciP8RCaNSg==}
-    engines: {node: ^20.0.0 || ^22.0.0}
+  '@sap/approuter@21.5.0':
+    resolution: {integrity: sha512-T1d2zEH2Go5qTirsg8O9soJEZJdQmfTrEY1Trcfvxe0MBZhAhDjHIDfX354OVlfu1PIb6NrZwZ8hgGj0ec/xHQ==}
+    engines: {node: ^22.0.0 || ^24.0.0}
 
   '@sap/audit-logging@7.0.0':
     resolution: {integrity: sha512-0wbXJlAOenEal6nMspDKJev8fWDYA+MuRbi6iTHNdusRT2fisM9v+IWllT4fzeut6+Sd3l+5qKtA/AlbM5zGfA==}
@@ -8822,16 +8822,16 @@ packages:
   '@sap/cf-tools@3.3.1':
     resolution: {integrity: sha512-hGrpVEoTxUC3IdfwCE30Pm4JV+hNXrJDfYzu7VspZglEZSPnut+MzCnzodRacFzRJ8qAP0MPvrr5PCFMmuBckA==}
 
-  '@sap/e2e-trace@5.4.0':
-    resolution: {integrity: sha512-NwrrCg4ThaEJYRLgAB1L312+EcIK5z8VVhshS3QaAyj3duLOezDg1CEgDjXzXkJUTWFQ8LdruIMNaddG+WN42A==}
-    engines: {node: ^18.0.0 || ^20.0.0 || ^22.0.0}
-
-  '@sap/e2e-trace@6.1.0':
-    resolution: {integrity: sha512-jxBIaLUGmZAjkp9Nu6b4J7fkAgRWaeXg7Ij1f+G7qRxP6gz0b0RcyPF7o2jXe6En1Bg0hkfZwrBmdVlypOl1Tg==}
+  '@sap/e2e-trace@6.0.0':
+    resolution: {integrity: sha512-SveaAgYUpZ6h05sCjBK+wEySHE5gyWQhehWABPDVlCAWJmESqmivfQp7DitBXNwnyIhgyI5yrNHUBD7eOt29zw==}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
 
-  '@sap/logging@9.1.1':
-    resolution: {integrity: sha512-OBh1BkvpKFwZdufOMzNtF11fHv8tjndivOjjCHZedBHlnIkpkXwy5UeZVmGoZXFf8EUYIvevg5PQHHgiSGrGpA==}
+  '@sap/e2e-trace@6.2.1':
+    resolution: {integrity: sha512-MS6dCg0fkfU+BPGzUYiFkepIN+aqE50ZKKRYnZSb5Pts6JgccagaJiNs90eKtNzFZQzSxtBdIGyWEI8UG4w1og==}
+    engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
+
+  '@sap/logging@9.2.0':
+    resolution: {integrity: sha512-qy9ADRZdJGMx5HwVvJQAwAWd2JWzO3aTxOaqkodfZB6xa4taMaPJXKgp5l50kguoj/FSh85LxlhS7msJkBoY5Q==}
     engines: {node: ^20.0.0 || ^22.0.0 || ^24.0.0}
 
   '@sap/mta-lib@1.7.4':
@@ -8856,9 +8856,9 @@ packages:
     resolution: {integrity: sha512-NixT1rrKKfNaGfLH8GzkWmPai+UJU3f/DePIMl0r5QxVrD6uBwZXULFReSEZLsGbv/xoVfQuZzZHWhl5+BVwhA==}
     engines: {node: '>=20.0.0 <21.0.0 || >=22.0.0 <23.0.0 || >=24.0.0 <25.0.0 || >=26.0.0', yarn: '>=1.22.19 < 2'}
 
-  '@sap/xsenv@5.6.1':
-    resolution: {integrity: sha512-4pDpsYLNJsLUBWtTSG+TJ8ul5iY0dWDyJgTy2H/WZGZww9CSPLP/39x+syDDTjkggsmZAlo9t7y9TiXMmtAunw==}
-    engines: {node: ^18.0.0 || ^20.0.0  || ^22.0.0}
+  '@sap/xsenv@6.0.0':
+    resolution: {integrity: sha512-9bNpJXmxndWn5JbRCPPtbeMqldXOn2Od17ybS92PHd1rNkZ80IMmOURHNct5YSVQ1MKBIDAyC+ck6VL7cVAfUA==}
+    engines: {node: ^20.0.0  || ^22.0.0 || ^24.0.0}
 
   '@sap/xsenv@6.1.0':
     resolution: {integrity: sha512-vlW4Zad3uiDqHtnYdQ0TsEIH8VIO4HmPGDowfBL5dIcHPmeKDISEQ9ibeHL5FkceqvYcXJEQAVZ5/hsHDqlXZg==}
@@ -11096,8 +11096,8 @@ packages:
     resolution: {integrity: sha512-prMTQVpcns/tzFgFVkVp6ak6RykZyWb3gu8ckUpd6YkTlacOd3DXGJjIpD4Q6zJirizvaiAjSSHlOsA+6sNh2A==}
     engines: {node: '>= 10'}
 
-  cf-nodejs-logging-support@7.4.4:
-    resolution: {integrity: sha512-sKoEbWvAU+KonLehBs4EBsd76DLuESpoeLUfO/0aFp+W/zRFGR8Nc2GJXHM4dyL7ckH/c/A9Tgq+0tBr3B/etA==}
+  cf-nodejs-logging-support@7.4.6:
+    resolution: {integrity: sha512-k1+i5HtO+mobS1rZVcWlt7Wr0U0uafhnGlIr/9vva4mbkGlcLtktkSTLh+RC1X6fyecGJLceLCMH+8+2h2rEVg==}
     engines: {node: '>=14.14'}
 
   chainsaw@0.1.0:
@@ -11706,6 +11706,15 @@ packages:
 
   debug@4.4.0:
     resolution: {integrity: sha512-6WTZ/IxCY/T6BALoZHaE4ctp9xm+Z5kY/pzYaCHRFeyVhojxlrm+46y68HA6hr0TcwEssoxNiDEUJQjfPZ/RYA==}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+
+  debug@4.4.1:
+    resolution: {integrity: sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==}
     engines: {node: '>=6.0'}
     peerDependencies:
       supports-color: '*'
@@ -18209,11 +18218,6 @@ packages:
     deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
-  uuid@9.0.1:
-    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
-    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
-    hasBin: true
-
   v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
 
@@ -21603,41 +21607,41 @@ snapshots:
 
   '@inquirer/ansi@2.0.3': {}
 
-  '@inquirer/checkbox@5.1.0(@types/node@22.13.14)':
+  '@inquirer/checkbox@5.1.0(@types/node@22.19.10)':
     dependencies:
       '@inquirer/ansi': 2.0.3
-      '@inquirer/core': 11.1.5(@types/node@22.13.14)
+      '@inquirer/core': 11.1.5(@types/node@22.19.10)
       '@inquirer/figures': 2.0.3
-      '@inquirer/type': 4.0.3(@types/node@22.13.14)
+      '@inquirer/type': 4.0.3(@types/node@22.19.10)
     optionalDependencies:
-      '@types/node': 22.13.14
+      '@types/node': 22.19.10
 
-  '@inquirer/confirm@6.0.8(@types/node@22.13.14)':
+  '@inquirer/confirm@6.0.8(@types/node@22.19.10)':
     dependencies:
-      '@inquirer/core': 11.1.5(@types/node@22.13.14)
-      '@inquirer/type': 4.0.3(@types/node@22.13.14)
+      '@inquirer/core': 11.1.5(@types/node@22.19.10)
+      '@inquirer/type': 4.0.3(@types/node@22.19.10)
     optionalDependencies:
-      '@types/node': 22.13.14
+      '@types/node': 22.19.10
 
-  '@inquirer/core@11.1.5(@types/node@22.13.14)':
+  '@inquirer/core@11.1.5(@types/node@22.19.10)':
     dependencies:
       '@inquirer/ansi': 2.0.3
       '@inquirer/figures': 2.0.3
-      '@inquirer/type': 4.0.3(@types/node@22.13.14)
+      '@inquirer/type': 4.0.3(@types/node@22.19.10)
       cli-width: 4.1.0
       fast-wrap-ansi: 0.2.0
       mute-stream: 3.0.0
       signal-exit: 4.1.0
     optionalDependencies:
-      '@types/node': 22.13.14
+      '@types/node': 22.19.10
 
-  '@inquirer/editor@5.0.8(@types/node@22.13.14)':
+  '@inquirer/editor@5.0.8(@types/node@22.19.10)':
     dependencies:
-      '@inquirer/core': 11.1.5(@types/node@22.13.14)
-      '@inquirer/external-editor': 2.0.3(@types/node@22.13.14)
-      '@inquirer/type': 4.0.3(@types/node@22.13.14)
+      '@inquirer/core': 11.1.5(@types/node@22.19.10)
+      '@inquirer/external-editor': 2.0.3(@types/node@22.19.10)
+      '@inquirer/type': 4.0.3(@types/node@22.19.10)
     optionalDependencies:
-      '@types/node': 22.13.14
+      '@types/node': 22.19.10
 
   '@inquirer/external-editor@1.0.3(@types/node@22.13.14)':
     dependencies:
@@ -21653,34 +21657,34 @@ snapshots:
     optionalDependencies:
       '@types/node': 22.19.10
 
-  '@inquirer/external-editor@2.0.3(@types/node@22.13.14)':
+  '@inquirer/external-editor@2.0.3(@types/node@22.19.10)':
     dependencies:
       chardet: 2.1.1
       iconv-lite: 0.7.2
     optionalDependencies:
-      '@types/node': 22.13.14
+      '@types/node': 22.19.10
 
   '@inquirer/figures@2.0.3': {}
 
-  '@inquirer/input@5.0.8(@types/node@22.13.14)':
+  '@inquirer/input@5.0.8(@types/node@22.19.10)':
     dependencies:
-      '@inquirer/core': 11.1.5(@types/node@22.13.14)
-      '@inquirer/type': 4.0.3(@types/node@22.13.14)
+      '@inquirer/core': 11.1.5(@types/node@22.19.10)
+      '@inquirer/type': 4.0.3(@types/node@22.19.10)
     optionalDependencies:
-      '@types/node': 22.13.14
+      '@types/node': 22.19.10
 
-  '@inquirer/select@5.1.0(@types/node@22.13.14)':
+  '@inquirer/select@5.1.0(@types/node@22.19.10)':
     dependencies:
       '@inquirer/ansi': 2.0.3
-      '@inquirer/core': 11.1.5(@types/node@22.13.14)
+      '@inquirer/core': 11.1.5(@types/node@22.19.10)
       '@inquirer/figures': 2.0.3
-      '@inquirer/type': 4.0.3(@types/node@22.13.14)
+      '@inquirer/type': 4.0.3(@types/node@22.19.10)
     optionalDependencies:
-      '@types/node': 22.13.14
+      '@types/node': 22.19.10
 
-  '@inquirer/type@4.0.3(@types/node@22.13.14)':
+  '@inquirer/type@4.0.3(@types/node@22.19.10)':
     optionalDependencies:
-      '@types/node': 22.13.14
+      '@types/node': 22.19.10
 
   '@ioredis/commands@1.5.1': {}
 
@@ -21800,7 +21804,6 @@ snapshots:
       - esbuild-register
       - supports-color
       - ts-node
-    optional: true
 
   '@jest/diff-sequences@30.0.1': {}
 
@@ -23429,21 +23432,21 @@ snapshots:
       lodash: 4.18.1
       yaml: 2.8.3
 
-  '@sap/approuter@20.10.0(undici@6.24.1)':
+  '@sap/approuter@21.5.0(undici@6.24.1)':
     dependencies:
       '@sap/audit-logging': 7.0.0
-      '@sap/e2e-trace': 5.4.0
-      '@sap/logging': 9.1.1
-      '@sap/xsenv': 5.6.1
+      '@sap/e2e-trace': 6.0.0
+      '@sap/logging': 9.2.0
+      '@sap/xsenv': 6.0.0
       '@sap/xssec': 4.12.2
       agentkeepalive: 4.6.0
       axios: 1.16.0(debug@4.4.3)
-      axios-cookiejar-support: 5.0.5(axios@1.16.0)(tough-cookie@4.1.4)(undici@6.24.1)
-      axios-retry: 4.5.0(axios@1.16.0)
+      axios-cookiejar-support: 5.0.5(axios@1.16.0(debug@4.4.3))(tough-cookie@4.1.4)(undici@6.24.1)
+      axios-retry: 4.5.0(axios@1.16.0(debug@4.4.3))
       base64-url: 2.3.3
       basic-auth: 1.1.0
       body-parser: 2.2.2
-      cf-nodejs-logging-support: 7.4.4
+      cf-nodejs-logging-support: 7.4.6
       commander: 2.20.3
       compressible: 2.0.18
       compression: 1.8.1
@@ -23456,7 +23459,7 @@ snapshots:
       encodeurl: 1.0.2
       express-session: 1.18.2
       http-proxy-agent: 7.0.2
-      https-proxy-agent: 5.0.1
+      https-proxy-agent: 7.0.6
       ioredis: 5.6.1
       jwt-decode: 2.2.0
       lodash: 4.18.1
@@ -23476,7 +23479,6 @@ snapshots:
       tv4: 1.3.0
       uid-safe: 2.1.5
       urijs: 1.19.11
-      uuid: 8.3.2
       validator: 13.15.26
       verror: 1.10.1
       ws: 7.5.10
@@ -23526,17 +23528,17 @@ snapshots:
       properties-reader: 2.3.0
       url: 0.11.4
 
-  '@sap/e2e-trace@5.4.0':
+  '@sap/e2e-trace@6.0.0':
     dependencies:
       request-stats: 3.0.0
 
-  '@sap/e2e-trace@6.1.0':
+  '@sap/e2e-trace@6.2.1':
     dependencies:
       request-stats: 3.0.0
 
-  '@sap/logging@9.1.1':
+  '@sap/logging@9.2.0':
     dependencies:
-      '@sap/e2e-trace': 6.1.0
+      '@sap/e2e-trace': 6.2.1
       lodash: 4.18.1
       moment: 2.30.1
 
@@ -23592,9 +23594,9 @@ snapshots:
       - debug
       - typescript
 
-  '@sap/xsenv@5.6.1':
+  '@sap/xsenv@6.0.0':
     dependencies:
-      debug: 4.4.0
+      debug: 4.4.1
       node-cache: 5.1.2
       verror: 1.10.1
     transitivePeerDependencies:
@@ -24936,7 +24938,6 @@ snapshots:
   '@types/node@22.19.10':
     dependencies:
       undici-types: 6.21.0
-    optional: true
 
   '@types/normalize-package-data@2.4.4': {}
 
@@ -26268,7 +26269,7 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axios-cookiejar-support@5.0.5(axios@1.16.0)(tough-cookie@4.1.4)(undici@6.24.1):
+  axios-cookiejar-support@5.0.5(axios@1.16.0(debug@4.4.3))(tough-cookie@4.1.4)(undici@6.24.1):
     dependencies:
       axios: 1.16.0(debug@4.4.3)
       http-cookie-agent: 6.0.8(tough-cookie@4.1.4)(undici@6.24.1)
@@ -26281,7 +26282,7 @@ snapshots:
       chalk: 4.1.2
       dateformat: 3.0.3
 
-  axios-retry@4.5.0(axios@1.16.0):
+  axios-retry@4.5.0(axios@1.16.0(debug@4.4.3)):
     dependencies:
       axios: 1.16.0(debug@4.4.3)
       is-retry-allowed: 2.2.0
@@ -26752,13 +26753,12 @@ snapshots:
     dependencies:
       lodash: 4.18.1
 
-  cf-nodejs-logging-support@7.4.4:
+  cf-nodejs-logging-support@7.4.6:
     dependencies:
       ajv: 8.18.0
       json-stringify-safe: 5.0.1
       jsonwebtoken: 9.0.3
       triple-beam: 1.4.1
-      uuid: 9.0.1
       winston-transport: 4.9.0
 
   chainsaw@0.1.0:
@@ -27411,6 +27411,10 @@ snapshots:
       ms: 2.1.3
 
   debug@4.4.0:
+    dependencies:
+      ms: 2.1.3
+
+  debug@4.4.1:
     dependencies:
       ms: 2.1.3
 
@@ -30245,7 +30249,6 @@ snapshots:
       - esbuild-register
       - supports-color
       - ts-node
-    optional: true
 
   jest-config@30.3.0(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)):
     dependencies:
@@ -30312,7 +30315,6 @@ snapshots:
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
-    optional: true
 
   jest-config@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)):
     dependencies:
@@ -30346,7 +30348,6 @@ snapshots:
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
-    optional: true
 
   jest-dev-server@11.0.0:
     dependencies:
@@ -30420,13 +30421,6 @@ snapshots:
       jest-mock: 30.3.0
       jest-util: 30.3.0
       jest-validate: 30.3.0
-
-  jest-extended@7.0.0(jest@30.3.0(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)))(typescript@5.9.3):
-    dependencies:
-      jest-diff: 30.2.0
-      typescript: 5.9.3
-    optionalDependencies:
-      jest: 30.3.0(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3))
 
   jest-extended@7.0.0(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3):
     dependencies:
@@ -30692,9 +30686,9 @@ snapshots:
       jest-util: 30.3.0
       string-length: 4.0.2
 
-  jest-when@4.0.1(jest@30.3.0(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3))):
+  jest-when@4.0.1(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3))):
     dependencies:
-      jest: 30.3.0(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3))
+      jest: 30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3))
 
   jest-worker@27.5.1:
     dependencies:
@@ -30735,7 +30729,6 @@ snapshots:
       - esbuild-register
       - supports-color
       - ts-node
-    optional: true
 
   jks-js@1.1.5:
     dependencies:
@@ -32901,17 +32894,17 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.28.6
 
-  promptfoo@0.121.3(@cfworker/json-schema@4.1.1)(@langchain/core@1.1.40(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(@noble/hashes@1.8.0)(@swc/helpers@0.5.19)(@types/json-schema@7.0.15)(@types/node@22.13.14)(@types/react@16.14.69)(babel-plugin-macros@3.1.0)(encoding@0.1.13)(pg@8.18.0)(playwright-core@1.58.2)(socks@2.8.7)(typescript@5.9.3):
+  promptfoo@0.121.3(@cfworker/json-schema@4.1.1)(@langchain/core@1.1.40(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.6.0(@opentelemetry/api@1.9.0))(openai@6.33.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(@noble/hashes@1.8.0)(@swc/helpers@0.5.19)(@types/json-schema@7.0.15)(@types/node@22.19.10)(@types/react@16.14.69)(babel-plugin-macros@3.1.0)(encoding@0.1.13)(pg@8.18.0)(playwright-core@1.58.2)(socks@2.8.7)(typescript@5.9.3):
     dependencies:
       '@anthropic-ai/sdk': 0.93.0(zod@4.3.6)
       '@apidevtools/json-schema-ref-parser': 15.3.1(@types/json-schema@7.0.15)
       '@googleapis/sheets': 13.0.1
-      '@inquirer/checkbox': 5.1.0(@types/node@22.13.14)
-      '@inquirer/confirm': 6.0.8(@types/node@22.13.14)
-      '@inquirer/core': 11.1.5(@types/node@22.13.14)
-      '@inquirer/editor': 5.0.8(@types/node@22.13.14)
-      '@inquirer/input': 5.0.8(@types/node@22.13.14)
-      '@inquirer/select': 5.1.0(@types/node@22.13.14)
+      '@inquirer/checkbox': 5.1.0(@types/node@22.19.10)
+      '@inquirer/confirm': 6.0.8(@types/node@22.19.10)
+      '@inquirer/core': 11.1.5(@types/node@22.19.10)
+      '@inquirer/editor': 5.0.8(@types/node@22.19.10)
+      '@inquirer/input': 5.0.8(@types/node@22.19.10)
+      '@inquirer/select': 5.1.0(@types/node@22.19.10)
       '@modelcontextprotocol/sdk': 1.29.0(@cfworker/json-schema@4.1.1)(zod@4.3.6)
       '@openai/agents': 0.7.2(@cfworker/json-schema@4.1.1)(ws@8.20.0)(zod@4.3.6)
       '@opencode-ai/sdk': 1.2.25
@@ -35223,6 +35216,27 @@ snapshots:
       esbuild: 0.27.4
       jest-util: 30.3.0
 
+  ts-jest@29.4.9(@babel/core@7.29.0)(@jest/transform@30.3.0)(@jest/types@30.3.0)(babel-jest@30.3.0(@babel/core@7.29.0))(esbuild@0.27.4)(jest-util@30.3.0)(jest@30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3):
+    dependencies:
+      bs-logger: 0.2.6
+      fast-json-stable-stringify: 2.1.0
+      handlebars: 4.7.9
+      jest: 30.3.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.4))(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3))
+      json5: 2.2.3
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.7.4
+      type-fest: 4.41.0
+      typescript: 5.9.3
+      yargs-parser: 21.1.1
+    optionalDependencies:
+      '@babel/core': 7.29.0
+      '@jest/transform': 30.3.0
+      '@jest/types': 30.3.0
+      babel-jest: 30.3.0(@babel/core@7.29.0)
+      esbuild: 0.27.4
+      jest-util: 30.3.0
+
   ts-loader@9.5.4(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.25.12)):
     dependencies:
       chalk: 4.1.2
@@ -35283,6 +35297,7 @@ snapshots:
       yn: 3.1.1
     optionalDependencies:
       '@swc/core': 1.15.18(@swc/helpers@0.5.19)
+    optional: true
 
   ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.19.10)(typescript@5.9.3):
     dependencies:
@@ -35303,7 +35318,6 @@ snapshots:
       yn: 3.1.1
     optionalDependencies:
       '@swc/core': 1.15.18(@swc/helpers@0.5.19)
-    optional: true
 
   tsconfig-paths@3.15.0:
     dependencies:
@@ -35752,8 +35766,6 @@ snapshots:
   uuid@14.0.0: {}
 
   uuid@8.3.2: {}
-
-  uuid@9.0.1: {}
 
   v8-compile-cache-lib@3.0.1: {}
 
