@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/odata-annotation-core-types",
-    "version": "0.5.8",
+    "version": "0.6.0",
     "description": "Annotation Core types",
     "repository": {
         "type": "git",
@@ -34,7 +34,7 @@
         "npm-run-all2": "8.0.4"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     },
     "files": [
         "LICENSE",

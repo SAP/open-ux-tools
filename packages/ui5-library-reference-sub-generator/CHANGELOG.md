@@ -1,5 +1,40 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 0.2.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/feature-toggle@0.4.0
+    - @sap-ux/fiori-generator-shared@0.15.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/telemetry@0.7.0
+    - @sap-ux/ui5-library-reference-inquirer@0.5.0
+    - @sap-ux/ui5-library-reference-writer@0.3.0
+
+## 0.1.157
+
+### Patch Changes
+
+- @sap-ux/ui5-library-reference-inquirer@0.4.157
+
+## 0.1.156
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/feature-toggle@0.3.9
+    - @sap-ux/fiori-generator-shared@0.14.2
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/telemetry@0.6.106
+    - @sap-ux/ui5-library-reference-inquirer@0.4.156
+    - @sap-ux/ui5-library-reference-writer@0.2.74
+
 ## 0.1.155
 
 ### Patch Changes
