@@ -4,6 +4,7 @@ import { t } from '../i18n.js';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { DirName, getMinimumUI5Version, getWebappPath } from '@sap-ux/project-access';
 import type { DataSources, EdmxAnnotationsInfo, OdataService } from '../types.js';
+import { OdataVersion } from '../types.js';
 import semVer from 'semver';
 
 interface DataSourceUpdateSettings {
@@ -18,18 +19,32 @@ interface DataSourceUpdateSettings {
 }
 
 /**
+ * Extracts the OData version string to write to manifest.json from raw EDMX metadata.
+ * Only returns a value when the EDMX declares Version="4.01".
+ * All other version distinctions (v2 vs v4) remain the caller's responsibility.
+ *
+ * @param metadata - raw EDMX XML string
+ * @returns '4.01' when applicable, undefined otherwise
+ */
+function getOdataVersionFromMetadata(metadata: string): string | undefined {
+    // Scan only the first 500 chars to avoid processing large metadata strings.
+    // The XML declaration (<?xml ...?>) may precede the root <edmx:Edmx Version="..."> tag,
+    // so we cannot stop at the first '>'.
+    const match = /Version="([^"]+)"/.exec(metadata.slice(0, 500));
+    return match?.[1] === '4.01' ? '4.01' : undefined;
+}
+
+/**
  * Updates service data in manifest.json.
  *
  * @param {Editor} fs - the memfs editor instance
  * @param {string} webappPath - the webapp path of an existing UI5 application
  * @param {DataSourceUpdateSettings} dataSourceUpdateSettings - dataSource settings for update
- * @param {string} minimumUi5Version - minimum UI5 version of the application
  */
 function enhanceManifestDatasources(
     fs: Editor,
     webappPath: string,
-    dataSourceUpdateSettings: DataSourceUpdateSettings,
-    minimumUi5Version?: string
+    dataSourceUpdateSettings: DataSourceUpdateSettings
 ): void {
     const {
         serviceName,
@@ -62,10 +77,16 @@ function enhanceManifestDatasources(
     if (serviceMetadata) {
         settings['localUri'] = `localService/${serviceName}/metadata.xml`;
     }
-    if (serviceVersion === '4') {
-        settings['odataVersion'] = minimumUi5Version && semVer.satisfies(minimumUi5Version, '>=1.144') ? '4.01' : '4.0';
-    } else if (serviceVersion === '2') {
-        settings['odataVersion'] = '2.0';
+    // Derive the manifest odataVersion: for v4 services, check EDMX metadata first (to detect 4.01),
+    // then fall back to the passed service version enum.
+    let odataVersionToWrite: string | undefined;
+    if (serviceVersion === OdataVersion.v4) {
+        odataVersionToWrite = (serviceMetadata && getOdataVersionFromMetadata(serviceMetadata)) || '4.0';
+    } else if (serviceVersion === OdataVersion.v2) {
+        odataVersionToWrite = '2.0';
+    }
+    if (odataVersionToWrite) {
+        settings['odataVersion'] = odataVersionToWrite;
     }
 
     // Create or update service dataSource in manifest.json for service
@@ -96,7 +117,7 @@ function enhanceManifestModels(
 ): void {
     const models = manifest?.['sap.ui5']?.models ?? {};
     let modelSettings: ManifestNamespace.Ui5Setting = {};
-    if (serviceVersion === '4') {
+    if (serviceVersion === OdataVersion.v4) {
         if (includeSynchronizationMode) {
             modelSettings['synchronizationMode'] = 'None';
         }
@@ -308,21 +329,16 @@ function enhanceManifest(
     // Enhance model settings for service
     const serviceSettings = Object.assign(service, getModelSettings(minimumUi5Version));
     if (serviceSettings.name && serviceSettings.path && serviceSettings.model !== undefined) {
-        enhanceManifestDatasources(
-            fs,
-            webappPath,
-            {
-                serviceName: serviceSettings.name,
-                servicePath: serviceSettings.path,
-                serviceVersion: serviceSettings.version,
-                manifest,
-                forceServiceUpdate,
-                serviceMetadata: serviceSettings.metadata,
-                serviceRemoteAnnotations: serviceSettings.annotations as EdmxAnnotationsInfo | EdmxAnnotationsInfo[],
-                serviceLocalAnnotations: serviceSettings.localAnnotationsName
-            },
-            minimumUi5Version
-        );
+        enhanceManifestDatasources(fs, webappPath, {
+            serviceName: serviceSettings.name,
+            servicePath: serviceSettings.path,
+            serviceVersion: serviceSettings.version,
+            manifest,
+            forceServiceUpdate,
+            serviceMetadata: serviceSettings.metadata,
+            serviceRemoteAnnotations: serviceSettings.annotations as EdmxAnnotationsInfo | EdmxAnnotationsInfo[],
+            serviceLocalAnnotations: serviceSettings.localAnnotationsName
+        });
         // Add or update existing service model settings for manifest.json
         enhanceManifestModels(
             serviceSettings.name,

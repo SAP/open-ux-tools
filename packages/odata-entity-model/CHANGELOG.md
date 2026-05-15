@@ -1,5 +1,17 @@
 # @sap-ux/odata-entity-model
 
+## 0.4.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 0.3.8
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
 ## 0.3.7
 
 ### Patch Changes

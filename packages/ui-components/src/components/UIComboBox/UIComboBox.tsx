@@ -883,6 +883,9 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         onRenderIcon: this.onRenderIcon
                     }}
                     styles={{
+                        callout: {
+                            boxShadow: 'var(--ui-box-shadow-small)'
+                        },
                         label: {
                             ...labelGlobalStyle,
                             ...(this.props.disabled && {

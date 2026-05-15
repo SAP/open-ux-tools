@@ -840,7 +840,7 @@ export interface CloudCustomTaskConfig {
 }
 
 export interface InboundChangeContentAddInboundId {
-    inbound: {
+    inbounds: {
         [inboundId: string]: AddInboundModel;
     };
 }
@@ -865,28 +865,6 @@ export interface AddInboundSignitureModel {
 export interface InboundParameters {
     'sap-appvar-id'?: object;
     'sap-priority'?: object;
-}
-
-export interface InboundChange {
-    inbound: {
-        [key: string]: {
-            /** Represent business entities that reflect a specific scenario. */
-            semanticObject: string;
-            /** Operations which can be performed on a semantic object. */
-            action: string;
-            /** Icon associated with the inbound navigation data. */
-            icon: string;
-            /** Title associated with the inbound navigation data. */
-            title: string;
-            /** Subtitle associated with the inbound navigation data. */
-            subTitle: string;
-            signature: {
-                parameters: object | string;
-                //** Defined instance of the semantic object (e.g. by specifying the employee ID). */
-                additionalParameters: 'allowed';
-            };
-        };
-    };
 }
 
 /**

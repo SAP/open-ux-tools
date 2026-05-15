@@ -42,7 +42,7 @@ export const V4_FACETS_ANNOTATIONS = `
                     <Collection>
                         <Record Type="UI.ReferenceFacet">
                             <PropertyValue Property="ID" String="Products"/>
-                            <PropertyValue Property="Label" String="Prducts"/>
+                            <PropertyValue Property="Label" String="Products"/>
                             <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.LineItem"/>
                         </Record>
                     </Collection>

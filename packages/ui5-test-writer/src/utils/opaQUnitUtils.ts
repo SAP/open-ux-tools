@@ -7,7 +7,11 @@
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { readHashFromFlpSandbox } from './flpSandboxUtils.js';
-import { getAllUi5YamlFileNames, readUi5Yaml } from '@sap-ux/project-access';
+import { getAllUi5YamlFileNames, readUi5Yaml, FileName } from '@sap-ux/project-access';
+import type {
+    TestConfig as PreviewMiddlewareTestConfig,
+    MiddlewareConfig as PreviewMiddlewareConfig
+} from '@sap-ux/preview-middleware';
 
 /** Relative path from the test output directory to opaTests.qunit.js */
 const OPA_QUNIT_FILE = join('integration', 'opaTests.qunit.js');
@@ -312,17 +316,6 @@ export function addPagesToJourneyRunner(pages: JourneyRunnerPage[], testOutDirPa
     }
 }
 
-/** Shape of one entry in the `test` array of a `fiori-tools-preview` middleware configuration */
-interface PreviewTestEntry {
-    framework?: string;
-    path?: string;
-}
-
-/** Shape of the `fiori-tools-preview` middleware configuration relevant to OPA5 detection */
-interface PreviewMiddlewareConfig {
-    test?: PreviewTestEntry[];
-}
-
 /**
  * Returns true if any UI5 yaml file in the project contains a `fiori-tools-preview`
  * middleware whose `test` array includes an entry with `framework: OPA5`.
@@ -345,4 +338,30 @@ export async function hasVirtualOPA5(basePath: string): Promise<boolean> {
         }
     }
     return false;
+}
+
+/**
+ * Updates the fiori-tools-preview middleware in ui5-mock.yaml to support virtual OPA test endpoints.
+ * Adds test framework entries to ui5-mock.yaml.
+ *
+ * @param basePath - the absolute target path of the application
+ * @param testFrameworks - the test framework entries to add to ui5-mock.yaml
+ * @param fs - the memfs editor instance
+ */
+export async function addVirtualTestConfig(
+    basePath: string,
+    testFrameworks: PreviewMiddlewareTestConfig[],
+    fs: Editor
+): Promise<void> {
+    const yamlPath = join(basePath, FileName.Ui5MockYaml);
+    if (!fs.exists(yamlPath)) {
+        return;
+    }
+    const yamlConfig = await readUi5Yaml(basePath, FileName.Ui5MockYaml, fs);
+    const previewMiddleware = yamlConfig.findCustomMiddleware<PreviewMiddlewareConfig>('fiori-tools-preview');
+    if (previewMiddleware?.configuration && !previewMiddleware.configuration.test?.length) {
+        previewMiddleware.configuration.test = [...testFrameworks];
+        yamlConfig.updateCustomMiddleware(previewMiddleware);
+        fs.write(yamlPath, yamlConfig.toString());
+    }
 }

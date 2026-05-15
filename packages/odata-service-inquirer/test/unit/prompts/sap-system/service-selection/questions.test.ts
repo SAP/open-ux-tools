@@ -148,6 +148,7 @@ describe('Test new system prompt', () => {
                 },
                 "message": [Function],
                 "name": "someNamespace:serviceSelection",
+                "showOutputTabLink": "validationMessageOverflow",
                 "source": [Function],
                 "type": "list",
                 "validate": [Function],
@@ -793,6 +794,7 @@ describe('Test new system prompt', () => {
         const validationResult = await (serviceSelectionPrompt?.validate as Function)(selectedService);
         expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining(selectedService.servicePath));
         expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining('Failed to get metadata'));
+        // Validation result should be the error message string
         expect(validationResult).toBe(
             t('errors.serviceMetadataErrorUI', {
                 servicePath: selectedService.servicePath,

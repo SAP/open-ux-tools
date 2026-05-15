@@ -129,7 +129,7 @@ export async function generateFreestyleOPAFiles(
     log?: Logger
 ): Promise<Editor> {
     const fsEditor = fs ?? create(createStorage());
-    const { enableTypeScript, ui5Version, viewName, appId } = opaConfig;
+    const { enableTypeScript, ui5Version, viewName, appId, useVirtualPreviewEndpoints } = opaConfig;
 
     const freestyleTemplateDir = join(__dirname, '../templates/freestyle/webapp/test');
     const commonTemplateDir = join(__dirname, '../templates/common');
@@ -143,12 +143,17 @@ export async function generateFreestyleOPAFiles(
     const isTypeScript = Boolean(enableTypeScript);
 
     const templateFilteredFiles = filterByUi5Version(templateFiles, templateUi5Version);
-    const filteredFiles = filterByTypeScript(templateFilteredFiles, isTypeScript);
 
-    // copy common templates
-    const commonFiles = await getFilePaths(commonTemplateDir);
-    const filteredCommonFiles = commonFiles.filter((filePath: string) => filePath.endsWith('.html'));
-    filteredFiles.push(...filteredCommonFiles);
+    let filteredFiles = filterByTypeScript(templateFilteredFiles, isTypeScript);
+    if (useVirtualPreviewEndpoints) {
+        filteredFiles = filteredFiles.filter(
+            (filePath) =>
+                !['testsuite.qunit', 'unitTests.qunit', 'opaTests.qunit'].some((pattern) => filePath.includes(pattern))
+        );
+    } else {
+        const commonFiles = await getFilePaths(commonTemplateDir);
+        filteredFiles.push(...commonFiles.filter((f) => f.endsWith('.html')));
+    }
 
     const config = {
         ...opaConfig,

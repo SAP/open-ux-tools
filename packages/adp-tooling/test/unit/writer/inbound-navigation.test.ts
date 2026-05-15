@@ -104,9 +104,9 @@ describe('FLP Configuration Functions', () => {
             expect(writtenData.content).toEqual(
                 expect.arrayContaining([
                     expect.objectContaining({
-                        changeType: 'appdescr_app_addNewInbound',
+                        changeType: 'appdescr_app_setInbounds',
                         content: expect.objectContaining({
-                            inbound: expect.objectContaining({
+                            inbounds: expect.objectContaining({
                                 [config[0].inboundId]: expect.objectContaining({
                                     action: config[0].action,
                                     semanticObject: config[0].semanticObject,
@@ -114,12 +114,6 @@ describe('FLP Configuration Functions', () => {
                                     subTitle: expect.stringContaining('subTitle')
                                 })
                             })
-                        })
-                    }),
-                    expect.objectContaining({
-                        changeType: 'appdescr_app_removeAllInboundsExceptOne',
-                        content: expect.objectContaining({
-                            inboundId: config[0].inboundId
                         })
                     })
                 ])
@@ -164,9 +158,9 @@ describe('FLP Configuration Functions', () => {
             expect(writtenData.content).toEqual(
                 expect.arrayContaining([
                     expect.objectContaining({
-                        changeType: 'appdescr_app_addNewInbound',
+                        changeType: 'appdescr_app_setInbounds',
                         content: expect.objectContaining({
-                            inbound: expect.objectContaining({
+                            inbounds: expect.objectContaining({
                                 [configs[0].inboundId]: expect.objectContaining({
                                     action: configs[0].action,
                                     semanticObject: configs[0].semanticObject
@@ -175,15 +169,9 @@ describe('FLP Configuration Functions', () => {
                         })
                     }),
                     expect.objectContaining({
-                        changeType: 'appdescr_app_removeAllInboundsExceptOne',
+                        changeType: 'appdescr_app_setInbounds',
                         content: expect.objectContaining({
-                            inboundId: configs[0].inboundId
-                        })
-                    }),
-                    expect.objectContaining({
-                        changeType: 'appdescr_app_addNewInbound',
-                        content: expect.objectContaining({
-                            inbound: expect.objectContaining({
+                            inbounds: expect.objectContaining({
                                 [configs[1].inboundId]: expect.objectContaining({
                                     action: configs[1].action,
                                     semanticObject: configs[1].semanticObject
@@ -221,7 +209,7 @@ describe('FLP Configuration Functions', () => {
                 })
             );
 
-            const inboundChangeTypes = ['appdescr_app_addNewInbound', 'appdescr_app_removeAllInboundsExceptOne'];
+            const inboundChangeTypes = ['appdescr_app_setInbounds'];
             const hasInboundChanges = writtenData.content.some((item: any) =>
                 inboundChangeTypes.includes(item.changeType)
             );

@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/ui-components",
-    "version": "2.1.15",
+    "version": "2.2.1",
     "license": "Apache-2.0",
     "description": "SAP UI Components Library",
     "type": "module",
@@ -85,6 +85,6 @@
         "ts-loader": "9.5.4"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

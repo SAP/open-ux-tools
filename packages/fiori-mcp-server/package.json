@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-mcp-server",
     "description": "SAP Fiori - Model Context Protocol (MCP) server",
-    "version": "0.6.58",
+    "version": "0.7.0",
     "mcpName": "io.github.SAP/fiori-mcp-server",
     "keywords": [
         "SAP Fiori tools",
@@ -99,6 +99,6 @@
         "mem-fs-editor": "9.4.0"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

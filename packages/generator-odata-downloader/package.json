@@ -2,7 +2,7 @@
     "name": "@sap-ux/generator-odata-downloader",
     "displayName": "Fiori Elements Data Downloader",
     "description": "Yeoman generator that supports download of app data, typically for mock data server use.",
-    "version": "0.0.10",
+    "version": "0.2.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -43,7 +43,7 @@
         "@jest/globals": "30.3.0"
     },
     "dependencies": {
-        "@sap-devx/yeoman-ui-types": "1.23.0",
+        "@sap-devx/yeoman-ui-types": "1.25.0",
         "@sap-ux/annotation-converter": "0.10.21",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
@@ -73,6 +73,6 @@
         "yeoman-generator": "5.10.0"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

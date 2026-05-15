@@ -13,6 +13,7 @@ import { getTemplateVersionPath, processDestinationPath } from './utils.js';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 import { generateOPATests } from './generateOPATests.js';
 import type { Logger } from '@sap-ux/logger';
+import { addVirtualTestConfig } from '@sap-ux/ui5-test-writer';
 import type { Package } from '@sap-ux/ui5-application-writer';
 import type { Editor } from 'mem-fs-editor';
 import type { BasicAppSettings, FreestyleApp } from './types.js';
@@ -202,6 +203,28 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
         };
         // apply cap updates when service is cap
         await applyCAPUpdates(fs, ffApp.service.capService, settings);
+    }
+
+    if (isEdmxProjectType && addTests && ffApp.appOptions?.useVirtualPreviewEndpoints) {
+        // Explicit patterns are required because the freestyle template uses AllJourneys.js (JS) or *Journey.ts (TS)
+        // rather than the preview-middleware default pattern, and unit tests live under controller/ not the default path.
+        await addVirtualTestConfig(
+            basePath,
+            [
+                {
+                    framework: 'OPA5',
+                    path: '/test/integration/opaTests.qunit.html',
+                    pattern: isTypeScriptEnabled ? '/test/**/*Journey.*' : '/test/**/AllJourneys.*'
+                },
+                { framework: 'Testsuite' },
+                {
+                    framework: 'QUnit',
+                    path: '/test/unit/unitTests.qunit.html',
+                    pattern: '/test/unit/controller/*.{js,ts}'
+                }
+            ],
+            fs
+        );
     }
 
     return fs;

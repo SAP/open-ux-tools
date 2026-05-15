@@ -11,7 +11,7 @@
         "@eslint/js": "10.0.1",
         "@playwright/test": "1.58.2",
         "@types/jest": "30.0.0",
-        "@types/node": "20.19.37",
+        "@types/node": "22.13.14",
         "autoprefixer": "10.4.27",
         "check-dependency-version-consistency": "6.0.0",
         "cross-env": "10.1.0",
@@ -47,7 +47,7 @@
     },
     "scripts": {
         "update-ts-references": "update-ts-references",
-        "postinstall": "npm-run-all -l -p update-ts-references && pnpm rebuild sharp -r",
+        "postinstall": "npm-run-all -l -p update-ts-references",
         "clean": "npm-run-all clean:nx:reset clean:nx:all",
         "clean:nx:all": "nx run-many --target=clean --all",
         "clean:nx:reset": "nx reset --only-cache",
@@ -75,7 +75,7 @@
         "npm": "please-use-pnpm",
         "yarn": "please-use-pnpm",
         "pnpm": "10.30.3",
-        "node": ">=20.20.0"
+        "node": ">=22.13.0"
     },
     "packageManager": "pnpm@10.30.3",
     "pnpm": {
@@ -87,6 +87,7 @@
             "axios-logger>axios": "^1.16.0",
             "@sap/subaccount-destination-service-provider>@sap/bas-sdk": "^3.13.6",
             "esbuild@<=0.24.2": ">=0.25.0",
+            "sharp@<0.33.0": ">=0.33.5",
             "fast-xml-parser": ">=5.8.0",
             "fast-uri": ">=3.1.2",
             "@babel/plugin-transform-modules-systemjs": ">=7.29.4",
