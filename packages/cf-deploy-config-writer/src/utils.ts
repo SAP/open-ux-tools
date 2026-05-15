@@ -1,4 +1,4 @@
-import { join, normalize, posix } from 'node:path';
+import { dirname, join, normalize, posix } from 'node:path';
 import { coerce, satisfies } from 'semver';
 import type { Editor } from 'mem-fs-editor';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
@@ -34,6 +34,7 @@ import {
     MAX_MTA_PREFIX_LENGTH
 } from './constants.js';
 import { type MTABaseConfig, type CFBaseConfig, type CFAppConfig } from './types/index.js';
+import { fileURLToPath } from 'node:url';
 
 /**
  * Read manifest file for processing.
@@ -55,7 +56,7 @@ export function readManifest(manifestPath: string, fs: Editor): Manifest {
  * @returns The path of the template specified or templates root folder
  */
 export function getTemplatePath(relativeTemplatePath: string): string {
-    return join(import.meta.dirname, '../templates', relativeTemplatePath);
+    return join(dirname(fileURLToPath(import.meta.url)), '../templates', relativeTemplatePath);
 }
 
 /**
