@@ -29,6 +29,14 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+        test:
+          - framework: OPA5
+            path: /test/integration/opaTests.qunit.html
+            pattern: /test/**/AllJourneys.*
+          - framework: Testsuite
+          - framework: QUnit
+            path: /test/unit/unitTests.qunit.html
+            pattern: /test/unit/controller/*.{js,ts}
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
