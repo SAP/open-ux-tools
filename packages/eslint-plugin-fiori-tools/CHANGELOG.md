@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.0.8
+
+### Patch Changes
+
+- a34e4c2: Update table configuration related eslint rules to include object page section label in the reported issue message.
+
 ## 10.0.7
 
 ### Patch Changes
