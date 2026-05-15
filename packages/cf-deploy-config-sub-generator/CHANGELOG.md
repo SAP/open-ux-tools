@@ -1,5 +1,40 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.183
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.48
+- @sap-ux/cf-deploy-config-inquirer@0.5.130
+- @sap-ux/deploy-config-generator-shared@0.1.127
+
+## 0.2.182
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/cf-deploy-config-inquirer@0.5.129
+    - @sap-ux/cf-deploy-config-writer@0.3.107
+    - @sap-ux/deploy-config-generator-shared@0.1.127
+    - @sap-ux/feature-toggle@0.3.9
+    - @sap-ux/fiori-generator-shared@0.14.2
+    - @sap-ux/inquirer-common@0.11.47
+    - @sap-ux/project-access@1.36.5
+
+## 0.2.181
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/deploy-config-generator-shared@0.1.126
+    - @sap-ux/fiori-generator-shared@0.14.1
+    - @sap-ux/inquirer-common@0.11.46
+    - @sap-ux/cf-deploy-config-writer@0.3.106
+    - @sap-ux/cf-deploy-config-inquirer@0.5.128
+
 ## 0.2.180
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/jest-runner-puppeteer
 
+## 0.2.10
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
 ## 0.2.9
 
 ### Patch Changes

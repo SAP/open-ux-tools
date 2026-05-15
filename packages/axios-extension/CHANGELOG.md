@@ -1,5 +1,21 @@
 # @sap-ux/axios-extension
 
+## 1.25.37
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/feature-toggle@0.3.9
+    - @sap-ux/logger@0.8.6
+
+## 1.25.36
+
+### Patch Changes
+
+- 21abda3: chore: upgrade fast-xml-parser 5.7.2 → 5.8.0 (fixes fast-xml-builder CVE-2025-47916)
+
 ## 1.25.35
 
 ### Patch Changes

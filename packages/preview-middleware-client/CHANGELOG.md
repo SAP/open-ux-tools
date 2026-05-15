@@ -1,5 +1,19 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.25.47
+
+## 0.25.46
+
+## 0.25.45
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux-private/control-property-editor-common@0.7.8
+
+## 0.25.44
+
 ## 0.25.43
 
 ## 0.25.42

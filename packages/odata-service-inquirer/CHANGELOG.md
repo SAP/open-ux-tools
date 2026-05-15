@@ -1,5 +1,42 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.20.25
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.48
+
+## 2.20.24
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/fiori-generator-shared@0.14.2
+    - @sap-ux/guided-answers-helper@0.4.3
+    - @sap-ux/inquirer-common@0.11.47
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/nodejs-utils@0.2.23
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/project-input-validator@0.6.84
+    - @sap-ux/store@1.5.14
+    - @sap-ux/telemetry@0.6.106
+
+## 2.20.23
+
+### Patch Changes
+
+- 21abda3: chore: upgrade fast-xml-parser 5.7.2 → 5.8.0 (fixes fast-xml-builder CVE-2025-47916)
+- Updated dependencies [21abda3]
+    - @sap-ux/axios-extension@1.25.36
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/fiori-generator-shared@0.14.1
+    - @sap-ux/inquirer-common@0.11.46
+    - @sap-ux/project-input-validator@0.6.83
+    - @sap-ux/telemetry@0.6.105
+
 ## 2.20.22
 
 ### Patch Changes

@@ -1,5 +1,23 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.14.2
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/telemetry@0.6.106
+
+## 0.14.1
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/telemetry@0.6.105
+
 ## 0.14.0
 
 ### Minor Changes

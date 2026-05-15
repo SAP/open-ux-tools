@@ -1,5 +1,32 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.170
+
+### Patch Changes
+
+- @sap-ux/ui5-library-inquirer@0.6.108
+
+## 0.1.169
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/fiori-generator-shared@0.14.2
+    - @sap-ux/fiori-tools-settings@0.2.4
+    - @sap-ux/nodejs-utils@0.2.23
+    - @sap-ux/ui5-info@0.13.22
+    - @sap-ux/ui5-library-inquirer@0.6.107
+    - @sap-ux/ui5-library-writer@0.6.86
+
+## 0.1.168
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.14.1
+- @sap-ux/ui5-library-writer@0.6.85
+- @sap-ux/ui5-library-inquirer@0.6.106
+
 ## 0.1.167
 
 ### Patch Changes

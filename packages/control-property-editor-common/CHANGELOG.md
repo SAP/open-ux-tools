@@ -1,5 +1,11 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.7.8
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
 ## 0.7.7
 
 ### Patch Changes

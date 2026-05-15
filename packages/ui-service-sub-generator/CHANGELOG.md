@@ -1,5 +1,40 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.237
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.48
+- @sap-ux/ui-service-inquirer@0.2.174
+
+## 0.1.236
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/feature-toggle@0.3.9
+    - @sap-ux/fiori-generator-shared@0.14.2
+    - @sap-ux/inquirer-common@0.11.47
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/system-access@0.7.13
+    - @sap-ux/telemetry@0.6.106
+    - @sap-ux/ui-service-inquirer@0.2.173
+
+## 0.1.235
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/axios-extension@1.25.36
+    - @sap-ux/fiori-generator-shared@0.14.1
+    - @sap-ux/system-access@0.7.12
+    - @sap-ux/ui-service-inquirer@0.2.172
+    - @sap-ux/inquirer-common@0.11.46
+    - @sap-ux/telemetry@0.6.105
+
 ## 0.1.234
 
 ### Patch Changes

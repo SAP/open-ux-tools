@@ -1,5 +1,51 @@
 # @sap-ux/adp-tooling
 
+## 0.18.134
+
+### Patch Changes
+
+- Updated dependencies [138246a]
+    - @sap-ux/odata-service-writer@0.31.15
+    - @sap-ux/inquirer-common@0.11.48
+
+## 0.18.133
+
+### Patch Changes
+
+- 8c4185a: fix: change used change type for inbounds
+
+## 0.18.132
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/i18n@0.3.12
+    - @sap-ux/inquirer-common@0.11.47
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/nodejs-utils@0.2.23
+    - @sap-ux/odata-service-writer@0.31.14
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/project-input-validator@0.6.84
+    - @sap-ux/store@1.5.14
+    - @sap-ux/system-access@0.7.13
+    - @sap-ux/ui5-config@0.30.5
+    - @sap-ux/ui5-info@0.13.22
+
+## 0.18.131
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/axios-extension@1.25.36
+    - @sap-ux/odata-service-writer@0.31.13
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/system-access@0.7.12
+    - @sap-ux/inquirer-common@0.11.46
+    - @sap-ux/project-input-validator@0.6.83
+
 ## 0.18.130
 
 ### Patch Changes

@@ -1,5 +1,35 @@
 # @sap-ux/deploy-tooling
 
+## 0.18.27
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.48
+
+## 0.18.26
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/inquirer-common@0.11.47
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/project-input-validator@0.6.84
+    - @sap-ux/system-access@0.7.13
+    - @sap-ux/ui5-config@0.30.5
+
+## 0.18.25
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/axios-extension@1.25.36
+    - @sap-ux/system-access@0.7.12
+    - @sap-ux/inquirer-common@0.11.46
+    - @sap-ux/project-input-validator@0.6.83
+
 ## 0.18.24
 
 ### Patch Changes

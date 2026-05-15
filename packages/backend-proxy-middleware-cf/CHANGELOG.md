@@ -1,5 +1,34 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.1.25
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.134
+
+## 0.1.24
+
+### Patch Changes
+
+- Updated dependencies [8c4185a]
+    - @sap-ux/adp-tooling@0.18.133
+
+## 0.1.23
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/adp-tooling@0.18.132
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/logger@0.8.6
+
+## 0.1.22
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.131
+
 ## 0.1.21
 
 ### Patch Changes

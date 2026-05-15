@@ -1,5 +1,25 @@
 # @sap-ux/telemetry
 
+## 0.6.106
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/nodejs-utils@0.2.23
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/store@1.5.14
+    - @sap-ux/ui5-config@0.30.5
+
+## 0.6.105
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+
 ## 0.6.104
 
 ### Patch Changes
