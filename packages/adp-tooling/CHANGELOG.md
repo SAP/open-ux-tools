@@ -1,5 +1,19 @@
 # @sap-ux/adp-tooling
 
+## 0.18.134
+
+### Patch Changes
+
+- Updated dependencies [138246a]
+    - @sap-ux/odata-service-writer@0.31.15
+    - @sap-ux/inquirer-common@0.11.48
+
+## 0.18.133
+
+### Patch Changes
+
+- 8c4185a: fix: change used change type for inbounds
+
 ## 0.18.132
 
 ### Patch Changes

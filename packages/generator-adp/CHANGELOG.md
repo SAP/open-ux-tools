@@ -1,5 +1,21 @@
 # @sap-ux/generator-adp
 
+## 0.9.73
+
+### Patch Changes
+
+- Updated dependencies [138246a]
+    - @sap-ux/odata-service-writer@0.31.15
+    - @sap-ux/adp-tooling@0.18.134
+    - @sap-ux/inquirer-common@0.11.48
+
+## 0.9.72
+
+### Patch Changes
+
+- Updated dependencies [8c4185a]
+    - @sap-ux/adp-tooling@0.18.133
+
 ## 0.9.71
 
 ### Patch Changes

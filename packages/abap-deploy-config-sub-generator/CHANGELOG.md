@@ -1,5 +1,20 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.3.37
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.134
+- @sap-ux/abap-deploy-config-inquirer@1.8.23
+- @sap-ux/deploy-config-generator-shared@0.1.127
+
+## 0.3.36
+
+### Patch Changes
+
+- Updated dependencies [8c4185a]
+    - @sap-ux/adp-tooling@0.18.133
+
 ## 0.3.35
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.31.15
+
+### Patch Changes
+
+- 138246a: fix(odata-service-writer): derive manifest odataVersion from EDMX metadata instead of minUI5Version
+
 ## 0.31.14
 
 ### Patch Changes

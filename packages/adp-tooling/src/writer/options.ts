@@ -290,7 +290,7 @@ function getInboundChangeContentWithNewInboundID(
     const parameters = flpConfiguration?.additionalParameters ? JSON.parse(flpConfiguration.additionalParameters) : {};
 
     const content: InboundChangeContentAddInboundId = {
-        inbound: {
+        inbounds: {
             [flpConfiguration.inboundId]: {
                 action: flpConfiguration.action,
                 semanticObject: flpConfiguration.semanticObject,
@@ -305,7 +305,7 @@ function getInboundChangeContentWithNewInboundID(
     };
 
     if (flpConfiguration.subTitle) {
-        content.inbound[flpConfiguration.inboundId].subTitle =
+        content.inbounds[flpConfiguration.inboundId].subTitle =
             `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.subTitle}}`;
     }
 
@@ -324,32 +324,18 @@ export function enhanceManifestChangeContentWithFlpConfig(
     appId: string,
     manifestChangeContent: Content[] = []
 ): void {
-    for (const [index, flpConfig] of flpConfigurations.entries()) {
+    flpConfigurations.forEach((flpConfig) => {
         const inboundChangeContent = getInboundChangeContentWithNewInboundID(flpConfig, appId);
 
         const addInboundChange = {
-            changeType: 'appdescr_app_addNewInbound',
+            changeType: 'appdescr_app_setInbounds',
             content: inboundChangeContent,
             texts: {
                 'i18n': 'i18n/i18n.properties'
             }
         };
         manifestChangeContent.push(addInboundChange);
-
-        // Remove all inbounds except one should be only after the first inbound is added
-        // This is implemented this way to avoid issues with the merged on ABAP side
-        if (index === 0) {
-            const removeOtherInboundsChange = {
-                changeType: 'appdescr_app_removeAllInboundsExceptOne',
-                content: {
-                    'inboundId': flpConfig.inboundId
-                },
-                texts: {}
-            };
-
-            manifestChangeContent.push(removeOtherInboundsChange);
-        }
-    }
+    });
 }
 
 /**
