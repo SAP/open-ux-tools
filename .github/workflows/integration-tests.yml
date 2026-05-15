@@ -84,7 +84,7 @@ jobs:
                 NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Upload blob report to GitHub Actions Artifacts
               if: ${{ !cancelled() }}
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v7
               with:
                 
                 name: blob-report-${{ matrix.ui5-version }}
@@ -130,7 +130,7 @@ jobs:
               run: cd tests/integration/adaptation-editor && npx playwright merge-reports --reporter html ./all-blob-reports
 
             - name: Upload HTML report
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v7
               with:
                   name: playwright-report-${{ github.run_attempt }}
                   path: tests/integration/adaptation-editor/playwright-report
