@@ -72,7 +72,7 @@ export interface AnnotationBasedNode<
     Children = never
 > extends ConfigurationBase<T['type'], Configuration> {
     annotation?: T;
-
+    label?: string;
     children: Children[];
 }
 

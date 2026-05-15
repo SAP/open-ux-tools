@@ -1,5 +1,25 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.7.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/inquirer-common@0.12.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/project-input-validator@0.7.0
+    - @sap-ux/ui5-info@0.14.0
+
+## 0.6.108
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.48
+
 ## 0.6.107
 
 ### Patch Changes

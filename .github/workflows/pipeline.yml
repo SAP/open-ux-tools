@@ -14,7 +14,7 @@ jobs:
                 # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
                 # not just the latest version of mac os also amd on Mac
                 # os: [ubuntu-latest, windows-2025, macos-13, macos-14, macos-14-large, macos-15, macos-latest-large]
-                node-version: [20.x, 22.x]
+                node-version: [22.x, 24.x]
         runs-on: ${{ matrix.os }}
         timeout-minutes: 60
         steps:
@@ -22,11 +22,12 @@ jobs:
               uses: actions/checkout@v6
               with:
                   fetch-depth: 0
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v6
+              with:
+                  node-version: ${{ matrix.node-version }}
             - name: Setup pnpm
               uses: pnpm/action-setup@v4.1.0
-              with:
-                  run_install: |
-                      - args: [--frozen-lockfile, --ignore-scripts]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
@@ -36,10 +37,6 @@ jobs:
                   key: ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
-            - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v6
-              with:
-                  node-version: ${{ matrix.node-version }}
             - name: Install pnpm modules
               run: pnpm install --frozen-lockfile --ignore-scripts
             - name: Run build
@@ -89,7 +86,7 @@ jobs:
                       !packages/*/node_modules
                   retention-days: 15
             - name: Run SonarCloud scan
-              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
+              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
               shell: bash
               env:
                   PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -101,12 +98,12 @@ jobs:
                   echo "$PR_BASE_REF" >> pr-event.txt
 
             - name: 'Prepare output artifact'
-              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
+              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
               shell: bash
               run: touch output.tar && tar --exclude='./node_modules' --exclude='./dist' --exclude='./**/node_modules/**' --exclude='./**/dist/**' --exclude='./.git' --exclude 'output.tar' -czf output.tar .
 
             - name: 'Upload sonar artifact'
-              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
+              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
               uses: actions/upload-artifact@v4
               with:
                   name: sonar-artifact
@@ -128,11 +125,12 @@ jobs:
               with:
                   fetch-depth: 0
                   token: ${{ secrets.ACCESS_PAT }}
+            - name: Use Node.js 22.x
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 22.x
             - name: Setup pnpm
               uses: pnpm/action-setup@v4.1.0
-              with:
-                  run_install: |
-                      - args: [--frozen-lockfile, --ignore-scripts]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
@@ -142,10 +140,6 @@ jobs:
                   key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
-            - name: Use Node.js 20.x
-              uses: actions/setup-node@v6
-              with:
-                  node-version: 20.x
             - name: Install pnpm modules
               run: pnpm install --frozen-lockfile
             - name: Apply changesets
@@ -183,11 +177,13 @@ jobs:
         steps:
             - name: Checkout code repository
               uses: actions/checkout@v6
+            - name: Use Node.js 22.x
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 22.x
+                  registry-url: 'https://registry.npmjs.org'
             - name: Setup pnpm
               uses: pnpm/action-setup@v4.1.0
-              with:
-                  run_install: |
-                      - args: [--frozen-lockfile, --ignore-scripts]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
@@ -197,11 +193,6 @@ jobs:
                   key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
-            - name: Use Node.js 20.x
-              uses: actions/setup-node@v6
-              with:
-                  node-version: 20.x
-                  registry-url: 'https://registry.npmjs.org'
             - name: Install pnpm modules
               run: pnpm install --frozen-lockfile
             - name: Set instrumentation key in fiori-mcp-server
@@ -234,6 +225,7 @@ jobs:
                   publish: pnpm ci:publish
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
+                  NPM_CONFIG_PROVENANCE: true
             - name: Detect extension publication
               if: steps.changesetPublish.outputs.published == 'true'
               run: |

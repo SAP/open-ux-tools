@@ -1,5 +1,11 @@
 # @sap-ux/fiori-tools-settings
 
+## 0.3.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
 ## 0.2.4
 
 ### Patch Changes

@@ -6,7 +6,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/ui5-library-reference-writer"
     },
-    "version": "0.2.74",
+    "version": "0.3.0",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -28,7 +28,7 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     },
     "dependencies": {
         "@sap-ux/project-access": "workspace:*",

@@ -1,5 +1,18 @@
 # @sap-ux/launch-config
 
+## 0.11.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/ui5-config@0.31.0
+    - @sap-ux/ui5-info@0.14.0
+
 ## 0.10.92
 
 ### Patch Changes

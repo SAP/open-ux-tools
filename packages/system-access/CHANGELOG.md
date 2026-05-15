@@ -1,5 +1,19 @@
 # @sap-ux/system-access
 
+## 0.8.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/store@1.6.0
+
 ## 0.7.13
 
 ### Patch Changes
