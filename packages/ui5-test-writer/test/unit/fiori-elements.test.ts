@@ -646,4 +646,217 @@ describe('ui5-test-writer', () => {
             expect(bookingObjPageJourneyContent).toContain('"AirportCode":{"header":"Airport"}');
         });
     });
+
+    describe('generateOPAFiles TypeScript', () => {
+        const metadata = fs?.read(join(__dirname, '../test-input/metadata.xml')) ?? '';
+
+        const testApplications = [
+            {
+                description: 'Fullscreen LR-OP TypeScript',
+                dirPath: 'FullScreenLROP',
+                scriptName: undefined
+            },
+            {
+                description: 'FCL LR-OP TypeScript',
+                dirPath: 'FclLROP',
+                scriptName: 'myOPATest'
+            },
+            {
+                description: 'Fullscreen LR-OP using "contextPath" TypeScript',
+                dirPath: 'FullScreenLROPContextPath',
+                scriptName: undefined
+            },
+            {
+                description: 'Fullscreen with 2 Sub-OP TypeScript',
+                dirPath: 'FullScreenSubOP',
+                scriptName: undefined
+            },
+            {
+                description: 'Fullscreen With LR only TypeScript',
+                dirPath: 'FullScreenLR',
+                scriptName: undefined
+            }
+        ];
+
+        it.each(testApplications)('$description', async (config) => {
+            const projectDir = prepareTestFiles(config.dirPath);
+            fs = await generateOPAFiles(
+                projectDir,
+                { scriptName: config.scriptName, enableTypeScript: true },
+                metadata,
+                fs
+            );
+            expect(fs.dump(projectDir)).toMatchSnapshot();
+        });
+
+        it('generates .ts file extensions for all journey and page files', async () => {
+            const projectDir = prepareTestFiles('FullScreenLROP');
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+            const paths = Object.keys(fs.dump(projectDir));
+            const integrationFiles = paths.filter(
+                (p) => p.includes('integration/') && !p.includes('opaTests.qunit') && !p.includes('OpaJourneyTypes')
+            );
+
+            for (const file of integrationFiles) {
+                expect(file).toMatch(/\.ts$/);
+            }
+            expect(paths.some((p) => p.endsWith('.js') && p.includes('integration/pages/'))).toBe(false);
+        });
+
+        it('generates OpaJourneyTypes.d.ts with correct page entries', async () => {
+            const projectDir = prepareTestFiles('FullScreenLROP');
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+            const dumped = fs.dump(projectDir);
+            const typesPath = Object.keys(dumped).find((p) => p.includes('OpaJourneyTypes.d.ts'));
+            expect(typesPath).toBeDefined();
+
+            const typesContent = dumped[typesPath!].contents as string;
+            expect(typesContent).toContain('export type Given');
+            expect(typesContent).toContain('export type When');
+            expect(typesContent).toContain('export type Then');
+            expect(typesContent).toContain('onTheEmployeesList: Opa5 & ListReportActions & TemplatePageActions');
+            expect(typesContent).toContain(
+                'onTheEmployeesObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & CustomObjectPageActions'
+            );
+            expect(typesContent).toContain(
+                'onTheEmployeesObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions'
+            );
+            expect(typesContent).toContain('onTheShell: Shell');
+            expect(typesContent).toContain('import type Opa5 from "sap/ui/test/Opa5"');
+            expect(typesContent).toContain('import type { actions as ListReportActions');
+            expect(typesContent).toContain('import type { actions as ObjectPageActions');
+            expect(typesContent).toContain('iPressSectionIconTabFilterButton(section: string): object');
+        });
+
+        it('generates ES module imports in journey files', async () => {
+            const projectDir = prepareTestFiles('FullScreenLROP');
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+            const dumped = fs.dump(projectDir);
+            const firstJourneyPath = Object.keys(dumped).find((p) => p.includes('FirstJourney.ts'));
+            expect(firstJourneyPath).toBeDefined();
+
+            const content = dumped[firstJourneyPath!].contents as string;
+            expect(content).toContain('import opaTest from "sap/ui/test/opaQunit"');
+            expect(content).toContain('import type { Given, When, Then }');
+            expect(content).toContain('import runner from "./pages/JourneyRunner"');
+            expect(content).toContain('function (Given: Given, When: When, Then: Then)');
+            expect(content).not.toContain('sap.ui.define');
+            expect(content).not.toContain("'use strict'");
+        });
+
+        it('generates ES module page objects with correct constructor args', async () => {
+            const projectDir = prepareTestFiles('FullScreenLROP');
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+            const dumped = fs.dump(projectDir);
+            const lrPagePath = Object.keys(dumped).find((p) => p.includes('pages/EmployeesList.ts'));
+            expect(lrPagePath).toBeDefined();
+
+            const lrContent = dumped[lrPagePath!].contents as string;
+            expect(lrContent).toContain('import ListReport from "sap/fe/test/ListReport"');
+            expect(lrContent).toContain('export default new ListReport(');
+            expect(lrContent).toContain('entitySet:');
+            expect(lrContent).toContain('contextPath:');
+            expect(lrContent).not.toContain('sap.ui.define');
+
+            const opPagePath = Object.keys(dumped).find((p) => p.includes('pages/EmployeesObjectPage.ts'));
+            expect(opPagePath).toBeDefined();
+
+            const opContent = dumped[opPagePath!].contents as string;
+            expect(opContent).toContain('import ObjectPage from "sap/fe/test/ObjectPage"');
+            expect(opContent).toContain('import Press from "sap/ui/test/actions/Press"');
+            expect(opContent).toContain('export default new ObjectPage(');
+            expect(opContent).toContain('iPressSectionIconTabFilterButton');
+            expect(opContent).toContain('this: Opa5');
+        });
+
+        it('generates JourneyRunner.ts with ES module imports of page objects', async () => {
+            const projectDir = prepareTestFiles('FullScreenLROP');
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+            const dumped = fs.dump(projectDir);
+            const runnerPath = Object.keys(dumped).find((p) => p.includes('JourneyRunner.ts'));
+            expect(runnerPath).toBeDefined();
+
+            const content = dumped[runnerPath!].contents as string;
+            expect(content).toContain('import JourneyRunner from "sap/fe/test/JourneyRunner"');
+            expect(content).toContain('import EmployeesList from "./EmployeesList"');
+            expect(content).toContain('import EmployeesObjectPage from "./EmployeesObjectPage"');
+            expect(content).toContain('export default runner');
+            expect(content).toContain('onTheEmployeesList: EmployeesList');
+            expect(content).toContain('onTheEmployeesObjectPage: EmployeesObjectPage');
+            expect(content).not.toContain('sap.ui.define');
+        });
+
+        it('keeps opaTests.qunit files as JS even when TypeScript is enabled', async () => {
+            const projectDir = prepareTestFiles('FullScreenLROP');
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+            const dumped = fs.dump(projectDir);
+            const paths = Object.keys(dumped);
+            expect(paths.some((p) => p.includes('opaTests.qunit.js'))).toBe(true);
+            expect(paths.some((p) => p.includes('opaTests.qunit.html'))).toBe(true);
+            expect(paths.some((p) => p.includes('opaTests.qunit.ts'))).toBe(false);
+        });
+
+        it('uses contextPath in page constructor when app uses contextPath', async () => {
+            const projectDir = prepareTestFiles('FullScreenLROPContextPath');
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+            const dumped = fs.dump(projectDir);
+            const lrPagePath = Object.keys(dumped).find(
+                (p) => p.includes('pages/') && p.includes('List') && p.endsWith('.ts')
+            );
+            expect(lrPagePath).toBeDefined();
+
+            const content = dumped[lrPagePath!].contents as string;
+            expect(content).toContain('contextPath: "/');
+        });
+
+        it('generates TypeScript ListReport journey with filter field checks using object syntax', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+            const dumped = fs.dump(projectDir);
+            const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.ts'));
+            expect(lrJourneyPath).toBeDefined();
+
+            const content = dumped[lrJourneyPath!].contents as string;
+            expect(content).toContain('iCheckFilterField({ property:');
+            expect(content).toContain('onTable("")');
+            expect(content).not.toContain('onTable()');
+        });
+
+        it('generates TypeScript ObjectPage journey with typed custom action call', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE));
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+            const dumped = fs.dump(projectDir);
+            const opJourneyPath = Object.keys(dumped).find((p) => p.includes('BookingObjectPageJourney.ts'));
+            expect(opJourneyPath).toBeDefined();
+
+            const content = dumped[opJourneyPath!].contents as string;
+            expect(content).toContain('iPressSectionIconTabFilterButton(');
+            expect(content).toContain('iCheckSection({');
+            expect(content).toContain('onForm(');
+            expect(content).toContain('.iCheckField({ property:');
+            expect(content).toContain('import type { Given, When, Then }');
+        });
+
+        it('does not modify tsconfig.json', async () => {
+            const projectDir = prepareTestFiles('FullScreenLROP');
+            const tsconfigPath = join(projectDir, 'tsconfig.json');
+            const tsconfigBefore = fs?.exists(tsconfigPath) ? fs?.read(tsconfigPath) : undefined;
+
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+            const tsconfigAfter = fs.exists(tsconfigPath) ? fs.read(tsconfigPath) : undefined;
+            expect(tsconfigAfter).toEqual(tsconfigBefore);
+        });
+    });
 });

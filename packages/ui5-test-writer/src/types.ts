@@ -1,5 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 
+export type FileExtension = '.ts' | '.js';
+
 export const SupportedPageTypes: { [id: string]: string } = {
     'sap.fe.templates.ListReport': 'ListReport',
     'sap.fe.templates.ObjectPage': 'ObjectPage',
@@ -25,6 +27,7 @@ export type FEV4OPAConfig = {
     htmlTarget: string;
     hideFilterBar: boolean;
     filterBarItems?: string[];
+    enableTypeScript?: boolean;
 };
 
 export type JourneyParams = {
@@ -193,6 +196,7 @@ export type WriteContext = {
     testOutDirPath: string;
     editor: Editor;
     journeyParams: JourneyParams;
+    ext: FileExtension;
 };
 
 export type FormField = {
