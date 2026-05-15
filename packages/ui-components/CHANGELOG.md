@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.2.1
+
+### Patch Changes
+
+- 742d896: Fixed missing local-variable box shadow for dropdown menus in UICombobox, UIDropdown.
+
 ## 2.2.0
 
 ### Minor Changes
