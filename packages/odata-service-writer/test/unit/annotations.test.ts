@@ -1,8 +1,7 @@
 import fsExtra from 'fs-extra';
-import { dirname } from 'node:path';
+import path, { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const { readFile } = fsExtra;
-import path, { dirname, join } from 'node:path';
 import {
     getAnnotationNamespaces,
     removeAnnotationsFromCDSFiles,

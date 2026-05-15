@@ -1,6 +1,5 @@
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import { validateCapPath } from '../../../../src/prompts/datasources/cap-project/validators';

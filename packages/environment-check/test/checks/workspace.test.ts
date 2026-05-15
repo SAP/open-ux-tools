@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals';
-import path, { join } from 'node:path';
+import path, { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const mockFindAllApps = jest.fn();

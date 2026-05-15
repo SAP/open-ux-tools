@@ -4,7 +4,6 @@ import { fileURLToPath } from 'node:url';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { EffectiveOptions } from '../../../src/types';
 
-import { dirname } from 'node:path';
 const __testdir = dirname(fileURLToPath(import.meta.url));
 
 const mockExistsSync = jest.fn();

@@ -1,4 +1,4 @@
-import { dirname } from 'node:path';
+import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 /**
  * Utility module for resolving embeddings data paths
@@ -6,7 +6,6 @@ import { fileURLToPath } from 'node:url';
  */
 
 import fs from 'node:fs/promises';
-import path from 'node:path';
 import { logger } from './logger.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

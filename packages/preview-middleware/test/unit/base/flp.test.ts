@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { dirname } from 'node:path';
+import path, { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
@@ -7,7 +7,6 @@ import type { FlpConfig, MiddlewareConfig } from '../../../src';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ProjectAccess, I18nBundles, Manifest, ApplicationAccess } from '@sap-ux/project-access';
 import { readFileSync, promises } from 'node:fs';
-import path, { dirname, join } from 'node:path';
 import supertest from 'supertest';
 import express, { type Response, type NextFunction } from 'express';
 import type { EnhancedRequest } from '../../../src/base/flp';

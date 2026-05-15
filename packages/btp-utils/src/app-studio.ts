@@ -6,7 +6,6 @@ import {
     apiGetServicesInstancesFilteredByType,
     cfGetInstanceKeyParameters,
     cfGetTarget,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- JSDoc references are not supported by typescript-eslint
     type ServiceInstanceInfo
 } from '@sap/cf-tools';
 import axios from 'axios';

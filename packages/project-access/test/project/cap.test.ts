@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import path, { join, sep } from 'node:path';
+import path, { join, sep, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type * as childProcess from 'node:child_process';
 import { create as createStorage, type Store } from 'mem-fs';
@@ -11,7 +11,6 @@ import os from 'node:os';
 import type { Logger } from '@sap-ux/logger';
 import { promises as fs } from 'node:fs';
 
-import { dirname } from 'node:path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const mockSpawn = jest.fn<typeof childProcess.spawn>();

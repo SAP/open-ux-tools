@@ -1,7 +1,6 @@
 import { getMetadataFileQuestion } from '../../../../src/prompts/datasources/metadata-file';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 import { OdataVersion } from '../../../../src/index';
 import { t, initI18nOdataServiceInquirer } from '../../../../src/i18n';
