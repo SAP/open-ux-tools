@@ -37,6 +37,6 @@
         "@types/lodash": "4.17.24"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

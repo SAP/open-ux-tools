@@ -15,7 +15,7 @@
         "sap-ux": "./dist/index.js"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     },
     "scripts": {
         "build": "tsc --build && node ./scripts/generate-readme.js",

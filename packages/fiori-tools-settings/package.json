@@ -36,6 +36,6 @@
         "@types/mem-fs": "1.1.2"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }
