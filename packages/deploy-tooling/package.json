@@ -58,6 +58,6 @@
         "@types/adm-zip": "0.5.8"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

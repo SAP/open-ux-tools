@@ -54,6 +54,6 @@
         "@types/vinyl": "2.0.12"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }
