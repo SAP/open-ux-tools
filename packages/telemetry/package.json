@@ -34,9 +34,9 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
         "applicationinsights": "2.9.8",
-        "axios": "1.16.0",
+        "axios": "1.16.1",
         "performance-now": "2.1.0",
-        "yaml": "2.8.3"
+        "yaml": "2.8.4"
     },
     "devDependencies": {
         "jest-extended": "7.0.0",

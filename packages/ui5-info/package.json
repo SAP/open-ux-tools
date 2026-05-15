@@ -33,7 +33,7 @@
     ],
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
-        "axios": "1.16.0",
+        "axios": "1.16.1",
         "semver": "7.7.4"
     },
     "devDependencies": {

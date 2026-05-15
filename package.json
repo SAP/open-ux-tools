@@ -13,7 +13,7 @@
         "@types/node": "22.13.14",
         "autoprefixer": "10.4.27",
         "check-dependency-version-consistency": "6.0.0",
-        "esbuild": "0.27.4",
+        "esbuild": "0.27.5",
         "esbuild-sass-plugin": "3.7.0",
         "eslint": "10.0.3",
         "eslint-config-prettier": "10.1.8",
@@ -40,7 +40,7 @@
         "typescript": "5.9.3",
         "typescript-eslint": "8.57.2",
         "update-ts-references": "4.0.0",
-        "yaml": "2.8.3",
+        "yaml": "2.8.4",
         "yargs-parser": "21.1.1"
     },
     "scripts": {
