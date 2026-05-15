@@ -2,7 +2,7 @@ import type { Command } from 'commander';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
-// BackendSystem properties are readonly; patch is built as a plain record and cast
+import { replaceEnvVariables } from '@sap-ux/ui5-config';
 import { getLogger } from '../../tracing';
 
 /**
@@ -68,8 +68,9 @@ async function updateSystem(params: {
             return;
         }
 
-        // Build patch as a plain record and cast — BackendSystem props are readonly class fields
         const patchRecord: Record<string, unknown> = {};
+
+        replaceEnvVariables(params);
 
         if (params.name !== undefined) {
             patchRecord.name = params.name;

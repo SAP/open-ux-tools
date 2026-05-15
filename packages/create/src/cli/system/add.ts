@@ -2,6 +2,7 @@ import type { Command } from 'commander';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { BackendSystemKey } from '@sap-ux/store';
 import { getService, BackendSystem, SystemType, AuthenticationType, ConnectionType } from '@sap-ux/store';
+import { replaceEnvVariables } from '@sap-ux/ui5-config';
 import { getLogger } from '../../tracing';
 
 /**
@@ -108,6 +109,8 @@ async function addSystem(params: {
         }
 
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
+
+        replaceEnvVariables(params);
 
         const system = new BackendSystem({
             name: params.name,
