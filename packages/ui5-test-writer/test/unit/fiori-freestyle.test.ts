@@ -661,6 +661,26 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
         const expectedTestOutputPath = join(expectedOutputPath, 'freestyle', projectName, 'webapp', 'test');
         expect(testOutPutPath).toMatchFolder(expectedTestOutputPath);
     });
+
+    test('skips testsuite and unitTests files when useVirtualPreviewEndpoints is enabled', async () => {
+        const opaConfig = {
+            appId: 'test-app-virtual',
+            applicationTitle: 'App test',
+            applicationDescription: 'App description',
+            viewName: 'View1',
+            ui5Version: '1.120.0',
+            useVirtualPreviewEndpoints: true
+        };
+
+        fs = await generateFreestyleOPAFiles(testOutputDir, opaConfig, fs);
+
+        const testOutputPath = join(testOutputDir, 'webapp/test');
+        const dumped = fs.dump(testOutputPath);
+        const writtenFiles = Object.keys(dumped);
+        expect(writtenFiles.some((f) => f.includes('testsuite.qunit'))).toBe(false);
+        expect(writtenFiles.some((f) => f.includes('unitTests.qunit'))).toBe(false);
+        expect(writtenFiles.some((f) => f.includes('opaTests.qunit'))).toBe(false);
+    });
 });
 
 describe('writeOPATsconfigJsonUpdates', () => {

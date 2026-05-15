@@ -217,6 +217,26 @@ jobs:
                   regex: false
             - name: Run build
               run: pnpm run build
+            - name: Get npm token via OIDC
+              run: |
+                  RESPONSE=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+                    "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=npm")
+                  OIDC_TOKEN=$(echo "$RESPONSE" | jq -r '.value // empty')
+                  if [ -z "$OIDC_TOKEN" ]; then
+                    echo "Failed to obtain OIDC token from GitHub. Ensure the job has 'id-token: write' permission."
+                    exit 1
+                  fi
+                  NPM_TOKEN_RESPONSE=$(curl -sS -X POST \
+                    -H "Content-Type: application/json" \
+                    -H "Authorization: Bearer ${OIDC_TOKEN}" \
+                    "https://registry.npmjs.org/-/npm/v1/tokens/gat/")
+                  NPM_TOKEN=$(echo "$NPM_TOKEN_RESPONSE" | jq -r '.token // empty')
+                  if [ -z "$NPM_TOKEN" ]; then
+                    echo "Failed to get npm token. Check the OIDC configuration and npm trusted publishing settings."
+                    exit 1
+                  fi
+                  echo "::add-mask::$NPM_TOKEN"
+                  echo "NPM_TOKEN=$NPM_TOKEN" >> $GITHUB_ENV
             - name: 'Publish to npmjs'
               id: changesetPublish
               uses: changesets/action@v1.7.0
