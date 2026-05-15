@@ -1,5 +1,16 @@
 # @sap-ux/i18n
 
+## 0.4.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/text-document-utils@0.4.0
+
 ## 0.3.12
 
 ### Patch Changes

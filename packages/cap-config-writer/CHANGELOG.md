@@ -1,5 +1,19 @@
 # @sap-ux/cap-config-writer
 
+## 0.13.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/fiori-generator-shared@0.15.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/yaml@0.18.0
+
 ## 0.12.100
 
 ### Patch Changes

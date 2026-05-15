@@ -1,5 +1,16 @@
 # @sap-ux/odata-annotation-core-types
 
+## 0.6.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/text-document-utils@0.4.0
+
 ## 0.5.9
 
 ### Patch Changes

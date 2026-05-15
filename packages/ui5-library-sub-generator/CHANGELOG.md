@@ -1,5 +1,27 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.2.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/fiori-generator-shared@0.15.0
+    - @sap-ux/fiori-tools-settings@0.3.0
+    - @sap-ux/nodejs-utils@0.3.0
+    - @sap-ux/ui5-info@0.14.0
+    - @sap-ux/ui5-library-inquirer@0.7.0
+    - @sap-ux/ui5-library-writer@0.7.0
+
+## 0.1.170
+
+### Patch Changes
+
+- @sap-ux/ui5-library-inquirer@0.6.108
+
 ## 0.1.169
 
 ### Patch Changes

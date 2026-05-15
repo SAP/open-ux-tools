@@ -1,5 +1,16 @@
 # @sap-ux/ui5-config
 
+## 0.31.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/yaml@0.18.0
+
 ## 0.30.5
 
 ### Patch Changes
