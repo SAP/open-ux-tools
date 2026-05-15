@@ -1,5 +1,15 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.9.1
+
+### Patch Changes
+
+- 2c76f8f: chore: upgrade @sap-devx/yeoman-ui-types 1.23.0 → 1.25.0
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+    - @sap-ux/inquirer-common@0.13.0
+
 ## 1.9.0
 
 ### Minor Changes
