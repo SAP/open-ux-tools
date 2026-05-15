@@ -9,7 +9,7 @@ import { create } from 'mem-fs-editor';
 
 describe('UI5 templates', () => {
     const debug = !!process.env['UX_DEBUG'];
-    const outputDir = join(import.meta.dirname, '/test-output');
+    const outputDir = join(dirname(fileURLToPath(import.meta.url)), '/test-output');
 
     const baseAppConfig: Ui5App = {
         app: {

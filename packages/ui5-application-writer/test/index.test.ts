@@ -10,7 +10,7 @@ import { updatePackageJSONDependencyToUseLocalPath } from './common';
 describe('UI5 templates', () => {
     const fs = create(createStorage());
     const debug = !!process.env['UX_DEBUG'];
-    const outputDir = join(import.meta.dirname, '/test-output');
+    const outputDir = join(dirname(fileURLToPath(import.meta.url)), '/test-output');
 
     beforeAll(() => {
         rmSync(outputDir, { recursive: true, force: true }); // even for in memory

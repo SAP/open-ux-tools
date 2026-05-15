@@ -11,7 +11,7 @@ const { getTemplatesOverwritePath } = await import('../../../src/utils/templates
 
 // The source code derives __dirname from import.meta.url, so compute
 // the expected path relative to the actual source file location.
-const srcUtilsDir = join(import.meta.dirname, '..', '..', '..', 'src', 'utils');
+const srcUtilsDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'src', 'utils');
 const expectedPath = join(srcUtilsDir, 'templates');
 
 describe('getTemplatesOverwritePath', () => {

@@ -6,6 +6,7 @@ import { t } from '../../../../i18n.js';
 import {
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- JSDoc references are not supported by typescript-eslint
     type ServiceSelectionPromptOptions,
     type SystemNamePromptOptions
 } from '../../../../types.js';

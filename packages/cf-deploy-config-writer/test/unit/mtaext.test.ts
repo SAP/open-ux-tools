@@ -6,7 +6,7 @@ import * as memfs from 'memfs';
 import { Union } from 'unionfs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const pkgRoot = join(import.meta.dirname, '../..');
+const pkgRoot = join(__dirname, '../..');
 
 // Create the union filesystem
 const ufs = new Union();
