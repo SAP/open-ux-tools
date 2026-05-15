@@ -3502,7 +3502,7 @@ importers:
         specifier: 1.58.2
         version: 1.58.2
       '@sap-ux/logger':
-        specifier: 0.8.6
+        specifier: 0.9.0
         version: link:../logger
       '@types/folder-hash':
         specifier: 4.0.4
@@ -3572,7 +3572,7 @@ importers:
         specifier: workspace:@sap-ux-private/preview-middleware-client@*
         version: link:../preview-middleware-client
       '@sap-ux-private/playwright':
-        specifier: 0.2.16
+        specifier: 0.3.0
         version: link:../playwright
       '@sap-ux/axios-extension':
         specifier: workspace:*

@@ -1,5 +1,19 @@
 # @sap-ux/annotation-generator
 
+## 0.5.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/fiori-annotation-api@0.10.0
+    - @sap-ux/odata-annotation-core-types@0.6.0
+    - @sap-ux/odata-entity-model@0.4.0
+    - @sap-ux/project-access@1.37.0
+
 ## 0.4.57
 
 ### Patch Changes

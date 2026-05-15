@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.6.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
 ## 0.5.3
 
 ### Patch Changes
