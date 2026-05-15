@@ -3,7 +3,74 @@
 exports[`API tests getPrompts, i18n is loaded 1`] = `
 [
   {
-    "name": "prompt1",
+    "choices": [
+      {
+        "name": "Connect to a System",
+        "value": "sapSystem",
+      },
+      {
+        "name": "Connect to an OData Service",
+        "value": "odataServiceUrl",
+      },
+      {
+        "name": "Use a Local CAP Project",
+        "value": "capProject",
+      },
+      {
+        "name": "Upload a Metadata Document",
+        "value": "metadataFile",
+      },
+    ],
+    "default": -1,
+    "guiOptions": {
+      "breadcrumb": true,
+    },
+    "message": "Data Source",
+    "name": "datasourceType",
+    "type": "list",
+  },
+  {
+    "additionalMessages": [Function],
+    "choices": [
+      {
+        "name": "New System",
+        "value": {
+          "system": "!@£*&937newSystem*X~qy^",
+          "type": "newSystemChoice",
+        },
+      },
+      {
+        "name": "storedSystem1",
+        "value": {
+          "system": {
+            "name": "storedSystem1",
+            "systemType": "OnPrem",
+            "url": "http://url1",
+          },
+          "type": "backendSystem",
+        },
+      },
+      {
+        "name": "storedSystem2 (ABAP Cloud)",
+        "value": {
+          "system": {
+            "name": "storedSystem2",
+            "systemType": "BTP",
+            "url": "http://url2",
+          },
+          "type": "backendSystem",
+        },
+      },
+    ],
+    "default": [Function],
+    "guiOptions": {
+      "breadcrumb": true,
+      "hint": "Select a system configuration.",
+    },
+    "message": "System",
+    "name": "systemSelection",
+    "source": [Function],
+    "type": "list",
     "validate": [Function],
     "when": [Function],
   },
