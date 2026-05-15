@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- JSDoc references are not supported by typescript-eslint
 import { Authentication } from '@sap-ux/btp-utils';
 import type { Annotations, EntitySetData, ExternalService } from '@sap-ux/axios-extension';
 import type { FloorplanKey } from './app-gen.js';

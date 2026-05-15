@@ -1,10 +1,4 @@
-import type {
-    Annotations,
-    ServiceProvider,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- JSDoc references are not supported by typescript-eslint
-    ODataServiceInfo,
-    ExternalService
-} from '@sap-ux/axios-extension';
+import type { Annotations, ServiceProvider, ODataServiceInfo, ExternalService } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';

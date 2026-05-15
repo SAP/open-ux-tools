@@ -1,10 +1,9 @@
 import type { Dirent } from 'node:fs';
-import path from 'node:path';
+import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 
-import { dirname } from 'node:path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import { DirName, getWebappPath } from '@sap-ux/project-access';

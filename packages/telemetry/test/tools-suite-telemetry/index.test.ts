@@ -3,11 +3,10 @@ import type { AxiosResponse } from 'axios';
 import { createRequire } from 'node:module';
 import * as memfs from 'memfs';
 import fs from 'node:fs';
-import path, { join } from 'node:path';
+import path, { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Union } from 'unionfs';
 
-import { dirname } from 'node:path';
 const require = createRequire(import.meta.url);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
