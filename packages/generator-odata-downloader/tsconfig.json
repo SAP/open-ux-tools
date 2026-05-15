@@ -6,7 +6,8 @@
   ],
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "generators"
+    "outDir": "generators",
+    "module": "commonjs"
   },
   "references": [
     {
