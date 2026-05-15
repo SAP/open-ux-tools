@@ -23178,7 +23178,7 @@ snapshots:
     dependencies:
       '@sap-ux/yaml': 0.17.5
       ajv: 8.18.0
-      axios: 1.13.5
+      axios: 1.16.0
       js-yaml: 4.1.1
       lodash: 4.17.23
       semver: 7.7.4
@@ -23268,7 +23268,7 @@ snapshots:
 
   '@sap/bas-sdk@3.13.3':
     dependencies:
-      axios: 1.13.5
+      axios: 1.16.0
       cross-spawn: 7.0.6
       fs-extra: 11.3.2
       jwt-decode: 4.0.0
@@ -23282,7 +23282,7 @@ snapshots:
 
   '@sap/bas-sdk@3.13.6':
     dependencies:
-      axios: 1.15.0
+      axios: 1.16.0
       cross-spawn: 7.0.6
       fs-extra: 11.3.2
       jwt-decode: 4.0.0
@@ -23336,7 +23336,7 @@ snapshots:
 
   '@sap/service-provider-apis@2.8.0':
     dependencies:
-      axios: 1.13.5
+      axios: 1.16.0
       lodash: 4.17.23
       xml2js: 0.6.2
     transitivePeerDependencies:
@@ -23346,7 +23346,7 @@ snapshots:
     dependencies:
       '@sap-ux/logger': 0.8.1
       '@sap-ux/store': 1.5.8(typescript@5.9.3)
-      '@sap/bas-sdk': 3.13.3
+      '@sap/bas-sdk': 3.13.6
       '@sap/service-provider-apis': 2.8.0
       stream-json: 1.9.1
       vkbeautify: 0.99.3
