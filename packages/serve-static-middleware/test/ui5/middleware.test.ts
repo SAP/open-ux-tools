@@ -1,9 +1,10 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import express from 'express';
 import supertest from 'supertest';
 import type { ServeStaticConfig } from '../../src';
 
-const testDirname = import.meta.dirname;
+const testDirname = dirname(fileURLToPath(import.meta.url));
 const localUI5Path = join(testDirname, '..', 'fixtures', 'local');
 
 // middleware function wrapper for testing to simplify tests

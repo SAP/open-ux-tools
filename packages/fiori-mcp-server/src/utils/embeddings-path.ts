@@ -1,3 +1,5 @@
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 /**
  * Utility module for resolving embeddings data paths
  * Handles fallback mechanisms when @sap-ux/fiori-docs-embeddings package is not available
@@ -7,7 +9,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { logger } from './logger.js';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Attempts to resolve the path to embeddings data. First tries to use @sap-ux/fiori-docs-embeddings package, then falls back to local data.

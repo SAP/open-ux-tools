@@ -1,8 +1,8 @@
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { promises } from 'node:fs';
-import { join, relative, sep, posix } from 'node:path';
+import { dirname, join, posix, relative, sep } from 'node:path';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import { create as createStore } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';

@@ -1,12 +1,13 @@
 import type { Editor } from 'mem-fs-editor';
 import { type AppDescriptorV4Change } from '../types.js';
 import type { Logger } from '@sap-ux/logger';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { getFragmentPathFromTemplate } from './utils.js';
 import { randomBytes } from 'node:crypto';
 import { render } from 'ejs';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const customFragmentConfig = {
     path: 'v4/custom-section.xml',

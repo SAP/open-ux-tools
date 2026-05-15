@@ -8,8 +8,9 @@ import { readFile } from 'node:fs/promises';
 import type { ListChoiceOptions, Question } from 'inquirer';
 import type { EntityAnswer } from '../../../../src/prompts/edmx/entity-helper';
 import type { EntitySelectionAnswers, PageBuildingBlockAnswers } from '../../../../src/types';
-import { join } from 'node:path';
-const __dirname = import.meta.dirname;
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 

@@ -1,10 +1,11 @@
 import { jest } from '@jest/globals';
 import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const mockGetService = jest.fn();
 const mockGetVariantNamespace = jest.fn();

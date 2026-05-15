@@ -1,8 +1,9 @@
 import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { AppConfig, DeployTarget } from '@sap-ux/fiori-generator-shared';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Runs the headless generator for deployment sub generators.

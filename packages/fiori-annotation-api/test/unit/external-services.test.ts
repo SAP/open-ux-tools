@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals';
-import { join, relative } from 'node:path';
+import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type * as fsPromisesType from 'node:fs/promises';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import { createElementNode, Range, Edm, Location } from '@sap-ux/odata-annotation-core-types';
 

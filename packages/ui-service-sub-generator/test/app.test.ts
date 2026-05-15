@@ -2,8 +2,9 @@ import { jest } from '@jest/globals';
 import yeomanTest from 'yeoman-test';
 import '@sap-ux/jest-file-matchers';
 import 'jest-extended';
-import { join } from 'node:path';
-const __testdirname = import.meta.dirname;
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const __testdirname = dirname(fileURLToPath(import.meta.url));
 
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { PromptOptions } from '../src/app/types';

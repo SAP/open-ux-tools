@@ -1,6 +1,7 @@
 import { generate, addEslintFeature } from '../src';
 import type { Package } from '@sap-ux/project-access';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { rmSync } from 'node:fs';
 import type { Ui5App } from '../src';
 import { create as createStorage } from 'mem-fs';

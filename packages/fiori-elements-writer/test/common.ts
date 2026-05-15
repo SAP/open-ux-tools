@@ -5,6 +5,7 @@ import { create as createStore } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import {
     TableType,
@@ -19,7 +20,7 @@ import { exec as execCP } from 'node:child_process';
 const exec = promisify(execCP);
 import { type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 
-const testDirname = import.meta.dirname;
+const testDirname = dirname(fileURLToPath(import.meta.url));
 const esmRequire = createRequire(import.meta.url);
 export const testOutputDir = join(testDirname, 'test-output');
 

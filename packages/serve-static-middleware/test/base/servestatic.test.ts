@@ -1,7 +1,8 @@
 import { jest } from '@jest/globals';
 import type { ServeStaticConfig } from '../../src';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { relative, join } from 'node:path';
+import { dirname, join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 const mockServeStatic = jest.fn();
 
 jest.unstable_mockModule('serve-static', () => ({
@@ -10,7 +11,7 @@ jest.unstable_mockModule('serve-static', () => ({
 
 const { serveStaticMiddleware } = await import('../../src');
 
-const testDirname = import.meta.dirname;
+const testDirname = dirname(fileURLToPath(import.meta.url));
 
 describe('serve-static-middleware', () => {
     const logger = new ToolsLogger({

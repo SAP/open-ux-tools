@@ -1,7 +1,9 @@
 import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-const __testdir = import.meta.dirname;
+import { dirname } from 'node:path';
+const __testdir = dirname(fileURLToPath(import.meta.url));
 
 import { getExtensionRoutes, loadExtensions, toExtensionModule } from '../../../src/approuter/extensions';
 

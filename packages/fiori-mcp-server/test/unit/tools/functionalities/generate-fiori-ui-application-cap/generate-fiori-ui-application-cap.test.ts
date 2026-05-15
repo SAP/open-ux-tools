@@ -1,10 +1,11 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { ExecuteFunctionalityInput } from '../../../../../src/types';
 import type { GeneratorConfigCAPWithAPI } from '../../../../../src/tools/schemas';
 import { existsSync, promises as fsPromises } from 'node:fs';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const mockFindInstalledPackages = jest.fn<any>().mockResolvedValue([
     {

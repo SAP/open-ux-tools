@@ -11,13 +11,14 @@ import {
     YAML_VERSION_REGEX
 } from '@sap-ux/jest-file-matchers';
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { rimraf } from 'rimraf';
 import yeomanTest from 'yeoman-test';
 import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator/fioriAppGeneratorOptions';
 import type { State } from '../../../src/types';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const testOutputFolder = './test-output/';
 const testDir: string = join(__dirname, '../', testOutputFolder);
 export const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later

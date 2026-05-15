@@ -1,6 +1,8 @@
 import { jest } from '@jest/globals';
 import path, { join } from 'node:path';
-const __dirname = import.meta.dirname;
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import type { CheckEnvironmentOptions } from '../../src';
 import { DevelopmentEnvironment, Severity } from '../../src/types';

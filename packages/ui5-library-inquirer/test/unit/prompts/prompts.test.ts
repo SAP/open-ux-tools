@@ -1,9 +1,10 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { jest } from '@jest/globals';
 import type { Separator } from 'inquirer';
 import type { UI5VersionChoice } from '@sap-ux/inquirer-common';
 
-const testDirname = import.meta.dirname;
+const testDirname = dirname(fileURLToPath(import.meta.url));
 
 const mockValidateLibModuleName = jest.fn();
 const mockValidateNamespace = jest.fn();

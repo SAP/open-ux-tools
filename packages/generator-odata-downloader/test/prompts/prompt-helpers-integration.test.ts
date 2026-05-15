@@ -3,7 +3,8 @@ import { ConsoleTransport, LogLevel, ToolsLogger } from '@sap-ux/logger';
 import { createApplicationAccess, getSpecificationModuleFromCache } from '@sap-ux/project-access';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
 import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { ReferencedEntities } from '../../src/data-download/types';
 import { getEntityModel } from '../../src/data-download/utils';
 import { initI18nODataDownloadGenerator } from '../../src/utils/i18n';
@@ -17,7 +18,7 @@ jest.unstable_mockModule('../../src/telemetry', () => ({
 
 const { createEntityChoices } = await import('../../src/data-download/prompts/prompt-helpers');
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('Test createEntityChoices (integration)', () => {
     beforeAll(async () => {

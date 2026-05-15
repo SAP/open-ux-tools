@@ -1,4 +1,5 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import type { MatcherIgnore } from '../../src/matchers/types';
 import { README_GENERATION_PLATFORM_REGEX, README_GENERATOR_REGEX } from '../../src/matchers/types';
@@ -6,7 +7,7 @@ import { toMatchFolder, toContainAllFilesIn } from '../../src/index';
 import { toMatchFile } from '../../src/matchers/toMatchFileSnapshot';
 import '../../src/setup';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 expect.extend({ toMatchFile, toMatchFolder, toContainAllFilesIn });
 

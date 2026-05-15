@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
-import { join, normalize } from 'node:path';
-const __dirname = import.meta.dirname;
+import { dirname, join, normalize } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const TEST_PACKAGE2_NAME_SUBSTRING = 'abcd-1234';
 const TEST_PACKAGE2_NAME = `@fake-scope/fake-package-${TEST_PACKAGE2_NAME_SUBSTRING}`;

@@ -1,12 +1,13 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import 'jest-extended';
 import { rimraf } from 'rimraf';
 import { toMatchFolder } from '@sap-ux/jest-file-matchers';
 import type { Editor } from 'mem-fs-editor';
 
-const testDir = import.meta.dirname;
+const testDir = dirname(fileURLToPath(import.meta.url));
 
 // Mock functions
 const mockPrompt = jest.fn<any>();

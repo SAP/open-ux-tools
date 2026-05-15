@@ -1,4 +1,5 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { UI5, Ui5App } from './types.js';
@@ -9,7 +10,7 @@ import { mergeObjects, UI5_DEFAULT } from '@sap-ux/ui5-config';
 import type { ProjectType } from '@sap-ux/project-access';
 import { getTemplateVersionPath, processDestinationPath } from './utils.js';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Input required to enable optional features.

@@ -1,10 +1,11 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type * as fsMock from 'node:fs';
 import type * as promisesMock from 'node:fs/promises';
 import type * as commandType from '../../src/command/npm-command';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Mock constants before importing getModule() to mock the module cache path
 const moduleCacheRoot = join(__dirname, '../test-data/module-loader');

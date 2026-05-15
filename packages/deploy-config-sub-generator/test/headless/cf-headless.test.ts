@@ -2,10 +2,11 @@ import { jest } from '@jest/globals';
 import { readdirSync, writeFileSync, cpSync, existsSync } from 'node:fs';
 import { readFile, rename } from 'node:fs/promises';
 import { rimraf } from 'rimraf';
-import { basename, join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { AppConfig } from '@sap-ux/fiori-generator-shared';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Pre-load modules before mocking so we can spread their exports
 

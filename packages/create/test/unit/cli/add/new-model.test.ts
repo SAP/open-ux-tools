@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 import { Command } from 'commander';
 import type { Editor } from 'mem-fs-editor';
@@ -7,7 +8,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 
 import { createProjectAccessMock } from '../__mocks__/project-access-mock';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const descriptorVariant = JSON.parse(
     readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.appdescr_variant'), 'utf-8')

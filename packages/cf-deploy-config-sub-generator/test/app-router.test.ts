@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import path, { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
 import * as memfs from 'memfs';
@@ -8,8 +9,9 @@ import yeomanTest from 'yeoman-test';
 import { TestFixture } from './fixtures';
 import type { Editor } from 'mem-fs-editor';
 
+import { dirname } from 'node:path';
 const require = createRequire(import.meta.url);
-const __testdirname = import.meta.dirname;
+const __testdirname = dirname(fileURLToPath(import.meta.url));
 
 // CJS mock for 'fs' — intercepted by yeoman-generator and other CJS consumers
 // jest.mock is hoisted, so we use require() inside the factory

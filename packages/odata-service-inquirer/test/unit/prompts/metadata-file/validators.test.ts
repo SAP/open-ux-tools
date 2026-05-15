@@ -1,5 +1,7 @@
 import path, { dirname } from 'node:path';
-const __dirname = import.meta.dirname;
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 import { validateMetadataFile } from '../../../../src/prompts/datasources/metadata-file/validators';
 
 describe('metadata valiadtors', () => {

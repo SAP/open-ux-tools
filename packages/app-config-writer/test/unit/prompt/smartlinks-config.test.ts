@@ -1,10 +1,11 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { PromptObject } from 'prompts';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type * as promptsMod from 'prompts';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Get actual prompts module (CJS, so requireActual works)
 const actualPrompts = jest.requireActual<typeof promptsMod>('prompts');

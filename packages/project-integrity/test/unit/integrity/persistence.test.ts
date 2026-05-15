@@ -1,9 +1,10 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import type { Integrity } from '../../../src/types';
 
-const __testdir = import.meta.dirname;
+const __testdir = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
 const lzString = require('lz-string');
 

@@ -1,7 +1,8 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import nock from 'nock';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 import type { AbapServiceProvider } from '../../src';
 import {
     createForAbap,

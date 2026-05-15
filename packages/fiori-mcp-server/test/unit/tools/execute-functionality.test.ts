@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { FlexChangeLayer } from '@sap/ux-specification/dist/types/src';
@@ -11,7 +12,7 @@ import {
     readAppWithModel
 } from '../utils';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Mock @sap-ux/project-access with controllable functions
 const actualProjectAccess = await import('@sap-ux/project-access');

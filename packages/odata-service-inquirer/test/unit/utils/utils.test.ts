@@ -1,8 +1,9 @@
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
-const __dirname = import.meta.dirname;
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 import {
     areArraysEquivalent,
     originToRelative,

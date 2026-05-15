@@ -1,11 +1,12 @@
 import { jest } from '@jest/globals';
 import type { ParseOptions } from 'commander';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Command } from 'commander';
 import { ToolsLogger } from '@sap-ux/logger';
 import ProcessEnv = NodeJS.ProcessEnv;
 
-const __testdirname = import.meta.dirname;
+const __testdirname = dirname(fileURLToPath(import.meta.url));
 
 // Import mock setup (this sets up jest.unstable_mockModule for @sap-ux/axios-extension and @sap-ux/store)
 import { mockedUi5RepoService, mockedLrepService, mockedProvider } from '../../__mocks__';

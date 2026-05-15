@@ -1,8 +1,9 @@
 import { createForAbap, ODataVersion, V2CatalogService, ServiceType } from '../../../src';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import nock from 'nock';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('V2CatalogService', () => {
     const server = 'https://sap.example';

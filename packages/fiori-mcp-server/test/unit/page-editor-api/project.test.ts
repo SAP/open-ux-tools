@@ -1,8 +1,9 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { FlexChangeLayer } from '@sap/ux-specification/dist/types/src';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Mock fs/promises
 const mockReadFile = jest.fn<any>();

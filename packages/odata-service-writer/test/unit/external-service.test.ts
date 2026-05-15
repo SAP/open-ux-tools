@@ -1,7 +1,9 @@
 import path, { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { readFile } from 'node:fs/promises';
 
-const __dirname = import.meta.dirname;
+import { dirname } from 'node:path';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';

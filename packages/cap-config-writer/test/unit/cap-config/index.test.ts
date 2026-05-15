@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import { promises } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
@@ -72,7 +73,7 @@ jest.unstable_mockModule('@sap-ux/yaml', () => ({
 
 const { enableCdsUi5Plugin } = await import('../../../src');
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixturesPath = join(__dirname, '../../fixture');
 
 describe('Test enableCdsUi5Plugin()', () => {

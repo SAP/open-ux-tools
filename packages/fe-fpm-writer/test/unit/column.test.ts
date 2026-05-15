@@ -1,7 +1,8 @@
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { generateCustomColumn } from '../../src';
 import { getManifestRoot } from '../../src/column';
 import type { CustomTableColumn } from '../../src/column/types';
@@ -12,7 +13,7 @@ import { Placement } from '../../src/common/types';
 import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
 import { getEndOfLinesLength, tabSizingTestCases } from '../common';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const testDir = join(__dirname, 'sample/column');
 

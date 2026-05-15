@@ -1,7 +1,8 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { getMtaPath } from '../../src';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('Test getMtaPath()', () => {
     test('Test managed MTA project', async () => {

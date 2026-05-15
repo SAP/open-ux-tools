@@ -1,4 +1,5 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
@@ -7,7 +8,7 @@ import type { ChoiceOptions } from 'inquirer';
 import type { getMinimumUI5Version } from '@sap-ux/project-access';
 import type { TablePromptsAnswer, SupportedGeneratorAnswers, BuildingBlockTypePromptsAnswer } from '../../../src';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const actualProjectAccess = await import('@sap-ux/project-access');
 const originalGetMinimumUI5Version: typeof getMinimumUI5Version = actualProjectAccess.getMinimumUI5Version;

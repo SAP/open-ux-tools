@@ -1,13 +1,14 @@
 import { jest } from '@jest/globals';
 import nock from 'nock';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Destination, ServiceInfo } from '../src';
 import { ENV } from '../src/app-studio.env';
 import destinationList from './mockResponses/destinations.json';
 import type { ServiceInstanceInfo } from '@sap/cf-tools';
 import { ToolsLogger } from '@sap-ux/logger';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const destinations: { [key: string]: Destination } = {};
 destinationList.forEach((dest) => {

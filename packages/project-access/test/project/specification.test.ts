@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import * as fsMock from 'node:fs';
 import type * as fsPromisesType from 'node:fs/promises';
 import type { Logger } from '@sap-ux/logger';
@@ -7,7 +8,7 @@ import type * as commandType from '../../src/command';
 import type * as moduleType from '../../src/project/module-loader';
 import type * as fileType from '../../src/file';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Mock constants before importing getSpecification
 const realConstants = await import('../../src/constants');

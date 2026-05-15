@@ -1,4 +1,5 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -8,7 +9,7 @@ import { enableTypescript } from './options/index.js';
 import { mergeWithDefaults } from './data/index.js';
 import { getTemplateVersionPath } from './utils.js';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Writes the template to the memfs editor instance.

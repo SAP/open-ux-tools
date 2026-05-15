@@ -1,12 +1,13 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { addVariantsManagementScript } from '../../../src/variants-config/package-json';
 import { create as createFS } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('addVariantsManagementScript', () => {
     let fs: Editor;

@@ -1,4 +1,6 @@
 import { jest } from '@jest/globals';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 import type { FlpConfig, MiddlewareConfig } from '../../../src';
@@ -18,7 +20,7 @@ import { fetchMock } from '../../__mock__/global';
 import connect = require('connect');
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Mock node:module to intercept createRequire so that require.resolve works for
 // @sap-ux/control-property-editor-sources (its dist/app.js is not built in test env)

@@ -1,4 +1,5 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { existsSync } from 'node:fs';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
@@ -28,7 +29,7 @@ import {
 import { getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { readHashFromFlpSandbox } from './utils/flpSandboxUtils.js';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Generate OPA test files for a Fiori elements for OData V4 application.

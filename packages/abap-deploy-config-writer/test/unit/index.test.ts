@@ -1,11 +1,12 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { generate } from '../../src';
 import fsExtra from 'fs-extra';
 import type { AbapDeployConfig, BspApp } from '@sap-ux/ui5-config';
 
 import type { DeployConfigOptions } from '../../src/types';
 
-const __testDirname = import.meta.dirname;
+const __testDirname = dirname(fileURLToPath(import.meta.url));
 
 describe('generate', () => {
     const outputDir = join(__testDirname, '../test-output');

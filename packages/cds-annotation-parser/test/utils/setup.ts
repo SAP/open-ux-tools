@@ -1,5 +1,6 @@
 import { promises, readdirSync, stat, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { platform } from 'node:os';
 import type { IToken, CstNode, CstNodeLocation, CstElement } from 'chevrotain';
 import type { DeclarationCstNode } from '../../src/parser/parser';
@@ -9,7 +10,7 @@ import { deserialize } from './deserialize-ast';
 
 const { readFile } = promises;
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const getBase = () => join(__dirname, '..', 'data');
 

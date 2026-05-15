@@ -2,13 +2,14 @@ import { jest } from '@jest/globals';
 import '@sap-ux/jest-file-matchers';
 import { readdirSync, readFileSync } from 'node:fs';
 import cloneDeep from 'lodash/cloneDeep';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { ApiHubConfig, Project, Service, State } from '../../../src/types';
 import { ApiHubType, FloorplanFE } from '../../../src/types';
 import { cleanTestDir, getTestDir, ignoreMatcherOpts, originalCwd, runWritingPhaseGen } from '../test-utils';
 import { baseTestProject, getExpectedOutputPath, v2EntityConfig, v2Service } from './test-utils';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const actualBtpUtils = await import('@sap-ux/btp-utils');
 const mockIsAppStudio = jest.fn();

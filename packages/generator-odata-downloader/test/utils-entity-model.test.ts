@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { readFile } from 'node:fs/promises';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
 import type { ApplicationAccess } from '@sap-ux/project-access';
@@ -14,7 +15,7 @@ jest.unstable_mockModule('@sap-ux/edmx-parser', () => ({
 
 const { getEntityModel } = await import('../src/data-download/utils');
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('getEntityModel', () => {
     const travelAppPath = join(__dirname, 'test-data/test-apps/travel/webapp');

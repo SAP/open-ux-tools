@@ -1,12 +1,13 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 
 import type { PackageInfo } from '@sap-ux/nodejs-utils';
 import type { Manifest } from '@sap-ux/project-access';
 import type { FLPConfigAnswers } from '@sap-ux/flp-config-inquirer';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const foundGenExts: Partial<PackageInfo>[] = [];
 

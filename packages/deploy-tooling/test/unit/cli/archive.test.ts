@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { join, relative } from 'node:path';
+import { dirname, join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createUi5Archive } from '../../../src/ui5/archive';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { Resource } from '@ui5/fs';
@@ -8,7 +9,7 @@ import AdmZip from 'adm-zip';
 import { existsSync } from 'node:fs';
 
 const __testfilename = import.meta.filename;
-const __testdirname = import.meta.dirname;
+const __testdirname = dirname(fileURLToPath(import.meta.url));
 
 const mockAxiosGet = jest.fn();
 

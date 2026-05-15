@@ -1,8 +1,9 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { LibraryXml, Manifest, ReuseLib } from '../../src';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const realFileUtils = await import('../../src/file');
 const mockFindFiles = jest.fn(realFileUtils.findFiles);

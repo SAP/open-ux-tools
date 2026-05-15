@@ -1,9 +1,10 @@
 import { jest } from '@jest/globals';
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Project } from '@sap-ux/project-access';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const mockGetCapModelAndServices = jest.fn().mockResolvedValue({
     model: {},

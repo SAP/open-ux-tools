@@ -3,13 +3,14 @@ import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import '@sap-ux/jest-file-matchers';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { copyFileSync, promises as fsPromise, mkdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { rimraf } from 'rimraf';
 import { FloorplanFF, type State } from '../../../src/types';
 import { cleanTestDir, getTestDir, ignoreMatcherOpts, runWritingPhaseGen } from '../test-utils';
 import { initI18nFioriAppSubGenerator } from '../../../src';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const EXPECTED_OUT_PATH = './expected-output';
 const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later

@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
-import { join, relative, posix } from 'node:path';
+import { dirname, join, posix, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import type { Linter } from 'eslint';
 import type { Plugin } from '@eslint/config-helpers';
@@ -12,7 +13,7 @@ import type { getPathMappings } from '@sap-ux/project-access';
 import { uniformUrl } from '@sap-ux/fiori-annotation-api';
 export { DiagnosticCache } from './language/diagnostic-cache.js';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
 
 // Use CommonJS require for modules with resolution issues

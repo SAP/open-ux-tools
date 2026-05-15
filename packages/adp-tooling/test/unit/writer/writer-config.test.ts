@@ -1,7 +1,8 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, Package } from '@sap-ux/project-access';

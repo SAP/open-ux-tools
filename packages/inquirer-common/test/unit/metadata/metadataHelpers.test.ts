@@ -13,7 +13,9 @@ import { convert } from '@sap-ux/annotation-converter';
 import { parse } from '@sap-ux/edmx-parser';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-const __testdirname = import.meta.dirname;
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+const __testdirname = dirname(fileURLToPath(import.meta.url));
 
 describe('metadata entity helpers', () => {
     let metadata: ReturnType<typeof convert>;

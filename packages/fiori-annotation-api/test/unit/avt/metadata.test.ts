@@ -1,7 +1,7 @@
-import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { dirname, join } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import type { DocumentCstNode } from '@xml-tools/parser';
 import { parse } from '@xml-tools/parser';

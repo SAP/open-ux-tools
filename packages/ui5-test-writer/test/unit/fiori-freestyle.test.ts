@@ -1,5 +1,6 @@
 import { generateFreestyleOPAFiles } from '../../src';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
@@ -8,7 +9,7 @@ import { toMatchFolder } from '@sap-ux/jest-file-matchers';
 import * as fileSystem from 'node:fs';
 import { rimraf } from 'rimraf';
 import { promisify } from 'node:util';
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 expect.extend({ toMatchFolder });
 

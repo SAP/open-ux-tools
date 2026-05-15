@@ -1,10 +1,11 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fsExtra from 'fs-extra';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 import type { Editor } from 'mem-fs-editor';
 import fs from 'node:fs';
 

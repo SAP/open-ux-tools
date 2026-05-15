@@ -1,14 +1,15 @@
 import { jest } from '@jest/globals';
 import prompts from 'prompts';
 import AdmZip from 'adm-zip';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { LogLevel, NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { AbapDeployConfig } from '../../../src/types';
 import { AxiosError } from 'axios';
 
-const __testdirname = import.meta.dirname;
+const __testdirname = dirname(fileURLToPath(import.meta.url));
 
 // Import mock setup (this sets up jest.unstable_mockModule for @sap-ux/axios-extension and @sap-ux/store)
 import {

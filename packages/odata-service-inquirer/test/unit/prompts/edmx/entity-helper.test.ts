@@ -8,8 +8,9 @@ import { readFile } from 'node:fs/promises';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { join } from 'node:path';
-const __dirname = import.meta.dirname;
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('Test entity helper functions', () => {
     let metadataV4WithAggregateTransforms: string;

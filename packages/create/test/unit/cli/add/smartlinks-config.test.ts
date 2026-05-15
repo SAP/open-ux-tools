@@ -2,8 +2,9 @@ import { jest } from '@jest/globals';
 import { Command } from 'commander';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { join } from 'node:path';
-const __dirname = import.meta.dirname;
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const mockGetLogger = jest.fn();
 const mockSetLogLevelVerbose = jest.fn();

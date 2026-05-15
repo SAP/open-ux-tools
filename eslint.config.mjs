@@ -261,13 +261,21 @@ export default [
                     endOfLine: 'auto',
                     quoteProps: 'preserve'
                 }
+            ],
+
+            'no-restricted-syntax': [
+                'error',
+                {
+                    selector: 'MemberExpression[object.type=\'MetaProperty\'][property.name=\'dirname\']',
+                    message:
+                        'Do not use import.meta.dirname. Use dirname(fileURLToPath(import.meta.url) instead, consumers of open-ux-tools esm modules in cjs bundles may not yet support this syntax'
+                }
             ]
         }
     },
     {
         name: 'typescript-eslint-1',
-        languageOptions: {
-        },
+        languageOptions: {},
         files: ['**/*.ts', '**/*.tsx'],
         // 'extends': ['plugin:@typescript-eslint/recommended'],
         rules: {
@@ -330,8 +338,7 @@ export default [
     },
     {
         name: 'typescript-eslint-2',
-        languageOptions: {
-        },
+        languageOptions: {},
         files: ['**/test/**/*.js', '**/test/**/*.ts', '**/test/**/*.tsx'],
         rules: {
             '@typescript-eslint/explicit-function-return-type': 'off',

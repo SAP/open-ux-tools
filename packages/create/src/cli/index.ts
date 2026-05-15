@@ -1,8 +1,9 @@
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Command, type Option } from 'commander';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 import { getLogger } from '../tracing/index.js';
 import { getAddCommands } from './add/index.js';
 import { getRemoveCommands } from './remove/index.js';

@@ -4,11 +4,12 @@ import type { Answers, DistinctChoice, ListChoiceMap } from 'inquirer';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Project } from '@sap-ux/project-access';
 import { bindingContextAbsolute, bindingContextRelative } from '../../../../../src/building-block/types';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const mockGetCapModelAndServices = jest.fn().mockResolvedValue({
     model: {},

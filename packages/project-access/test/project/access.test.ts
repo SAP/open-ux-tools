@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Manifest, Package } from '../../src';
 import type * as i18nWriteType from '../../src/project/i18n/write';
 import type * as specType from '../../src/project/specification';
@@ -8,7 +9,7 @@ import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { promises } from 'node:fs';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const mockCreateAnnotationI18nEntries = jest.fn<typeof i18nWriteType.createAnnotationI18nEntries>();
 const mockCreateUI5I18nEntries = jest.fn<typeof i18nWriteType.createUI5I18nEntries>();

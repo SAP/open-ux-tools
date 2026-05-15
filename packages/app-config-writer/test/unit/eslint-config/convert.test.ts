@@ -2,7 +2,8 @@ import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { EslintRcJson } from '../../../src/eslint-config/convert';
 import type { Package } from '@sap-ux/project-access';
@@ -11,7 +12,7 @@ import { EventEmitter } from 'node:events';
 import chalk from 'chalk';
 import type * as nodeFs from 'node:fs';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 jest.unstable_mockModule('chalk', () => ({
     default: chalk,

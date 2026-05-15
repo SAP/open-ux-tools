@@ -2,7 +2,8 @@ import { jest } from '@jest/globals';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { CustomFilter } from '../../src/filter/types';
 import { generateCustomFilter } from '../../src/filter';
 import type { EventHandlerConfiguration, FileContentPosition } from '../../src/common/types';
@@ -11,7 +12,7 @@ import { getEndOfLinesLength } from '../common';
 import { COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
 import { findFilesByExtensionMock } from '../__mocks__/project-access-file.mjs';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('CustomFilter', () => {
     describe('generateCustomFilter', () => {

@@ -1,5 +1,5 @@
-import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { dirname, join } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import type { ProjectType } from '@sap-ux/project-access';
 import { platform } from 'node:os';
 import { spawnSync } from 'node:child_process';

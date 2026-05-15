@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import fsextra from 'fs-extra';
 import type { YUIQuestion, CredentialsAnswers } from '@sap-ux/inquirer-common';
@@ -8,7 +9,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapServiceProvider, InboundContent } from '@sap-ux/axios-extension';
 import type * as sysAccessTypes from '@sap-ux/system-access';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Register all mocks before dynamic imports
 const realSysAccess = await import('@sap-ux/system-access');

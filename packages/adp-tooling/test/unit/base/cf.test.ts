@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
-const __dirname = import.meta.dirname;
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // MOCKS - use jest.unstable_mockModule for ESM compatibility
 const mockExistsSync = jest.fn();

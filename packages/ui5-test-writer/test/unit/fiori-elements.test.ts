@@ -1,12 +1,13 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import fileSystem from 'node:fs';
 import type { Logger } from '@sap-ux/logger/src/types';
 import * as appModels from '../test-input/constants';
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const readAppMock = jest.fn();
 const realProjectAccess = await import('@sap-ux/project-access');

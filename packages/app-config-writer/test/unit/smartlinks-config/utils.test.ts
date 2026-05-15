@@ -2,12 +2,13 @@ import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
 import { create as createFS } from 'mem-fs-editor';
 import nock from 'nock';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { ToolsLogger } from '@sap-ux/logger';
 import chalk from 'chalk';
 import type { TargetConfig } from '../../../src/types';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 jest.unstable_mockModule('chalk', () => ({
     default: chalk,

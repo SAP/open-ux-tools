@@ -2,10 +2,11 @@ import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
 import { Command } from 'commander';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const mockGetLogger = jest.fn();
 jest.unstable_mockModule('../../../../src/tracing/logger', () => ({

@@ -7,11 +7,12 @@ import {
     normalizeHierarchyNodeIds
 } from '../src/data-download/utils.js';
 import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { ConvertedMetadata, EntitySet, EntityType } from '@sap-ux/vocabularies-types';
 
-const __testdir = import.meta.dirname;
-const __dirname = import.meta.dirname;
+const __testdir = dirname(fileURLToPath(import.meta.url));
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('Test utils', () => {
     describe('createEntitySetData', () => {

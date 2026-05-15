@@ -2,11 +2,12 @@ import { jest } from '@jest/globals';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { create as createMemFs } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import type { Destination } from '@sap-ux/btp-utils';
 
-const __testdirname = import.meta.dirname;
+const __testdirname = dirname(fileURLToPath(import.meta.url));
 
 const mockIsAppStudio = jest.fn();
 const mockCreateAbapServiceProvider = jest.fn().mockResolvedValue({ get: {} });

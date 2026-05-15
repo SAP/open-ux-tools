@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { readFile } from 'node:fs/promises';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { jest } from '@jest/globals';
 import type { FoundFioriArtifacts, Manifest } from '@sap-ux/project-access';
 import { findFioriArtifacts, normalizePath } from '@sap-ux/project-access';
@@ -28,7 +28,7 @@ import { getParsedServiceByName } from '../../../src/project-context/utils';
 
 jest.setTimeout(60000); // time needed for Windows
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const parser = new ApplicationParser();
 

@@ -1,8 +1,9 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { ensureSpecificationLoaded, mockSpecificationReadAppWithModel } from '../utils';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Mock @sap-ux/project-access with controllable functions
 const actualProjectAccess = await import('@sap-ux/project-access');

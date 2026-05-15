@@ -1,9 +1,10 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import chalk from 'chalk';
 import type { Editor } from 'mem-fs-editor';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 jest.unstable_mockModule('chalk', () => ({
     default: chalk,

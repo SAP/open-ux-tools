@@ -1,4 +1,5 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { rmSync } from 'node:fs';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';

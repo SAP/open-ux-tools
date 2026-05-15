@@ -1,7 +1,8 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { getPathMappings } from '@sap-ux/project-access';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Tests call getPathMappings directly (async) instead of through the synckit worker.
 // The worker simply wraps this function; testing it directly avoids worker thread

@@ -1,5 +1,5 @@
-import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { dirname, join } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { existsSync, readFileSync } from 'node:fs';
 import { jest } from '@jest/globals';
 
@@ -17,7 +17,7 @@ export interface FileChange {
     code: string;
 }
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const ROOT = join(__dirname, '..');
 

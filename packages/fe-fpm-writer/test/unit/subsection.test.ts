@@ -2,7 +2,8 @@ import { jest } from '@jest/globals';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { generateCustomSubSection } from '../../src/section';
 import type { CustomSubSection } from '../../src/section/types';
 import type { Manifest } from '../../src/common/types';
@@ -11,7 +12,7 @@ import manifestSections from './sample/section/webapp/manifest.json';
 import { COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
 import { findFilesByExtensionMock } from '../__mocks__/project-access-file.mjs';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const testDir = join(__dirname, 'sample/subsection');
 

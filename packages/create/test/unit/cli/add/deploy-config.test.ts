@@ -2,12 +2,13 @@ import { jest } from '@jest/globals';
 import type { Editor } from 'mem-fs-editor';
 import { Command } from 'commander';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 import { createProjectAccessMock } from '../__mocks__/project-access-mock';
 
-const __dirname = import.meta.dirname;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const mockGetLogger = jest.fn();
 const mockSetLogLevelVerbose = jest.fn();

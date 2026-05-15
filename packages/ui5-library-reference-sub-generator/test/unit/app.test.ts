@@ -1,12 +1,13 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import fsextra from 'fs-extra';
 import { rimraf } from 'rimraf';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import type { UI5LibraryReferenceAnswers } from '@sap-ux/ui5-library-reference-inquirer';
 
-const testDirname = import.meta.dirname;
+const testDirname = dirname(fileURLToPath(import.meta.url));
 const testOutputDir = join(testDirname, '..', 'test-output', 'app');
 const originalCwd = process.cwd();
 const refLibGenPath = join(testDirname, '../../src/app');

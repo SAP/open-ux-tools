@@ -1,9 +1,11 @@
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { renderFile } from 'ejs';
 
-const __dirname = import.meta.dirname;
+import { dirname } from 'node:path';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 import sanitize from 'sanitize-filename';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
