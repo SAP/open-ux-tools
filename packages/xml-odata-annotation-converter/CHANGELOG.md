@@ -1,5 +1,16 @@
 # @sap-ux/xml-odata-annotation-converter
 
+## 0.5.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/odata-annotation-core@0.3.0
+
 ## 0.4.14
 
 ### Patch Changes

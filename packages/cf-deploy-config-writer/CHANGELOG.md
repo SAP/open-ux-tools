@@ -1,5 +1,21 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.4.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/nodejs-utils@0.3.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/ui5-config@0.31.0
+    - @sap-ux/yaml@0.18.0
+
 ## 0.3.107
 
 ### Patch Changes

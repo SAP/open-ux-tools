@@ -1,5 +1,53 @@
 # @sap-ux/create
 
+## 0.16.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/abap-deploy-config-inquirer@1.9.0
+    - @sap-ux/abap-deploy-config-writer@0.4.0
+    - @sap-ux/adp-tooling@0.19.0
+    - @sap-ux/app-config-writer@0.7.0
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/cap-config-writer@0.13.0
+    - @sap-ux/flp-config-inquirer@0.5.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/mockserver-config-writer@0.10.0
+    - @sap-ux/nodejs-utils@0.3.0
+    - @sap-ux/odata-service-writer@0.32.0
+    - @sap-ux/preview-middleware@0.26.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/system-access@0.8.0
+    - @sap-ux/ui5-config@0.31.0
+
+## 0.15.99
+
+### Patch Changes
+
+- Updated dependencies [138246a]
+    - @sap-ux/odata-service-writer@0.31.15
+    - @sap-ux/adp-tooling@0.18.134
+    - @sap-ux/flp-config-inquirer@0.4.194
+    - @sap-ux/preview-middleware@0.25.47
+    - @sap-ux/abap-deploy-config-inquirer@1.8.23
+    - @sap-ux/app-config-writer@0.6.145
+
+## 0.15.98
+
+### Patch Changes
+
+- Updated dependencies [8c4185a]
+    - @sap-ux/adp-tooling@0.18.133
+    - @sap-ux/flp-config-inquirer@0.4.193
+    - @sap-ux/preview-middleware@0.25.46
+    - @sap-ux/app-config-writer@0.6.145
+
 ## 0.15.97
 
 ### Patch Changes

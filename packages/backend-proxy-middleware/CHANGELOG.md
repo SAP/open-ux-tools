@@ -1,5 +1,19 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.13.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/store@1.6.0
+
 ## 0.12.10
 
 ### Patch Changes

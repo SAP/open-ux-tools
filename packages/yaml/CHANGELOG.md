@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.18.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
 ## 0.17.8
 
 ### Patch Changes
