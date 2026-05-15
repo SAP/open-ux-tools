@@ -33,7 +33,7 @@
         "@babel/core": "7.29.0",
         "@babel/eslint-parser": "^7.28.5",
         "@eslint/js": "10.0.1",
-        "@eslint/json": "0.14.0",
+        "@eslint/json": "1.2.0",
         "@eslint/core": "1.1.1",
         "@eslint/config-helpers": "0.5.3",
         "@typescript-eslint/eslint-plugin": "8.57.2",
