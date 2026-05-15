@@ -28,3 +28,4 @@ pnpm:
     saveExact: true
     engineStrict: true
     linkWorkspacePackages: true
+    provenance: true
