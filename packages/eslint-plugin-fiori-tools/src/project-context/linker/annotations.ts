@@ -86,42 +86,45 @@ export function collectTables(feVersion: 'v2' | 'v4', entityType: string, servic
 }
 
 /**
- * Collects section nodes from UI.Facets an UI.HeaderFacet annotations for an entity type.
+ * Collects object page table sections.
  *
- * @param feVersion - The Fiori Elements version ('v2' or 'v4')
- * @param entityType - The entity type name
- * @param service - The parsed OData service
+ * @param entityType - Entity type name
+ * @param service - Parsed OData service
+ * @returns Object page table sections
  */
-export function collectSections(
-    feVersion: 'v2' | 'v4',
-    entityType: string,
-    service: ParsedService
-): (TableSectionNode | HeaderSectionNode)[] {
-    const sections: (TableSectionNode | HeaderSectionNode)[] = [];
+function getOPTableSections(entityType: string, service: ParsedService): TableSectionNode[] {
+    const sections: TableSectionNode[] = [];
     const facetsKey = buildAnnotationIndexKey(entityType, 'com.sap.vocabularies.UI.v1.Facets');
     const facets = service.index.annotations[facetsKey]?.['undefined'];
-
     if (!facets) {
         return sections;
     }
-
     const [collection] = elementsWithName(Edm.Collection, facets.top.value);
     if (!collection) {
         return sections;
     }
-
     const records = elementsWithName(Edm.Record, collection);
     const aliasInfo = service.artifacts.aliasInfo[facets.top.uri];
     let index = 0;
-
     for (const record of records) {
         const section = processReferenceFacetRecord(record, aliasInfo, entityType, service, facets, index);
-        if (section) {
+        if (section?.type === 'table-section') {
             sections.push(section);
         }
         index++;
     }
+    return sections;
+}
 
+/**
+ * Collects object page header sections.
+ *
+ * @param entityType - Entity type name
+ * @param service - Parsed OData service
+ * @returns Object page header sections
+ */
+function getOPHeaderSections(entityType: string, service: ParsedService): HeaderSectionNode[] {
+    const sections: HeaderSectionNode[] = [];
     const headerFacetsKey = buildAnnotationIndexKey(entityType, 'com.sap.vocabularies.UI.v1.HeaderFacets');
     const headerFacets = service.index.annotations[headerFacetsKey]?.['undefined'];
     if (!headerFacets) {
@@ -133,7 +136,7 @@ export function collectSections(
     }
     const headerFacetRecords = elementsWithName(Edm.Record, headerFacetCollection);
     const headerFacetAliasInfo = service.artifacts.aliasInfo[headerFacets.top.uri];
-    index = 0;
+    let index = 0;
     for (const record of headerFacetRecords) {
         const headerFacet = processReferenceFacetRecord(
             record,
@@ -143,12 +146,30 @@ export function collectSections(
             headerFacets,
             index
         );
-        if (headerFacet) {
+        if (headerFacet?.type === 'header-section') {
             sections.push(headerFacet);
         }
         index++;
     }
+    return sections;
+}
 
+/**
+ * Collects section nodes from UI.Facets an UI.HeaderFacet annotations for an entity type.
+ *
+ * @param feVersion - The Fiori Elements version ('v2' or 'v4')
+ * @param entityType - The entity type name
+ * @param service - The parsed OData service
+ */
+export function collectSections(
+    feVersion: 'v2' | 'v4',
+    entityType: string,
+    service: ParsedService
+): (TableSectionNode | HeaderSectionNode)[] {
+    const sections: (TableSectionNode | HeaderSectionNode)[] = [
+        ...getOPTableSections(entityType, service),
+        ...getOPHeaderSections(entityType, service)
+    ];
     return sections;
 }
 
@@ -251,7 +272,9 @@ function getReferencedEntityType(
         contextPath = contextPath.slice(0, -1);
     }
     const referencedEntity = service.artifacts.metadataService.getMetadataElement(contextPath.slice(1));
-    return referencedEntity?.kind === 'EntityType' ? referencedEntity.name : referencedEntity?.structuredType;
+    return referencedEntity?.kind === 'EntityType' || referencedEntity?.kind === 'entity'
+        ? referencedEntity.name
+        : referencedEntity?.structuredType;
 }
 
 /**
