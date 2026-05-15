@@ -1,5 +1,50 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.15.1
+
+### Patch Changes
+
+- 2c76f8f: refactor(fiori-generator-shared): remove dead ExternalServiceConfig type and externalServices field from AppConfig
+
+## 0.15.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/telemetry@0.7.0
+
+## 0.14.2
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/telemetry@0.6.106
+
+## 0.14.1
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/telemetry@0.6.105
+
+## 0.14.0
+
+### Minor Changes
+
+- 9360ea5: feat(fiori-app-sub-generator): support virtual endpoints in headless generator, defaulting to true
+
+    Added `enableVirtualEndpoints` option to `AppConfig` in `fiori-generator-shared`. When used in the headless generator, this defaults to `true`, causing virtual preview endpoints to be used instead of generating `flpSandbox.html` and related test files.
+
 ## 0.13.105
 
 ### Patch Changes

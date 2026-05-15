@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/jest-runner-puppeteer",
-    "version": "0.2.9",
+    "version": "0.3.0",
     "description": "Jest runner for puppeteer",
     "repository": {
         "type": "git",
@@ -35,7 +35,7 @@
         "which": "6.0.1"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     },
     "eslint-formatter-multiple": {
         "formatters": [
