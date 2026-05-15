@@ -5,3 +5,26 @@ packages:
     - 'tests/fixtures/projects/mock'
     - 'types'
     - '!**/test/**'
+
+allowBuilds:
+    '@parcel/watcher': true
+    '@playwright/browser-chromium': true
+    '@swc/core': true
+    '@vscode/vsce-sign': true
+    '@zowe/secrets-for-zowe-sdk': true
+    better-sqlite3: true
+    esbuild: true
+    keytar: true
+    mta: true
+    nx: true
+    onnxruntime-node: true
+    protobufjs: true
+    sharp: true
+    ui5-tooling-modules: true
+    ui5-tooling-transpile: true
+    unrs-resolver: true
+
+pnpm:
+    saveExact: true
+    engineStrict: true
+    linkWorkspacePackages: true
