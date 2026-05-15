@@ -268,7 +268,12 @@ export default [
                 {
                     selector: 'MemberExpression[object.type=\'MetaProperty\'][property.name=\'dirname\']',
                     message:
-                        'Do not use import.meta.dirname. Use dirname(fileURLToPath(import.meta.url) instead, consumers of open-ux-tools esm modules in cjs bundles may not yet support this syntax'
+                        'Do not use import.meta.dirname. Use dirname(fileURLToPath(import.meta.url)) instead, consumers of open-ux-tools esm modules in cjs bundles may not yet support this syntax'
+                },
+                {
+                    selector: 'MemberExpression[object.type=\'MetaProperty\'][property.name=\'filename\']',
+                    message:
+                        'Do not use import.meta.filename. Use fileURLToPath(import.meta.url) instead, consumers of open-ux-tools esm modules in cjs bundles may not yet support this syntax'
                 }
             ]
         }

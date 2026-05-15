@@ -8,7 +8,7 @@ import type { Resource } from '@ui5/fs';
 import AdmZip from 'adm-zip';
 import { existsSync } from 'node:fs';
 
-const __testfilename = import.meta.filename;
+const __testfilename = fileURLToPath(import.meta.url);
 const __testdirname = dirname(fileURLToPath(import.meta.url));
 
 const mockAxiosGet = jest.fn();
