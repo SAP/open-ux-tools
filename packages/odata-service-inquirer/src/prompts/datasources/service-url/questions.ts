@@ -67,6 +67,7 @@ function getServiceUrlPrompt(
             mandatory: true,
             breadcrumb: true
         },
+        showOutputTabLink: 'validationMessageOverflow',
         message: t('prompts.odataServiceUrl.message', { odataVersion: requiredVersion }),
         validate: async (url: string) => {
             showAnnotationWarning = false;
