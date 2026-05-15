@@ -91,7 +91,6 @@
             "@babel/plugin-transform-modules-systemjs": ">=7.29.4",
             "@xmldom/xmldom": "~0.8.13",
             "node-forge": ">=1.4.0",
-            "express-rate-limit": ">=8.2.2",
             "serialize-javascript": ">=7.0.5",
             "drizzle-orm": ">=0.45.2",
             "socket.io-parser": ">=4.2.6",
@@ -159,7 +158,14 @@
             "sanitize-html>postcss": ">=8.5.10",
             "promptfoo>simple-git": ">=3.36.0",
             "socks>ip-address": ">=10.1.1",
-            "express-rate-limit>ip-address": ">=10.1.1"
+            "express-rate-limit>ip-address": ">=10.1.1",
+            "ip-address": ">=10.1.1",
+            "express-rate-limit": ">=8.5.0",
+            "sanitize-html": ">=2.17.4",
+            "terser-webpack-plugin>serialize-javascript": ">=7.0.5",
+            "esbuild-loader": ">=4.0.0",
+            "http-proxy-agent@4>@tootallnate/once": ">=3.0.1",
+            "@tootallnate/once": ">=3.0.1"
         }
     }
 }
