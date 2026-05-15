@@ -105,6 +105,7 @@ describe('deploy-test validation', () => {
             expect(output.result).toBe(true);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${green('√')} ${summaryMessage.allClientCheckPass}`);
+            expect(summaryStr).not.toContain(t('deploy.abapInvalidAppName', { prefix: 'ZZ1_' }));
         });
 
         test('Detect invalid deploy target', async () => {
