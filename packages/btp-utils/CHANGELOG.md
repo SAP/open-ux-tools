@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 1.2.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
 ## 1.1.16
 
 ### Patch Changes

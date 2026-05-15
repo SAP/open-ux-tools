@@ -1,5 +1,23 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.3.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/abap-deploy-config-inquirer@1.9.0
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/guided-answers-helper@0.5.0
+    - @sap-ux/inquirer-common@0.12.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/odata-service-inquirer@2.21.0
+    - @sap-ux/telemetry@0.7.0
+
 ## 0.2.174
 
 ### Patch Changes
