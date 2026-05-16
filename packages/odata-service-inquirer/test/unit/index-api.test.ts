@@ -1,27 +1,20 @@
 import { jest } from '@jest/globals';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { ErrorHandler, type InquirerAdapter } from '@sap-ux/inquirer-common';
-import { type BackendSystem } from '@sap-ux/store';
+import { BackendSystemKey, type BackendSystem } from '@sap-ux/store';
+import type { OdataServicePromptOptions, OdataServiceAnswers } from '../../src/index.js';
+import LoggerHelper from '../../src/prompts/logger-helper.js';
+import { PromptState } from '../../src/utils/prompt-state.js';
 
-const actualPrompts = await import('../../src/prompts');
-const mockGetQuestions = jest.fn<any>(actualPrompts.getQuestions);
-jest.unstable_mockModule('../../src/prompts', () => ({
-    ...actualPrompts,
-    getQuestions: mockGetQuestions
-}));
-
-const actualSystemSelection = await import('../../src/prompts/datasources/sap-system/system-selection');
-const mockGetSystemSelectionQuestions = jest.fn<any>(actualSystemSelection.getSystemSelectionQuestions);
-jest.unstable_mockModule('../../src/prompts/datasources/sap-system/system-selection', () => ({
-    ...actualSystemSelection,
-    getSystemSelectionQuestions: mockGetSystemSelectionQuestions
-}));
-
+/***
+ * NOTE: Unlike non-esm jest mocking, the order that mocks are declared is relevant
+ *
+ */
 const actualStore = await import('@sap-ux/store');
 jest.unstable_mockModule('@sap-ux/store', () => ({
     ...actualStore,
     getService: jest.fn().mockImplementation(() => ({
-        getAll: jest.fn().mockResolvedValue([
+        getAll: jest.fn<() => Promise<BackendSystem[]>>().mockResolvedValue([
             {
                 name: 'storedSystem1',
                 url: 'http://url1',
@@ -49,16 +42,28 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
                     systemType: 'BTP'
                 }
             ];
-            return Promise.resolve(systems.find((s) => s.url === key.url));
+
+            return Promise.resolve(systems.find((s) => s.url === (key as any).url));
         })
     }))
 }));
 
+const actualPrompts = await import('../../src/prompts/index.js');
+const mockGetQuestions = jest.fn<any>(actualPrompts.getQuestions);
+jest.unstable_mockModule('../../src/prompts/index.js', () => ({
+    ...actualPrompts,
+    getQuestions: mockGetQuestions
+}));
+
+const actualSystemSelection = await import('../../src/prompts/datasources/sap-system/system-selection/index.js');
+const mockGetSystemSelectionQuestions = jest.fn<any>(actualSystemSelection.getSystemSelectionQuestions);
+jest.unstable_mockModule('../../src/prompts/datasources/sap-system/system-selection', () => ({
+    ...actualSystemSelection,
+    getSystemSelectionQuestions: mockGetSystemSelectionQuestions
+}));
+
 const { DatasourceType, getPrompts, getSystemSelectionQuestions, OdataVersion, promptNames, prompt } =
-    await import('../../src/index');
-import type { OdataServicePromptOptions, OdataServiceAnswers } from '../../src/index';
-import LoggerHelper from '../../src/prompts/logger-helper';
-const { PromptState } = await import('../../src/utils');
+    await import('../../src/index.js');
 
 describe('API tests', () => {
     interface MockInquirerAdapter {
@@ -84,7 +89,7 @@ describe('API tests', () => {
     });
 
     test('getPrompts', async () => {
-        mockGetQuestions.mockResolvedValue([
+        mockGetQuestions.mockResolvedValueOnce([
             {
                 name: 'prompt1',
                 validate: () => (PromptState.odataService.metadata = 'metadata contents')
@@ -124,7 +129,7 @@ describe('API tests', () => {
 
     test('getSystemSelectionQuestions', async () => {
         PromptState.isYUI = false;
-        mockGetSystemSelectionQuestions.mockResolvedValue([
+        mockGetSystemSelectionQuestions.mockResolvedValueOnce([
             {
                 name: 'prompt1',
                 validate: () => (PromptState.odataService.servicePath = '/path/to/service')
@@ -152,7 +157,7 @@ describe('API tests', () => {
             servicePath: '/user/service'
         };
         mockAdapter.prompt.mockResolvedValue(userAnswers as any);
-        mockGetQuestions.mockResolvedValue([{ name: 'test', message: 'Test?' }]);
+        mockGetQuestions.mockResolvedValueOnce([{ name: 'test', message: 'Test?' }]);
 
         PromptState.odataService = { metadata: 'some metadata' };
 
@@ -168,7 +173,7 @@ describe('API tests', () => {
 
     test('prompt - capProject autocomplete registration', async () => {
         mockAdapter.prompt.mockResolvedValue({} as any);
-        mockGetQuestions.mockResolvedValue([]);
+        mockGetQuestions.mockResolvedValueOnce([]);
         PromptState.odataService = {};
 
         await prompt(mockAdapter as unknown as InquirerAdapter, {
@@ -180,7 +185,7 @@ describe('API tests', () => {
 
     test('prompt - no autocomplete when disabled or missing promptModule', async () => {
         mockAdapter.prompt.mockResolvedValue({} as any);
-        mockGetQuestions.mockResolvedValue([]);
+        mockGetQuestions.mockResolvedValueOnce([]);
         PromptState.odataService = {};
 
         // Test with useAutoComplete false
