@@ -1,5 +1,6 @@
 import type { ExecuteFunctionalityOutput } from '../types';
 import { command } from './functionalities/generate-fiori-ui-application-cap/command';
+import { generatorConfigCAP } from './schemas';
 import { GENERATE_FIORI_UI_APPLICATION_CAP_ID } from '../constant';
 
 /**
@@ -9,9 +10,10 @@ import { GENERATE_FIORI_UI_APPLICATION_CAP_ID } from '../constant';
  * @returns A promise resolving to the generation execution output.
  */
 export async function generateFioriAppCap(args: Record<string, unknown>): Promise<ExecuteFunctionalityOutput> {
+    const validated = generatorConfigCAP.parse(args);
     return command({
         functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
-        parameters: args,
-        appPath: ((args.project as Record<string, unknown>)?.targetFolder as string) ?? ''
+        parameters: validated,
+        appPath: (validated.project?.targetFolder as string) ?? ''
     });
 }

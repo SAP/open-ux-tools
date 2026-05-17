@@ -79,5 +79,3 @@ export const DocSearchInputSchema = zod.object({
         .min(2)
         .describe('The search query for fiori elements, annotations, sapui5, fiori tools documentation')
 });
-
-export type DownloadODataServiceMetadataInput = zod.infer<typeof DownloadODataServiceMetadataInputSchema>;

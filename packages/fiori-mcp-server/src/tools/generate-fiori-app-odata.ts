@@ -1,5 +1,7 @@
 import type { ExecuteFunctionalityOutput } from '../types';
 import executeOData from './functionalities/generate-fiori-ui-application/execute-functionality';
+import { generatorConfigOData } from './schemas';
+import { GENERATE_FIORI_UI_APPLICATION_ID } from '../constant';
 
 /**
  * Generates a new SAP Fiori UI application for OData (non-CAP) projects.
@@ -8,9 +10,10 @@ import executeOData from './functionalities/generate-fiori-ui-application/execut
  * @returns A promise resolving to the generation execution output.
  */
 export async function generateFioriAppOData(args: Record<string, unknown>): Promise<ExecuteFunctionalityOutput> {
+    const validated = generatorConfigOData.parse(args);
     return executeOData({
-        functionalityId: 'generate-fiori-ui-application',
-        parameters: args,
-        appPath: ((args.project as Record<string, unknown>)?.targetFolder as string) ?? ''
+        functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
+        parameters: validated,
+        appPath: (validated.project?.targetFolder as string) ?? ''
     });
 }

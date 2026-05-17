@@ -1,6 +1,6 @@
-import type { ExecuteFunctionalityOutput } from '../types';
-import type { DownloadODataServiceMetadataInput } from '../types/input';
+import type { ExecuteFunctionalityOutput, DownloadODataServiceMetadataInput } from '../types';
 import executeFetchServiceMetadata from './functionalities/fetch-service-metadata/execute-functionality';
+import { FETCH_SERVICE_METADATA_ID } from '../constant';
 
 /**
  * Downloads OData service metadata from a SAP system and saves it as metadata.xml.
@@ -12,7 +12,7 @@ export async function downloadODataServiceMetadata(
     params: DownloadODataServiceMetadataInput
 ): Promise<ExecuteFunctionalityOutput> {
     return executeFetchServiceMetadata({
-        functionalityId: 'fetch-service-metadata',
+        functionalityId: FETCH_SERVICE_METADATA_ID,
         parameters: {
             sapSystemQuery: params.sapSystemQuery,
             servicePath: params.servicePath

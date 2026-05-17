@@ -70,8 +70,7 @@ export const tools = [
         },
         inputSchema: {
             type: 'object',
-            properties: {},
-            required: []
+            properties: {}
         }
     },
     {
