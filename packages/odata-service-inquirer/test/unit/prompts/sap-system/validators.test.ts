@@ -37,9 +37,9 @@ jest.unstable_mockModule('node:fs', () => ({
         )
 }));
 
-const { initI18nOdataServiceInquirer, t } = await import('../../../../src/i18n');
+const { initI18nOdataServiceInquirer, t } = await import('../../../../src/i18n.js');
 const { validateServiceKey, validateSystemName } =
-    await import('../../../../src/prompts/datasources/sap-system/validators');
+    await import('../../../../src/prompts/datasources/sap-system/validators.js');
 
 describe('prompt validators', () => {
     beforeAll(async () => {

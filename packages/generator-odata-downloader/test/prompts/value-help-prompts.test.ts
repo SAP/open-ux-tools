@@ -7,7 +7,7 @@ import type {
     CodeListReference,
     ValueListService
 } from '@sap-ux/axios-extension';
-import { PromptState } from '../../src/data-download/prompt-state';
+import { PromptState } from '../../src/data-download/prompt-state.js';
 
 // Mock dependencies
 const mockConvert = jest.fn();
@@ -30,7 +30,7 @@ jest.unstable_mockModule('../../src/utils/i18n', () => ({
     t: mockT
 }));
 
-const { getValueHelpSelectionPrompt } = await import('../../src/data-download/prompts/value-help-prompts');
+const { getValueHelpSelectionPrompt } = await import('../../src/data-download/prompts/value-help-prompts.js');
 
 // Helper function to create mock ValueListReference
 function createValueListRef(target: string, servicePath: string = '/sap/opu/odata/sap/VH_SERVICE'): ValueListReference {

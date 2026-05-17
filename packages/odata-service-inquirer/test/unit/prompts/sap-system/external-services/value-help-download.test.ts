@@ -3,8 +3,8 @@ import type { ConfirmQuestion } from '@sap-ux/inquirer-common';
 import type { ExternalService, ExternalServiceReference } from '@sap-ux/axios-extension';
 import { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
-import { promptNames } from '../../../../../src/types';
+import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator.js';
+import { promptNames } from '../../../../../src/types.js';
 
 // Mock inquirer-common
 const actualInquirerCommon = await import('@sap-ux/inquirer-common');
@@ -58,7 +58,7 @@ jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
 }));
 
 // Mock utils
-const actualUtils = await import('../../../../../src/utils');
+const actualUtils = await import('../../../../../src/utils/index.js');
 const mockGetPromptHostEnvironment = jest.fn<any>();
 jest.unstable_mockModule('../../../../../src/utils', () => ({
     ...actualUtils,
@@ -66,10 +66,10 @@ jest.unstable_mockModule('../../../../../src/utils', () => ({
 }));
 
 const { getValueHelpDownloadPrompt } =
-    await import('../../../../../src/prompts/datasources/sap-system/external-services/value-help-download');
-const { PromptState } = await import('../../../../../src/utils');
-const LoggerHelper = (await import('../../../../../src/prompts/logger-helper')).default;
-const { initI18nOdataServiceInquirer } = await import('../../../../../src/i18n');
+    await import('../../../../../src/prompts/datasources/sap-system/external-services/value-help-download.js');
+const { PromptState } = await import('../../../../../src/utils/index.js');
+const LoggerHelper = (await import('../../../../../src/prompts/logger-helper.js')).default;
+const { initI18nOdataServiceInquirer } = await import('../../../../../src/i18n.js');
 
 // Get the hostEnvironment from the mocked module so object references match the source module's imports
 const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');

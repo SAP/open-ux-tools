@@ -2,7 +2,7 @@ import {
     getEntityChoices,
     getNavigationEntityChoices,
     getDefaultTableType
-} from '../../../../src/prompts/edmx/entity-helper';
+} from '../../../../src/prompts/edmx/entity-helper.js';
 import { getRecursiveHierarchyQualifier } from '@sap-ux/inquirer-common';
 import { readFile } from 'node:fs/promises';
 import { parse } from '@sap-ux/edmx-parser';

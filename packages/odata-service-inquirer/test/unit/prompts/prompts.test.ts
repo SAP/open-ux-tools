@@ -44,16 +44,16 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     }))
 }));
 
-const actualUtils = await import('../../../src/utils');
+const actualUtils = await import('../../../src/utils/index.js');
 const mockGetPromptHostEnvironment = jest.fn<any>(actualUtils.getPromptHostEnvironment);
 jest.unstable_mockModule('../../../src/utils', () => ({
     ...actualUtils,
     getPromptHostEnvironment: mockGetPromptHostEnvironment
 }));
 
-const { initI18nOdataServiceInquirer, t } = await import('../../../src/i18n');
-const { getQuestions } = await import('../../../src/prompts');
-const { DatasourceType } = await import('../../../src/types');
+const { initI18nOdataServiceInquirer, t } = await import('../../../src/i18n.js');
+const { getQuestions } = await import('../../../src/prompts/index.js');
+const { DatasourceType } = await import('../../../src/types.js');
 
 describe('getQuestions', () => {
     beforeAll(async () => {

@@ -13,9 +13,9 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { Answers, ChoiceOptions } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
-import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
-import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/service-selection';
-import { promptNames } from '../../../../../src/types';
+import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator.js';
+import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/service-selection/index.js';
+import { promptNames } from '../../../../../src/types.js';
 
 const serviceV4a = {
     id: '/DMO/FLIGHT',
@@ -92,7 +92,7 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
 
 // Mock service-helper to allow spying on validateService
 const actualServiceHelpers =
-    await import('../../../../../src/prompts/datasources/sap-system/service-selection/service-helper');
+    await import('../../../../../src/prompts/datasources/sap-system/service-selection/service-helper.js');
 const mockValidateService = jest.fn<any>(actualServiceHelpers.validateService);
 jest.unstable_mockModule('../../../../../src/prompts/datasources/sap-system/service-selection/service-helper', () => ({
     ...actualServiceHelpers,
@@ -100,7 +100,7 @@ jest.unstable_mockModule('../../../../../src/prompts/datasources/sap-system/serv
 }));
 
 // Mock utils to allow spying on getPromptHostEnvironment
-const actualUtils = await import('../../../../../src/utils');
+const actualUtils = await import('../../../../../src/utils/index.js');
 const mockGetPromptHostEnvironment = jest.fn<any>(actualUtils.getPromptHostEnvironment);
 jest.unstable_mockModule('../../../../../src/utils', () => ({
     ...actualUtils,
@@ -108,13 +108,13 @@ jest.unstable_mockModule('../../../../../src/utils', () => ({
 }));
 
 // Dynamic imports after mocks
-const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n');
+const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n.js');
 const { ConnectionValidator: ConnectionValidatorClass } =
-    await import('../../../../../src/prompts/connectionValidator');
+    await import('../../../../../src/prompts/connectionValidator.js');
 const { getSystemServiceQuestion } =
-    await import('../../../../../src/prompts/datasources/sap-system/service-selection');
-const LoggerHelper = (await import('../../../../../src/prompts/logger-helper')).default;
-const { PromptState } = await import('../../../../../src/utils');
+    await import('../../../../../src/prompts/datasources/sap-system/service-selection/index.js');
+const LoggerHelper = (await import('../../../../../src/prompts/logger-helper.js')).default;
+const { PromptState } = await import('../../../../../src/utils/index.js');
 const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 
 describe('Test new system prompt', () => {

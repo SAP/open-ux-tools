@@ -3,8 +3,8 @@ import type { Destination, Destinations } from '@sap-ux/btp-utils';
 import type { AxiosError } from '@sap-ux/axios-extension';
 import type { BackendSystem } from '@sap-ux/store';
 import { BackendSystemKey } from '@sap-ux/store';
-import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
-import LoggerHelper from '../../../../../src/prompts/logger-helper';
+import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator.js';
+import LoggerHelper from '../../../../../src/prompts/logger-helper.js';
 
 const backendSystemBasic: BackendSystem = {
     name: 'http://abap.on.prem:1234',
@@ -61,14 +61,14 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     listDestinations: mockListDestinations
 }));
 
-const { initI18nOdataServiceInquirer } = await import('../../../../../src/i18n');
+const { initI18nOdataServiceInquirer } = await import('../../../../../src/i18n.js');
 const {
     CfAbapEnvServiceChoice,
     connectWithBackendSystem,
     createSystemChoices,
     findDefaultSystemSelectionIndex,
     NewSystemChoice
-} = await import('../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers');
+} = await import('../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers.js');
 
 describe('Test system selection prompt helpers', () => {
     beforeAll(async () => {

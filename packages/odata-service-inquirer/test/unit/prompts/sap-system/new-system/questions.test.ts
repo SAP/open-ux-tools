@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import { ODataService, type ServiceProvider } from '@sap-ux/axios-extension';
-import type { SapSystemType } from '../../../../../src';
-import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
+import type { SapSystemType } from '../../../../../src/index.js';
+import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator.js';
 
 const actualStore = await import('@sap-ux/store');
 jest.unstable_mockModule('@sap-ux/store', () => ({
@@ -11,18 +11,18 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     }))
 }));
 
-const actualSapSystemValidators = await import('../../../../../src/prompts/datasources/sap-system/validators');
+const actualSapSystemValidators = await import('../../../../../src/prompts/datasources/sap-system/validators.js');
 const mockValidateSystemName = jest.fn<any>(actualSapSystemValidators.validateSystemName);
 jest.unstable_mockModule('../../../../../src/prompts/datasources/sap-system/validators', () => ({
     ...actualSapSystemValidators,
     validateSystemName: mockValidateSystemName
 }));
 
-const { initI18nOdataServiceInquirer } = await import('../../../../../src/i18n');
+const { initI18nOdataServiceInquirer } = await import('../../../../../src/i18n.js');
 const { getUserSystemNameQuestion } =
-    await import('../../../../../src/prompts/datasources/sap-system/shared-prompts/shared-prompts');
-const { PromptState } = await import('../../../../../src/utils');
-const { ConnectionValidator } = await import('../../../../../src/prompts/connectionValidator');
+    await import('../../../../../src/prompts/datasources/sap-system/shared-prompts/shared-prompts.js');
+const { PromptState } = await import('../../../../../src/utils/index.js');
+const { ConnectionValidator } = await import('../../../../../src/prompts/connectionValidator.js');
 
 describe('Test new system prompt', () => {
     beforeAll(async () => {

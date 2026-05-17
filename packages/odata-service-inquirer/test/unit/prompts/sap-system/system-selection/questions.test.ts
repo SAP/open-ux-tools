@@ -5,11 +5,11 @@ import type { Destination, Destinations } from '@sap-ux/btp-utils';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import type { SystemService, BackendSystem } from '@sap-ux/store';
 import type { ListChoiceOptions, Question } from 'inquirer';
-import type { ValidationResult } from '../../../../../src/prompts/types';
-import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
-import type { SystemSelectionAnswerType } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
-import type { SystemSelectionAnswers } from '../../../../../src/prompts/datasources/sap-system/system-selection/questions';
-import type { ConnectedSystem } from '../../../../../src/types';
+import type { ValidationResult } from '../../../../../src/prompts/types.js';
+import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator.js';
+import type { SystemSelectionAnswerType } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers.js';
+import type { SystemSelectionAnswers } from '../../../../../src/prompts/datasources/sap-system/system-selection/questions.js';
+import type { ConnectedSystem } from '../../../../../src/types.js';
 
 const backendSystemBasic: BackendSystem = {
     name: 'http://abap.on.prem:1234',
@@ -80,7 +80,7 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
 }));
 
 // Mock utils (for getPromptHostEnvironment)
-const actualUtils = await import('../../../../../src/utils');
+const actualUtils = await import('../../../../../src/utils/index.js');
 const mockGetPromptHostEnvironment = jest.fn<any>();
 jest.unstable_mockModule('../../../../../src/utils', () => ({
     ...actualUtils,
@@ -175,7 +175,7 @@ const mockConnectWithDestination = jest.fn<any>();
 
 // Dynamic imports after mocks - order matters: import prompt-helpers first to get actual, then register its mock
 const actualPromptHelpers =
-    await import('../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers');
+    await import('../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers.js');
 // Now register the prompt-helpers mock with actual exports spread + spy functions
 jest.unstable_mockModule('../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers', () => ({
     ...actualPromptHelpers,
@@ -183,19 +183,19 @@ jest.unstable_mockModule('../../../../../src/prompts/datasources/sap-system/syst
     connectWithDestination: mockConnectWithDestination
 }));
 
-const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n');
+const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n.js');
 const { ConnectionValidator: ConnectionValidatorClass } =
-    await import('../../../../../src/prompts/connectionValidator');
-const { newSystemPromptNames } = await import('../../../../../src/prompts/datasources/sap-system/new-system/types');
+    await import('../../../../../src/prompts/connectionValidator.js');
+const { newSystemPromptNames } = await import('../../../../../src/prompts/datasources/sap-system/new-system/types.js');
 const { NewSystemChoice } =
-    await import('../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers');
+    await import('../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers.js');
 const { getSystemConnectionQuestions, getSystemSelectionQuestions } =
-    await import('../../../../../src/prompts/datasources/sap-system/system-selection/questions');
-const LoggerHelper = (await import('../../../../../src/prompts/logger-helper')).default;
-const { promptNames } = await import('../../../../../src/types');
-const { PromptState } = await import('../../../../../src/utils');
+    await import('../../../../../src/prompts/datasources/sap-system/system-selection/questions.js');
+const LoggerHelper = (await import('../../../../../src/prompts/logger-helper.js')).default;
+const { promptNames } = await import('../../../../../src/types.js');
+const { PromptState } = await import('../../../../../src/utils/index.js');
 const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
-const { ERROR_TYPE } = await import('../../../../../src');
+const { ERROR_TYPE } = await import('../../../../../src/index.js');
 const { WebIDEAdditionalData, WebIDEUsage } = await import('@sap-ux/btp-utils');
 
 describe('Test system selection prompts', () => {

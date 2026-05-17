@@ -4,8 +4,8 @@ import type { CapCustomPaths, CdsVersionInfo } from '@sap-ux/project-access';
 import type { ListQuestion } from 'inquirer';
 import type { PathLike } from 'node:fs';
 import os from 'node:os';
-import type { CapProjectChoice } from '../../../../src/prompts/datasources/cap-project/types';
-import type { CapServiceChoice } from '../../../../src/types';
+import type { CapProjectChoice } from '../../../../src/prompts/datasources/cap-project/types.js';
+import type { CapServiceChoice } from '../../../../src/types.js';
 
 // Mock fs/promises
 const actualFsPromises = await import('node:fs/promises');
@@ -20,7 +20,7 @@ jest.unstable_mockModule('fs/promises', () => ({
 }));
 
 // Mock utils
-const actualUtils = await import('../../../../src/utils');
+const actualUtils = await import('../../../../src/utils/index.js');
 const mockGetPromptHostEnvironment = jest.fn<any>();
 jest.unstable_mockModule('../../../../src/utils', () => ({
     ...actualUtils,
@@ -81,7 +81,7 @@ const initialMockEdmx = '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Versio
 let mockEdmx: string | undefined = initialMockEdmx;
 
 // Mock cap-helpers
-const actualCapHelpers = await import('../../../../src/prompts/datasources/cap-project/cap-helpers');
+const actualCapHelpers = await import('../../../../src/prompts/datasources/cap-project/cap-helpers.js');
 const mockGetCapServiceChoices = jest.fn<any>().mockImplementation(async () => mockCapServiceChoices);
 const mockGetCapEdmx = jest.fn<any>().mockImplementation(async () => mockEdmx);
 const mockGetCapProjectPaths = jest.fn<any>().mockImplementation(() => mockCapWorkspaceFolders);
@@ -111,7 +111,7 @@ jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
 }));
 
 // Mock cap-project validators
-const actualCapValidators = await import('../../../../src/prompts/datasources/cap-project/validators');
+const actualCapValidators = await import('../../../../src/prompts/datasources/cap-project/validators.js');
 const mockValidateCapPath = jest.fn<any>(actualCapValidators.validateCapPath);
 jest.unstable_mockModule('../../../../src/prompts/datasources/cap-project/validators', () => ({
     ...actualCapValidators,
@@ -119,13 +119,13 @@ jest.unstable_mockModule('../../../../src/prompts/datasources/cap-project/valida
 }));
 
 // Dynamic imports after all mocks
-const { initI18nOdataServiceInquirer, t } = await import('../../../../src/i18n');
-const { enterCapPathChoiceValue } = await import('../../../../src/prompts/datasources/cap-project/cap-helpers');
-const { getLocalCapProjectPrompts } = await import('../../../../src/prompts/datasources/cap-project/questions');
-const { capInternalPromptNames } = await import('../../../../src/prompts/datasources/cap-project/types');
-const { errorHandler } = await import('../../../../src/prompts/prompt-helpers');
-const { promptNames } = await import('../../../../src/types');
-const { PromptState } = await import('../../../../src/utils');
+const { initI18nOdataServiceInquirer, t } = await import('../../../../src/i18n.js');
+const { enterCapPathChoiceValue } = await import('../../../../src/prompts/datasources/cap-project/cap-helpers.js');
+const { getLocalCapProjectPrompts } = await import('../../../../src/prompts/datasources/cap-project/questions.js');
+const { capInternalPromptNames } = await import('../../../../src/prompts/datasources/cap-project/types.js');
+const { errorHandler } = await import('../../../../src/prompts/prompt-helpers.js');
+const { promptNames } = await import('../../../../src/types.js');
+const { PromptState } = await import('../../../../src/utils/index.js');
 const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 const { getCapCustomPaths } = await import('@sap-ux/project-access');
 

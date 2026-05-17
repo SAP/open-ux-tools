@@ -8,8 +8,8 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     }))
 }));
 
-const { initI18nOdataServiceInquirer } = await import('../../../../src/i18n');
-const { suggestSystemName } = await import('../../../../src/prompts/datasources/sap-system/prompt-helpers');
+const { initI18nOdataServiceInquirer } = await import('../../../../src/i18n.js');
+const { suggestSystemName } = await import('../../../../src/prompts/datasources/sap-system/prompt-helpers.js');
 
 describe('Test prompt-helpers', () => {
     const systemUrl = 'https://ldciu1y.wdf.sap.corp:44355';

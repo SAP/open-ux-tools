@@ -3,8 +3,8 @@ import type { AbapServiceProvider, ServiceInfo, ServiceProvider } from '@sap-ux/
 import type { InputQuestion, Question } from 'inquirer';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
-import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
-import type { ConnectedSystem } from '../../../../../src/types';
+import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator.js';
+import type { ConnectedSystem } from '../../../../../src/types.js';
 import type { BackendSystem } from '@sap-ux/store';
 
 const validateUrlMock = jest.fn().mockResolvedValue(true);
@@ -85,7 +85,7 @@ jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
     })
 }));
 
-const actualUtils = await import('../../../../../src/utils');
+const actualUtils = await import('../../../../../src/utils/index.js');
 const mockIsBackendSystemKeyExisting = jest.fn<any>(actualUtils.isBackendSystemKeyExisting);
 jest.unstable_mockModule('../../../../../src/utils', () => ({
     ...actualUtils,
@@ -101,10 +101,10 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
         .mockImplementation((name: string) => `abap-cloud-${name}-testorg-testspace`)
 }));
 
-const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n');
+const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n.js');
 const { getAbapOnBTPSystemQuestions } =
-    await import('../../../../../src/prompts/datasources/sap-system/abap-on-btp/questions');
-const { PromptState } = await import('../../../../../src/utils');
+    await import('../../../../../src/prompts/datasources/sap-system/abap-on-btp/questions.js');
+const { PromptState } = await import('../../../../../src/utils/index.js');
 
 describe('questions', () => {
     beforeAll(async () => {

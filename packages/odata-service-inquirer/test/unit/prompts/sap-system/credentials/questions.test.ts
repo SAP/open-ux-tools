@@ -38,13 +38,13 @@ jest.unstable_mockModule('../../../../../src/prompts/connectionValidator', () =>
     ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
 }));
 
-const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n');
-const { ConnectionValidator } = await import('../../../../../src/prompts/connectionValidator');
+const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n.js');
+const { ConnectionValidator } = await import('../../../../../src/prompts/connectionValidator.js');
 const { getCredentialsPrompts } =
-    await import('../../../../../src/prompts/datasources/sap-system/credentials/questions');
-const { promptNames } = await import('../../../../../src/types');
-const { newSystemPromptNames } = await import('../../../../../src/prompts/datasources/sap-system/new-system/types');
-const { PromptState } = await import('../../../../../src/utils');
+    await import('../../../../../src/prompts/datasources/sap-system/credentials/questions.js');
+const { promptNames } = await import('../../../../../src/types.js');
+const { newSystemPromptNames } = await import('../../../../../src/prompts/datasources/sap-system/new-system/types.js');
+const { PromptState } = await import('../../../../../src/utils/index.js');
 
 describe('Test credentials prompts', () => {
     const promptNamespace = 'someNamespace';

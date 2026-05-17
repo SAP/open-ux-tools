@@ -130,12 +130,12 @@ jest.unstable_mockModule('../src/telemetry', () => ({
     }
 }));
 
-const { ODataDownloadGenerator } = await import('../src/data-download/odata-download-generator');
+const { ODataDownloadGenerator } = await import('../src/data-download/odata-download-generator.js');
 const { AbapServiceProvider } = await import('@sap-ux/axios-extension');
 const { createEntitySetData, buildReferentialConstraintFileContent, updateReferentialConstraintFileContent } =
-    await import('../src/data-download/utils');
-const { getODataDownloaderPrompts } = await import('../src/data-download/prompts/prompts');
-const { getValueHelpSelectionPrompt } = await import('../src/data-download/prompts/value-help-prompts');
+    await import('../src/data-download/utils.js');
+const { getODataDownloaderPrompts } = await import('../src/data-download/prompts/prompts.js');
+const { getValueHelpSelectionPrompt } = await import('../src/data-download/prompts/value-help-prompts.js');
 const { getMockServerConfig } = await import('@sap-ux/project-access');
 
 describe('ODataDownloadGenerator', () => {

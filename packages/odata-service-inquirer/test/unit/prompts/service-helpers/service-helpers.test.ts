@@ -1,10 +1,10 @@
 import { readFile } from 'node:fs/promises';
-import { showCollabDraftWarning } from '../../../../src/prompts/datasources/service-helpers/service-helpers';
-import LoggerHelper from '../../../../src/prompts/logger-helper';
+import { showCollabDraftWarning } from '../../../../src/prompts/datasources/service-helpers/service-helpers.js';
+import LoggerHelper from '../../../../src/prompts/logger-helper.js';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
-import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
+import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n.js';
 
 describe('Test service-helpers function `showCollabDraftWarning`', () => {
     let metadataV4WithDraftAndShareAnnot: string;

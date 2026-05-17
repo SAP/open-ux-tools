@@ -2,166 +2,55 @@ import { jest } from '@jest/globals';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { initI18nODataDownloadGenerator } from '../../src/utils/i18n';
-import type { AppConfig, Entity } from '../../src/data-download/types';
+import { initI18nODataDownloadGenerator } from '../../src/utils/i18n.js';
+import type { AppConfig, Entity } from '../../src/data-download/types.js';
 import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 import type { EntityType } from '@sap-ux/vocabularies-types';
-import { PromptState } from '../../src/data-download/prompt-state';
+import { PromptState } from '../../src/data-download/prompt-state.js';
 import type { ApplicationAccess, ServiceSpecification } from '@sap-ux/project-access';
+import { fetchData } from '../../src/data-download/odata-query.js';
+import { initTelemetrySettings } from '@sap-ux/telemetry';
+import { sendTelemetry } from '@sap-ux/fiori-generator-shared';
 
-// Mock the sub-module exports via jest.unstable_mockModule to avoid read-only ESM property issues
-const mockExecNpmCommand = jest.fn<(...args: unknown[]) => Promise<string>>();
-const mockWriteFile = jest.fn<(...args: unknown[]) => Promise<void>>();
-const mockReadJSON = jest.fn<(...args: unknown[]) => Promise<unknown>>();
-
-// Mock for odata-query (jest.spyOn doesn't work on ESM namespace objects)
-const mockFetchData = jest.fn();
-jest.unstable_mockModule('../../src/data-download/odata-query', () => ({
-    fetchData: mockFetchData,
-    getExpands: jest.fn(),
-    createQueryFromEntities: jest.fn()
-}));
-
-// Mock for utils.getSystemNameFromStore (jest.spyOn doesn't work on ESM namespace objects)
-const mockGetSystemNameFromStore = jest.fn();
-const mockGetEntityModel = jest.fn();
-jest.unstable_mockModule('../../src/data-download/utils', () => ({
-    getEntityModel: mockGetEntityModel,
-    getSystemNameFromStore: mockGetSystemNameFromStore,
-    createEntitySetData: jest.fn(),
-    buildReferentialConstraintFileContent: jest.fn(),
-    updateReferentialConstraintFileContent: jest.fn()
-}));
-
-// Mock @sap-ux/project-access to provide controllable getSpecificationModuleFromCache for getSpecification tests
-const mockGetSpecificationModuleFromCache = jest.fn();
-const mockCreateApplicationAccess = jest.fn();
-jest.unstable_mockModule('@sap-ux/project-access', () => ({
-    createApplicationAccess: mockCreateApplicationAccess,
-    FileName: {
-        AdaptationConfig: 'config.json',
-        CapJavaApplicationYaml: 'application.yaml',
-        ExtConfigJson: '.extconfig.json',
-        IndexCds: 'index.cds',
-        Library: '.library',
-        Manifest: 'manifest.json',
-        ManifestAppDescrVar: 'manifest.appdescr_variant',
-        MtaYaml: 'mta.yaml',
-        Package: 'package.json',
-        Pom: 'pom.xml',
-        SpecificationDistTags: 'specification-dist-tags.json',
-        ServiceCds: 'services.cds',
-        Tsconfig: 'tsconfig.json',
-        Ui5Yaml: 'ui5.yaml',
-        Ui5LocalYaml: 'ui5-local.yaml',
-        Ui5MockYaml: 'ui5-mock.yaml',
-        UI5DeployYaml: 'ui5-deploy.yaml',
-        PackageLock: 'package-lock.json',
-        XSAppJson: 'xs-app.json',
-        XSSecurityJson: 'xs-security.json',
-        DotGitIgnore: '.gitignore',
-        MtaExtYaml: 'mta-ext.mtaext'
-    },
-    getSpecificationModuleFromCache: mockGetSpecificationModuleFromCache,
-    DirName: { Webapp: 'webapp', LocalService: 'localService', Mockdata: 'mockdata' },
-    getMockServerConfig: jest.fn(),
-    FioriToolsSettings: {},
-    MinCdsPluginUi5Version: '0.0.0',
-    MinCdsVersion: '0.0.0',
-    fioriToolsDirectory: '.fioritools',
-    getFilePaths: jest.fn(),
-    normalizePath: jest.fn(),
-    addPackageDevDependency: jest.fn(),
-    clearCdsModuleCache: jest.fn(),
-    createProjectAccess: jest.fn(),
-    deleteCapApp: jest.fn(),
-    filterDataSourcesByType: jest.fn(),
-    findAllApps: jest.fn(),
-    findCapProjectRoot: jest.fn(),
-    findCapProjects: jest.fn(),
-    findFioriArtifacts: jest.fn(),
-    findProjectRoot: jest.fn(),
-    findRootsForPath: jest.fn(),
-    getAllUi5YamlFileNames: jest.fn(),
-    getAppRootFromWebappPath: jest.fn(),
-    getAppProgrammingLanguage: jest.fn(),
-    getAppType: jest.fn(),
-    getCapCustomPaths: jest.fn(),
-    getCapEnvironment: jest.fn(),
-    getCapModelAndServices: jest.fn(),
-    getCapServiceName: jest.fn(),
-    getCapProjectType: jest.fn(),
-    getCdsFiles: jest.fn(),
-    getCdsRoots: jest.fn(),
-    getCdsServices: jest.fn(),
-    getCapI18nFolderNames: jest.fn(),
-    getSpecification: jest.fn(),
-    getSpecificationPath: jest.fn(),
-    getI18nPropertiesPaths: jest.fn(),
-    getI18nBundles: jest.fn(),
-    getMinUI5VersionFromManifest: jest.fn(),
-    getMinUI5VersionAsArray: jest.fn(),
-    getMinimumUI5Version: jest.fn(),
-    getMtaPath: jest.fn(),
-    getMockDataPath: jest.fn(),
-    getNodeModulesPath: jest.fn(),
-    getPathMappings: jest.fn(),
-    getProject: jest.fn(),
-    getProjectType: jest.fn(),
-    getWebappPath: jest.fn(),
-    hasUI5CliV3: jest.fn(),
-    isCapProject: jest.fn(),
-    isCapJavaProject: jest.fn(),
-    isCapNodeJsProject: jest.fn(),
-    loadModuleFromProject: jest.fn(),
-    readCapServiceMetadataEdmx: jest.fn(),
-    readUi5Yaml: jest.fn(),
-    refreshSpecificationDistTags: jest.fn(),
-    toReferenceUri: jest.fn(),
-    updatePackageScript: jest.fn(),
-    getWorkspaceInfo: jest.fn(),
-    hasMinCdsVersion: jest.fn(),
-    checkCdsUi5PluginEnabled: jest.fn(),
-    readFlexChanges: jest.fn(),
-    processServices: jest.fn(),
-    getMainService: jest.fn(),
-    getGlobalCdsHomePath: jest.fn(),
-    execNpmCommand: jest.fn(),
-    findRecursiveHierarchyKey: jest.fn(),
-    getTableCapabilitiesByEntitySet: jest.fn(),
-    hasDependency: jest.fn()
-}));
-
-jest.unstable_mockModule('@sap-ux/project-access/dist/command', () => ({
-    execNpmCommand: mockExecNpmCommand
-}));
-
-jest.unstable_mockModule('@sap-ux/project-access/dist/file', () => ({
-    deleteDirectory: jest.fn(),
-    deleteFile: jest.fn(),
-    fileExists: jest.fn(),
-    readDirectory: jest.fn(),
-    readFile: jest.fn(),
-    readJSON: mockReadJSON,
-    updatePackageJSON: jest.fn(),
-    updateManifestJSON: jest.fn(),
-    writeFile: mockWriteFile,
-    findBy: jest.fn(),
-    findFiles: jest.fn(),
-    findFilesByExtension: jest.fn(),
-    findFileUp: jest.fn(),
-    getFilePaths: jest.fn()
+const actualStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...actualStore,
+    getService: jest.fn().mockImplementation(() => ({
+        getAll: jest.fn(),
+        read: jest.fn()
+    }))
 }));
 
 jest.unstable_mockModule('../../src/telemetry', () => ({
     TelemetryHelper: {
-        initTelemetrySettings: jest.fn().mockResolvedValue(undefined),
-        sendTelemetry: jest.fn().mockResolvedValue(undefined)
+        initTelemetrySettings: jest.fn<typeof initTelemetrySettings>().mockResolvedValue(undefined),
+        sendTelemetry: jest.fn<typeof sendTelemetry>().mockResolvedValue(undefined)
     }
 }));
 
+const actualProjectAccess = await import('@sap-ux/project-access');
+const mockGetSpecificationModuleFromCache = jest.fn();
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    getSpecificationModuleFromCache: mockGetSpecificationModuleFromCache
+}));
+
+const actualOdataQuery = await import('../../src/data-download/odata-query.js');
+const mockFetchData = jest.fn<typeof fetchData>();
+jest.unstable_mockModule('../../src/data-download/odata-query.js', () => ({
+    ...actualOdataQuery,
+    fetchData: mockFetchData
+}));
+
+const actualDataDownloadUtils = await import('../../src/data-download/utils.js');
+const mockGetSystemNameFromStore = jest.fn();
+jest.unstable_mockModule('../../src/data-download/utils', () => ({
+    ...actualDataDownloadUtils,
+    getSystemNameFromStore: mockGetSystemNameFromStore
+}));
+
 const { createEntityChoices, getData, getServiceDetails, getSpecification } =
-    await import('../../src/data-download/prompts/prompt-helpers');
+    await import('../../src/data-download/prompts/prompt-helpers.js');
 
 const __testdir = dirname(fileURLToPath(import.meta.url));
 
@@ -676,11 +565,14 @@ describe('Test getData', () => {
 
     test('should return odata query result on successful fetch', async () => {
         const mockEntityData = [{ id: 1, name: 'Test' }];
+        // Reload to isolate test
+        jest.resetModules();
         mockFetchData.mockResolvedValueOnce({
             odataResult: { entityData: mockEntityData }
         });
+        const { getData: localGetData } = await import('../../src/data-download/prompts/prompt-helpers.js');
 
-        const result = await getData(
+        const result = await localGetData(
             {
                 metadata: '<xml/>',
                 connectedSystem: {
@@ -698,11 +590,14 @@ describe('Test getData', () => {
     });
 
     test('should return error string when fetchData returns error', async () => {
+        // Reload to isolate test
+        jest.resetModules();
         mockFetchData.mockResolvedValueOnce({
             odataResult: { error: 'Connection failed' }
         });
+        const { getData: localGetData } = await import('../../src/data-download/prompts/prompt-helpers.js');
 
-        const result = await getData(
+        const result = await localGetData(
             {
                 metadata: '<xml/>',
                 connectedSystem: {

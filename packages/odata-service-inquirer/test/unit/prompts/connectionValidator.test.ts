@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import type { AbapServiceProvider, ODataServiceInfo, AxiosRequestConfig } from '@sap-ux/axios-extension';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
-import type { ConnectedSystem } from '../../../src/types';
+import type { ConnectedSystem } from '../../../src/types.js';
 import {
     GUIDED_ANSWERS_ICON,
     GUIDED_ANSWERS_LAUNCH_CMD_ID,
@@ -63,11 +63,11 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
 }));
 
 const { ODataService, ODataVersion, ServiceProvider } = await import('@sap-ux/axios-extension');
-const { initI18nOdataServiceInquirer, t } = await import('../../../src/i18n');
-const { ConnectionValidator } = await import('../../../src/prompts/connectionValidator');
-const LoggerHelper = (await import('../../../src/prompts/logger-helper')).default;
+const { initI18nOdataServiceInquirer, t } = await import('../../../src/i18n.js');
+const { ConnectionValidator } = await import('../../../src/prompts/connectionValidator.js');
+const LoggerHelper = (await import('../../../src/prompts/logger-helper.js')).default;
 const { ToolsLogger } = await import('@sap-ux/logger');
-const { errorHandler } = await import('../../../src/prompts/prompt-helpers');
+const { errorHandler } = await import('../../../src/prompts/prompt-helpers.js');
 
 // Re-export the module namespace for convenience in spyOn calls on prototypes
 const axiosExtension = await import('@sap-ux/axios-extension');

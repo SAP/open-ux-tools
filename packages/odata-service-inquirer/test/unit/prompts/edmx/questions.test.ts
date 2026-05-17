@@ -6,8 +6,8 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import { readFile } from 'node:fs/promises';
 import type { ListChoiceOptions, Question } from 'inquirer';
-import type { EntityAnswer } from '../../../../src/prompts/edmx/entity-helper';
-import type { EntitySelectionAnswers, PageBuildingBlockAnswers } from '../../../../src/types';
+import type { EntityAnswer } from '../../../../src/prompts/edmx/entity-helper.js';
+import type { EntitySelectionAnswers, PageBuildingBlockAnswers } from '../../../../src/types.js';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -15,7 +15,7 @@ import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 
 // Mock entity-helper to allow spying on getEntityChoices
-const actualEntityHelper = await import('../../../../src/prompts/edmx/entity-helper');
+const actualEntityHelper = await import('../../../../src/prompts/edmx/entity-helper.js');
 const mockGetEntityChoices = jest.fn<any>(actualEntityHelper.getEntityChoices);
 jest.unstable_mockModule('../../../../src/prompts/edmx/entity-helper', () => ({
     ...actualEntityHelper,
@@ -24,13 +24,13 @@ jest.unstable_mockModule('../../../../src/prompts/edmx/entity-helper', () => ({
 
 // Mock types module — we cannot mutate MetadataSizeWarningLimitKb in ESM, so we'll generate
 // sufficiently large metadata to trigger the size warning in affected tests
-const actualTypes = await import('../../../../src/types');
+const actualTypes = await import('../../../../src/types.js');
 
-const { initI18nOdataServiceInquirer, t } = await import('../../../../src/i18n');
-const { getEntitySelectionQuestions } = await import('../../../../src/prompts/edmx/questions');
-import LoggerHelper from '../../../../src/prompts/logger-helper';
-const { EntityPromptNames } = await import('../../../../src/types');
-const { PromptState } = await import('../../../../src/utils');
+const { initI18nOdataServiceInquirer, t } = await import('../../../../src/i18n.js');
+const { getEntitySelectionQuestions } = await import('../../../../src/prompts/edmx/questions.js');
+import LoggerHelper from '../../../../src/prompts/logger-helper.js';
+const { EntityPromptNames } = await import('../../../../src/types.js');
+const { PromptState } = await import('../../../../src/utils/index.js');
 
 /**
  * Pad metadata to exceed MetadataSizeWarningLimitKb (1000KB) while keeping it parseable.

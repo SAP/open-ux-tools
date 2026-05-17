@@ -10,8 +10,8 @@ import {
 } from '@sap-ux/axios-extension';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
-import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/service-selection/types';
+import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator.js';
+import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/service-selection/types.js';
 
 // eslint-disable-next-line prefer-const
 let connectionValidatorMock: Record<string, any>;
@@ -32,18 +32,18 @@ jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
 }));
 
 const actualSharedServiceHelpers =
-    await import('../../../../../src/prompts/datasources/service-helpers/service-helpers');
+    await import('../../../../../src/prompts/datasources/service-helpers/service-helpers.js');
 const mockShowCollabDraftWarning = jest.fn<any>(actualSharedServiceHelpers.showCollabDraftWarning);
 jest.unstable_mockModule('../../../../../src/prompts/datasources/service-helpers/service-helpers', () => ({
     ...actualSharedServiceHelpers,
     showCollabDraftWarning: mockShowCollabDraftWarning
 }));
 
-const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n');
+const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n.js');
 const { getSelectedServiceMessage, validateService } =
-    await import('../../../../../src/prompts/datasources/sap-system/service-selection/service-helper');
-const { PromptState } = await import('../../../../../src/utils');
-const { errorHandler } = await import('../../../../../src/prompts/prompt-helpers');
+    await import('../../../../../src/prompts/datasources/sap-system/service-selection/service-helper.js');
+const { PromptState } = await import('../../../../../src/utils/index.js');
+const { errorHandler } = await import('../../../../../src/prompts/prompt-helpers.js');
 
 const serviceV2a = {
     id: 'ZTRAVEL_DESK_SRV_0002',

@@ -22,32 +22,32 @@ jest.unstable_mockModule('../../../../src/prompts/connectionValidator', () => ({
     ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
 }));
 
-const actualUtils = await import('../../../../src/utils');
+const actualUtils = await import('../../../../src/utils/index.js');
 const mockGetPromptHostEnvironment = jest.fn<any>();
 jest.unstable_mockModule('../../../../src/utils', () => ({
     ...actualUtils,
     getPromptHostEnvironment: mockGetPromptHostEnvironment
 }));
 
-const actualServiceUrlValidators = await import('../../../../src/prompts/datasources/service-url/validators');
+const actualServiceUrlValidators = await import('../../../../src/prompts/datasources/service-url/validators.js');
 const mockValidateService = jest.fn<any>(actualServiceUrlValidators.validateService);
 jest.unstable_mockModule('../../../../src/prompts/datasources/service-url/validators', () => ({
     ...actualServiceUrlValidators,
     validateService: mockValidateService
 }));
 
-const actualServiceHelpers = await import('../../../../src/prompts/datasources/service-helpers/service-helpers');
+const actualServiceHelpers = await import('../../../../src/prompts/datasources/service-helpers/service-helpers.js');
 const mockShowCollabDraftWarning = jest.fn<any>(actualServiceHelpers.showCollabDraftWarning);
 jest.unstable_mockModule('../../../../src/prompts/datasources/service-helpers/service-helpers', () => ({
     ...actualServiceHelpers,
     showCollabDraftWarning: mockShowCollabDraftWarning
 }));
 
-const { initI18nOdataServiceInquirer, t } = await import('../../../../src/i18n');
-const { OdataVersion, promptNames } = await import('../../../../src/index');
-const { getServiceUrlQuestions } = await import('../../../../src/prompts/datasources/service-url/questions');
-const { serviceUrlInternalPromptNames } = await import('../../../../src/prompts/datasources/service-url/types');
-const LoggerHelper = (await import('../../../../src/prompts/logger-helper')).default;
+const { initI18nOdataServiceInquirer, t } = await import('../../../../src/i18n.js');
+const { OdataVersion, promptNames } = await import('../../../../src/index.js');
+const { getServiceUrlQuestions } = await import('../../../../src/prompts/datasources/service-url/questions.js');
+const { serviceUrlInternalPromptNames } = await import('../../../../src/prompts/datasources/service-url/types.js');
+const LoggerHelper = (await import('../../../../src/prompts/logger-helper.js')).default;
 const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 
 describe('Service URL prompts', () => {

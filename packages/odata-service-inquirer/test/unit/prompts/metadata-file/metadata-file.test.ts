@@ -1,10 +1,10 @@
-import { getMetadataFileQuestion } from '../../../../src/prompts/datasources/metadata-file';
+import { getMetadataFileQuestion } from '../../../../src/prompts/datasources/metadata-file/index.js';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
-import { OdataVersion } from '../../../../src/index';
-import { t, initI18nOdataServiceInquirer } from '../../../../src/i18n';
-import { PromptState } from '../../../../src/utils';
+import { OdataVersion } from '../../../../src/index.js';
+import { t, initI18nOdataServiceInquirer } from '../../../../src/i18n.js';
+import { PromptState } from '../../../../src/utils/index.js';
 
 describe('Test metadata file prompts', () => {
     beforeAll(async () => {

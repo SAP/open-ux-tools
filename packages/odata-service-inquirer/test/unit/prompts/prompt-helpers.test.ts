@@ -7,8 +7,8 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn().mockImplementation(() => mockIsAppStudio)
 }));
 
-const { initI18nOdataServiceInquirer } = await import('../../../src/i18n');
-const { getDatasourceTypeChoices } = await import('../../../src/prompts/prompt-helpers');
+const { initI18nOdataServiceInquirer } = await import('../../../src/i18n.js');
+const { getDatasourceTypeChoices } = await import('../../../src/prompts/prompt-helpers.js');
 
 describe('prompt-helpers', () => {
     beforeAll(async () => {

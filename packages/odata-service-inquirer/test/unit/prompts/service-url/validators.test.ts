@@ -22,10 +22,10 @@ jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
 const { V2CatalogService, createServiceForUrl } = await import('@sap-ux/axios-extension');
 const { OdataVersion } = await import('@sap-ux/odata-service-writer');
 const { ErrorHandler } = await import('@sap-ux/inquirer-common');
-const { initI18nOdataServiceInquirer, t } = await import('../../../../src/i18n');
-const { validateService } = await import('../../../../src/prompts/datasources/service-url/validators');
-const LoggerHelper = (await import('../../../../src/prompts/logger-helper')).default;
-const { PromptState } = await import('../../../../src/utils');
+const { initI18nOdataServiceInquirer, t } = await import('../../../../src/i18n.js');
+const { validateService } = await import('../../../../src/prompts/datasources/service-url/validators.js');
+const LoggerHelper = (await import('../../../../src/prompts/logger-helper.js')).default;
+const { PromptState } = await import('../../../../src/utils/index.js');
 
 describe('Test service url validators', () => {
     const validMetadata =

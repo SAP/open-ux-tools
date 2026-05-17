@@ -5,11 +5,11 @@ import { ODataVersion } from '@sap-ux/axios-extension';
 import type { InputQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
-import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
-import { BasicCredentialsPromptNames } from '../../../../../src/prompts/datasources/sap-system/credentials/questions';
-import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
-import type { SystemSelectionAnswerType } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
-import { promptNames } from '../../../../../src/types';
+import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator.js';
+import { BasicCredentialsPromptNames } from '../../../../../src/prompts/datasources/sap-system/credentials/questions.js';
+import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types.js';
+import type { SystemSelectionAnswerType } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers.js';
+import { promptNames } from '../../../../../src/types.js';
 
 const validateUrlMock = jest.fn().mockResolvedValue(true);
 const validateAuthMock = jest.fn().mockResolvedValue({ valResult: true });
@@ -41,17 +41,17 @@ jest.unstable_mockModule('../../../../../src/prompts/connectionValidator', () =>
     };
 });
 
-const actualUtils = await import('../../../../../src/utils');
+const actualUtils = await import('../../../../../src/utils/index.js');
 const mockIsBackendSystemKeyExisting = jest.fn<any>(actualUtils.isBackendSystemKeyExisting);
 jest.unstable_mockModule('../../../../../src/utils', () => ({
     ...actualUtils,
     isBackendSystemKeyExisting: mockIsBackendSystemKeyExisting
 }));
 
-const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n');
+const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n.js');
 const { getAbapOnPremQuestions } =
-    await import('../../../../../src/prompts/datasources/sap-system/abap-on-prem/questions');
-const { PromptState } = await import('../../../../../src/utils');
+    await import('../../../../../src/prompts/datasources/sap-system/abap-on-prem/questions.js');
+const { PromptState } = await import('../../../../../src/utils/index.js');
 
 describe('questions', () => {
     beforeAll(async () => {

@@ -5,9 +5,9 @@ import type { Specification } from '@sap/ux-specification/dist/types/src';
 import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { ReferencedEntities } from '../../src/data-download/types';
-import { getEntityModel } from '../../src/data-download/utils';
-import { initI18nODataDownloadGenerator } from '../../src/utils/i18n';
+import type { ReferencedEntities } from '../../src/data-download/types.js';
+import { getEntityModel } from '../../src/data-download/utils.js';
+import { initI18nODataDownloadGenerator } from '../../src/utils/i18n.js';
 
 jest.unstable_mockModule('../../src/telemetry', () => ({
     TelemetryHelper: {
@@ -16,7 +16,7 @@ jest.unstable_mockModule('../../src/telemetry', () => ({
     }
 }));
 
-const { createEntityChoices } = await import('../../src/data-download/prompts/prompt-helpers');
+const { createEntityChoices } = await import('../../src/data-download/prompts/prompt-helpers.js');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

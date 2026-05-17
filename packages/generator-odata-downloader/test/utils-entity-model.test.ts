@@ -13,7 +13,7 @@ jest.unstable_mockModule('@sap-ux/edmx-parser', () => ({
     parse
 }));
 
-const { getEntityModel } = await import('../src/data-download/utils');
+const { getEntityModel } = await import('../src/data-download/utils.js');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

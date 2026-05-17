@@ -9,7 +9,7 @@ import {
     originToRelative,
     parseOdataVersion,
     removeCircularFromServiceProvider
-} from '../../../src/utils';
+} from '../../../src/utils/index.js';
 
 describe('Utils', () => {
     test('parseOdataVersion - should return the odata version of metadata', async () => {

@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import { join, sep } from 'node:path';
 import os from 'node:os';
 import type { PathLike } from 'node:fs';
-import type { CapProjectPaths } from '../../../../src/prompts/datasources/cap-project/types';
+import type { CapProjectPaths } from '../../../../src/prompts/datasources/cap-project/types.js';
 
 // Mock node:path with controllable isAbsolute and relative functions
 // We need to get the actual path module first via dynamic import to use win32 variants
@@ -106,11 +106,11 @@ jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
 }));
 
 // Dynamic imports after all mocks
-const { initI18nOdataServiceInquirer, t } = await import('../../../../src/i18n');
+const { initI18nOdataServiceInquirer, t } = await import('../../../../src/i18n.js');
 const { getCapEdmx, getCapProjectChoices, getCapServiceChoices } =
-    await import('../../../../src/prompts/datasources/cap-project/cap-helpers');
-const LoggerHelper = (await import('../../../../src/prompts/logger-helper')).default;
-const { errorHandler } = await import('../../../../src/prompts/prompt-helpers');
+    await import('../../../../src/prompts/datasources/cap-project/cap-helpers.js');
+const LoggerHelper = (await import('../../../../src/prompts/logger-helper.js')).default;
+const { errorHandler } = await import('../../../../src/prompts/prompt-helpers.js');
 const { ERROR_TYPE } = await import('@sap-ux/inquirer-common');
 const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 

@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import type { CheckBoxQuestion, ConfirmQuestion, InputQuestion } from '@sap-ux/inquirer-common';
 import type { ServiceSpecification } from '@sap-ux/project-access';
-import { PromptState } from '../../src/data-download/prompt-state';
+import { PromptState } from '../../src/data-download/prompt-state.js';
 import { t as realT } from '../../src/utils/i18n.js';
 
 // Mock external packages that odata-download-generator.ts imports
@@ -193,8 +193,8 @@ jest.unstable_mockModule('../../src/data-download/prompts/value-help-prompts', (
     getValueHelpSelectionPrompt: jest.fn()
 }));
 
-const { getODataDownloaderPrompts, promptNames } = await import('../../src/data-download/prompts/prompts');
-const { ODataDownloadGenerator } = await import('../../src/data-download/odata-download-generator');
+const { getODataDownloaderPrompts, promptNames } = await import('../../src/data-download/prompts/prompts.js');
+const { ODataDownloadGenerator } = await import('../../src/data-download/odata-download-generator.js');
 const { getHostEnvironment, hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 const { getSystemSelectionQuestions } = await import('@sap-ux/odata-service-inquirer');
 type SelectedEntityAnswer = {

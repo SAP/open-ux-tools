@@ -2,8 +2,8 @@ import { jest } from '@jest/globals';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
 import { type ServiceInstanceInfo } from '@sap/cf-tools';
-import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
-import LoggerHelper from '../../../../../src/prompts/logger-helper';
+import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator.js';
+import LoggerHelper from '../../../../../src/prompts/logger-helper.js';
 
 const serviceProviderMock = {} as Partial<ServiceProvider>;
 
@@ -54,16 +54,16 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn().mockImplementation(() => true)
 }));
 
-const actualUtils = await import('../../../../../src/utils');
+const actualUtils = await import('../../../../../src/utils/index.js');
 const mockIsBackendSystemKeyExisting = jest.fn<any>(actualUtils.isBackendSystemKeyExisting);
 jest.unstable_mockModule('../../../../../src/utils', () => ({
     ...actualUtils,
     isBackendSystemKeyExisting: mockIsBackendSystemKeyExisting
 }));
 
-const { initI18nOdataServiceInquirer } = await import('../../../../../src/i18n');
-const { getCfAbapBASQuestions } = await import('../../../../../src/prompts/datasources/sap-system/cf-abap/questions');
-const { PromptState } = await import('../../../../../src/utils');
+const { initI18nOdataServiceInquirer } = await import('../../../../../src/i18n.js');
+const { getCfAbapBASQuestions } = await import('../../../../../src/prompts/datasources/sap-system/cf-abap/questions.js');
+const { PromptState } = await import('../../../../../src/utils/index.js');
 
 beforeAll(async () => {
     await initI18nOdataServiceInquirer();

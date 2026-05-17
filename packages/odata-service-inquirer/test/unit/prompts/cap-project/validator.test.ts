@@ -1,8 +1,8 @@
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
-import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
-import { validateCapPath } from '../../../../src/prompts/datasources/cap-project/validators';
+import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n.js';
+import { validateCapPath } from '../../../../src/prompts/datasources/cap-project/validators.js';
 
 describe('Test validators', () => {
     beforeAll(async () => {
