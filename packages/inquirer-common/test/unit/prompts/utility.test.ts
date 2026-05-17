@@ -68,7 +68,30 @@ describe('utility.ts', () => {
             ]
         `);
 
-        expect(ui5VersionsGrouped(ui5Vers, true)).toMatchSnapshot();
+        expect(ui5VersionsGrouped(ui5Vers, true)).toMatchInlineSnapshot(`
+            [
+              Separator {
+                "line": "[2mMaintained versions[22m",
+                "type": "separator",
+              },
+              {
+                "name": "1.118.0",
+                "value": "1.118.0",
+              },
+              {
+                "name": "1.117.0",
+                "value": "1.117.0",
+              },
+              Separator {
+                "line": "[2mOut of maintenance versions[22m",
+                "type": "separator",
+              },
+              {
+                "name": "1.116.0",
+                "value": "1.116.0",
+              },
+            ]
+        `);
 
         // No versions provided
         expect(ui5VersionsGrouped([])).toEqual([]);
@@ -144,7 +167,30 @@ describe('utility.ts', () => {
         // If version already exists in the list, it should be remain in place
         const defaultExistingChoice = { name: ui5Vers[1].version, value: ui5Vers[1].version };
         const ui5VersWithExistingChoice = ui5VersionsGrouped(ui5Vers, true, defaultExistingChoice);
-        expect(ui5VersWithExistingChoice).toMatchSnapshot();
+        expect(ui5VersWithExistingChoice).toMatchInlineSnapshot(`
+            [
+              Separator {
+                "line": "[2mMaintained versions[22m",
+                "type": "separator",
+              },
+              {
+                "name": "1.118.0",
+                "value": "1.118.0",
+              },
+              {
+                "name": "1.117.0",
+                "value": "1.117.0",
+              },
+              Separator {
+                "line": "[2mOut of maintenance versions[22m",
+                "type": "separator",
+              },
+              {
+                "name": "1.116.0",
+                "value": "1.116.0",
+              },
+            ]
+        `);
     });
 
     it('searchChoices', async () => {
