@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.15.1
+
+### Patch Changes
+
+- 2c76f8f: refactor(fiori-generator-shared): remove dead ExternalServiceConfig type and externalServices field from AppConfig
+
 ## 0.15.0
 
 ### Minor Changes

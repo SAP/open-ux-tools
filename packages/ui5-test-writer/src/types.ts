@@ -90,6 +90,7 @@ export interface FFOPAConfig {
     viewName?: string;
     ui5Version?: string;
     ui5Theme?: string;
+    useVirtualPreviewEndpoints?: boolean;
 }
 
 export type ObjectPageNavigationParents = {

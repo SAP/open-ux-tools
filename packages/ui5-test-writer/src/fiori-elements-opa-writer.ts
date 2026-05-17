@@ -24,6 +24,7 @@ import {
     addPagesToJourneyRunner,
     hasVirtualOPA5,
     readHtmlTargetFromQUnitJs,
+    addVirtualTestConfig,
     type JourneyRunnerPage
 } from './utils/opaQUnitUtils';
 import { getPackageScripts } from '@sap-ux/fiori-generator-shared';
@@ -38,6 +39,7 @@ import { readHashFromFlpSandbox } from './utils/flpSandboxUtils';
  * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
  * @param opaConfig.htmlTarget - the name of the html that will be used in OPA journey file. If not specified, 'index.html' will be used
  * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
+ * @param opaConfig.useVirtualPreviewEndpoints - when true, OPA harness files are served virtually; skip writing them to disk
  * @param opaConfig.enableTypeScript - if true, generate TypeScript files instead of JavaScript
  * @param metadata - optional metadata for the OPA test generation
  * @param fs - an optional reference to a mem-fs editor
@@ -47,7 +49,7 @@ import { readHashFromFlpSandbox } from './utils/flpSandboxUtils';
  */
 export async function generateOPAFiles(
     basePath: string,
-    opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string; enableTypeScript?: boolean },
+    opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string; useVirtualPreviewEndpoints?: boolean; enableTypeScript?: boolean },
     metadata?: string,
     fs?: Editor,
     log?: Logger,
@@ -97,8 +99,15 @@ export async function generateOPAFiles(
             writeJourneyFiles(appFeatures, standaloneWriteContext, true, hasJourneyRunner, virtualOPA5Configured);
         }
     } else {
-        writeCommonAndPageFiles(writeContext, rootCommonTemplateDirPath);
-        writeJourneyFiles(appFeatures, writeContext, false);
+        writeCommonAndPageFiles(writeContext, rootCommonTemplateDirPath, opaConfig.useVirtualPreviewEndpoints ?? false);
+        writeJourneyFiles(appFeatures, writeContext, false, false, opaConfig.useVirtualPreviewEndpoints ?? false);
+        if (opaConfig.useVirtualPreviewEndpoints) {
+            await addVirtualTestConfig(
+                basePath,
+                [{ framework: 'OPA5', path: '/test/integration/opaTests.qunit.html' }, { framework: 'Testsuite' }],
+                editor
+            );
+        }
     }
 
     return editor;
@@ -392,21 +401,28 @@ function findLROP(
  *
  * @param writeContext - shared write context (config, paths, editor, journey params)
  * @param rootCommonTemplateDirPath - template root directory for common files
+ * @param useVirtualPreviewEndpoints - when true, testsuite harness files are served virtually; skip writing them to disk
  */
-function writeCommonAndPageFiles(writeContext: WriteContext, rootCommonTemplateDirPath: string): void {
+function writeCommonAndPageFiles(
+    writeContext: WriteContext,
+    rootCommonTemplateDirPath: string,
+    useVirtualPreviewEndpoints = false
+): void {
     const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams, ext } = writeContext;
 
-    // Common test files
-    editor.copyTpl(
-        join(rootCommonTemplateDirPath),
-        testOutDirPath,
-        // unit tests are not added for Fiori elements app
-        { appId: config.appID },
-        undefined,
-        {
-            globOptions: { dot: true }
-        }
-    );
+    // Common test files (testsuite served virtually when useVirtualPreviewEndpoints is enabled)
+    if (!useVirtualPreviewEndpoints) {
+        editor.copyTpl(
+            join(rootCommonTemplateDirPath),
+            testOutDirPath,
+            // unit tests are not added for Fiori elements app
+            { appId: config.appID },
+            undefined,
+            {
+                globOptions: { dot: true }
+            }
+        );
+    }
 
     config.pages.forEach((page) => {
         writePageObject(page, rootV4TemplateDirPath, testOutDirPath, editor, ext);

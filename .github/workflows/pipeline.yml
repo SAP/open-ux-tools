@@ -38,7 +38,7 @@ jobs:
                   restore-keys: |
                       ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
             - name: Install pnpm modules
-              run: pnpm install --frozen-lockfile --ignore-scripts
+              run: pnpm install --frozen-lockfile
             - name: Run build
               run: pnpm run build
               env:
@@ -181,7 +181,6 @@ jobs:
               uses: actions/setup-node@v6
               with:
                   node-version: 22.x
-                  registry-url: 'https://registry.npmjs.org'
             - name: Setup pnpm
               uses: pnpm/action-setup@v4.1.0
             - name: Cache pnpm modules
@@ -225,7 +224,6 @@ jobs:
                   publish: pnpm ci:publish
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
-                  NPM_CONFIG_PROVENANCE: true
             - name: Detect extension publication
               if: steps.changesetPublish.outputs.published == 'true'
               run: |

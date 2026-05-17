@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.1.1
+
+### Patch Changes
+
+- b090449: Enable sap-no-data-field-intent-based-navigation rule to check UI.HeaderFacet annotation in CAP apps.
+
 ## 10.1.0
 
 ### Minor Changes

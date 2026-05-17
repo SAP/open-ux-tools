@@ -1,5 +1,14 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.2.1
+
+### Patch Changes
+
+- 2c76f8f: chore: upgrade @sap-devx/yeoman-ui-types 1.23.0 → 1.25.0
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+    - @sap-ux/ui5-library-inquirer@0.7.1
+
 ## 0.2.0
 
 ### Minor Changes
