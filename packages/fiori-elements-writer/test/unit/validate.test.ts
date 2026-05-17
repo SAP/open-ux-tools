@@ -1,17 +1,17 @@
 import { jest } from '@jest/globals';
-import type { FioriElementsApp, LROPSettings } from '../../src';
-import type { ALPSettings } from '../../src/types';
+import type { FioriElementsApp, LROPSettings } from '../../src/index.js';
+import type { ALPSettings } from '../../src/types.js';
 
 // Mock annotation-generator to prevent ESM transitive import chain
 jest.unstable_mockModule('@sap-ux/annotation-generator', () => ({
     generateAnnotations: jest.fn()
 }));
 
-const { OdataVersion, TemplateType } = await import('../../src');
-const { TemplateTypeAttributes } = await import('../../src/data/templateAttributes');
-const { t } = await import('../../src/i18n');
-const { validateApp, validateRequiredProperties } = await import('../../src/validate');
-const { feBaseConfig } = await import('../common');
+const { OdataVersion, TemplateType } = await import('../../src/index.js');
+const { TemplateTypeAttributes } = await import('../../src/data/templateAttributes.js');
+const { t } = await import('../../src/i18n.js');
+const { validateApp, validateRequiredProperties } = await import('../../src/validate.js');
+const { feBaseConfig } = await import('../common.js');
 
 describe('Validate', () => {
     test('Valid app config', () => {

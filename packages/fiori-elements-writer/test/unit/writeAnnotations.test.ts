@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
-import { TemplateType } from '../../src/types';
+import { TemplateType } from '../../src/types.js';
 
 const mockGenerateAnnotations = jest.fn();
 const mockGetCapFolderPathsSync = jest.fn().mockReturnValue({ app: '/mock/app/path' });
@@ -15,9 +15,9 @@ jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     getCapFolderPathsSync: mockGetCapFolderPathsSync
 }));
 
-const { writeAnnotations } = await import('../../src/writeAnnotations');
-const { t } = await import('../../src/i18n');
-const { applyBaseConfigToFEApp } = await import('../common');
+const { writeAnnotations } = await import('../../src/writeAnnotations.js');
+const { t } = await import('../../src/i18n.js');
+const { applyBaseConfigToFEApp } = await import('../common.js');
 
 describe('writeAnnotations', () => {
     let fs: Editor;

@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { FioriElementsApp, LROPSettings } from '../src';
+import type { FioriElementsApp, LROPSettings } from '../src/index.js';
 import { join } from 'node:path';
 import fsExtra from 'fs-extra';
 const { removeSync } = fsExtra;
@@ -42,7 +42,7 @@ jest.unstable_mockModule('@sap-ux/annotation-generator', () => ({
 }));
 
 // Dynamic imports after mocking
-const { generate, TemplateType, TableType } = await import('../src');
+const { generate, TemplateType, TableType } = await import('../src/index.js');
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 const {
     testOutputDir,
@@ -58,8 +58,8 @@ const {
     getTestData,
     applyBaseConfigToFEApp,
     sampleCapService
-} = await import('./common');
-const { initI18n } = await import('../src/i18n');
+} = await import('./common.js');
+const { initI18n } = await import('../src/i18n.js');
 
 const TEST_NAME = 'lropTemplates';
 if (debug?.enabled) {

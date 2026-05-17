@@ -14,7 +14,7 @@ import {
     type LROPSettings,
     type WorklistSettings,
     TemplateType
-} from '../src/types';
+} from '../src/types.js';
 import { promisify } from 'node:util';
 import { exec as execCP } from 'node:child_process';
 const exec = promisify(execCP);

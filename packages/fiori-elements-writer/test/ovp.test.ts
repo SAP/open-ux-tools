@@ -1,20 +1,20 @@
 import { jest } from '@jest/globals';
-import type { FioriElementsApp } from '../src';
+import type { FioriElementsApp } from '../src/index.js';
 import { join } from 'node:path';
 import fsExtra from 'fs-extra';
 const { removeSync } = fsExtra;
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { OVPSettings } from '../src/types';
+import type { OVPSettings } from '../src/types.js';
 
 // Mock annotation-generator to prevent ESM transitive import chain
 jest.unstable_mockModule('@sap-ux/annotation-generator', () => ({
     generateAnnotations: jest.fn()
 }));
 
-const { generate, TemplateType } = await import('../src');
+const { generate, TemplateType } = await import('../src/index.js');
 const { testOutputDir, getTestData, debug, feBaseConfig, projectChecks, updatePackageJSONDependencyToUseLocalPath } =
-    await import('./common');
+    await import('./common.js');
 
 const TEST_NAME = 'ovpTemplate';
 if (debug?.enabled) {

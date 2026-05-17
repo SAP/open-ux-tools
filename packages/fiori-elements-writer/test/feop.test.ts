@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals';
-import type { FioriElementsApp } from '../src';
+import type { FioriElementsApp } from '../src/index.js';
 import { join } from 'node:path';
 import fsExtra from 'fs-extra';
 const { removeSync } = fsExtra;
-import type { FEOPSettings } from '../src/types';
+import type { FEOPSettings } from '../src/types.js';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { create as createStorage } from 'mem-fs';
@@ -15,7 +15,7 @@ jest.unstable_mockModule('@sap-ux/annotation-generator', () => ({
     generateAnnotations: mockGenerateAnnotations
 }));
 
-const { generate, TemplateType } = await import('../src');
+const { generate, TemplateType } = await import('../src/index.js');
 const {
     testOutputDir,
     debug,
@@ -26,7 +26,7 @@ const {
     updatePackageJSONDependencyToUseLocalPath,
     applyBaseConfigToFEApp,
     sampleCapService
-} = await import('./common');
+} = await import('./common.js');
 
 const TEST_NAME = 'feopTemplate';
 if (debug?.enabled) {
