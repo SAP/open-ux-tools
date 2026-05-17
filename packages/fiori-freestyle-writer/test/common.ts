@@ -4,15 +4,15 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { sample } from './sample/metadata';
+import { sample } from './sample/metadata.js';
 import { create as createStore } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { TemplateType, type FreestyleApp } from '../src';
+import { TemplateType, type FreestyleApp } from '../src/index.js';
 import { promisify } from 'node:util';
 import { exec as execCP } from 'node:child_process';
 const exec = promisify(execCP);
-import { compareUI5VersionGte, ui5LtsVersion_1_120 } from '../src/utils';
+import { compareUI5VersionGte, ui5LtsVersion_1_120 } from '../src/utils.js';
 
 const testDirname = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);

@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals';
-import type { FreestyleApp } from '../src';
-import { generate } from '../src';
+import type { FreestyleApp } from '../src/index.js';
+import { generate } from '../src/index.js';
 import { join } from 'node:path';
-import type { ListDetailSettings } from '../src/types';
-import { TemplateType } from '../src/types';
+import type { ListDetailSettings } from '../src/types.js';
+import { TemplateType } from '../src/types.js';
 import fsExtra from 'fs-extra';
 const { removeSync } = fsExtra;
 import {
@@ -13,8 +13,8 @@ import {
     testOutputDir,
     projectChecks,
     updatePackageJSONDependencyToUseLocalPath
-} from './common';
-import { initI18n } from '../src/i18n';
+} from './common.js';
+import { initI18n } from '../src/i18n.js';
 
 const TEST_NAME = 'listDetailTemplate';
 

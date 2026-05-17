@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
-import type { FreestyleApp, BasicAppSettings } from '../src/types';
-import { TemplateType } from '../src/types';
+import type { FreestyleApp, BasicAppSettings } from '../src/types.js';
+import { TemplateType } from '../src/types.js';
 import type { Package } from '@sap-ux/ui5-application-writer';
 import type { Logger } from '@sap-ux/logger';
 
@@ -10,8 +10,8 @@ jest.unstable_mockModule('@sap-ux/ui5-test-writer', () => ({
     generateFreestyleOPAFiles: mockGenerateFreestyleOPAFiles
 }));
 
-const { generateOPATests } = await import('../src/generateOPATests');
-const { t } = await import('../src/i18n');
+const { generateOPATests } = await import('../src/generateOPATests.js');
+const { t } = await import('../src/i18n.js');
 
 describe('generateOPATests', () => {
     const basePath = '/path/to/base';

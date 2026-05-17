@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
-import type { FreestyleApp } from '../src';
-import type { BasicAppSettings } from '../src/types';
+import type { FreestyleApp } from '../src/index.js';
+import type { BasicAppSettings } from '../src/types.js';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import { join } from 'node:path';
 import fsExtra from 'fs-extra';
@@ -9,14 +9,25 @@ import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
+jest.unstable_mockModule('read-pkg-up', () => ({
+    default: {
+        sync: jest.fn().mockReturnValue({
+            packageJson: {
+                name: 'mocked-package-name',
+                version: '9.9.9-mocked'
+            }
+        })
+    }
+}));
+
 const mockApplyCAPUpdates = jest.fn<() => Promise<void>>().mockResolvedValue(undefined);
 
 jest.unstable_mockModule('@sap-ux/cap-config-writer', () => ({
     applyCAPUpdates: mockApplyCAPUpdates
 }));
 
-const { generate, TemplateType } = await import('../src');
-const { testOutputDir, debug, updatePackageJSONDependencyToUseLocalPath, projectChecks } = await import('./common');
+const { generate, TemplateType } = await import('../src/index.js');
+const { testOutputDir, debug, updatePackageJSONDependencyToUseLocalPath, projectChecks } = await import('./common.js');
 
 const TEST_NAME = 'basicTemplate';
 jest.setTimeout(240000); // Needed when debug.enabled
@@ -302,7 +313,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         const Component = { js: join(testPath, 'webapp', 'Component.js') };
 
         expect(fs.exists(Component.js)).toBeTruthy();
-        expect(await fs.read(Component.js).includes('my/demo/App')).toBeTruthy();
+        expect(fs.read(Component.js).includes('my/demo/App')).toBeTruthy();
     });
 
     test('sapuxLayer is added to package json for edmx projects when provided', async () => {

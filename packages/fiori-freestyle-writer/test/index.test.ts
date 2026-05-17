@@ -1,12 +1,12 @@
-import type { FreestyleApp } from '../src';
-import { generate } from '../src';
+import type { FreestyleApp } from '../src/index.js';
+import { generate } from '../src/index.js';
 import { join } from 'node:path';
-import { TemplateType } from '../src/types';
+import { TemplateType } from '../src/types.js';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import fsExtra from 'fs-extra';
 const { removeSync } = fsExtra;
-import { sample } from './sample/metadata';
-import { testOutputDir, debug, northwind } from './common';
+import { sample } from './sample/metadata.js';
+import { testOutputDir, debug, northwind } from './common.js';
 
 const TEST_NAME = 'allTemplate';
 
