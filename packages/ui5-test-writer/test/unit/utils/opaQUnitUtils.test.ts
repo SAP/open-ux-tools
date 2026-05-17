@@ -6,7 +6,7 @@ import { create } from 'mem-fs-editor';
 
 const actualProjectAccess = await import('@sap-ux/project-access');
 const getAllUi5YamlFileNamesMock = jest.fn();
-let readUi5YamlMock = jest.fn();
+const readUi5YamlMock = jest.fn();
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     ...actualProjectAccess,
     getAllUi5YamlFileNames: getAllUi5YamlFileNamesMock,
