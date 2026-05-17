@@ -62,7 +62,8 @@ jest.unstable_mockModule('../../../../../src/utils', () => ({
 }));
 
 const { initI18nOdataServiceInquirer } = await import('../../../../../src/i18n.js');
-const { getCfAbapBASQuestions } = await import('../../../../../src/prompts/datasources/sap-system/cf-abap/questions.js');
+const { getCfAbapBASQuestions } =
+    await import('../../../../../src/prompts/datasources/sap-system/cf-abap/questions.js');
 const { PromptState } = await import('../../../../../src/utils/index.js');
 
 beforeAll(async () => {

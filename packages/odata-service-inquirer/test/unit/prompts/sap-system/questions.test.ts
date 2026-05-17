@@ -3,7 +3,8 @@ import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { ConnectedSystem } from '../../../../src/types.js';
 import type { BackendSystem } from '@sap-ux/store';
 
-const actualAbapOnBtpQuestions = await import('../../../../src/prompts/datasources/sap-system/abap-on-btp/questions.js');
+const actualAbapOnBtpQuestions =
+    await import('../../../../src/prompts/datasources/sap-system/abap-on-btp/questions.js');
 const mockGetAbapOnBTPSystemQuestions = jest.fn<any>(actualAbapOnBtpQuestions.getAbapOnBTPSystemQuestions);
 jest.unstable_mockModule('../../../../src/prompts/datasources/sap-system/abap-on-btp/questions', () => ({
     ...actualAbapOnBtpQuestions,
@@ -11,7 +12,8 @@ jest.unstable_mockModule('../../../../src/prompts/datasources/sap-system/abap-on
 }));
 
 const { initI18nOdataServiceInquirer } = await import('../../../../src/i18n.js');
-const { getNewSystemQuestions } = await import('../../../../src/prompts/datasources/sap-system/new-system/questions.js');
+const { getNewSystemQuestions } =
+    await import('../../../../src/prompts/datasources/sap-system/new-system/questions.js');
 
 describe('questions', () => {
     beforeAll(async () => {

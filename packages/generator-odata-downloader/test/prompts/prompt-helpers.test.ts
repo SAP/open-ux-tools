@@ -8,9 +8,9 @@ import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 import type { EntityType } from '@sap-ux/vocabularies-types';
 import { PromptState } from '../../src/data-download/prompt-state.js';
 import type { ApplicationAccess, ServiceSpecification } from '@sap-ux/project-access';
-import { fetchData } from '../../src/data-download/odata-query.js';
-import { initTelemetrySettings } from '@sap-ux/telemetry';
-import { sendTelemetry } from '@sap-ux/fiori-generator-shared';
+import type { fetchData } from '../../src/data-download/odata-query.js';
+import type { initTelemetrySettings } from '@sap-ux/telemetry';
+import type { sendTelemetry } from '@sap-ux/fiori-generator-shared';
 
 const actualStore = await import('@sap-ux/store');
 jest.unstable_mockModule('@sap-ux/store', () => ({
