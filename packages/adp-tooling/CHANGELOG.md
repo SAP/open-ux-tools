@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.19.2
+
+### Patch Changes
+
+- 342c544: chore: bump used versions in adaptation project for Cloud Foundry
+
 ## 0.19.1
 
 ### Patch Changes
