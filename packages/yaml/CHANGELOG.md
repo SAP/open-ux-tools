@@ -1,5 +1,29 @@
 # @sap-ux/yaml
 
+## 0.18.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 0.17.8
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
+## 0.17.7
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+
+## 0.17.6
+
+### Patch Changes
+
+- a41533f: chore(yaml): upgrade yaml 2.8.2 → 2.8.3
+
 ## 0.17.5
 
 ### Patch Changes

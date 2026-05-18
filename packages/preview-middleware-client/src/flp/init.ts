@@ -8,7 +8,6 @@ import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import type AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
 import { getError } from '../utils/error';
-import initCdm from './initCdm';
 import initConnectors from './initConnectors';
 import { getUi5Version, isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 import type Component from 'sap/ui/core/Component';
@@ -43,6 +42,10 @@ const UI5_LIBS = [
     'sap.webanalytics',
     'sap.zen'
 ];
+
+const CONTROLLER_EXTENSION_PATH_REGEX = /\/changes\/coding\/.+\.(js|ts)/;
+
+type GlobalErrorEvent = ErrorEvent | PromiseRejectionEvent;
 
 interface Manifest {
     ['sap.ui5']?: {
@@ -168,7 +171,7 @@ function registerModules(dataFromAppIndex: AppIndexData) {
  * @param container the UShell container
  */
 export async function resetAppState(container: typeof sap.ushell.Container): Promise<void> {
-    const urlParams = new URLSearchParams(window.location.hash);
+    const urlParams = new URLSearchParams(globalThis.location.hash);
     const appStateValue = urlParams.get('sap-iapp-state') ?? urlParams.get('/?sap-iapp-state');
     if (appStateValue) {
         const appStateService = await container.getServiceAsync<AppState>('AppState');
@@ -186,9 +189,9 @@ export async function resetAppState(container: typeof sap.ushell.Container): Pro
 export async function registerComponentDependencyPaths(appUrls: string[], urlParams: URLSearchParams): Promise<void> {
     const libs = await getManifestLibs(appUrls);
     if (libs && libs.length > 0) {
-        let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + libs;
+        let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + encodeURIComponent(libs);
         const sapClient = urlParams.get('sap-client');
-        if (sapClient?.length === 3) {
+        if (sapClient?.length === 3 && /^\d+$/.test(sapClient)) {
             url = url + '&sap-client=' + sapClient;
         }
         const response = await fetch(url);
@@ -280,6 +283,55 @@ function addCardGenerationUserAction(componentInstance: Component, container: ty
 }
 
 /**
+ * Extracts an Error object from a global error event.
+ * Handles both synchronous errors (ErrorEvent) and unhandled promise rejections (PromiseRejectionEvent).
+ *
+ * @param {GlobalErrorEvent} event - The global error or unhandled rejection event.
+ * @returns {Error | undefined} The extracted Error instance, or undefined if no Error could be extracted.
+ */
+function extractError(event: GlobalErrorEvent): Error | undefined {
+    if ('error' in event && event.error instanceof Error) {
+        return event.error;
+    }
+
+    if ('reason' in event && event.reason instanceof Error) {
+        return event.reason;
+    }
+
+    return undefined;
+}
+
+/**
+ * Reports controller extension errors to the Info Center.
+ * Filters events by checking if the stack trace contains 'ControllerExtension',
+ * and sends matching errors as error-level messages to the Info Center panel.
+ *
+ * @param {GlobalErrorEvent} event - The global error or unhandled rejection event.
+ */
+const reportControllerExtensionErrorToInfoCenter: (event: GlobalErrorEvent) => void = (event) => {
+    const error = extractError(event);
+    const stackTrace = error?.stack ?? '';
+    if (!CONTROLLER_EXTENSION_PATH_REGEX.test(stackTrace)) {
+        return;
+    }
+    void sendInfoCenterMessage({
+        title: { key: 'CONTROLLER_EXTENSION_UNHANDLED_ERROR_TITLE' },
+        description: error?.message ?? '',
+        type: MessageBarType.error,
+        details: stackTrace
+    });
+};
+
+/**
+ * Registers global event listeners for uncaught errors and unhandled promise rejections
+ * to detect and report controller extension errors to the Info Center.
+ */
+function registerForControllerExtensionErrors(): void {
+    globalThis.addEventListener('error', reportControllerExtensionErrorToInfoCenter);
+    globalThis.addEventListener('unhandledrejection', reportControllerExtensionErrorToInfoCenter);
+}
+
+/**
  * Apply additional configuration and initialize sandbox.
  *
  * @param params init parameters read from the script tag
@@ -302,13 +354,7 @@ export async function init({
     enhancedHomePage?: boolean | null;
     enableCardGenerator?: boolean;
 }): Promise<void> {
-    // Set CDM configuration before importing ushell container
-    // to ensure proper configuration pickup during bootstrap
-    if (enhancedHomePage) {
-        initCdm();
-    }
-
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(globalThis.location.search);
     const container =
         sap?.ushell?.Container ??
         ((await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container);
@@ -316,11 +362,16 @@ export async function init({
     const ui5VersionInfo = await getUi5Version();
     // Register RTA if configured
     if (flex) {
+        registerForControllerExtensionErrors();
         const flexSettings = JSON.parse(flex) as FlexSettings;
         scenario = flexSettings.scenario;
         container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
+                // Prevent starting RTA when the FLP home component (#Shell-home) fires attachAppLoaded before the user navigates to the actual app.
+                if (!globalThis.location.hash || globalThis.location.hash.startsWith('#Shell-home')) {
+                    return;
+                }
                 const view = event.getParameter('componentInstance');
                 const pluginScript = flexSettings.pluginScript ?? '';
 
@@ -408,7 +459,7 @@ export async function init({
     renderer.placeAt('content');
 }
 
-// eslint-disable-next-line @sap-ux/fiori-tools/sap-no-dom-access,@sap-ux/fiori-tools/sap-browser-api-warning
+// eslint-disable-next-line @sap-ux/fiori-tools/sap-no-dom-access,@sap-ux/fiori-tools/sap-browser-api-warning, @sap-ux/fiori-tools/sap-no-global-variable
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
     init({
@@ -442,7 +493,6 @@ export async function handleHigherLayerChanges(error: unknown, ui5VersionInfo: U
             });
         }
 
-        // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-location-reload
-        window.location.reload();
+        globalThis.location.reload();
     }
 }

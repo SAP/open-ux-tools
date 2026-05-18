@@ -1,5 +1,153 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.85
+
+### Patch Changes
+
+- Updated dependencies [fb00faa]
+    - @sap-ux-private/playwright@0.3.1
+
+## 0.0.84
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux-private/playwright@0.3.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/ui5-info@0.14.0
+    - @sap-ux/yaml@0.18.0
+
+## 0.0.83
+
+### Patch Changes
+
+- Updated dependencies [50a8ba5]
+    - @sap-ux-private/playwright@0.2.16
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/ui5-info@0.13.22
+    - @sap-ux/yaml@0.17.8
+
+## 0.0.82
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+
+## 0.0.81
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/ui5-info@0.13.21
+    - @sap-ux/project-access@1.36.3
+
+## 0.0.80
+
+### Patch Changes
+
+- @sap-ux/project-access@1.36.2
+
+## 0.0.79
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+
+## 0.0.78
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+
+## 0.0.77
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+
+## 0.0.76
+
+### Patch Changes
+
+- Updated dependencies [9a48e63]
+    - @sap-ux/ui5-info@0.13.20
+
+## 0.0.75
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+
+## 0.0.74
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/ui5-info@0.13.19
+    - @sap-ux/project-access@1.35.20
+
+## 0.0.73
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/yaml@0.17.7
+    - @sap-ux-private/playwright@0.2.15
+    - @sap-ux/project-access@1.35.19
+    - @sap-ux/ui5-info@0.13.18
+
+## 0.0.72
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+
+## 0.0.71
+
+### Patch Changes
+
+- @sap-ux-private/playwright@0.2.14
+- @sap-ux/project-access@1.35.17
+- @sap-ux/ui5-info@0.13.17
+
+## 0.0.70
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+
+## 0.0.69
+
+### Patch Changes
+
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux-private/playwright@0.2.13
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-info@0.13.16
+    - @sap-ux/yaml@0.17.6
+
+## 0.0.68
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+
+## 0.0.67
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+
 ## 0.0.66
 
 ### Patch Changes

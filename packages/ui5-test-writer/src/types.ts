@@ -1,3 +1,5 @@
+import type { Editor } from 'mem-fs-editor';
+
 export const SupportedPageTypes: { [id: string]: string } = {
     'sap.fe.templates.ListReport': 'ListReport',
     'sap.fe.templates.ObjectPage': 'ObjectPage',
@@ -25,6 +27,13 @@ export type FEV4OPAConfig = {
     filterBarItems?: string[];
 };
 
+export type JourneyParams = {
+    startPages: string[];
+    startLR: string | undefined;
+    navigatedOP: string | undefined;
+    hideFilterBar: boolean;
+};
+
 export type FEV4ManifestTarget = {
     type?: string;
     name?: string;
@@ -40,6 +49,13 @@ export type FEV4ManifestTarget = {
                         route?: string;
                     };
                 };
+            };
+            views?: {
+                paths?: Array<{
+                    primary?: unknown[];
+                    secondary?: unknown[];
+                    defaultPath?: string;
+                }>;
             };
         };
     };
@@ -71,6 +87,7 @@ export interface FFOPAConfig {
     viewName?: string;
     ui5Version?: string;
     ui5Theme?: string;
+    useVirtualPreviewEndpoints?: boolean;
 }
 
 export type ObjectPageNavigationParents = {
@@ -79,12 +96,44 @@ export type ObjectPageNavigationParents = {
     parentOPTableSection?: string;
 };
 
+export type SectionFormField = {
+    property: string;
+};
+
+export type TableColumn = {
+    header?: string;
+};
+
+export type TableColumnFeatureData = Record<string, TableColumn>;
+
+export type BodySubSectionFeatureData = {
+    id: string;
+    navigationProperty?: string;
+    isTable: boolean;
+    custom: boolean;
+    order: number;
+    fields: SectionFormField[];
+    tableColumns: TableColumnFeatureData;
+};
+
+export type BodySectionFeatureData = {
+    id: string;
+    navigationProperty?: string;
+    isTable: boolean;
+    custom: boolean;
+    order: number;
+    fields: SectionFormField[];
+    tableColumns: TableColumnFeatureData;
+    subSections: BodySubSectionFeatureData[];
+};
+
 export type ObjectPageFeatures = {
     name?: string;
     navigationParents?: ObjectPageNavigationParents;
     headerTitle?: string;
     headerDescription?: string;
     headerSections?: HeaderSectionFeatureData[];
+    bodySections?: BodySectionFeatureData[];
 };
 
 export type ListReportFeatures = {
@@ -102,6 +151,7 @@ export type ListReportFeatures = {
     filterBarItems?: string[];
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
     toolBarActions?: ActionButtonState[];
+    isALP?: boolean;
 };
 
 export interface ActionButtonState {
@@ -138,6 +188,20 @@ export type AppFeatures = {
     fpm?: FPMFeatures;
 };
 
+export type WriteContext = {
+    config: FEV4OPAConfig;
+    rootV4TemplateDirPath: string;
+    testOutDirPath: string;
+    editor: Editor;
+    journeyParams: JourneyParams;
+};
+
+export type FormField = {
+    fieldGroupQualifier?: string;
+    field?: string;
+    targetAnnotation?: string;
+};
+
 export type HeaderSectionFeatureData = {
     facetId?: string;
     title?: string;
@@ -146,10 +210,7 @@ export type HeaderSectionFeatureData = {
     microChart?: boolean;
     form?: boolean;
     stashed?: boolean | string;
-    fields?: {
-        fieldGroupQualifier?: string;
-        field?: string;
-    }[];
+    fields?: FormField[];
 };
 
 export interface ButtonState {

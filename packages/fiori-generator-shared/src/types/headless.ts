@@ -1,5 +1,5 @@
 import { Authentication } from '@sap-ux/btp-utils';
-import type { Annotations } from '@sap-ux/axios-extension';
+import type { Annotations, EntitySetData, ExternalService } from '@sap-ux/axios-extension';
 import type { FloorplanKey } from './app-gen';
 import type { CapRuntime } from './cap';
 
@@ -76,6 +76,20 @@ export interface FLPConfig {
     readonly semanticObject?: string;
 }
 
+/*
+ * Headless specific extension of ExternalService.
+ */
+export type ExternalServiceConfig = ExternalService & {
+    /**
+     * Either the metadata xml or a file path to the metadata file on disk
+     */
+    metadata: string;
+    /**
+     * Either an inline array of entity set data or a file path to a JSON file on disk
+     */
+    entityData?: EntitySetData[] | string;
+};
+
 /**
  * Defines the external interface used to generate in headless mode (no prompts)
  * This is a deliberate re-definition of internal interfaces to avoid consumers having
@@ -98,6 +112,11 @@ export interface AppConfig {
         readonly skipAnnotations?: boolean;
         readonly enableEslint?: boolean;
         readonly enableTypeScript?: boolean;
+        /**
+         * If true, virtual endpoints will be used for preview instead of generating flpSandbox.html and related files.
+         * Defaults to true if not specified.
+         */
+        readonly enableVirtualEndpoints?: boolean;
     };
     service?: {
         readonly host?: string;
@@ -116,6 +135,10 @@ export interface AppConfig {
             readonly appPath?: string; // Alternative app path
         };
         readonly apiHubApiKey?: string; // Non-enterprise support only currently
+        /**
+         * Pre-fetched value help and code list metadata to be written.
+         */
+        externalServices?: ExternalServiceConfig[];
     };
     deployConfig?: DeployConfig;
     flpConfig?: FLPConfig;

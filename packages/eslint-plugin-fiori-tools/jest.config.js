@@ -1,7 +1,13 @@
 const config = require('../../jest.base');
 module.exports = {
     ...config,
-    // Coverage is handled by c8 wrapper for worker thread support
-    collectCoverage: false,
-    setupFiles: ['<rootDir>/test/global-setup.ts']
-}
+    // coverageProvider: 'v8' overrides jest.base default ('babel'); collectCoverage: true is inherited from jest.base
+    coverageProvider: 'v8',
+    setupFiles: ['<rootDir>/test/global-setup.ts'],
+    coveragePathIgnorePatterns: [
+        'src/types.ts',
+        'src/language/annotations/types.ts',
+        'src/language/json/types.ts',
+        'src/language/xml/types.ts'
+    ]
+};

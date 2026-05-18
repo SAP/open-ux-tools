@@ -1,5 +1,35 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.5.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 0.4.20
+
+### Patch Changes
+
+- 59537d3: chore: override sharp to >=0.33.5 to fix CI build on darwin-arm64
+
+## 0.4.19
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
+## 0.4.18
+
+### Patch Changes
+
+- a5c05a8: Add additional guidance on the adding of extension in fiori
+
+## 0.4.17
+
+### Patch Changes
+
+- e4a2488: feat - docs - how to add extensions to odata v4 fiori elements
+
 ## 0.4.16
 
 ### Patch Changes

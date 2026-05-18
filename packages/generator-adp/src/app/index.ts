@@ -12,6 +12,7 @@ import {
     fetchPublicVersions,
     generate,
     generateCf,
+    getCfBaseAppInbounds,
     getCfConfig,
     getConfig,
     getConfiguredProvider,
@@ -284,11 +285,12 @@ export default class extends Generator {
             await this._promptForCfEnvironment();
         } else {
             const isExtensibilityExtInstalled = isExtensionInstalled(this.vscode, 'SAP.vscode-bas-extensibility');
-            const isInternalUsage = isInternalFeaturesSettingEnabled();
             const configQuestions = this.prompter.getPrompts({
                 projectType: {
-                    default: isInternalUsage ? AdaptationProjectType.ON_PREMISE : AdaptationProjectType.CLOUD_READY
+                    default: AdaptationProjectType.CLOUD_READY
                 },
+                projectTypeCli: { hide: !this.isCli },
+                projectTypeClassicLabel: { hide: this.isCli },
                 appValidationCli: { hide: !this.isCli },
                 systemValidationCli: { hide: !this.isCli },
                 shouldCreateExtProject: { isExtensibilityExtInstalled }
@@ -579,7 +581,9 @@ export default class extends Generator {
             ui5Version: { hide: true },
             ui5ValidationCli: { hide: true },
             enableTypeScript: { hide: true },
-            addFlpConfig: { hide: true },
+            // In CF flow, inbounds are fetched after base app selection (CF services page), which comes after attributes.
+            // We assume true here so the wizard prepares the tile settings page; actual inbounds availability is handled by the FLP sub-gen.
+            addFlpConfig: { hasBaseAppInbounds: true },
             addDeployConfig: { hide: true },
             importKeyUserChanges: { hide: true }
         };
@@ -603,6 +607,39 @@ export default class extends Generator {
         const cfServicesQuestions = await this.cfPrompter.getPrompts(projectPath, this.cfConfig);
         this.cfServicesAnswers = await this.prompt<CfServicesAnswers>(cfServicesQuestions);
         this.logger.info(`CF Services Answers: ${JSON.stringify(this.cfServicesAnswers, null, 2)}`);
+
+        const selectedApp = this.cfServicesAnswers.baseApp;
+        if (!selectedApp || !this.attributeAnswers?.addFlpConfig) {
+            return;
+        }
+
+        try {
+            const cfInbounds = await getCfBaseAppInbounds(
+                selectedApp.appId,
+                selectedApp.appHostId,
+                this.cfConfig,
+                this.logger
+            );
+            // Register FLP wizard pages now that we know if inbounds are available
+            updateFlpWizardSteps(!!cfInbounds, this.prompts, this.attributeAnswers.projectName, true);
+            if (cfInbounds) {
+                await addFlpGen(
+                    {
+                        vscode: this.vscode,
+                        projectRootPath: this._getProjectPath(),
+                        inbounds: cfInbounds,
+                        layer: this.layer,
+                        prompts: this.prompts,
+                        isCfProject: true
+                    },
+                    this.composeWith.bind(this),
+                    this.logger,
+                    this.appWizard
+                );
+            }
+        } catch (e) {
+            this.logger.warn(`Could not fetch CF inbounds for FLP configuration: ${e.message}`);
+        }
     }
 
     /**
@@ -751,13 +788,16 @@ export default class extends Generator {
         const supportedProject = await getSupportedProject(this.abapProvider);
         let selectedProjectType = AdaptationProjectType.ON_PREMISE;
         if (supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM) {
-            selectedProjectType = projectType ?? AdaptationProjectType.CLOUD_READY;
+            const isInternalUsage = isInternalFeaturesSettingEnabled();
+            selectedProjectType = isInternalUsage
+                ? AdaptationProjectType.ON_PREMISE
+                : (projectType ?? AdaptationProjectType.CLOUD_READY);
         } else if (supportedProject === SupportedProject.CLOUD_READY) {
             selectedProjectType = AdaptationProjectType.CLOUD_READY;
         }
         this.projectType = selectedProjectType;
 
-        const applications = await loadApps(this.abapProvider, this.isCustomerBase, selectedProjectType);
+        const applications = await loadApps(this.abapProvider, this.isCustomerBase, supportedProject);
         this.telemetryCollector.setBatch({ numberOfApplications: applications.length });
         const application = applications.find((application) => application.id === baseApplicationName);
         if (!application) {

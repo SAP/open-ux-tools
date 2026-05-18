@@ -227,6 +227,7 @@ describe('Test utils', () => {
         // tests from reconcileAnswers
         const expectedAnswers: AbapDeployConfigAnswers = {
             url: 'htpp://target.url',
+            connectPath: '/sap/bc/test',
             client: '100',
             ui5AbapRepo: 'Mock Repo',
             description: 'Mock Description',
@@ -236,6 +237,7 @@ describe('Test utils', () => {
         };
 
         PromptState.abapDeployConfig = {
+            connectPath: '/sap/bc/test',
             client: '100',
             scp: false
         };

@@ -1,5 +1,128 @@
 # @sap-ux/ui-prompting
 
+## 0.7.1
+
+### Patch Changes
+
+- Updated dependencies [742d896]
+    - @sap-ux/ui-components@2.2.1
+
+## 0.7.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/ui-components@2.2.0
+
+## 0.6.29
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/ui-components@2.1.16
+
+## 0.6.28
+
+### Patch Changes
+
+- Updated dependencies [189ad98]
+    - @sap-ux/ui-components@2.1.15
+
+## 0.6.27
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/ui-components@2.1.14
+
+## 0.6.26
+
+### Patch Changes
+
+- Updated dependencies [7f8a712]
+    - @sap-ux/ui-components@2.1.13
+
+## 0.6.25
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/ui-components@2.1.12
+
+## 0.6.24
+
+### Patch Changes
+
+- Updated dependencies [f77f003]
+    - @sap-ux/ui-components@2.1.11
+
+## 0.6.23
+
+### Patch Changes
+
+- Updated dependencies [4357b0b]
+    - @sap-ux/ui-components@2.1.10
+
+## 0.6.22
+
+### Patch Changes
+
+- Updated dependencies [9357457]
+    - @sap-ux/ui-components@2.1.9
+
+## 0.6.21
+
+### Patch Changes
+
+- Updated dependencies [10f83b6]
+    - @sap-ux/ui-components@2.1.8
+
+## 0.6.20
+
+### Patch Changes
+
+- Updated dependencies [f101671]
+    - @sap-ux/ui-components@2.1.7
+
+## 0.6.19
+
+### Patch Changes
+
+- Updated dependencies [6b622e0]
+    - @sap-ux/ui-components@2.1.6
+
+## 0.6.18
+
+### Patch Changes
+
+- c53a4ba: chore(ui-prompting): upgrade @testing-library/jest-dom 5.17.0 → 6.9.1
+
+    chore(ui-prompting): replace deprecated @storybook/addons 7.6.20 with @storybook/manager-api 8.6.17; align @storybook/react + @storybook/react-webpack5 8.4.2 → 8.6.17
+
+    Note: jest-environment-jsdom kept at 29.7.0 — jsdom 26 (bundled in v30) hangs with enzyme-adapter-react-16
+
+- Updated dependencies [c53a4ba]
+    - @sap-ux/ui-components@2.1.5
+
+## 0.6.17
+
+### Patch Changes
+
+- Updated dependencies [a41533f]
+    - @sap-ux/ui-components@2.1.4
+
+## 0.6.16
+
+### Patch Changes
+
+- Updated dependencies [7f2689f]
+    - @sap-ux/ui-components@2.1.3
+
 ## 0.6.15
 
 ### Patch Changes

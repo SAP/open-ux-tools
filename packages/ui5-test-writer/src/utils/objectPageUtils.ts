@@ -1,14 +1,24 @@
 import type { Logger } from '@sap-ux/logger';
 import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
-import type { HeaderSectionFeatureData, ObjectPageFeatures, ObjectPageNavigationParents } from '../types';
+import type {
+    FormField,
+    SectionFormField,
+    BodySectionFeatureData,
+    BodySubSectionFeatureData,
+    HeaderSectionFeatureData,
+    ObjectPageFeatures,
+    ObjectPageNavigationParents
+} from '../types';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 import {
     type AggregationItem,
+    type BodySectionItem,
     type FieldItem,
     type HeaderSectionItem,
     type SectionItem,
     getAggregations
 } from './modelUtils';
+import { extractTableColumnsFromNode } from './tableUtils';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page';
 
 /**
@@ -42,6 +52,8 @@ export async function getObjectPageFeatures(
         );
         // extract header sections (facets)
         pageFeatureData.headerSections = extractObjectPageHeaderSectionsData(objectPage);
+        // extract body sections
+        pageFeatureData.bodySections = extractObjectPageBodySectionsData(objectPage);
         objectPageFeatures.push(pageFeatureData);
     }
 
@@ -133,6 +145,98 @@ function extractObjectPageHeaderSectionsData(objectPage: PageWithModelV4): Heade
 }
 
 /**
+ * Extracts body sections data from an object page model.
+ *
+ * @param objectPage - object page from the application model
+ * @returns body sections data including sub-sections
+ */
+function extractObjectPageBodySectionsData(objectPage: PageWithModelV4): BodySectionFeatureData[] {
+    const bodySections: BodySectionFeatureData[] = [];
+    if (objectPage.model) {
+        const sectionsAggregation = getAggregations(objectPage.model.root)['sections'];
+        const sections = getAggregations(sectionsAggregation) as Record<string, BodySectionItem>;
+        Object.entries(sections).forEach(([sectionKey, section]) => {
+            const sectionId = getSectionIdentifier(section) ?? sectionKey;
+            const subSections = extractBodySubSectionsData(section, sectionId);
+            bodySections.push({
+                id: sectionId,
+                navigationProperty: getNavigationPropertyFromKey(sectionKey),
+                isTable: !!section.isTable,
+                custom: !!section.custom,
+                order: section?.order ?? -1, // put a negative order number to signal that order was not in spec
+                fields: section.custom || section.isTable ? [] : extractFormFields(section),
+                tableColumns: section.custom || !section.isTable ? {} : extractTableColumnsFromNode(section),
+                subSections
+            });
+        });
+    }
+
+    return bodySections;
+}
+
+/**
+ * Extracts sub-sections data from a body section.
+ *
+ * @param section - body section entry from the application model
+ * @param parentSectionId - identifier of the parent section (used as fallback key prefix)
+ * @returns array of sub-section feature data
+ */
+function extractBodySubSectionsData(section: SectionItem, parentSectionId: string): BodySubSectionFeatureData[] {
+    const subSections: BodySubSectionFeatureData[] = [];
+    const subSectionsAggregation = getAggregations(section)['subSections'];
+    const subSectionItems = getAggregations(subSectionsAggregation) as Record<string, BodySectionItem>;
+    Object.entries(subSectionItems).forEach(([subSectionKey, subSection]) => {
+        const subSectionId = getSectionIdentifier(subSection) ?? `${parentSectionId}_${subSectionKey}`;
+        subSections.push({
+            id: subSectionId,
+            navigationProperty: getNavigationPropertyFromKey(subSectionKey),
+            isTable: !!subSection.isTable,
+            custom: !!subSection.custom,
+            order: subSection?.order ?? -1, // put a negative order number to signal that order was not in spec
+            fields: subSection.custom || subSection.isTable ? [] : extractFormFields(subSection),
+            tableColumns: subSection.custom || !subSection.isTable ? {} : extractTableColumnsFromNode(subSection)
+        });
+    });
+    return subSections;
+}
+
+/**
+ * Extracts form field property paths from a body sub-section's form aggregation.
+ *
+ * @param subSection - body sub-section entry from the application model
+ * @returns array of form field property paths for use with iCheckField({ property })
+ */
+function extractFormFields(subSection: BodySectionItem): SectionFormField[] {
+    const fields: SectionFormField[] = [];
+    const formAggregation = getAggregations(subSection)['form'] as AggregationItem;
+    if (!formAggregation) {
+        return fields;
+    }
+    const fieldsAggregation = getAggregations(formAggregation)['fields'] as AggregationItem;
+    const fieldItems = getAggregations(fieldsAggregation) as Record<string, FieldItem>;
+    Object.values(fieldItems).forEach((field) => {
+        const property = field.schema?.keys?.find((key) => key.name === 'Value')?.value;
+        if (property) {
+            fields.push({ property });
+        }
+    });
+    return fields;
+}
+
+/**
+ * Extracts the OData navigation property from a spec model section key.
+ * Section keys for table sections follow the pattern `_NavProperty::@annotation`, so the
+ * navigation property is the part before `::` when it starts with an underscore.
+ *
+ * @param sectionKey - the key of the section in the spec model aggregations
+ * @returns navigation property (e.g. '_Booking'), or undefined for non-navigation sections
+ */
+function getNavigationPropertyFromKey(sectionKey: string): string | undefined {
+    const prefix = sectionKey.split('::')[0];
+    return prefix.startsWith('_') ? prefix : undefined;
+}
+
+/**
  * Gets the identifier of a section for OPA5 tests.
  *
  * @param section - section entry from ux specification
@@ -143,14 +247,14 @@ function getSectionIdentifier(section: SectionItem): string | undefined {
 }
 
 /**
- * Gets the identifier of a section from the 'ID' entry in the schema keys for OPA5 tests.
+ * Gets the identifier of a section from the 'ID' or 'Key' entry in the schema keys for OPA5 tests.
  * If no such entry is found, undefined is returned.
  *
  * @param section - section entry from ux specification
- * @returns identifier of the section for OPA5 tests; can be undefined if no 'ID' entry is found
+ * @returns identifier of the section for OPA5 tests; can be undefined if no 'ID' or 'Key' entry is found
  */
 function getSectionIdentifierFromKey(section: SectionItem): string | undefined {
-    const keyEntry = section?.schema?.keys?.find((key) => key.name === 'ID');
+    const keyEntry = section?.schema?.keys?.find((key) => key.name === 'ID' || key.name === 'Key');
     return keyEntry ? keyEntry.value.replace('#', '::') : undefined;
 }
 
@@ -188,15 +292,41 @@ function getHeaderSectionFormFields(section: HeaderSectionItem): HeaderSectionFe
     if (fields) {
         Object.keys(fields).forEach((fieldKey) => {
             const field = fields[fieldKey];
-            if (field?.name) {
-                formFields.push({
-                    fieldGroupQualifier: getFieldGroupQualifier(formAggregation),
-                    field: field.schema.keys.find((key) => key.name === 'Value')?.value
-                });
+            const fieldData = getFormFieldData(field, formAggregation);
+            if (fieldData) {
+                formFields.push(fieldData);
             }
         });
     }
     return formFields;
+}
+
+/**
+ * Gets field data for a form field in a header section for OPA5 tests, including its identifier, bound property, and target annotation.
+ *
+ * @param field - field entry from ux specification
+ * @param formAggregation - form aggregation entry from ux specification, used to get field group qualifier for the field
+ * @returns field data including its identifier, bound property, and target annotation for OPA5 tests; can be undefined if the field type is not supported or necessary information is missing
+ */
+function getFormFieldData(field: FieldItem, formAggregation: AggregationItem): FormField | undefined {
+    if (!field.name) {
+        return undefined;
+    }
+    let [_, propertyName, targetAnnotation]: (string | undefined)[] = field.name.split('::');
+
+    // fall back to Value property in case of malformed or otherwise irregular field name
+    if (!propertyName) {
+        propertyName = field.schema.keys.find((key) => key.name === 'Value')?.value;
+    }
+
+    const fieldIdentifier = {
+        fieldGroupQualifier: getFieldGroupQualifier(formAggregation),
+        field: propertyName,
+        targetAnnotation: targetAnnotation
+    };
+
+    // avoid creating identifier if field property could not be determined
+    return fieldIdentifier.field ? fieldIdentifier : undefined;
 }
 
 /**

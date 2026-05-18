@@ -1,5 +1,235 @@
 # @sap-ux/ui5-test-writer
 
+## 0.9.3
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@0.26.3
+
+## 0.9.2
+
+### Patch Changes
+
+- Updated dependencies [fb00faa]
+    - @sap-ux/preview-middleware@0.26.2
+
+## 0.9.1
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+    - @sap-ux/preview-middleware@0.26.1
+
+## 0.9.0
+
+### Minor Changes
+
+- 2f0c182: feat: support virtual preview endpoints for test generation
+
+    When `useVirtualPreviewEndpoints` is enabled, test harness files (testsuite, unitTests, opaTests) are served virtually and not written to disk. UI5 yaml files are updated with `flp.path: test/flp.html` and test framework entries (OPA5, Testsuite, QUnit) are added to ui5-mock.yaml.
+
+## 0.8.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/fiori-generator-shared@0.15.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/ui5-application-writer@1.9.0
+
+## 0.7.114
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/fiori-generator-shared@0.14.2
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/ui5-application-writer@1.8.9
+
+## 0.7.113
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/fiori-generator-shared@0.14.1
+    - @sap-ux/ui5-application-writer@1.8.8
+
+## 0.7.112
+
+### Patch Changes
+
+- Updated dependencies [9360ea5]
+    - @sap-ux/fiori-generator-shared@0.14.0
+
+## 0.7.111
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/fiori-generator-shared@0.13.105
+    - @sap-ux/project-access@1.36.3
+    - @sap-ux/ui5-application-writer@1.8.8
+
+## 0.7.110
+
+### Patch Changes
+
+- 865fb96: fixes for app info generation
+
+## 0.7.109
+
+### Patch Changes
+
+- @sap-ux/ui5-application-writer@1.8.7
+- @sap-ux/project-access@1.36.2
+
+## 0.7.108
+
+### Patch Changes
+
+- 287e3a4: Generate tests for Form and Table content in Object Page Sections
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/ui5-application-writer@1.8.7
+
+## 0.7.107
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/ui5-application-writer@1.8.7
+
+## 0.7.106
+
+### Patch Changes
+
+- Updated dependencies [165a6c2]
+    - @sap-ux/ui5-application-writer@1.8.7
+
+## 0.7.105
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/ui5-application-writer@1.8.6
+    - @sap-ux/project-access@1.35.21
+
+## 0.7.104
+
+### Patch Changes
+
+- d36d5d7: app info generation fixes
+
+## 0.7.103
+
+### Patch Changes
+
+- 4357b0b: generate opa5 tests from app info
+
+## 0.7.102
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.20
+- @sap-ux/ui5-application-writer@1.8.5
+
+## 0.7.101
+
+### Patch Changes
+
+- 17d8e42: fixes for object page opa test failures
+
+## 0.7.100
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/ui5-application-writer@1.8.4
+    - @sap-ux/project-access@1.35.19
+
+## 0.7.99
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/ui5-application-writer@1.8.3
+
+## 0.7.98
+
+### Patch Changes
+
+- 9d272d7: Fix header form field identifier values
+
+## 0.7.97
+
+### Patch Changes
+
+- 791e9b9: Generate OPA5 existence checks for object page sections & subsections
+
+## 0.7.96
+
+### Patch Changes
+
+- c53a4ba: chore(ui5-test-writer): upgrade shared devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/ui5-application-writer@1.8.3
+    - @sap-ux/project-access@1.35.17
+
+## 0.7.95
+
+### Patch Changes
+
+- aa2baf3: fix action button state test based on line item selection
+
+## 0.7.94
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/ui5-application-writer@1.8.2
+
+## 0.7.93
+
+### Patch Changes
+
+- a41533f: chore(ui5-test-writer): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-application-writer@1.8.2
+
+## 0.7.92
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/ui5-application-writer@1.8.1
+
+## 0.7.91
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+- @sap-ux/ui5-application-writer@1.8.1
+
 ## 0.7.90
 
 ### Patch Changes

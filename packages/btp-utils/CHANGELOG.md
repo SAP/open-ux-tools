@@ -1,5 +1,49 @@
 # @sap-ux/btp-utils
 
+## 1.2.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 1.1.16
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
+## 1.1.15
+
+### Patch Changes
+
+- 678a08e: chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
+
+## 1.1.14
+
+### Patch Changes
+
+- ee68603: Axios upgrade from bas-sdk
+
+## 1.1.13
+
+### Patch Changes
+
+- cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
+
+## 1.1.12
+
+### Patch Changes
+
+- 2e17a6b: fix: allow deployment to OnPremise destinations with WebIDEUsage odata_gen
+
+    isAbapSystem now returns true for destinations with ProxyType=OnPremise, fixing deployments that failed with a cryptic 'bind' error when WebIDEUsage was set to odata_gen. deploy-tooling also now surfaces an actionable error message if a non-ABAP provider is resolved.
+
+## 1.1.11
+
+### Patch Changes
+
+- a41533f: chore(btp-utils): fix indentation in boolean expressions (Prettier upgrade autofix)
+
 ## 1.1.10
 
 ### Patch Changes

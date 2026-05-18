@@ -15,7 +15,7 @@ describe('<ActionButtons />', () => {
         password: 'password',
         connectionType: 'abap_catalog'
     };
-    it('Test Export button', () => {
+    it('Test Export button (abap_catalog)', () => {
         render(<ExternalActionBtns systemInfo={systemInfo} systemUnSaved={false} />);
         const exportSystemSpy = jest.spyOn(actions, 'exportSystem');
 
@@ -23,6 +23,17 @@ describe('<ActionButtons />', () => {
         fireEvent.click(exportSystemButton);
 
         expect(exportSystemSpy).toHaveBeenCalledWith(systemInfo);
+    });
+
+    it('Test Export button (odata_service)', () => {
+        const systemInfoODataService = { ...systemInfo, connectionType: 'odata_service' } as BackendSystem;
+        render(<ExternalActionBtns systemInfo={systemInfoODataService} systemUnSaved={false} />);
+        const exportSystemSpy = jest.spyOn(actions, 'exportSystem');
+
+        const exportSystemButton = screen.getByRole('button', { name: 'Export System' });
+        fireEvent.click(exportSystemButton);
+
+        expect(exportSystemSpy).toHaveBeenCalledWith(systemInfoODataService);
     });
 
     it('Test Create SAP Fiori application button', () => {

@@ -1,5 +1,47 @@
 # @sap-ux/cds-annotation-parser
 
+## 0.3.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/odata-annotation-core@0.3.0
+    - @sap-ux/odata-entity-model@0.4.0
+    - @sap-ux/odata-vocabularies@0.5.0
+    - @sap-ux/text-document-utils@0.4.0
+
+## 0.2.37
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/odata-annotation-core@0.2.19
+    - @sap-ux/odata-entity-model@0.3.8
+    - @sap-ux/odata-vocabularies@0.4.32
+    - @sap-ux/text-document-utils@0.3.5
+
+## 0.2.36
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/text-document-utils@0.3.4
+    - @sap-ux/odata-annotation-core@0.2.18
+    - @sap-ux/odata-entity-model@0.3.7
+    - @sap-ux/odata-vocabularies@0.4.31
+
+## 0.2.35
+
+### Patch Changes
+
+- Updated dependencies [c53a4ba]
+    - @sap-ux/odata-vocabularies@0.4.30
+
 ## 0.2.34
 
 ### Patch Changes

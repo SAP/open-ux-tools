@@ -7310,8 +7310,8 @@ export default [
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
-    \\"eslint\\": \\"^9\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^10.0.0\\",
+    \\"eslint\\": \\"^10\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -18299,6 +18299,10 @@ server:
       configuration:
         flp:
           theme: sap_belize
+        test:
+          - framework: OPA5
+            path: /test/integration/opaTests.qunit.html
+          - framework: Testsuite
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -18996,76 +19000,19 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
 });",
     "state": "modified",
   },
-  "webapp/test/integration/opaTests.qunit.html": Object {
-    "contents": "<!DOCTYPE html>
-<html>
-<head>
-    <title>Integration tests</title>
-    <meta charset=\\"utf-8\\">
-
-    <script id=\\"sap-ui-bootstrap\\"
-            src=\\"../../resources/sap-ui-core.js\\"
-            data-sap-ui-theme='sap_fiori_3'
-            data-sap-ui-resourceroots='{
-                \\"lrop_v4_add_test_virtual_endpoints\\": \\"../../\\"
-            }'
-            data-sap-ui-animation=\\"false\\"
-            data-sap-ui-compatVersion=\\"edge\\"
-            data-sap-ui-async=\\"true\\">
-    </script>
-
-    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
-
-    <script src=\\"opaTests.qunit.js\\"></script>
-
-</head>
-<body>
-    <div id=\\"qunit\\"></div>
-    <div id=\\"qunit-fixture\\"></div>
-</body>
-</html>
-",
-    "state": "modified",
-  },
-  "webapp/test/integration/opaTests.qunit.js": Object {
-    "contents": "sap.ui.loader.config({
-    shim: {
-        \\"sap/ui/qunit/qunit-junit\\": {
-            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
-        },
-        \\"sap/ui/qunit/qunit-coverage\\": {
-            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
-        },
-        \\"sap/ui/thirdparty/sinon-qunit\\": {
-            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
-        },
-        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
-            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
-        }
-    }
-});
-
-window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
-
-sap.ui.require(
-  [
-    \\"sap/ui/thirdparty/qunit-2\\",
-    \\"sap/ui/qunit/qunit-junit\\",
-    \\"sap/ui/qunit/qunit-coverage\\",
-    \\"lrop_v4_add_test_virtual_endpoints/test/integration/FirstJourney\\",
-], function (QUnit) {
-    \\"use strict\\";
-    QUnit.start();
-});
-",
-    "state": "modified",
-  },
   "webapp/test/integration/pages/BookingObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -19126,11 +19073,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -19386,32 +19340,6 @@ sap.registerComponentDependencyPaths(manifestUri)
             });
         }
     });",
-    "state": "modified",
-  },
-  "webapp/test/testsuite.qunit.html": Object {
-    "contents": "<!DOCTYPE html>
-<html>
-  <head>
-    <title>QUnit test suite</title>
-    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
-    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
-  </head>
-  <body></body>
-</html>",
-    "state": "modified",
-  },
-  "webapp/test/testsuite.qunit.js": Object {
-    "contents": "window.suite = function() {
-    'use strict';
-
-    // eslint-disable-next-line
-    var oSuite = new parent.jsUnitTestSuite(),
-    
-    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
-    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
-
-    return oSuite;
-};",
     "state": "modified",
   },
 }
@@ -22971,11 +22899,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/BookingObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -23036,11 +22971,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -23814,11 +23756,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/BookingObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -23879,11 +23828,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -24199,8 +24155,8 @@ export default [
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
-    \\"eslint\\": \\"^9\\"
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^10.0.0\\",
+    \\"eslint\\": \\"^10\\"
   },
   \\"scripts\\": {
     \\"deploy-config\\": \\"npx -p @sap/ux-ui5-tooling fiori add deploy-config cf\\"
@@ -24724,11 +24680,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/BookingObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -24789,11 +24752,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -26106,11 +26076,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/BookingObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -26171,11 +26148,18 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -47861,8 +47845,8 @@ export default [
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
-    \\"eslint\\": \\"^9\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^10.0.0\\",
+    \\"eslint\\": \\"^10\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -51361,8 +51345,8 @@ export default [
     \\"@sapui5/ts-types-esm\\": \\"~1.111.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
-    \\"eslint\\": \\"^9\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^10.0.0\\",
+    \\"eslint\\": \\"^10\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -54861,8 +54845,8 @@ export default [
     \\"@sapui5/types\\": \\"~1.113.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
-    \\"eslint\\": \\"^9\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^10.0.0\\",
+    \\"eslint\\": \\"^10\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {

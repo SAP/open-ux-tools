@@ -3,12 +3,28 @@ import { readFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import type { FoundFioriArtifacts, Manifest } from '@sap-ux/project-access';
 import { findFioriArtifacts, normalizePath } from '@sap-ux/project-access';
-import type { FeV4ListReport, FeV4ObjectPage, LinkedFeV4App } from '../../../src/project-context/linker/fe-v4';
+import type {
+    FeV4ListReport,
+    FeV4ObjectPage,
+    LinkedFeV4App,
+    TableSection
+} from '../../../src/project-context/linker/fe-v4';
 import { runFeV4Linker } from '../../../src/project-context/linker/fe-v4';
 import type { LinkerContext } from '../../../src/project-context/linker/types';
 import { ApplicationParser } from '../../../src/project-context/parser';
 import type { ManifestChange } from '../../test-helper';
-import { applyManifestChange, applyXmlAnnotationsChange } from '../../test-helper';
+import {
+    applyManifestChange,
+    applyXmlAnnotationsChange,
+    CAP_APP_PATH,
+    CAP_FACETS_ANNOTATIONS,
+    CAP_PROJECT_PATH,
+    npmInstall
+} from '../../test-helper';
+import { collectSections, type AnnotationBasedNode } from '../../../src/project-context/linker/annotations';
+import { getParsedServiceByName } from '../../../src/project-context/utils';
+
+jest.setTimeout(60000); // time needed for Windows
 
 const parser = new ApplicationParser();
 
@@ -17,7 +33,33 @@ interface TestOptions {
     annotationsChange?: string;
 }
 
-describe('FE V4 Linker', () => {
+function findListReportPage(app: LinkedFeV4App, index = 0): FeV4ListReport {
+    let i = 0;
+    for (const page of app.pages) {
+        if (page.componentName === 'sap.fe.templates.ListReport') {
+            if (i === index) {
+                return page;
+            }
+            i++;
+        }
+    }
+    throw new Error('ListReport page not found');
+}
+
+function findObjectPage(app: LinkedFeV4App, index = 0): FeV4ObjectPage {
+    let i = 0;
+    for (const page of app.pages) {
+        if (page.componentName === 'sap.fe.templates.ObjectPage') {
+            if (i === index) {
+                return page;
+            }
+            i++;
+        }
+    }
+    throw new Error('ObjectPage not found');
+}
+
+describe('FE V4 Linker - XML', () => {
     let artifacts: FoundFioriArtifacts;
     const fileCache = new Map<string, string>();
     const root = join(__dirname, '..', '..', 'data', 'v4-xml-start');
@@ -72,32 +114,6 @@ describe('FE V4 Linker', () => {
             app,
             diagnostics: []
         };
-    }
-
-    function findListReportPage(app: LinkedFeV4App, index = 0): FeV4ListReport {
-        let i = 0;
-        for (const page of app.pages) {
-            if (page.componentName === 'sap.fe.templates.ListReport') {
-                if (i === index) {
-                    return page;
-                }
-                i++;
-            }
-        }
-        throw new Error('ListReport page not found');
-    }
-
-    function findObjectPage(app: LinkedFeV4App, index = 0): FeV4ObjectPage {
-        let i = 0;
-        for (const page of app.pages) {
-            if (page.componentName === 'sap.fe.templates.ObjectPage') {
-                if (i === index) {
-                    return page;
-                }
-                i++;
-            }
-        }
-        throw new Error('ObjectPage not found');
     }
 
     describe('linkTableSettings', () => {
@@ -568,5 +584,599 @@ describe('FE V4 Linker', () => {
                 'visible'
             ]);
         });
+    });
+});
+
+const CAP_FACET_NO_ID = `
+                annotate service.Priority with @(
+    UI.Facets         : [{
+        $Type : 'UI.ReferenceFacet',
+        Target: 'incidentFlow/@UI.LineItem#table_section',
+        Label : 'table section',
+        // no ID
+    }, ],
+);`;
+
+const CAP_FACET_NO_ANNOTATION = `
+annotate service.Category with @(
+    UI.Facets         : [{
+        $Type : 'UI.ReferenceFacet',
+        // no annotation path
+        Label : 'table section',
+        ID    : 'table_section',
+    }, ],
+);`;
+
+describe('FE V4 Linker - CAP', () => {
+    let artifacts: FoundFioriArtifacts;
+    const fileCache = new Map<string, string>();
+
+    beforeAll(async () => {
+        npmInstall(CAP_PROJECT_PATH);
+        artifacts = await findFioriArtifacts({
+            wsFolders: [CAP_PROJECT_PATH],
+            artifacts: ['applications', 'adaptations']
+        });
+        const files = [
+            join('app', 'incidents', 'annotations.cds'),
+            join('srv', 'incidentservice.cds'),
+            join('app', 'incidents', 'webapp', 'manifest.json')
+        ];
+        for (const file of files) {
+            const absolutePath = normalizePath(join(CAP_PROJECT_PATH, file));
+            let content = await readFile(absolutePath, 'utf-8');
+            if (file.endsWith('annotations.cds')) {
+                content += CAP_FACETS_ANNOTATIONS + CAP_FACET_NO_ID + CAP_FACET_NO_ANNOTATION;
+            }
+            const uri = pathToFileURL(absolutePath).toString();
+            fileCache.set(uri, content);
+        }
+    });
+
+    async function setup(options?: TestOptions): Promise<LinkerContext> {
+        const testCache = new Map<string, string>(fileCache);
+        if (options?.manifestChanges) {
+            const absolutePath = normalizePath(join(CAP_APP_PATH, 'webapp', 'manifest.json'));
+            const uri = pathToFileURL(absolutePath).toString();
+            const manifestText = fileCache.get(uri)!;
+            const manifestObject = JSON.parse(manifestText) as Manifest;
+            for (const change of options?.manifestChanges) {
+                applyManifestChange(manifestObject, change);
+            }
+            testCache.set(uri, JSON.stringify(manifestObject, null, 4));
+        }
+        if (options?.annotationsChange) {
+            const absolutePath = normalizePath(join(CAP_APP_PATH, 'annotations.cds'));
+            const uri = pathToFileURL(absolutePath).toString();
+            const annotations = fileCache.get(uri)!;
+            const modifiedAnnotations = `${annotations}${options?.annotationsChange}`;
+            testCache.set(uri, modifiedAnnotations);
+        }
+        const model = parser.parse('CAPNodejs', artifacts, testCache);
+        const app = model.index.apps[Object.keys(model.index.apps)[0]];
+        return {
+            app,
+            diagnostics: []
+        };
+    }
+
+    describe('linkTableSettings', () => {
+        describe('application level', () => {
+            test('createMode', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: ['sap.fe', 'app', 'macros', 'table', 'defaultCreationMode'],
+                            value: 'InlineCreationRows'
+                        }
+                    ]
+                });
+
+                const result = runFeV4Linker(context);
+                expect(result.configuration.createMode).toMatchSnapshot();
+            });
+        });
+
+        describe('page level - listReport page', () => {
+            test('creationMode', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'IncidentsList',
+                                'options',
+                                'settings',
+                                'controlConfiguration',
+                                '@com.sap.vocabularies.UI.v1.LineItem',
+                                'tableSettings',
+                                'creationMode',
+                                'name'
+                            ],
+                            value: 'InlineCreationRows'
+                        }
+                    ]
+                });
+                const result = runFeV4Linker(context);
+                const page = findListReportPage(result);
+                expect(page.lookup['table']?.[0].configuration.creationMode).toMatchSnapshot();
+            });
+        });
+
+        describe('section level - object page', () => {
+            test('creationMode', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'IncidentsObjectPage',
+                                'options',
+                                'settings',
+                                'controlConfiguration',
+                                '@com.sap.vocabularies.UI.v1.LineItem',
+                                'tableSettings',
+                                'creationMode',
+                                'name'
+                            ],
+                            value: 'InlineCreationRows'
+                        }
+                    ]
+                });
+                const result = runFeV4Linker(context);
+                const page = findObjectPage(result);
+                const table = page.lookup['table'];
+                expect(page.sections).toHaveLength(1);
+                expect((page.sections[0].annotation as AnnotationBasedNode<'table-section'>).annotationPath).toBe(
+                    '@com.sap.vocabularies.UI.v1.Facets/0'
+                );
+                expect((page.sections[0] as TableSection).children).toHaveLength(1);
+                expect((page.sections[0] as TableSection).children[0].annotation?.annotationPath).toBe(
+                    'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem#table_section'
+                );
+                expect(table).toHaveLength(1);
+                expect(table![0].configuration.creationMode).toMatchSnapshot();
+            });
+
+            test('creationMode with contextPath', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'Incidents_incidentFlowObjectPage',
+                                'options',
+                                'settings',
+                                'contextPath'
+                            ],
+                            value: '/Incidents/incidentFlow'
+                        },
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'Incidents_incidentFlowObjectPage',
+                                'options',
+                                'settings',
+                                'controlConfiguration',
+                                '@com.sap.vocabularies.UI.v1.LineItem',
+                                'tableSettings',
+                                'creationMode',
+                                'name'
+                            ],
+                            value: 'InlineCreationRows'
+                        }
+                    ]
+                });
+                const result = runFeV4Linker(context);
+                const page = findObjectPage(result);
+                const table = page.lookup['table'];
+                expect(table).toHaveLength(1);
+                expect(table![0].configuration.creationMode).toMatchSnapshot();
+            });
+
+            test('creationMode - wrong value', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'IncidentsObjectPage',
+                                'options',
+                                'settings',
+                                'controlConfiguration',
+                                '@com.sap.vocabularies.UI.v1.LineItem',
+                                'tableSettings',
+                                'creationMode',
+                                'name'
+                            ],
+                            value: 'abc'
+                        }
+                    ]
+                });
+                const result = runFeV4Linker(context);
+                const page = findObjectPage(result);
+                const table = page.lookup['table'];
+                expect(table).toHaveLength(1);
+                expect(table![0].configuration.creationMode).toMatchSnapshot();
+            });
+
+            test('orphan-node', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'IncidentsObjectPage',
+                                'options',
+                                'settings',
+                                'controlConfiguration',
+                                '@com.sap.vocabularies.UI.v1.LineItem#test',
+                                'tableSettings',
+                                'creationMode',
+                                'name'
+                            ],
+                            value: 'InlineCreationRows'
+                        }
+                    ]
+                });
+                const result = runFeV4Linker(context);
+                const page = findObjectPage(result);
+                const orphanSections = page.lookup['orphan-section'];
+                expect(orphanSections).toHaveLength(1);
+                expect(orphanSections![0].configuration).toMatchSnapshot();
+            });
+
+            test('orphan-table', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'IncidentsList',
+                                'options',
+                                'settings',
+                                'controlConfiguration'
+                            ],
+                            value: '{}'
+                        }
+                    ]
+                });
+                const result = runFeV4Linker(context);
+                const page = findListReportPage(result);
+                const table = page.lookup['table'];
+                expect(table).toHaveLength(1);
+                expect(table![0].configuration).toMatchSnapshot();
+            });
+
+            test('tableType', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'IncidentsObjectPage',
+                                'options',
+                                'settings',
+                                'controlConfiguration',
+                                '@com.sap.vocabularies.UI.v1.LineItem',
+                                'tableSettings',
+                                'type'
+                            ],
+                            value: 'ResponsiveTable'
+                        }
+                    ]
+                });
+                const result = runFeV4Linker(context);
+                const page = findObjectPage(result);
+                const table = page.lookup['table'];
+                expect(table).toHaveLength(1);
+                expect(table![0].configuration.tableType).toMatchSnapshot();
+            });
+
+            test('tableType - wrong value', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'IncidentsObjectPage',
+                                'options',
+                                'settings',
+                                'controlConfiguration',
+                                '@com.sap.vocabularies.UI.v1.LineItem#test',
+                                'tableSettings',
+                                'type'
+                            ],
+                            value: 'wrong-value'
+                        }
+                    ]
+                });
+                const result = runFeV4Linker(context);
+                const page = findObjectPage(result);
+                const table = page.lookup['table'];
+                expect(table).toHaveLength(1);
+                expect(table![0].configuration.tableType).toMatchSnapshot();
+            });
+        });
+    });
+
+    describe('header configuration extraction', () => {
+        test('no header configuration', async () => {
+            const context = await setup();
+            const result = runFeV4Linker(context);
+            const page = findObjectPage(result);
+            expect(page.header.anchorBarVisible.valueInFile).toBeUndefined();
+            expect(page.header.visible.valueInFile).toBeUndefined();
+            expect(page.header.anchorBarVisible.configurationPath).toEqual([
+                'sap.ui5',
+                'routing',
+                'targets',
+                'IncidentsObjectPage',
+                'options',
+                'settings',
+                'content',
+                'header',
+                'anchorBarVisible'
+            ]);
+            expect(page.header.visible.configurationPath).toEqual([
+                'sap.ui5',
+                'routing',
+                'targets',
+                'IncidentsObjectPage',
+                'options',
+                'settings',
+                'content',
+                'header',
+                'visible'
+            ]);
+        });
+
+        test('both anchorBarVisible and visible set to false', async () => {
+            const context = await setup({
+                manifestChanges: [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'content',
+                            'header',
+                            'anchorBarVisible'
+                        ],
+                        value: false
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'content',
+                            'header',
+                            'visible'
+                        ],
+                        value: false
+                    }
+                ]
+            });
+            const result = runFeV4Linker(context);
+            const page = findObjectPage(result);
+            expect(page.header.anchorBarVisible.valueInFile).toBe(false);
+            expect(page.header.visible.valueInFile).toBe(false);
+            expect(page.header.anchorBarVisible.configurationPath).toEqual([
+                'sap.ui5',
+                'routing',
+                'targets',
+                'IncidentsObjectPage',
+                'options',
+                'settings',
+                'content',
+                'header',
+                'anchorBarVisible'
+            ]);
+        });
+
+        test('only anchorBarVisible set to false', async () => {
+            const context = await setup({
+                manifestChanges: [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'content',
+                            'header',
+                            'anchorBarVisible'
+                        ],
+                        value: false
+                    }
+                ]
+            });
+            const result = runFeV4Linker(context);
+            const page = findObjectPage(result);
+            expect(page.header.anchorBarVisible.valueInFile).toBe(false);
+            expect(page.header.visible.valueInFile).toBeUndefined();
+            expect(page.header.anchorBarVisible.configurationPath).toEqual([
+                'sap.ui5',
+                'routing',
+                'targets',
+                'IncidentsObjectPage',
+                'options',
+                'settings',
+                'content',
+                'header',
+                'anchorBarVisible'
+            ]);
+        });
+
+        test('only visible set to true', async () => {
+            const context = await setup({
+                manifestChanges: [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'content',
+                            'header',
+                            'visible'
+                        ],
+                        value: true
+                    }
+                ]
+            });
+            const result = runFeV4Linker(context);
+            const page = findObjectPage(result);
+            expect(page.header.anchorBarVisible.valueInFile).toBeUndefined();
+            expect(page.header.visible.valueInFile).toBe(true);
+            expect(page.header.visible.configurationPath).toEqual([
+                'sap.ui5',
+                'routing',
+                'targets',
+                'IncidentsObjectPage',
+                'options',
+                'settings',
+                'content',
+                'header',
+                'visible'
+            ]);
+        });
+
+        test('anchorBarVisible true and visible false', async () => {
+            const context = await setup({
+                manifestChanges: [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'content',
+                            'header',
+                            'anchorBarVisible'
+                        ],
+                        value: true
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'content',
+                            'header',
+                            'visible'
+                        ],
+                        value: false
+                    }
+                ]
+            });
+            const result = runFeV4Linker(context);
+            const page = findObjectPage(result);
+            expect(page.header.anchorBarVisible.valueInFile).toBe(true);
+            expect(page.header.visible.valueInFile).toBe(false);
+            expect(page.header.anchorBarVisible.configurationPath).toEqual([
+                'sap.ui5',
+                'routing',
+                'targets',
+                'IncidentsObjectPage',
+                'options',
+                'settings',
+                'content',
+                'header',
+                'anchorBarVisible'
+            ]);
+            expect(page.header.visible.configurationPath).toEqual([
+                'sap.ui5',
+                'routing',
+                'targets',
+                'IncidentsObjectPage',
+                'options',
+                'settings',
+                'content',
+                'header',
+                'visible'
+            ]);
+        });
+    });
+
+    test('collectSections', async () => {
+        const context = await setup({});
+        const mainService = getParsedServiceByName(context.app);
+        if (!mainService) {
+            fail('Service not found');
+        }
+        const entity = mainService.index.entitySets['Incidents'];
+        if (!entity?.structuredType) {
+            fail('Entity not found');
+        }
+        const sections = collectSections('v4', entity.structuredType, mainService);
+        expect(sections).toHaveLength(1);
+        expect(sections[0].type).toBe('table-section');
+        expect(sections[0].annotationPath).toBe('@com.sap.vocabularies.UI.v1.Facets/0');
+        expect(sections[0].children[0].annotationPath).toBe(
+            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem#table_section'
+        );
+    });
+
+    test('collectSections - no section ID', async () => {
+        const context = await setup({});
+        const mainService = getParsedServiceByName(context.app);
+        if (!mainService) {
+            fail('Service not found');
+        }
+        const entity = mainService.index.entitySets['Priority'];
+        if (!entity?.structuredType) {
+            fail('Entity not found');
+        }
+        const sections = collectSections('v4', entity.structuredType, mainService);
+        expect(sections).toHaveLength(0);
+    });
+
+    test('collectSections - no section annotation path', async () => {
+        const context = await setup({});
+        const mainService = getParsedServiceByName(context.app);
+        if (!mainService) {
+            fail('Service not found');
+        }
+        const entity = mainService.index.entitySets['Category'];
+        if (!entity?.structuredType) {
+            fail('Entity not found');
+        }
+        const sections = collectSections('v4', entity.structuredType, mainService);
+        expect(sections).toHaveLength(0);
     });
 });

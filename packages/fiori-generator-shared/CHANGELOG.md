@@ -1,5 +1,199 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.15.1
+
+### Patch Changes
+
+- 2c76f8f: refactor(fiori-generator-shared): remove dead ExternalServiceConfig type and externalServices field from AppConfig
+
+## 0.15.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/telemetry@0.7.0
+
+## 0.14.2
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/telemetry@0.6.106
+
+## 0.14.1
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/telemetry@0.6.105
+
+## 0.14.0
+
+### Minor Changes
+
+- 9360ea5: feat(fiori-app-sub-generator): support virtual endpoints in headless generator, defaulting to true
+
+    Added `enableVirtualEndpoints` option to `AppConfig` in `fiori-generator-shared`. When used in the headless generator, this defaults to `true`, causing virtual preview endpoints to be used instead of generating `flpSandbox.html` and related test files.
+
+## 0.13.105
+
+### Patch Changes
+
+- 678a08e: chore: upgrade runtime dependencies (@sap/cf-tools 3.3.0 → 3.3.1, @vscode-logging/logger 2.0.8 → 2.0.9)
+- Updated dependencies [678a08e]
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/telemetry@0.6.104
+    - @sap-ux/project-access@1.36.3
+
+## 0.13.104
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/telemetry@0.6.103
+    - @sap-ux/project-access@1.36.2
+
+## 0.13.103
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/telemetry@0.6.102
+
+## 0.13.102
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/telemetry@0.6.101
+
+## 0.13.101
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/telemetry@0.6.100
+
+## 0.13.100
+
+### Patch Changes
+
+- 237371b: fix(axios-extension): export EntitySetData type
+  feat(fiori-generator-shared): add ExternalServiceConfig headless type supporting metadata and entityData as inline values or file paths
+  feat(fiori-app-sub-generator): resolve external service metadata and entityData file paths in headless generator before passing to writer
+
+## 0.13.99
+
+### Patch Changes
+
+- Updated dependencies [67d1f8b]
+    - @sap-ux/telemetry@0.6.99
+
+## 0.13.98
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/telemetry@0.6.98
+
+## 0.13.97
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/telemetry@0.6.97
+    - @sap-ux/project-access@1.35.20
+
+## 0.13.96
+
+### Patch Changes
+
+- @sap-ux/btp-utils@1.1.12
+- @sap-ux/project-access@1.35.19
+- @sap-ux/telemetry@0.6.96
+
+## 0.13.95
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/telemetry@0.6.95
+
+## 0.13.94
+
+### Patch Changes
+
+- c53a4ba: chore(fiori-generator-shared): upgrade shared devDependencies (jest 30, i18next 25, @types/yeoman-generator 5.2.14)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/telemetry@0.6.94
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/project-access@1.35.17
+
+## 0.13.93
+
+### Patch Changes
+
+- Updated dependencies [e92850e]
+    - @sap-ux/telemetry@0.6.93
+
+## 0.13.92
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/telemetry@0.6.92
+
+## 0.13.91
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/telemetry@0.6.91
+
+## 0.13.90
+
+### Patch Changes
+
+- a41533f: chore(fiori-generator-shared): upgrade runtime dependencies (i18next 25.8.20, logform 2.7.0)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/telemetry@0.6.90
+
+## 0.13.89
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/telemetry@0.6.89
+
+## 0.13.88
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+- @sap-ux/telemetry@0.6.88
+
 ## 0.13.87
 
 ### Patch Changes

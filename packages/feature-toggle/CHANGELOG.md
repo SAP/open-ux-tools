@@ -1,5 +1,23 @@
 # @sap-ux/feature-toggle
 
+## 0.4.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 0.3.9
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
+## 0.3.8
+
+### Patch Changes
+
+- c53a4ba: chore(feature-toggle): upgrade jest-when 3.x → 4.x; upgrade shared devDependencies (jest 30)
+
 ## 0.3.7
 
 ### Patch Changes

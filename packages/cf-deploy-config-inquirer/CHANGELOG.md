@@ -1,5 +1,189 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.6.1
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/inquirer-common@0.13.0
+
+## 0.6.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/inquirer-common@0.12.0
+    - @sap-ux/logger@0.9.0
+
+## 0.5.130
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.48
+
+## 0.5.129
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/inquirer-common@0.11.47
+    - @sap-ux/logger@0.8.6
+
+## 0.5.128
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.46
+
+## 0.5.127
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.45
+
+## 0.5.126
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/inquirer-common@0.11.44
+
+## 0.5.125
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.43
+
+## 0.5.124
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.42
+
+## 0.5.123
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.41
+
+## 0.5.122
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.40
+
+## 0.5.121
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.39
+
+## 0.5.120
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.38
+
+## 0.5.119
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.37
+
+## 0.5.118
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/inquirer-common@0.11.36
+
+## 0.5.117
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/inquirer-common@0.11.35
+
+## 0.5.116
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/inquirer-common@0.11.34
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/btp-utils@1.1.12
+
+## 0.5.115
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.33
+
+## 0.5.114
+
+### Patch Changes
+
+- c53a4ba: chore(cf-deploy-config-inquirer): upgrade shared devDependencies (jest 30, i18next 25, @types/yeoman-generator 5.2.14)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/inquirer-common@0.11.32
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/btp-utils@1.1.12
+
+## 0.5.113
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.31
+
+## 0.5.112
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/inquirer-common@0.11.30
+
+## 0.5.111
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.29
+
+## 0.5.110
+
+### Patch Changes
+
+- a41533f: chore(cf-deploy-config-inquirer): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/inquirer-common@0.11.28
+    - @sap-ux/logger@0.8.3
+
+## 0.5.109
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.27
+
+## 0.5.108
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.26
+
 ## 0.5.107
 
 ### Patch Changes

@@ -1,5 +1,124 @@
 # @sap-ux/project-input-validator
 
+## 0.7.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/project-access@1.37.0
+
+## 0.6.84
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/project-access@1.36.5
+
+## 0.6.83
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+
+## 0.6.82
+
+### Patch Changes
+
+- @sap-ux/project-access@1.36.3
+
+## 0.6.81
+
+### Patch Changes
+
+- @sap-ux/project-access@1.36.2
+
+## 0.6.80
+
+### Patch Changes
+
+- a4b90ca: fix: Execute validation for multiple segments in project name for internal Cloud Foundry adaptation projects
+
+## 0.6.79
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+
+## 0.6.78
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+
+## 0.6.77
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+
+## 0.6.76
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.20
+
+## 0.6.75
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.19
+
+## 0.6.74
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+
+## 0.6.73
+
+### Patch Changes
+
+- c53a4ba: chore(project-input-validator): upgrade shared devDependencies (jest 30, i18next 25)
+    - @sap-ux/project-access@1.35.17
+
+## 0.6.72
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+
+## 0.6.71
+
+### Patch Changes
+
+- a41533f: chore(project-input-validator): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+    - @sap-ux/project-access@1.35.16
+
+## 0.6.70
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+
+## 0.6.69
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+
 ## 0.6.68
 
 ### Patch Changes

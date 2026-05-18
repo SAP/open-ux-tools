@@ -39,7 +39,7 @@ describe('Test command add eslint-config', () => {
         } as Partial<Editor> as Editor;
         jest.spyOn(appConfigWriter, 'generateEslintConfig').mockResolvedValue(fsMock);
         getProjectTypeSpy = jest.spyOn(projectAccess, 'getProjectType').mockResolvedValue('CAPNodejs');
-        runNpmInstallSpy = jest.spyOn(common, 'runNpmInstallCommand').mockImplementation(() => undefined);
+        runNpmInstallSpy = jest.spyOn(common, 'runNpmInstallCommand').mockImplementation(() => Promise.resolve());
     });
 
     test('Test create-fiori add eslint-config <appRoot>', async () => {

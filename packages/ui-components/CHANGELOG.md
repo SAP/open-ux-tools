@@ -1,5 +1,101 @@
 # @sap-ux/ui-components
 
+## 2.2.1
+
+### Patch Changes
+
+- 742d896: Fixed missing local-variable box shadow for dropdown menus in UICombobox, UIDropdown.
+
+## 2.2.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 2.1.16
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
+## 2.1.15
+
+### Patch Changes
+
+- 189ad98: UISections/UISplitter: Updated resize splitter UI and set `UISplitterLayoutType.Compact` as the default `splitterLayoutType`.
+
+## 2.1.14
+
+### Patch Changes
+
+- 678a08e: chore: upgrade uuid 11.1.0 → 11.1.1 (GHSA-w5hq-g745-h8pq buffer bounds check fix)
+
+## 2.1.13
+
+### Patch Changes
+
+- 7f8a712: Adjust toolbar border and separator color variables
+
+## 2.1.12
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+
+## 2.1.11
+
+### Patch Changes
+
+- f77f003: fix(deps): update dependency sanitize-html to v2.17.3 [security]
+
+## 2.1.10
+
+### Patch Changes
+
+- 4357b0b: generate opa5 tests from app info
+
+## 2.1.9
+
+### Patch Changes
+
+- 9357457: fix(ui-components): add inline code block styling for VS Code webviews
+
+## 2.1.8
+
+### Patch Changes
+
+- 10f83b6: UIActionButton, UIDefaultButton - adjust `min height` after latest Fluent UI update
+
+## 2.1.7
+
+### Patch Changes
+
+- f101671: Add line-height to UITranslationInput text
+
+## 2.1.6
+
+### Patch Changes
+
+- 6b622e0: error, warning, info boxes have rounded corners
+
+## 2.1.5
+
+### Patch Changes
+
+- c53a4ba: chore(ui-components): upgrade @testing-library/jest-dom 5.17.0 → 6.9.1; upgrade sass-loader 13→16, style-loader 3→4, css-loader 6→7; implement custom jsdom env for writable window.location
+
+## 2.1.4
+
+### Patch Changes
+
+- a41533f: chore(ui-components): upgrade runtime dependencies (@fluentui/react 8.125.5, sanitize-html 2.17.2)
+
+## 2.1.3
+
+### Patch Changes
+
+- 7f2689f: `UITranslationInput` - removed unnecessary <span> elements and left-aligned message content.
+
 ## 2.1.2
 
 ### Patch Changes

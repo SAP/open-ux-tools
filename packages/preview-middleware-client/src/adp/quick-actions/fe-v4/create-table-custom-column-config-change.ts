@@ -103,15 +103,14 @@ function findAnchor(table: UI5Element): string {
     const macroTable = table.getParent();
     let anchor: string = '';
     if (isMacroTable(macroTable)) {
-        let metaPath = '';
-        if (macroTable.metaPath.includes('LineItem')) {
-            metaPath = macroTable.metaPath;
-        } else {
+        const metaPath = macroTable.metaPath.includes('LineItem')
+            ? macroTable.metaPath
+            : (() => {
             const segments = macroTable.metaPath.split('/');
             segments.pop();
             const path = segments.join('/');
-            metaPath = `${path}/${getLineItemAnnotation(macroTable)}`;
-        }
+                return `${path}/${getLineItemAnnotation(macroTable)}`;
+            })();
         if (!metaPath) {
             return '';
         }
@@ -123,7 +122,7 @@ function findAnchor(table: UI5Element): string {
                     'com.sap.vocabularies.UI.v1.DataFieldForIntentBasedNavigation',
                     'com.sap.vocabularies.UI.v1.DataFieldForAnnotation'
                 ].includes(col.$Type) ||
-                ('com.sap.vocabularies.UI.v1.DataFieldForAction' === col.$Type && col.Inline)
+                (col.$Type === 'com.sap.vocabularies.UI.v1.DataFieldForAction' && col.Inline)
         ) as {
             $Type: string;
             Inline?: boolean;

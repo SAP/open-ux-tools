@@ -1,5 +1,45 @@
 # @sap-ux/serve-static-middleware
 
+## 0.5.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/logger@0.9.0
+
+## 0.4.14
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/logger@0.8.6
+
+## 0.4.13
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+
+## 0.4.12
+
+### Patch Changes
+
+- Updated dependencies [c53a4ba]
+    - @sap-ux/logger@0.8.4
+
+## 0.4.11
+
+### Patch Changes
+
+- Updated dependencies [a41533f]
+    - @sap-ux/logger@0.8.3
+
 ## 0.4.10
 
 ### Patch Changes

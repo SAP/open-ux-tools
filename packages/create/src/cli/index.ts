@@ -118,7 +118,7 @@ function getCommanderProgram(): Command {
  * @param commands - List of commands
  * @returns - Summary of the subcommands
  */
-function getFeatureSummary(commands: Command[]): string {
+function getFeatureSummary(commands: readonly Command[]): string {
     const subCommandNames = commands.map((cmd) => `\`${cmd.name()}\``);
     return subCommandNames.join(', ').replace(/, ([^,]*)$/, ' and $1');
 }

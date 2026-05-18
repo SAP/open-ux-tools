@@ -115,6 +115,7 @@ function _setProjectDefaults(project: AppConfig['project']): Project {
         enableEslint: project.enableEslint ?? defaultPromptValues[promptNames.enableEslint],
         enableTypeScript: project.enableTypeScript ?? defaultPromptValues[promptNames.enableTypeScript],
         sapux: project.sapux || false,
+        enableVirtualEndpoints: project.enableVirtualEndpoints ?? true,
         flpAppId: '' // Mandatory property, will be generated in the writing phase transforms and overwritten
     };
 }
@@ -145,7 +146,8 @@ function _setServiceDefaults(floorplan: AppConfig['floorplan'], service?: AppCon
         servicePath: service?.servicePath,
         client: service?.client,
         edmx: service?.edmx,
-        version
+        version,
+        valueListMetadata: service?.externalServices
     } as Service;
 
     if (service?.destination) {

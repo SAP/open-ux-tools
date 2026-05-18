@@ -1,5 +1,309 @@
 # @sap-ux/deploy-tooling
 
+## 0.19.1
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/inquirer-common@0.13.0
+
+## 0.19.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/inquirer-common@0.12.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/project-input-validator@0.7.0
+    - @sap-ux/system-access@0.8.0
+    - @sap-ux/ui5-config@0.31.0
+
+## 0.18.27
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.48
+
+## 0.18.26
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/inquirer-common@0.11.47
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/project-input-validator@0.6.84
+    - @sap-ux/system-access@0.7.13
+    - @sap-ux/ui5-config@0.30.5
+
+## 0.18.25
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/axios-extension@1.25.36
+    - @sap-ux/system-access@0.7.12
+    - @sap-ux/inquirer-common@0.11.46
+    - @sap-ux/project-input-validator@0.6.83
+
+## 0.18.24
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.45
+
+## 0.18.23
+
+### Patch Changes
+
+- 678a08e: chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
+- Updated dependencies [678a08e]
+    - @sap-ux/axios-extension@1.25.35
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/inquirer-common@0.11.44
+    - @sap-ux/ui5-config@0.30.4
+    - @sap-ux/system-access@0.7.11
+    - @sap-ux/project-input-validator@0.6.82
+
+## 0.18.22
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/system-access@0.7.10
+    - @sap-ux/axios-extension@1.25.34
+    - @sap-ux/inquirer-common@0.11.43
+    - @sap-ux/project-input-validator@0.6.81
+
+## 0.18.21
+
+### Patch Changes
+
+- Updated dependencies [a4b90ca]
+    - @sap-ux/project-input-validator@0.6.80
+
+## 0.18.20
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+- Updated dependencies [3945459]
+    - @sap-ux/axios-extension@1.25.33
+    - @sap-ux/system-access@0.7.9
+    - @sap-ux/inquirer-common@0.11.42
+    - @sap-ux/project-input-validator@0.6.79
+
+## 0.18.19
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.32
+- @sap-ux/inquirer-common@0.11.41
+- @sap-ux/project-input-validator@0.6.78
+- @sap-ux/system-access@0.7.8
+
+## 0.18.18
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.32
+- @sap-ux/inquirer-common@0.11.40
+- @sap-ux/project-input-validator@0.6.77
+- @sap-ux/system-access@0.7.8
+
+## 0.18.17
+
+### Patch Changes
+
+- Updated dependencies [237371b]
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/system-access@0.7.8
+    - @sap-ux/inquirer-common@0.11.39
+
+## 0.18.16
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.38
+
+## 0.18.15
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+    - @sap-ux/inquirer-common@0.11.37
+
+## 0.18.14
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/axios-extension@1.25.31
+    - @sap-ux/inquirer-common@0.11.36
+    - @sap-ux/system-access@0.7.7
+
+## 0.18.13
+
+### Patch Changes
+
+- cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
+- Updated dependencies [cc4450c]
+    - @sap-ux/axios-extension@1.25.30
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/inquirer-common@0.11.35
+    - @sap-ux/ui5-config@0.30.3
+    - @sap-ux/system-access@0.7.6
+    - @sap-ux/project-input-validator@0.6.76
+
+## 0.18.12
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+- Updated dependencies [f1e4481]
+    - @sap-ux/axios-extension@1.25.29
+    - @sap-ux/inquirer-common@0.11.34
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/ui5-config@0.30.2
+    - @sap-ux/system-access@0.7.5
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/project-input-validator@0.6.75
+
+## 0.18.11
+
+### Patch Changes
+
+- 56239c2: fix(deploy-tooling): normalize package name to uppercase in task (ui5-deploy) flow (#4453)
+
+    Moves package name normalization from `mergeConfig` (CLI-only) into `validateConfig` (shared), ensuring lowercase ABAP package names are uppercased with a warning in both the CLI and ui5-deploy task flows.
+
+## 0.18.10
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.28
+- @sap-ux/inquirer-common@0.11.33
+- @sap-ux/project-input-validator@0.6.74
+- @sap-ux/system-access@0.7.4
+
+## 0.18.9
+
+### Patch Changes
+
+- c53a4ba: chore(deploy-tooling): upgrade commander 9.x → 14.x; upgrade shared devDependencies (jest 30)
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/axios-extension@1.25.28
+    - @sap-ux/inquirer-common@0.11.32
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/project-input-validator@0.6.73
+    - @sap-ux/system-access@0.7.4
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/ui5-config@0.30.1
+
+## 0.18.8
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.31
+
+## 0.18.7
+
+### Patch Changes
+
+- 2e17a6b: fix: allow deployment to OnPremise destinations with WebIDEUsage odata_gen
+
+    isAbapSystem now returns true for destinations with ProxyType=OnPremise, fixing deployments that failed with a cryptic 'bind' error when WebIDEUsage was set to odata_gen. deploy-tooling also now surfaces an actionable error message if a non-ABAP provider is resolved.
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+    - @sap-ux/axios-extension@1.25.27
+    - @sap-ux/inquirer-common@0.11.30
+    - @sap-ux/system-access@0.7.3
+
+## 0.18.6
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.26
+- @sap-ux/inquirer-common@0.11.29
+- @sap-ux/project-input-validator@0.6.72
+- @sap-ux/system-access@0.7.2
+
+## 0.18.5
+
+### Patch Changes
+
+- b4b4447: fix(deploy-tooling): suppress 'Change logging level' hint when debug logging is already enabled via config.log
+
+## 0.18.4
+
+### Patch Changes
+
+- a41533f: chore(deploy-tooling): reformat CliOptions interface extends clause (Prettier upgrade autofix)
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/axios-extension@1.25.26
+    - @sap-ux/btp-utils@1.1.11
+    - @sap-ux/inquirer-common@0.11.28
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/project-input-validator@0.6.71
+    - @sap-ux/ui5-config@0.30.1
+    - @sap-ux/system-access@0.7.2
+
+## 0.18.3
+
+### Patch Changes
+
+- c7ce73f: Normalize $tmp package name to $TMP with a warning message to prevent deployment failures
+
+## 0.18.2
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.25
+- @sap-ux/inquirer-common@0.11.27
+- @sap-ux/project-input-validator@0.6.70
+- @sap-ux/system-access@0.7.1
+
+## 0.18.1
+
+### Patch Changes
+
+- Updated dependencies [c0e05ab]
+    - @sap-ux/axios-extension@1.25.25
+    - @sap-ux/system-access@0.7.1
+
+## 0.18.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/system-access@0.7.0
+    - @sap-ux/ui5-config@0.30.0
+    - @sap-ux/inquirer-common@0.11.26
+    - @sap-ux/axios-extension@1.25.24
+    - @sap-ux/project-input-validator@0.6.69
+
 ## 0.17.74
 
 ### Patch Changes

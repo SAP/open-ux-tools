@@ -1,5 +1,147 @@
 # @sap-ux/annotation-generator
 
+## 0.5.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/fiori-annotation-api@0.10.0
+    - @sap-ux/odata-annotation-core-types@0.6.0
+    - @sap-ux/odata-entity-model@0.4.0
+    - @sap-ux/project-access@1.37.0
+
+## 0.4.57
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/fiori-annotation-api@0.9.50
+    - @sap-ux/odata-annotation-core-types@0.5.9
+    - @sap-ux/odata-entity-model@0.3.8
+    - @sap-ux/project-access@1.36.5
+
+## 0.4.56
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/fiori-annotation-api@0.9.49
+
+## 0.4.55
+
+### Patch Changes
+
+- @sap-ux/project-access@1.36.3
+- @sap-ux/fiori-annotation-api@0.9.48
+
+## 0.4.54
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/fiori-annotation-api@0.9.47
+    - @sap-ux/odata-annotation-core-types@0.5.8
+    - @sap-ux/project-access@1.36.2
+    - @sap-ux/odata-entity-model@0.3.7
+
+## 0.4.53
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/fiori-annotation-api@0.9.46
+
+## 0.4.52
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/fiori-annotation-api@0.9.45
+
+## 0.4.51
+
+### Patch Changes
+
+- Updated dependencies [52f6549]
+    - @sap-ux/fiori-annotation-api@0.9.44
+
+## 0.4.50
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/fiori-annotation-api@0.9.43
+
+## 0.4.49
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.20
+- @sap-ux/fiori-annotation-api@0.9.42
+
+## 0.4.48
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.41
+- @sap-ux/project-access@1.35.19
+
+## 0.4.47
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/fiori-annotation-api@0.9.40
+
+## 0.4.46
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.39
+- @sap-ux/project-access@1.35.17
+
+## 0.4.45
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/fiori-annotation-api@0.9.38
+
+## 0.4.44
+
+### Patch Changes
+
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/fiori-annotation-api@0.9.37
+    - @sap-ux/project-access@1.35.16
+
+## 0.4.43
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/fiori-annotation-api@0.9.36
+
+## 0.4.42
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+- @sap-ux/fiori-annotation-api@0.9.35
+
 ## 0.4.41
 
 ### Patch Changes

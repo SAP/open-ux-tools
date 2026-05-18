@@ -9,10 +9,12 @@ import {
     ENABLE_EXPORT,
     ENABLE_PASTE,
     STATE_PRESERVATION_MODE,
+    NO_DATA_FIELD_INTENT_BASED_NAVIGATION,
     CONDENSED_TABLE_LAYOUT,
-    STRICT_UOM_FILTERING,
+    TABLE_COLUMN_VERTICAL_ALIGNMENT,
     TABLE_PERSONALIZATION,
-    TABLE_COLUMN_VERTICAL_ALIGNMENT
+    TEXT_ARRANGEMENT_HIDDEN,
+    STRICT_UOM_FILTERING
 } from '../language/diagnostics';
 
 // Import all rules
@@ -76,7 +78,9 @@ import enableExport from './sap-enable-export';
 import enablePaste from './sap-enable-paste';
 import tablePersonalization from './sap-table-personalization';
 import tableColumnVerticalAlignment from './sap-table-column-vertical-alignment';
+import noDataFieldIntentBasedNavigation from './sap-no-data-field-intent-based-navigation';
 import condensedTableLayout from './sap-condensed-table-layout';
+import textArrangementHidden from './sap-text-arrangement-hidden';
 
 import type { Rule } from 'eslint';
 
@@ -137,8 +141,10 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [ENABLE_PASTE]: enablePaste,
     [CREATION_MODE_FOR_TABLE]: creationModeForTable,
     [STATE_PRESERVATION_MODE]: statePreservationMode,
+    [NO_DATA_FIELD_INTENT_BASED_NAVIGATION]: noDataFieldIntentBasedNavigation,
     [CONDENSED_TABLE_LAYOUT]: condensedTableLayout,
     [STRICT_UOM_FILTERING]: strictUomFilteringRule,
+    [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment,
     [TABLE_PERSONALIZATION]: tablePersonalization,
-    [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment
+    [TEXT_ARRANGEMENT_HIDDEN]: textArrangementHidden
 };

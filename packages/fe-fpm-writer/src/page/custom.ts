@@ -147,7 +147,7 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
 
     const manifestPath = await getManifestPath(basePath, fs);
 
-    const fnGenerateId = await createIdGenerator(basePath, fs);
+    const fnGenerateId = await createIdGenerator({ basePath, fsEditor: fs });
     const config = enhanceData(data, manifestPath, fs);
 
     // merge content into existing files

@@ -5,7 +5,8 @@ import {
     appConfigInvalidCapServiceName,
     appConfigInvalidEdmx,
     appConfigNotSupportedVersion,
-    appConfigDest
+    appConfigDest,
+    appConfigWithValueListMetadata
 } from './test-data/testHeadlessAppConfigs';
 
 /**
@@ -33,6 +34,7 @@ describe('Test headless', () => {
                 description: 'An SAP Fiori application.',
                 enableEslint: true,
                 enableTypeScript: false,
+                enableVirtualEndpoints: true,
                 flpAppId: '',
                 localUI5Version: '1.88.1',
                 name: 'simple',
@@ -58,5 +60,55 @@ describe('Test headless', () => {
             },
             viewName: 'view1'
         });
+    });
+
+    test('externalServices entries are passed through to service state', () => {
+        const state = transformExtState(appConfigWithValueListMetadata as unknown as FFAppConfig);
+        expect(state.service).toEqual({
+            client: undefined,
+            destinationName: 'SomeDestinationName',
+            edmx: expect.stringContaining('<?xml version="1.0" encoding="utf-8" ?>'),
+            host: undefined,
+            servicePath: undefined,
+            source: 'sapSystem',
+            version: '2',
+            valueListMetadata: [
+                {
+                    type: 'value-list',
+                    target: 'SomeEntity/SomeProperty',
+                    metadata: expect.stringContaining('<edmx:Edmx'),
+                    path: '/sap/opu/odata4/sap/some_vh_service/srvd/sap/some_vh_service/0001/'
+                },
+                {
+                    type: 'code-list',
+                    collectionPath: 'Currencies',
+                    metadata: expect.stringContaining('<edmx:Edmx'),
+                    path: '/sap/opu/odata4/sap/common/srvd/sap/common/0001/'
+                }
+            ]
+        });
+    });
+
+    test('enableVirtualEndpoints defaults to true when not specified', () => {
+        const state = transformExtState(appConfigDest as unknown as FFAppConfig);
+        expect(state.project.enableVirtualEndpoints).toBe(true);
+    });
+
+    test('enableVirtualEndpoints is passed through when explicitly set to false', () => {
+        const appConfigWithVirtualEndpointsDisabled = {
+            ...appConfigDest,
+            project: { ...appConfigDest.project, enableVirtualEndpoints: false }
+        };
+        const state = transformExtState(appConfigWithVirtualEndpointsDisabled as unknown as FFAppConfig);
+        expect(state.project.enableVirtualEndpoints).toBe(false);
+    });
+
+    test('enableVirtualEndpoints is passed through when explicitly set to true', () => {
+        const appConfigWithVirtualEndpointsEnabled = {
+            ...appConfigDest,
+            project: { ...appConfigDest.project, enableVirtualEndpoints: true }
+        };
+        const state = transformExtState(appConfigWithVirtualEndpointsEnabled as unknown as FFAppConfig);
+        expect(state.project.enableVirtualEndpoints).toBe(true);
     });
 });

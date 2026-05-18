@@ -1,5 +1,58 @@
 # @sap-ux/ui5-config
 
+## 0.31.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/yaml@0.18.0
+
+## 0.30.5
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/yaml@0.17.8
+
+## 0.30.4
+
+### Patch Changes
+
+- 678a08e: chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
+
+## 0.30.3
+
+### Patch Changes
+
+- cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
+
+## 0.30.2
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+- Updated dependencies [f1e4481]
+    - @sap-ux/yaml@0.17.7
+
+## 0.30.1
+
+### Patch Changes
+
+- a41533f: chore(ui5-config): upgrade axios 1.13.5 → 1.13.6
+- Updated dependencies [a41533f]
+    - @sap-ux/yaml@0.17.6
+
+## 0.30.0
+
+### Minor Changes
+
+- 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
+
 ## 0.29.21
 
 ### Patch Changes

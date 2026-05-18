@@ -1,5 +1,111 @@
 # @sap-ux/project-integrity
 
+## 0.3.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/project-access@1.37.0
+
+## 0.2.74
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/project-access@1.36.5
+
+## 0.2.73
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+
+## 0.2.72
+
+### Patch Changes
+
+- @sap-ux/project-access@1.36.3
+
+## 0.2.71
+
+### Patch Changes
+
+- @sap-ux/project-access@1.36.2
+
+## 0.2.70
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+
+## 0.2.69
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+
+## 0.2.68
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+
+## 0.2.67
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.20
+
+## 0.2.66
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.19
+
+## 0.2.65
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+
+## 0.2.64
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+
+## 0.2.63
+
+### Patch Changes
+
+- a41533f: fix(project-integrity): fix ReadStream data event handler for @types/node 20.x (chunk type widened to `string | Buffer`)
+- Updated dependencies [a41533f]
+    - @sap-ux/project-access@1.35.16
+
+## 0.2.62
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+
+## 0.2.61
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+
 ## 0.2.60
 
 ### Patch Changes

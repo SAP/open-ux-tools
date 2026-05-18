@@ -1,5 +1,37 @@
 # @sap-ux/i18n
 
+## 0.4.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/text-document-utils@0.4.0
+
+## 0.3.12
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/text-document-utils@0.3.5
+
+## 0.3.11
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/text-document-utils@0.3.4
+
+## 0.3.10
+
+### Patch Changes
+
+- a41533f: chore(i18n): upgrade vscode-languageserver-textdocument 1.0.11 → 1.0.12
+
 ## 0.3.9
 
 ### Patch Changes

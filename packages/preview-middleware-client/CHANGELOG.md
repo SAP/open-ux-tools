@@ -1,5 +1,159 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.26.3
+
+## 0.26.2
+
+## 0.26.1
+
+## 0.26.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux-private/control-property-editor-common@0.8.0
+
+## 0.25.47
+
+## 0.25.46
+
+## 0.25.45
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux-private/control-property-editor-common@0.7.8
+
+## 0.25.44
+
+## 0.25.43
+
+## 0.25.42
+
+### Patch Changes
+
+- be5476f: feat: Display unhandled exceptions from the Controller extension inside the Info Center.
+
+## 0.25.41
+
+### Patch Changes
+
+- 17de742: fix: Add fragment list to model for custom fragments
+
+## 0.25.40
+
+### Patch Changes
+
+- f2bb2e4: Fix sonar issue 'Ensure that tainted data is validated before being used to construct a client-side request URL.' for method 'registerComponentDependencyPaths'
+
+## 0.25.39
+
+## 0.25.38
+
+### Patch Changes
+
+- 600f1b1: feat: Missing fragment or controller extension files errors to be shown in InfoCenter
+
+## 0.25.37
+
+## 0.25.36
+
+## 0.25.35
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+
+## 0.25.34
+
+## 0.25.33
+
+## 0.25.32
+
+## 0.25.31
+
+### Patch Changes
+
+- 165a6c2: feat: support ESLint 10
+
+## 0.25.30
+
+## 0.25.29
+
+### Patch Changes
+
+- 03d3ea1: fix(deps): Update dependency @ui5/manifest to v1.85.0
+
+## 0.25.28
+
+## 0.25.27
+
+## 0.25.26
+
+## 0.25.25
+
+## 0.25.24
+
+## 0.25.23
+
+## 0.25.22
+
+## 0.25.21
+
+### Patch Changes
+
+- 9696e29: Linting auto fix
+
+## 0.25.20
+
+## 0.25.19
+
+### Patch Changes
+
+- @sap-ux-private/control-property-editor-common@0.7.7
+
+## 0.25.18
+
+## 0.25.17
+
+## 0.25.16
+
+## 0.25.15
+
+### Patch Changes
+
+- 0153757: fix: RTA editor endpoint causing duplicate ID error if started from the launchpad sandbox
+
+## 0.25.14
+
+## 0.25.13
+
+## 0.25.12
+
+## 0.25.11
+
+### Patch Changes
+
+- c53a4ba: chore(preview-middleware-client): implement custom jsdom env for writable window.location; fix eslint config plugin scoping; upgrade shared devDependencies (jest 30)
+    - @sap-ux-private/control-property-editor-common@0.7.7
+
+## 0.25.10
+
+### Patch Changes
+
+- 8408e10: enhancedHomePage - initialize cdm before bootstrap
+
+## 0.19.1
+
+### Patch Changes
+
+- 55eb5dc: fix: disable condensing in workspace connector for older SAPUI5 versions
+
 ## 0.19.0
 
 ### Minor Changes

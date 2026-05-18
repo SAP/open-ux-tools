@@ -1,5 +1,23 @@
 # Change Log
 
+## 5.4.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 5.3.21
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
+## 5.3.20
+
+### Patch Changes
+
+- c53a4ba: chore(jest-environment-ui5): upgrade tsconfig-paths 3.x → 4.x; pin jest-environment-jsdom to ^29.7.0 for UI5 Core compatibility
+
 ## 5.3.19
 
 ### Patch Changes

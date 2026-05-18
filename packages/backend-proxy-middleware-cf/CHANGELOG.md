@@ -1,5 +1,318 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.2.2
+
+### Patch Changes
+
+- Updated dependencies [342c544]
+    - @sap-ux/adp-tooling@0.19.2
+
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/adp-tooling@0.19.1
+
+## 0.2.0
+
+### Minor Changes
+
+- 72695e5: chore: upgrade @sap/approuter ^20.8.0 → ^21.5.0 for Node 24 support
+  and drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/adp-tooling@0.19.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/logger@0.9.0
+
+## 0.1.25
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.134
+
+## 0.1.24
+
+### Patch Changes
+
+- Updated dependencies [8c4185a]
+    - @sap-ux/adp-tooling@0.18.133
+
+## 0.1.23
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/adp-tooling@0.18.132
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/logger@0.8.6
+
+## 0.1.22
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.131
+
+## 0.1.21
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.130
+
+## 0.1.20
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+- Updated dependencies [678a08e]
+    - @sap-ux/adp-tooling@0.18.129
+    - @sap-ux/btp-utils@1.1.15
+
+## 0.1.19
+
+### Patch Changes
+
+- Updated dependencies [b2ffc7e]
+    - @sap-ux/adp-tooling@0.18.128
+
+## 0.1.18
+
+### Patch Changes
+
+- Updated dependencies [fcaa70c]
+    - @sap-ux/adp-tooling@0.18.127
+
+## 0.1.17
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.126
+
+## 0.1.16
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.125
+
+## 0.1.15
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.124
+
+## 0.1.14
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.123
+
+## 0.1.13
+
+### Patch Changes
+
+- Updated dependencies [10847a1]
+    - @sap-ux/adp-tooling@0.18.122
+
+## 0.1.12
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.121
+
+## 0.1.11
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.120
+
+## 0.1.10
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.119
+
+## 0.1.9
+
+### Patch Changes
+
+- 37d4ded: fix: SSH tunnel not started in BAS for on-premise connectivity for CF ADP
+
+## 0.1.8
+
+### Patch Changes
+
+- Updated dependencies [67d1f8b]
+    - @sap-ux/adp-tooling@0.18.118
+
+## 0.1.7
+
+### Patch Changes
+
+- Updated dependencies [8fb08a2]
+    - @sap-ux/adp-tooling@0.18.117
+
+## 0.1.6
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/adp-tooling@0.18.116
+
+## 0.1.5
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/adp-tooling@0.18.115
+    - @sap-ux/btp-utils@1.1.13
+
+## 0.1.4
+
+### Patch Changes
+
+- Updated dependencies [497317c]
+    - @sap-ux/adp-tooling@0.18.114
+
+## 0.1.3
+
+### Patch Changes
+
+- 7a8613b: feat: Enable SSH tunnel in CF backend middleware for OnPremise destinations
+- Updated dependencies [7a8613b]
+    - @sap-ux/adp-tooling@0.18.113
+
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/adp-tooling@0.18.112
+    - @sap-ux/btp-utils@1.1.12
+
+## 0.1.1
+
+### Patch Changes
+
+- 1b10e9f: feat: Adapt CF ADP project structure to work with approuter backend middleware
+- Updated dependencies [1b10e9f]
+    - @sap-ux/adp-tooling@0.18.111
+
+## 0.1.0
+
+### Minor Changes
+
+- 6b74074: feat: Change `backend-proxy-middleware-cf` to use `approuter` instead of token exchange
+
+### Patch Changes
+
+- Updated dependencies [6b74074]
+    - @sap-ux/adp-tooling@0.18.110
+
+## 0.0.99
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+    - @sap-ux/adp-tooling@0.18.109
+
+## 0.0.98
+
+### Patch Changes
+
+- Updated dependencies [68b5523]
+    - @sap-ux/adp-tooling@0.18.108
+
+## 0.0.97
+
+### Patch Changes
+
+- Updated dependencies [c53a4ba]
+- Updated dependencies [c53a4ba]
+    - @sap-ux/adp-tooling@0.18.107
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/project-access@1.35.17
+
+## 0.0.96
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.106
+
+## 0.0.95
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.105
+
+## 0.0.94
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+    - @sap-ux/adp-tooling@0.18.104
+
+## 0.0.93
+
+### Patch Changes
+
+- Updated dependencies [96a689b]
+    - @sap-ux/adp-tooling@0.18.103
+
+## 0.0.92
+
+### Patch Changes
+
+- Updated dependencies [3dcd3f7]
+    - @sap-ux/adp-tooling@0.18.102
+
+## 0.0.91
+
+### Patch Changes
+
+- a41533f: chore(backend-proxy-middleware-cf): upgrade axios 1.13.5 → 1.13.6
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/adp-tooling@0.18.101
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/project-access@1.35.16
+
+## 0.0.90
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+    - @sap-ux/adp-tooling@0.18.100
+
+## 0.0.89
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.99
+
+## 0.0.88
+
+### Patch Changes
+
+- Updated dependencies [2cd2544]
+    - @sap-ux/adp-tooling@0.18.98
+
+## 0.0.87
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.97
+- @sap-ux/project-access@1.35.14
+
 ## 0.0.86
 
 ### Patch Changes

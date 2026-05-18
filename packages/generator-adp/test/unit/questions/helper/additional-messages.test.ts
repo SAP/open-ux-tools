@@ -25,7 +25,7 @@ describe('additional-messages', () => {
         it('should return CLOUD_READY info message for cloud project', () => {
             const result = getSystemAdditionalMessages({} as FlexUICapability, AdaptationProjectType.CLOUD_READY);
             expect(result).toEqual({
-                message: `${t('prompts.projectTypeLabel')}: ${AdaptationProjectType.CLOUD_READY}`,
+                message: t('prompts.projectTypeCloudReadyLabel'),
                 severity: Severity.information
             });
         });
@@ -69,7 +69,7 @@ describe('additional-messages', () => {
                 AdaptationProjectType.ON_PREMISE
             );
             expect(result).toEqual({
-                message: `${t('prompts.projectTypeLabel')}: ${AdaptationProjectType.ON_PREMISE}`,
+                message: t('prompts.projectTypeClassicLabel'),
                 severity: Severity.information
             });
         });

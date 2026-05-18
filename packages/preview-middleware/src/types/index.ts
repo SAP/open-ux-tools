@@ -272,6 +272,19 @@ export interface I18nEntry {
 }
 
 export interface CardManifest {
+    'sap.card'?: {
+        type?: string;
+        header?: Record<string, unknown>;
+        data?: {
+            request?: {
+                url: string;
+            };
+        };
+        configuration?: {
+            parameters?: Record<string, Record<string, unknown>>;
+        };
+        [key: string]: unknown;
+    };
     'sap.insights': {
         versions?: {
             dtpMiddleware?: string;

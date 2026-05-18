@@ -14,7 +14,7 @@ jobs:
                 # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
                 # not just the latest version of mac os also amd on Mac
                 # os: [ubuntu-latest, windows-2025, macos-13, macos-14, macos-14-large, macos-15, macos-latest-large]
-                node-version: [20.x, 22.x]
+                node-version: [22.x, 24.x]
         runs-on: ${{ matrix.os }}
         timeout-minutes: 60
         steps:
@@ -22,11 +22,12 @@ jobs:
               uses: actions/checkout@v6
               with:
                   fetch-depth: 0
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v6
+              with:
+                  node-version: ${{ matrix.node-version }}
             - name: Setup pnpm
               uses: pnpm/action-setup@v4.1.0
-              with:
-                  run_install: |
-                      - args: [--frozen-lockfile]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
@@ -36,10 +37,6 @@ jobs:
                   key: ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
-            - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v6
-              with:
-                  node-version: ${{ matrix.node-version }}
             - name: Install pnpm modules
               run: pnpm install --frozen-lockfile
             - name: Run build
@@ -89,20 +86,24 @@ jobs:
                       !packages/*/node_modules
                   retention-days: 15
             - name: Run SonarCloud scan
-              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
+              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
               shell: bash
+              env:
+                  PR_NUMBER: ${{ github.event.pull_request.number }}
+                  PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+                  PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
               run: |
-                  echo ${{ github.event.pull_request.number }} >> pr-event.txt
-                  echo ${{ github.event.pull_request.head.ref }} >> pr-event.txt
-                  echo ${{ github.event.pull_request.base.ref }} >> pr-event.txt
+                  echo "$PR_NUMBER" >> pr-event.txt
+                  echo "$PR_HEAD_REF" >> pr-event.txt
+                  echo "$PR_BASE_REF" >> pr-event.txt
 
             - name: 'Prepare output artifact'
-              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
+              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
               shell: bash
               run: touch output.tar && tar --exclude='./node_modules' --exclude='./dist' --exclude='./**/node_modules/**' --exclude='./**/dist/**' --exclude='./.git' --exclude 'output.tar' -czf output.tar .
 
             - name: 'Upload sonar artifact'
-              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
+              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
               uses: actions/upload-artifact@v4
               with:
                   name: sonar-artifact
@@ -124,11 +125,12 @@ jobs:
               with:
                   fetch-depth: 0
                   token: ${{ secrets.ACCESS_PAT }}
+            - name: Use Node.js 22.x
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 22.x
             - name: Setup pnpm
               uses: pnpm/action-setup@v4.1.0
-              with:
-                  run_install: |
-                      - args: [--frozen-lockfile]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
@@ -138,10 +140,6 @@ jobs:
                   key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
-            - name: Use Node.js 20.x
-              uses: actions/setup-node@v6
-              with:
-                  node-version: 20.x
             - name: Install pnpm modules
               run: pnpm install --frozen-lockfile
             - name: Apply changesets
@@ -149,6 +147,9 @@ jobs:
               run: |
                   echo ::set-output name=changes::$(pnpm ci:version 2>&1 | grep -q 'No unreleased changesets found' && echo 'false' || echo 'true')
                   git status
+            - name: Sync MCP manifest versions
+              if: steps.changesetVersion.outputs.changes == 'true'
+              run: node packages/fiori-mcp-server/scripts/sync-mcp-manifests.js
             - name: Commit and push changes
               if: steps.changesetVersion.outputs.changes == 'true'
               run: |
@@ -167,14 +168,21 @@ jobs:
         if: github.repository == 'SAP/open-ux-tools' && github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.version.outputs.changes == 'false'
         runs-on: ubuntu-latest
         needs: version
+        permissions:
+            id-token: write
+            contents: write
+        outputs:
+            published: ${{ steps.changesetPublish.outputs.published }}
+            publishedPackages: ${{ steps.changesetPublish.outputs.publishedPackages }}
         steps:
             - name: Checkout code repository
               uses: actions/checkout@v6
+            - name: Use Node.js 22.x
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 22.x
             - name: Setup pnpm
               uses: pnpm/action-setup@v4.1.0
-              with:
-                  run_install: |
-                      - args: [--frozen-lockfile]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
@@ -184,10 +192,6 @@ jobs:
                   key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
-            - name: Use Node.js 20.x
-              uses: actions/setup-node@v6
-              with:
-                  node-version: 20.x
             - name: Install pnpm modules
               run: pnpm install --frozen-lockfile
             - name: Set instrumentation key in fiori-mcp-server
@@ -213,8 +217,6 @@ jobs:
                   regex: false
             - name: Run build
               run: pnpm run build
-            - name: Setup npmrc with npmjs.com token
-              run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPMJS_TOKEN }}" > .npmrc
             - name: 'Publish to npmjs'
               id: changesetPublish
               uses: changesets/action@v1.7.0
@@ -291,3 +293,20 @@ jobs:
                       {"text": "${{ env.EXT_RELEASE_MESSAGE }}" }
               env:
                   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    publish-mcp-registry:
+        # Publish to MCP Registry after a successful npm release of fiori-mcp-server
+        if: |
+            github.repository == 'SAP/open-ux-tools' &&
+            github.event_name == 'push' &&
+            github.ref == 'refs/heads/main' &&
+            needs.release.outputs.published == 'true' &&
+            contains(needs.release.outputs.publishedPackages, '@sap-ux/fiori-mcp-server')
+        needs: release
+        uses: ./.github/workflows/publish-mcp-registry.yml
+        with:
+            dry_run: false
+        secrets: inherit
+        permissions:
+            id-token: write
+            contents: read

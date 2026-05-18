@@ -58,6 +58,8 @@ undeploy --config myproject/my-undeploy-config.yaml
 
 This is the minimal custom task configuration for deployment using package `$TMP`, without the change being recorded in a transport request.
 
+> **Note:** The package name `$TMP` must be uppercase. If a lowercase variant, for example, `$tmp` is detected in the configuration, it is automatically normalized to `$TMP` and a warning is logged because lowercase values can cause deployment failures.
+
 ```yaml
 - name: abap-deploy-task
   configuration:
@@ -121,6 +123,7 @@ Options:
   --verbose                            verbose log output (default: false)
   --destination  <destination>         Destination in SAP BTP pointing to an ABAP system
   --url <target-url>                   URL of target ABAP system
+  --connect-path <path>                (Optional) Service URL path used to retrieve credentials from secure storage
   --service                            (Optional) Alias for the target SAPUI5 Respository OData Service
   --client <sap-client>                Client number of target ABAP system
   --cloud                              target is an ABAP Cloud system

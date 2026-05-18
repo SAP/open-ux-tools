@@ -1,5 +1,6 @@
 import type { Manifest } from '@sap-ux/project-access';
 import type { AnnotationReference } from '../project-context/parser';
+import type { Element } from '@sap-ux/odata-annotation-core';
 import type { SourceLocation } from '@eslint/core';
 export const WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-width-including-column-header';
 export const ANCHOR_BAR_VISIBLE = 'sap-anchor-bar-visible';
@@ -11,6 +12,8 @@ export const CREATION_MODE_FOR_TABLE = 'sap-creation-mode-for-table';
 export const STATE_PRESERVATION_MODE = 'sap-state-preservation-mode';
 export const TABLE_PERSONALIZATION = 'sap-table-personalization';
 export const TABLE_COLUMN_VERTICAL_ALIGNMENT = 'sap-table-column-vertical-alignment';
+export const TEXT_ARRANGEMENT_HIDDEN = 'sap-text-arrangement-hidden';
+export const NO_DATA_FIELD_INTENT_BASED_NAVIGATION = 'sap-no-data-field-intent-based-navigation';
 export const CONDENSED_TABLE_LAYOUT = 'sap-condensed-table-layout';
 export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
 
@@ -18,6 +21,7 @@ export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
     manifest: ManifestPropertyDiagnosticData;
     pageName: string;
+    pageSectionName?: string;
     annotation: {
         file: string;
         annotationPath: string;
@@ -51,6 +55,7 @@ export type CreateModeMessageId =
 export interface CreationModeForTable {
     type: typeof CREATION_MODE_FOR_TABLE;
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
     messageId: CreateModeMessageId;
     tableType: string;
@@ -61,18 +66,21 @@ export interface CreationModeForTable {
 export interface CopyToClipboard {
     type: typeof COPY_TO_CLIPBOARD;
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 
 export interface EnableExport {
     type: typeof ENABLE_EXPORT;
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 
 export interface EnablePaste {
     type: typeof ENABLE_PASTE;
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 
@@ -104,6 +112,7 @@ export interface TablePersonalization {
     property?: PersonalizationProperty;
     undefinedProperties?: PersonalizationProperty[];
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 
@@ -112,14 +121,38 @@ export interface TableColumnVerticalAlignment {
     manifest: ManifestPropertyDiagnosticData;
 }
 
+export interface NoDataFieldIntentBasedNavigation {
+    type: typeof NO_DATA_FIELD_INTENT_BASED_NAVIGATION;
+    pageNames: string[];
+    annotation: {
+        file: string;
+        recordType: string;
+        annotationPath: string;
+        reference: AnnotationReference;
+        reportedParent: Element;
+    };
+}
+
 export interface CondensedTableLayout {
     type: typeof CONDENSED_TABLE_LAYOUT;
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
+
 export interface StrictUomFiltering {
     type: typeof STRICT_UOM_FILTERING;
     manifest: ManifestPropertyDiagnosticData;
+}
+
+export interface TextArrangementHidden {
+    type: typeof TEXT_ARRANGEMENT_HIDDEN;
+    pageNames: string[];
+    annotation: {
+        reference: AnnotationReference;
+        textPropertyPath: string;
+        targetWithTextArrangement: string;
+    };
 }
 
 export type Diagnostic =
@@ -131,7 +164,9 @@ export type Diagnostic =
     | EnableExport
     | EnablePaste
     | StatePreservationMode
+    | TableColumnVerticalAlignment
+    | NoDataFieldIntentBasedNavigation
     | CondensedTableLayout
-    | StrictUomFiltering
     | TablePersonalization
-    | TableColumnVerticalAlignment;
+    | TextArrangementHidden
+    | StrictUomFiltering;

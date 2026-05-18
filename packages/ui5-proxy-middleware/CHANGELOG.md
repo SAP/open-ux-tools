@@ -1,5 +1,80 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.7.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/ui5-config@0.31.0
+
+## 1.6.35
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/ui5-config@0.30.5
+
+## 1.6.34
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/ui5-config@0.30.4
+
+## 1.6.33
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+
+## 1.6.32
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/ui5-config@0.30.3
+
+## 1.6.31
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/logger@0.8.5
+    - @sap-ux/ui5-config@0.30.2
+
+## 1.6.30
+
+### Patch Changes
+
+- c53a4ba: chore(ui5-proxy-middleware): upgrade shared devDependencies (jest 30, i18next 25)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/logger@0.8.4
+    - @sap-ux/ui5-config@0.30.1
+
+## 1.6.29
+
+### Patch Changes
+
+- a41533f: chore(ui5-proxy-middleware): upgrade i18next 25.8.18 → 25.8.20
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux/logger@0.8.3
+    - @sap-ux/ui5-config@0.30.1
+
+## 1.6.28
+
+### Patch Changes
+
+- Updated dependencies [25e5177]
+    - @sap-ux/ui5-config@0.30.0
+
 ## 1.6.27
 
 ### Patch Changes

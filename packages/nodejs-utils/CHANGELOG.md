@@ -1,5 +1,60 @@
 # @sap-ux/nodejs-utils
 
+## 0.3.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/btp-utils@1.2.0
+
+## 0.2.23
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/btp-utils@1.1.16
+
+## 0.2.22
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/btp-utils@1.1.15
+
+## 0.2.21
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+
+## 0.2.20
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/btp-utils@1.1.13
+
+## 0.2.19
+
+### Patch Changes
+
+- Updated dependencies [2e17a6b]
+    - @sap-ux/btp-utils@1.1.12
+
+## 0.2.18
+
+### Patch Changes
+
+- a41533f: chore(nodejs-utils): upgrade fast-glob 3.3.1 → 3.3.3
+- Updated dependencies [a41533f]
+    - @sap-ux/btp-utils@1.1.11
+
 ## 0.2.17
 
 ### Patch Changes

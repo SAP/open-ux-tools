@@ -219,7 +219,7 @@ export default class extends DeploymentGenerator {
      */
     private async _handleApiHubConfig(): Promise<void> {
         // generate a new instance dest name for api hub
-        if (this.apiHubConfig && this.apiHubConfig.apiHubType === ApiHubType.apiHubEnterprise) {
+        if (this.apiHubConfig?.apiHubType === ApiHubType.apiHubEnterprise) {
             // full service path is only available from the manifest.json
             if (!this.servicePath) {
                 const manifest = await loadManifest(this.fs, this.appPath);

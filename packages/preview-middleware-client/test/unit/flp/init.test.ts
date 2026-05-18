@@ -8,7 +8,6 @@ import NewsAndPagesContainer from 'sap/cux/home/NewsAndPagesContainer';
 import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 import type Component from 'sap/ui/core/Component';
 import type { InitRtaScript, RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
-import { Window } from 'types/global';
 import * as apiHandler from '../../../src/adp/api-handler';
 import MyHomeController from '../../../src/flp/homepage/controller/MyHome.controller';
 import {
@@ -19,18 +18,12 @@ import {
     resetAppState,
     setI18nTitle
 } from '../../../src/flp/init';
-
-Object.defineProperty(window, 'location', {
-    value: {
-        ...window.location,
-        reload: jest.fn()
-    },
-    writable: true
-});
+import * as infoCenterMessage from '../../../src/utils/info-center-message';
 
 describe('flp/init', () => {
     afterEach(() => {
         sapMock.ushell.Container.getServiceAsync.mockReset();
+        window.location.hash = '';
     });
     test('registerSAPFonts', () => {
         registerSAPFonts();
@@ -104,6 +97,7 @@ describe('flp/init', () => {
 
         beforeEach(() => {
             loaderMock.mockReset();
+            fetchMock.mockReset();
         });
 
         test('single app, no reuse libs', async () => {
@@ -168,6 +162,48 @@ describe('flp/init', () => {
                 expect(error).toEqual('Error');
             }
         });
+
+        describe('test "sap-client" param validation', () => {
+            const sapClientParamTests = [
+                {
+                    name: 'Valid client',
+                    value: '001',
+                    expected: '/sap/bc/ui2/app_index/ui5_app_info?id=test.lib%2C&sap-client=001'
+                },
+                {
+                    name: 'Client contains non number',
+                    value: 'T12',
+                    expected: '/sap/bc/ui2/app_index/ui5_app_info?id=test.lib%2C'
+                },
+                {
+                    name: 'Client more than 3 symbols',
+                    value: '4444',
+                    expected: '/sap/bc/ui2/app_index/ui5_app_info?id=test.lib%2C'
+                },
+                {
+                    name: 'Client less than 3 symbols',
+                    value: '44',
+                    expected: '/sap/bc/ui2/app_index/ui5_app_info?id=test.lib%2C'
+                }
+            ];
+            test.each(sapClientParamTests)('$name', async ({ value, expected }) => {
+                const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
+                manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
+                fetchMock.mockResolvedValueOnce({ json: () => manifest });
+                fetchMock.mockResolvedValueOnce({
+                    json: () => ({
+                        'test.lib': {
+                            dependencies: [{ url: '~url', type: 'UI5LIB', componentId: 'test.lib.component' }]
+                        }
+                    })
+                });
+                const params = new URLSearchParams();
+                params.set('sap-client', value);
+                await registerComponentDependencyPaths(['/'], params);
+                expect(loaderMock).toHaveBeenCalledWith({ paths: { 'test/lib/component': '~url' } });
+                expect(fetchMock).toHaveBeenCalledWith(expected);
+            });
+        });
     });
 
     describe('resetAppState', () => {
@@ -210,23 +246,16 @@ describe('flp/init', () => {
 
     describe('init', () => {
         const reloadSpy = jest.fn();
-        const location = window.location;
         beforeEach(() => {
             sapMock.ushell.Container.attachRendererCreatedEvent.mockReset();
             sapMock.ui.require.mockReset();
             jest.clearAllMocks();
 
-            Object.defineProperty(window, 'location', {
-                value: {
-                    reload: reloadSpy
-                }
-            });
+            (window as any).__locationImpl.reload = reloadSpy;
         });
 
         afterEach(() => {
-            Object.defineProperty(window, 'location', {
-                value: location
-            });
+            (window as any).__locationImpl.reload = (window as any).__locationImplOriginalReload;
         });
 
         test('nothing configured', async () => {
@@ -266,9 +295,39 @@ describe('flp/init', () => {
             expect(sapMock.ushell.Container.createRenderer).toHaveBeenCalledWith(undefined, true);
 
             const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
+            window.location.hash = '#app-preview';
             loadedCb({ getParameter: () => {} });
             expect(sapMock.ui.require).toHaveBeenCalledWith(
                 ['sap/ui/rta/api/startAdaptation', flexSettings.pluginScript],
+                expect.anything()
+            );
+        });
+
+        test('flex configured - skips startAdaptation when hash is Shell-home', async () => {
+            const flexSettings = {
+                layer: 'CUSTOMER_BASE',
+                pluginScript: 'my/script'
+            };
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.76.0' }]
+            });
+
+            const mockService = {
+                attachAppLoaded: jest.fn()
+            };
+            sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
+            await init({ flex: JSON.stringify(flexSettings) });
+
+            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
+                .calls[0][0] as () => Promise<void>;
+            await rendererCb();
+
+            const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
+            window.location.hash = '#Shell-home';
+            loadedCb({ getParameter: () => {} });
+            expect(sapMock.ui.require).not.toHaveBeenCalledWith(
+                expect.arrayContaining(['sap/ui/rta/api/startAdaptation']),
                 expect.anything()
             );
         });
@@ -298,13 +357,14 @@ describe('flp/init', () => {
             expect(mockService.attachAppLoaded).toHaveBeenCalled();
 
             const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
+            window.location.hash = '#app-preview';
             loadedCb({ getParameter: () => {} });
             expect(sapMock.ui.require).toHaveBeenCalledWith(
                 ['open/ux/preview/client/flp/initRta', flexSettings.pluginScript],
                 expect.anything()
             );
 
-            const requireCb = sapMock.ui.require.mock.calls[0][1] as (
+            const requireCb = sapMock.ui.require.mock.calls[1][1] as (
                 initRta: InitRtaScript,
                 pluginScript?: RTAPlugin
             ) => Promise<void>;
@@ -371,7 +431,7 @@ describe('flp/init', () => {
                         callback({}); // WorkspaceConnector
                         return;
                     }
-                    // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+
                     await callback(() => Promise.reject('Reload triggered'));
                     resolve(undefined);
                 });
@@ -389,6 +449,7 @@ describe('flp/init', () => {
             };
             sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
 
+            window.location.hash = '#app-preview';
             await rendererCb();
 
             // Wait for the reload to complete before continue with the test cases.
@@ -439,7 +500,6 @@ describe('flp/init', () => {
             });
             await init({ enhancedHomePage: true });
 
-            expect((window as unknown as Window)['sap-ushell-config']).toMatchSnapshot();
             expect(sapMock.ushell.Container.init).toHaveBeenCalledWith('cdm');
         });
 
@@ -493,6 +553,95 @@ describe('flp/init', () => {
                 jest.dontMock('sap/cux/home/NewsContainer');
                 done();
             });
+        });
+    });
+
+    describe('registerForControllerExtensionErrors', () => {
+        let sendInfoCenterMessageSpy: jest.SpyInstance;
+
+        beforeEach(async () => {
+            sendInfoCenterMessageSpy = jest
+                .spyOn(infoCenterMessage, 'sendInfoCenterMessage')
+                .mockResolvedValue(undefined);
+
+            const flexSettings = { layer: 'CUSTOMER_BASE' };
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
+            });
+            CommunicationService.sendAction = jest.fn();
+            await init({ flex: JSON.stringify(flexSettings) });
+        });
+
+        afterEach(() => {
+            sendInfoCenterMessageSpy.mockRestore();
+        });
+
+        test('reports error event with controller extension path in stack trace', async () => {
+            const error = new Error('Something went wrong');
+            error.stack = 'Error: Something went wrong\n    at /changes/coding/MyExtension.js:10:5';
+            const errorEvent = new ErrorEvent('error', { error });
+            globalThis.dispatchEvent(errorEvent);
+
+            expect(sendInfoCenterMessageSpy).toHaveBeenCalledWith({
+                title: { key: 'CONTROLLER_EXTENSION_UNHANDLED_ERROR_TITLE' },
+                description: 'Something went wrong',
+                type: MessageBarType.error,
+                details: error.stack
+            });
+        });
+
+        test('reports unhandled rejection with controller extension .ts path in stack trace', async () => {
+            const error = new Error('Async failure');
+            error.stack = 'Error: Async failure\n    at /changes/coding/MyExtension.ts:20:3';
+
+            const rejectionEvent = new Event('unhandledrejection') as any;
+            rejectionEvent.reason = error;
+            globalThis.dispatchEvent(rejectionEvent);
+
+            expect(sendInfoCenterMessageSpy).toHaveBeenCalledWith({
+                title: { key: 'CONTROLLER_EXTENSION_UNHANDLED_ERROR_TITLE' },
+                description: 'Async failure',
+                type: MessageBarType.error,
+                details: error.stack
+            });
+        });
+
+        test('ignores error event without controller extension path in stack trace', async () => {
+            const error = new Error('Unrelated error');
+            error.stack = 'Error: Unrelated error\n    at /some/other/path.js:5:1';
+            const errorEvent = new ErrorEvent('error', { error });
+            globalThis.dispatchEvent(errorEvent);
+
+            expect(sendInfoCenterMessageSpy).not.toHaveBeenCalled();
+        });
+
+        test('ignores error event when error is not an Error instance', async () => {
+            const errorEvent = new ErrorEvent('error', { error: 'string error' } as any);
+            globalThis.dispatchEvent(errorEvent);
+
+            expect(sendInfoCenterMessageSpy).not.toHaveBeenCalled();
+        });
+
+        test('ignores error event when error is undefined', async () => {
+            const errorEvent = new ErrorEvent('error', {});
+            globalThis.dispatchEvent(errorEvent);
+
+            expect(sendInfoCenterMessageSpy).not.toHaveBeenCalled();
+        });
+
+        test('reports error with empty message when error.message is empty', async () => {
+            const error = new Error('');
+            error.stack = 'Error\n    at /changes/coding/Controller.js:1:1';
+            const errorEvent = new ErrorEvent('error', { error });
+            globalThis.dispatchEvent(errorEvent);
+
+            expect(sendInfoCenterMessageSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    description: '',
+                    type: MessageBarType.error
+                })
+            );
         });
     });
 });

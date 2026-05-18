@@ -3,6 +3,9 @@ import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing';
 import { validateBasePath } from '../../validation';
 import { convertEslintConfig as migrateEslintConfig } from '@sap-ux/app-config-writer';
 import { runNpmInstallCommand } from '../../common';
+import { execNpmCommand } from '@sap-ux/project-access';
+import { join } from 'node:path';
+
 /**
  * Add a new sub-command to convert the eslint configuration of a project to flat config format (eslint version 9).
  *
@@ -11,7 +14,7 @@ import { runNpmInstallCommand } from '../../common';
 export function addConvertEslintCommand(cmd: Command): void {
     cmd.command('eslint-config [path]')
         .description(
-            `Executed in the root folder of an app, it converts the ESLint configuration of the respective app to flat config format (ESLint version 9).\n
+            `Executed in the root folder of an app, it converts the ESLint configuration of the respective app to flat config format (used since ESLint version 9). It also introduces specific ESLint checks for SAP Fiori applications (using the \`@sap-ux/eslint-plugin-fiori-tools\` plugin), and deletes the deprecated \`eslint-plugin-fiori-custom\` plugin. To avoid dependency resolution conflicts, it deletes the \`package-lock.json\` file as well as the \`@sap-ux/eslint-plugin-fiori-tools\` module from the \`node_modules\` folder before running \`npm install\`.\n
 Examples:
     \`npx --yes @sap-ux/create@latest convert eslint-config\``
         )
@@ -22,7 +25,10 @@ Examples:
             'The name of the SAP Fiori tools ESLint plugin configuration to be used.',
             'recommended'
         )
-        .option('-n, --skip-install', 'Skip the `npm install` step.')
+        .option(
+            '-n, --skip-install',
+            'Skip the `npm install` step. Also skips deleting the `package-lock.json` file and the `@sap-ux/eslint-plugin-fiori-tools` module from the `node_modules` folder.'
+        )
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();
@@ -53,19 +59,34 @@ async function convertEslintConfig(
         const fs = await migrateEslintConfig(basePath, { logger, config });
         await traceChanges(fs);
         if (!simulate) {
-            fs.commit(() => {
+            if (!skipInstall) {
+                logger.info(`Deleting \`package-lock.json\` to avoid conflicts.`);
+                fs.delete(join(basePath, 'package-lock.json'));
+            }
+            await new Promise<void>((resolve) => fs.commit(resolve));
+            logger.info(
+                `ESlint configuration converted. Ensure the new configuration is working correctly before deleting old configuration files like '.eslintrc.json' or '.eslintignore'.`
+            );
+            if (skipInstall) {
                 logger.info(
-                    `ESlint configuration converted. Ensure the new configuration is working correctly before deleting old configuration files like '.eslintrc.json' or '.eslintignore'.`
+                    `\`npm install\` was skipped. Ensure you install the dependencies before executing any linting commands.`
                 );
-                if (skipInstall) {
+            } else {
+                try {
                     logger.info(
-                        `\`npm install\` was skipped. Ensure you install the dependencies before executing any linting commands.`
+                        `Deleting \`@sap-ux/eslint-plugin-fiori-tools\` from \`node_modules\` to avoid dependency resolution conflicts.`
                     );
-                } else {
+                    await execNpmCommand(['uninstall', '@sap-ux/eslint-plugin-fiori-tools', '--no-save'], {
+                        cwd: basePath,
+                        logger: logger
+                    });
+                    logger.info('npm uninstall completed successfully.');
                     logger.info(`Executing \`npm install\`.`);
                     runNpmInstallCommand(basePath, undefined, { logger });
+                } catch (error) {
+                    logger.error(`npm command failed. '${(error as Error).message}'`);
                 }
-            });
+            }
         }
     } catch (error) {
         logger.error(`Error while executing convert eslint-config. '${(error as Error).message}'`);

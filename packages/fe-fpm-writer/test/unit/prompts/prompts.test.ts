@@ -16,7 +16,7 @@ describe('Prompts', () => {
     beforeEach(async () => {
         fs = create(createStorage());
         promptsAPI = await PromptsAPI.init(projectPath, undefined, fs);
-        generateId = await createIdGenerator(projectPath, fs);
+        generateId = await createIdGenerator({ basePath: projectPath, fsEditor: fs });
     });
 
     test('Init PromptsApi without fs', async () => {
@@ -384,7 +384,7 @@ describe('Prompts - no project', () => {
     let generateId: any;
     beforeEach(async () => {
         fs = create(createStorage());
-        generateId = await createIdGenerator(undefined, fs);
+        generateId = await createIdGenerator({ basePath: '', fsEditor: fs });
         promptsAPI = new PromptsAPI(fs, undefined, undefined, {});
     });
 

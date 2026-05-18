@@ -175,13 +175,18 @@ function createJsonVisitorWithMatchers<
         deepestPathResult: DeepestExistingPathResult
     ) => (node: MemberNode) => void
 ): RuleVisitor {
-    const applicableDiagnostics = cachedDiagnostics.filter((diagnostic) => diagnostic.manifest.uri === sourceCode.uri);
+    const applicableDiagnostics = cachedDiagnostics.filter(
+        (diagnostic) => (diagnostic as any).manifest?.uri === sourceCode.uri
+    );
     if (applicableDiagnostics.length === 0) {
         return {};
     }
     const matchers: RuleVisitor = {};
     for (const diagnostic of applicableDiagnostics) {
-        const paths = findDeepestExistingPath(diagnostic.manifest.object, diagnostic.manifest.propertyPath);
+        const paths = findDeepestExistingPath(
+            (diagnostic as any).manifest?.object,
+            (diagnostic as any).manifest?.propertyPath
+        );
         if (paths?.validatedPath && paths.validatedPath.length > 0) {
             matchers[sourceCode.createMatcherString(paths.validatedPath)] = createJsonVisitorHandler(
                 context,

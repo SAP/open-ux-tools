@@ -243,4 +243,39 @@ describe('hasServiceMetadata', () => {
         expect(result).toBe(true);
         expect(serviceMock).toHaveBeenCalledWith('/sap/opu/odata/sap/SERVICE/');
     });
+
+    it('should use explicit servicePath instead of url pathname', async () => {
+        const mockMetadata = '<edmx:Edmx Version="1.0"></edmx:Edmx>';
+        metadataMock.mockResolvedValue(mockMetadata);
+
+        const system: BackendSystem = {
+            url: 'https://example.com',
+            name: 'Test System',
+            systemType: 'OnPrem',
+            username: 'testuser',
+            password: 'password',
+            connectionType: 'generic_host'
+        };
+
+        const result = await hasServiceMetadata(system, '/sap/opu/odata/sap/MY_SERVICE');
+        expect(result).toBe(true);
+        expect(serviceMock).toHaveBeenCalledWith('/sap/opu/odata/sap/MY_SERVICE/');
+    });
+
+    it('should not double trailing slash on explicit servicePath', async () => {
+        const mockMetadata = '<edmx:Edmx Version="1.0"></edmx:Edmx>';
+        metadataMock.mockResolvedValue(mockMetadata);
+
+        const system: BackendSystem = {
+            url: 'https://example.com',
+            name: 'Test System',
+            systemType: 'OnPrem',
+            username: 'testuser',
+            password: 'password',
+            connectionType: 'generic_host'
+        };
+
+        await hasServiceMetadata(system, '/sap/opu/odata/sap/MY_SERVICE/');
+        expect(serviceMock).toHaveBeenCalledWith('/sap/opu/odata/sap/MY_SERVICE/');
+    });
 });

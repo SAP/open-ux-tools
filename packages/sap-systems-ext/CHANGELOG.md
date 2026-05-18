@@ -1,5 +1,73 @@
 # sap-ux-sap-systems-ext
 
+## 0.6.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 0.5.3
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
+## 0.5.2
+
+### Patch Changes
+
+- ac6381f: remove default selected key for sap systems ext
+
+## 0.5.1
+
+### Patch Changes
+
+- 9661c7b: adds new internal create command to avoid collisions with other registered commands
+
+## 0.5.0
+
+### Minor Changes
+
+- 16d6382: feat(sap-systems-ext): pre-populate connection manager panel when creating a new system (#37892)
+
+    When opening the connection manager to create a new system, the panel can now be pre-populated with system details such as URL, client and system type.
+
+## 0.4.5
+
+### Patch Changes
+
+- 66e2099: Fix right click options on systems
+
+## 0.4.4
+
+### Patch Changes
+
+- 6379785: fix name validation
+
+## 0.4.3
+
+### Patch Changes
+
+- c53a4ba: chore(sap-systems-ext): upgrade shared devDependencies (jest 30, i18next 25)
+
+## 0.4.2
+
+### Patch Changes
+
+- 26fd5de: Align VS Code minimum supported version (^1.102.0) with Fiori tools
+
+## 0.4.1
+
+### Patch Changes
+
+- e976fdb: bump vscode version to align with @types/vscode
+
+## 0.4.0
+
+### Minor Changes
+
+- 2d20f19: adds support for the generic host connection type
+
 ## 0.3.11
 
 ### Patch Changes

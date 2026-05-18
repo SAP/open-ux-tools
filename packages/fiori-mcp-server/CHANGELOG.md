@@ -1,5 +1,127 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.7.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/fiori-docs-embeddings@0.5.0
+    - @sap-ux/store@1.6.0
+
+## 0.6.60
+
+### Patch Changes
+
+- 59537d3: chore: override sharp to >=0.33.5 to fix CI build on darwin-arm64
+- Updated dependencies [59537d3]
+    - @sap-ux/fiori-docs-embeddings@0.4.20
+
+## 0.6.59
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/fiori-docs-embeddings@0.4.19
+    - @sap-ux/store@1.5.14
+
+## 0.6.58
+
+### Patch Changes
+
+- 4101c21: fix: connect stdio transport before telemetry init to fix Claude Desktop extension disconnect
+
+## 0.6.57
+
+### Patch Changes
+
+- c4bd625: Improve documentation Claude code, etc...
+
+## 0.6.56
+
+### Patch Changes
+
+- Updated dependencies [a5c05a8]
+    - @sap-ux/fiori-docs-embeddings@0.4.18
+
+## 0.6.55
+
+### Patch Changes
+
+- 2781f39: fix: add missing apache-arrow runtime dependency required by @lancedb/lancedb
+
+## 0.6.54
+
+### Patch Changes
+
+- 35f4b68: chore: update plugin.json manifest name to sap-fiori-mcp-server and fix author metadata
+
+## 0.6.53
+
+### Patch Changes
+
+- Updated dependencies [e4a2488]
+    - @sap-ux/fiori-docs-embeddings@0.4.17
+
+## 0.6.52
+
+### Patch Changes
+
+- cf59d8e: feat: add Claude Code plugin support
+
+## 0.6.51
+
+### Patch Changes
+
+- d9ae55c: fix: improve floorplan descriptions and make service/entityConfig optional for FF_SIMPLE (Basic template)
+
+## 0.6.50
+
+### Patch Changes
+
+- c88661f: fix(deps): update dependency @langchain/core to v1.1.40
+
+## 0.6.49
+
+### Patch Changes
+
+- 7746b58: feat: add MCP registry manifest for registry.modelcontextprotocol.io
+
+## 0.6.48
+
+### Patch Changes
+
+- f1e4481: chore(fiori-mcp-server): upgrade @modelcontextprotocol/sdk 1.28.0 → 1.29.0 (hono/express-rate-limit/path-to-regexp security fixes)
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+    - @sap-ux/store@1.5.13
+
+## 0.6.47
+
+### Patch Changes
+
+- c53a4ba: chore(fiori-mcp-server): remove stale @types/diff devDependency (diff v8 ships own types); upgrade shared devDependencies (jest 30)
+- Updated dependencies [c53a4ba]
+    - @sap-ux/store@1.5.12
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
+## 0.6.46
+
+### Patch Changes
+
+- Updated dependencies [a41533f]
+    - @sap-ux/store@1.5.11
+    - @sap-ux/fiori-docs-embeddings@0.4.16
+
+## 0.6.45
+
+### Patch Changes
+
+- 55d833f: fix i18next init showSupportNotice: false.
+
 ## 0.6.44
 
 ### Patch Changes

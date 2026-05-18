@@ -56,7 +56,7 @@ export function getEnvironments(appWizard: AppWizard, isCfInstalled: boolean): E
     const choices: EnvironmentChoice[] = [{ name: 'ABAP', value: TargetEnv.ABAP }];
 
     if (isCfInstalled) {
-        choices.push({ name: 'Cloud Foundry', value: TargetEnv.CF });
+        choices.push({ name: 'SAP BTP, Cloud Foundry environment', value: TargetEnv.CF });
     } else {
         appWizard.showInformation(t('error.cfNotInstalled'), MessageType.prompt);
     }

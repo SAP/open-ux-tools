@@ -1,5 +1,43 @@
 # @sap-ux/sap-systems-ext-webapp
 
+## 0.4.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 0.3.2
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
+## 0.3.1
+
+### Patch Changes
+
+- ac6381f: remove default selected key for sap systems ext
+
+## 0.3.0
+
+### Minor Changes
+
+- 16d6382: feat(sap-systems-ext): pre-populate connection manager panel when creating a new system (#37892)
+
+    When opening the connection manager to create a new system, the panel can now be pre-populated with system details such as URL, client and system type.
+
+## 0.2.1
+
+### Patch Changes
+
+- c53a4ba: chore(sap-systems-ext-webapp): upgrade shared devDependencies (jest 30, i18next 25)
+
+## 0.2.0
+
+### Minor Changes
+
+- 2d20f19: adds support for the generic host connection type
+
 ## 0.1.5
 
 ### Patch Changes

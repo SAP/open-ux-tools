@@ -55,7 +55,8 @@ const messagesStyles: InputErrorMessageStyles = {
         paddingTop: 4,
         paddingBottom: 5,
         paddingLeft: 8,
-        margin: 0
+        margin: 0,
+        borderRadius: 'var(--vscode-cornerRadius-small)'
     },
     warning: {},
     info: {}
