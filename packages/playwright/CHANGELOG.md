@@ -1,5 +1,30 @@
 # @sap-ux-private/playwright
 
+## 0.3.1
+
+### Patch Changes
+
+- fb00faa: fix(ci): use workspace:\* for internal monorepo dependencies
+
+## 0.3.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/logger@0.9.0
+
+## 0.2.16
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/logger@0.8.6
+
 ## 0.2.15
 
 ### Patch Changes

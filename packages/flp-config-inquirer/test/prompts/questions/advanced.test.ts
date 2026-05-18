@@ -11,7 +11,6 @@ import {
 } from '../../../src/prompts/questions';
 import { t } from '../../../src/i18n';
 import { promptNames } from '../../../src';
-import { add } from 'lodash';
 
 const parseParametersMock = parseParameters as jest.Mock;
 
@@ -216,6 +215,26 @@ describe('advanced prompts', () => {
 
         it('should return the additional message with information severity', () => {
             const prompt = getConfirmReplacePrompt();
+            const additionalMessage = (prompt.additionalMessages as Function)();
+
+            expect(additionalMessage).toEqual({
+                severity: Severity.information,
+                message: t('additionalMessages.confirmReplaceAdditionalMessage')
+            });
+        });
+
+        it('should return the CF additional message when isCF is true', () => {
+            const prompt = getConfirmReplacePrompt({ isCF: true });
+            const additionalMessage = (prompt.additionalMessages as Function)();
+
+            expect(additionalMessage).toEqual({
+                severity: Severity.information,
+                message: t('additionalMessages.confirmReplaceAdditionalMessageCF')
+            });
+        });
+
+        it('should return the ABAP additional message when isCF is false', () => {
+            const prompt = getConfirmReplacePrompt({ isCF: false });
             const additionalMessage = (prompt.additionalMessages as Function)();
 
             expect(additionalMessage).toEqual({
