@@ -72,7 +72,7 @@ function processTextAnnotation(
         return [];
     }
 
-    const resolved = resolveTextPropertyPath(entityTypeName, textPath, parsedService);
+    const resolved = resolveTextPropertyPath(entityTypeName, textPath, parsedService.artifacts.metadataService);
     if (!resolved) {
         return [];
     }
