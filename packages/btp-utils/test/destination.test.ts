@@ -194,6 +194,12 @@ describe('destination', () => {
         it('Authentication set to SamlAssertion, internet facing and contains the required hostname', () => {
             expect(isS4HC({ ...S4HCDestination, Host: 'https://my41111-api.saps4hanacloud.cn' })).toBe(true);
         });
+        it('Authentication set to SamlAssertion, internet facing and s4hana.cloud.sap host', () => {
+            expect(isS4HC({ ...S4HCDestination, Host: 'https://my41111-api.s4hana.cloud.sap' })).toBe(true);
+        });
+        it('Authentication set to SamlAssertion, internet facing and s4hana.sapcloud.cn host', () => {
+            expect(isS4HC({ ...S4HCDestination, Host: 'https://my41111-api.s4hana.sapcloud.cn' })).toBe(true);
+        });
         it('Authentication set to SamlAssertion and is OnPremise', () => {
             expect(
                 isS4HC({

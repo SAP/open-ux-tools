@@ -253,7 +253,7 @@ export function isS4HC(destination: Destination): boolean {
         destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_ABAP) &&
             destination.Authentication === Authentication.SAML_ASSERTION &&
             destination.ProxyType === ProxyType.INTERNET &&
-            s4hanaHostRegex.test(destination.Host.toLowerCase())
+            s4hanaHostRegex.test(destination.Host)
     );
 }
 
