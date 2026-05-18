@@ -1,5 +1,17 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.3.1
+
+### Patch Changes
+
+- 2c76f8f: chore: upgrade @sap-devx/yeoman-ui-types 1.23.0 → 1.25.0
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+    - @sap-ux/inquirer-common@0.13.0
+    - @sap-ux/odata-service-inquirer@2.22.0
+    - @sap-ux/abap-deploy-config-inquirer@1.9.1
+
 ## 0.3.0
 
 ### Minor Changes
