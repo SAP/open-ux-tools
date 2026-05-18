@@ -3,6 +3,11 @@ import type { Manifest, ManifestNamespace, ServiceSpecification } from '../types
 import { readJSON } from '../file';
 import type { Editor } from 'mem-fs-editor';
 
+export interface UsedEntity {
+    service: string;
+    entity: string;
+}
+
 /**
  * Get the main service name from the manifest.
  * LROP: by definition the service name can be read from the UI5 model with "" as name.
@@ -17,6 +22,54 @@ export function getMainService(manifest: Manifest): string | undefined {
     return typeof manifest?.['sap.ui5']?.models?.[model]?.dataSource === 'string'
         ? (manifest['sap.ui5'].models[model].dataSource as string)
         : undefined;
+}
+
+/**
+ * Find used service entities by analyzing manifest.json
+ * Currently we do not return entities for Fiori element V2 apps
+ * @param manifest - parsed manifest.json
+ * @returns - string array of entities
+ */
+export function findUsedEntities(manifest: Manifest): UsedEntity[] {
+    if (typeof manifest['sap.ui5']?.routing?.targets !== 'object') {
+        // Targets empty or not resolvable
+        return [];
+    }
+    const usedEntities: UsedEntity[] = [];
+    const addUsedEntity = (service: string, entity: string): void => {
+        // Make sure we don't have duplicate entries
+        if (!usedEntities.find((e) => e.service + e.entity === service + entity)) {
+            usedEntities.push({ service, entity });
+        }
+    };
+    const mainService = getMainService(manifest) ?? '';
+    const mainServiceUri = manifest['sap.app']?.dataSources?.[mainService]?.uri || '';
+
+    for (const targetName in manifest['sap.ui5'].routing.targets) {
+        const target = manifest['sap.ui5'].routing.targets[targetName];
+        if (target.options && typeof target.options === 'object' && 'settings' in target.options) {
+            const settings = target.options?.settings;
+            if (typeof settings === 'object' && settings) {
+                if ('entitySet' in settings && typeof settings.entitySet === 'string') {
+                    addUsedEntity(mainServiceUri, settings.entitySet);
+                }
+                if (
+                    'views' in settings &&
+                    settings.views &&
+                    typeof settings.views === 'object' &&
+                    'paths' in settings.views &&
+                    Array.isArray(settings?.views?.paths)
+                ) {
+                    for (const path of settings.views.paths) {
+                        if (path.entitySet) {
+                            addUsedEntity(mainServiceUri, path.entitySet);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return usedEntities;
 }
 
 /**
