@@ -523,18 +523,7 @@ export class FlpSandbox {
             if (ui5Version.major === 1 && ui5Version.minor < 120) {
                 this.removeFlexExtensionPointEnabled();
             }
-            if ((ui5Version.major > 1 || ui5Version.label?.includes('legacy-free')) && !this.warnedLegacyConfig) {
-                this.warnedLegacyConfig = true;
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                const legacyFile = await this.project.byPath(
-                    `${this.templateConfig.baseUrl}/appconfig/fioriSandboxConfig.json`
-                );
-                if (legacyFile) {
-                    this.logger.warn(
-                        `Found legacy file at 'appconfig/fioriSandboxConfig.json'. This file is not used by the new FLP Sandbox 2.0. Please migrate your application configuration: https://pages.github.tools.sap/UI5/sandbox-2.0/#/consumer/migration-guide?id=step-2-convert-application-configuration`
-                    );
-                }
-            }
+            await this.warnIfLegacySandboxConfigExists(ui5Version);
             //for consistency reasons, we also add the baseUrl to the HTML here, although it is only used in editor mode
             const html = render(this.getSandboxTemplate(ui5Version), this.templateConfig);
             this.sendResponse(res, 'text/html', 200, html);
@@ -592,7 +581,7 @@ export class FlpSandbox {
                         ...userConfig,
                         // beforeFlpStart must always point to our init2
                         beforeFlpStart: config.beforeFlpStart
-                    } as typeof config;
+                    };
                 }
                 this.sendResponse(res, 'application/json', 200, JSON.stringify(config));
             }
@@ -705,6 +694,27 @@ export class FlpSandbox {
             const appDependencies = this.templateConfig.apps[app].applicationDependencies;
             if (appDependencies?.asyncHints.requests) {
                 appDependencies.asyncHints.requests = [];
+            }
+        }
+    }
+
+    /**
+     * Warns once if a legacy 'fioriSandboxConfig.json' file is found when using the new FLP Sandbox.
+     *
+     * @param ui5Version - the resolved UI5 version
+     * @private
+     */
+    private async warnIfLegacySandboxConfigExists(ui5Version: Ui5Version): Promise<void> {
+        if ((ui5Version.major > 1 || ui5Version.label?.includes('legacy-free')) && !this.warnedLegacyConfig) {
+            this.warnedLegacyConfig = true;
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            const legacyFile = await this.project.byPath(
+                `${this.templateConfig.baseUrl}/appconfig/fioriSandboxConfig.json`
+            );
+            if (legacyFile) {
+                this.logger.warn(
+                    `Found legacy file at 'appconfig/fioriSandboxConfig.json'. This file is not used by the new FLP Sandbox. Please migrate your application configuration: https://pages.github.tools.sap/UI5/sandbox-2.0/#/consumer/migration-guide?id=step-2-convert-application-configuration`
+                );
             }
         }
     }
