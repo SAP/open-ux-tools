@@ -1,7 +1,6 @@
 import { getVariant, type DescriptorVariant } from '@sap-ux/adp-tooling';
 import { join, relative } from 'node:path';
-import { existsSync } from 'node:fs';
-import { promises as FSpromises } from 'node:fs';
+import { existsSync, promises as FSpromises } from 'node:fs';
 import { logger } from '../../utils/logger';
 
 export interface ExtractedFile {

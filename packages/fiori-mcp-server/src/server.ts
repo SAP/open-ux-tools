@@ -24,6 +24,7 @@ import {
     adpControllerExtension,
     tools
 } from './tools';
+import { stopBrowser } from './tools/adp-controller-extension/frontend-actions';
 import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry';
 import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from './constant';
 import type {
@@ -98,6 +99,7 @@ export class FioriFunctionalityServer {
     private setupErrorHandling(): void {
         this.server.onerror = (error): void => logger.error(`[MCP Error] ${error}`);
         process.on('SIGINT', async () => {
+            await stopBrowser();
             await this.server.close();
             process.exit(0);
         });
