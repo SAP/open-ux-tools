@@ -74,12 +74,14 @@ export interface TemplateConfig {
     ui5: {
         /**
          * Comma-separated list of UI5 libraries to preload.
+         *
          * @remarks Not rendered in sandbox2.ejs — the Sandbox 2.0 bootstrap manages its own library loading.
          */
         libs: string;
         theme: string;
         /**
          * Flexibility service connector configuration.
+         *
          * @remarks Not rendered in sandbox2.ejs — WorkspaceConnector is wired via the fioriSandboxAppConfig.json `restricted.flexibilityServices` instead.
          */
         flex: (CustomConnector | FlexConnector)[];
