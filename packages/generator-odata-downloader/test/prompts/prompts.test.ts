@@ -3,9 +3,12 @@ import type { CheckBoxQuestion, ConfirmQuestion, InputQuestion } from '@sap-ux/i
 import type { ServiceSpecification } from '@sap-ux/project-access';
 import { PromptState } from '../../src/data-download/prompt-state.js';
 import { t as realT } from '../../src/utils/i18n.js';
+import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 
 // Mock external packages that odata-download-generator.ts imports
+const actualAxiosExtension = await import('@sap-ux/axios-extension');
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
+    ...actualAxiosExtension,
     AbapServiceProvider: class MockAbapServiceProvider {}
 }));
 
@@ -42,95 +45,17 @@ jest.unstable_mockModule('@sap-ux/mockserver-config-writer', () => ({
 }));
 
 const mockGetSystemSelectionQuestions = jest.fn();
-const mockOdataVersion = { v4: 'ODATAv4' };
+const actualOdataServiceInquirer = await import('@sap-ux/odata-service-inquirer');
 jest.unstable_mockModule('@sap-ux/odata-service-inquirer', () => ({
-    getSystemSelectionQuestions: mockGetSystemSelectionQuestions,
-    OdataVersion: mockOdataVersion
+    ...actualOdataServiceInquirer,
+    getSystemSelectionQuestions: mockGetSystemSelectionQuestions
 }));
 
-const mockCreateApplicationAccess = jest.fn();
+const actualProjectAccess = await import('@sap-ux/project-access');
+const mockCreateApplicationAccess = jest.fn(actualProjectAccess.createApplicationAccess);
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
-    createApplicationAccess: mockCreateApplicationAccess,
-    DirName: {
-        Webapp: 'webapp',
-        LocalService: 'localService',
-        Mockdata: 'mockdata'
-    },
-    FileName: {
-        SpecificationDistTags: 'specification-dist-tags.json',
-        Manifest: 'manifest.json',
-        Package: 'package.json',
-        Ui5Yaml: 'ui5.yaml',
-        Ui5MockYaml: 'ui5-mock.yaml',
-        Ui5LocalYaml: 'ui5-local.yaml'
-    },
-    FioriToolsSettings: {},
-    MinCdsPluginUi5Version: '0.0.0',
-    MinCdsVersion: '0.0.0',
-    fioriToolsDirectory: '.fioritools',
-    getFilePaths: jest.fn(),
-    normalizePath: jest.fn(),
-    addPackageDevDependency: jest.fn(),
-    clearCdsModuleCache: jest.fn(),
-    createProjectAccess: jest.fn(),
-    deleteCapApp: jest.fn(),
-    filterDataSourcesByType: jest.fn(),
-    findAllApps: jest.fn(),
-    findCapProjectRoot: jest.fn(),
-    findCapProjects: jest.fn(),
-    findFioriArtifacts: jest.fn(),
-    findProjectRoot: jest.fn(),
-    findRootsForPath: jest.fn(),
-    getAllUi5YamlFileNames: jest.fn(),
-    getAppRootFromWebappPath: jest.fn(),
-    getAppProgrammingLanguage: jest.fn(),
-    getAppType: jest.fn(),
-    getCapCustomPaths: jest.fn(),
-    getCapEnvironment: jest.fn(),
-    getCapModelAndServices: jest.fn(),
-    getCapServiceName: jest.fn(),
-    getCapProjectType: jest.fn(),
-    getCdsFiles: jest.fn(),
-    getCdsRoots: jest.fn(),
-    getCdsServices: jest.fn(),
-    getCapI18nFolderNames: jest.fn(),
-    getSpecification: jest.fn(),
-    getSpecificationModuleFromCache: jest.fn(),
-    getSpecificationPath: jest.fn(),
-    getI18nPropertiesPaths: jest.fn(),
-    getI18nBundles: jest.fn(),
-    getMinUI5VersionFromManifest: jest.fn(),
-    getMinUI5VersionAsArray: jest.fn(),
-    getMinimumUI5Version: jest.fn(),
-    getMtaPath: jest.fn(),
-    getMockServerConfig: jest.fn(),
-    getMockDataPath: jest.fn(),
-    getNodeModulesPath: jest.fn(),
-    getPathMappings: jest.fn(),
-    getProject: jest.fn(),
-    getProjectType: jest.fn(),
-    getWebappPath: jest.fn(),
-    hasUI5CliV3: jest.fn(),
-    isCapProject: jest.fn(),
-    isCapJavaProject: jest.fn(),
-    isCapNodeJsProject: jest.fn(),
-    loadModuleFromProject: jest.fn(),
-    readCapServiceMetadataEdmx: jest.fn(),
-    readUi5Yaml: jest.fn(),
-    refreshSpecificationDistTags: jest.fn(),
-    toReferenceUri: jest.fn(),
-    updatePackageScript: jest.fn(),
-    getWorkspaceInfo: jest.fn(),
-    hasMinCdsVersion: jest.fn(),
-    checkCdsUi5PluginEnabled: jest.fn(),
-    readFlexChanges: jest.fn(),
-    processServices: jest.fn(),
-    getMainService: jest.fn(),
-    getGlobalCdsHomePath: jest.fn(),
-    execNpmCommand: jest.fn(),
-    findRecursiveHierarchyKey: jest.fn(),
-    getTableCapabilitiesByEntitySet: jest.fn(),
-    hasDependency: jest.fn()
+    ...actualProjectAccess,
+    createApplicationAccess: mockCreateApplicationAccess
 }));
 
 // Mock yeoman-generator for ODataDownloadGenerator
@@ -193,10 +118,11 @@ jest.unstable_mockModule('../../src/data-download/prompts/value-help-prompts', (
     getValueHelpSelectionPrompt: jest.fn()
 }));
 
+const { getSystemSelectionQuestions } = await import('@sap-ux/odata-service-inquirer');
 const { getODataDownloaderPrompts, promptNames } = await import('../../src/data-download/prompts/prompts.js');
 const { ODataDownloadGenerator } = await import('../../src/data-download/odata-download-generator.js');
 const { getHostEnvironment, hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
-const { getSystemSelectionQuestions } = await import('@sap-ux/odata-service-inquirer');
+
 type SelectedEntityAnswer = {
     fullPath: string;
     entity: { entityPath: string; entitySetName: string; defaultSelected?: boolean };
@@ -297,7 +223,7 @@ describe('Test prompts', () => {
                         hideNewSystem: true
                     }),
                     serviceSelection: expect.objectContaining({
-                        requiredOdataVersion: mockOdataVersion.v4
+                        requiredOdataVersion: OdataVersion.v4
                     })
                 }),
                 true,
