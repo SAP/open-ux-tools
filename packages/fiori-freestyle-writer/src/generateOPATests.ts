@@ -50,7 +50,8 @@ export async function generateOPATests<T>(
             viewName: (ffApp.template.settings as BasicAppSettings).viewName,
             ui5Theme: ffApp.ui5?.ui5Theme,
             ui5Version: ffApp.ui5?.version,
-            enableTypeScript: ffApp.appOptions?.typescript
+            enableTypeScript: ffApp.appOptions?.typescript,
+            useVirtualPreviewEndpoints: ffApp.appOptions?.useVirtualPreviewEndpoints
         };
         await generateFreestyleOPAFiles(basePath, config, fs, log);
     } else {

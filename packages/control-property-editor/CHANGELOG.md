@@ -1,5 +1,17 @@
 # @sap-ux/control-property-editor
 
+## 0.8.1
+
+### Patch Changes
+
+- 676cbe6: Add margins to panel horizontal borders to distinguish them from splitter borders
+
+## 0.8.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
 ## 0.7.26
 
 ### Patch Changes

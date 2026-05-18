@@ -1,5 +1,16 @@
 # @sap-ux/store
 
+## 1.6.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/logger@0.9.0
+
 ## 1.5.14
 
 ### Patch Changes

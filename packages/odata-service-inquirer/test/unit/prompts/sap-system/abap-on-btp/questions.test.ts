@@ -146,6 +146,7 @@ describe('questions', () => {
                 },
                 "message": [Function],
                 "name": "abapOnBtp:serviceSelection",
+                "showOutputTabLink": "validationMessageOverflow",
                 "source": [Function],
                 "type": "list",
                 "validate": [Function],

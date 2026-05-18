@@ -1,5 +1,46 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.22.0
+
+### Minor Changes
+
+- 2c76f8f: feat(odata-service-inquirer): set showOutputTabLink on service URL, credentials, service selection and CAP project questions so the output tab link appears when validation errors overflow 2 lines
+
+### Patch Changes
+
+- 2c76f8f: chore: upgrade @sap-devx/yeoman-ui-types 1.23.0 → 1.25.0
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+    - @sap-ux/inquirer-common@0.13.0
+
+## 2.21.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/fiori-generator-shared@0.15.0
+    - @sap-ux/guided-answers-helper@0.5.0
+    - @sap-ux/inquirer-common@0.12.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/nodejs-utils@0.3.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/project-input-validator@0.7.0
+    - @sap-ux/store@1.6.0
+    - @sap-ux/telemetry@0.7.0
+
+## 2.20.25
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.48
+
 ## 2.20.24
 
 ### Patch Changes

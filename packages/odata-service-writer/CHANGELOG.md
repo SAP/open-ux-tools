@@ -1,5 +1,24 @@
 # @sap-ux/odata-service-writer
 
+## 0.32.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/mockserver-config-writer@0.10.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/ui5-config@0.31.0
+
+## 0.31.15
+
+### Patch Changes
+
+- 138246a: fix(odata-service-writer): derive manifest odataVersion from EDMX metadata instead of minUI5Version
+
 ## 0.31.14
 
 ### Patch Changes

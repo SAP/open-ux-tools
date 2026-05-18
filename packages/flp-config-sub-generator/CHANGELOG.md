@@ -1,5 +1,67 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.4.3
+
+### Patch Changes
+
+- @sap-ux/flp-config-inquirer@0.5.2
+- @sap-ux/app-config-writer@0.7.1
+
+## 0.4.2
+
+### Patch Changes
+
+- 2c76f8f: chore: upgrade @sap-devx/yeoman-ui-types 1.23.0 → 1.25.0
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+    - @sap-ux/inquirer-common@0.13.0
+    - @sap-ux/deploy-config-generator-shared@0.2.1
+    - @sap-ux/flp-config-inquirer@0.5.1
+    - @sap-ux/app-config-writer@0.7.1
+
+## 0.4.1
+
+### Patch Changes
+
+- Updated dependencies [2f0c182]
+    - @sap-ux/app-config-writer@0.7.1
+
+## 0.4.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/app-config-writer@0.7.0
+    - @sap-ux/deploy-config-generator-shared@0.2.0
+    - @sap-ux/feature-toggle@0.4.0
+    - @sap-ux/fiori-generator-shared@0.15.0
+    - @sap-ux/flp-config-inquirer@0.5.0
+    - @sap-ux/i18n@0.4.0
+    - @sap-ux/inquirer-common@0.12.0
+    - @sap-ux/project-access@1.37.0
+
+## 0.3.206
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.48
+- @sap-ux/flp-config-inquirer@0.4.194
+- @sap-ux/deploy-config-generator-shared@0.1.127
+- @sap-ux/app-config-writer@0.6.145
+
+## 0.3.205
+
+### Patch Changes
+
+- @sap-ux/flp-config-inquirer@0.4.193
+- @sap-ux/app-config-writer@0.6.145
+
 ## 0.3.204
 
 ### Patch Changes

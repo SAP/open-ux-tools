@@ -45,11 +45,11 @@ ruleTester.run(TEST_NAME, enableExportRule, {
                             'sap.ui5',
                             'routing',
                             'targets',
-                            'IncidentsList',
+                            'IncidentsObjectPage',
                             'options',
                             'settings',
                             'controlConfiguration',
-                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
                             'enableExport'
                         ],
@@ -64,7 +64,7 @@ ruleTester.run(TEST_NAME, enableExportRule, {
     invalid: [
         createInvalidTest(
             {
-                name: 'V4 - enableExport is false',
+                name: 'V4 - list report page - enableExport is false',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
                     {
@@ -85,7 +85,7 @@ ruleTester.run(TEST_NAME, enableExportRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'sap-enable-export',
+                        message: 'Export functionality in the table must be enabled',
                         line: 127,
                         column: 21
                     }
@@ -106,6 +106,55 @@ ruleTester.run(TEST_NAME, enableExportRule, {
                         value: {
                             type: 'ResponsiveTable',
                             selectionMode: 'Auto'
+                            // enableExport property removed
+                        }
+                    }
+                ])
+            },
+            [FACETSV4]
+        ),
+        createInvalidTest(
+            {
+                name: 'V4 - object page - enableExport is false',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'enableExport'
+                        ],
+                        value: false
+                    }
+                ]),
+                errors: [
+                    {
+                        message: 'Export functionality in the Products table must be enabled',
+                        line: 145,
+                        column: 21
+                    }
+                ],
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings'
+                        ],
+                        value: {
                             // enableExport property removed
                         }
                     }
