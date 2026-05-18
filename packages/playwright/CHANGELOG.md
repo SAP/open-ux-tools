@@ -1,5 +1,11 @@
 # @sap-ux-private/playwright
 
+## 0.3.1
+
+### Patch Changes
+
+- fb00faa: fix(ci): use workspace:\* for internal monorepo dependencies
+
 ## 0.3.0
 
 ### Minor Changes
