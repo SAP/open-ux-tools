@@ -1,5 +1,38 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.26.3
+
+## 0.26.2
+
+## 0.26.1
+
+## 0.26.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux-private/control-property-editor-common@0.8.0
+
+## 0.25.47
+
+## 0.25.46
+
+## 0.25.45
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux-private/control-property-editor-common@0.7.8
+
+## 0.25.44
+
+## 0.25.43
+
 ## 0.25.42
 
 ### Patch Changes
