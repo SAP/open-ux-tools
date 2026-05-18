@@ -38,4 +38,5 @@ export function t(key: string, options?: TOptions): string {
     return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
+// eslint-disable-next-line prefer-top-level-await
 void initI18nODataDownloadGenerator().catch((error) => console.error('Failed to initialize i18n:', error));
