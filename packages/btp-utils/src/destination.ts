@@ -252,9 +252,9 @@ export function getDisplayName(destination: Destination, displayUsername?: strin
 export function isS4HC(destination: Destination): boolean {
     return Boolean(
         destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_ABAP) &&
-            destination.Authentication === Authentication.SAML_ASSERTION &&
-            destination.ProxyType === ProxyType.INTERNET &&
-            s4hanaHostRegex.test(destination.Host)
+        destination.Authentication === Authentication.SAML_ASSERTION &&
+        destination.ProxyType === ProxyType.INTERNET &&
+        s4hanaHostRegex.test(destination.Host)
     );
 }
 
