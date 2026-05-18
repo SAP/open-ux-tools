@@ -457,6 +457,7 @@ Usage: `npx --yes @sap-ux/create@latest list [subcommand] [options]`
 
 The available subcommands are: `system`
 
+
 --------------------------------
 
 ## [`list system`](#list-system)
@@ -482,6 +483,7 @@ Command group for retrieving saved resources. A subcommand is required.
 Usage: `npx --yes @sap-ux/create@latest get [subcommand] [options]`
 
 The available subcommands are: `system`
+
 
 --------------------------------
 
