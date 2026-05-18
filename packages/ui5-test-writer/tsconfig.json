@@ -20,6 +20,9 @@
       "path": "../logger"
     },
     {
+      "path": "../preview-middleware"
+    },
+    {
       "path": "../project-access"
     },
     {
