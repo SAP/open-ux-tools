@@ -260,6 +260,8 @@ describe('ui5-application-inquirer API', () => {
             isWorkspaceEnabled: false
         };
         await prompt(mockInquirerAdapter, promptOpts, mockCdsInfo, true);
+
+        expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, promptOpts, mockCdsInfo, true);
     });
 });
 
