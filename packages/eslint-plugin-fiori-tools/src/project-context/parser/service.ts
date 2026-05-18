@@ -1,4 +1,4 @@
-import type { Element, MetadataElement, Range, Target } from '@sap-ux/odata-annotation-core';
+import type { Element, MetadataElement, Range } from '@sap-ux/odata-annotation-core';
 import {
     Edm,
     getAliasInformation,
@@ -159,12 +159,8 @@ function createSyntheticElement(attrName: string, attrValue: string, sourceRange
 }
 
 /**
- * Injects synthetic Common.Text and Common.Label annotation entries derived from OData V2
+ * Indexes synthetic Common.Text and Common.Label annotation entries derived from OData V2
  * inline `sap:text` and `sap:label` attributes, using pre-parsed V2Annotation objects.
- *
- * Both Common.Text and Common.Label are injected into the annotation index AND the annotation
- * file AST so that ESLint's `createAnnotations()` traversal can fire and report diagnostics
- * on either annotation type.
  *
  * Only adds entries when no explicit vocabulary annotation already exists for that key.
  *
@@ -173,7 +169,7 @@ function createSyntheticElement(attrName: string, attrValue: string, sourceRange
  * @param v2Annotations - Pre-parsed V2 annotations from convertMetadataDocumentV2
  * @param index - The annotation index to inject into
  */
-function injectV2Annotations(
+function indexV2Annotations(
     artifacts: ServiceArtifacts,
     metadataUri: string,
     v2Annotations: V2Annotation[],
@@ -206,12 +202,6 @@ function injectV2Annotations(
                         layers: [{ uri: metadataUri, value: syntheticElement }]
                     }
                 };
-                const syntheticTarget: Target = {
-                    type: 'target',
-                    name: propertyTarget,
-                    terms: [syntheticElement]
-                };
-                annotationFile.targets.push(syntheticTarget);
             }
         } else if (v2Ann.name === 'sap:label') {
             const labelKey = buildAnnotationIndexKey(propertyTarget, COMMON_LABEL);
@@ -226,12 +216,6 @@ function injectV2Annotations(
                         layers: [{ uri: metadataUri, value: syntheticElement }]
                     }
                 };
-                const syntheticTarget: Target = {
-                    type: 'target',
-                    name: propertyTarget,
-                    terms: [syntheticElement]
-                };
-                annotationFile.targets.push(syntheticTarget);
             }
         }
     }
@@ -240,7 +224,7 @@ function injectV2Annotations(
 /**
  * Builds a service index from service artifacts.
  * Creates indexes for entity sets, entity containers, and annotations.
- * For OData V2 services, also injects synthetic index entries and AST targets from
+ * For OData V2 services, also injects synthetic index entries from
  * inline sap:text/sap:label attributes so that annotation rules can report on metadata.xml.
  *
  * @param artifacts - Service artifacts to index
@@ -273,7 +257,7 @@ export function buildServiceIndex(
         }
     });
 
-    injectV2Annotations(artifacts, metadataUri, v2Annotations, annotationIndex);
+    indexV2Annotations(artifacts, metadataUri, v2Annotations, annotationIndex);
 
     return {
         entitySets: entitySets,

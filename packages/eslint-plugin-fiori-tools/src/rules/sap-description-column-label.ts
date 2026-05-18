@@ -214,22 +214,38 @@ const rule: FioriRuleDefinition = createFioriRule({
         for (const diagnostic of validationResult) {
             lookup.set(diagnostic.annotation.reference.value, diagnostic);
         }
+        const report = (node: Element, diagnostic: DescriptionColumnLabel): void => {
+            context.report({
+                node,
+                messageId: diagnostic.messageId,
+                data: {
+                    textPropertyTarget: diagnostic.annotation.textPropertyTarget,
+                    textPropertyLabel: diagnostic.annotation.textPropertyLabel,
+                    idPropertyTarget: diagnostic.annotation.idPropertyTarget,
+                    idPropertyLabel: diagnostic.annotation.idPropertyLabel ?? ''
+                }
+            });
+        };
         return {
             ['target>element[name="Annotation"]'](node: Element): void {
                 const diagnostic = lookup.get(node);
                 if (!diagnostic) {
                     return;
                 }
-                context.report({
-                    node,
-                    messageId: diagnostic.messageId,
-                    data: {
-                        textPropertyTarget: diagnostic.annotation.textPropertyTarget,
-                        textPropertyLabel: diagnostic.annotation.textPropertyLabel,
-                        idPropertyTarget: diagnostic.annotation.idPropertyTarget,
-                        idPropertyLabel: diagnostic.annotation.idPropertyLabel ?? ''
+                lookup.delete(node);
+                report(node, diagnostic);
+            },
+            ['annotation-file:exit'](): void {
+                // V2 synthetic elements are not injected into the AST, so the selector
+                // above never visits them. Report any remaining diagnostics directly using
+                // the element's pre-set range, filtering to the file currently being linted.
+                const currentUri = context.sourceCode.ast.uri;
+                for (const [element, diagnostic] of lookup) {
+                    if (diagnostic.annotation.reference.uri === currentUri) {
+                        report(element, diagnostic);
                     }
-                });
+                }
+                lookup.clear();
             }
         };
     }
