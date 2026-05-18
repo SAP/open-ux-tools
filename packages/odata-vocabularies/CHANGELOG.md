@@ -1,5 +1,30 @@
 # @sap-ux/odata-vocabularies
 
+## 0.5.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/odata-annotation-core-types@0.6.0
+
+## 0.4.32
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/odata-annotation-core-types@0.5.9
+
+## 0.4.31
+
+### Patch Changes
+
+- @sap-ux/odata-annotation-core-types@0.5.8
+
 ## 0.4.30
 
 ### Patch Changes

@@ -1,5 +1,78 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.10.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/cds-annotation-parser@0.3.0
+    - @sap-ux/cds-odata-annotation-converter@0.8.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/odata-annotation-core-types@0.6.0
+    - @sap-ux/odata-annotation-core@0.3.0
+    - @sap-ux/odata-entity-model@0.4.0
+    - @sap-ux/odata-vocabularies@0.5.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/xml-odata-annotation-converter@0.5.0
+
+## 0.9.50
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/cds-annotation-parser@0.2.37
+    - @sap-ux/cds-odata-annotation-converter@0.7.18
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/odata-annotation-core@0.2.19
+    - @sap-ux/odata-annotation-core-types@0.5.9
+    - @sap-ux/odata-entity-model@0.3.8
+    - @sap-ux/odata-vocabularies@0.4.32
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/xml-odata-annotation-converter@0.4.14
+
+## 0.9.49
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/cds-odata-annotation-converter@0.7.17
+
+## 0.9.48
+
+### Patch Changes
+
+- @sap-ux/project-access@1.36.3
+- @sap-ux/cds-odata-annotation-converter@0.7.17
+
+## 0.9.47
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+- Updated dependencies [c160401]
+    - @sap-ux/cds-odata-annotation-converter@0.7.17
+    - @sap-ux/xml-odata-annotation-converter@0.4.13
+    - @sap-ux/odata-annotation-core@0.2.18
+    - @sap-ux/cds-annotation-parser@0.2.36
+    - @sap-ux/odata-annotation-core-types@0.5.8
+    - @sap-ux/project-access@1.36.2
+    - @sap-ux/odata-entity-model@0.3.7
+    - @sap-ux/odata-vocabularies@0.4.31
+
+## 0.9.46
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/cds-odata-annotation-converter@0.7.16
+
 ## 0.9.45
 
 ### Patch Changes

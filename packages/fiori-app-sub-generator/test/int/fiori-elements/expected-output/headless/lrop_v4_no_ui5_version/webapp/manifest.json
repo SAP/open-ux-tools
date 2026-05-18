@@ -31,7 +31,7 @@
             "annotation"
           ],
           "localUri": "localService/mainService/metadata.xml",
-          "odataVersion": "4.01"
+          "odataVersion": "4.0"
         }
       }
     }

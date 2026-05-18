@@ -1,5 +1,54 @@
 # @sap-ux/ui5-library-writer
 
+## 0.7.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/ui5-config@0.31.0
+
+## 0.6.86
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/ui5-config@0.30.5
+
+## 0.6.85
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+
+## 0.6.84
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/ui5-config@0.30.4
+    - @sap-ux/project-access@1.36.3
+
+## 0.6.83
+
+### Patch Changes
+
+- @sap-ux/project-access@1.36.2
+
+## 0.6.82
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+
 ## 0.6.81
 
 ### Patch Changes

@@ -1,5 +1,150 @@
 # @sap-ux/preview-middleware
 
+## 0.26.3
+
+### Patch Changes
+
+- Updated dependencies [342c544]
+    - @sap-ux/adp-tooling@0.19.2
+
+## 0.26.2
+
+### Patch Changes
+
+- fb00faa: fix(ci): use workspace:\* for internal monorepo dependencies
+
+## 0.26.1
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/adp-tooling@0.19.1
+
+## 0.26.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/adp-tooling@0.19.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/feature-toggle@0.4.0
+    - @sap-ux/i18n@0.4.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/system-access@0.8.0
+
+## 0.25.47
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.134
+
+## 0.25.46
+
+### Patch Changes
+
+- Updated dependencies [8c4185a]
+    - @sap-ux/adp-tooling@0.18.133
+
+## 0.25.45
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/adp-tooling@0.18.132
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/feature-toggle@0.3.9
+    - @sap-ux/i18n@0.3.12
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/system-access@0.7.13
+
+## 0.25.44
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/adp-tooling@0.18.131
+    - @sap-ux/system-access@0.7.12
+
+## 0.25.43
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.130
+
+## 0.25.42
+
+### Patch Changes
+
+- be5476f: feat: Display unhandled exceptions from the Controller extension inside the Info Center.
+
+## 0.25.41
+
+### Patch Changes
+
+- 17de742: fix: Add fragment list to model for custom fragments
+
+## 0.25.40
+
+## 0.25.39
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+- Updated dependencies [678a08e]
+    - @sap-ux/adp-tooling@0.18.129
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/system-access@0.7.11
+    - @sap-ux/project-access@1.36.3
+
+## 0.25.38
+
+## 0.25.37
+
+### Patch Changes
+
+- Updated dependencies [b2ffc7e]
+    - @sap-ux/adp-tooling@0.18.128
+
+## 0.25.36
+
+### Patch Changes
+
+- Updated dependencies [fcaa70c]
+    - @sap-ux/adp-tooling@0.18.127
+
+## 0.25.35
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/system-access@0.7.10
+    - @sap-ux/adp-tooling@0.18.126
+    - @sap-ux/i18n@0.3.11
+    - @sap-ux/project-access@1.36.2
+
+## 0.25.34
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.125
+
+## 0.25.33
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/adp-tooling@0.18.124
+    - @sap-ux/system-access@0.7.9
+
 ## 0.25.32
 
 ### Patch Changes

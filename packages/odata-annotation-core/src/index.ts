@@ -23,7 +23,8 @@ export {
 export { findPathToPosition, FindPathResult, getPositionData } from './search';
 
 export {
-    indent,
+    indentWithTabs,
+    indentWithSpaces,
     getIndentLevel,
     positionAt,
     positionContained,

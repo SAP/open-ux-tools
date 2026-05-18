@@ -1,5 +1,72 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.2.1
+
+### Patch Changes
+
+- 2c76f8f: chore: upgrade @sap-devx/yeoman-ui-types 1.23.0 → 1.25.0
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+
+## 0.2.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/fiori-generator-shared@0.15.0
+    - @sap-ux/nodejs-utils@0.3.0
+
+## 0.1.127
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/fiori-generator-shared@0.14.2
+    - @sap-ux/nodejs-utils@0.2.23
+
+## 0.1.126
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.14.1
+
+## 0.1.125
+
+### Patch Changes
+
+- Updated dependencies [9360ea5]
+    - @sap-ux/fiori-generator-shared@0.14.0
+
+## 0.1.124
+
+### Patch Changes
+
+- 678a08e: chore: upgrade runtime dependencies (@sap/cf-tools 3.3.0 → 3.3.1, @vscode-logging/logger 2.0.8 → 2.0.9)
+- Updated dependencies [678a08e]
+- Updated dependencies [678a08e]
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/fiori-generator-shared@0.13.105
+    - @sap-ux/nodejs-utils@0.2.22
+
+## 0.1.123
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.104
+
+## 0.1.122
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.103
+
 ## 0.1.121
 
 ### Patch Changes

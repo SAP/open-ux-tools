@@ -11,6 +11,43 @@ import { getError } from '../utils/error';
 import { isLowerThanMinimalUi5Version, type Ui5VersionInfo } from '../utils/version';
 import { sendInfoCenterMessage } from '../utils/info-center-message';
 
+type GlobalErrorEvent = ErrorEvent | PromiseRejectionEvent;
+
+const CONTROLLER_EXTENSION_PATH_REGEX = /\/changes\/coding\/.+\.(js|ts)/;
+
+function extractError(event: GlobalErrorEvent): Error | undefined {
+    if ('error' in event && event.error instanceof Error) {
+        return event.error;
+    }
+    if ('reason' in event && event.reason instanceof Error) {
+        return event.reason;
+    }
+    return undefined;
+}
+
+const reportControllerExtensionErrorToInfoCenter: (event: GlobalErrorEvent) => void = (event) => {
+    const error = extractError(event);
+    const stackTrace = error?.stack ?? '';
+    if (!CONTROLLER_EXTENSION_PATH_REGEX.test(stackTrace)) {
+        return;
+    }
+    void sendInfoCenterMessage({
+        title: { key: 'CONTROLLER_EXTENSION_UNHANDLED_ERROR_TITLE' },
+        description: error?.message ?? '',
+        type: MessageBarType.error,
+        details: stackTrace
+    });
+};
+
+/**
+ * Registers global event listeners for uncaught errors and unhandled promise rejections
+ * to detect and report controller extension errors to the Info Center.
+ */
+export function registerForControllerExtensionErrors(): void {
+    globalThis.addEventListener('error', reportControllerExtensionErrorToInfoCenter);
+    globalThis.addEventListener('unhandledrejection', reportControllerExtensionErrorToInfoCenter);
+}
+
 export interface FlexChange {
     [key: string]: string | object | undefined;
     changeType: string;
@@ -183,9 +220,9 @@ export async function resetAppState(container: typeof sap.ushell.Container): Pro
 export async function registerComponentDependencyPaths(appUrls: string[], urlParams: URLSearchParams): Promise<void> {
     const libs = await getManifestLibs(appUrls);
     if (libs && libs.length > 0) {
-        let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + libs;
+        let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + encodeURIComponent(libs);
         const sapClient = urlParams.get('sap-client');
-        if (sapClient?.length === 3) {
+        if (sapClient?.length === 3 && /^\d+$/.test(sapClient)) {
             url = url + '&sap-client=' + sapClient;
         }
         const response = await fetch(url);
@@ -285,6 +322,7 @@ export function attachRtaListener(
     const flexSettings = JSON.parse(flex) as FlexSettings;
     const scenario = flexSettings.scenario;
 
+    registerForControllerExtensionErrors();
     container.attachRendererCreatedEvent(async function () {
         const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
         lifecycleService.attachAppLoaded((event) => {

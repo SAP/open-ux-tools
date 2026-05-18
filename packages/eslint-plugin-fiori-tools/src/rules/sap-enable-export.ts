@@ -3,8 +3,9 @@ import { ENABLE_EXPORT, type EnableExport } from '../language/diagnostics';
 import { createFioriRule } from '../language/rule-factory';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import type { ParsedApp } from '../project-context/parser';
-import type { FeV4PageType } from '../project-context/linker/fe-v4';
+import type { FeV4PageType, Table } from '../project-context/linker/fe-v4';
 import { createJsonFixer } from '../language/rule-fixer';
+import { checkAppTablesConfiguration } from '../utils/helpers';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: ENABLE_EXPORT,
@@ -16,7 +17,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-enable-export.md'
         },
         messages: {
-            [ENABLE_EXPORT]: 'Export functionality in the table must be enabled'
+            [ENABLE_EXPORT]: 'Export functionality in the {{sectionText}}table must be enabled'
         },
         fixable: 'code'
     },
@@ -32,7 +33,9 @@ const rule: FioriRuleDefinition = createFioriRule({
             }
             if (app.type === 'fe-v4') {
                 for (const page of app.pages) {
-                    problems.push(...handleExportInTableV4(page, parsedApp));
+                    problems.push(
+                        ...(<EnableExport[]>checkAppTablesConfiguration(page, parsedApp, checkConfiguration))
+                    );
                 }
             }
         }
@@ -43,6 +46,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             context.report({
                 node,
                 messageId: ENABLE_EXPORT,
+                data: { sectionText: diagnostic.pageSectionName ? `${diagnostic.pageSectionName} ` : '' },
                 fix: createJsonFixer({
                     context,
                     deepestPathResult,
@@ -54,28 +58,31 @@ const rule: FioriRuleDefinition = createFioriRule({
 });
 
 /**
- * Looks through V4 app page tables and returns problems if enableExport is set to false.
  *
- * @param page - V4 app page
- * @param parsedApp - parsed V4 app
- * @returns - EnableExport issues
+ * @param page
+ * @param table
+ * @param parsedApp
+ * @param problems
+ * @param pageSectionName
  */
-function handleExportInTableV4(page: FeV4PageType, parsedApp: ParsedApp): EnableExport[] {
-    const problems: EnableExport[] = [];
-    for (const table of page.lookup['table'] ?? []) {
-        if (table.configuration.enableExport.valueInFile === false) {
-            problems.push({
-                type: ENABLE_EXPORT,
-                pageName: page.targetName,
-                manifest: {
-                    uri: parsedApp.manifest.manifestUri,
-                    object: parsedApp.manifestObject,
-                    propertyPath: table.configuration.enableExport.configurationPath
-                }
-            });
-        }
+function checkConfiguration(
+    page: FeV4PageType,
+    table: Table,
+    parsedApp: ParsedApp,
+    problems: EnableExport[],
+    pageSectionName?: string
+): void {
+    if (table.configuration.enableExport.valueInFile === false) {
+        problems.push({
+            type: ENABLE_EXPORT,
+            pageName: page.targetName,
+            pageSectionName,
+            manifest: {
+                uri: parsedApp.manifest.manifestUri,
+                object: parsedApp.manifestObject,
+                propertyPath: table.configuration.enableExport.configurationPath
+            }
+        });
     }
-    return problems;
 }
-
 export default rule;

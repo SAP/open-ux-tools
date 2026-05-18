@@ -1,5 +1,68 @@
 # @sap-ux/odata-service-writer
 
+## 0.32.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/mockserver-config-writer@0.10.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/ui5-config@0.31.0
+
+## 0.31.15
+
+### Patch Changes
+
+- 138246a: fix(odata-service-writer): derive manifest odataVersion from EDMX metadata instead of minUI5Version
+
+## 0.31.14
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/mockserver-config-writer@0.9.78
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/ui5-config@0.30.5
+
+## 0.31.13
+
+### Patch Changes
+
+- 21abda3: chore: upgrade fast-xml-parser 5.7.2 → 5.8.0 (fixes fast-xml-builder CVE-2025-47916)
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/mockserver-config-writer@0.9.77
+
+## 0.31.12
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/ui5-config@0.30.4
+    - @sap-ux/mockserver-config-writer@0.9.76
+    - @sap-ux/project-access@1.36.3
+
+## 0.31.11
+
+### Patch Changes
+
+- @sap-ux/project-access@1.36.2
+- @sap-ux/mockserver-config-writer@0.9.75
+
+## 0.31.10
+
+### Patch Changes
+
+- 3945459: chore: upgrade fast-xml-parser 5.5.9 to 5.7.2 (security fix for XML comment/CDATA injection)
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/mockserver-config-writer@0.9.74
+
 ## 0.31.9
 
 ### Patch Changes

@@ -1,5 +1,109 @@
 # @sap-ux/inquirer-common
 
+## 0.13.0
+
+### Minor Changes
+
+- 2c76f8f: feat(inquirer-common): add ShowOutputTabLink and OutputTabLinkResult types; add showOutputTabLink property to YUIQuestion, InputQuestion, ListQuestion, ConfirmQuestion, CheckBoxQuestion
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+
+## 0.12.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/feature-toggle@0.4.0
+    - @sap-ux/fiori-generator-shared@0.15.0
+    - @sap-ux/guided-answers-helper@0.5.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/odata-service-writer@0.32.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/telemetry@0.7.0
+    - @sap-ux/ui5-info@0.14.0
+
+## 0.11.48
+
+### Patch Changes
+
+- Updated dependencies [138246a]
+    - @sap-ux/odata-service-writer@0.31.15
+
+## 0.11.47
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/feature-toggle@0.3.9
+    - @sap-ux/fiori-generator-shared@0.14.2
+    - @sap-ux/guided-answers-helper@0.4.3
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/odata-service-writer@0.31.14
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/telemetry@0.6.106
+    - @sap-ux/ui5-info@0.13.22
+
+## 0.11.46
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/odata-service-writer@0.31.13
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/fiori-generator-shared@0.14.1
+    - @sap-ux/telemetry@0.6.105
+
+## 0.11.45
+
+### Patch Changes
+
+- Updated dependencies [9360ea5]
+    - @sap-ux/fiori-generator-shared@0.14.0
+
+## 0.11.44
+
+### Patch Changes
+
+- 678a08e: chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
+- Updated dependencies [678a08e]
+- Updated dependencies [678a08e]
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/telemetry@0.6.104
+    - @sap-ux/ui5-info@0.13.21
+    - @sap-ux/fiori-generator-shared@0.13.105
+    - @sap-ux/odata-service-writer@0.31.12
+    - @sap-ux/project-access@1.36.3
+
+## 0.11.43
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/telemetry@0.6.103
+    - @sap-ux/fiori-generator-shared@0.13.104
+    - @sap-ux/odata-service-writer@0.31.11
+    - @sap-ux/project-access@1.36.2
+
+## 0.11.42
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/odata-service-writer@0.31.10
+    - @sap-ux/fiori-generator-shared@0.13.103
+    - @sap-ux/telemetry@0.6.102
+
 ## 0.11.41
 
 ### Patch Changes

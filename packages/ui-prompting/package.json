@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/ui-prompting",
-    "version": "0.6.24",
+    "version": "0.7.1",
     "license": "Apache-2.0",
     "description": "SAP UI Components Library",
     "repository": {
@@ -78,6 +78,6 @@
         "ts-node": "10.9.2"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

@@ -1,5 +1,64 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.44.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/fiori-annotation-api@0.10.0
+    - @sap-ux/i18n@0.4.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/project-access@1.37.0
+
+## 0.43.30
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/fiori-annotation-api@0.9.50
+    - @sap-ux/i18n@0.3.12
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/project-access@1.36.5
+
+## 0.43.29
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/fiori-annotation-api@0.9.49
+
+## 0.43.28
+
+### Patch Changes
+
+- @sap-ux/project-access@1.36.3
+- @sap-ux/fiori-annotation-api@0.9.48
+
+## 0.43.27
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+- Updated dependencies [c160401]
+    - @sap-ux/fiori-annotation-api@0.9.47
+    - @sap-ux/i18n@0.3.11
+    - @sap-ux/project-access@1.36.2
+
+## 0.43.26
+
+### Patch Changes
+
+- 3945459: chore: upgrade @xmldom/xmldom 0.8.12 to 0.8.13 (security fix for XML injection vulnerabilities)
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/fiori-annotation-api@0.9.46
+
 ## 0.43.25
 
 ### Patch Changes

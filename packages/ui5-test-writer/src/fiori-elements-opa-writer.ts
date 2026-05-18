@@ -14,7 +14,7 @@ import type {
 } from './types';
 import { SupportedPageTypes, ValidationError } from './types';
 import { t } from './i18n';
-import { FileName, DirName, getWebappPath } from '@sap-ux/project-access';
+import { FileName, DirName, getWebappPath, updatePackageScript } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
 import { getAppFeatures } from './utils/modelUtils';
 import {
@@ -23,8 +23,11 @@ import {
     addPagesToJourneyRunner,
     hasVirtualOPA5,
     readHtmlTargetFromQUnitJs,
+    addVirtualTestConfig,
     type JourneyRunnerPage
 } from './utils/opaQUnitUtils';
+import { getPackageScripts } from '@sap-ux/fiori-generator-shared';
+import { readHashFromFlpSandbox } from './utils/flpSandboxUtils';
 
 /**
  * Generate OPA test files for a Fiori elements for OData V4 application.
@@ -35,6 +38,7 @@ import {
  * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
  * @param opaConfig.htmlTarget - the name of the html that will be used in OPA journey file. If not specified, 'index.html' will be used
  * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
+ * @param opaConfig.useVirtualPreviewEndpoints - when true, OPA harness files are served virtually; skip writing them to disk
  * @param metadata - optional metadata for the OPA test generation
  * @param fs - an optional reference to a mem-fs editor
  * @param log - optional logger instance
@@ -43,7 +47,7 @@ import {
  */
 export async function generateOPAFiles(
     basePath: string,
-    opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string },
+    opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string; useVirtualPreviewEndpoints?: boolean },
     metadata?: string,
     fs?: Editor,
     log?: Logger,
@@ -80,23 +84,93 @@ export async function generateOPAFiles(
         if (hasJourneyRunner) {
             writeJourneyFiles(appFeatures, writeContext, true, true, virtualOPA5Configured);
         } else {
-            editor.move(join(testOutDirPath, 'integration', '**'), join(testOutDirPath, 'integration_old'));
-
-            await addIntegrationOldToGitignore(basePath, editor);
-            const htmlTarget = readHtmlTargetFromQUnitJs(testOutDirPath, editor) ?? config.htmlTarget;
-            const standaloneConfig = { ...config, htmlTarget };
-            const standaloneWriteContext: WriteContext = { ...writeContext, config: standaloneConfig };
+            const standaloneWriteContext = await resolveStandaloneWriteContext(
+                basePath,
+                testOutDirPath,
+                writeContext,
+                editor
+            );
             if (!virtualOPA5Configured) {
                 writeCommonAndPageFiles(standaloneWriteContext, rootCommonTemplateDirPath);
             }
             writeJourneyFiles(appFeatures, standaloneWriteContext, true, hasJourneyRunner, virtualOPA5Configured);
         }
     } else {
-        writeCommonAndPageFiles(writeContext, rootCommonTemplateDirPath);
-        writeJourneyFiles(appFeatures, writeContext, false);
+        writeCommonAndPageFiles(writeContext, rootCommonTemplateDirPath, opaConfig.useVirtualPreviewEndpoints ?? false);
+        writeJourneyFiles(appFeatures, writeContext, false, false, opaConfig.useVirtualPreviewEndpoints ?? false);
+        if (opaConfig.useVirtualPreviewEndpoints) {
+            await addVirtualTestConfig(
+                basePath,
+                [{ framework: 'OPA5', path: '/test/integration/opaTests.qunit.html' }, { framework: 'Testsuite' }],
+                editor
+            );
+        }
     }
 
     return editor;
+}
+
+/**
+ * Resolves the write context for standalone mode when no JourneyRunner.js exists yet.
+ * Moves any existing integration folder to integration_old, or adds the int-test script
+ * and resolves the htmlTarget from flpSandbox.html if present.
+ *
+ * @param basePath - the absolute target path of the application
+ * @param testOutDirPath - output test directory (.../webapp/test)
+ * @param writeContext - shared write context to base the resolved context on
+ * @param editor - a reference to a mem-fs editor
+ * @returns a new WriteContext with the resolved htmlTarget
+ */
+async function resolveStandaloneWriteContext(
+    basePath: string,
+    testOutDirPath: string,
+    writeContext: WriteContext,
+    editor: Editor
+): Promise<WriteContext> {
+    const { config } = writeContext;
+    let htmlTarget = readHtmlTargetFromQUnitJs(testOutDirPath, editor) ?? config.htmlTarget;
+
+    if (existsSync(join(testOutDirPath, 'integration'))) {
+        editor.move(join(testOutDirPath, 'integration', '**'), join(testOutDirPath, 'integration_old'));
+        await addIntegrationOldToGitignore(basePath, editor);
+    } else {
+        const hasIntTestScript = checkScriptInPackageJson(editor, basePath, 'int-test');
+        if (!hasIntTestScript) {
+            const script = getPackageScripts({ localOnly: false, addTest: true })['int-test'];
+            if (script) {
+                await updatePackageScript(basePath, 'int-test', script, editor);
+            }
+        }
+        if (existsSync(join(testOutDirPath, 'flpSandbox.html'))) {
+            const hashFromFlpSandbox = readHashFromFlpSandbox(
+                join('test', 'flpSandbox.html'),
+                await getWebappPath(basePath),
+                editor
+            );
+            if (hashFromFlpSandbox) {
+                htmlTarget = `test/flpSandbox.html#${hashFromFlpSandbox}`;
+            }
+        }
+    }
+
+    return { ...writeContext, config: { ...config, htmlTarget } };
+}
+
+/**
+ * Checks whether a script with the given name exists in the package.json.
+ *
+ * @param editor - a reference to a mem-fs editor
+ * @param basePath - the root folder of the app
+ * @param scriptName - the name of the script to check for
+ * @returns true if the script exists, false otherwise
+ */
+function checkScriptInPackageJson(editor: Editor, basePath: string, scriptName: string): boolean {
+    const packageJsonPath = join(basePath, FileName.Package);
+    if (!editor.exists(packageJsonPath)) {
+        return false;
+    }
+    const packageJson = editor.readJSON(packageJsonPath) as { scripts?: Record<string, string> };
+    return !!packageJson.scripts?.[scriptName];
 }
 
 /**
@@ -322,21 +396,28 @@ function findLROP(
  *
  * @param writeContext - shared write context (config, paths, editor, journey params)
  * @param rootCommonTemplateDirPath - template root directory for common files
+ * @param useVirtualPreviewEndpoints - when true, testsuite harness files are served virtually; skip writing them to disk
  */
-function writeCommonAndPageFiles(writeContext: WriteContext, rootCommonTemplateDirPath: string): void {
+function writeCommonAndPageFiles(
+    writeContext: WriteContext,
+    rootCommonTemplateDirPath: string,
+    useVirtualPreviewEndpoints = false
+): void {
     const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams } = writeContext;
 
-    // Common test files
-    editor.copyTpl(
-        join(rootCommonTemplateDirPath),
-        testOutDirPath,
-        // unit tests are not added for Fiori elements app
-        { appId: config.appID },
-        undefined,
-        {
-            globOptions: { dot: true }
-        }
-    );
+    // Common test files (testsuite served virtually when useVirtualPreviewEndpoints is enabled)
+    if (!useVirtualPreviewEndpoints) {
+        editor.copyTpl(
+            join(rootCommonTemplateDirPath),
+            testOutDirPath,
+            // unit tests are not added for Fiori elements app
+            { appId: config.appID },
+            undefined,
+            {
+                globOptions: { dot: true }
+            }
+        );
+    }
 
     config.pages.forEach((page) => {
         writePageObject(page, rootV4TemplateDirPath, testOutDirPath, editor);

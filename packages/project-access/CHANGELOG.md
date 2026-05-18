@@ -1,5 +1,51 @@
 # @sap-ux/project-access
 
+## 1.37.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/i18n@0.4.0
+    - @sap-ux/ui5-config@0.31.0
+
+## 1.36.5
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/i18n@0.3.12
+    - @sap-ux/ui5-config@0.30.5
+
+## 1.36.4
+
+### Patch Changes
+
+- 21abda3: chore: upgrade fast-xml-parser 5.7.2 → 5.8.0 (fixes fast-xml-builder CVE-2025-47916)
+
+## 1.36.3
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/ui5-config@0.30.4
+
+## 1.36.2
+
+### Patch Changes
+
+- @sap-ux/i18n@0.3.11
+
+## 1.36.1
+
+### Patch Changes
+
+- 3945459: chore: upgrade fast-xml-parser 5.5.9 to 5.7.2 (security fix for XML comment/CDATA injection)
+
 ## 1.36.0
 
 ### Minor Changes

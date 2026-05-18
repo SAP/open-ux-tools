@@ -11,8 +11,9 @@ export const systemInfoLoading = (): SystemInfoLoading => ({
     type: 'SYSTEM_INFO_LOADING'
 });
 
-export const createNewSystem = (): CreateNewSystem => ({
-    type: 'CREATE_NEW_SYSTEM'
+export const createNewSystem = (payload?: CreateNewSystem['payload']): CreateNewSystem => ({
+    type: 'CREATE_NEW_SYSTEM',
+    ...(payload && { payload })
 });
 
 export const updateSystemInfo = (payload: SystemInfo['payload']): SystemInfo => ({

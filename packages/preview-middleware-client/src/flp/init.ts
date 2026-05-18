@@ -17,6 +17,12 @@ import {
 export { handleHigherLayerChanges } from './common';
 import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 
+/**
+ * This function dynamically adds a "Generate Card" action to the SAP Fiori Launchpad for the given component instance.
+ *
+ * @param componentInstance - The instance of the component for which the card generation action is being added.
+ * @param container - The SAP Fiori Launchpad container instance used to access services.
+ */
 function addCardGenerationUserAction(componentInstance: Component, container: typeof sap.ushell.Container) {
     sap.ui.require(['sap/cards/ap/generator/CardGenerator'], async (CardGenerator: CardGeneratorType) => {
         const extensionService = await container.getServiceAsync<Extension>('Extension');
@@ -66,7 +72,7 @@ export async function init({
         ((await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container);
     let scenario: string = '';
     const ui5VersionInfo = await getUi5Version();
-
+    // Register RTA if configured
     if (flex) {
         scenario = attachRtaListener(container, flex, ui5VersionInfo) ?? scenario;
     }
@@ -82,20 +88,25 @@ export async function init({
         Log.warning('Card generator is not supported for the current UI5 version.');
     }
 
+    // reset app state if requested
     if (urlParams.get('fiori-tools-iapp-state')?.toLocaleLowerCase() !== 'true') {
         await resetAppState(container);
     }
 
+    // Load custom library paths if configured
     if (appUrls) {
         await registerComponentDependencyPaths((JSON.parse(appUrls) as string[]) ?? [], urlParams);
     }
 
+    // Load rta connector
     await initConnectors();
 
+    // Load custom initialization module
     if (customInit) {
         sap.ui.require([customInit]);
     }
 
+    // init
     const resourceBundle = await loadI18nResourceBundle(scenario as Scenario);
     setI18nTitle(resourceBundle);
     registerSAPFonts();

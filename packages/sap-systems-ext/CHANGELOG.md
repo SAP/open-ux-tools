@@ -1,5 +1,37 @@
 # sap-ux-sap-systems-ext
 
+## 0.6.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 0.5.3
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
+## 0.5.2
+
+### Patch Changes
+
+- ac6381f: remove default selected key for sap systems ext
+
+## 0.5.1
+
+### Patch Changes
+
+- 9661c7b: adds new internal create command to avoid collisions with other registered commands
+
+## 0.5.0
+
+### Minor Changes
+
+- 16d6382: feat(sap-systems-ext): pre-populate connection manager panel when creating a new system (#37892)
+
+    When opening the connection manager to create a new system, the panel can now be pre-populated with system details such as URL, client and system type.
+
 ## 0.4.5
 
 ### Patch Changes
