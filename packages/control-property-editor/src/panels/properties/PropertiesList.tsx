@@ -122,8 +122,7 @@ export function PropertiesList(): ReactElement {
             </div>
             <Separator
                 style={{
-                    marginTop: '0px',
-                    marginBottom: '15px'
+                    margin: '0 15px 15px'
                 }}
             />
             <div className="filter-properties">

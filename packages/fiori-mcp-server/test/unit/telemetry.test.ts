@@ -17,6 +17,32 @@ describe('TelemetryHelper', () => {
             await TelemetryHelper.initTelemetrySettings(opts);
             expect(initTelemetrySettingsSpy).toHaveBeenCalledWith(opts);
         });
+
+        it('should not reinitialise sessionId if initSessionId was already called', async () => {
+            jest.spyOn(sapUxTelemetry, 'initTelemetrySettings').mockResolvedValue();
+            TelemetryHelper.initSessionId();
+            const idBefore = TelemetryHelper.sessionId;
+            await TelemetryHelper.initTelemetrySettings(opts);
+            expect(TelemetryHelper.sessionId).toBe(idBefore);
+        });
+    });
+
+    describe('initSessionId', () => {
+        it('should assign a UUID to sessionId', () => {
+            TelemetryHelper.initSessionId();
+            expect(TelemetryHelper.sessionId).toMatch(
+                /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+            );
+        });
+
+        it('should generate a new UUID on each call', () => {
+            TelemetryHelper.initSessionId();
+            const first = TelemetryHelper.sessionId;
+            // Reset private state so initSessionId produces a fresh UUID
+            (TelemetryHelper as any)._sessionId = undefined;
+            TelemetryHelper.initSessionId();
+            expect(TelemetryHelper.sessionId).not.toBe(first);
+        });
     });
 
     describe('createTelemetryData', () => {
