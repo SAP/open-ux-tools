@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { addSystemListCommand } from '../system/list';
+import { addSystemListCommand } from './system';
 
 /**
  * Return 'create-fiori list *' commands. Commands include also the handler action.

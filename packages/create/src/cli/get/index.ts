@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { addSystemGetCommand } from '../system/get';
+import { addSystemGetCommand } from './system';
 
 /**
  * Return 'create-fiori get *' commands. Commands include also the handler action.

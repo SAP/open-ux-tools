@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { addSystemListCommand } from '../../../../src/cli/system/list';
+import { addSystemListCommand } from '../../../../src/cli/list/system';
 import * as logger from '../../../../src/tracing/logger';
 import * as btpUtils from '@sap-ux/btp-utils';
 import * as store from '@sap-ux/store';
