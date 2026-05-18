@@ -5,22 +5,22 @@ import { getService, BackendSystemKey } from '@sap-ux/store';
 import { getLogger } from '../../tracing';
 
 /**
- * Add the "system get" subcommand to a passed command.
+ * Add the "get system" subcommand to a passed command.
  * Retrieves details of a saved backend system identified by its URL and optional client.
  * Sensitive data (passwords, tokens) is never included in the output.
  *
- * @param cmd - commander command to attach the get subcommand to
+ * @param cmd - commander command to attach the system subcommand to
  */
 export function addSystemGetCommand(cmd: Command): void {
-    cmd.command('get')
+    cmd.command('system')
         .description(
             `Retrieve details of a saved backend system by URL.
 Sensitive data (passwords, tokens) is never included in the output.
 
 Example:
-    \`npx --yes @sap-ux/create@latest system get --url https://my-sap.example.com\`
-    \`npx --yes @sap-ux/create@latest system get --url https://my-sap.example.com --client 100\`
-    \`npx --yes @sap-ux/create@latest system get --url https://my-sap.example.com --json\``
+    \`npx --yes @sap-ux/create@latest get system --url https://my-sap.example.com\`
+    \`npx --yes @sap-ux/create@latest get system --url https://my-sap.example.com --client 100\`
+    \`npx --yes @sap-ux/create@latest get system --url https://my-sap.example.com --json\``
         )
         .requiredOption('--url <string>', 'URL of the backend system')
         .option('--client <string>', 'SAP client number (optional)')

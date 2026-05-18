@@ -128,8 +128,9 @@ async function addSystem(params: {
 
         const existingSystem = await service.read(new BackendSystemKey({ url: params.url, client: params.client }));
         if (existingSystem) {
+            const clientSuffix = params.client ? ` (client ${params.client})` : '';
             logger.error(
-                `System '${params.url}'${params.client ? ` (client ${params.client})` : ''} already exists. Use 'change system' to update it.`
+                `System '${params.url}'${clientSuffix} already exists. Use 'change system' to update it.`
             );
             return;
         }

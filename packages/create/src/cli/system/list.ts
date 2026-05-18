@@ -5,21 +5,21 @@ import { getService } from '@sap-ux/store';
 import { getLogger } from '../../tracing';
 
 /**
- * Add the "system list" subcommand to a passed command.
+ * Add the "list system" subcommand to a passed command.
  * Lists all backend systems saved in the store (~/.fioritools).
  * Sensitive data (passwords, tokens) is never included in the output.
  *
- * @param cmd - commander command to attach the list subcommand to
+ * @param cmd - commander command to attach the system subcommand to
  */
 export function addSystemListCommand(cmd: Command): void {
-    cmd.command('list')
+    cmd.command('system')
         .description(
             `List all backend systems saved in the store (~/.fioritools).
 Sensitive data (passwords, tokens) is never included in the output.
 
 Example:
-    \`npx --yes @sap-ux/create@latest system list\`
-    \`npx --yes @sap-ux/create@latest system list --json\``
+    \`npx --yes @sap-ux/create@latest list system\`
+    \`npx --yes @sap-ux/create@latest list system --json\``
         )
         .option('--json', 'Output as JSON (useful for automation and MCP integrations)')
         .action(async (options) => {

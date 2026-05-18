@@ -44,11 +44,11 @@ describe('system/get', () => {
 
     test('should print system details in human-readable format', async () => {
         // Given
-        const command = new Command('system');
+        const command = new Command('get');
         addSystemGetCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['get', '--url', 'https://my-sap.example.com']));
+        await command.parseAsync(getArgv(['system', '--url', 'https://my-sap.example.com']));
 
         // Then
         expect(mockedService.read).toHaveBeenCalledTimes(1);
@@ -62,11 +62,11 @@ describe('system/get', () => {
     test('should output system as JSON', async () => {
         // Given
         const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-        const command = new Command('system');
+        const command = new Command('get');
         addSystemGetCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['get', '--url', 'https://my-sap.example.com', '--json']));
+        await command.parseAsync(getArgv(['system', '--url', 'https://my-sap.example.com', '--json']));
 
         // Then
         expect(consoleSpy).toHaveBeenCalledTimes(1);
@@ -80,11 +80,11 @@ describe('system/get', () => {
     test('should log error when system not found', async () => {
         // Given
         mockedService.read.mockResolvedValue(undefined);
-        const command = new Command('system');
+        const command = new Command('get');
         addSystemGetCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['get', '--url', 'https://unknown.example.com']));
+        await command.parseAsync(getArgv(['system', '--url', 'https://unknown.example.com']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('not found'));
@@ -93,11 +93,11 @@ describe('system/get', () => {
     test('should log error and exit when running in BAS', async () => {
         // Given
         isAppStudioMock.mockReturnValue(true);
-        const command = new Command('system');
+        const command = new Command('get');
         addSystemGetCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['get', '--url', 'https://my-sap.example.com']));
+        await command.parseAsync(getArgv(['system', '--url', 'https://my-sap.example.com']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('Business Application Studio'));

@@ -45,11 +45,11 @@ describe('system/list', () => {
 
     test('should list systems in human-readable format', async () => {
         // Given
-        const command = new Command('system');
+        const command = new Command('list');
         addSystemListCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['list']));
+        await command.parseAsync(getArgv(['system']));
 
         // Then
         expect(mockedService.getAll).toHaveBeenCalledTimes(1);
@@ -64,11 +64,11 @@ describe('system/list', () => {
     test('should list systems as JSON', async () => {
         // Given
         const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-        const command = new Command('system');
+        const command = new Command('list');
         addSystemListCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['list', '--json']));
+        await command.parseAsync(getArgv(['system', '--json']));
 
         // Then
         expect(consoleSpy).toHaveBeenCalledTimes(1);
@@ -82,11 +82,11 @@ describe('system/list', () => {
     test('should show message when no systems found', async () => {
         // Given
         mockedService.getAll.mockResolvedValue([]);
-        const command = new Command('system');
+        const command = new Command('list');
         addSystemListCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['list']));
+        await command.parseAsync(getArgv(['system']));
 
         // Then
         expect(loggerMock.info).toHaveBeenCalledWith('No systems found.');
@@ -95,11 +95,11 @@ describe('system/list', () => {
     test('should log error and exit when running in BAS', async () => {
         // Given
         isAppStudioMock.mockReturnValue(true);
-        const command = new Command('system');
+        const command = new Command('list');
         addSystemListCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['list']));
+        await command.parseAsync(getArgv(['system']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('Business Application Studio'));
@@ -109,11 +109,11 @@ describe('system/list', () => {
     test('should log error when getAll throws', async () => {
         // Given
         mockedService.getAll.mockRejectedValueOnce(new Error('Store error'));
-        const command = new Command('system');
+        const command = new Command('list');
         addSystemListCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['list']));
+        await command.parseAsync(getArgv(['system']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith('Store error');

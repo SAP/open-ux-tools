@@ -449,45 +449,54 @@ Options:
 
 --------------------------------
 
-## [`system`](#system)
+## [`list`](#list)
 
-Command group for querying saved backend systems (read-only). A subcommand is required.
+Command group for listing saved resources. A subcommand is required.
 
-Usage: `npx --yes @sap-ux/create@latest system [subcommand] [options]`
+Usage: `npx --yes @sap-ux/create@latest list [subcommand] [options]`
 
-The available subcommands are: `list` and `get`
-
+The available subcommands are: `system`
 
 --------------------------------
 
-## [`system list`](#system-list)
+## [`list system`](#list-system)
 
 List all backend systems saved in the store (~/.fioritools).
 Sensitive data (passwords, tokens) is never included in the output.
 
 Example:
 
-`npx --yes @sap-ux/create@latest system list`
+`npx --yes @sap-ux/create@latest list system`
 
-`npx --yes @sap-ux/create@latest system list --json`
+`npx --yes @sap-ux/create@latest list system --json`
 
 Options:
 - `--json` - Output as JSON (useful for automation and MCP integrations)
 
 --------------------------------
 
-## [`system get`](#system-get)
+## [`get`](#get)
+
+Command group for retrieving saved resources. A subcommand is required.
+
+Usage: `npx --yes @sap-ux/create@latest get [subcommand] [options]`
+
+The available subcommands are: `system`
+
+--------------------------------
+
+## [`get system`](#get-system)
 
 Retrieve details of a saved backend system by URL.
 Sensitive data (passwords, tokens) is never included in the output.
 
 Example:
 
-`npx --yes @sap-ux/create@latest system get --url https://my-sap.example.com`
+`npx --yes @sap-ux/create@latest get system --url https://my-sap.example.com`
 
-`npx --yes @sap-ux/create@latest system get --url https://my-sap.example.com --client 100`
+`npx --yes @sap-ux/create@latest get system --url https://my-sap.example.com --client 100`
 
-`npx --yes @sap-ux/create@latest system get --url https://my-sap.example.com --json`
+`npx --yes @sap-ux/create@latest get system --url https://my-sap.example.com --json`
 
 Options:
 - `--url <string>` _(required)_ - URL of the backend system
