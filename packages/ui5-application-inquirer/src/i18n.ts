@@ -41,5 +41,4 @@ export function t(key: string, options?: TOptions): string {
     return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-// eslint-disable-next-line prefer-top-level-await
 void initI18nUi5AppInquirer().catch(() => undefined);
