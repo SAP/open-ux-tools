@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.10.2
+
+### Patch Changes
+
+- 342c544: chore: bump used versions in adaptation project for Cloud Foundry
+- Updated dependencies [342c544]
+    - @sap-ux/adp-tooling@0.19.2
+
 ## 0.10.1
 
 ### Patch Changes
