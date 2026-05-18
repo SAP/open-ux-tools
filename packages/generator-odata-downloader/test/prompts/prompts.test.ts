@@ -17,7 +17,7 @@ const mockHostEnvironment = {
     vscode: 'vscode'
 };
 
-const actualFioriGeneratorShared = await import ('@sap-ux/fiori-generator-shared');
+const actualFioriGeneratorShared = await import('@sap-ux/fiori-generator-shared');
 jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     ...actualFioriGeneratorShared,
     getHostEnvironment: mockGetHostEnvironment,
