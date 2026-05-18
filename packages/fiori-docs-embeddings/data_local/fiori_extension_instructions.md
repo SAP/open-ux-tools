@@ -39,16 +39,40 @@ Replace all placeholder names with your actual values:
 
 **CRITICAL PITFALL 11 — `macros:FormElement metaPath` must be a bare property name relative to the navigation target, with NO navigation prefix**: `macros:Form`'s `metaPath` already navigates into the target entity. The child `macros:FormElement` `metaPath` values must therefore be **property names only** (e.g. `metaPath="Name"`), not `metaPath="_Agency/Name"`. Using the navigation prefix creates a double-navigation OData path (e.g. `/_Agency/_Agency/Name`) and causes the error `_Agency/_Agency/Name does not point to a property`. Strip all navigation prefixes from FormElement `metaPath` values — they are resolved relative to the Form's navigation target.
 
-**CRITICAL PITFALL 11b — `macros:FormElement` inside a plain `sap.ui.layout.form.FormContainer` (outside `macros:Form`) requires an explicit `contextPath` attribute**: When `macros:FormElement` is placed directly inside a `sap.ui.layout.form.FormContainer` without a parent `macros:Form` wrapper, the building block has no ambient OData metadata context to resolve property labels, types, or value help. You must add an explicit `contextPath="/EntitySet"` attribute on each `macros:FormElement` so it can look up the property metadata. Without `contextPath`, the building block silently renders empty labels or throws a metadata-resolution error. Example:
+**CRITICAL PITFALL 11b — `macros:FormElement` inside a plain `sap.ui.layout.form.FormContainer` (outside `macros:Form`) requires an explicit `contextPath` attribute ONLY when outside a standard FE page**: When `macros:FormElement` is placed directly inside a `sap.ui.layout.form.FormContainer` without a parent `macros:Form` wrapper, the building block needs an OData metadata context to resolve property labels, types, or value help. The rule is: (1) **Inside a standard FE page** (e.g. custom section, custom header facet in List Report or Object Page): the page framework supplies the metadata context automatically, so `contextPath` is optional and can be omitted. (2) **Outside a standard FE page** (e.g. a standalone dialog or popup loaded via `Fragment.load()`): there is no ambient metadata context. You must explicitly provide `contextPath="/EntitySet"` on each `macros:FormElement` so it can look up the property metadata. Without `contextPath`, the building block silently renders empty labels or throws a metadata-resolution error. When `macros:FormElement` is a child of `macros:Form`, the `contextPath` is inherited from the parent and must NOT be repeated on the child elements.
 
+**STEP**: Standalone usage inside `f:FormContainer` (outside `macros:Form`)
+
+**DESCRIPTION**: When `macros:FormElement` is placed inside a plain `sap.ui.layout.form.FormContainer` rather than a `macros:Form`, the building block has no ambient metadata context — unless the fragment is embedded in a standard Fiori Elements page (List Report, Object Page, etc.), where the page framework already provides the metadata context. The rule is: **Inside a standard FE page** (e.g. custom section, custom header facet): the page framework supplies the metadata context, so `contextPath` is optional and can be omitted. **Outside a standard FE page** (e.g. a standalone dialog or popup loaded via `Fragment.load()`): there is no ambient metadata context. You must explicitly provide `contextPath="/EntitySet"` on each `macros:FormElement` so it can resolve property metadata (labels, types, value help).
+
+**LANGUAGE**: XML
+
+**CODE**:
 ```XML
-<form:FormContainer>
-    <macros:FormElement metaPath="PropertyName" contextPath="/EntitySet" />
-    <macros:FormElement metaPath="AnotherProperty" contextPath="/EntitySet" />
-</form:FormContainer>
-```
+<!-- Example 1: Standalone dialog/popup (outside FE page) — contextPath REQUIRED -->
+<f:Form xmlns:f="sap.ui.layout.form" xmlns:macros="sap.fe.macros">
+    <f:formContainers>
+        <f:FormContainer>
+            <f:formElements>
+                <macros:FormElement contextPath="/TravelAgency" metaPath="AgencyID" id="fe1" />
+                <macros:FormElement contextPath="/TravelAgency" metaPath="Name" id="fe2" />
+            </f:formElements>
+        </f:FormContainer>
+    </f:formContainers>
+</f:Form>
 
-This pattern is only relevant for standalone `macros:FormElement` usage; when `macros:FormElement` is a child of `macros:Form`, the `contextPath` is inherited from the parent and must NOT be repeated on the child elements.
+<!-- Example 2: Inside FE page (custom section) — contextPath OPTIONAL -->
+<f:Form xmlns:f="sap.ui.layout.form" xmlns:macros="sap.fe.macros">
+    <f:formContainers>
+        <f:FormContainer>
+            <f:formElements>
+                <macros:FormElement metaPath="AgencyID" id="fe1" />
+                <macros:FormElement metaPath="Name" id="fe2" />
+            </f:formElements>
+        </f:FormContainer>
+    </f:formContainers>
+</f:Form>
+```
 
 **CRITICAL PITFALL 12 — Bind the dialog to the PARENT entity path, NOT to the navigation target, when using `macros:Form` with a navigation `metaPath`**: When `macros:Form metaPath` is `"_Navigation/@...FieldGroup#..."`, the dialog's `bindElement` must use the parent entity path (e.g. `Travel(...)`), **not** the navigation target path (e.g. `Travel(...)/_Navigation`). The building block navigates from the parent binding context through `_Navigation` automatically. If you `bindElement` to `Travel(...)/_Navigation` AND use `metaPath="_Navigation/..."`, the actual OData path becomes `/_Navigation/_Navigation/...` which does not exist. Correct usage: `oDialog.bindElement({ path: oBindingContext.getPath() })` where `oBindingContext` is the row's parent entity context.
 
