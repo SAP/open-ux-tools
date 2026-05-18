@@ -25,7 +25,7 @@ function getIntentBasedNavDataFields(
     }
 
     let collection: Element | undefined;
-    if (tableOrFieldGroup.type == 'table') {
+    if (tableOrFieldGroup.type === 'table') {
         [collection] = elementsWithName(Edm.Collection, tableOrFieldGroup.annotation.annotation.top.value);
     } else {
         const [record] = elementsWithName(Edm.Record, tableOrFieldGroup.annotation.annotation.top.value);

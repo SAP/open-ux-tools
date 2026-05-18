@@ -1,5 +1,31 @@
 # @sap-ux/ui-prompting
 
+## 0.7.1
+
+### Patch Changes
+
+- Updated dependencies [742d896]
+    - @sap-ux/ui-components@2.2.1
+
+## 0.7.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/ui-components@2.2.0
+
+## 0.6.29
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/ui-components@2.1.16
+
 ## 0.6.28
 
 ### Patch Changes
