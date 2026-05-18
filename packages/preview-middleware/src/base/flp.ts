@@ -588,9 +588,8 @@ export class FlpSandbox {
                 if (userConfigFile) {
                     const userConfig = JSON.parse(await userConfigFile.getString()) as Record<string, unknown>;
                     config = {
-                        //todo: check order; shouldn't the user be able to override not vice versa?
-                        ...userConfig,
                         ...config,
+                        ...userConfig,
                         // beforeFlpStart must always point to our init2
                         beforeFlpStart: config.beforeFlpStart
                     } as typeof config;
