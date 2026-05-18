@@ -1,6 +1,13 @@
 import type { Command } from 'commander';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { getService, BackendSystem, BackendSystemKey, SystemType, AuthenticationType, ConnectionType } from '@sap-ux/store';
+import {
+    getService,
+    BackendSystem,
+    BackendSystemKey,
+    SystemType,
+    AuthenticationType,
+    ConnectionType
+} from '@sap-ux/store';
 import { replaceEnvVariables } from '@sap-ux/ui5-config';
 import { getLogger } from '../../tracing';
 

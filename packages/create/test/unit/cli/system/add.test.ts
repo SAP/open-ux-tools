@@ -167,12 +167,10 @@ describe('system/add', () => {
         addSystemAddCommand(command);
 
         // When
-        await command.parseAsync(
-            getArgv(['system', '--name', 'My System', '--url', 'not-a-valid-url'])
-        );
+        await command.parseAsync(getArgv(['system', '--name', 'My System', '--url', 'not-a-valid-url']));
 
         // Then
-        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining("Invalid URL"));
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('Invalid URL'));
         expect(mockedService.write).not.toHaveBeenCalled();
     });
 
@@ -183,9 +181,7 @@ describe('system/add', () => {
         addSystemAddCommand(command);
 
         // When
-        await command.parseAsync(
-            getArgv(['system', '--name', 'My System', '--url', 'https://example.com'])
-        );
+        await command.parseAsync(getArgv(['system', '--name', 'My System', '--url', 'https://example.com']));
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('already exists'));
