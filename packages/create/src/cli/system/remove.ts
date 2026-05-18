@@ -5,20 +5,20 @@ import { getService, BackendSystemKey } from '@sap-ux/store';
 import { getLogger } from '../../tracing';
 
 /**
- * Add the "system remove" subcommand to a passed command.
+ * Add the "remove system" subcommand to a passed command.
  * Removes a saved backend system from the store (~/.fioritools) and deletes its credentials from the OS keychain.
  *
- * @param cmd - commander command to attach the remove subcommand to
+ * @param cmd - commander command to attach the system subcommand to
  */
 export function addSystemRemoveCommand(cmd: Command): void {
-    cmd.command('remove')
+    cmd.command('system')
         .description(
             `Remove a saved backend system from the store (~/.fioritools).
 Also deletes any stored credentials from the OS keychain.
 
 Example:
-    \`npx --yes @sap-ux/create@latest system remove --url https://my-sap.example.com\`
-    \`npx --yes @sap-ux/create@latest system remove --url https://my-sap.example.com --client 100\``
+    \`npx --yes @sap-ux/create@latest remove system --url https://my-sap.example.com\`
+    \`npx --yes @sap-ux/create@latest remove system --url https://my-sap.example.com --client 100\``
         )
         .requiredOption('--url <string>', 'URL of the backend system to remove')
         .option('--client <string>', 'SAP client number (optional)')

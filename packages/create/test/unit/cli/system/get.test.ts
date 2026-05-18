@@ -61,6 +61,7 @@ describe('system/get', () => {
 
     test('should output system as JSON', async () => {
         // Given
+        const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
         const command = new Command('system');
         addSystemGetCommand(command);
 
@@ -68,19 +69,12 @@ describe('system/get', () => {
         await command.parseAsync(getArgv(['get', '--url', 'https://my-sap.example.com', '--json']));
 
         // Then
-        const jsonCall = (loggerMock.info as jest.Mock).mock.calls.find((args) => {
-            try {
-                JSON.parse(args[0]);
-                return true;
-            } catch {
-                return false;
-            }
-        });
-        expect(jsonCall).toBeDefined();
-        const parsed = JSON.parse(jsonCall[0]);
+        expect(consoleSpy).toHaveBeenCalledTimes(1);
+        const parsed = JSON.parse(consoleSpy.mock.calls[0][0]);
         expect(parsed.name).toBe('My System');
         expect(parsed.password).toBeUndefined();
         expect(parsed.username).toBeUndefined();
+        consoleSpy.mockRestore();
     });
 
     test('should log error when system not found', async () => {

@@ -48,7 +48,7 @@ async function listSystems(asJson: boolean): Promise<void> {
         const systems = await service.getAll();
 
         if (asJson) {
-            logger.info(JSON.stringify(systems.map(toPublicView), null, 2));
+            console.log(JSON.stringify(systems.map(toPublicView), null, 2));
         } else if (systems.length === 0) {
             logger.info('No systems found.');
         } else {

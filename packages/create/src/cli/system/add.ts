@@ -1,19 +1,18 @@
 import type { Command } from 'commander';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { BackendSystemKey } from '@sap-ux/store';
-import { getService, BackendSystem, SystemType, AuthenticationType, ConnectionType } from '@sap-ux/store';
+import { getService, BackendSystem, BackendSystemKey, SystemType, AuthenticationType, ConnectionType } from '@sap-ux/store';
 import { replaceEnvVariables } from '@sap-ux/ui5-config';
 import { getLogger } from '../../tracing';
 
 /**
- * Add the "system add" subcommand to a passed command.
+ * Add the "add system" subcommand to a passed command.
  * Adds a new backend system to the saved systems store (~/.fioritools).
  * Credentials are stored securely in the OS keychain.
  *
- * @param cmd - commander command to attach the add subcommand to
+ * @param cmd - commander command to attach the system subcommand to
  */
 export function addSystemAddCommand(cmd: Command): void {
-    cmd.command('add')
+    cmd.command('system')
         .description(
             `Add a new backend system to the saved systems store (~/.fioritools).
 Credentials are stored securely in the OS keychain.
@@ -23,8 +22,8 @@ Auth types:   ${Object.values(AuthenticationType).join(' | ')}
 Connection types: ${Object.values(ConnectionType).join(' | ')}
 
 Example:
-    \`npx --yes @sap-ux/create@latest system add --name "My System" --url https://my-sap.example.com\`
-    \`npx --yes @sap-ux/create@latest system add --name "My System" --url https://my-sap.example.com --client 100 --username myuser\``
+    \`npx --yes @sap-ux/create@latest add system --name "My System" --url https://my-sap.example.com\`
+    \`npx --yes @sap-ux/create@latest add system --name "My System" --url https://my-sap.example.com --client 100 --username myuser\``
         )
         .requiredOption('--name <string>', 'Display name for the system')
         .requiredOption('--url <string>', 'URL of the backend system')
@@ -41,7 +40,10 @@ Example:
             ConnectionType.AbapCatalog
         )
         .option('--username <string>', 'Username for basic authentication')
-        .option('--password <string>', 'Password for basic authentication')
+        .option(
+            '--password <string>',
+            'Password for basic authentication. Avoid passing plain text passwords; use the SAP_UX_SYSTEM_PASSWORD environment variable instead to prevent credentials from being stored in shell history.'
+        )
         .action(async (options) => {
             await addSystem({
                 name: options.name,
@@ -88,6 +90,13 @@ async function addSystem(params: {
             return;
         }
 
+        try {
+            new URL(params.url);
+        } catch {
+            logger.error(`Invalid URL: '${params.url}'`);
+            return;
+        }
+
         const validSystemTypes = Object.values(SystemType) as string[];
         if (!validSystemTypes.includes(params.systemType)) {
             logger.error(`Invalid system type '${params.systemType}'. Valid values: ${validSystemTypes.join(', ')}`);
@@ -109,6 +118,14 @@ async function addSystem(params: {
         }
 
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
+
+        const existingSystem = await service.read(new BackendSystemKey({ url: params.url, client: params.client }));
+        if (existingSystem) {
+            logger.error(
+                `System '${params.url}'${params.client ? ` (client ${params.client})` : ''} already exists. Use 'change system' to update it.`
+            );
+            return;
+        }
 
         replaceEnvVariables(params);
 

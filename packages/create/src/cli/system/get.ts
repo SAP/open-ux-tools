@@ -68,7 +68,7 @@ async function getSystem(url: string, client: string | undefined, asJson: boolea
         };
 
         if (asJson) {
-            logger.info(JSON.stringify(publicView, null, 2));
+            console.log(JSON.stringify(publicView, null, 2));
         } else {
             logger.info(`Name:       ${system.name}`);
             logger.info(`URL:        ${system.url}`);

@@ -385,16 +385,17 @@ Options:
 
 ## [`system`](#system)
 
-Command group for managing saved backend systems. A subcommand is required.
+Command group for querying saved backend systems (read-only). A subcommand is required.
 
 Usage: `npx --yes @sap-ux/create@latest system [subcommand] [options]`
 
-The available subcommands are: `add`, `list`, `get`, `update` and `remove`
+The available subcommands are: `list` and `get`
 
+> **Note:** Use `add system`, `change system`, and `remove system` to create, update, or delete saved systems.
 
 --------------------------------
 
-## [`system add`](#system-add)
+## [`add system`](#add-system)
 
 Add a new backend system to the saved systems store (~/.fioritools).
 Credentials are stored securely in the OS keychain.
@@ -406,9 +407,9 @@ Connection types: abap_catalog | generic_host | odata_service
 
 Example:
 
-`npx --yes @sap-ux/create@latest system add --name "My System" --url https://my-sap.example.com`
+`npx --yes @sap-ux/create@latest add system --name "My System" --url https://my-sap.example.com`
 
-`npx --yes @sap-ux/create@latest system add --name "My System" --url https://my-sap.example.com --client 100 --username myuser`
+`npx --yes @sap-ux/create@latest add system --name "My System" --url https://my-sap.example.com --client 100 --username myuser`
 
 Options:
 - `--name <string>` _(required)_ - Display name for the system
@@ -418,7 +419,7 @@ Options:
 - `--auth <string>` - Authentication type (basic | reentranceTicket | oauth2 | oauth2ClientCredential) _(default: `basic`)_
 - `--connection-type <string>` - Connection type (abap_catalog | generic_host | odata_service) _(default: `abap_catalog`)_
 - `--username <string>` - Username for basic authentication
-- `--password <string>` - Password for basic authentication
+- `--password <string>` - Password for basic authentication. **Tip:** Use the `SAP_UX_SYSTEM_PASSWORD` environment variable instead to avoid storing credentials in shell history.
 
 --------------------------------
 
@@ -458,37 +459,37 @@ Options:
 
 --------------------------------
 
-## [`system update`](#system-update)
+## [`change system`](#change-system)
 
 Update an existing backend system in the saved systems store (~/.fioritools).
 The system is identified by its URL and optional SAP client.
 
 Example:
 
-`npx --yes @sap-ux/create@latest system update --url https://my-sap.example.com --name "New Name"`
+`npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --name "New Name"`
 
-`npx --yes @sap-ux/create@latest system update --url https://my-sap.example.com --client 100 --username newuser`
+`npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --client 100 --username newuser`
 
 Options:
 - `--url <string>` _(required)_ - URL of the backend system to update
 - `--client <string>` - SAP client number to identify the system (optional)
 - `--name <string>` - New display name for the system
 - `--username <string>` - New username
-- `--password <string>` - New password
+- `--password <string>` - New password. **Tip:** Use the `SAP_UX_SYSTEM_PASSWORD` environment variable instead to avoid storing credentials in shell history.
 - `--clear-credentials` - Remove stored credentials from the system
 
 --------------------------------
 
-## [`system remove`](#system-remove)
+## [`remove system`](#remove-system)
 
 Remove a saved backend system from the store (~/.fioritools).
 Also deletes any stored credentials from the OS keychain.
 
 Example:
 
-`npx --yes @sap-ux/create@latest system remove --url https://my-sap.example.com`
+`npx --yes @sap-ux/create@latest remove system --url https://my-sap.example.com`
 
-`npx --yes @sap-ux/create@latest system remove --url https://my-sap.example.com --client 100`
+`npx --yes @sap-ux/create@latest remove system --url https://my-sap.example.com --client 100`
 
 Options:
 - `--url <string>` _(required)_ - URL of the backend system to remove

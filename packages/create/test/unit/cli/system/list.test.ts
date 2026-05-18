@@ -63,6 +63,7 @@ describe('system/list', () => {
 
     test('should list systems as JSON', async () => {
         // Given
+        const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
         const command = new Command('system');
         addSystemListCommand(command);
 
@@ -70,19 +71,12 @@ describe('system/list', () => {
         await command.parseAsync(getArgv(['list', '--json']));
 
         // Then
-        const jsonCall = (loggerMock.info as jest.Mock).mock.calls.find((args) => {
-            try {
-                JSON.parse(args[0]);
-                return true;
-            } catch {
-                return false;
-            }
-        });
-        expect(jsonCall).toBeDefined();
-        const parsed = JSON.parse(jsonCall[0]);
+        expect(consoleSpy).toHaveBeenCalledTimes(1);
+        const parsed = JSON.parse(consoleSpy.mock.calls[0][0]);
         expect(parsed[0].name).toBe('My System');
         expect(parsed[0].password).toBeUndefined();
         expect(parsed[0].username).toBeUndefined();
+        consoleSpy.mockRestore();
     });
 
     test('should show message when no systems found', async () => {

@@ -113,7 +113,7 @@ function getCommanderProgram(): Command {
     // Handler for sap-ux system <action> ..
     const systemCommands = getSystemCommands();
     systemCommands.description(
-        `Command group for managing saved backend systems. A subcommand is required.
+        `Command group for querying saved backend systems (read-only). A subcommand is required.
                     Usage: \`npx --yes @sap-ux/create@latest system [subcommand] [options]\`
                     The available subcommands are: ${getFeatureSummary(systemCommands.commands)}\n`
     );

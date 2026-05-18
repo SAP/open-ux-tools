@@ -1,25 +1,20 @@
 import { Command } from 'commander';
-import { addSystemAddCommand } from './add';
 import { addSystemListCommand } from './list';
 import { addSystemGetCommand } from './get';
-import { addSystemUpdateCommand } from './update';
-import { addSystemRemoveCommand } from './remove';
 
 /**
- * Return 'sap-ux system *' commands for managing saved backend systems.
- * All system management commands are grouped here to keep them separate
- * from application-feature commands (add, remove, etc.).
+ * Return 'sap-ux system *' commands for querying saved backend systems.
+ * Read-only operations (list, get) are grouped here.
+ * Write operations are exposed via their respective top-level commands:
+ *   add system, change system, remove system.
  *
- * Available subcommands: add, list, get, update, remove
+ * Available subcommands: list, get
  *
- * @returns - commander command containing system management subcommands
+ * @returns - commander command containing system query subcommands
  */
 export function getSystemCommands(): Command {
     const systemCommands = new Command('system');
-    addSystemAddCommand(systemCommands);
     addSystemListCommand(systemCommands);
     addSystemGetCommand(systemCommands);
-    addSystemUpdateCommand(systemCommands);
-    addSystemRemoveCommand(systemCommands);
     return systemCommands;
 }
