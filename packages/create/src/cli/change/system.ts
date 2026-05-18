@@ -28,7 +28,7 @@ Example:
         .option('--username <string>', 'New username')
         .option(
             '--password <string>',
-            'Avoid passing plain text password. Use the SAP_UX_SYSTEM_PASSWORD environment variable to prevent credentials from being stored in the shell\'s history.'
+            "Avoid passing plain text password. Use the SAP_UX_SYSTEM_PASSWORD environment variable to prevent credentials from being stored in the shell's history."
         )
         .option('--clear-credentials', 'Remove stored credentials from the system')
         .action(async (options) => {

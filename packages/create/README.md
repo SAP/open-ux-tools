@@ -273,7 +273,7 @@ Options:
 
 ## [`add system`](#add-system)
 
-Add a new backend system to the saved systems store (~/.fioritools).
+Add a new back-end system to the saved systems store: ~/.fioritools.
 Credentials are stored securely in the OS keychain.
 
 System types: AbapCloud | OnPrem | Generic
@@ -295,7 +295,7 @@ Options:
 - `--auth <string>` - Authentication type (basic | reentranceTicket | oauth2 | oauth2ClientCredential) _(default: `basic`)_
 - `--connection-type <string>` - Connection type (abap_catalog | generic_host | odata_service) _(default: `abap_catalog`)_
 - `--username <string>` - Username for basic authentication
-- `--password <string>` - Password for basic authentication. Avoid passing plain text passwords; use the SAP_UX_SYSTEM_PASSWORD environment variable instead to prevent credentials from being stored in shell history.
+- `--password <string>` - Avoid passing plain text password. Use the SAP_UX_SYSTEM_PASSWORD environment variable to prevent credentials from being stored in the shell's history.
 
 --------------------------------
 
@@ -370,8 +370,8 @@ Options:
 
 ## [`remove system`](#remove-system)
 
-Remove a saved backend system from the store (~/.fioritools).
-Also deletes any stored credentials from the OS keychain.
+Remove a saved back-end system from the saved system store: ~/.fioritools.
+Also deletes any stored credentials in the OS keychain.
 
 Example:
 
@@ -444,7 +444,7 @@ Options:
 - `--client <string>` - SAP client number to identify the system (optional)
 - `--name <string>` - New display name for the system
 - `--username <string>` - New username
-- `--password <string>` - New password. Avoid passing plain text passwords; use the SAP_UX_SYSTEM_PASSWORD environment variable instead to prevent credentials from being stored in shell history.
+- `--password <string>` - Avoid passing plain text password. Use the SAP_UX_SYSTEM_PASSWORD environment variable to prevent credentials from being stored in the shell's history.
 - `--clear-credentials` - Remove stored credentials from the system
 
 --------------------------------
@@ -462,7 +462,7 @@ The available subcommands are: `system`
 
 ## [`list system`](#list-system)
 
-List all backend systems saved in the store (~/.fioritools).
+List all back-end systems in the saved system store: ~/.fioritools.
 Sensitive data (passwords, tokens) is never included in the output.
 
 Example:
@@ -472,7 +472,7 @@ Example:
 `npx --yes @sap-ux/create@latest list system --json`
 
 Options:
-- `--json` - Output as JSON (useful for automation and MCP integrations)
+- `--json` - Output as JSON, which is useful for automation and MCP integrations.
 
 --------------------------------
 
@@ -489,7 +489,7 @@ The available subcommands are: `system`
 
 ## [`get system`](#get-system)
 
-Retrieve details of a saved backend system by URL.
+Retrieve details of a saved back-end system by URL.
 Sensitive data (passwords, tokens) is never included in the output.
 
 Example:
@@ -501,7 +501,7 @@ Example:
 `npx --yes @sap-ux/create@latest get system --url https://my-sap.example.com --json`
 
 Options:
-- `--url <string>` _(required)_ - URL of the backend system
-- `--client <string>` - SAP client number (optional)
-- `--json` - Output as JSON (useful for automation and MCP integrations)
+- `--url <string>` _(required)_ - URL of the backend system.
+- `--client <string>` - SAP client number (optional).
+- `--json` - Output as JSON, which is useful for automation and MCP integrations.
 

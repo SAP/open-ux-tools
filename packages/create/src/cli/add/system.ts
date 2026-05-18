@@ -49,7 +49,7 @@ Example:
         .option('--username <string>', 'Username for basic authentication')
         .option(
             '--password <string>',
-            'Avoid passing plain text password. Use the SAP_UX_SYSTEM_PASSWORD environment variable to prevent credentials from being stored in the shell\'s history.'
+            "Avoid passing plain text password. Use the SAP_UX_SYSTEM_PASSWORD environment variable to prevent credentials from being stored in the shell's history."
         )
         .action(async (options) => {
             await addSystem({
