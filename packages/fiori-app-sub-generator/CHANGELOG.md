@@ -1,5 +1,164 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.15.4
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.10.3
+- @sap-ux/fiori-freestyle-writer@2.7.3
+- @sap-ux/odata-service-inquirer@2.22.0
+
+## 0.15.3
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.10.2
+- @sap-ux/fiori-freestyle-writer@2.7.2
+- @sap-ux/odata-service-inquirer@2.22.0
+
+## 0.15.2
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+    - @sap-ux/odata-service-inquirer@2.22.0
+    - @sap-ux/cap-config-writer@0.13.1
+    - @sap-ux/fiori-elements-writer@2.10.1
+    - @sap-ux/fiori-freestyle-writer@2.7.1
+    - @sap-ux/ui5-application-inquirer@0.18.1
+
+## 0.15.1
+
+### Patch Changes
+
+- Updated dependencies [2f0c182]
+    - @sap-ux/fiori-elements-writer@2.10.0
+    - @sap-ux/fiori-freestyle-writer@2.7.0
+    - @sap-ux/odata-service-inquirer@2.21.0
+
+## 0.15.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/annotation-generator@0.5.0
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/cap-config-writer@0.13.0
+    - @sap-ux/feature-toggle@0.4.0
+    - @sap-ux/fiori-elements-writer@2.9.0
+    - @sap-ux/fiori-freestyle-writer@2.6.0
+    - @sap-ux/fiori-generator-shared@0.15.0
+    - @sap-ux/fiori-tools-settings@0.3.0
+    - @sap-ux/launch-config@0.11.0
+    - @sap-ux/odata-service-inquirer@2.21.0
+    - @sap-ux/odata-service-writer@0.32.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/store@1.6.0
+    - @sap-ux/telemetry@0.7.0
+    - @sap-ux/ui5-application-inquirer@0.18.0
+    - @sap-ux/ui5-info@0.14.0
+
+## 0.14.3
+
+### Patch Changes
+
+- Updated dependencies [138246a]
+    - @sap-ux/odata-service-writer@0.31.15
+    - @sap-ux/fiori-elements-writer@2.8.140
+    - @sap-ux/fiori-freestyle-writer@2.5.107
+    - @sap-ux/odata-service-inquirer@2.20.25
+    - @sap-ux/ui5-application-inquirer@0.17.25
+
+## 0.14.2
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/annotation-generator@0.4.57
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/cap-config-writer@0.12.100
+    - @sap-ux/feature-toggle@0.3.9
+    - @sap-ux/fiori-elements-writer@2.8.139
+    - @sap-ux/fiori-freestyle-writer@2.5.106
+    - @sap-ux/fiori-generator-shared@0.14.2
+    - @sap-ux/fiori-tools-settings@0.2.4
+    - @sap-ux/launch-config@0.10.92
+    - @sap-ux/odata-service-inquirer@2.20.24
+    - @sap-ux/odata-service-writer@0.31.14
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/store@1.5.14
+    - @sap-ux/telemetry@0.6.106
+    - @sap-ux/ui5-application-inquirer@0.17.24
+    - @sap-ux/ui5-info@0.13.22
+
+## 0.14.1
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/axios-extension@1.25.36
+    - @sap-ux/odata-service-inquirer@2.20.23
+    - @sap-ux/odata-service-writer@0.31.13
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/fiori-generator-shared@0.14.1
+    - @sap-ux/fiori-elements-writer@2.8.138
+    - @sap-ux/fiori-freestyle-writer@2.5.105
+    - @sap-ux/annotation-generator@0.4.56
+    - @sap-ux/cap-config-writer@0.12.99
+    - @sap-ux/launch-config@0.10.91
+    - @sap-ux/telemetry@0.6.105
+    - @sap-ux/ui5-application-inquirer@0.17.23
+
+## 0.14.0
+
+### Minor Changes
+
+- 9360ea5: feat(fiori-app-sub-generator): support virtual endpoints in headless generator, defaulting to true
+
+    Added `enableVirtualEndpoints` option to `AppConfig` in `fiori-generator-shared`. When used in the headless generator, this defaults to `true`, causing virtual preview endpoints to be used instead of generating `flpSandbox.html` and related test files.
+
+### Patch Changes
+
+- Updated dependencies [9360ea5]
+    - @sap-ux/fiori-generator-shared@0.14.0
+    - @sap-ux/cap-config-writer@0.12.98
+    - @sap-ux/fiori-elements-writer@2.8.137
+    - @sap-ux/fiori-freestyle-writer@2.5.104
+    - @sap-ux/odata-service-inquirer@2.20.22
+    - @sap-ux/ui5-application-inquirer@0.17.22
+
+## 0.13.33
+
+### Patch Changes
+
+- 678a08e: chore: upgrade uuid 11.1.0 → 11.1.1 (GHSA-w5hq-g745-h8pq buffer bounds check fix)
+- Updated dependencies [678a08e]
+- Updated dependencies [678a08e]
+    - @sap-ux/axios-extension@1.25.35
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/odata-service-inquirer@2.20.21
+    - @sap-ux/telemetry@0.6.104
+    - @sap-ux/ui5-info@0.13.21
+    - @sap-ux/fiori-generator-shared@0.13.105
+    - @sap-ux/odata-service-writer@0.31.12
+    - @sap-ux/ui5-application-inquirer@0.17.21
+    - @sap-ux/fiori-elements-writer@2.8.136
+    - @sap-ux/fiori-freestyle-writer@2.5.103
+    - @sap-ux/launch-config@0.10.90
+    - @sap-ux/project-access@1.36.3
+    - @sap-ux/cap-config-writer@0.12.97
+    - @sap-ux/annotation-generator@0.4.55
+
 ## 0.13.32
 
 ### Patch Changes

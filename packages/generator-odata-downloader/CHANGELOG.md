@@ -1,5 +1,29 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.2.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 0.1.2
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
+## 0.1.1
+
+### Patch Changes
+
+- 18e298b: Package is self contained, no external dependencies required.
+
+## 0.1.0
+
+### Minor Changes
+
+- 9244c23: Adds recursive hierarchy support
+
 ## 0.0.10
 
 ### Patch Changes

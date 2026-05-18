@@ -102,7 +102,11 @@ function throwIfHtmlLoginForm(response: AxiosResponse): void {
  * @returns true if the contents are determined to be HTML
  */
 function isHtmlResponse(response: AxiosResponse): boolean {
-    return getContentType(response.headers['content-type'], response.data).startsWith('text/html');
+    const contentTypeHeader = response.headers['content-type'];
+    return getContentType(
+        typeof contentTypeHeader === 'string' ? contentTypeHeader : undefined,
+        response.data
+    ).startsWith('text/html');
 }
 
 /**

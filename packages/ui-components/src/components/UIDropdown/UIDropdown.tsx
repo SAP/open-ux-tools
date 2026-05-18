@@ -307,7 +307,11 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
                 })
             },
 
-            errorMessage: [messageInfo.style]
+            errorMessage: [messageInfo.style],
+
+            callout: {
+                boxShadow: 'var(--ui-box-shadow-small)'
+            }
         });
 
         return (

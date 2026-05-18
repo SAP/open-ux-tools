@@ -1,5 +1,39 @@
 # @sap-ux/odata-cli
 
+## 0.17.65
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/logger@0.9.0
+
+## 0.17.64
+
+### Patch Changes
+
+- Updated dependencies [50a8ba5]
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/logger@0.8.6
+
+## 0.17.63
+
+### Patch Changes
+
+- 21abda3: chore: upgrade fast-xml-parser 5.7.2 → 5.8.0 (fixes fast-xml-builder CVE-2025-47916)
+- Updated dependencies [21abda3]
+    - @sap-ux/axios-extension@1.25.36
+
+## 0.17.62
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/axios-extension@1.25.35
+    - @sap-ux/btp-utils@1.1.15
+
 ## 0.17.61
 
 ### Patch Changes

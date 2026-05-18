@@ -1,5 +1,53 @@
 # @sap-ux/environment-check
 
+## 0.19.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/store@1.6.0
+    - @sap-ux/ui5-config@0.31.0
+
+## 0.18.127
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/store@1.5.14
+    - @sap-ux/ui5-config@0.30.5
+
+## 0.18.126
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/axios-extension@1.25.36
+    - @sap-ux/project-access@1.36.4
+
+## 0.18.125
+
+### Patch Changes
+
+- 678a08e: chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
+- Updated dependencies [678a08e]
+    - @sap-ux/axios-extension@1.25.35
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/ui5-config@0.30.4
+    - @sap-ux/project-access@1.36.3
+
 ## 0.18.124
 
 ### Patch Changes

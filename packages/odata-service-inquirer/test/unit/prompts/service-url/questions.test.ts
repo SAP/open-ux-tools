@@ -58,6 +58,7 @@ describe('Service URL prompts', () => {
                 },
                 "message": "OData service URL",
                 "name": "serviceUrl",
+                "showOutputTabLink": "validationMessageOverflow",
                 "type": "input",
                 "validate": [Function],
               },

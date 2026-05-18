@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/store",
-    "version": "1.5.13",
+    "version": "1.6.0",
     "description": "NPM module for storing persistent data",
     "repository": {
         "type": "git",
@@ -49,6 +49,6 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

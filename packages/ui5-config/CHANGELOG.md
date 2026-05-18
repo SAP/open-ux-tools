@@ -1,5 +1,30 @@
 # @sap-ux/ui5-config
 
+## 0.31.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/yaml@0.18.0
+
+## 0.30.5
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/yaml@0.17.8
+
+## 0.30.4
+
+### Patch Changes
+
+- 678a08e: chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
+
 ## 0.30.3
 
 ### Patch Changes

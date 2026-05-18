@@ -37,18 +37,23 @@ interface PointPosition {
     y: number;
 }
 
+export interface UISplitterState {
+    active?: boolean;
+}
+
 /**
  *
  */
-export class UISplitter extends React.Component<UISplitterProps> {
+export class UISplitter extends React.Component<UISplitterProps, UISplitterState> {
     private readonly splitterOverlay: HTMLDivElement;
     private readonly mousedownPosition: PointPosition = {
         x: 0,
         y: 0
     };
     private readonly rootRef: React.RefObject<HTMLDivElement>;
-    private readonly size = 14;
-    private readonly compactSize = 8;
+    private readonly size = 8;
+    private readonly compactSize = 4;
+    private readonly toggleSize = 14;
     private animationFrame?: number;
     /**
      *
@@ -56,6 +61,9 @@ export class UISplitter extends React.Component<UISplitterProps> {
      */
     constructor(props: UISplitterProps) {
         super(props);
+        this.state = {
+            active: false
+        };
         this.rootRef = React.createRef();
         this.stopMousemoveResize = this.stopMousemoveResize.bind(this);
         this.doMousemoveResize = this.doMousemoveResize.bind(this);
@@ -142,10 +150,22 @@ export class UISplitter extends React.Component<UISplitterProps> {
             document.body.removeEventListener('mousemove', this.doMousemoveResize);
             this.splitterOverlay.remove();
         }
-        if (start && this.props.onResizeStart) {
-            this.props.onResizeStart();
-        } else if (!start && this.props.onResizeEnd) {
-            this.props.onResizeEnd();
+        if (start) {
+            if (this.props.onResizeStart) {
+                this.props.onResizeStart();
+            }
+            this.setState({
+                active: true
+            });
+        } else {
+            if (this.props.onResizeEnd) {
+                this.props.onResizeEnd();
+            }
+            requestAnimationFrame(() => {
+                this.setState({
+                    active: false
+                });
+            });
         }
     }
 
@@ -159,23 +179,17 @@ export class UISplitter extends React.Component<UISplitterProps> {
     }
 
     /**
-     * Gets icon.
+     * Returns the icon component for the given splitter type.
      *
-     * @param type
-     * @param splitterLayoutType
-     * @returns {string}
+     * @param type - The splitter type.
+     * @returns The corresponding icon element, or an empty fragment if no icon is defined.
      */
-    private getIcon(
-        type: UISplitterType,
-        splitterLayoutType: UISplitterLayoutType = UISplitterLayoutType.Standard
-    ): string {
+    private getIcon(type: UISplitterType): React.ReactElement {
+        let icon: UiIcons | undefined;
         if (type === UISplitterType.Toggle) {
-            return UiIcons.ArrowLeft;
-        } else if (splitterLayoutType === UISplitterLayoutType.Compact) {
-            return UiIcons.Grabber;
-        } else {
-            return UiIcons.VerticalGrip;
+            icon = UiIcons.ArrowLeft;
         }
+        return icon ? <UIIcon iconName={icon} /> : <></>;
     }
 
     /**
@@ -217,6 +231,7 @@ export class UISplitter extends React.Component<UISplitterProps> {
      */
     getClassNames(): string {
         const { type, vertical, hidden, splitterLayoutType } = this.props;
+        const { active } = this.state;
         let classNames = `splitter splitter--${type}`;
         // vertical or horizontal
         classNames += ` ${vertical ? 'splitter--vertical' : 'splitter--horizontal'}`;
@@ -226,6 +241,9 @@ export class UISplitter extends React.Component<UISplitterProps> {
         classNames += ` ${
             splitterLayoutType === UISplitterLayoutType.Standard ? 'splitter--standard' : 'splitter--compact'
         }`;
+        if (active && type === UISplitterType.Resize) {
+            classNames += ' splitter--active';
+        }
         return classNames;
     }
 
@@ -235,8 +253,11 @@ export class UISplitter extends React.Component<UISplitterProps> {
     render(): React.ReactElement {
         const { type, vertical, hidden, title, splitterLayoutType } = this.props;
         const tabIndex = this.props.splitterTabIndex ?? 0;
-        const size = splitterLayoutType === UISplitterLayoutType.Standard ? this.size : this.compactSize;
-        const splitterOffset = type === UISplitterType.Toggle ? -size : -size / 2;
+        let size = splitterLayoutType === UISplitterLayoutType.Standard ? this.size : this.compactSize;
+        if (type === UISplitterType.Toggle) {
+            size = this.toggleSize;
+        }
+        const splitterOffset = -size / 2;
         const role = type === UISplitterType.Toggle ? 'button' : 'separator';
         const orientation = vertical ? 'horizontal' : 'vertical';
         let ariaPressed: boolean | undefined;
@@ -263,9 +284,7 @@ export class UISplitter extends React.Component<UISplitterProps> {
                 }
                 onClick={type === UISplitterType.Toggle ? (): void => this.toggleSplitter() : undefined}
                 className={this.getClassNames()}>
-                <div className="splitter__grip">
-                    <UIIcon iconName={this.getIcon(type, splitterLayoutType)} />
-                </div>
+                <div className="splitter__grip">{this.getIcon(type)}</div>
             </div>
         );
     }
