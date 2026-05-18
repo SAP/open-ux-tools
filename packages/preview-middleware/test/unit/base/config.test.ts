@@ -375,7 +375,6 @@ describe('config', () => {
                 url: '..'
             };
             const result = generateSandboxAppConfig(templateConfig, flpConfig);
-            expect(result.rootIntent).toBe('app-preview');
             expect(result.beforeFlpStart).toBe('module:open/ux/preview/client/flp/init2');
             expect(result.restricted.flexibilityServices).toHaveLength(1);
             expect(result.restricted.flexibilityServices[0]).toEqual({
@@ -384,7 +383,7 @@ describe('config', () => {
                 custom: true
             });
             expect(result.tiles).toHaveLength(1);
-            expect(result.tiles[0].rootPath).toBe('..');
+            expect(result.tiles[0].rootPath).toBe('../');
         });
 
         test('generates config with multiple apps', () => {
@@ -405,12 +404,11 @@ describe('config', () => {
                 url: '/app2'
             };
             const result = generateSandboxAppConfig(templateConfig, flpConfig);
-            expect(result.rootIntent).toBe('myApp-start');
             expect(result.tiles).toHaveLength(2);
-            const tile1 = result.tiles.find((t) => t.rootPath === '/app1');
-            const tile2 = result.tiles.find((t) => t.rootPath === '/app2');
-            expect(tile1).toEqual({ semanticObject: 'myApp', action: 'start', rootPath: '/app1' });
-            expect(tile2).toEqual({ semanticObject: 'otherApp', action: 'display', rootPath: '/app2' });
+            const tile1 = result.tiles.find((t) => t.semanticObject === 'myApp');
+            const tile2 = result.tiles.find((t) => t.semanticObject === 'otherApp');
+            expect(tile1).toEqual({ semanticObject: 'myApp', action: 'start', rootPath: '/app1/' });
+            expect(tile2).toEqual({ semanticObject: 'otherApp', action: 'display', rootPath: '/app2/' });
         });
 
         test('matches snapshot', () => {

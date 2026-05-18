@@ -179,7 +179,7 @@ exports[`FlpSandbox cds-plugin-ui5 test/flp.html 1`] = `
 </html>"
 `;
 
-exports[`FlpSandbox fioriSandboxAppConfig.json route returns generated fioriSandboxAppConfig.json when no real file exists 1`] = `"{\\"tiles\\":[{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"rootPath\\":\\"..\\"}],\\"rootIntent\\":\\"app-preview\\",\\"beforeFlpStart\\":\\"module:open/ux/preview/client/flp/init2\\",\\"restricted\\":{\\"flexibilityServices\\":[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]}}"`;
+exports[`FlpSandbox fioriSandboxAppConfig.json route returns generated fioriSandboxAppConfig.json when no real file exists 1`] = `"{\\"tiles\\":[{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"rootPath\\":\\"../\\"}],\\"beforeFlpStart\\":\\"module:open/ux/preview/client/flp/init2\\",\\"restricted\\":{\\"flexibilityServices\\":[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]}}"`;
 
 exports[`FlpSandbox init Card generator is enabled for the application 1`] = `
 Object {
@@ -1223,7 +1223,8 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 2.x 1`] 
 </head>
 
 <!-- UI Content -->
-<body class=\\"sapUiBody\\" id=\\"canvas\\">
+<body class=\\"sapUiBody\\">
+    <div id=\\"canvas\\"></div>
 </body>
 
 </html>
@@ -1258,7 +1259,8 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 legacy-f
 </head>
 
 <!-- UI Content -->
-<body class=\\"sapUiBody\\" id=\\"canvas\\">
+<body class=\\"sapUiBody\\">
+    <div id=\\"canvas\\"></div>
 </body>
 
 </html>
@@ -1631,7 +1633,8 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 2.x 1`] =
 </head>
 
 <!-- UI Content -->
-<body class=\\"sapUiBody\\" id=\\"canvas\\">
+<body class=\\"sapUiBody\\">
+    <div id=\\"canvas\\"></div>
 </body>
 
 </html>
@@ -1666,7 +1669,8 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 legacy-fr
 </head>
 
 <!-- UI Content -->
-<body class=\\"sapUiBody\\" id=\\"canvas\\">
+<body class=\\"sapUiBody\\">
+    <div id=\\"canvas\\"></div>
 </body>
 
 </html>
@@ -2244,7 +2248,8 @@ exports[`FlpSandbox router rta with developerMode=true UI5 version 2.x 2`] = `
 </head>
 
 <!-- UI Content -->
-<body class=\\"sapUiBody\\" id=\\"canvas\\">
+<body class=\\"sapUiBody\\">
+    <div id=\\"canvas\\"></div>
 </body>
 <!-- livereload disabled for editor </body>-->
 

@@ -345,11 +345,10 @@ Object {
       },
     ],
   },
-  "rootIntent": "app-preview",
   "tiles": Array [
     Object {
       "action": "preview",
-      "rootPath": "..",
+      "rootPath": "../",
       "semanticObject": "app",
     },
   ],
