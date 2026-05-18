@@ -54,8 +54,8 @@ Replace all placeholder names with your actual values:
     <f:formContainers>
         <f:FormContainer>
             <f:formElements>
-                <macros:FormElement contextPath="/TravelAgency" metaPath="AgencyID" id="fe1" />
-                <macros:FormElement contextPath="/TravelAgency" metaPath="Name" id="fe2" />
+                <macros:FormElement contextPath="/TravelAgency" metaPath="AgencyID" id="fe-standalone-1" />
+                <macros:FormElement contextPath="/TravelAgency" metaPath="Name" id="fe-standalone-2" />
             </f:formElements>
         </f:FormContainer>
     </f:formContainers>
@@ -66,12 +66,13 @@ Replace all placeholder names with your actual values:
     <f:formContainers>
         <f:FormContainer>
             <f:formElements>
-                <macros:FormElement metaPath="AgencyID" id="fe1" />
-                <macros:FormElement metaPath="Name" id="fe2" />
+                <macros:FormElement metaPath="AgencyID" id="fe-page-1" />
+                <macros:FormElement metaPath="Name" id="fe-page-2" />
             </f:formElements>
         </f:FormContainer>
     </f:formContainers>
 </f:Form>
+
 ```
 
 **CRITICAL PITFALL 12 — Bind the dialog to the PARENT entity path, NOT to the navigation target, when using `macros:Form` with a navigation `metaPath`**: When `macros:Form metaPath` is `"_Navigation/@...FieldGroup#..."`, the dialog's `bindElement` must use the parent entity path (e.g. `Travel(...)`), **not** the navigation target path (e.g. `Travel(...)/_Navigation`). The building block navigates from the parent binding context through `_Navigation` automatically. If you `bindElement` to `Travel(...)/_Navigation` AND use `metaPath="_Navigation/..."`, the actual OData path becomes `/_Navigation/_Navigation/...` which does not exist. Correct usage: `oDialog.bindElement({ path: oBindingContext.getPath() })` where `oBindingContext` is the row's parent entity context.
