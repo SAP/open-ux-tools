@@ -1996,17 +1996,22 @@ describe('FlpSandbox fioriSandboxAppConfig.json route', () => {
     } as unknown as { byPath: jest.Mock; byGlob: jest.Mock };
     const mockUtils = {
         getProject() {
-            return { getSourcePath: () => require('node:os').tmpdir() };
+            return { getSourcePath: () => tmpdir() };
         }
-    } as unknown as import('@ui5/server').MiddlewareUtils;
-    const logger = { debug: jest.fn(), warn: jest.fn(), error: jest.fn(), info: jest.fn() } as unknown as import('@sap-ux/logger').Logger & { warn: jest.Mock };
+    } as unknown as MiddlewareUtils;
+    const logger = {
+        debug: jest.fn(),
+        warn: jest.fn(),
+        error: jest.fn(),
+        info: jest.fn()
+    } as unknown as Logger & { warn: jest.Mock };
     const fixtures = join(__dirname, '../../fixtures');
 
     let server: ReturnType<typeof supertest>;
 
     const setupServer = async (projectByPath: jest.Mock = jest.fn().mockResolvedValue(undefined)) => {
         (mockProject as unknown as { byPath: jest.Mock }).byPath = projectByPath;
-        const flp = new FlpSandbox({}, mockProject as unknown as import('@ui5/fs').ReaderCollection, mockUtils, logger);
+        const flp = new FlpSandbox({}, mockProject as unknown as ReaderCollection, mockUtils, logger);
         const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
         await flp.init(manifest);
         const app = express();
