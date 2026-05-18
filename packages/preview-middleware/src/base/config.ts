@@ -470,15 +470,15 @@ export function createTestTemplateConfig(config: CompleteTestConfig, id: string,
  * Generates the fioriSandboxAppConfig.json content for Sandbox 2.0.
  *
  * @param templateConfig the current template configuration containing apps
- * @param flpConfig the FLP configuration containing the intent
+ * @param _flpConfig the FLP configuration containing the intent
  * @returns the sandbox app config object
  */
-export function generateSandboxAppConfig(templateConfig: TemplateConfig, flpConfig: FlpConfig): SandboxAppConfig {
+export function generateSandboxAppConfig(templateConfig: TemplateConfig, _flpConfig: FlpConfig): SandboxAppConfig {
     const workspaceConnectorPath = 'open/ux/preview/client/flp/WorkspaceConnector';
     const tiles = Object.entries(templateConfig.apps).map(([appName, app]) => {
         const dashIndex = appName.indexOf('-');
-        const semanticObject = dashIndex !== -1 ? appName.substring(0, dashIndex) : appName;
-        const action = dashIndex !== -1 ? appName.substring(dashIndex + 1) : '';
+        const semanticObject = dashIndex === -1 ? appName : appName.substring(0, dashIndex);
+        const action = dashIndex === -1 ? '' : appName.substring(dashIndex + 1);
         const rootPath = app.url.endsWith('/') ? app.url : `${app.url}/`;
         return {
             semanticObject,
