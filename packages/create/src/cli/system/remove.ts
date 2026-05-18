@@ -13,8 +13,8 @@ import { getLogger } from '../../tracing';
 export function addSystemRemoveCommand(cmd: Command): void {
     cmd.command('system')
         .description(
-            `Remove a saved backend system from the store (~/.fioritools).
-Also deletes any stored credentials from the OS keychain.
+            `Remove a saved back-end system from the saved system store: ~/.fioritools.
+Also deletes any stored credentials in the OS keychain.
 
 Example:
     \`npx --yes @sap-ux/create@latest remove system --url https://my-sap.example.com\`
@@ -38,7 +38,7 @@ async function removeSystem(url: string, client: string | undefined): Promise<vo
     try {
         if (isAppStudio()) {
             logger.error(
-                'System management via CLI is not supported in SAP Business Application Studio. Use the built-in system management instead.'
+                'System management using the CLI is not supported in SAP Business Application Studio. Use the built-in system management instead.'
             );
             return;
         }
@@ -54,7 +54,7 @@ async function removeSystem(url: string, client: string | undefined): Promise<vo
 
         const deleted = await service.delete(system);
         if (deleted) {
-            logger.info(`System '${system.name}' (${key.getId()}) removed successfully.`);
+            logger.info(`System '${system.name}' removed.`);
         } else {
             logger.error(`Failed to remove system: ${key.getId()}`);
         }

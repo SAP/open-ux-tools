@@ -14,14 +14,14 @@ import { getLogger } from '../../tracing';
 export function addSystemListCommand(cmd: Command): void {
     cmd.command('system')
         .description(
-            `List all backend systems saved in the store (~/.fioritools).
+            `List all back-end systems in the saved system store: ~/.fioritools.
 Sensitive data (passwords, tokens) is never included in the output.
 
 Example:
     \`npx --yes @sap-ux/create@latest list system\`
     \`npx --yes @sap-ux/create@latest list system --json\``
         )
-        .option('--json', 'Output as JSON (useful for automation and MCP integrations)')
+        .option('--json', 'Output as JSON, which is useful for automation and MCP integrations.')
         .action(async (options) => {
             await listSystems(!!options.json);
         });
@@ -38,7 +38,7 @@ async function listSystems(asJson: boolean): Promise<void> {
     try {
         if (isAppStudio()) {
             logger.error(
-                'System management via CLI is not supported in SAP Business Application Studio. Use the built-in system management instead.'
+                'System management using the CLI is not supported in SAP Business Application Studio. Use the built-in system management instead.'
             );
             return;
         }

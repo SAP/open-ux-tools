@@ -28,7 +28,7 @@ Example:
         .option('--username <string>', 'New username')
         .option(
             '--password <string>',
-            'New password. Avoid passing plain text passwords; use the SAP_UX_SYSTEM_PASSWORD environment variable instead to prevent credentials from being stored in shell history.'
+            'Avoid passing plain text password. Use the SAP_UX_SYSTEM_PASSWORD environment variable to prevent credentials from being stored in the shell\'s history.'
         )
         .option('--clear-credentials', 'Remove stored credentials from the system')
         .action(async (options) => {
@@ -66,7 +66,7 @@ async function updateSystem(params: {
     try {
         if (isAppStudio()) {
             logger.error(
-                'System management via CLI is not supported in SAP Business Application Studio. Use the built-in system management instead.'
+                'System management using the CLI is not supported in SAP Business Application Studio. Use the built-in system management instead.'
             );
             return;
         }
@@ -108,7 +108,7 @@ async function updateSystem(params: {
             return;
         }
         await service.partialUpdate(key, patch);
-        logger.info(`System '${key.getId()}' updated successfully.`);
+        logger.info(`System '${key.getId()}' updated.`);
     } catch (error) {
         logger.error((error as Error).message);
         logger.debug(error);

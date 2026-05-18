@@ -45,7 +45,7 @@ describe('system/update', () => {
         expect(mockedService.partialUpdate).toHaveBeenCalledTimes(1);
         const [, patch] = mockedService.partialUpdate.mock.calls[0];
         expect(patch.name).toBe('Updated Name');
-        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('updated successfully'));
+        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('updated'));
         expect(loggerMock.error).not.toHaveBeenCalled();
     });
 
@@ -91,7 +91,7 @@ describe('system/update', () => {
         const [, patch] = mockedService.partialUpdate.mock.calls[0];
         expect(patch.username).toBeUndefined();
         expect(patch.password).toBeUndefined();
-        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('updated successfully'));
+        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('updated'));
     });
 
     test('should log error when no fields to update', async () => {

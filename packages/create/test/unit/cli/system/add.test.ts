@@ -45,7 +45,7 @@ describe('system/add', () => {
         const written = mockedService.write.mock.calls[0][0];
         expect(written.name).toBe('My System');
         expect(written.url).toBe('https://my-sap.example.com');
-        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('added successfully'));
+        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('added'));
         expect(loggerMock.error).not.toHaveBeenCalled();
     });
 

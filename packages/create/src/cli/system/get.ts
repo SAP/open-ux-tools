@@ -14,7 +14,7 @@ import { getLogger } from '../../tracing';
 export function addSystemGetCommand(cmd: Command): void {
     cmd.command('system')
         .description(
-            `Retrieve details of a saved backend system by URL.
+            `Retrieve details of a saved back-end system by URL.
 Sensitive data (passwords, tokens) is never included in the output.
 
 Example:
@@ -22,9 +22,9 @@ Example:
     \`npx --yes @sap-ux/create@latest get system --url https://my-sap.example.com --client 100\`
     \`npx --yes @sap-ux/create@latest get system --url https://my-sap.example.com --json\``
         )
-        .requiredOption('--url <string>', 'URL of the backend system')
-        .option('--client <string>', 'SAP client number (optional)')
-        .option('--json', 'Output as JSON (useful for automation and MCP integrations)')
+        .requiredOption('--url <string>', 'URL of the backend system.')
+        .option('--client <string>', 'SAP client number (optional).')
+        .option('--json', 'Output as JSON, which is useful for automation and MCP integrations.')
         .action(async (options) => {
             await getSystem(options.url, options.client, !!options.json);
         });
@@ -42,7 +42,7 @@ async function getSystem(url: string, client: string | undefined, asJson: boolea
     try {
         if (isAppStudio()) {
             logger.error(
-                'System management via CLI is not supported in SAP Business Application Studio. Use the built-in system management instead.'
+                'System management using the CLI is not supported in SAP Business Application Studio. Use the built-in system management instead.'
             );
             return;
         }

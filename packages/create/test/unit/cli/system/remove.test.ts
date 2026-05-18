@@ -52,7 +52,7 @@ describe('system/remove', () => {
         // Then
         expect(mockedService.read).toHaveBeenCalledTimes(1);
         expect(mockedService.delete).toHaveBeenCalledWith(mockSystem);
-        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('removed successfully'));
+        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('removed'));
         expect(loggerMock.error).not.toHaveBeenCalled();
     });
 

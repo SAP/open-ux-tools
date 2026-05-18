@@ -21,7 +21,7 @@ import { getLogger } from '../../tracing';
 export function addSystemAddCommand(cmd: Command): void {
     cmd.command('system')
         .description(
-            `Add a new backend system to the saved systems store (~/.fioritools).
+            `Add a new back-end system to the saved systems store: ~/.fioritools.
 Credentials are stored securely in the OS keychain.
 
 System types: ${Object.values(SystemType).join(' | ')}
@@ -49,7 +49,7 @@ Example:
         .option('--username <string>', 'Username for basic authentication')
         .option(
             '--password <string>',
-            'Password for basic authentication. Avoid passing plain text passwords; use the SAP_UX_SYSTEM_PASSWORD environment variable instead to prevent credentials from being stored in shell history.'
+            'Avoid passing plain text password. Use the SAP_UX_SYSTEM_PASSWORD environment variable to prevent credentials from being stored in the shell\'s history.'
         )
         .action(async (options) => {
             await addSystem({
@@ -92,7 +92,7 @@ async function addSystem(params: {
     try {
         if (isAppStudio()) {
             logger.error(
-                'System management via CLI is not supported in SAP Business Application Studio. Use the built-in system management instead.'
+                'System management using the CLI is not supported in SAP Business Application Studio. Use the built-in system management instead.'
             );
             return;
         }
@@ -148,7 +148,7 @@ async function addSystem(params: {
         });
 
         await service.write(system);
-        logger.info(`System '${params.name}' (${params.url}) added successfully.`);
+        logger.info(`System '${params.name}' added.`);
     } catch (error) {
         logger.error((error as Error).message);
         logger.debug(error);
