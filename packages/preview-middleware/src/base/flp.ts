@@ -560,25 +560,35 @@ export class FlpSandbox {
             }
         );
 
-        // add route for fioriSandboxAppConfig.json (Sandbox 2.0) when no real file exists at the FLP path
+        // add route for fioriSandboxAppConfig.json (Sandbox 2.0)
+        // case 1: no real file exists at the FLP path
+        // case 2: file exists at the FLP path -> merge with virtual
         const configJsonPath = `${dirname(this.flpConfig.path)}/fioriSandboxAppConfig.json`;
         this.router.get(
             configJsonPath,
-            async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
+            async (
+                req: EnhancedRequest | connect.IncomingMessage,
+                res: Response | http.ServerResponse,
+                next: NextFunction
+            ) => {
+                const baseUrl = (this.templateConfig.baseUrl =
+                    ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '');
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                const file = await this.project.byPath(this.flpConfig.path);
+                const file = await this.project.byPath(`${baseUrl}${this.flpConfig.path}`);
                 if (file) {
-                    // real HTML file exists — user manages their own config
-                    (res as Response).status(404).end();
-                    return;
+                    this.logger.info(
+                        `HTML file returned at '${this.flpConfig.path}'. No virtual 'fioriSandboxAppConfig.json' will be served.`
+                    );
+                    next();
                 }
                 // check for user-provided fioriSandboxAppConfig.json and merge if present
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                const userConfigFile = await this.project.byPath(configJsonPath);
+                const userConfigFile = await this.project.byPath(`${baseUrl}${configJsonPath}`);
                 let config = generateSandboxAppConfig(this.templateConfig, this.flpConfig);
                 if (userConfigFile) {
                     const userConfig = JSON.parse(await userConfigFile.getString()) as Record<string, unknown>;
                     config = {
+                        //todo: check order; shouldn't the user be able to override not vice versa?
                         ...userConfig,
                         ...config,
                         // beforeFlpStart must always point to our init2
