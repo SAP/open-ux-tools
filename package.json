@@ -72,10 +72,10 @@
     "engines": {
         "npm": "please-use-pnpm",
         "yarn": "please-use-pnpm",
-        "pnpm": "10.30.3",
+        "pnpm": "11.1.2",
         "node": ">=22.13.0"
     },
-    "packageManager": "pnpm@10.30.3",
+    "packageManager": "pnpm@11.1.2",
     "pnpm": {
         "overrides": {
             "@sap-ux/vocabularies-types": "0.15.0",
@@ -160,14 +160,6 @@
             "promptfoo>simple-git": ">=3.36.0",
             "socks>ip-address": ">=10.1.1",
             "express-rate-limit>ip-address": ">=10.1.1"
-        },
-        "onlyBuiltDependencies": [
-            "sharp",
-            "esbuild",
-            "@swc/core",
-            "@parcel/watcher",
-            "better-sqlite3",
-            "onnxruntime-node"
-        ]
+        }
     }
 }

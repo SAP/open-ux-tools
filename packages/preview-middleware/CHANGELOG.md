@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.26.2
+
+### Patch Changes
+
+- fb00faa: fix(ci): use workspace:\* for internal monorepo dependencies
+
 ## 0.26.1
 
 ### Patch Changes
