@@ -111,5 +111,14 @@ describe('generateFlpEmbeddedConfig', () => {
                 'CAP projects are not supported'
             );
         });
+
+        test('throws when ui5.yaml is missing metadata.name', async () => {
+            const fs = getFs();
+            const noMetadataYaml = `specVersion: '1.0'\ntype: application\n`;
+            fs.write(join(fixturesPath, 'ui5.yaml'), noMetadataYaml);
+            await expect(generateFlpEmbeddedConfig(fixturesPath, 'myapp', undefined, undefined, fs)).rejects.toThrow(
+                "missing a 'metadata.name' field"
+            );
+        });
     });
 });

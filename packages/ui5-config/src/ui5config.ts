@@ -100,8 +100,12 @@ export class UI5Config {
      * @returns metadata object from config
      * @memberof UI5Config
      */
-    public getMetadata(): Ui5Document['metadata'] {
-        return this.document.getMap({ path: 'metadata' }).toJSON() as Ui5Document['metadata'];
+    public getMetadata(): Ui5Document['metadata'] | undefined {
+        try {
+            return this.document.getMap({ path: 'metadata' }).toJSON() as Ui5Document['metadata'];
+        } catch {
+            return undefined;
+        }
     }
 
     /**

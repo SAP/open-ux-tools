@@ -1,8 +1,6 @@
 import type { Command } from 'commander';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
-import { generateFlpEmbeddedConfig } from '@sap-ux/app-config-writer';
-
-const DEFAULT_FLP_PATH = 'sap/bc/ui5_ui5/ui2/ushell/shells/abap/Fiorilaunchpad.html';
+import { generateFlpEmbeddedConfig, DEFAULT_FLP_PATH } from '@sap-ux/app-config-writer';
 
 /**
  * Add the "add flp-embedded-config" command to a passed command.
@@ -67,7 +65,16 @@ async function runFlpEmbeddedConfig(
         if (options.simulate) {
             await traceChanges(fs);
         } else {
-            fs.commit(() => logger.info(`FLP Embedded Mode configuration written.`));
+            await new Promise<void>((resolve, reject) => {
+                fs.commit((error) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        logger.info(`FLP Embedded Mode configuration written.`);
+                        resolve();
+                    }
+                });
+            });
         }
     } catch (error) {
         logger.error(`Error while executing add flp-embedded-config: ${(error as Error).message}`);

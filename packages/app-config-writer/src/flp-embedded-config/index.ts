@@ -6,7 +6,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-const DEFAULT_FLP_PATH = 'sap/bc/ui5_ui5/ui2/ushell/shells/abap/Fiorilaunchpad.html';
+export const DEFAULT_FLP_PATH = 'sap/bc/ui5_ui5/ui2/ushell/shells/abap/Fiorilaunchpad.html';
 
 /**
  * Generates the FLP Embedded Mode configuration for a Fiori app:
@@ -101,7 +101,11 @@ async function addFlpYaml(
     const flpYamlPath = join(basePath, 'flp.yaml');
     const ui5Config = await readUi5Yaml(basePath, yamlFileName, fs);
 
-    const appModule: string = ui5Config.getMetadata().name.replaceAll('.', '/');
+    const metadata = ui5Config.getMetadata();
+    if (!metadata?.name) {
+        throw new Error(`The configuration file '${yamlFileName}' is missing a 'metadata.name' field.`);
+    }
+    const appModule: string = metadata.name.replaceAll('.', '/');
 
     const DIST = 'dist' as const;
     const paths: { path: string; src: string }[] = [{ path: '/**/' + bspApplication, src: DIST }];

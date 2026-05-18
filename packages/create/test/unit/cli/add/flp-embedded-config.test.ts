@@ -86,4 +86,14 @@ describe('Test command add flp-embedded-config', () => {
         );
         expect(fsMock.commit).not.toHaveBeenCalled();
     });
+
+    test('add flp-embedded-config passes commit error to logger', async () => {
+        fsMock.commit = jest.fn().mockImplementation((callback) => callback(new Error('disk full')));
+        const command = new Command('add');
+        addFlpEmbeddedConfigCommand(command);
+        await command.parseAsync(getArgv(['flp-embedded-config', appRoot, '-b', 'my-bsp-app']));
+
+        expect(loggerMock.error).toHaveBeenCalledWith('Error while executing add flp-embedded-config: disk full');
+        expect(loggerMock.info).not.toHaveBeenCalled();
+    });
 });
