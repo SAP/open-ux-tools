@@ -12,6 +12,7 @@ import type {
 } from './types';
 import { promptNames } from './types';
 import { initI18nUi5AppInquirer } from './i18n';
+import { defaultAppName } from './prompts/prompt-helpers';
 /**
  * Get the inquirer prompts for ui5 library inquirer.
  *
@@ -144,5 +145,6 @@ export {
     type PromptDefaultValue,
     type UI5ApplicationAnswers,
     type UI5ApplicationPromptOptions,
-    type UI5ApplicationCommonPromptOptions
+    type UI5ApplicationCommonPromptOptions,
+    defaultAppName
 };

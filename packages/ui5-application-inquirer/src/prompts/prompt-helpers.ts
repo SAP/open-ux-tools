@@ -23,16 +23,21 @@ export function appPathExists(appName: string, targetPath?: string): boolean | s
     return existsSync(join(targetPath ?? process.cwd(), appName.trim()));
 }
 /**
- * Generate a default applicaiton name that does not exist at the specified path.
+ * Generate a default application name that does not exist at the specified path.
  *
  * @param targetPath the target path where the application directory would be created
+ * @param baseAppName
  * @returns a suggested application name that can be created at the specified target path
  */
-export function defaultAppName(targetPath: string): string {
+export function defaultAppName(targetPath: string, baseAppName?: string): string {
     let defProjNum = defaultProjectNumber;
-    let defaultName = t('prompts.name.default');
+    let defaultName = baseAppName ? baseAppName : t('prompts.name.default');
     while (exports.appPathExists(`${defaultName}`, targetPath)) {
-        defaultName = t('prompts.name.default', { defaultProjectNumber: ++defProjNum });
+        if (!baseAppName) {
+            defaultName = t('prompts.name.default', { defaultProjectNumber: ++defProjNum });
+        } else {
+            defaultName = `${baseAppName}${defProjNum++}`;
+        }
         // Dont loop forever, user will need to provide input otherwise
         if (defProjNum > 999) {
             break;
