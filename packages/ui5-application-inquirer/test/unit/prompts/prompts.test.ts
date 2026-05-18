@@ -6,7 +6,7 @@ import * as actualUi5Info from '@sap-ux/ui5-info';
 import * as actualProjectAccess from '@sap-ux/project-access';
 import * as actualProjectInputValidator from '@sap-ux/project-input-validator';
 
-import type { UI5ApplicationPromptOptions } from '../../../src/types';
+import type { UI5ApplicationPromptOptions } from '../../../src/types.js';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 
@@ -46,9 +46,9 @@ jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
     getUi5Themes: mockGetUi5Themes
 }));
 
-const { getQuestions } = await import('../../../src/prompts');
-const { initI18nUi5AppInquirer } = await import('../../../src/i18n');
-const { promptNames } = await import('../../../src/types');
+const { getQuestions } = await import('../../../src/prompts/index.js');
+const { initI18nUi5AppInquirer } = await import('../../../src/i18n.js');
+const { promptNames } = await import('../../../src/types.js');
 const { defaultVersion, ui5ThemeIds } = await import('@sap-ux/ui5-info');
 
 describe('getQuestions', () => {

@@ -21,15 +21,6 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     getMtaPath: jest.fn()
 }));
 
-jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
-    validateModuleName: jest.fn(),
-    validateNamespace: jest.fn(),
-    validateProjectFolder: jest.fn(),
-    validateFioriAppTargetFolder: jest.fn(),
-    validateFioriAppProjectFolder: jest.fn(),
-    addi18nResourceBundle: jest.fn()
-}));
-
 // Mock ui5-info with pre-import spread + spy-able overrides
 const mockGetUI5Versions = jest.fn<() => Promise<UI5Version[]>>();
 const mockGetDefaultUI5Theme = jest.fn(actualUi5Info.getDefaultUI5Theme);
@@ -53,7 +44,14 @@ jest.unstable_mockModule('inquirer', () => ({
     createPromptModule: mockCreatePromptModule
 }));
 
-const { getPrompts, prompt, promptNames } = await import('../../src');
+const actualPrompts = await import('../../src/prompts/index.js');
+const getQuestionsSpy = jest.fn(actualPrompts.getQuestions); // Replace spy with mock wrapper but real impementation
+jest.unstable_mockModule('../../src/prompts/index.js', () => ({
+   ...actualPrompts,
+   getQuestions: getQuestionsSpy
+}));
+
+const { getPrompts, prompt, promptNames } = await import('../../src/index.js');
 const AutocompletePrompt = (await import('inquirer-autocomplete-prompt')).default;
 
 /**
@@ -103,7 +101,9 @@ describe('ui5-application-inquirer API', () => {
             minSupportedUI5Version: undefined
         };
         expect(mockGetUI5Versions).toHaveBeenCalledWith(filterOptions);
+        expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, undefined, undefined, false);
         mockGetUI5Versions.mockClear();
+        getQuestionsSpy.mockClear();
 
         const cdsInfo = {
             hasCdsUi5Plugin: true,
@@ -112,9 +112,10 @@ describe('ui5-application-inquirer API', () => {
             isWorkspaceEnabled: false
         };
         prompts = await getPrompts(undefined, cdsInfo, true);
+        expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, undefined, cdsInfo, true);
     });
 
-    test('getPrompts, prompt options specified', async () => {
+    test ('getPrompts, prompt options specified', async () => {
         const promptOpts: UI5ApplicationPromptOptions = {
             [promptNames.ui5Version]: {
                 validate: (answers: UI5ApplicationAnswers) => answers.name === 'someName'
@@ -135,6 +136,7 @@ describe('ui5-application-inquirer API', () => {
         };
 
         await getPrompts(promptOpts);
+        expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, promptOpts, undefined, false);
     });
 
     test('getPrompts, with `minUI5Version` specified', async () => {
