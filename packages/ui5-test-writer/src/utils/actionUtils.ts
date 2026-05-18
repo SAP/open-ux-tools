@@ -16,6 +16,10 @@ const DATA_FIELD_FOR_ACTION = 'DataFieldForAction';
 
 type OperationAvailableWithPaths = OperationAvailable & { $Path?: string; path?: string };
 type RestrictionValueWithPaths = (boolean | { $Path?: string; path?: string }) | undefined;
+type EntityContainerAnnotationsWithActions = EntityContainerAnnotations & Record<string, ActionAnnotations>;
+type DeletableRestrictionWithPath = DeleteRestrictionsType['Deletable'] & { $Path?: string; path?: string };
+type InsertableRestrictionWithPath = InsertRestrictionsType['Insertable'] & { $Path?: string; path?: string };
+type UpdatableRestrictionWithPath = UpdateRestrictionsType['Updatable'] & { $Path?: string; path?: string };
 
 /**
  * Extracts the action method name from a fully qualified action string.
@@ -64,8 +68,7 @@ export function findOperationAvailableAnnotation(
     }
 
     if (metadata.entityContainer?.annotations) {
-        const annotations = metadata.entityContainer.annotations as EntityContainerAnnotations &
-            Record<string, ActionAnnotations>;
+        const annotations = metadata.entityContainer.annotations as EntityContainerAnnotationsWithActions;
         const matchingKey = Object.keys(annotations).find(
             (key) => key === actionMethodName || key.endsWith(`.${actionMethodName}`)
         );
@@ -237,9 +240,7 @@ export function analyzeRestrictionValue(value: RestrictionValueWithPaths): Butto
  * @returns ButtonState indicating visibility and enabled state based on the Insertable value
  */
 export function analyzeInsertRestrictions(restriction: InsertRestrictionsType | undefined): ButtonState {
-    const value = restriction
-        ? (restriction['Insertable'] as (typeof restriction)['Insertable'] & { $Path?: string; path?: string })
-        : undefined;
+    const value = restriction ? (restriction['Insertable'] as InsertableRestrictionWithPath) : undefined;
     return analyzeRestrictionValue(value);
 }
 
@@ -250,9 +251,7 @@ export function analyzeInsertRestrictions(restriction: InsertRestrictionsType | 
  * @returns ButtonState indicating visibility and enabled state based on the Deletable value
  */
 export function analyzeDeleteRestrictions(restriction: DeleteRestrictionsType | undefined): ButtonState {
-    const value = restriction
-        ? (restriction['Deletable'] as (typeof restriction)['Deletable'] & { $Path?: string; path?: string })
-        : undefined;
+    const value = restriction ? (restriction['Deletable'] as DeletableRestrictionWithPath) : undefined;
     return analyzeRestrictionValue(value);
 }
 
@@ -263,9 +262,7 @@ export function analyzeDeleteRestrictions(restriction: DeleteRestrictionsType | 
  * @returns ButtonState indicating visibility and enabled state based on the Updatable value
  */
 export function analyzeUpdateRestrictions(restriction: UpdateRestrictionsType | undefined): ButtonState {
-    const value = restriction
-        ? (restriction['Updatable'] as (typeof restriction)['Updatable'] & { $Path?: string; path?: string })
-        : undefined;
+    const value = restriction ? (restriction['Updatable'] as UpdatableRestrictionWithPath) : undefined;
     return analyzeRestrictionValue(value);
 }
 
@@ -287,12 +284,8 @@ export function checkButtonVisibility(metadataXml: string, entitySetName: string
             throw new Error(`Entity set '${entitySetName}' not found in metadata`);
         }
 
-        const insertRestrictions = entitySet.annotations?.Capabilities?.InsertRestrictions as
-            | InsertRestrictionsType
-            | undefined;
-        const deleteRestrictions = entitySet.annotations?.Capabilities?.DeleteRestrictions as
-            | DeleteRestrictionsType
-            | undefined;
+        const insertRestrictions = entitySet.annotations?.Capabilities?.InsertRestrictions;
+        const deleteRestrictions = entitySet.annotations?.Capabilities?.DeleteRestrictions;
 
         return {
             create: analyzeInsertRestrictions(insertRestrictions),
@@ -322,9 +315,7 @@ export function checkEditVisibility(metadataXml: string, entitySetName: string):
             throw new Error(`Entity set '${entitySetName}' not found in metadata`);
         }
 
-        const updateRestrictions = entitySet.annotations?.Capabilities?.UpdateRestrictions as
-            | UpdateRestrictionsType
-            | undefined;
+        const updateRestrictions = entitySet.annotations?.Capabilities?.UpdateRestrictions;
         return analyzeUpdateRestrictions(updateRestrictions);
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
