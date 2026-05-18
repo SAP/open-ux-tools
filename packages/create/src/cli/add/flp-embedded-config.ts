@@ -12,7 +12,7 @@ export function addFlpEmbeddedConfigCommand(cmd: Command): void {
         .description(
             `Add the necessary configuration for running a Fiori app in FLP Embedded Mode.
 Adds a \`start-embedded\` script to \`package.json\` and creates an \`flp.yaml\` file
-based on the existing \`ui5.yaml\`.
+based on the existing \`ui5.yaml\`. Pre-existing files will be overridden.
 
 Example:
     \`npx --yes @sap-ux/create@latest add flp-embedded-config --bspApplication my-bsp-app\``
