@@ -230,8 +230,8 @@ function processReferenceFacetRecord(
     const propValues = elementsWithName(Edm.PropertyValue, record);
     const propValue = propValues.find((p) => p.attributes.Property?.value === 'Label');
     let sectionLabel = propValue?.attributes?.String?.value;
-    if (!sectionLabel && propValue?.content[0]) {
-        sectionLabel = getElementText(propValue?.content[0]);
+    if (!sectionLabel && propValue?.content?.[0]) {
+        sectionLabel = getElementText(propValue.content[0]);
     }
     if (term === UI_LINE_ITEM) {
         return createTableSection(
