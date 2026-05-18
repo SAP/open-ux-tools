@@ -5,7 +5,6 @@ import { PromptState } from '../../src/data-download/prompt-state.js';
 import { t as realT } from '../../src/utils/i18n.js';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 
-// Mock external packages that odata-download-generator.ts imports
 const actualAxiosExtension = await import('@sap-ux/axios-extension');
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     ...actualAxiosExtension,
@@ -17,23 +16,12 @@ const mockHostEnvironment = {
     cli: 'CLI',
     vscode: 'vscode'
 };
+
+const actualFioriGeneratorShared = await import ('@sap-ux/fiori-generator-shared');
 jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGeneratorShared,
     getHostEnvironment: mockGetHostEnvironment,
-    hostEnvironment: mockHostEnvironment,
-    DefaultLogger: {
-        info: jest.fn(),
-        error: jest.fn(),
-        debug: jest.fn(),
-        warn: jest.fn()
-    },
-    LogWrapper: jest.fn().mockImplementation(() => ({
-        info: jest.fn(),
-        error: jest.fn(),
-        debug: jest.fn(),
-        warn: jest.fn(),
-        getLogLevel: jest.fn().mockReturnValue('info')
-    })),
-    setYeomanEnvConflicterForce: jest.fn()
+    hostEnvironment: mockHostEnvironment
 }));
 
 jest.unstable_mockModule('@sap-ux/odata-service-writer', () => ({
@@ -57,30 +45,6 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     ...actualProjectAccess,
     createApplicationAccess: mockCreateApplicationAccess
 }));
-
-// Mock yeoman-generator for ODataDownloadGenerator
-jest.unstable_mockModule('yeoman-generator', () => {
-    const MockGenerator = class {
-        options: any = {};
-        env: any = { conflicter: { force: false } };
-        fs = { write: jest.fn() };
-        prompt = jest.fn();
-        writeDestinationJSON = jest.fn();
-        writeDestination = jest.fn();
-        destinationRoot = jest.fn();
-        log = jest.fn();
-        rootGeneratorVersion() {
-            return '1.0.0';
-        }
-        rootGeneratorName() {
-            return 'test-generator';
-        }
-        constructor(args: unknown, opts: Record<string, unknown>, _features?: unknown) {
-            this.options = opts ?? {};
-        }
-    };
-    return { default: MockGenerator };
-});
 
 jest.unstable_mockModule('../../src/utils/i18n', () => ({
     initI18nODataDownloadGenerator: jest.fn().mockResolvedValue(undefined),
