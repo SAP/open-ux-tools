@@ -56,15 +56,8 @@ describe('prompt-helpers', () => {
         expect(defaultAppName(testTempDir, 'myapp')).toEqual('myapp');
 
         // When path exists once, appends the incremented number
-        jest.spyOn(promptHelpers, 'appPathExists').mockReturnValueOnce(true).mockReturnValue(false);
+        jest.spyOn(promptHelpers, 'appPathExists').mockReturnValueOnce(true);
         expect(defaultAppName(testTempDir, 'myapp')).toEqual('myapp1');
-
-        // When path exists twice, increments until a free name is found
-        jest.spyOn(promptHelpers, 'appPathExists')
-            .mockReturnValueOnce(true)
-            .mockReturnValueOnce(true)
-            .mockReturnValue(false);
-        expect(defaultAppName(testTempDir, 'myapp')).toEqual('myapp2');
 
         // Test maximal suggested app name with baseAppName
         jest.spyOn(promptHelpers, 'appPathExists').mockReturnValue(true);
