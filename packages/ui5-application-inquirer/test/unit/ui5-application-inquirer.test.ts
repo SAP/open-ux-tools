@@ -47,8 +47,8 @@ jest.unstable_mockModule('inquirer', () => ({
 const actualPrompts = await import('../../src/prompts/index.js');
 const getQuestionsSpy = jest.fn(actualPrompts.getQuestions); // Replace spy with mock wrapper but real impementation
 jest.unstable_mockModule('../../src/prompts/index.js', () => ({
-   ...actualPrompts,
-   getQuestions: getQuestionsSpy
+    ...actualPrompts,
+    getQuestions: getQuestionsSpy
 }));
 
 const { getPrompts, prompt, promptNames } = await import('../../src/index.js');
@@ -115,7 +115,7 @@ describe('ui5-application-inquirer API', () => {
         expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, undefined, cdsInfo, true);
     });
 
-    test ('getPrompts, prompt options specified', async () => {
+    test('getPrompts, prompt options specified', async () => {
         const promptOpts: UI5ApplicationPromptOptions = {
             [promptNames.ui5Version]: {
                 validate: (answers: UI5ApplicationAnswers) => answers.name === 'someName'
