@@ -526,12 +526,12 @@ export class FlpSandbox {
             if ((ui5Version.major > 1 || ui5Version.label?.includes('legacy-free')) && !this.warnedLegacyConfig) {
                 this.warnedLegacyConfig = true;
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                const legacyFile = await this.project.byPath('/appconfig/fioriSandboxConfig.json');
+                const legacyFile = await this.project.byPath(
+                    `${this.templateConfig.baseUrl}/appconfig/fioriSandboxConfig.json`
+                );
                 if (legacyFile) {
                     this.logger.warn(
-                        'Found legacy appconfig/fioriSandboxConfig.json. This file is not used by the new FLP Sandbox 2.0. ' +
-                        'Please migrate your application configuration: ' +
-                        'https://pages.github.tools.sap/UI5/sandbox-2.0/#/consumer/migration-guide?id=step-2-convert-application-configuration'
+                        `Found legacy file at 'appconfig/fioriSandboxConfig.json'. This file is not used by the new FLP Sandbox 2.0. Please migrate your application configuration: https://pages.github.tools.sap/UI5/sandbox-2.0/#/consumer/migration-guide?id=step-2-convert-application-configuration`
                     );
                 }
             }
@@ -564,10 +564,7 @@ export class FlpSandbox {
         const configJsonPath = `${dirname(this.flpConfig.path)}/fioriSandboxAppConfig.json`;
         this.router.get(
             configJsonPath,
-            async (
-                _req: EnhancedRequest | connect.IncomingMessage,
-                res: Response | http.ServerResponse
-            ) => {
+            async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const file = await this.project.byPath(this.flpConfig.path);
                 if (file) {
