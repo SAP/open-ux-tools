@@ -23,12 +23,10 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 
 // Mock ui5-info with pre-import spread + spy-able overrides
 const mockGetUI5Versions = jest.fn<() => Promise<UI5Version[]>>();
-const mockGetDefaultUI5Theme = jest.fn(actualUi5Info.getDefaultUI5Theme);
 const mockGetUi5Themes = jest.fn(actualUi5Info.getUi5Themes);
 jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
     ...actualUi5Info,
     getUI5Versions: mockGetUI5Versions,
-    getDefaultUI5Theme: mockGetDefaultUI5Theme,
     getUi5Themes: mockGetUi5Themes
 }));
 
@@ -83,7 +81,7 @@ describe('ui5-application-inquirer API', () => {
         // jest.restoreAllMocks() only works when the mock was created with jest.spyOn().
         jest.restoreAllMocks();
         mockGetUI5Versions.mockReset();
-        mockGetDefaultUI5Theme.mockReset().mockImplementation(actualUi5Info.getDefaultUI5Theme);
+        //mockGetDefaultUI5Theme.mockReset().mockImplementation(actualUi5Info.getDefaultUI5Theme);
         mockGetUi5Themes.mockReset().mockImplementation(actualUi5Info.getUi5Themes);
         mockExistsSync.mockReset();
     });
@@ -289,7 +287,6 @@ describe('Filtering UI5 themes based on UI5 version', () => {
 
     test.each(versionsToTest)('should call getUi5Themes with correct ui5Version: %s', async (version) => {
         mockGetUI5Versions.mockReset().mockResolvedValue([{ version }]);
-        mockGetDefaultUI5Theme.mockReset().mockImplementation(actualUi5Info.getDefaultUI5Theme);
         mockGetUi5Themes.mockReset().mockImplementation(actualUi5Info.getUi5Themes);
         const promptOpts: UI5ApplicationPromptOptions = {
             [promptNames.ui5Version]: {
