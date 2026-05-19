@@ -294,4 +294,45 @@ describe('Test getUsedEntitiesFromManifest()', () => {
         } as unknown as Manifest);
         expect(result).toEqual([]);
     });
+
+    test('Target with options as string returns empty array', () => {
+        const result = getUsedEntitiesFromManifest({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyPage: { options: 'invalid' }
+                    }
+                }
+            }
+        } as unknown as Manifest);
+        expect(result).toEqual([]);
+    });
+
+    test('Target with settings as string returns empty array', () => {
+        const result = getUsedEntitiesFromManifest({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyPage: { options: { settings: 'invalid' } }
+                    }
+                }
+            }
+        } as unknown as Manifest);
+        expect(result).toEqual([]);
+    });
+
+    test('Target with views as string still returns entitySet from page', () => {
+        const result = getUsedEntitiesFromManifest({
+            'sap.app': { dataSources: { mainService: { uri: '/odata/v4/my-service/' } } },
+            'sap.ui5': {
+                models: { '': { dataSource: 'mainService' } },
+                routing: {
+                    targets: {
+                        MyPage: { options: { settings: { entitySet: 'Products', views: 'invalid' } } }
+                    }
+                }
+            }
+        } as unknown as Manifest);
+        expect(result).toEqual([{ service: '/odata/v4/my-service/', entity: 'Products' }]);
+    });
 });

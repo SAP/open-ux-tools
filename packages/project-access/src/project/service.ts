@@ -155,7 +155,7 @@ export function getUsedEntitiesFromManifest(manifest: Manifest): UsedEntity[] {
                 ? settings.views.paths
                 : [];
         for (const path of viewPaths) {
-            if (typeof path === 'object' && path.entitySet) {
+            if (typeof path.entitySet === 'string') {
                 addEntity(path.entitySet);
             }
         }
