@@ -68,7 +68,8 @@ export {
     processServices,
     getMainService,
     getGlobalCdsHomePath,
-    isUI5IdUnique
+    isUI5IdUnique,
+    getUsedEntitiesFromManifest
 } from './project';
 export { execNpmCommand } from './command/npm-command';
 export * from './types';
