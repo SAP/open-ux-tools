@@ -114,41 +114,49 @@ export function filterDataSourcesByType(
  * @returns - string array of entities
  */
 export function getUsedEntitiesFromManifest(manifest: Manifest): UsedEntity[] {
-    if (typeof manifest['sap.ui5']?.routing?.targets !== 'object') {
-        // Targets empty or not resolvable
+    const targets = manifest['sap.ui5']?.routing?.targets;
+    if (typeof targets !== 'object') {
         return [];
     }
-    const usedEntities: UsedEntity[] = [];
-    const addUsedEntity = (service: string, entity: string): void => {
-        // Make sure we don't have duplicate entries
-        if (!usedEntities.find((e) => e.service + e.entity === service + entity)) {
-            usedEntities.push({ service, entity });
-        }
-    };
     const mainService = getMainService(manifest) ?? '';
     const mainServiceUri = manifest['sap.app']?.dataSources?.[mainService]?.uri ?? '';
+    const seen = new Set<string>();
+    const usedEntities: UsedEntity[] = [];
 
-    for (const targetName in manifest['sap.ui5'].routing.targets) {
-        const target = manifest['sap.ui5'].routing.targets[targetName];
-        if (target.options && typeof target.options === 'object' && 'settings' in target.options) {
-            const settings = target.options?.settings;
-            if (typeof settings === 'object' && settings) {
-                if ('entitySet' in settings && typeof settings.entitySet === 'string') {
-                    addUsedEntity(mainServiceUri, settings.entitySet);
-                }
-                if (
-                    'views' in settings &&
-                    settings.views &&
-                    typeof settings.views === 'object' &&
-                    'paths' in settings.views &&
-                    Array.isArray(settings?.views?.paths)
-                ) {
-                    for (const path of settings.views.paths) {
-                        if (path.entitySet) {
-                            addUsedEntity(mainServiceUri, path.entitySet);
-                        }
-                    }
-                }
+    const addEntity = (entity: string): void => {
+        const key = `${mainServiceUri}${entity}`;
+        if (!seen.has(key)) {
+            seen.add(key);
+            usedEntities.push({ service: mainServiceUri, entity });
+        }
+    };
+
+    for (const targetName in targets) {
+        const target = targets[targetName];
+        // Resolve settings object with multiple safe checks
+        const settings =
+            target.options && typeof target.options === 'object' && 'settings' in target.options
+                ? target.options.settings
+                : undefined;
+        if (!settings || typeof settings !== 'object') {
+            continue;
+        }
+        // Resolve entitySet from page
+        if ('entitySet' in settings && typeof settings.entitySet === 'string') {
+            addEntity(settings.entitySet);
+        }
+        // Resolve entitySet from page views
+        const viewPaths =
+            'views' in settings &&
+            settings.views &&
+            typeof settings.views === 'object' &&
+            'paths' in settings.views &&
+            Array.isArray(settings.views.paths)
+                ? settings.views.paths
+                : [];
+        for (const path of viewPaths) {
+            if (typeof path === 'object' && path.entitySet) {
+                addEntity(path.entitySet);
             }
         }
     }
