@@ -295,7 +295,7 @@ Options:
 - `--auth <string>` - Authentication type (basic | reentranceTicket | oauth2 | oauth2ClientCredential) _(default: `basic`)_
 - `--connection-type <string>` - Connection type (abap_catalog | generic_host | odata_service) _(default: `abap_catalog`)_
 - `--username <string>` - Username for basic authentication
-- `--password <string>` - Avoid passing plain text password. Use the SAP_UX_SYSTEM_PASSWORD environment variable to prevent credentials from being stored in the shell's history.
+- `--password <string>` - To avoid plain-text credentials in shell history, pass an env reference: --password env:MY_VAR
 
 --------------------------------
 
@@ -444,7 +444,7 @@ Options:
 - `--client <string>` - SAP client number to identify the system (optional)
 - `--name <string>` - New display name for the system
 - `--username <string>` - New username
-- `--password <string>` - Avoid passing plain text password. Use the SAP_UX_SYSTEM_PASSWORD environment variable to prevent credentials from being stored in the shell's history.
+- `--password <string>` - To avoid plain-text credentials in shell history, pass an env reference: --password env:MY_VAR
 - `--clear-credentials` - Remove stored credentials from the system
 
 --------------------------------
