@@ -50,7 +50,7 @@ Example:
         .option('--username <string>', 'Username for basic authentication')
         .option(
             '--password <string>',
-            'To avoid plain-text credentials in shell history, pass an env reference: --password env:MY_VAR'
+            "To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR"
         )
         .action(async (options) => {
             loadEnvConfig();

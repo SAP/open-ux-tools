@@ -29,7 +29,7 @@ Example:
         .option('--username <string>', 'New username')
         .option(
             '--password <string>',
-            'To avoid plain-text credentials in shell history, pass an env reference: --password env:MY_VAR'
+            "To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR"
         )
         .option('--clear-credentials', 'Remove stored credentials from the system')
         .action(async (options) => {
