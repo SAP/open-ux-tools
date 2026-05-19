@@ -3,7 +3,7 @@ import type { Manifest, ManifestNamespace, ServiceSpecification } from '../types
 import { readJSON } from '../file';
 import type { Editor } from 'mem-fs-editor';
 
-export interface UsedEntity {
+interface UsedEntity {
     service: string;
     entity: string;
 }
