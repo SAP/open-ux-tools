@@ -11,70 +11,21 @@
     }
 }
 
-$splitter-contrast-border: 1px solid var(--vscode-contrastBorder);
-$splitter-hover-contrast-border: 1px dashed var(--vscode-contrastActiveBorder);
 $splitter-focus-border: 1px solid var(--vscode-focusBorder);
+$splitter-grip-color: var(--vscode-widget-border);
+$splitter-highlight-color: var(--vscode-focusBorder);
 
 .splitter {
-    background-color: var(--vscode-panelSection-border);
     position: absolute;
     outline: none;
 
-    &--horizontal {
-        top: 0;
-        bottom: 0;
-        cursor: ew-resize;
-
-        &:after {
-            @include splitter-border($splitter-contrast-border, true);
-        }
+    // Grip
+    &__grip {
+        position: absolute;
+        margin: auto;
     }
 
-    &--vertical {
-        cursor: ns-resize;
-        left: 0;
-        right: 0;
-
-        &:after {
-            @include splitter-border($splitter-contrast-border, false);
-        }
-    }
-
-    &--compact {
-        background: var(--vscode-editorWidget-border);
-        &.splitter--vertical {
-            .splitter__grip {
-                height: 3px;
-            }
-        }
-        &.splitter--horizontal {
-            .splitter__grip {
-                width: 12px;
-                svg {
-                    transform-origin: 5px 7px;
-                }
-            }
-        }
-    }
-
-    &--toggle {
-        cursor: pointer;
-
-        .splitter__grip {
-            height: 12px;
-        }
-    }
-
-    &--resize {
-        &.splitter--horizontal {
-            cursor: ew-resize;
-        }
-
-        &.splitter--vertical {
-            cursor: ns-resize;
-        }
-    }
-
+    // Highlight hover and focus
     &:after {
         content: '';
         top: 0;
@@ -82,57 +33,120 @@ $splitter-focus-border: 1px solid var(--vscode-focusBorder);
         right: 0;
         bottom: 0;
         position: absolute;
+        z-index: 1;
+        margin: auto;
     }
 
-    // Grip
-    &__grip {
-        position: absolute;
-        height: 16px;
-        top: 50%;
-        transform: translateY(-50%);
+    &--horizontal {
+        top: 0;
+        bottom: 0;
+        cursor: col-resize;
+
+        .splitter__grip {
+            height: 100%;
+            width: $splitter-resize-size;
+            left: 0;
+            right: 0;
+        }
+        &.splitter--compact {
+            .splitter__grip {
+                width: $splitter-resize-compact-size;
+            }
+        }
+        &.splitter--toggle {
+            .splitter__grip {
+                width: 100%;
+                svg {
+                    transform: rotate(180deg);
+                }
+            }
+        }
+
+        &.splitter--resize:after {
+            width: 4px;
+        }
+    }
+
+    &--vertical {
+        cursor: row-resize;
         left: 0;
         right: 0;
+
+        .splitter__grip {
+            width: 100%;
+            height: $splitter-resize-size;
+            top: 0;
+            bottom: 0;
+        }
+        &.splitter--compact {
+            .splitter__grip {
+                height: $splitter-resize-compact-size;
+            }
+        }
+        &.splitter--toggle {
+            .splitter__grip {
+                height: 100%;
+                svg {
+                    transform: rotate(270deg);
+                }
+            }
+        }
+
+        &.splitter--resize:after {
+            height: 4px;
+        }
+    }
+
+    &--toggle {
+        cursor: pointer;
+        background-color: $splitter-grip-color;
+
+        .splitter__grip {
+            width: 100%;
+            position: absolute;
+            height: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 0;
+            right: 0;
+            z-index: 0;
+        }
+    }
+
+    &--resize {
+        .splitter__grip {
+            background-color: $splitter-grip-color;
+        }
+        &.splitter--horizontal {
+            cursor: col-resize;
+        }
+
+        &.splitter--vertical {
+            cursor: row-resize;
+        }
     }
 
     & + .section {
         .section__header__title,
         .section__body {
-            padding-left: calc($splitter-size / 2);
-        }
-    }
-
-    &--toggle + .section {
-        .section__header__title,
-        .section__body {
-            padding: 0;
-            margin: 0;
+            padding-left: calc($splitter-toggle-size / 2);
         }
     }
 
     // Splitter focus style
     &:hover {
-        .splitter__grip svg path {
-            fill: var(--vscode-button-foreground);
+        &.splitter--resize {
+            &:after {
+                // animation: fadeInAnimation 0.07s ease-in 0.3s forwards;
+                background-color: $splitter-highlight-color;
+                transition: background-color 0.07s ease-in 0.3s;
+            }
         }
-        background-color: var(--vscode-focusBorder);
-    }
-    &--horizontal {
-        &:hover:after {
-            @include splitter-border($splitter-hover-contrast-border, true);
-        }
-
-        &:focus:after {
-            @include splitter-border($splitter-focus-border, true);
-        }
-    }
-
-    &--vertical {
-        &:hover:after {
-            @include splitter-border($splitter-hover-contrast-border, false);
-        }
-
-        &:focus:after {
-            @include splitter-border($splitter-focus-border, false);
+        &.splitter--toggle {
+            background-color: $splitter-highlight-color;
+            svg path {
+                fill: var(--vscode-button-foreground);
+            }
         }
     }
 
@@ -151,31 +165,9 @@ $splitter-focus-border: 1px solid var(--vscode-focusBorder);
         }
     }
 
-    // Rotate icon
-    &--toggle {
-        &.splitter--horizontal {
-            .splitter__grip {
-                svg {
-                    transform: rotate(180deg);
-                }
-            }
-        }
-        &.splitter--vertical {
-            .splitter__grip {
-                svg {
-                    transform: rotate(270deg);
-                }
-            }
-        }
-    }
-    &--resize {
-        &.splitter--standard.splitter--vertical,
-        &.splitter--compact.splitter--horizontal {
-            .splitter__grip {
-                svg {
-                    transform: rotate(90deg);
-                }
-            }
+    &--active {
+        &:after {
+            background-color: $splitter-highlight-color;
         }
     }
 }
@@ -190,23 +182,32 @@ $splitter-focus-border: 1px solid var(--vscode-focusBorder);
     background: transparent;
 
     &--horizontal {
-        cursor: ew-resize;
+        cursor: col-resize;
     }
 
     &--vertical {
-        cursor: ns-resize;
+        cursor: row-resize;
     }
 }
 
-.sections__item--hidden .splitter--toggle {
-    &.splitter--horizontal {
-        .splitter__grip svg {
-            transform: rotate(0) translateX(-1px);
+.ms-Fabric--isFocusVisible .splitter {
+    &:focus {
+        &.splitter--resize {
+            &:after {
+                background-color: $splitter-highlight-color;
+            }
         }
-    }
-    &.splitter--vertical {
-        .splitter__grip svg {
-            transform: rotate(90deg) translateX(-1px);
+        &.splitter--toggle {
+            &.splitter--horizontal {
+                &:after {
+                    @include splitter-border($splitter-focus-border, true);
+                }
+            }
+            &.splitter--vertical {
+                &:after {
+                    @include splitter-border($splitter-focus-border, false);
+                }
+            }
         }
     }
 }

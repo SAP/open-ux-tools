@@ -1,7 +1,7 @@
 {
   "name": "@sap-ux/cf-deploy-config-writer",
   "description": "Add or amend Cloud Foundry and ABAP deployment configuration for SAP projects",
-  "version": "0.3.104",
+  "version": "0.4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/SAP/open-ux-tools.git",
@@ -37,7 +37,7 @@
     "@sap-ux/ui5-config": "workspace:*",
     "@sap-ux/nodejs-utils": "workspace:*",
     "@sap/mta-lib": "1.7.4",
-    "@sap/cf-tools": "3.3.0",
+    "@sap/cf-tools": "3.3.1",
     "semver": "7.7.4",
     "ejs": "3.1.10",
     "i18next": "25.10.10",
@@ -62,6 +62,6 @@
     "mta": "^1.0.8"
   },
   "engines": {
-    "node": ">=20.x"
+    "node": ">=22.x"
   }
 }

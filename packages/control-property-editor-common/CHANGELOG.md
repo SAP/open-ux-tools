@@ -1,5 +1,17 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.8.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 0.7.8
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
 ## 0.7.7
 
 ### Patch Changes
