@@ -335,4 +335,36 @@ describe('Test getUsedEntitiesFromManifest()', () => {
         } as unknown as Manifest);
         expect(result).toEqual([{ service: '/odata/v4/my-service/', entity: 'Products' }]);
     });
+
+    test('Non-string entitySet in page settings is ignored', () => {
+        const result = getUsedEntitiesFromManifest({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyPage: { options: { settings: { entitySet: 123 } } }
+                    }
+                }
+            }
+        } as unknown as Manifest);
+        expect(result).toEqual([]);
+    });
+
+    test('Non-string entitySet in views.paths is ignored', () => {
+        const result = getUsedEntitiesFromManifest({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyView: {
+                            options: {
+                                settings: {
+                                    views: { paths: [{ entitySet: 123 }, { entitySet: null }, { entitySet: {} }] }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest);
+        expect(result).toEqual([]);
+    });
 });

@@ -123,11 +123,14 @@ export function getUsedEntitiesFromManifest(manifest: Manifest): UsedEntity[] {
     const seen = new Set<string>();
     const usedEntities: UsedEntity[] = [];
 
-    const addEntity = (entity: string): void => {
-        const key = `${mainServiceUri}${entity}`;
+    const addEntity = (entitySet: unknown): void => {
+        if (typeof entitySet !== 'string') {
+            return;
+        }
+        const key = `${mainServiceUri}${entitySet}`;
         if (!seen.has(key)) {
             seen.add(key);
-            usedEntities.push({ service: mainServiceUri, entity });
+            usedEntities.push({ service: mainServiceUri, entity: entitySet });
         }
     };
 
@@ -142,7 +145,7 @@ export function getUsedEntitiesFromManifest(manifest: Manifest): UsedEntity[] {
             continue;
         }
         // Resolve entitySet from page
-        if ('entitySet' in settings && typeof settings.entitySet === 'string') {
+        if ('entitySet' in settings) {
             addEntity(settings.entitySet);
         }
         // Resolve entitySet from page views
@@ -154,10 +157,8 @@ export function getUsedEntitiesFromManifest(manifest: Manifest): UsedEntity[] {
             Array.isArray(settings.views.paths)
                 ? settings.views.paths
                 : [];
-        for (const path of viewPaths) {
-            if (typeof path.entitySet === 'string') {
-                addEntity(path.entitySet);
-            }
+        for (const { entitySet } of viewPaths) {
+            addEntity(entitySet);
         }
     }
     return usedEntities;
