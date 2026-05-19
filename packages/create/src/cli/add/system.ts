@@ -9,6 +9,7 @@ import {
     ConnectionType
 } from '@sap-ux/store';
 import { replaceEnvVariables } from '@sap-ux/ui5-config';
+import { config as loadEnvConfig } from 'dotenv';
 import { getLogger } from '../../tracing';
 
 /**
@@ -49,9 +50,10 @@ Example:
         .option('--username <string>', 'Username for basic authentication')
         .option(
             '--password <string>',
-            "Avoid passing plain text password. Use the SAP_UX_SYSTEM_PASSWORD environment variable to prevent credentials from being stored in the shell's history."
+            "To avoid plain-text credentials in shell history, pass an env reference: --password env:MY_VAR"
         )
         .action(async (options) => {
+            loadEnvConfig();
             await addSystem({
                 name: options.name,
                 url: options.url,

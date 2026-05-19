@@ -3,6 +3,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
 import { replaceEnvVariables } from '@sap-ux/ui5-config';
+import { config as loadEnvConfig } from 'dotenv';
 import { getLogger } from '../../tracing';
 
 /**
@@ -28,10 +29,11 @@ Example:
         .option('--username <string>', 'New username')
         .option(
             '--password <string>',
-            "Avoid passing plain text password. Use the SAP_UX_SYSTEM_PASSWORD environment variable to prevent credentials from being stored in the shell's history."
+            "To avoid plain-text credentials in shell history, pass an env reference: --password env:MY_VAR"
         )
         .option('--clear-credentials', 'Remove stored credentials from the system')
         .action(async (options) => {
+            loadEnvConfig();
             await updateSystem({
                 url: options.url,
                 client: options.client,
