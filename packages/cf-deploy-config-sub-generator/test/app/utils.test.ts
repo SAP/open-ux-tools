@@ -54,8 +54,11 @@ describe('test utils', () => {
             mockIsAppStudio.mockReturnValue(true);
         });
 
-        it('always includes default option for CAP project even when no mta destinations', async () => {
-            mockNewInstance.mockResolvedValue({ getExposedDestinations: jest.fn().mockReturnValue([]) });
+        it('includes default option for CAP project when destination resource exists', async () => {
+            mockNewInstance.mockResolvedValue({
+                getExposedDestinations: jest.fn().mockReturnValue([]),
+                hasResource: jest.fn().mockReturnValue(true)
+            });
             const choices = await getCFChoices({
                 projectRoot: '/project',
                 isAbapDirectServiceBinding: false,
@@ -66,9 +69,25 @@ describe('test utils', () => {
             expect(values).toContain(DEFAULT_MTA_DESTINATION);
         });
 
-        it('includes default option and mta destinations for CAP project', async () => {
+        it('excludes default option for CAP project when no destination resource', async () => {
             mockNewInstance.mockResolvedValue({
-                getExposedDestinations: jest.fn().mockReturnValue(['srv-api'])
+                getExposedDestinations: jest.fn().mockReturnValue([]),
+                hasResource: jest.fn().mockReturnValue(false)
+            });
+            const choices = await getCFChoices({
+                projectRoot: '/project',
+                isAbapDirectServiceBinding: false,
+                isCap: true,
+                cfDestination: ''
+            });
+            const values = choices.map((c) => c.value);
+            expect(values).not.toContain(DEFAULT_MTA_DESTINATION);
+        });
+
+        it('includes default option and mta destinations for CAP project when destination resource exists', async () => {
+            mockNewInstance.mockResolvedValue({
+                getExposedDestinations: jest.fn().mockReturnValue(['srv-api']),
+                hasResource: jest.fn().mockReturnValue(true)
             });
             const choices = await getCFChoices({
                 projectRoot: '/project',

@@ -140,6 +140,18 @@ describe('Validate MtaConfig Instance', () => {
         `);
     });
 
+    it('hasResource returns true for existing resource and false for missing resource', async () => {
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: managedRouterConfig
+            },
+            '/'
+        );
+        const mtaConfig = await MtaConfig.newInstance(appDir);
+        expect(mtaConfig.hasResource('destination')).toBeTruthy();
+        expect(mtaConfig.hasResource('nonexistent')).toBeFalsy();
+    });
+
     it('Validate destinations are retrieved for an mta config missing destinations', async () => {
         memfs.vol.fromNestedJSON(
             {
