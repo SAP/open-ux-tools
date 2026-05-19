@@ -108,7 +108,7 @@ export function filterDataSourcesByType(
 
 /**
  * Find used service entities by analyzing manifest.json
- * Currently we do not return entities for Fiori element V2 apps
+ * Currently we do not return entities for Fiori element V2 apps and entities for Fiori Elements V4 apps that use contextPath instead of entitySet
  *
  * @param manifest - parsed manifest.json
  * @returns - array of used entities, each with service URI and entity name
