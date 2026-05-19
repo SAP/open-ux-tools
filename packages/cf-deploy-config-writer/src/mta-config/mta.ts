@@ -853,6 +853,7 @@ export class MtaConfig {
     /**
      * Validate if mta contains a specific resource i.e. destination
      *
+     * @param resourceName
      * @returns {boolean} true if the mta contains an XSUAA resource
      */
     public hasResource(resourceName: string): boolean {
