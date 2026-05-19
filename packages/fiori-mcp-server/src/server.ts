@@ -22,6 +22,7 @@ import {
     generateAdaptationProject,
     openAdaptationEditor,
     adpControllerExtension,
+    runRtaWorkflowStep,
     tools
 } from './tools';
 import { stopBrowser } from './tools/adp-controller-extension/frontend-actions';
@@ -36,7 +37,8 @@ import type {
     DownloadODataServiceMetadataInput,
     GenerateAdaptationProjectInput,
     OpenAdaptationEditorInput,
-    AdpControllerExtensionInput
+    AdpControllerExtensionInput,
+    RunRtaWorkflowStepInput
 } from './types';
 import { logger } from './utils/logger';
 
@@ -50,6 +52,7 @@ type ToolArgs =
     | GenerateAdaptationProjectInput
     | OpenAdaptationEditorInput
     | AdpControllerExtensionInput
+    | RunRtaWorkflowStepInput
     | Record<string, unknown>;
 
 /**
@@ -204,6 +207,9 @@ export class FioriFunctionalityServer {
                     case 'adp_controller_extension':
                         result = await adpControllerExtension(args as AdpControllerExtensionInput);
                         break;
+                    case 'run_rta_workflow_step':
+                        result = await runRtaWorkflowStep(args as RunRtaWorkflowStepInput);
+                        break;
                     case 'list_functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);
                         break;
@@ -217,7 +223,7 @@ export class FioriFunctionalityServer {
                         // Do not pass telemetryProperties to unknownTool
                         await TelemetryHelper.sendTelemetry(unknownTool, {}, (args as any)?.appPath);
                         throw new Error(
-                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, generate_adaptation_project, open_adaptation_editor, adp_controller_extension, list_functionality, get_functionality_details, execute_functionality.`
+                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, generate_adaptation_project, open_adaptation_editor, adp_controller_extension, run_rta_workflow_step, list_functionality, get_functionality_details, execute_functionality.`
                         );
                 }
                 await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
