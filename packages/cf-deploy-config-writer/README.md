@@ -115,6 +115,10 @@ const exampleWriter = async () => {
 await exampleWriter();
 ```
 
+## Further Reading
+
+* [Exploring Application Frontend Service: Deploying the UI of an MTA App](https://community.sap.com/t5/technology-blog-posts-by-members/exploring-application-frontend-service-deploying-the-ui-of-an-mta-app/ba-p/14149899) — SAP Community blog post covering the CAP App Frontend service and how it relates to MTA-based UI deployment.
+
 ## Additional Information
 
 * When appending Cloud Foundry deployment configuration to a HTML5 application that is missing a backend `path` in`ui5.yaml`, or there is no `dataSources` defined in `manifest.json`, the `xs-app.json` routing is appended with `'<apply-service-segment-path>'`. This is to allow you to append a custom service path if you introduce custom AJAX calls or add a new OData service.
