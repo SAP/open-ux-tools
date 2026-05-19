@@ -383,7 +383,7 @@ export function getSemanticKeyProperties(metadataXml: string, entitySetName: str
     return propertyNames.map((propName) => {
         const property = entitySet.entityType.entityProperties.find((p) => p.name === propName);
         const label = property?.annotations?.Common?.Label;
-        const labelStr = label != null ? String(label) : '';
+        const labelStr = label !== undefined && label !== null ? String(label) : '';
         return labelStr || propName;
     });
 }
