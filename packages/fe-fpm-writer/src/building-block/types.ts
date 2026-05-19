@@ -397,6 +397,13 @@ export interface Page extends BuildingBlock {
      * The description of the page.
      */
     description?: string;
+
+    /**
+     * The template type for the page building block.
+     * 'full' generates a full page template with all aggregations and controller stubs.
+     * 'blank' generates a minimal self-closing tag (default behavior).
+     */
+    templateType?: 'full' | 'blank';
 }
 
 /**

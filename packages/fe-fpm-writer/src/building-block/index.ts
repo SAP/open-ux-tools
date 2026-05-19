@@ -14,6 +14,7 @@ import {
     type BuildingBlock,
     type BuildingBlockConfig,
     type BuildingBlockMetaPath,
+    type Page,
     bindingContextAbsolute,
     type TemplateConfig
 } from './types';
@@ -23,10 +24,12 @@ import { getTemplatePath } from '../templates';
 import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
 import {
     CONFIG,
+    copyTpl,
     createIdGenerator,
     detectTabSpacing,
     extendJSON,
     getRelativeTemplateComponentPath,
+    type IdGeneratorFunction,
     type TemplateContext
 } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
@@ -95,6 +98,13 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     );
 
     if (
+        buildingBlockData.buildingBlockType === BuildingBlockType.Page &&
+        (buildingBlockData as Page).templateType === 'full'
+    ) {
+        appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId);
+    }
+
+    if (
         buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor ||
         buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditorButtonGroups
     ) {
@@ -116,6 +126,13 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         config.replace
     );
 
+    if (
+        buildingBlockData.buildingBlockType === BuildingBlockType.Page &&
+        (buildingBlockData as Page).templateType === 'full'
+    ) {
+        applyPageControllerTemplate(fs, basePath, viewOrFragmentPath);
+    }
+
     if (allowAutoAddDependencyLib && manifest && !validateDependenciesLibs(manifest, ['sap.fe.macros'])) {
         // "sap.fe.macros" is missing - enhance manifest.json for missing "sap.fe.macros"
         const manifestPath = await getManifestPath(basePath, fs);
@@ -130,6 +147,141 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     }
 
     return fs;
+}
+
+export const PAGE_AGGREGATIONS = [
+    'breadcrumbs',
+    'navigationActions',
+    'titleContent',
+    'actions',
+    'headerContent',
+    'items',
+    'footer'
+] as const;
+
+export type PageAggregationName = (typeof PAGE_AGGREGATIONS)[number];
+
+/**
+ * Appends the 7 Page building block aggregation fragments as child elements of the templateDocument root.
+ *
+ * @param {Editor} fs - the memfs editor instance
+ * @param {Document} xmlDocument - the view XML document (used to resolve namespace prefixes)
+ * @param {Document} templateDocument - the template document whose root element receives the children
+ * @param {IdGeneratorFunction} generateId - function to generate unique IDs
+ */
+function appendPageAggregations(
+    fs: Editor,
+    xmlDocument: Document,
+    templateDocument: Document,
+    generateId: IdGeneratorFunction
+): void {
+    const macrosNS = getOrAddNamespace(xmlDocument, 'sap.fe.macros', 'macros');
+    const mNS = getOrAddNamespace(xmlDocument, 'sap.m', 'm');
+    // getOrAddNamespace returns '' when the namespace is the document's default (xmlns="...").
+    // For macros:Page aggregations, macros always has an explicit prefix.
+    // For sap.m, honour the default namespace by keeping mPrefix empty so elements render
+    // as bare names (e.g. <Button>) instead of <m:Button xmlns:m="sap.m">.
+    const fragMacrosNS = macrosNS || 'macros';
+    const fragMNS = mNS;
+    const macrosPrefix = `${fragMacrosNS}:`;
+    const mPrefix = fragMNS ? `${fragMNS}:` : '';
+    const aggContext = { macrosNamespace: fragMacrosNS, mNamespace: fragMNS, macrosPrefix, mPrefix };
+    const pageElement = templateDocument.documentElement;
+    const aggErrorHandler = (level: string, message: string): never => {
+        throw new Error(`Unable to parse page aggregation fragment. Details: [${level}] - ${message}`);
+    };
+    for (const aggName of PAGE_AGGREGATIONS) {
+        const aggPath = getTemplatePath(`/building-block/page/${aggName}.xml`);
+        const aggContent = render(fs.read(aggPath), aggContext, {});
+        // Wrap with namespace declarations so elements parse correctly.
+        // When sap.m is the default namespace (fragMNS=''), declare it as xmlns= to keep
+        // bare element names; otherwise declare it as xmlns:m=.
+        const mNsDecl = fragMNS ? `xmlns:${fragMNS}="sap.m"` : `xmlns="sap.m"`;
+        const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" ${mNsDecl}>${aggContent}</root>`;
+        const aggDoc = new DOMParser({ errorHandler: aggErrorHandler }).parseFromString(wrapped, 'text/xml');
+        for (const node of Array.from(aggDoc.documentElement.childNodes)) {
+            if (node.nodeType === 1 /* Element */) {
+                (node as Element).setAttribute('id', generateId(aggName));
+                pageElement.appendChild(templateDocument.importNode(node, true));
+            }
+        }
+    }
+}
+
+/**
+ * Appends a single Page building block aggregation template to an existing `<macros:Page>` element in a view XML file.
+ *
+ * @param {Editor} fs - the memfs editor instance
+ * @param {string} basePath - the base path of the application
+ * @param {string} viewPath - the path of the xml view relative to the base path
+ * @param {PageAggregationName} aggName - the name of the Page BB aggregation to append
+ * @returns {Editor} the updated memfs editor instance
+ */
+export async function appendPageBBAggregation(
+    fs: Editor,
+    basePath: string,
+    viewPath: string,
+    aggName: PageAggregationName
+): Promise<Editor> {
+    const xmlDocument = getUI5XmlDocument(basePath, viewPath, fs);
+
+    const generateId = await createIdGenerator({ basePath, fsEditor: fs });
+    const uniqueId = generateId(aggName);
+
+    const macrosNS = getOrAddNamespace(xmlDocument, 'sap.fe.macros', 'macros');
+    const mNS = getOrAddNamespace(xmlDocument, 'sap.m', 'm');
+    const fragMacrosNS = macrosNS || 'macros';
+    const fragMNS = mNS;
+    const macrosPrefix = `${fragMacrosNS}:`;
+    const mPrefix = fragMNS ? `${fragMNS}:` : '';
+    const aggContext = { macrosNamespace: fragMacrosNS, mNamespace: fragMNS, macrosPrefix, mPrefix };
+
+    const aggPath = getTemplatePath(`/building-block/page/${aggName}.xml`);
+    const aggContent = render(fs.read(aggPath), aggContext, {});
+    const mNsDecl = fragMNS ? `xmlns:${fragMNS}="sap.m"` : `xmlns="sap.m"`;
+    const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" ${mNsDecl}>${aggContent}</root>`;
+
+    const errorHandler = (level: string, message: string): never => {
+        throw new Error(`Unable to parse page aggregation fragment. Details: [${level}] - ${message}`);
+    };
+    const aggDoc = new DOMParser({ errorHandler }).parseFromString(wrapped, 'text/xml');
+
+    const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
+    const pageNodes = xpathSelect(`//${fragMacrosNS}:Page`, xmlDocument);
+    if (!pageNodes || !Array.isArray(pageNodes) || pageNodes.length === 0) {
+        throw new Error(`macros:Page element not found in view ${viewPath}.`);
+    }
+
+    const pageElement = pageNodes[0] as Node;
+    for (const node of Array.from(aggDoc.documentElement.childNodes)) {
+        if (node.nodeType === 1 /* Element */) {
+            (node as Element).setAttribute('id', uniqueId);
+            pageElement.appendChild(xmlDocument.importNode(node, true));
+        }
+    }
+
+    const newXmlContent = new XMLSerializer().serializeToString(xmlDocument);
+    fs.write(join(basePath, viewPath), format(newXmlContent));
+
+    return fs;
+}
+
+/**
+ * Copies the Page controller template (JS or TS) into the view directory if no controller file exists yet.
+ *
+ * @param {Editor} fs - the memfs editor instance
+ * @param {string} basePath - the base path of the application
+ * @param {string} viewOrFragmentPath - the relative path of the view/fragment file
+ */
+function applyPageControllerTemplate(fs: Editor, basePath: string, viewOrFragmentPath: string): void {
+    const viewDir = parse(viewOrFragmentPath).dir;
+    const viewBaseName = parse(viewOrFragmentPath).name.replace(/\.view$/, '');
+    const isTypeScript = fs.exists(join(basePath, viewDir, `${viewBaseName}.controller.ts`));
+    const controllerExt = isTypeScript ? 'ts' : 'js';
+    const controllerPath = join(basePath, viewDir, `${viewBaseName}.controller.${controllerExt}`);
+    if (!fs.exists(controllerPath)) {
+        copyTpl(fs, getTemplatePath(`/building-block/page/Controller.${controllerExt}`), controllerPath);
+    }
 }
 
 /**

@@ -41,7 +41,13 @@ export {
     ButtonGroupConfig,
     Action
 } from './building-block/types';
-export { generateBuildingBlock, getSerializedFileContent } from './building-block';
+export {
+    generateBuildingBlock,
+    getSerializedFileContent,
+    appendPageBBAggregation,
+    PAGE_AGGREGATIONS
+} from './building-block';
+export type { PageAggregationName } from './building-block';
 export {
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,

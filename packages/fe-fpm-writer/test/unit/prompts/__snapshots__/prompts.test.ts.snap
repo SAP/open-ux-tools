@@ -428,6 +428,25 @@ Object {
   },
   "questions": Array [
     Object {
+      "choices": Array [
+        Object {
+          "name": "Default content",
+          "value": "full",
+        },
+        Object {
+          "name": "Blank",
+          "value": "blank",
+        },
+      ],
+      "default": "full",
+      "guiOptions": Object {
+        "mandatory": true,
+      },
+      "message": "Page template",
+      "name": "buildingBlockData.templateType",
+      "type": "list",
+    },
+    Object {
       "choices": Array [],
       "guiOptions": Object {
         "dependantPromptNames": Array [
@@ -1808,6 +1827,25 @@ Object {
     },
   },
   "questions": Array [
+    Object {
+      "choices": Array [
+        Object {
+          "name": "Default content",
+          "value": "full",
+        },
+        Object {
+          "name": "Blank",
+          "value": "blank",
+        },
+      ],
+      "default": "full",
+      "guiOptions": Object {
+        "mandatory": true,
+      },
+      "message": "Page template",
+      "name": "buildingBlockData.templateType",
+      "type": "list",
+    },
     Object {
       "choices": [Function],
       "guiOptions": Object {

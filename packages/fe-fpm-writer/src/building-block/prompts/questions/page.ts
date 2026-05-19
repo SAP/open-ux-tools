@@ -19,6 +19,17 @@ export async function getPageBuildingBlockPrompts(context: PromptContext): Promi
 
     return {
         questions: [
+            {
+                type: 'list',
+                name: 'buildingBlockData.templateType',
+                message: t('templateType.message') as string,
+                default: 'full',
+                choices: [
+                    { value: 'full', name: t('templateType.full') as string },
+                    { value: 'blank', name: t('templateType.blank') as string }
+                ],
+                guiOptions: { mandatory: true }
+            },
             getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate') as string, {
                 message: t('viewOrFragmentPath.message') as string,
                 guiOptions: {

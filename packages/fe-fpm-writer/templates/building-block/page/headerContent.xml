@@ -1,0 +1,6 @@
+<!-- Header content aggregation (content after avatar) -->
+<<%- macrosPrefix %>headerContent>
+    <<%- mPrefix %>VBox>
+        <<%- mPrefix %>Title text="Page Title" />
+    </<%- mPrefix %>VBox>
+</<%- macrosPrefix %>headerContent>

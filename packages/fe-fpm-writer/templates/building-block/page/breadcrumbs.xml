@@ -1,0 +1,8 @@
+<!-- Breadcrumbs aggregation -->
+<<%- macrosPrefix %>breadcrumbs>
+    <<%- mPrefix %>Breadcrumbs>
+        <<%- mPrefix %>Link text="Home" press=".onPressHome" />
+        <<%- mPrefix %>Link text="Page 1" press=".onPressPage1" />
+        <<%- mPrefix %>Link text="Page 2" press=".onPressPage2" />
+    </<%- mPrefix %>Breadcrumbs>
+</<%- macrosPrefix %>breadcrumbs>
