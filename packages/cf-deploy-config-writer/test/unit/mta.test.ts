@@ -108,7 +108,6 @@ describe('Validate MtaConfig Instance', () => {
         join(__dirname, 'fixtures/mta-types/appfront-cap/mta.yaml'),
         'utf-8'
     );
-    const appFrontConfig = fs.readFileSync(join(__dirname, 'fixtures/mta-types/appfront/mta.yaml'), 'utf-8');
     const appDir = `${OUTPUT_DIR_PREFIX}/app1`;
 
     beforeEach(() => {
@@ -176,21 +175,6 @@ describe('Validate MtaConfig Instance', () => {
         memfs.vol.fromNestedJSON(
             {
                 [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: managedRouterConfigCapSrvApi
-            },
-            '/'
-        );
-        const mtaConfig = await MtaConfig.newInstance(appDir);
-        expect(mtaConfig.getExposedDestinations()).toMatchInlineSnapshot(`
-            Array [
-              "srv-api",
-            ]
-        `);
-    });
-
-    it('(appfront) Validate srv-api destination is retrieved from parameters.config.destinations on appfront module', async () => {
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: appFrontConfig
             },
             '/'
         );

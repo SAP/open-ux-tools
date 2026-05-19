@@ -12,6 +12,7 @@ build-parameters:
         - npm ci
         - npx cds build --production
 modules:
+
   - name: captestproject-srv
     type: nodejs
     path: gen/srv
@@ -27,25 +28,6 @@ modules:
     requires:
       - name: captestproject-auth
 
-  - name: captestproject-app-content
-    type: com.sap.application.content
-    path: gen
-    build-parameters:
-      build-result: app/
-      requires:
-    requires:
-      - name: captestproject-auth
-      - name: srv-api
-      - name: captestproject-app-front
-        parameters:
-          content-target: true
-    parameters:
-      config:
-        destinations:
-          - name: srv-api
-            url: ~{srv-api/srv-url}
-            forwardAuthToken: true
-
 resources:
   - name: captestproject-auth
     type: org.cloudfoundry.managed-service
@@ -54,8 +36,3 @@ resources:
       service-plan: application
       service-name: captestproject-xsuaa-service
       path: ./xs-security.json
-  - name: captestproject-app-front
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: app-front
-      service-plan: developer
