@@ -27,6 +27,7 @@ export function getMainService(manifest: Manifest): string | undefined {
 /**
  * Find used service entities by analyzing manifest.json
  * Currently we do not return entities for Fiori element V2 apps
+ *
  * @param manifest - parsed manifest.json
  * @returns - string array of entities
  */
