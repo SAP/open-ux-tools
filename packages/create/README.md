@@ -463,7 +463,7 @@ The available subcommands are: `system`
 ## [`list system`](#list-system)
 
 List all back-end systems in the saved system store: ~/.fioritools.
-Sensitive data (passwords, tokens) is never included in the output.
+Sensitive data, such as passwords and tokens, is never included in the output.
 
 Example:
 
