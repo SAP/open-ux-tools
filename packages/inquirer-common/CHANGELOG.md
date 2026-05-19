@@ -1,5 +1,16 @@
 # @sap-ux/inquirer-common
 
+## 0.13.0
+
+### Minor Changes
+
+- 2c76f8f: feat(inquirer-common): add ShowOutputTabLink and OutputTabLinkResult types; add showOutputTabLink property to YUIQuestion, InputQuestion, ListQuestion, ConfirmQuestion, CheckBoxQuestion
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+
 ## 0.12.0
 
 ### Minor Changes

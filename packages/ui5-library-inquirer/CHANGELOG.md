@@ -1,5 +1,12 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.7.1
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/inquirer-common@0.13.0
+
 ## 0.7.0
 
 ### Minor Changes

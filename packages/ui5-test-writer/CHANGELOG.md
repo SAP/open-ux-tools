@@ -1,5 +1,40 @@
 # @sap-ux/ui5-test-writer
 
+## 0.9.4
+
+### Patch Changes
+
+- 8d4a8a4: Generate tests for Actions on the Object Page
+
+## 0.9.3
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@0.26.3
+
+## 0.9.2
+
+### Patch Changes
+
+- Updated dependencies [fb00faa]
+    - @sap-ux/preview-middleware@0.26.2
+
+## 0.9.1
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+    - @sap-ux/preview-middleware@0.26.1
+
+## 0.9.0
+
+### Minor Changes
+
+- 2f0c182: feat: support virtual preview endpoints for test generation
+
+    When `useVirtualPreviewEndpoints` is enabled, test harness files (testsuite, unitTests, opaTests) are served virtually and not written to disk. UI5 yaml files are updated with `flp.path: test/flp.html` and test framework entries (OPA5, Testsuite, QUnit) are added to ui5-mock.yaml.
+
 ## 0.8.0
 
 ### Minor Changes

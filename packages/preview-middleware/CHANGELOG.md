@@ -1,5 +1,25 @@
 # @sap-ux/preview-middleware
 
+## 0.26.3
+
+### Patch Changes
+
+- Updated dependencies [342c544]
+    - @sap-ux/adp-tooling@0.19.2
+
+## 0.26.2
+
+### Patch Changes
+
+- fb00faa: fix(ci): use workspace:\* for internal monorepo dependencies
+
+## 0.26.1
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/adp-tooling@0.19.1
+
 ## 0.26.0
 
 ### Minor Changes

@@ -1,5 +1,28 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.6.2
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-sub-generator@0.4.2
+- @sap-ux/odata-service-inquirer@2.22.0
+
+## 0.6.1
+
+### Patch Changes
+
+- 2c76f8f: chore: upgrade @sap-devx/yeoman-ui-types 1.23.0 → 1.25.0
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+    - @sap-ux/inquirer-common@0.13.0
+    - @sap-ux/odata-service-inquirer@2.22.0
+    - @sap-ux/abap-deploy-config-sub-generator@0.4.1
+    - @sap-ux/cf-deploy-config-sub-generator@0.3.1
+    - @sap-ux/deploy-config-generator-shared@0.2.1
+
 ## 0.6.0
 
 ### Minor Changes
