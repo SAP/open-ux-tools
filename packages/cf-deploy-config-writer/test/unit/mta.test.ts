@@ -104,6 +104,10 @@ describe('Validate MtaConfig Instance', () => {
     );
     const managedRouterConfigCap = fs.readFileSync(join(__dirname, 'fixtures/mta-types/managed-cap/mta.yaml'), 'utf-8');
     const managedRouterConfig = fs.readFileSync(join(__dirname, 'fixtures/mta-types/managed-apps/mta.yaml'), 'utf-8');
+    const managedRouterConfigCapSrvApi = fs.readFileSync(
+        join(__dirname, 'fixtures/mta-types/managed-cap-srv-api/mta.yaml'),
+        'utf-8'
+    );
     const appDir = `${OUTPUT_DIR_PREFIX}/app1`;
 
     beforeEach(() => {
@@ -163,6 +167,21 @@ describe('Validate MtaConfig Instance', () => {
         expect(mtaConfig.getExposedDestinations(true)).toMatchInlineSnapshot(`
             Array [
               "northwind",
+            ]
+        `);
+    });
+
+    it('(CAP frontend) Validate srv-api destination is retrieved from parameters.config.destinations', async () => {
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: managedRouterConfigCapSrvApi
+            },
+            '/'
+        );
+        const mtaConfig = await MtaConfig.newInstance(appDir);
+        expect(mtaConfig.getExposedDestinations()).toMatchInlineSnapshot(`
+            Array [
+              "srv-api",
             ]
         `);
     });

@@ -1201,7 +1201,7 @@ export class MtaConfig {
             );
         }
 
-        // 2. Modules
+        // 2. Modules - content.instance.destinations (destination-service managed router)
         const destinationModules = this.modules.get('com.sap.application.content:destination');
         if (destinationModules) {
             destinationModules.parameters?.content?.instance?.destinations?.map(
@@ -1209,6 +1209,16 @@ export class MtaConfig {
                     (checkWebIDEUsage ? this.isODataDestination(dest) : true) && exposedDestinations.push(dest.Name)
             );
         }
+
+        // 3. Modules - parameters.config.destinations (app-deployer/app-front/html5-repo style, CAP frontend)
+        for (const key of ['com.sap.application.content:resource', 'com.sap.application.content:appfront'] as const) {
+            this.modules.get(key)?.parameters?.config?.destinations?.forEach((dest: { name: string }) => {
+                if (dest.name) {
+                    exposedDestinations.push(dest.name);
+                }
+            });
+        }
+
         return exposedDestinations;
     }
 
