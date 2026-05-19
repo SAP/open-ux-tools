@@ -225,12 +225,12 @@ describe('showInternalQuestions', () => {
     });
 });
 
-describe('showBusinessSolutionNameQuestion', () => {
+describe('showBusinessSolutionIdQuestion', () => {
     it('should return true when all conditions are met', () => {
         const answers = {
             approuter: AppRouterType.MANAGED,
             businessService: 'test-service',
-            businessSolutionName: '',
+            businessSolutionId: '',
             baseApp: undefined
         } as CfServicesAnswers;
         const result = showBusinessSolutionIdQuestion(answers, true, true, 'test-service');
@@ -241,7 +241,7 @@ describe('showBusinessSolutionNameQuestion', () => {
         const answers = {
             approuter: AppRouterType.MANAGED,
             businessService: 'test-service',
-            businessSolutionName: '',
+            businessSolutionId: '',
             baseApp: undefined
         } as CfServicesAnswers;
         const result = showBusinessSolutionIdQuestion(answers, true, true, undefined);

@@ -342,4 +342,24 @@ describe('validateBusinessSolutionId', () => {
         const result = validateBusinessSolutionId('test.sol@tion');
         expect(result).toBe(t('error.businessSolutionIdInvalid'));
     });
+
+    test('should return true for id with underscore', () => {
+        const result = validateBusinessSolutionId('test_solution');
+        expect(result).toBe(true);
+    });
+
+    test('should return true for single-segment id', () => {
+        const result = validateBusinessSolutionId('test');
+        expect(result).toBe(true);
+    });
+
+    test('should return true for id of exactly 20 characters', () => {
+        const result = validateBusinessSolutionId('a'.repeat(20));
+        expect(result).toBe(true);
+    });
+
+    test('should return error for id exceeding 20 characters', () => {
+        const result = validateBusinessSolutionId('a'.repeat(21));
+        expect(result).toBe(t('error.businessSolutionIdInvalid'));
+    });
 });
