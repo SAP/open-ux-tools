@@ -105,7 +105,7 @@ describe('Validate MtaConfig Instance', () => {
     const managedRouterConfigCap = fs.readFileSync(join(__dirname, 'fixtures/mta-types/managed-cap/mta.yaml'), 'utf-8');
     const managedRouterConfig = fs.readFileSync(join(__dirname, 'fixtures/mta-types/managed-apps/mta.yaml'), 'utf-8');
     const managedRouterConfigCapSrvApi = fs.readFileSync(
-        join(__dirname, 'fixtures/mta-types/managed-cap-srv-api/mta.yaml'),
+        join(__dirname, 'fixtures/mta-types/appfront-cap/mta.yaml'),
         'utf-8'
     );
     const appFrontConfig = fs.readFileSync(join(__dirname, 'fixtures/mta-types/appfront/mta.yaml'), 'utf-8');
