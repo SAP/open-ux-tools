@@ -12,7 +12,9 @@ import {
     getToolBarActionNames,
     getToolBarActionItems,
     isALPManifestTarget,
-    isALPFromManifest
+    isALPFromManifest,
+    getSemanticKeyProperties,
+    isSemanticKeyInFilterBar
 } from '../../../src/utils/listReportUtils';
 import type { ButtonState, FEV4ManifestTarget } from '../../../src/types';
 import { readFileSync } from 'node:fs';
@@ -1724,5 +1726,272 @@ describe('getListReportFeatures() isALP integration', () => {
     test('sets isALP false when no manifest is provided', () => {
         const result = getListReportFeatures(minimalPage);
         expect(result.isALP).toBe(false);
+    });
+});
+
+describe('Test getSemanticKeyProperties()', () => {
+    const metadataWithSemanticKey = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm"
+                xmlns:SAP__common="com.sap.vocabularies.Common.v1"
+                Alias="SAP__self">
+            <EntityType Name="TravelType">
+                <Key><PropertyRef Name="TravelID"/></Key>
+                <Property Name="TravelID" Type="Edm.String"/>
+                <Property Name="Description" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.TravelType">
+                <Annotation Term="com.sap.vocabularies.Common.v1.SemanticKey">
+                    <Collection>
+                        <PropertyPath>TravelID</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    const metadataWithMultipleSemanticKeys = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm"
+                Alias="SAP__self">
+            <EntityType Name="OrderType">
+                <Key><PropertyRef Name="OrderID"/></Key>
+                <Property Name="OrderID" Type="Edm.String"/>
+                <Property Name="CompanyCode" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Order" EntityType="TestService.OrderType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.OrderType">
+                <Annotation Term="com.sap.vocabularies.Common.v1.SemanticKey">
+                    <Collection>
+                        <PropertyPath>OrderID</PropertyPath>
+                        <PropertyPath>CompanyCode</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    const metadataWithoutSemanticKey = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="ItemType">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Item" EntityType="TestService.ItemType"/>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    test('returns PropertyPath value from SemanticKey annotation', () => {
+        const result = getSemanticKeyProperties(metadataWithSemanticKey, 'Travel');
+        expect(result).toEqual(['TravelID']);
+    });
+
+    test('returns all PropertyPath values when SemanticKey has multiple entries', () => {
+        const result = getSemanticKeyProperties(metadataWithMultipleSemanticKeys, 'Order');
+        expect(result).toEqual(['OrderID', 'CompanyCode']);
+    });
+
+    const metadataWithLabels = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="BankType">
+                <Key><PropertyRef Name="BankCountry"/></Key>
+                <Property Name="BankCountry" Type="Edm.String"/>
+                <Property Name="BankInternalID" Type="Edm.String"/>
+                <Property Name="NoLabelProp" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Bank" EntityType="TestService.BankType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.BankType">
+                <Annotation Term="com.sap.vocabularies.Common.v1.SemanticKey">
+                    <Collection>
+                        <PropertyPath>BankCountry</PropertyPath>
+                        <PropertyPath>BankInternalID</PropertyPath>
+                        <PropertyPath>NoLabelProp</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="TestService.BankType/BankCountry">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Label" String="Bank Country"/>
+            </Annotations>
+            <Annotations Target="TestService.BankType/BankInternalID">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Label" String="Bank ID"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    test('resolveLabels=false returns property names (default)', () => {
+        expect(getSemanticKeyProperties(metadataWithLabels, 'Bank', false)).toEqual([
+            'BankCountry',
+            'BankInternalID',
+            'NoLabelProp'
+        ]);
+    });
+
+    test('resolveLabels=true returns Common.Label values, falling back to property name when no label', () => {
+        expect(getSemanticKeyProperties(metadataWithLabels, 'Bank', true)).toEqual([
+            'Bank Country',
+            'Bank ID',
+            'NoLabelProp'
+        ]);
+    });
+
+    test('returns empty array when no SemanticKey annotation exists', () => {
+        const result = getSemanticKeyProperties(metadataWithoutSemanticKey, 'Item');
+        expect(result).toEqual([]);
+    });
+
+    test('returns SemanticKey from the fixture metadata file', () => {
+        const metadataXml = readFileSync(join(__dirname, '../../../test/fixtures/metadata.xml'), 'utf-8');
+        const result = getSemanticKeyProperties(metadataXml, 'Travel');
+        expect(result).toEqual(['TravelID']);
+    });
+
+    test('throws when entity set is not found', () => {
+        expect(() => getSemanticKeyProperties(metadataWithSemanticKey, 'NonExistent')).toThrow(
+            "Entity set 'NonExistent' not found in metadata"
+        );
+    });
+
+    test('throws when metadata XML is invalid', () => {
+        expect(() => getSemanticKeyProperties('not valid xml', 'Travel')).toThrow();
+    });
+});
+
+describe('Test isSemanticKeyInFilterBar()', () => {
+    const makePageModel = (fields: string[]): TreeModel => {
+        const aggregations: Record<string, TreeAggregation> = {};
+        fields.forEach((f) => {
+            aggregations[f] = { description: f } as unknown as TreeAggregation;
+        });
+        return {
+            root: {
+                aggregations: {
+                    filterBar: {
+                        aggregations: {
+                            selectionFields: { aggregations } as unknown as TreeAggregation
+                        }
+                    } as unknown as TreeAggregation
+                }
+            } as unknown as TreeAggregation,
+            name: 'test',
+            schema: {}
+        } as unknown as TreeModel;
+    };
+
+    const metadataSingleKey = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm"
+                xmlns:Common="https://oasis-namespaces.org/odata/4.0/cs02/Common">
+            <EntityType Name="OrderType">
+                <Key><PropertyRef Name="SalesOrder"/></Key>
+                <Property Name="SalesOrder" Type="Edm.String"/>
+                <Property Name="Customer" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Order" EntityType="TestService.OrderType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.OrderType">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection><PropertyPath>SalesOrder</PropertyPath></Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    const metadataCompositeKey = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm"
+                xmlns:Common="https://oasis-namespaces.org/odata/4.0/cs02/Common">
+            <EntityType Name="BankType">
+                <Key><PropertyRef Name="BankCountry"/></Key>
+                <Property Name="BankCountry" Type="Edm.String"/>
+                <Property Name="BankInternalID" Type="Edm.String"/>
+                <Property Name="SWIFTCode" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Bank" EntityType="TestService.BankType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.BankType">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>BankCountry</PropertyPath>
+                        <PropertyPath>BankInternalID</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    const metadataNoSemanticKey = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="ItemType">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+                <Property Name="Name" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Item" EntityType="TestService.ItemType"/>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    test('returns true when single semantic key property is present in filter bar', () => {
+        const pageModel = makePageModel(['SalesOrder', 'Customer', 'Status']);
+        expect(isSemanticKeyInFilterBar(pageModel, metadataSingleKey, 'Order')).toBe(true);
+    });
+
+    test('returns false when single semantic key property is absent from filter bar', () => {
+        const pageModel = makePageModel(['Customer', 'Status']);
+        expect(isSemanticKeyInFilterBar(pageModel, metadataSingleKey, 'Order')).toBe(false);
+    });
+
+    test('returns true when all composite semantic key properties are present in filter bar', () => {
+        const pageModel = makePageModel(['BankCountry', 'BankInternalID', 'SWIFTCode']);
+        expect(isSemanticKeyInFilterBar(pageModel, metadataCompositeKey, 'Bank')).toBe(true);
+    });
+
+    test('returns false when only some composite semantic key properties are present in filter bar', () => {
+        const pageModel = makePageModel(['BankCountry', 'SWIFTCode']);
+        expect(isSemanticKeyInFilterBar(pageModel, metadataCompositeKey, 'Bank')).toBe(false);
+    });
+
+    test('returns false when no composite semantic key properties are present in filter bar', () => {
+        const pageModel = makePageModel(['SWIFTCode']);
+        expect(isSemanticKeyInFilterBar(pageModel, metadataCompositeKey, 'Bank')).toBe(false);
+    });
+
+    test('returns false when entity has no SemanticKey annotation', () => {
+        const pageModel = makePageModel(['ID', 'Name']);
+        expect(isSemanticKeyInFilterBar(pageModel, metadataNoSemanticKey, 'Item')).toBe(false);
+    });
+
+    test('returns false when filter bar has no fields', () => {
+        const pageModel = makePageModel([]);
+        expect(isSemanticKeyInFilterBar(pageModel, metadataSingleKey, 'Order')).toBe(false);
     });
 });

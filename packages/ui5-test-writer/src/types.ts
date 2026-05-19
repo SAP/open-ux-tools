@@ -144,13 +144,18 @@ export type ListReportFeatures = {
     };
     deleteButton?: {
         enabled?: boolean | string;
-        visible: boolean;
+        visible?: boolean;
         dynamicPath?: string;
     };
     filterBarItems?: string[];
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
     toolBarActions?: ActionButtonState[];
     isALP?: boolean;
+    semanticKey?: {
+        filterBarHasSemanticKey?: boolean;
+        semanticKeyProperties?: string[];
+        missingFromFilterBar?: string[];
+    };
 };
 
 export interface ActionButtonState {

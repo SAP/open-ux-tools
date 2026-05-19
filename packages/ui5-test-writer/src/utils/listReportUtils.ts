@@ -133,23 +133,28 @@ export function getListReportFeatures(
     metadata?: string,
     manifest?: Manifest
 ): ListReportFeatures {
-    const buttonVisibility =
-        metadata && listReportPage.entitySet
-            ? safeCheckButtonVisibility(metadata, listReportPage.entitySet, log)
-            : undefined;
+    const entitySetName = metadata ? listReportPage.entitySet : undefined;
+    const buttonVisibility = entitySetName ? safeCheckButtonVisibility(metadata!, entitySetName, log) : undefined;
     const toolbarActions = getToolBarActionNames(listReportPage.model, log);
+    const semanticKeyProperties = entitySetName ? getSemanticKeyProperties(metadata!, entitySetName, true) : undefined;
+    const filterBarItems = getFilterFieldNames(listReportPage.model, log);
+    const missingFromFilterBar = semanticKeyProperties?.length
+        ? semanticKeyProperties.filter((key) => !filterBarItems.includes(key))
+        : undefined;
 
     return {
         name: listReportPage.name,
         createButton: buildButtonState(buttonVisibility?.create),
         deleteButton: buildButtonState(buttonVisibility?.delete),
-        filterBarItems: getFilterFieldNames(listReportPage.model, log),
+        filterBarItems,
         tableColumns: getTableColumnData(listReportPage.model, log),
-        toolBarActions:
-            metadata && listReportPage.entitySet
-                ? safeCheckActionButtonStates(metadata, listReportPage.entitySet, toolbarActions, log)
-                : [],
-        isALP: manifest ? isALPFromManifest(manifest, listReportPage.name) : false
+        toolBarActions: entitySetName ? safeCheckActionButtonStates(metadata!, entitySetName, toolbarActions, log) : [],
+        isALP: manifest ? isALPFromManifest(manifest, listReportPage.name) : false,
+        semanticKey: {
+            semanticKeyProperties,
+            missingFromFilterBar: missingFromFilterBar?.length ? missingFromFilterBar : undefined,
+            filterBarHasSemanticKey: semanticKeyProperties?.length ? missingFromFilterBar?.length === 0 : undefined
+        }
     };
 }
 
@@ -543,4 +548,67 @@ function extractItemDescriptions(aggregations: TreeAggregations): string[] {
         );
     }
     return [];
+}
+
+/**
+ * Checks whether all SemanticKey properties for a given entity set appear as filter fields in the filter bar.
+ * Returns false if the semantic key is absent, empty, or no semantic key properties are present as filters.
+ *
+ * @param pageModel - The tree model containing filter bar definitions (from ux-specification)
+ * @param metadataXml - The OData metadata XML content as a string
+ * @param entitySetName - The name of the entity set to inspect
+ * @param log - optional logger instance
+ * @returns true if every SemanticKey property appears in the filter bar, false otherwise
+ */
+export function isSemanticKeyInFilterBar(
+    pageModel: TreeModel,
+    metadataXml: string,
+    entitySetName: string,
+    log?: Logger
+): boolean {
+    const semanticKeys = getSemanticKeyProperties(metadataXml, entitySetName, true);
+    if (!semanticKeys.length) {
+        return false;
+    }
+    const filterFields = getFilterFieldNames(pageModel, log);
+    return semanticKeys.every((key) => filterFields.includes(key));
+}
+
+/**
+ * Retrieves the SemanticKey PropertyPath values for a given entity set from OData metadata XML.
+ * Returns the values of all PropertyPath entries in the SAP Common SemanticKey annotation on the entity type.
+ *
+ * @param metadataXml - The OData metadata XML content as a string
+ * @param entitySetName - The name of the entity set to inspect
+ * @param resolveLabels - when true, each property name is replaced with its Common.Label value (falls back to the property name when no label is defined). Use this when comparing against getFilterFieldNames(), which also returns labels.
+ * @returns An array of PropertyPath string values (or their labels) from the SemanticKey annotation, or an empty array if not found
+ * @throws {Error} If the metadata cannot be parsed or the entity set is not found
+ */
+export function getSemanticKeyProperties(metadataXml: string, entitySetName: string, resolveLabels = false): string[] {
+    const convertedMetadata: ConvertedMetadata = convert(parse(metadataXml));
+    const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
+
+    if (!entitySet) {
+        throw new Error(`Entity set '${entitySetName}' not found in metadata`);
+    }
+
+    const semanticKey = entitySet.entityType.annotations?.Common?.SemanticKey;
+    if (!semanticKey) {
+        return [];
+    }
+
+    const propertyNames = (semanticKey as unknown as { value: string }[])
+        .map((entry) => entry.value)
+        .filter((v): v is string => typeof v === 'string');
+
+    if (!resolveLabels) {
+        return propertyNames;
+    }
+
+    return propertyNames.map((propName) => {
+        const property = entitySet.entityType.entityProperties.find((p) => p.name === propName);
+        const label = property?.annotations?.Common?.Label;
+        const labelStr = label != null ? String(label) : '';
+        return labelStr || propName;
+    });
 }
