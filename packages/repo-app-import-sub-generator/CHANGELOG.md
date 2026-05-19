@@ -1,5 +1,107 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.4.5
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.10.4
+- @sap-ux/odata-service-inquirer@2.22.0
+
+## 0.4.4
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.10.3
+- @sap-ux/odata-service-inquirer@2.22.0
+
+## 0.4.3
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.10.2
+- @sap-ux/odata-service-inquirer@2.22.0
+
+## 0.4.2
+
+### Patch Changes
+
+- 2c76f8f: chore: upgrade @sap-devx/yeoman-ui-types 1.23.0 → 1.25.0
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+    - @sap-ux/inquirer-common@0.13.0
+    - @sap-ux/odata-service-inquirer@2.22.0
+    - @sap-ux/fiori-elements-writer@2.10.1
+
+## 0.4.1
+
+### Patch Changes
+
+- Updated dependencies [2f0c182]
+    - @sap-ux/fiori-elements-writer@2.10.0
+    - @sap-ux/odata-service-inquirer@2.21.0
+
+## 0.4.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/abap-deploy-config-writer@0.4.0
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/feature-toggle@0.4.0
+    - @sap-ux/fiori-elements-writer@2.9.0
+    - @sap-ux/fiori-generator-shared@0.15.0
+    - @sap-ux/fiori-tools-settings@0.3.0
+    - @sap-ux/guided-answers-helper@0.5.0
+    - @sap-ux/inquirer-common@0.12.0
+    - @sap-ux/launch-config@0.11.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/odata-service-inquirer@2.21.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/project-input-validator@0.7.0
+    - @sap-ux/store@1.6.0
+    - @sap-ux/system-access@0.8.0
+    - @sap-ux/ui5-info@0.14.0
+
+## 0.3.328
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.140
+- @sap-ux/inquirer-common@0.11.48
+- @sap-ux/odata-service-inquirer@2.20.25
+
+## 0.3.327
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/abap-deploy-config-writer@0.3.18
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/feature-toggle@0.3.9
+    - @sap-ux/fiori-elements-writer@2.8.139
+    - @sap-ux/fiori-generator-shared@0.14.2
+    - @sap-ux/fiori-tools-settings@0.2.4
+    - @sap-ux/guided-answers-helper@0.4.3
+    - @sap-ux/inquirer-common@0.11.47
+    - @sap-ux/launch-config@0.10.92
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/odata-service-inquirer@2.20.24
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/project-input-validator@0.6.84
+    - @sap-ux/store@1.5.14
+    - @sap-ux/system-access@0.7.13
+    - @sap-ux/ui5-info@0.13.22
+
 ## 0.3.326
 
 ### Patch Changes
