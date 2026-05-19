@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/odata-annotation-core",
-    "version": "0.2.18",
+    "version": "0.3.0",
     "description": "Annotation Core",
     "repository": {
         "type": "git",
@@ -36,7 +36,7 @@
         "@sap-ux/odata-entity-model": "workspace:*"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     },
     "files": [
         "LICENSE",

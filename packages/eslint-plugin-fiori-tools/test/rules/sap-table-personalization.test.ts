@@ -57,7 +57,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                     }
                 ])
             },
-            [FACETSV4]
+            []
         ),
         createValidTest(
             {
@@ -129,7 +129,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                     }
                 ])
             },
-            [FACETSV4]
+            []
         ),
         createValidTest(
             {
@@ -177,7 +177,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                     }
                 ])
             },
-            [FACETSV4]
+            []
         ),
         createValidTest(
             {
@@ -225,7 +225,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                     }
                 ])
             },
-            [FACETSV4]
+            []
         ),
         createValidTest(
             {
@@ -273,7 +273,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                     }
                 ])
             },
-            [FACETSV4]
+            []
         ),
         createValidTest(
             {
@@ -321,7 +321,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                     }
                 ])
             },
-            [FACETSV4]
+            []
         ),
         createValidTest(
             {
@@ -369,7 +369,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                     }
                 ])
             },
-            [FACETSV4]
+            []
         ),
         createValidTest(
             {
@@ -417,7 +417,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                     }
                 ])
             },
-            [FACETSV4]
+            []
         )
     ],
 
@@ -445,7 +445,8 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'sap-table-personalization',
+                        message:
+                            'Table personalization should be enabled. Currently every table personalization setting is disabled.',
                         line: 127,
                         column: 21
                     }
@@ -468,7 +469,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                     }
                 ])
             },
-            [FACETSV4]
+            []
         ),
         createInvalidTest(
             {
@@ -493,7 +494,8 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'sap-table-missing-personalization-properties',
+                        message:
+                            'In case of using an object, omitting a setting is treated as false. Currently column, filter, sort are disabled in the Products table.',
                         line: 145,
                         column: 21
                     }
@@ -565,22 +567,23 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'sap-table-personalization-column',
+                        message: 'Adding or removing table columns should be enabled in the table.',
                         line: 128,
                         column: 23
                     },
                     {
-                        messageId: 'sap-table-personalization-filter',
+                        message: 'Data filtering should be enabled in the table.',
                         line: 129,
                         column: 23
                     },
                     {
-                        messageId: 'sap-table-personalization-group',
+                        message:
+                            'Data grouping should be enabled in the table. Grouping is available for analytical and responsive type tables.',
                         line: 130,
                         column: 23
                     },
                     {
-                        messageId: 'sap-table-personalization-sort',
+                        message: 'Data sorting should be enabled in the table.',
                         line: 131,
                         column: 23
                     }
@@ -622,7 +625,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                     }
                 ])
             },
-            [FACETSV4]
+            []
         ),
         createInvalidTest(
             {
@@ -671,7 +674,8 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'sap-table-personalization-group',
+                        message:
+                            'Data grouping should be enabled in the table. Grouping is available for analytical and responsive type tables.',
                         line: 130,
                         column: 23
                     }
@@ -713,7 +717,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                     }
                 ])
             },
-            [FACETSV4]
+            []
         ),
         createInvalidTest(
             {
@@ -760,7 +764,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 127,
                         column: 21,
                         message:
-                            'In case of using an object, omitting a setting is treated as false. Currently column, filter, group, sort are disabled.'
+                            'In case of using an object, omitting a setting is treated as false. Currently column, filter, group, sort are disabled in the table.'
                     }
                 ],
                 output: getManifestAsCode(V4_MANIFEST, [
@@ -800,7 +804,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                     }
                 ])
             },
-            [FACETSV4]
+            []
         ),
         createInvalidTest(
             {
@@ -831,12 +835,12 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 127,
                         column: 21,
                         message:
-                            'In case of using an object, omitting a setting is treated as false. Currently column, sort are disabled.'
+                            'In case of using an object, omitting a setting is treated as false. Currently column, sort are disabled in the table.'
                     },
                     {
                         line: 129,
                         column: 23,
-                        message: 'Table data filtering should be enabled.'
+                        message: 'Data filtering should be enabled in the table.'
                     }
                 ],
                 output: getManifestAsCode(V4_MANIFEST, [
@@ -857,7 +861,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                     }
                 ])
             },
-            [FACETSV4]
+            []
         ),
         createInvalidTest(
             {
@@ -889,12 +893,12 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 127,
                         column: 21,
                         message:
-                            'In case of using an object, omitting a setting is treated as false. Currently column is disabled.'
+                            'In case of using an object, omitting a setting is treated as false. Currently column is disabled in the table.'
                     },
                     {
                         line: 129,
                         column: 23,
-                        message: 'Table data filtering should be enabled.'
+                        message: 'Data filtering should be enabled in the table.'
                     }
                 ],
                 output: getManifestAsCode(V4_MANIFEST, [
@@ -915,7 +919,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                     }
                 ])
             },
-            [FACETSV4]
+            []
         ),
         createInvalidTest(
             {
@@ -965,12 +969,13 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         line: 127,
                         column: 21,
                         message:
-                            'In case of using an object, omitting a setting is treated as false. Currently filter, sort are disabled.'
+                            'In case of using an object, omitting a setting is treated as false. Currently filter, sort are disabled in the table.'
                     },
                     {
                         line: 129,
                         column: 23,
-                        message: 'Table data grouping should be enabled for analytical and responsive type tables.'
+                        message:
+                            'Data grouping should be enabled in the table. Grouping is available for analytical and responsive type tables.'
                     }
                 ],
                 output: getManifestAsCode(V4_MANIFEST, [
@@ -1003,6 +1008,304 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                             'settings',
                             'controlConfiguration',
                             '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: true
+                    }
+                ])
+            },
+            []
+        ),
+        createInvalidTest(
+            {
+                name: 'V4 - object page - empty object, group is checked, group is undefined',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.121.1'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'ResponsiveTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: {}
+                    }
+                ]),
+                errors: [
+                    {
+                        line: 146,
+                        column: 21,
+                        message:
+                            'In case of using an object, omitting a setting is treated as false. Currently column, filter, group, sort are disabled in the Products table.'
+                    }
+                ],
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.121.1'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'ResponsiveTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: true
+                    }
+                ])
+            },
+            [FACETSV4]
+        ),
+        createInvalidTest(
+            {
+                name: 'V4 - object page - undefined settings, group is not checked, group is false',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: {
+                            group: false,
+                            filter: false
+                        }
+                    }
+                ]),
+                errors: [
+                    {
+                        line: 145,
+                        column: 21,
+                        message:
+                            'In case of using an object, omitting a setting is treated as false. Currently column, sort are disabled in the Products table.'
+                    },
+                    {
+                        line: 147,
+                        column: 23,
+                        message: 'Data filtering should be enabled in the Products table.'
+                    }
+                ],
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: true
+                    }
+                ])
+            },
+            [FACETSV4]
+        ),
+        createInvalidTest(
+            {
+                name: 'V4 - object page - single undefined property, group is not checked',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: {
+                            group: false,
+                            filter: false,
+                            sort: true
+                        }
+                    }
+                ]),
+                errors: [
+                    {
+                        line: 145,
+                        column: 21,
+                        message:
+                            'In case of using an object, omitting a setting is treated as false. Currently column is disabled in the Products table.'
+                    },
+                    {
+                        line: 147,
+                        column: 23,
+                        message: 'Data filtering should be enabled in the Products table.'
+                    }
+                ],
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: true
+                    }
+                ])
+            },
+            [FACETSV4]
+        ),
+        createInvalidTest(
+            {
+                name: 'V4 - object page - undefined settings, group is checked, group is false',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.121.1'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'ResponsiveTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: {
+                            column: true,
+                            group: false
+                        }
+                    }
+                ]),
+                errors: [
+                    {
+                        line: 146,
+                        column: 21,
+                        message:
+                            'In case of using an object, omitting a setting is treated as false. Currently filter, sort are disabled in the Products table.'
+                    },
+                    {
+                        line: 148,
+                        column: 23,
+                        message:
+                            'Data grouping should be enabled in the Products table. Grouping is available for analytical and responsive type tables.'
+                    }
+                ],
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.121.1'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'ResponsiveTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
                             'personalization'
                         ],

@@ -1,4 +1,4 @@
-import type { IValidationLink, IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import type { IValidationLink, IMessageSeverity, ShowOutputTabLink } from '@sap-devx/yeoman-ui-types';
 import type {
     Answers,
     ConfirmQuestion as BaseConfirmQuestion,
@@ -35,7 +35,7 @@ export interface InquirerAdapter {
 }
 
 /**
- * To be replaced when YUI specific types are available from `"@sap-devx/yeoman-ui-types`.
+ * To be replaced when YUI specific types are available from `@sap-devx/yeoman-ui-types`.
  *
  */
 export interface GuiOptions {
@@ -83,12 +83,14 @@ export type YUIQuestion<A extends Answers = Answers> = Question<A> & {
     name: string;
     guiOptions?: GuiOptions;
     additionalMessages?: PromptSeverityMessage;
+    showOutputTabLink?: ShowOutputTabLink;
 };
 
 export interface PasswordQuestion<A extends Answers = Answers> extends BasePasswordQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
     additionalMessages?: YUIQuestion['additionalMessages'];
+    showOutputTabLink?: YUIQuestion['showOutputTabLink'];
 }
 
 export interface FileBrowserQuestion<A extends Answers = Answers> extends BaseInputQuestion<A> {
@@ -101,12 +103,14 @@ export interface ListQuestion<A extends Answers = Answers> extends BaseListQuest
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
     additionalMessages?: YUIQuestion['additionalMessages'];
+    showOutputTabLink?: YUIQuestion['showOutputTabLink'];
 }
 
 export interface ConfirmQuestion<A extends Answers = Answers> extends BaseConfirmQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
     additionalMessages?: PromptSeverityMessage;
+    showOutputTabLink?: YUIQuestion['showOutputTabLink'];
 }
 
 export interface EditorQuestion<A extends Answers = Answers> extends BaseEditorQuestion<A> {
@@ -118,12 +122,14 @@ export interface InputQuestion<A extends Answers = Answers> extends BaseInputQue
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
     additionalMessages?: YUIQuestion['additionalMessages'];
+    showOutputTabLink?: YUIQuestion['showOutputTabLink'];
 }
 
 export interface CheckBoxQuestion<A extends Answers = Answers> extends BaseCheckBoxQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
     additionalMessages?: YUIQuestion['additionalMessages'];
+    showOutputTabLink?: YUIQuestion['showOutputTabLink'];
 }
 
 export interface NumberQuestion<A extends Answers = Answers> extends BaseNumberQuestion<A> {
