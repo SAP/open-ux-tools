@@ -83,13 +83,11 @@ async function getCFSystemChoices(
         if (isCap) {
             const mtaConfig = await MtaConfig.newInstance(projectRoot);
             mtaDestinations = mtaConfig.getExposedDestinations();
-            if (mtaDestinations?.length) {
-                // Add default option
-                choices.push({
-                    name: t('cfGen.prompts.capInstanceBasedDest.name'),
-                    value: DEFAULT_MTA_DESTINATION
-                });
-            }
+            // Add default option
+            choices.push({
+                name: t('cfGen.prompts.capInstanceBasedDest.name'),
+                value: DEFAULT_MTA_DESTINATION
+            });
         } else {
             const mtaResult = await getMtaPath(projectRoot);
             const mtaDir = mtaResult?.mtaPath?.split(FileName.MtaYaml)[0];
