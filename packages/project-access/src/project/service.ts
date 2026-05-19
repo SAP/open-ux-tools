@@ -111,7 +111,7 @@ export function filterDataSourcesByType(
  * Currently we do not return entities for Fiori element V2 apps
  *
  * @param manifest - parsed manifest.json
- * @returns - string array of entities
+ * @returns - array of used entities, each with service URI and entity name
  */
 export function getUsedEntitiesFromManifest(manifest: Manifest): UsedEntity[] {
     const targets = manifest['sap.ui5']?.routing?.targets;
