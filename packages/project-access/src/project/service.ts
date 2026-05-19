@@ -134,7 +134,7 @@ function getViewPaths(settings: object): unknown[] {
  */
 export function getUsedEntitiesFromManifest(manifest: Manifest): UsedEntity[] {
     const targets = manifest['sap.ui5']?.routing?.targets;
-    if (typeof targets !== 'object') {
+    if (!targets || typeof targets !== 'object') {
         return [];
     }
     const mainService = getMainService(manifest) ?? '';
