@@ -107,6 +107,25 @@ export function filterDataSourcesByType(
 }
 
 /**
+ * Extracts view paths from target settings if present.
+ *
+ * @param settings - target settings object
+ * @returns - array of view path entries, or empty array if not present
+ */
+function getViewPaths(settings: object): unknown[] {
+    if (
+        'views' in settings &&
+        settings.views &&
+        typeof settings.views === 'object' &&
+        'paths' in settings.views &&
+        Array.isArray(settings.views.paths)
+    ) {
+        return settings.views.paths;
+    }
+    return [];
+}
+
+/**
  * Find used service entities by analyzing manifest.json
  * Currently we do not return entities for Fiori element V2 apps and entities for Fiori Elements V4 apps that use contextPath instead of entitySet
  *
@@ -149,16 +168,11 @@ export function getUsedEntitiesFromManifest(manifest: Manifest): UsedEntity[] {
             addEntity(settings.entitySet);
         }
         // Resolve entitySet from page views
-        const viewPaths =
-            'views' in settings &&
-            settings.views &&
-            typeof settings.views === 'object' &&
-            'paths' in settings.views &&
-            Array.isArray(settings.views.paths)
-                ? settings.views.paths
-                : [];
-        for (const { entitySet } of viewPaths) {
-            addEntity(entitySet);
+        const viewPaths = getViewPaths(settings);
+        for (const path of viewPaths) {
+            if (path && typeof path === 'object' && 'entitySet' in path) {
+                addEntity(path.entitySet);
+            }
         }
     }
     return usedEntities;
