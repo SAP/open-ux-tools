@@ -283,9 +283,9 @@ Connection types: abap_catalog | generic_host | odata_service
 
 Example:
 
-`npx --yes @sap-ux/create@latest add system --name "My System" --url https://my-sap.example.com`
+npx --yes @sap-ux/create@latest add system --name "My System" --url https://my-sap.example.com
 
-`npx --yes @sap-ux/create@latest add system --name "My System" --url https://my-sap.example.com --client 100 --username myuser`
+npx --yes @sap-ux/create@latest add system --name "My System" --url https://my-sap.example.com --client 100 --username myuser
 
 Options:
 - `--name <string>` _(required)_ - Display name for the system
@@ -435,9 +435,9 @@ The system is identified by its URL and optional SAP client.
 
 Example:
 
-`npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --name "New Name"`
+npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --name "New Name"
 
-`npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --client 100 --username newuser`
+npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --client 100 --username newuser
 
 Options:
 - `--url <string>` _(required)_ - URL of the backend system to update
