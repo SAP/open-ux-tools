@@ -1,6 +1,11 @@
 import { join } from 'node:path';
 import type { Manifest, ManifestNamespace } from '../../src';
-import { getMainService, getServicesAndAnnotations, filterDataSourcesByType } from '../../src/project/service';
+import {
+    getMainService,
+    getServicesAndAnnotations,
+    filterDataSourcesByType,
+    getUsedEntitiesFromManifest
+} from '../../src/project/service';
 
 describe('Test getMainService()', () => {
     test('No manifest', () => {
@@ -152,5 +157,141 @@ describe('Test filterDataSourcesByType()', () => {
     test('Filter Sources of type OData', async () => {
         const result = filterDataSourcesByType(dataSources, 'OData');
         expect(result).toEqual({ 'foo': dataSources['foo'] });
+    });
+});
+
+describe('Test getUsedEntitiesFromManifest()', () => {
+    test('No manifest throws error', () => {
+        expect(() => getUsedEntitiesFromManifest(undefined as unknown as Manifest)).toThrow();
+    });
+
+    test('Empty manifest returns empty array', () => {
+        expect(getUsedEntitiesFromManifest({} as unknown as Manifest)).toEqual([]);
+    });
+
+    test('Manifest with no routing targets returns empty array', () => {
+        expect(getUsedEntitiesFromManifest({ 'sap.ui5': {} } as unknown as Manifest)).toEqual([]);
+    });
+
+    test('Manifest with no mainService returns entity with empty service string', () => {
+        const result = getUsedEntitiesFromManifest({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyList: { options: { settings: { entitySet: 'Products' } } }
+                    }
+                }
+            }
+        } as unknown as Manifest);
+        expect(result).toEqual([{ service: '', entity: 'Products' }]);
+    });
+
+    test('Manifest with entitySet in target returns entity with service URI', () => {
+        const result = getUsedEntitiesFromManifest({
+            'sap.app': { dataSources: { mainService: { uri: '/odata/v4/my-service/' } } },
+            'sap.ui5': {
+                models: { '': { dataSource: 'mainService' } },
+                routing: {
+                    targets: {
+                        MyListReport: { options: { settings: { entitySet: 'Products' } } }
+                    }
+                }
+            }
+        } as unknown as Manifest);
+        expect(result).toEqual([{ service: '/odata/v4/my-service/', entity: 'Products' }]);
+    });
+
+    test('Manifest with multiple targets returns all entities', () => {
+        const result = getUsedEntitiesFromManifest({
+            'sap.app': { dataSources: { mainService: { uri: '/odata/v4/my-service/' } } },
+            'sap.ui5': {
+                models: { '': { dataSource: 'mainService' } },
+                routing: {
+                    targets: {
+                        ListPage: { options: { settings: { entitySet: 'Orders' } } },
+                        ObjectPage: { options: { settings: { entitySet: 'OrderItems' } } }
+                    }
+                }
+            }
+        } as unknown as Manifest);
+        expect(result).toEqual([
+            { service: '/odata/v4/my-service/', entity: 'Orders' },
+            { service: '/odata/v4/my-service/', entity: 'OrderItems' }
+        ]);
+    });
+
+    test('Duplicate entitySet across targets is deduplicated', () => {
+        const result = getUsedEntitiesFromManifest({
+            'sap.app': { dataSources: { mainService: { uri: '/odata/v4/my-service/' } } },
+            'sap.ui5': {
+                models: { '': { dataSource: 'mainService' } },
+                routing: {
+                    targets: {
+                        ListPage: { options: { settings: { entitySet: 'Products' } } },
+                        ObjectPage: { options: { settings: { entitySet: 'Products' } } }
+                    }
+                }
+            }
+        } as unknown as Manifest);
+        expect(result).toEqual([{ service: '/odata/v4/my-service/', entity: 'Products' }]);
+    });
+
+    test('Manifest with entitySet in views.paths returns entities', () => {
+        const result = getUsedEntitiesFromManifest({
+            'sap.app': { dataSources: { mainService: { uri: '/odata/v4/my-service/' } } },
+            'sap.ui5': {
+                models: { '': { dataSource: 'mainService' } },
+                routing: {
+                    targets: {
+                        MyView: {
+                            options: {
+                                settings: {
+                                    views: {
+                                        paths: [{ entitySet: 'SalesOrders' }, { entitySet: 'Products' }]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest);
+        expect(result).toEqual([
+            { service: '/odata/v4/my-service/', entity: 'SalesOrders' },
+            { service: '/odata/v4/my-service/', entity: 'Products' }
+        ]);
+    });
+
+    test('Fiori Elements V4 manifest with contextPath only returns empty array', () => {
+        // V4 apps use contextPath; the function only handles entitySet, so no entities are extracted
+        const result = getUsedEntitiesFromManifest({
+            'sap.app': {
+                dataSources: {
+                    mainService: {
+                        uri: '/odata/v4/kitchen-cabinet-app-srv/',
+                        type: 'OData',
+                        settings: { odataVersion: '4.0', annotations: [] }
+                    }
+                }
+            },
+            'sap.ui5': {
+                models: { '': { dataSource: 'mainService' } },
+                routing: {
+                    targets: {
+                        KitchenCabinetsList: {
+                            type: 'Component',
+                            name: 'sap.fe.templates.ListReport',
+                            options: { settings: { contextPath: '/KitchenCabinets' } }
+                        },
+                        KitchenCabinetsObjectPage: {
+                            type: 'Component',
+                            name: 'sap.fe.templates.ObjectPage',
+                            options: { settings: { contextPath: '/KitchenCabinets' } }
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest);
+        expect(result).toEqual([]);
     });
 });
