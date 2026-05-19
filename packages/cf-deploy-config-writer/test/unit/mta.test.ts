@@ -171,7 +171,7 @@ describe('Validate MtaConfig Instance', () => {
         `);
     });
 
-    it('(CAP frontend) Validate srv-api destination is retrieved from parameters.config.destinations', async () => {
+    it('(CAP frontend) Validate srv-api destination is retrieved from parameters.config.destinations (html5-repo + app-front deployer)', async () => {
         memfs.vol.fromNestedJSON(
             {
                 [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: managedRouterConfigCapSrvApi
