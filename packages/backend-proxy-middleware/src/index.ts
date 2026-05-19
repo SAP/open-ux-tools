@@ -8,8 +8,4 @@ export type {
     BackendMiddlewareConfig
 } from './base/types.js';
 
-try {
-    await initI18n();
-} catch {
-    // Ignore - module will work with fallback strings
-}
+void initI18n().catch(() => undefined);
