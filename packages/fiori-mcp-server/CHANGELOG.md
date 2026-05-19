@@ -1,5 +1,53 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.7.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/fiori-docs-embeddings@0.5.0
+    - @sap-ux/store@1.6.0
+
+## 0.6.60
+
+### Patch Changes
+
+- 59537d3: chore: override sharp to >=0.33.5 to fix CI build on darwin-arm64
+- Updated dependencies [59537d3]
+    - @sap-ux/fiori-docs-embeddings@0.4.20
+
+## 0.6.59
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/fiori-docs-embeddings@0.4.19
+    - @sap-ux/store@1.5.14
+
+## 0.6.58
+
+### Patch Changes
+
+- 4101c21: fix: connect stdio transport before telemetry init to fix Claude Desktop extension disconnect
+
+## 0.6.57
+
+### Patch Changes
+
+- c4bd625: Improve documentation Claude code, etc...
+
+## 0.6.56
+
+### Patch Changes
+
+- Updated dependencies [a5c05a8]
+    - @sap-ux/fiori-docs-embeddings@0.4.18
+
 ## 0.6.55
 
 ### Patch Changes
