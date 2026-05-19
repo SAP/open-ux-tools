@@ -71,6 +71,7 @@ export {
     isUI5IdUnique,
     getUsedEntitiesFromManifest
 } from './project';
+export type { UsedEntity } from './project';
 export { execNpmCommand } from './command/npm-command';
 export * from './types';
 export { checkDependencies, getReuseLibs } from './library';

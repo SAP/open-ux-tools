@@ -21,6 +21,7 @@ export {
     getGlobalCdsHomePath
 } from './cap';
 export { filterDataSourcesByType, getMainService, getUsedEntitiesFromManifest } from './service';
+export type { UsedEntity } from './service';
 export { addPackageDevDependency, getNodeModulesPath, hasDependency } from './dependencies';
 export { getCapI18nFolderNames, getI18nPropertiesPaths, getI18nBundles } from './i18n';
 export {
