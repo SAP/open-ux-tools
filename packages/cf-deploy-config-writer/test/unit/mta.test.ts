@@ -171,7 +171,7 @@ describe('Validate MtaConfig Instance', () => {
         `);
     });
 
-    it('(CAP frontend) Validate srv-api destination is retrieved from parameters.config.destinations (html5-repo + app-front deployer)', async () => {
+    it('(CAP frontend) Validate srv-api destination is not exposed without WebIDEUsage (html5-repo + app-front deployer)', async () => {
         memfs.vol.fromNestedJSON(
             {
                 [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: managedRouterConfigCapSrvApi
@@ -179,11 +179,7 @@ describe('Validate MtaConfig Instance', () => {
             '/'
         );
         const mtaConfig = await MtaConfig.newInstance(appDir);
-        expect(mtaConfig.getExposedDestinations()).toMatchInlineSnapshot(`
-            Array [
-              "srv-api",
-            ]
-        `);
+        expect(mtaConfig.getExposedDestinations()).toMatchInlineSnapshot(`Array []`);
     });
 
     it.each([

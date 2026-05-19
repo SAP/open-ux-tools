@@ -1209,23 +1209,6 @@ export class MtaConfig {
                     (checkWebIDEUsage ? this.isODataDestination(dest) : true) && exposedDestinations.push(dest.Name)
             );
         }
-
-        // 3. Modules - parameters.config.destinations (app-deployer/app-front/html5-repo style, CAP frontend)
-        // These destinations use lowercase `name` and are not WebIDE-style OData destinations;
-        // skip entirely when checkWebIDEUsage is requested to avoid false positives.
-        if (!checkWebIDEUsage) {
-            for (const key of [
-                'com.sap.application.content:resource',
-                'com.sap.application.content:appfront'
-            ] as const) {
-                this.modules.get(key)?.parameters?.config?.destinations?.forEach((dest: { name: string }) => {
-                    if (dest.name) {
-                        exposedDestinations.push(dest.name);
-                    }
-                });
-            }
-        }
-
         return exposedDestinations;
     }
 
