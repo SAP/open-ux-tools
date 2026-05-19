@@ -1201,7 +1201,7 @@ export class MtaConfig {
             );
         }
 
-        // 2. Modules - content.instance.destinations (destination-service managed router)
+        // 2. Modules
         const destinationModules = this.modules.get('com.sap.application.content:destination');
         if (destinationModules) {
             destinationModules.parameters?.content?.instance?.destinations?.map(
