@@ -358,7 +358,7 @@ export function enhanceUI5YamlWithCfCustomTask(ui5Config: UI5Config, config: CfA
                 html5RepoRuntime: cf.html5RepoRuntimeGuid,
                 org: cf.org.GUID,
                 space: cf.space.GUID,
-                sapCloudService: cf.businessSolutionName ?? '',
+                sapCloudService: cf.businessSolutionId ?? '',
                 serviceInstanceName: cf.businessService,
                 serviceInstanceGuid: cf.serviceInstanceGuid
             }

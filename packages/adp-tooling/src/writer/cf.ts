@@ -45,7 +45,7 @@ export async function generateCf(
             projectPath: basePath,
             adpProjectName: project.name,
             appRouterType: cf.approuter,
-            businessSolutionName: cf.businessSolutionName ?? '',
+            businessSolutionId: cf.businessSolutionId ?? '',
             businessService: cf.businessService,
             serviceKeys: cf.serviceInfo?.serviceKeys,
             spaceGuid: cf.space.GUID

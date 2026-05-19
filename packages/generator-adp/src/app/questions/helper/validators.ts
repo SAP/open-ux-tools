@@ -146,23 +146,20 @@ export async function validateProjectPath(projectPath: string, logger: ToolsLogg
 }
 
 /**
- * Validate business solution name.
+ * Validate business solution id.
  *
  * @param {string} value - Value to validate.
  * @returns {string | boolean} Validation result.
  */
-export function validateBusinessSolutionName(value: string): string | boolean {
+export function validateBusinessSolutionId(value: string): string | boolean {
     const validationResult = validateEmptyString(value);
     if (typeof validationResult === 'string') {
         return validationResult;
     }
 
-    if (!/^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/.test(value)) {
-        if (/\s/.test(value) || /[^a-zA-Z0-9.]/.test(value)) {
-            return t('error.businessSolutionNameInvalidChars');
-        }
-        return t('error.businessSolutionNameInvalid');
+    if (/^[\w.]{1,20}$/.test(value)) {
+        return true;
     }
 
-    return true;
+    return t('error.businessSolutionIdInvalid');
 }

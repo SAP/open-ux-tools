@@ -11,7 +11,7 @@ import {
     validateExtensibilityExtension,
     validateEnvironment,
     validateProjectPath,
-    validateBusinessSolutionName
+    validateBusinessSolutionId
 } from '../../../../src/app/questions/helper/validators';
 import { initI18n, t } from '../../../../src/utils/i18n';
 
@@ -309,7 +309,7 @@ describe('validateProjectPath', () => {
     });
 });
 
-describe('validateBusinessSolutionName', () => {
+describe('validateBusinessSolutionId', () => {
     beforeAll(async () => {
         await initI18n();
     });
@@ -319,32 +319,27 @@ describe('validateBusinessSolutionName', () => {
     });
 
     test('should return true for valid business solution name', () => {
-        const result = validateBusinessSolutionName('test.solution');
+        const result = validateBusinessSolutionId('test.solution');
         expect(result).toBe(true);
     });
 
     test('should return true for multi-segment name', () => {
-        const result = validateBusinessSolutionName('com.sap.test');
+        const result = validateBusinessSolutionId('com.sap.test');
         expect(result).toBe(true);
     });
 
     test('should return error for empty string', () => {
-        const result = validateBusinessSolutionName('');
+        const result = validateBusinessSolutionId('');
         expect(result).toBe('The input cannot be empty.');
     });
 
-    test('should return error for single part name', () => {
-        const result = validateBusinessSolutionName('test');
-        expect(result).toBe(t('error.businessSolutionNameInvalid'));
-    });
-
-    test('should return error for name with spaces', () => {
-        const result = validateBusinessSolutionName('test. solution');
-        expect(result).toBe(t('error.businessSolutionNameInvalidChars'));
+    test('should return error for id with spaces', () => {
+        const result = validateBusinessSolutionId('test. solution');
+        expect(result).toBe(t('error.businessSolutionIdInvalid'));
     });
 
     test('should return error for name with special characters', () => {
-        const result = validateBusinessSolutionName('test.sol@tion');
-        expect(result).toBe(t('error.businessSolutionNameInvalidChars'));
+        const result = validateBusinessSolutionId('test.sol@tion');
+        expect(result).toBe(t('error.businessSolutionIdInvalid'));
     });
 });

@@ -19,13 +19,13 @@ import type { CfConfig, CFApp, ServiceInfo, CfServicesAnswers } from '@sap-ux/ad
 
 import { initI18n, t } from '../../../src/utils/i18n';
 import { CFServicesPrompter } from '../../../src/app/questions/cf-services';
-import { validateBusinessSolutionName } from '../../../src/app/questions/helper/validators';
-import { showBusinessSolutionNameQuestion } from '../../../src/app/questions/helper/conditions';
+import { validateBusinessSolutionId } from '../../../src/app/questions/helper/validators';
+import { showBusinessSolutionIdQuestion } from '../../../src/app/questions/helper/conditions';
 import { getAppRouterChoices, getCFAppChoices } from '../../../src/app/questions/helper/choices';
 
 jest.mock('../../../src/app/questions/helper/validators', () => ({
     ...jest.requireActual('../../../src/app/questions/helper/validators'),
-    validateBusinessSolutionName: jest.fn()
+    validateBusinessSolutionId: jest.fn()
 }));
 
 jest.mock('../../../src/app/questions/helper/choices', () => ({
@@ -36,7 +36,7 @@ jest.mock('../../../src/app/questions/helper/choices', () => ({
 
 jest.mock('../../../src/app/questions/helper/conditions', () => ({
     ...jest.requireActual('../../../src/app/questions/helper/conditions'),
-    showBusinessSolutionNameQuestion: jest.fn()
+    showBusinessSolutionIdQuestion: jest.fn()
 }));
 
 jest.mock('@sap-ux/adp-tooling', () => ({
@@ -53,13 +53,13 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     getBusinessServiceInfo: jest.fn()
 }));
 
-const mockValidateBusinessSolutionName = validateBusinessSolutionName as jest.MockedFunction<
-    typeof validateBusinessSolutionName
+const mockValidateBusinessSolutionId = validateBusinessSolutionId as jest.MockedFunction<
+    typeof validateBusinessSolutionId
 >;
 const mockGetAppRouterChoices = getAppRouterChoices as jest.MockedFunction<typeof getAppRouterChoices>;
 const mockGetCFAppChoices = getCFAppChoices as jest.MockedFunction<typeof getCFAppChoices>;
-const mockShowBusinessSolutionNameQuestion = showBusinessSolutionNameQuestion as jest.MockedFunction<
-    typeof showBusinessSolutionNameQuestion
+const mockShowBusinessSolutionIdQuestion = showBusinessSolutionIdQuestion as jest.MockedFunction<
+    typeof showBusinessSolutionIdQuestion
 >;
 const mockGetModuleNames = getModuleNames as jest.MockedFunction<typeof getModuleNames>;
 const mockGetApprouterType = getApprouterType as jest.MockedFunction<typeof getApprouterType>;
@@ -155,7 +155,7 @@ describe('CFServicesPrompter', () => {
             expect(prompts.map((p) => p.name)).toEqual([
                 cfServicesPromptNames.approuter,
                 cfServicesPromptNames.businessService,
-                cfServicesPromptNames.businessSolutionName,
+                cfServicesPromptNames.businessSolutionId,
                 cfServicesPromptNames.baseApp
             ]);
             expect(mockGetMtaServices).toHaveBeenCalledWith('/test/path', mockLogger);
@@ -183,43 +183,43 @@ describe('CFServicesPrompter', () => {
         });
     });
 
-    describe('getBusinessSolutionNamePrompt', () => {
+    describe('getBusinessSolutionIdPrompt', () => {
         const prompter = new CFServicesPrompter(false, true, mockLogger);
 
-        test('should create business solution name prompt', () => {
-            mockShowBusinessSolutionNameQuestion.mockReturnValue(true);
-            mockValidateBusinessSolutionName.mockReturnValue(true);
+        test('should create business solution ID prompt', () => {
+            mockShowBusinessSolutionIdQuestion.mockReturnValue(true);
+            mockValidateBusinessSolutionId.mockReturnValue(true);
 
-            const prompt = prompter['getBusinessSolutionNamePrompt']();
+            const prompt = prompter['getBusinessSolutionIdPrompt']();
 
             expect(prompt.type).toBe('input');
-            expect(prompt.name).toBe(cfServicesPromptNames.businessSolutionName);
-            expect(prompt.message).toBe(t('prompts.businessSolutionNameLabel'));
+            expect(prompt.name).toBe(cfServicesPromptNames.businessSolutionId);
+            expect(prompt.message).toBe(t('prompts.businessSolutionIdLabel'));
             expect((prompt as any).store).toBe(false);
             expect(prompt.guiOptions).toEqual({
                 mandatory: true,
-                hint: t('prompts.businessSolutionNameTooltip'),
+                hint: t('prompts.businessSolutionIdTooltip'),
                 breadcrumb: t('prompts.businessSolutionBreadcrumb')
             });
         });
 
-        test('should call showBusinessSolutionNameQuestion for when condition', () => {
+        test('should call showBusinessSolutionIdQuestion for when condition', () => {
             const answers = { businessService: 'test-service' };
 
-            const prompt = prompter['getBusinessSolutionNamePrompt']();
+            const prompt = prompter['getBusinessSolutionIdPrompt']();
             const whenFn = prompt.when as (answers: CfServicesAnswers) => boolean;
             whenFn(answers);
 
-            expect(mockShowBusinessSolutionNameQuestion).toHaveBeenCalledWith(answers, true, false, 'test-service');
+            expect(mockShowBusinessSolutionIdQuestion).toHaveBeenCalledWith(answers, true, false, 'test-service');
         });
 
-        test('should call validateBusinessSolutionName for validation', () => {
-            mockValidateBusinessSolutionName.mockReturnValue(true);
+        test('should call validateBusinessSolutionId for validation', () => {
+            mockValidateBusinessSolutionId.mockReturnValue(true);
 
-            const prompt = prompter['getBusinessSolutionNamePrompt']();
+            const prompt = prompter['getBusinessSolutionIdPrompt']();
             const result = prompt.validate!('test-solution');
 
-            expect(mockValidateBusinessSolutionName).toHaveBeenCalledWith('test-solution');
+            expect(mockValidateBusinessSolutionId).toHaveBeenCalledWith('test-solution');
             expect(result).toBe(true);
         });
     });
@@ -283,7 +283,7 @@ describe('CFServicesPrompter', () => {
             const shouldShow = whenFn();
 
             expect(shouldShow).toBe(true);
-            expect(prompter['showSolutionNamePrompt']).toBe(true);
+            expect(prompter['showSolutionIdPrompt']).toBe(true);
         });
 
         test('should validate CF login status', async () => {

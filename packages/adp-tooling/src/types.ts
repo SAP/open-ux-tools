@@ -1151,7 +1151,7 @@ export interface CfAdpWriterConfig {
         html5RepoRuntimeGuid: string;
         approuter: AppRouterType;
         businessService: string;
-        businessSolutionName?: string;
+        businessSolutionId?: string;
         /**
          * GUID of the business service instance.
          */
@@ -1285,14 +1285,14 @@ export interface CFApp {
 export enum cfServicesPromptNames {
     approuter = 'approuter',
     businessService = 'businessService',
-    businessSolutionName = 'businessSolutionName',
+    businessSolutionId = 'businessSolutionId',
     baseApp = 'baseApp'
 }
 
 export type CfServicesAnswers = {
     [cfServicesPromptNames.approuter]?: AppRouterType;
     [cfServicesPromptNames.businessService]?: string;
-    [cfServicesPromptNames.businessSolutionName]?: string;
+    [cfServicesPromptNames.businessSolutionId]?: string;
     // Base app object returned by discovery (shape provided by FDC service)
     [cfServicesPromptNames.baseApp]?: CFApp;
 };
@@ -1307,7 +1307,7 @@ export interface BusinessServicePromptOptions {
     hide?: boolean;
 }
 
-export interface BusinessSolutionNamePromptOptions {
+export interface BusinessSolutionIdPromptOptions {
     hide?: boolean;
 }
 
@@ -1318,7 +1318,7 @@ export interface BaseAppPromptOptions {
 export type CfServicesPromptOptions = Partial<{
     [cfServicesPromptNames.approuter]: ApprouterPromptOptions;
     [cfServicesPromptNames.businessService]: BusinessServicePromptOptions;
-    [cfServicesPromptNames.businessSolutionName]: BusinessSolutionNamePromptOptions;
+    [cfServicesPromptNames.businessSolutionId]: BusinessSolutionIdPromptOptions;
     [cfServicesPromptNames.baseApp]: BaseAppPromptOptions;
 }>;
 

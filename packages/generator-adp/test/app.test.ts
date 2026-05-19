@@ -43,11 +43,7 @@ import {
     createServiceInstance,
     createServices
 } from '@sap-ux/adp-tooling/dist/cf/services/api';
-import {
-    type AbapServiceProvider,
-    AdaptationProjectType,
-    type LayeredRepositoryService
-} from '@sap-ux/axios-extension';
+import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { isInternalFeaturesSettingEnabled, isFeatureEnabled } from '@sap-ux/feature-toggle';
 import { isCli, isExtensionInstalled, sendTelemetry } from '@sap-ux/fiori-generator-shared';
@@ -55,7 +51,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
-import { getService, BackendSystem, BackendSystemKey } from '@sap-ux/store';
+import { getService } from '@sap-ux/store';
 
 import type { AdpGeneratorOptions } from '../src/app';
 import adpGenerator from '../src/app';
@@ -259,7 +255,7 @@ const answersCf: CfServicesAnswers & AttributesAnswers & TargetEnvAnswers = {
     baseApp,
     approuter: AppRouterType.MANAGED,
     businessService: 'test-service',
-    businessSolutionName: 'test-solution'
+    businessSolutionId: 'test-solution'
 };
 
 const cfConfig: CfConfig = {

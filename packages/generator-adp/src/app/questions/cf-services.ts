@@ -29,9 +29,9 @@ import { validateEmptyString } from '@sap-ux/project-input-validator';
 import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 
 import { t } from '../../utils/i18n';
-import { validateBusinessSolutionName } from './helper/validators';
+import { validateBusinessSolutionId } from './helper/validators';
 import { getAppRouterChoices, getCFAppChoices } from './helper/choices';
-import { shouldShowBaseAppPrompt, showBusinessSolutionNameQuestion } from './helper/conditions';
+import { shouldShowBaseAppPrompt, showBusinessSolutionIdQuestion } from './helper/conditions';
 
 /**
  * Prompter for CF services.
@@ -42,9 +42,9 @@ export class CFServicesPrompter {
      */
     private isCfLoggedIn = false;
     /**
-     * Whether to show the solution name prompt.
+     * Whether to show the solution ID prompt.
      */
-    private showSolutionNamePrompt = false;
+    private showSolutionIdPrompt = false;
     /**
      * The type of approuter to use.
      */
@@ -158,7 +158,7 @@ export class CFServicesPrompter {
         const keyedPrompts: Record<cfServicesPromptNames, CFServicesQuestion> = {
             [cfServicesPromptNames.approuter]: this.getAppRouterPrompt(mtaProjectPath, cfConfig),
             [cfServicesPromptNames.businessService]: this.getBusinessServicesPrompt(cfConfig),
-            [cfServicesPromptNames.businessSolutionName]: this.getBusinessSolutionNamePrompt(),
+            [cfServicesPromptNames.businessSolutionId]: this.getBusinessSolutionIdPrompt(),
             [cfServicesPromptNames.baseApp]: this.getBaseAppPrompt(cfConfig)
         };
 
@@ -173,26 +173,26 @@ export class CFServicesPrompter {
     }
 
     /**
-     * Prompt for business solution name.
+     * Prompt for business solution id.
      *
-     * @returns {CFServicesQuestion} Prompt for business solution name.
+     * @returns {CFServicesQuestion} Prompt for business solution id.
      */
-    private getBusinessSolutionNamePrompt(): CFServicesQuestion {
+    private getBusinessSolutionIdPrompt(): CFServicesQuestion {
         return {
             type: 'input',
-            name: cfServicesPromptNames.businessSolutionName,
-            message: t('prompts.businessSolutionNameLabel'),
+            name: cfServicesPromptNames.businessSolutionId,
+            message: t('prompts.businessSolutionIdLabel'),
             when: (answers: CfServicesAnswers) =>
-                showBusinessSolutionNameQuestion(
+                showBusinessSolutionIdQuestion(
                     answers,
                     this.isCfLoggedIn,
-                    this.showSolutionNamePrompt,
+                    this.showSolutionIdPrompt,
                     answers.businessService
                 ),
-            validate: (value: string) => validateBusinessSolutionName(value),
+            validate: (value: string) => validateBusinessSolutionId(value),
             guiOptions: {
                 mandatory: true,
-                hint: t('prompts.businessSolutionNameTooltip'),
+                hint: t('prompts.businessSolutionIdTooltip'),
                 breadcrumb: t('prompts.businessSolutionBreadcrumb')
             },
             store: false
@@ -220,7 +220,7 @@ export class CFServicesPrompter {
                 }
 
                 if (this.isCfLoggedIn && !hasRouter) {
-                    this.showSolutionNamePrompt = true;
+                    this.showSolutionIdPrompt = true;
                     return true;
                 } else {
                     return false;

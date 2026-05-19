@@ -229,7 +229,7 @@ export function getCfConfig(params: CreateCfConfigParams): CfAdpWriterConfig {
             html5RepoRuntimeGuid: params.html5RepoRuntimeGuid,
             approuter: params.cfServicesAnswers.approuter ?? AppRouterType.MANAGED,
             businessService: params.cfServicesAnswers.businessService ?? '',
-            businessSolutionName: params.cfServicesAnswers.businessSolutionName,
+            businessSolutionId: params.cfServicesAnswers.businessSolutionId,
             serviceInstanceGuid: params.serviceInstanceGuid,
             backendUrls: params.backendUrls,
             oauthPaths: params.oauthPaths,

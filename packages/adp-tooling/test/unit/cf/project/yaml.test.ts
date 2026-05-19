@@ -276,7 +276,7 @@ describe('YAML Project Functions', () => {
     describe('adjustMtaYaml', () => {
         const projectPath = '/test/project';
         const moduleName = 'test-module';
-        const businessSolutionName = 'test.solution';
+        const businessSolutionId = 'test.solution';
         const businessService = 'test-service';
         const spaceGuid = 'test-space-guid';
 
@@ -314,7 +314,7 @@ describe('YAML Project Functions', () => {
                     adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.STANDALONE,
                     spaceGuid,
-                    businessSolutionName,
+                    businessSolutionId,
                     businessService
                 },
                 mockMemFs,
@@ -347,7 +347,7 @@ describe('YAML Project Functions', () => {
                     projectPath,
                     adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
-                    businessSolutionName,
+                    businessSolutionId,
                     spaceGuid,
                     businessService
                 },
@@ -386,7 +386,7 @@ describe('YAML Project Functions', () => {
                     projectPath,
                     adpProjectName: 'test-adp-project',
                     appRouterType: null as unknown as AppRouterType,
-                    businessSolutionName,
+                    businessSolutionId,
                     spaceGuid,
                     businessService
                 },
@@ -423,7 +423,7 @@ describe('YAML Project Functions', () => {
                         projectPath,
                         adpProjectName: 'test-adp-project',
                         appRouterType: AppRouterType.STANDALONE,
-                        businessSolutionName,
+                        businessSolutionId,
                         spaceGuid,
                         businessService
                     },
@@ -473,7 +473,7 @@ describe('YAML Project Functions', () => {
                     projectPath,
                     adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
-                    businessSolutionName,
+                    businessSolutionId,
                     spaceGuid,
                     businessService
                 },
@@ -525,7 +525,7 @@ describe('YAML Project Functions', () => {
                     projectPath,
                     adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
-                    businessSolutionName,
+                    businessSolutionId,
                     businessService,
                     spaceGuid,
                     serviceKeys: mockServiceKeys as unknown as ServiceKeys[]
@@ -574,7 +574,7 @@ describe('YAML Project Functions', () => {
                     projectPath,
                     adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
-                    businessSolutionName,
+                    businessSolutionId,
                     businessService,
                     spaceGuid,
                     serviceKeys: mockServiceKeys as unknown as ServiceKeys[]
@@ -625,7 +625,7 @@ describe('YAML Project Functions', () => {
                     projectPath,
                     adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
-                    businessSolutionName,
+                    businessSolutionId,
                     businessService,
                     spaceGuid,
                     serviceKeys: mockServiceKeys as unknown as ServiceKeys[]
@@ -668,7 +668,7 @@ describe('YAML Project Functions', () => {
                     projectPath,
                     adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
-                    businessSolutionName,
+                    businessSolutionId,
                     businessService,
                     spaceGuid,
                     serviceKeys: mockServiceKeys
@@ -729,7 +729,7 @@ describe('YAML Project Functions', () => {
                     projectPath,
                     adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
-                    businessSolutionName,
+                    businessSolutionId,
                     spaceGuid,
                     businessService
                 },
@@ -790,7 +790,7 @@ describe('YAML Project Functions', () => {
                     projectPath,
                     adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
-                    businessSolutionName,
+                    businessSolutionId,
                     spaceGuid,
                     businessService
                 },
@@ -851,7 +851,7 @@ describe('YAML Project Functions', () => {
                     projectPath,
                     adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
-                    businessSolutionName,
+                    businessSolutionId,
                     spaceGuid,
                     businessService
                 },

@@ -77,7 +77,7 @@ const config: CfAdpWriterConfig = {
         html5RepoRuntimeGuid: 'runtime-guid',
         approuter: AppRouterType.STANDALONE,
         businessService: 'test-service',
-        businessSolutionName: 'test-solution',
+        businessSolutionId: 'test-solution',
         serviceInfo: {
             serviceKeys: mockServiceKeys,
             serviceInstance: { guid: 'service-guid', name: 'service-name' }

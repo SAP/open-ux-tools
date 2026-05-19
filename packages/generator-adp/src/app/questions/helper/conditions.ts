@@ -88,21 +88,21 @@ export function showInternalQuestions(
 }
 
 /**
- * Determines if the business solution name question should be shown.
+ * Determines if the business solution ID question should be shown.
  *
  * @param {CfServicesAnswers} answers - The user-provided answers containing application details.
  * @param {boolean} isCFLoggedIn - A flag indicating whether the user is logged in to Cloud Foundry.
- * @param {boolean} showSolutionNamePrompt - A flag indicating whether the solution name prompt should be shown.
+ * @param {boolean} showSolutionIdPrompt - A flag indicating whether the solution ID prompt should be shown.
  * @param {string} businessService - The business service to be used.
- * @returns {boolean} True if the business solution name question should be shown, otherwise false.
+ * @returns {boolean} True if the business solution ID question should be shown, otherwise false.
  */
-export function showBusinessSolutionNameQuestion(
+export function showBusinessSolutionIdQuestion(
     answers: CfServicesAnswers,
     isCFLoggedIn: boolean,
-    showSolutionNamePrompt: boolean,
+    showSolutionIdPrompt: boolean,
     businessService: string | undefined
 ): boolean {
-    return isCFLoggedIn && answers.approuter === AppRouterType.MANAGED && showSolutionNamePrompt && !!businessService;
+    return isCFLoggedIn && answers.approuter === AppRouterType.MANAGED && showSolutionIdPrompt && !!businessService;
 }
 
 /**

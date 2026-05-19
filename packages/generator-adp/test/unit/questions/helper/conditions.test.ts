@@ -7,7 +7,7 @@ import {
     showCredentialQuestion,
     showExtensionProjectQuestion,
     showInternalQuestions,
-    showBusinessSolutionNameQuestion,
+    showBusinessSolutionIdQuestion,
     showStoreCredentialsQuestion
 } from '../../../../src/app/questions/helper/conditions';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
@@ -233,7 +233,7 @@ describe('showBusinessSolutionNameQuestion', () => {
             businessSolutionName: '',
             baseApp: undefined
         } as CfServicesAnswers;
-        const result = showBusinessSolutionNameQuestion(answers, true, true, 'test-service');
+        const result = showBusinessSolutionIdQuestion(answers, true, true, 'test-service');
         expect(result).toBe(true);
     });
 
@@ -244,7 +244,7 @@ describe('showBusinessSolutionNameQuestion', () => {
             businessSolutionName: '',
             baseApp: undefined
         } as CfServicesAnswers;
-        const result = showBusinessSolutionNameQuestion(answers, true, true, undefined);
+        const result = showBusinessSolutionIdQuestion(answers, true, true, undefined);
         expect(result).toBe(false);
     });
 });

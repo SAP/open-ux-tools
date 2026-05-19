@@ -28,7 +28,7 @@ interface AdjustMtaYamlParams {
     projectPath: string;
     adpProjectName: string;
     appRouterType: AppRouterType;
-    businessSolutionName: string;
+    businessSolutionId: string;
     businessService: string;
     serviceKeys?: ServiceKeys[];
     spaceGuid: string;
@@ -490,7 +490,7 @@ export async function adjustMtaYaml(
         projectPath,
         adpProjectName,
         appRouterType,
-        businessSolutionName,
+        businessSolutionId,
         businessService,
         serviceKeys,
         spaceGuid
@@ -526,7 +526,7 @@ export async function adjustMtaYaml(
         adjustMtaYamlManagedApprouter(
             yamlContent,
             mtaProjectName,
-            businessSolutionName,
+            businessSolutionId,
             businessService,
             timestamp,
             serviceKeys
