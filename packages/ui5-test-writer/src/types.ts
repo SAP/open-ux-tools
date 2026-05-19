@@ -1,6 +1,25 @@
 import type { Editor } from 'mem-fs-editor';
 
-export type FileExtension = '.ts' | '.js';
+export enum DotFileExtension {
+    JS = '.js',
+    TS = '.ts'
+}
+
+/**
+ * Options accepted by the public OPA test generation entry point.
+ */
+export type OPAGenerationOptions = {
+    /** The name of the OPA journey file. If not specified, 'FirstJourney' will be used. */
+    scriptName?: string;
+    /** The appID. If not specified, will be read from the manifest in sap.app/id. */
+    appID?: string;
+    /** The name of the html that will be used in OPA journey file. If not specified, 'index.html' will be used. */
+    htmlTarget?: string;
+    /** When true, OPA harness files are served virtually; skip writing them to disk. */
+    useVirtualPreviewEndpoints?: boolean;
+    /** If true, generate TypeScript files instead of JavaScript. */
+    enableTypeScript?: boolean;
+};
 
 export const SupportedPageTypes: { [id: string]: string } = {
     'sap.fe.templates.ListReport': 'ListReport',
@@ -27,7 +46,6 @@ export type FEV4OPAConfig = {
     htmlTarget: string;
     hideFilterBar: boolean;
     filterBarItems?: string[];
-    enableTypeScript?: boolean;
 };
 
 export type JourneyParams = {
@@ -197,7 +215,7 @@ export type WriteContext = {
     testOutDirPath: string;
     editor: Editor;
     journeyParams: JourneyParams;
-    ext: FileExtension;
+    dotFileExtension: DotFileExtension;
 };
 
 export type FormField = {

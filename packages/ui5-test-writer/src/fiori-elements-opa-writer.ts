@@ -11,9 +11,9 @@ import type {
     JourneyParams,
     AppFeatures,
     WriteContext,
-    FileExtension
+    OPAGenerationOptions
 } from './types';
-import { SupportedPageTypes, ValidationError } from './types';
+import { SupportedPageTypes, ValidationError, DotFileExtension } from './types';
 import { t } from './i18n';
 import { FileName, DirName, getWebappPath, updatePackageScript } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
@@ -35,12 +35,7 @@ import { readHashFromFlpSandbox } from './utils/flpSandboxUtils';
  * Note: this can potentially overwrite existing files in the webapp/test folder.
  *
  * @param basePath - the absolute target path where the application will be generated
- * @param opaConfig - parameters for the generation
- * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
- * @param opaConfig.htmlTarget - the name of the html that will be used in OPA journey file. If not specified, 'index.html' will be used
- * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
- * @param opaConfig.useVirtualPreviewEndpoints - when true, OPA harness files are served virtually; skip writing them to disk
- * @param opaConfig.enableTypeScript - if true, generate TypeScript files instead of JavaScript
+ * @param options - OPA generation options
  * @param metadata - optional metadata for the OPA test generation
  * @param fs - an optional reference to a mem-fs editor
  * @param log - optional logger instance
@@ -49,7 +44,7 @@ import { readHashFromFlpSandbox } from './utils/flpSandboxUtils';
  */
 export async function generateOPAFiles(
     basePath: string,
-    opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string; useVirtualPreviewEndpoints?: boolean; enableTypeScript?: boolean },
+    options: OPAGenerationOptions,
     metadata?: string,
     fs?: Editor,
     log?: Logger,
@@ -60,9 +55,9 @@ export async function generateOPAFiles(
     const manifest = readManifest(editor, basePath);
     const { applicationType, hideFilterBar } = getAppTypeAndHideFilterBarFromManifest(manifest);
 
-    const config = createConfig(manifest, opaConfig, hideFilterBar);
+    const config = createConfig(manifest, options, hideFilterBar);
 
-    const ext: FileExtension = opaConfig.enableTypeScript ? '.ts' : '.js';
+    const dotFileExtension: DotFileExtension = options.enableTypeScript ? DotFileExtension.TS : DotFileExtension.JS;
     const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
     const rootV4TemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being
     const testOutDirPath = join(await getWebappPath(basePath), 'test');
@@ -79,7 +74,14 @@ export async function generateOPAFiles(
         hideFilterBar: config.hideFilterBar
     };
 
-    const writeContext: WriteContext = { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams, ext };
+    const writeContext: WriteContext = {
+        config,
+        rootV4TemplateDirPath,
+        testOutDirPath,
+        editor,
+        journeyParams,
+        dotFileExtension
+    };
 
     if (standalone) {
         const hasJourneyRunner = existsSync(join(testOutDirPath, 'integration', 'pages', 'JourneyRunner.js'));
@@ -99,9 +101,9 @@ export async function generateOPAFiles(
             writeJourneyFiles(appFeatures, standaloneWriteContext, true, hasJourneyRunner, virtualOPA5Configured);
         }
     } else {
-        writeCommonAndPageFiles(writeContext, rootCommonTemplateDirPath, opaConfig.useVirtualPreviewEndpoints ?? false);
-        writeJourneyFiles(appFeatures, writeContext, false, false, opaConfig.useVirtualPreviewEndpoints ?? false);
-        if (opaConfig.useVirtualPreviewEndpoints) {
+        writeCommonAndPageFiles(writeContext, rootCommonTemplateDirPath, options.useVirtualPreviewEndpoints ?? false);
+        writeJourneyFiles(appFeatures, writeContext, false, false, options.useVirtualPreviewEndpoints ?? false);
+        if (options.useVirtualPreviewEndpoints) {
             await addVirtualTestConfig(
                 basePath,
                 [{ framework: 'OPA5', path: '/test/integration/opaTests.qunit.html' }, { framework: 'Testsuite' }],
@@ -287,30 +289,21 @@ function createPageConfig(manifest: Manifest, targetKey: string, forcedAppID?: s
  * Create the configuration object from the app descriptor.
  *
  * @param manifest - the app descriptor of the target app
- * @param opaConfig - parameters for the generation
- * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
- * @param opaConfig.htmlTarget - the name of the html file that will be used in the OPA journey file. If not specified, 'index.html' will be used
- * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
- * @param opaConfig.enableTypeScript - if true, generate TypeScript files instead of JavaScript
+ * @param options - OPA generation options
  * @param hideFilterBar - whether the filter bar should be hidden in the generated tests
  * @returns OPA test configuration object
  */
-function createConfig(
-    manifest: Manifest,
-    opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string; enableTypeScript?: boolean },
-    hideFilterBar: boolean
-): FEV4OPAConfig {
+function createConfig(manifest: Manifest, options: OPAGenerationOptions, hideFilterBar: boolean): FEV4OPAConfig {
     // General application info
-    const { appID, appPath } = getAppFromManifest(manifest, opaConfig.appID);
+    const { appID, appPath } = getAppFromManifest(manifest, options.appID);
 
     const config: FEV4OPAConfig = {
         appID,
         appPath,
         pages: [],
-        opaJourneyFileName: opaConfig.scriptName ?? 'FirstJourney',
-        htmlTarget: opaConfig.htmlTarget ?? 'index.html',
-        hideFilterBar,
-        enableTypeScript: opaConfig.enableTypeScript
+        opaJourneyFileName: options.scriptName ?? 'FirstJourney',
+        htmlTarget: options.htmlTarget ?? 'index.html',
+        hideFilterBar
     };
 
     // Identify startup targets from the routes
@@ -327,7 +320,7 @@ function createConfig(
     // Create page configurations in supported cases
     const appTargets = manifest['sap.ui5']?.routing?.targets;
     for (const targetKey in appTargets) {
-        const pageConfig = createPageConfig(manifest, targetKey, opaConfig.appID);
+        const pageConfig = createPageConfig(manifest, targetKey, options.appID);
         if (pageConfig) {
             pageConfig.isStartup = startupTargets.includes(targetKey);
             config.pages.push(pageConfig);
@@ -408,7 +401,7 @@ function writeCommonAndPageFiles(
     rootCommonTemplateDirPath: string,
     useVirtualPreviewEndpoints = false
 ): void {
-    const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams, ext } = writeContext;
+    const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams, dotFileExtension } = writeContext;
 
     // Common test files (testsuite served virtually when useVirtualPreviewEndpoints is enabled)
     if (!useVirtualPreviewEndpoints) {
@@ -425,12 +418,12 @@ function writeCommonAndPageFiles(
     }
 
     config.pages.forEach((page) => {
-        writePageObject(page, rootV4TemplateDirPath, testOutDirPath, editor, ext);
+        writePageObject(page, rootV4TemplateDirPath, testOutDirPath, editor, dotFileExtension);
     });
 
     editor.copyTpl(
-        join(rootV4TemplateDirPath, 'integration', `FirstJourney${ext}`),
-        join(testOutDirPath, 'integration', `${config.opaJourneyFileName}${ext}`),
+        join(rootV4TemplateDirPath, 'integration', `FirstJourney${dotFileExtension}`),
+        join(testOutDirPath, 'integration', `${config.opaJourneyFileName}${dotFileExtension}`),
         { ...journeyParams, appPath: config.appPath },
         undefined,
         {
@@ -440,8 +433,8 @@ function writeCommonAndPageFiles(
 
     // Journey Runner
     editor.copyTpl(
-        join(rootV4TemplateDirPath, 'integration', 'pages', `JourneyRunner${ext}`),
-        join(testOutDirPath, 'integration', 'pages', `JourneyRunner${ext}`),
+        join(rootV4TemplateDirPath, 'integration', 'pages', `JourneyRunner${dotFileExtension}`),
+        join(testOutDirPath, 'integration', 'pages', `JourneyRunner${dotFileExtension}`),
         config,
         undefined,
         {
@@ -450,7 +443,7 @@ function writeCommonAndPageFiles(
     );
 
     // Generate OpaJourneyTypes.d.ts when TypeScript is enabled
-    if (ext === '.ts') {
+    if (dotFileExtension === DotFileExtension.TS) {
         editor.copyTpl(
             join(rootV4TemplateDirPath, 'integration', 'types', 'OpaJourneyTypes.d.ts'),
             join(testOutDirPath, 'integration', 'types', 'OpaJourneyTypes.d.ts'),
@@ -472,7 +465,7 @@ function writeCommonAndPageFiles(
  * @param rootV4TemplateDirPath - template root directory for v4 templates
  * @param testOutDirPath - output test directory (.../webapp/test)
  * @param editor - a reference to a mem-fs editor
- * @param ext - file extension ('.ts' or '.js')
+ * @param dotFileExtension - file extension ('.ts' or '.js')
  * @returns JourneyRunnerPage if the page was newly created, undefined otherwise
  */
 function ensurePageExists(
@@ -481,15 +474,15 @@ function ensurePageExists(
     rootV4TemplateDirPath: string,
     testOutDirPath: string,
     editor: Editor,
-    ext: FileExtension
+    dotFileExtension: DotFileExtension
 ): JourneyRunnerPage | undefined {
-    const pageFilePath = join(testOutDirPath, 'integration', 'pages', `${featureName}${ext}`);
+    const pageFilePath = join(testOutDirPath, 'integration', 'pages', `${featureName}${dotFileExtension}`);
     if (editor.exists(pageFilePath)) {
         return undefined;
     }
     const pageConfig = config.pages.find((p) => p.targetKey === featureName);
     if (pageConfig) {
-        writePageObject(pageConfig, rootV4TemplateDirPath, testOutDirPath, editor, ext);
+        writePageObject(pageConfig, rootV4TemplateDirPath, testOutDirPath, editor, dotFileExtension);
         return { targetKey: featureName, appPath: config.appPath };
     }
     return undefined;
@@ -511,14 +504,14 @@ function writeJourneyFiles(
     hasJourneyRunner = false,
     virtualOPA5Configured = false
 ): void {
-    const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams, ext } = writeContext;
+    const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams, dotFileExtension } = writeContext;
     const generatedJourneyPages: string[] = [];
     const newPages: JourneyRunnerPage[] = [];
 
     if (appFeatures.listReport?.name) {
         editor.copyTpl(
-            join(rootV4TemplateDirPath, 'integration', `ListReportJourney${ext}`),
-            join(testOutDirPath, 'integration', `${appFeatures.listReport.name}Journey${ext}`),
+            join(rootV4TemplateDirPath, 'integration', `ListReportJourney${dotFileExtension}`),
+            join(testOutDirPath, 'integration', `${appFeatures.listReport.name}Journey${dotFileExtension}`),
             {
                 ...journeyParams,
                 ...appFeatures.listReport,
@@ -536,7 +529,7 @@ function writeJourneyFiles(
             rootV4TemplateDirPath,
             testOutDirPath,
             editor,
-            ext
+            dotFileExtension
         );
         if (lrPage) {
             newPages.push(lrPage);
@@ -547,8 +540,8 @@ function writeJourneyFiles(
         appFeatures.objectPages.forEach((objectPage) => {
             if (objectPage.name) {
                 editor.copyTpl(
-                    join(rootV4TemplateDirPath, 'integration', `ObjectPageJourney${ext}`),
-                    join(testOutDirPath, 'integration', `${objectPage.name}Journey${ext}`),
+                    join(rootV4TemplateDirPath, 'integration', `ObjectPageJourney${dotFileExtension}`),
+                    join(testOutDirPath, 'integration', `${objectPage.name}Journey${dotFileExtension}`),
                     {
                         ...journeyParams,
                         ...objectPage,
@@ -567,7 +560,7 @@ function writeJourneyFiles(
                     rootV4TemplateDirPath,
                     testOutDirPath,
                     editor,
-                    ext
+                    dotFileExtension
                 );
                 if (opPage) {
                     newPages.push(opPage);
@@ -596,7 +589,7 @@ function writeJourneyFiles(
             rootV4TemplateDirPath,
             testOutDirPath,
             editor,
-            ext
+            dotFileExtension
         );
         if (fpmPage) {
             newPages.push(fpmPage);
@@ -637,18 +630,18 @@ function writeJourneyFiles(
  * @param rootTemplateDirPath - template root directory
  * @param testOutDirPath - output test directory (.../webapp/test)
  * @param fs - a reference to a mem-fs editor
- * @param ext - file extension ('.ts' or '.js')
+ * @param dotFileExtension - file extension ('.ts' or '.js')
  */
 function writePageObject(
     pageConfig: FEV4OPAPageConfig,
     rootTemplateDirPath: string,
     testOutDirPath: string,
     fs: Editor,
-    ext: FileExtension
+    dotFileExtension: DotFileExtension
 ): void {
     fs.copyTpl(
-        join(rootTemplateDirPath, 'integration', 'pages', `${pageConfig.template}${ext}`),
-        join(testOutDirPath, 'integration', 'pages', `${pageConfig.targetKey}${ext}`),
+        join(rootTemplateDirPath, 'integration', 'pages', `${pageConfig.template}${dotFileExtension}`),
+        join(testOutDirPath, 'integration', 'pages', `${pageConfig.targetKey}${dotFileExtension}`),
         pageConfig,
         undefined,
         {
@@ -665,12 +658,13 @@ function writePageObject(
  * @param pageObjectParameters - parameters for the page
  * @param pageObjectParameters.targetKey - the key of the target in the manifest file corresponding to the page
  * @param pageObjectParameters.appID - the appID. If not specified, will be read from the manifest in sap.app/id
+ * @param pageObjectParameters.dotFileExtension - file extension for the generated page object (defaults to '.js')
  * @param fs - an optional reference to a mem-fs editor
  * @returns Reference to a mem-fs-editor
  */
 export async function generatePageObjectFile(
     basePath: string,
-    pageObjectParameters: { targetKey: string; appID?: string },
+    pageObjectParameters: { targetKey: string; appID?: string; dotFileExtension?: DotFileExtension },
     fs?: Editor
 ): Promise<Editor> {
     const editor = fs ?? create(createStorage());
@@ -682,7 +676,8 @@ export async function generatePageObjectFile(
     if (pageConfig) {
         const rootTemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being
         const testOutDirPath = join(await getWebappPath(basePath), 'test');
-        writePageObject(pageConfig, rootTemplateDirPath, testOutDirPath, editor, '.js');
+        const dotFileExtension = pageObjectParameters.dotFileExtension ?? DotFileExtension.JS;
+        writePageObject(pageConfig, rootTemplateDirPath, testOutDirPath, editor, dotFileExtension);
     } else {
         throw new ValidationError(
             t('error.cannotGeneratePageFile', {

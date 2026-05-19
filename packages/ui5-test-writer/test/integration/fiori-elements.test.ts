@@ -1,4 +1,5 @@
 import { generateOPAFiles, generatePageObjectFile } from '../../src/fiori-elements-opa-writer';
+import { DotFileExtension } from '../../src/types';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
@@ -183,13 +184,19 @@ describe('ui5-test-writer - Integration tests', () => {
             }
         };
         addSubOPInManifest('DishObjectPage', 'Restaurant({key})/_Dishes({key2}):?query:', '_Dishes', DishOP);
-        fs = await generatePageObjectFile(projectDir, { targetKey: 'DishObjectPage' }, fs);
+        fs = await generatePageObjectFile(
+            projectDir,
+            { targetKey: 'DishObjectPage', dotFileExtension: DotFileExtension.TS },
+            fs
+        );
 
         const dumped = fs.dump(projectDir);
         const paths = Object.keys(dumped);
 
-        // The new page object is generated as JS because generatePageObjectFile doesn't know about TS yet
-        // But the initial TS generation should still be intact
+        // New page object is generated as TS, matching the rest of the suite
+        expect(paths.some((p) => p.includes('pages/DishObjectPage.ts'))).toBe(true);
+        expect(paths.some((p) => p.includes('pages/DishObjectPage.js'))).toBe(false);
+        // Initial TS generation should still be intact
         expect(paths.some((p) => p.includes('FirstJourney.ts'))).toBe(true);
         expect(paths.some((p) => p.includes('OpaJourneyTypes.d.ts'))).toBe(true);
 

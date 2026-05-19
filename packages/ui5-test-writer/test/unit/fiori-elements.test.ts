@@ -1,4 +1,5 @@
 import { generateOPAFiles, generatePageObjectFile } from '../../src/fiori-elements-opa-writer';
+import { DotFileExtension } from '../../src/types';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
@@ -158,6 +159,40 @@ describe('ui5-test-writer', () => {
                 fs
             );
             expect(fs.dump(projectDir)).toMatchSnapshot();
+        });
+
+        it('generates a TypeScript page object when dotFileExtension is TS', async () => {
+            const projectDir = prepareTestFiles('Pages');
+            fs = await generatePageObjectFile(
+                projectDir,
+                { targetKey: 'EmployeesListTarget', dotFileExtension: DotFileExtension.TS },
+                fs
+            );
+
+            const dumped = fs.dump(projectDir);
+            const paths = Object.keys(dumped);
+            const tsPagePath = paths.find((p) => p.includes('pages/EmployeesListTarget.ts'));
+            const jsPagePath = paths.find((p) => p.includes('pages/EmployeesListTarget.js'));
+
+            expect(tsPagePath).toBeDefined();
+            expect(jsPagePath).toBeUndefined();
+
+            const content = dumped[tsPagePath!].contents as string;
+            expect(content).toContain('import ListReport from "sap/fe/test/ListReport"');
+            expect(content).toContain('export const actions');
+            expect(content).toContain('export const assertions');
+            expect(content).toContain('export default new ListReport(');
+            expect(content).not.toContain('sap.ui.define');
+        });
+
+        it('defaults to JavaScript when dotFileExtension is omitted', async () => {
+            const projectDir = prepareTestFiles('Pages');
+            fs = await generatePageObjectFile(projectDir, { targetKey: 'EmployeesListTarget' }, fs);
+
+            const dumped = fs.dump(projectDir);
+            const paths = Object.keys(dumped);
+            expect(paths.some((p) => p.includes('pages/EmployeesListTarget.js'))).toBe(true);
+            expect(paths.some((p) => p.includes('pages/EmployeesListTarget.ts'))).toBe(false);
         });
     });
 
@@ -727,18 +762,22 @@ describe('ui5-test-writer', () => {
             expect(typesContent).toContain('export type Given');
             expect(typesContent).toContain('export type When');
             expect(typesContent).toContain('export type Then');
-            expect(typesContent).toContain('onTheEmployeesList: Opa5 & ListReportActions & TemplatePageActions');
             expect(typesContent).toContain(
-                'onTheEmployeesObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & CustomObjectPageActions'
+                'onTheEmployeesList: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListCustomActions'
             );
             expect(typesContent).toContain(
-                'onTheEmployeesObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions'
+                'onTheEmployeesObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & typeof EmployeesObjectPageCustomActions'
+            );
+            expect(typesContent).toContain(
+                'onTheEmployeesObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof EmployeesObjectPageCustomAssertions'
             );
             expect(typesContent).toContain('onTheShell: Shell');
             expect(typesContent).toContain('import type Opa5 from "sap/ui/test/Opa5"');
             expect(typesContent).toContain('import type { actions as ListReportActions');
             expect(typesContent).toContain('import type { actions as ObjectPageActions');
-            expect(typesContent).toContain('iPressSectionIconTabFilterButton(section: string): object');
+            expect(typesContent).toContain(
+                'import type { actions as EmployeesObjectPageCustomActions, assertions as EmployeesObjectPageCustomAssertions }'
+            );
         });
 
         it('generates ES module imports in journey files', async () => {
@@ -769,6 +808,8 @@ describe('ui5-test-writer', () => {
             const lrContent = dumped[lrPagePath!].contents as string;
             expect(lrContent).toContain('import ListReport from "sap/fe/test/ListReport"');
             expect(lrContent).toContain('export default new ListReport(');
+            expect(lrContent).toContain('export const actions');
+            expect(lrContent).toContain('export const assertions');
             expect(lrContent).toContain('entitySet:');
             expect(lrContent).toContain('contextPath:');
             expect(lrContent).not.toContain('sap.ui.define');
@@ -780,6 +821,8 @@ describe('ui5-test-writer', () => {
             expect(opContent).toContain('import ObjectPage from "sap/fe/test/ObjectPage"');
             expect(opContent).toContain('import Press from "sap/ui/test/actions/Press"');
             expect(opContent).toContain('export default new ObjectPage(');
+            expect(opContent).toContain('export const actions');
+            expect(opContent).toContain('export const assertions');
             expect(opContent).toContain('iPressSectionIconTabFilterButton');
             expect(opContent).toContain('this: Opa5');
         });

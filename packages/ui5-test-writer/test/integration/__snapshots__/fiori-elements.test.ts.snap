@@ -549,31 +549,32 @@ sap.ui.require(
 ",
     "state": "modified",
   },
-  "webapp/test/integration/pages/DishObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
-    'use strict';
+  "webapp/test/integration/pages/DishObjectPage.ts": Object {
+    "contents": "import ObjectPage from \\"sap/fe/test/ObjectPage\\";
+import type Opa5 from \\"sap/ui/test/Opa5\\";
+import Press from \\"sap/ui/test/actions/Press\\";
 
-    var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
-        assertions: {}
-    };
+export const actions = {
+    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
+        return this.waitFor({
+            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+            actions: new Press()
+        });
+    }
+};
 
-    return new ObjectPage(
-        {
-            appId: 'restaurantapp',
-            componentId: 'DishObjectPage',
-            entitySet: 'Dish'
-        },
-        CustomPageDefinitions
-    );
-});",
+export const assertions = {};
+
+export default new ObjectPage(
+    {
+        appId: \\"restaurantapp\\",
+        componentId: \\"DishObjectPage\\",
+        entitySet: \\"Dish\\",
+        contextPath: \\"\\"
+    },
+    { actions, assertions }
+);
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/JourneyRunner.ts": Object {
@@ -597,10 +598,9 @@ export default runner;
   "webapp/test/integration/pages/RestaurantList.ts": Object {
     "contents": "import ListReport from \\"sap/fe/test/ListReport\\";
 
-const CustomPageDefinitions = {
-    actions: {},
-    assertions: {}
-};
+export const actions = {};
+
+export const assertions = {};
 
 export default new ListReport(
     {
@@ -609,7 +609,7 @@ export default new ListReport(
         entitySet: \\"Restaurant\\",
         contextPath: \\"\\"
     },
-    CustomPageDefinitions
+    { actions, assertions }
 );
 ",
     "state": "modified",
@@ -619,17 +619,16 @@ export default new ListReport(
 import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
-const CustomPageDefinitions = {
-    actions: {
-        iPressSectionIconTabFilterButton(this: Opa5, section: string) {
-            return this.waitFor({
-                id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                actions: new Press()
-            });
-        }
-    },
-    assertions: {}
+export const actions = {
+    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
+        return this.waitFor({
+            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+            actions: new Press()
+        });
+    }
 };
+
+export const assertions = {};
 
 export default new ObjectPage(
     {
@@ -638,7 +637,7 @@ export default new ObjectPage(
         entitySet: \\"Restaurant\\",
         contextPath: \\"\\"
     },
-    CustomPageDefinitions
+    { actions, assertions }
 );
 ",
     "state": "modified",
@@ -650,10 +649,8 @@ import type { actions as ObjectPageActions, assertions as ObjectPageAssertions }
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
 import type Shell from \\"sap/fe/test/Shell\\";
 import type BaseArrangements from \\"sap/fe/test/BaseArrangements\\";
-
-interface CustomObjectPageActions {
-    iPressSectionIconTabFilterButton(section: string): object;
-}
+import type { actions as RestaurantListCustomActions, assertions as RestaurantListCustomAssertions } from \\"restaurantapp/test/integration/pages/RestaurantList\\";
+import type { actions as RestaurantObjectPageCustomActions, assertions as RestaurantObjectPageCustomAssertions } from \\"restaurantapp/test/integration/pages/RestaurantObjectPage\\";
 
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
@@ -662,14 +659,14 @@ export type Given = Opa5 & BaseArrangements & {
 };
 
 export type When = Opa5 & BaseArrangements & {
-    onTheRestaurantList: Opa5 & ListReportActions & TemplatePageActions;
-    onTheRestaurantObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & CustomObjectPageActions;
+    onTheRestaurantList: Opa5 & ListReportActions & TemplatePageActions & typeof RestaurantListCustomActions;
+    onTheRestaurantObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & typeof RestaurantObjectPageCustomActions;
     onTheShell: Shell;
 };
 
 export type Then = Opa5 & BaseArrangements & {
-    onTheRestaurantList: Opa5 & ListReportAssertions & TemplatePageAssertions;
-    onTheRestaurantObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions;
+    onTheRestaurantList: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof RestaurantListCustomAssertions;
+    onTheRestaurantObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof RestaurantObjectPageCustomAssertions;
     onTheShell: Shell;
 };
 ",
@@ -1253,10 +1250,9 @@ export default runner;
   "webapp/test/integration/pages/RestaurantList.ts": Object {
     "contents": "import ListReport from \\"sap/fe/test/ListReport\\";
 
-const CustomPageDefinitions = {
-    actions: {},
-    assertions: {}
-};
+export const actions = {};
+
+export const assertions = {};
 
 export default new ListReport(
     {
@@ -1265,7 +1261,7 @@ export default new ListReport(
         entitySet: \\"Restaurant\\",
         contextPath: \\"\\"
     },
-    CustomPageDefinitions
+    { actions, assertions }
 );
 ",
     "state": "modified",
@@ -1275,17 +1271,16 @@ export default new ListReport(
 import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
-const CustomPageDefinitions = {
-    actions: {
-        iPressSectionIconTabFilterButton(this: Opa5, section: string) {
-            return this.waitFor({
-                id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                actions: new Press()
-            });
-        }
-    },
-    assertions: {}
+export const actions = {
+    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
+        return this.waitFor({
+            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+            actions: new Press()
+        });
+    }
 };
+
+export const assertions = {};
 
 export default new ObjectPage(
     {
@@ -1294,7 +1289,7 @@ export default new ObjectPage(
         entitySet: \\"Restaurant\\",
         contextPath: \\"\\"
     },
-    CustomPageDefinitions
+    { actions, assertions }
 );
 ",
     "state": "modified",
@@ -1306,10 +1301,8 @@ import type { actions as ObjectPageActions, assertions as ObjectPageAssertions }
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
 import type Shell from \\"sap/fe/test/Shell\\";
 import type BaseArrangements from \\"sap/fe/test/BaseArrangements\\";
-
-interface CustomObjectPageActions {
-    iPressSectionIconTabFilterButton(section: string): object;
-}
+import type { actions as RestaurantListCustomActions, assertions as RestaurantListCustomAssertions } from \\"restaurantapp/test/integration/pages/RestaurantList\\";
+import type { actions as RestaurantObjectPageCustomActions, assertions as RestaurantObjectPageCustomAssertions } from \\"restaurantapp/test/integration/pages/RestaurantObjectPage\\";
 
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
@@ -1318,14 +1311,14 @@ export type Given = Opa5 & BaseArrangements & {
 };
 
 export type When = Opa5 & BaseArrangements & {
-    onTheRestaurantList: Opa5 & ListReportActions & TemplatePageActions;
-    onTheRestaurantObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & CustomObjectPageActions;
+    onTheRestaurantList: Opa5 & ListReportActions & TemplatePageActions & typeof RestaurantListCustomActions;
+    onTheRestaurantObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & typeof RestaurantObjectPageCustomActions;
     onTheShell: Shell;
 };
 
 export type Then = Opa5 & BaseArrangements & {
-    onTheRestaurantList: Opa5 & ListReportAssertions & TemplatePageAssertions;
-    onTheRestaurantObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions;
+    onTheRestaurantList: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof RestaurantListCustomAssertions;
+    onTheRestaurantObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof RestaurantObjectPageCustomAssertions;
     onTheShell: Shell;
 };
 ",

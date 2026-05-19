@@ -11568,10 +11568,9 @@ sap.ui.require(
   "webapp/test/integration/pages/EmployeesList.ts": Object {
     "contents": "import ListReport from \\"sap/fe/test/ListReport\\";
 
-const CustomPageDefinitions = {
-    actions: {},
-    assertions: {}
-};
+export const actions = {};
+
+export const assertions = {};
 
 export default new ListReport(
     {
@@ -11580,7 +11579,7 @@ export default new ListReport(
         entitySet: \\"Employees\\",
         contextPath: \\"\\"
     },
-    CustomPageDefinitions
+    { actions, assertions }
 );
 ",
     "state": "modified",
@@ -11590,17 +11589,16 @@ export default new ListReport(
 import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
-const CustomPageDefinitions = {
-    actions: {
-        iPressSectionIconTabFilterButton(this: Opa5, section: string) {
-            return this.waitFor({
-                id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                actions: new Press()
-            });
-        }
-    },
-    assertions: {}
+export const actions = {
+    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
+        return this.waitFor({
+            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+            actions: new Press()
+        });
+    }
 };
+
+export const assertions = {};
 
 export default new ObjectPage(
     {
@@ -11609,7 +11607,7 @@ export default new ObjectPage(
         entitySet: \\"Employees\\",
         contextPath: \\"\\"
     },
-    CustomPageDefinitions
+    { actions, assertions }
 );
 ",
     "state": "modified",
@@ -11639,10 +11637,8 @@ import type { actions as ObjectPageActions, assertions as ObjectPageAssertions }
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
 import type Shell from \\"sap/fe/test/Shell\\";
 import type BaseArrangements from \\"sap/fe/test/BaseArrangements\\";
-
-interface CustomObjectPageActions {
-    iPressSectionIconTabFilterButton(section: string): object;
-}
+import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"ui5-test-writer/test/employees/test/integration/pages/EmployeesList\\";
+import type { actions as EmployeesObjectPageCustomActions, assertions as EmployeesObjectPageCustomAssertions } from \\"ui5-test-writer/test/employees/test/integration/pages/EmployeesObjectPage\\";
 
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
@@ -11651,14 +11647,14 @@ export type Given = Opa5 & BaseArrangements & {
 };
 
 export type When = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportActions & TemplatePageActions;
-    onTheEmployeesObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & CustomObjectPageActions;
+    onTheEmployeesList: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListCustomActions;
+    onTheEmployeesObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & typeof EmployeesObjectPageCustomActions;
     onTheShell: Shell;
 };
 
 export type Then = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportAssertions & TemplatePageAssertions;
-    onTheEmployeesObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions;
+    onTheEmployeesList: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof EmployeesListCustomAssertions;
+    onTheEmployeesObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof EmployeesObjectPageCustomAssertions;
     onTheShell: Shell;
 };
 ",
@@ -11971,10 +11967,9 @@ sap.ui.require(
   "webapp/test/integration/pages/EmployeesList.ts": Object {
     "contents": "import ListReport from \\"sap/fe/test/ListReport\\";
 
-const CustomPageDefinitions = {
-    actions: {},
-    assertions: {}
-};
+export const actions = {};
+
+export const assertions = {};
 
 export default new ListReport(
     {
@@ -11983,7 +11978,7 @@ export default new ListReport(
         entitySet: \\"Employees\\",
         contextPath: \\"\\"
     },
-    CustomPageDefinitions
+    { actions, assertions }
 );
 ",
     "state": "modified",
@@ -11993,17 +11988,16 @@ export default new ListReport(
 import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
-const CustomPageDefinitions = {
-    actions: {
-        iPressSectionIconTabFilterButton(this: Opa5, section: string) {
-            return this.waitFor({
-                id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                actions: new Press()
-            });
-        }
-    },
-    assertions: {}
+export const actions = {
+    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
+        return this.waitFor({
+            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+            actions: new Press()
+        });
+    }
 };
+
+export const assertions = {};
 
 export default new ObjectPage(
     {
@@ -12012,7 +12006,7 @@ export default new ObjectPage(
         entitySet: \\"Employees\\",
         contextPath: \\"\\"
     },
-    CustomPageDefinitions
+    { actions, assertions }
 );
 ",
     "state": "modified",
@@ -12042,10 +12036,8 @@ import type { actions as ObjectPageActions, assertions as ObjectPageAssertions }
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
 import type Shell from \\"sap/fe/test/Shell\\";
 import type BaseArrangements from \\"sap/fe/test/BaseArrangements\\";
-
-interface CustomObjectPageActions {
-    iPressSectionIconTabFilterButton(section: string): object;
-}
+import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"ui5-test-writer/test/employees/test/integration/pages/EmployeesList\\";
+import type { actions as EmployeesObjectPageCustomActions, assertions as EmployeesObjectPageCustomAssertions } from \\"ui5-test-writer/test/employees/test/integration/pages/EmployeesObjectPage\\";
 
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
@@ -12054,14 +12046,14 @@ export type Given = Opa5 & BaseArrangements & {
 };
 
 export type When = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportActions & TemplatePageActions;
-    onTheEmployeesObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & CustomObjectPageActions;
+    onTheEmployeesList: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListCustomActions;
+    onTheEmployeesObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & typeof EmployeesObjectPageCustomActions;
     onTheShell: Shell;
 };
 
 export type Then = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportAssertions & TemplatePageAssertions;
-    onTheEmployeesObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions;
+    onTheEmployeesList: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof EmployeesListCustomAssertions;
+    onTheEmployeesObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof EmployeesObjectPageCustomAssertions;
     onTheShell: Shell;
 };
 ",
@@ -12374,10 +12366,9 @@ sap.ui.require(
   "webapp/test/integration/pages/EmployeesList.ts": Object {
     "contents": "import ListReport from \\"sap/fe/test/ListReport\\";
 
-const CustomPageDefinitions = {
-    actions: {},
-    assertions: {}
-};
+export const actions = {};
+
+export const assertions = {};
 
 export default new ListReport(
     {
@@ -12386,7 +12377,7 @@ export default new ListReport(
         entitySet: \\"\\",
         contextPath: \\"/Employees\\"
     },
-    CustomPageDefinitions
+    { actions, assertions }
 );
 ",
     "state": "modified",
@@ -12396,17 +12387,16 @@ export default new ListReport(
 import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
-const CustomPageDefinitions = {
-    actions: {
-        iPressSectionIconTabFilterButton(this: Opa5, section: string) {
-            return this.waitFor({
-                id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                actions: new Press()
-            });
-        }
-    },
-    assertions: {}
+export const actions = {
+    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
+        return this.waitFor({
+            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+            actions: new Press()
+        });
+    }
 };
+
+export const assertions = {};
 
 export default new ObjectPage(
     {
@@ -12415,7 +12405,7 @@ export default new ObjectPage(
         entitySet: \\"\\",
         contextPath: \\"/Employees\\"
     },
-    CustomPageDefinitions
+    { actions, assertions }
 );
 ",
     "state": "modified",
@@ -12445,10 +12435,8 @@ import type { actions as ObjectPageActions, assertions as ObjectPageAssertions }
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
 import type Shell from \\"sap/fe/test/Shell\\";
 import type BaseArrangements from \\"sap/fe/test/BaseArrangements\\";
-
-interface CustomObjectPageActions {
-    iPressSectionIconTabFilterButton(section: string): object;
-}
+import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"ui5-test-writer/test/employees/test/integration/pages/EmployeesList\\";
+import type { actions as EmployeesObjectPageCustomActions, assertions as EmployeesObjectPageCustomAssertions } from \\"ui5-test-writer/test/employees/test/integration/pages/EmployeesObjectPage\\";
 
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
@@ -12457,14 +12445,14 @@ export type Given = Opa5 & BaseArrangements & {
 };
 
 export type When = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportActions & TemplatePageActions;
-    onTheEmployeesObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & CustomObjectPageActions;
+    onTheEmployeesList: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListCustomActions;
+    onTheEmployeesObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & typeof EmployeesObjectPageCustomActions;
     onTheShell: Shell;
 };
 
 export type Then = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportAssertions & TemplatePageAssertions;
-    onTheEmployeesObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions;
+    onTheEmployeesList: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof EmployeesListCustomAssertions;
+    onTheEmployeesObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof EmployeesObjectPageCustomAssertions;
     onTheShell: Shell;
 };
 ",
@@ -12751,10 +12739,9 @@ sap.ui.require(
   "webapp/test/integration/pages/EmployeesList.ts": Object {
     "contents": "import ListReport from \\"sap/fe/test/ListReport\\";
 
-const CustomPageDefinitions = {
-    actions: {},
-    assertions: {}
-};
+export const actions = {};
+
+export const assertions = {};
 
 export default new ListReport(
     {
@@ -12763,7 +12750,7 @@ export default new ListReport(
         entitySet: \\"Employees\\",
         contextPath: \\"\\"
     },
-    CustomPageDefinitions
+    { actions, assertions }
 );
 ",
     "state": "modified",
@@ -12790,6 +12777,7 @@ import type { actions as ListReportActions, assertions as ListReportAssertions }
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
 import type Shell from \\"sap/fe/test/Shell\\";
 import type BaseArrangements from \\"sap/fe/test/BaseArrangements\\";
+import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"ui5-test-writer/test/employees/test/integration/pages/EmployeesList\\";
 
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
@@ -12798,12 +12786,12 @@ export type Given = Opa5 & BaseArrangements & {
 };
 
 export type When = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportActions & TemplatePageActions;
+    onTheEmployeesList: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListCustomActions;
     onTheShell: Shell;
 };
 
 export type Then = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportAssertions & TemplatePageAssertions;
+    onTheEmployeesList: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof EmployeesListCustomAssertions;
     onTheShell: Shell;
 };
 ",
@@ -13159,10 +13147,9 @@ sap.ui.require(
   "webapp/test/integration/pages/EmployeesList.ts": Object {
     "contents": "import ListReport from \\"sap/fe/test/ListReport\\";
 
-const CustomPageDefinitions = {
-    actions: {},
-    assertions: {}
-};
+export const actions = {};
+
+export const assertions = {};
 
 export default new ListReport(
     {
@@ -13171,7 +13158,7 @@ export default new ListReport(
         entitySet: \\"Employees\\",
         contextPath: \\"\\"
     },
-    CustomPageDefinitions
+    { actions, assertions }
 );
 ",
     "state": "modified",
@@ -13181,17 +13168,16 @@ export default new ListReport(
 import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
-const CustomPageDefinitions = {
-    actions: {
-        iPressSectionIconTabFilterButton(this: Opa5, section: string) {
-            return this.waitFor({
-                id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                actions: new Press()
-            });
-        }
-    },
-    assertions: {}
+export const actions = {
+    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
+        return this.waitFor({
+            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+            actions: new Press()
+        });
+    }
 };
+
+export const assertions = {};
 
 export default new ObjectPage(
     {
@@ -13200,7 +13186,7 @@ export default new ObjectPage(
         entitySet: \\"Employees\\",
         contextPath: \\"\\"
     },
-    CustomPageDefinitions
+    { actions, assertions }
 );
 ",
     "state": "modified",
@@ -13232,17 +13218,16 @@ export default runner;
 import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
-const CustomPageDefinitions = {
-    actions: {
-        iPressSectionIconTabFilterButton(this: Opa5, section: string) {
-            return this.waitFor({
-                id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                actions: new Press()
-            });
-        }
-    },
-    assertions: {}
+export const actions = {
+    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
+        return this.waitFor({
+            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+            actions: new Press()
+        });
+    }
 };
+
+export const assertions = {};
 
 export default new ObjectPage(
     {
@@ -13251,7 +13236,7 @@ export default new ObjectPage(
         entitySet: \\"Positions\\",
         contextPath: \\"\\"
     },
-    CustomPageDefinitions
+    { actions, assertions }
 );
 ",
     "state": "modified",
@@ -13261,17 +13246,16 @@ export default new ObjectPage(
 import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
-const CustomPageDefinitions = {
-    actions: {
-        iPressSectionIconTabFilterButton(this: Opa5, section: string) {
-            return this.waitFor({
-                id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                actions: new Press()
-            });
-        }
-    },
-    assertions: {}
+export const actions = {
+    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
+        return this.waitFor({
+            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+            actions: new Press()
+        });
+    }
 };
+
+export const assertions = {};
 
 export default new ObjectPage(
     {
@@ -13280,7 +13264,7 @@ export default new ObjectPage(
         entitySet: \\"Trainings\\",
         contextPath: \\"\\"
     },
-    CustomPageDefinitions
+    { actions, assertions }
 );
 ",
     "state": "modified",
@@ -13292,10 +13276,10 @@ import type { actions as ObjectPageActions, assertions as ObjectPageAssertions }
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
 import type Shell from \\"sap/fe/test/Shell\\";
 import type BaseArrangements from \\"sap/fe/test/BaseArrangements\\";
-
-interface CustomObjectPageActions {
-    iPressSectionIconTabFilterButton(section: string): object;
-}
+import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"vesc/demo/employee/project2/test/integration/pages/EmployeesList\\";
+import type { actions as EmployeesObjectPageCustomActions, assertions as EmployeesObjectPageCustomAssertions } from \\"vesc/demo/employee/project2/test/integration/pages/EmployeesObjectPage\\";
+import type { actions as PositionsObjectPageCustomActions, assertions as PositionsObjectPageCustomAssertions } from \\"vesc/demo/employee/project2/test/integration/pages/PositionsObjectPage\\";
+import type { actions as TrainingsObjectPageCustomActions, assertions as TrainingsObjectPageCustomAssertions } from \\"vesc/demo/employee/project2/test/integration/pages/TrainingsObjectPage\\";
 
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
@@ -13304,18 +13288,18 @@ export type Given = Opa5 & BaseArrangements & {
 };
 
 export type When = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportActions & TemplatePageActions;
-    onTheEmployeesObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & CustomObjectPageActions;
-    onThePositionsObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & CustomObjectPageActions;
-    onTheTrainingsObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & CustomObjectPageActions;
+    onTheEmployeesList: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListCustomActions;
+    onTheEmployeesObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & typeof EmployeesObjectPageCustomActions;
+    onThePositionsObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & typeof PositionsObjectPageCustomActions;
+    onTheTrainingsObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & typeof TrainingsObjectPageCustomActions;
     onTheShell: Shell;
 };
 
 export type Then = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportAssertions & TemplatePageAssertions;
-    onTheEmployeesObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions;
-    onThePositionsObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions;
-    onTheTrainingsObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions;
+    onTheEmployeesList: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof EmployeesListCustomAssertions;
+    onTheEmployeesObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof EmployeesObjectPageCustomAssertions;
+    onThePositionsObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof PositionsObjectPageCustomAssertions;
+    onTheTrainingsObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof TrainingsObjectPageCustomAssertions;
     onTheShell: Shell;
 };
 ",

@@ -1,9 +1,8 @@
 import ListReport from "sap/fe/test/ListReport";
 
-const CustomPageDefinitions = {
-    actions: {},
-    assertions: {}
-};
+export const actions = {};
+
+export const assertions = {};
 
 export default new ListReport(
     {
@@ -12,5 +11,5 @@ export default new ListReport(
         entitySet: "<%- locals.entitySet || '' %>",
         contextPath: "<%- locals.contextPath || '' %>"
     },
-    CustomPageDefinitions
+    { actions, assertions }
 );
