@@ -58,11 +58,16 @@ export function buildAnnotationIndexKey(target: string, term: string): string {
 
 /**
  * Indexes annotations by their annotation path (target and term).
+ * For OData V2 services, also indexes synthetic entries from inline sap:text/sap:label attributes.
  *
  * @param service - Service artifacts containing annotation files
+ * @param v2Annotations - Pre-parsed V2 annotations from convertMetadataDocumentV2
  * @returns Annotation index organized by path and qualifier
  */
-function indexAnnotationsByAnnotationPath(service: ServiceArtifacts): AnnotationIndex {
+function indexAnnotationsByAnnotationPath(
+    service: ServiceArtifacts,
+    v2Annotations: V2Annotation[] = []
+): AnnotationIndex {
     const index: AnnotationIndex = {};
     for (const file of service.fileSequence) {
         const annotationFile = service.annotationFiles[file];
@@ -81,6 +86,7 @@ function indexAnnotationsByAnnotationPath(service: ServiceArtifacts): Annotation
             processTargetAnnotations(target, annotationFile, namespace, aliasInfo, targetName, index);
         }
     }
+    processTargetV2Annotations(v2Annotations, index);
     return index;
 }
 
@@ -164,29 +170,15 @@ function createSyntheticElement(attrName: string, attrValue: string, sourceRange
  *
  * Only adds entries when no explicit vocabulary annotation already exists for that key.
  *
- * @param artifacts - Service artifacts (used to access annotation file AST)
- * @param metadataUri - URI of the metadata file (used as the annotation source)
  * @param v2Annotations - Pre-parsed V2 annotations from convertMetadataDocumentV2
- * @param index - The annotation index to inject into
+ * @param index - The annotation index to populate
  */
-function indexV2Annotations(
-    artifacts: ServiceArtifacts,
-    metadataUri: string,
-    v2Annotations: V2Annotation[],
-    index: AnnotationIndex
-): void {
-    if (!v2Annotations.length) {
-        return;
-    }
-    const annotationFile = artifacts.annotationFiles[metadataUri];
-    if (!annotationFile) {
-        return;
-    }
-
+function processTargetV2Annotations(v2Annotations: V2Annotation[], index: AnnotationIndex): void {
     for (const v2Ann of v2Annotations) {
         if (v2Ann.target.kind !== Edm.Property) {
             continue;
         }
+        const uri = v2Ann.target.location?.uri ?? '';
         const propertyTarget = v2Ann.target.path;
 
         if (v2Ann.name === 'sap:text') {
@@ -195,11 +187,11 @@ function indexV2Annotations(
                 const syntheticElement = createSyntheticElement(Edm.Path, v2Ann.value, v2Ann.valueRange);
                 index[textKey] = {
                     undefined: {
-                        source: metadataUri,
+                        source: uri,
                         target: propertyTarget,
                         term: COMMON_TEXT,
-                        top: { uri: metadataUri, value: syntheticElement },
-                        layers: [{ uri: metadataUri, value: syntheticElement }]
+                        top: { uri, value: syntheticElement },
+                        layers: [{ uri, value: syntheticElement }]
                     }
                 };
             }
@@ -209,11 +201,11 @@ function indexV2Annotations(
                 const syntheticElement = createSyntheticElement(Edm.String, v2Ann.value, v2Ann.valueRange);
                 index[labelKey] = {
                     undefined: {
-                        source: metadataUri,
+                        source: uri,
                         target: propertyTarget,
                         term: COMMON_LABEL,
-                        top: { uri: metadataUri, value: syntheticElement },
-                        layers: [{ uri: metadataUri, value: syntheticElement }]
+                        top: { uri, value: syntheticElement },
+                        layers: [{ uri, value: syntheticElement }]
                     }
                 };
             }
@@ -242,9 +234,7 @@ export function buildServiceIndex(
         documents[document.uri] = document;
     }
 
-    const annotationIndex = indexAnnotationsByAnnotationPath(artifacts);
     let entityContainer: MetadataElement | undefined;
-    let metadataUri = '';
     artifacts.metadataService.visitMetadataElements((element) => {
         // NOSONAR - TODO: check if we can handle CDS differences better
         if (element.kind === 'EntityContainer' || element.kind === 'service') {
@@ -252,12 +242,9 @@ export function buildServiceIndex(
         } else if (element.kind === 'EntitySet' || element.kind === 'entitySet') {
             entitySets[element.name] = element;
         }
-        if (!metadataUri && element.location?.uri) {
-            metadataUri = element.location.uri;
-        }
     });
 
-    indexV2Annotations(artifacts, metadataUri, v2Annotations, annotationIndex);
+    const annotationIndex = indexAnnotationsByAnnotationPath(artifacts, v2Annotations);
 
     return {
         entitySets: entitySets,

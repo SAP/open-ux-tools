@@ -112,6 +112,7 @@ const ID_PROP_ELEMENT = {
     targetKinds: ['Property'] as ['Property'],
     edmPrimitiveType: 'Edm.String',
     facets: {},
+    location: { uri: METADATA_URI, range: { start: { line: 2, character: 0 }, end: { line: 2, character: 60 } } },
     content: []
 };
 
@@ -126,6 +127,7 @@ const NAME_PROP_ELEMENT = {
     targetKinds: ['Property'] as ['Property'],
     edmPrimitiveType: 'Edm.String',
     facets: {},
+    location: { uri: METADATA_URI, range: { start: { line: 3, character: 0 }, end: { line: 3, character: 60 } } },
     content: []
 };
 
