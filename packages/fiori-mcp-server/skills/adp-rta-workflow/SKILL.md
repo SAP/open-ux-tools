@@ -10,9 +10,31 @@ Execute Runtime Authoring (RTA) changes in the SAP Fiori adaptation editor using
 ## Prerequisites
 
 - Playwright MCP connected (`mcp__plugin_playwright_playwright__*` tools)
-- fiori-mcp server connected (`mcp__fiori-mcp__adp_controller_extension`)
-- Adaptation editor running (URL from `adp-project-setup` skill or user-provided)
+- fiori-mcp server connected (`mcp__fiori-mcp__adp_controller_extension`, `mcp__fiori-mcp__open_adaptation_editor`)
 - User has described what UI changes they want
+
+## Required Inputs
+
+This skill needs two pieces of context before it can run:
+
+1. **Adaptation project path** (`appPath`) — absolute path to the adaptation project root (where `package.json` lives).
+2. **Editor URL** — the running adaptation editor URL.
+
+### Resolving missing inputs
+
+**If `appPath` is missing:** Ask the user for the absolute path to their adaptation project before proceeding. Do not guess or scan the filesystem — wait for the user to provide it.
+
+**If editor URL is missing (but `appPath` is known):** Open the editor via fiori-mcp before navigating Playwright:
+
+Call `mcp__fiori-mcp__open_adaptation_editor` with:
+- `appPath`: the resolved adaptation project path
+
+The tool returns:
+- `editorUrl` — full URL to use for `browser_navigate` in Step 1
+- `processId` — server PID (track this for cleanup in Step 13)
+- `port` — server port
+
+Use the returned `editorUrl` as the navigation target in Step 1. Remember the `processId` and `port` so Step 13 can clean up the server.
 
 ## API: FlexJouleIntegrationApi
 
