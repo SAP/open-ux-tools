@@ -1,4 +1,4 @@
-import type { FullyQualifiedName, Location, TargetKind } from '../index.js';
+import type { FullyQualifiedName, Location, Range, TargetKind } from '../index.js';
 import type { Facets } from './common.js';
 
 export type ODataVersionType = '2.0' | '4.0' | '4.01';
@@ -113,6 +113,26 @@ export interface MetadataElementProperties {
      * Only relevant for NavigationProperty kind
      */
     containsTarget?: boolean;
+
+    /**
+     * OData V2 inline: value of sap:text attribute (path to description property).
+     * Only present on Property elements in V2 metadata.
+     */
+    sapText?: string;
+    /**
+     * OData V2 inline: source range of the sap:text attribute.
+     */
+    sapTextRange?: Range;
+
+    /**
+     * OData V2 inline: value of sap:label attribute.
+     * Only present on Property elements in V2 metadata.
+     */
+    sapLabel?: string;
+    /**
+     * OData V2 inline: source range of the sap:label attribute.
+     */
+    sapLabelRange?: Range;
 }
 
 /**

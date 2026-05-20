@@ -1,2 +1,8 @@
-export { convertDocument, convertMetadataDocument, transformRange } from './parser/index.js';
+export {
+    convertDocument,
+    convertMetadataDocument,
+    convertMetadataDocumentV2,
+    transformRange,
+    type V2Annotation
+} from './parser/index.js';
 export * from './printer/index.js';

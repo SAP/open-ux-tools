@@ -6,3 +6,5 @@ export * from './external-services.js';
 export type { ServiceArtifacts } from './types/adapter.js';
 export { findAnnotation, getAvtNodeFromPointer } from './avt/index.js';
 export { getXmlServiceArtifacts, CdsAnnotationProvider, uniformUrl } from './annotation-provider.js';
+export type { V2Annotation } from '@sap-ux/xml-odata-annotation-converter';
+export { resolveTextPropertyPath } from './utils/metadata.js';

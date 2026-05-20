@@ -4,3 +4,4 @@ export { getGenericNodeFromPointer } from './pointer.js';
 export { increaseIndent } from './indent.js';
 export { annotationReferenceToString } from './reference.js';
 export { compareByRange } from './range.js';
+export { resolveTextPropertyPath } from './metadata.js';

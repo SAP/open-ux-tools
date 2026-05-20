@@ -29,7 +29,7 @@ describe('annotation provider', () => {
                 [project.files.metadata, metadata],
                 [project.files.annotations, annotations]
             ]);
-            const artifacts = getXmlServiceArtifacts(
+            const [artifacts] = getXmlServiceArtifacts(
                 '4.0',
                 '/here/goes/your/serviceurl/',
                 {

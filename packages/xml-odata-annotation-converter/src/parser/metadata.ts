@@ -5,13 +5,14 @@ import type {
     MetadataElement,
     TargetKind,
     ReferentialConstraint,
-    Facets
+    Facets,
+    Range
 } from '@sap-ux/odata-annotation-core-types';
 import type { FullyQualifiedTypeName, FullyQualifiedName } from '@sap-ux/odata-annotation-core';
 import { toFullyQualifiedName, parseIdentifier, Edm, Location, Edmx } from '@sap-ux/odata-annotation-core';
 
 import { getAttributeValue, getElementAttributeByName } from './attribute-getters.js';
-import { transformElementRange } from './range.js';
+import { transformElementRange, transformRange } from './range.js';
 import { getElementsWithName } from './element-getters.js';
 
 const EDMX_METADATA_ELEMENT_NAMES = new Set<string>([
@@ -70,6 +71,7 @@ interface Context {
     namespace: string;
     parentPath: string;
     parent?: MetadataElement;
+    v2annotations?: V2Annotation[];
     uri: string;
 }
 
@@ -95,6 +97,38 @@ export function convertMetadataDocument(uri: string, document: XMLDocument): Met
     return metadataElements;
 }
 
+export interface V2Annotation {
+    target: MetadataElement;
+    name: string; // sap:label
+    nameRange?: Range;
+    value: string;
+    valueRange?: Range;
+    range?: Range;
+}
+
+/**
+ * Converts an OData V2 metadata XML document, returning metadata elements and inline sap:* annotations.
+ *
+ * @param uri - URI of the metadata document
+ * @param document - Parsed XML document
+ * @returns Tuple of [MetadataElement[], V2Annotation[]]
+ */
+export function convertMetadataDocumentV2(uri: string, document: XMLDocument): [MetadataElement[], V2Annotation[]] {
+    const root = document.rootElement;
+    if (!root) {
+        return [[], []];
+    }
+    const aliasMap = getNamespaceMap(root);
+    const dataServices = getElementsWithName(Edmx.DataServices, root);
+    const schemas = dataServices.length ? getElementsWithName(Edm.Schema, dataServices[0]) : [];
+    const metadataElements: MetadataElement[] = [];
+    const v2annotations: V2Annotation[] = [];
+    for (const schema of schemas) {
+        convertSchema(schema, aliasMap, uri, metadataElements, v2annotations);
+    }
+    return [metadataElements, v2annotations];
+}
+
 /**
  * Collects metadata element definitions from given schema.
  *
@@ -102,12 +136,14 @@ export function convertMetadataDocument(uri: string, document: XMLDocument): Met
  * @param aliasMap alias map
  * @param uri Uri of the document
  * @param metadataElements metadata element collector array
+ * @param v2annotations V2 annotation collector array
  */
 function convertSchema(
     schema: XMLElement,
     aliasMap: NamespaceMap,
     uri: string,
-    metadataElements: MetadataElement[]
+    metadataElements: MetadataElement[],
+    v2annotations?: V2Annotation[]
 ): void {
     const namespace = getElementAttributeByName('Namespace', schema)?.value;
     if (!namespace) {
@@ -154,6 +190,7 @@ function convertSchema(
         aliasMap,
         associationMap,
         parentPath: '',
+        v2annotations,
         uri: uri
     };
     for (const child of schema.subElements) {
@@ -422,7 +459,8 @@ function createMetadataElementNodeForType(
         });
     }
     const range = transformElementRange(element.position, element);
-    return {
+
+    const metadataElement: MetadataElement = {
         path: context.parentPath
             ? `${context.parentPath}/${metadataElementProperties.name}`
             : metadataElementProperties.name,
@@ -430,6 +468,32 @@ function createMetadataElementNodeForType(
         content: functionImportV2Nodes,
         ...metadataElementProperties
     };
+    // OData V2: read inline sap:* attributes from Property elements
+    if (context.v2annotations) {
+        collectV2Annotations(context, element, metadataElement);
+    }
+
+    return metadataElement;
+}
+
+function collectV2Annotations(context: Context, element: XMLElement, target: MetadataElement): void {
+    for (const attribute of element.attributes) {
+        const attrKey = attribute.key;
+        if (typeof attrKey === 'string' && attrKey.startsWith('sap:')) {
+            const attrValue = attribute.value;
+            if (typeof attrValue === 'string') {
+                const annotation: V2Annotation = {
+                    name: attrKey,
+                    value: attrValue,
+                    target,
+                    valueRange: transformRange(attribute.syntax.value),
+                    nameRange: transformRange(attribute.syntax.key),
+                    range: transformRange(attribute.position)
+                };
+                context.v2annotations!.push(annotation);
+            }
+        }
+    }
 }
 
 /**
