@@ -115,7 +115,7 @@ describe('deploy-test validation', () => {
             const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(true);
             const summaryStr = formatSummary(output.summary);
-            expect(summaryStr).toContain(`${green('√')} ${summaryMessage.allClientCheckPass}`);
+            expect(summaryStr).toContain(`${chalk.green('√')} ${summaryMessage.allClientCheckPass}`);
             expect(summaryStr).not.toContain(t('deploy.abapInvalidAppName', { prefix: 'ZZ1_' }));
         });
 
