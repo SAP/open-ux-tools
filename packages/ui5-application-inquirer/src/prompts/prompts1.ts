@@ -282,6 +282,6 @@ export function getEnableVirtualEndpoints(capCdsInfo?: CdsUi5PluginInfo): UI5App
         // Only show for CAP Node.js projects that have the cds-ui5-plugin already enabled
         // or where the user selects TypeScript during prompting.
         when: (answers: UI5ApplicationAnswers): boolean =>
-            !!(capCdsInfo?.hasMinCdsVersion && (capCdsInfo?.hasCdsUi5Plugin || answers.enableTypeScript))
+            !!(capCdsInfo && (capCdsInfo.hasCdsUi5Plugin || answers.enableTypeScript))
     };
 }
