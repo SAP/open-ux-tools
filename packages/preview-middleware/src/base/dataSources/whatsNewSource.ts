@@ -200,32 +200,10 @@ export class WhatsNewSource {
         return [
             {
                 title: "What's New for SAP Fiori Tools",
-                subTitle:
-                    'Learn about features that have been added and changes that have been made to SAP Fiori tools.',
+                subTitle: intro,
                 description,
                 footerText: `SAP Fiori Tools ${latestVersion}`,
                 image: path.join(__dirname, '../images/whats-new.jpg')
-            },
-            {
-                title: 'SAP Fiori Tools',
-                subTitle: 'Simplify SAP Fiori development with SAP Fiori tools.',
-                description:
-                    '<p>SAP Fiori tools is a set of extensions for SAP Business Application Studio and Visual Studio Code' +
-                    ' that makes developing SAP Fiori applications faster and easier.' +
-                    ' If you want to learn more about SAP Fiori tools, visit ' +
-                    '<a href="http://sapfioritools.com" target="_blank">sapfioritools.com</a>.</p>',
-                footerText: 'SAP Fiori Tools',
-                image: path.join(__dirname, '../images/fiori-tools.jpg')
-            },
-            {
-                title: 'SAP Fiori Elements',
-                subTitle: 'Build SAP Fiori apps using SAP Fiori elements.',
-                description:
-                    '<p>SAP Fiori elements provides predefined templates and building blocks for creating SAP Fiori applications.' +
-                    ' If you want to learn more about SAP Fiori elements, visit ' +
-                    '<a href="http://www.sapfiorielements.com" target="_blank">sapfiorielements.com</a>.</p>',
-                footerText: 'SAP Fiori Elements',
-                image: path.join(__dirname, '../images/fiori-elements.jpg')
             }
         ];
     }

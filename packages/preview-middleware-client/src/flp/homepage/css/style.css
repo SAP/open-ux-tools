@@ -20,6 +20,13 @@
     grid-column: span 12;
 }
 
+.homeLayout .sapCuxNewsAndPagesContainer
+.sapMST.Stretch.sapMSTLargeScreen
+.sapMGT.Stretch.sapMGTArticleMode.sapMGTBackgroundImage
+.sapMGTContent .sapMTileCnt.News .sapMTileCntContent {
+    padding: 1.5rem 1.5rem 0 1.5rem;
+}
+
 .salutationBar.sapMIBar.sapMHeader-CTX {
     padding: 0.5rem 1rem;
     margin: var(--salutationBar-margin-top) var(--salutationBar-margin-right) var(--salutationBar-margin-bottom) var(--salutationBar-margin-left);

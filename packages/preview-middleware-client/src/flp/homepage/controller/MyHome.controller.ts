@@ -48,6 +48,8 @@ export default class MyHomeController extends Controller {
     private static readonly MAX_CARD_WIDTH = 583;
     private static readonly NARROW_BREAKPOINT = 320;
     private static readonly MOBILE_CARD_WIDTH_REM = 19;
+    private static readonly MOBILE_CARD_HEIGHT_REM = 25.5;
+    private static readonly DEFAULT_CARD_HEIGHT_REM = 33;
 
     private static readonly DeviceWidth = {
         Mobile: 600,
@@ -106,6 +108,7 @@ export default class MyHomeController extends Controller {
             const oViewModel = new JSONModel({
                 deviceType: MyHomeController.calculateDeviceType(Device.resize.width),
                 insightsCardWidth: `${MyHomeController.MIN_CARD_WIDTH / 16}rem`,
+                insightsCardHeight: `${MyHomeController.DEFAULT_CARD_HEIGHT_REM}rem`,
                 cards: [],
                 hasWarnings: false,
                 warnings: []
@@ -270,6 +273,10 @@ export default class MyHomeController extends Controller {
         }
 
         viewModel.setProperty('/insightsCardWidth', cardWidthRem);
+        viewModel.setProperty(
+            '/insightsCardHeight',
+            `${isMobile ? MyHomeController.MOBILE_CARD_HEIGHT_REM : MyHomeController.DEFAULT_CARD_HEIGHT_REM}rem`
+        );
     }
 
     private async initializeInsightsContainer() {
@@ -315,7 +322,7 @@ export default class MyHomeController extends Controller {
                 setTimeout(() => {
                     // apply color to the preview app
                     if (index === 0) {
-                        tile.setBackgroundColor('sapLegendColor6');
+                        tile.setBackgroundColor('sapLegendColor12');
                     }
                 }, 100);
             }

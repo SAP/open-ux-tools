@@ -116,7 +116,12 @@ export async function getAppFeatures(
         }
         if (objectPages) {
             log?.warn('Extracting Object Page features from application model');
-            featureData.objectPages = await getObjectPageFeatures(objectPages, listReportPage?.name, log);
+            featureData.objectPages = await getObjectPageFeatures(
+                objectPages,
+                listReportPage?.name,
+                log,
+                projectMetadata
+            );
             log?.warn('objectPages features extracted: ' + JSON.stringify(featureData.objectPages));
         }
         if (fpmPage) {
