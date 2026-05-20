@@ -124,7 +124,7 @@ async function startBrowser(): Promise<Browser> {
         headless: false,
         executablePath: executablePath ?? undefined,
         channel,
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--start-maximized']
     });
 
     try {
@@ -164,7 +164,8 @@ export async function callFrontendAction<TReturn = unknown>(
     let rpc = connectionRegistry.get(site);
 
     if (!rpc) {
-        const page: Page = await activeBrowser.newPage();
+        const context = await activeBrowser.newContext({ viewport: null });
+        const page: Page = await context.newPage();
 
         page.on('pageerror', (err) => {
             logger.warn(`Page error for ${site}: ${err.message}`);
