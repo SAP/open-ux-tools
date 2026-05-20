@@ -22,10 +22,10 @@ import { getLogger } from '../../tracing';
 export function addSystemAddCommand(cmd: Command): void {
     cmd.command('system')
         .description(
-            `Add a new back-end system to the saved systems store: ~/.fioritools. Credentials are stored securely in the OS keychain.\n` +
+            `Add a new back-end system to the saved systems store: ~/.fioritools. Credentials are stored securely in the OS keychain.\n\n` +
                 `System types: ${Object.values(SystemType).join(' | ')}\n` +
-                `Auth types:   ${Object.values(AuthenticationType).join(' | ')}\n` +
-                `Connection types: ${Object.values(ConnectionType).join(' | ')}\n` +
+                `Auth types: ${Object.values(AuthenticationType).join(' | ')}\n` +
+                `Connection types: ${Object.values(ConnectionType).join(' | ')}\n\n` +
                 `Example:\n` +
                 `    \`npx --yes @sap-ux/create@latest add system --name "My System" --url https://my-sap.example.com\`\n` +
                 `    \`npx --yes @sap-ux/create@latest add system --name "My System" --url https://my-sap.example.com --client 100 --username myuser\``

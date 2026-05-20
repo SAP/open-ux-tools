@@ -93,7 +93,7 @@ function renderCommandAndSubcommands(cmd, parentPath) {
     const anchor = generateAnchor(currentPath);
 
     let md = `## [\`${fullCommandName}\`](#${anchor})\n\n`;
-    md += `${cmd.description.replace(/ {2,}/g, '\n').replace(/\n/g, '\n\n').replace(/\n\n\n\n/g, '\n\n')}\n\n`;
+    md += `${cmd.description.replace(/ {2,}/g, '\n')}\n\n`;
 
     if (cmd.options && cmd.options.length > 0) {
         md += `Options:\n${renderOptions(cmd.options)}\n\n`;
