@@ -34,4 +34,4 @@ export function t(key: string, options?: TOptions): string {
     return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-void initI18n().catch(() => undefined);
+void initI18n().catch(() => undefined // Ignore any errors since the middleware will still work);
