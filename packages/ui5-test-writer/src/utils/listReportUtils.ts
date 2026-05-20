@@ -24,7 +24,7 @@ import { convert } from '@sap-ux/annotation-converter';
 import { extractActionMethodName, buildActionButtonState, safeCheckButtonVisibility } from './actionUtils.js';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
 import type { Manifest } from '@sap-ux/project-access';
-import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI';
+import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI.js';
 
 export { checkButtonVisibility, safeCheckEditVisibility } from './actionUtils.js';
 export { safeCheckButtonVisibility };

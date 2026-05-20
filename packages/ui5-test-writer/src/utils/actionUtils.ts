@@ -1,13 +1,13 @@
 import type { Action, ActionParameter, ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
-import type { ActionButtonState, ButtonState, ButtonVisibilityResult } from '../types';
-import type { ActionAnnotations, EntityContainerAnnotations } from '@sap-ux/vocabularies-types/vocabularies/Edm_Types';
-import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import type { OperationAvailable } from '@sap-ux/vocabularies-types/vocabularies/Core';
+import type { ActionButtonState, ButtonState, ButtonVisibilityResult } from '../types.js';
+import type { ActionAnnotations, EntityContainerAnnotations } from '@sap-ux/vocabularies-types/vocabularies/Edm_Types.js';
+import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI.js';
+import type { OperationAvailable } from '@sap-ux/vocabularies-types/vocabularies/Core.js';
 import type {
     DeleteRestrictionsType,
     InsertRestrictionsType,
     UpdateRestrictionsType
-} from '@sap-ux/vocabularies-types/vocabularies/Capabilities';
+} from '@sap-ux/vocabularies-types/vocabularies/Capabilities.js';
 import type { Logger } from '@sap-ux/logger';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
