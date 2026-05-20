@@ -66,6 +66,19 @@ export function safeCheckActionButtonStates(
     }
 }
 
+export function safeGetSemanticKeyProperties(
+    metadata: string,
+    entitySetName: string,
+    log?: Logger
+): string[] | undefined {
+    try {
+        return getSemanticKeyProperties(metadata, entitySetName, true);
+    } catch (error) {
+        log?.debug(`Failed to get semantic key properties: ${error instanceof Error ? error.message : String(error)}`);
+        return undefined;
+    }
+}
+
 /**
  * Returns true when a ListReport manifest target is configured as an Analytical List Page.
  * ALP targets have a `views.paths` array where at least one entry contains a `primary` array,
@@ -116,13 +129,22 @@ export function getListReportFeatures(
     metadata?: string,
     manifest?: Manifest
 ): ListReportFeatures {
-    const entitySetName = metadata ? listReportPage.entitySet : undefined;
-    const buttonVisibility = entitySetName ? safeCheckButtonVisibility(metadata!, entitySetName, log) : undefined;
     const toolbarActions = getToolBarActionNames(listReportPage.model, log);
-    const semanticKeyProperties = entitySetName ? getSemanticKeyProperties(metadata!, entitySetName, true) : undefined;
     const filterBarItems = getFilterFieldNames(listReportPage.model, log);
+
+    let buttonVisibility: ReturnType<typeof safeCheckButtonVisibility> | undefined;
+    let semanticKeyProperties: string[] | undefined;
+    let toolBarActions: ReturnType<typeof safeCheckActionButtonStates> = [];
+
+    if (metadata && listReportPage.entitySet) {
+        const entitySetName = listReportPage.entitySet;
+        buttonVisibility = safeCheckButtonVisibility(metadata, entitySetName, log);
+        semanticKeyProperties = safeGetSemanticKeyProperties(metadata, entitySetName, log);
+        toolBarActions = safeCheckActionButtonStates(metadata, entitySetName, toolbarActions, log);
+    }
+
     const missingFromFilterBar =
-        semanticKeyProperties?.length && filterBarItems.length > 0
+        semanticKeyProperties?.length && filterBarItems.length
             ? semanticKeyProperties.filter((key) => !filterBarItems.includes(key))
             : undefined;
 
@@ -132,7 +154,7 @@ export function getListReportFeatures(
         deleteButton: buildButtonState(buttonVisibility?.delete),
         filterBarItems,
         tableColumns: getTableColumnData(listReportPage.model, log),
-        toolBarActions: entitySetName ? safeCheckActionButtonStates(metadata!, entitySetName, toolbarActions, log) : [],
+        toolBarActions,
         isALP: manifest ? isALPFromManifest(manifest, listReportPage.name) : false,
         semanticKey: {
             semanticKeyProperties,
