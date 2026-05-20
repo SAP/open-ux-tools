@@ -9,6 +9,7 @@ import type { UI5Version } from '@sap-ux/ui5-info';
 import type { ListChoiceOptions } from 'inquirer';
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types';
 import type { ConfirmQuestion, FileBrowserQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
+import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
 
 /**
  * Gets the `name` prompt.
@@ -265,9 +266,10 @@ export function getAddFlpConfigPrompt(
 /**
  * Get the `enableVirtualEndpoints` prompt.
  *
+ * @param capCdsInfo optional CAP CDS plugin info used to determine prompt visibility
  * @returns the `enableVirtualEndpoints` prompt
  */
-export function getEnableVirtualEndpoints(): UI5ApplicationQuestion {
+export function getEnableVirtualEndpoints(capCdsInfo?: CdsUi5PluginInfo): UI5ApplicationQuestion {
     return {
         type: 'confirm',
         name: promptNames.enableVirtualEndpoints,
@@ -276,6 +278,10 @@ export function getEnableVirtualEndpoints(): UI5ApplicationQuestion {
             breadcrumb: t('prompts.enableVirtualEndpoints.breadcrumb')
         },
         message: (): string => t('prompts.enableVirtualEndpoints.message'),
-        default: true
+        default: true,
+        // Only show for CAP Node.js projects that have the cds-ui5-plugin already enabled
+        // or where the user selects TypeScript during prompting.
+        when: (answers: UI5ApplicationAnswers): boolean =>
+            !!(capCdsInfo?.hasMinCdsVersion && (capCdsInfo?.hasCdsUi5Plugin || answers.enableTypeScript))
     };
 }
