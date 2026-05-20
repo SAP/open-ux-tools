@@ -1,4 +1,4 @@
-import * as frontendService from '../../../../../src/tools/adp-controller-extension/frontend-actions/frontend-service';
+import * as frontendService from '../../../../../src/tools/run-rta-workflow-step/frontend-actions/frontend-service';
 import {
     FrontendActionError,
     executeAction,
@@ -9,9 +9,9 @@ import {
     startRta,
     startVisualization,
     stopRta
-} from '../../../../../src/tools/adp-controller-extension/frontend-actions/rta-actions';
+} from '../../../../../src/tools/run-rta-workflow-step/frontend-actions/rta-actions';
 
-jest.mock('../../../../../src/tools/adp-controller-extension/frontend-actions/frontend-service');
+jest.mock('../../../../../src/tools/run-rta-workflow-step/frontend-actions/frontend-service');
 
 const SITE = 'http://localhost:8080/test/adaptation-editor.html';
 const FRAME = 'preview';

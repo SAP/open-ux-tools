@@ -8,7 +8,7 @@ import {
     saveChanges,
     startRta,
     stopBrowser
-} from '../adp-controller-extension/frontend-actions';
+} from './frontend-actions';
 import { logger } from '../../utils/logger';
 
 /**
