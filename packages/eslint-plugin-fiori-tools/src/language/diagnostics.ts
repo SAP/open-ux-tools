@@ -75,13 +75,15 @@ export interface EnableExport {
     pageName: string;
     pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
+    changeFileUri?: string;
 }
 
 export interface EnablePaste {
     type: typeof ENABLE_PASTE;
     pageName: string;
     pageSectionName?: string;
-    manifest: ManifestPropertyDiagnosticData;
+    manifest?: ManifestPropertyDiagnosticData;
+    changeFileUri?: string;
 }
 
 export type StatePreservationModeMessageId =

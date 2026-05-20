@@ -10,6 +10,19 @@ export interface ParsedProject {
     documents: { [uri: string]: DocumentType };
 }
 
+export interface FlexChange {
+    changeType: string | 'propertyChange';
+    content: {
+        property: string;
+        newValue: boolean;
+    };
+    selector: {
+        id: string;
+        type: string;
+    };
+    changeFileUri: string;
+}
+
 export interface ParsedApp {
     manifest: ParsedManifest;
     services: { [name: string]: ParsedService };
@@ -18,6 +31,7 @@ export interface ParsedApp {
      */
     manifestObject: Manifest;
     projectRootPath: string;
+    changes: FlexChange[];
 }
 
 export interface ParsedManifest {

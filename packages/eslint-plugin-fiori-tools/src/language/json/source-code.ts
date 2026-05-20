@@ -61,3 +61,5 @@ export class FioriJSONSourceCode extends JSONSourceCode {
             .join(' > ');
     }
 }
+
+export class FioriChangeSourceCode extends FioriJSONSourceCode {}

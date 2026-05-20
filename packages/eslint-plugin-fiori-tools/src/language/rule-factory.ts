@@ -1,7 +1,7 @@
 import type { RuleContext, RulesMeta, RuleVisitor } from '@eslint/core';
 import type { FioriLanguageOptions, FioriSourceCode, Node } from './fiori-language';
 import { JSONSourceCode } from '@eslint/json';
-import type { FioriJSONSourceCode } from './json/source-code';
+import { FioriChangeSourceCode, type FioriJSONSourceCode } from './json/source-code';
 import type { AnyNode, MemberNode } from '@humanwhocodes/momoa';
 import { FioriXMLSourceCode } from './xml/source-code';
 import type { XMLAstNode, XMLToken } from '@xml-tools/ast';
@@ -64,6 +64,7 @@ export type AnnotationRuleContext<MessageIds extends string, RuleOptions extends
  * @param param0.ruleId
  * @param param0.meta
  * @param param0.createJsonVisitorHandler
+ * @param param0.createChangeVisitorHandler
  * @param param0.createJson
  * @param param0.createXml
  * @param param0.createAnnotations
@@ -80,6 +81,7 @@ export function createFioriRule<
     meta,
     check,
     createJsonVisitorHandler,
+    createChangeVisitorHandler,
     createJson,
     createXml,
     createAnnotations
@@ -90,6 +92,11 @@ export function createFioriRule<
         context: JSONRuleContext<MessageIds, RuleOptions>,
         validationResult: Extract<Diagnostic, { type: T }>[]
     ) => RuleVisitor;
+    createChangeVisitorHandler?: (
+        context: JSONRuleContext<MessageIds, RuleOptions>,
+        diagnostic: Extract<Diagnostic, { type: T }>,
+        deepestPathResult: DeepestExistingPathResult
+    ) => (node: MemberNode) => void;
     createJsonVisitorHandler?: (
         context: JSONRuleContext<MessageIds, RuleOptions>,
         diagnostic: Extract<Diagnostic, { type: T }>,
@@ -130,7 +137,18 @@ export function createFioriRule<
                 cachedDiagnostics = check(context);
                 DiagnosticCache.addMessages(uri, ruleId, cachedDiagnostics);
             }
+            if (!cachedDiagnostics?.length) {
+                return {};
+            }
             const sourceCode = context.sourceCode;
+            if (sourceCode instanceof FioriChangeSourceCode && createChangeVisitorHandler) {
+                return createChangeVisitorWithMatchers(
+                    sourceCode,
+                    cachedDiagnostics,
+                    context as JSONRuleContext<MessageIds, RuleOptions>,
+                    createChangeVisitorHandler
+                );
+            }
             if (sourceCode instanceof JSONSourceCode && createJsonVisitorHandler) {
                 return createJsonVisitorWithMatchers(
                     sourceCode,
@@ -189,6 +207,40 @@ function createJsonVisitorWithMatchers<
         );
         if (paths?.validatedPath && paths.validatedPath.length > 0) {
             matchers[sourceCode.createMatcherString(paths.validatedPath)] = createJsonVisitorHandler(
+                context,
+                diagnostic,
+                paths
+            );
+        }
+    }
+    return matchers;
+}
+
+function createChangeVisitorWithMatchers<
+    MessageIds extends string,
+    RuleOptions extends unknown[],
+    T extends Diagnostic['type']
+>(
+    sourceCode: FioriChangeSourceCode,
+    cachedDiagnostics: Extract<Diagnostic, { type: T }>[],
+    context: JSONRuleContext<MessageIds, RuleOptions>,
+    createChangeVisitorHandler: (
+        context: JSONRuleContext<MessageIds, RuleOptions>,
+        diagnostic: Extract<Diagnostic, { type: T }>,
+        deepestPathResult: DeepestExistingPathResult
+    ) => (node: MemberNode) => void
+): RuleVisitor {
+    const applicableDiagnostics = cachedDiagnostics.filter(
+        (diagnostic) => (diagnostic as any).changeFileUri === sourceCode.uri
+    );
+    if (applicableDiagnostics.length === 0) {
+        return {};
+    }
+    const matchers: RuleVisitor = {};
+    for (const diagnostic of applicableDiagnostics) {
+        const paths = { validatedPath: ['content', 'newValue'], missingSegments: [] };
+        if (paths?.validatedPath && paths.validatedPath.length > 0) {
+            matchers[sourceCode.createMatcherString(paths.validatedPath)] = createChangeVisitorHandler(
                 context,
                 diagnostic,
                 paths

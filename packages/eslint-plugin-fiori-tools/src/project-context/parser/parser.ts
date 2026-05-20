@@ -9,8 +9,17 @@ import { CdsAnnotationProvider, getXmlServiceArtifacts, type ServiceArtifacts } 
 import type { LocalFile, RemoteFileWithLocalServiceCache } from '../types';
 import type { Diagnostic } from '../../language/diagnostics';
 import { buildServiceIndex } from './service';
-import type { ParsedProject, ParsedApp, ParsedManifest, FoundODataService, CustomViews, MinUI5Version } from './types';
+import type {
+    ParsedProject,
+    ParsedApp,
+    ParsedManifest,
+    FoundODataService,
+    CustomViews,
+    MinUI5Version,
+    FlexChange
+} from './types';
 import { uniformUrl } from '@sap-ux/fiori-annotation-api';
+import { readdirSync, readFileSync } from 'node:fs';
 
 export interface ParseResult {
     index: ParsedProject;
@@ -69,10 +78,25 @@ export class ApplicationParser {
                 const webappPath = dirname(app.manifestPath);
                 const [parsedManifest, services] = this.parseManifest(webappPath, manifestUri, manifest);
                 const appRootUri = pathToFileURL(app.appRoot).toString();
+                const changes: FlexChange[] = [];
+                const changeFiles = readdirSync(join(app.appRoot, 'webapp', 'changes')).map((file) =>
+                    join(app.appRoot, 'webapp', 'changes', file)
+                );
+                for (const changeFile of changeFiles) {
+                    const fileContent = readFileSync(changeFile, { encoding: 'utf8', flag: 'r' });
+                    const jsonContent = JSON.parse(fileContent);
+                    changes.push({
+                        changeType: jsonContent.changeType,
+                        content: jsonContent.content,
+                        selector: jsonContent.selector,
+                        changeFileUri: pathToFileURL(changeFile).toString()
+                    });
+                }
                 const parsedApp: ParsedApp = {
                     manifest: parsedManifest,
                     manifestObject: manifest,
                     projectRootPath: app.projectRoot,
+                    changes,
                     services: {}
                 };
                 this.index.apps[appRootUri] = parsedApp;
@@ -144,12 +168,12 @@ export class ApplicationParser {
             const webappPath = dirname(fileURLToPath(uri));
             const [parsedManifest, services] = this.parseManifest(webappPath, uri, manifest);
             index.documents[uri] = manifestAst;
-
             const parsedApp: ParsedApp = {
                 manifest: parsedManifest,
                 manifestObject: manifest,
                 projectRootPath: previousApp.projectRootPath,
-                services: {}
+                services: {},
+                changes: []
             };
 
             const previouslyFoundServices = Object.values(previousApp.services).map((service) => service.config);
@@ -169,6 +193,32 @@ export class ApplicationParser {
             }
             index.apps[key] = parsedApp;
             break;
+        }
+    }
+
+    private reparseChange(uri: string, index: ParsedProject, fileCache: Map<string, string>): void {
+        for (const app of Object.values(index.apps)) {
+            const content = fileCache.get(uri) ?? '';
+            const ast = parseJson(content, {
+                mode: 'json',
+                ranges: true,
+                tokens: true,
+                allowTrailingCommas: false
+            });
+            index.documents[uri] = ast;
+            const jsonContent = JSON.parse(content);
+            const change: FlexChange = {
+                changeType: jsonContent.changeType,
+                content: jsonContent.content,
+                selector: jsonContent.selector,
+                changeFileUri: pathToFileURL(uri).toString()
+            };
+            const foundChangeIndex = app.changes.findIndex((c) => c.changeFileUri === uri);
+            if (foundChangeIndex > -1) {
+                app.changes[foundChangeIndex] = change;
+            } else {
+                app.changes.push(change);
+            }
         }
     }
 
@@ -212,6 +262,8 @@ export class ApplicationParser {
             this.reparseJSON(uri, index, fileCache);
         } else if (uri.endsWith('.xml')) {
             this.reparseXML(uri, index);
+        } else if (uri.endsWith('.change')) {
+            this.reparseChange(uri, index, fileCache);
         }
         return { index: index, diagnostics: [] };
     }
