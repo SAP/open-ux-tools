@@ -194,7 +194,15 @@ pnpm audit
 - Use async/await over raw Promises
 - Leverage TypeScript features: generics, union types, type guards, etc.
 - Avoid `any` type - use `unknown` or proper types
-- **Avoid TypeScript enums** - prefer union types or const objects for better type safety and tree-shaking
+- **Never use TypeScript enums** — this is a hard rule, not a preference. Enums compile to real JS objects (runtime overhead) and cause unexpected issues. Use `const` objects with `as const` and derive union types from them instead:
+  ```typescript
+  // ✅ Correct
+  export const Direction = { Up: 'up', Down: 'down' } as const;
+  export type Direction = (typeof Direction)[keyof typeof Direction];
+
+  // ❌ Wrong — never do this
+  export enum Direction { Up = 'up', Down = 'down' }
+  ```
 - Avoid using the non-null assertion operator (!). Use optional chaining (?.), nullish coalescing (??), or explicit type guards to handle potentially null/undefined values.
 
 **TypeScript config** (from [tsconfig.json](tsconfig.json)):
@@ -726,6 +734,7 @@ pnpm outdated
 13. ❌ **Don't run all tests when working on a single package** - Use `pnpm --filter @sap-ux/[package-name] test` instead of `pnpm test` at root
 14. ❌ **Don't hardcode version numbers in documentation** - Reference source files (like package.json) instead, as versions change frequently
 15. ❌ **Don't pin peerDependencies to exact versions** - Use open semver ranges (e.g., `^9` not `9.39.1`) so consumers can use any compatible release
+16. ❌ **Never use TypeScript enums** — use `const` objects with `as const` and derived union types instead. No exceptions, even for internal/private packages.
 
 ## Summary Checklist
 
