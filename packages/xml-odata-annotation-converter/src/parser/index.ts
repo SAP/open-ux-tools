@@ -1,3 +1,3 @@
 export { convertDocument } from './document';
 export { transformRange } from './range';
-export { convertMetadataDocument } from './metadata';
+export { convertMetadataDocument, convertMetadataDocumentV2, type V2Annotation } from './metadata';
