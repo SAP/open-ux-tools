@@ -237,7 +237,10 @@ async function getSystemPrefix(
         }
 
         const atoSettings = await adtService.getAtoInfo();
-        return atoSettings?.developmentPrefix;
+        if (atoSettings?.operationsType === 'C') {
+            return atoSettings.developmentPrefix;
+        }
+        return undefined;
     } catch (e) {
         logger.error(e.message);
         logger.debug(e);

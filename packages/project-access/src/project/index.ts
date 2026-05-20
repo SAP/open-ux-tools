@@ -20,7 +20,8 @@ export {
     processServices,
     getGlobalCdsHomePath
 } from './cap.js';
-export { filterDataSourcesByType, getMainService } from './service.js';
+export { filterDataSourcesByType, getMainService, getUsedEntitiesFromManifest } from './service.js';
+export type { UsedEntity } from './service.js';
 export { addPackageDevDependency, getNodeModulesPath, hasDependency } from './dependencies.js';
 export { getCapI18nFolderNames, getI18nPropertiesPaths, getI18nBundles } from './i18n/index.js';
 export {
