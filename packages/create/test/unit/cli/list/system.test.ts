@@ -63,7 +63,7 @@ describe('system/list', () => {
 
     test('should list systems as JSON', async () => {
         // Given
-        const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+        const stdoutSpy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
         const command = new Command('list');
         addSystemListCommand(command);
 
@@ -71,12 +71,12 @@ describe('system/list', () => {
         await command.parseAsync(getArgv(['system', '--json']));
 
         // Then
-        expect(consoleSpy).toHaveBeenCalledTimes(1);
-        const parsed = JSON.parse(consoleSpy.mock.calls[0][0]);
+        expect(stdoutSpy).toHaveBeenCalledTimes(1);
+        const parsed = JSON.parse((stdoutSpy.mock.calls[0][0] as string).trim());
         expect(parsed[0].name).toBe('My System');
         expect(parsed[0].password).toBeUndefined();
         expect(parsed[0].username).toBeUndefined();
-        consoleSpy.mockRestore();
+        stdoutSpy.mockRestore();
     });
 
     test('should show message when no systems found', async () => {
