@@ -121,9 +121,10 @@ export function getListReportFeatures(
     const toolbarActions = getToolBarActionNames(listReportPage.model, log);
     const semanticKeyProperties = entitySetName ? getSemanticKeyProperties(metadata!, entitySetName, true) : undefined;
     const filterBarItems = getFilterFieldNames(listReportPage.model, log);
-    const missingFromFilterBar = semanticKeyProperties?.length
-        ? semanticKeyProperties.filter((key) => !filterBarItems.includes(key))
-        : undefined;
+    const missingFromFilterBar =
+        semanticKeyProperties?.length && filterBarItems.length > 0
+            ? semanticKeyProperties.filter((key) => !filterBarItems.includes(key))
+            : undefined;
 
     return {
         name: listReportPage.name,

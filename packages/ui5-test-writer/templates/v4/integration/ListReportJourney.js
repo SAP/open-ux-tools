@@ -44,7 +44,7 @@ sap.ui.define([
             <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
             When.onThe<%- startLR%>.onFilterBar().iAddAdaptationFilterField("<%- property %>");
             <%_ }); -%>
-            Then.onThe<%- startLR%>.onFilterBar().iCloseFilterAdaptation();
+            Then.onThe<%- startLR%>.onFilterBar().iConfirmFilterAdaptation();
             <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
             Then.onThe<%- startLR%>.onFilterBar().iCheckFilterField("<%- property %>");
             <%_ }); -%>

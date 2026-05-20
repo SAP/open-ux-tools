@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import fileSystem, { read } from 'node:fs';
+import fileSystem, { read, readFileSync } from 'node:fs';
 import type { Logger } from '@sap-ux/logger/src/types';
 import * as appModels from '../test-input/constants';
 
@@ -162,7 +162,10 @@ describe('ui5-test-writer', () => {
     });
 
     describe('generateOPAFiles', () => {
-        const metadata = fs?.read(join(__dirname, '../test-input/metadata.xml')) || '';
+        const metadata = readFileSync(join(__dirname, '../fixtures/metadata.xml')).toString();
+        const metadataMissingSemanticFilter = readFileSync(
+            join(__dirname, '../fixtures/metadata_filter_bar_semantic_key.xml')
+        ).toString();
         const testApplications = [
             {
                 description: 'Fullscreen LR-OP',
@@ -320,6 +323,14 @@ describe('ui5-test-writer', () => {
             const firstJourneyContent =
                 fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.js'].contents;
             expect(firstJourneyContent).toContain('iCheckFilterField');
+        });
+
+        it('generates filter tests for LROPv4 app (missing semantic filter)', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL_FILTER_BAR_NO_TRAVEL_ID));
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, {}, metadataMissingSemanticFilter, fs);
+
+            expect(fs.dump(projectDir)).toMatchSnapshot();
         });
 
         it('generates column tests for LROPv4 app', async () => {
