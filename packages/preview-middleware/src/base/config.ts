@@ -91,6 +91,7 @@ export interface TemplateConfig {
     locateReuseLibsScript?: boolean;
     enhancedHomePage?: boolean;
     enableCardGenerator?: boolean;
+    previewAppId?: string;
 }
 
 /**
@@ -443,7 +444,8 @@ export function createFlpTemplateConfig(
         },
         locateReuseLibsScript: config.libs,
         enhancedHomePage: config.enhancedHomePage,
-        enableCardGenerator: false
+        enableCardGenerator: false,
+        previewAppId: id
     } satisfies TemplateConfig;
 }
 

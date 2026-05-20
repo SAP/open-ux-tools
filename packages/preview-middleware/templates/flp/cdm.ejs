@@ -49,7 +49,8 @@
         data-open-ux-preview-flex-settings='<%- JSON.stringify(flexSettings) %>'<% } if (locals.locateReuseLibsScript) { %>
         data-open-ux-preview-libs-manifests='<%- JSON.stringify(Object.values(apps).map(app => app.url)) %>'<% } %>
         data-open-ux-preview-base-url='<%- baseUrl %>'
-        data-open-ux-preview-enhanced-homepage='true'>
+        data-open-ux-preview-enhanced-homepage='true'
+        data-open-ux-preview-app-id='<%- previewAppId %>'>
     </script>
 
 <% if (locals.flexSettings && flexSettings?.developerMode) { %>

@@ -316,20 +316,22 @@ export default class MyHomeController extends Controller {
     }
 
     onAppsLoaded(event: Event<{ apps: App[], tiles: GenericTile[] }>) {
+        const apps = event.getParameter('apps');
         const tiles = event.getParameter('tiles');
+        // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-dom-access
+        const previewAppId = document.getElementById('sap-ui-bootstrap')?.dataset.openUxPreviewAppId ?? '';
+        const previewVizIdPrefix = previewAppId ? `VIZ:${previewAppId}` : '';
         tiles.forEach((tile, index) => {
-            if (!tile.getId().includes('sampleApps')) {
-                // eslint-disable-next-line @sap-ux/fiori-tools/sap-timeout-usage
-                setTimeout(() => {
-                    // apply color to the preview app
-                    if (index === 0) {
-                        tile.setBackgroundColor('sapLegendColor12');
-                    }
-                }, 100);
-            }
+            // eslint-disable-next-line @sap-ux/fiori-tools/sap-timeout-usage
+            setTimeout(() => {
+                const vizId = (apps[index]?.getProperty('vizId') as string | undefined) ?? '';
+                if (previewVizIdPrefix && vizId.startsWith(previewVizIdPrefix)) {
+                    tile.setBackgroundColor(index === 0 ? 'sapLegendColor12' : 'sapLegendColor6');
+                }
+            }, 100);
 
             // prevent tile-level actions
-            tile.setScope(GenericTileScope.Display)
+            tile.setScope(GenericTileScope.Display);
 
             // remove dnd configuration from parent
             const parentContainer = tile.getParent() as Control;
