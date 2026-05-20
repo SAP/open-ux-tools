@@ -1,5 +1,27 @@
 # @sap-ux/ui5-test-writer
 
+## 0.9.5
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/fiori-generator-shared@0.15.2
+    - @sap-ux/preview-middleware@0.26.4
+    - @sap-ux/ui5-application-writer@1.9.0
+
+## 0.9.4
+
+### Patch Changes
+
+- 8d4a8a4: Generate tests for Actions on the Object Page
+
+## 0.9.3
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@0.26.3
+
 ## 0.9.2
 
 ### Patch Changes
