@@ -28,35 +28,6 @@ sap-ux [command] [sub-command] /path/to/project
 
 # [Commands](#commands)
 
-| Command group | Subcommand | Description |
-|---|---|---|
-| [`generate`](#generate) | [`adaptation-project`](#generate-adaptation-project) | Generate a new SAPUI5 adaptation project |
-| [`add`](#add) | [`system`](#add-system) | Add a new back-end system to the store |
-| [`add`](#add) | [`deploy-config`](#add-deploy-config) | Add ABAP deployment configuration |
-| [`add`](#add) | [`mockserver-config`](#add-mockserver-config) | Add local OData mock server configuration |
-| [`add`](#add) | [`eslint-config`](#add-eslint-config) | Add ESLint configuration |
-| [`add`](#add) | [`cds-plugin-ui5`](#add-cds-plugin-ui5) | Add cds-plugin-ui5 to a CAP project |
-| [`add`](#add) | [`smartlinks-config`](#add-smartlinks-config) | Add SmartLinks cross-app navigation config |
-| [`add`](#add) | [`inbound-navigation`](#add-inbound-navigation) | Add FLP inbound navigation config |
-| [`add`](#add) | [`variants-config`](#add-variants-config) | Add variants creation configuration |
-| [`add`](#add) | [`cards-editor`](#add-cards-editor) | Add cards generation configuration |
-| [`add`](#add) | [`model`](#add-model) | Add OData service and model to an ADP project |
-| [`add`](#add) | [`annotations`](#add-annotations) | Add annotation to an ADP project |
-| [`add`](#add) | [`html`](#add-html) | Add HTML preview files |
-| [`add`](#add) | [`component-usages`](#add-component-usages) | Add component usages to an ADP project |
-| [`add`](#add) | [`adp-cf-config`](#add-adp-cf-config) | Configure CF ADP project for local preview |
-| [`change`](#change) | [`system`](#change-system) | Update a saved back-end system |
-| [`change`](#change) | [`data-source`](#change-data-source) | Replace OData source in an ADP project |
-| [`change`](#change) | [`inbound`](#change-inbound) | Replace FLP inbound config in an ADP project |
-| [`convert`](#convert) | [`preview-config`](#convert-preview-config) | Convert app to virtual-endpoint preview |
-| [`convert`](#convert) | [`eslint-config`](#convert-eslint-config) | Convert ESLint config to flat format |
-| [`list`](#list) | [`system`](#list-system) | List all saved back-end systems |
-| [`get`](#get) | [`system`](#get-system) | Get details of a saved back-end system |
-| [`remove`](#remove) | [`system`](#remove-system) | Remove a saved back-end system |
-| [`remove`](#remove) | [`mockserver-config`](#remove-mockserver-config) | Remove mock server configuration |
-
----
-
 ## [`generate`](#generate)
 
 Command group for generating SAP Fiori applications. A subcommand is required.
@@ -64,6 +35,8 @@ Command group for generating SAP Fiori applications. A subcommand is required.
 Usage: `npx --yes @sap-ux/create@latest generate [subcommand] [options]`
 
 The available subcommands are: `adaptation-project`
+
+
 
 --------------------------------
 
