@@ -68,7 +68,9 @@ async function getSystem(url: string, client: string | undefined, asJson: boolea
         };
 
         if (asJson) {
-            console.log(JSON.stringify(publicView, null, 2));
+            // Use process.stdout.write so the output is pure JSON with no logger
+            // prefixes or timestamps — required for machine consumption and piping.
+            process.stdout.write(JSON.stringify(publicView, null, 2) + '\n');
         } else {
             logger.info(`Name:       ${system.name}`);
             logger.info(`URL:        ${system.url}`);
@@ -84,6 +86,8 @@ async function getSystem(url: string, client: string | undefined, asJson: boolea
         }
     } catch (error) {
         logger.error((error as Error).message);
+        // Log the full error object (including stack trace) at debug level so it
+        // is visible when --verbose / debug logging is enabled.
         logger.debug(error);
     }
 }

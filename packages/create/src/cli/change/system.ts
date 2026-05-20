@@ -112,6 +112,8 @@ async function updateSystem(params: {
         logger.info(`System '${key.getId()}' updated.`);
     } catch (error) {
         logger.error((error as Error).message);
+        // Log the full error object (including stack trace) at debug level so it
+        // is visible when --verbose / debug logging is enabled.
         logger.debug(error);
     }
 }

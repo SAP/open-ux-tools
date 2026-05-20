@@ -48,7 +48,9 @@ async function listSystems(asJson: boolean): Promise<void> {
         const systems = await service.getAll();
 
         if (asJson) {
-            console.log(JSON.stringify(systems.map(toPublicView), null, 2));
+            // Use process.stdout.write so the output is pure JSON with no logger
+            // prefixes or timestamps — required for machine consumption and piping.
+            process.stdout.write(JSON.stringify(systems.map(toPublicView), null, 2) + '\n');
         } else if (systems.length === 0) {
             logger.info('No systems found.');
         } else {
@@ -59,6 +61,8 @@ async function listSystems(asJson: boolean): Promise<void> {
         }
     } catch (error) {
         logger.error((error as Error).message);
+        // Log the full error object (including stack trace) at debug level so it
+        // is visible when --verbose / debug logging is enabled.
         logger.debug(error);
     }
 }
