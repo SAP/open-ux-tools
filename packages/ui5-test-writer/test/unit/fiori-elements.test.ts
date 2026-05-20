@@ -623,7 +623,9 @@ describe('ui5-test-writer', () => {
         it('generates tests for v4 application with sub object page', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE));
             const projectDir = prepareTestFiles('LROPv4');
-            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+            const subOPMetadata =
+                fs?.read(join(__dirname, '../test-input/LROPv4/webapp/localService/mainService/metadata.xml')) ?? '';
+            fs = await generateOPAFiles(projectDir, {}, subOPMetadata, fs);
 
             const bookingObjPageJourneyContent =
                 fs.dump()['test/test-output/LROPv4/webapp/test/integration/BookingObjectPageJourney.js'].contents;
@@ -637,6 +639,7 @@ describe('ui5-test-writer', () => {
             expect(bookingObjPageJourneyContent).toContain('field: "carrier"');
             expect(bookingObjPageJourneyContent).toContain('targetAnnotation: "Contact"');
             expect(bookingObjPageJourneyContent).toContain('iCheckMicroChart("Supplement Price")');
+            expect(bookingObjPageJourneyContent).toContain('onHeader().iCheckAction("Activate", { enabled: false })');
             expect(bookingObjPageJourneyContent).toContain('iCheckNumberOfSections(3)');
             expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("BookingDetails")');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "BookingDetails" })');
@@ -644,8 +647,14 @@ describe('ui5-test-writer', () => {
             expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "AdministrativeData" })');
             expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("FlightData")');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "FlightData" })');
+            expect(bookingObjPageJourneyContent).toContain(
+                '.iCheckAction("Deduct Discount" /* , { enabled: true } */)'
+            );
             expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("PriceData")');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "PriceData" })');
+            expect(bookingObjPageJourneyContent).toContain(
+                'onTable({ property: "_BookSupplement" }).iCheckAction("Create Template", { enabled: true })'
+            );
             expect(bookingObjPageJourneyContent).toContain(
                 'onForm({ section: "BookingData" }).iCheckField({ property: "BookingId" })'
             );
