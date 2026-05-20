@@ -1,5 +1,5 @@
 import { EventEmitter } from 'node:events';
-import type * as FrontendServiceModule from '../../../../../src/tools/adp-controller-extension/frontend-actions/frontend-service';
+import type * as FrontendServiceModule from '../../../../../src/tools/run-rta-workflow-step/frontend-actions/frontend-service';
 
 // --- playwright-core mock --------------------------------------------------
 
@@ -85,7 +85,7 @@ function setupBrowser(pages: FakePage[]): { browser: FakeBrowser; pages: FakePag
 }
 
 async function loadFrontendService(): Promise<typeof FrontendServiceModule> {
-    return import('../../../../../src/tools/adp-controller-extension/frontend-actions/frontend-service');
+    return import('../../../../../src/tools/run-rta-workflow-step/frontend-actions/frontend-service');
 }
 
 beforeEach(() => {
