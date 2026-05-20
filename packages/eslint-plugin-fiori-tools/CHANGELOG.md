@@ -1,5 +1,19 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.2.0
+
+### Minor Changes
+
+- 2f1ece0: [rule] Add rule to check that a Common.Text description property has a meaningful Common.Label annotation
+
+### Patch Changes
+
+- Updated dependencies [2f1ece0]
+    - @sap-ux/fiori-annotation-api@0.11.0
+    - @sap-ux/odata-annotation-core@0.3.1
+    - @sap-ux/odata-entity-model@0.4.0
+    - @sap-ux/odata-vocabularies@0.5.1
+
 ## 10.1.2
 
 ### Patch Changes
