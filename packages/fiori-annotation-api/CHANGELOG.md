@@ -1,5 +1,23 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.11.0
+
+### Minor Changes
+
+- 2f1ece0: feat: add convertMetadataDocumentV2 API and expose V2Annotation type; getXmlServiceArtifacts now returns [ServiceArtifacts, V2Annotation[]]
+
+### Patch Changes
+
+- Updated dependencies [2f1ece0]
+- Updated dependencies [2f1ece0]
+    - @sap-ux/xml-odata-annotation-converter@0.6.0
+    - @sap-ux/odata-annotation-core-types@0.6.1
+    - @sap-ux/cds-odata-annotation-converter@0.8.1
+    - @sap-ux/odata-annotation-core@0.3.1
+    - @sap-ux/odata-entity-model@0.4.0
+    - @sap-ux/odata-vocabularies@0.5.1
+    - @sap-ux/cds-annotation-parser@0.3.1
+
 ## 0.10.1
 
 ### Patch Changes
