@@ -8,4 +8,4 @@ export type {
     BackendMiddlewareConfig
 } from './base/types.js';
 
-void initI18n().catch(() => undefined);
+initI18n().catch(() => undefined);

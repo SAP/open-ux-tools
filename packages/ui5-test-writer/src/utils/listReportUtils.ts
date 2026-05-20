@@ -1,9 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
-import type {
-    TreeAggregation,
-    TreeAggregations,
-    TreeModel
-} from '@sap/ux-specification/dist/types/src/parser/index.js';
+import type { TreeAggregations, TreeModel } from '@sap/ux-specification/dist/types/src/parser/index.js';
 import type {
     ActionButtonsResult,
     ActionButtonState,

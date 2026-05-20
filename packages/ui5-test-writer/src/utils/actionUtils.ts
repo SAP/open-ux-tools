@@ -1,6 +1,9 @@
 import type { Action, ActionParameter, ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import type { ActionButtonState, ButtonState, ButtonVisibilityResult } from '../types.js';
-import type { ActionAnnotations, EntityContainerAnnotations } from '@sap-ux/vocabularies-types/vocabularies/Edm_Types.js';
+import type {
+    ActionAnnotations,
+    EntityContainerAnnotations
+} from '@sap-ux/vocabularies-types/vocabularies/Edm_Types.js';
 import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI.js';
 import type { OperationAvailable } from '@sap-ux/vocabularies-types/vocabularies/Core.js';
 import type {
