@@ -1,0 +1,187 @@
+---
+name: sap-fiori-eslint-migrate
+description: Migrate a SAP Fiori project from legacy ESLint (eslint@8, .eslintrc, eslint-plugin-fiori-custom, or @sap-ux/eslint-plugin-fiori-tools@0.6.x) to ESLint 9+ flat config using @sap-ux/eslint-plugin-fiori-tools@9+. Use when the user has an old .eslintrc file, mentions migration, upgrading ESLint, or sees errors about unsupported ESLint config format.
+compatibility: Requires Node.js with npm, pnpm, or yarn. Project must have an existing ESLint configuration.
+metadata:
+  author: sap-fiori-tools
+  version: "1.0"
+---
+
+# Fiori ESLint Migration to ESLint 9 Flat Config
+
+Migrate from legacy ESLint config (`.eslintrc`, `eslintrc.js`, `eslint@8`, `eslint-plugin-fiori-custom`) to ESLint 9+ flat config using `@sap-ux/eslint-plugin-fiori-tools@9+`.
+
+## Step 1 — Detect what needs migrating
+
+Scan the project for legacy ESLint artifacts:
+
+```bash
+# Check for legacy config files
+ls .eslintrc .eslintrc.js .eslintrc.cjs .eslintrc.json .eslintrc.yml .eslintrc.yaml 2>/dev/null
+
+# Check for .eslintignore
+ls .eslintignore 2>/dev/null
+
+# Check current ESLint and plugin versions
+cat package.json | grep -E '"eslint"|"fiori-custom"|"eslint-plugin-fiori"'
+```
+
+For CAP projects, also check each app subfolder:
+```bash
+find . -name ".eslintrc*" -not -path "*/node_modules/*" 2>/dev/null
+find app -name "package.json" -not -path "*/node_modules/*" | xargs grep -l "eslint" 2>/dev/null
+```
+
+## Step 2 — Use the automatic migration tool (recommended)
+
+The `@sap-ux/create` tool can automatically migrate ESLint config. Run this from the app root (the folder containing `webapp/`):
+
+```bash
+npx --yes @sap-ux/create@latest convert eslint-config
+```
+
+For help and options:
+```bash
+npx --yes @sap-ux/create@latest convert eslint-config --help
+```
+
+**What the tool does automatically:**
+1. Creates `eslint.config.mjs` with the flat config format
+2. Migrates ignore patterns from `.eslintignore`
+3. Updates `package.json` to ESLint 9 + `@sap-ux/eslint-plugin-fiori-tools@^9`
+4. Removes the old `.eslintrc*` file
+5. Removes the old `.eslintignore` file
+
+If the automatic tool succeeds, jump to Step 5 to verify.
+
+## Step 3 — Manual migration (if automatic tool fails or custom rules exist)
+
+### 3a. Create eslint.config.mjs
+
+The config file goes at the **app level** (next to `webapp/`):
+
+**Basic migration (was using `plugin:@sap-ux/eslint-plugin-fiori-tools/defaultJS`):**
+```javascript
+import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+```
+
+**With custom ignores (migrate from .eslintignore):**
+```javascript
+import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    {
+        ignores: [
+            'dist',
+            'target',
+            'localService',
+            'backup'
+            // Add any other patterns from your old .eslintignore here
+        ]
+    },
+    ...fioriTools.configs.recommended
+];
+```
+
+**If the project had custom rules on top of the defaults:**
+```javascript
+import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended,
+    {
+        rules: {
+            // Migrate any custom rule overrides here
+            // Old: "fiori-custom/sap-no-localstorage": "error"
+            // New: "@sap-ux/fiori-tools/sap-no-localstorage": "error"
+        }
+    }
+];
+```
+
+### 3b. Migrate rule references in source code
+
+If source files have ESLint disable comments using the old `fiori-custom/` prefix, update them:
+
+```bash
+# Find all references to old rule prefix
+grep -r "fiori-custom/" webapp/ --include="*.js" --include="*.ts" -l 2>/dev/null
+```
+
+Replace `fiori-custom/` with `@sap-ux/fiori-tools/`:
+
+Examples:
+- `// eslint-disable fiori-custom/sap-browser-api-warning` → `// eslint-disable @sap-ux/fiori-tools/sap-browser-api-warning`
+- `// eslint-disable-next-line fiori-custom/sap-no-localstorage` → `// eslint-disable-next-line @sap-ux/fiori-tools/sap-no-localstorage`
+
+### 3c. Delete legacy files
+
+After creating the new config, remove old files:
+```bash
+# Remove old config (adjust filename to match what was found)
+rm -f .eslintrc .eslintrc.js .eslintrc.cjs .eslintrc.json .eslintrc.yml .eslintrc.yaml
+
+# Remove .eslintignore (patterns are now in eslint.config.mjs)
+rm -f .eslintignore
+```
+
+## Step 4 — Update package.json dependencies
+
+Update `eslint` to version 9+ and `@sap-ux/eslint-plugin-fiori-tools` to version 9+. Remove `eslint-plugin-fiori-custom` if present.
+
+Detect the package manager:
+```bash
+ls package-lock.json yarn.lock pnpm-lock.yaml 2>/dev/null
+```
+
+**npm:**
+```bash
+npm uninstall eslint-plugin-fiori-custom
+npm install --save-dev eslint@^10 @sap-ux/eslint-plugin-fiori-tools@^10
+```
+
+**pnpm:**
+```bash
+pnpm remove eslint-plugin-fiori-custom
+pnpm add --save-dev eslint@^10 @sap-ux/eslint-plugin-fiori-tools@^10
+```
+
+**yarn:**
+```bash
+yarn remove eslint-plugin-fiori-custom
+yarn add --dev eslint@^10 @sap-ux/eslint-plugin-fiori-tools@^10
+```
+
+**For CAP projects**: Run from the app subfolder if it has its own `package.json`, or from the root if packages are shared.
+
+## Step 5 — Verify the migration
+
+Run ESLint to confirm no configuration errors:
+
+```bash
+# Check config is valid (should print config JSON, not an error)
+npx eslint --print-config webapp/Component.js 2>&1 | head -5
+
+# Run lint on the webapp
+npx eslint webapp/ 2>&1 | head -40
+```
+
+If ESLint reports config errors, common fixes:
+- **"Cannot find module '@sap-ux/eslint-plugin-fiori-tools'"** → Plugin not installed, run install command from Step 4
+- **"FlatConfig is not supported"** → Using ESLint 8, upgrade to ESLint 10
+- **"Unknown rule"** → Old rule prefix still in use, check for remaining `fiori-custom/` references
+
+## What changed between ESLint 8 and 9+
+
+| ESLint 8 (legacy) | ESLint 9+ (flat config) |
+|---|---|
+| `.eslintrc` / `.eslintrc.js` | `eslint.config.mjs` |
+| `.eslintignore` | `ignores` array in config |
+| `extends: [...]` | Spread `...` configs into array |
+| `plugins: { "fiori-custom": ... }` | Included in `fioriTools.configs.recommended` |
+| `fiori-custom/` rule prefix | `@sap-ux/fiori-tools/` rule prefix |
+| `plugin:@sap-ux/.../defaultJS` | `fioriTools.configs.recommended` |
