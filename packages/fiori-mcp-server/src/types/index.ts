@@ -10,7 +10,8 @@ import type {
     DownloadODataServiceMetadataInputSchema,
     GenerateAdaptationProjectInputSchema,
     OpenAdaptationEditorInputSchema,
-    AdpControllerExtensionInputSchema
+    AdpControllerExtensionInputSchema,
+    RunRtaWorkflowStepInputSchema
 } from './input';
 import type {
     ExecuteFunctionalityOutputSchema,
@@ -41,6 +42,7 @@ export type DownloadODataServiceMetadataInput = zod.infer<typeof DownloadODataSe
 export type GenerateAdaptationProjectInput = zod.infer<typeof GenerateAdaptationProjectInputSchema>;
 export type OpenAdaptationEditorInput = zod.infer<typeof OpenAdaptationEditorInputSchema>;
 export type AdpControllerExtensionInput = zod.infer<typeof AdpControllerExtensionInputSchema>;
+export type RunRtaWorkflowStepInput = zod.infer<typeof RunRtaWorkflowStepInputSchema>;
 
 /**
  * Interface for functionality handlers
