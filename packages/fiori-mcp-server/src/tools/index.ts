@@ -17,6 +17,7 @@ export { generateFioriAppCap } from './generate-fiori-app-cap.js';
 export { generateAdaptationProject } from './generate-adaptation-project.js';
 export { openAdaptationEditor } from './open-adaptation-editor.js';
 export { adpControllerExtension } from './adp-controller-extension.js';
+export { runRtaWorkflowStep } from './run-rta-workflow-step.js';
 
 export const tools = [
     {
@@ -196,6 +197,30 @@ export const tools = [
             openWorldHint: false
         },
         inputSchema: convertToSchema(Input.AdpControllerExtensionInputSchema)
+    },
+    {
+        name: 'run_rta_workflow_step',
+        description: `Internal step runner for the **adp-rta-workflow** skill. **Do not call this tool standalone.**
+The skill orchestrates a multi-step Runtime Authoring flow (start → get_overlays → AI selects target control → get_actions → AI selects action → get_context → AI prepares payload → call_action → save → stop) and decides what each call should pass. Calling out of sequence will fail with descriptive errors but bypasses the AI decision points the skill provides.
+
+Always go through the **adp-rta-workflow** skill in the SAP Fiori MCP server.
+
+Steps:
+- **start** — payload: \`{ site: string, frameId?: string }\`. Launches the editor URL, starts RTA, returns a fresh \`sessionId\` and \`{ rtaStarted: true }\`.
+- **get_overlays** — sessionId only. Returns \`{ overlays: Overlay[] }\` for AI control selection.
+- **get_actions** — sessionId, payload: \`{ controlId: string }\`. Returns \`{ actions: Action[] }\`.
+- **get_context** — sessionId, payload: \`{ controlId: string, actionId: string }\`. Returns \`{ context }\`.
+- **call_action** — sessionId, payload: \`{ controlId: string, actionId: string, actionPayload: object }\`. Returns \`{ success: boolean }\`.
+- **save** — sessionId only. Returns \`{ saved: boolean }\`.
+- **stop** — sessionId only. Closes the session; if no sessions remain, the browser shuts down. Returns \`{ stopped: true }\`.`,
+        annotations: {
+            title: 'Run RTA Workflow Step (skill-internal)',
+            readOnlyHint: false,
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: true
+        },
+        inputSchema: convertToSchema(Input.RunRtaWorkflowStepInputSchema)
     },
     {
         name: 'list_functionality',

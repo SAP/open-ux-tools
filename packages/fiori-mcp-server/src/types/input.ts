@@ -130,3 +130,29 @@ export const AdpControllerExtensionInputSchema = zod.object({
     controllerName: zod.string().optional().describe('Desired controller extension name (without .js/.ts extension)'),
     viewId: zod.string().optional().describe('Optional target view identifier for the controller extension')
 });
+
+export const RunRtaWorkflowStepInputSchema = zod.object({
+    step: zod
+        .enum(['start', 'get_overlays', 'get_actions', 'get_context', 'call_action', 'save', 'stop'])
+        .describe(
+            'Which RTA workflow step to run. Each step maps to one Joule frontend action ' +
+                'on the adaptation editor page.'
+        ),
+    sessionId: zod
+        .string()
+        .optional()
+        .describe(
+            'Session identifier returned by the "start" step. Required for every step except "start" itself.'
+        ),
+    payload: zod
+        .record(zod.string(), zod.unknown())
+        .optional()
+        .describe(
+            'Step-specific arguments. ' +
+                'start: { site: string, frameId?: string }. ' +
+                'get_actions: { controlId: string }. ' +
+                'get_context: { controlId: string, actionId: string }. ' +
+                'call_action: { controlId: string, actionId: string, actionPayload: object }. ' +
+                'get_overlays / save / stop: omit.'
+        )
+});

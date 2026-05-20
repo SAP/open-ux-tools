@@ -23,8 +23,10 @@ import {
     generateAdaptationProject,
     openAdaptationEditor,
     adpControllerExtension,
+    runRtaWorkflowStep,
     tools
 } from './tools/index.js';
+import { stopBrowser } from './tools/adp-controller-extension/frontend-actions.js';
 import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry/index.js';
 import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from './constant.js';
 import type {
@@ -36,7 +38,8 @@ import type {
     DownloadODataServiceMetadataInput,
     GenerateAdaptationProjectInput,
     OpenAdaptationEditorInput,
-    AdpControllerExtensionInput
+    AdpControllerExtensionInput,
+    RunRtaWorkflowStepInput
 } from './types/index.js';
 import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
 import { logger } from './utils/logger.js';
@@ -53,6 +56,7 @@ type ToolArgs =
     | GenerateAdaptationProjectInput
     | OpenAdaptationEditorInput
     | AdpControllerExtensionInput
+    | RunRtaWorkflowStepInput
     | Record<string, unknown>;
 
 const FALLBACK_PROTOCOL_VERSION = '2024-11-05';
@@ -116,6 +120,7 @@ export class FioriFunctionalityServer {
     private setupErrorHandling(): void {
         this.server.onerror = (error): void => logger.error(`[MCP Error] ${error}`);
         process.on('SIGINT', async () => {
+            await stopBrowser();
             await this.server.close();
             process.exit(0);
         });
@@ -223,6 +228,9 @@ export class FioriFunctionalityServer {
                     case 'adp_controller_extension':
                         result = await adpControllerExtension(args as AdpControllerExtensionInput);
                         break;
+                    case 'run_rta_workflow_step':
+                        result = await runRtaWorkflowStep(args as RunRtaWorkflowStepInput);
+                        break;
                     case 'list_functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);
                         break;
@@ -236,7 +244,7 @@ export class FioriFunctionalityServer {
                         // Do not pass telemetryProperties to unknownTool
                         await TelemetryHelper.sendTelemetry(unknownTool, {}, (args as any)?.appPath);
                         throw new Error(
-                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, generate_adaptation_project, open_adaptation_editor, adp_controller_extension, list_functionality, get_functionality_details, execute_functionality.`
+                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, generate_adaptation_project, open_adaptation_editor, adp_controller_extension, run_rta_workflow_step, list_functionality, get_functionality_details, execute_functionality.`
                         );
                 }
                 await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
