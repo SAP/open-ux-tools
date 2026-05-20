@@ -133,9 +133,10 @@ export default class MyHomeController extends Controller {
     }
 
     onBeforeRendering(): void {
-        const appsContainer = this.byId('favoriteApps') as UI5Element;
-        appsContainer.removeAllAggregation('menuItems');
-        appsContainer.removeAllAggregation('actionButtons');
+        const favAppsPanel = this.byId('favoriteApps') as UI5Element;
+        favAppsPanel.setProperty('title', 'Previews');
+        favAppsPanel.removeAllAggregation('menuItems');
+        favAppsPanel.removeAllAggregation('actionButtons');
     }
 
     private setupSystemInfoBar(): void {
