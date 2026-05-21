@@ -1536,12 +1536,20 @@ Return ONLY the formatted markdown. Do not add any explanations or meta-commenta
             newSources[sourceId] = { path: `${sourceId}.md`, documentCount: markdownChunks.length };
         }
 
-        // Merge: new entries overwrite matching existing ones, rest are kept
+        // Merge sources: new source entry replaces the existing one for the same id
         const mergedSources = { ...existingSources, ...newSources };
 
-        const mergedCategoryMap = new Map(existingCategories.map((c) => [c.id, c]));
+        // Merge categories: for a category that already exists, union the document lists
+        // so existing documents from other sources are not lost.
+        const mergedCategoryMap = new Map(existingCategories.map((c) => [c.id, { ...c, documents: [...c.documents] }]));
         for (const cat of newCategories) {
-            mergedCategoryMap.set(cat.id, cat);
+            const existing = mergedCategoryMap.get(cat.id);
+            if (existing) {
+                const merged = [...new Set([...existing.documents, ...cat.documents])];
+                mergedCategoryMap.set(cat.id, { ...existing, count: merged.length, documents: merged });
+            } else {
+                mergedCategoryMap.set(cat.id, cat);
+            }
         }
         const mergedCategories = Array.from(mergedCategoryMap.values());
 
