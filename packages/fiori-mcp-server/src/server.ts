@@ -22,6 +22,8 @@ import {
     generateAdaptationProject,
     openAdaptationEditor,
     adpControllerExtension,
+    listLibrariesFromSystem,
+    readODataMetadataAdp,
     tools
 } from './tools';
 import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry';
@@ -201,6 +203,12 @@ export class FioriFunctionalityServer {
                         break;
                     case 'adp_controller_extension':
                         result = await adpControllerExtension(args as AdpControllerExtensionInput);
+                        break;
+                    case 'list_libraries_from_system':
+                        result = await listLibrariesFromSystem(args as ListFunctionalitiesInput);
+                        break;
+                    case 'read_odata_metadata_adp':
+                        result = await readODataMetadataAdp(args as ListFunctionalitiesInput);
                         break;
                     case 'list_functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);

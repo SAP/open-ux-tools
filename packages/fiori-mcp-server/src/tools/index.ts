@@ -17,6 +17,8 @@ export { generateFioriAppCap } from './generate-fiori-app-cap';
 export { generateAdaptationProject } from './generate-adaptation-project';
 export { openAdaptationEditor } from './open-adaptation-editor';
 export { adpControllerExtension } from './adp-controller-extension';
+export { listLibrariesFromSystem } from './get-libraries';
+export { readODataMetadataAdp } from './get-adp-odata-metada';
 
 export const tools = [
     {
@@ -193,6 +195,42 @@ export const tools = [
             openWorldHint: false
         },
         inputSchema: convertToSchema(Input.AdpControllerExtensionInputSchema)
+    },
+    {
+        name: 'list_libraries_from_system',
+        description: `Lists all available libraries from the specified SAP system.
+
+        This tool:
+        - Reads the SAP system connection details from the provided appPath (using ui5.yaml configuration)
+        - Connects to the SAP system and retrieves the list of available UI5 libraries with descriptors
+        - Returns an array of library objects with details such as name, version, and description
+
+        Use this tool when you need to discover which UI5 libraries are available in the connected SAP system, for adding an OData Service to the manifest.`,
+        annotations: {
+            title: 'List Libraries from SAP System',
+            readOnlyHint: true,
+            idempotentHint: true,
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.ListFunctionalitiesInputSchema)
+    },
+    {
+        name: 'read_odata_metadata_adp',
+        description: `Reads the OData metadata for the specified Adaptation Project.
+
+        This tool:
+        - Reads the SAP system connection details from the provided appPath (using ui5.yaml configuration)
+        - Connects to the SAP system and retrieves the OData metadata
+        - Returns the OData metadata of the merged app descriptor for the Adaptation Project
+
+        Use this tool when you need to read the OData metadata for an Adaptation Project.`,
+        annotations: {
+            title: 'Read OData Metadata for Adaptation Project',
+            readOnlyHint: true,
+            idempotentHint: true,
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.ListFunctionalitiesInputSchema)
     },
     {
         name: 'list_functionality',
