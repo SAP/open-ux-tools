@@ -2,6 +2,7 @@ import { join } from 'node:path';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { readUi5Yaml } from '@sap-ux/project-access';
+import type { FioriToolsServeStaticPath } from '@sap-ux/ui5-config';
 import { generateFlpEmbeddedConfig } from '../../../src';
 
 const fixturesPath = join(__dirname, '../../fixtures/flp-embedded-config');
@@ -49,7 +50,7 @@ describe('generateFlpEmbeddedConfig', () => {
             const proxyMw = flpConfig.findCustomMiddleware<{ bsp?: string }>('fiori-tools-proxy');
             expect(proxyMw?.configuration?.bsp).toBe('myapp');
 
-            const staticMw = flpConfig.findCustomMiddleware<{ paths: { path: string; src: string }[] }>(
+            const staticMw = flpConfig.findCustomMiddleware<{ paths: FioriToolsServeStaticPath[] }>(
                 'fiori-tools-servestatic'
             );
             expect(staticMw).toBeDefined();
@@ -61,7 +62,7 @@ describe('generateFlpEmbeddedConfig', () => {
             // test-app's metadata.name is 'test-app' (no dots), appModule = 'test-app', bsp = 'otherapp'
             const result = await generateFlpEmbeddedConfig(fixturesPath, 'otherapp', undefined, undefined, fs);
             const flpConfig = await readUi5Yaml(fixturesPath, 'flp.yaml', result);
-            const staticMw = flpConfig.findCustomMiddleware<{ paths: { path: string; src: string }[] }>(
+            const staticMw = flpConfig.findCustomMiddleware<{ paths: FioriToolsServeStaticPath[] }>(
                 'fiori-tools-servestatic'
             );
             expect(staticMw?.configuration.paths).toHaveLength(2);
@@ -74,7 +75,7 @@ describe('generateFlpEmbeddedConfig', () => {
             // test-app's metadata.name is 'test-app', bsp matches
             const result = await generateFlpEmbeddedConfig(fixturesPath, 'test-app', undefined, undefined, fs);
             const flpConfig = await readUi5Yaml(fixturesPath, 'flp.yaml', result);
-            const staticMw = flpConfig.findCustomMiddleware<{ paths: { path: string; src: string }[] }>(
+            const staticMw = flpConfig.findCustomMiddleware<{ paths: FioriToolsServeStaticPath[] }>(
                 'fiori-tools-servestatic'
             );
             expect(staticMw?.configuration.paths).toHaveLength(1);

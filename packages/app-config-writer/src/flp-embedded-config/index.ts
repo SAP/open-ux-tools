@@ -5,6 +5,7 @@ import { isCapProject, FileName, readUi5Yaml } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { FioriToolsServeStaticPath } from '@sap-ux/ui5-config';
 
 export const DEFAULT_FLP_PATH = 'sap/bc/ui5_ui5/ui2/ushell/shells/abap/Fiorilaunchpad.html';
 
@@ -26,13 +27,9 @@ export async function generateFlpEmbeddedConfig(
     bspApplication: string,
     flpPath: string = DEFAULT_FLP_PATH,
     yamlPath: string = FileName.Ui5Yaml,
-    fs?: Editor,
+    fs: Editor = create(createStorage()),
     logger?: ToolsLogger
 ): Promise<Editor> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
-
     const bspApp = bspApplication.trim().toLowerCase();
     if (!bspApp) {
         throw new Error('Mandatory parameter bspApplication is missing.');
@@ -71,9 +68,7 @@ function addStartEmbeddedScript(fs: Editor, basePath: string, flpPath: string, l
         throw new Error(`File 'package.json' not found at ${basePath}`);
     }
 
-    if (!packageJson.scripts) {
-        packageJson.scripts = {};
-    }
+    packageJson.scripts ??= {};
 
     packageJson.scripts['start-embedded'] =
         `ui5 build && fiori run --config ./flp.yaml --open "${flpPath}?sap-ushell-nocb=true"`;
@@ -107,8 +102,8 @@ async function addFlpYaml(
     }
     const appModule: string = metadata.name.replaceAll('.', '/');
 
-    const DIST = 'dist' as const;
-    const paths: { path: string; src: string }[] = [{ path: '/**/' + bspApplication, src: DIST }];
+    const DIST = 'dist';
+    const paths: FioriToolsServeStaticPath[] = [{ path: '/**/' + bspApplication, src: DIST }];
 
     if (appModule !== bspApplication) {
         paths.push({ path: '/**/' + appModule, src: DIST });
