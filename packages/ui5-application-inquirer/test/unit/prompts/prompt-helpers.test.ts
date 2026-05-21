@@ -72,6 +72,18 @@ describe('prompt-helpers', () => {
         // Test maximal suggested app name
         mockExistsSync.mockReturnValue(true);
         expect(defaultAppName(testTempDir)).toEqual('project1000');
+
+        // When path does not exist, returns baseAppName as-is
+        jest.spyOn(promptHelpers, 'appPathExists').mockReturnValue(false);
+        expect(defaultAppName(testTempDir, 'myapp')).toEqual('myapp');
+
+        // When path exists once, appends the incremented number
+        jest.spyOn(promptHelpers, 'appPathExists').mockReturnValueOnce(true);
+        expect(defaultAppName(testTempDir, 'myapp')).toEqual('myapp1');
+
+        // Test maximal suggested app name with baseAppName
+        jest.spyOn(promptHelpers, 'appPathExists').mockReturnValue(true);
+        expect(defaultAppName(testTempDir, 'myapp')).toEqual('myapp999');
     });
 
     test('isVersionIncluded', () => {

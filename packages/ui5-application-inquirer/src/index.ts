@@ -143,6 +143,7 @@ export {
     type InquirerAdapter,
     type PromptDefaultValue,
     type UI5ApplicationAnswers,
-    type UI5ApplicationPromptOptions,
-    type UI5ApplicationCommonPromptOptions
+    type UI5ApplicationPromptOptions
 };
+export type { UI5ApplicationCommonPromptOptions } from './types';
+export { defaultAppName } from './prompts/prompt-helpers';
