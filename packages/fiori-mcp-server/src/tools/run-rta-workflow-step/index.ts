@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { stopBrowser } from './browser';
+import { defaultTransport } from './browser';
 import {
     executeAction,
     FrontendActionError,
@@ -7,7 +7,10 @@ import {
     getElementContext,
     getOverlays,
     saveChanges,
-    startRta
+    startRta,
+    type Action,
+    type ElementContext,
+    type Overlay
 } from './rta';
 import { logger } from '../../utils/logger';
 
@@ -42,10 +45,41 @@ export interface RunRtaWorkflowStepInput {
 }
 
 /**
- * Result returned by the tool. The shape varies by step; the union is
- * widened here to keep the dispatcher's return type honest.
+ * Per-step result shapes. The dispatcher returns the union; each `case`
+ * inside the switch returns the matching shape, so the compiler verifies
+ * each branch produces something assignable to its slot.
  */
-export type RunRtaWorkflowStepResult = Record<string, unknown>;
+export interface StartStepResult {
+    sessionId: string;
+    rtaStarted: boolean;
+}
+export interface GetOverlaysStepResult {
+    overlays: Overlay[];
+}
+export interface GetActionsStepResult {
+    actions: Action[];
+}
+export interface GetContextStepResult {
+    context: ElementContext;
+}
+export interface CallActionStepResult {
+    success: boolean;
+}
+export interface SaveStepResult {
+    saved: boolean;
+}
+export interface StopStepResult {
+    stopped: true;
+}
+
+export type RunRtaWorkflowStepResult =
+    | StartStepResult
+    | GetOverlaysStepResult
+    | GetActionsStepResult
+    | GetContextStepResult
+    | CallActionStepResult
+    | SaveStepResult
+    | StopStepResult;
 
 function getSession(sessionId: string | undefined): { id: string; session: RtaSession } {
     if (!sessionId) {
@@ -58,6 +92,8 @@ function getSession(sessionId: string | undefined): { id: string; session: RtaSe
     return { id: sessionId, session };
 }
 
+// The Zod schema declares `payload` as `record(string, unknown)` so the AI
+// can pass any shape; per-step required fields are validated here instead.
 function requireString(payload: Record<string, unknown> | undefined, key: string): string {
     const value = payload?.[key];
     if (typeof value !== 'string' || value.length === 0) {
@@ -96,27 +132,27 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             case 'start': {
                 const site = requireString(input.payload, 'site');
                 const frameId = typeof input.payload?.frameId === 'string' ? input.payload.frameId : undefined;
-                const result = await startRta({ site, frameId });
+                const result = await startRta(defaultTransport, { site, frameId });
                 const sessionId = randomUUID();
                 sessions.set(sessionId, { site, frameId });
                 return { sessionId, ...result };
             }
             case 'get_overlays': {
                 const { session } = getSession(input.sessionId);
-                const overlays = await getOverlays(session);
+                const overlays = await getOverlays(defaultTransport, session);
                 return { overlays };
             }
             case 'get_actions': {
                 const { session } = getSession(input.sessionId);
                 const controlId = requireString(input.payload, 'controlId');
-                const actions = await getActions(session, controlId);
+                const actions = await getActions(defaultTransport, session, controlId);
                 return { actions };
             }
             case 'get_context': {
                 const { session } = getSession(input.sessionId);
                 const controlId = requireString(input.payload, 'controlId');
                 const actionId = requireString(input.payload, 'actionId');
-                const context = await getElementContext(session, controlId, actionId);
+                const context = await getElementContext(defaultTransport, session, controlId, actionId);
                 return { context };
             }
             case 'call_action': {
@@ -124,19 +160,19 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 const controlId = requireString(input.payload, 'controlId');
                 const actionId = requireString(input.payload, 'actionId');
                 const actionPayload = requireObject(input.payload, 'actionPayload');
-                const ok = await executeAction(session, controlId, actionId, actionPayload);
+                const ok = await executeAction(defaultTransport, session, controlId, actionId, actionPayload);
                 return { success: ok };
             }
             case 'save': {
                 const { session } = getSession(input.sessionId);
-                const ok = await saveChanges(session);
+                const ok = await saveChanges(defaultTransport, session);
                 return { saved: ok };
             }
             case 'stop': {
                 const { id } = getSession(input.sessionId);
                 sessions.delete(id);
                 if (sessions.size === 0) {
-                    await stopBrowser();
+                    await defaultTransport.stopBrowser();
                 }
                 return { stopped: true };
             }

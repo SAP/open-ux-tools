@@ -1,10 +1,10 @@
-import { callFrontendAction, disconnectSite, type FrontendActionResult, stopBrowser } from '../browser';
+import type { FrontendActionResult, FrontendActionTransport } from '../browser';
 import type { Action, ElementContext, Overlay } from './types';
 
 /**
- * Site coordinates shared by every RTA action.
+ * Where an RTA command runs: the editor URL and an optional iframe id.
  */
-export interface RtaSite {
+export interface EditorPage {
     /** Editor URL returned by `open_adaptation_editor`. */
     site: string;
     /** Optional iframe element id (e.g. `"preview"`) to scope the call to. */
@@ -28,13 +28,7 @@ const ACTION_VERSION = 'v1';
 const action = (name: string): string => `${ACTION_PREFIX}.${name}.${ACTION_VERSION}`;
 
 /**
- * Unwraps the FA result envelope: returns `payload` on success, throws on
- * failure. Centralizes the error path so each step function stays a
- * one-liner.
- *
- * @param actionName Action name for the error message.
- * @param result FA result envelope.
- * @returns The success payload.
+ * Returns `payload` on success, throws `FrontendActionError` on failure.
  */
 function unwrap<T>(actionName: string, result: FrontendActionResult<T>): T {
     if (!result.isSuccess) {
@@ -44,113 +38,83 @@ function unwrap<T>(actionName: string, result: FrontendActionResult<T>): T {
     return result.payload as T;
 }
 
-/**
- * Starts Runtime Authoring on the page hosting `s.site`.
- *
- * @param s Site coordinates.
- * @returns `{ rtaStarted: true }` on success.
- */
-export async function startRta(s: RtaSite): Promise<{ rtaStarted: boolean }> {
+/** Starts Runtime Authoring on the editor page. */
+export async function startRta(transport: FrontendActionTransport, page: EditorPage): Promise<{ rtaStarted: boolean }> {
     const name = action('startRTA');
-    const result = await callFrontendAction<{ rtaStarted: boolean }>(s.site, name, {}, s.frameId);
-    return unwrap(name, result);
+    return unwrap(name, await transport.callFrontendAction<{ rtaStarted: boolean }>(page.site, name, {}, page.frameId));
 }
 
-/**
- * Returns all editable overlays currently exposed by the running RTA
- * instance.
- *
- * @param s Site coordinates.
- * @returns Array of overlays.
- */
-export async function getOverlays(s: RtaSite): Promise<Overlay[]> {
+/** Returns all editable overlays exposed by the running RTA instance. */
+export async function getOverlays(transport: FrontendActionTransport, page: EditorPage): Promise<Overlay[]> {
     const name = action('getOverlaysInformation');
-    const result = await callFrontendAction<Overlay[]>(s.site, name, {}, s.frameId);
-    return unwrap(name, result);
+    return unwrap(name, await transport.callFrontendAction<Overlay[]>(page.site, name, {}, page.frameId));
 }
 
-/**
- * Returns the actions available for the given control.
- *
- * @param s Site coordinates.
- * @param controlId Target UI5 control id.
- * @returns Array of available actions.
- */
-export async function getActions(s: RtaSite, controlId: string): Promise<Action[]> {
+/** Returns the actions available for the given control. */
+export async function getActions(
+    transport: FrontendActionTransport,
+    page: EditorPage,
+    controlId: string
+): Promise<Action[]> {
     const name = action('getActions');
-    const result = await callFrontendAction<Action[]>(s.site, name, { controlId }, s.frameId);
-    return unwrap(name, result);
+    return unwrap(name, await transport.callFrontendAction<Action[]>(page.site, name, { controlId }, page.frameId));
 }
 
-/**
- * Returns context information for the given control + action combination.
- * The latest Joule API requires both `controlId` and `actionId`.
- *
- * @param s Site coordinates.
- * @param controlId Target UI5 control id.
- * @param actionId Action whose context should be retrieved.
- * @returns Element context.
- */
-export async function getElementContext(s: RtaSite, controlId: string, actionId: string): Promise<ElementContext> {
+/** Returns context information for the given control + action combination. */
+export async function getElementContext(
+    transport: FrontendActionTransport,
+    page: EditorPage,
+    controlId: string,
+    actionId: string
+): Promise<ElementContext> {
     const name = action('getContext');
-    const result = await callFrontendAction<ElementContext>(s.site, name, { controlId, actionId }, s.frameId);
-    return unwrap(name, result);
+    return unwrap(
+        name,
+        await transport.callFrontendAction<ElementContext>(page.site, name, { controlId, actionId }, page.frameId)
+    );
 }
 
-/**
- * Executes an RTA action on a control with the prepared payload.
- *
- * @param s Site coordinates.
- * @param controlId Target UI5 control id.
- * @param actionId Id of the action to execute (from `getActions`).
- * @param payload Action-specific payload forwarded to `createCommands`.
- * @returns `true` on success.
- */
+/** Executes an RTA action on a control with the prepared payload. */
 export async function executeAction(
-    s: RtaSite,
+    transport: FrontendActionTransport,
+    page: EditorPage,
     controlId: string,
     actionId: string,
     payload: Record<string, unknown>
 ): Promise<boolean> {
     const name = action('callAction');
-    const result = await callFrontendAction<boolean>(s.site, name, { controlId, actionId, payload }, s.frameId);
-    return unwrap(name, result);
+    return unwrap(
+        name,
+        await transport.callFrontendAction<boolean>(page.site, name, { controlId, actionId, payload }, page.frameId)
+    );
 }
 
-/**
- * Persists all RTA changes that have been applied so far.
- *
- * @param s Site coordinates.
- * @returns `true` on success.
- */
-export async function saveChanges(s: RtaSite): Promise<boolean> {
+/** Persists all RTA changes that have been applied so far. */
+export async function saveChanges(transport: FrontendActionTransport, page: EditorPage): Promise<boolean> {
     const name = action('saveChanges');
-    const result = await callFrontendAction<boolean>(s.site, name, {}, s.frameId);
-    return unwrap(name, result);
+    return unwrap(name, await transport.callFrontendAction<boolean>(page.site, name, {}, page.frameId));
 }
 
-/**
- * Switches the running RTA instance to visualization mode.
- *
- * @param s Site coordinates.
- * @returns `{ visualizationStarted: true }` on success.
- */
-export async function startVisualization(s: RtaSite): Promise<{ visualizationStarted: boolean }> {
+/** Switches the running RTA instance to visualization mode. */
+export async function startVisualization(
+    transport: FrontendActionTransport,
+    page: EditorPage
+): Promise<{ visualizationStarted: boolean }> {
     const name = action('startVisualization');
-    const result = await callFrontendAction<{ visualizationStarted: boolean }>(s.site, name, {}, s.frameId);
-    return unwrap(name, result);
+    return unwrap(
+        name,
+        await transport.callFrontendAction<{ visualizationStarted: boolean }>(page.site, name, {}, page.frameId)
+    );
 }
 
 /**
- * Tears down the RTA browser session. With a site argument, only that site's
- * page is closed. Without a site argument, the entire browser shuts down.
- *
- * @param s Optional site coordinates; if omitted, the browser stops entirely.
+ * Tears down the RTA session. With a page, only that site's page is closed;
+ * without one, the underlying transport (browser) stops entirely.
  */
-export async function stopRta(s?: RtaSite): Promise<void> {
-    if (s) {
-        await disconnectSite(s.site);
+export async function stopRta(transport: FrontendActionTransport, page?: EditorPage): Promise<void> {
+    if (page) {
+        await transport.disconnectSite(page.site);
     } else {
-        await stopBrowser();
+        await transport.stopBrowser();
     }
 }
