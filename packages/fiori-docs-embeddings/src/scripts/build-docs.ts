@@ -56,6 +56,7 @@ interface BuildConfig {
     outputPath: string;
     gitReposPath?: string;
     sources: SourceConfig[];
+    singleSource?: boolean;
 }
 
 interface LLMClient {
@@ -1504,39 +1505,57 @@ Return ONLY the formatted markdown. Do not add any explanations or meta-commenta
     async createMasterIndex(): Promise<void> {
         this.logger.info('\n📋 Creating master index...');
 
-        const categories = Array.from(this.categories.entries()).map(([id, docIds]) => {
+        const indexPath = path.join(this.config.outputPath, 'index.json');
+
+        // When running a single source, load and merge into the existing index
+        // so entries for other sources are preserved.
+        let existingCategories: { id: string; name: string; count: number; documents: string[] }[] = [];
+        let existingSources: Record<string, { path: string; documentCount: number }> = {};
+
+        if (this.config.singleSource) {
+            try {
+                const existing = JSON.parse(await fs.readFile(indexPath, 'utf-8'));
+                existingCategories = existing.categories ?? [];
+                existingSources = existing.sources ?? {};
+            } catch {
+                // No existing index yet — start fresh
+            }
+        }
+
+        // Build new entries from the current run
+        const newCategories = Array.from(this.categories.entries()).map(([id, docIds]) => {
             const categoryName = id
                 .split('-')
                 .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
                 .join(' ');
-
-            return {
-                id,
-                name: categoryName,
-                count: docIds.length,
-                documents: docIds
-            };
+            return { id, name: categoryName, count: docIds.length, documents: docIds };
         });
 
-        const sourceFiles: Record<string, { path: string; documentCount: number }> = {};
+        const newSources: Record<string, { path: string; documentCount: number }> = {};
         for (const [sourceId, markdownChunks] of this.sourceMarkdown) {
-            sourceFiles[sourceId] = {
-                path: `${sourceId}.md`,
-                documentCount: markdownChunks.length
-            };
+            newSources[sourceId] = { path: `${sourceId}.md`, documentCount: markdownChunks.length };
         }
+
+        // Merge: new entries overwrite matching existing ones, rest are kept
+        const mergedSources = { ...existingSources, ...newSources };
+
+        const mergedCategoryMap = new Map(existingCategories.map((c) => [c.id, c]));
+        for (const cat of newCategories) {
+            mergedCategoryMap.set(cat.id, cat);
+        }
+        const mergedCategories = Array.from(mergedCategoryMap.values());
+
+        const totalDocuments = mergedCategories.reduce((sum, c) => sum + c.count, 0);
 
         const index = {
             version: '1.0.0',
             generatedAt: new Date().toISOString(),
-            totalDocuments: this.documents.size,
-            categories,
-            sources: sourceFiles
+            totalDocuments,
+            categories: mergedCategories,
+            sources: mergedSources
         };
 
-        const indexPath = path.join(this.config.outputPath, 'index.json');
         await fs.writeFile(indexPath, JSON.stringify(index, null, 2));
-
         this.logger.info(`✓ Created master index: ${indexPath}`);
     }
 }
@@ -1552,16 +1571,16 @@ if (require.main === module) {
 
     const sourceArg = process.argv.find((a) => a.startsWith('--source='))?.split('=')[1];
     if (sourceArg) {
-        const source = (builder as unknown as { config: BuildConfig }).config.sources.find(
-            (s) => s.id === sourceArg
-        );
+        const cfg = (builder as unknown as { config: BuildConfig }).config;
+        const source = cfg.sources.find((s) => s.id === sourceArg);
         if (!source) {
             logger.error(
-                `Unknown source "${sourceArg}". Available: ${(builder as unknown as { config: BuildConfig }).config.sources.map((s) => s.id).join(', ')}`
+                `Unknown source "${sourceArg}". Available: ${cfg.sources.map((s) => s.id).join(', ')}`
             );
             process.exit(1);
         }
-        (builder as unknown as { config: BuildConfig }).config.sources = [source];
+        cfg.sources = [source];
+        cfg.singleSource = true;
     }
 
     builder.buildFilestore().catch((error) => {
