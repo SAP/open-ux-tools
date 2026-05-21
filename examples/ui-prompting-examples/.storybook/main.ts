@@ -1,9 +1,10 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { resolve } from 'node:path';
-// import { createWebSocketConnection } from '../src/backend';
+import { createRequire } from 'module';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
 
 export default {
     stories: ['../src/*.story.tsx'],
@@ -49,8 +50,10 @@ export default {
         });
         config.resolve.extensions.push('.ts', '.tsx');
         if (config.mode === 'development') {
-            // Create WebSocket connection to comunicate between fpm-writer API and ui
-            // await createWebSocketConnection();
+            // createRequire gives a CJS resolver that handles extensionless/directory imports in the backend
+            require('ts-node').register({ transpileOnly: true });
+            const { createWebSocketConnection } = require('../src/backend/connection');
+            await createWebSocketConnection();
         }
         return config;
     },
