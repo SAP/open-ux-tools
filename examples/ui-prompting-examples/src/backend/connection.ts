@@ -13,7 +13,8 @@ import { promisify } from 'node:util';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import WebSocket, { WebSocketServer } from 'ws';
+import type WebSocket from 'ws';
+import { WebSocketServer } from 'ws';
 import type { Data } from 'ws';
 import {
     GET_QUESTIONS,
