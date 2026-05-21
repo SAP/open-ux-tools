@@ -24,10 +24,12 @@ interface RtaSession {
 const sessions: Map<string, RtaSession> = new Map();
 
 /**
- * Allowed step values. Mirrors the Joule frontend action surface.
+ * The seven steps run_rta_workflow_step accepts. Single source of truth —
+ * the Zod schema in `types/input.ts` derives its enum from this tuple, so
+ * adding a step here is the only place that needs to change.
  */
-const STEPS = ['start', 'get_overlays', 'get_actions', 'get_context', 'call_action', 'save', 'stop'] as const;
-type Step = (typeof STEPS)[number];
+export const STEPS = ['start', 'get_overlays', 'get_actions', 'get_context', 'call_action', 'save', 'stop'] as const;
+export type Step = (typeof STEPS)[number];
 
 /**
  * Input shape accepted by `run_rta_workflow_step`. The `payload` object
@@ -73,12 +75,13 @@ function requireObject(payload: Record<string, unknown> | undefined, key: string
 }
 
 /**
- * Internal step dispatcher that runs one operation in the RTA workflow on
- * behalf of the `adp-rta-workflow` skill. **Do not call this tool directly
- * from a chat session**; the skill orchestrates the step sequence and
- * decides what to feed each invocation. Calling out of order will fail
- * with descriptive errors but skips the AI decision points the skill
- * provides.
+ * Runs one step of the RTA workflow. The MCP tool description (in
+ * `tools/index.ts`) carries the AI-facing guidance about step ordering and
+ * the skill-internal contract; this docblock stays purely technical.
+ *
+ * Dispatches by `input.step`, looks up or creates a session, and forwards
+ * to the corresponding `frontend-actions` wrapper. Each step's return shape
+ * matches the schema description in `types/input.ts`.
  *
  * @param input Step + sessionId + step-specific payload.
  * @returns Step-specific result. The `start` step returns the session id.
@@ -92,8 +95,7 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
         switch (input.step) {
             case 'start': {
                 const site = requireString(input.payload, 'site');
-                const frameId =
-                    typeof input.payload?.frameId === 'string' ? (input.payload.frameId as string) : undefined;
+                const frameId = typeof input.payload?.frameId === 'string' ? input.payload.frameId : undefined;
                 const result = await startRta({ site, frameId });
                 const sessionId = randomUUID();
                 sessions.set(sessionId, { site, frameId });
@@ -138,15 +140,13 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 }
                 return { stopped: true };
             }
-            default: {
-                // Exhaustiveness check — the STEPS array constrains `input.step`.
-                const exhaustive: never = input.step;
-                throw new Error(`Unhandled step: ${String(exhaustive)}`);
-            }
         }
     } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
         if (error instanceof FrontendActionError) {
-            logger.warn(`Frontend action failed in step ${input.step}: ${error.message}`);
+            logger.warn(`Frontend action failed in step ${input.step}: ${message}`);
+        } else {
+            logger.error(`run_rta_workflow_step "${input.step}" failed: ${message}`);
         }
         throw error;
     }

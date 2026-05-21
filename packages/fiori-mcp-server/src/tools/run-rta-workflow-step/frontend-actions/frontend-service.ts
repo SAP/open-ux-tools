@@ -23,6 +23,21 @@ interface PageRPC {
 }
 
 /**
+ * Shape of the Joule webclient bridge as exposed on the editor page's
+ * `window` object. Only the surface we use is typed.
+ */
+interface WebclientBridgeWindow {
+    sapdas?: {
+        webclientBridge?: {
+            getFrontendActions?: () => Array<{
+                frontend_action_name: string;
+                function: (arg: unknown) => unknown;
+            }>;
+        };
+    };
+}
+
+/**
  * Wraps a Playwright `Page` in an RPC handle that invokes Joule frontend
  * actions through `window.sapdas.webclientBridge.getFrontendActions()`.
  *
@@ -64,16 +79,11 @@ async function createPageRPC(page: Page): Promise<PageRPC> {
 
         const response = await executionContext.evaluate(
             async ({ name, p }: { name: string; p: Record<string, unknown> }) => {
-                const bridge = (
-                    window as unknown as { sapdas?: { webclientBridge?: { getFrontendActions?: () => unknown } } }
-                ).sapdas?.webclientBridge;
+                const bridge = (window as unknown as WebclientBridgeWindow).sapdas?.webclientBridge;
                 if (!bridge?.getFrontendActions) {
                     throw new Error('window.sapdas.webclientBridge.getFrontendActions is not available on the page');
                 }
-                const actions = bridge.getFrontendActions() as Array<{
-                    frontend_action_name: string;
-                    function: (arg: unknown) => unknown;
-                }>;
+                const actions = bridge.getFrontendActions();
                 const entry = actions.find((a) => a.frontend_action_name === name);
                 if (!entry) {
                     throw new Error(`Frontend action "${name}" not registered`);
