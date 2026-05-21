@@ -1,4 +1,15 @@
 /**
+ * Where an RTA command runs: the editor URL and an optional iframe id.
+ * Used both as a per-command target and as the per-session record kept by the tool dispatcher.
+ */
+export interface EditorPage {
+    /** Editor URL returned by `open_adaptation_editor`. */
+    site: string;
+    /** Optional iframe element id (e.g. `"preview"`) to scope the call to. */
+    frameId?: string;
+}
+
+/**
  * Information about an editable UI5 control reported by Joule's
  * `getOverlaysInformation` frontend action.
  */

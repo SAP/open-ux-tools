@@ -1,34 +1,15 @@
 import { chromium, type Browser, type Frame, type Page } from 'playwright-core';
 import { logger } from '../../../utils/logger';
+import type { FrontendActionResult, FrontendActionTransport } from './types';
 
-/**
- * Result envelope returned by every Joule frontend action.
- */
-export interface FrontendActionResult<T = unknown> {
-    isSuccess: boolean;
-    payload: T | null;
-    error: { code: string; message: string | null } | null;
-}
-
-/**
- * Transport that delivers Joule frontend action calls to the running
- * adaptation editor. The `rta/` layer depends on this interface, not on the
- * concrete Playwright implementation, so a fake transport can be injected
- * for tests or a different transport plugged in without touching the command wrappers.
- */
-export interface FrontendActionTransport {
-    /** Invoke a frontend action on the page hosting `site`. */
-    callFrontendAction<TReturn = unknown>(
-        site: string,
-        actionName: string,
-        payload?: Record<string, unknown>,
-        frameId?: string
-    ): Promise<FrontendActionResult<TReturn>>;
-    /** Close the page registered for `site`, if any. */
-    disconnectSite(site: string): Promise<void>;
-    /** Close every registered page and the underlying transport (browser). */
-    stopBrowser(): Promise<void>;
-}
+// Module-scope singleton state.
+//   `browser` — launched once and reused for the lifetime of the Node process.
+//   `browserStartPromise` — deduplicates concurrent launches so the first
+//      caller's `chromium.launch()` is awaited by everyone else.
+//   `connectionRegistry` — site URL → open page handle. One entry per editor URL.
+let browser: Browser | undefined;
+let browserStartPromise: Promise<Browser> | undefined;
+const connectionRegistry: Map<string, PageRPC> = new Map();
 
 /**
  * Internal RPC handle for a single browser page.
@@ -121,15 +102,6 @@ async function createPageRPC(page: Page): Promise<PageRPC> {
 
     return { callFrontendAction, close };
 }
-
-// Module-scope singleton state.
-//   `browser` — launched once and reused for the lifetime of the Node process.
-//   `browserStartPromise` — deduplicates concurrent launches so the first
-//      caller's `chromium.launch()` is awaited by everyone else.
-//   `connectionRegistry` — site URL → open page handle. One entry per editor URL.
-let browser: Browser | undefined;
-let browserStartPromise: Promise<Browser> | undefined;
-const connectionRegistry: Map<string, PageRPC> = new Map();
 
 /**
  * Launches a singleton headless Chromium browser via Playwright. Subsequent
