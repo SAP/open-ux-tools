@@ -5,6 +5,7 @@
     "license": "Apache-2.0",
     "private": true,
     "main": "dist/index.js",
+    "type": "module",
     "scripts": {
         "clean": "rimraf --glob dist coverage *.tsbuildinfo storybook",
         "build": "npm-run-all -l -p build:extension build:copyfiles",
@@ -16,7 +17,7 @@
         "format:fix": "prettier --write --ignore-path ../../.prettierignore",
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../.prettierignore",
         "storybook": "npm-run-all -l -p storybook:prepare storybook:run",
-        "storybook:prepare": "ts-node ./scripts/index.js",
+        "storybook:prepare": "node ./scripts/index.js",
         "storybook:run": "storybook dev"
     },
     "dependencies": {

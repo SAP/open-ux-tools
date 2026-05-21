@@ -1,10 +1,8 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { resolve } from 'node:path';
-import { createRequire } from 'module';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const require = createRequire(import.meta.url);
 
 export default {
     stories: ['../src/*.story.tsx'],
@@ -50,9 +48,7 @@ export default {
         });
         config.resolve.extensions.push('.ts', '.tsx');
         if (config.mode === 'development') {
-            // createRequire gives a CJS resolver that handles extensionless/directory imports in the backend
-            require('ts-node').register({ transpileOnly: true });
-            const { createWebSocketConnection } = require('../src/backend/connection');
+            const { createWebSocketConnection } = await import('../src/backend/connection.js');
             await createWebSocketConnection();
         }
         return config;
