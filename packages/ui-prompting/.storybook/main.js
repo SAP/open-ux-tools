@@ -40,6 +40,9 @@ module.exports = {
             include: [path.resolve(__dirname, '../'), path.resolve(__dirname, '../../../packages/ui-components')]
         });
         config.resolve.extensions.push('.ts', '.tsx');
+        config.resolve.extensionAlias = {
+            '.js': ['.ts', '.tsx', '.js']
+        };
         return config;
     },
     framework: {
