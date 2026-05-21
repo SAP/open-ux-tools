@@ -196,7 +196,8 @@ export const tools = [
             idempotentHint: false,
             openWorldHint: false
         },
-        inputSchema: convertToSchema(Input.AdpControllerExtensionInputSchema)
+        inputSchema: convertToSchema(Input.AdpControllerExtensionInputSchema),
+        outputSchema: convertToSchema(Output.ExecuteFunctionalityOutputSchema)
     },
     {
         name: 'run_rta_workflow_step',
