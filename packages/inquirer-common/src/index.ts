@@ -1,5 +1,6 @@
 export * from './prompts/utility';
 export * from './types';
+export type { OutputTabLinkResult, ShowOutputTabLink } from '@sap-devx/yeoman-ui-types';
 export * from './prompts/helpers';
 export * from './error-handler/error-handler';
 export * from './prompts/cf-helper';

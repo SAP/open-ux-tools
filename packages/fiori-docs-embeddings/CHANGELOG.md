@@ -1,5 +1,29 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.5.1
+
+### Patch Changes
+
+- 12137f6: update doc for fiori extension
+
+## 0.5.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 0.4.20
+
+### Patch Changes
+
+- 59537d3: chore: override sharp to >=0.33.5 to fix CI build on darwin-arm64
+
+## 0.4.19
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
 ## 0.4.18
 
 ### Patch Changes

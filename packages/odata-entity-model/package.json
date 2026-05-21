@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/odata-entity-model",
-    "version": "0.3.7",
+    "version": "0.4.0",
     "description": "OData model representation without annotations",
     "repository": {
         "type": "git",
@@ -28,7 +28,7 @@
         "dist/**"
     ],
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     },
     "devDependencies": {
         "@sap-ux/odata-annotation-core-types": "workspace:*",
