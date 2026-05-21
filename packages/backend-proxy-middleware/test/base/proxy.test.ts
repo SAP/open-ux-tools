@@ -308,7 +308,7 @@ describe('proxy', () => {
 
         test('unknown destination', async () => {
             try {
-                await enhanceConfigsForDestination({ headers: {} }, backend);
+                await enhanceConfigsForDestination({ headers: {} }, backend, logger);
                 fail('Unknown destination should have resulted in an error.');
             } catch (error) {
                 expect(error).toBeDefined();
@@ -321,7 +321,7 @@ describe('proxy', () => {
             });
             const proxyOptions: OptionsWithHeaders = { headers: {} };
 
-            await enhanceConfigsForDestination(proxyOptions, backend);
+            await enhanceConfigsForDestination(proxyOptions, backend, logger);
             expect(proxyOptions.target).toBe(getDestinationUrlForAppStudio(backend.destination));
         });
 
@@ -337,7 +337,7 @@ describe('proxy', () => {
             const proxyOptions: OptionsWithHeaders = { headers: {} };
             const modifiedBackend: DestinationBackendConfig = { ...backend };
 
-            await enhanceConfigsForDestination(proxyOptions, modifiedBackend);
+            await enhanceConfigsForDestination(proxyOptions, modifiedBackend, logger);
             expect(proxyOptions.target).toBe(getDestinationUrlForAppStudio(backend.destination));
             expect(modifiedBackend.path).toBe('/sap');
             expect(modifiedBackend.pathReplace).toBe('/');
@@ -355,10 +355,32 @@ describe('proxy', () => {
             const proxyOptions: OptionsWithHeaders = { headers: {} };
             const modifiedBackend: DestinationBackendConfig = { ...backend, pathReplace: '/xyz' };
 
-            await enhanceConfigsForDestination(proxyOptions, modifiedBackend);
+            await enhanceConfigsForDestination(proxyOptions, modifiedBackend, logger);
             expect(proxyOptions.target).toBe(getDestinationUrlForAppStudio(backend.destination));
             expect(modifiedBackend.path).toBe('/sap');
             expect(modifiedBackend.pathReplace).toBe('/xyz');
+        });
+
+        test('destination with full url: logger.warn is called with full URL destination message', async () => {
+            // Given: a destination where isFullUrlDestination returns true
+            mockListDestinations.mockResolvedValueOnce({
+                [backend.destination]: {
+                    Host: 'http://backend.example/sap',
+                    WebIDEUsage: `${WebIDEUsage.ODATA_GENERIC}`,
+                    WebIDEAdditionalData: `${WebIDEAdditionalData.FULL_URL}`
+                }
+            });
+            mockIsFullUrlDestination.mockReturnValueOnce(true);
+            const proxyOptions: OptionsWithHeaders = { headers: {} };
+            const modifiedBackend: DestinationBackendConfig = { ...backend };
+            const warnSpy = jest.spyOn(logger, 'warn');
+
+            // When: enhanceConfigsForDestination is called
+            await enhanceConfigsForDestination(proxyOptions, modifiedBackend, logger);
+
+            // Then: logger.warn is called with the full URL destination message
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('full URL destination'));
+            warnSpy.mockRestore();
         });
 
         test('destination provided by a destination service instance', async () => {
@@ -371,10 +393,14 @@ describe('proxy', () => {
             mockGetCredentialsForDestinationService.mockResolvedValue(cred);
             const proxyOptions: OptionsWithHeaders = { headers: {} };
 
-            await enhanceConfigsForDestination(proxyOptions, {
-                ...backend,
-                destinationInstance: '~destinationInstance'
-            });
+            await enhanceConfigsForDestination(
+                proxyOptions,
+                {
+                    ...backend,
+                    destinationInstance: '~destinationInstance'
+                },
+                logger
+            );
             expect(proxyOptions.target).toBe(getDestinationUrlForAppStudio(backend.destination));
             expect(proxyOptions.headers!['bas-destination-instance-cred']).toBe(cred);
         });
@@ -564,6 +590,29 @@ describe('proxy', () => {
             expect(options.xfwd).toBeUndefined();
             expect(options.secure).toBeUndefined();
             expect((options.pathRewrite as Function)('/my/other/path/to/chicken', {})).toBe('/to/chicken');
+        });
+
+        test('generate proxy middleware inside of BAS warns when full URL destination is detected', async () => {
+            // Given: a destination where isFullUrlDestination returns true
+            mockIsAppStudio.mockReturnValue(true);
+            const backend: DestinationBackendConfig = {
+                destination: '~destination',
+                path: '/my/path'
+            };
+            mockListDestinations.mockResolvedValueOnce({
+                [backend.destination]: {
+                    Host: 'http://backend.example/sap'
+                }
+            });
+            mockIsFullUrlDestination.mockReturnValueOnce(true);
+            const warnSpy = jest.spyOn(logger, 'warn');
+
+            // When: generateProxyMiddlewareOptions is called
+            await generateProxyMiddlewareOptions(backend, undefined, logger);
+
+            // Then: logger.warn is called with the full URL destination message
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('full URL destination'));
+            warnSpy.mockRestore();
         });
 
         test('generate proxy middleware options for FLP Embedded flow', async () => {

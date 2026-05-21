@@ -24,6 +24,9 @@
             "install": "An error occurred in the install phase: {{- error}}",
             "end": "An error occurred in the end phase: {{- error}}"
         },
+        "warn": {
+            "fullUrlDestination": "The deployment destination is configured as a full URL destination. The deployed app may not render correctly. See SAP Guided Answers for migration instructions."
+        },
         "debug": {
             "promptOptions": "Retrieving CF prompts using: \n {{- options}}",
             "initTelemetry": "Initializing telemetry in CF deployment configuration generator...",

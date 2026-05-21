@@ -6,6 +6,9 @@
         "authNeeded": "The FLP Embedded Preview might require credentials. Do you want to enter your credentials?",
         "operationAborted": "Operation aborted by the user."
     },
+    "warn": {
+        "fullUrlDestination": "The destination is configured as a full URL destination. Preview may not work as expected due to duplicated path segments when routing requests. See SAP Guided Answers for migration instructions."
+    },
     "error": {
         "emptyUsername": "Username can not be empty.",
         "emptyPassword": "Password can not be empty.",

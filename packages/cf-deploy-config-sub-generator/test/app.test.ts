@@ -16,6 +16,7 @@ import * as memfs from 'memfs';
 import * as questions from '../src/app/questions';
 import * as cfConfigWriter from '@sap-ux/cf-deploy-config-writer';
 import type { Editor } from 'mem-fs-editor';
+import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';
 
 const mockIsAppStudio = jest.fn();
 
@@ -1196,5 +1197,54 @@ describe('Cloud foundry generator tests', () => {
                 .run()
         ).resolves.not.toThrow();
         expect(cfGenSpawnSpy).toHaveBeenCalled();
+    });
+
+    it('Should warn when isFullUrlDest is true', async () => {
+        // Given
+        hasbinSyncMock.mockReturnValue(true);
+        jest.spyOn(cfConfigWriter, 'generateAppConfig').mockResolvedValue(fsMock);
+        const mockWarn = jest.fn();
+        jest.spyOn(DeploymentGenerator, 'logger', 'get').mockReturnValue({
+            warn: mockWarn,
+            debug: jest.fn(),
+            info: jest.fn(),
+            error: jest.fn(),
+            trace: jest.fn()
+        } as unknown as typeof DeploymentGenerator.logger);
+
+        const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/fullurl/webapp/manifest.json`]:
+                    testFixture.getContents('app1/webapp/manifest.json'),
+                [`.${OUTPUT_DIR_PREFIX}/fullurl/package.json`]: JSON.stringify({ scripts: {} }),
+                [`.${OUTPUT_DIR_PREFIX}/fullurl/mta.yaml`]: dump(managedRouterConfig),
+                [`.${OUTPUT_DIR_PREFIX}/fullurl/ui5.yaml`]: testFixture.getContents('app1/ui5.yaml')
+            },
+            '/'
+        );
+        const appDir = join(OUTPUT_DIR_PREFIX, 'fullurl');
+
+        // When
+        await expect(
+            yeomanTest
+                .create(
+                    CFGenerator,
+                    {
+                        resolved: cfGenPath
+                    },
+                    { cwd: appDir }
+                )
+                .withOptions({
+                    skipInstall: true,
+                    launchDeployConfigAsSubGenerator: true,
+                    isFullUrlDest: true
+                })
+                .withPrompts({})
+                .run()
+        ).resolves.not.toThrow();
+
+        // Then
+        expect(mockWarn).toHaveBeenCalledWith(t('cfGen.warn.fullUrlDestination'));
     });
 });
