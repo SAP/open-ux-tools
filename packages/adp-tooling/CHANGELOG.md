@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.19.4
+
+### Patch Changes
+
+- dab1aa2: fix: When we get the service uri from the ui5.yaml > adp > target object we use the context to determine whether to use the destination in the target or the url.
+
 ## 0.19.3
 
 ### Patch Changes
