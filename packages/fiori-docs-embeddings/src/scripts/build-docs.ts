@@ -1582,9 +1582,7 @@ if (require.main === module) {
         const cfg = (builder as unknown as { config: BuildConfig }).config;
         const source = cfg.sources.find((s) => s.id === sourceArg);
         if (!source) {
-            logger.error(
-                `Unknown source "${sourceArg}". Available: ${cfg.sources.map((s) => s.id).join(', ')}`
-            );
+            logger.error(`Unknown source "${sourceArg}". Available: ${cfg.sources.map((s) => s.id).join(', ')}`);
             process.exit(1);
         }
         cfg.sources = [source];
