@@ -131,7 +131,22 @@ export const AdpControllerExtensionInputSchema = zod.object({
     viewId: zod.string().optional().describe('Optional target view identifier for the controller extension')
 });
 
+export const AdpMetadataInputSchema = zod.object({
+    appPath: zod
+        .string()
+        .describe(
+            'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant resides).'
+        ),
+    saveLocal: zod
+        .boolean()
+        .optional()
+        .describe(
+            'Whether to save fetched metadata locally in the project under the "context" folder. Defaults to false.'
+        )
+});
+
 export type DownloadODataServiceMetadataInput = zod.infer<typeof DownloadODataServiceMetadataInputSchema>;
 export type GenerateAdaptationProjectInput = zod.infer<typeof GenerateAdaptationProjectInputSchema>;
 export type OpenAdaptationEditorInput = zod.infer<typeof OpenAdaptationEditorInputSchema>;
 export type AdpControllerExtensionInput = zod.infer<typeof AdpControllerExtensionInputSchema>;
+export type AdpMetadataInput = zod.infer<typeof AdpMetadataInputSchema>;

@@ -230,7 +230,7 @@ export const tools = [
             idempotentHint: true,
             openWorldHint: false
         },
-        inputSchema: convertToSchema(Input.ListFunctionalitiesInputSchema)
+        inputSchema: convertToSchema(Input.AdpMetadataInputSchema)
     },
     {
         name: 'list_functionality',

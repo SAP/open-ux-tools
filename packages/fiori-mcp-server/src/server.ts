@@ -37,7 +37,8 @@ import type {
     DownloadODataServiceMetadataInput,
     GenerateAdaptationProjectInput,
     OpenAdaptationEditorInput,
-    AdpControllerExtensionInput
+    AdpControllerExtensionInput,
+    AdpMetadataInput
 } from './types';
 import { logger } from './utils/logger';
 
@@ -208,7 +209,7 @@ export class FioriFunctionalityServer {
                         result = await listLibrariesFromSystem(args as ListFunctionalitiesInput);
                         break;
                     case 'read_odata_metadata_adp':
-                        result = await readODataMetadataAdp(args as ListFunctionalitiesInput);
+                        result = await readODataMetadataAdp(args as AdpMetadataInput);
                         break;
                     case 'list_functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);
