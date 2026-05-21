@@ -50,7 +50,10 @@ async function getSystem(url: string, client: string | undefined, asJson: boolea
         // @sap-ux/store diagnostic messages do not appear on stdout before the
         // JSON payload and break piped consumers.
         const storeLogger = asJson ? new ToolsLogger({ transports: [new NullTransport()] }) : logger;
-        const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system', logger: storeLogger });
+        const service = await getService<BackendSystem, BackendSystemKey>({
+            entityName: 'system',
+            logger: storeLogger
+        });
         const key = new BackendSystemKey({ url, client });
         const system = await service.read(key);
 

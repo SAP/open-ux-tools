@@ -46,7 +46,10 @@ async function listSystems(asJson: boolean): Promise<void> {
         // @sap-ux/store diagnostic messages (e.g. "Using KeyStoreManager…") do
         // not appear on stdout before the JSON payload and break piped consumers.
         const storeLogger = asJson ? new ToolsLogger({ transports: [new NullTransport()] }) : logger;
-        const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system', logger: storeLogger });
+        const service = await getService<BackendSystem, BackendSystemKey>({
+            entityName: 'system',
+            logger: storeLogger
+        });
         // Pass no filter so all systems are returned regardless of connection type
         const systems = await service.getAll();
 
