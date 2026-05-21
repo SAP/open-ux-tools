@@ -47,6 +47,9 @@ export default {
             ]
         });
         config.resolve.extensions.push('.ts', '.tsx');
+        config.resolve.extensionAlias = {
+            '.js': ['.ts', '.tsx', '.js']
+        };
         if (config.mode === 'development') {
             const { createWebSocketConnection } = await import('../src/backend/connection.js');
             await createWebSocketConnection();
