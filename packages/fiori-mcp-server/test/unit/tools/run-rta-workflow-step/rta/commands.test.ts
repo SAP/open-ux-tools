@@ -1,4 +1,7 @@
-import type { FrontendActionResult, FrontendActionTransport } from '../../../../../src/tools/run-rta-workflow-step/browser/types';
+import type {
+    FrontendActionResult,
+    FrontendActionTransport
+} from '../../../../../src/tools/run-rta-workflow-step/browser/types';
 import {
     FrontendActionError,
     executeAction,

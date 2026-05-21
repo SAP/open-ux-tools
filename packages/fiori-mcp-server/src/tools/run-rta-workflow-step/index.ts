@@ -16,6 +16,12 @@ import { STEPS, type RunRtaWorkflowStepInput, type RunRtaWorkflowStepResult } fr
 
 const sessions: Map<string, EditorPage> = new Map();
 
+/**
+ * Looks up the session record for `sessionId` and throws if it is missing.
+ *
+ * @param sessionId Session id from the input, typically returned by the `start` step.
+ * @returns The id and the matching `EditorPage`.
+ */
 function getSession(sessionId: string | undefined): { id: string; session: EditorPage } {
     if (!sessionId) {
         throw new Error('sessionId is required for this step');
@@ -27,8 +33,15 @@ function getSession(sessionId: string | undefined): { id: string; session: Edito
     return { id: sessionId, session };
 }
 
-// The Zod schema declares `payload` as `record(string, unknown)` so the AI
-// can pass any shape; per-step required fields are validated here instead.
+/**
+ * Reads `key` from `payload` and asserts it is a non-empty string. The Zod
+ * schema declares `payload` as `record(string, unknown)` so the AI can pass
+ * any shape; per-step required fields are validated here instead.
+ *
+ * @param payload The step payload, possibly undefined.
+ * @param key Property name to read.
+ * @returns The string value.
+ */
 function requireString(payload: Record<string, unknown> | undefined, key: string): string {
     const value = payload?.[key];
     if (typeof value !== 'string' || value.length === 0) {
@@ -37,6 +50,13 @@ function requireString(payload: Record<string, unknown> | undefined, key: string
     return value;
 }
 
+/**
+ * Reads `key` from `payload` and asserts it is a plain object.
+ *
+ * @param payload The step payload, possibly undefined.
+ * @param key Property name to read.
+ * @returns The object value.
+ */
 function requireObject(payload: Record<string, unknown> | undefined, key: string): Record<string, unknown> {
     const value = payload?.[key];
     if (typeof value !== 'object' || value === null || Array.isArray(value)) {
@@ -46,16 +66,12 @@ function requireObject(payload: Record<string, unknown> | undefined, key: string
 }
 
 /**
- * Runs one step of the RTA workflow. The MCP tool description (in
- * `tools/index.ts`) carries the AI-facing guidance about step ordering and
- * the skill-internal contract; this docblock stays purely technical.
- *
- * Dispatches by `input.step`, looks up or creates a session, and forwards
- * to the corresponding `rta` command wrapper. Each step's return shape
- * matches the schema description in `types/input.ts`.
+ * Runs one step of the RTA workflow. Dispatches by `input.step`, looks up
+ * or creates a session, and forwards to the corresponding `rta` command
+ * wrapper. Each step's return shape matches the schema in `types/input.ts`.
  *
  * @param input Step + sessionId + step-specific payload.
- * @returns Step-specific result. The `start` step returns the session id.
+ * @returns Step-specific result. The `start` step returns the new session id.
  */
 export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promise<RunRtaWorkflowStepResult> {
     if (!STEPS.includes(input.step)) {
