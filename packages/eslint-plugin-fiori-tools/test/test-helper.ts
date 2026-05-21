@@ -39,7 +39,7 @@ export const V4_FACETS_ANNOTATIONS = `
                     <Collection>
                         <Record Type="UI.ReferenceFacet">
                             <PropertyValue Property="ID" String="Products"/>
-                            <PropertyValue Property="Label" String="Prducts"/>
+                            <PropertyValue Property="Label" String="Products"/>
                             <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.LineItem"/>
                         </Record>
                     </Collection>
@@ -108,6 +108,8 @@ export const V2_ANNOTATIONS_PATH = join(
     'annotation.xml'
 );
 export const V2_ANNOTATIONS = readFileSync(V2_ANNOTATIONS_PATH, 'utf-8');
+export const V2_METADATA_PATH = join(ROOT, 'test', 'data', 'v2-xml-start', 'webapp', 'localService', 'metadata.xml');
+export const V2_METADATA = readFileSync(V2_METADATA_PATH, 'utf-8');
 
 const cdsModuleInstalled = (root: string): boolean => {
     const modulePath = join(root, 'node_modules');

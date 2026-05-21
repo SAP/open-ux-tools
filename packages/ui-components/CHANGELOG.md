@@ -1,5 +1,29 @@
 # @sap-ux/ui-components
 
+## 2.2.1
+
+### Patch Changes
+
+- 742d896: Fixed missing local-variable box shadow for dropdown menus in UICombobox, UIDropdown.
+
+## 2.2.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 2.1.16
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
+## 2.1.15
+
+### Patch Changes
+
+- 189ad98: UISections/UISplitter: Updated resize splitter UI and set `UISplitterLayoutType.Compact` as the default `splitterLayoutType`.
+
 ## 2.1.14
 
 ### Patch Changes

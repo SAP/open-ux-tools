@@ -142,7 +142,8 @@ type DefaultValueInputPrompts =
     | promptNames.description
     | promptNames.namespace
     | promptNames.ui5Version
-    | promptNames.targetFolder;
+    | promptNames.targetFolder
+    | promptNames.title;
 type DefaultValueConfirmPrompts =
     | promptNames.enableTypeScript
     | promptNames.enableEslint

@@ -1,5 +1,79 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 0.2.2
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/fiori-generator-shared@0.15.2
+    - @sap-ux/telemetry@0.7.1
+    - @sap-ux/ui5-library-reference-inquirer@0.5.2
+    - @sap-ux/ui5-library-reference-writer@0.3.1
+
+## 0.2.1
+
+### Patch Changes
+
+- 2c76f8f: chore: upgrade @sap-devx/yeoman-ui-types 1.23.0 → 1.25.0
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+    - @sap-ux/ui5-library-reference-inquirer@0.5.1
+
+## 0.2.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/feature-toggle@0.4.0
+    - @sap-ux/fiori-generator-shared@0.15.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/telemetry@0.7.0
+    - @sap-ux/ui5-library-reference-inquirer@0.5.0
+    - @sap-ux/ui5-library-reference-writer@0.3.0
+
+## 0.1.157
+
+### Patch Changes
+
+- @sap-ux/ui5-library-reference-inquirer@0.4.157
+
+## 0.1.156
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/feature-toggle@0.3.9
+    - @sap-ux/fiori-generator-shared@0.14.2
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/telemetry@0.6.106
+    - @sap-ux/ui5-library-reference-inquirer@0.4.156
+    - @sap-ux/ui5-library-reference-writer@0.2.74
+
+## 0.1.155
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/fiori-generator-shared@0.14.1
+    - @sap-ux/telemetry@0.6.105
+    - @sap-ux/ui5-library-reference-inquirer@0.4.155
+    - @sap-ux/ui5-library-reference-writer@0.2.73
+
+## 0.1.154
+
+### Patch Changes
+
+- Updated dependencies [9360ea5]
+    - @sap-ux/fiori-generator-shared@0.14.0
+    - @sap-ux/ui5-library-reference-inquirer@0.4.154
+
 ## 0.1.153
 
 ### Patch Changes

@@ -6,7 +6,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/abap-deploy-config-inquirer"
     },
-    "version": "1.8.19",
+    "version": "1.9.2",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -26,7 +26,7 @@
         "dist"
     ],
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     },
     "dependencies": {
         "@sap-ux/axios-extension": "workspace:*",
@@ -40,7 +40,7 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "i18next": "25.10.10",
-        "@sap-devx/yeoman-ui-types": "1.23.0",
+        "@sap-devx/yeoman-ui-types": "1.25.0",
         "inquirer-autocomplete-prompt": "2.0.1"
     },
     "devDependencies": {
