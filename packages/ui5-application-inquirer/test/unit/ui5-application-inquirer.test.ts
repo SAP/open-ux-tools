@@ -165,6 +165,9 @@ describe('ui5-application-inquirer API', () => {
             },
             [promptNames.enableTypeScript]: {
                 default: true
+            },
+            [promptNames.title]: {
+                default: 'My App Title'
             }
         };
 
@@ -180,6 +183,7 @@ describe('ui5-application-inquirer API', () => {
             enableTypeScript: true,
             name: 'a prompt answer',
             skipAnnotations: true,
+            title: 'My App Title',
             ui5Theme: 'sap_horizon',
             ui5Version: '999.999.999'
         });
@@ -194,6 +198,7 @@ describe('ui5-application-inquirer API', () => {
             description: 'Annotations inc.',
             enableTypeScript: true,
             skipAnnotations: false,
+            title: 'My App Title',
             ui5Theme: 'sap_fiori_3',
             ui5Version: '1.64.0'
         });
