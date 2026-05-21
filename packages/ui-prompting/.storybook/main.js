@@ -1,6 +1,9 @@
-const path = require('path');
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-module.exports = {
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export default {
     stories: ['../stories/*.story.tsx'],
     addons: [
         {
@@ -8,16 +11,16 @@ module.exports = {
             options: {
                 optimizationLevel: 3
             }
-        },
-        './addons/register.ts'
+        }
     ],
+    managerEntries: [path.resolve(__dirname, './addons/register.ts')],
     staticDirs: ['./static'],
     webpackFinal: async (config) => {
         config.module.rules.push({
             test: /\.(ts|tsx)$/,
             use: [
                 {
-                    loader: require.resolve('ts-loader'),
+                    loader: 'ts-loader',
                     options: {
                         configFile: 'tsconfig.json',
                         transpileOnly: true

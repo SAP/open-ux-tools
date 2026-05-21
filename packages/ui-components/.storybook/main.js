@@ -1,6 +1,9 @@
-const path = require('path');
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-module.exports = {
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export default {
     stories: ['../stories/*.story.tsx'],
     addons: [
         {
@@ -16,7 +19,7 @@ module.exports = {
             test: /\.(ts|tsx)$/,
             use: [
                 {
-                    loader: require.resolve('ts-loader'),
+                    loader: 'ts-loader',
                     options: {
                         configFile: 'tsconfig.json',
                         transpileOnly: true
