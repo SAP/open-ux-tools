@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.18.3
+
+### Patch Changes
+
+- eda2ce4: Adds support for default name generation export. Adds default support for `title` prompt
+
 ## 0.18.2
 
 ### Patch Changes
