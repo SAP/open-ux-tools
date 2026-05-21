@@ -19,7 +19,7 @@ import type {
     FlexChange
 } from './types';
 import { uniformUrl } from '@sap-ux/fiori-annotation-api';
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 
 export interface ParseResult {
     index: ParsedProject;
@@ -79,18 +79,20 @@ export class ApplicationParser {
                 const [parsedManifest, services] = this.parseManifest(webappPath, manifestUri, manifest);
                 const appRootUri = pathToFileURL(app.appRoot).toString();
                 const changes: FlexChange[] = [];
-                const changeFiles = readdirSync(join(app.appRoot, 'webapp', 'changes')).map((file) =>
-                    join(app.appRoot, 'webapp', 'changes', file)
-                );
-                for (const changeFile of changeFiles) {
-                    const fileContent = readFileSync(changeFile, { encoding: 'utf8', flag: 'r' });
-                    const jsonContent = JSON.parse(fileContent);
-                    changes.push({
-                        changeType: jsonContent.changeType,
-                        content: jsonContent.content,
-                        selector: jsonContent.selector,
-                        changeFileUri: pathToFileURL(changeFile).toString()
-                    });
+                if (existsSync(join(app.appRoot, 'webapp', 'changes'))) {
+                    const changeFiles = readdirSync(join(app.appRoot, 'webapp', 'changes'))
+                        .filter((file) => file.endsWith('propertyChange.change'))
+                        .map((file) => join(app.appRoot, 'webapp', 'changes', file));
+                    for (const changeFile of changeFiles) {
+                        const fileContent = readFileSync(changeFile, { encoding: 'utf8', flag: 'r' });
+                        const jsonContent = JSON.parse(fileContent);
+                        changes.push({
+                            changeType: jsonContent.changeType,
+                            content: jsonContent.content,
+                            selector: jsonContent.selector,
+                            changeFileUri: pathToFileURL(changeFile).toString()
+                        });
+                    }
                 }
                 const parsedApp: ParsedApp = {
                     manifest: parsedManifest,
@@ -108,8 +110,9 @@ export class ApplicationParser {
                         parsedApp.services[service.name] = { config: service, artifacts, index };
                     }
                 }
-            } catch {
+            } catch (error) {
                 // skip faulty apps for now
+                console.error(error);
             }
         }
         return {
