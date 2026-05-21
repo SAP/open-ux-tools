@@ -74,10 +74,6 @@ function requireObject(payload: Record<string, unknown> | undefined, key: string
  * @returns Step-specific result. The `start` step returns the new session id.
  */
 export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promise<RunRtaWorkflowStepResult> {
-    if (!STEPS.includes(input.step)) {
-        throw new Error(`Unknown step: ${input.step}. Valid steps: ${STEPS.join(', ')}`);
-    }
-
     try {
         switch (input.step) {
             case 'start': {
@@ -127,6 +123,8 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 }
                 return { stopped: true };
             }
+            default:
+                throw new Error(`Unknown step: ${String(input.step)}. Valid steps: ${STEPS.join(', ')}`);
         }
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
