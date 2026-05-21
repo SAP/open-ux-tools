@@ -9,5 +9,5 @@ export {
     startVisualization,
     stopRta
 } from './commands';
-export type { RtaSite } from './commands';
+export type { EditorPage } from './commands';
 export type { Action, ActionPayloadProperty, ElementContext, Overlay } from './types';
