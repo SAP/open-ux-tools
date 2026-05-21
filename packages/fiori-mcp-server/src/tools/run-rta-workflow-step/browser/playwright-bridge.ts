@@ -15,11 +15,13 @@ const connectionRegistry: Map<string, PageRPC> = new Map();
  * Internal RPC handle for a single browser page.
  */
 interface PageRPC {
+    /** Invoke a frontend action on this page. */
     callFrontendAction<TReturn = unknown>(
         actionName: string,
         payload?: Record<string, unknown>,
         frameId?: string
     ): Promise<FrontendActionResult<TReturn>>;
+    /** Close the underlying Playwright page. */
     close(): Promise<void>;
 }
 
@@ -42,12 +44,8 @@ interface WebclientBridgeWindow {
  * Wraps a Playwright `Page` in an RPC handle that invokes Joule frontend
  * actions through `window.sapdas.webclientBridge.getFrontendActions()`.
  *
- * The page-side action lookup is inlined into `evaluate` so it gets
- * serialized and runs in the page context (where it has access to
- * `window.sapdas`).
- *
  * @param page The Playwright page to wrap.
- * @returns The RPC handle.
+ * @returns An RPC handle for the page.
  */
 async function createPageRPC(page: Page): Promise<PageRPC> {
     await page.waitForFunction(() => document.readyState === 'complete', undefined, { timeout: 30000 });
@@ -104,18 +102,13 @@ async function createPageRPC(page: Page): Promise<PageRPC> {
 }
 
 /**
- * Launches a singleton headless Chromium browser via Playwright. Subsequent
- * calls return the existing instance.
- *
- * Browser selection priority:
+ * Launches a singleton Chromium browser via Playwright, or returns the
+ * existing instance. Browser selection priority:
  * 1. `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` — explicit absolute path.
- * 2. `PLAYWRIGHT_BROWSER_CHANNEL` — Playwright channel name (`chrome`,
- *    `chrome-beta`, `msedge`, etc.).
- * 3. Default: `chrome` channel — i.e. a system-installed Google Chrome.
+ * 2. `PLAYWRIGHT_BROWSER_CHANNEL` — Playwright channel (`chrome`, `msedge`, etc.).
+ * 3. Default: `chrome` channel (system-installed Google Chrome).
  *
- * Note: covers Chromium-family browsers only. Real Firefox / WebKit support
- * would require a separate launch path because the Playwright API surface
- * differs per browser type.
+ * @returns The connected Chromium browser instance.
  */
 async function startBrowser(): Promise<Browser> {
     if (browser?.isConnected()) {
@@ -151,15 +144,14 @@ async function startBrowser(): Promise<Browser> {
 /**
  * Invokes a Joule frontend action on the page hosting `site`. Reuses an
  * existing page if one is registered for the site; otherwise opens a new
- * one. Throws on transport / lookup failures; returns the FA's result
- * envelope (including `isSuccess === false` payloads) for the caller to
- * inspect.
+ * one. Throws on transport / lookup failures; returns the frontend action
+ * result envelope (including `isSuccess === false` payloads) for the caller to inspect.
  *
  * @param site URL to load (typically the adaptation editor URL).
  * @param actionName Frontend action identifier, e.g. `com.sap.ui.flex.startRTA.v1`.
- * @param payload Single object payload forwarded to the FA function.
+ * @param payload Object payload forwarded to the frontend action function.
  * @param frameId Optional frame element id to scope the call to an iframe.
- * @returns The FA result envelope.
+ * @returns The frontend action result envelope.
  */
 export async function callFrontendAction<TReturn = unknown>(
     site: string,
