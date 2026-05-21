@@ -1,5 +1,34 @@
 # @sap-ux/xml-odata-annotation-converter
 
+## 0.6.0
+
+### Minor Changes
+
+- 2f1ece0: feat: add convertMetadataDocumentV2 API and expose V2Annotation type; getXmlServiceArtifacts now returns [ServiceArtifacts, V2Annotation[]]
+
+### Patch Changes
+
+- @sap-ux/odata-annotation-core@0.3.1
+
+## 0.5.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/odata-annotation-core@0.3.0
+
+## 0.4.14
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/odata-annotation-core@0.2.19
+
 ## 0.4.13
 
 ### Patch Changes

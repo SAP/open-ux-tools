@@ -121,7 +121,8 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'sap-copy-to-clipboard',
+                        message:
+                            'Copy To Clipboard in the Products table must be correctly configured. If not set, the "Copy" button is displayed',
                         line: 154,
                         column: 23
                     }
@@ -169,7 +170,8 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'sap-copy-to-clipboard',
+                        message:
+                            'Copy To Clipboard in the table must be correctly configured. If not set, the "Copy" button is displayed',
                         line: 127,
                         column: 21
                     }

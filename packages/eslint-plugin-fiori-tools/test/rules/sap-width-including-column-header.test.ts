@@ -161,7 +161,8 @@ ruleTester.run(`${TEST_NAME} - XML`, widthIncludingColumnHeaderRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'width-including-column-header-manifest',
+                        message:
+                            'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width. Add it to the control configuration of the table.',
                         line: 124,
                         column: 19
                     }
@@ -244,7 +245,8 @@ ruleTester.run(`${TEST_NAME} - XML`, widthIncludingColumnHeaderRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'width-including-column-header-manifest',
+                        message:
+                            'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width. Add it to the control configuration of the Products table.',
                         line: 139,
                         column: 13
                     }

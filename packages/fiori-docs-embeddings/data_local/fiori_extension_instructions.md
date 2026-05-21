@@ -39,6 +39,42 @@ Replace all placeholder names with your actual values:
 
 **CRITICAL PITFALL 11 — `macros:FormElement metaPath` must be a bare property name relative to the navigation target, with NO navigation prefix**: `macros:Form`'s `metaPath` already navigates into the target entity. The child `macros:FormElement` `metaPath` values must therefore be **property names only** (e.g. `metaPath="Name"`), not `metaPath="_Agency/Name"`. Using the navigation prefix creates a double-navigation OData path (e.g. `/_Agency/_Agency/Name`) and causes the error `_Agency/_Agency/Name does not point to a property`. Strip all navigation prefixes from FormElement `metaPath` values — they are resolved relative to the Form's navigation target.
 
+**CRITICAL PITFALL 11b — `macros:FormElement` inside a plain `sap.ui.layout.form.FormContainer` (outside `macros:Form`) requires an explicit `contextPath` attribute ONLY when outside a standard FE page**: When `macros:FormElement` is placed directly inside a `sap.ui.layout.form.FormContainer` without a parent `macros:Form` wrapper, the building block needs an OData metadata context to resolve property labels, types, or value help. The rule is: (1) **Inside a standard FE page** (e.g. custom section, custom header facet in List Report or Object Page): the page framework supplies the metadata context automatically, so `contextPath` is optional and can be omitted. (2) **Outside a standard FE page** (e.g. a standalone dialog or popup loaded via `Fragment.load()`): there is no ambient metadata context. You must explicitly provide `contextPath="/EntitySet"` on each `macros:FormElement` so it can look up the property metadata. Without `contextPath`, the building block silently renders empty labels or throws a metadata-resolution error. When `macros:FormElement` is a child of `macros:Form`, the `contextPath` is inherited from the parent and must NOT be repeated on the child elements.
+
+**STEP**: Standalone usage inside `f:FormContainer` (outside `macros:Form`)
+
+**DESCRIPTION**: When `macros:FormElement` is placed inside a plain `sap.ui.layout.form.FormContainer` rather than a `macros:Form`, the building block has no ambient metadata context — unless the fragment is embedded in a standard Fiori Elements page (List Report, Object Page, etc.), where the page framework already provides the metadata context. The rule is: **Inside a standard FE page** (e.g. custom section, custom header facet): the page framework supplies the metadata context, so `contextPath` is optional and can be omitted. **Outside a standard FE page** (e.g. a standalone dialog or popup loaded via `Fragment.load()`): there is no ambient metadata context. You must explicitly provide `contextPath="/EntitySet"` on each `macros:FormElement` so it can resolve property metadata (labels, types, value help).
+
+**LANGUAGE**: XML
+
+**CODE**:
+```XML
+<!-- Example 1: Standalone dialog/popup (outside FE page) — contextPath REQUIRED -->
+<f:Form xmlns:f="sap.ui.layout.form" xmlns:macros="sap.fe.macros">
+    <f:formContainers>
+        <f:FormContainer>
+            <f:formElements>
+                <macros:FormElement contextPath="/TravelAgency" metaPath="AgencyID" id="fe-standalone-1" />
+                <macros:FormElement contextPath="/TravelAgency" metaPath="Name" id="fe-standalone-2" />
+            </f:formElements>
+        </f:FormContainer>
+    </f:formContainers>
+</f:Form>
+
+<!-- Example 2: Inside FE page (custom section) — contextPath OPTIONAL -->
+<f:Form xmlns:f="sap.ui.layout.form" xmlns:macros="sap.fe.macros">
+    <f:formContainers>
+        <f:FormContainer>
+            <f:formElements>
+                <macros:FormElement metaPath="AgencyID" id="fe-page-1" />
+                <macros:FormElement metaPath="Name" id="fe-page-2" />
+            </f:formElements>
+        </f:FormContainer>
+    </f:formContainers>
+</f:Form>
+
+```
+
 **CRITICAL PITFALL 12 — Bind the dialog to the PARENT entity path, NOT to the navigation target, when using `macros:Form` with a navigation `metaPath`**: When `macros:Form metaPath` is `"_Navigation/@...FieldGroup#..."`, the dialog's `bindElement` must use the parent entity path (e.g. `Travel(...)`), **not** the navigation target path (e.g. `Travel(...)/_Navigation`). The building block navigates from the parent binding context through `_Navigation` automatically. If you `bindElement` to `Travel(...)/_Navigation` AND use `metaPath="_Navigation/..."`, the actual OData path becomes `/_Navigation/_Navigation/...` which does not exist. Correct usage: `oDialog.bindElement({ path: oBindingContext.getPath() })` where `oBindingContext` is the row's parent entity context.
 
 **CRITICAL PITFALL 13 — `bindElement` — do NOT pass an OData context object inside `parameters`**: In OData V4, both `oDialog.bindElement(absolutePathString)` and `oDialog.bindElement({ path: absolutePathString })` work correctly. The **object form** `{ path: "..." }` is preferred for OData V4 because it allows adding binding parameters when needed (e.g. `{ path: "...", parameters: { $$ownRequest: true } }`). The working Step 5 code uses this object form. The critical warning is: do NOT pass an OData context object as a value inside `parameters`, i.e. do NOT write `oDialog.bindElement({ path: "_Navigation", parameters: { context: oBindingContext } })`. OData V4 context objects contain circular references (bidirectional parent↔child context chains) that cause the framework to throw `"Converting circular structure to JSON"` when it serializes the binding parameters. Use only the absolute path string derived from `oContext.getPath()` — never pass the context object itself.
@@ -977,6 +1013,35 @@ Replace all placeholder names with your actual values:
 **CRITICAL PITFALL E — The FPM custom page target must use `sap.fe.core.fpm` component, NOT `sap.fe.templates.ListReport` or a plain View target**: When the timeline page target is registered in manifest.json, it must use `"name": "sap.fe.core.fpm"` as the component name (not a view type/name directly at the target level). The `viewName` goes inside `options.settings`. This is required for `sap.fe.macros.Page` to work as the root element of the view. A plain `"type": "View"` target does NOT initialise the FPM context needed by `macros:Page`.
 
 **CRITICAL PITFALL F — `TimelineItem` controls inside a bound `Timeline` need an explicit `id` attribute when `flexEnabled: true`**: When `sap.ui5.flexEnabled: true` is set in manifest.json, all controls need stable IDs for SAPUI5 Flexibility. Add `id="timelineItemTemplate"` (or similar) to the `suite:TimelineItem` element inside the Timeline's content aggregation binding template.
+
+**CRITICAL PITFALL F2 — `sap.suite.ui.commons.Timeline` default aggregation is `content`, NOT `items`**: The aggregation binding for `sap.suite.ui.commons.Timeline` must use `content="{path: '/EntitySet', ...}"`, not `items`. Using `items` is silently ignored — the timeline renders empty with no error. Similarly, `suite:TimelineItem` children are placed inside the `content` aggregation, not `items`. Valid `TimelineItem` properties are: `dateTime`, `title`, `text`, `userName`, `icon`, `iconTooltip`, `filterValue`, `userNameClickable`. The attribute `key` is NOT a valid property on `TimelineItem` and will cause a runtime warning; use the standard SAPUI5 list binding `key` pattern on the binding descriptor instead, not as a control attribute. Correct XML for an FPM custom page:
+
+```XML
+<macros:Page id="travelTimelinePage" title="Travel Timeline">
+    <m:Panel id="travelTimelinePanel" headerText="All Travels" width="100%">
+        <suite:Timeline
+            id="travelTimeline"
+            sortOldestFirst="true"
+            content="{
+                path: '/Travel',
+                sorter: {
+                    path: 'BeginDate',
+                    descending: false
+                }
+            }">
+            <suite:TimelineItem
+                id="travelTimelineItem"
+                title="{= 'Travel ' + ${TravelID}}"
+                dateTime="{BeginDate}"
+                userName="{CustomerName}"
+                text="{AgencyName}"
+                icon="sap-icon://travel-expense"/>
+        </suite:Timeline>
+    </m:Panel>
+</macros:Page>
+```
+
+Note: the `xmlns:m="sap.m"` namespace alias is needed if you use `m:Panel` (or just use the default namespace `xmlns="sap.m"` and omit the prefix). For the `macros:Page` wrapper, `xmlns:macros="sap.fe.macros"` and `xmlns:suite="sap.suite.ui.commons"` must both be declared.
 
 **CRITICAL PITFALL G — Inside a ControllerExtension, `sap.ui.core.UIComponent.getRouterFor(this.base.getView())` returns `undefined` — use `this.base.getAppComponent().getRouter().navTo()` instead**: When a toolbar action press handler is implemented as a method on a registered `ControllerExtension` (using the `.extension.<namespace>.<ControllerName>.<method>` press format rather than a plain module), the static helper `sap.ui.core.UIComponent.getRouterFor(view)` may return `undefined` because the view's owner component chain is not resolved as expected within the FPM controller extension lifecycle. Calling `.navTo()` on `undefined` throws `TypeError: Cannot read properties of undefined (reading 'navTo')`. **Fix**: Use `this.base.getAppComponent().getRouter().navTo("RouteName")`. `this.base` is the FE base controller; `getAppComponent()` reliably returns the app component from within any ControllerExtension; `getRouter()` then returns the router. Pass the **route name** (e.g. `"TravelTimelinePage"`), NOT the route pattern. This is distinct from Pitfall B (which applies to plain `.js` modules where `this.base` does not exist at all and `HashChanger` must be used instead).
 

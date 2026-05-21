@@ -139,6 +139,15 @@ describe('Headless generation', () => {
         cleanTestDir(join(testDir, testProjectName));
     });
 
+    it('LROP v2 - virtual endpoints disabled', async () => {
+        testProjectName = 'lrop_v2_non_virt';
+        expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, 'headless', testProjectName);
+
+        await runHeadlessGen('LROP-v2-0.2-non-virt', 'sepmra_prod_man_v2');
+        expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, matcherOptions);
+        cleanTestDir(join(testDir, testProjectName));
+    });
+
     /**
      * From the headless perspective there is little difference between this test
      * and the lrop url test except for the absence of the service url and host
