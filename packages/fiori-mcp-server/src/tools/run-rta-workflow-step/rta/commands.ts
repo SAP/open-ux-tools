@@ -1,15 +1,8 @@
 import type { FrontendActionResult, FrontendActionTransport } from '../browser';
-import type { Action, ElementContext, Overlay } from './types';
+import type { Action, EditorPage, ElementContext, Overlay } from './types';
 
-/**
- * Where an RTA command runs: the editor URL and an optional iframe id.
- */
-export interface EditorPage {
-    /** Editor URL returned by `open_adaptation_editor`. */
-    site: string;
-    /** Optional iframe element id (e.g. `"preview"`) to scope the call to. */
-    frameId?: string;
-}
+const ACTION_PREFIX = 'com.sap.ui.flex';
+const ACTION_VERSION = 'v1';
 
 /**
  * Error raised when a Joule frontend action returns `isSuccess === false`.
@@ -23,8 +16,6 @@ export class FrontendActionError extends Error {
     }
 }
 
-const ACTION_PREFIX = 'com.sap.ui.flex';
-const ACTION_VERSION = 'v1';
 const action = (name: string): string => `${ACTION_PREFIX}.${name}.${ACTION_VERSION}`;
 
 /**

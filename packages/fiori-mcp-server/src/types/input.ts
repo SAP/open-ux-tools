@@ -1,6 +1,6 @@
 import * as zod from 'zod';
 import { FunctionalityIdSchema } from './basic.js';
-import { STEPS } from '../tools/run-rta-workflow-step/index.js';
+import { STEPS } from '../tools/run-rta-workflow-step/types.js';
 
 /**
  * Input interface for the 'list_fiori_apps' functionality

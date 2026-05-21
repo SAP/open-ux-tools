@@ -1,4 +1,4 @@
-import type { FrontendActionResult, FrontendActionTransport } from '../../../../../src/tools/run-rta-workflow-step/browser/playwright-bridge';
+import type { FrontendActionResult, FrontendActionTransport } from '../../../../../src/tools/run-rta-workflow-step/browser/types';
 import {
     FrontendActionError,
     executeAction,

@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { defaultTransport } from './browser';
+
 import {
     executeAction,
     FrontendActionError,
@@ -8,80 +8,15 @@ import {
     getOverlays,
     saveChanges,
     startRta,
-    type Action,
-    type ElementContext,
-    type Overlay
+    type EditorPage
 } from './rta';
 import { logger } from '../../utils/logger';
+import { defaultTransport } from './browser';
+import { STEPS, type RunRtaWorkflowStepInput, type RunRtaWorkflowStepResult } from './types';
 
-/**
- * Per-session coordinates. Persisted in-process for the lifetime of the
- * fiori-mcp server so successive `run_rta_workflow_step` calls can share
- * one browser page without the caller passing the URL on every step.
- */
-interface RtaSession {
-    site: string;
-    frameId?: string;
-}
+const sessions: Map<string, EditorPage> = new Map();
 
-const sessions: Map<string, RtaSession> = new Map();
-
-/**
- * The seven steps run_rta_workflow_step accepts. Single source of truth —
- * the Zod schema in `types/input.ts` derives its enum from this tuple, so
- * adding a step here is the only place that needs to change.
- */
-export const STEPS = ['start', 'get_overlays', 'get_actions', 'get_context', 'call_action', 'save', 'stop'] as const;
-export type Step = (typeof STEPS)[number];
-
-/**
- * Input shape accepted by `run_rta_workflow_step`. The `payload` object
- * carries step-specific data so the tool surface stays tidy.
- */
-export interface RunRtaWorkflowStepInput {
-    step: Step;
-    sessionId?: string;
-    payload?: Record<string, unknown>;
-}
-
-/**
- * Per-step result shapes. The dispatcher returns the union; each `case`
- * inside the switch returns the matching shape, so the compiler verifies
- * each branch produces something assignable to its slot.
- */
-export interface StartStepResult {
-    sessionId: string;
-    rtaStarted: boolean;
-}
-export interface GetOverlaysStepResult {
-    overlays: Overlay[];
-}
-export interface GetActionsStepResult {
-    actions: Action[];
-}
-export interface GetContextStepResult {
-    context: ElementContext;
-}
-export interface CallActionStepResult {
-    success: boolean;
-}
-export interface SaveStepResult {
-    saved: boolean;
-}
-export interface StopStepResult {
-    stopped: true;
-}
-
-export type RunRtaWorkflowStepResult =
-    | StartStepResult
-    | GetOverlaysStepResult
-    | GetActionsStepResult
-    | GetContextStepResult
-    | CallActionStepResult
-    | SaveStepResult
-    | StopStepResult;
-
-function getSession(sessionId: string | undefined): { id: string; session: RtaSession } {
+function getSession(sessionId: string | undefined): { id: string; session: EditorPage } {
     if (!sessionId) {
         throw new Error('sessionId is required for this step');
     }
