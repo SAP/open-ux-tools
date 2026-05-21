@@ -2,6 +2,7 @@ import type { Command } from 'commander';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import { getService } from '@sap-ux/store';
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { getLogger } from '../../tracing';
 
 /**
@@ -41,7 +42,11 @@ async function listSystems(asJson: boolean): Promise<void> {
             return;
         }
 
-        const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
+        // When emitting JSON, pass a silent logger to getService so that
+        // @sap-ux/store diagnostic messages (e.g. "Using KeyStoreManager…") do
+        // not appear on stdout before the JSON payload and break piped consumers.
+        const storeLogger = asJson ? new ToolsLogger({ transports: [new NullTransport()] }) : logger;
+        const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system', logger: storeLogger });
         // Pass no filter so all systems are returned regardless of connection type
         const systems = await service.getAll();
 

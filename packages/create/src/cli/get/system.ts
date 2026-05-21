@@ -2,6 +2,7 @@ import type { Command } from 'commander';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { getLogger } from '../../tracing';
 
 /**
@@ -45,7 +46,11 @@ async function getSystem(url: string, client: string | undefined, asJson: boolea
             return;
         }
 
-        const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
+        // When emitting JSON, pass a silent logger to getService so that
+        // @sap-ux/store diagnostic messages do not appear on stdout before the
+        // JSON payload and break piped consumers.
+        const storeLogger = asJson ? new ToolsLogger({ transports: [new NullTransport()] }) : logger;
+        const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system', logger: storeLogger });
         const key = new BackendSystemKey({ url, client });
         const system = await service.read(key);
 
