@@ -1,0 +1,28 @@
+[16:26:02.054] [INFO] storybook v10.4.0
+[16:26:02.312] [INFO] Loading main config failed as the file does not seem to be valid ESM. Trying a temporary fix, please ensure the main config is valid ESM.
+[16:26:02.368] [INFO] Loading main config failed as the file does not seem to be valid ESM. Trying a temporary fix, please ensure the main config is valid ESM.
+[16:26:02.378] [ERROR] [38;2;241;97;97mReferenceError: module is not defined in ES module scope[39m
+    at file:///C:/SAPDevelop/repos/open-ux-tools2/examples/ui-prompting-examples/.storybook/main.tmp..ts:8:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:345:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async importModule (file:///C:/SAPDevelop/repos/open-ux-tools2/node_modules/.pnpm/storybook@10.4.0_@emnapi+co_cc07b57e277bc0e4c6dadcc1667ece0c/node_modules/storybook/dist/_node-chunks/chunk-EGC27Z5J.js:737:11)
+    at async loadMainConfig (file:///C:/SAPDevelop/repos/open-ux-tools2/node_modules/.pnpm/storybook@10.4.0_@emnapi+co_cc07b57e277bc0e4c6dadcc1667ece0c/node_modules/storybook/dist/_node-chunks/chunk-WKCYHYMS.js:10150:17)
+    at async resolveTelemetryState (file:///C:/SAPDevelop/repos/open-ux-tools2/node_modules/.pnpm/storybook@10.4.0_@emnapi+co_cc07b57e277bc0e4c6dadcc1667ece0c/node_modules/storybook/dist/_node-chunks/chunk-OQIYQ5CW.js:632:18)
+    at async withTelemetry (file:///C:/SAPDevelop/repos/open-ux-tools2/node_modules/.pnpm/storybook@10.4.0_@emnapi+co_cc07b57e277bc0e4c6dadcc1667ece0c/node_modules/storybook/dist/_node-chunks/chunk-OQIYQ5CW.js:646:33)
+    at async dev (file:///C:/SAPDevelop/repos/open-ux-tools2/node_modules/.pnpm/storybook@10.4.0_@emnapi+co_cc07b57e277bc0e4c6dadcc1667ece0c/node_modules/storybook/dist/bin/core.js:2736:3)
+    at async _Command.<anonymous> (file:///C:/SAPDevelop/repos/open-ux-tools2/node_modules/.pnpm/storybook@10.4.0_@emnapi+co_cc07b57e277bc0e4c6dadcc1667ece0c/node_modules/storybook/dist/bin/core.js:2806:92)
+[16:26:02.387] [WARN] Broken build, fix the error above.
+You may need to refresh the browser.
+[16:26:02.393] [WARN]   Failed to load preset: "C:/SAPDevelop/repos/open-ux-tools2/examples/ui-prompting-examples/.storybook/main.ts"
+[16:26:02.394] [ERROR] [38;2;241;97;97mReferenceError: __dirname is not defined in ES module scope[39m
+    at <stdin> (file:///C:/SAPDevelop/repos/open-ux-tools2/examples/ui-prompting-examples/.storybook/main.ts:18:32)
+    at __require (file:///C:/SAPDevelop/repos/open-ux-tools2/examples/ui-prompting-examples/.storybook/main.ts:3:50)
+    at file:///C:/SAPDevelop/repos/open-ux-tools2/examples/ui-prompting-examples/.storybook/main.ts:62:16
+    at ModuleJob.run (node:internal/modules/esm/module_job:345:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async importModule (file:///C:/SAPDevelop/repos/open-ux-tools2/node_modules/.pnpm/storybook@10.4.0_@emnapi+co_cc07b57e277bc0e4c6dadcc1667ece0c/node_modules/storybook/dist/_node-chunks/chunk-EGC27Z5J.js:737:11)
+    at async loadMainConfig (file:///C:/SAPDevelop/repos/open-ux-tools2/node_modules/.pnpm/storybook@10.4.0_@emnapi+co_cc07b57e277bc0e4c6dadcc1667ece0c/node_modules/storybook/dist/_node-chunks/chunk-WKCYHYMS.js:10126:12)
+    at async resolveTelemetryState (file:///C:/SAPDevelop/repos/open-ux-tools2/node_modules/.pnpm/storybook@10.4.0_@emnapi+co_cc07b57e277bc0e4c6dadcc1667ece0c/node_modules/storybook/dist/_node-chunks/chunk-OQIYQ5CW.js:632:18)
+    at async withTelemetry (file:///C:/SAPDevelop/repos/open-ux-tools2/node_modules/.pnpm/storybook@10.4.0_@emnapi+co_cc07b57e277bc0e4c6dadcc1667ece0c/node_modules/storybook/dist/_node-chunks/chunk-OQIYQ5CW.js:646:33)
+    at async dev (file:///C:/SAPDevelop/repos/open-ux-tools2/node_modules/.pnpm/storybook@10.4.0_@emnapi+co_cc07b57e277bc0e4c6dadcc1667ece0c/node_modules/storybook/dist/bin/core.js:2736:3)
+[16:26:02.412] [INFO] Loading main config failed as the file does not seem to be valid ESM. Trying a temporary fix, please ensure the main config is valid ESM.

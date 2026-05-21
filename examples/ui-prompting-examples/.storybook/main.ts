@@ -1,7 +1,11 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { resolve } from 'node:path';
-import { createWebSocketConnection } from '../src/backend';
+// import { createWebSocketConnection } from '../src/backend';
 
-module.exports = {
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export default {
     stories: ['../src/*.story.tsx'],
     addons: [
         {
@@ -9,16 +13,16 @@ module.exports = {
             options: {
                 optimizationLevel: 3
             }
-        },
-        '../src/addons/register.ts'
+        }
     ],
+    managerEntries: [resolve(__dirname, '../src/addons/register.ts')],
     staticDirs: ['./static'],
     webpackFinal: async function (config) {
         config.module.rules.push({
             test: /\.(ts|tsx)$/,
             use: [
                 {
-                    loader: require.resolve('ts-loader'),
+                    loader: 'ts-loader',
                     options: {
                         configFile: 'tsconfig.json',
                         transpileOnly: true
@@ -46,7 +50,7 @@ module.exports = {
         config.resolve.extensions.push('.ts', '.tsx');
         if (config.mode === 'development') {
             // Create WebSocket connection to comunicate between fpm-writer API and ui
-            await createWebSocketConnection();
+            // await createWebSocketConnection();
         }
         return config;
     },
