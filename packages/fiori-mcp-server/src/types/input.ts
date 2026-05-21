@@ -1,5 +1,6 @@
 import * as zod from 'zod';
 import { FunctionalityIdSchema } from './basic';
+import { STEPS } from '../tools/run-rta-workflow-step';
 
 /**
  * Input interface for the 'list_fiori_apps' functionality
@@ -133,7 +134,7 @@ export const AdpControllerExtensionInputSchema = zod.object({
 
 export const RunRtaWorkflowStepInputSchema = zod.object({
     step: zod
-        .enum(['start', 'get_overlays', 'get_actions', 'get_context', 'call_action', 'save', 'stop'])
+        .enum(STEPS)
         .describe(
             'Which RTA workflow step to run. Each step maps to one Joule frontend action ' +
                 'on the adaptation editor page.'
