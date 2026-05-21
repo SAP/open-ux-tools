@@ -1,12 +1,12 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-01-28T01:14:53.489Z",
+  "generatedAt": "2026-05-21T20:00:14.571Z",
   "totalDocuments": 601,
   "categories": [
     {
       "id": "fiori-tools",
       "name": "Fiori Tools",
-      "count": 176,
+      "count": 177,
       "documents": [
         "btp-fiori-tools-deploying-an-application-deploying-an-application-1b7a3be-md",
         "btp-fiori-tools-deploying-an-application-deployment-configuration-1c85927-md",
@@ -183,7 +183,8 @@
         "btp-fiori-tools-updating-the-adaptation-project-5808877-md",
         "btp-fiori-tools-upgrade-safe-compatibility-rules-53706e2-md",
         "btp-fiori-tools-viewing-generation-logs-4ecc286-md",
-        "btp-fiori-tools-working-with-an-adaptation-project-36e4b64-md"
+        "btp-fiori-tools-working-with-an-adaptation-project-36e4b64-md",
+        "fiori-tools-opa-guide-tutorials-fiori-tools-mockserver-opa-testing-fiori-tools-mockserver-opa-testing-md"
       ]
     },
     {
@@ -629,14 +630,6 @@
       "count": 1,
       "documents": [
         "fiori-showcase-readme-md"
-      ]
-    },
-    {
-      "id": "fiori-tools",
-      "name": "Fiori Tools",
-      "count": 1,
-      "documents": [
-        "fiori-tools-opa-guide-tutorials-fiori-tools-mockserver-opa-testing-fiori-tools-mockserver-opa-testing-md"
       ]
     }
   ],
