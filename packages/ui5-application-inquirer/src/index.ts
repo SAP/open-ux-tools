@@ -4,12 +4,7 @@ import { getDefaultUI5Theme, getUI5Versions, type UI5VersionFilterOptions } from
 import autocomplete from 'inquirer-autocomplete-prompt';
 import isNil from 'lodash/isNil.js';
 import { getQuestions } from './prompts/index.js';
-import type {
-    UI5ApplicationAnswers,
-    UI5ApplicationCommonPromptOptions,
-    UI5ApplicationPromptOptions,
-    UI5ApplicationQuestion
-} from './types.js';
+import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from './types.js';
 import { promptNames } from './types.js';
 import { initI18nUi5AppInquirer } from './i18n.js';
 /**

@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import path, { join, dirname } from 'node:path';
+import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as actualFs from 'node:fs';
 
@@ -74,15 +74,15 @@ describe('prompt-helpers', () => {
         expect(defaultAppName(testTempDir)).toEqual('project1000');
 
         // When path does not exist, returns baseAppName as-is
-        jest.spyOn(promptHelpers, 'appPathExists').mockReturnValue(false);
+        mockExistsSync.mockReturnValue(false);
         expect(defaultAppName(testTempDir, 'myapp')).toEqual('myapp');
 
         // When path exists once, appends the incremented number
-        jest.spyOn(promptHelpers, 'appPathExists').mockReturnValueOnce(true);
+        mockExistsSync.mockReturnValueOnce(true);
         expect(defaultAppName(testTempDir, 'myapp')).toEqual('myapp1');
 
         // Test maximal suggested app name with baseAppName
-        jest.spyOn(promptHelpers, 'appPathExists').mockReturnValue(true);
+        mockExistsSync.mockReturnValue(true);
         expect(defaultAppName(testTempDir, 'myapp')).toEqual('myapp999');
     });
 

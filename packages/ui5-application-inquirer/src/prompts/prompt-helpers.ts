@@ -32,7 +32,7 @@ export function appPathExists(appName: string, targetPath?: string): boolean | s
 export function defaultAppName(targetPath: string, baseAppName?: string): string {
     let defProjNum = defaultProjectNumber;
     let defaultName = baseAppName || t('prompts.name.default');
-    while (exports.appPathExists(`${defaultName}`, targetPath)) {
+    while (appPathExists(`${defaultName}`, targetPath)) {
         if (baseAppName) {
             defaultName = `${baseAppName}${defProjNum++}`;
         } else {
