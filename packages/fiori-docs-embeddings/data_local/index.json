@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "generatedAt": "2026-01-28T01:14:53.489Z",
-  "totalDocuments": 600,
+  "totalDocuments": 601,
   "categories": [
     {
       "id": "fiori-tools",
@@ -630,6 +630,14 @@
       "documents": [
         "fiori-showcase-readme-md"
       ]
+    },
+    {
+      "id": "fiori-tools",
+      "name": "Fiori Tools",
+      "count": 1,
+      "documents": [
+        "fiori-tools-opa-guide-tutorials-fiori-tools-mockserver-opa-testing-fiori-tools-mockserver-opa-testing-md"
+      ]
     }
   ],
   "sources": {
@@ -651,6 +659,10 @@
     },
     "tools-suite": {
       "path": "tools-suite.md",
+      "documentCount": 1
+    },
+    "fiori-tools-opa-guide": {
+      "path": "fiori-tools-opa-guide.md",
       "documentCount": 1
     }
   }

@@ -40,11 +40,12 @@ const execCommand = (
 
 interface SourceConfig {
     id: string;
-    type: 'github' | 'json-api';
+    type: 'github' | 'json-api' | 'github-raw';
     owner?: string;
     repo?: string;
     branch?: string;
     docsPath?: string;
+    filePath?: string;
     url?: string;
     category: string;
     enabled: boolean;
@@ -402,6 +403,16 @@ class MultiSourceDocumentationBuilder {
                     category: 'fiori-tools',
                     enabled: true,
                     useEnvAuth: true
+                },
+                {
+                    id: 'fiori-tools-opa-guide',
+                    type: 'github-raw',
+                    owner: 'sap-tutorials',
+                    repo: 'Tutorials',
+                    branch: 'master',
+                    filePath: 'tutorials/fiori-tools-mockserver-opa-testing/fiori-tools-mockserver-opa-testing.md',
+                    category: 'fiori-tools',
+                    enabled: true
                 }
             ]
         };
@@ -996,6 +1007,9 @@ Return ONLY the formatted markdown. Do not add any explanations or meta-commenta
                 case 'github':
                     files = await this.processGitHubSource(source);
                     break;
+                case 'github-raw':
+                    files = await this.processGitHubRawSource(source);
+                    break;
                 case 'json-api':
                     files = await this.processJsonApiSource(source);
                     break;
@@ -1106,6 +1120,32 @@ Return ONLY the formatted markdown. Do not add any explanations or meta-commenta
         }
 
         this.sourceResults.set(source.id, result);
+    }
+
+    /**
+     * Process a single raw file from a GitHub repository without cloning.
+     *
+     * @param source - Source configuration with filePath pointing to the target file
+     * @returns Promise resolving to array containing the single file content
+     */
+    async processGitHubRawSource(source: SourceConfig): Promise<FileContent[]> {
+        if (!source.filePath) {
+            throw new Error(`github-raw source ${source.id} requires a filePath`);
+        }
+
+        const branch = source.branch ?? 'main';
+        const rawUrl = `https://raw.githubusercontent.com/${source.owner}/${source.repo}/${branch}/${source.filePath}`;
+        this.logger.info(`📥 Fetching raw file: ${rawUrl}`);
+
+        const response = await fetch(rawUrl);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch ${rawUrl}: HTTP ${response.status} ${response.statusText}`);
+        }
+
+        const content = await response.text();
+        const fileName = source.filePath.split('/').pop() ?? source.filePath;
+
+        return [{ name: fileName, path: source.filePath, content }];
     }
 
     /**
@@ -1509,6 +1549,21 @@ export { MultiSourceDocumentationBuilder };
 if (require.main === module) {
     const logger = new ToolsLogger();
     const builder = new MultiSourceDocumentationBuilder();
+
+    const sourceArg = process.argv.find((a) => a.startsWith('--source='))?.split('=')[1];
+    if (sourceArg) {
+        const source = (builder as unknown as { config: BuildConfig }).config.sources.find(
+            (s) => s.id === sourceArg
+        );
+        if (!source) {
+            logger.error(
+                `Unknown source "${sourceArg}". Available: ${(builder as unknown as { config: BuildConfig }).config.sources.map((s) => s.id).join(', ')}`
+            );
+            process.exit(1);
+        }
+        (builder as unknown as { config: BuildConfig }).config.sources = [source];
+    }
+
     builder.buildFilestore().catch((error) => {
         const errorMessage = error instanceof Error ? error.message : String(error);
         logger.error(`Build failed: ${errorMessage}`);
