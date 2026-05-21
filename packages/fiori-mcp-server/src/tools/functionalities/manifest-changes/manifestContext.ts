@@ -7,7 +7,8 @@ import { ToolsLogger } from '@sap-ux/logger';
 import { readUi5Config } from '@sap-ux/adp-tooling';
 import type { AbapTarget } from '@sap-ux/system-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
-import type { AbapServiceProvider, MergedAppDescriptor } from '@sap-ux/axios-extension';
+import { ODataVersion } from '@sap-ux/axios-extension';
+import type { ODataServiceInfo, AbapServiceProvider, MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 export type systemPath = {
     url: string;
@@ -31,15 +32,7 @@ type ODataMetadataEntry = {
     model?: Ui5Model;
 };
 
-const APP_FIELDS_LIST = [
-    'sap.app/id',
-    'sap.app/ach',
-    'sap.fiori/registrationIds',
-    'sap.app/title',
-    'url',
-    'fileType',
-    'repoName'
-];
+const APP_FIELDS_LIST = ['sap.app/id', 'sap.app/title', 'url', 'repoName'];
 
 const LIBRARY_WITH_DESCR_FILTER: UI5AppFilter = {
     fields: APP_FIELDS_LIST.join(','),
@@ -49,21 +42,6 @@ const LIBRARY_WITH_DESCR_FILTER: UI5AppFilter = {
 };
 
 const logger = new ToolsLogger({ logPrefix: 'fiori-mcp-server' });
-
-/**
- * Pretty-prints an XML string.
- *
- * @param xml - Raw XML content.
- * @returns Indented XML; returns the input unchanged if formatting fails.
- */
-function formatXml(xml: string): string {
-    try {
-        return prettifyXml(xml, { indent: 4 });
-    } catch (error) {
-        logger.warn(`Failed to format XML: ${(error as Error).message}`);
-        return xml;
-    }
-}
 
 /**
  * Zips the webapp folder and merges it with the base app descriptor on the LREP backend.
@@ -89,7 +67,7 @@ export async function readMergedManifest(appPath: string): Promise<MergedAppDesc
  * Resolves OData data sources from the merged manifest and fetches their metadata.
  *
  * @param appPath - Adaptation project root.
- * @param saveLocal
+ * @param saveLocal - Whether to save fetched metadata locally in the project for agent context.
  * @returns OData data source entries with id, url, metadata, and the bound model (if any).
  */
 export async function readAnnotationfromManifest(
@@ -145,6 +123,30 @@ export async function getAvailableLibraryFromSystem(appPath: string): Promise<Ar
 }
 
 /**
+ * Lists OData V2 and V4 services available in the target system's catalog.
+ *
+ * @param appPath - Adaptation project root.
+ * @param filter - Filter string to match service names.
+ * @returns Combined service catalog entries from the V2 and V4 catalogs.
+ */
+export async function getAvailableODataServices(appPath: string, filter: string): Promise<Array<ODataServiceInfo>> {
+    const system = await getSystemUrl(appPath);
+    const abapProvider = await getSystemProvider(system);
+
+    const serviceCatalogV4 = await abapProvider.catalog(ODataVersion.v4);
+    const serviceCatalogV2 = await abapProvider.catalog(ODataVersion.v2);
+
+    serviceCatalogV2.isS4Cloud = Promise.resolve(true);
+    serviceCatalogV4.isS4Cloud = Promise.resolve(true);
+
+    const services = [await serviceCatalogV2.listServices(), await serviceCatalogV4.listServices()]
+        .flat()
+        .filter((service) => service.name.includes(filter.toUpperCase()));
+
+    return services;
+}
+
+/**
  * Reads the preview middleware target from `ui5.yaml`.
  *
  * @param appPath - Adaptation project root.
@@ -185,4 +187,19 @@ async function readManifest(appPath: string): Promise<AppDescrVariant | ''> {
 function getSystemProvider(system: systemPath): Promise<AbapServiceProvider> {
     const target: AbapTarget = { url: system.url, client: system.client };
     return createAbapServiceProvider(target, { ignoreCertErrors: false }, false, logger);
+}
+
+/**
+ * Pretty-prints an XML string.
+ *
+ * @param xml - Raw XML content.
+ * @returns Indented XML; returns the input unchanged if formatting fails.
+ */
+function formatXml(xml: string): string {
+    try {
+        return prettifyXml(xml, { indent: 4 });
+    } catch (error) {
+        logger.warn(`Failed to format XML: ${(error as Error).message}`);
+        return xml;
+    }
 }
