@@ -68,7 +68,7 @@ Command group for adding features to existing SAP Fiori applications. A subcomma
 
 Usage: `npx --yes @sap-ux/create@latest add [subcommand] [options]`
 
-The available subcommands are: `mockserver-config`, `smartlinks-config`, `eslint-config`, `cds-plugin-ui5`, `inbound-navigation`, `cards-editor`, `model`, `annotations`, `html`, `component-usages`, `deploy-config`, `variants-config`, `adp-cf-config` and `system`
+The available subcommands are: `mockserver-config`, `smartlinks-config`, `eslint-config`, `cds-plugin-ui5`, `inbound-navigation`, `cards-editor`, `model`, `annotations`, `html`, `component-usages`, `deploy-config`, `variants-config`, `adp-cf-config`, `system` and `flp-embedded-config`
 
 
 --------------------------------
@@ -278,8 +278,7 @@ Add a new back-end system to the saved systems store (`~/.fioritools`). Credenti
 
 System types: `AbapCloud`, `OnPrem`, `Generic`
 
-Auth types:
-`basic`, `reentranceTicket`, `oauth2`, `oauth2ClientCredential`
+Auth types: `basic`, `reentranceTicket`, `oauth2`, `oauth2ClientCredential`
 
 Connection types: `abap_catalog`, `generic_host`, `odata_service`
 
@@ -298,6 +297,25 @@ Options:
 - `--connection-type <string>` - Connection type (abap_catalog | generic_host | odata_service) _(default: `abap_catalog`)_
 - `--username <string>` - Username for basic authentication
 - `--password <string>` - To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR
+
+--------------------------------
+
+## [`add flp-embedded-config`](#add-flp-embedded-config)
+
+Add the necessary configuration for running a Fiori app in FLP Embedded Mode.
+Adds a `start-embedded` script to `package.json` and creates an `flp.yaml` file
+based on the existing `ui5.yaml`. Pre-existing files will be overridden.
+
+Example:
+
+`npx --yes @sap-ux/create@latest add flp-embedded-config --bspApplication my-bsp-app`
+
+Options:
+- `-b, --bspApplication <string>` _(required)_ - BSP application name of the deployed app
+- `-c, --config <string>` - Path (relative to project root) to the ui5.yaml to use as base for flp.yaml _(default: `ui5.yaml`)_
+- `--flp <string>` - FLP URL path used in the start-embedded script _(default: `sap/bc/ui5_ui5/ui2/ushell/shells/abap/Fiorilaunchpad.html`)_
+- `-s, --simulate` - Simulate only. Do not write files. Also sets `--verbose`.
+- `-v, --verbose` - Show verbose information.
 
 --------------------------------
 
