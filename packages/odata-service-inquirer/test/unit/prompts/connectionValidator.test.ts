@@ -4,7 +4,8 @@ import {
     ServiceProvider,
     type AbapServiceProvider,
     type ODataServiceInfo,
-    type AxiosRequestConfig
+    type AxiosRequestConfig,
+    VIRTUAL_HOST_API_NOT_SUPPORTED
 } from '@sap-ux/axios-extension';
 import { createForAbap } from '@sap-ux/axios-extension';
 import * as axiosExtension from '@sap-ux/axios-extension';
@@ -197,6 +198,27 @@ describe('ConnectionValidator', () => {
             urlFormat: true,
             reachable: false
         });
+    });
+
+    test('should return user-friendly message when re-entrance ticket system does not support the virtual host API', async () => {
+        // Given a system URL that returns VIRTUAL_HOST_API_NOT_SUPPORTED when the catalog is requested
+        const catalogListServicesMock = jest
+            .fn()
+            .mockRejectedValueOnce(new Error(VIRTUAL_HOST_API_NOT_SUPPORTED));
+        jest.spyOn(axiosExtension, 'createForAbapOnCloud').mockReturnValueOnce({
+            ...mockAbapServiceProvider,
+            catalog: jest.fn().mockImplementation(() => ({
+                interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } },
+                listServices: catalogListServicesMock
+            }))
+        } as any);
+
+        const validator = new ConnectionValidator();
+        validator.systemAuthType = 'reentranceTicket';
+        const result = await validator.validateUrl('https://example.com', { isSystem: true });
+
+        expect(result).toBe(t('errors.reentranceTicketNotSupported'));
+        expect(validator.validity).toEqual({});
     });
 
     test('should handle 401 and basic authentication credentials', async () => {

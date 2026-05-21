@@ -1,6 +1,12 @@
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import axios from 'axios';
 
+/**
+ * Error message thrown when the system's virtual host API does not return the expected structure,
+ * indicating the system does not support re-entrance ticket authentication.
+ */
+export const VIRTUAL_HOST_API_NOT_SUPPORTED = 'VirtualHostApiNotSupported';
+
 type RelatedUrls = {
     relatedUrls: {
         API: string;
@@ -47,6 +53,12 @@ export class ABAPVirtualHostProvider {
             if (response.status !== 200) {
                 this.logger.debug(`Failed to fetch virtual hosts: from: ${url}. Error: ${response.statusText}`);
                 throw new Error(`Failed to fetch virtual hosts: ${response.statusText}`);
+            }
+            if (!response.data?.relatedUrls?.UI || !response.data?.relatedUrls?.API) {
+                this.logger.debug(
+                    `Virtual host API response from: ${url} does not contain the expected 'relatedUrls' structure.`
+                );
+                throw new Error(VIRTUAL_HOST_API_NOT_SUPPORTED);
             }
             this.relatedUrls = response.data;
         }

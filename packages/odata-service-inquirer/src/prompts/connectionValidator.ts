@@ -14,7 +14,8 @@ import {
     create,
     createForAbap,
     createForAbapOnCloud,
-    createForDestination
+    createForDestination,
+    VIRTUAL_HOST_API_NOT_SUPPORTED
 } from '@sap-ux/axios-extension';
 import {
     Authentication,
@@ -928,6 +929,10 @@ export class ConnectionValidator {
             if (ErrorHandler.getErrorType(error) === ERROR_TYPE.CONNECTION) {
                 this.validity.reachable = false;
                 return errorHandler.logErrorMsgs(t('errors.systemOrServiceUrlNotFound', { url: serviceUrl }));
+            }
+            // Specific user-friendly message when re-entrance ticket system does not support the virtual host API
+            if ((error as Error)?.message === VIRTUAL_HOST_API_NOT_SUPPORTED) {
+                return t('errors.reentranceTicketNotSupported');
             }
             const errorMsg = errorHandler.getErrorMsg(error);
             return errorMsg ?? error.message;
