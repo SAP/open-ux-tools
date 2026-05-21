@@ -145,5 +145,5 @@ export {
     type UI5ApplicationAnswers,
     type UI5ApplicationPromptOptions
 };
-export type { UI5ApplicationCommonPromptOptions } from './types';
-export { defaultAppName } from './prompts/prompt-helpers';
+export type { UI5ApplicationCommonPromptOptions } from './types.js';
+export { defaultAppName } from './prompts/prompt-helpers.js';
