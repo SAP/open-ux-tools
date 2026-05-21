@@ -23,9 +23,9 @@ export function addSystemAddCommand(cmd: Command): void {
     cmd.command('system')
         .description(
             `Add a new back-end system to the saved systems store (\`~/.fioritools\`). Credentials are stored securely in the OS keychain.\n
-            System types: \`${Object.values(SystemType).join('\`, \`')}\`
-            Auth types: \`${Object.values(AuthenticationType).join('\`, \`')}\`
-            Connection types: \`${Object.values(ConnectionType).join('\`, \`')}\`\n
+            System types: \`${Object.values(SystemType).join('`, `')}\`
+            Auth types: \`${Object.values(AuthenticationType).join('`, `')}\`
+            Connection types: \`${Object.values(ConnectionType).join('`, `')}\`\n
 Example:
     \`npx --yes @sap-ux/create@latest add system --name "My System" --url https://my-sap.example.com\`
     \`npx --yes @sap-ux/create@latest add system --name "My System" --url https://my-sap.example.com --client 100 --username myuser\``
