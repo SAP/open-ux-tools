@@ -1,4 +1,4 @@
-import * as frontendService from '../../../../../src/tools/run-rta-workflow-step/frontend-actions/frontend-service';
+import * as bridge from '../../../../../src/tools/run-rta-workflow-step/browser/playwright-bridge';
 import {
     FrontendActionError,
     executeAction,
@@ -9,9 +9,9 @@ import {
     startRta,
     startVisualization,
     stopRta
-} from '../../../../../src/tools/run-rta-workflow-step/frontend-actions/rta-actions';
+} from '../../../../../src/tools/run-rta-workflow-step/rta/commands';
 
-jest.mock('../../../../../src/tools/run-rta-workflow-step/frontend-actions/frontend-service');
+jest.mock('../../../../../src/tools/run-rta-workflow-step/browser/playwright-bridge');
 
 const SITE = 'http://localhost:8080/test/adaptation-editor.html';
 const FRAME = 'preview';
@@ -27,12 +27,10 @@ const fail = (code: string, message: string) => ({
     error: { code, message }
 });
 
-describe('rta-actions', () => {
-    const callFrontendAction = frontendService.callFrontendAction as jest.MockedFunction<
-        typeof frontendService.callFrontendAction
-    >;
-    const disconnectSite = frontendService.disconnectSite as jest.MockedFunction<typeof frontendService.disconnectSite>;
-    const stopBrowser = frontendService.stopBrowser as jest.MockedFunction<typeof frontendService.stopBrowser>;
+describe('rta/commands', () => {
+    const callFrontendAction = bridge.callFrontendAction as jest.MockedFunction<typeof bridge.callFrontendAction>;
+    const disconnectSite = bridge.disconnectSite as jest.MockedFunction<typeof bridge.disconnectSite>;
+    const stopBrowser = bridge.stopBrowser as jest.MockedFunction<typeof bridge.stopBrowser>;
 
     beforeEach(() => {
         jest.clearAllMocks();

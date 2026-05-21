@@ -25,7 +25,7 @@ import {
     runRtaWorkflowStep,
     tools
 } from './tools';
-import { stopBrowser } from './tools/run-rta-workflow-step/frontend-actions';
+import { stopBrowser } from './tools/run-rta-workflow-step/browser';
 import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry';
 import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from './constant';
 import type {

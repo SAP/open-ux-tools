@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { stopBrowser } from './browser';
 import {
     executeAction,
     FrontendActionError,
@@ -6,9 +7,8 @@ import {
     getElementContext,
     getOverlays,
     saveChanges,
-    startRta,
-    stopBrowser
-} from './frontend-actions';
+    startRta
+} from './rta';
 import { logger } from '../../utils/logger';
 
 /**
@@ -80,7 +80,7 @@ function requireObject(payload: Record<string, unknown> | undefined, key: string
  * the skill-internal contract; this docblock stays purely technical.
  *
  * Dispatches by `input.step`, looks up or creates a session, and forwards
- * to the corresponding `frontend-actions` wrapper. Each step's return shape
+ * to the corresponding `rta` command wrapper. Each step's return shape
  * matches the schema description in `types/input.ts`.
  *
  * @param input Step + sessionId + step-specific payload.

@@ -1,5 +1,5 @@
 import { EventEmitter } from 'node:events';
-import type * as FrontendServiceModule from '../../../../../src/tools/run-rta-workflow-step/frontend-actions/frontend-service';
+import type * as PlaywrightBridgeModule from '../../../../../src/tools/run-rta-workflow-step/browser/playwright-bridge';
 
 // --- playwright-core mock --------------------------------------------------
 
@@ -84,8 +84,8 @@ function setupBrowser(pages: FakePage[]): { browser: FakeBrowser; pages: FakePag
     return { browser, pages };
 }
 
-async function loadFrontendService(): Promise<typeof FrontendServiceModule> {
-    return import('../../../../../src/tools/run-rta-workflow-step/frontend-actions/frontend-service');
+async function loadPlaywrightBridge(): Promise<typeof PlaywrightBridgeModule> {
+    return import('../../../../../src/tools/run-rta-workflow-step/browser/playwright-bridge');
 }
 
 beforeEach(() => {
@@ -93,13 +93,13 @@ beforeEach(() => {
     launchMock.mockReset();
 });
 
-describe('frontend-service', () => {
+describe('browser/playwright-bridge', () => {
     test('first callFrontendAction launches browser, opens page, navigates, evaluates', async () => {
         const page = new FakePage();
         const { browser } = setupBrowser([page]);
         page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: { rtaStarted: true }, error: null });
 
-        const fs = await loadFrontendService();
+        const fs = await loadPlaywrightBridge();
         const result = await fs.callFrontendAction(SITE_A, 'com.sap.ui.flex.startRTA.v1', {});
 
         expect(launchMock).toHaveBeenCalledTimes(1);
@@ -121,7 +121,7 @@ describe('frontend-service', () => {
             .mockRejectedValueOnce(new Error('Frontend action "__liveness__" not registered'))
             .mockResolvedValueOnce({ isSuccess: true, payload: 'second', error: null });
 
-        const fs = await loadFrontendService();
+        const fs = await loadPlaywrightBridge();
         const r1 = await fs.callFrontendAction(SITE_A, 'a');
         const r2 = await fs.callFrontendAction(SITE_A, 'b');
 
@@ -145,7 +145,7 @@ describe('frontend-service', () => {
         stalePage.evaluate.mockRejectedValueOnce(new Error('Target page, context or browser has been closed'));
         freshPage.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'second', error: null });
 
-        const fs = await loadFrontendService();
+        const fs = await loadPlaywrightBridge();
         await fs.callFrontendAction(SITE_A, 'a');
         const r2 = await fs.callFrontendAction(SITE_A, 'b');
 
@@ -163,7 +163,7 @@ describe('frontend-service', () => {
         setupBrowser([page]);
         matchedFrame.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'inside-frame', error: null });
 
-        const fs = await loadFrontendService();
+        const fs = await loadPlaywrightBridge();
         const result = await fs.callFrontendAction(SITE_A, 'a', {}, 'preview');
 
         expect(matchedFrame.evaluate).toHaveBeenCalledTimes(1);
@@ -178,7 +178,7 @@ describe('frontend-service', () => {
         const page = new FakePage([new FakeFrame('toolbar')]);
         setupBrowser([page]);
 
-        const fs = await loadFrontendService();
+        const fs = await loadPlaywrightBridge();
         await expect(fs.callFrontendAction(SITE_A, 'a', {}, 'nonexistent')).rejects.toThrow(
             'Frame with id "nonexistent" not found'
         );
@@ -191,7 +191,7 @@ describe('frontend-service', () => {
         const { browser } = setupBrowser([page, new FakePage()]);
         page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'first', error: null });
 
-        const fs = await loadFrontendService();
+        const fs = await loadPlaywrightBridge();
         await fs.callFrontendAction(SITE_A, 'a');
         await fs.disconnectSite(SITE_A);
 
@@ -210,7 +210,7 @@ describe('frontend-service', () => {
         pageA.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'a', error: null });
         pageB.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'b', error: null });
 
-        const fs = await loadFrontendService();
+        const fs = await loadPlaywrightBridge();
         await fs.callFrontendAction(SITE_A, 'x');
         await fs.callFrontendAction(SITE_B, 'y');
         await fs.stopBrowser();
@@ -221,7 +221,7 @@ describe('frontend-service', () => {
     });
 
     test('stopBrowser is a no-op when no browser was started', async () => {
-        const fs = await loadFrontendService();
+        const fs = await loadPlaywrightBridge();
         await expect(fs.stopBrowser()).resolves.toBeUndefined();
         expect(launchMock).not.toHaveBeenCalled();
     });
@@ -231,7 +231,7 @@ describe('frontend-service', () => {
         const { browser } = setupBrowser([pageA]);
         pageA.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'first', error: null });
 
-        const fs = await loadFrontendService();
+        const fs = await loadPlaywrightBridge();
         await fs.callFrontendAction(SITE_A, 'a');
 
         browser.connected = false;
@@ -258,7 +258,7 @@ describe('frontend-service', () => {
             setupBrowser([page]);
             page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
 
-            const fs = await loadFrontendService();
+            const fs = await loadPlaywrightBridge();
             await fs.callFrontendAction(SITE_A, 'a');
 
             expect(launchMock).toHaveBeenCalledWith(

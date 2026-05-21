@@ -1,4 +1,4 @@
-import { callFrontendAction, disconnectSite, type FrontendActionResult, stopBrowser } from './frontend-service';
+import { callFrontendAction, disconnectSite, type FrontendActionResult, stopBrowser } from '../browser';
 import type { Action, ElementContext, Overlay } from './types';
 
 /**
