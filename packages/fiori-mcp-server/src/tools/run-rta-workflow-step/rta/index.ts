@@ -1,5 +1,3 @@
-export { callFrontendAction, disconnectSite, stopBrowser } from './frontend-service';
-export type { FrontendActionResult } from './frontend-service';
 export {
     FrontendActionError,
     executeAction,
@@ -10,6 +8,6 @@ export {
     startRta,
     startVisualization,
     stopRta
-} from './rta-actions';
-export type { RtaSite } from './rta-actions';
+} from './commands';
+export type { RtaSite } from './commands';
 export type { Action, ActionPayloadProperty, ElementContext, Overlay } from './types';

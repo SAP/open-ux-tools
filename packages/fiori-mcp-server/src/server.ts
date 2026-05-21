@@ -26,7 +26,7 @@ import {
     runRtaWorkflowStep,
     tools
 } from './tools/index.js';
-import { stopBrowser } from './tools/run-rta-workflow-step/frontend-actions.js';
+import { stopBrowser } from './tools/run-rta-workflow-step/browser.js';
 import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry/index.js';
 import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from './constant.js';
 import type {
