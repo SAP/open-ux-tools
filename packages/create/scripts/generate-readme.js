@@ -93,7 +93,12 @@ function renderCommandAndSubcommands(cmd, parentPath) {
     const anchor = generateAnchor(currentPath);
 
     let md = `## [\`${fullCommandName}\`](#${anchor})\n\n`;
-    md += `${cmd.description.replace(/ {2,}/g, '\n')}\n\n`;
+    const descriptionMd = cmd.description
+        .replace(/ {2,}/g, '\n')   // 2+ spaces → newline (for aligned descriptions)
+        .replace(/\n\n/g, '\0')    // protect paragraph breaks
+        .replace(/\n/g, '  \n')    // single newline → Markdown hard line break
+        .replace(/\0/g, '\n\n');   // restore paragraph breaks
+    md += `${descriptionMd}\n\n`;
 
     if (cmd.options && cmd.options.length > 0) {
         md += `Options:\n${renderOptions(cmd.options)}\n\n`;
