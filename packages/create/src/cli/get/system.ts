@@ -14,9 +14,7 @@ import { getLogger } from '../../tracing';
 export function addSystemGetCommand(cmd: Command): void {
     cmd.command('system')
         .description(
-            `Retrieve details of a saved back-end system by URL.
-Sensitive data (passwords, tokens) is never included in the output.
-
+            `Retrieve details of a saved back-end system by URL. Sensitive data (passwords, tokens) is never included in the output.\n
 Example:
     \`npx --yes @sap-ux/create@latest get system --url https://my-sap.example.com\`
     \`npx --yes @sap-ux/create@latest get system --url https://my-sap.example.com --client 100\`

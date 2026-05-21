@@ -13,9 +13,7 @@ import { getLogger } from '../../tracing';
 export function addSystemRemoveCommand(cmd: Command): void {
     cmd.command('system')
         .description(
-            `Remove a saved back-end system from the saved system store: ~/.fioritools.
-Also deletes any stored credentials in the OS keychain.
-
+            `Remove a saved back-end system from the saved system store (\`~/.fioritools\`). Also deletes any stored credentials in the OS keychain.\n
 Example:
     \`npx --yes @sap-ux/create@latest remove system --url https://my-sap.example.com\`
     \`npx --yes @sap-ux/create@latest remove system --url https://my-sap.example.com --client 100\``

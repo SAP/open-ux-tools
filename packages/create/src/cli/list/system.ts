@@ -14,9 +14,7 @@ import { getLogger } from '../../tracing';
 export function addSystemListCommand(cmd: Command): void {
     cmd.command('system')
         .description(
-            `List all back-end systems in the saved system store: ~/.fioritools.
-Sensitive data, such as passwords and tokens, is never included in the output.
-
+            `List all back-end systems in the saved system store (\`~/.fioritools\`). Sensitive data, such as passwords and tokens, is never included in the output.\n
 Example:
     \`npx --yes @sap-ux/create@latest list system\`
     \`npx --yes @sap-ux/create@latest list system --json\``

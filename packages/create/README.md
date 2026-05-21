@@ -34,7 +34,7 @@ Command group for generating SAP Fiori applications. A subcommand is required.
 
 Usage: `npx --yes @sap-ux/create@latest generate [subcommand] [options]`
 
-The available subcommands are: `adaptation-project`  
+The available subcommands are: `adaptation-project`
 
 
 --------------------------------
@@ -68,7 +68,7 @@ Command group for adding features to existing SAP Fiori applications. A subcomma
 
 Usage: `npx --yes @sap-ux/create@latest add [subcommand] [options]`
 
-The available subcommands are: `mockserver-config`, `smartlinks-config`, `eslint-config`, `cds-plugin-ui5`, `inbound-navigation`, `cards-editor`, `model`, `annotations`, `html`, `component-usages`, `deploy-config`, `variants-config`, `adp-cf-config` and `system`  
+The available subcommands are: `mockserver-config`, `smartlinks-config`, `eslint-config`, `cds-plugin-ui5`, `inbound-navigation`, `cards-editor`, `model`, `annotations`, `html`, `component-usages`, `deploy-config`, `variants-config`, `adp-cf-config` and `system`
 
 
 --------------------------------
@@ -181,7 +181,7 @@ Options:
 
 Adds an annotation to the OData Source of the base application in an adaptation project.
 
-  
+
 This command is not supported for Cloud Foundry projects.
 
 Example:
@@ -258,7 +258,7 @@ Options:
 
 Configure an existing Cloud Foundry adaptation project for local preview by fetching reusable libraries, building the project, and configuring ui5.yaml file middlewares.
 
-  
+
 **⚠️ Experimental**: This command is experimental and may be subject to breaking changes or even removal in future versions. Use with caution and be prepared to update your configuration or migrate to alternative solutions, if needed.
 
 Example:
@@ -273,11 +273,15 @@ Options:
 
 ## [`add system`](#add-system)
 
-Add a new back-end system to the saved systems store: ~/.fioritools. Credentials are stored securely in the OS keychain.
+Add a new back-end system to the saved systems store (`~/.fioritools`). Credentials are stored securely in the OS keychain.
 
-System types: AbapCloud | OnPrem | Generic  
-Auth types: basic | reentranceTicket | oauth2 | oauth2ClientCredential  
-Connection types: abap_catalog | generic_host | odata_service
+
+System types: `AbapCloud`, `OnPrem`, `Generic`
+
+Auth types:
+`basic`, `reentranceTicket`, `oauth2`, `oauth2ClientCredential`
+
+Connection types: `abap_catalog`, `generic_host`, `odata_service`
 
 Example:
 
@@ -303,7 +307,7 @@ Command group for converting existing SAP Fiori applications. A subcommand is re
 
 Usage: `npx --yes @sap-ux/create@latest convert [subcommand] [options]`
 
-The available subcommands are: `preview-config` and `eslint-config`  
+The available subcommands are: `preview-config` and `eslint-config`
 
 
 --------------------------------
@@ -347,7 +351,7 @@ Command group for removing features from existing SAP Fiori applications. A subc
 
 Usage: `npx --yes @sap-ux/create@latest remove [subcommand] [options]`
 
-The available subcommands are: `mockserver-config` and `system`  
+The available subcommands are: `mockserver-config` and `system`
 
 
 --------------------------------
@@ -368,8 +372,7 @@ Options:
 
 ## [`remove system`](#remove-system)
 
-Remove a saved back-end system from the saved system store: ~/.fioritools.  
-Also deletes any stored credentials in the OS keychain.
+Remove a saved back-end system from the saved system store (`~/.fioritools`). Also deletes any stored credentials in the OS keychain.
 
 Example:
 
@@ -397,7 +400,7 @@ The available subcommands are: `data-source`, `inbound` and `system`
 
 Replace the OData Source of the base application in an adaptation project.
 
-  
+
 This command is not supported for Cloud Foundry projects.
 
 Example:
@@ -414,7 +417,7 @@ Options:
 
 Replace the inbound FLP configurations of the base application in an adaptation project.
 
-  
+
 This command is not supported for Cloud Foundry projects.
 
 Example:
@@ -428,14 +431,14 @@ Options:
 
 ## [`change system`](#change-system)
 
-Update an existing backend system in the saved systems store (~/.fioritools).  
-The system is identified by its URL and optional SAP client.
+Update an existing backend system in the saved systems store (`~/.fioritools`). The system is identified by its URL and optional SAP client.
+
 
 Example:
 
-npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --name "New Name"
+`npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --name "New Name"`
 
-npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --client 100 --username newuser
+`npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --client 100 --username newuser`
 
 Options:
 - `--url <string>` _(required)_ - URL of the backend system to update
@@ -453,15 +456,14 @@ Command group for listing saved resources. A subcommand is required.
 
 Usage: `npx --yes @sap-ux/create@latest list [subcommand] [options]`
 
-The available subcommands are: `system`  
+The available subcommands are: `system`
 
 
 --------------------------------
 
 ## [`list system`](#list-system)
 
-List all back-end systems in the saved system store: ~/.fioritools.  
-Sensitive data, such as passwords and tokens, is never included in the output.
+List all back-end systems in the saved system store (`~/.fioritools`). Sensitive data, such as passwords and tokens, is never included in the output.
 
 Example:
 
@@ -480,15 +482,14 @@ Command group for retrieving saved resources. A subcommand is required.
 
 Usage: `npx --yes @sap-ux/create@latest get [subcommand] [options]`
 
-The available subcommands are: `system`  
+The available subcommands are: `system`
 
 
 --------------------------------
 
 ## [`get system`](#get-system)
 
-Retrieve details of a saved back-end system by URL.  
-Sensitive data (passwords, tokens) is never included in the output.
+Retrieve details of a saved back-end system by URL. Sensitive data (passwords, tokens) is never included in the output.
 
 Example:
 

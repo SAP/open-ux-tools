@@ -16,11 +16,11 @@ import { getLogger } from '../../tracing';
 export function addSystemUpdateCommand(cmd: Command): void {
     cmd.command('system')
         .description(
-            `Update an existing backend system in the saved systems store (~/.fioritools).\n` +
-                `The system is identified by its URL and optional SAP client.\n\n` +
-                `Example:\n` +
-                `  npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --name "New Name"\n` +
-                `  npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --client 100 --username newuser`
+            `Update an existing backend system in the saved systems store (\`~/.fioritools\`). The system is identified by its URL and optional SAP client.\n
+
+Example:
+    \`npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --name "New Name"\`
+    \`npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --client 100 --username newuser\``
         )
         .requiredOption('--url <string>', 'URL of the backend system to update')
         .option('--client <string>', 'SAP client number to identify the system (optional)')
