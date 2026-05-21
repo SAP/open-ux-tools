@@ -1,6 +1,7 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { resolve } from 'node:path';
+import { createWebSocketConnection } from '../src/backend/connection.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -51,7 +52,6 @@ export default {
             '.js': ['.ts', '.tsx', '.js']
         };
         if (config.mode === 'development') {
-            const { createWebSocketConnection } = await import('../src/backend/connection.js');
             await createWebSocketConnection();
         }
         return config;
