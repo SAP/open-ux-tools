@@ -19,6 +19,7 @@ export { openAdaptationEditor } from './open-adaptation-editor';
 export { adpControllerExtension } from './adp-controller-extension';
 export { listLibrariesFromSystem } from './get-libraries';
 export { readODataMetadataAdp } from './get-adp-odata-metada';
+export { listODataServices } from './get-odata-services';
 
 export const tools = [
     {
@@ -213,6 +214,24 @@ export const tools = [
             openWorldHint: false
         },
         inputSchema: convertToSchema(Input.ListFunctionalitiesInputSchema)
+    },
+    {
+        name: 'list_odata_services_from_system',
+        description: `Lists all available OData services from the specified SAP system.
+
+        This tool:
+        - Reads the SAP system connection details from the provided appPath (using ui5.yaml configuration)
+        - Connects to the SAP system and retrieves the list of available OData services
+        - Returns an array of OData service objects with details such as name, version, and description
+
+        Use this tool when you need to discover which OData services are available in the connected SAP system, for adding an OData Service to the manifest.`,
+        annotations: {
+            title: 'List OData Services from SAP System',
+            readOnlyHint: true,
+            idempotentHint: true,
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.ODataServiceInputSchema)
     },
     {
         name: 'read_odata_metadata_adp',
