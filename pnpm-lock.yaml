@@ -162,7 +162,7 @@ importers:
         version: 4.4.4(eslint-plugin-import@2.32.0)(eslint@10.0.3)
       eslint-plugin-import:
         specifier: 2.32.0
-        version: 2.32.0(@typescript-eslint/parser@8.57.2(eslint@10.0.3)(typescript@5.9.3))(eslint-import-resolver-typescript@4.4.4)(eslint@10.0.3)
+        version: 2.32.0(eslint-import-resolver-typescript@4.4.4)(eslint@10.0.3)
       eslint-plugin-jsdoc:
         specifier: 62.8.1
         version: 62.8.1(eslint@10.0.3)
@@ -396,13 +396,13 @@ importers:
         version: 8.18.1
       babel-loader:
         specifier: 10.1.1
-        version: 10.1.1(@babel/core@7.29.0)(webpack@5.105.0(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.4))
+        version: 10.1.1(@babel/core@7.29.0)(webpack@5.105.0(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.28.0))
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
       css-loader:
         specifier: 7.1.4
-        version: 7.1.4(webpack@5.105.0(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.4))
+        version: 7.1.4(webpack@5.105.0(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.28.0))
       eslint:
         specifier: 9.39.1
         version: 9.39.1
@@ -432,19 +432,19 @@ importers:
         version: 1.98.0
       sass-loader:
         specifier: 16.0.7
-        version: 16.0.7(sass-embedded@1.97.3)(sass@1.98.0)(webpack@5.105.0(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.4))
+        version: 16.0.7(sass-embedded@1.97.3)(sass@1.98.0)(webpack@5.105.0(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.28.0))
       storybook:
         specifier: 10.4.0
         version: 10.4.0(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@9.3.4)(@types/react@16.14.69)(prettier@3.8.1)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       storybook-addon-turbo-build:
         specifier: 2.0.1
-        version: 2.0.1(webpack@5.105.0(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.4))
+        version: 2.0.1(webpack@5.105.0(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.28.0))
       style-loader:
         specifier: 4.0.0
-        version: 4.0.0(webpack@5.105.0(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.4))
+        version: 4.0.0(webpack@5.105.0(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.28.0))
       ts-loader:
         specifier: 9.5.4
-        version: 9.5.4(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.4))
+        version: 9.5.4(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.28.0))
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)
@@ -2659,7 +2659,7 @@ importers:
         specifier: 1.1.3
         version: 1.1.3(@cfworker/json-schema@4.1.1)(@langchain/core@1.1.40(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.0))(openai@6.39.0(ws@8.21.0)(zod@4.3.6))(ws@8.21.0))(@langchain/langgraph@1.1.4(@langchain/core@1.1.40(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.0))(openai@6.39.0(ws@8.21.0)(zod@4.3.6))(ws@8.21.0))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@4.3.6))
       '@modelcontextprotocol/sdk':
-        specifier: ^1.29.0
+        specifier: '>=1.29.0'
         version: 1.29.0(@cfworker/json-schema@4.1.1)(zod@4.3.6)
       '@sap-ai-sdk/foundation-models':
         specifier: 2.9.0
@@ -23896,7 +23896,7 @@ snapshots:
       '@secretlint/profiler': 10.2.2
       '@secretlint/resolver': 10.2.2
       '@secretlint/types': 10.2.2
-      ajv: 8.20.0
+      ajv: 8.18.0
       debug: 4.4.3
       rc-config-loader: 4.1.3
     transitivePeerDependencies:
@@ -26097,9 +26097,13 @@ snapshots:
     dependencies:
       ajv: 8.18.0
 
-  ajv-formats@2.1.1(ajv@8.20.0):
+  ajv-formats@2.1.1(ajv@8.18.0):
     optionalDependencies:
-      ajv: 8.20.0
+      ajv: 8.18.0
+
+  ajv-formats@3.0.1(ajv@8.18.0):
+    optionalDependencies:
+      ajv: 8.18.0
 
   ajv-formats@3.0.1(ajv@8.20.0):
     optionalDependencies:
@@ -26109,9 +26113,9 @@ snapshots:
     dependencies:
       ajv: 6.15.0
 
-  ajv-keywords@5.1.0(ajv@8.20.0):
+  ajv-keywords@5.1.0(ajv@8.18.0):
     dependencies:
-      ajv: 8.20.0
+      ajv: 8.18.0
       fast-deep-equal: 3.1.3
 
   ajv@6.14.0:
@@ -26934,7 +26938,7 @@ snapshots:
 
   cf-nodejs-logging-support@7.4.6:
     dependencies:
-      ajv: 8.20.0
+      ajv: 8.18.0
       json-stringify-safe: 5.0.1
       jsonwebtoken: 9.0.3
       triple-beam: 1.4.1
@@ -27937,7 +27941,7 @@ snapshots:
     dependencies:
       airbnb-prop-types: 2.16.0(react@16.14.0)
       function.prototype.name: 1.1.8
-      hasown: 2.0.2
+      hasown: 2.0.3
       object.assign: 4.1.7
       object.fromentries: 2.0.8
       prop-types: 15.8.1
@@ -28010,7 +28014,7 @@ snapshots:
       has-property-descriptors: 1.0.2
       has-proto: 1.2.0
       has-symbols: 1.1.0
-      hasown: 2.0.2
+      hasown: 2.0.3
       internal-slot: 1.1.0
       is-array-buffer: 3.0.5
       is-callable: 1.2.7
@@ -28097,7 +28101,7 @@ snapshots:
 
   es-shim-unscopables@1.1.0:
     dependencies:
-      hasown: 2.0.2
+      hasown: 2.0.3
 
   es-to-primitive@1.3.0:
     dependencies:
@@ -28253,15 +28257,14 @@ snapshots:
       tinyglobby: 0.2.15
       unrs-resolver: 1.11.1
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.57.2(eslint@10.0.3)(typescript@5.9.3))(eslint-import-resolver-typescript@4.4.4)(eslint@10.0.3)
+      eslint-plugin-import: 2.32.0(eslint-import-resolver-typescript@4.4.4)(eslint@10.0.3)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.57.2(eslint@10.0.3)(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@4.4.4)(eslint@10.0.3):
+  eslint-module-utils@2.12.1(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@4.4.4)(eslint@10.0.3):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
-      '@typescript-eslint/parser': 8.57.2(eslint@10.0.3)(typescript@5.9.3)
       eslint: 10.0.3
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 4.4.4(eslint-plugin-import@2.32.0)(eslint@10.0.3)
@@ -28274,7 +28277,7 @@ snapshots:
       eslint: 9.39.1
       estraverse: 5.3.0
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.57.2(eslint@10.0.3)(typescript@5.9.3))(eslint-import-resolver-typescript@4.4.4)(eslint@10.0.3):
+  eslint-plugin-import@2.32.0(eslint-import-resolver-typescript@4.4.4)(eslint@10.0.3):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -28285,7 +28288,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 10.0.3
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.57.2(eslint@10.0.3)(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@4.4.4)(eslint@10.0.3)
+      eslint-module-utils: 2.12.1(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@4.4.4)(eslint@10.0.3)
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -28296,8 +28299,6 @@ snapshots:
       semver: 6.3.1
       string.prototype.trimend: 1.0.9
       tsconfig-paths: 3.15.0
-    optionalDependencies:
-      '@typescript-eslint/parser': 8.57.2(eslint@10.0.3)(typescript@5.9.3)
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
@@ -29368,7 +29369,7 @@ snapshots:
       extend: 3.0.2
       gaxios: 7.1.4
       google-auth-library: 10.6.2
-      qs: 6.15.2
+      qs: 6.15.0
       url-template: 2.0.8
     transitivePeerDependencies:
       - supports-color
@@ -29810,7 +29811,7 @@ snapshots:
   internal-slot@1.1.0:
     dependencies:
       es-errors: 1.3.0
-      hasown: 2.0.2
+      hasown: 2.0.3
       side-channel: 1.1.0
 
   interpret@1.4.0: {}
@@ -29886,7 +29887,7 @@ snapshots:
 
   is-core-module@2.16.1:
     dependencies:
-      hasown: 2.0.2
+      hasown: 2.0.3
 
   is-data-view@1.0.2:
     dependencies:
@@ -32997,7 +32998,7 @@ snapshots:
     dependencies:
       call-bound: 1.0.4
       es-errors: 1.3.0
-      hasown: 2.0.2
+      hasown: 2.0.3
       isarray: 2.0.5
       object.assign: 4.1.7
       own-keys: 1.0.1
@@ -34027,9 +34028,9 @@ snapshots:
   schema-utils@4.3.3:
     dependencies:
       '@types/json-schema': 7.0.15
-      ajv: 8.20.0
-      ajv-formats: 2.1.1(ajv@8.20.0)
-      ajv-keywords: 5.1.0(ajv@8.20.0)
+      ajv: 8.18.0
+      ajv-formats: 2.1.1(ajv@8.18.0)
+      ajv-keywords: 5.1.0(ajv@8.18.0)
 
   scoped-regex@2.1.0: {}
 
@@ -34775,7 +34776,7 @@ snapshots:
       formidable: 3.5.4
       methods: 1.1.2
       mime: 2.6.0
-      qs: 6.15.2
+      qs: 6.15.0
     transitivePeerDependencies:
       - supports-color
 
@@ -34821,7 +34822,7 @@ snapshots:
 
   table@6.9.0:
     dependencies:
-      ajv: 8.20.0
+      ajv: 8.18.0
       lodash.truncate: 4.4.2
       slice-ansi: 4.0.0
       string-width: 4.2.3
@@ -35267,7 +35268,7 @@ snapshots:
 
   typed-rest-client@1.8.11:
     dependencies:
-      qs: 6.15.2
+      qs: 6.15.0
       tunnel: 0.0.6
       underscore: 1.13.8
 
@@ -35315,6 +35316,7 @@ snapshots:
       chokidar: 5.0.0
       comment-json: 4.6.2
       estree-walker: 3.0.3
+      fast-xml-parser: 5.8.0
       fast-xml-parser: 5.8.0
       handlebars: 4.7.9
       ignore-walk: 8.0.0
@@ -35539,7 +35541,7 @@ snapshots:
   url@0.11.4:
     dependencies:
       punycode: 1.4.1
-      qs: 6.15.2
+      qs: 6.15.0
 
   use-isomorphic-layout-effect@1.2.1(@types/react@16.14.69)(react@16.14.0):
     dependencies:

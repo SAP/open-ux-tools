@@ -41,6 +41,7 @@ import type {
     GenerateAdaptationProjectInput,
     OpenAdaptationEditorInput,
     AdpControllerExtensionInput,
+    AdpMetadataInput,
     BuildAdaptationProjectInput,
     GetMergedManifestInput,
     RunRtaWorkflowStepInput,
@@ -249,7 +250,10 @@ export class FioriFunctionalityServer {
                         result = await listLibrariesFromSystem(args as ListFunctionalitiesInput);
                         break;
                     case 'read_odata_metadata_adp':
-                        result = await readODataMetadataAdp(args as ListFunctionalitiesInput);
+                        result = await readODataMetadataAdp(args as AdpMetadataInput);
+                        break;
+                    case 'run_rta_workflow_step':
+                        result = await runRtaWorkflowStep(args as RunRtaWorkflowStepInput);
                         break;
                     case 'run_rta_workflow_step':
                         result = await runRtaWorkflowStep(args as RunRtaWorkflowStepInput);

@@ -1,6 +1,7 @@
 import * as path from 'node:path';
 import * as fs from 'node:fs';
 import ZipFile from 'adm-zip';
+import prettifyXml from 'prettify-xml';
 
 import { ToolsLogger } from '@sap-ux/logger';
 import { readUi5Config } from '@sap-ux/adp-tooling';
@@ -50,6 +51,21 @@ const LIBRARY_WITH_DESCR_FILTER: UI5AppFilter = {
 const logger = new ToolsLogger({ logPrefix: 'fiori-mcp-server' });
 
 /**
+ * Pretty-prints an XML string.
+ *
+ * @param xml - Raw XML content.
+ * @returns Indented XML; returns the input unchanged if formatting fails.
+ */
+function formatXml(xml: string): string {
+    try {
+        return prettifyXml(xml, { indent: 4 });
+    } catch (error) {
+        logger.warn(`Failed to format XML: ${(error as Error).message}`);
+        return xml;
+    }
+}
+
+/**
  * Zips the webapp folder and merges it with the base app descriptor on the LREP backend.
  *
  * @param appPath - Adaptation project root.
@@ -73,9 +89,13 @@ export async function readMergedManifest(appPath: string): Promise<MergedAppDesc
  * Resolves OData data sources from the merged manifest and fetches their metadata.
  *
  * @param appPath - Adaptation project root.
+ * @param saveLocal
  * @returns OData data source entries with id, url, metadata, and the bound model (if any).
  */
-export async function readAnnotationfromManifest(appPath: string): Promise<ODataMetadataEntry[]> {
+export async function readAnnotationfromManifest(
+    appPath: string,
+    saveLocal: boolean = false
+): Promise<ODataMetadataEntry[]> {
     const abapProvider = await getSystemProvider(await getSystemUrl(appPath));
     const mergedManifest = await readMergedManifest(appPath);
 
@@ -94,10 +114,17 @@ export async function readAnnotationfromManifest(appPath: string): Promise<OData
             continue;
         }
         const oData = abapProvider.service(dataSource.uri);
+        const rawMetadata = await oData.metadata();
+        const formattedMetadata = formatXml(rawMetadata);
+        if (saveLocal) {
+            const metadataPath = path.join(appPath, 'webapp', '.context', `${name}-metadata.xml`);
+            await fs.promises.mkdir(path.dirname(metadataPath), { recursive: true });
+            await fs.promises.writeFile(metadataPath, formattedMetadata, 'utf-8');
+        }
         entries.push({
             id: name,
             url: dataSource.uri,
-            metadata: await oData.metadata(),
+            metadata: formattedMetadata,
             model: modelsByDataSource.get(name)
         });
     }

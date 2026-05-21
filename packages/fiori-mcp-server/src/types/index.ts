@@ -11,6 +11,7 @@ import type {
     GenerateAdaptationProjectInputSchema,
     OpenAdaptationEditorInputSchema,
     AdpControllerExtensionInputSchema,
+    AdpMetadataInputSchema,
     BuildAdaptationProjectInputSchema,
     GetMergedManifestInputSchema,
     RunRtaWorkflowStepInputSchema,
@@ -50,6 +51,7 @@ export type AdpControllerExtensionInput = zod.infer<typeof AdpControllerExtensio
 export type BuildAdaptationProjectInput = zod.infer<typeof BuildAdaptationProjectInputSchema>;
 export type GetMergedManifestInput = zod.infer<typeof GetMergedManifestInputSchema>;
 export type RunRtaWorkflowStepInput = zod.infer<typeof RunRtaWorkflowStepInputSchema>;
+export type AdpMetadataInput = zod.infer<typeof AdpMetadataInputSchema>;
 
 /**
  * Interface for functionality handlers
