@@ -1,5 +1,31 @@
 # @sap-ux/deploy-tooling
 
+## 0.19.4
+
+### Patch Changes
+
+- Updated dependencies [9752c40]
+    - @sap-ux/ui5-config@0.31.1
+    - @sap-ux/inquirer-common@0.13.2
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/project-input-validator@0.7.2
+    - @sap-ux/system-access@0.8.0
+
+## 0.19.3
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.26.0
+- @sap-ux/inquirer-common@0.13.1
+- @sap-ux/project-input-validator@0.7.1
+- @sap-ux/system-access@0.8.0
+
+## 0.19.2
+
+### Patch Changes
+
+- 0b35137: fix(deploy-tooling): skip ATO developmentPrefix enforcement for on-premise systems
+
 ## 0.19.1
 
 ### Patch Changes
