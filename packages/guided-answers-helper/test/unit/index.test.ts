@@ -45,7 +45,7 @@ describe('Guided Answers Helper', () => {
             UI_SERVICE_GENERATOR: 63068,
             DESTINATION_GATEWAY_TIMEOUT: 57914,
             ADT_APP_NOT_FOUND_ERROR: 63911,
-            DESTINATION_FULL_URL: 0
+            DESTINATION_FULL_URL: 68172
         });
     });
 });
