@@ -1,8 +1,11 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
-import { compressToBase64, decompressFromBase64 } from 'lz-string';
+import { createRequire } from 'node:module';
 import type { ContentIntegrity, FileIntegrity, Integrity } from '../types.js';
+
+const _require = createRequire(import.meta.url);
+const { compressToBase64, decompressFromBase64 } = _require('lz-string');
 
 /**
  * Read hashes from a previously stored hash file.
