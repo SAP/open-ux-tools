@@ -12,17 +12,18 @@ export type AnyPage = FeV4ObjectPage | FeV4ListReport | FeV2ListReport | FeV2Obj
 
 /**
  * Extracts a scalar value from an annotation element.
- * Checks for an attribute with `attrName` first; if absent, searches child elements whose
- * name matches one of `childNames` and returns the text content of the first match.
- * Handles both OData XML format (attribute) and CDS-compiled format (child element).
+ * Checks for an attribute named `name` first (OData XML form); if absent, searches child elements
+ * whose name matches `name` or any of `extraChildNames` and returns the text content of the first
+ * match (CDS-compiled form). `name` is always included in the child search because in OData the
+ * attribute name and the compiled child-element name are the same constant.
  *
  * @param element - The annotation element
- * @param attrName - The attribute name to check (e.g. `Edm.String`)
- * @param childNames - Element names to search among children (e.g. `Edm.Path`, `Edm.PropertyPath`)
+ * @param name - The Edm constant used for both the attribute lookup and the primary child-element match
+ * @param extraChildNames - Additional child-element names to accept (e.g. `Edm.PropertyPath` for path values)
  * @returns The scalar value or undefined if not found
  */
-function getScalarValue(element: Element, attrName: string, ...childNames: string[]): string | undefined {
-    const attr = getElementAttributeValue(element, attrName);
+function getScalarValue(element: Element, name: string, ...extraChildNames: string[]): string | undefined {
+    const attr = getElementAttributeValue(element, name);
     if (attr) {
         return attr;
     }
@@ -31,7 +32,7 @@ function getScalarValue(element: Element, attrName: string, ...childNames: strin
             continue;
         }
         const childEl = child as Element;
-        if (childNames.includes(childEl.name)) {
+        if (childEl.name === name || extraChildNames.includes(childEl.name)) {
             const textNode = childEl.content.find((c) => c.type === 'text');
             if (textNode && 'text' in textNode) {
                 return textNode.text;
@@ -41,10 +42,14 @@ function getScalarValue(element: Element, attrName: string, ...childNames: strin
     return undefined;
 }
 
-export const getStringValue = (element: Element): string | undefined => getScalarValue(element, Edm.String, Edm.String);
-export const getBoolValue = (element: Element): string | undefined => getScalarValue(element, Edm.Bool, Edm.Bool);
+// Edm.String is both the XML attribute name and the CDS-compiled child-element name.
+export const getStringValue = (element: Element): string | undefined => getScalarValue(element, Edm.String);
+// Edm.Bool is both the XML attribute name and the CDS-compiled child-element name.
+export const getBoolValue = (element: Element): string | undefined => getScalarValue(element, Edm.Bool);
+// Edm.Path covers both the XML Path attribute and the CDS-compiled <Path> child element;
+// Edm.PropertyPath covers navigation-path child elements emitted by some CDS forms.
 export const getTextPath = (element: Element): string | undefined =>
-    getScalarValue(element, Edm.Path, Edm.Path, Edm.PropertyPath);
+    getScalarValue(element, Edm.Path, Edm.PropertyPath);
 
 /**
  * Builds a reverse map from IndexedAnnotation to entity type name,
