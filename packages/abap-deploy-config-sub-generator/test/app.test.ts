@@ -15,7 +15,6 @@ const mockGetAppType = jest.fn();
 const mockGetPrompts = jest.fn();
 const mockHandleErrorMessage = jest.fn();
 
-
 const realStore = await import('@sap-ux/store');
 // Store mock is required here to prevent subsequent imports from using the real store funcs
 // Tests will still pass but some never exit
