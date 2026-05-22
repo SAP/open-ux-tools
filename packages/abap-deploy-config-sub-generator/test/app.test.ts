@@ -39,6 +39,10 @@ jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     sendTelemetry: mockSendTelemetry,
     isExtensionInstalled: jest.fn().mockReturnValue(true),
     getHostEnvironment: mockGetHostEnvironment,
+    TelemetryHelper: {
+        initTelemetrySettings: jest.fn(),
+        createTelemetryData: jest.fn()
+    },
     hostEnvironment: { cli: 'CLI', bas: 'BAS', vscode: 'VSCode' },
     YUI_EXTENSION_ID: 'SAPOSS.app-studio-toolkit',
     YUI_MIN_VER_FILES_GENERATED_MSG: '1.14.0'
