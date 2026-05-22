@@ -5,3 +5,4 @@ export { generateInboundNavigationConfig, readManifest } from './navigation-conf
 export { generateVariantsConfig } from './variants-config/index.js';
 export { convertToVirtualPreview } from './preview-config/index.js';
 export { enableCardGeneratorConfig } from './cards-config/index.js';
+export { generateFlpEmbeddedConfig, DEFAULT_FLP_PATH } from './flp-embedded-config/index.js';

@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.2.2
+
+### Patch Changes
+
+- 882d45b: Fixed UIDropdown background overflowing past rounded borders.
+
 ## 2.2.1
 
 ### Patch Changes
