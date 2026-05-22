@@ -9,23 +9,24 @@ const mockDefaultLogger = {
     debug: jest.fn()
 };
 
+const actualFioriGeneratorShared = await import('@sap-ux/fiori-generator-shared');
 jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGeneratorShared,
     getHostEnvironment: mockGetHostEnvironment,
     hostEnvironment: {
         vscode: { name: 'Visual Studio Code', technical: 'VSCode' },
         bas: { name: 'SAP Business Application Studio', technical: 'SBAS' },
         cli: { name: 'CLI', technical: 'CLI' }
     },
-    DefaultLogger: mockDefaultLogger,
-    LogWrapper: class {}
+    DefaultLogger: mockDefaultLogger
 }));
 
-const { ErrorHandler, ERROR_TYPE, bail, handleErrorMessage } = await import('../src/utils/error-handler');
-const { DeploymentGenerator } = await import('../src/base/generator');
+const { ErrorHandler, ERROR_TYPE, bail, handleErrorMessage } = await import('../src/utils/error-handler.js');
+const { DeploymentGenerator } = await import('../src/base/generator.js');
 const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 const { MessageType } = await import('@sap-devx/yeoman-ui-types');
-const { t } = await import('../src/utils/i18n');
-const { cdsExecutable, cdsPkg, mtaExecutable, mtaPkg } = await import('../src/utils/constants');
+const { t } = await import('../src/utils/i18n.js');
+const { cdsExecutable, cdsPkg, mtaExecutable, mtaPkg } = await import('../src/utils/constants.js');
 
 describe('bail', () => {
     it('should throw an error with the provided message', () => {

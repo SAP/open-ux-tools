@@ -4,9 +4,9 @@ import { AdaptationProjectType } from '@sap-ux/axios-extension';
 import { GUIDED_ANSWERS_ICON, HELP_NODES, HELP_TREE } from '@sap-ux/guided-answers-helper';
 import { AxiosError, type AxiosResponseHeaders } from 'axios';
 import { AuthenticationType } from '@sap-ux/store';
-import type { AbapSystemChoice, BackendTarget } from '../../src/types';
-import { ClientChoiceValue, PackageInputChoices, TargetSystemType, TransportChoices } from '../../src/types';
-import { mockDestinations } from '../fixtures/destinations';
+import type { AbapSystemChoice, BackendTarget } from '../../src/types.js';
+import { ClientChoiceValue, PackageInputChoices, TargetSystemType, TransportChoices } from '../../src/types.js';
+import { mockDestinations } from '../fixtures/destinations.js';
 
 const mockIsAppStudio = jest.fn();
 const mockGetTransportListFromService = jest.fn();
@@ -15,13 +15,12 @@ const mockFindBackendSystemByUrl = jest.fn();
 const mockInitTransportConfig = jest.fn();
 const mockQueryPackages = jest.fn();
 
+const actualUtils = await import('../../src/utils.js');
 jest.unstable_mockModule('../../src/utils', () => ({
+    ...actualUtils,
     findBackendSystemByUrl: mockFindBackendSystemByUrl,
     initTransportConfig: mockInitTransportConfig,
     queryPackages: mockQueryPackages,
-    getAbapSystems: jest.fn(),
-    findDestination: jest.fn(),
-    isSameSystem: jest.fn(),
     getPackageAnswer: (previousAnswers?: any, statePackage?: string): string => {
         return (
             statePackage ??
@@ -30,9 +29,6 @@ jest.unstable_mockModule('../../src/utils', () => ({
                 : (previousAnswers?.packageManual ?? ''))
         );
     },
-    useCreateTrDuringDeploy: jest.fn(),
-    reconcileAnswers: jest.fn(),
-    getTransportAnswer: jest.fn(),
     getSystemConfig: (_useStandalone: boolean, abapDeployConfig?: any, _backendTarget?: any) => ({
         url: abapDeployConfig?.url,
         client: abapDeployConfig?.client,
@@ -80,12 +76,10 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: mockIsAppStudio
 }));
 
+const actualServiceProviderUtils = await import('../../src/service-provider-utils/index.js');
 jest.unstable_mockModule('../../src/service-provider-utils', () => ({
-    getTransportListFromService: mockGetTransportListFromService,
-    createTransportNumberFromService: jest.fn(),
-    listPackagesFromService: jest.fn(),
-    getTransportConfigInstance: jest.fn(),
-    transportName: jest.fn()
+    ...actualServiceProviderUtils,
+    getTransportListFromService: mockGetTransportListFromService
 }));
 
 jest.unstable_mockModule('../../src/service-provider-utils/abap-service-provider', () => ({
@@ -98,8 +92,8 @@ jest.unstable_mockModule('../../src/service-provider-utils/abap-service-provider
     }
 }));
 
-const { initI18n, t } = await import('../../src/i18n');
-const { PromptState } = await import('../../src/prompts/prompt-state');
+const { initI18n, t } = await import('../../src/i18n.js');
+const { PromptState } = await import('../../src/prompts/prompt-state.js');
 const {
     validateAppDescription,
     validateClient,
@@ -116,9 +110,9 @@ const {
     validateTransportQuestion,
     validateUi5AbapRepoName,
     validateUrl
-} = await import('../../src/prompts/validators');
-const serviceProviderUtils = await import('../../src/service-provider-utils');
-const { AbapServiceProviderManager } = await import('../../src/service-provider-utils/abap-service-provider');
+} = await import('../../src/prompts/validators.js');
+const serviceProviderUtils = await import('../../src/service-provider-utils/index.js');
+const { AbapServiceProviderManager } = await import('../../src/service-provider-utils/abap-service-provider.js');
 
 describe('Test validators', () => {
     const previousAnswers = {

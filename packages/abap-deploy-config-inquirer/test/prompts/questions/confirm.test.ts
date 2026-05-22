@@ -1,48 +1,24 @@
 import { jest } from '@jest/globals';
-import { promptNames } from '../../../src/types';
+import { promptNames } from '../../../src/types.js';
 
 const mockShowIndexQuestion = jest.fn();
 const mockValidateConfirmQuestion = jest.fn();
 
+const actualConditions = await import('../../../src/prompts/conditions.js');
+const actualValidators = await import('../../../src/prompts/validators.js');
+
 jest.unstable_mockModule('../../../src/prompts/conditions', () => ({
-    showIndexQuestion: mockShowIndexQuestion,
-    showUsernameQuestion: jest.fn(),
-    showPasswordQuestion: jest.fn(),
-    showUrlQuestion: jest.fn(),
-    showScpQuestion: jest.fn(),
-    showClientChoiceQuestion: jest.fn(),
-    showClientQuestion: jest.fn(),
-    showUi5AppDeployConfigQuestion: jest.fn(),
-    showPackageInputChoiceQuestion: jest.fn(),
-    defaultOrShowManualPackageQuestion: jest.fn(),
-    defaultOrShowSearchPackageQuestion: jest.fn(),
-    showTransportInputChoice: jest.fn(),
-    defaultOrShowTransportListQuestion: jest.fn(),
-    defaultOrShowTransportCreatedQuestion: jest.fn(),
-    defaultOrShowManualTransportQuestion: jest.fn()
+    ...actualConditions,
+    showIndexQuestion: mockShowIndexQuestion
 }));
 
 jest.unstable_mockModule('../../../src/prompts/validators', () => ({
-    validateConfirmQuestion: mockValidateConfirmQuestion,
-    validateUrl: jest.fn(),
-    validateTargetSystem: jest.fn(),
-    validateTargetSystemUrlCli: jest.fn(),
-    updateDestinationPromptState: jest.fn(),
-    validateDestinationQuestion: jest.fn(),
-    validateClientChoiceQuestion: jest.fn(),
-    validateClient: jest.fn(),
-    validateCredentials: jest.fn(),
-    validateUi5AbapRepoName: jest.fn(),
-    validateAppDescription: jest.fn(),
-    validatePackage: jest.fn(),
-    validatePackageChoiceInput: jest.fn(),
-    validatePackageChoiceInputForCli: jest.fn(),
-    validateTransportChoiceInput: jest.fn(),
-    validateTransportQuestion: jest.fn()
+    ...actualValidators,
+    validateConfirmQuestion: mockValidateConfirmQuestion
 }));
 
-const { initI18n, t } = await import('../../../src/i18n');
-const { getConfirmPrompts } = await import('../../../src/prompts/questions');
+const { initI18n, t } = await import('../../../src/i18n.js');
+const { getConfirmPrompts } = await import('../../../src/prompts/questions/confirm.js');
 
 describe('getConfirmPrompts', () => {
     beforeAll(async () => {

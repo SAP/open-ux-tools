@@ -5,11 +5,11 @@ import {
     defaultTargetSystem,
     defaultUrl,
     defaultTransportRequestChoice
-} from '../../src/prompts/defaults';
-import { getAbapSystemChoices } from '../../src/prompts/helpers';
+} from '../../src/prompts/defaults.js';
+import { getAbapSystemChoices } from '../../src/prompts/helpers.js';
 import { mockTargetSystems } from '../fixtures/targets';
-import { PromptState } from '../../src/prompts/prompt-state';
-import { PackageInputChoices, TargetSystemType, TransportChoices, type TransportConfig } from '../../src/types';
+import { PromptState } from '../../src/prompts/prompt-state.js';
+import { PackageInputChoices, TargetSystemType, TransportChoices, type TransportConfig } from '../../src/types.js';
 
 describe('defaults', () => {
     beforeEach(() => {

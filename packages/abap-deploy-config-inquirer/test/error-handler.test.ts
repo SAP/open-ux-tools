@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
-import { bail, handleTransportConfigError } from '../src/error-handler';
-import LoggerHelper from '../src/logger-helper';
-import { PromptState } from '../src/prompts/prompt-state';
+import { bail, handleTransportConfigError } from '../src/error-handler.js';
+import LoggerHelper from '../src/logger-helper.js';
+import { PromptState } from '../src/prompts/prompt-state.js';
 
 describe('Test error handler', () => {
     it('should throw error with error message', () => {

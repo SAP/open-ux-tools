@@ -12,12 +12,13 @@ const foundGenExts = [
     }
 ];
 
+const actualNodeJsUtils = await import('@sap-ux/nodejs-utils');
 jest.unstable_mockModule('@sap-ux/nodejs-utils', () => ({
-    findInstalledPackages: jest.fn(async () => foundGenExts),
-    CommandRunner: class {}
+    ...actualNodeJsUtils,
+    findInstalledPackages: jest.fn(async () => foundGenExts)
 }));
 
-const { getExtensionGenPromptOpts } = await import('../../src/utils/extension-prompts');
+const { getExtensionGenPromptOpts } = await import('../../src/utils/extension-prompts.js');
 
 describe('Test extension prompts', () => {
     it('should return the extension prompt options', async () => {

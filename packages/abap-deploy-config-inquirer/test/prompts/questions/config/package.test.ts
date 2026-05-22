@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { promptNames, PackageInputChoices } from '../../../../src/types';
+import { promptNames, PackageInputChoices } from '../../../../src/types.js';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { Severity } from '@sap-devx/yeoman-ui-types';
@@ -12,62 +12,37 @@ const mockValidatePackageChoiceInputForCli = jest.fn();
 const mockValidatePackage = jest.fn();
 const mockGetPackageChoices = jest.fn();
 
+const actualConditions = await import('../../../../src/prompts/conditions.js');
+const actualValidators = await import('../../../../src/prompts/validators.js');
+const actualHelpers = await import('../../../../src/prompts/helpers.js');
+
 jest.unstable_mockModule('../../../../src/prompts/conditions', () => ({
+    ...actualConditions,
     showPackageInputChoiceQuestion: mockShowPackageInputChoiceQuestion,
     defaultOrShowManualPackageQuestion: mockDefaultOrShowManualPackageQuestion,
-    defaultOrShowSearchPackageQuestion: mockDefaultOrShowSearchPackageQuestion,
-    showUsernameQuestion: jest.fn(),
-    showPasswordQuestion: jest.fn(),
-    showUrlQuestion: jest.fn(),
-    showScpQuestion: jest.fn(),
-    showClientChoiceQuestion: jest.fn(),
-    showClientQuestion: jest.fn(),
-    showUi5AppDeployConfigQuestion: jest.fn(),
-    showTransportInputChoice: jest.fn(),
-    defaultOrShowTransportListQuestion: jest.fn(),
-    defaultOrShowTransportCreatedQuestion: jest.fn(),
-    defaultOrShowManualTransportQuestion: jest.fn(),
-    showIndexQuestion: jest.fn()
+    defaultOrShowSearchPackageQuestion: mockDefaultOrShowSearchPackageQuestion
 }));
 
 jest.unstable_mockModule('../../../../src/prompts/validators', () => ({
+    ...actualValidators,
     validatePackageChoiceInput: mockValidatePackageChoiceInput,
     validatePackageChoiceInputForCli: mockValidatePackageChoiceInputForCli,
-    validatePackage: mockValidatePackage,
-    validateUrl: jest.fn(),
-    validateTargetSystem: jest.fn(),
-    validateTargetSystemUrlCli: jest.fn(),
-    updateDestinationPromptState: jest.fn(),
-    validateDestinationQuestion: jest.fn(),
-    validateClientChoiceQuestion: jest.fn(),
-    validateClient: jest.fn(),
-    validateCredentials: jest.fn(),
-    validateUi5AbapRepoName: jest.fn(),
-    validateAppDescription: jest.fn(),
-    validateTransportChoiceInput: jest.fn(),
-    validateTransportQuestion: jest.fn(),
-    validateConfirmQuestion: jest.fn()
+    validatePackage: mockValidatePackage
 }));
 
 jest.unstable_mockModule('../../../../src/prompts/helpers', () => ({
+    ...actualHelpers,
     getPackageChoices: mockGetPackageChoices,
-    getAbapSystemChoices: jest.fn(),
-    getDestinationChoices: jest.fn(),
-    getClientChoiceDefaults: jest.fn(),
-    getClientChoicePromptChoices: jest.fn(),
-    getTransportChoices: jest.fn(),
-    getTransportListChoices: jest.fn(),
     getPackageInputChoices: jest.fn().mockReturnValue([
         { name: 'Enter Manually', value: 'EnterManualChoice' },
         { name: 'Choose from Existing', value: 'ListExistingChoice' }
     ]),
-    updatePromptStateUrl: jest.fn(),
     shouldRunValidation: jest.fn().mockReturnValue(true)
 }));
 
-const { initI18n, t } = await import('../../../../src/i18n');
-const { getPackagePrompts } = await import('../../../../src/prompts/questions');
-const { PromptState } = await import('../../../../src/prompts/prompt-state');
+const { initI18n, t } = await import('../../../../src/i18n.js');
+const { getPackagePrompts } = await import('../../../../src/prompts/questions/config/package.js');
+const { PromptState } = await import('../../../../src/prompts/prompt-state.js');
 
 describe('getPackagePrompts', () => {
     beforeAll(async () => {

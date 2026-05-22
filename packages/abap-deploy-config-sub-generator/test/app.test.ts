@@ -20,8 +20,9 @@ const realStore = await import('@sap-ux/store');
 const realProjectAccess = await import('@sap-ux/project-access');
 const realAbapInquirer = await import('@sap-ux/abap-deploy-config-inquirer');
 const realTelemetry = await import('@sap-ux/telemetry');
-const realUtilsProject = await import('../src/utils/project');
+const realUtilsProject = await import('../src/utils/project.js');
 const realDeployShared = await import('@sap-ux/deploy-config-generator-shared');
+const realFioriGeneratorShared = await import('@sap-ux/fiori-generator-shared');
 
 jest.unstable_mockModule('@sap-ux/store', () => ({
     ...realStore,
@@ -34,36 +35,13 @@ jest.unstable_mockModule('../src/utils/project.ts', () => ({
 }));
 
 jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...realFioriGeneratorShared,
     sendTelemetry: mockSendTelemetry,
     isExtensionInstalled: jest.fn().mockReturnValue(true),
     getHostEnvironment: mockGetHostEnvironment,
-    TelemetryHelper: {
-        initTelemetrySettings: jest.fn(),
-        createTelemetryData: jest.fn()
-    },
     hostEnvironment: { cli: 'CLI', bas: 'BAS', vscode: 'VSCode' },
-    DefaultLogger: {
-        info: jest.fn(),
-        error: jest.fn(),
-        warn: jest.fn(),
-        debug: jest.fn()
-    },
-    LogWrapper: jest.fn().mockImplementation(() => ({
-        info: jest.fn(),
-        error: jest.fn(),
-        warn: jest.fn(),
-        debug: jest.fn()
-    })),
-    setYeomanEnvConflicterForce: jest.fn(),
     YUI_EXTENSION_ID: 'SAPOSS.app-studio-toolkit',
-    YUI_MIN_VER_FILES_GENERATED_MSG: '1.14.0',
-    getDefaultTargetFolder: jest.fn(),
-    isCommandRegistered: jest.fn(),
-    getPackageScripts: jest.fn(),
-    getBootstrapResourceUrls: jest.fn(),
-    getFlpId: jest.fn(),
-    getSemanticObject: jest.fn(),
-    generateAppGenInfo: jest.fn()
+    YUI_MIN_VER_FILES_GENERATED_MSG: '1.14.0'
 }));
 
 jest.unstable_mockModule('@sap-ux/telemetry', () => ({
@@ -89,13 +67,13 @@ jest.unstable_mockModule('@sap-ux/abap-deploy-config-inquirer', () => ({
 // Dynamic imports after mock registration
 const path = await import('node:path');
 const yeomanTest = (await import('yeoman-test')).default;
-const { default: AbapDeployGenerator } = await import('../src/app');
-const { t } = await import('../src/utils/i18n');
+const { default: AbapDeployGenerator } = await import('../src/app/index.js');
+const { t } = await import('../src/utils/i18n.js');
 const { MessageType } = await import('@sap-devx/yeoman-ui-types');
-const { TestFixture } = await import('./fixtures');
+const { TestFixture } = await import('./fixtures/index.js');
 const { PackageInputChoices, TargetSystemType, TransportChoices } = await import('@sap-ux/abap-deploy-config-inquirer');
 const { UI5Config } = await import('@sap-ux/ui5-config');
-const { ABAP_DEPLOY_TASK } = await import('../src/utils/constants');
+const { ABAP_DEPLOY_TASK } = await import('../src/utils/constants.js');
 const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 const { AuthenticationType } = await import('@sap-ux/store');
 const { AdaptationProjectType } = await import('@sap-ux/axios-extension');

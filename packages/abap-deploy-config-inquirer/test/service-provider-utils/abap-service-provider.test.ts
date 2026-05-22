@@ -1,12 +1,14 @@
 import { jest } from '@jest/globals';
 import { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { AuthenticationType } from '@sap-ux/store';
-import { t } from '../../src/i18n';
+import { t } from '../../src/i18n.js';
 
 const mockCreateAbapServiceProvider = jest.fn();
 const mockIsAppStudio = jest.fn();
 
+const realSystemAccess = await import('@sap-ux/system-access');
 jest.unstable_mockModule('@sap-ux/system-access', () => ({
+    ...realSystemAccess,
     createAbapServiceProvider: mockCreateAbapServiceProvider
 }));
 
@@ -16,9 +18,9 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: mockIsAppStudio
 }));
 
-const { AbapServiceProviderManager } = await import('../../src/service-provider-utils/abap-service-provider');
-const { PromptState } = await import('../../src/prompts/prompt-state');
-const LoggerHelper = (await import('../../src/logger-helper')).default;
+const { AbapServiceProviderManager } = await import('../../src/service-provider-utils/abap-service-provider.js');
+const { PromptState } = await import('../../src/prompts/prompt-state.js');
+const LoggerHelper = (await import('../../src/logger-helper.js')).default;
 
 describe('getOrCreateServiceProvider', () => {
     beforeAll(() => {

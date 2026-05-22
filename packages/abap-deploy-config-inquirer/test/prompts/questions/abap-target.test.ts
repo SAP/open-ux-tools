@@ -1,6 +1,10 @@
 import { jest } from '@jest/globals';
-import type { AbapDeployConfigPromptOptions } from '../../../src/types';
-import { promptNames, ClientChoiceValue, TargetSystemType } from '../../../src/types';
+import {
+    promptNames,
+    ClientChoiceValue,
+    TargetSystemType,
+    type AbapDeployConfigPromptOptions
+} from '../../../src/types.js';
 import { mockDestinations } from '../../fixtures/destinations';
 import { mockTargetSystems } from '../../fixtures/targets';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
@@ -18,18 +22,10 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isOnPremiseDestination: mockIsOnPremiseDestination
 }));
 
+const actualUtils = await import('../../../src/utils.js');
 jest.unstable_mockModule('../../../src/utils', () => ({
-    getAbapSystems: mockGetAbapSystems,
-    findBackendSystemByUrl: jest.fn(),
-    findDestination: jest.fn(),
-    isSameSystem: jest.fn(),
-    initTransportConfig: jest.fn(),
-    getPackageAnswer: jest.fn(),
-    useCreateTrDuringDeploy: jest.fn(),
-    queryPackages: jest.fn(),
-    reconcileAnswers: jest.fn(),
-    getTransportAnswer: jest.fn(),
-    getSystemConfig: jest.fn()
+    ...actualUtils,
+    getAbapSystems: mockGetAbapSystems
 }));
 
 const mockValidateDestinationQuestion = jest.fn();
@@ -40,23 +36,16 @@ const mockValidateClientChoiceQuestion = jest.fn();
 const mockValidateTargetSystem = jest.fn();
 const mockValidateClient = jest.fn();
 
+const actualValidators = await import('../../../src/prompts/validators.js');
 jest.unstable_mockModule('../../../src/prompts/validators', () => ({
+    ...actualValidators,
     validateDestinationQuestion: mockValidateDestinationQuestion,
     updateDestinationPromptState: mockUpdateDestinationPromptState,
     validateTargetSystemUrlCli: mockValidateTargetSystemUrlCli,
     validateUrl: mockValidateUrl,
     validateClientChoiceQuestion: mockValidateClientChoiceQuestion,
     validateTargetSystem: mockValidateTargetSystem,
-    validateClient: mockValidateClient,
-    validateCredentials: jest.fn(),
-    validateUi5AbapRepoName: jest.fn(),
-    validateAppDescription: jest.fn(),
-    validatePackage: jest.fn(),
-    validatePackageChoiceInput: jest.fn(),
-    validatePackageChoiceInputForCli: jest.fn(),
-    validateTransportChoiceInput: jest.fn(),
-    validateTransportQuestion: jest.fn(),
-    validateConfirmQuestion: jest.fn()
+    validateClient: mockValidateClient
 }));
 
 const mockShowScpQuestion = jest.fn();
@@ -64,27 +53,18 @@ const mockShowClientChoiceQuestion = jest.fn();
 const mockShowClientQuestion = jest.fn();
 const mockShowUrlQuestion = jest.fn();
 
+const actualConditions = await import('../../../src/prompts/conditions.js');
 jest.unstable_mockModule('../../../src/prompts/conditions', () => ({
+    ...actualConditions,
     showScpQuestion: mockShowScpQuestion,
     showClientChoiceQuestion: mockShowClientChoiceQuestion,
     showClientQuestion: mockShowClientQuestion,
-    showUrlQuestion: mockShowUrlQuestion,
-    showUsernameQuestion: jest.fn(),
-    showPasswordQuestion: jest.fn(),
-    showUi5AppDeployConfigQuestion: jest.fn(),
-    showPackageInputChoiceQuestion: jest.fn(),
-    defaultOrShowManualPackageQuestion: jest.fn(),
-    defaultOrShowSearchPackageQuestion: jest.fn(),
-    showTransportInputChoice: jest.fn(),
-    defaultOrShowTransportListQuestion: jest.fn(),
-    defaultOrShowTransportCreatedQuestion: jest.fn(),
-    defaultOrShowManualTransportQuestion: jest.fn(),
-    showIndexQuestion: jest.fn()
+    showUrlQuestion: mockShowUrlQuestion
 }));
 
-const { initI18n, t } = await import('../../../src/i18n');
-const { getAbapTargetPrompts } = await import('../../../src/prompts/questions');
-const { PromptState } = await import('../../../src/prompts/prompt-state');
+const { initI18n, t } = await import('../../../src/i18n.js');
+const { getAbapTargetPrompts } = await import('../../../src/prompts/questions/abap-target.js');
+const { PromptState } = await import('../../../src/prompts/prompt-state.js');
 
 describe('getAbapTargetPrompts', () => {
     beforeAll(async () => {

@@ -1,11 +1,12 @@
 import { jest } from '@jest/globals';
-import type { AbapDeployConfigAnswersInternal, BackendTarget } from '../../src/types';
+import type { AbapDeployConfigAnswersInternal, BackendTarget } from '../../src/types.js';
 import { mockDestinations } from '../fixtures/destinations';
 import { mockTargetSystems } from '../fixtures/targets';
 
 const mockQueryPackages = jest.fn();
-
+const actualUtils = await import('../../src/utils.js');
 jest.unstable_mockModule('../../src/utils', () => ({
+    ...actualUtils,
     queryPackages: mockQueryPackages,
     findBackendSystemByUrl: jest.fn(),
     findDestination: jest.fn(),
@@ -18,10 +19,10 @@ jest.unstable_mockModule('../../src/utils', () => ({
     getTransportAnswer: jest.fn()
 }));
 
-const { initI18n, t } = await import('../../src/i18n');
-const { PromptState } = await import('../../src/prompts/prompt-state');
+const { initI18n, t } = await import('../../src/i18n.js');
+const { PromptState } = await import('../../src/prompts/prompt-state.js');
 const { getAbapSystemChoices, getPackageChoices, shouldRunValidation, updatePromptStateUrl } =
-    await import('../../src/prompts/helpers');
+    await import('../../src/prompts/helpers.js');
 
 describe('helpers', () => {
     beforeAll(async () => {
