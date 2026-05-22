@@ -84,7 +84,9 @@ export class ApplicationParser {
                         .filter((file) => file.endsWith('propertyChange.change'))
                         .map((file) => normalizePath(join(app.appRoot, 'webapp', 'changes', file)));
                     for (const changeFile of changeFiles) {
-                        const fileContent = readFileSync(changeFile, { encoding: 'utf8', flag: 'r' });
+                        const changeFileUri = pathToFileURL(changeFile).toString();
+                        const fileContent =
+                            fileCache.get(changeFileUri) ?? readFileSync(changeFile, { encoding: 'utf8', flag: 'r' });
                         const jsonContent = JSON.parse(fileContent);
                         changes.push({
                             changeType: jsonContent.changeType,
@@ -200,7 +202,7 @@ export class ApplicationParser {
     }
 
     private reparseChange(uri: string, index: ParsedProject, fileCache: Map<string, string>): void {
-        for (const app of Object.values(index.apps)) {
+        for (const [key, app] of Object.entries(index.apps)) {
             const content = fileCache.get(uri) ?? '';
             const ast = parseJson(content, {
                 mode: 'json',
@@ -216,11 +218,11 @@ export class ApplicationParser {
                 selector: jsonContent.selector,
                 changeFileUri: uri
             };
-            const foundChangeIndex = app.changes.findIndex((c) => c.changeFileUri === uri);
+            const foundChangeIndex = index.apps[key].changes.findIndex((c) => c.changeFileUri === uri);
             if (foundChangeIndex > -1) {
-                app.changes[foundChangeIndex] = change;
+                index.apps[key].changes[foundChangeIndex] = change;
             } else {
-                app.changes.push(change);
+                index.apps[key].changes.push(change);
             }
         }
     }

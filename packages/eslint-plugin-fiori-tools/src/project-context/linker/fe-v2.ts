@@ -614,7 +614,12 @@ function linkObjectPageSections(
     changes: FlexChange[]
 ): void {
     const controls: Record<string, Section | Table> = {};
-
+    const pageTableChanges = changes.filter((change) => {
+        const selectors = change.selector.id.split('::');
+        if (selectors[1].includes(page.componentName) && selectors.pop() === 'Table') {
+            return true;
+        }
+    });
     for (const section of sections) {
         if (section.type !== 'table-section') {
             continue;
@@ -635,12 +640,6 @@ function linkObjectPageSections(
         controls[`${section.type}|${configurationKey}`] = linkedSection;
 
         const sectionSettings = findSectionSettings(configuration);
-        const pageTableChanges = changes.filter((change) => {
-            const selectors = change.selector.id.split('::');
-            if (selectors[1].includes(page.componentName) && selectors.pop() === 'Table') {
-                return true;
-            }
-        });
         const linkedTable = createLinkedTableForSection(table, pathToPage, sectionSettings, pageTableChanges);
         linkedSection.children.push(linkedTable);
         controls[`${linkedTable.type}|${configurationKey}`] = linkedTable;
@@ -653,10 +652,16 @@ function linkObjectPageSections(
             const createMode = sectionConfig.createMode;
             const tableType = sectionConfig.tableSettings?.type;
             const copy = sectionConfig.tableSettings?.copy;
-
             const orphanedSection: OrphanSection = {
                 type: 'orphan-section',
-                configuration: createSectionTableConfiguration(pathToPage, sectionKey, createMode, tableType, copy, [])
+                configuration: createSectionTableConfiguration(
+                    pathToPage,
+                    sectionKey,
+                    createMode,
+                    tableType,
+                    copy,
+                    pageTableChanges
+                )
             };
             controls[`${orphanedSection.type}|${sectionKey}|`] = orphanedSection;
         }
