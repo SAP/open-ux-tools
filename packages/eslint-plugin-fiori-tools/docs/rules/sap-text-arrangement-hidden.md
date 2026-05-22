@@ -66,7 +66,8 @@ annotate service.Category with {
 };
 ```
 
-**An `UI.TextArrangement` annotation at the entity-type level which is a fallback for all `Common.Text` properties):**
+**An `UI.TextArrangement` annotation at the entity-type level which is a fallback for all `Common.Text` properties:**
+
 
 ```xml
 <!-- TextArrangement applied at entity-type level — acts as fallback for all Common.Text properties -->
@@ -134,7 +135,8 @@ annotate service.MyEntity with {
 };
 ```
 
-**A `UI.TextArrangement` annotation at the entity-type level which is a fallback for all `Common.Text` properties):**
+**A `UI.TextArrangement` annotation at the entity-type level which is a fallback for all `Common.Text` properties:**
+
 
 ```xml
 <!-- TextArrangement applied at entity-type level -->
