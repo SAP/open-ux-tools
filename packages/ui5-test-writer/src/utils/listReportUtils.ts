@@ -66,6 +66,14 @@ export function safeCheckActionButtonStates(
     }
 }
 
+/**
+ * Safely gets semantic key properties with error handling.
+ *
+ * @param metadata - The OData metadata XML content
+ * @param entitySetName - The name of the entity set
+ * @param log - Optional logger instance
+ * @returns Array of semantic key properties or undefined if error occurs
+ */
 export function safeGetSemanticKeyProperties(
     metadata: string,
     entitySetName: string,

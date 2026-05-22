@@ -14,7 +14,8 @@ import {
     isALPManifestTarget,
     isALPFromManifest,
     getSemanticKeyProperties,
-    isSemanticKeyInFilterBar
+    isSemanticKeyInFilterBar,
+    safeGetSemanticKeyProperties
 } from '../../../src/utils/listReportUtils';
 import type { ButtonState, FEV4ManifestTarget } from '../../../src/types';
 import { readFileSync } from 'node:fs';
@@ -1993,5 +1994,73 @@ describe('Test isSemanticKeyInFilterBar()', () => {
     test('returns false when filter bar has no fields', () => {
         const pageModel = makePageModel([]);
         expect(isSemanticKeyInFilterBar(pageModel, metadataSingleKey, 'Order')).toBe(false);
+    });
+});
+
+describe('Test safeGetSemanticKeyProperties()', () => {
+    let mockLogger: Logger;
+
+    beforeEach(() => {
+        mockLogger = {
+            warn: jest.fn(),
+            debug: jest.fn(),
+            info: jest.fn(),
+            error: jest.fn()
+        } as unknown as Logger;
+    });
+
+    const validMetadata = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="TravelType">
+                <Key><PropertyRef Name="TravelID"/></Key>
+                <Property Name="TravelID" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.TravelType">
+                <Annotation Term="com.sap.vocabularies.Common.v1.SemanticKey">
+                    <Collection>
+                        <PropertyPath>TravelID</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    test('returns semantic key properties when metadata and entity set are valid', () => {
+        const result = safeGetSemanticKeyProperties(validMetadata, 'Travel', mockLogger);
+        expect(result).toEqual(['TravelID']);
+        expect(mockLogger.debug).not.toHaveBeenCalled();
+    });
+
+    test('returns undefined and logs debug when metadata is invalid XML', () => {
+        const result = safeGetSemanticKeyProperties('not valid xml', 'Travel', mockLogger);
+        expect(result).toBeUndefined();
+        expect(mockLogger.debug).toHaveBeenCalledWith(
+            expect.stringContaining('Failed to get semantic key properties')
+        );
+    });
+
+    test('returns undefined and logs debug when entity set does not exist', () => {
+        const result = safeGetSemanticKeyProperties(validMetadata, 'NonExistent', mockLogger);
+        expect(result).toBeUndefined();
+        expect(mockLogger.debug).toHaveBeenCalledWith(
+            expect.stringContaining('Failed to get semantic key properties')
+        );
+    });
+
+    test('returns undefined without throwing when logger is not provided', () => {
+        const result = safeGetSemanticKeyProperties('not valid xml', 'Travel');
+        expect(result).toBeUndefined();
+    });
+
+    test('logs the error message when error is an Error instance', () => {
+        safeGetSemanticKeyProperties('invalid xml', 'Travel', mockLogger);
+        const [loggedMessage] = (mockLogger.debug as jest.Mock).mock.calls[0];
+        expect(loggedMessage).toMatch(/Failed to get semantic key properties: .+/);
     });
 });
