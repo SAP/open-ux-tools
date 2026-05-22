@@ -57,9 +57,10 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
 
 const { getPrompts, createNewModelData } = await import('../../../../src/prompts/add-new-model');
 const i18n = await import('../../../../src/i18n');
-const { Severity } = await import('@sap-devx/yeoman-ui-types');
+const { Severity, MessageType } = await import('@sap-devx/yeoman-ui-types');
 import type { NewModelAnswers, DescriptorVariant } from '../../../../src/index.js';
 import type { NewModelDataWithAnnotations } from '../../../../src/types.js';
+import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 describe('getPrompts', () => {
@@ -548,18 +549,48 @@ describe('getPrompts', () => {
         expect(mockReadFileSync).not.toHaveBeenCalledWith(expect.stringContaining('xs-app.json'), expect.anything());
     });
 
-    it('should log the error and set a generic UI error message when fetching destinations fails in CF', async () => {
+    it('should log the error and show notification via appWizard when fetching destinations fails in CF', async () => {
         mockIsCFEnvironment.mockResolvedValue(true);
         mockGetBtpDestinations.mockRejectedValue(new Error('Network error'));
 
         const logger = { error: jest.fn() } as Partial<ToolsLogger> as ToolsLogger;
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE', logger);
-
-        const destinationPrompt = prompts.find((p) => p.name === 'destination');
-        const validate = destinationPrompt?.validate as Function;
+        const appWizard = { showError: jest.fn() } as unknown as AppWizard;
+        await getPrompts(mockPath, 'CUSTOMER_BASE', logger, appWizard);
 
         expect(logger.error).toHaveBeenCalledWith('Network error');
-        expect(validate?.(undefined)).toBe(i18n.t('error.errorFetchingDestinations'));
+        expect(appWizard.showError).toHaveBeenCalledWith(
+            i18n.t('error.errorFetchingDestinations'),
+            MessageType.notification
+        );
+    });
+
+    it('should not throw when appWizard is not provided and fetching destinations fails in CF', async () => {
+        mockIsCFEnvironment.mockResolvedValue(true);
+        mockGetBtpDestinations.mockRejectedValue(new Error('Network error'));
+
+        const logger = { error: jest.fn() } as Partial<ToolsLogger> as ToolsLogger;
+        await expect(getPrompts(mockPath, 'CUSTOMER_BASE', logger)).resolves.toBeDefined();
+    });
+
+    it('should return true when validating destination prompt with a valid Name', async () => {
+        mockIsCFEnvironment.mockResolvedValue(true);
+
+        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const validation = prompts.find((p) => p.name === 'destination')?.validate;
+
+        expect(typeof validation).toBe('function');
+        expect(validation?.({ Name: 'MY_DEST' } as unknown as string)).toBe(true);
+    });
+
+    it('should return error message when validating destination prompt with empty Name', async () => {
+        mockIsCFEnvironment.mockResolvedValue(true);
+        mockValidateEmptyString.mockReturnValueOnce('general.inputCannotBeEmpty');
+
+        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+        const validation = prompts.find((p) => p.name === 'destination')?.validate;
+
+        expect(typeof validation).toBe('function');
+        expect(validation?.({ Name: '' } as unknown as string)).toBe('general.inputCannotBeEmpty');
     });
 });
 

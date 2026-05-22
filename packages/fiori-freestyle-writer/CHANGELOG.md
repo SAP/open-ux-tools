@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.7.8
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@0.9.8
+
 ## 2.7.7
 
 ### Patch Changes
