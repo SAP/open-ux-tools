@@ -32,10 +32,8 @@ type ODataMetadataEntry = {
     model?: Ui5Model;
 };
 
-const APP_FIELDS_LIST = ['sap.app/id', 'sap.app/title', 'url', 'repoName'];
-
 const LIBRARY_WITH_DESCR_FILTER: UI5AppFilter = {
-    fields: APP_FIELDS_LIST.join(','),
+    fields: ['sap.app/id', 'sap.app/title', 'url', 'repoName'].join(','),
     'sap.ui/technology': 'UI5',
     'sap.app/type': 'library',
     'fileType': 'appdescr'
@@ -50,11 +48,11 @@ const logger = new ToolsLogger({ logPrefix: 'fiori-mcp-server' });
  * @returns The merged descriptor for the variant's `id`.
  */
 export async function readMergedManifest(appPath: string): Promise<MergedAppDescriptor> {
-    const provider = await getSystemProvider(await getSystemUrl(appPath));
+    const provider = await getProvider(appPath);
     const lrepService = provider.getLayeredRepository();
     await lrepService.getCsrfToken();
 
-    const manifest = (await readManifest(appPath)) as AppDescrVariant;
+    const manifest = await readManifest(appPath);
 
     const zip = new ZipFile();
     zip.addLocalFolder(path.join(appPath, 'webapp'));
@@ -74,16 +72,15 @@ export async function readAnnotationfromManifest(
     appPath: string,
     saveLocal: boolean = false
 ): Promise<ODataMetadataEntry[]> {
-    const abapProvider = await getSystemProvider(await getSystemUrl(appPath));
+    const abapProvider = await getProvider(appPath);
     const mergedManifest = await readMergedManifest(appPath);
 
     const ui5Models = (mergedManifest.manifest['sap.ui5']?.models ?? {}) as Record<string, Ui5Model>;
-    const modelsByDataSource = new Map<string, Ui5Model>();
-    for (const model of Object.values(ui5Models)) {
-        if (model.dataSource) {
-            modelsByDataSource.set(model.dataSource, model);
-        }
-    }
+    const modelsByDataSource = new Map(
+        Object.values(ui5Models)
+            .filter((model): model is Ui5Model & { dataSource: string } => Boolean(model.dataSource))
+            .map((model) => [model.dataSource, model])
+    );
 
     const dataSources = mergedManifest.manifest['sap.app'].dataSources ?? {};
     const entries: ODataMetadataEntry[] = [];
@@ -91,13 +88,10 @@ export async function readAnnotationfromManifest(
         if (dataSource.type !== 'OData') {
             continue;
         }
-        const oData = abapProvider.service(dataSource.uri);
-        const rawMetadata = await oData.metadata();
+        const rawMetadata = await abapProvider.service(dataSource.uri).metadata();
         const formattedMetadata = formatXml(rawMetadata);
         if (saveLocal) {
-            const metadataPath = path.join(appPath, 'webapp', '.context', `${name}-metadata.xml`);
-            await fs.promises.mkdir(path.dirname(metadataPath), { recursive: true });
-            await fs.promises.writeFile(metadataPath, formattedMetadata, 'utf-8');
+            await writeLocalMetadata(appPath, name, formattedMetadata);
         }
         entries.push({
             id: name,
@@ -116,7 +110,7 @@ export async function readAnnotationfromManifest(
  * @returns Flattened library entries returned by the app index.
  */
 export async function getAvailableLibraryFromSystem(appPath: string): Promise<Array<object>> {
-    const provider = await getSystemProvider(await getSystemUrl(appPath));
+    const provider = await getProvider(appPath);
     const appIndex = await provider.getAppIndex();
     const response = await appIndex.search(LIBRARY_WITH_DESCR_FILTER);
     return response.flat();
@@ -130,20 +124,35 @@ export async function getAvailableLibraryFromSystem(appPath: string): Promise<Ar
  * @returns Combined service catalog entries from the V2 and V4 catalogs.
  */
 export async function getAvailableODataServices(appPath: string, filter: string): Promise<Array<ODataServiceInfo>> {
-    const system = await getSystemUrl(appPath);
-    const abapProvider = await getSystemProvider(system);
+    const abapProvider = await getProvider(appPath);
 
-    const serviceCatalogV4 = await abapProvider.catalog(ODataVersion.v4);
-    const serviceCatalogV2 = await abapProvider.catalog(ODataVersion.v2);
+    const [serviceCatalogV2, serviceCatalogV4] = await Promise.all([
+        abapProvider.catalog(ODataVersion.v2),
+        abapProvider.catalog(ODataVersion.v4)
+    ]);
 
     serviceCatalogV2.isS4Cloud = Promise.resolve(true);
     serviceCatalogV4.isS4Cloud = Promise.resolve(true);
 
-    const services = [await serviceCatalogV2.listServices(), await serviceCatalogV4.listServices()]
-        .flat()
-        .filter((service) => service.name.includes(filter.toUpperCase()));
+    const [v2Services, v4Services] = await Promise.all([
+        serviceCatalogV2.listServices(),
+        serviceCatalogV4.listServices()
+    ]);
 
-    return services;
+    const needle = filter.toUpperCase();
+    return [...v2Services, ...v4Services].filter((service) => service.name.includes(needle));
+}
+
+/**
+ * Resolves the target system from `ui5.yaml` and returns an ABAP service provider for it.
+ *
+ * @param appPath - Adaptation project root.
+ * @returns ABAP service provider for the configured target.
+ */
+async function getProvider(appPath: string): Promise<AbapServiceProvider> {
+    const system = await getSystemUrl(appPath);
+    const target: AbapTarget = { url: system.url, client: system.client };
+    return createAbapServiceProvider(target, { ignoreCertErrors: false }, false, logger);
 }
 
 /**
@@ -166,27 +175,25 @@ async function getSystemUrl(appPath: string): Promise<systemPath> {
  * Reads and parses the adaptation project's app descriptor variant.
  *
  * @param appPath - Adaptation project root.
- * @returns Parsed `webapp/manifest.appdescr_variant`, or `''` if unreadable.
+ * @returns Parsed `webapp/manifest.appdescr_variant`.
  */
-async function readManifest(appPath: string): Promise<AppDescrVariant | ''> {
+async function readManifest(appPath: string): Promise<AppDescrVariant> {
     const manifestPath = path.join(appPath, 'webapp', 'manifest.appdescr_variant');
-    try {
-        const fileContents = await fs.promises.readFile(manifestPath, 'utf-8');
-        return JSON.parse(fileContents) as AppDescrVariant;
-    } catch {
-        return '';
-    }
+    const fileContents = await fs.promises.readFile(manifestPath, 'utf-8');
+    return JSON.parse(fileContents) as AppDescrVariant;
 }
 
 /**
- * Creates an ABAP service provider for the given system.
+ * Writes formatted OData metadata to the project's `webapp/.context` folder for agent consumption.
  *
- * @param system - System URL and client.
- * @returns ABAP service provider for the target.
+ * @param appPath - Adaptation project root.
+ * @param name - Data source name; used as the file basename.
+ * @param metadata - Formatted XML content to persist.
  */
-function getSystemProvider(system: systemPath): Promise<AbapServiceProvider> {
-    const target: AbapTarget = { url: system.url, client: system.client };
-    return createAbapServiceProvider(target, { ignoreCertErrors: false }, false, logger);
+async function writeLocalMetadata(appPath: string, name: string, metadata: string): Promise<void> {
+    const metadataPath = path.join(appPath, 'webapp', '.context', `${name}-metadata.xml`);
+    await fs.promises.mkdir(path.dirname(metadataPath), { recursive: true });
+    await fs.promises.writeFile(metadataPath, metadata, 'utf-8');
 }
 
 /**
