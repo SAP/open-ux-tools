@@ -18,7 +18,8 @@ import {
     resolveTextPropertyPath,
     collectRelevantEntityTypes,
     parseCommonTextAnnotationKey,
-    getTextPath
+    getTextPath,
+    getBoolValue
 } from './utils/common-text-helpers';
 
 /**
@@ -79,33 +80,6 @@ function collectEntityTypesWithTextArrangement(parsedService: ParsedService): Se
 }
 
 /**
- * Reads the Bool value from a UI.Hidden annotation element.
- * Handles OData XML format (Bool attribute) and CDS compiled format (<Bool> child element).
- *
- * @param annotationElement - The UI.Hidden annotation element
- * @returns The bool string ("true"/"false") or undefined if absent
- */
-function getHiddenBoolValue(annotationElement: Element): string | undefined {
-    const attrBool = getElementAttributeValue(annotationElement, Edm.Bool);
-    if (attrBool) {
-        return attrBool;
-    }
-    for (const child of annotationElement.content) {
-        if (child.type !== ELEMENT_TYPE) {
-            continue;
-        }
-        const childEl = child as Element;
-        if (childEl.name === Edm.Bool) {
-            const textNode = childEl.content.find((c) => c.type === 'text');
-            if (textNode && 'text' in textNode) {
-                return textNode.text;
-            }
-        }
-    }
-    return undefined;
-}
-
-/**
  * Checks whether UI.Hidden is set on the given property and produces diagnostics if so.
  *
  * @param textPropertyTarget - Fully-qualified target path of the text property (e.g. "Service.Entity/prop")
@@ -131,7 +105,7 @@ function checkHiddenProperty(
         // CDS compiles @UI.Hidden: false as a <Bool>false</Bool> child element (no Bool attribute),
         // so all layers must be checked for both attribute and child-element forms.
         // Dynamic path expressions (Path="...") are still warned.
-        const explicitlyFalse = hiddenAnnotation.layers.some((layer) => getHiddenBoolValue(layer.value) === 'false');
+        const explicitlyFalse = hiddenAnnotation.layers.some((layer) => getBoolValue(layer.value) === 'false');
         if (explicitlyFalse) {
             continue;
         }

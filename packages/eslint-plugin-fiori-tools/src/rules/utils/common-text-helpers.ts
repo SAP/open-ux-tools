@@ -39,6 +39,34 @@ export function getStringValue(element: Element): string | undefined {
 }
 
 /**
+ * Extracts a Bool value from an annotation element.
+ * Handles both OData XML format (Bool attribute) and CDS-compiled format
+ * (value stored as text content of a child Bool element).
+ *
+ * @param element - The annotation element
+ * @returns The bool string ("true"/"false") or undefined if not found
+ */
+export function getBoolValue(element: Element): string | undefined {
+    const attrBool = getElementAttributeValue(element, Edm.Bool);
+    if (attrBool) {
+        return attrBool;
+    }
+    for (const child of element.content) {
+        if (child.type !== ELEMENT_TYPE) {
+            continue;
+        }
+        const childEl = child as Element;
+        if (childEl.name === Edm.Bool) {
+            const textNode = childEl.content.find((c) => c.type === 'text');
+            if (textNode && 'text' in textNode) {
+                return textNode.text;
+            }
+        }
+    }
+    return undefined;
+}
+
+/**
  * Extracts the text path from a Common.Text annotation element.
  * Handles both OData XML format (Path attribute) and CDS-compiled format
  * (path stored as text content of a child Path/PropertyPath element).
