@@ -216,7 +216,9 @@
                                 server.init();
                                 // initialize the ushell sandbox component
                                 sap.ui.require(["sap/ushell/Container"], async function (Container) {
-                                    Container.createRenderer(true).then(function (component) {
+                                    (typeof Container.createRenderer === 'function'
+                                        ? Container.createRenderer(true)
+                                        : Container.createRendererInternal(undefined, true)).then(function (component) {
                                         component.placeAt("content");
                                     });
                                 });
@@ -251,7 +253,9 @@
                         // initialize the ushell sandbox component
                         sap.ui.require(["sap/ushell/Container"], async function (Container) {
                             try {
-                            Container.createRenderer(true).then(function (component) {
+                            (typeof Container.createRenderer === 'function'
+                                ? Container.createRenderer(true)
+                                : Container.createRendererInternal(undefined, true)).then(function (component) {
                                 component.placeAt("content");
                             });
                             } catch (error) {
