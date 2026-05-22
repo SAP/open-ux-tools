@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux-private/preview-middleware-client",
-    "version": "0.25.46",
+    "version": "0.26.6",
     "description": "Client-side coding hosted by the preview middleware",
     "repository": {
         "type": "git",
@@ -25,7 +25,7 @@
         "dist"
     ],
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     },
     "dependencies": {
         "@sap-ux-private/control-property-editor-common": "workspace:*"

@@ -1,5 +1,24 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.7.1
+
+### Patch Changes
+
+- Updated dependencies [9752c40]
+    - @sap-ux/ui5-config@0.31.1
+
+## 1.7.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/ui5-config@0.31.0
+
 ## 1.6.35
 
 ### Patch Changes

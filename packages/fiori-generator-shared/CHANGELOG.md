@@ -1,5 +1,39 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.15.3
+
+### Patch Changes
+
+- @sap-ux/project-access@1.38.1
+- @sap-ux/telemetry@0.7.2
+
+## 0.15.2
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/telemetry@0.7.1
+
+## 0.15.1
+
+### Patch Changes
+
+- 2c76f8f: refactor(fiori-generator-shared): remove dead ExternalServiceConfig type and externalServices field from AppConfig
+
+## 0.15.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/telemetry@0.7.0
+
 ## 0.14.2
 
 ### Patch Changes

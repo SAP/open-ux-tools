@@ -1,5 +1,72 @@
 # @sap-ux/preview-middleware
 
+## 0.26.6
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.5
+- @sap-ux/project-access@1.38.1
+- @sap-ux/system-access@0.8.0
+
+## 0.26.5
+
+### Patch Changes
+
+- Updated dependencies [dab1aa2]
+    - @sap-ux/adp-tooling@0.19.4
+
+## 0.26.4
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/adp-tooling@0.19.3
+    - @sap-ux/system-access@0.8.0
+
+## 0.26.3
+
+### Patch Changes
+
+- Updated dependencies [342c544]
+    - @sap-ux/adp-tooling@0.19.2
+
+## 0.26.2
+
+### Patch Changes
+
+- fb00faa: fix(ci): use workspace:\* for internal monorepo dependencies
+
+## 0.26.1
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/adp-tooling@0.19.1
+
+## 0.26.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/adp-tooling@0.19.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/feature-toggle@0.4.0
+    - @sap-ux/i18n@0.4.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/system-access@0.8.0
+
+## 0.25.47
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.134
+
 ## 0.25.46
 
 ### Patch Changes

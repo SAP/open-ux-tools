@@ -1,5 +1,93 @@
 # @sap-ux/generator-adp
 
+## 0.10.5
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.5
+- @sap-ux/odata-service-writer@0.32.2
+- @sap-ux/project-access@1.38.1
+- @sap-ux/telemetry@0.7.2
+- @sap-ux/inquirer-common@0.13.2
+- @sap-ux/axios-extension@1.26.0
+- @sap-ux/fiori-generator-shared@0.15.3
+- @sap-ux/project-input-validator@0.7.2
+- @sap-ux/system-access@0.8.0
+
+## 0.10.4
+
+### Patch Changes
+
+- Updated dependencies [dab1aa2]
+    - @sap-ux/adp-tooling@0.19.4
+
+## 0.10.3
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/adp-tooling@0.19.3
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/fiori-generator-shared@0.15.2
+    - @sap-ux/inquirer-common@0.13.1
+    - @sap-ux/odata-service-writer@0.32.1
+    - @sap-ux/project-input-validator@0.7.1
+    - @sap-ux/system-access@0.8.0
+    - @sap-ux/telemetry@0.7.1
+
+## 0.10.2
+
+### Patch Changes
+
+- 342c544: chore: bump used versions in adaptation project for Cloud Foundry
+- Updated dependencies [342c544]
+    - @sap-ux/adp-tooling@0.19.2
+
+## 0.10.1
+
+### Patch Changes
+
+- 2c76f8f: chore: upgrade @sap-devx/yeoman-ui-types 1.23.0 → 1.25.0
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+    - @sap-ux/inquirer-common@0.13.0
+    - @sap-ux/adp-tooling@0.19.1
+
+## 0.10.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/adp-tooling@0.19.0
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/feature-toggle@0.4.0
+    - @sap-ux/fiori-generator-shared@0.15.0
+    - @sap-ux/inquirer-common@0.12.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/odata-service-writer@0.32.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/project-input-validator@0.7.0
+    - @sap-ux/store@1.6.0
+    - @sap-ux/system-access@0.8.0
+    - @sap-ux/telemetry@0.7.0
+
+## 0.9.73
+
+### Patch Changes
+
+- Updated dependencies [138246a]
+    - @sap-ux/odata-service-writer@0.31.15
+    - @sap-ux/adp-tooling@0.18.134
+    - @sap-ux/inquirer-common@0.11.48
+
 ## 0.9.72
 
 ### Patch Changes

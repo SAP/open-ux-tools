@@ -1,5 +1,24 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.7.1
+
+### Patch Changes
+
+- Updated dependencies [12137f6]
+    - @sap-ux/fiori-docs-embeddings@0.5.1
+
+## 0.7.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/fiori-docs-embeddings@0.5.0
+    - @sap-ux/store@1.6.0
+
 ## 0.6.60
 
 ### Patch Changes

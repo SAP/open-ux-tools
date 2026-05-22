@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/fiori-docs-embeddings",
-    "version": "0.4.20",
+    "version": "0.5.1",
     "description": "SAP Fiori documentation indexing",
     "repository": {
         "type": "git",
@@ -30,7 +30,7 @@
     "dependencies": {},
     "devDependencies": {
         "@npm/types": "2.1.0",
-        "@types/node": "20.19.37",
+        "@types/node": "22.13.14",
         "@lancedb/lancedb": "0.22.0",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/create": "workspace:*",
@@ -52,7 +52,7 @@
     ],
     "license": "Apache-2.0",
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     },
     "files": [
         "data/index.js",

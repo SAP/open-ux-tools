@@ -10,7 +10,7 @@ import type {
 } from '@sap-ux/inquirer-common';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { Destination } from '@sap-ux/btp-utils';
-import { listDestinations, isOnPremiseDestination } from '@sap-ux/btp-utils';
+import { listDestinations, isOnPremiseDestination, isAppStudio } from '@sap-ux/btp-utils';
 import { Severity, MessageType, type IMessageSeverity, type AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { ToolsLogger } from '@sap-ux/logger';
 
@@ -230,9 +230,10 @@ async function getAbapServiceUrl(projectPath: string): Promise<string | undefine
             return undefined;
         }
 
-        if (target.url) {
+        if (!isAppStudio()) {
             return target.url;
         }
+
         if (target.destination) {
             const destinations = await listDestinations();
             return destinations[target.destination]?.Host;

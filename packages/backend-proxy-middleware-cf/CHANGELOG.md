@@ -1,5 +1,58 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.2.5
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.5
+
+## 0.2.4
+
+### Patch Changes
+
+- Updated dependencies [dab1aa2]
+    - @sap-ux/adp-tooling@0.19.4
+
+## 0.2.3
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.3
+
+## 0.2.2
+
+### Patch Changes
+
+- Updated dependencies [342c544]
+    - @sap-ux/adp-tooling@0.19.2
+
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/adp-tooling@0.19.1
+
+## 0.2.0
+
+### Minor Changes
+
+- 72695e5: chore: upgrade @sap/approuter ^20.8.0 → ^21.5.0 for Node 24 support
+  and drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/adp-tooling@0.19.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/logger@0.9.0
+
+## 0.1.25
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.134
+
 ## 0.1.24
 
 ### Patch Changes
