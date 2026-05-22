@@ -3,7 +3,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse as parseJson } from '@humanwhocodes/momoa';
 
 import type { FoundFioriArtifacts, Manifest, ProjectType } from '@sap-ux/project-access';
-import { getMainService } from '@sap-ux/project-access';
+import { getMainService, normalizePath } from '@sap-ux/project-access';
 import { CdsAnnotationProvider, getXmlServiceArtifacts, type ServiceArtifacts } from '@sap-ux/fiori-annotation-api';
 
 import type { LocalFile, RemoteFileWithLocalServiceCache } from '../types';
@@ -82,7 +82,7 @@ export class ApplicationParser {
                 if (existsSync(join(app.appRoot, 'webapp', 'changes'))) {
                     const changeFiles = readdirSync(join(app.appRoot, 'webapp', 'changes'))
                         .filter((file) => file.endsWith('propertyChange.change'))
-                        .map((file) => join(app.appRoot, 'webapp', 'changes', file));
+                        .map((file) => normalizePath(join(app.appRoot, 'webapp', 'changes', file)));
                     for (const changeFile of changeFiles) {
                         const fileContent = readFileSync(changeFile, { encoding: 'utf8', flag: 'r' });
                         const jsonContent = JSON.parse(fileContent);
@@ -176,7 +176,7 @@ export class ApplicationParser {
                 manifestObject: manifest,
                 projectRootPath: previousApp.projectRootPath,
                 services: {},
-                changes: []
+                changes: previousApp.changes
             };
 
             const previouslyFoundServices = Object.values(previousApp.services).map((service) => service.config);
@@ -214,7 +214,7 @@ export class ApplicationParser {
                 changeType: jsonContent.changeType,
                 content: jsonContent.content,
                 selector: jsonContent.selector,
-                changeFileUri: pathToFileURL(uri).toString()
+                changeFileUri: uri
             };
             const foundChangeIndex = app.changes.findIndex((c) => c.changeFileUri === uri);
             if (foundChangeIndex > -1) {
