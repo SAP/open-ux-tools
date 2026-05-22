@@ -96,6 +96,24 @@ export class FioriLanguage implements Language<{
         DiagnosticCache.clear(uri);
         const projectContext = ProjectContext.updateFile(uri, text);
         const document = projectContext.index.documents[uri];
+        if (path.endsWith('.change')) {
+            return {
+                ok: true,
+                ast: {
+                    uri,
+                    context: projectContext,
+                    document: {
+                        type: 'change',
+                        root: parseJson(text, {
+                            mode: 'json',
+                            ranges: true,
+                            tokens: true,
+                            allowTrailingCommas: false
+                        })
+                    }
+                }
+            };
+        }
         if (!document) {
             if (path.endsWith('.xml')) {
                 try {
@@ -160,24 +178,6 @@ export class FioriLanguage implements Language<{
                                 targets: [],
                                 uri
                             }
-                        }
-                    }
-                };
-            }
-            if (path.endsWith('.change')) {
-                return {
-                    ok: true,
-                    ast: {
-                        uri,
-                        context: projectContext,
-                        document: {
-                            type: 'change',
-                            root: parseJson(text, {
-                                mode: 'json',
-                                ranges: true,
-                                tokens: true,
-                                allowTrailingCommas: false
-                            })
                         }
                     }
                 };
