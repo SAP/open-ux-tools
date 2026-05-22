@@ -202,7 +202,7 @@ export class ApplicationParser {
     }
 
     private reparseChange(uri: string, index: ParsedProject, fileCache: Map<string, string>): void {
-        for (const [key, app] of Object.entries(index.apps)) {
+        for (const [key, _app] of Object.entries(index.apps)) {
             const content = fileCache.get(uri) ?? '';
             const ast = parseJson(content, {
                 mode: 'json',
