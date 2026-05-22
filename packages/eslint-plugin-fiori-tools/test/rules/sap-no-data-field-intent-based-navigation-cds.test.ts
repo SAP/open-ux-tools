@@ -113,7 +113,7 @@ annotate service.Incidents with @(
 `;
 
 const TEST_NAME = 'sap-no-data-field-intent-based-navigation';
-const { createValidTest, createInvalidTest } = setup(`${TEST_NAME} - CAP`, CAP_APP_PATH);
+const { createValidTest, createInvalidTest } = setup(`${TEST_NAME} - CDS`, CAP_APP_PATH);
 
 ruleTester.run(`${TEST_NAME} - CDS`, intentBasedNavRule, {
     valid: [
