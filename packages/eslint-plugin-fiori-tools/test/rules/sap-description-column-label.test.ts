@@ -9,7 +9,10 @@ import {
     V2_ANNOTATIONS,
     V2_ANNOTATIONS_PATH,
     V2_METADATA,
-    V2_METADATA_PATH
+    V2_METADATA_PATH,
+    CAP_ANNOTATIONS,
+    CAP_ANNOTATIONS_PATH,
+    CAP_APP_PATH
 } from '../test-helper';
 
 const ruleTester = new RuleTester({
@@ -19,6 +22,7 @@ const ruleTester = new RuleTester({
 
 const TEST_NAME = 'sap-description-column-label';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
+const { createValidTest: createValidTestV2, createInvalidTest: createInvalidTestV2 } = setup(`${TEST_NAME} (V2)`);
 
 // ─── Annotation snippets ─────────────────────────────────────────────────────
 
@@ -178,7 +182,7 @@ ruleTester.run(TEST_NAME, descriptionColumnLabelRule, {
 
 ruleTester.run(`${TEST_NAME} (V2)`, descriptionColumnLabelRule, {
     valid: [
-        createValidTest(
+        createValidTestV2(
             {
                 name: 'V2 annotation.xml - no errors (synthetic sap:text/sap:label elements live in metadata.xml AST)',
                 filename: V2_ANNOTATIONS_PATH,
@@ -188,7 +192,7 @@ ruleTester.run(`${TEST_NAME} (V2)`, descriptionColumnLabelRule, {
         )
     ],
     invalid: [
-        createInvalidTest(
+        createInvalidTestV2(
             {
                 name: 'V2 metadata.xml - trivial and duplicate labels from injected sap:text/sap:label are flagged',
                 filename: V2_METADATA_PATH,
@@ -222,6 +226,74 @@ ruleTester.run(`${TEST_NAME} (V2)`, descriptionColumnLabelRule, {
                         }
                     }
                 ]
+            },
+            []
+        )
+    ]
+});
+
+// ─── CDS (CAP) tests ─────────────────────────────────────────────────────────
+
+const CDS_TRIVIAL_LABEL = `
+annotate service.Incidents with {
+    category @Common.Text: category.name
+};
+annotate service.Category with {
+    name @Common.Label: 'Name'
+};
+`;
+
+const CDS_DUPLICATE_LABEL = `
+annotate service.Incidents with {
+    category @Common.Text: category.name
+        @Common.Label: 'Category'
+};
+annotate service.Category with {
+    name @Common.Label: 'Category'
+};
+`;
+
+const CDS_MEANINGFUL_LABEL = `
+annotate service.Incidents with {
+    category @Common.Text: category.name
+};
+annotate service.Category with {
+    name @Common.Label: 'Category Name'
+};
+`;
+
+const { createValidTest: createValidTestCAP, createInvalidTest: createInvalidTestCAP } = setup(
+    `${TEST_NAME} - CAP`,
+    CAP_APP_PATH
+);
+
+ruleTester.run(`${TEST_NAME} - CAP`, descriptionColumnLabelRule, {
+    valid: [
+        createValidTestCAP(
+            {
+                name: 'CDS text property with meaningful distinct label - not flagged',
+                filename: CAP_ANNOTATIONS_PATH,
+                code: CAP_ANNOTATIONS + CDS_MEANINGFUL_LABEL
+            },
+            []
+        )
+    ],
+    invalid: [
+        createInvalidTestCAP(
+            {
+                name: 'CDS text property with trivial "Name" label',
+                filename: CAP_ANNOTATIONS_PATH,
+                code: CAP_ANNOTATIONS + CDS_TRIVIAL_LABEL,
+                errors: [{ messageId: 'trivialLabel' }]
+            },
+            []
+        ),
+        createInvalidTestCAP(
+            {
+                name: 'CDS text property label identical to ID property label',
+                filename: CAP_ANNOTATIONS_PATH,
+                code: CAP_ANNOTATIONS + CDS_DUPLICATE_LABEL,
+                errors: [{ messageId: 'duplicateLabel' }]
             },
             []
         )

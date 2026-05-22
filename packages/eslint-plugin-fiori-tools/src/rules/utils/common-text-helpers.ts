@@ -6,7 +6,37 @@ import type { FeV4ObjectPage, FeV4ListReport } from '../../project-context/linke
 import type { FeV2ListReport, FeV2ObjectPage } from '../../project-context/linker/fe-v2';
 import { COMMON_TEXT } from '../../constants';
 
+export { resolveTextPropertyPath } from '@sap-ux/fiori-annotation-api';
+
 export type AnyPage = FeV4ObjectPage | FeV4ListReport | FeV2ListReport | FeV2ObjectPage;
+
+/**
+ * Extracts a String value from an annotation element.
+ * Handles both OData XML format (String attribute) and CDS-compiled format
+ * (value stored as text content of a child String element).
+ *
+ * @param element - The annotation element
+ * @returns The string value or undefined if not found
+ */
+export function getStringValue(element: Element): string | undefined {
+    const attrString = getElementAttributeValue(element, Edm.String);
+    if (attrString) {
+        return attrString;
+    }
+    for (const child of element.content) {
+        if (child.type !== ELEMENT_TYPE) {
+            continue;
+        }
+        const childEl = child as Element;
+        if (childEl.name === Edm.String) {
+            const textNode = childEl.content.find((c) => c.type === 'text');
+            if (textNode && 'text' in textNode) {
+                return textNode.text;
+            }
+        }
+    }
+    return undefined;
+}
 
 /**
  * Extracts the text path from a Common.Text annotation element.
@@ -34,47 +64,6 @@ export function getTextPath(textElement: Element): string | undefined {
         }
     }
     return undefined;
-}
-
-/**
- * Resolves a path expression relative to an entity type.
- *
- * For example, given entity type "IncidentService.Incidents" and path "category/name",
- * it navigates through the "category" navigation property to find "IncidentService.Category",
- * and returns { entityTypeName: "IncidentService.Category", propertyName: "name" }.
- *
- * @param entityTypeName - Fully-qualified name of the starting entity type
- * @param textPath - Path expression (e.g. "category/name" or "name")
- * @param service - The parsed OData service
- * @returns Resolved entity type name and property name, or undefined if resolution fails
- */
-export function resolveTextPropertyPath(
-    entityTypeName: string,
-    textPath: string,
-    service: ParsedService
-): { entityTypeName: string; propertyName: string } | undefined {
-    const segments = textPath.split('/');
-    if (segments.length === 0 || segments[0] === '') {
-        return undefined;
-    }
-
-    const propertyName = segments.at(-1)!;
-    let currentEntityTypeName = entityTypeName;
-
-    for (let i = 0; i < segments.length - 1; i++) {
-        const segment = segments[i];
-        const entityTypeElement = service.artifacts.metadataService.getMetadataElement(currentEntityTypeName);
-        if (!entityTypeElement) {
-            return undefined;
-        }
-        const navProp = entityTypeElement.content.find((child) => child.name === segment);
-        if (!navProp?.structuredType) {
-            return undefined;
-        }
-        currentEntityTypeName = navProp.structuredType;
-    }
-
-    return { entityTypeName: currentEntityTypeName, propertyName };
 }
 
 /**
