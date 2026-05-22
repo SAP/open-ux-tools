@@ -2054,7 +2054,7 @@ describe('Test safeGetSemanticKeyProperties()', () => {
         expect(result).toBeUndefined();
     });
 
-    test('logs the error message when error is an Error instance', () => {
+    test('logs the error message', () => {
         safeGetSemanticKeyProperties('invalid xml', 'Travel', mockLogger);
         const [loggedMessage] = (mockLogger.debug as jest.Mock).mock.calls[0];
         expect(loggedMessage).toMatch(/Failed to get semantic key properties: .+/);

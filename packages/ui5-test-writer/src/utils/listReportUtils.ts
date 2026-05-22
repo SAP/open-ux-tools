@@ -82,7 +82,7 @@ export function safeGetSemanticKeyProperties(
     try {
         return getSemanticKeyProperties(metadata, entitySetName, true);
     } catch (error) {
-        log?.debug(`Failed to get semantic key properties: ${error instanceof Error ? error.message : String(error)}`);
+        log?.debug(`Failed to get semantic key properties: ${(error as Error).message}`);
         return undefined;
     }
 }
