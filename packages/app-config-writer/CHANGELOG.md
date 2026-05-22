@@ -1,5 +1,16 @@
 # @sap-ux/app-config-writer
 
+## 0.7.3
+
+### Patch Changes
+
+- 9752c40: feat: add command to add flp embedded mode
+- Updated dependencies [9752c40]
+    - @sap-ux/ui5-config@0.31.1
+    - @sap-ux/project-access@1.38.1
+    - @sap-ux/ui5-application-writer@1.9.1
+    - @sap-ux/axios-extension@1.26.0
+
 ## 0.7.2
 
 ### Patch Changes
