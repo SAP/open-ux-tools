@@ -29,8 +29,10 @@ export default {
     },
     // Allow jest.mock() to work with workspace packages in ESM mode
     // Also transform @sap/ux-cds-compiler-facade since it imports ESM workspace packages
+    // Also transform @sap-devx/yeoman-ui-types since it ships untransformed ESM under .pnpm/
+    // The (?:.*?/)? lazy prefix accounts for pnpm's .pnpm/<name>+<version>/node_modules/<name> layout
     transformIgnorePatterns: [
-        'node_modules/(?!(@sap-ux|@sap-ux-private|@sap/ux-cds-compiler-facade)/)'
+        'node_modules/(?!(?:.*?/)?(@sap-ux|@sap-ux-private|@sap/ux-cds-compiler-facade|@sap-devx[+/]yeoman-ui-types)/)'
     ],
     collectCoverage: true,
     collectCoverageFrom: ['src/**/*.ts'],
