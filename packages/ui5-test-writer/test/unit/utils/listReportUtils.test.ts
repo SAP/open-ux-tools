@@ -2040,17 +2040,13 @@ describe('Test safeGetSemanticKeyProperties()', () => {
     test('returns undefined and logs debug when metadata is invalid XML', () => {
         const result = safeGetSemanticKeyProperties('not valid xml', 'Travel', mockLogger);
         expect(result).toBeUndefined();
-        expect(mockLogger.debug).toHaveBeenCalledWith(
-            expect.stringContaining('Failed to get semantic key properties')
-        );
+        expect(mockLogger.debug).toHaveBeenCalledWith(expect.stringContaining('Failed to get semantic key properties'));
     });
 
     test('returns undefined and logs debug when entity set does not exist', () => {
         const result = safeGetSemanticKeyProperties(validMetadata, 'NonExistent', mockLogger);
         expect(result).toBeUndefined();
-        expect(mockLogger.debug).toHaveBeenCalledWith(
-            expect.stringContaining('Failed to get semantic key properties')
-        );
+        expect(mockLogger.debug).toHaveBeenCalledWith(expect.stringContaining('Failed to get semantic key properties'));
     });
 
     test('returns undefined without throwing when logger is not provided', () => {
