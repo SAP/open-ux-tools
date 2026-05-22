@@ -55,7 +55,6 @@
             id="insightsTilesContainer"
             renderType="Bare"
             class="sapCuxBaseContainer"
-            visible="{= ${view>/cards/length} &gt; 0}"
         >
             <m:HBox id="insightsTitleBar" alignItems="Center" renderType="Bare">
                 <m:Title id="insightsTitle" level="H4" titleStyle="H4"/>
@@ -68,8 +67,35 @@
                     class="sapUiTinyMarginBegin"
                 />
             </m:HBox>
+            <m:VBox
+                id="noDataContainer"
+                backgroundDesign="Solid"
+                visible="{= ${view>/cards/length} === 0 }"
+                class="sapCuxAppsPanel sapUiSmallMarginTop"
+            >
+                <m:IllustratedMessage
+                    id="noDataIllustratedMessage"
+                    illustrationSize="Dot"
+                    illustrationType="sapIllus-NoData"
+                    title="{i18n>noInsightsTitle}"
+                    description="{i18n>noInsightsDesc}"
+                    class="sapUiSmallMargin"
+                >
+                    <m:additionalContent>
+                        <m:Button
+                            id="refreshInsightsBtn"
+                            type="Transparent"
+                            icon="sap-icon://refresh"
+                            text="{view>/insightsRefreshInfo}"
+                            tooltip="{view>/insightsFullRefreshInfo}"
+                            press=".onRefreshInsightsPress"
+                        />
+                    </m:additionalContent>
+                </m:IllustratedMessage>
+            </m:VBox>
             <f:GridContainer
                 id="insightsCardContainer"
+                visible="{= ${view>/cards/length} &gt; 0}"
                 class="sapUiSmallMarginTop"
                 items="{view>/cards}"
             >

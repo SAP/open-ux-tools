@@ -181,11 +181,6 @@ export class WhatsNewSource {
         }
 
         // Build a single HTML description with intro + all categories
-        const intro =
-            `Learn about changes and new features that are available for SAP Fiori tools ${latestVersion}. ` +
-            'To use all new features, ensure your extensions are up to date. ' +
-            'You can always update your extensions in your preferred Integrated Development Environment (IDE).';
-
         const categorySections = [...byCategory.entries()]
             .map(([category, items]) => {
                 const listItems = items
@@ -195,17 +190,35 @@ export class WhatsNewSource {
             })
             .join('<hr>');
 
-        const description = `<p>${intro}</p>${categorySections}`;
+        const description = `<p>${this.getNewsIntroduction(latestVersion, true)}</p>${categorySections}`;
 
         return [
             {
                 title: "What's New for SAP Fiori Tools",
-                subTitle: intro,
+                subTitle: this.getNewsIntroduction(latestVersion, false),
                 description,
                 footerText: `SAP Fiori Tools ${latestVersion}`,
                 image: path.join(__dirname, '../images/whats-new.jpg')
             }
         ];
+    }
+
+    /**
+     * Generates a news introduction message for the given version.
+     *
+     * @param latestVersion the latest version string
+     * @param embedTools whether to embed tools as an HTML link
+     * @returns the introduction text
+     */
+    private getNewsIntroduction(latestVersion: string, embedTools: boolean): string {
+        const embeddedFioriTools = embedTools
+            ? `<a href="https://help.sap.com/docs/SAP_FIORI_tools" target="_blank">SAP Fiori Tools</a>`
+            : 'SAP Fiori Tools';
+        return (
+            `Learn about changes and new features that are available for ${embeddedFioriTools} ${latestVersion}. ` +
+            'To use all new features, ensure your extensions are up to date. ' +
+            'You can always update your extensions in your preferred Integrated Development Environment (IDE).'
+        );
     }
 
     /**

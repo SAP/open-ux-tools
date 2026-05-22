@@ -50,6 +50,19 @@ export default class MyHomeController extends Controller {
     private static readonly MOBILE_CARD_WIDTH_REM = 19;
     private static readonly MOBILE_CARD_HEIGHT_REM = 25.5;
     private static readonly DEFAULT_CARD_HEIGHT_REM = 33;
+    private static readonly INSIGHTS_REFRESH_INTERVAL = 65000;
+
+    private static readonly fullRelativeDateFormatter = DateFormat.getDateTimeInstance({
+        style: 'long',
+        relative: true,
+        relativeStyle: 'wide'
+    });
+
+    private static readonly relativeDateFormatter = DateFormat.getDateTimeInstance({
+        style: 'medium',
+        relative: true,
+        relativeStyle: 'short'
+    });
 
     private static readonly DeviceWidth = {
         Mobile: 600,
@@ -61,6 +74,8 @@ export default class MyHomeController extends Controller {
     private terminalWarningsPopover: Popover | undefined;
     private insightsActionsPopover: Popover | undefined;
     private useHeroBanner: boolean = false;
+    private lastInsightsRefreshTime: Date | undefined;
+    private insightsRefreshIntervalId: number | undefined;
 
     private static calculateDeviceType(width: number): string {
         const { DeviceWidth } = MyHomeController;
@@ -111,7 +126,9 @@ export default class MyHomeController extends Controller {
                 insightsCardHeight: `${MyHomeController.DEFAULT_CARD_HEIGHT_REM}rem`,
                 cards: [],
                 hasWarnings: false,
-                warnings: []
+                warnings: [],
+                insightsRefreshInfo: '',
+                insightsFullRefreshInfo: ''
             });
             view.setModel(oViewModel, 'view');
 
@@ -306,13 +323,45 @@ export default class MyHomeController extends Controller {
 
             const cardCount = cards.length;
             const viewModel = view.getModel('view') as JSONModel;
-            viewModel?.setProperty('/cards', cards);
+            viewModel?.setProperty('/cards', []);
             (view.byId('insightsTitle') as Title)?.setText(
                 `${this.getText('insightsTitle')}${cardCount > 0 ? ` (${cardCount})` : ''}`
             );
+
+            this.lastInsightsRefreshTime = new Date();
+            this._updateInsightsRefreshInformation();
+            this._setInsightsRefreshInterval();
         } catch (error: unknown) {
             Log.error('Failed to load insights data', error instanceof Error ? error : new Error(String(error)));
         }
+    }
+
+    private _setInsightsRefreshInterval(): void {
+        if (this.insightsRefreshIntervalId !== undefined) {
+            clearInterval(this.insightsRefreshIntervalId);
+        }
+        this.insightsRefreshIntervalId = window.setInterval(() => {
+            this._updateInsightsRefreshInformation();
+        }, MyHomeController.INSIGHTS_REFRESH_INTERVAL);
+    }
+
+    private _updateInsightsRefreshInformation(): void {
+        const viewModel = this.getView()?.getModel('view') as JSONModel | undefined;
+        if (!viewModel || !this.lastInsightsRefreshTime) {
+            return;
+        }
+        viewModel.setProperty(
+            '/insightsRefreshInfo',
+            MyHomeController.relativeDateFormatter.format(this.lastInsightsRefreshTime)
+        );
+        viewModel.setProperty(
+            '/insightsFullRefreshInfo',
+            MyHomeController.fullRelativeDateFormatter.format(this.lastInsightsRefreshTime)
+        );
+    }
+
+    onRefreshInsightsPress(): void {
+        void this.initializeInsightsContainer();
     }
 
     onAppsLoaded(event: Event<{ apps: App[], tiles: GenericTile[] }>) {
@@ -426,4 +475,10 @@ export default class MyHomeController extends Controller {
         }
     }
 
+    onExit(): void {
+        if (this.insightsRefreshIntervalId !== undefined) {
+            clearInterval(this.insightsRefreshIntervalId);
+            this.insightsRefreshIntervalId = undefined;
+        }
+    }
 }
