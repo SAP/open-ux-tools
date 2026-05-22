@@ -1,5 +1,12 @@
 # @sap-ux/odata-vocabularies
 
+## 0.5.1
+
+### Patch Changes
+
+- Updated dependencies [2f1ece0]
+    - @sap-ux/odata-annotation-core-types@0.6.1
+
 ## 0.5.0
 
 ### Minor Changes

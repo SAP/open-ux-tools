@@ -1,5 +1,11 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.5.1
+
+### Patch Changes
+
+- 12137f6: update doc for fiori extension
+
 ## 0.5.0
 
 ### Minor Changes
