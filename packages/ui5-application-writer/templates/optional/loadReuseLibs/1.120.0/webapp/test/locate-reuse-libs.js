@@ -215,9 +215,15 @@
                                 // set up test service for local testing
                                 server.init();
                                 // initialize the ushell sandbox component
-                                sap.ui.require(["sap/ushell/Container"], async function (Container) {
-                                    (typeof Container.createRenderer === 'function'
-                                        ? Container.createRenderer(true)
+                                sap.ui.require(["sap/ushell/Container", "sap/ui/VersionInfo"], async function (Container, VersionInfo) {
+                                    var versionInfo = await VersionInfo.load();
+                                    var coreLib = versionInfo && versionInfo.libraries && versionInfo.libraries.find(function (lib) { return lib.name === 'sap.ui.core'; });
+                                    var version = (coreLib && coreLib.version) || (versionInfo && versionInfo.version) || '';
+                                    var major = parseInt(version.split('.')[0], 10) || 0;
+                                    var label = version.indexOf('-') !== -1 ? version.slice(version.indexOf('-') + 1) : '';
+                                    var isLegacyFree = label.includes('legacy-free');
+                                    (major < 2 && !isLegacyFree
+                                        ? Container.createRenderer(undefined, true)
                                         : Container.createRendererInternal(undefined, true)).then(function (component) {
                                         component.placeAt("content");
                                     });
@@ -251,13 +257,19 @@
                     Core.ready(() => {
                         registerSAPFonts();
                         // initialize the ushell sandbox component
-                        sap.ui.require(["sap/ushell/Container"], async function (Container) {
+                        sap.ui.require(["sap/ushell/Container", "sap/ui/VersionInfo"], async function (Container, VersionInfo) {
                             try {
-                            (typeof Container.createRenderer === 'function'
-                                ? Container.createRenderer(true)
-                                : Container.createRendererInternal(undefined, true)).then(function (component) {
-                                component.placeAt("content");
-                            });
+                                var versionInfo = await VersionInfo.load();
+                                var coreLib = versionInfo && versionInfo.libraries && versionInfo.libraries.find(function (lib) { return lib.name === 'sap.ui.core'; });
+                                var version = (coreLib && coreLib.version) || (versionInfo && versionInfo.version) || '';
+                                var major = parseInt(version.split('.')[0], 10) || 0;
+                                var label = version.indexOf('-') !== -1 ? version.slice(version.indexOf('-') + 1) : '';
+                                var isLegacyFree = label.includes('legacy-free');
+                                (major < 2 && !isLegacyFree
+                                    ? Container.createRenderer(undefined, true)
+                                    : Container.createRendererInternal(undefined, true)).then(function (component) {
+                                    component.placeAt("content");
+                                });
                             } catch (error) {
                                 // support older versions of ui5 
                                 Container.createRenderer().placeAt("content");
