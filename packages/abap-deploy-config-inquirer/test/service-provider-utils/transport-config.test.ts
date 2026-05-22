@@ -13,9 +13,9 @@ jest.unstable_mockModule('../../src/service-provider-utils/abap-service-provider
     }
 }));
 
-const { t } = await import('../../src/i18n');
-const { getTransportConfigInstance } = await import('../../src/service-provider-utils');
-const LoggerHelper = (await import('../../src/logger-helper')).default;
+const { t } = await import('../../src/i18n.js');
+const { getTransportConfigInstance } = await import('../../src/service-provider-utils/transport-config.js');
+const LoggerHelper = (await import('../../src/logger-helper.js')).default;
 const { addi18nResourceBundle } = await import('@sap-ux/inquirer-common');
 
 describe('getTransportConfigInstance', () => {

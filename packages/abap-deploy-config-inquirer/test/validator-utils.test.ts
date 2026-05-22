@@ -11,8 +11,8 @@ jest.unstable_mockModule('../src/service-provider-utils', () => ({
 }));
 
 const { createTransportNumber, getTransportList, isAppNameValid, listPackages } =
-    await import('../src/validator-utils');
-const { initI18n, t } = await import('../src/i18n');
+    await import('../src/validator-utils.js');
+const { initI18n, t } = await import('../src/i18n.js');
 
 describe('validator-utils', () => {
     beforeAll(async () => {

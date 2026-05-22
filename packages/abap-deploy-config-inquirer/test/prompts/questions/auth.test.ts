@@ -1,49 +1,26 @@
 import { jest } from '@jest/globals';
-import { promptNames } from '../../../src/types';
+import { promptNames } from '../../../src/types.js';
 
 const mockShowUsernameQuestion = jest.fn();
 const mockShowPasswordQuestion = jest.fn();
 const mockValidateCredentials = jest.fn();
 
+const actualConditions = await import('../../../src/prompts/conditions.js');
+const actualValidators = await import('../../../src/prompts/validators.js');
+
 jest.unstable_mockModule('../../../src/prompts/conditions', () => ({
+    ...actualConditions,
     showUsernameQuestion: mockShowUsernameQuestion,
-    showPasswordQuestion: mockShowPasswordQuestion,
-    showUrlQuestion: jest.fn(),
-    showScpQuestion: jest.fn(),
-    showClientChoiceQuestion: jest.fn(),
-    showClientQuestion: jest.fn(),
-    showUi5AppDeployConfigQuestion: jest.fn(),
-    showPackageInputChoiceQuestion: jest.fn(),
-    defaultOrShowManualPackageQuestion: jest.fn(),
-    defaultOrShowSearchPackageQuestion: jest.fn(),
-    showTransportInputChoice: jest.fn(),
-    defaultOrShowTransportListQuestion: jest.fn(),
-    defaultOrShowTransportCreatedQuestion: jest.fn(),
-    defaultOrShowManualTransportQuestion: jest.fn(),
-    showIndexQuestion: jest.fn()
+    showPasswordQuestion: mockShowPasswordQuestion
 }));
 
 jest.unstable_mockModule('../../../src/prompts/validators', () => ({
-    validateCredentials: mockValidateCredentials,
-    validateUrl: jest.fn(),
-    validateTargetSystem: jest.fn(),
-    validateTargetSystemUrlCli: jest.fn(),
-    updateDestinationPromptState: jest.fn(),
-    validateDestinationQuestion: jest.fn(),
-    validateClientChoiceQuestion: jest.fn(),
-    validateClient: jest.fn(),
-    validateUi5AbapRepoName: jest.fn(),
-    validateAppDescription: jest.fn(),
-    validatePackage: jest.fn(),
-    validatePackageChoiceInput: jest.fn(),
-    validatePackageChoiceInputForCli: jest.fn(),
-    validateTransportChoiceInput: jest.fn(),
-    validateTransportQuestion: jest.fn(),
-    validateConfirmQuestion: jest.fn()
+    ...actualValidators,
+    validateCredentials: mockValidateCredentials
 }));
 
-const { initI18n, t } = await import('../../../src/i18n');
-const { getAuthPrompts } = await import('../../../src/prompts/questions');
+const { initI18n, t } = await import('../../../src/i18n.js');
+const { getAuthPrompts } = await import('../../../src/prompts/questions/auth.js');
 
 describe('getAuthPrompts', () => {
     beforeAll(async () => {

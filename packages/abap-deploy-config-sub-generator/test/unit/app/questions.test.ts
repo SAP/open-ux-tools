@@ -7,6 +7,7 @@ import type { AbapDeployConfigPromptOptions } from '@sap-ux/abap-deploy-config-i
 const realBtpUtils = await import('@sap-ux/btp-utils');
 const realProjectAccess = await import('@sap-ux/project-access');
 const realAbapInquirer = await import('@sap-ux/abap-deploy-config-inquirer');
+const realFioriGeneratorShared = await import('@sap-ux/fiori-generator-shared');
 
 const mockIsAppStudio = jest.fn();
 const mockReadUi5Yaml = jest.fn();
@@ -29,39 +30,14 @@ jest.unstable_mockModule('@sap-ux/abap-deploy-config-inquirer', () => ({
 }));
 
 jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...realFioriGeneratorShared,
     getHostEnvironment: mockGetHostEnvironment,
     hostEnvironment: { cli: 'CLI', bas: 'BAS', vscode: 'VSCode' },
-    DefaultLogger: {
-        info: jest.fn(),
-        error: jest.fn(),
-        warn: jest.fn(),
-        debug: jest.fn()
-    },
-    LogWrapper: jest.fn().mockImplementation(() => ({
-        info: jest.fn(),
-        error: jest.fn(),
-        warn: jest.fn(),
-        debug: jest.fn()
-    })),
-    setYeomanEnvConflicterForce: jest.fn(),
-    TelemetryHelper: {
-        initTelemetrySettings: jest.fn(),
-        createTelemetryData: jest.fn()
-    },
-    sendTelemetry: jest.fn(),
-    isExtensionInstalled: jest.fn(),
     YUI_EXTENSION_ID: 'SAPOSS.app-studio-toolkit',
-    YUI_MIN_VER_FILES_GENERATED_MSG: '1.14.0',
-    getDefaultTargetFolder: jest.fn(),
-    isCommandRegistered: jest.fn(),
-    getPackageScripts: jest.fn(),
-    getBootstrapResourceUrls: jest.fn(),
-    getFlpId: jest.fn(),
-    getSemanticObject: jest.fn(),
-    generateAppGenInfo: jest.fn()
+    YUI_MIN_VER_FILES_GENERATED_MSG: '1.14.0'
 }));
 
-const { getAbapQuestions } = await import('../../../src/app/questions');
+const { getAbapQuestions } = await import('../../../src/app/questions.js');
 const { AuthenticationType } = await import('@sap-ux/store');
 const { hostEnvironment, DefaultLogger } = await import('@sap-ux/fiori-generator-shared');
 const { AdaptationProjectType } = await import('@sap-ux/axios-extension');

@@ -2,13 +2,13 @@ import { jest } from '@jest/globals';
 
 const mockGetOrCreateServiceProvider = jest.fn();
 
-jest.unstable_mockModule('../../src/service-provider-utils/abap-service-provider', () => ({
+jest.unstable_mockModule('../../src/service-provider-utils/abap-service-provider.js', () => ({
     AbapServiceProviderManager: { getOrCreateServiceProvider: mockGetOrCreateServiceProvider }
 }));
 
-const { initI18n, t } = await import('../../src/i18n');
-const LoggerHelper = (await import('../../src/logger-helper')).default;
-const { createTransportNumberFromService } = await import('../../src/service-provider-utils');
+const { initI18n, t } = await import('../../src/i18n.js');
+const LoggerHelper = (await import('../../src/logger-helper.js')).default;
+const { createTransportNumberFromService } = await import('../../src/service-provider-utils/create-transport.js');
 
 describe('Test create transport', () => {
     beforeAll(async () => {

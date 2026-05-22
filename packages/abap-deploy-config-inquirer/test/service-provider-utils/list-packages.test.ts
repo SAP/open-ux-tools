@@ -7,9 +7,9 @@ jest.unstable_mockModule('../../src/service-provider-utils/abap-service-provider
     AbapServiceProviderManager: { getOrCreateServiceProvider: mockGetOrCreateServiceProvider }
 }));
 
-const { initI18n, t } = await import('../../src/i18n');
-const LoggerHelper = (await import('../../src/logger-helper')).default;
-const { listPackagesFromService } = await import('../../src/service-provider-utils');
+const { initI18n, t } = await import('../../src/i18n.js');
+const LoggerHelper = (await import('../../src/logger-helper.js')).default;
+const { listPackagesFromService } = await import('../../src/service-provider-utils/list-packages.js');
 
 describe('Test list packages', () => {
     beforeAll(async () => {

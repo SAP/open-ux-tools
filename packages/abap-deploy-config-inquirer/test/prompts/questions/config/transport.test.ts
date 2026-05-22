@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { promptNames, TransportChoices } from '../../../../src/types';
+import { promptNames, TransportChoices } from '../../../../src/types.js';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 
 const mockShowTransportInputChoice = jest.fn();
@@ -9,46 +9,26 @@ const mockDefaultOrShowManualTransportQuestion = jest.fn();
 const mockValidateTransportChoiceInput = jest.fn();
 const mockValidateTransportQuestion = jest.fn();
 
+const actualConditions = await import('../../../../src/prompts/conditions.js');
+const actualValidators = await import('../../../../src/prompts/validators.js');
+
 jest.unstable_mockModule('../../../../src/prompts/conditions', () => ({
+    ...actualConditions,
     showTransportInputChoice: mockShowTransportInputChoice,
     defaultOrShowTransportCreatedQuestion: mockDefaultOrShowTransportCreatedQuestion,
     defaultOrShowTransportListQuestion: mockDefaultOrShowTransportListQuestion,
-    defaultOrShowManualTransportQuestion: mockDefaultOrShowManualTransportQuestion,
-    showUsernameQuestion: jest.fn(),
-    showPasswordQuestion: jest.fn(),
-    showUrlQuestion: jest.fn(),
-    showScpQuestion: jest.fn(),
-    showClientChoiceQuestion: jest.fn(),
-    showClientQuestion: jest.fn(),
-    showUi5AppDeployConfigQuestion: jest.fn(),
-    showPackageInputChoiceQuestion: jest.fn(),
-    defaultOrShowManualPackageQuestion: jest.fn(),
-    defaultOrShowSearchPackageQuestion: jest.fn(),
-    showIndexQuestion: jest.fn()
+    defaultOrShowManualTransportQuestion: mockDefaultOrShowManualTransportQuestion
 }));
 
 jest.unstable_mockModule('../../../../src/prompts/validators', () => ({
+    ...actualValidators,
     validateTransportChoiceInput: mockValidateTransportChoiceInput,
-    validateTransportQuestion: mockValidateTransportQuestion,
-    validateUrl: jest.fn(),
-    validateTargetSystem: jest.fn(),
-    validateTargetSystemUrlCli: jest.fn(),
-    updateDestinationPromptState: jest.fn(),
-    validateDestinationQuestion: jest.fn(),
-    validateClientChoiceQuestion: jest.fn(),
-    validateClient: jest.fn(),
-    validateCredentials: jest.fn(),
-    validateUi5AbapRepoName: jest.fn(),
-    validateAppDescription: jest.fn(),
-    validatePackage: jest.fn(),
-    validatePackageChoiceInput: jest.fn(),
-    validatePackageChoiceInputForCli: jest.fn(),
-    validateConfirmQuestion: jest.fn()
+    validateTransportQuestion: mockValidateTransportQuestion
 }));
 
-const { initI18n, t } = await import('../../../../src/i18n');
-const { getTransportRequestPrompts } = await import('../../../../src/prompts/questions');
-const { PromptState } = await import('../../../../src/prompts/prompt-state');
+const { initI18n, t } = await import('../../../../src/i18n.js');
+const { getTransportRequestPrompts } = await import('../../../../src/prompts/questions/config/transport.js');
+const { PromptState } = await import('../../../../src/prompts/prompt-state.js');
 
 describe('getTransportRequestPrompts', () => {
     beforeAll(async () => {

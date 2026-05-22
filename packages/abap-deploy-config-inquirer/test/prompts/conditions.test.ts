@@ -5,7 +5,7 @@ import {
     TargetSystemType,
     TransportChoices,
     type TransportConfig
-} from '../../src/types';
+} from '../../src/types.js';
 
 const mockIsAppStudio = jest.fn();
 const mockFindBackendSystemByUrl = jest.fn();
@@ -17,18 +17,11 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: mockIsAppStudio
 }));
 
+const actualUtils = await import('../../src/utils.js');
 jest.unstable_mockModule('../../src/utils', () => ({
+    ...actualUtils,
     findBackendSystemByUrl: mockFindBackendSystemByUrl,
-    initTransportConfig: mockInitTransportConfig,
-    getAbapSystems: jest.fn(),
-    findDestination: jest.fn(),
-    isSameSystem: jest.fn(),
-    getPackageAnswer: jest.fn(),
-    useCreateTrDuringDeploy: jest.fn(),
-    queryPackages: jest.fn(),
-    reconcileAnswers: jest.fn(),
-    getTransportAnswer: jest.fn(),
-    getSystemConfig: jest.fn()
+    initTransportConfig: mockInitTransportConfig
 }));
 
 const {
@@ -47,8 +40,8 @@ const {
     showUi5AppDeployConfigQuestion,
     showUrlQuestion,
     showUsernameQuestion
-} = await import('../../src/prompts/conditions');
-const { PromptState } = await import('../../src/prompts/prompt-state');
+} = await import('../../src/prompts/conditions.js');
+const { PromptState } = await import('../../src/prompts/prompt-state.js');
 
 describe('Test abap deploy config inquirer conditions', () => {
     beforeEach(() => {

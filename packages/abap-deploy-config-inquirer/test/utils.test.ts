@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals';
 import { mockDestinations } from './fixtures/destinations';
 import { mockTargetSystems } from './fixtures/targets';
-import type { AbapDeployConfigAnswers, AbapDeployConfigAnswersInternal } from '../src/types';
-import { PackageInputChoices, TransportChoices } from '../src/types';
-import { CREATE_TR_DURING_DEPLOY } from '../src/constants';
+import type { AbapDeployConfigAnswers, AbapDeployConfigAnswersInternal } from '../src/types.js';
+import { PackageInputChoices, TransportChoices } from '../src/types.js';
+import { CREATE_TR_DURING_DEPLOY } from '../src/constants.js';
 
 const mockListPackages = jest.fn();
 const mockGetTransportConfigInstance = jest.fn();
@@ -47,10 +47,10 @@ const {
     queryPackages,
     reconcileAnswers,
     getTransportAnswer
-} = await import('../src/utils');
-const LoggerHelper = (await import('../src/logger-helper')).default;
-const { initI18n, t } = await import('../src/i18n');
-const { PromptState } = await import('../src/prompts/prompt-state');
+} = await import('../src/utils.js');
+const LoggerHelper = (await import('../src/logger-helper.js')).default;
+const { initI18n, t } = await import('../src/i18n.js');
+const { PromptState } = await import('../src/prompts/prompt-state.js');
 
 describe('Test utils', () => {
     beforeAll(async () => {
