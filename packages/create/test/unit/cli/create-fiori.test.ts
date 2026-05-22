@@ -113,7 +113,9 @@ jest.unstable_mockModule('@sap-ux/app-config-writer', () => ({
     convertToVirtualPreview: jest.fn(),
     simulatePrompt: jest.fn(),
     includeTestRunnersPrompt: jest.fn(),
-    convertEslintConfig: jest.fn()
+    convertEslintConfig: jest.fn(),
+    generateFlpEmbeddedConfig: jest.fn(),
+    DEFAULT_FLP_PATH: 'sap/bc/ui5_ui5/ui2/ushell/shells/abap/Fiorilaunchpad.html'
 }));
 
 jest.unstable_mockModule('@sap-ux/system-access', () => ({
