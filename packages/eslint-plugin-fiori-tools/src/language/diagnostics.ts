@@ -74,7 +74,7 @@ export interface EnableExport {
     type: typeof ENABLE_EXPORT;
     pageName: string;
     pageSectionName?: string;
-    manifest: ManifestPropertyDiagnosticData;
+    manifest?: ManifestPropertyDiagnosticData; // In ODataV2 apps this setting is defined in a .change file
     changeFileUri?: string;
 }
 
@@ -82,7 +82,7 @@ export interface EnablePaste {
     type: typeof ENABLE_PASTE;
     pageName: string;
     pageSectionName?: string;
-    manifest?: ManifestPropertyDiagnosticData;
+    manifest?: ManifestPropertyDiagnosticData; // In ODataV2 apps this setting is defined in a .change file
     changeFileUri?: string;
 }
 

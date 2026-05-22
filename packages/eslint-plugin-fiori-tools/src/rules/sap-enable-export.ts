@@ -86,17 +86,27 @@ function checkConfiguration(
     pageSectionName?: string
 ): void {
     if (table.configuration.enableExport.valueInFile === false) {
-        problems.push({
-            type: ENABLE_EXPORT,
-            pageName: page.targetName,
-            pageSectionName,
-            manifest: {
-                uri: parsedApp.manifest.manifestUri,
-                object: parsedApp.manifestObject,
-                propertyPath: table.configuration.enableExport.configurationPath
-            },
-            changeFileUri: table.configuration.enableExport.changeFileUri
-        });
+        const service = Object.values(parsedApp.services)[0]; // Assume 1 service only
+        if (service.config.version === '2.0') {
+            problems.push({
+                type: ENABLE_EXPORT,
+                pageName: page.targetName,
+                pageSectionName,
+                changeFileUri: table.configuration.enableExport.changeFileUri
+            });
+        } else if (service.config.version === '4.0') {
+            problems.push({
+                type: ENABLE_EXPORT,
+                pageName: page.targetName,
+                pageSectionName,
+                manifest: {
+                    uri: parsedApp.manifest.manifestUri,
+                    object: parsedApp.manifestObject,
+                    propertyPath: table.configuration.enableExport.configurationPath
+                },
+                changeFileUri: table.configuration.enableExport.changeFileUri
+            });
+        }
     }
 }
 export default rule;
