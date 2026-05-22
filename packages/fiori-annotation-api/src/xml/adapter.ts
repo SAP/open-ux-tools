@@ -7,8 +7,10 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import {
     convertDocument,
     convertMetadataDocument,
+    convertMetadataDocumentV2,
     getNewAnnotationFile,
-    serializeTarget
+    serializeTarget,
+    type V2Annotation
 } from '@sap-ux/xml-odata-annotation-converter';
 import type {
     AnnotationFile,
@@ -81,6 +83,8 @@ import { pathToFileURL } from 'node:url';
 export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     public metadataService = new MetadataService();
     public splitAnnotationSupport = false;
+    public collectV2Annotations = false;
+    public v2annotations: V2Annotation[] = [];
     public fileCache: Map<string, string>;
 
     private readonly externalServices = new Map<
@@ -165,7 +169,14 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
             });
         }
         this.addMissingMetadataReferences();
-        this.metadata = convertMetadataDocument(this.service.metadataFile.uri, metadataDocument);
+        if (this.collectV2Annotations) {
+            [this.metadata, this.v2annotations] = convertMetadataDocumentV2(
+                this.service.metadataFile.uri,
+                metadataDocument
+            );
+        } else {
+            this.metadata = convertMetadataDocument(this.service.metadataFile.uri, metadataDocument);
+        }
         this.metadataService = new MetadataService({
             ODataVersion: this.service.odataVersion,
             isCds: false
