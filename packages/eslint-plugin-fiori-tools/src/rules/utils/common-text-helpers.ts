@@ -11,24 +11,27 @@ export { resolveTextPropertyPath } from '@sap-ux/fiori-annotation-api';
 export type AnyPage = FeV4ObjectPage | FeV4ListReport | FeV2ListReport | FeV2ObjectPage;
 
 /**
- * Extracts a String value from an annotation element.
- * Handles both OData XML format (String attribute) and CDS-compiled format
- * (value stored as text content of a child String element).
+ * Extracts a scalar value from an annotation element.
+ * Checks for an attribute with `attrName` first; if absent, searches child elements whose
+ * name matches one of `childNames` and returns the text content of the first match.
+ * Handles both OData XML format (attribute) and CDS-compiled format (child element).
  *
  * @param element - The annotation element
- * @returns The string value or undefined if not found
+ * @param attrName - The attribute name to check (e.g. `Edm.String`)
+ * @param childNames - Element names to search among children (e.g. `Edm.Path`, `Edm.PropertyPath`)
+ * @returns The scalar value or undefined if not found
  */
-export function getStringValue(element: Element): string | undefined {
-    const attrString = getElementAttributeValue(element, Edm.String);
-    if (attrString) {
-        return attrString;
+function getScalarValue(element: Element, attrName: string, ...childNames: string[]): string | undefined {
+    const attr = getElementAttributeValue(element, attrName);
+    if (attr) {
+        return attr;
     }
     for (const child of element.content) {
         if (child.type !== ELEMENT_TYPE) {
             continue;
         }
         const childEl = child as Element;
-        if (childEl.name === Edm.String) {
+        if (childNames.includes(childEl.name)) {
             const textNode = childEl.content.find((c) => c.type === 'text');
             if (textNode && 'text' in textNode) {
                 return textNode.text;
@@ -38,61 +41,10 @@ export function getStringValue(element: Element): string | undefined {
     return undefined;
 }
 
-/**
- * Extracts a Bool value from an annotation element.
- * Handles both OData XML format (Bool attribute) and CDS-compiled format
- * (value stored as text content of a child Bool element).
- *
- * @param element - The annotation element
- * @returns The bool string ("true"/"false") or undefined if not found
- */
-export function getBoolValue(element: Element): string | undefined {
-    const attrBool = getElementAttributeValue(element, Edm.Bool);
-    if (attrBool) {
-        return attrBool;
-    }
-    for (const child of element.content) {
-        if (child.type !== ELEMENT_TYPE) {
-            continue;
-        }
-        const childEl = child as Element;
-        if (childEl.name === Edm.Bool) {
-            const textNode = childEl.content.find((c) => c.type === 'text');
-            if (textNode && 'text' in textNode) {
-                return textNode.text;
-            }
-        }
-    }
-    return undefined;
-}
-
-/**
- * Extracts the text path from a Common.Text annotation element.
- * Handles both OData XML format (Path attribute) and CDS-compiled format
- * (path stored as text content of a child Path/PropertyPath element).
- *
- * @param textElement - The Common.Text annotation element
- * @returns The path string or undefined if not found
- */
-export function getTextPath(textElement: Element): string | undefined {
-    const attrPath = getElementAttributeValue(textElement, Edm.Path);
-    if (attrPath) {
-        return attrPath;
-    }
-    for (const child of textElement.content) {
-        if (child.type !== ELEMENT_TYPE) {
-            continue;
-        }
-        const childEl = child as Element;
-        if (childEl.name === Edm.Path || childEl.name === Edm.PropertyPath) {
-            const textNode = childEl.content.find((c) => c.type === 'text');
-            if (textNode && 'text' in textNode) {
-                return textNode.text;
-            }
-        }
-    }
-    return undefined;
-}
+export const getStringValue = (element: Element): string | undefined => getScalarValue(element, Edm.String, Edm.String);
+export const getBoolValue = (element: Element): string | undefined => getScalarValue(element, Edm.Bool, Edm.Bool);
+export const getTextPath = (element: Element): string | undefined =>
+    getScalarValue(element, Edm.Path, Edm.Path, Edm.PropertyPath);
 
 /**
  * Builds a reverse map from IndexedAnnotation to entity type name,
