@@ -39,6 +39,33 @@ The text property "{{textPropertyPath}}" referenced using the Common.Text annota
 </Annotations>
 ```
 
+**Format 1 — record syntax:**
+
+```cds
+annotate service.MyEntity with {
+    property_code @Common: { Text: category.name, TextArrangement: #TextFirst }
+};
+
+annotate service.Category with {
+    name @UI.Hidden
+};
+```
+
+**Format 2 — inline qualifier syntax:**
+
+```cds
+annotate service.MyEntity with {
+    property_code @(
+        Common.Text: category.name,
+        Common.Text.@UI.TextArrangement: #TextFirst,
+    )
+};
+
+annotate service.Category with {
+    name @UI.Hidden
+};
+```
+
 **An `UI.TextArrangement` annotation at the entity-type level which is a fallback for all `Common.Text` properties):**
 
 ```xml
@@ -58,6 +85,18 @@ The text property "{{textPropertyPath}}" referenced using the Common.Text annota
 </Annotations>
 ```
 
+```cds
+annotate service.MyEntity with @UI.TextArrangement: #TextFirst;
+
+annotate service.MyEntity with {
+    property_code @Common.Text: category.name
+};
+
+annotate service.Category with {
+    name @UI.Hidden
+};
+```
+
 ### Correct Annotations
 
 **A `UI.TextArrangement` annotation at the property level which is nested inline inside a `Common.Text` Annotation:**
@@ -74,6 +113,25 @@ The text property "{{textPropertyPath}}" referenced using the Common.Text annota
 <Annotations Target="MyService.Category/name">
     <!-- no UI.Hidden annotation here -->
 </Annotations>
+```
+
+**Format 1 — record syntax:**
+
+```cds
+annotate service.MyEntity with {
+    property_code @Common: { Text: category.name, TextArrangement: #TextFirst }
+};
+```
+
+**Format 2 — inline qualifier syntax:**
+
+```cds
+annotate service.MyEntity with {
+    property_code @(
+        Common.Text: category.name,
+        Common.Text.@UI.TextArrangement: #TextFirst,
+    )
+};
 ```
 
 **A `UI.TextArrangement` annotation at the entity-type level which is a fallback for all `Common.Text` properties):**
@@ -95,12 +153,26 @@ The text property "{{textPropertyPath}}" referenced using the Common.Text annota
 </Annotations>
 ```
 
+```cds
+annotate service.MyEntity with @UI.TextArrangement: #TextFirst;
+
+annotate service.MyEntity with {
+    property_code @Common.Text: category.name
+};
+```
+
 If the property should not be hidden in this context, set `UI.Hidden` to `false`:
 
 ```xml
 <Annotations Target="MyService.Category/name">
     <Annotation Term="UI.Hidden" Bool="false"/>
 </Annotations>
+```
+
+```cds
+annotate service.Category with {
+    name @UI.Hidden: false
+};
 ```
 
 ## Bug Report
