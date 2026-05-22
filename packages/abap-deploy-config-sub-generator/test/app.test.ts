@@ -15,8 +15,16 @@ const mockGetAppType = jest.fn();
 const mockGetPrompts = jest.fn();
 const mockHandleErrorMessage = jest.fn();
 
-// Pre-import only lightweight modules before mocking
+
 const realStore = await import('@sap-ux/store');
+// Store mock is required here to prevent subsequent imports from using the real store funcs
+// Tests will still pass but some never exit
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
+    getService: mockGetService
+}));
+
+// Pre-import only lightweight modules before mocking
 const realProjectAccess = await import('@sap-ux/project-access');
 const realAbapInquirer = await import('@sap-ux/abap-deploy-config-inquirer');
 const realTelemetry = await import('@sap-ux/telemetry');
@@ -27,11 +35,6 @@ const realFioriGeneratorShared = await import('@sap-ux/fiori-generator-shared');
 jest.unstable_mockModule('@sap-ux/telemetry', () => ({
     ...realTelemetry,
     initTelemetrySettings: jest.fn()
-}));
-
-jest.unstable_mockModule('@sap-ux/store', () => ({
-    ...realStore,
-    getService: mockGetService
 }));
 
 jest.unstable_mockModule('../src/utils/project.ts', () => ({
