@@ -24,6 +24,11 @@ const realUtilsProject = await import('../src/utils/project.js');
 const realDeployShared = await import('@sap-ux/deploy-config-generator-shared');
 const realFioriGeneratorShared = await import('@sap-ux/fiori-generator-shared');
 
+jest.unstable_mockModule('@sap-ux/telemetry', () => ({
+    ...realTelemetry,
+    initTelemetrySettings: jest.fn()
+}));
+
 jest.unstable_mockModule('@sap-ux/store', () => ({
     ...realStore,
     getService: mockGetService
@@ -46,11 +51,6 @@ jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     hostEnvironment: { cli: 'CLI', bas: 'BAS', vscode: 'VSCode' },
     YUI_EXTENSION_ID: 'SAPOSS.app-studio-toolkit',
     YUI_MIN_VER_FILES_GENERATED_MSG: '1.14.0'
-}));
-
-jest.unstable_mockModule('@sap-ux/telemetry', () => ({
-    ...realTelemetry,
-    initTelemetrySettings: jest.fn()
 }));
 
 jest.unstable_mockModule('@sap-ux/deploy-config-generator-shared', () => ({

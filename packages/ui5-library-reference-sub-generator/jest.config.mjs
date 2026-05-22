@@ -8,9 +8,8 @@ config.moduleNameMapper = {
     ...config.moduleNameMapper,
     '^vscode$': '<rootDir>/test/__mocks__/vscode.js',
     '^@vscode-logging/logger$': '<rootDir>/test/__mocks__/vscode-logging-logger.mjs',
-    '^@sap-devx/yeoman-ui-types$': '<rootDir>/node_modules/@sap-devx/yeoman-ui-types/dist/cjs/src/index.js'
 };
 config.transformIgnorePatterns = [
-    'node_modules/(?!(@sap-ux|@sap-ux-private|@sap/ux-cds-compiler-facade|@vscode-logging)/)'
+    'node_modules/(?!(?:.*?/)?(@sap-ux|@sap-ux-private|@sap/ux-cds-compiler-facade|@vscode-logging|@sap-devx[+/]yeoman-ui-types)/)'
 ];
 export default config;
