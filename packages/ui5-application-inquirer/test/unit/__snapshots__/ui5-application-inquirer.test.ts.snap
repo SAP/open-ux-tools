@@ -112,6 +112,7 @@ exports[`ui5-application-inquirer API getPrompts, no options 1`] = `
     "message": [Function],
     "name": "enableVirtualEndpoints",
     "type": "confirm",
+    "when": [Function],
   },
   {
     "default": false,

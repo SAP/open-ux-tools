@@ -504,7 +504,7 @@ describe('getQuestions', () => {
     });
 
     test('getQuestions, prompt: `enableVirtualEndpoints`', async () => {
-        // Edmx project
+        // Edmx project (non-CAP): prompt is present and `when` always returns true
         let questions = await getQuestions([]);
         let enableVirtualEndpointsQuestion = questions.find(
             (question) => question.name === promptNames.enableVirtualEndpoints
@@ -516,15 +516,29 @@ describe('getQuestions', () => {
         expect((enableVirtualEndpointsQuestion?.message as Function)()).toMatchInlineSnapshot(
             `"Use Virtual Endpoints for Local Preview"`
         );
+        // Non-CAP: `when` always returns true regardless of answers
+        expect((enableVirtualEndpointsQuestion?.when as Function)({})).toBe(true);
+        expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: false })).toBe(true);
 
-        // CAP project with cds version
+        // CAP project with cds version and hasCdsUi5Plugin = false (matches mockCdsInfo)
         questions = await getQuestions([], {}, mockCdsInfo);
         enableVirtualEndpointsQuestion = questions.find(
             (question) => question.name === promptNames.enableVirtualEndpoints
         );
         expect(enableVirtualEndpointsQuestion).toBeDefined();
+        // hasCdsUi5Plugin = false: `when` depends on enableTypeScript answer
+        expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: false })).toBe(false);
+        expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: true })).toBe(true);
 
-        // CAP project with cds-ui5 plugin disabled and hasMinCdsVersion is false
+        // CAP project with hasCdsUi5Plugin = true: `when` always returns true
+        questions = await getQuestions([], {}, { ...mockCdsInfo, hasCdsUi5Plugin: true });
+        enableVirtualEndpointsQuestion = questions.find(
+            (question) => question.name === promptNames.enableVirtualEndpoints
+        );
+        expect(enableVirtualEndpointsQuestion).toBeDefined();
+        expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: false })).toBe(true);
+
+        // CAP project with cds-ui5 plugin disabled and hasMinCdsVersion is false (CAP Java): prompt removed entirely
         questions = await getQuestions(
             [],
             {},
