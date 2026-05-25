@@ -117,7 +117,6 @@ export function getDescriptionPrompt(): UI5ApplicationQuestion {
  * @param targetDir provides a default value for the target folder path
  * @param validateFioriAppFolder validates the target folder path as a Fiori app project
  * @param isYUI if true, input is returned unchanged (YUI folder browser already supplies absolute paths)
-
  * @returns the `targetFolder` prompt
  */
 export function getTargetFolderPrompt(
