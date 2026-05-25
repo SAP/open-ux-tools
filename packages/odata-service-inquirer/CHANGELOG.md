@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.23.0
+
+### Minor Changes
+
+- acb9875: Adds relative path support to CAP and non-CAP target folder prompts
+
 ## 2.22.2
 
 ### Patch Changes
