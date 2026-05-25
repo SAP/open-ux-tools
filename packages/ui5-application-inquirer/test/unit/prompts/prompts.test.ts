@@ -10,7 +10,7 @@ import type { UI5Version } from '@sap-ux/ui5-info';
 import { defaultVersion, ui5ThemeIds } from '@sap-ux/ui5-info';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import os from 'node:os';
-import { join } from 'node:path';
+import path, { join } from 'node:path';
 
 jest.mock('@sap-ux/project-input-validator', () => {
     return {
@@ -263,6 +263,64 @@ describe('getQuestions', () => {
         targetFolderPrompt = questions.find((question) => question.name === promptNames.targetFolder);
         expect(targetFolderPrompt?.default({})).toEqual(join(os.homedir(), 'projects'));
         expect(validateFioriAppProjectFolderSpy).toHaveBeenCalledWith('/folder/containing/fiori/app');
+
+        // filter is exercised in a dedicated test below (`getQuestions, prompt: \`targetFolder\` - filter`)
+    });
+
+    test('getQuestions, prompt: `targetFolder` - filter', async () => {
+        // Use `jest.isolateModules` + `jest.doMock` to swap `path`'s `isAbsolute`/`resolve` for the
+        // posix or win32 flavor so we can deterministically exercise the filter against both
+        // path styles, regardless of the OS running the test.
+        const loadTargetFolderPrompt = async (
+            pathImpl: typeof path.win32 | typeof path.posix,
+            isYUI?: boolean
+        ): Promise<any> => {
+            let targetFolderPromptLocal: any;
+            await new Promise<void>((done) => {
+                jest.isolateModules(async () => {
+                    jest.doMock('path', () => {
+                        const actual = jest.requireActual('path');
+                        return {
+                            ...actual,
+                            isAbsolute: pathImpl.isAbsolute,
+                            resolve: pathImpl.resolve
+                        };
+                    });
+                    // eslint-disable-next-line @typescript-eslint/no-require-imports
+                    const { getQuestions: getQuestionsLocal } = require('../../../src/prompts');
+                    const localQuestions = await getQuestionsLocal([], undefined, undefined, isYUI);
+                    targetFolderPromptLocal = localQuestions.find(
+                        (q: { name: string }) => q.name === promptNames.targetFolder
+                    );
+                    done();
+                });
+            });
+            return targetFolderPromptLocal;
+        };
+
+        // win32 CLI: relative paths are resolved using win32 semantics, absolute paths pass through
+        const win32Prompt = await loadTargetFolderPrompt(path.win32);
+        const win32Absolute = 'C:\\some\\absolute\\path';
+        expect((win32Prompt?.filter as Function)('relative\\path')).toEqual(path.win32.resolve('relative\\path'));
+        expect((win32Prompt?.filter as Function)(win32Absolute)).toEqual(win32Absolute);
+        expect((win32Prompt?.filter as Function)('')).toEqual('');
+        expect((win32Prompt?.filter as Function)(undefined)).toEqual(undefined);
+
+        // posix CLI: relative paths are resolved using posix semantics, absolute paths pass through
+        const posixPrompt = await loadTargetFolderPrompt(path.posix);
+        const posixAbsolute = '/some/absolute/path';
+        expect((posixPrompt?.filter as Function)('relative/path')).toEqual(path.posix.resolve('relative/path'));
+        expect((posixPrompt?.filter as Function)(posixAbsolute)).toEqual(posixAbsolute);
+        expect((posixPrompt?.filter as Function)('')).toEqual('');
+        expect((posixPrompt?.filter as Function)(undefined)).toEqual(undefined);
+
+        // YUI: input is returned unchanged regardless of path style (folder browser provides absolute paths)
+        const win32YuiPrompt = await loadTargetFolderPrompt(path.win32, true);
+        expect((win32YuiPrompt?.filter as Function)('relative\\path')).toEqual('relative\\path');
+        expect((win32YuiPrompt?.filter as Function)(win32Absolute)).toEqual(win32Absolute);
+        const posixYuiPrompt = await loadTargetFolderPrompt(path.posix, true);
+        expect((posixYuiPrompt?.filter as Function)('relative/path')).toEqual('relative/path');
+        expect((posixYuiPrompt?.filter as Function)(posixAbsolute)).toEqual(posixAbsolute);
     });
 
     test('getQuestions, prompt: `ui5VersionChoice`', async () => {
