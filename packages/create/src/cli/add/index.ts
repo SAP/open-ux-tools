@@ -12,6 +12,8 @@ import { addDeployConfigCommand } from './deploy-config';
 import { addAddVariantsConfigCommand } from './variants-config';
 import { addAdaptationProjectCFConfigCommand } from './adp-cf-config';
 import { addAddEslintConfigCommand } from './eslint-config';
+import { addSystemAddCommand } from './system';
+import { addFlpEmbeddedConfigCommand } from './flp-embedded-config';
 /**
  * Return 'create-fiori add *' commands. Commands include also the handler action.
  *
@@ -32,5 +34,7 @@ export function getAddCommands(): Command {
     addDeployConfigCommand(addCommands);
     addAddVariantsConfigCommand(addCommands);
     addAdaptationProjectCFConfigCommand(addCommands);
+    addSystemAddCommand(addCommands);
+    addFlpEmbeddedConfigCommand(addCommands);
     return addCommands;
 }

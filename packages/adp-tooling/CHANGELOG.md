@@ -1,5 +1,24 @@
 # @sap-ux/adp-tooling
 
+## 0.19.6
+
+### Patch Changes
+
+- 758b0d4: fix: show error message when fetching destination fails
+
+## 0.19.5
+
+### Patch Changes
+
+- Updated dependencies [9752c40]
+    - @sap-ux/ui5-config@0.31.1
+    - @sap-ux/odata-service-writer@0.32.2
+    - @sap-ux/project-access@1.38.1
+    - @sap-ux/inquirer-common@0.13.2
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/project-input-validator@0.7.2
+    - @sap-ux/system-access@0.8.0
+
 ## 0.19.4
 
 ### Patch Changes
