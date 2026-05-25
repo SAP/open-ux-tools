@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.18.5
+
+### Patch Changes
+
+- f6af206: feat: add CLI commands for managing saved backend systems (#37734)
+
 ## 0.18.4
 
 ### Patch Changes
