@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.10.6
+
+### Patch Changes
+
+- 758b0d4: fix: show error message when fetching destination fails
+- Updated dependencies [758b0d4]
+    - @sap-ux/adp-tooling@0.19.6
+
 ## 0.10.5
 
 ### Patch Changes
