@@ -48,6 +48,7 @@ exports[`ui5-application-inquirer API getPrompts, no options 1`] = `
   },
   {
     "default": [Function],
+    "filter": [Function],
     "guiOptions": {
       "applyDefaultWhenDirty": true,
       "breadcrumb": "Project Path",

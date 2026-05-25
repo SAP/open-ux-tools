@@ -63,7 +63,7 @@ export async function getQuestions(
         [promptNames.title]: getTitlePrompt(),
         [promptNames.namespace]: getNamespacePrompt(appName),
         [promptNames.description]: getDescriptionPrompt(),
-        [promptNames.targetFolder]: getTargetFolderPrompt(targetDir, shouldValidateFioriAppFolder),
+        [promptNames.targetFolder]: getTargetFolderPrompt(targetDir, shouldValidateFioriAppFolder, isYUI),
         [promptNames.ui5Version]: getUI5VersionPrompt(ui5Versions, promptOptions?.ui5Version),
         [promptNames.enableTypeScript]: getEnableTypeScriptPrompt(),
         [promptNames.addDeployConfig]: getAddDeployConfigPrompt(
