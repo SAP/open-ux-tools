@@ -268,9 +268,12 @@ describe('getQuestions', () => {
     });
 
     test('getQuestions, prompt: `targetFolder` - filter', async () => {
-        // Use `jest.isolateModules` + `jest.doMock` to swap `path`'s `isAbsolute`/`resolve` for the
-        // posix or win32 flavor so we can deterministically exercise the filter against both
+        // Use `jest.isolateModules` + `jest.doMock` to swap `node:path`'s `isAbsolute`/`resolve` for
+        // the posix or win32 flavor so we can deterministically exercise the filter against both
         // path styles, regardless of the OS running the test.
+        // NOTE: the production code imports from `'node:path'`, so the mock must use that exact
+        // specifier — `jest.doMock('path', ...)` would not intercept it (Jest treats `'path'` and
+        // `'node:path'` as distinct module registry keys).
         const loadTargetFolderPrompt = async (
             pathImpl: typeof path.win32 | typeof path.posix,
             isYUI?: boolean
@@ -278,14 +281,17 @@ describe('getQuestions', () => {
             let targetFolderPromptLocal: any;
             await new Promise<void>((done) => {
                 jest.isolateModules(async () => {
-                    jest.doMock('path', () => {
-                        const actual = jest.requireActual('path');
+                    const pathMockFactory = (): typeof path => {
+                        const actual = jest.requireActual('node:path');
                         return {
                             ...actual,
                             isAbsolute: pathImpl.isAbsolute,
                             resolve: pathImpl.resolve
                         };
-                    });
+                    };
+                    jest.doMock('node:path', pathMockFactory);
+                    // Also mock the bare specifier in case any transitive code uses it
+                    jest.doMock('path', pathMockFactory);
                     // eslint-disable-next-line @typescript-eslint/no-require-imports
                     const { getQuestions: getQuestionsLocal } = require('../../../src/prompts');
                     const localQuestions = await getQuestionsLocal([], undefined, undefined, isYUI);
@@ -297,6 +303,15 @@ describe('getQuestions', () => {
             });
             return targetFolderPromptLocal;
         };
+
+        // Sanity check: confirm the path mock is actually applied. `C:\abs` is absolute under
+        // win32 (passes through) but relative under posix (gets resolved). Without an effective
+        // mock, both calls would use the real platform `path` and one of these assertions would
+        // fail rather than silently pass on a host OS that happens to match the flavor.
+        const win32SanityPrompt = await loadTargetFolderPrompt(path.win32);
+        expect((win32SanityPrompt?.filter as Function)('C:\\abs')).toEqual('C:\\abs');
+        const posixSanityPrompt = await loadTargetFolderPrompt(path.posix);
+        expect((posixSanityPrompt?.filter as Function)('C:\\abs')).toEqual(path.posix.resolve('C:\\abs'));
 
         // win32 CLI: relative paths are resolved using win32 semantics, absolute paths pass through
         const win32Prompt = await loadTargetFolderPrompt(path.win32);
