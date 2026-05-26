@@ -26,7 +26,6 @@ import {
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 import type { Manifest } from '@sap-ux/project-access';
 import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import type { SemanticKey } from '@sap-ux/vocabularies-types/vocabularies/Common';
 
 export { checkButtonVisibility, safeCheckEditVisibility } from './actionUtils';
 export { safeCheckButtonVisibility };
@@ -433,7 +432,7 @@ export function getSemanticKeyPropertiesFromMetadata(
         throw new Error(`Entity set '${entitySetName}' not found in metadata`);
     }
 
-    const semanticKey = entitySet.entityType.annotations?.Common?.SemanticKey as SemanticKey | undefined;
+    const semanticKey = entitySet.entityType.annotations?.Common?.SemanticKey;
     if (!semanticKey) {
         return [];
     }
