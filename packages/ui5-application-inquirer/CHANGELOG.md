@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.19.0
+
+### Minor Changes
+
+- acb9875: Adds relative path support to CAP and non-CAP target folder prompts
+
 ## 0.18.5
 
 ### Patch Changes
