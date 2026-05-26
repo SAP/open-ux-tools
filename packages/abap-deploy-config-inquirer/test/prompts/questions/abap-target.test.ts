@@ -169,6 +169,36 @@ describe('getAbapTargetPrompts', () => {
                     "url": "https://mock.url.dest2.com",
                     "value": "Dest2",
                   },
+                  Object {
+                    "name": "DestBasic - https://mock.url.basic.com",
+                    "scp": false,
+                    "url": "https://mock.url.basic.com",
+                    "value": "DestBasic",
+                  },
+                  Object {
+                    "name": "DestClientCert - https://mock.url.cert.com",
+                    "scp": false,
+                    "url": "https://mock.url.cert.com",
+                    "value": "DestClientCert",
+                  },
+                  Object {
+                    "name": "DestOAuth2CC - https://mock.url.oauth2cc.com",
+                    "scp": false,
+                    "url": "https://mock.url.oauth2cc.com",
+                    "value": "DestOAuth2CC",
+                  },
+                  Object {
+                    "name": "DestOAuth2JWT - https://mock.url.oauth2jwt.com",
+                    "scp": false,
+                    "url": "https://mock.url.oauth2jwt.com",
+                    "value": "DestOAuth2JWT",
+                  },
+                  Object {
+                    "name": "DestSAML - https://mock.url.saml.com",
+                    "scp": false,
+                    "url": "https://mock.url.saml.com",
+                    "value": "DestSAML",
+                  },
                 ]
             `);
         } else {

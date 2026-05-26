@@ -1,4 +1,4 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { isAppStudio, Authentication } from '@sap-ux/btp-utils';
 import { PromptState } from './prompt-state';
 import { findBackendSystemByUrl, initTransportConfig } from '../utils';
 import { handleTransportConfigError } from '../error-handler';
@@ -101,6 +101,12 @@ export function showClientQuestion(previousAnswers?: AbapDeployConfigAnswersInte
  * @returns boolean
  */
 export async function showUsernameQuestion(backendTarget?: BackendTarget): Promise<boolean> {
+    const { destination, destinationAuthType } = PromptState.abapDeployConfig;
+    if (destination && destinationAuthType && destinationAuthType !== Authentication.NO_AUTHENTICATION) {
+        PromptState.transportAnswers.transportConfigNeedsCreds = false;
+        return false;
+    }
+
     const { transportConfig, transportConfigNeedsCreds } = await initTransportConfig({
         backendTarget: backendTarget,
         url: PromptState.abapDeployConfig.url,
