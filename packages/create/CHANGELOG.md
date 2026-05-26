@@ -1,5 +1,21 @@
 # @sap-ux/create
 
+## 0.17.0
+
+### Minor Changes
+
+- f6af206: feat: add CLI commands for managing saved backend systems (#37734)
+
+## 0.16.8
+
+### Patch Changes
+
+- Updated dependencies [758b0d4]
+    - @sap-ux/adp-tooling@0.19.6
+    - @sap-ux/flp-config-inquirer@0.5.6
+    - @sap-ux/preview-middleware@0.26.7
+    - @sap-ux/app-config-writer@0.7.3
+
 ## 0.16.7
 
 ### Patch Changes

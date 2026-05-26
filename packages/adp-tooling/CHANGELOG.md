@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.19.6
+
+### Patch Changes
+
+- 758b0d4: fix: show error message when fetching destination fails
+
 ## 0.19.5
 
 ### Patch Changes

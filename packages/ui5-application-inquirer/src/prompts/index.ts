@@ -63,7 +63,7 @@ export async function getQuestions(
         [promptNames.title]: getTitlePrompt(),
         [promptNames.namespace]: getNamespacePrompt(appName),
         [promptNames.description]: getDescriptionPrompt(),
-        [promptNames.targetFolder]: getTargetFolderPrompt(targetDir, shouldValidateFioriAppFolder),
+        [promptNames.targetFolder]: getTargetFolderPrompt(targetDir, shouldValidateFioriAppFolder, isYUI),
         [promptNames.ui5Version]: getUI5VersionPrompt(ui5Versions, promptOptions?.ui5Version),
         [promptNames.enableTypeScript]: getEnableTypeScriptPrompt(),
         [promptNames.addDeployConfig]: getAddDeployConfigPrompt(
@@ -72,7 +72,7 @@ export async function getQuestions(
             isCapProject
         ),
         [promptNames.addFlpConfig]: getAddFlpConfigPrompt(promptOptions?.addFlpConfig),
-        [promptNames.enableVirtualEndpoints]: getEnableVirtualEndpoints(),
+        [promptNames.enableVirtualEndpoints]: getEnableVirtualEndpoints(capCdsInfo),
         [promptNames.showAdvanced]: getShowAdvancedPrompt(),
         [promptNames.ui5Theme]: getUI5ThemePrompt(),
         [promptNames.enableEslint]: getEnableEsLintPrompt(),
