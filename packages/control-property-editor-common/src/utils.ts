@@ -18,11 +18,10 @@ const isSentenceCase = (text: string): boolean => {
         return false;
     }
     // Sentence case should have spaces between words
-    let hasSpaces = false;
     for (let i = 0; i < text.length; i++) {
         const code = text.charCodeAt(i);
         if (code === 32) {
-            hasSpaces = true;
+            return true;
         } else if (code === 45 || code === 95) {
             // Has hyphens or underscores - not sentence case
             return false;
@@ -32,12 +31,10 @@ const isSentenceCase = (text: string): boolean => {
 };
 
 const isEndOfAbbreviatedWord = (text: string, index: number): boolean => {
-const isEndOfAbbreviatedWord = (text: string, index: number): boolean => {
     if (index + 2 >= text.length) {
         return false;
     }
     return isUpperCase(text.charCodeAt(index + 1)) && isLowerCase(text.charCodeAt(index + 2));
-};
 };
 
 export const convertCamelCaseToPascalCase = (text: string): string => {
