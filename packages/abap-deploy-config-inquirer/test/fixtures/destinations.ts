@@ -39,14 +39,6 @@ export const mockDestinations = {
         Host: 'https://mock.url.oauth2jwt.com',
         ProxyType: 'Internet'
     },
-    DestBasic: {
-        Name: 'DestBasic',
-        Type: 'HTTP',
-        Authentication: 'BasicAuthentication',
-        Description: 'Basic auth destination',
-        Host: 'https://mock.url.basic.com',
-        ProxyType: 'Internet'
-    },
     DestClientCert: {
         Name: 'DestClientCert',
         Type: 'HTTP',
