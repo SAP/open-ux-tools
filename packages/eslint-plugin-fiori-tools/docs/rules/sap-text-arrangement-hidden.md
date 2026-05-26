@@ -39,7 +39,7 @@ The text property "{{textPropertyPath}}" referenced using the Common.Text annota
 </Annotations>
 ```
 
-**Format 1 — record syntax:**
+**Format 1: Record Syntax**
 
 ```cds
 annotate service.MyEntity with {
@@ -51,7 +51,7 @@ annotate service.Category with {
 };
 ```
 
-**Format 2 — inline qualifier syntax:**
+**Format 2: Inline Qualifier Syntax**
 
 ```cds
 annotate service.MyEntity with {
@@ -116,7 +116,7 @@ annotate service.Category with {
 </Annotations>
 ```
 
-**Format 1 — record syntax:**
+**Format 1: Record Syntax**
 
 ```cds
 annotate service.MyEntity with {
@@ -124,7 +124,7 @@ annotate service.MyEntity with {
 };
 ```
 
-**Format 2 — inline qualifier syntax:**
+**Format 2: Inline Qualifier Syntax:**
 
 ```cds
 annotate service.MyEntity with {
