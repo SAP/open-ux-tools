@@ -67,7 +67,7 @@
         "projectLocationBreadcrumb": "Project Path",
         "businessSolutionNameLabel": "Business Solution Name",
         "businessSolutionBreadcrumb": "Business Solution",
-        "businessSolutionNameTooltip": "The business solution name must be unique use lowercase letters, numbers, dots (.), underscores (_), and hyphens (-) only. The name must contain at least one letter or number.",
+        "businessSolutionNameTooltip": "The business solution name must be unique and use lowercase letters, numbers, dots (.), underscores (_), and hyphens (-) only. The name must contain at least one letter or number.",
         "approuterLabel": "HTML5 Application Runtime",
         "approuterTooltip": "Select the HTML5 application runtime that you want to use.",
         "baseAppLabel": "Base Application",
