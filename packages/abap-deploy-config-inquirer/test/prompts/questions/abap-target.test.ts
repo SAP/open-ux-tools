@@ -210,12 +210,6 @@ describe('getAbapTargetPrompts', () => {
                     "value": "Dest2",
                   },
                   Object {
-                    "name": "DestBasic - https://mock.url.basic.com",
-                    "scp": false,
-                    "url": "https://mock.url.basic.com",
-                    "value": "DestBasic",
-                  },
-                  Object {
                     "name": "DestClientCert - https://mock.url.cert.com",
                     "scp": false,
                     "url": "https://mock.url.cert.com",
