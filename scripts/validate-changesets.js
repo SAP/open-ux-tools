@@ -9,6 +9,8 @@ const BLOCKED_MAJOR_PACKAGES = [
     // '@sap-ux/eslint-plugin-fiori-tools'
 ];
 
+const VALID_SUMMARY_PREFIX = /^(FEAT|FIX|BUMP):/i;
+
 const CHANGESET_DIR = path.join(__dirname, '..', '.changeset');
 
 function validateChangesets() {
@@ -38,6 +40,17 @@ function validateChangesets() {
                     `   Please use 'minor' or 'patch' instead.`
                 );
             }
+        }
+
+        // Check summary prefix
+        const bodyMatch = content.match(/^---\n[\s\S]*?\n---\n\n?([\s\S]*)/);
+        const summary = bodyMatch ? bodyMatch[1].trim() : '';
+        if (summary && !VALID_SUMMARY_PREFIX.test(summary)) {
+            errors.push(
+                `❌ Invalid changeset summary in ${file}\n` +
+                `   Summary: "${summary.slice(0, 80)}"\n` +
+                `   Must start with FEAT:, FIX:, or BUMP:`
+            );
         }
     }
     
