@@ -7,6 +7,7 @@ import type { ListQuestion } from 'inquirer';
 import type { PathLike } from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
 import os from 'node:os';
+import path from 'node:path';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import {
     enterCapPathChoiceValue,
@@ -302,6 +303,83 @@ describe('getLocalCapProjectPrompts', () => {
             await (capProjectPathPrompt!.validate as Function)('/any/cap/path');
             expect(realpathSpy).not.toHaveBeenCalled();
         }
+    });
+
+    /**
+     * Load a fresh `getLocalCapProjectPrompts` and `PromptState` with `node:path`'s
+     * `isAbsolute` / `resolve` swapped for the supplied flavor. This lets us deterministically
+     * exercise the `capProjectPath` prompt's filter for both Windows and POSIX paths,
+     * regardless of the OS running the test.
+     *
+     * @param pathImpl - `path.win32` or `path.posix`
+     */
+    function loadQuestionsWithPath(pathImpl: typeof path.win32 | typeof path.posix): {
+        capProjectPathPrompt: any;
+        promptState: typeof PromptState;
+    } {
+        let capProjectPathPrompt: any;
+        let promptState: typeof PromptState;
+        jest.isolateModules(() => {
+            jest.doMock('node:path', () => {
+                const actual = jest.requireActual('node:path');
+                return {
+                    ...actual,
+                    isAbsolute: pathImpl.isAbsolute,
+                    resolve: pathImpl.resolve
+                };
+            });
+            const {
+                getLocalCapProjectPrompts: getPromptsLocal
+                // eslint-disable-next-line @typescript-eslint/no-require-imports
+            } = require('../../../../src/prompts/datasources/cap-project/questions');
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
+            ({ PromptState: promptState } = require('../../../../src/utils'));
+            const prompts = getPromptsLocal();
+            capProjectPathPrompt = prompts.find(
+                (p: { name: string }) => p.name === capInternalPromptNames.capProjectPath
+            );
+        });
+        return { capProjectPathPrompt, promptState: promptState! };
+    }
+
+    test('prompt: capProjectPath - filter (win32)', () => {
+        const { capProjectPathPrompt, promptState } = loadQuestionsWithPath(path.win32);
+        const relInput = 'relative\\cap\\path';
+        const absInput = 'C:\\abs\\cap\\path';
+
+        // CLI mode: relative paths are resolved to absolute paths using win32 semantics
+        promptState.isYUI = false;
+        expect(capProjectPathPrompt.filter(relInput)).toEqual(path.win32.resolve(relInput));
+        // CLI mode: absolute paths pass through unchanged
+        expect(capProjectPathPrompt.filter(absInput)).toEqual(absInput);
+        // CLI mode: empty / undefined input passes through unchanged
+        expect(capProjectPathPrompt.filter('')).toEqual('');
+        expect(capProjectPathPrompt.filter(undefined)).toEqual(undefined);
+
+        // YUI mode: input is returned unchanged regardless of whether it is absolute
+        promptState.isYUI = true;
+        expect(capProjectPathPrompt.filter(relInput)).toEqual(relInput);
+        expect(capProjectPathPrompt.filter(absInput)).toEqual(absInput);
+    });
+
+    test('prompt: capProjectPath - filter (posix)', () => {
+        const { capProjectPathPrompt, promptState } = loadQuestionsWithPath(path.posix);
+        const relInput = 'relative/cap/path';
+        const absInput = '/abs/cap/path';
+
+        // CLI mode: relative paths are resolved to absolute paths using posix semantics
+        promptState.isYUI = false;
+        expect(capProjectPathPrompt.filter(relInput)).toEqual(path.posix.resolve(relInput));
+        // CLI mode: absolute paths pass through unchanged
+        expect(capProjectPathPrompt.filter(absInput)).toEqual(absInput);
+        // CLI mode: empty / undefined input passes through unchanged
+        expect(capProjectPathPrompt.filter('')).toEqual('');
+        expect(capProjectPathPrompt.filter(undefined)).toEqual(undefined);
+
+        // YUI mode: input is returned unchanged regardless of whether it is absolute
+        promptState.isYUI = true;
+        expect(capProjectPathPrompt.filter(relInput)).toEqual(relInput);
+        expect(capProjectPathPrompt.filter(absInput)).toEqual(absInput);
     });
 
     test('prompt: capService', async () => {
