@@ -5,6 +5,7 @@ import * as actualFs from 'node:fs';
 import * as actualUi5Info from '@sap-ux/ui5-info';
 import * as actualProjectAccess from '@sap-ux/project-access';
 import * as actualProjectInputValidator from '@sap-ux/project-input-validator';
+import * as actualPath from 'node:path';
 
 import type { UI5ApplicationPromptOptions } from '../../../src/types.js';
 import type { UI5Version } from '@sap-ux/ui5-info';
@@ -44,6 +45,21 @@ jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
     ...actualUi5Info,
     getDefaultUI5Theme: mockGetDefaultUI5Theme,
     getUi5Themes: mockGetUi5Themes
+}));
+
+// Mock node:path so the targetFolder filter can be exercised against both posix and win32 path
+// semantics regardless of the host OS. The exposed `isAbsolute`/`resolve` dispatch through the
+// mutable `pathFlavor` variable, so tests can switch flavors at runtime without re-importing.
+let pathFlavor: 'posix' | 'win32' = process.platform === 'win32' ? 'win32' : 'posix';
+jest.unstable_mockModule('node:path', () => ({
+    ...actualPath,
+    isAbsolute: (p: string) => actualPath[pathFlavor].isAbsolute(p),
+    resolve: (...args: string[]) => actualPath[pathFlavor].resolve(...args),
+    default: {
+        ...actualPath.default,
+        isAbsolute: (p: string) => actualPath[pathFlavor].isAbsolute(p),
+        resolve: (...args: string[]) => actualPath[pathFlavor].resolve(...args)
+    }
 }));
 
 const { getQuestions } = await import('../../../src/prompts/index.js');
@@ -304,6 +320,61 @@ describe('getQuestions', () => {
         targetFolderPrompt = questions.find((question) => question.name === promptNames.targetFolder);
         expect(targetFolderPrompt?.default({})).toEqual(join(os.homedir(), 'projects'));
         expect(mockValidateFioriAppProjectFolder).toHaveBeenCalledWith('/folder/containing/fiori/app');
+
+        // filter is exercised in a dedicated test below (`getQuestions, prompt: \`targetFolder\` - filter`)
+    });
+
+    test('getQuestions, prompt: `targetFolder` - filter', async () => {
+        // Swap `node:path`'s `isAbsolute`/`resolve` for the posix or win32 flavor so we can
+        // deterministically exercise the filter against both path styles, regardless of the OS
+        // running the test. The top-level mock dispatches via the mutable `pathFlavor` variable;
+        // changing it here re-routes subsequent isAbsolute/resolve calls without needing to
+        // re-import the prompts module.
+        const loadTargetFolderPrompt = async (
+            pathImpl: typeof actualPath.win32 | typeof actualPath.posix,
+            isYUI?: boolean
+        ): Promise<any> => {
+            pathFlavor = pathImpl === actualPath.win32 ? 'win32' : 'posix';
+            const localQuestions = await getQuestions([], undefined, undefined, isYUI);
+            return localQuestions.find((q: { name: string }) => q.name === promptNames.targetFolder);
+        };
+
+        // Sanity check: confirm the path mock is actually applied. `C:\abs` is absolute under
+        // win32 (passes through) but relative under posix (gets resolved). Without an effective
+        // mock, both calls would use the real platform `path` and one of these assertions would
+        // fail rather than silently pass on a host OS that happens to match the flavor.
+        const win32SanityPrompt = await loadTargetFolderPrompt(actualPath.win32);
+        expect((win32SanityPrompt?.filter as Function)('C:\\abs')).toEqual('C:\\abs');
+        const posixSanityPrompt = await loadTargetFolderPrompt(actualPath.posix);
+        expect((posixSanityPrompt?.filter as Function)('C:\\abs')).toEqual(actualPath.posix.resolve('C:\\abs'));
+
+        // win32 CLI: relative paths are resolved using win32 semantics, absolute paths pass through
+        const win32Prompt = await loadTargetFolderPrompt(actualPath.win32);
+        const win32Absolute = 'C:\\some\\absolute\\path';
+        expect((win32Prompt?.filter as Function)('relative\\path')).toEqual(
+            actualPath.win32.resolve('relative\\path')
+        );
+        expect((win32Prompt?.filter as Function)(win32Absolute)).toEqual(win32Absolute);
+        expect((win32Prompt?.filter as Function)('')).toEqual('');
+        expect((win32Prompt?.filter as Function)(undefined)).toEqual(undefined);
+
+        // posix CLI: relative paths are resolved using posix semantics, absolute paths pass through
+        const posixPrompt = await loadTargetFolderPrompt(actualPath.posix);
+        const posixAbsolute = '/some/absolute/path';
+        expect((posixPrompt?.filter as Function)('relative/path')).toEqual(
+            actualPath.posix.resolve('relative/path')
+        );
+        expect((posixPrompt?.filter as Function)(posixAbsolute)).toEqual(posixAbsolute);
+        expect((posixPrompt?.filter as Function)('')).toEqual('');
+        expect((posixPrompt?.filter as Function)(undefined)).toEqual(undefined);
+
+        // YUI: input is returned unchanged regardless of path style (folder browser provides absolute paths)
+        const win32YuiPrompt = await loadTargetFolderPrompt(actualPath.win32, true);
+        expect((win32YuiPrompt?.filter as Function)('relative\\path')).toEqual('relative\\path');
+        expect((win32YuiPrompt?.filter as Function)(win32Absolute)).toEqual(win32Absolute);
+        const posixYuiPrompt = await loadTargetFolderPrompt(actualPath.posix, true);
+        expect((posixYuiPrompt?.filter as Function)('relative/path')).toEqual('relative/path');
+        expect((posixYuiPrompt?.filter as Function)(posixAbsolute)).toEqual(posixAbsolute);
     });
 
     test('getQuestions, prompt: `ui5VersionChoice`', async () => {
@@ -471,7 +542,7 @@ describe('getQuestions', () => {
     });
 
     test('getQuestions, prompt: `enableVirtualEndpoints`', async () => {
-        // Edmx project
+        // Edmx project (non-CAP): prompt is present and `when` always returns true
         let questions = await getQuestions([]);
         let enableVirtualEndpointsQuestion = questions.find(
             (question) => question.name === promptNames.enableVirtualEndpoints
@@ -483,15 +554,29 @@ describe('getQuestions', () => {
         expect((enableVirtualEndpointsQuestion?.message as Function)()).toMatchInlineSnapshot(
             `"Use Virtual Endpoints for Local Preview"`
         );
+        // Non-CAP: `when` always returns true regardless of answers
+        expect((enableVirtualEndpointsQuestion?.when as Function)({})).toBe(true);
+        expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: false })).toBe(true);
 
-        // CAP project with cds version
+        // CAP project with cds version and hasCdsUi5Plugin = false (matches mockCdsInfo)
         questions = await getQuestions([], {}, mockCdsInfo);
         enableVirtualEndpointsQuestion = questions.find(
             (question) => question.name === promptNames.enableVirtualEndpoints
         );
         expect(enableVirtualEndpointsQuestion).toBeDefined();
+        // hasCdsUi5Plugin = false: `when` depends on enableTypeScript answer
+        expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: false })).toBe(false);
+        expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: true })).toBe(true);
 
-        // CAP project with cds-ui5 plugin disabled and hasMinCdsVersion is false
+        // CAP project with hasCdsUi5Plugin = true: `when` always returns true
+        questions = await getQuestions([], {}, { ...mockCdsInfo, hasCdsUi5Plugin: true });
+        enableVirtualEndpointsQuestion = questions.find(
+            (question) => question.name === promptNames.enableVirtualEndpoints
+        );
+        expect(enableVirtualEndpointsQuestion).toBeDefined();
+        expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: false })).toBe(true);
+
+        // CAP project with cds-ui5 plugin disabled and hasMinCdsVersion is false (CAP Java): prompt removed entirely
         questions = await getQuestions(
             [],
             {},

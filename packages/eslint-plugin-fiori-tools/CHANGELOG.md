@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.2.2
+
+### Patch Changes
+
+- b3d4f62: Collect CAP application object page label to display in rule text messages.
+
 ## 10.2.1
 
 ### Patch Changes
