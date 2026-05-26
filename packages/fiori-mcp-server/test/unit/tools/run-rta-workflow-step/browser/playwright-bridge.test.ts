@@ -47,6 +47,7 @@ class FakeBrowser extends EventEmitter {
         this.emit('disconnected');
     });
     public readonly newPage = jest.fn();
+    public readonly newContext = jest.fn(async () => ({ newPage: this.newPage }));
     public connected = true;
     isConnected(): boolean {
         return this.connected;
@@ -273,5 +274,48 @@ describe('browser/playwright-bridge', () => {
                 process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH = original;
             }
         }
+    });
+
+    test('falls back to bundled Chromium when system Chrome is missing', async () => {
+        const page = new FakePage();
+        const browser = new FakeBrowser();
+        browser.newPage.mockResolvedValue(page);
+        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+
+        launchMock.mockRejectedValueOnce(
+            new Error("Executable doesn't exist at /usr/bin/google-chrome (channel=chrome)")
+        );
+        launchMock.mockResolvedValueOnce(browser);
+
+        const fs = await loadPlaywrightBridge();
+        const result = await fs.callFrontendAction(SITE_A, 'a');
+
+        expect(launchMock).toHaveBeenCalledTimes(2);
+        // First attempt uses the channel; second omits it.
+        expect(launchMock.mock.calls[0][0]).toEqual(expect.objectContaining({ channel: 'chrome' }));
+        expect(launchMock.mock.calls[1][0]).not.toHaveProperty('channel');
+        expect(launchMock.mock.calls[1][0]).not.toHaveProperty('executablePath');
+        expect(result.isSuccess).toBe(true);
+
+        await fs.stopBrowser();
+    });
+
+    test('throws an install hint when both system Chrome and bundled Chromium are missing', async () => {
+        launchMock.mockRejectedValueOnce(new Error("Executable doesn't exist at /usr/bin/google-chrome"));
+        launchMock.mockRejectedValueOnce(
+            new Error("Executable doesn't exist at /Users/.cache/ms-playwright/chromium-1234/chrome-mac/Chromium.app")
+        );
+
+        const fs = await loadPlaywrightBridge();
+        await expect(fs.callFrontendAction(SITE_A, 'a')).rejects.toThrow(/npx playwright install chromium/);
+        expect(launchMock).toHaveBeenCalledTimes(2);
+    });
+
+    test('does not retry when launch fails for an unrelated reason', async () => {
+        launchMock.mockRejectedValueOnce(new Error('User data dir is locked by another process'));
+
+        const fs = await loadPlaywrightBridge();
+        await expect(fs.callFrontendAction(SITE_A, 'a')).rejects.toThrow(/locked by another process/);
+        expect(launchMock).toHaveBeenCalledTimes(1);
     });
 });

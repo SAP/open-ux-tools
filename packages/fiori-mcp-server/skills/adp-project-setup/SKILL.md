@@ -68,7 +68,7 @@ Present to the user:
 - Project location (absolute path)
 - Editor URL
 - Server PID and port (for cleanup)
-- Next step: "Use the `adp-rta-workflow` skill to make RTA changes, or open the URL in your browser."
+- Next step: "Use the `adp-controller-extension-flow` skill to make RTA changes, or open the URL in your browser."
 
 ## Error Handling
 
