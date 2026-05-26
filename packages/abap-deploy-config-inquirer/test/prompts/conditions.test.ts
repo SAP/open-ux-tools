@@ -1,4 +1,5 @@
-import { isAppStudio, Authentication } from '@sap-ux/btp-utils';
+import type { Authentication } from '@sap-ux/btp-utils';
+import { isAppStudio } from '@sap-ux/btp-utils';
 import {
     ClientChoiceValue,
     PackageInputChoices,
