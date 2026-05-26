@@ -241,9 +241,10 @@ describe('Test abap deploy config inquirer conditions', () => {
         it('should not show password prompt when destination auth type is SAMLAssertion', async () => {
             PromptState.abapDeployConfig.destination = 'SomeDest';
             PromptState.abapDeployConfig.destinationAuthType = 'SAMLAssertion' as Authentication;
-            jest.spyOn(utils, 'initTransportConfig');
+            const initTransportConfigSpy = jest.spyOn(utils, 'initTransportConfig');
             await showUsernameQuestion(undefined);
             expect(await showPasswordQuestion()).toBe(false);
+            expect(initTransportConfigSpy).not.toHaveBeenCalled();
         });
 
         it('should show password prompt when destination auth type is NoAuthentication and creds needed', async () => {
