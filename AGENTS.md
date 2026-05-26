@@ -181,7 +181,7 @@ pnpm audit
 - axios, esbuild, fast-xml-parser, lodash, tar (security patches)
 - Review and update these regularly
 
-### 7. Modern TypeScript
+### 6. Modern TypeScript
 
 **All code should be written in modern TypeScript.**
 
@@ -194,7 +194,7 @@ pnpm audit
 - Use async/await over raw Promises
 - Leverage TypeScript features: generics, union types, type guards, etc.
 - Avoid `any` type - use `unknown` or proper types
-- **Never use TypeScript enums** — this is a hard rule, not a preference. Enums compile to real JS objects (runtime overhead) and cause unexpected issues. Use `const` objects with `as const` and derive union types from them instead:
+- **Never use TypeScript enums** — this is a hard rule, not a preference. Regular enums compile to real JS objects (runtime overhead, no tree-shaking); `const enum` avoids that overhead but creates brittle implicit coupling that breaks under `isolatedModules` / esbuild. Use `const` objects with `as const` and derive union types from them instead:
   ```typescript
   // ✅ Correct
   export const Direction = { Up: 'up', Down: 'down' } as const;
