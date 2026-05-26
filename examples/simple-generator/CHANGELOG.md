@@ -1,5 +1,51 @@
 # @sap-ux/generator-simple-fe
 
+## 1.1.268
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.10.9
+- @sap-ux/fiori-freestyle-writer@2.7.8
+
+## 1.1.267
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.10.8
+- @sap-ux/fiori-freestyle-writer@2.7.7
+- @sap-ux/axios-extension@1.26.0
+- @sap-ux/system-access@0.8.0
+
+## 1.1.266
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.10.7
+- @sap-ux/fiori-freestyle-writer@2.7.6
+
+## 1.1.265
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.10.6
+- @sap-ux/fiori-freestyle-writer@2.7.5
+
+## 1.1.264
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.26.0
+- @sap-ux/fiori-elements-writer@2.10.5
+- @sap-ux/system-access@0.8.0
+- @sap-ux/fiori-freestyle-writer@2.7.5
+
+## 1.1.263
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.10.4
+- @sap-ux/fiori-freestyle-writer@2.7.4
+
 ## 1.1.262
 
 ### Patch Changes
