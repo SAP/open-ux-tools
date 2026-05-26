@@ -77,7 +77,10 @@ describe('system/update', () => {
         );
 
         // Then
-        const [, patch] = mockedService.partialUpdate.mock.calls[0] as [unknown, { username: string; password: string }];
+        const [, patch] = mockedService.partialUpdate.mock.calls[0] as [
+            unknown,
+            { username: string; password: string }
+        ];
         expect(patch.username).toBe('newuser');
         expect(patch.password).toBe('newpassword');
     });
