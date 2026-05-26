@@ -157,12 +157,9 @@ export function validateBusinessSolutionName(value: string): string | boolean {
         return validationResult;
     }
 
-    if (!/^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/.test(value)) {
-        if (/\s/.test(value) || /[^a-zA-Z0-9.]/.test(value)) {
-            return t('error.businessSolutionNameInvalidChars');
-        }
-        return t('error.businessSolutionNameInvalid');
+    if (/^(?=.*[a-z0-9])[a-z0-9._-]+$/.test(value)) {
+        return true;
     }
 
-    return true;
+    return t('error.businessSolutionNameInvalid');
 }
