@@ -1,5 +1,11 @@
 # @sap-ux/odata-annotation-core-types
 
+## 0.6.1
+
+### Patch Changes
+
+- 2f1ece0: [rule] Add rule to check that a Common.Text description property has a meaningful Common.Label annotation
+
 ## 0.6.0
 
 ### Minor Changes
