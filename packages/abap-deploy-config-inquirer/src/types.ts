@@ -256,6 +256,7 @@ export interface AbapDeployConfigAnswersInternal extends AbapDeployConfigAnswers
     clientChoice?: string;
     username?: string;
     isAbapCloud?: boolean;
+    destinationAuthType?: string;
     packageInputChoice?: PackageInputChoices;
     packageManual?: string;
     packageAutocomplete?: string;
