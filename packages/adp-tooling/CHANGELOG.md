@@ -1,5 +1,19 @@
 # @sap-ux/adp-tooling
 
+## 0.19.7
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade @sap/bas-sdk 3.13.6 → 3.13.7, @sap/approuter ^21.5.0 → ^22.0.0 (security: ws vulnerability)
+- Updated dependencies [01b70ca]
+- Updated dependencies [01b70ca]
+    - @sap-ux/axios-extension@1.26.1
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/odata-service-writer@0.32.2
+    - @sap-ux/system-access@0.8.1
+    - @sap-ux/inquirer-common@0.13.3
+    - @sap-ux/nodejs-utils@0.3.1
+
 ## 0.19.6
 
 ### Patch Changes

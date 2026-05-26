@@ -31958,7 +31958,7 @@ snapshots:
 
   retry-axios@2.6.0(axios@1.16.0):
     dependencies:
-      axios: 1.16.0(debug@4.3.4)
+      axios: 1.16.0
     optional: true
 
   retry@0.12.0: {}
