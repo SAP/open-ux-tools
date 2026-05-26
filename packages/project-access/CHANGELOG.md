@@ -1,5 +1,18 @@
 # @sap-ux/project-access
 
+## 1.38.1
+
+### Patch Changes
+
+- Updated dependencies [9752c40]
+    - @sap-ux/ui5-config@0.31.1
+
+## 1.38.0
+
+### Minor Changes
+
+- 63e6846: add method `getUsedEntitiesFromManifest` returning used entitySets by page and views from manifest.json
+
 ## 1.37.0
 
 ### Minor Changes

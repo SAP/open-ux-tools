@@ -1,5 +1,40 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.2.7
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade @sap/bas-sdk 3.13.6 → 3.13.7, @sap/approuter ^21.5.0 → ^22.0.0 (security: ws vulnerability)
+- Updated dependencies [01b70ca]
+    - @sap-ux/adp-tooling@0.19.7
+    - @sap-ux/btp-utils@1.2.1
+
+## 0.2.6
+
+### Patch Changes
+
+- Updated dependencies [758b0d4]
+    - @sap-ux/adp-tooling@0.19.6
+
+## 0.2.5
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.5
+
+## 0.2.4
+
+### Patch Changes
+
+- Updated dependencies [dab1aa2]
+    - @sap-ux/adp-tooling@0.19.4
+
+## 0.2.3
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.3
+
 ## 0.2.2
 
 ### Patch Changes

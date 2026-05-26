@@ -4,7 +4,12 @@ import { parse as parseJson } from '@humanwhocodes/momoa';
 
 import type { FoundFioriArtifacts, Manifest, ProjectType } from '@sap-ux/project-access';
 import { getMainService } from '@sap-ux/project-access';
-import { CdsAnnotationProvider, getXmlServiceArtifacts, type ServiceArtifacts } from '@sap-ux/fiori-annotation-api';
+import {
+    CdsAnnotationProvider,
+    getXmlServiceArtifacts,
+    type ServiceArtifacts,
+    type V2Annotation
+} from '@sap-ux/fiori-annotation-api';
 
 import type { LocalFile, RemoteFileWithLocalServiceCache } from '../types';
 import type { Diagnostic } from '../../language/diagnostics';
@@ -78,9 +83,10 @@ export class ApplicationParser {
                 this.index.apps[appRootUri] = parsedApp;
 
                 for (const service of services) {
-                    const artifacts = this.parseService(app.projectRoot, service);
-                    if (artifacts) {
-                        const index = buildServiceIndex(artifacts, this.index.documents);
+                    const result = this.parseService(app.projectRoot, service);
+                    if (result) {
+                        const [artifacts, v2Annotations] = result;
+                        const index = buildServiceIndex(artifacts, this.index.documents, v2Annotations);
                         parsedApp.services[service.name] = { config: service, artifacts, index };
                     }
                 }
@@ -109,11 +115,11 @@ export class ApplicationParser {
         for (const app of Object.values(index.apps)) {
             for (const service of Object.values(app.services)) {
                 if (service.config.type === 'cap') {
-                    const artifacts = this.parseService(app.projectRootPath, service.config);
-                    if (artifacts) {
-                        const serviceIndex = buildServiceIndex(artifacts, index.documents);
+                    const result = this.parseService(app.projectRootPath, service.config);
+                    if (result) {
+                        const [artifacts, v2Annotations] = result;
                         service.artifacts = artifacts;
-                        service.index = serviceIndex;
+                        service.index = buildServiceIndex(artifacts, index.documents, v2Annotations);
                     }
                 }
             }
@@ -160,9 +166,10 @@ export class ApplicationParser {
                 // services have changed, reset existing services
                 parsedApp.services = {};
                 for (const service of services) {
-                    const artifacts = this.parseService(parsedApp.projectRootPath, service);
-                    if (artifacts) {
-                        const serviceIndex = buildServiceIndex(artifacts, index.documents);
+                    const result = this.parseService(parsedApp.projectRootPath, service);
+                    if (result) {
+                        const [artifacts, v2Annotations] = result;
+                        const serviceIndex = buildServiceIndex(artifacts, index.documents, v2Annotations);
                         parsedApp.services[service.name] = { config: service, artifacts, index: serviceIndex };
                     }
                 }
@@ -184,11 +191,11 @@ export class ApplicationParser {
                 if (service.config.type === 'local') {
                     const annotationFile = service.config.annotationFiles.find((file) => file.uri === uri);
                     if (annotationFile) {
-                        const artifacts = this.parseService(app.projectRootPath, service.config);
-                        if (artifacts) {
-                            const serviceIndex = buildServiceIndex(artifacts, index.documents);
+                        const result = this.parseService(app.projectRootPath, service.config);
+                        if (result) {
+                            const [artifacts, v2Annotations] = result;
                             service.artifacts = artifacts;
-                            service.index = serviceIndex;
+                            service.index = buildServiceIndex(artifacts, index.documents, v2Annotations);
                         }
                         break;
                     }
@@ -301,9 +308,17 @@ export class ApplicationParser {
      * @param projectRootPath - The absolute path to the project root
      * @param service - The OData service configuration to parse
      */
-    private parseService(projectRootPath: string, service: FoundODataService): ServiceArtifacts | undefined {
+    private parseService(
+        projectRootPath: string,
+        service: FoundODataService
+    ): [ServiceArtifacts, V2Annotation[]] | undefined {
         if (service.type === 'cap') {
-            return CdsAnnotationProvider.getCdsServiceArtifacts(projectRootPath, service.path, this.context.fileCache);
+            const artifacts = CdsAnnotationProvider.getCdsServiceArtifacts(
+                projectRootPath,
+                service.path,
+                this.context.fileCache
+            );
+            return artifacts ? [artifacts, []] : undefined;
         } else {
             return getXmlServiceArtifacts(
                 service.version,

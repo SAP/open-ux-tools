@@ -1,5 +1,18 @@
 # @sap-ux/ui-components
 
+## 2.2.3
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade sanitize-html 2.17.3 → 2.17.4 (GHSA-rpr9-rxv7-x643)
+- a97d926: fix(ui-components): upgrade sanitize-html 2.17.3 → 2.17.4 to resolve critical XSS vulnerability (GHSA-mjxr-4v3x-q3m4)
+
+## 2.2.2
+
+### Patch Changes
+
+- 882d45b: Fixed UIDropdown background overflowing past rounded borders.
+
 ## 2.2.1
 
 ### Patch Changes
