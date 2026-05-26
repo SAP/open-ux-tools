@@ -118,9 +118,8 @@ export class ApplicationParser {
                         parsedApp.services[service.name] = { config: service, artifacts, index };
                     }
                 }
-            } catch (error) {
+            } catch {
                 // skip faulty apps for now
-                console.error(error);
             }
         }
         return {
@@ -208,8 +207,16 @@ export class ApplicationParser {
         }
     }
 
+    /**
+     * Reparses .change property change files and updates the associated app in the project index.
+     *
+     * @param uri - The URI of the XML file to reparse
+     * @param index - The current parsed project index
+     * @param fileCache - Map of file URIs to their contents
+     */
     private reparseChange(uri: string, index: ParsedProject, fileCache: Map<string, string>): void {
-        for (const [key, _app] of Object.entries(index.apps)) {
+        for (const key of Object.keys(index.apps)) {
+            index.apps[key].changes = [];
             const content = fileCache.get(uri) ?? '';
             const ast = parseJson(content, {
                 mode: 'json',
@@ -225,12 +232,7 @@ export class ApplicationParser {
                 selector: jsonContent.selector,
                 changeFileUri: uri
             };
-            const foundChangeIndex = index.apps[key].changes.findIndex((c) => c.changeFileUri === uri);
-            if (foundChangeIndex > -1) {
-                index.apps[key].changes[foundChangeIndex] = change;
-            } else {
-                index.apps[key].changes.push(change);
-            }
+            index.apps[key].changes.push(change);
         }
     }
 

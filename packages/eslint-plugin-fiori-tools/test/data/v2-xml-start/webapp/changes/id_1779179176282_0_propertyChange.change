@@ -6,7 +6,7 @@
     "reference": "lrpv2products",
     "packageName": "",
     "content": {
-        "property": "test",
+        "property": "testProperty",
         "newValue": true
     },
     "selector": {

@@ -538,7 +538,7 @@ function linkPage(
  * @param pathToPage - Path to page in manifest structure
  * @param tables - Array of table annotation nodes
  * @param configuration - Manifest page settings containing table configuration
- * @param changes
+ * @param changes - Array of property changes related to the page
  */
 function linkListReportTable(
     page: FeV2ListReport,
@@ -606,7 +606,7 @@ function linkListReportTable(
  * @param service - The parsed OData service
  * @param sections - Array of table section nodes to link
  * @param configuration - Manifest page settings
- * @param changes
+ * @param changes - Array of property changes related to the page
  */
 function linkObjectPageSections(
     page: FeV2ObjectPage,

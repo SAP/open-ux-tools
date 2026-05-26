@@ -137,9 +137,6 @@ export function createFioriRule<
                 cachedDiagnostics = check(context);
                 DiagnosticCache.addMessages(uri, ruleId, cachedDiagnostics);
             }
-            if (!cachedDiagnostics?.length) {
-                return {};
-            }
             const sourceCode = context.sourceCode;
             if (sourceCode instanceof FioriChangeSourceCode && createChangeVisitorHandler) {
                 return createChangeVisitorWithMatchers(
@@ -245,7 +242,7 @@ function createChangeVisitorWithMatchers<
     }
     const matchers: RuleVisitor = {};
     for (const diagnostic of applicableDiagnostics) {
-        const path = 'Member[name.value="content"] > Object > Member[name.value="newValue"]';
+        const path = 'Member[name.value="content"] > Object > Member[name.value="newValue"]'; // Always the same path to new value
         matchers[path] = createChangeVisitorHandler(context, diagnostic);
     }
     return matchers;

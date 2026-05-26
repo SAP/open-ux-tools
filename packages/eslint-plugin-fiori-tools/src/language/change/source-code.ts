@@ -3,7 +3,7 @@ import type { ProjectContext } from '../../project-context/project-context';
 import { JSONSourceCode } from '@eslint/json';
 
 /**
- * A copy of FioriJSONSourceCode
+ * FlexChange Source Code class for Fiori tools.
  */
 export class FioriChangeSourceCode extends JSONSourceCode {
     public readonly projectContext: ProjectContext;
