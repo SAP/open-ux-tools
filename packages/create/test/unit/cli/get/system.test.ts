@@ -87,9 +87,7 @@ describe('system/get', () => {
 
         // Then — find the call that contains the JSON payload (other writes may originate from
         // the test runner's own stdout output and are not relevant to this assertion).
-        const jsonCall = stdoutSpy.mock.calls.find(
-            (call) => typeof call[0] === 'string' && call[0].includes('"name"')
-        );
+        const jsonCall = stdoutSpy.mock.calls.find((call) => typeof call[0] === 'string' && call[0].includes('"name"'));
         expect(jsonCall).toBeDefined();
         const parsed = JSON.parse((jsonCall![0] as string).trim());
         expect(parsed.name).toBe('My System');
