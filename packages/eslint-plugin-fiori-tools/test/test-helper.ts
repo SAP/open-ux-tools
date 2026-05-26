@@ -110,6 +110,17 @@ export const V2_ANNOTATIONS_PATH = join(
 export const V2_ANNOTATIONS = readFileSync(V2_ANNOTATIONS_PATH, 'utf-8');
 export const V2_METADATA_PATH = join(ROOT, 'test', 'data', 'v2-xml-start', 'webapp', 'localService', 'metadata.xml');
 export const V2_METADATA = readFileSync(V2_METADATA_PATH, 'utf-8');
+export const V2_FLEX_CHANGE_DIR = join(ROOT, 'test', 'data', 'v2-xml-start', 'webapp', 'changes');
+export const V2_FLEX_CHANGE_FILE_PATH = join(
+    ROOT,
+    'test',
+    'data',
+    'v2-xml-start',
+    'webapp',
+    'changes',
+    'id_1779179176282_0_propertyChange.change'
+);
+export const V2_FLEX_CHANGE_CONTENT = Object.freeze(JSON.parse(readFileSync(V2_FLEX_CHANGE_FILE_PATH, 'utf-8')));
 
 const cdsModuleInstalled = (root: string): boolean => {
     const modulePath = join(root, 'node_modules');

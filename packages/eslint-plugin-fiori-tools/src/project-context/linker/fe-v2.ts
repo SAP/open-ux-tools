@@ -558,7 +558,11 @@ function linkListReportTable(
 
         const pageTableChanges = changes.filter((change) => {
             const selectors = change.selector.id.split('::');
-            if (selectors[1].includes(page.componentName) && selectors.pop()?.endsWith('listReport')) {
+            if (
+                change.selector.id.includes(page.entitySetName) &&
+                selectors[1].includes(page.componentName) &&
+                selectors.pop()?.endsWith('listReport')
+            ) {
                 return true;
             }
         });
@@ -616,7 +620,11 @@ function linkObjectPageSections(
     const controls: Record<string, Section | Table> = {};
     const pageTableChanges = changes.filter((change) => {
         const selectors = change.selector.id.split('::');
-        if (selectors[1].includes(page.componentName) && selectors.pop() === 'Table') {
+        if (
+            change.selector.id.includes(page.entitySetName) &&
+            selectors[1].includes(page.componentName) &&
+            selectors.pop() === 'Table'
+        ) {
             return true;
         }
     });

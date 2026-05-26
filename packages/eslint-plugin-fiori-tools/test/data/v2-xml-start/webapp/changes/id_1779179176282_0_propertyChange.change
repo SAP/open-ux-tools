@@ -1,0 +1,41 @@
+{
+    "fileName": "id_1779179176282_0_propertyChange",
+    "fileType": "change",
+    "changeType": "propertyChange",
+    "moduleName": "",
+    "reference": "lrpv2products",
+    "packageName": "",
+    "content": {
+        "property": "test",
+        "newValue": true
+    },
+    "selector": {
+        "id": "lrpv2products::sap.suite.ui.generic.template.ObjectPage.view.Details::SEPMRA_C_PD_Product--ProductReviewFacetID::Table",
+        "idIsLocal": false,
+        "type": "sap.ui.comp.smarttable.SmartTable"
+    },
+    "layer": "VENDOR",
+    "texts": {},
+    "namespace": "apps/lrpv2products/changes/",
+    "projectId": "",
+    "creation": 1779353650738,
+    "originalLanguage": "",
+    "support": {
+        "generator": "changeUtils: SAPFioriTools",
+        "service": "",
+        "user": "",
+        "sapui5Version": "1.148.0",
+        "sourceChangeFileName": "",
+        "compositeCommand": ""
+    },
+    "oDataInformation": {},
+    "dependentSelector": {},
+    "validAppVersions": {
+        "from": "0.0.1",
+        "to": "0.0.1",
+        "creation": "0.0.1"
+    },
+    "jsOnly": false,
+    "variantReference": "",
+    "appDescriptorChange": false
+}

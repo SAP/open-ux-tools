@@ -5,6 +5,8 @@ import {
     getAnnotationsAsXmlCode,
     getManifestAsCode,
     setup,
+    V2_FLEX_CHANGE_CONTENT,
+    V2_FLEX_CHANGE_FILE_PATH,
     V4_ANNOTATIONS,
     V4_ANNOTATIONS_PATH,
     V4_FACETS_ANNOTATIONS,
@@ -24,6 +26,33 @@ const FACETSV4 = {
 
 const TEST_NAME = 'sap-enable-export';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
+
+const v2FlexChangeExportEnabledOP = {
+    ...V2_FLEX_CHANGE_CONTENT,
+    content: { ...V2_FLEX_CHANGE_CONTENT.content, property: 'enableExport' },
+    selector: {
+        ...V2_FLEX_CHANGE_CONTENT.content,
+        id: 'v2xmlstart::sap.suite.ui.generic.template.ObjectPage.view.Details::Z_SEPMRA_SO_SALESORDERANALYSIS::Table'
+    }
+};
+
+const v2FlexChangeExportEnabledLR = {
+    ...v2FlexChangeExportEnabledOP,
+    selector: {
+        ...v2FlexChangeExportEnabledOP.selector,
+        id: 'v2xmlstart::sap.suite.ui.generic.template.AnalyticalListPage.view.ListReport::Z_SEPMRA_SO_SALESORDERANALYSIS::listReport'
+    }
+};
+
+const v2FlexChangeExportDisabledOP = {
+    ...v2FlexChangeExportEnabledOP,
+    content: { ...v2FlexChangeExportEnabledOP.content, newValue: false }
+};
+
+const v2FlexChangeExportDisabledLR = {
+    ...v2FlexChangeExportEnabledLR,
+    content: { ...v2FlexChangeExportEnabledLR.content, newValue: false }
+};
 
 ruleTester.run(TEST_NAME, enableExportRule, {
     valid: [
@@ -58,6 +87,30 @@ ruleTester.run(TEST_NAME, enableExportRule, {
                 ])
             },
             [FACETSV4]
+        ),
+        createValidTest(
+            {
+                name: 'V2 - enableExport missing',
+                filename: V2_FLEX_CHANGE_FILE_PATH,
+                code: JSON.stringify(V2_FLEX_CHANGE_CONTENT, undefined, 2)
+            },
+            []
+        ),
+        createValidTest(
+            {
+                name: 'V2 - object page table - enableExport is true on object page',
+                filename: V2_FLEX_CHANGE_FILE_PATH,
+                code: JSON.stringify(v2FlexChangeExportEnabledOP, undefined, 2)
+            },
+            []
+        ),
+        createValidTest(
+            {
+                name: 'V2 - object page table - enableExport is true on list report page',
+                filename: V2_FLEX_CHANGE_FILE_PATH,
+                code: JSON.stringify(v2FlexChangeExportEnabledLR, undefined, 2)
+            },
+            []
         )
     ],
 
@@ -161,6 +214,38 @@ ruleTester.run(TEST_NAME, enableExportRule, {
                 ])
             },
             [FACETSV4]
+        ),
+        createInvalidTest(
+            {
+                name: 'V2 - list report page - enableExport is false',
+                filename: V2_FLEX_CHANGE_FILE_PATH,
+                code: JSON.stringify(v2FlexChangeExportDisabledLR, undefined, 2),
+                errors: [
+                    {
+                        message: 'Export functionality in the table must be enabled',
+                        line: 10,
+                        column: 5
+                    }
+                ],
+                output: JSON.stringify(v2FlexChangeExportEnabledLR, undefined, 2)
+            },
+            []
+        ),
+        createInvalidTest(
+            {
+                name: 'V2 - object page - enableExport is false',
+                filename: V2_FLEX_CHANGE_FILE_PATH,
+                code: JSON.stringify(v2FlexChangeExportDisabledOP, undefined, 2),
+                errors: [
+                    {
+                        message: 'Export functionality in the Products table must be enabled',
+                        line: 10,
+                        column: 5
+                    }
+                ],
+                output: JSON.stringify(v2FlexChangeExportEnabledOP, undefined, 2)
+            },
+            []
         )
     ]
 });
