@@ -1,7 +1,7 @@
 import type { RuleContext, RulesMeta, RuleVisitor } from '@eslint/core';
 import type { FioriLanguageOptions, FioriSourceCode, Node } from './fiori-language';
 import { JSONSourceCode } from '@eslint/json';
-import { FioriChangeSourceCode, type FioriJSONSourceCode } from './json/source-code';
+import { FioriJSONSourceCode } from './json/source-code';
 import type { AnyNode, MemberNode } from '@humanwhocodes/momoa';
 import { FioriXMLSourceCode } from './xml/source-code';
 import type { XMLAstNode, XMLToken } from '@xml-tools/ast';
@@ -14,6 +14,7 @@ import type { DeepestExistingPathResult } from '../utils/helpers';
 import { findDeepestExistingPath } from '../utils/helpers';
 import { pathToFileURL } from 'node:url';
 import { normalizePath } from '@sap-ux/project-access';
+import { FioriChangeSourceCode } from './change/source-code';
 
 /**
  * Rule context type for JSON-based rules.
@@ -94,8 +95,7 @@ export function createFioriRule<
     ) => RuleVisitor;
     createChangeVisitorHandler?: (
         context: JSONRuleContext<MessageIds, RuleOptions>,
-        diagnostic: Extract<Diagnostic, { type: T }>,
-        deepestPathResult: DeepestExistingPathResult
+        diagnostic: Extract<Diagnostic, { type: T }>
     ) => (node: MemberNode) => void;
     createJsonVisitorHandler?: (
         context: JSONRuleContext<MessageIds, RuleOptions>,
@@ -149,7 +149,7 @@ export function createFioriRule<
                     createChangeVisitorHandler
                 );
             }
-            if (sourceCode instanceof JSONSourceCode && createJsonVisitorHandler) {
+            if (sourceCode instanceof FioriJSONSourceCode && createJsonVisitorHandler) {
                 return createJsonVisitorWithMatchers(
                     sourceCode,
                     cachedDiagnostics,
@@ -216,6 +216,14 @@ function createJsonVisitorWithMatchers<
     return matchers;
 }
 
+/**
+ * Creates a FlexChange visitor with matchers for applicable diagnostics.
+ *
+ * @param sourceCode
+ * @param cachedDiagnostics
+ * @param context
+ * @param createChangeVisitorHandler
+ */
 function createChangeVisitorWithMatchers<
     MessageIds extends string,
     RuleOptions extends unknown[],
@@ -226,8 +234,7 @@ function createChangeVisitorWithMatchers<
     context: JSONRuleContext<MessageIds, RuleOptions>,
     createChangeVisitorHandler: (
         context: JSONRuleContext<MessageIds, RuleOptions>,
-        diagnostic: Extract<Diagnostic, { type: T }>,
-        deepestPathResult: DeepestExistingPathResult
+        diagnostic: Extract<Diagnostic, { type: T }>
     ) => (node: MemberNode) => void
 ): RuleVisitor {
     const applicableDiagnostics = cachedDiagnostics.filter(
@@ -238,14 +245,8 @@ function createChangeVisitorWithMatchers<
     }
     const matchers: RuleVisitor = {};
     for (const diagnostic of applicableDiagnostics) {
-        const paths = { validatedPath: ['content', 'newValue'], missingSegments: [] };
-        if (paths?.validatedPath && paths.validatedPath.length > 0) {
-            matchers[sourceCode.createMatcherString(paths.validatedPath)] = createChangeVisitorHandler(
-                context,
-                diagnostic,
-                paths
-            );
-        }
+        const path = 'Member[name.value="content"] > Object > Member[name.value="newValue"]';
+        matchers[path] = createChangeVisitorHandler(context, diagnostic);
     }
     return matchers;
 }

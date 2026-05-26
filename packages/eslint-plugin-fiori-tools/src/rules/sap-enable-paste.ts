@@ -55,8 +55,9 @@ const rule: FioriRuleDefinition = createFioriRule({
                 })
             });
         },
-    createChangeVisitorHandler(context, diagnostic, deepestPathResult) {
+    createChangeVisitorHandler(context, diagnostic) {
         return function report(node: MemberNode): void {
+            const deepestPathResult = { validatedPath: ['content', 'newValue'], missingSegments: [] };
             context.report({
                 node,
                 messageId: ENABLE_PASTE,
