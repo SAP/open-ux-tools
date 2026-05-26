@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.31.1
+
+### Patch Changes
+
+- 9752c40: feat: add function to read yaml metadata section
+
 ## 0.31.0
 
 ### Minor Changes

@@ -12,7 +12,7 @@ function getAst(annotations?: string): AnnotationFile {
         ['metadata.xml', V4_METADATA],
         ['annotations.xml', annotationContent]
     ]);
-    const artifacts = getXmlServiceArtifacts(
+    const [artifacts] = getXmlServiceArtifacts(
         '4.0',
         '',
         {
