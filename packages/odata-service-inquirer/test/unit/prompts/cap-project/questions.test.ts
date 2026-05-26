@@ -4,6 +4,7 @@ import type { CapCustomPaths, CdsVersionInfo } from '@sap-ux/project-access';
 import type { ListQuestion } from 'inquirer';
 import type { PathLike } from 'node:fs';
 import os from 'node:os';
+import * as actualPath from 'node:path';
 import type { CapProjectChoice } from '../../../../src/prompts/datasources/cap-project/types.js';
 import type { CapServiceChoice } from '../../../../src/types.js';
 
@@ -116,6 +117,18 @@ const mockValidateCapPath = jest.fn<any>(actualCapValidators.validateCapPath);
 jest.unstable_mockModule('../../../../src/prompts/datasources/cap-project/validators', () => ({
     ...actualCapValidators,
     validateCapPath: mockValidateCapPath
+}));
+
+// Mock node:path so the capProjectPath filter can be exercised against both posix and win32 path
+// semantics regardless of the host OS. When `pathFlavor` is null the mock passes through to the
+// real platform default; tests that need to exercise a specific flavor set it explicitly.
+let pathFlavor: 'posix' | 'win32' | null = null;
+jest.unstable_mockModule('node:path', () => ({
+    ...actualPath,
+    isAbsolute: (p: string) =>
+        pathFlavor ? actualPath[pathFlavor].isAbsolute(p) : actualPath.isAbsolute(p),
+    resolve: (...args: string[]) =>
+        pathFlavor ? actualPath[pathFlavor].resolve(...args) : actualPath.resolve(...args)
 }));
 
 // Dynamic imports after all mocks
@@ -345,50 +358,33 @@ describe('getLocalCapProjectPrompts', () => {
     });
 
     /**
-     * Load a fresh `getLocalCapProjectPrompts` and `PromptState` with `node:path`'s
-     * `isAbsolute` / `resolve` swapped for the supplied flavor. This lets us deterministically
-     * exercise the `capProjectPath` prompt's filter for both Windows and POSIX paths,
-     * regardless of the OS running the test.
+     * Load `getLocalCapProjectPrompts` and `PromptState` with `node:path`'s
+     * `isAbsolute` / `resolve` swapped for the supplied flavor via the top-level mock's
+     * mutable `pathFlavor`. This lets us deterministically exercise the `capProjectPath`
+     * prompt's filter for both Windows and POSIX paths, regardless of the OS running the test.
      *
      * @param pathImpl - `path.win32` or `path.posix`
      */
-    function loadQuestionsWithPath(pathImpl: typeof path.win32 | typeof path.posix): {
+    function loadQuestionsWithPath(pathImpl: typeof actualPath.win32 | typeof actualPath.posix): {
         capProjectPathPrompt: any;
         promptState: typeof PromptState;
     } {
-        let capProjectPathPrompt: any;
-        let promptState: typeof PromptState;
-        jest.isolateModules(() => {
-            jest.doMock('node:path', () => {
-                const actual = jest.requireActual('node:path');
-                return {
-                    ...actual,
-                    isAbsolute: pathImpl.isAbsolute,
-                    resolve: pathImpl.resolve
-                };
-            });
-            const {
-                getLocalCapProjectPrompts: getPromptsLocal
-                // eslint-disable-next-line @typescript-eslint/no-require-imports
-            } = require('../../../../src/prompts/datasources/cap-project/questions');
-            // eslint-disable-next-line @typescript-eslint/no-require-imports
-            ({ PromptState: promptState } = require('../../../../src/utils'));
-            const prompts = getPromptsLocal();
-            capProjectPathPrompt = prompts.find(
-                (p: { name: string }) => p.name === capInternalPromptNames.capProjectPath
-            );
-        });
-        return { capProjectPathPrompt, promptState: promptState! };
+        pathFlavor = pathImpl === actualPath.win32 ? 'win32' : 'posix';
+        const prompts = getLocalCapProjectPrompts();
+        const capProjectPathPrompt = prompts.find(
+            (p) => p.name === capInternalPromptNames.capProjectPath
+        );
+        return { capProjectPathPrompt, promptState: PromptState };
     }
 
     test('prompt: capProjectPath - filter (win32)', () => {
-        const { capProjectPathPrompt, promptState } = loadQuestionsWithPath(path.win32);
+        const { capProjectPathPrompt, promptState } = loadQuestionsWithPath(actualPath.win32);
         const relInput = 'relative\\cap\\path';
         const absInput = 'C:\\abs\\cap\\path';
 
         // CLI mode: relative paths are resolved to absolute paths using win32 semantics
         promptState.isYUI = false;
-        expect(capProjectPathPrompt.filter(relInput)).toEqual(path.win32.resolve(relInput));
+        expect(capProjectPathPrompt.filter(relInput)).toEqual(actualPath.win32.resolve(relInput));
         // CLI mode: absolute paths pass through unchanged
         expect(capProjectPathPrompt.filter(absInput)).toEqual(absInput);
         // CLI mode: empty / undefined input passes through unchanged
@@ -402,13 +398,13 @@ describe('getLocalCapProjectPrompts', () => {
     });
 
     test('prompt: capProjectPath - filter (posix)', () => {
-        const { capProjectPathPrompt, promptState } = loadQuestionsWithPath(path.posix);
+        const { capProjectPathPrompt, promptState } = loadQuestionsWithPath(actualPath.posix);
         const relInput = 'relative/cap/path';
         const absInput = '/abs/cap/path';
 
         // CLI mode: relative paths are resolved to absolute paths using posix semantics
         promptState.isYUI = false;
-        expect(capProjectPathPrompt.filter(relInput)).toEqual(path.posix.resolve(relInput));
+        expect(capProjectPathPrompt.filter(relInput)).toEqual(actualPath.posix.resolve(relInput));
         // CLI mode: absolute paths pass through unchanged
         expect(capProjectPathPrompt.filter(absInput)).toEqual(absInput);
         // CLI mode: empty / undefined input passes through unchanged

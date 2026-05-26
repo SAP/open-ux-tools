@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+import * as actualFs from 'node:fs';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,20 +10,18 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 // Read actual package.json for version assertion
 const actualPackageJson = readFileSync(join(__dirname, '../../../package.json'), 'utf-8');
 
-// Mock node:fs so that getVersion() in the source can read package.json
+// Mock node:fs so that getVersion() in the source can read package.json. Spread the real module
+// so transitive consumers (e.g. dotenv) that rely on default/other exports continue to work.
+const mockReadFileSync = jest.fn().mockImplementation((...args: unknown[]) => {
+    const filePath = args[0] as string;
+    if (typeof filePath === 'string' && filePath.endsWith('package.json')) {
+        return actualPackageJson;
+    }
+    return readFileSync(...(args as Parameters<typeof readFileSync>));
+});
 jest.unstable_mockModule('node:fs', () => ({
-    readFileSync: jest.fn().mockImplementation((...args: unknown[]) => {
-        const filePath = args[0] as string;
-        if (typeof filePath === 'string' && filePath.endsWith('package.json')) {
-            return actualPackageJson;
-        }
-        return readFileSync(...(args as Parameters<typeof readFileSync>));
-    }),
-    existsSync: jest.fn().mockReturnValue(true),
-    readdirSync: jest.fn(),
-    statSync: jest.fn(),
-    writeFileSync: jest.fn(),
-    mkdirSync: jest.fn()
+    ...actualFs,
+    readFileSync: mockReadFileSync
 }));
 
 const mockGetLogger = jest.fn();
@@ -162,7 +161,8 @@ jest.unstable_mockModule('@sap-ux/ui5-config', () => ({
         newInstance: jest.fn().mockResolvedValue({
             findCustomMiddleware: jest.fn()
         })
-    }
+    },
+    replaceEnvVariables: jest.fn()
 }));
 
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({

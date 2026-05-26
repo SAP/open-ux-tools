@@ -48,18 +48,15 @@ jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
 }));
 
 // Mock node:path so the targetFolder filter can be exercised against both posix and win32 path
-// semantics regardless of the host OS. The exposed `isAbsolute`/`resolve` dispatch through the
-// mutable `pathFlavor` variable, so tests can switch flavors at runtime without re-importing.
-let pathFlavor: 'posix' | 'win32' = process.platform === 'win32' ? 'win32' : 'posix';
+// semantics regardless of the host OS. When `pathFlavor` is null the mock passes through to the
+// real platform default; tests that need to exercise a specific flavor set it explicitly.
+let pathFlavor: 'posix' | 'win32' | null = null;
 jest.unstable_mockModule('node:path', () => ({
     ...actualPath,
-    isAbsolute: (p: string) => actualPath[pathFlavor].isAbsolute(p),
-    resolve: (...args: string[]) => actualPath[pathFlavor].resolve(...args),
-    default: {
-        ...actualPath.default,
-        isAbsolute: (p: string) => actualPath[pathFlavor].isAbsolute(p),
-        resolve: (...args: string[]) => actualPath[pathFlavor].resolve(...args)
-    }
+    isAbsolute: (p: string) =>
+        pathFlavor ? actualPath[pathFlavor].isAbsolute(p) : actualPath.isAbsolute(p),
+    resolve: (...args: string[]) =>
+        pathFlavor ? actualPath[pathFlavor].resolve(...args) : actualPath.resolve(...args)
 }));
 
 const { getQuestions } = await import('../../../src/prompts/index.js');
