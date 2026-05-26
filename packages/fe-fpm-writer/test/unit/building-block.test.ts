@@ -3880,5 +3880,28 @@ describe('Building Blocks', () => {
             const output = result.read(join(basePath, xmlViewFilePath));
             expect(output).toContain('id="footer1"');
         });
+
+        it('reorders existing aggregations into canonical PAGE_AGGREGATIONS order', async () => {
+            // Start with aggregations in wrong order: footer, actions, navigationActions
+            const basePath = join(testAppPath, 'page-bb-agg-sort');
+            const viewOutOfOrder = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+        <macros:footer id="footer"><OverflowToolbar /></macros:footer>
+        <macros:actions id="actions"><Button text="Act" /></macros:actions>
+    </macros:Page>
+</mvc:View>`;
+            fs.write(join(basePath, xmlViewFilePath), viewOutOfOrder);
+
+            // Adding navigationActions (index 1) should trigger a full sort
+            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, 'navigationActions');
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            const navPos = output.indexOf('macros:navigationActions');
+            const actPos = output.indexOf('macros:actions');
+            const footPos = output.indexOf('macros:footer');
+            expect(navPos).toBeLessThan(actPos);
+            expect(actPos).toBeLessThan(footPos);
+        });
     });
 });

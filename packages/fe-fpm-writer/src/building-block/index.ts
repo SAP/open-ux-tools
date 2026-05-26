@@ -209,6 +209,30 @@ function appendPageAggregations(
 }
 
 /**
+ * Reorders the child elements of a macros:Page node to match the canonical PAGE_AGGREGATIONS order.
+ * Preserves relative order of siblings with the same local name. Text/comment nodes are dropped
+ * because the xml-formatter call that follows will regenerate proper indentation.
+ *
+ * @param pageElement - the macros:Page DOM node whose children should be sorted
+ */
+function sortPageAggregationChildren(pageElement: Node): void {
+    const elementChildren = Array.from(pageElement.childNodes).filter(
+        (n) => n.nodeType === 1 /* Element */
+    ) as Element[];
+    const sorted = [...elementChildren].sort((a, b) => {
+        const aIdx = PAGE_AGGREGATIONS.indexOf(a.localName as PageAggregationName);
+        const bIdx = PAGE_AGGREGATIONS.indexOf(b.localName as PageAggregationName);
+        return (aIdx === -1 ? PAGE_AGGREGATIONS.length : aIdx) - (bIdx === -1 ? PAGE_AGGREGATIONS.length : bIdx);
+    });
+    while (pageElement.firstChild) {
+        pageElement.removeChild(pageElement.firstChild);
+    }
+    for (const el of sorted) {
+        pageElement.appendChild(el);
+    }
+}
+
+/**
  * Appends a single Page building block aggregation template to an existing `<macros:Page>` element in a view XML file.
  *
  * @param {Editor} fs - the memfs editor instance
@@ -259,6 +283,7 @@ export async function appendPageBBAggregation(
             pageElement.appendChild(xmlDocument.importNode(node, true));
         }
     }
+    sortPageAggregationChildren(pageElement);
 
     const newXmlContent = new XMLSerializer().serializeToString(xmlDocument);
     fs.write(join(basePath, viewPath), format(newXmlContent));

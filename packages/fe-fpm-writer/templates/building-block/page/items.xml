@@ -1,1 +1,8 @@
-<<%- macrosPrefix %>items></<%- macrosPrefix %>items>
+<<%- macrosPrefix %>items>
+	<IconTabBar id="stickySubheaderBar" class="sapUiResponsiveContentPadding">
+		<items>
+			<IconTabFilter text="Tab 1">
+			</IconTabFilter>
+		</items>
+	</IconTabBar>
+</<%- macrosPrefix %>items>
