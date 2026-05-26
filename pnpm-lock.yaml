@@ -8,7 +8,7 @@ overrides:
   '@sap-ux/vocabularies-types': 0.15.0
   '@storybook/manager-api>store2': 2.14.4
   axios-logger>axios: ^1.16.0
-  '@sap/subaccount-destination-service-provider>@sap/bas-sdk': ^3.13.6
+  '@sap/subaccount-destination-service-provider>@sap/bas-sdk': ^3.13.7
   esbuild: '>=0.25.0'
   sharp@<0.33.0: '>=0.33.5'
   fast-xml-parser: 5.8.0
@@ -36,8 +36,11 @@ overrides:
   express>path-to-regexp: 0.1.13
   router@^2.0.0>path-to-regexp: 8.4.0
   tar: '>=7.5.15'
-  yaml: 2.8.3
-  brace-expansion: 5.0.6
+  yaml@>=1.0.0 <1.10.3: '>=1.10.3'
+  yaml@>=2.0.0 <2.8.3: 2.8.3
+  brace-expansion@>=1.0.0 <1.1.13: ^1.1.13
+  brace-expansion@>=2.0.0 <2.0.3: ^2.0.3
+  brace-expansion@>=4.0.0 <5.0.6: 5.0.6
   node-gyp@8>make-fetch-happen: ^14.0.3
   node-gyp@9>make-fetch-happen: ^14.0.3
   npm-registry-fetch@12>make-fetch-happen: ^14.0.3
@@ -67,13 +70,14 @@ overrides:
   ignore-walk>minimatch@<10.2.4: ^10.2.4
   eslint-plugin-sonarjs>minimatch@<10.2.4: ^10.2.4
   nx>minimatch@<10.2.4: ^10.2.4
-  protobufjs: 7.5.8
+  protobufjs@<7.5.8: 7.5.8
   onnx-proto>protobufjs: '>=8.2.0'
   follow-redirects: '>=1.16.0'
   jsdom>http-proxy-agent: '>=7.0.2'
   css-loader>postcss: '>=8.5.10'
   sanitize-html>postcss: '>=8.5.10'
-  ip-address: 10.1.1
+  socks>ip-address: '>=10.1.1'
+  express-rate-limit>ip-address: '>=10.1.1'
   uuid: 11.1.1
   ws: 8.21.0
   '@sap/approuter>ws': 8.21.0
@@ -10667,6 +10671,12 @@ packages:
     resolution: {integrity: sha512-F3PH5k5juxom4xktynS7MoFY+NUWH5LC4CnH11YB8NPew+HLpmBLCybSAEyb2F+4pRXhuhWqFesoQd6DAyc2hw==}
     engines: {node: '>=18'}
 
+  brace-expansion@1.1.14:
+    resolution: {integrity: sha512-MWPGfDxnyzKU7rNOW9SP/c50vi3xrmrua/+6hfPbCS2ABNWfx24vPidzvC7krjU/RTo235sV776ymlsMtGKj8g==}
+
+  brace-expansion@2.1.0:
+    resolution: {integrity: sha512-TN1kCZAgdgweJhWWpgKYrQaMNHcDULHkWwQIspdtjV4Y5aurRdZpjAqn6yX3FPqTA9ngHCc4hJxMAMgGfve85w==}
+
   brace-expansion@5.0.6:
     resolution: {integrity: sha512-kLpxurY4Z4r9sgMsyG0Z9uzsBlgiU/EFKhj/h91/8yHu0edo7XuixOIH3VcJ8kkxs6/jPzoI6U9Vj3WqbMQ94g==}
     engines: {node: 18 || 20 || >=22}
@@ -11122,6 +11132,9 @@ packages:
   compression@1.8.1:
     resolution: {integrity: sha512-9mAqGPHLakhCLeNyxPkK4xVo746zQ/czLH1Ky+vkitMnWfWZps8r0qXuwhwizagCRttsL4lfG4pIOvaWLpAP0w==}
     engines: {node: '>= 0.8.0'}
+
+  concat-map@0.0.1:
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
   config-chain@1.1.13:
     resolution: {integrity: sha512-qj+f8APARXHrM0hraqXYb2/bOVSV4PvJQlNZ/DVj0QrmNM2q2euizkeuVckQ57J+W0mRH6Hvi+k50M4Jul2VRQ==}
@@ -22005,28 +22018,38 @@ snapshots:
       make-synchronized: 0.8.0
       prettier: 3.8.1
 
-  '@protobufjs/aspromise@1.1.2': {}
+  '@protobufjs/aspromise@1.1.2':
+    optional: true
 
-  '@protobufjs/base64@1.1.2': {}
+  '@protobufjs/base64@1.1.2':
+    optional: true
 
-  '@protobufjs/codegen@2.0.5': {}
+  '@protobufjs/codegen@2.0.5':
+    optional: true
 
-  '@protobufjs/eventemitter@1.1.0': {}
+  '@protobufjs/eventemitter@1.1.0':
+    optional: true
 
   '@protobufjs/fetch@1.1.0':
     dependencies:
       '@protobufjs/aspromise': 1.1.2
       '@protobufjs/inquire': 1.1.1
+    optional: true
 
-  '@protobufjs/float@1.0.2': {}
+  '@protobufjs/float@1.0.2':
+    optional: true
 
-  '@protobufjs/inquire@1.1.1': {}
+  '@protobufjs/inquire@1.1.1':
+    optional: true
 
-  '@protobufjs/path@1.1.2': {}
+  '@protobufjs/path@1.1.2':
+    optional: true
 
-  '@protobufjs/pool@1.1.0': {}
+  '@protobufjs/pool@1.1.0':
+    optional: true
 
-  '@protobufjs/utf8@1.1.1': {}
+  '@protobufjs/utf8@1.1.1':
+    optional: true
 
   '@puppeteer/browsers@2.13.0':
     dependencies:
@@ -25504,6 +25527,15 @@ snapshots:
       widest-line: 5.0.0
       wrap-ansi: 9.0.2
 
+  brace-expansion@1.1.14:
+    dependencies:
+      balanced-match: 1.0.2
+      concat-map: 0.0.1
+
+  brace-expansion@2.1.0:
+    dependencies:
+      balanced-match: 1.0.2
+
   brace-expansion@5.0.6:
     dependencies:
       balanced-match: 4.0.4
@@ -26001,6 +26033,8 @@ snapshots:
       vary: 1.1.2
     transitivePeerDependencies:
       - supports-color
+
+  concat-map@0.0.1: {}
 
   config-chain@1.1.13:
     dependencies:
@@ -29903,19 +29937,19 @@ snapshots:
 
   minimatch@3.1.5:
     dependencies:
-      brace-expansion: 5.0.6
+      brace-expansion: 1.1.14
 
   minimatch@5.1.9:
     dependencies:
-      brace-expansion: 5.0.6
+      brace-expansion: 2.1.0
 
   minimatch@7.4.9:
     dependencies:
-      brace-expansion: 5.0.6
+      brace-expansion: 2.1.0
 
   minimatch@9.0.9:
     dependencies:
-      brace-expansion: 5.0.6
+      brace-expansion: 2.1.0
 
   minimist@1.2.8: {}
 
@@ -31469,7 +31503,7 @@ snapshots:
       parse5: 8.0.0
       pem: 1.14.8
       posthog-node: 5.24.14
-      protobufjs: 7.5.8
+      protobufjs: 8.4.2
       proxy-agent: 8.0.1
       proxy-from-env: 2.1.0
       python-shell: 5.0.0
@@ -31614,6 +31648,7 @@ snapshots:
       '@protobufjs/utf8': 1.1.1
       '@types/node': 22.13.14
       long: 5.3.2
+    optional: true
 
   protobufjs@8.4.2:
     dependencies:
