@@ -372,4 +372,11 @@ describe('validateBusinessSolutionName', () => {
         const result = validateBusinessSolutionName('..._');
         expect(result).toBe(t('error.businessSolutionNameInvalid'));
     });
+
+    test('should return error for name wich starts with special character', () => {
+        let result = validateBusinessSolutionName('_abc');
+        expect(result).toBe(t('error.businessSolutionNameInvalid'));
+        result = validateBusinessSolutionName('.abc');
+        expect(result).toBe(t('error.businessSolutionNameInvalid'));
+    });
 });

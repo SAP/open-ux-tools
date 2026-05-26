@@ -157,7 +157,7 @@ export function validateBusinessSolutionName(value: string): string | boolean {
         return validationResult;
     }
 
-    if (/^(?=.*[a-z0-9])[a-z0-9._-]+$/.test(value)) {
+    if (/^[a-z0-9][a-z0-9._-]*$/.test(value)) {
         return true;
     }
 
