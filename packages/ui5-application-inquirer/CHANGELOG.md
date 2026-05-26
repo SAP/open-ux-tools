@@ -1,5 +1,25 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.19.0
+
+### Minor Changes
+
+- acb9875: Adds relative path support to CAP and non-CAP target folder prompts
+
+## 0.18.5
+
+### Patch Changes
+
+- f6af206: feat: add CLI commands for managing saved backend systems (#37734)
+
+## 0.18.4
+
+### Patch Changes
+
+- @sap-ux/project-access@1.38.1
+- @sap-ux/inquirer-common@0.13.2
+- @sap-ux/project-input-validator@0.7.2
+
 ## 0.18.3
 
 ### Patch Changes
