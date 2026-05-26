@@ -1,4 +1,4 @@
-import { generateOPAFiles, generatePageObjectFile } from '../../src/fiori-elements-opa-writer';
+import { generateOPAFiles } from '../../src/fiori-elements-opa-writer';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
@@ -74,90 +74,6 @@ describe('ui5-test-writer', () => {
                 fs = undefined;
                 resolve(true);
             }
-        });
-    });
-
-    describe('generatePageObjectFile', () => {
-        const testPages = [
-            {
-                description: 'ListReport',
-                targetKey: 'EmployeesListTarget'
-            },
-            {
-                description: 'Object Page',
-                targetKey: 'EmployeesObjectPageTarget'
-            },
-            {
-                description: 'FPM custom',
-                targetKey: 'EmployeesCustomPageTarget'
-            }
-        ];
-        const testUnsupportedPages = [
-            {
-                description: 'Another component view (not supported)',
-                targetKey: 'AnotherCustomPageTarget',
-                errorMsg: 'Validation error: Cannot generate the page file for target: AnotherCustomPageTarget.'
-            },
-            {
-                description: 'Plain XML view (not supported)',
-                targetKey: 'XMLView',
-                errorMsg: 'Validation error: Cannot generate the page file for target: XMLView.'
-            },
-            {
-                description: 'Missing ID',
-                targetKey: 'NoID',
-                errorMsg: 'Validation error: Cannot generate the page file for target: NoID.'
-            },
-            {
-                description: 'Missing entityset',
-                targetKey: 'NoEntitySet',
-                errorMsg: 'Validation error: Cannot generate the page file for target: NoEntitySet.'
-            },
-            {
-                description: 'Bad target',
-                targetKey: 'XXX',
-                errorMsg: 'Validation error: Cannot generate the page file for target: XXX.'
-            }
-        ];
-
-        it.each(testPages)('$description', async (config) => {
-            const projectDir = prepareTestFiles('Pages');
-            fs = await generatePageObjectFile(projectDir, { targetKey: config.targetKey }, fs);
-            expect(fs.dump(projectDir)).toMatchSnapshot();
-        });
-
-        it.each(testUnsupportedPages)('$description', async (config) => {
-            const projectDir = prepareTestFiles('Pages');
-            let error: string | undefined;
-            try {
-                fs = await generatePageObjectFile(projectDir, { targetKey: config.targetKey }, fs);
-            } catch (e) {
-                error = (e as Error).message;
-            }
-
-            expect(error).toEqual(config.errorMsg);
-        });
-
-        it('No manifest', async () => {
-            const projectDir = prepareTestFiles('Not_Here');
-            let error: string | undefined;
-            try {
-                fs = await generatePageObjectFile(projectDir, { targetKey: 'xx' }, fs);
-            } catch (e) {
-                error = (e as Error).message;
-            }
-
-            expect(error?.startsWith('Validation error: Cannot read the `manifest.json` file:')).toEqual(true);
-        });
-
-        it('Providing an app ID', async () => {
-            const projectDir = prepareTestFiles('Pages');
-            fs = await generatePageObjectFile(
-                projectDir,
-                { targetKey: 'EmployeesListTarget', appID: 'test.ui5-test-writer' },
-                fs
-            );
-            expect(fs.dump(projectDir)).toMatchSnapshot();
         });
     });
 

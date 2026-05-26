@@ -158,7 +158,6 @@ export type ListReportFeatures = {
     toolBarActions?: ActionButtonState[];
     isALP?: boolean;
     semanticKey?: {
-        filterBarHasSemanticKey?: boolean;
         semanticKeyProperties?: string[];
         missingFromFilterBar?: string[];
     };

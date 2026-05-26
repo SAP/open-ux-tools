@@ -21,6 +21,7 @@ import { extractActionMethodName, buildActionButtonState, safeCheckButtonVisibil
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 import type { Manifest } from '@sap-ux/project-access';
 import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI';
+import type { SemanticKey } from '@sap-ux/vocabularies-types/vocabularies/Common';
 
 export { checkButtonVisibility, safeCheckEditVisibility } from './actionUtils';
 export { safeCheckButtonVisibility };
@@ -151,7 +152,7 @@ export function getListReportFeatures(
         toolBarActions = safeCheckActionButtonStates(metadata, entitySetName, toolbarActions, log);
     }
 
-    const missingFromFilterBar =
+    const missingKeys =
         semanticKeyProperties?.length && filterBarItems.length
             ? semanticKeyProperties.filter((key) => !filterBarItems.includes(key))
             : undefined;
@@ -166,8 +167,7 @@ export function getListReportFeatures(
         isALP: manifest ? isALPFromManifest(manifest, listReportPage.name) : false,
         semanticKey: {
             semanticKeyProperties,
-            missingFromFilterBar: missingFromFilterBar?.length ? missingFromFilterBar : undefined,
-            filterBarHasSemanticKey: semanticKeyProperties?.length ? missingFromFilterBar?.length === 0 : undefined
+            missingFromFilterBar: missingKeys?.length ? missingKeys : undefined
         }
     };
 }
@@ -398,14 +398,12 @@ export function getSemanticKeyProperties(metadataXml: string, entitySetName: str
         throw new Error(`Entity set '${entitySetName}' not found in metadata`);
     }
 
-    const semanticKey = entitySet.entityType.annotations?.Common?.SemanticKey;
+    const semanticKey = entitySet.entityType.annotations?.Common?.SemanticKey as SemanticKey | undefined;
     if (!semanticKey) {
         return [];
     }
 
-    const propertyNames = (semanticKey as unknown as { value: string }[])
-        .map((entry) => entry.value)
-        .filter((v): v is string => typeof v === 'string');
+    const propertyNames = semanticKey.map((entry) => entry.value).filter((v): v is string => typeof v === 'string');
 
     if (!resolveLabels) {
         return propertyNames;

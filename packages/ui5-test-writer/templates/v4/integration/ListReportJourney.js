@@ -39,7 +39,7 @@ sap.ui.define([
         });
 <%_ } -%>
 <%_ if (semanticKey && semanticKey.missingFromFilterBar && semanticKey.missingFromFilterBar.length > 0) { %>
-        opaTest("Check semantic key columns in table", function (Given, When, Then) {
+        opaTest("Add semantic key properties to filter bar", function (Given, When, Then) {
             Then.onThe<%- startLR%>.onFilterBar().iOpenFilterAdaptation();
             <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
             When.onThe<%- startLR%>.onFilterBar().iAddAdaptationFilterField("<%- property %>");
