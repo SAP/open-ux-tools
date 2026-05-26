@@ -53,10 +53,8 @@ jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
 let pathFlavor: 'posix' | 'win32' | null = null;
 jest.unstable_mockModule('node:path', () => ({
     ...actualPath,
-    isAbsolute: (p: string) =>
-        pathFlavor ? actualPath[pathFlavor].isAbsolute(p) : actualPath.isAbsolute(p),
-    resolve: (...args: string[]) =>
-        pathFlavor ? actualPath[pathFlavor].resolve(...args) : actualPath.resolve(...args)
+    isAbsolute: (p: string) => (pathFlavor ? actualPath[pathFlavor].isAbsolute(p) : actualPath.isAbsolute(p)),
+    resolve: (...args: string[]) => (pathFlavor ? actualPath[pathFlavor].resolve(...args) : actualPath.resolve(...args))
 }));
 
 const { getQuestions } = await import('../../../src/prompts/index.js');
@@ -348,9 +346,7 @@ describe('getQuestions', () => {
         // win32 CLI: relative paths are resolved using win32 semantics, absolute paths pass through
         const win32Prompt = await loadTargetFolderPrompt(actualPath.win32);
         const win32Absolute = 'C:\\some\\absolute\\path';
-        expect((win32Prompt?.filter as Function)('relative\\path')).toEqual(
-            actualPath.win32.resolve('relative\\path')
-        );
+        expect((win32Prompt?.filter as Function)('relative\\path')).toEqual(actualPath.win32.resolve('relative\\path'));
         expect((win32Prompt?.filter as Function)(win32Absolute)).toEqual(win32Absolute);
         expect((win32Prompt?.filter as Function)('')).toEqual('');
         expect((win32Prompt?.filter as Function)(undefined)).toEqual(undefined);
@@ -358,9 +354,7 @@ describe('getQuestions', () => {
         // posix CLI: relative paths are resolved using posix semantics, absolute paths pass through
         const posixPrompt = await loadTargetFolderPrompt(actualPath.posix);
         const posixAbsolute = '/some/absolute/path';
-        expect((posixPrompt?.filter as Function)('relative/path')).toEqual(
-            actualPath.posix.resolve('relative/path')
-        );
+        expect((posixPrompt?.filter as Function)('relative/path')).toEqual(actualPath.posix.resolve('relative/path'));
         expect((posixPrompt?.filter as Function)(posixAbsolute)).toEqual(posixAbsolute);
         expect((posixPrompt?.filter as Function)('')).toEqual('');
         expect((posixPrompt?.filter as Function)(undefined)).toEqual(undefined);

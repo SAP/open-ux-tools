@@ -125,10 +125,8 @@ jest.unstable_mockModule('../../../../src/prompts/datasources/cap-project/valida
 let pathFlavor: 'posix' | 'win32' | null = null;
 jest.unstable_mockModule('node:path', () => ({
     ...actualPath,
-    isAbsolute: (p: string) =>
-        pathFlavor ? actualPath[pathFlavor].isAbsolute(p) : actualPath.isAbsolute(p),
-    resolve: (...args: string[]) =>
-        pathFlavor ? actualPath[pathFlavor].resolve(...args) : actualPath.resolve(...args)
+    isAbsolute: (p: string) => (pathFlavor ? actualPath[pathFlavor].isAbsolute(p) : actualPath.isAbsolute(p)),
+    resolve: (...args: string[]) => (pathFlavor ? actualPath[pathFlavor].resolve(...args) : actualPath.resolve(...args))
 }));
 
 // Dynamic imports after all mocks
@@ -371,9 +369,7 @@ describe('getLocalCapProjectPrompts', () => {
     } {
         pathFlavor = pathImpl === actualPath.win32 ? 'win32' : 'posix';
         const prompts = getLocalCapProjectPrompts();
-        const capProjectPathPrompt = prompts.find(
-            (p) => p.name === capInternalPromptNames.capProjectPath
-        );
+        const capProjectPathPrompt = prompts.find((p) => p.name === capInternalPromptNames.capProjectPath);
         return { capProjectPathPrompt, promptState: PromptState };
     }
 
