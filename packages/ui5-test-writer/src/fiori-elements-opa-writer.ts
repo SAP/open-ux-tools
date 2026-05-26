@@ -101,15 +101,20 @@ export async function generateOPAFiles(
             writeJourneyFiles(appFeatures, standaloneWriteContext, true, hasJourneyRunner, virtualOPA5Configured);
         }
     } else {
-        writeCommonAndPageFiles(writeContext, rootCommonTemplateDirPath, options.useVirtualPreviewEndpoints ?? false);
-        writeJourneyFiles(appFeatures, writeContext, false, false, options.useVirtualPreviewEndpoints ?? false);
-        if (options.useVirtualPreviewEndpoints) {
+        const useVirtualPreviewEndpoints = options.useVirtualPreviewEndpoints ?? false;
+        writeCommonAndPageFiles(writeContext, rootCommonTemplateDirPath, useVirtualPreviewEndpoints);
+        writeJourneyFiles(appFeatures, writeContext, false, false, useVirtualPreviewEndpoints);
+        if (useVirtualPreviewEndpoints) {
             await addVirtualTestConfig(
                 basePath,
                 [{ framework: 'OPA5', path: '/test/integration/opaTests.qunit.html' }, { framework: 'Testsuite' }],
                 editor
             );
         }
+    }
+
+    if (options.enableTypeScript) {
+        writeOpaJourneyTypes(writeContext);
     }
 
     return editor;
@@ -441,19 +446,24 @@ function writeCommonAndPageFiles(
             globOptions: { dot: true }
         }
     );
+}
 
-    // Generate OpaJourneyTypes.d.ts when TypeScript is enabled
-    if (dotFileExtension === DotFileExtension.TS) {
-        editor.copyTpl(
-            join(rootV4TemplateDirPath, 'integration', 'types', 'OpaJourneyTypes.d.ts'),
-            join(testOutDirPath, 'integration', 'types', 'OpaJourneyTypes.d.ts'),
-            config,
-            undefined,
-            {
-                globOptions: { dot: true }
-            }
-        );
-    }
+/**
+ * Writes the OpaJourneyTypes.d.ts type definition file used by generated TypeScript OPA tests.
+ *
+ * @param writeContext - shared write context (config, paths, editor, journey params)
+ */
+function writeOpaJourneyTypes(writeContext: WriteContext): void {
+    const { config, rootV4TemplateDirPath, testOutDirPath, editor } = writeContext;
+    editor.copyTpl(
+        join(rootV4TemplateDirPath, 'integration', 'types', 'OpaJourneyTypes.d.ts'),
+        join(testOutDirPath, 'integration', 'types', 'OpaJourneyTypes.d.ts'),
+        config,
+        undefined,
+        {
+            globOptions: { dot: true }
+        }
+    );
 }
 
 /**

@@ -1,9 +1,11 @@
 import type { Editor } from 'mem-fs-editor';
 
-export enum DotFileExtension {
-    JS = '.js',
-    TS = '.ts'
-}
+export const DotFileExtension = {
+    JS: '.js',
+    TS: '.ts'
+} as const;
+
+export type DotFileExtension = (typeof DotFileExtension)[keyof typeof DotFileExtension];
 
 /**
  * Options accepted by the public OPA test generation entry point.
