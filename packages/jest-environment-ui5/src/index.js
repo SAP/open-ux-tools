@@ -95,10 +95,6 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
             sap.ui.requireSync('ui5loader-autoconfig');
         }
 
-        Object.assign(global.performance, {
-            now: () => Date.now()
-        });
-
         sap.ui.predefine('sap/ui/util/_FeatureDetection', {
             initialScrollPositionIsZero: () => {}
         });
