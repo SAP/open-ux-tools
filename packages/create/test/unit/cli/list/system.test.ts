@@ -87,9 +87,13 @@ describe('system/list', () => {
         // When
         await command.parseAsync(getArgv(['system', '--json']));
 
-        // Then
-        expect(stdoutSpy).toHaveBeenCalledTimes(1);
-        const parsed = JSON.parse((stdoutSpy.mock.calls[0][0] as string).trim());
+        // Then — find the call that contains the JSON payload (other writes may originate from
+        // the test runner's own stdout output and are not relevant to this assertion).
+        const jsonCall = stdoutSpy.mock.calls.find(
+            (call) => typeof call[0] === 'string' && call[0].includes('"name"')
+        );
+        expect(jsonCall).toBeDefined();
+        const parsed = JSON.parse((jsonCall![0] as string).trim());
         expect(parsed[0].name).toBe('My System');
         expect(parsed[0].password).toBeUndefined();
         expect(parsed[0].username).toBeUndefined();
