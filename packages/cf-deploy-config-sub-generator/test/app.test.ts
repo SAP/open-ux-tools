@@ -1246,5 +1246,6 @@ describe('Cloud foundry generator tests', () => {
 
         // Then
         expect(mockWarn).toHaveBeenCalledWith(t('cfGen.warn.fullUrlDestination'));
+        jest.restoreAllMocks();
     });
 });

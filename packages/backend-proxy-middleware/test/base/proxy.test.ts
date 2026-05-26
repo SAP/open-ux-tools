@@ -333,7 +333,7 @@ describe('proxy', () => {
                     WebIDEAdditionalData: `${WebIDEAdditionalData.FULL_URL}`
                 }
             });
-            mockIsFullUrlDestination.mockResolvedValueOnce(true);
+            mockIsFullUrlDestination.mockReturnValueOnce(true);
             const proxyOptions: OptionsWithHeaders = { headers: {} };
             const modifiedBackend: DestinationBackendConfig = { ...backend };
 
@@ -351,7 +351,7 @@ describe('proxy', () => {
                     WebIDEAdditionalData: `${WebIDEAdditionalData.FULL_URL}`
                 }
             });
-            mockIsFullUrlDestination.mockResolvedValueOnce(true);
+            mockIsFullUrlDestination.mockReturnValueOnce(true);
             const proxyOptions: OptionsWithHeaders = { headers: {} };
             const modifiedBackend: DestinationBackendConfig = { ...backend, pathReplace: '/xyz' };
 
@@ -579,7 +579,7 @@ describe('proxy', () => {
                     Host: 'http://backend.example/my/other/path'
                 }
             });
-            mockIsFullUrlDestination.mockResolvedValueOnce(true);
+            mockIsFullUrlDestination.mockReturnValueOnce(true);
 
             const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
             expect(options).toBeDefined();
