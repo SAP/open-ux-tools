@@ -9,11 +9,13 @@ import {
     checkButtonVisibility,
     getFilterFieldNames,
     checkActionButtonStates,
+    checkActionButtonStatesFromMetadata,
     getToolBarActionNames,
     getToolBarActionItems,
     isALPManifestTarget,
     isALPFromManifest,
     getSemanticKeyProperties,
+    getSemanticKeyPropertiesFromMetadata,
     isSemanticKeyInFilterBar,
     safeGetSemanticKeyProperties
 } from '../../../src/utils/listReportUtils';
@@ -22,6 +24,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 import type { Manifest } from '@sap-ux/project-access';
+import { parse } from '@sap-ux/edmx-parser';
+import { convert } from '@sap-ux/annotation-converter';
 
 describe('Test buildButtonState()', () => {
     test('should return visible false when buttonState is undefined', () => {
@@ -182,8 +186,7 @@ describe('Test safeCheckActionButtonStates()', () => {
         } as unknown as Logger;
     });
 
-    test('should return action button states when metadata is valid', () => {
-        const validMetadata = `<?xml version="1.0" encoding="utf-8"?>
+    const validMetadataXml = `<?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
     <edmx:DataServices>
         <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
@@ -199,55 +202,32 @@ describe('Test safeCheckActionButtonStates()', () => {
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>`;
-        const result = safeCheckActionButtonStates(validMetadata, 'TestSet', [], mockLogger);
+
+    test('should return action button states when metadata is valid', () => {
+        const result = safeCheckActionButtonStates(convert(parse(validMetadataXml)), 'TestSet', [], mockLogger);
         expect(result).toBeDefined();
         expect(Array.isArray(result)).toBe(true);
     });
 
-    test('should return empty array and log debug when metadata is invalid', () => {
-        const result = safeCheckActionButtonStates('invalid xml', 'TestSet', [], mockLogger);
-        expect(result).toEqual([]);
-        expect(mockLogger.debug).toHaveBeenCalled();
-    });
-
     test('should return empty array and log debug when entity set does not exist', () => {
-        const validMetadata = `<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
-    <edmx:DataServices>
-        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
-            <EntityContainer Name="EntityContainer">
-            </EntityContainer>
-        </Schema>
-    </edmx:DataServices>
-</edmx:Edmx>`;
-        const result = safeCheckActionButtonStates(validMetadata, 'NonExistentEntitySet', [], mockLogger);
+        const result = safeCheckActionButtonStates(
+            convert(parse(validMetadataXml)),
+            'NonExistentEntitySet',
+            [],
+            mockLogger
+        );
         expect(result).toEqual([]);
         expect(mockLogger.debug).toHaveBeenCalled();
     });
 
     test('should handle missing logger gracefully', () => {
-        const result = safeCheckActionButtonStates('invalid xml', 'TestSet', []);
-        expect(result).toEqual([]);
+        expect(() =>
+            safeCheckActionButtonStates(convert(parse(validMetadataXml)), 'NonExistentEntitySet', [])
+        ).not.toThrow();
     });
 
     test('should handle empty action names array', () => {
-        const validMetadata = `<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
-    <edmx:DataServices>
-        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
-            <EntityType Name="TestEntity">
-                <Key>
-                    <PropertyRef Name="ID"/>
-                </Key>
-                <Property Name="ID" Type="Edm.String"/>
-            </EntityType>
-            <EntityContainer Name="EntityContainer">
-                <EntitySet Name="TestSet" EntityType="TestService.TestEntity"/>
-            </EntityContainer>
-        </Schema>
-    </edmx:DataServices>
-</edmx:Edmx>`;
-        const result = safeCheckActionButtonStates(validMetadata, 'TestSet', [], mockLogger);
+        const result = safeCheckActionButtonStates(convert(parse(validMetadataXml)), 'TestSet', [], mockLogger);
         expect(result).toBeDefined();
         expect(Array.isArray(result)).toBe(true);
     });
@@ -1553,6 +1533,23 @@ describe('Test getListReportFeatures()', () => {
 
         expect(Array.isArray(result.toolBarActions)).toBe(true);
     });
+
+    test('should log debug and return partial result when metadata XML is invalid', () => {
+        const pageModel: PageWithModelV4 = {
+            model: {
+                root: { aggregations: {} } as unknown as TreeAggregation
+            } as unknown as TreeModel,
+            name: 'TestList',
+            entitySet: 'TestSet'
+        };
+
+        const result = getListReportFeatures(pageModel, mockLogger, 'not valid xml');
+        expect(result).toBeDefined();
+        expect(result.name).toBe('TestList');
+        expect(result.semanticKey?.semanticKeyProperties).toBeUndefined();
+        expect(result.toolBarActions).toEqual([]);
+        expect(mockLogger.debug).toHaveBeenCalledWith(expect.stringContaining('Failed to parse metadata'));
+    });
 });
 
 /** ALP manifest target with views.paths containing a primary array */
@@ -1995,6 +1992,34 @@ describe('Test isSemanticKeyInFilterBar()', () => {
         const pageModel = makePageModel([]);
         expect(isSemanticKeyInFilterBar(pageModel, metadataSingleKey, 'Order')).toBe(false);
     });
+
+    test('returns false and logs debug when metadata XML is invalid', () => {
+        const pageModel = makePageModel(['OrderID']);
+        const mockLogger = {
+            debug: jest.fn(),
+            warn: jest.fn(),
+            info: jest.fn(),
+            error: jest.fn()
+        } as unknown as Logger;
+        expect(isSemanticKeyInFilterBar(pageModel, 'not valid xml', 'Order', mockLogger)).toBe(false);
+        expect(mockLogger.debug).toHaveBeenCalledWith(
+            expect.stringContaining('Failed to check semantic key in filter bar')
+        );
+    });
+
+    test('returns false and logs debug when entity set is not found in metadata', () => {
+        const pageModel = makePageModel(['OrderID']);
+        const mockLogger = {
+            debug: jest.fn(),
+            warn: jest.fn(),
+            info: jest.fn(),
+            error: jest.fn()
+        } as unknown as Logger;
+        expect(isSemanticKeyInFilterBar(pageModel, metadataSingleKey, 'NonExistentSet', mockLogger)).toBe(false);
+        expect(mockLogger.debug).toHaveBeenCalledWith(
+            expect.stringContaining('Failed to check semantic key in filter bar')
+        );
+    });
 });
 
 describe('Test safeGetSemanticKeyProperties()', () => {
@@ -2009,7 +2034,7 @@ describe('Test safeGetSemanticKeyProperties()', () => {
         } as unknown as Logger;
     });
 
-    const validMetadata = `<?xml version="1.0" encoding="utf-8"?>
+    const validMetadataXml = `<?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
     <edmx:DataServices>
         <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
@@ -2032,30 +2057,23 @@ describe('Test safeGetSemanticKeyProperties()', () => {
 </edmx:Edmx>`;
 
     test('returns semantic key properties when metadata and entity set are valid', () => {
-        const result = safeGetSemanticKeyProperties(validMetadata, 'Travel', mockLogger);
+        const result = safeGetSemanticKeyProperties(convert(parse(validMetadataXml)), 'Travel', mockLogger);
         expect(result).toEqual(['TravelID']);
         expect(mockLogger.debug).not.toHaveBeenCalled();
     });
 
-    test('returns undefined and logs debug when metadata is invalid XML', () => {
-        const result = safeGetSemanticKeyProperties('not valid xml', 'Travel', mockLogger);
-        expect(result).toBeUndefined();
-        expect(mockLogger.debug).toHaveBeenCalledWith(expect.stringContaining('Failed to get semantic key properties'));
-    });
-
     test('returns undefined and logs debug when entity set does not exist', () => {
-        const result = safeGetSemanticKeyProperties(validMetadata, 'NonExistent', mockLogger);
+        const result = safeGetSemanticKeyProperties(convert(parse(validMetadataXml)), 'NonExistent', mockLogger);
         expect(result).toBeUndefined();
         expect(mockLogger.debug).toHaveBeenCalledWith(expect.stringContaining('Failed to get semantic key properties'));
     });
 
     test('returns undefined without throwing when logger is not provided', () => {
-        const result = safeGetSemanticKeyProperties('not valid xml', 'Travel');
-        expect(result).toBeUndefined();
+        expect(() => safeGetSemanticKeyProperties(convert(parse(validMetadataXml)), 'NonExistent')).not.toThrow();
     });
 
-    test('logs the error message', () => {
-        safeGetSemanticKeyProperties('invalid xml', 'Travel', mockLogger);
+    test('logs the error message when entity set is not found', () => {
+        safeGetSemanticKeyProperties(convert(parse(validMetadataXml)), 'NonExistent', mockLogger);
         const [loggedMessage] = (mockLogger.debug as jest.Mock).mock.calls[0];
         expect(loggedMessage).toMatch(/Failed to get semantic key properties: .+/);
     });
