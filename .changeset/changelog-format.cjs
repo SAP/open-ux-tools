@@ -7,6 +7,8 @@
  * @typedef {{ name: string; newVersion: string; oldVersion?: string }} DependencyRelease
  */
 
+const REPO_URL = 'https://github.com/SAP/open-ux-tools';
+
 /** @type {PrefixEntry[]} */
 const PREFIX_MAP = [
     { regex: /^FEAT:/i, label: 'Features' },
@@ -19,7 +21,7 @@ const PREFIX_MAP = [
  * Falls back to no label for summaries without a recognised prefix so that
  * old-style entries do not break the formatter.
  * @param {string} summary - Raw summary text from the changeset file body.
- * @returns {ParsedSummary}
+ * @returns {ParsedSummary} Object containing the category label (or empty string if no prefix) and the message text with the prefix removed.
  */
 function parseSummary(summary) {
     const trimmed = summary.trim();
@@ -37,14 +39,17 @@ function parseSummary(summary) {
  * because `@changesets/cli` always wraps all entries in its own `### Patch/Minor/Major Changes`
  * heading and that wrapper cannot be suppressed from the formatter.
  * Called once per changeset file by the `@changesets/cli` during `changeset version`.
- * @param {{ summary: string }} changeset - The changeset object provided by the `@changesets/cli`.
+ * @param {{ summary: string; commit?: string }} changeset - The changeset object provided by the `@changesets/cli`.
  * @param {string} _type - Release type ('major' | 'minor' | 'patch') — unused; label comes from prefix.
  * @returns {Promise<string>} Markdown bullet string for this changelog entry.
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function getReleaseLine(changeset, _type) {
     const { label, text } = parseSummary(changeset.summary);
-    return label ? `#### ${label}\n\n- ${text}` : `- ${text}`;
+    const commitLink = changeset.commit
+        ? ` [[${changeset.commit.slice(0, 7)}](${REPO_URL}/commit/${changeset.commit})]`
+        : '';
+    return label ? `#### ${label}\n\n- ${text}${commitLink}` : `- ${text}${commitLink}`;
 }
 
 /**
