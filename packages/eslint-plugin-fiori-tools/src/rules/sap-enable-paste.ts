@@ -46,7 +46,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             context.report({
                 node,
                 messageId: ENABLE_PASTE,
-                data: { sectionText: diagnostic.pageSectionName ? `${diagnostic.pageSectionName} ` : '' },
+                data: { sectionText: `${diagnostic.pageSectionName} ` },
                 fix: createJsonFixer({
                     context,
                     deepestPathResult,
@@ -61,7 +61,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             context.report({
                 node,
                 messageId: ENABLE_PASTE,
-                data: { sectionText: diagnostic.pageSectionName },
+                data: { sectionText: `${diagnostic.pageSectionName} ` },
                 fix: createJsonFixer({
                     context,
                     deepestPathResult,
