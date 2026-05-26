@@ -28,11 +28,16 @@ const isSentenceCase = (text: string): boolean => {
             return false;
         }
     }
-    return hasSpaces;
+    return true;
 };
 
 const isEndOfAbbreviatedWord = (text: string, index: number): boolean => {
+const isEndOfAbbreviatedWord = (text: string, index: number): boolean => {
+    if (index + 2 >= text.length) {
+        return false;
+    }
     return isUpperCase(text.charCodeAt(index + 1)) && isLowerCase(text.charCodeAt(index + 2));
+};
 };
 
 export const convertCamelCaseToPascalCase = (text: string): string => {
