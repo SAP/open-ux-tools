@@ -1,5 +1,23 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.15.14
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade promptfoo 0.121.3 → 0.121.12 (security: dependency vulnerabilities)
+- Updated dependencies [01b70ca]
+- Updated dependencies [01b70ca]
+    - @sap-ux/axios-extension@1.26.1
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/fiori-generator-shared@0.15.4
+    - @sap-ux/odata-service-inquirer@2.23.1
+    - @sap-ux/odata-service-writer@0.32.2
+    - @sap-ux/telemetry@0.7.3
+    - @sap-ux/cap-config-writer@0.13.4
+    - @sap-ux/fiori-elements-writer@2.10.10
+    - @sap-ux/fiori-freestyle-writer@2.7.9
+    - @sap-ux/ui5-application-inquirer@0.19.1
+
 ## 0.15.13
 
 ### Patch Changes
