@@ -1,6 +1,6 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import { AdaptationProjectType, isAxiosError, type SystemInfo } from '@sap-ux/axios-extension';
-import type { Authentication, isAbapEnvironmentOnBtp, isS4HC, type Destinations } from '@sap-ux/btp-utils';
+import { isAbapEnvironmentOnBtp, isS4HC, type Authentication, type Destinations } from '@sap-ux/btp-utils';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 import { AuthenticationType } from '@sap-ux/store';
 import { DEFAULT_PACKAGE_ABAP } from '../constants';
