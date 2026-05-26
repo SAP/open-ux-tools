@@ -148,8 +148,8 @@ export async function ensureValidYoVersion(): Promise<{ error?: string }> {
             if (npmYoList) {
                 const yoList = JSON.parse(npmYoList);
                 const installedVersion = yoList?.dependencies?.yo?.version;
-                // yo v6 is ommitted as it has a bug that causes the generator to fail, see https://github.com/SBoudrias/Inquirer.js/issues/1968
-                if (installedVersion && !satisfies(installedVersion, '4.x || 5.x || 7.x')) {
+                // yo v6 is omitted as it has a bug that causes the generator to fail, see https://github.com/SBoudrias/Inquirer.js/issues/1968
+                if (installedVersion && !satisfies(installedVersion, '>=4.0.0 <6.0.0 || >=7.0.0 <8.0.0')) {
                     errorStr = t('error.unsupportedYoVersion', {
                         installedYoVersion: installedVersion,
                         latestSupportedYoVer

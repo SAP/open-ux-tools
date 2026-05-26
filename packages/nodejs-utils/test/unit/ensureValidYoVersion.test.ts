@@ -76,7 +76,7 @@ describe('ensureValidYoVersion', () => {
 
         expect(result.error).toBeDefined();
         expect(result.error).toContain('command not found');
-        expect(result.error).toContain('npm list -g yo --json');
+        expect(result.error).toContain(`${npmCmd} list -g yo --json`);
         expect(result.error).toContain('7.0.1');
     });
 });
