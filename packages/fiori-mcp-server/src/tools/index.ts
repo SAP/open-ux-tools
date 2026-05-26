@@ -201,10 +201,10 @@ export const tools = [
     },
     {
         name: 'run_rta_workflow_step',
-        description: `Internal step runner for the **adp-rta-workflow** skill. **Do not call this tool standalone.**
+        description: `Internal step runner for the **adp-controller-extension-flow** skill. **Do not call this tool standalone.**
         The skill orchestrates a multi-step Runtime Authoring flow (start → get_overlays → AI selects target control → get_actions → AI selects action → get_context → AI prepares payload → call_action → save → stop) and decides what each call should pass. Calling out of sequence will fail with descriptive errors but bypasses the AI decision points the skill provides.
 
-        Always go through the **adp-rta-workflow** skill in the SAP Fiori MCP server.
+        Always go through the **adp-controller-extension-flow** skill in the SAP Fiori MCP server.
 
         Steps:
         - **start** — payload: \`{ site: string, frameId?: string }\`. Launches the editor URL, starts RTA, returns a fresh \`sessionId\` and \`{ rtaStarted: true }\`.

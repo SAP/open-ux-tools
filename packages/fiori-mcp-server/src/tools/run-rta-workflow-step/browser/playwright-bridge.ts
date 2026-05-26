@@ -102,11 +102,40 @@ async function createPageRPC(page: Page): Promise<PageRPC> {
 }
 
 /**
+ * Returns `true` when the error message indicates Playwright could not find
+ * the browser binary it was asked to launch (system Chrome missing, bundled
+ * Chromium not installed, channel unavailable). Used to decide whether to
+ * retry the launch with Playwright's bundled Chromium.
+ *
+ * @param error Error thrown by `chromium.launch()`.
+ * @returns Whether the launch failed due to a missing browser binary.
+ */
+function isMissingBrowserError(error: unknown): boolean {
+    if (!(error instanceof Error)) {
+        return false;
+    }
+    const message = error.message.toLowerCase();
+    return (
+        message.includes("executable doesn't exist") ||
+        message.includes('executable does not exist') ||
+        message.includes('failed to find') ||
+        message.includes('not installed') ||
+        message.includes('no such file or directory')
+    );
+}
+
+const INSTALL_HINT =
+    'Chromium executable not found. Install Playwright Chromium with `npx playwright install chromium` ' +
+    '(one-time, ~120 MB), or set PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH to a Chrome/Chromium binary, ' +
+    'or set PLAYWRIGHT_BROWSER_CHANNEL to a channel available on this machine.';
+
+/**
  * Launches a singleton Chromium browser via Playwright, or returns the
  * existing instance. Browser selection priority:
  * 1. `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` — explicit absolute path.
  * 2. `PLAYWRIGHT_BROWSER_CHANNEL` — Playwright channel (`chrome`, `msedge`, etc.).
  * 3. Default: `chrome` channel (system-installed Google Chrome).
+ * 4. Fallback: Playwright's bundled Chromium (requires `npx playwright install chromium`).
  *
  * @returns The connected Chromium browser instance.
  */
@@ -120,12 +149,35 @@ async function startBrowser(): Promise<Browser> {
 
     const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
     const channel = process.env.PLAYWRIGHT_BROWSER_CHANNEL ?? (executablePath ? undefined : 'chrome');
-    browserStartPromise = chromium.launch({
-        headless: false,
-        executablePath: executablePath ?? undefined,
-        channel,
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--start-maximized']
-    });
+    const launchArgs = ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--start-maximized'];
+
+    browserStartPromise = (async (): Promise<Browser> => {
+        try {
+            return await chromium.launch({
+                headless: false,
+                executablePath: executablePath ?? undefined,
+                channel,
+                args: launchArgs
+            });
+        } catch (error) {
+            if (!isMissingBrowserError(error)) {
+                throw error;
+            }
+            logger.warn(
+                `Primary browser launch failed (${
+                    error instanceof Error ? error.message : String(error)
+                }); retrying with Playwright bundled Chromium.`
+            );
+            try {
+                return await chromium.launch({ headless: false, args: launchArgs });
+            } catch (fallbackError) {
+                if (isMissingBrowserError(fallbackError)) {
+                    throw new Error(INSTALL_HINT);
+                }
+                throw fallbackError;
+            }
+        }
+    })();
 
     try {
         browser = await browserStartPromise;

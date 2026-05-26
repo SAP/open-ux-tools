@@ -1,9 +1,9 @@
 ---
-name: adp-rta-workflow
+name: adp-controller-extension-flow
 description: Use when making RTA changes to a SAP Fiori adaptation project via the adaptation editor — adding/removing UI elements, changing properties, renaming labels, hiding controls, or extending controllers and fragments.
 ---
 
-# ADP RTA Workflow
+# ADP Controller Extension Flow
 
 Drive Runtime Authoring (RTA) in the SAP Fiori adaptation editor through the **`run_rta_workflow_step`** MCP tool exposed by `fiori-mcp-server`. The tool handles browser automation server-side; this skill orchestrates the step sequence and the AI decisions between steps.
 
@@ -13,7 +13,26 @@ Drive Runtime Authoring (RTA) in the SAP Fiori adaptation editor through the **`
 
 - `fiori-mcp` server running (provides `run_rta_workflow_step`)
 - Adaptation editor URL (from the `adp-project-setup` skill or user-provided)
-- A system Chrome installed where the server runs (resolved automatically; override with `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` or `PLAYWRIGHT_BROWSER_CHANNEL` env vars)
+- A Chromium-based browser the server can launch. Resolution order:
+  1. `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` env var (absolute path to a Chromium binary)
+  2. `PLAYWRIGHT_BROWSER_CHANNEL` env var (`chrome`, `msedge`, `chrome-beta`, etc.)
+  3. System Google Chrome (default channel)
+  4. Playwright-managed Chromium (auto-fallback if 1–3 fail)
+
+### Chromium fallback (no system Chrome)
+
+If no system Chrome is found and no env override is set, the server falls back to Playwright's bundled Chromium. The bundle is **not** included with `playwright-core`, so it has to be installed once on the host machine:
+
+```bash
+npx playwright install chromium
+```
+
+When `start` fails with `Executable doesn't exist at .../chromium-XXXX/...`, run that command and retry. Mention to the user that the first install downloads ~120 MB and can take a minute. Subsequent runs reuse the cached browser.
+
+Detection sequence the skill should follow on a `start` failure that mentions a missing browser:
+1. Inspect the error message — if it references a missing Chromium binary, prompt the user to run `npx playwright install chromium` (or run it on their behalf if they consent).
+2. After install completes, retry `start` with the same payload.
+3. If detection still fails, ask the user to set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to a known Chrome/Chromium binary.
 
 ## Tool Contract
 
@@ -158,6 +177,8 @@ Report to the user: summary of all changes made, files created, any issues encou
 | Save fails | Report error. Inform user changes may be lost. |
 | `Unknown sessionId` error | The server was restarted between steps. Start a fresh session from Step 1. |
 | `Frontend action ... not registered` | The editor hasn't finished loading, or wrong frame. Verify `frameId: "preview"` and retry. |
+| `Executable doesn't exist at .../chromium-...` or `browserType.launch: ...` referencing a missing browser | No system Chrome and no Playwright Chromium installed. Run `npx playwright install chromium` (one-time, ~120 MB) and retry `start`. |
+| `Chromium executable not found` (custom message from the server) | Same as above — Playwright Chromium isn't installed and no system Chrome was found. Install via `npx playwright install chromium`. |
 
 ## Multi-Change Strategy
 
