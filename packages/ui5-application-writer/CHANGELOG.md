@@ -1,5 +1,38 @@
 # @sap-ux/ui5-application-writer
 
+## 1.9.1
+
+### Patch Changes
+
+- Updated dependencies [9752c40]
+    - @sap-ux/ui5-config@0.31.1
+
+## 1.9.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/ui5-config@0.31.0
+
+## 1.8.9
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/ui5-config@0.30.5
+
+## 1.8.8
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/ui5-config@0.30.4
+
 ## 1.8.7
 
 ### Patch Changes

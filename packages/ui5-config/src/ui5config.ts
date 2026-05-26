@@ -95,6 +95,20 @@ export class UI5Config {
     }
 
     /**
+     * Reads the metadata object from the config.
+     *
+     * @returns metadata object from config
+     * @memberof UI5Config
+     */
+    public getMetadata(): Ui5Document['metadata'] | undefined {
+        try {
+            return this.document.getMap({ path: 'metadata' }).toJSON() as Ui5Document['metadata'];
+        } catch {
+            return undefined;
+        }
+    }
+
+    /**
      * Tries reading the resources/configuration object from the config.
      *
      * @returns resources/configuration object from config or an empty object

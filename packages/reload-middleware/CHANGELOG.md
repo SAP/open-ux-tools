@@ -1,5 +1,33 @@
 # @sap-ux/reload-middleware
 
+## 0.4.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/logger@0.9.0
+
+## 0.3.27
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/logger@0.8.6
+
+## 0.3.26
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/btp-utils@1.1.15
+
 ## 0.3.25
 
 ### Patch Changes

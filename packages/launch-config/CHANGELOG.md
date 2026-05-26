@@ -1,5 +1,59 @@
 # @sap-ux/launch-config
 
+## 0.11.2
+
+### Patch Changes
+
+- Updated dependencies [9752c40]
+    - @sap-ux/ui5-config@0.31.1
+    - @sap-ux/project-access@1.38.1
+
+## 0.11.1
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+
+## 0.11.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/ui5-config@0.31.0
+    - @sap-ux/ui5-info@0.14.0
+
+## 0.10.92
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/ui5-config@0.30.5
+    - @sap-ux/ui5-info@0.13.22
+
+## 0.10.91
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+
+## 0.10.90
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/ui5-config@0.30.4
+    - @sap-ux/ui5-info@0.13.21
+    - @sap-ux/project-access@1.36.3
+
 ## 0.10.89
 
 ### Patch Changes

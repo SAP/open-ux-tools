@@ -125,7 +125,8 @@ describe('Generate v4 apps', () => {
                 ...baseTestProject(testDir),
                 name: testProjectName,
                 ui5Version: '1.84.0',
-                manifestVersion: undefined // Allow default handling
+                manifestVersion: undefined, // Allow default handling
+                enableVirtualEndpoints: true
             } as Project,
             floorplan: FloorplanFE.FE_LROP,
             service: v4Service,
@@ -240,7 +241,8 @@ describe('Generate v4 apps', () => {
             project: {
                 ...baseTestProject(testDir),
                 name: testProjectName,
-                targetFolder: join(testDir, testProjectName, capAppFolder)
+                targetFolder: join(testDir, testProjectName, capAppFolder),
+                enableVirtualEndpoints: true
             } as Project,
             floorplan: FloorplanFE.FE_LROP,
             service: {
@@ -522,7 +524,8 @@ describe('Generate v4 apps', () => {
             project: {
                 ...baseTestProject(testDir),
                 name: testProjectName,
-                targetFolder: join(testDir, testProjectName, capAppFolder)
+                targetFolder: join(testDir, testProjectName, capAppFolder),
+                enableVirtualEndpoints: true
             } as Project,
             service: {
                 version: OdataVersion.v4,

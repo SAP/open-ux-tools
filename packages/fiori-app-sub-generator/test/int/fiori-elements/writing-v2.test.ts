@@ -55,7 +55,8 @@ describe('Generate v2 apps', () => {
 
         const testState: State = cloneDeep({
             project: Object.assign({}, v2Project, {
-                name: testProjectName
+                name: testProjectName,
+                enableVirtualEndpoints: true
             }) as Project,
             floorplan: FloorplanFE.FE_LROP,
             service: v2Service,
@@ -240,7 +241,8 @@ describe('Generate v2 apps', () => {
 
         const testState: State = cloneDeep({
             project: Object.assign({}, v2Project, {
-                name: testProjectName
+                name: testProjectName,
+                enableVirtualEndpoints: true
             }) as Project,
             floorplan: FloorplanFE.FE_ALP,
             service: alpService,

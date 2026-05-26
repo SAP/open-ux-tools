@@ -16,11 +16,13 @@ export const TEXT_ARRANGEMENT_HIDDEN = 'sap-text-arrangement-hidden';
 export const NO_DATA_FIELD_INTENT_BASED_NAVIGATION = 'sap-no-data-field-intent-based-navigation';
 export const CONDENSED_TABLE_LAYOUT = 'sap-condensed-table-layout';
 export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
+export const DESCRIPTION_COLUMN_LABEL = 'sap-description-column-label';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
     manifest: ManifestPropertyDiagnosticData;
     pageName: string;
+    pageSectionName?: string;
     annotation: {
         file: string;
         annotationPath: string;
@@ -54,6 +56,7 @@ export type CreateModeMessageId =
 export interface CreationModeForTable {
     type: typeof CREATION_MODE_FOR_TABLE;
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
     messageId: CreateModeMessageId;
     tableType: string;
@@ -64,18 +67,21 @@ export interface CreationModeForTable {
 export interface CopyToClipboard {
     type: typeof COPY_TO_CLIPBOARD;
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 
 export interface EnableExport {
     type: typeof ENABLE_EXPORT;
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 
 export interface EnablePaste {
     type: typeof ENABLE_PASTE;
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 
@@ -107,6 +113,7 @@ export interface TablePersonalization {
     property?: PersonalizationProperty;
     undefinedProperties?: PersonalizationProperty[];
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 
@@ -130,12 +137,31 @@ export interface NoDataFieldIntentBasedNavigation {
 export interface CondensedTableLayout {
     type: typeof CONDENSED_TABLE_LAYOUT;
     pageName: string;
+    pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 
 export interface StrictUomFiltering {
     type: typeof STRICT_UOM_FILTERING;
     manifest: ManifestPropertyDiagnosticData;
+}
+
+export type DescriptionColumnLabelMessageId =
+    | 'trivialLabel' // label is "Name" or "Description"
+    | 'duplicateLabel'; // label of text property matches label of ID property
+
+export interface DescriptionColumnLabel {
+    type: typeof DESCRIPTION_COLUMN_LABEL;
+    messageId: DescriptionColumnLabelMessageId;
+    pageNames: string[];
+    annotation: {
+        /** Reference to the Common.Label annotation of the text property (the reported node) */
+        reference: AnnotationReference;
+        idPropertyTarget: string;
+        textPropertyTarget: string;
+        textPropertyLabel: string;
+        idPropertyLabel?: string;
+    };
 }
 
 export interface TextArrangementHidden {
@@ -154,6 +180,7 @@ export type Diagnostic =
     | FlexEnabled
     | CopyToClipboard
     | CreationModeForTable
+    | DescriptionColumnLabel
     | EnableExport
     | EnablePaste
     | StatePreservationMode

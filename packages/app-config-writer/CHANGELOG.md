@@ -1,5 +1,84 @@
 # @sap-ux/app-config-writer
 
+## 0.7.3
+
+### Patch Changes
+
+- 9752c40: feat: add command to add flp embedded mode
+- Updated dependencies [9752c40]
+    - @sap-ux/ui5-config@0.31.1
+    - @sap-ux/project-access@1.38.1
+    - @sap-ux/ui5-application-writer@1.9.1
+    - @sap-ux/axios-extension@1.26.0
+
+## 0.7.2
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/ui5-application-writer@1.9.0
+
+## 0.7.1
+
+### Patch Changes
+
+- 2f0c182: feat: support virtual preview endpoints for test generation
+
+    When `useVirtualPreviewEndpoints` is enabled, test harness files (testsuite, unitTests, opaTests) are served virtually and not written to disk. UI5 yaml files are updated with `flp.path: test/flp.html` and test framework entries (OPA5, Testsuite, QUnit) are added to ui5-mock.yaml.
+
+## 0.7.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/store@1.6.0
+    - @sap-ux/ui5-application-writer@1.9.0
+    - @sap-ux/ui5-config@0.31.0
+
+## 0.6.145
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/store@1.5.14
+    - @sap-ux/ui5-application-writer@1.8.9
+    - @sap-ux/ui5-config@0.30.5
+
+## 0.6.144
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/axios-extension@1.25.36
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/ui5-application-writer@1.8.8
+
+## 0.6.143
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/axios-extension@1.25.35
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/ui5-config@0.30.4
+    - @sap-ux/project-access@1.36.3
+    - @sap-ux/ui5-application-writer@1.8.8
+
 ## 0.6.142
 
 ### Patch Changes

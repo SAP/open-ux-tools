@@ -294,15 +294,15 @@ You can also create changeset files manually in `.changeset/`. Use a descriptive
 "@sap-ux/package-name": patch
 ---
 
-chore(package-name): upgrade i18next 25.8.18 → 25.8.20
+chore: upgrade i18next 25.8.18 → 25.8.20
 ```
 
 **Changeset message conventions:**
 - Use conventional commit prefixes: `fix`, `feat`, `chore`, etc.
-- For dependency-only upgrades: `chore(package-name): upgrade <dep> <old> → <new>`
-- For multiple dep upgrades: `chore(package-name): upgrade runtime dependencies (<dep1> <ver>, <dep2> <ver>)`
-- For formatting/lint autofixes: `chore(package-name): reformat <description> (Prettier upgrade autofix)`
-- For type compatibility fixes: `fix(package-name): <description> for <@types/package> <version> compatibility`
+- For dependency-only upgrades: `chore: upgrade <dep> <old> → <new>`
+- For multiple dep upgrades: `chore: upgrade runtime dependencies (<dep1> <ver>, <dep2> <ver>)`
+- For formatting/lint autofixes: `chore: reformat <description> (Prettier upgrade autofix)`
+- For type compatibility fixes: `fix: <description> for <@types/package> <version> compatibility`
 
 **Changeset workflow:**
 1. Interactive CLI prompts for:

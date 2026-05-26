@@ -19,6 +19,7 @@ import {
 } from './types';
 import { validateCapPath } from './validators';
 import { realpath } from 'node:fs/promises';
+import { isAbsolute, resolve } from 'node:path';
 
 /**
  * Find the specified choice in the list of CAP project choices and return its index.
@@ -97,6 +98,12 @@ export function getLocalCapProjectPrompts(
                 }
             },
             guiOptions: { mandatory: true, breadcrumb: t('prompts.capProject.breadcrumb') },
+            filter: (input: string) => {
+                if (PromptState.isYUI) {
+                    return input;
+                }
+                return input && !isAbsolute(input) ? resolve(input) : input;
+            },
             validate: async (projectPath: string): Promise<string | boolean> => {
                 validCapPath = await validateCapPath(projectPath);
                 // Load the cap paths if the path is valid
@@ -149,6 +156,7 @@ export function getLocalCapProjectPrompts(
                 mandatory: true,
                 breadcrumb: true
             },
+            showOutputTabLink: 'validationMessageOverflow',
             default: () => {
                 return capServiceChoices?.length > 1 ? defaultServiceIndex : 0;
             },

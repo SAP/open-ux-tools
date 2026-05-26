@@ -1,5 +1,67 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.4.2
+
+### Patch Changes
+
+- Updated dependencies [9752c40]
+    - @sap-ux/ui5-config@0.31.1
+    - @sap-ux/project-access@1.38.1
+
+## 0.4.1
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+
+## 0.4.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/nodejs-utils@0.3.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/ui5-config@0.31.0
+    - @sap-ux/yaml@0.18.0
+
+## 0.3.107
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/nodejs-utils@0.2.23
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/ui5-config@0.30.5
+    - @sap-ux/yaml@0.17.8
+
+## 0.3.106
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+
+## 0.3.105
+
+### Patch Changes
+
+- 678a08e: chore: upgrade runtime dependencies (@sap/cf-tools 3.3.0 → 3.3.1, @vscode-logging/logger 2.0.8 → 2.0.9)
+- Updated dependencies [678a08e]
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/ui5-config@0.30.4
+    - @sap-ux/nodejs-utils@0.2.22
+    - @sap-ux/project-access@1.36.3
+
 ## 0.3.104
 
 ### Patch Changes

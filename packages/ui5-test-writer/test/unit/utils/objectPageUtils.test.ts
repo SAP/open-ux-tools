@@ -1973,4 +1973,235 @@ describe('Test getObjectPageFeatures()', () => {
         const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger);
         expect(result[0].bodySections?.[0].navigationProperty).toBeUndefined();
     });
+
+    const ACTION_METADATA = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="OrderType">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+            </EntityType>
+            <Action Name="Approve" IsBound="true">
+                <Parameter Name="_it" Type="TestService.OrderType" Nullable="false"/>
+            </Action>
+            <Action Name="MassProcess" IsBound="true">
+                <Parameter Name="_it" Type="Collection(TestService.OrderType)" Nullable="false"/>
+            </Action>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Orders" EntityType="TestService.OrderType"/>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    test('should extract header actions from metadata', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: { aggregations: {} } as unknown as TreeAggregation,
+                                actions: {
+                                    aggregations: {
+                                        'DataFieldForAction::TestService.Approve::TestService.OrderType': {
+                                            description: 'Approve',
+                                            path: [],
+                                            aggregations: {}
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures(
+            [objectPage] as PageWithModelV4[],
+            undefined,
+            mockLogger,
+            ACTION_METADATA
+        );
+        expect(result[0].headerActions).toHaveLength(1);
+        expect(result[0].headerActions?.[0]).toEqual({
+            label: 'Approve',
+            action: 'Approve',
+            service: 'TestService',
+            unbound: false,
+            visible: true,
+            enabled: false,
+            dynamicPath: undefined
+        });
+    });
+
+    test('should extract section actions from a table section', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: { aggregations: {} } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation,
+                        sections: {
+                            aggregations: {
+                                '_Items::@com.sap.vocabularies.UI.v1.LineItem': {
+                                    isTable: true,
+                                    custom: false,
+                                    order: 1,
+                                    schema: { keys: [{ name: 'ID', value: 'Items' }] },
+                                    aggregations: {
+                                        subSections: { aggregations: {} } as unknown as TreeAggregation,
+                                        table: {
+                                            aggregations: {
+                                                columns: { aggregations: {} } as unknown as TreeAggregation,
+                                                toolBar: {
+                                                    aggregations: {
+                                                        actions: {
+                                                            aggregations: {
+                                                                'DataFieldForAction::TestService.MassProcess::TestService.OrderType':
+                                                                    {
+                                                                        description: 'Mass Process',
+                                                                        path: [],
+                                                                        aggregations: {}
+                                                                    } as unknown as TreeAggregation
+                                                            }
+                                                        } as unknown as TreeAggregation
+                                                    }
+                                                } as unknown as TreeAggregation
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures(
+            [objectPage] as PageWithModelV4[],
+            undefined,
+            mockLogger,
+            ACTION_METADATA
+        );
+        const section = result[0].bodySections?.[0];
+        expect(section?.actions).toHaveLength(1);
+        expect(section?.actions?.[0]).toEqual({
+            label: 'Mass Process',
+            action: 'MassProcess',
+            service: 'TestService',
+            unbound: true,
+            visible: true,
+            enabled: true,
+            dynamicPath: undefined
+        });
+    });
+
+    test('should extract section actions from a form section', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: { aggregations: {} } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation,
+                        sections: {
+                            aggregations: {
+                                section1: {
+                                    isTable: false,
+                                    custom: false,
+                                    order: 1,
+                                    schema: { keys: [{ name: 'ID', value: 'General' }] },
+                                    aggregations: {
+                                        subSections: { aggregations: {} } as unknown as TreeAggregation,
+                                        form: {
+                                            aggregations: {
+                                                fields: { aggregations: {} } as unknown as TreeAggregation,
+                                                actions: {
+                                                    aggregations: {
+                                                        'DataFieldForAction::TestService.Approve::TestService.OrderType':
+                                                            {
+                                                                description: 'Approve',
+                                                                path: [],
+                                                                aggregations: {}
+                                                            } as unknown as TreeAggregation
+                                                    }
+                                                } as unknown as TreeAggregation
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures(
+            [objectPage] as PageWithModelV4[],
+            undefined,
+            mockLogger,
+            ACTION_METADATA
+        );
+        const section = result[0].bodySections?.[0];
+        expect(section?.actions).toHaveLength(1);
+        expect(section?.actions?.[0]).toEqual({
+            label: 'Approve',
+            action: 'Approve',
+            service: 'TestService',
+            unbound: false,
+            visible: true,
+            enabled: false,
+            dynamicPath: undefined
+        });
+    });
+
+    test('should return empty actions when no metadata is provided', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: { aggregations: {} } as unknown as TreeAggregation,
+                                actions: {
+                                    aggregations: {
+                                        'DataFieldForAction::TestService.Approve::TestService.OrderType': {
+                                            description: 'Approve',
+                                            path: [],
+                                            aggregations: {}
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger);
+        expect(result[0].headerActions).toEqual([]);
+    });
 });

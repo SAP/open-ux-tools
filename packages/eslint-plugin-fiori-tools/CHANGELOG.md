@@ -1,5 +1,100 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.2.2
+
+### Patch Changes
+
+- b3d4f62: Collect CAP application object page label to display in rule text messages.
+
+## 10.2.1
+
+### Patch Changes
+
+- @sap-ux/project-access@1.38.1
+- @sap-ux/fiori-annotation-api@0.11.1
+
+## 10.2.0
+
+### Minor Changes
+
+- 2f1ece0: [rule] Add rule to check that a Common.Text description property has a meaningful Common.Label annotation
+
+### Patch Changes
+
+- Updated dependencies [2f1ece0]
+    - @sap-ux/fiori-annotation-api@0.11.0
+    - @sap-ux/odata-annotation-core@0.3.1
+    - @sap-ux/odata-entity-model@0.4.0
+    - @sap-ux/odata-vocabularies@0.5.1
+
+## 10.1.2
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/fiori-annotation-api@0.10.1
+
+## 10.1.1
+
+### Patch Changes
+
+- b090449: Enable sap-no-data-field-intent-based-navigation rule to check UI.HeaderFacet annotation in CAP apps.
+
+## 10.1.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/fiori-annotation-api@0.10.0
+    - @sap-ux/odata-annotation-core@0.3.0
+    - @sap-ux/odata-entity-model@0.4.0
+    - @sap-ux/odata-vocabularies@0.5.0
+    - @sap-ux/project-access@1.37.0
+
+## 10.0.8
+
+### Patch Changes
+
+- a34e4c2: Update table configuration related eslint rules to include object page section label in the reported issue message.
+
+## 10.0.7
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/fiori-annotation-api@0.9.50
+    - @sap-ux/odata-annotation-core@0.2.19
+    - @sap-ux/odata-entity-model@0.3.8
+    - @sap-ux/odata-vocabularies@0.4.32
+    - @sap-ux/project-access@1.36.5
+
+## 10.0.6
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/fiori-annotation-api@0.9.49
+
+## 10.0.5
+
+### Patch Changes
+
+- c520b5e: Add cds annotation code examples to rules documentation.
+
+## 10.0.4
+
+### Patch Changes
+
+- @sap-ux/project-access@1.36.3
+- @sap-ux/fiori-annotation-api@0.9.48
+
 ## 10.0.3
 
 ### Patch Changes

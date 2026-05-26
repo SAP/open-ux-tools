@@ -1,5 +1,23 @@
 # @sap-ux/sap-systems-ext-webapp
 
+## 0.4.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 0.3.2
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
+## 0.3.1
+
+### Patch Changes
+
+- ac6381f: remove default selected key for sap systems ext
+
 ## 0.3.0
 
 ### Minor Changes

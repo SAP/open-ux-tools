@@ -1,5 +1,103 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.19.0
+
+### Minor Changes
+
+- acb9875: Adds relative path support to CAP and non-CAP target folder prompts
+
+## 0.18.5
+
+### Patch Changes
+
+- f6af206: feat: add CLI commands for managing saved backend systems (#37734)
+
+## 0.18.4
+
+### Patch Changes
+
+- @sap-ux/project-access@1.38.1
+- @sap-ux/inquirer-common@0.13.2
+- @sap-ux/project-input-validator@0.7.2
+
+## 0.18.3
+
+### Patch Changes
+
+- eda2ce4: Adds support for default name generation export. Adds default support for `title` prompt
+
+## 0.18.2
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/inquirer-common@0.13.1
+    - @sap-ux/project-input-validator@0.7.1
+
+## 0.18.1
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/inquirer-common@0.13.0
+
+## 0.18.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/inquirer-common@0.12.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/project-input-validator@0.7.0
+    - @sap-ux/ui5-info@0.14.0
+
+## 0.17.25
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.48
+
+## 0.17.24
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/inquirer-common@0.11.47
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/project-input-validator@0.6.84
+    - @sap-ux/ui5-info@0.13.22
+
+## 0.17.23
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/inquirer-common@0.11.46
+    - @sap-ux/project-input-validator@0.6.83
+
+## 0.17.22
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.45
+
+## 0.17.21
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/inquirer-common@0.11.44
+    - @sap-ux/ui5-info@0.13.21
+    - @sap-ux/project-access@1.36.3
+    - @sap-ux/project-input-validator@0.6.82
+
 ## 0.17.20
 
 ### Patch Changes
