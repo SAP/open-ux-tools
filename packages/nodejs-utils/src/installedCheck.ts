@@ -4,8 +4,11 @@ import fastGlob from 'fast-glob';
 import { join } from 'node:path';
 import readPkgUp from 'read-pkg-up';
 import type { SemVer } from 'semver';
-import { coerce, lt } from 'semver';
+import { coerce, lt, satisfies } from 'semver';
 import type { WorkspaceConfiguration } from 'vscode';
+import { t } from './i18n';
+
+const latestSupportedYoVer = '7.0.1'; // Latest supported version by fiori tools
 
 export type PackageInfo = {
     /** Path to the main entry point. Can be used by composeWith. */
@@ -127,4 +130,40 @@ async function getNpmInstallPaths(vscWorkspaceConfig?: WorkspaceConfiguration): 
     }
 
     return genSearchPaths;
+}
+
+/**
+ * Checks the installed version of `yo` and returns an error message if it is not installed or has an unsupported version.
+ *
+ * @returns An object containing an error message if `yo` is not installed or has an unsupported version.
+ */
+export async function ensureValidYoVersion(): Promise<{ error?: string }> {
+    let errorStr: string | undefined;
+    if (!isAppStudio()) {
+        const args = ['list', '-g', 'yo', '--json'];
+        const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+        try {
+            const npmYoList = await new CommandRunner().run(npm, args);
+
+            if (npmYoList) {
+                const yoList = JSON.parse(npmYoList);
+                const installedVersion = yoList?.dependencies?.yo?.version;
+                // yo v6 is ommitted as it has a bug that causes the generator to fail, see https://github.com/SBoudrias/Inquirer.js/issues/1968
+                if (installedVersion && !satisfies(installedVersion, '4.x || 5.x || 7.x')) {
+                    errorStr = t('error.unsupportedYoVersion', {
+                        installedYoVersion: installedVersion,
+                        latestSupportedYoVer
+                    });
+                }
+            }
+        } catch (error) {
+            // If the command fails (`npm list` returns an exit code 1 if the package is not found), it means `yo` or 'npm' is not installed
+            errorStr = t('error.executingNpmListCmd', {
+                error,
+                npmCmd: `${npm} ${args.join(' ')}`,
+                latestSupportedYoVer
+            });
+        }
+    }
+    return { error: errorStr };
 }
