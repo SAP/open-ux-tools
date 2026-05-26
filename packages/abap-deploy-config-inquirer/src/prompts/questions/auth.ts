@@ -31,7 +31,7 @@ function getUsernamePrompt(options: AbapDeployConfigPromptOptions): Question<Aba
  */
 function getPasswordPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
-        when: (): boolean => showPasswordQuestion(),
+        when: (): Promise<boolean> => showPasswordQuestion(options.backendTarget),
         type: 'password',
         name: promptNames.password,
         message: t('prompts.auth.password.message'),

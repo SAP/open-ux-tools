@@ -1,4 +1,4 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { isAppStudio, Authentication } from '@sap-ux/btp-utils';
 import {
     ClientChoiceValue,
     PackageInputChoices,
@@ -206,7 +206,7 @@ describe('Test abap deploy config inquirer conditions', () => {
             'should not show username prompt when destination auth type is %s',
             async (authType) => {
                 PromptState.abapDeployConfig.destination = 'SomeDest';
-                PromptState.abapDeployConfig.destinationAuthType = authType;
+                PromptState.abapDeployConfig.destinationAuthType = authType as Authentication;
                 const initTransportConfigSpy = jest.spyOn(utils, 'initTransportConfig');
                 const result = await showUsernameQuestion(undefined);
                 expect(result).toBe(false);
@@ -216,7 +216,7 @@ describe('Test abap deploy config inquirer conditions', () => {
 
         it('should show username prompt when destination auth type is NoAuthentication', async () => {
             PromptState.abapDeployConfig.destination = 'NoAuthDest';
-            PromptState.abapDeployConfig.destinationAuthType = 'NoAuthentication';
+            PromptState.abapDeployConfig.destinationAuthType = 'NoAuthentication' as Authentication;
             jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
                 transportConfig: {} as any,
                 transportConfigNeedsCreds: true
@@ -240,27 +240,27 @@ describe('Test abap deploy config inquirer conditions', () => {
     describe('showPasswordQuestion - destination auth type suppression', () => {
         it('should not show password prompt when destination auth type is SAMLAssertion', async () => {
             PromptState.abapDeployConfig.destination = 'SomeDest';
-            PromptState.abapDeployConfig.destinationAuthType = 'SAMLAssertion';
+            PromptState.abapDeployConfig.destinationAuthType = 'SAMLAssertion' as Authentication;
             jest.spyOn(utils, 'initTransportConfig');
             await showUsernameQuestion(undefined);
-            expect(showPasswordQuestion()).toBe(false);
+            expect(await showPasswordQuestion()).toBe(false);
         });
 
         it('should show password prompt when destination auth type is NoAuthentication and creds needed', async () => {
             PromptState.abapDeployConfig.destination = 'NoAuthDest';
-            PromptState.abapDeployConfig.destinationAuthType = 'NoAuthentication';
+            PromptState.abapDeployConfig.destinationAuthType = 'NoAuthentication' as Authentication;
             jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
                 transportConfig: {} as any,
                 transportConfigNeedsCreds: true
             });
             await showUsernameQuestion(undefined);
-            expect(showPasswordQuestion()).toBe(true);
+            expect(await showPasswordQuestion()).toBe(true);
         });
     });
 
-    test('should show password questions', () => {
+    test('should show password questions', async () => {
         PromptState.transportAnswers.transportConfigNeedsCreds = true;
-        expect(showPasswordQuestion()).toBe(true);
+        expect(await showPasswordQuestion()).toBe(true);
     });
 
     test('should show ui5 app deploy config questions', () => {

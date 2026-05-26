@@ -1,6 +1,7 @@
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { AdaptationProjectType, ServiceProvider } from '@sap-ux/axios-extension';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { Authentication } from '@sap-ux/btp-utils';
 
 export const enum TargetSystemType {
     Url = 'Url'
@@ -251,7 +252,7 @@ export interface AbapDeployConfigAnswersInternal extends AbapDeployConfigAnswers
     clientChoice?: string;
     username?: string;
     isAbapCloud?: boolean;
-    destinationAuthType?: string;
+    destinationAuthType?: Authentication;
     packageInputChoice?: PackageInputChoices;
     packageManual?: string;
     packageAutocomplete?: string;
