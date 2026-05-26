@@ -617,4 +617,3 @@ function writePageObject(
         }
     );
 }
-
