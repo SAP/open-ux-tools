@@ -15,11 +15,12 @@ import type { AnnotationFile, AnyNode as AnyAnnotationNode } from '@sap-ux/odata
 import { ANNOTATION_FILE_TYPE } from '@sap-ux/odata-annotation-core';
 import { normalizePath } from '@sap-ux/project-access';
 
-import { FioriChangeSourceCode, FioriJSONSourceCode } from './json/source-code';
+import { FioriJSONSourceCode } from './json/source-code';
 import { FioriXMLSourceCode, visitorKeys as xmlVisitorKeys } from './xml/source-code';
 import { ProjectContext } from '../project-context/project-context';
 import { FioriAnnotationSourceCode, visitorKeys as annotationVisitorKeys } from './annotations/source-code';
 import { DiagnosticCache } from './diagnostic-cache';
+import { FioriChangeSourceCode } from './change/source-code';
 
 export type FioriLanguageOptions = {};
 export type FioriSourceCode =

@@ -11,7 +11,7 @@ export interface ParsedProject {
 }
 
 export interface FlexChange {
-    changeType: string | 'propertyChange';
+    changeType: string;
     content: {
         property: string;
         newValue: boolean;
