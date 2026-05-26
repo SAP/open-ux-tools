@@ -133,6 +133,7 @@ export function updateDestinationPromptState(destinationName: string, destinatio
         return;
     }
     PromptState.abapDeployConfig.destination = destination.Name;
+    PromptState.abapDeployConfig.destinationAuthType = destination.Authentication;
     updatePromptState({
         url: destination?.Host,
         client: destination['sap-client'],
