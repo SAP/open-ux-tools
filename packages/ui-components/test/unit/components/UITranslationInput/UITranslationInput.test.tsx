@@ -387,10 +387,9 @@ describe('<UITranslationInput />', () => {
             );
             clickI18nButton();
             expect(document.querySelectorAll(selectors.callout).length).toEqual(1);
-            await waitFor(() => {
-                document.body.click();
-                expect(document.querySelectorAll(selectors.callout).length).toEqual(0);
-            });
+            await new Promise((resolve) => setTimeout(resolve, 0));
+            document.body.click();
+            await waitFor(() => expect(document.querySelectorAll(selectors.callout).length).toEqual(0));
         });
     });
 
