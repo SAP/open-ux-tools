@@ -387,7 +387,7 @@ describe('<UITranslationInput />', () => {
             );
             clickI18nButton();
             expect(document.querySelectorAll(selectors.callout).length).toEqual(1);
-            await new Promise((resolve) => setTimeout(resolve, 0));
+            await new Promise((resolve) => setTimeout(resolve, 50));
             document.body.click();
             await waitFor(() => expect(document.querySelectorAll(selectors.callout).length).toEqual(0));
         });
