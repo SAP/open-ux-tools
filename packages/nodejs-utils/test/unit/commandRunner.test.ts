@@ -15,7 +15,7 @@ jest.unstable_mockModule('node:child_process', () => ({
 }));
 
 // Import after mocking
-const { CommandRunner } = await import('../../src/commandRunner');
+const { CommandRunner } = await import('../../src/commandRunner.js');
 
 // write test cases for the CommandRunner class
 describe('CommandRunner', () => {

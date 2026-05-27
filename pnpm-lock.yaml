@@ -3393,6 +3393,9 @@ importers:
       fast-glob:
         specifier: 3.3.3
         version: 3.3.3
+      i18next:
+        specifier: 25.10.10
+        version: 25.10.10(typescript@5.9.3)
       read-pkg-up:
         specifier: 7.0.1
         version: 7.0.1
