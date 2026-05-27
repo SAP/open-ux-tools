@@ -1,5 +1,26 @@
 # @sap-ux/ui5-test-writer
 
+## 0.9.11
+
+### Patch Changes
+
+- Updated dependencies [162059e]
+    - @sap-ux/ui5-application-writer@1.9.2
+
+## 0.9.10
+
+### Patch Changes
+
+- 03d1cdd: add OPA tests for LR semantic key filters and global search
+
+## 0.9.9
+
+### Patch Changes
+
+- Updated dependencies [01b70ca]
+    - @sap-ux/preview-middleware@0.26.8
+    - @sap-ux/fiori-generator-shared@0.15.4
+
 ## 0.9.8
 
 ### Patch Changes

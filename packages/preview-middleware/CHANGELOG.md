@@ -1,5 +1,15 @@
 # @sap-ux/preview-middleware
 
+## 0.26.8
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade @sap/service-provider-apis 2.8.0 → 2.10.0 (security: axios vulnerability)
+- Updated dependencies [01b70ca]
+    - @sap-ux/adp-tooling@0.19.7
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/system-access@0.8.1
+
 ## 0.26.7
 
 ### Patch Changes
