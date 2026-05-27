@@ -4,7 +4,7 @@ import { getParsedServiceByName } from '../utils';
 import type { ParsedService } from '../parser';
 import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations';
 import { collectHeaderSections, collectSections, collectTables, getConfigurationKey } from './annotations';
-import type { FlexChange } from '../parser/types';
+import type { FlexChange, PropertyChangeConfig } from '../parser/types';
 
 export interface FlexibleColumnLayoutSettings {
     defaultTwoColumnLayoutType: string;
@@ -83,6 +83,18 @@ const createModeValues = ['creationRows', 'creationRowsHiddenInEditMode', 'newPa
 const tableTypeValues = ['Table', 'ResponsiveTable', 'AnalyticalTable', 'GridTable'];
 const statePreservationModeValues = ['persistence', 'discovery'];
 
+const getPropertyChangeConfig = (pageChanges: FlexChange[]): PropertyChangeConfig => {
+    return pageChanges.reduce((allChanges, change) => {
+        const changeSettings = {
+            [change.content.property]: {
+                value: change.content.newValue,
+                selector: change.selector.id.split('::'),
+                changeFileUri: change.changeFileUri
+            }
+        };
+        return { ...allChanges, ...changeSettings };
+    }, {});
+};
 /**
  * Creates table configuration object
  *
@@ -99,17 +111,7 @@ function createTableConfiguration(
     copy: boolean | undefined,
     pageTableChanges: FlexChange[]
 ) {
-    const changes: { [key: string]: { value: boolean; selector: string[]; changeFileUri: string } } =
-        pageTableChanges.reduce((allChanges, change) => {
-            const changeSettings = {
-                [change.content.property]: {
-                    value: change.content.newValue,
-                    selector: change.selector.id.split('::'),
-                    changeFileUri: change.changeFileUri
-                }
-            };
-            return { ...allChanges, ...changeSettings };
-        }, {});
+    const changes = getPropertyChangeConfig(pageTableChanges);
     return {
         createMode: {
             values: createModeValues,
@@ -159,17 +161,7 @@ function createSectionTableConfiguration(
     copy: boolean | undefined,
     pageTableChanges: FlexChange[]
 ) {
-    const changes: { [key: string]: { value: boolean; selector: string[]; changeFileUri: string } } =
-        pageTableChanges.reduce((allChanges, change) => {
-            const changeSettings = {
-                [change.content.property]: {
-                    value: change.content.newValue,
-                    selector: change.selector.id.split('::'),
-                    changeFileUri: change.changeFileUri
-                }
-            };
-            return { ...allChanges, ...changeSettings };
-        }, {});
+    const changes = getPropertyChangeConfig(pageTableChanges);
     return {
         createMode: {
             values: createModeValues,

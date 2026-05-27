@@ -23,6 +23,8 @@ export interface FlexChange {
     changeFileUri: string;
 }
 
+export type PropertyChangeConfig = { [key: string]: { value: boolean; selector: string[]; changeFileUri: string } };
+
 export interface ParsedApp {
     manifest: ParsedManifest;
     services: { [name: string]: ParsedService };
