@@ -1,5 +1,13 @@
 # @sap-ux/axios-extension
 
+## 1.26.1
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade qs 6.15.0 → 6.15.2 (GHSA-q8mj-m7cp-5q26)
+- Updated dependencies [01b70ca]
+    - @sap-ux/btp-utils@1.2.1
+
 ## 1.26.0
 
 ### Minor Changes
