@@ -54,15 +54,14 @@ function loadZoweSecretSdk(log: Logger): typeof zoweKeyring | undefined {
         return require('@zowe/secrets-for-zowe-sdk').keyring;
     } catch (primaryError) {
         log.warn(errorString(primaryError));
-        log.info('Attempting to load Zowe secrets SDK from fallback locations.');
+        log.debug('Attempting to load Zowe secrets SDK from fallback locations.');
 
         try {
             const fallbackPaths = [...getZoweSdkPaths(false), ...getZoweSdkPaths(true)];
-            log.info(`Discovered fallback directories: ${JSON.stringify(fallbackPaths)}`);
-
+            log.debug(`Discovered fallback directories: ${JSON.stringify(fallbackPaths)}`);
             for (const path of fallbackPaths) {
                 try {
-                    log.info(`Attempting to load Zowe secrets SDK from: ${path}`);
+                    log.debug(`Attempting to load Zowe secrets SDK from: ${path}`);
                     return typeof __non_webpack_require__ === 'function'
                         ? __non_webpack_require__(path)
                         : require(path);
@@ -94,7 +93,7 @@ export const getSecureStore = (log: Logger): SecureStore => {
     // Try to initialize secure storage with Zowe secrets SDK
     const zoweSecretSdk = loadZoweSecretSdk(log);
     if (zoweSecretSdk) {
-        log.info('Using KeyStoreManager for secure storage.');
+        log.debug('Using KeyStoreManager for secure storage.');
         return new KeyStoreManager(log, zoweSecretSdk);
     }
 
