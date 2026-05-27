@@ -115,6 +115,137 @@ export async function readLocalModulePaths(project: ReaderCollection, logger: Lo
 }
 
 /**
+ * Strips inlined module entries from `result.modules` whose paths match active local modules.
+ *
+ * @param result the response object being patched (mutated when modules are stripped)
+ * @param active set of active local module paths
+ * @param logger logger instance
+ * @returns true if `result.modules` was modified
+ */
+function stripInlinedModules(result: Record<string, unknown>, active: LocalModulePaths, logger: Logger): boolean {
+    if (!result.modules || typeof result.modules !== 'object') {
+        return false;
+    }
+    const originalModules = result.modules as Record<string, unknown>;
+    const filteredEntries = Object.entries(originalModules).filter(([key]) => {
+        // lastIndexOf anchors on the flex /changes/ segment even if the namespace contains "changes"
+        const changesIdx = key.lastIndexOf('/changes/');
+        if (changesIdx === -1) {
+            return true;
+        }
+        const relativePath = key.substring(changesIdx + '/changes/'.length);
+        if (active.has(relativePath)) {
+            logger.debug(`Stripping inlined module '${key}' — local version will be served instead`);
+            return false;
+        }
+        return true;
+    });
+
+    const removedCount = Object.keys(originalModules).length - filteredEntries.length;
+    if (removedCount === 0) {
+        return false;
+    }
+    logger.info(`Stripped ${removedCount} inlined module(s) from LREP response in favor of local versions`);
+    result.modules = Object.fromEntries(filteredEntries);
+    return true;
+}
+
+/**
+ * Injects expected `moduleName` values into changes whose local paths are active so UI5 resolves
+ * them via the adp.proxy instead of expecting inlined module content.
+ *
+ * @param changes the array of change objects
+ * @param active set of active local module paths
+ * @param logger logger instance
+ * @returns updated changes array if any moduleName was injected, otherwise null
+ */
+function injectModuleNames(changes: unknown[], active: LocalModulePaths, logger: Logger): unknown[] | null {
+    let changesModified = false;
+    const updatedChanges = changes.map((change) => {
+        const c = change as Record<string, unknown>;
+        const content = c.content as Record<string, unknown> | undefined;
+        const reference = typeof c.reference === 'string' ? c.reference : '';
+        const changeType = c.changeType;
+        const localPath = extractLocalModulePath(changeType, content);
+
+        if (!localPath || !active.has(localPath) || !reference) {
+            return change;
+        }
+        const prefix = reference.replaceAll('.', '/');
+        // codeExt modules are JS — strip .js so the path is a valid UI5 module ID
+        const modulePathSuffix = changeType === 'codeExt' ? localPath.replace('.js', '') : localPath;
+        const expectedModuleName = `${prefix}/changes/${modulePathSuffix}`;
+        if (c.moduleName === expectedModuleName) {
+            return change;
+        }
+        logger.debug(`Setting moduleName '${expectedModuleName}' for local '${localPath}'`);
+        changesModified = true;
+        return { ...c, moduleName: expectedModuleName };
+    });
+    return changesModified ? updatedChanges : null;
+}
+
+/**
+ * Filters out deployed changes whose local file exists but whose local change record was deleted
+ * (i.e. orphaned). Returning these changes would re-apply ABAP state that the user already removed.
+ *
+ * @param changes the array of change objects
+ * @param orphaned set of orphaned local module paths
+ * @param logger logger instance
+ * @returns filtered changes array if any change was suppressed, otherwise null
+ */
+function suppressOrphanedChanges(changes: unknown[], orphaned: LocalModulePaths, logger: Logger): unknown[] | null {
+    const filteredChanges = changes.filter((change) => {
+        const c = change as Record<string, unknown>;
+        const content = c.content as Record<string, unknown> | undefined;
+        const localPath = extractLocalModulePath(c.changeType, content);
+        if (localPath && orphaned.has(localPath)) {
+            logger.debug(`Suppressing deployed change for orphaned local file '${localPath}'`);
+            return false;
+        }
+        return true;
+    });
+    const removedCount = changes.length - filteredChanges.length;
+    if (removedCount === 0) {
+        return null;
+    }
+    logger.info(
+        `Suppressed ${removedCount} deployed change(s) whose local files exist but change records were deleted`
+    );
+    return filteredChanges;
+}
+
+/**
+ * Applies moduleName injection and orphaned-change suppression to `result.changes`.
+ *
+ * @param result the response object being patched (mutated when changes are updated)
+ * @param state local module state (active and orphaned)
+ * @param logger logger instance
+ * @returns true if `result.changes` was modified
+ */
+function processChanges(result: Record<string, unknown>, state: LocalModuleState, logger: Logger): boolean {
+    if (!result.changes || !Array.isArray(result.changes)) {
+        return false;
+    }
+    let modified = false;
+
+    const injected = injectModuleNames(result.changes as unknown[], state.active, logger);
+    if (injected) {
+        result.changes = injected;
+        modified = true;
+    }
+
+    if (state.orphaned.size > 0) {
+        const suppressed = suppressOrphanedChanges(result.changes as unknown[], state.orphaned, logger);
+        if (suppressed) {
+            result.changes = suppressed;
+            modified = true;
+        }
+    }
+    return modified;
+}
+
+/**
  * Patches an LREP flex data response so that deployed changes whose module
  * files exist locally in the workspace are loaded from the local workspace
  * instead of from ABAP.
@@ -133,30 +264,8 @@ export function stripLocalModulesFromLrepResponse(
         return responseData;
     }
 
-    let modified = false;
     const result: Record<string, unknown> = { ...responseData };
-    if (result.modules && typeof result.modules === 'object') {
-        const originalModules = result.modules as Record<string, unknown>;
-        const filteredEntries = Object.entries(originalModules).filter(([key]) => {
-            // lastIndexOf anchors on the flex /changes/ segment even if the namespace contains "changes"
-            const changesIdx = key.lastIndexOf('/changes/');
-            if (changesIdx !== -1) {
-                const relativePath = key.substring(changesIdx + '/changes/'.length);
-                if (localModuleState.active.has(relativePath)) {
-                    logger.debug(`Stripping inlined module '${key}' — local version will be served instead`);
-                    return false;
-                }
-            }
-            return true;
-        });
-
-        const removedCount = Object.keys(originalModules).length - filteredEntries.length;
-        if (removedCount > 0) {
-            logger.info(`Stripped ${removedCount} inlined module(s) from LREP response in favor of local versions`);
-            result.modules = Object.fromEntries(filteredEntries);
-            modified = true;
-        }
-    }
+    let modified = stripInlinedModules(result, localModuleState.active, logger);
 
     if (result.loadModules === true && localModuleState.active.size > 0) {
         logger.debug(
@@ -166,56 +275,8 @@ export function stripLocalModulesFromLrepResponse(
         modified = true;
     }
 
-    if (result.changes && Array.isArray(result.changes)) {
-        let changesModified = false;
-        const updatedChanges = (result.changes as unknown[]).map((change) => {
-            const c = change as Record<string, unknown>;
-            const content = c.content as Record<string, unknown> | undefined;
-            const reference = typeof c.reference === 'string' ? c.reference : '';
-            const changeType = c.changeType;
-            const localPath = extractLocalModulePath(changeType, content);
-
-            if (localPath && localModuleState.active.has(localPath) && reference) {
-                const prefix = reference.replace(/\./g, '/');
-                // codeExt modules are JS — strip .js so the path is a valid UI5 module ID
-                const modulePathSuffix = changeType === 'codeExt' ? localPath.replace('.js', '') : localPath;
-                const expectedModuleName = `${prefix}/changes/${modulePathSuffix}`;
-                if (c.moduleName !== expectedModuleName) {
-                    logger.debug(`Setting moduleName '${expectedModuleName}' for local '${localPath}'`);
-                    changesModified = true;
-                    return { ...c, moduleName: expectedModuleName };
-                }
-            }
-            return change;
-        });
-
-        if (changesModified) {
-            result.changes = updatedChanges;
-            modified = true;
-        }
-
-        if (localModuleState.orphaned.size > 0) {
-            const beforeCount = (result.changes as unknown[]).length;
-            const filteredChanges = (result.changes as unknown[]).filter((change) => {
-                const c = change as Record<string, unknown>;
-                const content = c.content as Record<string, unknown> | undefined;
-                const localPath = extractLocalModulePath(c.changeType, content);
-                if (localPath && localModuleState.orphaned.has(localPath)) {
-                    logger.debug(`Suppressing deployed change for orphaned local file '${localPath}'`);
-                    return false;
-                }
-                return true;
-            });
-
-            const removedCount = beforeCount - filteredChanges.length;
-            if (removedCount > 0) {
-                logger.info(
-                    `Suppressed ${removedCount} deployed change(s) whose local files exist but change records were deleted`
-                );
-                result.changes = filteredChanges;
-                modified = true;
-            }
-        }
+    if (processChanges(result, localModuleState, logger)) {
+        modified = true;
     }
 
     return modified ? result : responseData;
