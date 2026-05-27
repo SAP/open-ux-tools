@@ -1,5 +1,20 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.2.5
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade @sap/service-provider-apis 2.8.0 → 2.10.0 (security: axios vulnerability)
+- Updated dependencies [01b70ca]
+- Updated dependencies [01b70ca]
+    - @sap-ux/axios-extension@1.26.1
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/fiori-generator-shared@0.15.4
+    - @sap-ux/system-access@0.8.1
+    - @sap-ux/ui-service-inquirer@0.3.5
+    - @sap-ux/inquirer-common@0.13.3
+    - @sap-ux/telemetry@0.7.3
+
 ## 0.2.4
 
 ### Patch Changes

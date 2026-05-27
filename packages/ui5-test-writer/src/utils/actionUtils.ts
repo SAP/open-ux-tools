@@ -271,6 +271,34 @@ export function analyzeUpdateRestrictions(restriction: UpdateRestrictionsType | 
 
 /**
  * Checks the visibility and enabled state of create and delete buttons for a given entity set
+ * by analyzing OData Capabilities annotations in the converted metadata.
+ *
+ * @param convertedMetadata The already-converted OData metadata
+ * @param entitySetName The name of the entity set to check
+ * @returns ButtonVisibilityResult containing the state of create and delete buttons
+ * @throws {Error} If entity set is not found
+ */
+export function checkButtonVisibilityFromMetadata(
+    convertedMetadata: ConvertedMetadata,
+    entitySetName: string
+): ButtonVisibilityResult {
+    const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
+
+    if (!entitySet) {
+        throw new Error(`Entity set '${entitySetName}' not found in metadata`);
+    }
+
+    const insertRestrictions = entitySet.annotations?.Capabilities?.InsertRestrictions;
+    const deleteRestrictions = entitySet.annotations?.Capabilities?.DeleteRestrictions;
+
+    return {
+        create: analyzeInsertRestrictions(insertRestrictions),
+        delete: analyzeDeleteRestrictions(deleteRestrictions)
+    };
+}
+
+/**
+ * Checks the visibility and enabled state of create and delete buttons for a given entity set
  * by analyzing OData Capabilities annotations in the metadata.
  *
  * @param metadataXml The OData metadata XML content as a string
@@ -280,20 +308,7 @@ export function analyzeUpdateRestrictions(restriction: UpdateRestrictionsType | 
  */
 export function checkButtonVisibility(metadataXml: string, entitySetName: string): ButtonVisibilityResult {
     try {
-        const convertedMetadata: ConvertedMetadata = convert(parse(metadataXml));
-        const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
-
-        if (!entitySet) {
-            throw new Error(`Entity set '${entitySetName}' not found in metadata`);
-        }
-
-        const insertRestrictions = entitySet.annotations?.Capabilities?.InsertRestrictions;
-        const deleteRestrictions = entitySet.annotations?.Capabilities?.DeleteRestrictions;
-
-        return {
-            create: analyzeInsertRestrictions(insertRestrictions),
-            delete: analyzeDeleteRestrictions(deleteRestrictions)
-        };
+        return checkButtonVisibilityFromMetadata(convert(parse(metadataXml)), entitySetName);
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         throw new Error(`Failed to analyze button visibility: ${errorMessage}`);
@@ -323,6 +338,27 @@ export function checkEditVisibility(metadataXml: string, entitySetName: string):
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         throw new Error(`Failed to analyze edit visibility: ${errorMessage}`);
+    }
+}
+
+/**
+ * Safely checks button visibility from already-converted metadata, with error handling.
+ *
+ * @param convertedMetadata The already-converted OData metadata
+ * @param entitySetName The name of the entity set
+ * @param log Optional logger instance
+ * @returns Button visibility result or undefined if error occurs
+ */
+export function safeCheckButtonVisibilityFromMetadata(
+    convertedMetadata: ConvertedMetadata,
+    entitySetName: string,
+    log?: Logger
+): ButtonVisibilityResult | undefined {
+    try {
+        return checkButtonVisibilityFromMetadata(convertedMetadata, entitySetName);
+    } catch (error) {
+        log?.debug(`Failed to check button visibility: ${error instanceof Error ? error.message : String(error)}`);
+        return undefined;
     }
 }
 

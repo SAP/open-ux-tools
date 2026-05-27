@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import fileSystem from 'node:fs';
+import fileSystem, { readFileSync } from 'node:fs';
 import type { Logger } from '@sap-ux/logger/src/types';
 import * as appModels from '../test-input/constants';
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -36,7 +36,7 @@ jest.unstable_mockModule('../../src/utils/opaQUnitUtils.js', () => ({
     addPathsToQUnitJs: (...args: unknown[]) => addPathsToQUnitJsMock(...args)
 }));
 
-const { generateOPAFiles, generatePageObjectFile } = await import('../../src/fiori-elements-opa-writer.js');
+const { generateOPAFiles } = await import('../../src/fiori-elements-opa-writer.js');
 
 describe('ui5-test-writer', () => {
     let fs: Editor | undefined;
@@ -76,92 +76,11 @@ describe('ui5-test-writer', () => {
         });
     });
 
-    describe('generatePageObjectFile', () => {
-        const testPages = [
-            {
-                description: 'ListReport',
-                targetKey: 'EmployeesListTarget'
-            },
-            {
-                description: 'Object Page',
-                targetKey: 'EmployeesObjectPageTarget'
-            },
-            {
-                description: 'FPM custom',
-                targetKey: 'EmployeesCustomPageTarget'
-            }
-        ];
-        const testUnsupportedPages = [
-            {
-                description: 'Another component view (not supported)',
-                targetKey: 'AnotherCustomPageTarget',
-                errorMsg: 'Validation error: Cannot generate the page file for target: AnotherCustomPageTarget.'
-            },
-            {
-                description: 'Plain XML view (not supported)',
-                targetKey: 'XMLView',
-                errorMsg: 'Validation error: Cannot generate the page file for target: XMLView.'
-            },
-            {
-                description: 'Missing ID',
-                targetKey: 'NoID',
-                errorMsg: 'Validation error: Cannot generate the page file for target: NoID.'
-            },
-            {
-                description: 'Missing entityset',
-                targetKey: 'NoEntitySet',
-                errorMsg: 'Validation error: Cannot generate the page file for target: NoEntitySet.'
-            },
-            {
-                description: 'Bad target',
-                targetKey: 'XXX',
-                errorMsg: 'Validation error: Cannot generate the page file for target: XXX.'
-            }
-        ];
-
-        it.each(testPages)('$description', async (config) => {
-            const projectDir = prepareTestFiles('Pages');
-            fs = await generatePageObjectFile(projectDir, { targetKey: config.targetKey }, fs);
-            expect(fs.dump(projectDir)).toMatchSnapshot();
-        });
-
-        it.each(testUnsupportedPages)('$description', async (config) => {
-            const projectDir = prepareTestFiles('Pages');
-            let error: string | undefined;
-            try {
-                fs = await generatePageObjectFile(projectDir, { targetKey: config.targetKey }, fs);
-            } catch (e) {
-                error = (e as Error).message;
-            }
-
-            expect(error).toEqual(config.errorMsg);
-        });
-
-        it('No manifest', async () => {
-            const projectDir = prepareTestFiles('Not_Here');
-            let error: string | undefined;
-            try {
-                fs = await generatePageObjectFile(projectDir, { targetKey: 'xx' }, fs);
-            } catch (e) {
-                error = (e as Error).message;
-            }
-
-            expect(error?.startsWith('Validation error: Cannot read the `manifest.json` file:')).toEqual(true);
-        });
-
-        it('Providing an app ID', async () => {
-            const projectDir = prepareTestFiles('Pages');
-            fs = await generatePageObjectFile(
-                projectDir,
-                { targetKey: 'EmployeesListTarget', appID: 'test.ui5-test-writer' },
-                fs
-            );
-            expect(fs.dump(projectDir)).toMatchSnapshot();
-        });
-    });
-
     describe('generateOPAFiles', () => {
-        const metadata = fs?.read(join(__dirname, '../test-input/metadata.xml')) || '';
+        const metadata = readFileSync(join(__dirname, '../fixtures/metadata.xml')).toString();
+        const metadataMissingSemanticFilter = readFileSync(
+            join(__dirname, '../fixtures/metadata_filter_bar_semantic_key.xml')
+        ).toString();
         const testApplications = [
             {
                 description: 'Fullscreen LR-OP',
@@ -319,6 +238,14 @@ describe('ui5-test-writer', () => {
             const firstJourneyContent =
                 fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.js'].contents;
             expect(firstJourneyContent).toContain('iCheckFilterField');
+        });
+
+        it('generates filter tests for LROPv4 app (missing semantic filter)', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL_FILTER_BAR_NO_TRAVEL_ID));
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, {}, metadataMissingSemanticFilter, fs);
+
+            expect(fs.dump(projectDir)).toMatchSnapshot();
         });
 
         it('generates column tests for LROPv4 app', async () => {

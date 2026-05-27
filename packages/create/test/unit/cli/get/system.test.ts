@@ -78,7 +78,11 @@ describe('system/get', () => {
 
     test('should output system as JSON', async () => {
         // Given
-        const stdoutSpy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
+        const writes: string[] = [];
+        const stdoutSpy = jest.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
+            writes.push(chunk as string);
+            return true;
+        });
         const command = new Command('get');
         addSystemGetCommand(command);
 
@@ -93,7 +97,6 @@ describe('system/get', () => {
         expect(parsed.name).toBe('My System');
         expect(parsed.password).toBeUndefined();
         expect(parsed.username).toBeUndefined();
-        stdoutSpy.mockRestore();
     });
 
     test('should log error when system not found', async () => {
