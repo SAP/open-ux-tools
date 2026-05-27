@@ -17,6 +17,8 @@
 
 import opaTest from "sap/ui/test/opaQunit";
 import type { Given, When, Then } from "<%- appPath %>/test/integration/types/OpaJourneyTypes";
+import type { FieldIdentifier } from "sap/fe/test/api/BaseAPI";
+import type { FormIdentifier } from "sap/fe/test/api/FormAPI";
 import runner from "./pages/JourneyRunner";
 
 function journey() {
@@ -41,7 +43,7 @@ function journey() {
     opaTest("Check header facets of the Object Page", function (Given: Given, When: When, Then: Then) {
 <% headerSections.forEach(function(section) { -%>
 <% if (section.microChart) { -%>
-        Then.onThe<%- name%>.onHeader().iCheckMicroChart("<%- section.title %>");
+        Then.onThe<%- name%>.onHeader().iCheckMicroChart("<%- section.title %>", "");
 <% } else { -%>
         Then.onThe<%- name%>.onHeader().iCheckHeaderFacet({ facetId: "<%- section.facetId %>" });
 <% if (section.form) { -%>
@@ -50,7 +52,7 @@ function journey() {
             fieldGroup: "FieldGroup::<%- field.fieldGroupQualifier %>",
             field: "<%- field.field %>",
             targetAnnotation: "<%- field.targetAnnotation %>"
-        });
+        } as unknown as FieldIdentifier);
 <% }) -%>
 <% } -%>
 <% } -%>
@@ -74,7 +76,7 @@ function journey() {
         Then.onThe<%- name%>.iCheckSubSection({ section: "<%- subSection.id %>" });
 <% if (subSection.fields && subSection.fields.length > 0) { -%>
 <% subSection.fields.forEach(function(field) { -%>
-        Then.onThe<%- name%>.onForm("<%- subSection.id %>").iCheckField({ property: "<%- field.property %>" });
+        Then.onThe<%- name%>.onForm({ section: "<%- subSection.id %>" } as unknown as FormIdentifier).iCheckField({ property: "<%- field.property %>" });
 <% }) -%>
 <% } -%>
 <% if (subSection.tableColumns && Object.keys(subSection.tableColumns).length > 0 && subSection.navigationProperty) { -%>
@@ -84,7 +86,7 @@ function journey() {
 <% } else { -%>
 <% if (section.fields && section.fields.length > 0) { -%>
 <% section.fields.forEach(function(field) { -%>
-        Then.onThe<%- name%>.onForm("<%- section.id %>").iCheckField({ property: "<%- field.property %>" });
+        Then.onThe<%- name%>.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckField({ property: "<%- field.property %>" });
 <% }) -%>
 <% } -%>
 <% if (section.tableColumns && Object.keys(section.tableColumns).length > 0 && section.navigationProperty) { -%>

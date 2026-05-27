@@ -11576,9 +11576,8 @@ export default new ListReport(
     {
         appId: \\"ui5-test-writer.test.employees\\",
         componentId: \\"EmployeesList\\",
-        entitySet: \\"Employees\\",
-        contextPath: \\"\\"
-    },
+        entitySet: \\"Employees\\"
+    } as ConstructorParameters<typeof ListReport>[0],
     { actions, assertions }
 );
 ",
@@ -11604,9 +11603,8 @@ export default new ObjectPage(
     {
         appId: \\"ui5-test-writer.test.employees\\",
         componentId: \\"EmployeesObjectPage\\",
-        entitySet: \\"Employees\\",
-        contextPath: \\"\\"
-    },
+        entitySet: \\"Employees\\"
+    } as ConstructorParameters<typeof ObjectPage>[0],
     { actions, assertions }
 );
 ",
@@ -11975,9 +11973,8 @@ export default new ListReport(
     {
         appId: \\"ui5-test-writer.test.employees\\",
         componentId: \\"EmployeesList\\",
-        entitySet: \\"Employees\\",
-        contextPath: \\"\\"
-    },
+        entitySet: \\"Employees\\"
+    } as ConstructorParameters<typeof ListReport>[0],
     { actions, assertions }
 );
 ",
@@ -12003,9 +12000,8 @@ export default new ObjectPage(
     {
         appId: \\"ui5-test-writer.test.employees\\",
         componentId: \\"EmployeesObjectPage\\",
-        entitySet: \\"Employees\\",
-        contextPath: \\"\\"
-    },
+        entitySet: \\"Employees\\"
+    } as ConstructorParameters<typeof ObjectPage>[0],
     { actions, assertions }
 );
 ",
@@ -12374,9 +12370,8 @@ export default new ListReport(
     {
         appId: \\"ui5-test-writer.test.employees\\",
         componentId: \\"EmployeesList\\",
-        entitySet: \\"\\",
         contextPath: \\"/Employees\\"
-    },
+    } as ConstructorParameters<typeof ListReport>[0],
     { actions, assertions }
 );
 ",
@@ -12402,9 +12397,8 @@ export default new ObjectPage(
     {
         appId: \\"ui5-test-writer.test.employees\\",
         componentId: \\"EmployeesObjectPage\\",
-        entitySet: \\"\\",
         contextPath: \\"/Employees\\"
-    },
+    } as ConstructorParameters<typeof ObjectPage>[0],
     { actions, assertions }
 );
 ",
@@ -12747,9 +12741,8 @@ export default new ListReport(
     {
         appId: \\"ui5-test-writer.test.employees\\",
         componentId: \\"EmployeesList\\",
-        entitySet: \\"Employees\\",
-        contextPath: \\"\\"
-    },
+        entitySet: \\"Employees\\"
+    } as ConstructorParameters<typeof ListReport>[0],
     { actions, assertions }
 );
 ",
@@ -13155,9 +13148,8 @@ export default new ListReport(
     {
         appId: \\"vesc.demo.employee.project2\\",
         componentId: \\"EmployeesList\\",
-        entitySet: \\"Employees\\",
-        contextPath: \\"\\"
-    },
+        entitySet: \\"Employees\\"
+    } as ConstructorParameters<typeof ListReport>[0],
     { actions, assertions }
 );
 ",
@@ -13183,9 +13175,8 @@ export default new ObjectPage(
     {
         appId: \\"vesc.demo.employee.project2\\",
         componentId: \\"EmployeesObjectPage\\",
-        entitySet: \\"Employees\\",
-        contextPath: \\"\\"
-    },
+        entitySet: \\"Employees\\"
+    } as ConstructorParameters<typeof ObjectPage>[0],
     { actions, assertions }
 );
 ",
@@ -13233,9 +13224,8 @@ export default new ObjectPage(
     {
         appId: \\"vesc.demo.employee.project2\\",
         componentId: \\"PositionsObjectPage\\",
-        entitySet: \\"Positions\\",
-        contextPath: \\"\\"
-    },
+        entitySet: \\"Positions\\"
+    } as ConstructorParameters<typeof ObjectPage>[0],
     { actions, assertions }
 );
 ",
@@ -13261,9 +13251,8 @@ export default new ObjectPage(
     {
         appId: \\"vesc.demo.employee.project2\\",
         componentId: \\"TrainingsObjectPage\\",
-        entitySet: \\"Trainings\\",
-        contextPath: \\"\\"
-    },
+        entitySet: \\"Trainings\\"
+    } as ConstructorParameters<typeof ObjectPage>[0],
     { actions, assertions }
 );
 ",

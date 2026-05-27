@@ -974,8 +974,8 @@ describe('ui5-test-writer', () => {
             expect(lrContent).toContain('export default new ListReport(');
             expect(lrContent).toContain('export const actions');
             expect(lrContent).toContain('export const assertions');
-            expect(lrContent).toContain('entitySet:');
-            expect(lrContent).toContain('contextPath:');
+            expect(lrContent).toContain('entitySet: "Employees"');
+            expect(lrContent).not.toContain('contextPath:');
             expect(lrContent).not.toContain('sap.ui.define');
 
             const opPagePath = Object.keys(dumped).find((p) => p.includes('pages/EmployeesObjectPage.ts'));
