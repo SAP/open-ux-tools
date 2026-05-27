@@ -91,6 +91,7 @@ function checkConfiguration(
         if (service.config.version === '2.0') {
             problems.push({
                 type: ENABLE_EXPORT,
+                property: 'enableExport',
                 pageName: page.targetName,
                 pageSectionName,
                 changeFileUri: table.configuration.enableExport.changeFileUri
@@ -98,6 +99,7 @@ function checkConfiguration(
         } else if (service.config.version === '4.0') {
             problems.push({
                 type: ENABLE_EXPORT,
+                property: 'enableExport',
                 pageName: page.targetName,
                 pageSectionName,
                 manifest: {

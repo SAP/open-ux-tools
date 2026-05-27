@@ -73,6 +73,7 @@ export interface CopyToClipboard {
 
 export interface EnableExport {
     type: typeof ENABLE_EXPORT;
+    property: string;
     pageName: string;
     pageSectionName?: string;
     manifest?: ManifestPropertyDiagnosticData; // In ODataV2 apps this setting is defined in a .change file
@@ -81,6 +82,7 @@ export interface EnableExport {
 
 export interface EnablePaste {
     type: typeof ENABLE_PASTE;
+    property: string;
     pageName: string;
     pageSectionName?: string;
     manifest?: ManifestPropertyDiagnosticData; // In ODataV2 apps this setting is defined in a .change file

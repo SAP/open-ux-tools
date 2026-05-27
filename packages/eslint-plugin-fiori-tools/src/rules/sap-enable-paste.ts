@@ -103,6 +103,7 @@ function checkConfiguration(
         if (table.configuration.showPasteButton.valueInFile === false) {
             problems.push({
                 type: ENABLE_PASTE,
+                property: 'showPasteButton',
                 pageName: page.targetName,
                 pageSectionName,
                 changeFileUri: table.configuration.showPasteButton.changeFileUri
@@ -111,6 +112,7 @@ function checkConfiguration(
     } else if (table.configuration.enablePaste.valueInFile === false) {
         problems.push({
             type: ENABLE_PASTE,
+            property: 'enablePaste',
             pageName: page.targetName,
             pageSectionName,
             manifest: {
