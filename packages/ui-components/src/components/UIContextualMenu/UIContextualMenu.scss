@@ -9,7 +9,7 @@ $layout-dropdown-menu-item-focus-background: $menu-item-selection-background;
 $layout-dropdown-menu-item-focus-color: $menu-item-selection-color;
 
 $layout-contextual-menu-border-color: var(--vscode-editorWidget-border);
-$layout-contextual-menu-border-radius: 4px;
+$layout-contextual-menu-border-radius: var(--vscode-cornerRadius-small, 4px);
 $layout-contextual-menu-item-hover-background: var(--vscode-menu-selectionBackground);
 $layout-contextual-menu-item-hover-color: var(--vscode-menu-selectionForeground, var(--vscode-menu-foreground));
 $layout-contextual-menu-item-focus-background: $layout-contextual-menu-item-hover-background;
