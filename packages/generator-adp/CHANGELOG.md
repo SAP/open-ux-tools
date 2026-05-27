@@ -1,5 +1,11 @@
 # @sap-ux/generator-adp
 
+## 0.10.10
+
+### Patch Changes
+
+- c1575e0: fix: The business solution name must use lowercase letters, numbers, dots (.), underscores (\_), and hyphens (-) only. The name must contain at least one letter or number.
+
 ## 0.10.9
 
 ### Patch Changes
