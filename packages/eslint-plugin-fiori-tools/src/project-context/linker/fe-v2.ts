@@ -531,6 +531,27 @@ function linkPage(
 }
 
 /**
+ * Filters flex changes related to a given page.
+ *
+ * @param changes - All changes in the project
+ * @param page - Page to select changes for
+ * @returns - An array of property changes in a page
+ */
+const getPageChanges = (changes: FlexChange[], page: FeV2PageType): FlexChange[] => {
+    return changes.filter((change) => {
+        const selectors = change.selector.id.split('::');
+        if (
+            change.selector.id.includes(page.entitySetName) &&
+            selectors[1].includes(page.componentName) &&
+            selectors.pop()?.endsWith(page.type === 'list-report-page' ? 'listReport' : 'Table')
+        ) {
+            return true;
+        }
+        return false;
+    });
+};
+
+/**
  * Links tables in a List Report page with their configuration.
  * Creates linked table structures from annotation nodes and manifest settings.
  *
@@ -556,16 +577,7 @@ function linkListReportTable(
         const tableType = tableSettingsConfig.type;
         const copy = tableSettingsConfig.copy;
 
-        const pageTableChanges = changes.filter((change) => {
-            const selectors = change.selector.id.split('::');
-            if (
-                change.selector.id.includes(page.entitySetName) &&
-                selectors[1].includes(page.componentName) &&
-                selectors.pop()?.endsWith('listReport')
-            ) {
-                return true;
-            }
-        });
+        const pageTableChanges = getPageChanges(changes, page);
         const linkedTable: Table = {
             type: table.type,
             annotation: table,
@@ -618,16 +630,7 @@ function linkObjectPageSections(
     changes: FlexChange[]
 ): void {
     const controls: Record<string, Section | Table> = {};
-    const pageTableChanges = changes.filter((change) => {
-        const selectors = change.selector.id.split('::');
-        if (
-            change.selector.id.includes(page.entitySetName) &&
-            selectors[1].includes(page.componentName) &&
-            selectors.pop() === 'Table'
-        ) {
-            return true;
-        }
-    });
+    const pageTableChanges = getPageChanges(changes, page);
     for (const section of sections) {
         if (section.type !== 'table-section') {
             continue;
