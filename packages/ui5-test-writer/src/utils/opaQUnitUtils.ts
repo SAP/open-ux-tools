@@ -8,6 +8,7 @@ import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { readHashFromFlpSandbox } from './flpSandboxUtils';
 import { getAllUi5YamlFileNames, readUi5Yaml, FileName } from '@sap-ux/project-access';
+import { DotFileExtension } from '../types';
 import type {
     TestConfig as PreviewMiddlewareTestConfig,
     MiddlewareConfig as PreviewMiddlewareConfig
@@ -186,8 +187,14 @@ export function addPathsToQUnitJs(filePaths: string[], projectPath: string, fs: 
     }
 }
 
-/** Relative path from the test output directory to JourneyRunner.js */
-const JOURNEY_RUNNER_FILE = join('integration', 'pages', 'JourneyRunner.js');
+/**
+ * Builds the relative path from the test output directory to the JourneyRunner file.
+ *
+ * @param dotFileExtension - file extension ('.ts' or '.js')
+ * @returns the relative path
+ */
+const getJourneyRunnerFilePath = (dotFileExtension: DotFileExtension): string =>
+    join('integration', 'pages', `JourneyRunner${dotFileExtension}`);
 
 /**
  * Page entry to splice into an existing JourneyRunner.js.
@@ -295,19 +302,103 @@ export function splicePageIntoJourneyRunner(fileContent: string, pages: JourneyR
 }
 
 /**
- * Reads JourneyRunner.js from the project, adds new page entries to all three
- * locations (define array, function params, pages object), and writes the updated
- * content back. Pages already present are skipped.
+ * Splices new page entries into an existing TypeScript JourneyRunner.ts:
+ * - adds a default-import line after the last existing page import
+ * - adds an entry inside the `pages: { ... }` object literal
+ *
+ * Pages already present (detected by their import line) are skipped.
+ * All other content — formatting, comments, whitespace — is preserved exactly.
+ *
+ * Note: files exceeding MAX_FILE_CONTENT_LENGTH characters are returned unchanged to prevent
+ * ReDoS on crafted inputs. Valid generated files are well within this limit.
+ *
+ * @param fileContent - the full content of the JourneyRunner.ts file
+ * @param pages - pages to add
+ * @returns the updated file content, or the original content unchanged if nothing was added
+ */
+export function splicePageIntoJourneyRunnerTs(fileContent: string, pages: JourneyRunnerPage[]): string {
+    if (fileContent.length > MAX_FILE_CONTENT_LENGTH) {
+        return fileContent;
+    }
+    // Determine which pages are not yet present by checking for their default import line
+    const toAdd = pages.filter((page) => {
+        const importPattern = new RegExp(`from\\s+"\\./${page.targetKey}"`);
+        return !importPattern.test(fileContent);
+    });
+
+    if (toAdd.length === 0) {
+        return fileContent;
+    }
+
+    let result = fileContent;
+
+    // 1. Insert imports after the last existing `import ... from "..."` line.
+    //    Matches both relative and module-path imports so new entries follow the import block.
+    //    Use `[ \t]*` (not `\s*`) before the end-of-line anchor so the match doesn't span newlines.
+    const importLineRegex = /^import\s+.+\s+from\s+["'][^"']+["'];?[ \t]*$/gm;
+    let lastImportEnd = -1;
+    let importMatch: RegExpExecArray | null;
+    while ((importMatch = importLineRegex.exec(result)) !== null) {
+        lastImportEnd = importMatch.index + importMatch[0].length;
+    }
+    if (lastImportEnd >= 0) {
+        const newImports = toAdd.map((page) => `\nimport ${page.targetKey} from "./${page.targetKey}";`).join('');
+        result = `${result.slice(0, lastImportEnd)}${newImports}${result.slice(lastImportEnd)}`;
+    }
+
+    // 2. Splice into the pages object: `pages: { onTheFoo: Foo, ... }`.
+    //    Captures everything between `pages: {` and the closing `}`.
+    const pagesObjectRegex = /pages\s*:\s*\{([^}]*)\}/d;
+    const pagesMatch = pagesObjectRegex.exec(result);
+    if (pagesMatch?.indices?.[1]) {
+        const [, pagesBodyEnd] = pagesMatch.indices[1];
+        const pagesBody = result.slice(pagesMatch.indices[1][0], pagesBodyEnd);
+
+        // Detect indentation from the first existing page entry
+        const pageIndentMatch = /^([ \t]+)on/m.exec(pagesBody);
+        const pageIndent = pageIndentMatch ? pageIndentMatch[1] : '        ';
+
+        const newPageEntries = toAdd
+            .map((page) => `${pageIndent}onThe${page.targetKey}: ${page.targetKey},`)
+            .join('\n');
+
+        // Ensure the last existing entry ends with a comma before we insert after it.
+        const trimmedPagesEnd = result.slice(0, pagesBodyEnd).trimEnd();
+        const needsComma = !trimmedPagesEnd.endsWith(',');
+        const commaFix = needsComma ? ',' : '';
+        const trailingWhitespace = result.slice(trimmedPagesEnd.length, pagesBodyEnd);
+        result =
+            `${trimmedPagesEnd}${commaFix}\n${newPageEntries}` + `${trailingWhitespace}${result.slice(pagesBodyEnd)}`;
+    }
+
+    return result;
+}
+
+/**
+ * Reads JourneyRunner from the project, adds new page entries, and writes the updated
+ * content back. Pages already present are skipped. Both AMD (`.js`) and ES module
+ * (`.ts`) variants are supported and dispatched on `dotFileExtension`.
  *
  * @param pages - pages to add
  * @param testOutDirPath - path to the test output directory (`.../webapp/test`)
  * @param fs - mem-fs-editor instance used to read and write the file
+ * @param dotFileExtension - file extension of the JourneyRunner ('.ts' or '.js'); defaults to '.js'
  */
-export function addPagesToJourneyRunner(pages: JourneyRunnerPage[], testOutDirPath: string, fs: Editor): void {
+export function addPagesToJourneyRunner(
+    pages: JourneyRunnerPage[],
+    testOutDirPath: string,
+    fs: Editor,
+    dotFileExtension: DotFileExtension = DotFileExtension.JS
+): void {
+    if (pages.length === 0) {
+        return;
+    }
     try {
-        const filePath = join(testOutDirPath, JOURNEY_RUNNER_FILE);
+        const filePath = join(testOutDirPath, getJourneyRunnerFilePath(dotFileExtension));
         const content = fs.read(filePath);
-        const updated = splicePageIntoJourneyRunner(content, pages);
+        const splice =
+            dotFileExtension === DotFileExtension.TS ? splicePageIntoJourneyRunnerTs : splicePageIntoJourneyRunner;
+        const updated = splice(content, pages);
         if (updated !== content) {
             fs.write(filePath, updated);
         }

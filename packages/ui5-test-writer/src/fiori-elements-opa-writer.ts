@@ -57,7 +57,10 @@ export async function generateOPAFiles(
 
     const config = createConfig(manifest, options, hideFilterBar);
 
-    const dotFileExtension: DotFileExtension = options.enableTypeScript ? DotFileExtension.TS : DotFileExtension.JS;
+    // In standalone mode, auto-detect TS vs JS from the project (presence of `tsconfig.json`)
+    // when the caller has not made an explicit choice. This enforces "TS app → TS tests, JS app → JS tests".
+    const enableTypeScript = options.enableTypeScript ?? (standalone && existsSync(join(basePath, FileName.Tsconfig)));
+    const dotFileExtension: DotFileExtension = enableTypeScript ? DotFileExtension.TS : DotFileExtension.JS;
     const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
     const rootV4TemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being
     const testOutDirPath = join(await getWebappPath(basePath), 'test');
@@ -84,7 +87,9 @@ export async function generateOPAFiles(
     };
 
     if (standalone) {
-        const hasJourneyRunner = existsSync(join(testOutDirPath, 'integration', 'pages', 'JourneyRunner.js'));
+        const hasJourneyRunner = existsSync(
+            join(testOutDirPath, 'integration', 'pages', `JourneyRunner${dotFileExtension}`)
+        );
         const virtualOPA5Configured = await hasVirtualOPA5(basePath);
         if (hasJourneyRunner) {
             writeJourneyFiles(appFeatures, writeContext, true, true, virtualOPA5Configured);
@@ -113,7 +118,7 @@ export async function generateOPAFiles(
         }
     }
 
-    if (options.enableTypeScript) {
+    if (enableTypeScript) {
         writeOpaJourneyTypes(writeContext);
     }
 
@@ -468,7 +473,9 @@ function writeOpaJourneyTypes(writeContext: WriteContext): void {
 
 /**
  * Checks whether a page object file already exists for the given feature name.
- * If it doesn't exist, finds the matching page config and writes the file.
+ * Both `.ts` and `.js` extensions are checked to avoid creating duplicate page objects
+ * when regenerating in a different language than the existing tests use.
+ * If neither exists, finds the matching page config and writes the file.
  *
  * @param featureName - the feature/page name (equals the manifest targetKey)
  * @param config - the OPA config containing all page configurations
@@ -486,8 +493,11 @@ function ensurePageExists(
     editor: Editor,
     dotFileExtension: DotFileExtension
 ): JourneyRunnerPage | undefined {
-    const pageFilePath = join(testOutDirPath, 'integration', 'pages', `${featureName}${dotFileExtension}`);
-    if (editor.exists(pageFilePath)) {
+    const pagesDir = join(testOutDirPath, 'integration', 'pages');
+    if (
+        editor.exists(join(pagesDir, `${featureName}${DotFileExtension.TS}`)) ||
+        editor.exists(join(pagesDir, `${featureName}${DotFileExtension.JS}`))
+    ) {
         return undefined;
     }
     const pageConfig = config.pages.find((p) => p.targetKey === featureName);
@@ -504,7 +514,7 @@ function ensurePageExists(
  * @param appFeatures - object containing feature data for list report, object pages, and FPM
  * @param writeContext - shared write context (config, paths, editor, journey params)
  * @param isStandalone - whether the generation is run in standalone mode (not during app generation)
- * @param hasJourneyRunner - whether a JourneyRunner.js already exists (standalone upgrade path)
+ * @param hasJourneyRunner - whether a JourneyRunner already exists (standalone upgrade path)
  * @param virtualOPA5Configured - whether virtual OPA5 is configured
  */
 function writeJourneyFiles(
@@ -607,7 +617,7 @@ function writeJourneyFiles(
     }
 
     if (newPages.length > 0) {
-        addPagesToJourneyRunner(newPages, testOutDirPath, editor);
+        addPagesToJourneyRunner(newPages, testOutDirPath, editor, dotFileExtension);
     }
 
     if (!virtualOPA5Configured) {

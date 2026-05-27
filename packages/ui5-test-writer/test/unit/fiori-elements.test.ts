@@ -441,8 +441,10 @@ describe('ui5-test-writer', () => {
 
             it('generates journey files but skips opaTests.qunit.js when OPA5 is configured in yaml and JourneyRunner exists', async () => {
                 const projectDir = prepareTestFiles('LropVirtualTests');
-                // Simulate JourneyRunner.js existing on disk
-                existsSyncMock.mockReturnValue(true);
+                // Simulate JourneyRunner.js existing on disk; let other paths fall through to real fs
+                existsSyncMock.mockImplementation((p: string) =>
+                    typeof p === 'string' && p.includes('JourneyRunner.js') ? true : realExistsSync(p)
+                );
                 fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
 
                 expect(fs.dump(projectDir)).toMatchSnapshot();
@@ -652,6 +654,168 @@ describe('ui5-test-writer', () => {
                 expect(packageJson.scripts['int-test']).toBe(existingScript);
                 // Generation still completes
                 expect(Object.keys(dumped).some((p) => p.includes('FirstJourney.js'))).toBe(true);
+            });
+        });
+
+        describe('standalone mode TypeScript auto-detection', () => {
+            let realExistsSync: (path: string) => boolean;
+
+            beforeAll(() => {
+                realExistsSync = jest.requireActual<{ existsSync: (path: string) => boolean }>('node:fs').existsSync;
+            });
+
+            beforeEach(() => {
+                hasVirtualOPA5Mock.mockResolvedValue(false);
+            });
+
+            afterEach(() => {
+                hasVirtualOPA5Mock.mockReset();
+                existsSyncMock.mockImplementation(realExistsSync);
+            });
+
+            it('auto-detects TypeScript when tsconfig.json exists and options.enableTypeScript is undefined', async () => {
+                const projectDir = prepareTestFiles('LropVirtualTests');
+                // Pretend the project has a tsconfig.json (TS app), no JourneyRunner.ts on disk,
+                // but the existing integration folder is present (so it gets moved to integration_old).
+                existsSyncMock.mockImplementation((p: string) => {
+                    if (typeof p !== 'string' || !p.includes('test-output')) {
+                        return realExistsSync(p);
+                    }
+                    if (p.endsWith('tsconfig.json')) {
+                        return true;
+                    }
+                    if (p.includes('JourneyRunner')) {
+                        return false;
+                    }
+                    if (p.endsWith('integration')) {
+                        return true;
+                    }
+                    return realExistsSync(p);
+                });
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                const dumped = fs.dump(projectDir);
+                const paths = Object.keys(dumped);
+                // Active (non-deleted) entries only
+                const isActive = (p: string): boolean => (dumped[p] as { state?: string }).state !== 'deleted';
+
+                // TS files generated under integration/ (not integration_old/)
+                expect(paths.some((p) => p.includes('integration/pages/JourneyRunner.ts') && isActive(p))).toBe(true);
+                expect(paths.some((p) => p.includes('integration/types/OpaJourneyTypes.d.ts') && isActive(p))).toBe(
+                    true
+                );
+                // The existing JS journey runner is moved to integration_old/ (no active JS runner under integration/)
+                const activeJourneyRunnerJs = paths.find(
+                    (p) =>
+                        p.includes('integration/pages/JourneyRunner.js') &&
+                        !p.includes('integration_old') &&
+                        isActive(p)
+                );
+                expect(activeJourneyRunnerJs).toBeUndefined();
+            });
+
+            it('keeps JavaScript when tsconfig.json is absent', async () => {
+                const projectDir = prepareTestFiles('LropVirtualTests');
+                existsSyncMock.mockImplementation((p: string) => {
+                    if (typeof p !== 'string' || !p.includes('test-output')) {
+                        return realExistsSync(p);
+                    }
+                    if (p.endsWith('tsconfig.json')) {
+                        return false;
+                    }
+                    if (p.includes('JourneyRunner')) {
+                        return false;
+                    }
+                    if (p.endsWith('integration')) {
+                        return true;
+                    }
+                    return realExistsSync(p);
+                });
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                const dumped = fs.dump(projectDir);
+                const paths = Object.keys(dumped);
+                const isActive = (p: string): boolean => (dumped[p] as { state?: string }).state !== 'deleted';
+
+                expect(
+                    paths.some(
+                        (p) =>
+                            p.includes('integration/pages/JourneyRunner.js') &&
+                            !p.includes('integration_old') &&
+                            isActive(p)
+                    )
+                ).toBe(true);
+                expect(paths.some((p) => p.includes('integration/pages/JourneyRunner.ts') && isActive(p))).toBe(false);
+                expect(paths.some((p) => p.includes('integration/types/OpaJourneyTypes.d.ts') && isActive(p))).toBe(
+                    false
+                );
+            });
+
+            it('respects explicit options.enableTypeScript=false even when tsconfig.json exists', async () => {
+                const projectDir = prepareTestFiles('LropVirtualTests');
+                existsSyncMock.mockImplementation((p: string) => {
+                    if (typeof p !== 'string' || !p.includes('test-output')) {
+                        return realExistsSync(p);
+                    }
+                    if (p.endsWith('tsconfig.json')) {
+                        return true;
+                    }
+                    if (p.includes('JourneyRunner')) {
+                        return false;
+                    }
+                    if (p.endsWith('integration')) {
+                        return true;
+                    }
+                    return realExistsSync(p);
+                });
+
+                fs = await generateOPAFiles(projectDir, { enableTypeScript: false }, metadata, fs, undefined, true);
+
+                const dumped = fs.dump(projectDir);
+                const paths = Object.keys(dumped);
+                const isActive = (p: string): boolean => (dumped[p] as { state?: string }).state !== 'deleted';
+
+                expect(
+                    paths.some(
+                        (p) =>
+                            p.includes('integration/pages/JourneyRunner.js') &&
+                            !p.includes('integration_old') &&
+                            isActive(p)
+                    )
+                ).toBe(true);
+                expect(paths.some((p) => p.includes('integration/pages/JourneyRunner.ts') && isActive(p))).toBe(false);
+            });
+
+            it('detects existing JourneyRunner.ts in TS mode (extension-aware hasJourneyRunner)', async () => {
+                // Verify the standalone path detects an existing TS JourneyRunner and avoids
+                // the relocate-to-integration_old branch when only the .ts variant is present.
+                const projectDir = prepareTestFiles('LropVirtualTests');
+                existsSyncMock.mockImplementation((p: string) => {
+                    if (typeof p !== 'string' || !p.includes('test-output')) {
+                        return realExistsSync(p);
+                    }
+                    if (p.endsWith('tsconfig.json')) {
+                        return true;
+                    }
+                    if (p.endsWith('JourneyRunner.ts')) {
+                        return true;
+                    }
+                    if (p.endsWith('JourneyRunner.js')) {
+                        return false;
+                    }
+                    return realExistsSync(p);
+                });
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                const dumped = fs.dump(projectDir);
+                const paths = Object.keys(dumped);
+                const isActive = (p: string): boolean => (dumped[p] as { state?: string }).state !== 'deleted';
+
+                // No relocation happened — the existing integration/ folder is NOT moved to integration_old/
+                expect(paths.some((p) => p.includes('integration_old') && isActive(p))).toBe(false);
             });
         });
 

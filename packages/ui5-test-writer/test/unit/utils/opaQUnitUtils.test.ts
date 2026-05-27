@@ -3,11 +3,13 @@ import {
     addPagesToJourneyRunner,
     spliceModulesIntoQUnitContent,
     splicePageIntoJourneyRunner,
+    splicePageIntoJourneyRunnerTs,
     readHtmlTargetFromQUnitJs,
     addIntegrationOldToGitignore,
     hasVirtualOPA5,
     addVirtualTestConfig
 } from '../../../src/utils/opaQUnitUtils';
+import { DotFileExtension } from '../../../src/types';
 import { join } from 'node:path';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
@@ -476,6 +478,123 @@ describe('splicePageIntoJourneyRunner()', () => {
     });
 });
 
+/** Realistic JourneyRunner.ts matching what the TS template generates */
+const JOURNEY_RUNNER_TS_FILE = `import JourneyRunner from "sap/fe/test/JourneyRunner";
+import TravelList from "./TravelList";
+import TravelObjectPage from "./TravelObjectPage";
+
+const runner = new JourneyRunner({
+    launchUrl: sap.ui.require.toUrl("myApp") + "/index.html",
+    pages: {
+        onTheTravelList: TravelList,
+        onTheTravelObjectPage: TravelObjectPage
+    },
+    async: true
+});
+
+export default runner;
+`;
+
+describe('splicePageIntoJourneyRunnerTs()', () => {
+    test('returns file unchanged when all pages already exist', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
+            { targetKey: 'TravelList', appPath: 'myApp' },
+            { targetKey: 'TravelObjectPage', appPath: 'myApp' }
+        ]);
+
+        expect(result).toBe(JOURNEY_RUNNER_TS_FILE);
+    });
+
+    test('returns file unchanged when pages array is empty', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, []);
+        expect(result).toBe(JOURNEY_RUNNER_TS_FILE);
+    });
+
+    test('adds a new page to both import block and pages object', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
+            { targetKey: 'NewPage', appPath: 'myApp' }
+        ]);
+
+        // New default-import line follows the existing imports
+        expect(result).toContain('import NewPage from "./NewPage";');
+        // New entry inside pages: { ... }
+        expect(result).toContain('onTheNewPage: NewPage,');
+    });
+
+    test('adds multiple new pages', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
+            { targetKey: 'PageA', appPath: 'myApp' },
+            { targetKey: 'PageB', appPath: 'myApp' }
+        ]);
+
+        expect(result).toContain('import PageA from "./PageA";');
+        expect(result).toContain('import PageB from "./PageB";');
+        expect(result).toContain('onThePageA: PageA,');
+        expect(result).toContain('onThePageB: PageB,');
+    });
+
+    test('skips pages already present when adding new ones', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
+            { targetKey: 'TravelList', appPath: 'myApp' },
+            { targetKey: 'NewPage', appPath: 'myApp' }
+        ]);
+
+        // Existing import not duplicated
+        const travelListImports = result.match(/import TravelList from/g) ?? [];
+        expect(travelListImports.length).toBe(1);
+        // New entry inserted
+        expect(result).toContain('import NewPage from "./NewPage";');
+        expect(result).toContain('onTheNewPage: NewPage,');
+    });
+
+    test('inserts new imports after the last existing import line', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
+            { targetKey: 'NewPage', appPath: 'myApp' }
+        ]);
+
+        const lines = result.split('\n');
+        const lastTravelImportIdx = lines.findIndex((l) => l.includes('import TravelObjectPage from'));
+        const newPageImportIdx = lines.findIndex((l) => l.includes('import NewPage from'));
+        expect(newPageImportIdx).toBe(lastTravelImportIdx + 1);
+    });
+
+    test('preserves all content outside the patched locations', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
+            { targetKey: 'NewPage', appPath: 'myApp' }
+        ]);
+
+        // Sentinels: header import, runner construction, async flag, default export
+        expect(result).toContain('import JourneyRunner from "sap/fe/test/JourneyRunner";');
+        expect(result).toContain('const runner = new JourneyRunner({');
+        expect(result).toContain('async: true');
+        expect(result).toContain('export default runner;');
+    });
+
+    test('new page object entries use same indentation as existing entries', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
+            { targetKey: 'NewPage', appPath: 'myApp' }
+        ]);
+
+        const lines = result.split('\n');
+        const newPageLine = lines.find((l) => l.includes('onTheNewPage'));
+        // Existing entries use 8-space indentation in the template
+        expect(newPageLine).toMatch(/^ {8}/);
+    });
+
+    test('adds a trailing comma to the last existing pages entry when missing', () => {
+        // Construct a file whose last pages entry has no trailing comma
+        const noTrailingComma = JOURNEY_RUNNER_TS_FILE.replace(
+            'onTheTravelObjectPage: TravelObjectPage\n',
+            'onTheTravelObjectPage: TravelObjectPage\n'
+        );
+        const result = splicePageIntoJourneyRunnerTs(noTrailingComma, [{ targetKey: 'NewPage', appPath: 'myApp' }]);
+
+        // The previously-last entry must end with a comma now
+        expect(result).toMatch(/onTheTravelObjectPage: TravelObjectPage,/);
+        expect(result).toContain('onTheNewPage: NewPage,');
+    });
+});
+
 describe('addPagesToJourneyRunner()', () => {
     const testOutDirPath = join('/', 'project', 'webapp', 'test');
     const expectedFilePath = join(testOutDirPath, 'integration', 'pages', 'JourneyRunner.js');
@@ -524,6 +643,40 @@ describe('addPagesToJourneyRunner()', () => {
         expect(() => {
             addPagesToJourneyRunner([{ targetKey: 'NewPage', appPath: 'myApp' }], testOutDirPath, fs);
         }).not.toThrow();
+        expect(fs.write).not.toHaveBeenCalled();
+    });
+
+    test('returns early without reading when pages array is empty', () => {
+        const fs = makeFsMock(JOURNEY_RUNNER_FILE) as unknown as Editor;
+        addPagesToJourneyRunner([], testOutDirPath, fs);
+
+        expect(fs.read).not.toHaveBeenCalled();
+        expect(fs.write).not.toHaveBeenCalled();
+    });
+
+    test('reads JourneyRunner.ts and writes updated content when dotFileExtension is TS', () => {
+        const tsFilePath = join(testOutDirPath, 'integration', 'pages', 'JourneyRunner.ts');
+        const fs = makeFsMock(JOURNEY_RUNNER_TS_FILE) as unknown as Editor;
+        addPagesToJourneyRunner([{ targetKey: 'NewPage', appPath: 'myApp' }], testOutDirPath, fs, DotFileExtension.TS);
+
+        expect(fs.read).toHaveBeenCalledWith(tsFilePath);
+        expect(fs.write).toHaveBeenCalledWith(tsFilePath, expect.stringContaining('import NewPage from "./NewPage";'));
+        expect(fs.write).toHaveBeenCalledWith(tsFilePath, expect.stringContaining('onTheNewPage: NewPage,'));
+    });
+
+    test('does not write when all pages already exist in TS JourneyRunner', () => {
+        const fs = makeFsMock(JOURNEY_RUNNER_TS_FILE) as unknown as Editor;
+        addPagesToJourneyRunner(
+            [
+                { targetKey: 'TravelList', appPath: 'myApp' },
+                { targetKey: 'TravelObjectPage', appPath: 'myApp' }
+            ],
+            testOutDirPath,
+            fs,
+            DotFileExtension.TS
+        );
+
+        expect(fs.read).toHaveBeenCalled();
         expect(fs.write).not.toHaveBeenCalled();
     });
 });
