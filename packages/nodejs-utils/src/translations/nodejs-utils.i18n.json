@@ -1,6 +1,6 @@
 {
     "error": {
         "unsupportedYoVersion": "The installed version of the `Yo` CLI tool: {{installedYoVersion}} is not supported. Please use `npm` or `yarn` to globally install the latest supported version by running: 'npm i -g yo@{{latestSupportedYoVer}}'.",
-        "executingNpmListCmd": "Running: {{npmCmd}} returned an error: {{- error}}. Check that `npm` is installed and available on the path. If `yo@{{latestSupportedYoVer}}` is not installed use `npm` or `yarn` to globally install the latest required version by running: 'npm i -g yo@{{latestSupportedYoVer}}'."
+        "executingNpmListCmd": "Running: {{npmCmd}} returned an error: {{- error}}. Check that `npm` is installed and available on the path. If `yo@{{latestSupportedYoVer}}` is not installed, use `npm` or `yarn` to globally install the latest required version by running: 'npm i -g yo@{{latestSupportedYoVer}}'."
     }
 }
