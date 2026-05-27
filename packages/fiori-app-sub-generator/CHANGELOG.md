@@ -1,5 +1,95 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.15.19
+
+### Patch Changes
+
+- @sap-ux/odata-service-inquirer@2.23.3
+- @sap-ux/telemetry@0.7.5
+- @sap-ux/fiori-generator-shared@0.15.6
+- @sap-ux/cap-config-writer@0.13.6
+- @sap-ux/fiori-elements-writer@2.10.14
+- @sap-ux/fiori-freestyle-writer@2.7.13
+- @sap-ux/ui5-application-inquirer@0.19.4
+
+## 0.15.18
+
+### Patch Changes
+
+- Updated dependencies [c12420a]
+    - @sap-ux/store@1.6.1
+    - @sap-ux/fiori-generator-shared@0.15.5
+    - @sap-ux/odata-service-inquirer@2.23.2
+    - @sap-ux/telemetry@0.7.4
+    - @sap-ux/cap-config-writer@0.13.5
+    - @sap-ux/fiori-elements-writer@2.10.13
+    - @sap-ux/fiori-freestyle-writer@2.7.12
+    - @sap-ux/ui5-application-inquirer@0.19.3
+
+## 0.15.17
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.10.12
+- @sap-ux/fiori-freestyle-writer@2.7.11
+- @sap-ux/odata-service-inquirer@2.23.1
+
+## 0.15.16
+
+### Patch Changes
+
+- Updated dependencies [acb3b58]
+    - @sap-ux/ui5-application-inquirer@0.19.2
+
+## 0.15.15
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.10.11
+- @sap-ux/fiori-freestyle-writer@2.7.10
+- @sap-ux/odata-service-inquirer@2.23.1
+
+## 0.15.14
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade promptfoo 0.121.3 → 0.121.12 (security: dependency vulnerabilities)
+- Updated dependencies [01b70ca]
+- Updated dependencies [01b70ca]
+    - @sap-ux/axios-extension@1.26.1
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/fiori-generator-shared@0.15.4
+    - @sap-ux/odata-service-inquirer@2.23.1
+    - @sap-ux/odata-service-writer@0.32.2
+    - @sap-ux/telemetry@0.7.3
+    - @sap-ux/cap-config-writer@0.13.4
+    - @sap-ux/fiori-elements-writer@2.10.10
+    - @sap-ux/fiori-freestyle-writer@2.7.9
+    - @sap-ux/ui5-application-inquirer@0.19.1
+
+## 0.15.13
+
+### Patch Changes
+
+- Updated dependencies [acb9875]
+    - @sap-ux/ui5-application-inquirer@0.19.0
+    - @sap-ux/odata-service-inquirer@2.23.0
+
+## 0.15.12
+
+### Patch Changes
+
+- Updated dependencies [f6af206]
+    - @sap-ux/ui5-application-inquirer@0.18.5
+
+## 0.15.11
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.10.9
+- @sap-ux/fiori-freestyle-writer@2.7.8
+- @sap-ux/odata-service-inquirer@2.22.2
+
 ## 0.15.10
 
 ### Patch Changes
