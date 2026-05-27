@@ -1,5 +1,15 @@
 # @sap-ux/environment-check
 
+## 0.19.3
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade @sap/service-provider-apis 2.8.0 → 2.10.0 (security: axios vulnerability)
+- Updated dependencies [01b70ca]
+- Updated dependencies [01b70ca]
+    - @sap-ux/axios-extension@1.26.1
+    - @sap-ux/btp-utils@1.2.1
+
 ## 0.19.2
 
 ### Patch Changes

@@ -1,5 +1,7 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.26.8
+
 ## 0.26.7
 
 ## 0.26.6
