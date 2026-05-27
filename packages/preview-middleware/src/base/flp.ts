@@ -39,7 +39,8 @@ import {
     readChanges,
     readLocalModulePaths,
     stripLocalModulesFromLrepResponse,
-    writeChange
+    writeChange,
+    type LocalModuleState
 } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
 import type {
@@ -1240,7 +1241,8 @@ export class FlpSandbox {
         const descriptor = adp.descriptor;
         const { name, manifest } = descriptor;
         await this.init(manifest, name, adp.resources, adp);
-        this.registerLrepFlexDataFilter(adp);
+        const localModuleState = await readLocalModulePaths(this.project, this.logger);
+        this.registerLrepFlexDataFilter(adp, localModuleState);
         this.router.use(adp.descriptor.url, adp.proxy.bind(adp));
         await this.setupAdpCommonHandlers(adp);
     }
@@ -1259,27 +1261,32 @@ export class FlpSandbox {
     }
 
     /**
-     * Registers a middleware that intercepts LREP flex data responses to strip
-     * inlined modules (fragments, controllers) that exist locally in the workspace.
-     * Removing inlined content forces UI5 to request the module via HTTP, which
-     * the existing ADP proxy handler serves from the local workspace.
-     *
-     * Changes are left untouched — UI5 deduplicates them by fileName when both
-     * LrepConnector and WorkspaceConnector return the same change.
+     * Registers a middleware that intercepts LREP flex data responses to apply
+     * local workspace overrides: stripping inlined modules for active local files,
+     * removing the loadModules pre-fetch flag, injecting correct moduleNames, and
+     * suppressing deployed changes for orphaned local files (change record deleted).
      *
      * @param adp AdpPreview instance with access to the ABAP service provider
+     * @param localModuleState pre-scanned local module state
      */
-    private registerLrepFlexDataFilter(adp: AdpPreview): void {
+    private registerLrepFlexDataFilter(adp: AdpPreview, localModuleState: LocalModuleState): void {
         const provider = adp.serviceProvider;
         if (!provider) {
             return;
         }
 
-        const lrepFlexDataPath = '/sap/bc/lrep/flex/data/' as const;
+        if (localModuleState.active.size === 0 && localModuleState.orphaned.size === 0) {
+            this.logger.debug('No local module files found — LREP flex data filter not registered');
+            return;
+        }
+
+        const lrepFlexDataPath = '/sap/bc/lrep/flex/data/';
         this.router.get(`${lrepFlexDataPath}*`, async (req: Request, res: Response, next: NextFunction) => {
-            await this.lrepFlexDataFilterHandler(req, res, next, provider);
+            await this.lrepFlexDataFilterHandler(req, res, next, provider, localModuleState);
         });
-        this.logger.debug('Registered LREP flex data filter for local workspace priority');
+        this.logger.info(
+            `Registered LREP flex data filter for ${localModuleState.active.size} active and ${localModuleState.orphaned.size} orphaned local module(s)`
+        );
     }
 
     /**
@@ -1290,32 +1297,30 @@ export class FlpSandbox {
      * @param res the response
      * @param next the next middleware
      * @param provider the ABAP service provider for backend calls
+     * @param localModuleState pre-scanned local module state
      */
     private async lrepFlexDataFilterHandler(
         req: Request,
         res: Response,
         next: NextFunction,
-        provider: AbapServiceProvider
+        provider: AbapServiceProvider,
+        localModuleState: LocalModuleState
     ): Promise<void> {
         try {
-            const localModulePaths = await readLocalModulePaths(this.project, this.logger);
-            if (localModulePaths.size === 0) {
-                next();
-                return;
-            }
-
             const response = await provider.get(req.url);
             const responseData = typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
 
             const filtered = stripLocalModulesFromLrepResponse(
                 responseData as Record<string, unknown>,
-                localModulePaths,
+                localModuleState,
                 this.logger
             );
 
             res.status(200).json(filtered);
         } catch (error) {
-            this.logger.warn(`Failed to filter LREP flex data, falling back to unfiltered response: ${error}`);
+            this.logger.error(
+                `LREP flex data filter failed for '${req.url}' — falling back to unfiltered backend response. Local workspace files may not take effect. Error: ${error}`
+            );
             // Fall through to the next middleware (e.g. backend-proxy-middleware)
             // so that preview remains functional even if filtering fails.
             next();

@@ -14,6 +14,17 @@ import type { CommonChangeProperties } from '@sap-ux/adp-tooling';
 export type LocalModulePaths = Set<string>;
 
 /**
+ * State of local module files in the workspace.
+ * - `active`: paths derived from local change files — deployed changes should be served from the local workspace.
+ * - `orphaned`: local files with no corresponding local change record (e.g. change file was deleted) —
+ *   the associated deployed change should be suppressed entirely.
+ */
+export interface LocalModuleState {
+    active: LocalModulePaths;
+    orphaned: LocalModulePaths;
+}
+
+/**
  * Read changes from the file system and return them.
  *
  * @param project reference to the UI5 project
@@ -42,79 +53,172 @@ export async function readChanges(
 }
 
 /**
- * Read local module paths (fragments, controllers) from the workspace.
- * Used to strip inlined modules from the LrepConnector response so that
- * UI5 falls back to HTTP requests, which the existing ADP proxy serves
- * from the local workspace.
+ * Extracts the local module path from a change's type and content.
+ * Returns the fragmentPath for addXML changes, codeRef for codeExt changes, and undefined otherwise.
  *
- * @param project reference to the UI5 project
- * @param logger logger instance
- * @returns set of relative module paths under /changes/
+ * @param changeType
+ * @param content
  */
-export async function readLocalModulePaths(project: ReaderCollection, logger: Logger): Promise<LocalModulePaths> {
-    const modulePaths: LocalModulePaths = new Set();
-
-    const moduleFiles = await project.byGlob('/**/changes/{fragments/**,coding/**}');
-    for (const file of moduleFiles) {
-        const filePath = file.getPath();
-        // lastIndexOf ensures we anchor on the flex /changes/ segment even if
-        // the virtual path contains an earlier /changes/ component (e.g. a project root named "changes")
-        modulePaths.add(filePath.substring(filePath.lastIndexOf('/changes/') + '/changes/'.length));
+function extractLocalModulePath(changeType: unknown, content: Record<string, unknown> | undefined): string | undefined {
+    if (changeType === 'addXML' && typeof content?.fragmentPath === 'string') {
+        return content.fragmentPath;
     }
-
-    logger.debug(`Found ${modulePaths.size} local module(s) for LREP filtering`);
-    return modulePaths;
+    if (changeType === 'codeExt' && typeof content?.codeRef === 'string') {
+        return content.codeRef;
+    }
+    return undefined;
 }
 
 /**
- * Strips inlined modules from an LREP flex data response when the
- * corresponding files exist locally in the workspace.  Removing the
- * inline content forces UI5 to request the module via HTTP, which the
- * existing ADP proxy handler resolves to the local file.
+ * Reads local module state from the workspace.
  *
- * Changes are intentionally left untouched — UI5 deduplicates them by
- * fileName when both LrepConnector and WorkspaceConnector return the
- * same change.
+ * @param project reference to the UI5 project
+ * @param logger logger instance
+ * @returns LocalModuleState with `active` and `orphaned` sets of relative paths under /changes/
+ */
+export async function readLocalModulePaths(project: ReaderCollection, logger: Logger): Promise<LocalModuleState> {
+    const active: LocalModulePaths = new Set();
+    const orphaned: LocalModulePaths = new Set();
+
+    const changeFiles = await project.byGlob(
+        '/**/changes/**/*.{change,variant,ctrl_variant,ctrl_variant_change,ctrl_variant_management_change}'
+    );
+    for (const file of changeFiles) {
+        try {
+            const change = JSON.parse(await file.getString()) as Record<string, unknown>;
+            const content = change.content as Record<string, unknown> | undefined;
+            const localPath = extractLocalModulePath(change.changeType, content);
+            if (localPath) {
+                active.add(localPath);
+            }
+        } catch {
+            // ignore malformed change files — readChanges already warns about them
+        }
+    }
+
+    const moduleFiles = await project.byGlob('/**/changes/{fragments/**/*.xml,coding/**/*.js,coding/**/*.ts}');
+    for (const file of moduleFiles) {
+        const filePath = file.getPath();
+        const changesIdx = filePath.lastIndexOf('/changes/');
+        if (changesIdx !== -1) {
+            const relativePath = filePath.substring(changesIdx + '/changes/'.length);
+            // normalise .ts → .js so the orphaned key matches the codeRef in deployed changes
+            const normalizedPath = relativePath.endsWith('.ts') ? relativePath.slice(0, -3) + '.js' : relativePath;
+            if (!active.has(normalizedPath)) {
+                orphaned.add(normalizedPath);
+            }
+        }
+    }
+
+    logger.debug(`Found ${active.size} active and ${orphaned.size} orphaned local module(s) for LREP filtering`);
+    return { active, orphaned };
+}
+
+/**
+ * Patches an LREP flex data response so that deployed changes whose module
+ * files exist locally in the workspace are loaded from the local workspace
+ * instead of from ABAP.
  *
  * @param responseData the parsed LREP flex data response
- * @param localModulePaths set of relative module paths that exist locally
+ * @param localModuleState state of local module files (active and orphaned)
  * @param logger logger instance
- * @returns the response data with local modules stripped from the inlined modules
+ * @returns the (possibly patched) response data
  */
 export function stripLocalModulesFromLrepResponse(
     responseData: Record<string, unknown>,
-    localModulePaths: LocalModulePaths,
+    localModuleState: LocalModuleState,
     logger: Logger
 ): Record<string, unknown> {
-    if (localModulePaths.size === 0) {
+    if (localModuleState.active.size === 0 && localModuleState.orphaned.size === 0) {
         return responseData;
     }
 
-    if (!responseData.modules || typeof responseData.modules !== 'object') {
-        return responseData;
+    let modified = false;
+    const result: Record<string, unknown> = { ...responseData };
+    if (result.modules && typeof result.modules === 'object') {
+        const originalModules = result.modules as Record<string, unknown>;
+        const filteredEntries = Object.entries(originalModules).filter(([key]) => {
+            // lastIndexOf anchors on the flex /changes/ segment even if the namespace contains "changes"
+            const changesIdx = key.lastIndexOf('/changes/');
+            if (changesIdx !== -1) {
+                const relativePath = key.substring(changesIdx + '/changes/'.length);
+                if (localModuleState.active.has(relativePath)) {
+                    logger.debug(`Stripping inlined module '${key}' — local version will be served instead`);
+                    return false;
+                }
+            }
+            return true;
+        });
+
+        const removedCount = Object.keys(originalModules).length - filteredEntries.length;
+        if (removedCount > 0) {
+            logger.info(`Stripped ${removedCount} inlined module(s) from LREP response in favor of local versions`);
+            result.modules = Object.fromEntries(filteredEntries);
+            modified = true;
+        }
     }
 
-    const originalModules = responseData.modules as Record<string, unknown>;
-    const filteredEntries = Object.entries(originalModules).filter(([key]) => {
-        // lastIndexOf ensures we anchor on the flex /changes/ segment even if the namespace contains "changes"
-        const changesIdx = key.lastIndexOf('/changes/');
-        if (changesIdx !== -1) {
-            const relativePath = key.substring(changesIdx + '/changes/'.length);
-            if (localModulePaths.has(relativePath)) {
-                logger.debug(`Stripping inlined module '${key}' — local version will be served instead`);
-                return false;
+    if (result.loadModules === true && localModuleState.active.size > 0) {
+        logger.debug(
+            'Stripping loadModules flag — modules will be loaded on-demand so adp.proxy can serve local versions'
+        );
+        delete result.loadModules;
+        modified = true;
+    }
+
+    if (result.changes && Array.isArray(result.changes)) {
+        let changesModified = false;
+        const updatedChanges = (result.changes as unknown[]).map((change) => {
+            const c = change as Record<string, unknown>;
+            const content = c.content as Record<string, unknown> | undefined;
+            const reference = typeof c.reference === 'string' ? c.reference : '';
+            const changeType = c.changeType;
+            const localPath = extractLocalModulePath(changeType, content);
+
+            if (localPath && localModuleState.active.has(localPath) && reference) {
+                const prefix = reference.replace(/\./g, '/');
+                // codeExt modules are JS — strip .js so the path is a valid UI5 module ID
+                const modulePathSuffix = changeType === 'codeExt' ? localPath.replace('.js', '') : localPath;
+                const expectedModuleName = `${prefix}/changes/${modulePathSuffix}`;
+                if (c.moduleName !== expectedModuleName) {
+                    logger.debug(`Setting moduleName '${expectedModuleName}' for local '${localPath}'`);
+                    changesModified = true;
+                    return { ...c, moduleName: expectedModuleName };
+                }
+            }
+            return change;
+        });
+
+        if (changesModified) {
+            result.changes = updatedChanges;
+            modified = true;
+        }
+
+        if (localModuleState.orphaned.size > 0) {
+            const beforeCount = (result.changes as unknown[]).length;
+            const filteredChanges = (result.changes as unknown[]).filter((change) => {
+                const c = change as Record<string, unknown>;
+                const content = c.content as Record<string, unknown> | undefined;
+                const localPath = extractLocalModulePath(c.changeType, content);
+                if (localPath && localModuleState.orphaned.has(localPath)) {
+                    logger.debug(`Suppressing deployed change for orphaned local file '${localPath}'`);
+                    return false;
+                }
+                return true;
+            });
+
+            const removedCount = beforeCount - filteredChanges.length;
+            if (removedCount > 0) {
+                logger.info(
+                    `Suppressed ${removedCount} deployed change(s) whose local files exist but change records were deleted`
+                );
+                result.changes = filteredChanges;
+                modified = true;
             }
         }
-        return true;
-    });
-
-    const removedCount = Object.keys(originalModules).length - filteredEntries.length;
-    if (removedCount > 0) {
-        logger.info(`Stripped ${removedCount} inlined module(s) from LREP response in favor of local versions`);
-        return { ...responseData, modules: Object.fromEntries(filteredEntries) };
     }
 
-    return responseData;
+    return modified ? result : responseData;
 }
 
 /**
