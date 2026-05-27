@@ -1,5 +1,11 @@
 # @sap-ux/nodejs-utils
 
+## 0.3.2
+
+### Patch Changes
+
+- ea9cbb1: feat(nodejs-utils): add i18n support and translations for `ensureValidYoVersion` error messages
+
 ## 0.3.1
 
 ### Patch Changes
