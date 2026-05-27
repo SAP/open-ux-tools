@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/telemetry",
-    "version": "0.6.106",
+    "version": "0.7.5",
     "description": "Library for sending usage telemetry data",
     "repository": {
         "type": "git",
@@ -51,6 +51,6 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

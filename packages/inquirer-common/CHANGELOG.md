@@ -1,5 +1,85 @@
 # @sap-ux/inquirer-common
 
+## 0.13.5
+
+### Patch Changes
+
+- @sap-ux/telemetry@0.7.5
+- @sap-ux/fiori-generator-shared@0.15.6
+
+## 0.13.4
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.15.5
+- @sap-ux/telemetry@0.7.4
+
+## 0.13.3
+
+### Patch Changes
+
+- Updated dependencies [01b70ca]
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/fiori-generator-shared@0.15.4
+    - @sap-ux/odata-service-writer@0.32.2
+    - @sap-ux/telemetry@0.7.3
+
+## 0.13.2
+
+### Patch Changes
+
+- @sap-ux/odata-service-writer@0.32.2
+- @sap-ux/project-access@1.38.1
+- @sap-ux/telemetry@0.7.2
+- @sap-ux/fiori-generator-shared@0.15.3
+
+## 0.13.1
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/fiori-generator-shared@0.15.2
+    - @sap-ux/odata-service-writer@0.32.1
+    - @sap-ux/telemetry@0.7.1
+
+## 0.13.0
+
+### Minor Changes
+
+- 2c76f8f: feat(inquirer-common): add ShowOutputTabLink and OutputTabLinkResult types; add showOutputTabLink property to YUIQuestion, InputQuestion, ListQuestion, ConfirmQuestion, CheckBoxQuestion
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+
+## 0.12.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/feature-toggle@0.4.0
+    - @sap-ux/fiori-generator-shared@0.15.0
+    - @sap-ux/guided-answers-helper@0.5.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/odata-service-writer@0.32.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/telemetry@0.7.0
+    - @sap-ux/ui5-info@0.14.0
+
+## 0.11.48
+
+### Patch Changes
+
+- Updated dependencies [138246a]
+    - @sap-ux/odata-service-writer@0.31.15
+
 ## 0.11.47
 
 ### Patch Changes

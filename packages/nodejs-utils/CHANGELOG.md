@@ -1,5 +1,29 @@
 # @sap-ux/nodejs-utils
 
+## 0.3.2
+
+### Patch Changes
+
+- ea9cbb1: feat(nodejs-utils): add i18n support and translations for `ensureValidYoVersion` error messages
+
+## 0.3.1
+
+### Patch Changes
+
+- Updated dependencies [01b70ca]
+    - @sap-ux/btp-utils@1.2.1
+
+## 0.3.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/btp-utils@1.2.0
+
 ## 0.2.23
 
 ### Patch Changes

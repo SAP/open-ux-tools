@@ -1,5 +1,135 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.4.9
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.9.6
+- @sap-ux/adp-tooling@0.19.9
+- @sap-ux/deploy-config-generator-shared@0.2.6
+- @sap-ux/fiori-generator-shared@0.15.6
+
+## 0.4.8
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.9.5
+- @sap-ux/adp-tooling@0.19.8
+- @sap-ux/deploy-config-generator-shared@0.2.5
+- @sap-ux/fiori-generator-shared@0.15.5
+- @sap-ux/ui5-config@0.31.1
+- @sap-ux/abap-deploy-config-writer@0.4.4
+
+## 0.4.7
+
+### Patch Changes
+
+- Updated dependencies [01b70ca]
+- Updated dependencies [01b70ca]
+    - @sap-ux/axios-extension@1.26.1
+    - @sap-ux/adp-tooling@0.19.7
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/abap-deploy-config-inquirer@1.9.4
+    - @sap-ux/deploy-config-generator-shared@0.2.4
+    - @sap-ux/fiori-generator-shared@0.15.4
+    - @sap-ux/abap-deploy-config-writer@0.4.3
+
+## 0.4.6
+
+### Patch Changes
+
+- Updated dependencies [758b0d4]
+    - @sap-ux/adp-tooling@0.19.6
+
+## 0.4.5
+
+### Patch Changes
+
+- Updated dependencies [9752c40]
+    - @sap-ux/ui5-config@0.31.1
+    - @sap-ux/abap-deploy-config-inquirer@1.9.3
+    - @sap-ux/abap-deploy-config-writer@0.4.2
+    - @sap-ux/adp-tooling@0.19.5
+    - @sap-ux/project-access@1.38.1
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/fiori-generator-shared@0.15.3
+    - @sap-ux/deploy-config-generator-shared@0.2.3
+
+## 0.4.4
+
+### Patch Changes
+
+- Updated dependencies [dab1aa2]
+    - @sap-ux/adp-tooling@0.19.4
+
+## 0.4.3
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/abap-deploy-config-writer@0.4.1
+    - @sap-ux/adp-tooling@0.19.3
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/fiori-generator-shared@0.15.2
+    - @sap-ux/abap-deploy-config-inquirer@1.9.2
+    - @sap-ux/deploy-config-generator-shared@0.2.2
+
+## 0.4.2
+
+### Patch Changes
+
+- Updated dependencies [342c544]
+    - @sap-ux/adp-tooling@0.19.2
+
+## 0.4.1
+
+### Patch Changes
+
+- 2c76f8f: chore: upgrade @sap-devx/yeoman-ui-types 1.23.0 → 1.25.0
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+    - @sap-ux/abap-deploy-config-inquirer@1.9.1
+    - @sap-ux/adp-tooling@0.19.1
+    - @sap-ux/deploy-config-generator-shared@0.2.1
+
+## 0.4.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/abap-deploy-config-inquirer@1.9.0
+    - @sap-ux/abap-deploy-config-writer@0.4.0
+    - @sap-ux/adp-tooling@0.19.0
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/deploy-config-generator-shared@0.2.0
+    - @sap-ux/feature-toggle@0.4.0
+    - @sap-ux/fiori-generator-shared@0.15.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/ui5-config@0.31.0
+
+## 0.3.37
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.134
+- @sap-ux/abap-deploy-config-inquirer@1.8.23
+- @sap-ux/deploy-config-generator-shared@0.1.127
+
+## 0.3.36
+
+### Patch Changes
+
+- Updated dependencies [8c4185a]
+    - @sap-ux/adp-tooling@0.18.133
+
 ## 0.3.35
 
 ### Patch Changes

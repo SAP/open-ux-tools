@@ -71,7 +71,8 @@ describe('deploy-test validation', () => {
                 { transportNumber: 'T000003' }
             ]);
             mockedAdtService.getAtoInfo.mockResolvedValueOnce({
-                developmentPrefix: prefix
+                developmentPrefix: prefix,
+                operationsType: 'C'
             });
 
             const output = await validateBeforeDeploy(
@@ -87,6 +88,24 @@ describe('deploy-test validation', () => {
             expect(summaryStr).toContain(`${red('×')} ${t('deploy.invalidAppNameMultipleReason')}`);
             expect(summaryStr).toContain(`${t('deploy.abapInvalidAppNameLength', { length: name.length })}`);
             expect(summaryStr).toContain(`${t('deploy.abapInvalidAppName', { prefix })}`);
+        });
+
+        test('On-premise ATO system does not enforce developmentPrefix on BSP app name', async () => {
+            mockedAdtService.listPackages.mockResolvedValueOnce(['TESTPACKAGE', 'MYPACKAGE']);
+            mockedAdtService.getTransportRequests.mockResolvedValueOnce([
+                { transportNumber: 'T000001' },
+                { transportNumber: 'T000002' },
+                { transportNumber: 'T000003' }
+            ]);
+            mockedAdtService.getAtoInfo.mockResolvedValueOnce({
+                developmentPrefix: 'ZZ1_',
+                operationsType: 'P'
+            });
+            const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
+            expect(output.result).toBe(true);
+            const summaryStr = formatSummary(output.summary);
+            expect(summaryStr).toContain(`${green('√')} ${summaryMessage.allClientCheckPass}`);
+            expect(summaryStr).not.toContain(t('deploy.abapInvalidAppName', { prefix: 'ZZ1_' }));
         });
 
         test('Detect invalid deploy target', async () => {

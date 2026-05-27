@@ -1,9 +1,9 @@
-import { generateOPAFiles, generatePageObjectFile } from '../../src/fiori-elements-opa-writer';
+import { generateOPAFiles } from '../../src/fiori-elements-opa-writer';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import fileSystem, { read } from 'node:fs';
+import fileSystem, { read, readFileSync } from 'node:fs';
 import type { Logger } from '@sap-ux/logger/src/types';
 import * as appModels from '../test-input/constants';
 
@@ -77,92 +77,11 @@ describe('ui5-test-writer', () => {
         });
     });
 
-    describe('generatePageObjectFile', () => {
-        const testPages = [
-            {
-                description: 'ListReport',
-                targetKey: 'EmployeesListTarget'
-            },
-            {
-                description: 'Object Page',
-                targetKey: 'EmployeesObjectPageTarget'
-            },
-            {
-                description: 'FPM custom',
-                targetKey: 'EmployeesCustomPageTarget'
-            }
-        ];
-        const testUnsupportedPages = [
-            {
-                description: 'Another component view (not supported)',
-                targetKey: 'AnotherCustomPageTarget',
-                errorMsg: 'Validation error: Cannot generate the page file for target: AnotherCustomPageTarget.'
-            },
-            {
-                description: 'Plain XML view (not supported)',
-                targetKey: 'XMLView',
-                errorMsg: 'Validation error: Cannot generate the page file for target: XMLView.'
-            },
-            {
-                description: 'Missing ID',
-                targetKey: 'NoID',
-                errorMsg: 'Validation error: Cannot generate the page file for target: NoID.'
-            },
-            {
-                description: 'Missing entityset',
-                targetKey: 'NoEntitySet',
-                errorMsg: 'Validation error: Cannot generate the page file for target: NoEntitySet.'
-            },
-            {
-                description: 'Bad target',
-                targetKey: 'XXX',
-                errorMsg: 'Validation error: Cannot generate the page file for target: XXX.'
-            }
-        ];
-
-        it.each(testPages)('$description', async (config) => {
-            const projectDir = prepareTestFiles('Pages');
-            fs = await generatePageObjectFile(projectDir, { targetKey: config.targetKey }, fs);
-            expect(fs.dump(projectDir)).toMatchSnapshot();
-        });
-
-        it.each(testUnsupportedPages)('$description', async (config) => {
-            const projectDir = prepareTestFiles('Pages');
-            let error: string | undefined;
-            try {
-                fs = await generatePageObjectFile(projectDir, { targetKey: config.targetKey }, fs);
-            } catch (e) {
-                error = (e as Error).message;
-            }
-
-            expect(error).toEqual(config.errorMsg);
-        });
-
-        it('No manifest', async () => {
-            const projectDir = prepareTestFiles('Not_Here');
-            let error: string | undefined;
-            try {
-                fs = await generatePageObjectFile(projectDir, { targetKey: 'xx' }, fs);
-            } catch (e) {
-                error = (e as Error).message;
-            }
-
-            expect(error?.startsWith('Validation error: Cannot read the `manifest.json` file:')).toEqual(true);
-        });
-
-        it('Providing an app ID', async () => {
-            const projectDir = prepareTestFiles('Pages');
-            fs = await generatePageObjectFile(
-                projectDir,
-                { targetKey: 'EmployeesListTarget', appID: 'test.ui5-test-writer' },
-                fs
-            );
-            expect(fs.dump(projectDir)).toMatchSnapshot();
-        });
-    });
-
     describe('generateOPAFiles', () => {
-        const metadata = fs?.read(join(__dirname, '../test-input/metadata.xml')) || '';
+        const metadata = readFileSync(join(__dirname, '../fixtures/metadata.xml')).toString();
+        const metadataMissingSemanticFilter = readFileSync(
+            join(__dirname, '../fixtures/metadata_filter_bar_semantic_key.xml')
+        ).toString();
         const testApplications = [
             {
                 description: 'Fullscreen LR-OP',
@@ -322,6 +241,14 @@ describe('ui5-test-writer', () => {
             expect(firstJourneyContent).toContain('iCheckFilterField');
         });
 
+        it('generates filter tests for LROPv4 app (missing semantic filter)', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL_FILTER_BAR_NO_TRAVEL_ID));
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, {}, metadataMissingSemanticFilter, fs);
+
+            expect(fs.dump(projectDir)).toMatchSnapshot();
+        });
+
         it('generates column tests for LROPv4 app', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_NO_FILTER_MODEL));
             const projectDir = prepareTestFiles('LROPv4');
@@ -330,6 +257,17 @@ describe('ui5-test-writer', () => {
             const firstJourneyContent =
                 fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.js'].contents;
             expect(firstJourneyContent).toContain('iCheckColumns');
+        });
+
+        it('skips testsuite and opaTests harness files when useVirtualPreviewEndpoints is enabled', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, { useVirtualPreviewEndpoints: true }, metadata, fs);
+
+            const dumped = fs.dump(projectDir);
+            const testFiles = Object.keys(dumped);
+            expect(testFiles.some((f) => f.includes('testsuite.qunit'))).toBe(false);
+            expect(testFiles.some((f) => f.includes('opaTests.qunit'))).toBe(false);
         });
 
         it('generates tests for LROPv4 app that has no filters in filter bar', async () => {
@@ -612,7 +550,9 @@ describe('ui5-test-writer', () => {
         it('generates tests for v4 application with sub object page', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE));
             const projectDir = prepareTestFiles('LROPv4');
-            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+            const subOPMetadata =
+                fs?.read(join(__dirname, '../test-input/LROPv4/webapp/localService/mainService/metadata.xml')) ?? '';
+            fs = await generateOPAFiles(projectDir, {}, subOPMetadata, fs);
 
             const bookingObjPageJourneyContent =
                 fs.dump()['test/test-output/LROPv4/webapp/test/integration/BookingObjectPageJourney.js'].contents;
@@ -626,6 +566,7 @@ describe('ui5-test-writer', () => {
             expect(bookingObjPageJourneyContent).toContain('field: "carrier"');
             expect(bookingObjPageJourneyContent).toContain('targetAnnotation: "Contact"');
             expect(bookingObjPageJourneyContent).toContain('iCheckMicroChart("Supplement Price")');
+            expect(bookingObjPageJourneyContent).toContain('onHeader().iCheckAction("Activate", { enabled: false })');
             expect(bookingObjPageJourneyContent).toContain('iCheckNumberOfSections(3)');
             expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("BookingDetails")');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "BookingDetails" })');
@@ -633,8 +574,14 @@ describe('ui5-test-writer', () => {
             expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "AdministrativeData" })');
             expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("FlightData")');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "FlightData" })');
+            expect(bookingObjPageJourneyContent).toContain(
+                '.iCheckAction("Deduct Discount" /* , { enabled: true } */)'
+            );
             expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("PriceData")');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "PriceData" })');
+            expect(bookingObjPageJourneyContent).toContain(
+                'onTable({ property: "_BookSupplement" }).iCheckAction("Create Template", { enabled: true })'
+            );
             expect(bookingObjPageJourneyContent).toContain(
                 'onForm({ section: "BookingData" }).iCheckField({ property: "BookingId" })'
             );

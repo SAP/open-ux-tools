@@ -1,5 +1,36 @@
 # @sap-ux/ui-components
 
+## 2.2.4
+
+### Patch Changes
+
+- bc315f0: chore: use VSCode cornerRadius CSS variables instead of hardcoded border-radius values
+
+## 2.2.3
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade sanitize-html 2.17.3 → 2.17.4 (GHSA-rpr9-rxv7-x643)
+- a97d926: fix(ui-components): upgrade sanitize-html 2.17.3 → 2.17.4 to resolve critical XSS vulnerability (GHSA-mjxr-4v3x-q3m4)
+
+## 2.2.2
+
+### Patch Changes
+
+- 882d45b: Fixed UIDropdown background overflowing past rounded borders.
+
+## 2.2.1
+
+### Patch Changes
+
+- 742d896: Fixed missing local-variable box shadow for dropdown menus in UICombobox, UIDropdown.
+
+## 2.2.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
 ## 2.1.16
 
 ### Patch Changes

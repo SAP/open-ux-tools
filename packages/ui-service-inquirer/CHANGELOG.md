@@ -1,5 +1,101 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.3.7
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.9.6
+- @sap-ux/odata-service-inquirer@2.23.3
+- @sap-ux/telemetry@0.7.5
+- @sap-ux/inquirer-common@0.13.5
+
+## 0.3.6
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.9.5
+- @sap-ux/odata-service-inquirer@2.23.2
+- @sap-ux/telemetry@0.7.4
+- @sap-ux/inquirer-common@0.13.4
+
+## 0.3.5
+
+### Patch Changes
+
+- Updated dependencies [01b70ca]
+- Updated dependencies [01b70ca]
+    - @sap-ux/axios-extension@1.26.1
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/abap-deploy-config-inquirer@1.9.4
+    - @sap-ux/odata-service-inquirer@2.23.1
+    - @sap-ux/inquirer-common@0.13.3
+    - @sap-ux/telemetry@0.7.3
+
+## 0.3.4
+
+### Patch Changes
+
+- Updated dependencies [acb9875]
+    - @sap-ux/odata-service-inquirer@2.23.0
+
+## 0.3.3
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.9.3
+- @sap-ux/telemetry@0.7.2
+- @sap-ux/odata-service-inquirer@2.22.2
+- @sap-ux/inquirer-common@0.13.2
+- @sap-ux/axios-extension@1.26.0
+
+## 0.3.2
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.26.0
+- @sap-ux/inquirer-common@0.13.1
+- @sap-ux/odata-service-inquirer@2.22.1
+- @sap-ux/telemetry@0.7.1
+- @sap-ux/abap-deploy-config-inquirer@1.9.2
+
+## 0.3.1
+
+### Patch Changes
+
+- 2c76f8f: chore: upgrade @sap-devx/yeoman-ui-types 1.23.0 → 1.25.0
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+    - @sap-ux/inquirer-common@0.13.0
+    - @sap-ux/odata-service-inquirer@2.22.0
+    - @sap-ux/abap-deploy-config-inquirer@1.9.1
+
+## 0.3.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/abap-deploy-config-inquirer@1.9.0
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/guided-answers-helper@0.5.0
+    - @sap-ux/inquirer-common@0.12.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/odata-service-inquirer@2.21.0
+    - @sap-ux/telemetry@0.7.0
+
+## 0.2.174
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.48
+- @sap-ux/odata-service-inquirer@2.20.25
+- @sap-ux/abap-deploy-config-inquirer@1.8.23
+
 ## 0.2.173
 
 ### Patch Changes

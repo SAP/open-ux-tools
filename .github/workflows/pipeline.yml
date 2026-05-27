@@ -14,21 +14,22 @@ jobs:
                 # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
                 # not just the latest version of mac os also amd on Mac
                 # os: [ubuntu-latest, windows-2025, macos-13, macos-14, macos-14-large, macos-15, macos-latest-large]
-                node-version: [20.x, 22.x]
+                node-version: [22.x, 24.x]
         runs-on: ${{ matrix.os }}
         timeout-minutes: 60
         steps:
             - name: Checkout code repository
-              uses: actions/checkout@v6
+              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
               with:
                   fetch-depth: 0
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v4.1.0
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
               with:
-                  run_install: |
-                      - args: [--frozen-lockfile, --ignore-scripts]
+                  node-version: ${{ matrix.node-version }}
+            - name: Setup pnpm
+              uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
             - name: Cache pnpm modules
-              uses: actions/cache@v4
+              uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
               env:
                   cache-name: cache-pnpm-modules
               with:
@@ -36,12 +37,8 @@ jobs:
                   key: ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
-            - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v6
-              with:
-                  node-version: ${{ matrix.node-version }}
             - name: Install pnpm modules
-              run: pnpm install --frozen-lockfile --ignore-scripts
+              run: pnpm install --frozen-lockfile
             - name: Run build
               run: pnpm run build
               env:
@@ -55,7 +52,7 @@ jobs:
                   NX_CLOUD_ACCESS_TOKEN: ${{ github.event.pull_request.head.repo.full_name == github.repository && secrets.NX_CLOUD_ACCESS_TOKEN || '' }}
             - name: Check for changeset files
               id: check_changeset_files
-              uses: andstor/file-existence-action@v3
+              uses: andstor/file-existence-action@558493d6c74bf472d87c84eab196434afc2fa029 # v3
               with:
                   files: '.changeset/[!README]*.md'
                   fail: false
@@ -64,7 +61,7 @@ jobs:
               run: pnpm changeset status
             - name: Cache playwright browsers
               id: cache-playwright-browsers
-              uses: actions/cache@v4
+              uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
               with:
                   path: |
                       ${{ runner.os == 'Windows' }}:
@@ -81,7 +78,7 @@ jobs:
                   NX_CLOUD_ACCESS_TOKEN: ${{ github.event.pull_request.head.repo.full_name == github.repository && secrets.NX_CLOUD_ACCESS_TOKEN || '' }}
             - name: Upload playwright reports
               if: failure()
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
               with:
                   name: playwright-reports-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
                   path: |
@@ -89,7 +86,7 @@ jobs:
                       !packages/*/node_modules
                   retention-days: 15
             - name: Run SonarCloud scan
-              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
+              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
               shell: bash
               env:
                   PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -101,13 +98,13 @@ jobs:
                   echo "$PR_BASE_REF" >> pr-event.txt
 
             - name: 'Prepare output artifact'
-              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
+              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
               shell: bash
               run: touch output.tar && tar --exclude='./node_modules' --exclude='./dist' --exclude='./**/node_modules/**' --exclude='./**/dist/**' --exclude='./.git' --exclude 'output.tar' -czf output.tar .
 
             - name: 'Upload sonar artifact'
-              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
-              uses: actions/upload-artifact@v4
+              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
+              uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
               with:
                   name: sonar-artifact
                   path: |
@@ -124,17 +121,18 @@ jobs:
             changes: ${{ steps.changesetVersion.outputs.changes }} # map step output to job output
         steps:
             - name: Checkout code repository
-              uses: actions/checkout@v6
+              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
               with:
                   fetch-depth: 0
                   token: ${{ secrets.ACCESS_PAT }}
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v4.1.0
+            - name: Use Node.js 22.x
+              uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
               with:
-                  run_install: |
-                      - args: [--frozen-lockfile, --ignore-scripts]
+                  node-version: 22.x
+            - name: Setup pnpm
+              uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
             - name: Cache pnpm modules
-              uses: actions/cache@v4
+              uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
               env:
                   cache-name: cache-pnpm-modules
               with:
@@ -142,10 +140,6 @@ jobs:
                   key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
-            - name: Use Node.js 20.x
-              uses: actions/setup-node@v6
-              with:
-                  node-version: 20.x
             - name: Install pnpm modules
               run: pnpm install --frozen-lockfile
             - name: Apply changesets
@@ -182,14 +176,15 @@ jobs:
             publishedPackages: ${{ steps.changesetPublish.outputs.publishedPackages }}
         steps:
             - name: Checkout code repository
-              uses: actions/checkout@v6
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v4.1.0
+              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+            - name: Use Node.js 22.x
+              uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
               with:
-                  run_install: |
-                      - args: [--frozen-lockfile, --ignore-scripts]
+                  node-version: 22.x
+            - name: Setup pnpm
+              uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
             - name: Cache pnpm modules
-              uses: actions/cache@v4
+              uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
               env:
                   cache-name: cache-pnpm-modules
               with:
@@ -197,29 +192,24 @@ jobs:
                   key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
-            - name: Use Node.js 20.x
-              uses: actions/setup-node@v6
-              with:
-                  node-version: 20.x
-                  registry-url: 'https://registry.npmjs.org'
             - name: Install pnpm modules
               run: pnpm install --frozen-lockfile
             - name: Set instrumentation key in fiori-mcp-server
-              uses: jacobtomlinson/gha-find-replace@v3
+              uses: jacobtomlinson/gha-find-replace@2ff30f644d2e0078fc028beb9193f5ff0dcad39e # v3
               with:
                   include: packages/fiori-mcp-server/src/telemetry/index.ts
                   find: 'ApplicationInsightsInstrumentationKeyPLACEH0LDER'
                   replace: ${{ secrets.INSTRUMENTATION_KEY }}
                   regex: false
             - name: Set instrumentation key in generator-odata-downloader
-              uses: jacobtomlinson/gha-find-replace@v3
+              uses: jacobtomlinson/gha-find-replace@2ff30f644d2e0078fc028beb9193f5ff0dcad39e # v3
               with:
                   include: packages/generator-odata-downloader/src/telemetry/index.ts
                   find: 'ApplicationInsightsInstrumentationKeyPLACEH0LDER'
                   replace: ${{ secrets.INSTRUMENTATION_KEY }}
                   regex: false
             - name: Set instrumentation key in sap-systems-ext
-              uses: jacobtomlinson/gha-find-replace@v3
+              uses: jacobtomlinson/gha-find-replace@2ff30f644d2e0078fc028beb9193f5ff0dcad39e # v3
               with:
                   include: packages/sap-systems-ext/src/utils/telemetryHelper.ts
                   find: 'ApplicationInsightsInstrumentationKeyPLACEH0LDER'
@@ -229,7 +219,7 @@ jobs:
               run: pnpm run build
             - name: 'Publish to npmjs'
               id: changesetPublish
-              uses: changesets/action@v1.7.0
+              uses: changesets/action@6a0a831ff30acef54f2c6aa1cbbc1096b066edaf # v1.7.0
               with:
                   publish: pnpm ci:publish
               env:
@@ -261,7 +251,7 @@ jobs:
               run: pnpm --filter ${{ env.EXT_PKG }} ide-ext:package
             - name: Create GitHub Release (extension)
               if: env.EXTENSION_UPDATED == 'true'
-              uses: softprops/action-gh-release@v2
+              uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
               with:
                   tag_name: ${{ env.EXT_PKG }}@${{ env.EXT_VERSION }}
                   name: ${{ env.EXT_PKG }} v${{ env.EXT_VERSION }}
@@ -289,7 +279,7 @@ jobs:
                   echo "EXT_RELEASE_MESSAGE=:package: Extension *${{ env.EXT_PKG }}* v${{ env.EXT_VERSION }} released - <${RELEASE_URL}|View on GitHub>" >> $GITHUB_ENV
             - name: Send Slack notification (published packages)
               if: steps.changesetPublish.outputs.published == 'true'
-              uses: slackapi/slack-github-action@v1.26.0
+              uses: slackapi/slack-github-action@70cd7be8e40a46e8b0eced40b0de447bdb42f68e # v1.26.0
               with:
                   payload: |
                       {"text": ":rocket: The following packages were published to npmjs.com:\n${{ env.PUBLISHED_PACKAGES_MESSAGE }}" }
@@ -297,7 +287,7 @@ jobs:
                   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
             - name: Send Slack notification (extension release)
               if: env.EXTENSION_UPDATED == 'true'
-              uses: slackapi/slack-github-action@v1.26.0
+              uses: slackapi/slack-github-action@70cd7be8e40a46e8b0eced40b0de447bdb42f68e # v1.26.0
               with:
                   payload: |
                       {"text": "${{ env.EXT_RELEASE_MESSAGE }}" }

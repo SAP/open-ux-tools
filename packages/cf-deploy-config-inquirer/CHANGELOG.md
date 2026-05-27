@@ -1,5 +1,63 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.6.6
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.13.5
+
+## 0.6.5
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.13.4
+
+## 0.6.4
+
+### Patch Changes
+
+- Updated dependencies [01b70ca]
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/inquirer-common@0.13.3
+
+## 0.6.3
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.13.2
+
+## 0.6.2
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.13.1
+
+## 0.6.1
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/inquirer-common@0.13.0
+
+## 0.6.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/inquirer-common@0.12.0
+    - @sap-ux/logger@0.9.0
+
+## 0.5.130
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.48
+
 ## 0.5.129
 
 ### Patch Changes

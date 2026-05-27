@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Abackend-proxy-middleware-cf"
     },
-    "version": "0.1.23",
+    "version": "0.2.9",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -30,7 +30,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap/approuter": "^20.8.0",
+        "@sap/approuter": "^22.0.0",
         "@sap-ux/adp-tooling": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
@@ -47,6 +47,6 @@
         "@types/mime-types": "^2.1.4"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

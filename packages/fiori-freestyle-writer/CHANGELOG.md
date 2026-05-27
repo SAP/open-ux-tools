@@ -1,5 +1,145 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.7.13
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.15.6
+- @sap-ux/ui5-test-writer@0.9.13
+- @sap-ux/cap-config-writer@0.13.6
+
+## 2.7.12
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.15.5
+- @sap-ux/ui5-config@0.31.1
+- @sap-ux/ui5-test-writer@0.9.12
+- @sap-ux/cap-config-writer@0.13.5
+
+## 2.7.11
+
+### Patch Changes
+
+- Updated dependencies [162059e]
+    - @sap-ux/ui5-application-writer@1.9.2
+    - @sap-ux/ui5-test-writer@0.9.11
+
+## 2.7.10
+
+### Patch Changes
+
+- Updated dependencies [03d1cdd]
+    - @sap-ux/ui5-test-writer@0.9.10
+
+## 2.7.9
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.15.4
+- @sap-ux/odata-service-writer@0.32.2
+- @sap-ux/ui5-test-writer@0.9.9
+- @sap-ux/cap-config-writer@0.13.4
+
+## 2.7.8
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@0.9.8
+
+## 2.7.7
+
+### Patch Changes
+
+- Updated dependencies [9752c40]
+    - @sap-ux/ui5-config@0.31.1
+    - @sap-ux/odata-service-writer@0.32.2
+    - @sap-ux/ui5-application-writer@1.9.1
+    - @sap-ux/cap-config-writer@0.13.3
+    - @sap-ux/fiori-generator-shared@0.15.3
+    - @sap-ux/ui5-test-writer@0.9.7
+
+## 2.7.6
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@0.9.6
+
+## 2.7.5
+
+### Patch Changes
+
+- @sap-ux/cap-config-writer@0.13.2
+- @sap-ux/fiori-generator-shared@0.15.2
+- @sap-ux/odata-service-writer@0.32.1
+- @sap-ux/ui5-application-writer@1.9.0
+- @sap-ux/ui5-test-writer@0.9.5
+
+## 2.7.4
+
+### Patch Changes
+
+- Updated dependencies [8d4a8a4]
+    - @sap-ux/ui5-test-writer@0.9.4
+
+## 2.7.3
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@0.9.3
+
+## 2.7.2
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@0.9.2
+
+## 2.7.1
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+    - @sap-ux/cap-config-writer@0.13.1
+    - @sap-ux/ui5-test-writer@0.9.1
+
+## 2.7.0
+
+### Minor Changes
+
+- 2f0c182: feat: support virtual preview endpoints for test generation
+
+    When `useVirtualPreviewEndpoints` is enabled, test harness files (testsuite, unitTests, opaTests) are served virtually and not written to disk. UI5 yaml files are updated with `flp.path: test/flp.html` and test framework entries (OPA5, Testsuite, QUnit) are added to ui5-mock.yaml.
+
+### Patch Changes
+
+- Updated dependencies [2f0c182]
+    - @sap-ux/ui5-test-writer@0.9.0
+
+## 2.6.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/cap-config-writer@0.13.0
+    - @sap-ux/fiori-generator-shared@0.15.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/odata-service-writer@0.32.0
+    - @sap-ux/ui5-application-writer@1.9.0
+    - @sap-ux/ui5-config@0.31.0
+    - @sap-ux/ui5-test-writer@0.8.0
+
+## 2.5.107
+
+### Patch Changes
+
+- Updated dependencies [138246a]
+    - @sap-ux/odata-service-writer@0.31.15
+
 ## 2.5.106
 
 ### Patch Changes

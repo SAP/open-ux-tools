@@ -1,5 +1,52 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.4.4
+
+### Patch Changes
+
+- Updated dependencies [ea9cbb1]
+    - @sap-ux/nodejs-utils@0.3.2
+
+## 0.4.3
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade @sap/approuter ^21.0.0 → ^22.0.0 in templates (security: ws vulnerability)
+- Updated dependencies [01b70ca]
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/nodejs-utils@0.3.1
+
+## 0.4.2
+
+### Patch Changes
+
+- Updated dependencies [9752c40]
+    - @sap-ux/ui5-config@0.31.1
+    - @sap-ux/project-access@1.38.1
+
+## 0.4.1
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+
+## 0.4.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/nodejs-utils@0.3.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/ui5-config@0.31.0
+    - @sap-ux/yaml@0.18.0
+
 ## 0.3.107
 
 ### Patch Changes

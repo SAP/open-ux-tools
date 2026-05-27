@@ -23,6 +23,7 @@ import {
     addPagesToJourneyRunner,
     hasVirtualOPA5,
     readHtmlTargetFromQUnitJs,
+    addVirtualTestConfig,
     type JourneyRunnerPage
 } from './utils/opaQUnitUtils';
 import { getPackageScripts } from '@sap-ux/fiori-generator-shared';
@@ -37,6 +38,7 @@ import { readHashFromFlpSandbox } from './utils/flpSandboxUtils';
  * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
  * @param opaConfig.htmlTarget - the name of the html that will be used in OPA journey file. If not specified, 'index.html' will be used
  * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
+ * @param opaConfig.useVirtualPreviewEndpoints - when true, OPA harness files are served virtually; skip writing them to disk
  * @param metadata - optional metadata for the OPA test generation
  * @param fs - an optional reference to a mem-fs editor
  * @param log - optional logger instance
@@ -45,7 +47,7 @@ import { readHashFromFlpSandbox } from './utils/flpSandboxUtils';
  */
 export async function generateOPAFiles(
     basePath: string,
-    opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string },
+    opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string; useVirtualPreviewEndpoints?: boolean },
     metadata?: string,
     fs?: Editor,
     log?: Logger,
@@ -94,8 +96,15 @@ export async function generateOPAFiles(
             writeJourneyFiles(appFeatures, standaloneWriteContext, true, hasJourneyRunner, virtualOPA5Configured);
         }
     } else {
-        writeCommonAndPageFiles(writeContext, rootCommonTemplateDirPath);
-        writeJourneyFiles(appFeatures, writeContext, false);
+        writeCommonAndPageFiles(writeContext, rootCommonTemplateDirPath, opaConfig.useVirtualPreviewEndpoints ?? false);
+        writeJourneyFiles(appFeatures, writeContext, false, false, opaConfig.useVirtualPreviewEndpoints ?? false);
+        if (opaConfig.useVirtualPreviewEndpoints) {
+            await addVirtualTestConfig(
+                basePath,
+                [{ framework: 'OPA5', path: '/test/integration/opaTests.qunit.html' }, { framework: 'Testsuite' }],
+                editor
+            );
+        }
     }
 
     return editor;
@@ -387,21 +396,28 @@ function findLROP(
  *
  * @param writeContext - shared write context (config, paths, editor, journey params)
  * @param rootCommonTemplateDirPath - template root directory for common files
+ * @param useVirtualPreviewEndpoints - when true, testsuite harness files are served virtually; skip writing them to disk
  */
-function writeCommonAndPageFiles(writeContext: WriteContext, rootCommonTemplateDirPath: string): void {
+function writeCommonAndPageFiles(
+    writeContext: WriteContext,
+    rootCommonTemplateDirPath: string,
+    useVirtualPreviewEndpoints = false
+): void {
     const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams } = writeContext;
 
-    // Common test files
-    editor.copyTpl(
-        join(rootCommonTemplateDirPath),
-        testOutDirPath,
-        // unit tests are not added for Fiori elements app
-        { appId: config.appID },
-        undefined,
-        {
-            globOptions: { dot: true }
-        }
-    );
+    // Common test files (testsuite served virtually when useVirtualPreviewEndpoints is enabled)
+    if (!useVirtualPreviewEndpoints) {
+        editor.copyTpl(
+            join(rootCommonTemplateDirPath),
+            testOutDirPath,
+            // unit tests are not added for Fiori elements app
+            { appId: config.appID },
+            undefined,
+            {
+                globOptions: { dot: true }
+            }
+        );
+    }
 
     config.pages.forEach((page) => {
         writePageObject(page, rootV4TemplateDirPath, testOutDirPath, editor);
@@ -600,41 +616,4 @@ function writePageObject(
             globOptions: { dot: true }
         }
     );
-}
-
-/**
- * Generate a page object file for a Fiori elements for OData V4 application.
- * Note: this doesn't modify other existing files in the webapp/test folder.
- *
- * @param basePath - the absolute target path where the application will be generated
- * @param pageObjectParameters - parameters for the page
- * @param pageObjectParameters.targetKey - the key of the target in the manifest file corresponding to the page
- * @param pageObjectParameters.appID - the appID. If not specified, will be read from the manifest in sap.app/id
- * @param fs - an optional reference to a mem-fs editor
- * @returns Reference to a mem-fs-editor
- */
-export async function generatePageObjectFile(
-    basePath: string,
-    pageObjectParameters: { targetKey: string; appID?: string },
-    fs?: Editor
-): Promise<Editor> {
-    const editor = fs ?? create(createStorage());
-
-    const manifest = readManifest(editor, basePath);
-    const { applicationType } = getAppTypeAndHideFilterBarFromManifest(manifest);
-
-    const pageConfig = createPageConfig(manifest, pageObjectParameters.targetKey, pageObjectParameters.appID);
-    if (pageConfig) {
-        const rootTemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being
-        const testOutDirPath = join(await getWebappPath(basePath), 'test');
-        writePageObject(pageConfig, rootTemplateDirPath, testOutDirPath, editor);
-    } else {
-        throw new ValidationError(
-            t('error.cannotGeneratePageFile', {
-                targetKey: pageObjectParameters.targetKey
-            })
-        );
-    }
-
-    return editor;
 }

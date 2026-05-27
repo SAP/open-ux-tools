@@ -69,17 +69,15 @@ function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coerc
  * @param appOpts - relevant app options for retrieving the opa config
  * @param appOpts.useVirtualPreviewEndpoints - if virtual endpoints will be used for preview
  * @param flpAppId - the flp app id
- * @returns - the opa config { htmlTarget }
+ * @returns - the opa config { htmlTarget, useVirtualPreviewEndpoints }
  */
 function getOpaConfig(
     { useVirtualPreviewEndpoints }: { useVirtualPreviewEndpoints?: boolean },
     flpAppId?: string
-): { htmlTarget: string } {
+): { htmlTarget: string; useVirtualPreviewEndpoints?: boolean } {
     const flpTarget = useVirtualPreviewEndpoints ? 'flp' : 'flpSandbox';
     const htmlTarget = `test/${flpTarget}.html#${flpAppId}`;
-    return {
-        htmlTarget
-    };
+    return { htmlTarget, useVirtualPreviewEndpoints };
 }
 
 /**
@@ -271,9 +269,7 @@ async function generate<T extends {}>(
     // OPA tests must be generated last since they depend on other parts of the app, such as annotations, being in place
     if (addTest) {
         const opaConfig = getOpaConfig(
-            {
-                useVirtualPreviewEndpoints: feApp.appOptions?.useVirtualPreviewEndpoints
-            },
+            { useVirtualPreviewEndpoints: feApp.appOptions?.useVirtualPreviewEndpoints },
             feApp.app.flpAppId
         );
         await generateOPAFiles(basePath, opaConfig, data.service.metadata, fs, log);

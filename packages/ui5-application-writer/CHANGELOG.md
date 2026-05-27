@@ -1,5 +1,29 @@
 # @sap-ux/ui5-application-writer
 
+## 1.9.2
+
+### Patch Changes
+
+- 162059e: Fix locate-reuse-libs.js to support UI5 2.x by using createRendererInternal when createRenderer is not available
+
+## 1.9.1
+
+### Patch Changes
+
+- Updated dependencies [9752c40]
+    - @sap-ux/ui5-config@0.31.1
+
+## 1.9.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/ui5-config@0.31.0
+
 ## 1.8.9
 
 ### Patch Changes

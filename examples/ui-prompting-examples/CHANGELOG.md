@@ -1,5 +1,48 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 0.5.35
+
+### Patch Changes
+
+- Updated dependencies [bc315f0]
+    - @sap-ux/ui-components@2.2.4
+    - @sap-ux/ui-prompting@0.7.4
+
+## 0.5.34
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade sanitize-html 2.17.3 → 2.17.4 (GHSA-rpr9-rxv7-x643), ws 8.20.0 → 8.21.0 (GHSA-58qx-3vcg-4xpx)
+- a97d926: fix(ui-prompting-examples): upgrade sanitize-html 2.17.3 → 2.17.4 to resolve critical XSS vulnerability (GHSA-mjxr-4v3x-q3m4)
+- Updated dependencies [01b70ca]
+- Updated dependencies [a97d926]
+    - @sap-ux/ui-components@2.2.3
+    - @sap-ux/ui-prompting@0.7.3
+
+## 0.5.33
+
+### Patch Changes
+
+- Updated dependencies [882d45b]
+    - @sap-ux/ui-components@2.2.2
+    - @sap-ux/ui-prompting@0.7.2
+
+## 0.5.32
+
+### Patch Changes
+
+- Updated dependencies [742d896]
+    - @sap-ux/ui-components@2.2.1
+    - @sap-ux/ui-prompting@0.7.1
+
+## 0.5.31
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/ui-components@2.2.0
+    - @sap-ux/ui-prompting@0.7.0
+
 ## 0.5.30
 
 ### Patch Changes
