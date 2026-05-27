@@ -14571,6 +14571,13 @@ sap.ui.define([
         });
 
 
+        // Note: this test will only work if the ListReport page has a search field and shows data that matches the search term. Please ensure that the test data and search term are set up accordingly.
+        // opaTest(\\"Perform a global search and check the result\\", function (Given, When, Then) {
+        //     When.onTheTravelList.onFilterBar().iChangeSearchField(\\"Search Term\\");
+        //     When.onTheTravelList.onFilterBar().iExecuteSearch();
+        //     Then.onTheTravelList.onTable().iCheckRows();
+        // });
+
         opaTest(\\"Check table columns and actions\\", function (Given, When, Then) {
             Then.onTheTravelList.onTable().iCheckCreate({ visible: true });
             // Then.ontheTravelList.onTable().iPressCreate();
