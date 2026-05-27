@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 1.6.1
+
+### Patch Changes
+
+- c12420a: correction for log levels
+
 ## 1.6.0
 
 ### Minor Changes
