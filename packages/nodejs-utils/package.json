@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/nodejs-utils",
-    "version": "0.3.0",
+    "version": "0.3.2",
     "description": "Nodejs utility wrappers",
     "repository": {
         "type": "git",
@@ -28,6 +28,7 @@
     "dependencies": {
         "@sap-ux/btp-utils": "workspace:*",
         "fast-glob": "3.3.3",
+        "i18next": "25.10.10",
         "read-pkg-up": "7.0.1",
         "semver": "7.7.4"
     },
