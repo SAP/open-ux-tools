@@ -1,5 +1,19 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.3.4
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade @sap/approuter ^21.0.0 → ^22.0.0 in templates (security: ws vulnerability)
+- Updated dependencies [01b70ca]
+- Updated dependencies [01b70ca]
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/cf-deploy-config-writer@0.4.3
+    - @sap-ux/deploy-config-generator-shared@0.2.4
+    - @sap-ux/fiori-generator-shared@0.15.4
+    - @sap-ux/cf-deploy-config-inquirer@0.6.4
+    - @sap-ux/inquirer-common@0.13.3
+
 ## 0.3.3
 
 ### Patch Changes
