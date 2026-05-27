@@ -196,3 +196,6 @@ CLAUDE.local.md
 # Local Model/Agent Caches
 .anthropic/
 .claude/cache/
+
+# Test fixture lock files
+packages/cds-odata-annotation-converter/test/data/bookshop/package-lock.json

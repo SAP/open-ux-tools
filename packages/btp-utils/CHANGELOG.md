@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 1.2.1
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade @sap/bas-sdk 3.13.6 → 3.13.7, @sap/approuter ^21.5.0 → ^22.0.0 (security: ws vulnerability)
+
 ## 1.2.0
 
 ### Minor Changes

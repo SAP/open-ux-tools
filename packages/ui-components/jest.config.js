@@ -7,11 +7,10 @@ config.collectCoverageFrom = ['src/**/*.{ts,tsx}'];
 config.setupFilesAfterEnv = ['<rootDir>/test/test-setup.js', '<rootDir>/test/test-shim.js'];
 config.snapshotResolver = '<rootDir>/test/utils/snapshotResolver.js';
 config.moduleNameMapper = {
-    // Enzyme (3.11.0) resolves cheerio@1.0.0-rc.12 internally and requires 'cheerio/lib/utils'.
-    // Jest intercepts this via moduleNameMapper and must redirect to a physical path because
-    // ui-components has no direct cheerio dep (pnpm strict isolation blocks package-export resolution).
+    // Enzyme (3.11.0) resolves cheerio internally and requires 'cheerio/lib/utils'.
+    // cheerio@1.2.0+ moved utils to dist/commonjs/utils. Map the old path to the new location.
     '^cheerio/lib/utils$':
-        '<rootDir>/../../node_modules/.pnpm/cheerio@1.0.0-rc.12/node_modules/cheerio/lib/utils'
+        '<rootDir>/../../node_modules/.pnpm/cheerio@1.2.0/node_modules/cheerio/dist/commonjs/utils'
 };
 config.transform = {
     '^.+\\.tsx?$': [

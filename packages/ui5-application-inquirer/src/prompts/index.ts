@@ -72,7 +72,7 @@ export async function getQuestions(
             isCapProject
         ),
         [promptNames.addFlpConfig]: getAddFlpConfigPrompt(promptOptions?.addFlpConfig),
-        [promptNames.enableVirtualEndpoints]: getEnableVirtualEndpoints(capCdsInfo),
+        [promptNames.enableVirtualEndpoints]: getEnableVirtualEndpoints(),
         [promptNames.showAdvanced]: getShowAdvancedPrompt(),
         [promptNames.ui5Theme]: getUI5ThemePrompt(),
         [promptNames.enableEslint]: getEnableEsLintPrompt(),
