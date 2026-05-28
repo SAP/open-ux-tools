@@ -32,7 +32,7 @@ const v2FlexChangeExportEnabledOP = {
     content: { ...V2_FLEX_CHANGE_CONTENT.content, property: 'enableExport' },
     selector: {
         ...V2_FLEX_CHANGE_CONTENT.content,
-        id: 'v2xmlstart::sap.suite.ui.generic.template.ObjectPage.view.Details::Z_SEPMRA_SO_SALESORDERANALYSIS::Table'
+        id: 'v2xmlstart::sap.suite.ui.generic.template.ObjectPage.view.Details::Z_SEPMRA_SO_SALESORDERANALYSIS--Products::Table'
     }
 };
 
@@ -40,7 +40,7 @@ const v2FlexChangeExportEnabledLR = {
     ...v2FlexChangeExportEnabledOP,
     selector: {
         ...v2FlexChangeExportEnabledOP.selector,
-        id: 'v2xmlstart::sap.suite.ui.generic.template.AnalyticalListPage.view.ListReport::Z_SEPMRA_SO_SALESORDERANALYSIS::listReport'
+        id: 'v2xmlstart::sap.suite.ui.generic.template.AnalyticalListPage.view.AnalyticalListPage::Z_SEPMRA_SO_SALESORDERANALYSIS--listReport'
     }
 };
 

@@ -26,6 +26,10 @@ export type ConfigurationProperty<T> = {
      * Flex change file uri.
      */
     changeFileUri?: string;
+    /**
+     * Flex change selector id
+     */
+    selector?: string;
 };
 
 export interface ConfigurationBase<T extends string, Configuration extends object = {}> {
