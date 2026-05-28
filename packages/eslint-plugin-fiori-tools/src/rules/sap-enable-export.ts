@@ -88,6 +88,9 @@ function checkConfiguration(
 ): void {
     if (table.configuration.enableExport.valueInFile === false) {
         const service = Object.values(parsedApp.services)[0]; // Assume 1 service only
+        if (!service) {
+            return;
+        }
         if (service.config.version === '2.0') {
             problems.push({
                 type: ENABLE_EXPORT,
