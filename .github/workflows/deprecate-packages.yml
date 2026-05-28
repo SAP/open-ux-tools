@@ -42,7 +42,7 @@ jobs:
                   if [ -n "${{ inputs.packages }}" ]; then
                     ARGS="--packages ${{ inputs.packages }}"
                   fi
-                  npx ts-node scripts/deprecate-packages.ts $ARGS | tee deprecation-report.txt
+                  node_modules/.bin/ts-node scripts/deprecate-packages.ts $ARGS | tee deprecation-report.txt
 
             - name: Run deprecation script (execute)
               if: inputs.dry_run == false
@@ -51,7 +51,7 @@ jobs:
                   if [ -n "${{ inputs.packages }}" ]; then
                     ARGS="$ARGS --packages ${{ inputs.packages }}"
                   fi
-                  npx ts-node scripts/deprecate-packages.ts $ARGS | tee deprecation-report.txt
+                  node_modules/.bin/ts-node scripts/deprecate-packages.ts $ARGS | tee deprecation-report.txt
 
             - name: Write step summary
               if: always()

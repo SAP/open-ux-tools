@@ -12,10 +12,10 @@
  * Legacy anchors are always kept regardless of all other rules.
  *
  * Usage:
- *   npx tsx scripts/deprecate-packages.ts                         # dry run, all packages
- *   npx tsx scripts/deprecate-packages.ts --packages @sap-ux/foo  # dry run, one package
- *   npx tsx scripts/deprecate-packages.ts --execute               # apply deprecations
- *   npx tsx scripts/deprecate-packages.ts --config path/to/config.json
+ *   node_modules/.bin/ts-node scripts/deprecate-packages.ts                         # dry run, all packages
+ *   node_modules/.bin/ts-node scripts/deprecate-packages.ts --packages @sap-ux/foo  # dry run, one package
+ *   node_modules/.bin/ts-node scripts/deprecate-packages.ts --execute               # apply deprecations
+ *   node_modules/.bin/ts-node scripts/deprecate-packages.ts --config path/to/config.json
  */
 
 import * as fs from 'fs';
