@@ -17,7 +17,12 @@ import {
 import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
-import { extractActionMethodName, buildActionButtonState, safeCheckButtonVisibility } from './actionUtils';
+import {
+    extractActionMethodName,
+    buildActionButtonState,
+    safeCheckButtonVisibility,
+    safeCheckButtonVisibilityFromMetadata
+} from './actionUtils';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 import type { Manifest } from '@sap-ux/project-access';
 import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI';
@@ -46,23 +51,44 @@ export function buildButtonState(buttonState?: ButtonState): {
 /**
  * Safely checks action button states with error handling.
  *
- * @param metadata - The OData metadata XML content
+ * @param convertedMetadata - The already-converted OData metadata
  * @param entitySetName - The name of the entity set
  * @param actionNames - List of action names to check
  * @param log - Optional logger instance
  * @returns Array of action button states or empty array if error occurs
  */
 export function safeCheckActionButtonStates(
-    metadata: string,
+    convertedMetadata: ConvertedMetadata,
     entitySetName: string,
     actionNames: string[],
     log?: Logger
 ): ActionButtonState[] {
     try {
-        return checkActionButtonStates(metadata, entitySetName, actionNames).actions;
+        return checkActionButtonStatesFromMetadata(convertedMetadata, entitySetName, actionNames).actions;
     } catch (error) {
         log?.debug(`Failed to check action button states: ${error instanceof Error ? error.message : String(error)}`);
         return [];
+    }
+}
+
+/**
+ * Safely gets semantic key properties with error handling.
+ *
+ * @param convertedMetadata - The already-converted OData metadata
+ * @param entitySetName - The name of the entity set
+ * @param log - Optional logger instance
+ * @returns Array of semantic key properties or undefined if error occurs
+ */
+export function safeGetSemanticKeyProperties(
+    convertedMetadata: ConvertedMetadata,
+    entitySetName: string,
+    log?: Logger
+): string[] | undefined {
+    try {
+        return getSemanticKeyPropertiesFromMetadata(convertedMetadata, entitySetName, true);
+    } catch (error) {
+        log?.debug(`Failed to get semantic key properties: ${error instanceof Error ? error.message : String(error)}`);
+        return undefined;
     }
 }
 
@@ -116,23 +142,42 @@ export function getListReportFeatures(
     metadata?: string,
     manifest?: Manifest
 ): ListReportFeatures {
-    const buttonVisibility =
-        metadata && listReportPage.entitySet
-            ? safeCheckButtonVisibility(metadata, listReportPage.entitySet, log)
-            : undefined;
     const toolbarActions = getToolBarActionNames(listReportPage.model, log);
+    const filterBarItems = getFilterFieldNames(listReportPage.model, log);
+
+    let buttonVisibility: ReturnType<typeof safeCheckButtonVisibility> | undefined;
+    let semanticKeyProperties: string[] | undefined;
+    let toolBarActions: ReturnType<typeof safeCheckActionButtonStates> = [];
+
+    if (metadata && listReportPage.entitySet) {
+        const entitySetName = listReportPage.entitySet;
+        try {
+            const convertedMetadata = convert(parse(metadata));
+            buttonVisibility = safeCheckButtonVisibilityFromMetadata(convertedMetadata, entitySetName, log);
+            semanticKeyProperties = safeGetSemanticKeyProperties(convertedMetadata, entitySetName, log);
+            toolBarActions = safeCheckActionButtonStates(convertedMetadata, entitySetName, toolbarActions, log);
+        } catch (error) {
+            log?.debug(`Failed to parse metadata: ${error instanceof Error ? error.message : String(error)}`);
+        }
+    }
+
+    const missingKeys =
+        semanticKeyProperties?.length && filterBarItems.length
+            ? semanticKeyProperties.filter((key) => !filterBarItems.includes(key))
+            : undefined;
 
     return {
         name: listReportPage.name,
         createButton: buildButtonState(buttonVisibility?.create),
         deleteButton: buildButtonState(buttonVisibility?.delete),
-        filterBarItems: getFilterFieldNames(listReportPage.model, log),
+        filterBarItems,
         tableColumns: getTableColumnData(listReportPage.model, log),
-        toolBarActions:
-            metadata && listReportPage.entitySet
-                ? safeCheckActionButtonStates(metadata, listReportPage.entitySet, toolbarActions, log)
-                : [],
-        isALP: manifest ? isALPFromManifest(manifest, listReportPage.name) : false
+        toolBarActions,
+        isALP: manifest ? isALPFromManifest(manifest, listReportPage.name) : false,
+        semanticKey: {
+            semanticKeyProperties,
+            missingFromFilterBar: missingKeys?.length ? missingKeys : undefined
+        }
     };
 }
 
@@ -181,6 +226,48 @@ export function getFilterFieldNames(pageModel: TreeModel, log?: Logger): string[
 /**
  * Checks the state of action buttons defined in UI.LineItem annotations for a given entity set.
  *
+ * @param convertedMetadata The already-converted OData metadata
+ * @param entitySetName The name of the entity set to check
+ * @param actionNames Optional list of action names to filter (e.g., ['Check', 'deductDiscount']). If not provided, returns all actions.
+ * @returns ActionButtonsResult containing the list of action buttons and their states
+ * @throws {Error} If entity set is not found
+ */
+export function checkActionButtonStatesFromMetadata(
+    convertedMetadata: ConvertedMetadata,
+    entitySetName: string,
+    actionNames?: string[]
+): ActionButtonsResult {
+    const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
+
+    if (!entitySet) {
+        throw new Error(`Entity set '${entitySetName}' not found in metadata`);
+    }
+
+    const entityType = entitySet.entityType;
+    if (!entityType) {
+        throw new Error(`Entity type not found for entity set '${entitySetName}'`);
+    }
+
+    const lineItemAnnotation = entityType.annotations?.UI?.LineItem as any[] | undefined;
+
+    if (!lineItemAnnotation || !Array.isArray(lineItemAnnotation)) {
+        return { actions: [], entityType: entityType.name };
+    }
+
+    const dataFieldForActions = lineItemAnnotation.filter(
+        (item) => item.$Type === 'com.sap.vocabularies.UI.v1.DataFieldForAction'
+    );
+
+    const actions: ActionButtonState[] = actionNames
+        ? findActionStates(dataFieldForActions, actionNames, convertedMetadata)
+        : extractAllActionStates(dataFieldForActions, convertedMetadata);
+
+    return { actions, entityType: entityType.name };
+}
+
+/**
+ * Checks the state of action buttons defined in UI.LineItem annotations for a given entity set.
+ *
  * @param metadataXml The OData metadata XML content as a string
  * @param entitySetName The name of the entity set to check
  * @param actionNames Optional list of action names to filter (e.g., ['Check', 'deductDiscount']). If not provided, returns all actions.
@@ -193,33 +280,7 @@ export function checkActionButtonStates(
     actionNames?: string[]
 ): ActionButtonsResult {
     try {
-        const convertedMetadata: ConvertedMetadata = convert(parse(metadataXml));
-        const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
-
-        if (!entitySet) {
-            throw new Error(`Entity set '${entitySetName}' not found in metadata`);
-        }
-
-        const entityType = entitySet.entityType;
-        if (!entityType) {
-            throw new Error(`Entity type not found for entity set '${entitySetName}'`);
-        }
-
-        const lineItemAnnotation = entityType.annotations?.UI?.LineItem as any[] | undefined;
-
-        if (!lineItemAnnotation || !Array.isArray(lineItemAnnotation)) {
-            return { actions: [], entityType: entityType.name };
-        }
-
-        const dataFieldForActions = lineItemAnnotation.filter(
-            (item) => item.$Type === 'com.sap.vocabularies.UI.v1.DataFieldForAction'
-        );
-
-        const actions: ActionButtonState[] = actionNames
-            ? findActionStates(dataFieldForActions, actionNames, convertedMetadata)
-            : extractAllActionStates(dataFieldForActions, convertedMetadata);
-
-        return { actions, entityType: entityType.name };
+        return checkActionButtonStatesFromMetadata(convert(parse(metadataXml)), entitySetName, actionNames);
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         throw new Error(`Failed to analyze action button states: ${errorMessage}`);
@@ -318,4 +379,88 @@ function extractItemDescriptions(aggregations: TreeAggregations): string[] {
         );
     }
     return [];
+}
+
+/**
+ * Checks whether all SemanticKey properties for a given entity set appear as filter fields in the filter bar.
+ * Returns false if the semantic key is absent, empty, or no semantic key properties are present as filters.
+ *
+ * @param pageModel - The tree model containing filter bar definitions (from ux-specification)
+ * @param metadataXml - The OData metadata XML content as a string
+ * @param entitySetName - The name of the entity set to inspect
+ * @param log - optional logger instance
+ * @returns true if every SemanticKey property appears in the filter bar, false otherwise
+ */
+export function isSemanticKeyInFilterBar(
+    pageModel: TreeModel,
+    metadataXml: string,
+    entitySetName: string,
+    log?: Logger
+): boolean {
+    try {
+        const semanticKeys = getSemanticKeyProperties(metadataXml, entitySetName, true);
+        if (!semanticKeys.length) {
+            return false;
+        }
+        const filterFields = getFilterFieldNames(pageModel, log);
+        return semanticKeys.every((key) => filterFields.includes(key));
+    } catch (error) {
+        log?.debug(
+            `Failed to check semantic key in filter bar: ${error instanceof Error ? error.message : String(error)}`
+        );
+        return false;
+    }
+}
+
+/**
+ * Retrieves the SemanticKey PropertyPath values for a given entity set from already-converted metadata.
+ *
+ * @param convertedMetadata - The already-converted OData metadata
+ * @param entitySetName - The name of the entity set to inspect
+ * @param resolveLabels - when true, each property name is replaced with its Common.Label value (falls back to the property name when no label is defined). Use this when comparing against getFilterFieldNames(), which also returns labels.
+ * @returns An array of PropertyPath string values (or their labels) from the SemanticKey annotation, or an empty array if not found
+ * @throws {Error} If the entity set is not found
+ */
+export function getSemanticKeyPropertiesFromMetadata(
+    convertedMetadata: ConvertedMetadata,
+    entitySetName: string,
+    resolveLabels = false
+): string[] {
+    const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
+
+    if (!entitySet) {
+        throw new Error(`Entity set '${entitySetName}' not found in metadata`);
+    }
+
+    const semanticKey = entitySet.entityType.annotations?.Common?.SemanticKey;
+    if (!semanticKey) {
+        return [];
+    }
+
+    const propertyNames = semanticKey.map((entry) => entry.value).filter((v): v is string => typeof v === 'string');
+
+    if (!resolveLabels) {
+        return propertyNames;
+    }
+
+    return propertyNames.map((propName) => {
+        const property = entitySet.entityType.entityProperties.find((p) => p.name === propName);
+        const label = property?.annotations?.Common?.Label;
+        const labelStr = label !== undefined && label !== null ? String(label) : '';
+        return labelStr || propName;
+    });
+}
+
+/**
+ * Retrieves the SemanticKey PropertyPath values for a given entity set from OData metadata XML.
+ * Returns the values of all PropertyPath entries in the SAP Common SemanticKey annotation on the entity type.
+ *
+ * @param metadataXml - The OData metadata XML content as a string
+ * @param entitySetName - The name of the entity set to inspect
+ * @param resolveLabels - when true, each property name is replaced with its Common.Label value (falls back to the property name when no label is defined). Use this when comparing against getFilterFieldNames(), which also returns labels.
+ * @returns An array of PropertyPath string values (or their labels) from the SemanticKey annotation, or an empty array if not found
+ * @throws {Error} If the metadata cannot be parsed or the entity set is not found
+ */
+export function getSemanticKeyProperties(metadataXml: string, entitySetName: string, resolveLabels = false): string[] {
+    return getSemanticKeyPropertiesFromMetadata(convert(parse(metadataXml)), entitySetName, resolveLabels);
 }

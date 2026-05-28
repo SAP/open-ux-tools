@@ -200,7 +200,8 @@ ruleTester.run(`${TEST_NAME} - XML`, widthIncludingColumnHeaderRule, {
                 ...FACETS,
                 errors: [
                     {
-                        messageId: 'width-including-column-header',
+                        message:
+                            'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width.',
                         line: 29,
                         column: 18
                     }
@@ -372,7 +373,8 @@ ruleTester.run(`${TEST_NAME} - CAP`, widthIncludingColumnHeaderRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'width-including-column-header-manifest',
+                        message:
+                            'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width. Add it to the control configuration of the table.',
                         line: 114,
                         column: 17
                     }
@@ -413,7 +415,8 @@ ruleTester.run(`${TEST_NAME} - CAP`, widthIncludingColumnHeaderRule, {
                 code: CAP_ANNOTATIONS + CAP_FACETS_ANNOTATIONS,
                 errors: [
                     {
-                        messageId: 'width-including-column-header',
+                        message:
+                            'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width.',
                         line: 53,
                         column: 38
                     }
@@ -463,7 +466,8 @@ ruleTester.run(`${TEST_NAME} - CAP`, widthIncludingColumnHeaderRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'width-including-column-header-manifest',
+                        message:
+                            'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width. Add it to the control configuration of the table_section table.',
                         line: 128,
                         column: 13
                     }

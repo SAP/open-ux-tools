@@ -215,10 +215,17 @@
                                 // set up test service for local testing
                                 server.init();
                                 // initialize the ushell sandbox component
-                                sap.ui.require(["sap/ushell/Container"], async function (Container) {
-                                    Container.createRenderer(true).then(function (component) {
-                                        component.placeAt("content");
-                                    });
+                                sap.ui.require(["sap/ushell/Container"], function (Container) {
+                                    (typeof Container.createRendererInternal === 'function'
+                                        ? Container.createRendererInternal(undefined, true)
+                                        : Container.createRenderer(undefined, true))
+                                        .then(function (component) {
+                                            component.placeAt("content");
+                                        })
+                                        .catch(function () {
+                                            // support older versions of ui5
+                                            Container.createRenderer().placeAt("content");
+                                        });
                                 });
                             });
                         });        
@@ -249,15 +256,17 @@
                     Core.ready(() => {
                         registerSAPFonts();
                         // initialize the ushell sandbox component
-                        sap.ui.require(["sap/ushell/Container"], async function (Container) {
-                            try {
-                            Container.createRenderer(true).then(function (component) {
-                                component.placeAt("content");
-                            });
-                            } catch (error) {
-                                // support older versions of ui5 
-                                Container.createRenderer().placeAt("content");
-                            }
+                        sap.ui.require(["sap/ushell/Container"], function (Container) {
+                            (typeof Container.createRendererInternal === 'function'
+                                ? Container.createRendererInternal(undefined, true)
+                                : Container.createRenderer(undefined, true))
+                                .then(function (component) {
+                                    component.placeAt("content");
+                                })
+                                .catch(function () {
+                                    // support older versions of ui5
+                                    Container.createRenderer().placeAt("content");
+                                });
                         });
                     });
                 });

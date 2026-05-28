@@ -1,5 +1,21 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.4.4
+
+### Patch Changes
+
+- Updated dependencies [ea9cbb1]
+    - @sap-ux/nodejs-utils@0.3.2
+
+## 0.4.3
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade @sap/approuter ^21.0.0 → ^22.0.0 in templates (security: ws vulnerability)
+- Updated dependencies [01b70ca]
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/nodejs-utils@0.3.1
+
 ## 0.4.2
 
 ### Patch Changes
