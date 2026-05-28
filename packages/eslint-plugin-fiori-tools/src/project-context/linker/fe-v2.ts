@@ -546,16 +546,13 @@ const getPageTableChanges = (changes: FlexChange[], page: FeV2PageType, section?
     // LR change id: lrpv2products::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--listReport
     // OP change id: lrpv2products::sap.suite.ui.generic.template.ObjectPage.view.Details::SEPMRA_C_PD_Product--ProductTextFacetID::Table
     return changes.filter((change) => {
+        let changeIdSubstring;
         if (page.type === 'list-report-page') {
-            return !!change.selector.id.match(
-                `::${page.componentName}.view.${page.componentName.split('.').pop()}::${page.entitySetName}--listReport`
-            )?.length;
+            changeIdSubstring = `::${page.componentName}.view.${page.componentName.split('.').pop()}::${page.entitySetName}`;
         } else if (page.type === 'object-page') {
-            return !!change.selector.id.match(
-                `::${page.componentName}.view.Details::${page.entitySetName}--${section?.id}::Table`
-            )?.length;
+            changeIdSubstring = `::${page.componentName}.view.Details::${page.entitySetName}--${section?.id}::Table`;
         }
-        return false;
+        return changeIdSubstring && change.selector.id.includes(changeIdSubstring);
     });
 };
 
