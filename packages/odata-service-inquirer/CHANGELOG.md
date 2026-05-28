@@ -1,5 +1,67 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.23.3
+
+### Patch Changes
+
+- Updated dependencies [ea9cbb1]
+    - @sap-ux/nodejs-utils@0.3.2
+    - @sap-ux/telemetry@0.7.5
+    - @sap-ux/fiori-generator-shared@0.15.6
+    - @sap-ux/inquirer-common@0.13.5
+
+## 2.23.2
+
+### Patch Changes
+
+- Updated dependencies [c12420a]
+    - @sap-ux/store@1.6.1
+    - @sap-ux/fiori-generator-shared@0.15.5
+    - @sap-ux/telemetry@0.7.4
+    - @sap-ux/inquirer-common@0.13.4
+
+## 2.23.1
+
+### Patch Changes
+
+- Updated dependencies [01b70ca]
+- Updated dependencies [01b70ca]
+    - @sap-ux/axios-extension@1.26.1
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/fiori-generator-shared@0.15.4
+    - @sap-ux/inquirer-common@0.13.3
+    - @sap-ux/nodejs-utils@0.3.1
+    - @sap-ux/telemetry@0.7.3
+
+## 2.23.0
+
+### Minor Changes
+
+- acb9875: Adds relative path support to CAP and non-CAP target folder prompts
+
+## 2.22.2
+
+### Patch Changes
+
+- @sap-ux/project-access@1.38.1
+- @sap-ux/telemetry@0.7.2
+- @sap-ux/inquirer-common@0.13.2
+- @sap-ux/axios-extension@1.26.0
+- @sap-ux/fiori-generator-shared@0.15.3
+- @sap-ux/project-input-validator@0.7.2
+
+## 2.22.1
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/fiori-generator-shared@0.15.2
+    - @sap-ux/inquirer-common@0.13.1
+    - @sap-ux/project-input-validator@0.7.1
+    - @sap-ux/telemetry@0.7.1
+
 ## 2.22.0
 
 ### Minor Changes

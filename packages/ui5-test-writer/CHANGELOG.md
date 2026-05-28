@@ -1,5 +1,83 @@
 # @sap-ux/ui5-test-writer
 
+## 0.9.13
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@0.26.10
+- @sap-ux/fiori-generator-shared@0.15.6
+
+## 0.9.12
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.15.5
+- @sap-ux/preview-middleware@0.26.9
+
+## 0.9.11
+
+### Patch Changes
+
+- Updated dependencies [162059e]
+    - @sap-ux/ui5-application-writer@1.9.2
+
+## 0.9.10
+
+### Patch Changes
+
+- 03d1cdd: add OPA tests for LR semantic key filters and global search
+
+## 0.9.9
+
+### Patch Changes
+
+- Updated dependencies [01b70ca]
+    - @sap-ux/preview-middleware@0.26.8
+    - @sap-ux/fiori-generator-shared@0.15.4
+
+## 0.9.8
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@0.26.7
+
+## 0.9.7
+
+### Patch Changes
+
+- @sap-ux/project-access@1.38.1
+- @sap-ux/ui5-application-writer@1.9.1
+- @sap-ux/preview-middleware@0.26.6
+- @sap-ux/fiori-generator-shared@0.15.3
+
+## 0.9.6
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@0.26.5
+
+## 0.9.5
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/fiori-generator-shared@0.15.2
+    - @sap-ux/preview-middleware@0.26.4
+    - @sap-ux/ui5-application-writer@1.9.0
+
+## 0.9.4
+
+### Patch Changes
+
+- 8d4a8a4: Generate tests for Actions on the Object Page
+
+## 0.9.3
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@0.26.3
+
 ## 0.9.2
 
 ### Patch Changes

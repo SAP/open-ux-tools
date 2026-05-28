@@ -1,5 +1,99 @@
 # @sap-ux/generator-adp
 
+## 0.10.10
+
+### Patch Changes
+
+- c1575e0: fix: The business solution name must use lowercase letters, numbers, dots (.), underscores (\_), and hyphens (-) only. The name must contain at least one letter or number.
+
+## 0.10.9
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.9
+- @sap-ux/telemetry@0.7.5
+- @sap-ux/fiori-generator-shared@0.15.6
+- @sap-ux/inquirer-common@0.13.5
+
+## 0.10.8
+
+### Patch Changes
+
+- Updated dependencies [c12420a]
+    - @sap-ux/store@1.6.1
+    - @sap-ux/adp-tooling@0.19.8
+    - @sap-ux/fiori-generator-shared@0.15.5
+    - @sap-ux/system-access@0.8.2
+    - @sap-ux/telemetry@0.7.4
+    - @sap-ux/inquirer-common@0.13.4
+
+## 0.10.7
+
+### Patch Changes
+
+- Updated dependencies [01b70ca]
+- Updated dependencies [01b70ca]
+    - @sap-ux/axios-extension@1.26.1
+    - @sap-ux/adp-tooling@0.19.7
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/fiori-generator-shared@0.15.4
+    - @sap-ux/odata-service-writer@0.32.2
+    - @sap-ux/system-access@0.8.1
+    - @sap-ux/inquirer-common@0.13.3
+    - @sap-ux/telemetry@0.7.3
+
+## 0.10.6
+
+### Patch Changes
+
+- 758b0d4: fix: show error message when fetching destination fails
+- Updated dependencies [758b0d4]
+    - @sap-ux/adp-tooling@0.19.6
+
+## 0.10.5
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.5
+- @sap-ux/odata-service-writer@0.32.2
+- @sap-ux/project-access@1.38.1
+- @sap-ux/telemetry@0.7.2
+- @sap-ux/inquirer-common@0.13.2
+- @sap-ux/axios-extension@1.26.0
+- @sap-ux/fiori-generator-shared@0.15.3
+- @sap-ux/project-input-validator@0.7.2
+- @sap-ux/system-access@0.8.0
+
+## 0.10.4
+
+### Patch Changes
+
+- Updated dependencies [dab1aa2]
+    - @sap-ux/adp-tooling@0.19.4
+
+## 0.10.3
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/adp-tooling@0.19.3
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/fiori-generator-shared@0.15.2
+    - @sap-ux/inquirer-common@0.13.1
+    - @sap-ux/odata-service-writer@0.32.1
+    - @sap-ux/project-input-validator@0.7.1
+    - @sap-ux/system-access@0.8.0
+    - @sap-ux/telemetry@0.7.1
+
+## 0.10.2
+
+### Patch Changes
+
+- 342c544: chore: bump used versions in adaptation project for Cloud Foundry
+- Updated dependencies [342c544]
+    - @sap-ux/adp-tooling@0.19.2
+
 ## 0.10.1
 
 ### Patch Changes

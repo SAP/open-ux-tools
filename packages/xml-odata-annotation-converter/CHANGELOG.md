@@ -1,5 +1,15 @@
 # @sap-ux/xml-odata-annotation-converter
 
+## 0.6.0
+
+### Minor Changes
+
+- 2f1ece0: feat: add convertMetadataDocumentV2 API and expose V2Annotation type; getXmlServiceArtifacts now returns [ServiceArtifacts, V2Annotation[]]
+
+### Patch Changes
+
+- @sap-ux/odata-annotation-core@0.3.1
+
 ## 0.5.0
 
 ### Minor Changes

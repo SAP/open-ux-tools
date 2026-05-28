@@ -1,5 +1,71 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.19.4
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.13.5
+
+## 0.19.3
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.13.4
+
+## 0.19.2
+
+### Patch Changes
+
+- acb3b58: fix: revert accidental virtual-endpoints condition changes from #4675
+
+    The `when` condition and `capCdsInfo` parameter added to `getEnableVirtualEndpoints` in
+    PR #4675 (CLI system management) were unintentionally included — they belong to the
+    internal bug fix for 38236 which is not intended for open source.
+
+    Reverts the changes to `src/prompts/prompts1.ts`, `src/prompts/index.ts`, and the
+    corresponding test snapshots/cases.
+
+## 0.19.1
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.13.3
+
+## 0.19.0
+
+### Minor Changes
+
+- acb9875: Adds relative path support to CAP and non-CAP target folder prompts
+
+## 0.18.5
+
+### Patch Changes
+
+- f6af206: feat: add CLI commands for managing saved backend systems (#37734)
+
+## 0.18.4
+
+### Patch Changes
+
+- @sap-ux/project-access@1.38.1
+- @sap-ux/inquirer-common@0.13.2
+- @sap-ux/project-input-validator@0.7.2
+
+## 0.18.3
+
+### Patch Changes
+
+- eda2ce4: Adds support for default name generation export. Adds default support for `title` prompt
+
+## 0.18.2
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/inquirer-common@0.13.1
+    - @sap-ux/project-input-validator@0.7.1
+
 ## 0.18.1
 
 ### Patch Changes

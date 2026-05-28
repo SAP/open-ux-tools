@@ -4,3 +4,4 @@ export { getGenericNodeFromPointer } from './pointer';
 export { increaseIndent } from './indent';
 export { annotationReferenceToString } from './reference';
 export { compareByRange } from './range';
+export { resolveTextPropertyPath } from './metadata';
