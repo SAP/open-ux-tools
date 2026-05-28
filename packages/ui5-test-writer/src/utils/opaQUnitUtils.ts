@@ -333,9 +333,11 @@ export function splicePageIntoJourneyRunnerTs(fileContent: string, pages: Journe
     let result = fileContent;
 
     // 1. Insert imports after the last existing `import ... from "..."` line.
-    //    Matches both relative and module-path imports so new entries follow the import block.
-    //    Use `[ \t]*` (not `\s*`) before the end-of-line anchor so the match doesn't span newlines.
-    const importLineRegex = /^import\s+.+\s+from\s+["'][^"']+["'];?[ \t]*$/gm;
+    //    Uses `\b` word boundaries (zero-width) around `import` and `from` so the
+    //    `[^\n]*?` middle quantifier doesn't sit next to another quantifier that
+    //    could match the same characters. This avoids the consecutive-overlapping-
+    //    quantifier shape that triggers catastrophic backtracking.
+    const importLineRegex = /^import\b[^\n]*?\bfrom[ \t]+["'][^"']+["'];?[ \t]*$/gm;
     let lastImportEnd = -1;
     let importMatch: RegExpExecArray | null;
     while ((importMatch = importLineRegex.exec(result)) !== null) {
