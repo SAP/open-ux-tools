@@ -1,5 +1,32 @@
 # @sap-ux/generator-adp
 
+## 0.10.10
+
+### Patch Changes
+
+- c1575e0: fix: The business solution name must use lowercase letters, numbers, dots (.), underscores (\_), and hyphens (-) only. The name must contain at least one letter or number.
+
+## 0.10.9
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.9
+- @sap-ux/telemetry@0.7.5
+- @sap-ux/fiori-generator-shared@0.15.6
+- @sap-ux/inquirer-common@0.13.5
+
+## 0.10.8
+
+### Patch Changes
+
+- Updated dependencies [c12420a]
+    - @sap-ux/store@1.6.1
+    - @sap-ux/adp-tooling@0.19.8
+    - @sap-ux/fiori-generator-shared@0.15.5
+    - @sap-ux/system-access@0.8.2
+    - @sap-ux/telemetry@0.7.4
+    - @sap-ux/inquirer-common@0.13.4
+
 ## 0.10.7
 
 ### Patch Changes
