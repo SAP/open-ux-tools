@@ -15,7 +15,7 @@ const REPO_URL = 'https://github.com/SAP/open-ux-tools';
 const PREFIX_MAP = [
     { regex: /^FEAT:/i, label: 'Features' },
     { regex: /^FIX:/i, label: 'Bug Fixes' },
-    { regex: /^BUMP:/i, label: 'Dependency Upgrades' }
+    { regex: /^BUMP:/i, label: 'Dependency Updates' }
 ];
 
 /**
@@ -71,10 +71,16 @@ async function getReleaseLine(changeset, _type) {
     const packageName = changeset.releases?.find((r) => r.type !== 'none')?.name ?? '';
     const dateHeader = getReleaseDateSection(packageName);
     const { label, text } = parseSummary(changeset.summary);
+    const [firstLine, ...remainingLines] = text.split('\n').map((l) => l.trimEnd());
+    const continuationLines = remainingLines.filter((l) => l.trim() !== '');
     const commitLink = changeset.commit
         ? ` [[${changeset.commit.slice(0, 7)}](${REPO_URL}/commit/${changeset.commit})]`
         : '';
-    return `${dateHeader}${label ? `#### ${label}\n\n- ${text}${commitLink}` : `- ${text}${commitLink}`}`;
+    const bullet =
+        continuationLines.length > 0
+            ? `- ${firstLine}\n\n  ${continuationLines.join('\n  ')}${commitLink}`
+            : `- ${firstLine}${commitLink}`;
+    return `${dateHeader}${label ? `#### ${label}\n\n${bullet}` : bullet}`;
 }
 
 /**
