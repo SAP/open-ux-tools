@@ -318,7 +318,7 @@ describe('validateBusinessSolutionName', () => {
         jest.clearAllMocks();
     });
 
-    test('should return true for valid business solution name', () => {
+    test('should return true for valid name with dot separator', () => {
         const result = validateBusinessSolutionName('test.solution');
         expect(result).toBe(true);
     });
@@ -328,23 +328,55 @@ describe('validateBusinessSolutionName', () => {
         expect(result).toBe(true);
     });
 
+    test('should return true for single segment name', () => {
+        const result = validateBusinessSolutionName('test');
+        expect(result).toBe(true);
+    });
+
+    test('should return true for name with underscores', () => {
+        const result = validateBusinessSolutionName('my_solution');
+        expect(result).toBe(true);
+    });
+
+    test('should return true for name with hyphens', () => {
+        const result = validateBusinessSolutionName('my-solution');
+        expect(result).toBe(true);
+    });
+
+    test('should return true for name with mixed valid characters', () => {
+        const result = validateBusinessSolutionName('my-app_v2.config');
+        expect(result).toBe(true);
+    });
+
     test('should return error for empty string', () => {
         const result = validateBusinessSolutionName('');
         expect(result).toBe('The input cannot be empty.');
     });
 
-    test('should return error for single part name', () => {
-        const result = validateBusinessSolutionName('test');
-        expect(result).toBe(t('error.businessSolutionNameInvalid'));
-    });
-
     test('should return error for name with spaces', () => {
-        const result = validateBusinessSolutionName('test. solution');
-        expect(result).toBe(t('error.businessSolutionNameInvalidChars'));
+        const result = validateBusinessSolutionName('test solution');
+        expect(result).toBe(t('error.businessSolutionNameInvalid'));
     });
 
     test('should return error for name with special characters', () => {
         const result = validateBusinessSolutionName('test.sol@tion');
-        expect(result).toBe(t('error.businessSolutionNameInvalidChars'));
+        expect(result).toBe(t('error.businessSolutionNameInvalid'));
+    });
+
+    test('should return error for name with uppercase letters', () => {
+        const result = validateBusinessSolutionName('Test.Solution');
+        expect(result).toBe(t('error.businessSolutionNameInvalid'));
+    });
+
+    test('should return error for name with only dots and special chars', () => {
+        const result = validateBusinessSolutionName('..._');
+        expect(result).toBe(t('error.businessSolutionNameInvalid'));
+    });
+
+    test('should return error for name wich starts with special character', () => {
+        let result = validateBusinessSolutionName('_abc');
+        expect(result).toBe(t('error.businessSolutionNameInvalid'));
+        result = validateBusinessSolutionName('.abc');
+        expect(result).toBe(t('error.businessSolutionNameInvalid'));
     });
 });
