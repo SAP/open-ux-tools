@@ -760,6 +760,9 @@ describe('ui5-test-writer', () => {
 
     describe('generateOPAFiles TypeScript', () => {
         const metadata = fs?.read(join(__dirname, '../test-input/metadata.xml')) ?? '';
+        const metadataMissingSemanticFilter = readFileSync(
+            join(__dirname, '../fixtures/metadata_filter_bar_semantic_key.xml')
+        ).toString();
 
         const testApplications = [
             {
@@ -935,7 +938,7 @@ describe('ui5-test-writer', () => {
             expect(content).toContain('contextPath: "/');
         });
 
-        it('generates TypeScript ListReport journey with filter field checks using object syntax', async () => {
+        it('generates TypeScript filter tests for LROPv4 app', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
             const projectDir = prepareTestFiles('LROPv4');
             fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
@@ -943,28 +946,191 @@ describe('ui5-test-writer', () => {
             const dumped = fs.dump(projectDir);
             const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.ts'));
             expect(lrJourneyPath).toBeDefined();
+            const lrContent = dumped[lrJourneyPath!].contents as string;
 
-            const content = dumped[lrJourneyPath!].contents as string;
-            expect(content).toContain('iCheckFilterField({ property:');
-            expect(content).toContain('onTable("")');
-            expect(content).not.toContain('onTable()');
+            // TS-shape filter assertions (object form, not plain string)
+            expect(lrContent).toContain('iCheckFilterField({ property: "TravelID" })');
+            expect(lrContent).toContain('iCheckFilterField({ property: "AgencyID" })');
+            expect(lrContent).toContain('iCheckFilterField({ property: "Kunden ID" })');
+
+            // TS adaptation: onTable("") instead of onTable()
+            expect(lrContent).toContain('onTable("")');
+            expect(lrContent).not.toContain('onTable()');
+
+            // The TS journey is typed, no AMD wrapper
+            expect(lrContent).toContain('function (Given: Given, When: When, Then: Then)');
+            expect(lrContent).not.toContain('sap.ui.define');
+
+            // Sanity: FirstJourney has no filter assertions (matches JS Worklistv4 test)
+            const firstJourneyPath = Object.keys(dumped).find((p) => p.includes('FirstJourney.ts'));
+            expect(firstJourneyPath).toBeDefined();
+            const firstContent = dumped[firstJourneyPath!].contents as string;
+            expect(firstContent).not.toContain('iCheckFilterField');
         });
 
-        it('generates TypeScript ObjectPage journey with typed custom action call', async () => {
-            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE));
+        it('generates TypeScript filter tests for LROPv4 app (missing semantic filter)', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL_FILTER_BAR_NO_TRAVEL_ID));
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadataMissingSemanticFilter, fs);
+
+            const dumped = fs.dump(projectDir);
+            const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.ts'));
+            expect(lrJourneyPath).toBeDefined();
+            const content = dumped[lrJourneyPath!].contents as string;
+
+            // The semantic-key adaptation block is emitted with TS-shape calls
+            expect(content).toContain('Add semantic key properties to filter bar');
+            expect(content).toContain('iOpenFilterAdaptation()');
+            expect(content).toContain('iAddAdaptationFilterField("TravelID")');
+            expect(content).toContain('iConfirmFilterAdaptation()');
+            expect(content).toContain('iCheckFilterField({ property: "TravelID" })');
+            // Commented-out global search example uses the typed function signature
+            expect(content).toContain('function (Given: Given, When: When, Then: Then)');
+        });
+
+        it('generates TypeScript column tests for LROPv4 app', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_NO_FILTER_MODEL));
             const projectDir = prepareTestFiles('LROPv4');
             fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
 
             const dumped = fs.dump(projectDir);
+            const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.ts'));
+            expect(lrJourneyPath).toBeDefined();
+            const content = dumped[lrJourneyPath!].contents as string;
+
+            expect(content).toContain('iCheckColumns');
+            // TS adaptation: onTable("") on the column-check call
+            expect(content).toMatch(/onTable\(""\)\.iCheckColumns/);
+        });
+
+        it('generates TypeScript tests for LROPv4 app that has no filters in filter bar', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_NO_FILTER_MODEL));
+            const projectDir = prepareTestFiles('LROPv4NoFilters');
+            const mockLogger = {
+                warn: jest.fn()
+            };
+
+            fs = await generateOPAFiles(
+                projectDir,
+                { enableTypeScript: true },
+                metadata,
+                fs,
+                mockLogger as unknown as Logger
+            );
+
+            const dumped = fs.dump(projectDir);
+            const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.ts'));
+            expect(lrJourneyPath).toBeDefined();
+            const content = dumped[lrJourneyPath!].contents as string;
+
+            expect(content).not.toContain('iCheckFilterField');
+            expect(content).toContain('iCheckColumns');
+            expect(mockLogger.warn).toHaveBeenCalledWith(
+                expect.stringContaining(
+                    'Unable to extract filter fields from project model using specification. No filter field tests will be generated.'
+                )
+            );
+        });
+
+        it('generates TypeScript tests for LROPv4 app that has no columns in the table', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+            const projectDir = prepareTestFiles('LROPv4NoColumns');
+            const mockLogger = {
+                warn: jest.fn()
+            };
+
+            fs = await generateOPAFiles(
+                projectDir,
+                { enableTypeScript: true },
+                metadata,
+                fs,
+                mockLogger as unknown as Logger
+            );
+
+            const dumped = fs.dump(projectDir);
+            const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.ts'));
+            expect(lrJourneyPath).toBeDefined();
+            const content = dumped[lrJourneyPath!].contents as string;
+
+            expect(content).toContain('iCheckFilterField');
+            expect(content).not.toContain('iCheckColumns');
+            expect(mockLogger.warn).toHaveBeenCalledWith(
+                expect.stringContaining(
+                    'Unable to extract table columns from project model using specification. No table column tests will be generated.'
+                )
+            );
+        });
+
+        it('generates TypeScript tests for v4 application with sub object page', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE));
+            const projectDir = prepareTestFiles('LROPv4');
+            const subOPMetadata =
+                fs?.read(join(__dirname, '../test-input/LROPv4/webapp/localService/mainService/metadata.xml')) ?? '';
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, subOPMetadata, fs);
+
+            const dumped = fs.dump(projectDir);
             const opJourneyPath = Object.keys(dumped).find((p) => p.includes('BookingObjectPageJourney.ts'));
             expect(opJourneyPath).toBeDefined();
-
             const content = dumped[opJourneyPath!].contents as string;
-            expect(content).toContain('iPressSectionIconTabFilterButton(');
-            expect(content).toContain('iCheckSection({');
-            expect(content).toContain('onForm(');
-            expect(content).toContain('.iCheckField({ property:');
+
+            // ─── Type-only imports for the @sapui5/types casts ───
             expect(content).toContain('import type { Given, When, Then }');
+            expect(content).toContain('import type { FieldIdentifier } from "sap/fe/test/api/BaseAPI"');
+            expect(content).toContain('import type { FormIdentifier } from "sap/fe/test/api/FormAPI"');
+
+            // ─── Header facets (same shape as JS) ───
+            expect(content).toContain('iCheckHeaderFacet({ facetId: "DataPoint::FlightDate" }');
+            expect(content).toContain('iCheckHeaderFacet({ facetId: "DataPoint::BookingDate" }');
+            expect(content).toContain('iCheckHeaderFacet({ facetId: "FieldGroup::Names" }');
+
+            // ─── iCheckFieldInFieldGroup with FieldIdentifier cast (TS adaptation) ───
+            expect(content).toContain('iCheckFieldInFieldGroup');
+            expect(content).toContain('fieldGroup: "FieldGroup::Names"');
+            expect(content).toContain('field: "AirlineName"');
+            expect(content).toContain('field: "CustomerName"');
+            expect(content).toContain('field: "carrier"');
+            expect(content).toContain('targetAnnotation: "Contact"');
+            expect(content).toContain('} as unknown as FieldIdentifier);');
+
+            // ─── iCheckMicroChart with empty 2nd arg (TS adaptation) ───
+            expect(content).toContain('iCheckMicroChart("Supplement Price", "")');
+
+            // ─── Header actions (from PR #4632) ───
+            expect(content).toContain('onHeader().iCheckAction("Activate", { enabled: false })');
+
+            // ─── Section navigation ───
+            expect(content).toContain('iCheckNumberOfSections(3)');
+            expect(content).toContain('iPressSectionIconTabFilterButton("BookingDetails")');
+            expect(content).toContain('iCheckSection({ section: "BookingDetails" }, {})');
+            expect(content).toContain('iCheckSubSection({ section: "BookingData" })');
+            expect(content).toContain('iCheckSubSection({ section: "AdministrativeData" })');
+            expect(content).toContain('iPressSectionIconTabFilterButton("FlightData")');
+            expect(content).toContain('iCheckSection({ section: "FlightData" }, {})');
+            expect(content).toContain('iPressSectionIconTabFilterButton("PriceData")');
+            expect(content).toContain('iCheckSection({ section: "PriceData" }, {})');
+
+            // ─── Section actions (table action with dynamic enabled) ───
+            expect(content).toContain('.iCheckAction("Deduct Discount" /* , { enabled: true } */)');
+            expect(content).toContain(
+                'onTable({ property: "_BookSupplement" }).iCheckAction("Create Template", { enabled: true })'
+            );
+
+            // ─── onForm with FormIdentifier cast (TS adaptation) ───
+            expect(content).toContain(
+                'onForm({ section: "BookingData" } as unknown as FormIdentifier).iCheckField({ property: "BookingId" })'
+            );
+            expect(content).toContain(
+                'onForm({ section: "BookingData" } as unknown as FormIdentifier).iCheckField({ property: "FlightDate" })'
+            );
+
+            // ─── Sub-section table columns ───
+            expect(content).toContain('onTable({ property: "_Supplements" }).iCheckColumns(');
+            expect(content).toContain('"ConnectionId":{"header":"Connection"}');
+            expect(content).toContain('"AirportCode":{"header":"Airport"}');
+
+            // ─── No JS leakage ───
+            expect(content).not.toContain('sap.ui.define');
+            expect(content).not.toContain("'use strict'");
         });
 
         it('does not modify tsconfig.json', async () => {
