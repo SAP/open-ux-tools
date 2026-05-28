@@ -215,24 +215,30 @@ export class ApplicationParser {
      * @param fileCache - Map of file URIs to their contents
      */
     private reparseChange(uri: string, index: ParsedProject, fileCache: Map<string, string>): void {
+        const content = fileCache.get(uri) ?? '';
+        const ast = parseJson(content, {
+            mode: 'json',
+            ranges: true,
+            tokens: true,
+            allowTrailingCommas: false
+        });
+        index.documents[uri] = ast;
+        const jsonContent = JSON.parse(content);
+        const change: FlexChange = {
+            changeType: jsonContent.changeType,
+            content: jsonContent.content,
+            selector: jsonContent.selector,
+            changeFileUri: uri
+        };
         for (const key of Object.keys(index.apps)) {
-            index.apps[key].changes = [];
-            const content = fileCache.get(uri) ?? '';
-            const ast = parseJson(content, {
-                mode: 'json',
-                ranges: true,
-                tokens: true,
-                allowTrailingCommas: false
-            });
-            index.documents[uri] = ast;
-            const jsonContent = JSON.parse(content);
-            const change: FlexChange = {
-                changeType: jsonContent.changeType,
-                content: jsonContent.content,
-                selector: jsonContent.selector,
-                changeFileUri: uri
-            };
-            index.apps[key].changes.push(change);
+            const app = index.apps[key];
+            // Replace the existing entry for this URI, or append if new
+            const existingIndex = app.changes.findIndex((c) => c.changeFileUri === uri);
+            if (existingIndex >= 0) {
+                app.changes[existingIndex] = change;
+            } else {
+                app.changes.push(change);
+            }
         }
     }
 
