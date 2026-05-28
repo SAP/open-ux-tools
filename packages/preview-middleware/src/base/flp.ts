@@ -1266,6 +1266,12 @@ export class FlpSandbox {
      * removing the loadModules pre-fetch flag, injecting correct moduleNames, and
      * suppressing deployed changes for orphaned local files (change record deleted).
      *
+     * The local module state is captured once at server startup by `readLocalModulePaths`
+     * and is not refreshed during the preview session. If a developer adds, renames, or deletes
+     * a local fragment, controller, or change file while the preview is running, the filter will
+     * be stale until the server is restarted. This is an intentional trade-off — re-scanning the
+     * VFS on every flex-data request would add latency to every preview round-trip.
+     *
      * @param adp AdpPreview instance with access to the ABAP service provider
      * @param localModuleState pre-scanned local module state
      */
@@ -1319,7 +1325,7 @@ export class FlpSandbox {
             res.status(200).json(filtered);
         } catch (error) {
             this.logger.error(
-                `LREP flex data filter failed for '${req.url}' — falling back to unfiltered backend response. Local workspace files may not take effect. Error: ${error}`
+                `LREP flex data filter failed for '${req.url}' — falling back to unfiltered backend response. Local workspace files may not take effect. Error: ${error?.message ?? error}`
             );
             // Fall through to the next middleware (e.g. backend-proxy-middleware)
             // so that preview remains functional even if filtering fails.

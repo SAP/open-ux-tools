@@ -172,8 +172,9 @@ function injectModuleNames(changes: unknown[], active: LocalModulePaths, logger:
             return change;
         }
         const prefix = reference.replaceAll('.', '/');
-        // codeExt modules are JS — strip .js so the path is a valid UI5 module ID
-        const modulePathSuffix = changeType === 'codeExt' ? localPath.replace('.js', '') : localPath;
+        // codeExt modules are JS — strip the trailing .js so the path is a valid UI5 module ID
+        const modulePathSuffix =
+            changeType === 'codeExt' && localPath.endsWith('.js') ? localPath.slice(0, -3) : localPath;
         const expectedModuleName = `${prefix}/changes/${modulePathSuffix}`;
         if (c.moduleName === expectedModuleName) {
             return change;
