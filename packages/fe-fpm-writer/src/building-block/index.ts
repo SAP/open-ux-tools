@@ -101,7 +101,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         buildingBlockData.buildingBlockType === BuildingBlockType.Page &&
         (buildingBlockData as Page).templateType === 'full'
     ) {
-        appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId);
+        appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId, buildingBlockData as Page);
     }
 
     if (
@@ -168,29 +168,27 @@ export type PageAggregationName = (typeof PAGE_AGGREGATIONS)[number];
  * @param {Document} xmlDocument - the view XML document (used to resolve namespace prefixes)
  * @param {Document} templateDocument - the template document whose root element receives the children
  * @param {IdGeneratorFunction} generateId - function to generate unique IDs
+ * @param {Page} pageData - the Page building block data containing optional aggregation mContent
  */
 function appendPageAggregations(
     fs: Editor,
     xmlDocument: Document,
     templateDocument: Document,
-    generateId: IdGeneratorFunction
+    generateId: IdGeneratorFunction,
+    pageData: Page
 ): void {
     const macrosNS = getOrAddNamespace(xmlDocument, 'sap.fe.macros', 'macros');
     const mNS = getOrAddNamespace(xmlDocument, 'sap.m', 'm');
-    // getOrAddNamespace returns '' when the namespace is the document's default (xmlns="...").
-    // For macros:Page aggregations, macros always has an explicit prefix.
-    // For sap.m, honour the default namespace by keeping mPrefix empty so elements render
-    // as bare names (e.g. <Button>) instead of <m:Button xmlns:m="sap.m">.
     const fragMacrosNS = macrosNS || 'macros';
     const fragMNS = mNS;
     const macrosPrefix = `${fragMacrosNS}:`;
-    const mPrefix = fragMNS ? `${fragMNS}:` : '';
-    const aggContext = { macrosNamespace: fragMacrosNS, mNamespace: fragMNS, macrosPrefix, mPrefix };
     const pageElement = templateDocument.documentElement;
     const aggErrorHandler = (level: string, message: string): never => {
         throw new Error(`Unable to parse page aggregation fragment. Details: [${level}] - ${message}`);
     };
     for (const aggName of PAGE_AGGREGATIONS) {
+        const mContent = pageData.aggregations?.[aggName] ?? '';
+        const aggContext = { macrosNamespace: fragMacrosNS, macrosPrefix, mContent };
         const aggPath = getTemplatePath(`/building-block/page/${aggName}.xml`);
         const aggContent = render(fs.read(aggPath), aggContext, {});
         // Wrap with namespace declarations so elements parse correctly.
@@ -238,15 +236,16 @@ function sortPageAggregationChildren(pageElement: Node): void {
  * @param {Editor} fs - the memfs editor instance
  * @param {string} basePath - the base path of the application
  * @param {string} viewPath - the path of the xml view relative to the base path
- * @param {PageAggregationName} aggName - the name of the Page BB aggregation to append
+ * @param {{ aggregationName: PageAggregationName; mContent: string }} data - aggregation name and inner XML content
  * @returns {Editor} the updated memfs editor instance
  */
 export async function appendPageBBAggregation(
     fs: Editor,
     basePath: string,
     viewPath: string,
-    aggName: PageAggregationName
+    data: { aggregationName: PageAggregationName; mContent: string }
 ): Promise<Editor> {
+    const { aggregationName: aggName, mContent } = data;
     const xmlDocument = getUI5XmlDocument(basePath, viewPath, fs);
 
     const generateId = await createIdGenerator({ basePath, fsEditor: fs });
@@ -257,8 +256,7 @@ export async function appendPageBBAggregation(
     const fragMacrosNS = macrosNS || 'macros';
     const fragMNS = mNS;
     const macrosPrefix = `${fragMacrosNS}:`;
-    const mPrefix = fragMNS ? `${fragMNS}:` : '';
-    const aggContext = { macrosNamespace: fragMacrosNS, mNamespace: fragMNS, macrosPrefix, mPrefix };
+    const aggContext = { macrosNamespace: fragMacrosNS, macrosPrefix, mContent };
 
     const aggPath = getTemplatePath(`/building-block/page/${aggName}.xml`);
     const aggContent = render(fs.read(aggPath), aggContext, {});

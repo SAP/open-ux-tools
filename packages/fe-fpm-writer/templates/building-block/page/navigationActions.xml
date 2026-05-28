@@ -1,4 +1,3 @@
-<!-- Navigation actions aggregation -->
 <<%- macrosPrefix %>navigationActions>
-    <<%- mPrefix %>Button icon="sap-icon://full-screen" press=".onFullScreen" type="Transparent" />
+    <%- mContent %>
 </<%- macrosPrefix %>navigationActions>

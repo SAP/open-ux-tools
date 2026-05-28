@@ -1,4 +1,3 @@
-<!-- Title content aggregation (content next to title) -->
 <<%- macrosPrefix %>titleContent>
-    <<%- mPrefix %>GenericTag text="Status" design="StatusIconHidden" status="Information" />
+    <%- mContent %>
 </<%- macrosPrefix %>titleContent>

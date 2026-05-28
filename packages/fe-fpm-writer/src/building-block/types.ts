@@ -404,6 +404,12 @@ export interface Page extends BuildingBlock {
      * 'blank' generates a minimal self-closing tag (default behavior).
      */
     templateType?: 'full' | 'blank';
+
+    /**
+     * Optional mContent strings keyed by aggregation name.
+     * When templateType is 'full', each entry is written as the inner XML of the corresponding aggregation.
+     */
+    aggregations?: Record<string, string>;
 }
 
 /**

@@ -1,4 +1,3 @@
-<!-- Footer aggregation -->
 <<%- macrosPrefix %>footer>
-    <<%- mPrefix %>OverflowToolbar />
+    <%- mContent %>
 </<%- macrosPrefix %>footer>
