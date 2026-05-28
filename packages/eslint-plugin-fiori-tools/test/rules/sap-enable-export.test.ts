@@ -31,7 +31,7 @@ const v2FlexChangeExportEnabledOP = {
     ...V2_FLEX_CHANGE_CONTENT,
     content: { ...V2_FLEX_CHANGE_CONTENT.content, property: 'enableExport' },
     selector: {
-        ...V2_FLEX_CHANGE_CONTENT.content,
+        ...V2_FLEX_CHANGE_CONTENT.selector,
         id: 'v2xmlstart::sap.suite.ui.generic.template.ObjectPage.view.Details::Z_SEPMRA_SO_SALESORDERANALYSIS--Products::Table'
     }
 };
