@@ -81,4 +81,3 @@ describe('ui5-test-writer - Integration tests', () => {
         expect(dumped).toMatchSnapshot();
     });
 });
-

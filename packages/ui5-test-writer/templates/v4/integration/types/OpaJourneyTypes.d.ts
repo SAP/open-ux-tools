@@ -5,7 +5,9 @@ import type { actions as ListReportActions, assertions as ListReportAssertions }
 <% if (pages.some(p => p.template === 'ObjectPage')) { -%>
 import type { actions as ObjectPageActions, assertions as ObjectPageAssertions } from "sap/fe/test/ObjectPage";
 <% } -%>
+<% if (pages.some(p => p.template === 'ListReport' || p.template === 'ObjectPage')) { -%>
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from "sap/fe/test/TemplatePage";
+<% } -%>
 import type Shell from "sap/fe/test/Shell";
 import type BaseArrangements from "sap/fe/test/BaseArrangements";
 <% pages.forEach(function(page) { -%>

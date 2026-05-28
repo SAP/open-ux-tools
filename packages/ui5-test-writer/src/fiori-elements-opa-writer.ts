@@ -590,6 +590,12 @@ function writeJourneyFiles(
     }
 
     if (appFeatures.fpm?.name) {
+        // FPM TypeScript support is out of scope for the initial TS OPA5 work
+        // (LROP only). The FPM journey path below is hardcoded `.js` and there is
+        // no `FPM.ts` template, so an LR-OP-FPM mix with `enableTypeScript` would
+        // emit JS FPM files alongside TS LR/OP files (and `writePageObject` would
+        // throw when trying to load the missing `FPM.ts` template). // TODO: add
+        // FPM.ts/FPMJourney.ts templates and switch to `dotFileExtension`.
         editor.copyTpl(
             join(rootV4TemplateDirPath, 'integration', 'FPMJourney.js'),
             join(testOutDirPath, 'integration', `${appFeatures.fpm.name}Journey.js`),

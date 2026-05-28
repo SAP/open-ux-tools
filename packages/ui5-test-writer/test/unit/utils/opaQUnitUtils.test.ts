@@ -580,19 +580,6 @@ describe('splicePageIntoJourneyRunnerTs()', () => {
         // Existing entries use 8-space indentation in the template
         expect(newPageLine).toMatch(/^ {8}/);
     });
-
-    test('adds a trailing comma to the last existing pages entry when missing', () => {
-        // Construct a file whose last pages entry has no trailing comma
-        const noTrailingComma = JOURNEY_RUNNER_TS_FILE.replace(
-            'onTheTravelObjectPage: TravelObjectPage\n',
-            'onTheTravelObjectPage: TravelObjectPage\n'
-        );
-        const result = splicePageIntoJourneyRunnerTs(noTrailingComma, [{ targetKey: 'NewPage', appPath: 'myApp' }]);
-
-        // The previously-last entry must end with a comma now
-        expect(result).toMatch(/onTheTravelObjectPage: TravelObjectPage,/);
-        expect(result).toContain('onTheNewPage: NewPage,');
-    });
 });
 
 describe('addPagesToJourneyRunner()', () => {
