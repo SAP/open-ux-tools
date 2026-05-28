@@ -538,6 +538,8 @@
 
 ## 0.1.209
 
+*Released: 2026-03-20T16:07:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [25e5177]
@@ -551,6 +553,8 @@
 
 ## 0.1.208
 
+*Released: 2026-03-18T16:51:44Z*
+
 ### Patch Changes
 
 - Updated dependencies [ae6758f]
@@ -561,6 +565,8 @@
 
 ## 0.1.207
 
+*Released: 2026-03-18T15:22:00Z*
+
 ### Patch Changes
 
 - Updated dependencies [4f86250]
@@ -569,6 +575,8 @@
 
 ## 0.1.206
 
+*Released: 2026-03-17T08:35:25Z*
+
 ### Patch Changes
 
 - Updated dependencies [3626b55]
@@ -576,6 +584,8 @@
     - @sap-ux/flp-config-inquirer@0.4.153
 
 ## 0.1.205
+
+*Released: 2026-03-17T07:55:04Z*
 
 ### Patch Changes
 
@@ -587,6 +597,8 @@
     - @sap-ux/system-access@0.6.66
 
 ## 0.1.204
+
+*Released: 2026-03-17T01:04:22Z*
 
 ### Patch Changes
 
@@ -604,6 +616,8 @@
 
 ## 0.1.203
 
+*Released: 2026-03-13T07:45:50Z*
+
 ### Patch Changes
 
 - Updated dependencies [53af342]
@@ -611,6 +625,8 @@
     - @sap-ux/flp-config-inquirer@0.4.150
 
 ## 0.1.202
+
+*Released: 2026-03-10T13:28:49Z*
 
 ### Patch Changes
 
@@ -620,6 +636,8 @@
 
 ## 0.1.201
 
+*Released: 2026-03-06T13:19:33Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.89
@@ -628,6 +646,8 @@
 
 ## 0.1.200
 
+*Released: 2026-03-06T10:26:32Z*
+
 ### Patch Changes
 
 - Updated dependencies [f14a3d1]
@@ -635,6 +655,8 @@
     - @sap-ux/flp-config-inquirer@0.4.147
 
 ## 0.1.199
+
+*Released: 2026-03-05T23:21:37Z*
 
 ### Patch Changes
 
@@ -646,6 +668,8 @@
     - @sap-ux/system-access@0.6.64
 
 ## 0.1.198
+
+*Released: 2026-03-05T16:08:22Z*
 
 ### Patch Changes
 
@@ -660,6 +684,8 @@
 
 ## 0.1.197
 
+*Released: 2026-03-05T15:09:36Z*
+
 ### Patch Changes
 
 - Updated dependencies [5d458c7]
@@ -667,6 +693,8 @@
     - @sap-ux/flp-config-inquirer@0.4.144
 
 ## 0.1.196
+
+*Released: 2026-03-05T12:30:25Z*
 
 ### Patch Changes
 
@@ -683,6 +711,8 @@
 
 ## 0.1.195
 
+*Released: 2026-03-05T10:41:09Z*
+
 ### Patch Changes
 
 - 5aff25c: fix(deps): update dependency fs-extra to v11
@@ -691,6 +721,8 @@
     - @sap-ux/flp-config-inquirer@0.4.142
 
 ## 0.1.194
+
+*Released: 2026-03-04T22:42:20Z*
 
 ### Patch Changes
 
@@ -712,6 +744,8 @@
 
 ## 0.1.193
 
+*Released: 2026-03-04T15:52:08Z*
+
 ### Patch Changes
 
 - Updated dependencies [2302698]
@@ -724,6 +758,8 @@
     - @sap-ux/system-access@0.6.61
 
 ## 0.1.192
+
+*Released: 2026-03-04T14:39:10Z*
 
 ### Patch Changes
 
@@ -738,6 +774,8 @@
 
 ## 0.1.191
 
+*Released: 2026-03-04T11:03:29Z*
+
 ### Patch Changes
 
 - Updated dependencies [2d42592]
@@ -745,6 +783,8 @@
     - @sap-ux/flp-config-inquirer@0.4.138
 
 ## 0.1.190
+
+*Released: 2026-03-03T08:27:12Z*
 
 ### Patch Changes
 
@@ -756,6 +796,8 @@
     - @sap-ux/system-access@0.6.60
 
 ## 0.1.189
+
+*Released: 2026-02-27T15:42:39Z*
 
 ### Patch Changes
 
@@ -770,6 +812,8 @@
 
 ## 0.1.188
 
+*Released: 2026-02-26T10:46:59Z*
+
 ### Patch Changes
 
 - 6c993f3: fix: turn off i18next support notice
@@ -783,6 +827,8 @@
 
 ## 0.1.187
 
+*Released: 2026-02-25T14:21:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [ed1399d]
@@ -790,6 +836,8 @@
     - @sap-ux/flp-config-inquirer@0.4.134
 
 ## 0.1.186
+
+*Released: 2026-02-23T22:35:31Z*
 
 ### Patch Changes
 
@@ -804,6 +852,8 @@
 
 ## 0.1.185
 
+*Released: 2026-02-23T19:07:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [0ecc5f1]
@@ -817,6 +867,8 @@
 
 ## 0.1.184
 
+*Released: 2026-02-23T15:13:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [ce9f074]
@@ -824,6 +876,8 @@
     - @sap-ux/flp-config-inquirer@0.4.131
 
 ## 0.1.183
+
+*Released: 2026-02-20T21:31:31Z*
 
 ### Patch Changes
 
@@ -836,6 +890,8 @@
 - @sap-ux/system-access@0.6.56
 
 ## 0.1.182
+
+*Released: 2026-02-20T20:20:17Z*
 
 ### Patch Changes
 
@@ -852,6 +908,8 @@
 
 ## 0.1.181
 
+*Released: 2026-02-20T16:17:11Z*
+
 ### Patch Changes
 
 - cbd340a: fix(deps): update dependency i18next to v25.8.12
@@ -864,6 +922,8 @@
     - @sap-ux/system-access@0.6.55
 
 ## 0.1.180
+
+*Released: 2026-02-20T13:46:55Z*
 
 ### Patch Changes
 
@@ -881,6 +941,8 @@
 
 ## 0.1.179
 
+*Released: 2026-02-20T11:22:50Z*
+
 ### Patch Changes
 
 - Updated dependencies [d1b13c4]
@@ -888,6 +950,8 @@
     - @sap-ux/flp-config-inquirer@0.4.126
 
 ## 0.1.178
+
+*Released: 2026-02-18T21:45:35Z*
 
 ### Patch Changes
 
@@ -902,6 +966,8 @@
 
 ## 0.1.177
 
+*Released: 2026-02-16T18:48:13Z*
+
 ### Patch Changes
 
 - Updated dependencies [dd2131c]
@@ -914,6 +980,8 @@
     - @sap-ux/system-access@0.6.53
 
 ## 0.1.176
+
+*Released: 2026-02-16T16:08:11Z*
 
 ### Patch Changes
 
@@ -930,6 +998,8 @@
 
 ## 0.1.175
 
+*Released: 2026-02-13T16:18:58Z*
+
 ### Patch Changes
 
 - Updated dependencies [9f94937]
@@ -941,6 +1011,8 @@
     - @sap-ux/inquirer-common@0.11.5
 
 ## 0.1.174
+
+*Released: 2026-02-13T09:54:38Z*
 
 ### Patch Changes
 
@@ -956,6 +1028,8 @@
 
 ## 0.1.173
 
+*Released: 2026-02-12T10:29:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [d2b772d]
@@ -968,6 +1042,8 @@
     - @sap-ux/system-access@0.6.50
 
 ## 0.1.172
+
+*Released: 2026-02-10T23:50:15Z*
 
 ### Patch Changes
 
@@ -983,6 +1059,8 @@
 
 ## 0.1.171
 
+*Released: 2026-02-09T15:13:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [1ad56d1]
@@ -991,6 +1069,8 @@
     - @sap-ux/flp-config-inquirer@0.4.118
 
 ## 0.1.170
+
+*Released: 2026-02-09T11:21:43Z*
 
 ### Patch Changes
 
@@ -1005,6 +1085,8 @@
 
 ## 0.1.169
 
+*Released: 2026-02-05T20:09:45Z*
+
 ### Patch Changes
 
 - Updated dependencies [467e6aa]
@@ -1018,6 +1100,8 @@
 
 ## 0.1.168
 
+*Released: 2026-02-05T13:53:56Z*
+
 ### Patch Changes
 
 - Updated dependencies [38e215e]
@@ -1030,6 +1114,8 @@
 
 ## 0.1.167
 
+*Released: 2026-02-05T13:02:56Z*
+
 ### Patch Changes
 
 - Updated dependencies [df61c3a]
@@ -1037,6 +1123,8 @@
     - @sap-ux/flp-config-inquirer@0.4.114
 
 ## 0.1.166
+
+*Released: 2026-02-05T11:39:04Z*
 
 ### Patch Changes
 
@@ -1050,6 +1138,8 @@
 
 ## 0.1.165
 
+*Released: 2026-02-05T09:48:57Z*
+
 ### Patch Changes
 
 - Updated dependencies [8a56942]
@@ -1057,6 +1147,8 @@
     - @sap-ux/flp-config-inquirer@0.4.112
 
 ## 0.1.164
+
+*Released: 2026-02-05T08:38:39Z*
 
 ### Patch Changes
 
@@ -1071,6 +1163,8 @@
 
 ## 0.1.163
 
+*Released: 2026-02-05T06:48:22Z*
+
 ### Patch Changes
 
 - f1e6ed6: fix: Incorrect Adaptation Project configuration for Cloud Foundry projects
@@ -1079,6 +1173,8 @@
     - @sap-ux/flp-config-inquirer@0.4.110
 
 ## 0.1.162
+
+*Released: 2026-02-04T22:31:27Z*
 
 ### Patch Changes
 
@@ -1095,6 +1191,8 @@
 
 ## 0.1.161
 
+*Released: 2026-02-03T15:42:23Z*
+
 ### Patch Changes
 
 - Updated dependencies [89175fe]
@@ -1107,6 +1205,8 @@
     - @sap-ux/inquirer-common@0.10.21
 
 ## 0.1.160
+
+*Released: 2026-01-30T16:59:27Z*
 
 ### Patch Changes
 
@@ -1124,6 +1224,8 @@
 
 ## 0.1.159
 
+*Released: 2026-01-29T14:02:02Z*
+
 ### Patch Changes
 
 - Updated dependencies [6d71400]
@@ -1137,11 +1239,15 @@
 
 ## 0.1.158
 
+*Released: 2026-01-28T10:35:11Z*
+
 ### Patch Changes
 
 - 6d1c7ff: fix: Improve error message for Adaptation Project FLP Config generator on older systems
 
 ## 0.1.157
+
+*Released: 2026-01-28T00:19:05Z*
 
 ### Patch Changes
 
@@ -1155,6 +1261,8 @@
 
 ## 0.1.156
 
+*Released: 2026-01-26T09:14:13Z*
+
 ### Patch Changes
 
 - Updated dependencies [0492325]
@@ -1166,6 +1274,8 @@
 
 ## 0.1.155
 
+*Released: 2026-01-23T23:57:30Z*
+
 ### Patch Changes
 
 - Updated dependencies [c707af1]
@@ -1175,6 +1285,8 @@
     - @sap-ux/inquirer-common@0.10.17
 
 ## 0.1.154
+
+*Released: 2026-01-23T22:30:10Z*
 
 ### Patch Changes
 
@@ -1186,6 +1298,8 @@
     - @sap-ux/inquirer-common@0.10.16
 
 ## 0.1.153
+
+*Released: 2026-01-23T12:49:27Z*
 
 ### Patch Changes
 
@@ -1199,6 +1313,8 @@
 
 ## 0.1.152
 
+*Released: 2026-01-19T12:47:48Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.41
@@ -1206,6 +1322,8 @@
 - @sap-ux/flp-config-inquirer@0.4.100
 
 ## 0.1.151
+
+*Released: 2026-01-16T13:57:39Z*
 
 ### Patch Changes
 
@@ -1220,6 +1338,8 @@
 
 ## 0.1.150
 
+*Released: 2026-01-16T12:32:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [c9fd939]
@@ -1231,6 +1351,8 @@
     - @sap-ux/inquirer-common@0.10.12
 
 ## 0.1.149
+
+*Released: 2026-01-15T14:14:39Z*
 
 ### Patch Changes
 
@@ -1245,6 +1367,8 @@
 
 ## 0.1.148
 
+*Released: 2026-01-14T17:56:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [b132944]
@@ -1258,6 +1382,8 @@
 
 ## 0.1.147
 
+*Released: 2026-01-14T13:30:42Z*
+
 ### Patch Changes
 
 - Updated dependencies [ce4b29c]
@@ -1265,6 +1391,8 @@
     - @sap-ux/flp-config-inquirer@0.4.95
 
 ## 0.1.146
+
+*Released: 2026-01-12T12:01:34Z*
 
 ### Patch Changes
 
@@ -1279,6 +1407,8 @@
 
 ## 0.1.145
 
+*Released: 2026-01-09T11:35:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [e111d0d]
@@ -1292,6 +1422,8 @@
 
 ## 0.1.144
 
+*Released: 2026-01-08T17:12:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [2204ad3]
@@ -1304,6 +1436,8 @@
 
 ## 0.1.143
 
+*Released: 2026-01-07T16:03:58Z*
+
 ### Patch Changes
 
 - Updated dependencies [4e0f204]
@@ -1315,6 +1449,8 @@
 
 ## 0.1.142
 
+*Released: 2026-01-07T10:20:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [6382440]
@@ -1323,6 +1459,8 @@
     - @sap-ux/flp-config-inquirer@0.4.90
 
 ## 0.1.141
+
+*Released: 2026-01-06T14:37:31Z*
 
 ### Patch Changes
 
@@ -1333,6 +1471,8 @@
     - @sap-ux/adp-tooling@0.18.30
 
 ## 0.1.140
+
+*Released: 2026-01-05T14:16:22Z*
 
 ### Patch Changes
 
@@ -1345,6 +1485,8 @@
 
 ## 0.1.139
 
+*Released: 2025-12-22T17:36:43Z*
+
 ### Patch Changes
 
 - Updated dependencies [14a1bc2]
@@ -1355,6 +1497,8 @@
     - @sap-ux/system-access@0.6.37
 
 ## 0.1.138
+
+*Released: 2025-12-19T11:36:13Z*
 
 ### Patch Changes
 
@@ -1373,6 +1517,8 @@
 
 ## 0.1.137
 
+*Released: 2025-12-18T21:05:02Z*
+
 ### Patch Changes
 
 - a9471d0: fix sonar issues
@@ -1390,6 +1536,8 @@
 
 ## 0.1.136
 
+*Released: 2025-12-18T13:13:52Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.25
@@ -1397,6 +1545,8 @@
 - @sap-ux/flp-config-inquirer@0.4.84
 
 ## 0.1.135
+
+*Released: 2025-12-18T08:56:52Z*
 
 ### Patch Changes
 
@@ -1410,6 +1560,8 @@
 
 ## 0.1.134
 
+*Released: 2025-12-17T13:45:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [a79eb1b]
@@ -1417,6 +1569,8 @@
     - @sap-ux/flp-config-inquirer@0.4.82
 
 ## 0.1.133
+
+*Released: 2025-12-16T11:43:52Z*
 
 ### Patch Changes
 
@@ -1429,6 +1583,8 @@
     - @sap-ux/inquirer-common@0.9.17
 
 ## 0.1.132
+
+*Released: 2025-12-15T10:50:50Z*
 
 ### Patch Changes
 
@@ -1448,6 +1604,8 @@
 
 ## 0.1.131
 
+*Released: 2025-12-12T12:38:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [7217d7d]
@@ -1461,6 +1619,8 @@
 
 ## 0.1.130
 
+*Released: 2025-12-12T09:02:37Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.19
@@ -1468,6 +1628,8 @@
 - @sap-ux/flp-config-inquirer@0.4.78
 
 ## 0.1.129
+
+*Released: 2025-12-10T20:04:51Z*
 
 ### Patch Changes
 
@@ -1482,6 +1644,8 @@
 
 ## 0.1.128
 
+*Released: 2025-12-10T09:08:56Z*
+
 ### Patch Changes
 
 - Updated dependencies [985223a]
@@ -1494,6 +1658,8 @@
     - @sap-ux/inquirer-common@0.9.12
 
 ## 0.1.127
+
+*Released: 2025-12-08T17:56:48Z*
 
 ### Patch Changes
 
@@ -1509,6 +1675,8 @@
 
 ## 0.1.126
 
+*Released: 2025-12-08T11:51:00Z*
+
 ### Patch Changes
 
 - Updated dependencies [f71a139]
@@ -1520,6 +1688,8 @@
 
 ## 0.1.125
 
+*Released: 2025-12-05T12:18:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [d202c17]
@@ -1529,6 +1699,8 @@
     - @sap-ux/adp-tooling@0.18.14
 
 ## 0.1.124
+
+*Released: 2025-12-04T10:42:12Z*
 
 ### Patch Changes
 
@@ -1543,6 +1715,8 @@
 
 ## 0.1.123
 
+*Released: 2025-12-04T07:10:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [324d8ed]
@@ -1551,6 +1725,8 @@
 
 ## 0.1.122
 
+*Released: 2025-11-28T13:51:14Z*
+
 ### Patch Changes
 
 - Updated dependencies [9c66de4]
@@ -1558,6 +1734,8 @@
     - @sap-ux/flp-config-inquirer@0.4.70
 
 ## 0.1.121
+
+*Released: 2025-11-27T14:58:09Z*
 
 ### Patch Changes
 
@@ -1572,6 +1750,8 @@
 
 ## 0.1.120
 
+*Released: 2025-11-26T14:39:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [5d0598d]
@@ -1585,6 +1765,8 @@
 
 ## 0.1.119
 
+*Released: 2025-11-26T12:17:21Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.8
@@ -1592,6 +1774,8 @@
 - @sap-ux/flp-config-inquirer@0.4.67
 
 ## 0.1.118
+
+*Released: 2025-11-26T00:12:42Z*
 
 ### Patch Changes
 
@@ -1601,6 +1785,8 @@
     - @sap-ux/flp-config-inquirer@0.4.66
 
 ## 0.1.117
+
+*Released: 2025-11-24T12:45:14Z*
 
 ### Patch Changes
 
@@ -1616,6 +1802,8 @@
 
 ## 0.1.116
 
+*Released: 2025-11-21T15:52:30Z*
+
 ### Patch Changes
 
 - Updated dependencies [6872b31]
@@ -1623,6 +1811,8 @@
     - @sap-ux/flp-config-inquirer@0.4.64
 
 ## 0.1.115
+
+*Released: 2025-11-18T12:29:09Z*
 
 ### Patch Changes
 
@@ -1632,6 +1822,8 @@
 
 ## 0.1.114
 
+*Released: 2025-11-12T16:47:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [744fa93]
@@ -1639,6 +1831,8 @@
     - @sap-ux/flp-config-inquirer@0.4.62
 
 ## 0.1.113
+
+*Released: 2025-11-12T13:11:21Z*
 
 ### Patch Changes
 
@@ -1649,6 +1843,8 @@
 
 ## 0.1.112
 
+*Released: 2025-11-12T08:08:16Z*
+
 ### Patch Changes
 
 - Updated dependencies [3017ce7]
@@ -1656,6 +1852,8 @@
     - @sap-ux/flp-config-inquirer@0.4.60
 
 ## 0.1.111
+
+*Released: 2025-11-10T14:56:50Z*
 
 ### Patch Changes
 
@@ -1665,6 +1863,8 @@
 
 ## 0.1.110
 
+*Released: 2025-11-07T13:23:57Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.17.8
@@ -1672,6 +1872,8 @@
 - @sap-ux/flp-config-inquirer@0.4.58
 
 ## 0.1.109
+
+*Released: 2025-11-06T15:12:51Z*
 
 ### Patch Changes
 
@@ -1681,6 +1883,8 @@
 - @sap-ux/adp-tooling@0.17.7
 
 ## 0.1.108
+
+*Released: 2025-11-05T06:53:42Z*
 
 ### Patch Changes
 
@@ -1700,6 +1904,8 @@
 
 ## 0.1.107
 
+*Released: 2025-11-03T10:50:00Z*
+
 ### Patch Changes
 
 - Updated dependencies [4ddcff3]
@@ -1708,6 +1914,8 @@
     - @sap-ux/flp-config-inquirer@0.4.55
 
 ## 0.1.106
+
+*Released: 2025-10-31T13:35:34Z*
 
 ### Patch Changes
 
@@ -1721,6 +1929,8 @@
 
 ## 0.1.105
 
+*Released: 2025-10-30T10:09:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [3253294]
@@ -1731,6 +1941,8 @@
     - @sap-ux/system-access@0.6.26
 
 ## 0.1.104
+
+*Released: 2025-10-29T17:02:38Z*
 
 ### Patch Changes
 
@@ -1744,6 +1956,8 @@
 
 ## 0.1.103
 
+*Released: 2025-10-29T11:04:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [36b0f19]
@@ -1756,6 +1970,8 @@
 
 ## 0.1.102
 
+*Released: 2025-10-28T13:36:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [cdeb18b]
@@ -1767,6 +1983,8 @@
 
 ## 0.1.101
 
+*Released: 2025-10-28T09:08:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [05ecba6]
@@ -1774,6 +1992,8 @@
     - @sap-ux/flp-config-inquirer@0.4.49
 
 ## 0.1.100
+
+*Released: 2025-10-27T13:41:31Z*
 
 ### Patch Changes
 
@@ -1787,6 +2007,8 @@
     - @sap-ux/inquirer-common@0.8.7
 
 ## 0.1.99
+
+*Released: 2025-10-22T18:56:41Z*
 
 ### Patch Changes
 
@@ -1802,6 +2024,8 @@
 
 ## 0.1.98
 
+*Released: 2025-10-22T12:44:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [27fb53e]
@@ -1809,6 +2033,8 @@
     - @sap-ux/flp-config-inquirer@0.4.46
 
 ## 0.1.97
+
+*Released: 2025-10-22T09:32:12Z*
 
 ### Patch Changes
 
@@ -1823,6 +2049,8 @@
 
 ## 0.1.96
 
+*Released: 2025-10-21T09:37:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [06bc541]
@@ -1831,6 +2059,8 @@
     - @sap-ux/flp-config-inquirer@0.4.44
 
 ## 0.1.95
+
+*Released: 2025-10-21T07:47:50Z*
 
 ### Patch Changes
 
@@ -1845,6 +2075,8 @@
 
 ## 0.1.94
 
+*Released: 2025-10-17T14:58:57Z*
+
 ### Patch Changes
 
 - Updated dependencies [233259c]
@@ -1852,6 +2084,8 @@
     - @sap-ux/flp-config-inquirer@0.4.42
 
 ## 0.1.93
+
+*Released: 2025-10-17T11:37:38Z*
 
 ### Patch Changes
 
@@ -1865,6 +2099,8 @@
 
 ## 0.1.92
 
+*Released: 2025-10-17T09:45:11Z*
+
 ### Patch Changes
 
 - Updated dependencies [d4dabbd]
@@ -1875,6 +2111,8 @@
 
 ## 0.1.91
 
+*Released: 2025-10-15T16:45:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [4053369]
@@ -1884,6 +2122,8 @@
 
 ## 0.1.90
 
+*Released: 2025-10-15T14:30:03Z*
+
 ### Patch Changes
 
 - Updated dependencies [441be86]
@@ -1892,11 +2132,15 @@
 
 ## 0.1.89
 
+*Released: 2025-10-14T16:42:16Z*
+
 ### Patch Changes
 
 - ee9af90: fix(adp)(vscode): SAP Fiori Launchpad Configuration step appears multiple times.
 
 ## 0.1.88
+
+*Released: 2025-10-14T15:08:41Z*
 
 ### Patch Changes
 
@@ -1905,6 +2149,8 @@
     - @sap-ux/flp-config-inquirer@0.4.37
 
 ## 0.1.87
+
+*Released: 2025-10-14T13:22:30Z*
 
 ### Patch Changes
 
@@ -1920,6 +2166,8 @@
 
 ## 0.1.86
 
+*Released: 2025-10-13T14:40:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [247a5a9]
@@ -1927,6 +2175,8 @@
     - @sap-ux/flp-config-inquirer@0.4.35
 
 ## 0.1.85
+
+*Released: 2025-10-13T07:04:12Z*
 
 ### Patch Changes
 
@@ -1936,6 +2186,8 @@
 
 ## 0.1.84
 
+*Released: 2025-10-10T13:53:56Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.15.37
@@ -1943,6 +2195,8 @@
 - @sap-ux/flp-config-inquirer@0.4.33
 
 ## 0.1.83
+
+*Released: 2025-10-10T12:22:06Z*
 
 ### Patch Changes
 
@@ -1956,6 +2210,8 @@
 
 ## 0.1.82
 
+*Released: 2025-10-10T09:39:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [e015869]
@@ -1963,6 +2219,8 @@
     - @sap-ux/adp-tooling@0.15.35
 
 ## 0.1.81
+
+*Released: 2025-10-07T13:15:25Z*
 
 ### Patch Changes
 
@@ -1972,6 +2230,8 @@
 - @sap-ux/inquirer-common@0.7.48
 
 ## 0.1.80
+
+*Released: 2025-10-06T17:09:01Z*
 
 ### Patch Changes
 
@@ -1989,6 +2249,8 @@
 
 ## 0.1.79
 
+*Released: 2025-10-06T10:53:53Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.15.32
@@ -2001,11 +2263,15 @@
 
 ## 0.1.78
 
+*Released: 2025-10-01T14:21:20Z*
+
 ### Patch Changes
 
 - 487296c: fix: Wrong navigation between steps in FLP Configuration generator for ADP
 
 ## 0.1.77
+
+*Released: 2025-09-23T20:14:56Z*
 
 ### Patch Changes
 
@@ -2019,6 +2285,8 @@
     - @sap-ux/system-access@0.6.18
 
 ## 0.1.76
+
+*Released: 2025-09-19T16:36:41Z*
 
 ### Patch Changes
 
@@ -2034,6 +2302,8 @@
 
 ## 0.1.75
 
+*Released: 2025-09-19T00:44:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [f9b4afe]
@@ -2046,6 +2316,8 @@
     - @sap-ux/inquirer-common@0.7.43
 
 ## 0.1.74
+
+*Released: 2025-09-18T07:30:28Z*
 
 ### Patch Changes
 
@@ -2060,6 +2332,8 @@
 
 ## 0.1.73
 
+*Released: 2025-09-16T06:28:11Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.15.27
@@ -2072,6 +2346,8 @@
 
 ## 0.1.72
 
+*Released: 2025-09-11T11:04:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [3c094af]
@@ -2082,6 +2358,8 @@
 
 ## 0.1.71
 
+*Released: 2025-09-03T14:26:25Z*
+
 ### Patch Changes
 
 - Updated dependencies [f46dd02]
@@ -2089,6 +2367,8 @@
     - @sap-ux/flp-config-inquirer@0.4.21
 
 ## 0.1.70
+
+*Released: 2025-09-02T13:22:05Z*
 
 ### Patch Changes
 
@@ -2103,6 +2383,8 @@
 
 ## 0.1.69
 
+*Released: 2025-09-01T12:06:20Z*
+
 ### Patch Changes
 
 - Updated dependencies [77c1459]
@@ -2114,6 +2396,8 @@
     - @sap-ux/inquirer-common@0.7.38
 
 ## 0.1.68
+
+*Released: 2025-08-28T13:37:07Z*
 
 ### Patch Changes
 
@@ -2129,6 +2413,8 @@
 
 ## 0.1.67
 
+*Released: 2025-08-25T12:19:51Z*
+
 ### Patch Changes
 
 - Updated dependencies [384bb40]
@@ -2136,6 +2422,8 @@
     - @sap-ux/flp-config-inquirer@0.4.17
 
 ## 0.1.66
+
+*Released: 2025-08-21T14:27:46Z*
 
 ### Patch Changes
 
@@ -2149,6 +2437,8 @@
 
 ## 0.1.65
 
+*Released: 2025-08-20T12:18:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [0729936]
@@ -2157,6 +2447,8 @@
 
 ## 0.1.64
 
+*Released: 2025-08-20T06:12:11Z*
+
 ### Patch Changes
 
 - Updated dependencies [9f84298]
@@ -2164,6 +2456,8 @@
     - @sap-ux/flp-config-inquirer@0.4.14
 
 ## 0.1.63
+
+*Released: 2025-08-14T14:36:13Z*
 
 ### Patch Changes
 
@@ -2178,6 +2472,8 @@
 
 ## 0.1.62
 
+*Released: 2025-08-13T10:00:10Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.15.16
@@ -2190,6 +2486,8 @@
 
 ## 0.1.61
 
+*Released: 2025-08-12T14:05:27Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.33
@@ -2197,6 +2495,8 @@
 - @sap-ux/flp-config-inquirer@0.4.11
 
 ## 0.1.60
+
+*Released: 2025-08-07T06:27:29Z*
 
 ### Patch Changes
 
@@ -2207,6 +2507,8 @@
 
 ## 0.1.59
 
+*Released: 2025-08-04T07:58:35Z*
+
 ### Patch Changes
 
 - Updated dependencies [98fbd93]
@@ -2214,6 +2516,8 @@
     - @sap-ux/flp-config-inquirer@0.4.9
 
 ## 0.1.58
+
+*Released: 2025-08-01T13:45:39Z*
 
 ### Patch Changes
 
@@ -2225,6 +2529,8 @@
     - @sap-ux/system-access@0.6.12
 
 ## 0.1.57
+
+*Released: 2025-08-01T09:39:39Z*
 
 ### Patch Changes
 
@@ -2238,6 +2544,8 @@
 
 ## 0.1.56
 
+*Released: 2025-07-31T11:23:22Z*
+
 ### Patch Changes
 
 - Updated dependencies [9fa7f0b]
@@ -2246,6 +2554,8 @@
     - @sap-ux/flp-config-inquirer@0.4.6
 
 ## 0.1.55
+
+*Released: 2025-07-30T19:33:46Z*
 
 ### Patch Changes
 
@@ -2258,6 +2568,8 @@
 - @sap-ux/inquirer-common@0.7.29
 
 ## 0.1.54
+
+*Released: 2025-07-28T22:57:52Z*
 
 ### Patch Changes
 
@@ -2272,6 +2584,8 @@
 
 ## 0.1.53
 
+*Released: 2025-07-28T08:36:50Z*
+
 ### Patch Changes
 
 - Updated dependencies [ffac61c]
@@ -2283,6 +2597,8 @@
 
 ## 0.1.52
 
+*Released: 2025-07-25T11:40:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [e25ee86]
@@ -2290,6 +2606,8 @@
     - @sap-ux/flp-config-inquirer@0.4.2
 
 ## 0.1.51
+
+*Released: 2025-07-25T09:16:43Z*
 
 ### Patch Changes
 
@@ -2299,12 +2617,16 @@
 
 ## 0.1.50
 
+*Released: 2025-07-24T09:25:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [089b56f]
     - @sap-ux/flp-config-inquirer@0.4.0
 
 ## 0.1.49
+
+*Released: 2025-07-22T13:05:35Z*
 
 ### Patch Changes
 
@@ -2316,6 +2638,8 @@
 
 ## 0.1.48
 
+*Released: 2025-07-21T13:01:41Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.15.3
@@ -2324,12 +2648,16 @@
 
 ## 0.1.47
 
+*Released: 2025-07-17T13:47:26Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.15.2
 - @sap-ux/flp-config-inquirer@0.3.47
 
 ## 0.1.46
+
+*Released: 2025-07-17T08:59:54Z*
 
 ### Patch Changes
 
@@ -2339,6 +2667,8 @@
 
 ## 0.1.45
 
+*Released: 2025-07-16T14:40:22Z*
+
 ### Patch Changes
 
 - Updated dependencies [e53c1f8]
@@ -2346,6 +2676,8 @@
     - @sap-ux/flp-config-inquirer@0.3.45
 
 ## 0.1.44
+
+*Released: 2025-07-16T12:23:18Z*
 
 ### Patch Changes
 
@@ -2355,12 +2687,16 @@
 
 ## 0.1.43
 
+*Released: 2025-07-11T15:10:00Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.14.43
 - @sap-ux/flp-config-inquirer@0.3.43
 
 ## 0.1.42
+
+*Released: 2025-07-10T11:49:34Z*
 
 ### Patch Changes
 
@@ -2371,6 +2707,8 @@
     - @sap-ux/adp-tooling@0.14.42
 
 ## 0.1.41
+
+*Released: 2025-07-08T12:06:04Z*
 
 ### Patch Changes
 
@@ -2385,6 +2723,8 @@
 
 ## 0.1.40
 
+*Released: 2025-07-07T08:44:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [58abe82]
@@ -2394,6 +2734,8 @@
     - @sap-ux/adp-tooling@0.14.40
 
 ## 0.1.39
+
+*Released: 2025-07-04T15:18:17Z*
 
 ### Patch Changes
 
@@ -2408,6 +2750,8 @@
 
 ## 0.1.38
 
+*Released: 2025-07-04T10:48:56Z*
+
 ### Patch Changes
 
 - e9beeb4: fix: Various bugs in FLP config generator for Adaptation Project
@@ -2416,6 +2760,8 @@
     - @sap-ux/flp-config-inquirer@0.3.38
 
 ## 0.1.37
+
+*Released: 2025-07-04T09:34:59Z*
 
 ### Patch Changes
 
@@ -2428,6 +2774,8 @@
 - @sap-ux/inquirer-common@0.7.20
 
 ## 0.1.36
+
+*Released: 2025-07-03T12:14:55Z*
 
 ### Patch Changes
 
@@ -2442,6 +2790,8 @@
 
 ## 0.1.35
 
+*Released: 2025-07-02T05:46:03Z*
+
 ### Patch Changes
 
 - Updated dependencies [6c2d08a]
@@ -2449,6 +2799,8 @@
     - @sap-ux/flp-config-inquirer@0.3.35
 
 ## 0.1.34
+
+*Released: 2025-06-30T08:46:50Z*
 
 ### Patch Changes
 
@@ -2460,6 +2812,8 @@
     - @sap-ux/adp-tooling@0.14.34
 
 ## 0.1.33
+
+*Released: 2025-06-27T16:39:38Z*
 
 ### Patch Changes
 
@@ -2474,6 +2828,8 @@
 
 ## 0.1.32
 
+*Released: 2025-06-27T07:08:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [77b3b22]
@@ -2486,6 +2842,8 @@
 
 ## 0.1.31
 
+*Released: 2025-06-25T10:51:12Z*
+
 ### Patch Changes
 
 - Updated dependencies [83109eb]
@@ -2493,6 +2851,8 @@
     - @sap-ux/flp-config-inquirer@0.3.31
 
 ## 0.1.30
+
+*Released: 2025-06-24T14:02:12Z*
 
 ### Patch Changes
 
@@ -2503,6 +2863,8 @@
     - @sap-ux/adp-tooling@0.14.30
 
 ## 0.1.29
+
+*Released: 2025-06-24T07:18:46Z*
 
 ### Patch Changes
 
@@ -2518,6 +2880,8 @@
 
 ## 0.1.28
 
+*Released: 2025-06-23T22:19:01Z*
+
 ### Patch Changes
 
 - Updated dependencies [14214a3]
@@ -2527,6 +2891,8 @@
     - @sap-ux/flp-config-inquirer@0.3.28
 
 ## 0.1.27
+
+*Released: 2025-06-19T10:31:56Z*
 
 ### Patch Changes
 
@@ -2538,6 +2904,8 @@
 
 ## 0.1.26
 
+*Released: 2025-06-19T04:44:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [aaf0c14]
@@ -2548,12 +2916,16 @@
 
 ## 0.1.25
 
+*Released: 2025-06-17T13:40:19Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.14.25
 - @sap-ux/flp-config-inquirer@0.3.25
 
 ## 0.1.24
+
+*Released: 2025-06-17T07:58:40Z*
 
 ### Patch Changes
 
@@ -2565,6 +2937,8 @@
 
 ## 0.1.23
 
+*Released: 2025-06-16T09:52:52Z*
+
 ### Patch Changes
 
 - Updated dependencies [20cc54f]
@@ -2574,6 +2948,8 @@
 
 ## 0.1.22
 
+*Released: 2025-06-16T05:54:38Z*
+
 ### Patch Changes
 
 - Updated dependencies [65edfba]
@@ -2581,6 +2957,8 @@
     - @sap-ux/flp-config-inquirer@0.3.22
 
 ## 0.1.21
+
+*Released: 2025-06-13T14:12:57Z*
 
 ### Patch Changes
 
@@ -2590,6 +2968,8 @@
 
 ## 0.1.20
 
+*Released: 2025-06-13T10:58:52Z*
+
 ### Patch Changes
 
 - Updated dependencies [bf752f3]
@@ -2598,6 +2978,8 @@
     - @sap-ux/flp-config-inquirer@0.3.20
 
 ## 0.1.19
+
+*Released: 2025-06-11T12:23:45Z*
 
 ### Patch Changes
 
@@ -2609,6 +2991,8 @@
 
 ## 0.1.18
 
+*Released: 2025-06-10T17:08:16Z*
+
 ### Patch Changes
 
 - Updated dependencies [4303f99]
@@ -2619,6 +3003,8 @@
 
 ## 0.1.17
 
+*Released: 2025-06-10T09:28:31Z*
+
 ### Patch Changes
 
 - f4439f1: feat(generator-adp): Consume FLP generator and Deployment generator
@@ -2627,6 +3013,8 @@
     - @sap-ux/flp-config-inquirer@0.3.17
 
 ## 0.1.16
+
+*Released: 2025-06-10T07:40:27Z*
 
 ### Patch Changes
 
@@ -2638,6 +3026,8 @@
 
 ## 0.1.15
 
+*Released: 2025-06-09T09:48:34Z*
+
 ### Patch Changes
 
 - Updated dependencies [d6943aa]
@@ -2646,6 +3036,8 @@
     - @sap-ux/flp-config-inquirer@0.3.15
 
 ## 0.1.14
+
+*Released: 2025-06-05T12:32:35Z*
 
 ### Patch Changes
 
@@ -2657,6 +3049,8 @@
 
 ## 0.1.13
 
+*Released: 2025-06-05T07:23:07Z*
+
 ### Patch Changes
 
 - Updated dependencies [15ec5c4]
@@ -2666,6 +3060,8 @@
     - @sap-ux/adp-tooling@0.14.13
 
 ## 0.1.12
+
+*Released: 2025-06-04T10:59:54Z*
 
 ### Patch Changes
 
@@ -2677,6 +3073,8 @@
 
 ## 0.1.11
 
+*Released: 2025-05-30T09:02:15Z*
+
 ### Patch Changes
 
 - Updated dependencies [91726b0]
@@ -2686,6 +3084,8 @@
     - @sap-ux/adp-tooling@0.14.11
 
 ## 0.1.10
+
+*Released: 2025-05-30T07:18:36Z*
 
 ### Patch Changes
 
@@ -2700,12 +3100,16 @@
 
 ## 0.1.9
 
+*Released: 2025-05-29T08:13:17Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.14.9
 - @sap-ux/flp-config-inquirer@0.3.9
 
 ## 0.1.8
+
+*Released: 2025-05-27T17:59:17Z*
 
 ### Patch Changes
 
@@ -2717,6 +3121,8 @@
 
 ## 0.1.7
 
+*Released: 2025-05-27T15:05:11Z*
+
 ### Patch Changes
 
 - Updated dependencies [b3fe5b8]
@@ -2726,12 +3132,16 @@
 
 ## 0.1.6
 
+*Released: 2025-05-26T11:57:48Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.14.6
 - @sap-ux/flp-config-inquirer@0.3.6
 
 ## 0.1.5
+
+*Released: 2025-05-23T13:35:39Z*
 
 ### Patch Changes
 
@@ -2743,6 +3153,8 @@
 
 ## 0.1.4
 
+*Released: 2025-05-23T12:26:54Z*
+
 ### Patch Changes
 
 - Updated dependencies [8e44d02]
@@ -2751,12 +3163,16 @@
 
 ## 0.1.3
 
+*Released: 2025-05-22T16:20:10Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.14.3
 - @sap-ux/flp-config-inquirer@0.3.3
 
 ## 0.1.2
+
+*Released: 2025-05-15T14:05:09Z*
 
 ### Patch Changes
 
@@ -2765,6 +3181,8 @@
     - @sap-ux/flp-config-inquirer@0.3.2
 
 ## 0.1.1
+
+*Released: 2025-05-15T13:36:04Z*
 
 ### Patch Changes
 
@@ -2778,6 +3196,8 @@
     - @sap-ux/system-access@0.6.0
 
 ## 0.1.0
+
+*Released: 2025-05-14T22:35:53Z*
 
 ### Minor Changes
 
@@ -2800,6 +3220,8 @@
 
 ## 0.0.61
 
+*Released: 2025-05-14T12:10:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [2ba9fe9]
@@ -2807,6 +3229,8 @@
     - @sap-ux/flp-config-inquirer@0.2.90
 
 ## 0.0.60
+
+*Released: 2025-05-13T10:46:10Z*
 
 ### Patch Changes
 
@@ -2820,6 +3244,8 @@
 
 ## 0.0.59
 
+*Released: 2025-05-08T10:12:31Z*
+
 ### Patch Changes
 
 - Updated dependencies [6cb23c8]
@@ -2827,6 +3253,8 @@
     - @sap-ux/flp-config-inquirer@0.2.88
 
 ## 0.0.58
+
+*Released: 2025-05-05T13:48:20Z*
 
 ### Patch Changes
 
@@ -2841,6 +3269,8 @@
 
 ## 0.0.57
 
+*Released: 2025-05-02T10:00:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [1a01c5e]
@@ -2851,6 +3281,8 @@
 
 ## 0.0.56
 
+*Released: 2025-05-02T07:45:43Z*
+
 ### Patch Changes
 
 - Updated dependencies [9e7fa23]
@@ -2858,6 +3290,8 @@
     - @sap-ux/flp-config-inquirer@0.2.85
 
 ## 0.0.55
+
+*Released: 2025-05-01T13:52:16Z*
 
 ### Patch Changes
 
@@ -2867,12 +3301,16 @@
 
 ## 0.0.54
 
+*Released: 2025-04-30T10:38:47Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.13.38
 - @sap-ux/flp-config-inquirer@0.2.83
 
 ## 0.0.53
+
+*Released: 2025-04-30T08:50:36Z*
 
 ### Patch Changes
 
@@ -2884,6 +3322,8 @@
 
 ## 0.0.52
 
+*Released: 2025-04-28T14:29:23Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.40
@@ -2892,6 +3332,8 @@
 
 ## 0.0.51
 
+*Released: 2025-04-25T13:08:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [258ecca]
@@ -2899,6 +3341,8 @@
     - @sap-ux/flp-config-inquirer@0.2.80
 
 ## 0.0.50
+
+*Released: 2025-04-24T15:01:01Z*
 
 ### Patch Changes
 
@@ -2911,6 +3355,8 @@
 - @sap-ux/inquirer-common@0.6.39
 
 ## 0.0.49
+
+*Released: 2025-04-23T15:22:38Z*
 
 ### Patch Changes
 
@@ -2925,6 +3371,8 @@
 
 ## 0.0.48
 
+*Released: 2025-04-23T13:59:14Z*
+
 ### Patch Changes
 
 - Updated dependencies [1ca4004]
@@ -2938,6 +3386,8 @@
 
 ## 0.0.47
 
+*Released: 2025-04-17T12:52:13Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.36
@@ -2946,6 +3396,8 @@
 
 ## 0.0.46
 
+*Released: 2025-04-17T09:03:34Z*
+
 ### Patch Changes
 
 - Updated dependencies [2db2c33]
@@ -2953,6 +3405,8 @@
     - @sap-ux/flp-config-inquirer@0.2.75
 
 ## 0.0.45
+
+*Released: 2025-04-15T14:18:17Z*
 
 ### Patch Changes
 
@@ -2964,6 +3418,8 @@
 
 ## 0.0.44
 
+*Released: 2025-04-15T10:10:52Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.10.2
@@ -2972,6 +3428,8 @@
 - @sap-ux/adp-tooling@0.13.28
 
 ## 0.0.43
+
+*Released: 2025-04-14T22:24:07Z*
 
 ### Patch Changes
 
@@ -2986,6 +3444,8 @@
 
 ## 0.0.42
 
+*Released: 2025-04-11T08:09:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [c4278fb]
@@ -2993,6 +3453,8 @@
     - @sap-ux/flp-config-inquirer@0.2.71
 
 ## 0.0.41
+
+*Released: 2025-04-10T13:52:38Z*
 
 ### Patch Changes
 
@@ -3004,6 +3466,8 @@
 
 ## 0.0.40
 
+*Released: 2025-04-09T06:44:54Z*
+
 ### Patch Changes
 
 - Updated dependencies [c81864a]
@@ -3011,6 +3475,8 @@
     - @sap-ux/flp-config-inquirer@0.2.69
 
 ## 0.0.39
+
+*Released: 2025-04-08T13:20:49Z*
 
 ### Patch Changes
 
@@ -3020,6 +3486,8 @@
 
 ## 0.0.38
 
+*Released: 2025-03-30T09:30:38Z*
+
 ### Patch Changes
 
 - Updated dependencies [fbdf2d0]
@@ -3027,6 +3495,8 @@
     - @sap-ux/flp-config-inquirer@0.2.67
 
 ## 0.0.37
+
+*Released: 2025-03-26T12:15:41Z*
 
 ### Patch Changes
 
@@ -3039,12 +3509,16 @@
 
 ## 0.0.36
 
+*Released: 2025-03-26T09:06:26Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.13.20
 - @sap-ux/flp-config-inquirer@0.2.65
 
 ## 0.0.35
+
+*Released: 2025-03-25T15:09:56Z*
 
 ### Patch Changes
 
@@ -3054,12 +3528,16 @@
 
 ## 0.0.34
 
+*Released: 2025-03-22T09:43:02Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.13.18
 - @sap-ux/flp-config-inquirer@0.2.63
 
 ## 0.0.33
+
+*Released: 2025-03-19T11:14:07Z*
 
 ### Patch Changes
 
@@ -3068,6 +3546,8 @@
     - @sap-ux/flp-config-inquirer@0.2.62
 
 ## 0.0.32
+
+*Released: 2025-03-19T08:54:25Z*
 
 ### Patch Changes
 
@@ -3082,6 +3562,8 @@
 
 ## 0.0.31
 
+*Released: 2025-03-18T09:41:03Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.13.15
@@ -3093,6 +3575,8 @@
 - @sap-ux/inquirer-common@0.6.30
 
 ## 0.0.30
+
+*Released: 2025-03-10T20:40:35Z*
 
 ### Patch Changes
 
@@ -3108,6 +3592,8 @@
 
 ## 0.0.29
 
+*Released: 2025-03-06T16:16:20Z*
+
 ### Patch Changes
 
 - Updated dependencies [1ce7fe9]
@@ -3121,6 +3607,8 @@
 
 ## 0.0.28
 
+*Released: 2025-03-06T08:13:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [1c07ab9]
@@ -3128,6 +3616,8 @@
     - @sap-ux/flp-config-inquirer@0.2.57
 
 ## 0.0.27
+
+*Released: 2025-03-05T11:16:53Z*
 
 ### Patch Changes
 
@@ -3142,6 +3632,8 @@
 
 ## 0.0.26
 
+*Released: 2025-03-05T09:53:57Z*
+
 ### Patch Changes
 
 - Updated dependencies [14bec21]
@@ -3149,6 +3641,8 @@
     - @sap-ux/flp-config-inquirer@0.2.55
 
 ## 0.0.25
+
+*Released: 2025-03-05T09:14:02Z*
 
 ### Patch Changes
 
@@ -3162,6 +3656,8 @@
 
 ## 0.0.24
 
+*Released: 2025-03-04T08:55:15Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.13.8
@@ -3174,6 +3670,8 @@
 
 ## 0.0.23
 
+*Released: 2025-03-03T11:06:12Z*
+
 ### Patch Changes
 
 - Updated dependencies [d47a1b1]
@@ -3184,6 +3682,8 @@
 
 ## 0.0.22
 
+*Released: 2025-03-03T08:50:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [aaa432a]
@@ -3193,6 +3693,8 @@
     - @sap-ux/flp-config-inquirer@0.2.51
 
 ## 0.0.21
+
+*Released: 2025-02-28T15:10:48Z*
 
 ### Patch Changes
 
@@ -3207,6 +3709,8 @@
 
 ## 0.0.20
 
+*Released: 2025-02-28T08:16:02Z*
+
 ### Patch Changes
 
 - Updated dependencies [78dd2c2]
@@ -3215,6 +3719,8 @@
 
 ## 0.0.19
 
+*Released: 2025-02-27T19:24:50Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.22
@@ -3222,6 +3728,8 @@
 - @sap-ux/flp-config-inquirer@0.2.48
 
 ## 0.0.18
+
+*Released: 2025-02-27T14:15:03Z*
 
 ### Patch Changes
 
@@ -3237,6 +3745,8 @@
 
 ## 0.0.17
 
+*Released: 2025-02-27T08:22:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [c8c292c]
@@ -3250,6 +3760,8 @@
 
 ## 0.0.16
 
+*Released: 2025-02-26T11:38:25Z*
+
 ### Patch Changes
 
 - Updated dependencies [127bd12]
@@ -3257,6 +3769,8 @@
     - @sap-ux/flp-config-inquirer@0.2.45
 
 ## 0.0.15
+
+*Released: 2025-02-24T09:17:17Z*
 
 ### Patch Changes
 
@@ -3268,6 +3782,8 @@
 
 ## 0.0.14
 
+*Released: 2025-02-20T16:17:08Z*
+
 ### Patch Changes
 
 - Updated dependencies [df8d790]
@@ -3275,6 +3791,8 @@
     - @sap-ux/flp-config-inquirer@0.2.43
 
 ## 0.0.13
+
+*Released: 2025-02-19T07:51:13Z*
 
 ### Patch Changes
 
@@ -3284,12 +3802,16 @@
 
 ## 0.0.12
 
+*Released: 2025-02-18T18:24:37Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.12.135
 - @sap-ux/flp-config-inquirer@0.2.41
 
 ## 0.0.11
+
+*Released: 2025-02-18T13:48:13Z*
 
 ### Patch Changes
 
@@ -3299,12 +3821,16 @@
 
 ## 0.0.10
 
+*Released: 2025-02-17T16:12:15Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.12.133
 - @sap-ux/flp-config-inquirer@0.2.39
 
 ## 0.0.9
+
+*Released: 2025-02-17T13:42:22Z*
 
 ### Patch Changes
 
@@ -3319,6 +3845,8 @@
 
 ## 0.0.8
 
+*Released: 2025-02-17T11:44:22Z*
+
 ### Patch Changes
 
 - Updated dependencies [4fd3029]
@@ -3329,12 +3857,16 @@
 
 ## 0.0.7
 
+*Released: 2025-02-14T10:07:13Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.12.130
 - @sap-ux/flp-config-inquirer@0.2.36
 
 ## 0.0.6
+
+*Released: 2025-02-13T17:39:11Z*
 
 ### Patch Changes
 
@@ -3345,6 +3877,8 @@
     - @sap-ux/adp-tooling@0.12.129
 
 ## 0.0.5
+
+*Released: 2025-02-13T10:58:34Z*
 
 ### Patch Changes
 
@@ -3359,6 +3893,8 @@
 
 ## 0.0.4
 
+*Released: 2025-02-07T19:58:32Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.12.127
@@ -3371,6 +3907,8 @@
 
 ## 0.0.3
 
+*Released: 2025-02-06T22:08:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [59453ba]
@@ -3378,6 +3916,8 @@
     - @sap-ux/flp-config-inquirer@0.2.32
 
 ## 0.0.2
+
+*Released: 2025-02-05T17:08:20Z*
 
 ### Patch Changes
 

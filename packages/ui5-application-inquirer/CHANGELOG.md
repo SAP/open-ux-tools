@@ -273,6 +273,8 @@
 
 ## 0.17.2
 
+*Released: 2026-03-20T16:07:49Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.26
@@ -281,17 +283,23 @@
 
 ## 0.17.1
 
+*Released: 2026-03-18T16:51:44Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.25
 
 ## 0.17.0
 
+*Released: 2026-03-18T12:34:00Z*
+
 ### Minor Changes
 
 - b5c7d47: Hide ESLint prompt from users as ESLint is now enabled by default in the writer. The enableEslint prompt is no longer shown during application generation.
 
 ## 0.16.46
+
+*Released: 2026-03-17T01:04:22Z*
 
 ### Patch Changes
 
@@ -304,11 +312,15 @@
 
 ## 0.16.45
 
+*Released: 2026-03-06T13:19:33Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.23
 
 ## 0.16.44
+
+*Released: 2026-03-05T16:08:22Z*
 
 ### Patch Changes
 
@@ -319,6 +331,8 @@
 
 ## 0.16.43
 
+*Released: 2026-03-05T12:30:25Z*
+
 ### Patch Changes
 
 - Updated dependencies [7c06ef0]
@@ -328,11 +342,15 @@
 
 ## 0.16.42
 
+*Released: 2026-03-05T10:41:09Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.20
 
 ## 0.16.41
+
+*Released: 2026-03-04T22:42:20Z*
 
 ### Patch Changes
 
@@ -344,12 +362,16 @@
 
 ## 0.16.40
 
+*Released: 2026-03-04T15:52:08Z*
+
 ### Patch Changes
 
 - Updated dependencies [2302698]
     - @sap-ux/inquirer-common@0.11.18
 
 ## 0.16.39
+
+*Released: 2026-03-04T14:39:10Z*
 
 ### Patch Changes
 
@@ -358,6 +380,8 @@
 - @sap-ux/project-input-validator@0.6.65
 
 ## 0.16.38
+
+*Released: 2026-02-27T15:42:39Z*
 
 ### Patch Changes
 
@@ -368,6 +392,8 @@
 
 ## 0.16.37
 
+*Released: 2026-02-26T10:46:59Z*
+
 ### Patch Changes
 
 - 6c993f3: fix: turn off i18next support notice
@@ -376,6 +402,8 @@
     - @sap-ux/inquirer-common@0.11.15
 
 ## 0.16.36
+
+*Released: 2026-02-23T22:35:31Z*
 
 ### Patch Changes
 
@@ -386,6 +414,8 @@
 
 ## 0.16.35
 
+*Released: 2026-02-23T19:07:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [0ecc5f1]
@@ -395,6 +425,8 @@
 
 ## 0.16.34
 
+*Released: 2026-02-20T21:31:31Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.35.7
@@ -403,12 +435,16 @@
 
 ## 0.16.33
 
+*Released: 2026-02-20T20:20:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [ff634b0]
     - @sap-ux/inquirer-common@0.11.11
 
 ## 0.16.32
+
+*Released: 2026-02-20T16:17:11Z*
 
 ### Patch Changes
 
@@ -418,6 +454,8 @@
     - @sap-ux/project-input-validator@0.6.59
 
 ## 0.16.31
+
+*Released: 2026-02-20T13:46:55Z*
 
 ### Patch Changes
 
@@ -431,6 +469,8 @@
 
 ## 0.16.30
 
+*Released: 2026-02-18T21:45:35Z*
+
 ### Patch Changes
 
 - Updated dependencies [d57cc47]
@@ -440,11 +480,15 @@
 
 ## 0.16.29
 
+*Released: 2026-02-16T18:48:13Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.7
 
 ## 0.16.28
+
+*Released: 2026-02-16T16:08:11Z*
 
 ### Patch Changes
 
@@ -454,11 +498,15 @@
 
 ## 0.16.27
 
+*Released: 2026-02-13T16:18:58Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.5
 
 ## 0.16.26
+
+*Released: 2026-02-13T09:54:38Z*
 
 ### Patch Changes
 
@@ -469,6 +517,8 @@
 
 ## 0.16.25
 
+*Released: 2026-02-12T10:29:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [d2b772d]
@@ -477,6 +527,8 @@
     - @sap-ux/project-input-validator@0.6.54
 
 ## 0.16.24
+
+*Released: 2026-02-10T23:50:15Z*
 
 ### Patch Changes
 
@@ -488,12 +540,16 @@
 
 ## 0.16.23
 
+*Released: 2026-02-09T15:13:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [1ad56d1]
     - @sap-ux/inquirer-common@0.11.1
 
 ## 0.16.22
+
+*Released: 2026-02-09T11:21:43Z*
 
 ### Patch Changes
 
@@ -504,6 +560,8 @@
 
 ## 0.16.21
 
+*Released: 2026-02-05T20:09:45Z*
+
 ### Patch Changes
 
 - Updated dependencies [467e6aa]
@@ -513,17 +571,23 @@
 
 ## 0.16.20
 
+*Released: 2026-02-05T13:53:56Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.10.25
 
 ## 0.16.19
 
+*Released: 2026-02-05T11:39:04Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.10.24
 
 ## 0.16.18
+
+*Released: 2026-02-05T08:38:39Z*
 
 ### Patch Changes
 
@@ -536,12 +600,16 @@
 
 ## 0.16.17
 
+*Released: 2026-02-04T22:31:27Z*
+
 ### Patch Changes
 
 - Updated dependencies [9f11dd2]
     - @sap-ux/inquirer-common@0.10.22
 
 ## 0.16.16
+
+*Released: 2026-02-03T15:42:23Z*
 
 ### Patch Changes
 
@@ -551,6 +619,8 @@
     - @sap-ux/project-input-validator@0.6.49
 
 ## 0.16.15
+
+*Released: 2026-01-30T16:59:27Z*
 
 ### Patch Changes
 
@@ -563,6 +633,8 @@
 
 ## 0.16.14
 
+*Released: 2026-01-29T14:02:02Z*
+
 ### Patch Changes
 
 - Updated dependencies [6d71400]
@@ -573,17 +645,23 @@
 
 ## 0.16.13
 
+*Released: 2026-01-28T00:19:05Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.10.18
 
 ## 0.16.12
 
+*Released: 2026-01-23T23:57:30Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.10.17
 
 ## 0.16.11
+
+*Released: 2026-01-23T22:30:10Z*
 
 ### Patch Changes
 
@@ -593,11 +671,15 @@
 
 ## 0.16.10
 
+*Released: 2026-01-23T12:49:27Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.10.15
 
 ## 0.16.9
+
+*Released: 2026-01-19T12:47:48Z*
 
 ### Patch Changes
 
@@ -606,6 +688,8 @@
     - @sap-ux/inquirer-common@0.10.14
 
 ## 0.16.8
+
+*Released: 2026-01-16T13:57:39Z*
 
 ### Patch Changes
 
@@ -616,11 +700,15 @@
 
 ## 0.16.7
 
+*Released: 2026-01-16T12:32:24Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.10.12
 
 ## 0.16.6
+
+*Released: 2026-01-15T14:14:39Z*
 
 ### Patch Changes
 
@@ -631,6 +719,8 @@
 
 ## 0.16.5
 
+*Released: 2026-01-14T17:56:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [b132944]
@@ -639,6 +729,8 @@
     - @sap-ux/inquirer-common@0.10.10
 
 ## 0.16.4
+
+*Released: 2026-01-12T12:01:34Z*
 
 ### Patch Changes
 
@@ -649,6 +741,8 @@
 
 ## 0.16.3
 
+*Released: 2026-01-09T11:35:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [e111d0d]
@@ -658,6 +752,8 @@
 
 ## 0.16.2
 
+*Released: 2026-01-08T17:12:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [2204ad3]
@@ -665,12 +761,16 @@
 
 ## 0.16.1
 
+*Released: 2026-01-07T10:20:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [6382440]
     - @sap-ux/inquirer-common@0.10.6
 
 ## 0.16.0
+
+*Released: 2026-01-06T14:37:31Z*
 
 ### Minor Changes
 
@@ -684,11 +784,15 @@
 
 ## 0.15.53
 
+*Released: 2026-01-05T14:16:22Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.10.4
 
 ## 0.15.52
+
+*Released: 2025-12-19T11:36:13Z*
 
 ### Patch Changes
 
@@ -699,6 +803,8 @@
     - @sap-ux/project-input-validator@0.6.40
 
 ## 0.15.51
+
+*Released: 2025-12-18T21:05:02Z*
 
 ### Patch Changes
 
@@ -711,11 +817,15 @@
 
 ## 0.15.50
 
+*Released: 2025-12-18T13:13:52Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.10.1
 
 ## 0.15.49
+
+*Released: 2025-12-18T08:56:52Z*
 
 ### Patch Changes
 
@@ -724,11 +834,15 @@
 
 ## 0.15.48
 
+*Released: 2025-12-16T11:43:52Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.9.17
 
 ## 0.15.47
+
+*Released: 2025-12-15T10:50:50Z*
 
 ### Patch Changes
 
@@ -741,6 +855,8 @@
 
 ## 0.15.46
 
+*Released: 2025-12-12T12:38:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [7217d7d]
@@ -750,11 +866,15 @@
 
 ## 0.15.45
 
+*Released: 2025-12-12T09:02:37Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.9.14
 
 ## 0.15.44
+
+*Released: 2025-12-10T20:04:51Z*
 
 ### Patch Changes
 
@@ -765,6 +885,8 @@
 
 ## 0.15.43
 
+*Released: 2025-12-10T09:08:56Z*
+
 ### Patch Changes
 
 - Updated dependencies [985223a]
@@ -774,17 +896,23 @@
 
 ## 0.15.42
 
+*Released: 2025-12-08T17:56:48Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.9.11
 
 ## 0.15.41
 
+*Released: 2025-12-05T12:18:49Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.9.10
 
 ## 0.15.40
+
+*Released: 2025-12-04T10:42:12Z*
 
 ### Patch Changes
 
@@ -795,6 +923,8 @@
 
 ## 0.15.39
 
+*Released: 2025-11-27T14:58:09Z*
+
 ### Patch Changes
 
 - Updated dependencies [07725fe]
@@ -804,6 +934,8 @@
 
 ## 0.15.38
 
+*Released: 2025-11-26T14:39:37Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.9.7
@@ -811,6 +943,8 @@
 - @sap-ux/project-input-validator@0.6.32
 
 ## 0.15.37
+
+*Released: 2025-11-26T12:17:21Z*
 
 ### Patch Changes
 
@@ -820,12 +954,16 @@
 
 ## 0.15.36
 
+*Released: 2025-11-26T00:12:42Z*
+
 ### Patch Changes
 
 - Updated dependencies [597834f]
     - @sap-ux/inquirer-common@0.9.5
 
 ## 0.15.35
+
+*Released: 2025-11-24T12:45:14Z*
 
 ### Patch Changes
 
@@ -837,6 +975,8 @@
 
 ## 0.15.34
 
+*Released: 2025-11-07T13:23:57Z*
+
 ### Patch Changes
 
 - Updated dependencies [fef7496]
@@ -845,11 +985,15 @@
 
 ## 0.15.33
 
+*Released: 2025-11-06T15:12:51Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.9.2
 
 ## 0.15.32
+
+*Released: 2025-11-05T06:53:42Z*
 
 ### Patch Changes
 
@@ -862,6 +1006,8 @@
 
 ## 0.15.31
 
+*Released: 2025-11-03T10:50:00Z*
+
 ### Patch Changes
 
 - Updated dependencies [4ddcff3]
@@ -869,11 +1015,15 @@
 
 ## 0.15.30
 
+*Released: 2025-10-31T13:35:34Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.8.10
 
 ## 0.15.29
+
+*Released: 2025-10-29T17:02:38Z*
 
 ### Patch Changes
 
@@ -881,11 +1031,15 @@
 
 ## 0.15.28
 
+*Released: 2025-10-29T11:04:17Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.8.8
 
 ## 0.15.27
+
+*Released: 2025-10-27T13:41:31Z*
 
 ### Patch Changes
 
@@ -896,11 +1050,15 @@
 
 ## 0.15.26
 
+*Released: 2025-10-22T18:56:41Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.8.6
 
 ## 0.15.25
+
+*Released: 2025-10-22T09:32:12Z*
 
 ### Patch Changes
 
@@ -911,12 +1069,16 @@
 
 ## 0.15.24
 
+*Released: 2025-10-21T09:37:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [06bc541]
     - @sap-ux/inquirer-common@0.8.4
 
 ## 0.15.23
+
+*Released: 2025-10-21T07:47:50Z*
 
 ### Patch Changes
 
@@ -927,17 +1089,23 @@
 
 ## 0.15.22
 
+*Released: 2025-10-17T11:37:38Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.8.2
 
 ## 0.15.21
 
+*Released: 2025-10-17T09:45:11Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.8.1
 
 ## 0.15.20
+
+*Released: 2025-10-15T16:45:46Z*
 
 ### Patch Changes
 
@@ -946,11 +1114,15 @@
 
 ## 0.15.19
 
+*Released: 2025-10-14T13:22:30Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.51
 
 ## 0.15.18
+
+*Released: 2025-10-13T14:40:48Z*
 
 ### Patch Changes
 
@@ -958,6 +1130,8 @@
     - @sap-ux/project-input-validator@0.6.26
 
 ## 0.15.17
+
+*Released: 2025-10-10T13:53:56Z*
 
 ### Patch Changes
 
@@ -967,6 +1141,8 @@
 
 ## 0.15.16
 
+*Released: 2025-10-10T12:22:06Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.32.4
@@ -975,17 +1151,23 @@
 
 ## 0.15.15
 
+*Released: 2025-10-10T09:39:17Z*
+
 ### Patch Changes
 
 - e015869: chore: patch inquirer dependency
 
 ## 0.15.14
 
+*Released: 2025-10-07T13:15:25Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.48
 
 ## 0.15.13
+
+*Released: 2025-10-06T17:09:01Z*
 
 ### Patch Changes
 
@@ -998,6 +1180,8 @@
 
 ## 0.15.12
 
+*Released: 2025-10-06T10:53:53Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.32.2
@@ -1006,11 +1190,15 @@
 
 ## 0.15.11
 
+*Released: 2025-09-23T20:14:56Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.45
 
 ## 0.15.10
+
+*Released: 2025-09-19T16:36:41Z*
 
 ### Patch Changes
 
@@ -1022,6 +1210,8 @@
 
 ## 0.15.9
 
+*Released: 2025-09-19T00:44:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [f9b4afe]
@@ -1030,6 +1220,8 @@
     - @sap-ux/inquirer-common@0.7.43
 
 ## 0.15.8
+
+*Released: 2025-09-18T07:30:28Z*
 
 ### Patch Changes
 
@@ -1040,6 +1232,8 @@
 
 ## 0.15.7
 
+*Released: 2025-09-16T06:28:11Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.30.14
@@ -1048,11 +1242,15 @@
 
 ## 0.15.6
 
+*Released: 2025-09-11T11:04:24Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.40
 
 ## 0.15.5
+
+*Released: 2025-09-02T13:22:05Z*
 
 ### Patch Changes
 
@@ -1060,11 +1258,15 @@
 
 ## 0.15.4
 
+*Released: 2025-09-01T12:06:20Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.38
 
 ## 0.15.3
+
+*Released: 2025-08-28T13:37:07Z*
 
 ### Patch Changes
 
@@ -1076,11 +1278,15 @@
 
 ## 0.15.2
 
+*Released: 2025-08-21T14:27:46Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.36
 
 ## 0.15.1
+
+*Released: 2025-08-15T14:43:36Z*
 
 ### Patch Changes
 
@@ -1088,11 +1294,15 @@
 
 ## 0.15.0
 
+*Released: 2025-08-14T15:20:59Z*
+
 ### Minor Changes
 
 - 55bb22e: updates cap projects to use npm workspaces by default
 
 ## 0.14.39
+
+*Released: 2025-08-14T14:36:13Z*
 
 ### Patch Changes
 
@@ -1103,6 +1313,8 @@
 
 ## 0.14.38
 
+*Released: 2025-08-13T10:00:10Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.30.11
@@ -1111,17 +1323,23 @@
 
 ## 0.14.37
 
+*Released: 2025-08-12T14:05:27Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.33
 
 ## 0.14.36
 
+*Released: 2025-08-07T06:27:29Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.32
 
 ## 0.14.35
+
+*Released: 2025-08-01T09:39:39Z*
 
 ### Patch Changes
 
@@ -1131,12 +1349,16 @@
 
 ## 0.14.34
 
+*Released: 2025-07-31T11:23:22Z*
+
 ### Patch Changes
 
 - Updated dependencies [9fa7f0b]
     - @sap-ux/inquirer-common@0.7.30
 
 ## 0.14.33
+
+*Released: 2025-07-30T19:33:46Z*
 
 ### Patch Changes
 
@@ -1145,6 +1367,8 @@
 - @sap-ux/inquirer-common@0.7.29
 
 ## 0.14.32
+
+*Released: 2025-07-28T22:57:52Z*
 
 ### Patch Changes
 
@@ -1155,11 +1379,15 @@
 
 ## 0.14.31
 
+*Released: 2025-07-22T13:05:35Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.27
 
 ## 0.14.30
+
+*Released: 2025-07-21T13:01:41Z*
 
 ### Patch Changes
 
@@ -1169,11 +1397,15 @@
 
 ## 0.14.29
 
+*Released: 2025-07-16T12:23:18Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.25
 
 ## 0.14.28
+
+*Released: 2025-07-11T15:10:00Z*
 
 ### Patch Changes
 
@@ -1183,11 +1415,15 @@
 
 ## 0.14.27
 
+*Released: 2025-07-10T11:49:34Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.24
 
 ## 0.14.26
+
+*Released: 2025-07-08T12:06:04Z*
 
 ### Patch Changes
 
@@ -1198,11 +1434,15 @@
 
 ## 0.14.25
 
+*Released: 2025-07-07T08:44:59Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.22
 
 ## 0.14.24
+
+*Released: 2025-07-04T15:18:17Z*
 
 ### Patch Changes
 
@@ -1213,6 +1453,8 @@
 
 ## 0.14.23
 
+*Released: 2025-07-04T09:34:59Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.30.6
@@ -1220,6 +1462,8 @@
 - @sap-ux/inquirer-common@0.7.20
 
 ## 0.14.22
+
+*Released: 2025-07-03T12:14:55Z*
 
 ### Patch Changes
 
@@ -1230,11 +1474,15 @@
 
 ## 0.14.21
 
+*Released: 2025-07-03T11:40:24Z*
+
 ### Patch Changes
 
 - d152617: Align text on mta message and non mta deploy config
 
 ## 0.14.20
+
+*Released: 2025-06-30T08:46:50Z*
 
 ### Patch Changes
 
@@ -1245,6 +1493,8 @@
 
 ## 0.14.19
 
+*Released: 2025-06-27T16:39:38Z*
+
 ### Patch Changes
 
 - Updated dependencies [f75b89d]
@@ -1254,11 +1504,15 @@
 
 ## 0.14.18
 
+*Released: 2025-06-27T07:08:06Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.16
 
 ## 0.14.17
+
+*Released: 2025-06-25T10:51:12Z*
 
 ### Patch Changes
 
@@ -1267,11 +1521,15 @@
 
 ## 0.14.16
 
+*Released: 2025-06-24T14:02:12Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.15
 
 ## 0.14.15
+
+*Released: 2025-06-24T07:18:46Z*
 
 ### Patch Changes
 
@@ -1281,6 +1539,8 @@
 
 ## 0.14.14
 
+*Released: 2025-06-17T13:40:19Z*
+
 ### Patch Changes
 
 - c9f79c1: Check long Windows paths during project generation and deployment config generation.
@@ -1289,11 +1549,15 @@
 
 ## 0.14.13
 
+*Released: 2025-06-17T07:58:40Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.13
 
 ## 0.14.12
+
+*Released: 2025-06-16T09:52:52Z*
 
 ### Patch Changes
 
@@ -1304,6 +1568,8 @@
 
 ## 0.14.11
 
+*Released: 2025-06-13T14:12:57Z*
+
 ### Patch Changes
 
 - Updated dependencies [7f35f6c]
@@ -1312,6 +1578,8 @@
 
 ## 0.14.10
 
+*Released: 2025-06-13T10:58:52Z*
+
 ### Patch Changes
 
 - Updated dependencies [bf752f3]
@@ -1319,11 +1587,15 @@
 
 ## 0.14.9
 
+*Released: 2025-06-10T07:40:27Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.9
 
 ## 0.14.8
+
+*Released: 2025-06-09T09:48:34Z*
 
 ### Patch Changes
 
@@ -1332,11 +1604,15 @@
 
 ## 0.14.7
 
+*Released: 2025-06-05T12:32:35Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.7
 
 ## 0.14.6
+
+*Released: 2025-06-05T07:23:07Z*
 
 ### Patch Changes
 
@@ -1344,11 +1620,15 @@
 
 ## 0.14.5
 
+*Released: 2025-05-30T09:02:15Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.5
 
 ## 0.14.4
+
+*Released: 2025-05-30T07:18:36Z*
 
 ### Patch Changes
 
@@ -1358,11 +1638,15 @@
 
 ## 0.14.3
 
+*Released: 2025-05-27T17:59:17Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.3
 
 ## 0.14.2
+
+*Released: 2025-05-27T15:05:11Z*
 
 ### Patch Changes
 
@@ -1371,11 +1655,15 @@
 
 ## 0.14.1
 
+*Released: 2025-05-22T10:23:41Z*
+
 ### Patch Changes
 
 - c05c016: fix hide fn logic
 
 ## 0.14.0
+
+*Released: 2025-05-15T13:36:04Z*
 
 ### Minor Changes
 
@@ -1389,6 +1677,8 @@
     - @sap-ux/project-input-validator@0.6.1
 
 ## 0.13.0
+
+*Released: 2025-05-14T22:35:53Z*
 
 ### Minor Changes
 
@@ -1404,11 +1694,15 @@
 
 ## 0.12.9
 
+*Released: 2025-05-13T10:46:10Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.43
 
 ## 0.12.8
+
+*Released: 2025-05-08T10:12:31Z*
 
 ### Patch Changes
 
@@ -1417,11 +1711,15 @@
 
 ## 0.12.7
 
+*Released: 2025-05-07T17:15:44Z*
+
 ### Patch Changes
 
 - b94e186: fix typescript workspace warning for non cap projects
 
 ## 0.12.6
+
+*Released: 2025-05-05T13:48:20Z*
 
 ### Patch Changes
 
@@ -1432,11 +1730,15 @@
 
 ## 0.12.5
 
+*Released: 2025-05-02T14:39:49Z*
+
 ### Patch Changes
 
 - 5ce363e: fix when condition for typescript prompt
 
 ## 0.12.4
+
+*Released: 2025-05-01T13:52:16Z*
 
 ### Patch Changes
 
@@ -1446,11 +1748,15 @@
 
 ## 0.12.3
 
+*Released: 2025-04-30T17:25:02Z*
+
 ### Patch Changes
 
 - 0d8918a: updates for cap and virtual endpoints
 
 ## 0.12.2
+
+*Released: 2025-04-28T14:29:23Z*
 
 ### Patch Changes
 
@@ -1460,17 +1766,23 @@
 
 ## 0.12.1
 
+*Released: 2025-04-25T11:33:04Z*
+
 ### Patch Changes
 
 - 7a87b92: cap checks for virtual endpoints prompt
 
 ## 0.12.0
 
+*Released: 2025-04-24T17:01:27Z*
+
 ### Minor Changes
 
 - 398e4da: adds new virtual endpoint prompt
 
 ## 0.11.9
+
+*Released: 2025-04-24T15:01:01Z*
 
 ### Patch Changes
 
@@ -1479,6 +1791,8 @@
 - @sap-ux/inquirer-common@0.6.39
 
 ## 0.11.8
+
+*Released: 2025-04-23T15:22:38Z*
 
 ### Patch Changes
 
@@ -1489,6 +1803,8 @@
 
 ## 0.11.7
 
+*Released: 2025-04-23T13:59:14Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.37
@@ -1497,11 +1813,15 @@
 
 ## 0.11.6
 
+*Released: 2025-04-17T12:52:13Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.36
 
 ## 0.11.5
+
+*Released: 2025-04-17T09:03:34Z*
 
 ### Patch Changes
 
@@ -1510,17 +1830,23 @@
 
 ## 0.11.4
 
+*Released: 2025-04-15T10:10:52Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.35
 
 ## 0.11.3
 
+*Released: 2025-04-14T22:24:07Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.34
 
 ## 0.11.2
+
+*Released: 2025-04-10T13:52:38Z*
 
 ### Patch Changes
 
@@ -1529,12 +1855,16 @@
 
 ## 0.11.1
 
+*Released: 2025-03-26T12:15:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [ced5edf]
     - @sap-ux/inquirer-common@0.6.32
 
 ## 0.11.0
+
+*Released: 2025-03-26T09:06:26Z*
 
 ### Minor Changes
 
@@ -1547,6 +1877,8 @@
 
 ## 0.10.0
 
+*Released: 2025-03-22T09:43:02Z*
+
 ### Minor Changes
 
 - c69752b: Move validate target project path logic from ui5-application-inquirer to project-input-validator for improved reuse
@@ -1558,6 +1890,8 @@
 
 ## 0.9.31
 
+*Released: 2025-03-19T08:54:25Z*
+
 ### Patch Changes
 
 - c3ebc82: fix: wrong convert preview-config prerequisites check for usage of cds-plugin-ui5
@@ -1567,12 +1901,16 @@
 
 ## 0.9.30
 
+*Released: 2025-03-18T09:41:03Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.29.17
 - @sap-ux/inquirer-common@0.6.30
 
 ## 0.9.29
+
+*Released: 2025-03-10T20:40:35Z*
 
 ### Patch Changes
 
@@ -1583,6 +1921,8 @@
 
 ## 0.9.28
 
+*Released: 2025-03-06T16:16:20Z*
+
 ### Patch Changes
 
 - Updated dependencies [1ce7fe9]
@@ -1590,6 +1930,8 @@
     - @sap-ux/inquirer-common@0.6.28
 
 ## 0.9.27
+
+*Released: 2025-03-05T11:16:53Z*
 
 ### Patch Changes
 
@@ -1599,12 +1941,16 @@
 
 ## 0.9.26
 
+*Released: 2025-03-05T09:14:02Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.29.13
 - @sap-ux/inquirer-common@0.6.26
 
 ## 0.9.25
+
+*Released: 2025-03-04T08:55:15Z*
 
 ### Patch Changes
 
@@ -1613,11 +1959,15 @@
 
 ## 0.9.24
 
+*Released: 2025-03-03T11:06:12Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.24
 
 ## 0.9.23
+
+*Released: 2025-02-28T15:10:48Z*
 
 ### Patch Changes
 
@@ -1627,6 +1977,8 @@
 
 ## 0.9.22
 
+*Released: 2025-02-27T19:24:50Z*
+
 ### Patch Changes
 
 - Updated dependencies [88520b4]
@@ -1635,12 +1987,16 @@
 
 ## 0.9.21
 
+*Released: 2025-02-27T14:15:03Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.21
 - @sap-ux/project-access@1.29.10
 
 ## 0.9.20
+
+*Released: 2025-02-27T08:22:17Z*
 
 ### Patch Changes
 
@@ -1650,11 +2006,15 @@
 
 ## 0.9.19
 
+*Released: 2025-02-24T09:17:17Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.19
 
 ## 0.9.18
+
+*Released: 2025-02-17T13:42:22Z*
 
 ### Patch Changes
 
@@ -1664,11 +2024,15 @@
 
 ## 0.9.17
 
+*Released: 2025-02-13T17:39:11Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.17
 
 ## 0.9.16
+
+*Released: 2025-02-13T10:58:34Z*
 
 ### Patch Changes
 
@@ -1678,12 +2042,16 @@
 
 ## 0.9.15
 
+*Released: 2025-02-07T19:58:32Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.29.6
 - @sap-ux/inquirer-common@0.6.15
 
 ## 0.9.14
+
+*Released: 2025-02-05T17:08:20Z*
 
 ### Patch Changes
 
@@ -1692,11 +2060,15 @@
 
 ## 0.9.13
 
+*Released: 2025-02-05T14:44:29Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.13
 
 ## 0.9.12
+
+*Released: 2025-02-04T15:39:07Z*
 
 ### Patch Changes
 
@@ -1706,11 +2078,15 @@
 
 ## 0.9.11
 
+*Released: 2025-02-04T14:25:43Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.11
 
 ## 0.9.10
+
+*Released: 2025-01-30T10:04:50Z*
 
 ### Patch Changes
 
@@ -1720,6 +2096,8 @@
 
 ## 0.9.9
 
+*Released: 2025-01-29T17:41:08Z*
+
 ### Patch Changes
 
 - Updated dependencies [5e3a5f8]
@@ -1727,11 +2105,15 @@
 
 ## 0.9.8
 
+*Released: 2025-01-29T13:31:31Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.8
 
 ## 0.9.7
+
+*Released: 2025-01-28T09:20:06Z*
 
 ### Patch Changes
 
@@ -1741,6 +2123,8 @@
 
 ## 0.9.6
 
+*Released: 2025-01-27T18:57:16Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.29.1
@@ -1748,12 +2132,16 @@
 
 ## 0.9.5
 
+*Released: 2025-01-22T17:11:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [080bda2]
     - @sap-ux/inquirer-common@0.6.5
 
 ## 0.9.4
+
+*Released: 2025-01-16T02:22:29Z*
 
 ### Patch Changes
 
@@ -1763,12 +2151,16 @@
 
 ## 0.9.3
 
+*Released: 2025-01-08T15:30:03Z*
+
 ### Patch Changes
 
 - Updated dependencies [40ba546]
     - @sap-ux/inquirer-common@0.6.3
 
 ## 0.9.2
+
+*Released: 2025-01-08T11:51:44Z*
 
 ### Patch Changes
 
@@ -1777,11 +2169,15 @@
 
 ## 0.9.1
 
+*Released: 2024-12-20T15:43:15Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.1
 
 ## 0.9.0
+
+*Released: 2024-12-19T17:24:19Z*
 
 ### Minor Changes
 
@@ -1794,12 +2190,16 @@
 
 ## 0.8.14
 
+*Released: 2024-12-18T10:32:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [f8dda3b]
     - @sap-ux/inquirer-common@0.5.15
 
 ## 0.8.13
+
+*Released: 2024-12-17T15:31:53Z*
 
 ### Patch Changes
 
@@ -1809,17 +2209,23 @@
 
 ## 0.8.12
 
+*Released: 2024-12-17T13:32:02Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.5.13
 
 ## 0.8.11
 
+*Released: 2024-12-10T16:04:29Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.5.12
 
 ## 0.8.10
+
+*Released: 2024-12-10T14:32:00Z*
 
 ### Patch Changes
 
@@ -1828,11 +2234,15 @@
 
 ## 0.8.9
 
+*Released: 2024-12-10T11:51:29Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.5.10
 
 ## 0.8.8
+
+*Released: 2024-12-06T21:07:01Z*
 
 ### Patch Changes
 
@@ -1842,11 +2252,15 @@
 
 ## 0.8.7
 
+*Released: 2024-12-05T16:58:37Z*
+
 ### Patch Changes
 
 - b67b17d: Fixes non-loading texts from nested dependency
 
 ## 0.8.6
+
+*Released: 2024-12-04T15:30:32Z*
 
 ### Patch Changes
 
@@ -1855,6 +2269,8 @@
 
 ## 0.8.5
 
+*Released: 2024-12-04T12:27:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [2359524]
@@ -1862,11 +2278,15 @@
 
 ## 0.8.4
 
+*Released: 2024-12-04T11:05:53Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.5.6
 
 ## 0.8.3
+
+*Released: 2024-12-02T16:28:38Z*
 
 ### Patch Changes
 
@@ -1875,12 +2295,16 @@
 
 ## 0.8.2
 
+*Released: 2024-11-27T12:48:07Z*
+
 ### Patch Changes
 
 - Updated dependencies [cfdd442]
     - @sap-ux/project-input-validator@0.3.4
 
 ## 0.8.1
+
+*Released: 2024-11-21T11:48:14Z*
 
 ### Patch Changes
 
@@ -1889,11 +2313,15 @@
 
 ## 0.8.0
 
+*Released: 2024-11-21T10:53:16Z*
+
 ### Minor Changes
 
 - d11283f: Remove the enableNpmWorkspaces prompt (and all references)
 
 ## 0.7.16
+
+*Released: 2024-11-19T13:21:01Z*
 
 ### Patch Changes
 
@@ -1901,11 +2329,15 @@
 
 ## 0.7.15
 
+*Released: 2024-11-18T22:28:16Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.5.2
 
 ## 0.7.14
+
+*Released: 2024-11-18T20:38:37Z*
 
 ### Patch Changes
 
@@ -1914,12 +2346,16 @@
 
 ## 0.7.13
 
+*Released: 2024-11-14T17:04:56Z*
+
 ### Patch Changes
 
 - Updated dependencies [2886db3]
     - @sap-ux/inquirer-common@0.5.0
 
 ## 0.7.12
+
+*Released: 2024-11-08T08:58:34Z*
 
 ### Patch Changes
 
@@ -1928,11 +2364,15 @@
 
 ## 0.7.11
 
+*Released: 2024-11-05T21:46:19Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.28.5
 
 ## 0.7.10
+
+*Released: 2024-11-05T13:50:29Z*
 
 ### Patch Changes
 
@@ -1940,6 +2380,8 @@
     - @sap-ux/project-access@1.28.4
 
 ## 0.7.9
+
+*Released: 2024-11-01T07:47:25Z*
 
 ### Patch Changes
 
@@ -1949,12 +2391,16 @@
 
 ## 0.7.8
 
+*Released: 2024-10-31T07:40:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [42f13eb]
     - @sap-ux/project-access@1.28.3
 
 ## 0.7.7
+
+*Released: 2024-10-30T13:01:12Z*
 
 ### Patch Changes
 
@@ -1964,6 +2410,8 @@
 
 ## 0.7.6
 
+*Released: 2024-10-24T14:04:35Z*
+
 ### Patch Changes
 
 - 02e4f29: add resource bundle for inquirer common in consumers
@@ -1971,6 +2419,8 @@
     - @sap-ux/inquirer-common@0.4.8
 
 ## 0.7.5
+
+*Released: 2024-10-23T12:50:19Z*
 
 ### Patch Changes
 
@@ -1980,6 +2430,8 @@
 
 ## 0.7.4
 
+*Released: 2024-10-16T08:21:13Z*
+
 ### Patch Changes
 
 - Updated dependencies [eb38e5b]
@@ -1987,12 +2439,16 @@
 
 ## 0.7.3
 
+*Released: 2024-10-14T21:48:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [64e037d]
     - @sap-ux/project-access@1.28.1
 
 ## 0.7.2
+
+*Released: 2024-10-14T16:41:16Z*
 
 ### Patch Changes
 
@@ -2002,12 +2458,16 @@
 
 ## 0.7.1
 
+*Released: 2024-10-08T10:16:01Z*
+
 ### Patch Changes
 
 - Updated dependencies [eb74890]
     - @sap-ux/project-access@1.27.6
 
 ## 0.7.0
+
+*Released: 2024-10-02T14:28:15Z*
 
 ### Minor Changes
 
@@ -2020,11 +2480,15 @@
 
 ## 0.6.6
 
+*Released: 2024-09-23T10:02:33Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.27.4
 
 ## 0.6.5
+
+*Released: 2024-09-18T14:01:49Z*
 
 ### Patch Changes
 
@@ -2032,6 +2496,8 @@
     - @sap-ux/project-access@1.27.3
 
 ## 0.6.4
+
+*Released: 2024-09-12T09:42:45Z*
 
 ### Patch Changes
 
@@ -2041,12 +2507,16 @@
 
 ## 0.6.3
 
+*Released: 2024-09-03T19:06:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [d962ce1]
     - @sap-ux/project-access@1.27.1
 
 ## 0.6.2
+
+*Released: 2024-08-30T06:05:30Z*
 
 ### Patch Changes
 
@@ -2055,17 +2525,23 @@
 
 ## 0.6.1
 
+*Released: 2024-08-28T11:16:50Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.26.9
 
 ## 0.6.0
 
+*Released: 2024-08-28T08:13:51Z*
+
 ### Minor Changes
 
 - e4a9da3: Adds support for `defaultValue` prompt option
 
 ## 0.5.26
+
+*Released: 2024-08-20T10:06:29Z*
 
 ### Patch Changes
 
@@ -2074,11 +2550,15 @@
 
 ## 0.5.25
 
+*Released: 2024-08-19T11:34:45Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.26.7
 
 ## 0.5.24
+
+*Released: 2024-08-19T09:48:14Z*
 
 ### Patch Changes
 
@@ -2088,6 +2568,8 @@
 
 ## 0.5.23
 
+*Released: 2024-08-16T10:46:05Z*
+
 ### Patch Changes
 
 - Updated dependencies [cc1ac72]
@@ -2096,12 +2578,16 @@
 
 ## 0.5.22
 
+*Released: 2024-08-12T10:50:52Z*
+
 ### Patch Changes
 
 - Updated dependencies [82aaea3]
     - @sap-ux/project-access@1.26.6
 
 ## 0.5.21
+
+*Released: 2024-08-08T13:01:35Z*
 
 ### Patch Changes
 
@@ -2111,12 +2597,16 @@
 
 ## 0.5.20
 
+*Released: 2024-08-08T07:33:51Z*
+
 ### Patch Changes
 
 - Updated dependencies [cc16cbb]
     - @sap-ux/project-access@1.26.5
 
 ## 0.5.19
+
+*Released: 2024-08-07T14:42:33Z*
 
 ### Patch Changes
 
@@ -2125,11 +2615,15 @@
 
 ## 0.5.18
 
+*Released: 2024-08-07T11:06:05Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.26.4
 
 ## 0.5.17
+
+*Released: 2024-08-01T18:27:11Z*
 
 ### Patch Changes
 
@@ -2137,6 +2631,8 @@
     - @sap-ux/project-access@1.26.3
 
 ## 0.5.16
+
+*Released: 2024-08-01T17:28:17Z*
 
 ### Patch Changes
 
@@ -2146,12 +2642,16 @@
 
 ## 0.5.15
 
+*Released: 2024-08-01T16:21:31Z*
+
 ### Patch Changes
 
 - Updated dependencies [a986655]
     - @sap-ux/project-access@1.26.1
 
 ## 0.5.14
+
+*Released: 2024-08-01T14:53:05Z*
 
 ### Patch Changes
 
@@ -2160,12 +2660,16 @@
 
 ## 0.5.13
 
+*Released: 2024-08-01T12:24:50Z*
+
 ### Patch Changes
 
 - Updated dependencies [99b7b5f]
     - @sap-ux/project-access@1.25.8
 
 ## 0.5.12
+
+*Released: 2024-08-01T10:59:20Z*
 
 ### Patch Changes
 
@@ -2175,12 +2679,16 @@
 
 ## 0.5.11
 
+*Released: 2024-07-23T09:01:05Z*
+
 ### Patch Changes
 
 - Updated dependencies [d549173]
     - @sap-ux/project-access@1.25.7
 
 ## 0.5.10
+
+*Released: 2024-07-22T13:28:51Z*
 
 ### Patch Changes
 
@@ -2190,12 +2698,16 @@
 
 ## 0.5.9
 
+*Released: 2024-07-18T16:34:38Z*
+
 ### Patch Changes
 
 - Updated dependencies [a9fac04]
     - @sap-ux/project-access@1.25.6
 
 ## 0.5.8
+
+*Released: 2024-07-18T11:50:01Z*
 
 ### Patch Changes
 
@@ -2205,12 +2717,16 @@
 
 ## 0.5.7
 
+*Released: 2024-07-17T10:08:55Z*
+
 ### Patch Changes
 
 - Updated dependencies [421f3ca]
     - @sap-ux/project-access@1.25.5
 
 ## 0.5.6
+
+*Released: 2024-07-12T15:28:30Z*
 
 ### Patch Changes
 
@@ -2219,6 +2735,8 @@
 
 ## 0.5.5
 
+*Released: 2024-07-12T09:20:42Z*
+
 ### Patch Changes
 
 - Updated dependencies [e7b9184]
@@ -2226,11 +2744,15 @@
 
 ## 0.5.4
 
+*Released: 2024-07-12T08:50:08Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.25.2
 
 ## 0.5.3
+
+*Released: 2024-07-10T11:59:21Z*
 
 ### Patch Changes
 
@@ -2239,6 +2761,8 @@
 
 ## 0.5.2
 
+*Released: 2024-07-09T12:14:56Z*
+
 ### Patch Changes
 
 - Updated dependencies [f076dd3]
@@ -2246,12 +2770,16 @@
 
 ## 0.5.1
 
+*Released: 2024-07-09T08:05:42Z*
+
 ### Patch Changes
 
 - Updated dependencies [0ae685e]
     - @sap-ux/project-access@1.24.0
 
 ## 0.5.0
+
+*Released: 2024-07-05T15:03:05Z*
 
 ### Minor Changes
 
@@ -2267,12 +2795,16 @@
 
 ## 0.4.5
 
+*Released: 2024-07-03T10:48:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [9ea58ad4]
     - @sap-ux/project-access@1.22.4
 
 ## 0.4.4
+
+*Released: 2024-06-27T07:14:34Z*
 
 ### Patch Changes
 
@@ -2281,11 +2813,15 @@
 
 ## 0.4.3
 
+*Released: 2024-06-26T13:30:18Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.22.3
 
 ## 0.4.2
+
+*Released: 2024-06-25T14:41:22Z*
 
 ### Patch Changes
 
@@ -2294,17 +2830,23 @@
 
 ## 0.4.1
 
+*Released: 2024-06-18T15:06:09Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.22.1
 
 ## 0.4.0
 
+*Released: 2024-06-18T06:09:39Z*
+
 ### Minor Changes
 
 - 3c986ab2: Supports conditional default for Enable TypeScript option, provides defaults for Advanced config if not answer provided.
 
 ## 0.3.26
+
+*Released: 2024-06-17T12:35:55Z*
 
 ### Patch Changes
 
@@ -2313,6 +2855,8 @@
 
 ## 0.3.25
 
+*Released: 2024-06-13T16:04:23Z*
+
 ### Patch Changes
 
 - Updated dependencies [ad93a484]
@@ -2320,17 +2864,23 @@
 
 ## 0.3.24
 
+*Released: 2024-06-12T15:20:44Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.21.2
 
 ## 0.3.23
 
+*Released: 2024-06-07T14:16:07Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.21.1
 
 ## 0.3.22
+
+*Released: 2024-06-04T12:43:36Z*
 
 ### Patch Changes
 
@@ -2339,6 +2889,8 @@
 
 ## 0.3.21
 
+*Released: 2024-06-04T12:14:54Z*
+
 ### Patch Changes
 
 - Updated dependencies [a7d78229]
@@ -2346,11 +2898,15 @@
 
 ## 0.3.20
 
+*Released: 2024-05-31T13:42:35Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.20.3
 
 ## 0.3.19
+
+*Released: 2024-05-29T14:07:16Z*
 
 ### Patch Changes
 
@@ -2359,11 +2915,15 @@
 
 ## 0.3.18
 
+*Released: 2024-05-27T13:04:53Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.20.1
 
 ## 0.3.17
+
+*Released: 2024-05-14T08:36:35Z*
 
 ### Patch Changes
 
@@ -2371,6 +2931,8 @@
     - @sap-ux/project-access@1.20.0
 
 ## 0.3.16
+
+*Released: 2024-05-10T15:53:32Z*
 
 ### Patch Changes
 
@@ -2380,6 +2942,8 @@
 
 ## 0.3.15
 
+*Released: 2024-05-03T11:39:22Z*
+
 ### Patch Changes
 
 - 4098bed2: Moves some prompting code to inquirer-common. Adds new module odata-service-inquirer
@@ -2388,11 +2952,15 @@
 
 ## 0.3.14
 
+*Released: 2024-05-02T14:43:18Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.19.14
 
 ## 0.3.13
+
+*Released: 2024-04-26T19:12:20Z*
 
 ### Patch Changes
 
@@ -2401,12 +2969,16 @@
 
 ## 0.3.12
 
+*Released: 2024-04-23T22:35:35Z*
+
 ### Patch Changes
 
 - Updated dependencies [b7d95fb3]
     - @sap-ux/project-access@1.19.12
 
 ## 0.3.11
+
+*Released: 2024-04-23T07:22:50Z*
 
 ### Patch Changes
 
@@ -2415,12 +2987,16 @@
 
 ## 0.3.10
 
+*Released: 2024-04-18T07:12:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [f8e16120]
     - @sap-ux/project-access@1.19.10
 
 ## 0.3.9
+
+*Released: 2024-04-17T07:44:37Z*
 
 ### Patch Changes
 
@@ -2429,12 +3005,16 @@
 
 ## 0.3.8
 
+*Released: 2024-04-16T14:18:28Z*
+
 ### Patch Changes
 
 - Updated dependencies [f8b24a3a]
     - @sap-ux/inquirer-common@0.2.6
 
 ## 0.3.7
+
+*Released: 2024-04-16T13:12:31Z*
 
 ### Patch Changes
 
@@ -2444,11 +3024,15 @@
 
 ## 0.3.6
 
+*Released: 2024-04-15T19:27:29Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.19.8
 
 ## 0.3.5
+
+*Released: 2024-04-15T16:20:25Z*
 
 ### Patch Changes
 
@@ -2459,6 +3043,8 @@
 
 ## 0.3.4
 
+*Released: 2024-04-04T14:37:58Z*
+
 ### Patch Changes
 
 - Updated dependencies [f0e3263a]
@@ -2466,11 +3052,15 @@
 
 ## 0.3.3
 
+*Released: 2024-04-04T13:19:16Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.19.5
 
 ## 0.3.2
+
+*Released: 2024-03-27T09:13:31Z*
 
 ### Patch Changes
 
@@ -2479,12 +3069,16 @@
 
 ## 0.3.1
 
+*Released: 2024-03-25T11:18:54Z*
+
 ### Patch Changes
 
 - Updated dependencies [89013210]
     - @sap-ux/project-access@1.19.3
 
 ## 0.3.0
+
+*Released: 2024-03-22T12:43:23Z*
 
 ### Minor Changes
 
@@ -2497,6 +3091,8 @@
 
 ## 0.2.8
 
+*Released: 2024-03-22T08:51:54Z*
+
 ### Patch Changes
 
 - 61b46bc8: Security upgrade fixes
@@ -2506,6 +3102,8 @@
 
 ## 0.2.7
 
+*Released: 2024-03-21T17:43:52Z*
+
 ### Patch Changes
 
 - 9da2dbb8: export extendAdditionalMessages from inquirer common module
@@ -2514,17 +3112,23 @@
 
 ## 0.2.6
 
+*Released: 2024-03-21T16:21:01Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.19.2
 
 ## 0.2.5
 
+*Released: 2024-03-18T10:40:39Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.19.1
 
 ## 0.2.4
+
+*Released: 2024-03-13T17:30:13Z*
 
 ### Patch Changes
 
@@ -2533,6 +3137,8 @@
 
 ## 0.2.3
 
+*Released: 2024-03-11T09:22:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [e6da2117]
@@ -2540,12 +3146,16 @@
 
 ## 0.2.2
 
+*Released: 2024-03-06T10:34:51Z*
+
 ### Patch Changes
 
 - Updated dependencies [c381d32f]
     - @sap-ux/project-access@1.17.6
 
 ## 0.2.1
+
+*Released: 2024-03-05T11:26:09Z*
 
 ### Patch Changes
 
