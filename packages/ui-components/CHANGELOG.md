@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.2.5
+
+### Patch Changes
+
+- b0a922a: fix(UITranslationButton): use onCancel for callout onDismiss instead of onToggleCallout
+
 ## 2.2.4
 
 ### Patch Changes
