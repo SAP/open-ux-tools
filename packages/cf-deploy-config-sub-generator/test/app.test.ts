@@ -10,7 +10,6 @@ import yeomanTest from 'yeoman-test';
 import { TestFixture } from './fixtures';
 import type { Manifest } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
-import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';
 
 const require = createRequire(import.meta.url);
 const __testdirname = dirname(fileURLToPath(import.meta.url));
@@ -111,6 +110,7 @@ const { initI18n, t } = await import('../src/utils');
 const { MessageType } = await import('@sap-devx/yeoman-ui-types');
 const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 const { ApiHubType, RouterModuleType } = await import('@sap-ux/cf-deploy-config-writer');
+const { DeploymentGenerator } = await import('@sap-ux/deploy-config-generator-shared');
 
 // Use memfs.fs to read files written to virtual paths by the generator
 const mockedFs = memfs.fs;
@@ -1249,8 +1249,8 @@ describe('Cloud foundry generator tests', () => {
 
     it('Should warn when isFullUrlDest is true', async () => {
         // Given
-        hasbinSyncMock.mockReturnValue(true);
-        jest.spyOn(cfConfigWriter, 'generateAppConfig').mockResolvedValue(fsMock);
+        mockHasbinSync.mockReturnValue(true);
+        mockGenerateAppConfig.mockResolvedValue(fsMock);
         const mockWarn = jest.fn();
         jest.spyOn(DeploymentGenerator, 'logger', 'get').mockReturnValue({
             warn: mockWarn,
