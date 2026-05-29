@@ -85,11 +85,11 @@ const createModeValues = ['creationRows', 'creationRowsHiddenInEditMode', 'newPa
 const tableTypeValues = ['Table', 'ResponsiveTable', 'AnalyticalTable', 'GridTable'];
 const statePreservationModeValues = ['persistence', 'discovery'];
 
-const getPropertyChangeConfig = (
-    pageChanges: FlexChange[],
+const getTablePropertyChangeConfig = (
+    pageTableChanges: FlexChange[],
     property: FlexChangeProperty
 ): PropertyChangeConfig | undefined => {
-    const propertyChange = pageChanges.find((change: FlexChange) => change.content.property === property);
+    const propertyChange = pageTableChanges.find((change: FlexChange) => change.content.property === property);
     if (propertyChange) {
         return {
             property,
@@ -116,8 +116,8 @@ function createTableConfiguration(
     copy: boolean | undefined,
     pageTableChanges: FlexChange[]
 ) {
-    const enableExport = getPropertyChangeConfig(pageTableChanges, 'enableExport');
-    const showPasteButton = getPropertyChangeConfig(pageTableChanges, 'showPasteButton');
+    const enableExport = getTablePropertyChangeConfig(pageTableChanges, 'enableExport');
+    const showPasteButton = getTablePropertyChangeConfig(pageTableChanges, 'showPasteButton');
     return {
         createMode: {
             values: createModeValues,
@@ -169,8 +169,8 @@ function createSectionTableConfiguration(
     copy: boolean | undefined,
     pageTableChanges: FlexChange[]
 ) {
-    const enableExport = getPropertyChangeConfig(pageTableChanges, 'enableExport');
-    const showPasteButton = getPropertyChangeConfig(pageTableChanges, 'showPasteButton');
+    const enableExport = getTablePropertyChangeConfig(pageTableChanges, 'enableExport');
+    const showPasteButton = getTablePropertyChangeConfig(pageTableChanges, 'showPasteButton');
     return {
         createMode: {
             values: createModeValues,
@@ -550,7 +550,7 @@ const getPageTableChanges = (changes: FlexChange[], page: FeV2PageType, section?
         if (page.type === 'list-report-page') {
             changeIdSubstring = `::${page.componentName}.view.${page.componentName.split('.').pop()}::${page.entitySetName}`;
         } else if (page.type === 'object-page') {
-            changeIdSubstring = `::${page.componentName}.view.Details::${page.entitySetName}--${section?.id ?? ''}::Table`;
+            changeIdSubstring = `::${page.componentName}.view.Details::${page.entitySetName}--${section?.id}::Table`;
         }
         return changeIdSubstring && change.selector.id.includes(changeIdSubstring);
     });

@@ -210,7 +210,7 @@ export class ApplicationParser {
     /**
      * Reparses .change property change files and updates the associated app in the project index.
      *
-     * @param uri - The URI of the XML file to reparse
+     * @param uri - The URI of the property change file to reparse
      * @param index - The current parsed project index
      * @param fileCache - Map of file URIs to their contents
      */
