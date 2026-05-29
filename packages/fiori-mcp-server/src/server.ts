@@ -174,7 +174,6 @@ export class FioriFunctionalityServer {
                         telemetryProperties.functionalityId = functionalityId as string;
                     }
                 }
-
                 logger.debug(`Executing tool: ${name} with arguments: ${JSON.stringify(args)}`);
 
                 switch (name) {
