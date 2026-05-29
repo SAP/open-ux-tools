@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.4.1
+
+### Patch Changes
+
+- 1b19ed5: Bump jsdom environment
+
 ## 5.4.0
 
 ### Minor Changes
