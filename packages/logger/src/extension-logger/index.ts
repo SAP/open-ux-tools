@@ -3,6 +3,7 @@ import { VSCodeTransport as WinstonVSCodeTransport } from '../winston-logger/vsc
 import { WinstonLogger } from '../winston-logger';
 import { LogLevel } from '../types';
 import { toWinstonLogLevel } from '../winston-logger/adapter';
+import { inspect } from 'node:util';
 
 /**
  *
@@ -29,12 +30,13 @@ export class ExtensionLogger extends WinstonLogger {
      * @param message - log message
      * @param args - additional arguments like objects, arrays, etc.
      */
-    private logWithArgs(level: LogLevel, message: string, ...args: any): void {
+    private logWithArgs(level: LogLevel, message: string | object, ...args: any): void {
         const winstonLevel = toWinstonLogLevel(level) ?? this._logger.level;
+        let msg = typeof message === 'string' ? message : inspect(message);
         if (args.length > 0) {
-            message += ' %O'.repeat(args.length);
+            msg += ' %O'.repeat(args.length);
         }
-        this._logger.log(winstonLevel, message, ...args);
+        this._logger.log(winstonLevel, msg, ...args);
     }
 
     /**
@@ -43,7 +45,7 @@ export class ExtensionLogger extends WinstonLogger {
      * @param message - error message
      * @param args - additional arguments like objects, arrays, etc.
      */
-    error(message: string, ...args: any): void {
+    error(message: string | object, ...args: any): void {
         this.logWithArgs(LogLevel.Error, message, ...args);
     }
 
@@ -53,7 +55,7 @@ export class ExtensionLogger extends WinstonLogger {
      * @param message - warning message
      * @param args - additional arguments like objects, arrays, etc.
      */
-    warn(message: string, ...args: any): void {
+    warn(message: string | object, ...args: any): void {
         this.logWithArgs(LogLevel.Warn, message, ...args);
     }
 
@@ -63,7 +65,7 @@ export class ExtensionLogger extends WinstonLogger {
      * @param message - info message
      * @param args - additional arguments like objects, arrays, etc.
      */
-    info(message: string, ...args: any): void {
+    info(message: string | object, ...args: any): void {
         this.logWithArgs(LogLevel.Info, message, ...args);
     }
 
@@ -73,7 +75,7 @@ export class ExtensionLogger extends WinstonLogger {
      * @param message - debug message
      * @param args - additional arguments like objects, arrays, etc.
      */
-    debug(message: string, ...args: any): void {
+    debug(message: string | object, ...args: any): void {
         this.logWithArgs(LogLevel.Debug, message, ...args);
     }
 
@@ -83,7 +85,7 @@ export class ExtensionLogger extends WinstonLogger {
      * @param message - log message
      * @param args - additional arguments like objects, arrays, etc.
      */
-    trace(message: string, ...args: any): void {
+    trace(message: string | object, ...args: any): void {
         this.logWithArgs(LogLevel.Silly, message, ...args);
     }
 
