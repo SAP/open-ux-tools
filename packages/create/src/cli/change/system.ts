@@ -2,7 +2,6 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
 import { replaceEnvVariables } from '@sap-ux/ui5-config';
-import { config as loadEnvConfig } from 'dotenv';
 import { getLogger } from '../../tracing';
 
 /**
