@@ -10,7 +10,7 @@ const ruleTester = new RuleTester({
 });
 
 const TEST_NAME = 'sap-text-arrangement-hidden';
-const { createValidTest, createInvalidTest } = setup(TEST_NAME);
+const { createValidTest, createInvalidTest } = setup(`${TEST_NAME} - XML`);
 
 // Annotation blocks used by tests
 
@@ -110,14 +110,10 @@ const TEXT_ARRANGEMENT_ENTITY_TYPE_NOT_ON_PAGE = `
         <Annotation Term="UI.Hidden"/>
     </Annotations>`;
 
-ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
+ruleTester.run(`${TEST_NAME} - XML`, textArrangementHiddenRule, {
     valid: [
         createValidTest(
-            {
-                name: 'no text arrangement annotation',
-                filename: V4_ANNOTATIONS_PATH,
-                code: V4_ANNOTATIONS
-            },
+            { name: 'no text arrangement annotation', filename: V4_ANNOTATIONS_PATH, code: V4_ANNOTATIONS },
             []
         ),
         createValidTest(
@@ -185,11 +181,7 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                 name: 'text property referenced via Common.Text is hidden (default true)',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_ARRANGEMENT_WITH_HIDDEN_TEXT_PROPERTY),
-                errors: [
-                    {
-                        messageId: TEXT_ARRANGEMENT_HIDDEN
-                    }
-                ]
+                errors: [{ messageId: TEXT_ARRANGEMENT_HIDDEN }]
             },
             []
         ),
@@ -198,11 +190,7 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                 name: 'text property referenced via Common.Text is hidden (Bool=true)',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_ARRANGEMENT_WITH_EXPLICITLY_HIDDEN_TEXT_PROPERTY),
-                errors: [
-                    {
-                        messageId: TEXT_ARRANGEMENT_HIDDEN
-                    }
-                ]
+                errors: [{ messageId: TEXT_ARRANGEMENT_HIDDEN }]
             },
             []
         ),
@@ -211,11 +199,7 @@ ruleTester.run(TEST_NAME, textArrangementHiddenRule, {
                 name: 'entity-type level TextArrangement with hidden text property',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_ARRANGEMENT_ENTITY_TYPE_LEVEL_WITH_HIDDEN),
-                errors: [
-                    {
-                        messageId: TEXT_ARRANGEMENT_HIDDEN
-                    }
-                ]
+                errors: [{ messageId: TEXT_ARRANGEMENT_HIDDEN }]
             },
             []
         )

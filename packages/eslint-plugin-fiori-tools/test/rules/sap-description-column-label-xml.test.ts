@@ -19,6 +19,7 @@ const ruleTester = new RuleTester({
 
 const TEST_NAME = 'sap-description-column-label';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
+const { createValidTest: createValidTestV2, createInvalidTest: createInvalidTestV2 } = setup(`${TEST_NAME} (V2)`);
 
 // ─── Annotation snippets ─────────────────────────────────────────────────────
 
@@ -178,7 +179,7 @@ ruleTester.run(TEST_NAME, descriptionColumnLabelRule, {
 
 ruleTester.run(`${TEST_NAME} (V2)`, descriptionColumnLabelRule, {
     valid: [
-        createValidTest(
+        createValidTestV2(
             {
                 name: 'V2 annotation.xml - no errors (synthetic sap:text/sap:label elements live in metadata.xml AST)',
                 filename: V2_ANNOTATIONS_PATH,
@@ -188,7 +189,7 @@ ruleTester.run(`${TEST_NAME} (V2)`, descriptionColumnLabelRule, {
         )
     ],
     invalid: [
-        createInvalidTest(
+        createInvalidTestV2(
             {
                 name: 'V2 metadata.xml - trivial and duplicate labels from injected sap:text/sap:label are flagged',
                 filename: V2_METADATA_PATH,
