@@ -258,10 +258,12 @@ export async function initI18n(): Promise<void> {
  *
  * @param proxyOptions reference to a proxy options object that the function will enhance
  * @param backend reference to the backend configuration that the function may enhance
+ * @param logger logger instance
  */
 export async function enhanceConfigsForDestination(
     proxyOptions: Options & { headers: object },
-    backend: DestinationBackendConfig
+    backend: DestinationBackendConfig,
+    logger: ToolsLogger
 ): Promise<void> {
     proxyOptions.target = getDestinationUrlForAppStudio(backend.destination);
     if (backend.destinationInstance) {
@@ -276,6 +278,7 @@ export async function enhanceConfigsForDestination(
             if (isFullUrlDestination(destination)) {
                 backend.path = new URL(destination.Host).pathname.replace(/\/$/, '');
                 backend.pathReplace = backend.pathReplace ?? '/';
+                logger.warn(i18n.t('warn.fullUrlDestination'));
             }
         } else {
             throw new Error('Destination not found. Please check your configuration or user role assignment.');
@@ -368,7 +371,7 @@ export async function generateProxyMiddlewareOptions(
         const destBackend = backend as DestinationBackendConfig;
         destBackend.destination = destBackend.destination ?? process.env.FIORI_TOOLS_DESTINATION;
         if (destBackend.destination) {
-            await enhanceConfigsForDestination(proxyOptions, destBackend);
+            await enhanceConfigsForDestination(proxyOptions, destBackend, logger);
             logger.info('Using destination: ' + destBackend.destination);
         }
     } else {
