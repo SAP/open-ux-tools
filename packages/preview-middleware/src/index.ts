@@ -9,6 +9,7 @@ export {
 } from './base';
 export {
     FlpConfig,
+    Intent,
     RtaConfig,
     TestConfig,
     MiddlewareConfig,

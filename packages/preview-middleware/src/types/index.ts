@@ -2,11 +2,13 @@ import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 
 /**
- * Intent object consisting of an object and an action.
+ * Intent object consisting of an object, action, and optional parameters/route.
  */
 export interface Intent {
     object: string;
     action: string;
+    params?: Record<string, string>;
+    route?: string;
 }
 
 /**

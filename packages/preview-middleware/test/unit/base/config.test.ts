@@ -7,7 +7,8 @@ import {
     generatePreviewFiles,
     getFlpConfigWithDefaults,
     getPreviewPaths,
-    remapResourcesForPath
+    remapResourcesForPath,
+    buildIntentHash
 } from '../../../src/base/config';
 import { mergeTestConfigDefaults } from '../../../src/base/test';
 import type { MiddlewareConfig } from '../../../src';
@@ -33,6 +34,16 @@ describe('config', () => {
             const intent = { object: 'myapp', action: 'myaction' };
             const flpConfig = getFlpConfigWithDefaults({ path, intent });
             expect(flpConfig).toMatchObject({ path, intent });
+        });
+        test('resolves structured intent with params from yaml', () => {
+            const flpConfig = getFlpConfigWithDefaults({
+                intent: { object: 'app', action: 'manage', params: { id: '123' } }
+            });
+            expect(flpConfig.intent).toEqual({
+                object: 'app',
+                action: 'manage',
+                params: { id: '123' }
+            });
         });
     });
 
@@ -99,12 +110,7 @@ describe('config', () => {
             } as MiddlewareConfig;
             const previews = getPreviewPaths(config);
             expect(previews).toHaveLength(5);
-            expect(
-                previews.find(
-                    ({ path }) =>
-                        path === `${config?.flp?.path}#${config?.flp?.intent?.object}-${config?.flp?.intent?.action}`
-                )
-            ).toBeDefined();
+            expect(previews.find(({ path }) => path === `${config?.flp?.path}#myapp-myaction`)).toBeDefined();
             expect(previews.find(({ path }) => path === config?.editors?.rta?.endpoints[0]?.path)).toBeDefined();
             expect(previews.find(({ path }) => path === config?.editors?.rta?.endpoints[1]?.path)).toBeDefined();
             expect(consoleSpyError).toHaveBeenCalledWith(
@@ -147,6 +153,21 @@ describe('config', () => {
             previews.forEach(({ path }) => {
                 expect(path.startsWith('/')).toBe(true);
             });
+        });
+
+        test('preview path includes intent params and route', () => {
+            const config = {
+                flp: {
+                    intent: {
+                        object: 'SupplierInvoice',
+                        action: 'displayFactSheet',
+                        params: { FiscalYear: '2017' },
+                        route: '/display'
+                    }
+                }
+            } as unknown as MiddlewareConfig;
+            const paths = getPreviewPaths(config);
+            expect(paths[0].path).toBe('/test/flp.html#SupplierInvoice-displayFactSheet?FiscalYear=2017&/display');
         });
     });
 
@@ -357,6 +378,59 @@ describe('config', () => {
             expect(config.basePath).toBe('.');
             // posix.join('.', 'preview', 'client') normalises to 'preview/client' (no leading './')
             expect(config.ui5.resources['open.ux.preview.client']).toBe('preview/client');
+        });
+    });
+
+    describe('buildIntentHash', () => {
+        test('basic intent without params', () => {
+            expect(buildIntentHash({ object: 'app', action: 'preview' })).toBe('app-preview');
+        });
+
+        test('intent with params', () => {
+            expect(
+                buildIntentHash({
+                    object: 'SupplierInvoice',
+                    action: 'displayFactSheet',
+                    params: { FiscalYear: '2017', SupplierInvoice: '5100000001' }
+                })
+            ).toBe('SupplierInvoice-displayFactSheet?FiscalYear=2017&SupplierInvoice=5100000001');
+        });
+
+        test('intent with route only', () => {
+            expect(
+                buildIntentHash({
+                    object: 'SupplierInvoice',
+                    action: 'create',
+                    route: '/create/isSharedDraft=false'
+                })
+            ).toBe('SupplierInvoice-create&/create/isSharedDraft=false');
+        });
+
+        test('intent with params and route', () => {
+            expect(
+                buildIntentHash({
+                    object: 'SupplierInvoice',
+                    action: 'displayFactSheet',
+                    params: { FiscalYear: '2017', SupplierInvoice: '5100000001' },
+                    route: '/display'
+                })
+            ).toBe('SupplierInvoice-displayFactSheet?FiscalYear=2017&SupplierInvoice=5100000001&/display');
+        });
+
+        test('normalizes route without leading slash', () => {
+            expect(buildIntentHash({ object: 'app', action: 'preview', route: 'display' })).toBe(
+                'app-preview&/display'
+            );
+        });
+
+        test('empty params object is ignored', () => {
+            expect(buildIntentHash({ object: 'app', action: 'preview', params: {} })).toBe('app-preview');
+        });
+
+        test('encodes special characters in param values', () => {
+            expect(buildIntentHash({ object: 'App', action: 'view', params: { filter: 'a&b=c' } })).toBe(
+                'App-view?filter=a%26b%3Dc'
+            );
         });
     });
 });

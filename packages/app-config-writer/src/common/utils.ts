@@ -57,7 +57,10 @@ export function getIntentFromPreviewConfig(
         return undefined;
     }
     const intent = previewMiddlewareConfig?.flp?.intent;
-    return intent ? `#${intent.object}-${intent.action}` : undefined;
+    if (!intent) {
+        return undefined;
+    }
+    return `#${intent.object}-${intent.action}`;
 }
 
 /**

@@ -65,7 +65,8 @@ import {
     getAppName,
     sanitizeRtaConfig,
     CARD_GENERATOR_DEFAULT,
-    remapResourcesForPath
+    remapResourcesForPath,
+    buildIntentHash
 } from './config';
 import { generateCdm } from './cdm';
 import { readFileSync } from 'node:fs';
@@ -385,7 +386,7 @@ export class FlpSandbox {
         previewUrl: string
     ): Promise<void> {
         const scenario = rta.options?.scenario;
-        let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.flpConfig.intent.object}-${this.flpConfig.intent.action}`;
+        let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${buildIntentHash(this.flpConfig.intent)}`;
         if (scenario === 'ADAPTATION_PROJECT') {
             templatePreviewUrl = templatePreviewUrl.replace('?', `?sap-ui-layer=${rta.layer}&`);
         }
@@ -692,29 +693,39 @@ export class FlpSandbox {
      */
     private async addRoutesForAdditionalApps(): Promise<void> {
         for (const app of this.flpConfig.apps) {
-            let manifest: Manifest | undefined;
-            if (app.local) {
-                const webappPath = await getWebappPath(app.local, this.fs);
-                manifest = JSON.parse(readFileSync(join(webappPath, 'manifest.json'), 'utf-8')) as Manifest | undefined;
-                this.router.use(app.target, serveStatic(webappPath));
-                this.logger.info(`Serving additional application at ${app.target} from ${app.local}`);
-            } else if (app.componentId) {
-                manifest = {
-                    'sap.app': {
-                        id: app.componentId,
-                        title: app.intent ? `${app.intent.object}-${app.intent.action}` : app.componentId
-                    }
-                } as Manifest;
-            }
+            const manifest = await this.resolveAppManifest(app);
             if (manifest) {
                 await addApp(this.templateConfig, manifest, app, this.logger);
-                this.logger.info(`Adding additional intent: ${app.intent?.object}-${app.intent?.action}`);
+                this.logger.info(`Adding additional intent: ${app.intent ? buildIntentHash(app.intent) : 'none'}`);
             } else {
                 this.logger.info(
                     `Invalid application config for route ${app.target} because neither componentId nor local folder provided.`
                 );
             }
         }
+    }
+
+    /**
+     * Resolves a manifest for an additional app from either its local folder or componentId.
+     *
+     * @param app
+     */
+    private async resolveAppManifest(app: FlpConfig['apps'][number]): Promise<Manifest | undefined> {
+        if (app.local) {
+            const webappPath = await getWebappPath(app.local, this.fs);
+            this.router.use(app.target, serveStatic(webappPath));
+            this.logger.info(`Serving additional application at ${app.target} from ${app.local}`);
+            return JSON.parse(readFileSync(join(webappPath, 'manifest.json'), 'utf-8')) as Manifest;
+        }
+        if (app.componentId) {
+            return {
+                'sap.app': {
+                    id: app.componentId,
+                    title: app.intent ? `${app.intent.object}-${app.intent.action}` : app.componentId
+                }
+            } as Manifest;
+        }
+        return undefined;
     }
 
     /**

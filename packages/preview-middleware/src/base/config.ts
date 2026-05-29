@@ -120,6 +120,33 @@ export const DEFAULT_INTENT = {
 } as Readonly<DefaultIntent>;
 
 /**
+ * Builds the intent hash fragment from an Intent object.
+ *
+ * @param intent the structured intent object
+ * @returns hash fragment string (without leading #)
+ */
+export function buildIntentHash(intent: Intent): string {
+    let hash = `${intent.object}-${intent.action}`;
+
+    const params = intent.params;
+    const route = intent.route;
+
+    if (params && Object.keys(params).length > 0) {
+        const paramString = Object.entries(params)
+            .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+            .join('&');
+        hash += `?${paramString}`;
+    }
+
+    if (route) {
+        const normalizedRoute = route.startsWith('/') ? route : `/${route}`;
+        hash += `&${normalizedRoute}`;
+    }
+
+    return hash;
+}
+
+/**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
  */
 const UI5_LIBS = [
@@ -310,18 +337,18 @@ export async function addApp(
  * Get the application name based on the manifest and app configuration.
  *
  * @param manifest - The application manifest.
- * @param intent - The app configuration.
+ * @param intent - The app intent configuration.
  * @returns The application name.
  */
 export function getAppName(manifest: Partial<Manifest>, intent?: Intent): string {
     const id = manifest['sap.app']?.id ?? '';
 
-    intent ??= {
+    const resolved: Intent = intent ?? {
         object: id.replace(/\./g, ''),
         action: 'preview'
     };
 
-    return `${intent?.object}-${intent?.action}`;
+    return `${resolved.object}-${resolved.action}`;
 }
 
 /**
@@ -462,7 +489,7 @@ export function getPreviewPaths(config: MiddlewareConfig, logger: ToolsLogger = 
     sanitizeConfig(config, logger);
     // add flp preview url
     const flpConfig = getFlpConfigWithDefaults(config.flp);
-    urls.push({ path: `${flpConfig.path}#${flpConfig.intent.object}-${flpConfig.intent.action}`, type: 'preview' });
+    urls.push({ path: `${flpConfig.path}#${buildIntentHash(flpConfig.intent)}`, type: 'preview' });
     // add editor urls
     if (config.editors) {
         config.editors.rta?.endpoints.forEach((endpoint) => {
