@@ -4,11 +4,11 @@
 
 ### For OData V2 Applications
 
-Since the `enableExport` is a flex change property, this rule checks if there is a `.change` file for the `enableExport` property, where the `newValue` is set to `false`. This property sets whether to enable the export button in a table.
+Since the `enableExport` is a flex change property, this rule checks if there is a `.change` file for the `enableExport` property, where the `newValue` is set to `false`. This property defines whether to enable the export button in a table.
 
 ### For OData V4 Applications
 
-This rule checks if the `enableExport` property set to `false` in `tableSettings` in the `manifest.json` file for OData V4 applications. This property sets whether to enable the "Export" button in tables.
+This rule checks if the `enableExport` property is set to `false` in `tableSettings` in the `manifest.json` file for OData V4 applications. This property defines whether to enable the "Export" button in tables.
 
 ### Why Was This Rule Introduced?
 
@@ -16,7 +16,7 @@ The export functionality should not be hidden from the preview.
 
 ### Warning Message
 
-#### Incorrect Manifest File in OData V4
+#### Incorrect `manifest.json` File in OData V4
 
 ```json
 {
@@ -28,7 +28,7 @@ The export functionality should not be hidden from the preview.
 
 The `enableExport` property is set to `false` which hides the "Export" button.
 
-#### Incorrect .change File in OData V2
+#### Incorrect `.change` File in OData V2
 
 ```json
 {
@@ -39,7 +39,7 @@ The `enableExport` property is set to `false` which hides the "Export" button.
 }
 ```
 
-The `enableExport` property new value is set to `false` which hides the "Export" button.
+The `newValue` of the `enableExport` property is set to `false` which hides the "Export" button.
 
 #### Correct Manifest File in OData V4
 
@@ -53,7 +53,7 @@ The `enableExport` property new value is set to `false` which hides the "Export"
 
 The `enableExport` property is correctly set to `true` or omitted from  `tableSettings`.
 
-#### Correct .change File in OData V2
+#### Correct `.change` File in OData V2
 
 ```json
 {
@@ -64,15 +64,15 @@ The `enableExport` property is correctly set to `true` or omitted from  `tableSe
 }
 ```
 
-The `enableExport` property new value is set to `true` to display the "Export" button.
+The `newValue` of the `enableExport` property is set to `true` to display the "Export" button.
 
 ## How to Fix in OData V4
 
-To fix the warning, remove it from the `manifest.json` file. The "Export" button is shown by default.
+To fix the warning, remove the `enableExport` property from the `manifest.json` file. The "Export" button is shown by default.
 
 ## How to Fix in OData V2
 
-To fix the warning, there are two options: either delete the corresponding `.change` file, restoring the default setting, or set `newValue` in the property change file to `true`.
+To fix the warning, there are two options: either delete the corresponding `.change` file, which restores the default setting, or set `newValue` in the property change file to `true`.
 
 ## Bug Report
 

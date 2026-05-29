@@ -4,7 +4,7 @@
 
 ### For OData V2 Applications
 
-For OData V2 applications the `showPasteButton` is a flex change property, so this rule checks if there is a `.change` file for the `showPasteButton` property, where the `newValue` is set to `false`. This property sets whether the paste functionality is enabled in a table.
+For OData V2 applications, the `showPasteButton` is a flex change property, so this rule checks if there is a `.change` file for the `showPasteButton` property, where the `newValue` is set to `false`. This property sets whether paste functionality is enabled in a table.
 
 ### For OData V4 Applications
 
@@ -16,7 +16,7 @@ The paste functionality should not be hidden from the preview.
 
 ### Warning Message
 
-#### Incorrect Manifest File in OData V4
+#### Incorrect `manifest.json` File in OData V4
 
 ```json
 {
@@ -28,7 +28,7 @@ The paste functionality should not be hidden from the preview.
 
 The `enablePaste` property is set to `false` which hides the "Paste" button.
 
-#### Incorrect .change File in OData V2
+#### Incorrect `.change` File in OData V2
 
 ```json
 {
@@ -39,9 +39,9 @@ The `enablePaste` property is set to `false` which hides the "Paste" button.
 }
 ```
 
-The `showPasteButton` property new value is set to `false` which hides the "Paste" button.
+The `newValue` of the `showPasteButton` property is set to `false` which hides the "Paste" button.
 
-#### Correct Manifest File in OData V4
+#### Correct `manifest.json` File in OData V4
 
 ```json
 {
@@ -51,9 +51,9 @@ The `showPasteButton` property new value is set to `false` which hides the "Past
 }
 ```
 
-The `enablePaste` property is correctly set to `true` or omitted from  `tableSettings`.
+The `enablePaste` property is set to `true` or omitted from `tableSettings`.
 
-#### Correct .change File in OData V2
+#### Correct `.change` File in OData V2
 
 ```json
 {
@@ -64,15 +64,15 @@ The `enablePaste` property is correctly set to `true` or omitted from  `tableSet
 }
 ```
 
-The `showPasteButton` property new value is set to `true` to display the "Paste" button.
+The `newValue` of the `showPasteButton` property is set to `true` to display the "Paste" button.
 
 ## How to Fix in OData V4
 
-To fix the warning, remove it from the `manifest.json` file. The "Paste" button is shown by default.
+To fix the warning, remove the `enableExport` property from the `manifest.json` file. The "Paste" button is shown by default.
 
 ## How to Fix in OData V2
 
-To fix the warning, there are two options: either delete the corresponding `.change` file, restoring the default setting, or set `newValue` in the property change file to `true`.
+To fix the warning, there are two options: either delete the corresponding `.change` file, which restores the default setting, or set `newValue` in the property change file to `true`.
 
 ## Bug Report
 
