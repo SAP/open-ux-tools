@@ -5,7 +5,7 @@ import type { Logger } from '@sap-ux/logger';
  * Logger utility for the extension.
  */
 export default class SystemsLogger {
-    private static _logger = new ExtensionLogger('Connection Manager for SAP Systems');
+    private static _logger: Logger = new ExtensionLogger('Connection Manager for SAP Systems');
 
     /**
      * Get the logger.
@@ -13,7 +13,7 @@ export default class SystemsLogger {
      * @returns the logger
      */
     public static get logger(): Logger {
-        return SystemsLogger._logger as Logger;
+        return SystemsLogger._logger;
     }
 
     /**
@@ -22,13 +22,15 @@ export default class SystemsLogger {
      * @param value the logger to set
      */
     public static set logger(value: Logger) {
-        SystemsLogger._logger = value as ExtensionLogger;
+        SystemsLogger._logger = value;
     }
 
     /**
      * Show the logger output channel.
      */
     public static show(): void {
-        SystemsLogger._logger.show();
+        if (SystemsLogger._logger instanceof ExtensionLogger) {
+            SystemsLogger._logger.show();
+        }
     }
 }
