@@ -888,10 +888,18 @@ export interface XsApp {
 export interface Uaa {
     clientid: string;
     clientsecret: string;
+    /** Auth server URL (used to request OAuth tokens). */
     url: string;
+    /** Present on destination-service uaa bindings. */
+    uri?: string;
 }
 
-export type CfDestinationServiceCredentials = { uri: string; uaa: Uaa } | ({ uri: string } & Uaa);
+/**
+ * CF destination-service service-key credentials.
+ * - nested: `{ uaa: { clientid, clientsecret, url, uri, ... } }`
+ * - flat:   `{ clientid, clientsecret, url, uri, ... }`
+ */
+export type CfDestinationServiceCredentials = { uaa: Uaa & { uri: string } } | (Uaa & { uri: string });
 
 export interface CfAppParams {
     appName: string;

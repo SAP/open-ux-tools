@@ -55,8 +55,12 @@ const mockDestinations = {
 };
 
 const mockCredentials = {
-    uri: 'https://destination.cfapps.example.com',
-    uaa: { clientid: 'client-id', clientsecret: 'client-secret', url: 'https://auth.example.com' }
+    uaa: {
+        clientid: 'client-id',
+        clientsecret: 'client-secret',
+        url: 'https://auth.example.com',
+        uri: 'https://destination.cfapps.example.com'
+    }
 };
 
 const mockServiceInfo = {

@@ -74,12 +74,9 @@ export async function getBtpDestinationConfig(
  * @returns {Promise<Destinations>} Map of destination name to Destination object.
  */
 export async function listBtpDestinations(credentials: CfDestinationServiceCredentials): Promise<Destinations> {
-    const uaa =
-        'uaa' in credentials
-            ? credentials.uaa
-            : { clientid: credentials.clientid, clientsecret: credentials.clientsecret, url: credentials.url };
+    const uaa = 'uaa' in credentials ? credentials.uaa : credentials;
     const token = await getToken(uaa);
-    const url = `${credentials.uri}/destination-configuration/v1/subaccountDestinations`;
+    const url = `${uaa.uri}/destination-configuration/v1/subaccountDestinations`;
     try {
         const response = await axios.get<BtpDestinationConfig[]>(url, {
             headers: { Authorization: `Bearer ${token}` }

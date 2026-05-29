@@ -128,8 +128,12 @@ describe('btp/api', () => {
 
     describe('listBtpDestinations', () => {
         const mockCredentials = {
-            uri: 'https://destination.cfapps.example.com',
-            uaa: { clientid: 'client-id', clientsecret: 'client-secret', url: 'https://auth.example.com' }
+            uaa: {
+                clientid: 'client-id',
+                clientsecret: 'client-secret',
+                url: 'https://auth.example.com',
+                uri: 'https://destination.cfapps.example.com'
+            }
         };
 
         const mockBtpConfigs = [
@@ -159,6 +163,10 @@ describe('btp/api', () => {
 
             const result = await listBtpDestinations(mockCredentials);
 
+            expect(mockAxios.get).toHaveBeenCalledWith(
+                `${mockCredentials.uaa.uri}/destination-configuration/v1/subaccountDestinations`,
+                { headers: { Authorization: 'Bearer mock-token' } }
+            );
             expect(result).toEqual({
                 DEST_ONE: {
                     Name: 'DEST_ONE',
@@ -190,6 +198,10 @@ describe('btp/api', () => {
 
             const result = await listBtpDestinations(flatCredentials);
 
+            expect(mockAxios.get).toHaveBeenCalledWith(
+                `${flatCredentials.uri}/destination-configuration/v1/subaccountDestinations`,
+                { headers: { Authorization: 'Bearer mock-token' } }
+            );
             expect(result).toEqual({
                 DEST_ONE: {
                     Name: 'DEST_ONE',
