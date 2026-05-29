@@ -1,5 +1,14 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.3.7
+
+### Patch Changes
+
+- a1c9cd7: feat: warn when using a full URL destination during preview and deployment
+    - @sap-ux/inquirer-common@0.13.6
+    - @sap-ux/cf-deploy-config-inquirer@0.6.7
+    - @sap-ux/deploy-config-generator-shared@0.2.6
+
 ## 0.3.6
 
 ### Patch Changes
