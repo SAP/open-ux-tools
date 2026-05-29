@@ -8,7 +8,7 @@ import type { InputQuestion, PasswordQuestion, YUIQuestion } from '@sap-ux/inqui
 import { t } from '../../utils/i18n.js';
 import type { Credentials } from '../../types.js';
 import { configPromptNames } from '../../app/types.js';
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { LayeredRepositoryService } from '@sap-ux/axios-extension';
 
 interface ClientCredentials {

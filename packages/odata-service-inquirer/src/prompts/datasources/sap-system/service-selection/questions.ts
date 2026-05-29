@@ -20,6 +20,7 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n.js';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { OdataServicePromptOptions, ServiceSelectionPromptOptions } from '../../../../types.js';
 import { promptNames } from '../../../../types.js';
 import {

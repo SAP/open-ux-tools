@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { Annotations, ServiceProvider, ODataServiceInfo, ExternalService } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
