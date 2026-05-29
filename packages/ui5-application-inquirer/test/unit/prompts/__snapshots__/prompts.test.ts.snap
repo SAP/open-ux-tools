@@ -112,7 +112,6 @@ exports[`getQuestions getQuestions, no options 1`] = `
     "message": [Function],
     "name": "enableVirtualEndpoints",
     "type": "confirm",
-    "when": [Function],
   },
   {
     "default": false,

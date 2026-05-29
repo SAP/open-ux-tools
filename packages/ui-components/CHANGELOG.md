@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 2.2.4
+
+### Patch Changes
+
+- bc315f0: chore: use VSCode cornerRadius CSS variables instead of hardcoded border-radius values
+
 ## 2.2.3
 
 ### Patch Changes
