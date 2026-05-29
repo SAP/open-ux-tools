@@ -1,5 +1,11 @@
 # @sap-ux/guided-answers-helper
 
+## 0.5.1
+
+### Patch Changes
+
+- a1c9cd7: feat: warn when using a full URL destination during preview and deployment
+
 ## 0.5.0
 
 ### Minor Changes

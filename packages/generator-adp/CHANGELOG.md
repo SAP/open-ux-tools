@@ -1,5 +1,12 @@
 # @sap-ux/generator-adp
 
+## 0.10.12
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.13.6
+- @sap-ux/adp-tooling@0.19.11
+
 ## 0.10.11
 
 ### Patch Changes
