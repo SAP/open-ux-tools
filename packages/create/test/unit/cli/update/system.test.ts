@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { addSystemUpdateCommand } from '../../../../src/cli/change/system';
+import { addSystemUpdateCommand } from '../../../../src/cli/update/system';
 import * as logger from '../../../../src/tracing/logger';
 import * as btpUtils from '@sap-ux/btp-utils';
 import * as store from '@sap-ux/store';
@@ -12,7 +12,7 @@ jest.mock('@sap-ux/btp-utils', () => ({
 const { mockedService } = store as unknown as { mockedService: Record<string, jest.Mock> };
 const isAppStudioMock = btpUtils.isAppStudio as jest.Mock;
 
-describe('system/update', () => {
+describe('system/update (update command group)', () => {
     let loggerMock: ToolsLogger;
 
     const getArgv = (args: string[]) => ['', '', ...args];
@@ -35,7 +35,7 @@ describe('system/update', () => {
 
     test('should update system name', async () => {
         // Given
-        const command = new Command('change');
+        const command = new Command('update');
         addSystemUpdateCommand(command);
 
         // When
@@ -51,7 +51,7 @@ describe('system/update', () => {
 
     test('should update username and password', async () => {
         // Given
-        const command = new Command('change');
+        const command = new Command('update');
         addSystemUpdateCommand(command);
 
         // When
@@ -67,7 +67,7 @@ describe('system/update', () => {
 
     test('should update password only', async () => {
         // Given
-        const command = new Command('change');
+        const command = new Command('update');
         addSystemUpdateCommand(command);
 
         // When
@@ -81,7 +81,7 @@ describe('system/update', () => {
 
     test('should clear credentials when --clear-credentials is passed', async () => {
         // Given
-        const command = new Command('change');
+        const command = new Command('update');
         addSystemUpdateCommand(command);
 
         // When
@@ -96,7 +96,7 @@ describe('system/update', () => {
 
     test('should log error when no fields to update', async () => {
         // Given
-        const command = new Command('change');
+        const command = new Command('update');
         addSystemUpdateCommand(command);
 
         // When
@@ -110,7 +110,7 @@ describe('system/update', () => {
     test('should log error and exit when running in BAS', async () => {
         // Given
         isAppStudioMock.mockReturnValue(true);
-        const command = new Command('change');
+        const command = new Command('update');
         addSystemUpdateCommand(command);
 
         // When
@@ -125,7 +125,7 @@ describe('system/update', () => {
         // Given
         mockedService.read.mockResolvedValueOnce({ name: 'existing' });
         mockedService.partialUpdate.mockRejectedValueOnce(new Error('Store error'));
-        const command = new Command('change');
+        const command = new Command('update');
         addSystemUpdateCommand(command);
 
         // When
@@ -138,7 +138,7 @@ describe('system/update', () => {
     test('should log error when system does not exist', async () => {
         // Given
         mockedService.read.mockResolvedValueOnce(undefined);
-        const command = new Command('change');
+        const command = new Command('update');
         addSystemUpdateCommand(command);
 
         // When
