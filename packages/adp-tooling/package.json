@@ -60,7 +60,7 @@
         "mem-fs-editor": "9.4.0",
         "prompts": "2.4.2",
         "sanitize-filename": "1.6.4",
-        "uuid": "11.1.1"
+        "uuid": "14.0.0"
     },
     "devDependencies": {
         "@sap-ux/store": "workspace:*",
