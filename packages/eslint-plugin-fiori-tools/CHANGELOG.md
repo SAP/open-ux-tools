@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.3.0
+
+### Minor Changes
+
+- 0d6c80c: feat: enhance ESLint rules to support CDS annotations for sap-description-column-label and sap-text-arrangement-hidden
+
 ## 10.2.2
 
 ### Patch Changes

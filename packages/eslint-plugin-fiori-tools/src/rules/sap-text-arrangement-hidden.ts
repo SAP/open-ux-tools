@@ -12,12 +12,14 @@ import type { FioriRuleDefinition } from '../types.js';
 import { TEXT_ARRANGEMENT_HIDDEN, type TextArrangementHidden } from '../language/diagnostics.js';
 import { buildAnnotationIndexKey } from '../project-context/parser/index.js';
 import type { IndexedAnnotation, ParsedService } from '../project-context/parser/index.js';
-import { UI_HIDDEN, UI_TEXT_ARRANGEMENT } from '../constants.js';
+import { UI_HIDDEN, UI_TEXT_ARRANGEMENT, COMMON_TEXT_ARRANGEMENT } from '../constants.js';
 import {
     type AnyPage,
     resolveTextPropertyPath,
     collectRelevantEntityTypes,
-    parseCommonTextAnnotationKey
+    parseCommonTextAnnotationKey,
+    getTextPath,
+    getBoolValue
 } from './utils/common-text-helpers.js';
 
 /**
@@ -99,11 +101,12 @@ function checkHiddenProperty(
         return problems;
     }
     for (const hiddenAnnotation of Object.values(hiddenAnnotations)) {
-        // Skip only when explicitly set to false (Bool="false" means not hidden)
-        // Dynamic path expressions (Path="...") are still warned — presence of
-        // UI.Hidden on the text property is considered problematic regardless
-        const boolVal = getElementAttributeValue(hiddenAnnotation.top.value, Edm.Bool);
-        if (boolVal === 'false') {
+        // Skip only when explicitly set to false.
+        // CDS compiles @UI.Hidden: false as a <Bool>false</Bool> child element (no Bool attribute),
+        // so all layers must be checked for both attribute and child-element forms.
+        // Dynamic path expressions (Path="...") are still warned.
+        const explicitlyFalse = hiddenAnnotation.layers.some((layer) => getBoolValue(layer.value) === 'false');
+        if (explicitlyFalse) {
             continue;
         }
         problems.push({
@@ -122,6 +125,14 @@ function checkHiddenProperty(
 /**
  * Processes a single Common.Text annotation and returns diagnostics if the referenced text property is hidden.
  *
+ * CDS compiles `@(Common.Text: x, Common.Text.@UI.TextArrangement: y)` into two separate annotation
+ * layers under the same index key. One layer carries the path value, the other carries the inline
+ * UI.TextArrangement child element. Both layers must be inspected to determine whether the full
+ * combination is present.
+ *
+ * Format 1 (`@Common: {Text: x, TextArrangement: y}`) produces a separate
+ * `Common.TextArrangement` annotation entry in the index instead of an inline child element.
+ *
  * @param textAnnotation - The indexed Common.Text annotation to process
  * @param entityTypeName - Fully-qualified name of the entity type that owns the annotated property
  * @param targetPath - The annotation target path (e.g. "Service.Entity/property")
@@ -138,17 +149,31 @@ function processTextAnnotation(
     entityTypesWithTextArrangement: Set<string>,
     parsedService: ParsedService
 ): TextArrangementHidden[] {
-    const textElement = textAnnotation.top.value;
-    const textPath = getElementAttributeValue(textElement, Edm.Path);
+    // Scan all layers: CDS may split path and inline TextArrangement into separate layers
+    let textPath: string | undefined;
+    let hasInlineTA = false;
+    for (const layer of textAnnotation.layers) {
+        textPath ??= getTextPath(layer.value);
+        if (!hasInlineTA) {
+            const aliasInfo = parsedService.artifacts.aliasInfo[layer.uri];
+            hasInlineTA = hasInlineTextArrangement(layer.value, aliasInfo);
+        }
+        if (textPath && hasInlineTA) {
+            break;
+        }
+    }
     if (!textPath) {
         return [];
     }
-    // UI.TextArrangement may be a nested inline annotation inside Common.Text
-    // (property level, takes precedence) or applied directly on the entity type
-    // (entity-type level fallback per vocabulary spec)
-    const aliasInfo = parsedService.artifacts.aliasInfo[textAnnotation.top.uri];
+
+    // Format 1: @Common:{Text:x, TextArrangement:y} produces a separate Common.TextArrangement
+    // annotation entry rather than an inline child element inside Common.Text.
+    const hasPropertyLevelCommonTA =
+        !!parsedService.index.annotations[buildAnnotationIndexKey(targetPath, COMMON_TEXT_ARRANGEMENT)];
+
+    // UI.TextArrangement may also be applied directly on the entity type as a fallback
     const hasTextArrangement =
-        hasInlineTextArrangement(textElement, aliasInfo) || entityTypesWithTextArrangement.has(entityTypeName);
+        hasInlineTA || hasPropertyLevelCommonTA || entityTypesWithTextArrangement.has(entityTypeName);
     if (!hasTextArrangement) {
         return [];
     }

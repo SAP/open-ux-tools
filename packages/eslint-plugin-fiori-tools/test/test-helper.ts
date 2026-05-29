@@ -8,7 +8,7 @@ import type { RuleTester } from 'eslint';
 import type { Manifest } from '@sap-ux/project-access';
 import { getNodeModulesPath, normalizePath } from '@sap-ux/project-access';
 
-import { ProjectContext } from '../src/project-context/project-context';
+import { ProjectContext } from '../src/project-context/project-context.js';
 import { platform } from 'node:os';
 import { spawnSync } from 'node:child_process';
 
@@ -173,10 +173,10 @@ export function setup(name: string, capAppPath?: string) {
 
     beforeEach(() => {
         const key = expect.getState().currentTestName;
-        if (!key) {
+        if (!key || !lookup[key]) {
             return;
         }
-        const { changes = [], filename } = lookup[key] ?? [];
+        const { changes = [], filename } = lookup[key];
         const projectCwdCap = capAppPath && CAP_PROJECT_PATH;
         const projectCwdXml = filename?.includes(V4_PROJECT_PATH) ? V4_PROJECT_PATH : V2_PROJECT_PATH;
         const cwd = projectCwdCap ?? projectCwdXml;
