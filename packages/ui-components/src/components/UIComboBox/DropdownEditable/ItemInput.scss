@@ -1,0 +1,68 @@
+$menu-item-selection-color: var(
+    --vscode-editorSuggestWidget-selectedForeground,
+    var(--vscode-quickInputList-focusForeground, var(--vscode-editorSuggestWidget-foreground))
+);
+
+.editable-item {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    line-height: 18px;
+    height: 100%;
+    font-size: var(--vscode-font-size);
+    font-family: var(--vscode-font-family);
+    font-weight: var(--vscode-font-weight);
+    overflow: visible;
+    &-input {
+        flex-grow: 1;
+        .ms-TextField-wrapper {
+            width: 100%;
+            max-width: 200px;
+        }
+        .ms-TextField-fieldGroup {
+            height: 18px;
+            max-height: 18px;
+            min-height: 18px;
+            margin-left: -4px;
+        }
+        input {
+            display: block !important;
+            padding-left: 3px;
+        }
+        // Hide error message - error is shown as tooltip
+        .ms-TextField-errorMessage {
+            display: none;
+        }
+        &--error:hover .ms-TextField-fieldGroup {
+            border-color: var(--vscode-charts-red);
+        }
+    }
+    &-sub-value {
+        font-size: 11px;
+        font-weight: 400;
+        font-style: italic;
+        padding: 0 10px;
+    }
+    &-sub-menu-icon {
+        margin-top: 1px;
+        align-self: center;
+        height: 16px;
+        width: 16px;
+    }
+    // Expandable item
+    &-expandable {
+        .editable-item-sub-value {
+            padding-right: 0px;
+        }
+    }
+}
+
+.ts-ComboBox--selected,
+.ms-Dropdown-item.is-checked,
+.ms-ComboBox-option.is-checked {
+    .editable-item-sub-menu-icon svg > path {
+        fill: $menu-item-selection-color;
+    }
+}
