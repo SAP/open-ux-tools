@@ -118,10 +118,17 @@ export class AdpPreview {
     }
 
     /**
-     * @returns {AdaptationProjectType | undefined} The project type.
+     * @returns The project type.
      */
     get projectType(): AdaptationProjectType | undefined {
         return this.projectTypeValue;
+    }
+
+    /**
+     * @returns the ABAP service provider used to connect to the backend, or undefined if not initialized or in CF build mode.
+     */
+    get serviceProvider(): AbapServiceProvider | undefined {
+        return this.provider;
     }
 
     /**
