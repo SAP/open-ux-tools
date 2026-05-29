@@ -6,7 +6,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/guided-answers-helper"
     },
-    "version": "0.5.0",
+    "version": "0.5.1",
     "license": "Apache-2.0",
     "type": "module",
     "main": "dist/index.js",
