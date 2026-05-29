@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.13.3
+
+### Patch Changes
+
+- a1c9cd7: feat: warn when using a full URL destination during preview and deployment
+
 ## 0.13.2
 
 ### Patch Changes
