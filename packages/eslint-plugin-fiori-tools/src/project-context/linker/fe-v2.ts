@@ -550,7 +550,7 @@ const getPageTableChanges = (changes: FlexChange[], page: FeV2PageType, section?
         if (page.type === 'list-report-page') {
             changeIdSubstring = `::${page.componentName}.view.${page.componentName.split('.').pop()}::${page.entitySetName}`;
         } else if (page.type === 'object-page') {
-            changeIdSubstring = `::${page.componentName}.view.Details::${page.entitySetName}--${section?.id}::Table`;
+            changeIdSubstring = `::${page.componentName}.view.Details::${page.entitySetName}--${section?.id ?? ''}::Table`;
         }
         return changeIdSubstring && change.selector.id.includes(changeIdSubstring);
     });
