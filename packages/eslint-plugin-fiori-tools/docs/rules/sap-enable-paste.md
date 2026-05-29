@@ -64,9 +64,9 @@ The `enablePaste` property is correctly set to `true` or omitted from  `tableSet
 }
 ```
 
-The `showPasteButton` property new value is set to `false` which hides the "Paste" button.
+The `showPasteButton` property new value is set to `true` to display the "Paste" button.
 
-## How to Fix in ODataV4
+## How to Fix in OData V4
 
 To fix the warning, remove it from the `manifest.json` file. The "Paste" button is shown by default.
 
