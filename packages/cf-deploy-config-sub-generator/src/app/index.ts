@@ -258,6 +258,9 @@ export default class extends DeploymentGenerator {
         const destination = await getDestination(destinationName);
         const isDestinationFullUrl =
             this.options.isFullUrlDest ?? (destination && isFullUrlDestination(destination)) ?? false;
+        if (isDestinationFullUrl) {
+            DeploymentGenerator.logger?.warn(t('cfGen.warn.fullUrlDestination'));
+        }
         const addManagedAppRouter =
             this.options.addManagedAppRouter ??
             (this.options.routerType === RouterModuleType.Managed ||
