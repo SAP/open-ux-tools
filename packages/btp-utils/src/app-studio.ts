@@ -1,6 +1,6 @@
 import type { Logger } from '@sap-ux/logger';
 import { destinations as destinationAPI } from '@sap/bas-sdk';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 import type { ServiceInstanceInfo } from '@sap/cf-tools';
 import {
     apiCreateServiceInstance,

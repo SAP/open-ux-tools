@@ -6,7 +6,6 @@ import { t } from '../../../../i18n.js';
 import {
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     type ServiceSelectionPromptOptions,
     type SystemNamePromptOptions
 } from '../../../../types.js';
