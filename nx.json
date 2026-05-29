@@ -38,8 +38,8 @@
             "inputs": [
                 "default",
                 "^prod",
-                "{workspaceRoot}/jest.base.js",
-                "{projectRoot}/jest.config.js",
+                "{workspaceRoot}/jest.base.mjs",
+                "{projectRoot}/jest.config.{js,cjs,mjs}",
                 "sharedGlobals"
             ],
             "outputs": ["{projectRoot}/coverage"],
@@ -49,8 +49,8 @@
             "inputs": [
                 "default",
                 "^prod",
-                "{workspaceRoot}/jest.base.js",
-                "{projectRoot}/jest.config.js",
+                "{workspaceRoot}/jest.base.mjs",
+                "{projectRoot}/jest.config.{js,cjs,mjs}",
                 "sharedGlobals"
             ],
             "outputs": ["{projectRoot}/playwright-report"],

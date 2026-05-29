@@ -110,7 +110,7 @@ Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS
 - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
 - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
 - **Build Output**: Generated JavaScript files are now ESM modules
-- **Node.js Requirement**: Minimum Node.js version remains >=20.x (ESM is stable in Node 20+)
+- **Node.js Requirement**: Minimum Node.js version remains >=22.x
 
 
 ### Jest Configuration (for Testing)

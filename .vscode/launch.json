@@ -83,7 +83,7 @@
             "args": [
                 "${fileBasenameNoExtension}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -116,7 +116,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -131,7 +131,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -146,7 +146,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -161,7 +161,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -179,7 +179,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -197,7 +197,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -212,7 +212,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -227,7 +227,7 @@
             "args": [
                 "${fileBasenameNoExtension}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -264,7 +264,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false",
                 "--runInBand"
             ],
@@ -280,7 +280,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -295,7 +295,7 @@
             "args": [
                 "${fileBasenameNoExtension}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -310,7 +310,7 @@
             "args": [
                 "${fileBasenameNoExtension}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -325,7 +325,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -345,7 +345,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -363,7 +363,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -381,7 +381,7 @@
             "args": [
                 "${fileBasenameNoExtension}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -402,7 +402,7 @@
             "args": [
                 "${fileBasenameNoExtension}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -423,7 +423,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -441,7 +441,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -459,7 +459,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -477,7 +477,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -495,7 +495,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -510,7 +510,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -525,7 +525,7 @@
             "args": [
                 "${fileBasenameNoExtension}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -543,7 +543,7 @@
             "args": [
                 "${fileBasenameNoExtension}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -561,7 +561,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false",
                 "--runInBand"
             ],
@@ -580,7 +580,7 @@
             "args": [
                 "${fileBasenameNoExtension}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false",
                 "--runInBand"
             ],
@@ -603,7 +603,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -621,7 +621,7 @@
             "args": [
                 "${fileBasenameNoExtension}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false",
                 "--runInBand"
             ],
@@ -644,7 +644,7 @@
             "args": [
                 "${fileBasenameNoExtension}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false",
                 "--runInBand"
             ],
@@ -667,7 +667,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
@@ -685,7 +685,7 @@
             "args": [
                 "${file}",
                 "--config",
-                "jest.config.js",
+                "jest.config.mjs",
                 "--coverage=false"
             ],
             "console": "integratedTerminal",
