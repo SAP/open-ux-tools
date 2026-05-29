@@ -139,7 +139,7 @@ export function createFioriRule<
             }
             const sourceCode = context.sourceCode;
             if (sourceCode instanceof FioriChangeSourceCode && createChangeVisitorHandler) {
-                return createChangeVisitorWithMatchers(
+                return createChangeVisitor(
                     sourceCode,
                     cachedDiagnostics,
                     context as JSONRuleContext<MessageIds, RuleOptions>,
@@ -214,18 +214,14 @@ function createJsonVisitorWithMatchers<
 }
 
 /**
- * Creates a FlexChange visitor with matchers for applicable diagnostics.
+ * Creates a FlexChange rule visitor for applicable diagnostics.
  *
  * @param sourceCode
  * @param cachedDiagnostics
  * @param context
  * @param createChangeVisitorHandler
  */
-function createChangeVisitorWithMatchers<
-    MessageIds extends string,
-    RuleOptions extends unknown[],
-    T extends Diagnostic['type']
->(
+function createChangeVisitor<MessageIds extends string, RuleOptions extends unknown[], T extends Diagnostic['type']>(
     sourceCode: FioriChangeSourceCode,
     cachedDiagnostics: Extract<Diagnostic, { type: T }>[],
     context: JSONRuleContext<MessageIds, RuleOptions>,
@@ -234,16 +230,13 @@ function createChangeVisitorWithMatchers<
         diagnostic: Extract<Diagnostic, { type: T }>
     ) => (node: MemberNode) => void
 ): RuleVisitor {
-    const applicableDiagnostics = cachedDiagnostics.filter(
+    // Find the diagnostic applicable to the .change file. Always a single property value issue in one file.
+    const applicableDiagnostics = cachedDiagnostics.find(
         (diagnostic) => (diagnostic as any).changeFileUri === sourceCode.uri
     );
-    if (applicableDiagnostics.length === 0) {
+    if (!applicableDiagnostics) {
         return {};
     }
-    const matchers: RuleVisitor = {};
-    for (const diagnostic of applicableDiagnostics) {
-        const path = 'Member[name.value="content"] > Object > Member[name.value="newValue"]'; // Always the same path to new value
-        matchers[path] = createChangeVisitorHandler(context, diagnostic);
-    }
-    return matchers;
+    const path = 'Member[name.value="content"] > Object > Member[name.value="newValue"]'; // Always the same path to new value
+    return { [path]: createChangeVisitorHandler(context, applicableDiagnostics) };
 }
