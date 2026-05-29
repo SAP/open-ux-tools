@@ -52,6 +52,20 @@ describe('ExtensionLogger', () => {
         );
     });
 
+    test('log error with object message', async () => {
+        const logger = new ExtensionLogger('test');
+        logger.error({ code: 404, message: 'not found' });
+        await flushPromises();
+        expect(channelMock.error).toHaveBeenCalledWith("{ code: 404, message: 'not found' }");
+    });
+
+    test('log error with object message and args', async () => {
+        const logger = new ExtensionLogger('test');
+        logger.error({ code: 500 }, 'extra');
+        await flushPromises();
+        expect(channelMock.error).toHaveBeenCalledWith("{ code: 500 } 'extra'");
+    });
+
     test('log warn', async () => {
         const logger = new ExtensionLogger('test');
         logger.warn('warn test');
