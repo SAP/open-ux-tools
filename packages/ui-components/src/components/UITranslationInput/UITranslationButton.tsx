@@ -119,7 +119,7 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
                     isBeakVisible={false}
                     setInitialFocus={true}
                     className={getCalloutClassNames(invertedCalloutTheme)}
-                    onDismiss={() => onToggleCallout()}
+                    onDismiss={onCancel}
                     contentPadding={UICalloutContentPadding.Standard}>
                     <div className="ui-translatable__message">
                         {suggestion.message}
