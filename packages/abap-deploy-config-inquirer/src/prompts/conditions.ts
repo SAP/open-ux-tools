@@ -1,4 +1,4 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { isAppStudio, Authentication } from '@sap-ux/btp-utils';
 import { PromptState } from './prompt-state';
 import { findBackendSystemByUrl, initTransportConfig } from '../utils';
 import { handleTransportConfigError } from '../error-handler';
@@ -95,39 +95,60 @@ export function showClientQuestion(previousAnswers?: AbapDeployConfigAnswersInte
 }
 
 /**
+ * Initialises transport config state. Idempotent — no-ops if already set.
+ *
+ * @param backendTarget - backend target from prompt options
+ */
+async function ensureTransportConfigInitialised(backendTarget?: BackendTarget): Promise<void> {
+    const { transportConfig, transportConfigNeedsCreds } = PromptState.transportAnswers;
+    if (transportConfig !== undefined || transportConfigNeedsCreds !== undefined) {
+        return;
+    }
+
+    const result = await initTransportConfig({
+        backendTarget,
+        url: PromptState.abapDeployConfig.url,
+        client: PromptState.abapDeployConfig.client,
+        destination: PromptState.abapDeployConfig.destination,
+        errorHandler: handleTransportConfigError
+    });
+
+    const needsCreds = result.transportConfigNeedsCreds ?? false;
+    PromptState.transportAnswers.transportConfig = result.transportConfig;
+    PromptState.transportAnswers.transportConfigNeedsCreds = needsCreds;
+
+    if (needsCreds) {
+        LoggerHelper.logger.info(t('errors.atoUnauthorisedSystem'));
+    }
+}
+
+/**
  * Determines if the username question should be shown.
  *
  * @param backendTarget - backend target from prompt options
  * @returns boolean
  */
 export async function showUsernameQuestion(backendTarget?: BackendTarget): Promise<boolean> {
-    const { transportConfig, transportConfigNeedsCreds } = await initTransportConfig({
-        backendTarget: backendTarget,
-        url: PromptState.abapDeployConfig.url,
-        client: PromptState.abapDeployConfig.client,
-        destination: PromptState.abapDeployConfig.destination,
-        errorHandler: (e: string) => {
-            handleTransportConfigError(e);
-        }
-    });
-
-    // Update the prompt state with the transport configuration
-    PromptState.transportAnswers.transportConfig = transportConfig;
-    PromptState.transportAnswers.transportConfigNeedsCreds = transportConfigNeedsCreds ?? false;
-
-    // Provide context to the CLI when username credentials are required
-    if (transportConfigNeedsCreds) {
-        LoggerHelper.logger.info(t('errors.atoUnauthorisedSystem'));
+    const { destination, destinationAuthType } = PromptState.abapDeployConfig;
+    if (destination && destinationAuthType && destinationAuthType !== Authentication.NO_AUTHENTICATION) {
+        PromptState.transportAnswers.transportConfigNeedsCreds = false;
+        return false;
     }
-    return PromptState.transportAnswers.transportConfigNeedsCreds;
+
+    await ensureTransportConfigInitialised(backendTarget);
+    return Boolean(PromptState.transportAnswers.transportConfigNeedsCreds);
 }
 
 /**
  * Determines if the password question should be shown.
  *
+ * @param backendTarget - backend target from prompt options
  * @returns boolean
  */
-export function showPasswordQuestion(): boolean {
+export async function showPasswordQuestion(backendTarget?: BackendTarget): Promise<boolean> {
+    if (PromptState.transportAnswers.transportConfigNeedsCreds === undefined) {
+        return showUsernameQuestion(backendTarget);
+    }
     return Boolean(PromptState.transportAnswers.transportConfigNeedsCreds);
 }
 

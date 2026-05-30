@@ -50,14 +50,14 @@ describe('getAuthPrompts', () => {
     });
 
     test('should return expected values from password prompt methods', async () => {
-        jest.spyOn(conditions, 'showPasswordQuestion').mockReturnValue(true);
+        jest.spyOn(conditions, 'showPasswordQuestion').mockResolvedValue(true);
         jest.spyOn(validators, 'validateCredentials').mockResolvedValueOnce(true);
 
         const authPrompts = getAuthPrompts({});
         const passwordPrompt = authPrompts.find((prompt) => prompt.name === promptNames.password);
 
         if (passwordPrompt) {
-            expect((passwordPrompt.when as Function)()).toBe(true);
+            expect(await (passwordPrompt.when as Function)()).toBe(true);
             expect(passwordPrompt.message).toBe(t('prompts.auth.password.message'));
             expect(await (passwordPrompt.validate as Function)()).toBe(true);
         }
