@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 1.0.1
+
+### Patch Changes
+
+- 509e833: fix: bump version to 1.0.1 to avoid npm publish conflict with previously unpublished 1.0.0
+
 ## 1.0.0
 
 ### Major Changes
