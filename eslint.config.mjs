@@ -52,6 +52,7 @@ export default [
             '__mocks__',
             'test/tools-suite-telemetry/fixtures',
             'lint-staged.config.js',
+            'lint-staged.config.cjs',
             'generators/',
             'lib',
             'eslintrc-typescript.js',
