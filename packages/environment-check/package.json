@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/environment-check",
-    "version": "0.19.4",
+    "version": "1.0.0",
     "description": "SAP Fiori environment check",
     "type": "module",
     "repository": {
