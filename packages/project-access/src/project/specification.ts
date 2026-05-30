@@ -3,13 +3,13 @@ import { mkdir, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { valid } from 'semver';
 import type { Logger } from '@sap-ux/logger';
-import { deleteModule, getModule, getModulePath, loadModuleFromProject } from './module-loader';
-import { getWebappPath } from './ui5-config';
-import { getMinimumUI5Version } from './info';
-import { FileName, fioriToolsDirectory, moduleCacheRoot } from '../constants';
-import { readJSON, writeFile } from '../file';
-import type { Manifest, Package } from '../types';
-import { execNpmCommand } from '../command';
+import { deleteModule, getModule, getModulePath, loadModuleFromProject } from './module-loader.js';
+import { getWebappPath } from './ui5-config.js';
+import { getMinimumUI5Version } from './info.js';
+import { FileName, fioriToolsDirectory, moduleCacheRoot } from '../constants.js';
+import { readJSON, writeFile } from '../file/index.js';
+import type { Manifest, Package } from '../types/index.js';
+import { execNpmCommand } from '../command/index.js';
 
 const specificationDistTagPath = join(fioriToolsDirectory, FileName.SpecificationDistTags);
 

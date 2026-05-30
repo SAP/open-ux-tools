@@ -1,18 +1,18 @@
 import type { Element } from '@sap-ux/odata-annotation-core';
 
-import { createFioriRule } from '../language/rule-factory';
-import type { FioriRuleDefinition } from '../types';
-import { DESCRIPTION_COLUMN_LABEL, type DescriptionColumnLabel } from '../language/diagnostics';
-import { buildAnnotationIndexKey } from '../project-context/parser';
-import type { IndexedAnnotation, ParsedService } from '../project-context/parser';
-import { COMMON_LABEL } from '../constants';
+import { createFioriRule } from '../language/rule-factory.js';
+import type { FioriRuleDefinition } from '../types.js';
+import { DESCRIPTION_COLUMN_LABEL, type DescriptionColumnLabel } from '../language/diagnostics.js';
+import { buildAnnotationIndexKey } from '../project-context/parser/index.js';
+import type { IndexedAnnotation, ParsedService } from '../project-context/parser/index.js';
+import { COMMON_LABEL } from '../constants.js';
 import {
     resolveTextPropertyPath,
     collectRelevantEntityTypes,
     parseCommonTextAnnotationKey,
     getTextPath,
     getStringValue
-} from './utils/common-text-helpers';
+} from './utils/common-text-helpers.js';
 
 /**
  * Labels that are considered trivially non-descriptive regardless of context.

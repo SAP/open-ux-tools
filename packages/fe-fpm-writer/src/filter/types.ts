@@ -1,5 +1,5 @@
-import type { FilterField } from '../building-block/types';
-import type { CustomElement, InternalCustomElement, Position, EventHandler } from '../common/types';
+import type { FilterField } from '../building-block/types.js';
+import type { CustomElement, InternalCustomElement, Position, EventHandler } from '../common/types.js';
 
 /**
  * Properties to create a custom filter.

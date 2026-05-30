@@ -17,8 +17,8 @@
     },
     "files": [
         "dist/**/*.{js,css}",
-        "resources",
         "prebuilds",
+        "resources",
         "LICENSE"
     ],
     "scripts": {

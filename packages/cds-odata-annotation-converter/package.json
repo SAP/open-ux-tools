@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/cds-odata-annotation-converter",
     "description": "Converter for OData annotations in CDS format.",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -22,7 +23,7 @@
         "lint:report": "eslint . -f multiple ",
         "lint:summary": "eslint . -f summary",
         "pre-commit": "lint-staged --quiet",
-        "test": "jest --maxWorkers=2",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=2",
         "test:update": "node scripts/update-test-data.js",
         "watch": "tsc --build ./ -watch"
     },

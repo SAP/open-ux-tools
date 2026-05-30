@@ -1,12 +1,12 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { CommandRunner } from './commandRunner';
+import { CommandRunner } from './commandRunner.js';
 import fastGlob from 'fast-glob';
 import { join } from 'node:path';
 import readPkgUp from 'read-pkg-up';
 import type { SemVer } from 'semver';
 import { coerce, lt, satisfies } from 'semver';
 import type { WorkspaceConfiguration } from 'vscode';
-import { t } from './i18n';
+import { t } from './i18n.js';
 
 const latestSupportedYoVer = '7.0.1'; // Latest supported version by fiori tools
 

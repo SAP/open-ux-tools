@@ -8,22 +8,22 @@ import {
     MessageBarType
 } from '@sap-ux-private/control-property-editor-common';
 
-import { getError } from '../utils/error';
-import { ChangeService } from './changes/service';
-import { CommunicationService } from './communication-service';
-import { WorkspaceConnectorService } from './connector-service';
-import { ContextMenuService } from './context-menu-service';
-import { loadDefaultLibraries } from './documentation';
-import { OutlineService } from './outline/service';
-import { QuickActionService } from './quick-actions/quick-action-service';
-import type { QuickActionDefinitionRegistry } from './quick-actions/registry';
-import { RtaService } from './rta-service';
-import { SelectionService } from './selection';
-import type { ActionHandler, Service } from './types';
-import { getIcons } from './ui5-utils';
-import { ODataHealthChecker } from './odata-health/odata-health-checker';
-import { sendInfoCenterMessage } from '../utils/info-center-message';
-import { ODataUpStatus } from './odata-health/odata-health-status';
+import { getError } from '../utils/error.js';
+import { ChangeService } from './changes/service.js';
+import { CommunicationService } from './communication-service.js';
+import { WorkspaceConnectorService } from './connector-service.js';
+import { ContextMenuService } from './context-menu-service.js';
+import { loadDefaultLibraries } from './documentation.js';
+import { OutlineService } from './outline/service.js';
+import { QuickActionService } from './quick-actions/quick-action-service.js';
+import type { QuickActionDefinitionRegistry } from './quick-actions/registry.js';
+import { RtaService } from './rta-service.js';
+import { SelectionService } from './selection.js';
+import type { ActionHandler, Service } from './types.js';
+import { getIcons } from './ui5-utils.js';
+import { ODataHealthChecker } from './odata-health/odata-health-checker.js';
+import { sendInfoCenterMessage } from '../utils/info-center-message.js';
+import { ODataUpStatus } from './odata-health/odata-health-status.js';
 
 /**
  * Subscribes a handler to the CommunicationService

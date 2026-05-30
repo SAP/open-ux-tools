@@ -1,15 +1,15 @@
 import type { MemberNode } from '@humanwhocodes/momoa';
 import type { RuleContext } from '@eslint/core';
 
-import { createFioriRule } from '../language/rule-factory';
-import type { FioriRuleDefinition } from '../types';
-import type { CreateModeMessageId, CreationModeForTable } from '../language/diagnostics';
-import { CREATION_MODE_FOR_TABLE } from '../language/diagnostics';
-import type { ParsedApp } from '../project-context/parser';
-import type { FioriLanguageOptions, FioriSourceCode, Node } from '../language/fiori-language';
-import type { Table as V2Table, FeV2ObjectPage } from '../project-context/linker/fe-v2';
-import type { Table as V4Table, FeV4ObjectPage, LinkedFeV4App } from '../project-context/linker/fe-v4';
-import { createJsonFixer } from '../language/rule-fixer';
+import { createFioriRule } from '../language/rule-factory.js';
+import type { FioriRuleDefinition } from '../types.js';
+import type { CreateModeMessageId, CreationModeForTable } from '../language/diagnostics.js';
+import { CREATION_MODE_FOR_TABLE } from '../language/diagnostics.js';
+import type { ParsedApp } from '../project-context/parser/index.js';
+import type { FioriLanguageOptions, FioriSourceCode, Node } from '../language/fiori-language.js';
+import type { Table as V2Table, FeV2ObjectPage } from '../project-context/linker/fe-v2.js';
+import type { Table as V4Table, FeV4ObjectPage, LinkedFeV4App } from '../project-context/linker/fe-v4.js';
+import { createJsonFixer } from '../language/rule-fixer.js';
 
 const RECOMMENDED_MODE_V2 = 'creationRows';
 const RECOMMENDED_MODE_V4_RESPONSIVE_GRID = 'InlineCreationRows';

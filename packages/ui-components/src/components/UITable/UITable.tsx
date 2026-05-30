@@ -24,11 +24,11 @@ import {
     FocusZoneDirection
 } from '@fluentui/react';
 
-import { UICheckbox } from '../UICheckbox';
-import { UITextInput } from '../UIInput';
-import { UIDropdown } from '../UIDropdown';
-import { UIComboBox } from '../UIComboBox';
-import { UIDatePicker } from '../UIDatePicker';
+import { UICheckbox } from '../UICheckbox/index.js';
+import { UITextInput } from '../UIInput/index.js';
+import { UIDropdown } from '../UIDropdown/index.js';
+import { UIComboBox } from '../UIComboBox/index.js';
+import { UIDatePicker } from '../UIDatePicker/index.js';
 import {
     scrollToColumn,
     addRowNumbers,
@@ -41,9 +41,9 @@ import {
     scrollToRow,
     getComboBoxInput,
     getCellFromCoords
-} from './UITable-helper';
-import type { UITableProps, UITableState, UIDocument, UIColumn, EditedCell } from './types';
-import { ColumnControlType } from './types';
+} from './UITable-helper.js';
+import type { UITableProps, UITableState, UIDocument, UIColumn, EditedCell } from './types.js';
+import { ColumnControlType } from './types.js';
 import './UITable.scss';
 
 /**
@@ -197,7 +197,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                 this.props.columns,
                 true
             ) as HTMLElement;
-            const input = cell.querySelector('input') as HTMLInputElement;
+            const input = cell?.querySelector('input') as HTMLInputElement;
             if (input && input.selectionStart !== this.caretPosition) {
                 input.setSelectionRange(this.caretPosition, this.caretPosition);
                 this.caretPosition = -1;
@@ -276,7 +276,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                     {...(cell?.props || {})}
                     data-is-focusable={true}
                     onClick={onClick}
-                    tabIndex="0"
+                    tabIndex={0}
                     role="gridcell">
                     {cell?.props?.children || null}
                     <div className="table-item-warning">
@@ -291,7 +291,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                     {...(cell?.props || {})}
                     data-is-focusable={true}
                     onClick={onClick}
-                    tabIndex="0"
+                    tabIndex={0}
                     role="gridcell">
                     {cell?.props?.children || null}
                 </div>
@@ -691,8 +691,8 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                     this.props.columns,
                     true
                 ) as HTMLElement;
-                const input = cell.querySelector('input') as HTMLInputElement;
-                this.caretPosition = input.selectionStart || 0;
+                const input = cell?.querySelector('input') as HTMLInputElement;
+                this.caretPosition = input?.selectionStart || 0;
             }
 
             editedCell.errorMessage = errorMessage || undefined;

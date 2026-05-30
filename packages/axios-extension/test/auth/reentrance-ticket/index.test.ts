@@ -1,13 +1,23 @@
-import * as redirect from '../../../src/auth/reentrance-ticket/redirect';
+import { jest } from '@jest/globals';
 import type { AddressInfo } from 'node:net';
 import type http from 'node:http';
-import { getReentranceTicket } from '../../../src/auth/reentrance-ticket';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import open = require('open');
-import nock = require('nock');
+import nock from 'nock';
 
-jest.mock('open');
-const mockOpen = jest.mocked(open);
+const mockOpen = jest.fn<any>();
+jest.unstable_mockModule('open', () => ({
+    __esModule: true,
+    default: mockOpen
+}));
+
+const actualRedirect = await import('../../../src/auth/reentrance-ticket/redirect');
+const mockSetupRedirectHandling = jest.fn<any>();
+jest.unstable_mockModule('../../../src/auth/reentrance-ticket/redirect', () => ({
+    ...actualRedirect,
+    setupRedirectHandling: mockSetupRedirectHandling
+}));
+
+const { getReentranceTicket } = await import('../../../src/auth/reentrance-ticket');
 
 describe('getReentranceTicket()', () => {
     const serverOrigin = 'http://some_url.example';
@@ -16,7 +26,7 @@ describe('getReentranceTicket()', () => {
 
     beforeEach(() => {
         jest.resetAllMocks();
-        jest.spyOn(redirect, 'setupRedirectHandling').mockImplementation(({ resolve, backend }) => {
+        mockSetupRedirectHandling.mockImplementation(({ resolve, backend }: any) => {
             resolve({ reentranceTicket: 'some_ticket', backend });
             return {
                 server: {

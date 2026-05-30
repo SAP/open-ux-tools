@@ -1,17 +1,23 @@
-import * as i18n from '../../../../src/i18n';
-import { getPrompts } from '../../../../src/prompts/add-component-usages';
-import * as validators from '@sap-ux/project-input-validator';
+import { jest } from '@jest/globals';
 
-jest.mock('@sap-ux/project-input-validator');
+const mockHasContentDuplication = jest.fn().mockReturnValue(false);
+const mockHasCustomerPrefix = jest.fn().mockReturnValue(true);
+const mockValidateJSON = jest.fn().mockReturnValue(true);
+const mockValidateSpecialChars = jest.fn().mockReturnValue(true);
+const mockValidateEmptyString = jest.fn().mockReturnValue(true);
+const mockValidateEmptySpaces = jest.fn().mockReturnValue(true);
 
-jest.mock('@sap-ux/project-input-validator', () => ({
-    ...jest.requireActual('@sap-ux/project-input-validator'),
-    hasContentDuplication: jest.fn().mockReturnValue(false),
-    hasCustomerPrefix: jest.fn().mockReturnValue(true),
-    validateJSON: jest.fn().mockReturnValue(true),
-    validateSpecialChars: jest.fn().mockReturnValue(true),
-    validateEmptyString: jest.fn().mockReturnValue(true)
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    hasContentDuplication: mockHasContentDuplication,
+    hasCustomerPrefix: mockHasCustomerPrefix,
+    validateJSON: mockValidateJSON,
+    validateSpecialChars: mockValidateSpecialChars,
+    validateEmptyString: mockValidateEmptyString,
+    validateEmptySpaces: mockValidateEmptySpaces
 }));
+
+const { getPrompts } = await import('../../../../src/prompts/add-component-usages');
+const i18n = await import('../../../../src/i18n');
 
 describe('getPrompts', () => {
     const isLazyDropDownOptions = [
@@ -115,6 +121,15 @@ describe('getPrompts', () => {
         await i18n.initI18n();
     });
 
+    beforeEach(() => {
+        // Reset mocks to defaults before each test
+        mockHasContentDuplication.mockReturnValue(false);
+        mockHasCustomerPrefix.mockReturnValue(true);
+        mockValidateJSON.mockReturnValue(true);
+        mockValidateSpecialChars.mockReturnValue(true);
+        mockValidateEmptyString.mockReturnValue(true);
+    });
+
     test('should return prompts', () => {
         const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
@@ -131,7 +146,7 @@ describe('getPrompts', () => {
 
     describe('Validators', () => {
         test('should fail validation of usageId for special characters', () => {
-            jest.spyOn(validators, 'validateSpecialChars').mockReturnValueOnce('error');
+            mockValidateSpecialChars.mockReturnValueOnce('error');
 
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
@@ -142,7 +157,7 @@ describe('getPrompts', () => {
         });
 
         test('should fail validation of usageId for missing customer prefix', () => {
-            jest.spyOn(validators, 'hasCustomerPrefix').mockReturnValueOnce(false);
+            mockHasCustomerPrefix.mockReturnValueOnce(false);
 
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
@@ -164,7 +179,7 @@ describe('getPrompts', () => {
         });
 
         test('should fail validation of usageId for content duplication', () => {
-            jest.spyOn(validators, 'hasContentDuplication').mockReturnValueOnce(true);
+            mockHasContentDuplication.mockReturnValueOnce(true);
 
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
@@ -177,19 +192,17 @@ describe('getPrompts', () => {
         });
 
         test('should pass validation of id', () => {
-            const hasContentDuplicationSpy = jest.spyOn(validators, 'hasContentDuplication');
-
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
             const validator = prompts.find((prompt) => prompt.name === 'usageId')?.validate;
 
             expect(typeof validator).toBe('function');
             expect(validator?.('customer.id')).toBe(true);
-            expect(hasContentDuplicationSpy).toHaveBeenCalledWith('customer.id', 'componentUsages', []);
+            expect(mockHasContentDuplication).toHaveBeenCalledWith('customer.id', 'componentUsages', []);
         });
 
         test('should fail validation of name for special characters', () => {
-            jest.spyOn(validators, 'validateSpecialChars').mockReturnValueOnce('error');
+            mockValidateSpecialChars.mockReturnValueOnce('error');
 
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
@@ -200,7 +213,7 @@ describe('getPrompts', () => {
         });
 
         test('should fail validation of comonent settings for JSON', () => {
-            jest.spyOn(validators, 'validateJSON').mockReturnValueOnce('error');
+            mockValidateJSON.mockReturnValueOnce('error');
 
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
@@ -211,7 +224,7 @@ describe('getPrompts', () => {
         });
 
         test('should fail validation of comonent data for JSON', () => {
-            jest.spyOn(validators, 'validateJSON').mockReturnValueOnce('error');
+            mockValidateJSON.mockReturnValueOnce('error');
 
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
@@ -222,7 +235,7 @@ describe('getPrompts', () => {
         });
 
         test('should pass validation of comonent data for empty input', () => {
-            jest.spyOn(validators, 'validateEmptyString').mockReturnValueOnce('error');
+            mockValidateEmptyString.mockReturnValueOnce('error');
 
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
@@ -233,7 +246,7 @@ describe('getPrompts', () => {
         });
 
         test('should fail validation of library for special charecters', () => {
-            jest.spyOn(validators, 'validateSpecialChars').mockReturnValueOnce('error');
+            mockValidateSpecialChars.mockReturnValueOnce('error');
 
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
@@ -244,19 +257,17 @@ describe('getPrompts', () => {
         });
 
         test('should pass validation of library', () => {
-            const hasContentDuplicationSpy = jest.spyOn(validators, 'hasContentDuplication');
-
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
             const validator = prompts.find((prompt) => prompt.name === 'library')?.validate;
 
             expect(typeof validator).toBe('function');
             expect(validator?.('customer.library')).toBe(true);
-            expect(hasContentDuplicationSpy).toHaveBeenCalledWith('customer.library', 'libraries', []);
+            expect(mockHasContentDuplication).toHaveBeenCalledWith('customer.library', 'libraries', []);
         });
 
         test('should fail validation of library for content duplication', () => {
-            jest.spyOn(validators, 'hasContentDuplication').mockReturnValueOnce(true);
+            mockHasContentDuplication.mockReturnValueOnce(true);
 
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 

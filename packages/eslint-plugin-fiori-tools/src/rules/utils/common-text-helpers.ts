@@ -1,10 +1,10 @@
 import type { Element } from '@sap-ux/odata-annotation-core';
 import { Edm, getElementAttributeValue, ELEMENT_TYPE } from '@sap-ux/odata-annotation-core';
 
-import type { IndexedAnnotation, ParsedService } from '../../project-context/parser';
-import type { FeV4ObjectPage, FeV4ListReport } from '../../project-context/linker/fe-v4';
-import type { FeV2ListReport, FeV2ObjectPage } from '../../project-context/linker/fe-v2';
-import { COMMON_TEXT } from '../../constants';
+import type { IndexedAnnotation, ParsedService } from '../../project-context/parser/index.js';
+import type { FeV4ObjectPage, FeV4ListReport } from '../../project-context/linker/fe-v4.js';
+import type { FeV2ListReport, FeV2ObjectPage } from '../../project-context/linker/fe-v2.js';
+import { COMMON_TEXT } from '../../constants.js';
 
 export { resolveTextPropertyPath } from '@sap-ux/fiori-annotation-api';
 

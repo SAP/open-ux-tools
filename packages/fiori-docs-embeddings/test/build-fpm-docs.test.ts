@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import * as path from 'node:path';
 
 const mockReadFile = jest.fn();
@@ -17,11 +18,16 @@ const mockLogger = {
     debug: jest.fn()
 };
 
-jest.mock('@sap-ux/logger', () => ({
+const mockXMLParserParse = jest.fn();
+const MockXMLParser = jest.fn().mockImplementation(() => ({
+    parse: mockXMLParserParse
+}));
+
+jest.unstable_mockModule('@sap-ux/logger', () => ({
     ToolsLogger: jest.fn().mockImplementation(() => mockLogger)
 }));
 
-jest.mock('fs/promises', () => ({
+jest.unstable_mockModule('node:fs/promises', () => ({
     readFile: mockReadFile,
     mkdir: mockMkdir,
     writeFile: mockWriteFile,
@@ -29,16 +35,14 @@ jest.mock('fs/promises', () => ({
     stat: mockStat
 }));
 
-jest.mock('child_process', () => ({
+jest.unstable_mockModule('node:child_process', () => ({
     spawn: mockSpawn
 }));
 
-jest.mock('readline', () => mockReadline);
+jest.unstable_mockModule('node:readline', () => mockReadline);
 
-jest.mock('fast-xml-parser', () => ({
-    XMLParser: jest.fn().mockImplementation(() => ({
-        parse: jest.fn()
-    }))
+jest.unstable_mockModule('fast-xml-parser', () => ({
+    XMLParser: MockXMLParser
 }));
 
 describe('FpmDocumentationBuilder', () => {
@@ -1370,8 +1374,7 @@ describe('FpmDocumentationBuilder', () => {
             process.env.GITHUB_TOKEN = 'test-token';
 
             // Setup XMLParser mock to return valid parsed data
-            const { XMLParser } = jest.requireMock('fast-xml-parser') as { XMLParser: jest.Mock };
-            const mockParse = jest.fn().mockReturnValue({
+            mockXMLParserParse.mockReturnValue({
                 'mvc:View': {
                     'fpmExplorer:Page': {
                         '@_title': 'Test',
@@ -1385,9 +1388,6 @@ describe('FpmDocumentationBuilder', () => {
                     }
                 }
             });
-            XMLParser.mockImplementation(() => ({
-                parse: mockParse
-            }));
 
             // Setup all mocks for a successful build
             mockStat.mockResolvedValue({
@@ -1497,8 +1497,7 @@ describe('FpmDocumentationBuilder', () => {
             process.env.GITHUB_TOKEN = 'test-token';
 
             // Setup XMLParser mock to return empty structure (no implementation steps)
-            const { XMLParser } = jest.requireMock('fast-xml-parser') as { XMLParser: jest.Mock };
-            const mockParse = jest.fn().mockReturnValue({
+            mockXMLParserParse.mockReturnValue({
                 'mvc:View': {
                     'fpmExplorer:Page': {
                         '@_title': 'Test',
@@ -1507,9 +1506,6 @@ describe('FpmDocumentationBuilder', () => {
                     }
                 }
             });
-            XMLParser.mockImplementation(() => ({
-                parse: mockParse
-            }));
 
             mockLogger.error.mockClear();
             const processExitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {

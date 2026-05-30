@@ -1,14 +1,17 @@
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { generateCustomField } from '../../src/field';
 import type { CustomField } from '../../src/field/types';
 import type { EventHandlerConfiguration, Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
-import * as manifest from './sample/field/webapp/manifest.json';
+import manifest from './sample/field/webapp/manifest.json';
 import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
 import { getEndOfLinesLength, tabSizingTestCases } from '../common';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const testDir = join(__dirname, 'sample/field');
 

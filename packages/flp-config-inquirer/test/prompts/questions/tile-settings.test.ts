@@ -2,6 +2,7 @@ import { getApiHubOptions } from '../../../../deploy-config-sub-generator/src/ut
 import { getTileSettingsPrompts } from '../../../src/prompts/questions/tile-settings';
 import { tileActions, tilePromptNames, type TileSettingsAnswers } from '../../../src/types';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
+import { t } from '../../../src/i18n';
 
 describe('getTileSettingsPrompts', () => {
     it('should return two prompts', () => {
@@ -17,14 +18,14 @@ describe('getTileSettingsPrompts', () => {
             expect.objectContaining({
                 type: 'list',
                 name: tilePromptNames.tileHandlingAction,
-                message: 'prompts.tileHandlingAction',
+                message: t('prompts.tileHandlingAction'),
                 guiOptions: {
                     mandatory: true,
                     breadcrumb: true
                 },
                 choices: [
-                    { name: 'choices.addNewTile', value: tileActions.ADD },
-                    { name: 'choices.replaceOriginalTile', value: tileActions.REPLACE }
+                    { name: t('choices.addNewTile'), value: tileActions.ADD },
+                    { name: t('choices.replaceOriginalTile'), value: tileActions.REPLACE }
                 ],
                 store: false
             })
@@ -39,7 +40,7 @@ describe('getTileSettingsPrompts', () => {
             expect.objectContaining({
                 type: 'confirm',
                 name: tilePromptNames.copyFromExisting,
-                message: 'prompts.copyFromExisting',
+                message: t('prompts.copyFromExisting'),
                 guiOptions: {
                     mandatory: true,
                     breadcrumb: true

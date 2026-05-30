@@ -1,13 +1,14 @@
-import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { dirname, join } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { existsSync, readFileSync } from 'node:fs';
+import { jest } from '@jest/globals';
 
 import type { RuleTester } from 'eslint';
 
 import type { Manifest } from '@sap-ux/project-access';
 import { getNodeModulesPath, normalizePath } from '@sap-ux/project-access';
 
-import { ProjectContext } from '../src/project-context/project-context';
+import { ProjectContext } from '../src/project-context/project-context.js';
 import { platform } from 'node:os';
 import { spawnSync } from 'node:child_process';
 
@@ -15,6 +16,8 @@ export interface FileChange {
     filename: string;
     code: string;
 }
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const ROOT = join(__dirname, '..');
 

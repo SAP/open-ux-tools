@@ -33,8 +33,8 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { validateAch, validateEmptyString } from '@sap-ux/project-input-validator';
 
-import { t } from '../../utils/i18n';
-import type { TelemetryCollector } from '../../telemetry';
+import { t } from '../../utils/i18n.js';
+import type { TelemetryCollector } from '../../telemetry/index.js';
 import type {
     AchPromptOptions,
     ApplicationPromptOptions,
@@ -47,19 +47,19 @@ import type {
     StoreCredentialsPromptOptions,
     SystemPromptOptions,
     UsernamePromptOptions
-} from '../types';
-import { configPromptNames, SystemType } from '../types';
-import { getAppAdditionalMessages, getSystemAdditionalMessages } from './helper/additional-messages';
-import { getApplicationChoices, getProjectTypeChoices } from './helper/choices';
+} from '../types.js';
+import { configPromptNames, SystemType } from '../types.js';
+import { getAppAdditionalMessages, getSystemAdditionalMessages } from './helper/additional-messages.js';
+import { getApplicationChoices, getProjectTypeChoices } from './helper/choices.js';
 import {
     showApplicationQuestion,
     showCredentialQuestion,
     showExtensionProjectQuestion,
     showInternalQuestions,
     showStoreCredentialsQuestion
-} from './helper/conditions';
-import { getExtProjectMessage } from './helper/message';
-import { validateExtensibilityExtension } from './helper/validators';
+} from './helper/conditions.js';
+import { getExtProjectMessage } from './helper/message.js';
+import { validateExtensibilityExtension } from './helper/validators.js';
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { Severity } from '@sap-devx/yeoman-ui-types';

@@ -37,4 +37,5 @@ abstract class PerformanceMeasurement {
     static clearEntries: () => void;
 }
 
-export { EntryType, Mark, Measurement, EntriesArray, PerformanceMeasurement };
+export { EntryType, PerformanceMeasurement };
+export type { Mark, Measurement, EntriesArray };

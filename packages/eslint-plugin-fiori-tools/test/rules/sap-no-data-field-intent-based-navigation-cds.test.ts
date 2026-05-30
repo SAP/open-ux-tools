@@ -1,7 +1,7 @@
 import { RuleTester } from 'eslint';
-import intentBasedNavRule from '../../src/rules/sap-no-data-field-intent-based-navigation';
-import { meta, languages } from '../../src/index';
-import { CAP_ANNOTATIONS, CAP_ANNOTATIONS_PATH, CAP_APP_PATH, CAP_FACETS_ANNOTATIONS, setup } from '../test-helper';
+import intentBasedNavRule from '../../src/rules/sap-no-data-field-intent-based-navigation.js';
+import { meta, languages } from '../../src/index.js';
+import { CAP_ANNOTATIONS, CAP_ANNOTATIONS_PATH, CAP_APP_PATH, CAP_FACETS_ANNOTATIONS, setup } from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },

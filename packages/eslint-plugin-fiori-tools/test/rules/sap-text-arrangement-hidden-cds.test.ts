@@ -1,8 +1,8 @@
 import { RuleTester } from 'eslint';
-import textArrangementHiddenRule from '../../src/rules/sap-text-arrangement-hidden';
-import { meta, languages } from '../../src/index';
-import { TEXT_ARRANGEMENT_HIDDEN } from '../../src/language/diagnostics';
-import { setup, CAP_ANNOTATIONS, CAP_ANNOTATIONS_PATH, CAP_APP_PATH } from '../test-helper';
+import textArrangementHiddenRule from '../../src/rules/sap-text-arrangement-hidden.js';
+import { meta, languages } from '../../src/index.js';
+import { TEXT_ARRANGEMENT_HIDDEN } from '../../src/language/diagnostics.js';
+import { setup, CAP_ANNOTATIONS, CAP_ANNOTATIONS_PATH, CAP_APP_PATH } from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },

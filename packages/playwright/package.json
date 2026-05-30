@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux-private/playwright",
     "description": "Playwright framework",
+    "type": "module",
     "private": true,
     "repository": {
         "type": "git",
@@ -21,8 +22,8 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors --silent",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors --silent",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
@@ -43,7 +44,9 @@
         "portfinder": "1.0.38",
         "promisify-child-process": "5.0.1"
     },
-    "devDependencies": {},
+    "devDependencies": {
+        "@jest/globals": "30.3.0"
+    },
     "engines": {
         "node": ">=22.x"
     }

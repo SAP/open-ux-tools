@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import { DefaultButton } from '@fluentui/react';
 import { UIDefaultButton } from '../../../src/components/UIButton/UIDefaultButton';
 import type { UIDefaultButtonProps } from '../../../src/components/UIButton/UIDefaultButton';

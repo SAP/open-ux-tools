@@ -1,7 +1,7 @@
 import { RuleTester } from 'eslint';
-import descriptionColumnLabelRule from '../../src/rules/sap-description-column-label';
-import { meta, languages } from '../../src/index';
-import { setup, CAP_ANNOTATIONS, CAP_ANNOTATIONS_PATH, CAP_APP_PATH } from '../test-helper';
+import descriptionColumnLabelRule from '../../src/rules/sap-description-column-label.js';
+import { meta, languages } from '../../src/index.js';
+import { setup, CAP_ANNOTATIONS, CAP_ANNOTATIONS_PATH, CAP_APP_PATH } from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },

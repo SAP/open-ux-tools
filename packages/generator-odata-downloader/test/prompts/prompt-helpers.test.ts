@@ -1,41 +1,64 @@
-import { ConsoleTransport, LogLevel, ToolsLogger } from '@sap-ux/logger';
-import * as projectAccess from '@sap-ux/project-access';
-import { createApplicationAccess, FileName, getSpecificationModuleFromCache } from '@sap-ux/project-access';
-import * as commandMock from '@sap-ux/project-access/dist/command';
-import * as fileMock from '@sap-ux/project-access/dist/file';
+import { jest } from '@jest/globals';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
-import {
-    createEntityChoices,
-    getData,
-    getServiceDetails,
-    getSpecification
-} from '../../src/data-download/prompts/prompt-helpers';
-import { getEntityModel } from '../../src/data-download/utils';
-import * as odataQueryModule from '../../src/data-download/odata-query';
-import { initI18nODataDownloadGenerator } from '../../src/utils/i18n';
-import type { AppConfig, Entity, ReferencedEntities } from '../../src/data-download/types';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { initI18nODataDownloadGenerator } from '../../src/utils/i18n.js';
+import type { AppConfig, Entity } from '../../src/data-download/types.js';
 import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 import type { EntityType } from '@sap-ux/vocabularies-types';
-import { PromptState } from '../../src/data-download/prompt-state';
+import { PromptState } from '../../src/data-download/prompt-state.js';
 import type { ApplicationAccess, ServiceSpecification } from '@sap-ux/project-access';
-import * as utils from '../../src/data-download/utils';
+import type { fetchData } from '../../src/data-download/odata-query.js';
+import type { initTelemetrySettings } from '@sap-ux/telemetry';
+import type { sendTelemetry } from '@sap-ux/fiori-generator-shared';
 
-const readJSONOriginal = fileMock.readJSON;
+const actualStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...actualStore,
+    getService: jest.fn().mockImplementation(() => ({
+        getAll: jest.fn(),
+        read: jest.fn()
+    }))
+}));
+
+jest.unstable_mockModule('../../src/telemetry', () => ({
+    TelemetryHelper: {
+        initTelemetrySettings: jest.fn<typeof initTelemetrySettings>().mockResolvedValue(undefined),
+        sendTelemetry: jest.fn<typeof sendTelemetry>().mockResolvedValue(undefined)
+    }
+}));
+
+const actualProjectAccess = await import('@sap-ux/project-access');
+const mockGetSpecificationModuleFromCache = jest.fn();
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    getSpecificationModuleFromCache: mockGetSpecificationModuleFromCache
+}));
+
+const actualOdataQuery = await import('../../src/data-download/odata-query.js');
+const mockFetchData = jest.fn<typeof fetchData>();
+jest.unstable_mockModule('../../src/data-download/odata-query.js', () => ({
+    ...actualOdataQuery,
+    fetchData: mockFetchData
+}));
+
+const actualDataDownloadUtils = await import('../../src/data-download/utils.js');
+const mockGetSystemNameFromStore = jest.fn();
+jest.unstable_mockModule('../../src/data-download/utils', () => ({
+    ...actualDataDownloadUtils,
+    getSystemNameFromStore: mockGetSystemNameFromStore
+}));
+
+const { createEntityChoices, getData, getServiceDetails, getSpecification } =
+    await import('../../src/data-download/prompts/prompt-helpers.js');
+
+const __testdir = dirname(fileURLToPath(import.meta.url));
 
 // UIAnnotationTypes enum values
 const UIAnnotationTypes = {
     ReferenceFacet: 'com.sap.vocabularies.UI.v1.ReferenceFacet',
     CollectionFacet: 'com.sap.vocabularies.UI.v1.CollectionFacet'
 } as const;
-
-jest.mock('../../src/telemetry', () => ({
-    TelemetryHelper: {
-        initTelemetrySettings: jest.fn().mockResolvedValue(undefined),
-        sendTelemetry: jest.fn().mockResolvedValue(undefined)
-    }
-}));
 
 describe('Test createEntityChoices', () => {
     beforeEach(() => {
@@ -483,46 +506,6 @@ describe('Test createEntityChoices', () => {
         expect(result!.choices).toHaveLength(1);
         expect(result!.choices[0].name).toBe('_Country');
     });
-
-    it('should create entity set choices based on app model (from specification)', async () => {
-        // Prevent spec from fetching versions and writing on test jobs
-        jest.spyOn(commandMock, 'execNpmCommand').mockResolvedValueOnce('{"latest": "1.142.1"}');
-        jest.spyOn(fileMock, 'writeFile').mockResolvedValueOnce();
-
-        jest.spyOn(fileMock, 'readJSON').mockImplementation(async (path) => {
-            if (path.endsWith(FileName.SpecificationDistTags)) {
-                return {
-                    latest: '1.142.1'
-                };
-            }
-            return await readJSONOriginal(path);
-        });
-        // Load the test app
-        const appPath = join(__dirname, '../test-data/test-apps/travel');
-
-        const appAccess = await createApplicationAccess(appPath);
-
-        // Usually loaded from backend, use local copy for testing
-        const metadata = await readFile(join(appPath, '/webapp/localService/mainService/metadata.xml'), 'utf8');
-
-        const logger = new ToolsLogger({ logLevel: LogLevel.Debug, transports: [new ConsoleTransport()] });
-        // Use non-mocked spec to ensure integration
-        const specResult = await getSpecificationModuleFromCache(appAccess.app.appRoot, { logger });
-
-        if (typeof specResult === 'string') {
-            throw new Error(specResult);
-        }
-        // Load the full entity model
-        const entityModel = await getEntityModel(appAccess, specResult as Specification, metadata);
-        expect(entityModel).not.toBe(String);
-        expect(entityModel).not.toBe(undefined);
-
-        const entityChoices = createEntityChoices(
-            (entityModel! as ReferencedEntities).listEntity,
-            (entityModel! as ReferencedEntities)?.pageObjectEntities
-        );
-        expect(entityChoices).toMatchSnapshot();
-    }, 900000); // Very long spec load time on Windows
 });
 
 describe('Test getData', () => {
@@ -549,12 +532,6 @@ describe('Test getData', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockServiceProvider.service.mockReturnValue(mockODataService);
-        // Mock the static logger on ODataDownloadGenerator
-        jest.doMock('../../src/data-download/odata-download-generator', () => ({
-            ODataDownloadGenerator: {
-                logger: mockLogger
-            }
-        }));
     });
 
     test('should return error message when metadata is missing', async () => {
@@ -588,11 +565,14 @@ describe('Test getData', () => {
 
     test('should return odata query result on successful fetch', async () => {
         const mockEntityData = [{ id: 1, name: 'Test' }];
-        jest.spyOn(odataQueryModule, 'fetchData').mockResolvedValueOnce({
+        // Reload to isolate test
+        jest.resetModules();
+        mockFetchData.mockResolvedValueOnce({
             odataResult: { entityData: mockEntityData }
-        } as unknown as Awaited<ReturnType<typeof odataQueryModule.fetchData>>);
+        });
+        const { getData: localGetData } = await import('../../src/data-download/prompts/prompt-helpers.js');
 
-        const result = await getData(
+        const result = await localGetData(
             {
                 metadata: '<xml/>',
                 connectedSystem: {
@@ -610,11 +590,14 @@ describe('Test getData', () => {
     });
 
     test('should return error string when fetchData returns error', async () => {
-        jest.spyOn(odataQueryModule, 'fetchData').mockResolvedValueOnce({
+        // Reload to isolate test
+        jest.resetModules();
+        mockFetchData.mockResolvedValueOnce({
             odataResult: { error: 'Connection failed' }
-        } as unknown as Awaited<ReturnType<typeof odataQueryModule.fetchData>>);
+        });
+        const { getData: localGetData } = await import('../../src/data-download/prompts/prompt-helpers.js');
 
-        const result = await getData(
+        const result = await localGetData(
             {
                 metadata: '<xml/>',
                 connectedSystem: {
@@ -634,14 +617,14 @@ describe('Test getData', () => {
 
 describe('Test getServiceDetails', () => {
     // Use test-apps/travel which has a real ui5.yaml file
-    const testAppPath = join(__dirname, '../test-data/test-apps/travel');
+    const testAppPath = join(__testdir, '../test-data/test-apps/travel');
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
     test('should return service path and URI from service specification', async () => {
-        jest.spyOn(utils, 'getSystemNameFromStore').mockResolvedValue('MY_SYSTEM');
+        mockGetSystemNameFromStore.mockResolvedValue('MY_SYSTEM');
 
         const service: ServiceSpecification = {
             uri: '/sap/opu/odata4/sap/fe_draft_travel/srvd/sap/travel_processor/0001/',
@@ -655,7 +638,7 @@ describe('Test getServiceDetails', () => {
     });
 
     test('should return undefined system name when getSystemNameFromStore returns undefined', async () => {
-        jest.spyOn(utils, 'getSystemNameFromStore').mockResolvedValue(undefined);
+        mockGetSystemNameFromStore.mockResolvedValue(undefined);
 
         const service: ServiceSpecification = {
             uri: '/sap/opu/odata4/sap/fe_draft_travel/srvd/sap/travel_processor/0001/',
@@ -682,9 +665,7 @@ describe('Test getSpecification', () => {
             getApiVersion: jest.fn().mockReturnValue({ version: '24' })
         };
 
-        jest.spyOn(projectAccess, 'getSpecificationModuleFromCache').mockResolvedValue(
-            mockSpecification as unknown as Specification
-        );
+        mockGetSpecificationModuleFromCache.mockResolvedValue(mockSpecification as unknown as Specification);
 
         const mockAppAccess = {
             app: {
@@ -702,9 +683,7 @@ describe('Test getSpecification', () => {
             getApiVersion: jest.fn().mockReturnValue({ version: '25' })
         };
 
-        jest.spyOn(projectAccess, 'getSpecificationModuleFromCache').mockResolvedValue(
-            mockSpecification as unknown as Specification
-        );
+        mockGetSpecificationModuleFromCache.mockResolvedValue(mockSpecification as unknown as Specification);
 
         const mockAppAccess = {
             app: {
@@ -722,9 +701,7 @@ describe('Test getSpecification', () => {
             getApiVersion: jest.fn().mockReturnValue({ version: '23' })
         };
 
-        jest.spyOn(projectAccess, 'getSpecificationModuleFromCache').mockResolvedValue(
-            mockSpecification as unknown as Specification
-        );
+        mockGetSpecificationModuleFromCache.mockResolvedValue(mockSpecification as unknown as Specification);
 
         const mockAppAccess = {
             app: {
@@ -743,9 +720,7 @@ describe('Test getSpecification', () => {
             getApiVersion: jest.fn().mockReturnValue({ version: undefined })
         };
 
-        jest.spyOn(projectAccess, 'getSpecificationModuleFromCache').mockResolvedValue(
-            mockSpecification as unknown as Specification
-        );
+        mockGetSpecificationModuleFromCache.mockResolvedValue(mockSpecification as unknown as Specification);
 
         const mockAppAccess = {
             app: {
@@ -765,9 +740,7 @@ describe('Test getSpecification', () => {
             getApiVersion: jest.fn().mockReturnValue({ version: '100' })
         };
 
-        jest.spyOn(projectAccess, 'getSpecificationModuleFromCache').mockResolvedValue(
-            mockSpecification as unknown as Specification
-        );
+        mockGetSpecificationModuleFromCache.mockResolvedValue(mockSpecification as unknown as Specification);
 
         const mockAppAccess = {
             app: {

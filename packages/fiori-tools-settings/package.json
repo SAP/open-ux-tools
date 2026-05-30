@@ -7,6 +7,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/fiori-tools-settings"
     },
+    "type": "module",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -15,8 +16,8 @@
         "watch": "tsc --watch",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors --silent",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors --silent",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },

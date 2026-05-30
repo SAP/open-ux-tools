@@ -6,6 +6,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/sap-systems-ext-types"
     },
+    "type": "module",
     "private": true,
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
