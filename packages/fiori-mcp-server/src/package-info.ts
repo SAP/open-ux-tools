@@ -10,7 +10,6 @@ function readPackageJson(): { name: string; version: string } {
     return require('../package.json') as { name: string; version: string };
 }
 
-export const PACKAGE_NAME: string =
-    typeof __PACKAGE_NAME__ !== 'undefined' ? __PACKAGE_NAME__ : readPackageJson().name;
+export const PACKAGE_NAME: string = typeof __PACKAGE_NAME__ !== 'undefined' ? __PACKAGE_NAME__ : readPackageJson().name;
 export const PACKAGE_VERSION: string =
     typeof __PACKAGE_VERSION__ !== 'undefined' ? __PACKAGE_VERSION__ : readPackageJson().version;
