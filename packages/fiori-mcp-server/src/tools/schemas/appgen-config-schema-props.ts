@@ -1,17 +1,14 @@
 import * as z from 'zod';
-import { createRequire } from 'node:module';
 import { LATEST_UI5_VERSION } from '../../constant.js';
-
-const require = createRequire(import.meta.url);
-const packageJson = require('../../../package.json');
+import { PACKAGE_NAME, PACKAGE_VERSION } from '../../package-info.js';
 
 // Extended type generators API use
 export const PREDEFINED_GENERATOR_VALUES = {
     // Config schema version
     version: '0.2',
     telemetryData: {
-        generationSourceName: packageJson.name,
-        generationSourceVersion: packageJson.version
+        generationSourceName: PACKAGE_NAME,
+        generationSourceVersion: PACKAGE_VERSION
     },
     project: {
         sapux: true
