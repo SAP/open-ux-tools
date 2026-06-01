@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 2.0.1
+
+### Patch Changes
+
+- aed799d: `loadModuleFromProject` throws error on Windows: `Only URLs with a scheme in: file, data, node, and electron are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'`
+
 ## 2.0.0
 
 ### Major Changes
