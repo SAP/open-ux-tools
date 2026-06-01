@@ -109,8 +109,7 @@ function checkConfiguration(
                     uri: parsedApp.manifest.manifestUri,
                     object: parsedApp.manifestObject,
                     propertyPath: table.configuration.enableExport.configurationPath
-                },
-                changeFileUri: table.configuration.enableExport.changeFileUri
+                }
             });
         }
     }
