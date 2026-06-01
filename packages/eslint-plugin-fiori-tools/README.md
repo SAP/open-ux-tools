@@ -128,8 +128,8 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 |   9.8.0   | [sap-table-personalization](docs/rules/sap-table-personalization.md) | Ensures that all table `personalization` options are enabled in the OData V4 applications. | | ✅ |
 |   9.7.0   | [sap-anchor-bar-visible](docs/rules/sap-anchor-bar-visible.md) | Anchor Bar Visible should not be set to false in manifest settings for object page headers (except form entry object pages). | | ✅ |
 |   9.5.0   | [sap-table-column-vertical-alignment](docs/rules/sap-table-column-vertical-alignment.md) | Ensures `tableColumnVerticalAlignment` Configuration for Responsive Type Tables in SAP Fiori Elements applications | | ✅ |
-|   9.4.0   | [sap-enable-export](docs/rules/sap-enable-export.md) | Ensures that the export to Excel functionality in any OData V4 applications tables is available | | ✅ |
-|   9.4.0   | [sap-enable-paste](docs/rules/sap-enable-paste.md) | Ensures that the paste functionality in any OData V4 applications tables is available | | ✅ |
+|   9.4.0   | [sap-enable-export](docs/rules/sap-enable-export.md) | Ensures that the export to Excel functionality in any OData V4 and OData V2 applications tables is available | | ✅ |
+|   9.4.0   | [sap-enable-paste](docs/rules/sap-enable-paste.md) | Ensures that the paste functionality in any OData V4 and OData V2 applications tables is available | | ✅ |
 |   9.3.1   | [sap-state-preservation-mode](docs/rules/sap-state-preservation-mode.md) | Ensures Valid `statePreservationMode` Configuration in SAP Fiori Elements | | ✅ |
 |   9.1.0   | [sap-copy-to-clipboard](docs/rules/sap-copy-to-clipboard.md) | Ensures that the copy functionality in any table is enabled. "Copy" button is shown by default. | | ✅ |
 |   9.1.0   | [sap-creation-mode-for-table](docs/rules/sap-creation-mode-for-table.md) | Validates that the table creation mode (`createMode` in OData V2 and `creationMode` in OData V4) is correctly configured to ensure an optimal user experience when creating new table entries. | | ✅ |
