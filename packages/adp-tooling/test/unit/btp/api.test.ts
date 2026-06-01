@@ -171,7 +171,7 @@ describe('btp/api', () => {
 
             const result = await listBtpDestinations(mockCredentials);
 
-            expect(mockAxios.get).toHaveBeenCalledWith(
+            expect(mockAxiosGet).toHaveBeenCalledWith(
                 `${mockCredentials.uaa.uri}/destination-configuration/v1/subaccountDestinations`,
                 { headers: { Authorization: 'Bearer mock-token' } }
             );
@@ -206,7 +206,7 @@ describe('btp/api', () => {
 
             const result = await listBtpDestinations(flatCredentials);
 
-            expect(mockAxios.get).toHaveBeenCalledWith(
+            expect(mockAxiosGet).toHaveBeenCalledWith(
                 `${flatCredentials.uri}/destination-configuration/v1/subaccountDestinations`,
                 { headers: { Authorization: 'Bearer mock-token' } }
             );
