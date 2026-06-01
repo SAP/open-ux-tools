@@ -7,7 +7,7 @@ import {
     type ManagedDestination,
     type ManagedXSUAA,
     type CDSXSUAAService
-} from '../constants';
+} from '../constants.js';
 
 export type ResourceType =
     | 'xsuaa'

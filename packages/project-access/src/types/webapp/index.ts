@@ -1,7 +1,8 @@
-import type * as ManifestNamespace from '@ui5/manifest/types/manifest';
+// Re-export the entire namespace for backwards compatibility
+export type * as ManifestNamespace from '@ui5/manifest';
 
-export { ManifestNamespace };
-export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile;
+// Re-export commonly used types
+export type { SAPJSONSchemaForWebApplicationManifestFile as Manifest } from '@ui5/manifest';
 
 export interface AnnotationFile {
     dataSourceUri: string;

@@ -1,48 +1,55 @@
+import { jest } from '@jest/globals';
 import { t } from '../../src/utils/i18n';
-import { validateFioriAppTargetFolder } from '@sap-ux/project-input-validator';
-import { getPrompts } from '../../src/prompts/prompts';
 import { PromptNames, type QuickDeployedAppConfig } from '../../src/app/types';
-import { PromptState } from '../../src/prompts/prompt-state';
-import * as helpers from '../../src/prompts/prompt-helpers';
-import * as downloadUtils from '../../src/utils/download-utils';
-import * as odataServiceInq from '@sap-ux/odata-service-inquirer';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
-import { formatAppChoices } from '../../src/prompts/prompt-helpers';
-import { validateAppSelection } from '../../src/utils/validators';
-import { ErrorHandler } from '@sap-ux/inquirer-common';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { Question } from 'yeoman-generator';
 
-ErrorHandler.getHelpLink = jest.fn();
+// Pre-import actual modules
+const actualOdataServiceInq = await import('@sap-ux/odata-service-inquirer');
 
-jest.mock('@sap-ux/odata-service-inquirer', () => ({
-    ...jest.requireActual('@sap-ux/odata-service-inquirer'),
-    getSystemSelectionQuestions: jest.fn()
+const mockGetSystemSelectionQuestions = jest.fn();
+const mockFetchAppList = jest.fn();
+const mockFormatAppChoices = jest.fn();
+const mockDownloadApp = jest.fn();
+const mockHasQfaJson = jest.fn();
+const mockValidateAppSelection = jest.fn();
+const mockValidateFioriAppTargetFolder = jest.fn().mockResolvedValue(true);
+
+jest.unstable_mockModule('@sap-ux/odata-service-inquirer', () => ({
+    ...actualOdataServiceInq,
+    getSystemSelectionQuestions: mockGetSystemSelectionQuestions
 }));
 
-jest.mock('../../src/prompts/prompt-helpers', () => ({
-    fetchAppListForSelectedSystem: jest.fn(),
-    formatAppChoices: jest.fn()
+jest.unstable_mockModule('../../src/prompts/prompt-helpers', () => ({
+    fetchAppListForSelectedSystem: mockFetchAppList,
+    formatAppChoices: mockFormatAppChoices
 }));
 
-jest.mock('../../src/utils/download-utils', () => ({
-    downloadApp: jest.fn(),
-    hasQfaJson: jest.fn()
+jest.unstable_mockModule('../../src/utils/download-utils', () => ({
+    downloadApp: mockDownloadApp,
+    hasQfaJson: mockHasQfaJson
 }));
 
-jest.mock('@sap-ux/project-input-validator', () => ({
-    validateFioriAppTargetFolder: jest.fn().mockResolvedValue(true)
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    validateFioriAppTargetFolder: mockValidateFioriAppTargetFolder
 }));
 
-jest.mock('../../src/utils/validators', () => ({
-    validateAppSelection: jest.fn()
+// Import real validators BEFORE mocking the validators module,
+// but AFTER download-utils mock, so the real implementation uses mocked download-utils
+const actualValidators = await import('../../src/utils/validators');
+
+jest.unstable_mockModule('../../src/utils/validators', () => ({
+    validateAppSelection: mockValidateAppSelection
 }));
+
+const { getPrompts } = await import('../../src/prompts/prompts');
+const { PromptState } = await import('../../src/prompts/prompt-state');
+const { ErrorHandler } = await import('@sap-ux/inquirer-common');
+
+ErrorHandler.getHelpLink = jest.fn() as any;
+
 describe('getPrompts', () => {
-    const mockGetSystemSelectionQuestions = jest.spyOn(odataServiceInq, 'getSystemSelectionQuestions');
-    const mockFetchAppList = helpers.fetchAppListForSelectedSystem as jest.Mock;
-    const mockDownloadApp = downloadUtils.downloadApp as jest.Mock;
-    const mockHasQfaJson = downloadUtils.hasQfaJson as jest.Mock;
-
     const mockServiceProvider = {
         defaults: {
             baseURL: 'https://mock.sap-system.com',
@@ -76,10 +83,10 @@ describe('getPrompts', () => {
     });
 
     it('should return system, app, and target folder prompts without Quick Deployed App config', async () => {
-        (formatAppChoices as jest.Mock).mockReturnValue(appList);
+        mockFormatAppChoices.mockReturnValue(appList);
 
-        (validateAppSelection as jest.Mock).mockResolvedValue(true);
-        (validateFioriAppTargetFolder as jest.Mock).mockResolvedValue(true);
+        mockValidateAppSelection.mockResolvedValue(true);
+        mockValidateFioriAppTargetFolder.mockResolvedValue(true);
 
         mockFetchAppList.mockResolvedValue([{ appId: 'app1', repoName: 'repo1' }]);
         mockDownloadApp.mockResolvedValue(undefined);
@@ -140,10 +147,10 @@ describe('getPrompts', () => {
     });
 
     it('should return system, app, and target folder prompts with Quick Deployed App config', async () => {
-        (formatAppChoices as jest.Mock).mockReturnValue(appList);
+        mockFormatAppChoices.mockReturnValue(appList);
 
-        (validateAppSelection as jest.Mock).mockResolvedValue(true);
-        (validateFioriAppTargetFolder as jest.Mock).mockResolvedValue(true);
+        mockValidateAppSelection.mockResolvedValue(true);
+        mockValidateFioriAppTargetFolder.mockResolvedValue(true);
 
         mockFetchAppList.mockResolvedValue([{ appId: 'app1', repoName: 'repo1' }]);
         mockDownloadApp.mockResolvedValue(undefined);
@@ -204,10 +211,10 @@ describe('getPrompts', () => {
             { name: 'App 3', value: { appId: 'app3', repoName: 'repo3' } }
         ];
 
-        (formatAppChoices as jest.Mock).mockReturnValue(appListWithMoreOptions);
+        mockFormatAppChoices.mockReturnValue(appListWithMoreOptions);
 
-        (validateAppSelection as jest.Mock).mockResolvedValue(true);
-        (validateFioriAppTargetFolder as jest.Mock).mockResolvedValue(true);
+        mockValidateAppSelection.mockResolvedValue(true);
+        mockValidateFioriAppTargetFolder.mockResolvedValue(true);
 
         mockFetchAppList.mockResolvedValue([{ appId: 'app1', repoName: 'repo1' }]);
         mockDownloadApp.mockResolvedValue(undefined);
@@ -248,8 +255,8 @@ describe('getPrompts', () => {
     });
 
     it('should display GA link when no app is chosen and app list is empty', async () => {
-        const realValidateAppSelection = jest.requireActual('../../src/utils/validators').validateAppSelection;
-        (validateAppSelection as jest.Mock).mockImplementation(realValidateAppSelection);
+        // Use the real validateAppSelection for this test
+        mockValidateAppSelection.mockImplementation(actualValidators.validateAppSelection);
 
         const gaLinkObject = {
             link: {
@@ -263,13 +270,13 @@ describe('getPrompts', () => {
             message: 'No applications deployed to this system can be downloaded.'
         };
 
-        const mockGetHelpLink = ErrorHandler.getHelpLink as jest.Mock;
+        const mockGetHelpLink = ErrorHandler.getHelpLink as ReturnType<typeof jest.fn>;
         mockGetHelpLink.mockResolvedValue(gaLinkObject);
 
         const emptyAppList = [] as unknown as AppIndex;
 
-        (formatAppChoices as jest.Mock).mockReturnValue(emptyAppList);
-        (validateFioriAppTargetFolder as jest.Mock).mockResolvedValue(true);
+        mockFormatAppChoices.mockReturnValue(emptyAppList);
+        mockValidateFioriAppTargetFolder.mockResolvedValue(true);
         mockFetchAppList.mockResolvedValue(emptyAppList);
         mockDownloadApp.mockResolvedValue(undefined);
 
@@ -281,10 +288,9 @@ describe('getPrompts', () => {
     });
 
     it('should validate app selection as false when no answers and app list are available', async () => {
-        const realValidateAppSelection = jest.requireActual('../../src/utils/validators').validateAppSelection;
-        (validateAppSelection as jest.Mock).mockImplementation(realValidateAppSelection);
-        (formatAppChoices as jest.Mock).mockReturnValue(appList);
-        (validateFioriAppTargetFolder as jest.Mock).mockResolvedValue(true);
+        mockValidateAppSelection.mockImplementation(actualValidators.validateAppSelection);
+        mockFormatAppChoices.mockReturnValue(appList);
+        mockValidateFioriAppTargetFolder.mockResolvedValue(true);
 
         mockFetchAppList.mockResolvedValue(appList);
         mockDownloadApp.mockResolvedValue(undefined);
@@ -300,10 +306,9 @@ describe('getPrompts', () => {
     });
 
     it('should validate app selection as true when app list is available and chosen app includes QFA JSON', async () => {
-        const realValidateAppSelection = jest.requireActual('../../src/utils/validators').validateAppSelection;
-        (validateAppSelection as jest.Mock).mockImplementation(realValidateAppSelection);
-        (formatAppChoices as jest.Mock).mockReturnValue(appList);
-        (validateFioriAppTargetFolder as jest.Mock).mockResolvedValue(true);
+        mockValidateAppSelection.mockImplementation(actualValidators.validateAppSelection);
+        mockFormatAppChoices.mockReturnValue(appList);
+        mockValidateFioriAppTargetFolder.mockResolvedValue(true);
         mockFetchAppList.mockResolvedValue(appList);
         mockDownloadApp.mockResolvedValue(undefined);
         mockHasQfaJson.mockReturnValue(true);
@@ -316,11 +321,10 @@ describe('getPrompts', () => {
     });
 
     it('should return error string when downloadApp fails during app validation', async () => {
-        const realValidateAppSelection = jest.requireActual('../../src/utils/validators').validateAppSelection;
-        (validateAppSelection as jest.Mock).mockImplementation(realValidateAppSelection);
+        mockValidateAppSelection.mockImplementation(actualValidators.validateAppSelection);
 
-        (formatAppChoices as jest.Mock).mockReturnValue(appList);
-        (validateFioriAppTargetFolder as jest.Mock).mockResolvedValue(true);
+        mockFormatAppChoices.mockReturnValue(appList);
+        mockValidateFioriAppTargetFolder.mockResolvedValue(true);
         mockFetchAppList.mockResolvedValue(appList);
 
         const error = { message: 'Mocked download error' };

@@ -1,17 +1,18 @@
 import type { Element } from '@sap-ux/odata-annotation-core';
-import { Edm, getElementAttributeValue } from '@sap-ux/odata-annotation-core';
 
-import { createFioriRule } from '../language/rule-factory';
-import type { FioriRuleDefinition } from '../types';
-import { DESCRIPTION_COLUMN_LABEL, type DescriptionColumnLabel } from '../language/diagnostics';
-import { buildAnnotationIndexKey } from '../project-context/parser';
-import type { IndexedAnnotation, ParsedService } from '../project-context/parser';
-import { COMMON_LABEL } from '../constants';
+import { createFioriRule } from '../language/rule-factory.js';
+import type { FioriRuleDefinition } from '../types.js';
+import { DESCRIPTION_COLUMN_LABEL, type DescriptionColumnLabel } from '../language/diagnostics.js';
+import { buildAnnotationIndexKey } from '../project-context/parser/index.js';
+import type { IndexedAnnotation, ParsedService } from '../project-context/parser/index.js';
+import { COMMON_LABEL } from '../constants.js';
 import {
     resolveTextPropertyPath,
     collectRelevantEntityTypes,
-    parseCommonTextAnnotationKey
-} from './utils/common-text-helpers';
+    parseCommonTextAnnotationKey,
+    getTextPath,
+    getStringValue
+} from './utils/common-text-helpers.js';
 
 /**
  * Labels that are considered trivially non-descriptive regardless of context.
@@ -38,7 +39,7 @@ function getLabelForProperty(
     if (!annotation) {
         return undefined;
     }
-    const label = getElementAttributeValue(annotation.top.value, Edm.String) || undefined;
+    const label = getStringValue(annotation.top.value) ?? undefined;
     if (!label) {
         return undefined;
     }
@@ -66,8 +67,13 @@ function processTextAnnotation(
     pageNames: string[],
     parsedService: ParsedService
 ): DescriptionColumnLabel[] {
-    const textElement = textAnnotation.top.value;
-    const textPath = getElementAttributeValue(textElement, Edm.Path);
+    let textPath: string | undefined;
+    for (const layer of textAnnotation.layers) {
+        textPath ??= getTextPath(layer.value);
+        if (textPath) {
+            break;
+        }
+    }
     if (!textPath) {
         return [];
     }
@@ -194,14 +200,16 @@ const rule: FioriRuleDefinition = createFioriRule({
 
     check(context) {
         const problems: DescriptionColumnLabel[] = [];
-        for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
+        const allApps = context.sourceCode.projectContext.linkedModel.apps;
+        for (const [appKey, app] of Object.entries(allApps)) {
             const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
             const parsedService = context.sourceCode.projectContext.getIndexedServiceForMainService(parsedApp);
             if (!parsedService) {
                 continue;
             }
             const relevantEntityTypes = collectRelevantEntityTypes(app.pages, parsedService);
-            problems.push(...collectProblemsForService(parsedService, relevantEntityTypes));
+            const pageProblems = collectProblemsForService(parsedService, relevantEntityTypes);
+            problems.push(...pageProblems);
         }
         return problems;
     },

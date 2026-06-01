@@ -1,14 +1,9 @@
-import { ClientFactory } from '../../src/base/client';
-import { TelemetrySettings } from '../../src/base/config-state';
-import { EventName } from '../../src/base/types/event-name';
-import { SampleRate } from '../../src/base/types/sample-rate';
-import type { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
-import type FlushOptions from 'applicationinsights/out/Library/FlushOptions';
+import { jest } from '@jest/globals';
 
 const trackEventMock = jest.fn();
 const flushMock = jest.fn();
 
-jest.mock('applicationinsights', () => {
+jest.unstable_mockModule('applicationinsights', () => {
     class TelemetryClient {
         public config: any;
         public channel: any;
@@ -26,8 +21,8 @@ jest.mock('applicationinsights', () => {
             this.addTelemetryProcessor = (fn: any) => {
                 fn({ tags: {} });
             };
-            this.trackEvent = (event: EventTelemetry) => trackEventMock(event);
-            this.flush = (options: FlushOptions | undefined) => {
+            this.trackEvent = (event: any) => trackEventMock(event);
+            this.flush = (options: any) => {
                 flushMock(options);
                 if (options?.callback) {
                     options.callback('testCallbackValue');
@@ -37,6 +32,11 @@ jest.mock('applicationinsights', () => {
     }
     return { TelemetryClient };
 });
+
+const { ClientFactory } = await import('../../src/base/client');
+const { TelemetrySettings } = await import('../../src/base/config-state');
+const { EventName } = await import('../../src/base/types/event-name');
+const { SampleRate } = await import('../../src/base/types/sample-rate');
 
 describe('ClientFactory Send Report Blocking Tests', () => {
     beforeEach(() => {

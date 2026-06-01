@@ -1,12 +1,17 @@
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Command, type Option } from 'commander';
-import { getLogger } from '../tracing';
-import { getAddCommands } from './add';
-import { getRemoveCommands } from './remove';
-import { getGenerateCommands } from './generate';
-import { getChangeCommands } from './change';
-import { getConvertCommands } from './convert';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+import { getLogger } from '../tracing/index.js';
+import { getAddCommands } from './add/index.js';
+import { getRemoveCommands } from './remove/index.js';
+import { getGenerateCommands } from './generate/index.js';
+import { getChangeCommands } from './change/index.js';
+import { getConvertCommands } from './convert/index.js';
+import { getListCommands } from './list/index.js';
+import { getGetCommands } from './get/index.js';
 
 /*
  * We've chosen 'commander' over 'minimist' and 'yargs' for this CLI implementation. Reasons:
@@ -108,6 +113,24 @@ function getCommanderProgram(): Command {
                     The available subcommands are: ${getFeatureSummary(changeCommands.commands)}`
     );
     program.addCommand(changeCommands);
+
+    // Handler for create-fiori list <feature> ..
+    const listCommands = getListCommands();
+    listCommands.description(
+        `Command group for listing saved resources. A subcommand is required.
+                    Usage: \`npx --yes @sap-ux/create@latest list [subcommand] [options]\`
+                    The available subcommands are: ${getFeatureSummary(listCommands.commands)}\n`
+    );
+    program.addCommand(listCommands);
+
+    // Handler for create-fiori get <feature> ..
+    const getCommands = getGetCommands();
+    getCommands.description(
+        `Command group for retrieving saved resources. A subcommand is required.
+                    Usage: \`npx --yes @sap-ux/create@latest get [subcommand] [options]\`
+                    The available subcommands are: ${getFeatureSummary(getCommands.commands)}\n`
+    );
+    program.addCommand(getCommands);
 
     return program;
 }

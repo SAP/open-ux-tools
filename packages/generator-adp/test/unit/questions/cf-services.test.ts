@@ -1,78 +1,61 @@
-import {
-    getModuleNames,
-    getApprouterType,
-    hasApprouter,
-    isLoggedInCf,
-    getMtaServices,
-    getCfApps,
-    AppRouterType,
-    downloadAppContent,
-    validateSmartTemplateApplication,
-    validateODataEndpoints,
-    getBusinessServiceInfo,
-    cfServicesPromptNames
-} from '@sap-ux/adp-tooling';
+import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import type { CfConfig, CFApp, ServiceInfo, CfServicesAnswers } from '@sap-ux/adp-tooling';
 
-import { initI18n, t } from '../../../src/utils/i18n';
-import { CFServicesPrompter } from '../../../src/app/questions/cf-services';
-import { validateBusinessSolutionName } from '../../../src/app/questions/helper/validators';
-import { showBusinessSolutionNameQuestion } from '../../../src/app/questions/helper/conditions';
-import { getAppRouterChoices, getCFAppChoices } from '../../../src/app/questions/helper/choices';
+const mockValidateBusinessSolutionName = jest.fn();
+const mockGetAppRouterChoices = jest.fn();
+const mockGetCFAppChoices = jest.fn();
+const mockShowBusinessSolutionNameQuestion = jest.fn();
+const mockGetModuleNames = jest.fn();
+const mockGetApprouterType = jest.fn();
+const mockHasApprouter = jest.fn();
+const mockIsLoggedInCf = jest.fn();
+const mockGetMtaServices = jest.fn();
+const mockGetCfApps = jest.fn();
+const mockDownloadAppContent = jest.fn();
+const mockValidateSmartTemplateApplication = jest.fn();
+const mockValidateODataEndpoints = jest.fn();
+const mockGetBusinessServiceInfo = jest.fn();
 
-jest.mock('../../../src/app/questions/helper/validators', () => ({
-    ...jest.requireActual('../../../src/app/questions/helper/validators'),
-    validateBusinessSolutionName: jest.fn()
+const realValidators = await import('../../../src/app/questions/helper/validators');
+jest.unstable_mockModule('../../../src/app/questions/helper/validators', () => ({
+    ...realValidators,
+    validateBusinessSolutionName: mockValidateBusinessSolutionName
 }));
 
-jest.mock('../../../src/app/questions/helper/choices', () => ({
-    ...jest.requireActual('../../../src/app/questions/helper/choices'),
-    getAppRouterChoices: jest.fn(),
-    getCFAppChoices: jest.fn()
+const realChoices = await import('../../../src/app/questions/helper/choices');
+jest.unstable_mockModule('../../../src/app/questions/helper/choices', () => ({
+    ...realChoices,
+    getAppRouterChoices: mockGetAppRouterChoices,
+    getCFAppChoices: mockGetCFAppChoices
 }));
 
-jest.mock('../../../src/app/questions/helper/conditions', () => ({
-    ...jest.requireActual('../../../src/app/questions/helper/conditions'),
-    showBusinessSolutionNameQuestion: jest.fn()
+const realConditions = await import('../../../src/app/questions/helper/conditions');
+jest.unstable_mockModule('../../../src/app/questions/helper/conditions', () => ({
+    ...realConditions,
+    showBusinessSolutionNameQuestion: mockShowBusinessSolutionNameQuestion
 }));
 
-jest.mock('@sap-ux/adp-tooling', () => ({
-    ...jest.requireActual('@sap-ux/adp-tooling'),
-    getModuleNames: jest.fn(),
-    getApprouterType: jest.fn(),
-    hasApprouter: jest.fn(),
-    isLoggedInCf: jest.fn(),
-    getMtaServices: jest.fn(),
-    getCfApps: jest.fn(),
-    downloadAppContent: jest.fn(),
-    validateSmartTemplateApplication: jest.fn(),
-    validateODataEndpoints: jest.fn(),
-    getBusinessServiceInfo: jest.fn()
+const realAdpTooling = await import('@sap-ux/adp-tooling');
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    ...realAdpTooling,
+    getModuleNames: mockGetModuleNames,
+    getApprouterType: mockGetApprouterType,
+    hasApprouter: mockHasApprouter,
+    isLoggedInCf: mockIsLoggedInCf,
+    getMtaServices: mockGetMtaServices,
+    getCfApps: mockGetCfApps,
+    downloadAppContent: mockDownloadAppContent,
+    validateSmartTemplateApplication: mockValidateSmartTemplateApplication,
+    validateODataEndpoints: mockValidateODataEndpoints,
+    getBusinessServiceInfo: mockGetBusinessServiceInfo
 }));
 
-const mockValidateBusinessSolutionName = validateBusinessSolutionName as jest.MockedFunction<
-    typeof validateBusinessSolutionName
->;
-const mockGetAppRouterChoices = getAppRouterChoices as jest.MockedFunction<typeof getAppRouterChoices>;
-const mockGetCFAppChoices = getCFAppChoices as jest.MockedFunction<typeof getCFAppChoices>;
-const mockShowBusinessSolutionNameQuestion = showBusinessSolutionNameQuestion as jest.MockedFunction<
-    typeof showBusinessSolutionNameQuestion
->;
-const mockGetModuleNames = getModuleNames as jest.MockedFunction<typeof getModuleNames>;
-const mockGetApprouterType = getApprouterType as jest.MockedFunction<typeof getApprouterType>;
-const mockHasApprouter = hasApprouter as jest.MockedFunction<typeof hasApprouter>;
-const mockIsLoggedInCf = isLoggedInCf as jest.MockedFunction<typeof isLoggedInCf>;
-const mockGetMtaServices = getMtaServices as jest.MockedFunction<typeof getMtaServices>;
-const mockGetCfApps = getCfApps as jest.MockedFunction<typeof getCfApps>;
-const mockDownloadAppContent = downloadAppContent as jest.MockedFunction<typeof downloadAppContent>;
-const mockValidateSmartTemplateApplication = validateSmartTemplateApplication as jest.MockedFunction<
-    typeof validateSmartTemplateApplication
->;
-const mockValidateODataEndpoints = validateODataEndpoints as jest.MockedFunction<typeof validateODataEndpoints>;
-const mockGetBusinessServiceKeys = getBusinessServiceInfo as jest.MockedFunction<typeof getBusinessServiceInfo>;
+const { AppRouterType, cfServicesPromptNames } = await import('@sap-ux/adp-tooling');
+const { initI18n, t } = await import('../../../src/utils/i18n');
+const { CFServicesPrompter } = await import('../../../src/app/questions/cf-services');
 
 const mockCfConfig: CfConfig = {
     org: { GUID: 'org-guid', Name: 'test-org' },
@@ -422,19 +405,19 @@ describe('CFServicesPrompter', () => {
         });
 
         test('should validate business service selection', async () => {
-            mockGetBusinessServiceKeys.mockResolvedValue(mockServiceKeys);
+            mockGetBusinessServiceInfo.mockResolvedValue(mockServiceKeys);
             mockGetCfApps.mockResolvedValue([mockCFApp]);
 
             const prompt = prompter['getBusinessServicesPrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
             const result = await prompt.validate!('test-service');
 
-            expect(mockGetBusinessServiceKeys).toHaveBeenCalledWith('test-service', mockCfConfig, mockLogger);
+            expect(mockGetBusinessServiceInfo).toHaveBeenCalledWith('test-service', mockCfConfig, mockLogger);
             expect(mockGetCfApps).toHaveBeenCalledWith(mockServiceKeys.serviceKeys, mockCfConfig, mockLogger);
             expect(result).toBe(true);
         });
 
         test('should handle empty string for business service', async () => {
-            mockGetBusinessServiceKeys.mockResolvedValue(null);
+            mockGetBusinessServiceInfo.mockResolvedValue(null);
 
             const prompt = prompter['getBusinessServicesPrompt'](mockCfConfig);
             const result = await prompt.validate!('');
@@ -443,7 +426,7 @@ describe('CFServicesPrompter', () => {
         });
 
         test('should handle business service not found', async () => {
-            mockGetBusinessServiceKeys.mockResolvedValue(null);
+            mockGetBusinessServiceInfo.mockResolvedValue(null);
 
             const prompt = prompter['getBusinessServicesPrompt'](mockCfConfig);
             const result = await prompt.validate!('test-service');
@@ -453,7 +436,7 @@ describe('CFServicesPrompter', () => {
 
         test('should handle errors during validation', async () => {
             const error = new Error('Service error');
-            mockGetBusinessServiceKeys.mockRejectedValue(error);
+            mockGetBusinessServiceInfo.mockRejectedValue(error);
 
             const prompt = prompter['getBusinessServicesPrompt'](mockCfConfig);
             const result = await prompt.validate!('test-service');
@@ -463,7 +446,7 @@ describe('CFServicesPrompter', () => {
         });
 
         test('should return error when no apps found for business service', async () => {
-            mockGetBusinessServiceKeys.mockResolvedValue(mockServiceKeys);
+            mockGetBusinessServiceInfo.mockResolvedValue(mockServiceKeys);
             mockGetCfApps.mockResolvedValue([]);
 
             const prompt = prompter['getBusinessServicesPrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;

@@ -1,5 +1,12 @@
-import { POST_LIB_GEN_COMMAND, runPostLibGenHook } from '../../../src/utils/eventHook';
+import { jest } from '@jest/globals';
 import type { VSCodeInstance } from '@sap-ux/fiori-generator-shared';
+
+// Mock @vscode-logging/logger before importing modules that depend on it
+jest.unstable_mockModule('@vscode-logging/logger', () => ({
+    getExtensionLogger: jest.fn()
+}));
+
+const { POST_LIB_GEN_COMMAND, runPostLibGenHook } = await import('../../../src/utils/eventHook');
 
 describe('runPostLibGenHook', () => {
     const mockExecuteCommand = jest.fn();

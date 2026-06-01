@@ -2,19 +2,19 @@ import { withCondition } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { validateClient } from '@sap-ux/project-input-validator';
 import type { InputQuestion, Question } from 'inquirer';
-import { t } from '../../../../i18n';
+import { t } from '../../../../i18n.js';
 import {
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
     type ServiceSelectionPromptOptions,
     type SystemNamePromptOptions
-} from '../../../../types';
-import { isBackendSystemKeyExisting, PromptState } from '../../../../utils';
-import { ConnectionValidator } from '../../../connectionValidator';
-import { BasicCredentialsPromptNames, getCredentialsPrompts } from '../credentials/questions';
-import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../shared-prompts/shared-prompts';
-import { newSystemPromptNames } from '../new-system/types';
-import { getSystemServiceQuestion, type ServiceAnswer } from '../service-selection';
+} from '../../../../types.js';
+import { isBackendSystemKeyExisting, PromptState } from '../../../../utils/index.js';
+import { ConnectionValidator } from '../../../connectionValidator.js';
+import { BasicCredentialsPromptNames, getCredentialsPrompts } from '../credentials/questions.js';
+import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../shared-prompts/shared-prompts.js';
+import { newSystemPromptNames } from '../new-system/types.js';
+import { getSystemServiceQuestion, type ServiceAnswer } from '../service-selection/index.js';
 
 const abapOnPremPromptNamespace = 'abapOnPrem';
 const systemUrlPromptName = `${abapOnPremPromptNamespace}:${newSystemPromptNames.newSystemUrl}` as const;

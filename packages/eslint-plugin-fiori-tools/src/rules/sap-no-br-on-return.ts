@@ -3,7 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
-import { type ASTNode, isIdentifier, isCall, isLiteral, createDocumentBasedRuleVisitors } from '../utils/helpers';
+import { type ASTNode, isIdentifier, isCall, isLiteral, createDocumentBasedRuleVisitors } from '../utils/helpers.js';
 
 // ------------------------------------------------------------------------------
 // Rule Definition

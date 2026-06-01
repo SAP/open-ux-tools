@@ -1,4 +1,4 @@
-import type { Service } from '../base/service-provider';
+import type { Service } from '../base/service-provider.js';
 import { Axios, isAxiosError } from 'axios';
 import type { Logger } from '@sap-ux/logger';
 

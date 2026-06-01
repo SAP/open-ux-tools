@@ -10,9 +10,9 @@ import {
     toFullyQualifiedPath,
     parsePath
 } from '@sap-ux/odata-annotation-core';
-import type { IndexedAnnotation, ParsedService } from '../parser';
-import { buildAnnotationIndexKey } from '../parser';
-import { UI_FIELD_GROUP, UI_LINE_ITEM } from '../../constants';
+import type { IndexedAnnotation, ParsedService } from '../parser/index.js';
+import { buildAnnotationIndexKey } from '../parser/index.js';
+import { UI_FIELD_GROUP, UI_LINE_ITEM } from '../../constants.js';
 
 /**
  * index - Index of annotation
@@ -173,6 +173,12 @@ export function collectSections(
     return sections;
 }
 
+const findContentByName = (content: ElementChild[], name: string): ElementChild | undefined =>
+    content.find((c) => (c as Element).name === name);
+
+const getElementText = (element: ElementChild): string | undefined =>
+    (element as Element).content?.find((c) => c.type === 'text')?.text;
+
 /**
  * Process a single reference facet record and create a table or header section if applicable.
  *
@@ -223,8 +229,11 @@ function processReferenceFacetRecord(
 
     const propValues = elementsWithName(Edm.PropertyValue, record);
     const propValue = propValues.find((p) => p.attributes.Property?.value === 'Label');
-    const sectionLabel = propValue?.attributes?.String?.value;
-
+    let sectionLabel = propValue ? getElementAttribute(propValue, Edm.String)?.value : undefined;
+    if (!sectionLabel) {
+        const textContent = findContentByName(propValue?.content ?? [], Edm.String);
+        sectionLabel = textContent ? getElementText(textContent) : undefined;
+    }
     if (term === UI_LINE_ITEM) {
         return createTableSection(
             facets,
@@ -395,12 +404,6 @@ export function getRecordType(aliasInfo: AliasInformation, element: Element): st
         return toFullyQualifiedName(aliasInfo.aliasMap, aliasInfo.currentFileNamespace, parseIdentifier(recordType));
     }
 }
-
-const findContentByName = (content: ElementChild[], name: string): ElementChild | undefined =>
-    content.find((c) => (c as Element).name === name);
-
-const getElementText = (element: ElementChild): string | undefined =>
-    (element as Element).content.find((c) => c.type === 'text')?.text;
 
 /**
  * Returns AnnotationPath property value.

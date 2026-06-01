@@ -1,12 +1,11 @@
 import { join, posix, relative, sep } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
-import type { CustomMiddleware, DataSourceConfig } from '@sap-ux/ui5-config';
+import type { CustomMiddleware, DataSourceConfig, MockserverConfig } from '@sap-ux/ui5-config';
 import type { Manifest } from '@sap-ux/project-access';
 import { DirName, FileName, getWebappPath, readUi5Yaml } from '@sap-ux/project-access';
-import type { Ui5MockYamlConfig } from '../types';
-import type { MockserverConfig } from '@sap-ux/ui5-config/dist/types';
-import { getODataSources } from '../app-info';
+import type { Ui5MockYamlConfig } from '../types/index.js';
+import { getODataSources } from '../app-info.js';
 
 /**
  * Enhance or create the ui5-mock.yaml with mockserver config.

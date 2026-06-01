@@ -1,9 +1,9 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { PromptState } from './prompt-state';
-import { findBackendSystemByUrl, initTransportConfig } from '../utils';
-import { handleTransportConfigError } from '../error-handler';
-import { t } from '../i18n';
-import LoggerHelper from '../logger-helper';
+import { PromptState } from './prompt-state.js';
+import { findBackendSystemByUrl, initTransportConfig } from '../utils.js';
+import { handleTransportConfigError } from '../error-handler.js';
+import { t } from '../i18n.js';
+import LoggerHelper from '../logger-helper.js';
 import {
     ClientChoiceValue,
     PackageInputChoices,
@@ -15,7 +15,7 @@ import {
     type BackendTarget,
     type TransportListItem,
     type TransportInputChoicePromptOptions
-} from '../types';
+} from '../types.js';
 
 /**
  * Determines if URL question should be shown.

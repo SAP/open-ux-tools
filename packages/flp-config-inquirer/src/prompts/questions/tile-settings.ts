@@ -1,6 +1,6 @@
 import type { ListQuestion, ConfirmQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
-import { type TileSettingsAnswers, tileActions, tilePromptNames } from '../../types';
-import { t } from '../../i18n';
+import { type TileSettingsAnswers, tileActions, tilePromptNames } from '../../types.js';
+import { t } from '../../i18n.js';
 
 /**
  * Returns the list of questions for tile handling actions.

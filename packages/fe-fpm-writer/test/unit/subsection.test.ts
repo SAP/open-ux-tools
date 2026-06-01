@@ -1,14 +1,18 @@
+import { jest } from '@jest/globals';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { generateCustomSubSection } from '../../src/section';
 import type { CustomSubSection } from '../../src/section/types';
 import type { Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
-import * as manifestSections from './sample/section/webapp/manifest.json';
+import manifestSections from './sample/section/webapp/manifest.json';
 import { COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
-import * as fileAccess from '@sap-ux/project-access/dist/file';
+import { findFilesByExtensionMock } from '../__mocks__/project-access-file.mjs';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const testDir = join(__dirname, 'sample/subsection');
 
@@ -39,7 +43,7 @@ describe('SubCustomSection generateCustomSubSection', () => {
         fs = create(createStorage());
         fs.delete(testDir);
         fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(manifest));
-        jest.spyOn(fileAccess, 'findFilesByExtension').mockResolvedValue([]);
+        findFilesByExtensionMock.mockResolvedValue([]);
     });
 
     const testVersions = ['1.85', '1.86', '1.98'];
