@@ -33540,7 +33540,7 @@ snapshots:
 
   retry-axios@2.6.0(axios@1.16.1):
     dependencies:
-      axios: 1.16.1(debug@4.3.4)
+      axios: 1.16.1
     optional: true
 
   retry@0.12.0: {}
