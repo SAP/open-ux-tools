@@ -14,7 +14,7 @@ import type { DeepestExistingPathResult } from '../utils/helpers.js';
 import { findDeepestExistingPath } from '../utils/helpers.js';
 import { pathToFileURL } from 'node:url';
 import { normalizePath } from '@sap-ux/project-access';
-import { FioriChangeSourceCode } from './change/source-code';
+import { FioriChangeSourceCode } from './change/source-code.js';
 
 /**
  * Rule context type for JSON-based rules.

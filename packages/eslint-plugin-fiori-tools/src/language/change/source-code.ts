@@ -1,5 +1,5 @@
 import type { DocumentNode } from '@humanwhocodes/momoa';
-import type { ProjectContext } from '../../project-context/project-context';
+import type { ProjectContext } from '../../project-context/project-context.js';
 import { JSONSourceCode } from '@eslint/json';
 
 /**
