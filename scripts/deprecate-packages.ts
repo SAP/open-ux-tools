@@ -18,12 +18,13 @@
  *   node_modules/.bin/ts-node scripts/deprecate-packages.ts --config path/to/config.json
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import * as https from 'https';
-import { execSync } from 'child_process';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import * as https from 'node:https';
+import { execSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
-const scriptDir: string = __dirname;
+const scriptDir: string = path.dirname(fileURLToPath(import.meta.url));
 
 // ---------------------------------------------------------------------------
 // Types
