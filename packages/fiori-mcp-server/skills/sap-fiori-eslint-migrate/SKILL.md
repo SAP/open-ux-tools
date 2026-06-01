@@ -118,16 +118,6 @@ Examples:
 - `// eslint-disable fiori-custom/sap-browser-api-warning` → `// eslint-disable @sap-ux/fiori-tools/sap-browser-api-warning`
 - `// eslint-disable-next-line fiori-custom/sap-no-localstorage` → `// eslint-disable-next-line @sap-ux/fiori-tools/sap-no-localstorage`
 
-### 3c. Delete legacy files
-
-After creating the new config, remove old files:
-```bash
-# Remove old config (adjust filename to match what was found)
-rm -f .eslintrc .eslintrc.js .eslintrc.cjs .eslintrc.json .eslintrc.yml .eslintrc.yaml
-
-# Remove .eslintignore (patterns are now in eslint.config.mjs)
-rm -f .eslintignore
-```
 
 ## Step 4 — Update package.json dependencies
 

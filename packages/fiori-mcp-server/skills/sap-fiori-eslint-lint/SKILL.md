@@ -13,18 +13,59 @@ Run ESLint on a SAP Fiori project to check code quality and optionally auto-fix 
 
 ## Step 1 — Verify ESLint is configured
 
-Before running lint, check that an ESLint config exists:
+Detect whether this is a standalone Fiori app or a CAP project, then check for a valid ESLint config.
+
+### Detect project type
+
+```bash
+# CAP project has a package.json with @sap/cds or a cds section, and an app/ folder
+ls app/ 2>/dev/null && cat package.json 2>/dev/null | grep -q '"@sap/cds"' && echo "CAP project" || echo "Standalone Fiori app"
+```
+
+### Standalone Fiori app — check root config
 
 ```bash
 ls eslint.config.mjs eslint.config.js eslint.config.cjs 2>/dev/null
 ```
 
-For CAP projects, check app subfolders:
+Then verify the found config references `@sap-ux/eslint-plugin-fiori-tools`:
 ```bash
-find . -name "eslint.config.mjs" -not -path "*/node_modules/*" 2>/dev/null
+grep -l "@sap-ux/eslint-plugin-fiori-tools" eslint.config.mjs eslint.config.js eslint.config.cjs 2>/dev/null
 ```
 
-**If no config is found**: Use the `sap-fiori-eslint-setup` skill first to create one, then return here.
+### CAP project — check app subfolders only (NOT the root)
+
+```bash
+# Find eslint configs inside app/ subfolders, skipping node_modules
+find app -name "eslint.config.mjs" -not -path "*/node_modules/*" 2>/dev/null
+```
+
+Then verify each found config references `@sap-ux/eslint-plugin-fiori-tools`:
+```bash
+find app -name "eslint.config.mjs" -not -path "*/node_modules/*" 2>/dev/null | while read config; do
+  if grep -q "@sap-ux/eslint-plugin-fiori-tools" "$config"; then
+    echo "✅ $config — plugin configured"
+  else
+    echo "❌ $config — missing @sap-ux/eslint-plugin-fiori-tools"
+  fi
+done
+```
+
+**Decision tree — what to do next:**
+
+1. **Config found and references `@sap-ux/eslint-plugin-fiori-tools`** → proceed to Step 2.
+2. **Legacy config found** (`.eslintrc`, `.eslintrc.js`, `.eslintrc.cjs`, `.eslintrc.json`, `.eslintrc.yml`) → use the `sap-fiori-eslint-migrate` skill to migrate to flat config first, then return here.
+3. **No config found at all** → use the `sap-fiori-eslint-setup` skill to create a fresh config, then return here.
+
+To detect a legacy config:
+```bash
+ls .eslintrc .eslintrc.js .eslintrc.cjs .eslintrc.json .eslintrc.yml .eslintrc.yaml 2>/dev/null
+```
+
+For CAP projects, also check each app subfolder:
+```bash
+find app -name ".eslintrc*" -not -path "*/node_modules/*" 2>/dev/null
+```
 
 ## Step 2 — Locate the app to lint
 
