@@ -14,7 +14,8 @@ jest.unstable_mockModule('axios', () => ({
     __esModule: true
 }));
 
-const { getToken, getBtpDestinationConfig, listBtpDestinations } = await import('../../../src/btp/api');
+const { getToken, getBtpDestinationConfig, listBtpDestinations, getDestinationServiceUaa } =
+    await import('../../../src/btp/api');
 const { initI18n, t } = await import('../../../src/i18n');
 
 describe('btp/api', () => {
@@ -236,6 +237,50 @@ describe('btp/api', () => {
             await expect(listBtpDestinations(mockCredentials)).rejects.toThrow(
                 t('error.failedToListBtpDestinations', { error: 'Network error' })
             );
+        });
+
+        it('should throw when credentials are incomplete', async () => {
+            await expect(listBtpDestinations({ clientid: 'cid' } as any)).rejects.toThrow(
+                t('error.failedToListBtpDestinations', {
+                    error: t('error.incompleteDestinationServiceCredentials')
+                })
+            );
+            expect(mockAxiosGet).not.toHaveBeenCalled();
+            expect(mockAxiosPost).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('getDestinationServiceUaa', () => {
+        it('returns the flat credentials unchanged', () => {
+            const flat = {
+                clientid: 'cid',
+                clientsecret: 'csecret',
+                url: '/auth.example',
+                uri: '/dest.example'
+            };
+
+            expect(getDestinationServiceUaa(flat)).toEqual(flat);
+        });
+
+        it('unwraps the nested uaa shape', () => {
+            const nested = {
+                uaa: {
+                    clientid: 'cid',
+                    clientsecret: 'csecret',
+                    url: '/auth.example',
+                    uri: '/dest.example'
+                }
+            };
+
+            expect(getDestinationServiceUaa(nested)).toEqual(nested.uaa);
+        });
+
+        it('returns undefined when any required field is missing', () => {
+            expect(getDestinationServiceUaa(undefined)).toBeUndefined();
+            expect(
+                getDestinationServiceUaa({ clientid: 'cid', clientsecret: 'csecret', url: '/u' } as any)
+            ).toBeUndefined();
+            expect(getDestinationServiceUaa({ uaa: { clientid: 'cid' } } as any)).toBeUndefined();
         });
     });
 });

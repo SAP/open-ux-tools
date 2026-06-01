@@ -68,13 +68,37 @@ export async function getBtpDestinationConfig(
 }
 
 /**
+ * Normalise destination-service credentials (nested `{ uaa: { ... } }` or flat) into a flat UAA + `uri`.
+ *
+ * @param credentials - Destination service credentials.
+ * @returns Flat UAA credentials, or `undefined` if any required field is missing.
+ */
+export function getDestinationServiceUaa(
+    credentials: CfDestinationServiceCredentials | undefined
+): (Uaa & { uri: string }) | undefined {
+    if (!credentials) {
+        return undefined;
+    }
+    const uaa = 'uaa' in credentials ? credentials.uaa : credentials;
+    if (!uaa?.clientid || !uaa.clientsecret || !uaa.url || !uaa.uri) {
+        return undefined;
+    }
+    return uaa;
+}
+
+/**
  * Lists all subaccount destinations from the BTP Destination Configuration API.
  *
  * @param {CfDestinationServiceCredentials} credentials - Destination service credentials.
  * @returns {Promise<Destinations>} Map of destination name to Destination object.
  */
 export async function listBtpDestinations(credentials: CfDestinationServiceCredentials): Promise<Destinations> {
-    const uaa = 'uaa' in credentials ? credentials.uaa : credentials;
+    const uaa = getDestinationServiceUaa(credentials);
+    if (!uaa) {
+        throw new Error(
+            t('error.failedToListBtpDestinations', { error: t('error.incompleteDestinationServiceCredentials') })
+        );
+    }
     const token = await getToken(uaa);
     const url = `${uaa.uri}/destination-configuration/v1/subaccountDestinations`;
     try {
