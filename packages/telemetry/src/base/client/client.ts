@@ -1,4 +1,4 @@
-import type { SampleRate } from '../types/sample-rate';
+import type { SampleRate } from '../types/sample-rate.js';
 
 /**
  *

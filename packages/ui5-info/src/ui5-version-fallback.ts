@@ -1,6 +1,6 @@
 import { coerce, gte } from 'semver';
-import type { UI5VersionSupport } from './types';
-import { defaultMinUi5Version } from './constants';
+import type { UI5VersionSupport } from './types.js';
+import { defaultMinUi5Version } from './constants.js';
 
 export const supportState = {
     maintenance: 'Maintenance',

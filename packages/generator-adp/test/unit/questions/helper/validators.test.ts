@@ -1,42 +1,54 @@
-import { existsSync } from 'node:fs';
-
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { CfConfig, SystemLookup } from '@sap-ux/adp-tooling';
-import { isExternalLoginEnabled, isMtaProject, getMtaServices } from '@sap-ux/adp-tooling';
-import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
-import {
+const mockIsAppStudio = jest.fn();
+const mockValidateProjectName = jest.fn();
+const mockValidateNamespaceAdp = jest.fn();
+const mockIsExternalLoginEnabled = jest.fn();
+const mockIsMtaProject = jest.fn();
+const mockGetMtaServices = jest.fn();
+const mockExistsSync = jest.fn();
+
+const realFs = await import('node:fs');
+jest.unstable_mockModule('node:fs', () => ({
+    ...realFs,
+    default: {
+        ...realFs.default,
+        existsSync: mockExistsSync
+    },
+    existsSync: mockExistsSync
+}));
+
+const realProjectInputValidator = await import('@sap-ux/project-input-validator');
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    ...realProjectInputValidator,
+    validateProjectName: mockValidateProjectName,
+    validateNamespaceAdp: mockValidateNamespaceAdp
+}));
+
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
+}));
+
+const realAdpTooling = await import('@sap-ux/adp-tooling');
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    ...realAdpTooling,
+    isExternalLoginEnabled: mockIsExternalLoginEnabled,
+    isMtaProject: mockIsMtaProject,
+    getMtaServices: mockGetMtaServices
+}));
+
+const {
     validateJsonInput,
     validateExtensibilityExtension,
     validateEnvironment,
     validateProjectPath,
     validateBusinessSolutionName
-} from '../../../../src/app/questions/helper/validators';
-import { initI18n, t } from '../../../../src/utils/i18n';
-
-jest.mock('@sap-ux/project-input-validator', () => ({
-    ...jest.requireActual('@sap-ux/project-input-validator'),
-    validateProjectName: jest.fn(),
-    validateNamespaceAdp: jest.fn()
-}));
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn()
-}));
-
-jest.mock('@sap-ux/adp-tooling', () => ({
-    ...jest.requireActual('@sap-ux/adp-tooling'),
-    isExternalLoginEnabled: jest.fn(),
-    isMtaProject: jest.fn(),
-    getMtaServices: jest.fn()
-}));
-
-jest.mock('fs', () => ({
-    ...jest.requireActual('fs'),
-    existsSync: jest.fn()
-}));
+} = await import('../../../../src/app/questions/helper/validators');
+const { initI18n, t } = await import('../../../../src/utils/i18n');
 
 const availableSystem = 'systemA';
 const nonExistingSystem = 'systemB';
@@ -47,14 +59,6 @@ const jsonInput = {
     namespace: 'namespace',
     system: availableSystem
 };
-
-const mockExistsSync = existsSync as jest.MockedFunction<typeof existsSync>;
-const mockIsAppStudio = isAppStudio as jest.MockedFunction<typeof isAppStudio>;
-const mockIsMtaProject = isMtaProject as jest.MockedFunction<typeof isMtaProject>;
-const mockGetMtaServices = getMtaServices as jest.MockedFunction<typeof getMtaServices>;
-const mockValidateProjectName = validateProjectName as jest.MockedFunction<typeof validateProjectName>;
-const mockValidateNamespaceAdp = validateNamespaceAdp as jest.MockedFunction<typeof validateNamespaceAdp>;
-const mockIsExternalLoginEnabled = isExternalLoginEnabled as jest.MockedFunction<typeof isExternalLoginEnabled>;
 
 describe('validateExtensibilityGenerator', () => {
     beforeAll(async () => {

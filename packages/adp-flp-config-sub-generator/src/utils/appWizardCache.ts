@@ -1,7 +1,7 @@
 import { getHostEnvironment, hostEnvironment, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
-import type { State } from '../app/types';
+import type { State } from '../app/types.js';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
-import { t } from '../utils/i18n';
+import { t } from '../utils/i18n.js';
 
 const ADP_FLP_CONFIG_CACHE = '$adp-flp-config-cache';
 // Type alias for the AppWizard object with the cache object.

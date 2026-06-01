@@ -1,14 +1,22 @@
-import { generateDestinationName, getDestination } from '../../src';
-import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
-import { mockDestinations } from '../fixtures/destinations';
+import { jest } from '@jest/globals';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn(),
-    listDestinations: jest.fn()
+const mockIsAppStudio = jest.fn();
+const mockListDestinations = jest.fn();
+
+jest.unstable_mockModule('@vscode-logging/logger', () => ({
+    getExtensionLogger: jest.fn()
 }));
 
-const mockIsAppStudio = isAppStudio as jest.Mock;
-const mockListDestinations = listDestinations as jest.Mock;
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio,
+    listDestinations: mockListDestinations,
+    Destination: {}
+}));
+
+const { generateDestinationName, getDestination } = await import('../../src');
+const { mockDestinations } = await import('../fixtures/destinations');
 
 describe('destination utils', () => {
     it('should generate destination name', () => {

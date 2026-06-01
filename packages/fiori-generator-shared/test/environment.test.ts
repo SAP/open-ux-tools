@@ -1,13 +1,18 @@
+import { jest } from '@jest/globals';
 import { hostEnvironment } from '../src/types';
-import { isCli, getHostEnvironment } from '../src/environment';
-import * as btpUtils from '@sap-ux/btp-utils';
+import * as actualBtpUtils from '@sap-ux/btp-utils';
 
-jest.mock('@sap-ux/btp-utils', () => {
-    return {
-        __esModule: true,
-        ...jest.requireActual('@sap-ux/btp-utils')
-    };
-});
+jest.unstable_mockModule('@vscode-logging/logger', () => ({
+    getExtensionLogger: jest.fn()
+}));
+
+const mockIsAppStudio = jest.fn(actualBtpUtils.isAppStudio);
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    isAppStudio: mockIsAppStudio
+}));
+
+const { isCli, getHostEnvironment } = await import('../src/environment');
 
 function mockCli(isCli: boolean) {
     process.argv[1] = isCli ? 'path/to/yo' : 'path/to/mock';
@@ -47,13 +52,13 @@ describe('environment utils', () => {
 
     it('should return correct host environment - app studio', () => {
         mockCli(false);
-        jest.spyOn(btpUtils, 'isAppStudio').mockReturnValueOnce(true);
+        mockIsAppStudio.mockReturnValueOnce(true);
         expect(getHostEnvironment()).toEqual(hostEnvironment.bas);
     });
 
     it('should return correct host environment - vscode', () => {
         mockCli(false);
-        jest.spyOn(btpUtils, 'isAppStudio').mockReturnValueOnce(false);
+        mockIsAppStudio.mockReturnValueOnce(false);
         expect(getHostEnvironment()).toEqual(hostEnvironment.vscode);
     });
 });

@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui5-info",
     "description": "SAP Fiori UI5 info",
-    "version": "0.14.0",
+    "version": "1.0.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -10,16 +10,24 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-info"
     },
+    "type": "module",
     "license": "Apache-2.0",
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
     "scripts": {
         "build": "tsc --build",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "watch": "tsc --watch",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global",
         "update-fallbacks": "node scripts/update-fallbacks.js"
@@ -37,6 +45,7 @@
         "semver": "7.7.4"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@types/semver": "7.7.1",
         "mock-spawn": "0.2.6",
         "nock": "14.0.11"

@@ -50,19 +50,6 @@ export function onNewAction(this: ExtensionAPI) {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -116,19 +103,6 @@ Object {
       \\"libs\\": {
         \\"sap.fe.core\\": {},
         \\"sap.fe.macros\\": {}
-      }
-    }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
       }
     }
   }
@@ -210,19 +184,6 @@ Object {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -280,19 +241,6 @@ Object {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -348,19 +296,6 @@ Object {
       \\"libs\\": {
         \\"sap.fe.core\\": {},
         \\"sap.fe.macros\\": {}
-      }
-    }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
       }
     }
   }
@@ -441,19 +376,6 @@ Object {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -505,19 +427,6 @@ export function onApprove(this: ExtensionAPI, event: UI5Event) {
       \\"libs\\": {
         \\"sap.fe.core\\": {},
         \\"sap.fe.macros\\": {}
-      }
-    }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
       }
     }
   }
@@ -580,19 +489,6 @@ Object {
       \\"libs\\": {
         \\"sap.fe.core\\": {},
         \\"sap.fe.macros\\": {}
-      }
-    }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
       }
     }
   }
@@ -662,19 +558,6 @@ Object {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -727,19 +610,6 @@ Object {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -785,19 +655,6 @@ exports[`Building Blocks CustomFormField building block generate CustomFormField
 
 exports[`Building Blocks Do not update "manifest.json" with missing dependency when "allowAutoAddDependencyLib=false" 1`] = `
 Object {
-  "default": Object {
-    "sap.app": Object {
-      "id": "my.test.App",
-    },
-    "sap.ui5": Object {
-      "dependencies": Object {
-        "libs": Object {
-          "sap.fe.core": Object {},
-        },
-        "minUI5Version": "1.127.0",
-      },
-    },
-  },
   "sap.app": Object {
     "id": "my.test.App",
   },
@@ -845,19 +702,6 @@ Object {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -889,19 +733,6 @@ Object {
       \\"libs\\": {
         \\"sap.fe.core\\": {},
         \\"sap.fe.macros\\": {}
-      }
-    }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
       }
     }
   }
@@ -937,19 +768,6 @@ Object {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -981,19 +799,6 @@ Object {
       \\"libs\\": {
         \\"sap.fe.core\\": {},
         \\"sap.fe.macros\\": {}
-      }
-    }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
       }
     }
   }
@@ -1029,19 +834,6 @@ Object {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -1075,19 +867,6 @@ Object {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -1119,19 +898,6 @@ Object {
       \\"libs\\": {
         \\"sap.fe.core\\": {},
         \\"sap.fe.macros\\": {}
-      }
-    }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
       }
     }
   }
@@ -1175,19 +941,6 @@ Object {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -1219,19 +972,6 @@ Object {
       \\"libs\\": {
         \\"sap.fe.core\\": {},
         \\"sap.fe.macros\\": {}
-      }
-    }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
       }
     }
   }
@@ -1267,19 +1007,6 @@ Object {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -1311,19 +1038,6 @@ Object {
       \\"libs\\": {
         \\"sap.fe.core\\": {},
         \\"sap.fe.macros\\": {}
-      }
-    }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
       }
     }
   }
@@ -1359,19 +1073,6 @@ Object {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -1403,19 +1104,6 @@ Object {
       \\"libs\\": {
         \\"sap.fe.core\\": {},
         \\"sap.fe.macros\\": {}
-      }
-    }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
       }
     }
   }
@@ -1451,19 +1139,6 @@ Object {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -1495,19 +1170,6 @@ Object {
       \\"libs\\": {
         \\"sap.fe.core\\": {},
         \\"sap.fe.macros\\": {}
-      }
-    }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
       }
     }
   }
@@ -1607,19 +1269,6 @@ Object {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -1651,19 +1300,6 @@ Object {
       \\"libs\\": {
         \\"sap.fe.core\\": {},
         \\"sap.fe.macros\\": {}
-      }
-    }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
       }
     }
   }
@@ -1699,19 +1335,6 @@ Object {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -1743,19 +1366,6 @@ Object {
       \\"libs\\": {
         \\"sap.fe.core\\": {},
         \\"sap.fe.macros\\": {}
-      }
-    }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
       }
     }
   }
@@ -1791,19 +1401,6 @@ Object {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -1835,19 +1432,6 @@ Object {
       \\"libs\\": {
         \\"sap.fe.core\\": {},
         \\"sap.fe.macros\\": {}
-      }
-    }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
       }
     }
   }
@@ -1883,19 +1467,6 @@ Object {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -1927,19 +1498,6 @@ Object {
       \\"libs\\": {
         \\"sap.fe.core\\": {},
         \\"sap.fe.macros\\": {}
-      }
-    }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
       }
     }
   }
@@ -1975,19 +1533,6 @@ Object {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -2019,19 +1564,6 @@ Object {
       \\"libs\\": {
         \\"sap.fe.core\\": {},
         \\"sap.fe.macros\\": {}
-      }
-    }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
       }
     }
   }
@@ -2370,19 +1902,6 @@ Object {
         \\"sap.fe.macros\\": {}
       }
     }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
-      }
-    }
   }
 }
 ",
@@ -2412,19 +1931,6 @@ Object {
     \\"dependencies\\": {
       \\"libs\\": {
         \\"sap.fe.macros\\": {}
-      }
-    }
-  },
-  \\"default\\": {
-    \\"sap.app\\": {
-      \\"id\\": \\"my.test.App\\"
-    },
-    \\"sap.ui5\\": {
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.127.0\\",
-        \\"libs\\": {
-          \\"sap.fe.core\\": {}
-        }
       }
     }
   }

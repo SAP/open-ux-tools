@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import type { DialogProps, DialogState } from '../../../src/components/UIDialog';
 import { UIDialog, UIDialogScrollArea, DIALOG_MAX_HEIGHT_OFFSET } from '../../../src/components/UIDialog';
 import { UIDefaultButton } from '../../../src/components/UIButton';

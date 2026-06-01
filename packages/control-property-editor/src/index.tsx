@@ -5,13 +5,13 @@ import { Provider } from 'react-redux';
 import { initIcons, initTheme } from '@sap-ux/ui-components';
 import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 import { enableTelemetry } from '@sap-ux-private/control-property-editor-common';
-import { initI18n } from './i18n';
+import { initI18n } from './i18n.js';
 
 import './index.css';
-import App from './App';
-import { store } from './store';
-import { registerAppIcons } from './icons';
-import { initializeLivereload, setProjectScenario, setFeatureToggles } from './slice';
+import App from './App.js';
+import { store } from './store.js';
+import { registerAppIcons } from './icons.js';
+import { initializeLivereload, setProjectScenario, setFeatureToggles } from './slice.js';
 
 export interface StartOptions {
     previewUrl: string;

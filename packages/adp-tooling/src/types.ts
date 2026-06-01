@@ -12,7 +12,7 @@ import type { Destination } from '@sap-ux/btp-utils';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { SupportedProject } from './source';
+import type { SupportedProject } from './source/index.js';
 
 export type DataSources = Record<string, ManifestNamespace.DataSource>;
 

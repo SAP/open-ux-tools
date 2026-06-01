@@ -8,9 +8,9 @@ import {
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { randomUUID } from 'node:crypto';
 import osName from 'os-name';
-import { version } from '../../package.json';
-import { ODataDownloadGenerator } from '../data-download';
-import { t } from '../utils/i18n';
+import packageJson from '../../package.json' with { type: 'json' };
+import { ODataDownloadGenerator } from '../data-download/index.js';
+import { t } from '../utils/i18n.js';
 
 const generatorName = '@sap-ux/odata-download-sub-generator';
 
@@ -39,7 +39,7 @@ export abstract class TelemetryHelper {
         const telemetryOptions: ToolsSuiteTelemetryInitSettings = {
             consumerModule: {
                 name: generatorName,
-                version
+                version: packageJson.version
             },
             watchTelemetrySettingStore: false,
             internalFeature: true,

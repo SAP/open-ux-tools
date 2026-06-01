@@ -10,10 +10,10 @@ import type {
     UIReferenceFacetDefinition,
     UIFacetsDefinition,
     UIFieldGroupDefinition
-} from './types';
-import { UI_FACETS, UI_LINE_ITEM, UI_REFERENCE_FACET, UI_FIELD_GROUP, UI_DATA_FIELD } from './types';
-import { logger } from '../logger';
-import { createValue } from './builders';
+} from './types.js';
+import { UI_FACETS, UI_LINE_ITEM, UI_REFERENCE_FACET, UI_FIELD_GROUP, UI_DATA_FIELD } from './types.js';
+import { logger } from '../logger.js';
+import { createValue } from './builders.js';
 
 type CollectorDefinition = {
     [A in SupportedAnnotations]: (target: Target, term: Element) => void;

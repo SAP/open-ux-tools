@@ -1,1 +1,1 @@
-export { InfoCenter } from './InfoCenter';
+export { InfoCenter } from './InfoCenter.js';

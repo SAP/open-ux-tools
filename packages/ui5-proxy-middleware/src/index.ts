@@ -1,2 +1,2 @@
-export { ui5Proxy, directLoadProxy } from './base';
-export type { ProxyConfig } from './base/types';
+export { ui5Proxy, directLoadProxy } from './base/index.js';
+export type { ProxyConfig } from './base/types.js';

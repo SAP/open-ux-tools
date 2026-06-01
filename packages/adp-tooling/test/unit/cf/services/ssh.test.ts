@@ -1,30 +1,38 @@
-import fs from 'node:fs';
+import { jest } from '@jest/globals';
 import path from 'node:path';
-import * as CFToolsCli from '@sap/cf-tools/out/src/cli';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { ensureTunnelAppExists, enableSshAndRestart } from '../../../../src/cf/services/ssh';
-
 const mockTmpDir = path.join('/tmp', 'adp-tunnel-mock');
 
-jest.mock('@sap/cf-tools/out/src/cli', () => ({
-    Cli: {
-        execute: jest.fn()
-    }
+const mockMkdtempSync = jest.fn<() => string>().mockReturnValue(mockTmpDir);
+const mockWriteFileSync = jest.fn();
+const mockRmSync = jest.fn();
+
+jest.unstable_mockModule('node:fs', () => ({
+    default: {
+        mkdtempSync: mockMkdtempSync,
+        writeFileSync: mockWriteFileSync,
+        rmSync: mockRmSync
+    },
+    mkdtempSync: mockMkdtempSync,
+    writeFileSync: mockWriteFileSync,
+    rmSync: mockRmSync
 }));
 
-jest.mock('node:fs', () => ({
-    ...jest.requireActual('node:fs'),
-    mkdtempSync: jest.fn(),
-    writeFileSync: jest.fn(),
-    rmSync: jest.fn()
+const mockCheckAppExists = jest.fn<(appName: string) => Promise<boolean>>();
+const mockPushApp = jest.fn<(appName: string, appPath: string, args?: string[]) => Promise<void>>();
+const mockEnableSsh = jest.fn<(appName: string) => Promise<void>>();
+const mockRestartApp = jest.fn<(appName: string) => Promise<void>>();
+
+jest.unstable_mockModule('../../../../src/cf/services/cli', () => ({
+    checkAppExists: mockCheckAppExists,
+    pushApp: mockPushApp,
+    enableSsh: mockEnableSsh,
+    restartApp: mockRestartApp
 }));
 
-const mockRmSync = fs.rmSync as jest.Mock;
-const mockMkdtempSync = fs.mkdtempSync as jest.Mock;
-const mockWriteFileSync = fs.writeFileSync as jest.Mock;
-const mockCFToolsCliExecute = CFToolsCli.Cli.execute as jest.MockedFunction<typeof CFToolsCli.Cli.execute>;
+const { ensureTunnelAppExists, enableSshAndRestart } = await import('../../../../src/cf/services/ssh');
 
 describe('SSH Services', () => {
     const mockLogger = {
@@ -41,56 +49,42 @@ describe('SSH Services', () => {
 
     describe('ensureTunnelAppExists', () => {
         test('should skip deploy when app already exists', async () => {
-            mockCFToolsCliExecute.mockResolvedValue({ exitCode: 0, stdout: '', stderr: '' });
+            mockCheckAppExists.mockResolvedValue(true);
 
             await ensureTunnelAppExists('my-tunnel', mockLogger);
 
-            expect(mockCFToolsCliExecute).toHaveBeenCalledTimes(1);
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
-                ['app', 'my-tunnel'],
-                expect.objectContaining({ env: { CF_COLOR: 'false' } })
-            );
+            expect(mockCheckAppExists).toHaveBeenCalledWith('my-tunnel');
             expect(mockMkdtempSync).not.toHaveBeenCalled();
             expect(mockLogger.info).toHaveBeenCalledWith('Tunnel app "my-tunnel" already exists.');
         });
 
         test('should deploy minimal app when not found', async () => {
-            mockCFToolsCliExecute
-                .mockResolvedValueOnce({ exitCode: 1, stdout: '', stderr: 'not found' })
-                .mockResolvedValueOnce({ exitCode: 0, stdout: '', stderr: '' });
+            mockCheckAppExists.mockResolvedValue(false);
+            mockPushApp.mockResolvedValue(undefined);
 
             await ensureTunnelAppExists('my-tunnel', mockLogger);
 
-            expect(mockCFToolsCliExecute).toHaveBeenCalledTimes(2);
             expect(mockMkdtempSync).toHaveBeenCalled();
             expect(mockWriteFileSync).toHaveBeenCalledWith(path.join(mockTmpDir, '.keep'), '');
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
-                [
-                    'push',
-                    'my-tunnel',
-                    '-p',
-                    mockTmpDir,
-                    '--no-route',
-                    '-m',
-                    '64M',
-                    '-k',
-                    '256M',
-                    '-b',
-                    'binary_buildpack',
-                    '-c',
-                    'sleep infinity',
-                    '--health-check-type',
-                    'process'
-                ],
-                expect.objectContaining({ env: { CF_COLOR: 'false' } })
-            );
+            expect(mockPushApp).toHaveBeenCalledWith('my-tunnel', mockTmpDir, [
+                '--no-route',
+                '-m',
+                '64M',
+                '-k',
+                '256M',
+                '-b',
+                'binary_buildpack',
+                '-c',
+                'sleep infinity',
+                '--health-check-type',
+                'process'
+            ]);
             expect(mockLogger.info).toHaveBeenCalledWith('Tunnel app "my-tunnel" deployed successfully.');
         });
 
         test('should clean up temp directory even when push fails', async () => {
-            mockCFToolsCliExecute
-                .mockResolvedValueOnce({ exitCode: 1, stdout: '', stderr: 'not found' })
-                .mockResolvedValueOnce({ exitCode: 1, stdout: '', stderr: 'push failed' });
+            mockCheckAppExists.mockResolvedValue(false);
+            mockPushApp.mockRejectedValue(new Error('push failed'));
 
             await expect(ensureTunnelAppExists('my-tunnel', mockLogger)).rejects.toThrow();
 
@@ -103,31 +97,24 @@ describe('SSH Services', () => {
 
     describe('enableSshAndRestart', () => {
         test('should enable SSH and restart the app', async () => {
-            mockCFToolsCliExecute.mockResolvedValue({ exitCode: 0, stdout: '', stderr: '' });
+            mockEnableSsh.mockResolvedValue(undefined);
+            mockRestartApp.mockResolvedValue(undefined);
 
             await enableSshAndRestart('my-tunnel', mockLogger);
 
-            expect(mockCFToolsCliExecute).toHaveBeenCalledTimes(2);
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
-                ['enable-ssh', 'my-tunnel'],
-                expect.objectContaining({ env: { CF_COLOR: 'false' } })
-            );
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
-                ['restart', 'my-tunnel', '--strategy', 'rolling', '--no-wait'],
-                expect.objectContaining({ env: { CF_COLOR: 'false' } })
-            );
+            expect(mockEnableSsh).toHaveBeenCalledWith('my-tunnel');
+            expect(mockRestartApp).toHaveBeenCalledWith('my-tunnel');
         });
 
         test('should throw when enable-ssh fails', async () => {
-            mockCFToolsCliExecute.mockResolvedValue({ exitCode: 1, stdout: '', stderr: 'ssh failed' });
+            mockEnableSsh.mockRejectedValue(new Error('ssh failed'));
 
             await expect(enableSshAndRestart('my-tunnel', mockLogger)).rejects.toThrow();
         });
 
         test('should throw when restart fails', async () => {
-            mockCFToolsCliExecute
-                .mockResolvedValueOnce({ exitCode: 0, stdout: '', stderr: '' })
-                .mockResolvedValueOnce({ exitCode: 1, stdout: '', stderr: 'restart failed' });
+            mockEnableSsh.mockResolvedValue(undefined);
+            mockRestartApp.mockRejectedValue(new Error('restart failed'));
 
             await expect(enableSshAndRestart('my-tunnel', mockLogger)).rejects.toThrow();
         });
