@@ -1,5 +1,5 @@
-import type { Measurement as IMeasurement, Mark as IMark } from './types';
-import { EntryType } from './types';
+import type { Measurement as IMeasurement, Mark as IMark } from './types.js';
+import { EntryType } from './types.js';
 
 /**
  * Repreeents a mark during a performance measurement.

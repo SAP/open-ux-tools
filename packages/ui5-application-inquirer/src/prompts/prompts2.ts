@@ -1,9 +1,9 @@
 import { getUI5ThemesChoices } from '@sap-ux/inquirer-common';
 import { defaultVersion, getDefaultUI5Theme } from '@sap-ux/ui5-info';
-import { t } from '../i18n';
-import { promptNames } from '../types';
+import { t } from '../i18n.js';
+import { promptNames } from '../types.js';
 import type { ListChoiceOptions } from 'inquirer';
-import type { UI5ApplicationAnswers, UI5ApplicationQuestion } from '../types';
+import type { UI5ApplicationAnswers, UI5ApplicationQuestion } from '../types.js';
 import type { ConfirmQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 
 /**

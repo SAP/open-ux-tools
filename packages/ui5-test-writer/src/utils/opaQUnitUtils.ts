@@ -6,7 +6,7 @@
 
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
-import { readHashFromFlpSandbox } from './flpSandboxUtils';
+import { readHashFromFlpSandbox } from './flpSandboxUtils.js';
 import { getAllUi5YamlFileNames, readUi5Yaml, FileName } from '@sap-ux/project-access';
 import type {
     TestConfig as PreviewMiddlewareTestConfig,

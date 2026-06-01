@@ -17,7 +17,7 @@ import AddActionFragment from '../../../src/adp/controllers/AddActionFragment.co
 
 describe('DialogFactory', () => {
     afterEach(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+         
         const closeDialogFunction = attachBeforeClose.mock.calls[0]?.[0];
         if (typeof closeDialogFunction === 'function') {
             // make sure that dialog factory is in clean state after each test
@@ -176,11 +176,11 @@ describe('DialogFactory', () => {
             rtaMock as unknown as RuntimeAuthoring,
             DialogNames.ADD_CUSTOM_FRAGMENT
         );
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+         
         expect(Fragment.load.mock.calls[0][0].name).toStrictEqual('open.ux.preview.client.adp.ui.AddCustomFragment');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+         
         expect(Fragment.load.mock.calls[0][0].id).toStrictEqual(undefined);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+         
         expect(Fragment.load.mock.calls[0][0].controller).toBeInstanceOf(AddCustomFragment);
 
         expect(DialogFactory.canOpenDialog).toBe(false);
@@ -197,11 +197,11 @@ describe('DialogFactory', () => {
             rtaMock as unknown as RuntimeAuthoring,
             DialogNames.ADD_ACTION
         );
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+         
         expect(Fragment.load.mock.calls[0][0].name).toStrictEqual('open.ux.preview.client.adp.ui.AddAction');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+         
         expect(Fragment.load.mock.calls[0][0].id).toStrictEqual(undefined);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+         
         expect(Fragment.load.mock.calls[0][0].controller).toBeInstanceOf(AddActionFragment);
 
         expect(DialogFactory.canOpenDialog).toBe(false);

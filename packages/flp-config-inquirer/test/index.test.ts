@@ -1,12 +1,17 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
-import { getPrompts, prompt } from '../src';
-import type { FLPConfigAnswers } from '../src';
+import { jest } from '@jest/globals';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
+// Pre-import real module before mocking to avoid missing export errors
+const realBtpUtils = await import('@sap-ux/btp-utils');
+
+const mockIsAppStudio = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
 }));
 
-const mockIsAppStudio = isAppStudio as jest.Mock;
+const { getPrompts, prompt } = await import('../src');
+import type { FLPConfigAnswers } from '../src';
 
 describe('index', () => {
     describe('getPrompts', () => {

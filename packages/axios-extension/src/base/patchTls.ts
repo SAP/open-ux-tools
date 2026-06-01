@@ -1,6 +1,6 @@
 import type { SecureContext } from 'node:tls';
 import tls from 'node:tls';
-import { sapGlobalRootCaCert } from '../cacerts/sap-global-root-ca';
+import { sapGlobalRootCaCert } from '../cacerts/sap-global-root-ca.js';
 
 /**
  * Test for sap domains and patching to trust SAPs root certificate

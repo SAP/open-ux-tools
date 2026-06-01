@@ -1,5 +1,6 @@
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
-import { Severity } from '@sap-devx/yeoman-ui-types';
+import yeomanTypes from '@sap-devx/yeoman-ui-types';
+const { Severity } = yeomanTypes;
 import type { Answers } from 'inquirer';
 import type { CommonPromptOptions } from '../../../dist';
 import {

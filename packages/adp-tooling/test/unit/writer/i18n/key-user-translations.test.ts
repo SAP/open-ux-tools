@@ -1,23 +1,22 @@
+import { jest } from '@jest/globals';
 import path from 'node:path';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 
-import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 import type { KeyUserTextTranslations } from '@sap-ux/axios-extension';
 
-import {
-    normalizeLanguageForI18n,
-    replaceTextsWithI18nBindings,
-    writeKeyUserTranslations
-} from '../../../../src/writer/i18n/key-user-translations';
+const mockCreatePropertiesI18nEntries = jest.fn().mockResolvedValue(true);
 
-jest.mock('@sap-ux/i18n', () => ({
-    ...jest.requireActual('@sap-ux/i18n'),
-    createPropertiesI18nEntries: jest.fn().mockResolvedValue(true)
+const realI18n = await import('@sap-ux/i18n');
+
+jest.unstable_mockModule('@sap-ux/i18n', () => ({
+    ...realI18n,
+    createPropertiesI18nEntries: mockCreatePropertiesI18nEntries
 }));
 
-const createPropertiesI18nEntriesMock = createPropertiesI18nEntries as jest.Mock;
+const { normalizeLanguageForI18n, replaceTextsWithI18nBindings, writeKeyUserTranslations } =
+    await import('../../../../src/writer/i18n/key-user-translations');
 
 describe('i18n-writer', () => {
     describe('normalizeLanguageForI18n', () => {
@@ -147,10 +146,10 @@ describe('i18n-writer', () => {
             await writeKeyUserTranslations(projectPath, 'id_123_renameLabel', topLevelTexts, fs);
 
             // Should be called twice: once for default language, once for 'en'
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledTimes(2);
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenCalledTimes(2);
 
             // Default language file
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenCalledWith(
                 expect.stringContaining(path.join('i18n', 'i18n.properties')),
                 [
                     {
@@ -164,7 +163,7 @@ describe('i18n-writer', () => {
             );
 
             // English language file
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenCalledWith(
                 expect.stringContaining(path.join('i18n', 'i18n_en.properties')),
                 [
                     {
@@ -199,10 +198,10 @@ describe('i18n-writer', () => {
             await writeKeyUserTranslations(projectPath, 'id_456_change', topLevelTexts, fs);
 
             // Should be called twice: default and 'de'
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledTimes(2);
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenCalledTimes(2);
 
             // Default language file should have both entries
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenCalledWith(
                 expect.stringContaining(path.join('i18n', 'i18n.properties')),
                 expect.arrayContaining([
                     expect.objectContaining({ key: 'id_456_change_title', value: 'Title' }),
@@ -213,7 +212,7 @@ describe('i18n-writer', () => {
             );
 
             // German language file should have both entries
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenCalledWith(
                 expect.stringContaining(path.join('i18n', 'i18n_de.properties')),
                 expect.arrayContaining([
                     expect.objectContaining({ key: 'id_456_change_title', value: 'Titel' }),
@@ -239,8 +238,8 @@ describe('i18n-writer', () => {
 
             await writeKeyUserTranslations(projectPath, 'id_789_change', topLevelTexts, fs);
 
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledTimes(1);
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenCalledTimes(1);
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenCalledWith(
                 expect.stringContaining(path.join('i18n', 'i18n.properties')),
                 [expect.objectContaining({ key: 'id_789_change_validText', value: 'Valid' })],
                 undefined,
@@ -259,7 +258,7 @@ describe('i18n-writer', () => {
 
             await writeKeyUserTranslations(projectPath, 'id_999_change', topLevelTexts, fs);
 
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenCalledWith(
                 expect.anything(),
                 [{ key: 'id_999_change_text', value: 'No Type' }],
                 undefined,
@@ -279,7 +278,7 @@ describe('i18n-writer', () => {
 
             await writeKeyUserTranslations(projectPath, 'id_lang_change', topLevelTexts, fs);
 
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenCalledWith(
                 expect.stringContaining(path.join('i18n', 'i18n_he.properties')),
                 expect.anything(),
                 undefined,

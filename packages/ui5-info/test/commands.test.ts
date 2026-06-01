@@ -1,12 +1,18 @@
-jest.disableAutomock();
-
-import * as cp from 'node:child_process';
-import { executeNpmUI5VersionsCmd } from '../src/commands';
-import { getUI5Versions } from '../src/ui5-version-info';
+import { jest } from '@jest/globals';
+import { createRequire } from 'node:module';
 import os from 'node:os';
 
-jest.mock('child_process');
-const mockedCp = jest.mocked(cp, { shallow: true });
+// Mock child_process spawn for the first describe block
+const mockSpawnFn = jest.fn();
+jest.unstable_mockModule('node:child_process', () => ({
+    spawn: mockSpawnFn,
+    default: { spawn: mockSpawnFn }
+}));
+
+// Dynamic imports after mocking
+const { executeNpmUI5VersionsCmd } = await import('../src/commands');
+const { getUI5Versions } = await import('../src/ui5-version-info');
+
 const originalPlatform = process.platform;
 
 /**
@@ -32,10 +38,10 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
     });
 
     it('Validate spawn flow', async () => {
-        mockedCp.spawn.mockImplementation((): any => {
+        mockSpawnFn.mockImplementation((): any => {
             return {
                 stdout: {
-                    on: jest.fn().mockImplementation((event, cb) => {
+                    on: jest.fn().mockImplementation((event: string, cb: any) => {
                         if (event === 'data') {
                             cb(Buffer.from(`['1.90.0', '1.90.1', '1.92.1', '1.93.0', '1.80-snapshot']`, 'utf8'));
                         }
@@ -45,7 +51,7 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
                 stderr: {
                     on: jest.fn()
                 },
-                on: jest.fn().mockImplementation((event, cb) => {
+                on: jest.fn().mockImplementation((event: string, cb: any) => {
                     if (event === 'close') {
                         cb(0);
                     }
@@ -71,8 +77,8 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
             ]
         `); // Sorted
         expect(retrievedUI5Versions.length).toEqual(4);
-        expect(mockedCp.spawn).toHaveBeenCalled();
-        expect(mockedCp.spawn).toHaveBeenNthCalledWith(
+        expect(mockSpawnFn).toHaveBeenCalled();
+        expect(mockSpawnFn).toHaveBeenNthCalledWith(
             1,
             'npm',
             ['show', '@sapui5/distribution-metadata', 'versions', '--no-color'],
@@ -81,20 +87,20 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
     });
 
     it('Validate exception spawn flow', async () => {
-        mockedCp.spawn.mockImplementation((): any => {
+        mockSpawnFn.mockImplementation((): any => {
             return {
                 stdout: {
                     on: jest.fn(),
                     setEncoding: jest.fn()
                 },
                 stderr: {
-                    on: jest.fn().mockImplementation((event, cb) => {
+                    on: jest.fn().mockImplementation((event: string, cb: any) => {
                         if (event === 'data') {
                             cb(Buffer.from(`Command Failure`, 'utf8'));
                         }
                     })
                 },
-                on: jest.fn().mockImplementation((event, cb) => {
+                on: jest.fn().mockImplementation((event: string, cb: any) => {
                     if (event === 'close') {
                         cb(1);
                     }
@@ -135,8 +141,8 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
               },
             ]
         `);
-        expect(mockedCp.spawn).toHaveBeenCalled();
-        expect(mockedCp.spawn).toHaveBeenNthCalledWith(
+        expect(mockSpawnFn).toHaveBeenCalled();
+        expect(mockSpawnFn).toHaveBeenNthCalledWith(
             1,
             'npm',
             ['show', '@sapui5/distribution-metadata', 'versions', '--no-color'],
@@ -145,7 +151,7 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
     });
 
     it('Validate error spawn flow', async () => {
-        mockedCp.spawn.mockImplementation((): any => {
+        mockSpawnFn.mockImplementation((): any => {
             return {
                 stdout: {
                     on: jest.fn(),
@@ -155,7 +161,7 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
                     on: jest.fn(),
                     setEncoding: jest.fn()
                 },
-                on: jest.fn().mockImplementation((event, cb) => {
+                on: jest.fn().mockImplementation((_event: string, cb: any) => {
                     cb(new Error('spawn ENOENT'));
                 }),
                 error: new Error('spawn ENOENT')
@@ -166,10 +172,10 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
 
     it('Validate spawn flow on windows', async () => {
         Object.defineProperty(process, 'platform', { value: 'win32' });
-        mockedCp.spawn.mockImplementation((): any => {
+        mockSpawnFn.mockImplementation((): any => {
             return {
                 stdout: {
-                    on: jest.fn().mockImplementation((event, cb) => {
+                    on: jest.fn().mockImplementation((event: string, cb: any) => {
                         if (event === 'data') {
                             cb(Buffer.from(`['1.90.0', '1.90.1', '1.92.1', '1.93.0', '1.80-snapshot']`, 'utf8'));
                         }
@@ -179,7 +185,7 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
                 stderr: {
                     on: jest.fn()
                 },
-                on: jest.fn().mockImplementation((event, cb) => {
+                on: jest.fn().mockImplementation((event: string, cb: any) => {
                     if (event === 'close') {
                         cb(0);
                     }
@@ -205,8 +211,8 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
             ]
         `); // Sorted
         expect(retrievedUI5Versions.length).toEqual(4);
-        expect(mockedCp.spawn).toHaveBeenCalled();
-        expect(mockedCp.spawn).toHaveBeenNthCalledWith(
+        expect(mockSpawnFn).toHaveBeenCalled();
+        expect(mockSpawnFn).toHaveBeenNthCalledWith(
             1,
             'npm.cmd',
             ['show', '@sapui5/distribution-metadata', 'versions', '--no-color'],
@@ -215,17 +221,20 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
     });
 });
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const mockSpawn = require('mock-spawn');
-import childProcess from 'node:child_process';
+// Use createRequire for CJS-only mock-spawn module
+const requireCjs = createRequire(import.meta.url);
+const mockSpawn = requireCjs('mock-spawn');
 
 describe('Test commands internals', () => {
     jest.setTimeout(10000);
     let mockedSpawn = mockSpawn();
 
-    beforeEach(() => {
+    // We need a fresh import of commands that uses the real child_process
+    // but with spawn replaced by mock-spawn
+    beforeEach(async () => {
         mockedSpawn = mockSpawn();
-        childProcess.spawn = mockedSpawn;
+        // Re-mock child_process with the mock-spawn instance
+        mockSpawnFn.mockImplementation((...args: any[]) => mockedSpawn(...args));
     });
 
     it('Fails to spawn with error', async () => {
