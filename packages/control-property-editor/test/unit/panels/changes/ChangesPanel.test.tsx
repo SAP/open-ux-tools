@@ -1,19 +1,11 @@
 import type { PendingChange, SavedChange } from '@sap-ux-private/control-property-editor-common';
+import { selectControl } from '@sap-ux-private/control-property-editor-common';
 import type { FilterOptions, ChangesSlice } from '../../../../src/slice';
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import * as cpeCommon from '@sap-ux-private/control-property-editor-common';
-import * as reactRedux from 'react-redux';
 import { render } from '../../utils';
 import { FilterName } from '../../../../src/slice';
 import { ChangesPanel } from '../../../../src/panels/changes';
-
-jest.mock('@sap-ux-private/control-property-editor-common', () => {
-    return {
-        __esModule: true,
-        ...jest.requireActual('@sap-ux-private/control-property-editor-common')
-    };
-});
 
 const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSlice => {
     const pending: PendingChange[] = !generateSavedChanges
@@ -763,10 +755,7 @@ describe('ChangePanel', () => {
     });
 
     test('saved control change - link', () => {
-        jest.spyOn(cpeCommon, 'selectControl').mockImplementationOnce(jest.fn());
-        jest.spyOn(reactRedux, 'useDispatch').mockReturnValue(jest.fn());
-
-        render(<ChangesPanel />, {
+        const { dispatch } = render(<ChangesPanel />, {
             initialState: {
                 changes: {
                     controls: {},
@@ -804,8 +793,7 @@ describe('ChangePanel', () => {
         expect(link).toBeInTheDocument();
 
         link.click();
-        expect(reactRedux.useDispatch).toHaveBeenCalled();
-        expect(cpeCommon.selectControl).toHaveBeenCalledWith('testId1');
+        expect(dispatch).toHaveBeenCalledWith(selectControl('testId1'));
     });
 
     test('Filter unsaved changes', () => {

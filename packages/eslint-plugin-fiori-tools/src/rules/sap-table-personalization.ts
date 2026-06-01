@@ -1,16 +1,16 @@
-import type { FioriRuleDefinition } from '../types';
+import type { FioriRuleDefinition } from '../types.js';
 import {
     type PersonalizationMessageId,
     type PersonalizationProperty,
     TABLE_PERSONALIZATION,
     type TablePersonalization
-} from '../language/diagnostics';
-import { createFioriRule } from '../language/rule-factory';
+} from '../language/diagnostics.js';
+import { createFioriRule } from '../language/rule-factory.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
-import { createJsonFixer } from '../language/rule-fixer';
-import type { FeV4PageType, Table } from '../project-context/linker/fe-v4';
-import type { ParsedApp } from '../project-context/parser';
-import { isLowerThanMinimalUi5Version } from '../utils/version';
+import { createJsonFixer } from '../language/rule-fixer.js';
+import type { FeV4PageType, Table } from '../project-context/linker/fe-v4.js';
+import type { ParsedApp } from '../project-context/parser/index.js';
+import { isLowerThanMinimalUi5Version } from '../utils/version.js';
 
 const PersonalizationProperties = ['column', 'filter', 'group', 'sort'];
 

@@ -3,11 +3,11 @@ import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type {
     QuickActionContext,
     SimpleQuickActionDefinition
-} from '../../../cpe/quick-actions/quick-action-definition';
-import { areManifestChangesSupported, prepareManifestChange } from './utils';
+} from '../../../cpe/quick-actions/quick-action-definition.js';
+import { areManifestChangesSupported, prepareManifestChange } from './utils.js';
 import type ListReportComponent from 'sap/suite/ui/generic/template/ListReport';
 
-import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
+import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base.js';
 import Component from 'sap/ui/core/Component';
 
 export const ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS = 'enable-variant-management-in-tables-charts';

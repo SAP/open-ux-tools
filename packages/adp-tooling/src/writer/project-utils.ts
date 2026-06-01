@@ -1,8 +1,11 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
 
-import type { CloudApp, AdpWriterConfig, TypesConfig, CfAdpWriterConfig, DescriptorVariant } from '../types';
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+import type { CloudApp, AdpWriterConfig, TypesConfig, CfAdpWriterConfig, DescriptorVariant } from '../types.js';
 import {
     enhanceUI5DeployYaml,
     enhanceUI5Yaml,
@@ -12,7 +15,7 @@ import {
     enhanceUI5YamlWithTranspileMiddleware,
     enhanceUI5YamlWithCfCustomTask,
     enhanceUI5YamlWithFioriToolsMiddleware
-} from './options';
+} from './options.js';
 
 import type { Package } from '@sap-ux/project-access';
 import { UI5Config, UI5_DEFAULT, getEsmTypesVersion, getTypesPackage, getTypesVersion } from '@sap-ux/ui5-config';

@@ -1,67 +1,67 @@
-import * as i18n from '../../../../src/i18n';
-import type { NewModelAnswers, DescriptorVariant } from '../../../../src';
-import type { NewModelDataWithAnnotations } from '../../../../src/types';
-import { isCFEnvironment } from '../../../../src/base/cf';
-import { getAdpConfig } from '../../../../src/base/helper';
-import { getPrompts, createNewModelData } from '../../../../src/prompts/add-new-model';
-import * as validators from '@sap-ux/project-input-validator';
-import { getChangesByType } from '../../../../src/base/change-utils';
-import { listDestinations, isOnPremiseDestination, isAppStudio } from '@sap-ux/btp-utils';
-import { getBtpDestinations } from '../../../../src/cf/services/destinations';
-import { Severity, MessageType } from '@sap-devx/yeoman-ui-types';
+import { jest } from '@jest/globals';
+
+const mockGetChangesByType = jest.fn();
+const mockIsCFEnvironment = jest.fn();
+const mockGetAdpConfig = jest.fn();
+const mockListDestinations = jest.fn();
+const mockGetBtpDestinations = jest.fn();
+const mockIsOnPremiseDestination = jest.fn();
+const mockIsAppStudio = jest.fn().mockReturnValue(false);
+const mockReadFileSync = jest.fn();
+const mockHasContentDuplication = jest.fn().mockReturnValue(false);
+const mockHasCustomerPrefix = jest.fn().mockReturnValue(true);
+const mockValidateJSON = jest.fn().mockReturnValue(true);
+const mockValidateSpecialChars = jest.fn().mockReturnValue(true);
+const mockValidateEmptyString = jest.fn().mockReturnValue(true);
+const mockValidateEmptySpaces = jest.fn().mockReturnValue(true);
+const mockIsDataSourceURI = jest.fn().mockReturnValue(true);
+
+jest.unstable_mockModule('../../../../src/base/change-utils', () => ({
+    getChangesByType: mockGetChangesByType
+}));
+
+jest.unstable_mockModule('../../../../src/base/cf', () => ({
+    isCFEnvironment: mockIsCFEnvironment
+}));
+
+jest.unstable_mockModule('../../../../src/base/helper', () => ({
+    getAdpConfig: mockGetAdpConfig
+}));
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    listDestinations: mockListDestinations,
+    isOnPremiseDestination: mockIsOnPremiseDestination,
+    isAppStudio: mockIsAppStudio
+}));
+
+jest.unstable_mockModule('../../../../src/cf/services/destinations', () => ({
+    getBtpDestinations: mockGetBtpDestinations
+}));
+
+const realFs = await import('node:fs');
+jest.unstable_mockModule('node:fs', () => ({
+    ...realFs,
+    readFileSync: mockReadFileSync,
+    default: { ...realFs.default, readFileSync: mockReadFileSync }
+}));
+
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    hasContentDuplication: mockHasContentDuplication,
+    hasCustomerPrefix: mockHasCustomerPrefix,
+    validateJSON: mockValidateJSON,
+    validateSpecialChars: mockValidateSpecialChars,
+    validateEmptyString: mockValidateEmptyString,
+    validateEmptySpaces: mockValidateEmptySpaces,
+    isDataSourceURI: mockIsDataSourceURI
+}));
+
+const { getPrompts, createNewModelData } = await import('../../../../src/prompts/add-new-model');
+const i18n = await import('../../../../src/i18n');
+const { Severity, MessageType } = await import('@sap-devx/yeoman-ui-types');
+import type { NewModelAnswers, DescriptorVariant } from '../../../../src/index.js';
+import type { NewModelDataWithAnnotations } from '../../../../src/types.js';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
-import { readFileSync } from 'node:fs';
 import type { ToolsLogger } from '@sap-ux/logger';
-
-const getChangesByTypeMock = getChangesByType as jest.Mock;
-const isCFEnvironmentMock = isCFEnvironment as jest.Mock;
-const getAdpConfigMock = getAdpConfig as jest.Mock;
-const listDestinationsMock = listDestinations as jest.Mock;
-const getDestinationsMock = getBtpDestinations as jest.Mock;
-const isOnPremiseDestinationMock = isOnPremiseDestination as jest.Mock;
-const isAppStudioMock = isAppStudio as jest.Mock;
-
-const readFileSyncMock = readFileSync as jest.Mock;
-
-jest.mock('../../../../src/base/change-utils.ts', () => ({
-    ...jest.requireActual('../../../../src/base/change-utils.ts'),
-    getChangesByType: jest.fn()
-}));
-
-jest.mock('../../../../src/base/cf.ts', () => ({
-    isCFEnvironment: jest.fn()
-}));
-
-jest.mock('../../../../src/base/helper.ts', () => ({
-    ...jest.requireActual('../../../../src/base/helper.ts'),
-    getAdpConfig: jest.fn()
-}));
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    listDestinations: jest.fn(),
-    isOnPremiseDestination: jest.fn(),
-    isAppStudio: jest.fn()
-}));
-
-jest.mock('../../../../src/cf/services/destinations', () => ({
-    getBtpDestinations: jest.fn()
-}));
-
-jest.mock('node:fs', () => ({
-    ...jest.requireActual('node:fs'),
-    readFileSync: jest.fn()
-}));
-
-jest.mock('@sap-ux/project-input-validator', () => ({
-    ...jest.requireActual('@sap-ux/project-input-validator'),
-    hasContentDuplication: jest.fn().mockReturnValue(false),
-    hasCustomerPrefix: jest.fn().mockReturnValue(true),
-    validateJSON: jest.fn().mockReturnValue(true),
-    validateSpecialChars: jest.fn().mockReturnValue(true),
-    validateEmptyString: jest.fn().mockReturnValue(true),
-    isDataSourceURI: jest.fn().mockReturnValue(true)
-}));
 
 describe('getPrompts', () => {
     const mockPath = '/path/to/project';
@@ -71,18 +71,24 @@ describe('getPrompts', () => {
     });
 
     beforeEach(() => {
-        getChangesByTypeMock.mockReturnValue([]);
-        isCFEnvironmentMock.mockResolvedValue(false);
-        getAdpConfigMock.mockRejectedValue(new Error('ui5.yaml not found'));
-        listDestinationsMock.mockResolvedValue({});
-        getDestinationsMock.mockResolvedValue({});
-        isAppStudioMock.mockReturnValue(false);
-        readFileSyncMock.mockClear();
-        readFileSyncMock.mockReturnValue('{"routes": []}');
+        mockGetChangesByType.mockReturnValue([]);
+        mockIsCFEnvironment.mockResolvedValue(false);
+        mockGetAdpConfig.mockRejectedValue(new Error('ui5.yaml not found'));
+        mockListDestinations.mockResolvedValue({});
+        mockGetBtpDestinations.mockResolvedValue({});
+        mockIsAppStudio.mockReturnValue(false);
+        mockReadFileSync.mockClear();
+        mockReadFileSync.mockReturnValue('{"routes": []}');
+        mockHasContentDuplication.mockReturnValue(false);
+        mockHasCustomerPrefix.mockReturnValue(true);
+        mockValidateJSON.mockReturnValue(true);
+        mockValidateSpecialChars.mockReturnValue(true);
+        mockValidateEmptyString.mockReturnValue(true);
+        mockIsDataSourceURI.mockReturnValue(true);
     });
 
     afterEach(() => {
-        jest.restoreAllMocks();
+        jest.clearAllMocks();
     });
 
     it('should generate prompts with default settings for non-customer layers', async () => {
@@ -99,19 +105,17 @@ describe('getPrompts', () => {
     });
 
     it('should return true when validating service name prompt', async () => {
-        const hasContentDuplicationSpy = jest.spyOn(validators, 'hasContentDuplication');
-
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
         const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
 
         expect(typeof validation).toBe('function');
         expect(validation?.('customer.testName')).toBe(true);
-        expect(hasContentDuplicationSpy).toHaveBeenCalledWith('customer.testName', 'dataSource', []);
+        expect(mockHasContentDuplication).toHaveBeenCalledWith('customer.testName', 'dataSource', []);
     });
 
     it('should return error message when validating service name prompt and name does not include "customer."', async () => {
-        jest.spyOn(validators, 'hasCustomerPrefix').mockReturnValueOnce(false);
+        mockHasCustomerPrefix.mockReturnValueOnce(false);
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -131,7 +135,7 @@ describe('getPrompts', () => {
     });
 
     it('should return error message when validating service name prompt and has special characters', async () => {
-        jest.spyOn(validators, 'validateSpecialChars').mockReturnValueOnce('general.invalidValueForSpecialChars');
+        mockValidateSpecialChars.mockReturnValueOnce('general.invalidValueForSpecialChars');
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
@@ -140,19 +144,8 @@ describe('getPrompts', () => {
         expect(validation?.('customer.testName@')).toBe('general.invalidValueForSpecialChars');
     });
 
-    it('should return error message when validating service name prompt and name ends with a non-alphanumeric character', async () => {
-        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
-
-        const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
-
-        expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName.')).toBe('The input must end with an alphanumeric character.');
-        expect(validation?.('customer.testName-')).toBe('The input must end with an alphanumeric character.');
-        expect(validation?.('customer.testName$')).toBe('The input must end with an alphanumeric character.');
-    });
-
-    it('should return error message when validating service name prompt and has content duplication', async () => {
-        jest.spyOn(validators, 'hasContentDuplication').mockReturnValueOnce(true);
+    it('should return error message when validating service name prompt has content duplication', async () => {
+        mockHasContentDuplication.mockReturnValueOnce(true);
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -174,7 +167,7 @@ describe('getPrompts', () => {
     });
 
     it('should return error message when validating empty service uri prompt', async () => {
-        jest.spyOn(validators, 'validateEmptyString').mockReturnValueOnce('general.inputCannotBeEmpty');
+        mockValidateEmptyString.mockReturnValueOnce('general.inputCannotBeEmpty');
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -185,7 +178,7 @@ describe('getPrompts', () => {
     });
 
     it('should return error message when service uri is not valid uri', async () => {
-        jest.spyOn(validators, 'isDataSourceURI').mockReturnValueOnce(false);
+        mockIsDataSourceURI.mockReturnValueOnce(false);
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -196,7 +189,7 @@ describe('getPrompts', () => {
     });
 
     it('should return information message with resulting service URL for ABAP VS Code project (url in ui5.yaml)', async () => {
-        getAdpConfigMock.mockResolvedValue({ target: { url: 'https://abap.example.com' } });
+        mockGetAdpConfig.mockResolvedValue({ target: { url: 'https://abap.example.com' } });
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const additionalMessages = prompts.find((p) => p.name === 'uri')?.additionalMessages as Function;
@@ -213,9 +206,9 @@ describe('getPrompts', () => {
     });
 
     it('should return information message with resulting service URL for ABAP BAS project (destination in ui5.yaml)', async () => {
-        isAppStudioMock.mockReturnValue(true);
-        getAdpConfigMock.mockResolvedValue({ target: { destination: 'MY_DEST' } });
-        listDestinationsMock.mockResolvedValue({ MY_DEST: { Host: 'https://bas.dest.example.com', Name: 'MY_DEST' } });
+        mockIsAppStudio.mockReturnValue(true);
+        mockGetAdpConfig.mockResolvedValue({ target: { destination: 'MY_DEST' } });
+        mockListDestinations.mockResolvedValue({ MY_DEST: { Host: 'https://bas.dest.example.com', Name: 'MY_DEST' } });
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const additionalMessages = prompts.find((p) => p.name === 'uri')?.additionalMessages as Function;
@@ -232,7 +225,7 @@ describe('getPrompts', () => {
     });
 
     it('should return information message with resulting service URL for CF project using selected destination', async () => {
-        isCFEnvironmentMock.mockResolvedValue(true);
+        mockIsCFEnvironment.mockResolvedValue(true);
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const additionalMessages = prompts.find((p) => p.name === 'uri')?.additionalMessages as Function;
@@ -252,8 +245,8 @@ describe('getPrompts', () => {
     });
 
     it('should return undefined from additionalMessages when uri is invalid', async () => {
-        jest.spyOn(validators, 'isDataSourceURI').mockReturnValueOnce(false);
-        getAdpConfigMock.mockResolvedValue({ target: { url: 'https://abap.example.com' } });
+        mockIsDataSourceURI.mockReturnValueOnce(false);
+        mockGetAdpConfig.mockResolvedValue({ target: { url: 'https://abap.example.com' } });
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const additionalMessages = prompts.find((p) => p.name === 'uri')?.additionalMessages as Function;
@@ -273,8 +266,8 @@ describe('getPrompts', () => {
     });
 
     it('should return target.url in non-AppStudio environment even when destination is also configured', async () => {
-        isAppStudioMock.mockReturnValue(false);
-        getAdpConfigMock.mockResolvedValue({ target: { url: 'https://vscode.example.com', destination: 'MY_DEST' } });
+        mockIsAppStudio.mockReturnValue(false);
+        mockGetAdpConfig.mockResolvedValue({ target: { url: 'https://vscode.example.com', destination: 'MY_DEST' } });
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const additionalMessages = prompts.find((p) => p.name === 'uri')?.additionalMessages as Function;
@@ -291,8 +284,8 @@ describe('getPrompts', () => {
     });
 
     it('should return undefined in non-AppStudio environment when target has no url', async () => {
-        isAppStudioMock.mockReturnValue(false);
-        getAdpConfigMock.mockResolvedValue({ target: { destination: 'MY_DEST' } });
+        mockIsAppStudio.mockReturnValue(false);
+        mockGetAdpConfig.mockResolvedValue({ target: { destination: 'MY_DEST' } });
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const additionalMessages = prompts.find((p) => p.name === 'uri')?.additionalMessages as Function;
@@ -303,8 +296,8 @@ describe('getPrompts', () => {
     });
 
     it('should return undefined in AppStudio environment when target has no destination', async () => {
-        isAppStudioMock.mockReturnValue(true);
-        getAdpConfigMock.mockResolvedValue({ target: { url: 'https://some.url.com' } });
+        mockIsAppStudio.mockReturnValue(true);
+        mockGetAdpConfig.mockResolvedValue({ target: { url: 'https://some.url.com' } });
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const additionalMessages = prompts.find((p) => p.name === 'uri')?.additionalMessages as Function;
@@ -324,7 +317,7 @@ describe('getPrompts', () => {
     });
 
     it('should return true when validating model settings prompt with empty value', async () => {
-        jest.spyOn(validators, 'validateEmptyString').mockReturnValueOnce('general.inputCannotBeEmpty');
+        mockValidateEmptyString.mockReturnValueOnce('general.inputCannotBeEmpty');
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -335,7 +328,7 @@ describe('getPrompts', () => {
     });
 
     it('should return error message when validating model settings prompt with incorrect input', async () => {
-        jest.spyOn(validators, 'validateJSON').mockReturnValueOnce('general.invalidJSON');
+        mockValidateJSON.mockReturnValueOnce('general.invalidJSON');
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
 
@@ -355,7 +348,7 @@ describe('getPrompts', () => {
     });
 
     it('should return error message when data source uri is not valid uri', async () => {
-        jest.spyOn(validators, 'isDataSourceURI').mockReturnValueOnce(false);
+        mockIsDataSourceURI.mockReturnValueOnce(false);
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const validation = prompts.find((p) => p.name === 'dataSourceURI')?.validate;
@@ -365,7 +358,7 @@ describe('getPrompts', () => {
     });
 
     it('should return information message with resulting annotation URL for ABAP VS Code project (url in ui5.yaml)', async () => {
-        getAdpConfigMock.mockResolvedValue({ target: { url: 'https://abap.example.com' } });
+        mockGetAdpConfig.mockResolvedValue({ target: { url: 'https://abap.example.com' } });
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const additionalMessages = prompts.find((p) => p.name === 'dataSourceURI')?.additionalMessages as Function;
@@ -382,9 +375,9 @@ describe('getPrompts', () => {
     });
 
     it('should return information message with resulting annotation URL for ABAP BAS project (destination in ui5.yaml)', async () => {
-        isAppStudioMock.mockReturnValue(true);
-        getAdpConfigMock.mockResolvedValue({ target: { destination: 'MY_DEST' } });
-        listDestinationsMock.mockResolvedValue({ MY_DEST: { Host: 'https://bas.dest.example.com', Name: 'MY_DEST' } });
+        mockIsAppStudio.mockReturnValue(true);
+        mockGetAdpConfig.mockResolvedValue({ target: { destination: 'MY_DEST' } });
+        mockListDestinations.mockResolvedValue({ MY_DEST: { Host: 'https://bas.dest.example.com', Name: 'MY_DEST' } });
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const additionalMessages = prompts.find((p) => p.name === 'dataSourceURI')?.additionalMessages as Function;
@@ -401,7 +394,7 @@ describe('getPrompts', () => {
     });
 
     it('should return information message with resulting annotation URL for CF project using selected destination', async () => {
-        isCFEnvironmentMock.mockResolvedValue(true);
+        mockIsCFEnvironment.mockResolvedValue(true);
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const additionalMessages = prompts.find((p) => p.name === 'dataSourceURI')?.additionalMessages as Function;
@@ -421,8 +414,8 @@ describe('getPrompts', () => {
     });
 
     it('should return undefined from dataSourceURI additionalMessages when uri is invalid', async () => {
-        jest.spyOn(validators, 'isDataSourceURI').mockReturnValueOnce(false);
-        getAdpConfigMock.mockResolvedValue({ target: { url: 'https://abap.example.com' } });
+        mockIsDataSourceURI.mockReturnValueOnce(false);
+        mockGetAdpConfig.mockResolvedValue({ target: { url: 'https://abap.example.com' } });
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const additionalMessages = prompts.find((p) => p.name === 'dataSourceURI')?.additionalMessages as Function;
@@ -461,6 +454,17 @@ describe('getPrompts', () => {
         expect(typeof annotationSettingsPromptWhen).toBe('function');
         expect(dataSourceURIPromptWhen(answers)).toBe(true);
         expect(annotationSettingsPromptWhen(answers)).toBe(true);
+    });
+
+    it('should return error message when validating service name prompt and name ends with a non-alphanumeric character', async () => {
+        const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
+
+        const validation = prompts.find((p) => p.name === 'modelAndDatasourceName')?.validate;
+
+        expect(typeof validation).toBe('function');
+        expect(validation?.('customer.testName.')).toBe('The input must end with an alphanumeric character.');
+        expect(validation?.('customer.testName-')).toBe('The input must end with an alphanumeric character.');
+        expect(validation?.('customer.testName$')).toBe('The input must end with an alphanumeric character.');
     });
 
     it('should show "Datasource Name" label for modelAndDatasourceName prompt when service type is HTTP', async () => {
@@ -506,11 +510,11 @@ describe('getPrompts', () => {
     });
 
     it('should return error when xs-app.json already has a route with the same target for CF project', async () => {
-        isCFEnvironmentMock.mockResolvedValue(true);
-        readFileSyncMock.mockReturnValueOnce(
+        mockIsCFEnvironment.mockResolvedValue(true);
+        mockReadFileSync.mockReturnValueOnce(
             JSON.stringify({
                 routes: [{ source: '^some/route/(.*)', target: '/sap/opu/odata/v4/$1', destination: 'DEST' }]
-            }) as any
+            })
         );
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
@@ -521,11 +525,11 @@ describe('getPrompts', () => {
     });
 
     it('should return true when xs-app.json has no matching route for CF project', async () => {
-        isCFEnvironmentMock.mockResolvedValue(true);
-        readFileSyncMock.mockReturnValueOnce(
+        mockIsCFEnvironment.mockResolvedValue(true);
+        mockReadFileSync.mockReturnValueOnce(
             JSON.stringify({
                 routes: [{ source: '^other/route/(.*)', target: '/other/route/$1', destination: 'DEST' }]
-            }) as any
+            })
         );
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
@@ -542,12 +546,12 @@ describe('getPrompts', () => {
         expect(typeof validation).toBe('function');
         validation?.('/sap/opu/odata/v4/');
 
-        expect(readFileSyncMock).not.toHaveBeenCalledWith(expect.stringContaining('xs-app.json'), expect.anything());
+        expect(mockReadFileSync).not.toHaveBeenCalledWith(expect.stringContaining('xs-app.json'), expect.anything());
     });
 
     it('should log the error and show notification via appWizard when fetching destinations fails in CF', async () => {
-        isCFEnvironmentMock.mockResolvedValue(true);
-        getDestinationsMock.mockRejectedValue(new Error('Network error'));
+        mockIsCFEnvironment.mockResolvedValue(true);
+        mockGetBtpDestinations.mockRejectedValue(new Error('Network error'));
 
         const logger = { error: jest.fn() } as Partial<ToolsLogger> as ToolsLogger;
         const appWizard = { showError: jest.fn() } as unknown as AppWizard;
@@ -561,15 +565,15 @@ describe('getPrompts', () => {
     });
 
     it('should not throw when appWizard is not provided and fetching destinations fails in CF', async () => {
-        isCFEnvironmentMock.mockResolvedValue(true);
-        getDestinationsMock.mockRejectedValue(new Error('Network error'));
+        mockIsCFEnvironment.mockResolvedValue(true);
+        mockGetBtpDestinations.mockRejectedValue(new Error('Network error'));
 
         const logger = { error: jest.fn() } as Partial<ToolsLogger> as ToolsLogger;
         await expect(getPrompts(mockPath, 'CUSTOMER_BASE', logger)).resolves.toBeDefined();
     });
 
     it('should return true when validating destination prompt with a valid Name', async () => {
-        isCFEnvironmentMock.mockResolvedValue(true);
+        mockIsCFEnvironment.mockResolvedValue(true);
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const validation = prompts.find((p) => p.name === 'destination')?.validate;
@@ -579,8 +583,8 @@ describe('getPrompts', () => {
     });
 
     it('should return error message when validating destination prompt with empty Name', async () => {
-        isCFEnvironmentMock.mockResolvedValue(true);
-        jest.spyOn(validators, 'validateEmptyString').mockReturnValueOnce('general.inputCannotBeEmpty');
+        mockIsCFEnvironment.mockResolvedValue(true);
+        mockValidateEmptyString.mockReturnValueOnce('general.inputCannotBeEmpty');
 
         const prompts = await getPrompts(mockPath, 'CUSTOMER_BASE');
         const validation = prompts.find((p) => p.name === 'destination')?.validate;
@@ -599,8 +603,8 @@ describe('createNewModelData', () => {
     });
 
     beforeEach(() => {
-        isCFEnvironmentMock.mockResolvedValue(false);
-        isOnPremiseDestinationMock.mockReturnValue(false);
+        mockIsCFEnvironment.mockResolvedValue(false);
+        mockIsOnPremiseDestination.mockReturnValue(false);
     });
 
     afterEach(() => {
@@ -668,8 +672,8 @@ describe('createNewModelData', () => {
     });
 
     it('should set CF fields and isOnPremiseDestination for CF on-premise projects', async () => {
-        isCFEnvironmentMock.mockResolvedValue(true);
-        isOnPremiseDestinationMock.mockReturnValue(true);
+        mockIsCFEnvironment.mockResolvedValue(true);
+        mockIsOnPremiseDestination.mockReturnValue(true);
 
         const destination = { Host: 'https://cf.dest.example.com', Name: 'CF_DEST' };
         const answers = {
@@ -686,6 +690,6 @@ describe('createNewModelData', () => {
         expect(result.isCloudFoundry).toBe(true);
         expect(result.destinationName).toBe('CF_DEST');
         expect(result.isOnPremiseDestination).toBe(true);
-        expect(isOnPremiseDestinationMock).toHaveBeenCalledWith(destination);
+        expect(mockIsOnPremiseDestination).toHaveBeenCalledWith(destination);
     });
 });

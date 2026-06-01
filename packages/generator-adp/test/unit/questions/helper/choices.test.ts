@@ -1,22 +1,23 @@
-import { AppRouterType } from '@sap-ux/adp-tooling';
-import { AdaptationProjectType, type AdaptationDescriptor } from '@sap-ux/axios-extension';
+import { jest } from '@jest/globals';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import type { AdaptationDescriptor } from '@sap-ux/axios-extension';
 import type { CFApp, Endpoint, SourceApplication } from '@sap-ux/adp-tooling';
 
-import {
+jest.unstable_mockModule('../../../../src/utils/i18n', () => ({
+    t: jest.fn((key: string) => key),
+    initI18n: jest.fn().mockResolvedValue(undefined)
+}));
+
+const { AppRouterType } = await import('@sap-ux/adp-tooling');
+const {
     getApplicationChoices,
     getCFAppChoices,
     getAppRouterChoices,
     getAdaptationChoices,
     getKeyUserSystemChoices,
     getProjectTypeChoices
-} from '../../../../src/app/questions/helper/choices';
-import { t } from '../../../../src/utils/i18n';
-
-// Jest cannot exit if we use the actual translation function.
-jest.mock('../../../../src/utils/i18n', () => ({
-    t: jest.fn((key: string) => key), // Returns the key itself
-    initI18n: jest.fn().mockResolvedValue(undefined)
-}));
+} = await import('../../../../src/app/questions/helper/choices');
+const { t } = await import('../../../../src/utils/i18n');
 
 describe('Choices Helper Functions', () => {
     beforeEach(() => {

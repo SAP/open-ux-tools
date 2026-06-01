@@ -1,15 +1,17 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { UI5Config, getEsmTypesVersion, getPreviewMiddlewareConfig, getTypesPackage } from '@sap-ux/ui5-config';
 import { getMinimumUI5Version, type Manifest, type Package } from '@sap-ux/project-access';
-import { mergeWithDefaults } from './data';
-import { ui5TSSupport } from './data/ui5Libs';
-import { applyOptionalFeatures, enableTypescript as enableTypescriptOption, getTemplateOptions } from './options';
-import { Ui5App } from './types';
+import { mergeWithDefaults } from './data/index.js';
+import { ui5TSSupport } from './data/ui5Libs.js';
+import { applyOptionalFeatures, enableTypescript as enableTypescriptOption, getTemplateOptions } from './options.js';
+import type { Ui5App, App, AppOptions, UI5 } from './types.js';
 import type { Editor } from 'mem-fs-editor';
-import type { App, AppOptions, UI5 } from './types';
-import { copyTemplates } from './utils';
+import { copyTemplates } from './utils.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Writes the template to the memfs editor instance.
@@ -191,14 +193,15 @@ async function enableTypescript(basePath: string, fs?: Editor): Promise<Editor> 
     return fs;
 }
 
-export { Ui5App, generate, enableTypescript, isTypescriptEnabled };
-export { App, Package, UI5, AppOptions };
-export { addEslintFeature } from './options';
+export type { Package } from '@sap-ux/project-access';
+export { generate, enableTypescript, isTypescriptEnabled };
+export type { App, Ui5App, UI5, AppOptions } from './types.js';
+export { addEslintFeature } from './options.js';
 export {
     compareUI5VersionGte,
     ui5LtsVersion_1_120,
     ui5LtsVersion_1_71,
     processDestinationPath,
     getTemplateVersionPath
-} from './utils';
-export { getManifestVersion } from './data/defaults';
+} from './utils.js';
+export { getManifestVersion } from './data/defaults.js';

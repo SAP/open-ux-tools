@@ -1,6 +1,6 @@
 import type { VocabularyService, ComplexTypeProperty, Term } from '@sap-ux/odata-vocabularies';
 
-import type { Context } from './visitor-state';
+import type { Context } from './visitor-state.js';
 
 /**
  * Gets the implicit property type based on the provided vocabulary service, context, and property name.

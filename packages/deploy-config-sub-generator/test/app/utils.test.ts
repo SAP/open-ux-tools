@@ -1,22 +1,36 @@
-import { getYUIDetails, parseTarget } from '../../src/app/utils';
-import { isMTAInstalled, getEnvApiHubConfig } from '../../src/utils';
+import { jest } from '@jest/globals';
+import { createRequire } from 'node:module';
 import type { DeployConfigOptions } from '../../src/types';
-import hasbin from 'hasbin';
-import mockFs from 'node:fs';
 
-jest.mock('fs');
-jest.mock('hasbin', () => ({
-    sync: jest.fn()
+const require = createRequire(import.meta.url);
+
+const mockHasbinSync = jest.fn();
+const mockExistsSync = jest.fn().mockReturnValue(true);
+
+jest.unstable_mockModule('hasbin', () => ({
+    default: { sync: mockHasbinSync },
+    sync: mockHasbinSync
 }));
 
-const hasbinSyncMock = hasbin.sync as jest.MockedFunction<typeof hasbin.sync>;
+jest.unstable_mockModule('node:fs', () => {
+    const actual = require('node:fs');
+    return {
+        __esModule: true,
+        default: actual,
+        ...actual,
+        existsSync: mockExistsSync
+    };
+});
+
+const { getYUIDetails, parseTarget } = await import('../../src/app/utils');
+const { isMTAInstalled, getEnvApiHubConfig } = await import('../../src/utils');
+const { t } = await import('@sap-ux/deploy-config-generator-shared');
 
 describe('Test utils - Deploy', () => {
     beforeEach(() => {});
 
     beforeAll(() => {
         jest.clearAllMocks();
-        jest.spyOn(mockFs, 'existsSync').mockImplementation(() => true);
     });
 
     afterAll(() => {
@@ -30,14 +44,14 @@ describe('Test utils - Deploy', () => {
     });
 
     it('Validate isMTAInstalled with missing mta', () => {
-        hasbinSyncMock.mockReturnValue(false);
-        expect(isMTAInstalled('cf', '')).toEqual('errors.noBinary');
+        mockHasbinSync.mockReturnValue(false);
+        expect(isMTAInstalled('cf', '')).toEqual(t('errors.noBinary', { bin: 'mta', pkg: 'mta' }));
         expect(isMTAInstalled('InvalidParam', '')).toEqual(true);
-        expect(isMTAInstalled('abap', '')).toEqual('errors.noBinary');
+        expect(isMTAInstalled('abap', '')).toEqual(t('errors.noBinary', { bin: 'mta', pkg: 'mta' }));
     });
 
     it('Validate isMTAInstalled with installed mta', () => {
-        hasbinSyncMock.mockReturnValue(true);
+        mockHasbinSync.mockReturnValue(true);
         expect(isMTAInstalled('cf', '')).toEqual(true);
         expect(isMTAInstalled('InvalidParam', '')).toEqual(true);
         expect(isMTAInstalled('abap', '')).toEqual(true);

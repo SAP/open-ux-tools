@@ -1,25 +1,27 @@
-import {
-    generateAppGenInfo,
-    getHostEnvironment,
-    hostEnvironment,
-    type AppGenInfo
-} from '@sap-ux/fiori-generator-shared';
+import { jest } from '@jest/globals';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
-import { writeAPIHubKeyFiles, writeAppGenInfoFiles } from '../../../src/fiori-app-generator/writing';
 import type { ApiHubConfig, Project, Service } from '../../../src/types';
 import { ApiHubType, FloorplanFE, FloorplanFF, generatorName } from '../../../src/types';
-import { initI18nFioriAppSubGenerator, t } from '../../../src/utils';
+import type { AppGenInfo } from '@sap-ux/fiori-generator-shared';
 
-jest.mock('@sap-ux/fiori-generator-shared', () => {
-    return {
-        ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-        sendTelemetry: jest.fn(),
-        getHostEnvironment: jest.fn(),
-        generateAppGenInfo: jest.fn()
-    };
-});
+// Pre-import actual
+const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+
+const mockGenerateAppGenInfo = jest.fn();
+const mockGetHostEnvironment = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGenShared,
+    sendTelemetry: jest.fn(),
+    getHostEnvironment: mockGetHostEnvironment,
+    generateAppGenInfo: mockGenerateAppGenInfo
+}));
+
+const { writeAPIHubKeyFiles, writeAppGenInfoFiles } = await import('../../../src/fiori-app-generator/writing');
+const { initI18nFioriAppSubGenerator, t } = await import('../../../src/utils');
+const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 
 describe('`writing` tests', () => {
     describe('`writeAppGenInfoFiles` tests', () => {
@@ -43,7 +45,7 @@ describe('`writing` tests', () => {
         });
 
         it('`generateAppGenInfo` should be called with custom overrides of read me values', async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+            mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
             const expectedReadMe: AppGenInfo = {
                 generationDate: 'Jan 01 1975',
                 generatorPlatform: 'CLI',
@@ -90,11 +92,11 @@ describe('`writing` tests', () => {
                 {} as Editor,
                 readMe
             );
-            expect(generateAppGenInfo).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
+            expect(mockGenerateAppGenInfo).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
         });
 
         it('`writeAppGenInfoFiles` should call `generateAppGenInfo` with the correct params', async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+            mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
 
             const expectedReadMe: AppGenInfo = {
                 generationDate: expect.any(String),
@@ -135,11 +137,11 @@ describe('`writing` tests', () => {
                 '/target/path',
                 {} as Editor
             );
-            expect(generateAppGenInfo).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
+            expect(mockGenerateAppGenInfo).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
         });
 
         it('should generate readme with CAP launch text', async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+            mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
             const expectedReadMe: AppGenInfo = {
                 generationDate: expect.any(String),
                 generatorPlatform: 'CLI',
@@ -191,11 +193,11 @@ describe('`writing` tests', () => {
                     externalParameters: { label: 'label1', value: 'value1' }
                 }
             );
-            expect(generateAppGenInfo).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
+            expect(mockGenerateAppGenInfo).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
         });
 
         it('should generate readme with entity related entries', async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+            mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
             const expectedReadMe: AppGenInfo = {
                 generationDate: expect.any(String),
                 generatorPlatform: 'CLI',
@@ -261,7 +263,7 @@ describe('`writing` tests', () => {
                 '/target/path',
                 {} as Editor
             );
-            expect(generateAppGenInfo).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
+            expect(mockGenerateAppGenInfo).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
             jest.clearAllMocks();
             await initI18nFioriAppSubGenerator();
 
@@ -301,7 +303,7 @@ describe('`writing` tests', () => {
                 { type: 'Filter Entity Type', value: 'filterEntitySetName1' }
             ];
             expectedReadMe.externalParameters = { addLabel1: 'addValue1' };
-            expect(generateAppGenInfo).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
+            expect(mockGenerateAppGenInfo).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
         });
     });
 

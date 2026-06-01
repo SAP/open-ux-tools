@@ -1506,12 +1506,15 @@ export { MultiSourceDocumentationBuilder };
 
 // Run the builder
 /* istanbul ignore if */
-if (require.main === module) {
+const isMainModule = import.meta.url === `file://${process.argv[1]}`;
+if (isMainModule) {
     const logger = new ToolsLogger();
     const builder = new MultiSourceDocumentationBuilder();
-    builder.buildFilestore().catch((error) => {
+    try {
+        await builder.buildFilestore();
+    } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         logger.error(`Build failed: ${errorMessage}`);
         process.exit(1);
-    });
+    }
 }

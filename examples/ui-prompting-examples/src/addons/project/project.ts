@@ -1,5 +1,8 @@
-import { join } from 'node:path';
-import type { ApplicationInformation } from './types';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import type { ApplicationInformation } from './types.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const testAppPath = join(__dirname, `../../../test-output/fe-app-${Date.now()}`);
 let currentApp: ApplicationInformation | undefined = {

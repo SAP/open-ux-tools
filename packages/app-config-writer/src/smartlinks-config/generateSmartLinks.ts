@@ -2,8 +2,8 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { TargetConfig } from '../types';
-import { writeSmartLinksConfig } from './utils';
+import type { TargetConfig } from '../types/index.js';
+import { writeSmartLinksConfig } from './utils.js';
 
 /**
  * Add smartlinks configuration to a UI5 application.

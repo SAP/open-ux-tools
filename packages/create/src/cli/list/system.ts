@@ -3,7 +3,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import { getService } from '@sap-ux/store';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { getLogger } from '../../tracing';
+import { getLogger } from '../../tracing/index.js';
 
 /**
  * Add the "list system" subcommand to a passed command.

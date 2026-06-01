@@ -1,7 +1,7 @@
-import { showIndexQuestion } from '../conditions';
-import { validateConfirmQuestion } from '../validators';
-import { t } from '../../i18n';
-import { promptNames, type AbapDeployConfigPromptOptions, type AbapDeployConfigAnswersInternal } from '../../types';
+import { showIndexQuestion } from '../conditions.js';
+import { validateConfirmQuestion } from '../validators.js';
+import { t } from '../../i18n.js';
+import { promptNames, type AbapDeployConfigPromptOptions, type AbapDeployConfigAnswersInternal } from '../../types.js';
 import type { ConfirmQuestion, Question } from 'inquirer';
 
 /**
