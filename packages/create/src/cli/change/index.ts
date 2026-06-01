@@ -1,7 +1,7 @@
 import { Command } from 'commander';
-import { addChangeDataSourceCommand } from './change-data-source';
-import { addChangeInboundCommand } from './change-inbound';
-import { addSystemUpdateCommand } from './system';
+import { addChangeDataSourceCommand } from './change-data-source.js';
+import { addChangeInboundCommand } from './change-inbound.js';
+import { addSystemUpdateCommand } from './system.js';
 
 /**
  * Return 'create-fiori change *' commands. Commands include also the handler action.

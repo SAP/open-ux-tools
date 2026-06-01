@@ -1,5 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
-import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
+import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser/index.js';
 import type {
     ActionButtonState,
     FormField,
@@ -9,8 +9,8 @@ import type {
     HeaderSectionFeatureData,
     ObjectPageFeatures,
     ObjectPageNavigationParents
-} from '../types';
-import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
+} from '../types.js';
+import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
 import {
     type AggregationItem,
     type BodySectionItem,
@@ -18,13 +18,13 @@ import {
     type HeaderSectionItem,
     type SectionItem,
     getAggregations
-} from './modelUtils';
-import { extractTableColumnsFromNode } from './tableUtils';
-import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page';
+} from './modelUtils.js';
+import { extractTableColumnsFromNode } from './tableUtils.js';
+import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page.js';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import { buildActionStateFromSpecModelKey, safeCheckButtonVisibility, safeCheckEditVisibility } from './actionUtils';
+import { buildActionStateFromSpecModelKey, safeCheckButtonVisibility, safeCheckEditVisibility } from './actionUtils.js';
 
 /**
  * Extracts feature data for object pages from the application model.

@@ -1,20 +1,22 @@
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
 import * as nodeFs from 'node:fs';
-import { waitForMtaFile } from '../../src/mta-config/wait-for-mta';
 
-jest.mock('@sap/mta-lib', () => ({
-    Mta: jest.fn()
+const mockMta = jest.fn();
+
+jest.unstable_mockModule('@sap/mta-lib', () => ({
+    Mta: mockMta
 }));
 
-jest.mock('node:fs', () => ({
-    ...jest.requireActual('node:fs'),
+jest.unstable_mockModule('node:fs', () => ({
+    ...nodeFs,
     existsSync: jest.fn()
 }));
 
-const mockExistsSync = nodeFs.existsSync as jest.Mock;
+const fs = await import('node:fs');
+const mockExistsSync = fs.existsSync as jest.Mock;
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { Mta } = require('@sap/mta-lib');
+const { waitForMtaFile } = await import('../../src/mta-config/wait-for-mta');
 
 describe('waitForMtaFile', () => {
     const mtaPath = '/fake/project';
@@ -32,7 +34,7 @@ describe('waitForMtaFile', () => {
     it('resolves immediately when mta.yaml exists and has an ID', async () => {
         // Given: file exists and Mta returns an ID
         mockExistsSync.mockImplementation((p: string) => p === mtaFilePath);
-        Mta.mockImplementation(() => ({
+        mockMta.mockImplementation(() => ({
             getMtaID: jest.fn().mockResolvedValue('my-app')
         }));
 
@@ -54,7 +56,7 @@ describe('waitForMtaFile', () => {
             callCount++;
             return callCount >= 3;
         });
-        Mta.mockImplementation(() => ({
+        mockMta.mockImplementation(() => ({
             getMtaID: jest.fn().mockResolvedValue('my-app')
         }));
 
@@ -71,7 +73,7 @@ describe('waitForMtaFile', () => {
         // Given: file exists but Mta throws initially, succeeds on third attempt
         mockExistsSync.mockImplementation((p: string) => p === mtaFilePath);
         let mtaCallCount = 0;
-        Mta.mockImplementation(() => {
+        mockMta.mockImplementation(() => {
             mtaCallCount++;
             if (mtaCallCount < 3) {
                 return { getMtaID: jest.fn().mockRejectedValue(new Error('not ready')) };
@@ -92,7 +94,7 @@ describe('waitForMtaFile', () => {
         // Given: getMtaID returns undefined on first call, id on second
         mockExistsSync.mockImplementation((p: string) => p === mtaFilePath);
         let idCallCount = 0;
-        Mta.mockImplementation(() => ({
+        mockMta.mockImplementation(() => ({
             getMtaID: jest.fn().mockImplementation(async () => {
                 idCallCount++;
                 return idCallCount < 2 ? undefined : 'my-app';
@@ -125,7 +127,7 @@ describe('waitForMtaFile', () => {
     it('uses default options when none are supplied', async () => {
         // Given: file exists from the start
         mockExistsSync.mockImplementation((p: string) => p === mtaFilePath);
-        Mta.mockImplementation(() => ({
+        mockMta.mockImplementation(() => ({
             getMtaID: jest.fn().mockResolvedValue('my-app')
         }));
 

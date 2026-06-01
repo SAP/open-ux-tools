@@ -14,13 +14,12 @@ import type { XMLAstNode, XMLDocument, XMLToken } from '@xml-tools/ast';
 import type { AnnotationFile, AnyNode as AnyAnnotationNode } from '@sap-ux/odata-annotation-core';
 import { ANNOTATION_FILE_TYPE } from '@sap-ux/odata-annotation-core';
 import { normalizePath } from '@sap-ux/project-access';
-
-import { FioriJSONSourceCode } from './json/source-code';
-import { FioriXMLSourceCode, visitorKeys as xmlVisitorKeys } from './xml/source-code';
-import { ProjectContext } from '../project-context/project-context';
-import { FioriAnnotationSourceCode, visitorKeys as annotationVisitorKeys } from './annotations/source-code';
-import { DiagnosticCache } from './diagnostic-cache';
-import { FioriChangeSourceCode } from './change/source-code';
+import { FioriJSONSourceCode } from './json/source-code.js';
+import { FioriXMLSourceCode, visitorKeys as xmlVisitorKeys } from './xml/source-code.js';
+import { ProjectContext } from '../project-context/project-context.js';
+import { FioriAnnotationSourceCode, visitorKeys as annotationVisitorKeys } from './annotations/source-code.js';
+import { DiagnosticCache } from './diagnostic-cache.js';
+import { FioriChangeSourceCode } from './change/source-code.js';
 
 export type FioriLanguageOptions = {};
 export type FioriSourceCode =

@@ -1,7 +1,7 @@
 import { getService, BackendSystem, BackendSystemKey, SystemType } from '@sap-ux/store';
-import type { SystemLookup } from '../source';
+import type { SystemLookup } from '../source/index.js';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { ConfigAnswers } from '../types';
+import type { ConfigAnswers } from '../types.js';
 
 /**
  * Stores system credentials securely using the @sap-ux/store service.

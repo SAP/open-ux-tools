@@ -1,8 +1,8 @@
 import React from 'react';
 import { divProperties, getNativeProps } from '@fluentui/react';
-import { UISection } from './UISection';
-import type { UISectionProps } from './UISection';
-import { UISplitter, UISplitterType, UISplitterLayoutType } from './UISplitter';
+import { UISection } from './UISection.js';
+import type { UISectionProps } from './UISection.js';
+import { UISplitter, UISplitterType, UISplitterLayoutType } from './UISplitter.js';
 
 import './UISections.scss';
 

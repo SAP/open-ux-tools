@@ -25,22 +25,22 @@ import { type SimpleForm } from 'sap/ui/layout/form';
 
 import { MessageBarType, setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 
-import { CommunicationService } from '../../cpe/communication-service';
-import { getResourceModel } from '../../i18n';
+import { CommunicationService } from '../../cpe/communication-service.js';
+import { getResourceModel } from '../../i18n.js';
 
 import Input from 'sap/m/Input';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import Control from 'sap/ui/core/Control';
 import { ValueState } from 'sap/ui/core/library';
-import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
-import { setAdditionalChangeInfoForChangeFile } from '../../utils/additional-change-info';
-import { getError } from '../../utils/error';
-import { sendInfoCenterMessage } from '../../utils/info-center-message';
-import { getFragments } from '../api-handler';
-import CommandExecutor from '../command-executor';
-import ControlUtils from '../control-utils';
-import { type AddFragmentModel, type AddFragmentOptions } from './AddFragment.controller';
-import BaseDialog from './BaseDialog.controller';
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition.js';
+import { setAdditionalChangeInfoForChangeFile } from '../../utils/additional-change-info.js';
+import { getError } from '../../utils/error.js';
+import { sendInfoCenterMessage } from '../../utils/info-center-message.js';
+import { getFragments } from '../api-handler.js';
+import CommandExecutor from '../command-executor.js';
+import ControlUtils from '../control-utils.js';
+import { type AddFragmentModel, type AddFragmentOptions } from './AddFragment.controller.js';
+import BaseDialog from './BaseDialog.controller.js';
 
 const radix = 10;
 

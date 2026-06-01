@@ -3,9 +3,9 @@
  */
 
 import type { Rule } from 'eslint';
-import type { FeV4PageType } from '../project-context/linker/fe-v4';
-import type { FeV2PageType } from '../project-context/linker/fe-v2';
-import type { ParsedApp } from '../project-context/parser';
+import type { FeV4PageType } from '../project-context/linker/fe-v4.js';
+import type { FeV2PageType } from '../project-context/linker/fe-v2.js';
+import type { ParsedApp } from '../project-context/parser/index.js';
 
 // Type aliases for better readability
 export type ASTNode = Rule.Node;

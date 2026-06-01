@@ -1,20 +1,26 @@
-import { ServiceProvider } from '../../src/base/service-provider';
+import { jest } from '@jest/globals';
 import type { AbapServiceProvider } from '../../src';
-import { createForDestination } from '../../src';
 import type { ServiceInfo } from '../../src/auth';
-import { attachUaaAuthInterceptor, getReentranceTicketAuthInterceptor } from '../../src/auth';
-import * as rt from '../../src/auth/reentrance-ticket';
 import type { InternalAxiosRequestConfig } from 'axios';
 import { AxiosHeaders } from 'axios';
 import { WebIDEUsage as WebIDEUsageType, type Destination } from '@sap-ux/btp-utils';
 import type { ABAPVirtualHostProvider } from '../../src/auth/reentrance-ticket/abap-virtual-host-provider';
 
+const mockGetReentranceTicket = jest.fn<any>();
+jest.unstable_mockModule('../../src/auth/reentrance-ticket', () => ({
+    getReentranceTicket: mockGetReentranceTicket
+}));
+
+const { ServiceProvider } = await import('../../src/base/service-provider');
+const { createForDestination } = await import('../../src');
+const { attachUaaAuthInterceptor, getReentranceTicketAuthInterceptor } = await import('../../src/auth');
+
 describe('getReentranceTicketAuthInterceptor', () => {
-    const getReentranceTicketSpy = jest.spyOn(rt, 'getReentranceTicket');
+    const getReentranceTicketSpy = mockGetReentranceTicket;
 
     it('adds reentrance ticket to the header', async () => {
         const REENTRANCE_TICKET_VALUE = 'a_reentrance_ticket';
-        getReentranceTicketSpy.mockResolvedValueOnce({ reentranceTicket: REENTRANCE_TICKET_VALUE });
+        getReentranceTicketSpy.mockResolvedValueOnce({ reentranceTicket: REENTRANCE_TICKET_VALUE } as any);
         const provider = new ServiceProvider({ baseURL: 'base_url.example' });
         const request: InternalAxiosRequestConfig = { headers: new AxiosHeaders() };
 
@@ -33,7 +39,7 @@ describe('getReentranceTicketAuthInterceptor', () => {
         getReentranceTicketSpy.mockResolvedValueOnce({
             reentranceTicket: 'foo',
             backend: backendMock as unknown as ABAPVirtualHostProvider
-        });
+        } as any);
         const provider = new ServiceProvider({ baseURL: ORIGINAL_ORIGIN });
 
         const interceptor = getReentranceTicketAuthInterceptor({ provider, ejectCallback: () => 0 });
@@ -47,7 +53,7 @@ describe('getReentranceTicketAuthInterceptor', () => {
     it('calls eject after running once', async () => {
         const provider = new ServiceProvider({ baseURL: 'base_url.example' });
         const ejectCallback = jest.fn();
-        getReentranceTicketSpy.mockResolvedValueOnce({ reentranceTicket: 'foo' });
+        getReentranceTicketSpy.mockResolvedValueOnce({ reentranceTicket: 'foo' } as any);
 
         const interceptor = getReentranceTicketAuthInterceptor({ provider, ejectCallback });
         await interceptor({ headers: new AxiosHeaders() });

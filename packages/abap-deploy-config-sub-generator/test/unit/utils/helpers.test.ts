@@ -1,26 +1,26 @@
-import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
-import { getService } from '@sap-ux/store';
-import { determineScpFromTarget, determineUrlFromDestination } from '../../../src/utils';
-import { determineS4HCFromTarget } from '../../../src/utils/helpers';
+import { jest } from '@jest/globals';
 
-jest.mock('@sap-ux/store', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/store') as {}),
-        getService: jest.fn()
-    };
-});
+// Pre-import real modules BEFORE mocking to avoid circular resolution OOM
+const realBtpUtils = await import('@sap-ux/btp-utils');
+const realStore = await import('@sap-ux/store');
 
-jest.mock('@sap-ux/btp-utils', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/btp-utils') as {}),
-        isAppStudio: jest.fn(),
-        listDestinations: jest.fn()
-    };
-});
+const mockIsAppStudio = jest.fn();
+const mockListDestinations = jest.fn();
+const mockGetService = jest.fn();
 
-const getServiceMock = getService as jest.Mock;
-const isAppStudioMock = isAppStudio as jest.Mock;
-const listDestinationsMock = listDestinations as jest.Mock;
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio,
+    listDestinations: mockListDestinations
+}));
+
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
+    getService: mockGetService
+}));
+
+const { determineScpFromTarget, determineUrlFromDestination } = await import('../../../src/utils');
+const { determineS4HCFromTarget } = await import('../../../src/utils/helpers');
 
 const mockDestinations = {
     Dest1: {
@@ -65,8 +65,8 @@ describe('Test the helpers for abap sub gen', () => {
     });
 
     it('should fail silently when call to destinations fails', async () => {
-        isAppStudioMock.mockReturnValue(true);
-        listDestinationsMock.mockImplementationOnce(() => {
+        mockIsAppStudio.mockReturnValue(true);
+        mockListDestinations.mockImplementationOnce(() => {
             throw new Error('401 error');
         });
 
@@ -75,8 +75,8 @@ describe('Test the helpers for abap sub gen', () => {
     });
 
     it('should fail silently when call to backend systems fails', async () => {
-        isAppStudioMock.mockReturnValue(false);
-        getServiceMock.mockResolvedValue({
+        mockIsAppStudio.mockReturnValue(false);
+        mockGetService.mockResolvedValue({
             getAll: () => {
                 throw new Error('Failure accessing secure store');
             }
@@ -86,24 +86,24 @@ describe('Test the helpers for abap sub gen', () => {
     });
 
     it('should determine the url from the given destination', async () => {
-        isAppStudioMock.mockReturnValue(true);
-        listDestinationsMock.mockResolvedValue(mockDestinations);
+        mockIsAppStudio.mockReturnValue(true);
+        mockListDestinations.mockResolvedValue(mockDestinations);
 
         const result = await determineUrlFromDestination('Dest1');
         expect(result).toBe('https://mock.url.dest1.com');
     });
 
     it('should determine the scp value from the given destinations', async () => {
-        isAppStudioMock.mockReturnValue(true);
-        listDestinationsMock.mockResolvedValue(mockDestinations);
+        mockIsAppStudio.mockReturnValue(true);
+        mockListDestinations.mockResolvedValue(mockDestinations);
 
         const result = await determineScpFromTarget({ destination: 'Dest1' });
         expect(result).toBe(false);
     });
 
     it('should determine the scp value from the given backend systems', async () => {
-        isAppStudioMock.mockReturnValue(false);
-        getServiceMock.mockResolvedValue({
+        mockIsAppStudio.mockReturnValue(false);
+        mockGetService.mockResolvedValue({
             getAll: jest.fn().mockResolvedValue([backendSystemBtp])
         });
         const result = await determineScpFromTarget({ url: 'https://example.abap.backend:44300', client: '100' });
@@ -111,16 +111,16 @@ describe('Test the helpers for abap sub gen', () => {
     });
 
     it('should determine the s4hc value from the given destinations', async () => {
-        isAppStudioMock.mockReturnValue(true);
-        listDestinationsMock.mockResolvedValue(mockDestinations);
+        mockIsAppStudio.mockReturnValue(true);
+        mockListDestinations.mockResolvedValue(mockDestinations);
 
         const result = await determineS4HCFromTarget({ destination: 'Dest2' });
         expect(result).toBe(true);
     });
 
     it('should determine the s4hc value from the given backend systems', async () => {
-        isAppStudioMock.mockReturnValue(false);
-        getServiceMock.mockResolvedValue({
+        mockIsAppStudio.mockReturnValue(false);
+        mockGetService.mockResolvedValue({
             getAll: jest.fn().mockResolvedValue([backendSystemOnPrem])
         });
         const result = await determineS4HCFromTarget({ url: 'https://example.abap.backend:44300' });

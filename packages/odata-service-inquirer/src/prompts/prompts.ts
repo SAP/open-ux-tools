@@ -1,6 +1,6 @@
 import { withCondition, type YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Answers, Question } from 'inquirer';
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 import {
     DatasourceType,
     promptNames,
@@ -9,12 +9,12 @@ import {
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
     type OdataServiceQuestion
-} from '../types';
-import { getLocalCapProjectPrompts } from './datasources/cap-project/questions';
-import { getMetadataFileQuestion } from './datasources/metadata-file';
-import { getSystemSelectionQuestions } from './datasources/sap-system/system-selection';
-import { getServiceUrlQuestions } from './datasources/service-url/questions';
-import { getDatasourceTypeChoices } from './prompt-helpers';
+} from '../types.js';
+import { getLocalCapProjectPrompts } from './datasources/cap-project/questions.js';
+import { getMetadataFileQuestion } from './datasources/metadata-file/index.js';
+import { getSystemSelectionQuestions } from './datasources/sap-system/system-selection/index.js';
+import { getServiceUrlQuestions } from './datasources/service-url/questions.js';
+import { getDatasourceTypeChoices } from './prompt-helpers.js';
 
 /**
  * Get the prompts for the OData service inquirer.

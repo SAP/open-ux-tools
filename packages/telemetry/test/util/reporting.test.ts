@@ -1,10 +1,8 @@
-import { reportRuntimeError, reportEnableTelemetryOnOff } from '../../src/base/utils/reporting';
-import { EventName } from '../../src';
-import type { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
+import { jest } from '@jest/globals';
 
 const spyTrackEvent = jest.fn();
 
-jest.mock('applicationinsights', () => {
+jest.unstable_mockModule('applicationinsights', () => {
     class TelemetryClient {
         public config: any;
         public channel: any;
@@ -21,11 +19,14 @@ jest.mock('applicationinsights', () => {
             this.addTelemetryProcessor = (fn: any) => {
                 fn({ tags: {} });
             };
-            this.trackEvent = (event: EventTelemetry) => spyTrackEvent(event);
+            this.trackEvent = (event: any) => spyTrackEvent(event);
         }
     }
     return { TelemetryClient };
 });
+
+const { reportRuntimeError, reportEnableTelemetryOnOff } = await import('../../src/base/utils/reporting');
+const { EventName } = await import('../../src');
 
 let telemetrySetting: string | undefined;
 

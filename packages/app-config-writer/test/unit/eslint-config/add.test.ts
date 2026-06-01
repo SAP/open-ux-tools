@@ -1,10 +1,33 @@
+import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { generateEslintConfig } from '../../../src/';
 import type { Package } from '@sap-ux/project-access';
+import chalk from 'chalk';
+
+jest.unstable_mockModule('chalk', () => ({
+    default: chalk,
+    cyan: (s: string) => s,
+    yellow: (s: string) => s,
+    red: (s: string) => s,
+    green: (s: string) => s,
+    blue: (s: string) => s,
+    bold: (s: string) => s,
+    dim: (s: string) => s
+}));
+
+const mockPrompt = jest.fn();
+const mockPromptsModule = Object.assign(mockPrompt, { prompt: mockPrompt, inject: jest.fn() });
+jest.unstable_mockModule('prompts', () => ({
+    default: mockPromptsModule
+}));
+
+const { generateEslintConfig } = await import('../../../src/');
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('generateEslintConfig', () => {
     const loggerMock: ToolsLogger = {

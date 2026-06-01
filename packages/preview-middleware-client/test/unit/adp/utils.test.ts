@@ -2,18 +2,24 @@ import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import FlexUtils from 'mock/sap/ui/fl/Utils';
 import isReuseComponentApi from 'mock/sap/ui/rta/util/isReuseComponent';
-import * as Utils from '../../../src/utils/core';
 import Element from 'sap/ui/core/Element';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 
-import {
+const _core = await import('open/ux/preview/client/utils/core');
+const getControlByIdMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/core', () => ({
+    ..._core,
+    getControlById: getControlByIdMock
+}));
+
+const {
     createDeferred,
     getReuseComponentChecker,
     resetReuseComponentChecker,
     matchesChangeProperty,
     checkForExistingChange
-} from '../../../src/adp/utils';
+} = await import('open/ux/preview/client/adp/utils');
 
 describe('utils', () => {
     describe('createDeferred', () => {
@@ -183,20 +189,20 @@ describe('utils', () => {
 
         it('should return false if ui5 control is not defined', async () => {
             const checker = await getReuseComponentChecker(ui5VersionInfo);
-            jest.spyOn(Utils, 'getControlById').mockReturnValue(undefined);
+            getControlByIdMock.mockReturnValue(undefined);
             expect(checker('controlId')).toBe(false);
         });
 
         it('should return false if control has no component - UI5 1.120', async () => {
             const checker = await getReuseComponentChecker(ui5VersionInfo);
-            jest.spyOn(Utils, 'getControlById').mockReturnValue(ui5Control);
+            getControlByIdMock.mockReturnValue(ui5Control);
             FlexUtils.getComponentForControl.mockReturnValue(undefined);
             expect(checker('controlId')).toBe(false);
         });
 
         it('should return false if there is no app component for control - 1.120', async () => {
             const checker = await getReuseComponentChecker(ui5VersionInfo);
-            jest.spyOn(Utils, 'getControlById').mockReturnValue(ui5Control);
+            getControlByIdMock.mockReturnValue(ui5Control);
             FlexUtils.getComponentForControl.mockReturnValue({});
             FlexUtils.getAppComponentForControl.mockReturnValue(undefined);
             expect(checker('controlId')).toBe(false);
@@ -204,7 +210,7 @@ describe('utils', () => {
 
         it('should return false if app manifest does not have any reuse components - 1.120', async () => {
             const checker = await getReuseComponentChecker(ui5VersionInfo);
-            jest.spyOn(Utils, 'getControlById').mockReturnValue(ui5Control);
+            getControlByIdMock.mockReturnValue(ui5Control);
             FlexUtils.getComponentForControl.mockReturnValue({
                 getManifest: () => ({
                     'sap.app': { id: 'componentName' }
@@ -220,7 +226,7 @@ describe('utils', () => {
 
         it('should return false if the control component does not match any reuse component in the app manifest - 1.120', async () => {
             const checker = await getReuseComponentChecker(ui5VersionInfo);
-            jest.spyOn(Utils, 'getControlById').mockReturnValue(ui5Control);
+            getControlByIdMock.mockReturnValue(ui5Control);
             FlexUtils.getComponentForControl.mockReturnValue({
                 getManifest: () => ({
                     'sap.app': { id: 'componentName' }
@@ -236,7 +242,7 @@ describe('utils', () => {
 
         it('should return true if the control component matches a reuse component in the app manifest - 1.120', async () => {
             const checker = await getReuseComponentChecker(ui5VersionInfo);
-            jest.spyOn(Utils, 'getControlById').mockReturnValue(ui5Control);
+            getControlByIdMock.mockReturnValue(ui5Control);
             FlexUtils.getComponentForControl.mockReturnValue({
                 getManifest: () => ({
                     'sap.app': { id: 'componentName' }
@@ -252,7 +258,7 @@ describe('utils', () => {
 
         it('should executed UI5 RTA API for higher UI5 versions - 1.134', async () => {
             const checker = await getReuseComponentChecker({ major: 1, minor: 134 });
-            jest.spyOn(Utils, 'getControlById').mockReturnValue(ui5Control);
+            getControlByIdMock.mockReturnValue(ui5Control);
             FlexUtils.getComponentForControl.mockReturnValue({});
             const isReuseComponentMock = isReuseComponentApi.mockReturnValue(true);
             expect(checker('controlId')).toBe(true);

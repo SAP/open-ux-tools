@@ -1,8 +1,8 @@
 import type { ServiceArtifacts } from '@sap-ux/fiori-annotation-api';
 import type { ODataVersionType } from '@sap-ux/odata-annotation-core';
 import type { Manifest, ProjectType } from '@sap-ux/project-access';
-import type { File, DocumentType, RemoteServiceFileWithToolsCache, RemoteFileWithLocalServiceCache } from '../types';
-import type { ServiceIndex } from './service';
+import type { File, DocumentType, RemoteServiceFileWithToolsCache, RemoteFileWithLocalServiceCache } from '../types.js';
+import type { ServiceIndex } from './service.js';
 
 export interface ParsedProject {
     projectType: ProjectType;

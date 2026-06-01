@@ -27,14 +27,14 @@ import type Event from 'sap/ui/base/Event';
 import UI5Element from 'sap/ui/core/Element';
 import { ChangeDefinition } from 'sap/ui/fl/Change';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import { getTextBundle } from '../../i18n';
-import { setAdditionalChangeInfo } from '../../utils/additional-change-info';
-import { getControlById, isA } from '../../utils/core';
-import { getError } from '../../utils/error';
-import { sendInfoCenterMessage } from '../../utils/info-center-message';
-import { modeAndStackChangeHandler } from '../rta-service';
-import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions } from '../types';
-import { applyChange } from './flex-change';
+import { getTextBundle } from '../../i18n.js';
+import { setAdditionalChangeInfo } from '../../utils/additional-change-info.js';
+import { getControlById, isA } from '../../utils/core.js';
+import { getError } from '../../utils/error.js';
+import { sendInfoCenterMessage } from '../../utils/info-center-message.js';
+import { modeAndStackChangeHandler } from '../rta-service.js';
+import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions } from '../types.js';
+import { applyChange } from './flex-change.js';
 import {
     ChangeHandler,
     ChangeType,
@@ -43,7 +43,7 @@ import {
     getControlIdByChange,
     getFlexObject,
     type GenericChange
-} from './generic-change';
+} from './generic-change.js';
 
 const TITLE_MAP: { [key: string]: string } = {
     appdescr_app_addAnnotationsToOData: 'Add New Annotation File'

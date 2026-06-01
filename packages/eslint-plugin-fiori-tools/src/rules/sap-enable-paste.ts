@@ -1,12 +1,12 @@
-import type { FioriRuleDefinition } from '../types';
-import { ENABLE_PASTE, type EnablePaste } from '../language/diagnostics';
-import { createFioriRule } from '../language/rule-factory';
+import type { FioriRuleDefinition } from '../types.js';
+import { ENABLE_PASTE, type EnablePaste } from '../language/diagnostics.js';
+import { createFioriRule } from '../language/rule-factory.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
-import type { ParsedApp } from '../project-context/parser';
-import type { FeV4PageType, Table as TableV4 } from '../project-context/linker/fe-v4';
-import { createJsonFixer } from '../language/rule-fixer';
-import { checkAppTablesConfiguration } from '../utils/helpers';
-import type { FeV2PageType, Table as TableV2 } from '../project-context/linker/fe-v2';
+import type { ParsedApp } from '../project-context/parser/index.js';
+import type { FeV4PageType, Table as TableV4 } from '../project-context/linker/fe-v4.js';
+import { createJsonFixer } from '../language/rule-fixer.js';
+import { checkAppTablesConfiguration } from '../utils/helpers.js';
+import type { FeV2PageType, Table as TableV2 } from '../project-context/linker/fe-v2.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: ENABLE_PASTE,

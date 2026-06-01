@@ -2,15 +2,15 @@ import type { Element, AliasInformation } from '@sap-ux/odata-annotation-core';
 import { Edm, elementsWithName, elements } from '@sap-ux/odata-annotation-core';
 import type { MemberNode } from '@humanwhocodes/momoa';
 
-import { createFioriRule } from '../language/rule-factory';
-import type { FioriRuleDefinition } from '../types';
-import type { WidthIncludingColumnHeaderDiagnostic } from '../language/diagnostics';
-import { WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE } from '../language/diagnostics';
-import { getRecordType } from '../project-context/linker/annotations';
-import type { FeV4ObjectPage, FeV4ListReport, Table } from '../project-context/linker/fe-v4';
-import type { ParsedApp, ParsedService } from '../project-context/parser';
-import { createJsonFixer } from '../language/rule-fixer';
-import { isLowerThanMinimalUi5Version } from '../utils/version';
+import { createFioriRule } from '../language/rule-factory.js';
+import type { FioriRuleDefinition } from '../types.js';
+import type { WidthIncludingColumnHeaderDiagnostic } from '../language/diagnostics.js';
+import { WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE } from '../language/diagnostics.js';
+import { getRecordType } from '../project-context/linker/annotations.js';
+import type { FeV4ObjectPage, FeV4ListReport, Table } from '../project-context/linker/fe-v4.js';
+import type { ParsedApp, ParsedService } from '../project-context/parser/index.js';
+import { createJsonFixer } from '../language/rule-fixer.js';
+import { isLowerThanMinimalUi5Version } from '../utils/version.js';
 
 export type RequireWidthIncludingColumnHeaderOptions = {
     form: string;

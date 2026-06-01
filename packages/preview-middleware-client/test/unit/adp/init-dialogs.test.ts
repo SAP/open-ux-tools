@@ -4,19 +4,31 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import hasStableId from 'mock/sap/ui/rta/util/hasStableId';
 import FlUtils from 'mock/sap/ui/fl/Utils';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
-import {
+
+// Pre-import for spread
+const _syncViewsUtils = await import('open/ux/preview/client/adp/sync-views-utils');
+
+const getSyncViewIdsMock = jest.fn().mockReturnValue(new Set<string>());
+jest.unstable_mockModule('open/ux/preview/client/adp/sync-views-utils', () => ({
+    ..._syncViewsUtils,
+    getSyncViewIds: getSyncViewIdsMock
+}));
+
+const {
     initDialogs,
     isControllerExtensionEnabled,
     isFragmentCommandEnabled,
     getAddFragmentItemText,
     getExtendControllerItemText
-} from '../../../src/adp/init-dialogs';
-import { getTextBundle } from '../../../src/i18n';
-import * as syncViewsUtils from '../../../src/adp/sync-views-utils';
+} = await import('open/ux/preview/client/adp/init-dialogs');
+const { getTextBundle } = await import('open/ux/preview/client/i18n');
 
 describe('Dialogs', () => {
     const isReuseComponentMock = jest.fn().mockReturnValue(false);
-    jest.spyOn(syncViewsUtils, 'getSyncViewIds').mockReturnValue(new Set<string>());
+
+    beforeEach(() => {
+        getSyncViewIdsMock.mockReturnValue(new Set<string>());
+    });
     describe('initDialogs', () => {
         afterEach(() => {
             jest.restoreAllMocks();
@@ -155,6 +167,7 @@ describe('Dialogs', () => {
         beforeEach(() => {
             jest.restoreAllMocks();
             jest.resetAllMocks();
+            getSyncViewIdsMock.mockReturnValue(new Set<string>());
         });
 
         it('should return simple text if the control is a reuse component in OnPremise', async () => {
@@ -219,7 +232,7 @@ describe('Dialogs', () => {
                 })
             } as ElementOverlay;
             const syncViewsIds = new Set<string>(['syncViewId1', 'syncViewId2']);
-            jest.spyOn(syncViewsUtils, 'getSyncViewIds').mockReturnValueOnce(syncViewsIds);
+            getSyncViewIdsMock.mockReturnValueOnce(syncViewsIds);
 
             const result = getExtendControllerItemText(overlay, isReuseComponentMock, false, resources);
 
@@ -232,7 +245,10 @@ describe('Dialogs', () => {
     describe('isControllerExtensionEnabled', () => {
         const elementOverlayMock = { getElement: jest.fn() } as unknown as ElementOverlay;
         const syncViewsIds = new Set<string>(['syncViewId1', 'syncViewId2']);
-        jest.spyOn(syncViewsUtils, 'getSyncViewIds').mockReturnValue(syncViewsIds);
+
+        beforeEach(() => {
+            getSyncViewIdsMock.mockReturnValue(syncViewsIds);
+        });
 
         afterEach(() => {
             jest.resetAllMocks();

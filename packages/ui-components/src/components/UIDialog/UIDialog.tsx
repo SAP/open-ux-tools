@@ -1,8 +1,8 @@
 import React from 'react';
 import type { IDialogProps, IDialogFooterProps } from '@fluentui/react';
 import { Dialog as BaseDialog, DialogFooter } from '@fluentui/react';
-import { UIDefaultButton } from '../UIButton';
-import { deepMerge } from '../../utilities/DeepMerge';
+import { UIDefaultButton } from '../UIButton/index.js';
+import { deepMerge } from '../../utilities/DeepMerge.js';
 
 import '../../styles/_shadows.scss';
 

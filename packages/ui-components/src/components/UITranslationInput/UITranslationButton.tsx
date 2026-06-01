@@ -1,16 +1,16 @@
 import React, { useCallback, useState } from 'react';
 import type { ReactElement } from 'react';
-import { UIDefaultButton } from '../UIButton';
-import { UICallout, UICalloutContentPadding } from '../UICallout';
-import { UiIcons } from '../Icons';
+import { UIDefaultButton } from '../UIButton/index.js';
+import { UICallout, UICalloutContentPadding } from '../UICallout/index.js';
+import { UiIcons } from '../Icons.js';
 import type {
     UITranslationProps,
     TranslationInputStrings,
     TranslationSuggest,
     TranslationEntry
-} from './UITranslationButton.types';
-import { SuggestValueType } from './UITranslationButton.types';
-import { UILoadButton } from './UILoadButton';
+} from './UITranslationButton.types.js';
+import { SuggestValueType } from './UITranslationButton.types.js';
+import { UILoadButton } from './UILoadButton.js';
 
 import './UITranslationInput.scss';
 

@@ -1,5 +1,5 @@
-import { t } from '../../../i18n';
-import { validateSystemName } from './validators';
+import { t } from '../../../i18n.js';
+import { validateSystemName } from './validators.js';
 
 /**
  * Provides a system name suggestion based on the passed system name and client, validating the name is unique against the secure store.

@@ -1,3 +1,5 @@
+import { jest } from '@jest/globals';
+
 const mockLogger = {
     info: jest.fn(),
     warn: jest.fn(),
@@ -5,12 +7,13 @@ const mockLogger = {
     debug: jest.fn()
 };
 
-jest.mock('@sap-ux/logger', () => ({
+jest.unstable_mockModule('@sap-ux/logger', () => ({
     ToolsLogger: jest.fn().mockImplementation(() => mockLogger)
 }));
 
-jest.mock('node:fs/promises', () => ({
-    writeFile: jest.fn()
+const mockWriteFile = jest.fn();
+jest.unstable_mockModule('node:fs/promises', () => ({
+    writeFile: mockWriteFile
 }));
 
 describe('download readme from npmjs', () => {
@@ -27,14 +30,12 @@ describe('download readme from npmjs', () => {
     });
 
     it('should download readme from npmjs', async () => {
-        global.fetch = jest.fn().mockResolvedValue({
+        global.fetch = jest.fn<typeof fetch>().mockResolvedValue({
             ok: true,
             json: jest.fn().mockResolvedValue({
                 readme: testReadmeContent
             })
-        });
-        const { writeFile } = await import('node:fs/promises');
-        const mockedWriteFile = writeFile as jest.Mock;
+        } as any);
 
         const script = await import('../src/scripts/load-readme-from-npm');
         await script.execution;
@@ -42,7 +43,7 @@ describe('download readme from npmjs', () => {
         expect(mockLogger.info).toHaveBeenCalledWith(`Fetching README for ${testPackageName}...`);
         expect(mockLogger.info).toHaveBeenCalledWith(`Successfully saved README to './data_local'`);
         const expectedFileName = `${testPackageName.split('/').pop()}-README.md`;
-        expect(mockedWriteFile).toHaveBeenCalledWith(
+        expect(mockWriteFile).toHaveBeenCalledWith(
             expect.stringContaining(expectedFileName),
             `\n--------------------------------\n${testReadmeContent}`,
             'utf-8'
@@ -50,10 +51,10 @@ describe('download readme from npmjs', () => {
     });
 
     it('should handle fetch error', async () => {
-        global.fetch = jest.fn().mockResolvedValue({
+        global.fetch = jest.fn<typeof fetch>().mockResolvedValue({
             ok: false,
             statusText: 'Not Found'
-        });
+        } as any);
 
         const script = await import('../src/scripts/load-readme-from-npm');
         await script.execution;
@@ -64,7 +65,7 @@ describe('download readme from npmjs', () => {
 
     it('should handle fetch throwing an exception', async () => {
         const fetchError = new Error('Network error');
-        global.fetch = jest.fn().mockRejectedValue(fetchError);
+        global.fetch = jest.fn<typeof fetch>().mockRejectedValue(fetchError);
 
         const script = await import('../src/scripts/load-readme-from-npm');
         await script.execution;
@@ -76,10 +77,10 @@ describe('download readme from npmjs', () => {
     });
 
     it('should handle missing readme content', async () => {
-        global.fetch = jest.fn().mockResolvedValue({
+        global.fetch = jest.fn<typeof fetch>().mockResolvedValue({
             ok: true,
             json: jest.fn().mockResolvedValue({})
-        });
+        } as any);
 
         const script = await import('../src/scripts/load-readme-from-npm');
         await script.execution;
@@ -89,15 +90,13 @@ describe('download readme from npmjs', () => {
     });
 
     it('should handle writeFile error', async () => {
-        global.fetch = jest.fn().mockResolvedValue({
+        global.fetch = jest.fn<typeof fetch>().mockResolvedValue({
             ok: true,
             json: jest.fn().mockResolvedValue({
                 readme: testReadmeContent
             })
-        });
-        const { writeFile } = await import('node:fs/promises');
-        const mockedWriteFile = writeFile as jest.Mock;
-        mockedWriteFile.mockRejectedValue(new Error('Permission denied'));
+        } as any);
+        mockWriteFile.mockRejectedValue(new Error('Permission denied'));
 
         const script = await import('../src/scripts/load-readme-from-npm');
         await script.execution;
