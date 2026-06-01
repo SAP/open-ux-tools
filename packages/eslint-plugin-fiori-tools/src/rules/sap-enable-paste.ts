@@ -5,7 +5,7 @@ import type { MemberNode } from '@humanwhocodes/momoa';
 import type { ParsedApp } from '../project-context/parser/index.js';
 import type { FeV4PageType, Table as TableV4 } from '../project-context/linker/fe-v4.js';
 import { createJsonFixer } from '../language/rule-fixer.js';
-import { checkAppTablesConfiguration } from '../utils/helpers.js';
+import { checkAppTablesConfiguration, isV2Table } from '../utils/helpers.js';
 import type { FeV2PageType, Table as TableV2 } from '../project-context/linker/fe-v2.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
@@ -73,16 +73,6 @@ const rule: FioriRuleDefinition = createFioriRule({
         };
     }
 });
-
-/**
- * Checks if given table is ODataV2 type.
- *
- * @param table
- * @returns
- */
-function isV2Table(table: TableV2 | TableV4): table is TableV2 {
-    return 'showPasteButton' in (table as TableV2).configuration;
-}
 
 /**
  *

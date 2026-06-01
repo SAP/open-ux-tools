@@ -5,7 +5,7 @@ import type { MemberNode } from '@humanwhocodes/momoa';
 import type { ParsedApp } from '../project-context/parser/index.js';
 import type { FeV4PageType, Table as TableV4 } from '../project-context/linker/fe-v4.js';
 import { createJsonFixer } from '../language/rule-fixer.js';
-import { checkAppTablesConfiguration } from '../utils/helpers.js';
+import { checkAppTablesConfiguration, isV2Table } from '../utils/helpers.js';
 import type { FeV2PageType, Table as TableV2 } from '../project-context/linker/fe-v2.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
@@ -87,11 +87,7 @@ function checkConfiguration(
     pageSectionName?: string
 ): void {
     if (table.configuration.enableExport.valueInFile === false) {
-        const service = Object.values(parsedApp.services)[0]; // Assume 1 service only
-        if (!service) {
-            return;
-        }
-        if (service.config.version === '2.0') {
+        if (isV2Table(table)) {
             problems.push({
                 type: ENABLE_EXPORT,
                 property: 'enableExport',
@@ -99,7 +95,7 @@ function checkConfiguration(
                 pageSectionName,
                 changeFileUri: table.configuration.enableExport.changeFileUri
             });
-        } else if (service.config.version === '4.0') {
+        } else {
             problems.push({
                 type: ENABLE_EXPORT,
                 property: 'enableExport',
