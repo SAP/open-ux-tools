@@ -6,8 +6,9 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/guided-answers-helper"
     },
-    "version": "0.5.1",
+    "version": "1.0.0",
     "license": "Apache-2.0",
+    "type": "module",
     "main": "dist/index.js",
     "scripts": {
         "build": "tsc --build",
@@ -16,8 +17,8 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },

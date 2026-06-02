@@ -4,7 +4,7 @@ import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
 import { replaceEnvVariables } from '@sap-ux/ui5-config';
 import { config as loadEnvConfig } from 'dotenv';
-import { getLogger } from '../../tracing';
+import { getLogger } from '../../tracing/index.js';
 
 /**
  * Add the "change system" subcommand to a passed command.

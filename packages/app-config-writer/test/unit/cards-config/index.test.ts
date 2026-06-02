@@ -1,5 +1,7 @@
+import { jest } from '@jest/globals';
 import { enableCardGeneratorConfig } from '../../../src/cards-config';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
@@ -15,6 +17,8 @@ function createTestFs(basePath: string) {
     fs.write(join(basePath, 'ui5.yaml'), '');
     return fs;
 }
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('enableCardGenerator', () => {
     test('Valid LROP', async () => {

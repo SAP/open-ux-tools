@@ -1,22 +1,57 @@
+import { jest } from '@jest/globals';
 import { Severity } from '@sap-devx/yeoman-ui-types';
+import * as actualUi5Info from '@sap-ux/ui5-info';
+import * as actualFs from 'node:fs';
+import * as actualProjectAccess from '@sap-ux/project-access';
+
 import type { UI5Version, UI5VersionFilterOptions } from '@sap-ux/ui5-info';
-import * as ui5Info from '@sap-ux/ui5-info';
-import { createPromptModule } from 'inquirer';
-import AutocompletePrompt from 'inquirer-autocomplete-prompt';
 import type { InquirerAdapter, UI5ApplicationAnswers, UI5ApplicationPromptOptions } from '../../src';
-import { getPrompts, prompt, promptNames } from '../../src';
-import * as ui5AppPrompts from '../../src/prompts';
 import { gte, lt } from 'semver';
 
-/**
- * Workaround to allow spyOn
- */
-jest.mock('../../src/prompts', () => {
-    return {
-        __esModule: true,
-        ...jest.requireActual('../../src/prompts')
-    };
+// Mock node:fs to control existsSync
+const mockExistsSync = jest.fn();
+jest.unstable_mockModule('node:fs', () => ({
+    ...actualFs,
+    existsSync: mockExistsSync
+}));
+
+// Mock project-access with pre-import spread
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    getMtaPath: jest.fn()
+}));
+
+// Mock ui5-info with pre-import spread + spy-able overrides
+const mockGetUI5Versions = jest.fn<() => Promise<UI5Version[]>>();
+const mockGetUi5Themes = jest.fn(actualUi5Info.getUi5Themes);
+jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
+    ...actualUi5Info,
+    getUI5Versions: mockGetUI5Versions,
+    getUi5Themes: mockGetUi5Themes
+}));
+
+// Mock inquirer for createPromptModule (CJS module)
+const mockRegisterPrompt = jest.fn();
+const mockCreatePromptModule = jest.fn().mockReturnValue({
+    registerPrompt: mockRegisterPrompt
 });
+jest.unstable_mockModule('inquirer', () => ({
+    default: {
+        createPromptModule: mockCreatePromptModule
+    },
+    createPromptModule: mockCreatePromptModule
+}));
+
+const actualPrompts = await import('../../src/prompts/index.js');
+const getQuestionsSpy = jest.fn(actualPrompts.getQuestions); // Replace spy with mock wrapper but real impementation
+jest.unstable_mockModule('../../src/prompts/index.js', () => ({
+    ...actualPrompts,
+    getQuestions: getQuestionsSpy
+}));
+
+const { getPrompts, prompt, promptNames } = await import('../../src/index.js');
+const AutocompletePrompt = (await import('inquirer-autocomplete-prompt')).default;
+
 /**
  * Tests the exported ui5-application-inquirer APIs
  */
@@ -36,20 +71,22 @@ describe('ui5-application-inquirer API', () => {
             maintained: false
         }
     ];
-    let getUI5VersionsSpy: jest.SpyInstance;
 
     beforeEach(() => {
-        getUI5VersionsSpy = jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue(ui5Vers);
+        mockGetUI5Versions.mockResolvedValue(ui5Vers);
     });
 
     afterEach(() => {
         // Reset all spys (not mocks)
         // jest.restoreAllMocks() only works when the mock was created with jest.spyOn().
         jest.restoreAllMocks();
+        mockGetUI5Versions.mockReset();
+        //mockGetDefaultUI5Theme.mockReset().mockImplementation(actualUi5Info.getDefaultUI5Theme);
+        mockGetUi5Themes.mockReset().mockImplementation(actualUi5Info.getUi5Themes);
+        mockExistsSync.mockReset();
     });
 
     test('getPrompts, no options', async () => {
-        const getQuestionsSpy = jest.spyOn(ui5AppPrompts, 'getQuestions');
         // All prompts, no options
         let prompts = await getPrompts();
         expect(prompts).toMatchSnapshot();
@@ -61,9 +98,9 @@ describe('ui5-application-inquirer API', () => {
             includeDefault: true,
             minSupportedUI5Version: undefined
         };
-        expect(getUI5VersionsSpy).toHaveBeenCalledWith(filterOptions);
+        expect(mockGetUI5Versions).toHaveBeenCalledWith(filterOptions);
         expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, undefined, undefined, false);
-        getUI5VersionsSpy.mockClear();
+        mockGetUI5Versions.mockClear();
         getQuestionsSpy.mockClear();
 
         const cdsInfo = {
@@ -73,12 +110,10 @@ describe('ui5-application-inquirer API', () => {
             isWorkspaceEnabled: false
         };
         prompts = await getPrompts(undefined, cdsInfo, true);
-
         expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, undefined, cdsInfo, true);
     });
 
     test('getPrompts, prompt options specified', async () => {
-        const getQuestionsSpy = jest.spyOn(ui5AppPrompts, 'getQuestions');
         const promptOpts: UI5ApplicationPromptOptions = {
             [promptNames.ui5Version]: {
                 validate: (answers: UI5ApplicationAnswers) => answers.name === 'someName'
@@ -103,7 +138,6 @@ describe('ui5-application-inquirer API', () => {
     });
 
     test('getPrompts, with `minUI5Version` specified', async () => {
-        const getUI5VersionsSpy = jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue(ui5Vers);
         const minUI5Version = '1.999.9';
         const promptOptions: UI5ApplicationPromptOptions = {
             [promptNames.ui5Version]: {
@@ -111,17 +145,19 @@ describe('ui5-application-inquirer API', () => {
             }
         };
         await getPrompts(promptOptions);
-        expect(getUI5VersionsSpy).toHaveBeenCalledWith(
+        expect(mockGetUI5Versions).toHaveBeenCalledWith(
             expect.objectContaining({ minSupportedUI5Version: minUI5Version })
         );
     });
 
     test('prompt, prompt module registers plugin', async () => {
-        const mockPromptsModule = createPromptModule();
-        const adapterRegisterPromptSpy = jest.spyOn(mockPromptsModule, 'registerPrompt');
+        const adapterRegisterPromptSpy = jest.fn();
+        const mockPromptsModule = {
+            registerPrompt: adapterRegisterPromptSpy
+        };
         const mockInquirerAdapter: InquirerAdapter = {
-            prompt: jest.fn().mockResolvedValue({ aPrompt: 'a prompt answer' }),
-            promptModule: mockPromptsModule
+            prompt: jest.fn<any>().mockResolvedValue({ aPrompt: 'a prompt answer' }),
+            promptModule: mockPromptsModule as any
         };
         const promptOpts: UI5ApplicationPromptOptions = {
             [promptNames.ui5Version]: {
@@ -137,10 +173,12 @@ describe('ui5-application-inquirer API', () => {
     });
 
     test('prompt, defaults are applied from prompt options and prompt defaults if advanced option', async () => {
-        const mockPromptsModule = createPromptModule();
+        const mockPromptsModule = {
+            registerPrompt: jest.fn()
+        };
         const mockInquirerAdapter: InquirerAdapter = {
-            prompt: jest.fn().mockResolvedValue({ [promptNames.name]: 'a prompt answer' }),
-            promptModule: mockPromptsModule
+            prompt: jest.fn<any>().mockResolvedValue({ [promptNames.name]: 'a prompt answer' }),
+            promptModule: mockPromptsModule as any
         };
         const promptOpts: UI5ApplicationPromptOptions = {
             // Test default string value
@@ -189,7 +227,7 @@ describe('ui5-application-inquirer API', () => {
         });
 
         // Provided answer takes precendence, default theme uses ui5 answer, default functions use previous answers
-        mockInquirerAdapter.prompt = jest.fn().mockResolvedValue({
+        mockInquirerAdapter.prompt = jest.fn<any>().mockResolvedValue({
             [promptNames.ui5Version]: '1.64.0',
             [promptNames.skipAnnotations]: false
         });
@@ -205,17 +243,18 @@ describe('ui5-application-inquirer API', () => {
     });
 
     test('prompt, prompt args are passed correctly applied', async () => {
-        const getQuestionsSpy = jest.spyOn(ui5AppPrompts, 'getQuestions');
         const promptOpts: UI5ApplicationPromptOptions = {
             [promptNames.name]: {
                 default: 'someName'
             }
         };
 
-        const mockPromptsModule = createPromptModule();
+        const mockPromptsModule = {
+            registerPrompt: jest.fn()
+        };
         const mockInquirerAdapter: InquirerAdapter = {
-            prompt: jest.fn().mockResolvedValue({ [promptNames.name]: 'a prompt answer' }),
-            promptModule: mockPromptsModule
+            prompt: jest.fn<any>().mockResolvedValue({ [promptNames.name]: 'a prompt answer' }),
+            promptModule: mockPromptsModule as any
         };
         const mockCdsInfo = {
             hasCdsUi5Plugin: true,
@@ -252,9 +291,8 @@ describe('Filtering UI5 themes based on UI5 version', () => {
     }
 
     test.each(versionsToTest)('should call getUi5Themes with correct ui5Version: %s', async (version) => {
-        jest.restoreAllMocks();
-        const getUi5ThemesSpy = jest.spyOn(ui5Info, 'getUi5Themes');
-        const getUI5VersionsSpy = jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue([{ version }]);
+        mockGetUI5Versions.mockReset().mockResolvedValue([{ version }]);
+        mockGetUi5Themes.mockReset().mockImplementation(actualUi5Info.getUi5Themes);
         const promptOpts: UI5ApplicationPromptOptions = {
             [promptNames.ui5Version]: {
                 validate: (answers: UI5ApplicationAnswers) => answers.name === version,
@@ -280,7 +318,7 @@ describe('Filtering UI5 themes based on UI5 version', () => {
 
         const expectedChoices = getExpectedChoices(version);
 
-        expect(getUi5ThemesSpy).toHaveBeenCalledWith(version);
+        expect(mockGetUi5Themes).toHaveBeenCalledWith(version);
         expect(choices.length).toBeGreaterThan(0);
         expect(choices).toEqual(expectedChoices);
     });

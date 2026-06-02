@@ -1,17 +1,15 @@
-import { FileName, Severity } from '../../src/types';
-import { join } from 'node:path';
-import { getDestinationsFromWorkspace } from '../../src/checks/workspace';
-import { findAllApps } from '@sap-ux/project-access';
+import { jest } from '@jest/globals';
+import path, { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-jest.mock('@sap-ux/project-access', () => ({
-    findAllApps: jest.fn()
+const mockFindAllApps = jest.fn();
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    findAllApps: mockFindAllApps
 }));
-const mockFindAllApps = findAllApps as jest.Mock;
 
-jest.mock('fs', () => {
-    const fs = jest.requireActual('fs');
-    return fs;
-});
+const { FileName, Severity } = await import('../../src/types');
+const { getDestinationsFromWorkspace } = await import('../../src/checks/workspace');
 
 describe('Test for getDestinationsFromWorkspace()', () => {
     const sampleWorkspace = join(__dirname, '..', 'sample-workspace');

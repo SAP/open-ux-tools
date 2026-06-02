@@ -1,18 +1,34 @@
+import { jest } from '@jest/globals';
 import { Command } from 'commander';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { addFlpEmbeddedConfigCommand } from '../../../../src/cli/add/flp-embedded-config';
-import * as appConfigWriter from '@sap-ux/app-config-writer';
-import * as logger from '../../../../src/tracing/logger';
-import { join } from 'node:path';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-jest.mock('prompts');
+const mockGetLogger = jest.fn();
+const mockSetLogLevelVerbose = jest.fn();
+jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
+    getLogger: mockGetLogger,
+    setLogLevelVerbose: mockSetLogLevelVerbose
+}));
+
+const mockGenerateFlpEmbeddedConfig = jest.fn();
+jest.unstable_mockModule('@sap-ux/app-config-writer', () => ({
+    generateFlpEmbeddedConfig: mockGenerateFlpEmbeddedConfig,
+    DEFAULT_FLP_PATH: 'sap/bc/ui5_ui5/ui2/ushell/shells/abap/Fiorilaunchpad.html'
+}));
+
+jest.unstable_mockModule('prompts', () => ({
+    default: jest.fn()
+}));
+
+const { addFlpEmbeddedConfigCommand } = await import('../../../../src/cli/add/flp-embedded-config');
 
 describe('Test command add flp-embedded-config', () => {
     const appRoot = join(__dirname, '../../../fixtures/bare-minimum');
     let loggerMock: ToolsLogger;
     let fsMock: Editor;
-    let logLevelSpy: jest.SpyInstance;
 
     const getArgv = (arg: string[]) => ['', '', ...arg];
 
@@ -25,14 +41,13 @@ describe('Test command add flp-embedded-config', () => {
             warn: jest.fn(),
             error: jest.fn()
         } as Partial<ToolsLogger> as ToolsLogger;
-        jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
-        logLevelSpy = jest.spyOn(logger, 'setLogLevelVerbose').mockImplementation(() => undefined);
+        mockGetLogger.mockReturnValue(loggerMock);
         fsMock = {
             dump: jest.fn(),
             exists: jest.fn(),
-            commit: jest.fn().mockImplementation((callback) => callback())
+            commit: jest.fn().mockImplementation((callback: (error?: Error) => void) => callback())
         } as Partial<Editor> as Editor;
-        jest.spyOn(appConfigWriter, 'generateFlpEmbeddedConfig').mockResolvedValue(fsMock);
+        mockGenerateFlpEmbeddedConfig.mockResolvedValue(fsMock);
     });
 
     test('add flp-embedded-config with required bspApplication option', async () => {
@@ -40,12 +55,12 @@ describe('Test command add flp-embedded-config', () => {
         addFlpEmbeddedConfigCommand(command);
         await command.parseAsync(getArgv(['flp-embedded-config', appRoot, '-b', 'my-bsp-app']));
 
-        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).not.toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.info).toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
-        expect(appConfigWriter.generateFlpEmbeddedConfig).toHaveBeenCalledWith(
+        expect(mockGenerateFlpEmbeddedConfig).toHaveBeenCalledWith(
             appRoot,
             'my-bsp-app',
             expect.any(String),
@@ -60,7 +75,7 @@ describe('Test command add flp-embedded-config', () => {
         addFlpEmbeddedConfigCommand(command);
         await command.parseAsync(getArgv(['flp-embedded-config', appRoot, '-b', 'my-bsp-app', '--simulate']));
 
-        expect(logLevelSpy).toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).not.toHaveBeenCalled();
     });
@@ -70,13 +85,13 @@ describe('Test command add flp-embedded-config', () => {
         addFlpEmbeddedConfigCommand(command);
         await command.parseAsync(getArgv(['flp-embedded-config', appRoot, '-b', 'my-bsp-app', '--verbose']));
 
-        expect(logLevelSpy).toHaveBeenCalled();
+        expect(mockSetLogLevelVerbose).toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
     });
 
     test('add flp-embedded-config passes error to logger when generateFlpEmbeddedConfig throws', async () => {
-        jest.spyOn(appConfigWriter, 'generateFlpEmbeddedConfig').mockRejectedValue(new Error('something went wrong'));
+        mockGenerateFlpEmbeddedConfig.mockRejectedValueOnce(new Error('something went wrong'));
         const command = new Command('add');
         addFlpEmbeddedConfigCommand(command);
         await command.parseAsync(getArgv(['flp-embedded-config', appRoot, '-b', 'my-bsp-app']));
@@ -88,7 +103,9 @@ describe('Test command add flp-embedded-config', () => {
     });
 
     test('add flp-embedded-config passes commit error to logger', async () => {
-        fsMock.commit = jest.fn().mockImplementation((callback) => callback(new Error('disk full')));
+        fsMock.commit = jest
+            .fn()
+            .mockImplementation((callback: (error?: Error) => void) => callback(new Error('disk full')));
         const command = new Command('add');
         addFlpEmbeddedConfigCommand(command);
         await command.parseAsync(getArgv(['flp-embedded-config', appRoot, '-b', 'my-bsp-app']));

@@ -1,10 +1,7 @@
-import { runPostGenerationTasks } from '../../../src/fiori-app-generator/end';
-import { DEFAULT_POST_APP_GEN_COMMAND, generateLaunchConfig, runHooks, t } from '../../../src/utils';
+import { jest } from '@jest/globals';
 import type { BackendSystem } from '@sap-ux/store';
-import { getService } from '@sap-ux/store';
 import { PLATFORMS, ApiHubType, EventName, State } from '../../../src/types';
 import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
-import { sendTelemetry, TelemetryHelper, getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { CapService } from '@sap-ux/odata-service-inquirer';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { Editor } from 'mem-fs-editor';
@@ -13,30 +10,44 @@ import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import { join } from 'node:path';
 
-jest.mock('../../../src/utils', () => ({
-    ...jest.requireActual('../../../src/utils'),
-    generateLaunchConfig: jest.fn(),
-    getPlatform: jest.fn(),
-    runHooks: jest.fn()
-}));
+// Pre-import actual modules
+const actualUtils = await import('../../../src/utils');
+const actualStore = await import('@sap-ux/store');
+const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
 
+const mockGenerateLaunchConfig = jest.fn();
+const mockRunHooks = jest.fn();
 const storeServiceWriteMock = jest.fn().mockResolvedValue({});
+const mockGetService = jest.fn().mockImplementation(() => ({
+    write: storeServiceWriteMock
+}));
+const mockSendTelemetry = jest.fn();
+const mockGetHostEnvironment = jest.fn();
 
-jest.mock('@sap-ux/store', () => ({
-    ...jest.requireActual('@sap-ux/store'),
-    getService: jest.fn().mockImplementation(() => ({
-        write: storeServiceWriteMock
-    }))
+jest.unstable_mockModule('../../../src/utils', () => ({
+    ...actualUtils,
+    generateLaunchConfig: mockGenerateLaunchConfig,
+    getPlatform: jest.fn(),
+    runHooks: mockRunHooks
 }));
 
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    sendTelemetry: jest.fn(),
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...actualStore,
+    getService: mockGetService
+}));
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGenShared,
+    sendTelemetry: mockSendTelemetry,
     TelemetryHelper: {
         telemetryData: {}
     },
-    getHostEnvironment: jest.fn()
+    getHostEnvironment: mockGetHostEnvironment
 }));
+
+const { runPostGenerationTasks } = await import('../../../src/fiori-app-generator/end');
+const { t } = await import('../../../src/utils');
+const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 
 describe('runPostGenerationTasks', () => {
     const logger = {
@@ -69,7 +80,7 @@ describe('runPostGenerationTasks', () => {
 
         await runPostGenerationTasks({ service, project }, fs, logger, vscode, appWizard);
 
-        expect(generateLaunchConfig).toHaveBeenCalledWith(
+        expect(mockGenerateLaunchConfig).toHaveBeenCalledWith(
             {
                 targetFolder: project.targetFolder,
                 projectName: project.name,
@@ -100,11 +111,11 @@ describe('runPostGenerationTasks', () => {
             flpAppId: 'testAppId'
         };
 
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
 
         await runPostGenerationTasks({ service, project }, fs, logger, vscode, appWizard);
 
-        expect(getService).toHaveBeenCalledWith({
+        expect(mockGetService).toHaveBeenCalledWith({
             logger,
             entityName: 'system'
         });
@@ -126,12 +137,12 @@ describe('runPostGenerationTasks', () => {
             flpAppId: 'testAppId'
         };
 
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
 
         await runPostGenerationTasks({ service, project }, fs, logger, vscode, appWizard);
 
         // Should not call getService or write when newOrUpdated is false
-        expect(getService).not.toHaveBeenCalled();
+        expect(mockGetService).not.toHaveBeenCalled();
         expect(storeServiceWriteMock).not.toHaveBeenCalled();
     });
 
@@ -172,7 +183,7 @@ describe('runPostGenerationTasks', () => {
             flpAppId: 'testAppId'
         };
 
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
 
         await runPostGenerationTasks({ service, project }, fs, logger, vscode, appWizard);
 
@@ -197,8 +208,8 @@ describe('runPostGenerationTasks', () => {
         expect(logger.info).toHaveBeenCalledWith(
             t('logMessages.applicationGenerationSuccess', { targetFolder: projectPath })
         );
-        expect(sendTelemetry).toHaveBeenCalledWith('GENERATION_SUCCESS', TelemetryHelper.telemetryData, projectPath);
-        expect(runHooks).toHaveBeenCalledWith(
+        expect(mockSendTelemetry).toHaveBeenCalledWith('GENERATION_SUCCESS', {}, projectPath);
+        expect(mockRunHooks).toHaveBeenCalledWith(
             'app-generated',
             {
                 hookParameters: { fsPath: projectPath },

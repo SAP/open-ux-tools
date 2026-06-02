@@ -31,10 +31,10 @@ import {
     type TileSettingsAnswers
 } from '@sap-ux/flp-config-inquirer';
 
-import { promptYUIQuestions } from '../../common';
-import { validateBasePath } from '../../validation';
-import { filterLabelTypeQuestions } from '../../common/prompts';
-import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
+import { promptYUIQuestions } from '../../common/index.js';
+import { validateBasePath } from '../../validation/index.js';
+import { filterLabelTypeQuestions } from '../../common/prompts.js';
+import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing/index.js';
 
 type Variant = { isAdp: true; content: DescriptorVariant } | { isAdp: false; content: undefined };
 

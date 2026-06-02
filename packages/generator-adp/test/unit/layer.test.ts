@@ -1,13 +1,13 @@
-import { FlexLayer } from '@sap-ux/adp-tooling';
-import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
+import { jest } from '@jest/globals';
 
-import { getFlexLayer } from '../../src/app/layer';
+const mockIsInternalFeaturesSettingEnabled = jest.fn();
 
-jest.mock('@sap-ux/feature-toggle', () => ({
-    isInternalFeaturesSettingEnabled: jest.fn()
+jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
+    isInternalFeaturesSettingEnabled: mockIsInternalFeaturesSettingEnabled
 }));
 
-const isFeatureEnabledMock = isInternalFeaturesSettingEnabled as jest.Mock;
+const { FlexLayer } = await import('@sap-ux/adp-tooling');
+const { getFlexLayer } = await import('../../src/app/layer');
 
 describe('getFlexLayer', () => {
     afterEach(() => {
@@ -15,7 +15,7 @@ describe('getFlexLayer', () => {
     });
 
     it('should return FlexLayer.VENDOR if internal usage is true', async () => {
-        isFeatureEnabledMock.mockReturnValue(true);
+        mockIsInternalFeaturesSettingEnabled.mockReturnValue(true);
 
         const layer = await getFlexLayer();
 
@@ -23,7 +23,7 @@ describe('getFlexLayer', () => {
     });
 
     it('should return FlexLayer.CUSTOMER_BASE if internal usage is false', async () => {
-        isFeatureEnabledMock.mockReturnValue(false);
+        mockIsInternalFeaturesSettingEnabled.mockReturnValue(false);
 
         const layer = await getFlexLayer();
 

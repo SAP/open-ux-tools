@@ -1,9 +1,7 @@
 import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
-import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
-import { initOrphanedChangeDetection } from 'open/ux/preview/client/adp/change-file-validator';
 import { documentMock, fetchMock } from 'mock/window';
 
-jest.mock('../../../src/i18n', () => ({
+jest.unstable_mockModule('open/ux/preview/client/i18n', () => ({
     getTextBundle: () =>
         Promise.resolve({
             getText: jest
@@ -13,6 +11,9 @@ jest.mock('../../../src/i18n', () => ({
                 )
         })
 }));
+
+const { CommunicationService } = await import('open/ux/preview/client/cpe/communication-service');
+const { initOrphanedChangeDetection } = await import('open/ux/preview/client/adp/change-file-validator');
 
 /**
  * Flushes pending microtasks so fire-and-forget async calls (sendInfoCenterMessage)

@@ -1,20 +1,21 @@
-import { readFileSync } from 'node:fs';
-import { exec } from 'node:child_process';
+import { jest } from '@jest/globals';
 
-import { getPackageInfo, installDependencies } from '../../../src/utils/deps';
+const mockExec = jest.fn();
+const mockReadFileSync = jest.fn();
 
-jest.mock('child_process', () => ({
-    ...jest.requireActual('child_process'),
-    exec: jest.fn()
+const realChildProcess = await import('node:child_process');
+jest.unstable_mockModule('node:child_process', () => ({
+    ...realChildProcess,
+    exec: mockExec
 }));
 
-jest.mock('fs', () => ({
-    ...jest.requireActual('fs'),
-    readFileSync: jest.fn()
+const realFs = await import('node:fs');
+jest.unstable_mockModule('node:fs', () => ({
+    ...realFs,
+    readFileSync: mockReadFileSync
 }));
 
-const execMock = exec as unknown as jest.Mock;
-const readFileSyncMock = readFileSync as jest.Mock;
+const { getPackageInfo, installDependencies } = await import('../../../src/utils/deps');
 
 const mockPackage = { name: '@sap-ux/generator-adp', version: '0.0.1', displayName: 'SAPUI5 Adaptation Project' };
 
@@ -26,18 +27,18 @@ describe('installDependencies', () => {
     });
 
     it('should resolve when npm install succeeds', async () => {
-        execMock.mockImplementation((command: string, callback: Function) => {
+        mockExec.mockImplementation((command: string, callback: Function) => {
             callback(null, { stdout: 'ok', stderr: '' });
         });
 
         await expect(installDependencies(dummyProjectPath)).resolves.toBeUndefined();
 
-        expect(exec).toHaveBeenCalledWith(`cd ${dummyProjectPath} && npm i`, expect.any(Function));
+        expect(mockExec).toHaveBeenCalledWith(`cd ${dummyProjectPath} && npm i`, expect.any(Function));
     });
 
     it('should throw an error when npm install fails', async () => {
         const error = new Error('Installation failed');
-        execMock.mockImplementation((command: string, callback: Function) => {
+        mockExec.mockImplementation((command: string, callback: Function) => {
             callback(error, null);
         });
 
@@ -51,7 +52,7 @@ describe('getPackageInfo', () => {
     });
 
     it('should return the correct package.json', async () => {
-        readFileSyncMock.mockReturnValue(JSON.stringify(mockPackage));
+        mockReadFileSync.mockReturnValue(JSON.stringify(mockPackage));
         const result = getPackageInfo();
 
         expect(result).toEqual(mockPackage);

@@ -1,5 +1,5 @@
-import type { I18nAnnotation } from '../types';
-import { getI18nMaxLength, getI18nTextType } from './text';
+import type { I18nAnnotation } from '../types.js';
+import { getI18nMaxLength, getI18nTextType } from './text.js';
 
 /**
  * Creates annotation text in .properties file format

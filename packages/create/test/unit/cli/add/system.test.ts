@@ -1,16 +1,33 @@
+import { jest } from '@jest/globals';
 import { Command } from 'commander';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { addSystemAddCommand } from '../../../../src/cli/add/system';
-import * as logger from '../../../../src/tracing/logger';
-import * as btpUtils from '@sap-ux/btp-utils';
-import * as store from '@sap-ux/store';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn().mockReturnValue(false)
+const mockGetLogger = jest.fn();
+const mockSetLogLevelVerbose = jest.fn();
+jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
+    getLogger: mockGetLogger,
+    setLogLevelVerbose: mockSetLogLevelVerbose
 }));
 
-const { mockedService } = store as unknown as { mockedService: Record<string, jest.Mock> };
-const isAppStudioMock = btpUtils.isAppStudio as jest.Mock;
+const isAppStudioMock = jest.fn().mockReturnValue(false);
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: isAppStudioMock
+}));
+
+const mockedService = {
+    read: jest.fn<any>().mockResolvedValue(undefined),
+    write: jest.fn<any>().mockResolvedValue(undefined),
+    delete: jest.fn<any>().mockResolvedValue(true),
+    getAll: jest.fn<any>().mockResolvedValue([]),
+    partialUpdate: jest.fn<any>().mockResolvedValue(undefined)
+};
+const actualStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...actualStore,
+    getService: jest.fn().mockResolvedValue(mockedService)
+}));
+
+const { addSystemAddCommand } = await import('../../../../src/cli/add/system.js');
 
 describe('system/add', () => {
     let loggerMock: ToolsLogger;
@@ -26,7 +43,7 @@ describe('system/add', () => {
             warn: jest.fn(),
             error: jest.fn()
         } as Partial<ToolsLogger> as ToolsLogger;
-        jest.spyOn(logger, 'getLogger').mockReturnValue(loggerMock);
+        mockGetLogger.mockReturnValue(loggerMock);
         isAppStudioMock.mockReturnValue(false);
         mockedService.read.mockResolvedValue(undefined);
         mockedService.write.mockResolvedValue(undefined);
@@ -42,7 +59,7 @@ describe('system/add', () => {
 
         // Then
         expect(mockedService.write).toHaveBeenCalledTimes(1);
-        const written = mockedService.write.mock.calls[0][0];
+        const written = mockedService.write.mock.calls[0][0] as { name: string; url: string };
         expect(written.name).toBe('My System');
         expect(written.url).toBe('https://my-sap.example.com');
         expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('added'));
@@ -70,7 +87,7 @@ describe('system/add', () => {
         );
 
         // Then
-        const written = mockedService.write.mock.calls[0][0];
+        const written = mockedService.write.mock.calls[0][0] as { username: string; password: string };
         expect(written.username).toBe('user1');
         expect(written.password).toBe('secret');
     });
@@ -84,7 +101,7 @@ describe('system/add', () => {
         await command.parseAsync(getArgv(['system', '--name', 'My System', '--url', 'https://example.com']));
 
         // Then
-        const written = mockedService.write.mock.calls[0][0];
+        const written = mockedService.write.mock.calls[0][0] as { username?: string; password?: string };
         expect(written.username).toBeUndefined();
         expect(written.password).toBeUndefined();
     });

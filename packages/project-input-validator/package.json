@@ -1,7 +1,8 @@
 {
     "name": "@sap-ux/project-input-validator",
-    "version": "0.7.2",
+    "version": "1.0.1",
     "description": "Library to validate Fiori project input formats",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -20,8 +21,8 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
@@ -31,6 +32,7 @@
         "@sap-ux/project-access": "workspace:*"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@types/validate-npm-package-name": "4.0.2",
         "jest-extended": "7.0.0"
     },
