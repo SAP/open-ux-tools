@@ -1,5 +1,19 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.3.3
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.3
+
+## 0.3.2
+
+### Patch Changes
+
+- a8e4cf0: fix: handle both nested (`{ uaa: {...} }`) and flat destination-service credential shapes when fetching BTP destinations and when checking for OnPremise destinations during adaptation-project startup. A new `getDestinationServiceUaa` helper in `@sap-ux/adp-tooling` is reused by `@sap-ux/backend-proxy-middleware-cf` to avoid duplicate shape-handling logic.
+- Updated dependencies [a8e4cf0]
+    - @sap-ux/adp-tooling@1.0.2
+
 ## 0.3.1
 
 ### Patch Changes
