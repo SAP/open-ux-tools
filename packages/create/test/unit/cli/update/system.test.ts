@@ -2,7 +2,6 @@ import { jest } from '@jest/globals';
 import { Command } from 'commander';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-
 const mockGetLogger = jest.fn();
 const mockSetLogLevelVerbose = jest.fn();
 jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
