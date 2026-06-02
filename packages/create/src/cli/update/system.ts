@@ -55,7 +55,7 @@ Example:
  * @param params.password - optional new password
  * @param params.clearCredentials - if true, clears stored credentials
  */
-export async function updateSystem(params: {
+async function updateSystem(params: {
     url: string;
     client?: string;
     name?: string;
