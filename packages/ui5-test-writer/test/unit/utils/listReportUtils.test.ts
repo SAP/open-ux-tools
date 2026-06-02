@@ -19,7 +19,7 @@ import {
     isSemanticKeyInFilterBar,
     safeGetSemanticKeyProperties
 } from '../../../src/utils/listReportUtils';
-import type { ButtonState, FEV4ManifestTarget } from '../../../src/types';
+import type { ButtonState, FEV4ManifestTarget } from '../../../src/types.js';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';

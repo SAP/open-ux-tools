@@ -8,21 +8,21 @@ import { TemplateType as TemplateTypeFF } from '@sap-ux/fiori-freestyle-writer';
 import type { BasicAppSettings } from '@sap-ux/fiori-freestyle-writer/dist/types';
 import { type CapService, DatasourceType } from '@sap-ux/odata-service-inquirer';
 import { ServiceType } from '@sap-ux/odata-service-writer';
-import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
+import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator/index.js';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import Generator from 'yeoman-generator';
 import yeomanTest from 'yeoman-test';
-import type { Project, State } from '../../../src/types';
+import type { Project, State } from '../../../src/types/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Pre-import actuals
-const actualTransforms = await import('../../../src/fiori-app-generator/transforms');
-const actualWriting = await import('../../../src/fiori-app-generator/writing');
-const actualEnd = await import('../../../src/fiori-app-generator/end');
-const actualInstall = await import('../../../src/fiori-app-generator/install');
-const actualUtils = await import('../../../src/utils');
+const actualTransforms = await import('../../../src/fiori-app-generator/transforms.js');
+const actualWriting = await import('../../../src/fiori-app-generator/writing.js');
+const actualEnd = await import('../../../src/fiori-app-generator/end.js');
+const actualInstall = await import('../../../src/fiori-app-generator/install.js');
+const actualUtils = await import('../../../src/utils/index.js');
 const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
 const actualUi5Info = await import('@sap-ux/ui5-info');
 const actualTelemetry = await import('@sap-ux/telemetry');
@@ -149,11 +149,11 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
 }));
 
 // Import after all mocks are set up
-const { FioriAppGenerator } = await import('../../../src/fiori-app-generator');
+const { FioriAppGenerator } = await import('../../../src/fiori-app-generator/index.js');
 const { DefaultLogger, TelemetryHelper, sendTelemetry } = await import('@sap-ux/fiori-generator-shared');
 const { ApiHubType, FIORI_STEPS, FloorplanFE, FloorplanFF, PLATFORMS, generatorName } =
-    await import('../../../src/types');
-const { deleteCache, getYeomanUiStepConfig, t } = await import('../../../src/utils');
+    await import('../../../src/types/index.js');
+const { deleteCache, getYeomanUiStepConfig, t } = await import('../../../src/utils/index.js');
 
 // Increase timeout for heavy generator lifecycle execution in ESM mode
 jest.setTimeout(60000);

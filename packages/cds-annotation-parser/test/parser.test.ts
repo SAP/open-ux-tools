@@ -1,6 +1,6 @@
-import { parse as parseInternal } from '../src/parser';
-import type { AnnotationNode } from '../src/transformer';
-import { buildAst } from '../src/transformer';
+import { parse as parseInternal } from '../src/parser/index.js';
+import type { AnnotationNode } from '../src/transformer/index.js';
+import { buildAst } from '../src/transformer/index.js';
 import {
     getAssignment,
     getCst,
@@ -13,7 +13,7 @@ import {
 import type { Position } from '@sap-ux/text-document-utils';
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
-import { findAnnotationNode, getAstNodes, getNode, parse } from '../src';
+import { findAnnotationNode, getAstNodes, getNode, parse } from '../src/index.js';
 
 const testParser = async (testCasePath: string, valid = true): Promise<void> => {
     const text = await getAssignment(testCasePath);

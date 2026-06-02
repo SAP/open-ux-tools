@@ -21,13 +21,13 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     validateWindowsPathLength: mockValidateWindowsPathLength
 }));
 
-const { initI18nCfDeployConfigInquirer, t } = await import('../src/i18n');
+const { initI18nCfDeployConfigInquirer, t } = await import('../src/i18n.js');
 const { validateDestinationQuestion, validateMtaPath, validateMtaId, validateAbapService } =
-    await import('../src/prompts/validators');
+    await import('../src/prompts/validators.js');
 const { ErrorHandler } = await import('@sap-ux/inquirer-common');
 const projectInputValidator = await import('@sap-ux/project-input-validator');
 import { join } from 'node:path';
-import type { CfAppRouterDeployConfigAnswers } from '../src/types';
+import type { CfAppRouterDeployConfigAnswers } from '../src/types.js';
 
 describe('validators', () => {
     beforeAll(async () => {

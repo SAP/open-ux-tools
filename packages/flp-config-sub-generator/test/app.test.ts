@@ -80,11 +80,11 @@ const yeomanTest = (await import('yeoman-test')).default;
 const unset = (await import('lodash/unset')).default;
 const get = (await import('lodash/get')).default;
 const set = (await import('lodash/set')).default;
-const { TestFixture } = await import('./fixtures');
-const { default: FLPConfigGenerator } = await import('../src/app');
-const { initI18n, t } = await import('../src/utils');
+const { TestFixture } = await import('./fixtures/index.js');
+const { default: FLPConfigGenerator } = await import('../src/app/index.js');
+const { initI18n, t } = await import('../src/utils/index.js');
 const { MessageType } = await import('@sap-devx/yeoman-ui-types');
-const { assertInboundsHasConfig } = await import('./utils');
+const { assertInboundsHasConfig } = await import('./utils.js');
 const { rimraf } = await import('rimraf');
 
 const sapApp = 'sap.app';

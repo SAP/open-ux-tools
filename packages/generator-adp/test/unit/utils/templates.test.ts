@@ -7,7 +7,7 @@ jest.unstable_mockModule('node:fs', () => ({
     existsSync: mockExistsSync
 }));
 
-const { getTemplatesOverwritePath } = await import('../../../src/utils/templates');
+const { getTemplatesOverwritePath } = await import('../../../src/utils/templates.js');
 
 // The source code derives __dirname from import.meta.url, so compute
 // the expected path relative to the actual source file location.

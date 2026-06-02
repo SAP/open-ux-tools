@@ -7,9 +7,9 @@ jest.unstable_mockModule('uuid', () => ({
 }));
 
 const { FlexLayer, MAIN_I18N_PATH, RESOURCE_BUNDLE_TEXT, BASE_I18N_DESCRIPTION, TRANSLATION_UUID_TEXT } =
-    await import('../../../../src');
+    await import('../../../../src/index.js');
 const { getI18nDescription, writeI18nModels, extractResourceModelPath, getI18nModels } =
-    await import('../../../../src/writer/i18n');
+    await import('../../../../src/writer/i18n/index.js');
 import type { ResourceModel } from '../../../../src/index.js';
 
 describe('writeI18nModels', () => {

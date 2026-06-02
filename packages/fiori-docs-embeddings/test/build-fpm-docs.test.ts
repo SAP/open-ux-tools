@@ -52,7 +52,7 @@ describe('FpmDocumentationBuilder', () => {
         process.env.GITHUB_HOST = 'github.test.com';
         process.env.GITHUB_TOKEN = 'test-token';
 
-        const module = await import('../src/scripts/build-local-docs');
+        const module = await import('../src/scripts/build-local-docs.js');
         FpmDocumentationBuilder = (module as any).FpmDocumentationBuilder;
     });
 

@@ -1,5 +1,5 @@
-import { UI5_DEFAULT } from '../src/defaults';
-import { getEsmTypesVersion, getTypesPackage, getTypesVersion, mergeObjects, replaceEnvVariables } from '../src/utils';
+import { UI5_DEFAULT } from '../src/defaults.js';
+import { getEsmTypesVersion, getTypesPackage, getTypesVersion, mergeObjects, replaceEnvVariables } from '../src/utils.js';
 
 describe('mergeObjects', () => {
     const base = {

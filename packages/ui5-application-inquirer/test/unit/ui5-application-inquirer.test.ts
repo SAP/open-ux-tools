@@ -5,7 +5,7 @@ import * as actualFs from 'node:fs';
 import * as actualProjectAccess from '@sap-ux/project-access';
 
 import type { UI5Version, UI5VersionFilterOptions } from '@sap-ux/ui5-info';
-import type { InquirerAdapter, UI5ApplicationAnswers, UI5ApplicationPromptOptions } from '../../src';
+import type { InquirerAdapter, UI5ApplicationAnswers, UI5ApplicationPromptOptions } from '../../src/index.js';
 import { gte, lt } from 'semver';
 
 // Mock node:fs to control existsSync

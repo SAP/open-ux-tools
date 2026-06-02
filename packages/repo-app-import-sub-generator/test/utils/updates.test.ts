@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import type { Editor } from 'mem-fs-editor';
-import { t } from '../../src/utils/i18n';
+import { t } from '../../src/utils/i18n.js';
 import { join } from 'node:path';
-import { fioriAppSourcetemplateId } from '../../src/utils/constants';
+import { fioriAppSourcetemplateId } from '../../src/utils/constants.js';
 
 import type { Manifest } from '@sap-ux/project-access';
 
@@ -13,7 +13,7 @@ const DirName = { Webapp: 'webapp' } as const;
 // Pre-import actual modules before mocking
 const actualUi5Info = await import('@sap-ux/ui5-info');
 const actualFeatureToggle = await import('@sap-ux/feature-toggle');
-const actualFileHelpers = await import('../../src/utils/file-helpers');
+const actualFileHelpers = await import('../../src/utils/file-helpers.js');
 
 const mockGetUI5Versions = jest.fn();
 const mockIsInternalFeaturesSettingEnabled = jest.fn();
@@ -42,8 +42,8 @@ jest.unstable_mockModule('../../src/utils/logger', () => {
     return { default: mock, ...mock };
 });
 
-const { validateAndUpdateManifestUI5Version, replaceWebappFiles } = await import('../../src/utils/updates');
-const RepoAppDownloadLogger = (await import('../../src/utils/logger')).default;
+const { validateAndUpdateManifestUI5Version, replaceWebappFiles } = await import('../../src/utils/updates.js');
+const RepoAppDownloadLogger = (await import('../../src/utils/logger.js')).default;
 
 describe('validateAndUpdateManifestUI5Version', () => {
     let fs: {

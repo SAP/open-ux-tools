@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ensureSpecificationLoaded, mockSpecificationReadAppWithModel } from '../utils';
+import { ensureSpecificationLoaded, mockSpecificationReadAppWithModel } from '../utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -16,7 +16,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 }));
 
 // Mock getManifest from project utils
-const actualProjectUtils = await import('../../../src/page-editor-api/project');
+const actualProjectUtils = await import('../../../src/page-editor-api/project.js');
 const mockGetManifest = jest.fn<any>();
 jest.unstable_mockModule('../../../src/page-editor-api/project', () => ({
     ...actualProjectUtils,
@@ -24,8 +24,8 @@ jest.unstable_mockModule('../../../src/page-editor-api/project', () => ({
 }));
 
 // Dynamic imports after mocks
-const { getFunctionalityDetails } = await import('../../../src/tools');
-const addPageDependency = await import('../../../src/tools/functionalities/page');
+const { getFunctionalityDetails } = await import('../../../src/tools/index.js');
+const addPageDependency = await import('../../../src/tools/functionalities/page/index.js');
 const openUxProjectAccessDependency = await import('@sap-ux/project-access');
 import type { ApplicationAccess } from '@sap-ux/project-access';
 

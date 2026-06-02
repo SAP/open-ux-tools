@@ -41,9 +41,9 @@ jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     getHostEnvironment: jest.fn().mockReturnValue({ name: 'CLI', technical: 'CLI' })
 }));
 
-const { ERROR_TYPE, ErrorHandler } = await import('../../../src/error-handler/error-handler');
-const { initI18nInquirerCommon, t } = await import('../../../src/i18n');
-const { getCFAbapInstanceChoices } = await import('../../../src/prompts/cf-helper');
+const { ERROR_TYPE, ErrorHandler } = await import('../../../src/error-handler/error-handler.js');
+const { initI18nInquirerCommon, t } = await import('../../../src/i18n.js');
+const { getCFAbapInstanceChoices } = await import('../../../src/prompts/cf-helper.js');
 
 describe('cf-helper', () => {
     beforeEach(() => {

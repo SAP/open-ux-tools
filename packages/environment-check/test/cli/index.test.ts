@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
-import type { Endpoint } from '../../src';
-import { Severity } from '../../src/types';
+import type { Endpoint } from '../../src/index.js';
+import { Severity } from '../../src/types.js';
 
 const mockIsAppStudio = jest.fn();
 const actualBtpUtils = await import('@sap-ux/btp-utils');
@@ -28,7 +28,7 @@ jest.unstable_mockModule('../../src/output', () => ({
     storeResultsZip: mockStoreResultsZip
 }));
 
-const { cli } = await import('../../src/cli/index');
+const { cli } = await import('../../src/cli/index.js');
 
 describe('Test for cli()', () => {
     beforeEach(() => {

@@ -2,7 +2,7 @@ import path from 'node:path';
 import { jest } from '@jest/globals';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { CfDeploymentInfo, MtaYaml, CfConfig } from '../../../src/types';
+import type { CfDeploymentInfo, MtaYaml, CfConfig } from '../../../src/types.js';
 
 // MOCKS - declare mock functions before jest.unstable_mockModule for ESM compatibility
 const mockGetYamlContent = jest.fn();
@@ -40,8 +40,8 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 
 // Import modules under test AFTER mocks are set up
 const { getCfDeploymentInfo, formatDeploymentSummary, findMtaRoot, buildMtaArchive, deployMtaArchive, deployCf } =
-    await import('../../../src/cf/deploy');
-const { initI18n, t } = await import('../../../src/i18n');
+    await import('../../../src/cf/deploy.js');
+const { initI18n, t } = await import('../../../src/i18n.js');
 
 const mockLogger = {
     info: jest.fn(),

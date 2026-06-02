@@ -1,12 +1,12 @@
 import { jest } from '@jest/globals';
-import type { DebugOptions, LaunchConfig, LaunchJSON, FioriOptions } from '../../src/types';
+import type { DebugOptions, LaunchConfig, LaunchJSON, FioriOptions } from '../../src/types/index.js';
 import path, { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../../src/types';
+import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../../src/types/index.js';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { FileName } from '@sap-ux/project-access';
-import { TestPaths } from '../test-data/utils';
+import { TestPaths } from '../test-data/utils.js';
 
 const mockHandleWorkspaceConfig = jest.fn<any>();
 // Mock workspaceManager
@@ -14,8 +14,8 @@ jest.unstable_mockModule('../../src/debug-config/workspaceManager', () => ({
     handleWorkspaceConfig: mockHandleWorkspaceConfig
 }));
 
-const { configureLaunchJsonFile } = await import('../../src/debug-config/config');
-const launchConfig = await import('../../src/launch-config-crud/create');
+const { configureLaunchJsonFile } = await import('../../src/debug-config/config.js');
+const launchConfig = await import('../../src/launch-config-crud/create.js');
 
 const configTestDir = dirname(fileURLToPath(import.meta.url));
 

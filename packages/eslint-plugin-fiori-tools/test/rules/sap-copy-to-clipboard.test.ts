@@ -1,6 +1,6 @@
 import { RuleTester } from 'eslint';
-import copyToClipboardRule from '../../src/rules/sap-copy-to-clipboard';
-import { meta, languages } from '../../src/index';
+import copyToClipboardRule from '../../src/rules/sap-copy-to-clipboard.js';
+import { meta, languages } from '../../src/index.js';
 import {
     getAnnotationsAsXmlCode,
     getManifestAsCode,

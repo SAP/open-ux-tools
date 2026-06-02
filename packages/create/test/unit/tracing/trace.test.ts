@@ -14,7 +14,7 @@ jest.unstable_mockModule('../../../src/tracing/logger', () => ({
     setLogLevelVerbose: jest.fn()
 }));
 
-const { traceChanges } = await import('../../../src/tracing');
+const { traceChanges } = await import('../../../src/tracing/index.js');
 
 describe('Test traceChanges()', () => {
     let loggerMock: ToolsLogger;

@@ -5,8 +5,8 @@ import {
     TargetSystemType,
     type AbapDeployConfigPromptOptions
 } from '../../../src/types.js';
-import { mockDestinations } from '../../fixtures/destinations';
-import { mockTargetSystems } from '../../fixtures/targets';
+import { mockDestinations } from '../../fixtures/destinations.js';
+import { mockTargetSystems } from '../../fixtures/targets.js';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { UrlAbapTarget } from '@sap-ux/system-access';

@@ -33,9 +33,9 @@ jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     getHostEnvironment: jest.fn().mockReturnValue({ name: 'CLI', technical: 'CLI' })
 }));
 
-const { ERROR_TYPE, ErrorHandler } = await import('../../../src/error-handler/error-handler');
-const { initI18nInquirerCommon, t } = await import('../../../src/i18n');
-const telemetryUtils = await import('../../../src/telemetry/telemetry');
+const { ERROR_TYPE, ErrorHandler } = await import('../../../src/error-handler/error-handler.js');
+const { initI18nInquirerCommon, t } = await import('../../../src/i18n.js');
+const telemetryUtils = await import('../../../src/telemetry/telemetry.js');
 const { GUIDED_ANSWERS_ICON, GUIDED_ANSWERS_LAUNCH_CMD_ID, HELP_NODES, HELP_TREE } =
     await import('@sap-ux/guided-answers-helper');
 const { SampleRate } = await import('@sap-ux/telemetry');

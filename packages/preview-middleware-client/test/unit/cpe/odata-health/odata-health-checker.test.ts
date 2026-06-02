@@ -7,8 +7,8 @@ import ODataModel4, {
     oDataDestroySpy as oDataV4DestroySpy
 } from 'mock/sap/ui/model/odata/v4/ODataModel';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import { ODataHealthChecker } from '../../../../src/cpe/odata-health/odata-health-checker';
-import { ODataDownStatus, ODataUpStatus } from '../../../../src/cpe/odata-health/odata-health-status';
+import { ODataHealthChecker } from '../../../../src/cpe/odata-health/odata-health-checker.js';
+import { ODataDownStatus, ODataUpStatus } from '../../../../src/cpe/odata-health/odata-health-status.js';
 
 type ODataVersion = 'v2' | 'v4' | '2.0' | '4.0';
 

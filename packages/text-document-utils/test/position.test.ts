@@ -8,7 +8,7 @@ import {
     indentWithSpaces,
     positionAt
 } from '../src/position';
-import { printOptions } from '../src/text-formatting';
+import { printOptions } from '../src/text-formatting.js';
 import { Position, Range } from 'vscode-languageserver-types';
 
 describe('position.ts', () => {

@@ -30,7 +30,7 @@ jest.unstable_mockModule('../../../../src/base/helper', () => ({
 }));
 
 const { ManifestService, getInboundsFromManifest, getRegistrationIdFromManifest } =
-    await import('../../../../src/base/abap/manifest-service');
+    await import('../../../../src/base/abap/manifest-service.js');
 import type { DescriptorVariant } from '../../../../src/types.js';
 
 describe('ManifestService', () => {

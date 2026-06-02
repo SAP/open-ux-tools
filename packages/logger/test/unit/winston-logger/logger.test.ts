@@ -1,7 +1,7 @@
 import 'jest-extended';
-import type { Transport } from '../../../src';
-import { LogLevel, ToolsLogger } from '../../../src';
-import type { ArrayTransportLogEntry } from '../../../src/transports';
+import type { Transport } from '../../../src/index.js';
+import { LogLevel, ToolsLogger } from '../../../src/index.js';
+import type { ArrayTransportLogEntry } from '../../../src/transports/index.js';
 import {
     ConsoleTransport,
     ArrayTransport,
@@ -9,8 +9,8 @@ import {
     UI5ToolingTransport,
     VSCodeTransport
 } from '../../../src/transports';
-import { NullTransport as WinstonNullTransport } from '../../../src/winston-logger/null-transport';
-import { VSCodeTransport as WinstonVSCodeTransport } from '../../../src/winston-logger/vscode-output-channel-transport';
+import { NullTransport as WinstonNullTransport } from '../../../src/winston-logger/null-transport.js';
+import { VSCodeTransport as WinstonVSCodeTransport } from '../../../src/winston-logger/vscode-output-channel-transport.js';
 import winston from 'winston';
 
 jest.mock(

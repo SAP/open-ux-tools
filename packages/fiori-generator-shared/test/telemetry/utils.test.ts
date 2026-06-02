@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { hostEnvironment } from '../../src/types';
+import { hostEnvironment } from '../../src/types/index.js';
 
 jest.unstable_mockModule('@vscode-logging/logger', () => ({
     getExtensionLogger: jest.fn()
@@ -12,7 +12,7 @@ jest.unstable_mockModule('../../src/environment', () => ({
 }));
 
 const { ClientFactory } = await import('@sap-ux/telemetry');
-const { sendTelemetry, sendTelemetryBlocking, TelemetryHelper } = await import('../../src/telemetry');
+const { sendTelemetry, sendTelemetryBlocking, TelemetryHelper } = await import('../../src/telemetry/index.js');
 
 describe('Telemetry utils', () => {
     beforeAll(() => {

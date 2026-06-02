@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
-import type { Manifest } from '../../../src/common/types';
+import type { Manifest } from '../../../src/common/types.js';
 import {
     generateRoutePattern,
     generateRouteTarget,
@@ -12,7 +12,7 @@ import {
     initializeTargetSettings
 } from '../../../src/page/common';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { CustomPage, FpmPage } from '../../../src/page/types';
+import type { CustomPage, FpmPage } from '../../../src/page/types.js';
 
 describe('common page functionality', () => {
     const mainEntity = 'Main';

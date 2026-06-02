@@ -6,7 +6,7 @@ import { Command } from 'commander';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { createProjectAccessMock } from '../__mocks__/project-access-mock';
+import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -70,7 +70,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     isCFEnvironment: jest.fn().mockResolvedValue(false)
 }));
 
-const { addNewModelCommand } = await import('../../../../src/cli/add/new-model');
+const { addNewModelCommand } = await import('../../../../src/cli/add/new-model.js');
 
 const mockAnswers = {
     name: 'OData_ServiceName',

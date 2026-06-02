@@ -1,5 +1,5 @@
 import type { CapRuntime } from '@sap-ux/odata-service-inquirer';
-import { capTypeConversion, LEGACY_CAP_TYPE_NODE, LEGACY_CAP_TYPE_JAVA, defaultPromptValues } from '../../../src/types';
+import { capTypeConversion, LEGACY_CAP_TYPE_NODE, LEGACY_CAP_TYPE_JAVA, defaultPromptValues } from '../../../src/types/index.js';
 import { promptNames } from '@sap-ux/ui5-application-inquirer';
 
 describe('Test types', () => {

@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import path from 'node:path';
-import type { EmbeddingMetadata } from '../../../../src/tools/services/vector-simple';
+import type { EmbeddingMetadata } from '../../../../src/tools/services/vector-simple.js';
 
 // Mock logger
 const mockLog = jest.fn();
@@ -52,7 +52,7 @@ jest.unstable_mockModule('@lancedb/lancedb', () => ({
     connect: mockConnect
 }));
 
-const { SimpleVectorService } = await import('../../../../src/tools/services/vector-simple');
+const { SimpleVectorService } = await import('../../../../src/tools/services/vector-simple.js');
 
 describe('SimpleVectorService', () => {
     let vectorService: SimpleVectorService;

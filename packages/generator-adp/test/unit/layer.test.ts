@@ -7,7 +7,7 @@ jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
 }));
 
 const { FlexLayer } = await import('@sap-ux/adp-tooling');
-const { getFlexLayer } = await import('../../src/app/layer');
+const { getFlexLayer } = await import('../../src/app/layer.js');
 
 describe('getFlexLayer', () => {
     afterEach(() => {

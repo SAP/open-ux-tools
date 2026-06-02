@@ -107,10 +107,10 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     findCapProjectRoot: mockFindCapProjectRoot
 }));
 
-const { default: DeployGenerator } = await import('../../src/app');
+const { default: DeployGenerator } = await import('../../src/app/index.js');
 const { default: yeomanTest } = await import('yeoman-test');
-const { TestFixture } = await import('./fixtures');
-const { generatorNamespace, initI18n } = await import('../../src/utils');
+const { TestFixture } = await import('./fixtures/index.js');
+const { generatorNamespace, initI18n } = await import('../../src/utils/index.js');
 const { TargetName } = await import('@sap-ux/deploy-config-generator-shared');
 
 describe('Deployment Generator', () => {

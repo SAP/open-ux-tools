@@ -41,7 +41,7 @@ jest.unstable_mockModule('@sap-ux/system-access', () => ({
 }));
 
 const { ManifestService, SystemLookup, ChangeType, AnnotationFileSelectType } = await import('@sap-ux/adp-tooling');
-const { default: annotationGen } = await import('../../../src/add-annotations-to-odata');
+const { default: annotationGen } = await import('../../../src/add-annotations-to-odata/index.js');
 
 // Set template path mock to return the real template path
 const templatePath = join(__dirname, 'src/add-annotations-to-odata/templates');

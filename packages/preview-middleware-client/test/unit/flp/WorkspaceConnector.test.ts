@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import ObjectStorageConnector from 'mock/sap/ui/fl/write/api/connectors/ObjectStorageConnector';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { documentMock, fetchMock } from 'mock/window';

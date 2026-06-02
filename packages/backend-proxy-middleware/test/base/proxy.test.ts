@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import type { ClientRequest, IncomingMessage } from 'node:http';
 import type { Options } from 'http-proxy-middleware';
-import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
+import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types.js';
 
 const mockBackendSystemRead = jest.fn();
 const mockBackendSystemWrite = jest.fn();
@@ -90,8 +90,8 @@ jest.unstable_mockModule('prompts', () => ({
 // Dynamic imports after mocks
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 const { enhanceConfigsForDestination, enhanceConfigForSystem, ProxyEventHandlers, PathRewriters, proxyErrorHandler } =
-    await import('../../src/base/proxy');
-const { generateProxyMiddlewareOptions, createProxy } = await import('../../src');
+    await import('../../src/base/proxy.js');
+const { generateProxyMiddlewareOptions, createProxy } = await import('../../src/index.js');
 const { AuthenticationType } = await import('@sap-ux/store');
 const { AbapCloudEnvironment } = await import('@sap-ux/axios-extension');
 const { getDestinationUrlForAppStudio, WebIDEUsage, WebIDEAdditionalData } = await import('@sap-ux/btp-utils');

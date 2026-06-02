@@ -1,6 +1,6 @@
 import { Prompts } from '@sap-devx/yeoman-ui-types';
 import type { IPrompt } from '@sap-devx/yeoman-ui-types';
-import { GeneratorTypes } from '../../../src/types';
+import { GeneratorTypes } from '../../../src/types.js';
 
 import {
     getWizardPages,
@@ -12,7 +12,7 @@ import {
     getSubGenAuthPages,
     getKeyUserImportPage
 } from '../../../src/utils/steps';
-import { initI18n, t } from '../../../src/utils/i18n';
+import { initI18n, t } from '../../../src/utils/i18n.js';
 
 describe('Wizard Steps Utility', () => {
     let prompts: Prompts;

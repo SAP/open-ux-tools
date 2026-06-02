@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { MessageBarType, showInfoCenterMessage, type Scenario } from '@sap-ux-private/control-property-editor-common';
 import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
 import IconPoolMock from 'mock/sap/ui/core/IconPool';
@@ -24,7 +25,7 @@ jest.unstable_mockModule('open/ux/preview/client/utils/info-center-message', () 
     sendInfoCenterMessage: jest.fn()
 }));
 
-import MyHomeController from '../../../src/flp/homepage/controller/MyHome.controller';
+import MyHomeController from '../../../src/flp/homepage/controller/MyHome.controller.js';
 const {
     init,
     loadI18nResourceBundle,
@@ -34,7 +35,7 @@ const {
     setI18nTitle
 } = await import('open/ux/preview/client/flp/init');
 const infoCenterMessage = await import('open/ux/preview/client/utils/info-center-message');
-type ManifestAppdescr = import('../../../src/adp/api-handler').ManifestAppdescr;
+type ManifestAppdescr = import('../../../src/adp/api-handler.js').ManifestAppdescr;
 
 describe('flp/init', () => {
     afterEach(() => {

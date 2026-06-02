@@ -7,8 +7,8 @@ import memFs from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import memFsEditor from 'mem-fs-editor';
 import { join } from 'node:path';
-import { FloorplanFE, FloorplanFF } from '../../../src/types';
-import { ApiHubType, SapSystemSourceType, minUi5VersionForPageBuildingBlock } from '../../../src/types/constants';
+import { FloorplanFE, FloorplanFF } from '../../../src/types/index.js';
+import { ApiHubType, SapSystemSourceType, minUi5VersionForPageBuildingBlock } from '../../../src/types/constants.js';
 import type { Logger } from '@sap-ux/logger';
 
 // Pre-import actual modules
@@ -59,7 +59,7 @@ jest.unstable_mockModule('@sap-ux/cap-config-writer', () => ({
 }));
 
 const { convertCapRuntimeToCapProjectType, getCdsUi5PluginInfo, initI18nFioriAppSubGenerator, t } =
-    await import('../../../src/utils');
+    await import('../../../src/utils/index.js');
 const {
     buildSapClientParam,
     generateLaunchConfig,
@@ -72,7 +72,7 @@ const {
     getReadMeDataSourceLabel,
     getRequiredOdataVersion,
     restoreServiceProviderLoggers
-} = await import('../../../src/utils/common');
+} = await import('../../../src/utils/common.js');
 
 describe('Test utils', () => {
     beforeAll(async () => {

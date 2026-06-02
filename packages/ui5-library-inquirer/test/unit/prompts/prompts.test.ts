@@ -26,8 +26,8 @@ jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
     addi18nResourceBundle: mockAddi18nResourceBundle
 }));
 
-const { getQuestions } = await import('../../../src/prompts');
-const { t } = await import('../../../src/i18n');
+const { getQuestions } = await import('../../../src/prompts/index.js');
+const { t } = await import('../../../src/i18n.js');
 
 describe('getPrompts', () => {
     const ui5VersionsGrouped: (UI5VersionChoice | Separator)[] = [

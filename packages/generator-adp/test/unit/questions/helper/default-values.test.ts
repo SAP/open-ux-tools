@@ -17,7 +17,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
 }));
 
 const { getDefaultNamespace, getDefaultProjectName, getDefaultVersion } =
-    await import('../../../../src/app/questions/helper/default-values');
+    await import('../../../../src/app/questions/helper/default-values.js');
 
 describe('generateValidNamespace', () => {
     const projectName = 'app.variant1';

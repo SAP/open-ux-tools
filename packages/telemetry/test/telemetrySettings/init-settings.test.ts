@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { ProjectInfo } from '../../src/base/types';
+import type { ProjectInfo } from '../../src/base/types/index.js';
 
 jest.unstable_mockModule('applicationinsights', () => {
     class TelemetryClient {
@@ -68,8 +68,8 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     TelemetrySettingKey: class {}
 }));
 
-const { TelemetrySettings } = await import('../../src/base/config-state');
-const { initTelemetrySettings } = await import('../../src/tooling-telemetry');
+const { TelemetrySettings } = await import('../../src/base/config-state.js');
+const { initTelemetrySettings } = await import('../../src/tooling-telemetry/index.js');
 
 const packageJson = {
     name: 'testProject',

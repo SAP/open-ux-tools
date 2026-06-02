@@ -11,7 +11,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     getProjectType: mockGetProjectType
 }));
 
-const { listFioriApps } = await import('../../../src/tools');
+const { listFioriApps } = await import('../../../src/tools/index.js');
 
 describe('listFioriApps', () => {
     const searchPath = ['testApplicationPath'];

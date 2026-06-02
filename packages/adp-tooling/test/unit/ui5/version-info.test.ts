@@ -6,7 +6,7 @@ const mockAddSnapshot = jest.fn();
 const mockBuildSystemVersionLabel = jest.fn();
 const mockRemoveTimestampFromVersion = jest.fn();
 
-const realFormat = await import('../../../src/ui5/format');
+const realFormat = await import('../../../src/ui5/format.js');
 jest.unstable_mockModule('../../../src/ui5/fetch', () => ({
     fetchInternalVersions: mockFetchInternalVersions
 }));
@@ -29,10 +29,10 @@ const {
     getRelevantVersions,
     shouldSetMinUI5Version,
     getMinUI5VersionForManifest
-} = await import('../../../src/ui5/version-info');
+} = await import('../../../src/ui5/version-info.js');
 import type { UI5Version } from '../../../src/index.js';
 const { CURRENT_SYSTEM_VERSION, LATEST_VERSION, SNAPSHOT_UNTESTED_VERSION, SNAPSHOT_VERSION } =
-    await import('../../../src/base/constants');
+    await import('../../../src/base/constants/index.js');
 
 const fetchInternalVersionsMock = mockFetchInternalVersions;
 const addSnapshotMock = mockAddSnapshot;

@@ -1,7 +1,7 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DirName } from '@sap-ux/project-access';
-import { LAUNCH_JSON_FILE } from '../../src/types';
+import { LAUNCH_JSON_FILE } from '../../src/types/index.js';
 
 const testDataDir = dirname(fileURLToPath(import.meta.url));
 const feProjects = join(testDataDir, 'test-workspace', 'fe-projects');

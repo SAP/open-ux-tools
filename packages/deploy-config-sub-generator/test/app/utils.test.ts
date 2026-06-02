@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import { createRequire } from 'node:module';
-import type { DeployConfigOptions } from '../../src/types';
+import type { DeployConfigOptions } from '../../src/types/index.js';
 
 const require = createRequire(import.meta.url);
 
@@ -22,8 +22,8 @@ jest.unstable_mockModule('node:fs', () => {
     };
 });
 
-const { getYUIDetails, parseTarget } = await import('../../src/app/utils');
-const { isMTAInstalled, getEnvApiHubConfig } = await import('../../src/utils');
+const { getYUIDetails, parseTarget } = await import('../../src/app/utils.js');
+const { isMTAInstalled, getEnvApiHubConfig } = await import('../../src/utils/index.js');
 const { t } = await import('@sap-ux/deploy-config-generator-shared');
 
 describe('Test utils - Deploy', () => {

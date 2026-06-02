@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import { join } from 'node:path';
-import { mockSpecificationReadApp } from '../../../utils';
+import { mockSpecificationReadApp } from '../../../utils.js';
 
 // Mock @sap-ux/project-access with controllable functions
 const actualProjectAccess = await import('@sap-ux/project-access');
@@ -13,7 +13,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 }));
 
 // Mock project utils
-const actualProjectUtils = await import('../../../../../src/page-editor-api/project');
+const actualProjectUtils = await import('../../../../../src/page-editor-api/project.js');
 const mockGetUI5Version = jest.fn<any>();
 const mockGetManifest = jest.fn<any>();
 jest.unstable_mockModule('../../../../../src/page-editor-api/project', () => ({
@@ -23,7 +23,7 @@ jest.unstable_mockModule('../../../../../src/page-editor-api/project', () => ({
 }));
 
 // Mock utils
-const actualUtils = await import('../../../../../src/utils');
+const actualUtils = await import('../../../../../src/utils/index.js');
 const mockGetDefaultExtensionFolder = jest.fn<any>();
 jest.unstable_mockModule('../../../../../src/utils', () => ({
     ...actualUtils,
@@ -32,7 +32,7 @@ jest.unstable_mockModule('../../../../../src/utils', () => ({
 
 // Dynamic imports after mocks
 const { CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY, createControllerExtensionHandlers } =
-    await import('../../../../../src/tools/functionalities/controller-extension');
+    await import('../../../../../src/tools/functionalities/controller-extension/index.js');
 
 describe('create-controller-extension', () => {
     const appPath = join('root', 'app1');

@@ -25,7 +25,7 @@ jest.unstable_mockModule('prompts', () => ({
     prompt: mockPrompt
 }));
 
-const { addAddSmartLinksConfigCommand } = await import('../../../../src/cli/add/smartlinks-config');
+const { addAddSmartLinksConfigCommand } = await import('../../../../src/cli/add/smartlinks-config.js');
 
 describe('Test command add smartlinks-config', () => {
     const appRoot = join(__dirname, '../../../fixtures/ui5-deploy-config');

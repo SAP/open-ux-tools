@@ -2,7 +2,7 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-import { initI18n, t } from '../../../src/i18n';
+import { initI18n, t } from '../../../src/i18n.js';
 import {
     ApplicationType,
     SourceManifest,

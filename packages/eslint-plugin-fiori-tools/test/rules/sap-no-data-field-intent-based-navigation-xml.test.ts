@@ -1,6 +1,6 @@
 import { RuleTester } from 'eslint';
-import intentBasedNavRule from '../../src/rules/sap-no-data-field-intent-based-navigation';
-import { meta, languages } from '../../src/index';
+import intentBasedNavRule from '../../src/rules/sap-no-data-field-intent-based-navigation.js';
+import { meta, languages } from '../../src/index.js';
 import {
     getAnnotationsAsXmlCode,
     setup,

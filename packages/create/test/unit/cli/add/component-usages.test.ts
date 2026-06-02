@@ -49,7 +49,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getPromptsForAddComponentUsages: mockGetPromptsForAddComponentUsages
 }));
 
-const { addComponentUsagesCommand } = await import('../../../../src/cli/add/component-usages');
+const { addComponentUsagesCommand } = await import('../../../../src/cli/add/component-usages.js');
 
 describe('add/component-usages', () => {
     let loggerMock: ToolsLogger;

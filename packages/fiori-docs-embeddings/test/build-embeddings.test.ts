@@ -60,7 +60,7 @@ describe('EmbeddingBuilder', () => {
     beforeEach(async () => {
         jest.clearAllMocks();
 
-        const module = await import('../src/scripts/build-embeddings');
+        const module = await import('../src/scripts/build-embeddings.js');
         EmbeddingBuilder = (module as unknown as { EmbeddingBuilder: new () => EmbeddingBuilderType }).EmbeddingBuilder;
     });
 

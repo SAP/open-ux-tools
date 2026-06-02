@@ -46,9 +46,9 @@ jest.unstable_mockModule('node:module', () => ({
     }
 }));
 
-const { getSecureStore } = await import('../../../src/secure-store');
-const { DummyStore } = await import('../../../src/secure-store/dummy-store');
-const { KeyStoreManager } = await import('../../../src/secure-store/key-store');
+const { getSecureStore } = await import('../../../src/secure-store/index.js');
+const { DummyStore } = await import('../../../src/secure-store/dummy-store.js');
+const { KeyStoreManager } = await import('../../../src/secure-store/key-store.js');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 
 describe('getSecureStore', () => {

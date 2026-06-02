@@ -1,10 +1,10 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
-import type { MatcherIgnore } from '../../src/matchers/types';
-import { README_GENERATION_PLATFORM_REGEX, README_GENERATOR_REGEX } from '../../src/matchers/types';
-import { toMatchFolder, toContainAllFilesIn } from '../../src/index';
-import { toMatchFile } from '../../src/matchers/toMatchFileSnapshot';
+import type { MatcherIgnore } from '../../src/matchers/types.js';
+import { README_GENERATION_PLATFORM_REGEX, README_GENERATOR_REGEX } from '../../src/matchers/types.js';
+import { toMatchFolder, toContainAllFilesIn } from '../../src/index.js';
+import { toMatchFile } from '../../src/matchers/toMatchFileSnapshot/index.js';
 import '../../src/setup';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

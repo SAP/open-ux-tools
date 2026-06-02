@@ -5,8 +5,8 @@ import { readdirSync } from 'node:fs';
 import cloneDeep from 'lodash/cloneDeep';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Project, Service, State } from '../../../src/types';
-import { ApiHubType, FloorplanFE } from '../../../src/types';
+import type { Project, Service, State } from '../../../src/types/index.js';
+import { ApiHubType, FloorplanFE } from '../../../src/types/index.js';
 import {
     cleanTestDir,
     getTestData,
@@ -15,7 +15,7 @@ import {
     originalCwd,
     runWritingPhaseGen
 } from '../test-utils';
-import { baseTestProject, getExpectedOutputPath, v2EntityConfig, v2Service } from './test-utils';
+import { baseTestProject, getExpectedOutputPath, v2EntityConfig, v2Service } from './test-utils.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');

@@ -27,10 +27,10 @@ jest.unstable_mockModule('../src/logger-helper', () => ({
     }
 }));
 
-const { getCfSystemChoices, fetchBTPDestinations } = await import('../src/prompts/prompt-helpers');
-const LoggerHelper = (await import('../src/logger-helper')).default;
-const { t } = await import('../src/i18n');
-import type { CfSystemChoice } from '../src';
+const { getCfSystemChoices, fetchBTPDestinations } = await import('../src/prompts/prompt-helpers.js');
+const LoggerHelper = (await import('../src/logger-helper.js')).default;
+const { t } = await import('../src/i18n.js');
+import type { CfSystemChoice } from '../src/index.js';
 import type { Destinations } from '@sap-ux/btp-utils';
 
 describe('Utility Functions', () => {

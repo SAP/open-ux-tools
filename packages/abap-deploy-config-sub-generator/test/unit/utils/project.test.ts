@@ -31,8 +31,8 @@ jest.unstable_mockModule('@sap-ux/deploy-config-generator-shared', () => ({
     }
 }));
 
-const { getVariantNamespace } = await import('../../../src/utils/project');
-const { initI18n, t } = await import('../../../src/utils/i18n');
+const { getVariantNamespace } = await import('../../../src/utils/project.js');
+const { initI18n, t } = await import('../../../src/utils/i18n.js');
 const { FileName } = await import('@sap-ux/project-access');
 
 describe('getVariantNamespace', () => {

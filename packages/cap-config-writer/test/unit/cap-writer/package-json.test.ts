@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { CapRuntime, CapServiceCdsInfo } from '../../../src';
+import type { CapRuntime, CapServiceCdsInfo } from '../../../src/index.js';
 import memFs from 'mem-fs';
 import editor, { type Editor } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
@@ -66,7 +66,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     hasDependency: mockHasDependency
 }));
 
-const { updateRootPackageJson, updateAppPackageJson } = await import('../../../src/cap-writer/package-json');
+const { updateRootPackageJson, updateAppPackageJson } = await import('../../../src/cap-writer/package-json.js');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

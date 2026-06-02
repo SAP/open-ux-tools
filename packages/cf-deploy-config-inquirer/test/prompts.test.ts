@@ -3,7 +3,7 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 
 // Pre-import real modules before mocking
 const realBtpUtils = await import('@sap-ux/btp-utils');
-const realPromptHelpers = await import('../src/prompts/prompt-helpers');
+const realPromptHelpers = await import('../src/prompts/prompt-helpers.js');
 
 const mockIsAppStudio = jest.fn();
 const mockFetchBTPDestinations = jest.fn();
@@ -18,16 +18,16 @@ jest.unstable_mockModule('../src/prompts/prompt-helpers', () => ({
     fetchBTPDestinations: mockFetchBTPDestinations
 }));
 
-const { getQuestions } = await import('../src/prompts');
-const { t } = await import('../src/i18n');
-const { promptNames } = await import('../src');
+const { getQuestions } = await import('../src/prompts/index.js');
+const { t } = await import('../src/i18n.js');
+const { promptNames } = await import('../src/index.js');
 import type {
     CfDeployConfigPromptOptions,
     CfSystemChoice,
     CfDeployConfigQuestions,
     DestinationNamePromptOptions
 } from '../src/types';
-import { RouterModuleType } from '../src/types';
+import { RouterModuleType } from '../src/types.js';
 import { type ListQuestion, type YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Logger } from '@sap-ux/logger';
 

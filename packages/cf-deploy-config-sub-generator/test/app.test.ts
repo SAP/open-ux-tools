@@ -7,7 +7,7 @@ import * as memfs from 'memfs';
 import { Union } from 'unionfs';
 import { load, dump } from 'js-yaml';
 import yeomanTest from 'yeoman-test';
-import { TestFixture } from './fixtures';
+import { TestFixture } from './fixtures/index.js';
 import type { Manifest } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 
@@ -49,7 +49,7 @@ jest.unstable_mockModule('hasbin', () => ({
 }));
 
 // Import MockMta AFTER fs mocks are set up so it gets the mocked fs
-const { MockMta } = await import('./utils/mock-mta');
+const { MockMta } = await import('./utils/mock-mta.js');
 
 jest.unstable_mockModule('@sap/mta-lib', () => ({
     Mta: MockMta
@@ -89,7 +89,7 @@ jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
 }));
 
 const mockGetCFQuestions = jest.fn<(...args: unknown[]) => unknown>();
-const realQuestions = await import('../src/app/questions');
+const realQuestions = await import('../src/app/questions.js');
 
 jest.unstable_mockModule('../src/app/questions.js', () => ({
     ...realQuestions,
@@ -105,8 +105,8 @@ jest.unstable_mockModule('@sap-ux/cf-deploy-config-writer', () => ({
 }));
 
 // Dynamic imports after mock registration
-const { default: CFGenerator } = await import('../src/app');
-const { initI18n, t } = await import('../src/utils');
+const { default: CFGenerator } = await import('../src/app/index.js');
+const { initI18n, t } = await import('../src/utils/index.js');
 const { MessageType } = await import('@sap-devx/yeoman-ui-types');
 const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 const { ApiHubType, RouterModuleType } = await import('@sap-ux/cf-deploy-config-writer');

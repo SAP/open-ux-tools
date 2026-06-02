@@ -42,8 +42,8 @@ jest.unstable_mockModule('@sap-ux/i18n', () => ({
     getPropertiesI18nBundle: jest.fn()
 }));
 
-const { getFlpI18nKeys, updateI18n, generateInboundConfig } = await import('../../../src/writer/inbound-navigation');
-import type { InternalInboundNavigation, DescriptorVariant, DescriptorVariantContent } from '../../../src/types';
+const { getFlpI18nKeys, updateI18n, generateInboundConfig } = await import('../../../src/writer/inbound-navigation.js');
+import type { InternalInboundNavigation, DescriptorVariant, DescriptorVariantContent } from '../../../src/types.js';
 
 describe('FLP Configuration Functions', () => {
     const basePath = join(__dirname, '../../fixtures', 'adaptation-project');

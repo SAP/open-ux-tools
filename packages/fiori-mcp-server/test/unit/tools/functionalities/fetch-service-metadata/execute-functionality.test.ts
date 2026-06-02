@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { ExecuteFunctionalityInput } from '../../../../../src/types';
+import type { ExecuteFunctionalityInput } from '../../../../../src/types/index.js';
 import path from 'node:path';
 
 // Mock dependencies
@@ -30,7 +30,7 @@ jest.unstable_mockModule('fs', () => ({
 }));
 
 const { default: executeFunctionality } =
-    await import('../../../../../src/tools/functionalities/fetch-service-metadata/execute-functionality');
+    await import('../../../../../src/tools/functionalities/fetch-service-metadata/execute-functionality.js');
 
 describe('execute-functionality', () => {
     const mockAppPath = '/test/app/path';

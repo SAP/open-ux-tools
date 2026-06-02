@@ -14,7 +14,7 @@ jest.unstable_mockModule('node:child_process', () => ({
     spawn: mockSpawn
 }));
 
-const { execNpmCommand } = await import('../../src/command');
+const { execNpmCommand } = await import('../../src/command/index.js');
 
 const originalPlatform = process.platform;
 

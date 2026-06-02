@@ -18,7 +18,7 @@ jest.unstable_mockModule('../../src/slice', () => ({
 }));
 
 const common = await import('@sap-ux-private/control-property-editor-common');
-const { communicationMiddleware } = await import('../../src/middleware');
+const { communicationMiddleware } = await import('../../src/middleware.js');
 
 describe('communication middleware', () => {
     let dispatch: jest.Mock;

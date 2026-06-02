@@ -9,7 +9,7 @@ import {
     validateAllowedCharacters,
     validateWindowsPathLength
 } from '../src/general/validators';
-import { initI18nProjectValidators, t } from '../src/i18n';
+import { initI18nProjectValidators, t } from '../src/i18n.js';
 
 describe('project input validators', () => {
     beforeAll(async () => {

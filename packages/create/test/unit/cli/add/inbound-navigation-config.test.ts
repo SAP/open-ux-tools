@@ -6,7 +6,7 @@ import type { Store } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { createProjectAccessMock } from '../__mocks__/project-access-mock';
+import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -129,7 +129,7 @@ const adpTooling = await import('@sap-ux/adp-tooling');
 const projectAccess = await import('@sap-ux/project-access');
 type Manifest = projectAccess.Manifest;
 type ManifestNamespace = projectAccess.ManifestNamespace;
-const { addInboundNavigationConfigCommand } = await import('../../../../src/cli/add/navigation-config');
+const { addInboundNavigationConfigCommand } = await import('../../../../src/cli/add/navigation-config.js');
 
 const flpConfigAnswers = {
     semanticObject: 'so1',

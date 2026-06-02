@@ -48,7 +48,7 @@ jest.unstable_mockModule('prompts', () => ({
     prompt: mockPrompt
 }));
 
-const { addRemoveMockserverConfigCommand } = await import('../../../../src/cli/remove/mockserver-config');
+const { addRemoveMockserverConfigCommand } = await import('../../../../src/cli/remove/mockserver-config.js');
 
 describe('Test command add mockserver-config', () => {
     const appRoot = join(__dirname, '../../../fixtures/bare-minimum');

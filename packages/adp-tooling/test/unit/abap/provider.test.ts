@@ -30,7 +30,7 @@ jest.unstable_mockModule('../../../src/abap/config', () => ({
     getProviderConfig: mockGetProviderConfig
 }));
 
-const { getConfiguredProvider } = await import('../../../src/abap/provider');
+const { getConfiguredProvider } = await import('../../../src/abap/provider.js');
 
 const logger = {
     error: jest.fn(),

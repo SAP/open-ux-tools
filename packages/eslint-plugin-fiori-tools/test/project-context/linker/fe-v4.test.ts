@@ -11,10 +11,10 @@ import type {
     LinkedFeV4App,
     TableSection
 } from '../../../src/project-context/linker/fe-v4';
-import { runFeV4Linker } from '../../../src/project-context/linker/fe-v4';
-import type { LinkerContext } from '../../../src/project-context/linker/types';
-import { ApplicationParser } from '../../../src/project-context/parser';
-import type { ManifestChange } from '../../test-helper';
+import { runFeV4Linker } from '../../../src/project-context/linker/fe-v4.js';
+import type { LinkerContext } from '../../../src/project-context/linker/types.js';
+import { ApplicationParser } from '../../../src/project-context/parser/index.js';
+import type { ManifestChange } from '../../test-helper.js';
 import {
     applyManifestChange,
     applyXmlAnnotationsChange,
@@ -23,8 +23,8 @@ import {
     CAP_PROJECT_PATH,
     npmInstall
 } from '../../test-helper';
-import { collectSections, type AnnotationBasedNode } from '../../../src/project-context/linker/annotations';
-import { getParsedServiceByName } from '../../../src/project-context/utils';
+import { collectSections, type AnnotationBasedNode } from '../../../src/project-context/linker/annotations.js';
+import { getParsedServiceByName } from '../../../src/project-context/utils.js';
 
 jest.setTimeout(60000); // time needed for Windows
 

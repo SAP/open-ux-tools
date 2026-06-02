@@ -10,8 +10,8 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: mockIsAppStudio
 }));
 
-const { getPrompts, prompt } = await import('../src');
-import type { FLPConfigAnswers } from '../src';
+const { getPrompts, prompt } = await import('../src/index.js');
+import type { FLPConfigAnswers } from '../src/index.js';
 
 describe('index', () => {
     describe('getPrompts', () => {

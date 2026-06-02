@@ -3,11 +3,11 @@ import { basename, join, posix, dirname } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { DirName, FileName } from '@sap-ux/project-access';
-import { TestPaths } from '../test-data/utils';
-import type { DebugOptions } from '../../src/types';
-import { LAUNCH_JSON_FILE } from '../../src/types';
+import { TestPaths } from '../test-data/utils.js';
+import type { DebugOptions } from '../../src/types/index.js';
+import { LAUNCH_JSON_FILE } from '../../src/types/index.js';
 import type { Logger } from '@sap-ux/logger';
-import { t } from '../../src/i18n';
+import { t } from '../../src/i18n.js';
 
 const mockIsFolderInWorkspace = jest.fn<any>();
 
@@ -36,7 +36,7 @@ jest.unstable_mockModule('../../src/debug-config/helpers', () => ({
     }
 }));
 
-const { createLaunchConfig } = await import('../../src/launch-config-crud/create');
+const { createLaunchConfig } = await import('../../src/launch-config-crud/create.js');
 
 describe('create', () => {
     const memFs = create(createStorage());

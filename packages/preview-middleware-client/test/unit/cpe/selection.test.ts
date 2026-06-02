@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { type ExternalAction, type Control } from '@sap-ux-private/control-property-editor-common';
 import type Element from 'sap/ui/core/Element';
 import type { ID } from 'sap/ui/core/library';
@@ -686,7 +687,7 @@ describe('SelectionService', () => {
 
         mockOverlay.isSelectable.mockReturnValue(true);
         mockOverlay.isSelectable.mockReturnValue(false);
-        const attachSelectionChange = jest.fn().mockImplementation();
+        const attachSelectionChange = jest.fn().mockImplementation(() => {});
         const rta = {
             attachSelectionChange,
             getSelection: jest.fn().mockReturnValue([{ setSelected: jest.fn() }, { setSelected: jest.fn() }]),

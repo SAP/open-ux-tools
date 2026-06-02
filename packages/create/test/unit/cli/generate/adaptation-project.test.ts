@@ -61,7 +61,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
 }));
 
 const adp = await import('@sap-ux/adp-tooling');
-const { addGenerateAdaptationProjectCommand } = await import('../../../../src/cli/generate/adaptation-project');
+const { addGenerateAdaptationProjectCommand } = await import('../../../../src/cli/generate/adaptation-project.js');
 
 describe('generate/adaptation-project', () => {
     // test data

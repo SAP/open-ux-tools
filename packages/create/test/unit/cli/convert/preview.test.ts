@@ -30,7 +30,7 @@ jest.unstable_mockModule('node:child_process', () => ({
 }));
 jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn() }));
 
-const { addConvertPreviewCommand } = await import('../../../../src/cli/convert/preview');
+const { addConvertPreviewCommand } = await import('../../../../src/cli/convert/preview.js');
 
 describe('Test command convert preview', () => {
     const appRoot = join(__dirname, '../../../fixtures/bare-minimum');
@@ -133,7 +133,7 @@ describe('Test command convert preview', () => {
     });
 
     test('Test create-fiori convert preview with simulate cancelled from prompt', async () => {
-        const mockExit = jest.spyOn(process, 'exit').mockImplementation();
+        const mockExit = jest.spyOn(process, 'exit').mockImplementation((() => {}) as unknown as () => never);
         mockSimulatePrompt.mockResolvedValue(Promise.reject(new Error('test error')));
         // Test execution
         const command = new Command('convert');
@@ -163,7 +163,7 @@ describe('Test command convert preview', () => {
     });
 
     test('Test create-fiori convert preview with simulate and test cancelled from prompt', async () => {
-        const mockExit = jest.spyOn(process, 'exit').mockImplementation();
+        const mockExit = jest.spyOn(process, 'exit').mockImplementation((() => {}) as unknown as () => never);
         mockSimulatePrompt.mockResolvedValue(true);
         mockIncludeTestRunnersPrompt.mockResolvedValue(Promise.reject(new Error('test error')));
         // Test execution

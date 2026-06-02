@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
-import type { CatalogServiceResult, Endpoint } from '../../src/types';
-import { Severity, UrlServiceType } from '../../src/types';
+import type { CatalogServiceResult, Endpoint } from '../../src/types.js';
+import { Severity, UrlServiceType } from '../../src/types.js';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 
 const mockIsAppStudio = jest.fn();
@@ -41,7 +41,7 @@ jest.unstable_mockModule('../../src/checks/stored-system', () => ({
     checkStoredSystem: mockCheckStoredSystem
 }));
 
-const { checkEndpoints, checkEndpoint } = await import('../../src/checks/endpoint');
+const { checkEndpoints, checkEndpoint } = await import('../../src/checks/endpoint.js');
 
 const mockServiceProvider = {
     log: jest.fn(),

@@ -1,12 +1,12 @@
-import { getTree } from '../../../src/page-editor-api/tree';
-import type { TreeNode, TreeNodeProperty } from '../../../src/page-editor-api/tree';
+import { getTree } from '../../../src/page-editor-api/tree/index.js';
+import type { TreeNode, TreeNodeProperty } from '../../../src/page-editor-api/tree/index.js';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import type { Parser } from '@sap/ux-specification/dist/types/src';
-import { ensureSpecificationLoaded, readAppWithModel } from '../utils';
-import { specificationLogger } from '../../../src/utils/logger';
+import { ensureSpecificationLoaded, readAppWithModel } from '../utils.js';
+import { specificationLogger } from '../../../src/utils/logger.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

@@ -15,8 +15,8 @@ jest.unstable_mockModule('node:child_process', () => ({
     spawn: (...args: any[]) => mockedSpawn(...args)
 }));
 
-const { CommandRunner } = await import('../../../src/utils/command-runner');
-const { initI18nFioriAppSubGenerator } = await import('../../../src/utils/i18n');
+const { CommandRunner } = await import('../../../src/utils/command-runner.js');
+const { initI18nFioriAppSubGenerator } = await import('../../../src/utils/i18n.js');
 
 describe('Test command-runner', () => {
     beforeAll(async () => {

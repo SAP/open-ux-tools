@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
-import { t } from '../../src/utils/i18n';
-import { PromptNames, type QuickDeployedAppConfig } from '../../src/app/types';
+import { t } from '../../src/utils/i18n.js';
+import { PromptNames, type QuickDeployedAppConfig } from '../../src/app/types.js';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { Question } from 'yeoman-generator';
@@ -37,14 +37,14 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
 
 // Import real validators BEFORE mocking the validators module,
 // but AFTER download-utils mock, so the real implementation uses mocked download-utils
-const actualValidators = await import('../../src/utils/validators');
+const actualValidators = await import('../../src/utils/validators.js');
 
 jest.unstable_mockModule('../../src/utils/validators', () => ({
     validateAppSelection: mockValidateAppSelection
 }));
 
-const { getPrompts } = await import('../../src/prompts/prompts');
-const { PromptState } = await import('../../src/prompts/prompt-state');
+const { getPrompts } = await import('../../src/prompts/prompts.js');
+const { PromptState } = await import('../../src/prompts/prompt-state.js');
 const { ErrorHandler } = await import('@sap-ux/inquirer-common');
 
 ErrorHandler.getHelpLink = jest.fn() as any;

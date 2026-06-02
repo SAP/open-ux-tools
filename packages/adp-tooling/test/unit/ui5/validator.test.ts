@@ -14,8 +14,8 @@ jest.unstable_mockModule('../../../src/ui5/format', () => ({
     getFormattedVersion: mockGetFormattedVersion
 }));
 
-const { validateUI5VersionExists } = await import('../../../src/ui5/validator');
-const { t, initI18n } = await import('../../../src/i18n');
+const { validateUI5VersionExists } = await import('../../../src/ui5/validator.js');
+const { t, initI18n } = await import('../../../src/i18n.js');
 
 const validateEmptyStringMock = mockValidateEmptyString;
 const getOfficialBaseUI5VersionUrlMock = mockGetOfficialBaseUI5VersionUrl;

@@ -37,8 +37,8 @@ jest.unstable_mockModule('../../../../src/cf/services/api', () => ({
     getOrCreateServiceInstanceKeys: mockGetOrCreateServiceInstanceKeys
 }));
 
-const { downloadAppContent, downloadZip, getHtml5RepoCredentials } = await import('../../../../src/cf/app/html5-repo');
-const { initI18n, t } = await import('../../../../src/i18n');
+const { downloadAppContent, downloadZip, getHtml5RepoCredentials } = await import('../../../../src/cf/app/html5-repo.js');
+const { initI18n, t } = await import('../../../../src/i18n.js');
 import type { CfAppParams, ServiceInfo, Uaa } from '../../../../src/types.js';
 
 const mockAxios = { get: mockAxiosGet, post: mockAxiosPost } as any;

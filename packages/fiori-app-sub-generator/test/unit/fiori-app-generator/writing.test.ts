@@ -2,8 +2,8 @@ import { jest } from '@jest/globals';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
-import type { ApiHubConfig, Project, Service } from '../../../src/types';
-import { ApiHubType, FloorplanFE, FloorplanFF, generatorName } from '../../../src/types';
+import type { ApiHubConfig, Project, Service } from '../../../src/types/index.js';
+import { ApiHubType, FloorplanFE, FloorplanFF, generatorName } from '../../../src/types/index.js';
 import type { AppGenInfo } from '@sap-ux/fiori-generator-shared';
 
 // Pre-import actual
@@ -19,8 +19,8 @@ jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     generateAppGenInfo: mockGenerateAppGenInfo
 }));
 
-const { writeAPIHubKeyFiles, writeAppGenInfoFiles } = await import('../../../src/fiori-app-generator/writing');
-const { initI18nFioriAppSubGenerator, t } = await import('../../../src/utils');
+const { writeAPIHubKeyFiles, writeAppGenInfoFiles } = await import('../../../src/fiori-app-generator/writing.js');
+const { initI18nFioriAppSubGenerator, t } = await import('../../../src/utils/index.js');
 const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 
 describe('`writing` tests', () => {

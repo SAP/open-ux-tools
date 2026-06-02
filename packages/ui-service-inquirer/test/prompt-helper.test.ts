@@ -1,4 +1,4 @@
-import * as promptHelper from '../src/prompts';
+import * as promptHelper from '../src/prompts/index.js';
 
 const mockIsAppStudio = jest.fn();
 jest.mock('@sap-ux/btp-utils', () => ({

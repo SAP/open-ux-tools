@@ -6,7 +6,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 
-import { createProjectAccessMock } from '../__mocks__/project-access-mock';
+import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -56,7 +56,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
 
 jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn() }));
 
-const { addChangeInboundCommand } = await import('../../../../src/cli/change/change-inbound');
+const { addChangeInboundCommand } = await import('../../../../src/cli/change/change-inbound.js');
 
 const cloudDescriptorVariant = JSON.parse(
     readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.appdescr_variant.cloud'), 'utf-8')

@@ -4,7 +4,7 @@ import { create, type Editor } from 'mem-fs-editor';
 
 // Import real printPropertiesI18nEntry from the leaf module (not the barrel)
 // This avoids caching the barrel so our mock can take effect
-const { printPropertiesI18nEntry: realPrint } = await import('../../../../src/utils/print');
+const { printPropertiesI18nEntry: realPrint } = await import('../../../../src/utils/print.js');
 
 // Define mock functions for the I/O operations we want to control
 const mockReadFile = jest.fn<(filePath: string, fs?: Editor) => Promise<string>>();
@@ -14,12 +14,12 @@ const mockPrintPropertiesI18nEntry = jest.fn<(key: string, value: string, annota
 // Mock the utils barrel module BEFORE importing anything that uses it
 jest.unstable_mockModule('../../../../src/utils', async () => {
     // Import leaf modules directly to get real implementations
-    const config = await import('../../../../src/utils/config');
-    const resolve = await import('../../../../src/utils/resolve');
-    const path = await import('../../../../src/utils/path');
-    const print = await import('../../../../src/utils/print');
-    const text = await import('../../../../src/utils/text');
-    const key = await import('../../../../src/utils/key');
+    const config = await import('../../../../src/utils/config.js');
+    const resolve = await import('../../../../src/utils/resolve.js');
+    const path = await import('../../../../src/utils/path.js');
+    const print = await import('../../../../src/utils/print.js');
+    const text = await import('../../../../src/utils/text.js');
+    const key = await import('../../../../src/utils/key.js');
     return {
         ...config,
         ...resolve,
@@ -35,8 +35,8 @@ jest.unstable_mockModule('../../../../src/utils', async () => {
 });
 
 // Import modules under test AFTER mocking
-const { writeToExistingI18nPropertiesFile } = await import('../../../../src/write/utils');
-const { SapShortTextType } = await import('../../../../src');
+const { writeToExistingI18nPropertiesFile } = await import('../../../../src/write/utils/index.js');
+const { SapShortTextType } = await import('../../../../src/index.js');
 
 describe('index', () => {
     describe('writeToExistingI18nPropertiesFile', () => {

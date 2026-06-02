@@ -4,7 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createProjectAccessMock } from '../__mocks__/project-access-mock';
+import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -34,7 +34,7 @@ jest.unstable_mockModule('node:child_process', () => ({
     exec: jest.fn()
 }));
 
-const { addAddCdsPluginUi5Command } = await import('../../../../src/cli/add/cds-plugin-ui');
+const { addAddCdsPluginUi5Command } = await import('../../../../src/cli/add/cds-plugin-ui.js');
 
 describe('Test command add cds-plugin-ui5', () => {
     let loggerMock: ToolsLogger;

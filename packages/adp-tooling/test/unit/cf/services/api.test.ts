@@ -68,8 +68,8 @@ const {
     getServiceTags,
     getServiceKeyCredentialsWithTags,
     getOrCreateServiceInstanceKeys
-} = await import('../../../../src/cf/services/api');
-const { initI18n, t } = await import('../../../../src/i18n');
+} = await import('../../../../src/cf/services/api.js');
+const { initI18n, t } = await import('../../../../src/i18n.js');
 import type { CfConfig, ServiceInfo, MtaYaml } from '../../../../src/types.js';
 
 // Alias mockAxiosGet as mockAxios for compatibility with existing tests

@@ -1,6 +1,6 @@
 import { RuleTester } from 'eslint';
-import tablePersonalizationRule from '../../src/rules/sap-table-personalization';
-import { meta, languages } from '../../src/index';
+import tablePersonalizationRule from '../../src/rules/sap-table-personalization.js';
+import { meta, languages } from '../../src/index.js';
 import {
     getAnnotationsAsXmlCode,
     getManifestAsCode,

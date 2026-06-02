@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import * as memfs from 'memfs';
 import { Union } from 'unionfs';
 import yeomanTest from 'yeoman-test';
-import { TestFixture } from './fixtures';
+import { TestFixture } from './fixtures/index.js';
 import type { Editor } from 'mem-fs-editor';
 
 const require = createRequire(import.meta.url);
@@ -47,7 +47,7 @@ jest.unstable_mockModule('hasbin', () => ({
 }));
 
 // Import MockMta AFTER fs mocks are set up so it gets the mocked fs
-const { MockMta } = await import('./utils/mock-mta');
+const { MockMta } = await import('./utils/mock-mta.js');
 
 jest.unstable_mockModule('@sap/mta-lib', () => ({
     Mta: MockMta
@@ -97,8 +97,8 @@ jest.unstable_mockModule('@sap-ux/cf-deploy-config-writer', () => ({
 }));
 
 // Dynamic imports after mock registration
-const { default: CFGenerator } = await import('../src/app');
-const { initI18n, t } = await import('../src/utils');
+const { default: CFGenerator } = await import('../src/app/index.js');
+const { initI18n, t } = await import('../src/utils/index.js');
 const { RouterModuleType } = await import('@sap-ux/cf-deploy-config-writer');
 
 const mockShowInformation = jest.fn();

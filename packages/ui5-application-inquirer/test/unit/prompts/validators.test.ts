@@ -21,8 +21,8 @@ jest.unstable_mockModule('../../../src/prompts/prompt-helpers', () => ({
     isVersionIncluded: jest.fn()
 }));
 
-const { initI18nUi5AppInquirer } = await import('../../../src/i18n');
-const { validateAppName } = await import('../../../src/prompts/validators');
+const { initI18nUi5AppInquirer } = await import('../../../src/i18n.js');
+const { validateAppName } = await import('../../../src/prompts/validators.js');
 
 describe('validators', () => {
     beforeAll(async () => {

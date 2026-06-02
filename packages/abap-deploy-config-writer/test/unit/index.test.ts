@@ -1,10 +1,10 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { generate } from '../../src';
+import { generate } from '../../src/index.js';
 import fsExtra from 'fs-extra';
 import type { AbapDeployConfig, BspApp } from '@sap-ux/ui5-config';
 
-import type { DeployConfigOptions } from '../../src/types';
+import type { DeployConfigOptions } from '../../src/types.js';
 
 const __testDirname = dirname(fileURLToPath(import.meta.url));
 

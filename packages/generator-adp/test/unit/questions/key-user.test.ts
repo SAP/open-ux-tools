@@ -44,9 +44,9 @@ jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
 }));
 
 const { KeyUserImportPrompter, DEFAULT_ADAPTATION_ID, determineFlexVersion } =
-    await import('../../../src/app/questions/key-user');
-const { initI18n, t } = await import('../../../src/utils/i18n');
-const { keyUserPromptNames } = await import('../../../src/app/types');
+    await import('../../../src/app/questions/key-user.js');
+const { initI18n, t } = await import('../../../src/utils/i18n.js');
+const { keyUserPromptNames } = await import('../../../src/app/types.js');
 
 const logger: ToolsLogger = {
     error: jest.fn(),

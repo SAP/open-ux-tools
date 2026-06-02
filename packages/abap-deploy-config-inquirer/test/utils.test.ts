@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
-import { mockDestinations } from './fixtures/destinations';
-import { mockTargetSystems } from './fixtures/targets';
+import { mockDestinations } from './fixtures/destinations.js';
+import { mockTargetSystems } from './fixtures/targets.js';
 import type { AbapDeployConfigAnswers, AbapDeployConfigAnswersInternal } from '../src/types.js';
 import { PackageInputChoices, TransportChoices } from '../src/types.js';
 import { CREATE_TR_DURING_DEPLOY } from '../src/constants.js';

@@ -3,7 +3,7 @@ import {
     positionIsInExpressionWhiteSpace,
     containsIncorrectExpressions
 } from '../../src/transformer/expressions';
-import type { CorrectExpression, IncorrectExpression, Path } from '../../src';
+import type { CorrectExpression, IncorrectExpression, Path } from '../../src/index.js';
 import {
     CORRECT_EXPRESSION_TYPE,
     IDENTIFIER_TYPE,

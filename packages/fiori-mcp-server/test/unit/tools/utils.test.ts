@@ -17,7 +17,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 }));
 
 const { convertToSchema, prepatePropertySchema, resolveApplication, resolveRefs, validateWithSchema } =
-    await import('../../../src/utils');
+    await import('../../../src/utils/index.js');
 
 describe('resolveApplication', () => {
     const appPath = join('folder', 'dummy', 'app');

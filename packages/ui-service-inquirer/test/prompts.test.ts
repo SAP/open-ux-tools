@@ -55,7 +55,7 @@ const mockGetBusinessObjects = jest.fn();
 const mockGetAbapCDSViews = jest.fn();
 
 // Import actual prompt-helper BEFORE mocking (for functions we want to keep real)
-const actualPromptHelperModule = await import('../src/prompts/prompt-helper');
+const actualPromptHelperModule = await import('../src/prompts/prompt-helper.js');
 
 jest.unstable_mockModule('../src/prompts/prompt-helper', () => ({
     ...actualPromptHelperModule,
@@ -71,10 +71,10 @@ jest.unstable_mockModule('@sap-ux/abap-deploy-config-inquirer', () => ({
     getTransportRequestPrompts: mockGetTransportRequestPrompts
 }));
 
-const { getSystemSelectionPrompts, getConfigPrompts } = await import('../src');
-const { PromptState } = await import('../src/prompts/prompt-state');
-const { ObjectType } = await import('../src/types');
-const { initI18n, t } = await import('../src/i18n');
+const { getSystemSelectionPrompts, getConfigPrompts } = await import('../src/index.js');
+const { PromptState } = await import('../src/prompts/prompt-state.js');
+const { ObjectType } = await import('../src/types.js');
+const { initI18n, t } = await import('../src/i18n.js');
 
 interface Question extends YoQuestion {
     when?: (answers: Answers) => boolean | Promise<boolean>;

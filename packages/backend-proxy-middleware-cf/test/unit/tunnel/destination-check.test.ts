@@ -27,7 +27,7 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils
 }));
 
-const { hasOnPremiseDestination } = await import('../../../src/tunnel/destination-check');
+const { hasOnPremiseDestination } = await import('../../../src/tunnel/destination-check.js');
 
 describe('destination-check', () => {
     const logger = {

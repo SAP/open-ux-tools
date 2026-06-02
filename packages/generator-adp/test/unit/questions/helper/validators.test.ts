@@ -47,8 +47,8 @@ const {
     validateEnvironment,
     validateProjectPath,
     validateBusinessSolutionName
-} = await import('../../../../src/app/questions/helper/validators');
-const { initI18n, t } = await import('../../../../src/utils/i18n');
+} = await import('../../../../src/app/questions/helper/validators.js');
+const { initI18n, t } = await import('../../../../src/utils/i18n.js');
 
 const availableSystem = 'systemA';
 const nonExistingSystem = 'systemB';

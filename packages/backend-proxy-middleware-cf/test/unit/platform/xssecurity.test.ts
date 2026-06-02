@@ -18,7 +18,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     updateServiceInstance: mockUpdateServiceInstance
 }));
 
-const { updateXsuaaService } = await import('../../../src/platform/xssecurity');
+const { updateXsuaaService } = await import('../../../src/platform/xssecurity.js');
 
 describe('xssecurity', () => {
     const logger = { info: jest.fn(), error: jest.fn(), debug: jest.fn(), warn: jest.fn() };

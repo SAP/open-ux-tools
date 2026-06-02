@@ -14,8 +14,8 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     filterDataSourcesByType: mockFilterDataSourcesByType
 }));
 
-const { getPrompts } = await import('../../../../src/prompts/change-data-source/index');
-const i18n = await import('../../../../src/i18n');
+const { getPrompts } = await import('../../../../src/prompts/change-data-source/index.js');
+const i18n = await import('../../../../src/i18n.js');
 
 describe('getPrompts', () => {
     const dataSources = {

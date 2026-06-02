@@ -1,5 +1,5 @@
 import { Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
-import type { YeomanUiStepConfig } from '../../../src/types';
+import type { YeomanUiStepConfig } from '../../../src/types/index.js';
 import {
     FIORI_STEPS,
     STEP_DATASOURCE_AND_SERVICE,
@@ -9,7 +9,7 @@ import {
     STEP_FLP_CONFIG,
     STEP_PROJECT_ATTRIBUTES
 } from '../../../src/types/constants';
-import { initI18nFioriAppSubGenerator, t } from '../../../src/utils/i18n';
+import { initI18nFioriAppSubGenerator, t } from '../../../src/utils/i18n.js';
 import {
     getYeomanUiStepConfig,
     hasActiveStep,

@@ -1,10 +1,10 @@
 import { jest } from '@jest/globals';
 import type * as uxI18nType from '@sap-ux/i18n';
-import type * as capType from '../../../src/project/cap';
-import type * as fileType from '../../../src/file';
+import type * as capType from '../../../src/project/cap.js';
+import type * as fileType from '../../../src/file/index.js';
 import type * as fsPromisesType from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import type { I18nPropertiesPaths } from '../../../src';
+import type { I18nPropertiesPaths } from '../../../src/index.js';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
@@ -20,7 +20,7 @@ jest.unstable_mockModule('@sap-ux/i18n', () => ({
 
 const mockGetCapEnvironment = jest.fn<typeof capType.getCapEnvironment>();
 
-const realCap = await import('../../../src/project/cap');
+const realCap = await import('../../../src/project/cap.js');
 jest.unstable_mockModule('../../../src/project/cap', () => ({
     ...realCap,
     getCapEnvironment: mockGetCapEnvironment
@@ -29,7 +29,7 @@ jest.unstable_mockModule('../../../src/project/cap', () => ({
 const mockReadJSON = jest.fn<typeof fileType.readJSON>();
 const mockWriteFile = jest.fn<typeof fileType.writeFile>();
 
-const realFile = await import('../../../src/file');
+const realFile = await import('../../../src/file/index.js');
 jest.unstable_mockModule('../../../src/file', () => ({
     ...realFile,
     readJSON: mockReadJSON,
@@ -45,7 +45,7 @@ jest.unstable_mockModule('node:fs/promises', () => ({
 }));
 
 const { createAnnotationI18nEntries, createCapI18nEntries, createManifestI18nEntries, createUI5I18nEntries } =
-    await import('../../../src/project/i18n');
+    await import('../../../src/project/i18n/index.js');
 
 describe('write', () => {
     const memFs = create(createStorage());

@@ -18,8 +18,8 @@ jest.unstable_mockModule('../../../../src/base/project-builder', () => ({
     runBuild: mockRunBuild
 }));
 
-const { ManifestServiceCF } = await import('../../../../src/cf/services/manifest');
-const { initI18n, t } = await import('../../../../src/i18n');
+const { ManifestServiceCF } = await import('../../../../src/cf/services/manifest.js');
+const { initI18n, t } = await import('../../../../src/i18n.js');
 
 const mockLogger = {
     log: jest.fn(),

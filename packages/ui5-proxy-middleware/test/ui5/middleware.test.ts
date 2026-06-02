@@ -36,7 +36,7 @@ const { default: express } = await import('express');
 const { default: supertest } = await import('supertest');
 const { default: nock } = await import('nock');
 const { ToolsLogger } = await import('@sap-ux/logger');
-const ui5ProxyMiddleware = await import('../../src/ui5/middleware');
+const ui5ProxyMiddleware = await import('../../src/ui5/middleware.js');
 
 const rootProjectMock = {
     byGlob: jest.fn<any>().mockResolvedValue([])

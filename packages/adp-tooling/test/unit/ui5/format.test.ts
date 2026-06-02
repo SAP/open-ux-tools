@@ -10,7 +10,7 @@ import {
     formatUi5Version
 } from '../../../src/ui5/format';
 
-import { CURRENT_SYSTEM_VERSION, SNAPSHOT_CDN_URL, UI5_CDN_URL } from '../../../src/base/constants';
+import { CURRENT_SYSTEM_VERSION, SNAPSHOT_CDN_URL, UI5_CDN_URL } from '../../../src/base/constants/index.js';
 import { format } from 'node:path';
 
 describe('getOfficialBaseUI5VersionUrl', () => {

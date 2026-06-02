@@ -31,7 +31,7 @@ jest.unstable_mockModule('../../../src/variants-config/generateVariantsConfig', 
 }));
 
 const { ensurePreviewMiddlewareDependency, updateVariantsCreationScript } =
-    await import('../../../src/preview-config/package-json');
+    await import('../../../src/preview-config/package-json.js');
 
 describe('package-json', () => {
     const logger = new ToolsLogger();

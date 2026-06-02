@@ -6,7 +6,7 @@ import {
     handleWorkspaceFolderChoice,
     workspaceChoices
 } from '../../../src/utils/workspace';
-import { initI18n } from '../../../src/utils/i18n';
+import { initI18n } from '../../../src/utils/i18n.js';
 
 describe('workspace', () => {
     beforeAll(async () => {

@@ -1,4 +1,4 @@
-import type { PrintContext } from '../../src/printer/csdl-to-xml';
+import type { PrintContext } from '../../src/printer/csdl-to-xml.js';
 import {
     printCsdlNodeToXmlString,
     escapeAttribute,

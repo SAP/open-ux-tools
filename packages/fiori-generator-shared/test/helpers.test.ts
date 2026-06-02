@@ -14,9 +14,9 @@ jest.unstable_mockModule('node:fs', () => ({
     existsSync: mockExistsSync
 }));
 
-const { getBootstrapResourceUrls } = await import('../src/index');
+const { getBootstrapResourceUrls } = await import('../src/index.js');
 const { YEOMANUI_TARGET_FOLDER_CONFIG_PROP, getDefaultTargetFolder, isCommandRegistered } =
-    await import('../src/vscode-helpers/vscode-helpers');
+    await import('../src/vscode-helpers/vscode-helpers.js');
 
 describe('getResourceUrlsForUi5Bootstrap', () => {
     it('should return relative paths for Edmx projects', () => {

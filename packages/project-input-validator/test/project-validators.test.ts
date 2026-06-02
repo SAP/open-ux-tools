@@ -22,15 +22,15 @@ jest.unstable_mockModule('../src/ui5/validators', () => ({
 }));
 
 // Need to get the real implementations for general/validators, then mock only validateWindowsPathLength
-const realGeneralValidators = await import('../src/general/validators');
+const realGeneralValidators = await import('../src/general/validators.js');
 
 jest.unstable_mockModule('../src/general/validators', () => ({
     ...realGeneralValidators,
     validateWindowsPathLength: mockValidateWindowsPathLength
 }));
 
-const { validateFioriAppTargetFolder } = await import('../src/general/project-path-validators');
-const { initI18nProjectValidators, t } = await import('../src/i18n');
+const { validateFioriAppTargetFolder } = await import('../src/general/project-path-validators.js');
+const { initI18nProjectValidators, t } = await import('../src/i18n.js');
 
 describe('validateFioriAppTargetFolder', () => {
     beforeAll(async () => {

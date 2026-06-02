@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
-import type { Integrity } from '../../../src/types';
+import type { Integrity } from '../../../src/types.js';
 
 const __testdir = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
@@ -23,7 +23,7 @@ jest.unstable_mockModule('lz-string', () => ({
     decompressFromBase64: lzString.decompressFromBase64
 }));
 
-const { readIntegrityData, writeIntegrityData } = await import('../../../src/integrity/persistence');
+const { readIntegrityData, writeIntegrityData } = await import('../../../src/integrity/persistence.js');
 const { readFile } = await import('node:fs/promises');
 
 describe('Test readIntegrityData()', () => {

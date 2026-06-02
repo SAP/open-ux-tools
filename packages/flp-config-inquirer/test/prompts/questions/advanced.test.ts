@@ -24,9 +24,9 @@ const {
     getExistingFlpConfigInfoPrompt,
     getIconPrompt,
     getConfirmReplacePrompt
-} = await import('../../../src/prompts/questions');
-const { t } = await import('../../../src/i18n');
-const { promptNames } = await import('../../../src');
+} = await import('../../../src/prompts/questions/index.js');
+const { t } = await import('../../../src/i18n.js');
+const { promptNames } = await import('../../../src/index.js');
 
 describe('advanced prompts', () => {
     const inbounds = {

@@ -65,10 +65,10 @@ jest.unstable_mockModule('yeoman-test/lib/adapter', () => {
 });
 
 const yeomanTest = (await import('yeoman-test')).default;
-const RefLibGenerator = (await import('../../src/app')).default;
-const { reuseLibs } = await import('./util/constants');
-const { EventName } = await import('../../src/telemetryEvents');
-const { t } = await import('../../src/utils/i18n');
+const RefLibGenerator = (await import('../../src/app/index.js')).default;
+const { reuseLibs } = await import('./util/constants.js');
+const { EventName } = await import('../../src/telemetryEvents/index.js');
+const { t } = await import('../../src/utils/i18n.js');
 
 afterAll(() => {
     process.chdir(originalCwd); // Generation changes the cwd, this breaks sonar report so we restore later

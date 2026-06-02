@@ -11,7 +11,7 @@ import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-e
 const mockGetProviderConfig = jest.fn();
 const mockGetSupportedProject = jest.fn();
 
-const realSystems = await import('../../../src/source/systems');
+const realSystems = await import('../../../src/source/systems.js');
 
 jest.unstable_mockModule('../../../src/abap/config', () => ({
     getProviderConfig: mockGetProviderConfig
@@ -25,10 +25,10 @@ jest.unstable_mockModule('../../../src/source/systems', () => ({
     SupportedProject: realSystems.SupportedProject
 }));
 
-const { FlexLayer, getConfig, SupportedProject } = await import('../../../src');
-const { getCfConfig } = await import('../../../src/writer/writer-config');
-const { t } = await import('../../../src/i18n');
-const { AppRouterType } = await import('../../../src/types');
+const { FlexLayer, getConfig, SupportedProject } = await import('../../../src/index.js');
+const { getCfConfig } = await import('../../../src/writer/writer-config.js');
+const { t } = await import('../../../src/i18n.js');
+const { AppRouterType } = await import('../../../src/types.js');
 import type {
     AttributesAnswers,
     ConfigAnswers,

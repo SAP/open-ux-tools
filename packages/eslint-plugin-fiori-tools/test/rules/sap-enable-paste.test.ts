@@ -1,6 +1,6 @@
 import { RuleTester } from 'eslint';
-import enablePasteRule from '../../src/rules/sap-enable-paste';
-import { meta, languages } from '../../src/index';
+import enablePasteRule from '../../src/rules/sap-enable-paste.js';
+import { meta, languages } from '../../src/index.js';
 import {
     getAnnotationsAsXmlCode,
     getManifestAsCode,

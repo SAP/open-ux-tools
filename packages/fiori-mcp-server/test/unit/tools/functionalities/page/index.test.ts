@@ -2,8 +2,8 @@ import { jest } from '@jest/globals';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { writeFileSync, readFileSync } from 'node:fs';
-import { copyDirectory } from '../../../utils';
-import { npmInstall, removeDirectory } from '../../../../utils';
+import { copyDirectory } from '../../../utils.js';
+import { npmInstall, removeDirectory } from '../../../../utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -28,8 +28,8 @@ jest.unstable_mockModule('../../../../../src/tools/functionalities/page/serviceS
 
 // Dynamic imports after mocks
 const { ADD_PAGE_FUNCTIONALITY, addPageHandlers, DELETE_PAGE_FUNCTIONALITY, deletePageHandlers } =
-    await import('../../../../../src/tools/functionalities/page');
-const { getManifest } = await import('../../../../../src/page-editor-api/project');
+    await import('../../../../../src/tools/functionalities/page/index.js');
+const { getManifest } = await import('../../../../../src/page-editor-api/project.js');
 
 const originProjectRoot = join(__dirname, '..', '..', '..', '..', 'test-data', 'original', 'node-ai-created');
 const copyProjectRoot = join(originProjectRoot, '..', '..', 'copy', `node-ai-created-add-page`);

@@ -9,7 +9,7 @@ import {
     extendWithOptions,
     withCondition
 } from '../../../src/prompts/helpers';
-import type { PromptDefaultValue, YUIQuestion } from '../../../src/types';
+import type { PromptDefaultValue, YUIQuestion } from '../../../src/types.js';
 
 describe('prompt helpers', () => {
     describe('extendAdditionalMessages', () => {

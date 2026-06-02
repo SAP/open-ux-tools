@@ -7,8 +7,8 @@ import 'jest-extended';
 import cloneDeep from 'lodash/cloneDeep';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Project, Service, State } from '../../../src/types';
-import { FloorplanFE } from '../../../src/types';
+import type { Project, Service, State } from '../../../src/types/index.js';
+import { FloorplanFE } from '../../../src/types/index.js';
 import {
     cleanTestDir,
     getTestData,
@@ -17,7 +17,7 @@ import {
     originalCwd,
     runWritingPhaseGen
 } from '../test-utils';
-import { baseTestProject, getExpectedOutputPath, v4EntityConfig, v4Service } from './test-utils';
+import { baseTestProject, getExpectedOutputPath, v4EntityConfig, v4Service } from './test-utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

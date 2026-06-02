@@ -9,8 +9,8 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: mockIsAppStudio
 }));
 
-const { SystemLookup } = await import('../../../src/source/systems');
-const { getProviderConfig } = await import('../../../src/abap/config');
+const { SystemLookup } = await import('../../../src/source/systems.js');
+const { getProviderConfig } = await import('../../../src/abap/config.js');
 import type { RequestOptions } from '../../../src/abap/config.js';
 
 const logger = {

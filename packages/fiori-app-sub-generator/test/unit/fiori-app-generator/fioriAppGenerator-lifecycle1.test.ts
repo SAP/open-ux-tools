@@ -5,14 +5,14 @@ import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { type CapService, DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
 import type { UI5ApplicationAnswers } from '@sap-ux/ui5-application-inquirer';
 import yeomanTest from 'yeoman-test';
-import type { Project, Service } from '../../../src/types';
-import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
-import type { AppWizardCache } from '../../../src/utils';
+import type { Project, Service } from '../../../src/types/index.js';
+import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator/index.js';
+import type { AppWizardCache } from '../../../src/utils/index.js';
 
 // Pre-import actuals
-const actualPrompting = await import('../../../src/fiori-app-generator/prompting');
-const actualSubgenHelpers = await import('../../../src/fiori-app-generator/subgenHelpers');
-const actualUtils = await import('../../../src/utils');
+const actualPrompting = await import('../../../src/fiori-app-generator/prompting.js');
+const actualSubgenHelpers = await import('../../../src/fiori-app-generator/subgenHelpers.js');
+const actualUtils = await import('../../../src/utils/index.js');
 const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
 const actualUi5Info = await import('@sap-ux/ui5-info');
 const actualOdataServiceInquirer = await import('@sap-ux/odata-service-inquirer');
@@ -113,14 +113,14 @@ jest.unstable_mockModule('@sap-ux/telemetry', () => ({
 }));
 
 // Import after all mocks are set up
-const { FioriAppGenerator } = await import('../../../src/fiori-app-generator');
+const { FioriAppGenerator } = await import('../../../src/fiori-app-generator/index.js');
 const { DefaultLogger, TelemetryHelper, hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 const { getUI5Versions } = await import('@sap-ux/ui5-info');
 const { getEntityRelatedPrompts } = await import('@sap-ux/odata-service-inquirer');
 const { initTelemetrySettings } = await import('@sap-ux/telemetry');
 const { FIORI_STEPS, FloorplanFE, FloorplanFF, STEP_DATASOURCE_AND_SERVICE, STEP_FLP_CONFIG, STEP_PROJECT_ATTRIBUTES } =
-    await import('../../../src/types');
-const { getYeomanUiStepConfig, t } = await import('../../../src/utils');
+    await import('../../../src/types/index.js');
+const { getYeomanUiStepConfig, t } = await import('../../../src/utils/index.js');
 
 /**
  * Tests the FioriAppGenerator generator lifecycle methods call what they should with the correct parameters.

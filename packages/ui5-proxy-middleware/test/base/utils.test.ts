@@ -14,8 +14,8 @@ import {
 } from '../../src/base/utils';
 import type { Response } from 'express';
 import fs from 'node:fs';
-import * as baseUtils from '../../src/base/utils';
-import type { ProxyConfig } from '../../src/base/types';
+import * as baseUtils from '../../src/base/utils.js';
+import type { ProxyConfig } from '../../src/base/types.js';
 import type { IncomingMessage } from 'node:http';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';

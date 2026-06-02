@@ -11,12 +11,12 @@ import {
     MockNullTransport
 } from '../../__mocks__';
 import type { Destination } from '@sap-ux/btp-utils';
-import type { AbapTarget } from '../../../src/types';
+import type { AbapTarget } from '../../../src/types.js';
 
 // Dynamic imports after mocks are set up
 const { AuthenticationType } = await import('@sap-ux/store');
 const { default: prompts } = await import('prompts');
-const { createAbapServiceProvider, isUrlTarget } = await import('../../../src/base/connect');
+const { createAbapServiceProvider, isUrlTarget } = await import('../../../src/base/connect.js');
 
 /**
  * Create a mock ABAP service provider with the given options.

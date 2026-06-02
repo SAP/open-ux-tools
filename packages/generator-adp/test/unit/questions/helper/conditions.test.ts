@@ -18,7 +18,7 @@ const {
     showInternalQuestions,
     showBusinessSolutionNameQuestion,
     showStoreCredentialsQuestion
-} = await import('../../../../src/app/questions/helper/conditions');
+} = await import('../../../../src/app/questions/helper/conditions.js');
 
 describe('showApplicationQuestion', () => {
     it('should return true when system is provided, no authentication is required, and login is successful', () => {

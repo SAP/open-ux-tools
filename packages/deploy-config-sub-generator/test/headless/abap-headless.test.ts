@@ -62,10 +62,10 @@ jest.unstable_mockModule('hasbin', () => ({
     sync: jest.fn().mockReturnValue(true)
 }));
 
-const { runHeadlessGen } = await import('./utils');
+const { runHeadlessGen } = await import('./utils.js');
 const { DeployTarget } = await import('@sap-ux/fiori-generator-shared');
 const { backendSystemBtp, backendSystemOnPrem, INPUT_APP_DIR_ABAP, INPUT_BASE_APP, mockDestinations } =
-    await import('./fixtures/constants');
+    await import('./fixtures/constants/index.js');
 
 export const ORIGINAL_CWD: string = process.cwd();
 export const OUTPUT_DIR = join(__dirname, '../test-output/abap');

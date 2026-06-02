@@ -15,8 +15,8 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     Destination: {}
 }));
 
-const { generateDestinationName, getDestination } = await import('../../src');
-const { mockDestinations } = await import('../fixtures/destinations');
+const { generateDestinationName, getDestination } = await import('../../src/index.js');
+const { mockDestinations } = await import('../fixtures/destinations.js');
 
 describe('destination utils', () => {
     it('should generate destination name', () => {

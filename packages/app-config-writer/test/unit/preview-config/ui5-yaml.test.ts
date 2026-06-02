@@ -4,9 +4,9 @@ import { create as createStorage } from 'mem-fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ToolsLogger } from '@sap-ux/logger';
-import type { PreviewConfigOptions } from '../../../src/types';
+import type { PreviewConfigOptions } from '../../../src/types/index.js';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
-import type { Script } from '../../../src/common/package-json';
+import type { Script } from '../../../src/common/package-json.js';
 
 const mockGetAllUi5YamlFileNames = jest.fn();
 const actualProjectAccess = await import('@sap-ux/project-access');
@@ -15,8 +15,8 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     getAllUi5YamlFileNames: mockGetAllUi5YamlFileNames
 }));
 
-const { updatePreviewMiddlewareConfigs } = await import('../../../src/preview-config/ui5-yaml');
-const { updatePreviewMiddlewareConfig } = await import('../../../src/common/ui5-yaml');
+const { updatePreviewMiddlewareConfigs } = await import('../../../src/preview-config/ui5-yaml.js');
+const { updatePreviewMiddlewareConfig } = await import('../../../src/common/ui5-yaml.js');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

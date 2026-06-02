@@ -88,7 +88,7 @@ describe('MultiSourceDocumentationBuilder', () => {
     let MultiSourceDocumentationBuilder: new () => BuilderType;
 
     beforeAll(async () => {
-        const module = await import('../src/scripts/build-docs');
+        const module = await import('../src/scripts/build-docs.js');
         MultiSourceDocumentationBuilder = (
             module as unknown as { MultiSourceDocumentationBuilder: new () => BuilderType }
         ).MultiSourceDocumentationBuilder;

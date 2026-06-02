@@ -32,7 +32,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     filterDataSourcesByType: jest.fn()
 }));
 
-const { isCFEnvironment } = await import('../../../src/base/cf');
+const { isCFEnvironment } = await import('../../../src/base/cf.js');
 
 describe('isCFEnvironment', () => {
     const basePath = join(__dirname, '../../fixtures', 'adaptation-project');

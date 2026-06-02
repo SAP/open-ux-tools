@@ -46,12 +46,12 @@ const mockRenderFile = jest.fn();
 const mockGetService = jest.fn();
 
 // Pre-load real modules for spreading
-const realHelper = await import('../../../src/base/helper');
+const realHelper = await import('../../../src/base/helper.js');
 const realSystemAccess = await import('@sap-ux/system-access/dist/base/connect');
 const realServiceWriter = await import('@sap-ux/odata-service-writer/dist/data/annotations');
-const realEditors = await import('../../../src/writer/editors');
-const realChangeHandler = await import('../../../src/preview/change-handler');
-const realDescriptorChangeHandler = await import('../../../src/preview/descriptor-change-handler');
+const realEditors = await import('../../../src/writer/editors.js');
+const realChangeHandler = await import('../../../src/preview/change-handler.js');
+const realDescriptorChangeHandler = await import('../../../src/preview/descriptor-change-handler.js');
 const realStore = await import('@sap-ux/store');
 const realEjs = await import('ejs');
 const realOs = await import('node:os');
@@ -144,10 +144,10 @@ jest.unstable_mockModule('../../../src/base/abap/manifest-service', () => ({
     ManifestService: { initMergedManifest: mockInitMergedManifest }
 }));
 
-const { AdpPreview } = await import('../../../src');
+const { AdpPreview } = await import('../../../src/index.js');
 import type { AddXMLChange, AdpPreviewConfig, CommonChangeProperties } from '../../../src/index.js';
-const { addXmlFragment, tryFixChange, addControllerExtension } = await import('../../../src/preview/change-handler');
-const { addCustomFragment } = await import('../../../src/preview/descriptor-change-handler');
+const { addXmlFragment, tryFixChange, addControllerExtension } = await import('../../../src/preview/change-handler.js');
+const { addCustomFragment } = await import('../../../src/preview/descriptor-change-handler.js');
 const { AdaptationProjectType } = await import('@sap-ux/axios-extension');
 
 interface GetFragmentsResponse {

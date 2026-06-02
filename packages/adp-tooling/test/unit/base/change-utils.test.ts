@@ -58,8 +58,8 @@ const {
     writeAnnotationChange,
     writeChangeToFolder,
     writeKeyUserChanges
-} = await import('../../../src/base/change-utils');
-const { ChangeType, FlexLayer } = await import('../../../src');
+} = await import('../../../src/base/change-utils.js');
+const { ChangeType, FlexLayer } = await import('../../../src/index.js');
 
 describe('Change Utils', () => {
     describe('writeChangeToFolder', () => {

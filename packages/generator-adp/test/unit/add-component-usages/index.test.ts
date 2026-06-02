@@ -18,7 +18,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getVariant: mockGetVariant
 }));
 
-const { default: componentUsagesGen } = await import('../../../src/add-component-usages');
+const { default: componentUsagesGen } = await import('../../../src/add-component-usages/index.js');
 
 const variant = {
     reference: 'customer.adp.variant',

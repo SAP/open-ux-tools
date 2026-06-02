@@ -1,6 +1,6 @@
 import { RuleTester } from 'eslint';
-import condensedTableLayoutRule from '../../src/rules/sap-condensed-table-layout';
-import { meta, languages } from '../../src/index';
+import condensedTableLayoutRule from '../../src/rules/sap-condensed-table-layout.js';
+import { meta, languages } from '../../src/index.js';
 import {
     getAnnotationsAsXmlCode,
     getManifestAsCode,

@@ -6,7 +6,7 @@ jest.unstable_mockModule('axios', () => ({
     __esModule: true
 }));
 
-const { getSapSystemUI5Version } = await import('../src/ui5-version-backend');
+const { getSapSystemUI5Version } = await import('../src/ui5-version-backend.js');
 
 describe('Get UI5 Version used on backend ABAP system', () => {
     beforeEach(() => {

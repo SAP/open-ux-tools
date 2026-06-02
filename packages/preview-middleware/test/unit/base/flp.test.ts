@@ -3,18 +3,18 @@ import path, { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
-import type { FlpConfig, MiddlewareConfig } from '../../../src';
+import type { FlpConfig, MiddlewareConfig } from '../../../src/index.js';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ProjectAccess, I18nBundles, Manifest, ApplicationAccess } from '@sap-ux/project-access';
 import { readFileSync, promises } from 'node:fs';
 import supertest from 'supertest';
 import express, { type Response, type NextFunction } from 'express';
-import type { EnhancedRequest } from '../../../src/base/flp';
+import type { EnhancedRequest } from '../../../src/base/flp.js';
 import { tmpdir } from 'node:os';
 import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import type { TemplateConfig } from '../../../src/base/config.js';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
-import { fetchMock } from '../../__mock__/global';
+import { fetchMock } from '../../__mock__/global.js';
 //@ts-expect-error: this import is not relevant for the 'erasableSyntaxOnly' check
 import connect = require('connect');
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
@@ -83,8 +83,8 @@ jest.unstable_mockModule('@sap-ux/i18n', () => ({
 }));
 
 // Import after mocking
-const { FlpSandbox: FlpSandboxUnderTest } = await import('../../../src');
-const { CARD_GENERATOR_DEFAULT } = await import('../../../src/base/config');
+const { FlpSandbox: FlpSandboxUnderTest } = await import('../../../src/index.js');
+const { CARD_GENERATOR_DEFAULT } = await import('../../../src/base/config.js');
 const adpTooling = await import('@sap-ux/adp-tooling');
 
 class FlpSandbox extends FlpSandboxUnderTest {

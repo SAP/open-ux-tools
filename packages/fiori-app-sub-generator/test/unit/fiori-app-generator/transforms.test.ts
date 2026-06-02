@@ -3,8 +3,8 @@ import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
 import type { BackendSystem } from '@sap-ux/store';
 import { AuthenticationType } from '@sap-ux/store';
-import type { Project, Service, State } from '../../../src/types';
-import { ApiHubType, FloorplanFE, FloorplanFF, PLATFORMS } from '../../../src/types';
+import type { Project, Service, State } from '../../../src/types/index.js';
+import { ApiHubType, FloorplanFE, FloorplanFF, PLATFORMS } from '../../../src/types/index.js';
 import type { FioriElementsApp } from '@sap-ux/fiori-elements-writer';
 import type { FreestyleApp } from '@sap-ux/fiori-freestyle-writer';
 import type { BasicAppSettings } from '@sap-ux/fiori-freestyle-writer/dist/types';
@@ -32,7 +32,7 @@ jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
     isFeatureEnabled: mockIsFeatureEnabled
 }));
 
-const { transformState } = await import('../../../src/fiori-app-generator/transforms');
+const { transformState } = await import('../../../src/fiori-app-generator/transforms.js');
 const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 
 describe('Test transform state', () => {

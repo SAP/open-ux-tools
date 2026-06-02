@@ -4,7 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createProjectAccessMock } from '../__mocks__/project-access-mock';
+import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -53,7 +53,7 @@ jest.unstable_mockModule('prompts', () => ({
     default: mockPromptsModule
 }));
 
-const { addAddMockserverConfigCommand } = await import('../../../../src/cli/add/mockserver-config');
+const { addAddMockserverConfigCommand } = await import('../../../../src/cli/add/mockserver-config.js');
 
 describe('Test command add mockserver-config', () => {
     const appRoot = join(__dirname, '../../../fixtures/bare-minimum');

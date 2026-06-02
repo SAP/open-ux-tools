@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import type { UI5Version } from '@sap-ux/ui5-info';
-import type { UI5LibraryPromptOptions, UI5LibraryAnswers } from '../../../src/types';
+import type { UI5LibraryPromptOptions, UI5LibraryAnswers } from '../../../src/types.js';
 import type { FileBrowserQuestion, InputQuestion } from '@sap-ux/inquirer-common';
 
 // Mock dependencies
@@ -24,8 +24,8 @@ jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
     addi18nResourceBundle: mockAddi18nResourceBundle
 }));
 
-const { getQuestions } = await import('../../../src/prompts');
-const { initI18n, t } = await import('../../../src/i18n');
+const { getQuestions } = await import('../../../src/prompts/index.js');
+const { initI18n, t } = await import('../../../src/i18n.js');
 
 describe('Enhanced Prompting Tests', () => {
     const mockUI5Versions: UI5Version[] = [

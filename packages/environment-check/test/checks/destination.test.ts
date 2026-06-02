@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import type { Destinations } from '@sap-ux/btp-utils';
-import type { Endpoint, CatalogServiceResult } from '../../src/types';
-import { Severity, UrlServiceType } from '../../src/types';
-import { t } from '../../src/i18n';
+import type { Endpoint, CatalogServiceResult } from '../../src/types.js';
+import { Severity, UrlServiceType } from '../../src/types.js';
+import { t } from '../../src/i18n.js';
 
 const mockCreateForDestination = jest.fn();
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
@@ -48,7 +48,7 @@ jest.unstable_mockModule('../../src/checks/service-checks', () => ({
 }));
 
 const { checkBASDestination, checkBASDestinations, needsUsernamePassword } =
-    await import('../../src/checks/destination');
+    await import('../../src/checks/destination.js');
 
 describe('Destination tests, function checkBASDestination()', () => {
     const checkCatalogServicesResult = {

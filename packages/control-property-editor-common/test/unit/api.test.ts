@@ -12,7 +12,7 @@ import {
     propertyChanged,
     selectControl
 } from '../../src/api';
-import type { Control, ChangeStackModified, PropertyChange, OutlineNode } from '../../src/api';
+import type { Control, ChangeStackModified, PropertyChange, OutlineNode } from '../../src/api.js';
 
 describe('createExternalAction', () => {
     test('iconsLoaded', () => {

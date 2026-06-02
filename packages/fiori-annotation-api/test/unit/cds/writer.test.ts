@@ -3,7 +3,7 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import { createElementNode, createAttributeNode, Edm, createTextNode } from '@sap-ux/odata-annotation-core-types';
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
 
-import type { CDSDocumentChange } from '../../../src/cds/change';
+import type { CDSDocumentChange } from '../../../src/cds/change.js';
 import {
     MOVE_COLLECTION_VALUE_CHANGE_TYPE,
     createDeleteAnnotationChange,
@@ -15,12 +15,12 @@ import {
     createInsertRecordPropertyChange,
     createMoveCollectionChange
 } from '../../../src/cds/change';
-import { CDSWriter } from '../../../src/cds/writer';
+import { CDSWriter } from '../../../src/cds/writer.js';
 
-import { applyTextEdits } from '../apply-edits';
-import { PROJECTS } from '../projects';
+import { applyTextEdits } from '../apply-edits.js';
+import { PROJECTS } from '../projects.js';
 
-import { getCDSDocument } from './utils';
+import { getCDSDocument } from './utils.js';
 
 async function testWriter(
     text: string,

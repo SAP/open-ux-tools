@@ -1,6 +1,6 @@
 import { fetchMock, documentMock } from 'mock/window';
 import ODataModelMock from 'mock/sap/ui/model/odata/v2/ODataModel';
-import { initOvpWindowFunctions } from '../../../src/adp/ovp-window-functions';
+import { initOvpWindowFunctions } from '../../../src/adp/ovp-window-functions.js';
 
 const mockEntityContainer = { namespace: 'NS', entitySet: [{ name: 'TestSet', entityType: 'NS.TestType' }] };
 const mockSchema = [{ namespace: 'NS', entityType: [{ name: 'TestType' }] }];

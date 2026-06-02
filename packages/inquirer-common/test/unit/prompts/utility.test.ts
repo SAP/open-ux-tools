@@ -20,9 +20,9 @@ jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
     getUI5VersionSupportInfo: jest.fn()
 }));
 
-const { initI18nInquirerCommon } = await import('../../../src/i18n');
+const { initI18nInquirerCommon } = await import('../../../src/i18n.js');
 const { getDefaultUI5VersionChoice, getUI5ThemesChoices, searchChoices, ui5VersionsGrouped } =
-    await import('../../../src/prompts/utility');
+    await import('../../../src/prompts/utility.js');
 const { ui5ThemeIds } = await import('@sap-ux/ui5-info');
 
 describe('utility.ts', () => {

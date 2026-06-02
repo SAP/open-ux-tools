@@ -3,7 +3,7 @@ import net from 'node:net';
 import { EventEmitter } from 'node:events';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { ConnectivityProxyInfo, EffectiveOptions } from '../../../src/types';
+import type { ConnectivityProxyInfo, EffectiveOptions } from '../../../src/types.js';
 
 const mockIsAppStudio = jest.fn().mockReturnValue(false);
 

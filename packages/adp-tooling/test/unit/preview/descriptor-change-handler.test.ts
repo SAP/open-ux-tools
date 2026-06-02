@@ -62,14 +62,14 @@ const {
     isAddXMLChange,
     moduleNameContentMap,
     tryFixChange
-} = await import('../../../src/preview/change-handler');
+} = await import('../../../src/preview/change-handler.js');
 import type {
     AddXMLChange,
     CommonChangeProperties,
     AnnotationFileChange,
     DescriptorVariant
 } from '../../../src/index.js';
-const { addCustomFragment } = await import('../../../src/preview/descriptor-change-handler');
+const { addCustomFragment } = await import('../../../src/preview/descriptor-change-handler.js');
 
 describe('change-handler', () => {
     describe('moduleNameContentMap', () => {

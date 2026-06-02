@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import type { CSDL, CSDLAnnotations } from '@sap-ux/vocabularies/CSDL';
-import type * as VocabulariesType from '../../tools/update';
+import type * as VocabulariesType from '../../tools/update.js';
 
 const mockAxiosGet = jest.fn();
 jest.unstable_mockModule('axios', () => ({
@@ -26,7 +26,7 @@ jest.unstable_mockModule('prettier', () => ({
     __esModule: true
 }));
 
-const Vocabularies = await import('../../tools/update');
+const Vocabularies = await import('../../tools/update.js');
 const { join } = await import('node:path');
 
 describe('vocabularies', () => {

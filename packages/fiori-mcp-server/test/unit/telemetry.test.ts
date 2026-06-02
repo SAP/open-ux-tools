@@ -30,7 +30,7 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn().mockReturnValue(false)
 }));
 
-const { TelemetryHelper, mcpServerName } = await import('../../src/telemetry');
+const { TelemetryHelper, mcpServerName } = await import('../../src/telemetry/index.js');
 
 describe('TelemetryHelper', () => {
     const opts = {

@@ -1,6 +1,6 @@
 import { RuleTester } from 'eslint';
-import enableExportRule from '../../src/rules/sap-enable-export';
-import { meta, languages } from '../../src/index';
+import enableExportRule from '../../src/rules/sap-enable-export.js';
+import { meta, languages } from '../../src/index.js';
 import {
     getAnnotationsAsXmlCode,
     getManifestAsCode,

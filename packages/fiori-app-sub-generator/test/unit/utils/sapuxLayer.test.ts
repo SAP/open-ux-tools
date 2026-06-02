@@ -6,7 +6,7 @@ jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
     isInternalFeaturesSettingEnabled: mockIsInternalFeaturesSettingEnabled
 }));
 
-const { assignSapUxLayerValue } = await import('../../../src/utils/sapuxLayer');
+const { assignSapUxLayerValue } = await import('../../../src/utils/sapuxLayer.js');
 
 describe('sapuxLayer - assignSapUxLayerValue', () => {
     test('should return undefined for CAP projects', () => {

@@ -59,7 +59,7 @@ jest.unstable_mockModule('@sap-ux/fiori-docs-embeddings', () => {
 });
 
 // Dynamic imports after all mocks
-const { resolveEmbeddingsPath, hasEmbeddingsData } = await import('../../../src/utils/embeddings-path');
+const { resolveEmbeddingsPath, hasEmbeddingsData } = await import('../../../src/utils/embeddings-path.js');
 
 describe('embeddings-path', () => {
     beforeEach(() => {

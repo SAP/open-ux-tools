@@ -4,9 +4,9 @@ import { fileURLToPath } from 'node:url';
 import type * as childProcess from 'node:child_process';
 import { create as createStorage, type Store } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import type * as projectModuleType from '../../src/project/module-loader';
-import type * as fileType from '../../src/file';
-import type { Package } from '../../src';
+import type * as projectModuleType from '../../src/project/module-loader.js';
+import type * as fileType from '../../src/file/index.js';
+import type { Package } from '../../src/index.js';
 import os from 'node:os';
 import type { Logger } from '@sap-ux/logger';
 import { promises as fs } from 'node:fs';
@@ -21,8 +21,8 @@ const mockReadFile = jest.fn<typeof fileType.readFile>();
 
 // Load real modules first (they become cached)
 const realChildProcess = await import('node:child_process');
-const realProjectModule = await import('../../src/project/module-loader');
-const realFile = await import('../../src/file');
+const realProjectModule = await import('../../src/project/module-loader.js');
+const realFile = await import('../../src/file/index.js');
 
 // Register mocks BEFORE loading source modules that use them.
 jest.unstable_mockModule('node:child_process', () => ({
@@ -49,7 +49,7 @@ jest.unstable_mockModule('../../src/file', () => ({
 // Note: search module is NOT mocked due to circular dependency with cap.ts
 // Tests that need findCapProjectRoot to fail should use non-existent paths instead
 
-const { FileName } = await import('../../src/constants');
+const { FileName } = await import('../../src/constants.js');
 const {
     clearCdsModuleCache,
     clearGlobalCdsModulePromiseCache,
@@ -57,7 +57,7 @@ const {
     checkCdsUi5PluginEnabled,
     satisfiesMinCdsVersion,
     hasMinCdsVersion
-} = await import('../../src/project/cap');
+} = await import('../../src/project/cap.js');
 const {
     getCapCustomPaths,
     getCapEnvironment,
@@ -74,7 +74,7 @@ const {
     isCapProject,
     deleteCapApp,
     getGlobalCdsHomePath
-} = await import('../../src');
+} = await import('../../src/index.js');
 const { deleteFile, readFile, readJSON } = realFile;
 
 // Re-establish real implementations as defaults after clearAllMocks/restoreAllMocks resets them

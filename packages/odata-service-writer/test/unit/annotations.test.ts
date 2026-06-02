@@ -11,7 +11,7 @@ import {
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import type { CdsAnnotationsInfo } from '../../src';
+import type { CdsAnnotationsInfo } from '../../src/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

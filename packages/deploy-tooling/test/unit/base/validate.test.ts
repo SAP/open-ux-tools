@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { mockedProvider, mockedAdtService } from '../../__mocks__';
+import { mockedProvider, mockedAdtService } from '../../__mocks__/index.js';
 import chalk from 'chalk';
 import { TransportChecksService } from '@sap-ux/axios-extension';
 import type { AxiosError } from '@sap-ux/axios-extension';
@@ -26,7 +26,7 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
 }));
 
 const { formatSummary, showAdditionalInfoForOnPrem, summaryMessage, validateBeforeDeploy, checkForCredentials } =
-    await import('../../../src/base/validate');
+    await import('../../../src/base/validate.js');
 const { Authentication } = await import('@sap-ux/btp-utils');
 
 const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });

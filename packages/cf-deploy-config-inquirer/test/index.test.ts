@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 
 // Pre-import real modules before mocking
-const realCfPrompts = await import('../src/prompts/prompts');
+const realCfPrompts = await import('../src/prompts/prompts.js');
 
 const mockGetQuestions = jest.fn<typeof realCfPrompts.getQuestions>();
 
@@ -15,8 +15,8 @@ mockGetQuestions.mockImplementation((...args: Parameters<typeof realCfPrompts.ge
     realCfPrompts.getQuestions(...args)
 );
 
-const { getPrompts, promptNames, prompt } = await import('../src');
-import type { CfDeployConfigPromptOptions, CfDeployConfigAnswers } from '../src/types';
+const { getPrompts, promptNames, prompt } = await import('../src/index.js');
+import type { CfDeployConfigPromptOptions, CfDeployConfigAnswers } from '../src/types.js';
 import type { Logger } from '@sap-ux/logger';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
 import inquirer from 'inquirer';

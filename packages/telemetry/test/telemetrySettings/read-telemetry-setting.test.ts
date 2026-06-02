@@ -38,7 +38,7 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     Service: {}
 }));
 
-const { getTelemetrySetting } = await import('../../src/tooling-telemetry');
+const { getTelemetrySetting } = await import('../../src/tooling-telemetry/index.js');
 
 describe('Tests for getTelemetrySetting()', () => {
     beforeEach(() => {

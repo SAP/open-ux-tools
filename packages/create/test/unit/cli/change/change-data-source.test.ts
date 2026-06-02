@@ -8,7 +8,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { UI5Config } from '@sap-ux/ui5-config';
 
-import { createProjectAccessMock } from '../__mocks__/project-access-mock';
+import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -102,7 +102,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
 
 jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn() }));
 
-const { addChangeDataSourceCommand } = await import('../../../../src/cli/change/change-data-source');
+const { addChangeDataSourceCommand } = await import('../../../../src/cli/change/change-data-source.js');
 
 describe('change/data-source', () => {
     let loggerMock: ToolsLogger;

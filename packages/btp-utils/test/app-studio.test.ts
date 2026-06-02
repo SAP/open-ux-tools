@@ -2,8 +2,8 @@ import { jest } from '@jest/globals';
 import nock from 'nock';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Destination, ServiceInfo } from '../src';
-import { ENV } from '../src/app-studio.env';
+import type { Destination, ServiceInfo } from '../src/index.js';
+import { ENV } from '../src/app-studio.env.js';
 import destinationList from './mockResponses/destinations.json';
 import type { ServiceInstanceInfo } from '@sap/cf-tools';
 import { ToolsLogger } from '@sap-ux/logger';
@@ -85,7 +85,7 @@ const {
     getCredentialsForDestinationService,
     exposePort,
     createOAuth2UserTokenExchangeDest
-} = await import('../src');
+} = await import('../src/index.js');
 
 describe('App Studio', () => {
     beforeEach(() => {

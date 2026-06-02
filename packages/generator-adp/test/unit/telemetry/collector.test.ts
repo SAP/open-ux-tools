@@ -14,7 +14,7 @@ jest.unstable_mockModule('@sap-ux/telemetry', () => ({
     }
 }));
 
-const { TelemetryCollector } = await import('../../../src/telemetry/collector');
+const { TelemetryCollector } = await import('../../../src/telemetry/collector.js');
 
 describe('TelemetryCollector', () => {
     let collector: TelemetryCollector;

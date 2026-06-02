@@ -8,7 +8,7 @@ jest.unstable_mockModule('@sap/approuter', () => ({
     })
 }));
 
-const { startApprouter } = await import('../../../src/approuter/approuter');
+const { startApprouter } = await import('../../../src/approuter/approuter.js');
 
 const mockLogger = { debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn() } as unknown as ToolsLogger;
 

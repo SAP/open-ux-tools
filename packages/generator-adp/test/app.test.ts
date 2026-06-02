@@ -90,25 +90,25 @@ jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
     isFeatureEnabled: mockIsFeatureEnabled
 }));
 
-const realDefaultValues = await import('../src/app/questions/helper/default-values');
+const realDefaultValues = await import('../src/app/questions/helper/default-values.js');
 jest.unstable_mockModule('../src/app/questions/helper/default-values', () => ({
     ...realDefaultValues,
     getDefaultProjectName: mockGetDefaultProjectName
 }));
 
-const realValidators = await import('../src/app/questions/helper/validators');
+const realValidators = await import('../src/app/questions/helper/validators.js');
 jest.unstable_mockModule('../src/app/questions/helper/validators', () => ({
     ...realValidators,
     validateExtensibilityGenerator: mockValidateExtensibilityGenerator
 }));
 
-const realExtensionProject = await import('../src/app/extension-project/index');
+const realExtensionProject = await import('../src/app/extension-project/index.js');
 jest.unstable_mockModule('../src/app/extension-project/index', () => ({
     ...realExtensionProject,
     resolveNodeModuleGenerator: mockResolveNodeModuleGenerator
 }));
 
-const realConditions = await import('../src/app/questions/helper/conditions');
+const realConditions = await import('../src/app/questions/helper/conditions.js');
 jest.unstable_mockModule('../src/app/questions/helper/conditions', () => ({
     ...realConditions,
     showApplicationQuestion: mockShowApplicationQuestion,
@@ -173,19 +173,19 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     generateCf: mockGenerateCf
 }));
 
-const realDeps = await import('../src/utils/deps');
+const realDeps = await import('../src/utils/deps.js');
 jest.unstable_mockModule('../src/utils/deps', () => ({
     ...realDeps,
     getPackageInfo: mockGetPackageInfo,
     installDependencies: mockInstallDependencies
 }));
 
-const realAppWizardCache = await import('../src/utils/appWizardCache');
+const realAppWizardCache = await import('../src/utils/appWizardCache.js');
 jest.unstable_mockModule('../src/utils/appWizardCache', () => ({
     ...realAppWizardCache
 }));
 
-const realTemplates = await import('../src/utils/templates');
+const realTemplates = await import('../src/utils/templates.js');
 jest.unstable_mockModule('../src/utils/templates', () => ({
     ...realTemplates,
     getTemplatesOverwritePath: mockGetTemplatesOverwritePath
@@ -220,7 +220,7 @@ jest.unstable_mockModule('uuid', () => ({
     v4: mockV4
 }));
 
-const realSubgenHelpers = await import('../src/utils/subgenHelpers');
+const realSubgenHelpers = await import('../src/utils/subgenHelpers.js');
 jest.unstable_mockModule('../src/utils/subgenHelpers', () => ({
     ...realSubgenHelpers,
     addExtProjectGen: mockAddExtProjectGen,
@@ -228,7 +228,7 @@ jest.unstable_mockModule('../src/utils/subgenHelpers', () => ({
     addFlpGen: mockAddFlpGen
 }));
 
-const realWorkspace = await import('../src/utils/workspace');
+const realWorkspace = await import('../src/utils/workspace.js');
 jest.unstable_mockModule('../src/utils/workspace', () => ({
     ...realWorkspace,
     existsInWorkspace: mockExistsInWorkspace,
@@ -248,14 +248,14 @@ jest.unstable_mockModule('@sap-ux/logger', () => ({
 const { AppRouterType, FlexLayer, SourceManifest, SupportedProject, SystemLookup } =
     await import('@sap-ux/adp-tooling');
 const { AdaptationProjectType } = await import('@sap-ux/axios-extension');
-const { default: adpGenerator } = await import('../src/app');
-const { ConfigPrompter } = await import('../src/app/questions/configuration');
-const { KeyUserImportPrompter } = await import('../src/app/questions/key-user');
-const { TargetEnv } = await import('../src/app/types');
-const { EventName } = await import('../src/telemetry');
-const { initI18n, t } = await import('../src/utils/i18n');
-const { workspaceChoices } = await import('../src/utils/workspace');
-const { CFServicesPrompter } = await import('../src/app/questions/cf-services');
+const { default: adpGenerator } = await import('../src/app/index.js');
+const { ConfigPrompter } = await import('../src/app/questions/configuration.js');
+const { KeyUserImportPrompter } = await import('../src/app/questions/key-user.js');
+const { TargetEnv } = await import('../src/app/types.js');
+const { EventName } = await import('../src/telemetry/index.js');
+const { initI18n, t } = await import('../src/utils/i18n.js');
+const { workspaceChoices } = await import('../src/utils/workspace.js');
+const { CFServicesPrompter } = await import('../src/app/questions/cf-services.js');
 
 // ─── Test data ───
 

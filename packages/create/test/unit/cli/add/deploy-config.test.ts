@@ -6,7 +6,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-import { createProjectAccessMock } from '../__mocks__/project-access-mock';
+import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -57,7 +57,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     isCFEnvironment: jest.fn().mockResolvedValue(false)
 }));
 
-const { addDeployConfigCommand } = await import('../../../../src/cli/add/deploy-config');
+const { addDeployConfigCommand } = await import('../../../../src/cli/add/deploy-config.js');
 
 describe('add/deploy-config', () => {
     const appRoot = join(__dirname, '../../../fixtures/bare-minimum');

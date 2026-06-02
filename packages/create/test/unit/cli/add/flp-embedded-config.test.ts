@@ -23,7 +23,7 @@ jest.unstable_mockModule('prompts', () => ({
     default: jest.fn()
 }));
 
-const { addFlpEmbeddedConfigCommand } = await import('../../../../src/cli/add/flp-embedded-config');
+const { addFlpEmbeddedConfigCommand } = await import('../../../../src/cli/add/flp-embedded-config.js');
 
 describe('Test command add flp-embedded-config', () => {
     const appRoot = join(__dirname, '../../../fixtures/bare-minimum');

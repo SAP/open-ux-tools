@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type * as fsMock from 'node:fs';
 import type * as promisesMock from 'node:fs/promises';
-import type * as commandType from '../../src/command/npm-command';
+import type * as commandType from '../../src/command/npm-command.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -11,14 +11,14 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const moduleCacheRoot = join(__dirname, '../test-data/module-loader');
 const modulePath = join(moduleCacheRoot, '@scope/module/1.2.3');
 
-const realConstants = await import('../../src/constants');
+const realConstants = await import('../../src/constants.js');
 jest.unstable_mockModule('../../src/constants', () => ({
     ...realConstants,
     moduleCacheRoot
 }));
 
 const mockExecNpmCommand = jest.fn<typeof commandType.execNpmCommand>();
-const realCommand = await import('../../src/command/npm-command');
+const realCommand = await import('../../src/command/npm-command.js');
 jest.unstable_mockModule('../../src/command/npm-command', () => ({
     ...realCommand,
     execNpmCommand: mockExecNpmCommand
@@ -67,8 +67,8 @@ jest.unstable_mockModule('node:fs/promises', () => ({
     writeFile: mockWriteFilePromise
 }));
 
-const { FileName, loadModuleFromProject } = await import('../../src');
-const { deleteModule, getModule } = await import('../../src/project/module-loader');
+const { FileName, loadModuleFromProject } = await import('../../src/index.js');
+const { deleteModule, getModule } = await import('../../src/project/module-loader.js');
 const { ToolsLogger } = await import('@sap-ux/logger');
 
 describe('Test loadModuleFromProject()', () => {

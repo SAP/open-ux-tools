@@ -5,7 +5,7 @@ import type { Editor } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { EslintRcJson } from '../../../src/eslint-config/convert';
+import type { EslintRcJson } from '../../../src/eslint-config/convert.js';
 import type { Package } from '@sap-ux/project-access';
 import type { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -89,7 +89,7 @@ jest.unstable_mockModule('node:fs', () => {
     };
 });
 
-const { convertEslintConfig } = await import('../../../src');
+const { convertEslintConfig } = await import('../../../src/index.js');
 
 describe('convertEslintConfig', () => {
     const loggerMock: ToolsLogger = {

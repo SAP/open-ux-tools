@@ -28,9 +28,9 @@ jest.unstable_mockModule('node:fs', () => ({
     mkdirSync: mockMkdirSync
 }));
 
-const { getInstance, SystemService } = await import('../../../src/services/backend-system');
-const { BackendSystem, BackendSystemKey } = await import('../../../src');
-const { initI18n, text } = await import('../../../src/i18n');
+const { getInstance, SystemService } = await import('../../../src/services/backend-system.js');
+const { BackendSystem, BackendSystemKey } = await import('../../../src/index.js');
+const { initI18n, text } = await import('../../../src/i18n.js');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 
 describe('BackendSystem service', () => {

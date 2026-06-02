@@ -34,9 +34,9 @@ jest.unstable_mockModule('../../src/command', () => ({
 }));
 
 const { getCFCliToolVersion, getFioriGenVersion, getInstalledExtensions, getProcessVersions } =
-    await import('../../src/checks/get-installed');
-const { getLogger } = await import('../../src/logger');
-const { t } = await import('../../src/i18n');
+    await import('../../src/checks/get-installed.js');
+const { getLogger } = await import('../../src/logger.js');
+const { t } = await import('../../src/i18n.js');
 
 describe('Test install functions', () => {
     const mockPackageJson =

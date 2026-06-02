@@ -22,7 +22,7 @@ jest.unstable_mockModule('archiver', () => ({
     default: (): typeof zipMock => zipMock
 }));
 
-const { archiveProject } = await import('../../src/archive');
+const { archiveProject } = await import('../../src/archive/index.js');
 
 describe('Test for archive project, archiveProject()', () => {
     beforeEach(() => {

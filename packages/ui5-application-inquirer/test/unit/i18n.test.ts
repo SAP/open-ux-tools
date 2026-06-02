@@ -23,7 +23,7 @@ jest.unstable_mockModule('i18next', () => ({
     }
 }));
 
-const { initI18nUi5AppInquirer, t, i18n } = await import('../../src/i18n');
+const { initI18nUi5AppInquirer, t, i18n } = await import('../../src/i18n.js');
 
 describe('i18n', () => {
     test('initI18n', async () => {

@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { ServeStaticConfig } from '../../src';
+import type { ServeStaticConfig } from '../../src/index.js';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,7 +9,7 @@ jest.unstable_mockModule('serve-static', () => ({
     default: mockServeStatic
 }));
 
-const { serveStaticMiddleware } = await import('../../src');
+const { serveStaticMiddleware } = await import('../../src/index.js');
 
 const testDirname = dirname(fileURLToPath(import.meta.url));
 

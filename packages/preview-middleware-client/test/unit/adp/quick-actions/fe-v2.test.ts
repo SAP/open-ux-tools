@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import type { Ui5VersionInfo } from 'open/ux/preview/client/utils/version';
 import FlexBox from 'sap/m/FlexBox';
 import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';

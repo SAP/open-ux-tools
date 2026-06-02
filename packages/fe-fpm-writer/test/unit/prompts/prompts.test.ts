@@ -6,7 +6,7 @@ import { create as createStorage } from 'mem-fs';
 import { jest } from '@jest/globals';
 import type { ChoiceOptions } from 'inquirer';
 import type { getMinimumUI5Version } from '@sap-ux/project-access';
-import type { TablePromptsAnswer, SupportedGeneratorAnswers, BuildingBlockTypePromptsAnswer } from '../../../src';
+import type { TablePromptsAnswer, SupportedGeneratorAnswers, BuildingBlockTypePromptsAnswer } from '../../../src/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -20,8 +20,8 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     getMinimumUI5Version: mockGetMinimumUI5Version
 }));
 
-const { PromptsType, PromptsAPI, BuildingBlockType } = await import('../../../src');
-const { createIdGenerator } = await import('../../../src/common/file');
+const { PromptsType, PromptsAPI, BuildingBlockType } = await import('../../../src/index.js');
+const { createIdGenerator } = await import('../../../src/common/file.js');
 
 describe('Prompts', () => {
     let fs: Editor;

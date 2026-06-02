@@ -32,7 +32,7 @@ jest.unstable_mockModule('../../../../src/cf/services/cli', () => ({
     restartApp: mockRestartApp
 }));
 
-const { ensureTunnelAppExists, enableSshAndRestart } = await import('../../../../src/cf/services/ssh');
+const { ensureTunnelAppExists, enableSshAndRestart } = await import('../../../../src/cf/services/ssh.js');
 
 describe('SSH Services', () => {
     const mockLogger = {

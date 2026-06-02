@@ -9,7 +9,7 @@ import {
 import Element from 'mock/sap/ui/core/Element';
 import Log from 'mock/sap/base/Log';
 import ElementRegistry from 'mock/sap/ui/core/ElementRegistry';
-import { CommunicationService } from '../../../src/cpe/communication-service';
+import { CommunicationService } from '../../../src/cpe/communication-service.js';
 import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
 
 describe('sync-views-utils', () => {

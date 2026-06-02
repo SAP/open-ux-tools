@@ -56,8 +56,8 @@ const {
     getAppParamsFromUI5Yaml,
     adjustMtaYaml,
     addConnectivityServiceToMta
-} = await import('../../../../src/cf/project/yaml');
-const { AppRouterType } = await import('../../../../src/types');
+} = await import('../../../../src/cf/project/yaml.js');
+const { AppRouterType } = await import('../../../../src/types.js');
 import type { MtaYaml, CfUI5Yaml, ServiceKeys } from '../../../../src/types.js';
 
 describe('YAML Project Functions', () => {

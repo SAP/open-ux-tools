@@ -5,7 +5,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { createProjectAccessMock } from '../__mocks__/project-access-mock';
+import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -39,7 +39,7 @@ jest.unstable_mockModule('prompts', () => ({
     prompt: jest.fn()
 }));
 
-const { addAddEslintConfigCommand } = await import('../../../../src/cli/add/eslint-config');
+const { addAddEslintConfigCommand } = await import('../../../../src/cli/add/eslint-config.js');
 
 describe('Test command add eslint-config', () => {
     const appRoot = join(__dirname, '../../../fixtures/ui5-deploy-config');

@@ -6,7 +6,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ToolsLogger } from '@sap-ux/logger';
 import chalk from 'chalk';
-import type { TargetConfig } from '../../../src/types';
+import type { TargetConfig } from '../../../src/types/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -39,7 +39,7 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
 }));
 
 const { getLocalStoredCredentials, getTargetDefinition, getTargetMappingsConfig, sendRequest, writeSmartLinksConfig } =
-    await import('../../../src/smartlinks-config/utils');
+    await import('../../../src/smartlinks-config/utils.js');
 
 // logger mock
 const loggerMock = {

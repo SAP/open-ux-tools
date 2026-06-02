@@ -16,7 +16,7 @@ jest.unstable_mockModule('prompts', () => ({
 }));
 
 const { ToolsLogger, NullTransport } = await import('@sap-ux/logger');
-const { addOptionsForEmbeddedBSP, promptUserPass } = await import('../../src/ext/bsp');
+const { addOptionsForEmbeddedBSP, promptUserPass } = await import('../../src/ext/bsp.js');
 
 describe('bsp', () => {
     const logger = new ToolsLogger({

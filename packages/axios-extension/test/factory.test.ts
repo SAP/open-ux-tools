@@ -33,7 +33,7 @@ jest.unstable_mockModule('proxy-from-env', () => ({
 }));
 
 const { create, createServiceForUrl, createForDestination, ServiceProvider, AbapServiceProvider } =
-    await import('../src');
+    await import('../src/index.js');
 
 beforeAll(() => {
     nock.disableNetConnect();

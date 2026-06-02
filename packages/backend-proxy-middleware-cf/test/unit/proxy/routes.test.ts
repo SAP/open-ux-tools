@@ -3,8 +3,8 @@ import path from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { mergeEffectiveOptions } from '../../../src/config/config';
-import { loadAndPrepareXsappConfig, buildRouteEntries } from '../../../src/proxy/routes';
+import { mergeEffectiveOptions } from '../../../src/config/config.js';
+import { loadAndPrepareXsappConfig, buildRouteEntries } from '../../../src/proxy/routes.js';
 
 describe('routes', () => {
     const rootPath = '/project/root';

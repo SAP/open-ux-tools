@@ -1,7 +1,7 @@
 import 'jest-extended';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { t } from '../src/i18n';
+import { t } from '../src/i18n.js';
 import {
     validateModuleName,
     validateProjectFolder,

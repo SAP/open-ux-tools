@@ -6,7 +6,7 @@ import { Command } from 'commander';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createProjectAccessMock } from '../__mocks__/project-access-mock';
+import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -72,7 +72,7 @@ jest.unstable_mockModule('@sap-ux/system-access', () => ({
     createAbapServiceProvider: jest.fn()
 }));
 
-const { addAnnotationsToOdataCommand } = await import('../../../../src/cli/add/annotations-to-odata');
+const { addAnnotationsToOdataCommand } = await import('../../../../src/cli/add/annotations-to-odata.js');
 
 const mockDataSources = {
     'annotation': {

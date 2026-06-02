@@ -16,7 +16,7 @@ jest.unstable_mockModule('node:fs', () => ({
 const fs = await import('node:fs');
 const mockExistsSync = fs.existsSync as jest.Mock;
 
-const { waitForMtaFile } = await import('../../src/mta-config/wait-for-mta');
+const { waitForMtaFile } = await import('../../src/mta-config/wait-for-mta.js');
 
 describe('waitForMtaFile', () => {
     const mtaPath = '/fake/project';

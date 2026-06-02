@@ -174,7 +174,7 @@ jest.unstable_mockModule('prompts', () => ({
     prompt: jest.fn()
 }));
 
-const { handleCreateFioriCommand } = await import('../../../src/cli');
+const { handleCreateFioriCommand } = await import('../../../src/cli/index.js');
 
 describe('Test handleCreateFioriCommand()', () => {
     beforeEach(() => {

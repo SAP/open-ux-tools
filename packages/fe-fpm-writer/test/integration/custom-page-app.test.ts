@@ -2,9 +2,9 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Chart, FilterBar, Table, Page } from '../../src';
-import { generateBuildingBlock, BuildingBlockType } from '../../src';
-import { clearTestOutput, writeFilesForDebugging } from '../common';
+import type { Chart, FilterBar, Table, Page } from '../../src/index.js';
+import { generateBuildingBlock, BuildingBlockType } from '../../src/index.js';
+import { clearTestOutput, writeFilesForDebugging } from '../common/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

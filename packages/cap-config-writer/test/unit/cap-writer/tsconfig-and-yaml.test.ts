@@ -36,7 +36,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 }));
 
 const { updateTsConfig, updateStaticLocationsInApplicationYaml } =
-    await import('../../../src/cap-writer/tsconfig-and-yaml');
+    await import('../../../src/cap-writer/tsconfig-and-yaml.js');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

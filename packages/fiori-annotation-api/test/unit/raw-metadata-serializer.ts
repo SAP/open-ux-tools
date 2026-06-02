@@ -23,8 +23,8 @@ import type {
     RecordWithOrigins
 } from '../../src/avt/annotations';
 
-import { toUnifiedUri } from '../../src/cds/utils';
-import { isAnnotation, isAnnotationList, isCollection, isRecord } from '../../src/avt';
+import { toUnifiedUri } from '../../src/cds/utils.js';
+import { isAnnotation, isAnnotationList, isCollection, isRecord } from '../../src/avt/index.js';
 
 export function adaptedUrl(url: string, root: string): string {
     let result = url;

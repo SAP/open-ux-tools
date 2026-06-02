@@ -12,8 +12,8 @@ jest.unstable_mockModule('archiver', () => ({
     default: (): typeof zipMock => zipMock
 }));
 
-const { storeResultsZip } = await import('../../src/output');
-const { Check } = await import('../../src/types');
+const { storeResultsZip } = await import('../../src/output/index.js');
+const { Check } = await import('../../src/types.js');
 
 describe('Test to check zip save, storeResultsZip()', () => {
     beforeEach(() => {

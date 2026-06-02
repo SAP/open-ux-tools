@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
-import type { CatalogServiceResult } from '../../src/types';
-import { Severity } from '../../src/types';
+import type { CatalogServiceResult } from '../../src/types.js';
+import { Severity } from '../../src/types.js';
 
 const mockGetService = jest.fn();
 const realStore = await import('@sap-ux/store');
@@ -29,7 +29,7 @@ jest.unstable_mockModule('../../src/checks/service-checks', () => ({
     getServiceProvider: jest.fn()
 }));
 
-const { checkStoredSystem, checkStoredSystems } = await import('../../src/checks/stored-system');
+const { checkStoredSystem, checkStoredSystems } = await import('../../src/checks/stored-system.js');
 
 describe('Stored system tests ', () => {
     const checkCatalogServicesResult = {

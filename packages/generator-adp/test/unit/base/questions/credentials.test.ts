@@ -25,9 +25,9 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getConfiguredProvider: mockGetConfiguredProvider
 }));
 
-const { initI18n, t } = await import('../../../../src/utils/i18n');
-const { configPromptNames } = await import('../../../../src/app/types');
-const { getCredentialsPrompts } = await import('../../../../src/base/questions/credentials');
+const { initI18n, t } = await import('../../../../src/utils/i18n.js');
+const { configPromptNames } = await import('../../../../src/app/types.js');
+const { getCredentialsPrompts } = await import('../../../../src/base/questions/credentials.js');
 
 import type { Credentials } from '../../../../src/types.js';
 

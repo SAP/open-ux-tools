@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { DebugOptions } from '../../src/types';
+import type { DebugOptions } from '../../src/types/index.js';
 import path from 'node:path';
 
 const mockFormatCwd = jest.fn<any>();
@@ -15,7 +15,7 @@ jest.unstable_mockModule('../../src/debug-config/helpers', () => ({
     isFolderInWorkspace: mockIsFolderInWorkspace
 }));
 
-const { handleWorkspaceConfig } = await import('../../src/debug-config/workspaceManager');
+const { handleWorkspaceConfig } = await import('../../src/debug-config/workspaceManager.js');
 
 describe('launchConfig Unit Tests', () => {
     const isAppStudio = false;

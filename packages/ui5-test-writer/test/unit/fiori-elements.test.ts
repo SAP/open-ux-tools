@@ -6,7 +6,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import fileSystem, { readFileSync } from 'node:fs';
 import type { Logger } from '@sap-ux/logger/src/types';
-import * as appModels from '../test-input/constants';
+import * as appModels from '../test-input/constants.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const readAppMock = jest.fn();

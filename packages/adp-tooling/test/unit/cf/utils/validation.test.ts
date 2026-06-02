@@ -12,9 +12,9 @@ jest.unstable_mockModule('../../../../src/source/manifest', () => ({
 }));
 
 const { validateSmartTemplateApplication, extractXSApp, validateODataEndpoints } =
-    await import('../../../../src/cf/utils/validation');
-const { initI18n, t } = await import('../../../../src/i18n');
-const { ApplicationType } = await import('../../../../src/types');
+    await import('../../../../src/cf/utils/validation.js');
+const { initI18n, t } = await import('../../../../src/i18n.js');
+const { ApplicationType } = await import('../../../../src/types.js');
 import type { ServiceKeys, XsApp } from '../../../../src/types.js';
 
 describe('CF Utils Validation', () => {

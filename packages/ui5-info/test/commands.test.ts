@@ -10,8 +10,8 @@ jest.unstable_mockModule('node:child_process', () => ({
 }));
 
 // Dynamic imports after mocking
-const { executeNpmUI5VersionsCmd } = await import('../src/commands');
-const { getUI5Versions } = await import('../src/ui5-version-info');
+const { executeNpmUI5VersionsCmd } = await import('../src/commands.js');
+const { getUI5Versions } = await import('../src/ui5-version-info.js');
 
 const originalPlatform = process.platform;
 

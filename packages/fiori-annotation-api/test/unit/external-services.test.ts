@@ -7,13 +7,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import { createElementNode, Range, Edm, Location } from '@sap-ux/odata-annotation-core-types';
 
-import { createFsEditorForProject } from './virtual-fs';
+import { createFsEditorForProject } from './virtual-fs.js';
 import type { Editor } from 'mem-fs-editor';
-import { pathFromUri } from '../../src/utils/path';
-import { PROJECTS } from './projects';
-import type { ValueListReference } from '../../src/types/adapter';
-import { XMLAnnotationServiceAdapter } from '../../src/xml/adapter';
-import type { FioriAnnotationService } from '../../src';
+import { pathFromUri } from '../../src/utils/path.js';
+import { PROJECTS } from './projects.js';
+import type { ValueListReference } from '../../src/types/adapter.js';
+import { XMLAnnotationServiceAdapter } from '../../src/xml/adapter.js';
+import type { FioriAnnotationService } from '../../src/index.js';
 
 const realFsPromises = await import('node:fs/promises');
 const mockReadFile = jest.fn<typeof fsPromisesType.readFile>().mockImplementation(realFsPromises.readFile as any);
@@ -25,14 +25,14 @@ jest.unstable_mockModule('node:fs/promises', () => ({
 }));
 
 const mockConvertMetadataToAvtSchema = jest.fn();
-const realAvt = await import('../../src/avt');
+const realAvt = await import('../../src/avt/index.js');
 jest.unstable_mockModule('../../src/avt', () => ({
     ...realAvt,
     convertMetadataToAvtSchema: mockConvertMetadataToAvtSchema
 }));
 
-const { readExternalServiceMetadata } = await import('../../src/external-services');
-const { testRead } = await import('./test-read');
+const { readExternalServiceMetadata } = await import('../../src/external-services.js');
+const { testRead } = await import('./test-read.js');
 
 describe('external service loading', () => {
     test('placeholder test', async () => {

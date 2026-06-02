@@ -48,7 +48,7 @@ jest.unstable_mockModule('path', () => ({
     join: mockPathJoin
 }));
 
-const { basedir, getFilesystemStore, getFilesystemWatcherFor } = await import('../../../src/data-access/filesystem');
+const { basedir, getFilesystemStore, getFilesystemWatcherFor } = await import('../../../src/data-access/filesystem.js');
 const path = await import('node:path');
 const fs = await import('node:fs');
 const { ToolsLogger, NullTransport } = await import('@sap-ux/logger');

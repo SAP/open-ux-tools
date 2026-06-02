@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { EffectiveOptions } from '../../../src/types';
+import type { EffectiveOptions } from '../../../src/types.js';
 
 const __testdir = dirname(fileURLToPath(import.meta.url));
 
@@ -26,7 +26,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
 }));
 
 const { loadEnvOptions, getConnectivityProxyInfo, applyToProcessEnv, updateUi5ServerDestinationPort } =
-    await import('../../../src/config/env');
+    await import('../../../src/config/env.js');
 
 describe('env', () => {
     const logger = { warn: jest.fn(), debug: jest.fn() } as unknown as ToolsLogger;

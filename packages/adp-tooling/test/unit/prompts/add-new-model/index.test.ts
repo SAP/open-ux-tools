@@ -55,8 +55,8 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     isDataSourceURI: mockIsDataSourceURI
 }));
 
-const { getPrompts, createNewModelData } = await import('../../../../src/prompts/add-new-model');
-const i18n = await import('../../../../src/i18n');
+const { getPrompts, createNewModelData } = await import('../../../../src/prompts/add-new-model/index.js');
+const i18n = await import('../../../../src/i18n.js');
 const { Severity, MessageType } = await import('@sap-devx/yeoman-ui-types');
 import type { NewModelAnswers, DescriptorVariant } from '../../../../src/index.js';
 import type { NewModelDataWithAnnotations } from '../../../../src/types.js';

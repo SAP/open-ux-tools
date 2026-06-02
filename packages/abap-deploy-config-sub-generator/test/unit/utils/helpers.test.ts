@@ -19,8 +19,8 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     getService: mockGetService
 }));
 
-const { determineScpFromTarget, determineUrlFromDestination } = await import('../../../src/utils');
-const { determineS4HCFromTarget } = await import('../../../src/utils/helpers');
+const { determineScpFromTarget, determineUrlFromDestination } = await import('../../../src/utils/index.js');
+const { determineS4HCFromTarget } = await import('../../../src/utils/helpers.js');
 
 const mockDestinations = {
     Dest1: {

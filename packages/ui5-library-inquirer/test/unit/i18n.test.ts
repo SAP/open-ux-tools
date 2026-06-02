@@ -21,7 +21,7 @@ jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
     addi18nResourceBundle: mockAddi18nResourceBundle
 }));
 
-const { initI18n, t, i18n } = await import('../../src/i18n');
+const { initI18n, t, i18n } = await import('../../src/i18n.js');
 
 describe('i18n', () => {
     test('initI18n', async () => {

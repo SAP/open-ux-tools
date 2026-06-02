@@ -15,7 +15,7 @@ jest.unstable_mockModule('node:fs', () => ({
     readFileSync: mockReadFileSync
 }));
 
-const { getPackageInfo, installDependencies } = await import('../../../src/utils/deps');
+const { getPackageInfo, installDependencies } = await import('../../../src/utils/deps.js');
 
 const mockPackage = { name: '@sap-ux/generator-adp', version: '0.0.1', displayName: 'SAPUI5 Adaptation Project' };
 

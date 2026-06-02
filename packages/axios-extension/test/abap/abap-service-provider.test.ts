@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import nock from 'nock';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-import type { AbapServiceProvider } from '../../src';
+import type { AbapServiceProvider } from '../../src/index.js';
 import {
     createForAbap,
     V2CatalogService,
@@ -14,7 +14,7 @@ import {
     AppIndexService,
     LayeredRepositoryService
 } from '../../src';
-import { UI5VersionService } from '../../src/abap/ui5-version-service';
+import { UI5VersionService } from '../../src/abap/ui5-version-service.js';
 
 /**
  * URL are specific to the discovery schema.

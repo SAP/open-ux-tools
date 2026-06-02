@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { BackendSystem as BackendSystemType } from '../../../src';
+import type { BackendSystem as BackendSystemType } from '../../../src/index.js';
 
 const mockHybridStore = {
     write: jest.fn(),
@@ -39,9 +39,9 @@ jest.unstable_mockModule('node:fs', () => ({
     writeFileSync: mockWriteFileSync
 }));
 
-const { BackendSystem, BackendSystemKey, SystemType } = await import('../../../src');
-const { SystemDataProvider } = await import('../../../src/data-provider/backend-system');
-const { Entities } = await import('../../../src/data-provider/constants');
+const { BackendSystem, BackendSystemKey, SystemType } = await import('../../../src/index.js');
+const { SystemDataProvider } = await import('../../../src/data-provider/backend-system.js');
+const { Entities } = await import('../../../src/data-provider/constants.js');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 
 describe('Backend system data provider', () => {

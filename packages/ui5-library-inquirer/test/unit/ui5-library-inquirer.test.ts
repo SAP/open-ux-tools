@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
-import type { UI5LibraryAnswers } from '../../src/types';
+import type { UI5LibraryAnswers } from '../../src/types.js';
 import type { Answers, ListQuestion } from 'inquirer';
 
 const mockGetUI5Versions = jest.fn<() => Promise<UI5Version[]>>();
@@ -45,8 +45,8 @@ jest.unstable_mockModule('inquirer-autocomplete-prompt', () => ({
     default: jest.fn()
 }));
 
-const { getPrompts, prompt } = await import('../../src/index');
-const { initI18n } = await import('../../src/i18n');
+const { getPrompts, prompt } = await import('../../src/index.js');
+const { initI18n } = await import('../../src/i18n.js');
 
 /**
  * Tests the exported ui5-library-inquirer APIs

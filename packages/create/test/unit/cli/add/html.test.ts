@@ -71,7 +71,7 @@ jest.unstable_mockModule('mem-fs-editor', () => ({
     }
 }));
 
-const { addAddHtmlFilesCmd } = await import('../../../../src/cli/add/html');
+const { addAddHtmlFilesCmd } = await import('../../../../src/cli/add/html.js');
 
 const testArgv = (args: string[]) => ['', '', 'html', appRoot, ...args];
 

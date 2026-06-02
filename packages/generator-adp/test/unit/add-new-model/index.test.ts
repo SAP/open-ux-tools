@@ -38,7 +38,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     extractCfBuildTask: mockExtractCfBuildTask
 }));
 
-const { default: newModelGen } = await import('../../../src/add-new-model');
+const { default: newModelGen } = await import('../../../src/add-new-model/index.js');
 
 const variant = {
     reference: 'customer.adp.variant',

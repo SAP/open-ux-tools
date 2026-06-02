@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { createValue } from '../../../src/sap/builders';
+import { createValue } from '../../../src/sap/builders.js';
 
 const mockWarn = jest.fn();
 const mockLog = jest.fn();
@@ -10,7 +10,7 @@ jest.unstable_mockModule('../../../src/logger', () => ({
     }
 }));
 
-const { SAPAnnotationConverter } = await import('../../../src/sap/converter');
+const { SAPAnnotationConverter } = await import('../../../src/sap/converter.js');
 
 describe('SAP Annotation Converter', () => {
     const converter = new SAPAnnotationConverter();

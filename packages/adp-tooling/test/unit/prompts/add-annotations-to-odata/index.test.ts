@@ -27,8 +27,8 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     validateEmptyString: mockValidateEmptyString
 }));
 
-const { getPrompts } = await import('../../../../src/prompts/add-annotations-to-odata/index');
-const i18n = await import('../../../../src/i18n');
+const { getPrompts } = await import('../../../../src/prompts/add-annotations-to-odata/index.js');
+const i18n = await import('../../../../src/i18n.js');
 
 describe('getPrompts', () => {
     const mockBasePath = '/path/to/project';

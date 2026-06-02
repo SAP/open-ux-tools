@@ -25,7 +25,7 @@ jest.unstable_mockModule('prompts', () => ({
     default: mockPromptsModule
 }));
 
-const { generateEslintConfig } = await import('../../../src/');
+const { generateEslintConfig } = await import('../../../src//index.js');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

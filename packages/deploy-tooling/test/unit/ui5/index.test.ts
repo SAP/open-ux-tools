@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import { LogLevel } from '@sap-ux/logger';
-import type { AbapDeployConfig } from '../../../src/types';
-import { mockedUi5RepoService } from '../../__mocks__';
+import type { AbapDeployConfig } from '../../../src/types/index.js';
+import { mockedUi5RepoService } from '../../__mocks__/index.js';
 import { readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -13,9 +13,9 @@ jest.unstable_mockModule('dotenv', () => ({
     config: mockDotenvConfig
 }));
 
-const ui5TaskModule = await import('../../../src/ui5');
+const ui5TaskModule = await import('../../../src/ui5/index.js');
 const ui5Task = ui5TaskModule.default;
-const { task } = await import('../../../src');
+const { task } = await import('../../../src/index.js');
 
 describe('ui5', () => {
     const configuration: AbapDeployConfig = {

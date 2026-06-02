@@ -5,7 +5,7 @@ jest.unstable_mockModule('node:child_process', () => ({
     spawn: mockSpawn
 }));
 
-const { spawnCommand } = await import('../src/command');
+const { spawnCommand } = await import('../src/command.js');
 
 describe('Test commandRunner functions', () => {
     jest.setTimeout(10000);

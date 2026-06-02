@@ -1,6 +1,6 @@
-import { t } from '../../../src/utils/i18n';
-import { transformExtState } from '../../../src/app-headless/transforms';
-import type { FFAppConfig } from '../../../src/types';
+import { t } from '../../../src/utils/i18n.js';
+import { transformExtState } from '../../../src/app-headless/transforms.js';
+import type { FFAppConfig } from '../../../src/types/index.js';
 import {
     appConfigInvalidCapServiceName,
     appConfigInvalidEdmx,

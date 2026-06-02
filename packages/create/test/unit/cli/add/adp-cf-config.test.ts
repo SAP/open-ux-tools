@@ -39,7 +39,7 @@ jest.unstable_mockModule('node:child_process', () => ({
     exec: jest.fn()
 }));
 
-const { addAdaptationProjectCFConfigCommand } = await import('../../../../src/cli/add/adp-cf-config');
+const { addAdaptationProjectCFConfigCommand } = await import('../../../../src/cli/add/adp-cf-config.js');
 
 describe('add/adp-cf-config', () => {
     const appRoot = join(__dirname, '../../../fixtures/adaptation-project');

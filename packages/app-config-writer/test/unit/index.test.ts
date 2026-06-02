@@ -18,7 +18,7 @@ jest.unstable_mockModule('prompts', () => ({
     default: mockPromptsModule
 }));
 
-const appConfigWriter = await import('../../src');
+const appConfigWriter = await import('../../src/index.js');
 
 test('Smoke test', () => {
     expect(appConfigWriter).toBeDefined();

@@ -41,10 +41,10 @@ jest.unstable_mockModule('../../../src/app/questions/helper/additional-messages'
 }));
 
 const { FlexLayer } = await import('@sap-ux/adp-tooling');
-const { attributePromptNames } = await import('../../../src/app/types');
-const { getPrompts } = await import('../../../src/app/questions/attributes');
-const { getWizardPages } = await import('../../../src/utils/steps');
-const { t } = await import('../../../src/utils/i18n');
+const { attributePromptNames } = await import('../../../src/app/types.js');
+const { getPrompts } = await import('../../../src/app/questions/attributes.js');
+const { getWizardPages } = await import('../../../src/utils/steps.js');
+const { t } = await import('../../../src/utils/i18n.js');
 
 const mockPath = '/project';
 const mockConfig = {

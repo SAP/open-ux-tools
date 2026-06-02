@@ -41,7 +41,7 @@ jest.unstable_mockModule('proxy-from-env', () => ({
 }));
 
 // Import after mocking
-const { ui5Proxy } = await import('../../src/base/proxy');
+const { ui5Proxy } = await import('../../src/base/proxy.js');
 const { ToolsLogger } = await import('@sap-ux/logger');
 
 describe('proxy', () => {

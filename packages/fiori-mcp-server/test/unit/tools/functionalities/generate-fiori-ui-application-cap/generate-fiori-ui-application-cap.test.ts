@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { ExecuteFunctionalityInput } from '../../../../../src/types';
-import type { GeneratorConfigCAPWithAPI } from '../../../../../src/tools/schemas';
+import type { ExecuteFunctionalityInput } from '../../../../../src/types/index.js';
+import type { GeneratorConfigCAPWithAPI } from '../../../../../src/tools/schemas/index.js';
 import { existsSync, promises as fsPromises } from 'node:fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -34,7 +34,7 @@ jest.unstable_mockModule('node:child_process', () => ({
 }));
 
 const { GENERATE_FIORI_UI_APPLICATION_CAP, generateFioriUIApplicationCapHandlers } =
-    await import('../../../../../src/tools/functionalities/generate-fiori-ui-application-cap');
+    await import('../../../../../src/tools/functionalities/generate-fiori-ui-application-cap/index.js');
 
 // Read package.json for version
 const packageJsonModule = await import('../../../../../package.json', { with: { type: 'json' } });

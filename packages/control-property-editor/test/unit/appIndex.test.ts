@@ -28,8 +28,8 @@ jest.unstable_mockModule('react-dom', () => ({
 }));
 
 const { start } = await import('../../src/index');
-const { store } = await import('../../src/store');
-const { initializeLivereload, setFeatureToggles, setProjectScenario } = await import('../../src/slice');
+const { store } = await import('../../src/store.js');
+const { initializeLivereload, setFeatureToggles, setProjectScenario } = await import('../../src/slice.js');
 
 describe('index', () => {
     const dispatchSpy = jest.spyOn(store, 'dispatch');

@@ -3,8 +3,8 @@ import path, { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-import type { CheckEnvironmentOptions } from '../../src';
-import { DevelopmentEnvironment, Severity } from '../../src/types';
+import type { CheckEnvironmentOptions } from '../../src/index.js';
+import { DevelopmentEnvironment, Severity } from '../../src/types.js';
 
 jest.unstable_mockModule('axios', () => ({
     __esModule: true,
@@ -46,7 +46,7 @@ jest.unstable_mockModule('../../src/checks/get-installed', () => ({
     getProcessVersions: mockGetProcessVersions
 }));
 
-const { checkEnvironment, getEnvironment } = await import('../../src/checks/environment');
+const { checkEnvironment, getEnvironment } = await import('../../src/checks/environment.js');
 
 const nodeJSProcessVersions = {
     'node': '16.17.0',

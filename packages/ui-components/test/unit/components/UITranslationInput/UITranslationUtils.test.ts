@@ -2,7 +2,7 @@ import {
     TranslationTextPattern,
     TranslationKeyGenerator
 } from '../../../../src/components/UITranslationInput/UITranslationButton.types';
-import type { I18nBundle } from '../../../../src/components/UITranslationInput/UITranslationButton.types';
+import type { I18nBundle } from '../../../../src/components/UITranslationInput/UITranslationButton.types.js';
 import {
     extractI18nKey,
     generateI18nKey,
@@ -10,7 +10,7 @@ import {
     getTranslationByKey,
     getTranslationByText
 } from '../../../../src/components/UITranslationInput/UITranslationUtils';
-import { getBundle } from './utils';
+import { getBundle } from './utils.js';
 
 describe('UITranslationUtils', () => {
     const bundle: I18nBundle = getBundle();

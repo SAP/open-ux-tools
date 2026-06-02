@@ -1,4 +1,4 @@
-import { t } from '../src/i18n';
+import { t } from '../src/i18n.js';
 import {
     validateAppDescription,
     validateAppName,

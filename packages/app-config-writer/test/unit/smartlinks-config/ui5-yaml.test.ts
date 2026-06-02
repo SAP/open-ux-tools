@@ -17,7 +17,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 }));
 
 const { readUi5DeployConfigTarget, addUi5YamlServeStaticMiddleware } =
-    await import('../../../src/smartlinks-config/ui5-yaml');
+    await import('../../../src/smartlinks-config/ui5-yaml.js');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

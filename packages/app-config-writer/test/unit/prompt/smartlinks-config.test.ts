@@ -65,9 +65,9 @@ jest.unstable_mockModule('@sap-ux/logger', () => ({
 }));
 
 // Import modules after all mocks are set up
-const { getSmartLinksTargetFromPrompt } = await import('../../../src');
-const { promptUserPass } = await import('../../../src/prompt');
-const { initI18n } = await import('../../../src/i18n');
+const { getSmartLinksTargetFromPrompt } = await import('../../../src/index.js');
+const { promptUserPass } = await import('../../../src/prompt/index.js');
+const { initI18n } = await import('../../../src/i18n.js');
 
 // Now import utils module — it will have mocked @sap-ux/store and @sap-ux/btp-utils
 

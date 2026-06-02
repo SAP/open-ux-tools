@@ -23,7 +23,7 @@ jest.unstable_mockModule('@sap-ux/system-access', () => ({
     getCredentialsWithPrompts: jest.fn()
 }));
 
-const utils = await import('../src/app/utils');
+const utils = await import('../src/app/utils.js');
 const { checkConnection, getAppGenSystemData } = utils;
 
 const store = createMemFs();

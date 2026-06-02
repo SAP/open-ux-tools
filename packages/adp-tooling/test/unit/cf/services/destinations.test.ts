@@ -23,8 +23,8 @@ jest.unstable_mockModule('../../../../src/cf/project/yaml-loader', () => ({
     getYamlContent: mockGetYamlContent
 }));
 
-const { getBtpDestinations } = await import('../../../../src/cf/services/destinations');
-const { initI18n, t } = await import('../../../../src/i18n');
+const { getBtpDestinations } = await import('../../../../src/cf/services/destinations.js');
+const { initI18n, t } = await import('../../../../src/i18n.js');
 
 const mockProjectPath = join('path', 'to', 'project');
 

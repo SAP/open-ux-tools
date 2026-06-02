@@ -34,7 +34,7 @@ jest.unstable_mockModule('prompts', () => ({
     prompt: jest.fn()
 }));
 
-const { addAddVariantsConfigCommand } = await import('../../../../src/cli/add/variants-config');
+const { addAddVariantsConfigCommand } = await import('../../../../src/cli/add/variants-config.js');
 
 describe('Test command add variants-config', () => {
     const appRoot = join(__dirname, '../../../fixtures/bare-minimum');

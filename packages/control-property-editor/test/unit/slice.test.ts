@@ -15,7 +15,7 @@ import {
     updateQuickAction
 } from '@sap-ux-private/control-property-editor-common';
 
-import { DeviceType } from '../../src/devices';
+import { DeviceType } from '../../src/devices.js';
 import reducer, {
     changeDeviceType,
     changeProperty,

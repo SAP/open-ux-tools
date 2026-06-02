@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Manifest, ManifestNamespace } from '../../src';
+import type { Manifest, ManifestNamespace } from '../../src/index.js';
 import {
     getMainService,
     getServicesAndAnnotations,

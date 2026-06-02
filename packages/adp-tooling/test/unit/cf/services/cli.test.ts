@@ -17,9 +17,9 @@ jest.unstable_mockModule('@sap/cf-tools', () => ({
     }
 }));
 
-const cli = await import('../../../../src/cf/services/cli');
-const i18nModule = await import('../../../../src/i18n');
-import type { ServiceKeys } from '../../../../src/types';
+const cli = await import('../../../../src/cf/services/cli.js');
+const i18nModule = await import('../../../../src/i18n.js');
+import type { ServiceKeys } from '../../../../src/types.js';
 
 const { isCfInstalled, getServiceKeys, createServiceKey, requestCfApi, updateServiceInstance } = cli;
 const { initI18n, t } = i18nModule;

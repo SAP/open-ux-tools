@@ -31,9 +31,9 @@ const {
     getResources,
     readMta,
     buildVcapServicesFromResources
-} = await import('../../../../src/cf/project/mta');
+} = await import('../../../../src/cf/project/mta.js');
 import type { MtaYaml } from '../../../../src/index.js';
-const { initI18n, t } = await import('../../../../src/i18n');
+const { initI18n, t } = await import('../../../../src/i18n.js');
 
 const mtaProjectPath = '/test/project';
 const mtaFilePath = '/test/mta.yaml';

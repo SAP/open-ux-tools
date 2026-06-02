@@ -19,20 +19,20 @@ const mockValidateSmartTemplateApplication = jest.fn();
 const mockValidateODataEndpoints = jest.fn();
 const mockGetBusinessServiceInfo = jest.fn();
 
-const realValidators = await import('../../../src/app/questions/helper/validators');
+const realValidators = await import('../../../src/app/questions/helper/validators.js');
 jest.unstable_mockModule('../../../src/app/questions/helper/validators', () => ({
     ...realValidators,
     validateBusinessSolutionName: mockValidateBusinessSolutionName
 }));
 
-const realChoices = await import('../../../src/app/questions/helper/choices');
+const realChoices = await import('../../../src/app/questions/helper/choices.js');
 jest.unstable_mockModule('../../../src/app/questions/helper/choices', () => ({
     ...realChoices,
     getAppRouterChoices: mockGetAppRouterChoices,
     getCFAppChoices: mockGetCFAppChoices
 }));
 
-const realConditions = await import('../../../src/app/questions/helper/conditions');
+const realConditions = await import('../../../src/app/questions/helper/conditions.js');
 jest.unstable_mockModule('../../../src/app/questions/helper/conditions', () => ({
     ...realConditions,
     showBusinessSolutionNameQuestion: mockShowBusinessSolutionNameQuestion
@@ -54,8 +54,8 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
 }));
 
 const { AppRouterType, cfServicesPromptNames } = await import('@sap-ux/adp-tooling');
-const { initI18n, t } = await import('../../../src/utils/i18n');
-const { CFServicesPrompter } = await import('../../../src/app/questions/cf-services');
+const { initI18n, t } = await import('../../../src/utils/i18n.js');
+const { CFServicesPrompter } = await import('../../../src/app/questions/cf-services.js');
 
 const mockCfConfig: CfConfig = {
     org: { GUID: 'org-guid', Name: 'test-org' },

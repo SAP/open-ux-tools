@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import * as utils from '../../../src/variants-config/utils';
+import * as utils from '../../../src/variants-config/utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

@@ -8,7 +8,7 @@ import type { Editor, create } from 'mem-fs-editor';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 import type { UI5Config, CustomMiddleware } from '@sap-ux/ui5-config';
-import type { DescriptorVariant } from '../../../src/types';
+import type { DescriptorVariant } from '../../../src/types.js';
 
 // MOCKS - use jest.unstable_mockModule for ESM compatibility
 const mockExistsSync = jest.fn();
@@ -121,7 +121,7 @@ const {
     loadAppVariant,
     getBaseAppId,
     getExistingAdpProjectType
-} = await import('../../../src/base/helper');
+} = await import('../../../src/base/helper.js');
 
 // Import types
 import type { Inbound, AdaptationProjectType } from '@sap-ux/axios-extension';

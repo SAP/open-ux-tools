@@ -1,4 +1,4 @@
-import { createForAbap, ODataVersion, V2CatalogService, ServiceType } from '../../../src';
+import { createForAbap, ODataVersion, V2CatalogService, ServiceType } from '../../../src/index.js';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import nock from 'nock';

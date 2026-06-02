@@ -1,6 +1,6 @@
 import { RuleTester } from 'eslint';
-import widthIncludingColumnHeaderRule from '../../src/rules/sap-width-including-column-header';
-import { meta, languages } from '../../src/index';
+import widthIncludingColumnHeaderRule from '../../src/rules/sap-width-including-column-header.js';
+import { meta, languages } from '../../src/index.js';
 import {
     CAP_ANNOTATIONS,
     CAP_ANNOTATIONS_PATH,

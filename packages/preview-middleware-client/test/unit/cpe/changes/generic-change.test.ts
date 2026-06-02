@@ -1,4 +1,4 @@
-import { getTextBundle } from '../../../../src/i18n';
+import { getTextBundle } from '../../../../src/i18n.js';
 import {
     ADD_NEW_ANNOTATION_FILE_CHANGE,
     RENAME_CHANGE,

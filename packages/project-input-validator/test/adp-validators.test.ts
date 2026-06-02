@@ -16,8 +16,8 @@ const {
     validateProjectName,
     validateProjectNameExternal,
     validateProjectNameInternal
-} = await import('../src/adp/validators');
-const { t } = await import('../src/i18n');
+} = await import('../src/adp/validators.js');
+const { t } = await import('../src/i18n.js');
 
 describe('project input validators', () => {
     beforeEach(() => {

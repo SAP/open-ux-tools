@@ -34,7 +34,7 @@ jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     createForDestination: mockCreateForDestination
 }));
 
-const { generateSmartLinksConfig } = await import('../../../src');
+const { generateSmartLinksConfig } = await import('../../../src/index.js');
 
 describe('Test generateSmartLinksConfig', () => {
     const configMock = {

@@ -18,7 +18,7 @@ jest.unstable_mockModule('prompts', () => ({
     default: mockPromptsModule
 }));
 
-const prompt = await import('../../../src/prompt');
+const prompt = await import('../../../src/prompt/index.js');
 
 test('Smoke test', () => {
     expect(prompt).toBeDefined();

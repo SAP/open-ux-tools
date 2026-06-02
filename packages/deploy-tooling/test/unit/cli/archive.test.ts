@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createUi5Archive } from '../../../src/ui5/archive';
+import { createUi5Archive } from '../../../src/ui5/archive.js';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { Resource } from '@ui5/fs';
 import AdmZip from 'adm-zip';
@@ -19,7 +19,7 @@ jest.unstable_mockModule('axios', () => ({
     }
 }));
 
-const { getArchive } = await import('../../../src/cli/archive');
+const { getArchive } = await import('../../../src/cli/archive.js');
 
 describe('cli/archive', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
