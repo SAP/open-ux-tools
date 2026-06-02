@@ -313,14 +313,16 @@ npm run start-mock
 
 ## Chart Type Selection Guide
 
-| Chart Type | Best For | Data Requirements |
-|------------|----------|-------------------|
+| ChartType | Best For | Data Requirements |
+|-----------|----------|-------------------|
 | `#Column` | Comparing categories, trends | 1 dimension, 1+ measures |
 | `#Bar` | Long category names, rankings | 1 dimension, 1+ measures |
 | `#Line` | Time series, continuous trends | 1 dimension (ideally time), 1+ measures |
-| `#Donut` | Part-to-whole relationships | 1 dimension, 1 measure |
 | `#Area` | Volume trends over time | 1 dimension (time), 1+ measures |
-| `#Bubble` | Multi-dimensional comparison | 1 dimension, 2-3 measures |
+| `#Donut` | Part-to-whole relationships | 1 dimension, 1 measure |
+| `#Pie` | Part-to-whole relationships | 1 dimension, 1 measure |
+| `#Bubble` | Multi-dimensional comparison | 3 measures (x-axis, y-axis, size), 1-2 dimensions (optional for color/shape) |
+| `#Scatter` | Data point distribution | 2 measures (x-axis, y-axis), up to 2 dimensions (optional) |
 
 ## Common Issues & Troubleshooting
 

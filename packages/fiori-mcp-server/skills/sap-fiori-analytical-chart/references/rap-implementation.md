@@ -108,10 +108,12 @@ Look for these annotations in the EntityType definition:
 1. **Inform user**: "The backend CDS projection view needs to be configured with aggregation annotations first. Please add `@OData.applySupportedForAggregation: #FULL` and `@Aggregation.default` annotations to your backend CDS view."
 2. **Ask user to configure backend** (refer to Backend Configuration section above)
 3. **After backend is configured**, refresh the metadata:
-   - Open command palette: `Cmd/Ctrl + Shift + P`
-   - Search for and run: `Fiori: Open Service Manager`
-   - In the Service Manager, click the **pencil icon** (✏️) next to the service URI
-   - This will refresh and reload the metadata from the backend
+   - **Right-click** on `webapp/manifest.json`
+   - Select **"Service Manager"**
+   - Click the **pencil (edit) icon** next to your service
+   - Choose your **Connection Type**: Destination (SAP BAS), SAP System (VS Code), or Hostname (direct)
+   - Provide credentials if required
+   - Click **"Refresh & Save"** to update local metadata.xml and ui5*.yaml
 4. **Verify metadata.xml** has been updated with the aggregation annotations
 5. **Then proceed** with frontend chart annotation configuration
 
@@ -170,7 +172,6 @@ npm run start-mock
 - **Check backend CDS projection view** has `@OData.applySupportedForAggregation: #FULL` in the header
 - Verify measure fields have `@Aggregation.default` annotations (e.g., `#SUM`, `#AVG`, `#MIN`, `#MAX`)
 - Verify `@Aggregation.CustomAggregate` qualifier matches an existing entity property
-- Check `ContextDefiningProperties` includes the dimension fields
 - Ensure the Chart's `Measures` property references the correct property path
 - Confirm manifest.json has the correct `views` configuration
 
@@ -181,7 +182,6 @@ npm run start-mock
 - Verify the qualifier in `@Aggregation.CustomAggregate` exactly matches an existing property name
 - Do NOT add `AggregatableProperties` to `@Aggregation.ApplySupported` for RAP services
 - Check that the backend RAP CDS view has aggregation support enabled
-- Ensure dimension fields are included in `ContextDefiningProperties`
 
 **Property not found:**
 - The `@Aggregation.CustomAggregate` qualifier must match an existing entity property
@@ -192,9 +192,11 @@ npm run start-mock
 **Metadata not reflecting backend changes:**
 - Check `webapp/localService/mainService/metadata.xml` to verify if aggregation annotations are present
 - If annotations are missing after backend configuration, refresh metadata:
-  - Open command palette: `Cmd/Ctrl + Shift + P`
-  - Search for and run: `Fiori: Open Service Manager`
-  - In the Service Manager, click the **pencil icon** (✏️) next to the service URI to refresh metadata
+  - **Right-click** on `webapp/manifest.json` → Select **"Service Manager"**
+  - Click the **pencil (edit) icon** next to your service
+  - Choose your **Connection Type** (Destination, SAP System, or Hostname)
+  - Provide credentials if required
+  - Click **"Refresh & Save"** to update local metadata.xml and ui5*.yaml
 - Clear browser cache and restart the application
 - Verify the service URL in manifest.json points to the correct backend service
 - Check if backend CDS view has been activated after making changes
