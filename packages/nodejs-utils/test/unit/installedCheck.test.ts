@@ -80,9 +80,7 @@ const mockReadPkgUp = jest.fn(async ({ cwd }: { cwd: string }) => {
 });
 
 // Mock modules before importing
-const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
-    ...realBtpUtils,
     isAppStudio: mockIsAppStudio
 }));
 
@@ -97,8 +95,8 @@ jest.unstable_mockModule('read-pkg-up', () => ({
 }));
 
 // Import after mocking
-const { findInstalledPackages } = await import('../../src/installedCheck');
-const { CommandRunner } = await import('../../src/commandRunner');
+const { findInstalledPackages } = await import('../../src/installedCheck.js');
+const { CommandRunner } = await import('../../src/commandRunner.js');
 
 describe('Installed module checker', () => {
     // CommandRunner mock npm 'npm -g root'
