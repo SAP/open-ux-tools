@@ -8,7 +8,7 @@ jest.mock('@sap-ux/btp-utils', () => ({
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
 describe('ensureValidYoVersion', () => {
-    const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+    const yoCmd = process.platform === 'win32' ? 'yo.cmd' : 'yo';
     let runSpy: jest.SpyInstance;
 
     beforeAll(async () => {
@@ -34,15 +34,15 @@ describe('ensureValidYoVersion', () => {
     });
 
     it('returns no error when installed yo version is supported', async () => {
-        runSpy.mockResolvedValueOnce(JSON.stringify({ dependencies: { yo: { version: '7.0.1' } } }));
+        runSpy.mockResolvedValueOnce('7.0.1');
 
         const result = await ensureValidYoVersion();
 
         expect(result).toEqual({ error: undefined });
-        expect(runSpy).toHaveBeenCalledWith(npmCmd, ['list', '-g', 'yo', '--json']);
+        expect(runSpy).toHaveBeenCalledWith(yoCmd, ['--version']);
     });
 
-    it('returns no error when npm list returns empty output', async () => {
+    it('returns no error when yo --version returns empty output', async () => {
         runSpy.mockResolvedValueOnce('');
 
         const result = await ensureValidYoVersion();
@@ -50,16 +50,8 @@ describe('ensureValidYoVersion', () => {
         expect(result).toEqual({ error: undefined });
     });
 
-    it('returns no error when yo is not in the global dependencies', async () => {
-        runSpy.mockResolvedValueOnce(JSON.stringify({ dependencies: {} }));
-
-        const result = await ensureValidYoVersion();
-
-        expect(result).toEqual({ error: undefined });
-    });
-
     it('returns an unsupported version error when installed yo version is not in 4.x || 5.x || 7.x', async () => {
-        runSpy.mockResolvedValueOnce(JSON.stringify({ dependencies: { yo: { version: '6.0.0' } } }));
+        runSpy.mockResolvedValueOnce('6.0.0');
 
         const result = await ensureValidYoVersion();
 
@@ -69,14 +61,14 @@ describe('ensureValidYoVersion', () => {
         expect(result.error).toContain('not supported');
     });
 
-    it('returns an npm list execution error when the command throws', async () => {
+    it('returns a yo --version execution error when the command throws', async () => {
         runSpy.mockRejectedValueOnce(new Error('command not found'));
 
         const result = await ensureValidYoVersion();
 
         expect(result.error).toBeDefined();
         expect(result.error).toContain('command not found');
-        expect(result.error).toContain(`${npmCmd} list -g yo --json`);
+        expect(result.error).toContain(`${yoCmd} --version`);
         expect(result.error).toContain('7.0.1');
     });
 });
