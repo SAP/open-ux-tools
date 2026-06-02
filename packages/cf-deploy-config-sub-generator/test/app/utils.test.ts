@@ -1,31 +1,31 @@
-import { destinationQuestionDefaultOption, getCFChoices } from '../../src/app/utils.js';
-import {
-    DESTINATION_CHOICE_DIRECT_SERVICE_BINDING,
-    DESTINATION_CHOICE_NONE,
-    DEFAULT_MTA_DESTINATION
-} from '../../src/utils/index.js';
-import { MtaConfig } from '@sap-ux/cf-deploy-config-writer';
-import { isAppStudio } from '@sap-ux/btp-utils';
+const mockIsAppStudio = jest.fn();
+const mockGetMtaPath = jest.fn().mockResolvedValue(undefined);
+const mockNewInstance = jest.fn();
 
-jest.mock('@sap-ux/cf-deploy-config-writer', () => ({
-    ...jest.requireActual('@sap-ux/cf-deploy-config-writer'),
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: () => mockIsAppStudio()
+}));
+
+const realProjectAccess = await import('@sap-ux/project-access');
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...realProjectAccess,
+    getMtaPath: (...args: unknown[]) => mockGetMtaPath(...args)
+}));
+
+const realCfWriter = await import('@sap-ux/cf-deploy-config-writer');
+jest.unstable_mockModule('@sap-ux/cf-deploy-config-writer', () => ({
+    ...realCfWriter,
     MtaConfig: {
-        newInstance: jest.fn()
+        ...realCfWriter.MtaConfig,
+        newInstance: (...args: unknown[]) => mockNewInstance(...args)
     }
 }));
 
-jest.mock('@sap-ux/project-access', () => ({
-    ...jest.requireActual('@sap-ux/project-access'),
-    getMtaPath: jest.fn().mockResolvedValue(undefined)
-}));
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn().mockReturnValue(false)
-}));
-
-const mockNewInstance = MtaConfig.newInstance as jest.Mock;
-const mockIsAppStudio = isAppStudio as jest.Mock;
+const { destinationQuestionDefaultOption, getCFChoices } = await import('../../src/app/utils.js');
+const { DESTINATION_CHOICE_DIRECT_SERVICE_BINDING, DESTINATION_CHOICE_NONE, DEFAULT_MTA_DESTINATION } =
+    await import('../../src/utils/index.js');
 
 describe('test utils', () => {
     it('should return correct default destination', () => {
