@@ -105,6 +105,7 @@ exports[`UI5Config addAbapDeployTask AppStudio + Steampunk settings 1`] = `
           package: ~package
           transport: ~transport
         exclude:
+          - /test/
           - /localService/
 "
 `;
@@ -128,6 +129,7 @@ exports[`UI5Config addAbapDeployTask local settings 1`] = `
           package: ~package
           transport: ~transport
         exclude:
+          - /test/
           - /localService/
 "
 `;

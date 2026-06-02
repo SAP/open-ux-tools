@@ -657,7 +657,7 @@ export class UI5Config {
             value: '/localService/**'
         });
 
-        const deployExclude = Array.from(new Set([...(exclude ?? []), '/localService/']));
+        const deployExclude = Array.from(new Set([...(exclude ?? []), '/test/', '/localService/']));
         const configuration: {
             target: AbapTarget;
             app: BspApp | Adp;
