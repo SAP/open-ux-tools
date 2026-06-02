@@ -157,6 +157,19 @@ describe('Test getModule()', () => {
             logger
         });
     });
+
+    test('Retry path passes cacheBuster option to loadModuleFromProject', async () => {
+        // Verify the retry branch in getModule re-loads with a cacheBuster: the option exposed
+        // by loadModuleFromProject appends `?v=...` to the ESM import URL so Node's import-map
+        // does not return a cached rejection from the first failed import.
+        const moduleSpecPath = join(__dirname, '..');
+        const url1 = await loadModuleFromProject<{ FileName: {} }>(moduleSpecPath, '@sap-ux/ui5-config');
+        const url2 = await loadModuleFromProject<{ FileName: {} }>(moduleSpecPath, '@sap-ux/ui5-config', {
+            cacheBuster: '12345-67890'
+        });
+        expect(url1).toBeDefined();
+        expect(url2).toBeDefined();
+    });
 });
 
 describe('Test deleteModule()', () => {
