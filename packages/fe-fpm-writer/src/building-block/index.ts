@@ -188,7 +188,7 @@ function appendPageAggregations(
     };
     for (const aggName of PAGE_AGGREGATIONS) {
         const mContent = pageData.aggregations?.[aggName] ?? '';
-        const aggContext = { macrosNamespace: fragMacrosNS, macrosPrefix, mContent };
+        const aggContext = { macrosPrefix, mContent };
         const aggPath = getTemplatePath(`/building-block/page/${aggName}.xml`);
         const aggContent = render(fs.read(aggPath), aggContext, {});
         // Wrap with namespace declarations so elements parse correctly.
@@ -256,7 +256,7 @@ export async function appendPageBBAggregation(
     const fragMacrosNS = macrosNS || 'macros';
     const fragMNS = mNS;
     const macrosPrefix = `${fragMacrosNS}:`;
-    const aggContext = { macrosNamespace: fragMacrosNS, macrosPrefix, mContent };
+    const aggContext = { macrosPrefix, mContent };
 
     const aggPath = getTemplatePath(`/building-block/page/${aggName}.xml`);
     const aggContent = render(fs.read(aggPath), aggContext, {});

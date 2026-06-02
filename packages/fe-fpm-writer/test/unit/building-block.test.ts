@@ -1108,7 +1108,14 @@ describe('Building Blocks', () => {
                     buildingBlockType: BuildingBlockType.Page,
                     title: 'Test Page',
                     templateType: 'full',
-                    generateId
+                    generateId,
+                    aggregations: {
+                        breadcrumbs:
+                            '<m:Breadcrumbs>\n    <m:Link text="Home" press=".onPressHome" />\n    <m:Link text="Page 1" press=".onPressPage1" />\n    <m:Link text="Page 2" press=".onPressPage2" />\n</m:Breadcrumbs>',
+                        navigationActions:
+                            '<m:Button icon="sap-icon://full-screen" press=".onFullScreen" type="Transparent" />',
+                        actions: '<m:Button text="Action 1" press=".onClickAction1" type="Ghost" />\n    <m:Button text="Action 2" press=".onClickAction2" type="Ghost" />'
+                    }
                 },
                 replace: true
             },
@@ -3858,7 +3865,7 @@ describe('Building Blocks', () => {
             const basePath = join(testAppPath, 'page-bb-agg');
             fs.write(join(basePath, xmlViewFilePath), pageViewContent);
 
-            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, 'footer');
+            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, { aggregationName: 'footer', mContent: '' });
 
             const output = result.read(join(basePath, xmlViewFilePath));
             expect(output).toContain('id="footer"');
@@ -3875,7 +3882,7 @@ describe('Building Blocks', () => {
             fs.write(join(basePath, xmlViewFilePath), viewWithExistingId);
             jest.spyOn(fileAccess, 'findFilesByExtension').mockResolvedValue([join(basePath, xmlViewFilePath)]);
 
-            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, 'footer');
+            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, { aggregationName: 'footer', mContent: '' });
 
             const output = result.read(join(basePath, xmlViewFilePath));
             expect(output).toContain('id="footer1"');
@@ -3894,7 +3901,7 @@ describe('Building Blocks', () => {
             fs.write(join(basePath, xmlViewFilePath), viewOutOfOrder);
 
             // Adding navigationActions (index 1) should trigger a full sort
-            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, 'navigationActions');
+            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, { aggregationName: 'navigationActions', mContent: '' });
 
             const output = result.read(join(basePath, xmlViewFilePath));
             const navPos = output.indexOf('macros:navigationActions');
