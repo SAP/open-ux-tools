@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { addSystemUpdateCommand } from './system';
+import { addSystemUpdateCommand } from './system.js';
 
 /**
  * Return 'create-fiori update *' commands. Commands include also the handler action.

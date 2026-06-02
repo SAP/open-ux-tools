@@ -1,5 +1,5 @@
-import type { FullyQualifiedName, Location, Range, TargetKind } from '..';
-import type { Facets } from './common';
+import type { FullyQualifiedName, Location, Range, TargetKind } from '../index.js';
+import type { Facets } from './common.js';
 
 export type ODataVersionType = '2.0' | '4.0' | '4.01';
 

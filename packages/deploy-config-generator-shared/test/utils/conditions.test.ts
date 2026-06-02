@@ -1,4 +1,10 @@
-import { showOverwriteQuestion } from '../../src/utils';
+import { jest } from '@jest/globals';
+
+jest.unstable_mockModule('@vscode-logging/logger', () => ({
+    getExtensionLogger: jest.fn()
+}));
+
+const { showOverwriteQuestion } = await import('../../src/utils');
 
 describe('Test condition functions', () => {
     const testCases = [

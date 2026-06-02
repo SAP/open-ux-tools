@@ -1,16 +1,34 @@
+import { jest } from '@jest/globals';
 import { Command } from 'commander';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { addSystemUpdateCommand } from '../../../../src/cli/update/system';
-import * as logger from '../../../../src/tracing/logger';
-import * as btpUtils from '@sap-ux/btp-utils';
-import * as store from '@sap-ux/store';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn().mockReturnValue(false)
+
+const mockGetLogger = jest.fn();
+const mockSetLogLevelVerbose = jest.fn();
+jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
+    getLogger: mockGetLogger,
+    setLogLevelVerbose: mockSetLogLevelVerbose
 }));
 
-const { mockedService } = store as unknown as { mockedService: Record<string, jest.Mock> };
-const isAppStudioMock = btpUtils.isAppStudio as jest.Mock;
+const isAppStudioMock = jest.fn().mockReturnValue(false);
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: isAppStudioMock
+}));
+
+const mockedService = {
+    read: jest.fn<any>().mockResolvedValue(undefined),
+    write: jest.fn<any>().mockResolvedValue(undefined),
+    delete: jest.fn<any>().mockResolvedValue(true),
+    getAll: jest.fn<any>().mockResolvedValue([]),
+    partialUpdate: jest.fn<any>().mockResolvedValue(undefined)
+};
+const actualStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...actualStore,
+    getService: jest.fn().mockResolvedValue(mockedService)
+}));
+
+const { addSystemUpdateCommand } = await import('../../../../src/cli/update/system.js');
 
 describe('system/update (update command group)', () => {
     let loggerMock: ToolsLogger;
@@ -26,7 +44,7 @@ describe('system/update (update command group)', () => {
             warn: jest.fn(),
             error: jest.fn()
         } as Partial<ToolsLogger> as ToolsLogger;
-        jest.spyOn(logger, 'getLogger').mockReturnValue(loggerMock);
+        mockGetLogger.mockReturnValue(loggerMock);
         isAppStudioMock.mockReturnValue(false);
         mockedService.partialUpdate.mockResolvedValue(undefined);
         // Default: system exists
@@ -43,7 +61,7 @@ describe('system/update (update command group)', () => {
 
         // Then
         expect(mockedService.partialUpdate).toHaveBeenCalledTimes(1);
-        const [, patch] = mockedService.partialUpdate.mock.calls[0];
+        const [, patch] = mockedService.partialUpdate.mock.calls[0] as [unknown, { name: string }];
         expect(patch.name).toBe('Updated Name');
         expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('updated'));
         expect(loggerMock.error).not.toHaveBeenCalled();
@@ -60,7 +78,10 @@ describe('system/update (update command group)', () => {
         );
 
         // Then
-        const [, patch] = mockedService.partialUpdate.mock.calls[0];
+        const [, patch] = mockedService.partialUpdate.mock.calls[0] as [
+            unknown,
+            { username: string; password: string }
+        ];
         expect(patch.username).toBe('newuser');
         expect(patch.password).toBe('newpassword');
     });
@@ -74,7 +95,10 @@ describe('system/update (update command group)', () => {
         await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--password', 'newpassword']));
 
         // Then
-        const [, patch] = mockedService.partialUpdate.mock.calls[0];
+        const [, patch] = mockedService.partialUpdate.mock.calls[0] as [
+            unknown,
+            { username?: string; password: string }
+        ];
         expect(patch.password).toBe('newpassword');
         expect(patch.username).toBeUndefined();
     });
@@ -88,7 +112,10 @@ describe('system/update (update command group)', () => {
         await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--clear-credentials']));
 
         // Then
-        const [, patch] = mockedService.partialUpdate.mock.calls[0];
+        const [, patch] = mockedService.partialUpdate.mock.calls[0] as [
+            unknown,
+            { username?: string; password?: string }
+        ];
         expect(patch.username).toBeUndefined();
         expect(patch.password).toBeUndefined();
         expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('updated'));

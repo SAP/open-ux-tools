@@ -1,9 +1,21 @@
-import { PromptState } from '../../src/prompts/prompt-state';
+import { jest } from '@jest/globals';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import AdmZip from 'adm-zip';
 import { DatasourceType, type OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 
-jest.mock('adm-zip');
+jest.unstable_mockModule('adm-zip', () => {
+    class MockAdmZip {
+        buffer: Buffer;
+        constructor(buf: Buffer) {
+            this.buffer = buf;
+        }
+    }
+    return { default: MockAdmZip, __esModule: true };
+});
+
+const { PromptState } = await import('../../src/prompts/prompt-state');
+const AdmZipModule = await import('adm-zip');
+const AdmZip = AdmZipModule.default;
+
 describe('PromptState', () => {
     const mockServiceProvider = {
         defaults: {

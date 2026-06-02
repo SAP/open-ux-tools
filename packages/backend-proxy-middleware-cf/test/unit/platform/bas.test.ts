@@ -1,14 +1,16 @@
-import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 
-import { fetchBasUrlTemplate, resolveBasExternalUrl } from '../../../src/platform/bas';
+const mockIsAppStudio = jest.fn().mockReturnValue(false);
+const mockExposePort = jest.fn().mockResolvedValue('');
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn().mockReturnValue(false),
-    exposePort: jest.fn().mockResolvedValue('')
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio,
+    exposePort: mockExposePort
 }));
 
-const isAppStudioMock = isAppStudio as jest.Mock;
-const exposePortMock = exposePort as jest.Mock;
+const { fetchBasUrlTemplate, resolveBasExternalUrl } = await import('../../../src/platform/bas');
 
 describe('bas', () => {
     const logger = { info: jest.fn(), error: jest.fn(), debug: jest.fn(), warn: jest.fn() };
@@ -24,27 +26,27 @@ describe('bas', () => {
 
     describe('fetchBasUrlTemplate', () => {
         test('returns empty string when not in BAS', async () => {
-            isAppStudioMock.mockReturnValue(false);
+            mockIsAppStudio.mockReturnValue(false);
 
             const result = await fetchBasUrlTemplate(logger as never);
 
             expect(result).toBe('');
-            expect(exposePortMock).not.toHaveBeenCalled();
+            expect(mockExposePort).not.toHaveBeenCalled();
         });
 
         test('calls exposePort with placeholder port 0 when in BAS', async () => {
-            isAppStudioMock.mockReturnValue(true);
-            exposePortMock.mockResolvedValue('https://port0-workspaces-xxx/');
+            mockIsAppStudio.mockReturnValue(true);
+            mockExposePort.mockResolvedValue('https://port0-workspaces-xxx/');
 
             const result = await fetchBasUrlTemplate(logger as never);
 
-            expect(exposePortMock).toHaveBeenCalledWith(0, logger);
+            expect(mockExposePort).toHaveBeenCalledWith(0, logger);
             expect(result).toBe('https://port0-workspaces-xxx/');
         });
 
         test('returns empty string when exposePort fails in BAS', async () => {
-            isAppStudioMock.mockReturnValue(true);
-            exposePortMock.mockResolvedValue('');
+            mockIsAppStudio.mockReturnValue(true);
+            mockExposePort.mockResolvedValue('');
 
             const result = await fetchBasUrlTemplate(logger as never);
 

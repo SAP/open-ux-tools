@@ -1,9 +1,9 @@
 import type { MetadataElement } from '@sap-ux/odata-annotation-core';
-import type { ParsedService } from '../parser';
-import type { LinkerContext, ConfigurationBase, ConfigurationProperty } from './types';
-import { getParsedServiceByName } from '../utils';
-import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations';
-import { collectTables, collectSections, collectHeaderSections } from './annotations';
+import type { ParsedService } from '../parser/index.js';
+import type { LinkerContext, ConfigurationBase, ConfigurationProperty } from './types.js';
+import { getParsedServiceByName } from '../utils.js';
+import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations.js';
+import { collectTables, collectSections, collectHeaderSections } from './annotations.js';
 
 export interface ApplicationSetting {
     createMode: string;
@@ -265,11 +265,12 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
     if (!routingTargets) {
         return linkedApp;
     }
-    for (const [name, target] of Object.entries(routingTargets)) {
+    for (const [name, target] of Object.entries(routingTargets as Record<string, Target>)) {
         const settings = target.options?.settings;
-        const contextPath =
-            target.options?.settings?.contextPath ??
-            (target.options?.settings?.entitySet ? `/${target.options.settings.entitySet}` : undefined);
+        if (!settings) {
+            continue;
+        }
+        const contextPath = settings.contextPath ?? (settings.entitySet ? `/${settings.entitySet}` : undefined);
         if (!contextPath) {
             continue;
         }
@@ -317,6 +318,7 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
 }
 
 interface Target {
+    name?: string;
     options?: {
         settings?: {
             entitySet?: string;

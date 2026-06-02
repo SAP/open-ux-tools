@@ -1,10 +1,15 @@
+import { jest } from '@jest/globals';
 import type { Question } from 'inquirer';
-import { getDeployTargetQuestion } from '../../src/prompts/deploy-target';
-import { abapChoice, cfChoice } from '../../src/utils/constants';
 
-jest.mock('hasbin', () => ({
-    sync: jest.fn().mockReturnValue(true)
+const mockHasbinSync = jest.fn().mockReturnValue(true);
+
+jest.unstable_mockModule('hasbin', () => ({
+    default: { sync: mockHasbinSync },
+    sync: mockHasbinSync
 }));
+
+const { getDeployTargetQuestion } = await import('../../src/prompts/deploy-target');
+const { abapChoice, cfChoice } = await import('../../src/utils/constants');
 
 describe('deploy-target', () => {
     it('should return the deployment target question', () => {

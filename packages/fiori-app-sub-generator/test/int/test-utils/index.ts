@@ -10,34 +10,22 @@ import {
     README_GENERATOR_REGEX,
     YAML_VERSION_REGEX
 } from '@sap-ux/jest-file-matchers';
-import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
-import os from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { rimraf } from 'rimraf';
 import yeomanTest from 'yeoman-test';
 import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator/fioriAppGeneratorOptions';
 import type { State } from '../../../src/types';
-import { TestWritingGenerator } from './testGeneratorWriting';
 
-export { TestWritingGenerator };
-
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const testOutputFolder = './test-output/';
 const testDir: string = join(__dirname, '../', testOutputFolder);
 export const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later
 
 export function cleanTestDir(path: string): void {
     console.log('Test path clean', path);
-    if (os.platform() === 'win32') {
-        try {
-            // falls back to powershell args if command shell version fails
-            execSync(`rmdir /s /q ${path} || rmdir -recurse ${path}`, { encoding: 'utf-8' });
-        } catch (err) {
-            console.log(err);
-        }
-    } else {
-        rimraf.rimrafSync(path);
-    }
+    rimraf.rimrafSync(path);
 }
 /**
  * Gets the specified service test data
@@ -92,10 +80,30 @@ export async function runWritingPhaseGen(
     state: Partial<State>,
     options?: Partial<FioriAppGeneratorOptions>
 ): Promise<any> {
+    const { TestWritingGenerator } = await import('./testGeneratorWriting');
     const mergedOptions = {
         state,
         skipInstall: true,
         ...options
     };
     return yeomanTest.create(TestWritingGenerator, {}, {}).withOptions(mergedOptions).run();
+}
+
+/**
+ * Runs the writing phase generator using dynamically imported classes.
+ * Use this in test files that mock modules with jest.unstable_mockModule
+ * to ensure the mocks are applied before the generator classes are loaded.
+ */
+export async function runWritingPhaseGenDynamic(
+    state: Partial<State>,
+    options?: Partial<FioriAppGeneratorOptions>
+): Promise<any> {
+    const { createTestWritingGeneratorClass } = await import('./testGeneratorWriting');
+    const GeneratorClass = await createTestWritingGeneratorClass();
+    const mergedOptions = {
+        state,
+        skipInstall: true,
+        ...options
+    };
+    return yeomanTest.create(GeneratorClass, {}, {}).withOptions(mergedOptions).run();
 }

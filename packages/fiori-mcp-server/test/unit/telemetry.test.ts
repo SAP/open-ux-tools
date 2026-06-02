@@ -1,7 +1,36 @@
-import { TelemetryHelper, mcpServerName } from '../../src/telemetry';
-import * as sapUxTelemetry from '@sap-ux/telemetry';
-import { ClientFactory } from '@sap-ux/telemetry';
-import type { TelemetryData } from '../../src/telemetry';
+import { jest } from '@jest/globals';
+import type { TelemetryData } from '../../src/telemetry.js';
+
+const mockInitTelemetrySettings = jest.fn().mockResolvedValue(undefined);
+const mockGetTelemetryClient = jest.fn();
+const mockStartMark = jest.fn();
+const mockEndMark = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/telemetry', () => ({
+    initTelemetrySettings: mockInitTelemetrySettings,
+    ClientFactory: {
+        getTelemetryClient: mockGetTelemetryClient
+    },
+    PerformanceMeasurementAPI: {
+        startMark: mockStartMark,
+        endMark: mockEndMark,
+        getMeasurementDuration: jest.fn(),
+        measure: jest.fn()
+    },
+    SampleRate: { NoSampling: 2 }
+}));
+
+jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
+    isInternalFeaturesSettingEnabled: jest.fn().mockReturnValue(false)
+}));
+
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: jest.fn().mockReturnValue(false)
+}));
+
+const { TelemetryHelper, mcpServerName } = await import('../../src/telemetry');
 
 describe('TelemetryHelper', () => {
     const opts = {
@@ -11,15 +40,17 @@ describe('TelemetryHelper', () => {
         watchTelemetrySettingStore: false
     };
 
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
     describe('initTelemetrySettings', () => {
         it('should call initTelemetrySettings with the provided options', async () => {
-            const initTelemetrySettingsSpy = jest.spyOn(sapUxTelemetry, 'initTelemetrySettings').mockResolvedValue();
             await TelemetryHelper.initTelemetrySettings(opts);
-            expect(initTelemetrySettingsSpy).toHaveBeenCalledWith(opts);
+            expect(mockInitTelemetrySettings).toHaveBeenCalledWith(opts);
         });
 
         it('should not reinitialise sessionId if initSessionId was already called', async () => {
-            jest.spyOn(sapUxTelemetry, 'initTelemetrySettings').mockResolvedValue();
             TelemetryHelper.initSessionId();
             const idBefore = TelemetryHelper.sessionId;
             await TelemetryHelper.initTelemetrySettings(opts);
@@ -75,9 +106,9 @@ describe('TelemetryHelper', () => {
 
     test('sendTelemetry', async () => {
         const reportEventSpy = jest.fn();
-        jest.spyOn(ClientFactory, 'getTelemetryClient').mockReturnValue({
+        mockGetTelemetryClient.mockReturnValue({
             reportEvent: reportEventSpy
-        } as any);
+        });
 
         await TelemetryHelper.initTelemetrySettings(opts);
         const telemetryData = TelemetryHelper.createTelemetryData({ test: 'test' }) as TelemetryData;
@@ -97,11 +128,12 @@ describe('TelemetryHelper', () => {
             undefined
         );
     });
+
     test('sendTelemetry - error case', async () => {
         const reportEventSpy = jest.fn();
-        jest.spyOn(ClientFactory, 'getTelemetryClient').mockReturnValue({
+        mockGetTelemetryClient.mockReturnValue({
             reportEvent: reportEventSpy
-        } as any);
+        });
 
         await TelemetryHelper.initTelemetrySettings(opts);
         const telemetryData = TelemetryHelper.createTelemetryData({ test: 'test' }) as TelemetryData;
@@ -128,15 +160,15 @@ describe('TelemetryHelper', () => {
 
     describe('markToolsStartTime / markToolsEndTime', () => {
         it('should call Performance.startMark with "LOADING_TIME"', () => {
-            const startMarkSpy = jest.spyOn(sapUxTelemetry.PerformanceMeasurementAPI, 'startMark');
             TelemetryHelper.markToolStartTime();
-            expect(startMarkSpy).toHaveBeenCalledWith('MCP_LOADING_TIME');
+            expect(mockStartMark).toHaveBeenCalledWith('MCP_LOADING_TIME');
         });
 
         it('should call Performance.endMark with "LOADING_TIME"', () => {
-            const endMarkSpy = jest.spyOn(sapUxTelemetry.PerformanceMeasurementAPI, 'endMark');
+            mockStartMark.mockReturnValue('MCP_LOADING_TIME_mock');
+            TelemetryHelper.markToolStartTime();
             TelemetryHelper.markToolsEndTime();
-            expect(endMarkSpy).toHaveBeenCalledWith(expect.stringContaining('MCP_LOADING_TIME'));
+            expect(mockEndMark).toHaveBeenCalledWith(expect.stringContaining('MCP_LOADING_TIME'));
         });
     });
 });

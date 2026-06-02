@@ -14,12 +14,12 @@ import {
 import Utils from 'sap/ui/fl/Utils';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
-import type { MergedSetting, ManagedObjectMetadataProperties } from './utils';
-import { getManifestProperties } from './utils';
-import type { UI5ControlProperty } from './types';
+import type { MergedSetting, ManagedObjectMetadataProperties } from './utils.js';
+import { getManifestProperties } from './utils.js';
+import type { UI5ControlProperty } from './types.js';
 import DataType from 'sap/ui/base/DataType';
-import { getV4PageType } from '../utils/fe-v4';
-import type { ChangeService } from './changes';
+import { getV4PageType } from '../utils/fe-v4.js';
+import type { ChangeService } from './changes/index.js';
 import type { TemplateType } from 'sap/ui/dt/DesignTimeMetadata';
 
 type AnalyzedType = Pick<UI5ControlProperty, 'isArray' | 'primitiveType' | 'ui5Type' | 'enumValues'>;

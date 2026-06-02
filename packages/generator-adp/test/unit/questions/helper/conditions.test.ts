@@ -1,22 +1,24 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 import type { ConfigAnswers, SourceApplication, CfServicesAnswers } from '@sap-ux/adp-tooling';
-import { AppRouterType } from '@sap-ux/adp-tooling';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-import {
+const mockIsAppStudio = jest.fn();
+
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
+}));
+
+const { AppRouterType } = await import('@sap-ux/adp-tooling');
+const {
     showApplicationQuestion,
     showCredentialQuestion,
     showExtensionProjectQuestion,
     showInternalQuestions,
     showBusinessSolutionNameQuestion,
     showStoreCredentialsQuestion
-} from '../../../../src/app/questions/helper/conditions';
-import { AdaptationProjectType } from '@sap-ux/axios-extension';
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
-}));
-
-const mockIsAppStudio = isAppStudio as jest.Mock;
+} = await import('../../../../src/app/questions/helper/conditions');
 
 describe('showApplicationQuestion', () => {
     it('should return true when system is provided, no authentication is required, and login is successful', () => {
@@ -102,13 +104,6 @@ describe('showExtensionProjectQuestion', () => {
             isApplicationSupported: true,
             hasSyncViews: true
         });
-        // const result = showExtensionProjectQuestion(
-        //     { ...answers, application: undefined as unknown as SourceApplication },
-        //     { isOnPremise: true, isUIFlex: true },
-        //     false,
-        //     true,
-        //     true
-        // );
         expect(result).toBe(false);
     });
 

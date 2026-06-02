@@ -6,16 +6,19 @@ import type {
     AnnotationFileChange,
     CommonAdditionalChangeInfoProperties,
     AppDescriptorV4Change
-} from '../types';
-import { ChangeType, TemplateFileName } from '../types';
-import { basename, join } from 'node:path';
+} from '../types.js';
+import { ChangeType, TemplateFileName } from '../types.js';
+import { basename, dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { render } from 'ejs';
 import { randomBytes } from 'node:crypto';
-import { ManifestService } from '../base/abap/manifest-service';
-import { getVariant, isTypescriptSupported } from '../base/helper';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+import { ManifestService } from '../base/abap/manifest-service.js';
+import { getVariant, isTypescriptSupported } from '../base/helper.js';
 import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
-import { generateChange } from '../writer/editors';
+import { generateChange } from '../writer/editors.js';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { DirName } from '@sap-ux/project-access';
 

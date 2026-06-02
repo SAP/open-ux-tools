@@ -1,5 +1,36 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.4.1
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+    - @sap-ux/fiori-annotation-api@1.0.1
+
+## 10.4.0
+
+### Minor Changes
+
+- 32609a7: chore(eslint-plugin-fiori-tools): migrate to ESM module system
+
+    Migrated internal code to ESM (ECMAScript Modules) with NodeNext module resolution. This is a non-breaking change for consumers as the plugin continues to work with ESLint 9.x and 10.x.
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/odata-annotation-core@1.0.0
+    - @sap-ux/fiori-annotation-api@1.0.0
+    - @sap-ux/odata-entity-model@1.0.0
+    - @sap-ux/odata-vocabularies@1.0.0
+    - @sap-ux/project-access@2.0.0
+
+## 10.3.0
+
+### Minor Changes
+
+- 0d6c80c: feat: enhance ESLint rules to support CDS annotations for sap-description-column-label and sap-text-arrangement-hidden
+
 ## 10.2.2
 
 ### Patch Changes

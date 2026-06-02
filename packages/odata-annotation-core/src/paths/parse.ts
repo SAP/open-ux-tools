@@ -1,5 +1,5 @@
-import type { ParsedActionFunctionSignature, ParsedIdentifier } from '..';
-import { parseIdentifier } from '..';
+import type { ParsedActionFunctionSignature, ParsedIdentifier } from '../index.js';
+import { parseIdentifier } from '../index.js';
 
 export interface ParsedPath {
     segments: ParsedPathSegment[];

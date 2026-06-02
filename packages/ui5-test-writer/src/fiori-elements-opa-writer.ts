@@ -1,4 +1,5 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { existsSync } from 'node:fs';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
@@ -11,12 +12,12 @@ import type {
     JourneyParams,
     AppFeatures,
     WriteContext
-} from './types';
-import { SupportedPageTypes, ValidationError } from './types';
-import { t } from './i18n';
+} from './types.js';
+import { SupportedPageTypes, ValidationError } from './types.js';
+import { t } from './i18n.js';
 import { FileName, DirName, getWebappPath, updatePackageScript } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
-import { getAppFeatures } from './utils/modelUtils';
+import { getAppFeatures } from './utils/modelUtils.js';
 import {
     addIntegrationOldToGitignore,
     addPathsToQUnitJs,
@@ -25,9 +26,11 @@ import {
     readHtmlTargetFromQUnitJs,
     addVirtualTestConfig,
     type JourneyRunnerPage
-} from './utils/opaQUnitUtils';
+} from './utils/opaQUnitUtils.js';
 import { getPackageScripts } from '@sap-ux/fiori-generator-shared';
-import { readHashFromFlpSandbox } from './utils/flpSandboxUtils';
+import { readHashFromFlpSandbox } from './utils/flpSandboxUtils.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Generate OPA test files for a Fiori elements for OData V4 application.

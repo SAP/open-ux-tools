@@ -4,7 +4,7 @@ import type { i18n as i18nNext, TOptions } from 'i18next';
 import { addi18nResourceBundle as addInquirerCommonResourceBundle } from '@sap-ux/inquirer-common';
 import { addi18nResourceBundle as addProjectInputValidatorBundle } from '@sap-ux/project-input-validator';
 
-import translations from '../translations/generator-adp.i18n.json';
+import translations from '../translations/generator-adp.i18n.json' with { type: 'json' };
 
 const adpGeneratorI18nNamespace = 'generator-adp';
 export const i18n: i18nNext = i18next.createInstance();
@@ -38,6 +38,4 @@ export function t(key: string, options?: TOptions): string {
     return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-initI18n().catch(() => {
-    // Needed for lint
-});
+void initI18n().catch(() => undefined);

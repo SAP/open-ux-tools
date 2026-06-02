@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import type { IContextualMenuItem } from '@fluentui/react';
 import type { UITreeDropdownProps, UITreeDropdownState } from '../../../src/components/UITreeDropdown';
 import { UITreeDropdown } from '../../../src/components/UITreeDropdown';
