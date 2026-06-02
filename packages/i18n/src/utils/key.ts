@@ -1,4 +1,4 @@
-import type { I18nBundle, I18nEntry } from './../types';
+import type { I18nBundle, I18nEntry } from './../types.js';
 
 /**
  * Extract i18n key.

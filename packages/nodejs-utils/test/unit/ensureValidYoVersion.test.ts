@@ -1,15 +1,19 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
-import { CommandRunner } from '../../src/commandRunner';
-import { ensureValidYoVersion, initI18nNodejsUtils } from '../../src';
+import { jest } from '@jest/globals';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
+const mockIsAppStudio = jest.fn();
+
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
 }));
-const mockIsAppStudio = isAppStudio as jest.Mock;
+
+const { CommandRunner } = await import('../../src/commandRunner.js');
+const { ensureValidYoVersion, initI18nNodejsUtils } = await import('../../src/index.js');
 
 describe('ensureValidYoVersion', () => {
     const yoCmd = process.platform === 'win32' ? 'yo.cmd' : 'yo';
-    let runSpy: jest.SpyInstance;
+    let runSpy: jest.SpiedFunction<typeof CommandRunner.prototype.run>;
 
     beforeAll(async () => {
         await initI18nNodejsUtils();

@@ -1,5 +1,11 @@
-import { getConfirmMtaContinuePrompt } from '../../src/prompts';
-import { initI18n } from '../../src/utils/i18n';
+import { jest } from '@jest/globals';
+
+jest.unstable_mockModule('@vscode-logging/logger', () => ({
+    getExtensionLogger: jest.fn()
+}));
+
+const { getConfirmMtaContinuePrompt } = await import('../../src/prompts');
+const { initI18n } = await import('../../src/utils/i18n');
 
 describe('prompts', () => {
     beforeAll(async () => {

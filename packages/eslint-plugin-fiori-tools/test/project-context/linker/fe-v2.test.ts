@@ -1,6 +1,6 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { readFile } from 'node:fs/promises';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import type { FoundFioriArtifacts, Manifest } from '@sap-ux/project-access';
 import { findFioriArtifacts, normalizePath } from '@sap-ux/project-access';
@@ -13,6 +13,8 @@ import type { ManifestChange } from '../../test-helper';
 import { applyManifestChange, applyXmlAnnotationsChange } from '../../test-helper';
 import { getParsedServiceByName } from '../../../src/project-context/utils';
 import { collectSections } from '../../../src/project-context/linker/annotations';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const parser = new ApplicationParser();
 

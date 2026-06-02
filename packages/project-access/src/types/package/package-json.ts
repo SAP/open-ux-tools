@@ -1,5 +1,5 @@
-import type { LiteralUnion } from './literal-union';
-import type { JsonObject, JsonValue } from './basic';
+import type { LiteralUnion } from './literal-union.js';
+import type { JsonObject, JsonValue } from './basic.js';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace PackageJson {

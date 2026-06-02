@@ -1,8 +1,8 @@
-import type { App, UI5, AppOptions, Ui5App } from '../types';
+import type { App, UI5, AppOptions, Ui5App } from '../types.js';
 import type { Package } from '@sap-ux/project-access';
 import { mergeObjects } from '@sap-ux/ui5-config';
-import { mergeApp, packageDefaults, mergeUi5 } from './defaults';
-import { validate } from './validators';
+import { mergeApp, packageDefaults, mergeUi5 } from './defaults.js';
+import { validate } from './validators.js';
 
 /**
  * Merges Ui5App instance with default properties.

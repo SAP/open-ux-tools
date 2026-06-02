@@ -548,11 +548,15 @@ class EmbeddingBuilder {
 export { EmbeddingBuilder };
 
 // Run the builder
-if (require.main === module) {
+// In ESM, check if this file is being run directly
+const isMainModule = import.meta.url === `file://${process.argv[1]}`;
+if (isMainModule) {
     const logger = new ToolsLogger();
     const builder = new EmbeddingBuilder();
-    builder.buildEmbeddings().catch((error) => {
+    try {
+        await builder.buildEmbeddings();
+    } catch (error) {
         logger.error(`Build failed: ${error.message}`);
         process.exit(1);
-    });
+    }
 }

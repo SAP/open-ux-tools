@@ -1,6 +1,6 @@
 import { join } from 'node:path';
-import type { ServiceOptions } from './service';
-import { Service } from './service';
+import type { ServiceOptions } from './service.js';
+import { Service } from './service.js';
 
 const serviceStore: Map<string, Service> = new Map();
 

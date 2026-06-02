@@ -9,7 +9,13 @@ import type { Request, Response, Router, NextFunction } from 'express';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type connect from 'connect';
 import { dirname, join, posix } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
+
+import { createRequire } from 'node:module';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareUtils } from '@ui5/server';
 import {
@@ -41,8 +47,8 @@ import {
     stripLocalModulesFromLrepResponse,
     writeChange,
     type LocalModuleState
-} from './flex';
-import { generateImportList, mergeTestConfigDefaults } from './test';
+} from './flex.js';
+import { generateImportList, mergeTestConfigDefaults } from './test.js';
 import type {
     RtaEditor,
     FlpConfig,
@@ -53,7 +59,7 @@ import type {
     CardGeneratorConfig,
     MultiCardsPayload,
     I18nEntry
-} from '../types';
+} from '../types/index.js';
 import {
     getFlpConfigWithDefaults,
     createFlpTemplateConfig,
@@ -66,10 +72,10 @@ import {
     sanitizeRtaConfig,
     CARD_GENERATOR_DEFAULT,
     remapResourcesForPath
-} from './config';
-import { generateCdm } from './cdm';
+} from './config.js';
+import { generateCdm } from './cdm.js';
 import { readFileSync } from 'node:fs';
-import { getIntegrationCard } from './utils/cards';
+import { getIntegrationCard } from './utils/cards.js';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
 

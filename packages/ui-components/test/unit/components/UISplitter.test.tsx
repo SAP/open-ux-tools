@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import type { UISplitterProps } from '../../../src/components/UISection/UISplitter';
 import { UISplitter, UISplitterType, UISplitterLayoutType } from '../../../src/components/UISection/UISplitter';
 import { initIcons, UiIcons } from '../../../src/components/Icons';

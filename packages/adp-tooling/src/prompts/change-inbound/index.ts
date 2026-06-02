@@ -1,6 +1,6 @@
 import type { InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
-import { t } from '../../i18n';
-import type { InboundChangeAnswers } from '../../types';
+import { t } from '../../i18n.js';
+import type { InboundChangeAnswers } from '../../types.js';
 
 /**
  * Gets the prompts for Inbound Change.

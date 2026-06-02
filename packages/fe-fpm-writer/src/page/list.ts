@@ -5,10 +5,10 @@ import {
     initializeTargetSettings,
     getLibraryDependencies,
     getTemplateNamePrefix
-} from './common';
-import type { Manifest } from '../common/types';
-import type { ListReport, InternalListReport } from './types';
-import { PageType } from './types';
+} from './common.js';
+import type { Manifest } from '../common/types.js';
+import type { ListReport, InternalListReport } from './types.js';
+import { PageType } from './types.js';
 
 /**
  * Enhances the provided list report configuration with default data.

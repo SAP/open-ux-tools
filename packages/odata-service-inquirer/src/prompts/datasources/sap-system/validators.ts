@@ -1,7 +1,7 @@
-import { t } from '../../../i18n';
+import { t } from '../../../i18n.js';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import { readFileSync } from 'node:fs';
-import { getAllBackendSystems } from '../../../utils/store';
+import { getAllBackendSystems } from '../../../utils/store.js';
 
 /**
  * Check if the system name is already in use.

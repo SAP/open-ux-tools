@@ -1,10 +1,14 @@
 import { defineConfig, devices } from '@sap-ux-private/playwright';
 import type { PlaywrightTestConfig } from '@sap-ux-private/playwright';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 /**
  * Read environment variables from `.env` file.
  */
 import 'dotenv/config';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -34,6 +38,6 @@ const config: PlaywrightTestConfig = {
             use: { ...devices['Desktop Chrome'], channel: 'chrome', viewport: { width: 1720, height: 900 } }
         }
     ],
-    globalSetup: require.resolve('./test/integration/utils/global-setup')
+    globalSetup: join(__dirname, './test/integration/utils/global-setup')
 };
 export default defineConfig(config);

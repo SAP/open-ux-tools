@@ -3,9 +3,16 @@ import Log from 'mock/sap/base/Log';
 import { fetchMock } from 'mock/window';
 import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 import type { SchemaForApiJsonFiles } from '../../../src/cpe/api-json';
-import * as Documentation from '../../../src/cpe/documentation';
-import * as Utils from '../../../src/cpe/utils';
 import apiJson from '../../fixtures/api.json';
+
+const getLibraryMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/cpe/utils', () => ({
+    getLibrary: getLibraryMock,
+    getRuntimeControl: jest.fn(),
+    isReuseComponent: jest.fn()
+}));
+
+const { getDocumentation } = await import('open/ux/preview/client/cpe/documentation');
 
 describe('Documentation', () => {
     const sapUiCompMetadata = JSON.parse(JSON.stringify(apiJson));
@@ -38,10 +45,10 @@ describe('Documentation', () => {
     test('Get Documention for sap.ui.comp.filterbar.FilterBar', async () => {
         fetchMock.mockResolvedValue(apiJsonSuccess);
 
-        jest.spyOn(Utils, 'getLibrary').mockImplementation(() => {
+        getLibraryMock.mockImplementation(() => {
             return Promise.resolve('');
         });
-        const result = await Documentation.getDocumentation('sap.ui.comp.filterbar.FilterBar', 'sap.ui.comp');
+        const result = await getDocumentation('sap.ui.comp.filterbar.FilterBar', 'sap.ui.comp');
         expect(result).toMatchSnapshot();
         expect(CommunicationService.sendAction).not.toHaveBeenCalled();
     });
@@ -49,10 +56,10 @@ describe('Documentation', () => {
     test('When the UI component has no api.json file provided then we do not show message in the info center', async () => {
         fetchMock.mockResolvedValue(apiJsonNotFound);
 
-        jest.spyOn(Utils, 'getLibrary').mockImplementation(() => {
+        getLibraryMock.mockImplementation(() => {
             return Promise.resolve('');
         });
-        const result = await Documentation.getDocumentation(
+        const result = await getDocumentation(
             'sap.fe.controls.easyFilter.EasyFilterBarContainer',
             'sap.fe.controls.easyFilter'
         );
@@ -64,10 +71,10 @@ describe('Documentation', () => {
     test('When the api json respond with status different than 200 and 404 then we display the error in the info center', async () => {
         fetchMock.mockResolvedValue(apiJsonServerError);
 
-        jest.spyOn(Utils, 'getLibrary').mockImplementation(() => {
+        getLibraryMock.mockImplementation(() => {
             return Promise.resolve('');
         });
-        const result = await Documentation.getDocumentation('sap.fe.macros.Table', 'sap.fe.macros');
+        const result = await getDocumentation('sap.fe.macros.Table', 'sap.fe.macros');
         expect(result).toBeUndefined();
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(
             showInfoCenterMessage({

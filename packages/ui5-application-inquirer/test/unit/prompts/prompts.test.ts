@@ -1,23 +1,66 @@
-import * as projectAccess from '@sap-ux/project-access';
-import * as projectValidators from '@sap-ux/project-input-validator';
-import * as ui5Info from '@sap-ux/ui5-info';
-import { getQuestions } from '../../../src/prompts';
-import * as promptHelpers from '../../../src/prompts/prompt-helpers';
-import type { UI5ApplicationPromptOptions } from '../../../src/types';
-import { promptNames } from '../../../src/types';
-import { initI18nUi5AppInquirer } from '../../../src/i18n';
-import type { UI5Version } from '@sap-ux/ui5-info';
-import { defaultVersion, ui5ThemeIds } from '@sap-ux/ui5-info';
-import type { ListQuestion } from '@sap-ux/inquirer-common';
+import { jest } from '@jest/globals';
+import { join } from 'node:path';
 import os from 'node:os';
-import path, { join } from 'node:path';
+import * as actualFs from 'node:fs';
+import * as actualUi5Info from '@sap-ux/ui5-info';
+import * as actualProjectAccess from '@sap-ux/project-access';
+import * as actualProjectInputValidator from '@sap-ux/project-input-validator';
+import * as actualPath from 'node:path';
 
-jest.mock('@sap-ux/project-input-validator', () => {
-    return {
-        __esModule: true,
-        ...jest.requireActual('@sap-ux/project-input-validator')
-    };
-});
+import type { UI5ApplicationPromptOptions } from '../../../src/types.js';
+import type { UI5Version } from '@sap-ux/ui5-info';
+import type { ListQuestion } from '@sap-ux/inquirer-common';
+
+// Mock node:fs to control existsSync (used by appPathExists)
+const mockExistsSync = jest.fn();
+jest.unstable_mockModule('node:fs', () => ({
+    ...actualFs,
+    existsSync: mockExistsSync
+}));
+
+// Mock project-access (only getMtaPath is used at runtime)
+const mockGetMtaPath = jest.fn<any>();
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    getMtaPath: mockGetMtaPath
+}));
+
+// Mock project-input-validator with real implementations + spy-able overrides
+const mockValidateModuleName = jest.fn(actualProjectInputValidator.validateModuleName);
+const mockValidateNamespace = jest.fn(actualProjectInputValidator.validateNamespace);
+const mockValidateFioriAppTargetFolder = jest.fn(actualProjectInputValidator.validateFioriAppTargetFolder);
+const mockValidateFioriAppProjectFolder = jest.fn(actualProjectInputValidator.validateFioriAppProjectFolder);
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    ...actualProjectInputValidator,
+    validateModuleName: mockValidateModuleName,
+    validateNamespace: mockValidateNamespace,
+    validateFioriAppTargetFolder: mockValidateFioriAppTargetFolder,
+    validateFioriAppProjectFolder: mockValidateFioriAppProjectFolder
+}));
+
+// Mock ui5-info with real implementations + spy-able overrides
+const mockGetDefaultUI5Theme = jest.fn(actualUi5Info.getDefaultUI5Theme);
+const mockGetUi5Themes = jest.fn(actualUi5Info.getUi5Themes);
+jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
+    ...actualUi5Info,
+    getDefaultUI5Theme: mockGetDefaultUI5Theme,
+    getUi5Themes: mockGetUi5Themes
+}));
+
+// Mock node:path so the targetFolder filter can be exercised against both posix and win32 path
+// semantics regardless of the host OS. When `pathFlavor` is null the mock passes through to the
+// real platform default; tests that need to exercise a specific flavor set it explicitly.
+let pathFlavor: 'posix' | 'win32' | null = null;
+jest.unstable_mockModule('node:path', () => ({
+    ...actualPath,
+    isAbsolute: (p: string) => (pathFlavor ? actualPath[pathFlavor].isAbsolute(p) : actualPath.isAbsolute(p)),
+    resolve: (...args: string[]) => (pathFlavor ? actualPath[pathFlavor].resolve(...args) : actualPath.resolve(...args))
+}));
+
+const { getQuestions } = await import('../../../src/prompts/index.js');
+const { initI18nUi5AppInquirer } = await import('../../../src/i18n.js');
+const { promptNames } = await import('../../../src/types.js');
+const { defaultVersion, ui5ThemeIds } = await import('@sap-ux/ui5-info');
 
 describe('getQuestions', () => {
     const mockCdsInfo = {
@@ -35,6 +78,18 @@ describe('getQuestions', () => {
         // Reset all spys (not mocks)
         // jest.restoreAllMocks() only works when the mock was created with jest.spyOn().
         jest.restoreAllMocks();
+        mockExistsSync.mockReset();
+        mockGetMtaPath.mockReset();
+        mockValidateModuleName.mockReset().mockImplementation(actualProjectInputValidator.validateModuleName);
+        mockValidateNamespace.mockReset().mockImplementation(actualProjectInputValidator.validateNamespace);
+        mockValidateFioriAppTargetFolder
+            .mockReset()
+            .mockImplementation(actualProjectInputValidator.validateFioriAppTargetFolder);
+        mockValidateFioriAppProjectFolder
+            .mockReset()
+            .mockImplementation(actualProjectInputValidator.validateFioriAppProjectFolder);
+        mockGetDefaultUI5Theme.mockReset().mockImplementation(actualUi5Info.getDefaultUI5Theme);
+        mockGetUi5Themes.mockReset().mockImplementation(actualUi5Info.getUi5Themes);
     });
 
     test('getQuestions, no options', async () => {
@@ -55,7 +110,8 @@ describe('getQuestions', () => {
     });
 
     test('getQuestions, prompt: `name`, conditional validator', async () => {
-        jest.spyOn(promptHelpers, 'appPathExists').mockReturnValue(true);
+        mockValidateModuleName.mockReturnValue(true);
+        mockExistsSync.mockReturnValue(true);
         // Test default when `isCLi` === true
         let questions = await getQuestions([], {
             [promptNames.targetFolder]: {
@@ -100,7 +156,7 @@ describe('getQuestions', () => {
             (questions.find((question) => question.name === promptNames.name)?.validate as Function)('project1', {})
         ).toEqual(true);
 
-        jest.spyOn(promptHelpers, 'appPathExists').mockReturnValue(false);
+        mockExistsSync.mockReturnValue(false);
         // Default generated name
         expect((questions.find((question) => question.name === promptNames.name)?.default as Function)({})).toEqual(
             'project1'
@@ -162,12 +218,12 @@ describe('getQuestions', () => {
         ).toMatchInlineSnapshot(`"abc"`);
 
         // validators
-        const validateNamespaceSpy = jest.spyOn(projectValidators, 'validateNamespace').mockReturnValue(true);
+        mockValidateNamespace.mockReturnValue(true);
         expect(namespacePrompt?.validate!(undefined, {})).toEqual(true);
 
         const args = ['abc', { name: 'project1' }] as const;
         expect(namespacePrompt?.validate!(...args)).toEqual(true);
-        expect(validateNamespaceSpy).toHaveBeenCalledWith(args[0], args[1].name);
+        expect(mockValidateNamespace).toHaveBeenCalledWith(args[0], args[1].name);
 
         const promptOpts: UI5ApplicationPromptOptions = {
             [promptNames.name]: {
@@ -177,7 +233,7 @@ describe('getQuestions', () => {
         questions = await getQuestions([], promptOpts);
         namespacePrompt = questions.find((question) => question.name === promptNames.namespace);
         expect(namespacePrompt?.validate!('def', {})).toEqual(true);
-        expect(validateNamespaceSpy).toHaveBeenCalledWith('def', promptOpts.name?.default);
+        expect(mockValidateNamespace).toHaveBeenCalledWith('def', promptOpts.name?.default);
     });
 
     test('getQuestions, prompt: `description`, default', async () => {
@@ -222,12 +278,10 @@ describe('getQuestions', () => {
 
         await expect(targetFolderPrompt?.validate!(undefined, {})).resolves.toEqual(false);
 
-        const validateTargetFolderSpy = jest
-            .spyOn(projectValidators, 'validateFioriAppTargetFolder')
-            .mockResolvedValueOnce(true);
+        mockValidateFioriAppTargetFolder.mockResolvedValueOnce(true);
         const args = ['/some/target/path', { name: 'project1' }] as const;
         await expect(targetFolderPrompt?.validate!(...args)).resolves.toEqual(true);
-        expect(validateTargetFolderSpy).toHaveBeenCalledWith(...[args[0]], args[1].name, undefined);
+        expect(mockValidateFioriAppTargetFolder).toHaveBeenCalledWith(...[args[0]], args[1].name, undefined);
 
         // Test `defaultValue` prompt option - should not replace existing default function
         const promptOptionsDefaultValue = {
@@ -248,9 +302,7 @@ describe('getQuestions', () => {
         );
 
         // test scenario where target folder is within an existing Fiori app
-        const validateFioriAppProjectFolderSpy = jest
-            .spyOn(projectValidators, 'validateFioriAppProjectFolder')
-            .mockResolvedValueOnce(false);
+        mockValidateFioriAppProjectFolder.mockResolvedValueOnce(false);
 
         const promptOptsValidateFioriAppFolder: UI5ApplicationPromptOptions = {
             [promptNames.targetFolder]: {
@@ -262,78 +314,56 @@ describe('getQuestions', () => {
         questions = await getQuestions([], promptOptsValidateFioriAppFolder);
         targetFolderPrompt = questions.find((question) => question.name === promptNames.targetFolder);
         expect(targetFolderPrompt?.default({})).toEqual(join(os.homedir(), 'projects'));
-        expect(validateFioriAppProjectFolderSpy).toHaveBeenCalledWith('/folder/containing/fiori/app');
+        expect(mockValidateFioriAppProjectFolder).toHaveBeenCalledWith('/folder/containing/fiori/app');
 
         // filter is exercised in a dedicated test below (`getQuestions, prompt: \`targetFolder\` - filter`)
     });
 
     test('getQuestions, prompt: `targetFolder` - filter', async () => {
-        // Use `jest.isolateModules` + `jest.doMock` to swap `node:path`'s `isAbsolute`/`resolve` for
-        // the posix or win32 flavor so we can deterministically exercise the filter against both
-        // path styles, regardless of the OS running the test.
-        // NOTE: the production code imports from `'node:path'`, so the mock must use that exact
-        // specifier — `jest.doMock('path', ...)` would not intercept it (Jest treats `'path'` and
-        // `'node:path'` as distinct module registry keys).
+        // Swap `node:path`'s `isAbsolute`/`resolve` for the posix or win32 flavor so we can
+        // deterministically exercise the filter against both path styles, regardless of the OS
+        // running the test. The top-level mock dispatches via the mutable `pathFlavor` variable;
+        // changing it here re-routes subsequent isAbsolute/resolve calls without needing to
+        // re-import the prompts module.
         const loadTargetFolderPrompt = async (
-            pathImpl: typeof path.win32 | typeof path.posix,
+            pathImpl: typeof actualPath.win32 | typeof actualPath.posix,
             isYUI?: boolean
         ): Promise<any> => {
-            let targetFolderPromptLocal: any;
-            await new Promise<void>((done) => {
-                jest.isolateModules(async () => {
-                    const pathMockFactory = (): typeof path => {
-                        const actual = jest.requireActual('node:path');
-                        return {
-                            ...actual,
-                            isAbsolute: pathImpl.isAbsolute,
-                            resolve: pathImpl.resolve
-                        };
-                    };
-                    jest.doMock('node:path', pathMockFactory);
-                    // Also mock the bare specifier in case any transitive code uses it
-                    jest.doMock('path', pathMockFactory);
-                    // eslint-disable-next-line @typescript-eslint/no-require-imports
-                    const { getQuestions: getQuestionsLocal } = require('../../../src/prompts');
-                    const localQuestions = await getQuestionsLocal([], undefined, undefined, isYUI);
-                    targetFolderPromptLocal = localQuestions.find(
-                        (q: { name: string }) => q.name === promptNames.targetFolder
-                    );
-                    done();
-                });
-            });
-            return targetFolderPromptLocal;
+            pathFlavor = pathImpl === actualPath.win32 ? 'win32' : 'posix';
+            const localQuestions = await getQuestions([], undefined, undefined, isYUI);
+            return localQuestions.find((q: { name: string }) => q.name === promptNames.targetFolder);
         };
 
         // Sanity check: confirm the path mock is actually applied. `C:\abs` is absolute under
         // win32 (passes through) but relative under posix (gets resolved). Without an effective
         // mock, both calls would use the real platform `path` and one of these assertions would
         // fail rather than silently pass on a host OS that happens to match the flavor.
-        const win32SanityPrompt = await loadTargetFolderPrompt(path.win32);
+        const win32SanityPrompt = await loadTargetFolderPrompt(actualPath.win32);
         expect((win32SanityPrompt?.filter as Function)('C:\\abs')).toEqual('C:\\abs');
-        const posixSanityPrompt = await loadTargetFolderPrompt(path.posix);
-        expect((posixSanityPrompt?.filter as Function)('C:\\abs')).toEqual(path.posix.resolve('C:\\abs'));
+        const posixSanityPrompt = await loadTargetFolderPrompt(actualPath.posix);
+        expect((posixSanityPrompt?.filter as Function)('C:\\abs')).toEqual(actualPath.posix.resolve('C:\\abs'));
 
         // win32 CLI: relative paths are resolved using win32 semantics, absolute paths pass through
-        const win32Prompt = await loadTargetFolderPrompt(path.win32);
+        const win32Prompt = await loadTargetFolderPrompt(actualPath.win32);
         const win32Absolute = 'C:\\some\\absolute\\path';
-        expect((win32Prompt?.filter as Function)('relative\\path')).toEqual(path.win32.resolve('relative\\path'));
+        expect((win32Prompt?.filter as Function)('relative\\path')).toEqual(actualPath.win32.resolve('relative\\path'));
         expect((win32Prompt?.filter as Function)(win32Absolute)).toEqual(win32Absolute);
         expect((win32Prompt?.filter as Function)('')).toEqual('');
         expect((win32Prompt?.filter as Function)(undefined)).toEqual(undefined);
 
         // posix CLI: relative paths are resolved using posix semantics, absolute paths pass through
-        const posixPrompt = await loadTargetFolderPrompt(path.posix);
+        const posixPrompt = await loadTargetFolderPrompt(actualPath.posix);
         const posixAbsolute = '/some/absolute/path';
-        expect((posixPrompt?.filter as Function)('relative/path')).toEqual(path.posix.resolve('relative/path'));
+        expect((posixPrompt?.filter as Function)('relative/path')).toEqual(actualPath.posix.resolve('relative/path'));
         expect((posixPrompt?.filter as Function)(posixAbsolute)).toEqual(posixAbsolute);
         expect((posixPrompt?.filter as Function)('')).toEqual('');
         expect((posixPrompt?.filter as Function)(undefined)).toEqual(undefined);
 
         // YUI: input is returned unchanged regardless of path style (folder browser provides absolute paths)
-        const win32YuiPrompt = await loadTargetFolderPrompt(path.win32, true);
+        const win32YuiPrompt = await loadTargetFolderPrompt(actualPath.win32, true);
         expect((win32YuiPrompt?.filter as Function)('relative\\path')).toEqual('relative\\path');
         expect((win32YuiPrompt?.filter as Function)(win32Absolute)).toEqual(win32Absolute);
-        const posixYuiPrompt = await loadTargetFolderPrompt(path.posix, true);
+        const posixYuiPrompt = await loadTargetFolderPrompt(actualPath.posix, true);
         expect((posixYuiPrompt?.filter as Function)('relative/path')).toEqual('relative/path');
         expect((posixYuiPrompt?.filter as Function)(posixAbsolute)).toEqual(posixAbsolute);
     });
@@ -427,8 +457,7 @@ describe('getQuestions', () => {
     });
 
     test('getQuestions, prompt: `addDeployConfig` conditions and message based on mta.yaml discovery', async () => {
-        const mockMtaPath = undefined;
-        const getMtaPathSpy = jest.spyOn(projectAccess, 'getMtaPath').mockResolvedValue(mockMtaPath);
+        mockGetMtaPath.mockResolvedValue(undefined);
         const mockCwd = '/any/current/working/directory';
         jest.spyOn(process, 'cwd').mockReturnValueOnce(mockCwd);
 
@@ -444,15 +473,15 @@ describe('getQuestions', () => {
             `"Add Deployment Configuration"`
         );
 
-        getMtaPathSpy.mockResolvedValue({ mtaPath: 'any/path', hasRoot: false });
+        mockGetMtaPath.mockResolvedValue({ mtaPath: 'any/path', hasRoot: false });
         questions = await getQuestions([], undefined, mockCdsInfo);
         addDeployConfigQuestion = questions.find((question) => question.name === promptNames.addDeployConfig);
         expect(await (addDeployConfigQuestion?.when as Function)()).toEqual(true);
-        expect(getMtaPathSpy).toHaveBeenCalledWith(mockCwd);
+        expect(mockGetMtaPath).toHaveBeenCalledWith(mockCwd);
 
         const targetFolder = '/any/target/folder';
         expect(await (addDeployConfigQuestion?.when as Function)({ targetFolder })).toEqual(true);
-        expect(getMtaPathSpy).toHaveBeenCalledWith(targetFolder);
+        expect(mockGetMtaPath).toHaveBeenCalledWith(targetFolder);
 
         expect((addDeployConfigQuestion?.message as Function)()).toMatchInlineSnapshot(
             `"Add Deployment Configuration to the MTA Project: (any/path)."`
@@ -537,27 +566,26 @@ describe('getQuestions', () => {
     });
 
     test('getQuestions, prompt: `ui5Theme`', async () => {
-        const getDefaultUI5ThemeSpy = jest.spyOn(ui5Info, 'getDefaultUI5Theme');
         const questions = await getQuestions([]);
         const ui5ThemeQuestion = questions.find((question) => question.name === promptNames.ui5Theme);
 
         expect(questions).toEqual(expect.arrayContaining([expect.objectContaining({ name: promptNames.ui5Theme })]));
         expect((ui5ThemeQuestion?.default as Function)({})).toEqual(ui5ThemeIds.SAP_HORIZON);
-        expect(getDefaultUI5ThemeSpy).toHaveBeenCalledWith(undefined);
+        expect(mockGetDefaultUI5Theme).toHaveBeenCalledWith(undefined);
 
         const ui5Theme = ui5ThemeIds.SAP_FIORI_3;
-        getDefaultUI5ThemeSpy.mockClear();
+        mockGetDefaultUI5Theme.mockClear();
         expect((ui5ThemeQuestion?.default as Function)({ [promptNames.ui5Theme]: ui5Theme })).toEqual(
             ui5ThemeIds.SAP_FIORI_3
         );
-        expect(getDefaultUI5ThemeSpy).not.toHaveBeenCalledWith();
+        expect(mockGetDefaultUI5Theme).not.toHaveBeenCalledWith();
 
         const ui5Version = '9.999.999';
-        getDefaultUI5ThemeSpy.mockClear();
+        mockGetDefaultUI5Theme.mockClear();
         expect((ui5ThemeQuestion?.default as Function)({ [promptNames.ui5Version]: ui5Version })).toEqual(
             ui5ThemeIds.SAP_HORIZON
         );
-        expect(getDefaultUI5ThemeSpy).toHaveBeenCalledWith(ui5Version);
+        expect(mockGetDefaultUI5Theme).toHaveBeenCalledWith(ui5Version);
 
         // choices
         // Mock themes
@@ -565,7 +593,7 @@ describe('getQuestions', () => {
             { id: ui5ThemeIds.SAP_FIORI_3_DARK, label: 'Theme One' },
             { id: ui5ThemeIds.SAP_HORIZON_DARK, label: 'Theme Two' }
         ];
-        const getUI5ThemesSpy = jest.spyOn(ui5Info, 'getUi5Themes').mockResolvedValue(mockThemes);
+        mockGetUi5Themes.mockResolvedValue(mockThemes);
         expect(await ((ui5ThemeQuestion as ListQuestion)?.choices as Function)({})).toMatchInlineSnapshot(`
             [
               {
@@ -578,10 +606,10 @@ describe('getQuestions', () => {
               },
             ]
         `);
-        expect(getUI5ThemesSpy).toHaveBeenCalledWith(defaultVersion);
-        getUI5ThemesSpy.mockClear();
+        expect(mockGetUi5Themes).toHaveBeenCalledWith(defaultVersion);
+        mockGetUi5Themes.mockClear();
         ((ui5ThemeQuestion as ListQuestion)?.choices as Function)({ [promptNames.ui5Version]: ui5Version });
-        expect(getUI5ThemesSpy).toHaveBeenCalledWith(ui5Version);
+        expect(mockGetUi5Themes).toHaveBeenCalledWith(ui5Version);
     });
 
     test('getQuestions, prompt: `enableEslint` is always hidden', async () => {

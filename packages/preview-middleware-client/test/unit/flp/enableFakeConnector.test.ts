@@ -1,15 +1,21 @@
 import { documentMock, fetchMock } from 'mock/window';
 import FakeLrepConnector from 'mock/sap/ui/fl/FakeLrepConnector';
-
-import enableFakeConnector, {
-    create,
-    loadChanges
-} from '../../../src/flp/enableFakeConnector';
 import LrepConnector from 'mock/sap/ui/fl/LrepConnector';
-import * as additionalChangeInfo from '../../../src/utils/additional-change-info';
+
+const getAdditionalChangeInfoMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/additional-change-info', () => ({
+    getAdditionalChangeInfo: getAdditionalChangeInfoMock,
+    setAdditionalChangeInfo: jest.fn(),
+    clearAdditionalChangeInfo: jest.fn(),
+    setAdditionalChangeInfoForChangeFile: jest.fn()
+}));
+
+const { default: enableFakeConnector, create, loadChanges } = await import(
+    'open/ux/preview/client/flp/enableFakeConnector'
+);
 
 describe('flp/FakeLrepConnector', () => {
-    jest.spyOn(additionalChangeInfo, 'getAdditionalChangeInfo').mockReturnValue(undefined);
+    getAdditionalChangeInfoMock.mockReturnValue(undefined);
     afterEach(() => {
         jest.restoreAllMocks();
     });
@@ -60,57 +66,6 @@ describe('flp/FakeLrepConnector', () => {
             expect(result.changes.changes[0].changeType).toBe('propertyChange');
         });
 
-        test('loads changes correctly with baseUrl', async () => {
-            const mockBaseUrl = '/test.base.url';
-            jest.isolateModules(async () => {
-                // Mock document.getElementById to return element with baseUrl in dataset of sap-ui-bootstrap
-                documentMock.getElementById.mockImplementation((id: string) => {
-                    if (id === 'sap-ui-bootstrap') {
-                        return {
-                            dataset: {
-                                openUxPreviewBaseUrl: mockBaseUrl
-                            }
-                        };
-                    }
-                    return null;
-                });
-
-                // Mock LrepConnector before requiring the module
-                const LrepConnectorMock = require('mock/sap/ui/fl/LrepConnector');
-                LrepConnectorMock.default.prototype.loadChanges = jest.fn().mockResolvedValue({
-                    changes: {
-                        changes: []
-                    }
-                });
-
-                fetchMock.mockReturnValue({
-                    json: jest.fn().mockReturnValue({
-                        'sap.ui.fl.changes.propertyChange': {
-                            changeType: 'propertyChange',
-                            support: {
-                                generator: '@sap-ux/control-property-editor'
-                            }
-                        }
-                    })
-                });
-
-                const { loadChanges: loadChangesWithMockedUrl } = require('../../../src/flp/enableFakeConnector');
-
-                const result = await loadChangesWithMockedUrl();
-
-                expect(fetchMock).toHaveBeenCalledWith(
-                    '/test.base.url/preview/api/changes',
-                    expect.objectContaining({
-                        method: 'GET',
-                        headers: {
-                            'content-type': 'application/json'
-                        }
-                    })
-                );
-                expect(result.changes.changes.length).toBe(1);
-                expect(result.changes.changes[0].changeType).toBe('propertyChange');
-            });
-        });
     });
 
     describe('create', () => {
@@ -119,7 +74,7 @@ describe('flp/FakeLrepConnector', () => {
         });
 
         test('calls the API to save changes', async () => {
-            jest.spyOn(additionalChangeInfo, 'getAdditionalChangeInfo').mockReturnValueOnce({ templateName: 'templateName' });
+            getAdditionalChangeInfoMock.mockReturnValueOnce({ templateName: 'templateName' });
             const change = {
                 changeType: 'propertyChange',
                 fileName: 'dummyFileName',

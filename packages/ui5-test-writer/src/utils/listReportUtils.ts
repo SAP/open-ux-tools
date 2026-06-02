@@ -1,19 +1,19 @@
 import type { Logger } from '@sap-ux/logger';
-import type { TreeAggregations, TreeModel } from '@sap/ux-specification/dist/types/src/parser';
+import type { TreeAggregations, TreeModel } from '@sap/ux-specification/dist/types/src/parser/index.js';
 import type {
     ActionButtonsResult,
     ActionButtonState,
     ButtonState,
     FEV4ManifestTarget,
     ListReportFeatures
-} from '../types';
+} from '../types.js';
 import {
     getFilterFields,
     getSelectionFieldItems,
     getTableColumnData,
     type AggregationItem,
     getAggregations
-} from './modelUtils';
+} from './modelUtils.js';
 import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
@@ -22,12 +22,12 @@ import {
     buildActionButtonState,
     safeCheckButtonVisibility,
     safeCheckButtonVisibilityFromMetadata
-} from './actionUtils';
-import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
+} from './actionUtils.js';
+import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
 import type { Manifest } from '@sap-ux/project-access';
-import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI';
+import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI.js';
 
-export { checkButtonVisibility, safeCheckEditVisibility } from './actionUtils';
+export { checkButtonVisibility, safeCheckEditVisibility } from './actionUtils.js';
 export { safeCheckButtonVisibility };
 
 /**
