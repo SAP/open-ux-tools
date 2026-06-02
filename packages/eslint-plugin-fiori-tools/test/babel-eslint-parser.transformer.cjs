@@ -6,7 +6,6 @@
 // --experimental-vm-modules because the VM-modules runtime cannot satisfy a sync CJS-style
 // require for a pure-ESM module like @babel/parser@8. Production runtime is unaffected:
 // Node 22.12+ supports require(esm) natively, so the unpatched parser loads fine there.
-// Upstream tracking issue: https://github.com/babel/babel/issues/<TBD-after-filing>
 module.exports = {
     process(sourceText) {
         const importReplaced = sourceText.replace(
