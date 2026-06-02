@@ -21,7 +21,8 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "cross-env \"NODE_OPTIONS=--experimental-vm-modules\" jest --ci --forceExit --detectOpenHandles --colors --maxWorkers=50%"
+        "test": "cross-env \"NODE_OPTIONS=--experimental-vm-modules\" jest --ci --forceExit --detectOpenHandles --colors --maxWorkers=50%",
+        "tgz:package": "pnpm pack"
     },
     "devDependencies": {
         "@jest/globals": "30.3.0",
@@ -32,8 +33,9 @@
         "@types/semver": "7.7.1"
     },
     "dependencies": {
-        "@babel/core": "7.29.0",
-        "@babel/eslint-parser": "^7.28.5",
+        "@babel/core": "8.0.0-rc.6",
+        "@babel/eslint-parser": "8.0.0-rc.6",
+        "@babel/parser": "8.0.0-rc.6",
         "@eslint/js": "10.0.1",
         "@eslint/json": "0.14.0",
         "@eslint/core": "1.1.1",
