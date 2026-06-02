@@ -1,5 +1,11 @@
 # @sap-ux/nodejs-utils
 
+## 1.0.1
+
+### Patch Changes
+
+- 41f327a: update to use yo directly to check version rather than npm
+
 ## 1.0.0
 
 ### Major Changes
