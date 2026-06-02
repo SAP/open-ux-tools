@@ -521,6 +521,7 @@ describe('Test getObjectPageFeatures()', () => {
         const objectPage = {
             name: 'objectPage1',
             pageType: 'ObjectPage',
+            entitySet: 'TestEntities',
             model: {
                 root: {
                     aggregations: {
@@ -532,7 +533,13 @@ describe('Test getObjectPageFeatures()', () => {
                                             title: 'Chart Section',
                                             custom: false,
                                             schema: {
-                                                keys: [{ name: 'ID', value: 'chartFacet' }],
+                                                keys: [
+                                                    { name: 'ID', value: 'chartFacet' },
+                                                    {
+                                                        name: 'Target',
+                                                        value: 'com.sap.vocabularies.UI.v1.Chart#TestQualifier'
+                                                    }
+                                                ],
                                                 dataType: 'ChartDefinition'
                                             },
                                             properties: {
@@ -561,6 +568,73 @@ describe('Test getObjectPageFeatures()', () => {
         const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], 'listReportPage', mockLogger);
         expect(result[0].headerSections?.[0].microChart).toBe(true);
         expect(result[0].headerSections?.[0].form).toBe(false);
+        expect(result[0].headerSections?.[0].microChartId).toBeUndefined();
+        expect(result[0].headerSections?.[0].microChartType).toBeUndefined();
+    });
+
+    test('should populate microChartId/microChartType when metadata resolves the chart type', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            entitySet: 'TestEntities',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: {
+                                    aggregations: {
+                                        section1: {
+                                            title: 'Revenue',
+                                            custom: false,
+                                            schema: {
+                                                keys: [
+                                                    { name: 'ID', value: 'Chart::Revenue' },
+                                                    {
+                                                        name: 'Target',
+                                                        value: 'com.sap.vocabularies.UI.v1.Chart#Revenue'
+                                                    }
+                                                ],
+                                                dataType: 'ChartDefinition'
+                                            },
+                                            properties: { stashed: { freeText: false } },
+                                            aggregations: {}
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const metadata = {
+            entitySets: [
+                {
+                    name: 'TestEntities',
+                    entityType: {
+                        annotations: {
+                            UI: {
+                                'Chart#Revenue': {
+                                    term: 'com.sap.vocabularies.UI.v1.Chart',
+                                    ChartType: 'UI.ChartType/Line'
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        };
+        const result = await getObjectPageFeatures(
+            [objectPage] as PageWithModelV4[],
+            'listReportPage',
+            mockLogger,
+            metadata as never
+        );
+        expect(result[0].headerSections?.[0].microChartId).toBe('Chart::Revenue');
+        expect(result[0].headerSections?.[0].microChartType).toBe('LineMicroChart');
     });
 
     test('should identify form sections', async () => {

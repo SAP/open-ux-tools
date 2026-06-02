@@ -19,6 +19,19 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 import type { Manifest } from '@sap-ux/project-access';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
+import { parse } from '@sap-ux/edmx-parser';
+import { convert } from '@sap-ux/annotation-converter';
+
+/**
+ * Parses and converts an OData metadata XML string into the shape these utilities consume.
+ *
+ * @param xml - OData metadata XML
+ * @returns the converted metadata
+ */
+function toConvertedMetadata(xml: string): ConvertedMetadata {
+    return convert(parse(xml));
+}
 
 describe('Test buildButtonState()', () => {
     test('should return visible false when buttonState is undefined', () => {
@@ -128,14 +141,14 @@ describe('Test safeCheckButtonVisibility()', () => {
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>`;
-        const result = safeCheckButtonVisibility(validMetadata, 'TestSet', mockLogger);
+        const result = safeCheckButtonVisibility(toConvertedMetadata(validMetadata), 'TestSet', mockLogger);
         expect(result).toBeDefined();
         expect(result?.create).toBeDefined();
         expect(result?.delete).toBeDefined();
     });
 
-    test('should return undefined and log debug when metadata is invalid', () => {
-        const result = safeCheckButtonVisibility('invalid xml', 'TestSet', mockLogger);
+    test('should return undefined and log debug when metadata structure is malformed', () => {
+        const result = safeCheckButtonVisibility({} as ConvertedMetadata, 'TestSet', mockLogger);
         expect(result).toBeUndefined();
         expect(mockLogger.debug).toHaveBeenCalled();
     });
@@ -150,19 +163,22 @@ describe('Test safeCheckButtonVisibility()', () => {
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>`;
-        const result = safeCheckButtonVisibility(validMetadata, 'NonExistentEntitySet', mockLogger);
+        const result = safeCheckButtonVisibility(
+            toConvertedMetadata(validMetadata),
+            'NonExistentEntitySet',
+            mockLogger
+        );
         expect(result).toBeUndefined();
         expect(mockLogger.debug).toHaveBeenCalled();
     });
 
     test('should handle missing logger gracefully', () => {
-        const result = safeCheckButtonVisibility('invalid xml', 'TestSet');
+        const result = safeCheckButtonVisibility({} as ConvertedMetadata, 'TestSet');
         expect(result).toBeUndefined();
     });
 
-    test('should log error message when parse error occurs', () => {
-        const invalidMetadata = '<invalid>xml</invalid>';
-        safeCheckButtonVisibility(invalidMetadata, 'TestSet', mockLogger);
+    test('should log error message when an entity set lookup fails', () => {
+        safeCheckButtonVisibility({} as ConvertedMetadata, 'TestSet', mockLogger);
         expect(mockLogger.debug).toHaveBeenCalledWith(expect.stringContaining('Failed to check button visibility'));
     });
 });
@@ -196,13 +212,13 @@ describe('Test safeCheckActionButtonStates()', () => {
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>`;
-        const result = safeCheckActionButtonStates(validMetadata, 'TestSet', [], mockLogger);
+        const result = safeCheckActionButtonStates(toConvertedMetadata(validMetadata), 'TestSet', [], mockLogger);
         expect(result).toBeDefined();
         expect(Array.isArray(result)).toBe(true);
     });
 
-    test('should return empty array and log debug when metadata is invalid', () => {
-        const result = safeCheckActionButtonStates('invalid xml', 'TestSet', [], mockLogger);
+    test('should return empty array and log debug when metadata structure is malformed', () => {
+        const result = safeCheckActionButtonStates({} as ConvertedMetadata, 'TestSet', [], mockLogger);
         expect(result).toEqual([]);
         expect(mockLogger.debug).toHaveBeenCalled();
     });
@@ -217,13 +233,18 @@ describe('Test safeCheckActionButtonStates()', () => {
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>`;
-        const result = safeCheckActionButtonStates(validMetadata, 'NonExistentEntitySet', [], mockLogger);
+        const result = safeCheckActionButtonStates(
+            toConvertedMetadata(validMetadata),
+            'NonExistentEntitySet',
+            [],
+            mockLogger
+        );
         expect(result).toEqual([]);
         expect(mockLogger.debug).toHaveBeenCalled();
     });
 
     test('should handle missing logger gracefully', () => {
-        const result = safeCheckActionButtonStates('invalid xml', 'TestSet', []);
+        const result = safeCheckActionButtonStates({} as ConvertedMetadata, 'TestSet', []);
         expect(result).toEqual([]);
     });
 
@@ -244,7 +265,7 @@ describe('Test safeCheckActionButtonStates()', () => {
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>`;
-        const result = safeCheckActionButtonStates(validMetadata, 'TestSet', [], mockLogger);
+        const result = safeCheckActionButtonStates(toConvertedMetadata(validMetadata), 'TestSet', [], mockLogger);
         expect(result).toBeDefined();
         expect(Array.isArray(result)).toBe(true);
     });
@@ -354,7 +375,7 @@ describe('Test checkButtonVisibility()', () => {
     </edmx:DataServices>
 </edmx:Edmx>`;
 
-        const result = checkButtonVisibility(minimalMetadata, 'TestSet');
+        const result = checkButtonVisibility(toConvertedMetadata(minimalMetadata), 'TestSet');
         expect(result.create).toEqual({ visible: true, enabled: true });
         expect(result.delete).toEqual({ visible: true, enabled: true });
     });
@@ -378,15 +399,15 @@ describe('Test checkButtonVisibility()', () => {
     </edmx:DataServices>
 </edmx:Edmx>`;
 
-        const result = checkButtonVisibility(minimalMetadata, 'TestSet');
+        const result = checkButtonVisibility(toConvertedMetadata(minimalMetadata), 'TestSet');
         // When no restrictions, defaults to visible and enabled
         expect(result.create.visible).toBe(true);
         expect(result.create.enabled).toBe(true);
     });
 
-    test('should throw error when metadata is invalid', () => {
+    test('should throw error when metadata structure is malformed', () => {
         expect(() => {
-            checkButtonVisibility('invalid xml', 'TestSet');
+            checkButtonVisibility({} as ConvertedMetadata, 'TestSet');
         }).toThrow('Failed to analyze button visibility');
     });
 
@@ -402,7 +423,7 @@ describe('Test checkButtonVisibility()', () => {
 </edmx:Edmx>`;
 
         expect(() => {
-            checkButtonVisibility(minimalMetadata, 'NonExistentSet');
+            checkButtonVisibility(toConvertedMetadata(minimalMetadata), 'NonExistentSet');
         }).toThrow("Entity set 'NonExistentSet' not found in metadata");
     });
 
@@ -428,7 +449,7 @@ describe('Test checkButtonVisibility()', () => {
 </edmx:Edmx>`;
 
         // When restrictions are not present, function returns defaults
-        const result = checkButtonVisibility(minimalMetadata, 'TestSet');
+        const result = checkButtonVisibility(toConvertedMetadata(minimalMetadata), 'TestSet');
         expect(result.create.visible).toBe(true);
         expect(result.create.enabled).toBe(true);
         expect(result.delete.visible).toBe(true);
@@ -454,7 +475,7 @@ describe('Test checkButtonVisibility()', () => {
     </edmx:DataServices>
 </edmx:Edmx>`;
 
-        const result = checkButtonVisibility(minimalMetadata, 'TestSet');
+        const result = checkButtonVisibility(toConvertedMetadata(minimalMetadata), 'TestSet');
         // When no restrictions are defined, defaults to enabled
         expect(result.delete.visible).toBe(true);
         expect(result.delete.enabled).toBe(true);
@@ -555,7 +576,7 @@ describe('Test checkActionButtonStates()', () => {
     </edmx:DataServices>
 </edmx:Edmx>`;
 
-        const result = checkActionButtonStates(minimalMetadata, 'TestSet');
+        const result = checkActionButtonStates(toConvertedMetadata(minimalMetadata), 'TestSet');
         expect(result.actions).toEqual([]);
         expect(result.entityType).toBe('TestEntity');
     });
@@ -579,7 +600,7 @@ describe('Test checkActionButtonStates()', () => {
     </edmx:DataServices>
 </edmx:Edmx>`;
 
-        const result = checkActionButtonStates(minimalMetadata, 'TestSet');
+        const result = checkActionButtonStates(toConvertedMetadata(minimalMetadata), 'TestSet');
         expect(result.actions).toEqual([]);
         expect(result.entityType).toBe('TestEntity');
     });
@@ -596,7 +617,7 @@ describe('Test checkActionButtonStates()', () => {
 </edmx:Edmx>`;
 
         expect(() => {
-            checkActionButtonStates(minimalMetadata, 'NonExistentSet');
+            checkActionButtonStates(toConvertedMetadata(minimalMetadata), 'NonExistentSet');
         }).toThrow("Entity set 'NonExistentSet' not found in metadata");
     });
 
@@ -621,13 +642,13 @@ describe('Test checkActionButtonStates()', () => {
 </edmx:Edmx>`;
 
         // When entity type exists, function should succeed
-        const result = checkActionButtonStates(minimalMetadata, 'TestSet');
+        const result = checkActionButtonStates(toConvertedMetadata(minimalMetadata), 'TestSet');
         expect(result.entityType).toBe('TestEntity');
     });
 
-    test('should handle invalid metadata gracefully', () => {
+    test('should handle malformed metadata gracefully', () => {
         expect(() => {
-            checkActionButtonStates('invalid xml', 'TestSet');
+            checkActionButtonStates({} as ConvertedMetadata, 'TestSet');
         }).toThrow('Failed to analyze action button states');
     });
 
@@ -650,7 +671,7 @@ describe('Test checkActionButtonStates()', () => {
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>`;
-        const result = checkActionButtonStates(minimalMetadata, 'TestSet', ['Check']);
+        const result = checkActionButtonStates(toConvertedMetadata(minimalMetadata), 'TestSet', ['Check']);
         expect(result.actions).toBeDefined();
         expect(Array.isArray(result.actions)).toBe(true);
         // When no LineItem annotation, returns empty array
@@ -675,7 +696,7 @@ describe('Test checkActionButtonStates()', () => {
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>`;
-        const result = checkActionButtonStates(minimalMetadata, 'TestSet');
+        const result = checkActionButtonStates(toConvertedMetadata(minimalMetadata), 'TestSet');
         expect(result.actions).toBeDefined();
         expect(Array.isArray(result.actions)).toBe(true);
         expect(result.actions).toEqual([]);
@@ -700,16 +721,15 @@ describe('Test checkActionButtonStates()', () => {
     </edmx:DataServices>
 </edmx:Edmx>`;
 
-        const result = checkActionButtonStates(minimalMetadata, 'TestSet');
+        const result = checkActionButtonStates(toConvertedMetadata(minimalMetadata), 'TestSet');
         expect(result.actions).toEqual([]);
         expect(result.entityType).toBe('TestEntity');
     });
 
     test('should handle error case and wrap it in Failed to analyze message', () => {
-        // Test the catch block error handling
-        const invalidXml = 'completely broken xml <>';
+        // Test the catch block error handling - malformed metadata triggers the inner error
         expect(() => {
-            checkActionButtonStates(invalidXml, 'TestSet');
+            checkActionButtonStates({} as ConvertedMetadata, 'TestSet');
         }).toThrow('Failed to analyze action button states');
     });
 
@@ -718,7 +738,7 @@ describe('Test checkActionButtonStates()', () => {
         const fixtureMetadata = readFileSync(join(__dirname, '../../fixtures/metadata.xml'), 'utf8');
 
         // Test with Travel entity set which has LineItem annotations
-        const result = checkActionButtonStates(fixtureMetadata, 'Travel');
+        const result = checkActionButtonStates(toConvertedMetadata(fixtureMetadata), 'Travel');
 
         expect(result).toBeDefined();
         expect(result.entityType).toBe('TravelType');
@@ -738,7 +758,10 @@ describe('Test checkActionButtonStates()', () => {
         const fixtureMetadata = readFileSync(join(__dirname, '../../fixtures/metadata.xml'), 'utf8');
 
         // Test filtering by action name - looking for specific actions
-        const result = checkActionButtonStates(fixtureMetadata, 'Travel', ['setToBooked', 'deductDiscount']);
+        const result = checkActionButtonStates(toConvertedMetadata(fixtureMetadata), 'Travel', [
+            'setToBooked',
+            'deductDiscount'
+        ]);
 
         expect(result).toBeDefined();
         expect(Array.isArray(result.actions)).toBe(true);
@@ -758,7 +781,7 @@ describe('Test checkActionButtonStates()', () => {
     test('should extract InvocationGrouping from real metadata', () => {
         const fixtureMetadata = readFileSync(join(__dirname, '../../fixtures/metadata.xml'), 'utf8');
 
-        const result = checkActionButtonStates(fixtureMetadata, 'Travel');
+        const result = checkActionButtonStates(toConvertedMetadata(fixtureMetadata), 'Travel');
 
         // Check if any actions have InvocationGrouping
         const actionsWithGrouping = result.actions.filter((a) => a.invocationGrouping);
@@ -773,7 +796,7 @@ describe('Test checkActionButtonStates()', () => {
         // This tests the extractActionMethodName internal function through the public API
         const fixtureMetadata = readFileSync(join(__dirname, '../../fixtures/metadata.xml'), 'utf8');
 
-        const result = checkActionButtonStates(fixtureMetadata, 'Travel');
+        const result = checkActionButtonStates(toConvertedMetadata(fixtureMetadata), 'Travel');
 
         // Actions should have properly extracted method names
         if (result.actions.length > 0) {
@@ -791,7 +814,7 @@ describe('Test checkActionButtonStates()', () => {
         // Test with fixture that has OperationAvailable annotations
         const fixtureMetadata = readFileSync(join(__dirname, '../../fixtures/metadata.xml'), 'utf8');
 
-        const result = checkActionButtonStates(fixtureMetadata, 'Travel');
+        const result = checkActionButtonStates(toConvertedMetadata(fixtureMetadata), 'Travel');
 
         // Some actions should have enabled state based on OperationAvailable
         if (result.actions.length > 0) {
@@ -810,7 +833,7 @@ describe('Test checkActionButtonStates()', () => {
         const fixtureMetadata = readFileSync(join(__dirname, '../../fixtures/metadata.xml'), 'utf8');
 
         // Get all actions without filtering
-        const result = checkActionButtonStates(fixtureMetadata, 'Travel');
+        const result = checkActionButtonStates(toConvertedMetadata(fixtureMetadata), 'Travel');
 
         // Each action should have an enabled state determined by OperationAvailable annotation
         expect(result.actions.length).toBeGreaterThanOrEqual(0);
@@ -824,7 +847,7 @@ describe('Test checkActionButtonStates()', () => {
         // This tests the extractEnumMemberValue internal function
         const fixtureMetadata = readFileSync(join(__dirname, '../../fixtures/metadata.xml'), 'utf8');
 
-        const result = checkActionButtonStates(fixtureMetadata, 'Travel');
+        const result = checkActionButtonStates(toConvertedMetadata(fixtureMetadata), 'Travel');
 
         // Filter actions that have InvocationGrouping
         const actionsWithGrouping = result.actions.filter((a) => a.invocationGrouping);
@@ -861,7 +884,7 @@ describe('Test internal helper function coverage through public APIs', () => {
     </edmx:DataServices>
 </edmx:Edmx>`;
 
-        const result = checkButtonVisibility(minimalMetadata, 'TestSet');
+        const result = checkButtonVisibility(toConvertedMetadata(minimalMetadata), 'TestSet');
         // When no restrictions, should return default state
         expect(result.create.visible).toBe(true);
         expect(result.create.enabled).toBe(true);
@@ -874,7 +897,7 @@ describe('Test internal helper function coverage through public APIs', () => {
         const fixtureMetadata = readFileSync(join(__dirname, '../../fixtures/metadata.xml'), 'utf8');
 
         // Test with Booking entity which may have restrictions
-        const result = checkButtonVisibility(fixtureMetadata, 'Booking');
+        const result = checkButtonVisibility(toConvertedMetadata(fixtureMetadata), 'Booking');
 
         // The result should be defined with create and delete properties
         expect(result).toBeDefined();
@@ -888,7 +911,7 @@ describe('Test internal helper function coverage through public APIs', () => {
         // The fixture has path-based restrictions like _Booking/__DeleteByAssociationControl
         const fixtureMetadata = readFileSync(join(__dirname, '../../fixtures/metadata.xml'), 'utf8');
 
-        const result = checkButtonVisibility(fixtureMetadata, 'Booking');
+        const result = checkButtonVisibility(toConvertedMetadata(fixtureMetadata), 'Booking');
 
         // Should handle path-based enabled state
         expect(result).toBeDefined();
@@ -960,7 +983,7 @@ describe('Test internal helper function coverage through public APIs', () => {
     test('should test checkButtonVisibility error wrapping', () => {
         // Test that errors are properly wrapped with context message
         try {
-            checkButtonVisibility('', 'TestSet');
+            checkButtonVisibility({} as ConvertedMetadata, 'TestSet');
             fail('Should have thrown error');
         } catch (error) {
             expect(error).toBeInstanceOf(Error);
@@ -973,13 +996,15 @@ describe('Test internal helper function coverage through public APIs', () => {
         const fixtureMetadata = readFileSync(join(__dirname, '../../fixtures/metadata.xml'), 'utf8');
 
         // Get actions from Travel entity
-        const allActions = checkActionButtonStates(fixtureMetadata, 'Travel');
+        const allActions = checkActionButtonStates(toConvertedMetadata(fixtureMetadata), 'Travel');
 
         // If there are actions, try filtering by one of them
         if (allActions.actions.length > 0) {
             const firstActionName = allActions.actions[0].action.split('.').pop()?.split('(')[0];
             if (firstActionName) {
-                const filtered = checkActionButtonStates(fixtureMetadata, 'Travel', [firstActionName]);
+                const filtered = checkActionButtonStates(toConvertedMetadata(fixtureMetadata), 'Travel', [
+                    firstActionName
+                ]);
                 // The filtered result should contain actions
                 expect(filtered.actions.length).toBeGreaterThanOrEqual(0);
             }
@@ -990,12 +1015,12 @@ describe('Test internal helper function coverage through public APIs', () => {
         // Test that findActionStates can match by label as well as action name
         const fixtureMetadata = readFileSync(join(__dirname, '../../fixtures/metadata.xml'), 'utf8');
 
-        const allActions = checkActionButtonStates(fixtureMetadata, 'Travel');
+        const allActions = checkActionButtonStates(toConvertedMetadata(fixtureMetadata), 'Travel');
 
         // Try to filter by label if actions have labels
         if (allActions.actions.length > 0 && allActions.actions[0].label) {
             const firstLabel = allActions.actions[0].label;
-            const filtered = checkActionButtonStates(fixtureMetadata, 'Travel', [firstLabel]);
+            const filtered = checkActionButtonStates(toConvertedMetadata(fixtureMetadata), 'Travel', [firstLabel]);
 
             // Should be able to find actions by label
             expect(filtered.actions).toBeDefined();
@@ -1007,7 +1032,7 @@ describe('Test internal helper function coverage through public APIs', () => {
         const fixtureMetadata = readFileSync(join(__dirname, '../../fixtures/metadata.xml'), 'utf8');
 
         // Call without actionNames parameter
-        const result = checkActionButtonStates(fixtureMetadata, 'Travel');
+        const result = checkActionButtonStates(toConvertedMetadata(fixtureMetadata), 'Travel');
 
         // Should extract all actions
         expect(result.actions).toBeDefined();
@@ -1026,7 +1051,7 @@ describe('Test internal helper function coverage through public APIs', () => {
         // Test with Booking entity which may have different annotations
         const fixtureMetadata = readFileSync(join(__dirname, '../../fixtures/metadata.xml'), 'utf8');
 
-        const result = checkActionButtonStates(fixtureMetadata, 'Booking');
+        const result = checkActionButtonStates(toConvertedMetadata(fixtureMetadata), 'Booking');
 
         // Should successfully parse even if structure is different
         expect(result).toBeDefined();
@@ -1038,7 +1063,7 @@ describe('Test internal helper function coverage through public APIs', () => {
         // Test with another entity to cover more code paths
         const fixtureMetadata = readFileSync(join(__dirname, '../../fixtures/metadata.xml'), 'utf8');
 
-        const result = checkActionButtonStates(fixtureMetadata, 'BookingSupplement');
+        const result = checkActionButtonStates(toConvertedMetadata(fixtureMetadata), 'BookingSupplement');
 
         expect(result).toBeDefined();
         expect(result.entityType).toBeDefined();
@@ -1088,7 +1113,7 @@ describe('Test internal helper function coverage through public APIs', () => {
     </edmx:DataServices>
 </edmx:Edmx>`;
 
-        const result = checkActionButtonStates(metadata, 'TestSet');
+        const result = checkActionButtonStates(toConvertedMetadata(metadata), 'TestSet');
         expect(result.actions).toBeDefined();
         expect(Array.isArray(result.actions)).toBe(true);
 
@@ -1304,7 +1329,7 @@ describe('Test getListReportFeatures()', () => {
             name: 'test'
         };
 
-        const result = getListReportFeatures(mockPageModel, mockLogger, validMetadata);
+        const result = getListReportFeatures(mockPageModel, mockLogger, toConvertedMetadata(validMetadata));
 
         expect(result).toBeDefined();
         expect(result.createButton).toBeDefined();
@@ -1414,7 +1439,7 @@ describe('Test getListReportFeatures()', () => {
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>`;
-        const result = getListReportFeatures(mockPageModel, mockLogger, validMetadata);
+        const result = getListReportFeatures(mockPageModel, mockLogger, toConvertedMetadata(validMetadata));
 
         expect(result.createButton?.visible).toBe(false);
         expect(result.deleteButton?.visible).toBe(false);
@@ -1532,7 +1557,7 @@ describe('Test getListReportFeatures()', () => {
             name: 'test'
         };
 
-        const result = getListReportFeatures(completePageModel, mockLogger, validMetadata);
+        const result = getListReportFeatures(completePageModel, mockLogger, toConvertedMetadata(validMetadata));
 
         // Verify all components are integrated
         expect(result.filterBarItems).toHaveLength(2);

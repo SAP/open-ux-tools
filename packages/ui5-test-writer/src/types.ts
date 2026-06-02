@@ -114,6 +114,7 @@ export type BodySubSectionFeatureData = {
     order: number;
     fields: SectionFormField[];
     tableColumns: TableColumnFeatureData;
+    hidden?: boolean | 'dynamic';
 };
 
 export type BodySectionFeatureData = {
@@ -125,6 +126,7 @@ export type BodySectionFeatureData = {
     fields: SectionFormField[];
     tableColumns: TableColumnFeatureData;
     subSections: BodySubSectionFeatureData[];
+    hidden?: boolean | 'dynamic';
 };
 
 export type ObjectPageFeatures = {
@@ -134,6 +136,10 @@ export type ObjectPageFeatures = {
     headerDescription?: string;
     headerSections?: HeaderSectionFeatureData[];
     bodySections?: BodySectionFeatureData[];
+    /** Number of header sections that will render at runtime (those with `hidden !== true`). */
+    headerSectionsRenderableCount?: number;
+    /** Number of body sections that will render at runtime (those with `hidden !== true`). */
+    bodySectionsRenderableCount?: number;
 };
 
 export type ListReportFeatures = {
@@ -208,8 +214,17 @@ export type HeaderSectionFeatureData = {
     custom?: boolean;
     collection?: boolean;
     microChart?: boolean;
+    microChartId?: string;
+    microChartType?: string;
     form?: boolean;
     stashed?: boolean | string;
+    /**
+     * Indicates whether the section's `UI.Hidden` annotation hides it.
+     * - true: literal `UI.Hidden = true` (or annotation present with no value); test is skipped.
+     * - 'dynamic': annotation is a path/expression the generator cannot evaluate; test is emitted as a comment.
+     * - false / undefined: section is visible.
+     */
+    hidden?: boolean | 'dynamic';
     fields?: FormField[];
 };
 

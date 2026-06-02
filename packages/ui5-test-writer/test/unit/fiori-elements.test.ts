@@ -34,6 +34,12 @@ jest.mock('../../src/utils/opaQUnitUtils', () => ({
     addPathsToQUnitJs: (...args: unknown[]) => addPathsToQUnitJsMock(...args)
 }));
 
+const loadServiceMetadataMock = jest.fn();
+jest.mock('../../src/utils/xmlMetadataUtils', () => ({
+    ...(jest.requireActual('../../src/utils/xmlMetadataUtils') as object),
+    loadServiceMetadata: (...args: unknown[]) => loadServiceMetadataMock(...args)
+}));
+
 describe('ui5-test-writer', () => {
     let fs: Editor | undefined;
     const debug = !!process.env['UX_DEBUG'];
@@ -50,6 +56,11 @@ describe('ui5-test-writer', () => {
             addPathsToQUnitJs: typeof addPathsToQUnitJsMock;
         }>('../../src/utils/opaQUnitUtils');
         addPathsToQUnitJsMock.mockImplementation(realAddPaths);
+    });
+
+    beforeEach(() => {
+        loadServiceMetadataMock.mockReset();
+        loadServiceMetadataMock.mockResolvedValue(undefined);
     });
 
     function prepareTestFiles(testConfigurationName: string): string {
@@ -655,6 +666,109 @@ describe('ui5-test-writer', () => {
             expect(bookingObjPageJourneyContent).toContain('onTable({ property: "_Supplements" }).iCheckColumns(');
             expect(bookingObjPageJourneyContent).toContain('"ConnectionId":{"header":"Connection"}');
             expect(bookingObjPageJourneyContent).toContain('"AirportCode":{"header":"Airport"}');
+        });
+
+        it('emits the chartId/chartType identifier when metadata resolves the chart type', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE));
+            loadServiceMetadataMock.mockResolvedValueOnce({
+                entitySets: [
+                    {
+                        name: 'Booking',
+                        entityType: {
+                            navigationProperties: [],
+                            annotations: {
+                                UI: {
+                                    'Chart#SupplementPrice': {
+                                        term: 'com.sap.vocabularies.UI.v1.Chart',
+                                        ChartType: 'UI.ChartType/Line'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            });
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+            const bookingObjPageJourneyContent =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/BookingObjectPageJourney.js'].contents;
+            expect(bookingObjPageJourneyContent).toContain(
+                'iCheckMicroChart({ chartId: "Chart::SupplementPrice", chartType: "LineMicroChart" })'
+            );
+            expect(bookingObjPageJourneyContent).not.toContain('iCheckMicroChart("Supplement Price")');
+        });
+
+        it('skips assertions for sections marked UI.Hidden in metadata', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE));
+            loadServiceMetadataMock.mockResolvedValueOnce({
+                entitySets: [
+                    {
+                        name: 'Booking',
+                        entityType: {
+                            navigationProperties: [],
+                            annotations: {
+                                UI: {
+                                    HeaderFacets: [
+                                        {
+                                            $Type: 'com.sap.vocabularies.UI.v1.ReferenceFacet',
+                                            Target: { value: 'com.sap.vocabularies.UI.v1.Chart#SupplementPrice' },
+                                            annotations: { UI: { Hidden: true } }
+                                        }
+                                    ],
+                                    Facets: [
+                                        {
+                                            $Type: 'com.sap.vocabularies.UI.v1.CollectionFacet',
+                                            ID: 'FlightData',
+                                            Facets: [],
+                                            annotations: { UI: { Hidden: true } }
+                                        },
+                                        {
+                                            $Type: 'com.sap.vocabularies.UI.v1.CollectionFacet',
+                                            ID: 'PriceData',
+                                            Facets: [],
+                                            annotations: { UI: { Hidden: { $Path: 'isHiddenProp' } } }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                ]
+            });
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+            const bookingObjPageJourneyContent =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/BookingObjectPageJourney.js'].contents;
+            // Hidden=true header facet emits a skip comment, no actual assertion
+            expect(bookingObjPageJourneyContent).toContain(
+                '// Test skipped for header facet "Chart::SupplementPrice" - UI.Hidden annotation is set to true'
+            );
+            expect(bookingObjPageJourneyContent).not.toMatch(/^\s*Then\.[^/]*iCheckMicroChart/m);
+            // Hidden=true body section emits a skip comment, no actual assertion
+            expect(bookingObjPageJourneyContent).toContain(
+                '// Test skipped for body section "FlightData" - UI.Hidden annotation is set to true'
+            );
+            expect(bookingObjPageJourneyContent).not.toMatch(
+                /^\s*Then\.[^/]*iCheckSection\(\{ section: "FlightData" \}\)/m
+            );
+            // Dynamic Hidden body section emits an explanation + commented-out assertion
+            expect(bookingObjPageJourneyContent).toContain(
+                '// Test skipped for body section "PriceData" - UI.Hidden annotation is an expression which the generator is unable to resolve.'
+            );
+            expect(bookingObjPageJourneyContent).toContain(
+                '// Then.onTheBookingObjectPage.iCheckSection({ section: "PriceData" });'
+            );
+            expect(bookingObjPageJourneyContent).not.toMatch(
+                /^\s*Then\.[^/]*iCheckSection\(\{ section: "PriceData" \}\)/m
+            );
+            // Visible body section is still asserted
+            expect(bookingObjPageJourneyContent).toMatch(
+                /^\s*Then\.[^/]*iCheckSection\(\{ section: "BookingDetails" \}\)/m
+            );
+            // Section count reflects only renderable sections (FlightData hidden=true is excluded; PriceData dynamic is included)
+            expect(bookingObjPageJourneyContent).toContain('iCheckNumberOfSections(2)');
         });
     });
 });

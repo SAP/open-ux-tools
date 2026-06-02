@@ -16,8 +16,6 @@ import {
     getAggregations
 } from './modelUtils';
 import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
-import { parse } from '@sap-ux/edmx-parser';
-import { convert } from '@sap-ux/annotation-converter';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 import type { Manifest } from '@sap-ux/project-access';
 
@@ -42,13 +40,13 @@ export function buildButtonState(buttonState?: ButtonState): {
 /**
  * Safely checks button visibility with error handling.
  *
- * @param metadata - The OData metadata XML content
+ * @param metadata - converted OData metadata
  * @param entitySetName - The name of the entity set
  * @param log - Optional logger instance
  * @returns Button visibility result or undefined if error occurs
  */
 export function safeCheckButtonVisibility(
-    metadata: string,
+    metadata: ConvertedMetadata,
     entitySetName: string,
     log?: Logger
 ): ButtonVisibilityResult | undefined {
@@ -63,14 +61,14 @@ export function safeCheckButtonVisibility(
 /**
  * Safely checks action button states with error handling.
  *
- * @param metadata - The OData metadata XML content
+ * @param metadata - converted OData metadata
  * @param entitySetName - The name of the entity set
  * @param actionNames - List of action names to check
  * @param log - Optional logger instance
  * @returns Array of action button states or empty array if error occurs
  */
 export function safeCheckActionButtonStates(
-    metadata: string,
+    metadata: ConvertedMetadata,
     entitySetName: string,
     actionNames: string[],
     log?: Logger
@@ -123,14 +121,14 @@ export function isALPFromManifest(manifest: Manifest, targetKey?: string): boole
  *
  * @param listReportPage - the List Report page containing the tree model with feature definitions
  * @param log - optional logger instance
- * @param metadata - optional metadata for the OPA test generation
+ * @param metadata - optional converted metadata for the OPA test generation
  * @param manifest - optional application manifest, used to detect ALP configuration
  * @returns feature data extracted from the List Report page model
  */
 export function getListReportFeatures(
     listReportPage: PageWithModelV4,
     log?: Logger,
-    metadata?: string,
+    metadata?: ConvertedMetadata,
     manifest?: Manifest
 ): ListReportFeatures {
     const buttonVisibility =
@@ -173,14 +171,16 @@ export function getToolBarActions(pageModel: TreeModel): TreeAggregations {
  * Checks the visibility and enabled state of create and delete buttons for a given entity set
  * by analyzing OData Capabilities annotations in the metadata.
  *
- * @param metadataXml The OData metadata XML content as a string
+ * @param convertedMetadata The converted OData metadata
  * @param entitySetName The name of the entity set to check
  * @returns ButtonVisibilityResult containing the state of create and delete buttons
- * @throws {Error} If metadata cannot be parsed or entity set is not found
+ * @throws {Error} If the entity set cannot be found
  */
-export function checkButtonVisibility(metadataXml: string, entitySetName: string): ButtonVisibilityResult {
+export function checkButtonVisibility(
+    convertedMetadata: ConvertedMetadata,
+    entitySetName: string
+): ButtonVisibilityResult {
     try {
-        const convertedMetadata: ConvertedMetadata = convert(parse(metadataXml));
         const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
 
         if (!entitySet) {
@@ -270,19 +270,18 @@ function analyzeRestriction(
 /**
  * Checks the state of action buttons defined in UI.LineItem annotations for a given entity set.
  *
- * @param metadataXml The OData metadata XML content as a string
+ * @param convertedMetadata The converted OData metadata
  * @param entitySetName The name of the entity set to check
  * @param actionNames Optional list of action names to filter (e.g., ['Check', 'deductDiscount']). If not provided, returns all actions.
  * @returns ActionButtonsResult containing the list of action buttons and their states
- * @throws {Error} If metadata cannot be parsed or entity set is not found
+ * @throws {Error} If the entity set cannot be found
  */
 export function checkActionButtonStates(
-    metadataXml: string,
+    convertedMetadata: ConvertedMetadata,
     entitySetName: string,
     actionNames?: string[]
 ): ActionButtonsResult {
     try {
-        const convertedMetadata: ConvertedMetadata = convert(parse(metadataXml));
         const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
 
         if (!entitySet) {
