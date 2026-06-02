@@ -371,7 +371,7 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                 minHeight: BASE_STYLES.height,
                 height: BASE_STYLES.height,
                 boxSizing: 'border-box',
-                borderRadius: `0 ${COMMON_INPUT_STYLES.borderRadius} ${COMMON_INPUT_STYLES.borderRadius} 0 !important`,
+                borderRadius: `0 var(--vscode-cornerRadius-small, 4px) var(--vscode-cornerRadius-small, 4px) 0 !important`,
                 borderLeft: 'none',
                 outline: 'transparent',
                 userSelect: 'none',
