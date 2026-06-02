@@ -2,12 +2,12 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
-import { validateVersion, validateBasePath } from '../common/validate';
-import { getTemplatePath } from '../templates';
-import { getJsonSpace } from '../common/file';
-import { getManifest } from '../common/utils';
-import { enhanceManifestAndGetActionsElementReference } from '../action';
-import { TargetControl, type ActionMenu, type ActionMenuTarget } from './types';
+import { validateVersion, validateBasePath } from '../common/validate.js';
+import { getTemplatePath } from '../templates.js';
+import { getJsonSpace } from '../common/file.js';
+import { getManifest } from '../common/utils.js';
+import { enhanceManifestAndGetActionsElementReference } from '../action/index.js';
+import { TargetControl, type ActionMenu, type ActionMenuTarget } from './types.js';
 
 /**
  * Add a custom page to an existing UI5 application.

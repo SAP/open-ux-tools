@@ -1,8 +1,9 @@
+import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
 import { promises as fsPromises } from 'node:fs';
 import { create, type Editor } from 'mem-fs-editor';
-import { join } from 'node:path';
-
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type {
     BuildingBlockConfig,
     Chart,
@@ -19,13 +20,15 @@ import type {
 
 import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent, appendPageBBAggregation } from '../../src';
 import { BUILDING_BLOCK_CONFIG } from '../../src/building-block/processor';
-import * as testManifestContent from './sample/building-block/webapp/manifest.json';
+import testManifestContent from './sample/building-block/webapp/manifest.json';
 import { clearTestOutput, writeFilesForDebugging } from '../common';
 import { bindingContextAbsolute, type BindingContextType } from '../../src/building-block/types';
 import { i18nNamespaces, translate } from '../../src/i18n';
 import { Placement } from '../../src/common/types';
 import type { IdGeneratorFunction } from '../../src/common/file';
-import * as fileAccess from '@sap-ux/project-access/dist/file';
+import { findFilesByExtensionMock } from '../__mocks__/project-access-file.mjs';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('Building Blocks', () => {
     let fs: Editor;
@@ -45,7 +48,7 @@ describe('Building Blocks', () => {
         let item = 0;
         jest.requireActual('mem-fs-editor');
         fs = create(createStorage());
-        jest.spyOn(fileAccess, 'findFilesByExtension').mockResolvedValue([]);
+        findFilesByExtensionMock.mockResolvedValue([]);
         generateId = jest.fn((baseId: string) => {
             if (['Item', 'ButtonGroup'].includes(baseId)) {
                 return `${baseId}${item++}`;

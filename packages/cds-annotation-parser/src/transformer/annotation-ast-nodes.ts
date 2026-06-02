@@ -1,5 +1,5 @@
 import { Range } from '@sap-ux/text-document-utils';
-import { copyRange } from './range';
+import { copyRange } from './range.js';
 
 export type QualifiedName = string;
 export type SimpleIdentifier = string;

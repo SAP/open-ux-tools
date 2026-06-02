@@ -1,9 +1,9 @@
-import type { FioriRuleDefinition } from '../types';
-import { createFioriRule } from '../language/rule-factory';
-import { FLEX_ENABLED, type FlexEnabled } from '../language/diagnostics';
+import type { FioriRuleDefinition } from '../types.js';
+import { createFioriRule } from '../language/rule-factory.js';
+import { FLEX_ENABLED, type FlexEnabled } from '../language/diagnostics.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
-import { isLowerThanMinimalUi5Version } from '../utils/version';
-import { createJsonFixer } from '../language/rule-fixer';
+import { isLowerThanMinimalUi5Version } from '../utils/version.js';
+import { createJsonFixer } from '../language/rule-fixer.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: FLEX_ENABLED,

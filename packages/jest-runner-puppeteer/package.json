@@ -1,7 +1,8 @@
 {
     "name": "@sap-ux/jest-runner-puppeteer",
-    "version": "0.3.0",
+    "version": "1.0.0",
     "description": "Jest runner for puppeteer",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -29,7 +30,7 @@
         "rimraf": "6.1.3"
     },
     "devDependencies": {
-        "chalk": "4.1.2",
+        "chalk": "5.3.0",
         "jest-environment-node": "30.2.0",
         "puppeteer-core": "24.40.0",
         "which": "6.0.1"

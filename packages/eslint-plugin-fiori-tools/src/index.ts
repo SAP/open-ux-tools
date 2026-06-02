@@ -1,20 +1,25 @@
 import { readFileSync } from 'node:fs';
-import { join, relative, posix } from 'node:path';
+import { dirname, join, posix, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 import type { Linter } from 'eslint';
 import type { Plugin } from '@eslint/config-helpers';
 import babelParser from '@babel/eslint-parser';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
-import { rules } from './rules';
-import { FioriLanguage } from './language/fiori-language';
+import { rules } from './rules/index.js';
+import { FioriLanguage } from './language/fiori-language.js';
 import { createSyncFn } from 'synckit';
 import type { getPathMappings } from '@sap-ux/project-access';
 import { uniformUrl } from '@sap-ux/fiori-annotation-api';
-export { DiagnosticCache } from './language/diagnostic-cache';
+export { DiagnosticCache } from './language/diagnostic-cache.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
 
 // Use CommonJS require for modules with resolution issues
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+
 const tsParser = require('@typescript-eslint/parser') as any;
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+
 const globals = require('globals') as any;
 
 // Read package.json to get version
@@ -436,7 +441,7 @@ const typescriptConfig: Linter.Config[] = [
         ],
 
         plugins: {
-            '@typescript-eslint': typescriptEslint
+            '@typescript-eslint': typescriptEslint as unknown as Plugin
         },
 
         languageOptions: {
@@ -474,6 +479,7 @@ const fioriLanguageConfig: Linter.Config[] = [
             '@sap-ux/fiori-tools/sap-flex-enabled': 'warn',
             '@sap-ux/fiori-tools/sap-width-including-column-header': 'warn',
             '@sap-ux/fiori-tools/sap-copy-to-clipboard': 'warn',
+            '@sap-ux/fiori-tools/sap-description-column-label': 'warn',
             '@sap-ux/fiori-tools/sap-enable-export': 'warn',
             '@sap-ux/fiori-tools/sap-enable-paste': 'warn',
             '@sap-ux/fiori-tools/sap-creation-mode-for-table': 'warn',
@@ -520,5 +526,8 @@ export const configs: Record<string, Linter.Config[]> = {
     ]
 };
 
-export { rules } from './rules';
+// Add configs to plugin so they are accessible via default import
+plugin.configs = configs;
+
+export { rules } from './rules/index.js';
 export default plugin;

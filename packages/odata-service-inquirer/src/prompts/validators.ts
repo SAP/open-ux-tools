@@ -1,7 +1,7 @@
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import LoggerHelper from './logger-helper';
-import { parseOdataVersion } from '../utils';
+import LoggerHelper from './logger-helper.js';
+import { parseOdataVersion } from '../utils/index.js';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 
 /**

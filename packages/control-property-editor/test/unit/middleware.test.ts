@@ -1,22 +1,30 @@
-import * as common from '@sap-ux-private/control-property-editor-common';
-import { communicationMiddleware } from '../../src/middleware';
-jest.mock('../../src/slice', () => {
-    return {
-        changeProperty: { type: '[ext] property-changed' }
-    };
+import { jest } from '@jest/globals';
+import * as actualCommon from '@sap-ux-private/control-property-editor-common';
+
+const mockSendAction = jest.fn();
+const mockDispose = jest.fn();
+const mockStartPostMessageCommunication = jest.fn().mockReturnValue({
+    sendAction: mockSendAction,
+    dispose: mockDispose
 });
 
+jest.unstable_mockModule('@sap-ux-private/control-property-editor-common', () => ({
+    ...actualCommon,
+    startPostMessageCommunication: mockStartPostMessageCommunication
+}));
+
+jest.unstable_mockModule('../../src/slice', () => ({
+    changeProperty: { type: '[ext] property-changed' }
+}));
+
+const common = await import('@sap-ux-private/control-property-editor-common');
+const { communicationMiddleware } = await import('../../src/middleware');
+
 describe('communication middleware', () => {
-    let messageProcessor: jest.SpyInstance;
-    let dispatch: jest.SpyInstance;
+    let dispatch: jest.Mock;
     let middleWare: any;
-    const sendActionfn = jest.fn();
 
     beforeEach(() => {
-        messageProcessor = jest.spyOn(common, 'startPostMessageCommunication').mockReturnValue({
-            sendAction: sendActionfn,
-            dispose: jest.fn()
-        });
         dispatch = jest.fn();
         middleWare = communicationMiddleware({
             dispatch,
@@ -27,10 +35,8 @@ describe('communication middleware', () => {
         } as any);
     });
     afterEach(() => {
-        if (messageProcessor) {
-            messageProcessor.mockRestore();
-        }
-        sendActionfn.mockReset();
+        mockStartPostMessageCommunication.mockClear();
+        mockSendAction.mockReset();
     });
 
     test('property changed in UI5 application', () => {
@@ -39,15 +45,15 @@ describe('communication middleware', () => {
             propertyName: 'text',
             newValue: 'new value'
         });
-        messageProcessor.mock.calls[0][1](action);
+        mockStartPostMessageCommunication.mock.calls[0][1](action);
         expect(dispatch).toHaveBeenCalledTimes(1);
         expect(dispatch).toHaveBeenNthCalledWith(1, action);
     });
 
     test('select control in UI5 application on apploaded', () => {
         const action = common.appLoaded();
-        messageProcessor.mock.calls[0][1](action);
-        expect(sendActionfn).toHaveBeenCalledWith(common.selectControl('filterBar'));
+        mockStartPostMessageCommunication.mock.calls[0][1](action);
+        expect(mockSendAction).toHaveBeenCalledWith(common.selectControl('filterBar'));
         expect(dispatch).toHaveBeenCalledTimes(1);
         expect(dispatch).toHaveBeenNthCalledWith(1, action);
     });
@@ -59,14 +65,14 @@ describe('communication middleware', () => {
             type: 'text',
             properties: []
         });
-        messageProcessor.mock.calls[0][1](action);
+        mockStartPostMessageCommunication.mock.calls[0][1](action);
         expect(dispatch).toHaveBeenCalledTimes(1);
         expect(dispatch).toHaveBeenNthCalledWith(1, action);
     });
 
     test('outline changed in UI5 application', () => {
         const action = common.outlineChanged([]);
-        messageProcessor.mock.calls[0][1](action);
+        mockStartPostMessageCommunication.mock.calls[0][1](action);
         expect(dispatch).toHaveBeenCalledTimes(1);
         expect(dispatch).toHaveBeenNthCalledWith(1, action);
     });
@@ -77,13 +83,13 @@ describe('communication middleware', () => {
             propertyName: 'text',
             errorMessage: 'change failed'
         });
-        messageProcessor.mock.calls[0][1](action);
+        mockStartPostMessageCommunication.mock.calls[0][1](action);
         expect(dispatch).toHaveBeenCalledTimes(1);
         expect(dispatch).toHaveBeenNthCalledWith(1, action);
     });
 
     test('getTarget', () => {
-        expect(messageProcessor.mock.calls[0][0]()).toEqual('Target');
+        expect(mockStartPostMessageCommunication.mock.calls[0][0]()).toEqual('Target');
     });
 
     test('property change - send action', () => {
@@ -104,17 +110,12 @@ describe('communication middleware', () => {
               "type": "[ext] property-changed",
             }
         `);
-        expect(sendActionfn).toHaveBeenCalledTimes(1);
+        expect(mockSendAction).toHaveBeenCalledTimes(1);
     });
 
     test('select control - send action', () => {
         const action = common.selectControl('01-02');
         const next = jest.fn().mockReturnValue(action);
-        jest.mock('@sap-ux-private/control-property-editor-common', () => {
-            return {
-                selectControl: { type: '[ext] select-control' }
-            };
-        });
         const result = middleWare(next)(action);
         expect(result).toMatchInlineSnapshot(`
             Object {
@@ -122,17 +123,12 @@ describe('communication middleware', () => {
               "type": "[ext] select-control",
             }
         `);
-        expect(sendActionfn).toHaveBeenCalledTimes(1);
+        expect(mockSendAction).toHaveBeenCalledTimes(1);
     });
 
     test('add extension point - send action', () => {
         const action = common.addExtensionPoint({ controlId: 'control1' } as common.OutlineNode);
         const next = jest.fn().mockReturnValue(action);
-        jest.mock('@sap-ux-private/control-property-editor-common', () => {
-            return {
-                addExtensionPoint: { type: '[ext] add-extension-point' }
-            };
-        });
         const result = middleWare(next)(action);
         expect(result).toMatchInlineSnapshot(`
             Object {
@@ -142,17 +138,12 @@ describe('communication middleware', () => {
               "type": "[ext] add-extension-point",
             }
         `);
-        expect(sendActionfn).toHaveBeenCalledTimes(1);
+        expect(mockSendAction).toHaveBeenCalledTimes(1);
     });
 
     test('undo - send action', () => {
         const action = common.undo();
         const next = jest.fn().mockReturnValue(action);
-        jest.mock('@sap-ux-private/control-property-editor-common', () => {
-            return {
-                undo: { type: '[ext] undo' }
-            };
-        });
         const result = middleWare(next)(action);
         expect(result).toMatchInlineSnapshot(`
             Object {
@@ -160,17 +151,12 @@ describe('communication middleware', () => {
               "type": "[ext] undo",
             }
         `);
-        expect(sendActionfn).toHaveBeenCalledTimes(1);
+        expect(mockSendAction).toHaveBeenCalledTimes(1);
     });
 
     test('redo - send action', () => {
         const action = common.redo();
         const next = jest.fn().mockReturnValue(action);
-        jest.mock('@sap-ux-private/control-property-editor-common', () => {
-            return {
-                redo: { type: '[ext] redo' }
-            };
-        });
         const result = middleWare(next)(action);
         expect(result).toMatchInlineSnapshot(`
             Object {
@@ -178,17 +164,12 @@ describe('communication middleware', () => {
               "type": "[ext] redo",
             }
         `);
-        expect(sendActionfn).toHaveBeenCalledTimes(1);
+        expect(mockSendAction).toHaveBeenCalledTimes(1);
     });
 
     test('save - send action', () => {
         const action = common.save();
         const next = jest.fn().mockReturnValue(action);
-        jest.mock('@sap-ux-private/control-property-editor-common', () => {
-            return {
-                save: { type: '[ext] save' }
-            };
-        });
         const result = middleWare(next)(action);
         expect(result).toMatchInlineSnapshot(`
             Object {
@@ -196,17 +177,12 @@ describe('communication middleware', () => {
               "type": "[ext] save",
             }
         `);
-        expect(sendActionfn).toHaveBeenCalledTimes(1);
+        expect(mockSendAction).toHaveBeenCalledTimes(1);
     });
 
     test('setAppMode(adaptation) mode - send action', () => {
         const action = common.setAppMode('adaptation');
         const next = jest.fn().mockReturnValue(action);
-        jest.mock('@sap-ux-private/control-property-editor-common', () => {
-            return {
-                setAppMode: { type: '[ext] setAppMode' }
-            };
-        });
         const result = middleWare(next)(action);
         expect(result).toMatchInlineSnapshot(`
             Object {
@@ -214,16 +190,11 @@ describe('communication middleware', () => {
               "type": "[ext] set-app-mode",
             }
         `);
-        expect(sendActionfn).toHaveBeenCalledTimes(1);
+        expect(mockSendAction).toHaveBeenCalledTimes(1);
     });
     test('setAppMode(navigation) mode - send action', () => {
         const action = common.setAppMode('navigation');
         const next = jest.fn().mockReturnValue(action);
-        jest.mock('@sap-ux-private/control-property-editor-common', () => {
-            return {
-                setAppMode: { type: '[ext] setAppMode' }
-            };
-        });
         const result = middleWare(next)(action);
         expect(result).toMatchInlineSnapshot(`
             Object {
@@ -231,16 +202,11 @@ describe('communication middleware', () => {
               "type": "[ext] set-app-mode",
             }
         `);
-        expect(sendActionfn).toHaveBeenCalledTimes(1);
+        expect(mockSendAction).toHaveBeenCalledTimes(1);
     });
     test('externalFileChange - send action', () => {
         const action = common.externalFileChange('file-path');
         const next = jest.fn().mockReturnValue(action);
-        jest.mock('@sap-ux-private/control-property-editor-common', () => {
-            return {
-                externalFileChange: { type: '[ext] external-file-change' }
-            };
-        });
         const result = middleWare(next)(action);
         expect(result).toMatchInlineSnapshot(`
             Object {
@@ -248,6 +214,6 @@ describe('communication middleware', () => {
               "type": "[ext] external-file-change",
             }
         `);
-        expect(sendActionfn).toHaveBeenCalledTimes(1);
+        expect(mockSendAction).toHaveBeenCalledTimes(1);
     });
 });

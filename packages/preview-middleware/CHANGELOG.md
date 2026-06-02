@@ -1,5 +1,142 @@
 # @sap-ux/preview-middleware
 
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies [a8e4cf0]
+    - @sap-ux/adp-tooling@1.0.2
+
+## 1.0.2
+
+### Patch Changes
+
+- 8024912: fix: republish to pick up control-property-editor 1.0.1 (1.0.0 was unpublished from npm)
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+    - @sap-ux/adp-tooling@1.0.1
+    - @sap-ux/system-access@1.0.0
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/feature-toggle@1.0.0
+    - @sap-ux/project-access@2.0.0
+    - @sap-ux/system-access@1.0.0
+    - @sap-ux/adp-tooling@1.0.0
+    - @sap-ux/btp-utils@2.0.0
+    - @sap-ux/logger@1.0.0
+    - @sap-ux/i18n@1.0.0
+
+## 0.26.12
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.11
+
+## 0.26.11
+
+### Patch Changes
+
+- 9a980a9: fix: Prioritize local workspace fragments over deployed versions in adaptation project editor
+
+    When previewing an adaptation project connected to an ABAP system, locally created fragments and controllers are now correctly prioritized over their deployed counterparts. The LREP flex data response from the ABAP system includes inlined module content (fragment XMLs, controller JS) which prevented UI5 from requesting local workspace versions. The fix strips these inlined modules from the response so that UI5 falls back to HTTP requests, which the existing ADP proxy serves from the local workspace. Flex changes are left untouched as UI5 deduplicates them natively by fileName.
+
+- Updated dependencies [9a980a9]
+    - @sap-ux/adp-tooling@0.19.10
+
+## 0.26.10
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.9
+
+## 0.26.9
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.8
+- @sap-ux/system-access@0.8.2
+
+## 0.26.8
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade @sap/service-provider-apis 2.8.0 → 2.10.0 (security: axios vulnerability)
+- Updated dependencies [01b70ca]
+    - @sap-ux/adp-tooling@0.19.7
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/system-access@0.8.1
+
+## 0.26.7
+
+### Patch Changes
+
+- Updated dependencies [758b0d4]
+    - @sap-ux/adp-tooling@0.19.6
+
+## 0.26.6
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.5
+- @sap-ux/project-access@1.38.1
+- @sap-ux/system-access@0.8.0
+
+## 0.26.5
+
+### Patch Changes
+
+- Updated dependencies [dab1aa2]
+    - @sap-ux/adp-tooling@0.19.4
+
+## 0.26.4
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/adp-tooling@0.19.3
+    - @sap-ux/system-access@0.8.0
+
 ## 0.26.3
 
 ### Patch Changes

@@ -1,5 +1,71 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.4.1
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+    - @sap-ux/fiori-annotation-api@1.0.1
+
+## 10.4.0
+
+### Minor Changes
+
+- 32609a7: chore(eslint-plugin-fiori-tools): migrate to ESM module system
+
+    Migrated internal code to ESM (ECMAScript Modules) with NodeNext module resolution. This is a non-breaking change for consumers as the plugin continues to work with ESLint 9.x and 10.x.
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/odata-annotation-core@1.0.0
+    - @sap-ux/fiori-annotation-api@1.0.0
+    - @sap-ux/odata-entity-model@1.0.0
+    - @sap-ux/odata-vocabularies@1.0.0
+    - @sap-ux/project-access@2.0.0
+
+## 10.3.0
+
+### Minor Changes
+
+- 0d6c80c: feat: enhance ESLint rules to support CDS annotations for sap-description-column-label and sap-text-arrangement-hidden
+
+## 10.2.2
+
+### Patch Changes
+
+- b3d4f62: Collect CAP application object page label to display in rule text messages.
+
+## 10.2.1
+
+### Patch Changes
+
+- @sap-ux/project-access@1.38.1
+- @sap-ux/fiori-annotation-api@0.11.1
+
+## 10.2.0
+
+### Minor Changes
+
+- 2f1ece0: [rule] Add rule to check that a Common.Text description property has a meaningful Common.Label annotation
+
+### Patch Changes
+
+- Updated dependencies [2f1ece0]
+    - @sap-ux/fiori-annotation-api@0.11.0
+    - @sap-ux/odata-annotation-core@0.3.1
+    - @sap-ux/odata-entity-model@0.4.0
+    - @sap-ux/odata-vocabularies@0.5.1
+
+## 10.1.2
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/fiori-annotation-api@0.10.1
+
 ## 10.1.1
 
 ### Patch Changes

@@ -17,11 +17,11 @@ import {
     type Page,
     bindingContextAbsolute,
     type TemplateConfig
-} from './types';
-import type { Manifest } from '../common/types';
-import { getErrorMessage, validateBasePath, validateDependenciesLibs } from '../common/validate';
-import { getTemplatePath } from '../templates';
-import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
+} from './types.js';
+import type { Manifest } from '../common/types.js';
+import { getErrorMessage, validateBasePath, validateDependenciesLibs } from '../common/validate.js';
+import { getTemplatePath } from '../templates.js';
+import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types.js';
 import {
     CONFIG,
     copyTpl,
@@ -31,11 +31,11 @@ import {
     getRelativeTemplateComponentPath,
     type IdGeneratorFunction,
     type TemplateContext
-} from '../common/file';
-import { getManifest, getManifestPath } from '../common/utils';
-import { getOrAddNamespace } from './prompts/utils/xml';
-import { i18nNamespaces, translate } from '../i18n';
-import { processBuildingBlock } from './processor';
+} from '../common/file.js';
+import { getManifest, getManifestPath } from '../common/utils.js';
+import { getOrAddNamespace } from './prompts/utils/xml.js';
+import { i18nNamespaces, translate } from '../i18n.js';
+import { processBuildingBlock } from './processor.js';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',

@@ -1,12 +1,15 @@
 import type { Logger } from '@sap-ux/logger';
-import { isAppStudio, errorString } from '../utils';
-import { DummyStore } from './dummy-store';
-import { KeyStoreManager } from './key-store';
-import type { SecureStore } from './types';
+import { isAppStudio, errorString } from '../utils/index.js';
+import { DummyStore } from './dummy-store.js';
+import { KeyStoreManager } from './key-store.js';
+import type { SecureStore } from './types.js';
 import type { keyring as zoweKeyring } from '@zowe/secrets-for-zowe-sdk';
 import { join, dirname } from 'node:path';
 import { homedir } from 'node:os';
+import { createRequire } from 'node:module';
 import fs from 'node:fs';
+
+const require = createRequire(import.meta.url);
 
 // Ensure the require is not bundled by webpack and resolved at runtime
 declare function __non_webpack_require__(moduleName: string): any;
@@ -47,22 +50,21 @@ function getZoweSdkPaths(insiders: boolean): string[] {
 function loadZoweSecretSdk(log: Logger): typeof zoweKeyring | undefined {
     try {
         // Attempt to load the Zowe SDK directly
-        // eslint-disable-next-line
+
         return require('@zowe/secrets-for-zowe-sdk').keyring;
     } catch (primaryError) {
         log.warn(errorString(primaryError));
-        log.info('Attempting to load Zowe secrets SDK from fallback locations.');
+        log.debug('Attempting to load Zowe secrets SDK from fallback locations.');
 
         try {
             const fallbackPaths = [...getZoweSdkPaths(false), ...getZoweSdkPaths(true)];
-            log.info(`Discovered fallback directories: ${JSON.stringify(fallbackPaths)}`);
-
+            log.debug(`Discovered fallback directories: ${JSON.stringify(fallbackPaths)}`);
             for (const path of fallbackPaths) {
                 try {
-                    log.info(`Attempting to load Zowe secrets SDK from: ${path}`);
+                    log.debug(`Attempting to load Zowe secrets SDK from: ${path}`);
                     return typeof __non_webpack_require__ === 'function'
                         ? __non_webpack_require__(path)
-                        : require(path); // eslint-disable-line @typescript-eslint/no-require-imports
+                        : require(path);
                 } catch (fallbackError) {
                     log.warn(`Failed to load Zowe secrets SDK from ${path}: ${errorString(fallbackError)}`);
                 }
@@ -91,7 +93,7 @@ export const getSecureStore = (log: Logger): SecureStore => {
     // Try to initialize secure storage with Zowe secrets SDK
     const zoweSecretSdk = loadZoweSecretSdk(log);
     if (zoweSecretSdk) {
-        log.info('Using KeyStoreManager for secure storage.');
+        log.debug('Using KeyStoreManager for secure storage.');
         return new KeyStoreManager(log, zoweSecretSdk);
     }
 
@@ -99,4 +101,4 @@ export const getSecureStore = (log: Logger): SecureStore => {
     return new DummyStore(log);
 };
 
-export * from './types';
+export * from './types.js';

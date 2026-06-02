@@ -1,16 +1,14 @@
-import prompts from 'prompts';
-import {
-    getCredentialsWithPrompts,
-    getCredentialsFromStore,
-    getCredentialsFromEnvVariables,
-    storeCredentials
-} from '../../../src/base/credentials';
+import { jest } from '@jest/globals';
+import { mockedStoreService, MockToolsLogger, MockNullTransport } from '../../__mocks__';
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { mockedStoreService } from '../../__mocks__';
+
+// Dynamic imports after mocks are set up
+const { default: prompts } = await import('prompts');
+const { getCredentialsWithPrompts, getCredentialsFromStore, getCredentialsFromEnvVariables, storeCredentials } =
+    await import('../../../src/base/credentials');
 
 describe('base/credentials', () => {
-    const logger = new ToolsLogger({ transports: [new NullTransport()] });
+    const logger = new MockToolsLogger({ transports: [new MockNullTransport()] }) as any;
     const target: BackendSystem = {
         name: 'Target System',
         url: 'http://target.example',

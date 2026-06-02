@@ -1,5 +1,9 @@
-import { join } from 'node:path';
+import { jest } from '@jest/globals';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { generateInboundNavigationConfig } from '../../../src/navigation-config';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('Unit tests for navigation config generation', () => {
     const fixturePath = join(__dirname, '../../fixtures/navigation-config');

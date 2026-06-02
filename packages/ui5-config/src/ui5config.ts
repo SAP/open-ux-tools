@@ -16,7 +16,7 @@ import type {
     DataSourceConfig,
     AbapDeployConfig,
     MockserverService
-} from './types';
+} from './types/index.js';
 import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
 import {
@@ -24,13 +24,16 @@ import {
     getBackendComments,
     getFioriToolsProxyMiddlewareConfig,
     getMockServerMiddlewareConfig
-} from './middlewares';
-import { fioriToolsProxy, serveStatic } from './constants';
-import Ajv, { type ValidateFunction } from 'ajv';
-import type { SomeJSONSchema } from 'ajv/dist/types/json-schema';
-import { join, posix, relative, sep } from 'node:path';
+} from './middlewares.js';
+import { fioriToolsProxy, serveStatic } from './constants.js';
+import { Ajv, type ValidateFunction } from 'ajv';
+type SomeJSONSchema = Record<string, unknown>;
+import { dirname, join, posix, relative, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { readFile } from 'node:fs/promises';
 import yaml from 'js-yaml';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Represents a UI5 config file in yaml format (ui5(-*).yaml) with utility functions to manipulate the yaml document.
@@ -92,6 +95,20 @@ export class UI5Config {
             }
         }
         return instance;
+    }
+
+    /**
+     * Reads the metadata object from the config.
+     *
+     * @returns metadata object from config
+     * @memberof UI5Config
+     */
+    public getMetadata(): Ui5Document['metadata'] | undefined {
+        try {
+            return this.document.getMap({ path: 'metadata' }).toJSON() as Ui5Document['metadata'];
+        } catch {
+            return undefined;
+        }
     }
 
     /**

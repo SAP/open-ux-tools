@@ -1,5 +1,5 @@
 import { DatasourceType } from '@sap-ux/odata-service-inquirer';
-import { PromptNames, type RepoAppDownloadAnswers } from '../app/types';
+import { PromptNames, type RepoAppDownloadAnswers } from '../app/types.js';
 
 // Title and description for the generator
 export const generatorTitle = 'Download ADT deployed app from UI5 ABAP repository';

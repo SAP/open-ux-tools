@@ -1,9 +1,9 @@
-import type { FioriRuleDefinition } from '../types';
-import { TABLE_COLUMN_VERTICAL_ALIGNMENT } from '../language/diagnostics';
-import { createFioriRule } from '../language/rule-factory';
+import type { FioriRuleDefinition } from '../types.js';
+import { TABLE_COLUMN_VERTICAL_ALIGNMENT } from '../language/diagnostics.js';
+import { createFioriRule } from '../language/rule-factory.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
-import { createJsonFixer } from '../language/rule-fixer';
-import { isLowerThanMinimalUi5Version } from '../utils/version';
+import { createJsonFixer } from '../language/rule-fixer.js';
+import { isLowerThanMinimalUi5Version } from '../utils/version.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: TABLE_COLUMN_VERTICAL_ALIGNMENT,

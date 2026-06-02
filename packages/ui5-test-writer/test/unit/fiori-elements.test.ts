@@ -1,15 +1,18 @@
-import { generateOPAFiles, generatePageObjectFile } from '../../src/fiori-elements-opa-writer';
-import { join } from 'node:path';
+import { jest } from '@jest/globals';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import fileSystem, { read } from 'node:fs';
+import fileSystem, { readFileSync } from 'node:fs';
 import type { Logger } from '@sap-ux/logger/src/types';
 import * as appModels from '../test-input/constants';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const readAppMock = jest.fn();
-jest.mock('@sap-ux/project-access', () => ({
-    ...(jest.requireActual('@sap-ux/project-access') as any),
+const realProjectAccess = await import('@sap-ux/project-access');
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...realProjectAccess,
     createApplicationAccess: jest.fn().mockResolvedValue({
         getSpecification: jest.fn().mockResolvedValue({
             readApp: () => readAppMock()
@@ -18,38 +21,34 @@ jest.mock('@sap-ux/project-access', () => ({
 }));
 
 const existsSyncMock = jest.fn();
-jest.mock('node:fs', () => {
-    const actual = jest.requireActual('node:fs') as object;
-    return {
-        ...actual,
-        existsSync: (...args: unknown[]) => existsSyncMock(...args)
-    };
-});
+const actualFs = await import('node:fs');
+jest.unstable_mockModule('node:fs', () => ({
+    ...actualFs,
+    existsSync: (...args: unknown[]) => existsSyncMock(...args)
+}));
 
 const hasVirtualOPA5Mock = jest.fn();
 const addPathsToQUnitJsMock = jest.fn();
-jest.mock('../../src/utils/opaQUnitUtils', () => ({
-    ...(jest.requireActual('../../src/utils/opaQUnitUtils') as object),
+const actualOpaQUnitUtils = await import('../../src/utils/opaQUnitUtils.js');
+jest.unstable_mockModule('../../src/utils/opaQUnitUtils.js', () => ({
+    ...actualOpaQUnitUtils,
     hasVirtualOPA5: (...args: unknown[]) => hasVirtualOPA5Mock(...args),
     addPathsToQUnitJs: (...args: unknown[]) => addPathsToQUnitJsMock(...args)
 }));
+
+const { generateOPAFiles } = await import('../../src/fiori-elements-opa-writer.js');
 
 describe('ui5-test-writer', () => {
     let fs: Editor | undefined;
     const debug = !!process.env['UX_DEBUG'];
     jest.setTimeout(600000);
 
-    beforeAll(() => {
+    beforeAll(async () => {
         // Pass existsSync and addPathsToQUnitJs through to real implementations by default
-        const realExistsSync: typeof existsSyncMock = jest.requireActual<{
-            existsSync: typeof existsSyncMock;
-        }>('node:fs').existsSync;
-        existsSyncMock.mockImplementation(realExistsSync);
+        existsSyncMock.mockImplementation(actualFs.existsSync);
 
-        const { addPathsToQUnitJs: realAddPaths } = jest.requireActual<{
-            addPathsToQUnitJs: typeof addPathsToQUnitJsMock;
-        }>('../../src/utils/opaQUnitUtils');
-        addPathsToQUnitJsMock.mockImplementation(realAddPaths);
+        const realOpaQUnitUtils = await import('../../src/utils/opaQUnitUtils.js');
+        addPathsToQUnitJsMock.mockImplementation(realOpaQUnitUtils.addPathsToQUnitJs);
     });
 
     function prepareTestFiles(testConfigurationName: string): string {
@@ -77,92 +76,11 @@ describe('ui5-test-writer', () => {
         });
     });
 
-    describe('generatePageObjectFile', () => {
-        const testPages = [
-            {
-                description: 'ListReport',
-                targetKey: 'EmployeesListTarget'
-            },
-            {
-                description: 'Object Page',
-                targetKey: 'EmployeesObjectPageTarget'
-            },
-            {
-                description: 'FPM custom',
-                targetKey: 'EmployeesCustomPageTarget'
-            }
-        ];
-        const testUnsupportedPages = [
-            {
-                description: 'Another component view (not supported)',
-                targetKey: 'AnotherCustomPageTarget',
-                errorMsg: 'Validation error: Cannot generate the page file for target: AnotherCustomPageTarget.'
-            },
-            {
-                description: 'Plain XML view (not supported)',
-                targetKey: 'XMLView',
-                errorMsg: 'Validation error: Cannot generate the page file for target: XMLView.'
-            },
-            {
-                description: 'Missing ID',
-                targetKey: 'NoID',
-                errorMsg: 'Validation error: Cannot generate the page file for target: NoID.'
-            },
-            {
-                description: 'Missing entityset',
-                targetKey: 'NoEntitySet',
-                errorMsg: 'Validation error: Cannot generate the page file for target: NoEntitySet.'
-            },
-            {
-                description: 'Bad target',
-                targetKey: 'XXX',
-                errorMsg: 'Validation error: Cannot generate the page file for target: XXX.'
-            }
-        ];
-
-        it.each(testPages)('$description', async (config) => {
-            const projectDir = prepareTestFiles('Pages');
-            fs = await generatePageObjectFile(projectDir, { targetKey: config.targetKey }, fs);
-            expect(fs.dump(projectDir)).toMatchSnapshot();
-        });
-
-        it.each(testUnsupportedPages)('$description', async (config) => {
-            const projectDir = prepareTestFiles('Pages');
-            let error: string | undefined;
-            try {
-                fs = await generatePageObjectFile(projectDir, { targetKey: config.targetKey }, fs);
-            } catch (e) {
-                error = (e as Error).message;
-            }
-
-            expect(error).toEqual(config.errorMsg);
-        });
-
-        it('No manifest', async () => {
-            const projectDir = prepareTestFiles('Not_Here');
-            let error: string | undefined;
-            try {
-                fs = await generatePageObjectFile(projectDir, { targetKey: 'xx' }, fs);
-            } catch (e) {
-                error = (e as Error).message;
-            }
-
-            expect(error?.startsWith('Validation error: Cannot read the `manifest.json` file:')).toEqual(true);
-        });
-
-        it('Providing an app ID', async () => {
-            const projectDir = prepareTestFiles('Pages');
-            fs = await generatePageObjectFile(
-                projectDir,
-                { targetKey: 'EmployeesListTarget', appID: 'test.ui5-test-writer' },
-                fs
-            );
-            expect(fs.dump(projectDir)).toMatchSnapshot();
-        });
-    });
-
     describe('generateOPAFiles', () => {
-        const metadata = fs?.read(join(__dirname, '../test-input/metadata.xml')) || '';
+        const metadata = readFileSync(join(__dirname, '../fixtures/metadata.xml')).toString();
+        const metadataMissingSemanticFilter = readFileSync(
+            join(__dirname, '../fixtures/metadata_filter_bar_semantic_key.xml')
+        ).toString();
         const testApplications = [
             {
                 description: 'Fullscreen LR-OP',
@@ -322,6 +240,14 @@ describe('ui5-test-writer', () => {
             expect(firstJourneyContent).toContain('iCheckFilterField');
         });
 
+        it('generates filter tests for LROPv4 app (missing semantic filter)', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL_FILTER_BAR_NO_TRAVEL_ID));
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, {}, metadataMissingSemanticFilter, fs);
+
+            expect(fs.dump(projectDir)).toMatchSnapshot();
+        });
+
         it('generates column tests for LROPv4 app', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_NO_FILTER_MODEL));
             const projectDir = prepareTestFiles('LROPv4');
@@ -386,22 +312,20 @@ describe('ui5-test-writer', () => {
         describe('standalone mode with virtual OPA5', () => {
             let realExistsSync: (path: string) => boolean;
 
-            beforeAll(() => {
-                realExistsSync = jest.requireActual<{ existsSync: (path: string) => boolean }>('node:fs').existsSync;
+            beforeAll(async () => {
+                realExistsSync = actualFs.existsSync;
             });
 
             beforeEach(() => {
                 hasVirtualOPA5Mock.mockResolvedValue(true);
             });
 
-            afterEach(() => {
+            afterEach(async () => {
                 hasVirtualOPA5Mock.mockReset();
                 // Restore pass-through so subsequent tests are unaffected
                 existsSyncMock.mockImplementation(realExistsSync);
-                const { addPathsToQUnitJs: realAddPaths } = jest.requireActual<{
-                    addPathsToQUnitJs: typeof addPathsToQUnitJsMock;
-                }>('../../src/utils/opaQUnitUtils');
-                addPathsToQUnitJsMock.mockImplementation(realAddPaths);
+                const realOpaQUnitUtils = await import('../../src/utils/opaQUnitUtils.js');
+                addPathsToQUnitJsMock.mockImplementation(realOpaQUnitUtils.addPathsToQUnitJs);
             });
 
             it('generates journey files but skips opaTests.qunit.js when OPA5 is configured in yaml and JourneyRunner exists', async () => {
@@ -436,7 +360,7 @@ describe('ui5-test-writer', () => {
             let realExistsSync: (path: string) => boolean;
 
             beforeAll(() => {
-                realExistsSync = jest.requireActual<{ existsSync: (path: string) => boolean }>('node:fs').existsSync;
+                realExistsSync = actualFs.existsSync;
             });
 
             beforeEach(() => {
@@ -446,10 +370,7 @@ describe('ui5-test-writer', () => {
             afterEach(() => {
                 hasVirtualOPA5Mock.mockReset();
                 existsSyncMock.mockImplementation(realExistsSync);
-                const { addPathsToQUnitJs: realAddPaths } = jest.requireActual<{
-                    addPathsToQUnitJs: typeof addPathsToQUnitJsMock;
-                }>('../../src/utils/opaQUnitUtils');
-                addPathsToQUnitJsMock.mockImplementation(realAddPaths);
+                addPathsToQUnitJsMock.mockImplementation(actualOpaQUnitUtils.addPathsToQUnitJs);
             });
 
             it('moves integration folder and writes common/page/journey files when no JourneyRunner and OPA5 not virtual', async () => {

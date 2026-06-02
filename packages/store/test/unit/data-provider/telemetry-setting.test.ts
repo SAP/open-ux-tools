@@ -1,26 +1,34 @@
-import { TelemetrySetting, TelemetrySettingKey } from '../../../src';
-import * as dataAccessFilesystem from '../../../src/data-access/filesystem';
-import { TelemetryDataProvider } from '../../../src/data-provider/telemetry-setting';
-import { Entities } from '../../../src/data-provider/constants';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
+import { jest } from '@jest/globals';
+
+const mockFsStore = {
+    write: jest.fn(),
+    read: jest.fn(),
+    del: jest.fn(),
+    getAll: jest.fn(),
+    readAll: jest.fn(),
+    partialUpdate: jest.fn()
+};
+
+jest.unstable_mockModule('../../../src/data-access/filesystem', () => ({
+    getFilesystemStore: jest.fn().mockReturnValue(mockFsStore),
+    basedir: jest.fn(),
+    getFilesystemWatcherFor: jest.fn()
+}));
+
+const { TelemetryDataProvider } = await import('../../../src/data-provider/telemetry-setting');
+const { Entities } = await import('../../../src/data-provider/constants');
+const { TelemetrySetting, TelemetrySettingKey } = await import('../../../src');
+const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 
 describe('TelemetrySetting data provider', () => {
     const logger = new ToolsLogger({ transports: [new NullTransport()] });
-    const mockGetFilesystemStore = jest.spyOn(dataAccessFilesystem, 'getFilesystemStore');
-    const mockFsStore = {
-        write: jest.fn(),
-        read: jest.fn(),
-        del: jest.fn(),
-        getAll: jest.fn(),
-        readAll: jest.fn(),
-        partialUpdate: jest.fn()
-    };
+
     beforeEach(() => {
-        mockGetFilesystemStore.mockReturnValue(mockFsStore);
+        jest.clearAllMocks();
     });
 
     it('read delegates to the data accessor', async () => {
-        const expectedTelemetrySetting: TelemetrySetting = {
+        const expectedTelemetrySetting = {
             enableTelemetry: true
         };
         mockFsStore.read.mockResolvedValueOnce(expectedTelemetrySetting);
@@ -30,7 +38,7 @@ describe('TelemetrySetting data provider', () => {
     });
 
     it('write delegates to the data accessor', async () => {
-        const expectedTelemetrySetting: TelemetrySetting = {
+        const expectedTelemetrySetting = {
             enableTelemetry: true
         };
         mockFsStore.write.mockResolvedValueOnce(expectedTelemetrySetting);
@@ -45,7 +53,7 @@ describe('TelemetrySetting data provider', () => {
     });
 
     it('delete delegates to the data accessor', async () => {
-        const expectedTelemetrySetting: TelemetrySetting = {
+        const expectedTelemetrySetting = {
             enableTelemetry: true
         };
         mockFsStore.del.mockResolvedValueOnce(expectedTelemetrySetting);
@@ -59,7 +67,7 @@ describe('TelemetrySetting data provider', () => {
     });
 
     it('getAll delegates to the data accessor', async () => {
-        const expectedTelemetrySetting: TelemetrySetting = {
+        const expectedTelemetrySetting = {
             enableTelemetry: true
         };
         mockFsStore.getAll.mockResolvedValueOnce(expectedTelemetrySetting);

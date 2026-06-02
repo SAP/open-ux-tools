@@ -1,2 +1,2 @@
-export * from './communication';
-export * from './types';
+export * from './communication.js';
+export * from './types.js';

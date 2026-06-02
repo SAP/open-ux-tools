@@ -1,15 +1,15 @@
-import Generator = require('yeoman-generator');
-import type { Prompts } from '@sap-devx/yeoman-ui-types';
+import Generator from 'yeoman-generator';
+import type { Prompts, AppWizard as AppWizardType } from '@sap-devx/yeoman-ui-types';
 import { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
-import { t } from '../utils/i18n';
-import type { GeneratorTypes } from '../types';
-import { setHeaderTitle } from '../utils/opts';
-import AdpGeneratorLogger from '../utils/logger';
-import type { GeneratorOpts } from '../utils/opts';
+import { t } from '../utils/i18n.js';
+import type { GeneratorTypes } from '../types.js';
+import { setHeaderTitle } from '../utils/opts.js';
+import AdpGeneratorLogger from '../utils/logger.js';
+import type { GeneratorOpts } from '../utils/opts.js';
 
 /**
  * Shared base class for all ADP generators.
@@ -25,7 +25,7 @@ export default class SubGeneratorBase extends Generator {
     /**
      * Instance of the app wizard.
      */
-    protected readonly appWizard: AppWizard;
+    protected readonly appWizard: AppWizardType;
     /**
      * The type of generator.
      */

@@ -1,12 +1,12 @@
 import path from 'node:path';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { getMtaPath } from '@sap-ux/project-access';
-import { isCfInstalled } from './services/cli';
-import { isLoggedInCf } from './core/auth';
-import { loadCfConfig } from './core/config';
-import { getYamlContent } from './project/yaml-loader';
-import { t } from '../i18n';
-import type { CfConfig, CfDeploymentInfo, DeployCfOptions, MtaYaml } from '../types';
+import { isCfInstalled } from './services/cli.js';
+import { isLoggedInCf } from './core/auth.js';
+import { loadCfConfig } from './core/config.js';
+import { getYamlContent } from './project/yaml-loader.js';
+import { t } from '../i18n.js';
+import type { CfConfig, CfDeploymentInfo, DeployCfOptions, MtaYaml } from '../types.js';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 const SEPARATOR = '------------------------------------';
