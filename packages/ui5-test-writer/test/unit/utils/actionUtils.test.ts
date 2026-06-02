@@ -1,12 +1,17 @@
 import type { Action, ActionParameter, ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI';
+import { parse } from '@sap-ux/edmx-parser';
+import { convert } from '@sap-ux/annotation-converter';
+import type { Logger } from '@sap-ux/logger';
 import {
     extractActionMethodName,
     findOperationAvailableAnnotation,
     analyzeOperationAvailability,
     extractEnumMemberValue,
     buildActionButtonState,
-    buildActionStateFromSpecModelKey
+    buildActionStateFromSpecModelKey,
+    checkEditVisibilityFromMetadata,
+    safeCheckEditVisibilityFromMetadata
 } from '../../../src/utils/actionUtils';
 
 describe('extractActionMethodName()', () => {
@@ -370,5 +375,118 @@ describe('buildActionStateFromSpecModelKey()', () => {
             enabled: 'dynamic',
             dynamicPath: 'IsReady'
         });
+    });
+});
+
+describe('checkEditVisibilityFromMetadata()', () => {
+    const baseMetadataXml = (annotations = ''): string => `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="TestEntity">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="TestSet" EntityType="TestService.TestEntity"/>
+            </EntityContainer>${annotations}
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    test('returns default visible/enabled when no UpdateRestrictions are present', () => {
+        const metadata = convert(parse(baseMetadataXml()));
+        const result = checkEditVisibilityFromMetadata(metadata, 'TestSet');
+        expect(result).toEqual({ visible: true, enabled: true });
+    });
+
+    test('honours UpdateRestrictions Updatable=false', () => {
+        const metadata = convert(
+            parse(
+                baseMetadataXml(`
+            <Annotations Target="TestService.EntityContainer/TestSet">
+                <Annotation Term="Org.OData.Capabilities.V1.UpdateRestrictions">
+                    <Record>
+                        <PropertyValue Property="Updatable" Bool="false"/>
+                    </Record>
+                </Annotation>
+            </Annotations>`)
+            )
+        );
+        const result = checkEditVisibilityFromMetadata(metadata, 'TestSet');
+        expect(result.visible).toBe(false);
+        expect(result.enabled).toBe(false);
+    });
+
+    test('returns dynamic state with the path when Updatable is path-based', () => {
+        const metadata = convert(
+            parse(
+                baseMetadataXml(`
+            <Annotations Target="TestService.EntityContainer/TestSet">
+                <Annotation Term="Org.OData.Capabilities.V1.UpdateRestrictions">
+                    <Record>
+                        <PropertyValue Property="Updatable" Path="_it/__EntityControl/Updatable"/>
+                    </Record>
+                </Annotation>
+            </Annotations>`)
+            )
+        );
+        const result = checkEditVisibilityFromMetadata(metadata, 'TestSet');
+        expect(result.enabled).toBe('dynamic');
+        expect(result.dynamicPath).toBe('_it/__EntityControl/Updatable');
+    });
+
+    test('throws when entity set does not exist', () => {
+        const metadata = convert(parse(baseMetadataXml()));
+        expect(() => checkEditVisibilityFromMetadata(metadata, 'MissingSet')).toThrow(
+            "Entity set 'MissingSet' not found in metadata"
+        );
+    });
+});
+
+describe('safeCheckEditVisibilityFromMetadata()', () => {
+    let mockLogger: Logger;
+
+    beforeEach(() => {
+        mockLogger = {
+            warn: jest.fn(),
+            debug: jest.fn(),
+            info: jest.fn(),
+            error: jest.fn()
+        } as unknown as Logger;
+    });
+
+    const validMetadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="TestEntity">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="TestSet" EntityType="TestService.TestEntity"/>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    test('returns ButtonState when entity set is valid', () => {
+        const metadata = convert(parse(validMetadataXml));
+        const result = safeCheckEditVisibilityFromMetadata(metadata, 'TestSet', mockLogger);
+        expect(result).toEqual({ visible: true, enabled: true });
+        expect(mockLogger.debug).not.toHaveBeenCalled();
+    });
+
+    test('returns undefined and logs debug when entity set is missing', () => {
+        const metadata = convert(parse(validMetadataXml));
+        const result = safeCheckEditVisibilityFromMetadata(metadata, 'MissingSet', mockLogger);
+        expect(result).toBeUndefined();
+        expect(mockLogger.debug).toHaveBeenCalledWith(expect.stringContaining('Failed to check edit visibility'));
+    });
+
+    test('returns undefined when metadata structure is malformed and tolerates missing logger', () => {
+        const result = safeCheckEditVisibilityFromMetadata({} as ConvertedMetadata, 'TestSet');
+        expect(result).toBeUndefined();
     });
 });

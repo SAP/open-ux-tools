@@ -317,6 +317,29 @@ export function checkButtonVisibility(metadataXml: string, entitySetName: string
 
 /**
  * Checks the visibility and enabled state of the edit button for a given entity set
+ * by analyzing UpdateRestrictions in the converted metadata.
+ *
+ * @param convertedMetadata The already-converted OData metadata
+ * @param entitySetName The name of the entity set to check
+ * @returns ButtonState for the edit button
+ * @throws {Error} If entity set is not found
+ */
+export function checkEditVisibilityFromMetadata(
+    convertedMetadata: ConvertedMetadata,
+    entitySetName: string
+): ButtonState {
+    const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
+
+    if (!entitySet) {
+        throw new Error(`Entity set '${entitySetName}' not found in metadata`);
+    }
+
+    const updateRestrictions = entitySet.annotations?.Capabilities?.UpdateRestrictions;
+    return analyzeUpdateRestrictions(updateRestrictions);
+}
+
+/**
+ * Checks the visibility and enabled state of the edit button for a given entity set
  * by analyzing UpdateRestrictions in the metadata.
  *
  * @param metadataXml The OData metadata XML content as a string
@@ -326,15 +349,7 @@ export function checkButtonVisibility(metadataXml: string, entitySetName: string
  */
 export function checkEditVisibility(metadataXml: string, entitySetName: string): ButtonState {
     try {
-        const convertedMetadata: ConvertedMetadata = convert(parse(metadataXml));
-        const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
-
-        if (!entitySet) {
-            throw new Error(`Entity set '${entitySetName}' not found in metadata`);
-        }
-
-        const updateRestrictions = entitySet.annotations?.Capabilities?.UpdateRestrictions;
-        return analyzeUpdateRestrictions(updateRestrictions);
+        return checkEditVisibilityFromMetadata(convert(parse(metadataXml)), entitySetName);
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         throw new Error(`Failed to analyze edit visibility: ${errorMessage}`);
@@ -398,6 +413,27 @@ export function safeCheckEditVisibility(
 ): ButtonState | undefined {
     try {
         return checkEditVisibility(metadata, entitySetName);
+    } catch (error) {
+        log?.debug(`Failed to check edit visibility: ${error instanceof Error ? error.message : String(error)}`);
+        return undefined;
+    }
+}
+
+/**
+ * Safely checks edit button visibility from already-converted metadata, with error handling.
+ *
+ * @param convertedMetadata The already-converted OData metadata
+ * @param entitySetName The name of the entity set
+ * @param log Optional logger instance
+ * @returns ButtonState for the edit button, or undefined if error occurs
+ */
+export function safeCheckEditVisibilityFromMetadata(
+    convertedMetadata: ConvertedMetadata,
+    entitySetName: string,
+    log?: Logger
+): ButtonState | undefined {
+    try {
+        return checkEditVisibilityFromMetadata(convertedMetadata, entitySetName);
     } catch (error) {
         log?.debug(`Failed to check edit visibility: ${error instanceof Error ? error.message : String(error)}`);
         return undefined;

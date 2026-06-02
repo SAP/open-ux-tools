@@ -15,6 +15,8 @@ import type { AppFeatures, FPMFeatures } from '../types.js';
 import { getObjectPageFeatures, getObjectPages } from './objectPageUtils.js';
 import { getFilterFieldNames, getListReportFeatures } from './listReportUtils.js';
 import { extractTableColumnsFromNode } from './tableUtils.js';
+import { loadServiceMetadata } from './xmlMetadataUtils.js';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 
 export interface AggregationItem extends TreeAggregation {
     description: string;
@@ -61,7 +63,7 @@ export interface PageWithModelV4WithProperties extends PageWithModelV4 {
  * @param basePath - the absolute target path where the application will be generated
  * @param fs - optional mem-fs editor instance
  * @param log - optional logger instance
- * @param metadata - optional metadata for the OPA test generation
+ * @param metadata - optional pre-read OData metadata XML for the OPA test generation
  * @param manifest - optional application manifest, used to detect ALP configuration
  * @returns feature data extracted from the application model
  */
@@ -77,7 +79,7 @@ export async function getAppFeatures(
     let listReportPage: PageWithModelV4 | null = null;
     let objectPages: PageWithModelV4[] | null = null;
     let fpmPage: PageWithModelV4 | null = null;
-    let projectMetadata = metadata;
+    let convertedMetadata: ConvertedMetadata | undefined;
     // Read application model to extract control information needed for test generation
     // specification and readApp might not be available due to specification version, fail gracefully
     try {
@@ -86,12 +88,7 @@ export async function getAppFeatures(
         const specification = await appAccess.getSpecification<Specification>();
         const appModel: ReadAppResult = await specification.readApp({ app: appAccess, fs: fs });
 
-        if (!projectMetadata) {
-            const metadataPath = appAccess.project?.apps['']?.services?.mainService?.local;
-            if (metadataPath) {
-                projectMetadata = fs?.read(metadataPath);
-            }
-        }
+        convertedMetadata = await loadServiceMetadata(appAccess, fs, log, metadata);
 
         listReportPage = appModel?.applicationModel ? getListReportPage(appModel.applicationModel) : listReportPage;
         objectPages = appModel?.applicationModel ? getObjectPages(appModel.applicationModel) : objectPages;
@@ -112,7 +109,7 @@ export async function getAppFeatures(
     // attempt to get individual feature data
     try {
         if (listReportPage) {
-            featureData.listReport = getListReportFeatures(listReportPage, log, projectMetadata, manifest);
+            featureData.listReport = getListReportFeatures(listReportPage, log, convertedMetadata, manifest);
         }
         if (objectPages) {
             log?.warn('Extracting Object Page features from application model');
@@ -120,7 +117,7 @@ export async function getAppFeatures(
                 objectPages,
                 listReportPage?.name,
                 log,
-                projectMetadata
+                convertedMetadata
             );
             log?.warn('objectPages features extracted: ' + JSON.stringify(featureData.objectPages));
         }

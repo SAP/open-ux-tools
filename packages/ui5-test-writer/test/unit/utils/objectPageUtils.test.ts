@@ -3,6 +3,8 @@ import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parse
 import type { Logger } from '@sap-ux/logger';
 import { getObjectPageFeatures } from '../../../src/utils/objectPageUtils';
 import type { ObjectPageFeatures, HeaderSectionFeatureData } from '../../../src/types';
+import { parse } from '@sap-ux/edmx-parser';
+import { convert } from '@sap-ux/annotation-converter';
 
 describe('Test getObjectPageFeatures()', () => {
     let mockLogger: Logger;
@@ -521,6 +523,7 @@ describe('Test getObjectPageFeatures()', () => {
         const objectPage = {
             name: 'objectPage1',
             pageType: 'ObjectPage',
+            entitySet: 'TestEntities',
             model: {
                 root: {
                     aggregations: {
@@ -532,7 +535,13 @@ describe('Test getObjectPageFeatures()', () => {
                                             title: 'Chart Section',
                                             custom: false,
                                             schema: {
-                                                keys: [{ name: 'ID', value: 'chartFacet' }],
+                                                keys: [
+                                                    { name: 'ID', value: 'chartFacet' },
+                                                    {
+                                                        name: 'Target',
+                                                        value: 'com.sap.vocabularies.UI.v1.Chart#TestQualifier'
+                                                    }
+                                                ],
                                                 dataType: 'ChartDefinition'
                                             },
                                             properties: {
@@ -561,6 +570,73 @@ describe('Test getObjectPageFeatures()', () => {
         const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], 'listReportPage', mockLogger);
         expect(result[0].headerSections?.[0].microChart).toBe(true);
         expect(result[0].headerSections?.[0].form).toBe(false);
+        expect(result[0].headerSections?.[0].microChartId).toBeUndefined();
+        expect(result[0].headerSections?.[0].microChartType).toBeUndefined();
+    });
+
+    test('should populate microChartId/microChartType when metadata resolves the chart type', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            entitySet: 'TestEntities',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: {
+                                    aggregations: {
+                                        section1: {
+                                            title: 'Revenue',
+                                            custom: false,
+                                            schema: {
+                                                keys: [
+                                                    { name: 'ID', value: 'Chart::Revenue' },
+                                                    {
+                                                        name: 'Target',
+                                                        value: 'com.sap.vocabularies.UI.v1.Chart#Revenue'
+                                                    }
+                                                ],
+                                                dataType: 'ChartDefinition'
+                                            },
+                                            properties: { stashed: { freeText: false } },
+                                            aggregations: {}
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const metadata = {
+            entitySets: [
+                {
+                    name: 'TestEntities',
+                    entityType: {
+                        annotations: {
+                            UI: {
+                                'Chart#Revenue': {
+                                    term: 'com.sap.vocabularies.UI.v1.Chart',
+                                    ChartType: 'UI.ChartType/Line'
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        };
+        const result = await getObjectPageFeatures(
+            [objectPage] as PageWithModelV4[],
+            'listReportPage',
+            mockLogger,
+            metadata as never
+        );
+        expect(result[0].headerSections?.[0].microChartId).toBe('Chart::Revenue');
+        expect(result[0].headerSections?.[0].microChartType).toBe('LineMicroChart');
     });
 
     test('should identify form sections', async () => {
@@ -2026,7 +2102,7 @@ describe('Test getObjectPageFeatures()', () => {
             [objectPage] as PageWithModelV4[],
             undefined,
             mockLogger,
-            ACTION_METADATA
+            convert(parse(ACTION_METADATA))
         );
         expect(result[0].headerActions).toHaveLength(1);
         expect(result[0].headerActions?.[0]).toEqual({
@@ -2094,7 +2170,7 @@ describe('Test getObjectPageFeatures()', () => {
             [objectPage] as PageWithModelV4[],
             undefined,
             mockLogger,
-            ACTION_METADATA
+            convert(parse(ACTION_METADATA))
         );
         const section = result[0].bodySections?.[0];
         expect(section?.actions).toHaveLength(1);
@@ -2159,7 +2235,7 @@ describe('Test getObjectPageFeatures()', () => {
             [objectPage] as PageWithModelV4[],
             undefined,
             mockLogger,
-            ACTION_METADATA
+            convert(parse(ACTION_METADATA))
         );
         const section = result[0].bodySections?.[0];
         expect(section?.actions).toHaveLength(1);

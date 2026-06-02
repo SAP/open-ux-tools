@@ -1,5 +1,6 @@
 import type { Logger } from '@sap-ux/logger';
 import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser/index.js';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type {
     ActionButtonState,
     FormField,
@@ -21,10 +22,13 @@ import {
 } from './modelUtils.js';
 import { extractTableColumnsFromNode } from './tableUtils.js';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page.js';
-import { parse } from '@sap-ux/edmx-parser';
-import { convert } from '@sap-ux/annotation-converter';
-import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import { buildActionStateFromSpecModelKey, safeCheckButtonVisibility, safeCheckEditVisibility } from './actionUtils.js';
+import {
+    buildActionStateFromSpecModelKey,
+    safeCheckButtonVisibilityFromMetadata,
+    safeCheckEditVisibilityFromMetadata
+} from './actionUtils.js';
+import { resolveMicroChartType } from './microChartUtils.js';
+import { isFacetHidden } from './facetUtils.js';
 
 /**
  * Extracts feature data for object pages from the application model.
@@ -32,14 +36,15 @@ import { buildActionStateFromSpecModelKey, safeCheckButtonVisibility, safeCheckE
  * @param objectPages - the array of object pages extracted from the application model
  * @param listReportPageKey - the key of the List Report page in the application model, used to find navigation routes to object pages
  * @param log - optional logger instance
- * @param metadata - optional metadata for the OPA test generation
+ * @param metadata - optional already-converted OData metadata of the main service, used to resolve microchart types,
+ *                   detect `UI.Hidden` facets, and look up action / button-visibility annotations
  * @returns a record of object page feature data
  */
 export async function getObjectPageFeatures(
     objectPages: PageWithModelV4[],
     listReportPageKey?: string,
     log?: Logger,
-    metadata?: string
+    metadata?: ConvertedMetadata
 ): Promise<ObjectPageFeatures[]> {
     const objectPageFeatures: ObjectPageFeatures[] = [];
     if (!objectPages || objectPages.length === 0) {
@@ -48,8 +53,7 @@ export async function getObjectPageFeatures(
     }
 
     // attempt to get individual feature data for each object page
-    const convertedMetadata = metadata ? convert(parse(metadata)) : undefined;
-    const schemaNamespace = convertedMetadata?.namespace ?? '';
+    const schemaNamespace = metadata?.namespace ?? '';
 
     for (const objectPage of objectPages) {
         const pageFeatureData: ObjectPageFeatures = {} as ObjectPageFeatures;
@@ -61,22 +65,16 @@ export async function getObjectPageFeatures(
             listReportPageKey
         );
         // extract header sections (facets)
-        pageFeatureData.headerSections = extractObjectPageHeaderSectionsData(objectPage);
-        // extract body sections (includes section-level actions and standard create/delete buttons)
-        pageFeatureData.bodySections = extractObjectPageBodySectionsData(
-            objectPage,
-            convertedMetadata,
-            schemaNamespace,
-            metadata,
-            log
-        );
+        pageFeatureData.headerSections = extractObjectPageHeaderSectionsData(objectPage, metadata, log);
+        // extract body sections (includes section-level actions, standard create/delete buttons, and hidden detection)
+        pageFeatureData.bodySections = extractObjectPageBodySectionsData(objectPage, metadata, schemaNamespace, log);
+        pageFeatureData.headerSectionsRenderableCount = countRenderableSections(pageFeatureData.headerSections);
+        pageFeatureData.bodySectionsRenderableCount = countRenderableSections(pageFeatureData.bodySections);
         // extract header-level actions
-        pageFeatureData.headerActions = convertedMetadata
-            ? extractHeaderActions(objectPage, convertedMetadata, schemaNamespace)
-            : [];
+        pageFeatureData.headerActions = metadata ? extractHeaderActions(objectPage, metadata, schemaNamespace) : [];
         // determine edit button visibility from UpdateRestrictions on the OP entity set
         if (metadata && objectPage.entitySet) {
-            pageFeatureData.editButton = safeCheckEditVisibility(metadata, objectPage.entitySet, log);
+            pageFeatureData.editButton = safeCheckEditVisibilityFromMetadata(metadata, objectPage.entitySet, log);
         }
         objectPageFeatures.push(pageFeatureData);
     }
@@ -136,9 +134,15 @@ function getObjectPageNavigationParents(
  *  Extracts header sections data from an object page model.
  *
  * @param objectPage - object page from the application model
+ * @param metadata - optional converted metadata of the main service, used to resolve microchart types
+ * @param log - optional logger instance
  * @returns header sections data
  */
-function extractObjectPageHeaderSectionsData(objectPage: PageWithModelV4): HeaderSectionFeatureData[] {
+function extractObjectPageHeaderSectionsData(
+    objectPage: PageWithModelV4,
+    metadata?: ConvertedMetadata,
+    log?: Logger
+): HeaderSectionFeatureData[] {
     const headerSections: HeaderSectionFeatureData[] = [];
     if (objectPage.model) {
         const headerAggregation = getAggregations(objectPage.model.root)['header'];
@@ -150,15 +154,31 @@ function extractObjectPageHeaderSectionsData(objectPage: PageWithModelV4): Heade
                 // if no identifier can be found for the section, it is not possible to reliably identify it in tests, so skip it
                 return;
             }
+            const isMicroChart = isSectionMicroChart(section);
+            const targetValue = getSectionTargetValue(section);
             const sectionData: HeaderSectionFeatureData = {
                 facetId: facetId,
                 stashed: getSectionStashedFlag(section),
                 custom: section.custom,
-                microChart: isSectionMicroChart(section),
+                microChart: isMicroChart,
                 form: isFormSection(section),
                 // collection: false // TODO: find out how to identify collection facets
-                title: section.title
+                title: section.title,
+                hidden: isFacetHidden(
+                    objectPage.entitySet,
+                    'HeaderFacets',
+                    { target: targetValue, id: facetId },
+                    metadata,
+                    log
+                )
             };
+            if (isMicroChart) {
+                const microChartType = resolveMicroChartType(targetValue, objectPage.entitySet, metadata, log);
+                if (microChartType) {
+                    sectionData.microChartId = facetId;
+                    sectionData.microChartType = microChartType;
+                }
+            }
             if (sectionData.form) {
                 sectionData.fields = getHeaderSectionFormFields(section);
             }
@@ -169,20 +189,39 @@ function extractObjectPageHeaderSectionsData(objectPage: PageWithModelV4): Heade
 }
 
 /**
+ * Counts sections that will render at runtime (those whose `hidden` is not `true`).
+ * Sections marked `'dynamic'` are counted because they may render — the test for them is
+ * emitted as a comment regardless.
+ *
+ * @param sections - the section list to count
+ * @returns the renderable count
+ */
+function countRenderableSections(sections: { hidden?: boolean | 'dynamic' }[] | undefined): number {
+    return (sections ?? []).filter((section) => section.hidden !== true).length;
+}
+
+/**
+ * @param section - section entry from ux specification
+ * @returns the value of the section's `Target` schema key, or undefined if not present
+ */
+function getSectionTargetValue(section: SectionItem): string | undefined {
+    return section?.schema?.keys?.find((key) => key.name === 'Target')?.value;
+}
+
+/**
  * Extracts body sections data from an object page model.
  *
  * @param objectPage - object page from the application model
- * @param convertedMetadata - optional converted OData metadata for action extraction
+ * @param metadata - optional already-converted OData metadata, used to extract section actions, resolve
+ *                   Create/Delete button visibility on table sections, and detect `UI.Hidden` facets
  * @param schemaNamespace - optional OData schema namespace used as service identifier in action assertions
- * @param metadata - optional raw metadata XML for resolving standard button visibility (Create/Delete)
  * @param log - optional logger instance
  * @returns body sections data including sub-sections
  */
 function extractObjectPageBodySectionsData(
     objectPage: PageWithModelV4,
-    convertedMetadata?: ConvertedMetadata,
+    metadata?: ConvertedMetadata,
     schemaNamespace?: string,
-    metadata?: string,
     log?: Logger
 ): BodySectionFeatureData[] {
     const bodySections: BodySectionFeatureData[] = [];
@@ -191,7 +230,7 @@ function extractObjectPageBodySectionsData(
         const sections = getAggregations(sectionsAggregation) as Record<string, BodySectionItem>;
         Object.entries(sections).forEach(([sectionKey, section]) => {
             const sectionId = getSectionIdentifier(section) ?? sectionKey;
-            const subSections = extractBodySubSectionsData(section, sectionId);
+            const subSections = extractBodySubSectionsData(section, sectionId, objectPage.entitySet, metadata, log);
             const navigationProperty = getNavigationPropertyFromKey(sectionKey);
             const sectionData: BodySectionFeatureData = {
                 id: sectionId,
@@ -203,19 +242,26 @@ function extractObjectPageBodySectionsData(
                 tableColumns: section.custom || !section.isTable ? {} : extractTableColumnsFromNode(section),
                 subSections,
                 actions:
-                    !section.custom && convertedMetadata && schemaNamespace
-                        ? extractSectionActions(section, convertedMetadata, schemaNamespace)
-                        : []
+                    !section.custom && metadata && schemaNamespace
+                        ? extractSectionActions(section, metadata, schemaNamespace)
+                        : [],
+                hidden: isFacetHidden(
+                    objectPage.entitySet,
+                    'Facets',
+                    { target: getSectionTargetValue(section), id: sectionId },
+                    metadata,
+                    log
+                )
             };
             // For table sections, resolve Create/Delete visibility from target entity set
-            if (section.isTable && navigationProperty && metadata && convertedMetadata) {
+            if (section.isTable && navigationProperty && metadata) {
                 const targetEntitySet = resolveNavigationTargetEntitySet(
-                    convertedMetadata,
+                    metadata,
                     objectPage.entitySet,
                     navigationProperty
                 );
                 if (targetEntitySet) {
-                    const buttonVisibility = safeCheckButtonVisibility(metadata, targetEntitySet, log);
+                    const buttonVisibility = safeCheckButtonVisibilityFromMetadata(metadata, targetEntitySet, log);
                     sectionData.createButton = buttonVisibility?.create;
                     sectionData.deleteButton = buttonVisibility?.delete;
                 }
@@ -294,9 +340,18 @@ function extractSectionActions(
  *
  * @param section - body section entry from the application model
  * @param parentSectionId - identifier of the parent section (used as fallback key prefix)
+ * @param pageEntitySet - the page entity set name; used together with `metadata` to detect `UI.Hidden` sub-sections
+ * @param metadata - optional converted metadata of the main service
+ * @param log - optional logger instance
  * @returns array of sub-section feature data
  */
-function extractBodySubSectionsData(section: SectionItem, parentSectionId: string): BodySubSectionFeatureData[] {
+function extractBodySubSectionsData(
+    section: SectionItem,
+    parentSectionId: string,
+    pageEntitySet?: string,
+    metadata?: ConvertedMetadata,
+    log?: Logger
+): BodySubSectionFeatureData[] {
     const subSections: BodySubSectionFeatureData[] = [];
     const subSectionsAggregation = getAggregations(section)['subSections'];
     const subSectionItems = getAggregations(subSectionsAggregation) as Record<string, BodySectionItem>;
@@ -309,7 +364,14 @@ function extractBodySubSectionsData(section: SectionItem, parentSectionId: strin
             custom: !!subSection.custom,
             order: subSection?.order ?? -1, // put a negative order number to signal that order was not in spec
             fields: subSection.custom || subSection.isTable ? [] : extractFormFields(subSection),
-            tableColumns: subSection.custom || !subSection.isTable ? {} : extractTableColumnsFromNode(subSection)
+            tableColumns: subSection.custom || !subSection.isTable ? {} : extractTableColumnsFromNode(subSection),
+            hidden: isFacetHidden(
+                pageEntitySet,
+                'Facets',
+                { target: getSectionTargetValue(subSection), id: subSectionId },
+                metadata,
+                log
+            )
         });
     });
     return subSections;

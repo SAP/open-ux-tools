@@ -62,8 +62,24 @@ sap.ui.define([
 <% if (headerSections?.length > 0) { -%>
         opaTest("Check header facets of the Object Page", function (Given, When, Then) {
 <% headerSections.forEach(function(section) { -%>
-<% if (section.microChart) { -%>
+<% if (section.hidden === true) { -%>
+            // Test skipped for header facet "<%- section.facetId %>" - UI.Hidden annotation is set to true
+<% } else if (section.hidden === 'dynamic') { -%>
+            // Test skipped for header facet "<%- section.facetId %>" - UI.Hidden annotation is an expression which the generator is unable to resolve.
+            // Uncomment and adjust if the expression is known to evaluate to false at runtime:
+<% if (section.microChart && section.microChartId && section.microChartType) { -%>
+            // Then.onThe<%- name%>.onHeader().iCheckMicroChart({ chartId: "<%- section.microChartId %>", chartType: "<%- section.microChartType %>" });
+<% } else if (section.microChart) { -%>
+            // Then.onThe<%- name%>.onHeader().iCheckMicroChart("<%- section.title %>");
+<% } else { -%>
+            // Then.onThe<%- name%>.onHeader().iCheckHeaderFacet({ facetId: "<%- section.facetId %>" });
+<% } -%>
+<% } else if (section.microChart) { -%>
+<% if (section.microChartId && section.microChartType) { -%>
+            Then.onThe<%- name%>.onHeader().iCheckMicroChart({ chartId: "<%- section.microChartId %>", chartType: "<%- section.microChartType %>" });
+<% } else { -%>
             Then.onThe<%- name%>.onHeader().iCheckMicroChart("<%- section.title %>");
+<% } -%>
 <% } else { -%>
             Then.onThe<%- name%>.onHeader().iCheckHeaderFacet({ facetId: "<%- section.facetId %>" });
 <% if (section.form) { -%>
@@ -82,11 +98,21 @@ sap.ui.define([
 
 <% if (bodySections?.length > 0 && !isStandalone) { -%>
         opaTest("Check body sections of the Object Page", function (Given, When, Then) {
-<% if (bodySections?.length > 1) { -%>
-            Then.onThe<%- name%>.iCheckNumberOfSections(<%- bodySections.length %>);
+<% if (bodySectionsRenderableCount > 1) { -%>
+            Then.onThe<%- name%>.iCheckNumberOfSections(<%- bodySectionsRenderableCount %>);
 <% } -%>
 <% bodySections.forEach(function(section) { -%>
-<% if (bodySections.length > 1) { -%>
+<% if (section.hidden === true) { -%>
+            // Test skipped for body section "<%- section.id %>" - UI.Hidden annotation is set to true
+<% } else if (section.hidden === 'dynamic') { -%>
+            // Test skipped for body section "<%- section.id %>" - UI.Hidden annotation is an expression which the generator is unable to resolve.
+            // Uncomment and adjust if the expression is known to evaluate to false at runtime:
+<% if (bodySectionsRenderableCount > 1) { -%>
+            // When.onThe<%- name%>.iPressSectionIconTabFilterButton("<%- section.id %>");
+<% } -%>
+            // Then.onThe<%- name%>.iCheckSection({ section: "<%- section.id %>" });
+<% } else { -%>
+<% if (bodySectionsRenderableCount > 1) { -%>
             When.onThe<%- name%>.iPressSectionIconTabFilterButton("<%- section.id %>");
 <% } -%>
             Then.onThe<%- name%>.iCheckSection({ section: "<%- section.id %>" });
@@ -123,6 +149,13 @@ sap.ui.define([
 <% } -%>
 <% if (section?.subSections?.length > 0) { -%>
 <% section.subSections.forEach(function(subSection) { -%>
+<% if (subSection.hidden === true) { -%>
+            // Test skipped for sub-section "<%- subSection.id %>" - UI.Hidden annotation is set to true
+<% } else if (subSection.hidden === 'dynamic') { -%>
+            // Test skipped for sub-section "<%- subSection.id %>" - UI.Hidden annotation is an expression which the generator is unable to resolve.
+            // Uncomment and adjust if the expression is known to evaluate to false at runtime:
+            // Then.onThe<%- name%>.iCheckSubSection({ section: "<%- subSection.id %>" });
+<% } else { -%>
             //When.onThe<%- name%>.iGoToSection({ section: "<%- section.id %>", subSection: "<%- subSection.id %>" });
             Then.onThe<%- name%>.iCheckSubSection({ section: "<%- subSection.id %>" });
 <% if (subSection.fields && subSection.fields.length > 0) { -%>
@@ -133,6 +166,7 @@ sap.ui.define([
 <% if (subSection.tableColumns && Object.keys(subSection.tableColumns).length > 0 && subSection.navigationProperty) { -%>
             Then.onThe<%- name%>.onTable({ property: "<%- subSection.navigationProperty %>" }).iCheckColumns(<%- JSON.stringify(subSection.tableColumns) %>);
 <% } -%>
+<% } -%>
 <% }) -%>
 <% } else { -%>
 <% if (section.fields && section.fields.length > 0) { -%>
@@ -142,6 +176,7 @@ sap.ui.define([
 <% } -%>
 <% if (section.tableColumns && Object.keys(section.tableColumns).length > 0 && section.navigationProperty) { -%>
             Then.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iCheckColumns(<%- JSON.stringify(section.tableColumns) %>);
+<% } -%>
 <% } -%>
 <% } -%>
 <% }) -%>

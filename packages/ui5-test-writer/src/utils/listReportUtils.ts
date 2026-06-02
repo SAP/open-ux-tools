@@ -132,14 +132,14 @@ export function isALPFromManifest(manifest: Manifest, targetKey?: string): boole
  *
  * @param listReportPage - the List Report page containing the tree model with feature definitions
  * @param log - optional logger instance
- * @param metadata - optional metadata for the OPA test generation
+ * @param metadata - optional already-converted OData metadata for the OPA test generation
  * @param manifest - optional application manifest, used to detect ALP configuration
  * @returns feature data extracted from the List Report page model
  */
 export function getListReportFeatures(
     listReportPage: PageWithModelV4,
     log?: Logger,
-    metadata?: string,
+    metadata?: ConvertedMetadata,
     manifest?: Manifest
 ): ListReportFeatures {
     const toolbarActions = getToolBarActionNames(listReportPage.model, log);
@@ -151,14 +151,9 @@ export function getListReportFeatures(
 
     if (metadata && listReportPage.entitySet) {
         const entitySetName = listReportPage.entitySet;
-        try {
-            const convertedMetadata = convert(parse(metadata));
-            buttonVisibility = safeCheckButtonVisibilityFromMetadata(convertedMetadata, entitySetName, log);
-            semanticKeyProperties = safeGetSemanticKeyProperties(convertedMetadata, entitySetName, log);
-            toolBarActions = safeCheckActionButtonStates(convertedMetadata, entitySetName, toolbarActions, log);
-        } catch (error) {
-            log?.debug(`Failed to parse metadata: ${error instanceof Error ? error.message : String(error)}`);
-        }
+        buttonVisibility = safeCheckButtonVisibilityFromMetadata(metadata, entitySetName, log);
+        semanticKeyProperties = safeGetSemanticKeyProperties(metadata, entitySetName, log);
+        toolBarActions = safeCheckActionButtonStates(metadata, entitySetName, toolbarActions, log);
     }
 
     const missingKeys =
