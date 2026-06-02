@@ -144,7 +144,8 @@ export async function ensureValidYoVersion(): Promise<{ error?: string }> {
         const args = ['--version'];
         let installedVersion: string | undefined;
         try {
-            installedVersion = ((await new CommandRunner().run(yo, args)) as string).trim();
+            const result = await new CommandRunner().run(yo, args);
+            installedVersion = typeof result === 'string' ? result.trim() : undefined;
         } catch (yoError) {
             // `yo --version` failed — yo is not installed or not on PATH
             error = t('error.executingYoVersionCmd', {
@@ -154,7 +155,7 @@ export async function ensureValidYoVersion(): Promise<{ error?: string }> {
             });
         }
         // yo v6 is omitted as it has a bug that causes the generator to fail, see https://github.com/SBoudrias/Inquirer.js/issues/1968
-        if (installedVersion && !satisfies(installedVersion, '4.x || 5.x || 7.x')) {
+        if (!error && installedVersion && !satisfies(installedVersion, '4.x || 5.x || 7.x')) {
             error = t('error.unsupportedYoVersion', {
                 installedYoVersion: installedVersion,
                 latestSupportedYoVer

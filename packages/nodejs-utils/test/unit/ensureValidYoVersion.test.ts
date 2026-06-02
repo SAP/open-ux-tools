@@ -2,9 +2,7 @@ import { jest } from '@jest/globals';
 
 const mockIsAppStudio = jest.fn();
 
-const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
-    ...realBtpUtils,
     isAppStudio: mockIsAppStudio
 }));
 
@@ -52,6 +50,7 @@ describe('ensureValidYoVersion', () => {
         const result = await ensureValidYoVersion();
 
         expect(result).toEqual({ error: undefined });
+        expect(runSpy).toHaveBeenCalledWith(yoCmd, ['--version']);
     });
 
     it('returns an unsupported version error when installed yo version is not in 4.x || 5.x || 7.x', async () => {
