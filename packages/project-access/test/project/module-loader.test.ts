@@ -9,7 +9,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Mock constants before importing getModule() to mock the module cache path
 const moduleCacheRoot = join(__dirname, '../test-data/module-loader');
-const modulePath = join(moduleCacheRoot, '@scope/module/1.2.3');
+const moduleParentPath = join(moduleCacheRoot, '@scope/module');
+const modulePath = join(moduleParentPath, '1.2.3');
 
 const realConstants = await import('../../src/constants');
 jest.unstable_mockModule('../../src/constants', () => ({
@@ -67,6 +68,17 @@ jest.unstable_mockModule('node:fs/promises', () => ({
     writeFile: mockWriteFilePromise
 }));
 
+// Mock proper-lockfile so tests exercise acquireModuleLock without depending on the real fs lock.
+// Without this mock, properLockfile.lock(<test fixture path>) either succeeds against the real fs
+// or throws and is silently swallowed by the catch in acquireModuleLock — so the locking branch
+// wouldn't be exercised at all.
+const mockReleaseLock = jest.fn<() => Promise<void>>().mockResolvedValue();
+const mockProperLockfileLock = jest.fn().mockResolvedValue(mockReleaseLock);
+jest.unstable_mockModule('proper-lockfile', () => ({
+    default: { lock: mockProperLockfileLock },
+    lock: mockProperLockfileLock
+}));
+
 const { FileName, loadModuleFromProject } = await import('../../src');
 const { deleteModule, getModule } = await import('../../src/project/module-loader');
 const { ToolsLogger } = await import('@sap-ux/logger');
@@ -97,11 +109,23 @@ describe('Test getModule()', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
+        // jest.clearAllMocks() resets the call history but does NOT clear implementations set
+        // with mockImplementation in earlier tests. Reset pathToFileURL to its default delegating
+        // implementation so per-test mockImplementation overrides start from a clean slate.
+        mockPathToFileURL.mockImplementation(realUrl.pathToFileURL);
+        // Re-prime proper-lockfile (clearAllMocks resets implementations on auto-mocked fns).
+        mockReleaseLock.mockResolvedValue();
+        mockProperLockfileLock.mockResolvedValue(mockReleaseLock);
     });
 
     test('Module exists', async () => {
         const module = await getModule<Module>('@scope/module', '1.2.3');
         expect(module.exec()).toBe('works');
+        // Lock is acquired on the parent (scope/module) directory, not the version subdir which
+        // gets wiped and recreated during reinstall — verifying the fix for the lock-target review.
+        expect(mockProperLockfileLock).toHaveBeenCalledTimes(1);
+        expect(mockProperLockfileLock.mock.calls[0]?.[0]).toBe(moduleParentPath);
+        expect(mockReleaseLock).toHaveBeenCalledTimes(1);
     });
 
     test('Module does not exists, triggers npm install (mocked)', async () => {
@@ -123,6 +147,7 @@ describe('Test getModule()', () => {
             'cwd': modulePath,
             logger
         });
+        expect(mockReleaseLock).toHaveBeenCalledTimes(1);
     });
 
     test('Module failed to load and there no "package-lock.json" -> run "npm i"', async () => {
@@ -158,17 +183,36 @@ describe('Test getModule()', () => {
         });
     });
 
-    test('Retry path passes cacheBuster option to loadModuleFromProject', async () => {
-        // Verify the retry branch in getModule re-loads with a cacheBuster: the option exposed
-        // by loadModuleFromProject appends `?v=...` to the ESM import URL so Node's import-map
-        // does not return a cached rejection from the first failed import.
-        const moduleSpecPath = join(__dirname, '..');
-        const url1 = await loadModuleFromProject<{ FileName: {} }>(moduleSpecPath, '@sap-ux/ui5-config');
-        const url2 = await loadModuleFromProject<{ FileName: {} }>(moduleSpecPath, '@sap-ux/ui5-config', {
-            cacheBuster: '12345-67890'
+    test('Retry path re-imports the module via loadModuleFromProject after the first load fails', async () => {
+        // Force the first load attempt to fail by throwing inside existsSync (consumed by
+        // getNodeModulesPath inside loadModuleFromProject). The retry path then re-runs install
+        // and calls loadModuleFromProject again *with* the cacheBuster option — observable via
+        // pathToFileURL being invoked a second time on the recovery attempt.
+        //
+        // We can't directly assert the `?v=<token>` substring on the import URL: Jest's resolver
+        // strips query strings before module resolution, so `import('file://...?v=x')` reports
+        // an error with the unqueried path. The cacheBuster behaviour is what makes the retry
+        // *possible* under Node's real ESM loader (which keys its module map by URL); under Jest
+        // the test can only observe that the retry path executed end-to-end. The complementary
+        // behaviour of loadModuleFromProject({cacheBuster}) is exercised by the call site and
+        // documented in the source — see the comment on line 53 of module-loader.ts.
+        mockExecNpmCommand.mockResolvedValueOnce('');
+        mockExistsSync
+            .mockReturnValueOnce(true) // existsSync(modulePackagePath) → skip install
+            .mockImplementationOnce(() => {
+                throw new Error('Simulate first load failure');
+            })
+            .mockReturnValueOnce(false); // existsSync(modulePackageLockPath) → installCommand on retry
+
+        await getModule<Module>('@scope/module', '1.2.3');
+
+        // Retry must have invoked loadModuleFromProject again — observed via pathToFileURL being
+        // called on the second attempt (the first attempt threw before reaching pathToFileURL).
+        expect(mockPathToFileURL).toHaveBeenCalledTimes(1);
+        expect(mockExecNpmCommand).toHaveBeenCalledWith(['install', '--prefix', modulePath, '@scope/module@1.2.3'], {
+            cwd: modulePath,
+            logger: undefined
         });
-        expect(url1).toBeDefined();
-        expect(url2).toBeDefined();
     });
 });
 

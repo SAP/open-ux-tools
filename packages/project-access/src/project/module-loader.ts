@@ -74,12 +74,15 @@ export async function loadModuleFromProject<T>(
  */
 export async function getModule<T>(module: string, version: string, options?: { logger?: Logger }): Promise<T> {
     const logger = options?.logger;
-    const moduleDirectory = join(moduleCacheRoot, module, version);
+    const moduleParentDirectory = join(moduleCacheRoot, module);
+    const moduleDirectory = join(moduleParentDirectory, version);
     const modulePackagePath = join(moduleDirectory, FileName.Package);
     const installCommand = ['install', '--prefix', moduleDirectory, `${module}@${version}`];
+    // Lock the parent (scope/module) rather than moduleDirectory itself: moduleDirectory is wiped + recreated
+    // during reinstall, which would orphan a lock file living inside it. The parent is stable across reinstalls.
     // proper-lockfile.lock() requires the target path to exist, so create it eagerly.
-    await mkdir(moduleDirectory, { recursive: true });
-    const releaseLock = await acquireModuleLock(moduleDirectory);
+    await mkdir(moduleParentDirectory, { recursive: true });
+    const releaseLock = await acquireModuleLock(moduleParentDirectory);
     try {
         if (!existsSync(modulePackagePath)) {
             if (existsSync(moduleDirectory)) {
