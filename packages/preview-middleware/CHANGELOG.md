@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 1.0.2
+
+### Patch Changes
+
+- 8024912: fix: republish to pick up control-property-editor 1.0.1 (1.0.0 was unpublished from npm)
+
 ## 1.0.1
 
 ### Patch Changes
