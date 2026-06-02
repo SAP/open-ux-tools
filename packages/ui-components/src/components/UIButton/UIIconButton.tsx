@@ -54,7 +54,7 @@ export class UIIconButton extends React.Component<ButtonProps, {}> {
                 boxSizing: 'content-box',
                 padding: 3,
                 backgroundColor: 'transparent',
-                borderRadius: 4,
+                borderRadius: 'var(--vscode-cornerRadius-small, 4px)',
                 selectors: {
                     // Focus through tab navigation
                     '.ms-Fabric--isFocusVisible &:focus:after': {
@@ -72,7 +72,7 @@ export class UIIconButton extends React.Component<ButtonProps, {}> {
             rootHovered: {
                 backgroundColor: this.getButtonInteractionBackgroundColor('--vscode-toolbar-hoverBackground'),
                 outline: '1px dashed var(--vscode-contrastActiveBorder)',
-                borderRadius: 5
+                borderRadius: 'var(--vscode-cornerRadius-small, 4px)'
             },
             rootPressed: {
                 backgroundColor: this.getButtonInteractionBackgroundColor('--vscode-toolbar-activeBackground')
