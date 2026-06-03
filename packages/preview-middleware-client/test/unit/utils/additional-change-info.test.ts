@@ -12,8 +12,11 @@ const {
     setAdditionalChangeInfo,
     getAdditionalChangeInfo,
     clearAdditionalChangeInfo,
-    setAdditionalChangeInfoForChangeFile
+    setAdditionalChangeInfoForChangeFile,
+    getFlexChangeList,
+    getFlexXMLChangeList
 } = await import('open/ux/preview/client/utils/additional-change-info');
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 describe('additional-change-info.ts', () => {
     const mockAdditionalInfo = {
@@ -35,30 +38,15 @@ describe('additional-change-info.ts', () => {
             });
             getAddXMLAdditionalInfoMock.mockReturnValueOnce(mockAdditionalInfo);
 
-            setAdditionalChangeInfo(mockChange);
+            setAdditionalChangeInfo([mockChange]);
 
             expect(getAddXMLAdditionalInfoMock).toHaveBeenCalledWith(mockChange, undefined);
             const result = getAdditionalChangeInfo(mockChange as unknown as Change);
             expect(result).toEqual(mockAdditionalInfo);
         });
 
-        it('should not set additional change info for unsupported change type', () => {
-            const mockChange = new FlexChange({
-                selector: { id: 'mockSelectorId', idIsLocal: false },
-                changeType: 'unsupportedType',
-                layer: 'CUSTOMER_BASE',
-                fileName: 'mockFileName'
-            });
-
-            setAdditionalChangeInfo(mockChange);
-
-            expect(getAddXMLAdditionalInfoMock).not.toHaveBeenCalled();
-            const result = getAdditionalChangeInfo(mockChange as unknown as Change);
-            expect(result).toBeUndefined();
-        });
-
         it('should not set additional change info if change is undefined', () => {
-            setAdditionalChangeInfo(undefined);
+            setAdditionalChangeInfo([]);
 
             expect(getAddXMLAdditionalInfoMock).not.toHaveBeenCalled();
         });
@@ -74,8 +62,8 @@ describe('additional-change-info.ts', () => {
                 .mockReturnValueOnce({ templateName: 'template' })
                 .mockReturnValueOnce({ controlType: 'test' });
 
-            setAdditionalChangeInfo(mockChange);
-            setAdditionalChangeInfo(mockChange);
+            setAdditionalChangeInfo([mockChange]);
+            setAdditionalChangeInfo([mockChange]);
 
             expect(getAddXMLAdditionalInfoMock).toHaveBeenCalledTimes(2);
 
@@ -110,7 +98,7 @@ describe('additional-change-info.ts', () => {
             });
             getAddXMLAdditionalInfoMock.mockReturnValueOnce(mockAdditionalInfo);
 
-            setAdditionalChangeInfo(mockChange);
+            setAdditionalChangeInfo([mockChange]);
 
             const result = getAdditionalChangeInfo(mockChange as unknown as Change);
             expect(result).toEqual(mockAdditionalInfo);
@@ -126,6 +114,102 @@ describe('additional-change-info.ts', () => {
 
             const result = getAdditionalChangeInfo(mockChange as unknown as Change);
             expect(result).toBeUndefined();
+        });
+    });
+
+    describe('getFlexChangeList', () => {
+        it('should return an empty array if command is undefined', () => {
+            const result = getFlexChangeList(undefined);
+            expect(result).toEqual([]);
+        });
+
+        it('should return an empty array if getPreparedChange returns undefined', () => {
+            const command = {
+                getPreparedChange: jest.fn().mockReturnValue(undefined)
+            } as unknown as FlexCommand;
+
+            const result = getFlexChangeList(command);
+            expect(result).toEqual([]);
+        });
+
+        it('should return a single change wrapped in an array', () => {
+            const mockChange = new FlexChange({
+                selector: { id: 'mockSelectorId', idIsLocal: false },
+                changeType: 'addXML',
+                layer: 'CUSTOMER_BASE',
+                fileName: 'mockFileName'
+            });
+            const command = {
+                getPreparedChange: jest.fn().mockReturnValue(mockChange)
+            } as unknown as FlexCommand;
+
+            const result = getFlexChangeList(command);
+            expect(result).toEqual([mockChange]);
+        });
+
+        it('should return the array of changes as-is', () => {
+            const mockChange1 = new FlexChange({
+                selector: { id: 'id1', idIsLocal: false },
+                changeType: 'addXML',
+                layer: 'CUSTOMER_BASE',
+                fileName: 'file1'
+            });
+            const mockChange2 = new FlexChange({
+                selector: { id: 'id2', idIsLocal: false },
+                changeType: 'rename',
+                layer: 'CUSTOMER_BASE',
+                fileName: 'file2'
+            });
+            const command = {
+                getPreparedChange: jest.fn().mockReturnValue([mockChange1, mockChange2])
+            } as unknown as FlexCommand;
+
+            const result = getFlexChangeList(command);
+            expect(result).toEqual([mockChange1, mockChange2]);
+        });
+    });
+
+    describe('getFlexXMLChangeList', () => {
+        it('should return an empty array if command is undefined', () => {
+            const result = getFlexXMLChangeList(undefined);
+            expect(result).toEqual([]);
+        });
+
+        it('should return only changes with addXML change type', () => {
+            const xmlChange = new FlexChange({
+                selector: { id: 'id1', idIsLocal: false },
+                changeType: 'addXML',
+                layer: 'CUSTOMER_BASE',
+                fileName: 'xmlFile'
+            });
+            const otherChange = new FlexChange({
+                selector: { id: 'id2', idIsLocal: false },
+                changeType: 'rename',
+                layer: 'CUSTOMER_BASE',
+                fileName: 'otherFile'
+            });
+            const command = {
+                getPreparedChange: jest.fn().mockReturnValue([xmlChange, otherChange])
+            } as unknown as FlexCommand;
+
+            const result = getFlexXMLChangeList(command);
+            expect(result).toHaveLength(1);
+            expect(result[0]).toBe(xmlChange);
+        });
+
+        it('should return an empty array if no changes have addXML type', () => {
+            const otherChange = new FlexChange({
+                selector: { id: 'id1', idIsLocal: false },
+                changeType: 'rename',
+                layer: 'CUSTOMER_BASE',
+                fileName: 'otherFile'
+            });
+            const command = {
+                getPreparedChange: jest.fn().mockReturnValue([otherChange])
+            } as unknown as FlexCommand;
+
+            const result = getFlexXMLChangeList(command);
+            expect(result).toEqual([]);
         });
     });
 });

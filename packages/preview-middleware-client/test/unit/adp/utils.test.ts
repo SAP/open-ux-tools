@@ -64,7 +64,7 @@ describe('utils', () => {
     describe('matchesChangeProperty', () => {
         const createMockCommand = (fragmentPath: string | undefined) => ({
             getPreparedChange: () => ({
-                getDefinition: () => ({
+                convertToFileContent: () => ({
                     content: {
                         fragmentPath
                     }
@@ -131,7 +131,7 @@ describe('utils', () => {
         const mockCommand = {
             getProperty: jest.fn(() => 'addXML'),
             getPreparedChange: jest.fn(() => ({
-                getDefinition: jest.fn(() => ({
+                convertToFileContent: jest.fn(() => ({
                     content: {
                         fragmentPath: 'testFragment.fragment.xml'
                     }

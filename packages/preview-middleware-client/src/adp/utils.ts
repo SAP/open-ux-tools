@@ -1,12 +1,13 @@
-import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import FlexUtils from 'sap/ui/fl/Utils';
-import IsReuseComponentApi from 'sap/ui/rta/util/isReuseComponent';
-import { getControlById } from '../utils/core.js';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand.js';
 import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import IsReuseComponentApi from 'sap/ui/rta/util/isReuseComponent';
+import { getControlById } from '../utils/core';
 
+import { getFlexChangeList } from '../utils/additional-change-info';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version.js';
 
 export interface Deferred<T> {
@@ -106,16 +107,11 @@ export function getNestedProperty(obj: object, path: string): unknown {
  * @returns {boolean} Returns true if the command's change contains the specified property with the matching value; otherwise, returns false.
  */
 export function matchesChangeProperty(command: FlexCommand, propertyPath: string, propertyValue: string): boolean {
-    if (typeof command.getPreparedChange !== 'function') {
-        return false;
-    }
-    const change = command.getPreparedChange()?.getDefinition?.();
-    if (!change) {
-        return false;
-    }
-
-    const nestedProperty = getNestedProperty(change, propertyPath);
-    return typeof nestedProperty === 'string' ? nestedProperty.includes(propertyValue) : false;
+    return getFlexChangeList(command).some((change) => {
+        const changeDefinition = change.convertToFileContent?.();
+        const nestedProperty = getNestedProperty(changeDefinition, propertyPath);
+        return typeof nestedProperty === 'string' ? nestedProperty.includes(propertyValue) : false;
+    });
 }
 interface ControllerInfo {
     controllerName: string;
