@@ -9,8 +9,8 @@ import { ToolsLogger, type Logger } from '@sap-ux/logger';
 
 // Store downloaded models under the package root so the CI cache step can
 // target a stable path regardless of the pnpm store layout.
-const __dirname = path.dirname(path.dirname(path.dirname(fileURLToPath(import.meta.url))));
-env.cacheDir = path.join(__dirname, '.cache');
+const packageRoot = path.dirname(path.dirname(path.dirname(fileURLToPath(import.meta.url))));
+env.cacheDir = path.join(packageRoot, '.cache');
 
 interface ProgressCallback {
     status: string;
