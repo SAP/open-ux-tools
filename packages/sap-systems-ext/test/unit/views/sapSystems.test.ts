@@ -11,7 +11,9 @@ jest.mock('@sap-ux/store', () => ({
 
 describe('Test the SAP Systems view', () => {
     it('should initialize the view without errors', () => {
-        const registerTreeDataProviderSpy = jest.spyOn(vscode.window, 'registerTreeDataProvider').mockImplementation((() => {}) as unknown as any);
+        const registerTreeDataProviderSpy = jest
+            .spyOn(vscode.window, 'registerTreeDataProvider')
+            .mockImplementation((() => {}) as unknown as any);
         const mockContext = {
             subscriptions: [],
             extensionPath: '/mock/extension/path'
