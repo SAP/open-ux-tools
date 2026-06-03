@@ -1,7 +1,7 @@
 import { expect } from '@sap-ux-private/playwright';
-import { test } from '../../fixture';
-import { ADP_FIORI_ELEMENTS_V2 } from '../../project';
-import { AdaptationEditorShell, createChangeFlexFile, deleteChanges, exposeFunction, ListReport } from '../test-utils';
+import { test } from '../../fixture.js';
+import { ADP_FIORI_ELEMENTS_V2 } from '../../project/index.js';
+import { AdaptationEditorShell, createChangeFlexFile, deleteChanges, exposeFunction, ListReport } from '../test-utils.js';
 import { join } from 'node:path';
 
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V2 });
