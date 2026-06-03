@@ -35,6 +35,7 @@
     "dependencies": {
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
+        "@ui5/manifest": "1.85.0",
         "fast-xml-parser": "5.8.0",
         "findit2": "2.2.3",
         "json-parse-even-better-errors": "5.0.0",
@@ -49,7 +50,6 @@
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/semver": "7.7.1",
-        "@ui5/manifest": "1.85.0",
         "vscode-uri": "3.1.0"
     }
 }
