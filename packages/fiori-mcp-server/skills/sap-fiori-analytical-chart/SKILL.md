@@ -2,6 +2,9 @@
 name: sap-fiori-analytical-chart
 description: 'Add analytical chart view to SAP Fiori Elements List Report for visualizing aggregated data. Use when: adding charts to List Reports, visualizing OData aggregations, implementing analytical views, configuring chart dimensions and measures, enabling chart/table hybrid views in Fiori Elements OData V4 applications.'
 argument-hint: 'Entity name, dimension field, measure field, aggregation method'
+metadata:
+  author: sap-fiori-tools
+  version: "0.0.1"
 ---
 
 # Add Chart to SAP Fiori List Report
