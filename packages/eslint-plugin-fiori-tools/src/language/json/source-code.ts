@@ -1,5 +1,5 @@
 import { JSONSourceCode } from '@eslint/json';
-import type { DocumentNode } from '@humanwhocodes/momoa';
+import type { AnyNode, DocumentNode } from '@humanwhocodes/momoa';
 import type { Manifest } from '@sap-ux/project-access';
 
 import type { ProjectContext } from '../../project-context/project-context.js';
@@ -59,5 +59,35 @@ export class FioriJSONSourceCode extends JSONSourceCode {
                 return isLast ? `Member[name.value="${segment}"]` : `Member[name.value="${segment}"] > Object`;
             })
             .join(' > ');
+    }
+
+    /**
+     * Gets the node by provided json path.
+     * Looks from provided starting node. You can begin search from ast body node.
+     *
+     * @param node - Initial node, start from ast body or closer to the searched node
+     * @param path - Path to the node
+     * @returns - Node
+     */
+    getNode(node: AnyNode | undefined, path: string[]): AnyNode | undefined {
+        if (node && path.length) {
+            const name = path[0];
+            if (node.type === 'Object') {
+                node = node.members.find((n) => {
+                    if (n.name.type === 'String') {
+                        return n.name.value === name;
+                    }
+                    return false;
+                });
+                if (node) {
+                    return this.getNode(node, path);
+                }
+            } else if (node.type === 'Member' && path.length > 1) {
+                // Report the final node, not value of the final node
+                return this.getNode(node.value, path.slice(1));
+            }
+            return undefined;
+        }
+        return node;
     }
 }
