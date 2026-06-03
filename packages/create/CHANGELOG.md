@@ -1,5 +1,11 @@
 # @sap-ux/create
 
+## 1.0.6
+
+### Patch Changes
+
+- 3140dcc: FIX: replace `change system` with `update system`
+
 ## 1.0.5
 
 ### Patch Changes
