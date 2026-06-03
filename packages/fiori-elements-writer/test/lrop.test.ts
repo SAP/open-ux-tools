@@ -463,7 +463,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 await projectChecks(testPath, config, debug?.debugFull);
             });
         },
-        120000 // Increased to 120s - lrop_v4_addtests with test generation can take 60s+ on Windows CI
+        240000 // Increased to 240s - lrop_v4_addtests with test generation can exceed 120s on Windows CI
     );
 
     test('should generate manifest with correct routing and context paths when parameterised main entity is selected', async () => {
