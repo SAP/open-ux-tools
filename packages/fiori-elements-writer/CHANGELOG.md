@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 3.0.5
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@1.0.5
+
 ## 3.0.4
 
 ### Patch Changes
