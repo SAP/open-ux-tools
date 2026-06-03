@@ -1,13 +1,13 @@
 import { jest } from '@jest/globals';
 
-const mockGetChangesByType = jest.fn();
-const mockIsCFEnvironment = jest.fn();
-const mockGetAdpConfig = jest.fn();
-const mockListDestinations = jest.fn();
-const mockGetBtpDestinations = jest.fn();
-const mockIsOnPremiseDestination = jest.fn();
+const mockGetChangesByType = jest.fn() as jest.Mock;
+const mockIsCFEnvironment = jest.fn() as jest.Mock;
+const mockGetAdpConfig = jest.fn() as jest.Mock;
+const mockListDestinations = jest.fn() as jest.Mock;
+const mockGetBtpDestinations = jest.fn() as jest.Mock;
+const mockIsOnPremiseDestination = jest.fn() as jest.Mock;
 const mockIsAppStudio = jest.fn().mockReturnValue(false);
-const mockReadFileSync = jest.fn();
+const mockReadFileSync = jest.fn<typeof realFs.readFileSync>();
 const mockHasContentDuplication = jest.fn().mockReturnValue(false);
 const mockHasCustomerPrefix = jest.fn().mockReturnValue(true);
 const mockValidateJSON = jest.fn().mockReturnValue(true);
@@ -55,8 +55,8 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     isDataSourceURI: mockIsDataSourceURI
 }));
 
-const { getPrompts, createNewModelData } = await import('../../../../src/prompts/add-new-model');
-const i18n = await import('../../../../src/i18n');
+const { getPrompts, createNewModelData } = await import('../../../../src/prompts/add-new-model/index.js');
+const i18n = await import('../../../../src/i18n.js');
 const { Severity, MessageType } = await import('@sap-devx/yeoman-ui-types');
 import type { NewModelAnswers, DescriptorVariant } from '../../../../src/index.js';
 import type { NewModelDataWithAnnotations } from '../../../../src/types.js';

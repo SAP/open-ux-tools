@@ -6,7 +6,7 @@ jest.unstable_mockModule('@xenova/transformers', () => ({
     pipeline: mockPipeline
 }));
 
-const { TextEmbeddingService } = await import('../../../../src/tools/services/text-embedding');
+const { TextEmbeddingService } = await import('../../../../src/tools/services/text-embedding.js');
 
 describe('TextEmbeddingService', () => {
     let service: TextEmbeddingService;

@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { LogLevel, NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { AbapTarget } from '@sap-ux/system-access';
-import type { AbapDeployConfig } from '../../../src/types';
+import type { AbapDeployConfig } from '../../../src/types/index.js';
 import { AxiosError } from 'axios';
 
 const __testdirname = dirname(fileURLToPath(import.meta.url));
@@ -18,7 +18,7 @@ import {
     mockCreateForAbap,
     mockedAdtService,
     mockedLrepService
-} from '../../__mocks__';
+} from '../../__mocks__/index.js';
 
 // Mock validate module to allow spying on ESM exports
 const validateBeforeDeployMock = jest.fn<any>().mockResolvedValue({ result: true, summary: [] });
@@ -27,7 +27,7 @@ const formatSummaryMock = jest.fn<any>().mockReturnValue('');
 const checkForCredentialsMock = jest.fn<any>().mockResolvedValue(true);
 
 // Import the real validate module first to get the real SummaryStatus enum and other exports
-const realValidate = await import('../../../src/base/validate');
+const realValidate = await import('../../../src/base/validate.js');
 
 jest.unstable_mockModule('../../../src/base/validate', () => ({
     ...realValidate,
@@ -40,7 +40,7 @@ jest.unstable_mockModule('../../../src/base/validate', () => ({
 const { SummaryStatus } = realValidate;
 
 // Dynamic imports AFTER all mocks are set up
-const { createTransportRequest, deploy, undeploy } = await import('../../../src/base/deploy');
+const { createTransportRequest, deploy, undeploy } = await import('../../../src/base/deploy.js');
 
 describe('base/deploy', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });

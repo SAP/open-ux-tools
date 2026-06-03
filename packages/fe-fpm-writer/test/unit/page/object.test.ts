@@ -3,11 +3,11 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { ObjectPage } from '../../../src/page';
-import { generate } from '../../../src/page/object';
-import { detectTabSpacing } from '../../../src/common/file';
-import { tabSizingTestCases } from '../../common';
-import { FCL_ROUTER } from '../../../src/common/defaults';
+import type { ObjectPage } from '../../../src/page/index.js';
+import { generate } from '../../../src/page/object.js';
+import { detectTabSpacing } from '../../../src/common/file.js';
+import { tabSizingTestCases } from '../../common/index.js';
+import { FCL_ROUTER } from '../../../src/common/defaults.js';
 
 describe('ObjectPage', () => {
     const testDir = '' + Date.now();

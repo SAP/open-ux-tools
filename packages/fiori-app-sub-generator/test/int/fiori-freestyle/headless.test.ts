@@ -5,9 +5,9 @@ import 'jest-extended';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import yeomanTest from 'yeoman-test';
-import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
-import { type FFAppConfig } from '../../../src/types';
-import { cleanTestDir, ignoreMatcherOpts } from '../test-utils';
+import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator/index.js';
+import { type FFAppConfig } from '../../../src/types/index.js';
+import { cleanTestDir, ignoreMatcherOpts } from '../test-utils/index.js';
 
 // Disable telemetry for integration tests to avoid Application Insights initialization errors
 process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY = 'true';
@@ -21,7 +21,7 @@ const originalCwd: string = process.cwd(); // Generation changes the cwd, this b
 
 const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
 const actualTelemetry = await import('@sap-ux/telemetry');
-const actualInstall = await import('../../../src/fiori-app-generator/install');
+const actualInstall = await import('../../../src/fiori-app-generator/install.js');
 
 const mockInstallDependencies = jest.fn<() => Promise<void>>().mockResolvedValue(undefined);
 
@@ -42,7 +42,7 @@ jest.unstable_mockModule('../../../src/fiori-app-generator/install', () => ({
 }));
 
 // Import after mocks are set up
-const { FioriAppGeneratorHeadless } = await import('../../../src/app-headless');
+const { FioriAppGeneratorHeadless } = await import('../../../src/app-headless/index.js');
 
 /**
  *

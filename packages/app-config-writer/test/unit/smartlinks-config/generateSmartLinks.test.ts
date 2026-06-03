@@ -17,7 +17,7 @@ jest.unstable_mockModule('chalk', () => ({
     dim: (s: string) => s
 }));
 
-const mockPrompt = jest.fn();
+const mockPrompt = jest.fn() as jest.Mock;
 const mockPromptsModule = Object.assign(mockPrompt, { prompt: mockPrompt, inject: jest.fn() });
 jest.unstable_mockModule('prompts', () => ({
     default: mockPromptsModule
@@ -34,7 +34,7 @@ jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     createForDestination: mockCreateForDestination
 }));
 
-const { generateSmartLinksConfig } = await import('../../../src');
+const { generateSmartLinksConfig } = await import('../../../src/index.js');
 
 describe('Test generateSmartLinksConfig', () => {
     const configMock = {

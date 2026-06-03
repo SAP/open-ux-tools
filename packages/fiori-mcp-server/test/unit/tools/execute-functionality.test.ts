@@ -10,7 +10,7 @@ import {
     mockSpecificationReadApp,
     mockSpecificationReadAppWithModel,
     readAppWithModel
-} from '../utils';
+} from '../utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -25,7 +25,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 }));
 
 // Mock project utils
-const actualProjectUtils = await import('../../../src/page-editor-api/project');
+const actualProjectUtils = await import('../../../src/page-editor-api/project.js');
 const mockGetManifest = jest.fn<any>();
 const mockGetFlexChangeLayer = jest.fn<any>();
 const mockGetUI5Version = jest.fn<any>();
@@ -37,7 +37,7 @@ jest.unstable_mockModule('../../../src/page-editor-api/project', () => ({
 }));
 
 // Mock flex utils
-const actualFlexUtils = await import('../../../src/page-editor-api/flex');
+const actualFlexUtils = await import('../../../src/page-editor-api/flex.js');
 const mockWriteFlexChanges = jest.fn<any>();
 jest.unstable_mockModule('../../../src/page-editor-api/flex', () => ({
     ...actualFlexUtils,
@@ -45,8 +45,8 @@ jest.unstable_mockModule('../../../src/page-editor-api/flex', () => ({
 }));
 
 // Dynamic imports after mocks
-const { executeFunctionality } = await import('../../../src/tools');
-const addPageDependency = await import('../../../src/tools/functionalities/page');
+const { executeFunctionality } = await import('../../../src/tools/index.js');
+const addPageDependency = await import('../../../src/tools/functionalities/page/index.js');
 
 const appPathLropV4 = join(__dirname, '../../test-data/original/lrop');
 const fsEditor = create(createStorage());

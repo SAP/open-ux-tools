@@ -2,7 +2,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-ui5-legacy-jquerysap-usage';
+import rule from '../../src/rules/sap-ui5-legacy-jquerysap-usage.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

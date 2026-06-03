@@ -10,10 +10,10 @@ jest.unstable_mockModule('@sap/cf-tools', () => ({
     apiGetServicesInstancesFilteredByType: jest.fn().mockImplementation(() => cfAbapServices)
 }));
 
-const { t } = await import('../src/i18n');
-const { RouterModuleType, appRouterPromptNames } = await import('../src');
-const { getAppRouterQuestions } = await import('../src/prompts');
-import type { CfAppRouterDeployConfigQuestions, CfAppRouterDeployConfigPromptOptions } from '../src';
+const { t } = await import('../src/i18n.js');
+const { RouterModuleType, appRouterPromptNames } = await import('../src/index.js');
+const { getAppRouterQuestions } = await import('../src/prompts/index.js');
+import type { CfAppRouterDeployConfigQuestions, CfAppRouterDeployConfigPromptOptions } from '../src/index.js';
 import { type ListQuestion } from '@sap-ux/inquirer-common';
 import { initI18nCfDeployConfigInquirer } from '../src/i18n.js';
 

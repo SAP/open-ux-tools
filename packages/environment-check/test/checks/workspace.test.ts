@@ -3,13 +3,13 @@ import path, { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockFindAllApps = jest.fn();
+const mockFindAllApps = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     findAllApps: mockFindAllApps
 }));
 
-const { FileName, Severity } = await import('../../src/types');
-const { getDestinationsFromWorkspace } = await import('../../src/checks/workspace');
+const { FileName, Severity } = await import('../../src/types.js');
+const { getDestinationsFromWorkspace } = await import('../../src/checks/workspace.js');
 
 describe('Test for getDestinationsFromWorkspace()', () => {
     const sampleWorkspace = join(__dirname, '..', 'sample-workspace');

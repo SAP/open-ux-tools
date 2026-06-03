@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals';
 import { type TransportConfig, promptNames } from '../../../../src/types.js';
 
-const mockShowUi5AppDeployConfigQuestion = jest.fn();
-const mockValidateUi5AbapRepoName = jest.fn();
-const mockValidateAppDescription = jest.fn();
+const mockShowUi5AppDeployConfigQuestion = jest.fn<typeof actualConditions.showUi5AppDeployConfigQuestion>();
+const mockValidateUi5AbapRepoName = jest.fn<typeof actualValidators.validateUi5AbapRepoName>();
+const mockValidateAppDescription = jest.fn<typeof actualValidators.validateAppDescription>();
 
 const actualConditions = await import('../../../../src/prompts/conditions.js');
 const actualValidators = await import('../../../../src/prompts/validators.js');

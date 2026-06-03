@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 1.0.1
+
+### Patch Changes
+
+- 9580241: fix(ui5-config): addAbapDeployTask always includes /localService/ in deploy task configuration.exclude
+
 ## 1.0.0
 
 ### Major Changes

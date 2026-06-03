@@ -14,13 +14,13 @@ jest.unstable_mockModule('chalk', () => ({
     dim: (s: string) => s
 }));
 
-const mockPrompt = jest.fn();
+const mockPrompt = jest.fn() as jest.Mock;
 const mockPromptsModule = Object.assign(mockPrompt, { prompt: mockPrompt, inject: jest.fn() });
 jest.unstable_mockModule('prompts', () => ({
     default: mockPromptsModule
 }));
 
-const { generateVariantsConfig } = await import('../../../src');
+const { generateVariantsConfig } = await import('../../../src/index.js');
 const { ToolsLogger } = await import('@sap-ux/logger');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

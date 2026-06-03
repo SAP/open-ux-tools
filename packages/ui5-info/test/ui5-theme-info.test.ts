@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
-import { getDefaultUI5Theme, ui5ThemeIds, getUi5Themes, ui5Themes } from '../src/ui5-theme-info';
-import { defaultMinUi5Version, defaultVersion, ui5VersionsCache, ui5VersionRequestInfo } from '../src/constants';
-import type { UI5Theme } from '../src/types';
+import { getDefaultUI5Theme, ui5ThemeIds, getUi5Themes, ui5Themes } from '../src/ui5-theme-info.js';
+import { defaultMinUi5Version, defaultVersion, ui5VersionsCache, ui5VersionRequestInfo } from '../src/constants.js';
+import type { UI5Theme } from '../src/types.js';
 import nock from 'nock';
 import { coerce, gte, lt } from 'semver';
 

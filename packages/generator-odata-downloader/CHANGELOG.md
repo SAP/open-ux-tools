@@ -1,5 +1,20 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.3
+
+### Patch Changes
+
+- Updated dependencies [9580241]
+    - @sap-ux/ui5-config@1.0.1
+    - @sap-ux/mockserver-config-writer@1.0.2
+    - @sap-ux/odata-service-writer@1.0.2
+    - @sap-ux/project-access@2.0.2
+    - @sap-ux/telemetry@1.0.3
+    - @sap-ux/odata-service-inquirer@3.0.3
+    - @sap-ux/inquirer-common@1.0.3
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/fiori-generator-shared@1.0.3
+
 ## 0.3.2
 
 ### Patch Changes

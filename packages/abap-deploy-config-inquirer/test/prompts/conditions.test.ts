@@ -7,9 +7,9 @@ import {
     type TransportConfig
 } from '../../src/types.js';
 
-const mockIsAppStudio = jest.fn();
-const mockFindBackendSystemByUrl = jest.fn();
-const mockInitTransportConfig = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockFindBackendSystemByUrl = jest.fn<typeof actualUtils.findBackendSystemByUrl>();
+const mockInitTransportConfig = jest.fn<typeof actualUtils.initTransportConfig>();
 
 const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({

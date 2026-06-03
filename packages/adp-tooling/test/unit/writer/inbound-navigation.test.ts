@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
 
 // MOCKS - use jest.unstable_mockModule for ESM compatibility
-const mockGetVariant = jest.fn();
+const mockGetVariant = jest.fn() as jest.Mock;
 const mockUpdateVariant = jest
     .fn<(basePath: string, variant: unknown, fs: Editor) => Promise<void>>()
     .mockImplementation(async (basePath: string, variant: unknown, fs: Editor) => {
@@ -30,7 +30,7 @@ jest.unstable_mockModule('../../../src/base/helper', () => ({
     getBaseAppId: jest.fn()
 }));
 
-const mockRemoveAndCreateI18nEntries = jest.fn();
+const mockRemoveAndCreateI18nEntries = jest.fn() as jest.Mock;
 const SapShortTextType = { TableTitle: 'XTIT' };
 jest.unstable_mockModule('@sap-ux/i18n', () => ({
     removeAndCreateI18nEntries: mockRemoveAndCreateI18nEntries,
@@ -42,8 +42,8 @@ jest.unstable_mockModule('@sap-ux/i18n', () => ({
     getPropertiesI18nBundle: jest.fn()
 }));
 
-const { getFlpI18nKeys, updateI18n, generateInboundConfig } = await import('../../../src/writer/inbound-navigation');
-import type { InternalInboundNavigation, DescriptorVariant, DescriptorVariantContent } from '../../../src/types';
+const { getFlpI18nKeys, updateI18n, generateInboundConfig } = await import('../../../src/writer/inbound-navigation.js');
+import type { InternalInboundNavigation, DescriptorVariant, DescriptorVariantContent } from '../../../src/types.js';
 
 describe('FLP Configuration Functions', () => {
     const basePath = join(__dirname, '../../fixtures', 'adaptation-project');

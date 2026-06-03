@@ -4,15 +4,15 @@ import { readdirSync, readFileSync } from 'node:fs';
 import cloneDeep from 'lodash/cloneDeep';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { ApiHubConfig, Project, Service, State } from '../../../src/types';
-import { ApiHubType, FloorplanFE } from '../../../src/types';
-import { cleanTestDir, getTestDir, ignoreMatcherOpts, originalCwd, runWritingPhaseGen } from '../test-utils';
-import { baseTestProject, getExpectedOutputPath, v2EntityConfig, v2Service } from './test-utils';
+import type { ApiHubConfig, Project, Service, State } from '../../../src/types/index.js';
+import { ApiHubType, FloorplanFE } from '../../../src/types/index.js';
+import { cleanTestDir, getTestDir, ignoreMatcherOpts, originalCwd, runWritingPhaseGen } from '../test-utils/index.js';
+import { baseTestProject, getExpectedOutputPath, v2EntityConfig, v2Service } from './test-utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const actualBtpUtils = await import('@sap-ux/btp-utils');
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn<typeof actualBtpUtils.isAppStudio>();
 
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...actualBtpUtils,

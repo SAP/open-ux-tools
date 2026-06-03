@@ -1,7 +1,7 @@
 import { AuthenticationType } from '@sap-ux/store';
-import type { BspApp, FioriToolsProxyConfig, UI5ProxyConfig } from '../src';
-import { UI5Config } from '../src';
-import { fioriToolsProxy } from '../src/constants';
+import type { BspApp, FioriToolsProxyConfig, UI5ProxyConfig } from '../src/index.js';
+import { UI5Config } from '../src/index.js';
+import { fioriToolsProxy } from '../src/constants.js';
 
 describe('UI5Config', () => {
     // values for testing

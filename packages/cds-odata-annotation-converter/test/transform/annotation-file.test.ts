@@ -2,9 +2,9 @@ import { dirname, join } from 'node:path';
 
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
 
-import { getCDSCompilerFacade } from '../setup';
-import { toAbsoluteUriString } from '../../src';
-import { toAnnotationFile, toTarget, toTargetMap } from '../../src/transforms/annotation-file';
+import { getCDSCompilerFacade } from '../setup.js';
+import { toAbsoluteUriString } from '../../src/index.js';
+import { toAnnotationFile, toTarget, toTargetMap } from '../../src/transforms/annotation-file.js';
 
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import cdsCompilerFacadeModule from '@sap/ux-cds-compiler-facade';

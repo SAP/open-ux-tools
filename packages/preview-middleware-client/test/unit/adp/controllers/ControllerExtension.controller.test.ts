@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import type Dialog from 'sap/m/Dialog';
 import Utils from 'mock/sap/ui/fl/Utils';
 import type Event from 'sap/ui/base/Event';

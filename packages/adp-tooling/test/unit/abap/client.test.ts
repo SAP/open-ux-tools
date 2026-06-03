@@ -2,7 +2,7 @@ import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { AdtCatalogService, UI5RtVersionService } from '@sap-ux/axios-extension';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-import { getBaseAppInbounds, getFlexUICapability, getSystemUI5Version } from '../../../src';
+import { getBaseAppInbounds, getFlexUICapability, getSystemUI5Version } from '../../../src/index.js';
 
 describe('getFlexUICapability', () => {
     it('should return immediately when isCustomerBase is false', async () => {

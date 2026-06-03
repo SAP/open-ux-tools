@@ -1,4 +1,4 @@
-import { reportTelemetry, enableTelemetry, disableTelemetry } from '../../src/telemetry';
+import { reportTelemetry, enableTelemetry, disableTelemetry } from '../../src/telemetry.js';
 
 export const fetchMock = jest.fn().mockResolvedValue({ status: 200 });
 window.fetch = fetchMock;

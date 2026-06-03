@@ -28,7 +28,7 @@ jest.unstable_mockModule('@sap/cf-tools', () => ({
     apiGetInstanceCredentials: jest.fn()
 }));
 
-const { MockMta } = await import('./mockMta');
+const { MockMta } = await import('./mockMta.js');
 jest.unstable_mockModule('@sap/mta-lib', () => ({
     Mta: MockMta
 }));
@@ -36,8 +36,8 @@ jest.unstable_mockModule('@sap/mta-lib', () => ({
 const btp = await import('@sap-ux/btp-utils');
 const hasbin = await import('hasbin');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
-const { generateAppConfig, DefaultMTADestination } = await import('../../src');
-const { generateSupportingConfig } = await import('../../src/utils');
+const { generateAppConfig, DefaultMTADestination } = await import('../../src/index.js');
+const { generateSupportingConfig } = await import('../../src/utils.js');
 const { Mta } = await import('@sap/mta-lib');
 const { CommandRunner } = await import('@sap-ux/nodejs-utils');
 

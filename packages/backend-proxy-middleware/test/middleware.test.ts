@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { BackendMiddlewareConfig } from '../src/base/types';
+import type { BackendMiddlewareConfig } from '../src/base/types.js';
 import type { Options } from 'http-proxy-middleware';
 
 const mockGenerateProxyMiddlewareOptions = jest.fn<any>();
@@ -31,7 +31,7 @@ jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
 }));
 
 // Import the real proxy module (its transitive deps are mocked above, so this is lightweight)
-const realProxy = await import('../src/base/proxy');
+const realProxy = await import('../src/base/proxy.js');
 mockGenerateProxyMiddlewareOptions.mockImplementation(realProxy.generateProxyMiddlewareOptions);
 
 // Now mock the proxy module, replacing generateProxyMiddlewareOptions with the spy
@@ -44,7 +44,7 @@ const express = (await import('express')).default;
 const supertest = (await import('supertest')).default;
 const nock = (await import('nock')).default;
 const connect = (await import('connect')).default;
-const proxyMiddleware = await import('../src/middleware');
+const proxyMiddleware = await import('../src/middleware.js');
 const { ToolsLogger } = await import('@sap-ux/logger');
 // middleware function wrapper for testing to simplify tests
 async function getTestServerForExpress(configuration: BackendMiddlewareConfig): Promise<any> {

@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
-import type { UI5LibraryAnswers } from '../../src/types';
+import type { UI5LibraryAnswers } from '../../src/types.js';
 import type { Answers, ListQuestion } from 'inquirer';
 
 const mockGetUI5Versions = jest.fn<() => Promise<UI5Version[]>>();
@@ -19,15 +19,15 @@ jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
     searchChoices: jest.fn()
 }));
 
-const mockGetQuestions = jest.fn();
+const mockGetQuestions = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('../../src/prompts/prompts', () => ({
     getQuestions: mockGetQuestions
 }));
 
-const mockRegisterPrompt = jest.fn();
-const mockPrompt = jest.fn();
-const mockAdapterRegisterPrompt = jest.fn();
+const mockRegisterPrompt = jest.fn() as jest.Mock;
+const mockPrompt = jest.fn() as jest.Mock;
+const mockAdapterRegisterPrompt = jest.fn() as jest.Mock;
 const mockCreatePromptModule = jest.fn().mockReturnValue({
     registerPrompt: mockAdapterRegisterPrompt
 });
@@ -45,8 +45,8 @@ jest.unstable_mockModule('inquirer-autocomplete-prompt', () => ({
     default: jest.fn()
 }));
 
-const { getPrompts, prompt } = await import('../../src/index');
-const { initI18n } = await import('../../src/i18n');
+const { getPrompts, prompt } = await import('../../src/index.js');
+const { initI18n } = await import('../../src/i18n.js');
 
 /**
  * Tests the exported ui5-library-inquirer APIs
@@ -80,7 +80,7 @@ describe('API test', () => {
         // Don't mock getQuestions - let it call the real implementation
         // We need to re-import to use the real getQuestions for snapshot testing
         // Instead, let's mock getQuestions to return expected prompts
-        mockGetQuestions.mockImplementation((...args: any[]) => {
+        mockGetQuestions.mockImplementation((...args) => {
             // We need the real getQuestions for this test
             // But since prompts.ts is mocked, we'll verify the call args instead
             return [

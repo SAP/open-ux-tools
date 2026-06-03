@@ -5,7 +5,7 @@ import type { Editor } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ToolsLogger } from '@sap-ux/logger';
-import { updateMiddlewaresForPreview } from '../../../src/common/ui5-yaml';
+import { updateMiddlewaresForPreview } from '../../../src/common/ui5-yaml.js';
 import { FileName } from '@sap-ux/project-access';
 
 const middlewareUpdatedMessage = (middleware: 'preview' | 'reload', filename: string) =>

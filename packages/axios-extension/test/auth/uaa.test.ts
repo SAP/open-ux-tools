@@ -9,7 +9,7 @@ jest.unstable_mockModule('open', () => ({
     default: mockOpen
 }));
 
-const { Uaa } = await import('../../src');
+const { Uaa } = await import('../../src/index.js');
 
 describe('UAA', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
