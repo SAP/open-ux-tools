@@ -12,7 +12,7 @@ export type { ITextField, ITextFieldProps } from '@fluentui/react';
 export type UITextInputProps = ITextFieldProps & UIMessagesExtendedProps;
 
 export const COMMON_INPUT_STYLES = {
-    borderRadius: 4
+    borderRadius: 'var(--vscode-cornerRadius-small, 4px)'
 };
 
 const COLOR_STYLES = {

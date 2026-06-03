@@ -22,7 +22,7 @@ export const CALLOUT_STYLES = {
     boxShadow: 'var(--ui-box-shadow-small)',
     borderColor: 'var(--vscode-editorWidget-border)',
     text: 'var(--vscode-editorWidget-foreground)',
-    borderRadius: 4
+    borderRadius: 'var(--vscode-cornerRadius-small, 4px)'
 };
 
 export enum UICalloutContentPadding {
