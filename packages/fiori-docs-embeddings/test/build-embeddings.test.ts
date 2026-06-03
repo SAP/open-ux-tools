@@ -15,7 +15,7 @@ jest.unstable_mockModule('@sap-ux/logger', () => ({
     ToolsLogger: jest.fn().mockImplementation(() => mockLogger)
 }));
 
-jest.unstable_mockModule('@xenova/transformers', () => ({
+jest.unstable_mockModule('@huggingface/transformers', () => ({
     pipeline: mockPipeline,
     env: { cacheDir: '' }
 }));
@@ -92,7 +92,7 @@ describe('EmbeddingBuilder', () => {
                 'feature-extraction',
                 'Xenova/all-MiniLM-L6-v2',
                 expect.objectContaining({
-                    quantized: false,
+                    dtype: 'fp32',
                     progress_callback: expect.any(Function)
                 })
             );

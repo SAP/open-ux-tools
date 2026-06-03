@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { pipeline, env, type FeatureExtractionPipeline } from '@xenova/transformers';
+import { pipeline, env, type FeatureExtractionPipeline } from '@huggingface/transformers';
 import { connect } from '@lancedb/lancedb';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
@@ -118,7 +118,7 @@ class EmbeddingBuilder {
 
         try {
             this.pipeline = await pipeline('feature-extraction', this.config.model, {
-                quantized: false, // Try without quantization first
+                dtype: 'fp32',
                 progress_callback: (progress: ProgressCallback) => {
                     if (progress.status === 'downloading') {
                         this.logger.info(`Downloading: ${Math.round(progress.progress || 0)}%`);
@@ -129,7 +129,7 @@ class EmbeddingBuilder {
             this.logger.warn(`Failed to load preferred model (${error.message}), trying fallback...`);
             // Fallback to a simpler model if the main one fails
             this.pipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
-                quantized: false,
+                dtype: 'fp32',
                 progress_callback: (progress: ProgressCallback) => {
                     if (progress.status === 'downloading') {
                         this.logger.info(`Fallback model downloading: ${Math.round(progress.progress || 0)}%`);

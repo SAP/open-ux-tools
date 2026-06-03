@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 
 // Mock the transformers module
 const mockPipeline = jest.fn<any>();
-jest.unstable_mockModule('@xenova/transformers', () => ({
+jest.unstable_mockModule('@huggingface/transformers', () => ({
     pipeline: mockPipeline
 }));
 
