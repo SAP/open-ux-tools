@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 3.0.1
+
+### Patch Changes
+
+- 21cadc3: fix: use VSCode cornerRadius CSS variables instead of hardcoded border-radius values in buttons, callouts, dialogs and toggle
+
 ## 3.0.0
 
 ### Major Changes

@@ -223,6 +223,7 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                     height: sizeInfo?.height,
                     width: sizeInfo?.width,
                     padding: sizeInfo?.padding,
+                    borderRadius: 'var(--vscode-cornerRadius-circle, 9999px)',
                     background: COLORS.pill.checked.background,
                     borderColor: COLORS.pill.checked.borderColor,
                     borderStyle: 'solid',
