@@ -98,25 +98,29 @@ Add visual filter configuration in `webapp/manifest.json` (same for both CAP and
 
 ```json
 {
-  "targets": {
-    "EntityList": {
-      "type": "Component",
-      "id": "EntityList",
-      "name": "sap.fe.templates.ListReport",
-      "options": {
-        "settings": {
-          "contextPath": "/YourEntity",
-          "variantManagement": "Page",
-          "initialLoad": true,
-          "controlConfiguration": {
-            "@com.sap.vocabularies.UI.v1.SelectionFields": {
-              "layout": "CompactVisual",
-              "initialLayout": "Visual",
-              "filterFields": {
-                "DimensionField": {
-                  "availability": "Default",
-                  "visualFilter": {
-                    "valueList": "com.sap.vocabularies.Common.v1.ValueList#visualFilter"
+  "sap.ui5": {
+    "routing": {
+      "targets": {
+        "EntityList": {
+          "type": "Component",
+          "id": "EntityList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/YourEntity",
+              "variantManagement": "Page",
+              "initialLoad": true,
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.SelectionFields": {
+                  "layout": "CompactVisual",
+                  "initialLayout": "Visual",
+                  "filterFields": {
+                    "DimensionField": {
+                      "availability": "Default",
+                      "visualFilter": {
+                        "valueList": "com.sap.vocabularies.Common.v1.ValueList#visualFilter"
+                      }
+                    }
                   }
                 }
               }
@@ -162,8 +166,8 @@ Refer to the **sap-fiori-elements** skill for guidance on how to start the appli
 |-----------|----------|------------------|
 | `#Bar` | Horizontal bars, comparing categories | ✅ Recommended |
 | `#Line` | Trends, sequential data | ✅ Supported |
-| `#Column` | Vertical bars, comparing values | ⚠️ Limited support |
-| `#Donut` | Part-to-whole relationships | ❌ Not recommended for V4 |
+| `#Column` | Vertical bars, comparing values | ❌ Not supported |
+| `#Donut` | Part-to-whole relationships | ❌ Not supported |
 
 **Recommendation:** Use **Bar** chart for visual filters (most common and reliable).
 
@@ -254,9 +258,9 @@ Refer to the **sap-fiori-elements** skill for guidance on how to start the appli
 - Frontend charts reference the property directly via `Measures`, not through DataPoints
 - CAP uses a different aggregation model with `AggregatableProperties` and dynamic measures
 
-### Backend-Specific Mistakes:
-- **[CAP common mistakes →](references/cap-implementation.md#critical-mistakes-to-avoid)**
-- **[RAP common mistakes →](references/rap-implementation.md#critical-mistakes-to-avoid)**
+### Backend-Specific Troubleshooting:
+- **[CAP troubleshooting →](references/cap-implementation.md#troubleshooting)**
+- **[RAP troubleshooting →](references/rap-implementation.md#troubleshooting)**
 
 ## Best Practices
 

@@ -413,8 +413,7 @@ annotate service.Travel with {
 
 2. **Chart Selection:**
    - Bar charts work best for visual filters (easy to select)
-   - Use Column for vertical comparison
-   - Use Donut for part-to-whole relationships
+   - Line charts are suitable for trends over time
 
 3. **Dimension Selection:**
    - Choose fields with 5-30 distinct values
