@@ -1,12 +1,20 @@
+import { jest } from '@jest/globals';
 import * as React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
-import { TranslationInput } from '../../../../src/components';
 import type { TranslationInputProps } from '../../../../src/components';
-import * as TranslationContext from '../../../../src/context/TranslationContext';
-import { acceptI18nCallout, clickI18nButton, isI18nLoading } from '../../utils';
-import { TRANSLATE_EVENT_SHOW, TRANSLATE_EVENT_UPDATE } from '../../../../src/types';
 import { SapShortTextType } from '@sap-ux/i18n';
+import { TRANSLATE_EVENT_SHOW, TRANSLATE_EVENT_UPDATE } from '../../../../src/types';
+
+const mockUseTranslation = jest.fn();
+
+jest.unstable_mockModule('../../../../src/context/TranslationContext', () => ({
+    useTranslation: mockUseTranslation,
+    TranslationProvider: ({ children }: any) => children
+}));
+
+const { TranslationInput } = await import('../../../../src/components');
+const { acceptI18nCallout, clickI18nButton, isI18nLoading } = await import('../../utils');
 
 const id = 'test';
 const annotationProps = {
@@ -35,11 +43,10 @@ const selectors = {
 describe('TranslationInput', () => {
     initIcons();
 
-    let useTranslationSpy: jest.SpyInstance;
     let triggerEventMock: jest.Mock;
     beforeEach(() => {
         triggerEventMock = jest.fn();
-        useTranslationSpy = jest.spyOn(TranslationContext, 'useTranslation').mockReturnValue({
+        mockUseTranslation.mockReturnValue({
             bundle: {
                 test: [{ key: { value: 'test' }, value: { value: 'Test value' } }]
             },
@@ -166,7 +173,7 @@ describe('TranslationInput', () => {
     });
 
     it('Mark translation field busy', () => {
-        useTranslationSpy = jest.spyOn(TranslationContext, 'useTranslation').mockReturnValue({
+        mockUseTranslation.mockReturnValue({
             bundle: {},
             pendingQuestions: ['testInput'],
             onEvent: triggerEventMock

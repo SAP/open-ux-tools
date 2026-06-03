@@ -1,10 +1,10 @@
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { Resource } from '@ui5/fs';
-import type { CompleteTestConfig, TestConfig, TestConfigDefaults } from '../types';
+import type { CompleteTestConfig, TestConfig, TestConfigDefaults } from '../types/index.js';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareUtils } from '@ui5/server';
 import { posix } from 'node:path';
-import { getTestResourcesPathPrefix, adjustPathForSandbox } from './utils/project';
+import { getTestResourcesPathPrefix, adjustPathForSandbox } from './utils/project.js';
 
 const DEFAULTS: Record<string, Readonly<Required<TestConfig>>> = {
     qunit: {

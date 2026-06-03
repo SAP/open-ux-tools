@@ -1,7 +1,8 @@
 {
     "name": "@sap-ux/launch-config",
-    "version": "0.11.2",
+    "version": "1.0.1",
     "description": "SAP Fiori tools launch config administration",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -19,7 +20,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
         "watch": "tsc --watch"
     },
     "files": [
@@ -41,6 +42,7 @@
         "yargs-parser": "21.1.1"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@sap-ux/logger": "workspace:*",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",

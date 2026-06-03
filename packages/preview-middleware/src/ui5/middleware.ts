@@ -2,11 +2,11 @@ import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareParameters } from '@ui5/server';
-import { type EnhancedRouter, FlpSandbox } from '../base/flp';
-import type { MiddlewareConfig } from '../types';
-import { getPreviewPaths, sanitizeConfig } from '../base/config';
-import { logRemoteUrl, isRemoteConnectionsEnabled } from '../base/remote-url';
-import { getResourcesPathPrefix } from '../base/utils/project';
+import { type EnhancedRouter, FlpSandbox } from '../base/flp.js';
+import type { MiddlewareConfig } from '../types/index.js';
+import { getPreviewPaths, sanitizeConfig } from '../base/config.js';
+import { logRemoteUrl, isRemoteConnectionsEnabled } from '../base/remote-url.js';
+import { getResourcesPathPrefix } from '../base/utils/project.js';
 
 /**
  * Create the router that is to be exposed as UI5 middleware.
@@ -59,7 +59,7 @@ async function createRouter(
  * @param params middleware configuration
  * @returns a promise for the request handler
  */
-module.exports = async (params: MiddlewareParameters<MiddlewareConfig>): Promise<RequestHandler> => {
+export default async (params: MiddlewareParameters<MiddlewareConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'preview-middleware' })],
         logLevel: params.options.configuration?.debug ? LogLevel.Debug : LogLevel.Info

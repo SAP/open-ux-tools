@@ -1,10 +1,9 @@
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
-import { isEditable } from '../../../../src/cpe/outline/editable';
 import OverlayUtil from 'mock/sap/ui/dt/OverlayUtil';
 import ComponentMock from 'mock/sap/ui/core/Component';
 import { sapCoreMock } from 'mock/window';
-import * as cpeUtils from '../../../../src/cpe/utils';
-jest.mock('../../../../src/cpe/control-data', () => {
+
+jest.unstable_mockModule('open/ux/preview/client/cpe/control-data', () => {
     return {
         buildControlData: () => {
             return {
@@ -13,6 +12,15 @@ jest.mock('../../../../src/cpe/control-data', () => {
         }
     };
 });
+
+const getRuntimeControlMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/cpe/utils', () => ({
+    getRuntimeControl: getRuntimeControlMock,
+    isReuseComponent: jest.fn()
+}));
+
+const { isEditable } = await import('open/ux/preview/client/cpe/outline/editable');
+
 describe('utils', () => {
     ComponentMock.get = jest.fn();
 
@@ -37,14 +45,13 @@ describe('utils', () => {
                 getElementInstance: jest.fn().mockReturnValue('mockControlOverlay')
             };
             OverlayUtil.getClosestOverlayFor.mockReturnValue(mockControlOverlay);
-            const getRuntimeControlSpy = jest.spyOn(cpeUtils, 'getRuntimeControl');
             // act
             const editable = isEditable({} as any, 'dummyId');
 
             // assert
             expect(editable).toBeTruthy();
             expect(OverlayUtil.getClosestOverlayFor).toHaveBeenCalledWith('mockControl');
-            expect(getRuntimeControlSpy).toHaveBeenCalledWith(mockControlOverlay);
+            expect(getRuntimeControlMock).toHaveBeenCalledWith(mockControlOverlay);
         });
     });
 });

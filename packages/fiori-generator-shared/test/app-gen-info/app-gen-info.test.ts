@@ -1,8 +1,11 @@
-import path from 'node:path';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import memFs from 'mem-fs';
 import memFsEditor from 'mem-fs-editor';
 import { generateAppGenInfo } from '../../src/app-gen-info';
 import type { AppGenInfo } from '../../src/types';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 function getLaunchText(): string {
     return (

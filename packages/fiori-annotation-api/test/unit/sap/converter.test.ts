@@ -1,12 +1,23 @@
-import { SAPAnnotationConverter } from '../../../src/sap/converter';
+import { jest } from '@jest/globals';
 import { createValue } from '../../../src/sap/builders';
-import { logger } from '../../../src/logger';
+
+const mockWarn = jest.fn();
+const mockLog = jest.fn();
+jest.unstable_mockModule('../../../src/logger', () => ({
+    logger: {
+        log: mockLog,
+        warn: mockWarn
+    }
+}));
+
+const { SAPAnnotationConverter } = await import('../../../src/sap/converter');
 
 describe('SAP Annotation Converter', () => {
     const converter = new SAPAnnotationConverter();
 
     beforeEach(() => {
-        jest.clearAllMocks();
+        mockWarn.mockReset();
+        mockLog.mockReset();
     });
 
     describe('UI LineItem', () => {
@@ -18,7 +29,7 @@ describe('SAP Annotation Converter', () => {
                     items: []
                 }
             ]);
-            expect(logger.warn).toHaveBeenCalledTimes(0);
+            expect(mockWarn).toHaveBeenCalledTimes(0);
             expect(result).toMatchSnapshot();
         });
         test('with a data field', () => {
@@ -34,7 +45,7 @@ describe('SAP Annotation Converter', () => {
                     ]
                 }
             ]);
-            expect(logger.warn).toHaveBeenCalledTimes(0);
+            expect(mockWarn).toHaveBeenCalledTimes(0);
             expect(result).toMatchSnapshot();
         });
         test('multiple items with label', () => {
@@ -55,7 +66,7 @@ describe('SAP Annotation Converter', () => {
                     ]
                 }
             ]);
-            expect(logger.warn).toHaveBeenCalledTimes(0);
+            expect(mockWarn).toHaveBeenCalledTimes(0);
             expect(result).toMatchSnapshot();
         });
     });
@@ -69,7 +80,7 @@ describe('SAP Annotation Converter', () => {
                     data: []
                 }
             ]);
-            expect(logger.warn).toHaveBeenCalledTimes(0);
+            expect(mockWarn).toHaveBeenCalledTimes(0);
             expect(result).toMatchSnapshot();
         });
         test('with multiple data fields', () => {
@@ -89,7 +100,7 @@ describe('SAP Annotation Converter', () => {
                     ]
                 }
             ]);
-            expect(logger.warn).toHaveBeenCalledTimes(0);
+            expect(mockWarn).toHaveBeenCalledTimes(0);
             expect(result).toMatchSnapshot();
         });
     });
@@ -103,7 +114,7 @@ describe('SAP Annotation Converter', () => {
                     facets: []
                 }
             ]);
-            expect(logger.warn).toHaveBeenCalledWith(
+            expect(mockWarn).toHaveBeenCalledWith(
                 'Could not find a property to which attach Facets annotation for entity "Service.Entity"'
             );
             expect(result).toMatchSnapshot();
@@ -128,7 +139,7 @@ describe('SAP Annotation Converter', () => {
                     facets: []
                 }
             ]);
-            expect(logger.warn).toHaveBeenCalledTimes(0);
+            expect(mockWarn).toHaveBeenCalledTimes(0);
             expect(result).toMatchSnapshot();
         });
 
@@ -163,7 +174,7 @@ describe('SAP Annotation Converter', () => {
                     ]
                 }
             ]);
-            expect(logger.warn).toHaveBeenCalledTimes(0);
+            expect(mockWarn).toHaveBeenCalledTimes(0);
             expect(result).toMatchSnapshot();
         });
     });
@@ -195,7 +206,7 @@ describe('SAP Annotation Converter', () => {
                     ]
                 }
             ]);
-            expect(logger.warn).toHaveBeenCalledTimes(0);
+            expect(mockWarn).toHaveBeenCalledTimes(0);
             expect(result).toMatchSnapshot();
         });
     });

@@ -3,9 +3,9 @@ import type { ReactElement } from 'react';
 import { Stack, Text } from '@fluentui/react';
 import { UIMessageBar, UIDialog, UITextInput, UIIconButton, UiIcons } from '@sap-ux/ui-components';
 import { useDispatch } from 'react-redux';
-import type { InfoCenterItem } from '../../slice';
+import type { InfoCenterItem } from '../../slice.js';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
-import { clearInfoCenterMessage } from '../../slice';
+import { clearInfoCenterMessage } from '../../slice.js';
 import { useTranslation } from 'react-i18next';
 import './InfoMessageItem.scss';
 

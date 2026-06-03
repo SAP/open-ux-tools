@@ -1,29 +1,37 @@
-import { initI18n, t, i18n } from '../../src/i18n';
-import * as mockInquirerCommon from '@sap-ux/inquirer-common';
+import { jest } from '@jest/globals';
 
-jest.mock('i18next', () => {
-    const instance = {
-        init: jest.fn(),
-        t: jest.fn(),
-        addResourceBundle: jest.fn()
-    };
-    return {
+const mockInit = jest.fn();
+const mockT = jest.fn();
+const mockAddResourceBundle = jest.fn();
+const instance = {
+    init: mockInit,
+    t: mockT,
+    addResourceBundle: mockAddResourceBundle
+};
+
+jest.unstable_mockModule('i18next', () => ({
+    default: {
         createInstance: () => instance
-    };
-});
+    },
+    createInstance: () => instance
+}));
+
+const mockAddi18nResourceBundle = jest.fn();
+jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
+    addi18nResourceBundle: mockAddi18nResourceBundle
+}));
+
+const { initI18n, t, i18n } = await import('../../src/i18n');
 
 describe('i18n', () => {
     test('initI18n', async () => {
-        const initSpy = jest.spyOn(i18n, 'init');
-        const addi18nResourceBundleSpy = jest.spyOn(mockInquirerCommon, 'addi18nResourceBundle');
         await initI18n();
-        expect(initSpy).toHaveBeenCalled();
-        expect(addi18nResourceBundleSpy).toHaveBeenCalled();
+        expect(mockInit).toHaveBeenCalled();
+        expect(mockAddi18nResourceBundle).toHaveBeenCalled();
     });
 
     test('t', async () => {
-        const tSpy = jest.spyOn(i18n, 't');
         t('test');
-        expect(tSpy).toHaveBeenCalledWith('test', { ns: 'ui5-library-inquirer' });
+        expect(mockT).toHaveBeenCalledWith('test', { ns: 'ui5-library-inquirer' });
     });
 });

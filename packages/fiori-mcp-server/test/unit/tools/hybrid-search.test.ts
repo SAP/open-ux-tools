@@ -1,40 +1,36 @@
+import { jest } from '@jest/globals';
 import type { DocSearchInput, SearchResponseData } from '../../../src/tools/hybrid-search';
-import { docSearch } from '../../../src/tools/hybrid-search';
-import { SimpleVectorService } from '../../../src/tools/services/vector-simple';
-import { TextEmbeddingService } from '../../../src/tools/services/text-embedding';
 
 // Mock the service dependencies
-jest.mock('../../../src/tools/services/vector-simple');
-jest.mock('../../../src/tools/services/text-embedding');
+const mockInitializeVector = jest.fn<any>();
+const mockSemanticSearch = jest.fn<any>();
+const mockIsInitializedVector = jest.fn<any>();
+const mockCloseVector = jest.fn<any>();
+jest.unstable_mockModule('../../../src/tools/services/vector-simple', () => ({
+    SimpleVectorService: jest.fn().mockImplementation(() => ({
+        initialize: mockInitializeVector,
+        semanticSearch: mockSemanticSearch,
+        isInitialized: mockIsInitializedVector,
+        close: mockCloseVector
+    }))
+}));
 
-const MockedSimpleVectorService = SimpleVectorService as jest.MockedClass<typeof SimpleVectorService>;
-const MockedTextEmbeddingService = TextEmbeddingService as jest.MockedClass<typeof TextEmbeddingService>;
+const mockInitializeEmbed = jest.fn<any>();
+const mockGenerateEmbedding = jest.fn<any>();
+const mockIsInitializedEmbed = jest.fn<any>();
+jest.unstable_mockModule('../../../src/tools/services/text-embedding', () => ({
+    TextEmbeddingService: jest.fn().mockImplementation(() => ({
+        initialize: mockInitializeEmbed,
+        generateEmbedding: mockGenerateEmbedding,
+        isInitialized: mockIsInitializedEmbed
+    }))
+}));
+
+const { docSearch } = await import('../../../src/tools/hybrid-search');
 
 describe('hybrid-search', () => {
-    let mockVectorService: jest.Mocked<SimpleVectorService>;
-    let mockEmbeddingService: jest.Mocked<TextEmbeddingService>;
-
     beforeEach(() => {
-        // Clear all mocks
         jest.clearAllMocks();
-
-        // Create mocked instances
-        mockVectorService = {
-            initialize: jest.fn(),
-            semanticSearch: jest.fn(),
-            isInitialized: jest.fn(),
-            close: jest.fn()
-        } as any;
-
-        mockEmbeddingService = {
-            initialize: jest.fn(),
-            generateEmbedding: jest.fn(),
-            isInitialized: jest.fn()
-        } as any;
-
-        // Mock the constructor calls to return our mocked instances
-        MockedSimpleVectorService.mockImplementation(() => mockVectorService);
-        MockedTextEmbeddingService.mockImplementation(() => mockEmbeddingService);
     });
 
     describe('docSearch', () => {
@@ -89,25 +85,18 @@ describe('hybrid-search', () => {
         ];
 
         it('should perform successful hybrid search and return structured results', async () => {
-            // Setup mocks for successful path
-            mockVectorService.initialize.mockResolvedValue();
-            mockEmbeddingService.initialize.mockResolvedValue();
-            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
-            mockVectorService.semanticSearch.mockResolvedValue(mockSearchResults);
+            mockInitializeVector.mockResolvedValue(undefined);
+            mockInitializeEmbed.mockResolvedValue(undefined);
+            mockGenerateEmbedding.mockResolvedValue(mockQueryVector);
+            mockSemanticSearch.mockResolvedValue(mockSearchResults);
 
             const result = (await docSearch(mockSearchParams, false)) as SearchResponseData;
 
-            // Verify service initialization
-            expect(mockVectorService.initialize).toHaveBeenCalledTimes(1);
-            expect(mockEmbeddingService.initialize).toHaveBeenCalledTimes(1);
+            expect(mockInitializeVector).toHaveBeenCalledTimes(1);
+            expect(mockInitializeEmbed).toHaveBeenCalledTimes(1);
+            expect(mockGenerateEmbedding).toHaveBeenCalledWith('test query');
+            expect(mockSemanticSearch).toHaveBeenCalledWith(mockQueryVector, 5);
 
-            // Verify embedding generation
-            expect(mockEmbeddingService.generateEmbedding).toHaveBeenCalledWith('test query');
-
-            // Verify semantic search
-            expect(mockVectorService.semanticSearch).toHaveBeenCalledWith(mockQueryVector, 5);
-
-            // Verify result structure
             expect(result).toEqual({
                 query: 'test query',
                 searchType: 'hybrid',
@@ -142,21 +131,21 @@ describe('hybrid-search', () => {
                 query: 'test query'
             };
 
-            mockVectorService.initialize.mockResolvedValue();
-            mockEmbeddingService.initialize.mockResolvedValue();
-            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
-            mockVectorService.semanticSearch.mockResolvedValue(mockSearchResults);
+            mockInitializeVector.mockResolvedValue(undefined);
+            mockInitializeEmbed.mockResolvedValue(undefined);
+            mockGenerateEmbedding.mockResolvedValue(mockQueryVector);
+            mockSemanticSearch.mockResolvedValue(mockSearchResults);
 
             await docSearch(paramsWithoutMaxResults, false);
 
-            expect(mockVectorService.semanticSearch).toHaveBeenCalledWith(mockQueryVector, 10);
+            expect(mockSemanticSearch).toHaveBeenCalledWith(mockQueryVector, 10);
         });
 
         it('should return results as formatted string when resultAsString is true', async () => {
-            mockVectorService.initialize.mockResolvedValue();
-            mockEmbeddingService.initialize.mockResolvedValue();
-            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
-            mockVectorService.semanticSearch.mockResolvedValue(mockSearchResults);
+            mockInitializeVector.mockResolvedValue(undefined);
+            mockInitializeEmbed.mockResolvedValue(undefined);
+            mockGenerateEmbedding.mockResolvedValue(mockQueryVector);
+            mockSemanticSearch.mockResolvedValue(mockSearchResults);
 
             const result = (await docSearch(mockSearchParams, true)) as string;
 
@@ -186,16 +175,15 @@ describe('hybrid-search', () => {
                             headers: ['Introduction'],
                             lastModified: new Date('2023-01-01'),
                             wordCount: 100
-                            // No excerpt
                         }
                     }
                 }
             ];
 
-            mockVectorService.initialize.mockResolvedValue();
-            mockEmbeddingService.initialize.mockResolvedValue();
-            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
-            mockVectorService.semanticSearch.mockResolvedValue(resultsWithoutExcerpt);
+            mockInitializeVector.mockResolvedValue(undefined);
+            mockInitializeEmbed.mockResolvedValue(undefined);
+            mockGenerateEmbedding.mockResolvedValue(mockQueryVector);
+            mockSemanticSearch.mockResolvedValue(resultsWithoutExcerpt);
 
             const result = (await docSearch(mockSearchParams, false)) as SearchResponseData;
 
@@ -220,10 +208,10 @@ describe('hybrid-search', () => {
                 }
             ];
 
-            mockVectorService.initialize.mockResolvedValue();
-            mockEmbeddingService.initialize.mockResolvedValue();
-            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
-            mockVectorService.semanticSearch.mockResolvedValue(resultsWithNullMetadata);
+            mockInitializeVector.mockResolvedValue(undefined);
+            mockInitializeEmbed.mockResolvedValue(undefined);
+            mockGenerateEmbedding.mockResolvedValue(mockQueryVector);
+            mockSemanticSearch.mockResolvedValue(resultsWithNullMetadata);
 
             const result = (await docSearch(mockSearchParams, false)) as SearchResponseData;
 
@@ -231,7 +219,7 @@ describe('hybrid-search', () => {
         });
 
         it('should return fallback response when vector service initialization fails', async () => {
-            mockVectorService.initialize.mockRejectedValue(new Error('Vector service init failed'));
+            mockInitializeVector.mockRejectedValue(new Error('Vector service init failed'));
 
             const result = (await docSearch(mockSearchParams, false)) as SearchResponseData;
 
@@ -244,14 +232,13 @@ describe('hybrid-search', () => {
                 suggestion: 'Try running: npm install -g @sap-ux/fiori-docs-embeddings'
             });
 
-            // Should not call further methods after initialization failure
-            expect(mockEmbeddingService.generateEmbedding).not.toHaveBeenCalled();
-            expect(mockVectorService.semanticSearch).not.toHaveBeenCalled();
+            expect(mockGenerateEmbedding).not.toHaveBeenCalled();
+            expect(mockSemanticSearch).not.toHaveBeenCalled();
         });
 
         it('should return fallback response when embedding service initialization fails', async () => {
-            mockVectorService.initialize.mockResolvedValue();
-            mockEmbeddingService.initialize.mockRejectedValue(new Error('Embedding service init failed'));
+            mockInitializeVector.mockResolvedValue(undefined);
+            mockInitializeEmbed.mockRejectedValue(new Error('Embedding service init failed'));
 
             const result = (await docSearch(mockSearchParams, false)) as SearchResponseData;
 
@@ -266,9 +253,9 @@ describe('hybrid-search', () => {
         });
 
         it('should return fallback response when embedding generation fails', async () => {
-            mockVectorService.initialize.mockResolvedValue();
-            mockEmbeddingService.initialize.mockResolvedValue();
-            mockEmbeddingService.generateEmbedding.mockRejectedValue(new Error('Embedding generation failed'));
+            mockInitializeVector.mockResolvedValue(undefined);
+            mockInitializeEmbed.mockResolvedValue(undefined);
+            mockGenerateEmbedding.mockRejectedValue(new Error('Embedding generation failed'));
 
             const result = (await docSearch(mockSearchParams, false)) as SearchResponseData;
 
@@ -279,10 +266,10 @@ describe('hybrid-search', () => {
         });
 
         it('should return fallback response when semantic search fails', async () => {
-            mockVectorService.initialize.mockResolvedValue();
-            mockEmbeddingService.initialize.mockResolvedValue();
-            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
-            mockVectorService.semanticSearch.mockRejectedValue(new Error('Semantic search failed'));
+            mockInitializeVector.mockResolvedValue(undefined);
+            mockInitializeEmbed.mockResolvedValue(undefined);
+            mockGenerateEmbedding.mockResolvedValue(mockQueryVector);
+            mockSemanticSearch.mockRejectedValue(new Error('Semantic search failed'));
 
             const result = (await docSearch(mockSearchParams, false)) as SearchResponseData;
 
@@ -293,10 +280,10 @@ describe('hybrid-search', () => {
         });
 
         it('should handle empty search results', async () => {
-            mockVectorService.initialize.mockResolvedValue();
-            mockEmbeddingService.initialize.mockResolvedValue();
-            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
-            mockVectorService.semanticSearch.mockResolvedValue([]);
+            mockInitializeVector.mockResolvedValue(undefined);
+            mockInitializeEmbed.mockResolvedValue(undefined);
+            mockGenerateEmbedding.mockResolvedValue(mockQueryVector);
+            mockSemanticSearch.mockResolvedValue([]);
 
             const result = (await docSearch(mockSearchParams, false)) as SearchResponseData;
 
@@ -306,10 +293,10 @@ describe('hybrid-search', () => {
         });
 
         it('should handle string result format with empty results', async () => {
-            mockVectorService.initialize.mockResolvedValue();
-            mockEmbeddingService.initialize.mockResolvedValue();
-            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
-            mockVectorService.semanticSearch.mockResolvedValue([]);
+            mockInitializeVector.mockResolvedValue(undefined);
+            mockInitializeEmbed.mockResolvedValue(undefined);
+            mockGenerateEmbedding.mockResolvedValue(mockQueryVector);
+            mockSemanticSearch.mockResolvedValue([]);
 
             const result = (await docSearch(mockSearchParams, true)) as string;
 
@@ -323,14 +310,14 @@ describe('hybrid-search', () => {
                 maxResults: 15
             };
 
-            mockVectorService.initialize.mockResolvedValue();
-            mockEmbeddingService.initialize.mockResolvedValue();
-            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
-            mockVectorService.semanticSearch.mockResolvedValue(mockSearchResults);
+            mockInitializeVector.mockResolvedValue(undefined);
+            mockInitializeEmbed.mockResolvedValue(undefined);
+            mockGenerateEmbedding.mockResolvedValue(mockQueryVector);
+            mockSemanticSearch.mockResolvedValue(mockSearchResults);
 
             await docSearch(paramsWithMaxResults, false);
 
-            expect(mockVectorService.semanticSearch).toHaveBeenCalledWith(mockQueryVector, 15);
+            expect(mockSemanticSearch).toHaveBeenCalledWith(mockQueryVector, 15);
         });
 
         it('should handle different query strings', async () => {
@@ -339,14 +326,14 @@ describe('hybrid-search', () => {
                 maxResults: 3
             };
 
-            mockVectorService.initialize.mockResolvedValue();
-            mockEmbeddingService.initialize.mockResolvedValue();
-            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
-            mockVectorService.semanticSearch.mockResolvedValue(mockSearchResults);
+            mockInitializeVector.mockResolvedValue(undefined);
+            mockInitializeEmbed.mockResolvedValue(undefined);
+            mockGenerateEmbedding.mockResolvedValue(mockQueryVector);
+            mockSemanticSearch.mockResolvedValue(mockSearchResults);
 
             const result = (await docSearch(differentParams, false)) as SearchResponseData;
 
-            expect(mockEmbeddingService.generateEmbedding).toHaveBeenCalledWith('how to configure SAP Fiori elements');
+            expect(mockGenerateEmbedding).toHaveBeenCalledWith('how to configure SAP Fiori elements');
             expect(result.query).toBe('how to configure SAP Fiori elements');
         });
     });

@@ -1,28 +1,28 @@
-import { join } from 'node:path';
-import * as nodeFs from 'node:fs';
-import * as ejs from 'ejs';
-import * as utils from '../../src/utils';
-import { renderTemplateToDisk } from '../../src/mta-config/template-renderer';
+import { jest } from '@jest/globals';
 
-jest.mock('node:fs', () => ({
-    readFileSync: jest.fn(),
-    writeFileSync: jest.fn()
+const mockReadFileSync = jest.fn<(path: string, encoding: string) => string>();
+const mockWriteFileSync = jest.fn<(path: string, data: string) => void>();
+
+jest.unstable_mockModule('node:fs', () => ({
+    readFileSync: mockReadFileSync,
+    writeFileSync: mockWriteFileSync
 }));
 
-jest.mock('ejs', () => ({
-    render: jest.fn()
+const mockRender = jest.fn<(template: string, data: Record<string, unknown>) => string>();
+
+jest.unstable_mockModule('ejs', () => ({
+    render: mockRender
 }));
 
-jest.mock('../../src/utils', () => ({
-    getTemplatePath: jest.fn()
+const mockGetTemplatePath = jest.fn<(name: string) => string>();
+
+jest.unstable_mockModule('../../src/utils.js', () => ({
+    getTemplatePath: mockGetTemplatePath
 }));
+
+const { renderTemplateToDisk } = await import('../../src/mta-config/template-renderer.js');
 
 describe('renderTemplateToDisk', () => {
-    const getTemplatePathMock = utils.getTemplatePath as jest.MockedFunction<typeof utils.getTemplatePath>;
-    const readFileSyncMock = nodeFs.readFileSync as jest.MockedFunction<typeof nodeFs.readFileSync>;
-    const writeFileSyncMock = nodeFs.writeFileSync as jest.MockedFunction<typeof nodeFs.writeFileSync>;
-    const renderMock = ejs.render as jest.MockedFunction<typeof ejs.render>;
-
     beforeEach(() => {
         jest.clearAllMocks();
     });
@@ -35,37 +35,47 @@ describe('renderTemplateToDisk', () => {
         const rawTemplate = '<%= id %>';
         const rendered = 'my-mta';
 
-        getTemplatePathMock.mockReturnValue(resolvedTemplatePath);
-        readFileSyncMock.mockReturnValue(rawTemplate as any);
-        renderMock.mockReturnValue(rendered);
+        mockGetTemplatePath.mockReturnValue(resolvedTemplatePath);
+        mockReadFileSync.mockReturnValue(rawTemplate);
+        mockRender.mockReturnValue(rendered);
 
         renderTemplateToDisk(templateName, outputPath, data);
 
-        expect(getTemplatePathMock).toHaveBeenCalledWith(templateName);
-        expect(readFileSyncMock).toHaveBeenCalledWith(resolvedTemplatePath, 'utf-8');
-        expect(renderMock).toHaveBeenCalledWith(rawTemplate, data);
-        expect(writeFileSyncMock).toHaveBeenCalledWith(outputPath, rendered);
+        expect(mockGetTemplatePath).toHaveBeenCalledWith(templateName);
+        expect(mockReadFileSync).toHaveBeenCalledWith(resolvedTemplatePath, 'utf-8');
+        expect(mockRender).toHaveBeenCalledWith(rawTemplate, data);
+        expect(mockWriteFileSync).toHaveBeenCalledWith(outputPath, rendered);
     });
 
     test('passes all data properties to the template renderer', () => {
         const data = { id: 'mta-id', mtaDescription: 'desc', mtaVersion: '1.0.0' };
-        getTemplatePathMock.mockReturnValue('/tmpl');
-        readFileSyncMock.mockReturnValue('tmpl' as any);
-        renderMock.mockReturnValue('rendered');
+        mockGetTemplatePath.mockReturnValue('/tmpl');
+        mockReadFileSync.mockReturnValue('tmpl');
+        mockRender.mockReturnValue('rendered');
 
         renderTemplateToDisk('some/template.yaml', '/out.yaml', data);
 
-        expect(renderMock).toHaveBeenCalledWith('tmpl', data);
+        expect(mockRender).toHaveBeenCalledWith('tmpl', data);
     });
 
     test('uses output path directly for writeFileSync', () => {
-        const outputPath = join('/nested', 'deep', 'output.yaml');
-        getTemplatePathMock.mockReturnValue('/tmpl');
-        readFileSyncMock.mockReturnValue('t' as any);
-        renderMock.mockReturnValue('out');
+        const outputPath = '/nested/deep/output.yaml';
+        mockGetTemplatePath.mockReturnValue('/tmpl');
+        mockReadFileSync.mockReturnValue('t');
+        mockRender.mockReturnValue('out');
 
         renderTemplateToDisk('t', outputPath, {});
 
-        expect(writeFileSyncMock).toHaveBeenCalledWith(outputPath, 'out');
+        expect(mockWriteFileSync).toHaveBeenCalledWith(outputPath, 'out');
+    });
+
+    test('throws if readFileSync fails', () => {
+        mockGetTemplatePath.mockReturnValue('/tmpl');
+        mockReadFileSync.mockImplementation(() => {
+            throw new Error('ENOENT');
+        });
+
+        expect(() => renderTemplateToDisk('t', '/out', {})).toThrow('ENOENT');
+        expect(mockWriteFileSync).not.toHaveBeenCalled();
     });
 });

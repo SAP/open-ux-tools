@@ -9,7 +9,7 @@ import {
     readUi5Yaml
 } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { isLowerThanMinimalVersion } from '../common/package-json';
+import { isLowerThanMinimalVersion } from '../common/package-json.js';
 
 const packageName = {
     WDIO_QUNIT_SERVICE: 'wdio-qunit-service',

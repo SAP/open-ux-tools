@@ -2,7 +2,7 @@ import { JSONSourceCode } from '@eslint/json';
 import type { DocumentNode } from '@humanwhocodes/momoa';
 import type { Manifest } from '@sap-ux/project-access';
 
-import type { ProjectContext } from '../../project-context/project-context';
+import type { ProjectContext } from '../../project-context/project-context.js';
 
 /**
  * JSON Source Code class for Fiori tools.

@@ -5,8 +5,13 @@ import Log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type { ChangeService } from '../../../../src/cpe/changes/service';
-import * as nodes from '../../../../src/cpe/outline/nodes';
-import { OutlineService } from '../../../../src/cpe/outline/service';
+
+const transformNodesMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/cpe/outline/nodes', () => ({
+    transformNodes: transformNodesMock
+}));
+
+const { OutlineService } = await import('open/ux/preview/client/cpe/outline/service');
 
 const mockChangeService = {
     syncOutlineChanges: jest.fn()
@@ -17,7 +22,6 @@ jest.useFakeTimers();
 describe('index', () => {
     const mockSendAction = jest.fn();
     const mockAttachEvent = jest.fn();
-    const transformNodesSpy = jest.spyOn(nodes, 'transformNodes');
     Log.error = jest.fn();
     Log.info = jest.fn();
     sapCoreMock.byId.mockReturnValue({
@@ -43,11 +47,11 @@ describe('index', () => {
     });
     afterEach(() => {
         mockSendAction.mockClear();
-        transformNodesSpy.mockReset();
+        transformNodesMock.mockReset();
         mockAttachEvent.mockClear();
     });
     test('initOutline', async () => {
-        transformNodesSpy.mockResolvedValue([
+        transformNodesMock.mockResolvedValue([
             {
                 children: [],
                 controlId: 'application-preview-app-component',
@@ -59,7 +63,7 @@ describe('index', () => {
         ]);
         const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring, mockChangeService);
         await service.init(mockSendAction);
-        expect(transformNodesSpy.mock.calls[0][0]).toBe('mockViewNodes');
+        expect(transformNodesMock.mock.calls[0][0]).toBe('mockViewNodes');
         expect(mockSendAction).toMatchInlineSnapshot(`
             [MockFunction] {
               "calls": Array [
@@ -90,18 +94,18 @@ describe('index', () => {
     });
 
     test('initOutline - exception', async () => {
-        transformNodesSpy.mockRejectedValue(new Error('error'));
+        transformNodesMock.mockRejectedValue(new Error('error'));
         jest.spyOn(CommunicationService, 'sendAction');
         const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring, mockChangeService);
         await service.init(mockSendAction);
-        // transformNodesSpy called but rejected.
-        expect(transformNodesSpy).toHaveBeenCalled();
+        // transformNodesMock called but rejected.
+        expect(transformNodesMock).toHaveBeenCalled();
         expect(mockSendAction).not.toHaveBeenCalled();
     });
 
     test('initOutline - empty additional data', async () => {
         sapCoreMock.byId.mockReturnValueOnce(undefined);
-        transformNodesSpy.mockResolvedValue([
+        transformNodesMock.mockResolvedValue([
             {
                 children: [],
                 controlId: 'application-preview-app-component',
@@ -111,10 +115,10 @@ describe('index', () => {
                 visible: true
             }
         ]);
-        transformNodesSpy.mockRejectedValue('error');
+        transformNodesMock.mockRejectedValue('error');
 
         const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring, mockChangeService);
         await service.init(mockSendAction);
-        expect(transformNodesSpy.mock.calls[0][0]).toBe('mockViewNodes');
+        expect(transformNodesMock.mock.calls[0][0]).toBe('mockViewNodes');
     });
 });

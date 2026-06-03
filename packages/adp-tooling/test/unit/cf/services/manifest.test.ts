@@ -1,24 +1,25 @@
-import { readFileSync } from 'node:fs';
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
-import { ManifestServiceCF } from '../../../../src/cf/services/manifest';
-import { runBuild } from '../../../../src/base/project-builder';
-import { initI18n, t } from '../../../../src/i18n';
+const mockReadFileSync = jest.fn();
+const mockRunBuild = jest.fn();
 
-jest.mock('node:fs', () => ({
-    ...jest.requireActual('node:fs'),
-    readFileSync: jest.fn()
+const realFs = await import('node:fs');
+jest.unstable_mockModule('node:fs', () => ({
+    ...realFs,
+    readFileSync: mockReadFileSync,
+    default: { ...realFs.default, readFileSync: mockReadFileSync }
 }));
 
-jest.mock('../../../../src/base/project-builder', () => ({
-    runBuild: jest.fn()
+jest.unstable_mockModule('../../../../src/base/project-builder', () => ({
+    runBuild: mockRunBuild
 }));
 
-const mockReadFileSync = readFileSync as jest.MockedFunction<typeof readFileSync>;
-const mockRunBuild = runBuild as jest.MockedFunction<typeof runBuild>;
+const { ManifestServiceCF } = await import('../../../../src/cf/services/manifest');
+const { initI18n, t } = await import('../../../../src/i18n');
 
 const mockLogger = {
     log: jest.fn(),

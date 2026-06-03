@@ -1,25 +1,45 @@
-import * as utils from '../../src/base/utils';
-import * as proxy from '../../src/base/proxy';
-import * as ui5ProxyMiddleware from '../../src/ui5/middleware';
-
-import express from 'express';
-import supertest from 'supertest';
-import nock from 'nock';
+import { jest } from '@jest/globals';
 import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
-import { ToolsLogger } from '@sap-ux/logger';
+import http from 'node:http';
+import https from 'node:https';
 
-// spy on ui5Proxy and injectScripts to verify calls
-const ui5ProxySpy = jest.spyOn(proxy, 'ui5Proxy');
-const injectScriptsMock = jest.spyOn(utils, 'injectScripts').mockImplementation(async (req, res, _next) => {
-    if (req.url.includes('error')) {
-        throw Error('error with directLoad');
-    } else {
-        res.end();
+// Define mock functions
+const mockUi5Proxy = jest.fn<any>();
+const mockDirectLoadProxy = jest.fn<any>();
+const mockGetCorporateProxyServer = jest.fn<any>().mockReturnValue(undefined);
+const mockHideProxyCredentials = jest.fn<any>().mockReturnValue(undefined);
+const mockResolveUI5Version = jest.fn<any>().mockImplementation(async (version: string) => {
+    // Mimic the real resolveUI5Version: CLI env overrides config
+    if (process.env.FIORI_TOOLS_UI5_VERSION || process.env.FIORI_TOOLS_UI5_VERSION === '') {
+        return process.env.FIORI_TOOLS_UI5_VERSION;
     }
+    return version || '';
 });
 
+// Mock the base barrel module that middleware.ts imports from
+jest.unstable_mockModule('../../src/base', () => ({
+    ui5Proxy: mockUi5Proxy,
+    directLoadProxy: mockDirectLoadProxy,
+    getCorporateProxyServer: mockGetCorporateProxyServer,
+    hideProxyCredentials: mockHideProxyCredentials,
+    resolveUI5Version: mockResolveUI5Version
+}));
+
+// Mock dotenv
+jest.unstable_mockModule('dotenv', () => ({
+    default: { config: jest.fn() },
+    config: jest.fn()
+}));
+
+// Import after mocking
+const { default: express } = await import('express');
+const { default: supertest } = await import('supertest');
+const { default: nock } = await import('nock');
+const { ToolsLogger } = await import('@sap-ux/logger');
+const ui5ProxyMiddleware = await import('../../src/ui5/middleware');
+
 const rootProjectMock = {
-    byGlob: jest.fn().mockResolvedValue([])
+    byGlob: jest.fn<any>().mockResolvedValue([])
 };
 
 const middlewareUtilMock = {
@@ -36,7 +56,7 @@ const middlewareUtilMock = {
  * @returns instance of a supertest server
  */
 async function getTestServer(configuration: Partial<UI5ProxyConfig> | undefined): Promise<any> {
-    const router = await (ui5ProxyMiddleware as any).default({
+    const router = await ui5ProxyMiddleware.default({
         resources: { rootProject: rootProjectMock },
         options: { configuration },
         middlewareUtil: middlewareUtilMock
@@ -60,6 +80,24 @@ describe('middleware', () => {
         const runConfigServer = 'https://ui5.runconfig.example';
 
         beforeAll(() => {
+            // Make ui5Proxy return a handler that proxies through nock
+            mockUi5Proxy.mockImplementation((config: any) => {
+                return (req: any, res: any, _next: any) => {
+                    const url = new URL(config.url);
+                    const version = config.version ? `/${config.version}` : '';
+                    const targetUrl = `${url.origin}${version}${req.path}`;
+                    const client = targetUrl.startsWith('https') ? https : http;
+                    client
+                        .get(targetUrl, (proxyRes) => {
+                            res.status(proxyRes.statusCode || 404);
+                            res.end();
+                        })
+                        .on('error', () => {
+                            res.status(502).end();
+                        });
+                };
+            });
+
             nock.disableNetConnect();
             nock.enableNetConnect(/^127\.0\.0\.1(:[0-9]+)?\/?(\/[.\w]*)*$/);
             nock(ui5Server).get(`${CORE}`).reply(200).persist();
@@ -156,12 +194,14 @@ describe('middleware', () => {
         };
 
         beforeEach(() => {
-            ui5ProxySpy.mockClear();
+            mockUi5Proxy.mockClear();
+            mockDirectLoadProxy.mockClear();
+            mockUi5Proxy.mockReturnValue((_req: any, _res: any, next: any) => next());
         });
 
         test('none', async () => {
             await getTestServer(config);
-            expect(ui5ProxySpy).toHaveBeenCalledWith(
+            expect(mockUi5Proxy).toHaveBeenCalledWith(
                 expect.objectContaining({}),
                 expect.objectContaining({ secure: true, logger: undefined }),
                 undefined,
@@ -175,7 +215,7 @@ describe('middleware', () => {
                 ...config,
                 proxy: 'http://proxy.example'
             });
-            expect(ui5ProxySpy).toHaveBeenCalledWith(
+            expect(mockUi5Proxy).toHaveBeenCalledWith(
                 expect.objectContaining({ proxy: 'http://proxy.example' }),
                 expect.objectContaining({}),
                 undefined,
@@ -189,7 +229,7 @@ describe('middleware', () => {
                 ...config,
                 debug: true
             });
-            expect(ui5ProxySpy).toHaveBeenCalledWith(
+            expect(mockUi5Proxy).toHaveBeenCalledWith(
                 expect.objectContaining({}),
                 expect.objectContaining({ logger: expect.objectContaining({}) }),
                 undefined,
@@ -207,7 +247,7 @@ describe('middleware', () => {
                     pathReplace: '/new-resources'
                 }
             });
-            expect(ui5ProxySpy).toHaveBeenCalledWith(
+            expect(mockUi5Proxy).toHaveBeenCalledWith(
                 expect.objectContaining({ pathReplace: '/new-resources' }),
                 expect.objectContaining({}),
                 undefined,
@@ -221,7 +261,7 @@ describe('middleware', () => {
                 ...config,
                 secure: true
             });
-            expect(ui5ProxySpy).toHaveBeenCalledWith(
+            expect(mockUi5Proxy).toHaveBeenCalledWith(
                 expect.objectContaining({}),
                 expect.objectContaining({ secure: true, logger: undefined }),
                 undefined,
@@ -235,7 +275,7 @@ describe('middleware', () => {
                 ...config,
                 secure: false
             });
-            expect(ui5ProxySpy).toHaveBeenCalledWith(
+            expect(mockUi5Proxy).toHaveBeenCalledWith(
                 expect.objectContaining({}),
                 expect.objectContaining({ secure: false, logger: undefined }),
                 undefined,
@@ -245,16 +285,23 @@ describe('middleware', () => {
         });
 
         test('directLoad', async () => {
+            mockDirectLoadProxy.mockReturnValue(async (req: any, res: any, _next: any) => {
+                res.end();
+            });
             const server = await getTestServer({
                 ...config,
                 directLoad: true
             });
 
             await server.get('/index.html');
-            expect(injectScriptsMock).toHaveBeenCalled();
+            expect(mockDirectLoadProxy).toHaveBeenCalled();
         });
 
         test('directLoad:error', async () => {
+            mockDirectLoadProxy.mockReturnValue(async (req: any, res: any, next: any) => {
+                const error = new Error('error with directLoad');
+                next(error);
+            });
             const server = await getTestServer({
                 ...config,
                 directLoad: true
@@ -273,7 +320,8 @@ describe('middleware', () => {
             }
         };
         beforeEach(() => {
-            ui5ProxySpy.mockClear();
+            mockUi5Proxy.mockClear();
+            mockUi5Proxy.mockReturnValue((_req: any, _res: any, next: any) => next());
         });
 
         test('valid manifest.json', async () => {
@@ -286,9 +334,10 @@ describe('middleware', () => {
                     getString: loadManifestMock
                 }
             ]);
+            mockResolveUI5Version.mockResolvedValueOnce(ui5Version);
             await getTestServer(config);
             expect(loadManifestMock).toHaveBeenCalled();
-            expect(ui5ProxySpy).toHaveBeenCalledWith(
+            expect(mockUi5Proxy).toHaveBeenCalledWith(
                 expect.objectContaining({ version: ui5Version }),
                 expect.objectContaining({}),
                 undefined,
@@ -304,7 +353,7 @@ describe('middleware', () => {
                 }
             ]);
             await getTestServer(config);
-            expect(ui5ProxySpy).toHaveBeenCalledWith(
+            expect(mockUi5Proxy).toHaveBeenCalledWith(
                 expect.objectContaining({ version: '' }),
                 expect.objectContaining({}),
                 undefined,
@@ -316,7 +365,7 @@ describe('middleware', () => {
         test('no manifest.json', async () => {
             rootProjectMock.byGlob.mockResolvedValueOnce([]);
             await getTestServer(config);
-            expect(ui5ProxySpy).toHaveBeenCalledWith(
+            expect(mockUi5Proxy).toHaveBeenCalledWith(
                 expect.objectContaining({ version: '' }),
                 expect.objectContaining({}),
                 undefined,
