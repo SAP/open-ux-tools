@@ -37,6 +37,18 @@ jest.unstable_mockModule('node:fs', () => ({
     existsSync: mockExistsSync
 }));
 
+// Mock node:url module
+const realUrl = await import('node:url');
+const mockPathToFileURL = jest.fn<typeof realUrl.pathToFileURL>(realUrl.pathToFileURL);
+jest.unstable_mockModule('node:url', () => ({
+    ...realUrl,
+    default: {
+        ...realUrl.default,
+        pathToFileURL: mockPathToFileURL
+    },
+    pathToFileURL: mockPathToFileURL
+}));
+
 // Mock fs/promises module
 const realFsPromises = await import('node:fs/promises');
 const mockRm = jest.fn<typeof promisesMock.rm>(realFsPromises.rm);
@@ -66,6 +78,7 @@ describe('Test loadModuleFromProject()', () => {
             '@sap-ux/ui5-config'
         );
         expect(typeof projectModule).toEqual('object');
+        expect(mockPathToFileURL).toHaveBeenCalledTimes(1);
     });
 
     test('Module not install in project, should throw error', async () => {

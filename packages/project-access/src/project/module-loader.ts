@@ -6,6 +6,7 @@ import type { Logger } from '@sap-ux/logger';
 import { getNodeModulesPath } from './dependencies.js';
 import { FileName, moduleCacheRoot } from '../constants.js';
 import { execNpmCommand } from '../command/index.js';
+import { pathToFileURL } from 'node:url';
 
 const require = createRequire(import.meta.url);
 
@@ -40,7 +41,7 @@ export async function loadModuleFromProject<T>(projectRoot: string, moduleName: 
     let module: T;
     try {
         const modulePath = await getModulePath(projectRoot, moduleName);
-        module = (await import(modulePath)) as T;
+        module = (await import(pathToFileURL(modulePath).href)) as T;
     } catch (error) {
         throw Error(`Module '${moduleName}' not installed in project '${projectRoot}'.\n${error.toString()}`);
     }

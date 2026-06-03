@@ -14,10 +14,12 @@ jest.unstable_mockModule('node:fs', () => ({
 
 const mockGetToken = jest.fn();
 const mockGetBtpDestinationConfig = jest.fn();
+const mockGetDestinationServiceUaa = jest.fn();
 
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getToken: mockGetToken,
-    getBtpDestinationConfig: mockGetBtpDestinationConfig
+    getBtpDestinationConfig: mockGetBtpDestinationConfig,
+    getDestinationServiceUaa: mockGetDestinationServiceUaa
 }));
 
 const realBtpUtils = await import('@sap-ux/btp-utils');
@@ -49,6 +51,13 @@ describe('destination-check', () => {
             }
         ]
     });
+
+    const validUaa = {
+        clientid: 'cid',
+        clientsecret: 'csecret',
+        url: '/auth.example',
+        uri: '/dest.example'
+    };
 
     let savedVcapServices: string | undefined;
 
@@ -151,6 +160,7 @@ describe('destination-check', () => {
                 JSON.stringify({ routes: [{ source: '^/api/', destination: 'backend' }] })
             );
             process.env.VCAP_SERVICES = validVcapServices;
+            mockGetDestinationServiceUaa.mockReturnValue(validUaa);
             mockGetToken.mockRejectedValue(new Error('Token error'));
 
             const result = await hasOnPremiseDestination(rootPath, logger);
@@ -170,6 +180,7 @@ describe('destination-check', () => {
                 })
             );
             process.env.VCAP_SERVICES = validVcapServices;
+            mockGetDestinationServiceUaa.mockReturnValue(validUaa);
             mockGetToken.mockResolvedValue('mock-token');
             mockGetBtpDestinationConfig
                 .mockResolvedValueOnce({ ProxyType: 'Internet' })
@@ -192,6 +203,7 @@ describe('destination-check', () => {
                 JSON.stringify({ routes: [{ source: '^/api/', destination: 'backend' }] })
             );
             process.env.VCAP_SERVICES = validVcapServices;
+            mockGetDestinationServiceUaa.mockReturnValue(validUaa);
             mockGetToken.mockResolvedValue('mock-token');
             mockGetBtpDestinationConfig.mockResolvedValue({ ProxyType: 'Internet' });
 
@@ -212,6 +224,7 @@ describe('destination-check', () => {
                 })
             );
             process.env.VCAP_SERVICES = validVcapServices;
+            mockGetDestinationServiceUaa.mockReturnValue(validUaa);
             mockGetToken.mockResolvedValue('mock-token');
             mockGetBtpDestinationConfig
                 .mockRejectedValueOnce(new Error('Network error'))
@@ -234,6 +247,7 @@ describe('destination-check', () => {
                 })
             );
             process.env.VCAP_SERVICES = validVcapServices;
+            mockGetDestinationServiceUaa.mockReturnValue(validUaa);
             mockGetToken.mockResolvedValue('mock-token');
             mockGetBtpDestinationConfig.mockResolvedValue({ ProxyType: 'Internet' });
 

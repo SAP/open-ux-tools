@@ -6,7 +6,12 @@ const __dirname = import.meta.dirname;
 
 export default [
     {
-        ignores: ['config/**/eslintrc*.js', 'test/global-setup.js', 'jest.resolver.cjs']
+        ignores: [
+            'config/**/eslintrc*.js',
+            'test/global-setup.js',
+            'jest.resolver.cjs',
+            'test/babel-eslint-parser.transformer.cjs'
+        ]
     },
     ...base,
     {
