@@ -1,4 +1,12 @@
-import { getAllNormalizeFolderPath, getAst, getBase, getToken, getInput, deserialize, serialize } from '../../helper/index.js';
+import {
+    getAllNormalizeFolderPath,
+    getAst,
+    getBase,
+    getToken,
+    getInput,
+    deserialize,
+    serialize
+} from '../../helper/index.js';
 import { FileExtension } from '../../helper/types.js';
 import { parse } from '../../../../src/parser/index.js';
 import { FileFormat } from '../../../../src/parser/types.js';

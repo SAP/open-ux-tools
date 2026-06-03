@@ -6,7 +6,11 @@ import { create as createStorage } from 'mem-fs';
 import { jest } from '@jest/globals';
 import type { ChoiceOptions } from 'inquirer';
 import type { getMinimumUI5Version } from '@sap-ux/project-access';
-import type { TablePromptsAnswer, SupportedGeneratorAnswers, BuildingBlockTypePromptsAnswer } from '../../../src/index.js';
+import type {
+    TablePromptsAnswer,
+    SupportedGeneratorAnswers,
+    BuildingBlockTypePromptsAnswer
+} from '../../../src/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

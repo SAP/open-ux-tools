@@ -1,4 +1,8 @@
-import { getColumnIdentifier, transformTableColumns, extractTableColumnsFromNode } from '../../../src/utils/tableUtils.js';
+import {
+    getColumnIdentifier,
+    transformTableColumns,
+    extractTableColumnsFromNode
+} from '../../../src/utils/tableUtils.js';
 import type { ColumnAggregations } from '../../../src/utils/tableUtils.js';
 import type { TreeAggregation } from '@sap/ux-specification/dist/types/src/parser';
 

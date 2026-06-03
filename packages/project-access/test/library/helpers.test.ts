@@ -12,7 +12,8 @@ jest.unstable_mockModule('../../src/file', () => ({
     findFiles: mockFindFiles
 }));
 
-const { checkDependencies, getReuseLibs, getLibraryDesc, getManifestDesc } = await import('../../src/library/helpers.js');
+const { checkDependencies, getReuseLibs, getLibraryDesc, getManifestDesc } =
+    await import('../../src/library/helpers.js');
 const manifestJson =
     await import('../test-data/libs/sap.reuse.ex.test.lib.attachmentservice/src/sap/reuse/ex/test/lib/attachmentservice/manifest.json');
 
