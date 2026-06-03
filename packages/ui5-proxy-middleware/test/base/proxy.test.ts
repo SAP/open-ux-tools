@@ -11,7 +11,9 @@ const mockProxyResponseHandler = jest.fn<typeof actualUtils.proxyResponseHandler
 const mockProxyErrorHandler = jest.fn<typeof actualUtils.proxyErrorHandler>();
 const mockFilterCompressedHtmlFiles = jest.fn<() => boolean>().mockReturnValue(true);
 const mockUpdateProxyEnv = jest.fn<typeof actualUtils.updateProxyEnv>();
-const mockGetPathRewrite = jest.fn<typeof actualUtils.getPathRewrite>().mockReturnValue(jest.fn() as unknown as hpm.Options["pathRewrite"]);
+const mockGetPathRewrite = jest
+    .fn<typeof actualUtils.getPathRewrite>()
+    .mockReturnValue(jest.fn() as unknown as hpm.Options['pathRewrite']);
 
 // Mock http-proxy-middleware
 jest.unstable_mockModule('http-proxy-middleware', () => ({
@@ -51,7 +53,7 @@ const { ToolsLogger } = await import('@sap-ux/logger');
 describe('proxy', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        mockGetPathRewrite.mockReturnValue(jest.fn() as unknown as hpm.Options["pathRewrite"]);
+        mockGetPathRewrite.mockReturnValue(jest.fn() as unknown as hpm.Options['pathRewrite']);
     });
 
     test('ui5Proxy: creates an ui5 proxy middleware, default params', () => {
