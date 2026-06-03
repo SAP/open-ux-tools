@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/project-input-validator",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Library to validate Fiori project input formats",
     "type": "module",
     "repository": {

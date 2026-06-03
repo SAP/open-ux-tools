@@ -1,5 +1,29 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.0.7
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/abap-deploy-config-writer@1.0.3
+    - @sap-ux/project-input-validator@1.0.3
+    - @sap-ux/fiori-generator-shared@1.0.4
+    - @sap-ux/odata-service-inquirer@3.0.4
+    - @sap-ux/fiori-elements-writer@3.0.7
+    - @sap-ux/guided-answers-helper@1.0.1
+    - @sap-ux/fiori-tools-settings@1.0.1
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/inquirer-common@1.0.4
+    - @sap-ux/feature-toggle@1.0.1
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux/launch-config@1.0.3
+    - @sap-ux/system-access@1.0.1
+    - @sap-ux/btp-utils@2.0.1
+    - @sap-ux/ui5-info@1.0.1
+    - @sap-ux/logger@1.0.1
+    - @sap-ux/store@2.0.1
+
 ## 1.0.6
 
 ### Patch Changes

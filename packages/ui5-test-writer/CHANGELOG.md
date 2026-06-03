@@ -1,5 +1,17 @@
 # @sap-ux/ui5-test-writer
 
+## 1.0.7
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/fiori-generator-shared@1.0.4
+    - @sap-ux/ui5-application-writer@2.0.2
+    - @sap-ux/preview-middleware@1.0.7
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux/logger@1.0.1
+
 ## 1.0.6
 
 ### Patch Changes

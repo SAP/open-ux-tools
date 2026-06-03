@@ -1,5 +1,19 @@
 # @sap-ux/flp-config-inquirer
 
+## 1.0.5
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/project-input-validator@1.0.3
+    - @sap-ux/fiori-generator-shared@1.0.4
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/inquirer-common@1.0.4
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux/adp-tooling@1.0.5
+    - @sap-ux/btp-utils@2.0.1
+
 ## 1.0.4
 
 ### Patch Changes
