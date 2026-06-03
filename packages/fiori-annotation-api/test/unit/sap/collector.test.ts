@@ -14,8 +14,8 @@ import { convertDocument } from '@sap-ux/xml-odata-annotation-converter';
 import { createComplexAnnotation, createComplexRecordProperty, createRecord } from '../../../src/sap/builders.js';
 import type { ValueWithOrigin } from '../../../src/sap/types.js';
 
-const mockWarn = jest.fn();
-const mockLog = jest.fn();
+const mockWarn = jest.fn() as jest.Mock;
+const mockLog = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../src/logger', () => ({
     logger: {
         log: mockLog,

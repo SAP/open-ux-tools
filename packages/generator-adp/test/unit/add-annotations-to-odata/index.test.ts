@@ -10,12 +10,12 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { DescriptorVariant } from '@sap-ux/adp-tooling';
 
-const mockGenerateChange = jest.fn();
-const mockGetVariant = jest.fn();
-const mockGetAdpConfig = jest.fn();
+const mockGenerateChange = jest.fn<typeof realAdpTooling.generateChange>();
+const mockGetVariant = jest.fn<typeof realAdpTooling.getVariant>();
+const mockGetAdpConfig = jest.fn<typeof realAdpTooling.getAdpConfig>();
 const mockIsCFEnvironment = jest.fn().mockResolvedValue(false);
-const mockManifestServiceCFInit = jest.fn();
-const mockGetTemplatesOverwritePath = jest.fn();
+const mockManifestServiceCFInit = jest.fn<typeof realAdpTooling.init>();
+const mockGetTemplatesOverwritePath = jest.fn() as jest.Mock;
 
 const realAdpTooling = await import('@sap-ux/adp-tooling');
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({

@@ -46,7 +46,7 @@ describe('base/credentials', () => {
         });
 
         test('fallback read without client parameter', async () => {
-            mockedStoreService.read.mockImplementation((key: BackendSystemKey) =>
+            mockedStoreService.read.mockImplementation((key) =>
                 key.getId().includes(target.client as string) ? undefined : {}
             );
             const credentials = await getCredentialsFromStore(target, logger);

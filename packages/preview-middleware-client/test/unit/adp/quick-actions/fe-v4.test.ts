@@ -128,17 +128,17 @@ describe('FE V4 quick actions', () => {
         // Re-establish pass-through defaults after clearAllMocks wipes implementations.
         // With jest.unstable_mockModule + spread pattern, jest.fn() mocks lose their
         // implementation on clearAllMocks, unlike jest.spyOn which preserves it.
-        getUi5VersionMock.mockImplementation((...args: unknown[]) =>
+        getUi5VersionMock.mockImplementation((...args) =>
             (_versionUtils.getUi5Version as Function)(...args)
         );
         checkForExistingChangeMock.mockReturnValue(false);
-        getV4AppComponentMock.mockImplementation((...args: unknown[]) =>
+        getV4AppComponentMock.mockImplementation((...args) =>
             (_utils.getV4AppComponent as Function)(...args)
         );
-        getParentContainerMock.mockImplementation((...args: unknown[]) =>
+        getParentContainerMock.mockImplementation((...args) =>
             (_QCUtils.getParentContainer as Function)(...args)
         );
-        getExistingControllerMock.mockImplementation((...args: unknown[]) =>
+        getExistingControllerMock.mockImplementation((...args) =>
             (_apiHandler.getExistingController as Function)(...args)
         );
     });
@@ -154,7 +154,7 @@ describe('FE V4 quick actions', () => {
 
     describe('ListReport', () => {
         beforeEach(() => {
-            jest.spyOn(FeatureService, 'isFeatureEnabled').mockImplementation((feature: string) => {
+            jest.spyOn(FeatureService, 'isFeatureEnabled').mockImplementation((feature) => {
                 if (feature === 'cpe.beta.quick-actions') {
                     return true;
                 }
@@ -240,7 +240,7 @@ describe('FE V4 quick actions', () => {
                 jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                     return 'component-id';
                 });
-                jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                     if (id === 'component-id') {
                         return component as unknown as ComponentMock;
                     }
@@ -420,7 +420,7 @@ describe('FE V4 quick actions', () => {
 
             async function setupContext(actionFilter: 'CustomAction' | 'DataFieldForAction' | 'both' = 'both') {
                 const pageView = new XMLView();
-                pageView.getLocalId.mockImplementation((id: string) => id.split('dummyProjectId--')[1]);
+                pageView.getLocalId.mockImplementation((id) => id.split('dummyProjectId--')[1]);
                 pageView.getViewData.mockImplementation(() => ({
                     stableId: 'dummyProjectIdppId::ProductsList'
                 }));
@@ -500,7 +500,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -873,7 +873,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -1063,7 +1063,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -1198,7 +1198,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -1318,7 +1318,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -1335,7 +1335,7 @@ describe('FE V4 quick actions', () => {
 
                 const execute = jest.fn();
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-                jest.spyOn(rtaMock, 'getService').mockImplementation((serviceName: string): any => {
+                jest.spyOn(rtaMock, 'getService').mockImplementation((serviceName): any => {
                     if (serviceName === 'action') {
                         return {
                             get: (controlId: string) => {
@@ -1443,7 +1443,7 @@ describe('FE V4 quick actions', () => {
 
             async function setupContext(lineItemFields: any[]) {
                 const pageView = new XMLView();
-                pageView.getLocalId.mockImplementation((id: string) => id.split('dummyProjectId--')[1]);
+                pageView.getLocalId.mockImplementation((id) => id.split('dummyProjectId--')[1]);
                 pageView.getViewData.mockImplementation(() => ({
                     stableId: 'dummyProjectIdppId::ProductsList'
                 }));
@@ -1515,7 +1515,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -2124,7 +2124,7 @@ describe('FE V4 quick actions', () => {
                 // Use a metaPath that does NOT contain 'LineItem' to trigger the IIFE branch in findAnchor()
                 // which pops the last segment and delegates to getLineItemAnnotation() for the annotation
                 const pageView = new XMLView();
-                pageView.getLocalId.mockImplementation((id: string) => id.split('dummyProjectId--')[1]);
+                pageView.getLocalId.mockImplementation((id) => id.split('dummyProjectId--')[1]);
                 pageView.getViewData.mockImplementation(() => ({
                     stableId: 'dummyProjectIdppId::ProductsList'
                 }));
@@ -2177,7 +2177,7 @@ describe('FE V4 quick actions', () => {
                         pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ListReport.ListReport');
                         const componentContainer = new ComponentContainer();
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => 'component-id');
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') return component as unknown as ComponentMock;
                         });
                         container.getCurrentPage.mockImplementation(() => componentContainer);
@@ -2257,7 +2257,7 @@ describe('FE V4 quick actions', () => {
 
             async function setupContext(lineItemFields: any[]) {
                 const pageView = new XMLView();
-                pageView.getLocalId.mockImplementation((id: string) => id.split('dummyProjectId--')[1]);
+                pageView.getLocalId.mockImplementation((id) => id.split('dummyProjectId--')[1]);
                 pageView.getViewData.mockImplementation(() => ({
                     stableId: 'dummyProjectIdppId::ProductsList'
                 }));
@@ -2439,7 +2439,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -2687,7 +2687,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -2866,7 +2866,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -3059,7 +3059,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -3293,7 +3293,7 @@ describe('FE V4 quick actions', () => {
                             jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                                 return 'component-id';
                             });
-                            jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                                 if (id === 'component-id') {
                                     return component as unknown as ComponentMock;
                                 }
@@ -3437,7 +3437,7 @@ describe('FE V4 quick actions', () => {
 
                         const setSelectedSubSectionMock = jest.fn();
                         const fakeSubSection = new ManagedObject() as any;
-                        getParentContainerMock.mockImplementation((control: any, type: string) => {
+                        getParentContainerMock.mockImplementation((control, type) => {
                             if (type === 'sap.uxap.ObjectPageSection') {
                                 // Return a mock object with the getSubSections method
                                 return {
@@ -3546,7 +3546,7 @@ describe('FE V4 quick actions', () => {
                                     return 'component-id';
                                 });
                                 jest.spyOn(Component, 'getComponentById').mockImplementation(
-                                    (id: string | undefined) => {
+                                    (id) => {
                                         if (id === 'component-id') {
                                             return component as unknown as ComponentMock;
                                         }
@@ -3733,7 +3733,7 @@ describe('FE V4 quick actions', () => {
                             jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                                 return 'component-id';
                             });
-                            jest.spyOn(ComponentMock, 'getComponentById').mockImplementation((id: string) => {
+                            jest.spyOn(ComponentMock, 'getComponentById').mockImplementation((id) => {
                                 if (id === 'component-id') {
                                     return component as unknown as ComponentMock;
                                 }
@@ -3988,7 +3988,7 @@ describe('FE V4 quick actions', () => {
                             jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                                 return 'component-id';
                             });
-                            jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                                 if (id === 'component-id') {
                                     return component as unknown as ComponentMock;
                                 }
@@ -4158,7 +4158,7 @@ describe('FE V4 quick actions', () => {
                     jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                         return 'component-id';
                     });
-                    jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                    jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                         if (id === 'component-id') {
                             return component as unknown as ComponentMock;
                         }
@@ -4212,7 +4212,7 @@ describe('FE V4 quick actions', () => {
                             jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                                 return 'component-id';
                             });
-                            jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                                 if (id === 'component-id') {
                                     return component as unknown as ComponentMock;
                                 }
@@ -4582,7 +4582,7 @@ describe('FE V4 quick actions', () => {
 
                     jest.spyOn(view, 'getComponent').mockReturnValue('component-id');
 
-                    jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                    jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                         if (id === 'component-id') {
                             return component;
                         }
@@ -4693,7 +4693,7 @@ describe('FE V4 quick actions', () => {
             getV4AppComponentMock.mockReturnValue(dummyAppComponent);
 
             const metaModelMock = {
-                requestObject: jest.fn().mockImplementation((path: string) => {
+                requestObject: jest.fn().mockImplementation((path) => {
                     if (path.split('/').length > 2) {
                         switch (path) {
                             case '/TravelType/_Booking':
@@ -4965,7 +4965,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -4982,7 +4982,7 @@ describe('FE V4 quick actions', () => {
             });
 
             const execute = jest.fn();
-            const getMock = jest.fn().mockImplementation((controlId: string) => {
+            const getMock = jest.fn().mockImplementation((controlId) => {
                 if (controlId === 'Toolbar') {
                     return testCase.isActionNotSupported
                         ? []
@@ -4990,7 +4990,7 @@ describe('FE V4 quick actions', () => {
                 }
             });
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            jest.spyOn(rtaMock, 'getService').mockImplementation((serviceName: string): any => {
+            jest.spyOn(rtaMock, 'getService').mockImplementation((serviceName): any => {
                 if (serviceName === 'action') {
                     return {
                         get: getMock,

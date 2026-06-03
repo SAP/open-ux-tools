@@ -8,12 +8,12 @@ import type { Question } from 'yeoman-generator';
 // Pre-import actual modules
 const actualOdataServiceInq = await import('@sap-ux/odata-service-inquirer');
 
-const mockGetSystemSelectionQuestions = jest.fn();
-const mockFetchAppList = jest.fn();
-const mockFormatAppChoices = jest.fn();
-const mockDownloadApp = jest.fn();
-const mockHasQfaJson = jest.fn();
-const mockValidateAppSelection = jest.fn();
+const mockGetSystemSelectionQuestions = jest.fn<typeof actualOdataServiceInq.getSystemSelectionQuestions>();
+const mockFetchAppList = jest.fn() as jest.Mock;
+const mockFormatAppChoices = jest.fn() as jest.Mock;
+const mockDownloadApp = jest.fn() as jest.Mock;
+const mockHasQfaJson = jest.fn() as jest.Mock;
+const mockValidateAppSelection = jest.fn() as jest.Mock;
 const mockValidateFioriAppTargetFolder = jest.fn().mockResolvedValue(true);
 
 jest.unstable_mockModule('@sap-ux/odata-service-inquirer', () => ({

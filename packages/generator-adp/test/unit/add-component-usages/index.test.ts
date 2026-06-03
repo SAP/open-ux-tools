@@ -8,8 +8,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import type { AddComponentUsageAnswers, DescriptorVariant } from '@sap-ux/adp-tooling';
 
-const mockGenerateChange = jest.fn();
-const mockGetVariant = jest.fn();
+const mockGenerateChange = jest.fn<typeof realAdpTooling.generateChange>();
+const mockGetVariant = jest.fn<typeof realAdpTooling.getVariant>();
 
 const realAdpTooling = await import('@sap-ux/adp-tooling');
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({

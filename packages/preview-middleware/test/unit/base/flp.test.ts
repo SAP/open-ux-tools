@@ -52,8 +52,8 @@ const actualI18n = await import('@sap-ux/i18n');
 // Mock functions for @sap-ux/project-access
 const mockFindProjectRoot = jest.fn<() => Promise<string>>().mockResolvedValue(process.cwd());
 const mockGetProjectType = jest.fn<() => Promise<string>>().mockResolvedValue('EDMXBackend');
-const mockCreateProjectAccess = jest.fn();
-const mockCreateApplicationAccess = jest.fn();
+const mockCreateProjectAccess = jest.fn<typeof actualProjectAccess.createProjectAccess>();
+const mockCreateApplicationAccess = jest.fn<typeof actualProjectAccess.createApplicationAccess>();
 
 // Mock @sap-ux/project-access
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
@@ -65,8 +65,8 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 }));
 
 // Mock @sap-ux/adp-tooling
-const mockAdpPreviewConstructor = jest.fn();
-const mockReadManifestFromBuildPath = jest.fn();
+const mockAdpPreviewConstructor = jest.fn<typeof actualAdpTooling.AdpPreview>();
+const mockReadManifestFromBuildPath = jest.fn<typeof actualAdpTooling.readManifestFromBuildPath>();
 
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     ...actualAdpTooling,
@@ -75,7 +75,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
 }));
 
 // Mock @sap-ux/i18n
-const mockCreatePropertiesI18nEntries = jest.fn();
+const mockCreatePropertiesI18nEntries = jest.fn<typeof actualI18n.createPropertiesI18nEntries>();
 
 jest.unstable_mockModule('@sap-ux/i18n', () => ({
     ...actualI18n,
@@ -95,7 +95,7 @@ class FlpSandbox extends FlpSandboxUnderTest {
 describe('FlpSandbox', () => {
     const mockProject = {
         byPath: jest.fn().mockResolvedValue(undefined),
-        byGlob: jest.fn().mockImplementation((glob: string) =>
+        byGlob: jest.fn().mockImplementation((glob) =>
             Promise.resolve(
                 glob.includes('changes')
                     ? [
@@ -1826,7 +1826,7 @@ describe('initAdp', () => {
                         readFileSync(join(__dirname, `../../fixtures/adp/webapp/manifest.appdescr_variant`), 'utf-8')
                     )
             }),
-            byGlob: jest.fn().mockImplementation((glob: string) => {
+            byGlob: jest.fn().mockImplementation((glob) => {
                 if (glob.includes('.{change,')) {
                     return [
                         {
@@ -1910,7 +1910,7 @@ describe('initAdp', () => {
                         readFileSync(join(__dirname, `../../fixtures/adp/webapp/manifest.appdescr_variant`), 'utf-8')
                     )
             }),
-            byGlob: jest.fn().mockImplementation((glob: string) => {
+            byGlob: jest.fn().mockImplementation((glob) => {
                 if (glob.includes('.{change,')) {
                     return [
                         {
@@ -2016,7 +2016,7 @@ describe('initAdp', () => {
                         readFileSync(join(__dirname, `../../fixtures/adp/webapp/manifest.appdescr_variant`), 'utf-8')
                     )
             }),
-            byGlob: jest.fn().mockImplementation((glob: string) => {
+            byGlob: jest.fn().mockImplementation((glob) => {
                 if (glob.includes('.{change,')) {
                     return [
                         {
@@ -2070,7 +2070,7 @@ describe('initAdp', () => {
             } as unknown as adpTooling.AdpPreview;
         });
 
-        const byGlobMock = jest.fn().mockImplementation((glob: string) => {
+        const byGlobMock = jest.fn().mockImplementation((glob) => {
             if (glob.includes('.{change,')) {
                 return [
                     {

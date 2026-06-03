@@ -5,7 +5,7 @@ import * as actualFs from 'node:fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockExistsSync = jest.fn();
+const mockExistsSync = jest.fn<typeof actualFs.existsSync>();
 
 jest.unstable_mockModule('node:fs', () => ({
     ...actualFs,

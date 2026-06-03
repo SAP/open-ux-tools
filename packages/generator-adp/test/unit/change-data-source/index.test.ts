@@ -12,11 +12,11 @@ import type { ChangeDataSourceAnswers, DescriptorVariant } from '@sap-ux/adp-too
 
 import type { Credentials } from '../../../src/types.js';
 
-const mockGenerateChange = jest.fn();
-const mockGetVariant = jest.fn();
-const mockGetAdpConfig = jest.fn();
+const mockGenerateChange = jest.fn<typeof realAdpTooling.generateChange>();
+const mockGetVariant = jest.fn<typeof realAdpTooling.getVariant>();
+const mockGetAdpConfig = jest.fn<typeof realAdpTooling.getAdpConfig>();
 const mockIsCFEnvironment = jest.fn().mockResolvedValue(false);
-const mockManifestServiceCFInit = jest.fn();
+const mockManifestServiceCFInit = jest.fn<typeof realAdpTooling.init>();
 
 const realAdpTooling = await import('@sap-ux/adp-tooling');
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({

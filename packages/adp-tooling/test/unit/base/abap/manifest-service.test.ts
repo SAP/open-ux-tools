@@ -3,9 +3,9 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type * as axiosExtensionTypes from '@sap-ux/axios-extension';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 
-const mockGetWebappFiles = jest.fn();
-const mockAdmZipConstructor = jest.fn();
-const mockIsAxiosError = jest.fn();
+const mockGetWebappFiles = jest.fn() as jest.Mock;
+const mockAdmZipConstructor = jest.fn() as jest.Mock;
+const mockIsAxiosError = jest.fn<typeof realAxiosExtension.isAxiosError>();
 
 const realAxiosExtension = await import('@sap-ux/axios-extension');
 

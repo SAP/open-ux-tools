@@ -46,7 +46,7 @@ describe('index', () => {
             mockWriteFile.mockReset();
             mockPrintPropertiesI18nEntry.mockReset();
             // Default: use real printPropertiesI18nEntry
-            mockPrintPropertiesI18nEntry.mockImplementation((key: string, value: string, annotation?: unknown) =>
+            mockPrintPropertiesI18nEntry.mockImplementation((key, value, annotation) =>
                 realPrint(key, value, annotation as string | undefined)
             );
         });
@@ -173,7 +173,7 @@ describe('index', () => {
                 mockWriteFile.mockImplementation(
                     jest.fn() as (filePath: string, content: string, fs?: Editor) => Promise<string | void>
                 );
-                mockPrintPropertiesI18nEntry.mockImplementation((key: string, value: string, annotation?: unknown) => {
+                mockPrintPropertiesI18nEntry.mockImplementation((key, value, annotation) => {
                     return annotation ? `${key}=${value} # ${annotation}\n` : `${key}=${value}\n`;
                 });
             });

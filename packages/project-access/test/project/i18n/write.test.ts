@@ -27,7 +27,7 @@ jest.unstable_mockModule('../../../src/project/cap', () => ({
 }));
 
 const mockReadJSON = jest.fn<typeof fileType.readJSON>();
-const mockWriteFile = jest.fn<typeof fileType.writeFile>();
+const mockWriteFile = jest.fn<typeof realFile.writeFile>();
 
 const realFile = await import('../../../src/file/index.js');
 jest.unstable_mockModule('../../../src/file', () => ({

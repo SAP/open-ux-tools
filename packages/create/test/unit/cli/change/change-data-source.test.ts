@@ -17,24 +17,24 @@ const descriptorVariant = JSON.parse(
     readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.appdescr_variant'), 'utf-8')
 );
 
-const mockGetLogger = jest.fn();
+const mockGetLogger = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
     setLogLevelVerbose: jest.fn()
 }));
 
-const mockTraceChanges = jest.fn();
+const mockTraceChanges = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/trace', () => ({
     traceChanges: mockTraceChanges
 }));
 
-const mockPromptYUIQuestions = jest.fn();
+const mockPromptYUIQuestions = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/common', () => ({
     promptYUIQuestions: mockPromptYUIQuestions,
     runNpmInstallCommand: jest.fn()
 }));
 
-const mockValidateAdpAppType = jest.fn();
+const mockValidateAdpAppType = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/validation', () => ({
     validateBasePath: jest.fn(),
     validateAdpAppType: mockValidateAdpAppType,
@@ -42,7 +42,7 @@ jest.unstable_mockModule('../../../../src/validation', () => ({
     hasFileDeletes: jest.fn()
 }));
 
-const mockGetAppType = jest.fn();
+const mockGetAppType = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/project-access', () =>
     createProjectAccessMock({
         getAppType: mockGetAppType
@@ -82,12 +82,12 @@ jest.unstable_mockModule('@sap-ux/system-access', () => ({
     })
 }));
 
-const mockIsCFEnvironment = jest.fn();
-const mockGetAdpConfig = jest.fn();
-const mockGetVariant = jest.fn();
-const mockGenerateChange = jest.fn();
-const mockGetPromptsForChangeDataSource = jest.fn();
-const mockInitBaseManifest = jest.fn();
+const mockIsCFEnvironment = jest.fn() as jest.Mock;
+const mockGetAdpConfig = jest.fn() as jest.Mock;
+const mockGetVariant = jest.fn() as jest.Mock;
+const mockGenerateChange = jest.fn() as jest.Mock;
+const mockGetPromptsForChangeDataSource = jest.fn() as jest.Mock;
+const mockInitBaseManifest = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     isCFEnvironment: mockIsCFEnvironment,
     getAdpConfig: mockGetAdpConfig,
@@ -176,7 +176,7 @@ describe('change/data-source', () => {
 
     test('change data-source - preview-middleware custom configuration', async () => {
         jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
-            findCustomMiddleware: jest.fn().mockImplementation((customMiddleware: string) => {
+            findCustomMiddleware: jest.fn().mockImplementation((customMiddleware) => {
                 if (customMiddleware === 'fiori-tools-preview') {
                     return undefined;
                 }

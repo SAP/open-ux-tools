@@ -55,7 +55,7 @@ describe('create-controller-extension', () => {
         mockFindProjectRoot.mockImplementation(async (path: string): Promise<string> => path);
         mockGetUI5Version.mockResolvedValue('1.108.1');
         mockGetManifest.mockResolvedValue({});
-        mockCreateApplicationAccess.mockImplementation((rootPath: string) => {
+        mockCreateApplicationAccess.mockImplementation((rootPath) => {
             return {
                 getAppId: () => 'app1',
                 app: {

@@ -19,11 +19,11 @@ const actualFs = await import('node:fs');
 const actualCapConfigWriter = await import('@sap-ux/cap-config-writer');
 
 const getProjectTypeMock = jest.fn();
-const mockWriteApplicationInfoSettings = jest.fn();
-const mockCreateLaunchConfig = jest.fn();
+const mockWriteApplicationInfoSettings = jest.fn() as jest.Mock;
+const mockCreateLaunchConfig = jest.fn() as jest.Mock;
 const mockIsAppStudio = jest.fn<() => boolean>();
-const mockGenerateAppGenInfo = jest.fn();
-const mockCheckCdsUi5PluginEnabled = jest.fn();
+const mockGenerateAppGenInfo = jest.fn<typeof actualFioriGeneratorShared.generateAppGenInfo>();
+const mockCheckCdsUi5PluginEnabled = jest.fn<typeof actualCapConfigWriter.checkCdsUi5PluginEnabled>();
 
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     ...actualProjectAccess,

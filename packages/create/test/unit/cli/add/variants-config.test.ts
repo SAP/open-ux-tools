@@ -6,19 +6,19 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockGetLogger = jest.fn();
-const mockSetLogLevelVerbose = jest.fn();
+const mockGetLogger = jest.fn() as jest.Mock;
+const mockSetLogLevelVerbose = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
     setLogLevelVerbose: mockSetLogLevelVerbose
 }));
 
-const mockTraceChanges = jest.fn();
+const mockTraceChanges = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/trace', () => ({
     traceChanges: mockTraceChanges
 }));
 
-const mockGenerateVariantsConfig = jest.fn();
+const mockGenerateVariantsConfig = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/app-config-writer', () => ({
     generateVariantsConfig: mockGenerateVariantsConfig
 }));

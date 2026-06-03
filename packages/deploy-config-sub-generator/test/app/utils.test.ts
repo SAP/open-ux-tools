@@ -4,7 +4,7 @@ import type { DeployConfigOptions } from '../../src/types/index.js';
 
 const require = createRequire(import.meta.url);
 
-const mockHasbinSync = jest.fn();
+const mockHasbinSync = jest.fn() as jest.Mock;
 const mockExistsSync = jest.fn().mockReturnValue(true);
 
 jest.unstable_mockModule('hasbin', () => ({

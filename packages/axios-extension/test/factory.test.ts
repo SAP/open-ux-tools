@@ -11,7 +11,7 @@ const client = '010';
 const expectedMetadata = '<METADATA>';
 const destinationServiceCreds = 'EXAMPLE_BASE64';
 
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn() as jest.Mock;
 const actualBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...actualBtpUtils,

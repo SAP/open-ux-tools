@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import type * as archiver from 'archiver';
 
-const mockCreateWriteStream = jest.fn();
+const mockCreateWriteStream = jest.fn() as jest.Mock;
 jest.unstable_mockModule('node:fs', () => ({
     createWriteStream: mockCreateWriteStream
 }));
@@ -37,7 +37,7 @@ describe('Test to check zip save, storeResultsZip()', () => {
                 }
             }
         };
-        mockCreateWriteStream.mockImplementation((filename: string) => {
+        mockCreateWriteStream.mockImplementation((filename) => {
             return filename === 'envcheck-results.zip' ? writeStreamMock : undefined;
         });
         console.log = jest.fn();
@@ -71,7 +71,7 @@ describe('Test to check zip save, storeResultsZip()', () => {
                 }
             }
         };
-        mockCreateWriteStream.mockImplementation((filename: string) => {
+        mockCreateWriteStream.mockImplementation((filename) => {
             return filename === 'ANY_NAME' ? writeStreamMock : undefined;
         });
         console.log = jest.fn();

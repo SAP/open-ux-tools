@@ -21,7 +21,7 @@ jest.unstable_mockModule('../src/logger-helper', () => ({
     }
 }));
 
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...actualBtpUtils,
     isAppStudio: () => mockIsAppStudio()
@@ -51,8 +51,8 @@ jest.unstable_mockModule('@sap-ux/odata-service-inquirer', () => ({
         getSystemSelectionQuestionsMock(promptOptions, isYUI)
 }));
 
-const mockGetBusinessObjects = jest.fn();
-const mockGetAbapCDSViews = jest.fn();
+const mockGetBusinessObjects = jest.fn<typeof actualPromptHelperModule.getBusinessObjects>();
+const mockGetAbapCDSViews = jest.fn<typeof actualPromptHelperModule.getAbapCDSViews>();
 
 // Import actual prompt-helper BEFORE mocking (for functions we want to keep real)
 const actualPromptHelperModule = await import('../src/prompts/prompt-helper.js');

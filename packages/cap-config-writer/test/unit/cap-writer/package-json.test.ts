@@ -6,7 +6,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Package } from '@sap-ux/project-access';
 
-const mockGetCdsVersionInfo = jest.fn();
+const mockGetCdsVersionInfo = jest.fn() as jest.Mock;
 const mockSatisfiesMinCdsVersion = jest.fn().mockReturnValue(true);
 const mockCheckCdsUi5PluginEnabled = jest.fn<(...args: unknown[]) => Promise<boolean>>().mockResolvedValue(false);
 const mockGetCapCustomPaths = jest

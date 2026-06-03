@@ -7,7 +7,7 @@ import type { AxiosError } from '@sap-ux/axios-extension';
 import { t } from '@sap-ux/project-input-validator/src/i18n';
 
 const mockIsAppStudio = jest.fn<() => boolean>().mockReturnValue(false);
-const mockListDestinations = jest.fn();
+const mockListDestinations = jest.fn<typeof realBtpUtils.listDestinations>();
 const mockisOnPremiseDestination = jest.fn().mockReturnValue(false);
 
 const realBtpUtils = await import('@sap-ux/btp-utils');

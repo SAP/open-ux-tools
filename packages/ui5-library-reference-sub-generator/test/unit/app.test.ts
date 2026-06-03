@@ -19,7 +19,7 @@ const actualUi5LibRefWriter = await import('@sap-ux/ui5-library-reference-writer
 const actualUi5LibRefInquirer = await import('@sap-ux/ui5-library-reference-inquirer');
 
 // Mock functions
-const mockSendTelemetry = jest.fn();
+const mockSendTelemetry = jest.fn<typeof actualFioriGenShared.sendTelemetry>();
 const mockIsExtensionInstalled = jest.fn().mockReturnValue(true);
 const mockGenerate = jest.fn<(...args: any[]) => Promise<any>>().mockImplementation(actualUi5LibRefWriter.generate);
 const mockPrompt = jest

@@ -29,12 +29,12 @@ const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
 const actualUi5Info = await import('@sap-ux/ui5-info');
 const actualProjectAccess = await import('@sap-ux/project-access');
 
-const mockGetAppConfig = jest.fn();
-const mockIsValidPromptState = jest.fn();
-const mockSendTelemetry = jest.fn();
-const mockHandleWorkspaceConfig = jest.fn();
-const mockGetUI5Versions = jest.fn();
-const mockGetPrompts = jest.fn();
+const mockGetAppConfig = jest.fn<typeof actualAppConfig.getAppConfig>();
+const mockIsValidPromptState = jest.fn() as jest.Mock;
+const mockSendTelemetry = jest.fn<typeof actualFioriGenShared.sendTelemetry>();
+const mockHandleWorkspaceConfig = jest.fn<typeof actualLaunchConfig.handleWorkspaceConfig>();
+const mockGetUI5Versions = jest.fn<typeof actualUi5Info.getUI5Versions>();
+const mockGetPrompts = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('../src/prompts/prompt-helpers', () => ({
     ...actualPromptHelpers,

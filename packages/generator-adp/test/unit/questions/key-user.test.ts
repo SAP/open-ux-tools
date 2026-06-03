@@ -9,12 +9,12 @@ import type {
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { SystemLookup } from '@sap-ux/adp-tooling';
 
-const mockIsAxiosError = jest.fn();
-const mockValidateEmptyString = jest.fn();
-const mockGetConfiguredProvider = jest.fn();
-const mockGetAdaptationChoices = jest.fn();
-const mockGetKeyUserSystemChoices = jest.fn();
-const mockGetKeyUserSystemAdditionalMessages = jest.fn();
+const mockIsAxiosError = jest.fn<typeof realAxiosExtension.isAxiosError>();
+const mockValidateEmptyString = jest.fn<typeof realProjectInputValidator.validateEmptyString>();
+const mockGetConfiguredProvider = jest.fn<typeof realAdpTooling.getConfiguredProvider>();
+const mockGetAdaptationChoices = jest.fn() as jest.Mock;
+const mockGetKeyUserSystemChoices = jest.fn() as jest.Mock;
+const mockGetKeyUserSystemAdditionalMessages = jest.fn() as jest.Mock;
 
 const realProjectInputValidator = await import('@sap-ux/project-input-validator');
 jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({

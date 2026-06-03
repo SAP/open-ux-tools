@@ -4,8 +4,8 @@ import { join } from 'node:path';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
-const mockReadFileSync = jest.fn();
-const mockRunBuild = jest.fn();
+const mockReadFileSync = jest.fn<typeof realFs.readFileSync>();
+const mockRunBuild = jest.fn() as jest.Mock;
 
 const realFs = await import('node:fs');
 jest.unstable_mockModule('node:fs', () => ({
@@ -70,9 +70,9 @@ describe('ManifestServiceCF', () => {
         });
 
         it('should propagate errors when manifest file is missing', async () => {
-            mockReadFileSync.mockImplementation(() => {
+            mockReadFileSync.mockImplementation((() => {
                 throw new Error('ENOENT: no such file or directory');
-            });
+            }) as unknown as typeof realFs.readFileSync);
 
             await expect(ManifestServiceCF.init('/project/path', mockLogger)).rejects.toThrow('ENOENT');
         });

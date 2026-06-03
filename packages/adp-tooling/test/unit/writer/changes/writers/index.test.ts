@@ -2,12 +2,12 @@ import { jest } from '@jest/globals';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
-const mockWriteAnnotationChange = jest.fn();
-const mockWriteChangeToFolder = jest.fn();
-const mockFindChangeWithInboundId = jest.fn();
-const mockWriteChangeToFile = jest.fn();
+const mockWriteAnnotationChange = jest.fn<typeof realChangeUtils.writeAnnotationChange>();
+const mockWriteChangeToFolder = jest.fn<typeof realChangeUtils.writeChangeToFolder>();
+const mockFindChangeWithInboundId = jest.fn<typeof realChangeUtils.findChangeWithInboundId>();
+const mockWriteChangeToFile = jest.fn<typeof realChangeUtils.writeChangeToFile>();
 const mockGetChange = jest.fn().mockReturnValue({});
-const mockAddConnectivityServiceToMta = jest.fn();
+const mockAddConnectivityServiceToMta = jest.fn<typeof realYaml.addConnectivityServiceToMta>();
 
 const realChangeUtils = await import('../../../../../src/base/change-utils.js');
 

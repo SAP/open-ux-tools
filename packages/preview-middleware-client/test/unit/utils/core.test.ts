@@ -90,7 +90,7 @@ describe('isManagedObject', () => {
 describe('isA', () => {
     test('calls "isA" on ManagedObject', () => {
         const managedObject = new ManagedObjectMock();
-        const spy = jest.spyOn(managedObject, 'isA').mockImplementation((type: string | string[]) => {
+        const spy = jest.spyOn(managedObject, 'isA').mockImplementation((type) => {
             return type === 'sap.ui.base.ManagedObject';
         });
         expect(isA('sap.ui.base.ManagedObject', managedObject)).toBe(true);
@@ -119,7 +119,7 @@ describe('findViewByControl', () => {
         const mockView = new ManagedObjectMock() as unknown as View;
         const viewIsASpy = jest
             .spyOn(mockView, 'isA')
-            .mockImplementation((type: string | string[]) => type === 'sap.ui.core.mvc.View');
+            .mockImplementation((type) => type === 'sap.ui.core.mvc.View');
         mockView.getViewName = jest.fn().mockReturnValue('TestView');
 
         // Create a mock parent (parent of the control)

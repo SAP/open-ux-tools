@@ -4,8 +4,8 @@ import type { CFResource } from '@sap/cf-tools';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-const mockCfGetServiceKeys = jest.fn();
-const mockCliExecute = jest.fn();
+const mockCfGetServiceKeys = jest.fn<typeof realCfTools.cfGetServiceKeys>();
+const mockCliExecute = jest.fn<typeof realCfTools.execute>();
 
 const realCfTools = await import('@sap/cf-tools');
 jest.unstable_mockModule('@sap/cf-tools', () => ({

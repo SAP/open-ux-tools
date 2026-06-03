@@ -14,9 +14,9 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     validateProjectFolder: mockValidateProjectFolder
 }));
 
-const mockUi5VersionsGrouped = jest.fn();
-const mockSearchChoices = jest.fn();
-const mockAddi18nResourceBundle = jest.fn();
+const mockUi5VersionsGrouped = jest.fn() as jest.Mock;
+const mockSearchChoices = jest.fn() as jest.Mock;
+const mockAddi18nResourceBundle = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
     ui5VersionsGrouped: mockUi5VersionsGrouped,

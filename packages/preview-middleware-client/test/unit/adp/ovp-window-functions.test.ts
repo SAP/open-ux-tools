@@ -62,7 +62,7 @@ describe('OVP Bridge Functions', () => {
         });
 
         test('uses baseUrl from root element dataset', () => {
-            documentMock.getElementById.mockImplementation((id: string) => {
+            documentMock.getElementById.mockImplementation((id) => {
                 if (id === 'root') {
                     return { dataset: { openUxPreviewBaseUrl: '/my-base' } };
                 }

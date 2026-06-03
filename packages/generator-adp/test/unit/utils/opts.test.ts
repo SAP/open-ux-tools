@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-const mockReadFileSync = jest.fn();
+const mockReadFileSync = jest.fn<typeof realFs.readFileSync>();
 
 const realFs = await import('node:fs');
 jest.unstable_mockModule('node:fs', () => ({

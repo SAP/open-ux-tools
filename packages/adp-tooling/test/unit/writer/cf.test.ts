@@ -11,13 +11,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
-const mockGetAppHostIds = jest.fn();
-const mockGetOrCreateServiceInstanceKeys = jest.fn();
-const mockGetCfUi5AppInfo = jest.fn();
-const mockGetProjectNameForXsSecurity = jest.fn();
-const mockGetBaseAppId = jest.fn();
-const mockRunBuild = jest.fn();
-const mockReadUi5Yaml = jest.fn();
+const mockGetAppHostIds = jest.fn<typeof realCfAppDiscovery.getAppHostIds>();
+const mockGetOrCreateServiceInstanceKeys = jest.fn<typeof realCf.getOrCreateServiceInstanceKeys>();
+const mockGetCfUi5AppInfo = jest.fn<typeof realCf.getCfUi5AppInfo>();
+const mockGetProjectNameForXsSecurity = jest.fn<typeof realCf.getProjectNameForXsSecurity>();
+const mockGetBaseAppId = jest.fn<typeof realHelper.getBaseAppId>();
+const mockRunBuild = jest.fn() as jest.Mock;
+const mockReadUi5Yaml = jest.fn<typeof realProjectAccess.readUi5Yaml>();
 const mockAdjustMtaYaml = jest.fn().mockResolvedValue('');
 
 const realProjectAccess = await import('@sap-ux/project-access');

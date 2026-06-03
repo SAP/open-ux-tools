@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 
-const mockIsAppStudio = jest.fn();
-const mockListDestinations = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockListDestinations = jest.fn<typeof realBtpUtils.listDestinations>();
 
 jest.unstable_mockModule('@vscode-logging/logger', () => ({
     getExtensionLogger: jest.fn()

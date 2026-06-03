@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-const mockIsInternalFeaturesSettingEnabled = jest.fn();
+const mockIsInternalFeaturesSettingEnabled = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
     isInternalFeaturesSettingEnabled: mockIsInternalFeaturesSettingEnabled

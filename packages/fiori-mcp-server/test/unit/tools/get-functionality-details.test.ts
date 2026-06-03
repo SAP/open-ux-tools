@@ -45,7 +45,7 @@ describe('getFunctionalityDetails', () => {
         readAppMock = jest.fn().mockResolvedValue({ files: [] });
         mockGetManifest.mockResolvedValue({});
         mockFindProjectRoot.mockImplementation(async (path: string): Promise<string> => path);
-        mockCreateApplicationAccess.mockImplementation((rootPath: string) => {
+        mockCreateApplicationAccess.mockImplementation((rootPath) => {
             return {
                 getAppId: () => 'dummy-id',
                 app: {

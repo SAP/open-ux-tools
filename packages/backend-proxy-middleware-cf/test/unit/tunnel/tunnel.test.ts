@@ -13,8 +13,8 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: mockIsAppStudio
 }));
 
-const mockEnsureTunnelAppExists = jest.fn();
-const mockEnableSshAndRestart = jest.fn();
+const mockEnsureTunnelAppExists = jest.fn() as jest.Mock;
+const mockEnableSshAndRestart = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     ensureTunnelAppExists: mockEnsureTunnelAppExists,
@@ -22,13 +22,13 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     DEFAULT_TUNNEL_APP_NAME: 'adp-ssh-tunnel-app'
 }));
 
-const mockHasOnPremiseDestination = jest.fn();
+const mockHasOnPremiseDestination = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('../../../src/tunnel/destination-check', () => ({
     hasOnPremiseDestination: mockHasOnPremiseDestination
 }));
 
-const mockSpawn = jest.fn();
+const mockSpawn = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('node:child_process', () => ({
     spawn: mockSpawn

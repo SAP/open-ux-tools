@@ -2,10 +2,10 @@ import { jest } from '@jest/globals';
 import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-const mockGetFDCApps = jest.fn();
-const mockExtractXSApp = jest.fn();
-const mockIsAppStudio = jest.fn();
-const mockCreate = jest.fn();
+const mockGetFDCApps = jest.fn() as jest.Mock;
+const mockExtractXSApp = jest.fn() as jest.Mock;
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockCreate = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('mem-fs-editor', () => ({
     create: mockCreate

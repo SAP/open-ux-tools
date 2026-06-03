@@ -43,7 +43,7 @@ jest.unstable_mockModule('node:fs', () => ({
     default: esmUnionFs
 }));
 
-const mockHasbinSync = jest.fn();
+const mockHasbinSync = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('hasbin', () => ({
     default: { sync: mockHasbinSync },
@@ -57,7 +57,7 @@ jest.unstable_mockModule('@sap/mta-lib', () => ({
     Mta: MockMta
 }));
 
-const mockHandleErrorMessage = jest.fn();
+const mockHandleErrorMessage = jest.fn() as jest.Mock;
 const realDeployShared = await import('@sap-ux/deploy-config-generator-shared');
 
 jest.unstable_mockModule('@sap-ux/deploy-config-generator-shared', () => ({
@@ -107,10 +107,10 @@ describe('App router generator tests', () => {
             cwd = dir;
         });
         // Delegate to real implementations by default
-        mockGetAppRouterPrompts.mockImplementation((...args: unknown[]) =>
+        mockGetAppRouterPrompts.mockImplementation((...args) =>
             (realCfConfigInquirer.getAppRouterPrompts as Function)(...args)
         );
-        mockGenerateBaseConfig.mockImplementation((...args: unknown[]) =>
+        mockGenerateBaseConfig.mockImplementation((...args) =>
             (realCfConfigWriter.generateBaseConfig as Function)(...args)
         );
     });

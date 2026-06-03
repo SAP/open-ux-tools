@@ -3,7 +3,7 @@ import { jest } from '@jest/globals';
 // Pre-import real module before mocking to avoid missing export errors
 const realAdpTooling = await import('@sap-ux/adp-tooling');
 
-const mockFlpConfigurationExists = jest.fn();
+const mockFlpConfigurationExists = jest.fn<typeof realAdpTooling.flpConfigurationExists>();
 
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     ...realAdpTooling,

@@ -340,7 +340,7 @@ describe('ui5-test-writer', () => {
             it('moves integration folder and skips common/page files when OPA5 is configured and no JourneyRunner', async () => {
                 const projectDir = prepareTestFiles('LropVirtualTests');
                 // Return false only for the test output JourneyRunner check (not template paths)
-                existsSyncMock.mockImplementation((p: string) =>
+                existsSyncMock.mockImplementation((p) =>
                     p.includes('test-output') && p.includes('JourneyRunner.js') ? false : realExistsSync(p)
                 );
 
@@ -376,7 +376,7 @@ describe('ui5-test-writer', () => {
             it('moves integration folder and writes common/page/journey files when no JourneyRunner and OPA5 not virtual', async () => {
                 const projectDir = prepareTestFiles('LropVirtualTests');
                 // Return false only for the test output JourneyRunner check (not template paths)
-                existsSyncMock.mockImplementation((p: string) =>
+                existsSyncMock.mockImplementation((p) =>
                     p.includes('test-output') && p.includes('JourneyRunner.js') ? false : realExistsSync(p)
                 );
 
@@ -396,7 +396,7 @@ describe('ui5-test-writer', () => {
                 const projectDir = prepareTestFiles('LropVirtualTests');
                 readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                 // Return true only for the test output JourneyRunner check (not template paths)
-                existsSyncMock.mockImplementation((p: string) =>
+                existsSyncMock.mockImplementation((p) =>
                     p.includes('test-output') && p.includes('JourneyRunner.js') ? true : realExistsSync(p)
                 );
                 addPathsToQUnitJsMock.mockImplementation(jest.fn());
@@ -414,7 +414,7 @@ describe('ui5-test-writer', () => {
             it('adds int-test script and resolves htmlTarget from flpSandbox.html when no integration folder exists', async () => {
                 // LropNoTests has no integration/ folder, no test script, and a flpSandbox.html
                 const projectDir = prepareTestFiles('LropNoTests');
-                existsSyncMock.mockImplementation((p: string) => {
+                existsSyncMock.mockImplementation((p) => {
                     // No JourneyRunner.js → goes into resolveStandaloneWriteContext
                     if (p.includes('test-output') && p.includes('JourneyRunner.js')) {
                         return false;
@@ -450,7 +450,7 @@ describe('ui5-test-writer', () => {
                 // LropVirtualTests has an integration/ folder on disk
                 const projectDir = prepareTestFiles('LropVirtualTests');
                 const moveSpy = jest.spyOn(fs!, 'move');
-                existsSyncMock.mockImplementation((p: string) => {
+                existsSyncMock.mockImplementation((p) => {
                     if (p.includes('test-output') && p.includes('JourneyRunner.js')) {
                         return false;
                     }
@@ -474,7 +474,7 @@ describe('ui5-test-writer', () => {
                 // LropVirtualTests has JourneyRunner.js — simulate page files not yet existing in mem-fs
                 const projectDir = prepareTestFiles('LropVirtualTests');
                 readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
-                existsSyncMock.mockImplementation((p: string) =>
+                existsSyncMock.mockImplementation((p) =>
                     p.includes('test-output') && p.includes('JourneyRunner.js') ? true : realExistsSync(p)
                 );
 
@@ -508,7 +508,7 @@ describe('ui5-test-writer', () => {
                 // LropNoTests has no integration/ folder; pre-populate int-test so the
                 // addition is skipped, covering the hasTestScript = true branch
                 const projectDir = prepareTestFiles('LropNoTests');
-                existsSyncMock.mockImplementation((p: string) => {
+                existsSyncMock.mockImplementation((p) => {
                     if (p.includes('test-output') && p.includes('JourneyRunner.js')) {
                         return false;
                     }

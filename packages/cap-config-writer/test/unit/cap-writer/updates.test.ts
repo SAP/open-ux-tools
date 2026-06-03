@@ -7,7 +7,7 @@ import type { CapServiceCdsInfo, CapProjectSettings } from '../../../src/cap-con
 import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 
-const mockYamlNewInstance = jest.fn();
+const mockYamlNewInstance = jest.fn() as jest.Mock;
 const mockYamlDocumentToYamlString = jest.fn((doc: Record<string, Record<string, string>>) => {
     const lines: string[] = [];
     for (const [key, value] of Object.entries(doc)) {

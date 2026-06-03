@@ -7,7 +7,7 @@ const actualProjectAccess = await import('@sap-ux/project-access');
 const actualValidators = await import('@sap-ux/project-input-validator');
 
 // Create mocks
-const mockFilterDataSourcesByType = jest.fn();
+const mockFilterDataSourcesByType = jest.fn<typeof actualProjectAccess.filterDataSourcesByType>();
 const mockExistsSync = jest.fn<typeof actualFs.existsSync>();
 const mockValidateEmptyString = jest.fn<(...args: unknown[]) => unknown>().mockReturnValue(true);
 

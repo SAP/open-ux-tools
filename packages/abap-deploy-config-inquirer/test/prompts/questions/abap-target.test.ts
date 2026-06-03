@@ -11,9 +11,9 @@ import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { UrlAbapTarget } from '@sap-ux/system-access';
 
-const mockIsOnPremiseDestination = jest.fn();
-const mockIsAppStudio = jest.fn();
-const mockGetAbapSystems = jest.fn();
+const mockIsOnPremiseDestination = jest.fn<typeof realBtpUtils.isOnPremiseDestination>();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockGetAbapSystems = jest.fn<typeof actualUtils.getAbapSystems>();
 
 const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
@@ -28,13 +28,13 @@ jest.unstable_mockModule('../../../src/utils', () => ({
     getAbapSystems: mockGetAbapSystems
 }));
 
-const mockValidateDestinationQuestion = jest.fn();
-const mockUpdateDestinationPromptState = jest.fn();
-const mockValidateTargetSystemUrlCli = jest.fn();
-const mockValidateUrl = jest.fn();
-const mockValidateClientChoiceQuestion = jest.fn();
-const mockValidateTargetSystem = jest.fn();
-const mockValidateClient = jest.fn();
+const mockValidateDestinationQuestion = jest.fn<typeof actualValidators.validateDestinationQuestion>();
+const mockUpdateDestinationPromptState = jest.fn<typeof actualValidators.updateDestinationPromptState>();
+const mockValidateTargetSystemUrlCli = jest.fn<typeof actualValidators.validateTargetSystemUrlCli>();
+const mockValidateUrl = jest.fn<typeof actualValidators.validateUrl>();
+const mockValidateClientChoiceQuestion = jest.fn<typeof actualValidators.validateClientChoiceQuestion>();
+const mockValidateTargetSystem = jest.fn<typeof actualValidators.validateTargetSystem>();
+const mockValidateClient = jest.fn<typeof actualValidators.validateClient>();
 
 const actualValidators = await import('../../../src/prompts/validators.js');
 jest.unstable_mockModule('../../../src/prompts/validators', () => ({
@@ -48,10 +48,10 @@ jest.unstable_mockModule('../../../src/prompts/validators', () => ({
     validateClient: mockValidateClient
 }));
 
-const mockShowScpQuestion = jest.fn();
-const mockShowClientChoiceQuestion = jest.fn();
-const mockShowClientQuestion = jest.fn();
-const mockShowUrlQuestion = jest.fn();
+const mockShowScpQuestion = jest.fn<typeof actualConditions.showScpQuestion>();
+const mockShowClientChoiceQuestion = jest.fn<typeof actualConditions.showClientChoiceQuestion>();
+const mockShowClientQuestion = jest.fn<typeof actualConditions.showClientQuestion>();
+const mockShowUrlQuestion = jest.fn<typeof actualConditions.showUrlQuestion>();
 
 const actualConditions = await import('../../../src/prompts/conditions.js');
 jest.unstable_mockModule('../../../src/prompts/conditions', () => ({

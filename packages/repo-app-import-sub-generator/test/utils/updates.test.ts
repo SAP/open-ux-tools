@@ -15,9 +15,9 @@ const actualUi5Info = await import('@sap-ux/ui5-info');
 const actualFeatureToggle = await import('@sap-ux/feature-toggle');
 const actualFileHelpers = await import('../../src/utils/file-helpers.js');
 
-const mockGetUI5Versions = jest.fn();
-const mockIsInternalFeaturesSettingEnabled = jest.fn();
-const mockReadManifest = jest.fn();
+const mockGetUI5Versions = jest.fn<typeof actualUi5Info.getUI5Versions>();
+const mockIsInternalFeaturesSettingEnabled = jest.fn<typeof actualFeatureToggle.isInternalFeaturesSettingEnabled>();
+const mockReadManifest = jest.fn<typeof actualFileHelpers.readManifest>();
 
 jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
     ...actualUi5Info,
@@ -218,7 +218,7 @@ describe('replaceWebappFiles', () => {
         const webappPath = join(`${projectPath}/${DirName.Webapp}`);
 
         // Mock fs.exists to return false for one file
-        fs.exists.mockImplementation((filePath: string) => filePath !== join(`${extractedPath}/${FileName.Manifest}`));
+        fs.exists.mockImplementation((filePath) => filePath !== join(`${extractedPath}/${FileName.Manifest}`));
         await replaceWebappFiles(projectPath, extractedPath, fs as unknown as Editor);
 
         // Verify that fs.copy is not called for the missing file

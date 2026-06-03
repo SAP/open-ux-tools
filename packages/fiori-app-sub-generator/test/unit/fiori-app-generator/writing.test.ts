@@ -9,8 +9,8 @@ import type { AppGenInfo } from '@sap-ux/fiori-generator-shared';
 // Pre-import actual
 const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
 
-const mockGenerateAppGenInfo = jest.fn();
-const mockGetHostEnvironment = jest.fn();
+const mockGenerateAppGenInfo = jest.fn<typeof actualFioriGenShared.generateAppGenInfo>();
+const mockGetHostEnvironment = jest.fn<typeof actualFioriGenShared.getHostEnvironment>();
 
 jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     ...actualFioriGenShared,

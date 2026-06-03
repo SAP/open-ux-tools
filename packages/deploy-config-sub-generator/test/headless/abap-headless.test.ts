@@ -6,9 +6,9 @@ import { readFile } from 'node:fs/promises';
 import { rimraf } from 'rimraf';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockGetService = jest.fn();
-const mockIsAppStudio = jest.fn();
-const mockListDestinations = jest.fn();
+const mockGetService = jest.fn<typeof actualStore.getService>();
+const mockIsAppStudio = jest.fn<typeof actualBtpUtils.isAppStudio>();
+const mockListDestinations = jest.fn<typeof actualBtpUtils.listDestinations>();
 const spawnSyncMock = jest.fn().mockReturnValue({ status: 0 });
 
 // Pre-load @sap-ux/fiori-generator-shared (works because @vscode-logging/logger is mocked via jest config)

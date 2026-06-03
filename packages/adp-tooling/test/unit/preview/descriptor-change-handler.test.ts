@@ -3,7 +3,7 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockRandomBytes = jest.fn();
+const mockRandomBytes = jest.fn<typeof realCrypto.randomBytes>();
 const realCrypto = await import('node:crypto');
 jest.unstable_mockModule('node:crypto', () => ({
     ...realCrypto,
@@ -11,9 +11,9 @@ jest.unstable_mockModule('node:crypto', () => ({
     default: { ...realCrypto.default, randomBytes: mockRandomBytes }
 }));
 
-const mockIsTypescriptSupported = jest.fn();
-const mockGetVariant = jest.fn();
-const mockGetAdpConfig = jest.fn();
+const mockIsTypescriptSupported = jest.fn() as jest.Mock;
+const mockGetVariant = jest.fn() as jest.Mock;
+const mockGetAdpConfig = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('../../../src/base/helper', () => ({
     isTypescriptSupported: mockIsTypescriptSupported,
@@ -21,7 +21,7 @@ jest.unstable_mockModule('../../../src/base/helper', () => ({
     getAdpConfig: mockGetAdpConfig
 }));
 
-const mockGetAnnotationNamespaces = jest.fn();
+const mockGetAnnotationNamespaces = jest.fn<typeof realOdataServiceWriter.getAnnotationNamespaces>();
 
 const realOdataServiceWriter = await import('@sap-ux/odata-service-writer');
 
@@ -35,7 +35,7 @@ jest.unstable_mockModule('@sap-ux/odata-service-writer/dist/data/annotations', (
     getAnnotationNamespaces: mockGetAnnotationNamespaces
 }));
 
-const mockInitMergedManifest = jest.fn();
+const mockInitMergedManifest = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('../../../src/base/abap/manifest-service', () => ({
     ManifestService: {
@@ -43,7 +43,7 @@ jest.unstable_mockModule('../../../src/base/abap/manifest-service', () => ({
     }
 }));
 
-const mockGenerateChange = jest.fn();
+const mockGenerateChange = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('../../../src/writer/editors', () => ({
     generateChange: mockGenerateChange
@@ -261,7 +261,7 @@ describe('change-handler', () => {
                 mockFs.write.mockReset();
             });
             beforeEach(() => {
-                mockRandomBytes.mockImplementation((size: number) => Buffer.from('0'.repeat(size)));
+                mockRandomBytes.mockImplementation((size) => Buffer.from('0'.repeat(size)));
             });
             it('should create Object Page custom section fragment', () => {
                 mockFs.exists.mockReturnValue(false);

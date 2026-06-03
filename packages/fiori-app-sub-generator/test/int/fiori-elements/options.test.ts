@@ -12,7 +12,7 @@ import { baseTestProject, getExpectedOutputPath, v2EntityConfig, v2Service } fro
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const actualBtpUtils = await import('@sap-ux/btp-utils');
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn<typeof actualBtpUtils.isAppStudio>();
 
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...actualBtpUtils,

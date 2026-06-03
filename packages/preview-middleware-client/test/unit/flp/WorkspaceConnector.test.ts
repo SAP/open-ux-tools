@@ -53,7 +53,7 @@ describe('flp/WorkspaceConnector', () => {
             const mockBaseUrl = '/test.base.url';
 
             // Mock BEFORE isolating modules
-            documentMock.getElementById.mockImplementation((id: string) => {
+            documentMock.getElementById.mockImplementation((id) => {
                 if (id === 'sap-ui-bootstrap') {
                     return {
                         dataset: {

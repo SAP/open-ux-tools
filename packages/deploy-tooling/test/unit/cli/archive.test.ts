@@ -11,7 +11,7 @@ import { existsSync } from 'node:fs';
 const __testfilename = fileURLToPath(import.meta.url);
 const __testdirname = dirname(fileURLToPath(import.meta.url));
 
-const mockAxiosGet = jest.fn();
+const mockAxiosGet = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('axios', () => ({
     default: {

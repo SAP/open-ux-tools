@@ -13,9 +13,9 @@ const actualFileHelpers = await import('../src/utils/file-helpers.js');
 const actualUi5Info = await import('@sap-ux/ui5-info');
 const actualProjectAccess = await import('@sap-ux/project-access');
 
-const mockReadManifest = jest.fn();
-const mockGetUI5Versions = jest.fn();
-const mockGetMinimumUI5Version = jest.fn();
+const mockReadManifest = jest.fn<typeof actualFileHelpers.readManifest>();
+const mockGetUI5Versions = jest.fn<typeof actualUi5Info.getUI5Versions>();
+const mockGetMinimumUI5Version = jest.fn<typeof actualProjectAccess.getMinimumUI5Version>();
 
 jest.unstable_mockModule('../src/utils/logger', () => {
     const mock = {

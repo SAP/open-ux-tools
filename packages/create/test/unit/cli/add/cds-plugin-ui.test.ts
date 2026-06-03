@@ -8,14 +8,14 @@ import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockGetLogger = jest.fn();
-const mockSetLogLevelVerbose = jest.fn();
+const mockGetLogger = jest.fn() as jest.Mock;
+const mockSetLogLevelVerbose = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
     setLogLevelVerbose: mockSetLogLevelVerbose
 }));
 
-const mockEnableCdsUi5Plugin = jest.fn();
+const mockEnableCdsUi5Plugin = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/cap-config-writer', () => ({
     enableCdsUi5Plugin: mockEnableCdsUi5Plugin
 }));

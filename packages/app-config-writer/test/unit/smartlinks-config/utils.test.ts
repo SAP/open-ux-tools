@@ -31,7 +31,7 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     })
 }));
 
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn<typeof actualBtpUtils.isAppStudio>();
 const actualBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...actualBtpUtils,

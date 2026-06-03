@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import { join } from 'node:path';
 
-const mockFindFioriArtifacts = jest.fn();
+const mockFindFioriArtifacts = jest.fn<typeof actualProjectAccess.findFioriArtifacts>();
 const mockGetProjectType = jest.fn().mockResolvedValue('EDMXBackend');
 
 const actualProjectAccess = await import('@sap-ux/project-access');

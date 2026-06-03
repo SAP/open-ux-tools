@@ -3,14 +3,14 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 // MOCKS - use jest.unstable_mockModule for ESM compatibility
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
 const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils,
     isAppStudio: mockIsAppStudio
 }));
 
-const mockCreateAbapServiceProvider = jest.fn();
+const mockCreateAbapServiceProvider = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/system-access', () => ({
     createAbapServiceProvider: mockCreateAbapServiceProvider,
     isUrlTarget: jest.fn(),
@@ -25,7 +25,7 @@ jest.unstable_mockModule('@sap-ux/system-access', () => ({
     inquirer: {}
 }));
 
-const mockGetProviderConfig = jest.fn();
+const mockGetProviderConfig = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../src/abap/config', () => ({
     getProviderConfig: mockGetProviderConfig
 }));

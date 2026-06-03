@@ -53,7 +53,7 @@ jest.unstable_mockModule('node:url', () => ({
 const realFsPromises = await import('node:fs/promises');
 const mockRm = jest.fn<typeof promisesMock.rm>(realFsPromises.rm);
 const mockMkdir = jest.fn<typeof promisesMock.mkdir>(realFsPromises.mkdir);
-const mockWriteFilePromise = jest.fn<typeof promisesMock.writeFile>(realFsPromises.writeFile);
+const mockWriteFilePromise = jest.fn() as jest.Mock;
 jest.unstable_mockModule('node:fs/promises', () => ({
     ...realFsPromises,
     default: {

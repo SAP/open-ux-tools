@@ -73,7 +73,7 @@ describe('middleware', () => {
 
         beforeAll(() => {
             // Make ui5Proxy return a handler that proxies through nock
-            mockUi5Proxy.mockImplementation((config: any) => {
+            mockUi5Proxy.mockImplementation((config) => {
                 return (req: any, res: any, _next: any) => {
                     const url = new URL(config.url);
                     const version = config.version ? `/${config.version}` : '';

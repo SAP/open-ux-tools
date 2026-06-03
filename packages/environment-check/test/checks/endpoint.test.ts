@@ -3,16 +3,16 @@ import type { CatalogServiceResult, Endpoint } from '../../src/types.js';
 import { Severity, UrlServiceType } from '../../src/types.js';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
 const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils,
     isAppStudio: mockIsAppStudio
 }));
 
-const mockCreateForDestination = jest.fn();
-const mockCreateForAbap = jest.fn();
-const mockCreateForAbapOnCloud = jest.fn();
+const mockCreateForDestination = jest.fn() as jest.Mock;
+const mockCreateForAbap = jest.fn() as jest.Mock;
+const mockCreateForAbapOnCloud = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     createForDestination: mockCreateForDestination,
     createForAbap: mockCreateForAbap,
@@ -26,16 +26,16 @@ jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     }
 }));
 
-const mockCheckBASDestinations = jest.fn();
-const mockCheckBASDestination = jest.fn();
+const mockCheckBASDestinations = jest.fn() as jest.Mock;
+const mockCheckBASDestination = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/checks/destination', () => ({
     checkBASDestinations: mockCheckBASDestinations,
     checkBASDestination: mockCheckBASDestination,
     needsUsernamePassword: jest.fn()
 }));
 
-const mockCheckStoredSystems = jest.fn();
-const mockCheckStoredSystem = jest.fn();
+const mockCheckStoredSystems = jest.fn() as jest.Mock;
+const mockCheckStoredSystem = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/checks/stored-system', () => ({
     checkStoredSystems: mockCheckStoredSystems,
     checkStoredSystem: mockCheckStoredSystem

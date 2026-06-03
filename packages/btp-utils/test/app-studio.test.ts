@@ -60,7 +60,7 @@ const mockApiCreateServiceInstance = jest.fn().mockImplementation(() => {});
 const mockApiGetInstanceCredentials = jest.fn(() => Promise.resolve(uaaCredentialsMock));
 
 // Mock function for @sap/bas-sdk destinations.createDestination
-const mockCreateDestination = jest.fn();
+const mockCreateDestination = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap/cf-tools', () => ({
     cfGetInstanceKeyParameters: mockCfGetInstanceKeyParameters,
@@ -91,7 +91,7 @@ describe('App Studio', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         // Re-assign default mock implementations that may get cleared
-        mockCfGetInstanceKeyParameters.mockImplementation((name?: string) => {
+        mockCfGetInstanceKeyParameters.mockImplementation((name) => {
             if (name === 'invalid') {
                 throw new Error();
             } else if (name === 'noinstance') {

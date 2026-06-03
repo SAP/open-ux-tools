@@ -42,17 +42,17 @@ jest.unstable_mockModule('node:fs', () => ({
     }
 }));
 
-const mockReportRuntimeError = jest.fn().mockImplementation((error: Error) => {
+const mockReportRuntimeError = jest.fn().mockImplementation((error) => {
     throw error;
 });
-const mockReportEnableTelemetryOnOff = jest.fn();
+const mockReportEnableTelemetryOnOff = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/base/utils/reporting', () => ({
     reportRuntimeError: mockReportRuntimeError,
     reportEnableTelemetryOnOff: mockReportEnableTelemetryOnOff
 }));
 
-const mockGetService = jest.fn();
-const mockGetFilesystemWatcherFor = jest.fn();
+const mockGetService = jest.fn<typeof realStore.getService>();
+const mockGetFilesystemWatcherFor = jest.fn<typeof realStore.getFilesystemWatcherFor>();
 const realStore = await import('@sap-ux/store');
 jest.unstable_mockModule('@sap-ux/store', () => ({
     ...realStore,

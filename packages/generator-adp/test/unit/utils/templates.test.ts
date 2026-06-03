@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-const mockExistsSync = jest.fn();
+const mockExistsSync = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('node:fs', () => ({
     existsSync: mockExistsSync

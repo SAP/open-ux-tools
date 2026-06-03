@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-const mockGetHostEnv = jest.fn();
+const mockGetHostEnv = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     getHostEnvironment: mockGetHostEnv,

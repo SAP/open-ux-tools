@@ -8,8 +8,8 @@ const __testdir = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
 const lzString = require('lz-string');
 
-const mockMkdir = jest.fn();
-const mockWriteFile = jest.fn();
+const mockMkdir = jest.fn() as jest.Mock;
+const mockWriteFile = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('node:fs/promises', () => ({
     ...(jest.requireActual('node:fs/promises') as object),

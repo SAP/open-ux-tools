@@ -41,7 +41,7 @@ jest.unstable_mockModule('node:fs', () => ({
     default: esmUnionFs
 }));
 
-const mockHasbinSync = jest.fn();
+const mockHasbinSync = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('hasbin', () => ({
     default: { sync: mockHasbinSync },
@@ -55,7 +55,7 @@ jest.unstable_mockModule('@sap/mta-lib', () => ({
     Mta: MockMta
 }));
 
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn() as jest.Mock;
 const realBtpUtils = await import('@sap-ux/btp-utils');
 
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
@@ -64,7 +64,7 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     listDestinations: () => jest.fn()
 }));
 
-const mockFindCapProjectRoot = jest.fn();
+const mockFindCapProjectRoot = jest.fn() as jest.Mock;
 const realProjectAccess = await import('@sap-ux/project-access');
 
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
@@ -72,8 +72,8 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     findCapProjectRoot: () => mockFindCapProjectRoot()
 }));
 
-const mockGetHostEnvironment = jest.fn();
-const mockSendTelemetry = jest.fn();
+const mockGetHostEnvironment = jest.fn() as jest.Mock;
+const mockSendTelemetry = jest.fn() as jest.Mock;
 const mockIsExtensionInstalled = jest.fn().mockReturnValue(true);
 const realFioriGenShared = await import('@sap-ux/fiori-generator-shared');
 
@@ -119,8 +119,8 @@ const readJson = (filePath: string) => {
     return JSON.parse(mockedFs.readFileSync(filePath).toString());
 };
 
-const mockShowInformation = jest.fn();
-const mockShowError = jest.fn();
+const mockShowInformation = jest.fn() as jest.Mock;
+const mockShowError = jest.fn() as jest.Mock;
 const mockAppWizard = {
     showInformation: mockShowInformation,
     showError: mockShowError
@@ -143,10 +143,10 @@ describe('Cloud foundry generator tests', () => {
             cwd = dir;
         });
         // Delegate to real implementations by default
-        mockGetCFQuestions.mockImplementation((...args: unknown[]) =>
+        mockGetCFQuestions.mockImplementation((...args) =>
             (realQuestions.getCFQuestions as Function)(...args)
         );
-        mockGenerateAppConfig.mockImplementation((...args: unknown[]) =>
+        mockGenerateAppConfig.mockImplementation((...args) =>
             (realCfConfigWriter.generateAppConfig as Function)(...args)
         );
         mockIsExtensionInstalled.mockReturnValue(true);

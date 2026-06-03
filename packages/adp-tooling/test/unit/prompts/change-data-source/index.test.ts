@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import { initI18nProjectValidators } from '@sap-ux/project-input-validator';
 
-const mockFilterDataSourcesByType = jest.fn().mockImplementation((dataSources: Record<string, any>, type: string) => {
+const mockFilterDataSourcesByType = jest.fn().mockImplementation((dataSources, type) => {
     if (!dataSources) {
         return {};
     }
@@ -43,7 +43,7 @@ describe('getPrompts', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockFilterDataSourcesByType.mockImplementation((ds: Record<string, any>, type: string) => {
+        mockFilterDataSourcesByType.mockImplementation((ds, type) => {
             if (!ds) {
                 return {};
             }

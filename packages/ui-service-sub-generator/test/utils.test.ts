@@ -9,7 +9,7 @@ import type { Destination } from '@sap-ux/btp-utils';
 
 const __testdirname = dirname(fileURLToPath(import.meta.url));
 
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
 const mockCreateAbapServiceProvider = jest.fn().mockResolvedValue({ get: {} });
 
 const realBtpUtils = await import('@sap-ux/btp-utils');

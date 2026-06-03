@@ -8,7 +8,7 @@ jest.unstable_mockModule('@vscode-logging/logger', () => ({
 }));
 
 // Mock for fs.existsSync - will be controlled in tests
-const mockExistsSync = jest.fn();
+const mockExistsSync = jest.fn<typeof actualFs.existsSync>();
 jest.unstable_mockModule('node:fs', () => ({
     ...actualFs,
     existsSync: mockExistsSync

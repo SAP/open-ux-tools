@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-const mockGetHostEnvironment = jest.fn();
+const mockGetHostEnvironment = jest.fn<typeof realFioriGenShared.getHostEnvironment>();
 
 const realFioriGenShared = await import('@sap-ux/fiori-generator-shared');
 jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({

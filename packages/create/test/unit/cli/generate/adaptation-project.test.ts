@@ -6,7 +6,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockTraceChanges = jest.fn();
+const mockTraceChanges = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/trace', () => ({
     traceChanges: mockTraceChanges
 }));
@@ -21,7 +21,7 @@ jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     setLogLevelVerbose: jest.fn()
 }));
 
-const mockRunNpmInstallCommand = jest.fn();
+const mockRunNpmInstallCommand = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/common', () => ({
     promptYUIQuestions: jest.fn(),
     runNpmInstallCommand: mockRunNpmInstallCommand
@@ -52,7 +52,7 @@ const mockGenerate = jest.fn().mockResolvedValue({
     commit: jest.fn().mockImplementation((cb) => cb()),
     dump: jest.fn()
 } as Partial<Editor> as Editor);
-const mockPromptGeneratorInput = jest.fn();
+const mockPromptGeneratorInput = jest.fn() as jest.Mock;
 const FlexLayer = { CUSTOMER_BASE: 'CUSTOMER_BASE', VENDOR: 'VENDOR' };
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     generate: mockGenerate,

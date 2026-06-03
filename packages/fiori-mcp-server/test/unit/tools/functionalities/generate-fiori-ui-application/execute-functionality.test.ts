@@ -76,7 +76,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
         jest.clearAllMocks();
         mockCheckIfGeneratorInstalled.mockResolvedValue(undefined);
         mockRunCmd.mockResolvedValue({ stdout: 'Success', stderr: '' });
-        mockValidateWithSchema.mockImplementation((schema: any, data: any) => data.appGenConfig || data);
+        mockValidateWithSchema.mockImplementation((schema, data) => data.appGenConfig || data);
         mockReadFile.mockResolvedValue(mockMetadata);
         mockMkdir.mockResolvedValue(undefined);
         mockWriteFile.mockResolvedValue(undefined);

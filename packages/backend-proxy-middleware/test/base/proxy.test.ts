@@ -3,9 +3,9 @@ import type { ClientRequest, IncomingMessage } from 'node:http';
 import type { Options } from 'http-proxy-middleware';
 import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types.js';
 
-const mockBackendSystemRead = jest.fn();
-const mockBackendSystemWrite = jest.fn();
-const mockApiHubRead = jest.fn();
+const mockBackendSystemRead = jest.fn() as jest.Mock;
+const mockBackendSystemWrite = jest.fn() as jest.Mock;
+const mockApiHubRead = jest.fn() as jest.Mock;
 const mockGetService = jest.fn().mockImplementation(({ entityName }: { entityName: string }) => {
     if (entityName === 'system') {
         return { read: mockBackendSystemRead, write: mockBackendSystemWrite };
@@ -41,7 +41,7 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     getService: mockGetService
 }));
 
-const mockCreateForAbapOnCloud = jest.fn();
+const mockCreateForAbapOnCloud = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     AbapCloudEnvironment: {
         Standalone: 'Standalone',
@@ -50,10 +50,10 @@ jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     createForAbapOnCloud: mockCreateForAbapOnCloud
 }));
 
-const mockListDestinations = jest.fn();
-const mockIsFullUrlDestination = jest.fn();
-const mockGetCredentialsForDestinationService = jest.fn();
-const mockIsAppStudio = jest.fn();
+const mockListDestinations = jest.fn<typeof realBtpUtils.listDestinations>();
+const mockIsFullUrlDestination = jest.fn<typeof realBtpUtils.isFullUrlDestination>();
+const mockGetCredentialsForDestinationService = jest.fn<typeof realBtpUtils.getCredentialsForDestinationService>();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
 
 function getDestinationUrlForAppStudioImpl(name: string, path?: string): string {
     const origin = `https://${name}.dest`;
@@ -81,7 +81,7 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     }
 }));
 
-const mockPrompt = jest.fn();
+const mockPrompt = jest.fn() as jest.Mock;
 jest.unstable_mockModule('prompts', () => ({
     default: () => mockPrompt(),
     __esModule: true

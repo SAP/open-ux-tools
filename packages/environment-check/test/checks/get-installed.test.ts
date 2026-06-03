@@ -1,16 +1,16 @@
 import { jest } from '@jest/globals';
 import type { Extension } from 'vscode';
 
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
 const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils,
     isAppStudio: mockIsAppStudio
 }));
 
-const mockReaddirSync = jest.fn();
-const mockExistsSync = jest.fn();
-const mockReadFile = jest.fn();
+const mockReaddirSync = jest.fn() as jest.Mock;
+const mockExistsSync = jest.fn() as jest.Mock;
+const mockReadFile = jest.fn() as jest.Mock;
 jest.unstable_mockModule('node:fs', () => ({
     __esModule: true,
     default: {
@@ -238,7 +238,7 @@ describe('Test install functions', () => {
             process.env.NODE_PATH = `/some/global/node_modules:/another/global/node_modules:/yet/another/global/node_modules:${installedPath}`;
 
             mockSpawnCommand.mockResolvedValueOnce('/not/installed/path');
-            mockExistsSync.mockImplementation((filePath: any) => {
+            mockExistsSync.mockImplementation((filePath) => {
                 // Mocks finding the package at `installedPath`
                 if ((filePath as string).startsWith(installedPath)) {
                     return true;

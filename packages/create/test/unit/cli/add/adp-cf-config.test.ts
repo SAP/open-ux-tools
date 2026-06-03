@@ -5,15 +5,15 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockGetLogger = jest.fn();
-const mockSetLogLevelVerbose = jest.fn();
+const mockGetLogger = jest.fn() as jest.Mock;
+const mockSetLogLevelVerbose = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
     setLogLevelVerbose: mockSetLogLevelVerbose
 }));
 
-const mockValidateBasePath = jest.fn();
-const mockValidateAdpAppType = jest.fn();
+const mockValidateBasePath = jest.fn() as jest.Mock;
+const mockValidateAdpAppType = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/validation', () => ({
     validateBasePath: mockValidateBasePath,
     validateAdpAppType: mockValidateAdpAppType,
@@ -21,10 +21,10 @@ jest.unstable_mockModule('../../../../src/validation', () => ({
     hasFileDeletes: jest.fn()
 }));
 
-const mockIsCFEnvironment = jest.fn();
-const mockLoadCfConfig = jest.fn();
-const mockIsLoggedInCf = jest.fn();
-const mockSetupCfPreview = jest.fn();
+const mockIsCFEnvironment = jest.fn() as jest.Mock;
+const mockLoadCfConfig = jest.fn() as jest.Mock;
+const mockIsLoggedInCf = jest.fn() as jest.Mock;
+const mockSetupCfPreview = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     isCFEnvironment: mockIsCFEnvironment,
     loadCfConfig: mockLoadCfConfig,

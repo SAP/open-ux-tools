@@ -12,9 +12,9 @@ jest.unstable_mockModule('../../../src/data-provider/backend-system', () => ({
 }));
 
 const mockExistsSync = jest.fn<(path: string) => boolean>().mockReturnValue(false);
-const mockReadFileSync = jest.fn();
-const mockWriteFileSync = jest.fn();
-const mockMkdirSync = jest.fn();
+const mockReadFileSync = jest.fn<typeof actualFs.readFileSync>();
+const mockWriteFileSync = jest.fn<typeof actualFs.writeFileSync>();
+const mockMkdirSync = jest.fn<typeof actualFs.mkdirSync>();
 
 // Import actual fs BEFORE mocking to avoid infinite resolution loops
 const actualFs = await import('node:fs');

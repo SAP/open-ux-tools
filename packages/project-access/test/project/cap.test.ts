@@ -13,11 +13,11 @@ import { promises as fs } from 'node:fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockSpawn = jest.fn<typeof childProcess.spawn>();
+const mockSpawn = jest.fn<typeof realChildProcess.spawn>();
 const mockLoadModuleFromProject = jest.fn<typeof projectModuleType.loadModuleFromProject>();
 const mockFileExists = jest.fn<typeof fileType.fileExists>();
 const mockReadJSON = jest.fn<typeof fileType.readJSON>();
-const mockReadFile = jest.fn<typeof fileType.readFile>();
+const mockReadFile = jest.fn<typeof realFile.readFile>();
 
 // Load real modules first (they become cached)
 const realChildProcess = await import('node:child_process');
@@ -953,9 +953,9 @@ describe('toReferenceUri', () => {
 
     test('toReferenceUri with refUri starting with "../" custom cds paths', async () => {
         // mock reading of package json in root folder of sibling project
-        mockReadFile.mockImplementation(async () => {
+        mockReadFile.mockImplementation((async () => {
             return '';
-        });
+        }) as unknown as typeof realFile.readFile);
         // prepare
         const projectRoot = join(__dirname, '..', 'test-data', 'cap-nodejs-1');
         const relUriFrom = join('sap', 'app', 'admin', 'fiori.cds'); // relative (to project root) uri of file for which the using statement should be generated
@@ -1599,7 +1599,7 @@ describe('deleteCapApp', () => {
             debug: jest.fn()
         } as unknown as Logger;
         // Simulate error while deleting cds file
-        jest.spyOn(memFs, 'delete').mockImplementation((path: unknown) => {
+        jest.spyOn(memFs, 'delete').mockImplementation((path) => {
             if (path === join(capProject, 'apps', FileName.IndexCds)) {
                 throw new Error('aaaa');
             }

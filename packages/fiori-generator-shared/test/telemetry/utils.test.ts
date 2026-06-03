@@ -5,7 +5,7 @@ jest.unstable_mockModule('@vscode-logging/logger', () => ({
     getExtensionLogger: jest.fn()
 }));
 
-const mockGetHostEnvironment = jest.fn();
+const mockGetHostEnvironment = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/environment', () => ({
     getHostEnvironment: mockGetHostEnvironment,
     isCli: jest.fn()

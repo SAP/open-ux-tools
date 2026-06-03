@@ -5,12 +5,12 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { CfDeploymentInfo, MtaYaml, CfConfig } from '../../../src/types.js';
 
 // MOCKS - declare mock functions before jest.unstable_mockModule for ESM compatibility
-const mockGetYamlContent = jest.fn();
-const mockLoadCfConfig = jest.fn();
-const mockIsCfInstalled = jest.fn();
-const mockIsLoggedInCf = jest.fn();
-const mockCommandRunnerRun = jest.fn();
-const mockGetMtaPath = jest.fn();
+const mockGetYamlContent = jest.fn() as jest.Mock;
+const mockLoadCfConfig = jest.fn() as jest.Mock;
+const mockIsCfInstalled = jest.fn() as jest.Mock;
+const mockIsLoggedInCf = jest.fn() as jest.Mock;
+const mockCommandRunnerRun = jest.fn() as jest.Mock;
+const mockGetMtaPath = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('../../../src/cf/project/yaml-loader', () => ({
     getYamlContent: mockGetYamlContent

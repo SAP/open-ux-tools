@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import * as actualCommon from '@sap-ux-private/control-property-editor-common';
 
-const mockSendAction = jest.fn();
-const mockDispose = jest.fn();
+const mockSendAction = jest.fn() as jest.Mock;
+const mockDispose = jest.fn() as jest.Mock;
 const mockStartPostMessageCommunication = jest.fn().mockReturnValue({
     sendAction: mockSendAction,
     dispose: mockDispose

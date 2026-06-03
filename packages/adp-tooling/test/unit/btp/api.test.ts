@@ -3,8 +3,8 @@ import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Uaa } from '../../../src/types.js';
 
-const mockAxiosGet = jest.fn();
-const mockAxiosPost = jest.fn();
+const mockAxiosGet = jest.fn() as jest.Mock;
+const mockAxiosPost = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('axios', () => ({
     default: {

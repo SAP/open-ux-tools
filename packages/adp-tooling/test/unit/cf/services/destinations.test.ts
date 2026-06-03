@@ -2,9 +2,9 @@ import { jest } from '@jest/globals';
 import { join, dirname } from 'node:path';
 
 // Create mocks before any imports
-const mockGetOrCreateServiceInstanceKeys = jest.fn();
-const mockListBtpDestinations = jest.fn();
-const mockGetYamlContent = jest.fn();
+const mockGetOrCreateServiceInstanceKeys = jest.fn() as jest.Mock;
+const mockListBtpDestinations = jest.fn() as jest.Mock;
+const mockGetYamlContent = jest.fn() as jest.Mock;
 
 const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({

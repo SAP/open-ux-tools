@@ -11,7 +11,7 @@ jest.unstable_mockModule('@sap-ux/logger', () => ({
     ToolsLogger: jest.fn().mockImplementation(() => mockLogger)
 }));
 
-const mockWriteFile = jest.fn();
+const mockWriteFile = jest.fn() as jest.Mock;
 jest.unstable_mockModule('node:fs/promises', () => ({
     writeFile: mockWriteFile
 }));

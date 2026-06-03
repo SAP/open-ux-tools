@@ -4,9 +4,9 @@ import listReportSchema from '../page-editor-api/test-data/schema/ListReport.jso
 import * as zod from 'zod';
 import type { JSONSchema4 } from 'json-schema';
 
-const mockFindProjectRoot = jest.fn();
-const mockCreateApplicationAccess = jest.fn();
-const mockGetProject = jest.fn();
+const mockFindProjectRoot = jest.fn() as jest.Mock;
+const mockCreateApplicationAccess = jest.fn() as jest.Mock;
+const mockGetProject = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     findProjectRoot: mockFindProjectRoot,
@@ -22,7 +22,7 @@ const { convertToSchema, prepatePropertySchema, resolveApplication, resolveRefs,
 describe('resolveApplication', () => {
     const appPath = join('folder', 'dummy', 'app');
     const mockCreateApplicationAccessImpl = (appIds: string[] = [''], appId = '') => {
-        mockCreateApplicationAccess.mockImplementation((root: string) => {
+        mockCreateApplicationAccess.mockImplementation((root) => {
             const apps: { [key: string]: {} } = {};
             for (const id of appIds) {
                 apps[id] = {};

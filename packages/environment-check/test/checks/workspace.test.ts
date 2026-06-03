@@ -3,7 +3,7 @@ import path, { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockFindAllApps = jest.fn();
+const mockFindAllApps = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     findAllApps: mockFindAllApps
 }));

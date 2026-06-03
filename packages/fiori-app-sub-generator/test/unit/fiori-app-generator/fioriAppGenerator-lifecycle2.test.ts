@@ -69,16 +69,16 @@ const appConfigMocked: FioriElementsApp<unknown> | FreestyleApp<BasicAppSettings
 };
 
 const mockTransformState = jest.fn().mockImplementation(() => Promise.resolve(appConfigMocked));
-const mockWriteAPIHubKeyFiles = jest.fn();
-const mockWriteAppGenInfoFiles = jest.fn();
-const mockRunPostGenerationTasks = jest.fn();
-const mockInstallDependencies = jest.fn();
+const mockWriteAPIHubKeyFiles = jest.fn<typeof actualWriting.writeAPIHubKeyFiles>();
+const mockWriteAppGenInfoFiles = jest.fn<typeof actualWriting.writeAppGenInfoFiles>();
+const mockRunPostGenerationTasks = jest.fn<typeof actualEnd.runPostGenerationTasks>();
+const mockInstallDependencies = jest.fn<typeof actualInstall.installDependencies>();
 let mockPlatform = 'CLI';
 const mockGetPlatform = jest.fn().mockImplementation(() => mockPlatform);
-const mockDeleteCache = jest.fn();
+const mockDeleteCache = jest.fn<typeof actualUtils.deleteCache>();
 const mockIsAppStudio = jest.fn().mockReturnValue(false);
-const mockGenerateFE = jest.fn();
-const mockGenerateFF = jest.fn();
+const mockGenerateFE = jest.fn<typeof actualFioriElementsWriter.generate>();
+const mockGenerateFF = jest.fn<typeof actualFioriFreestyleWriter.generate>();
 
 jest.unstable_mockModule('../../../src/fiori-app-generator/transforms', () => ({
     ...actualTransforms,

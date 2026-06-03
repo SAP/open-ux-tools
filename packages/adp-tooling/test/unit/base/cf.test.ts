@@ -4,8 +4,8 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // MOCKS - use jest.unstable_mockModule for ESM compatibility
-const mockExistsSync = jest.fn();
-const mockReadFileSync = jest.fn();
+const mockExistsSync = jest.fn() as jest.Mock;
+const mockReadFileSync = jest.fn() as jest.Mock;
 jest.unstable_mockModule('node:fs', () => ({
     existsSync: mockExistsSync,
     readFileSync: mockReadFileSync,
@@ -23,7 +23,7 @@ jest.unstable_mockModule('node:fs', () => ({
     }
 }));
 
-const mockReadUi5Yaml = jest.fn();
+const mockReadUi5Yaml = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     readUi5Yaml: mockReadUi5Yaml,
     DirName: { Changes: 'changes', Webapp: 'webapp' },

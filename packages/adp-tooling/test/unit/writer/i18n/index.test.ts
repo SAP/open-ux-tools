@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-const mockUuidV4 = jest.fn();
+const mockUuidV4 = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('uuid', () => ({
     v4: mockUuidV4

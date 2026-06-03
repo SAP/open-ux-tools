@@ -12,7 +12,7 @@ const __testdirname = dirname(fileURLToPath(import.meta.url));
 import { mockedUi5RepoService, mockedLrepService, mockedProvider } from '../../__mocks__/index.js';
 
 // Mock node:fs writeFileSync
-const mockWriteFileSync = jest.fn();
+const mockWriteFileSync = jest.fn<typeof realFs.writeFileSync>();
 const realFs = await import('node:fs');
 jest.unstable_mockModule('node:fs', () => ({
     ...realFs,

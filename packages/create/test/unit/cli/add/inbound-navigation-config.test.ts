@@ -10,19 +10,19 @@ import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockGetLogger = jest.fn();
-const mockSetLogLevelVerbose = jest.fn();
+const mockGetLogger = jest.fn() as jest.Mock;
+const mockSetLogLevelVerbose = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
     setLogLevelVerbose: mockSetLogLevelVerbose
 }));
 
-const mockTraceChanges = jest.fn();
+const mockTraceChanges = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/trace', () => ({
     traceChanges: mockTraceChanges
 }));
 
-const mockPromptYUIQuestions = jest.fn();
+const mockPromptYUIQuestions = jest.fn() as jest.Mock;
 const mockFilterLabelTypeQuestions = jest.fn().mockImplementation((questions) => Promise.resolve(questions ?? []));
 jest.unstable_mockModule('../../../../src/common', () => ({
     promptYUIQuestions: mockPromptYUIQuestions,
@@ -36,7 +36,7 @@ jest.unstable_mockModule('../../../../src/common/prompts', () => ({
 
 jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn() }));
 
-const mockValidateBasePath = jest.fn();
+const mockValidateBasePath = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/validation', () => ({
     validateBasePath: mockValidateBasePath,
     validateAdpAppType: jest.fn(),
@@ -71,13 +71,13 @@ jest.unstable_mockModule('mem-fs-editor', () => ({
     }
 }));
 
-const mockFlpConfigurationExists = jest.fn();
-const mockGetAdpConfig = jest.fn();
-const mockGetVariant = jest.fn();
-const mockGenerateInboundConfig = jest.fn();
-const mockGetBaseAppInbounds = jest.fn();
+const mockFlpConfigurationExists = jest.fn() as jest.Mock;
+const mockGetAdpConfig = jest.fn() as jest.Mock;
+const mockGetVariant = jest.fn() as jest.Mock;
+const mockGenerateInboundConfig = jest.fn() as jest.Mock;
+const mockGetBaseAppInbounds = jest.fn() as jest.Mock;
 const mockIsCFEnvironment = jest.fn().mockResolvedValue(false);
-const mockGetCfBaseAppInbounds = jest.fn();
+const mockGetCfBaseAppInbounds = jest.fn() as jest.Mock;
 const mockLoadCfConfig = jest.fn().mockReturnValue({});
 const mockGetAppParamsFromUI5Yaml = jest
     .fn()
@@ -99,24 +99,24 @@ jest.unstable_mockModule('@sap-ux/system-access', () => ({
     createAbapServiceProvider: jest.fn()
 }));
 
-const mockGetAppType = jest.fn();
+const mockGetAppType = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/project-access', () =>
     createProjectAccessMock({
         getAppType: mockGetAppType
     })
 );
 
-const mockGenerateInboundNavigationConfig = jest.fn();
-const mockReadManifest = jest.fn();
+const mockGenerateInboundNavigationConfig = jest.fn() as jest.Mock;
+const mockReadManifest = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/app-config-writer', () => ({
     generateInboundNavigationConfig: mockGenerateInboundNavigationConfig,
     readManifest: mockReadManifest
 }));
 
-const mockGetPrompts = jest.fn();
-const mockGetTileSettingsQuestions = jest.fn();
-const mockGetAdpFlpConfigPromptOptions = jest.fn();
-const mockGetAdpFlpInboundsWriterConfig = jest.fn();
+const mockGetPrompts = jest.fn() as jest.Mock;
+const mockGetTileSettingsQuestions = jest.fn() as jest.Mock;
+const mockGetAdpFlpConfigPromptOptions = jest.fn() as jest.Mock;
+const mockGetAdpFlpInboundsWriterConfig = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/flp-config-inquirer', () => ({
     getPrompts: mockGetPrompts,
     tileActions: { REPLACE: 'replace', ADD: 'add' },

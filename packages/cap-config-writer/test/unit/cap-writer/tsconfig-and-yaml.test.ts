@@ -4,7 +4,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import editor, { type Editor } from 'mem-fs-editor';
 
-const mockYamlNewInstance = jest.fn();
+const mockYamlNewInstance = jest.fn() as jest.Mock;
 const mockYamlDocumentToYamlString = jest.fn((doc: Record<string, Record<string, string>>) => {
     const lines: string[] = [];
     for (const [key, value] of Object.entries(doc)) {

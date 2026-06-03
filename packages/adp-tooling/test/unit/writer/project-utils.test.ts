@@ -11,9 +11,9 @@ jest.unstable_mockModule('node:fs', () => ({
     default: { ...realFs.default, readFileSync: mockReadFileSync }
 }));
 
-const mockGetTypesPackage = jest.fn();
-const mockGetTypesVersion = jest.fn();
-const mockGetEsmTypesVersion = jest.fn();
+const mockGetTypesPackage = jest.fn<typeof realUi5Config.getTypesPackage>();
+const mockGetTypesVersion = jest.fn<typeof realUi5Config.getTypesVersion>();
+const mockGetEsmTypesVersion = jest.fn<typeof realUi5Config.getEsmTypesVersion>();
 
 const realUi5Config = await import('@sap-ux/ui5-config');
 
@@ -127,9 +127,9 @@ describe('Project Utils', () => {
         });
 
         it('should return default package info on read failure', () => {
-            mockReadFileSync.mockImplementation(() => {
+            mockReadFileSync.mockImplementation((() => {
                 throw new Error('File not found');
-            });
+            }) as unknown as typeof realFs.readFileSync);
 
             const result = getPackageJSONInfo();
 

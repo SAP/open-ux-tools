@@ -133,7 +133,7 @@ describe('AddSubpage controller', () => {
             const getTestModel = () =>
                 ({
                     setProperty: setPropertySpy,
-                    getProperty: jest.fn().mockImplementation((propName: string) => {
+                    getProperty: jest.fn().mockImplementation((propName) => {
                         switch (propName) {
                             case '/navigationData':
                                 return [
@@ -296,7 +296,7 @@ describe('AddSubpage controller', () => {
 
         const setPropertySpy = jest.fn();
         const testModel = {
-            getProperty: jest.fn().mockImplementation((name: string) => {
+            getProperty: jest.fn().mockImplementation((name) => {
                 const props: Record<string, any> = {
                     '/navigationData': [
                         { entitySet: 'Bookings', navProperty: 'to_Booking' },
@@ -409,7 +409,7 @@ describe('AddSubpage controller', () => {
             let beginBtnSetEnabledMock: jest.Mock<any, any, any>;
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             const testModel = {
-                getProperty: jest.fn().mockImplementation((name: string) => {
+                getProperty: jest.fn().mockImplementation((name) => {
                     const props: Record<string, any> = {
                         '/navigationData': [
                             { entitySet: 'Bookings', navProperty: 'to_Booking' },

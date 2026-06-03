@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import type { ListChoiceOptions } from 'inquirer';
 
-const mockGetUi5Themes = jest.fn();
+const mockGetUi5Themes = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
     getUi5Themes: mockGetUi5Themes,

@@ -2,10 +2,10 @@ import { jest } from '@jest/globals';
 import { join } from 'node:path';
 
 // Mock functions
-const mockFindCapProjectRoot = jest.fn();
-const mockGetCapProjectType = jest.fn();
-const mockFindRootsForPath = jest.fn();
-const mockValidateProjectFolder = jest.fn();
+const mockFindCapProjectRoot = jest.fn() as jest.Mock;
+const mockGetCapProjectType = jest.fn() as jest.Mock;
+const mockFindRootsForPath = jest.fn() as jest.Mock;
+const mockValidateProjectFolder = jest.fn() as jest.Mock;
 const mockValidateWindowsPathLength = jest.fn<() => true | string>().mockReturnValue(true);
 
 jest.unstable_mockModule('@sap-ux/project-access', () => ({

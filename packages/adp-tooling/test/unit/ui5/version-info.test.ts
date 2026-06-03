@@ -1,10 +1,10 @@
 import { jest } from '@jest/globals';
 
-const mockFetchInternalVersions = jest.fn();
-const mockFormatUi5Version = jest.fn();
-const mockAddSnapshot = jest.fn();
-const mockBuildSystemVersionLabel = jest.fn();
-const mockRemoveTimestampFromVersion = jest.fn();
+const mockFetchInternalVersions = jest.fn() as jest.Mock;
+const mockFormatUi5Version = jest.fn<typeof realFormat.formatUi5Version>();
+const mockAddSnapshot = jest.fn<typeof realFormat.addSnapshot>();
+const mockBuildSystemVersionLabel = jest.fn<typeof realFormat.buildSystemVersionLabel>();
+const mockRemoveTimestampFromVersion = jest.fn<typeof realFormat.removeTimestampFromVersion>();
 
 const realFormat = await import('../../../src/ui5/format.js');
 jest.unstable_mockModule('../../../src/ui5/fetch', () => ({

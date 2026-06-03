@@ -14,18 +14,18 @@ const descriptorVariant = JSON.parse(
     readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.appdescr_variant'), 'utf-8')
 );
 
-const mockGetLogger = jest.fn();
+const mockGetLogger = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
     setLogLevelVerbose: jest.fn()
 }));
 
-const mockTraceChanges = jest.fn();
+const mockTraceChanges = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/trace', () => ({
     traceChanges: mockTraceChanges
 }));
 
-const mockPromptYUIQuestions = jest.fn();
+const mockPromptYUIQuestions = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/common', () => ({
     promptYUIQuestions: mockPromptYUIQuestions,
     runNpmInstallCommand: jest.fn()
@@ -38,14 +38,14 @@ jest.unstable_mockModule('../../../../src/validation/validation', () => ({
     hasFileDeletes: jest.fn()
 }));
 
-const mockGetAppType = jest.fn();
+const mockGetAppType = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/project-access', () =>
     createProjectAccessMock({
         getAppType: mockGetAppType
     })
 );
 
-const mockReadFileSync = jest.fn();
+const mockReadFileSync = jest.fn() as jest.Mock;
 jest.unstable_mockModule('fs', () => ({
     readFileSync: mockReadFileSync,
     existsSync: jest.fn(),
@@ -58,9 +58,9 @@ jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn
 const mockGenerateChange = jest.fn().mockResolvedValue({
     commit: jest.fn().mockImplementation((cb) => cb())
 } as Partial<Editor> as Editor);
-const mockGetPromptsForNewModel = jest.fn();
-const mockGetVariant = jest.fn();
-const mockCreateNewModelData = jest.fn();
+const mockGetPromptsForNewModel = jest.fn() as jest.Mock;
+const mockGetVariant = jest.fn() as jest.Mock;
+const mockCreateNewModelData = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     generateChange: mockGenerateChange,
     ChangeType: { ADD_NEW_MODEL: 'appdescr_ui5_addNewModel' },

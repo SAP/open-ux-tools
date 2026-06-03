@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 
-const mockInit = jest.fn();
-const mockT = jest.fn();
-const mockAddResourceBundle = jest.fn();
+const mockInit = jest.fn() as jest.Mock;
+const mockT = jest.fn() as jest.Mock;
+const mockAddResourceBundle = jest.fn() as jest.Mock;
 const instance = {
     init: mockInit,
     t: mockT,
@@ -16,7 +16,7 @@ jest.unstable_mockModule('i18next', () => ({
     createInstance: () => instance
 }));
 
-const mockAddi18nResourceBundle = jest.fn();
+const mockAddi18nResourceBundle = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
     addi18nResourceBundle: mockAddi18nResourceBundle
 }));

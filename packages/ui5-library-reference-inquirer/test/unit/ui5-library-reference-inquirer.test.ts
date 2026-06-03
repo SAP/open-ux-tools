@@ -6,8 +6,8 @@ import type { UI5LibraryReferencePromptOptions } from '../../src/index.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Mock functions
-const mockFindFioriArtifacts = jest.fn();
-const mockGetQuestions = jest.fn();
+const mockFindFioriArtifacts = jest.fn() as jest.Mock;
+const mockGetQuestions = jest.fn() as jest.Mock;
 
 // Mock ../../src/prompts so getQuestions is spyable
 jest.unstable_mockModule('../../src/prompts', () => ({

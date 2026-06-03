@@ -16,7 +16,7 @@ import { XMLAnnotationServiceAdapter } from '../../src/xml/adapter.js';
 import type { FioriAnnotationService } from '../../src/index.js';
 
 const realFsPromises = await import('node:fs/promises');
-const mockReadFile = jest.fn<typeof fsPromisesType.readFile>().mockImplementation(realFsPromises.readFile as any);
+const mockReadFile = jest.fn<typeof realFsPromises.readFile>().mockImplementation(realFsPromises.readFile as any);
 const mockAccess = jest.fn<typeof fsPromisesType.access>().mockImplementation(realFsPromises.access as any);
 jest.unstable_mockModule('node:fs/promises', () => ({
     ...realFsPromises,
@@ -24,7 +24,7 @@ jest.unstable_mockModule('node:fs/promises', () => ({
     access: mockAccess
 }));
 
-const mockConvertMetadataToAvtSchema = jest.fn();
+const mockConvertMetadataToAvtSchema = jest.fn<typeof realAvt.convertMetadataToAvtSchema>();
 const realAvt = await import('../../src/avt/index.js');
 jest.unstable_mockModule('../../src/avt', () => ({
     ...realAvt,

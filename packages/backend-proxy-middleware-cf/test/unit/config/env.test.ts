@@ -6,8 +6,8 @@ import type { EffectiveOptions } from '../../../src/types.js';
 
 const __testdir = dirname(fileURLToPath(import.meta.url));
 
-const mockExistsSync = jest.fn();
-const mockReadFileSync = jest.fn();
+const mockExistsSync = jest.fn() as jest.Mock;
+const mockReadFileSync = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('node:fs', () => ({
     default: { existsSync: mockExistsSync, readFileSync: mockReadFileSync },
@@ -15,9 +15,9 @@ jest.unstable_mockModule('node:fs', () => ({
     readFileSync: mockReadFileSync
 }));
 
-const mockBuildVcapServicesFromResources = jest.fn();
-const mockGetSpaceGuidFromUi5Yaml = jest.fn();
-const mockGetYamlContent = jest.fn();
+const mockBuildVcapServicesFromResources = jest.fn() as jest.Mock;
+const mockGetSpaceGuidFromUi5Yaml = jest.fn() as jest.Mock;
+const mockGetYamlContent = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     buildVcapServicesFromResources: mockBuildVcapServicesFromResources,

@@ -1,19 +1,19 @@
 import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-const mockAxiosGet = jest.fn();
-const mockAxiosPost = jest.fn();
-const mockReadFileSync = jest.fn();
-const mockIsAppStudio = jest.fn();
-const mockIsLoggedInCf = jest.fn();
-const mockGetServiceKeys = jest.fn();
-const mockCreateServiceKey = jest.fn();
-const mockRequestCfApi = jest.fn();
-const mockGetProjectNameForXsSecurity = jest.fn();
-const mockCfGetServiceKeys = jest.fn();
-const mockCfCreateServiceKey = jest.fn();
-const mockCfGetAvailableOrgs = jest.fn();
-const mockCFToolsCliExecute = jest.fn();
+const mockAxiosGet = jest.fn() as jest.Mock;
+const mockAxiosPost = jest.fn() as jest.Mock;
+const mockReadFileSync = jest.fn<typeof realFs.readFileSync>();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockIsLoggedInCf = jest.fn() as jest.Mock;
+const mockGetServiceKeys = jest.fn() as jest.Mock;
+const mockCreateServiceKey = jest.fn() as jest.Mock;
+const mockRequestCfApi = jest.fn() as jest.Mock;
+const mockGetProjectNameForXsSecurity = jest.fn() as jest.Mock;
+const mockCfGetServiceKeys = jest.fn<typeof realCfTools.cfGetServiceKeys>();
+const mockCfCreateServiceKey = jest.fn<typeof realCfTools.cfCreateServiceKey>();
+const mockCfGetAvailableOrgs = jest.fn<typeof realCfTools.cfGetAvailableOrgs>();
+const mockCFToolsCliExecute = jest.fn<typeof realCfTools.execute>();
 
 const realFs = await import('node:fs');
 jest.unstable_mockModule('node:fs', () => ({

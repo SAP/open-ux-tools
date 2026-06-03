@@ -11,8 +11,8 @@ import type { UI5Config, CustomMiddleware } from '@sap-ux/ui5-config';
 import type { DescriptorVariant } from '../../../src/types.js';
 
 // MOCKS - use jest.unstable_mockModule for ESM compatibility
-const mockExistsSync = jest.fn();
-const mockReadFileSync = jest.fn();
+const mockExistsSync = jest.fn() as jest.Mock;
+const mockReadFileSync = jest.fn() as jest.Mock;
 jest.unstable_mockModule('node:fs', () => ({
     existsSync: mockExistsSync,
     readFileSync: mockReadFileSync,
@@ -30,9 +30,9 @@ jest.unstable_mockModule('node:fs', () => ({
     }
 }));
 
-const mockReadUi5Yaml = jest.fn();
-const mockGetAppType = jest.fn();
-const mockGetWebappPath = jest.fn();
+const mockReadUi5Yaml = jest.fn() as jest.Mock;
+const mockGetAppType = jest.fn() as jest.Mock;
+const mockGetWebappPath = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     readUi5Yaml: mockReadUi5Yaml,
     getAppType: mockGetAppType,

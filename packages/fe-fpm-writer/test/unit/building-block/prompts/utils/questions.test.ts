@@ -25,7 +25,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     getCapServiceName: mockGetCapServiceName
 }));
 
-const mockGetEntitySetOptions = jest.fn();
+const mockGetEntitySetOptions = jest.fn<typeof actualPromptHelpers.getEntitySetOptions>();
 const actualPromptHelpers = await import('../../../../../src/building-block/prompts/utils/prompt-helpers.js');
 jest.unstable_mockModule('../../../../../src/building-block/prompts/utils/prompt-helpers', () => ({
     ...actualPromptHelpers,

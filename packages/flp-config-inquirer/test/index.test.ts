@@ -3,7 +3,7 @@ import { jest } from '@jest/globals';
 // Pre-import real module before mocking to avoid missing export errors
 const realBtpUtils = await import('@sap-ux/btp-utils');
 
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
 
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils,

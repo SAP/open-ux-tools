@@ -19,7 +19,7 @@ const mockGetHostEnvironment = jest.fn().mockReturnValue({
     name: 'CLI',
     technical: 'CLI'
 });
-const mockIsFeatureEnabled = jest.fn();
+const mockIsFeatureEnabled = jest.fn<typeof actualFeatureToggle.isFeatureEnabled>();
 
 jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     ...actualFioriGenShared,

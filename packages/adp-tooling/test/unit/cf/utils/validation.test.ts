@@ -3,7 +3,7 @@ import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
-const mockGetApplicationType = jest.fn();
+const mockGetApplicationType = jest.fn() as jest.Mock;
 const mockIsSupportedAppTypeForAdp = jest.fn().mockReturnValue(true);
 
 jest.unstable_mockModule('../../../../src/source/manifest', () => ({

@@ -2,10 +2,10 @@ import { jest } from '@jest/globals';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
-const mockExistsSync = jest.fn();
-const mockReadFileSync = jest.fn();
-const mockGetWebappPath = jest.fn();
-const mockLoggerDebug = jest.fn();
+const mockExistsSync = jest.fn() as jest.Mock;
+const mockReadFileSync = jest.fn() as jest.Mock;
+const mockGetWebappPath = jest.fn() as jest.Mock;
+const mockLoggerDebug = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('fs', () => ({
     existsSync: mockExistsSync,

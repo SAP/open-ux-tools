@@ -24,41 +24,41 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
 // ─── Mock functions (declared before jest.unstable_mockModule) ───
 
-const mockIsInternalFeaturesSettingEnabled = jest.fn();
-const mockIsFeatureEnabled = jest.fn();
-const mockGetDefaultProjectName = jest.fn();
+const mockIsInternalFeaturesSettingEnabled = jest.fn<typeof realFeatureToggle.isInternalFeaturesSettingEnabled>();
+const mockIsFeatureEnabled = jest.fn<typeof realFeatureToggle.isFeatureEnabled>();
+const mockGetDefaultProjectName = jest.fn<typeof realDefaultValues.getDefaultProjectName>();
 const mockValidateExtensibilityGenerator = jest.fn().mockReturnValue(true);
 const mockResolveNodeModuleGenerator = jest.fn().mockReturnValue('my-generator-path');
 const mockShowApplicationQuestion = jest.fn().mockReturnValue(true);
 const mockShowExtensionProjectQuestion = jest.fn().mockReturnValue(true);
 const mockShouldShowBaseAppPrompt = jest.fn().mockReturnValue(true);
 const mockShowStoreCredentialsQuestion = jest.fn().mockReturnValue(false);
-const mockGetCredentialsFromStore = jest.fn();
-const mockGetService = jest.fn();
-const mockExec = jest.fn();
-const mockGetOrCreateServiceInstanceKeysApi = jest.fn();
-const mockCreateServiceInstanceApi = jest.fn();
-const mockCreateServicesApi = jest.fn();
-const mockGenerateCf = jest.fn();
-const mockGetConfiguredProvider = jest.fn();
-const mockLoadApps = jest.fn();
-const mockGetProviderConfig = jest.fn();
-const mockValidateUI5VersionExists = jest.fn();
-const mockFetchPublicVersions = jest.fn();
+const mockGetCredentialsFromStore = jest.fn<typeof realSystemAccess.getCredentialsFromStore>();
+const mockGetService = jest.fn<typeof realStore.getService>();
+const mockExec = jest.fn<typeof realChildProcess.exec>();
+const mockGetOrCreateServiceInstanceKeysApi = jest.fn() as jest.Mock;
+const mockCreateServiceInstanceApi = jest.fn() as jest.Mock;
+const mockCreateServicesApi = jest.fn() as jest.Mock;
+const mockGenerateCf = jest.fn<typeof realAdpTooling.generateCf>();
+const mockGetConfiguredProvider = jest.fn<typeof realAdpTooling.getConfiguredProvider>();
+const mockLoadApps = jest.fn<typeof realAdpTooling.loadApps>();
+const mockGetProviderConfig = jest.fn<typeof realAdpTooling.getProviderConfig>();
+const mockValidateUI5VersionExists = jest.fn<typeof realAdpTooling.validateUI5VersionExists>();
+const mockFetchPublicVersions = jest.fn<typeof realAdpTooling.fetchPublicVersions>();
 const mockIsCFEnvironment = jest.fn().mockReturnValue(false);
-const mockIsCfInstalled = jest.fn();
-const mockLoadCfConfig = jest.fn();
-const mockIsLoggedInCf = jest.fn();
-const mockGetMtaServices = jest.fn();
-const mockGetModuleNames = jest.fn();
-const mockGetApprouterType = jest.fn();
-const mockHasApprouter = jest.fn();
-const mockCreateServices = jest.fn();
-const mockCreateServiceInstance = jest.fn();
-const mockGetOrCreateServiceInstanceKeys = jest.fn();
-const mockStoreCredentials = jest.fn();
-const mockGetSupportedProject = jest.fn();
-const mockGetCfBaseAppInbounds = jest.fn();
+const mockIsCfInstalled = jest.fn<typeof realAdpTooling.isCfInstalled>();
+const mockLoadCfConfig = jest.fn<typeof realAdpTooling.loadCfConfig>();
+const mockIsLoggedInCf = jest.fn<typeof realAdpTooling.isLoggedInCf>();
+const mockGetMtaServices = jest.fn<typeof realAdpTooling.getMtaServices>();
+const mockGetModuleNames = jest.fn<typeof realAdpTooling.getModuleNames>();
+const mockGetApprouterType = jest.fn<typeof realAdpTooling.getApprouterType>();
+const mockHasApprouter = jest.fn<typeof realAdpTooling.hasApprouter>();
+const mockCreateServices = jest.fn<typeof realAdpTooling.createServices>();
+const mockCreateServiceInstance = jest.fn<typeof realAdpTooling.createServiceInstance>();
+const mockGetOrCreateServiceInstanceKeys = jest.fn<typeof realAdpTooling.getOrCreateServiceInstanceKeys>();
+const mockStoreCredentials = jest.fn<typeof realAdpTooling.storeCredentials>();
+const mockGetSupportedProject = jest.fn<typeof realAdpTooling.getSupportedProject>();
+const mockGetCfBaseAppInbounds = jest.fn<typeof realAdpTooling.getCfBaseAppInbounds>();
 const mockGetPackageInfo = jest.fn().mockReturnValue({ name: '@sap-ux/generator-adp', version: 'mocked-version' });
 const mockInstallDependencies = jest.fn().mockResolvedValue(undefined);
 const mockSendTelemetry = jest.fn().mockResolvedValue(undefined);
@@ -66,20 +66,20 @@ const mockCreateTelemetryData = jest.fn().mockReturnValue({
     OperatingSystem: 'testOS',
     Platform: 'testPlatform'
 });
-const mockIsExtensionInstalled = jest.fn();
+const mockIsExtensionInstalled = jest.fn<typeof realFioriGeneratorShared.isExtensionInstalled>();
 const mockGetHostEnvironment = jest.fn().mockReturnValue('cli');
-const mockIsCli = jest.fn();
+const mockIsCli = jest.fn<typeof realFioriGeneratorShared.isCli>();
 const mockGetDefaultTargetFolder = jest.fn().mockReturnValue(undefined);
 const mockInitTelemetrySettings = jest.fn().mockResolvedValue(undefined);
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
 const mockV4 = jest.fn().mockReturnValue('mocked-uuid');
-const mockExistsInWorkspace = jest.fn();
-const mockShowWorkspaceFolderWarning = jest.fn();
-const mockHandleWorkspaceFolderChoice = jest.fn();
-const mockAddExtProjectGen = jest.fn();
-const mockAddDeployGen = jest.fn();
-const mockAddFlpGen = jest.fn();
-const mockGetTemplatesOverwritePath = jest.fn();
+const mockExistsInWorkspace = jest.fn<typeof realWorkspace.existsInWorkspace>();
+const mockShowWorkspaceFolderWarning = jest.fn<typeof realWorkspace.showWorkspaceFolderWarning>();
+const mockHandleWorkspaceFolderChoice = jest.fn<typeof realWorkspace.handleWorkspaceFolderChoice>();
+const mockAddExtProjectGen = jest.fn<typeof realSubgenHelpers.addExtProjectGen>();
+const mockAddDeployGen = jest.fn<typeof realSubgenHelpers.addDeployGen>();
+const mockAddFlpGen = jest.fn<typeof realSubgenHelpers.addFlpGen>();
+const mockGetTemplatesOverwritePath = jest.fn<typeof realTemplates.getTemplatesOverwritePath>();
 
 // ─── jest.unstable_mockModule calls ───
 
@@ -236,7 +236,7 @@ jest.unstable_mockModule('../src/utils/workspace', () => ({
     handleWorkspaceFolderChoice: mockHandleWorkspaceFolderChoice
 }));
 
-const mockToolsLoggerCtor = jest.fn();
+const mockToolsLoggerCtor = jest.fn<typeof realLogger.ToolsLogger>();
 const realLogger = await import('@sap-ux/logger');
 jest.unstable_mockModule('@sap-ux/logger', () => ({
     ...realLogger,
@@ -437,9 +437,9 @@ describe('Adaptation Project Generator Integration Test', () => {
                 Url: 'urlA'
             });
             mockGetConfiguredProvider.mockResolvedValue(dummyProvider);
-            mockExec.mockImplementation((_: string, callback: Function) => {
+            mockExec.mockImplementation(((_, callback) => {
                 callback(null, { stdout: 'ok', stderr: '' });
-            });
+            }) as unknown as typeof realChildProcess.exec);
             mockIsCli.mockReturnValue(false);
             mockGetProviderConfig.mockResolvedValue({ url: 'urlA', client: '010' });
             isAbapCloudMock.mockResolvedValue(false);

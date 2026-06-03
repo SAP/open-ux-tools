@@ -8,7 +8,7 @@ jest.unstable_mockModule('../../../src/utils/app-studio', () => ({
 }));
 
 const mockExistsSync = jest.fn<(path: string) => boolean>();
-const mockReaddirSync = jest.fn();
+const mockReaddirSync = jest.fn<typeof actualFs.readdirSync>();
 
 // Import actual fs BEFORE mocking to avoid infinite resolution loops
 const actualFs = await import('node:fs');
@@ -30,7 +30,7 @@ jest.unstable_mockModule('node:os', () => ({
 }));
 
 // Configurable mock for createRequire — allows per-test control over zowe SDK loading
-const mockRequireForZowe = jest.fn();
+const mockRequireForZowe = jest.fn() as jest.Mock;
 
 const actualModule = await import('node:module');
 jest.unstable_mockModule('node:module', () => ({
@@ -104,7 +104,7 @@ describe('getSecureStore', () => {
             mockRequireForZowe.mockReturnValueOnce({ keyring: mockKeyring });
 
             // Extensions directory exists and contains app modeler extension
-            mockExistsSync.mockImplementation((p: string) => {
+            mockExistsSync.mockImplementation((p) => {
                 if (typeof p === 'string' && p.includes('extensions')) {
                     return true;
                 }
@@ -131,7 +131,7 @@ describe('getSecureStore', () => {
 
         it('returns DummyStore when zowe sdk fails and all fallback paths also fail', () => {
             // Extensions directory exists with app modeler extension
-            mockExistsSync.mockImplementation((p: string) => {
+            mockExistsSync.mockImplementation((p) => {
                 if (typeof p === 'string' && p.includes('extensions')) {
                     return true;
                 }

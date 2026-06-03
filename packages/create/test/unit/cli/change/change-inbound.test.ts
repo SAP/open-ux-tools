@@ -10,25 +10,25 @@ import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockGetLogger = jest.fn();
+const mockGetLogger = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
     setLogLevelVerbose: jest.fn()
 }));
 
-const mockTraceChanges = jest.fn();
+const mockTraceChanges = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/trace', () => ({
     traceChanges: mockTraceChanges
 }));
 
-const mockPromptYUIQuestions = jest.fn();
+const mockPromptYUIQuestions = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/common', () => ({
     promptYUIQuestions: mockPromptYUIQuestions,
     runNpmInstallCommand: jest.fn()
 }));
 
-const mockValidateAdpAppType = jest.fn();
-const mockValidateCloudAdpProject = jest.fn();
+const mockValidateAdpAppType = jest.fn() as jest.Mock;
+const mockValidateCloudAdpProject = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/validation', () => ({
     validateBasePath: jest.fn(),
     validateAdpAppType: mockValidateAdpAppType,
@@ -36,16 +36,16 @@ jest.unstable_mockModule('../../../../src/validation', () => ({
     hasFileDeletes: jest.fn()
 }));
 
-const mockGetAppType = jest.fn();
+const mockGetAppType = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/project-access', () =>
     createProjectAccessMock({
         getAppType: mockGetAppType
     })
 );
 
-const mockIsCFEnvironment = jest.fn();
-const mockGetVariant = jest.fn();
-const mockGenerateChange = jest.fn();
+const mockIsCFEnvironment = jest.fn() as jest.Mock;
+const mockGetVariant = jest.fn() as jest.Mock;
+const mockGenerateChange = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     isCFEnvironment: mockIsCFEnvironment,
     getVariant: mockGetVariant,

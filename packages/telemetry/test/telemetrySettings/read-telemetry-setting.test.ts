@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-const mockGetService = jest.fn();
+const mockGetService = jest.fn<typeof realStore.getService>();
 
 jest.unstable_mockModule('applicationinsights', () => {
     class TelemetryClient {

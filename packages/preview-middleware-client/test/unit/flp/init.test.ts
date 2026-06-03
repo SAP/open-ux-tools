@@ -487,7 +487,7 @@ describe('flp/init', () => {
             });
             const mockComponentInstance = {} as Component;
             const mockService = {
-                attachAppLoaded: jest.fn().mockImplementation((callback: (event: any) => void) => {
+                attachAppLoaded: jest.fn().mockImplementation((callback: () => void) => {
                     const mockEvent = {
                         getParameter: jest.fn().mockReturnValue(mockComponentInstance)
                     };

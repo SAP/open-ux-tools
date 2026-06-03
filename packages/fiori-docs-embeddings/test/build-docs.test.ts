@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import { join } from 'node:path';
 
-const mockFetch = jest.fn();
-const mockSpawn = jest.fn();
+const mockFetch = jest.fn() as jest.Mock;
+const mockSpawn = jest.fn() as jest.Mock;
 
 const mockLogger = {
     info: jest.fn(),

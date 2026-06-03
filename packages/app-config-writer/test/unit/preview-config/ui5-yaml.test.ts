@@ -8,7 +8,7 @@ import type { PreviewConfigOptions } from '../../../src/types/index.js';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import type { Script } from '../../../src/common/package-json.js';
 
-const mockGetAllUi5YamlFileNames = jest.fn();
+const mockGetAllUi5YamlFileNames = jest.fn<typeof actualProjectAccess.getAllUi5YamlFileNames>();
 const actualProjectAccess = await import('@sap-ux/project-access');
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     ...actualProjectAccess,

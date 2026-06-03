@@ -5,8 +5,8 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 const realBtpUtils = await import('@sap-ux/btp-utils');
 const realPromptHelpers = await import('../src/prompts/prompt-helpers.js');
 
-const mockIsAppStudio = jest.fn();
-const mockFetchBTPDestinations = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockFetchBTPDestinations = jest.fn<typeof realPromptHelpers.fetchBTPDestinations>();
 
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils,

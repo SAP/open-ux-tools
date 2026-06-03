@@ -6,14 +6,14 @@ import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockGetLogger = jest.fn();
-const mockSetLogLevelVerbose = jest.fn();
+const mockGetLogger = jest.fn() as jest.Mock;
+const mockSetLogLevelVerbose = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
     setLogLevelVerbose: mockSetLogLevelVerbose
 }));
 
-const mockGenerateFlpEmbeddedConfig = jest.fn();
+const mockGenerateFlpEmbeddedConfig = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/app-config-writer', () => ({
     generateFlpEmbeddedConfig: mockGenerateFlpEmbeddedConfig,
     DEFAULT_FLP_PATH: 'sap/bc/ui5_ui5/ui2/ushell/shells/abap/Fiorilaunchpad.html'
@@ -45,7 +45,7 @@ describe('Test command add flp-embedded-config', () => {
         fsMock = {
             dump: jest.fn(),
             exists: jest.fn(),
-            commit: jest.fn().mockImplementation((callback: (error?: Error) => void) => callback())
+            commit: jest.fn().mockImplementation((callback: () => void) => callback())
         } as Partial<Editor> as Editor;
         mockGenerateFlpEmbeddedConfig.mockResolvedValue(fsMock);
     });
@@ -105,7 +105,7 @@ describe('Test command add flp-embedded-config', () => {
     test('add flp-embedded-config passes commit error to logger', async () => {
         fsMock.commit = jest
             .fn()
-            .mockImplementation((callback: (error?: Error) => void) => callback(new Error('disk full')));
+            .mockImplementation((callback: () => void) => callback(new Error('disk full')));
         const command = new Command('add');
         addFlpEmbeddedConfigCommand(command);
         await command.parseAsync(getArgv(['flp-embedded-config', appRoot, '-b', 'my-bsp-app']));

@@ -5,7 +5,7 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ReuseLibType } from '@sap-ux/project-access';
 
 // Mock function for checkDependencies
-const mockCheckDependencies = jest.fn();
+const mockCheckDependencies = jest.fn() as jest.Mock;
 
 // Mock @sap-ux/project-access - list all exports to satisfy ESM linker (avoid importing actual - causes OOM)
 jest.unstable_mockModule('@sap-ux/project-access', () => ({

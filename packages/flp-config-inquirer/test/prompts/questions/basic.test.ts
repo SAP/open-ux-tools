@@ -4,7 +4,7 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 // Pre-import real module before mocking to avoid missing export errors
 const realProjectInputValidator = await import('@sap-ux/project-input-validator');
 
-const mockValidateText = jest.fn();
+const mockValidateText = jest.fn<typeof realProjectInputValidator.validateText>();
 
 jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     ...realProjectInputValidator,

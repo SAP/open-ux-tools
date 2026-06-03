@@ -6,8 +6,8 @@ import type { ToolsLogger } from '@sap-ux/logger';
 const mockTmpDir = path.join('/tmp', 'adp-tunnel-mock');
 
 const mockMkdtempSync = jest.fn<() => string>().mockReturnValue(mockTmpDir);
-const mockWriteFileSync = jest.fn();
-const mockRmSync = jest.fn();
+const mockWriteFileSync = jest.fn() as jest.Mock;
+const mockRmSync = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('node:fs', () => ({
     default: {

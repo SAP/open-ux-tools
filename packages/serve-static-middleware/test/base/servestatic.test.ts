@@ -3,7 +3,7 @@ import type { ServeStaticConfig } from '../../src/index.js';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
-const mockServeStatic = jest.fn();
+const mockServeStatic = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('serve-static', () => ({
     default: mockServeStatic

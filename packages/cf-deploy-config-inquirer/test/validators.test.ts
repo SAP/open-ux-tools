@@ -4,7 +4,7 @@ import { jest } from '@jest/globals';
 const realFs = await import('node:fs');
 const realProjectInputValidator = await import('@sap-ux/project-input-validator');
 
-const mockExistsSync = jest.fn();
+const mockExistsSync = jest.fn<typeof realFs.existsSync>();
 const mockValidateWindowsPathLength = jest.fn().mockImplementation(() => true);
 
 jest.unstable_mockModule('node:fs', () => ({

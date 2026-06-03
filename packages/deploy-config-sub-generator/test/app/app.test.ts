@@ -9,7 +9,7 @@ const require = createRequire(import.meta.url);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const hasbinSyncMock = jest.fn();
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn<typeof actualBtpUtils.isAppStudio>();
 
 // Create unionfs factory for mocking both ESM and CJS fs modules
 function createUnionFs() {

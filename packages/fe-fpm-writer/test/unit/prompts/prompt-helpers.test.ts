@@ -5,12 +5,12 @@ import type { PromptContext } from '../../../src/prompts/types.js';
 import { i18nNamespaces, translate } from '../../../src/i18n.js';
 import { BUTTON_GROUP_CONFIGS } from '../../../src/building-block/processor.js';
 
-const mockGetExistingButtonGroups = jest.fn();
+const mockGetExistingButtonGroups = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../src/building-block/prompts/utils/xml', () => ({
     getExistingButtonGroups: mockGetExistingButtonGroups
 }));
 
-const mockGetEntitySets = jest.fn();
+const mockGetEntitySets = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../src/building-block/prompts/utils/service', () => ({
     getEntitySets: mockGetEntitySets
 }));

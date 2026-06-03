@@ -19,15 +19,15 @@ jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
     searchChoices: jest.fn()
 }));
 
-const mockGetQuestions = jest.fn();
+const mockGetQuestions = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('../../src/prompts/prompts', () => ({
     getQuestions: mockGetQuestions
 }));
 
-const mockRegisterPrompt = jest.fn();
-const mockPrompt = jest.fn();
-const mockAdapterRegisterPrompt = jest.fn();
+const mockRegisterPrompt = jest.fn() as jest.Mock;
+const mockPrompt = jest.fn() as jest.Mock;
+const mockAdapterRegisterPrompt = jest.fn() as jest.Mock;
 const mockCreatePromptModule = jest.fn().mockReturnValue({
     registerPrompt: mockAdapterRegisterPrompt
 });
@@ -80,7 +80,7 @@ describe('API test', () => {
         // Don't mock getQuestions - let it call the real implementation
         // We need to re-import to use the real getQuestions for snapshot testing
         // Instead, let's mock getQuestions to return expected prompts
-        mockGetQuestions.mockImplementation((...args: any[]) => {
+        mockGetQuestions.mockImplementation((...args) => {
             // We need the real getQuestions for this test
             // But since prompts.ts is mocked, we'll verify the call args instead
             return [

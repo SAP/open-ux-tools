@@ -1,6 +1,6 @@
 import * as promptHelper from '../src/prompts/index.js';
 
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn() as jest.Mock;
 jest.mock('@sap-ux/btp-utils', () => ({
     ...(jest.requireActual('@sap-ux/btp-utils') as {}),
     isAppStudio: () => mockIsAppStudio()

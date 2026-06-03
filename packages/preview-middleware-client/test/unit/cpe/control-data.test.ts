@@ -7,7 +7,7 @@ import type { DesigntimeSetting, ManifestSettingsValue } from 'sap/ui/dt/DesignT
 
 describe('controlData', () => {
     // prepare
-    sapMock.ui.require.mockImplementation((path: any) => {
+    sapMock.ui.require.mockImplementation((path) => {
         if (path === 'sap/ui/core/aria/HasPopup') {
             return { None: 'None', Menu: 'Menu', ListBox: 'ListBox' };
         }

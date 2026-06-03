@@ -6,10 +6,10 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { CfConfig } from '@sap-ux/adp-tooling';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 
-const mockGetDefaultTargetFolder = jest.fn();
-const mockGetTargetEnvAdditionalMessages = jest.fn();
-const mockValidateEnvironment = jest.fn();
-const mockValidateProjectPath = jest.fn();
+const mockGetDefaultTargetFolder = jest.fn<typeof realFioriGenShared.getDefaultTargetFolder>();
+const mockGetTargetEnvAdditionalMessages = jest.fn() as jest.Mock;
+const mockValidateEnvironment = jest.fn() as jest.Mock;
+const mockValidateProjectPath = jest.fn() as jest.Mock;
 
 const realFioriGenShared = await import('@sap-ux/fiori-generator-shared');
 jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({

@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-const mockAxiosGet = jest.fn();
+const mockAxiosGet = jest.fn() as jest.Mock;
 jest.unstable_mockModule('axios', () => ({
     default: { get: mockAxiosGet },
     __esModule: true

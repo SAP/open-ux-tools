@@ -2,16 +2,16 @@ import { jest } from '@jest/globals';
 import type * as archiver from 'archiver';
 import { join } from 'node:path';
 
-const mockCreateWriteStream = jest.fn();
-const mockExistsSync = jest.fn();
-const mockReadFile = jest.fn();
+const mockCreateWriteStream = jest.fn() as jest.Mock;
+const mockExistsSync = jest.fn() as jest.Mock;
+const mockReadFile = jest.fn() as jest.Mock;
 jest.unstable_mockModule('node:fs', () => ({
     createWriteStream: mockCreateWriteStream,
     existsSync: mockExistsSync,
     promises: { readFile: mockReadFile }
 }));
 
-const mockGlob = jest.fn();
+const mockGlob = jest.fn() as jest.Mock;
 jest.unstable_mockModule('glob-gitignore', () => ({
     glob: mockGlob
 }));

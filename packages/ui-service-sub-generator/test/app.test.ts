@@ -12,7 +12,7 @@ import type { SystemSelectionAnswers } from '@sap-ux/ui-service-inquirer';
 
 // ── Top-level mock functions ──────────────────────────────────────────────
 
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn() as jest.Mock;
 
 // UiServiceInquirer mocks
 const mockGetSystemSelectionPrompts = jest.fn<any>();
@@ -259,7 +259,7 @@ describe('BAS service center', () => {
             showInformation: jest.fn()
         };
 
-        mockValidateConnection.mockImplementation((systemName: string, system: any, reqAuth: any) => {
+        mockValidateConnection.mockImplementation((systemName, system, reqAuth) => {
             Object.assign(system, {
                 connectedSystem: {
                     serviceProvider: {
@@ -315,7 +315,7 @@ describe('BAS service center', () => {
             showInformation: jest.fn()
         };
 
-        mockAuthenticateInputData.mockImplementation((data: PromptOptions, system: SystemSelectionAnswers) => {
+        mockAuthenticateInputData.mockImplementation((data, system) => {
             Object.assign(system, {
                 connectedSystem: {
                     serviceProvider: {
@@ -481,7 +481,7 @@ describe('BAS service center', () => {
             showInformation: jest.fn()
         };
 
-        mockAuthenticateInputData.mockImplementation((data: PromptOptions, system: SystemSelectionAnswers) => {
+        mockAuthenticateInputData.mockImplementation((data, system) => {
             Object.assign(system, {
                 connectedSystem: {
                     serviceProvider: {
@@ -532,7 +532,7 @@ describe('BAS service center', () => {
             showInformation: jest.fn()
         };
 
-        mockAuthenticateInputData.mockImplementation((data: PromptOptions, system: SystemSelectionAnswers) => {
+        mockAuthenticateInputData.mockImplementation((data, system) => {
             Object.assign(system, {
                 connectedSystem: {
                     serviceProvider: {
@@ -643,7 +643,7 @@ describe('test ui service generator', () => {
             showError: jest.fn()
         };
 
-        mockAuthenticateInputData.mockImplementation((data: PromptOptions, system: SystemSelectionAnswers) => {
+        mockAuthenticateInputData.mockImplementation((data, system) => {
             Object.assign(system, {
                 connectedSystem: {
                     destination: {

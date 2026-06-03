@@ -32,7 +32,7 @@ jest.unstable_mockModule('../../src/project/module-loader', () => ({
     deleteModule: mockDeleteModule
 }));
 
-const mockWriteFile = jest.fn<typeof fileType.writeFile>();
+const mockWriteFile = jest.fn<typeof realFile.writeFile>();
 const realFile = await import('../../src/file/index.js');
 jest.unstable_mockModule('../../src/file', () => ({
     ...realFile,

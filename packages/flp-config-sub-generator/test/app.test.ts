@@ -11,8 +11,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const foundGenExts: Partial<PackageInfo>[] = [];
 
-const mockIsExtensionInstalled = jest.fn();
-const mockSendTelemetry = jest.fn();
+const mockIsExtensionInstalled = jest.fn() as jest.Mock;
+const mockSendTelemetry = jest.fn() as jest.Mock;
 
 // Pre-import @sap-ux/i18n before mocking to get real implementations
 const realI18n = await import('@sap-ux/i18n');

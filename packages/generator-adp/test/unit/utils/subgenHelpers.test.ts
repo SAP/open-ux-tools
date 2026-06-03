@@ -5,7 +5,7 @@ import { FlexLayer, type AttributesAnswers, type ConfigAnswers, type SystemLooku
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-const mockGetExtensionProjectData = jest.fn();
+const mockGetExtensionProjectData = jest.fn<typeof realExtProject.getExtensionProjectData>();
 
 const realExtProject = await import('../../../src/app/extension-project/index.js');
 jest.unstable_mockModule('../../../src/app/extension-project', () => ({

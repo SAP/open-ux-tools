@@ -11,8 +11,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const actualPrompts = jest.requireActual<typeof promptsMod>('prompts');
 
 // Mock functions for prompts
-const mockPrompt = jest.fn();
-const mockInject = jest.fn().mockImplementation((...args: any[]) => (actualPrompts as any).inject(...args));
+const mockPrompt = jest.fn() as jest.Mock;
+const mockInject = jest.fn().mockImplementation((...args) => (actualPrompts as any).inject(...args));
 const mockPromptsModule = Object.assign(mockPrompt, { prompt: mockPrompt, inject: mockInject });
 
 jest.unstable_mockModule('prompts', () => ({
@@ -32,8 +32,8 @@ jest.unstable_mockModule('chalk', () => ({
 }));
 
 // btp-utils mock
-const mockIsAppStudio = jest.fn();
-const mockListDestinations = jest.fn();
+const mockIsAppStudio = jest.fn<typeof actualBtpUtils.isAppStudio>();
+const mockListDestinations = jest.fn<typeof actualBtpUtils.listDestinations>();
 const actualBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...actualBtpUtils,
@@ -90,7 +90,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
         mockGetService.mockImplementation(() => serviceMock);
-        mockInject.mockImplementation((...args: any[]) => (actualPrompts as any).inject(...args));
+        mockInject.mockImplementation((...args) => (actualPrompts as any).inject(...args));
         promptMock = mockPrompt;
         serviceMock.read.mockReset();
         (loggerMock.debug as jest.Mock).mockReset();
@@ -157,7 +157,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
     describe('Local prompts for target url and client: ', () => {
         beforeEach(() => {
             promptMock = mockPrompt;
-            mockPrompt.mockImplementation((questions: any) => (actualPrompts as any).prompt(questions));
+            mockPrompt.mockImplementation((questions) => (actualPrompts as any).prompt(questions));
         });
         test('No ui5-deploy config', async () => {
             const basePath = 'no-ui5-deploy-config';
@@ -187,7 +187,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
         });
         test('Existing ui5-deploy-config - picked initial', async () => {
             const basePath = 'ui5-deploy-config';
-            mockPrompt.mockImplementationOnce((choices: PromptObject[]) => ({
+            mockPrompt.mockImplementationOnce((choices) => ({
                 [choices[0].name as string]: choices[0].initial,
                 [choices[1].name as string]: (choices[1].format as any)(choices[1].initial)
             }));
@@ -205,7 +205,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             jest.clearAllMocks();
             mockIsAppStudio.mockResolvedValue(true);
             promptMock = mockPrompt;
-            mockPrompt.mockImplementation((questions: any) => (actualPrompts as any).prompt(questions));
+            mockPrompt.mockImplementation((questions) => (actualPrompts as any).prompt(questions));
         });
 
         test('Use destination (no deploy config)', async () => {
@@ -364,7 +364,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             expect(config.target).toEqual(mockTarget);
         });
         test('User aborted on choose target - no config provided', async () => {
-            mockPrompt.mockImplementation((_choices: any, cancel: any) => {
+            mockPrompt.mockImplementation((_choices, cancel) => {
                 const processSpy = jest.spyOn(process, 'exit');
                 processSpy.mockImplementation((() => {}) as any);
                 cancel.onCancel();
@@ -379,7 +379,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
 
         test('BAS', async () => {
             mockIsAppStudio.mockResolvedValueOnce(true);
-            mockPrompt.mockImplementationOnce((choices: PromptObject[]) => {
+            mockPrompt.mockImplementationOnce((choices) => {
                 const destination = choices.find(
                     (choice) => choice.name === 'destination' && choice.initial === 'ABC123'
                 );
@@ -392,7 +392,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             await getSmartLinksTargetFromPrompt(basePath, loggerMock);
         });
         test('Local environment', async () => {
-            mockPrompt.mockImplementationOnce((choices: PromptObject[]) => {
+            mockPrompt.mockImplementationOnce((choices) => {
                 const url = choices[0];
                 expect(url.name).toBe('url');
                 expect((url.validate as any)()).toEqual('Please provide a target for the configuration.');
@@ -416,7 +416,7 @@ describe('Test promptUserPass', () => {
         expect(await promptUserPass(loggerMock)).toEqual(userPrompt);
     });
     test('Validation', async () => {
-        mockPrompt.mockImplementation((choices: PromptObject[]) => {
+        mockPrompt.mockImplementation((choices) => {
             const username = choices[0];
             expect(username.name).toBe('username');
             expect((username.validate as any)()).toEqual('Username cannot be empty. Provide a value for the username.');
@@ -433,7 +433,7 @@ describe('Test promptUserPass', () => {
         await promptUserPass(loggerMock);
     });
     test('onCancel', async () => {
-        mockPrompt.mockImplementation((_choices: any, cancel: any) => {
+        mockPrompt.mockImplementation((_choices, cancel) => {
             const processSpy = jest.spyOn(process, 'exit');
             processSpy.mockImplementation((() => {}) as any);
             cancel.onCancel();

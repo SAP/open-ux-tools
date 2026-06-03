@@ -7,11 +7,11 @@ import { fileURLToPath } from 'node:url';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-const mockReadUi5Yaml = jest.fn();
+const mockReadUi5Yaml = jest.fn<typeof actualProjectAccess.readUi5Yaml>();
 const actualProjectAccess = await import('@sap-ux/project-access');
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     ...actualProjectAccess,
-    readUi5Yaml: mockReadUi5Yaml.mockImplementation((...args: any[]) =>
+    readUi5Yaml: mockReadUi5Yaml.mockImplementation((...args) =>
         (actualProjectAccess.readUi5Yaml as any)(...args)
     )
 }));

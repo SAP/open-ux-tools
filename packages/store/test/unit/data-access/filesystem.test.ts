@@ -10,7 +10,7 @@ const actualPath = await import('node:path');
 // Mock 'fs' and 'node:fs' with memfs — spread all named exports
 // Also add mockable functions for watcher and write tests
 const mockExistsSync = jest.fn<typeof memfs.existsSync>((...args: any[]) => (memfs.existsSync as any)(...args));
-const mockWatch = jest.fn();
+const mockWatch = jest.fn() as jest.Mock;
 const mockWriteFileSync = jest.fn((...args: any[]) => (memfs.writeFileSync as any)(...args));
 
 const fsMockFactory = () => ({
@@ -366,7 +366,7 @@ describe('data-access/filesystem', () => {
                 getFilesystemStore(logger).write({ entityName: 'dummy', id: '42', entity })
             ).rejects.toThrow();
 
-            mockWriteFileSync.mockImplementation((...args: any[]) => (memfs.writeFileSync as any)(...args));
+            mockWriteFileSync.mockImplementation((...args) => (memfs.writeFileSync as any)(...args));
         });
 
         it('will create the file if missing', async () => {
@@ -603,19 +603,19 @@ describe('getFilesystemWatcherFor', () => {
     beforeEach(() => {
         mockWatch.mockReturnValueOnce({} as FSWatcher);
         // Reset existsSync to use memfs default
-        mockExistsSync.mockImplementation((...args: any[]) => (memfs.existsSync as any)(...args));
+        mockExistsSync.mockImplementation((...args) => (memfs.existsSync as any)(...args));
     });
 
     afterEach(() => {
         mockWatch.mockReset();
-        mockExistsSync.mockImplementation((...args: any[]) => (memfs.existsSync as any)(...args));
-        mockPathJoin.mockImplementation((...args: string[]) => actualPath.join(...args));
+        mockExistsSync.mockImplementation((...args) => (memfs.existsSync as any)(...args));
+        mockPathJoin.mockImplementation((...args) => actualPath.join(...args));
     });
 
     it('will return a watcher if a file for an entity exists', () => {
         const fileName = 'dummyentities.json';
         mockPathJoin.mockReturnValueOnce('/' + fileName);
-        mockExistsSync.mockImplementation((fpath: any) => {
+        mockExistsSync.mockImplementation((fpath) => {
             return String(fpath).endsWith(fileName) ? true : false;
         });
 
@@ -626,7 +626,7 @@ describe('getFilesystemWatcherFor', () => {
     it('will return undefined if a file for an entity does not exist', () => {
         const fileName = 'dummyentities.json';
         mockPathJoin.mockReturnValueOnce('/' + fileName);
-        mockExistsSync.mockImplementation((fpath: any) => {
+        mockExistsSync.mockImplementation((fpath) => {
             return String(fpath).endsWith(fileName) ? false : false;
         });
 

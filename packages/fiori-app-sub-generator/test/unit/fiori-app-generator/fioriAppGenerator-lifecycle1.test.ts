@@ -38,18 +38,18 @@ const mockPromptUI5ApplicationAnswers = jest.fn().mockImplementation(() =>
         localUI5Version: '3.2.1'
     })
 );
-const mockAddDeployGen = jest.fn();
-const mockAddFlpGen = jest.fn();
+const mockAddDeployGen = jest.fn<typeof actualSubgenHelpers.addDeployGen>();
+const mockAddFlpGen = jest.fn<typeof actualSubgenHelpers.addFlpGen>();
 const mockGetCdsUi5PluginInfo = jest.fn().mockResolvedValue({
     hasCdsUi5Plugin: true,
     hasMinCdsVersion: true,
     isCdsUi5PluginEnabled: true,
     isWorkspaceEnabled: true
 });
-const mockUpdateDependentStep = jest.fn();
+const mockUpdateDependentStep = jest.fn<typeof actualUtils.updateDependentStep>();
 const mockGetFromCache = jest.fn().mockImplementation(actualUtils.getFromCache);
 const mockAddToCache = jest.fn().mockImplementation(actualUtils.addToCache);
-const mockGetHostEnvironment = jest.fn();
+const mockGetHostEnvironment = jest.fn<typeof actualFioriGenShared.getHostEnvironment>();
 const mockGetUI5Versions = jest.fn().mockResolvedValue(() => Promise.resolve([]));
 const mockEntityRelatedQuestions = [
     {

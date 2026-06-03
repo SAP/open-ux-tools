@@ -7,7 +7,7 @@ import { qfaJsonFileName } from '../../src/utils/constants.js';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 
-const mockDownloadApp = jest.fn();
+const mockDownloadApp = jest.fn() as jest.Mock;
 const mockHasQfaJson = jest.fn<() => boolean>().mockReturnValue(true);
 
 jest.unstable_mockModule('../../src/utils/logger', () => {

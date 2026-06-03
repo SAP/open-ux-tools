@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals';
 import axios from 'axios';
 
-const mockValidateEmptyString = jest.fn();
-const mockGetOfficialBaseUI5VersionUrl = jest.fn();
-const mockGetFormattedVersion = jest.fn();
+const mockValidateEmptyString = jest.fn() as jest.Mock;
+const mockGetOfficialBaseUI5VersionUrl = jest.fn() as jest.Mock;
+const mockGetFormattedVersion = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     validateEmptyString: mockValidateEmptyString

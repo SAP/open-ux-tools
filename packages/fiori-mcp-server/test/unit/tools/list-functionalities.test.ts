@@ -51,7 +51,7 @@ describe('listFunctionalities', () => {
             readApp: readAppMock,
             getApiVersion: () => ({ version: '99' })
         });
-        mockCreateApplicationAccess.mockImplementation((rootPath: string) => {
+        mockCreateApplicationAccess.mockImplementation((rootPath) => {
             return {
                 getAppId: () => 'dummy-id',
                 app: {
@@ -84,7 +84,7 @@ describe('listFunctionalities', () => {
     });
 
     test('call with project without apps', async () => {
-        mockCreateApplicationAccess.mockImplementation((rootPath: string) => {
+        mockCreateApplicationAccess.mockImplementation((rootPath) => {
             return {
                 getAppId: () => '',
                 project: {

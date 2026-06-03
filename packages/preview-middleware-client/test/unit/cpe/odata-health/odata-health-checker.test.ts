@@ -193,7 +193,7 @@ describe('ODataHealthChecker', () => {
             };
 
             getManifestMock.mockReturnValue(MANIFEST_WITH_RELATIVE_URIS);
-            resolveUriMock.mockImplementation((uri: string) => `/cf-host${uri}`);
+            resolveUriMock.mockImplementation((uri) => `/cf-host${uri}`);
             oDataMetadataLoadedSpy.mockResolvedValue({ metadata: 'test' });
 
             const result = await healthChecker.getHealthStatus();

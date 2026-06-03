@@ -4,11 +4,11 @@ import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
-const mockAxiosGet = jest.fn();
-const mockAxiosPost = jest.fn();
-const mockGetServiceNameByTags = jest.fn();
-const mockCreateServiceInstance = jest.fn();
-const mockGetOrCreateServiceInstanceKeys = jest.fn();
+const mockAxiosGet = jest.fn() as jest.Mock;
+const mockAxiosPost = jest.fn() as jest.Mock;
+const mockGetServiceNameByTags = jest.fn() as jest.Mock;
+const mockCreateServiceInstance = jest.fn() as jest.Mock;
+const mockGetOrCreateServiceInstanceKeys = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('axios', () => ({
     default: {

@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-const mockExistsSync = jest.fn();
+const mockExistsSync = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('node:fs', () => ({
     existsSync: mockExistsSync

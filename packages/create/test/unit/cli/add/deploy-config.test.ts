@@ -10,8 +10,8 @@ import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockGetLogger = jest.fn();
-const mockSetLogLevelVerbose = jest.fn();
+const mockGetLogger = jest.fn() as jest.Mock;
+const mockSetLogLevelVerbose = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
     setLogLevelVerbose: mockSetLogLevelVerbose
@@ -24,33 +24,33 @@ jest.unstable_mockModule('../../../../src/validation', () => ({
     hasFileDeletes: jest.fn()
 }));
 
-const mockGetPrompts = jest.fn();
-const mockReconcileAnswers = jest.fn();
+const mockGetPrompts = jest.fn() as jest.Mock;
+const mockReconcileAnswers = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/abap-deploy-config-inquirer', () => ({
     getPrompts: mockGetPrompts,
     reconcileAnswers: mockReconcileAnswers
 }));
 
-const mockGenerate = jest.fn();
+const mockGenerate = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/abap-deploy-config-writer', () => ({
     generate: mockGenerate
 }));
 
-const mockGetAppType = jest.fn();
+const mockGetAppType = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/project-access', () =>
     createProjectAccessMock({
         getAppType: mockGetAppType
     })
 );
 
-const mockPrompt = jest.fn();
+const mockPrompt = jest.fn() as jest.Mock;
 // prompts default export is a function with 'prompt' as a property
 const mockPromptsModule = Object.assign(mockPrompt, { prompt: mockPrompt });
 jest.unstable_mockModule('prompts', () => ({
     default: mockPromptsModule
 }));
 
-const mockGetExistingAdpProjectType = jest.fn();
+const mockGetExistingAdpProjectType = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getExistingAdpProjectType: mockGetExistingAdpProjectType,
     getVariant: jest.fn(),

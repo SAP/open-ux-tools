@@ -7,7 +7,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const __testdirname = dirname(fileURLToPath(import.meta.url));
 
-const mockDotenvConfig = jest.fn();
+const mockDotenvConfig = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('dotenv', () => ({
     config: mockDotenvConfig

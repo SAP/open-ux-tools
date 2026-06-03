@@ -4,11 +4,11 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Mock logger
-const mockLog = jest.fn();
-const mockWarn = jest.fn();
-const mockError = jest.fn();
-const mockInfo = jest.fn();
-const mockDebug = jest.fn();
+const mockLog = jest.fn() as jest.Mock;
+const mockWarn = jest.fn() as jest.Mock;
+const mockError = jest.fn() as jest.Mock;
+const mockInfo = jest.fn() as jest.Mock;
+const mockDebug = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../src/utils/logger', () => ({
     logger: {
         log: mockLog,

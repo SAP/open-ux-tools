@@ -25,13 +25,13 @@ jest.unstable_mockModule('chalk', () => ({
     dim: (s: string) => s
 }));
 
-const mockPrompt = jest.fn();
+const mockPrompt = jest.fn() as jest.Mock;
 const mockPromptsModule = Object.assign(mockPrompt, { prompt: mockPrompt, inject: jest.fn() });
 jest.unstable_mockModule('prompts', () => ({
     default: mockPromptsModule
 }));
 
-const mockCrossSpawn = jest.fn();
+const mockCrossSpawn = jest.fn() as jest.Mock;
 jest.unstable_mockModule('cross-spawn', () => ({
     default: mockCrossSpawn
 }));
@@ -63,10 +63,10 @@ export default defineConfig([globalIgnores([
 }]);
 `;
 
-const mockWriteFileSync = jest.fn();
-const mockMkdtempSync = jest.fn();
-const mockRmSync = jest.fn();
-const mockReadFileSync = jest.fn();
+const mockWriteFileSync = jest.fn() as jest.Mock;
+const mockMkdtempSync = jest.fn() as jest.Mock;
+const mockRmSync = jest.fn() as jest.Mock;
+const mockReadFileSync = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('node:fs', () => {
     const actual = jest.requireActual<typeof nodeFs>('node:fs');
@@ -76,7 +76,7 @@ jest.unstable_mockModule('node:fs', () => {
         writeFileSync: mockWriteFileSync,
         mkdtempSync: mockMkdtempSync,
         rmSync: mockRmSync,
-        readFileSync: mockReadFileSync.mockImplementation((path: string, encoding?: string) => {
+        readFileSync: mockReadFileSync.mockImplementation((path, encoding) => {
             if (typeof path === 'string' && path.includes('eslint-migration-') && path.endsWith('eslint.config.mjs')) {
                 return MOCK_MIGRATED_MJS;
             }
@@ -144,7 +144,7 @@ describe('convertEslintConfig', () => {
         setupFixtures();
 
         // Mock fs.commit to prevent writing to disk in tests
-        jest.spyOn(fs, 'commit').mockImplementation((callback?: any) => {
+        jest.spyOn(fs, 'commit').mockImplementation((callback) => {
             if (callback) {
                 setImmediate(callback);
             }
@@ -714,7 +714,7 @@ describe('convertEslintConfig', () => {
             setupFixtures(customFs);
 
             // Mock commit on custom fs
-            jest.spyOn(customFs, 'commit').mockImplementation((callback?: any) => {
+            jest.spyOn(customFs, 'commit').mockImplementation((callback) => {
                 if (callback) {
                     setImmediate(callback);
                 }

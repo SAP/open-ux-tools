@@ -13,7 +13,7 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn<() => boolean>().mockImplementation(() => mockIsAppStudio),
     isHTML5DynamicConfigured: jest
         .fn()
-        .mockImplementation((dest: Record<string, unknown>) => Boolean(dest['HTML5.DynamicDestination'])),
+        .mockImplementation((dest) => Boolean(dest['HTML5.DynamicDestination'])),
     isOnPremiseDestination: jest.fn().mockReturnValue(false),
     isAbapODataDestination: jest.fn().mockReturnValue(false),
     isFullUrlDestination: jest.fn().mockReturnValue(false),

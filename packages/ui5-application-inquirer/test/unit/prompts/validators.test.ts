@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import { join } from 'node:path';
 
-const mockValidateModuleName = jest.fn();
+const mockValidateModuleName = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     validateModuleName: mockValidateModuleName,
@@ -12,7 +12,7 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     validateFioriAppProjectFolder: jest.fn()
 }));
 
-const mockAppPathExists = jest.fn();
+const mockAppPathExists = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('../../../src/prompts/prompt-helpers', () => ({
     appPathExists: mockAppPathExists,
