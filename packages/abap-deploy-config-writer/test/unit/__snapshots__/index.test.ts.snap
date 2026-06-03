@@ -48,10 +48,6 @@ framework:
     - name: themelib_sap_belize
     - name: themelib_sap_fiori_3
 builder:
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
   customTasks:
     - name: deploy-to-abap
       afterTask: generateCachebusterInfo
@@ -131,10 +127,6 @@ framework:
     - name: sap.ui.core
     - name: themelib_sap_fiori_3
 builder:
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
   customTasks:
     - name: deploy-to-abap
       afterTask: generateCachebusterInfo

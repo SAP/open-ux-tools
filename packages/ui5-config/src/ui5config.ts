@@ -674,6 +674,7 @@ export class UI5Config {
         lrep?: string,
         comments: NodeComment<CustomTask<AbapDeployConfig>>[] = []
     ): this {
+        this.addBuilderResourceExcludes();
         const configuration: {
             target: AbapTarget;
             app: BspApp | Adp;
@@ -708,6 +709,7 @@ export class UI5Config {
      * @memberof UI5Config
      */
     public addCloudFoundryDeployTask(archiveName: string, addModulesTask = false, addTranspileTask = false): this {
+        this.addBuilderResourceExcludes();
         this.document.appendTo({
             path: 'builder.customTasks',
             value: {

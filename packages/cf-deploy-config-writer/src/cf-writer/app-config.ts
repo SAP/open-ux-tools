@@ -474,7 +474,6 @@ export async function generateUI5DeployConfig(cfConfig: CFConfig, fs: Editor): P
         location: 'beginning'
     });
     ui5DeployConfig.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
-    ui5DeployConfig.addBuilderResourceExcludes();
     ui5DeployConfig.addCloudFoundryDeployTask(cfConfig.appId, addModulesTask, addTranspileTask);
     fs.write(join(cfConfig.appPath, FileName.UI5DeployYaml), ui5DeployConfig.toString());
 }

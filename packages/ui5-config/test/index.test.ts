@@ -870,6 +870,14 @@ describe('UI5Config', () => {
         test('returns this for chaining', () => {
             expect(ui5Config.addBuilderResourceExcludes()).toBe(ui5Config);
         });
+
+        test('handles malformed excludes (null value) — replaces null with sequence', async () => {
+            const malformed = await UI5Config.newInstance(`builder:\n  resources:\n    excludes: ~\n`);
+            expect(() => malformed.addBuilderResourceExcludes()).not.toThrow();
+            const result = malformed.toString();
+            expect(result).toContain('/test/**');
+            expect(result).toContain('/localService/**');
+        });
     });
 
     describe('addAbapDeployTask', () => {

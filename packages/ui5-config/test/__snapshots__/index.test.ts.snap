@@ -88,6 +88,10 @@ exports[`UI5Config add/find/update/removeCustomMiddleware updateMiddleware that 
 
 exports[`UI5Config addAbapDeployTask AppStudio + Steampunk settings 1`] = `
 "builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: deploy-to-abap
       afterTask: generateCachebusterInfo
@@ -105,6 +109,10 @@ exports[`UI5Config addAbapDeployTask AppStudio + Steampunk settings 1`] = `
 
 exports[`UI5Config addAbapDeployTask local settings 1`] = `
 "builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: deploy-to-abap
       afterTask: generateCachebusterInfo
@@ -122,6 +130,10 @@ exports[`UI5Config addAbapDeployTask local settings 1`] = `
 
 exports[`UI5Config addAbapDeployTask minimal adp settings 1`] = `
 "builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: deploy-to-abap
       afterTask: generateCachebusterInfo
@@ -139,6 +151,10 @@ exports[`UI5Config addAbapDeployTask minimal adp settings 1`] = `
 
 exports[`UI5Config addAbapDeployTask use open source task 1`] = `
 "builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: abap-deploy-task
       afterTask: generateCachebusterInfo
@@ -206,6 +222,10 @@ exports[`UI5Config addBuilderResourceExcludes adds both default excludes to empt
 
 exports[`UI5Config addCloudFoundryDeployTask add modules task 1`] = `
 "builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
@@ -222,6 +242,10 @@ exports[`UI5Config addCloudFoundryDeployTask add modules task 1`] = `
 
 exports[`UI5Config addCloudFoundryDeployTask add transpile task 1`] = `
 "builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
@@ -245,6 +269,10 @@ exports[`UI5Config addCloudFoundryDeployTask add transpile task 1`] = `
 
 exports[`UI5Config addCloudFoundryDeployTask minimal settings required 1`] = `
 "builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo

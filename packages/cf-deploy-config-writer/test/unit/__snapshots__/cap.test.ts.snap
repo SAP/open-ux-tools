@@ -53,10 +53,6 @@ resources:
   configuration:
     propertiesFileSourceEncoding: UTF-8
 builder:
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
   customTasks:
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
@@ -486,10 +482,6 @@ resources:
   configuration:
     propertiesFileSourceEncoding: UTF-8
 builder:
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
   customTasks:
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
@@ -743,10 +735,6 @@ resources:
   configuration:
     propertiesFileSourceEncoding: UTF-8
 builder:
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
   customTasks:
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
@@ -876,10 +864,6 @@ resources:
   configuration:
     propertiesFileSourceEncoding: UTF-8
 builder:
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
   customTasks:
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
