@@ -17,10 +17,10 @@ import {
     generateCustomHeaderSection,
     RequestGroupId,
     DesignTime
-} from '../../src';
-import { Placement } from '../../src/common/types';
-import { generateListReport, generateObjectPage } from '../../src/page';
-import { clearTestOutput, writeFilesForDebugging } from '../common';
+} from '../../src/index.js';
+import { Placement } from '../../src/common/types.js';
+import { generateListReport, generateObjectPage } from '../../src/page/index.js';
+import { clearTestOutput, writeFilesForDebugging } from '../common/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

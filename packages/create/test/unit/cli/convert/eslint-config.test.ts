@@ -5,29 +5,29 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { createProjectAccessMock } from '../__mocks__/project-access-mock';
+import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockGetLogger = jest.fn();
-const mockSetLogLevelVerbose = jest.fn();
+const mockGetLogger = jest.fn() as jest.Mock;
+const mockSetLogLevelVerbose = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
     setLogLevelVerbose: mockSetLogLevelVerbose
 }));
 
-const mockRunNpmInstallCommand = jest.fn();
+const mockRunNpmInstallCommand = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/common', () => ({
     promptYUIQuestions: jest.fn(),
     runNpmInstallCommand: mockRunNpmInstallCommand
 }));
 
-const mockConvertEslintConfig = jest.fn();
+const mockConvertEslintConfig = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/app-config-writer', () => ({
     convertEslintConfig: mockConvertEslintConfig
 }));
 
-const mockExecNpmCommand = jest.fn();
+const mockExecNpmCommand = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/project-access', () =>
     createProjectAccessMock({
         execNpmCommand: mockExecNpmCommand
@@ -36,7 +36,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () =>
 
 jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn() }));
 
-const { addConvertEslintCommand } = await import('../../../../src/cli/convert/eslint-config');
+const { addConvertEslintCommand } = await import('../../../../src/cli/convert/eslint-config.js');
 
 describe('Test command convert eslint-config', () => {
     const appRoot = join(__dirname, '../../../fixtures/ui5-deploy-config');

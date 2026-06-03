@@ -1,13 +1,13 @@
 import { jest } from '@jest/globals';
-import type { QfaJsonConfig, QuickDeployedAppConfig, AppInfo } from '../../src/app/types';
-import { t } from '../../src/utils/i18n';
+import type { QfaJsonConfig, QuickDeployedAppConfig, AppInfo } from '../../src/app/types.js';
+import { t } from '../../src/utils/i18n.js';
 import type { AppIndex, AbapServiceProvider } from '@sap-ux/axios-extension';
 import { HELP_NODES } from '@sap-ux/guided-answers-helper';
-import { qfaJsonFileName } from '../../src/utils/constants';
+import { qfaJsonFileName } from '../../src/utils/constants.js';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 
-const mockDownloadApp = jest.fn();
+const mockDownloadApp = jest.fn() as jest.Mock;
 const mockHasQfaJson = jest.fn<() => boolean>().mockReturnValue(true);
 
 jest.unstable_mockModule('../../src/utils/logger', () => {
@@ -30,10 +30,10 @@ jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
     ...actualInquirerCommon
 }));
 
-const { validateQfaJsonFile, validateAppSelection, isValidPromptState } = await import('../../src/utils/validators');
-const RepoAppDownloadLogger = (await import('../../src/utils/logger')).default;
+const { validateQfaJsonFile, validateAppSelection, isValidPromptState } = await import('../../src/utils/validators.js');
+const RepoAppDownloadLogger = (await import('../../src/utils/logger.js')).default;
 const { ErrorHandler, ERROR_TYPE } = await import('@sap-ux/inquirer-common');
-const { PromptState } = await import('../../src/prompts/prompt-state');
+const { PromptState } = await import('../../src/prompts/prompt-state.js');
 
 ErrorHandler.getHelpLink = jest.fn() as any;
 

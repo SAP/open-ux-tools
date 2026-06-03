@@ -3,42 +3,42 @@ import path, { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-import type { CheckEnvironmentOptions } from '../../src';
-import { DevelopmentEnvironment, Severity } from '../../src/types';
+import type { CheckEnvironmentOptions } from '../../src/index.js';
+import { DevelopmentEnvironment, Severity } from '../../src/types.js';
 
 jest.unstable_mockModule('axios', () => ({
     __esModule: true,
     default: { get: jest.fn() }
 }));
 
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
 const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils,
     isAppStudio: mockIsAppStudio
 }));
 
-const mockCheckBASDestinations = jest.fn();
+const mockCheckBASDestinations = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/checks/destination', () => ({
     checkBASDestinations: mockCheckBASDestinations,
     needsUsernamePassword: jest.fn(),
     checkBASDestination: jest.fn()
 }));
 
-const mockCheckSapSystem = jest.fn();
+const mockCheckSapSystem = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/checks/endpoint', () => ({
     checkEndpoint: mockCheckSapSystem
 }));
 
-const mockCheckStoredSystems = jest.fn();
+const mockCheckStoredSystems = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/checks/stored-system', () => ({
     checkStoredSystems: mockCheckStoredSystems
 }));
 
-const mockGetFioriGenVersion = jest.fn();
-const mockGetCFCliToolVersion = jest.fn();
-const mockGetInstalledExtensions = jest.fn();
-const mockGetProcessVersions = jest.fn();
+const mockGetFioriGenVersion = jest.fn() as jest.Mock;
+const mockGetCFCliToolVersion = jest.fn() as jest.Mock;
+const mockGetInstalledExtensions = jest.fn() as jest.Mock;
+const mockGetProcessVersions = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/checks/get-installed', () => ({
     getFioriGenVersion: mockGetFioriGenVersion,
     getCFCliToolVersion: mockGetCFCliToolVersion,
@@ -46,7 +46,7 @@ jest.unstable_mockModule('../../src/checks/get-installed', () => ({
     getProcessVersions: mockGetProcessVersions
 }));
 
-const { checkEnvironment, getEnvironment } = await import('../../src/checks/environment');
+const { checkEnvironment, getEnvironment } = await import('../../src/checks/environment.js');
 
 const nodeJSProcessVersions = {
     'node': '16.17.0',

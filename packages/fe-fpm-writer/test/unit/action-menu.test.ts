@@ -2,11 +2,11 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'node:path';
-import { generateActionMenu } from '../../src';
-import { TargetControl } from '../../src/action-menu/types';
-import { Placement } from '../../src/common/types';
-import { detectTabSpacing } from '../../src/common/file';
-import { tabSizingTestCases } from '../common';
+import { generateActionMenu } from '../../src/index.js';
+import { TargetControl } from '../../src/action-menu/types.js';
+import { Placement } from '../../src/common/types.js';
+import { detectTabSpacing } from '../../src/common/file.js';
+import { tabSizingTestCases } from '../common/index.js';
 
 describe('CustomAction', () => {
     describe('generateActionMenu', () => {

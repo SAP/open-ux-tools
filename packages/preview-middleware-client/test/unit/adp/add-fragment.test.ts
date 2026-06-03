@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type UI5Element from 'sap/ui/core/Element';
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';

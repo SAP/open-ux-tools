@@ -12,7 +12,7 @@ import { writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { UI5Version } from '@sap-ux/ui5-info';
-import { SERVER_TIMEOUT, TIMEOUT } from '../utils/constant';
+import { SERVER_TIMEOUT, TIMEOUT } from '../utils/constant.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

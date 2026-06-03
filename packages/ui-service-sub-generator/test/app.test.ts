@@ -7,12 +7,12 @@ import { fileURLToPath } from 'node:url';
 const __testdirname = dirname(fileURLToPath(import.meta.url));
 
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
-import type { PromptOptions } from '../src/app/types';
+import type { PromptOptions } from '../src/app/types.js';
 import type { SystemSelectionAnswers } from '@sap-ux/ui-service-inquirer';
 
 // ── Top-level mock functions ──────────────────────────────────────────────
 
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn() as jest.Mock;
 
 // UiServiceInquirer mocks
 const mockGetSystemSelectionPrompts = jest.fn<any>();
@@ -104,7 +104,7 @@ jest.unstable_mockModule('@sap-ux/ui-service-inquirer', () => ({
     }
 }));
 
-const realUtils = await import('../src/app/utils');
+const realUtils = await import('../src/app/utils.js');
 
 jest.unstable_mockModule('../src/app/utils', () => ({
     ...realUtils,
@@ -120,7 +120,7 @@ jest.unstable_mockModule('../src/app/utils', () => ({
 
 // ── Dynamic imports (AFTER mocks) ─────────────────────────────────────────
 
-const { default: ServiceGenerator } = await import('../src/app');
+const { default: ServiceGenerator } = await import('../src/app/index.js');
 const { ObjectType } = await import('@sap-ux/ui-service-inquirer');
 
 // ── Test setup ────────────────────────────────────────────────────────────
@@ -259,7 +259,7 @@ describe('BAS service center', () => {
             showInformation: jest.fn()
         };
 
-        mockValidateConnection.mockImplementation((systemName: string, system: any, reqAuth: any) => {
+        mockValidateConnection.mockImplementation((systemName, system, reqAuth) => {
             Object.assign(system, {
                 connectedSystem: {
                     serviceProvider: {
@@ -315,7 +315,7 @@ describe('BAS service center', () => {
             showInformation: jest.fn()
         };
 
-        mockAuthenticateInputData.mockImplementation((data: PromptOptions, system: SystemSelectionAnswers) => {
+        mockAuthenticateInputData.mockImplementation((data, system) => {
             Object.assign(system, {
                 connectedSystem: {
                     serviceProvider: {
@@ -481,7 +481,7 @@ describe('BAS service center', () => {
             showInformation: jest.fn()
         };
 
-        mockAuthenticateInputData.mockImplementation((data: PromptOptions, system: SystemSelectionAnswers) => {
+        mockAuthenticateInputData.mockImplementation((data, system) => {
             Object.assign(system, {
                 connectedSystem: {
                     serviceProvider: {
@@ -532,7 +532,7 @@ describe('BAS service center', () => {
             showInformation: jest.fn()
         };
 
-        mockAuthenticateInputData.mockImplementation((data: PromptOptions, system: SystemSelectionAnswers) => {
+        mockAuthenticateInputData.mockImplementation((data, system) => {
             Object.assign(system, {
                 connectedSystem: {
                     serviceProvider: {
@@ -643,7 +643,7 @@ describe('test ui service generator', () => {
             showError: jest.fn()
         };
 
-        mockAuthenticateInputData.mockImplementation((data: PromptOptions, system: SystemSelectionAnswers) => {
+        mockAuthenticateInputData.mockImplementation((data, system) => {
             Object.assign(system, {
                 connectedSystem: {
                     destination: {

@@ -19,7 +19,7 @@ jest.unstable_mockModule('prettier', () => ({
     __esModule: true
 }));
 
-const Vocabularies = await import('../../tools/update');
+const Vocabularies = await import('../../tools/update.js');
 
 // -----------------------------------------------------------------
 // Please keep this test for easier debugging:

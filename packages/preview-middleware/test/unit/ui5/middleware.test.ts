@@ -5,8 +5,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 import nock from 'nock';
-import type { EnhancedRouter } from '../../../src/base/flp';
-import type { MiddlewareConfig } from '../../../src/types';
+import type { EnhancedRouter } from '../../../src/base/flp.js';
+import type { MiddlewareConfig } from '../../../src/types/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -58,7 +58,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 }));
 
 // Import after mocking
-const previewMiddleware = await import('../../../src/ui5/middleware');
+const previewMiddleware = await import('../../../src/ui5/middleware.js');
 const { ToolsLogger } = await import('@sap-ux/logger');
 
 async function getRouter(fixture?: string, configuration: Partial<MiddlewareConfig> = {}): Promise<EnhancedRouter> {

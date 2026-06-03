@@ -6,14 +6,14 @@ import Fragment, { attachBeforeClose } from 'mock/sap/ui/core/Fragment';
 import Controller from 'mock/sap/ui/core/mvc/Controller';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 
-import { DialogFactory, DialogNames } from '../../../src/adp/dialog-factory';
-import AddFragment from '../../../src/adp/controllers/AddFragment.controller';
-import ControllerExtension from '../../../src/adp/controllers/ControllerExtension.controller';
-import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controller';
-import AddTableColumnFragments from '../../../src/adp/controllers/AddTableColumnFragments.controller';
-import FileExistsDialog from '../../../src/adp/controllers/FileExistsDialog.controller';
-import AddCustomFragment from '../../../src/adp/controllers/AddCustomFragment.controller';
-import AddActionFragment from '../../../src/adp/controllers/AddActionFragment.controller';
+import { DialogFactory, DialogNames } from '../../../src/adp/dialog-factory.js';
+import AddFragment from '../../../src/adp/controllers/AddFragment.controller.js';
+import ControllerExtension from '../../../src/adp/controllers/ControllerExtension.controller.js';
+import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controller.js';
+import AddTableColumnFragments from '../../../src/adp/controllers/AddTableColumnFragments.controller.js';
+import FileExistsDialog from '../../../src/adp/controllers/FileExistsDialog.controller.js';
+import AddCustomFragment from '../../../src/adp/controllers/AddCustomFragment.controller.js';
+import AddActionFragment from '../../../src/adp/controllers/AddActionFragment.controller.js';
 
 describe('DialogFactory', () => {
     afterEach(() => {

@@ -12,7 +12,7 @@ const actualPackageJson = readFileSync(join(__dirname, '../../../package.json'),
 
 // Mock node:fs so that getVersion() in the source can read package.json. Spread the real module
 // so transitive consumers (e.g. dotenv) that rely on default/other exports continue to work.
-const mockReadFileSync = jest.fn().mockImplementation((...args: unknown[]) => {
+const mockReadFileSync = jest.fn().mockImplementation((...args) => {
     const filePath = args[0] as string;
     if (typeof filePath === 'string' && filePath.endsWith('package.json')) {
         return actualPackageJson;
@@ -24,7 +24,7 @@ jest.unstable_mockModule('node:fs', () => ({
     readFileSync: mockReadFileSync
 }));
 
-const mockGetLogger = jest.fn();
+const mockGetLogger = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
     setLogLevelVerbose: jest.fn()
@@ -174,7 +174,7 @@ jest.unstable_mockModule('prompts', () => ({
     prompt: jest.fn()
 }));
 
-const { handleCreateFioriCommand } = await import('../../../src/cli');
+const { handleCreateFioriCommand } = await import('../../../src/cli/index.js');
 
 describe('Test handleCreateFioriCommand()', () => {
     beforeEach(() => {

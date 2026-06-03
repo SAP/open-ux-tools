@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { enableCardGeneratorConfig } from '../../../src/cards-config';
+import { enableCardGeneratorConfig } from '../../../src/cards-config/index.js';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';

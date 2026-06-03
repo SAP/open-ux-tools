@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { platform } from 'node:os';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
-import { PromptNames } from '../src/app/types';
+import { PromptNames } from '../src/app/types.js';
 import fs from 'node:fs';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
@@ -13,28 +13,28 @@ import {
     fioriAppSourcetemplateId,
     extractedFilePath,
     qfaJsonFileName
-} from '../src/utils/constants';
+} from '../src/utils/constants.js';
 import fsExtra from 'fs-extra';
 const { removeSync } = fsExtra;
-import { t } from '../src/utils/i18n';
-import { EventName } from '../src/telemetryEvents';
+import { t } from '../src/utils/i18n.js';
+import { EventName } from '../src/telemetryEvents/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Pre-import actual modules before mocking
-const actualPromptHelpers = await import('../src/prompts/prompt-helpers');
+const actualPromptHelpers = await import('../src/prompts/prompt-helpers.js');
 const actualLaunchConfig = await import('@sap-ux/launch-config');
-const actualAppConfig = await import('../src/app/app-config');
+const actualAppConfig = await import('../src/app/app-config.js');
 const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
 const actualUi5Info = await import('@sap-ux/ui5-info');
 const actualProjectAccess = await import('@sap-ux/project-access');
 
-const mockGetAppConfig = jest.fn();
-const mockIsValidPromptState = jest.fn();
-const mockSendTelemetry = jest.fn();
-const mockHandleWorkspaceConfig = jest.fn();
-const mockGetUI5Versions = jest.fn();
-const mockGetPrompts = jest.fn();
+const mockGetAppConfig = jest.fn<typeof actualAppConfig.getAppConfig>();
+const mockIsValidPromptState = jest.fn() as jest.Mock;
+const mockSendTelemetry = jest.fn<typeof actualFioriGenShared.sendTelemetry>();
+const mockHandleWorkspaceConfig = jest.fn<typeof actualLaunchConfig.handleWorkspaceConfig>();
+const mockGetUI5Versions = jest.fn<typeof actualUi5Info.getUI5Versions>();
+const mockGetPrompts = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('../src/prompts/prompt-helpers', () => ({
     ...actualPromptHelpers,
@@ -106,10 +106,10 @@ jest.unstable_mockModule('../src/prompts/prompts', () => ({
 }));
 
 const yeomanTest = (await import('yeoman-test')).default;
-const RepoAppDownloadGeneratorModule = await import('../src/app');
+const RepoAppDownloadGeneratorModule = await import('../src/app/index.js');
 const RepoAppDownloadGenerator = RepoAppDownloadGeneratorModule.default;
-const { TestFixture } = await import('./fixtures');
-const RepoAppDownloadLogger = (await import('../src/utils/logger')).default;
+const { TestFixture } = await import('./fixtures/index.js');
+const RepoAppDownloadLogger = (await import('../src/utils/logger.js')).default;
 const { TelemetryHelper } = await import('@sap-ux/fiori-generator-shared');
 const { handleWorkspaceConfig } = await import('@sap-ux/launch-config');
 const env = (await import('yeoman-environment')).default;

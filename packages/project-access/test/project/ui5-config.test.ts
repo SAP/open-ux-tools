@@ -10,7 +10,7 @@ import {
     getPathMappings,
     getWebappPath,
     readUi5Yaml
-} from '../../src';
+} from '../../src/index.js';
 import { readFile, writeFile } from 'node:fs/promises';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

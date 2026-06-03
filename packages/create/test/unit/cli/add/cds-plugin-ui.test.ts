@@ -4,18 +4,18 @@ import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createProjectAccessMock } from '../__mocks__/project-access-mock';
+import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockGetLogger = jest.fn();
-const mockSetLogLevelVerbose = jest.fn();
+const mockGetLogger = jest.fn() as jest.Mock;
+const mockSetLogLevelVerbose = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
     setLogLevelVerbose: mockSetLogLevelVerbose
 }));
 
-const mockEnableCdsUi5Plugin = jest.fn();
+const mockEnableCdsUi5Plugin = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/cap-config-writer', () => ({
     enableCdsUi5Plugin: mockEnableCdsUi5Plugin
 }));
@@ -34,7 +34,7 @@ jest.unstable_mockModule('node:child_process', () => ({
     exec: jest.fn()
 }));
 
-const { addAddCdsPluginUi5Command } = await import('../../../../src/cli/add/cds-plugin-ui');
+const { addAddCdsPluginUi5Command } = await import('../../../../src/cli/add/cds-plugin-ui.js');
 
 describe('Test command add cds-plugin-ui5', () => {
     let loggerMock: ToolsLogger;

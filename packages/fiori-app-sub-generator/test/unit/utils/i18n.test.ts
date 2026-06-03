@@ -1,4 +1,4 @@
-import { initI18nFioriAppSubGenerator, t } from '../../../src/utils/i18n';
+import { initI18nFioriAppSubGenerator, t } from '../../../src/utils/i18n.js';
 
 describe('Test i18n', () => {
     beforeAll(async () => {

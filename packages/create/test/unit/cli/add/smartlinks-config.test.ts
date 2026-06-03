@@ -6,26 +6,26 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockGetLogger = jest.fn();
-const mockSetLogLevelVerbose = jest.fn();
+const mockGetLogger = jest.fn() as jest.Mock;
+const mockSetLogLevelVerbose = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
     setLogLevelVerbose: mockSetLogLevelVerbose
 }));
 
-const mockGenerateSmartLinksConfig = jest.fn();
+const mockGenerateSmartLinksConfig = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/app-config-writer', () => ({
     generateSmartLinksConfig: mockGenerateSmartLinksConfig,
     getSmartLinksTargetFromPrompt: jest.fn()
 }));
 
-const mockPrompt = jest.fn();
+const mockPrompt = jest.fn() as jest.Mock;
 jest.unstable_mockModule('prompts', () => ({
     default: mockPrompt,
     prompt: mockPrompt
 }));
 
-const { addAddSmartLinksConfigCommand } = await import('../../../../src/cli/add/smartlinks-config');
+const { addAddSmartLinksConfigCommand } = await import('../../../../src/cli/add/smartlinks-config.js');
 
 describe('Test command add smartlinks-config', () => {
     const appRoot = join(__dirname, '../../../fixtures/ui5-deploy-config');

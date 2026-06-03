@@ -19,7 +19,7 @@ jest.unstable_mockModule('prompts', () => ({
     default: mockPromptsModule
 }));
 
-const { includeTestRunnersPrompt, simulatePrompt } = await import('../../../src');
+const { includeTestRunnersPrompt, simulatePrompt } = await import('../../../src/index.js');
 
 describe('Test prompts for convert preview', () => {
     test('Test simulatePrompt - true', async () => {

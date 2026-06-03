@@ -7,13 +7,13 @@ import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockGetService = jest.fn();
-const mockGetVariantNamespace = jest.fn();
-const mockSendTelemetry = jest.fn();
-const mockGetHostEnvironment = jest.fn();
-const mockGetAppType = jest.fn();
-const mockGetPrompts = jest.fn();
-const mockHandleErrorMessage = jest.fn();
+const mockGetService = jest.fn<typeof realStore.getService>();
+const mockGetVariantNamespace = jest.fn<typeof realUtilsProject.getVariantNamespace>();
+const mockSendTelemetry = jest.fn<typeof realFioriGeneratorShared.sendTelemetry>();
+const mockGetHostEnvironment = jest.fn<typeof realFioriGeneratorShared.getHostEnvironment>();
+const mockGetAppType = jest.fn<typeof realProjectAccess.getAppType>();
+const mockGetPrompts = jest.fn<typeof realAbapInquirer.getPrompts>();
+const mockHandleErrorMessage = jest.fn<typeof realDeployShared.handleErrorMessage>();
 
 const realStore = await import('@sap-ux/store');
 // Store mock is required here to prevent subsequent imports from using the real store funcs
@@ -117,10 +117,10 @@ describe('Test abap deploy configuration generator', () => {
         });
         mockGetVariantNamespace.mockResolvedValue(undefined);
         // Default: delegate getPrompts to real implementation
-        mockGetPrompts.mockImplementation((...args: any[]) => (realAbapInquirer.getPrompts as any)(...args));
+        mockGetPrompts.mockImplementation((...args) => (realAbapInquirer.getPrompts as any)(...args));
         // Default: handleErrorMessage throws in CLI, shows error in VSCode/BAS
         mockHandleErrorMessage.mockImplementation(
-            (appWizard: any, { errorType, errorMsg }: { errorType?: string; errorMsg?: string }) => {
+            (appWizard, { errorType, errorMsg }: { errorType?: string; errorMsg?: string }) => {
                 const error = errorMsg ?? realDeployShared.ErrorHandler.getErrorMsgFromType(errorType as any);
                 const env = mockGetHostEnvironment();
                 if (env === hostEnvironment.cli) {

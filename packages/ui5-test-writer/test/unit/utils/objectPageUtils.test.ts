@@ -1,8 +1,8 @@
 import type { ApplicationModel, TreeAggregation } from '@sap/ux-specification/dist/types/src/parser';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 import type { Logger } from '@sap-ux/logger';
-import { getObjectPageFeatures } from '../../../src/utils/objectPageUtils';
-import type { ObjectPageFeatures, HeaderSectionFeatureData } from '../../../src/types';
+import { getObjectPageFeatures } from '../../../src/utils/objectPageUtils.js';
+import type { ObjectPageFeatures, HeaderSectionFeatureData } from '../../../src/types.js';
 
 describe('Test getObjectPageFeatures()', () => {
     let mockLogger: Logger;
