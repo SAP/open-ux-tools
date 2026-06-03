@@ -6,6 +6,8 @@ import type { ParsedApp } from '../project-context/parser/index.js';
 import type { FeV4PageType, Table } from '../project-context/linker/fe-v4.js';
 import { createJsonFixer } from '../language/rule-fixer.js';
 import { checkAppTablesConfiguration } from '../utils/helpers.js';
+import { FioriJSONSourceCode } from '../language/json/source-code.js';
+import type { FioriSourceCode } from '../language/fiori-language.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: ENABLE_PASTE,
@@ -23,6 +25,9 @@ const rule: FioriRuleDefinition = createFioriRule({
     },
 
     check(context) {
+        if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
+            return [];
+        }
         const problems: EnablePaste[] = [];
 
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
@@ -36,7 +41,11 @@ const rule: FioriRuleDefinition = createFioriRule({
                     if (page.type !== 'object-page') {
                         continue;
                     }
-                    problems.push(...(<EnablePaste[]>checkAppTablesConfiguration(page, parsedApp, checkConfiguration)));
+                    problems.push(
+                        ...(<EnablePaste[]>(
+                            checkAppTablesConfiguration(page, parsedApp, context.sourceCode, checkConfiguration)
+                        ))
+                    );
                 }
             }
         }
@@ -63,6 +72,7 @@ const rule: FioriRuleDefinition = createFioriRule({
  * @param page
  * @param table
  * @param parsedApp
+ * @param sourceCode
  * @param problems
  * @param pageSectionName
  */
@@ -70,10 +80,15 @@ function checkConfiguration(
     page: FeV4PageType,
     table: Table,
     parsedApp: ParsedApp,
+    sourceCode: FioriSourceCode,
     problems: EnablePaste[],
     pageSectionName?: string
 ): void {
     if (table.configuration.enablePaste.valueInFile === false) {
+        const node =
+            sourceCode instanceof FioriJSONSourceCode
+                ? sourceCode.getNode(sourceCode.ast.body, table.configuration.enablePaste.configurationPath)
+                : undefined;
         problems.push({
             type: ENABLE_PASTE,
             pageName: page.targetName,
@@ -81,7 +96,8 @@ function checkConfiguration(
             manifest: {
                 uri: parsedApp.manifest.manifestUri,
                 object: parsedApp.manifestObject,
-                propertyPath: table.configuration.enablePaste.configurationPath
+                propertyPath: table.configuration.enablePaste.configurationPath,
+                loc: node?.loc
             }
         });
     }

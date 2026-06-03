@@ -4,6 +4,7 @@ import { FLEX_ENABLED, type FlexEnabled } from '../language/diagnostics.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import { isLowerThanMinimalUi5Version } from '../utils/version.js';
 import { createJsonFixer } from '../language/rule-fixer.js';
+import { FioriJSONSourceCode } from '../language/json/source-code.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: FLEX_ENABLED,
@@ -21,6 +22,9 @@ const rule: FioriRuleDefinition = createFioriRule({
         fixable: 'code'
     },
     check(context) {
+        if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
+            return [];
+        }
         const problems: FlexEnabled[] = [];
 
         for (const [, app] of Object.entries(context.sourceCode.projectContext.index.apps)) {
@@ -31,12 +35,14 @@ const rule: FioriRuleDefinition = createFioriRule({
                 continue;
             }
             if (!app.manifest.flexEnabled) {
+                const node = context.sourceCode.getNode(context.sourceCode.ast.body, ['sap.ui5', 'flexEnabled']);
                 problems.push({
                     type: FLEX_ENABLED,
                     manifest: {
                         uri: app.manifest.manifestUri,
                         object: app.manifestObject,
-                        propertyPath: ['sap.ui5', 'flexEnabled']
+                        propertyPath: ['sap.ui5', 'flexEnabled'],
+                        loc: node?.loc
                     }
                 });
             }

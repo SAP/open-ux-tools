@@ -4,6 +4,7 @@ import { createFioriRule } from '../language/rule-factory.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import { createJsonFixer } from '../language/rule-fixer.js';
 import { isLowerThanMinimalUi5Version } from '../utils/version.js';
+import { FioriJSONSourceCode } from '../language/json/source-code.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: TABLE_COLUMN_VERTICAL_ALIGNMENT,
@@ -45,13 +46,18 @@ const rule: FioriRuleDefinition = createFioriRule({
             if (!responsiveTable) {
                 continue;
             }
+            const node =
+                context.sourceCode instanceof FioriJSONSourceCode
+                    ? context.sourceCode.getNode(context.sourceCode.ast.body, ['sap.ui5', 'flexEnabled'])
+                    : undefined;
             return [
                 {
                     type: TABLE_COLUMN_VERTICAL_ALIGNMENT,
                     manifest: {
                         uri: parsedApp.manifest.manifestUri,
                         object: parsedApp.manifestObject,
-                        propertyPath: app.configuration.tableColumnVerticalAlignment.configurationPath
+                        propertyPath: app.configuration.tableColumnVerticalAlignment.configurationPath,
+                        loc: node?.loc
                     }
                 }
             ];

@@ -6,6 +6,7 @@ import type { ParsedApp } from '../project-context/parser/index.js';
 import type { FeV2PageType, LinkedFeV2App } from '../project-context/linker/fe-v2.js';
 import type { FeV4PageType, LinkedFeV4App, Table, OrphanTable } from '../project-context/linker/fe-v4.js';
 import { createJsonFixer } from '../language/rule-fixer.js';
+import { FioriJSONSourceCode } from '../language/json/source-code.js';
 
 const COMPACT_TABLE_TYPES = new Set(['GridTable', 'AnalyticalTable', 'TreeTable']);
 
@@ -27,6 +28,9 @@ const rule: FioriRuleDefinition = createFioriRule({
     },
 
     check(context) {
+        if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
+            return [];
+        }
         const problems: CondensedTableLayout[] = [];
 
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
@@ -36,7 +40,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                 continue;
             }
             if (app.type === 'fe-v4' || app.type === 'fe-v2') {
-                problems.push(...checkCondensedTableLayoutForApp(app, parsedApp));
+                problems.push(...checkCondensedTableLayoutForApp(app, parsedApp, context.sourceCode));
             }
         }
         return problems;
@@ -61,19 +65,21 @@ const rule: FioriRuleDefinition = createFioriRule({
  *
  * @param app - linked V4 or V2 app
  * @param parsedApp - parsed app
+ * @param sourceCode
  * @returns - CondensedTableLayout issues
  */
 function checkCondensedTableLayoutForApp(
     app: LinkedFeV4App | LinkedFeV2App,
-    parsedApp: ParsedApp
+    parsedApp: ParsedApp,
+    sourceCode: FioriJSONSourceCode
 ): CondensedTableLayout[] {
     if (app.type === 'fe-v4') {
         return app.pages.flatMap((page) =>
-            page.type === 'list-report-page' ? checkCondensedTableLayoutV4(page, parsedApp) : []
+            page.type === 'list-report-page' ? checkCondensedTableLayoutV4(page, parsedApp, sourceCode) : []
         );
     }
     return app.pages.flatMap((page) =>
-        page.type === 'list-report-page' ? checkCondensedTableLayoutV2(page, parsedApp) : []
+        page.type === 'list-report-page' ? checkCondensedTableLayoutV2(page, parsedApp, sourceCode) : []
     );
 }
 
@@ -82,9 +88,14 @@ function checkCondensedTableLayoutForApp(
  *
  * @param page - V4 app page
  * @param parsedApp - parsed V4 app
+ * @param sourceCode - FioriJSONSourceCode instance
  * @returns - CondensedTableLayout issues
  */
-function checkCondensedTableLayoutV4(page: FeV4PageType, parsedApp: ParsedApp): CondensedTableLayout[] {
+function checkCondensedTableLayoutV4(
+    page: FeV4PageType,
+    parsedApp: ParsedApp,
+    sourceCode: FioriJSONSourceCode
+): CondensedTableLayout[] {
     const problems: CondensedTableLayout[] = [];
     for (const table of (page.lookup['table'] ?? []) as (Table | OrphanTable)[]) {
         const tableType = table.configuration.tableType.valueInFile;
@@ -92,13 +103,18 @@ function checkCondensedTableLayoutV4(page: FeV4PageType, parsedApp: ParsedApp): 
             continue;
         }
         if (table.configuration.condensedTableLayout.valueInFile !== true) {
+            const node = sourceCode.getNode(
+                sourceCode.ast.body,
+                table.configuration.condensedTableLayout.configurationPath
+            );
             problems.push({
                 type: CONDENSED_TABLE_LAYOUT,
                 pageName: page.targetName,
                 manifest: {
                     uri: parsedApp.manifest.manifestUri,
                     object: parsedApp.manifestObject,
-                    propertyPath: table.configuration.condensedTableLayout.configurationPath
+                    propertyPath: table.configuration.condensedTableLayout.configurationPath,
+                    loc: node?.loc
                 }
             });
         }
@@ -111,11 +127,13 @@ function checkCondensedTableLayoutV4(page: FeV4PageType, parsedApp: ParsedApp): 
  *
  * @param page - V2 list report page
  * @param parsedApp - parsed V2 app
+ * @param sourceCode
  * @returns - CondensedTableLayout issues
  */
 function checkCondensedTableLayoutV2(
     page: Extract<FeV2PageType, { type: 'list-report-page' }>,
-    parsedApp: ParsedApp
+    parsedApp: ParsedApp,
+    sourceCode: FioriJSONSourceCode
 ): CondensedTableLayout[] {
     const hasCompactTable = (page.lookup['table'] ?? []).some((table) =>
         COMPACT_TABLE_TYPES.has(table.configuration.tableType.valueInFile ?? '')
@@ -126,6 +144,7 @@ function checkCondensedTableLayoutV2(
     if (page.configuration.condensedTableLayout.valueInFile === true) {
         return [];
     }
+    const node = sourceCode.getNode(sourceCode.ast.body, page.configuration.condensedTableLayout.configurationPath);
     return [
         {
             type: CONDENSED_TABLE_LAYOUT,
@@ -133,7 +152,8 @@ function checkCondensedTableLayoutV2(
             manifest: {
                 uri: parsedApp.manifest.manifestUri,
                 object: parsedApp.manifestObject,
-                propertyPath: page.configuration.condensedTableLayout.configurationPath
+                propertyPath: page.configuration.condensedTableLayout.configurationPath,
+                loc: node?.loc
             }
         }
     ];

@@ -10,6 +10,7 @@ import type { FioriLanguageOptions, FioriSourceCode, Node } from '../language/fi
 import type { Table as V2Table, FeV2ObjectPage } from '../project-context/linker/fe-v2.js';
 import type { Table as V4Table, FeV4ObjectPage, LinkedFeV4App } from '../project-context/linker/fe-v4.js';
 import { createJsonFixer } from '../language/rule-fixer.js';
+import { FioriJSONSourceCode } from '../language/json/source-code.js';
 
 const RECOMMENDED_MODE_V2 = 'creationRows';
 const RECOMMENDED_MODE_V4_RESPONSIVE_GRID = 'InlineCreationRows';
@@ -25,6 +26,7 @@ interface CreateModeConfig {
  * Reports a diagnostic issue related to the creation mode configuration.
  *
  * @param problems - Array to collect diagnostic problems
+ * @param sourceCode - FioriJSONSourceCode instance
  * @param options - Diagnostic options
  * @param options.messageId - The message identifier for the diagnostic
  * @param options.pageName - Name of the page where the issue occurs
@@ -37,6 +39,7 @@ interface CreateModeConfig {
  */
 function reportDiagnostic(
     problems: CreationModeForTable[],
+    sourceCode: FioriJSONSourceCode,
     {
         messageId,
         pageName,
@@ -57,6 +60,10 @@ function reportDiagnostic(
         recommendedValue?: string;
     }
 ): void {
+    const node =
+        sourceCode instanceof FioriJSONSourceCode
+            ? sourceCode.getNode(sourceCode.ast.body, configurationPath)
+            : undefined;
     problems.push({
         type: CREATION_MODE_FOR_TABLE,
         messageId,
@@ -68,7 +75,8 @@ function reportDiagnostic(
         manifest: {
             uri: parsedApp.manifest.manifestUri,
             object: parsedApp.manifestObject,
-            propertyPath: configurationPath
+            propertyPath: configurationPath,
+            loc: node?.loc
         }
     });
 }
@@ -84,6 +92,7 @@ function reportDiagnostic(
  * @param pageName - Name of the page
  * @param parsedApp - Parsed application context
  * @param problems - Array to collect diagnostic problems
+ * @param sourceCode
  * @returns True, if an analytical table issue was found and reported. Otherwise, false
  */
 function checkAnalyticalTableV2(
@@ -93,14 +102,15 @@ function checkAnalyticalTableV2(
     appCreateMode: CreateModeConfig,
     pageName: string,
     parsedApp: ParsedApp,
-    problems: CreationModeForTable[]
+    problems: CreationModeForTable[],
+    sourceCode: FioriJSONSourceCode
 ): boolean {
     if (tableType !== 'AnalyticalTable') {
         return false;
     }
 
     if (sectionCreateMode.valueInFile) {
-        reportDiagnostic(problems, {
+        reportDiagnostic(problems, sourceCode, {
             messageId: 'analyticalTableNotSupported',
             pageName,
             parsedApp,
@@ -110,7 +120,7 @@ function checkAnalyticalTableV2(
         return true;
     }
     if (pageCreateMode.valueInFile) {
-        reportDiagnostic(problems, {
+        reportDiagnostic(problems, sourceCode, {
             messageId: 'analyticalTableNotSupported',
             pageName,
             parsedApp,
@@ -132,6 +142,7 @@ function checkAnalyticalTableV2(
  * @param parsedApp - Parsed application context
  * @param tableType - Type of the table
  * @param problems - Array to collect diagnostic problems
+ * @param sourceCode - FioriJSONSourceCode instance
  * @param pageSectionName - Name of the object page section where the issue occurs
  * @returns True, if a configuration is found and an issue reported. False, if no configuration exists
  */
@@ -141,6 +152,7 @@ function validateCreateModeV2(
     parsedApp: ParsedApp,
     tableType: string,
     problems: CreationModeForTable[],
+    sourceCode: FioriJSONSourceCode,
     pageSectionName?: string
 ): boolean {
     if (!createMode.valueInFile) {
@@ -148,7 +160,7 @@ function validateCreateModeV2(
     }
 
     if (!createMode.values.includes(createMode.valueInFile)) {
-        reportDiagnostic(problems, {
+        reportDiagnostic(problems, sourceCode, {
             messageId: 'invalidCreateMode',
             pageName,
             parsedApp,
@@ -162,7 +174,7 @@ function validateCreateModeV2(
     }
 
     if (createMode.valueInFile !== RECOMMENDED_MODE_V2) {
-        reportDiagnostic(problems, {
+        reportDiagnostic(problems, sourceCode, {
             messageId: 'recommendCreationRows',
             pageName,
             parsedApp,
@@ -184,6 +196,7 @@ function validateCreateModeV2(
  * @param appCreateMode - Application-level create mode configuration
  * @param parsedApp - Parsed application context
  * @param problems - Array to collect diagnostic problems
+ * @param sourceCode - FioriJSONSourceCode instance
  * @param pageSectionName - Name of the object page section where the issue occurs
  */
 function processTableV2(
@@ -192,6 +205,7 @@ function processTableV2(
     appCreateMode: CreateModeConfig,
     parsedApp: ParsedApp,
     problems: CreationModeForTable[],
+    sourceCode: FioriJSONSourceCode,
     pageSectionName?: string
 ): void {
     const sectionCreateMode = table.configuration.createMode;
@@ -207,26 +221,37 @@ function processTableV2(
             appCreateMode,
             page.targetName,
             parsedApp,
-            problems
+            problems,
+            sourceCode
         )
     ) {
         return;
     }
 
     // Check section, page, then app level
-    if (validateCreateModeV2(sectionCreateMode, page.targetName, parsedApp, tableType, problems, pageSectionName)) {
+    if (
+        validateCreateModeV2(
+            sectionCreateMode,
+            page.targetName,
+            parsedApp,
+            tableType,
+            problems,
+            sourceCode,
+            pageSectionName
+        )
+    ) {
         return;
     }
-    if (validateCreateModeV2(pageCreateMode, page.targetName, parsedApp, tableType, problems)) {
+    if (validateCreateModeV2(pageCreateMode, page.targetName, parsedApp, tableType, problems, sourceCode)) {
         return;
     }
-    if (validateCreateModeV2(appCreateMode, page.targetName, parsedApp, tableType, problems)) {
+    if (validateCreateModeV2(appCreateMode, page.targetName, parsedApp, tableType, problems, sourceCode)) {
         return;
     }
 
     // Suggest app level only once
     if (!problems.some((p) => p.messageId === 'suggestAppLevel' && p.manifest.uri === parsedApp.manifest.manifestUri)) {
-        reportDiagnostic(problems, {
+        reportDiagnostic(problems, sourceCode, {
             messageId: 'suggestAppLevel',
             pageName: '',
             parsedApp,
@@ -247,6 +272,7 @@ function processTableV2(
  * @param pageName - Name of the page
  * @param parsedApp - Parsed application context
  * @param problems - Array to collect diagnostic problems
+ * @param sourceCode
  * @returns True, if an analytical table issue was found and reported. Otherwise, false
  */
 function checkAnalyticalTableV4(
@@ -255,7 +281,8 @@ function checkAnalyticalTableV4(
     appCreateMode: CreateModeConfig,
     pageName: string,
     parsedApp: ParsedApp,
-    problems: CreationModeForTable[]
+    problems: CreationModeForTable[],
+    sourceCode: FioriJSONSourceCode
 ): boolean {
     if (tableType !== 'AnalyticalTable') {
         return false;
@@ -264,7 +291,7 @@ function checkAnalyticalTableV4(
     if (tableCreationMode.valueInFile) {
         // Remove 'name' segment to delete the entire creationMode object
         const pathWithoutName = tableCreationMode.configurationPath.slice(0, -1);
-        reportDiagnostic(problems, {
+        reportDiagnostic(problems, sourceCode, {
             messageId: 'analyticalTableNotSupported',
             pageName,
             parsedApp,
@@ -300,6 +327,7 @@ function getRecommendedValueV4(tableType: string): string {
  * @param recommendedValue - The recommended value for this table type
  * @param problems - Array to collect diagnostic problems
  * @param shouldSuggestAppLevel - Whether to report on page level or not based on app level suggestion
+ * @param sourceCode
  * @returns True, if a configuration was found and issue was reported. False, if no configuration exists
  */
 function validateCreationModeV4(
@@ -309,7 +337,8 @@ function validateCreationModeV4(
     tableType: string,
     recommendedValue: string,
     problems: CreationModeForTable[],
-    shouldSuggestAppLevel: boolean
+    shouldSuggestAppLevel: boolean,
+    sourceCode: FioriJSONSourceCode
 ): boolean {
     const value = creationMode.valueInFile;
     if (value === undefined && shouldSuggestAppLevel === true) {
@@ -318,7 +347,7 @@ function validateCreationModeV4(
     const validValues = creationMode.values;
     // If shouldSuggestAppLevel is false, we MUST report on page level. (missing configuration)
     if (!value) {
-        reportDiagnostic(problems, {
+        reportDiagnostic(problems, sourceCode, {
             messageId: 'invalidCreateModeV4',
             pageName: page.name,
             parsedApp,
@@ -332,7 +361,7 @@ function validateCreationModeV4(
     }
 
     if (!validValues.includes(value)) {
-        reportDiagnostic(problems, {
+        reportDiagnostic(problems, sourceCode, {
             messageId: 'invalidCreateModeV4',
             pageName: page.name,
             parsedApp,
@@ -346,7 +375,7 @@ function validateCreationModeV4(
     }
 
     if (value !== recommendedValue) {
-        reportDiagnostic(problems, {
+        reportDiagnostic(problems, sourceCode, {
             messageId: 'recommendInlineCreationRowsV4',
             pageName: page.name,
             parsedApp,
@@ -371,6 +400,7 @@ function validateCreationModeV4(
  * @param parsedApp - Parsed application context
  * @param problems - Array to collect diagnostic problems
  * @param shouldSuggestAppLevel - Whether to suggest app-level configuration (only if all tables have same recommended value)
+ * @param sourceCode - FioriJSONSourceCode instance
  * @param pageSectionName - Name of the object page section where the issue occurs
  */
 function processTableV4(
@@ -380,13 +410,24 @@ function processTableV4(
     parsedApp: ParsedApp,
     problems: CreationModeForTable[],
     shouldSuggestAppLevel: boolean,
+    sourceCode: FioriJSONSourceCode,
     pageSectionName?: string
 ): void {
     const tableCreationMode = table.configuration.creationMode;
     const tableType = table.configuration.tableType?.valueInFile ?? '';
 
     // Check analytical table
-    if (checkAnalyticalTableV4(tableType, tableCreationMode, appCreateMode, page.targetName, parsedApp, problems)) {
+    if (
+        checkAnalyticalTableV4(
+            tableType,
+            tableCreationMode,
+            appCreateMode,
+            page.targetName,
+            parsedApp,
+            problems,
+            sourceCode
+        )
+    ) {
         return;
     }
 
@@ -401,7 +442,8 @@ function processTableV4(
             tableType,
             recommendedValue,
             problems,
-            shouldSuggestAppLevel
+            shouldSuggestAppLevel,
+            sourceCode
         )
     ) {
         return;
@@ -411,7 +453,7 @@ function processTableV4(
     if (appCreateMode.valueInFile) {
         const validValues = appCreateMode.values;
         if (!validValues.includes(appCreateMode.valueInFile)) {
-            reportDiagnostic(problems, {
+            reportDiagnostic(problems, sourceCode, {
                 messageId: 'invalidCreateModeV4',
                 pageName: page.targetName,
                 parsedApp,
@@ -423,7 +465,7 @@ function processTableV4(
             return;
         }
         if (appCreateMode.valueInFile !== recommendedValue) {
-            reportDiagnostic(problems, {
+            reportDiagnostic(problems, sourceCode, {
                 messageId: 'recommendInlineCreationRowsV4',
                 pageName: page.targetName,
                 parsedApp,
@@ -441,7 +483,7 @@ function processTableV4(
         shouldSuggestAppLevel &&
         !problems.some((p) => p.messageId === 'suggestAppLevelV4' && p.manifest.uri === parsedApp.manifest.manifestUri)
     ) {
-        reportDiagnostic(problems, {
+        reportDiagnostic(problems, sourceCode, {
             messageId: 'suggestAppLevelV4',
             pageName: '',
             parsedApp,
@@ -483,7 +525,15 @@ function processV2Apps(
             for (const tableSection of page.sections.filter((section) => section.type === 'table-section')) {
                 const table = tableSection.children.find((element) => element.type === 'table');
                 if (table) {
-                    processTableV2(table, page, appCreateMode, parsedApp, problems, tableSection.annotation?.label);
+                    processTableV2(
+                        table,
+                        page,
+                        appCreateMode,
+                        parsedApp,
+                        problems,
+                        context.sourceCode as FioriJSONSourceCode,
+                        tableSection.annotation?.label
+                    );
                 }
             }
         }
@@ -559,6 +609,7 @@ function processV4Apps(
                         parsedApp,
                         problems,
                         shouldSuggestAppLevel,
+                        context.sourceCode as FioriJSONSourceCode,
                         tableSection.annotation?.label
                     );
                 }
@@ -593,6 +644,9 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
         fixable: 'code'
     },
     check(context) {
+        if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
+            return [];
+        }
         const problems: CreationModeForTable[] = [];
 
         processV2Apps(context, problems);

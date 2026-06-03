@@ -6,6 +6,8 @@ import type { ParsedApp } from '../project-context/parser/index.js';
 import type { FeV4PageType, Table } from '../project-context/linker/fe-v4.js';
 import { createJsonFixer } from '../language/rule-fixer.js';
 import { checkAppTablesConfiguration } from '../utils/helpers.js';
+import { FioriJSONSourceCode } from '../language/json/source-code.js';
+import type { FioriSourceCode } from '../language/fiori-language.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: ENABLE_EXPORT,
@@ -23,6 +25,9 @@ const rule: FioriRuleDefinition = createFioriRule({
     },
 
     check(context) {
+        if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
+            return [];
+        }
         const problems: EnableExport[] = [];
 
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
@@ -34,7 +39,9 @@ const rule: FioriRuleDefinition = createFioriRule({
             if (app.type === 'fe-v4') {
                 for (const page of app.pages) {
                     problems.push(
-                        ...(<EnableExport[]>checkAppTablesConfiguration(page, parsedApp, checkConfiguration))
+                        ...(<EnableExport[]>(
+                            checkAppTablesConfiguration(page, parsedApp, context.sourceCode, checkConfiguration)
+                        ))
                     );
                 }
             }
@@ -62,6 +69,7 @@ const rule: FioriRuleDefinition = createFioriRule({
  * @param page
  * @param table
  * @param parsedApp
+ * @param sourceCode
  * @param problems
  * @param pageSectionName
  */
@@ -69,10 +77,15 @@ function checkConfiguration(
     page: FeV4PageType,
     table: Table,
     parsedApp: ParsedApp,
+    sourceCode: FioriSourceCode,
     problems: EnableExport[],
     pageSectionName?: string
 ): void {
     if (table.configuration.enableExport.valueInFile === false) {
+        const node =
+            sourceCode instanceof FioriJSONSourceCode
+                ? sourceCode.getNode(sourceCode.ast.body, table.configuration.enableExport.configurationPath)
+                : undefined;
         problems.push({
             type: ENABLE_EXPORT,
             pageName: page.targetName,
@@ -80,7 +93,8 @@ function checkConfiguration(
             manifest: {
                 uri: parsedApp.manifest.manifestUri,
                 object: parsedApp.manifestObject,
-                propertyPath: table.configuration.enableExport.configurationPath
+                propertyPath: table.configuration.enableExport.configurationPath,
+                loc: node?.loc
             }
         });
     }

@@ -11,6 +11,8 @@ import type { FeV4ObjectPage, FeV4ListReport, Table } from '../project-context/l
 import type { ParsedApp, ParsedService } from '../project-context/parser/index.js';
 import { createJsonFixer } from '../language/rule-fixer.js';
 import { isLowerThanMinimalUi5Version } from '../utils/version.js';
+import { FioriJSONSourceCode } from '../language/json/source-code.js';
+import type { FioriSourceCode } from '../language/fiori-language.js';
 
 export type RequireWidthIncludingColumnHeaderOptions = {
     form: string;
@@ -54,6 +56,7 @@ function shouldTableHaveWidthIncludingColumnHeader(table: Table, aliasInfo: Alia
  * @param parsedApp - Parsed application containing manifest.json file data
  * @param parsedService - Parsed service containing metadata and annotations
  * @param problems - Array to collect diagnostic problems
+ * @param sourceCode - FioriJSONSourceCode instance
  * @param tableSectionName - Label of the object page section
  */
 function checkTable(
@@ -62,6 +65,7 @@ function checkTable(
     parsedApp: ParsedApp,
     parsedService: ParsedService,
     problems: WidthIncludingColumnHeaderDiagnostic[],
+    sourceCode: FioriSourceCode,
     tableSectionName?: string
 ): void {
     if (!table?.annotation) {
@@ -70,6 +74,13 @@ function checkTable(
     const aliasInfo = parsedService.artifacts.aliasInfo[table.annotation.annotation.top.uri];
 
     if (shouldTableHaveWidthIncludingColumnHeader(table, aliasInfo)) {
+        const node =
+            sourceCode instanceof FioriJSONSourceCode
+                ? sourceCode.getNode(
+                      sourceCode.ast.body,
+                      table.configuration.widthIncludingColumnHeader.configurationPath
+                  )
+                : undefined;
         problems.push({
             type: WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
             pageName: page.targetName,
@@ -77,7 +88,8 @@ function checkTable(
             manifest: {
                 uri: parsedApp.manifest.manifestUri,
                 object: parsedApp.manifestObject,
-                propertyPath: table.configuration.widthIncludingColumnHeader.configurationPath
+                propertyPath: table.configuration.widthIncludingColumnHeader.configurationPath,
+                loc: node?.loc
             },
             annotation: {
                 file: table.annotation.annotation.source,
@@ -94,22 +106,24 @@ function checkTable(
  * @param page - SAP Fiori elements for OData V4 page to check (object page or list report)
  * @param parsedApp - Parsed application containing manifest.json file data
  * @param parsedService - Parsed service containing metadata and annotations
+ * @param sourceCode - FioriSourceCode instance
  * @param problems - Array to collect diagnostic problems
  */
 function checkTablesInPage(
     page: FeV4ListReport | FeV4ObjectPage,
     parsedApp: ParsedApp,
     parsedService: ParsedService,
+    sourceCode: FioriSourceCode,
     problems: WidthIncludingColumnHeaderDiagnostic[]
 ): void {
     if (page.type === 'list-report-page') {
         for (const table of page.lookup['table'] ?? []) {
-            checkTable(page, table, parsedApp, parsedService, problems);
+            checkTable(page, table, parsedApp, parsedService, problems, sourceCode);
         }
     } else if (page.type === 'object-page') {
         for (const tableSection of page.sections.filter((section) => section.type === 'table-section')) {
             const table = tableSection.children.find((element) => element.type === 'table');
-            checkTable(page, table, parsedApp, parsedService, problems, tableSection.annotation?.label);
+            checkTable(page, table, parsedApp, parsedService, problems, sourceCode, tableSection.annotation?.label);
         }
     }
 }
@@ -152,7 +166,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                     continue;
                 }
 
-                checkTablesInPage(page, parsedApp, parsedService, problems);
+                checkTablesInPage(page, parsedApp, parsedService, context.sourceCode, problems);
             }
         }
 

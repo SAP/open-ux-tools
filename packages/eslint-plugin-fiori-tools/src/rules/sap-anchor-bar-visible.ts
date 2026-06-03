@@ -3,6 +3,7 @@ import { ANCHOR_BAR_VISIBLE, type AnchorBarVisible } from '../language/diagnosti
 import { createFioriRule } from '../language/rule-factory.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import { createJsonFixer } from '../language/rule-fixer.js';
+import { FioriJSONSourceCode } from '../language/json/source-code.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: ANCHOR_BAR_VISIBLE,
@@ -22,6 +23,9 @@ const rule: FioriRuleDefinition = createFioriRule({
     },
 
     check(context) {
+        if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
+            return [];
+        }
         const problems: AnchorBarVisible[] = [];
 
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
@@ -40,13 +44,18 @@ const rule: FioriRuleDefinition = createFioriRule({
                 const headerVisible = page.header.visible.valueInFile;
 
                 if (anchorBarVisible === false && headerVisible !== false) {
+                    const node = context.sourceCode.getNode(
+                        context.sourceCode.ast.body,
+                        page.header.anchorBarVisible.configurationPath
+                    );
                     problems.push({
                         type: ANCHOR_BAR_VISIBLE,
                         pageName: page.targetName,
                         manifest: {
                             uri: parsedApp.manifest.manifestUri,
                             object: parsedApp.manifestObject,
-                            propertyPath: page.header.anchorBarVisible.configurationPath
+                            propertyPath: page.header.anchorBarVisible.configurationPath,
+                            loc: node?.loc
                         }
                     });
                 }
