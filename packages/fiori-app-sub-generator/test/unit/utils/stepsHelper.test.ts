@@ -8,7 +8,7 @@ import {
     STEP_FLOORPLAN,
     STEP_FLP_CONFIG,
     STEP_PROJECT_ATTRIBUTES
-} from '../../../src/types/constants';
+} from '../../../src/types/constants.js';
 import { initI18nFioriAppSubGenerator, t } from '../../../src/utils/i18n.js';
 import {
     getYeomanUiStepConfig,
@@ -16,7 +16,7 @@ import {
     hasStep,
     updateDependentStep,
     validateNextStep
-} from '../../../src/utils/stepsHelper';
+} from '../../../src/utils/stepsHelper.js';
 
 describe('utils/stepsHelper.ts', () => {
     beforeAll(async () => {

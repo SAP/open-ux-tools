@@ -24,7 +24,7 @@ import reducer, {
     filterNodes,
     setFeatureToggles,
     setProjectScenario
-} from '../../src/slice';
+} from '../../src/slice.js';
 
 describe('main redux slice', () => {
     describe('property changed', () => {

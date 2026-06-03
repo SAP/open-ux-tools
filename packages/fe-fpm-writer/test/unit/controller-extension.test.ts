@@ -9,7 +9,7 @@ import { ControllerExtensionPageType } from '../../src/controller-extension/type
 import {
     UI5_CONTROLLER_EXTENSION_LIST_REPORT,
     UI5_CONTROLLER_EXTENSION_OBJECT_PAGE
-} from '../../src/controller-extension';
+} from '../../src/controller-extension/index.js';
 import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file.js';
 import { tabSizingTestCases } from '../common/index.js';
 

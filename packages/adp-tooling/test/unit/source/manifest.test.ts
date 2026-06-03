@@ -11,7 +11,7 @@ import {
     getFioriId,
     isSyncLoadedView,
     isV4Application
-} from '../../../src';
+} from '../../../src/index.js';
 
 describe('SourceManifest', () => {
     let sourceManifest: SourceManifest;

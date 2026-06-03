@@ -5,7 +5,7 @@ import {
     showWorkspaceFolderWarning,
     handleWorkspaceFolderChoice,
     workspaceChoices
-} from '../../../src/utils/workspace';
+} from '../../../src/utils/workspace.js';
 import { initI18n } from '../../../src/utils/i18n.js';
 
 describe('workspace', () => {

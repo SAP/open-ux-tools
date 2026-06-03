@@ -11,7 +11,7 @@ import {
     proxyErrorHandler,
     updateProxyEnv,
     getPathRewrite
-} from '../../src/base/utils';
+} from '../../src/base/utils.js';
 import type { Response } from 'express';
 import fs from 'node:fs';
 import * as baseUtils from '../../src/base/utils.js';

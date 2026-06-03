@@ -14,7 +14,7 @@ import {
     createInsertAnnotationChange,
     createInsertRecordPropertyChange,
     createMoveCollectionChange
-} from '../../../src/cds/change';
+} from '../../../src/cds/change.js';
 import { CDSWriter } from '../../../src/cds/writer.js';
 
 import { applyTextEdits } from '../apply-edits.js';

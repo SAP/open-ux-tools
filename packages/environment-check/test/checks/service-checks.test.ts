@@ -4,7 +4,7 @@ import {
     checkTransportRequests,
     checkCatalogServices,
     getServiceProvider
-} from '../../src/checks/service-checks';
+} from '../../src/checks/service-checks.js';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { Severity } from '../../src/types.js';
 import type { AxiosError } from 'axios';

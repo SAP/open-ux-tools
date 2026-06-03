@@ -5,7 +5,7 @@ import {
     getServicesAndAnnotations,
     filterDataSourcesByType,
     getUsedEntitiesFromManifest
-} from '../../src/project/service';
+} from '../../src/project/service.js';
 
 describe('Test getMainService()', () => {
     test('No manifest', () => {

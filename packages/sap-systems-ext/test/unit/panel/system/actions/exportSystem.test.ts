@@ -41,7 +41,7 @@ describe('Test the export system action', () => {
     it('should call writeFileSync to export the system', async () => {
         systemServiceReadMock.mockResolvedValue(backendSystem);
         const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {});
-        const showInformationMessageSpy = jest.spyOn(vscodeMod.window, 'showInformationMessage').mockImplementation(() => {});
+        const showInformationMessageSpy = jest.spyOn(vscodeMod.window, 'showInformationMessage').mockImplementation((() => {}) as unknown as any);
         const showSaveDialogSpy = jest
             .spyOn(panelActionUtils, 'showFileSaveDialog')
             .mockResolvedValue({ fsPath: '/mock/path/system.json' } as vscodeMod.Uri);
@@ -85,7 +85,7 @@ describe('Test the export system action', () => {
         const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync').mockImplementationOnce(() => {
             throw new Error('Writing failure');
         });
-        const showErrorMessageSpy = jest.spyOn(vscodeMod.window, 'showErrorMessage').mockImplementation(() => {});
+        const showErrorMessageSpy = jest.spyOn(vscodeMod.window, 'showErrorMessage').mockImplementation((() => {}) as unknown as any);
         const showSaveDialogSpy = jest
             .spyOn(panelActionUtils, 'showFileSaveDialog')
             .mockResolvedValue({ fsPath: '/mock/path/system.json' } as vscodeMod.Uri);
@@ -133,7 +133,7 @@ describe('Test the export system action', () => {
         };
         systemServiceReadMock.mockResolvedValue(systemWithoutClient);
         const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {});
-        const showInformationMessageSpy = jest.spyOn(vscodeMod.window, 'showInformationMessage').mockImplementation(() => {});
+        const showInformationMessageSpy = jest.spyOn(vscodeMod.window, 'showInformationMessage').mockImplementation((() => {}) as unknown as any);
         const showSaveDialogSpy = jest
             .spyOn(panelActionUtils, 'showFileSaveDialog')
             .mockResolvedValue({ fsPath: '/mock/path/odata-system.json' } as vscodeMod.Uri);
@@ -168,7 +168,7 @@ describe('Test the export system action', () => {
     it('should not export if file path is not provided', async () => {
         systemServiceReadMock.mockResolvedValue(backendSystem);
         const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {});
-        const showInformationMessageSpy = jest.spyOn(vscodeMod.window, 'showInformationMessage').mockImplementation(() => {});
+        const showInformationMessageSpy = jest.spyOn(vscodeMod.window, 'showInformationMessage').mockImplementation((() => {}) as unknown as any);
         const showSaveDialogSpy = jest.spyOn(panelActionUtils, 'showFileSaveDialog').mockResolvedValue(undefined);
 
         await exportSystem({} as any, {

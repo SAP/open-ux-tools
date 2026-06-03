@@ -5,7 +5,7 @@ import {
     isSyncView,
     getSyncViewIds,
     resetSyncViews
-} from '../../../src/adp/sync-views-utils';
+} from '../../../src/adp/sync-views-utils.js';
 import Element from 'mock/sap/ui/core/Element';
 import Log from 'mock/sap/base/Log';
 import ElementRegistry from 'mock/sap/ui/core/ElementRegistry';

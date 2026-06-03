@@ -14,7 +14,7 @@ import {
     updateManifestJSON,
     updatePackageJSON,
     writeFile
-} from '../../src/file';
+} from '../../src/file/index.js';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { promises } from 'node:fs';

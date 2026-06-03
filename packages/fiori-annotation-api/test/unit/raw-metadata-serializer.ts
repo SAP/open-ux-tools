@@ -21,7 +21,7 @@ import type {
     AnnotationWithOrigin,
     CollectionExpressionWithOrigins,
     RecordWithOrigins
-} from '../../src/avt/annotations';
+} from '../../src/avt/annotations.js';
 
 import { toUnifiedUri } from '../../src/cds/utils.js';
 import { isAnnotation, isAnnotationList, isCollection, isRecord } from '../../src/avt/index.js';

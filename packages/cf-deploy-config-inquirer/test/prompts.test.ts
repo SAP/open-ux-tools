@@ -26,7 +26,7 @@ import type {
     CfSystemChoice,
     CfDeployConfigQuestions,
     DestinationNamePromptOptions
-} from '../src/types';
+} from '../src/types.js';
 import { RouterModuleType } from '../src/types.js';
 import { type ListQuestion, type YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Logger } from '@sap-ux/logger';

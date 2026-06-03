@@ -6,7 +6,7 @@ import {
     getDestinationProjectRoot,
     nodeModulesUpToDate,
     storePackageJsonHash
-} from '../../../src/project/project';
+} from '../../../src/project/project.js';
 import { copyProject } from '../../../src/project/copy.js';
 import type { CopyOptions } from '../../../src/types.js';
 import { pathExists, ensureDir } from 'fs-extra';

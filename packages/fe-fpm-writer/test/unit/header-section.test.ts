@@ -10,7 +10,7 @@ import {
     DesignTime,
     type HeaderSectionEditProperty,
     type CustomHeaderSection
-} from '../../src/section/types';
+} from '../../src/section/types.js';
 import type { Manifest } from '../../src/common/types.js';
 import { Placement } from '../../src/common/types.js';
 import manifestSections from './sample/section/webapp/manifest.json';

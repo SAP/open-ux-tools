@@ -13,7 +13,7 @@ import {
     fioriAppSourcetemplateId,
     extractedFilePath,
     qfaJsonFileName
-} from '../src/utils/constants';
+} from '../src/utils/constants.js';
 import fsExtra from 'fs-extra';
 const { removeSync } = fsExtra;
 import { t } from '../src/utils/i18n.js';

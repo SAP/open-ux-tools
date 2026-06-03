@@ -9,7 +9,7 @@ import {
     V4_ANNOTATIONS,
     V4_ANNOTATIONS_PATH,
     V4_FACETS_ANNOTATIONS
-} from '../test-helper';
+} from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },

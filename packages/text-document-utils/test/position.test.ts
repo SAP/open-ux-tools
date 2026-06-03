@@ -7,7 +7,7 @@ import {
     indentWithTabs,
     indentWithSpaces,
     positionAt
-} from '../src/position';
+} from '../src/position.js';
 import { printOptions } from '../src/text-formatting.js';
 import { Position, Range } from 'vscode-languageserver-types';
 

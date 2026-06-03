@@ -10,7 +10,7 @@ import {
     PATTERN_SUFFIX,
     validatePageConfig,
     initializeTargetSettings
-} from '../../../src/page/common';
+} from '../../../src/page/common.js';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { CustomPage, FpmPage } from '../../../src/page/types.js';
 

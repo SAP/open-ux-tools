@@ -8,7 +8,7 @@ import {
     getFlpConfigWithDefaults,
     getPreviewPaths,
     remapResourcesForPath
-} from '../../../src/base/config';
+} from '../../../src/base/config.js';
 import { mergeTestConfigDefaults } from '../../../src/base/test.js';
 import type { MiddlewareConfig } from '../../../src/index.js';
 import { dirname, join } from 'node:path';

@@ -11,7 +11,7 @@ import {
     getSubGenErrorPage,
     getSubGenAuthPages,
     getKeyUserImportPage
-} from '../../../src/utils/steps';
+} from '../../../src/utils/steps.js';
 import { initI18n, t } from '../../../src/utils/i18n.js';
 
 describe('Wizard Steps Utility', () => {

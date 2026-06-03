@@ -8,7 +8,7 @@ import {
     extendValidate,
     extendWithOptions,
     withCondition
-} from '../../../src/prompts/helpers';
+} from '../../../src/prompts/helpers.js';
 import type { PromptDefaultValue, YUIQuestion } from '../../../src/types.js';
 
 describe('prompt helpers', () => {

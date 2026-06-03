@@ -9,7 +9,7 @@ import {
     transformCstForAssertion,
     doesExits,
     getBase
-} from './utils';
+} from './utils/index.js';
 import type { Position } from '@sap-ux/text-document-utils';
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';

@@ -11,7 +11,7 @@ import type {
     AdpWriterConfig,
     App,
     ToolsSupport
-} from '../../../src';
+} from '../../../src/index.js';
 import type { KeyUserChangeContent } from '@sap-ux/axios-extension';
 
 // Pre-load actual modules before mocking

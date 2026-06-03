@@ -7,7 +7,7 @@ import {
     validateProjectFolder,
     validateNamespace,
     validateLibModuleName
-} from '../src/ui5/validators';
+} from '../src/ui5/validators.js';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 

@@ -11,7 +11,7 @@ import {
     findProjectRoot,
     findRootsForPath,
     getAppRootFromWebappPath
-} from '../../src';
+} from '../../src/index.js';
 
 /**
  * To get CAP project type we call cds --version using child_process.spawn() and cache global install path.

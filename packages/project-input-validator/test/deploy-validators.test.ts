@@ -4,7 +4,7 @@ import {
     validateAppName,
     validatePackage,
     validateTransportRequestNumber
-} from '../src/deploy/validators';
+} from '../src/deploy/validators.js';
 
 describe('project input validators', () => {
     describe('validateAppName', () => {

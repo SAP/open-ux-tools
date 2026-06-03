@@ -8,7 +8,7 @@ import {
     validateMaxLength,
     validateAllowedCharacters,
     validateWindowsPathLength
-} from '../src/general/validators';
+} from '../src/general/validators.js';
 import { initI18nProjectValidators, t } from '../src/i18n.js';
 
 describe('project input validators', () => {

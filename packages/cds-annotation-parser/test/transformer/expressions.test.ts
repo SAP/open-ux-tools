@@ -2,7 +2,7 @@ import {
     getEdmOperatorMap,
     positionIsInExpressionWhiteSpace,
     containsIncorrectExpressions
-} from '../../src/transformer/expressions';
+} from '../../src/transformer/expressions.js';
 import type { CorrectExpression, IncorrectExpression, Path } from '../../src/index.js';
 import {
     CORRECT_EXPRESSION_TYPE,
@@ -10,7 +10,7 @@ import {
     INCORRECT_EXPRESSION_TYPE,
     OPERATOR_TYPE,
     PATH_TYPE
-} from '../../src';
+} from '../../src/index.js';
 import { Range } from '@sap-ux/odata-annotation-core';
 
 describe('getEdmOperatorMap', () => {

@@ -10,7 +10,7 @@ import {
     V4_FACETS_ANNOTATIONS,
     V4_MANIFEST,
     V4_MANIFEST_PATH
-} from '../test-helper';
+} from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },

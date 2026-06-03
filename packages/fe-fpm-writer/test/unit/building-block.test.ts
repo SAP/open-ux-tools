@@ -15,7 +15,7 @@ import type {
     CustomFilterField,
     CustomFormField,
     Action
-} from '../../src';
+} from '../../src/index.js';
 
 import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } from '../../src/index.js';
 import { BUILDING_BLOCK_CONFIG } from '../../src/building-block/processor.js';

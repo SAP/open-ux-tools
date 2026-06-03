@@ -9,7 +9,7 @@ import {
     mockCreateForDestination,
     MockToolsLogger,
     MockNullTransport
-} from '../../__mocks__';
+} from '../../__mocks__/index.js';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { AbapTarget } from '../../../src/types.js';
 

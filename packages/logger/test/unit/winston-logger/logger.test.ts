@@ -8,7 +8,7 @@ import {
     NullTransport,
     UI5ToolingTransport,
     VSCodeTransport
-} from '../../../src/transports';
+} from '../../../src/transports/index.js';
 import { NullTransport as WinstonNullTransport } from '../../../src/winston-logger/null-transport.js';
 import { VSCodeTransport as WinstonVSCodeTransport } from '../../../src/winston-logger/vscode-output-channel-transport.js';
 import winston from 'winston';

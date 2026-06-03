@@ -13,7 +13,7 @@ import {
     Ui5AbapRepositoryService,
     AppIndexService,
     LayeredRepositoryService
-} from '../../src';
+} from '../../src/index.js';
 import { UI5VersionService } from '../../src/abap/ui5-version-service.js';
 
 /**

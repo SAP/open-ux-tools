@@ -7,7 +7,7 @@ import {
     appConfigNotSupportedVersion,
     appConfigDest,
     appConfigWithValueListMetadata
-} from './test-data/testHeadlessAppConfigs';
+} from './test-data/testHeadlessAppConfigs.js';
 
 /**
  * Most coverage is achieved via the @sap/fiori-elements-generator integration tests currently.

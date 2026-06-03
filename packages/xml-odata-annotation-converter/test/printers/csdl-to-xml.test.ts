@@ -5,7 +5,7 @@ import {
     unescapeText,
     unescapeAttribute,
     escapeText
-} from '../../src/printer/csdl-to-xml';
+} from '../../src/printer/csdl-to-xml.js';
 import type { Element, TextNode } from '@sap-ux/odata-annotation-core';
 import { ELEMENT_TYPE, ATTRIBUTE_TYPE, TEXT_TYPE, printOptions } from '@sap-ux/odata-annotation-core';
 

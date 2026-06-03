@@ -23,7 +23,7 @@ import {
     createDeleteAnnotationGroupItemsChange,
     createInsertEmbeddedAnnotationChange,
     createMoveCollectionChange
-} from '../../../src/cds/change';
+} from '../../../src/cds/change.js';
 import { preprocessChanges } from '../../../src/cds/preprocessor.js';
 
 import { getDocument } from '../../../src/cds/document.js';

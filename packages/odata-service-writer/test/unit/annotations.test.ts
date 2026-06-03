@@ -7,7 +7,7 @@ import {
     removeAnnotationsFromCDSFiles,
     removeRemoteServiceAnnotationXmlFiles,
     updateCdsFilesWithAnnotations
-} from '../../src/data/annotations';
+} from '../../src/data/annotations.js';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';

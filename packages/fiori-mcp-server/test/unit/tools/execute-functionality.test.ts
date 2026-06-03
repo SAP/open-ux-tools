@@ -10,7 +10,7 @@ import {
     mockSpecificationReadApp,
     mockSpecificationReadAppWithModel,
     readAppWithModel
-} from '../utils';
+} from '../utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

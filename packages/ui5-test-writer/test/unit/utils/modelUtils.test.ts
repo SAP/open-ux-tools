@@ -10,7 +10,7 @@ import {
     getSelectionFieldItems,
     getFilterFields,
     getAppFeatures
-} from '../../../src/utils/modelUtils';
+} from '../../../src/utils/modelUtils.js';
 import type { Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 

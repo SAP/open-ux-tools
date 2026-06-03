@@ -18,7 +18,7 @@ import {
     mockCreateForAbap,
     mockedAdtService,
     mockedLrepService
-} from '../../__mocks__';
+} from '../../__mocks__/index.js';
 
 // Mock validate module to allow spying on ESM exports
 const validateBeforeDeployMock = jest.fn<any>().mockResolvedValue({ result: true, summary: [] });

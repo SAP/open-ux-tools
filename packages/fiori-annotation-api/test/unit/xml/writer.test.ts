@@ -19,7 +19,7 @@ import {
     insertElement,
     UPDATE_ATTRIBUTE_NAME,
     MOVE_COLLECTION_VALUE
-} from '../../../src/xml/changes';
+} from '../../../src/xml/changes.js';
 import { XMLWriter } from '../../../src/xml/writer.js';
 
 import { applyTextEdits } from '../apply-edits.js';
@@ -32,7 +32,7 @@ import {
     INSERT_ELEMENT,
     UPDATE_ATTRIBUTE_VALUE,
     UPDATE_ELEMENT_NAME
-} from '../../../src/types';
+} from '../../../src/types/index.js';
 
 function parseXML(text: string): [XMLDocument, Comment[]] {
     const { cst, tokenVector } = parse(text);

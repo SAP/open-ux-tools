@@ -16,7 +16,7 @@ import {
     ignoreMatcherOpts,
     originalCwd,
     runWritingPhaseGen
-} from '../test-utils';
+} from '../test-utils/index.js';
 import { baseTestProject, getExpectedOutputPath, v4EntityConfig, v4Service } from './test-utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
