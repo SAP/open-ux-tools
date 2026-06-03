@@ -1,179 +1,123 @@
 ---
 name: sap-fiori-add-visual-filter
-description: 'Add visual filters with charts to SAP Fiori Elements value help dialogs. Use for: displaying aggregated data in filter fields, adding bar/column/line/donut charts to value help, configuring Analytics.AggregatedProperty with sum/average/min/max, setting up @Aggregation.ApplySupported, configuring manifest.json for visual filters, implementing OData V4 aggregation in CAP projects, enhancing List Report filter bars with visual analytics.'
-argument-hint: 'field name to add visual filter to (e.g., "Category", "Status", "Region")'
+description: 'Add visual filters with charts to SAP Fiori Elements filter bar. Use when: adding interactive charts to filter fields, displaying aggregated data as visual filters, adding bar or line charts to filter bar, configuring visual filters with aggregation, implementing OData V4 visual filters in Fiori Elements applications.'
+argument-hint: 'Filter field name, dimension field, measure field, chart type (Bar/Line)'
 metadata:
   author: sap-fiori-tools
-  version: "0.0.3"
+  version: "0.0.4"
 ---
 
-# Add Visual Filter Bar to SAP Fiori Elements Application
+# Add Visual Filter to SAP Fiori Elements Filter Bar
 
-## Purpose
-This skill guides you through adding a visual filter to a value help dialog in SAP Fiori Elements applications. Visual filters display aggregated data as charts (bar, column, line, or donut) to help users filter data visually.
+Add a visual filter with a chart to a filter field in SAP Fiori Elements applications. Visual filters display aggregated data as interactive charts to help users filter data visually.
 
-## When to Use This Skill
-- Adding visual filters to value help dialogs on filter fields
-- Enhancing user experience with graphical data representations
-- Displaying aggregated data (sum, average, min, max) in filter selections
-- Implementing analytics features in Fiori Elements OData V4 applications
+## When to Use
+
+- Add interactive visual charts directly to the filter bar
+- Display aggregated metrics as visual filter fields
+- Enable users to filter by viewing aggregated data in charts
+- Enhance filter bar with visual analytics
+- Show distribution or trends in filter options
+- Implement analytics features in OData V4 filter bars
 
 ## Prerequisites
-- SAP CAP project with OData V4 service
-- SAP Fiori Elements application (List Report or Analytical List Page)
-- An entity with properties that can be aggregated
-- Basic understanding of CDS annotations and manifest.json configuration
 
-## Implementation Steps
+- Existing SAP Fiori Elements List Report application (OData V4)
+- Backend service (CAP or ABAP RAP) with entity model
+- Entity with numeric fields for aggregation
+- Dimension field for grouping and filtering
 
-### Step 1: Enable Aggregation Support in Service Definition
-Add `@Aggregation.ApplySupported` annotation to the entity in your service file (e.g., `srv/service.cds`):
+## Backend Types
 
-```cds
-service YourService {
-  entity YourEntity as projection on schema.YourEntity;
-}
+This skill supports two backend types. Choose the appropriate guide:
 
-annotate YourService.YourEntity with @Aggregation.ApplySupported: {
-  Transformations: ['aggregate', 'groupby'],
-  AggregatableProperties: [
-    { Property: MeasureField }  // e.g., Amount, Price, Quantity, Revenue
-  ],
-  GroupableProperties: [
-    DimensionField1,  // e.g., Status, Category, Region, Department
-    DimensionField2,
-    // ... other fields that can be grouped
-  ]
-};
-```
+### Quick Reference: CAP vs RAP Key Differences
 
-**Key Points:**
-- The annotation must be applied directly to the entity, not the service block
-- Use `annotate ServiceName.EntityName with @Aggregation.ApplySupported` after the service definition
-- `AggregatableProperties`: Numeric fields that can be summed, averaged, etc. (measures)
-- `GroupableProperties`: Fields to group by (dimensions)
-- Both properties are required for visual filters to work
+| Aspect | CAP Projects | RAP/ABAP Projects |
+|--------|--------------|-------------------|
+| **Chart Measures** | `DynamicMeasures` + DataPoint | `Measures` with direct PropertyPath |
+| **Backend Aggregation** | `@Aggregation.ApplySupported` + `@Analytics.AggregatedProperty` | `@OData.applySupportedForAggregation` + `@Aggregation.default` |
+| **Annotations Format** | CDS annotations | XML annotations |
+| **Measure Definition** | DataPoint with aggregation logic | Direct property reference |
 
-### Step 2: Define Aggregated Property in Annotations
-In your annotations file (e.g., `app/your-app/annotations.cds`), define the aggregated property:
+**⚠️ Using the wrong measure type causes:** `TypeError: Cannot read properties of undefined (reading 'map')`
 
-```cds
-annotate service.YourEntity @(
-    Analytics.AggregatedProperty #MeasureField_sum : {
-        $Type : 'Analytics.AggregatedPropertyType',
-        Name : 'MeasureField_sum',
-        AggregatableProperty : MeasureField,
-        AggregationMethod : 'sum',  // Options: sum, min, max, average
-        @Common.Label : 'Total Amount'
-    }
-);
-```
+### **[CAP Projects →](references/cap-implementation.md)**
+CDS-based annotations using `@Aggregation.ApplySupported`, `@Analytics.AggregatedProperty`, and `DynamicMeasures`
 
-**Aggregation Methods:**
-- `sum`: Total sum of values
-- `min`: Minimum value
-- `max`: Maximum value
-- `average`: Average value
+### **[ABAP/RAP Projects →](references/rap-implementation.md)**
+XML-based annotations using backend `@Aggregation.default` and frontend `Measures` property
 
-### Step 3: Create the Chart Definition
-Define a chart that will be displayed in the value help dialog:
+## Procedure
 
-```cds
-annotate service.YourEntity @(
-    UI.Chart #visualFilter : {
-        $Type : 'UI.ChartDefinitionType',
-        ChartType : #Bar,  // Options: #Bar, #Column, #Line, #Donut
-        Dimensions : [
-            DimensionField  // Field to group by (e.g., Category, Status, Region)
-        ],
-        DynamicMeasures : [
-            '@Analytics.AggregatedProperty#MeasureField_sum'
-        ]
-    }
-);
-```
+**⚠️ IMPORTANT: Always configure backend aggregation support before adding frontend annotations.**
 
-**Chart Types:**
-- `#Bar`: Horizontal bar chart
-- `#Column`: Vertical column chart
-- `#Line`: Line chart
-- `#Donut`: Donut/pie chart
+### High-Level Steps
 
-### Step 4: Create Presentation Variant
-Link the chart to a presentation variant:
+1. **Gather Requirements**
+   - **Backend type (CAP or ABAP/RAP)** ⚠️ CRITICAL: This determines chart configuration approach
+   - Target entity name
+   - Dimension field for grouping
+   - Measure field to aggregate
+   - Chart type (Bar or Line recommended)
 
-```cds
-annotate service.YourEntity @(
-    UI.PresentationVariant #visualFilter : {
-        $Type : 'UI.PresentationVariantType',
-        Visualizations : [
-            '@UI.Chart#visualFilter'
-        ]
-    }
-);
-```
+2. **Configure Backend**
+   - **[CAP: Configure aggregation support →](references/cap-implementation.md#backend-configuration)**
+   - **[RAP: Configure backend CDS view →](references/rap-implementation.md#backend-configuration)**
 
-### Step 5: Configure Value List with Visual Filter
-Add the field to SelectionFields and configure the value list:
+3. **Add Frontend Annotations**
+   - **[CAP: Add CDS annotations →](references/cap-implementation.md#frontend-annotations)**
+   - **[RAP: Add XML annotations →](references/rap-implementation.md#frontend-annotations)**
+   
+   **⚠️ CRITICAL DIFFERENCE:**
+   - **CAP**: Use `DynamicMeasures` with DataPoint annotations
+   - **RAP**: Use `Measures` with direct property paths
+   
+   Core annotations needed:
+   - Chart definition with dimensions and measures
+   - Presentation variant linking to chart
+   - ValueList on dimension field with PresentationVariantQualifier
+   - Include field in SelectionFields
 
-```cds
-annotate service.YourEntity with @(
-    UI.SelectionFields : [
-        DimensionField,
-        // ... other filter fields
-    ]
-);
+4. **Configure Manifest**
+   - Add visual filter control configuration (common for both backend types)
 
-annotate service.YourEntity with {
-    DimensionField @(
-        Common.ValueList #visualFilter : {
-            $Type : 'Common.ValueListType',
-            CollectionPath : 'YourEntity',
-            Parameters : [
-                {
-                    $Type : 'Common.ValueListParameterInOut',
-                    LocalDataProperty : DimensionField,
-                    ValueListProperty : 'DimensionField',
-                },
-            ],
-            PresentationVariantQualifier : 'visualFilter',
-        },
-        Common.Label : 'Field Label',
-    )
-}
-```
+5. **Test**
+   - **[CAP: Testing guide →](references/cap-implementation.md#testing)**
+   - **[RAP: Testing guide →](references/rap-implementation.md#testing)**
 
-**Key Elements:**
-- `CollectionPath`: Entity to query for value help data
-- `Parameters`: Maps the local property to the value list property
-- `PresentationVariantQualifier`: Links to the presentation variant (must match the qualifier from Step 4)
-- Field must be included in `UI.SelectionFields` to appear in the filter bar
+### Detailed Implementation
 
-### Step 6: Configure Visual Filter in Manifest.json
-In your Fiori app's `webapp/manifest.json`, configure the visual filter display in the List Report settings:
+For step-by-step instructions with code examples:
+- **[Complete CAP implementation guide →](references/cap-implementation.md)**
+- **[Complete RAP implementation guide →](references/rap-implementation.md)**
+
+## Manifest Configuration
+
+Add visual filter configuration in `webapp/manifest.json` (same for both CAP and RAP):
 
 ```json
 {
-  "sap.ui5": {
-    "routing": {
-      "targets": {
-        "YourEntityList": {
-          "type": "Component",
-          "id": "YourEntityList",
-          "name": "sap.fe.templates.ListReport",
-          "options": {
-            "settings": {
-              "contextPath": "/YourEntity",
-              "controlConfiguration": {
-                "@com.sap.vocabularies.UI.v1.SelectionFields": {
-                  "filterFields": {
-                    "DimensionField": {
-                      "visualFilter": {
-                        "valueList": "com.sap.vocabularies.Common.v1.ValueList#visualFilter"
-                      }
-                    }
-                  },
-                  "layout": "CompactVisual"
+  "targets": {
+    "EntityList": {
+      "type": "Component",
+      "id": "EntityList",
+      "name": "sap.fe.templates.ListReport",
+      "options": {
+        "settings": {
+          "contextPath": "/YourEntity",
+          "variantManagement": "Page",
+          "initialLoad": true,
+          "controlConfiguration": {
+            "@com.sap.vocabularies.UI.v1.SelectionFields": {
+              "layout": "CompactVisual",
+              "initialLayout": "Visual",
+              "filterFields": {
+                "DimensionField": {
+                  "availability": "Default",
+                  "visualFilter": {
+                    "valueList": "com.sap.vocabularies.Common.v1.ValueList#visualFilter"
+                  }
                 }
               }
             }
@@ -185,218 +129,167 @@ In your Fiori app's `webapp/manifest.json`, configure the visual filter display 
 }
 ```
 
-**Manifest Configuration Details:**
-- `controlConfiguration`: Configure specific UI controls
-- `@com.sap.vocabularies.UI.v1.SelectionFields`: Targets the filter bar
-- `filterFields`: Object containing field-specific configurations
-- `DimensionField`: The field name (must match the field in annotations)
-- `visualFilter.valueList`: Full vocabulary path to the value list annotation (including the qualifier)
-- `layout`: Set to `"CompactVisual"` to enable visual filter layout in the filter bar
+**Key Configuration:**
+- `layout: "CompactVisual"` - Enables both compact and visual filter modes with toggle
+- `initialLayout: "Visual"` - Opens filter bar in visual mode by default
+- `valueList` - Must include full vocabulary path with qualifier (e.g., `#visualFilter`)
+- Field name in `filterFields` must match the entity property name exactly
 
-**Important Notes:**
-- The `valueList` path must match exactly: `com.sap.vocabularies.Common.v1.ValueList#visualFilter`
-- The qualifier after `#` must match the qualifier used in the `@Common.ValueList` annotation
-- Without this manifest configuration, the visual filter will not display even if annotations are correct
+## Testing & Verification
 
-## Complete Example
+### Starting the Application
 
-Generic implementation template:
+Refer to the **sap-fiori-elements** skill for guidance on how to start the application for CAP vs RAP/ABAP projects.
 
-**Service Definition (srv/service.cds):**
-```cds
-service MyService {
-  entity Products as projection on db.Products;
-}
+### Common Verification Steps
 
-annotate MyService.Products with @Aggregation.ApplySupported: {
-  Transformations: ['aggregate', 'groupby'],
-  AggregatableProperties: [
-    { Property: Amount }  // Your numeric/measure field
-  ],
-  GroupableProperties: [
-    Category,      // Your dimension field
-    Status,
-    CreatedDate
-    // Add other fields users can group by
-  ]
-};
+1. Start the application using the appropriate command
+2. Filter bar displays in visual mode with chart
+3. Chart shows aggregated data for the dimension field
+4. Click chart elements to apply filters
+5. Selected values appear in the filter field
+6. Toggle between visual and compact modes works
+
+**Backend-Specific Testing:**
+- **[CAP Projects: Testing guide →](references/cap-implementation.md#testing)**
+- **[RAP Projects: Testing guide →](references/rap-implementation.md#testing)**
+
+## Chart Type Selection Guide
+
+**⚠️ IMPORTANT: OData V4 visual filters work best with Bar and Line chart types.**
+
+| ChartType | Best For | OData V4 Support |
+|-----------|----------|------------------|
+| `#Bar` | Horizontal bars, comparing categories | ✅ Recommended |
+| `#Line` | Trends, sequential data | ✅ Supported |
+| `#Column` | Vertical bars, comparing values | ⚠️ Limited support |
+| `#Donut` | Part-to-whole relationships | ❌ Not recommended for V4 |
+
+**Recommendation:** Use **Bar** chart for visual filters (most common and reliable).
+
+## Common Troubleshooting
+
+**Visual filter chart not appearing:**
+- Verify field is in `UI.SelectionFields`
+- Check `PresentationVariantQualifier` matches between ValueList and PresentationVariant
+- Verify manifest configuration has correct valueList path with qualifier
+- Ensure `layout: "CompactVisual"` is set in manifest
+- Confirm backend aggregation is configured
+
+**Chart not displaying data:**
+- Verify chart annotation references correct measure/dimension
+- Check PresentationVariant references correct Chart annotation
+- Ensure backend aggregation annotations exist
+
+**Incorrect manifest configuration:**
+- **Wrong:** `"valueList": "Common.ValueList#visualFilter"`
+- **Correct:** `"valueList": "com.sap.vocabularies.Common.v1.ValueList#visualFilter"`
+- Qualifier must match exactly (case-sensitive)
+
+**TypeError: Cannot read properties of undefined (reading 'map'):**
+- **Cause:** Using `DynamicMeasures` in a RAP/ABAP project (CAP-only feature)
+- **Solution:** Replace with `Measures` property and direct PropertyPath references
+- **Wrong (RAP):** `<PropertyValue Property="DynamicMeasures">` with DataPoint
+- **Correct (RAP):** `<PropertyValue Property="Measures">` with PropertyPath
+- See **[MISTAKE 4](#mistake-4-using-dynamicmeasures-in-rap-projects)** for detailed examples
+
+**Backend-Specific Issues:**
+- **[CAP troubleshooting →](references/cap-implementation.md#troubleshooting)**
+- **[RAP troubleshooting →](references/rap-implementation.md#troubleshooting)**
+
+## Common Mistakes to Avoid
+
+### MISTAKE 1: Mismatched Qualifiers
+
+**WRONG** ❌: Using different qualifiers across annotations
+
+**CORRECT** ✅: Use same qualifier (e.g., `visualFilter`) for:
+- Chart annotation
+- PresentationVariant annotation
+- ValueList annotation
+- manifest.json valueList path
+
+### MISTAKE 2: Wrong valueList Path
+
+**WRONG** ❌: `"valueList": "Common.ValueList#visualFilter"`
+
+**CORRECT** ✅: `"valueList": "com.sap.vocabularies.Common.v1.ValueList#visualFilter"`
+
+### MISTAKE 3: Missing PresentationVariantQualifier
+
+**WRONG** ❌: ValueList without `PresentationVariantQualifier`
+
+**CORRECT** ✅: Include `PresentationVariantQualifier` property that references the PresentationVariant
+
+### MISTAKE 4: Using DynamicMeasures in RAP Projects
+
+**⚠️ CRITICAL:** This is a backend-specific difference that causes errors.
+
+**WRONG** ❌ (for RAP/ABAP backends):
+```xml
+<PropertyValue Property="DynamicMeasures">
+    <Collection>
+        <AnnotationPath>@UI.DataPoint#Count</AnnotationPath>
+    </Collection>
+</PropertyValue>
 ```
 
-**Annotations (app/yourapp/annotations.cds):**
-```cds
-// Step 2: Define aggregated property
-annotate service.Products @(
-    Analytics.AggregatedProperty #Amount_sum : {
-        $Type : 'Analytics.AggregatedPropertyType',
-        Name : 'Amount_sum',
-        AggregatableProperty : Amount,
-        AggregationMethod : 'sum',
-        @Common.Label : 'Total Amount'
-    }
-);
-
-// Step 3: Define chart
-annotate service.Products @(
-    UI.Chart #visualFilter : {
-        $Type : 'UI.ChartDefinitionType',
-        ChartType : #Bar,
-        Dimensions : [
-            Category
-        ],
-        DynamicMeasures : [
-            '@Analytics.AggregatedProperty#Amount_sum'
-        ]
-    }
-);
-
-// Step 4: Create presentation variant
-annotate service.Products @(
-    UI.PresentationVariant #visualFilter : {
-        $Type : 'UI.PresentationVariantType',
-        Visualizations : [
-            '@UI.Chart#visualFilter'
-        ]
-    }
-);
-
-// Step 5a: Add to selection fields
-annotate service.Products @(
-    UI.SelectionFields : [
-        Category
-    ]
-);
-
-// Step 5b: Configure value list
-annotate service.Products with {
-    Category @(
-        Common.ValueList #visualFilter : {
-            $Type : 'Common.ValueListType',
-            CollectionPath : 'Products',
-            Parameters : [
-                {
-                    $Type : 'Common.ValueListParameterInOut',
-                    LocalDataProperty : Category,
-                    ValueListProperty : 'Category',
-                },
-            ],
-            PresentationVariantQualifier : 'visualFilter',
-        },
-        Common.Label : 'Product Category',
-    )
-};
+**CORRECT** ✅ (for RAP/ABAP backends):
+```xml
+<PropertyValue Property="Measures">
+    <Collection>
+        <PropertyPath>TotalPrice</PropertyPath>
+    </Collection>
+</PropertyValue>
 ```
 
-**Manifest Configuration (app/yourapp/webapp/manifest.json):**
-```json
-{
-  "sap.ui5": {
-    "routing": {
-      "targets": {
-        "ProductsList": {
-          "type": "Component",
-          "id": "ProductsList",
-          "name": "sap.fe.templates.ListReport",
-          "options": {
-            "settings": {
-              "contextPath": "/Products",
-              "variantManagement": "Page",
-              "navigation": {
-                "Products": {
-                  "detail": {
-                    "route": "ProductsObjectPage"
-                  }
-                }
-              },
-              "controlConfiguration": {
-                "@com.sap.vocabularies.UI.v1.LineItem": {
-                  "tableSettings": {
-                    "type": "ResponsiveTable"
-                  }
-                },
-                "@com.sap.vocabularies.UI.v1.SelectionFields": {
-                  "filterFields": {
-                    "Category": {
-                      "visualFilter": {
-                        "valueList": "com.sap.vocabularies.Common.v1.ValueList#visualFilter"
-                      }
-                    }
-                  },
-                  "layout": "CompactVisual"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
+**Key Difference:**
+- **CAP projects**: Use `DynamicMeasures` with `@Analytics.AggregatedProperty` and DataPoint annotations
+- **RAP/ABAP projects**: Use `Measures` with direct property paths and backend `@Aggregation.default` annotations
+- Using the wrong approach causes `TypeError: Cannot read properties of undefined (reading 'map')` at runtime
 
-## Testing the Visual Filter
+**Why this matters:**
+- RAP backends define aggregation at the CDS level with `@Aggregation.default: #SUM` (or #AVG, #MIN, #MAX)
+- These become `@Aggregation.CustomAggregate` annotations in metadata.xml
+- Frontend charts reference the property directly via `Measures`, not through DataPoints
+- CAP uses a different aggregation model with `AggregatableProperties` and dynamic measures
 
-1. Start the application: `cds watch`
-2. Open the Fiori application in your browser
-3. Click on the dimension field (e.g., Category) in the filter bar
-4. The value help dialog should display a chart showing aggregated data
-5. Click on a chart element (bar, column, etc.) to filter by that value
-6. Verify the table updates to show only records matching your selection
-
-## Common Issues and Troubleshooting
-
-### Visual Filter Not Appearing
-- Verify `@Aggregation.ApplySupported` is correctly configured in service.cds
-- Ensure the dimension field is in `GroupableProperties`
-- Ensure the measure field is in `AggregatableProperties`
-- Check that `PresentationVariantQualifier` matches the qualifier in `UI.PresentationVariant`
-- **Verify manifest.json has the visual filter configuration with correct valueList path**
-- Ensure `layout: "CompactVisual"` is set in the manifest
-
-### Chart Not Showing Data
-- Verify there is data in the entity
-- Check that the aggregated property name matches in both definition and usage
-- Ensure the dimension field has multiple distinct values
-
-### Field Not in Filter Bar
-- Add the field to `UI.SelectionFields` annotation
-- Clear browser cache and restart the application
-
-### Visual Filter Configuration Not Applied
-- Check that the field name in manifest.json matches exactly the field name in CDS
-- Verify the valueList path includes the correct qualifier
-- Ensure JSON syntax is valid (no trailing commas, proper nesting)
-- Clear browser cache and hard refresh (Cmd+Shift+R / Ctrl+Shift+F5)
+### Backend-Specific Mistakes:
+- **[CAP common mistakes →](references/cap-implementation.md#critical-mistakes-to-avoid)**
+- **[RAP common mistakes →](references/rap-implementation.md#critical-mistakes-to-avoid)**
 
 ## Best Practices
 
-1. **Choose Appropriate Chart Types:**
-   - Bar/Column: Good for comparing categories
-   - Line: Good for trends over time
-   - Donut: Good for showing proportions
+1. **Backend First:**
+   - Always configure backend aggregation before frontend annotations
+   - Verify aggregation support exists before adding visual filters
 
-2. **Limit Dimensions:**
-   - Use fields with a reasonable number of distinct values (5-20 items)
-   - Too many values make the chart cluttered
+2. **Naming Consistency:**
+   - Use consistent qualifier names across all annotations
+   - Keep qualifiers synchronized between Chart, PresentationVariant, ValueList, and manifest
 
-3. **Naming Conventions:**
-   - Use descriptive names for aggregated properties (e.g., `TotalPrice_sum`, `Amount_average`)
-   - Use consistent qualifier names across related annotations (e.g., `#visualFilter`)
-   - Keep qualifier names synchronized between annotations and manifest
+3. **Chart Selection:**
+   - Use Bar charts for most visual filters (best user experience)
+   - Choose dimensions with 5-30 distinct values for optimal visualization
 
-4. **Manifest Configuration:**
-   - Always use the full vocabulary path in manifest.json
-   - Document the qualifier used to maintain consistency
-   - Test after manifest changes by clearing cache
+4. **Testing Strategy:**
+   - Refer to **sap-fiori-elements** skill for how to start CAP vs RAP/ABAP projects
+   - Test with actual backend data when possible
+   - Verify aggregations calculate correctly
+   - Check filter synchronization between visual and compact modes
 
-5. **Performance:**
-   - Visual filters trigger additional queries for aggregated data
-   - Consider the performance impact on large datasets
+5. **Error Prevention:**
+   - Match qualifiers exactly across all annotations (case-sensitive)
+   - Always include `PresentationVariantQualifier` in ValueList
+   - Use full vocabulary path in manifest valueList configuration
 
-## Related Annotations
+**For backend-specific best practices:**
+- **[CAP best practices →](references/cap-implementation.md#best-practices)**
+- **[RAP best practices →](references/rap-implementation.md#best-practices)**
 
-- `@Aggregation.ApplySupported`: Enables aggregation capabilities
-- `@Analytics.AggregatedProperty`: Defines how to aggregate a measure
-- `@UI.Chart`: Defines the chart visualization
-- `@UI.PresentationVariant`: Groups visualization elements
-- `@Common.ValueList`: Configures value help dialog
-- `@UI.SelectionFields`: Adds fields to the filter bar
+## Reference Documentation
+
+- [SAP UI5 Documentation - Visual Filters](https://ui5.sap.com/#/topic/1714720cae984ad8b9d9111937e7cd38)
+- [OData Aggregation Vocabulary](http://docs.oasis-open.org/odata/odata-data-aggregation-ext/v4.0/odata-data-aggregation-ext-v4.0.html)
+- **[Complete CAP Implementation Guide](references/cap-implementation.md)**
+- **[Complete RAP Implementation Guide](references/rap-implementation.md)**
