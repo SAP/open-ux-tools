@@ -3599,6 +3599,9 @@ importers:
         specifier: 7.7.4
         version: 7.7.4
     devDependencies:
+      '@jest/globals':
+        specifier: 30.3.0
+        version: 30.3.0
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
@@ -3795,6 +3798,9 @@ importers:
         specifier: workspace:*
         version: link:../control-property-editor-common
     devDependencies:
+      '@jest/globals':
+        specifier: ^30.0.0
+        version: 30.3.0
       '@sap-ux/eslint-plugin-fiori-tools':
         specifier: workspace:*
         version: link:../eslint-plugin-fiori-tools
@@ -3837,6 +3843,9 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
+      '@ui5/manifest':
+        specifier: 1.85.0
+        version: 1.85.0
       fast-xml-parser:
         specifier: 5.8.0
         version: 5.8.0
@@ -3874,9 +3883,6 @@ importers:
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
-      '@ui5/manifest':
-        specifier: 1.85.0
-        version: 1.85.0
       vscode-uri:
         specifier: 3.1.0
         version: 3.1.0
@@ -4436,6 +4442,9 @@ importers:
       '@babel/preset-typescript':
         specifier: 7.28.5
         version: 7.28.5(@babel/core@7.29.0)
+      '@jest/globals':
+        specifier: 30.3.0
+        version: 30.3.0
       '@storybook/react':
         specifier: 10.4.0
         version: 10.4.0(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.4.0(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@9.3.4)(@types/react@16.14.69)(prettier@3.8.1)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@5.9.3)

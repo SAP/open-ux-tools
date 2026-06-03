@@ -4,8 +4,8 @@ import { DatasourceType } from '@sap-ux/odata-service-inquirer';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Project, Service, State } from '../../../src/types';
-import { getTestData, getTestDir } from '../test-utils';
+import type { Project, Service, State } from '../../../src/types/index.js';
+import { getTestData, getTestDir } from '../test-utils/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

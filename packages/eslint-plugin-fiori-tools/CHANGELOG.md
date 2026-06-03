@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.5.2
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/odata-annotation-core@1.0.1
+    - @sap-ux/fiori-annotation-api@1.0.3
+    - @sap-ux/odata-entity-model@1.0.1
+    - @sap-ux/odata-vocabularies@1.0.1
+    - @sap-ux/project-access@2.0.3
+
 ## 10.5.1
 
 ### Patch Changes

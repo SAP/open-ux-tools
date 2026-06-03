@@ -4,7 +4,7 @@ import {
     GUIDED_ANSWERS_ICON,
     GUIDED_ANSWERS_LAUNCH_CMD_ID,
     HELP_NODES
-} from '../../src/index';
+} from '../../src/index.js';
 
 // write your tests here
 describe('Guided Answers Helper', () => {

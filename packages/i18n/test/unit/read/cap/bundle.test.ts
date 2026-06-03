@@ -1,8 +1,8 @@
 import { promises } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { getCapI18nBundle } from '../../../../src';
-import { replaceBundleWithUnifiedFileUri } from '../../helper';
+import { getCapI18nBundle } from '../../../../src/index.js';
+import { replaceBundleWithUnifiedFileUri } from '../../helper/index.js';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 const __dirname = dirname(fileURLToPath(import.meta.url));

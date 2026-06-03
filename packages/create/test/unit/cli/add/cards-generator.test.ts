@@ -4,11 +4,11 @@ import type { Store } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createProjectAccessMock } from '../__mocks__/project-access-mock';
+import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockTraceChanges = jest.fn();
+const mockTraceChanges = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/trace', () => ({
     traceChanges: mockTraceChanges
 }));
@@ -23,8 +23,8 @@ jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     setLogLevelVerbose: jest.fn()
 }));
 
-const mockFindProjectRoot = jest.fn();
-const mockGetProjectType = jest.fn();
+const mockFindProjectRoot = jest.fn() as jest.Mock;
+const mockGetProjectType = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/project-access', () =>
     createProjectAccessMock({
         findProjectRoot: mockFindProjectRoot,
@@ -52,14 +52,14 @@ jest.unstable_mockModule('mem-fs-editor', () => ({
     }
 }));
 
-const mockEnableCardGeneratorConfig = jest.fn();
+const mockEnableCardGeneratorConfig = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/app-config-writer', () => ({
     enableCardGeneratorConfig: mockEnableCardGeneratorConfig
 }));
 
 jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn() }));
 
-const { addCardsEditorConfigCommand } = await import('../../../../src/cli/add/cards-generator');
+const { addCardsEditorConfigCommand } = await import('../../../../src/cli/add/cards-generator.js');
 
 const appRoot = join(__dirname, '../../../fixtures/ui5-deploy-config');
 const testArgv = (args: string[]) => ['', '', 'cards-editor', appRoot, ...args];

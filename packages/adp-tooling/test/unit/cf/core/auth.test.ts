@@ -1,11 +1,11 @@
 import { jest } from '@jest/globals';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { CfConfig } from '../../../../src/types';
+import type { CfConfig } from '../../../../src/types.js';
 
 // MOCKS - use jest.unstable_mockModule for ESM compatibility
-const mockCfGetAvailableOrgs = jest.fn();
-const mockCfGetAuthToken = jest.fn();
+const mockCfGetAvailableOrgs = jest.fn() as jest.Mock;
+const mockCfGetAuthToken = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap/cf-tools', () => ({
     cfGetAvailableOrgs: mockCfGetAvailableOrgs,
@@ -13,7 +13,7 @@ jest.unstable_mockModule('@sap/cf-tools', () => ({
 }));
 
 // Import after mocks are set up
-const { isExternalLoginEnabled, isLoggedInCf } = await import('../../../../src/cf/core/auth');
+const { isExternalLoginEnabled, isLoggedInCf } = await import('../../../../src/cf/core/auth.js');
 const { Organization } = await import('@sap/cf-tools');
 
 const mockCfConfig: CfConfig = {

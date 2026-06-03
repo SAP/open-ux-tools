@@ -4,7 +4,7 @@ import FeaturesAPI from 'mock/sap/ui/fl/write/api/FeaturesAPI';
 import Control from 'mock/sap/ui/core/Control';
 import Utils from 'mock/sap/ui/fl/Utils';
 
-import initRta from '../../../src/flp/initRta';
+import initRta from '../../../src/flp/initRta.js';
 import { sapCoreMock, documentMock } from 'mock/window';
 
 describe('flp/initRta', () => {

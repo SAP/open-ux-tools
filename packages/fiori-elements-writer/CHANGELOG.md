@@ -1,5 +1,21 @@
 # @sap-ux/fiori-elements-writer
 
+## 3.0.7
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/fiori-generator-shared@1.0.4
+    - @sap-ux/ui5-application-writer@2.0.2
+    - @sap-ux/annotation-generator@1.0.3
+    - @sap-ux/odata-service-writer@1.0.3
+    - @sap-ux/cap-config-writer@1.0.4
+    - @sap-ux/ui5-test-writer@1.0.7
+    - @sap-ux/fe-fpm-writer@1.0.3
+    - @sap-ux/ui5-config@1.0.2
+    - @sap-ux/logger@1.0.1
+
 ## 3.0.6
 
 ### Patch Changes

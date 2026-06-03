@@ -1,5 +1,20 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 1.0.4
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/deploy-config-generator-shared@1.0.4
+    - @sap-ux/cf-deploy-config-inquirer@1.0.4
+    - @sap-ux/cf-deploy-config-writer@1.0.4
+    - @sap-ux/fiori-generator-shared@1.0.4
+    - @sap-ux/inquirer-common@1.0.4
+    - @sap-ux/feature-toggle@1.0.1
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux/btp-utils@2.0.1
+
 ## 1.0.3
 
 ### Patch Changes

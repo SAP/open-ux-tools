@@ -14,10 +14,10 @@ import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
 import type { Target, CdsAnnotationFile } from '@sap-ux/cds-odata-annotation-converter';
 import { toAnnotationFile, toTargetMap } from '@sap-ux/cds-odata-annotation-converter';
 
-import type { CompilerToken } from '../../../src/cds/cds-compiler-tokens';
-import type { AstNode } from '../../../src/cds/document';
-import { getDeletionRangeForNode, getTextEditsForDeletionRanges } from '../../../src/cds/deletion';
-import { getAnnotationFromAssignment } from '../../../src/cds/utils';
+import type { CompilerToken } from '../../../src/cds/cds-compiler-tokens.js';
+import type { AstNode } from '../../../src/cds/document.js';
+import { getDeletionRangeForNode, getTextEditsForDeletionRanges } from '../../../src/cds/deletion.js';
+import { getAnnotationFromAssignment } from '../../../src/cds/utils.js';
 
 function getTextForRange(content: string, range: Range): string {
     const lines = content.split('\n');

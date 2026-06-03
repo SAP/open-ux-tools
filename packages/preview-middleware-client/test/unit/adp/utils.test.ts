@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import FlexUtils from 'mock/sap/ui/fl/Utils';

@@ -36,7 +36,7 @@ jest.unstable_mockModule('@sap/bas-sdk', () => ({
 
 // Import after mocking
 const { getRemoteUrl, isRemoteConnectionsEnabled, getPortFromArgs, getOpenPathFromArgs, logRemoteUrl } =
-    await import('../../../src/base/remote-url');
+    await import('../../../src/base/remote-url.js');
 
 // Centralized network interface configurations
 const MOCK_EXTERNAL_NETWORK_INTERFACES = {

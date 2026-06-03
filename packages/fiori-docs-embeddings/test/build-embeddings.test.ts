@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import { join } from 'node:path';
 
-const mockPipeline = jest.fn();
-const mockConnect = jest.fn();
+const mockPipeline = jest.fn() as jest.Mock;
+const mockConnect = jest.fn() as jest.Mock;
 
 const mockLogger = {
     info: jest.fn(),
@@ -61,7 +61,7 @@ describe('EmbeddingBuilder', () => {
     beforeEach(async () => {
         jest.clearAllMocks();
 
-        const module = await import('../src/scripts/build-embeddings');
+        const module = await import('../src/scripts/build-embeddings.js');
         EmbeddingBuilder = (module as unknown as { EmbeddingBuilder: new () => EmbeddingBuilderType }).EmbeddingBuilder;
     });
 

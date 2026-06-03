@@ -47,7 +47,7 @@ let mockTestPackage1: { packageJson: Record<string, any>; path: string } = {
 };
 
 // Mock functions
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn() as jest.Mock;
 const mockFastGlob = jest.fn(async (globPat: string, { cwd }: { cwd: string }) => {
     if (globPat === `**/*${TEST_PACKAGE2_NAME_SUBSTRING}*`) {
         if (fastGlobMockCondition === MOCK_FAST_GLOB_PATH.LOCAL_NM_PATH && cwd.indexOf(mockNMPath) > -1) {
@@ -105,7 +105,7 @@ describe('Installed module checker', () => {
         has: jest.fn(),
         inspect: jest.fn(),
         update: jest.fn(),
-        get: jest.fn().mockImplementation((id: string) => {
+        get: jest.fn().mockImplementation((id) => {
             if (id === 'ApplicationWizard.installationLocation') {
                 return customInstallLoc;
             }

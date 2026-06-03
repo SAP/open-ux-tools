@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 

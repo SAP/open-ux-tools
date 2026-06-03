@@ -3,10 +3,10 @@ import { jest } from '@jest/globals';
 // Pre-import real modules before mocking
 const realBtpUtils = await import('@sap-ux/btp-utils');
 
-const mockIsAppStudio = jest.fn();
-const mockListDestinations = jest.fn();
-const mockGetDisplayName = jest.fn();
-const mockIsAbapEnvironmentOnBtp = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockListDestinations = jest.fn<typeof realBtpUtils.listDestinations>();
+const mockGetDisplayName = jest.fn<typeof realBtpUtils.getDisplayName>();
+const mockIsAbapEnvironmentOnBtp = jest.fn<typeof realBtpUtils.isAbapEnvironmentOnBtp>();
 
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils,
@@ -27,10 +27,10 @@ jest.unstable_mockModule('../src/logger-helper', () => ({
     }
 }));
 
-const { getCfSystemChoices, fetchBTPDestinations } = await import('../src/prompts/prompt-helpers');
-const LoggerHelper = (await import('../src/logger-helper')).default;
-const { t } = await import('../src/i18n');
-import type { CfSystemChoice } from '../src';
+const { getCfSystemChoices, fetchBTPDestinations } = await import('../src/prompts/prompt-helpers.js');
+const LoggerHelper = (await import('../src/logger-helper.js')).default;
+const { t } = await import('../src/i18n.js');
+import type { CfSystemChoice } from '../src/index.js';
 import type { Destinations } from '@sap-ux/btp-utils';
 
 describe('Utility Functions', () => {
@@ -87,7 +87,7 @@ describe('Utility Functions', () => {
                     Description: 'Test Destination 2'
                 }
             };
-            mockGetDisplayName.mockImplementation((dest: any) => dest.Name);
+            mockGetDisplayName.mockImplementation((dest) => dest.Name);
             mockIsAbapEnvironmentOnBtp.mockReturnValue(false);
 
             const result = await getCfSystemChoices(destinations);

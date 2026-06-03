@@ -9,8 +9,8 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
 
 const btp = await import('@sap-ux/btp-utils');
 const { validateVersion, toMtaModuleName, runCommand, getBTPDestinations, getDestinationProperties } =
-    await import('../../src/utils');
-const { MTAVersion } = await import('../../src/constants');
+    await import('../../src/utils.js');
+const { MTAVersion } = await import('../../src/constants.js');
 const { CommandRunner } = await import('@sap-ux/nodejs-utils');
 
 const isAppStudioMock = btp.isAppStudio as jest.Mock;

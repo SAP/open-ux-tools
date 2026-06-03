@@ -1,15 +1,15 @@
 import { jest } from '@jest/globals';
-import { mockDestinations } from './fixtures/destinations';
-import { mockTargetSystems } from './fixtures/targets';
+import { mockDestinations } from './fixtures/destinations.js';
+import { mockTargetSystems } from './fixtures/targets.js';
 import type { AbapDeployConfigAnswers, AbapDeployConfigAnswersInternal } from '../src/types.js';
 import { PackageInputChoices, TransportChoices } from '../src/types.js';
 import { CREATE_TR_DURING_DEPLOY } from '../src/constants.js';
 
-const mockListPackages = jest.fn();
-const mockGetTransportConfigInstance = jest.fn();
-const mockGetService = jest.fn();
-const mockIsAppStudio = jest.fn();
-const mockListDestinations = jest.fn();
+const mockListPackages = jest.fn() as jest.Mock;
+const mockGetTransportConfigInstance = jest.fn() as jest.Mock;
+const mockGetService = jest.fn() as jest.Mock;
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockListDestinations = jest.fn<typeof realBtpUtils.listDestinations>();
 
 jest.unstable_mockModule('../src/validator-utils', () => ({
     listPackages: mockListPackages,

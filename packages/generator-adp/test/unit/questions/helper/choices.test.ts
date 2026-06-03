@@ -16,8 +16,8 @@ const {
     getAdaptationChoices,
     getKeyUserSystemChoices,
     getProjectTypeChoices
-} = await import('../../../../src/app/questions/helper/choices');
-const { t } = await import('../../../../src/utils/i18n');
+} = await import('../../../../src/app/questions/helper/choices.js');
+const { t } = await import('../../../../src/utils/i18n.js');
 
 describe('Choices Helper Functions', () => {
     beforeEach(() => {

@@ -1,8 +1,8 @@
 import { dirname, join, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Package } from '../../src';
-import { FileName, getNodeModulesPath } from '../../src';
-import { addPackageDevDependency, hasDependency } from '../../src/project/dependencies';
+import type { Package } from '../../src/index.js';
+import { FileName, getNodeModulesPath } from '../../src/index.js';
+import { addPackageDevDependency, hasDependency } from '../../src/project/dependencies.js';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
