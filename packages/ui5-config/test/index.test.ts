@@ -877,6 +877,7 @@ describe('UI5Config', () => {
             const result = malformed.toString();
             expect(result).toContain('/test/**');
             expect(result).toContain('/localService/**');
+            expect(result).not.toContain('excludes: ~');
         });
     });
 
