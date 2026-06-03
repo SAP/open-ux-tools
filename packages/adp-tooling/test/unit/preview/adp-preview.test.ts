@@ -863,7 +863,12 @@ describe('AdaptationProject', () => {
 
         test('POST /adp/api/controller - creates controller', async () => {
             mockExistsSyncFn.mockReturnValue(false);
-            mockRenderFile.mockImplementation(((_templatePath: string, _data: object, _options: object, callback: Function) => {
+            mockRenderFile.mockImplementation(((
+                _templatePath: string,
+                _data: object,
+                _options: object,
+                callback: Function
+            ) => {
                 callback(undefined, 'test-js-controller');
             }) as unknown as typeof realEjs.renderFile);
             const controllerName = 'Share';
@@ -880,7 +885,12 @@ describe('AdaptationProject', () => {
         test('POST /adp/api/controller - creates TypeScript controller', async () => {
             mockExistsSyncFn.mockReturnValue(false);
             mockIsTypescriptSupported.mockReturnValue(true);
-            mockRenderFile.mockImplementation(((_templatePath: string, _data: object, _options: object, callback: Function) => {
+            mockRenderFile.mockImplementation(((
+                _templatePath: string,
+                _data: object,
+                _options: object,
+                callback: Function
+            ) => {
                 callback(undefined, 'test-ts-controller');
             }) as unknown as typeof realEjs.renderFile);
 
@@ -898,7 +908,12 @@ describe('AdaptationProject', () => {
         test('POST /adp/api/controller - throws error during rendering a ts template', async () => {
             mockExistsSyncFn.mockReturnValue(false);
             mockIsTypescriptSupported.mockReturnValue(true);
-            mockRenderFile.mockImplementation(((_templatePath: string, _data: object, _options: object, callback: Function) => {
+            mockRenderFile.mockImplementation(((
+                _templatePath: string,
+                _data: object,
+                _options: object,
+                callback: Function
+            ) => {
                 callback(new Error('Failed to render template'), '');
             }) as unknown as typeof realEjs.renderFile);
 

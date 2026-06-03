@@ -11,9 +11,7 @@ const mockReadUi5Yaml = jest.fn<typeof actualProjectAccess.readUi5Yaml>();
 const actualProjectAccess = await import('@sap-ux/project-access');
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     ...actualProjectAccess,
-    readUi5Yaml: mockReadUi5Yaml.mockImplementation((...args) =>
-        (actualProjectAccess.readUi5Yaml as any)(...args)
-    )
+    readUi5Yaml: mockReadUi5Yaml.mockImplementation((...args) => (actualProjectAccess.readUi5Yaml as any)(...args))
 }));
 
 const { readUi5DeployConfigTarget, addUi5YamlServeStaticMiddleware } =

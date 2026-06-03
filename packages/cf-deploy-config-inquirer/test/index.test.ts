@@ -11,9 +11,7 @@ jest.unstable_mockModule('../src/prompts/prompts', () => ({
 }));
 
 // Set default implementation to call through to the real function
-mockGetQuestions.mockImplementation((...args) =>
-    realCfPrompts.getQuestions(...args)
-);
+mockGetQuestions.mockImplementation((...args) => realCfPrompts.getQuestions(...args));
 
 const { getPrompts, promptNames, prompt } = await import('../src/index.js');
 import type { CfDeployConfigPromptOptions, CfDeployConfigAnswers } from '../src/types.js';
@@ -31,9 +29,7 @@ describe('index', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         // Reset to call-through after clearAllMocks
-        mockGetQuestions.mockImplementation((...args) =>
-            realCfPrompts.getQuestions(...args)
-        );
+        mockGetQuestions.mockImplementation((...args) => realCfPrompts.getQuestions(...args));
     });
 
     const promptOptions: CfDeployConfigPromptOptions = {

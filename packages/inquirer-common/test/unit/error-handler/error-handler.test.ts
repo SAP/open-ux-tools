@@ -11,9 +11,7 @@ const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils,
     isAppStudio: jest.fn<() => boolean>().mockImplementation(() => mockIsAppStudio),
-    isHTML5DynamicConfigured: jest
-        .fn()
-        .mockImplementation((dest) => Boolean(dest['HTML5.DynamicDestination'])),
+    isHTML5DynamicConfigured: jest.fn().mockImplementation((dest) => Boolean(dest['HTML5.DynamicDestination'])),
     isOnPremiseDestination: jest.fn().mockReturnValue(false),
     isAbapODataDestination: jest.fn().mockReturnValue(false),
     isFullUrlDestination: jest.fn().mockReturnValue(false),

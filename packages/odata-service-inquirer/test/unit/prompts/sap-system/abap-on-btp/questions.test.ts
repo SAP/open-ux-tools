@@ -96,9 +96,7 @@ jest.unstable_mockModule('../../../../../src/utils', () => ({
 const actualBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...actualBtpUtils,
-    generateABAPCloudDestinationName: jest
-        .fn()
-        .mockImplementation((name) => `abap-cloud-${name}-testorg-testspace`)
+    generateABAPCloudDestinationName: jest.fn().mockImplementation((name) => `abap-cloud-${name}-testorg-testspace`)
 }));
 
 const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n.js');

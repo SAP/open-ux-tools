@@ -143,9 +143,7 @@ describe('Cloud foundry generator tests', () => {
             cwd = dir;
         });
         // Delegate to real implementations by default
-        mockGetCFQuestions.mockImplementation((...args) =>
-            (realQuestions.getCFQuestions as Function)(...args)
-        );
+        mockGetCFQuestions.mockImplementation((...args) => (realQuestions.getCFQuestions as Function)(...args));
         mockGenerateAppConfig.mockImplementation((...args) =>
             (realCfConfigWriter.generateAppConfig as Function)(...args)
         );
