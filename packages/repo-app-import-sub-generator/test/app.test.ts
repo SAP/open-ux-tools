@@ -286,7 +286,7 @@ function verifyGeneratedFiles(testOutputDir: string, appId: string, testFixtureD
 }
 
 // Increase timeout for heavy generator lifecycle execution in ESM mode (Windows + NTFS + ESM resolution is ~3-5x slower)
-jest.setTimeout(150000);
+jest.setTimeout(240000);
 
 describe('Repo App Download', () => {
     const testFixture = new TestFixture();
@@ -385,7 +385,7 @@ describe('Repo App Download', () => {
         copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
         mockIsValidPromptState.mockReturnValue(true);
         mockGetAppConfig.mockResolvedValue(appConfig);
-        mockHandleWorkspaceConfig.mockResolvedValue({
+        mockHandleWorkspaceConfig.mockReturnValue({
             launchJsonPath: join(testOutputDir, '.vscode', 'launch.json'),
             cwd: testOutputDir,
             workspaceFolderUri: 'testUri',
@@ -437,7 +437,7 @@ describe('Repo App Download', () => {
         mockSendTelemetry.mockRejectedValue(new Error(errorMsg));
         mockIsValidPromptState.mockReturnValue(true);
         mockGetAppConfig.mockResolvedValue(appConfig);
-        mockHandleWorkspaceConfig.mockResolvedValue({
+        mockHandleWorkspaceConfig.mockReturnValue({
             launchJsonPath: join(testOutputDir, '.vscode', 'launch.json'),
             cwd: testOutputDir,
             workspaceFolderUri: 'testUri',
@@ -478,7 +478,7 @@ describe('Repo App Download', () => {
             copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
             mockIsValidPromptState.mockReturnValue(true);
             mockGetAppConfig.mockResolvedValue(appConfig);
-            mockHandleWorkspaceConfig.mockResolvedValue({
+            mockHandleWorkspaceConfig.mockReturnValue({
                 launchJsonPath: join(testOutputDir, '.vscode', 'launch.json'),
                 cwd: testOutputDir,
                 workspaceFolderUri: undefined,

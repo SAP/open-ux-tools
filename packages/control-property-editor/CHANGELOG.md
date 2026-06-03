@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 1.0.2
+
+### Patch Changes
+
+- 3506d2c: fix: i18n translations not loading after ESM migration
+
 ## 1.0.1
 
 ### Patch Changes
