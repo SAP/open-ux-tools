@@ -8,11 +8,15 @@ import type { Editor, create } from 'mem-fs-editor';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 import type { UI5Config, CustomMiddleware } from '@sap-ux/ui5-config';
-import type { DescriptorVariant } from '../../../src/types';
+import type { DescriptorVariant } from '../../../src/types.js';
+
+// Pre-import real modules before mocking
+const actualFs = await import('node:fs');
+const actualProjectAccess = await import('@sap-ux/project-access');
 
 // MOCKS - use jest.unstable_mockModule for ESM compatibility
-const mockExistsSync = jest.fn();
-const mockReadFileSync = jest.fn();
+const mockExistsSync = jest.fn<typeof actualFs.existsSync>();
+const mockReadFileSync = jest.fn<(...args: unknown[]) => string>();
 jest.unstable_mockModule('node:fs', () => ({
     existsSync: mockExistsSync,
     readFileSync: mockReadFileSync,
@@ -30,9 +34,9 @@ jest.unstable_mockModule('node:fs', () => ({
     }
 }));
 
-const mockReadUi5Yaml = jest.fn();
-const mockGetAppType = jest.fn();
-const mockGetWebappPath = jest.fn();
+const mockReadUi5Yaml = jest.fn<typeof actualProjectAccess.readUi5Yaml>();
+const mockGetAppType = jest.fn<typeof actualProjectAccess.getAppType>();
+const mockGetWebappPath = jest.fn<typeof actualProjectAccess.getWebappPath>();
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     readUi5Yaml: mockReadUi5Yaml,
     getAppType: mockGetAppType,
@@ -121,8 +125,8 @@ const {
     loadAppVariant,
     getBaseAppId,
     getExistingAdpProjectType
-} = await import('../../../src/base/helper');
-import { getAppType, readUi5Yaml } from '@sap-ux/project-access';
+} = await import('../../../src/base/helper.js');
+//todo import { getAppType, readUi5Yaml } from '@sap-ux/project-access';
 import { tmpdir } from 'node:os';
 //eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareUtils } from '@ui5/server';
@@ -174,7 +178,7 @@ describe('helper', () => {
 
         test('should return variant using fs editor', async () => {
             const fs = {
-                readJSON: jest.fn().mockReturnValue(JSON.parse(mockVariant))
+                readJSON: jest.fn<() => any>().mockReturnValue(JSON.parse(mockVariant))
             } as unknown as Editor;
 
             const result = await getVariant(basePath, fs);
@@ -189,7 +193,7 @@ describe('helper', () => {
 
         beforeEach(() => {
             fs = {
-                writeJSON: jest.fn()
+                writeJSON: jest.fn<() => void>()
             } as unknown as Editor;
             jest.clearAllMocks();
             mockGetWebappPath.mockResolvedValue(join(basePath, 'webapp'));
@@ -262,7 +266,7 @@ describe('helper', () => {
 
         it('should return true if tsconfig.json exists and fs is provided', () => {
             const mockEditor = {
-                exists: jest.fn().mockReturnValueOnce(true)
+                exists: jest.fn<() => boolean>().mockReturnValueOnce(true)
             } as unknown as Editor;
 
             const result = isTypescriptSupported(basePath, mockEditor);
@@ -273,7 +277,7 @@ describe('helper', () => {
 
         it('should return false if tsconfig.json does not exist and fs is provided', () => {
             const mockEditor = {
-                exists: jest.fn().mockReturnValueOnce(false)
+                exists: jest.fn<() => boolean>().mockReturnValueOnce(false)
             } as unknown as Editor;
 
             const result = isTypescriptSupported(basePath, mockEditor);
@@ -290,7 +294,7 @@ describe('helper', () => {
 
         test('should throw error when no system configuration found', async () => {
             mockReadUi5Yaml.mockResolvedValue({
-                findCustomMiddleware: jest.fn().mockReturnValue(undefined)
+                findCustomMiddleware: jest.fn<() => any>().mockReturnValue(undefined)
             } as unknown as UI5Config);
 
             await expect(getAdpConfig(basePath, '/path/to/mock/ui5.yaml')).rejects.toThrow(
@@ -300,7 +304,7 @@ describe('helper', () => {
 
         test('should return adp configuration', async () => {
             mockReadUi5Yaml.mockResolvedValue({
-                findCustomMiddleware: jest.fn().mockReturnValue({
+                findCustomMiddleware: jest.fn<() => any>().mockReturnValue({
                     configuration: { adp: mockAdp }
                 } as Partial<CustomMiddleware> as CustomMiddleware<object>)
             } as unknown as UI5Config);
@@ -456,8 +460,8 @@ describe('helper', () => {
             const spaceGuid = 'my-space-guid-123';
             const mockBuildTask = { space: spaceGuid };
             mockReadUi5Yaml.mockResolvedValue({
-                findCustomTask: jest.fn().mockReturnValue({ configuration: mockBuildTask }),
-                findCustomMiddleware: jest.fn()
+                findCustomTask: jest.fn<() => any>().mockReturnValue({ configuration: mockBuildTask }),
+                findCustomMiddleware: jest.fn<() => any>()
             } as unknown as UI5Config);
 
             const result = await getSpaceGuidFromUi5Yaml(rootPath);
@@ -492,7 +496,7 @@ describe('helper', () => {
             };
 
             const mockUi5Config = {
-                findCustomTask: jest.fn().mockReturnValue({
+                findCustomTask: jest.fn<() => any>().mockReturnValue({
                     configuration: mockBuildTask
                 })
             } as unknown as UI5Config;
@@ -505,7 +509,7 @@ describe('helper', () => {
 
         test('should throw error when build task configuration is undefined', () => {
             const mockUi5Config = {
-                findCustomTask: jest.fn().mockReturnValue({
+                findCustomTask: jest.fn<() => any>().mockReturnValue({
                     configuration: undefined
                 })
             } as unknown as UI5Config;
@@ -578,11 +582,11 @@ describe('helper', () => {
 
         test('should load and parse app variant descriptor successfully', async () => {
             const mockResource = {
-                getString: jest.fn().mockResolvedValue(JSON.stringify(mockVariantContent))
+                getString: jest.fn<() => Promise<string>>().mockResolvedValue(JSON.stringify(mockVariantContent))
             };
 
             const mockRootProject = {
-                byPath: jest.fn().mockResolvedValue(mockResource)
+                byPath: jest.fn<() => Promise<any>>().mockResolvedValue(mockResource)
             } as unknown as ReaderCollection;
 
             const result = await loadAppVariant(mockRootProject, mockUtils);
@@ -594,7 +598,7 @@ describe('helper', () => {
 
         test('should throw error when manifest.appdescr_variant is not found', async () => {
             const mockRootProject = {
-                byPath: jest.fn().mockResolvedValue(null)
+                byPath: jest.fn<() => Promise<any>>().mockResolvedValue(null)
             } as unknown as ReaderCollection;
 
             await expect(loadAppVariant(mockRootProject, mockUtils)).rejects.toThrow(
@@ -605,11 +609,11 @@ describe('helper', () => {
 
         test('should throw error when manifest.appdescr_variant is empty', async () => {
             const mockResource = {
-                getString: jest.fn().mockResolvedValue('')
+                getString: jest.fn<() => Promise<string>>().mockResolvedValue('')
             };
 
             const mockRootProject = {
-                byPath: jest.fn().mockResolvedValue(mockResource)
+                byPath: jest.fn<() => Promise<any>>().mockResolvedValue(mockResource)
             } as unknown as ReaderCollection;
 
             await expect(loadAppVariant(mockRootProject, mockUtils)).rejects.toThrow(
@@ -622,11 +626,11 @@ describe('helper', () => {
         test('should throw error when getString throws an error', async () => {
             const mockError = new Error('File read error');
             const mockResource = {
-                getString: jest.fn().mockRejectedValue(mockError)
+                getString: jest.fn<() => Promise<string>>().mockRejectedValue(mockError)
             };
 
             const mockRootProject = {
-                byPath: jest.fn().mockResolvedValue(mockResource)
+                byPath: jest.fn<() => Promise<any>>().mockResolvedValue(mockResource)
             } as unknown as ReaderCollection;
 
             await expect(loadAppVariant(mockRootProject, mockUtils)).rejects.toThrow(
@@ -684,13 +688,15 @@ describe('helper', () => {
 
         test('should return CLOUD_READY when project is Fiori Adaptation and has custom tasks', async () => {
             const adpCloudProjectBuildTaskName = 'app-variant-bundler-build';
-            mockGetAppType.mockResolvedValue('Fiori Adaptation');
-            const findCustomTaskMock = jest.fn().mockReturnValue({
+            mockGetAppType.mockResolvedValue(
+                'Fiori Adaptation' as unknown as Awaited<ReturnType<typeof actualProjectAccess.getAppType>>
+            );
+            const findCustomTaskMock = jest.fn<() => any>().mockReturnValue({
                 name: adpCloudProjectBuildTaskName
             });
             const mockUi5Config = {
                 findCustomTask: findCustomTaskMock,
-                findCustomMiddleware: jest.fn()
+                findCustomMiddleware: jest.fn<() => any>()
             } as unknown as UI5Config;
             mockReadUi5Yaml.mockResolvedValue(mockUi5Config);
 
@@ -703,10 +709,12 @@ describe('helper', () => {
         });
 
         test('should return ON_PREMISE when project is Fiori Adaptation and does not have builder custom task', async () => {
-            mockGetAppType.mockResolvedValue('Fiori Adaptation');
+            mockGetAppType.mockResolvedValue(
+                'Fiori Adaptation' as unknown as Awaited<ReturnType<typeof actualProjectAccess.getAppType>>
+            );
             const mockUi5Config = {
-                findCustomTask: jest.fn().mockReturnValue(undefined),
-                findCustomMiddleware: jest.fn()
+                findCustomTask: jest.fn<() => any>().mockReturnValue(undefined),
+                findCustomMiddleware: jest.fn<() => any>()
             } as unknown as UI5Config;
             mockReadUi5Yaml.mockResolvedValue(mockUi5Config);
 
@@ -718,7 +726,9 @@ describe('helper', () => {
         });
 
         test('should return undefined when project is not Fiori Adaptation', async () => {
-            mockGetAppType.mockResolvedValue('Fiori Freestyle');
+            mockGetAppType.mockResolvedValue(
+                'SAPUI5 freestyle' as unknown as Awaited<ReturnType<typeof actualProjectAccess.getAppType>>
+            );
 
             const result = await getExistingAdpProjectType(basePath);
 
@@ -738,7 +748,9 @@ describe('helper', () => {
         });
 
         test('should return undefined when readUi5Config throws an error', async () => {
-            mockGetAppType.mockResolvedValue('Fiori Adaptation');
+            mockGetAppType.mockResolvedValue(
+                'Fiori Adaptation' as unknown as Awaited<ReturnType<typeof actualProjectAccess.getAppType>>
+            );
             mockReadUi5Yaml.mockRejectedValue(new Error('Failed to read ui5.yaml'));
 
             const result = await getExistingAdpProjectType(basePath);

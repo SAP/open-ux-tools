@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import type { ListChoiceOptions } from 'inquirer';
 
-const mockGetUi5Themes = jest.fn();
+const mockGetUi5Themes = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
     getUi5Themes: mockGetUi5Themes,
@@ -20,9 +20,9 @@ jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
     getUI5VersionSupportInfo: jest.fn()
 }));
 
-const { initI18nInquirerCommon } = await import('../../../src/i18n');
+const { initI18nInquirerCommon } = await import('../../../src/i18n.js');
 const { getDefaultUI5VersionChoice, getUI5ThemesChoices, searchChoices, ui5VersionsGrouped } =
-    await import('../../../src/prompts/utility');
+    await import('../../../src/prompts/utility.js');
 const { ui5ThemeIds } = await import('@sap-ux/ui5-info');
 
 describe('utility.ts', () => {

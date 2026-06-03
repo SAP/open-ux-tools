@@ -5,10 +5,10 @@ import type { Destination } from '@sap-ux/btp-utils';
 import type { AbapServiceProvider, LayeredRepositoryService } from '@sap-ux/axios-extension';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-const mockGetService = jest.fn();
-const mockIsAppStudio = jest.fn();
-const mockListDestinations = jest.fn();
-const mockGetCredentialsFromStore = jest.fn();
+const mockGetService = jest.fn<typeof realStore.getService>();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockListDestinations = jest.fn<typeof realBtpUtils.listDestinations>();
+const mockGetCredentialsFromStore = jest.fn<typeof realSystemAccess.getCredentialsFromStore>();
 
 const realSystemAccess = await import('@sap-ux/system-access');
 const realStore = await import('@sap-ux/store');
@@ -31,10 +31,10 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
 }));
 
 const { getEndpointNames, getSupportedProject, SupportedProject, SystemLookup, transformBackendSystem } =
-    await import('../../../src');
+    await import('../../../src/index.js');
 import type { Endpoint } from '../../../src/index.js';
 import { type AxiosResponseHeaders, AxiosError } from 'axios';
-const { t } = await import('../../../src/i18n');
+const { t } = await import('../../../src/i18n.js');
 
 const logger: ToolsLogger = {
     error: jest.fn(),

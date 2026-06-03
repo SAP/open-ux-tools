@@ -4,7 +4,7 @@ import { TemplateType } from '../src/types.js';
 import type { Package } from '@sap-ux/ui5-application-writer';
 import type { Logger } from '@sap-ux/logger';
 
-const mockGenerateFreestyleOPAFiles = jest.fn();
+const mockGenerateFreestyleOPAFiles = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/ui5-test-writer', () => ({
     generateFreestyleOPAFiles: mockGenerateFreestyleOPAFiles

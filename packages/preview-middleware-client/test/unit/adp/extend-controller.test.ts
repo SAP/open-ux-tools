@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import type UI5Element from 'sap/ui/core/Element';
 import mockCommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
 import ExtendControllerPlugin from 'mock/sap/ui/rta/plugin/ExtendControllerPlugin';

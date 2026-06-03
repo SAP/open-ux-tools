@@ -4,7 +4,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import editor, { type Editor } from 'mem-fs-editor';
 
-const mockYamlNewInstance = jest.fn();
+const mockYamlNewInstance = jest.fn() as jest.Mock;
 const mockYamlDocumentToYamlString = jest.fn((doc: Record<string, Record<string, string>>) => {
     const lines: string[] = [];
     for (const [key, value] of Object.entries(doc)) {
@@ -36,7 +36,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 }));
 
 const { updateTsConfig, updateStaticLocationsInApplicationYaml } =
-    await import('../../../src/cap-writer/tsconfig-and-yaml');
+    await import('../../../src/cap-writer/tsconfig-and-yaml.js');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

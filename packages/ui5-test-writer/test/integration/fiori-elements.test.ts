@@ -1,4 +1,4 @@
-import { generateOPAFiles } from '../../src/fiori-elements-opa-writer';
+import { generateOPAFiles } from '../../src/fiori-elements-opa-writer.js';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';

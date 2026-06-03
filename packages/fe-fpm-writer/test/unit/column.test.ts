@@ -3,15 +3,15 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { generateCustomColumn } from '../../src';
-import { getManifestRoot } from '../../src/column';
-import type { CustomTableColumn } from '../../src/column/types';
-import { Availability, HorizontalAlign } from '../../src/column/types';
+import { generateCustomColumn } from '../../src/index.js';
+import { getManifestRoot } from '../../src/column/index.js';
+import type { CustomTableColumn } from '../../src/column/types.js';
+import { Availability, HorizontalAlign } from '../../src/column/types.js';
 import manifest from './sample/column/webapp/manifest.json';
-import type { EventHandlerConfiguration, FileContentPosition, Manifest } from '../../src/common/types';
-import { Placement } from '../../src/common/types';
-import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
-import { getEndOfLinesLength, tabSizingTestCases } from '../common';
+import type { EventHandlerConfiguration, FileContentPosition, Manifest } from '../../src/common/types.js';
+import { Placement } from '../../src/common/types.js';
+import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file.js';
+import { getEndOfLinesLength, tabSizingTestCases } from '../common/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

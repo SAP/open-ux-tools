@@ -36,7 +36,7 @@ const { default: express } = await import('express');
 const { default: supertest } = await import('supertest');
 const { default: nock } = await import('nock');
 const { ToolsLogger } = await import('@sap-ux/logger');
-const ui5ProxyMiddleware = await import('../../src/ui5/middleware');
+const ui5ProxyMiddleware = await import('../../src/ui5/middleware.js');
 
 const rootProjectMock = {
     byGlob: jest.fn<any>().mockResolvedValue([])
@@ -81,7 +81,7 @@ describe('middleware', () => {
 
         beforeAll(() => {
             // Make ui5Proxy return a handler that proxies through nock
-            mockUi5Proxy.mockImplementation((config: any) => {
+            mockUi5Proxy.mockImplementation((config) => {
                 return (req: any, res: any, _next: any) => {
                     const url = new URL(config.url);
                     const version = config.version ? `/${config.version}` : '';

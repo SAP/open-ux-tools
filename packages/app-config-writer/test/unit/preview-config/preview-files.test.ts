@@ -7,7 +7,7 @@ import {
     renameDefaultSandboxes,
     deleteNoLongerUsedFiles,
     renameSandbox
-} from '../../../src/preview-config/preview-files';
+} from '../../../src/preview-config/preview-files.js';
 import { ToolsLogger } from '@sap-ux/logger';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

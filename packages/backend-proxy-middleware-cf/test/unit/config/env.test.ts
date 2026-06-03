@@ -2,12 +2,12 @@ import { jest } from '@jest/globals';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { EffectiveOptions } from '../../../src/types';
+import type { EffectiveOptions } from '../../../src/types.js';
 
 const __testdir = dirname(fileURLToPath(import.meta.url));
 
-const mockExistsSync = jest.fn();
-const mockReadFileSync = jest.fn();
+const mockExistsSync = jest.fn() as jest.Mock;
+const mockReadFileSync = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('node:fs', () => ({
     default: { existsSync: mockExistsSync, readFileSync: mockReadFileSync },
@@ -15,9 +15,9 @@ jest.unstable_mockModule('node:fs', () => ({
     readFileSync: mockReadFileSync
 }));
 
-const mockBuildVcapServicesFromResources = jest.fn();
-const mockGetSpaceGuidFromUi5Yaml = jest.fn();
-const mockGetYamlContent = jest.fn();
+const mockBuildVcapServicesFromResources = jest.fn() as jest.Mock;
+const mockGetSpaceGuidFromUi5Yaml = jest.fn() as jest.Mock;
+const mockGetYamlContent = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     buildVcapServicesFromResources: mockBuildVcapServicesFromResources,
@@ -26,7 +26,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
 }));
 
 const { loadEnvOptions, getConnectivityProxyInfo, applyToProcessEnv, updateUi5ServerDestinationPort } =
-    await import('../../../src/config/env');
+    await import('../../../src/config/env.js');
 
 describe('env', () => {
     const logger = { warn: jest.fn(), debug: jest.fn() } as unknown as ToolsLogger;

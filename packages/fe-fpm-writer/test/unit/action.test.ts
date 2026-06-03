@@ -3,13 +3,13 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { generateCustomAction } from '../../src';
-import { enhanceManifestAndGetActionsElementReference } from '../../src/action';
-import { TargetControl } from '../../src/action/types';
-import type { EventHandlerConfiguration, FileContentPosition, Manifest } from '../../src/common/types';
-import { Placement } from '../../src/common/types';
-import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
-import { getEndOfLinesLength, tabSizingTestCases } from '../common';
+import { generateCustomAction } from '../../src/index.js';
+import { enhanceManifestAndGetActionsElementReference } from '../../src/action/index.js';
+import { TargetControl } from '../../src/action/types.js';
+import type { EventHandlerConfiguration, FileContentPosition, Manifest } from '../../src/common/types.js';
+import { Placement } from '../../src/common/types.js';
+import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file.js';
+import { getEndOfLinesLength, tabSizingTestCases } from '../common/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

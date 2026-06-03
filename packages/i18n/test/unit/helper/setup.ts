@@ -1,8 +1,8 @@
 import { readdirSync, statSync, promises } from 'node:fs';
 import { join, dirname, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { deserialize } from '../helper/deserialize-ast';
-import type { FileExtension } from './types';
+import { deserialize } from '../helper/deserialize-ast.js';
+import type { FileExtension } from './types.js';
 const { readFile } = promises;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

@@ -16,7 +16,7 @@ jest.unstable_mockModule('@sap-ux/i18n', () => ({
 }));
 
 const { normalizeLanguageForI18n, replaceTextsWithI18nBindings, writeKeyUserTranslations } =
-    await import('../../../../src/writer/i18n/key-user-translations');
+    await import('../../../../src/writer/i18n/key-user-translations.js');
 
 describe('i18n-writer', () => {
     describe('normalizeLanguageForI18n', () => {

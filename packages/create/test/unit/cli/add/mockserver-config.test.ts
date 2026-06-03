@@ -4,18 +4,18 @@ import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createProjectAccessMock } from '../__mocks__/project-access-mock';
+import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockGetLogger = jest.fn();
-const mockSetLogLevelVerbose = jest.fn();
+const mockGetLogger = jest.fn() as jest.Mock;
+const mockSetLogLevelVerbose = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
     setLogLevelVerbose: mockSetLogLevelVerbose
 }));
 
-const mockValidateBasePath = jest.fn();
+const mockValidateBasePath = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/validation', () => ({
     validateBasePath: mockValidateBasePath,
     validateAdpAppType: jest.fn(),
@@ -23,14 +23,14 @@ jest.unstable_mockModule('../../../../src/validation', () => ({
     hasFileDeletes: jest.fn()
 }));
 
-const mockGenerateMockserverConfig = jest.fn();
-const mockGetMockserverConfigQuestions = jest.fn();
+const mockGenerateMockserverConfig = jest.fn() as jest.Mock;
+const mockGetMockserverConfigQuestions = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/mockserver-config-writer', () => ({
     generateMockserverConfig: mockGenerateMockserverConfig,
     getMockserverConfigQuestions: mockGetMockserverConfigQuestions
 }));
 
-const mockGetWebappPath = jest.fn();
+const mockGetWebappPath = jest.fn() as jest.Mock;
 const mockExecNpmCommand = jest.fn().mockResolvedValue('');
 jest.unstable_mockModule('@sap-ux/project-access', () =>
     createProjectAccessMock({
@@ -46,14 +46,14 @@ jest.unstable_mockModule('node:child_process', () => ({
     exec: jest.fn()
 }));
 
-const mockPrompt = jest.fn();
+const mockPrompt = jest.fn() as jest.Mock;
 // prompts default export is a function with 'prompt' as a property
 const mockPromptsModule = Object.assign(mockPrompt, { prompt: mockPrompt });
 jest.unstable_mockModule('prompts', () => ({
     default: mockPromptsModule
 }));
 
-const { addAddMockserverConfigCommand } = await import('../../../../src/cli/add/mockserver-config');
+const { addAddMockserverConfigCommand } = await import('../../../../src/cli/add/mockserver-config.js');
 
 describe('Test command add mockserver-config', () => {
     const appRoot = join(__dirname, '../../../fixtures/bare-minimum');
@@ -133,7 +133,7 @@ describe('Test command add mockserver-config', () => {
 
     test('Test create-fiori add mockserver-config <appRoot> --interactive', async () => {
         // Mock setup
-        mockGetMockserverConfigQuestions.mockImplementation((q: any) => [q]);
+        mockGetMockserverConfigQuestions.mockImplementation((q) => [q]);
 
         // Test execution
         const command = new Command('add');
