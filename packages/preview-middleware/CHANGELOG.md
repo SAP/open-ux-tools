@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 1.0.5
+
+### Patch Changes
+
+- 3506d2c: fix: i18n translations not loading after ESM migration
+
 ## 1.0.4
 
 ### Patch Changes
