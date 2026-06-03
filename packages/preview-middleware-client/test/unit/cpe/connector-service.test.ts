@@ -1,12 +1,20 @@
-import { WorkspaceConnectorService } from '../../../src/cpe/connector-service';
-import connector from '../../../src/flp/WorkspaceConnector';
 import * as common from '@sap-ux-private/control-property-editor-common';
 import FakeLrepConnector from 'mock/sap/ui/fl/FakeLrepConnector';
-import { create } from '../../../src/flp/enableFakeConnector';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { fetchMock } from 'mock/window';
 import { ActionHandler } from '../../../src/cpe/types';
-import * as additionalChangeInfo from '../../../src/utils/additional-change-info';
+
+const getAdditionalChangeInfoMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/additional-change-info', () => ({
+    getAdditionalChangeInfo: getAdditionalChangeInfoMock,
+    setAdditionalChangeInfo: jest.fn(),
+    clearAdditionalChangeInfo: jest.fn(),
+    setAdditionalChangeInfoForChangeFile: jest.fn()
+}));
+
+const { default: connector } = await import('open/ux/preview/client/flp/WorkspaceConnector');
+const { WorkspaceConnectorService } = await import('open/ux/preview/client/cpe/connector-service');
+const { create } = await import('open/ux/preview/client/flp/enableFakeConnector');
 
 describe('connector-service', () => {
     let sendActionMock: jest.Mock;
@@ -121,7 +129,7 @@ describe('connector-service', () => {
         const wsConnector = new WorkspaceConnectorService();
         const subscribeSpy = jest.fn<void, [ActionHandler]>();
         await wsConnector.init(sendActionMock, subscribeSpy);
-        jest.spyOn(additionalChangeInfo, 'getAdditionalChangeInfo').mockReturnValue({ templateName: 'my-template' });
+        getAdditionalChangeInfoMock.mockReturnValue({ templateName: 'my-template' });
 
         subscribeSpy.mock.calls[0][0](common.reloadApplication({ save: true }));
         // call notifier

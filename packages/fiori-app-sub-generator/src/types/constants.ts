@@ -1,5 +1,5 @@
-import { t } from '../utils/i18n';
-import type { FioriStep } from './yeomanUiStepConfig';
+import { t } from '../utils/i18n.js';
+import type { FioriStep } from './yeomanUiStepConfig.js';
 
 export const LEGACY_CAP_TYPE_NODE = 'capNode';
 export const LEGACY_CAP_TYPE_JAVA = 'capJava';

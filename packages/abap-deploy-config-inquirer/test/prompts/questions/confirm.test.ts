@@ -1,8 +1,24 @@
-import { initI18n, t } from '../../../src/i18n';
-import { getConfirmPrompts } from '../../../src/prompts/questions';
-import * as conditions from '../../../src/prompts/conditions';
-import * as validators from '../../../src/prompts/validators';
-import { promptNames } from '../../../src/types';
+import { jest } from '@jest/globals';
+import { promptNames } from '../../../src/types.js';
+
+const mockShowIndexQuestion = jest.fn();
+const mockValidateConfirmQuestion = jest.fn();
+
+const actualConditions = await import('../../../src/prompts/conditions.js');
+const actualValidators = await import('../../../src/prompts/validators.js');
+
+jest.unstable_mockModule('../../../src/prompts/conditions', () => ({
+    ...actualConditions,
+    showIndexQuestion: mockShowIndexQuestion
+}));
+
+jest.unstable_mockModule('../../../src/prompts/validators', () => ({
+    ...actualValidators,
+    validateConfirmQuestion: mockValidateConfirmQuestion
+}));
+
+const { initI18n, t } = await import('../../../src/i18n.js');
+const { getConfirmPrompts } = await import('../../../src/prompts/questions/confirm.js');
 
 describe('getConfirmPrompts', () => {
     beforeAll(async () => {
@@ -37,7 +53,7 @@ describe('getConfirmPrompts', () => {
     });
 
     test('should return expected values from index prompt methods', async () => {
-        jest.spyOn(conditions, 'showIndexQuestion').mockReturnValueOnce(true);
+        mockShowIndexQuestion.mockReturnValueOnce(true);
 
         const confirmPrompts = getConfirmPrompts({});
         const indexPrompt = confirmPrompts.find((prompt) => prompt.name === promptNames.index);
@@ -50,7 +66,7 @@ describe('getConfirmPrompts', () => {
     });
 
     test('should return expected values from overwrite prompt methods', async () => {
-        jest.spyOn(validators, 'validateConfirmQuestion').mockReturnValue(true);
+        mockValidateConfirmQuestion.mockReturnValue(true);
 
         const confirmPrompts = getConfirmPrompts({});
         const overwritePrompt = confirmPrompts.find((prompt) => prompt.name === promptNames.overwriteAbapConfig);

@@ -1,4 +1,4 @@
-import type { ExtensionConfigKeys } from './types';
+import type { ExtensionConfigKeys } from './types.js';
 
 export const extensionConfigKeys: ExtensionConfigKeys = {
     AnnotationModeler: 'sap.ux.annotationModeler',

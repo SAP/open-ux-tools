@@ -1,5 +1,5 @@
-import type { CapCustomPaths, CapProjectType } from '../cap';
-import type { ManifestNamespace } from '../webapp';
+import type { CapCustomPaths, CapProjectType } from '../cap/index.js';
+import type { ManifestNamespace } from '../webapp/index.js';
 
 export interface Project {
     /**

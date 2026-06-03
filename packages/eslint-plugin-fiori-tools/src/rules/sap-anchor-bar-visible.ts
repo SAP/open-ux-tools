@@ -1,8 +1,8 @@
-import type { FioriRuleDefinition } from '../types';
-import { ANCHOR_BAR_VISIBLE, type AnchorBarVisible } from '../language/diagnostics';
-import { createFioriRule } from '../language/rule-factory';
+import type { FioriRuleDefinition } from '../types.js';
+import { ANCHOR_BAR_VISIBLE, type AnchorBarVisible } from '../language/diagnostics.js';
+import { createFioriRule } from '../language/rule-factory.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
-import { createJsonFixer } from '../language/rule-fixer';
+import { createJsonFixer } from '../language/rule-fixer.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: ANCHOR_BAR_VISIBLE,

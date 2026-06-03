@@ -1,8 +1,8 @@
 import type { Connection, Table } from '@lancedb/lancedb';
 import { connect } from '@lancedb/lancedb';
-import type { VectorSearchResult } from './types/vector';
-import { logger } from '../../utils/logger';
-import { resolveEmbeddingsPath } from '../../utils/embeddings-path';
+import type { VectorSearchResult } from './types/vector.js';
+import { logger } from '../../utils/logger.js';
+import { resolveEmbeddingsPath } from '../../utils/embeddings-path.js';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 

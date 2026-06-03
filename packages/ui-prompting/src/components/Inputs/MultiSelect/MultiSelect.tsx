@@ -1,7 +1,7 @@
 import React from 'react';
 import { UIComboBox, UIComboBoxLoaderType } from '@sap-ux/ui-components';
-import { useValue, getLabelRenderer, useOptions, useMultiSelectKeys } from '../../../utilities';
-import type { AnswerValue, CheckboxPromptQuestion, PromptListChoices } from '../../../types';
+import { useValue, getLabelRenderer, useOptions, useMultiSelectKeys } from '../../../utilities/index.js';
+import type { AnswerValue, CheckboxPromptQuestion, PromptListChoices } from '../../../types.js';
 
 export interface MultiSelectProps extends CheckboxPromptQuestion {
     id?: string;

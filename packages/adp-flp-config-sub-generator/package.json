@@ -1,12 +1,13 @@
 {
     "name": "@sap-ux/adp-flp-config-sub-generator",
     "description": "Generator for adding FLP configuration to an Adaptation Project",
-    "version": "0.2.9",
+    "version": "1.0.4",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/adp-flp-config-sub-generator"
     },
+    "type": "module",
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue"
     },
@@ -18,8 +19,8 @@
         "watch": "tsc --watch",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
@@ -46,6 +47,7 @@
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@jest/types": "30.3.0",
         "@types/fs-extra": "11.0.4",
         "@types/inquirer": "8.2.6",

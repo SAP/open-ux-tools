@@ -1,4 +1,4 @@
-const run = require('./storybook');
+import run from './storybook.js';
 
 /**
  * Usage through command line

@@ -3,27 +3,27 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
-import type { CustomPage, InternalCustomPage } from './types';
-import { PageType } from './types';
+import type { CustomPage, InternalCustomPage } from './types.js';
+import { PageType } from './types.js';
 import {
     initializeTargetSettings,
     getFclConfig,
     getManifestJsonExtensionHelper,
     validatePageConfig,
     getLibraryDependencies
-} from './common';
-import { setCommonDefaults } from '../common/defaults';
-import type { Manifest } from '../common/types';
-import { validateVersion } from '../common/validate';
-import { getTemplatePath } from '../templates';
+} from './common.js';
+import { setCommonDefaults } from '../common/defaults.js';
+import type { Manifest } from '../common/types.js';
+import { validateVersion } from '../common/validate.js';
+import { getTemplatePath } from '../templates.js';
 import { coerce, gte, lt } from 'semver';
-import { addExtensionTypes, getManifestPath } from '../common/utils';
-import { copyTpl, extendJSON, createIdGenerator, type IdGeneratorFunction } from '../common/file';
-import { generateBuildingBlock } from '../building-block';
-import { BuildingBlockType } from '../building-block/types';
-import { augmentXpathWithLocalNames } from '../building-block/prompts/utils';
+import { addExtensionTypes, getManifestPath } from '../common/utils.js';
+import { copyTpl, extendJSON, createIdGenerator, type IdGeneratorFunction } from '../common/file.js';
+import { generateBuildingBlock } from '../building-block/index.js';
+import { BuildingBlockType } from '../building-block/types.js';
+import { augmentXpathWithLocalNames } from '../building-block/prompts/utils/index.js';
 import type { Logger } from '@sap-ux/logger';
-import { i18nNamespaces, translate } from '../i18n';
+import { i18nNamespaces, translate } from '../i18n.js';
 
 /**
  * Enhances the provided custom page configuration with default data.

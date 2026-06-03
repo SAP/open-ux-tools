@@ -1,7 +1,7 @@
 import type { Logger } from '@sap-ux/logger';
-import type { EntityKey } from '../entities';
-import type { BackendSerializableKeys, ServiceOptions } from '../types';
-import type { BackendSystem } from '../entities/backend-system';
+import type { EntityKey } from '../entities/index.js';
+import type { BackendSerializableKeys, ServiceOptions } from '../types.js';
+import type { BackendSystem } from '../entities/backend-system.js';
 
 /**
  * The backend system keys and their values to filter backend systems by.

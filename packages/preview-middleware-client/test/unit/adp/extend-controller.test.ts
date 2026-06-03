@@ -1,18 +1,28 @@
-import { initExtendControllerPlugin } from '../../../src/adp/extend-controller';
 import type UI5Element from 'sap/ui/core/Element';
 import mockCommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
 import ExtendControllerPlugin from 'mock/sap/ui/rta/plugin/ExtendControllerPlugin';
-import { DialogFactory, DialogNames } from '../../../src/adp/dialog-factory';
-import { createDeferred } from '../../../src/adp/utils';
 import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 
-jest.mock('sap/ui/rta/command/CommandFactory');
-jest.mock('sap/ui/rta/plugin/ExtendControllerPlugin');
-jest.mock('../../../src/adp/dialog-factory');
-jest.mock('../../../src/adp/utils', () => ({
-    createDeferred: jest.fn()
+const createDeferredMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/adp/utils', () => ({
+    createDeferred: createDeferredMock
 }));
+
+const createDialogMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/adp/dialog-factory', () => ({
+    DialogFactory: { createDialog: createDialogMock },
+    DialogNames: {
+        ADD_FRAGMENT: 'ADD_FRAGMENT',
+        ADD_FRAGMENT_AT_EXTENSION_POINT: 'ADD_FRAGMENT_AT_EXTENSION_POINT',
+        CONTROLLER_EXTENSION: 'CONTROLLER_EXTENSION',
+        ADD_TABLE_COLUMN_FRAGMENTS: 'ADD_TABLE_COLUMN_FRAGMENTS',
+        CHANGE_DATA_SOURCE: 'CHANGE_DATA_SOURCE',
+        ADD_COMPONENT_USAGES: 'ADD_COMPONENT_USAGES'
+    }
+}));
+
+const { initExtendControllerPlugin } = await import('open/ux/preview/client/adp/extend-controller');
 
 describe('AddFragmentService', () => {
     const mockRta = new RuntimeAuthoringMock({} as RTAOptions);
@@ -38,17 +48,16 @@ describe('AddFragmentService', () => {
             // Test the handler function
             const handlerFunction = (ExtendControllerPlugin as jest.Mock).mock.calls[0][0].handlerFunction;
             const mockDeferred = { promise: Promise.resolve('mockDeferredData') };
-            const createDeferredMock = (createDeferred as jest.Mock);
             createDeferredMock.mockReturnValue(mockDeferred);
-            jest.spyOn(DialogFactory, 'createDialog').mockResolvedValue(undefined);
+            createDialogMock.mockResolvedValue(undefined);
 
             const result = await handlerFunction(mockOverlay);
 
-            expect(createDeferred).toHaveBeenCalledWith();
-            expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+            expect(createDeferredMock).toHaveBeenCalledWith();
+            expect(createDialogMock).toHaveBeenCalledWith(
                 mockOverlay,
                 mockRta,
-                DialogNames.CONTROLLER_EXTENSION,
+                'CONTROLLER_EXTENSION',
                 { deferred: mockDeferred }
             );
             expect(result).toEqual('mockDeferredData');

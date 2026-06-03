@@ -1,5 +1,5 @@
-import type { IdGeneratorFunction } from '../common/file';
-import type { CustomElement, CustomFragment, EventHandler, FragmentContentData, Position } from '../common/types';
+import type { IdGeneratorFunction } from '../common/file.js';
+import type { CustomElement, CustomFragment, EventHandler, FragmentContentData, Position } from '../common/types.js';
 
 /**
  * Building block type.

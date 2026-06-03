@@ -12,14 +12,14 @@ import {
     type ButtonGroupConfig,
     type Action,
     type EmbeddedAction
-} from './types';
-import type { Manifest, InternalCustomElement } from '../common/types';
+} from './types.js';
+import type { Manifest, InternalCustomElement } from '../common/types.js';
 
-import { getTemplatePath } from '../templates';
-import { applyEventHandlerConfiguration } from '../common/event-handler';
-import { getDefaultFragmentContent, setCommonDefaults } from '../common/defaults';
-import { getOrAddNamespace } from './prompts/utils/xml';
-import { CONFIG } from '../common/file';
+import { getTemplatePath } from '../templates.js';
+import { applyEventHandlerConfiguration } from '../common/event-handler.js';
+import { getDefaultFragmentContent, setCommonDefaults } from '../common/defaults.js';
+import { getOrAddNamespace } from './prompts/utils/xml.js';
+import { CONFIG } from '../common/file.js';
 
 /**
  * Type for embedded fragment data used in building block processing.

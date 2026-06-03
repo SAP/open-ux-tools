@@ -1,0 +1,66 @@
+#!/usr/bin/env node
+
+import fs from 'node:fs';
+import path from 'node:path';
+import yaml from 'yaml';
+
+// Packages that should not have major version bumps
+const BLOCKED_MAJOR_PACKAGES = [
+    // '@sap-ux/eslint-plugin-fiori-tools'
+];
+
+const __dirname = import.meta.dirname;
+const VALID_SUMMARY_PREFIX = /^(FEAT|FIX|BUMP):/i;
+const CHANGESET_DIR = path.join(__dirname, '..', '.changeset');
+
+function validateChangesets() {
+    const files = fs.readdirSync(CHANGESET_DIR);
+    const changesetFiles = files.filter((f) => f.endsWith('.md') && f !== 'README.md');
+
+    const errors = [];
+
+    for (const file of changesetFiles) {
+        const filePath = path.join(CHANGESET_DIR, file);
+        const content = fs.readFileSync(filePath, 'utf8');
+
+        // Parse frontmatter
+        const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+        if (!frontmatterMatch) {
+            continue;
+        }
+
+        const frontmatter = yaml.parse(frontmatterMatch[1]);
+
+        // Check each package in the changeset
+        for (const [packageName, bumpType] of Object.entries(frontmatter)) {
+            if (BLOCKED_MAJOR_PACKAGES.includes(packageName) && bumpType === 'major') {
+                errors.push(
+                    `❌ Major version bump blocked for ${packageName} in ${file}\n` +
+                        `   Reason: This package is restricted from major version changes.\n` +
+                        `   Please use 'minor' or 'patch' instead.`
+                );
+            }
+        }
+
+        // Check summary prefix
+        const bodyMatch = content.match(/^---\n[\s\S]*?\n---\n\n?([\s\S]*)/);
+        const summary = bodyMatch ? bodyMatch[1].trim() : '';
+        if (summary && !VALID_SUMMARY_PREFIX.test(summary)) {
+            errors.push(
+                `❌ Invalid changeset summary in ${file}\n` +
+                `   Summary: "${summary.slice(0, 80)}"\n` +
+                `   Must start with FEAT:, FIX:, or BUMP:`
+            );
+        }
+    }
+
+    if (errors.length > 0) {
+        console.error('\n🚫 Changeset validation failed:\n');
+        errors.forEach((error) => console.error(error + '\n'));
+        process.exit(1);
+    }
+
+    console.log('✅ All changesets validated successfully');
+}
+
+validateChangesets();

@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui-service-inquirer",
     "description": "Generator for creating UI Service",
-    "version": "0.3.7",
+    "version": "1.0.3",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -16,11 +16,12 @@
         "watch": "tsc --watch",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
+    "type": "module",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "files": [
@@ -44,6 +45,7 @@
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@sap-ux/jest-file-matchers": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/system-access": "workspace:*",

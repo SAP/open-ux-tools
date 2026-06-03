@@ -1,15 +1,15 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { isSameSystem } from '../utils';
+import { isSameSystem } from '../utils.js';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { AuthenticationType } from '@sap-ux/store';
-import { PromptState } from '../prompts/prompt-state';
-import LoggerHelper from '../logger-helper';
+import { PromptState } from '../prompts/prompt-state.js';
+import LoggerHelper from '../logger-helper.js';
 import type { AbapServiceProvider, AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
-import type { BackendTarget, Credentials, SystemConfig } from '../types';
+import type { BackendTarget, Credentials, SystemConfig } from '../types.js';
 import type { AbapTarget } from '@sap-ux/ui5-config';
 import { setGlobalRejectUnauthorized } from '@sap-ux/nodejs-utils';
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 
 /**
  * Class to manage the ABAP service provider used during prompting.

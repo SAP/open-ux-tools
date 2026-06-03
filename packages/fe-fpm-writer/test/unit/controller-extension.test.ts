@@ -1,7 +1,8 @@
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { generateControllerExtension } from '../../src';
 import type { ControllerExtension } from '../../src/controller-extension/types';
 import { ControllerExtensionPageType } from '../../src/controller-extension/types';
@@ -11,6 +12,8 @@ import {
 } from '../../src/controller-extension';
 import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
 import { tabSizingTestCases } from '../common';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('ControllerExtension', () => {
     describe('generateControllerExtension', () => {

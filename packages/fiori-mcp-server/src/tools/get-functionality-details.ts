@@ -1,8 +1,8 @@
-import type { FunctionalityId, GetFunctionalityDetailsInput, GetFunctionalityDetailsOutput } from '../types';
-import { PageEditorApi, SapuxFtfsFileIO, findByPath } from '../page-editor-api';
-import type { TreeNode, PropertyPath } from '../page-editor-api';
-import { FUNCTIONALITIES_HANDLERS } from './functionalities';
-import { prepatePropertySchema, resolveApplication, resolveRefs } from '../utils';
+import type { FunctionalityId, GetFunctionalityDetailsInput, GetFunctionalityDetailsOutput } from '../types/index.js';
+import { PageEditorApi, SapuxFtfsFileIO, findByPath } from '../page-editor-api/index.js';
+import type { TreeNode, PropertyPath } from '../page-editor-api/index.js';
+import { FUNCTIONALITIES_HANDLERS } from './functionalities/index.js';
+import { prepatePropertySchema, resolveApplication, resolveRefs } from '../utils/index.js';
 import type { JSONSchema4 } from 'json-schema';
 
 /**
