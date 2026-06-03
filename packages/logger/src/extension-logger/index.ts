@@ -1,5 +1,4 @@
 import { VSCodeTransport } from '../transports/index.js';
-import { VSCodeTransport as WinstonVSCodeTransport } from '../winston-logger/vscode-output-channel-transport.js';
 import { WinstonLogger } from '../winston-logger/index.js';
 import { LogLevel } from '../types.js';
 import { toWinstonLogLevel } from '../winston-logger/adapter.js';
@@ -8,6 +7,9 @@ import { toWinstonLogLevel } from '../winston-logger/adapter.js';
  *
  */
 export class ExtensionLogger extends WinstonLogger {
+    // Cache the lazily-loaded VSCode transport class to avoid repeated requires
+    private static WinstonVSCodeTransportClass?: any;
+
     /**
      *
      * @param channelName
@@ -91,9 +93,15 @@ export class ExtensionLogger extends WinstonLogger {
      * Show the output channel in Visual Studio Code.
      */
     show(): void {
+        // Lazy-load WinstonVSCodeTransport once and cache it to prevent repeated requires
+        ExtensionLogger.WinstonVSCodeTransportClass ??=
+            // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
+            require('../winston-logger/vscode-output-channel-transport.js').VSCodeTransport;
+
+        const WinstonVSCodeTransport = ExtensionLogger.WinstonVSCodeTransportClass;
         const winstonVSCodeTransport = this._logger.transports.find((t) => t instanceof WinstonVSCodeTransport);
         if (winstonVSCodeTransport) {
-            (winstonVSCodeTransport as WinstonVSCodeTransport).show();
+            (winstonVSCodeTransport as InstanceType<typeof WinstonVSCodeTransport>).show();
         }
     }
 }

@@ -11,7 +11,6 @@ import {
     VSCodeTransport
 } from '../transports/index.js';
 import { NullTransport as WinstonNullTransport } from './null-transport.js';
-import { VSCodeTransport as WinstonVSCodeTransport } from './vscode-output-channel-transport.js';
 import type { Format } from 'logform';
 import { inspect } from 'node:util';
 import chalk from 'chalk';
@@ -129,6 +128,9 @@ export function toWinstonTransport(transport: Transport): WinstonTransport {
     } else if (transport instanceof FileTransport) {
         return new winston.transports.File(toWinstonTransportOptions(transport.options));
     } else if (transport instanceof VSCodeTransport) {
+        // Lazy-load VSCode transport to prevent Playwright test errors with import.meta.url
+        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
+        const { VSCodeTransport: WinstonVSCodeTransport } = require('./vscode-output-channel-transport.js');
         return new WinstonVSCodeTransport(toWinstonTransportOptions(transport.options));
     } else if (transport instanceof UI5ToolingTransport) {
         return new winston.transports.Console({
