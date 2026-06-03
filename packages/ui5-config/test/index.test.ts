@@ -845,6 +845,29 @@ describe('UI5Config', () => {
         });
     });
 
+    describe('addBuilderResourceExcludes', () => {
+        test('adds both default excludes to empty config', () => {
+            ui5Config.addBuilderResourceExcludes();
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('is idempotent — calling twice does not duplicate entries', () => {
+            ui5Config.addBuilderResourceExcludes();
+            ui5Config.addBuilderResourceExcludes();
+            const result = ui5Config.toString();
+            expect([...result.matchAll(/\/test\/\*\*/g)]).toHaveLength(1);
+            expect([...result.matchAll(/\/localService\/\*\*/g)]).toHaveLength(1);
+        });
+
+        test('does not duplicate an entry that already exists', async () => {
+            const partial = await UI5Config.newInstance(`builder:\n  resources:\n    excludes:\n      - /test/**\n`);
+            partial.addBuilderResourceExcludes();
+            const result = partial.toString();
+            expect([...result.matchAll(/\/test\/\*\*/g)]).toHaveLength(1);
+            expect(result).toContain('/localService/**');
+        });
+    });
+
     describe('addAbapDeployTask', () => {
         const app: BspApp = {
             name: '~name',

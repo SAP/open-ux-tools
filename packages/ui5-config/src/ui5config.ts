@@ -627,6 +627,30 @@ export class UI5Config {
     }
 
     /**
+     * Appends `/test/**` and `/localService/**` to `builder.resources.excludes` if not already present.
+     * Safe to call multiple times — idempotent.
+     *
+     * @returns this UI5Config instance
+     * @memberof UI5Config
+     */
+    public addBuilderResourceExcludes(): this {
+        const defaults = ['/test/**', '/localService/**'];
+        let existing: string[] = [];
+        try {
+            existing = this.document.getSequence({ path: 'builder.resources.excludes' }).toJSON() as string[];
+        } catch {
+            // path not present yet — existing stays []
+        }
+        for (const value of defaults) {
+            if (!existing.includes(value)) {
+                this.document.appendTo({ path: 'builder.resources.excludes', value });
+                existing.push(value);
+            }
+        }
+        return this;
+    }
+
+    /**
      * Adds the ABAP deployment task to the config.
      *
      * @param target system that this app is to be deployed to
