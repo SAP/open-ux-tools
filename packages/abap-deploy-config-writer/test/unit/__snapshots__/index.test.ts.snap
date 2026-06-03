@@ -26,6 +26,10 @@ builder:
   customTasks:
     - name: ui5-task-flatten-library
       afterTask: generateResourcesJson
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -185,6 +189,10 @@ builder:
           overridesToOverride: true
     - name: ui5-task-flatten-library
       afterTask: generateResourcesJson
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -251,6 +259,39 @@ builder:
 ",
     "state": "modified",
   },
+  "ui5.yaml": Object {
+    "contents": "specVersion: '2.4'
+metadata:
+  name: 'test-js-adp-variant'
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: https://example.com
+            authenticationType: 'reentranceTicket'
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+",
+    "state": "modified",
+  },
 }
 `;
 
@@ -314,6 +355,39 @@ builder:
 ",
     "state": "modified",
   },
+  "ui5.yaml": Object {
+    "contents": "specVersion: '2.4'
+metadata:
+  name: 'test-js-app'
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: https://example.com
+            authenticationType: 'reentranceTicket'
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+",
+    "state": "modified",
+  },
 }
 `;
 
@@ -373,6 +447,39 @@ builder:
           transport: TR123
         exclude:
           - /test/
+",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "specVersion: '2.4'
+metadata:
+  name: 'test-ts-adp-variant'
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: https://example.com
+            authenticationType: 'reentranceTicket'
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -440,6 +547,58 @@ builder:
           transport: TR123
         exclude:
           - /test/
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: '3.1'
+metadata:
+  name: test-ts-app
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: ui5-tooling-transpile-middleware
+      afterMiddleware: compression
+      configuration:
+        debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
+        excludePatterns:
+          - /Component-preload.js
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: tsbasic
+        ui5Theme: sap_horizon
+builder:
+  customTasks:
+    - name: ui5-tooling-transpile-task
+      afterTask: replaceVersion
+      configuration:
+        debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
   resources:
     excludes:
       - /test/**
