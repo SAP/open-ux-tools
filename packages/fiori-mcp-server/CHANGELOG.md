@@ -1,5 +1,12 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.0.2
+
+### Patch Changes
+
+- 0268c25: Replace negated typeof checks to avoid SonarQube findings
+    - @sap-ux/fiori-docs-embeddings@1.0.0
+
 ## 1.0.1
 
 ### Patch Changes
