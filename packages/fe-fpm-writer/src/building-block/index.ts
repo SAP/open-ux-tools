@@ -14,14 +14,13 @@ import {
     type BuildingBlock,
     type BuildingBlockConfig,
     type BuildingBlockMetaPath,
-    type RichTextEditor,
     bindingContextAbsolute,
     type TemplateConfig
-} from './types';
-import type { Manifest } from '../common/types';
-import { getErrorMessage, validateBasePath, validateDependenciesLibs } from '../common/validate';
-import { getTemplatePath } from '../templates';
-import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
+} from './types.js';
+import type { Manifest } from '../common/types.js';
+import { getErrorMessage, validateBasePath, validateDependenciesLibs } from '../common/validate.js';
+import { getTemplatePath } from '../templates.js';
+import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types.js';
 import {
     CONFIG,
     createIdGenerator,
@@ -29,11 +28,11 @@ import {
     extendJSON,
     getRelativeTemplateComponentPath,
     type TemplateContext
-} from '../common/file';
-import { getManifest, getManifestPath } from '../common/utils';
-import { getOrAddNamespace } from './prompts/utils/xml';
-import { i18nNamespaces, translate } from '../i18n';
-import { processBuildingBlock } from './processor';
+} from '../common/file.js';
+import { getManifest, getManifestPath } from '../common/utils.js';
+import { getOrAddNamespace } from './prompts/utils/xml.js';
+import { i18nNamespaces, translate } from '../i18n.js';
+import { processBuildingBlock } from './processor.js';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
@@ -156,7 +155,7 @@ function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor): Docu
     // Parse the xml view content
     let viewDocument: Document;
     try {
-        viewDocument = new DOMParser({ errorHandler }).parseFromString(viewContent);
+        viewDocument = new DOMParser({ errorHandler }).parseFromString(viewContent, 'text/xml');
     } catch (error) {
         throw new Error(`Unable to parse xml view file. Details: ${getErrorMessage(error)}`);
     }
@@ -257,9 +256,13 @@ function getTemplateContent<T extends BuildingBlock>(
         // or for equal or below UI5 v1.96.0 contextPath is applied
         const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
         let targetProperty: string | undefined;
-        if (buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor) {
-            // Get target property for RichTextEditor building block
-            targetProperty = (buildingBlockData as RichTextEditor).targetProperty;
+        if (
+            (buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor ||
+                buildingBlockData.buildingBlockType === BuildingBlockType.CustomFormField) &&
+            'targetProperty' in buildingBlockData &&
+            typeof buildingBlockData.targetProperty === 'string'
+        ) {
+            targetProperty = buildingBlockData.targetProperty;
         }
 
         const applyContextPath =
@@ -338,7 +341,7 @@ function getTemplateDocument<T extends BuildingBlock>(
     // Parse the rendered template content
     let templateDocument: Document;
     try {
-        templateDocument = new DOMParser({ errorHandler }).parseFromString(templateContent);
+        templateDocument = new DOMParser({ errorHandler }).parseFromString(templateContent, 'text/xml');
     } catch (error) {
         throw new Error(`Unable to parse template file with building block data. Details: ${getErrorMessage(error)}`);
     }

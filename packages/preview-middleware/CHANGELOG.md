@@ -1,5 +1,389 @@
 # @sap-ux/preview-middleware
 
+## 1.0.6
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.4
+- @sap-ux/project-access@2.0.2
+- @sap-ux/system-access@1.0.0
+
+## 1.0.5
+
+### Patch Changes
+
+- 3506d2c: fix: i18n translations not loading after ESM migration
+
+## 1.0.4
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.3
+
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies [a8e4cf0]
+    - @sap-ux/adp-tooling@1.0.2
+
+## 1.0.2
+
+### Patch Changes
+
+- 8024912: fix: republish to pick up control-property-editor 1.0.1 (1.0.0 was unpublished from npm)
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+    - @sap-ux/adp-tooling@1.0.1
+    - @sap-ux/system-access@1.0.0
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/feature-toggle@1.0.0
+    - @sap-ux/project-access@2.0.0
+    - @sap-ux/system-access@1.0.0
+    - @sap-ux/adp-tooling@1.0.0
+    - @sap-ux/btp-utils@2.0.0
+    - @sap-ux/logger@1.0.0
+    - @sap-ux/i18n@1.0.0
+
+## 0.26.12
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.11
+
+## 0.26.11
+
+### Patch Changes
+
+- 9a980a9: fix: Prioritize local workspace fragments over deployed versions in adaptation project editor
+
+    When previewing an adaptation project connected to an ABAP system, locally created fragments and controllers are now correctly prioritized over their deployed counterparts. The LREP flex data response from the ABAP system includes inlined module content (fragment XMLs, controller JS) which prevented UI5 from requesting local workspace versions. The fix strips these inlined modules from the response so that UI5 falls back to HTTP requests, which the existing ADP proxy serves from the local workspace. Flex changes are left untouched as UI5 deduplicates them natively by fileName.
+
+- Updated dependencies [9a980a9]
+    - @sap-ux/adp-tooling@0.19.10
+
+## 0.26.10
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.9
+
+## 0.26.9
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.8
+- @sap-ux/system-access@0.8.2
+
+## 0.26.8
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade @sap/service-provider-apis 2.8.0 → 2.10.0 (security: axios vulnerability)
+- Updated dependencies [01b70ca]
+    - @sap-ux/adp-tooling@0.19.7
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/system-access@0.8.1
+
+## 0.26.7
+
+### Patch Changes
+
+- Updated dependencies [758b0d4]
+    - @sap-ux/adp-tooling@0.19.6
+
+## 0.26.6
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.5
+- @sap-ux/project-access@1.38.1
+- @sap-ux/system-access@0.8.0
+
+## 0.26.5
+
+### Patch Changes
+
+- Updated dependencies [dab1aa2]
+    - @sap-ux/adp-tooling@0.19.4
+
+## 0.26.4
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/adp-tooling@0.19.3
+    - @sap-ux/system-access@0.8.0
+
+## 0.26.3
+
+### Patch Changes
+
+- Updated dependencies [342c544]
+    - @sap-ux/adp-tooling@0.19.2
+
+## 0.26.2
+
+### Patch Changes
+
+- fb00faa: fix(ci): use workspace:\* for internal monorepo dependencies
+
+## 0.26.1
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/adp-tooling@0.19.1
+
+## 0.26.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/adp-tooling@0.19.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/feature-toggle@0.4.0
+    - @sap-ux/i18n@0.4.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/system-access@0.8.0
+
+## 0.25.47
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.134
+
+## 0.25.46
+
+### Patch Changes
+
+- Updated dependencies [8c4185a]
+    - @sap-ux/adp-tooling@0.18.133
+
+## 0.25.45
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/adp-tooling@0.18.132
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/feature-toggle@0.3.9
+    - @sap-ux/i18n@0.3.12
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/system-access@0.7.13
+
+## 0.25.44
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/adp-tooling@0.18.131
+    - @sap-ux/system-access@0.7.12
+
+## 0.25.43
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.130
+
+## 0.25.42
+
+### Patch Changes
+
+- be5476f: feat: Display unhandled exceptions from the Controller extension inside the Info Center.
+
+## 0.25.41
+
+### Patch Changes
+
+- 17de742: fix: Add fragment list to model for custom fragments
+
+## 0.25.40
+
+## 0.25.39
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+- Updated dependencies [678a08e]
+    - @sap-ux/adp-tooling@0.18.129
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/system-access@0.7.11
+    - @sap-ux/project-access@1.36.3
+
+## 0.25.38
+
+## 0.25.37
+
+### Patch Changes
+
+- Updated dependencies [b2ffc7e]
+    - @sap-ux/adp-tooling@0.18.128
+
+## 0.25.36
+
+### Patch Changes
+
+- Updated dependencies [fcaa70c]
+    - @sap-ux/adp-tooling@0.18.127
+
+## 0.25.35
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/system-access@0.7.10
+    - @sap-ux/adp-tooling@0.18.126
+    - @sap-ux/i18n@0.3.11
+    - @sap-ux/project-access@1.36.2
+
+## 0.25.34
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.125
+
+## 0.25.33
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/adp-tooling@0.18.124
+    - @sap-ux/system-access@0.7.9
+
+## 0.25.32
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/adp-tooling@0.18.123
+    - @sap-ux/system-access@0.7.8
+
+## 0.25.31
+
+## 0.25.30
+
+### Patch Changes
+
+- Updated dependencies [10847a1]
+    - @sap-ux/adp-tooling@0.18.122
+
+## 0.25.29
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/adp-tooling@0.18.121
+    - @sap-ux/system-access@0.7.8
+
+## 0.25.28
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.120
+- @sap-ux/system-access@0.7.8
+
+## 0.25.27
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.119
+
+## 0.25.26
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+- Updated dependencies [67d1f8b]
+    - @sap-ux/adp-tooling@0.18.118
+
+## 0.25.25
+
+### Patch Changes
+
+- Updated dependencies [8fb08a2]
+    - @sap-ux/adp-tooling@0.18.117
+
+## 0.25.24
+
+### Patch Changes
+
+- ee68603: Axios upgrade from bas-sdk
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/adp-tooling@0.18.116
+    - @sap-ux/system-access@0.7.7
+
+## 0.25.23
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/adp-tooling@0.18.115
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/system-access@0.7.6
+    - @sap-ux/project-access@1.35.20
+
+## 0.25.22
+
+### Patch Changes
+
+- Updated dependencies [497317c]
+    - @sap-ux/adp-tooling@0.18.114
+
 ## 0.25.21
 
 ## 0.25.20

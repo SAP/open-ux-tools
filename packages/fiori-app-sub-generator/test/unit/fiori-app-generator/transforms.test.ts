@@ -1,8 +1,8 @@
+import { jest } from '@jest/globals';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
 import type { BackendSystem } from '@sap-ux/store';
 import { AuthenticationType } from '@sap-ux/store';
-import { transformState } from '../../../src/fiori-app-generator/transforms';
 import type { Project, Service, State } from '../../../src/types';
 import { ApiHubType, FloorplanFE, FloorplanFF, PLATFORMS } from '../../../src/types';
 import type { FioriElementsApp } from '@sap-ux/fiori-elements-writer';
@@ -10,26 +10,30 @@ import type { FreestyleApp } from '@sap-ux/fiori-freestyle-writer';
 import type { BasicAppSettings } from '@sap-ux/fiori-freestyle-writer/dist/types';
 import type { Destination } from '@sap-ux/btp-utils';
 import { Authentication as DestinationAuthType } from '@sap-ux/btp-utils';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import * as featureToggle from '@sap-ux/feature-toggle';
 
-jest.mock('@sap-ux/fiori-generator-shared', () => {
-    return {
-        ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-        sendTelemetry: jest.fn(),
-        getHostEnvironment: jest.fn().mockReturnValue({
-            name: 'CLI',
-            technical: 'CLI'
-        })
-    };
-});
+// Pre-import actuals
+const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+const actualFeatureToggle = await import('@sap-ux/feature-toggle');
 
-jest.mock('@sap-ux/feature-toggle', () => {
-    return {
-        ...jest.requireActual('@sap-ux/feature-toggle'),
-        isFeatureEnabled: jest.fn()
-    };
+const mockGetHostEnvironment = jest.fn().mockReturnValue({
+    name: 'CLI',
+    technical: 'CLI'
 });
+const mockIsFeatureEnabled = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGenShared,
+    sendTelemetry: jest.fn(),
+    getHostEnvironment: mockGetHostEnvironment
+}));
+
+jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
+    ...actualFeatureToggle,
+    isFeatureEnabled: mockIsFeatureEnabled
+}));
+
+const { transformState } = await import('../../../src/fiori-app-generator/transforms');
+const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 
 describe('Test transform state', () => {
     const baseState: State = {
@@ -109,7 +113,7 @@ describe('Test transform state', () => {
                 } as Service['connectedSystem']
             }
         };
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.bas);
+        (mockGetHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.bas);
 
         let ffApp = await transformState<FreestyleApp<BasicAppSettings>>(state);
         // All cloud systems support reentrance this supports BAS -> VSCode portability
@@ -335,7 +339,7 @@ describe('Test transform state', () => {
                 }
             }
         };
-        jest.spyOn(featureToggle, 'isFeatureEnabled').mockReturnValueOnce(true); // mock feature flag to disable root package json updates
+        mockIsFeatureEnabled.mockReturnValueOnce(true); // mock feature flag to disable root package json updates
         const feApp = await transformState<FioriElementsApp<unknown>>(state, true);
         expect(feApp.app.projectType).toStrictEqual('CAPNodejs');
         expect(feApp.appOptions.disableCapRootPkgJsonUpdates).toBe(true);

@@ -1,11 +1,12 @@
 {
     "name": "@sap-ux/sap-systems-ext-webapp",
-    "version": "0.2.1",
+    "version": "1.0.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/sap-systems-ext-webapp"
     },
+    "type": "module",
     "private": true,
     "main": "dist/store.js",
     "description": "Web view for sap-systems-ext",
@@ -14,13 +15,13 @@
         "clean:dist": "rimraf ./dist ./generators *.tsbuildinfo",
         "clean": "rimraf ./out ./reports",
         "watch": "npm-run-all -l -s clean -p watch:*",
-        "watch:webapp": "node esbuild.js --watch --minify=false --sourcemap=inline",
+        "watch:webapp": "node esbuild.mjs --watch --minify=false --sourcemap=inline",
         "build": "npm-run-all -l -s clean -p build:webapp ",
         "build:debug": "npm-run-all -l -s clean -p build:webapp:debug",
-        "build:webapp:debug": "node esbuild.js --minify=false",
-        "build:webapp": "node esbuild.js",
-        "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles --config=jest.config.js --silent",
-        "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand  --config=jest.config.js --colors",
+        "build:webapp:debug": "node esbuild.mjs --minify=false",
+        "build:webapp": "node esbuild.mjs",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=1 --ci --forceExit --detectOpenHandles --config=jest.config.mjs --silent",
+        "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand  --config=jest.config.mjs --colors",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
         "format:fix": "prettier --write --ignore-path ../../../.prettierignore",
@@ -29,6 +30,7 @@
     },
     "devDependencies": {
         "@esbuild-plugins/node-modules-polyfill": "0.2.2",
+        "@jest/globals": "30.3.0",
         "@reduxjs/toolkit": "1.6.1",
         "@sap-ux/ui-components": "workspace:*",
         "@sap-ux/store": "workspace:*",
@@ -50,7 +52,7 @@
         "redux": "4.0.4"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     },
     "files": [
         "dist/"

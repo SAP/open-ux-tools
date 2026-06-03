@@ -1,7 +1,7 @@
 import React from 'react';
-import { UIIconButton } from '..';
-import type { UiIcons } from '..';
-import { getTableActionButtonId } from './utils';
+import { UIIconButton } from '../index.js';
+import type { UiIcons } from '../index.js';
+import { getTableActionButtonId } from './utils.js';
 
 export interface UIFlexibleTableActionProps {
     actionName: string;

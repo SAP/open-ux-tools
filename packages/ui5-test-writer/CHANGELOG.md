@@ -1,5 +1,321 @@
 # @sap-ux/ui5-test-writer
 
+## 1.0.6
+
+### Patch Changes
+
+- @sap-ux/project-access@2.0.2
+- @sap-ux/ui5-application-writer@2.0.1
+- @sap-ux/preview-middleware@1.0.6
+- @sap-ux/fiori-generator-shared@1.0.3
+
+## 1.0.5
+
+### Patch Changes
+
+- Updated dependencies [3506d2c]
+    - @sap-ux/preview-middleware@1.0.5
+
+## 1.0.4
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@1.0.4
+- @sap-ux/fiori-generator-shared@1.0.2
+
+## 1.0.3
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@1.0.3
+
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies [8024912]
+    - @sap-ux/preview-middleware@1.0.2
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+    - @sap-ux/fiori-generator-shared@1.0.1
+    - @sap-ux/preview-middleware@1.0.1
+    - @sap-ux/ui5-application-writer@2.0.0
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/fiori-generator-shared@1.0.0
+    - @sap-ux/ui5-application-writer@2.0.0
+    - @sap-ux/preview-middleware@1.0.0
+    - @sap-ux/project-access@2.0.0
+    - @sap-ux/logger@1.0.0
+
+## 0.9.15
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@0.26.12
+
+## 0.9.14
+
+### Patch Changes
+
+- Updated dependencies [9a980a9]
+    - @sap-ux/preview-middleware@0.26.11
+
+## 0.9.13
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@0.26.10
+- @sap-ux/fiori-generator-shared@0.15.6
+
+## 0.9.12
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.15.5
+- @sap-ux/preview-middleware@0.26.9
+
+## 0.9.11
+
+### Patch Changes
+
+- Updated dependencies [162059e]
+    - @sap-ux/ui5-application-writer@1.9.2
+
+## 0.9.10
+
+### Patch Changes
+
+- 03d1cdd: add OPA tests for LR semantic key filters and global search
+
+## 0.9.9
+
+### Patch Changes
+
+- Updated dependencies [01b70ca]
+    - @sap-ux/preview-middleware@0.26.8
+    - @sap-ux/fiori-generator-shared@0.15.4
+
+## 0.9.8
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@0.26.7
+
+## 0.9.7
+
+### Patch Changes
+
+- @sap-ux/project-access@1.38.1
+- @sap-ux/ui5-application-writer@1.9.1
+- @sap-ux/preview-middleware@0.26.6
+- @sap-ux/fiori-generator-shared@0.15.3
+
+## 0.9.6
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@0.26.5
+
+## 0.9.5
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/fiori-generator-shared@0.15.2
+    - @sap-ux/preview-middleware@0.26.4
+    - @sap-ux/ui5-application-writer@1.9.0
+
+## 0.9.4
+
+### Patch Changes
+
+- 8d4a8a4: Generate tests for Actions on the Object Page
+
+## 0.9.3
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@0.26.3
+
+## 0.9.2
+
+### Patch Changes
+
+- Updated dependencies [fb00faa]
+    - @sap-ux/preview-middleware@0.26.2
+
+## 0.9.1
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+    - @sap-ux/preview-middleware@0.26.1
+
+## 0.9.0
+
+### Minor Changes
+
+- 2f0c182: feat: support virtual preview endpoints for test generation
+
+    When `useVirtualPreviewEndpoints` is enabled, test harness files (testsuite, unitTests, opaTests) are served virtually and not written to disk. UI5 yaml files are updated with `flp.path: test/flp.html` and test framework entries (OPA5, Testsuite, QUnit) are added to ui5-mock.yaml.
+
+## 0.8.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/fiori-generator-shared@0.15.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/ui5-application-writer@1.9.0
+
+## 0.7.114
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/fiori-generator-shared@0.14.2
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/ui5-application-writer@1.8.9
+
+## 0.7.113
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/fiori-generator-shared@0.14.1
+    - @sap-ux/ui5-application-writer@1.8.8
+
+## 0.7.112
+
+### Patch Changes
+
+- Updated dependencies [9360ea5]
+    - @sap-ux/fiori-generator-shared@0.14.0
+
+## 0.7.111
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/fiori-generator-shared@0.13.105
+    - @sap-ux/project-access@1.36.3
+    - @sap-ux/ui5-application-writer@1.8.8
+
+## 0.7.110
+
+### Patch Changes
+
+- 865fb96: fixes for app info generation
+
+## 0.7.109
+
+### Patch Changes
+
+- @sap-ux/ui5-application-writer@1.8.7
+- @sap-ux/project-access@1.36.2
+
+## 0.7.108
+
+### Patch Changes
+
+- 287e3a4: Generate tests for Form and Table content in Object Page Sections
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/ui5-application-writer@1.8.7
+
+## 0.7.107
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/ui5-application-writer@1.8.7
+
+## 0.7.106
+
+### Patch Changes
+
+- Updated dependencies [165a6c2]
+    - @sap-ux/ui5-application-writer@1.8.7
+
+## 0.7.105
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/ui5-application-writer@1.8.6
+    - @sap-ux/project-access@1.35.21
+
+## 0.7.104
+
+### Patch Changes
+
+- d36d5d7: app info generation fixes
+
+## 0.7.103
+
+### Patch Changes
+
+- 4357b0b: generate opa5 tests from app info
+
+## 0.7.102
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.20
+- @sap-ux/ui5-application-writer@1.8.5
+
 ## 0.7.101
 
 ### Patch Changes

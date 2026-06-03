@@ -3,7 +3,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'node:path';
 import { FileName, hasDependency, type Package } from '@sap-ux/project-access';
-import { isLowerThanMinimalVersion } from '../common/package-json';
+import { isLowerThanMinimalVersion } from '../common/package-json.js';
 import crossSpawn from 'cross-spawn';
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -369,8 +369,8 @@ async function updatePackageJson(basePath: string, fs: Editor, logger?: ToolsLog
     const packageJsonPath = join(basePath, FileName.Package);
     const packageJson = fs.readJSON(packageJsonPath) as Package;
     packageJson.devDependencies ??= {};
-    packageJson.devDependencies[packageName.ESLINT] = '^9.0.0';
-    packageJson.devDependencies[packageName.ESLINT_PLUGIN_FIORI_TOOLS] = '^9.0.0';
+    packageJson.devDependencies[packageName.ESLINT] = '^10.0.0';
+    packageJson.devDependencies[packageName.ESLINT_PLUGIN_FIORI_TOOLS] = '^10.0.0';
     delete packageJson.devDependencies[packageName.ESLINT_PLUGIN_FIORI_CUSTOM];
     packageJson.scripts ??= {};
     if (packageJson.scripts['lint']) {

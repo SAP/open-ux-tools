@@ -1,0 +1,43 @@
+import { spawnSync } from 'node:child_process';
+import { join } from 'node:path';
+import { platform } from 'node:os';
+const __dirname = import.meta.dirname;
+
+const fiveMinutes = 5 * 60000;
+const TEST_DATA_ROOT = join(__dirname, 'test', 'data');
+const CDS_PROJECTS = [
+    join(TEST_DATA_ROOT, 'bookshop')
+];
+
+function npmInstall(projectPath) {
+    console.log(`Installing packages in ${projectPath}. Max time allocated is 5 min.`);
+    const cmd = platform() === 'win32' ? `npm.cmd` : 'npm';
+    const npm = spawnSync(cmd, ['install', '--ignore-engines'], {
+        cwd: projectPath,
+        env: process.env,
+        shell: true,
+        stdio: 'inherit',
+        timeout: fiveMinutes
+    });
+
+    if (npm.error) {
+        console.log(`Error: ${npm.error.message}`);
+    } else if (npm.status !== 0) {
+        console.log(`npm process exited with code ${npm.status}`);
+    } else {
+        console.log(`Package installed successfully in ${projectPath}`);
+    }
+}
+
+export default function () {
+    // for watch mode assume that node modules are already installed
+    const skipInstall = process.argv.find((arg) => arg === '--watch');
+
+    if (skipInstall) {
+        return;
+    }
+
+    for (const projectPath of CDS_PROJECTS) {
+        npmInstall(projectPath);
+    }
+}

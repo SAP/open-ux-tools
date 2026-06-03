@@ -1,35 +1,33 @@
-import { getQuestions } from '../../../src/prompts';
-import { initI18n, t } from '../../../src/i18n';
+import { jest } from '@jest/globals';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import type { UI5LibraryPromptOptions, UI5LibraryAnswers } from '../../../src/types';
-import * as projectInputValidators from '@sap-ux/project-input-validator';
-import * as inquirerCommon from '@sap-ux/inquirer-common';
-import type { ListQuestion, Question } from 'inquirer';
-import type { FileBrowserQuestion, InputQuestion, ConfirmQuestion } from '@sap-ux/inquirer-common';
+import type { FileBrowserQuestion, InputQuestion } from '@sap-ux/inquirer-common';
 
 // Mock dependencies
-jest.mock('@sap-ux/project-input-validator');
-jest.mock('@sap-ux/inquirer-common', () => ({
-    ...jest.requireActual('@sap-ux/inquirer-common'),
-    ui5VersionsGrouped: jest.fn(),
-    searchChoices: jest.fn()
+const mockValidateLibModuleName = jest.fn<(name: string) => boolean | string>();
+const mockValidateNamespace = jest.fn<(ns: string, libName?: string, flag?: boolean) => boolean | string>();
+const mockValidateProjectFolder = jest.fn<(target: string, name: string) => boolean | string>();
+
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    validateLibModuleName: mockValidateLibModuleName,
+    validateNamespace: mockValidateNamespace,
+    validateProjectFolder: mockValidateProjectFolder
 }));
 
-describe('Enhanced Prompting Tests', () => {
-    const mockValidateLibModuleName = projectInputValidators.validateLibModuleName as jest.MockedFunction<
-        typeof projectInputValidators.validateLibModuleName
-    >;
-    const mockValidateNamespace = projectInputValidators.validateNamespace as jest.MockedFunction<
-        typeof projectInputValidators.validateNamespace
-    >;
-    const mockValidateProjectFolder = projectInputValidators.validateProjectFolder as jest.MockedFunction<
-        typeof projectInputValidators.validateProjectFolder
-    >;
-    const mockUi5VersionsGrouped = inquirerCommon.ui5VersionsGrouped as jest.MockedFunction<
-        typeof inquirerCommon.ui5VersionsGrouped
-    >;
-    const mockSearchChoices = inquirerCommon.searchChoices as jest.MockedFunction<typeof inquirerCommon.searchChoices>;
+const mockUi5VersionsGrouped = jest.fn();
+const mockSearchChoices = jest.fn();
+const mockAddi18nResourceBundle = jest.fn();
 
+jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
+    ui5VersionsGrouped: mockUi5VersionsGrouped,
+    searchChoices: mockSearchChoices,
+    addi18nResourceBundle: mockAddi18nResourceBundle
+}));
+
+const { getQuestions } = await import('../../../src/prompts');
+const { initI18n, t } = await import('../../../src/i18n');
+
+describe('Enhanced Prompting Tests', () => {
     const mockUI5Versions: UI5Version[] = [
         { version: '1.120.0', maintained: true, default: true },
         { version: '1.108.0', maintained: true },
@@ -148,7 +146,7 @@ describe('Enhanced Prompting Tests', () => {
             const originalProcessCwd = process.cwd;
 
             beforeEach(() => {
-                process.cwd = jest.fn().mockReturnValue('/mock/current/directory');
+                process.cwd = jest.fn<() => string>().mockReturnValue('/mock/current/directory');
             });
 
             afterEach(() => {

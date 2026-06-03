@@ -1,5 +1,208 @@
 # @sap-ux/environment-check
 
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies [9580241]
+    - @sap-ux/ui5-config@1.0.1
+    - @sap-ux/project-access@2.0.2
+    - @sap-ux/axios-extension@2.0.0
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+    - @sap-ux/axios-extension@2.0.0
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/project-access@2.0.0
+    - @sap-ux/ui5-config@1.0.0
+    - @sap-ux/btp-utils@2.0.0
+    - @sap-ux/logger@1.0.0
+    - @sap-ux/store@2.0.0
+
+## 0.19.4
+
+### Patch Changes
+
+- Updated dependencies [c12420a]
+    - @sap-ux/store@1.6.1
+    - @sap-ux/ui5-config@0.31.1
+
+## 0.19.3
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade @sap/service-provider-apis 2.8.0 → 2.10.0 (security: axios vulnerability)
+- Updated dependencies [01b70ca]
+- Updated dependencies [01b70ca]
+    - @sap-ux/axios-extension@1.26.1
+    - @sap-ux/btp-utils@1.2.1
+
+## 0.19.2
+
+### Patch Changes
+
+- Updated dependencies [9752c40]
+    - @sap-ux/ui5-config@0.31.1
+    - @sap-ux/project-access@1.38.1
+    - @sap-ux/axios-extension@1.26.0
+
+## 0.19.1
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/axios-extension@1.26.0
+
+## 0.19.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/store@1.6.0
+    - @sap-ux/ui5-config@0.31.0
+
+## 0.18.127
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/store@1.5.14
+    - @sap-ux/ui5-config@0.30.5
+
+## 0.18.126
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/axios-extension@1.25.36
+    - @sap-ux/project-access@1.36.4
+
+## 0.18.125
+
+### Patch Changes
+
+- 678a08e: chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
+- Updated dependencies [678a08e]
+    - @sap-ux/axios-extension@1.25.35
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/ui5-config@0.30.4
+    - @sap-ux/project-access@1.36.3
+
+## 0.18.124
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/axios-extension@1.25.34
+    - @sap-ux/project-access@1.36.2
+
+## 0.18.123
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+- Updated dependencies [3945459]
+    - @sap-ux/axios-extension@1.25.33
+    - @sap-ux/project-access@1.36.1
+
+## 0.18.122
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/axios-extension@1.25.32
+
+## 0.18.121
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/axios-extension@1.25.32
+
+## 0.18.120
+
+### Patch Changes
+
+- Updated dependencies [237371b]
+    - @sap-ux/axios-extension@1.25.32
+
+## 0.18.119
+
+### Patch Changes
+
+- ee68603: Axios upgrade from bas-sdk
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/axios-extension@1.25.31
+
+## 0.18.118
+
+### Patch Changes
+
+- cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
+- Updated dependencies [cc4450c]
+    - @sap-ux/axios-extension@1.25.30
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/ui5-config@0.30.3
+    - @sap-ux/project-access@1.35.20
+
 ## 0.18.117
 
 ### Patch Changes

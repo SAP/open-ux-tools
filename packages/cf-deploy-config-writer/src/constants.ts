@@ -1,5 +1,5 @@
 import { UI5_DEFAULT } from '@sap-ux/ui5-config';
-import { t } from './i18n';
+import { t } from './i18n.js';
 export const WelcomeFile = 'welcomeFile';
 export const MTABuildResult = 'build-result';
 export const MTABuildParams = 'build-parameters';
@@ -25,7 +25,7 @@ export const MTAVersion = '0.0.1';
 export const RimrafVersion = '^5.0.5';
 export const Rimraf = 'rimraf';
 export const MbtPackage = 'mbt';
-export const MbtPackageVersion = '^1.2.29';
+export const MbtPackageVersion = '^1.2.49';
 export const UI5TaskZipperPackage = 'ui5-task-zipper';
 export const UI5TaskZipperPackageVersion = '^3.4.x';
 export const UI5Package = '@ui5/cli';

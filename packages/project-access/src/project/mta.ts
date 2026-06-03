@@ -1,8 +1,8 @@
 import type { Editor } from 'mem-fs-editor';
-import { findFileUp } from '../file/file-search';
-import { FileName } from '../constants';
+import { findFileUp } from '../file/file-search.js';
+import { FileName } from '../constants.js';
 import { dirname } from 'node:path';
-import type { MtaPath } from '../types/mta';
+import type { MtaPath } from '../types/mta/index.js';
 
 /**
  * Searches `projectPath` and parent folders.

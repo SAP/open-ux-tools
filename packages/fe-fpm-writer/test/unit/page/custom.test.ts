@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -10,12 +11,12 @@ import { detectTabSpacing } from '../../../src/common/file';
 import { tabSizingTestCases } from '../../common';
 import type { Logger } from '@sap-ux/logger';
 import { i18nNamespaces, translate } from '../../../src/i18n';
-import * as fileAccess from '@sap-ux/project-access/dist/file';
+import { findFilesByExtensionMock } from '../../__mocks__/project-access-file.mjs';
 
 describe('CustomPage', () => {
     const testDir = '' + Date.now();
     let fs: Editor;
-    jest.spyOn(fileAccess, 'findFilesByExtension').mockResolvedValue([]);
+    findFilesByExtensionMock.mockResolvedValue([]);
     const testAppManifest = JSON.stringify(
         {
             'sap.app': {

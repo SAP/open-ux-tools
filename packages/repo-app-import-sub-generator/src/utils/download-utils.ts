@@ -1,10 +1,10 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
-import { PromptState } from '../prompts/prompt-state';
-import { t } from './i18n';
-import RepoAppDownloadLogger from '../utils/logger';
-import { qfaJsonFileName } from './constants';
+import { PromptState } from '../prompts/prompt-state.js';
+import { t } from './i18n.js';
+import RepoAppDownloadLogger from '../utils/logger.js';
+import { qfaJsonFileName } from './constants.js';
 import { type Logger } from '@sap-ux/logger';
 
 /**

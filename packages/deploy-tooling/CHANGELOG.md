@@ -1,5 +1,296 @@
 # @sap-ux/deploy-tooling
 
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies [9580241]
+    - @sap-ux/ui5-config@1.0.1
+    - @sap-ux/inquirer-common@1.0.3
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/project-input-validator@1.0.2
+    - @sap-ux/system-access@1.0.0
+
+## 1.0.2
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@1.0.2
+
+## 1.0.1
+
+### Patch Changes
+
+- @sap-ux/axios-extension@2.0.0
+- @sap-ux/inquirer-common@1.0.1
+- @sap-ux/project-input-validator@1.0.1
+- @sap-ux/system-access@1.0.0
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/project-input-validator@1.0.0
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/inquirer-common@1.0.0
+    - @sap-ux/system-access@1.0.0
+    - @sap-ux/ui5-config@1.0.0
+    - @sap-ux/btp-utils@2.0.0
+    - @sap-ux/logger@1.0.0
+
+## 0.19.8
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.13.6
+
+## 0.19.7
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.13.5
+
+## 0.19.6
+
+### Patch Changes
+
+- @sap-ux/system-access@0.8.2
+- @sap-ux/ui5-config@0.31.1
+- @sap-ux/inquirer-common@0.13.4
+
+## 0.19.5
+
+### Patch Changes
+
+- Updated dependencies [01b70ca]
+- Updated dependencies [01b70ca]
+    - @sap-ux/axios-extension@1.26.1
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/system-access@0.8.1
+    - @sap-ux/inquirer-common@0.13.3
+
+## 0.19.4
+
+### Patch Changes
+
+- Updated dependencies [9752c40]
+    - @sap-ux/ui5-config@0.31.1
+    - @sap-ux/inquirer-common@0.13.2
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/project-input-validator@0.7.2
+    - @sap-ux/system-access@0.8.0
+
+## 0.19.3
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.26.0
+- @sap-ux/inquirer-common@0.13.1
+- @sap-ux/project-input-validator@0.7.1
+- @sap-ux/system-access@0.8.0
+
+## 0.19.2
+
+### Patch Changes
+
+- 0b35137: fix(deploy-tooling): skip ATO developmentPrefix enforcement for on-premise systems
+
+## 0.19.1
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/inquirer-common@0.13.0
+
+## 0.19.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/inquirer-common@0.12.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/project-input-validator@0.7.0
+    - @sap-ux/system-access@0.8.0
+    - @sap-ux/ui5-config@0.31.0
+
+## 0.18.27
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.48
+
+## 0.18.26
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/inquirer-common@0.11.47
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/project-input-validator@0.6.84
+    - @sap-ux/system-access@0.7.13
+    - @sap-ux/ui5-config@0.30.5
+
+## 0.18.25
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/axios-extension@1.25.36
+    - @sap-ux/system-access@0.7.12
+    - @sap-ux/inquirer-common@0.11.46
+    - @sap-ux/project-input-validator@0.6.83
+
+## 0.18.24
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.45
+
+## 0.18.23
+
+### Patch Changes
+
+- 678a08e: chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
+- Updated dependencies [678a08e]
+    - @sap-ux/axios-extension@1.25.35
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/inquirer-common@0.11.44
+    - @sap-ux/ui5-config@0.30.4
+    - @sap-ux/system-access@0.7.11
+    - @sap-ux/project-input-validator@0.6.82
+
+## 0.18.22
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/system-access@0.7.10
+    - @sap-ux/axios-extension@1.25.34
+    - @sap-ux/inquirer-common@0.11.43
+    - @sap-ux/project-input-validator@0.6.81
+
+## 0.18.21
+
+### Patch Changes
+
+- Updated dependencies [a4b90ca]
+    - @sap-ux/project-input-validator@0.6.80
+
+## 0.18.20
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+- Updated dependencies [3945459]
+    - @sap-ux/axios-extension@1.25.33
+    - @sap-ux/system-access@0.7.9
+    - @sap-ux/inquirer-common@0.11.42
+    - @sap-ux/project-input-validator@0.6.79
+
+## 0.18.19
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.32
+- @sap-ux/inquirer-common@0.11.41
+- @sap-ux/project-input-validator@0.6.78
+- @sap-ux/system-access@0.7.8
+
+## 0.18.18
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.32
+- @sap-ux/inquirer-common@0.11.40
+- @sap-ux/project-input-validator@0.6.77
+- @sap-ux/system-access@0.7.8
+
+## 0.18.17
+
+### Patch Changes
+
+- Updated dependencies [237371b]
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/system-access@0.7.8
+    - @sap-ux/inquirer-common@0.11.39
+
+## 0.18.16
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.38
+
+## 0.18.15
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+    - @sap-ux/inquirer-common@0.11.37
+
+## 0.18.14
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/axios-extension@1.25.31
+    - @sap-ux/inquirer-common@0.11.36
+    - @sap-ux/system-access@0.7.7
+
+## 0.18.13
+
+### Patch Changes
+
+- cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
+- Updated dependencies [cc4450c]
+    - @sap-ux/axios-extension@1.25.30
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/inquirer-common@0.11.35
+    - @sap-ux/ui5-config@0.30.3
+    - @sap-ux/system-access@0.7.6
+    - @sap-ux/project-input-validator@0.6.76
+
 ## 0.18.12
 
 ### Patch Changes

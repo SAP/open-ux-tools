@@ -1,11 +1,11 @@
 import React from 'react';
 import type { ReactElement } from 'react';
 import type { ConnectionType, SystemType } from '@sap-ux/store';
-import type { SystemInfo as ISystemInfo } from '../../../../types';
-import { ConnectionName } from './ConnectionName';
-import { ConnectionTypes } from './ConnectionTypes';
-import { OnPremSystem } from './OnPremSystem';
-import { CloudSystem } from './CloudSystem';
+import type { SystemInfo as ISystemInfo } from '../../../../types/index.js';
+import { ConnectionName } from './ConnectionName.js';
+import { ConnectionTypes } from './ConnectionTypes.js';
+import { OnPremSystem } from './OnPremSystem.js';
+import { CloudSystem } from './CloudSystem.js';
 
 import '../../../../styles/SystemMain.scss';
 

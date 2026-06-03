@@ -1,35 +1,43 @@
+import { jest } from '@jest/globals';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { ToolsLogger } from '@sap-ux/logger';
-import { updatePreviewMiddlewareConfigs } from '../../../src/preview-config/ui5-yaml';
 import type { PreviewConfigOptions } from '../../../src/types';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
-import * as projectAccess from '@sap-ux/project-access';
 import type { Script } from '../../../src/common/package-json';
-import { updatePreviewMiddlewareConfig } from '../../../src/common/ui5-yaml';
+
+const mockGetAllUi5YamlFileNames = jest.fn();
+const actualProjectAccess = await import('@sap-ux/project-access');
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    getAllUi5YamlFileNames: mockGetAllUi5YamlFileNames
+}));
+
+const { updatePreviewMiddlewareConfigs } = await import('../../../src/preview-config/ui5-yaml');
+const { updatePreviewMiddlewareConfig } = await import('../../../src/common/ui5-yaml');
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('update preview middleware config', () => {
     const logger = new ToolsLogger();
     const warnLogMock = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
     const basePath = join(__dirname, '../../fixtures/preview-config');
     let fs: Editor;
-    let getAllUi5YamlFileNamesMock: jest.SpyInstance;
 
     beforeEach(() => {
         jest.clearAllMocks();
         fs = create(createStorage());
-        getAllUi5YamlFileNamesMock = jest
-            .spyOn(projectAccess, 'getAllUi5YamlFileNames')
-            .mockResolvedValue([
-                'ui5.yaml',
-                'ui5-deprecated-tools-preview.yaml',
-                'ui5-deprecated-tools-preview-theme.yaml',
-                'ui5-existing-preview-middleware.yaml',
-                'ui5-existing-tools-preview.yaml',
-                'ui5-no-middleware.yaml',
-                'ui5-invalid.yaml'
-            ]);
+        mockGetAllUi5YamlFileNames.mockResolvedValue([
+            'ui5.yaml',
+            'ui5-deprecated-tools-preview.yaml',
+            'ui5-deprecated-tools-preview-theme.yaml',
+            'ui5-existing-preview-middleware.yaml',
+            'ui5-existing-tools-preview.yaml',
+            'ui5-no-middleware.yaml',
+            'ui5-invalid.yaml'
+        ]);
     });
 
     test('w/o path and intent', async () => {
@@ -68,7 +76,7 @@ describe('update preview middleware config', () => {
         expect(warnLogMock).toHaveBeenCalledWith(text('ui5-existing-tools-preview.yaml'));
         expect(warnLogMock).toHaveBeenCalledWith(text('ui5-no-middleware.yaml'));
         expect(warnLogMock).toHaveBeenCalledWith(text('ui5.yaml'));
-        expect(getAllUi5YamlFileNamesMock).toHaveBeenCalledTimes(1);
+        expect(mockGetAllUi5YamlFileNames).toHaveBeenCalledTimes(1);
     });
 
     test('skip invalid yaml configurations', async () => {
@@ -156,6 +164,22 @@ describe('update preview middleware config', () => {
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
         expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'integration', 'opaTests.qunit.js'))).toBeFalsy();
         expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'unit', 'unitTests.qunit.ts'))).toBeFalsy();
+    });
+
+    test('warns about QUnit discovery pattern when unitTests.qunit.html exists', async () => {
+        const variousConfigsPath = join(basePath, 'various-configs');
+        const packageJson = {
+            scripts: {
+                'ui:unit':
+                    'fiori run -o test/unit/unitTests.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml'
+            },
+            'devDependencies': { '@sap/ux-ui5-tooling': '1.15.1' }
+        };
+        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
+        fs.write(join(variousConfigsPath, 'webapp', 'test', 'unit', 'unitTests.qunit.html'), 'dummy content');
+
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, true, logger);
+        expect(warnLogMock).toHaveBeenCalledWith(expect.stringContaining("default pattern '/test/**/*Test.{js,ts}'"));
     });
 
     test('deprecated tools preview with theme, tests and ui5-test-runner', async () => {

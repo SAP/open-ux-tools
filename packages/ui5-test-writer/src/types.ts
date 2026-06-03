@@ -1,3 +1,5 @@
+import type { Editor } from 'mem-fs-editor';
+
 export const SupportedPageTypes: { [id: string]: string } = {
     'sap.fe.templates.ListReport': 'ListReport',
     'sap.fe.templates.ObjectPage': 'ObjectPage',
@@ -25,6 +27,13 @@ export type FEV4OPAConfig = {
     filterBarItems?: string[];
 };
 
+export type JourneyParams = {
+    startPages: string[];
+    startLR: string | undefined;
+    navigatedOP: string | undefined;
+    hideFilterBar: boolean;
+};
+
 export type FEV4ManifestTarget = {
     type?: string;
     name?: string;
@@ -40,6 +49,13 @@ export type FEV4ManifestTarget = {
                         route?: string;
                     };
                 };
+            };
+            views?: {
+                paths?: Array<{
+                    primary?: unknown[];
+                    secondary?: unknown[];
+                    defaultPath?: string;
+                }>;
             };
         };
     };
@@ -71,6 +87,7 @@ export interface FFOPAConfig {
     viewName?: string;
     ui5Version?: string;
     ui5Theme?: string;
+    useVirtualPreviewEndpoints?: boolean;
 }
 
 export type ObjectPageNavigationParents = {
@@ -79,19 +96,38 @@ export type ObjectPageNavigationParents = {
     parentOPTableSection?: string;
 };
 
+export type SectionFormField = {
+    property: string;
+};
+
+export type TableColumn = {
+    header?: string;
+};
+
+export type TableColumnFeatureData = Record<string, TableColumn>;
+
 export type BodySubSectionFeatureData = {
     id: string;
+    navigationProperty?: string;
     isTable: boolean;
     custom: boolean;
     order: number;
+    fields: SectionFormField[];
+    tableColumns: TableColumnFeatureData;
 };
 
 export type BodySectionFeatureData = {
     id: string;
+    navigationProperty?: string;
     isTable: boolean;
     custom: boolean;
     order: number;
+    fields: SectionFormField[];
+    tableColumns: TableColumnFeatureData;
     subSections: BodySubSectionFeatureData[];
+    actions?: ActionButtonState[];
+    createButton?: ButtonState;
+    deleteButton?: ButtonState;
 };
 
 export type ObjectPageFeatures = {
@@ -101,6 +137,8 @@ export type ObjectPageFeatures = {
     headerDescription?: string;
     headerSections?: HeaderSectionFeatureData[];
     bodySections?: BodySectionFeatureData[];
+    headerActions?: ActionButtonState[];
+    editButton?: ButtonState;
 };
 
 export type ListReportFeatures = {
@@ -112,16 +150,25 @@ export type ListReportFeatures = {
     };
     deleteButton?: {
         enabled?: boolean | string;
-        visible: boolean;
+        visible?: boolean;
         dynamicPath?: string;
     };
     filterBarItems?: string[];
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
     toolBarActions?: ActionButtonState[];
+    isALP?: boolean;
+    semanticKey?: {
+        semanticKeyProperties?: string[];
+        missingFromFilterBar?: string[];
+    };
 };
 
 export interface ActionButtonState {
     label: string;
+    /**
+     * For List Report actions: the full OData binding path (e.g. "namespace.ActionName(entityType=@odata.context)").
+     * For Object Page actions extracted from the spec model: the method name only (e.g. "Copy").
+     */
     action: string;
     visible: boolean;
     /**
@@ -140,6 +187,16 @@ export interface ActionButtonState {
      * The invocation grouping type if specified (e.g., "Isolated", "ChangeSet").
      */
     invocationGrouping?: string;
+    /**
+     * OData schema namespace used as the `service` parameter in iCheckAction({ service, action, unbound }).
+     * Populated for Object Page actions extracted via the spec model + metadata.
+     */
+    service?: string;
+    /**
+     * Whether the action is unbound (not bound to a specific entity instance).
+     * Populated for Object Page actions extracted via the spec model + metadata.
+     */
+    unbound?: boolean;
 }
 
 export type FPMFeatures = {
@@ -152,6 +209,14 @@ export type AppFeatures = {
     listReport?: ListReportFeatures;
     objectPages?: ObjectPageFeatures[];
     fpm?: FPMFeatures;
+};
+
+export type WriteContext = {
+    config: FEV4OPAConfig;
+    rootV4TemplateDirPath: string;
+    testOutDirPath: string;
+    editor: Editor;
+    journeyParams: JourneyParams;
 };
 
 export type FormField = {

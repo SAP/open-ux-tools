@@ -1,10 +1,10 @@
 import type { AtoSettings } from '@sap-ux/axios-extension';
 import { AtoService } from '@sap-ux/axios-extension';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
-import { t } from '../i18n';
-import LoggerHelper from '../logger-helper';
-import type { BackendTarget, Credentials, InitTransportConfigResult, TransportConfig } from '../types';
-import { AbapServiceProviderManager } from './abap-service-provider';
+import { t } from '../i18n.js';
+import LoggerHelper from '../logger-helper.js';
+import type { BackendTarget, Credentials, InitTransportConfigResult, TransportConfig } from '../types.js';
+import { AbapServiceProviderManager } from './abap-service-provider.js';
 
 /**
  * Dummy transport configuration.

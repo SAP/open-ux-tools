@@ -1,7 +1,8 @@
 {
     "name": "@sap-ux/i18n",
-    "version": "0.3.10",
+    "version": "1.0.0",
     "description": "Library for i18n",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -15,6 +16,7 @@
     "main": "dist/index.js",
     "exports": {
         ".": {
+            "types": "./dist/index.d.ts",
             "browser": "./dist/web/index.js",
             "import": "./dist/index.js",
             "default": "./dist/index.js"
@@ -27,7 +29,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --maxWorkers=1 --colors --silent",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=1 --colors --silent",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global",
         "test:update": "npm-run-all -l -s test:update-properties test:update-csv",
@@ -40,6 +42,7 @@
         "@sap-ux/text-document-utils": "workspace:*"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "npm-run-all2": "8.0.4",
         "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
@@ -54,6 +57,6 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

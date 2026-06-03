@@ -1,2 +1,2 @@
-export { copyProject } from './copy';
-export { getDestinationProjectRoot } from './project';
+export { copyProject } from './copy.js';
+export { getDestinationProjectRoot } from './project.js';

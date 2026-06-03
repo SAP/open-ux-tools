@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { UIComboBoxOption, UIComboBoxRef } from '@sap-ux/ui-components';
 import { UIComboBox, UIIconButton, UiIcons } from '@sap-ux/ui-components';
 
-import type { RootState } from '../store';
-import { changePreviewScale, changePreviewScaleMode } from '../slice';
+import type { RootState } from '../store.js';
+import { changePreviewScale, changePreviewScaleMode } from '../slice.js';
 
 import styles from './ViewChanger.module.scss';
 
@@ -88,7 +88,7 @@ export function ViewChanger(): ReactElement {
         } else if (value) {
             const match = SCALE_INPUT_PATTERN.exec(value);
             if (match) {
-                const percent = parseInt(match[1], 10);
+                const percent = Number.parseInt(match[1], 10);
                 const newScale = percent / 100;
                 if (newScale >= MIN_SCALE && newScale <= MAX_SCALE) {
                     dispatch(changePreviewScale(newScale));

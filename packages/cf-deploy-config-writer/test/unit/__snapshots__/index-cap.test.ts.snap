@@ -164,7 +164,7 @@ exports[`CF Writer CAP Validate generation of CAP mta configurations managed 2`]
     \\"@cap-js/sqlite\\": \\"^1\\",
     \\"@sap/cds-dk\\": \\"^8\\",
     \\"rimraf\\": \\"^5.0.5\\",
-    \\"mbt\\": \\"^1.2.29\\"
+    \\"mbt\\": \\"^1.2.49\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"cds-serve\\",
@@ -346,7 +346,7 @@ exports[`CF Writer CAP Validate generation of CAP mta configurations standard 2`
     \\"@cap-js/sqlite\\": \\"^1\\",
     \\"@sap/cds-dk\\": \\"^8\\",
     \\"rimraf\\": \\"^5.0.5\\",
-    \\"mbt\\": \\"^1.2.29\\"
+    \\"mbt\\": \\"^1.2.49\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"cds-serve\\",
@@ -374,7 +374,7 @@ exports[`CF Writer CAP Validate generation of CAP mta configurations standard 3`
         \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\"
     },
     \\"dependencies\\": {
-        \\"@sap/approuter\\": \\"^20.0.0\\"
+        \\"@sap/approuter\\": \\"^22.0.0\\"
     }
 }"
 `;

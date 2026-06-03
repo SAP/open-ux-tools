@@ -1,17 +1,4 @@
-import type { ParsedApp, ParsedService } from './parser';
-
-/**
- * Normalizes a URL by replacing backslashes with forward slashes and removing leading slashes.
- *
- * @param url - The URL to normalize.
- * @returns The normalized URL.
- */
-export function uniformUrl(url: string): string {
-    return url
-        .replaceAll('\\', '/')
-        .replaceAll('//', '/')
-        .replaceAll(/(?:^\/)/g, '');
-}
+import type { ParsedApp, ParsedService } from './parser/index.js';
 
 /**
  * Get parsed service by name from parsed application.

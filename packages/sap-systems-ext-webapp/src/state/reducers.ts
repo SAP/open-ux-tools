@@ -1,7 +1,7 @@
 import type { Reducer } from 'redux';
-import type { SystemState } from '../types';
+import type { SystemState } from '../types/index.js';
 import type { ExtensionActions } from '@sap-ux/sap-systems-ext-types';
-import { LoadingState } from '../types';
+import { LoadingState } from '../types/index.js';
 import {
     SYSTEM_INFO,
     SYSTEM_INFO_LOADING,
@@ -85,7 +85,9 @@ export const reducer: Reducer<SystemState, ExtensionActions> = (
         case CREATE_NEW_SYSTEM:
             return {
                 ...state,
-                addNewSapSystem: true
+                addNewSapSystem: true,
+                systemInfo: action.payload?.systemInfo,
+                unSaved: true
             };
         default:
             return state;

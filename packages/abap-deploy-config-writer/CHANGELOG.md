@@ -1,5 +1,185 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies [9580241]
+    - @sap-ux/ui5-config@1.0.1
+    - @sap-ux/project-access@2.0.2
+    - @sap-ux/system-access@1.0.0
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+    - @sap-ux/system-access@1.0.0
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/project-access@2.0.0
+    - @sap-ux/system-access@1.0.0
+    - @sap-ux/ui5-config@1.0.0
+
+## 0.4.4
+
+### Patch Changes
+
+- @sap-ux/system-access@0.8.2
+- @sap-ux/ui5-config@0.31.1
+
+## 0.4.3
+
+### Patch Changes
+
+- @sap-ux/system-access@0.8.1
+
+## 0.4.2
+
+### Patch Changes
+
+- Updated dependencies [9752c40]
+    - @sap-ux/ui5-config@0.31.1
+    - @sap-ux/project-access@1.38.1
+    - @sap-ux/system-access@0.8.0
+
+## 0.4.1
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/system-access@0.8.0
+
+## 0.4.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/system-access@0.8.0
+    - @sap-ux/ui5-config@0.31.0
+
+## 0.3.18
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/system-access@0.7.13
+    - @sap-ux/ui5-config@0.30.5
+
+## 0.3.17
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/system-access@0.7.12
+
+## 0.3.16
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/ui5-config@0.30.4
+    - @sap-ux/system-access@0.7.11
+    - @sap-ux/project-access@1.36.3
+
+## 0.3.15
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/system-access@0.7.10
+    - @sap-ux/project-access@1.36.2
+
+## 0.3.14
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/system-access@0.7.9
+
+## 0.3.13
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/system-access@0.7.8
+
+## 0.3.12
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/system-access@0.7.8
+
+## 0.3.11
+
+### Patch Changes
+
+- @sap-ux/system-access@0.7.8
+
+## 0.3.10
+
+### Patch Changes
+
+- @sap-ux/system-access@0.7.7
+
+## 0.3.9
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/ui5-config@0.30.3
+    - @sap-ux/system-access@0.7.6
+    - @sap-ux/project-access@1.35.20
+
 ## 0.3.8
 
 ### Patch Changes

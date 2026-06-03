@@ -1,64 +1,102 @@
+import { jest } from '@jest/globals';
 import type { ClientRequest, IncomingMessage } from 'node:http';
 import type { Options } from 'http-proxy-middleware';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import {
-    enhanceConfigsForDestination,
-    enhanceConfigForSystem,
-    ProxyEventHandlers,
-    PathRewriters,
-    proxyErrorHandler,
-    type EnhancedIncomingMessage
-} from '../../src/base/proxy';
-import { generateProxyMiddlewareOptions, createProxy } from '../../src';
 import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
-import { type BackendSystem, AuthenticationType } from '@sap-ux/store';
-import { getInstance } from '@sap-ux/store/dist/services/backend-system';
 
-jest.mock('@sap-ux/store/dist/services/api-hub', () => ({
-    getInstance: jest.fn().mockReturnValue({ read: () => {} })
-}));
 const mockBackendSystemRead = jest.fn();
-jest.mock('@sap-ux/store/dist/services/backend-system', () => ({
-    getInstance: jest.fn().mockImplementation(() => ({
-        read: mockBackendSystemRead
-    }))
-}));
-const mockGetService = getInstance as jest.Mock;
+const mockBackendSystemWrite = jest.fn();
+const mockApiHubRead = jest.fn();
+const mockGetService = jest.fn().mockImplementation(({ entityName }: { entityName: string }) => {
+    if (entityName === 'system') {
+        return { read: mockBackendSystemRead, write: mockBackendSystemWrite };
+    }
+    if (entityName === 'api-hub') {
+        return { read: mockApiHubRead };
+    }
+    return {};
+});
 
-// mock required axios-extension functions
-import { AbapCloudEnvironment, createForAbapOnCloud } from '@sap-ux/axios-extension';
-jest.mock('@sap-ux/axios-extension', () => ({
-    ...(jest.requireActual('@sap-ux/axios-extension') as object),
-    createForAbapOnCloud: jest.fn()
-}));
-const mockCreateForAbapOnCloud = createForAbapOnCloud as jest.Mock;
+class MockBackendSystemKey {
+    private readonly url: string;
+    private readonly client?: string;
+    constructor({ url, client }: { url: string; client?: string }) {
+        this.url = url.trim().replace(/\/$/, '');
+        this.client = client?.trim();
+    }
+    public getId(): string {
+        return this.url + `${this.client ? '/' + this.client : ''}`;
+    }
+}
+const realStore = await import('@sap-ux/store');
 
-// mock required btp-utils functions
-import {
-    listDestinations,
-    getDestinationUrlForAppStudio,
-    WebIDEUsage,
-    WebIDEAdditionalData,
-    getCredentialsForDestinationService,
-    isAppStudio,
-    isFullUrlDestination
-} from '@sap-ux/btp-utils';
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...(jest.requireActual('@sap-ux/btp-utils') as object),
-    listDestinations: jest.fn(),
-    isFullUrlDestination: jest.fn(),
-    getCredentialsForDestinationService: jest.fn(),
-    isAppStudio: jest.fn()
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
+    AuthenticationType: {
+        Basic: 'basic',
+        ReentranceTicket: 'reentranceTicket',
+        OAuth2RefreshToken: 'oauth2',
+        OAuth2ClientCredential: 'oauth2ClientCredential'
+    },
+    BackendSystemKey: MockBackendSystemKey,
+    getService: mockGetService
 }));
-const mockListDestinations = listDestinations as jest.Mock;
-const mockIsFullUrlDestination = isFullUrlDestination as jest.Mock;
-const mockGetCredentialsForDestinationService = getCredentialsForDestinationService as jest.Mock;
-const mockIsAppStudio = isAppStudio as jest.Mock;
+
+const mockCreateForAbapOnCloud = jest.fn();
+jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
+    AbapCloudEnvironment: {
+        Standalone: 'Standalone',
+        EmbeddedSteampunk: 'EmbeddedSteampunk'
+    },
+    createForAbapOnCloud: mockCreateForAbapOnCloud
+}));
+
+const mockListDestinations = jest.fn();
+const mockIsFullUrlDestination = jest.fn();
+const mockGetCredentialsForDestinationService = jest.fn();
+const mockIsAppStudio = jest.fn();
+
+function getDestinationUrlForAppStudioImpl(name: string, path?: string): string {
+    const origin = `https://${name}.dest`;
+    return path && path.length > 1 ? new URL(path, origin).toString() : origin;
+}
+
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    BAS_DEST_INSTANCE_CRED_HEADER: 'bas-destination-instance-cred',
+    getDestinationUrlForAppStudio: getDestinationUrlForAppStudioImpl,
+    getCredentialsForDestinationService: mockGetCredentialsForDestinationService,
+    isAppStudio: mockIsAppStudio,
+    isFullUrlDestination: mockIsFullUrlDestination,
+    listDestinations: mockListDestinations,
+    WebIDEUsage: {
+        ODATA_GENERIC: 'odata_gen',
+        ODATA_ABAP: 'odata_abap',
+        DEV_ABAP: 'dev_abap',
+        ABAP_CLOUD: 'abap_cloud'
+    },
+    WebIDEAdditionalData: {
+        FULL_URL: 'full_url',
+        API_MGMT: 'api_mgmt'
+    }
+}));
 
 const mockPrompt = jest.fn();
-jest.mock('prompts', () => {
-    return () => mockPrompt();
-});
+jest.unstable_mockModule('prompts', () => ({
+    default: () => mockPrompt(),
+    __esModule: true
+}));
+
+// Dynamic imports after mocks
+const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
+const { enhanceConfigsForDestination, enhanceConfigForSystem, ProxyEventHandlers, PathRewriters, proxyErrorHandler } =
+    await import('../../src/base/proxy');
+const { generateProxyMiddlewareOptions, createProxy } = await import('../../src');
+const { AuthenticationType } = await import('@sap-ux/store');
+const { AbapCloudEnvironment } = await import('@sap-ux/axios-extension');
+const { getDestinationUrlForAppStudio, WebIDEUsage, WebIDEAdditionalData } = await import('@sap-ux/btp-utils');
+import type { BackendSystem } from '@sap-ux/store';
+import type { EnhancedIncomingMessage } from '../../src/base/proxy.js';
 
 describe('proxy', () => {
     type OptionsWithHeaders = Options & { headers: object };
@@ -308,7 +346,7 @@ describe('proxy', () => {
 
         test('unknown destination', async () => {
             try {
-                await enhanceConfigsForDestination({ headers: {} }, backend);
+                await enhanceConfigsForDestination({ headers: {} }, backend, logger);
                 fail('Unknown destination should have resulted in an error.');
             } catch (error) {
                 expect(error).toBeDefined();
@@ -321,7 +359,7 @@ describe('proxy', () => {
             });
             const proxyOptions: OptionsWithHeaders = { headers: {} };
 
-            await enhanceConfigsForDestination(proxyOptions, backend);
+            await enhanceConfigsForDestination(proxyOptions, backend, logger);
             expect(proxyOptions.target).toBe(getDestinationUrlForAppStudio(backend.destination));
         });
 
@@ -333,11 +371,11 @@ describe('proxy', () => {
                     WebIDEAdditionalData: `${WebIDEAdditionalData.FULL_URL}`
                 }
             });
-            mockIsFullUrlDestination.mockResolvedValueOnce(true);
+            mockIsFullUrlDestination.mockReturnValueOnce(true);
             const proxyOptions: OptionsWithHeaders = { headers: {} };
             const modifiedBackend: DestinationBackendConfig = { ...backend };
 
-            await enhanceConfigsForDestination(proxyOptions, modifiedBackend);
+            await enhanceConfigsForDestination(proxyOptions, modifiedBackend, logger);
             expect(proxyOptions.target).toBe(getDestinationUrlForAppStudio(backend.destination));
             expect(modifiedBackend.path).toBe('/sap');
             expect(modifiedBackend.pathReplace).toBe('/');
@@ -351,14 +389,36 @@ describe('proxy', () => {
                     WebIDEAdditionalData: `${WebIDEAdditionalData.FULL_URL}`
                 }
             });
-            mockIsFullUrlDestination.mockResolvedValueOnce(true);
+            mockIsFullUrlDestination.mockReturnValueOnce(true);
             const proxyOptions: OptionsWithHeaders = { headers: {} };
             const modifiedBackend: DestinationBackendConfig = { ...backend, pathReplace: '/xyz' };
 
-            await enhanceConfigsForDestination(proxyOptions, modifiedBackend);
+            await enhanceConfigsForDestination(proxyOptions, modifiedBackend, logger);
             expect(proxyOptions.target).toBe(getDestinationUrlForAppStudio(backend.destination));
             expect(modifiedBackend.path).toBe('/sap');
             expect(modifiedBackend.pathReplace).toBe('/xyz');
+        });
+
+        test('destination with full url: logger.warn is called with full URL destination message', async () => {
+            // Given: a destination where isFullUrlDestination returns true
+            mockListDestinations.mockResolvedValueOnce({
+                [backend.destination]: {
+                    Host: 'http://backend.example/sap',
+                    WebIDEUsage: `${WebIDEUsage.ODATA_GENERIC}`,
+                    WebIDEAdditionalData: `${WebIDEAdditionalData.FULL_URL}`
+                }
+            });
+            mockIsFullUrlDestination.mockReturnValueOnce(true);
+            const proxyOptions: OptionsWithHeaders = { headers: {} };
+            const modifiedBackend: DestinationBackendConfig = { ...backend };
+            const warnSpy = jest.spyOn(logger, 'warn');
+
+            // When: enhanceConfigsForDestination is called
+            await enhanceConfigsForDestination(proxyOptions, modifiedBackend, logger);
+
+            // Then: logger.warn is called with the full URL destination message
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('full URL destination'));
+            warnSpy.mockRestore();
         });
 
         test('destination provided by a destination service instance', async () => {
@@ -371,10 +431,14 @@ describe('proxy', () => {
             mockGetCredentialsForDestinationService.mockResolvedValue(cred);
             const proxyOptions: OptionsWithHeaders = { headers: {} };
 
-            await enhanceConfigsForDestination(proxyOptions, {
-                ...backend,
-                destinationInstance: '~destinationInstance'
-            });
+            await enhanceConfigsForDestination(
+                proxyOptions,
+                {
+                    ...backend,
+                    destinationInstance: '~destinationInstance'
+                },
+                logger
+            );
             expect(proxyOptions.target).toBe(getDestinationUrlForAppStudio(backend.destination));
             expect(proxyOptions.headers!['bas-destination-instance-cred']).toBe(cred);
         });
@@ -553,7 +617,7 @@ describe('proxy', () => {
                     Host: 'http://backend.example/my/other/path'
                 }
             });
-            mockIsFullUrlDestination.mockResolvedValueOnce(true);
+            mockIsFullUrlDestination.mockReturnValueOnce(true);
 
             const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
             expect(options).toBeDefined();
@@ -564,6 +628,29 @@ describe('proxy', () => {
             expect(options.xfwd).toBeUndefined();
             expect(options.secure).toBeUndefined();
             expect((options.pathRewrite as Function)('/my/other/path/to/chicken', {})).toBe('/to/chicken');
+        });
+
+        test('generate proxy middleware inside of BAS warns when full URL destination is detected', async () => {
+            // Given: a destination where isFullUrlDestination returns true
+            mockIsAppStudio.mockReturnValue(true);
+            const backend: DestinationBackendConfig = {
+                destination: '~destination',
+                path: '/my/path'
+            };
+            mockListDestinations.mockResolvedValueOnce({
+                [backend.destination]: {
+                    Host: 'http://backend.example/sap'
+                }
+            });
+            mockIsFullUrlDestination.mockReturnValueOnce(true);
+            const warnSpy = jest.spyOn(logger, 'warn');
+
+            // When: generateProxyMiddlewareOptions is called
+            await generateProxyMiddlewareOptions(backend, undefined, logger);
+
+            // Then: logger.warn is called with the full URL destination message
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('full URL destination'));
+            warnSpy.mockRestore();
         });
 
         test('generate proxy middleware options for FLP Embedded flow', async () => {
@@ -609,32 +696,11 @@ describe('proxy', () => {
 
         test('calling onError calls proxyErrorHandler', async () => {
             const debugSpy = jest.fn();
+            const mockLogger = { debug: debugSpy, info: jest.fn(), warn: jest.fn(), error: jest.fn() };
 
-            jest.mock('@sap-ux/logger', () => {
-                return {
-                    ...jest.requireActual('@sap-ux/logger'),
-                    ToolsLogger: jest.fn().mockImplementation(() => ({
-                        debug: debugSpy,
-                        info: jest.fn()
-                    }))
-                };
-            });
-
-            jest.resetModules();
-            // To ensure the mock is applied the import must be done after the mock is set
-            const { generateProxyMiddlewareOptions } = await import('../../src');
-
-            const backend: LocalBackendConfig = {
-                url: 'http://backend.example',
-                path: '/my/path'
-            };
-
-            const proxyOptions = await generateProxyMiddlewareOptions(backend, {});
-
-            if (typeof proxyOptions?.on?.error === 'function') {
-                proxyOptions.on.error(undefined as any, {} as any, {} as any);
-                expect(debugSpy).toHaveBeenCalledTimes(1);
-            }
+            // Test proxyErrorHandler directly with a mock logger
+            proxyErrorHandler(undefined as unknown as Error, {} as IncomingMessage, mockLogger as any);
+            expect(debugSpy).toHaveBeenCalledTimes(1);
         });
 
         test('options are updated for backend with a connectPath', async () => {

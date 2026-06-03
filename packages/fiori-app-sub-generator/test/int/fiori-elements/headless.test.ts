@@ -1,38 +1,56 @@
-import * as projectAccess from '@sap-ux/project-access';
+import { jest } from '@jest/globals';
 import '@sap-ux/jest-file-matchers';
 import { copyFileSync, existsSync, promises as fs, mkdirSync, readdirSync, readFileSync } from 'node:fs';
 import 'jest-extended';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import yeomanTest from 'yeoman-test';
-import { FioriAppGeneratorHeadless } from '../../../src/app-headless';
 import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
-import * as install from '../../../src/fiori-app-generator/install';
 import type { FEAppConfig } from '../../../src/types';
 import { cleanTestDir, getTestData, getTestDir, ignoreMatcherOpts, originalCwd } from '../test-utils';
 import { EXPECTED_OUTPUT_DIR_NAME } from './test-utils';
 
+// Disable telemetry for integration tests to avoid Application Insights initialization errors
+process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY = 'true';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 const testDir: string = getTestDir('headless');
 const fixturesPath = join(__dirname, './fixtures');
 
-const appAccessMock = jest.spyOn(projectAccess, 'createApplicationAccess');
-appAccessMock.mockResolvedValue({} as any);
+const actualProjectAccess = await import('@sap-ux/project-access');
+const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+const actualTelemetry = await import('@sap-ux/telemetry');
+const actualInstall = await import('../../../src/fiori-app-generator/install');
 
-jest.mock('@sap-ux/fiori-generator-shared', () => {
-    const fioriGenShared = jest.requireActual('@sap-ux/fiori-generator-shared');
-    return {
-        ...fioriGenShared,
-        sendTelemetry: jest.fn()
-    };
-});
+// Alias for easier access to DirName constants
+const projectAccess = actualProjectAccess;
 
-jest.mock('@sap-ux/telemetry', () => {
-    const telemetry = jest.requireActual('@sap-ux/telemetry');
-    return {
-        ...telemetry,
-        setEnableTelemetry: jest.fn(),
-        initTelemetrySettings: jest.fn()
-    };
-});
+const mockInstallDependencies = jest.fn<() => Promise<void>>().mockResolvedValue(undefined);
+
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    createApplicationAccess: jest.fn().mockResolvedValue({})
+}));
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGenShared,
+    sendTelemetry: jest.fn()
+}));
+
+jest.unstable_mockModule('@sap-ux/telemetry', () => ({
+    ...actualTelemetry,
+    setEnableTelemetry: jest.fn(),
+    initTelemetrySettings: jest.fn()
+}));
+
+jest.unstable_mockModule('../../../src/fiori-app-generator/install', () => ({
+    ...actualInstall,
+    installDependencies: mockInstallDependencies
+}));
+
+// Import after mocks are set up
+const { FioriAppGeneratorHeadless } = await import('../../../src/app-headless');
 
 /**
  *
@@ -104,7 +122,7 @@ async function runHeadlessGen(
 describe('Headless generation', () => {
     let testProjectName: string;
     let expectedOutputPath: string;
-    jest.setTimeout(60000);
+    jest.setTimeout(120000); // Increased to 120s for integration tests with multiple generations
 
     /**
      * Ignoring `appGenInfo.json` in headless tests as output has slight variations
@@ -135,6 +153,15 @@ describe('Headless generation', () => {
         expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, testProjectName);
 
         await runHeadlessGen('LROP-v2-0.2', 'sepmra_prod_man_v2');
+        expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, matcherOptions);
+        cleanTestDir(join(testDir, testProjectName));
+    });
+
+    it('LROP v2 - virtual endpoints disabled', async () => {
+        testProjectName = 'lrop_v2_non_virt';
+        expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, 'headless', testProjectName);
+
+        await runHeadlessGen('LROP-v2-0.2-non-virt', 'sepmra_prod_man_v2');
         expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, matcherOptions);
         cleanTestDir(join(testDir, testProjectName));
     });
@@ -173,6 +200,72 @@ describe('Headless generation', () => {
         expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, 'headless', testProjectNameNoVers);
         expect(join(testDir, testProjectNameNoVers)).toMatchFolder(expectedOutputPath, matcherOptions);
         cleanTestDir(join(testDir, testProjectNameNoVers));
+    }, 300000); // 5 minutes for test with multiple generations (very slow on CI)
+
+    it('LROP v4 with externalServices - external service files are written', async () => {
+        testProjectName = 'lrop_v4_with_vh';
+        expectedOutputPath = join(
+            __dirname,
+            EXPECTED_OUTPUT_DIR_NAME,
+            'headless',
+            testProjectName,
+            projectAccess.DirName.Webapp,
+            projectAccess.DirName.LocalService
+        );
+        const fixturesHeadlessDir = join(__dirname, './fixtures/headless');
+
+        const appConfigJson = JSON.stringify({
+            version: '0.2',
+            floorplan: 'FE_LROP',
+            project: {
+                title: 'Project\'s "Title"',
+                description: 'Test \'Project\' "Description"',
+                namespace: 'testNameSpace',
+                ui5Version: '1.84.0',
+                localUI5Version: '1.82.2',
+                targetFolder: testDir,
+                name: testProjectName,
+                sapux: true,
+                enableEslint: false
+            },
+            service: {
+                servicePath: '/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/',
+                host: 'https://sap-ux-mock-services-v4-feop.cfapps.us10.hana.ondemand.com',
+                externalServices: [
+                    {
+                        type: 'value-list',
+                        target: 'Travel/AgencyID',
+                        metadata: join(fixturesHeadlessDir, 'agency_vh_metadata.xml'),
+                        path: '/sap/opu/odata4/sap/agency_vh_service/srvd/sap/agency_vh_service/0001/',
+                        entityData: join(fixturesHeadlessDir, 'agency_entity_data.json')
+                    },
+                    {
+                        type: 'code-list',
+                        collectionPath: 'Currencies',
+                        metadata:
+                            '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:DataServices><Schema Namespace="Currencies" xmlns="http://docs.oasis-open.org/odata/ns/edm"></Schema></edmx:DataServices></edmx:Edmx>',
+                        path: '/sap/opu/odata4/sap/currencies/srvd/sap/currencies/0001/'
+                    },
+                    {
+                        type: 'code-list',
+                        collectionPath: 'Units',
+                        metadata: join(fixturesHeadlessDir, 'common_metadata.xml'),
+                        path: '/sap/opu/odata4/sap/common/srvd/sap/common/0001/'
+                    }
+                ]
+            },
+            entityConfig: {
+                mainEntity: { entityName: 'Travel' },
+                navigationEntity: { EntitySet: 'Booking', Name: '_Booking' }
+            }
+        });
+
+        await runHeadlessGen(appConfigJson, 'travel_v4');
+        expect(
+            join(testDir, testProjectName, projectAccess.DirName.Webapp, projectAccess.DirName.LocalService)
+        ).toMatchFolder(expectedOutputPath);
+
+        cleanTestDir(join(testDir, testProjectName));
     });
 
     it('LROP v4 CAP', async () => {
@@ -202,14 +295,14 @@ describe('Headless generation', () => {
         // Mock writing, we are not testing that here
         jest.spyOn(FioriAppGeneratorHeadless.prototype, 'writing').mockImplementation(jest.fn());
         jest.spyOn(FioriAppGeneratorHeadless.prototype, 'end').mockImplementation(jest.fn());
-        const installDepsSpy = jest.spyOn(install, 'installDependencies').mockResolvedValue();
 
+        mockInstallDependencies.mockClear();
         await runHeadlessGen('LROP-v4-0.2', 'travel_v4', undefined, { skipInstall: false });
-        expect(installDepsSpy).toHaveBeenCalled();
+        expect(mockInstallDependencies).toHaveBeenCalled();
 
-        installDepsSpy.mockClear();
+        mockInstallDependencies.mockClear();
         await runHeadlessGen('LROP-v4-0.2', 'travel_v4', undefined, { skipInstall: true });
-        expect(installDepsSpy).not.toHaveBeenCalled();
+        expect(mockInstallDependencies).not.toHaveBeenCalled();
         // Restore only spies
         jest.restoreAllMocks();
     });

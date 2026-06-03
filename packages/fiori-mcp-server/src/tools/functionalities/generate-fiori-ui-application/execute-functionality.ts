@@ -1,11 +1,11 @@
-import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types';
-import type { GeneratorConfigOData, GeneratorConfigODataWithAPI } from '../../schemas';
+import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types/index.js';
+import type { GeneratorConfigOData, GeneratorConfigODataWithAPI } from '../../schemas/index.js';
 
 import { promises as FSpromises, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { generatorConfigOData, PREDEFINED_GENERATOR_VALUES } from '../../schemas';
-import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../../../utils';
-import details from './details';
+import { generatorConfigOData, PREDEFINED_GENERATOR_VALUES } from '../../schemas/index.js';
+import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../../../utils/index.js';
+import details from './details.js';
 
 /**
  * Method to generate fiori app.
@@ -38,11 +38,13 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
 
     await checkIfGeneratorInstalled();
 
-    const metadataPath = generatorConfig.service.metadataFilePath ?? join(targetDir, 'metadata.xml');
+    const metadataPath = generatorConfig.service?.metadataFilePath ?? join(targetDir, 'metadata.xml');
 
     try {
-        const metadata = await FSpromises.readFile(metadataPath, { encoding: 'utf8' });
-        generatorConfig.service.edmx = metadata;
+        if (generatorConfig.service) {
+            const metadata = await FSpromises.readFile(metadataPath, { encoding: 'utf8' });
+            generatorConfig.service.edmx = metadata;
+        }
 
         const content = JSON.stringify(generatorConfig, null, 4);
 
@@ -71,7 +73,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
         if (existsSync(configPath)) {
             await FSpromises.unlink(configPath);
         }
-        if (existsSync(metadataPath)) {
+        if (generatorConfig.service && existsSync(metadataPath)) {
             await FSpromises.unlink(metadataPath);
         }
     }

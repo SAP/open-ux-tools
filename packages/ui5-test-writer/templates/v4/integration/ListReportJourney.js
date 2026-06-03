@@ -38,10 +38,37 @@ sap.ui.define([
             <%_ }); -%>
         });
 <%_ } -%>
+<%_ if (semanticKey && semanticKey.missingFromFilterBar && semanticKey.missingFromFilterBar.length > 0) { %>
+        opaTest("Add semantic key properties to filter bar", function (Given, When, Then) {
+            Then.onThe<%- startLR%>.onFilterBar().iOpenFilterAdaptation();
+            <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
+            When.onThe<%- startLR%>.onFilterBar().iAddAdaptationFilterField("<%- property %>");
+            <%_ }); -%>
+            Then.onThe<%- startLR%>.onFilterBar().iConfirmFilterAdaptation();
+            <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
+            Then.onThe<%- startLR%>.onFilterBar().iCheckFilterField("<%- property %>");
+            <%_ }); -%>
+            <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
+            // Then.onThe<%- startLR%>.onFilterBar().iChangeFilterField("<%- property %>");
+            <%_ }); -%>
+            // Then.onThe<%- startLR%>.onFilterBar().iExecuteSearch();
+            // Then.onThe<%- startLR%>.onTable().iCheckRows();
+            // Then.onThe<%- startLR%>.onTable().iSelectRows(0);
+            // Then.onThe<%- startLR%>.onTable().iCheckAction("<Action Name>", { enabled: true });
+        });
+<%_ } -%>
 
+        // Note: this test will only work if the ListReport page has a search field and shows data that matches the search term. Please ensure that the test data and search term are set up accordingly.
+        // opaTest("Perform a global search and check the result", function (Given, When, Then) {
+        //     When.onThe<%- startLR%>.onFilterBar().iChangeSearchField("Search Term");
+        //     When.onThe<%- startLR%>.onFilterBar().iExecuteSearch();
+        //     Then.onThe<%- startLR%>.onTable().iCheckRows();
+        // });
+
+<%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
         opaTest("Check table columns and actions", function (Given, When, Then) {
             <%_ if (toolBarActions && toolBarActions.length > 0) { -%>
-            <%_ if (createButton.visible) { _%>
+            <%_ if (createButton.visible && !isALP) { _%>
             Then.onThe<%- startLR%>.onTable().iCheckCreate({ visible: true });
             // Then.onthe<%- startLR%>.onTable().iPressCreate();
             <%_ } _%>
@@ -57,9 +84,10 @@ sap.ui.define([
             <%_ }); -%>
             <%_ } -%>
             <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
-            Then.onThe<%- startLR %>.onTable().iCheckColumns(<%- Object.keys(tableColumns).length %>, <%- JSON.stringify(tableColumns) %>);
+            Then.onThe<%- startLR %>.onTable().iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
             <%_ } %>
         });
+<%_ } %>
 
 <% if (startLR) { %>
         opaTest("Navigate to ObjectPage", function (Given, When, Then) {

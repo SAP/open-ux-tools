@@ -1,7 +1,8 @@
 {
     "name": "@sap-ux/eslint-plugin-fiori-tools",
-    "version": "9.11.7",
+    "version": "10.5.1",
     "description": "Custom linting plugin for Fiori tools apps",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -20,24 +21,27 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "c8 --reporter=text --reporter=lcov --exclude='test/**' --exclude='**/*.test.ts'  --include='src/**/*.ts' cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors"
+        "test": "cross-env \"NODE_OPTIONS=--experimental-vm-modules\" jest --ci --forceExit --detectOpenHandles --colors --maxWorkers=50%",
+        "tgz:package": "pnpm pack"
     },
     "devDependencies": {
-        "c8": "^11.0.0",
+        "@jest/globals": "30.3.0",
         "cross-env": "10.1.0",
         "eslint": "9.39.1",
         "@typescript-eslint/rule-tester": "8.57.2",
-        "eslint-plugin-eslint-plugin": "7.3.2"
+        "eslint-plugin-eslint-plugin": "7.3.2",
+        "@types/semver": "7.7.1"
     },
     "dependencies": {
-        "@babel/core": "7.29.0",
-        "@babel/eslint-parser": "^7.28.5",
-        "@eslint/js": "9.22.0",
+        "@babel/core": "8.0.0-rc.6",
+        "@babel/eslint-parser": "8.0.0-rc.6",
+        "@babel/parser": "8.0.0-rc.6",
+        "@eslint/js": "10.0.1",
         "@eslint/json": "0.14.0",
-        "@eslint/core": "0.17.0",
+        "@eslint/core": "1.1.1",
         "@eslint/config-helpers": "0.5.3",
-        "@typescript-eslint/eslint-plugin": ">=8.57.2",
-        "@typescript-eslint/parser": ">=8.57.2",
+        "@typescript-eslint/eslint-plugin": "8.57.2",
+        "@typescript-eslint/parser": "8.57.2",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/odata-annotation-core": "workspace:*",
         "@sap-ux/odata-vocabularies": "workspace:*",
@@ -47,7 +51,7 @@
         "@xml-tools/ast": "5.0.5",
         "@xml-tools/parser": "1.0.11",
         "@humanwhocodes/momoa": "^3.3.9",
-        "@eslint/plugin-kit": "0.5.0",
+        "@eslint/plugin-kit": "0.6.1",
         "globals": "17.4.0",
         "lodash": "4.18.1",
         "requireindex": "^1.2.0",
@@ -56,12 +60,11 @@
         "semver": "7.7.4"
     },
     "peerDependencies": {
-        "eslint": "^9",
-        "typescript-eslint": "^8.57.2",
-        "@types/semver": "7.7.1"
+        "eslint": "^9 || ^10",
+        "typescript-eslint": "^8.57.2"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     },
     "license": "Apache-2.0",
     "files": [

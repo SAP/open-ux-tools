@@ -6,13 +6,13 @@ import { useSelector } from 'react-redux';
 import { UIFocusZone, UILabel, UIToolbar, UIToolbarColumn } from '@sap-ux/ui-components';
 import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 
-import type { RootState } from '../store';
-import { Separator, ThemeSelectorCallout } from '../components';
+import type { RootState } from '../store.js';
+import { Separator, ThemeSelectorCallout } from '../components/index.js';
 
-import { ViewChanger } from './ViewChanger';
-import { DeviceSelector } from './DeviceSelector';
-import { ModeSwitcher } from './ModeSwitcher';
-import { UndoRedoSaveActions } from './UndoRedoSaveActions';
+import { ViewChanger } from './ViewChanger.js';
+import { DeviceSelector } from './DeviceSelector.js';
+import { ModeSwitcher } from './ModeSwitcher.js';
+import { UndoRedoSaveActions } from './UndoRedoSaveActions.js';
 
 import './ToolBar.scss';
 

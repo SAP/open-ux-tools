@@ -195,6 +195,7 @@ pnpm audit
 - Leverage TypeScript features: generics, union types, type guards, etc.
 - Avoid `any` type - use `unknown` or proper types
 - **Avoid TypeScript enums** - prefer union types or const objects for better type safety and tree-shaking
+- Avoid using the non-null assertion operator (!). Use optional chaining (?.), nullish coalescing (??), or explicit type guards to handle potentially null/undefined values.
 
 **TypeScript config** (from [tsconfig.json](tsconfig.json)):
 - Strict mode enabled
@@ -293,15 +294,15 @@ You can also create changeset files manually in `.changeset/`. Use a descriptive
 "@sap-ux/package-name": patch
 ---
 
-chore(package-name): upgrade i18next 25.8.18 → 25.8.20
+chore: upgrade i18next 25.8.18 → 25.8.20
 ```
 
 **Changeset message conventions:**
 - Use conventional commit prefixes: `fix`, `feat`, `chore`, etc.
-- For dependency-only upgrades: `chore(package-name): upgrade <dep> <old> → <new>`
-- For multiple dep upgrades: `chore(package-name): upgrade runtime dependencies (<dep1> <ver>, <dep2> <ver>)`
-- For formatting/lint autofixes: `chore(package-name): reformat <description> (Prettier upgrade autofix)`
-- For type compatibility fixes: `fix(package-name): <description> for <@types/package> <version> compatibility`
+- For dependency-only upgrades: `chore: upgrade <dep> <old> → <new>`
+- For multiple dep upgrades: `chore: upgrade runtime dependencies (<dep1> <ver>, <dep2> <ver>)`
+- For formatting/lint autofixes: `chore: reformat <description> (Prettier upgrade autofix)`
+- For type compatibility fixes: `fix: <description> for <@types/package> <version> compatibility`
 
 **Changeset workflow:**
 1. Interactive CLI prompts for:

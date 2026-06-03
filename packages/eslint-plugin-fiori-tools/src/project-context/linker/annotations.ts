@@ -1,4 +1,4 @@
-import type { AliasInformation, Element, MetadataElement } from '@sap-ux/odata-annotation-core';
+import type { AliasInformation, Element, ElementChild, MetadataElement } from '@sap-ux/odata-annotation-core';
 import {
     Edm,
     elementsWithName,
@@ -10,9 +10,22 @@ import {
     toFullyQualifiedPath,
     parsePath
 } from '@sap-ux/odata-annotation-core';
-import type { IndexedAnnotation, ParsedService } from '../parser';
-import { buildAnnotationIndexKey } from '../parser';
-import { UI_FIELD_GROUP, UI_LINE_ITEM } from '../../constants';
+import type { IndexedAnnotation, ParsedService } from '../parser/index.js';
+import { buildAnnotationIndexKey } from '../parser/index.js';
+import { UI_FIELD_GROUP, UI_LINE_ITEM } from '../../constants.js';
+
+/**
+ * index - Index of annotation
+ * referencedEntityType - Entity type
+ * qualifier - FieldGroup annotation qualifier
+ * sectionLabel - Object page section label
+ */
+type SectionConfig = {
+    index: number;
+    referencedEntityType: string;
+    qualifier?: string;
+    sectionLabel?: string;
+};
 
 /**
  * Creates a configuration key from an annotation path
@@ -28,6 +41,7 @@ export function getConfigurationKey(annotationPath: string): string {
 export interface AnnotationBasedNode<T extends string, Children = never> {
     type: T;
     annotation: IndexedAnnotation;
+    label?: string;
     /**
      * Path used by Fiori elements to reference this control
      */
@@ -72,42 +86,45 @@ export function collectTables(feVersion: 'v2' | 'v4', entityType: string, servic
 }
 
 /**
- * Collects section nodes from UI.Facets an UI.HeaderFacet annotations for an entity type.
+ * Collects object page table sections.
  *
- * @param feVersion - The Fiori Elements version ('v2' or 'v4')
- * @param entityType - The entity type name
- * @param service - The parsed OData service
+ * @param entityType - Entity type name
+ * @param service - Parsed OData service
+ * @returns Object page table sections
  */
-export function collectSections(
-    feVersion: 'v2' | 'v4',
-    entityType: string,
-    service: ParsedService
-): (TableSectionNode | HeaderSectionNode)[] {
-    const sections: (TableSectionNode | HeaderSectionNode)[] = [];
+function getOPTableSections(entityType: string, service: ParsedService): TableSectionNode[] {
+    const sections: TableSectionNode[] = [];
     const facetsKey = buildAnnotationIndexKey(entityType, 'com.sap.vocabularies.UI.v1.Facets');
     const facets = service.index.annotations[facetsKey]?.['undefined'];
-
     if (!facets) {
         return sections;
     }
-
     const [collection] = elementsWithName(Edm.Collection, facets.top.value);
     if (!collection) {
         return sections;
     }
-
     const records = elementsWithName(Edm.Record, collection);
     const aliasInfo = service.artifacts.aliasInfo[facets.top.uri];
     let index = 0;
-
     for (const record of records) {
         const section = processReferenceFacetRecord(record, aliasInfo, entityType, service, facets, index);
-        if (section) {
+        if (section?.type === 'table-section') {
             sections.push(section);
         }
         index++;
     }
+    return sections;
+}
 
+/**
+ * Collects object page header sections.
+ *
+ * @param entityType - Entity type name
+ * @param service - Parsed OData service
+ * @returns Object page header sections
+ */
+function getOPHeaderSections(entityType: string, service: ParsedService): HeaderSectionNode[] {
+    const sections: HeaderSectionNode[] = [];
     const headerFacetsKey = buildAnnotationIndexKey(entityType, 'com.sap.vocabularies.UI.v1.HeaderFacets');
     const headerFacets = service.index.annotations[headerFacetsKey]?.['undefined'];
     if (!headerFacets) {
@@ -119,7 +136,7 @@ export function collectSections(
     }
     const headerFacetRecords = elementsWithName(Edm.Record, headerFacetCollection);
     const headerFacetAliasInfo = service.artifacts.aliasInfo[headerFacets.top.uri];
-    index = 0;
+    let index = 0;
     for (const record of headerFacetRecords) {
         const headerFacet = processReferenceFacetRecord(
             record,
@@ -129,14 +146,38 @@ export function collectSections(
             headerFacets,
             index
         );
-        if (headerFacet) {
+        if (headerFacet?.type === 'header-section') {
             sections.push(headerFacet);
         }
         index++;
     }
-
     return sections;
 }
+
+/**
+ * Collects section nodes from UI.Facets an UI.HeaderFacet annotations for an entity type.
+ *
+ * @param feVersion - The Fiori Elements version ('v2' or 'v4')
+ * @param entityType - The entity type name
+ * @param service - The parsed OData service
+ */
+export function collectSections(
+    feVersion: 'v2' | 'v4',
+    entityType: string,
+    service: ParsedService
+): (TableSectionNode | HeaderSectionNode)[] {
+    const sections: (TableSectionNode | HeaderSectionNode)[] = [
+        ...getOPTableSections(entityType, service),
+        ...getOPHeaderSections(entityType, service)
+    ];
+    return sections;
+}
+
+const findContentByName = (content: ElementChild[], name: string): ElementChild | undefined =>
+    content.find((c) => (c as Element).name === name);
+
+const getElementText = (element: ElementChild): string | undefined =>
+    (element as Element).content?.find((c) => c.type === 'text')?.text;
 
 /**
  * Process a single reference facet record and create a table or header section if applicable.
@@ -161,15 +202,13 @@ function processReferenceFacetRecord(
         return undefined;
     }
 
-    const properties = getRecordPropertyValue(record);
-    const id = properties['ID']?.value;
-    const target = properties['Target'];
+    const id = getId(record);
+    const annotationPath = getTargetAnnotationPath(record);
 
-    if (!id || target?.kind !== Edm.AnnotationPath) {
+    if (!id || !annotationPath) {
         return undefined;
     }
 
-    const annotationPath = target.value;
     if (annotationPath.startsWith('/')) {
         // absolute path is not supported
         return undefined;
@@ -188,12 +227,31 @@ function processReferenceFacetRecord(
     const [, _annotationPath] = fullyQualifiedPath.split('@');
     const [term, qualifier] = _annotationPath.split('#');
 
+    const propValues = elementsWithName(Edm.PropertyValue, record);
+    const propValue = propValues.find((p) => p.attributes.Property?.value === 'Label');
+    let sectionLabel = propValue ? getElementAttribute(propValue, Edm.String)?.value : undefined;
+    if (!sectionLabel) {
+        const textContent = findContentByName(propValue?.content ?? [], Edm.String);
+        sectionLabel = textContent ? getElementText(textContent) : undefined;
+    }
     if (term === UI_LINE_ITEM) {
-        return createTableSection(facets, index, referencedEntityType, qualifier, annotationPath, aliasInfo, service);
+        return createTableSection(
+            facets,
+            { index, referencedEntityType, qualifier, sectionLabel },
+            annotationPath,
+            aliasInfo,
+            service
+        );
     }
 
     if (term === UI_FIELD_GROUP) {
-        return addHeaderSection(facets, index, referencedEntityType, qualifier, annotationPath, aliasInfo, service);
+        return addHeaderSection(
+            facets,
+            { index, referencedEntityType, qualifier, sectionLabel },
+            annotationPath,
+            aliasInfo,
+            service
+        );
     }
 
     return undefined;
@@ -223,43 +281,43 @@ function getReferencedEntityType(
         contextPath = contextPath.slice(0, -1);
     }
     const referencedEntity = service.artifacts.metadataService.getMetadataElement(contextPath.slice(1));
-    return referencedEntity?.kind === 'EntityType' ? referencedEntity.name : referencedEntity?.structuredType;
+    return referencedEntity?.kind === 'EntityType' || referencedEntity?.kind === 'entity'
+        ? referencedEntity.name
+        : referencedEntity?.structuredType;
 }
 
 /**
  * Create a table section node with its child table node.
  *
  * @param facets
- * @param index
- * @param referencedEntityType
- * @param qualifier
+ * @param config
  * @param annotationPath
  * @param aliasInfo
  * @param service
+ * @returns
  */
 function createTableSection(
     facets: IndexedAnnotation,
-    index: number,
-    referencedEntityType: string,
-    qualifier: string | undefined,
+    config: SectionConfig,
     annotationPath: string,
     aliasInfo: AliasInformation,
     service: ParsedService
 ): TableSectionNode | undefined {
     const section: TableSectionNode = {
         type: 'table-section',
-        annotationPath: `@com.sap.vocabularies.UI.v1.Facets/${index}`,
+        annotationPath: `@com.sap.vocabularies.UI.v1.Facets/${config.index}`,
+        label: config.sectionLabel,
         annotation: facets,
         children: []
     };
 
-    const lineItemKey = buildAnnotationIndexKey(referencedEntityType, UI_LINE_ITEM);
+    const lineItemKey = buildAnnotationIndexKey(config.referencedEntityType, UI_LINE_ITEM);
     const tableAnnotations = service.index.annotations[lineItemKey];
     if (!tableAnnotations) {
         return undefined;
     }
 
-    const annotation = tableAnnotations[qualifier ?? 'undefined'];
+    const annotation = tableAnnotations[config.qualifier ?? 'undefined'];
     if (!annotation) {
         return undefined;
     }
@@ -282,9 +340,7 @@ function createTableSection(
  * Creates a header facet section node with field group child annotation.
  *
  * @param headerFacets - Header facet annotation
- * @param index - Index of annotation
- * @param referencedEntityType - Entity type
- * @param qualifier - FieldGroup annotation qualifier
+ * @param config - Section configuration
  * @param annotationPath - Header facet annotation path
  * @param aliasInfo - Alias information for resolving namespaces
  * @param service - The parsed OData service
@@ -292,27 +348,26 @@ function createTableSection(
  */
 function addHeaderSection(
     headerFacets: IndexedAnnotation,
-    index: number,
-    referencedEntityType: string,
-    qualifier: string | undefined,
+    config: SectionConfig,
     annotationPath: string,
     aliasInfo: AliasInformation,
     service: ParsedService
 ): HeaderSectionNode | undefined {
     const section: HeaderSectionNode = {
         type: 'header-section',
-        annotationPath: `@com.sap.vocabularies.UI.v1.HeaderFacet/${index}`,
+        annotationPath: `@com.sap.vocabularies.UI.v1.HeaderFacet/${config.index}`,
         annotation: headerFacets,
+        label: config.sectionLabel,
         children: []
     };
 
-    const fieldGroupKey = buildAnnotationIndexKey(referencedEntityType, UI_FIELD_GROUP);
+    const fieldGroupKey = buildAnnotationIndexKey(config.referencedEntityType, UI_FIELD_GROUP);
     const fieldGroupAnnotations = service.index.annotations[fieldGroupKey];
     if (!fieldGroupAnnotations) {
         return undefined;
     }
 
-    const annotation = fieldGroupAnnotations[qualifier ?? 'undefined'];
+    const annotation = fieldGroupAnnotations[config.qualifier ?? 'undefined'];
     if (!annotation) {
         return undefined;
     }
@@ -350,45 +405,60 @@ export function getRecordType(aliasInfo: AliasInformation, element: Element): st
     }
 }
 
-interface RecordProperty {
-    name: string;
-    value: string;
-    kind: Edm.String | Edm.AnnotationPath;
-}
-
 /**
- * Extracts property values from a record element.
+ * Returns AnnotationPath property value.
  *
- * @param record - The record element to extract properties from
+ * @param record -The record element
+ * @returns - Annotation path string
  */
-function getRecordPropertyValue(record: Element): Record<string, RecordProperty> {
-    const properties: Record<string, RecordProperty> = {};
-    for (const child of record.content) {
-        if (child.type !== ELEMENT_TYPE) {
-            continue;
-        }
-        if (child.name === Edm.PropertyValue) {
+function getTargetAnnotationPath(record: Element): string | undefined {
+    const target = record.content.find((child) => {
+        if (child.type === ELEMENT_TYPE && child.name === Edm.PropertyValue) {
             const name = getElementAttributeValue(child, Edm.Property);
-            const annotationPathAttribute = getElementAttribute(child, Edm.AnnotationPath);
-            if (annotationPathAttribute) {
-                properties[name] = {
-                    name,
-                    value: annotationPathAttribute.value,
-                    kind: Edm.AnnotationPath
-                };
-                continue;
-            }
-            const stringAttribute = getElementAttribute(child, Edm.String);
-            if (stringAttribute) {
-                properties[name] = {
-                    name,
-                    value: stringAttribute.value,
-                    kind: Edm.String
-                };
+            return name === 'Target';
+        }
+        return false;
+    });
+    if (target?.type === ELEMENT_TYPE) {
+        const stringAttribute = getElementAttribute(target, Edm.AnnotationPath);
+        if (stringAttribute) {
+            return stringAttribute.value;
+        } else {
+            const annotationPathContent = findContentByName(target.content, Edm.AnnotationPath);
+            if (annotationPathContent) {
+                return getElementText(annotationPathContent);
             }
         }
     }
-    return properties;
+    return undefined;
+}
+
+/**
+ * Returns ID property value.
+ *
+ * @param record - The record element
+ * @returns - String ID value
+ */
+function getId(record: Element): string | undefined {
+    const id = record.content.find((child) => {
+        if (child.type === ELEMENT_TYPE && child.name === Edm.PropertyValue) {
+            const name = getElementAttributeValue(child, Edm.Property);
+            return name === 'ID';
+        }
+        return false;
+    });
+    if (id?.type === ELEMENT_TYPE) {
+        const stringAttribute = getElementAttribute(id, Edm.String);
+        if (stringAttribute) {
+            return stringAttribute.value;
+        } else {
+            const idContent = findContentByName(id.content, Edm.String);
+            if (idContent) {
+                return getElementText(idContent);
+            }
+        }
+    }
+    return undefined;
 }
 
 /**

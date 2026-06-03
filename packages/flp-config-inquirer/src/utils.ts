@@ -7,19 +7,21 @@ import {
     NamespacePrefix
 } from '@sap-ux/adp-tooling';
 import type { ManifestNamespace, UI5FlexLayer } from '@sap-ux/project-access';
-import { type FLPConfigPromptOptions, type FLPConfigAnswers, type TileSettingsAnswers, tileActions } from './types';
+import { type FLPConfigPromptOptions, type FLPConfigAnswers, type TileSettingsAnswers, tileActions } from './types.js';
 /**
  * Returns FLP configuration prompt options based on the provided inbounds, variant, and tile settings answers.
  *
  * @param {TileSettingsAnswers} tileSettingsAnswers - The answers for tile settings.
  * @param {ManifestNamespace.Inbound} inbounds - The inbounds from the manifest.
  * @param {DescriptorVariant} variant - The descriptor variant object.
+ * @param {boolean} isCfProject - Indicates if the project is a Cloud Foundry project.
  * @returns {FLPConfigPromptOptions} The FLP configuration prompt options.
  */
 export function getAdpFlpConfigPromptOptions(
     tileSettingsAnswers: TileSettingsAnswers,
     inbounds?: ManifestNamespace.Inbound,
-    variant?: DescriptorVariant
+    variant?: DescriptorVariant,
+    isCfProject?: boolean
 ): FLPConfigPromptOptions {
     const { tileHandlingAction, copyFromExisting } = tileSettingsAnswers ?? {};
 
@@ -45,7 +47,8 @@ export function getAdpFlpConfigPromptOptions(
             inboundId: { hide: true },
             title: { hide: true },
             subTitle: { hide: true },
-            icon: { hide: true }
+            icon: { hide: true },
+            confirmReplace: { isCF: isCfProject }
         };
     }
 
@@ -74,7 +77,7 @@ function buildReplaceInboundConfig(
         return [];
     }
 
-    return Object.entries(inbounds).map(([inboundKey, inboundData]) => {
+    return Object.entries(inbounds).map(([inboundKey, inboundData]: [string, ManifestNamespace.Inbound]) => {
         const { semanticObject, action, signature: { parameters } = {} } = inboundData;
         let inboundId = inboundKey;
         if (inboundId && layer === FlexLayer.CUSTOMER_BASE) {

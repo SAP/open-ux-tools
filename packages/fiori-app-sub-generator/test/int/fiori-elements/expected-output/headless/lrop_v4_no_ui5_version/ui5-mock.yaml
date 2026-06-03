@@ -29,10 +29,10 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: test/flpSandbox.html
-          intent:
-            object: testnamepsacelropv4noui5version
-            action: tile
+        test:
+          - framework: OPA5
+            path: /test/integration/opaTests.qunit.html
+          - framework: Testsuite
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:

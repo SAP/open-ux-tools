@@ -1,33 +1,35 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { getConfiguredProvider } from '@sap-ux/adp-tooling';
 
-import type { Credentials } from '../../../../src/types';
-import { initI18n, t } from '../../../../src/utils/i18n';
-import { configPromptNames } from '../../../../src/app/types';
-import { getCredentialsPrompts } from '../../../../src/base/questions/credentials';
+const mockIsAppStudio = jest.fn();
+const mockValidateEmptyString = jest.fn();
+const mockGetConfiguredProvider = jest.fn();
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn()
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
 }));
 
-jest.mock('@sap-ux/project-input-validator', () => ({
-    ...jest.requireActual('@sap-ux/project-input-validator'),
-    validateEmptyString: jest.fn()
+const realProjectInputValidator = await import('@sap-ux/project-input-validator');
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    ...realProjectInputValidator,
+    validateEmptyString: mockValidateEmptyString
 }));
 
-jest.mock('@sap-ux/adp-tooling', () => ({
-    ...jest.requireActual('@sap-ux/adp-tooling'),
-    getConfiguredProvider: jest.fn()
+const realAdpTooling = await import('@sap-ux/adp-tooling');
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    ...realAdpTooling,
+    getConfiguredProvider: mockGetConfiguredProvider
 }));
 
-const mockIsAppStudio = isAppStudio as jest.MockedFunction<typeof isAppStudio>;
-const mockValidateEmptyString = validateEmptyString as jest.MockedFunction<typeof validateEmptyString>;
-const mockGetConfiguredProvider = getConfiguredProvider as jest.MockedFunction<typeof getConfiguredProvider>;
+const { initI18n, t } = await import('../../../../src/utils/i18n');
+const { configPromptNames } = await import('../../../../src/app/types');
+const { getCredentialsPrompts } = await import('../../../../src/base/questions/credentials');
+
+import type { Credentials } from '../../../../src/types.js';
 
 describe('Credentials Prompts', () => {
     let mockLogger: ToolsLogger;
@@ -80,14 +82,11 @@ describe('Credentials Prompts', () => {
             const result = getCredentialsPrompts(mockAbapTarget, mockLogger);
             const usernamePrompt = result[0];
 
-            expect(usernamePrompt).toEqual({
-                type: 'input',
-                name: configPromptNames.username,
-                message: t('prompts.usernameLabel'),
-                validate: validateEmptyString,
-                guiOptions: {
-                    mandatory: true
-                }
+            expect(usernamePrompt.type).toBe('input');
+            expect(usernamePrompt.name).toBe(configPromptNames.username);
+            expect(usernamePrompt.message).toBe(t('prompts.usernameLabel'));
+            expect(usernamePrompt.guiOptions).toEqual({
+                mandatory: true
             });
         });
 
@@ -95,7 +94,7 @@ describe('Credentials Prompts', () => {
             const result = getCredentialsPrompts(mockAbapTarget, mockLogger);
             const usernamePrompt = result[0];
 
-            expect(usernamePrompt.validate).toBe(validateEmptyString);
+            expect(usernamePrompt.validate).toBe(mockValidateEmptyString);
         });
 
         it('should have mandatory guiOptions', () => {
@@ -110,14 +109,14 @@ describe('Credentials Prompts', () => {
 
     describe('Password Prompt', () => {
         let passwordPrompt: any;
-        let mockGetSystemInfo: jest.Mock;
+        let mockGetCsrfToken: jest.Mock;
 
         beforeEach(() => {
             const result = getCredentialsPrompts(mockAbapTarget, mockLogger);
             passwordPrompt = result[1];
-            mockGetSystemInfo = jest.fn();
+            mockGetCsrfToken = jest.fn();
             mockGetConfiguredProvider.mockResolvedValue({
-                getLayeredRepository: () => ({ getSystemInfo: mockGetSystemInfo })
+                getLayeredRepository: () => ({ getCsrfToken: mockGetCsrfToken })
             } as unknown as AbapServiceProvider);
         });
 
@@ -139,7 +138,7 @@ describe('Credentials Prompts', () => {
             mockIsAppStudio.mockReturnValue(false);
             mockAbapTarget.url = 'some-system';
             mockValidateEmptyString.mockReturnValue(true);
-            mockGetSystemInfo.mockResolvedValue({});
+            mockGetCsrfToken.mockResolvedValue({});
 
             const prompts = getCredentialsPrompts(mockAbapTarget, mockLogger);
             const passwordPrompt = prompts[1];
@@ -159,7 +158,7 @@ describe('Credentials Prompts', () => {
                 },
                 mockLogger
             );
-            expect(mockGetSystemInfo).toHaveBeenCalled();
+            expect(mockGetCsrfToken).toHaveBeenCalled();
             expect(result).toBe(true);
         });
 
@@ -167,7 +166,7 @@ describe('Credentials Prompts', () => {
             mockIsAppStudio.mockReturnValue(true);
             mockAbapTarget.destination = 'SYS_010';
             mockValidateEmptyString.mockReturnValue(true);
-            mockGetSystemInfo.mockResolvedValue({});
+            mockGetCsrfToken.mockResolvedValue({});
 
             const prompts = getCredentialsPrompts(mockAbapTarget, mockLogger);
             const passwordPrompt = prompts[1];
@@ -187,7 +186,7 @@ describe('Credentials Prompts', () => {
                 },
                 mockLogger
             );
-            expect(mockGetSystemInfo).toHaveBeenCalled();
+            expect(mockGetCsrfToken).toHaveBeenCalled();
             expect(result).toBe(true);
         });
 
@@ -230,7 +229,7 @@ describe('Credentials Prompts', () => {
                     statusText: 'Unauthorized'
                 }
             };
-            mockGetSystemInfo.mockRejectedValue(mockError);
+            mockGetCsrfToken.mockRejectedValue(mockError);
 
             const prompts = getCredentialsPrompts(mockAbapTarget, mockLogger);
             const passwordPrompt = prompts[1];

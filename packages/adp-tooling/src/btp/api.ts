@@ -1,9 +1,10 @@
 import axios from 'axios';
 
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { Destinations } from '@sap-ux/btp-utils';
 
-import { t } from '../i18n';
-import type { Uaa, BtpDestinationConfig } from '../types';
+import { t } from '../i18n.js';
+import type { Uaa, BtpDestinationConfig, CfDestinationServiceCredentials } from '../types.js';
 
 /**
  * Obtain an OAuth2 access token using the client credentials grant.
@@ -27,8 +28,8 @@ export async function getToken(uaa: Uaa, logger?: ToolsLogger): Promise<string> 
         logger?.debug('OAuth token obtained successfully');
         return response.data['access_token'];
     } catch (e) {
-        logger?.error(`Failed to obtain OAuth token from ${uri}: ${e.message}`);
-        throw new Error(t('error.failedToGetAuthKey', { error: e.message }));
+        logger?.error(`Failed to obtain OAuth token from ${uri}: ${e instanceof Error ? e.message : String(e)}`);
+        throw new Error(t('error.failedToGetAuthKey', { error: e instanceof Error ? e.message : String(e) }));
     }
 }
 
@@ -59,7 +60,64 @@ export async function getBtpDestinationConfig(
         logger?.debug(`Destination "${destinationName}" config: ProxyType=${config?.ProxyType}`);
         return config;
     } catch (e) {
-        logger?.error(`Failed to fetch destination config for "${destinationName}": ${e.message}`);
+        logger?.error(
+            `Failed to fetch destination config for "${destinationName}": ${e instanceof Error ? e.message : String(e)}`
+        );
         return undefined;
+    }
+}
+
+/**
+ * Normalise destination-service credentials (nested `{ uaa: { ... } }` or flat) into a flat UAA + `uri`.
+ *
+ * @param credentials - Destination service credentials.
+ * @returns Flat UAA credentials, or `undefined` if any required field is missing.
+ */
+export function getDestinationServiceUaa(
+    credentials: CfDestinationServiceCredentials | undefined
+): (Uaa & { uri: string }) | undefined {
+    if (!credentials) {
+        return undefined;
+    }
+    const uaa = 'uaa' in credentials ? credentials.uaa : credentials;
+    if (!uaa?.clientid || !uaa.clientsecret || !uaa.url || !uaa.uri) {
+        return undefined;
+    }
+    return uaa;
+}
+
+/**
+ * Lists all subaccount destinations from the BTP Destination Configuration API.
+ *
+ * @param {CfDestinationServiceCredentials} credentials - Destination service credentials.
+ * @returns {Promise<Destinations>} Map of destination name to Destination object.
+ */
+export async function listBtpDestinations(credentials: CfDestinationServiceCredentials): Promise<Destinations> {
+    const uaa = getDestinationServiceUaa(credentials);
+    if (!uaa) {
+        throw new Error(
+            t('error.failedToListBtpDestinations', { error: t('error.incompleteDestinationServiceCredentials') })
+        );
+    }
+    const token = await getToken(uaa);
+    const url = `${uaa.uri}/destination-configuration/v1/subaccountDestinations`;
+    try {
+        const response = await axios.get<BtpDestinationConfig[]>(url, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        const configs = Array.isArray(response.data) ? response.data : [];
+        return configs.reduce<Destinations>((acc, config) => {
+            acc[config.Name] = {
+                Name: config.Name,
+                Host: config.URL,
+                Type: config.Type,
+                Authentication: config.Authentication,
+                ProxyType: config.ProxyType,
+                Description: config.Description ?? ''
+            };
+            return acc;
+        }, {});
+    } catch (e) {
+        throw new Error(t('error.failedToListBtpDestinations', { error: e instanceof Error ? e.message : String(e) }));
     }
 }

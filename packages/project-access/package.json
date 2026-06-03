@@ -1,7 +1,8 @@
 {
     "name": "@sap-ux/project-access",
-    "version": "1.35.19",
+    "version": "2.0.2",
     "description": "Library to access SAP Fiori tools projects",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -19,7 +20,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
         "watch": "tsc --watch"
     },
     "files": [
@@ -29,12 +30,12 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     },
     "dependencies": {
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "fast-xml-parser": "5.5.9",
+        "fast-xml-parser": "5.8.0",
         "findit2": "2.2.3",
         "json-parse-even-better-errors": "5.0.0",
         "mem-fs": "2.1.0",
@@ -42,12 +43,13 @@
         "semver": "7.7.4"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/vocabularies-types": "0.15.0",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/semver": "7.7.1",
-        "@ui5/manifest": "1.84.0",
+        "@ui5/manifest": "1.85.0",
         "vscode-uri": "3.1.0"
     }
 }

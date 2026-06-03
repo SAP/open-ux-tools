@@ -1,5 +1,76 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.1
+
+### Patch Changes
+
+- 93591d4: fix(sap-systems-ext): remove unsafe Logger/ExtensionLogger casts in SystemsLogger
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+## 0.6.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 0.5.3
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
+## 0.5.2
+
+### Patch Changes
+
+- ac6381f: remove default selected key for sap systems ext
+
+## 0.5.1
+
+### Patch Changes
+
+- 9661c7b: adds new internal create command to avoid collisions with other registered commands
+
+## 0.5.0
+
+### Minor Changes
+
+- 16d6382: feat(sap-systems-ext): pre-populate connection manager panel when creating a new system (#37892)
+
+    When opening the connection manager to create a new system, the panel can now be pre-populated with system details such as URL, client and system type.
+
 ## 0.4.5
 
 ### Patch Changes

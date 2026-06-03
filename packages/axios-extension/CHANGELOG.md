@@ -1,5 +1,126 @@
 # @sap-ux/axios-extension
 
+## 2.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/feature-toggle@1.0.0
+    - @sap-ux/btp-utils@2.0.0
+    - @sap-ux/logger@1.0.0
+
+## 1.26.1
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade qs 6.15.0 → 6.15.2 (GHSA-q8mj-m7cp-5q26)
+- Updated dependencies [01b70ca]
+    - @sap-ux/btp-utils@1.2.1
+
+## 1.26.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/feature-toggle@0.4.0
+    - @sap-ux/logger@0.9.0
+
+## 1.25.37
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/feature-toggle@0.3.9
+    - @sap-ux/logger@0.8.6
+
+## 1.25.36
+
+### Patch Changes
+
+- 21abda3: chore: upgrade fast-xml-parser 5.7.2 → 5.8.0 (fixes fast-xml-builder CVE-2025-47916)
+
+## 1.25.35
+
+### Patch Changes
+
+- 678a08e: chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
+- Updated dependencies [678a08e]
+    - @sap-ux/btp-utils@1.1.15
+
+## 1.25.34
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+
+## 1.25.33
+
+### Patch Changes
+
+- 3945459: chore: upgrade fast-xml-parser 5.5.9 to 5.7.2 (security fix for XML comment/CDATA injection)
+- 3945459: chore: upgrade @xmldom/xmldom 0.8.12 to 0.8.13 (security fix for XML injection vulnerabilities)
+
+## 1.25.32
+
+### Patch Changes
+
+- 237371b: fix(axios-extension): export EntitySetData type
+  feat(fiori-generator-shared): add ExternalServiceConfig headless type supporting metadata and entityData as inline values or file paths
+  feat(fiori-app-sub-generator): resolve external service metadata and entityData file paths in headless generator before passing to writer
+
+## 1.25.31
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+
+## 1.25.30
+
+### Patch Changes
+
+- cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
+- Updated dependencies [cc4450c]
+    - @sap-ux/btp-utils@1.1.13
+
 ## 1.25.29
 
 ### Patch Changes

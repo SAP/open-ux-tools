@@ -1,49 +1,91 @@
+import { jest } from '@jest/globals';
+import path, { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
-import { CARD_GENERATOR_DEFAULT, type TemplateConfig } from '../../../src/base/config';
-import { FlpSandbox as FlpSandboxUnderTest } from '../../../src';
 import type { FlpConfig, MiddlewareConfig } from '../../../src';
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
-import type { MiddlewareUtils } from '@ui5/server';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ProjectAccess, I18nBundles, Manifest, ApplicationAccess } from '@sap-ux/project-access';
 import { readFileSync, promises } from 'node:fs';
-import path, { join } from 'node:path';
-
 import supertest from 'supertest';
 import express, { type Response, type NextFunction } from 'express';
 import type { EnhancedRequest } from '../../../src/base/flp';
 import { tmpdir } from 'node:os';
-import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
-import * as adpTooling from '@sap-ux/adp-tooling';
-import * as projectAccess from '@sap-ux/project-access';
+import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
+import type { TemplateConfig } from '../../../src/base/config.js';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
 import { fetchMock } from '../../__mock__/global';
-import { getWebappPath } from '@sap-ux/project-access';
-import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 //@ts-expect-error: this import is not relevant for the 'erasableSyntaxOnly' check
 import connect = require('connect');
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(process.cwd()));
-const getProjectTypeMock = jest
-    .spyOn(projectAccess, 'getProjectType')
-    .mockImplementation(() => Promise.resolve('EDMXBackend'));
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-jest.mock('@sap-ux/adp-tooling', () => {
-    return {
-        __esModule: true,
-        ...jest.requireActual('@sap-ux/adp-tooling')
-    };
-});
+// Mock node:module to intercept createRequire so that require.resolve works for
+// @sap-ux/control-property-editor-sources (its dist/app.js is not built in test env)
+const actualNodeModule = await import('node:module');
+jest.unstable_mockModule('node:module', () => ({
+    ...actualNodeModule,
+    createRequire: (url: string | URL) => {
+        const originalRequire = actualNodeModule.createRequire(url);
+        const wrappedRequire = Object.assign((id: string) => originalRequire(id), originalRequire);
+        const originalResolve = originalRequire.resolve.bind(originalRequire);
+        wrappedRequire.resolve = Object.assign(
+            (id: string, options?: { paths?: string[] }) => {
+                if (id === '@sap-ux/control-property-editor-sources') {
+                    // Return a dummy path; dirname() of this gives a usable directory for serveStatic
+                    return join(__dirname, '..', '..', 'fixtures', 'dummy-cpe', 'index.js');
+                }
+                return originalResolve(id, options);
+            },
+            { paths: originalRequire.resolve.paths }
+        ) as NodeJS.RequireResolve;
+        return wrappedRequire;
+    }
+}));
 
-jest.mock('@sap-ux/i18n', () => {
-    return {
-        ...jest.requireActual('@sap-ux/i18n'),
-        createPropertiesI18nEntries: jest.fn()
-    };
-});
-const createPropertiesI18nEntriesMock = createPropertiesI18nEntries as jest.Mock;
+// Pre-import actual modules (before mocking) to use as spread base
+const actualProjectAccess = await import('@sap-ux/project-access');
+const actualAdpTooling = await import('@sap-ux/adp-tooling');
+const actualI18n = await import('@sap-ux/i18n');
+
+// Mock functions for @sap-ux/project-access
+const mockFindProjectRoot = jest.fn<() => Promise<string>>().mockResolvedValue(process.cwd());
+const mockGetProjectType = jest.fn<() => Promise<string>>().mockResolvedValue('EDMXBackend');
+const mockCreateProjectAccess = jest.fn();
+const mockCreateApplicationAccess = jest.fn();
+
+// Mock @sap-ux/project-access
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    findProjectRoot: mockFindProjectRoot,
+    getProjectType: mockGetProjectType,
+    createProjectAccess: mockCreateProjectAccess,
+    createApplicationAccess: mockCreateApplicationAccess
+}));
+
+// Mock @sap-ux/adp-tooling
+const mockAdpPreviewConstructor = jest.fn();
+const mockReadManifestFromBuildPath = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    ...actualAdpTooling,
+    AdpPreview: mockAdpPreviewConstructor,
+    readManifestFromBuildPath: mockReadManifestFromBuildPath
+}));
+
+// Mock @sap-ux/i18n
+const mockCreatePropertiesI18nEntries = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/i18n', () => ({
+    ...actualI18n,
+    createPropertiesI18nEntries: mockCreatePropertiesI18nEntries
+}));
+
+// Import after mocking
+const { FlpSandbox: FlpSandboxUnderTest } = await import('../../../src');
+const { CARD_GENERATOR_DEFAULT } = await import('../../../src/base/config');
+const adpTooling = await import('@sap-ux/adp-tooling');
 
 class FlpSandbox extends FlpSandboxUnderTest {
     declare public templateConfig: TemplateConfig;
@@ -53,7 +95,7 @@ class FlpSandbox extends FlpSandboxUnderTest {
 describe('FlpSandbox', () => {
     const mockProject = {
         byPath: jest.fn().mockResolvedValue(undefined),
-        byGlob: jest.fn().mockImplementation((glob) =>
+        byGlob: jest.fn().mockImplementation((glob: string) =>
             Promise.resolve(
                 glob.includes('changes')
                     ? [
@@ -66,17 +108,18 @@ describe('FlpSandbox', () => {
                     : []
             )
         )
-    } as unknown as ReaderCollection & { byPath: jest.Mock; byGlob: jest.Mock };
+    } as unknown as ReaderCollection & { byPath: ReturnType<typeof jest.fn>; byGlob: ReturnType<typeof jest.fn> };
     const mockUtils = {
         getProject() {
             return {
                 getSourcePath: () => tmpdir()
             };
         }
-    } as unknown as MiddlewareUtils;
+        // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+    } as unknown as import('@ui5/server').MiddlewareUtils;
     const logger = { debug: jest.fn(), warn: jest.fn(), error: jest.fn(), info: jest.fn() } as unknown as Logger & {
-        warn: jest.Mock;
-        info: jest.Mock;
+        warn: ReturnType<typeof jest.fn>;
+        info: ReturnType<typeof jest.fn>;
     };
     const fixtures = join(__dirname, '../../fixtures');
 
@@ -182,7 +225,7 @@ describe('FlpSandbox', () => {
         });
 
         test('i18n manifest', async () => {
-            const projectAccessMock = jest.spyOn(projectAccess, 'createProjectAccess').mockImplementation(() => {
+            mockCreateProjectAccess.mockImplementation(() => {
                 return Promise.resolve({
                     getApplicationIdByManifestAppId: () => {
                         return Promise.resolve(['my\\id']);
@@ -206,7 +249,7 @@ describe('FlpSandbox', () => {
                 'sap.app': { id: 'my.id', title: '{{myTitle}}', description: '{{myDescription}}' }
             } as Manifest;
             await flp.init(manifest);
-            expect(projectAccessMock).toHaveBeenCalled();
+            expect(mockCreateProjectAccess).toHaveBeenCalled();
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
@@ -710,14 +753,14 @@ describe('FlpSandbox', () => {
             app.use(flp.router);
             const localServer = supertest(app);
 
-            // The FLP at test/flp.html should still use "../" resource roots
             const flpResponse = await localServer.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+            // The FLP at test/flp.html should still use "../" resource roots
             expect(flpResponse.text).toContain('"open.ux.preview.client":"../preview/client"');
 
-            // The editor at /rta.html should use "./" resource roots, not "../"
             const editorResponse = await localServer.get('/rta.html?fiori-tools-rta-mode=true').expect(200);
-            // posix.join('.', 'preview', 'client') normalises to 'preview/client' (no leading './')
+            // The editor at /rta.html should use "./" resource roots, not "../"
             expect(editorResponse.text).toContain('"open.ux.preview.client":"preview/client"');
+            // posix.join('.', 'preview', 'client') normalises to 'preview/client' (no leading './')
             expect(editorResponse.text).not.toContain('"open.ux.preview.client":"../preview/client"');
             // App resource root must also be remapped to "."
             expect(editorResponse.text).toContain('"test.fe.v2.app":"."');
@@ -920,17 +963,10 @@ describe('FlpSandbox', () => {
                     return 'CUSTOMER_BASE';
                 },
                 descriptor: {
-                    manifest: {
-                        'sap.ui5': {
-                            flexExtensionPointEnabled: true,
-                            dependencies: { libs: {} }
-                        }
-                    },
+                    manifest: { 'sap.ui5': { flexExtensionPointEnabled: true, dependencies: { libs: {} } } },
                     name: 'descriptorName',
                     url,
-                    asyncHints: {
-                        requests: []
-                    }
+                    asyncHints: { requests: [] }
                 },
                 resources: [],
                 proxy: jest.fn(),
@@ -975,9 +1011,7 @@ describe('FlpSandbox', () => {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
             const componendId = 'myComponent';
-            const resources = {
-                'myResources1': 'myResourcesUrl1'
-            };
+            const resources = { 'myResources1': 'myResourcesUrl1' };
             const url = 'http://sap.example';
             const syncSpy = jest.fn().mockResolvedValueOnce({});
             const adpToolingMock = {
@@ -985,17 +1019,10 @@ describe('FlpSandbox', () => {
                     return 'CUSTOMER_BASE';
                 },
                 descriptor: {
-                    manifest: {
-                        'sap.ui5': {
-                            flexExtensionPointEnabled: true,
-                            dependencies: { libs: {} }
-                        }
-                    },
+                    manifest: { 'sap.ui5': { flexExtensionPointEnabled: true, dependencies: { libs: {} } } },
                     name: 'descriptorName',
                     url,
-                    asyncHints: {
-                        requests: []
-                    }
+                    asyncHints: { requests: [] }
                 },
                 resources: [],
                 proxy: jest.fn(),
@@ -1023,18 +1050,14 @@ describe('FlpSandbox', () => {
     describe('router with enableCardGenerator', () => {
         let server!: supertest.Agent;
         const mockConfig = {
-            editors: {
-                cardGenerator: {
-                    path: 'test/flpCardGeneratorSandbox.html'
-                }
-            }
+            editors: { cardGenerator: { path: 'test/flpCardGeneratorSandbox.html' } }
         };
 
-        let mockFsPromisesWriteFile: jest.Mock;
+        let mockFsPromisesWriteFile: ReturnType<typeof jest.fn>;
 
         beforeEach(() => {
             mockFsPromisesWriteFile = jest.fn();
-            promises.writeFile = mockFsPromisesWriteFile;
+            promises.writeFile = mockFsPromisesWriteFile as typeof promises.writeFile;
         });
 
         afterEach(() => {
@@ -1045,10 +1068,8 @@ describe('FlpSandbox', () => {
             flp = new FlpSandbox(mockConfig, mockProject, mockUtils, logger);
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             await flp.init(manifest);
-
             const app = express();
             app.use(flp.router);
-
             server = supertest(app);
         };
         beforeAll(async () => {
@@ -1064,7 +1085,7 @@ describe('FlpSandbox', () => {
         });
 
         test('POST /cards/store with payload', async () => {
-            const projectAccessMock = jest.spyOn(projectAccess, 'createApplicationAccess').mockImplementation(() => {
+            mockCreateApplicationAccess.mockImplementation(() => {
                 return Promise.resolve({
                     updateManifestJSON: () => {
                         return Promise.resolve({});
@@ -1080,17 +1101,9 @@ describe('FlpSandbox', () => {
                         type: 'integration',
                         manifest: {
                             '_version': '1.15.0',
-                            'sap.card': {
-                                'type': 'Object',
-                                'header': {
-                                    'type': 'Numeric',
-                                    'title': 'Card title'
-                                }
-                            },
+                            'sap.card': { 'type': 'Object', 'header': { 'type': 'Numeric', 'title': 'Card title' } },
                             'sap.insights': {
-                                'versions': {
-                                    'ui5': '1.120.1-202403281300'
-                                },
+                                'versions': { 'ui5': '1.120.1-202403281300' },
                                 'templateName': 'ObjectPage',
                                 'parentAppId': 'sales.order.wd20',
                                 'cardType': 'DT'
@@ -1103,14 +1116,7 @@ describe('FlpSandbox', () => {
                         type: 'adaptive',
                         manifest: {
                             'type': 'AdaptiveCard',
-                            'body': [
-                                {
-                                    'type': 'TextBlock',
-                                    'wrap': true,
-                                    'weight': 'Bolder',
-                                    'text': 'Card Title'
-                                }
-                            ]
+                            'body': [{ 'type': 'TextBlock', 'wrap': true, 'weight': 'Bolder', 'text': 'Card Title' }]
                         },
                         default: true,
                         entitySet: 'op1'
@@ -1118,7 +1124,7 @@ describe('FlpSandbox', () => {
                 ]
             };
             const response = await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send(payload);
-            expect(projectAccessMock).toHaveBeenCalled();
+            expect(mockCreateApplicationAccess).toHaveBeenCalled();
             expect(response.status).toBe(201);
             expect(response.text).toBe('Files were updated/created');
         });
@@ -1130,19 +1136,13 @@ describe('FlpSandbox', () => {
         });
 
         test('POST /editor/i18n with payload', async () => {
-            const newI18nEntry = [
-                {
-                    'key': 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0',
-                    'value': 'new Entry'
-                }
-            ];
+            const newI18nEntry = [{ 'key': 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0', 'value': 'new Entry' }];
             const response = await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send(newI18nEntry);
-            // getSourcePath() returns tmpdir() in the mock
             const expectedFilePath = join(tmpdir(), 'i18n', 'i18n.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenCalledWith(
                 expectedFilePath,
                 expect.arrayContaining([
                     expect.objectContaining({
@@ -1158,19 +1158,13 @@ describe('FlpSandbox', () => {
             manifest['sap.app'].i18n = 'i18n/custom.properties';
             await flp.init(manifest);
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
-            // getSourcePath() returns tmpdir() in the mock
             const expectedPath = join(tmpdir(), 'i18n', 'custom_de.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenCalledWith(
                 expectedPath,
-                expect.arrayContaining([
-                    expect.objectContaining({
-                        key: 'HELLO',
-                        value: 'Hello World'
-                    })
-                ])
+                expect.arrayContaining([expect.objectContaining({ key: 'HELLO', value: 'Hello World' })])
             );
         });
 
@@ -1183,95 +1177,66 @@ describe('FlpSandbox', () => {
                 fallbackLocale: 'de'
             };
             await flp.init(manifest);
-
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
-            // getSourcePath() returns tmpdir() in the mock
             const expectedPath = join(tmpdir(), 'i18n', 'i18n_de.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenCalledWith(
                 expectedPath,
-                expect.arrayContaining([
-                    expect.objectContaining({
-                        key: 'GREETING',
-                        value: 'Hallo Welt'
-                    })
-                ])
+                expect.arrayContaining([expect.objectContaining({ key: 'GREETING', value: 'Hallo Welt' })])
             );
         });
 
         test('should reject unsupported locale', async () => {
             const newI18nEntry = [{ key: 'GREETING', value: 'Bonjour' }];
-
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
-            manifest['sap.app'].i18n = {
-                bundleUrl: 'i18n/i18n.properties',
-                supportedLocales: ['de', 'es']
-            };
+            manifest['sap.app'].i18n = { bundleUrl: 'i18n/i18n.properties', supportedLocales: ['de', 'es'] };
             await flp.init(manifest);
-
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=fr`).send(newI18nEntry);
-
             expect(response.status).toBe(400);
             expect(response.text).toContain('Locale "fr" is not supported');
         });
+
         test('should fallback to default i18n/i18n.properties if no i18n defined', async () => {
             const newI18nEntry = [{ key: 'HELLO', value: 'Hello World' }];
-
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             delete manifest['sap.app'].i18n;
             await flp.init(manifest);
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}`).send(newI18nEntry);
-
-            // getSourcePath() returns tmpdir() in the mock
             const expectedPath = join(tmpdir(), 'i18n', 'i18n.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenCalledWith(
                 expectedPath,
-                expect.arrayContaining([
-                    expect.objectContaining({
-                        key: 'HELLO',
-                        value: 'Hello World'
-                    })
-                ])
+                expect.arrayContaining([expect.objectContaining({ key: 'HELLO', value: 'Hello World' })])
             );
         });
 
         test('should handle bundleName (CAP project style) i18n config', async () => {
-            createPropertiesI18nEntriesMock.mockClear();
+            mockCreatePropertiesI18nEntries.mockClear();
             const newI18nEntry = [{ key: 'CAP_KEY', value: 'CAP Value' }];
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
-            // bundleName should start with the app ID prefix for correct path resolution
             manifest['sap.app'].i18n = {
                 bundleName: 'test.fe.v2.app.i18n.i18n',
                 supportedLocales: ['en', 'de'],
                 fallbackLocale: 'en'
             };
             await flp.init(manifest);
-
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
-            // bundleName "test.fe.v2.app.i18n.i18n" should convert to "i18n/i18n.properties" by removing the app ID prefix
-            // getSourcePath() returns tmpdir() in the mock
             const expectedPath = join(tmpdir(), 'i18n', 'i18n_de.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenCalledWith(
                 expectedPath,
-                expect.arrayContaining([
-                    expect.objectContaining({
-                        key: 'CAP_KEY',
-                        value: 'CAP Value'
-                    })
-                ])
+                expect.arrayContaining([expect.objectContaining({ key: 'CAP_KEY', value: 'CAP Value' })])
             );
         });
 
         test('should use fallbackLocale when no locale provided', async () => {
-            createPropertiesI18nEntriesMock.mockClear();
+            mockCreatePropertiesI18nEntries.mockClear();
             const newI18nEntry = [{ key: 'FALLBACK_KEY', value: 'Fallback Value' }];
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             manifest['sap.app'].i18n = {
@@ -1280,45 +1245,32 @@ describe('FlpSandbox', () => {
                 fallbackLocale: 'en'
             };
             await flp.init(manifest);
-
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}`).send(newI18nEntry);
             const expectedPath = join(tmpdir(), 'i18n', 'i18n_en.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenCalledWith(
                 expectedPath,
-                expect.arrayContaining([
-                    expect.objectContaining({
-                        key: 'FALLBACK_KEY',
-                        value: 'Fallback Value'
-                    })
-                ])
+                expect.arrayContaining([expect.objectContaining({ key: 'FALLBACK_KEY', value: 'Fallback Value' })])
             );
         });
 
         test('should use first supportedLocale when no locale and no fallbackLocale', async () => {
-            createPropertiesI18nEntriesMock.mockClear();
+            mockCreatePropertiesI18nEntries.mockClear();
             const newI18nEntry = [{ key: 'FIRST_LOCALE_KEY', value: 'First Locale Value' }];
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
-            manifest['sap.app'].i18n = {
-                bundleUrl: 'i18n/i18n.properties',
-                supportedLocales: ['fr', 'de']
-            };
+            manifest['sap.app'].i18n = { bundleUrl: 'i18n/i18n.properties', supportedLocales: ['fr', 'de'] };
             await flp.init(manifest);
-
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}`).send(newI18nEntry);
             const expectedPath = join(tmpdir(), 'i18n', 'i18n_fr.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenCalledWith(
                 expectedPath,
                 expect.arrayContaining([
-                    expect.objectContaining({
-                        key: 'FIRST_LOCALE_KEY',
-                        value: 'First Locale Value'
-                    })
+                    expect.objectContaining({ key: 'FIRST_LOCALE_KEY', value: 'First Locale Value' })
                 ])
             );
         });
@@ -1329,50 +1281,39 @@ describe('FlpSandbox', () => {
         const webappPath = join(tmpdir(), 'webapp');
         const mockCAPUtils = {
             getProject() {
-                return {
-                    getSourcePath: () => webappPath
-                };
+                return { getSourcePath: () => webappPath };
             }
-        } as unknown as MiddlewareUtils;
-        const mockConfig = {
-            editors: {
-                cardGenerator: {
-                    path: '/test/flpCardGeneratorSandbox.html'
-                }
-            }
-        };
+            // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+        } as unknown as import('@ui5/server').MiddlewareUtils;
+        const mockConfig = { editors: { cardGenerator: { path: '/test/flpCardGeneratorSandbox.html' } } };
 
-        let mockFsPromisesWriteFile: jest.Mock;
+        let mockFsPromisesWriteFile: ReturnType<typeof jest.fn>;
         let flp: FlpSandbox;
 
         const setupMiddleware = async (mockConfig: Partial<MiddlewareConfig>) => {
-            // Set project type to CAPNodejs before initializing
-            getProjectTypeMock.mockImplementation(() => Promise.resolve('CAPNodejs'));
+            mockGetProjectType.mockImplementation(() => Promise.resolve('CAPNodejs'));
             flp = new FlpSandbox(mockConfig, mockProject, mockCAPUtils, logger);
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             await flp.init(manifest);
-
             const app = express();
             app.use(flp.router);
-
             server = supertest(app);
         };
 
         beforeEach(() => {
             mockFsPromisesWriteFile = jest.fn();
-            promises.writeFile = mockFsPromisesWriteFile;
-            createPropertiesI18nEntriesMock.mockClear();
+            promises.writeFile = mockFsPromisesWriteFile as typeof promises.writeFile;
+            mockCreatePropertiesI18nEntries.mockClear();
         });
 
         afterEach(() => {
             fetchMock.mockRestore();
-            // Reset to default project type
-            getProjectTypeMock.mockImplementation(() => Promise.resolve('EDMXBackend'));
+            mockGetProjectType.mockImplementation(() => Promise.resolve('EDMXBackend'));
         });
 
         test('POST /cards/store with payload for CAP project (CAPNodejs)', async () => {
             await setupMiddleware(mockConfig as MiddlewareConfig);
-            const projectAccessMock = jest.spyOn(projectAccess, 'createApplicationAccess').mockImplementation(() => {
+            mockCreateApplicationAccess.mockImplementation(() => {
                 return Promise.resolve({
                     updateManifestJSON: () => {
                         return Promise.resolve({});
@@ -1388,17 +1329,9 @@ describe('FlpSandbox', () => {
                         type: 'integration',
                         manifest: {
                             '_version': '1.15.0',
-                            'sap.card': {
-                                'type': 'Object',
-                                'header': {
-                                    'type': 'Numeric',
-                                    'title': 'Card title'
-                                }
-                            },
+                            'sap.card': { 'type': 'Object', 'header': { 'type': 'Numeric', 'title': 'Card title' } },
                             'sap.insights': {
-                                'versions': {
-                                    'ui5': '1.120.1-202403281300'
-                                },
+                                'versions': { 'ui5': '1.120.1-202403281300' },
                                 'templateName': 'ObjectPage',
                                 'parentAppId': 'sales.order.wd20',
                                 'cardType': 'DT'
@@ -1410,28 +1343,21 @@ describe('FlpSandbox', () => {
                 ]
             };
             const response = await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send(payload);
-            expect(projectAccessMock).toHaveBeenCalled();
-            // For CAP projects, createApplicationAccess should be called with the parent of webappPath
-            expect(projectAccessMock).toHaveBeenCalledWith(path.dirname(webappPath), expect.anything());
+            expect(mockCreateApplicationAccess).toHaveBeenCalled();
+            expect(mockCreateApplicationAccess).toHaveBeenCalledWith(path.dirname(webappPath), expect.anything());
             expect(response.status).toBe(201);
             expect(response.text).toBe('Files were updated/created');
         });
 
         test('POST /editor/i18n with payload for CAP project (CAPNodejs)', async () => {
             await setupMiddleware(mockConfig as MiddlewareConfig);
-            const newI18nEntry = [
-                {
-                    'key': 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0',
-                    'value': 'new Entry'
-                }
-            ];
+            const newI18nEntry = [{ 'key': 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0', 'value': 'new Entry' }];
             const response = await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send(newI18nEntry);
-            // For CAP projects, the webappPath should be used directly from getSourcePath()
             const expectedFilePath = join(webappPath, 'i18n', 'i18n.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenCalledWith(
                 expectedFilePath,
                 expect.arrayContaining([
                     expect.objectContaining({
@@ -1449,24 +1375,8 @@ describe('FlpSandbox', () => {
         beforeAll(async () => {
             const flp = new FlpSandbox(
                 {
-                    flp: {
-                        apps: [
-                            {
-                                target: '/yet/another/app'
-                            }
-                        ]
-                    },
-                    test: [
-                        {
-                            framework: 'QUnit'
-                        },
-                        {
-                            framework: 'OPA5'
-                        },
-                        {
-                            framework: 'Testsuite'
-                        }
-                    ]
+                    flp: { apps: [{ target: '/yet/another/app' }] },
+                    test: [{ framework: 'QUnit' }, { framework: 'OPA5' }, { framework: 'Testsuite' }]
                 },
                 mockProject,
                 mockUtils,
@@ -1474,10 +1384,8 @@ describe('FlpSandbox', () => {
             );
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             await flp.init(manifest);
-
             const app = express();
             app.use(flp.router);
-
             server = await supertest(app);
         });
 
@@ -1497,30 +1405,15 @@ describe('FlpSandbox', () => {
 
         beforeAll(async () => {
             const flp = new FlpSandbox(
-                {
-                    flp: {
-                        apps: [
-                            {
-                                target: '/yet/another/app'
-                            }
-                        ]
-                    },
-                    test: [
-                        {
-                            framework: 'Testsuite'
-                        }
-                    ]
-                },
+                { flp: { apps: [{ target: '/yet/another/app' }] }, test: [{ framework: 'Testsuite' }] },
                 mockProject,
                 mockUtils,
                 logger
             );
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             await flp.init(manifest);
-
             const app = express();
             app.use(flp.router);
-
             server = await supertest(app);
         });
 
@@ -1534,27 +1427,16 @@ describe('FlpSandbox', () => {
         let server!: supertest.Agent;
 
         beforeAll(async () => {
-            const flp = new FlpSandbox(
-                {
-                    flp: {
-                        path: '/test/existingFlp.html'
-                    }
-                },
-                mockProject,
-                mockUtils,
-                logger
-            );
+            const flp = new FlpSandbox({ flp: { path: '/test/existingFlp.html' } }, mockProject, mockUtils, logger);
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             await flp.init(manifest);
-
             const app = express();
             app.use(flp.router);
-
             server = supertest(app);
         });
 
         test('test/existingFlp.html', async () => {
-            logger.info.mockReset();
+            (logger.info as ReturnType<typeof jest.fn>).mockReset();
             mockProject.byPath.mockResolvedValueOnce({});
             await server.get('/test/existingFlp.html?sap-ui-xx-viewCache=false');
             expect(logger.info).toHaveBeenCalledWith(
@@ -1569,17 +1451,10 @@ describe('FlpSandbox', () => {
         const mockConfig = {
             flp: {
                 enhancedHomePage: false,
-                apps: [
-                    {
-                        target: '/yet/another/app',
-                        local: join(fixtures, 'multi-app')
-                    }
-                ]
+                apps: [{ target: '/yet/another/app', local: join(fixtures, 'multi-app') }]
             },
             test: [
-                {
-                    framework: 'QUnit'
-                },
+                { framework: 'QUnit' },
                 {
                     framework: 'OPA5',
                     path: '/test/integration/opaTests.qunit.html',
@@ -1597,10 +1472,8 @@ describe('FlpSandbox', () => {
                 logger
             );
             await flp.init(manifest);
-
             const app = connect();
             app.use(flp.router as unknown as connect.Server);
-
             server = await supertest(app);
             let response = await server.get('/test/flp.html').expect(200);
             expect(response.text).toMatchSnapshot();
@@ -1624,10 +1497,8 @@ describe('FlpSandbox', () => {
                 logger
             );
             await flp.init(manifest);
-
             const app = connect();
             app.use(flp.router as unknown as connect.Server);
-
             server = await supertest(app);
             let response = await server.get('/test/flp.html').expect(200);
             expect(response.text).toMatchSnapshot();
@@ -1639,18 +1510,9 @@ describe('FlpSandbox', () => {
     describe('rta with new config', () => {
         let server!: supertest.Agent;
         const mockConfig = {
-            flp: {
-                apps: [
-                    {
-                        target: '/yet/another/app',
-                        local: join(fixtures, 'multi-app')
-                    }
-                ]
-            },
+            flp: { apps: [{ target: '/yet/another/app', local: join(fixtures, 'multi-app') }] },
             test: [
-                {
-                    framework: 'QUnit'
-                },
+                { framework: 'QUnit' },
                 {
                     framework: 'OPA5',
                     path: '/test/integration/opaTests.qunit.html',
@@ -1661,25 +1523,11 @@ describe('FlpSandbox', () => {
                 rta: {
                     layer: 'CUSTOMER_BASE',
                     endpoints: [
-                        {
-                            path: '/my/rta.html'
-                        },
-                        {
-                            path: 'without/slash/rta.html'
-                        },
-                        {
-                            path: '/my/editor.html',
-                            developerMode: true
-                        },
-                        {
-                            path: '/with/plugin.html',
-                            developerMode: true,
-                            pluginScript: 'open/ux/tools/plugin'
-                        },
-                        {
-                            path: '/my/editorWithConfig.html',
-                            generator: 'test-generator'
-                        }
+                        { path: '/my/rta.html' },
+                        { path: 'without/slash/rta.html' },
+                        { path: '/my/editor.html', developerMode: true },
+                        { path: '/with/plugin.html', developerMode: true, pluginScript: 'open/ux/tools/plugin' },
+                        { path: '/my/editorWithConfig.html', generator: 'test-generator' }
                     ]
                 }
             }
@@ -1698,10 +1546,8 @@ describe('FlpSandbox', () => {
             );
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             await flp.init(manifest);
-
             const app = express();
             app.use(flp.router);
-
             server = await supertest(app);
         });
 
@@ -1735,10 +1581,8 @@ describe('FlpSandbox', () => {
             );
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             await flp.init(manifest);
-
             const app = express();
             app.use(flp.router);
-
             server = await supertest(app);
             const response = await server.get('/my/rta.html?fiori-tools-rta-mode=true').expect(200);
             expect(response.text).toMatchSnapshot();
@@ -1749,18 +1593,9 @@ describe('FlpSandbox', () => {
         let server!: supertest.Agent;
         const baseUrl = '/ui5.patched.router.base';
         const mockConfig = {
-            flp: {
-                apps: [
-                    {
-                        target: '/yet/another/app',
-                        local: join(fixtures, 'multi-app')
-                    }
-                ]
-            },
+            flp: { apps: [{ target: '/yet/another/app', local: join(fixtures, 'multi-app') }] },
             test: [
-                {
-                    framework: 'QUnit'
-                },
+                { framework: 'QUnit' },
                 {
                     framework: 'OPA5',
                     path: '/test/integration/opaTests.qunit.html',
@@ -1771,25 +1606,11 @@ describe('FlpSandbox', () => {
                 rta: {
                     layer: 'CUSTOMER_BASE',
                     endpoints: [
-                        {
-                            path: '/my/rta.html'
-                        },
-                        {
-                            path: 'without/slash/rta.html'
-                        },
-                        {
-                            path: '/my/editor.html',
-                            developerMode: true
-                        },
-                        {
-                            path: '/with/plugin.html',
-                            developerMode: true,
-                            pluginScript: 'open/ux/tools/plugin'
-                        },
-                        {
-                            path: '/my/editorWithConfig.html',
-                            generator: 'test-generator'
-                        }
+                        { path: '/my/rta.html' },
+                        { path: 'without/slash/rta.html' },
+                        { path: '/my/editor.html', developerMode: true },
+                        { path: '/with/plugin.html', developerMode: true, pluginScript: 'open/ux/tools/plugin' },
+                        { path: '/my/editorWithConfig.html', generator: 'test-generator' }
                     ]
                 }
             }
@@ -1808,17 +1629,12 @@ describe('FlpSandbox', () => {
             );
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             await flp.init(manifest);
-
             const app = express();
-            // Middleware to inject baseUrl
             app.use((req: EnhancedRequest, _res: Response, next: NextFunction) => {
                 req['ui5-patched-router'] = { baseUrl };
                 next();
             });
-
-            // Mount router at baseUrl path instead of root
             app.use(baseUrl, flp.router);
-
             server = await supertest(app);
         });
 
@@ -1848,26 +1664,23 @@ describe('FlpSandbox', () => {
 describe('initAdp', () => {
     const url = 'http://sap.example';
     const syncSpy = jest.fn();
-    const adpToolingMock = jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
-        return {
-            init: () => {
-                return 'CUSTOMER_BASE';
-            },
-            descriptor: {
-                manifest: {},
-                name: 'descriptorName',
-                url,
-                asyncHints: {
-                    requests: []
-                }
-            },
-            resources: [],
-            proxy: jest.fn(),
-            sync: syncSpy,
-            onChangeRequest: jest.fn(),
-            addApis: jest.fn()
-        } as unknown as adpTooling.AdpPreview;
+
+    beforeEach(() => {
+        mockAdpPreviewConstructor.mockImplementation((): adpTooling.AdpPreview => {
+            return {
+                init: () => {
+                    return 'CUSTOMER_BASE';
+                },
+                descriptor: { manifest: {}, name: 'descriptorName', url, asyncHints: { requests: [] } },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn()
+            } as unknown as adpTooling.AdpPreview;
+        });
     });
+
     const mockAdpProject = {
         byPath: () => {
             return {
@@ -1900,7 +1713,8 @@ describe('initAdp', () => {
     const logger = { debug: jest.fn(), warn: jest.fn(), error: jest.fn(), info: jest.fn() } as unknown as ToolsLogger;
 
     test('initAdp: throw an error if no adp project', async () => {
-        const flp = new FlpSandbox({}, mockNonAdpProject, {} as MiddlewareUtils, logger);
+        // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+        const flp = new FlpSandbox({}, mockNonAdpProject, {} as import('@ui5/server').MiddlewareUtils, logger);
         try {
             await flp.initAdp({} as AdpPreviewConfig);
         } catch (error) {
@@ -1910,29 +1724,29 @@ describe('initAdp', () => {
 
     test('initAdp', async () => {
         const config = { adp: { target: { url } } };
-        const flp = new FlpSandbox({ adp: { target: { url } } }, mockAdpProject, {} as MiddlewareUtils, logger);
+
+        const flp = new FlpSandbox(
+            { adp: { target: { url } } },
+            mockAdpProject,
+            // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+            {} as import('@ui5/server').MiddlewareUtils,
+            logger
+        );
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
         await flp.initAdp(config.adp);
-        expect(adpToolingMock).toHaveBeenCalled();
+        expect(mockAdpPreviewConstructor).toHaveBeenCalled();
         expect(flpInitMock).toHaveBeenCalled();
     });
 
     test('initAdp - cloud scenario', async () => {
-        const adpToolingMock = jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
+        mockAdpPreviewConstructor.mockImplementation((): adpTooling.AdpPreview => {
             return {
                 init: () => {
                     return 'CUSTOMER_BASE';
                 },
-                descriptor: {
-                    manifest: {},
-                    name: 'descriptorName',
-                    url,
-                    asyncHints: {
-                        requests: []
-                    }
-                },
+                descriptor: { manifest: {}, name: 'descriptorName', url, asyncHints: { requests: [] } },
                 resources: [],
                 proxy: jest.fn(),
                 sync: syncSpy,
@@ -1945,12 +1759,13 @@ describe('initAdp', () => {
             adp: { target: { url } },
             rta: { options: {}, editors: [] }
         } as unknown as Partial<MiddlewareConfig>;
-        const flp = new FlpSandbox(config, mockAdpProject, {} as MiddlewareUtils, logger);
+        // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+        const flp = new FlpSandbox(config, mockAdpProject, {} as import('@ui5/server').MiddlewareUtils, logger);
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
         await flp.initAdp(config.adp as AdpPreviewConfig);
-        expect(adpToolingMock).toHaveBeenCalled();
+        expect(mockAdpPreviewConstructor).toHaveBeenCalled();
         expect(flpInitMock).toHaveBeenCalled();
         expect(flp.rta?.options?.isCloud).toBe(true);
     });
@@ -1961,26 +1776,15 @@ describe('initAdp', () => {
                 id: 'test.app',
                 title: 'Test App',
                 type: 'application',
-                applicationVersion: {
-                    version: '1.0.0'
-                }
+                applicationVersion: { version: '1.0.0' }
             }
         } as Manifest;
         const cfBuildPath = 'dist';
-        const readManifestFromBuildPathMock = jest
-            .spyOn(adpTooling, 'readManifestFromBuildPath')
-            .mockReturnValue(mockManifest);
-        const adpToolingMock = jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
+        mockReadManifestFromBuildPath.mockReturnValue(mockManifest);
+        mockAdpPreviewConstructor.mockImplementation((): adpTooling.AdpPreview => {
             return {
                 init: jest.fn().mockResolvedValue('CUSTOMER_BASE'),
-                descriptor: {
-                    manifest: {},
-                    name: 'descriptorName',
-                    url,
-                    asyncHints: {
-                        requests: []
-                    }
-                },
+                descriptor: { manifest: {}, name: 'descriptorName', url, asyncHints: { requests: [] } },
                 resources: [],
                 proxy: jest.fn(),
                 sync: syncSpy,
@@ -1990,25 +1794,348 @@ describe('initAdp', () => {
             } as unknown as adpTooling.AdpPreview;
         });
 
-        const config: AdpPreviewConfig = {
-            target: { url },
-            cfBuildPath
-        };
-        const flpConfig = {
-            adp: config,
-            rta: { options: {}, editors: [] }
-        } as unknown as Partial<MiddlewareConfig>;
-        const flp = new FlpSandbox(flpConfig, mockAdpProject, {} as MiddlewareUtils, logger);
+        const config: AdpPreviewConfig = { target: { url }, cfBuildPath };
+        const flpConfig = { adp: config, rta: { options: {}, editors: [] } } as unknown as Partial<MiddlewareConfig>;
+        // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+        const flp = new FlpSandbox(flpConfig, mockAdpProject, {} as import('@ui5/server').MiddlewareUtils, logger);
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
 
         await flp.initAdp(config);
 
-        expect(readManifestFromBuildPathMock).toHaveBeenCalledWith(cfBuildPath);
-        expect(adpToolingMock).toHaveBeenCalled();
+        expect(mockReadManifestFromBuildPath).toHaveBeenCalledWith(cfBuildPath);
+        expect(mockAdpPreviewConstructor).toHaveBeenCalled();
         expect(flpInitMock).toHaveBeenCalledWith(mockManifest, expect.any(String));
         expect(flp.rta?.options?.isCloud).toBe(false);
         expect(flp.rta?.options?.isCloudFoundry).toBe(true);
+    });
+
+    test('initAdp registers lrep flex data filter when serviceProvider is available', async () => {
+        const lrepResponseBody = JSON.stringify({
+            changes: [
+                { fileName: 'localChange', changeType: 'addXML' },
+                { fileName: 'deployedOnly', changeType: 'propertyChange' }
+            ],
+            modules: {
+                'ns/app/changes/fragments/Local.fragment.xml': '<deployed/>',
+                'ns/app/Component.js': 'base-component'
+            }
+        });
+        const mockProvider = {
+            get: jest.fn().mockResolvedValue({ data: lrepResponseBody })
+        };
+        jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
+            return {
+                init: () => 'CUSTOMER_BASE',
+                descriptor: {
+                    manifest: {},
+                    name: 'descriptorName',
+                    url,
+                    asyncHints: { requests: [] }
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn(),
+                serviceProvider: mockProvider
+            } as unknown as adpTooling.AdpPreview;
+        });
+
+        const mockProjectWithLocalChanges = {
+            byPath: () => ({
+                getString: () =>
+                    Promise.resolve(
+                        readFileSync(join(__dirname, `../../fixtures/adp/webapp/manifest.appdescr_variant`), 'utf-8')
+                    )
+            }),
+            byGlob: jest.fn().mockImplementation((glob: string) => {
+                if (glob.includes('.{change,')) {
+                    return [
+                        {
+                            getPath: () => '/webapp/changes/id_addXML.change',
+                            getName: () => 'id_addXML.change',
+                            getString: () =>
+                                Promise.resolve(
+                                    JSON.stringify({
+                                        changeType: 'addXML',
+                                        content: { fragmentPath: 'fragments/Local.fragment.xml' }
+                                    })
+                                )
+                        }
+                    ];
+                }
+                return [];
+            })
+        } as unknown as ReaderCollection;
+
+        const flp = new FlpSandbox(
+            { adp: { target: { url } } },
+            mockProjectWithLocalChanges,
+            {} as MiddlewareUtils,
+            logger
+        );
+        jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
+            jest.fn();
+        });
+
+        await flp.initAdp({ target: { url } });
+
+        const app = express();
+        app.use(flp.router);
+
+        const response = await supertest(app).get('/sap/bc/lrep/flex/data/my.app.Component');
+        expect(response.status).toBe(200);
+        expect(response.body.changes).toEqual([
+            { fileName: 'localChange', changeType: 'addXML' },
+            { fileName: 'deployedOnly', changeType: 'propertyChange' }
+        ]);
+        expect(response.body.modules).toEqual({ 'ns/app/Component.js': 'base-component' });
+        expect(mockProvider.get).toHaveBeenCalledWith('/sap/bc/lrep/flex/data/my.app.Component');
+    });
+
+    test('initAdp lrep filter handles pre-parsed response data (Axios auto-parse)', async () => {
+        const lrepResponseData = {
+            changes: [
+                { fileName: 'localChange', changeType: 'addXML' },
+                { fileName: 'deployedOnly', changeType: 'propertyChange' }
+            ],
+            modules: {
+                'ns/app/changes/fragments/Local.fragment.xml': '<deployed/>',
+                'ns/app/Component.js': 'base-component'
+            }
+        };
+        const mockProvider = {
+            get: jest.fn().mockResolvedValue({ data: lrepResponseData })
+        };
+        jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
+            return {
+                init: () => 'CUSTOMER_BASE',
+                descriptor: {
+                    manifest: {},
+                    name: 'descriptorName',
+                    url,
+                    asyncHints: { requests: [] }
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn(),
+                serviceProvider: mockProvider
+            } as unknown as adpTooling.AdpPreview;
+        });
+
+        const mockProjectWithLocalChanges = {
+            byPath: () => ({
+                getString: () =>
+                    Promise.resolve(
+                        readFileSync(join(__dirname, `../../fixtures/adp/webapp/manifest.appdescr_variant`), 'utf-8')
+                    )
+            }),
+            byGlob: jest.fn().mockImplementation((glob: string) => {
+                if (glob.includes('.{change,')) {
+                    return [
+                        {
+                            getPath: () => '/webapp/changes/id_addXML.change',
+                            getName: () => 'id_addXML.change',
+                            getString: () =>
+                                Promise.resolve(
+                                    JSON.stringify({
+                                        changeType: 'addXML',
+                                        content: { fragmentPath: 'fragments/Local.fragment.xml' }
+                                    })
+                                )
+                        }
+                    ];
+                }
+                return [];
+            })
+        } as unknown as ReaderCollection;
+
+        const flp = new FlpSandbox(
+            { adp: { target: { url } } },
+            mockProjectWithLocalChanges,
+            {} as MiddlewareUtils,
+            logger
+        );
+        jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
+            jest.fn();
+        });
+
+        await flp.initAdp({ target: { url } });
+
+        const app = express();
+        app.use(flp.router);
+
+        const response = await supertest(app).get('/sap/bc/lrep/flex/data/my.app.Component');
+        expect(response.status).toBe(200);
+        expect(response.body.modules).toEqual({ 'ns/app/Component.js': 'base-component' });
+    });
+
+    test('initAdp does not register lrep filter when no local module files exist', async () => {
+        const mockProvider = { get: jest.fn() };
+        jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
+            return {
+                init: () => 'CUSTOMER_BASE',
+                descriptor: { manifest: {}, name: 'descriptorName', url, asyncHints: { requests: [] } },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn(),
+                serviceProvider: mockProvider
+            } as unknown as adpTooling.AdpPreview;
+        });
+
+        const byGlobMock = jest.fn().mockResolvedValue([]);
+        const projectNoModules = {
+            byPath: () => ({
+                getString: () =>
+                    Promise.resolve(
+                        readFileSync(join(__dirname, `../../fixtures/adp/webapp/manifest.appdescr_variant`), 'utf-8')
+                    )
+            }),
+            byGlob: byGlobMock
+        } as unknown as ReaderCollection;
+
+        const flp = new FlpSandbox({ adp: { target: { url } } }, projectNoModules, {} as MiddlewareUtils, logger);
+        jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
+            jest.fn();
+        });
+
+        await flp.initAdp({ target: { url } });
+
+        const app = express();
+        app.use(flp.router);
+        app.get('/sap/bc/lrep/flex/data/*', (_req, res) => res.status(200).json({ from: 'next' }));
+
+        const response = await supertest(app).get('/sap/bc/lrep/flex/data/my.app.Component');
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual({ from: 'next' });
+        expect(mockProvider.get).not.toHaveBeenCalled();
+    });
+
+    test('initAdp lrep filter falls back to next() and logs error when provider.get() fails', async () => {
+        const providerError = new Error('Network error');
+        const mockProvider = { get: jest.fn().mockRejectedValue(providerError) };
+        jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
+            return {
+                init: () => 'CUSTOMER_BASE',
+                descriptor: { manifest: {}, name: 'descriptorName', url, asyncHints: { requests: [] } },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn(),
+                serviceProvider: mockProvider
+            } as unknown as adpTooling.AdpPreview;
+        });
+
+        const projectWithModules = {
+            byPath: () => ({
+                getString: () =>
+                    Promise.resolve(
+                        readFileSync(join(__dirname, `../../fixtures/adp/webapp/manifest.appdescr_variant`), 'utf-8')
+                    )
+            }),
+            byGlob: jest.fn().mockImplementation((glob: string) => {
+                if (glob.includes('.{change,')) {
+                    return [
+                        {
+                            getPath: () => '/webapp/changes/id_addXML.change',
+                            getName: () => 'id_addXML.change',
+                            getString: () =>
+                                Promise.resolve(
+                                    JSON.stringify({
+                                        changeType: 'addXML',
+                                        content: { fragmentPath: 'fragments/Local.fragment.xml' }
+                                    })
+                                )
+                        }
+                    ];
+                }
+                return [];
+            })
+        } as unknown as ReaderCollection;
+
+        const flp = new FlpSandbox({ adp: { target: { url } } }, projectWithModules, {} as MiddlewareUtils, logger);
+        jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
+            jest.fn();
+        });
+
+        await flp.initAdp({ target: { url } });
+
+        const app = express();
+        app.use(flp.router);
+        app.get('/sap/bc/lrep/flex/data/*', (_req, res) => res.status(200).json({ from: 'next' }));
+
+        const response = await supertest(app).get('/sap/bc/lrep/flex/data/my.app.Component');
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual({ from: 'next' });
+        expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('LREP flex data filter failed'));
+        expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('/sap/bc/lrep/flex/data/my.app.Component'));
+    });
+
+    test('initAdp scans local modules once at startup, not on every request', async () => {
+        const lrepResponseData = { changes: [], modules: {} };
+        const mockProvider = { get: jest.fn().mockResolvedValue({ data: lrepResponseData }) };
+        jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
+            return {
+                init: () => 'CUSTOMER_BASE',
+                descriptor: { manifest: {}, name: 'descriptorName', url, asyncHints: { requests: [] } },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn(),
+                serviceProvider: mockProvider
+            } as unknown as adpTooling.AdpPreview;
+        });
+
+        const byGlobMock = jest.fn().mockImplementation((glob: string) => {
+            if (glob.includes('.{change,')) {
+                return [
+                    {
+                        getPath: () => '/webapp/changes/id_addXML.change',
+                        getName: () => 'id_addXML.change',
+                        getString: () =>
+                            Promise.resolve(
+                                JSON.stringify({
+                                    changeType: 'addXML',
+                                    content: { fragmentPath: 'fragments/Local.fragment.xml' }
+                                })
+                            )
+                    }
+                ];
+            }
+            return [];
+        });
+        const projectWithModules = {
+            byPath: () => ({
+                getString: () =>
+                    Promise.resolve(
+                        readFileSync(join(__dirname, `../../fixtures/adp/webapp/manifest.appdescr_variant`), 'utf-8')
+                    )
+            }),
+            byGlob: byGlobMock
+        } as unknown as ReaderCollection;
+
+        const flp = new FlpSandbox({ adp: { target: { url } } }, projectWithModules, {} as MiddlewareUtils, logger);
+        jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
+            jest.fn();
+        });
+
+        await flp.initAdp({ target: { url } });
+
+        const callsAfterInit = byGlobMock.mock.calls.length;
+
+        const app = express();
+        app.use(flp.router);
+        await supertest(app).get('/sap/bc/lrep/flex/data/my.app.Component');
+        await supertest(app).get('/sap/bc/lrep/flex/data/my.app.Component');
+
+        expect(byGlobMock.mock.calls.length).toBe(callsAfterInit);
     });
 });

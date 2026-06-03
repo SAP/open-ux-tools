@@ -1,15 +1,18 @@
-import { generateOPAFiles, generatePageObjectFile } from '../../src/fiori-elements-opa-writer';
-import { join } from 'node:path';
+import { jest } from '@jest/globals';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import fileSystem, { read } from 'node:fs';
+import fileSystem, { readFileSync } from 'node:fs';
 import type { Logger } from '@sap-ux/logger/src/types';
 import * as appModels from '../test-input/constants';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const readAppMock = jest.fn();
-jest.mock('@sap-ux/project-access', () => ({
-    ...(jest.requireActual('@sap-ux/project-access') as any),
+const realProjectAccess = await import('@sap-ux/project-access');
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...realProjectAccess,
     createApplicationAccess: jest.fn().mockResolvedValue({
         getSpecification: jest.fn().mockResolvedValue({
             readApp: () => readAppMock()
@@ -17,10 +20,36 @@ jest.mock('@sap-ux/project-access', () => ({
     })
 }));
 
+const existsSyncMock = jest.fn();
+const actualFs = await import('node:fs');
+jest.unstable_mockModule('node:fs', () => ({
+    ...actualFs,
+    existsSync: (...args: unknown[]) => existsSyncMock(...args)
+}));
+
+const hasVirtualOPA5Mock = jest.fn();
+const addPathsToQUnitJsMock = jest.fn();
+const actualOpaQUnitUtils = await import('../../src/utils/opaQUnitUtils.js');
+jest.unstable_mockModule('../../src/utils/opaQUnitUtils.js', () => ({
+    ...actualOpaQUnitUtils,
+    hasVirtualOPA5: (...args: unknown[]) => hasVirtualOPA5Mock(...args),
+    addPathsToQUnitJs: (...args: unknown[]) => addPathsToQUnitJsMock(...args)
+}));
+
+const { generateOPAFiles } = await import('../../src/fiori-elements-opa-writer.js');
+
 describe('ui5-test-writer', () => {
     let fs: Editor | undefined;
     const debug = !!process.env['UX_DEBUG'];
     jest.setTimeout(600000);
+
+    beforeAll(async () => {
+        // Pass existsSync and addPathsToQUnitJs through to real implementations by default
+        existsSyncMock.mockImplementation(actualFs.existsSync);
+
+        const realOpaQUnitUtils = await import('../../src/utils/opaQUnitUtils.js');
+        addPathsToQUnitJsMock.mockImplementation(realOpaQUnitUtils.addPathsToQUnitJs);
+    });
 
     function prepareTestFiles(testConfigurationName: string): string {
         // Copy input templates into output directory
@@ -47,92 +76,11 @@ describe('ui5-test-writer', () => {
         });
     });
 
-    describe('generatePageObjectFile', () => {
-        const testPages = [
-            {
-                description: 'ListReport',
-                targetKey: 'EmployeesListTarget'
-            },
-            {
-                description: 'Object Page',
-                targetKey: 'EmployeesObjectPageTarget'
-            },
-            {
-                description: 'FPM custom',
-                targetKey: 'EmployeesCustomPageTarget'
-            }
-        ];
-        const testUnsupportedPages = [
-            {
-                description: 'Another component view (not supported)',
-                targetKey: 'AnotherCustomPageTarget',
-                errorMsg: 'Validation error: Cannot generate the page file for target: AnotherCustomPageTarget.'
-            },
-            {
-                description: 'Plain XML view (not supported)',
-                targetKey: 'XMLView',
-                errorMsg: 'Validation error: Cannot generate the page file for target: XMLView.'
-            },
-            {
-                description: 'Missing ID',
-                targetKey: 'NoID',
-                errorMsg: 'Validation error: Cannot generate the page file for target: NoID.'
-            },
-            {
-                description: 'Missing entityset',
-                targetKey: 'NoEntitySet',
-                errorMsg: 'Validation error: Cannot generate the page file for target: NoEntitySet.'
-            },
-            {
-                description: 'Bad target',
-                targetKey: 'XXX',
-                errorMsg: 'Validation error: Cannot generate the page file for target: XXX.'
-            }
-        ];
-
-        it.each(testPages)('$description', async (config) => {
-            const projectDir = prepareTestFiles('Pages');
-            fs = await generatePageObjectFile(projectDir, { targetKey: config.targetKey }, fs);
-            expect(fs.dump(projectDir)).toMatchSnapshot();
-        });
-
-        it.each(testUnsupportedPages)('$description', async (config) => {
-            const projectDir = prepareTestFiles('Pages');
-            let error: string | undefined;
-            try {
-                fs = await generatePageObjectFile(projectDir, { targetKey: config.targetKey }, fs);
-            } catch (e) {
-                error = (e as Error).message;
-            }
-
-            expect(error).toEqual(config.errorMsg);
-        });
-
-        it('No manifest', async () => {
-            const projectDir = prepareTestFiles('Not_Here');
-            let error: string | undefined;
-            try {
-                fs = await generatePageObjectFile(projectDir, { targetKey: 'xx' }, fs);
-            } catch (e) {
-                error = (e as Error).message;
-            }
-
-            expect(error?.startsWith('Validation error: Cannot read the `manifest.json` file:')).toEqual(true);
-        });
-
-        it('Providing an app ID', async () => {
-            const projectDir = prepareTestFiles('Pages');
-            fs = await generatePageObjectFile(
-                projectDir,
-                { targetKey: 'EmployeesListTarget', appID: 'test.ui5-test-writer' },
-                fs
-            );
-            expect(fs.dump(projectDir)).toMatchSnapshot();
-        });
-    });
-
     describe('generateOPAFiles', () => {
-        const metadata = fs?.read(join(__dirname, '../test-input/metadata.xml')) || '';
+        const metadata = readFileSync(join(__dirname, '../fixtures/metadata.xml')).toString();
+        const metadataMissingSemanticFilter = readFileSync(
+            join(__dirname, '../fixtures/metadata_filter_bar_semantic_key.xml')
+        ).toString();
         const testApplications = [
             {
                 description: 'Fullscreen LR-OP',
@@ -292,6 +240,14 @@ describe('ui5-test-writer', () => {
             expect(firstJourneyContent).toContain('iCheckFilterField');
         });
 
+        it('generates filter tests for LROPv4 app (missing semantic filter)', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL_FILTER_BAR_NO_TRAVEL_ID));
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, {}, metadataMissingSemanticFilter, fs);
+
+            expect(fs.dump(projectDir)).toMatchSnapshot();
+        });
+
         it('generates column tests for LROPv4 app', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_NO_FILTER_MODEL));
             const projectDir = prepareTestFiles('LROPv4');
@@ -300,6 +256,17 @@ describe('ui5-test-writer', () => {
             const firstJourneyContent =
                 fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.js'].contents;
             expect(firstJourneyContent).toContain('iCheckColumns');
+        });
+
+        it('skips testsuite and opaTests harness files when useVirtualPreviewEndpoints is enabled', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, { useVirtualPreviewEndpoints: true }, metadata, fs);
+
+            const dumped = fs.dump(projectDir);
+            const testFiles = Object.keys(dumped);
+            expect(testFiles.some((f) => f.includes('testsuite.qunit'))).toBe(false);
+            expect(testFiles.some((f) => f.includes('opaTests.qunit'))).toBe(false);
         });
 
         it('generates tests for LROPv4 app that has no filters in filter bar', async () => {
@@ -342,10 +309,244 @@ describe('ui5-test-writer', () => {
             );
         });
 
+        describe('standalone mode with virtual OPA5', () => {
+            let realExistsSync: (path: string) => boolean;
+
+            beforeAll(async () => {
+                realExistsSync = actualFs.existsSync;
+            });
+
+            beforeEach(() => {
+                hasVirtualOPA5Mock.mockResolvedValue(true);
+            });
+
+            afterEach(async () => {
+                hasVirtualOPA5Mock.mockReset();
+                // Restore pass-through so subsequent tests are unaffected
+                existsSyncMock.mockImplementation(realExistsSync);
+                const realOpaQUnitUtils = await import('../../src/utils/opaQUnitUtils.js');
+                addPathsToQUnitJsMock.mockImplementation(realOpaQUnitUtils.addPathsToQUnitJs);
+            });
+
+            it('generates journey files but skips opaTests.qunit.js when OPA5 is configured in yaml and JourneyRunner exists', async () => {
+                const projectDir = prepareTestFiles('LropVirtualTests');
+                // Simulate JourneyRunner.js existing on disk
+                existsSyncMock.mockReturnValue(true);
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+
+            it('moves integration folder and skips common/page files when OPA5 is configured and no JourneyRunner', async () => {
+                const projectDir = prepareTestFiles('LropVirtualTests');
+                // Return false only for the test output JourneyRunner check (not template paths)
+                existsSyncMock.mockImplementation((p: string) =>
+                    p.includes('test-output') && p.includes('JourneyRunner.js') ? false : realExistsSync(p)
+                );
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                const dumped: Record<string, unknown> = fs.dump(projectDir);
+                const paths = Object.keys(dumped);
+                // Journey files should be written
+                expect(paths.some((p) => p.includes('TravelListJourney.js'))).toBe(true);
+                // opaTests.qunit.js and opaTests.qunit.html should NOT be written (virtual OPA5 skips them)
+                expect(paths.every((p) => !p.includes('opaTests.qunit.js'))).toBe(true);
+                expect(paths.every((p) => !p.includes('opaTests.qunit.html'))).toBe(true);
+            });
+        });
+
+        describe('standalone mode without virtual OPA5', () => {
+            let realExistsSync: (path: string) => boolean;
+
+            beforeAll(() => {
+                realExistsSync = actualFs.existsSync;
+            });
+
+            beforeEach(() => {
+                hasVirtualOPA5Mock.mockResolvedValue(false);
+            });
+
+            afterEach(() => {
+                hasVirtualOPA5Mock.mockReset();
+                existsSyncMock.mockImplementation(realExistsSync);
+                addPathsToQUnitJsMock.mockImplementation(actualOpaQUnitUtils.addPathsToQUnitJs);
+            });
+
+            it('moves integration folder and writes common/page/journey files when no JourneyRunner and OPA5 not virtual', async () => {
+                const projectDir = prepareTestFiles('LropVirtualTests');
+                // Return false only for the test output JourneyRunner check (not template paths)
+                existsSyncMock.mockImplementation((p: string) =>
+                    p.includes('test-output') && p.includes('JourneyRunner.js') ? false : realExistsSync(p)
+                );
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                const dumped: Record<string, unknown> = fs.dump(projectDir);
+                const paths = Object.keys(dumped);
+                // opaTests.qunit.js should be generated (no virtual OPA5)
+                expect(paths.some((p) => p.includes('opaTests.qunit.js'))).toBe(true);
+                // Journey files should be written
+                expect(paths.some((p) => p.includes('TravelListJourney.js'))).toBe(true);
+                // JourneyRunner.js should be written as part of common files
+                expect(paths.some((p) => p.includes('JourneyRunner.js'))).toBe(true);
+            });
+
+            it('adds journey paths to opaTests.qunit.js when JourneyRunner exists and OPA5 not virtual', async () => {
+                const projectDir = prepareTestFiles('LropVirtualTests');
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                // Return true only for the test output JourneyRunner check (not template paths)
+                existsSyncMock.mockImplementation((p: string) =>
+                    p.includes('test-output') && p.includes('JourneyRunner.js') ? true : realExistsSync(p)
+                );
+                addPathsToQUnitJsMock.mockImplementation(jest.fn());
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                // addPathsToQUnitJs should have been called with journey module paths
+                expect(addPathsToQUnitJsMock).toHaveBeenCalledWith(
+                    expect.arrayContaining([expect.stringContaining('Journey')]),
+                    expect.any(String),
+                    expect.anything()
+                );
+            });
+
+            it('adds int-test script and resolves htmlTarget from flpSandbox.html when no integration folder exists', async () => {
+                // LropNoTests has no integration/ folder, no test script, and a flpSandbox.html
+                const projectDir = prepareTestFiles('LropNoTests');
+                existsSyncMock.mockImplementation((p: string) => {
+                    // No JourneyRunner.js → goes into resolveStandaloneWriteContext
+                    if (p.includes('test-output') && p.includes('JourneyRunner.js')) {
+                        return false;
+                    }
+                    // No existing integration/ folder → falls into the else branch
+                    if (p.includes('test-output') && p.endsWith('integration')) {
+                        return false;
+                    }
+                    // flpSandbox.html exists in the project (only in mem-fs, not on real disk)
+                    if (p.includes('test-output') && p.endsWith('flpSandbox.html')) {
+                        return true;
+                    }
+                    return realExistsSync(p);
+                });
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                const dumped = fs.dump(projectDir);
+
+                // int-test script should have been added to package.json
+                const packageJsonPath = Object.keys(dumped).find((p) => p.endsWith('package.json'));
+                expect(packageJsonPath).toBeDefined();
+                const packageJson = JSON.parse(dumped[packageJsonPath!].contents as string);
+                expect(packageJson.scripts['int-test']).toContain('opaTests.qunit.html');
+
+                // htmlTarget resolved from flpSandbox.html should appear in JourneyRunner.js launchUrl
+                const journeyRunnerPath = Object.keys(dumped).find((p) => p.includes('JourneyRunner.js'));
+                expect(journeyRunnerPath).toBeDefined();
+                expect(dumped[journeyRunnerPath!].contents).toContain('C_Arbankstatement-display');
+            });
+
+            it('moves existing integration folder to integration_old when no JourneyRunner exists', async () => {
+                // LropVirtualTests has an integration/ folder on disk
+                const projectDir = prepareTestFiles('LropVirtualTests');
+                const moveSpy = jest.spyOn(fs!, 'move');
+                existsSyncMock.mockImplementation((p: string) => {
+                    if (p.includes('test-output') && p.includes('JourneyRunner.js')) {
+                        return false;
+                    }
+                    // Simulate existing integration/ folder in the output dir
+                    if (p.includes('test-output') && p.endsWith('integration')) {
+                        return true;
+                    }
+                    return realExistsSync(p);
+                });
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                expect(moveSpy).toHaveBeenCalledWith(
+                    expect.stringContaining(join('integration', '**')),
+                    expect.stringContaining('integration_old')
+                );
+                moveSpy.mockRestore();
+            });
+
+            it('writes missing page objects and calls addPagesToJourneyRunner when JourneyRunner exists but pages are absent', async () => {
+                // LropVirtualTests has JourneyRunner.js — simulate page files not yet existing in mem-fs
+                const projectDir = prepareTestFiles('LropVirtualTests');
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                existsSyncMock.mockImplementation((p: string) =>
+                    p.includes('test-output') && p.includes('JourneyRunner.js') ? true : realExistsSync(p)
+                );
+
+                // Make editor.exists return false for page files so ensurePageExists writes them
+                const origExists = fs!.exists.bind(fs!);
+                const existsSpy = jest.spyOn(fs!, 'exists').mockImplementation((p) => {
+                    if (
+                        typeof p === 'string' &&
+                        p.includes('test-output') &&
+                        p.includes('pages') &&
+                        p.endsWith('.js')
+                    ) {
+                        return false;
+                    }
+                    return origExists(p);
+                });
+
+                addPathsToQUnitJsMock.mockImplementation(jest.fn());
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                const dumped = fs.dump(projectDir);
+                // Page object files should have been written by ensurePageExists
+                expect(Object.keys(dumped).some((p) => p.includes('pages') && p.includes('TravelList.js'))).toBe(true);
+                // addPathsToQUnitJs should have been called (hasJourneyRunner path)
+                expect(addPathsToQUnitJsMock).toHaveBeenCalled();
+
+                existsSpy.mockRestore();
+            });
+
+            it('skips adding int-test script when it already exists in package.json', async () => {
+                // LropNoTests has no integration/ folder; pre-populate int-test so the
+                // addition is skipped, covering the hasTestScript = true branch
+                const projectDir = prepareTestFiles('LropNoTests');
+                existsSyncMock.mockImplementation((p: string) => {
+                    if (p.includes('test-output') && p.includes('JourneyRunner.js')) {
+                        return false;
+                    }
+                    if (p.includes('test-output') && p.endsWith('integration')) {
+                        return false;
+                    }
+                    if (p.includes('test-output') && p.endsWith('flpSandbox.html')) {
+                        return false;
+                    }
+                    return realExistsSync(p);
+                });
+
+                // Pre-inject int-test so checkScriptInPackageJson returns true and skips re-adding it
+                const pkgPath = join(projectDir, 'package.json');
+                const pkg = JSON.parse(fs!.read(pkgPath));
+                const existingScript = 'fiori run --existing';
+                pkg.scripts['int-test'] = existingScript;
+                fs!.write(pkgPath, JSON.stringify(pkg));
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+                const dumped = fs.dump(projectDir);
+                // int-test script should remain unchanged (not overwritten)
+                const packageJsonPath = Object.keys(dumped).find((p) => p.endsWith('package.json'));
+                expect(packageJsonPath).toBeDefined();
+                const packageJson = JSON.parse(dumped[packageJsonPath!].contents as string);
+                expect(packageJson.scripts['int-test']).toBe(existingScript);
+                // Generation still completes
+                expect(Object.keys(dumped).some((p) => p.includes('FirstJourney.js'))).toBe(true);
+            });
+        });
+
         it('generates tests for v4 application with sub object page', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE));
             const projectDir = prepareTestFiles('LROPv4');
-            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+            const subOPMetadata =
+                fs?.read(join(__dirname, '../test-input/LROPv4/webapp/localService/mainService/metadata.xml')) ?? '';
+            fs = await generateOPAFiles(projectDir, {}, subOPMetadata, fs);
 
             const bookingObjPageJourneyContent =
                 fs.dump()['test/test-output/LROPv4/webapp/test/integration/BookingObjectPageJourney.js'].contents;
@@ -359,6 +560,7 @@ describe('ui5-test-writer', () => {
             expect(bookingObjPageJourneyContent).toContain('field: "carrier"');
             expect(bookingObjPageJourneyContent).toContain('targetAnnotation: "Contact"');
             expect(bookingObjPageJourneyContent).toContain('iCheckMicroChart("Supplement Price")');
+            expect(bookingObjPageJourneyContent).toContain('onHeader().iCheckAction("Activate", { enabled: false })');
             expect(bookingObjPageJourneyContent).toContain('iCheckNumberOfSections(3)');
             expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("BookingDetails")');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "BookingDetails" })');
@@ -366,8 +568,23 @@ describe('ui5-test-writer', () => {
             expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "AdministrativeData" })');
             expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("FlightData")');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "FlightData" })');
+            expect(bookingObjPageJourneyContent).toContain(
+                '.iCheckAction("Deduct Discount" /* , { enabled: true } */)'
+            );
             expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("PriceData")');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "PriceData" })');
+            expect(bookingObjPageJourneyContent).toContain(
+                'onTable({ property: "_BookSupplement" }).iCheckAction("Create Template", { enabled: true })'
+            );
+            expect(bookingObjPageJourneyContent).toContain(
+                'onForm({ section: "BookingData" }).iCheckField({ property: "BookingId" })'
+            );
+            expect(bookingObjPageJourneyContent).toContain(
+                'onForm({ section: "BookingData" }).iCheckField({ property: "FlightDate" })'
+            );
+            expect(bookingObjPageJourneyContent).toContain('onTable({ property: "_Supplements" }).iCheckColumns(');
+            expect(bookingObjPageJourneyContent).toContain('"ConnectionId":{"header":"Connection"}');
+            expect(bookingObjPageJourneyContent).toContain('"AirportCode":{"header":"Airport"}');
         });
     });
 });

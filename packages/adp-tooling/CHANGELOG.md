@@ -1,5 +1,425 @@
 # @sap-ux/adp-tooling
 
+## 1.0.4
+
+### Patch Changes
+
+- Updated dependencies [9580241]
+    - @sap-ux/ui5-config@1.0.1
+    - @sap-ux/odata-service-writer@1.0.2
+    - @sap-ux/project-access@2.0.2
+    - @sap-ux/inquirer-common@1.0.3
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/project-input-validator@1.0.2
+    - @sap-ux/system-access@1.0.0
+
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies [41f327a]
+    - @sap-ux/nodejs-utils@1.0.1
+    - @sap-ux/inquirer-common@1.0.2
+
+## 1.0.2
+
+### Patch Changes
+
+- a8e4cf0: fix: handle both nested (`{ uaa: {...} }`) and flat destination-service credential shapes when fetching BTP destinations and when checking for OnPremise destinations during adaptation-project startup. A new `getDestinationServiceUaa` helper in `@sap-ux/adp-tooling` is reused by `@sap-ux/backend-proxy-middleware-cf` to avoid duplicate shape-handling logic.
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/inquirer-common@1.0.1
+    - @sap-ux/odata-service-writer@1.0.1
+    - @sap-ux/project-input-validator@1.0.1
+    - @sap-ux/system-access@1.0.0
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/project-input-validator@1.0.0
+    - @sap-ux/odata-service-writer@1.0.0
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/inquirer-common@1.0.0
+    - @sap-ux/project-access@2.0.0
+    - @sap-ux/system-access@1.0.0
+    - @sap-ux/nodejs-utils@1.0.0
+    - @sap-ux/ui5-config@1.0.0
+    - @sap-ux/btp-utils@2.0.0
+    - @sap-ux/ui5-info@1.0.0
+    - @sap-ux/logger@1.0.0
+    - @sap-ux/store@2.0.0
+    - @sap-ux/i18n@1.0.0
+
+## 0.19.11
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.13.6
+
+## 0.19.10
+
+### Patch Changes
+
+- 9a980a9: fix: Prioritize local workspace fragments over deployed versions in adaptation project editor
+
+    When previewing an adaptation project connected to an ABAP system, locally created fragments and controllers are now correctly prioritized over their deployed counterparts. The LREP flex data response from the ABAP system includes inlined module content (fragment XMLs, controller JS) which prevented UI5 from requesting local workspace versions. The fix strips these inlined modules from the response so that UI5 falls back to HTTP requests, which the existing ADP proxy serves from the local workspace. Flex changes are left untouched as UI5 deduplicates them natively by fileName.
+
+## 0.19.9
+
+### Patch Changes
+
+- Updated dependencies [ea9cbb1]
+    - @sap-ux/nodejs-utils@0.3.2
+    - @sap-ux/inquirer-common@0.13.5
+
+## 0.19.8
+
+### Patch Changes
+
+- Updated dependencies [c12420a]
+    - @sap-ux/store@1.6.1
+    - @sap-ux/system-access@0.8.2
+    - @sap-ux/ui5-config@0.31.1
+    - @sap-ux/inquirer-common@0.13.4
+
+## 0.19.7
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade @sap/bas-sdk 3.13.6 → 3.13.7, @sap/approuter ^21.5.0 → ^22.0.0 (security: ws vulnerability)
+- Updated dependencies [01b70ca]
+- Updated dependencies [01b70ca]
+    - @sap-ux/axios-extension@1.26.1
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/odata-service-writer@0.32.2
+    - @sap-ux/system-access@0.8.1
+    - @sap-ux/inquirer-common@0.13.3
+    - @sap-ux/nodejs-utils@0.3.1
+
+## 0.19.6
+
+### Patch Changes
+
+- 758b0d4: fix: show error message when fetching destination fails
+
+## 0.19.5
+
+### Patch Changes
+
+- Updated dependencies [9752c40]
+    - @sap-ux/ui5-config@0.31.1
+    - @sap-ux/odata-service-writer@0.32.2
+    - @sap-ux/project-access@1.38.1
+    - @sap-ux/inquirer-common@0.13.2
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/project-input-validator@0.7.2
+    - @sap-ux/system-access@0.8.0
+
+## 0.19.4
+
+### Patch Changes
+
+- dab1aa2: fix: When we get the service uri from the ui5.yaml > adp > target object we use the context to determine whether to use the destination in the target or the url.
+
+## 0.19.3
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/inquirer-common@0.13.1
+    - @sap-ux/odata-service-writer@0.32.1
+    - @sap-ux/project-input-validator@0.7.1
+    - @sap-ux/system-access@0.8.0
+
+## 0.19.2
+
+### Patch Changes
+
+- 342c544: chore: bump used versions in adaptation project for Cloud Foundry
+
+## 0.19.1
+
+### Patch Changes
+
+- 2c76f8f: chore: upgrade @sap-devx/yeoman-ui-types 1.23.0 → 1.25.0
+- Updated dependencies [2c76f8f]
+    - @sap-ux/inquirer-common@0.13.0
+
+## 0.19.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/i18n@0.4.0
+    - @sap-ux/inquirer-common@0.12.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/nodejs-utils@0.3.0
+    - @sap-ux/odata-service-writer@0.32.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/project-input-validator@0.7.0
+    - @sap-ux/store@1.6.0
+    - @sap-ux/system-access@0.8.0
+    - @sap-ux/ui5-config@0.31.0
+    - @sap-ux/ui5-info@0.14.0
+
+## 0.18.134
+
+### Patch Changes
+
+- Updated dependencies [138246a]
+    - @sap-ux/odata-service-writer@0.31.15
+    - @sap-ux/inquirer-common@0.11.48
+
+## 0.18.133
+
+### Patch Changes
+
+- 8c4185a: fix: change used change type for inbounds
+
+## 0.18.132
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/i18n@0.3.12
+    - @sap-ux/inquirer-common@0.11.47
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/nodejs-utils@0.2.23
+    - @sap-ux/odata-service-writer@0.31.14
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/project-input-validator@0.6.84
+    - @sap-ux/store@1.5.14
+    - @sap-ux/system-access@0.7.13
+    - @sap-ux/ui5-config@0.30.5
+    - @sap-ux/ui5-info@0.13.22
+
+## 0.18.131
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/axios-extension@1.25.36
+    - @sap-ux/odata-service-writer@0.31.13
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/system-access@0.7.12
+    - @sap-ux/inquirer-common@0.11.46
+    - @sap-ux/project-input-validator@0.6.83
+
+## 0.18.130
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.45
+
+## 0.18.129
+
+### Patch Changes
+
+- 678a08e: chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
+- 678a08e: chore: upgrade uuid 11.1.0 → 11.1.1 (GHSA-w5hq-g745-h8pq buffer bounds check fix)
+- Updated dependencies [678a08e]
+    - @sap-ux/axios-extension@1.25.35
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/inquirer-common@0.11.44
+    - @sap-ux/ui5-config@0.30.4
+    - @sap-ux/ui5-info@0.13.21
+    - @sap-ux/odata-service-writer@0.31.12
+    - @sap-ux/system-access@0.7.11
+    - @sap-ux/nodejs-utils@0.2.22
+    - @sap-ux/project-access@1.36.3
+    - @sap-ux/project-input-validator@0.6.82
+
+## 0.18.128
+
+### Patch Changes
+
+- b2ffc7e: fix(mbt): bump mbt to ^1.2.49 to avoid suspicious 1.2.48 release (#4616)
+
+## 0.18.127
+
+### Patch Changes
+
+- fcaa70c: fix(adp-tooling): Improve logging for Cloud Foundry setup
+
+## 0.18.126
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/system-access@0.7.10
+    - @sap-ux/axios-extension@1.25.34
+    - @sap-ux/i18n@0.3.11
+    - @sap-ux/inquirer-common@0.11.43
+    - @sap-ux/odata-service-writer@0.31.11
+    - @sap-ux/project-access@1.36.2
+    - @sap-ux/project-input-validator@0.6.81
+
+## 0.18.125
+
+### Patch Changes
+
+- Updated dependencies [a4b90ca]
+    - @sap-ux/project-input-validator@0.6.80
+
+## 0.18.124
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+- Updated dependencies [3945459]
+    - @sap-ux/axios-extension@1.25.33
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/odata-service-writer@0.31.10
+    - @sap-ux/system-access@0.7.9
+    - @sap-ux/inquirer-common@0.11.42
+    - @sap-ux/project-input-validator@0.6.79
+
+## 0.18.123
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/inquirer-common@0.11.41
+    - @sap-ux/odata-service-writer@0.31.9
+    - @sap-ux/project-input-validator@0.6.78
+    - @sap-ux/system-access@0.7.8
+
+## 0.18.122
+
+### Patch Changes
+
+- 10847a1: fix: Translation texts for Add Data Source and SAPUI5 Model title and subtitle
+
+## 0.18.121
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/inquirer-common@0.11.40
+    - @sap-ux/odata-service-writer@0.31.8
+    - @sap-ux/project-input-validator@0.6.77
+    - @sap-ux/system-access@0.7.8
+
+## 0.18.120
+
+### Patch Changes
+
+- Updated dependencies [237371b]
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/odata-service-writer@0.31.7
+    - @sap-ux/system-access@0.7.8
+    - @sap-ux/inquirer-common@0.11.39
+
+## 0.18.119
+
+### Patch Changes
+
+- Updated dependencies [9a48e63]
+    - @sap-ux/ui5-info@0.13.20
+    - @sap-ux/inquirer-common@0.11.38
+
+## 0.18.118
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+    - @sap-ux/inquirer-common@0.11.37
+
+## 0.18.117
+
+### Patch Changes
+
+- 8fb08a2: feat: Extend add-new-model generator to support external services for CF projects
+
+## 0.18.116
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/axios-extension@1.25.31
+    - @sap-ux/inquirer-common@0.11.36
+    - @sap-ux/nodejs-utils@0.2.21
+    - @sap-ux/system-access@0.7.7
+    - @sap-ux/odata-service-writer@0.31.7
+
+## 0.18.115
+
+### Patch Changes
+
+- cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
+- Updated dependencies [cc4450c]
+    - @sap-ux/axios-extension@1.25.30
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/inquirer-common@0.11.35
+    - @sap-ux/ui5-config@0.30.3
+    - @sap-ux/ui5-info@0.13.19
+    - @sap-ux/odata-service-writer@0.31.7
+    - @sap-ux/system-access@0.7.6
+    - @sap-ux/nodejs-utils@0.2.20
+    - @sap-ux/project-access@1.35.20
+    - @sap-ux/project-input-validator@0.6.76
+
+## 0.18.114
+
+### Patch Changes
+
+- 497317c: feat: Adjust deployment wizard behavior for CF scenario
+
 ## 0.18.113
 
 ### Patch Changes

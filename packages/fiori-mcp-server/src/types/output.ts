@@ -1,5 +1,5 @@
 import * as zod from 'zod';
-import { FioriAppSchema, FunctionalityIdSchema, FunctionalitySchema, ParameterSchema } from './basic';
+import { FioriAppSchema, FunctionalityIdSchema, FunctionalitySchema, ParameterSchema } from './basic.js';
 
 /**
  * Output interface for the 'search_docs' functionality

@@ -1,13 +1,17 @@
+import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { ToolsLogger } from '@sap-ux/logger';
 import { updateMiddlewaresForPreview } from '../../../src/common/ui5-yaml';
 import { FileName } from '@sap-ux/project-access';
 
 const middlewareUpdatedMessage = (middleware: 'preview' | 'reload', filename: string) =>
     `Updated ${middleware} middleware in ${filename}.`;
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('Test update middleware', () => {
     const logger = new ToolsLogger();

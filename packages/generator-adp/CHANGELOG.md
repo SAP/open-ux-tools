@@ -1,5 +1,495 @@
 # @sap-ux/generator-adp
 
+## 1.0.4
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.4
+- @sap-ux/odata-service-writer@1.0.2
+- @sap-ux/project-access@2.0.2
+- @sap-ux/telemetry@1.0.3
+- @sap-ux/inquirer-common@1.0.3
+- @sap-ux/axios-extension@2.0.0
+- @sap-ux/fiori-generator-shared@1.0.3
+- @sap-ux/project-input-validator@1.0.2
+- @sap-ux/system-access@1.0.0
+
+## 1.0.3
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.3
+- @sap-ux/telemetry@1.0.2
+- @sap-ux/fiori-generator-shared@1.0.2
+- @sap-ux/inquirer-common@1.0.2
+
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies [a8e4cf0]
+    - @sap-ux/adp-tooling@1.0.2
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+    - @sap-ux/adp-tooling@1.0.1
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/fiori-generator-shared@1.0.1
+    - @sap-ux/inquirer-common@1.0.1
+    - @sap-ux/odata-service-writer@1.0.1
+    - @sap-ux/project-input-validator@1.0.1
+    - @sap-ux/system-access@1.0.0
+    - @sap-ux/telemetry@1.0.1
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/project-input-validator@1.0.0
+    - @sap-ux/fiori-generator-shared@1.0.0
+    - @sap-ux/odata-service-writer@1.0.0
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/inquirer-common@1.0.0
+    - @sap-ux/feature-toggle@1.0.0
+    - @sap-ux/project-access@2.0.0
+    - @sap-ux/system-access@1.0.0
+    - @sap-ux/adp-tooling@1.0.0
+    - @sap-ux/btp-utils@2.0.0
+    - @sap-ux/telemetry@1.0.0
+    - @sap-ux/logger@1.0.0
+    - @sap-ux/store@2.0.0
+
+## 0.10.12
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.13.6
+- @sap-ux/adp-tooling@0.19.11
+
+## 0.10.11
+
+### Patch Changes
+
+- Updated dependencies [9a980a9]
+    - @sap-ux/adp-tooling@0.19.10
+
+## 0.10.10
+
+### Patch Changes
+
+- c1575e0: fix: The business solution name must use lowercase letters, numbers, dots (.), underscores (\_), and hyphens (-) only. The name must contain at least one letter or number.
+
+## 0.10.9
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.9
+- @sap-ux/telemetry@0.7.5
+- @sap-ux/fiori-generator-shared@0.15.6
+- @sap-ux/inquirer-common@0.13.5
+
+## 0.10.8
+
+### Patch Changes
+
+- Updated dependencies [c12420a]
+    - @sap-ux/store@1.6.1
+    - @sap-ux/adp-tooling@0.19.8
+    - @sap-ux/fiori-generator-shared@0.15.5
+    - @sap-ux/system-access@0.8.2
+    - @sap-ux/telemetry@0.7.4
+    - @sap-ux/inquirer-common@0.13.4
+
+## 0.10.7
+
+### Patch Changes
+
+- Updated dependencies [01b70ca]
+- Updated dependencies [01b70ca]
+    - @sap-ux/axios-extension@1.26.1
+    - @sap-ux/adp-tooling@0.19.7
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/fiori-generator-shared@0.15.4
+    - @sap-ux/odata-service-writer@0.32.2
+    - @sap-ux/system-access@0.8.1
+    - @sap-ux/inquirer-common@0.13.3
+    - @sap-ux/telemetry@0.7.3
+
+## 0.10.6
+
+### Patch Changes
+
+- 758b0d4: fix: show error message when fetching destination fails
+- Updated dependencies [758b0d4]
+    - @sap-ux/adp-tooling@0.19.6
+
+## 0.10.5
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.5
+- @sap-ux/odata-service-writer@0.32.2
+- @sap-ux/project-access@1.38.1
+- @sap-ux/telemetry@0.7.2
+- @sap-ux/inquirer-common@0.13.2
+- @sap-ux/axios-extension@1.26.0
+- @sap-ux/fiori-generator-shared@0.15.3
+- @sap-ux/project-input-validator@0.7.2
+- @sap-ux/system-access@0.8.0
+
+## 0.10.4
+
+### Patch Changes
+
+- Updated dependencies [dab1aa2]
+    - @sap-ux/adp-tooling@0.19.4
+
+## 0.10.3
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/adp-tooling@0.19.3
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/fiori-generator-shared@0.15.2
+    - @sap-ux/inquirer-common@0.13.1
+    - @sap-ux/odata-service-writer@0.32.1
+    - @sap-ux/project-input-validator@0.7.1
+    - @sap-ux/system-access@0.8.0
+    - @sap-ux/telemetry@0.7.1
+
+## 0.10.2
+
+### Patch Changes
+
+- 342c544: chore: bump used versions in adaptation project for Cloud Foundry
+- Updated dependencies [342c544]
+    - @sap-ux/adp-tooling@0.19.2
+
+## 0.10.1
+
+### Patch Changes
+
+- 2c76f8f: chore: upgrade @sap-devx/yeoman-ui-types 1.23.0 → 1.25.0
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+    - @sap-ux/inquirer-common@0.13.0
+    - @sap-ux/adp-tooling@0.19.1
+
+## 0.10.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/adp-tooling@0.19.0
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/feature-toggle@0.4.0
+    - @sap-ux/fiori-generator-shared@0.15.0
+    - @sap-ux/inquirer-common@0.12.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/odata-service-writer@0.32.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/project-input-validator@0.7.0
+    - @sap-ux/store@1.6.0
+    - @sap-ux/system-access@0.8.0
+    - @sap-ux/telemetry@0.7.0
+
+## 0.9.73
+
+### Patch Changes
+
+- Updated dependencies [138246a]
+    - @sap-ux/odata-service-writer@0.31.15
+    - @sap-ux/adp-tooling@0.18.134
+    - @sap-ux/inquirer-common@0.11.48
+
+## 0.9.72
+
+### Patch Changes
+
+- Updated dependencies [8c4185a]
+    - @sap-ux/adp-tooling@0.18.133
+
+## 0.9.71
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/adp-tooling@0.18.132
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/feature-toggle@0.3.9
+    - @sap-ux/fiori-generator-shared@0.14.2
+    - @sap-ux/inquirer-common@0.11.47
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/odata-service-writer@0.31.14
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/project-input-validator@0.6.84
+    - @sap-ux/store@1.5.14
+    - @sap-ux/system-access@0.7.13
+    - @sap-ux/telemetry@0.6.106
+
+## 0.9.70
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/axios-extension@1.25.36
+    - @sap-ux/odata-service-writer@0.31.13
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/adp-tooling@0.18.131
+    - @sap-ux/fiori-generator-shared@0.14.1
+    - @sap-ux/system-access@0.7.12
+    - @sap-ux/inquirer-common@0.11.46
+    - @sap-ux/project-input-validator@0.6.83
+    - @sap-ux/telemetry@0.6.105
+
+## 0.9.69
+
+### Patch Changes
+
+- Updated dependencies [9360ea5]
+    - @sap-ux/fiori-generator-shared@0.14.0
+    - @sap-ux/inquirer-common@0.11.45
+    - @sap-ux/adp-tooling@0.18.130
+
+## 0.9.68
+
+### Patch Changes
+
+- 678a08e: chore: upgrade uuid 11.1.0 → 11.1.1 (GHSA-w5hq-g745-h8pq buffer bounds check fix)
+- Updated dependencies [678a08e]
+- Updated dependencies [678a08e]
+- Updated dependencies [678a08e]
+    - @sap-ux/adp-tooling@0.18.129
+    - @sap-ux/axios-extension@1.25.35
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/inquirer-common@0.11.44
+    - @sap-ux/telemetry@0.6.104
+    - @sap-ux/fiori-generator-shared@0.13.105
+    - @sap-ux/odata-service-writer@0.31.12
+    - @sap-ux/system-access@0.7.11
+    - @sap-ux/project-access@1.36.3
+    - @sap-ux/project-input-validator@0.6.82
+
+## 0.9.67
+
+### Patch Changes
+
+- Updated dependencies [b2ffc7e]
+    - @sap-ux/adp-tooling@0.18.128
+
+## 0.9.66
+
+### Patch Changes
+
+- Updated dependencies [fcaa70c]
+    - @sap-ux/adp-tooling@0.18.127
+
+## 0.9.65
+
+### Patch Changes
+
+- Updated dependencies [c160401]
+    - @sap-ux/system-access@0.7.10
+    - @sap-ux/telemetry@0.6.103
+    - @sap-ux/axios-extension@1.25.34
+    - @sap-ux/adp-tooling@0.18.126
+    - @sap-ux/fiori-generator-shared@0.13.104
+    - @sap-ux/inquirer-common@0.11.43
+    - @sap-ux/odata-service-writer@0.31.11
+    - @sap-ux/project-access@1.36.2
+    - @sap-ux/project-input-validator@0.6.81
+
+## 0.9.64
+
+### Patch Changes
+
+- Updated dependencies [a4b90ca]
+    - @sap-ux/project-input-validator@0.6.80
+    - @sap-ux/adp-tooling@0.18.125
+
+## 0.9.63
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+- Updated dependencies [3945459]
+    - @sap-ux/axios-extension@1.25.33
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/odata-service-writer@0.31.10
+    - @sap-ux/adp-tooling@0.18.124
+    - @sap-ux/fiori-generator-shared@0.13.103
+    - @sap-ux/system-access@0.7.9
+    - @sap-ux/inquirer-common@0.11.42
+    - @sap-ux/project-input-validator@0.6.79
+    - @sap-ux/telemetry@0.6.102
+
+## 0.9.62
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/adp-tooling@0.18.123
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/fiori-generator-shared@0.13.102
+    - @sap-ux/inquirer-common@0.11.41
+    - @sap-ux/odata-service-writer@0.31.9
+    - @sap-ux/project-input-validator@0.6.78
+    - @sap-ux/system-access@0.7.8
+    - @sap-ux/telemetry@0.6.101
+
+## 0.9.61
+
+### Patch Changes
+
+- 10847a1: fix: Translation texts for Add Data Source and SAPUI5 Model title and subtitle
+- Updated dependencies [10847a1]
+    - @sap-ux/adp-tooling@0.18.122
+
+## 0.9.60
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/adp-tooling@0.18.121
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/fiori-generator-shared@0.13.101
+    - @sap-ux/inquirer-common@0.11.40
+    - @sap-ux/odata-service-writer@0.31.8
+    - @sap-ux/project-input-validator@0.6.77
+    - @sap-ux/system-access@0.7.8
+    - @sap-ux/telemetry@0.6.100
+
+## 0.9.59
+
+### Patch Changes
+
+- Updated dependencies [237371b]
+    - @sap-ux/axios-extension@1.25.32
+    - @sap-ux/fiori-generator-shared@0.13.100
+    - @sap-ux/adp-tooling@0.18.120
+    - @sap-ux/odata-service-writer@0.31.7
+    - @sap-ux/system-access@0.7.8
+    - @sap-ux/inquirer-common@0.11.39
+
+## 0.9.58
+
+### Patch Changes
+
+- e333607: fix(generator-adp): Change endpoint used for checking user authentication
+    - @sap-ux/adp-tooling@0.18.119
+    - @sap-ux/inquirer-common@0.11.38
+
+## 0.9.57
+
+### Patch Changes
+
+- Updated dependencies [67d1f8b]
+    - @sap-ux/adp-tooling@0.18.118
+    - @sap-ux/telemetry@0.6.99
+    - @sap-ux/fiori-generator-shared@0.13.99
+    - @sap-ux/inquirer-common@0.11.37
+
+## 0.9.56
+
+### Patch Changes
+
+- 8fb08a2: feat: Extend add-new-model generator to support external services for CF projects
+- Updated dependencies [8fb08a2]
+    - @sap-ux/adp-tooling@0.18.117
+
+## 0.9.55
+
+### Patch Changes
+
+- Updated dependencies [ee68603]
+    - @sap-ux/btp-utils@1.1.14
+    - @sap-ux/adp-tooling@0.18.116
+    - @sap-ux/axios-extension@1.25.31
+    - @sap-ux/fiori-generator-shared@0.13.98
+    - @sap-ux/inquirer-common@0.11.36
+    - @sap-ux/system-access@0.7.7
+    - @sap-ux/telemetry@0.6.98
+    - @sap-ux/odata-service-writer@0.31.7
+
+## 0.9.54
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/adp-tooling@0.18.115
+    - @sap-ux/axios-extension@1.25.30
+    - @sap-ux/btp-utils@1.1.13
+    - @sap-ux/inquirer-common@0.11.35
+    - @sap-ux/telemetry@0.6.97
+    - @sap-ux/fiori-generator-shared@0.13.97
+    - @sap-ux/odata-service-writer@0.31.7
+    - @sap-ux/system-access@0.7.6
+    - @sap-ux/project-access@1.35.20
+    - @sap-ux/project-input-validator@0.6.76
+
+## 0.9.53
+
+### Patch Changes
+
+- Updated dependencies [497317c]
+    - @sap-ux/adp-tooling@0.18.114
+
+## 0.9.52
+
+### Patch Changes
+
+- fa016e6: Error message when user is not logged in Cloud Foundry when starting FLP Config generator
+  Change current label for environment prompt from "Cloud Foundry" to "SAP BTP, Cloud Foundry environment".
+
 ## 0.9.51
 
 ### Patch Changes

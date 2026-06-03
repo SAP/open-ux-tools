@@ -1,8 +1,8 @@
 import React from 'react';
 import { divProperties, getNativeProps } from '@fluentui/react';
-import { UISection } from './UISection';
-import type { UISectionProps } from './UISection';
-import { UISplitter, UISplitterType, UISplitterLayoutType } from './UISplitter';
+import { UISection } from './UISection.js';
+import type { UISectionProps } from './UISection.js';
+import { UISplitter, UISplitterType, UISplitterLayoutType } from './UISplitter.js';
 
 import './UISections.scss';
 
@@ -26,6 +26,11 @@ export interface UISectionsProps {
     splitterTabIndex?: -1 | 0;
     onClose?: () => void;
     splitterTitle?: string;
+    /**
+     * Splitter layout type for resize splitter.
+     *
+     * @default UISplitterLayoutType.Compact
+     */
     splitterLayoutType?: UISplitterLayoutType;
     onResize?: (sizes: Array<UISectionSize | undefined>) => void;
     onToggleFullscreen?: (isFullScreen: boolean) => void;
@@ -686,7 +691,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             splitterTitle,
             splitterType = UISplitterType.Resize,
             splitterTabIndex,
-            splitterLayoutType = UISplitterLayoutType.Standard
+            splitterLayoutType = UISplitterLayoutType.Compact
         } = this.props;
         let isSplitterVisible = splitter && index > 0;
         const isSingleSection = this.getVisibleChildrenCount() === 1;

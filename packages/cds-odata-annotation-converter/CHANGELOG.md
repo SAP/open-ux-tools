@@ -1,5 +1,90 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/cds-annotation-parser@1.0.0
+    - @sap-ux/odata-annotation-core@1.0.0
+    - @sap-ux/text-document-utils@1.0.0
+    - @sap-ux/odata-vocabularies@1.0.0
+
+## 0.8.1
+
+### Patch Changes
+
+- @sap-ux/odata-annotation-core@0.3.1
+- @sap-ux/odata-vocabularies@0.5.1
+- @sap-ux/cds-annotation-parser@0.3.1
+
+## 0.8.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/cds-annotation-parser@0.3.0
+    - @sap-ux/odata-annotation-core@0.3.0
+    - @sap-ux/odata-vocabularies@0.5.0
+    - @sap-ux/text-document-utils@0.4.0
+
+## 0.7.18
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/cds-annotation-parser@0.2.37
+    - @sap-ux/odata-annotation-core@0.2.19
+    - @sap-ux/odata-vocabularies@0.4.32
+    - @sap-ux/text-document-utils@0.3.5
+
+## 0.7.17
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+- Updated dependencies [c160401]
+    - @sap-ux/text-document-utils@0.3.4
+    - @sap-ux/odata-annotation-core@0.2.18
+    - @sap-ux/cds-annotation-parser@0.2.36
+    - @sap-ux/odata-vocabularies@0.4.31
+
 ## 0.7.16
 
 ### Patch Changes

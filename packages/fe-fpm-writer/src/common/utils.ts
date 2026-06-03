@@ -3,9 +3,9 @@ import os from 'node:os';
 import { join } from 'node:path';
 import { coerce, minor } from 'semver';
 import { getWebappPath } from '@sap-ux/project-access';
-import { getTemplatePath } from '../templates';
-import type { FileContentPosition, Manifest, ManifestData } from './types';
-import { copyTpl } from './file';
+import { getTemplatePath } from '../templates.js';
+import type { FileContentPosition, Manifest, ManifestData } from './types.js';
+import { copyTpl } from './file.js';
 import { DOMParser } from '@xmldom/xmldom';
 
 /**
@@ -112,6 +112,6 @@ export async function getManifest(basePath: string, fs: Editor, validate = true)
  */
 export function isElementIdAvailable(fs: Editor, viewOrFragmentPath: string, id: string): boolean {
     const xmlContent = fs.read(viewOrFragmentPath).toString();
-    const xmlDocument = new DOMParser({ errorHandler: (): void => {} }).parseFromString(xmlContent);
+    const xmlDocument = new DOMParser({ errorHandler: (): void => {} }).parseFromString(xmlContent, 'text/xml');
     return xmlDocument.documentElement ? !xmlDocument.getElementById(id) : true;
 }

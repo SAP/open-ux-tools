@@ -24,6 +24,22 @@ Using `UI.DataFieldForIntentBasedNavigation` or `UI.DataFieldWithIntentBasedNavi
 </Annotation>
 ```
 
+```cds
+annotate service.Incidents with @(UI.LineItem: [
+    {
+        $Type         : 'UI.DataFieldForIntentBasedNavigation',
+        SemanticObject: 'EPMProduct',
+        Action        : 'manage_st',
+        Inline        : true,
+    },
+    {
+        $Type         : 'UI.DataFieldWithIntentBasedNavigation',
+        Value         : category,
+        SemanticObject: 'test',
+    },
+]);
+```
+
 #### Incorrect `UI.FieldGroup` Annotation Using `UI.DataFieldForIntentBasedNavigation` and `UI.DataFieldWithIntentBasedNavigation`
 
 ```xml
@@ -45,10 +61,105 @@ Using `UI.DataFieldForIntentBasedNavigation` or `UI.DataFieldWithIntentBasedNavi
 </Annotation>
 ```
 
-#### Correct: Semantic Link or Smart Link Navigation Is Used
+```cds
+annotate service.Incidents with @(
+    UI.FieldGroup #test: {
+        $Type: 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type         : 'UI.DataFieldForIntentBasedNavigation',
+                SemanticObject: 'test',
+            },
+            {
+                $Type         : 'UI.DataFieldWithIntentBasedNavigation',
+                Value         : test,
+                SemanticObject: 'testSO',
+            },
+        ],
+    },
+);
+```
 
-The `sap.ui.comp.navpopover.SmartLink` control provides a popover with navigation links to related applications, for example, more detailed information about customer data.
-For more information about this control, see the [API Reference](https://ui5.sap.com/#/api/sap.ui.comp.navpopover.SmartLink) and the [samples](https://ui5.sap.com/#/entity/sap.ui.comp.navpopover.SmartLink).
+### Correct: Semantic Link or Smart Link Navigation Is Used Using `Common.SemanticObject` on the Entity Property
+
+Annotate the entity property, for example,`CustomerId`, with the `Common.SemanticObject` annotation before using it in a `UI.LineItem` or `UI.FieldGroup`. SAP Fiori elements automatically detects this and renders the field as a semantic link.
+
+#### Step 1: Annotate the Entity Property:
+
+```xml
+<!-- Applied to the actual OData property, NOT inside DataField -->
+<Annotations Target="YourEntityType/CustomerId">
+    <Annotation Term="Common.SemanticObject" String="Customer"/>
+</Annotations>
+```
+
+```cds
+annotate service.Incidents with {
+    incidentFlow @Common.SemanticObject : 'qwerty'
+}
+```
+
+#### Step 2: Reference the Property in Your UI Annotations:
+Note: No navigation annotation is needed.
+
+For a table column using the `UI.LineItem` annotation:
+
+```xml
+<Annotation Term="UI.LineItem">
+    <Collection>
+        <Record Type="UI.DataField">
+            <PropertyValue Property="Value" Path="CustomerId"/>
+            <PropertyValue Property="Label" String="Customer"/>
+            <!-- Semantic Link rendered automatically due to Common.SemanticObject on CustomerId property -->
+        </Record>
+    </Collection>
+</Annotation>
+```
+
+```cds
+annotate service.Incidents with @(
+    UI.LineItem                  : [
+            {
+                $Type: 'UI.DataField',
+                Value: identifier,
+                Label : 'ID',
+            },
+        ]
+    )
+```
+
+For a form field using the `UI.FieldGroup` annotation:
+
+```xml
+<Annotation Term="UI.FieldGroup" Qualifier="GeneralInformation">
+    <Record Type="UI.FieldGroupType">
+        <PropertyValue Property="Data">
+            <Collection>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="CustomerId"/>
+                    <PropertyValue Property="Label" String="Customer"/>
+                    <!-- Semantic Link rendered automatically due to Common.SemanticObject on CustomerId property -->
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+```
+
+```cds
+annotate service.Incidents with @(
+    UI.FieldGroup #test: {
+        $Type: 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type : 'UI.DataField',
+                Value : category,
+                Label : 'Category',
+            },
+        ],
+    },
+);
+```
 
 ## Bug Report
 
@@ -56,4 +167,5 @@ If you encounter an issue with this rule, please open a [GitHub issue](https://g
 
 ## Further Reading
 
-- [UI5 UI Adaptation Documentation: Smart Link](https://ui5.sap.com/#/topic/f638884d0d624ad8a243f4005f8e9972)
+- [Semantic Link Implementation in SAP Fiori Elements](https://ui5.sap.com/#/topic/c18ada4bc56e427a9a2df2d1898f28a5)
+- [Smart Link and Navigation Intents](https://ui5.sap.com/#/topic/d782acf8bfd74107ad6a04f0361c5f62)

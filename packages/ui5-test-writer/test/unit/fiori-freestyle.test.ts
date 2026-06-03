@@ -1,5 +1,6 @@
 import { generateFreestyleOPAFiles } from '../../src';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
@@ -8,6 +9,7 @@ import { toMatchFolder } from '@sap-ux/jest-file-matchers';
 import * as fileSystem from 'node:fs';
 import { rimraf } from 'rimraf';
 import { promisify } from 'node:util';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 expect.extend({ toMatchFolder });
 
@@ -660,6 +662,26 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
         const testOutPutPath = join(testOutputDir, 'webapp', 'test');
         const expectedTestOutputPath = join(expectedOutputPath, 'freestyle', projectName, 'webapp', 'test');
         expect(testOutPutPath).toMatchFolder(expectedTestOutputPath);
+    });
+
+    test('skips testsuite and unitTests files when useVirtualPreviewEndpoints is enabled', async () => {
+        const opaConfig = {
+            appId: 'test-app-virtual',
+            applicationTitle: 'App test',
+            applicationDescription: 'App description',
+            viewName: 'View1',
+            ui5Version: '1.120.0',
+            useVirtualPreviewEndpoints: true
+        };
+
+        fs = await generateFreestyleOPAFiles(testOutputDir, opaConfig, fs);
+
+        const testOutputPath = join(testOutputDir, 'webapp/test');
+        const dumped = fs.dump(testOutputPath);
+        const writtenFiles = Object.keys(dumped);
+        expect(writtenFiles.some((f) => f.includes('testsuite.qunit'))).toBe(false);
+        expect(writtenFiles.some((f) => f.includes('unitTests.qunit'))).toBe(false);
+        expect(writtenFiles.some((f) => f.includes('opaTests.qunit'))).toBe(false);
     });
 });
 

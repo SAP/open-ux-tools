@@ -1,7 +1,8 @@
 {
     "name": "@sap-ux/environment-check",
-    "version": "0.18.117",
+    "version": "1.0.2",
     "description": "SAP Fiori environment check",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -20,8 +21,8 @@
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
@@ -32,9 +33,9 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "@sap/bas-sdk": "3.13.3",
+        "@sap/bas-sdk": "3.13.7",
         "archiver": "7.0.1",
-        "axios": "1.13.6",
+        "axios": "1.16.0",
         "glob-gitignore": "1.0.15",
         "i18next": "25.10.10",
         "ignore": "5.2.4",
@@ -43,6 +44,7 @@
         "yamljs": "0.3.0"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@types/archiver": "7.0.0",
         "@types/minimist": "1.2.5",
         "@types/prompts": "2.4.9",
@@ -53,6 +55,6 @@
         "package.json"
     ],
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

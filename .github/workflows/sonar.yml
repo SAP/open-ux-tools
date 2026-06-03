@@ -11,9 +11,11 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       actions: read # Required to download artifacts
+      pull-requests: write # Required for PR decoration comments
+      statuses: write # Required for SonarCloud to post quality gate commit status
     steps:
       - name: 'Checkout project'
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           repository: ${{ github.event.workflow_run.head_repository.full_name }}
           ref: ${{ github.event.workflow_run.head_branch }}
@@ -21,7 +23,7 @@ jobs:
 
       - name: 'Download cached artifact'
         if: github.event_name == 'workflow_run'
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: sonar-artifact
           run-id: ${{ github.event.workflow_run.id }}
@@ -43,7 +45,7 @@ jobs:
 
       - name: 'Run SonarCloud scan'
         if: github.event_name == 'workflow_run'
-        uses: SonarSource/sonarqube-scan-action@v7.0.0
+        uses: SonarSource/sonarqube-scan-action@a31c9398be7ace6bbfaf30c0bd5d415f843d45e9 # v7.0.0
         with:
           args: >
             ${{ github.event.workflow_run.event == 'pull_request' && format('{0}{1}', '-Dsonar.scm.revision=', github.event.workflow_run.head_sha) || '' }}

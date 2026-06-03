@@ -1,41 +1,64 @@
-import { existsSync } from 'node:fs';
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import {
+// Create mocks before any source modules are loaded
+const mockExistsSync = jest.fn();
+const mockCreateServices = jest.fn();
+const mockCreateServiceInstance = jest.fn();
+const mockGetOrCreateServiceInstanceKeys = jest.fn();
+const mockGetYamlContent = jest.fn();
+const mockGetProjectNameForXsSecurity = jest.fn();
+const mockGetServiceKeyDestinations = jest.fn().mockImplementation((serviceKeys: any[]) => {
+    const results: Array<{ name: string; url: string }> = [];
+    for (const key of serviceKeys) {
+        const endpoints = key.credentials?.endpoints;
+        if (endpoints && typeof endpoints === 'object') {
+            for (const endpointKey in endpoints) {
+                const endpoint = endpoints[endpointKey];
+                if (endpoint?.url && endpoint.destination) {
+                    results.push({ name: endpoint.destination, url: endpoint.url });
+                }
+            }
+        }
+    }
+    return results;
+});
+
+const realFs = await import('node:fs');
+jest.unstable_mockModule('node:fs', () => ({
+    ...realFs,
+    existsSync: mockExistsSync,
+    default: { ...realFs.default, existsSync: mockExistsSync }
+}));
+
+jest.unstable_mockModule('../../../../src/cf/services/api', () => ({
+    createServices: mockCreateServices,
+    createServiceInstance: mockCreateServiceInstance,
+    getOrCreateServiceInstanceKeys: mockGetOrCreateServiceInstanceKeys
+}));
+
+jest.unstable_mockModule('../../../../src/cf/app/discovery', () => ({
+    getServiceKeyDestinations: mockGetServiceKeyDestinations
+}));
+
+jest.unstable_mockModule('../../../../src/cf/project/yaml-loader', () => ({
+    getProjectNameForXsSecurity: mockGetProjectNameForXsSecurity,
+    getYamlContent: mockGetYamlContent
+}));
+
+const {
     isMtaProject,
     getSAPCloudService,
     getRouterType,
     getAppParamsFromUI5Yaml,
-    adjustMtaYaml
-} from '../../../../src/cf/project/yaml';
-import { AppRouterType } from '../../../../src/types';
-import type { MtaYaml, CfUI5Yaml, ServiceKeys } from '../../../../src/types';
-import { createServices } from '../../../../src/cf/services/api';
-import { getProjectNameForXsSecurity, getYamlContent } from '../../../../src/cf/project/yaml-loader';
-
-jest.mock('fs', () => ({
-    existsSync: jest.fn()
-}));
-
-const mockExistsSync = existsSync as jest.MockedFunction<typeof existsSync>;
-
-jest.mock('../../../../src/cf/services/api', () => ({
-    createServices: jest.fn()
-}));
-
-jest.mock('../../../../src/cf/project/yaml-loader', () => ({
-    getProjectNameForXsSecurity: jest.fn(),
-    getYamlContent: jest.fn()
-}));
-
-const mockCreateServices = createServices as jest.MockedFunction<typeof createServices>;
-const mockGetYamlContent = getYamlContent as jest.MockedFunction<typeof getYamlContent>;
-const mockGetProjectNameForXsSecurity = getProjectNameForXsSecurity as jest.MockedFunction<
-    typeof getProjectNameForXsSecurity
->;
+    adjustMtaYaml,
+    addConnectivityServiceToMta
+} = await import('../../../../src/cf/project/yaml');
+const { AppRouterType } = await import('../../../../src/types');
+import type { MtaYaml, CfUI5Yaml, ServiceKeys } from '../../../../src/types.js';
 
 describe('YAML Project Functions', () => {
     const mockLogger = {
@@ -871,6 +894,105 @@ describe('YAML Project Functions', () => {
             expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
             expect(mockCreateServices).toHaveBeenCalled();
             expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
+        });
+    });
+
+    describe('addConnectivityServiceToMta', () => {
+        const projectPath = '/test/project';
+        const mtaYamlPath = join(projectPath, 'mta.yaml');
+        const mockMtaYaml: MtaYaml = {
+            '_schema-version': '3.2.0',
+            ID: 'MyProject',
+            version: '1.0.0',
+            modules: [],
+            resources: []
+        };
+
+        let mockMemFs: { write: jest.Mock };
+
+        beforeEach(() => {
+            mockMemFs = { write: jest.fn() };
+        });
+
+        test('should add connectivity resource when mta.yaml exists and resource is not yet present', async () => {
+            mockExistsSync.mockReturnValue(true);
+            mockGetYamlContent.mockReturnValue({ ...mockMtaYaml, resources: [] });
+
+            await addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor);
+
+            expect(mockMemFs.write).toHaveBeenCalledWith(
+                mtaYamlPath,
+                expect.stringContaining('myproject-connectivity')
+            );
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.stringContaining('connectivity'));
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.stringContaining('lite'));
+            expect(mockMemFs.write).toHaveBeenCalledWith(
+                mtaYamlPath,
+                expect.stringContaining('service-name: myproject-connectivity')
+            );
+            expect(mockCreateServiceInstance).toHaveBeenCalledWith(
+                'lite',
+                'myproject-connectivity',
+                'connectivity',
+                expect.any(Object)
+            );
+            expect(mockGetOrCreateServiceInstanceKeys).toHaveBeenCalledWith(
+                { names: ['myproject-connectivity'] },
+                undefined
+            );
+        });
+
+        test('should not create service when project has no mta.yaml', async () => {
+            mockExistsSync.mockReturnValue(false);
+
+            await addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor);
+
+            expect(mockMemFs.write).not.toHaveBeenCalled();
+            expect(mockCreateServiceInstance).not.toHaveBeenCalled();
+            expect(mockGetOrCreateServiceInstanceKeys).not.toHaveBeenCalled();
+        });
+
+        test('should not create service when yaml content cannot be read', async () => {
+            mockExistsSync.mockReturnValue(true);
+            mockGetYamlContent.mockReturnValue(null);
+
+            await addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor);
+
+            expect(mockMemFs.write).not.toHaveBeenCalled();
+            expect(mockCreateServiceInstance).not.toHaveBeenCalled();
+            expect(mockGetOrCreateServiceInstanceKeys).not.toHaveBeenCalled();
+        });
+
+        test('should not create service when connectivity resource already exists (idempotent)', async () => {
+            mockExistsSync.mockReturnValue(true);
+            mockGetYamlContent.mockReturnValue({
+                ...mockMtaYaml,
+                resources: [
+                    {
+                        name: 'myproject-connectivity',
+                        type: 'org.cloudfoundry.managed-service',
+                        parameters: { service: 'connectivity', 'service-plan': 'lite' }
+                    }
+                ]
+            });
+
+            await addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor);
+
+            expect(mockMemFs.write).not.toHaveBeenCalled();
+            expect(mockCreateServiceInstance).not.toHaveBeenCalled();
+            expect(mockGetOrCreateServiceInstanceKeys).not.toHaveBeenCalled();
+        });
+
+        test('should not modify mta.yaml when createServiceInstance fails', async () => {
+            mockExistsSync.mockReturnValue(true);
+            mockGetYamlContent.mockReturnValue({ ...mockMtaYaml, resources: [] });
+            mockCreateServiceInstance.mockRejectedValueOnce(new Error('CF error'));
+
+            await expect(addConnectivityServiceToMta(projectPath, mockMemFs as unknown as Editor)).rejects.toThrow(
+                'CF error'
+            );
+
+            expect(mockMemFs.write).not.toHaveBeenCalled();
         });
     });
 });

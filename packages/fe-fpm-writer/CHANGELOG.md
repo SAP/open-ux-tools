@@ -1,5 +1,186 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.0.2
+
+### Patch Changes
+
+- @sap-ux/project-access@2.0.2
+- @sap-ux/fiori-annotation-api@1.0.2
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+    - @sap-ux/fiori-annotation-api@1.0.1
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/fiori-annotation-api@1.0.0
+    - @sap-ux/project-access@2.0.0
+    - @sap-ux/logger@1.0.0
+    - @sap-ux/i18n@1.0.0
+
+## 0.44.3
+
+### Patch Changes
+
+- @sap-ux/project-access@1.38.1
+- @sap-ux/fiori-annotation-api@0.11.1
+
+## 0.44.2
+
+### Patch Changes
+
+- Updated dependencies [2f1ece0]
+    - @sap-ux/fiori-annotation-api@0.11.0
+
+## 0.44.1
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/fiori-annotation-api@0.10.1
+
+## 0.44.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/fiori-annotation-api@0.10.0
+    - @sap-ux/i18n@0.4.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/project-access@1.37.0
+
+## 0.43.30
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/fiori-annotation-api@0.9.50
+    - @sap-ux/i18n@0.3.12
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/project-access@1.36.5
+
+## 0.43.29
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+    - @sap-ux/fiori-annotation-api@0.9.49
+
+## 0.43.28
+
+### Patch Changes
+
+- @sap-ux/project-access@1.36.3
+- @sap-ux/fiori-annotation-api@0.9.48
+
+## 0.43.27
+
+### Patch Changes
+
+- c160401: fix: SONAR issues
+- Updated dependencies [c160401]
+    - @sap-ux/fiori-annotation-api@0.9.47
+    - @sap-ux/i18n@0.3.11
+    - @sap-ux/project-access@1.36.2
+
+## 0.43.26
+
+### Patch Changes
+
+- 3945459: chore: upgrade @xmldom/xmldom 0.8.12 to 0.8.13 (security fix for XML injection vulnerabilities)
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+    - @sap-ux/fiori-annotation-api@0.9.46
+
+## 0.43.25
+
+### Patch Changes
+
+- d45b5a4: fix(fpm-writer): custom form field view.xml update
+
+## 0.43.24
+
+### Patch Changes
+
+- 1d60871: Added isUI5IdUnique function to check UI5 control ID uniqueness in XML views/fragments.
+  Exported findFilesByExtension from @sap-ux/project-access and removed deep imports.
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+    - @sap-ux/fiori-annotation-api@0.9.45
+
+## 0.43.23
+
+### Patch Changes
+
+- Updated dependencies [52f6549]
+    - @sap-ux/fiori-annotation-api@0.9.44
+
+## 0.43.22
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+    - @sap-ux/fiori-annotation-api@0.9.43
+
+## 0.43.21
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.20
+- @sap-ux/fiori-annotation-api@0.9.42
+
+## 0.43.20
+
+### Patch Changes
+
+- 9700a95: feat(fpm-writer): Support custom fields for form building block
+
 ## 0.43.19
 
 ### Patch Changes
