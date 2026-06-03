@@ -637,7 +637,8 @@ export class UI5Config {
         const defaults = ['/test/**', '/localService/**'];
         let existing: string[] = [];
         try {
-            existing = this.document.getSequence({ path: 'builder.resources.excludes' }).toJSON() as string[];
+            existing = (this.document.getSequence({ path: 'builder.resources.excludes' }).toJSON() as unknown[])
+                .filter((v): v is string => typeof v === 'string');
         } catch {
             // path not present yet — existing stays []
         }

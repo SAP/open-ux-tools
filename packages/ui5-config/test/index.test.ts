@@ -866,6 +866,10 @@ describe('UI5Config', () => {
             expect([...result.matchAll(/\/test\/\*\*/g)]).toHaveLength(1);
             expect(result).toContain('/localService/**');
         });
+
+        test('returns this for chaining', () => {
+            expect(ui5Config.addBuilderResourceExcludes()).toBe(ui5Config);
+        });
     });
 
     describe('addAbapDeployTask', () => {
