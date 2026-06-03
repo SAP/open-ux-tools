@@ -1,5 +1,5 @@
-import { destinationQuestionDefaultOption } from '../../src/app/utils';
-import { DESTINATION_CHOICE_DIRECT_SERVICE_BINDING, DESTINATION_CHOICE_NONE } from '../../src/utils';
+import { destinationQuestionDefaultOption } from '../../src/app/utils.js';
+import { DESTINATION_CHOICE_DIRECT_SERVICE_BINDING, DESTINATION_CHOICE_NONE } from '../../src/utils/index.js';
 
 describe('test utils', () => {
     it('should return correct default destination', () => {

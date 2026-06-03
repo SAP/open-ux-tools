@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import { join } from 'node:path';
 
-const mockFetch = jest.fn();
-const mockSpawn = jest.fn();
+const mockFetch = jest.fn() as jest.Mock;
+const mockSpawn = jest.fn() as jest.Mock;
 
 const mockLogger = {
     info: jest.fn(),
@@ -88,7 +88,7 @@ describe('MultiSourceDocumentationBuilder', () => {
     let MultiSourceDocumentationBuilder: new () => BuilderType;
 
     beforeAll(async () => {
-        const module = await import('../src/scripts/build-docs');
+        const module = await import('../src/scripts/build-docs.js');
         MultiSourceDocumentationBuilder = (
             module as unknown as { MultiSourceDocumentationBuilder: new () => BuilderType }
         ).MultiSourceDocumentationBuilder;

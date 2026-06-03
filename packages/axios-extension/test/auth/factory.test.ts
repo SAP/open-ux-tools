@@ -1,14 +1,14 @@
 import { jest } from '@jest/globals';
 
-const actualAuth = await import('../../src/auth');
+const actualAuth = await import('../../src/auth/index.js');
 const mockAttachReentranceTicketAuthInterceptor = jest.fn(actualAuth.attachReentranceTicketAuthInterceptor);
 jest.unstable_mockModule('../../src/auth', () => ({
     ...actualAuth,
     attachReentranceTicketAuthInterceptor: mockAttachReentranceTicketAuthInterceptor
 }));
 
-const { AbapServiceProvider } = await import('../../src/abap');
-const { AbapCloudEnvironment, createForAbapOnCloud } = await import('../../src/factory');
+const { AbapServiceProvider } = await import('../../src/abap/index.js');
+const { AbapCloudEnvironment, createForAbapOnCloud } = await import('../../src/factory.js');
 
 describe('createForAbapCloud', () => {
     beforeEach(() => {

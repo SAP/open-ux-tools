@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-inner-html-write';
+import rule from '../../src/rules/sap-no-inner-html-write.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

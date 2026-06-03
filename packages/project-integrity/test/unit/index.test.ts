@@ -18,7 +18,7 @@ const {
     checkProjectIntegrity,
     updateFioriProjectIntegrity,
     updateProjectIntegrity
-} = await import('../../src');
+} = await import('../../src/index.js');
 
 test('Check public interface for project integrity', () => {
     expect(typeof initProject).toBe('function');

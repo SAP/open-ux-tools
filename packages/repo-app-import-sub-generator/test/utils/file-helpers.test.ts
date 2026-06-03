@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import type { Editor } from 'mem-fs-editor';
-import { t } from '../../src/utils/i18n';
-import { adtSourceTemplateId } from '../../src/utils/constants';
+import { t } from '../../src/utils/i18n.js';
+import { adtSourceTemplateId } from '../../src/utils/constants.js';
 import { join } from 'node:path';
 
 jest.unstable_mockModule('../../src/utils/logger', () => {
@@ -12,8 +12,8 @@ jest.unstable_mockModule('../../src/utils/logger', () => {
     return { default: mock, ...mock };
 });
 
-const { readManifest } = await import('../../src/utils/file-helpers');
-const RepoAppDownloadLogger = (await import('../../src/utils/logger')).default;
+const { readManifest } = await import('../../src/utils/file-helpers.js');
+const RepoAppDownloadLogger = (await import('../../src/utils/logger.js')).default;
 
 describe('readManifest', () => {
     const mockReadJSON = jest.fn();

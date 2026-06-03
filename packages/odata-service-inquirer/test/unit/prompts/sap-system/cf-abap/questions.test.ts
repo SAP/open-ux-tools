@@ -46,7 +46,7 @@ const actualBtpUtils = await import('@sap-ux/btp-utils');
 const mockCreateOAuth2Dest = jest.fn<any>().mockImplementation(async () => createdDestinationMock);
 const mockGenerateABAPCloudDestinationName = jest
     .fn<any>()
-    .mockImplementation((name: string) => `${name}-someCfOrg-someCfSpace`);
+    .mockImplementation((name) => `${name}-someCfOrg-someCfSpace`);
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...actualBtpUtils,
     createOAuth2UserTokenExchangeDest: mockCreateOAuth2Dest,

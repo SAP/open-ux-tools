@@ -71,7 +71,7 @@ jest.unstable_mockModule('@sap-ux/yaml', () => ({
     YAMLError: class YAMLError extends Error {}
 }));
 
-const { enableCdsUi5Plugin } = await import('../../../src');
+const { enableCdsUi5Plugin } = await import('../../../src/index.js');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixturesPath = join(__dirname, '../../fixture');

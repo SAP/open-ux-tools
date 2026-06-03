@@ -1,8 +1,8 @@
-import { getApiHubOptions } from '../../../../deploy-config-sub-generator/src/utils';
-import { getTileSettingsPrompts } from '../../../src/prompts/questions/tile-settings';
-import { tileActions, tilePromptNames, type TileSettingsAnswers } from '../../../src/types';
+import { getApiHubOptions } from '../../../../deploy-config-sub-generator/src/utils/index.js';
+import { getTileSettingsPrompts } from '../../../src/prompts/questions/tile-settings.js';
+import { tileActions, tilePromptNames, type TileSettingsAnswers } from '../../../src/types.js';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
-import { t } from '../../../src/i18n';
+import { t } from '../../../src/i18n.js';
 
 describe('getTileSettingsPrompts', () => {
     it('should return two prompts', () => {

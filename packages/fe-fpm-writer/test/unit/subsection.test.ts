@@ -4,12 +4,12 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { generateCustomSubSection } from '../../src/section';
-import type { CustomSubSection } from '../../src/section/types';
-import type { Manifest } from '../../src/common/types';
-import { Placement } from '../../src/common/types';
+import { generateCustomSubSection } from '../../src/section/index.js';
+import type { CustomSubSection } from '../../src/section/types.js';
+import type { Manifest } from '../../src/common/types.js';
+import { Placement } from '../../src/common/types.js';
 import manifestSections from './sample/section/webapp/manifest.json';
-import { COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
+import { COPY_TEMPLATE_OPTIONS } from '../../src/common/file.js';
 import { findFilesByExtensionMock } from '../__mocks__/project-access-file.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

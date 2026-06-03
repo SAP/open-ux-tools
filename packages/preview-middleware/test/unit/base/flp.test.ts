@@ -3,18 +3,18 @@ import path, { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
-import type { FlpConfig, MiddlewareConfig } from '../../../src';
+import type { FlpConfig, MiddlewareConfig } from '../../../src/index.js';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ProjectAccess, I18nBundles, Manifest, ApplicationAccess } from '@sap-ux/project-access';
 import { readFileSync, promises } from 'node:fs';
 import supertest from 'supertest';
 import express, { type Response, type NextFunction } from 'express';
-import type { EnhancedRequest } from '../../../src/base/flp';
+import type { EnhancedRequest } from '../../../src/base/flp.js';
 import { tmpdir } from 'node:os';
 import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import type { TemplateConfig } from '../../../src/base/config.js';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
-import { fetchMock } from '../../__mock__/global';
+import { fetchMock } from '../../__mock__/global.js';
 //@ts-expect-error: this import is not relevant for the 'erasableSyntaxOnly' check
 import connect = require('connect');
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
@@ -52,8 +52,8 @@ const actualI18n = await import('@sap-ux/i18n');
 // Mock functions for @sap-ux/project-access
 const mockFindProjectRoot = jest.fn<() => Promise<string>>().mockResolvedValue(process.cwd());
 const mockGetProjectType = jest.fn<() => Promise<string>>().mockResolvedValue('EDMXBackend');
-const mockCreateProjectAccess = jest.fn();
-const mockCreateApplicationAccess = jest.fn();
+const mockCreateProjectAccess = jest.fn<typeof actualProjectAccess.createProjectAccess>();
+const mockCreateApplicationAccess = jest.fn<typeof actualProjectAccess.createApplicationAccess>();
 
 // Mock @sap-ux/project-access
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
@@ -65,8 +65,8 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 }));
 
 // Mock @sap-ux/adp-tooling
-const mockAdpPreviewConstructor = jest.fn();
-const mockReadManifestFromBuildPath = jest.fn();
+const mockAdpPreviewConstructor = jest.fn<typeof actualAdpTooling.AdpPreview>();
+const mockReadManifestFromBuildPath = jest.fn<typeof actualAdpTooling.readManifestFromBuildPath>();
 
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     ...actualAdpTooling,
@@ -75,7 +75,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
 }));
 
 // Mock @sap-ux/i18n
-const mockCreatePropertiesI18nEntries = jest.fn();
+const mockCreatePropertiesI18nEntries = jest.fn<typeof actualI18n.createPropertiesI18nEntries>();
 
 jest.unstable_mockModule('@sap-ux/i18n', () => ({
     ...actualI18n,
@@ -83,8 +83,8 @@ jest.unstable_mockModule('@sap-ux/i18n', () => ({
 }));
 
 // Import after mocking
-const { FlpSandbox: FlpSandboxUnderTest } = await import('../../../src');
-const { CARD_GENERATOR_DEFAULT } = await import('../../../src/base/config');
+const { FlpSandbox: FlpSandboxUnderTest } = await import('../../../src/index.js');
+const { CARD_GENERATOR_DEFAULT } = await import('../../../src/base/config.js');
 const adpTooling = await import('@sap-ux/adp-tooling');
 
 class FlpSandbox extends FlpSandboxUnderTest {
@@ -95,7 +95,7 @@ class FlpSandbox extends FlpSandboxUnderTest {
 describe('FlpSandbox', () => {
     const mockProject = {
         byPath: jest.fn().mockResolvedValue(undefined),
-        byGlob: jest.fn().mockImplementation((glob: string) =>
+        byGlob: jest.fn().mockImplementation((glob) =>
             Promise.resolve(
                 glob.includes('changes')
                     ? [
@@ -1826,7 +1826,7 @@ describe('initAdp', () => {
                         readFileSync(join(__dirname, `../../fixtures/adp/webapp/manifest.appdescr_variant`), 'utf-8')
                     )
             }),
-            byGlob: jest.fn().mockImplementation((glob: string) => {
+            byGlob: jest.fn().mockImplementation((glob) => {
                 if (glob.includes('.{change,')) {
                     return [
                         {
@@ -1910,7 +1910,7 @@ describe('initAdp', () => {
                         readFileSync(join(__dirname, `../../fixtures/adp/webapp/manifest.appdescr_variant`), 'utf-8')
                     )
             }),
-            byGlob: jest.fn().mockImplementation((glob: string) => {
+            byGlob: jest.fn().mockImplementation((glob) => {
                 if (glob.includes('.{change,')) {
                     return [
                         {
@@ -2016,7 +2016,7 @@ describe('initAdp', () => {
                         readFileSync(join(__dirname, `../../fixtures/adp/webapp/manifest.appdescr_variant`), 'utf-8')
                     )
             }),
-            byGlob: jest.fn().mockImplementation((glob: string) => {
+            byGlob: jest.fn().mockImplementation((glob) => {
                 if (glob.includes('.{change,')) {
                     return [
                         {
@@ -2070,7 +2070,7 @@ describe('initAdp', () => {
             } as unknown as adpTooling.AdpPreview;
         });
 
-        const byGlobMock = jest.fn().mockImplementation((glob: string) => {
+        const byGlobMock = jest.fn().mockImplementation((glob) => {
             if (glob.includes('.{change,')) {
                 return [
                     {

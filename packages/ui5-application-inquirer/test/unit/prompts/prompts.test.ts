@@ -12,7 +12,7 @@ import type { UI5Version } from '@sap-ux/ui5-info';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 
 // Mock node:fs to control existsSync (used by appPathExists)
-const mockExistsSync = jest.fn();
+const mockExistsSync = jest.fn<typeof actualFs.existsSync>();
 jest.unstable_mockModule('node:fs', () => ({
     ...actualFs,
     existsSync: mockExistsSync

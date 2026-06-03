@@ -25,8 +25,8 @@ jest.unstable_mockModule('applicationinsights', () => {
     return { TelemetryClient };
 });
 
-const { reportRuntimeError, reportEnableTelemetryOnOff } = await import('../../src/base/utils/reporting');
-const { EventName } = await import('../../src');
+const { reportRuntimeError, reportEnableTelemetryOnOff } = await import('../../src/base/utils/reporting.js');
+const { EventName } = await import('../../src/index.js');
 
 let telemetrySetting: string | undefined;
 

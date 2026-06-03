@@ -1,4 +1,5 @@
-import type { EdmxAnnotationsInfo, OdataService } from '../../src';
+import { jest } from '@jest/globals';
+import type { EdmxAnnotationsInfo, OdataService } from '../../src/index.js';
 import type { Manifest } from '@sap-ux/project-access';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
@@ -17,9 +18,9 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     getWebappPath: mockGetWebappPath
 }));
 
-const { generate, update, remove, OdataVersion, ServiceType } = await import('../../src');
-const { enhanceData } = await import('../../src/data');
-const { t } = await import('../../src/i18n');
+const { generate, update, remove, OdataVersion, ServiceType } = await import('../../src/index.js');
+const { enhanceData } = await import('../../src/data/index.js');
+const { t } = await import('../../src/i18n.js');
 
 const testDir = tmpdir();
 const commonConfig = {

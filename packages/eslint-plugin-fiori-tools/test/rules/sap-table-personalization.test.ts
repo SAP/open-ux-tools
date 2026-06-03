@@ -1,6 +1,6 @@
 import { RuleTester } from 'eslint';
-import tablePersonalizationRule from '../../src/rules/sap-table-personalization';
-import { meta, languages } from '../../src/index';
+import tablePersonalizationRule from '../../src/rules/sap-table-personalization.js';
+import { meta, languages } from '../../src/index.js';
 import {
     getAnnotationsAsXmlCode,
     getManifestAsCode,
@@ -10,7 +10,7 @@ import {
     V4_FACETS_ANNOTATIONS,
     V4_MANIFEST,
     V4_MANIFEST_PATH
-} from '../test-helper';
+} from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },

@@ -16,12 +16,12 @@ ufs.use(realFs as any).use(memfs.vol as any);
 
 jest.unstable_mockModule('node:fs', () => ufs);
 
-const { MockMta } = await import('./mockMta');
+const { MockMta } = await import('./mockMta.js');
 jest.unstable_mockModule('@sap/mta-lib', () => ({
     Mta: MockMta
 }));
 
-const realWaitForMta = await import('../../src/mta-config/wait-for-mta');
+const realWaitForMta = await import('../../src/mta-config/wait-for-mta.js');
 const mockWaitForMtaFile = jest.fn().mockImplementation(realWaitForMta.waitForMtaFile);
 jest.unstable_mockModule('../../src/mta-config/wait-for-mta', () => ({
     ...realWaitForMta,
@@ -30,8 +30,8 @@ jest.unstable_mockModule('../../src/mta-config/wait-for-mta', () => ({
 
 const fs = await import('node:fs');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
-const { isMTAFound, useAbapDirectServiceBinding, MtaConfig, getMtaConfig } = await import('../../src/');
-const { deployMode, SRV_API } = await import('../../src/constants');
+const { isMTAFound, useAbapDirectServiceBinding, MtaConfig, getMtaConfig } = await import('../../src//index.js');
+const { deployMode, SRV_API } = await import('../../src/constants.js');
 
 describe('Validate common functionality', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });

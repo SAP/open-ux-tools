@@ -1,10 +1,11 @@
+import { jest } from '@jest/globals';
 import NewsAndPagesContainer from 'sap/cux/home/NewsAndPagesContainer';
 
 jest.unstable_mockModule('sap/cux/home/NewsContainer', () => {
     throw new Error('NewsContainer not found');
 });
 
-import MyHomeController from '../../../src/flp/homepage/controller/MyHome.controller';
+import MyHomeController from '../../../src/flp/homepage/controller/MyHome.controller.js';
 
 describe('flp/init - NewsContainer fallback', () => {
     test('enhancedHomePage view - fallback to NewsAndPagesContainer control when NewsContainer is not available', (done) => {
