@@ -1,5 +1,39 @@
 # @sap-ux/preview-middleware
 
+## 1.0.5
+
+### Patch Changes
+
+- 3506d2c: fix: i18n translations not loading after ESM migration
+
+## 1.0.4
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.3
+
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies [a8e4cf0]
+    - @sap-ux/adp-tooling@1.0.2
+
+## 1.0.2
+
+### Patch Changes
+
+- 8024912: fix: republish to pick up control-property-editor 1.0.1 (1.0.0 was unpublished from npm)
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+    - @sap-ux/adp-tooling@1.0.1
+    - @sap-ux/system-access@1.0.0
+
 ## 1.0.0
 
 ### Major Changes

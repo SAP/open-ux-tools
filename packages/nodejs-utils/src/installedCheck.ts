@@ -138,32 +138,29 @@ async function getNpmInstallPaths(vscWorkspaceConfig?: WorkspaceConfiguration): 
  * @returns An object containing an error message if `yo` is not installed or has an unsupported version.
  */
 export async function ensureValidYoVersion(): Promise<{ error?: string }> {
-    let errorStr: string | undefined;
+    let error: string | undefined;
     if (!isAppStudio()) {
-        const args = ['list', '-g', 'yo', '--json'];
-        const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+        const yo = process.platform === 'win32' ? 'yo.cmd' : 'yo';
+        const args = ['--version'];
+        let installedVersion: string | undefined;
         try {
-            const npmYoList = await new CommandRunner().run(npm, args);
-
-            if (npmYoList) {
-                const yoList = JSON.parse(npmYoList);
-                const installedVersion = yoList?.dependencies?.yo?.version;
-                // yo v6 is omitted as it has a bug that causes the generator to fail, see https://github.com/SBoudrias/Inquirer.js/issues/1968
-                if (installedVersion && !satisfies(installedVersion, '4.x || 5.x || 7.x')) {
-                    errorStr = t('error.unsupportedYoVersion', {
-                        installedYoVersion: installedVersion,
-                        latestSupportedYoVer
-                    });
-                }
-            }
-        } catch (error) {
-            // If the command fails (`npm list` returns an exit code 1 if the package is not found), it means `yo` or 'npm' is not installed
-            errorStr = t('error.executingNpmListCmd', {
-                error,
-                npmCmd: `${npm} ${args.join(' ')}`,
+            const result = await new CommandRunner().run(yo, args);
+            installedVersion = typeof result === 'string' ? result.trim() : undefined;
+        } catch (yoError) {
+            // `yo --version` failed — yo is not installed or not on PATH
+            error = t('error.executingYoVersionCmd', {
+                error: yoError,
+                yoCmd: `${yo} ${args.join(' ')}`,
+                latestSupportedYoVer
+            });
+        }
+        // yo v6 is omitted as it has a bug that causes the generator to fail, see https://github.com/SBoudrias/Inquirer.js/issues/1968
+        if (!error && installedVersion && !satisfies(installedVersion, '4.x || 5.x || 7.x')) {
+            error = t('error.unsupportedYoVersion', {
+                installedYoVersion: installedVersion,
                 latestSupportedYoVer
             });
         }
     }
-    return { error: errorStr };
+    return { error };
 }
