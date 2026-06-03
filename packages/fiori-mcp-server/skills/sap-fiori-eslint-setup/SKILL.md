@@ -21,8 +21,8 @@ First, determine whether this is:
 # Check for standalone Fiori app
 ls webapp/manifest.json 2>/dev/null && echo "standalone" || echo "not-standalone"
 
-# Check for CAP project with app folder
-ls app/ 2>/dev/null && echo "cap" || echo "not-cap"
+# Check for CAP project: app/ folder AND @sap/cds in package.json
+if ls app/ 2>/dev/null && grep -q '"@sap/cds"' package.json 2>/dev/null; then echo "cap"; else echo "not-cap"; fi
 ```
 
 ## Step 2 — Determine the correct config location
@@ -146,7 +146,7 @@ If the project's `package.json` has a `scripts` section but no `lint` script, of
 }
 ```
 
-For CAP apps where the config is in a subfolder, the script should be run from within that subfolder or use the `--rule-dir` approach.
+For CAP apps where the config is in a subfolder, the script should be run from within that subfolder (e.g., `cd app/<app-name> && eslint webapp/`) or by passing `--config app/<app-name>/eslint.config.mjs` from the project root.
 
 ## Step 8 — Verify the setup
 

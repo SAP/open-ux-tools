@@ -19,7 +19,11 @@ Detect whether this is a standalone Fiori app or a CAP project, then check for a
 
 ```bash
 # CAP project has a package.json with @sap/cds or a cds section, and an app/ folder
-ls app/ 2>/dev/null && cat package.json 2>/dev/null | grep -q '"@sap/cds"' && echo "CAP project" || echo "Standalone Fiori app"
+if ls app/ 2>/dev/null && grep -q '"@sap/cds"' package.json 2>/dev/null; then
+  echo "CAP project"
+else
+  echo "Standalone Fiori app"
+fi
 ```
 
 ### Standalone Fiori app — check root config
@@ -69,32 +73,31 @@ find app -name ".eslintrc*" -not -path "*/node_modules/*" 2>/dev/null
 
 ## Step 2 — Locate the app to lint
 
-Determine which directory to lint:
+Determine the **app-level directory** to lint — this is where `eslint.config.mjs` lives. Running ESLint from there (with `.` as the target) lets the config control which files are linted, covering all source files.
 
-- **Standalone Fiori app**: `webapp/` at the project root
-- **CAP project**: Each app under `app/<app-name>/webapp/`
+- **Standalone Fiori app**: project root (where `eslint.config.mjs` is)
+- **CAP project**: each `app/<app-name>/` subfolder (where its `eslint.config.mjs` is)
 
 For CAP projects, list available apps:
 ```bash
-ls app/ 2>/dev/null
-find app -name "manifest.json" -not -path "*/node_modules/*" 2>/dev/null
+find app -name "eslint.config.mjs" -not -path "*/node_modules/*" 2>/dev/null
 ```
 
-If the user specified a particular app or path, use that. Otherwise lint the detected location.
+If the user specified a particular app or path, use that. Otherwise lint the detected location(s).
 
 ## Step 3 — Run lint (check mode)
 
-Run ESLint to report issues without modifying files:
+Run ESLint from the app-level directory (where `eslint.config.mjs` is) using `.` as the target. This ensures the config is picked up correctly and all files the config covers are linted.
 
 ### Standalone Fiori app:
 ```bash
-npx eslint webapp/
+npx eslint .
 ```
 
 ### CAP project — specific app:
 ```bash
 # Run from the app subfolder (where eslint.config.mjs is)
-cd app/<app-name> && npx eslint webapp/
+cd app/<app-name> && npx eslint .
 ```
 
 ### CAP project — all apps:
@@ -103,14 +106,14 @@ cd app/<app-name> && npx eslint webapp/
 find app -name "eslint.config.mjs" -not -path "*/node_modules/*" | while read config; do
   appdir=$(dirname "$config")
   echo "=== Linting $appdir ==="
-  (cd "$appdir" && npx eslint webapp/ 2>&1)
+  (cd "$appdir" && npx eslint . 2>&1)
 done
 ```
 
 ### With detailed output format:
 ```bash
 # More readable output with file/line references
-npx eslint webapp/ --format stylish
+npx eslint . --format stylish
 ```
 
 ## Step 4 — Interpret the output
@@ -141,12 +144,12 @@ Many ESLint rules support automatic fixing. Run with `--fix` to apply safe fixes
 
 ### Standalone:
 ```bash
-npx eslint webapp/ --fix
+npx eslint . --fix
 ```
 
 ### CAP — specific app:
 ```bash
-cd app/<app-name> && npx eslint webapp/ --fix
+cd app/<app-name> && npx eslint . --fix
 ```
 
 **IMPORTANT**: The `--fix` flag modifies files in place. Before running:
@@ -155,7 +158,7 @@ cd app/<app-name> && npx eslint webapp/ --fix
 
 After fixing, show what changed:
 ```bash
-git diff --stat webapp/ 2>/dev/null || echo "(git not available to show diff)"
+git diff --stat 2>/dev/null || echo "(git not available to show diff)"
 ```
 
 ## Step 6 — Handle unfixable issues
@@ -184,7 +187,7 @@ Issues not fixed by `--fix` require manual code changes. For each unfixable erro
 After linting (and optional fixing), provide a clear summary:
 
 ```
-ESLint Results for webapp/:
+ESLint Results:
 - X errors found (N auto-fixed, M require manual fix)
 - Y warnings found (P auto-fixed, Q require manual fix)
 - Files with issues: [list key files]
@@ -193,12 +196,12 @@ ESLint Results for webapp/:
 
 If everything is clean:
 ```
-✅ No ESLint issues found in webapp/
+✅ No ESLint issues found
 ```
 
 ## Tips
 
-- Run `npx eslint webapp/ --fix-dry-run` to preview what auto-fixes would change without applying them
-- Use `npx eslint webapp/ --rule '@sap-ux/fiori-tools/sap-no-localstorage: error'` to check a single rule
+- Run `npx eslint . --fix-dry-run` to preview what auto-fixes would change without applying them
+- Use `npx eslint . --rule '@sap-ux/fiori-tools/sap-no-localstorage: error'` to check a single rule
 - Add `// eslint-disable-next-line @sap-ux/fiori-tools/<rule-name>` to suppress a specific rule on one line when a violation is intentional and documented
 

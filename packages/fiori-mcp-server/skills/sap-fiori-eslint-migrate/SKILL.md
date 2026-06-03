@@ -1,6 +1,6 @@
 ---
 name: sap-fiori-eslint-migrate
-description: Migrate a SAP Fiori project from legacy ESLint (eslint@8, .eslintrc, eslint-plugin-fiori-custom, or @sap-ux/eslint-plugin-fiori-tools@0.6.x) to ESLint 9+ flat config using @sap-ux/eslint-plugin-fiori-tools@9+. Use when the user has an old .eslintrc file, mentions migration, upgrading ESLint, or sees errors about unsupported ESLint config format.
+description: Migrate a SAP Fiori project from legacy ESLint (eslint@8, .eslintrc, eslint-plugin-fiori-custom, or @sap-ux/eslint-plugin-fiori-tools@0.6.x) to ESLint 10+ flat config using @sap-ux/eslint-plugin-fiori-tools@10+. Use when the user has an old .eslintrc file, mentions migration, upgrading ESLint, or sees errors about unsupported ESLint config format.
 compatibility: Requires Node.js with npm, pnpm, or yarn. Project must have an existing ESLint configuration.
 metadata:
   author: sap-fiori-tools
@@ -9,7 +9,7 @@ metadata:
 
 # Fiori ESLint Migration to ESLint 9 Flat Config
 
-Migrate from legacy ESLint config (`.eslintrc`, `eslintrc.js`, `eslint@8`, `eslint-plugin-fiori-custom`) to ESLint 9+ flat config using `@sap-ux/eslint-plugin-fiori-tools@9+`.
+Migrate from legacy ESLint config (`.eslintrc`, `.eslintrc.js`, `eslint@8`, `eslint-plugin-fiori-custom`) to ESLint 9+ flat config using `@sap-ux/eslint-plugin-fiori-tools@9+`.
 
 ## Step 1 — Detect what needs migrating
 
@@ -48,7 +48,7 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 **What the tool does automatically:**
 1. Creates `eslint.config.mjs` with the flat config format
 2. Migrates ignore patterns from `.eslintignore`
-3. Updates `package.json` to ESLint 9 + `@sap-ux/eslint-plugin-fiori-tools@^9`
+3. Updates `package.json` to ESLint 10 + `@sap-ux/eslint-plugin-fiori-tools@^10`
 4. Removes the old `.eslintrc*` file
 5. Removes the old `.eslintignore` file
 
