@@ -1,4 +1,4 @@
-import * as fs from 'node:fs/promises';
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
 
 const mockFetch = jest.fn();
@@ -11,28 +11,35 @@ const mockLogger = {
     debug: jest.fn()
 };
 
-jest.mock('@sap-ux/logger', () => ({
+jest.unstable_mockModule('@sap-ux/logger', () => ({
     ToolsLogger: jest.fn().mockImplementation(() => mockLogger)
 }));
 
-jest.mock('node-fetch', () => ({
+jest.unstable_mockModule('node-fetch', () => ({
     default: mockFetch
 }));
 
-jest.mock('gray-matter', () => ({
-    default: jest.requireActual('gray-matter')
+// Import real gray-matter before mocking to avoid recursive resolution
+const realGrayMatter = await import('gray-matter');
+jest.unstable_mockModule('gray-matter', () => ({
+    default: realGrayMatter.default
 }));
 
-jest.mock('fs/promises', () => ({
+const mockFs = {
     readFile: jest.fn(),
     mkdir: jest.fn(),
     writeFile: jest.fn(),
     readdir: jest.fn(),
     stat: jest.fn()
+};
+jest.unstable_mockModule('node:fs/promises', () => mockFs);
+
+jest.unstable_mockModule('node:child_process', () => ({
+    spawn: mockSpawn
 }));
 
-jest.mock('child_process', () => ({
-    spawn: mockSpawn
+jest.unstable_mockModule('node:timers/promises', () => ({
+    setTimeout: jest.fn().mockResolvedValue(undefined)
 }));
 
 interface FileContent {
@@ -79,15 +86,16 @@ interface BuilderType {
 
 describe('MultiSourceDocumentationBuilder', () => {
     let MultiSourceDocumentationBuilder: new () => BuilderType;
-    const mockFs = fs as jest.Mocked<typeof fs>;
 
-    beforeEach(async () => {
-        jest.clearAllMocks();
-
+    beforeAll(async () => {
         const module = await import('../src/scripts/build-docs');
         MultiSourceDocumentationBuilder = (
             module as unknown as { MultiSourceDocumentationBuilder: new () => BuilderType }
         ).MultiSourceDocumentationBuilder;
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
     });
 
     describe('constructor', () => {
@@ -837,7 +845,7 @@ describe('MultiSourceDocumentationBuilder', () => {
 
             await builder.createMasterIndex();
 
-            const writeFileCalls = (mockFs.writeFile as jest.Mock).mock.calls;
+            const writeFileCalls = mockFs.writeFile.mock.calls;
             const indexCall = writeFileCalls.find(
                 (call: unknown[]) => typeof call[0] === 'string' && call[0].includes('index.json')
             );

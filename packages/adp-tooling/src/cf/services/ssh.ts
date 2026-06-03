@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { checkAppExists, pushApp, enableSsh, restartApp } from './cli';
+import { checkAppExists, pushApp, enableSsh, restartApp } from './cli.js';
 
 /**
  * Default CF app name used for SSH tunneling to the connectivity proxy.

@@ -3,8 +3,8 @@ import axios from 'axios';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Destinations } from '@sap-ux/btp-utils';
 
-import { t } from '../i18n';
-import type { Uaa, BtpDestinationConfig, CfDestinationServiceCredentials } from '../types';
+import { t } from '../i18n.js';
+import type { Uaa, BtpDestinationConfig, CfDestinationServiceCredentials } from '../types.js';
 
 /**
  * Obtain an OAuth2 access token using the client credentials grant.
@@ -68,18 +68,39 @@ export async function getBtpDestinationConfig(
 }
 
 /**
+ * Normalise destination-service credentials (nested `{ uaa: { ... } }` or flat) into a flat UAA + `uri`.
+ *
+ * @param credentials - Destination service credentials.
+ * @returns Flat UAA credentials, or `undefined` if any required field is missing.
+ */
+export function getDestinationServiceUaa(
+    credentials: CfDestinationServiceCredentials | undefined
+): (Uaa & { uri: string }) | undefined {
+    if (!credentials) {
+        return undefined;
+    }
+    const uaa = 'uaa' in credentials ? credentials.uaa : credentials;
+    if (!uaa?.clientid || !uaa.clientsecret || !uaa.url || !uaa.uri) {
+        return undefined;
+    }
+    return uaa;
+}
+
+/**
  * Lists all subaccount destinations from the BTP Destination Configuration API.
  *
  * @param {CfDestinationServiceCredentials} credentials - Destination service credentials.
  * @returns {Promise<Destinations>} Map of destination name to Destination object.
  */
 export async function listBtpDestinations(credentials: CfDestinationServiceCredentials): Promise<Destinations> {
-    const uaa =
-        'uaa' in credentials
-            ? credentials.uaa
-            : { clientid: credentials.clientid, clientsecret: credentials.clientsecret, url: credentials.url };
+    const uaa = getDestinationServiceUaa(credentials);
+    if (!uaa) {
+        throw new Error(
+            t('error.failedToListBtpDestinations', { error: t('error.incompleteDestinationServiceCredentials') })
+        );
+    }
     const token = await getToken(uaa);
-    const url = `${credentials.uri}/destination-configuration/v1/subaccountDestinations`;
+    const url = `${uaa.uri}/destination-configuration/v1/subaccountDestinations`;
     try {
         const response = await axios.get<BtpDestinationConfig[]>(url, {
             headers: { Authorization: `Bearer ${token}` }

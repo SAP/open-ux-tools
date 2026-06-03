@@ -1,12 +1,13 @@
 {
     "name": "@sap-ux/ui5-library-reference-writer",
     "description": "Writer module to add library/component references to an existing Fiori application",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/ui5-library-reference-writer"
     },
-    "version": "0.3.2",
+    "version": "1.0.2",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -16,8 +17,8 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },

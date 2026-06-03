@@ -1,5 +1,8 @@
 import { basename, dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { CapProjectType, WorkspaceFolder } from '../../src';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 import {
     findAllApps,
     findCapProjectRoot,

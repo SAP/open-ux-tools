@@ -14,11 +14,11 @@ import {
     MISSING_REQUIRED_PROPERTY
 } from '@sap-ux/odata-annotation-core-types';
 
-import { i18n } from '../../../i18n';
+import { i18n } from '../../../i18n.js';
 
-import type { ConvertResult, NodeHandler, Subtree } from '../handler';
-import type { Context, VisitorState } from '../visitor-state';
-import { EdmJsonVisitor } from './edm-json';
+import type { ConvertResult, NodeHandler, Subtree } from '../handler.js';
+import type { Context, VisitorState } from '../visitor-state.js';
+import { EdmJsonVisitor } from './edm-json.js';
 
 export const recordHandler: NodeHandler<Record> = {
     type: RECORD_TYPE,

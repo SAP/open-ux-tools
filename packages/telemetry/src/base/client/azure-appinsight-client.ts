@@ -4,13 +4,13 @@
 // so this channel provides no benefit and causes console.time/timeEnd warnings in
 // apps (e.g. CAP) that hold pre-existing console timers.
 process.env.APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL ??= 'true';
-import { Client } from './client';
+import { Client } from './client.js';
 import * as appInsights from 'applicationinsights';
-import { EventHeader } from '../types/event-header';
-import { SampleRate } from '../types/sample-rate';
-import { configAzureTelemetryClient } from '../utils/azure-client-config';
-import { TelemetrySettings } from '../config-state';
-import type { TelemetryMeasurements, TelemetryProperties } from '../types';
+import { EventHeader } from '../types/event-header.js';
+import { SampleRate } from '../types/sample-rate.js';
+import { configAzureTelemetryClient } from '../utils/azure-client-config.js';
+import { TelemetrySettings } from '../config-state.js';
+import type { TelemetryMeasurements, TelemetryProperties } from '../types/index.js';
 
 /**
  *

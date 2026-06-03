@@ -1,6 +1,6 @@
-import { isFeatureSupportedVersion } from '../../ui5';
-import { FlexLayer, ApplicationType } from '../../types';
-import type { Content, AdpWriterConfig, ResourceModel } from '../../types';
+import { isFeatureSupportedVersion } from '../../ui5/index.js';
+import { FlexLayer, ApplicationType } from '../../types.js';
+import type { Content, AdpWriterConfig, ResourceModel } from '../../types.js';
 
 /**
  * Creates a descriptor change object for a resource model.

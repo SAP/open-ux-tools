@@ -1,52 +1,47 @@
 import path from 'node:path';
+import { jest } from '@jest/globals';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-
-import {
-    getCfDeploymentInfo,
-    formatDeploymentSummary,
-    findMtaRoot,
-    buildMtaArchive,
-    deployMtaArchive,
-    deployCf
-} from '../../../src/cf/deploy';
-import { initI18n, t } from '../../../src/i18n';
 import type { CfDeploymentInfo, MtaYaml, CfConfig } from '../../../src/types';
 
-jest.mock('../../../src/cf/project/yaml-loader', () => ({
-    getYamlContent: jest.fn()
+// MOCKS - declare mock functions before jest.unstable_mockModule for ESM compatibility
+const mockGetYamlContent = jest.fn();
+const mockLoadCfConfig = jest.fn();
+const mockIsCfInstalled = jest.fn();
+const mockIsLoggedInCf = jest.fn();
+const mockCommandRunnerRun = jest.fn();
+const mockGetMtaPath = jest.fn();
+
+jest.unstable_mockModule('../../../src/cf/project/yaml-loader', () => ({
+    getYamlContent: mockGetYamlContent
 }));
 
-jest.mock('../../../src/cf/core/config', () => ({
-    loadCfConfig: jest.fn()
+jest.unstable_mockModule('../../../src/cf/core/config', () => ({
+    loadCfConfig: mockLoadCfConfig
 }));
 
-jest.mock('../../../src/cf/services/cli', () => ({
-    isCfInstalled: jest.fn()
+jest.unstable_mockModule('../../../src/cf/services/cli', () => ({
+    isCfInstalled: mockIsCfInstalled
 }));
 
-jest.mock('../../../src/cf/core/auth', () => ({
-    isLoggedInCf: jest.fn()
+jest.unstable_mockModule('../../../src/cf/core/auth', () => ({
+    isLoggedInCf: mockIsLoggedInCf
 }));
 
-jest.mock('@sap-ux/nodejs-utils', () => ({
+jest.unstable_mockModule('@sap-ux/nodejs-utils', () => ({
     CommandRunner: jest.fn().mockImplementation(() => ({
-        run: jest.fn()
+        run: mockCommandRunnerRun
     }))
 }));
 
-jest.mock('@sap-ux/project-access', () => ({
-    getMtaPath: jest.fn()
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    getMtaPath: mockGetMtaPath
 }));
 
-const { getYamlContent } = jest.requireMock('../../../src/cf/project/yaml-loader') as {
-    getYamlContent: jest.Mock;
-};
-const { loadCfConfig } = jest.requireMock('../../../src/cf/core/config') as { loadCfConfig: jest.Mock };
-const { isCfInstalled } = jest.requireMock('../../../src/cf/services/cli') as { isCfInstalled: jest.Mock };
-const { isLoggedInCf } = jest.requireMock('../../../src/cf/core/auth') as { isLoggedInCf: jest.Mock };
-const { CommandRunner } = jest.requireMock('@sap-ux/nodejs-utils') as { CommandRunner: jest.Mock };
-const { getMtaPath } = jest.requireMock('@sap-ux/project-access') as { getMtaPath: jest.Mock };
+// Import modules under test AFTER mocks are set up
+const { getCfDeploymentInfo, formatDeploymentSummary, findMtaRoot, buildMtaArchive, deployMtaArchive, deployCf } =
+    await import('../../../src/cf/deploy');
+const { initI18n, t } = await import('../../../src/i18n');
 
 const mockLogger = {
     info: jest.fn(),
@@ -102,7 +97,7 @@ describe('CF Deploy', () => {
 
     describe('getCfDeploymentInfo', () => {
         test('should return deployment info when mta.yaml exists', () => {
-            getYamlContent.mockReturnValue(sampleMtaYaml);
+            mockGetYamlContent.mockReturnValue(sampleMtaYaml);
 
             const result = getCfDeploymentInfo('/projects/my-mta', sampleCfConfig);
 
@@ -118,11 +113,11 @@ describe('CF Deploy', () => {
                     { name: 'my-app-deployer', type: 'com.sap.application.content', path: 'my-app-deployer' }
                 ]
             });
-            expect(getYamlContent).toHaveBeenCalledWith(path.join('/projects/my-mta', 'mta.yaml'));
+            expect(mockGetYamlContent).toHaveBeenCalledWith(path.join('/projects/my-mta', 'mta.yaml'));
         });
 
         test('should handle MTA yaml with no modules', () => {
-            getYamlContent.mockReturnValue({
+            mockGetYamlContent.mockReturnValue({
                 '_schema-version': '3.2.0',
                 'ID': 'empty-project',
                 'version': '0.1.0'
@@ -135,7 +130,7 @@ describe('CF Deploy', () => {
         });
 
         test('should handle missing CF config fields gracefully', () => {
-            getYamlContent.mockReturnValue(sampleMtaYaml);
+            mockGetYamlContent.mockReturnValue(sampleMtaYaml);
 
             const result = getCfDeploymentInfo('/projects/my-mta', {} as CfConfig);
 
@@ -243,35 +238,31 @@ describe('CF Deploy', () => {
     describe('findMtaRoot', () => {
         test('should return the path itself when mta.yaml is in the given path', async () => {
             const mtaRoot = path.resolve('/projects/mta-root');
-            getMtaPath.mockResolvedValue({ mtaPath: path.join(mtaRoot, 'mta.yaml'), hasRoot: false });
+            mockGetMtaPath.mockResolvedValue({ mtaPath: path.join(mtaRoot, 'mta.yaml'), hasRoot: false });
 
             expect(await findMtaRoot(mtaRoot)).toBe(mtaRoot);
         });
 
         test('should return parent when mta.yaml is in an ancestor directory', async () => {
             const mtaRoot = path.resolve('/projects/mta-root');
-            getMtaPath.mockResolvedValue({ mtaPath: path.join(mtaRoot, 'mta.yaml'), hasRoot: true });
+            mockGetMtaPath.mockResolvedValue({ mtaPath: path.join(mtaRoot, 'mta.yaml'), hasRoot: true });
 
             const deepChild = path.join(mtaRoot, 'apps', 'my-app');
             expect(await findMtaRoot(deepChild)).toBe(mtaRoot);
         });
 
         test('should return undefined when mta.yaml is not found', async () => {
-            getMtaPath.mockResolvedValue(undefined);
+            mockGetMtaPath.mockResolvedValue(undefined);
 
             expect(await findMtaRoot(path.resolve('/some/random/path'))).toBeUndefined();
         });
     });
 
     describe('buildMtaArchive', () => {
-        let mockCommandRunnerRun: jest.Mock;
         const appPath = path.resolve('/projects/my-mta/my-app');
 
         beforeEach(() => {
-            mockCommandRunnerRun = jest.fn().mockResolvedValue(undefined);
-            CommandRunner.mockImplementation(() => ({
-                run: mockCommandRunnerRun
-            }));
+            mockCommandRunnerRun.mockResolvedValue(undefined);
         });
 
         test('should run npm run build-mta', async () => {
@@ -295,14 +286,10 @@ describe('CF Deploy', () => {
     });
 
     describe('deployMtaArchive', () => {
-        let mockCommandRunnerRun: jest.Mock;
         const appPath = path.resolve('/projects/my-mta/my-app');
 
         beforeEach(() => {
-            mockCommandRunnerRun = jest.fn().mockResolvedValue(undefined);
-            CommandRunner.mockImplementation(() => ({
-                run: mockCommandRunnerRun
-            }));
+            mockCommandRunnerRun.mockResolvedValue(undefined);
         });
 
         test('should run npm run deploy', async () => {
@@ -321,49 +308,45 @@ describe('CF Deploy', () => {
     });
 
     describe('deployCf', () => {
-        let mockCommandRunnerRun: jest.Mock;
         const mtaRoot = path.resolve('/projects/my-mta');
         const appPath = path.join(mtaRoot, 'my-app');
 
         beforeEach(() => {
-            mockCommandRunnerRun = jest.fn().mockResolvedValue(undefined);
-            CommandRunner.mockImplementation(() => ({
-                run: mockCommandRunnerRun
-            }));
+            mockCommandRunnerRun.mockResolvedValue(undefined);
         });
 
         test('should throw when CF CLI is not installed', async () => {
-            isCfInstalled.mockResolvedValue(false);
+            mockIsCfInstalled.mockResolvedValue(false);
 
             await expect(deployCf(appPath, mockLogger)).rejects.toThrow(t('deploy.cfNotInstalled'));
         });
 
         test('should throw when not logged in to CF', async () => {
-            isCfInstalled.mockResolvedValue(true);
-            loadCfConfig.mockReturnValue(sampleCfConfig);
-            isLoggedInCf.mockResolvedValue(false);
+            mockIsCfInstalled.mockResolvedValue(true);
+            mockLoadCfConfig.mockReturnValue(sampleCfConfig);
+            mockIsLoggedInCf.mockResolvedValue(false);
 
             await expect(deployCf(appPath, mockLogger)).rejects.toThrow(t('deploy.notLoggedIn'));
         });
 
         test('should throw when MTA root is not found', async () => {
-            isCfInstalled.mockResolvedValue(true);
-            loadCfConfig.mockReturnValue(sampleCfConfig);
-            isLoggedInCf.mockResolvedValue(true);
-            getMtaPath.mockResolvedValue(undefined);
+            mockIsCfInstalled.mockResolvedValue(true);
+            mockLoadCfConfig.mockReturnValue(sampleCfConfig);
+            mockIsLoggedInCf.mockResolvedValue(true);
+            mockGetMtaPath.mockResolvedValue(undefined);
 
             const noMtaPath = path.resolve('/projects/no-mta');
             await expect(deployCf(noMtaPath, mockLogger)).rejects.toThrow();
         });
 
         test('should cancel when confirmDeployment returns false', async () => {
-            isCfInstalled.mockResolvedValue(true);
-            loadCfConfig.mockReturnValue(sampleCfConfig);
-            isLoggedInCf.mockResolvedValue(true);
-            getMtaPath.mockResolvedValue({ mtaPath: path.join(mtaRoot, 'mta.yaml'), hasRoot: true });
-            getYamlContent.mockReturnValue(sampleMtaYaml);
+            mockIsCfInstalled.mockResolvedValue(true);
+            mockLoadCfConfig.mockReturnValue(sampleCfConfig);
+            mockIsLoggedInCf.mockResolvedValue(true);
+            mockGetMtaPath.mockResolvedValue({ mtaPath: path.join(mtaRoot, 'mta.yaml'), hasRoot: true });
+            mockGetYamlContent.mockReturnValue(sampleMtaYaml);
 
-            const confirmDeployment = jest.fn().mockResolvedValue(false);
+            const confirmDeployment = jest.fn<() => Promise<boolean>>().mockResolvedValue(false);
 
             await deployCf(appPath, mockLogger, { confirmDeployment });
             expect(mockCommandRunnerRun).not.toHaveBeenCalled();
@@ -371,13 +354,13 @@ describe('CF Deploy', () => {
         });
 
         test('should run build-mta and deploy scripts when confirmed', async () => {
-            isCfInstalled.mockResolvedValue(true);
-            loadCfConfig.mockReturnValue(sampleCfConfig);
-            isLoggedInCf.mockResolvedValue(true);
-            getMtaPath.mockResolvedValue({ mtaPath: path.join(mtaRoot, 'mta.yaml'), hasRoot: true });
-            getYamlContent.mockReturnValue(sampleMtaYaml);
+            mockIsCfInstalled.mockResolvedValue(true);
+            mockLoadCfConfig.mockReturnValue(sampleCfConfig);
+            mockIsLoggedInCf.mockResolvedValue(true);
+            mockGetMtaPath.mockResolvedValue({ mtaPath: path.join(mtaRoot, 'mta.yaml'), hasRoot: true });
+            mockGetYamlContent.mockReturnValue(sampleMtaYaml);
 
-            const confirmDeployment = jest.fn().mockResolvedValue(true);
+            const confirmDeployment = jest.fn<() => Promise<boolean>>().mockResolvedValue(true);
 
             await deployCf(appPath, mockLogger, { confirmDeployment });
 
@@ -402,11 +385,11 @@ describe('CF Deploy', () => {
         });
 
         test('should proceed without confirmation when callback is not provided', async () => {
-            isCfInstalled.mockResolvedValue(true);
-            loadCfConfig.mockReturnValue(sampleCfConfig);
-            isLoggedInCf.mockResolvedValue(true);
-            getMtaPath.mockResolvedValue({ mtaPath: path.join(mtaRoot, 'mta.yaml'), hasRoot: true });
-            getYamlContent.mockReturnValue(sampleMtaYaml);
+            mockIsCfInstalled.mockResolvedValue(true);
+            mockLoadCfConfig.mockReturnValue(sampleCfConfig);
+            mockIsLoggedInCf.mockResolvedValue(true);
+            mockGetMtaPath.mockResolvedValue({ mtaPath: path.join(mtaRoot, 'mta.yaml'), hasRoot: true });
+            mockGetYamlContent.mockReturnValue(sampleMtaYaml);
 
             await deployCf(appPath, mockLogger);
 
@@ -414,11 +397,11 @@ describe('CF Deploy', () => {
         });
 
         test('should throw when build fails', async () => {
-            isCfInstalled.mockResolvedValue(true);
-            loadCfConfig.mockReturnValue(sampleCfConfig);
-            isLoggedInCf.mockResolvedValue(true);
-            getMtaPath.mockResolvedValue({ mtaPath: path.join(mtaRoot, 'mta.yaml'), hasRoot: true });
-            getYamlContent.mockReturnValue(sampleMtaYaml);
+            mockIsCfInstalled.mockResolvedValue(true);
+            mockLoadCfConfig.mockReturnValue(sampleCfConfig);
+            mockIsLoggedInCf.mockResolvedValue(true);
+            mockGetMtaPath.mockResolvedValue({ mtaPath: path.join(mtaRoot, 'mta.yaml'), hasRoot: true });
+            mockGetYamlContent.mockReturnValue(sampleMtaYaml);
             mockCommandRunnerRun.mockRejectedValueOnce('Build error: missing dependency');
 
             await expect(deployCf(appPath, mockLogger)).rejects.toThrow(
@@ -427,11 +410,11 @@ describe('CF Deploy', () => {
         });
 
         test('should throw when CF deploy fails', async () => {
-            isCfInstalled.mockResolvedValue(true);
-            loadCfConfig.mockReturnValue(sampleCfConfig);
-            isLoggedInCf.mockResolvedValue(true);
-            getMtaPath.mockResolvedValue({ mtaPath: path.join(mtaRoot, 'mta.yaml'), hasRoot: true });
-            getYamlContent.mockReturnValue(sampleMtaYaml);
+            mockIsCfInstalled.mockResolvedValue(true);
+            mockLoadCfConfig.mockReturnValue(sampleCfConfig);
+            mockIsLoggedInCf.mockResolvedValue(true);
+            mockGetMtaPath.mockResolvedValue({ mtaPath: path.join(mtaRoot, 'mta.yaml'), hasRoot: true });
+            mockGetYamlContent.mockReturnValue(sampleMtaYaml);
             mockCommandRunnerRun.mockResolvedValueOnce(undefined); // build succeeds
             mockCommandRunnerRun.mockRejectedValueOnce('Deploy error: insufficient permissions');
 
@@ -441,11 +424,11 @@ describe('CF Deploy', () => {
         });
 
         test('should call onOutput callback with summary', async () => {
-            isCfInstalled.mockResolvedValue(true);
-            loadCfConfig.mockReturnValue(sampleCfConfig);
-            isLoggedInCf.mockResolvedValue(true);
-            getMtaPath.mockResolvedValue({ mtaPath: path.join(mtaRoot, 'mta.yaml'), hasRoot: true });
-            getYamlContent.mockReturnValue(sampleMtaYaml);
+            mockIsCfInstalled.mockResolvedValue(true);
+            mockLoadCfConfig.mockReturnValue(sampleCfConfig);
+            mockIsLoggedInCf.mockResolvedValue(true);
+            mockGetMtaPath.mockResolvedValue({ mtaPath: path.join(mtaRoot, 'mta.yaml'), hasRoot: true });
+            mockGetYamlContent.mockReturnValue(sampleMtaYaml);
 
             const onOutput = jest.fn();
 

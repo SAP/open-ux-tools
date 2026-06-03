@@ -61,6 +61,7 @@ builder:
           transport: $TMP
         exclude:
           - /test/
+          - /localService/
 "
 `;
 
@@ -126,6 +127,7 @@ builder:
           transport: TEST_TR
         exclude:
           - /test/
+          - /localService/
 "
 `;
 
@@ -190,6 +192,7 @@ builder:
           transport: TR123
         exclude:
           - /test/
+          - /localService/
 "
 `;
 
@@ -254,5 +257,6 @@ builder:
           transport: TR123
         exclude:
           - /test/
+          - /localService/
 "
 `;

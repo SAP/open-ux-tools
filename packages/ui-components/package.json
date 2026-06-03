@@ -1,8 +1,9 @@
 {
     "name": "@sap-ux/ui-components",
-    "version": "2.2.2",
+    "version": "3.0.1",
     "license": "Apache-2.0",
     "description": "SAP UI Components Library",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -29,8 +30,8 @@
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../.prettierignore",
         "storybook": "storybook dev",
         "build:storybook": "storybook build -o ./storybook",
-        "test": "jest --ci --forceExit --colors --silent",
-        "test-u": "jest --ci --forceExit --colors  --silent -u"
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --colors --silent",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --colors  --silent -u"
     },
     "dependencies": {
         "@fluentui/react": "8.125.5",
@@ -50,8 +51,8 @@
         "@babel/preset-env": "7.29.2",
         "@babel/preset-react": "7.28.5",
         "@babel/preset-typescript": "7.28.5",
-        "@storybook/react": "8.6.17",
-        "@storybook/react-webpack5": "8.6.17",
+        "@storybook/react": "10.4.0",
+        "@storybook/react-webpack5": "10.4.0",
         "@testing-library/jest-dom": "6.9.1",
         "@testing-library/react": "12.1.5",
         "@types/enzyme": "3.10.19",
@@ -78,7 +79,7 @@
         "require-from-string": "2.0.2",
         "sass": "1.98.0",
         "sass-loader": "16.0.7",
-        "storybook": "8.6.17",
+        "storybook": "10.4.0",
         "storybook-addon-turbo-build": "2.0.1",
         "style-loader": "4.0.0",
         "ts-loader": "9.5.4"

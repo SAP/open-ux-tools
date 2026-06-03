@@ -1,7 +1,6 @@
 import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import * as common from '@sap-ux-private/control-property-editor-common';
 import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
 
 import Log from 'mock/sap/base/Log';
@@ -9,19 +8,42 @@ import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { fetchMock, sapCoreMock } from 'mock/window';
 
-import { ChangeService } from '../../../src/cpe/changes';
-import * as flexChange from '../../../src/cpe/changes/flex-change';
-import { CommunicationService } from '../../../src/cpe/communication-service';
-import { WorkspaceConnectorService } from '../../../src/cpe/connector-service';
-import { ContextMenuService } from '../../../src/cpe/context-menu-service';
-import init from '../../../src/cpe/init';
-import { OutlineService } from '../../../src/cpe/outline/service';
-import { QuickActionService } from '../../../src/cpe/quick-actions/quick-action-service';
-import { RtaService } from '../../../src/cpe/rta-service';
-import { SelectionService } from '../../../src/cpe/selection';
-import * as ui5Utils from '../../../src/cpe/ui5-utils';
-import connector from '../../../src/flp/WorkspaceConnector';
-import { ODataDownStatus } from '../../../src/cpe/odata-health/odata-health-status';
+// Pre-import for spread
+const _common = await import('@sap-ux-private/control-property-editor-common');
+const _flexChange = await import('open/ux/preview/client/cpe/changes/flex-change');
+const _ui5Utils = await import('open/ux/preview/client/cpe/ui5-utils');
+
+const applyChangeMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/cpe/changes/flex-change', () => ({
+    ..._flexChange,
+    applyChange: applyChangeMock
+}));
+
+const getIconsMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/cpe/ui5-utils', () => ({
+    ..._ui5Utils,
+    getIcons: getIconsMock
+}));
+
+const getHealthStatusMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/cpe/odata-health/odata-health-checker', () => ({
+    ODataHealthChecker: jest.fn().mockImplementation(() => ({
+        getHealthStatus: getHealthStatusMock
+    }))
+}));
+
+const common = await import('@sap-ux-private/control-property-editor-common');
+const { ChangeService } = await import('open/ux/preview/client/cpe/changes/index');
+const { CommunicationService } = await import('open/ux/preview/client/cpe/communication-service');
+const { WorkspaceConnectorService } = await import('open/ux/preview/client/cpe/connector-service');
+const { ContextMenuService } = await import('open/ux/preview/client/cpe/context-menu-service');
+const { default: init } = await import('open/ux/preview/client/cpe/init');
+const { OutlineService } = await import('open/ux/preview/client/cpe/outline/service');
+const { QuickActionService } = await import('open/ux/preview/client/cpe/quick-actions/quick-action-service');
+const { RtaService } = await import('open/ux/preview/client/cpe/rta-service');
+const { SelectionService } = await import('open/ux/preview/client/cpe/selection');
+const { default: connector } = await import('open/ux/preview/client/flp/WorkspaceConnector');
+const { ODataDownStatus } = await import('open/ux/preview/client/cpe/odata-health/odata-health-status');
 
 function getWaitForAppLoadedPromise(): Promise<void> {
     return new Promise((resolve) => {
@@ -54,21 +76,12 @@ async function waitForInfoCenterNotification(): Promise<void> {
     });
 }
 
-const getHealthStatusMock = jest.fn();
-
-jest.mock('../../../src/cpe/odata-health/odata-health-checker', () => ({
-    ODataHealthChecker: jest.fn().mockImplementation(() => ({
-        getHealthStatus: getHealthStatusMock
-    }))
-}));
-
 describe('main', () => {
     const UNHEALTHY_ODATA_SERVICE_STATUS = new ODataDownStatus('/service-a', 'Service not configured properly');
 
     VersionInfo.load.mockResolvedValue({ version: '1.120.4' });
-    const applyChangeSpy = jest
-        .spyOn(flexChange, 'applyChange')
-        .mockResolvedValueOnce()
+    applyChangeMock
+        .mockResolvedValueOnce(undefined)
         .mockRejectedValueOnce({
             toString: jest
                 .fn()
@@ -110,7 +123,7 @@ describe('main', () => {
     });
 
     afterEach(() => {
-        applyChangeSpy.mockClear();
+        applyChangeMock.mockClear();
         initOutlineSpy.mockClear();
         rtaSpy.mockClear();
         changesServiceSpy.mockClear();
@@ -140,7 +153,7 @@ describe('main', () => {
             name: 'testIcon2'
         }
     ];
-    jest.spyOn(ui5Utils, 'getIcons').mockImplementation(() => {
+    getIconsMock.mockImplementation(() => {
         return mockIconResult;
     });
 
@@ -168,7 +181,7 @@ describe('main', () => {
         await connector.storage.removeItem('sap.ui.fl.testFile');
 
         //assert
-        expect(applyChangeSpy).toHaveBeenCalledWith({ rta }, payload);
+        expect(applyChangeMock).toHaveBeenCalledWith({ rta }, payload);
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
     });
 

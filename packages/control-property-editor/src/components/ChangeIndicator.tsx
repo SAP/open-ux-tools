@@ -2,7 +2,7 @@ import { UIIcon } from '@sap-ux/ui-components';
 import type { ReactElement } from 'react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { IconName } from '../../src/icons';
+import { IconName } from '../../src/icons.js';
 
 interface ChangeIndicatorProps {
     saved: number;

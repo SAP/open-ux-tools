@@ -8,19 +8,41 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
 import { fetchMock, sapCoreMock, sapMock } from 'mock/window';
 
-import ControlUtils from '../../../../src/adp/control-utils';
-import AddFragment from '../../../../src/adp/controllers/AddFragment.controller';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { ValueState } from 'mock/sap/ui/core/library';
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type Core from 'sap/ui/core/Core';
 import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
-import { AddFragmentData } from '../../../../src/adp/add-fragment';
-import * as addXMLAdditionalInfo from '../../../../src/cpe/additional-change-info/add-xml-additional-info';
-import { CommunicationService } from '../../../../src/cpe/communication-service';
-import * as adpUtils from '../../../../src/adp/utils';
+import { type AddFragmentData } from 'open/ux/preview/client/adp/add-fragment';
+import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 import { showInfoCenterMessage, MessageBarType } from '@sap-ux-private/control-property-editor-common';
+
+// Pre-import for spread
+const _addXMLAdditionalInfo = await import('open/ux/preview/client/cpe/additional-change-info/add-xml-additional-info');
+const _adpUtils = await import('open/ux/preview/client/adp/utils');
+const _apiHandler = await import('open/ux/preview/client/adp/api-handler');
+
+const getFragmentTemplateNameMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/cpe/additional-change-info/add-xml-additional-info', () => ({
+    ..._addXMLAdditionalInfo,
+    getFragmentTemplateName: getFragmentTemplateNameMock
+}));
+
+const checkForExistingChangeMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/adp/utils', () => ({
+    ..._adpUtils,
+    checkForExistingChange: checkForExistingChangeMock
+}));
+
+const getFragmentsMock = jest.fn().mockResolvedValue({ fragments: [] });
+jest.unstable_mockModule('open/ux/preview/client/adp/api-handler', () => ({
+    ..._apiHandler,
+    getFragments: getFragmentsMock
+}));
+
+const { default: AddFragment } = await import('open/ux/preview/client/adp/controllers/AddFragment.controller');
+const { default: ControlUtils } = await import('open/ux/preview/client/adp/control-utils');
 
 describe('AddFragment', () => {
     beforeAll(() => {
@@ -181,7 +203,7 @@ describe('AddFragment', () => {
             // Arrange
             const error = new Error('Fragments fetch failed');
             // Mock getFragments to throw
-            jest.spyOn(require('../../../../src/adp/api-handler'), 'getFragments').mockRejectedValue(error);
+            getFragmentsMock.mockRejectedValueOnce(error);
             jest.spyOn(CommunicationService, 'sendAction');
 
             const overlays = {
@@ -463,7 +485,7 @@ describe('AddFragment', () => {
         });
 
         test('does not crash if composite command exists in command stack', () => {
-            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+            checkForExistingChangeMock.mockReturnValue(false);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
 
             const command = {
@@ -505,7 +527,7 @@ describe('AddFragment', () => {
         });
 
         test('sets error when the fragment name already exists in command stack', () => {
-            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
+            checkForExistingChangeMock.mockReturnValue(true);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             const change = {
                 content: {
@@ -552,7 +574,7 @@ describe('AddFragment', () => {
         });
 
         test('sets error when the fragment name already exists in command stack (command is "composite")', () => {
-            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
+            checkForExistingChangeMock.mockReturnValue(true);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             const change = {
                 content: {
@@ -603,7 +625,7 @@ describe('AddFragment', () => {
         });
 
         test('sets create button to true when the fragment name is valid', () => {
-            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+            checkForExistingChangeMock.mockReturnValue(false);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             rtaMock.getCommandStack.mockReturnValue({
                 getCommands: jest.fn().mockReturnValue([])
@@ -671,7 +693,7 @@ describe('AddFragment', () => {
                 }),
                 getId: jest.fn().mockReturnValue('some-id')
             } as unknown as ManagedObject);
-            jest.spyOn(addXMLAdditionalInfo, 'getFragmentTemplateName').mockReturnValue('templateName');
+            getFragmentTemplateNameMock.mockReturnValue('templateName');
 
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
@@ -823,7 +845,7 @@ describe('AddFragment', () => {
                 }),
                 getId: jest.fn().mockReturnValue('some-id')
             } as unknown as ManagedObject);
-            jest.spyOn(addXMLAdditionalInfo, 'getFragmentTemplateName').mockReturnValue('');
+            getFragmentTemplateNameMock.mockReturnValue('');
 
             addFragment.handleDialogClose = jest.fn();
 
@@ -932,7 +954,7 @@ describe('AddFragment', () => {
                 }),
                 getId: jest.fn().mockReturnValue('some-id')
             } as unknown as ManagedObject);
-            jest.spyOn(addXMLAdditionalInfo, 'getFragmentTemplateName').mockReturnValue('');
+            getFragmentTemplateNameMock.mockReturnValue('');
 
             addFragment.handleDialogClose = jest.fn();
 
@@ -975,7 +997,7 @@ describe('AddFragment', () => {
                 }),
                 getId: jest.fn().mockReturnValue('some-id')
             } as unknown as ManagedObject);
-            jest.spyOn(addXMLAdditionalInfo, 'getFragmentTemplateName').mockReturnValue('templateName');
+            getFragmentTemplateNameMock.mockReturnValue('templateName');
             const event = {
                 getSource: jest.fn().mockReturnValue({
                     setEnabled: jest.fn()

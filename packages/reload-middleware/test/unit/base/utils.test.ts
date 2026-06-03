@@ -1,6 +1,14 @@
-import { getAvailablePort } from '../../../src/base/utils';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import portfinder from 'portfinder';
+import { jest } from '@jest/globals';
+
+const mockGetPort = jest.fn();
+
+jest.unstable_mockModule('portfinder', () => ({
+    default: { getPort: mockGetPort },
+    getPort: mockGetPort
+}));
+
+const { getAvailablePort } = await import('../../../src/base/utils.js');
+const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 
 describe('Utils', () => {
     const logger = new ToolsLogger({
@@ -12,8 +20,7 @@ describe('Utils', () => {
     });
 
     test('should get the next available port', async () => {
-        jest.spyOn(portfinder, 'getPort').mockImplementation((_options, callback) => {
-            //@ts-expect-error - ignore for testing purposes
+        mockGetPort.mockImplementation((_options: any, callback: any) => {
             callback(null, 12345);
         });
         const port = await getAvailablePort(35729, logger);
@@ -21,8 +28,7 @@ describe('Utils', () => {
     });
 
     test('should log an error when getting the next available port fails', async () => {
-        jest.spyOn(portfinder, 'getPort').mockImplementation((_options, callback) => {
-            //@ts-expect-error - ignore for testing purposes
+        mockGetPort.mockImplementation((_options: any, callback: any) => {
             callback(new Error('Error'));
         });
         const errorSpy = jest.spyOn(logger, 'error');

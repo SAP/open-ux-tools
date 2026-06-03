@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/preview-middleware",
     "description": "Preview middleware",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -9,7 +10,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Apreview-middleware"
     },
-    "version": "0.26.7",
+    "version": "1.0.6",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -23,8 +24,8 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "test:integration:clean": "rimraf --glob playwright-report",
         "test:integration:run": "playwright test",
         "test:integration": "npm-run-all -l -s test:integration:clean test:integration:run",
@@ -52,9 +53,10 @@
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "qrcode": "1.5.4",
-        "@sap/bas-sdk": "3.13.6"
+        "@sap/bas-sdk": "3.13.7"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@private/preview-middleware-client": "workspace:@sap-ux-private/preview-middleware-client@*",
         "@sap-ux-private/playwright": "workspace:*",
         "@sap-ux/axios-extension": "workspace:*",

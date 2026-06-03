@@ -1,4 +1,4 @@
-import type { ParsedApp, ParsedService } from './parser';
+import type { ParsedApp, ParsedService } from './parser/index.js';
 
 /**
  * Get parsed service by name from parsed application.

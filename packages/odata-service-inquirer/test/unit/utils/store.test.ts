@@ -1,14 +1,19 @@
-import { initI18nOdataServiceInquirer } from '../../../src/i18n';
-import LoggerHelper from '../../../src/prompts/logger-helper';
-import { getAllBackendSystems } from '../../../src/utils/store';
+import { jest } from '@jest/globals';
 
 const mockGetAll = jest.fn();
-jest.mock('@sap-ux/store', () => ({
-    ...jest.requireActual('@sap-ux/store'),
+
+const actualStore = await import('@sap-ux/store');
+
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...actualStore,
     getService: jest.fn().mockImplementation(() => ({
         getAll: mockGetAll
     }))
 }));
+
+const { initI18nOdataServiceInquirer } = await import('../../../src/i18n.js');
+const LoggerHelper = (await import('../../../src/prompts/logger-helper.js')).default;
+const { getAllBackendSystems } = await import('../../../src/utils/store.js');
 
 describe('Test utils related to the store', () => {
     beforeAll(async () => {

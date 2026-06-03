@@ -1,6 +1,6 @@
 import type { Middleware, MiddlewareAPI, Dispatch, Action } from 'redux';
 import { WEB_APP_ACTION_TYPES_SET } from '@sap-ux/sap-systems-ext-types';
-import { initVsCodeApi } from '../utils';
+import { initVsCodeApi } from '../utils/index.js';
 
 export const postMessageMiddleware: Middleware = (store: MiddlewareAPI) => {
     window.addEventListener('message', (event: MessageEvent) => {

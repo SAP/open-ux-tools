@@ -1,7 +1,11 @@
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { renderFile } from 'ejs';
+
+import { dirname } from 'node:path';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 import sanitize from 'sanitize-filename';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -11,11 +15,11 @@ import type { MiddlewareUtils } from '@ui5/server';
 import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { NextFunction, Request, Response } from 'express';
 
-import { TemplateFileName, HttpStatusCodes } from '../types';
+import { TemplateFileName, HttpStatusCodes } from '../types.js';
 import { DirName } from '@sap-ux/project-access';
-import type { DataSources, CodeExtChange } from '../types';
-import { ManifestService } from '../base/abap/manifest-service';
-import { getVariant, isTypescriptSupported } from '../base/helper';
+import type { DataSources, CodeExtChange } from '../types.js';
+import { ManifestService } from '../base/abap/manifest-service.js';
+import { getVariant, isTypescriptSupported } from '../base/helper.js';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 interface WriteControllerBody {

@@ -3,7 +3,7 @@
     "displayName": "SAPUI5 Adaptation Project",
     "homepage": "https://help.sap.com/viewer/584e0bcbfd4a4aff91c815cefa0bce2d/Cloud/en-US/ada9567b767941aba8d49fdb4fdedea7.html",
     "description": "Adaptation project allows you to create an app variant for an existing SAP Fiori elements-based or SAPUI5 freestyle application, without changing the original application.",
-    "version": "0.10.6",
+    "version": "1.0.4",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -12,6 +12,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue"
     },
+    "type": "module",
     "license": "Apache-2.0",
     "main": "generators/app/index.js",
     "scripts": {
@@ -20,8 +21,8 @@
         "watch": "tsc --watch",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "test:abap": "jest --ci --forceExit --detectOpenHandles --colors test/app.test.ts --testNamePattern=\"ABAP Environment\"",
         "test:cf": "jest --ci --forceExit --detectOpenHandles --colors test/app.test.ts --testNamePattern=\"CF Environment\"",
         "link": "pnpm link --global",
@@ -58,6 +59,7 @@
         "uuid": "11.1.1"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@jest/types": "30.3.0",
         "@types/fs-extra": "11.0.4",
         "@types/inquirer": "8.2.6",

@@ -1,28 +1,37 @@
-import {
-    isAppStudio,
-    listDestinations,
-    getDisplayName,
-    isAbapEnvironmentOnBtp,
-    type Destinations
-} from '@sap-ux/btp-utils';
-import { getCfSystemChoices, fetchBTPDestinations } from '../src/prompts/prompt-helpers';
-import type { CfSystemChoice } from '../src';
-import LoggerHelper from '../src/logger-helper';
-import { t } from '../src/i18n';
+import { jest } from '@jest/globals';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn(),
-    listDestinations: jest.fn(),
-    getDisplayName: jest.fn(),
-    isAbapEnvironmentOnBtp: jest.fn()
+// Pre-import real modules before mocking
+const realBtpUtils = await import('@sap-ux/btp-utils');
+
+const mockIsAppStudio = jest.fn();
+const mockListDestinations = jest.fn();
+const mockGetDisplayName = jest.fn();
+const mockIsAbapEnvironmentOnBtp = jest.fn();
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio,
+    listDestinations: mockListDestinations,
+    getDisplayName: mockGetDisplayName,
+    isAbapEnvironmentOnBtp: mockIsAbapEnvironmentOnBtp
 }));
 
-jest.mock('../src/logger-helper', () => ({
+jest.unstable_mockModule('../src/logger-helper', () => ({
+    default: {
+        logger: {
+            warn: jest.fn()
+        }
+    },
     logger: {
         warn: jest.fn()
     }
 }));
+
+const { getCfSystemChoices, fetchBTPDestinations } = await import('../src/prompts/prompt-helpers');
+const LoggerHelper = (await import('../src/logger-helper')).default;
+const { t } = await import('../src/i18n');
+import type { CfSystemChoice } from '../src';
+import type { Destinations } from '@sap-ux/btp-utils';
 
 describe('Utility Functions', () => {
     const mockDestinations: Destinations = {
@@ -53,8 +62,8 @@ describe('Utility Functions', () => {
                 { name: 'Dest1 - host', value: '', scp: false, url: 'host' },
                 { name: 'Unknown - host', value: 'Dest1', scp: false, url: 'host' }
             ];
-            (getDisplayName as jest.Mock).mockReturnValueOnce('Dest1');
-            (isAbapEnvironmentOnBtp as jest.Mock).mockReturnValueOnce(false);
+            mockGetDisplayName.mockReturnValueOnce('Dest1');
+            mockIsAbapEnvironmentOnBtp.mockReturnValueOnce(false);
 
             const result = await getCfSystemChoices(mockDestinations);
 
@@ -78,8 +87,8 @@ describe('Utility Functions', () => {
                     Description: 'Test Destination 2'
                 }
             };
-            (getDisplayName as jest.Mock).mockImplementation((dest) => dest.Name);
-            (isAbapEnvironmentOnBtp as jest.Mock).mockReturnValue(false);
+            mockGetDisplayName.mockImplementation((dest: any) => dest.Name);
+            mockIsAbapEnvironmentOnBtp.mockReturnValue(false);
 
             const result = await getCfSystemChoices(destinations);
 
@@ -92,24 +101,24 @@ describe('Utility Functions', () => {
 
     describe('fetchBTPDestinations', () => {
         it('should return destinations if running in App Studio', async () => {
-            (isAppStudio as jest.Mock).mockReturnValue(true);
-            (listDestinations as jest.Mock).mockResolvedValue(mockDestinations);
+            mockIsAppStudio.mockReturnValue(true);
+            mockListDestinations.mockResolvedValue(mockDestinations);
 
             const result = await fetchBTPDestinations();
 
             expect(result).toEqual(mockDestinations);
-            expect(isAppStudio).toHaveBeenCalled();
-            expect(listDestinations).toHaveBeenCalled();
+            expect(mockIsAppStudio).toHaveBeenCalled();
+            expect(mockListDestinations).toHaveBeenCalled();
         });
 
         it('should return undefined if not running in App Studio', async () => {
-            (isAppStudio as jest.Mock).mockReturnValue(false);
+            mockIsAppStudio.mockReturnValue(false);
 
             const result = await fetchBTPDestinations();
 
             expect(result).toBeUndefined();
-            expect(isAppStudio).toHaveBeenCalled();
-            expect(listDestinations).not.toHaveBeenCalled();
+            expect(mockIsAppStudio).toHaveBeenCalled();
+            expect(mockListDestinations).not.toHaveBeenCalled();
             expect(LoggerHelper.logger.warn).toHaveBeenCalledWith(t('warning.btpDestinationListWarning'));
         });
     });

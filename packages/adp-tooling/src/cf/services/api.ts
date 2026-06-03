@@ -1,8 +1,12 @@
 import * as fs from 'node:fs';
 import axios from 'axios';
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { AxiosRequestConfig } from 'axios';
 import { Cli } from '@sap/cf-tools';
+
+import { dirname } from 'node:path';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -22,10 +26,10 @@ import type {
     ServiceInfo,
     CfUi5AppInfo,
     ServiceKeyCredentialsWithTags
-} from '../../types';
-import { t } from '../../i18n';
-import { getProjectNameForXsSecurity } from '../project';
-import { createServiceKey, getServiceKeys, requestCfApi } from './cli';
+} from '../../types.js';
+import { t } from '../../i18n.js';
+import { getProjectNameForXsSecurity } from '../project/index.js';
+import { createServiceKey, getServiceKeys, requestCfApi } from './cli.js';
 
 interface FDCResponse {
     results: CFApp[];

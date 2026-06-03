@@ -1,4 +1,5 @@
 import { join, resolve } from 'node:path';
+import { jest } from '@jest/globals';
 
 const mockXml = '<edmx:Edmx Version="4.0"/>';
 const mockCwd = resolve('mock', 'cwd');
@@ -8,19 +9,19 @@ const relativeEntityDataPath = 'entityData.json';
 const absoluteEntityDataPath = resolve('absolute', 'path', 'entityData.json');
 const mockEntityData = [{ entitySetName: 'Agencies', items: [{ ID: '1' }] }];
 
-jest.mock('node:fs', () => ({
-    existsSync: jest.fn(),
-    readFileSync: jest.fn()
+const existsSyncMock = jest.fn();
+const readFileSyncMock = jest.fn();
+
+jest.unstable_mockModule('node:fs', () => ({
+    existsSync: existsSyncMock,
+    readFileSync: readFileSyncMock
 }));
 
 jest.spyOn(process, 'cwd').mockReturnValue(mockCwd);
 
 // Import after mocks are set up
-import { existsSync, readFileSync } from 'node:fs';
-import { resolveMetadata, resolveEntityData, resolveExternalServices } from '../../../src/app-headless/resolve';
-
-const existsSyncMock = existsSync as jest.Mock;
-const readFileSyncMock = readFileSync as jest.Mock;
+const { resolveMetadata, resolveEntityData, resolveExternalServices } =
+    await import('../../../src/app-headless/resolve.js');
 
 describe('resolveMetadata', () => {
     beforeEach(() => {
