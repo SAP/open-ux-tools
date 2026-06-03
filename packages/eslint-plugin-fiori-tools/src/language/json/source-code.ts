@@ -86,7 +86,6 @@ export class FioriJSONSourceCode extends JSONSourceCode {
                 // Report the final node, not value of the final node
                 return this.getNode(node.value, path.slice(1));
             }
-            return undefined;
         }
         return node;
     }
