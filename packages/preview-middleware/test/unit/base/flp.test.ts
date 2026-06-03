@@ -1885,12 +1885,7 @@ describe('initAdp', () => {
 
     test('initAdp', async () => {
         const config = { adp: { target: { url } } };
-        const flp = new FlpSandbox(
-            { adp: { target: { url } } },
-            mockAdpProject,
-            mockUtils,
-            logger
-        );
+        const flp = new FlpSandbox({ adp: { target: { url } } }, mockAdpProject, mockUtils, logger);
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
