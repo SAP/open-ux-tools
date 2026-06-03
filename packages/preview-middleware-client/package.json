@@ -14,7 +14,9 @@
     "scripts": {
         "build": "npm-run-all -l -p build:type-check build:component",
         "build:type-check": "tsc --noEmit",
-        "build:component": "ui5 build --clean-dest --exclude-task minify --exclude-task generateComponentPreload",
+        "build:component": "npm-run-all -l -s build:component:clean build:component:ui5",
+        "build:component:clean": "rimraf --glob dist",
+        "build:component:ui5": "ui5 build --exclude-task minify --exclude-task generateComponentPreload",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",

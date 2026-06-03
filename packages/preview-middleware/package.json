@@ -16,9 +16,11 @@
     "main": "dist/index.js",
     "scripts": {
         "start:fixture": "ui5 serve --config test/fixtures/simple-app/ui5.yaml",
-        "build": "npm-run-all -l -p build:middleware build:client",
+        "build": "npm-run-all -l -p build:middleware build:copy-client",
+        "build:dev": "npm-run-all -l -p build:middleware build:client build:copy-client",
         "build:middleware": "tsc --build",
-        "build:client": "pnpm -C ../preview-middleware-client run build:component && copyfiles --exclude **/*-dbg.js --up 4 \"./node_modules/@private/preview-middleware-client/dist/**/*\" \"./dist/client\"",
+        "build:copy-client": "copyfiles --exclude '**/*-dbg.js' -u 3 '../preview-middleware-client/dist/**/*' 'dist/client'",
+        "build:client": "pnpm -C ../preview-middleware-client run build:component",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo playwright-report",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
@@ -83,5 +85,8 @@
     },
     "engines": {
         "node": ">=22.x"
+    },
+    "nx": {
+        "implicitDependencies": ["@sap-ux/control-property-editor", "@sap-ux-private/preview-middleware-client"]
     }
 }
