@@ -70,19 +70,18 @@ jobs:
               id: cache-playwright-browsers
               uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
               with:
-                  path: |
-                      ${{ runner.os == 'Windows' }}:
-                        C:\Users\runneradmin\AppData\Local\ms-playwright
-                      ${{ runner.os != 'Windows' }}:
-                        ~/.cache/ms-playwright
+                  path: ${{ github.workspace }}/.ms-playwright
                   key: playwright-browsers-chromium-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
             - name: Install playwright chromium browsers
               if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
               run: npx playwright install chromium
+              env:
+                  PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.ms-playwright
             - name: Run integration tests
               run: pnpm run test:integration
               env:
                   NX_CLOUD_ACCESS_TOKEN: ${{ github.event.pull_request.head.repo.full_name == github.repository && secrets.NX_CLOUD_ACCESS_TOKEN || '' }}
+                  PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.ms-playwright
             - name: Upload playwright reports
               if: failure()
               uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
