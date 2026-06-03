@@ -19,7 +19,7 @@
         "build": "npm-run-all -l -p build:middleware build:copy-client",
         "build:dev": "npm-run-all -l -p build:middleware build:client build:copy-client",
         "build:middleware": "tsc --build",
-        "build:copy-client": "copyfiles --exclude '**/*-dbg.js' -u 3 '../preview-middleware-client/dist/**/*' 'dist/client'",
+        "build:copy-client": "copyfiles --exclude \"**/*-dbg.js\" -u 3 \"../preview-middleware-client/dist/**/*\" \"dist/client\"",
         "build:client": "pnpm -C ../preview-middleware-client run build:component",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo playwright-report",
