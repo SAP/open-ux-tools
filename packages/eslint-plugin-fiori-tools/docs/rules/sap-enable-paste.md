@@ -80,5 +80,5 @@ If you encounter an issue with this rule, please open a [GitHub issue](https://g
 
 ## Further Reading
 
-- [UI5 UI Adaptation Documentation OData V4](https://ui5.sap.com/#/topic/f6a8fd2812d9442a9bba2f6fb296c42e)
-- [UI5 UI Adaptation Documentation OData V2](https://ui5.sap.com/#/topic/181c4e6e6eaa411eb0fa0cd371726238)
+- [Copying and Pasting from External Applications to Tables OData V4](https://ui5.sap.com/#/topic/f6a8fd2812d9442a9bba2f6fb296c42e)
+- [Copying and Pasting from External Applications to Tables OData V2](https://ui5.sap.com/#/topic/181c4e6e6eaa411eb0fa0cd371726238)
