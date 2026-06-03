@@ -159,7 +159,7 @@ describe('FlpSandbox', () => {
 
     describe('init', () => {
         beforeEach(() => {
-            jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
+            mockGetProjectType.mockResolvedValue('EDMXBackend');
         });
 
         test('minimal manifest', async () => {
@@ -172,7 +172,7 @@ describe('FlpSandbox', () => {
         });
 
         test('minimal manifest with CAPNodejs project type', async () => {
-            jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+            mockGetProjectType.mockResolvedValue('CAPNodejs');
             const flp = new FlpSandbox(
                 {
                     flp: {

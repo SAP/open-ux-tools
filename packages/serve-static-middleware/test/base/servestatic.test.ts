@@ -60,8 +60,8 @@ describe('serve-static-middleware', () => {
             ]
         };
         serveStaticMiddleware('/root', config, logger);
-        expect(serveStaticMock).toHaveBeenCalledTimes(3);
-        expect(serveStaticMock.mock.calls).toMatchSnapshot();
+        expect(mockServeStatic).toHaveBeenCalledTimes(3);
+        expect(mockServeStatic.mock.calls).toMatchSnapshot();
     });
 
     test('serveStaticMiddleware: call with src path resolution', () => {
