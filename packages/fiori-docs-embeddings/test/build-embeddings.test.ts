@@ -16,7 +16,8 @@ jest.unstable_mockModule('@sap-ux/logger', () => ({
 }));
 
 jest.unstable_mockModule('@xenova/transformers', () => ({
-    pipeline: mockPipeline
+    pipeline: mockPipeline,
+    env: { cacheDir: '' }
 }));
 
 jest.unstable_mockModule('@lancedb/lancedb', () => ({

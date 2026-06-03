@@ -62,6 +62,7 @@ builder:
           transport: TR123
         exclude:
           - /test/
+          - /localService/
 ",
     "state": "modified",
   },
@@ -145,6 +146,7 @@ builder:
           transport: TR123
         exclude:
           - /test/
+          - /localService/
 ",
     "state": "modified",
   },
@@ -247,6 +249,7 @@ builder:
           transport: TR123
         exclude:
           - /test/
+          - /localService/
         lrep: MOCK_LREP
 ",
     "state": "modified",
@@ -311,6 +314,7 @@ builder:
           transport: TR123
         exclude:
           - /test/
+          - /localService/
 ",
     "state": "modified",
   },
@@ -373,6 +377,7 @@ builder:
           transport: TR123
         exclude:
           - /test/
+          - /localService/
 ",
     "state": "modified",
   },
@@ -440,6 +445,7 @@ builder:
           transport: TR123
         exclude:
           - /test/
+          - /localService/
   resources:
     excludes:
       - /test/**

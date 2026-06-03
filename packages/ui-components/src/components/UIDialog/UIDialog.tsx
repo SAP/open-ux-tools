@@ -38,7 +38,7 @@ export const DIALOG_STYLES = {
     background: 'var(--vscode-editorWidget-background)',
     boxShadow: 'var(--ui-box-shadow-medium)',
     borderColor: 'var(--vscode-editorWidget-border)',
-    borderRadius: 4,
+    borderRadius: 'var(--vscode-cornerRadius-small, 4px)',
     vPadding: 20,
     vPaddingHalf: 10,
     hPadding: 45,

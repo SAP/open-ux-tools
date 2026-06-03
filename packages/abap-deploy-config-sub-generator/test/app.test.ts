@@ -222,7 +222,7 @@ describe('Test abap deploy configuration generator', () => {
                 url: 'https://mock.system.sap:24300',
                 scp: true
             },
-            exclude: ['/test/']
+            exclude: ['/test/', '/localService/']
         });
 
         expect(showInformationSpy).toHaveBeenCalledWith(t('info.filesGenerated'), MessageType.notification);
@@ -292,7 +292,7 @@ describe('Test abap deploy configuration generator', () => {
             target: {
                 url: 'https://mock.url.target2.com'
             },
-            exclude: ['/test/']
+            exclude: ['/test/', '/localService/']
         });
     });
 
@@ -348,7 +348,7 @@ describe('Test abap deploy configuration generator', () => {
                 url: 'https://mock.system.sap:24300',
                 scp: true
             },
-            exclude: ['/test/']
+            exclude: ['/test/', '/localService/']
         });
     });
 
@@ -446,7 +446,7 @@ describe('Test abap deploy configuration generator', () => {
             target: {
                 url: 'https://mock.url.target2.com'
             },
-            exclude: ['/test/']
+            exclude: ['/test/', '/localService/']
         });
     });
 
@@ -548,7 +548,7 @@ describe('Test abap deploy configuration generator', () => {
             },
             lrep: 'apps/workcenter/appVariants/customer.app.variant',
             target: {},
-            exclude: ['/test/']
+            exclude: ['/test/', '/localService/']
         });
     });
 
@@ -649,7 +649,7 @@ describe('Test abap deploy configuration generator', () => {
             target: {
                 url: 'https://mock.system.sap:24300'
             },
-            exclude: ['/test/']
+            exclude: ['/test/', '/localService/']
         });
     });
 
