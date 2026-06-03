@@ -7,7 +7,7 @@ import { config as loadEnvConfig } from 'dotenv';
 import { getLogger } from '../../tracing/index.js';
 
 /**
- * Add the "change system" subcommand to a passed command.
+ * Add the "update system" subcommand to a passed command.
  * Updates an existing backend system in the saved systems store (~/.fioritools).
  * The system is identified by URL and optional SAP client.
  *
@@ -19,8 +19,8 @@ export function addSystemUpdateCommand(cmd: Command): void {
             `Update an existing backend system in the saved systems store (\`~/.fioritools\`). The system is identified by its URL and optional SAP client.\n
 
 Example:
-    \`npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --name "New Name"\`
-    \`npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --client 100 --username newuser\``
+    \`npx --yes @sap-ux/create@latest update system --url https://my-sap.example.com --name "New Name"\`
+    \`npx --yes @sap-ux/create@latest update system --url https://my-sap.example.com --client 100 --username newuser\``
         )
         .requiredOption('--url <string>', 'URL of the backend system to update')
         .option('--client <string>', 'SAP client number to identify the system (optional)')
