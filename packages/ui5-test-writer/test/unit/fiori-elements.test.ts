@@ -860,12 +860,13 @@ describe('ui5-test-writer', () => {
             expect(content).toContain('import opaTest from "sap/ui/test/opaQunit"');
             expect(content).toContain('import type { Given, When, Then }');
             expect(content).toContain('import runner from "./pages/JourneyRunner"');
+            // Start application uses Given + Then
             expect(content).toContain('function (Given: Given, When: When, Then: Then)');
             expect(content).not.toContain('sap.ui.define');
             expect(content).not.toContain("'use strict'");
         });
 
-        it('generates ES module page objects with correct constructor args', async () => {
+        it('generates ES module page objects as classes wrapping named action/assertion exports', async () => {
             const projectDir = prepareTestFiles('FullScreenLROP');
             fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
 
@@ -874,28 +875,31 @@ describe('ui5-test-writer', () => {
             expect(lrPagePath).toBeDefined();
 
             const lrContent = dumped[lrPagePath!].contents as string;
-            expect(lrContent).toContain('import ListReport from "sap/fe/test/ListReport"');
-            expect(lrContent).toContain('export default new ListReport(');
+            // Page files own the custom actions/assertions and the wrapper class —
+            // framework page-construction lives in JourneyRunner.ts.
             expect(lrContent).toContain('export const actions');
             expect(lrContent).toContain('export const assertions');
-            expect(lrContent).toContain('entitySet: "Employees"');
-            expect(lrContent).not.toContain('contextPath:');
+            expect(lrContent).toContain('export default class ListReport');
+            expect(lrContent).toContain('actions = actions;');
+            expect(lrContent).toContain('assertions = assertions;');
+            expect(lrContent).not.toContain('sap/fe/test/ListReport');
             expect(lrContent).not.toContain('sap.ui.define');
 
             const opPagePath = Object.keys(dumped).find((p) => p.includes('pages/EmployeesObjectPage.ts'));
             expect(opPagePath).toBeDefined();
 
             const opContent = dumped[opPagePath!].contents as string;
-            expect(opContent).toContain('import ObjectPage from "sap/fe/test/ObjectPage"');
+            expect(opContent).toContain('import type Opa5 from "sap/ui/test/Opa5"');
             expect(opContent).toContain('import Press from "sap/ui/test/actions/Press"');
-            expect(opContent).toContain('export default new ObjectPage(');
             expect(opContent).toContain('export const actions');
             expect(opContent).toContain('export const assertions');
+            expect(opContent).toContain('export default class ObjectPage');
             expect(opContent).toContain('iPressSectionIconTabFilterButton');
             expect(opContent).toContain('this: Opa5');
+            expect(opContent).not.toContain('sap/fe/test/ObjectPage');
         });
 
-        it('generates JourneyRunner.ts with ES module imports of page objects', async () => {
+        it('generates JourneyRunner.ts that constructs framework page instances with custom classes', async () => {
             const projectDir = prepareTestFiles('FullScreenLROP');
             fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
 
@@ -904,12 +908,19 @@ describe('ui5-test-writer', () => {
             expect(runnerPath).toBeDefined();
 
             const content = dumped[runnerPath!].contents as string;
+            // Framework imports
             expect(content).toContain('import JourneyRunner from "sap/fe/test/JourneyRunner"');
-            expect(content).toContain('import EmployeesList from "./EmployeesList"');
-            expect(content).toContain('import EmployeesObjectPage from "./EmployeesObjectPage"');
+            expect(content).toContain('import ListReport from "sap/fe/test/ListReport"');
+            expect(content).toContain('import ObjectPage from "sap/fe/test/ObjectPage"');
+            // Custom-class imports (renamed with `Custom` prefix to avoid shadowing the framework class)
+            expect(content).toContain('import CustomEmployeesList from "./EmployeesList"');
+            expect(content).toContain('import CustomEmployeesObjectPage from "./EmployeesObjectPage"');
+            // Each page is constructed inline with the framework class + custom class
+            expect(content).toContain('onTheEmployeesList: new ListReport(');
+            expect(content).toContain('onTheEmployeesObjectPage: new ObjectPage(');
+            expect(content).toContain('CustomEmployeesList');
+            expect(content).toContain('CustomEmployeesObjectPage');
             expect(content).toContain('export default runner');
-            expect(content).toContain('onTheEmployeesList: EmployeesList');
-            expect(content).toContain('onTheEmployeesObjectPage: EmployeesObjectPage');
             expect(content).not.toContain('sap.ui.define');
         });
 
@@ -924,18 +935,19 @@ describe('ui5-test-writer', () => {
             expect(paths.some((p) => p.includes('opaTests.qunit.ts'))).toBe(false);
         });
 
-        it('uses contextPath in page constructor when app uses contextPath', async () => {
+        it('uses contextPath in JourneyRunner page-construction when app uses contextPath', async () => {
             const projectDir = prepareTestFiles('FullScreenLROPContextPath');
             fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
 
             const dumped = fs.dump(projectDir);
-            const lrPagePath = Object.keys(dumped).find(
-                (p) => p.includes('pages/') && p.includes('List') && p.endsWith('.ts')
-            );
-            expect(lrPagePath).toBeDefined();
+            const runnerPath = Object.keys(dumped).find((p) => p.includes('pages/JourneyRunner.ts'));
+            expect(runnerPath).toBeDefined();
 
-            const content = dumped[lrPagePath!].contents as string;
+            const content = dumped[runnerPath!].contents as string;
+            // The page-definition object passed to `new ListReport(...)` includes contextPath set
+            // and entitySet empty (heimwege pattern: both fields always present, framework picks one).
             expect(content).toContain('contextPath: "/');
+            expect(content).toContain('entitySet: ""');
         });
 
         it('generates TypeScript filter tests for LROPv4 app', async () => {

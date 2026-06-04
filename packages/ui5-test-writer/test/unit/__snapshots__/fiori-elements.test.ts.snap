@@ -11566,26 +11566,19 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesList.ts": Object {
-    "contents": "import ListReport from \\"sap/fe/test/ListReport\\";
-
-export const actions = {};
+    "contents": "export const actions = {};
 
 export const assertions = {};
 
-export default new ListReport(
-    {
-        appId: \\"ui5-test-writer.test.employees\\",
-        componentId: \\"EmployeesList\\",
-        entitySet: \\"Employees\\"
-    } as ConstructorParameters<typeof ListReport>[0],
-    { actions, assertions }
-);
+export default class ListReport {
+    actions = actions;
+    assertions = assertions;
+}
 ",
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.ts": Object {
-    "contents": "import ObjectPage from \\"sap/fe/test/ObjectPage\\";
-import type Opa5 from \\"sap/ui/test/Opa5\\";
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
 export const actions = {
@@ -11599,27 +11592,41 @@ export const actions = {
 
 export const assertions = {};
 
-export default new ObjectPage(
-    {
-        appId: \\"ui5-test-writer.test.employees\\",
-        componentId: \\"EmployeesObjectPage\\",
-        entitySet: \\"Employees\\"
-    } as ConstructorParameters<typeof ObjectPage>[0],
-    { actions, assertions }
-);
+export default class ObjectPage {
+    actions = actions;
+    assertions = assertions;
+}
 ",
     "state": "modified",
   },
   "webapp/test/integration/pages/JourneyRunner.ts": Object {
     "contents": "import JourneyRunner from \\"sap/fe/test/JourneyRunner\\";
-import EmployeesList from \\"./EmployeesList\\";
-import EmployeesObjectPage from \\"./EmployeesObjectPage\\";
+import ListReport from \\"sap/fe/test/ListReport\\";
+import ObjectPage from \\"sap/fe/test/ObjectPage\\";
+import CustomEmployeesList from \\"./EmployeesList\\";
+import CustomEmployeesObjectPage from \\"./EmployeesObjectPage\\";
 
 const runner = new JourneyRunner({
     launchUrl: sap.ui.require.toUrl(\\"ui5-test-writer/test/employees\\") + \\"/index.html\\",
     pages: {
-        onTheEmployeesList: EmployeesList,
-        onTheEmployeesObjectPage: EmployeesObjectPage
+        onTheEmployeesList: new ListReport(
+            {
+                appId: \\"ui5-test-writer.test.employees\\",
+                componentId: \\"EmployeesList\\",
+                entitySet: \\"Employees\\",
+                contextPath: \\"\\"
+            },
+            CustomEmployeesList
+        ),
+        onTheEmployeesObjectPage: new ObjectPage(
+            {
+                appId: \\"ui5-test-writer.test.employees\\",
+                componentId: \\"EmployeesObjectPage\\",
+                entitySet: \\"Employees\\",
+                contextPath: \\"\\"
+            },
+            CustomEmployeesObjectPage
+        )
     },
     async: true
 });
@@ -11963,26 +11970,19 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesList.ts": Object {
-    "contents": "import ListReport from \\"sap/fe/test/ListReport\\";
-
-export const actions = {};
+    "contents": "export const actions = {};
 
 export const assertions = {};
 
-export default new ListReport(
-    {
-        appId: \\"ui5-test-writer.test.employees\\",
-        componentId: \\"EmployeesList\\",
-        entitySet: \\"Employees\\"
-    } as ConstructorParameters<typeof ListReport>[0],
-    { actions, assertions }
-);
+export default class ListReport {
+    actions = actions;
+    assertions = assertions;
+}
 ",
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.ts": Object {
-    "contents": "import ObjectPage from \\"sap/fe/test/ObjectPage\\";
-import type Opa5 from \\"sap/ui/test/Opa5\\";
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
 export const actions = {
@@ -11996,27 +11996,41 @@ export const actions = {
 
 export const assertions = {};
 
-export default new ObjectPage(
-    {
-        appId: \\"ui5-test-writer.test.employees\\",
-        componentId: \\"EmployeesObjectPage\\",
-        entitySet: \\"Employees\\"
-    } as ConstructorParameters<typeof ObjectPage>[0],
-    { actions, assertions }
-);
+export default class ObjectPage {
+    actions = actions;
+    assertions = assertions;
+}
 ",
     "state": "modified",
   },
   "webapp/test/integration/pages/JourneyRunner.ts": Object {
     "contents": "import JourneyRunner from \\"sap/fe/test/JourneyRunner\\";
-import EmployeesList from \\"./EmployeesList\\";
-import EmployeesObjectPage from \\"./EmployeesObjectPage\\";
+import ListReport from \\"sap/fe/test/ListReport\\";
+import ObjectPage from \\"sap/fe/test/ObjectPage\\";
+import CustomEmployeesList from \\"./EmployeesList\\";
+import CustomEmployeesObjectPage from \\"./EmployeesObjectPage\\";
 
 const runner = new JourneyRunner({
     launchUrl: sap.ui.require.toUrl(\\"ui5-test-writer/test/employees\\") + \\"/index.html\\",
     pages: {
-        onTheEmployeesList: EmployeesList,
-        onTheEmployeesObjectPage: EmployeesObjectPage
+        onTheEmployeesList: new ListReport(
+            {
+                appId: \\"ui5-test-writer.test.employees\\",
+                componentId: \\"EmployeesList\\",
+                entitySet: \\"Employees\\",
+                contextPath: \\"\\"
+            },
+            CustomEmployeesList
+        ),
+        onTheEmployeesObjectPage: new ObjectPage(
+            {
+                appId: \\"ui5-test-writer.test.employees\\",
+                componentId: \\"EmployeesObjectPage\\",
+                entitySet: \\"Employees\\",
+                contextPath: \\"\\"
+            },
+            CustomEmployeesObjectPage
+        )
     },
     async: true
 });
@@ -12360,26 +12374,19 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesList.ts": Object {
-    "contents": "import ListReport from \\"sap/fe/test/ListReport\\";
-
-export const actions = {};
+    "contents": "export const actions = {};
 
 export const assertions = {};
 
-export default new ListReport(
-    {
-        appId: \\"ui5-test-writer.test.employees\\",
-        componentId: \\"EmployeesList\\",
-        contextPath: \\"/Employees\\"
-    } as ConstructorParameters<typeof ListReport>[0],
-    { actions, assertions }
-);
+export default class ListReport {
+    actions = actions;
+    assertions = assertions;
+}
 ",
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.ts": Object {
-    "contents": "import ObjectPage from \\"sap/fe/test/ObjectPage\\";
-import type Opa5 from \\"sap/ui/test/Opa5\\";
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
 export const actions = {
@@ -12393,27 +12400,41 @@ export const actions = {
 
 export const assertions = {};
 
-export default new ObjectPage(
-    {
-        appId: \\"ui5-test-writer.test.employees\\",
-        componentId: \\"EmployeesObjectPage\\",
-        contextPath: \\"/Employees\\"
-    } as ConstructorParameters<typeof ObjectPage>[0],
-    { actions, assertions }
-);
+export default class ObjectPage {
+    actions = actions;
+    assertions = assertions;
+}
 ",
     "state": "modified",
   },
   "webapp/test/integration/pages/JourneyRunner.ts": Object {
     "contents": "import JourneyRunner from \\"sap/fe/test/JourneyRunner\\";
-import EmployeesList from \\"./EmployeesList\\";
-import EmployeesObjectPage from \\"./EmployeesObjectPage\\";
+import ListReport from \\"sap/fe/test/ListReport\\";
+import ObjectPage from \\"sap/fe/test/ObjectPage\\";
+import CustomEmployeesList from \\"./EmployeesList\\";
+import CustomEmployeesObjectPage from \\"./EmployeesObjectPage\\";
 
 const runner = new JourneyRunner({
     launchUrl: sap.ui.require.toUrl(\\"ui5-test-writer/test/employees\\") + \\"/index.html\\",
     pages: {
-        onTheEmployeesList: EmployeesList,
-        onTheEmployeesObjectPage: EmployeesObjectPage
+        onTheEmployeesList: new ListReport(
+            {
+                appId: \\"ui5-test-writer.test.employees\\",
+                componentId: \\"EmployeesList\\",
+                entitySet: \\"\\",
+                contextPath: \\"/Employees\\"
+            },
+            CustomEmployeesList
+        ),
+        onTheEmployeesObjectPage: new ObjectPage(
+            {
+                appId: \\"ui5-test-writer.test.employees\\",
+                componentId: \\"EmployeesObjectPage\\",
+                entitySet: \\"\\",
+                contextPath: \\"/Employees\\"
+            },
+            CustomEmployeesObjectPage
+        )
     },
     async: true
 });
@@ -12731,31 +12752,34 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesList.ts": Object {
-    "contents": "import ListReport from \\"sap/fe/test/ListReport\\";
-
-export const actions = {};
+    "contents": "export const actions = {};
 
 export const assertions = {};
 
-export default new ListReport(
-    {
-        appId: \\"ui5-test-writer.test.employees\\",
-        componentId: \\"EmployeesList\\",
-        entitySet: \\"Employees\\"
-    } as ConstructorParameters<typeof ListReport>[0],
-    { actions, assertions }
-);
+export default class ListReport {
+    actions = actions;
+    assertions = assertions;
+}
 ",
     "state": "modified",
   },
   "webapp/test/integration/pages/JourneyRunner.ts": Object {
     "contents": "import JourneyRunner from \\"sap/fe/test/JourneyRunner\\";
-import EmployeesList from \\"./EmployeesList\\";
+import ListReport from \\"sap/fe/test/ListReport\\";
+import CustomEmployeesList from \\"./EmployeesList\\";
 
 const runner = new JourneyRunner({
     launchUrl: sap.ui.require.toUrl(\\"ui5-test-writer/test/employees\\") + \\"/index.html\\",
     pages: {
-        onTheEmployeesList: EmployeesList
+        onTheEmployeesList: new ListReport(
+            {
+                appId: \\"ui5-test-writer.test.employees\\",
+                componentId: \\"EmployeesList\\",
+                entitySet: \\"Employees\\",
+                contextPath: \\"\\"
+            },
+            CustomEmployeesList
+        )
     },
     async: true
 });
@@ -13138,26 +13162,19 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesList.ts": Object {
-    "contents": "import ListReport from \\"sap/fe/test/ListReport\\";
-
-export const actions = {};
+    "contents": "export const actions = {};
 
 export const assertions = {};
 
-export default new ListReport(
-    {
-        appId: \\"vesc.demo.employee.project2\\",
-        componentId: \\"EmployeesList\\",
-        entitySet: \\"Employees\\"
-    } as ConstructorParameters<typeof ListReport>[0],
-    { actions, assertions }
-);
+export default class ListReport {
+    actions = actions;
+    assertions = assertions;
+}
 ",
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.ts": Object {
-    "contents": "import ObjectPage from \\"sap/fe/test/ObjectPage\\";
-import type Opa5 from \\"sap/ui/test/Opa5\\";
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
 export const actions = {
@@ -13171,31 +13188,61 @@ export const actions = {
 
 export const assertions = {};
 
-export default new ObjectPage(
-    {
-        appId: \\"vesc.demo.employee.project2\\",
-        componentId: \\"EmployeesObjectPage\\",
-        entitySet: \\"Employees\\"
-    } as ConstructorParameters<typeof ObjectPage>[0],
-    { actions, assertions }
-);
+export default class ObjectPage {
+    actions = actions;
+    assertions = assertions;
+}
 ",
     "state": "modified",
   },
   "webapp/test/integration/pages/JourneyRunner.ts": Object {
     "contents": "import JourneyRunner from \\"sap/fe/test/JourneyRunner\\";
-import EmployeesList from \\"./EmployeesList\\";
-import EmployeesObjectPage from \\"./EmployeesObjectPage\\";
-import PositionsObjectPage from \\"./PositionsObjectPage\\";
-import TrainingsObjectPage from \\"./TrainingsObjectPage\\";
+import ListReport from \\"sap/fe/test/ListReport\\";
+import ObjectPage from \\"sap/fe/test/ObjectPage\\";
+import CustomEmployeesList from \\"./EmployeesList\\";
+import CustomEmployeesObjectPage from \\"./EmployeesObjectPage\\";
+import CustomPositionsObjectPage from \\"./PositionsObjectPage\\";
+import CustomTrainingsObjectPage from \\"./TrainingsObjectPage\\";
 
 const runner = new JourneyRunner({
     launchUrl: sap.ui.require.toUrl(\\"vesc/demo/employee/project2\\") + \\"/index.html\\",
     pages: {
-        onTheEmployeesList: EmployeesList,
-        onTheEmployeesObjectPage: EmployeesObjectPage,
-        onThePositionsObjectPage: PositionsObjectPage,
-        onTheTrainingsObjectPage: TrainingsObjectPage
+        onTheEmployeesList: new ListReport(
+            {
+                appId: \\"vesc.demo.employee.project2\\",
+                componentId: \\"EmployeesList\\",
+                entitySet: \\"Employees\\",
+                contextPath: \\"\\"
+            },
+            CustomEmployeesList
+        ),
+        onTheEmployeesObjectPage: new ObjectPage(
+            {
+                appId: \\"vesc.demo.employee.project2\\",
+                componentId: \\"EmployeesObjectPage\\",
+                entitySet: \\"Employees\\",
+                contextPath: \\"\\"
+            },
+            CustomEmployeesObjectPage
+        ),
+        onThePositionsObjectPage: new ObjectPage(
+            {
+                appId: \\"vesc.demo.employee.project2\\",
+                componentId: \\"PositionsObjectPage\\",
+                entitySet: \\"Positions\\",
+                contextPath: \\"\\"
+            },
+            CustomPositionsObjectPage
+        ),
+        onTheTrainingsObjectPage: new ObjectPage(
+            {
+                appId: \\"vesc.demo.employee.project2\\",
+                componentId: \\"TrainingsObjectPage\\",
+                entitySet: \\"Trainings\\",
+                contextPath: \\"\\"
+            },
+            CustomTrainingsObjectPage
+        )
     },
     async: true
 });
@@ -13205,8 +13252,7 @@ export default runner;
     "state": "modified",
   },
   "webapp/test/integration/pages/PositionsObjectPage.ts": Object {
-    "contents": "import ObjectPage from \\"sap/fe/test/ObjectPage\\";
-import type Opa5 from \\"sap/ui/test/Opa5\\";
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
 export const actions = {
@@ -13220,20 +13266,15 @@ export const actions = {
 
 export const assertions = {};
 
-export default new ObjectPage(
-    {
-        appId: \\"vesc.demo.employee.project2\\",
-        componentId: \\"PositionsObjectPage\\",
-        entitySet: \\"Positions\\"
-    } as ConstructorParameters<typeof ObjectPage>[0],
-    { actions, assertions }
-);
+export default class ObjectPage {
+    actions = actions;
+    assertions = assertions;
+}
 ",
     "state": "modified",
   },
   "webapp/test/integration/pages/TrainingsObjectPage.ts": Object {
-    "contents": "import ObjectPage from \\"sap/fe/test/ObjectPage\\";
-import type Opa5 from \\"sap/ui/test/Opa5\\";
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
 export const actions = {
@@ -13247,14 +13288,10 @@ export const actions = {
 
 export const assertions = {};
 
-export default new ObjectPage(
-    {
-        appId: \\"vesc.demo.employee.project2\\",
-        componentId: \\"TrainingsObjectPage\\",
-        entitySet: \\"Trainings\\"
-    } as ConstructorParameters<typeof ObjectPage>[0],
-    { actions, assertions }
-);
+export default class ObjectPage {
+    actions = actions;
+    assertions = assertions;
+}
 ",
     "state": "modified",
   },

@@ -1,4 +1,3 @@
-import ObjectPage from "sap/fe/test/ObjectPage";
 import type Opa5 from "sap/ui/test/Opa5";
 import Press from "sap/ui/test/actions/Press";
 
@@ -13,12 +12,7 @@ export const actions = {
 
 export const assertions = {};
 
-export default new ObjectPage(
-    {
-        appId: "<%- appID %>",
-        componentId: "<%- componentID %>",<% if (locals.contextPath) { %>
-        contextPath: "<%- contextPath %>"<% } else if (locals.entitySet) { %>
-        entitySet: "<%- entitySet %>"<% } %>
-    } as ConstructorParameters<typeof ObjectPage>[0],
-    { actions, assertions }
-);
+export default class ObjectPage {
+    actions = actions;
+    assertions = assertions;
+}

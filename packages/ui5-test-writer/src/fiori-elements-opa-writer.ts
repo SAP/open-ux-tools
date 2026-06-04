@@ -503,7 +503,15 @@ function ensurePageExists(
     const pageConfig = config.pages.find((p) => p.targetKey === featureName);
     if (pageConfig) {
         writePageObject(pageConfig, rootV4TemplateDirPath, testOutDirPath, editor, dotFileExtension);
-        return { targetKey: featureName, appPath: config.appPath };
+        return {
+            targetKey: featureName,
+            appPath: config.appPath,
+            template: pageConfig.template,
+            appID: config.appID,
+            componentID: pageConfig.componentID,
+            entitySet: pageConfig.entitySet,
+            contextPath: pageConfig.contextPath
+        };
     }
     return undefined;
 }

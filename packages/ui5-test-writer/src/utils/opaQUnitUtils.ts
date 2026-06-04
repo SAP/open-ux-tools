@@ -197,13 +197,23 @@ const getJourneyRunnerFilePath = (dotFileExtension: DotFileExtension): string =>
     join('integration', 'pages', `JourneyRunner${dotFileExtension}`);
 
 /**
- * Page entry to splice into an existing JourneyRunner.js.
+ * Page entry to splice into an existing JourneyRunner.js / JourneyRunner.ts.
  */
 export interface JourneyRunnerPage {
     /** The page's targetKey, used as both the variable name and `onThe<targetKey>` key */
     targetKey: string;
     /** The app module path prefix (e.g. "project1/test/integration/pages") */
     appPath: string;
+    /** The framework page template (`'ListReport'` or `'ObjectPage'`); used by the TS splicer to construct `new <FW>(definition, Custom<Page>)`. */
+    template?: string;
+    /** The app id (sap.app.id from the manifest); only needed by the TS splicer. */
+    appID?: string;
+    /** The component id (defined in the target section); only needed by the TS splicer. */
+    componentID?: string;
+    /** The entity set name (if the page uses an entitySet rather than a contextPath); only needed by the TS splicer. */
+    entitySet?: string;
+    /** The context path (if the page uses a contextPath rather than an entitySet); only needed by the TS splicer. */
+    contextPath?: string;
 }
 
 /**
@@ -320,7 +330,7 @@ export function splicePageIntoJourneyRunnerTs(fileContent: string, pages: Journe
     if (fileContent.length > MAX_FILE_CONTENT_LENGTH) {
         return fileContent;
     }
-    // Determine which pages are not yet present by checking for their default import line
+    // Determine which pages are not yet present by checking for their `Custom<Page>` import line
     const toAdd = pages.filter((page) => {
         const importPattern = new RegExp(`from\\s+"\\./${page.targetKey}"`);
         return !importPattern.test(fileContent);
@@ -331,6 +341,12 @@ export function splicePageIntoJourneyRunnerTs(fileContent: string, pages: Journe
     }
 
     let result = fileContent;
+
+    // Determine which framework imports (ListReport / ObjectPage) are missing and need to be added.
+    const frameworkTemplates = Array.from(
+        new Set(toAdd.map((page) => page.template).filter((t): t is string => Boolean(t)))
+    );
+    const missingFrameworkImports = frameworkTemplates.filter((tpl) => !result.includes(`from "sap/fe/test/${tpl}"`));
 
     // 1. Insert imports after the last existing `import ... from "..."` line.
     //    Uses `\b` word boundaries (zero-width) around `import` and `from` so the
@@ -344,29 +360,60 @@ export function splicePageIntoJourneyRunnerTs(fileContent: string, pages: Journe
         lastImportEnd = importMatch.index + importMatch[0].length;
     }
     if (lastImportEnd >= 0) {
-        const newImports = toAdd.map((page) => `\nimport ${page.targetKey} from "./${page.targetKey}";`).join('');
+        const frameworkImports = missingFrameworkImports.map((tpl) => `\nimport ${tpl} from "sap/fe/test/${tpl}";`);
+        const customImports = toAdd.map((page) => `\nimport Custom${page.targetKey} from "./${page.targetKey}";`);
+        const newImports = [...frameworkImports, ...customImports].join('');
         result = `${result.slice(0, lastImportEnd)}${newImports}${result.slice(lastImportEnd)}`;
     }
 
-    // 2. Splice into the pages object: `pages: { onTheFoo: Foo, ... }`.
-    //    Captures everything between `pages: {` and the closing `}`.
-    const pagesObjectRegex = /pages\s*:\s*\{([^}]*)\}/d;
-    const pagesMatch = pagesObjectRegex.exec(result);
-    if (pagesMatch?.indices?.[1]) {
-        const [, pagesBodyEnd] = pagesMatch.indices[1];
-        const pagesBody = result.slice(pagesMatch.indices[1][0], pagesBodyEnd);
+    // 2. Splice into the pages object: `pages: { ... }`.
+    //    The pages object now contains nested `{}` (the page-definition object) so we
+    //    walk forward from `pages: {` counting braces to find the matching closing `}`.
+    const pagesStartMatch = /pages\s*:\s*\{/.exec(result);
+    if (pagesStartMatch) {
+        const openBraceIdx = result.indexOf('{', pagesStartMatch.index);
+        let depth = 1;
+        let i = openBraceIdx + 1;
+        while (i < result.length && depth > 0) {
+            const ch = result[i];
+            if (ch === '{') {
+                depth++;
+            } else if (ch === '}') {
+                depth--;
+            }
+            if (depth === 0) {
+                break;
+            }
+            i++;
+        }
+        const pagesBodyEnd = i; // position of the matching `}`
+        const pagesBody = result.slice(openBraceIdx + 1, pagesBodyEnd);
 
         // Detect indentation from the first existing page entry
         const pageIndentMatch = /^([ \t]+)on/m.exec(pagesBody);
         const pageIndent = pageIndentMatch ? pageIndentMatch[1] : '        ';
+        const innerIndent = pageIndent + '    ';
 
         const newPageEntries = toAdd
-            .map((page) => `${pageIndent}onThe${page.targetKey}: ${page.targetKey},`)
-            .join('\n');
+            .map((page) => {
+                const fw = page.template ?? 'ListReport';
+                return [
+                    `${pageIndent}onThe${page.targetKey}: new ${fw}(`,
+                    `${innerIndent}{`,
+                    `${innerIndent}    appId: "${page.appID ?? ''}",`,
+                    `${innerIndent}    componentId: "${page.componentID ?? ''}",`,
+                    `${innerIndent}    entitySet: "${page.entitySet ?? ''}",`,
+                    `${innerIndent}    contextPath: "${page.contextPath ?? ''}"`,
+                    `${innerIndent}},`,
+                    `${innerIndent}Custom${page.targetKey}`,
+                    `${pageIndent})`
+                ].join('\n');
+            })
+            .join(',\n');
 
         // Ensure the last existing entry ends with a comma before we insert after it.
         const trimmedPagesEnd = result.slice(0, pagesBodyEnd).trimEnd();
-        const needsComma = !trimmedPagesEnd.endsWith(',');
+        const needsComma = !trimmedPagesEnd.endsWith(',') && !trimmedPagesEnd.endsWith('{');
         const commaFix = needsComma ? ',' : '';
         const trailingWhitespace = result.slice(trimmedPagesEnd.length, pagesBodyEnd);
         result =

@@ -480,14 +480,32 @@ describe('splicePageIntoJourneyRunner()', () => {
 
 /** Realistic JourneyRunner.ts matching what the TS template generates */
 const JOURNEY_RUNNER_TS_FILE = `import JourneyRunner from "sap/fe/test/JourneyRunner";
-import TravelList from "./TravelList";
-import TravelObjectPage from "./TravelObjectPage";
+import ListReport from "sap/fe/test/ListReport";
+import ObjectPage from "sap/fe/test/ObjectPage";
+import CustomTravelList from "./TravelList";
+import CustomTravelObjectPage from "./TravelObjectPage";
 
 const runner = new JourneyRunner({
     launchUrl: sap.ui.require.toUrl("myApp") + "/index.html",
     pages: {
-        onTheTravelList: TravelList,
-        onTheTravelObjectPage: TravelObjectPage
+        onTheTravelList: new ListReport(
+            {
+                appId: "myApp",
+                componentId: "TravelList",
+                entitySet: "",
+                contextPath: "/Travel"
+            },
+            CustomTravelList
+        ),
+        onTheTravelObjectPage: new ObjectPage(
+            {
+                appId: "myApp",
+                componentId: "TravelObjectPage",
+                entitySet: "",
+                contextPath: "/Travel"
+            },
+            CustomTravelObjectPage
+        )
     },
     async: true
 });
@@ -512,49 +530,95 @@ describe('splicePageIntoJourneyRunnerTs()', () => {
 
     test('adds a new page to both import block and pages object', () => {
         const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
-            { targetKey: 'NewPage', appPath: 'myApp' }
+            {
+                targetKey: 'NewPage',
+                appPath: 'myApp',
+                template: 'ObjectPage',
+                appID: 'myApp',
+                componentID: 'NewPage',
+                contextPath: '/New'
+            }
         ]);
 
-        // New default-import line follows the existing imports
-        expect(result).toContain('import NewPage from "./NewPage";');
-        // New entry inside pages: { ... }
-        expect(result).toContain('onTheNewPage: NewPage,');
+        // Custom-class import follows the existing imports
+        expect(result).toContain('import CustomNewPage from "./NewPage";');
+        // New entry inside pages: { ... } constructs the framework instance
+        expect(result).toMatch(/onTheNewPage:\s*new ObjectPage\(/);
+        expect(result).toContain('CustomNewPage');
+        expect(result).toContain('contextPath: "/New"');
     });
 
     test('adds multiple new pages', () => {
         const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
-            { targetKey: 'PageA', appPath: 'myApp' },
-            { targetKey: 'PageB', appPath: 'myApp' }
+            {
+                targetKey: 'PageA',
+                appPath: 'myApp',
+                template: 'ListReport',
+                appID: 'myApp',
+                componentID: 'PageA',
+                entitySet: 'A'
+            },
+            {
+                targetKey: 'PageB',
+                appPath: 'myApp',
+                template: 'ObjectPage',
+                appID: 'myApp',
+                componentID: 'PageB',
+                contextPath: '/B'
+            }
         ]);
 
-        expect(result).toContain('import PageA from "./PageA";');
-        expect(result).toContain('import PageB from "./PageB";');
-        expect(result).toContain('onThePageA: PageA,');
-        expect(result).toContain('onThePageB: PageB,');
+        expect(result).toContain('import CustomPageA from "./PageA";');
+        expect(result).toContain('import CustomPageB from "./PageB";');
+        expect(result).toMatch(/onThePageA:\s*new ListReport\(/);
+        expect(result).toMatch(/onThePageB:\s*new ObjectPage\(/);
+        expect(result).toContain('entitySet: "A"');
+        expect(result).toContain('contextPath: "/B"');
     });
 
     test('skips pages already present when adding new ones', () => {
         const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
-            { targetKey: 'TravelList', appPath: 'myApp' },
-            { targetKey: 'NewPage', appPath: 'myApp' }
+            {
+                targetKey: 'TravelList',
+                appPath: 'myApp',
+                template: 'ListReport',
+                appID: 'myApp',
+                componentID: 'TravelList',
+                contextPath: '/Travel'
+            },
+            {
+                targetKey: 'NewPage',
+                appPath: 'myApp',
+                template: 'ObjectPage',
+                appID: 'myApp',
+                componentID: 'NewPage',
+                contextPath: '/New'
+            }
         ]);
 
         // Existing import not duplicated
-        const travelListImports = result.match(/import TravelList from/g) ?? [];
+        const travelListImports = result.match(/import CustomTravelList from/g) ?? [];
         expect(travelListImports.length).toBe(1);
         // New entry inserted
-        expect(result).toContain('import NewPage from "./NewPage";');
-        expect(result).toContain('onTheNewPage: NewPage,');
+        expect(result).toContain('import CustomNewPage from "./NewPage";');
+        expect(result).toMatch(/onTheNewPage:\s*new ObjectPage\(/);
     });
 
     test('inserts new imports after the last existing import line', () => {
         const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
-            { targetKey: 'NewPage', appPath: 'myApp' }
+            {
+                targetKey: 'NewPage',
+                appPath: 'myApp',
+                template: 'ObjectPage',
+                appID: 'myApp',
+                componentID: 'NewPage',
+                contextPath: '/New'
+            }
         ]);
 
         const lines = result.split('\n');
-        const lastTravelImportIdx = lines.findIndex((l) => l.includes('import TravelObjectPage from'));
-        const newPageImportIdx = lines.findIndex((l) => l.includes('import NewPage from'));
+        const lastTravelImportIdx = lines.findIndex((l) => l.includes('import CustomTravelObjectPage from'));
+        const newPageImportIdx = lines.findIndex((l) => l.includes('import CustomNewPage from'));
         expect(newPageImportIdx).toBe(lastTravelImportIdx + 1);
     });
 
@@ -644,11 +708,28 @@ describe('addPagesToJourneyRunner()', () => {
     test('reads JourneyRunner.ts and writes updated content when dotFileExtension is TS', () => {
         const tsFilePath = join(testOutDirPath, 'integration', 'pages', 'JourneyRunner.ts');
         const fs = makeFsMock(JOURNEY_RUNNER_TS_FILE) as unknown as Editor;
-        addPagesToJourneyRunner([{ targetKey: 'NewPage', appPath: 'myApp' }], testOutDirPath, fs, DotFileExtension.TS);
+        addPagesToJourneyRunner(
+            [
+                {
+                    targetKey: 'NewPage',
+                    appPath: 'myApp',
+                    template: 'ObjectPage',
+                    appID: 'myApp',
+                    componentID: 'NewPage',
+                    contextPath: '/New'
+                }
+            ],
+            testOutDirPath,
+            fs,
+            DotFileExtension.TS
+        );
 
         expect(fs.read).toHaveBeenCalledWith(tsFilePath);
-        expect(fs.write).toHaveBeenCalledWith(tsFilePath, expect.stringContaining('import NewPage from "./NewPage";'));
-        expect(fs.write).toHaveBeenCalledWith(tsFilePath, expect.stringContaining('onTheNewPage: NewPage,'));
+        expect(fs.write).toHaveBeenCalledWith(
+            tsFilePath,
+            expect.stringContaining('import CustomNewPage from "./NewPage";')
+        );
+        expect(fs.write).toHaveBeenCalledWith(tsFilePath, expect.stringMatching(/onTheNewPage:\s*new ObjectPage\(/));
     });
 
     test('does not write when all pages already exist in TS JourneyRunner', () => {
