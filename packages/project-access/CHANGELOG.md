@@ -1,5 +1,21 @@
 # @sap-ux/project-access
 
+## 2.1.0
+
+### Minor Changes
+
+- b326a9a: fix(project-access): restore strict types from `@ui5/manifest` for the `Manifest` and `ManifestNamespace` exports
+
+    Removes the local ambient module declaration that was redeclaring `@ui5/manifest`
+    with permissive `[key: string]: any` shapes (and an optional `'sap.app'`).
+    Consumers now receive the real, strict types shipped by `@ui5/manifest`. This
+    matches the pre-ESM behaviour and brings back accurate compile-time checking
+    of manifest structures (e.g. `Manifest['sap.app']` is required again).
+
+    `@ui5/manifest` is also promoted from `devDependencies` to `dependencies`
+    because the emitted `.d.ts` files reference its types, so consumers now need
+    the package available at type-check time.
+
 ## 2.0.3
 
 ### Patch Changes
