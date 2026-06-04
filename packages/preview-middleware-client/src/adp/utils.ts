@@ -1,7 +1,7 @@
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import FlexUtils from 'sap/ui/fl/Utils';
-import type FlexCommand from 'sap/ui/rta/command/FlexCommand.js';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import IsReuseComponentApi from 'sap/ui/rta/util/isReuseComponent';
