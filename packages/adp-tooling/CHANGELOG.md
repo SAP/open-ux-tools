@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 1.0.7
+
+### Patch Changes
+
+- fb84c0e: chore: enhance incomplete destination service key credentials error message
+
 ## 1.0.6
 
 ### Patch Changes
