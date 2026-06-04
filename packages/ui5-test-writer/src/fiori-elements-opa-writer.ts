@@ -426,16 +426,6 @@ function writeCommonAndPageFiles(
         writePageObject(page, rootV4TemplateDirPath, testOutDirPath, editor);
     });
 
-    editor.copyTpl(
-        join(rootV4TemplateDirPath, 'integration', 'FirstJourney.js'),
-        join(testOutDirPath, 'integration', `${config.opaJourneyFileName}.js`),
-        journeyParams,
-        undefined,
-        {
-            globOptions: { dot: true }
-        }
-    );
-
     // Journey Runner
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration', 'pages', 'JourneyRunner.js'),
@@ -571,6 +561,18 @@ function writeJourneyFiles(
 
     if (newPages.length > 0) {
         addPagesToJourneyRunner(newPages, testOutDirPath, editor);
+    }
+
+    if (generatedJourneyPages.length === 0) {
+        editor.copyTpl(
+            join(rootV4TemplateDirPath, 'integration', 'FirstJourney.js'),
+            join(testOutDirPath, 'integration', `${config.opaJourneyFileName}.js`),
+            journeyParams,
+            undefined,
+            {
+                globOptions: { dot: true }
+            }
+        );
     }
 
     if (!virtualOPA5Configured) {

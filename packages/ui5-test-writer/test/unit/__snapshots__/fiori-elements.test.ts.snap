@@ -12868,44 +12868,6 @@ server:
 ",
     "state": "modified",
   },
-  "webapp/test/integration/FirstJourney.js": Object {
-    "contents": "sap.ui.define([
-    \\"sap/ui/test/opaQunit\\",
-    \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
-    \\"use strict\\";
-
-    function journey() {
-        QUnit.module(\\"First journey\\");
-
-        opaTest(\\"Start application\\", function (Given, When, Then) {
-            Given.iStartMyApp();
-            Then.onTheTravelList.iSeeThisPage();
-        });
-
-
-        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
-            // Note: this test will fail if the ListReport page doesn't show any data
-            
-            When.onTheTravelList.onFilterBar().iExecuteSearch();
-            
-            Then.onTheTravelList.onTable().iCheckRows();
-
-            When.onTheTravelList.onTable().iPressRow(0);
-            Then.onTheTravelObjectPage.iSeeThisPage();
-
-        });
-
-        opaTest(\\"Teardown\\", function (Given, When, Then) { 
-            // Cleanup
-            Given.iTearDownMyApp();
-        });
-    }
-
-    runner.run([journey]);
-});",
-    "state": "modified",
-  },
   "webapp/test/integration/TravelListJourney.js": Object {
     "contents": "/******************************************************************************
  * ╔═══════════════════════════════════════════════════════════════════════╗ *
@@ -13044,7 +13006,6 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    \\"project1/test/integration/FirstJourney\\",
     \\"project1/test/integration/TravelListJourney\\",
 ], function (QUnit) {
     \\"use strict\\";
@@ -14752,44 +14713,6 @@ server:
 ",
     "state": "modified",
   },
-  "webapp/test/integration/FirstJourney.js": Object {
-    "contents": "sap.ui.define([
-    \\"sap/ui/test/opaQunit\\",
-    \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
-    \\"use strict\\";
-
-    function journey() {
-        QUnit.module(\\"First journey\\");
-
-        opaTest(\\"Start application\\", function (Given, When, Then) {
-            Given.iStartMyApp();
-            Then.onTheTravelList.iSeeThisPage();
-        });
-
-
-        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
-            // Note: this test will fail if the ListReport page doesn't show any data
-            
-            When.onTheTravelList.onFilterBar().iExecuteSearch();
-            
-            Then.onTheTravelList.onTable().iCheckRows();
-
-            When.onTheTravelList.onTable().iPressRow(0);
-            Then.onTheTravelObjectPage.iSeeThisPage();
-
-        });
-
-        opaTest(\\"Teardown\\", function (Given, When, Then) { 
-            // Cleanup
-            Given.iTearDownMyApp();
-        });
-    }
-
-    runner.run([journey]);
-});",
-    "state": "modified",
-  },
   "webapp/test/integration/TravelListJourney.js": Object {
     "contents": "/******************************************************************************
  * ╔═══════════════════════════════════════════════════════════════════════╗ *
@@ -14917,7 +14840,6 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    \\"project1/test/integration/FirstJourney\\",
     \\"project1/test/integration/TravelListJourney\\",
 ], function (QUnit) {
     \\"use strict\\";
@@ -16626,42 +16548,6 @@ server:
 ",
     "state": "modified",
   },
-  "webapp/test/integration/FirstJourney.js": Object {
-    "contents": "sap.ui.define([
-    \\"sap/ui/test/opaQunit\\",
-    \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
-    \\"use strict\\";
-
-    function journey() {
-        QUnit.module(\\"First journey\\");
-
-        opaTest(\\"Start application\\", function (Given, When, Then) {
-            Given.iStartMyApp();
-            Then.onTheTravelList.iSeeThisPage();
-        });
-
-
-        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
-            // Note: this test will fail if the ListReport page doesn't show any data
-            
-            Then.onTheTravelList.onTable().iCheckRows();
-
-            When.onTheTravelList.onTable().iPressRow(0);
-            Then.onTheTravelObjectPage.iSeeThisPage();
-
-        });
-
-        opaTest(\\"Teardown\\", function (Given, When, Then) { 
-            // Cleanup
-            Given.iTearDownMyApp();
-        });
-    }
-
-    runner.run([journey]);
-});",
-    "state": "modified",
-  },
   "webapp/test/integration/TravelListJourney.js": Object {
     "contents": "/******************************************************************************
  * ╔═══════════════════════════════════════════════════════════════════════╗ *
@@ -16782,7 +16668,6 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    \\"project1/test/integration/FirstJourney\\",
     \\"project1/test/integration/TravelListJourney\\",
 ], function (QUnit) {
     \\"use strict\\";

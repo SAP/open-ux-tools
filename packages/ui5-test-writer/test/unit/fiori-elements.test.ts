@@ -224,9 +224,9 @@ describe('ui5-test-writer', () => {
             fs = await generateOPAFiles(projectDir, {}, metadata, fs);
 
             expect(fs.dump(projectDir)).toMatchSnapshot();
-            const firstJourneyContent =
-                fs.dump()['test/test-output/Worklistv4/webapp/test/integration/FirstJourney.js'].contents;
-            expect(firstJourneyContent).not.toContain('iCheckFilterField');
+            const travelListJourneyContent =
+                fs.dump()['test/test-output/Worklistv4/webapp/test/integration/TravelListJourney.js'].contents;
+            expect(travelListJourneyContent).not.toContain('iCheckFilterField');
         });
 
         it('generates filter tests for LROPv4 app', async () => {
