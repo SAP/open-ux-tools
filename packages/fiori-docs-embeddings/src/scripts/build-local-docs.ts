@@ -2,6 +2,7 @@
 
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { XMLParser } from 'fast-xml-parser';
 import * as readline from 'node:readline';
@@ -1036,7 +1037,7 @@ class FpmDocumentationBuilder {
 }
 
 // Run the builder
-const isMainModule = import.meta.url === `file://${process.argv[1]}`;
+const isMainModule = fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
 if (isMainModule) {
     const logger = new ToolsLogger();
     const builder = new FpmDocumentationBuilder();
