@@ -11,7 +11,7 @@ jest.unstable_mockModule('@sap-ux/logger', () => ({
     ToolsLogger: jest.fn().mockImplementation(() => mockLogger)
 }));
 
-const mockWriteFile = jest.fn();
+const mockWriteFile = jest.fn() as jest.Mock;
 jest.unstable_mockModule('node:fs/promises', () => ({
     writeFile: mockWriteFile
 }));
@@ -37,7 +37,7 @@ describe('download readme from npmjs', () => {
             })
         } as any);
 
-        const script = await import('../src/scripts/load-readme-from-npm');
+        const script = await import('../src/scripts/load-readme-from-npm.js');
         await script.execution;
 
         expect(mockLogger.info).toHaveBeenCalledWith(`Fetching README for ${testPackageName}...`);
@@ -56,7 +56,7 @@ describe('download readme from npmjs', () => {
             statusText: 'Not Found'
         } as any);
 
-        const script = await import('../src/scripts/load-readme-from-npm');
+        const script = await import('../src/scripts/load-readme-from-npm.js');
         await script.execution;
 
         expect(mockLogger.error).toHaveBeenCalledWith(`Failed to fetch package: Not Found.`);
@@ -67,7 +67,7 @@ describe('download readme from npmjs', () => {
         const fetchError = new Error('Network error');
         global.fetch = jest.fn<typeof fetch>().mockRejectedValue(fetchError);
 
-        const script = await import('../src/scripts/load-readme-from-npm');
+        const script = await import('../src/scripts/load-readme-from-npm.js');
         await script.execution;
 
         expect(mockLogger.error).toHaveBeenCalledWith(
@@ -82,7 +82,7 @@ describe('download readme from npmjs', () => {
             json: jest.fn().mockResolvedValue({})
         } as any);
 
-        const script = await import('../src/scripts/load-readme-from-npm');
+        const script = await import('../src/scripts/load-readme-from-npm.js');
         await script.execution;
 
         expect(mockLogger.error).toHaveBeenCalledWith(`Could not find README content for ${testPackageName}.`);
@@ -98,7 +98,7 @@ describe('download readme from npmjs', () => {
         } as any);
         mockWriteFile.mockRejectedValue(new Error('Permission denied'));
 
-        const script = await import('../src/scripts/load-readme-from-npm');
+        const script = await import('../src/scripts/load-readme-from-npm.js');
         await script.execution;
 
         const expectedFileName = `${testPackageName.split('/').pop()}-README.md`;
@@ -112,7 +112,7 @@ describe('download readme from npmjs', () => {
         process.argv = ['node', 'script.js'];
         const mockExit = jest.spyOn(process, 'exit').mockImplementation((() => {}) as any);
 
-        const script = await import('../src/scripts/load-readme-from-npm');
+        const script = await import('../src/scripts/load-readme-from-npm.js');
         await script.execution;
 
         expect(mockLogger.error).toHaveBeenCalledWith(`Please provide a package name as an argument.`);

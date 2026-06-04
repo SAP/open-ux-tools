@@ -1,5 +1,23 @@
 # @sap-ux/ui5-library-inquirer
 
+## 1.0.4
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/project-input-validator@1.0.3
+    - @sap-ux/inquirer-common@1.0.4
+    - @sap-ux/ui5-info@1.0.1
+    - @sap-ux/logger@1.0.1
+
+## 1.0.3
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@1.0.3
+- @sap-ux/project-input-validator@1.0.2
+
 ## 1.0.2
 
 ### Patch Changes

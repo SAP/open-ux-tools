@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
-import type { EnityName } from '../../src';
+import type { EnityName } from '../../src/index.js';
 
 // Import actual text function BEFORE mocking
-const actualI18n = await import('../../src/i18n');
+const actualI18n = await import('../../src/i18n.js');
 const actualText = actualI18n.text;
 
 const mockInitI18n = jest.fn<() => Promise<void>>().mockResolvedValue(undefined);
@@ -12,8 +12,8 @@ jest.unstable_mockModule('../../src/i18n', () => ({
     text: (...args: any[]) => actualText(...args)
 }));
 
-const { getService } = await import('../../src');
-const { Entities } = await import('../../src/data-provider/constants');
+const { getService } = await import('../../src/index.js');
+const { Entities } = await import('../../src/data-provider/constants.js');
 
 describe('store', () => {
     describe('getService', () => {

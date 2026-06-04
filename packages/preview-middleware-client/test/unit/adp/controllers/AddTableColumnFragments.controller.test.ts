@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import type Dialog from 'sap/m/Dialog';
 import type Event from 'sap/ui/base/Event';
 import type UI5Element from 'sap/ui/core/Element';
@@ -25,7 +26,7 @@ jest.unstable_mockModule('open/ux/preview/client/adp/utils', () => ({
     checkForExistingChange: checkForExistingChangeMock
 }));
 
-const getControlByIdMock = jest.fn().mockImplementation((...args: unknown[]) => (_core.getControlById as Function)(...args));
+const getControlByIdMock = jest.fn().mockImplementation((...args) => (_core.getControlById as Function)(...args));
 jest.unstable_mockModule('open/ux/preview/client/utils/core', () => ({
     ..._core,
     getControlById: getControlByIdMock
@@ -657,7 +658,7 @@ describe('AddTableColumnsFragments controller', () => {
                 };
             };
             const commandStack: CommandBase[] = [];
-            const addCommandMock = jest.fn().mockImplementation((cmd: CommandBase) => {
+            const addCommandMock = jest.fn().mockImplementation((cmd) => {
                 commandStack.push(cmd);
             });
             CommandFactory.getCommandFor = nCallsMock([

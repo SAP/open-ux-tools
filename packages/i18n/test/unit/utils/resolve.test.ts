@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { toUnifiedUri } from '../helper';
-import type { CdsEnvironment } from '../../../src';
+import { toUnifiedUri } from '../helper/index.js';
+import type { CdsEnvironment } from '../../../src/index.js';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -33,7 +33,7 @@ jest.unstable_mockModule('node:fs', () => ({
 }));
 
 // Import after mocking
-const { getCapI18nFiles, resolveCapI18nFolderForFile, getCapI18nFolder } = await import('../../../src/utils');
+const { getCapI18nFiles, resolveCapI18nFolderForFile, getCapI18nFolder } = await import('../../../src/utils/index.js');
 
 const DATA_ROOT = join(__dirname, '..', 'data');
 const PROJECT_ROOT = join(DATA_ROOT, 'project');

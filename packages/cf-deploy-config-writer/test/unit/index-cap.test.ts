@@ -11,7 +11,7 @@ jest.unstable_mockModule('hasbin', () => ({
     sync: jest.fn()
 }));
 
-const { MockMta } = await import('./mockMta');
+const { MockMta } = await import('./mockMta.js');
 jest.unstable_mockModule('@sap/mta-lib', () => ({
     Mta: MockMta
 }));
@@ -24,8 +24,8 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 
 const hasbin = await import('hasbin');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
-const { generateCAPConfig } = await import('../../src');
-const { RouterModuleType } = await import('../../src');
+const { generateCAPConfig } = await import('../../src/index.js');
+const { RouterModuleType } = await import('../../src/index.js');
 const projectAccess = await import('@sap-ux/project-access');
 const { CommandRunner } = await import('@sap-ux/nodejs-utils');
 

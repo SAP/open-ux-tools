@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import nock from 'nock';
-import type { Message } from '../../src/abap/lrep-service';
-import type { AdaptationConfig, AxiosError } from '../../src';
+import type { Message } from '../../src/abap/lrep-service.js';
+import type { AdaptationConfig, AxiosError } from '../../src/index.js';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 const loggerMock: ToolsLogger = {
@@ -26,7 +26,7 @@ jest.unstable_mockModule('node:fs', () => ({
     default: { ...actualFs, readFileSync: mockReadFileSync }
 }));
 
-const { LayeredRepositoryService, createForAbap } = await import('../../src');
+const { LayeredRepositoryService, createForAbap } = await import('../../src/index.js');
 
 describe('LayeredRepositoryService', () => {
     const server = 'http://sap.example';

@@ -16,13 +16,13 @@ ufs.use(realFs as any).use(memfs.vol as any);
 
 jest.unstable_mockModule('node:fs', () => ufs);
 
-const { MockMta } = await import('./mockMta');
+const { MockMta } = await import('./mockMta.js');
 jest.unstable_mockModule('@sap/mta-lib', () => ({
     Mta: MockMta
 }));
 
 const fs = await import('node:fs');
-const { MtaConfig } = await import('../../src/');
+const { MtaConfig } = await import('../../src//index.js');
 const { FileName } = await import('@sap-ux/project-access');
 
 describe('Adding and Updating mta extension configuration', () => {

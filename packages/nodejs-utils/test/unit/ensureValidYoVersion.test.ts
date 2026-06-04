@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: mockIsAppStudio

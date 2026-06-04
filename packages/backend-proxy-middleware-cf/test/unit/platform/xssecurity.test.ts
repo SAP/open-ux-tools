@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import path from 'node:path';
 
-const mockExistsSync = jest.fn();
-const mockReadFileSync = jest.fn();
+const mockExistsSync = jest.fn() as jest.Mock;
+const mockReadFileSync = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('node:fs', () => ({
     default: { existsSync: mockExistsSync, readFileSync: mockReadFileSync },
@@ -10,15 +10,15 @@ jest.unstable_mockModule('node:fs', () => ({
     readFileSync: mockReadFileSync
 }));
 
-const mockGetServicesForFile = jest.fn();
-const mockUpdateServiceInstance = jest.fn();
+const mockGetServicesForFile = jest.fn() as jest.Mock;
+const mockUpdateServiceInstance = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getServicesForFile: mockGetServicesForFile,
     updateServiceInstance: mockUpdateServiceInstance
 }));
 
-const { updateXsuaaService } = await import('../../../src/platform/xssecurity');
+const { updateXsuaaService } = await import('../../../src/platform/xssecurity.js');
 
 describe('xssecurity', () => {
     const logger = { info: jest.fn(), error: jest.fn(), debug: jest.fn(), warn: jest.fn() };
@@ -42,7 +42,7 @@ describe('xssecurity', () => {
         };
 
         test('should warn and skip when xs-security.json not found', async () => {
-            mockExistsSync.mockImplementation((p: string) => p !== xsSecurityPath);
+            mockExistsSync.mockImplementation((p) => p !== xsSecurityPath);
 
             await updateXsuaaService(rootPath, logger as never);
 
@@ -51,7 +51,7 @@ describe('xssecurity', () => {
         });
 
         test('should warn and skip when mta.yaml not found', async () => {
-            mockExistsSync.mockImplementation((p: string) => p !== mtaPath);
+            mockExistsSync.mockImplementation((p) => p !== mtaPath);
 
             await updateXsuaaService(rootPath, logger as never);
 

@@ -1,10 +1,11 @@
+import { jest } from '@jest/globals';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { sapCoreMock } from 'mock/window';
 import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 import Log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
-import type { ChangeService } from '../../../../src/cpe/changes/service';
+import type { ChangeService } from '../../../../src/cpe/changes/service.js';
 
 const transformNodesMock = jest.fn();
 jest.unstable_mockModule('open/ux/preview/client/cpe/outline/nodes', () => ({

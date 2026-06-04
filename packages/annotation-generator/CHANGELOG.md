@@ -1,5 +1,23 @@
 # @sap-ux/annotation-generator
 
+## 1.0.3
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/odata-annotation-core-types@1.0.1
+    - @sap-ux/fiori-annotation-api@1.0.3
+    - @sap-ux/odata-entity-model@1.0.1
+    - @sap-ux/project-access@2.0.3
+
+## 1.0.2
+
+### Patch Changes
+
+- @sap-ux/project-access@2.0.2
+- @sap-ux/fiori-annotation-api@1.0.2
+
 ## 1.0.1
 
 ### Patch Changes

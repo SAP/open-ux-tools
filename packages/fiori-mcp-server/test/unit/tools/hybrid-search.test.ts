@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { DocSearchInput, SearchResponseData } from '../../../src/tools/hybrid-search';
+import type { DocSearchInput, SearchResponseData } from '../../../src/tools/hybrid-search.js';
 
 // Mock the service dependencies
 const mockInitializeVector = jest.fn<any>();
@@ -26,7 +26,7 @@ jest.unstable_mockModule('../../../src/tools/services/text-embedding', () => ({
     }))
 }));
 
-const { docSearch } = await import('../../../src/tools/hybrid-search');
+const { docSearch } = await import('../../../src/tools/hybrid-search.js');
 
 describe('hybrid-search', () => {
     beforeEach(() => {

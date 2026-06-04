@@ -1,12 +1,12 @@
 import { jest } from '@jest/globals';
-import { hostEnvironment } from '../../src/types';
+import { hostEnvironment } from '../../src/types/index.js';
 import * as actualSapUxTelemetry from '@sap-ux/telemetry';
 
 jest.unstable_mockModule('@vscode-logging/logger', () => ({
     getExtensionLogger: jest.fn()
 }));
 
-const mockGetHostEnvironment = jest.fn();
+const mockGetHostEnvironment = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/environment', () => ({
     getHostEnvironment: mockGetHostEnvironment,
     isCli: jest.fn()
@@ -18,7 +18,7 @@ jest.unstable_mockModule('@sap-ux/telemetry', () => ({
     initTelemetrySettings: mockInitTelemetrySettings
 }));
 
-const { TelemetryHelper } = await import('../../src/telemetry');
+const { TelemetryHelper } = await import('../../src/telemetry/index.js');
 const sapUxTelemetry = await import('@sap-ux/telemetry');
 
 describe('TelemetryHelper', () => {

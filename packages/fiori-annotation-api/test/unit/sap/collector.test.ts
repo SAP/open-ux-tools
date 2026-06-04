@@ -11,11 +11,11 @@ import { parse } from '@xml-tools/parser';
 import { buildAst } from '@xml-tools/ast';
 import { convertDocument } from '@sap-ux/xml-odata-annotation-converter';
 
-import { createComplexAnnotation, createComplexRecordProperty, createRecord } from '../../../src/sap/builders';
-import type { ValueWithOrigin } from '../../../src/sap/types';
+import { createComplexAnnotation, createComplexRecordProperty, createRecord } from '../../../src/sap/builders.js';
+import type { ValueWithOrigin } from '../../../src/sap/types.js';
 
-const mockWarn = jest.fn();
-const mockLog = jest.fn();
+const mockWarn = jest.fn() as jest.Mock;
+const mockLog = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../src/logger', () => ({
     logger: {
         log: mockLog,
@@ -23,7 +23,7 @@ jest.unstable_mockModule('../../../src/logger', () => ({
     }
 }));
 
-const { collectODataAnnotations } = await import('../../../src/sap/collector');
+const { collectODataAnnotations } = await import('../../../src/sap/collector.js');
 
 function buildSnippet(target: string, annotation: string): string {
     return `<?xml version="1.0" encoding="utf-8"?>

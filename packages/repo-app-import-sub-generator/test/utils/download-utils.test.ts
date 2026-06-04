@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import { join } from 'node:path';
-import { qfaJsonFileName } from '../../src/utils/constants';
+import { qfaJsonFileName } from '../../src/utils/constants.js';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 jest.unstable_mockModule('adm-zip', () => {
@@ -21,12 +21,12 @@ jest.unstable_mockModule('../../src/utils/logger', () => {
     return { default: mock, ...mock };
 });
 
-const { downloadApp, extractZip, hasQfaJson } = await import('../../src/utils/download-utils');
-const { PromptState } = await import('../../src/prompts/prompt-state');
-const RepoAppDownloadLogger = (await import('../../src/utils/logger')).default;
+const { downloadApp, extractZip, hasQfaJson } = await import('../../src/utils/download-utils.js');
+const { PromptState } = await import('../../src/prompts/prompt-state.js');
+const RepoAppDownloadLogger = (await import('../../src/utils/logger.js')).default;
 const AdmZipModule = await import('adm-zip');
 const AdmZip = AdmZipModule.default;
-const { t } = await import('../../src/utils/i18n');
+const { t } = await import('../../src/utils/i18n.js');
 
 describe('App Download Utils', () => {
     beforeEach(() => {

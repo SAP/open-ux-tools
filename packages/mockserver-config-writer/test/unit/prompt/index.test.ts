@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Choice } from 'prompts';
-import { getMockserverConfigQuestions } from '../../../src';
+import { getMockserverConfigQuestions } from '../../../src/index.js';
 import { t } from '../../..';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

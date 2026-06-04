@@ -3,9 +3,9 @@ import type { AnnotationFile } from '@sap-ux/odata-annotation-core';
 import type { ServiceArtifacts } from '@sap-ux/fiori-annotation-api/src/types';
 import type { V2Annotation } from '@sap-ux/fiori-annotation-api';
 
-import { buildAnnotationIndexKey, buildServiceIndex } from '../../../src/project-context/parser/service';
-import { COMMON_LABEL, COMMON_TEXT } from '../../../src/constants';
-import type { DocumentType } from '../../../src/project-context/types';
+import { buildAnnotationIndexKey, buildServiceIndex } from '../../../src/project-context/parser/service.js';
+import { COMMON_LABEL, COMMON_TEXT } from '../../../src/constants.js';
+import type { DocumentType } from '../../../src/project-context/types.js';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 

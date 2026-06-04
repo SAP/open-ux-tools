@@ -1,4 +1,4 @@
-import { resolveServeStaticOptions, resolveSrcPath } from '../../src/base/utils';
+import { resolveServeStaticOptions, resolveSrcPath } from '../../src/base/utils.js';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const testDirname = dirname(fileURLToPath(import.meta.url));

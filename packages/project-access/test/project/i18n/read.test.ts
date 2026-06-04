@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import type * as uxI18nType from '@sap-ux/i18n';
-import type * as capType from '../../../src/project/cap';
+import type * as capType from '../../../src/project/cap.js';
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
@@ -20,14 +20,14 @@ jest.unstable_mockModule('@sap-ux/i18n', () => ({
 const mockGetCapEnvironment = jest.fn<typeof capType.getCapEnvironment>();
 const mockGetCdsFiles = jest.fn<typeof capType.getCdsFiles>();
 
-const realCap = await import('../../../src/project/cap');
+const realCap = await import('../../../src/project/cap.js');
 jest.unstable_mockModule('../../../src/project/cap', () => ({
     ...realCap,
     getCapEnvironment: mockGetCapEnvironment,
     getCdsFiles: mockGetCdsFiles
 }));
 
-const { getCapI18nFolderNames, getI18nBundles } = await import('../../../src/project/i18n');
+const { getCapI18nFolderNames, getI18nBundles } = await import('../../../src/project/i18n/index.js');
 
 describe('read', () => {
     const memFs = create(createStorage());

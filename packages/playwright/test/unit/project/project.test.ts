@@ -6,9 +6,9 @@ import {
     getDestinationProjectRoot,
     nodeModulesUpToDate,
     storePackageJsonHash
-} from '../../../src/project/project';
-import { copyProject } from '../../../src/project/copy';
-import type { CopyOptions } from '../../../src/types';
+} from '../../../src/project/project.js';
+import { copyProject } from '../../../src/project/copy.js';
+import type { CopyOptions } from '../../../src/types.js';
 import { pathExists, ensureDir } from 'fs-extra';
 
 const testDirname = dirname(fileURLToPath(import.meta.url));

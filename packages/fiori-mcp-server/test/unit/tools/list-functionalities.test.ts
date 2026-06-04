@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { ListFunctionalitiesOutput } from '../../../src/types';
-import { ensureSpecificationLoaded, mockSpecificationReadAppWithModel } from '../utils';
+import type { ListFunctionalitiesOutput } from '../../../src/types/index.js';
+import { ensureSpecificationLoaded, mockSpecificationReadAppWithModel } from '../utils.js';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -20,7 +20,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 }));
 
 // Mock getManifest from project utils
-const actualProjectUtils = await import('../../../src/page-editor-api/project');
+const actualProjectUtils = await import('../../../src/page-editor-api/project.js');
 const mockGetManifest = jest.fn<any>();
 jest.unstable_mockModule('../../../src/page-editor-api/project', () => ({
     ...actualProjectUtils,
@@ -28,7 +28,7 @@ jest.unstable_mockModule('../../../src/page-editor-api/project', () => ({
 }));
 
 // Dynamic imports after mocks
-const { listFunctionalities } = await import('../../../src/tools');
+const { listFunctionalities } = await import('../../../src/tools/index.js');
 
 const appPathLropV4 = join(__dirname, '../../test-data/original/lrop');
 
@@ -51,7 +51,7 @@ describe('listFunctionalities', () => {
             readApp: readAppMock,
             getApiVersion: () => ({ version: '99' })
         });
-        mockCreateApplicationAccess.mockImplementation((rootPath: string) => {
+        mockCreateApplicationAccess.mockImplementation((rootPath) => {
             return {
                 getAppId: () => 'dummy-id',
                 app: {
@@ -84,7 +84,7 @@ describe('listFunctionalities', () => {
     });
 
     test('call with project without apps', async () => {
-        mockCreateApplicationAccess.mockImplementation((rootPath: string) => {
+        mockCreateApplicationAccess.mockImplementation((rootPath) => {
             return {
                 getAppId: () => '',
                 project: {

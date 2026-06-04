@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import type { Logger } from '@sap-ux/logger';
 import type childProcess from 'node:child_process';
 
-const mockSpawn = jest.fn<typeof childProcess.spawn>();
+const mockSpawn = jest.fn<typeof realChildProcess.spawn>();
 
 const realChildProcess = await import('node:child_process');
 jest.unstable_mockModule('node:child_process', () => ({
@@ -14,7 +14,7 @@ jest.unstable_mockModule('node:child_process', () => ({
     spawn: mockSpawn
 }));
 
-const { execNpmCommand } = await import('../../src/command');
+const { execNpmCommand } = await import('../../src/command/index.js');
 
 const originalPlatform = process.platform;
 
