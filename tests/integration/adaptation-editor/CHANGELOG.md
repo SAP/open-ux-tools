@@ -1,5 +1,14 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 1.0.4
+
+### Patch Changes
+
+- Updated dependencies [d2b8d7b]
+- Updated dependencies [b326a9a]
+    - @sap-ux-private/playwright@1.0.2
+    - @sap-ux/project-access@2.1.0
+
 ## 1.0.3
 
 ### Patch Changes
