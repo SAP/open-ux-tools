@@ -51,9 +51,6 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
-        exclude:
-          - /test/
-          - /localService/
 ",
     "state": "modified",
   },
@@ -171,9 +168,6 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
-        exclude:
-          - /test/
-          - /localService/
 ",
     "state": "modified",
   },
@@ -291,9 +285,6 @@ builder:
           destination: DUMMY_DESTINATION
         app:
           package: $TMP
-        exclude:
-          - /test/
-          - /localService/
 ",
     "state": "modified",
   },
@@ -415,9 +406,6 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
-        exclude:
-          - /test/
-          - /localService/
 ",
     "state": "modified",
   },
@@ -589,9 +577,6 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
-        exclude:
-          - /test/
-          - /localService/
 ",
     "state": "modified",
   },
@@ -714,9 +699,6 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
-        exclude:
-          - /test/
-          - /localService/
 ",
     "state": "modified",
   },
@@ -1070,9 +1052,6 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
-        exclude:
-          - /test/
-          - /localService/
 ",
     "state": "modified",
   },
@@ -1205,9 +1184,6 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
-        exclude:
-          - /test/
-          - /localService/
 ",
     "state": "modified",
   },
@@ -1447,9 +1423,6 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
-        exclude:
-          - /test/
-          - /localService/
 ",
     "state": "modified",
   },
@@ -1600,9 +1573,6 @@ builder:
           destination: DUMMY_DESTINATION
         app:
           package: $TMP
-        exclude:
-          - /test/
-          - /localService/
 ",
     "state": "modified",
   },
@@ -1754,9 +1724,6 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
-        exclude:
-          - /test/
-          - /localService/
 ",
     "state": "modified",
   },
@@ -1932,9 +1899,6 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
-        exclude:
-          - /test/
-          - /localService/
 ",
     "state": "modified",
   },
