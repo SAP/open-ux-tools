@@ -1,5 +1,24 @@
 # @sap-ux/flp-config-inquirer
 
+## 1.0.6
+
+### Patch Changes
+
+- b326a9a: fix: align inbound iteration with strict `ManifestNamespace.Inbound` types
+
+    `ManifestNamespace.Inbound` is a record keyed by inbound id; its values describe
+    each inbound. Drop incorrect destructuring annotations that typed the value as
+    the full record, and use optional chaining for the optional `signature` field.
+    No runtime change.
+
+- Updated dependencies [b326a9a]
+    - @sap-ux/project-access@2.1.0
+    - @sap-ux/adp-tooling@1.0.6
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/fiori-generator-shared@1.0.5
+    - @sap-ux/inquirer-common@1.0.5
+    - @sap-ux/project-input-validator@1.0.4
+
 ## 1.0.5
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux-private/playwright
 
+## 1.0.2
+
+### Patch Changes
+
+- d2b8d7b: chore: upgrade @playwright/test 1.58.2 → 1.60.0
+
 ## 1.0.1
 
 ### Patch Changes
