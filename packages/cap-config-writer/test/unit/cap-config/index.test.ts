@@ -52,7 +52,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
         DotGitIgnore: '.gitignore',
         MtaExtYaml: 'mta-ext.mtaext'
     },
-    MinCdsPluginUi5Version: '0.13.0',
+    MinCdsPluginUi5Version: '0.17.0',
     MinCdsVersion: '6.8.2',
     hasMinCdsVersion: mockHasMinCdsVersion,
     getWorkspaceInfo: mockGetWorkspaceInfo,
@@ -98,7 +98,7 @@ describe('Test enableCdsUi5Plugin()', () => {
             },
             'workspaces': ['app/*'],
             'devDependencies': {
-                'cds-plugin-ui5': '^0.13.0'
+                'cds-plugin-ui5': '^0.17.0'
             }
         });
     });
@@ -128,7 +128,7 @@ describe('Test enableCdsUi5Plugin()', () => {
             },
             'workspaces': ['app/*'],
             'devDependencies': {
-                'cds-plugin-ui5': '^0.13.0'
+                'cds-plugin-ui5': '^0.17.0'
             }
         });
     });
@@ -148,7 +148,7 @@ describe('Test enableCdsUi5Plugin()', () => {
         });
         const fs = await enableCdsUi5Plugin(__dirname, memFs);
         const packageJson = fs.readJSON(join(__dirname, 'package.json')) as Package;
-        expect(packageJson.devDependencies).toEqual({ 'cds-plugin-ui5': '^0.13.0' });
+        expect(packageJson.devDependencies).toEqual({ 'cds-plugin-ui5': '^0.17.0' });
     });
 
     test('CAP with custom app path and mem-fs editor', async () => {
