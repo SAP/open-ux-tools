@@ -1,5 +1,163 @@
 # @sap-ux/ui5-test-writer
 
+## 1.0.8
+
+### Patch Changes
+
+- Updated dependencies [b326a9a]
+    - @sap-ux/project-access@2.1.0
+    - @sap-ux/preview-middleware@1.0.8
+    - @sap-ux/fiori-generator-shared@1.0.5
+    - @sap-ux/ui5-application-writer@2.0.2
+
+## 1.0.7
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/fiori-generator-shared@1.0.4
+    - @sap-ux/ui5-application-writer@2.0.2
+    - @sap-ux/preview-middleware@1.0.7
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux/logger@1.0.1
+
+## 1.0.6
+
+### Patch Changes
+
+- @sap-ux/project-access@2.0.2
+- @sap-ux/ui5-application-writer@2.0.1
+- @sap-ux/preview-middleware@1.0.6
+- @sap-ux/fiori-generator-shared@1.0.3
+
+## 1.0.5
+
+### Patch Changes
+
+- Updated dependencies [3506d2c]
+    - @sap-ux/preview-middleware@1.0.5
+
+## 1.0.4
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@1.0.4
+- @sap-ux/fiori-generator-shared@1.0.2
+
+## 1.0.3
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@1.0.3
+
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies [8024912]
+    - @sap-ux/preview-middleware@1.0.2
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+    - @sap-ux/fiori-generator-shared@1.0.1
+    - @sap-ux/preview-middleware@1.0.1
+    - @sap-ux/ui5-application-writer@2.0.0
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/fiori-generator-shared@1.0.0
+    - @sap-ux/ui5-application-writer@2.0.0
+    - @sap-ux/preview-middleware@1.0.0
+    - @sap-ux/project-access@2.0.0
+    - @sap-ux/logger@1.0.0
+
+## 0.9.15
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@0.26.12
+
+## 0.9.14
+
+### Patch Changes
+
+- Updated dependencies [9a980a9]
+    - @sap-ux/preview-middleware@0.26.11
+
+## 0.9.13
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@0.26.10
+- @sap-ux/fiori-generator-shared@0.15.6
+
+## 0.9.12
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.15.5
+- @sap-ux/preview-middleware@0.26.9
+
+## 0.9.11
+
+### Patch Changes
+
+- Updated dependencies [162059e]
+    - @sap-ux/ui5-application-writer@1.9.2
+
+## 0.9.10
+
+### Patch Changes
+
+- 03d1cdd: add OPA tests for LR semantic key filters and global search
+
+## 0.9.9
+
+### Patch Changes
+
+- Updated dependencies [01b70ca]
+    - @sap-ux/preview-middleware@0.26.8
+    - @sap-ux/fiori-generator-shared@0.15.4
+
 ## 0.9.8
 
 ### Patch Changes

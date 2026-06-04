@@ -2,7 +2,7 @@ import { addi18nResourceBundle as addInquirerCommonTexts } from '@sap-ux/inquire
 import { addi18nResourceBundle as addProjectInputValidatorTexts } from '@sap-ux/project-input-validator';
 import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from './translations/odata-service-inquirer.i18n.json';
+import translations from './translations/odata-service-inquirer.i18n.json' with { type: 'json' };
 
 const odataServiceInquirerNamespace = 'odata-service-inquirer';
 export const defaultProjectNumber = 1;
@@ -51,6 +51,4 @@ export function t(key: string, options?: TOptions): string {
     return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-initI18nOdataServiceInquirer().catch(() => {
-    // Needed for lint
-});
+void initI18nOdataServiceInquirer().catch(() => undefined);

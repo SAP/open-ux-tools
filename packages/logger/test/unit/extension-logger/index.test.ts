@@ -1,4 +1,4 @@
-import { ExtensionLogger } from '../../../src';
+import { ExtensionLogger } from '../../../src/index.js';
 
 const channelMock = {
     error: jest.fn(),

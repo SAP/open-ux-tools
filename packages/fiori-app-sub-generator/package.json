@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-app-sub-generator",
     "description": "A yeoman (sub) generator that can generate Fiori applications. Not for standalone use.",
-    "version": "0.15.13",
+    "version": "1.0.8",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -10,6 +10,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Afiori-app-sub-generator"
     },
+    "type": "module",
     "license": "Apache-2.0",
     "main": "generators/index.js",
     "scripts": {
@@ -18,8 +19,8 @@
         "watch": "tsc --watch",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
@@ -49,7 +50,7 @@
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/ui5-application-inquirer": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
-        "@sap/service-provider-apis": "2.8.0",
+        "@sap/service-provider-apis": "2.10.0",
         "i18next": "25.10.10",
         "inquirer": "8.2.7",
         "lodash": "4.18.1",
@@ -59,6 +60,7 @@
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@sap-devx/yeoman-ui-types": "1.25.0",
         "@sap-ux/deploy-config-sub-generator": "workspace:*",
         "@sap-ux/flp-config-sub-generator": "workspace:*",

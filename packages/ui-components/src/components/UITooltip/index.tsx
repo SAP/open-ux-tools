@@ -1,2 +1,2 @@
-export * from './UITooltip';
-export * from './UITooltipUtils';
+export * from './UITooltip.js';
+export * from './UITooltipUtils.js';

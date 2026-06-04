@@ -4,10 +4,10 @@ import {
     type TelemetryProperties,
     type ToolsSuiteTelemetryInitSettings
 } from '@sap-ux/telemetry';
-import type { TelemetryData } from './types';
-import { getHostEnvironment } from '../environment';
+import type { TelemetryData } from './types.js';
+import { getHostEnvironment } from '../environment.js';
 import osName from 'os-name';
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 
 /**
  * Helper class for intialising and preparing event data for telemetry.

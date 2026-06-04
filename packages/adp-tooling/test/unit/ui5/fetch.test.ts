@@ -1,10 +1,10 @@
 import { supportedUi5VersionFallbacks } from '@sap-ux/ui5-info';
 
-import { fetchPublicVersions, fetchInternalVersions } from '../../../src/ui5/fetch';
-import { UI5_VERSIONS_CDN_URL, UI5_VERSIONS_NEO_CDN_URL } from '../../../src/base/constants';
+import { fetchPublicVersions, fetchInternalVersions } from '../../../src/ui5/fetch.js';
+import { UI5_VERSIONS_CDN_URL, UI5_VERSIONS_NEO_CDN_URL } from '../../../src/base/constants/index.js';
 
-import { fetchMock } from '../../__mock__/global';
-import { buildFallbackMap } from '../../../src';
+import { fetchMock } from '../../__mock__/global.js';
+import { buildFallbackMap } from '../../../src/index.js';
 
 describe('ui5 fetchers', () => {
     beforeEach(() => {

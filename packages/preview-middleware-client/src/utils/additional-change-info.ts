@@ -3,8 +3,8 @@ import {
     getAddXMLAdditionalInfo,
     type AddXMLAdditionalInfo,
     type AddXMLChangeContent
-} from '../cpe/additional-change-info/add-xml-additional-info';
-import { FlexChange as Change } from '../flp/common';
+} from '../cpe/additional-change-info/add-xml-additional-info.js';
+import { FlexChange as Change } from '../flp/common.js';
 import type Component from 'sap/ui/core/Component';
 
 export type AdditionalChangeInfo = AddXMLAdditionalInfo | undefined;

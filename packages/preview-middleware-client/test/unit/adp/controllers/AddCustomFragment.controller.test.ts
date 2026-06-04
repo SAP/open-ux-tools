@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import type Dialog from 'sap/m/Dialog';
 import Event from 'sap/ui/base/Event';
 import type UI5Element from 'sap/ui/core/Element';
@@ -8,17 +9,32 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
 import { fetchMock, sapCoreMock, sapMock } from 'mock/window';
 
-import ControlUtils from '../../../../src/adp/control-utils';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { ValueState } from 'mock/sap/ui/core/library';
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
-import * as addXMLAdditionalInfo from '../../../../src/cpe/additional-change-info/add-xml-additional-info';
-import { CommunicationService } from '../../../../src/cpe/communication-service';
-import * as adpUtils from '../../../../src/adp/utils';
-import AddCustomFragment from 'open/ux/preview/client/adp/controllers/AddCustomFragment.controller';
+import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 import Control from 'sap/ui/core/Control';
 import SimpleForm from 'sap/ui/layout/form';
+
+// Pre-import for spread
+const _addXMLAdditionalInfo = await import('open/ux/preview/client/cpe/additional-change-info/add-xml-additional-info');
+const _adpUtils = await import('open/ux/preview/client/adp/utils');
+
+const getFragmentTemplateNameMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/cpe/additional-change-info/add-xml-additional-info', () => ({
+    ..._addXMLAdditionalInfo,
+    getFragmentTemplateName: getFragmentTemplateNameMock
+}));
+
+const checkForExistingChangeMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/adp/utils', () => ({
+    ..._adpUtils,
+    checkForExistingChange: checkForExistingChangeMock
+}));
+
+const { default: AddCustomFragment } = await import('open/ux/preview/client/adp/controllers/AddCustomFragment.controller');
+const { default: ControlUtils } = await import('open/ux/preview/client/adp/control-utils');
 
 const mocks = {
     setValueStateMock: jest.fn(),
@@ -425,7 +441,7 @@ describe('AddCustomFragment', () => {
         });
 
         test('sets error when the fragment name already exists in command stack', () => {
-            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
+            checkForExistingChangeMock.mockReturnValue(true);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             const change = {
                 content: {
@@ -485,7 +501,7 @@ describe('AddCustomFragment', () => {
         });
 
         test('sets error when the fragment name already exists in command stack (command is "composite")', () => {
-            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
+            checkForExistingChangeMock.mockReturnValue(true);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             const change = {
                 content: {
@@ -549,7 +565,7 @@ describe('AddCustomFragment', () => {
         });
 
         test('sets create button to true when the fragment name is valid', () => {
-            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+            checkForExistingChangeMock.mockReturnValue(false);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             rtaMock.getCommandStack.mockReturnValue({
                 getCommands: jest.fn().mockReturnValue([])
@@ -756,7 +772,7 @@ describe('AddCustomFragment', () => {
                 }),
                 getId: jest.fn().mockReturnValue('some-id')
             } as unknown as ManagedObject);
-            jest.spyOn(addXMLAdditionalInfo, 'getFragmentTemplateName').mockReturnValue('templateName');
+            getFragmentTemplateNameMock.mockReturnValue('templateName');
 
             const addFragment = new AddCustomFragment(
                 'adp.extension.controllers.AddCustomFragment',

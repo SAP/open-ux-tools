@@ -1,10 +1,16 @@
 #!/usr/bin/env node
 
-import { pipeline, type FeatureExtractionPipeline } from '@xenova/transformers';
+import { pipeline, env, type FeatureExtractionPipeline } from '@xenova/transformers';
 import { connect } from '@lancedb/lancedb';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
+
+// Store downloaded models under the package root so the CI cache step can
+// target a stable path regardless of the pnpm store layout.
+const packageRoot = path.dirname(path.dirname(path.dirname(fileURLToPath(import.meta.url))));
+env.cacheDir = path.join(packageRoot, '.cache');
 
 interface ProgressCallback {
     status: string;
@@ -548,11 +554,15 @@ class EmbeddingBuilder {
 export { EmbeddingBuilder };
 
 // Run the builder
-if (require.main === module) {
+// In ESM, check if this file is being run directly
+const isMainModule = import.meta.url === `file://${process.argv[1]}`;
+if (isMainModule) {
     const logger = new ToolsLogger();
     const builder = new EmbeddingBuilder();
-    builder.buildEmbeddings().catch((error) => {
+    try {
+        await builder.buildEmbeddings();
+    } catch (error) {
         logger.error(`Build failed: ${error.message}`);
         process.exit(1);
-    });
+    }
 }

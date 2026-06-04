@@ -6,9 +6,9 @@ import { createElementNode, Edm } from '@sap-ux/odata-annotation-core-types';
 
 import { ENUM_TYPE_KIND } from '@sap-ux/odata-vocabularies';
 
-import type { NodeHandler } from '../handler';
-import type { VisitorState } from '../visitor-state';
-import { convertFlags } from './enum';
+import type { NodeHandler } from '../handler.js';
+import type { VisitorState } from '../visitor-state.js';
+import { convertFlags } from './enum.js';
 
 export const collectionHandler: NodeHandler<Collection> = {
     type: COLLECTION_TYPE,

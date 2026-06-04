@@ -7,7 +7,7 @@ import {
     NamespacePrefix
 } from '@sap-ux/adp-tooling';
 import type { ManifestNamespace, UI5FlexLayer } from '@sap-ux/project-access';
-import { type FLPConfigPromptOptions, type FLPConfigAnswers, type TileSettingsAnswers, tileActions } from './types';
+import { type FLPConfigPromptOptions, type FLPConfigAnswers, type TileSettingsAnswers, tileActions } from './types.js';
 /**
  * Returns FLP configuration prompt options based on the provided inbounds, variant, and tile settings answers.
  *
@@ -78,7 +78,8 @@ function buildReplaceInboundConfig(
     }
 
     return Object.entries(inbounds).map(([inboundKey, inboundData]) => {
-        const { semanticObject, action, signature: { parameters } = {} } = inboundData;
+        const { semanticObject, action } = inboundData;
+        const parameters = inboundData.signature?.parameters;
         let inboundId = inboundKey;
         if (inboundId && layer === FlexLayer.CUSTOMER_BASE) {
             inboundId = `${NamespacePrefix.CUSTOMER}${inboundId}`;

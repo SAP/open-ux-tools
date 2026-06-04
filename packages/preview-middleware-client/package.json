@@ -1,7 +1,8 @@
 {
     "name": "@sap-ux-private/preview-middleware-client",
-    "version": "0.26.7",
+    "version": "1.0.8",
     "description": "Client-side coding hosted by the preview middleware",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -18,8 +19,8 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u"
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u"
     },
     "files": [
         "dist"
@@ -38,6 +39,7 @@
         "@ui5/cli": "4.0.50",
         "eslint-plugin-jsdoc": "62.8.1",
         "npm-run-all2": "8.0.4",
+        "@jest/globals": "^30.0.0",
         "ui5-tooling-transpile": "3.11.0",
         "vscode-languageserver-textdocument": "1.0.12",
         "@ui5/manifest": "1.85.0"

@@ -1,10 +1,18 @@
-import type { FreestyleApp } from '../src';
-import { generate, TemplateType } from '../src';
+import { jest } from '@jest/globals';
+import type { FreestyleApp } from '../src/index.js';
+import { generate, TemplateType } from '../src/index.js';
 import { join } from 'node:path';
-import { removeSync } from 'fs-extra';
-import { testOutputDir, debug, getMetadata, projectChecks, updatePackageJSONDependencyToUseLocalPath } from './common';
+import fsExtra from 'fs-extra';
+const { removeSync } = fsExtra;
+import {
+    testOutputDir,
+    debug,
+    getMetadata,
+    projectChecks,
+    updatePackageJSONDependencyToUseLocalPath
+} from './common.js';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { WorklistSettings } from '../src/types';
+import type { WorklistSettings } from '../src/types.js';
 
 const TEST_NAME = 'worklistTemplate';
 if (debug?.enabled) {

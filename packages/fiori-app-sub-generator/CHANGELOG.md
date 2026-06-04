@@ -1,5 +1,256 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 1.0.8
+
+### Patch Changes
+
+- Updated dependencies [b326a9a]
+    - @sap-ux/project-access@2.1.0
+    - @sap-ux/annotation-generator@1.0.4
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/cap-config-writer@1.0.5
+    - @sap-ux/fiori-elements-writer@3.0.8
+    - @sap-ux/fiori-generator-shared@1.0.5
+    - @sap-ux/launch-config@1.0.4
+    - @sap-ux/odata-service-inquirer@3.0.5
+    - @sap-ux/odata-service-writer@1.0.4
+    - @sap-ux/telemetry@1.0.5
+    - @sap-ux/ui5-application-inquirer@1.0.5
+    - @sap-ux/fiori-freestyle-writer@3.0.8
+
+## 1.0.7
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/ui5-application-inquirer@1.0.4
+    - @sap-ux/fiori-freestyle-writer@3.0.7
+    - @sap-ux/fiori-generator-shared@1.0.4
+    - @sap-ux/odata-service-inquirer@3.0.4
+    - @sap-ux/fiori-elements-writer@3.0.7
+    - @sap-ux/annotation-generator@1.0.3
+    - @sap-ux/fiori-tools-settings@1.0.1
+    - @sap-ux/odata-service-writer@1.0.3
+    - @sap-ux/cap-config-writer@1.0.4
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/feature-toggle@1.0.1
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux/launch-config@1.0.3
+    - @sap-ux/btp-utils@2.0.1
+    - @sap-ux/telemetry@1.0.4
+    - @sap-ux/ui5-info@1.0.1
+    - @sap-ux/store@2.0.1
+
+## 1.0.6
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.6
+- @sap-ux/fiori-freestyle-writer@3.0.6
+- @sap-ux/launch-config@1.0.2
+- @sap-ux/odata-service-writer@1.0.2
+- @sap-ux/project-access@2.0.2
+- @sap-ux/telemetry@1.0.3
+- @sap-ux/odata-service-inquirer@3.0.3
+- @sap-ux/annotation-generator@1.0.2
+- @sap-ux/axios-extension@2.0.0
+- @sap-ux/cap-config-writer@1.0.3
+- @sap-ux/fiori-generator-shared@1.0.3
+- @sap-ux/ui5-application-inquirer@1.0.3
+
+## 1.0.5
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.5
+- @sap-ux/fiori-freestyle-writer@3.0.5
+- @sap-ux/odata-service-inquirer@3.0.2
+
+## 1.0.4
+
+### Patch Changes
+
+- @sap-ux/odata-service-inquirer@3.0.2
+- @sap-ux/telemetry@1.0.2
+- @sap-ux/fiori-generator-shared@1.0.2
+- @sap-ux/cap-config-writer@1.0.2
+- @sap-ux/fiori-elements-writer@3.0.4
+- @sap-ux/fiori-freestyle-writer@3.0.4
+- @sap-ux/ui5-application-inquirer@1.0.2
+
+## 1.0.3
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.3
+- @sap-ux/fiori-freestyle-writer@3.0.3
+- @sap-ux/odata-service-inquirer@3.0.1
+
+## 1.0.2
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.2
+- @sap-ux/fiori-freestyle-writer@3.0.2
+- @sap-ux/odata-service-inquirer@3.0.1
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+    - @sap-ux/annotation-generator@1.0.1
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/cap-config-writer@1.0.1
+    - @sap-ux/fiori-elements-writer@3.0.1
+    - @sap-ux/fiori-generator-shared@1.0.1
+    - @sap-ux/launch-config@1.0.1
+    - @sap-ux/odata-service-inquirer@3.0.1
+    - @sap-ux/odata-service-writer@1.0.1
+    - @sap-ux/telemetry@1.0.1
+    - @sap-ux/ui5-application-inquirer@1.0.1
+    - @sap-ux/fiori-freestyle-writer@3.0.1
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/ui5-application-inquirer@1.0.0
+    - @sap-ux/fiori-freestyle-writer@3.0.0
+    - @sap-ux/fiori-generator-shared@1.0.0
+    - @sap-ux/odata-service-inquirer@3.0.0
+    - @sap-ux/fiori-elements-writer@3.0.0
+    - @sap-ux/annotation-generator@1.0.0
+    - @sap-ux/fiori-tools-settings@1.0.0
+    - @sap-ux/odata-service-writer@1.0.0
+    - @sap-ux/cap-config-writer@1.0.0
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/feature-toggle@1.0.0
+    - @sap-ux/project-access@2.0.0
+    - @sap-ux/launch-config@1.0.0
+    - @sap-ux/btp-utils@2.0.0
+    - @sap-ux/telemetry@1.0.0
+    - @sap-ux/ui5-info@1.0.0
+    - @sap-ux/store@2.0.0
+
+## 0.15.21
+
+### Patch Changes
+
+- @sap-ux/odata-service-inquirer@2.23.4
+- @sap-ux/ui5-application-inquirer@0.19.5
+- @sap-ux/fiori-elements-writer@2.10.16
+- @sap-ux/fiori-freestyle-writer@2.7.15
+
+## 0.15.20
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.10.15
+- @sap-ux/fiori-freestyle-writer@2.7.14
+- @sap-ux/odata-service-inquirer@2.23.3
+
+## 0.15.19
+
+### Patch Changes
+
+- @sap-ux/odata-service-inquirer@2.23.3
+- @sap-ux/telemetry@0.7.5
+- @sap-ux/fiori-generator-shared@0.15.6
+- @sap-ux/cap-config-writer@0.13.6
+- @sap-ux/fiori-elements-writer@2.10.14
+- @sap-ux/fiori-freestyle-writer@2.7.13
+- @sap-ux/ui5-application-inquirer@0.19.4
+
+## 0.15.18
+
+### Patch Changes
+
+- Updated dependencies [c12420a]
+    - @sap-ux/store@1.6.1
+    - @sap-ux/fiori-generator-shared@0.15.5
+    - @sap-ux/odata-service-inquirer@2.23.2
+    - @sap-ux/telemetry@0.7.4
+    - @sap-ux/cap-config-writer@0.13.5
+    - @sap-ux/fiori-elements-writer@2.10.13
+    - @sap-ux/fiori-freestyle-writer@2.7.12
+    - @sap-ux/ui5-application-inquirer@0.19.3
+
+## 0.15.17
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.10.12
+- @sap-ux/fiori-freestyle-writer@2.7.11
+- @sap-ux/odata-service-inquirer@2.23.1
+
+## 0.15.16
+
+### Patch Changes
+
+- Updated dependencies [acb3b58]
+    - @sap-ux/ui5-application-inquirer@0.19.2
+
+## 0.15.15
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.10.11
+- @sap-ux/fiori-freestyle-writer@2.7.10
+- @sap-ux/odata-service-inquirer@2.23.1
+
+## 0.15.14
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade promptfoo 0.121.3 → 0.121.12 (security: dependency vulnerabilities)
+- Updated dependencies [01b70ca]
+- Updated dependencies [01b70ca]
+    - @sap-ux/axios-extension@1.26.1
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/fiori-generator-shared@0.15.4
+    - @sap-ux/odata-service-inquirer@2.23.1
+    - @sap-ux/odata-service-writer@0.32.2
+    - @sap-ux/telemetry@0.7.3
+    - @sap-ux/cap-config-writer@0.13.4
+    - @sap-ux/fiori-elements-writer@2.10.10
+    - @sap-ux/fiori-freestyle-writer@2.7.9
+    - @sap-ux/ui5-application-inquirer@0.19.1
+
 ## 0.15.13
 
 ### Patch Changes
