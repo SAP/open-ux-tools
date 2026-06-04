@@ -1,5 +1,21 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.3.6
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.6
+
+## 0.3.5
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/adp-tooling@1.0.5
+    - @sap-ux/btp-utils@2.0.1
+    - @sap-ux/logger@1.0.1
+
 ## 0.3.4
 
 ### Patch Changes
