@@ -16,13 +16,13 @@
  ******************************************************************************/
 
 import opaTest from "sap/ui/test/opaQunit";
-import type { Given, When, Then } from "<%- appPath %>/test/integration/types/OpaJourneyTypes";
+import type { Given, When, Then } from "./types/OpaJourneyTypes";
 import runner from "./pages/JourneyRunner";
 
 function journey() {
     QUnit.module("<%- name%>ListReport journey");
 
-    opaTest("Start application", function (Given: Given, When: When, Then: Then) {
+    opaTest("Start application", function (Given: Given, _When: When, Then: Then) {
         Given.iStartMyApp();
         <%_ startPages.forEach(function(pageName) { %>
         Then.onThe<%- pageName %>.iSeeThisPage();
@@ -30,14 +30,14 @@ function journey() {
     });
 
     <%_ if (!hideFilterBar && filterBarItems && filterBarItems.length > 0) { -%>
-    opaTest("Check filter bar", function (Given: Given, When: When, Then: Then) {
+    opaTest("Check filter bar", function (_Given: Given, _When: When, Then: Then) {
         <%_ filterBarItems.forEach(function(item) { _%>
         Then.onThe<%- startLR%>.onFilterBar().iCheckFilterField({ property: "<%- item %>" });
         <%_ }); -%>
     });
 <%_ } -%>
 <%_ if (semanticKey && semanticKey.missingFromFilterBar && semanticKey.missingFromFilterBar.length > 0) { %>
-    opaTest("Add semantic key properties to filter bar", function (Given: Given, When: When, Then: Then) {
+    opaTest("Add semantic key properties to filter bar", function (_Given: Given, When: When, Then: Then) {
         Then.onThe<%- startLR%>.onFilterBar().iOpenFilterAdaptation();
         <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
         When.onThe<%- startLR%>.onFilterBar().iAddAdaptationFilterField("<%- property %>");
@@ -64,7 +64,7 @@ function journey() {
     // });
 
 <%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
-    opaTest("Check table columns and actions", function (Given: Given, When: When, Then: Then) {
+    opaTest("Check table columns and actions", function (_Given: Given, _When: When, Then: Then) {
         <%_ if (toolBarActions && toolBarActions.length > 0) { -%>
         <%_ if (createButton.visible && !isALP) { _%>
         Then.onThe<%- startLR%>.onTable("").iCheckCreate({ visible: true });
@@ -88,7 +88,7 @@ function journey() {
 <%_ } %>
 
 <% if (startLR) { %>
-    opaTest("Navigate to ObjectPage", function (Given: Given, When: When, Then: Then) {
+    opaTest("Navigate to ObjectPage", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data
         <% if (!hideFilterBar) { %>
         When.onThe<%- startLR%>.onFilterBar().iExecuteSearch();
@@ -100,7 +100,7 @@ function journey() {
 <%} %>
     });
 <%} %>
-    opaTest("Teardown", function (Given: Given, When: When, Then: Then) {
+    opaTest("Teardown", function (Given: Given) {
         // Cleanup
         Given.iTearDownMyApp();
     });

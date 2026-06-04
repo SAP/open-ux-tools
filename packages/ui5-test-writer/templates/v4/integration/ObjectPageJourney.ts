@@ -16,9 +16,28 @@
  ******************************************************************************/
 
 import opaTest from "sap/ui/test/opaQunit";
-import type { Given, When, Then } from "<%- appPath %>/test/integration/types/OpaJourneyTypes";
+import type { Given, When, Then } from "./types/OpaJourneyTypes";
+<%_
+const usesFieldIdentifier = (headerSections || []).some(function(section) {
+    return section.form && section.fields && section.fields.length > 0;
+});
+const usesFormIdentifier = !isStandalone && (bodySections || []).some(function(section) {
+    const subSectionsHaveForm = (section.subSections || []).some(function(sub) {
+        return sub.fields && sub.fields.length > 0;
+    });
+    const sectionHasFormFields = !(section.subSections && section.subSections.length > 0) && section.fields && section.fields.length > 0;
+    const hasFormAction = (section.actions || []).some(function(action) {
+        return action.visible && !(section.isTable && section.navigationProperty);
+    });
+    return subSectionsHaveForm || sectionHasFormFields || hasFormAction;
+});
+-%>
+<% if (usesFieldIdentifier) { -%>
 import type { FieldIdentifier } from "sap/fe/test/api/BaseAPI";
+<% } -%>
+<% if (usesFormIdentifier) { -%>
 import type { FormIdentifier } from "sap/fe/test/api/FormAPI";
+<% } -%>
 import runner from "./pages/JourneyRunner";
 
 function journey() {
@@ -40,7 +59,7 @@ function journey() {
     });
 
 <% if (headerActions?.length > 0 && !isStandalone) { -%>
-    opaTest("Check header actions of the Object Page", function (Given: Given, When: When, Then: Then) {
+    opaTest("Check header actions of the Object Page", function (_Given: Given, _When: When, Then: Then) {
 <% if (editButton?.visible) { -%>
         // Ensure the opened entity is not in Draft state before uncommenting
         // Then.onThe<%- name%>.onHeader().iCheckEdit({ visible: true });
@@ -60,7 +79,7 @@ function journey() {
 <% } -%>
 
 <% if (headerSections?.length > 0) { -%>
-    opaTest("Check header facets of the Object Page", function (Given: Given, When: When, Then: Then) {
+    opaTest("Check header facets of the Object Page", function (_Given: Given, _When: When, Then: Then) {
 <% headerSections.forEach(function(section) { -%>
 <% if (section.microChart) { -%>
         Then.onThe<%- name%>.onHeader().iCheckMicroChart("<%- section.title %>", "");
@@ -81,7 +100,7 @@ function journey() {
 <% } -%>
 
 <% if (bodySections?.length > 0 && !isStandalone) { -%>
-    opaTest("Check body sections of the Object Page", function (Given: Given, When: When, Then: Then) {
+    opaTest("Check body sections of the Object Page", function (_Given: Given, <% if (bodySections?.length > 1) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
 <% if (bodySections?.length > 1) { -%>
         Then.onThe<%- name%>.iCheckNumberOfSections(<%- bodySections.length %>);
 <% } -%>
@@ -148,7 +167,7 @@ function journey() {
    });
 <% } -%>
 
-    opaTest("Teardown", function (Given: Given, When: When, Then: Then) {
+    opaTest("Teardown", function (Given: Given) {
         // Cleanup
         Given.iTearDownMyApp();
     });

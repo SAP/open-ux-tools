@@ -11467,19 +11467,19 @@ Object {
   },
   "webapp/test/integration/myOPATest.ts": Object {
     "contents": "import opaTest from \\"sap/ui/test/opaQunit\\";
-import type { Given, When, Then } from \\"ui5-test-writer/test/employees/test/integration/types/OpaJourneyTypes\\";
+import type { Given, When, Then } from \\"./types/OpaJourneyTypes\\";
 import runner from \\"./pages/JourneyRunner\\";
 
 function journey() {
     QUnit.module(\\"First journey\\");
 
-    opaTest(\\"Start application\\", function (Given: Given, When: When, Then: Then) {
+    opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
         Given.iStartMyApp();
         Then.onTheEmployeesList.iSeeThisPage();
     });
 
 
-    opaTest(\\"Navigate to ObjectPage\\", function (Given: Given, When: When, Then: Then) {
+    opaTest(\\"Navigate to ObjectPage\\", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data
         
         When.onTheEmployeesList.onFilterBar().iExecuteSearch();
@@ -11491,7 +11491,7 @@ function journey() {
 
     });
 
-    opaTest(\\"Teardown\\", function (Given: Given, When: When, Then: Then) {
+    opaTest(\\"Teardown\\", function (Given: Given) {
         // Cleanup
         Given.iTearDownMyApp();
     });
@@ -11642,8 +11642,8 @@ import type { actions as ObjectPageActions, assertions as ObjectPageAssertions }
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
 import type Shell from \\"sap/fe/test/Shell\\";
 import type BaseArrangements from \\"sap/fe/test/BaseArrangements\\";
-import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"ui5-test-writer/test/employees/test/integration/pages/EmployeesList\\";
-import type { actions as EmployeesObjectPageCustomActions, assertions as EmployeesObjectPageCustomAssertions } from \\"ui5-test-writer/test/employees/test/integration/pages/EmployeesObjectPage\\";
+import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"../pages/EmployeesList\\";
+import type { actions as EmployeesObjectPageCustomActions, assertions as EmployeesObjectPageCustomAssertions } from \\"../pages/EmployeesObjectPage\\";
 
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
@@ -11871,19 +11871,19 @@ Object {
   },
   "webapp/test/integration/FirstJourney.ts": Object {
     "contents": "import opaTest from \\"sap/ui/test/opaQunit\\";
-import type { Given, When, Then } from \\"ui5-test-writer/test/employees/test/integration/types/OpaJourneyTypes\\";
+import type { Given, When, Then } from \\"./types/OpaJourneyTypes\\";
 import runner from \\"./pages/JourneyRunner\\";
 
 function journey() {
     QUnit.module(\\"First journey\\");
 
-    opaTest(\\"Start application\\", function (Given: Given, When: When, Then: Then) {
+    opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
         Given.iStartMyApp();
         Then.onTheEmployeesList.iSeeThisPage();
     });
 
 
-    opaTest(\\"Navigate to ObjectPage\\", function (Given: Given, When: When, Then: Then) {
+    opaTest(\\"Navigate to ObjectPage\\", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data
         
         When.onTheEmployeesList.onFilterBar().iExecuteSearch();
@@ -11895,7 +11895,7 @@ function journey() {
 
     });
 
-    opaTest(\\"Teardown\\", function (Given: Given, When: When, Then: Then) {
+    opaTest(\\"Teardown\\", function (Given: Given) {
         // Cleanup
         Given.iTearDownMyApp();
     });
@@ -12046,8 +12046,8 @@ import type { actions as ObjectPageActions, assertions as ObjectPageAssertions }
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
 import type Shell from \\"sap/fe/test/Shell\\";
 import type BaseArrangements from \\"sap/fe/test/BaseArrangements\\";
-import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"ui5-test-writer/test/employees/test/integration/pages/EmployeesList\\";
-import type { actions as EmployeesObjectPageCustomActions, assertions as EmployeesObjectPageCustomAssertions } from \\"ui5-test-writer/test/employees/test/integration/pages/EmployeesObjectPage\\";
+import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"../pages/EmployeesList\\";
+import type { actions as EmployeesObjectPageCustomActions, assertions as EmployeesObjectPageCustomAssertions } from \\"../pages/EmployeesObjectPage\\";
 
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
@@ -12275,19 +12275,19 @@ Object {
   },
   "webapp/test/integration/FirstJourney.ts": Object {
     "contents": "import opaTest from \\"sap/ui/test/opaQunit\\";
-import type { Given, When, Then } from \\"ui5-test-writer/test/employees/test/integration/types/OpaJourneyTypes\\";
+import type { Given, When, Then } from \\"./types/OpaJourneyTypes\\";
 import runner from \\"./pages/JourneyRunner\\";
 
 function journey() {
     QUnit.module(\\"First journey\\");
 
-    opaTest(\\"Start application\\", function (Given: Given, When: When, Then: Then) {
+    opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
         Given.iStartMyApp();
         Then.onTheEmployeesList.iSeeThisPage();
     });
 
 
-    opaTest(\\"Navigate to ObjectPage\\", function (Given: Given, When: When, Then: Then) {
+    opaTest(\\"Navigate to ObjectPage\\", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data
         
         When.onTheEmployeesList.onFilterBar().iExecuteSearch();
@@ -12299,7 +12299,7 @@ function journey() {
 
     });
 
-    opaTest(\\"Teardown\\", function (Given: Given, When: When, Then: Then) {
+    opaTest(\\"Teardown\\", function (Given: Given) {
         // Cleanup
         Given.iTearDownMyApp();
     });
@@ -12450,8 +12450,8 @@ import type { actions as ObjectPageActions, assertions as ObjectPageAssertions }
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
 import type Shell from \\"sap/fe/test/Shell\\";
 import type BaseArrangements from \\"sap/fe/test/BaseArrangements\\";
-import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"ui5-test-writer/test/employees/test/integration/pages/EmployeesList\\";
-import type { actions as EmployeesObjectPageCustomActions, assertions as EmployeesObjectPageCustomAssertions } from \\"ui5-test-writer/test/employees/test/integration/pages/EmployeesObjectPage\\";
+import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"../pages/EmployeesList\\";
+import type { actions as EmployeesObjectPageCustomActions, assertions as EmployeesObjectPageCustomAssertions } from \\"../pages/EmployeesObjectPage\\";
 
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
@@ -12656,19 +12656,19 @@ Object {
   },
   "webapp/test/integration/FirstJourney.ts": Object {
     "contents": "import opaTest from \\"sap/ui/test/opaQunit\\";
-import type { Given, When, Then } from \\"ui5-test-writer/test/employees/test/integration/types/OpaJourneyTypes\\";
+import type { Given, When, Then } from \\"./types/OpaJourneyTypes\\";
 import runner from \\"./pages/JourneyRunner\\";
 
 function journey() {
     QUnit.module(\\"First journey\\");
 
-    opaTest(\\"Start application\\", function (Given: Given, When: When, Then: Then) {
+    opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
         Given.iStartMyApp();
         Then.onTheEmployeesList.iSeeThisPage();
     });
 
 
-    opaTest(\\"Navigate to ObjectPage\\", function (Given: Given, When: When, Then: Then) {
+    opaTest(\\"Navigate to ObjectPage\\", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data
         
         When.onTheEmployeesList.onFilterBar().iExecuteSearch();
@@ -12677,7 +12677,7 @@ function journey() {
 
     });
 
-    opaTest(\\"Teardown\\", function (Given: Given, When: When, Then: Then) {
+    opaTest(\\"Teardown\\", function (Given: Given) {
         // Cleanup
         Given.iTearDownMyApp();
     });
@@ -12794,7 +12794,7 @@ import type { actions as ListReportActions, assertions as ListReportAssertions }
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
 import type Shell from \\"sap/fe/test/Shell\\";
 import type BaseArrangements from \\"sap/fe/test/BaseArrangements\\";
-import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"ui5-test-writer/test/employees/test/integration/pages/EmployeesList\\";
+import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"../pages/EmployeesList\\";
 
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
@@ -13063,19 +13063,19 @@ Object {
   },
   "webapp/test/integration/FirstJourney.ts": Object {
     "contents": "import opaTest from \\"sap/ui/test/opaQunit\\";
-import type { Given, When, Then } from \\"vesc/demo/employee/project2/test/integration/types/OpaJourneyTypes\\";
+import type { Given, When, Then } from \\"./types/OpaJourneyTypes\\";
 import runner from \\"./pages/JourneyRunner\\";
 
 function journey() {
     QUnit.module(\\"First journey\\");
 
-    opaTest(\\"Start application\\", function (Given: Given, When: When, Then: Then) {
+    opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
         Given.iStartMyApp();
         Then.onTheEmployeesList.iSeeThisPage();
     });
 
 
-    opaTest(\\"Navigate to ObjectPage\\", function (Given: Given, When: When, Then: Then) {
+    opaTest(\\"Navigate to ObjectPage\\", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data
         
         When.onTheEmployeesList.onFilterBar().iExecuteSearch();
@@ -13087,7 +13087,7 @@ function journey() {
 
     });
 
-    opaTest(\\"Teardown\\", function (Given: Given, When: When, Then: Then) {
+    opaTest(\\"Teardown\\", function (Given: Given) {
         // Cleanup
         Given.iTearDownMyApp();
     });
@@ -13302,10 +13302,10 @@ import type { actions as ObjectPageActions, assertions as ObjectPageAssertions }
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
 import type Shell from \\"sap/fe/test/Shell\\";
 import type BaseArrangements from \\"sap/fe/test/BaseArrangements\\";
-import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"vesc/demo/employee/project2/test/integration/pages/EmployeesList\\";
-import type { actions as EmployeesObjectPageCustomActions, assertions as EmployeesObjectPageCustomAssertions } from \\"vesc/demo/employee/project2/test/integration/pages/EmployeesObjectPage\\";
-import type { actions as PositionsObjectPageCustomActions, assertions as PositionsObjectPageCustomAssertions } from \\"vesc/demo/employee/project2/test/integration/pages/PositionsObjectPage\\";
-import type { actions as TrainingsObjectPageCustomActions, assertions as TrainingsObjectPageCustomAssertions } from \\"vesc/demo/employee/project2/test/integration/pages/TrainingsObjectPage\\";
+import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"../pages/EmployeesList\\";
+import type { actions as EmployeesObjectPageCustomActions, assertions as EmployeesObjectPageCustomAssertions } from \\"../pages/EmployeesObjectPage\\";
+import type { actions as PositionsObjectPageCustomActions, assertions as PositionsObjectPageCustomAssertions } from \\"../pages/PositionsObjectPage\\";
+import type { actions as TrainingsObjectPageCustomActions, assertions as TrainingsObjectPageCustomAssertions } from \\"../pages/TrainingsObjectPage\\";
 
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;

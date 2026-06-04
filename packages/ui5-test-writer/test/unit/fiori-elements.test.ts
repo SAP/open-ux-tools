@@ -860,8 +860,8 @@ describe('ui5-test-writer', () => {
             expect(content).toContain('import opaTest from "sap/ui/test/opaQunit"');
             expect(content).toContain('import type { Given, When, Then }');
             expect(content).toContain('import runner from "./pages/JourneyRunner"');
-            // Start application uses Given + Then
-            expect(content).toContain('function (Given: Given, When: When, Then: Then)');
+            // Start application uses Given + Then (When unused, prefixed with _ per project lint convention)
+            expect(content).toContain('function (Given: Given, _When: When, Then: Then)');
             expect(content).not.toContain('sap.ui.define');
             expect(content).not.toContain("'use strict'");
         });
@@ -969,8 +969,8 @@ describe('ui5-test-writer', () => {
             expect(lrContent).toContain('onTable("")');
             expect(lrContent).not.toContain('onTable()');
 
-            // The TS journey is typed, no AMD wrapper
-            expect(lrContent).toContain('function (Given: Given, When: When, Then: Then)');
+            // The TS journey is typed, no AMD wrapper. Start application uses Given + Then (When prefixed with _ as unused).
+            expect(lrContent).toContain('function (Given: Given, _When: When, Then: Then)');
             expect(lrContent).not.toContain('sap.ui.define');
 
             // Sanity: FirstJourney has no filter assertions (matches JS Worklistv4 test)
