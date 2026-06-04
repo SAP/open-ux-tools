@@ -31,6 +31,11 @@ jest.unstable_mockModule('@sap-ux/ui5-config', () => ({
     replaceEnvVariables: jest.fn()
 }));
 
+const mockCreateUi5Archive = jest.fn().mockResolvedValue(Buffer.from('')) as jest.Mock;
+jest.unstable_mockModule('../../../src/ui5/archive.js', () => ({
+    createUi5Archive: mockCreateUi5Archive
+}));
+
 const ui5TaskModule = await import('../../../src/ui5/index.js');
 const ui5Task = ui5TaskModule.default;
 const { task } = await import('../../../src/index.js');
@@ -67,6 +72,7 @@ describe('ui5', () => {
         mockUi5ConfigNewInstance.mockResolvedValue({
             getBuilderResourceExcludes: mockGetBuilderResourceExcludes
         });
+        mockCreateUi5Archive.mockResolvedValue(Buffer.from(''));
     });
 
     test('no errors', async () => {
@@ -124,6 +130,7 @@ describe('ui5', () => {
                 }))
             );
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
+            mockCreateUi5Archive.mockResolvedValue(Buffer.from(''));
         });
 
         test('reads builder.resources.excludes from ui5-deploy.yaml when configuration.exclude is absent', async () => {
@@ -145,8 +152,13 @@ describe('ui5', () => {
 
             // Implementation must call UI5Config.newInstance to parse the yaml
             expect(mockUi5ConfigNewInstance).toHaveBeenCalled();
-            // createUi5Archive calls workspace.byGlob — verify it was called (task ran fully)
-            expect(workspace.byGlob).toHaveBeenCalled();
+            // Builder excludes (glob-stripped) must reach createUi5Archive as 4th argument
+            expect(mockCreateUi5Archive).toHaveBeenCalledWith(
+                expect.anything(),
+                expect.anything(),
+                expect.anything(),
+                expect.arrayContaining(['/test/', '/localService/'])
+            );
         });
 
         test('falls back gracefully when ui5-deploy.yaml cannot be read', async () => {
@@ -158,7 +170,11 @@ describe('ui5', () => {
                 task({ workspace, options: { projectName, configuration: configWithExclude } } as any)
             ).resolves.not.toThrow();
 
-            expect(workspace.byGlob).toHaveBeenCalled();
+            // config.exclude alone must reach createUi5Archive when yaml is unreadable
+            expect(mockCreateUi5Archive).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.anything(), [
+                '/test/',
+                '/localService/'
+            ]);
         });
 
         test('merges configuration.exclude with builder.resources.excludes when both present', async () => {
@@ -176,7 +192,13 @@ describe('ui5', () => {
 
             // Implementation must call UI5Config.newInstance to parse the yaml
             expect(mockUi5ConfigNewInstance).toHaveBeenCalled();
-            expect(workspace.byGlob).toHaveBeenCalled();
+            // Merged array must contain both sources
+            expect(mockCreateUi5Archive).toHaveBeenCalledWith(
+                expect.anything(),
+                expect.anything(),
+                expect.anything(),
+                expect.arrayContaining(['/test/', '/localService/'])
+            );
         });
 
         test('deduplicates overlapping entries from both sources', async () => {
@@ -193,7 +215,10 @@ describe('ui5', () => {
                 task({ workspace, options: { projectName, configuration: configWithExclude } } as any)
             ).resolves.not.toThrow();
 
-            expect(workspace.byGlob).toHaveBeenCalled();
+            // Dedup: /test/ appears once only
+            expect(mockCreateUi5Archive).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.anything(), [
+                '/test/'
+            ]);
         });
     });
 });
