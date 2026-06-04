@@ -34,8 +34,8 @@ const config: PlaywrightTestConfig = {
     /* Configure projects for major browsers */
     projects: [
         {
-            name: 'Google Chrome',
-            use: { ...devices['Desktop Chrome'], channel: 'chrome', viewport: { width: 1720, height: 900 } }
+            name: 'Chromium',
+            use: { ...devices['Desktop Chrome'], viewport: { width: 1720, height: 900 } }
         }
     ],
     globalSetup: join(__dirname, './test/integration/utils/global-setup')
