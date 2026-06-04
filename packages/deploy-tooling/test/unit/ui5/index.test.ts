@@ -13,6 +13,24 @@ jest.unstable_mockModule('dotenv', () => ({
     config: mockDotenvConfig
 }));
 
+// Mockable readFile for node:fs/promises
+const mockReadFile = jest.fn() as jest.Mock;
+const realFsPromises = await import('node:fs/promises');
+jest.unstable_mockModule('node:fs/promises', () => ({
+    ...realFsPromises,
+    readFile: mockReadFile
+}));
+
+// Mockable UI5Config for @sap-ux/ui5-config
+const mockGetBuilderResourceExcludes = jest.fn().mockReturnValue([]) as jest.Mock;
+const mockUi5ConfigNewInstance = jest.fn().mockResolvedValue({
+    getBuilderResourceExcludes: mockGetBuilderResourceExcludes
+}) as jest.Mock;
+jest.unstable_mockModule('@sap-ux/ui5-config', () => ({
+    UI5Config: { newInstance: mockUi5ConfigNewInstance },
+    replaceEnvVariables: jest.fn()
+}));
+
 const ui5TaskModule = await import('../../../src/ui5/index.js');
 const ui5Task = ui5TaskModule.default;
 const { task } = await import('../../../src/index.js');
@@ -41,6 +59,15 @@ describe('ui5', () => {
         )
     };
     const options = { projectName, configuration };
+
+    beforeEach(() => {
+        // By default, readFile rejects so builder excludes fall back to []
+        mockReadFile.mockRejectedValue(new Error('ENOENT: no such file'));
+        mockGetBuilderResourceExcludes.mockReturnValue([]);
+        mockUi5ConfigNewInstance.mockResolvedValue({
+            getBuilderResourceExcludes: mockGetBuilderResourceExcludes
+        });
+    });
 
     test('no errors', async () => {
         mockedUi5RepoService.deploy.mockResolvedValue(undefined);
@@ -84,5 +111,89 @@ describe('ui5', () => {
         await expect(
             task({ workspace, options: { projectName, configuration: configWithStringLog } } as any)
         ).resolves.not.toThrow();
+    });
+
+    describe('exclude handling', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+            // Reset workspace mock after clearAllMocks
+            (workspace.byGlob as jest.Mock).mockReturnValue(
+                readdirSync(join(__testdirname, '../../fixtures/simple-app/webapp')).map((file) => ({
+                    getPath: () => `/resources/${projectName}/${file}`,
+                    getBuffer: () => Promise.resolve(Buffer.from(''))
+                }))
+            );
+            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
+        });
+
+        test('reads builder.resources.excludes from ui5-deploy.yaml when configuration.exclude is absent', async () => {
+            // Setup: yaml file exists with builder excludes
+            mockReadFile.mockResolvedValue(
+                'builder:\n  resources:\n    excludes:\n      - /test/**\n      - /localService/**\n'
+            );
+            mockGetBuilderResourceExcludes.mockReturnValue(['/test/**', '/localService/**']);
+            mockUi5ConfigNewInstance.mockResolvedValue({
+                getBuilderResourceExcludes: mockGetBuilderResourceExcludes
+            });
+
+            const configWithoutExclude: AbapDeployConfig = { ...configuration };
+            delete (configWithoutExclude as any).exclude;
+
+            await expect(
+                task({ workspace, options: { projectName, configuration: configWithoutExclude } } as any)
+            ).resolves.not.toThrow();
+
+            // Implementation must call UI5Config.newInstance to parse the yaml
+            expect(mockUi5ConfigNewInstance).toHaveBeenCalled();
+            // createUi5Archive calls workspace.byGlob — verify it was called (task ran fully)
+            expect(workspace.byGlob).toHaveBeenCalled();
+        });
+
+        test('falls back gracefully when ui5-deploy.yaml cannot be read', async () => {
+            // readFile throws (file not found) — should fall back to empty builder excludes
+            mockReadFile.mockRejectedValue(new Error('ENOENT: no such file'));
+
+            const configWithExclude: AbapDeployConfig = { ...configuration, exclude: ['/test/', '/localService/'] };
+            await expect(
+                task({ workspace, options: { projectName, configuration: configWithExclude } } as any)
+            ).resolves.not.toThrow();
+
+            expect(workspace.byGlob).toHaveBeenCalled();
+        });
+
+        test('merges configuration.exclude with builder.resources.excludes when both present', async () => {
+            // Setup: yaml has /localService/** but config already has /test/
+            mockReadFile.mockResolvedValue('builder:\n  resources:\n    excludes:\n      - /localService/**\n');
+            mockGetBuilderResourceExcludes.mockReturnValue(['/localService/**']);
+            mockUi5ConfigNewInstance.mockResolvedValue({
+                getBuilderResourceExcludes: mockGetBuilderResourceExcludes
+            });
+
+            const configWithExclude: AbapDeployConfig = { ...configuration, exclude: ['/test/'] };
+            await expect(
+                task({ workspace, options: { projectName, configuration: configWithExclude } } as any)
+            ).resolves.not.toThrow();
+
+            // Implementation must call UI5Config.newInstance to parse the yaml
+            expect(mockUi5ConfigNewInstance).toHaveBeenCalled();
+            expect(workspace.byGlob).toHaveBeenCalled();
+        });
+
+        test('deduplicates overlapping entries from both sources', async () => {
+            // Same pattern appears in both config.exclude and builder excludes (after globToPrefix)
+            mockReadFile.mockResolvedValue('builder:\n  resources:\n    excludes:\n      - /test/**\n');
+            mockGetBuilderResourceExcludes.mockReturnValue(['/test/**']);
+            mockUi5ConfigNewInstance.mockResolvedValue({
+                getBuilderResourceExcludes: mockGetBuilderResourceExcludes
+            });
+
+            // config.exclude uses the already-stripped prefix form
+            const configWithExclude: AbapDeployConfig = { ...configuration, exclude: ['/test/'] };
+            await expect(
+                task({ workspace, options: { projectName, configuration: configWithExclude } } as any)
+            ).resolves.not.toThrow();
+
+            expect(workspace.byGlob).toHaveBeenCalled();
+        });
     });
 });

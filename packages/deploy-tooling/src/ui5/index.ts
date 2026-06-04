@@ -6,7 +6,9 @@ import { NAME } from '../types/index.js';
 import { deploy, validateConfig } from '../base/index.js';
 import { createUi5Archive } from './archive.js';
 import { config as loadEnvConfig } from 'dotenv';
-import { replaceEnvVariables } from '@sap-ux/ui5-config';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { UI5Config, replaceEnvVariables } from '@sap-ux/ui5-config';
 
 /**
  * Resolves a log level value from ui5.yaml configuration to a LogLevel enum value.
@@ -32,6 +34,33 @@ function resolveLogLevel(value: string | number | undefined): LogLevel {
 }
 
 /**
+ * Convert a glob pattern to a regex-safe prefix string.
+ * Strips trailing `/**` or `/*` so `/test/**` becomes `/test/`.
+ *
+ * @param pattern - glob pattern to convert
+ * @returns prefix string safe for regex matching
+ */
+function globToPrefix(pattern: string): string {
+    return pattern.replace(/\/\*+$/, '/');
+}
+
+/**
+ * Read builder.resources.excludes from ui5-deploy.yaml in the current working directory.
+ * Returns an empty array if the file cannot be read or the path is absent.
+ *
+ * @returns array of prefix strings derived from builder.resources.excludes
+ */
+async function readBuilderExcludes(): Promise<string[]> {
+    try {
+        const content = await readFile(join(process.cwd(), 'ui5-deploy.yaml'), 'utf-8');
+        const ui5Config = await UI5Config.newInstance(content);
+        return ui5Config.getBuilderResourceExcludes().map(globToPrefix);
+    } catch {
+        return [];
+    }
+}
+
+/**
  * Custom task to upload the build result to the UI5 ABAP Repository.
  *
  * @param params - destructured input parameters
@@ -50,12 +79,18 @@ async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): P
     const config = validateConfig(options.configuration, logger);
     replaceEnvVariables(config);
 
+    // Merge configuration.exclude (old format, backward compat) with
+    // builder.resources.excludes read from ui5-deploy.yaml (new format).
+    // Dedup so both sources can coexist without duplicate patterns.
+    const builderExcludes = await readBuilderExcludes();
+    const mergedExclude = [...new Set([...(config.exclude ?? []), ...builderExcludes])];
+
     // The calling client can use either the projectNamespace or projectName when creating the workspace, needs to match when creating the archive.
     const archive = await createUi5Archive(
         logger,
         workspace,
         options.projectNamespace ?? options.projectName,
-        config.exclude
+        mergedExclude
     );
     await deploy(archive, config, logger);
 }
