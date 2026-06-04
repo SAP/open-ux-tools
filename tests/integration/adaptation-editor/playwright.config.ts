@@ -69,7 +69,6 @@ const config: PlaywrightTestConfig<TestOptions> = {
         name: `${version}`,
         use: {
             ...devices['Desktop Chrome'],
-            channel: 'chrome',
             viewport: { width: 1720, height: 900 },
             ui5Version: version
         }

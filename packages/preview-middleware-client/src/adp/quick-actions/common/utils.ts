@@ -1,4 +1,4 @@
-import type { TextBundle } from '../../../i18n';
+import type { TextBundle } from '../../../i18n.js';
 
 export function getTooltipsForTableEmptyRowModeAction(resourceBundle: TextBundle) {
     const alreadyEnabledTooltip = resourceBundle.getText('EMPTY_ROW_MODE_IS_ALREADY_ENABLED');

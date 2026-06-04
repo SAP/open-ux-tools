@@ -1,12 +1,13 @@
 {
     "name": "@sap-ux/fiori-generator-shared",
     "description": "Commonly used shared functionality and types to support the fiori generator.",
-    "version": "0.15.6",
+    "version": "1.0.5",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/fiori-generator-shared"
     },
+    "type": "module",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -15,8 +16,8 @@
         "watch": "tsc --watch",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
@@ -40,6 +41,7 @@
         "semver": "7.7.4"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
         "@types/semver": "7.7.1",

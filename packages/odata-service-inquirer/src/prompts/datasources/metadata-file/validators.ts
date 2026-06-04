@@ -8,8 +8,8 @@
 
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { readFile } from 'node:fs/promises';
-import { validateODataVersion } from '../../validators';
-import { t } from '../../../i18n';
+import { validateODataVersion } from '../../validators.js';
+import { t } from '../../../i18n.js';
 
 export const validateMetadataFile = async (
     path: string,

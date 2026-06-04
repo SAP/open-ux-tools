@@ -1,6 +1,6 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 
-import { t } from '../../../utils/i18n';
+import { t } from '../../../utils/i18n.js';
 
 /**
  * Creates a message for extension project prompt based on the provided parameters.

@@ -1,7 +1,7 @@
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
-import { getFilteredModel } from '../../../../src/panels/outline/utils';
-import type { FilterOptions } from '../../../../src/slice';
-import { FilterName } from '../../../../src/slice';
+import { getFilteredModel } from '../../../../src/panels/outline/utils.js';
+import type { FilterOptions } from '../../../../src/slice.js';
+import { FilterName } from '../../../../src/slice.js';
 
 const getOutlineNodes = (
     editable = true,

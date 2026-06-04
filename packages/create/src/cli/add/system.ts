@@ -10,7 +10,7 @@ import {
 } from '@sap-ux/store';
 import { replaceEnvVariables } from '@sap-ux/ui5-config';
 import { config as loadEnvConfig } from 'dotenv';
-import { getLogger } from '../../tracing';
+import { getLogger } from '../../tracing/index.js';
 
 /**
  * Add the "add system" subcommand to a passed command.

@@ -1,18 +1,20 @@
+import { jest } from '@jest/globals';
 import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
-import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
-import { initOrphanedChangeDetection } from 'open/ux/preview/client/adp/change-file-validator';
 import { documentMock, fetchMock } from 'mock/window';
 
-jest.mock('../../../src/i18n', () => ({
+jest.unstable_mockModule('open/ux/preview/client/i18n', () => ({
     getTextBundle: () =>
         Promise.resolve({
             getText: jest
                 .fn()
-                .mockImplementation((key: string, params: string[] | undefined) =>
+                .mockImplementation((key, params) =>
                     Array.isArray(params) ? `${key} - ${params.join(', ')}` : key
                 )
         })
 }));
+
+const { CommunicationService } = await import('open/ux/preview/client/cpe/communication-service');
+const { initOrphanedChangeDetection } = await import('open/ux/preview/client/adp/change-file-validator');
 
 /**
  * Flushes pending microtasks so fire-and-forget async calls (sendInfoCenterMessage)
@@ -33,7 +35,7 @@ describe('change-file-validator', () => {
 
         jest.spyOn(CommunicationService, 'sendAction');
 
-        documentMock.getElementById.mockImplementation((id: string) => {
+        documentMock.getElementById.mockImplementation((id) => {
             if (id === 'sap-ui-bootstrap') {
                 return { dataset: { openUxPreviewBaseUrl: '' } };
             }
@@ -345,7 +347,7 @@ describe('change-file-validator', () => {
 
     test('uses baseUrl from sap-ui-bootstrap element', async () => {
         const mockBaseUrl = '/my-base-url';
-        documentMock.getElementById.mockImplementation((id: string) => {
+        documentMock.getElementById.mockImplementation((id) => {
             if (id === 'sap-ui-bootstrap') {
                 return { dataset: { openUxPreviewBaseUrl: mockBaseUrl } };
             }

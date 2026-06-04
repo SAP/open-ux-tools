@@ -2,8 +2,8 @@ import fs from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { TestSuite, TestCase } from 'promptfoo';
-import { FOLDER_PATHS } from '../types';
-import { npmInstall, removeDirectory } from '../../utils';
+import { FOLDER_PATHS } from '../types/index.js';
+import { npmInstall, removeDirectory } from '../../utils.js';
 
 /** Variable name used to identify project configuration in test config */
 const PROJECT_VARIABLE_NAME = 'project';

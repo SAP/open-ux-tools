@@ -1,11 +1,14 @@
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 /**
  * Utility module for resolving embeddings data paths
  * Handles fallback mechanisms when @sap-ux/fiori-docs-embeddings package is not available
  */
 
 import fs from 'node:fs/promises';
-import path from 'node:path';
-import { logger } from './logger';
+import { logger } from './logger.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Attempts to resolve the path to embeddings data. First tries to use @sap-ux/fiori-docs-embeddings package, then falls back to local data.
@@ -22,19 +25,13 @@ export async function resolveEmbeddingsPath(): Promise<{
 }> {
     // Try to resolve @sap-ux/fiori-docs-embeddings package
     try {
-        // Try to require the embeddings package dynamically
         let embeddingsPackage: any;
         try {
-            // eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-require-imports
-            embeddingsPackage = require('@sap-ux/fiori-docs-embeddings');
+            const moduleName = '@sap-ux/fiori-docs-embeddings';
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            embeddingsPackage = await import(moduleName);
         } catch {
-            // Try dynamic import as fallback with proper error handling
-            try {
-                const moduleName = '@sap-ux/fiori-docs-embeddings';
-                embeddingsPackage = await import(moduleName);
-            } catch {
-                embeddingsPackage = null;
-            }
+            embeddingsPackage = null;
         }
 
         if (!embeddingsPackage || typeof embeddingsPackage.getDataPath !== 'function') {

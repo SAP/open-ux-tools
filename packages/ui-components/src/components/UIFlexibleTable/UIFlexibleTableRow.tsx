@@ -1,9 +1,9 @@
 import React from 'react';
 import type { CSSProperties } from 'react';
-import { UIFocusZone, UIFocusZoneDirection } from '..';
-import { UIFlexibleTableLayout } from './types';
-import type { UIFlexibleTableProps, UIFlexibleTableRowType, NodeDragAndDropSortingParams } from './types';
-import { composeClassNames } from './utils';
+import { UIFocusZone, UIFocusZoneDirection } from '../index.js';
+import { UIFlexibleTableLayout } from './types.js';
+import type { UIFlexibleTableProps, UIFlexibleTableRowType, NodeDragAndDropSortingParams } from './types.js';
+import { composeClassNames } from './utils.js';
 
 export interface UIFlexibleTableRowProps<T> {
     dragAndDropParams: NodeDragAndDropSortingParams;

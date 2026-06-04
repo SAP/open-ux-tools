@@ -1,13 +1,16 @@
-import { getPrompts, prompt } from '../src';
-import { getService } from '@sap-ux/store';
-import { mockTargetSystems } from './fixtures/targets';
-import type { AbapDeployConfigAnswersInternal } from '../src/types';
+import { jest } from '@jest/globals';
+import { mockTargetSystems } from './fixtures/targets.js';
+import type { AbapDeployConfigAnswersInternal } from '../src/types.js';
 
-jest.mock('@sap-ux/store', () => ({
-    ...jest.requireActual('@sap-ux/store'),
-    getService: jest.fn()
+const mockGetService = jest.fn<typeof realStore.getService>();
+const realStore = await import('@sap-ux/store');
+
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
+    getService: mockGetService
 }));
-const mockGetService = getService as jest.Mock;
+
+const { getPrompts, prompt } = await import('../src/index.js');
 
 describe('index', () => {
     it('should return prompts from getPrompts', async () => {

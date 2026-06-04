@@ -6,9 +6,9 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { fetchMock } from 'mock/window';
 
-import { type ExtensionPointData } from '../../../../src/adp/extension-point';
+import { type ExtensionPointData } from '../../../../src/adp/extension-point.js';
 
-import ExtensionPoint from '../../../../src/adp/controllers/ExtensionPoint.controller';
+import ExtensionPoint from '../../../../src/adp/controllers/ExtensionPoint.controller.js';
 import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
 import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 

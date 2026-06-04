@@ -1,4 +1,4 @@
-import type { GetFunctionalityDetailsOutput } from '../../../types';
+import type { GetFunctionalityDetailsOutput } from '../../../types/index.js';
 
 export default {
     functionalityId: 'fetch-service-metadata',

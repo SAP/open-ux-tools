@@ -1,3 +1,3 @@
-export * from './UIToolbar';
-export * from './UIToolbarColumn';
-export * from './UIToolbarDivider';
+export * from './UIToolbar.js';
+export * from './UIToolbarColumn.js';
+export * from './UIToolbarDivider.js';
