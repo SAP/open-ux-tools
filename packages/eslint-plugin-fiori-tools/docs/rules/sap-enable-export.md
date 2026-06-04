@@ -41,7 +41,7 @@ The `enableExport` property is set to `false` which hides the "Export" button.
 
 The `newValue` of the `enableExport` property is set to `false` which hides the "Export" button.
 
-#### Correct Manifest File in OData V4
+#### Correct `manifest.json` File in OData V4
 
 ```json
 {
