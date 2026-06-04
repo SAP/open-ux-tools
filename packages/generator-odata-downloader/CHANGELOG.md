@@ -1,5 +1,11 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.7
+
+### Patch Changes
+
+- 78f39f4: revert odata-downloader to cjs
+
 ## 0.3.6
 
 ### Patch Changes
