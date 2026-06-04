@@ -60,7 +60,7 @@ declare module 'sap/ui/rta/command/FlexCommand' {
             };
             setModuleName(moduleName: string): void;
         };
-        // avasilev: This may return heterogeneous collection so it is wrong to 
+        // This may return heterogeneous collection so it is wrong to 
         // use the generic type when the method returns an array of changes.
         getPreparedChange(): Change<ChangeContentType> | Change<unknown>[];
         getCommands(): FlexCommand[];
