@@ -26,16 +26,20 @@ sap.ui.define([
 
         opaTest("Navigate to <%- name%>ObjectPage", function (Given, When, Then) {
             Given.iStartMyApp();
-<% if (!hideFilterBar) { %>
+<% if (!hideFilterBar && navigationParents.parentLRName) { -%>
             When.onThe<%- navigationParents.parentLRName%>.onFilterBar().iExecuteSearch();
-<% } %>
+<% } -%>
+<% if (navigationParents.parentLRName) { -%>
             Then.onThe<%- navigationParents.parentLRName%>.onTable().iCheckRows();
             When.onThe<%- navigationParents.parentLRName%>.onTable().iPressRow(0);
-<% if(navigationParents.parentOPName) { %>
+<% } else { -%>
+            // Navigation to Object Page might be different based on the app's structure, adjust the navigation steps accordingly
+<% } -%>
+<% if(navigationParents.parentOPName) { -%>
             Then.onThe<%- navigationParents.parentOPName%>.iSeeThisPage();
             Then.onThe<%- navigationParents.parentOPName%>.onTable({ property: "<%- navigationParents.parentOPTableSection %>" }).iCheckRows();
             When.onThe<%- navigationParents.parentOPName%>.onTable({ property: "<%- navigationParents.parentOPTableSection %>" }).iPressRow(0);
-<% } %>
+<% } -%>
             Then.onThe<%- name%>.iSeeThisPage();
         });
 
