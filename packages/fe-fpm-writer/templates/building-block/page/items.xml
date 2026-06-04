@@ -1,4 +1,5 @@
 <<%- macrosPrefix %>items>
+    <!-- Main content -->
 	<IconTabBar id="stickySubheaderBar" class="sapUiResponsiveContentPadding">
 		<items>
 			<IconTabFilter text="Tab 1">

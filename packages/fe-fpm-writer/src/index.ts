@@ -43,8 +43,10 @@ export type {
     CustomFormField,
     RichTextEditor,
     ButtonGroupConfig,
-    Action
+    Action,
+    PageTemplateType
 } from './building-block/types.js';
+export { PAGE_TEMPLATE_TYPE_FULL, PAGE_TEMPLATE_TYPE_BASIC } from './building-block/types.js';
 export {
     generateBuildingBlock,
     getSerializedFileContent,

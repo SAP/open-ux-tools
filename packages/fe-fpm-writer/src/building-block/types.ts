@@ -401,9 +401,9 @@ export interface Page extends BuildingBlock {
     /**
      * The template type for the page building block.
      * 'full' generates a full page template with all aggregations and controller stubs.
-     * 'blank' generates a minimal self-closing tag (default behavior).
+     * 'basic' generates a minimal self-closing tag (default behavior).
      */
-    templateType?: 'full' | 'blank';
+    templateType?: PageTemplateType;
 
     /**
      * Optional mContent strings keyed by aggregation name.
@@ -411,6 +411,10 @@ export interface Page extends BuildingBlock {
      */
     aggregations?: Record<string, string>;
 }
+
+export const PAGE_TEMPLATE_TYPE_FULL = 'full' as const;
+export const PAGE_TEMPLATE_TYPE_BASIC = 'basic' as const;
+export type PageTemplateType = typeof PAGE_TEMPLATE_TYPE_FULL | typeof PAGE_TEMPLATE_TYPE_BASIC;
 
 /**
  * Represents a custom filter to be used inside the FilterBar.

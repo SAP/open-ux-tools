@@ -11,6 +11,7 @@ import type { Editor } from 'mem-fs-editor';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import {
     BuildingBlockType,
+    PAGE_TEMPLATE_TYPE_FULL,
     type BuildingBlock,
     type BuildingBlockConfig,
     type BuildingBlockMetaPath,
@@ -99,7 +100,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
 
     if (
         buildingBlockData.buildingBlockType === BuildingBlockType.Page &&
-        (buildingBlockData as Page).templateType === 'full'
+        (buildingBlockData as Page).templateType === PAGE_TEMPLATE_TYPE_FULL
     ) {
         appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId, buildingBlockData as Page);
     }
@@ -128,7 +129,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
 
     if (
         buildingBlockData.buildingBlockType === BuildingBlockType.Page &&
-        (buildingBlockData as Page).templateType === 'full'
+        (buildingBlockData as Page).templateType === PAGE_TEMPLATE_TYPE_FULL
     ) {
         applyPageControllerTemplate(fs, basePath, viewOrFragmentPath);
     }
@@ -161,6 +162,8 @@ export const PAGE_AGGREGATIONS = [
 
 export type PageAggregationName = (typeof PAGE_AGGREGATIONS)[number];
 
+const PAGE_TEMPLATE_COMMENT = 'This is a sample template, event handlers should be added for implementation';
+
 /**
  * Appends the 7 Page building block aggregation fragments as child elements of the templateDocument root.
  *
@@ -186,6 +189,7 @@ function appendPageAggregations(
     const aggErrorHandler = (level: string, message: string): never => {
         throw new Error(`Unable to parse page aggregation fragment. Details: [${level}] - ${message}`);
     };
+    pageElement.appendChild(templateDocument.createComment(PAGE_TEMPLATE_COMMENT));
     for (const aggName of PAGE_AGGREGATIONS) {
         const mContent = pageData.aggregations?.[aggName] ?? '';
         const aggContext = { macrosPrefix, mContent };
@@ -214,9 +218,10 @@ function appendPageAggregations(
  * @param pageElement - the macros:Page DOM node whose children should be sorted
  */
 function sortPageAggregationChildren(pageElement: Node): void {
-    const elementChildren = Array.from(pageElement.childNodes).filter(
-        (n) => n.nodeType === 1 /* Element */
-    ) as Element[];
+    const allChildren = Array.from(pageElement.childNodes);
+    // Separate leading template comment (first comment node) from element children
+    const leadingComment = allChildren.find((n) => n.nodeType === 8 /* Comment */);
+    const elementChildren = allChildren.filter((n) => n.nodeType === 1 /* Element */) as Element[];
     const sorted = [...elementChildren].sort((a, b) => {
         const aIdx = PAGE_AGGREGATIONS.indexOf(a.localName as PageAggregationName);
         const bIdx = PAGE_AGGREGATIONS.indexOf(b.localName as PageAggregationName);
@@ -224,6 +229,9 @@ function sortPageAggregationChildren(pageElement: Node): void {
     });
     while (pageElement.firstChild) {
         pageElement.removeChild(pageElement.firstChild);
+    }
+    if (leadingComment) {
+        pageElement.appendChild(leadingComment);
     }
     for (const el of sorted) {
         pageElement.appendChild(el);
@@ -237,6 +245,8 @@ function sortPageAggregationChildren(pageElement: Node): void {
  * @param {string} basePath - the base path of the application
  * @param {string} viewPath - the path of the xml view relative to the base path
  * @param {{ aggregationName: PageAggregationName; mContent: string }} data - aggregation name and inner XML content
+ * @param data.aggregationName
+ * @param data.mContent
  * @returns {Editor} the updated memfs editor instance
  */
 export async function appendPageBBAggregation(
@@ -275,6 +285,10 @@ export async function appendPageBBAggregation(
     }
 
     const pageElement = pageNodes[0] as Node;
+    const hasExistingChildren = Array.from(pageElement.childNodes).some((n) => n.nodeType === 1 /* Element */);
+    if (!hasExistingChildren) {
+        pageElement.appendChild(xmlDocument.createComment(PAGE_TEMPLATE_COMMENT));
+    }
     for (const node of Array.from(aggDoc.documentElement.childNodes)) {
         if (node.nodeType === 1 /* Element */) {
             (node as Element).setAttribute('id', uniqueId);

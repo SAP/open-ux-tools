@@ -1,3 +1,4 @@
 <<%- macrosPrefix %>headerContent>
+    <!-- Header content aggregation (content after avatar) -->
     <%- mContent %>
 </<%- macrosPrefix %>headerContent>

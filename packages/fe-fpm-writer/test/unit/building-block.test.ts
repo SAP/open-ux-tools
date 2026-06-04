@@ -1117,7 +1117,8 @@ describe('Building Blocks', () => {
                             '<m:Breadcrumbs>\n    <m:Link text="Home" press=".onPressHome" />\n    <m:Link text="Page 1" press=".onPressPage1" />\n    <m:Link text="Page 2" press=".onPressPage2" />\n</m:Breadcrumbs>',
                         navigationActions:
                             '<m:Button icon="sap-icon://full-screen" press=".onFullScreen" type="Transparent" />',
-                        actions: '<m:Button text="Action 1" press=".onClickAction1" type="Ghost" />\n    <m:Button text="Action 2" press=".onClickAction2" type="Ghost" />'
+                        actions:
+                            '<m:Button text="Action 1" press=".onClickAction1" type="Ghost" />\n    <m:Button text="Action 2" press=".onClickAction2" type="Ghost" />'
                     }
                 },
                 replace: true
@@ -1147,6 +1148,7 @@ describe('Building Blocks', () => {
         expect(viewContent).toContain('press=".onFullScreen"');
         expect(viewContent).toContain('press=".onClickAction1"');
         expect(viewContent).toContain('press=".onClickAction2"');
+        expect(viewContent).toContain('This is a sample template, event handlers should be added for implementation');
     });
 
     test('generate Page building block with full template creates JS controller', async () => {
@@ -1223,7 +1225,7 @@ describe('Building Blocks', () => {
                 buildingBlockData: {
                     id: 'testPage',
                     buildingBlockType: BuildingBlockType.Page,
-                    templateType: 'blank',
+                    templateType: 'basic',
                     generateId
                 },
                 replace: true
@@ -3868,7 +3870,10 @@ describe('Building Blocks', () => {
             const basePath = join(testAppPath, 'page-bb-agg');
             fs.write(join(basePath, xmlViewFilePath), pageViewContent);
 
-            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, { aggregationName: 'footer', mContent: '' });
+            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, {
+                aggregationName: 'footer',
+                mContent: ''
+            });
 
             const output = result.read(join(basePath, xmlViewFilePath));
             expect(output).toContain('id="footer"');
@@ -3883,9 +3888,12 @@ describe('Building Blocks', () => {
     </macros:Page>
 </mvc:View>`;
             fs.write(join(basePath, xmlViewFilePath), viewWithExistingId);
-            jest.spyOn(fileAccess, 'findFilesByExtension').mockResolvedValue([join(basePath, xmlViewFilePath)]);
+            findFilesByExtensionMock.mockResolvedValue([join(basePath, xmlViewFilePath)]);
 
-            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, { aggregationName: 'footer', mContent: '' });
+            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, {
+                aggregationName: 'footer',
+                mContent: ''
+            });
 
             const output = result.read(join(basePath, xmlViewFilePath));
             expect(output).toContain('id="footer1"');
@@ -3904,7 +3912,10 @@ describe('Building Blocks', () => {
             fs.write(join(basePath, xmlViewFilePath), viewOutOfOrder);
 
             // Adding navigationActions (index 1) should trigger a full sort
-            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, { aggregationName: 'navigationActions', mContent: '' });
+            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, {
+                aggregationName: 'navigationActions',
+                mContent: ''
+            });
 
             const output = result.read(join(basePath, xmlViewFilePath));
             const navPos = output.indexOf('macros:navigationActions');
@@ -3912,6 +3923,68 @@ describe('Building Blocks', () => {
             const footPos = output.indexOf('macros:footer');
             expect(navPos).toBeLessThan(actPos);
             expect(actPos).toBeLessThan(footPos);
+        });
+
+        it('adds template comment as first child when Page has no existing aggregations', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-comment');
+            fs.write(join(basePath, xmlViewFilePath), pageViewContent);
+
+            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, {
+                aggregationName: 'items',
+                mContent: ''
+            });
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            expect(output).toContain('This is a sample template, event handlers should be added for implementation');
+            // Comment should appear before the aggregation element
+            const commentPos = output.indexOf('This is a sample template');
+            const itemsPos = output.indexOf('macros:items');
+            expect(commentPos).toBeLessThan(itemsPos);
+        });
+
+        it('does not add template comment when Page already has aggregation children', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-no-comment');
+            const viewWithExisting = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+        <macros:footer id="footer"><OverflowToolbar /></macros:footer>
+    </macros:Page>
+</mvc:View>`;
+            fs.write(join(basePath, xmlViewFilePath), viewWithExisting);
+
+            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, {
+                aggregationName: 'items',
+                mContent: ''
+            });
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            // Comment should not be added again if children already exist
+            expect(output.split('This is a sample template').length - 1).toBeLessThanOrEqual(1);
+        });
+
+        it('preserves template comment when reordering aggregations', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-sort-comment');
+            const viewWithComment = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+        <!--This is a sample template, event handlers should be added for implementation-->
+        <macros:footer id="footer"><OverflowToolbar /></macros:footer>
+        <macros:actions id="actions"><Button text="Act" /></macros:actions>
+    </macros:Page>
+</mvc:View>`;
+            fs.write(join(basePath, xmlViewFilePath), viewWithComment);
+
+            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, {
+                aggregationName: 'navigationActions',
+                mContent: ''
+            });
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            expect(output).toContain('This is a sample template, event handlers should be added for implementation');
+            // Comment should remain before all aggregation elements
+            const commentPos = output.indexOf('This is a sample template');
+            const navPos = output.indexOf('macros:navigationActions');
+            expect(commentPos).toBeLessThan(navPos);
         });
     });
 });

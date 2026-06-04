@@ -1,3 +1,4 @@
 <<%- macrosPrefix %>breadcrumbs>
+    <!-- Breadcrumbs aggregation -->
     <%- mContent %>
 </<%- macrosPrefix %>breadcrumbs>

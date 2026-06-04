@@ -281,9 +281,9 @@ const ns1 = {
         },
         'page': {
             'templateType': {
-                'message': 'Page template',
-                'full': 'Default content',
-                'blank': 'Blank'
+                'message': 'Page Layout',
+                'full': 'Full',
+                'basic': 'Basic'
             },
             'id': {
                 'message': 'Building Block ID',

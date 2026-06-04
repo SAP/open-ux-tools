@@ -430,19 +430,19 @@ Object {
     Object {
       "choices": Array [
         Object {
-          "name": "Default content",
-          "value": "full",
+          "name": "Basic",
+          "value": "basic",
         },
         Object {
-          "name": "Blank",
-          "value": "blank",
+          "name": "Full",
+          "value": "full",
         },
       ],
-      "default": "full",
+      "default": "basic",
       "guiOptions": Object {
         "mandatory": true,
       },
-      "message": "Page template",
+      "message": "Page Layout",
       "name": "buildingBlockData.templateType",
       "type": "list",
     },
@@ -1830,19 +1830,19 @@ Object {
     Object {
       "choices": Array [
         Object {
-          "name": "Default content",
-          "value": "full",
+          "name": "Basic",
+          "value": "basic",
         },
         Object {
-          "name": "Blank",
-          "value": "blank",
+          "name": "Full",
+          "value": "full",
         },
       ],
-      "default": "full",
+      "default": "basic",
       "guiOptions": Object {
         "mandatory": true,
       },
-      "message": "Page template",
+      "message": "Page Layout",
       "name": "buildingBlockData.templateType",
       "type": "list",
     },
