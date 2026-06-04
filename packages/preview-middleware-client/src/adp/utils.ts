@@ -7,7 +7,7 @@ import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import IsReuseComponentApi from 'sap/ui/rta/util/isReuseComponent';
 import { getControlById } from '../utils/core';
 
-import { getFlexChangeList } from '../utils/additional-change-info';
+import { getChangeDefinition, getFlexChangeList } from '../utils/additional-change-info';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version.js';
 
 export interface Deferred<T> {
@@ -108,7 +108,7 @@ export function getNestedProperty(obj: object, path: string): unknown {
  */
 export function matchesChangeProperty(command: FlexCommand, propertyPath: string, propertyValue: string): boolean {
     return getFlexChangeList(command).some((change) => {
-        const changeDefinition = change.convertToFileContent?.();
+        const changeDefinition = getChangeDefinition(change);
         const nestedProperty = getNestedProperty(changeDefinition, propertyPath);
         return typeof nestedProperty === 'string' ? nestedProperty.includes(propertyValue) : false;
     });

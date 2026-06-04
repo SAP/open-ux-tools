@@ -1,5 +1,5 @@
 import type Component from 'sap/ui/core/Component';
-import FlexChange from 'sap/ui/fl/Change';
+import FlexChange, { ChangeDefinition } from 'sap/ui/fl/Change';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import {
     getAddXMLAdditionalInfo,
@@ -12,6 +12,9 @@ import { FlexChange as Change } from '../flp/common.js';
 export type AdditionalChangeInfo = AddXMLAdditionalInfo | undefined;
 type FlexXMLChange = FlexChange<AddXMLChangeContent>;
 type FlexBaseChange = Omit<FlexChange<unknown>, 'setContent'>;
+interface FlexLegacyBaseChange {
+    getDefinition: () => ChangeDefinition;
+}
 
 const additionalChangeInfoMap = new Map<string, AdditionalChangeInfo>();
 
@@ -23,7 +26,7 @@ const additionalChangeInfoMap = new Map<string, AdditionalChangeInfo>();
  */
 export function setAdditionalChangeInfo(changes: FlexXMLChange[], appComponent?: Component): void {
     changes.reduce((changeInfoByFileNameMap, change) => {
-        const { fileName } = change.convertToFileContent();
+        const { fileName } = getChangeDefinition(change);
         const changeInfo = getAddXMLAdditionalInfo(change, appComponent);
 
         if (!changeInfo) {
@@ -93,4 +96,28 @@ export function getFlexXMLChangeList(command?: FlexCommand): FlexXMLChange[] {
     return getFlexChangeList(command).filter(
         (change): change is FlexXMLChange => change.getChangeType?.() === ADD_XML_CHANGE
     );
+}
+
+/**
+ * Retrieves the change definition from a flex change object, supporting both modern and legacy UI5 APIs.
+ *
+ * In UI5 2.x, the change base class is a FlexObject exposing `convertToFileContent()`.
+ * In older UI5 versions (e.g. 1.96.x), the base class is `Change` which uses the now-deprecated
+ * `getDefinition()` method and lacks `convertToFileContent`. This function falls back to
+ * `getDefinition()` for backward compatibility with those older versions.
+ *
+ * @param change - The flex change object (modern FlexObject or legacy Change instance).
+ * @returns The change definition.
+ * @throws Error if the change object supports neither API.
+ */
+export function getChangeDefinition(change: FlexBaseChange | FlexLegacyBaseChange): ChangeDefinition {
+    if ('convertToFileContent' in change) {
+        return change.convertToFileContent();
+    }
+
+    if ('getDefinition' in change) {
+        return change.getDefinition();
+    }
+
+    throw new Error('Unsupported change object');
 }

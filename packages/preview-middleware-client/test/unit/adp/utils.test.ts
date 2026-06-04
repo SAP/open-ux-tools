@@ -106,10 +106,10 @@ describe('utils', () => {
             expect(matchesChangeProperty({} as FlexCommand, 'content.fragmentPath', fragmentPath)).toBe(false);
         });
 
-        it('returns false when command does not have change definition', () => {
+        it('throws error when command does not have change definition', () => {
             const fragmentPath = 'Share.fragment.xml';
 
-            expect(
+            expect(() =>
                 matchesChangeProperty(
                     {
                         getPreparedChange: () => ({})
@@ -117,7 +117,7 @@ describe('utils', () => {
                     'content.fragmentPath',
                     fragmentPath
                 )
-            ).toBe(false);
+            ).toThrow(new Error('Unsupported change object'));
         });
     });
 

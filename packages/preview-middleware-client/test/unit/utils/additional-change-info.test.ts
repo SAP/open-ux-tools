@@ -14,7 +14,8 @@ const {
     clearAdditionalChangeInfo,
     setAdditionalChangeInfoForChangeFile,
     getFlexChangeList,
-    getFlexXMLChangeList
+    getFlexXMLChangeList,
+    getChangeDefinition
 } = await import('open/ux/preview/client/utils/additional-change-info');
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
@@ -210,6 +211,36 @@ describe('additional-change-info.ts', () => {
 
             const result = getFlexXMLChangeList(command);
             expect(result).toEqual([]);
+        });
+    });
+
+    describe('getChangeDefinition', () => {
+        it('should return change definition using convertToFileContent for modern UI5 changes', () => {
+            const mockDefinition = { fileName: 'testFile', changeType: 'addXML' };
+            const change = {
+                convertToFileContent: jest.fn().mockReturnValue(mockDefinition)
+            };
+
+            const result = getChangeDefinition(change as any);
+            expect(result).toEqual(mockDefinition);
+            expect(change.convertToFileContent).toHaveBeenCalled();
+        });
+
+        it('should fall back to getDefinition for legacy UI5 changes (e.g. 1.96.x)', () => {
+            const mockDefinition = { fileName: 'legacyFile', changeType: 'rename' };
+            const legacyChange = {
+                getDefinition: jest.fn().mockReturnValue(mockDefinition)
+            };
+
+            const result = getChangeDefinition(legacyChange as any);
+            expect(result).toEqual(mockDefinition);
+            expect(legacyChange.getDefinition).toHaveBeenCalled();
+        });
+
+        it('should throw an error if the change object supports neither API', () => {
+            const unsupportedChange = {};
+
+            expect(() => getChangeDefinition(unsupportedChange as any)).toThrow('Unsupported change object');
         });
     });
 });

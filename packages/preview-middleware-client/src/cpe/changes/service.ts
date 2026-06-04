@@ -28,7 +28,7 @@ import UI5Element from 'sap/ui/core/Element';
 import Change, { ChangeDefinition } from 'sap/ui/fl/Change';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import { getTextBundle } from '../../i18n.js';
-import { getFlexChangeList, getFlexXMLChangeList, setAdditionalChangeInfo } from '../../utils/additional-change-info.js';
+import { getChangeDefinition, getFlexChangeList, getFlexXMLChangeList, setAdditionalChangeInfo } from '../../utils/additional-change-info.js';
 import { getControlById, isA } from '../../utils/core.js';
 import { getError } from '../../utils/error.js';
 import { sendInfoCenterMessage } from '../../utils/info-center-message.js';
@@ -550,7 +550,7 @@ export class ChangeService extends EventTarget {
 
                 const changeType = change.getChangeType?.() ?? command.getChangeType?.();
 
-                const changeDefinition = change.convertToFileContent();
+                const changeDefinition = getChangeDefinition(change);
                 const { fileName } = changeDefinition;
 
                 const handler = GENERIC_CHANGE_HANDLER[
