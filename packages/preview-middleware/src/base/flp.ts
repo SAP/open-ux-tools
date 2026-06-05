@@ -514,7 +514,7 @@ export class FlpSandbox {
         await this.setApplicationDependencies();
         // get filepath from request. Use dummy url to extract it from originalUrl if needed
         const filePath = 'query' in req ? req.path : new URL('http://dummyHost' + req.originalUrl!).pathname; //NOSONAR
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
         const file = await this.project.byPath(filePath);
         if (file) {
             this.logger.info(`HTML file returned at ${filePath} is loaded from the file system.`);
@@ -963,7 +963,7 @@ export class FlpSandbox {
         id: string
     ): Promise<void> {
         this.logger.debug(`Serving test route: ${config.path}`);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
         const file = await this.project.byPath(config.path);
         if (file) {
             this.logger.warn(`HTML file returned at ${config.path} is loaded from the file system.`);
