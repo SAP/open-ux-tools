@@ -173,14 +173,14 @@ describe('service-metadata', () => {
             mockTlsPatchIsPatchRequired.mockReturnValue(true);
             const sapSystem: BackendSystem = {
                 name: 'CorpSystem',
-                url: 'https://ldai2uia.wdf.sap.corp:44300',
+                url: 'https://corp-system.example.com',
                 client: '000',
                 ...commonSystemProps
             };
 
             await getServiceMetadata(sapSystem, '/sap/opu/odata4/service1');
 
-            expect(mockTlsPatchIsPatchRequired).toHaveBeenCalledWith('https://ldai2uia.wdf.sap.corp:44300');
+            expect(mockTlsPatchIsPatchRequired).toHaveBeenCalledWith('https://corp-system.example.com');
             expect(mockTlsPatchApply).toHaveBeenCalledTimes(1);
         });
 
