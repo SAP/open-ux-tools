@@ -1,5 +1,19 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 1.0.5
+
+### Patch Changes
+
+- 4a19d53: fix(cf-deploy-config-sub-generator): always show default destination for CAP projects
+- Updated dependencies [4a19d53]
+- Updated dependencies [b326a9a]
+    - @sap-ux/cf-deploy-config-writer@1.0.5
+    - @sap-ux/project-access@2.1.0
+    - @sap-ux/fiori-generator-shared@1.0.5
+    - @sap-ux/inquirer-common@1.0.5
+    - @sap-ux/deploy-config-generator-shared@1.0.5
+    - @sap-ux/cf-deploy-config-inquirer@1.0.5
+
 ## 1.0.4
 
 ### Patch Changes
