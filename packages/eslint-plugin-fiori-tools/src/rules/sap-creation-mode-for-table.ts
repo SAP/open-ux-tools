@@ -8,7 +8,7 @@ import { CREATION_MODE_FOR_TABLE } from '../language/diagnostics.js';
 import type { ParsedApp } from '../project-context/parser/index.js';
 import type { FioriLanguageOptions, FioriSourceCode, Node } from '../language/fiori-language.js';
 import type { Table as V2Table, FeV2ObjectPage } from '../project-context/linker/fe-v2.js';
-import type { Table as V4Table, FeV4ObjectPage, LinkedFeV4App } from '../project-context/linker/fe-v4.js';
+import type { Table as V4Table, LinkedFeV4App } from '../project-context/linker/fe-v4.js';
 import { createJsonFixer } from '../language/rule-fixer.js';
 import { FioriJSONSourceCode } from '../language/json/source-code.js';
 
@@ -86,9 +86,10 @@ function reportDiagnostic(
  * Analytical tables do not support creation mode and this function reports diagnostics, if configured.
  *
  * @param tableType - Type of the table
- * @param sectionCreateMode - Create mode configuration at the section level
- * @param pageCreateMode - Create mode configuration at the page level
- * @param appCreateMode - Create mode configuration at the application level
+ * @param createMode - Create mode configuration on different levels
+ * @param createMode.sectionCreateMode - Create mode configuration at the section level
+ * @param createMode.pageCreateMode - Create mode configuration at the page level
+ * @param createMode.appCreateMode - Create mode configuration at the application level
  * @param pageName - Name of the page
  * @param parsedApp - Parsed application context
  * @param problems - Array to collect diagnostic problems
@@ -97,9 +98,11 @@ function reportDiagnostic(
  */
 function checkAnalyticalTableV2(
     tableType: string,
-    sectionCreateMode: CreateModeConfig,
-    pageCreateMode: CreateModeConfig,
-    appCreateMode: CreateModeConfig,
+    createMode: {
+        sectionCreateMode: CreateModeConfig;
+        pageCreateMode: CreateModeConfig;
+        appCreateMode: CreateModeConfig;
+    },
     pageName: string,
     parsedApp: ParsedApp,
     problems: CreationModeForTable[],
@@ -109,22 +112,22 @@ function checkAnalyticalTableV2(
         return false;
     }
 
-    if (sectionCreateMode.valueInFile) {
+    if (createMode.sectionCreateMode.valueInFile) {
         reportDiagnostic(problems, sourceCode, {
             messageId: 'analyticalTableNotSupported',
             pageName,
             parsedApp,
-            configurationPath: sectionCreateMode.configurationPath,
+            configurationPath: createMode.sectionCreateMode.configurationPath,
             tableType
         });
         return true;
     }
-    if (pageCreateMode.valueInFile) {
+    if (createMode.pageCreateMode.valueInFile) {
         reportDiagnostic(problems, sourceCode, {
             messageId: 'analyticalTableNotSupported',
             pageName,
             parsedApp,
-            configurationPath: pageCreateMode.configurationPath,
+            configurationPath: createMode.pageCreateMode.configurationPath,
             tableType
         });
         return true;
@@ -216,9 +219,7 @@ function processTableV2(
     if (
         checkAnalyticalTableV2(
             tableType,
-            sectionCreateMode,
-            pageCreateMode,
-            appCreateMode,
+            { sectionCreateMode, pageCreateMode, appCreateMode },
             page.targetName,
             parsedApp,
             problems,
@@ -324,9 +325,10 @@ function getRecommendedValueV4(tableType: string): string {
  * @param page.sectionName - Name of the object page section
  * @param parsedApp - Parsed application context
  * @param tableType - Type of the table
- * @param recommendedValue - The recommended value for this table type
+ * @param recommended - Suggested value recommendation
+ * @param recommended.value - The recommended value for this table type
+ * @param recommended.suggestAppLevel - Whether to report on page level or not based on app level suggestion
  * @param problems - Array to collect diagnostic problems
- * @param shouldSuggestAppLevel - Whether to report on page level or not based on app level suggestion
  * @param sourceCode
  * @returns True, if a configuration was found and issue was reported. False, if no configuration exists
  */
@@ -335,17 +337,17 @@ function validateCreationModeV4(
     page: { name: string; sectionName?: string },
     parsedApp: ParsedApp,
     tableType: string,
-    recommendedValue: string,
+    recommended: { value: string; suggestAppLevel: boolean },
     problems: CreationModeForTable[],
-    shouldSuggestAppLevel: boolean,
     sourceCode: FioriJSONSourceCode
 ): boolean {
     const value = creationMode.valueInFile;
-    if (value === undefined && shouldSuggestAppLevel === true) {
+    if (value === undefined && recommended.suggestAppLevel === true) {
         return false;
     }
     const validValues = creationMode.values;
-    // If shouldSuggestAppLevel is false, we MUST report on page level. (missing configuration)
+    const recommendedValue = recommended.value;
+    // If recommended.suggestAppLevel is false, we MUST report on page level. (missing configuration)
     if (!value) {
         reportDiagnostic(problems, sourceCode, {
             messageId: 'invalidCreateModeV4',
@@ -395,23 +397,23 @@ function validateCreationModeV4(
  * Different table types have different recommended values.
  *
  * @param table - The table node to process
- * @param page - The object page containing the table
+ * @param page - Page information
+ * @param page.targetName - The page name
+ * @param page.sectionName - Name of the object page section where the issue occurs
  * @param appCreateMode - Application-level create mode configuration
  * @param parsedApp - Parsed application context
  * @param problems - Array to collect diagnostic problems
  * @param shouldSuggestAppLevel - Whether to suggest app-level configuration (only if all tables have same recommended value)
  * @param sourceCode - FioriJSONSourceCode instance
- * @param pageSectionName - Name of the object page section where the issue occurs
  */
 function processTableV4(
     table: V4Table,
-    page: FeV4ObjectPage,
+    page: { targetName: string; sectionName?: string },
     appCreateMode: CreateModeConfig,
     parsedApp: ParsedApp,
     problems: CreationModeForTable[],
     shouldSuggestAppLevel: boolean,
-    sourceCode: FioriJSONSourceCode,
-    pageSectionName?: string
+    sourceCode: FioriJSONSourceCode
 ): void {
     const tableCreationMode = table.configuration.creationMode;
     const tableType = table.configuration.tableType?.valueInFile ?? '';
@@ -437,12 +439,11 @@ function processTableV4(
     if (
         validateCreationModeV4(
             tableCreationMode,
-            { name: page.targetName, sectionName: pageSectionName },
+            { name: page.targetName, sectionName: page.sectionName },
             parsedApp,
             tableType,
-            recommendedValue,
+            { value: recommendedValue, suggestAppLevel: shouldSuggestAppLevel },
             problems,
-            shouldSuggestAppLevel,
             sourceCode
         )
     ) {
@@ -511,6 +512,9 @@ function processV2Apps(
     }>,
     problems: CreationModeForTable[]
 ): void {
+    if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
+        return;
+    }
     for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
         if (app.type !== 'fe-v2') {
             continue;
@@ -518,10 +522,7 @@ function processV2Apps(
         const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
         const appCreateMode = app.configuration.createMode;
 
-        for (const page of app.pages) {
-            if (page.type !== 'object-page') {
-                continue;
-            }
+        for (const page of app.pages.filter((page) => page.type === 'object-page')) {
             for (const tableSection of page.sections.filter((section) => section.type === 'table-section')) {
                 const table = tableSection.children.find((element) => element.type === 'table');
                 if (table) {
@@ -531,7 +532,7 @@ function processV2Apps(
                         appCreateMode,
                         parsedApp,
                         problems,
-                        context.sourceCode as FioriJSONSourceCode,
+                        context.sourceCode,
                         tableSection.annotation?.label
                     );
                 }
@@ -588,6 +589,9 @@ function processV4Apps(
     }>,
     problems: CreationModeForTable[]
 ): void {
+    if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
+        return;
+    }
     for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
         if (app.type !== 'fe-v4') {
             continue;
@@ -595,22 +599,18 @@ function processV4Apps(
         const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
         const appCreateMode = app.configuration.createMode;
         const shouldSuggestAppLevel = shouldSuggestAppLevelV4(app);
-        for (const page of app.pages) {
-            if (page.type !== 'object-page') {
-                continue;
-            }
+        for (const page of app.pages.filter((page) => page.type === 'object-page')) {
             for (const tableSection of page.sections.filter((section) => section.type === 'table-section')) {
                 const table = tableSection.children.find((element) => element.type === 'table');
                 if (table) {
                     processTableV4(
                         table,
-                        page,
+                        { targetName: page.targetName, sectionName: tableSection.annotation?.label },
                         appCreateMode,
                         parsedApp,
                         problems,
                         shouldSuggestAppLevel,
-                        context.sourceCode as FioriJSONSourceCode,
-                        tableSection.annotation?.label
+                        context.sourceCode
                     );
                 }
             }
@@ -644,9 +644,6 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
         fixable: 'code'
     },
     check(context) {
-        if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
-            return [];
-        }
         const problems: CreationModeForTable[] = [];
 
         processV2Apps(context, problems);
