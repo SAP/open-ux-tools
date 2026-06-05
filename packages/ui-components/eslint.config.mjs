@@ -1,7 +1,6 @@
 import base from '../../eslint.config.mjs';
 import reactPlugin from 'eslint-plugin-react';
 import globals from 'globals';
-const __dirname = import.meta.dirname;
 
 export default [
     { ignores: ['stories', 'storybook', 'test'] },
@@ -14,10 +13,6 @@ export default [
             reactPlugin
         },
         languageOptions: {
-            parserOptions: {
-                project: './tsconfig.eslint.json',
-                tsconfigRootDir: __dirname
-            },
             globals: {
                 ...globals.browser
             }
@@ -40,9 +35,7 @@ export default [
     },
     {
         languageOptions: {
-            'parser': '@typescript-eslint/parser',
-            project: './tsconfig.eslint.json',
-            tsconfigRootDir: __dirname
+            'parser': '@typescript-eslint/parser'
         },
         files: ['./test/**/*.tsx'],
         rules: {
