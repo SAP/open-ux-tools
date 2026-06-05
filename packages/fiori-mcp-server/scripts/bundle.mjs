@@ -7,8 +7,14 @@
  *   dist/node_modules/onnxruntime-node/   ONNX runtime (native .node files)
  *   dist/prebuilds/                       @zowe/secrets-for-zowe-sdk .node binaries
  *   dist/data/embeddings/                 pre-built binary vector store (embeddings.bin + records.jsonl)
- *   dist/models/Xenova/                   bundled ONNX model for text embeddings
  *   dist/icon.png, dist/icon.svg
+ *
+ * Model strategy:
+ *   The ONNX model (all-MiniLM-L6-v2, ~86 MB) is NOT bundled. It is downloaded
+ *   from HuggingFace Hub on first use and cached in the default @huggingface/transformers
+ *   cache directory (respects HF_HOME / TRANSFORMERS_CACHE env vars; defaults to
+ *   ~/.cache/huggingface/hub on Linux/macOS).
+ *   This keeps the published tgz under npm's 100 MB limit.
  *
  * Native binary strategy:
  *   onnxruntime-node — kept external (uses a dynamic require template literal
@@ -263,40 +269,7 @@ const embeddingsOut = path.join(DIST, 'data', 'embeddings');
 copyDir(embeddingsDataDir, embeddingsOut);
 console.log('✓ Copied embeddings data');
 
-// ── Step 6: copy bundled ONNX model ──────────────────────────────────────────
-// text-embedding.ts sets env.localModelPath = path.join(__dirname, 'models')
-// and transformers resolves: localModelPath + '/' + modelId + '/' + filename.
-// The model cache lives at fiori-docs-embeddings/.cache/Xenova/ (set via
-// env.cacheDir in build-embeddings.ts). We copy that cache → dist/models/Xenova,
-// skipping model_quantized.onnx (q8) and keeping only model.onnx (fp32) to match
-// the dtype used by build-embeddings.ts.
-
-const modelCacheDir = path.join(path.dirname(embeddingsPkgJson), '.cache', 'Xenova');
-const modelOutDir = path.join(DIST, 'models', 'Xenova');
-
-function copyDirExclude(src, dst, excludeNames) {
-    fs.mkdirSync(dst, { recursive: true });
-    for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
-        if (excludeNames.includes(entry.name)) continue;
-        const s = path.join(src, entry.name);
-        const d = path.join(dst, entry.name);
-        if (entry.isDirectory()) {
-            copyDirExclude(s, d, excludeNames);
-        } else {
-            fs.copyFileSync(s, d);
-        }
-    }
-}
-
-if (fs.existsSync(modelCacheDir)) {
-    copyDirExclude(modelCacheDir, modelOutDir, ['model_quantized.onnx']);
-    console.log('✓ Copied ONNX model (fp32)');
-} else {
-    console.warn('⚠ ONNX model cache not found at', modelCacheDir);
-    console.warn('  Run the embedding pipeline once to populate it, then rebuild.');
-}
-
-// ── Step 7: copy WASM runtime ─────────────────────────────────────────────────
+// ── Step 6: copy WASM runtime ─────────────────────────────────────────────────
 // @huggingface/transformers loads ort-wasm-simd-threaded.jsep.mjs from its own
 // dist/ at runtime via a path relative to the transformers bundle. When inlined
 // by esbuild the WASM load path becomes relative to dist/, so we copy it there.
@@ -310,14 +283,14 @@ if (fs.existsSync(wasmSrc)) {
     console.warn('⚠ WASM file not found at', wasmSrc);
 }
 
-// ── Step 8: copy icons ────────────────────────────────────────────────────────
+// ── Step 7: copy icons ────────────────────────────────────────────────────────
 
 for (const icon of ['icon.png', 'icon.svg']) {
     fs.copyFileSync(path.join(PKG_ROOT, 'assets', icon), path.join(DIST, icon));
 }
 console.log('✓ Copied icons');
 
-// ── Step 9: scrub nested package.json files ──────────────────────────────────
+// ── Step 8: scrub nested package.json files ──────────────────────────────────
 // Remove dependency/script fields from package.json files inside dist/node_modules/
 // so package managers (bun, npm) don't try to resolve or run them at install time.
 
