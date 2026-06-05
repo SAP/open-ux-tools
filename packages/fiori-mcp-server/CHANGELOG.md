@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.1.1
+
+### Patch Changes
+
+- 889a217: Download ONNX model at runtime to reduce tgz below npm publish 100 MB limit
+
 ## 1.1.0
 
 ### Minor Changes
