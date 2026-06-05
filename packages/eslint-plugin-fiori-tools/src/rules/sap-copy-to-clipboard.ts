@@ -109,7 +109,7 @@ function checkConfiguration(
                 uri: parsedApp.manifest.manifestUri,
                 object: parsedApp.manifestObject,
                 propertyPath: config.configurationPath,
-                loc: node ? node.loc : sourceCode.ast.body.loc
+                loc: node.loc
             }
         };
         problems.push(copyIssue);

@@ -60,10 +60,7 @@ function reportDiagnostic(
         recommendedValue?: string;
     }
 ): void {
-    const node =
-        sourceCode instanceof FioriJSONSourceCode
-            ? sourceCode.getNode(sourceCode.ast.body, configurationPath)
-            : undefined;
+    const node = sourceCode.getNode(sourceCode.ast.body, configurationPath);
     problems.push({
         type: CREATION_MODE_FOR_TABLE,
         messageId,
@@ -76,7 +73,7 @@ function reportDiagnostic(
             uri: parsedApp.manifest.manifestUri,
             object: parsedApp.manifestObject,
             propertyPath: configurationPath,
-            loc: node ? node.loc : sourceCode.ast.body.loc
+            loc: node.loc
         }
     });
 }

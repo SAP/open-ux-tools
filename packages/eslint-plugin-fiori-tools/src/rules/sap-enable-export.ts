@@ -90,7 +90,7 @@ function checkConfiguration(
                 uri: parsedApp.manifest.manifestUri,
                 object: parsedApp.manifestObject,
                 propertyPath: table.configuration.enableExport.configurationPath,
-                loc: node ? node.loc : sourceCode.ast.body.loc
+                loc: node.loc
             }
         });
     }

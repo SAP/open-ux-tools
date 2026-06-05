@@ -49,13 +49,10 @@ const rule: FioriRuleDefinition = createFioriRule({
             if (!responsiveTable) {
                 continue;
             }
-            const node =
-                context.sourceCode instanceof FioriJSONSourceCode
-                    ? context.sourceCode.getNode(
-                          context.sourceCode.ast.body,
-                          app.configuration.tableColumnVerticalAlignment.configurationPath
-                      )
-                    : undefined;
+            const node = context.sourceCode.getNode(
+                context.sourceCode.ast.body,
+                app.configuration.tableColumnVerticalAlignment.configurationPath
+            );
             return [
                 {
                     type: TABLE_COLUMN_VERTICAL_ALIGNMENT,
@@ -63,7 +60,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                         uri: parsedApp.manifest.manifestUri,
                         object: parsedApp.manifestObject,
                         propertyPath: app.configuration.tableColumnVerticalAlignment.configurationPath,
-                        loc: node?.loc ?? context.sourceCode.ast.body.loc
+                        loc: node.loc
                     }
                 }
             ];

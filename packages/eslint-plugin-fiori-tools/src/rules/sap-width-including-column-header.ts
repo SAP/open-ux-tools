@@ -78,21 +78,11 @@ function checkTable(
             end: { column: 0, line: 0, offset: 0 }
         };
         if (sourceCode instanceof FioriJSONSourceCode) {
-            const node =
-                sourceCode.getNode(
-                    sourceCode.ast.body,
-                    table.configuration.widthIncludingColumnHeader.configurationPath
-                ) ?? sourceCode.ast.body;
-            loc = node.loc;
+            loc = sourceCode.getNode(
+                sourceCode.ast.body,
+                table.configuration.widthIncludingColumnHeader.configurationPath
+            ).loc;
         }
-        if (!loc && table.annotation.annotation.top.value.range) {
-            const { start, end } = table.annotation.annotation.top.value.range;
-            loc = {
-                start: { column: start.character, line: start.line, offset: 0 },
-                end: { column: end.character, line: end.line, offset: 0 }
-            };
-        }
-
         problems.push({
             type: WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
             pageName: page.targetName,

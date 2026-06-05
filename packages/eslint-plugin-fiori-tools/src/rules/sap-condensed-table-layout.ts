@@ -114,7 +114,7 @@ function checkCondensedTableLayoutV4(
                     uri: parsedApp.manifest.manifestUri,
                     object: parsedApp.manifestObject,
                     propertyPath: table.configuration.condensedTableLayout.configurationPath,
-                    loc: node ? node.loc : sourceCode.ast.body.loc
+                    loc: node.loc
                 }
             });
         }
@@ -153,7 +153,7 @@ function checkCondensedTableLayoutV2(
                 uri: parsedApp.manifest.manifestUri,
                 object: parsedApp.manifestObject,
                 propertyPath: page.configuration.condensedTableLayout.configurationPath,
-                loc: node ? node.loc : sourceCode.ast.body.loc
+                loc: node.loc
             }
         }
     ];

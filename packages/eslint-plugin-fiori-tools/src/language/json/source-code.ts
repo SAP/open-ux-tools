@@ -68,14 +68,14 @@ export class FioriJSONSourceCode extends JSONSourceCode {
      *
      * @param node - Initial node, start from ast body or closer to the searched node
      * @param path - Path to the node
-     * @param parentNode - Optional parent node of the searched node
+     * @param parentNode - Parent node of the searched node
      * @returns
      */
-    getNode(
+    private getNodeOrParent = (
         node: ValueNode | MemberNode | undefined,
         path: string[],
-        parentNode?: MemberNode
-    ): ValueNode | MemberNode | undefined {
+        parentNode: MemberNode | ValueNode
+    ): ValueNode | MemberNode => {
         if (node && path.length) {
             const name = path[0];
             if (node.type === 'Object') {
@@ -86,15 +86,30 @@ export class FioriJSONSourceCode extends JSONSourceCode {
                     return false;
                 });
                 if (node) {
-                    return this.getNode(node, path, parentNode);
+                    parentNode = node;
+                    return this.getNodeOrParent(node, path, parentNode);
                 }
             } else if (node.type === 'Member' && path.length > 1) {
-                // Assign parent MemberNode before search continued
                 parentNode = node;
                 // Report the final node, not value of the final node
-                return this.getNode(node.value, path.slice(1), parentNode);
+                return this.getNodeOrParent(node.value, path.slice(1), parentNode);
             }
         }
         return node ?? parentNode;
+    };
+
+    /**
+     * Gets the node by provided json path, or the parent of it.
+     * Looks from provided starting node. You can begin search from ast body node.
+     *
+     * @param node - Initial node, start from ast body or closer to the searched node
+     * @param path - Path to the node
+     * @returns - Node or the last found parent (initialnode of nothing found)
+     */
+    getNode(node: ValueNode | MemberNode, path: string[]): ValueNode | MemberNode {
+        if (!path.length) {
+            return node;
+        }
+        return this.getNodeOrParent(node, path, node);
     }
 }

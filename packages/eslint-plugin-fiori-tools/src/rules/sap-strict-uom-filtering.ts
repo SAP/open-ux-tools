@@ -51,7 +51,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                         uri: parsedApp.manifest.manifestUri,
                         object: parsedApp.manifestObject,
                         propertyPath: app.configuration.disableStrictUomFiltering.configurationPath,
-                        loc: node?.loc ?? context.sourceCode.ast.body.loc
+                        loc: node.loc
                     }
                 });
             }
