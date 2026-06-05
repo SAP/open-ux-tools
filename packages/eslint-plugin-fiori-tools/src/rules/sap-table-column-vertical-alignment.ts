@@ -51,7 +51,10 @@ const rule: FioriRuleDefinition = createFioriRule({
             }
             const node =
                 context.sourceCode instanceof FioriJSONSourceCode
-                    ? context.sourceCode.getNode(context.sourceCode.ast.body, ['sap.ui5', 'flexEnabled'])
+                    ? context.sourceCode.getNode(
+                          context.sourceCode.ast.body,
+                          app.configuration.tableColumnVerticalAlignment.configurationPath
+                      )
                     : undefined;
             return [
                 {
@@ -60,7 +63,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                         uri: parsedApp.manifest.manifestUri,
                         object: parsedApp.manifestObject,
                         propertyPath: app.configuration.tableColumnVerticalAlignment.configurationPath,
-                        loc: node ? node.loc : context.sourceCode.ast.body.loc
+                        loc: node?.loc ?? context.sourceCode.ast.body.loc
                     }
                 }
             ];
