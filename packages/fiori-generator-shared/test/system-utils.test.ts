@@ -4,7 +4,7 @@ jest.unstable_mockModule('@vscode-logging/logger', () => ({
     getExtensionLogger: jest.fn()
 }));
 
-const { getSystemDisplayName } = await import('../src');
+const { getSystemDisplayName } = await import('../src/index.js');
 
 describe('Test SystemUtils', () => {
     describe('getSystemDisplayName', () => {

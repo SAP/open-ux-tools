@@ -9,7 +9,7 @@ import { promptNames } from '../../../../../src/types.js';
 // Mock inquirer-common
 const actualInquirerCommon = await import('@sap-ux/inquirer-common');
 const mockSendTelemetryEvent = jest.fn<any>();
-const mockReportEvent = jest.fn();
+const mockReportEvent = jest.fn() as jest.Mock;
 const mockTelemetryClient = {
     reportEvent: mockReportEvent
 };

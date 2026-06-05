@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { fetchMock } from 'mock/window';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';

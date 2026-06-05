@@ -5,8 +5,8 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 const realAdpTooling = await import('@sap-ux/adp-tooling');
 const realProjectInputValidator = await import('@sap-ux/project-input-validator');
 
-const mockParseParameters = jest.fn();
-const mockValidateEmptyString = jest.fn();
+const mockParseParameters = jest.fn<typeof realAdpTooling.parseParameters>();
+const mockValidateEmptyString = jest.fn<typeof realProjectInputValidator.validateEmptyString>();
 
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     ...realAdpTooling,
@@ -24,9 +24,9 @@ const {
     getExistingFlpConfigInfoPrompt,
     getIconPrompt,
     getConfirmReplacePrompt
-} = await import('../../../src/prompts/questions');
-const { t } = await import('../../../src/i18n');
-const { promptNames } = await import('../../../src');
+} = await import('../../../src/prompts/questions/index.js');
+const { t } = await import('../../../src/i18n.js');
+const { promptNames } = await import('../../../src/index.js');
 
 describe('advanced prompts', () => {
     const inbounds = {

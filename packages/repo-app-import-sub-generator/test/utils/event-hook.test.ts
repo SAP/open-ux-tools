@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import type { VSCodeInstance } from '@sap-ux/fiori-generator-shared';
-import { t } from '../../src/utils/i18n';
+import { t } from '../../src/utils/i18n.js';
 
 const mockLogger = {
     error: jest.fn(),
@@ -14,8 +14,8 @@ jest.unstable_mockModule('../../src/utils/logger', () => {
     return { default: mock, ...mock };
 });
 
-const { runPostAppGenHook } = await import('../../src/utils/event-hook');
-const RepoAppDownloadLogger = (await import('../../src/utils/logger')).default;
+const { runPostAppGenHook } = await import('../../src/utils/event-hook.js');
+const RepoAppDownloadLogger = (await import('../../src/utils/logger.js')).default;
 import type { RepoAppGenContext } from '../../src/utils/event-hook.js';
 
 describe('runPostAppGenHook', () => {

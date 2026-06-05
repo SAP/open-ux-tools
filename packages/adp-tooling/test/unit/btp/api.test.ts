@@ -1,10 +1,10 @@
 import { jest } from '@jest/globals';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { Uaa } from '../../../src/types';
+import type { Uaa } from '../../../src/types.js';
 
-const mockAxiosGet = jest.fn();
-const mockAxiosPost = jest.fn();
+const mockAxiosGet = jest.fn() as jest.Mock;
+const mockAxiosPost = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('axios', () => ({
     default: {
@@ -15,8 +15,8 @@ jest.unstable_mockModule('axios', () => ({
 }));
 
 const { getToken, getBtpDestinationConfig, listBtpDestinations, getDestinationServiceUaa } =
-    await import('../../../src/btp/api');
-const { initI18n, t } = await import('../../../src/i18n');
+    await import('../../../src/btp/api.js');
+const { initI18n, t } = await import('../../../src/i18n.js');
 
 describe('btp/api', () => {
     const mockLogger = {

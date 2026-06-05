@@ -1,6 +1,6 @@
-import type { OdataService } from '../src/types';
-import { OdataVersion, ServiceType } from '../src/types';
-import { generate } from '../src';
+import type { OdataService } from '../src/types.js';
+import { OdataVersion, ServiceType } from '../src/types.js';
+import { generate } from '../src/index.js';
 import path, { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';

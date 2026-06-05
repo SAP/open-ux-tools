@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import { join } from 'node:path';
 
-const mockPipeline = jest.fn();
-const mockConnect = jest.fn();
+const mockPipeline = jest.fn() as jest.Mock;
+const mockConnect = jest.fn() as jest.Mock;
 
 const mockLogger = {
     info: jest.fn(),
@@ -16,7 +16,8 @@ jest.unstable_mockModule('@sap-ux/logger', () => ({
 }));
 
 jest.unstable_mockModule('@xenova/transformers', () => ({
-    pipeline: mockPipeline
+    pipeline: mockPipeline,
+    env: { cacheDir: '' }
 }));
 
 jest.unstable_mockModule('@lancedb/lancedb', () => ({
@@ -60,7 +61,7 @@ describe('EmbeddingBuilder', () => {
     beforeEach(async () => {
         jest.clearAllMocks();
 
-        const module = await import('../src/scripts/build-embeddings');
+        const module = await import('../src/scripts/build-embeddings.js');
         EmbeddingBuilder = (module as unknown as { EmbeddingBuilder: new () => EmbeddingBuilderType }).EmbeddingBuilder;
     });
 

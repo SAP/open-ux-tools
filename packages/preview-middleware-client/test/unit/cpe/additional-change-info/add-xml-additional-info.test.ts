@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import ElementMetadata from 'sap/ui/core/ElementMetadata';
 import Element from 'sap/ui/core/Element';
 import FlexChange from 'mock/sap/ui/fl/Change';

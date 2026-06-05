@@ -15,8 +15,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { rimraf } from 'rimraf';
 import yeomanTest from 'yeoman-test';
-import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator/fioriAppGeneratorOptions';
-import type { State } from '../../../src/types';
+import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator/fioriAppGeneratorOptions.js';
+import type { State } from '../../../src/types/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const testOutputFolder = './test-output/';
@@ -80,7 +80,7 @@ export async function runWritingPhaseGen(
     state: Partial<State>,
     options?: Partial<FioriAppGeneratorOptions>
 ): Promise<any> {
-    const { TestWritingGenerator } = await import('./testGeneratorWriting');
+    const { TestWritingGenerator } = await import('./testGeneratorWriting.js');
     const mergedOptions = {
         state,
         skipInstall: true,
@@ -98,7 +98,7 @@ export async function runWritingPhaseGenDynamic(
     state: Partial<State>,
     options?: Partial<FioriAppGeneratorOptions>
 ): Promise<any> {
-    const { createTestWritingGeneratorClass } = await import('./testGeneratorWriting');
+    const { createTestWritingGeneratorClass } = await import('./testGeneratorWriting.js');
     const GeneratorClass = await createTestWritingGeneratorClass();
     const mergedOptions = {
         state,

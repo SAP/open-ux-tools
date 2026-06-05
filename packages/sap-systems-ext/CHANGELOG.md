@@ -1,5 +1,17 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.2
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+
+## 1.0.1
+
+### Patch Changes
+
+- 93591d4: fix(sap-systems-ext): remove unsafe Logger/ExtensionLogger casts in SystemsLogger
+
 ## 1.0.0
 
 ### Major Changes

@@ -12,7 +12,7 @@ jest.unstable_mockModule('adm-zip', () => {
     return { default: MockAdmZip, __esModule: true };
 });
 
-const { PromptState } = await import('../../src/prompts/prompt-state');
+const { PromptState } = await import('../../src/prompts/prompt-state.js');
 const AdmZipModule = await import('adm-zip');
 const AdmZip = AdmZipModule.default;
 

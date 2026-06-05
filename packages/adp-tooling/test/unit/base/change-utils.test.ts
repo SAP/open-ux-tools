@@ -11,7 +11,7 @@ import type {
     AdpWriterConfig,
     App,
     ToolsSupport
-} from '../../../src';
+} from '../../../src/index.js';
 import type { KeyUserChangeContent } from '@sap-ux/axios-extension';
 
 // Pre-load actual modules before mocking
@@ -22,7 +22,7 @@ const actualEjs = await import('ejs');
 const mockExistsSync = jest.fn<typeof actualFs.existsSync>();
 const mockReadFileSync = jest.fn<(...args: unknown[]) => string>();
 const mockReaddirSync = jest.fn<(...args: unknown[]) => unknown[]>();
-const mockRenderFile = jest.fn();
+const mockRenderFile = jest.fn<typeof actualEjs.renderFile>();
 
 // Set up unstable mocks BEFORE importing the subject module
 jest.unstable_mockModule('node:fs', () => ({
@@ -58,8 +58,8 @@ const {
     writeAnnotationChange,
     writeChangeToFolder,
     writeKeyUserChanges
-} = await import('../../../src/base/change-utils');
-const { ChangeType, FlexLayer } = await import('../../../src');
+} = await import('../../../src/base/change-utils.js');
+const { ChangeType, FlexLayer } = await import('../../../src/index.js');
 
 describe('Change Utils', () => {
     describe('writeChangeToFolder', () => {
@@ -359,11 +359,14 @@ describe('Change Utils', () => {
         };
 
         it('should write the change file and an annotation file from a template', async () => {
-            mockRenderFile.mockImplementation(
-                (templatePath: string, data: object, options: object, callback: Function) => {
-                    callback(undefined, 'test');
-                }
-            );
+            mockRenderFile.mockImplementation(((
+                _templatePath: string,
+                _data: object,
+                _options: object,
+                callback: Function
+            ) => {
+                callback(undefined, 'test');
+            }) as unknown as typeof actualEjs.renderFile);
             await writeAnnotationChange(
                 mockProjectPath,
                 123456789,
@@ -406,11 +409,14 @@ describe('Change Utils', () => {
         });
 
         it('should write the change file and an annotation file from a template using the provided templates path', async () => {
-            mockRenderFile.mockImplementation(
-                (templatePath: string, data: object, options: object, callback: Function) => {
-                    callback(undefined, 'test');
-                }
-            );
+            mockRenderFile.mockImplementation(((
+                _templatePath: string,
+                _data: object,
+                _options: object,
+                callback: Function
+            ) => {
+                callback(undefined, 'test');
+            }) as unknown as typeof actualEjs.renderFile);
             await writeAnnotationChange(
                 mockProjectPath,
                 123456789,
@@ -518,11 +524,14 @@ describe('Change Utils', () => {
         });
 
         it('should throw an error if rendering the annotation file fails', async () => {
-            mockRenderFile.mockImplementation(
-                (templatePath: string, data: object, options: object, callback: Function) => {
-                    callback(new Error('Failed to render annotation file'), '');
-                }
-            );
+            mockRenderFile.mockImplementation(((
+                _templatePath: string,
+                _data: object,
+                _options: object,
+                callback: Function
+            ) => {
+                callback(new Error('Failed to render annotation file'), '');
+            }) as unknown as typeof actualEjs.renderFile);
 
             await expect(() =>
                 writeAnnotationChange(
@@ -712,7 +721,7 @@ describe('Change Utils', () => {
                 })
             );
 
-            const secondCallChange = writeJsonSpy.mock.calls[1][1];
+            const secondCallChange = writeJsonSpy.mock.calls[1][1] as Record<string, any>;
             expect(secondCallChange.support).toBeDefined();
             expect(secondCallChange.support.generator).toBe('adp-key-user-converter');
         });

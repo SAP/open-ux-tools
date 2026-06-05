@@ -1,5 +1,79 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 1.0.8
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+    - @sap-ux/abap-deploy-config-writer@1.0.5
+    - @sap-ux/adp-tooling@1.0.8
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/fiori-generator-shared@1.0.6
+    - @sap-ux/abap-deploy-config-inquirer@2.0.6
+    - @sap-ux/deploy-config-generator-shared@1.0.6
+
+## 1.0.7
+
+### Patch Changes
+
+- Updated dependencies [fb84c0e]
+    - @sap-ux/adp-tooling@1.0.7
+
+## 1.0.6
+
+### Patch Changes
+
+- Updated dependencies [b326a9a]
+    - @sap-ux/project-access@2.1.0
+    - @sap-ux/abap-deploy-config-writer@1.0.4
+    - @sap-ux/adp-tooling@1.0.6
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/fiori-generator-shared@1.0.5
+    - @sap-ux/abap-deploy-config-inquirer@2.0.5
+    - @sap-ux/deploy-config-generator-shared@1.0.5
+
+## 1.0.5
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/deploy-config-generator-shared@1.0.4
+    - @sap-ux/abap-deploy-config-inquirer@2.0.4
+    - @sap-ux/abap-deploy-config-writer@1.0.3
+    - @sap-ux/fiori-generator-shared@1.0.4
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/feature-toggle@1.0.1
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux/adp-tooling@1.0.5
+    - @sap-ux/ui5-config@1.0.2
+    - @sap-ux/btp-utils@2.0.1
+    - @sap-ux/logger@1.0.1
+
+## 1.0.4
+
+### Patch Changes
+
+- Updated dependencies [9580241]
+    - @sap-ux/ui5-config@1.0.1
+    - @sap-ux/abap-deploy-config-inquirer@2.0.3
+    - @sap-ux/abap-deploy-config-writer@1.0.2
+    - @sap-ux/adp-tooling@1.0.4
+    - @sap-ux/project-access@2.0.2
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/fiori-generator-shared@1.0.3
+    - @sap-ux/deploy-config-generator-shared@1.0.3
+
+## 1.0.3
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@2.0.2
+- @sap-ux/adp-tooling@1.0.3
+- @sap-ux/deploy-config-generator-shared@1.0.2
+- @sap-ux/fiori-generator-shared@1.0.2
+
 ## 1.0.2
 
 ### Patch Changes
