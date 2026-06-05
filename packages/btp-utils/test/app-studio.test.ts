@@ -93,12 +93,12 @@ describe('App Studio', () => {
     describe('getAppStudioProxyURL', () => {
         it('returns the url from the correct env var when set', () => {
             const PROXY_URL = 'http://proxy';
-            process.env[ENV.PROXY_URL] = PROXY_URL;
+            process.env[ENV.HTTP_PROXY] = PROXY_URL;
             expect(getAppStudioProxyURL()).toBe(PROXY_URL);
         });
 
         it('returns undefined when env var is not set', () => {
-            delete process.env[ENV.PROXY_URL];
+            delete process.env[ENV.HTTP_PROXY];
             expect(getAppStudioProxyURL()).toBeUndefined();
         });
     });
@@ -169,12 +169,15 @@ describe('App Studio', () => {
         beforeAll(() => {
             nock(server).get('/reload').reply(200).persist();
             process.env[ENV.H2O_URL] = server;
-            process.env[ENV.PROXY_URL] = server;
+            process.env[ENV.HTTP_PROXY] = server;
+            process.env[ENV.HTTPS_PROXY] = server;
+            global.GLOBAL_AGENT = { HTTP_PROXY: null, HTTPS_PROXY: null };
         });
 
         afterAll(() => {
             delete process.env[ENV.H2O_URL];
-            delete process.env[ENV.PROXY_URL];
+            delete process.env[ENV.HTTP_PROXY];
+            delete process.env[ENV.HTTPS_PROXY];
         });
 
         test('only destinations for development returned', async () => {
@@ -201,6 +204,17 @@ describe('App Studio', () => {
                 .replyWithFile(200, join(__dirname, 'mockResponses/destinations.json'));
             const destinationsWithOpts = await listDestinations({ stripS4HCApiHosts: true });
             expect(destinationsWithOpts['S4HC'].Host).toBe('https://s4hc-example.sap.example');
+        });
+
+        test('patches global agent proxy settings when running in BAS', async () => {
+            nock(server)
+                .get('/api/listDestinations')
+                .replyWithFile(200, join(__dirname, 'mockResponses/destinations.json'));
+
+            await listDestinations();
+
+            expect(global.GLOBAL_AGENT?.HTTP_PROXY).toBe(server);
+            expect(global.GLOBAL_AGENT?.HTTPS_PROXY).toBe(server);
         });
     });
 
@@ -234,7 +248,7 @@ describe('App Studio', () => {
             envH20Settings = process.env[ENV.H2O_URL];
             envWSBaseURLSettings = process.env['WS_BASE_URL'];
             process.env[ENV.H2O_URL] = server;
-            process.env[ENV.PROXY_URL] = server;
+            process.env[ENV.HTTP_PROXY] = server;
         });
 
         afterAll(() => {
