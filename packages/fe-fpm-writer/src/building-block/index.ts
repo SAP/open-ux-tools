@@ -11,11 +11,13 @@ import type { Editor } from 'mem-fs-editor';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import {
     BuildingBlockType,
+    PAGE_AGGREGATIONS,
     PAGE_TEMPLATE_TYPE_FULL,
     type BuildingBlock,
     type BuildingBlockConfig,
     type BuildingBlockMetaPath,
     type Page,
+    type PageAggregationName,
     bindingContextAbsolute,
     type TemplateConfig
 } from './types.js';
@@ -150,17 +152,8 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     return fs;
 }
 
-export const PAGE_AGGREGATIONS = [
-    'breadcrumbs',
-    'navigationActions',
-    'titleContent',
-    'actions',
-    'headerContent',
-    'items',
-    'footer'
-] as const;
-
-export type PageAggregationName = (typeof PAGE_AGGREGATIONS)[number];
+export { PAGE_AGGREGATIONS } from './types.js';
+export type { PageAggregationName } from './types.js';
 
 const PAGE_TEMPLATE_COMMENT = 'This is a sample template, event handlers should be added for implementation';
 
@@ -259,7 +252,6 @@ export async function appendPageBBAggregation(
     const xmlDocument = getUI5XmlDocument(basePath, viewPath, fs);
 
     const generateId = await createIdGenerator({ basePath, fsEditor: fs });
-    const uniqueId = generateId(aggName);
 
     const macrosNS = getOrAddNamespace(xmlDocument, 'sap.fe.macros', 'macros');
     const mNS = getOrAddNamespace(xmlDocument, 'sap.m', 'm');
@@ -278,7 +270,11 @@ export async function appendPageBBAggregation(
     };
     const aggDoc = new DOMParser({ errorHandler }).parseFromString(wrapped, 'text/xml');
 
-    const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
+    const firstChildView = xmlDocument.firstChild;
+    if (!firstChildView) {
+        throw new Error(`Unable to read namespace map from view ${viewPath}.`);
+    }
+    const xpathSelect = xpath.useNamespaces((firstChildView as any)._nsMap);
     const pageNodes = xpathSelect(`//${fragMacrosNS}:Page`, xmlDocument);
     if (!pageNodes || !Array.isArray(pageNodes) || pageNodes.length === 0) {
         throw new Error(`macros:Page element not found in view ${viewPath}.`);
@@ -291,7 +287,7 @@ export async function appendPageBBAggregation(
     }
     for (const node of Array.from(aggDoc.documentElement.childNodes)) {
         if (node.nodeType === 1 /* Element */) {
-            (node as Element).setAttribute('id', uniqueId);
+            (node as Element).setAttribute('id', generateId(aggName));
             pageElement.appendChild(xmlDocument.importNode(node, true));
         }
     }
@@ -311,8 +307,8 @@ export async function appendPageBBAggregation(
  * @param {string} viewOrFragmentPath - the relative path of the view/fragment file
  */
 function applyPageControllerTemplate(fs: Editor, basePath: string, viewOrFragmentPath: string): void {
-    const viewDir = parse(viewOrFragmentPath).dir;
-    const viewBaseName = parse(viewOrFragmentPath).name.replace(/\.view$/, '');
+    const { dir: viewDir, name: viewName } = parse(viewOrFragmentPath);
+    const viewBaseName = viewName.replace(/\.view$/, '');
     const isTypeScript = fs.exists(join(basePath, viewDir, `${viewBaseName}.controller.ts`));
     const controllerExt = isTypeScript ? 'ts' : 'js';
     const controllerPath = join(basePath, viewDir, `${viewBaseName}.controller.${controllerExt}`);
@@ -560,7 +556,11 @@ function updateViewFile(
     fs: Editor,
     replace: boolean = false
 ): Editor {
-    const xpathSelect = xpath.useNamespaces((viewDocument.firstChild as any)._nsMap);
+    const firstChild = viewDocument.firstChild;
+    if (!firstChild) {
+        throw new Error(`Unable to read namespace map from view ${viewPath}.`);
+    }
+    const xpathSelect = xpath.useNamespaces((firstChild as any)._nsMap);
 
     // Find target aggregated element and append template as child
     const targetNodes = xpathSelect(aggregationPath, viewDocument);
