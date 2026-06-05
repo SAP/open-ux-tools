@@ -81,11 +81,8 @@ function checkConfiguration(
     problems: EnableExport[],
     pageSectionName?: string
 ): void {
-    if (table.configuration.enableExport.valueInFile === false) {
-        const node =
-            sourceCode instanceof FioriJSONSourceCode
-                ? sourceCode.getNode(sourceCode.ast.body, table.configuration.enableExport.configurationPath)
-                : undefined;
+    if (sourceCode instanceof FioriJSONSourceCode && table.configuration.enableExport.valueInFile === false) {
+        const node = sourceCode.getNode(sourceCode.ast.body, table.configuration.enableExport.configurationPath);
         problems.push({
             type: ENABLE_EXPORT,
             pageName: page.targetName,
@@ -94,7 +91,7 @@ function checkConfiguration(
                 uri: parsedApp.manifest.manifestUri,
                 object: parsedApp.manifestObject,
                 propertyPath: table.configuration.enableExport.configurationPath,
-                loc: node?.loc
+                loc: node ? node.loc : sourceCode.ast.body.loc
             }
         });
     }

@@ -92,6 +92,9 @@ function checkConfiguration(
     problems: CopyToClipboard[],
     pageSectionName?: string
 ): void {
+    if (!(sourceCode instanceof FioriJSONSourceCode)) {
+        return;
+    }
     let config;
     let wrongValue = false;
     if (isV2Table(table)) {
@@ -101,10 +104,7 @@ function checkConfiguration(
         wrongValue = true;
     }
     if (config?.valueInFile === wrongValue) {
-        const node =
-            sourceCode instanceof FioriJSONSourceCode
-                ? sourceCode.getNode(sourceCode.ast.body, config.configurationPath)
-                : undefined;
+        const node = sourceCode.getNode(sourceCode.ast.body, config.configurationPath);
         const copyIssue: CopyToClipboard | undefined = {
             type: COPY_TO_CLIPBOARD,
             pageName: page.targetName,
@@ -113,7 +113,7 @@ function checkConfiguration(
                 uri: parsedApp.manifest.manifestUri,
                 object: parsedApp.manifestObject,
                 propertyPath: config.configurationPath,
-                loc: node?.loc
+                loc: node ? node.loc : sourceCode.ast.body.loc
             }
         };
         problems.push(copyIssue);

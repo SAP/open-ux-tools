@@ -4,6 +4,7 @@ import { createFioriRule } from '../language/rule-factory.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import { createJsonFixer } from '../language/rule-fixer.js';
 import { isLowerThanMinimalUi5Version } from '../utils/version.js';
+import { FioriJSONSourceCode } from '../language/json/source-code.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: STRICT_UOM_FILTERING,
@@ -23,6 +24,9 @@ const rule: FioriRuleDefinition = createFioriRule({
     },
 
     check(context) {
+        if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
+            return [];
+        }
         const problems: StrictUomFiltering[] = [];
 
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
@@ -37,12 +41,17 @@ const rule: FioriRuleDefinition = createFioriRule({
                 continue;
             }
             if (app.configuration.disableStrictUomFiltering.valueInFile === true) {
+                const node = context.sourceCode.getNode(
+                    context.sourceCode.ast.body,
+                    app.configuration.disableStrictUomFiltering.configurationPath
+                );
                 problems.push({
                     type: STRICT_UOM_FILTERING,
                     manifest: {
                         uri: parsedApp.manifest.manifestUri,
                         object: parsedApp.manifestObject,
-                        propertyPath: app.configuration.disableStrictUomFiltering.configurationPath
+                        propertyPath: app.configuration.disableStrictUomFiltering.configurationPath,
+                        loc: node?.loc ?? context.sourceCode.ast.body.loc
                     }
                 });
             }

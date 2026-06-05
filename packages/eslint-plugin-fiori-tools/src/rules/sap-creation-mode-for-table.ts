@@ -76,7 +76,7 @@ function reportDiagnostic(
             uri: parsedApp.manifest.manifestUri,
             object: parsedApp.manifestObject,
             propertyPath: configurationPath,
-            loc: node?.loc
+            loc: node ? node.loc : sourceCode.ast.body.loc
         }
     });
 }

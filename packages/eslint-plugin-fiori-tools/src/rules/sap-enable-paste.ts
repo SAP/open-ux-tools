@@ -84,11 +84,8 @@ function checkConfiguration(
     problems: EnablePaste[],
     pageSectionName?: string
 ): void {
-    if (table.configuration.enablePaste.valueInFile === false) {
-        const node =
-            sourceCode instanceof FioriJSONSourceCode
-                ? sourceCode.getNode(sourceCode.ast.body, table.configuration.enablePaste.configurationPath)
-                : undefined;
+    if (sourceCode instanceof FioriJSONSourceCode && table.configuration.enablePaste.valueInFile === false) {
+        const node = sourceCode.getNode(sourceCode.ast.body, table.configuration.enablePaste.configurationPath);
         problems.push({
             type: ENABLE_PASTE,
             pageName: page.targetName,
@@ -97,7 +94,7 @@ function checkConfiguration(
                 uri: parsedApp.manifest.manifestUri,
                 object: parsedApp.manifestObject,
                 propertyPath: table.configuration.enablePaste.configurationPath,
-                loc: node?.loc
+                loc: node ? node.loc : sourceCode.ast.body.loc
             }
         });
     }

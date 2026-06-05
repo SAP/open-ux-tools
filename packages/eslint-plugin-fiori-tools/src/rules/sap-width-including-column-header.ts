@@ -1,7 +1,6 @@
 import type { Element, AliasInformation } from '@sap-ux/odata-annotation-core';
 import { Edm, elementsWithName, elements } from '@sap-ux/odata-annotation-core';
-import type { MemberNode } from '@humanwhocodes/momoa';
-
+import type { LocationRange, MemberNode } from '@humanwhocodes/momoa';
 import { createFioriRule } from '../language/rule-factory.js';
 import type { FioriRuleDefinition } from '../types.js';
 import type { WidthIncludingColumnHeaderDiagnostic } from '../language/diagnostics.js';
@@ -74,13 +73,26 @@ function checkTable(
     const aliasInfo = parsedService.artifacts.aliasInfo[table.annotation.annotation.top.uri];
 
     if (shouldTableHaveWidthIncludingColumnHeader(table, aliasInfo)) {
-        const node =
-            sourceCode instanceof FioriJSONSourceCode
-                ? sourceCode.getNode(
-                      sourceCode.ast.body,
-                      table.configuration.widthIncludingColumnHeader.configurationPath
-                  )
-                : undefined;
+        let loc: LocationRange = {
+            start: { column: 0, line: 0, offset: 0 },
+            end: { column: 0, line: 0, offset: 0 }
+        };
+        if (sourceCode instanceof FioriJSONSourceCode) {
+            const node =
+                sourceCode.getNode(
+                    sourceCode.ast.body,
+                    table.configuration.widthIncludingColumnHeader.configurationPath
+                ) ?? sourceCode.ast.body;
+            loc = node.loc;
+        }
+        if (!loc && table.annotation.annotation.top.value.range) {
+            const { start, end } = table.annotation.annotation.top.value.range;
+            loc = {
+                start: { column: start.character, line: start.line, offset: 0 },
+                end: { column: end.character, line: end.line, offset: 0 }
+            };
+        }
+
         problems.push({
             type: WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
             pageName: page.targetName,
@@ -89,7 +101,7 @@ function checkTable(
                 uri: parsedApp.manifest.manifestUri,
                 object: parsedApp.manifestObject,
                 propertyPath: table.configuration.widthIncludingColumnHeader.configurationPath,
-                loc: node?.loc
+                loc
             },
             annotation: {
                 file: table.annotation.annotation.source,

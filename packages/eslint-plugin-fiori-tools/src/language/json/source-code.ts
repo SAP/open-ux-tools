@@ -1,5 +1,5 @@
 import { JSONSourceCode } from '@eslint/json';
-import type { AnyNode, DocumentNode, MemberNode } from '@humanwhocodes/momoa';
+import type { DocumentNode, MemberNode, ValueNode } from '@humanwhocodes/momoa';
 import type { Manifest } from '@sap-ux/project-access';
 
 import type { ProjectContext } from '../../project-context/project-context.js';
@@ -71,7 +71,11 @@ export class FioriJSONSourceCode extends JSONSourceCode {
      * @param parentNode - Optional parent node of the searched node
      * @returns
      */
-    getNode(node: AnyNode | undefined, path: string[], parentNode?: MemberNode): AnyNode | undefined {
+    getNode(
+        node: ValueNode | MemberNode | undefined,
+        path: string[],
+        parentNode?: MemberNode
+    ): ValueNode | MemberNode | undefined {
         if (node && path.length) {
             const name = path[0];
             if (node.type === 'Object') {
@@ -85,6 +89,7 @@ export class FioriJSONSourceCode extends JSONSourceCode {
                     return this.getNode(node, path, parentNode);
                 }
             } else if (node.type === 'Member' && path.length > 1) {
+                // Assign parent MemberNode before search continued
                 parentNode = node;
                 // Report the final node, not value of the final node
                 return this.getNode(node.value, path.slice(1), parentNode);

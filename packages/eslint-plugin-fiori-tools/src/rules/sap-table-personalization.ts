@@ -177,7 +177,7 @@ function checkPersonalizationValue(
                     uri: parsedApp.manifest.manifestUri,
                     object: parsedApp.manifestObject,
                     propertyPath: table.configuration.personalization.configurationPath,
-                    loc: personalizationNode?.loc
+                    loc: personalizationNode?.loc ?? sourceCode.ast.body.loc
                 }
             }
         ];
@@ -203,7 +203,7 @@ function checkPersonalizationValue(
                         uri: parsedApp.manifest.manifestUri,
                         object: parsedApp.manifestObject,
                         propertyPath: [...table.configuration.personalization.configurationPath, property],
-                        loc: node?.loc
+                        loc: node ? node.loc : sourceCode.ast.body.loc
                     }
                 });
             } else if (propertyValue === undefined) {
@@ -222,7 +222,7 @@ function checkPersonalizationValue(
                 uri: parsedApp.manifest.manifestUri,
                 object: parsedApp.manifestObject,
                 propertyPath: table.configuration.personalization.configurationPath,
-                loc: personalizationNode?.loc
+                loc: personalizationNode?.loc ?? sourceCode.ast.body.loc
             }
         });
     }

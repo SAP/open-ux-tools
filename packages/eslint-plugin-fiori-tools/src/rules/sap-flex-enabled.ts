@@ -42,7 +42,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                         uri: app.manifest.manifestUri,
                         object: app.manifestObject,
                         propertyPath: ['sap.ui5', 'flexEnabled'],
-                        loc: node?.loc
+                        loc: node ? node.loc : context.sourceCode.ast.body.loc
                     }
                 });
             }

@@ -23,6 +23,9 @@ const rule: FioriRuleDefinition = createFioriRule({
     },
 
     check(context) {
+        if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
+            return [];
+        }
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
             if (app.type !== 'fe-v2') {
                 continue;
@@ -57,7 +60,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                         uri: parsedApp.manifest.manifestUri,
                         object: parsedApp.manifestObject,
                         propertyPath: app.configuration.tableColumnVerticalAlignment.configurationPath,
-                        loc: node?.loc
+                        loc: node ? node.loc : context.sourceCode.ast.body.loc
                     }
                 }
             ];

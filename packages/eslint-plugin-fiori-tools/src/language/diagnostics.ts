@@ -38,7 +38,7 @@ export interface ManifestPropertyDiagnosticData {
     uri: string;
     object: Manifest;
     propertyPath: string[];
-    loc?: SourceLocation;
+    loc: SourceLocation;
 }
 
 export interface FlexEnabled {
