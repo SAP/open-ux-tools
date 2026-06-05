@@ -1,7 +1,7 @@
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import type { AxiosRequestConfig, ODataService, ODataServiceInfo } from '@sap-ux/axios-extension';
 
-import { AbapServiceProvider, ODataVersion } from '@sap-ux/axios-extension';
+import { AbapServiceProvider, ODataVersion, TlsPatch } from '@sap-ux/axios-extension';
 import { getService } from '@sap-ux/store';
 import { ToolsLogger } from '@sap-ux/logger';
 import { parse as parseEdmx } from '@sap-ux/edmx-parser';
@@ -135,6 +135,9 @@ async function getServiceFromSystem(backendSystem: BackendSystem, servicePath: s
             username: backendSystem.username,
             password: backendSystem.password
         };
+    }
+    if (TlsPatch.isPatchRequired(providerConfig.baseURL ?? '')) {
+        TlsPatch.apply();
     }
     const serviceProvider = new AbapServiceProvider(providerConfig);
 
