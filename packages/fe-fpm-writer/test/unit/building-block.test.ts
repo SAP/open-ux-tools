@@ -18,7 +18,12 @@ import type {
     Action
 } from '../../src/index.js';
 
-import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent, appendPageBBAggregation } from '../../src/index.js';
+import {
+    BuildingBlockType,
+    generateBuildingBlock,
+    getSerializedFileContent,
+    appendPageBBAggregation
+} from '../../src/index.js';
 import { BUILDING_BLOCK_CONFIG } from '../../src/building-block/processor.js';
 import testManifestContent from './sample/building-block/webapp/manifest.json';
 import { clearTestOutput, writeFilesForDebugging } from '../common/index.js';
