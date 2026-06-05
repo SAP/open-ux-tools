@@ -5,7 +5,7 @@ export default {
     setupFilesAfterEnv: ['<rootDir>/test/jest.setup.ts'],
     modulePathIgnorePatterns: [...baseConfig.modulePathIgnorePatterns, '<rootDir>/test/data/'],
     transformIgnorePatterns: [
-        'node_modules/(?!(@xenova|@sap-ux|@sap-ux-private|@sap/ux-specification|@sap/ux-cds-compiler-facade)/)'
+        'node_modules/(?!(@huggingface|@sap-ux|@sap-ux-private|@sap/ux-specification|@sap/ux-cds-compiler-facade)/)'
     ],
     // Routes @sap/ux-cds-compiler-facade to .mjs ESM mock
     resolver: '<rootDir>/jest.resolver.cjs',
@@ -26,7 +26,6 @@ export default {
         '^@sap-ux/fe-fpm-writer$': '<rootDir>/test/__mocks__/@sap-ux/fe-fpm-writer.cjs',
         '^@sap/ux-specification$': '<rootDir>/test/__mocks__/@sap/ux-specification.mjs',
         ...baseConfig.moduleNameMapper,
-        '^@lancedb/lancedb$': '<rootDir>/test/__mocks__/@lancedb/lancedb.cjs',
-        '^@xenova/transformers$': '<rootDir>/test/__mocks__/@xenova/transformers.cjs'
+        '^@huggingface/transformers$': '<rootDir>/test/__mocks__/@huggingface/transformers.cjs'
     }
 };

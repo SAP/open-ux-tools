@@ -1,157 +1,87 @@
 import { jest } from '@jest/globals';
-import path, { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-// Mock logger
-const mockLog = jest.fn() as jest.Mock;
-const mockWarn = jest.fn() as jest.Mock;
-const mockError = jest.fn() as jest.Mock;
-const mockInfo = jest.fn() as jest.Mock;
-const mockDebug = jest.fn() as jest.Mock;
-jest.unstable_mockModule('../../../src/utils/logger', () => ({
-    logger: {
-        log: mockLog,
-        warn: mockWarn,
-        error: mockError,
-        info: mockInfo,
-        debug: mockDebug
-    }
-}));
+import path from 'node:path';
 
 // Mock fs/promises
 const mockAccess = jest.fn<any>();
-const mockReadFile = jest.fn<any>();
-const mockReaddir = jest.fn<any>();
 const actualFsPromises = await import('node:fs/promises');
 jest.unstable_mockModule('fs/promises', () => ({
     ...actualFsPromises,
     default: {
         ...actualFsPromises,
-        access: mockAccess,
-        readFile: mockReadFile,
-        readdir: mockReaddir
+        access: mockAccess
     },
-    access: mockAccess,
-    readFile: mockReadFile,
-    readdir: mockReaddir
+    access: mockAccess
 }));
 jest.unstable_mockModule('node:fs/promises', () => ({
     ...actualFsPromises,
     default: {
         ...actualFsPromises,
-        access: mockAccess,
-        readFile: mockReadFile,
-        readdir: mockReaddir
+        access: mockAccess
     },
-    access: mockAccess,
-    readFile: mockReadFile,
-    readdir: mockReaddir
+    access: mockAccess
 }));
 
-// Configurable mock for the external embeddings package
-let mockEmbeddingsModule: any = null;
-jest.unstable_mockModule('@sap-ux/fiori-docs-embeddings', () => {
-    if (mockEmbeddingsModule === null) {
-        throw new Error('Module not found');
-    }
-    return mockEmbeddingsModule;
-});
+// Mock logger
+const mockLog = jest.fn();
+const mockWarn = jest.fn();
+const mockError = jest.fn();
+const mockLogger = {
+    log: mockLog,
+    warn: mockWarn,
+    error: mockError,
+    info: jest.fn(),
+    debug: jest.fn()
+};
+jest.unstable_mockModule('../../../src/utils/logger', () => ({
+    logger: mockLogger
+}));
 
-// Dynamic imports after all mocks
+// Mock @sap-ux/fiori-docs-embeddings
+jest.unstable_mockModule('@sap-ux/fiori-docs-embeddings', () => ({
+    getDataPath: jest.fn().mockReturnValue('/mock/data/path')
+}));
+
 const { resolveEmbeddingsPath, hasEmbeddingsData } = await import('../../../src/utils/embeddings-path.js');
 
 describe('embeddings-path', () => {
     beforeEach(() => {
-        jest.resetModules();
-        jest.resetAllMocks();
         jest.clearAllMocks();
-        mockEmbeddingsModule = null;
     });
 
     describe('resolveEmbeddingsPath', () => {
-        it('should return external package data when @sap-ux/fiori-docs-embeddings is available', async () => {
-            const mockPackageDataPath = '/path/to/external/package/data';
-            mockEmbeddingsModule = { getDataPath: () => mockPackageDataPath };
-
-            // Mock fs.access to succeed for external package
+        it('should return data path from @sap-ux/fiori-docs-embeddings when data is accessible', async () => {
             mockAccess.mockResolvedValue(undefined);
 
             const result = await resolveEmbeddingsPath();
 
             expect(result).toEqual({
-                dataPath: mockPackageDataPath,
-                embeddingsPath: path.join(mockPackageDataPath, 'embeddings'),
-                searchPath: path.join(mockPackageDataPath, 'search'),
-                docsPath: path.join(mockPackageDataPath, 'docs'),
+                dataPath: '/mock/data/path',
+                embeddingsPath: path.join('/mock/data/path', 'embeddings'),
+                searchPath: path.join('/mock/data/path', 'search'),
+                docsPath: path.join('/mock/data/path', 'docs'),
                 isExternalPackage: true,
                 isAvailable: true
             });
 
-            expect(mockLog).toHaveBeenCalledWith('✓ Using @sap-ux/fiori-docs-embeddings package');
-            expect(mockAccess).toHaveBeenCalledWith(mockPackageDataPath);
+            expect(mockLogger.log).toHaveBeenCalledWith('✓ Using @sap-ux/fiori-docs-embeddings package');
+            expect(mockAccess).toHaveBeenCalledWith('/mock/data/path');
         });
 
-        it('should fall back to local data when external package fails to load', async () => {
-            // External package not available (mockEmbeddingsModule = null → throws)
-            mockAccess.mockResolvedValue(undefined);
-
-            const result = await resolveEmbeddingsPath();
-
-            expect(result.isExternalPackage).toBe(false);
-            expect(result.isAvailable).toBe(true);
-            expect(mockWarn).toHaveBeenCalledWith(
-                'Could not load @sap-ux/fiori-docs-embeddings package, trying local data...'
-            );
-            expect(mockLog).toHaveBeenCalledWith('✓ Using local data directory');
-        });
-
-        it('should return unavailable when both external package and local data fail', async () => {
-            // External package not available
-            // Local path also not accessible
+        it('should return unavailable when data directory does not exist', async () => {
             mockAccess.mockRejectedValue(new Error('ENOENT: no such file or directory'));
 
             const result = await resolveEmbeddingsPath();
 
-            expect(result.isExternalPackage).toBe(false);
-            expect(result.isAvailable).toBe(false);
-            expect(mockWarn).toHaveBeenCalledWith(
-                'Could not load @sap-ux/fiori-docs-embeddings package, trying local data...'
-            );
-            expect(mockWarn).toHaveBeenCalledWith('Local data directory not available either');
-            expect(mockWarn).toHaveBeenCalledWith('⚠️ No embeddings data available - running in limited mode');
-        });
+            expect(result).toEqual({
+                dataPath: '/mock/data/path',
+                embeddingsPath: path.join('/mock/data/path', 'embeddings'),
+                searchPath: path.join('/mock/data/path', 'search'),
+                docsPath: path.join('/mock/data/path', 'docs'),
+                isExternalPackage: false,
+                isAvailable: false
+            });
 
-        it('should handle package with invalid getDataPath function', async () => {
-            // Package exists but without getDataPath method
-            mockEmbeddingsModule = { someOtherMethod: () => {} };
-
-            // Mock fs.access to succeed for local path
-            mockAccess.mockResolvedValue(undefined);
-
-            const result = await resolveEmbeddingsPath();
-
-            expect(result.isExternalPackage).toBe(false);
-            expect(result.isAvailable).toBe(true);
-            expect(mockWarn).toHaveBeenCalledWith(
-                'Could not load @sap-ux/fiori-docs-embeddings package, trying local data...'
-            );
-        });
-
-        it('should handle external package data path access failure', async () => {
-            const mockPackageDataPath = '/path/to/external/package/data';
-            mockEmbeddingsModule = { getDataPath: () => mockPackageDataPath };
-
-            // External package path fails, local path succeeds
-            mockAccess.mockRejectedValueOnce(new Error('ENOENT')).mockResolvedValueOnce(undefined);
-
-            const result = await resolveEmbeddingsPath();
-
-            expect(result.isExternalPackage).toBe(false);
-            expect(result.isAvailable).toBe(true);
-            expect(mockWarn).toHaveBeenCalledWith(
-                'Could not load @sap-ux/fiori-docs-embeddings package, trying local data...'
-            );
+            expect(mockLogger.warn).toHaveBeenCalledWith('⚠️ No embeddings data available - running in limited mode');
         });
     });
 
