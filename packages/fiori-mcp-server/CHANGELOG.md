@@ -1,5 +1,12 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.1.0
+
+### Minor Changes
+
+- 9f33150: Build self-contained dist/ bundle (ONNX model, onnxruntime, embeddings data included);
+  Replace @xenova/transformers with @huggingface/transformers 4.2.0;
+
 ## 1.0.3
 
 ### Patch Changes
