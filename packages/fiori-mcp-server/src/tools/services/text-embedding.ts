@@ -2,6 +2,11 @@
  * Text embedding service for converting text queries to vectors.
  */
 
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 /**
  * Simple text embedding service that uses the same model as the build process.
  */
@@ -19,17 +24,20 @@ export class TextEmbeddingService {
 
         try {
             // Dynamically import the ES Module
-            const { pipeline } = await import('@xenova/transformers');
+            const { pipeline, env } = await import('@huggingface/transformers');
+
+            // Point at the bundled model directory (dist/models/) so the ONNX model is loaded
+            // from the package itself rather than downloaded from HuggingFace Hub at runtime.
+            env.localModelPath = path.join(__dirname, 'models');
+            env.allowRemoteModels = false;
 
             // Use the same model as the build process
-            this.pipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
-                quantized: false
-            });
+            this.pipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
 
             this.initialized = true;
         } catch (error) {
             throw new Error(
-                `Failed to initialize text embedding service: ${error}. Make sure @xenova/transformers is available.`
+                `Failed to initialize text embedding service: ${error}. Make sure @huggingface/transformers is available.`
             );
         }
     }

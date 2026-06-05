@@ -1,5 +1,11 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 1.1.0
+
+### Minor Changes
+
+- 9f33150: Replace @xenova/transformers with @huggingface/transformers 4.2.0.
+
 ## 1.0.1
 
 ### Patch Changes

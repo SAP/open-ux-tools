@@ -226,10 +226,9 @@ describe('hybrid-search', () => {
             expect(result).toEqual({
                 query: 'test query',
                 searchType: 'limited_fallback',
-                error: 'Embeddings data not available. Please install @sap-ux/fiori-docs-embeddings for full search capabilities.',
+                error: 'Search is currently unavailable. The embeddings service failed to initialize.',
                 results: [],
-                total: 0,
-                suggestion: 'Try running: npm install -g @sap-ux/fiori-docs-embeddings'
+                total: 0
             });
 
             expect(mockGenerateEmbedding).not.toHaveBeenCalled();
@@ -245,10 +244,9 @@ describe('hybrid-search', () => {
             expect(result).toEqual({
                 query: 'test query',
                 searchType: 'limited_fallback',
-                error: 'Embeddings data not available. Please install @sap-ux/fiori-docs-embeddings for full search capabilities.',
+                error: 'Search is currently unavailable. The embeddings service failed to initialize.',
                 results: [],
-                total: 0,
-                suggestion: 'Try running: npm install -g @sap-ux/fiori-docs-embeddings'
+                total: 0
             });
         });
 
