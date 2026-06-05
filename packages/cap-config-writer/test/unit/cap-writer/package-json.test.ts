@@ -54,7 +54,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
         DotGitIgnore: '.gitignore',
         MtaExtYaml: 'mta-ext.mtaext'
     },
-    MinCdsPluginUi5Version: '0.13.0',
+    MinCdsPluginUi5Version: '0.17.0',
     MinCdsVersion: '6.8.2',
     getCdsVersionInfo: mockGetCdsVersionInfo,
     satisfiesMinCdsVersion: mockSatisfiesMinCdsVersion,
@@ -150,7 +150,7 @@ describe('Writing/package json files', () => {
         const devDependencies = packageJson.devDependencies;
         const scripts = packageJson.scripts;
         expect(devDependencies).toEqual({
-            'cds-plugin-ui5': '^0.13.0'
+            'cds-plugin-ui5': '^0.17.0'
         });
         expect(scripts?.['watch-test-cap-package-sapux']).toBeDefined();
         expect(scripts?.['watch-test-cap-package-sapux']).toEqual(
