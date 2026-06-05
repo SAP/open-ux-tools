@@ -32,12 +32,8 @@ const rule: FioriRuleDefinition = createFioriRule({
             if (app.type !== 'fe-v4') {
                 continue;
             }
-            for (const page of app.pages) {
-                if (page.type !== 'object-page') {
-                    continue;
-                }
-                const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
-
+            const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
+            for (const page of app.pages.filter((page) => page.type === 'object-page')) {
                 // Check if anchorBarVisible is set to false
                 // Exception: Form Entry Object Pages can have both visible: false and anchorBarVisible: false
                 const anchorBarVisible = page.header.anchorBarVisible.valueInFile;
