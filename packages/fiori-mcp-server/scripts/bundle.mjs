@@ -11,7 +11,9 @@
  *
  * Model strategy:
  *   The ONNX model (all-MiniLM-L6-v2, ~86 MB) is NOT bundled. It is downloaded
- *   from HuggingFace Hub on first use and cached in ~/.cache/sap-fiori-mcp/.
+ *   from HuggingFace Hub on first use and cached in the default @huggingface/transformers
+ *   cache directory (respects HF_HOME / TRANSFORMERS_CACHE env vars; defaults to
+ *   ~/.cache/huggingface/hub on Linux/macOS).
  *   This keeps the published tgz under npm's 100 MB limit.
  *
  * Native binary strategy:
