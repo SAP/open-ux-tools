@@ -9,14 +9,14 @@ import {
     mockCreateForDestination,
     MockToolsLogger,
     MockNullTransport
-} from '../../__mocks__';
+} from '../../__mocks__/index.js';
 import type { Destination } from '@sap-ux/btp-utils';
-import type { AbapTarget } from '../../../src/types';
+import type { AbapTarget } from '../../../src/types.js';
 
 // Dynamic imports after mocks are set up
 const { AuthenticationType } = await import('@sap-ux/store');
 const { default: prompts } = await import('prompts');
-const { createAbapServiceProvider, isUrlTarget } = await import('../../../src/base/connect');
+const { createAbapServiceProvider, isUrlTarget } = await import('../../../src/base/connect.js');
 
 /**
  * Create a mock ABAP service provider with the given options.
@@ -50,9 +50,9 @@ describe('connect', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockCreateForAbap.mockImplementation((opts: any) => createMockProvider(opts));
-        mockCreateForAbapOnCloud.mockImplementation((opts: any) => createMockProvider(opts));
-        mockCreateForDestination.mockImplementation((opts: any) => createMockProvider(opts));
+        mockCreateForAbap.mockImplementation((opts) => createMockProvider(opts));
+        mockCreateForAbapOnCloud.mockImplementation((opts) => createMockProvider(opts));
+        mockCreateForDestination.mockImplementation((opts) => createMockProvider(opts));
     });
 
     describe('createProvider', () => {
@@ -197,7 +197,7 @@ describe('connect', () => {
 
                 // Set up mock provider that simulates 401 -> retry with auth
                 const mockProvider = createMockProvider();
-                mockProvider.interceptors.response.use.mockImplementation((_onFulfilled: any, onRejected: any) => {
+                mockProvider.interceptors.response.use.mockImplementation((_onFulfilled, onRejected) => {
                     // Store the error handler for later invocation
                     mockProvider._onRejected = onRejected;
                     return 0;

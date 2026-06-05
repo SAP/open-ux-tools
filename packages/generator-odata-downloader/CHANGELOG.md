@@ -1,5 +1,57 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.7
+
+### Patch Changes
+
+- 78f39f4: revert odata-downloader to cjs
+
+## 0.3.6
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/fiori-generator-shared@1.0.6
+    - @sap-ux/inquirer-common@1.0.6
+    - @sap-ux/mockserver-config-writer@1.0.5
+    - @sap-ux/odata-service-inquirer@3.0.6
+    - @sap-ux/odata-service-writer@1.0.5
+    - @sap-ux/telemetry@1.0.6
+
+## 0.3.5
+
+### Patch Changes
+
+- Updated dependencies [b326a9a]
+    - @sap-ux/project-access@2.1.0
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/fiori-generator-shared@1.0.5
+    - @sap-ux/inquirer-common@1.0.5
+    - @sap-ux/mockserver-config-writer@1.0.4
+    - @sap-ux/odata-service-inquirer@3.0.5
+    - @sap-ux/odata-service-writer@1.0.4
+    - @sap-ux/telemetry@1.0.5
+
+## 0.3.4
+
+### Patch Changes
+
+- Updated dependencies [21a3de7]
+    - @sap-ux/mockserver-config-writer@1.0.3
+    - @sap-ux/fiori-generator-shared@1.0.4
+    - @sap-ux/odata-service-inquirer@3.0.4
+    - @sap-ux/odata-service-writer@1.0.3
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/inquirer-common@1.0.4
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux/ui5-config@1.0.2
+    - @sap-ux/btp-utils@2.0.1
+    - @sap-ux/telemetry@1.0.4
+    - @sap-ux/logger@1.0.1
+    - @sap-ux/store@2.0.1
+
 ## 0.3.3
 
 ### Patch Changes

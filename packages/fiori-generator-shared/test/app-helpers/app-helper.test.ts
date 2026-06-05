@@ -1,4 +1,4 @@
-import { getFlpId, getSemanticObject } from '../../src/app-helpers/app-helpers';
+import { getFlpId, getSemanticObject } from '../../src/app-helpers/app-helpers.js';
 
 describe('app-helper tests', () => {
     test('should return flp id', () => {

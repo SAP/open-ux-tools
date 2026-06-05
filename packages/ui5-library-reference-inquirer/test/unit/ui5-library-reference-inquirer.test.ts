@@ -1,13 +1,13 @@
 import { jest } from '@jest/globals';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { UI5LibraryReferencePromptOptions } from '../../src';
+import type { UI5LibraryReferencePromptOptions } from '../../src/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Mock functions
-const mockFindFioriArtifacts = jest.fn();
-const mockGetQuestions = jest.fn();
+const mockFindFioriArtifacts = jest.fn() as jest.Mock;
+const mockGetQuestions = jest.fn() as jest.Mock;
 
 // Mock ../../src/prompts so getQuestions is spyable
 jest.unstable_mockModule('../../src/prompts', () => ({
@@ -91,11 +91,11 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 }));
 
 // Dynamic imports after mocking
-const { prompt, getPrompts } = await import('../../src');
-const { promptNames } = await import('../../src/types');
-const { initI18n } = await import('../../src/i18n');
+const { prompt, getPrompts } = await import('../../src/index.js');
+const { promptNames } = await import('../../src/types.js');
+const { initI18n } = await import('../../src/i18n.js');
 // Load the real getQuestions implementation for mockGetQuestions to delegate to
-const actualPrompts = await import('../../src/prompts/prompts');
+const actualPrompts = await import('../../src/prompts/prompts.js');
 mockGetQuestions.mockImplementation(actualPrompts.getQuestions);
 
 describe('ui5-library-reference-inquirer API', () => {

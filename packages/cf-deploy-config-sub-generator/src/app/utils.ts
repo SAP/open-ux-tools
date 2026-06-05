@@ -83,7 +83,8 @@ async function getCFSystemChoices(
         if (isCap) {
             const mtaConfig = await MtaConfig.newInstance(projectRoot);
             mtaDestinations = mtaConfig.getExposedDestinations();
-            if (mtaDestinations?.length) {
+            // Only offer to create a destination, if the service exists
+            if (mtaConfig.hasResource('destination')) {
                 // Add default option
                 choices.push({
                     name: t('cfGen.prompts.capInstanceBasedDest.name'),

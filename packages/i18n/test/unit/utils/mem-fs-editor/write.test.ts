@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { writeFile } from '../../../../src/utils';
+import { writeFile } from '../../../../src/utils/index.js';
 import * as fs from 'node:fs';
 
 describe('write', () => {

@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { hostEnvironment } from '../src/types';
+import { hostEnvironment } from '../src/types/index.js';
 import * as actualBtpUtils from '@sap-ux/btp-utils';
 
 jest.unstable_mockModule('@vscode-logging/logger', () => ({
@@ -12,7 +12,7 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: mockIsAppStudio
 }));
 
-const { isCli, getHostEnvironment } = await import('../src/environment');
+const { isCli, getHostEnvironment } = await import('../src/environment.js');
 
 function mockCli(isCli: boolean) {
     process.argv[1] = isCli ? 'path/to/yo' : 'path/to/mock';

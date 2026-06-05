@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import type { ActionHandler } from 'open/ux/preview/client/cpe/types';
 import {
     changeProperty,
@@ -59,7 +60,7 @@ describe('ChangeService', () => {
             })
         });
         sendActionMock = jest.fn();
-        subscribeMock = jest.fn<void, [ActionHandler]>();
+        subscribeMock = jest.fn<(handler: ActionHandler) => void>();
         fetchMock.mockClear();
         isLowerThanMinimalUi5VersionMock.mockReturnValueOnce(false);
     });

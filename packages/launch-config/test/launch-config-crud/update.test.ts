@@ -2,8 +2,8 @@ import { DirName } from '@sap-ux/project-access';
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { createLaunchConfig, LAUNCH_JSON_FILE, updateLaunchConfig } from '../../src';
-import { TestPaths } from '../test-data/utils';
+import { createLaunchConfig, LAUNCH_JSON_FILE, updateLaunchConfig } from '../../src/index.js';
+import { TestPaths } from '../test-data/utils.js';
 import { parse } from 'jsonc-parser';
 import type { Editor } from 'mem-fs-editor';
 

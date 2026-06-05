@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 
-const mockExistsSync = jest.fn();
-const mockReaddirSync = jest.fn();
+const mockExistsSync = jest.fn<typeof realFs.existsSync>();
+const mockReaddirSync = jest.fn<typeof realFs.readdirSync>();
 
 const realFs = await import('node:fs');
 jest.unstable_mockModule('node:fs', () => ({
@@ -17,7 +17,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
 }));
 
 const { getDefaultNamespace, getDefaultProjectName, getDefaultVersion } =
-    await import('../../../../src/app/questions/helper/default-values');
+    await import('../../../../src/app/questions/helper/default-values.js');
 
 describe('generateValidNamespace', () => {
     const projectName = 'app.variant1';

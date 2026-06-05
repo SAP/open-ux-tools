@@ -1,5 +1,14 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 2.0.2
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/ui5-config@1.0.2
+    - @sap-ux/logger@1.0.1
+
 ## 2.0.1
 
 ### Patch Changes

@@ -1,4 +1,4 @@
-import { error, type Result, success } from './result';
+import { error, type Result, success } from './result.js';
 import type { z } from 'zod';
 
 /**

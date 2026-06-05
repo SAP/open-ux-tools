@@ -13,8 +13,8 @@ import { promptNames } from '@sap-ux/ui5-application-inquirer';
 import 'jest-extended';
 import { join } from 'node:path';
 import type { Adapter } from 'yeoman-environment';
-import { type Service, FloorplanFE } from '../../../src/types';
-import { minUi5VersionForPageBuildingBlock } from '../../../src/types/constants';
+import { type Service, FloorplanFE } from '../../../src/types/index.js';
+import { minUi5VersionForPageBuildingBlock } from '../../../src/types/constants.js';
 
 // Pre-import actuals
 const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
@@ -23,15 +23,15 @@ const actualFeatureToggle = await import('@sap-ux/feature-toggle');
 const actualOdataServiceInquirer = await import('@sap-ux/odata-service-inquirer');
 const actualUi5ApplicationInquirer = await import('@sap-ux/ui5-application-inquirer');
 const actualUi5Info = await import('@sap-ux/ui5-info');
-const actualStepsHelper = await import('../../../src/utils/stepsHelper');
+const actualStepsHelper = await import('../../../src/utils/stepsHelper.js');
 
-const mockGetHostEnvironment = jest.fn();
-const mockIsFeatureEnabled = jest.fn();
-const mockOdataServiceInquirerPrompt = jest.fn();
-const mockUi5ApplicationInquirerPrompt = jest.fn();
-const mockGetUI5Versions = jest.fn();
-const mockGetSapSystemUI5Version = jest.fn();
-const mockValidateNextStep = jest.fn();
+const mockGetHostEnvironment = jest.fn<typeof actualFioriGenShared.getHostEnvironment>();
+const mockIsFeatureEnabled = jest.fn<typeof actualFeatureToggle.isFeatureEnabled>();
+const mockOdataServiceInquirerPrompt = jest.fn<typeof actualOdataServiceInquirer.prompt>();
+const mockUi5ApplicationInquirerPrompt = jest.fn<typeof actualUi5ApplicationInquirer.prompt>();
+const mockGetUI5Versions = jest.fn<typeof actualUi5Info.getUI5Versions>();
+const mockGetSapSystemUI5Version = jest.fn<typeof actualUi5Info.getSapSystemUI5Version>();
+const mockValidateNextStep = jest.fn<typeof actualStepsHelper.validateNextStep>();
 
 jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     ...actualFioriGenShared,
@@ -73,8 +73,8 @@ jest.unstable_mockModule('../../../src/utils/stepsHelper', () => ({
 }));
 
 const { createUI5ApplicationPromptOptions, getViewQuestion, promptOdataServiceAnswers, promptUI5ApplicationAnswers } =
-    await import('../../../src/fiori-app-generator/prompting');
-const { initI18nFioriAppSubGenerator, t } = await import('../../../src/utils/i18n');
+    await import('../../../src/fiori-app-generator/prompting.js');
+const { initI18nFioriAppSubGenerator, t } = await import('../../../src/utils/i18n.js');
 const { DefaultLogger, hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 
 describe('prompting.ts', () => {

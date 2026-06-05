@@ -1,15 +1,15 @@
 import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { CfConfig, Config } from '../../../../src/types';
+import type { CfConfig, Config } from '../../../../src/types.js';
 
 // MOCKS - use jest.unstable_mockModule for ESM compatibility
-const mockHomedir = jest.fn();
+const mockHomedir = jest.fn() as jest.Mock;
 jest.unstable_mockModule('node:os', () => ({
     homedir: mockHomedir,
     default: { homedir: mockHomedir }
 }));
 
-const mockReadFileSync = jest.fn();
+const mockReadFileSync = jest.fn() as jest.Mock;
 jest.unstable_mockModule('node:fs', () => ({
     readFileSync: mockReadFileSync,
     existsSync: jest.fn(),
@@ -27,7 +27,7 @@ jest.unstable_mockModule('node:fs', () => ({
     }
 }));
 
-const { loadCfConfig } = await import('../../../../src/cf/core/config');
+const { loadCfConfig } = await import('../../../../src/cf/core/config.js');
 
 const defaultHome = '/home/user';
 

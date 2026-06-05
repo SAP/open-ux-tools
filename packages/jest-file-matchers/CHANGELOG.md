@@ -1,5 +1,11 @@
 # @sap-ux/jest-file-matchers
 
+## 1.0.1
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+
 ## 1.0.0
 
 ### Major Changes

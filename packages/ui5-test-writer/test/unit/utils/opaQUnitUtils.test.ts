@@ -295,7 +295,7 @@ describe('readHtmlTargetFromQUnitJs()', () => {
         const opaTestsPath = join(testPath, 'integration_old', 'opaTests.qunit.js');
         const opaPath = join(testPath, 'integration_old', 'Opa.qunit.js');
         const fs = {
-            exists: jest.fn().mockImplementation((path: string) => path !== opaTestsPath),
+            exists: jest.fn().mockImplementation((path) => path !== opaTestsPath),
             read: jest.fn().mockReturnValue(content)
         } as unknown as Editor;
 

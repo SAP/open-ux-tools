@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import type { BackendProxyMiddlewareCfConfig } from '../../src/types.js';
 
-const mockExistsSync = jest.fn();
+const mockExistsSync = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('node:fs', () => ({
     default: { existsSync: mockExistsSync },
@@ -21,15 +21,15 @@ jest.unstable_mockModule('@sap-ux/logger', () => ({
     UI5ToolingTransport: jest.fn()
 }));
 
-const mockNextFreePort = jest.fn();
+const mockNextFreePort = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/utils', () => ({
     nextFreePort: mockNextFreePort
 }));
 
 const mockLoadEnvOptions = jest.fn().mockResolvedValue({});
-const mockUpdateUi5ServerDestinationPort = jest.fn();
+const mockUpdateUi5ServerDestinationPort = jest.fn() as jest.Mock;
 const mockGetConnectivityProxyInfo = jest.fn().mockReturnValue(undefined);
-const mockApplyToProcessEnv = jest.fn();
+const mockApplyToProcessEnv = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/config/env', () => ({
     loadEnvOptions: mockLoadEnvOptions,
     updateUi5ServerDestinationPort: mockUpdateUi5ServerDestinationPort,
@@ -37,24 +37,24 @@ jest.unstable_mockModule('../../src/config/env', () => ({
     applyToProcessEnv: mockApplyToProcessEnv
 }));
 
-const mockLoadAndPrepareXsappConfig = jest.fn();
-const mockBuildRouteEntries = jest.fn();
+const mockLoadAndPrepareXsappConfig = jest.fn() as jest.Mock;
+const mockBuildRouteEntries = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/proxy/routes', () => ({
     loadAndPrepareXsappConfig: mockLoadAndPrepareXsappConfig,
     buildRouteEntries: mockBuildRouteEntries
 }));
 
-const mockLoadExtensions = jest.fn();
+const mockLoadExtensions = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/approuter/extensions', () => ({
     loadExtensions: mockLoadExtensions
 }));
 
-const mockStartApprouter = jest.fn();
+const mockStartApprouter = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/approuter/approuter', () => ({
     startApprouter: mockStartApprouter
 }));
 
-const mockCreateProxy = jest.fn();
+const mockCreateProxy = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/proxy/proxy', () => ({
     createProxy: mockCreateProxy
 }));

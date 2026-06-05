@@ -77,8 +77,9 @@ function buildReplaceInboundConfig(
         return [];
     }
 
-    return Object.entries(inbounds).map(([inboundKey, inboundData]: [string, ManifestNamespace.Inbound]) => {
-        const { semanticObject, action, signature: { parameters } = {} } = inboundData;
+    return Object.entries(inbounds).map(([inboundKey, inboundData]) => {
+        const { semanticObject, action } = inboundData;
+        const parameters = inboundData.signature?.parameters;
         let inboundId = inboundKey;
         if (inboundId && layer === FlexLayer.CUSTOMER_BASE) {
             inboundId = `${NamespacePrefix.CUSTOMER}${inboundId}`;

@@ -15,16 +15,16 @@ import type {
     CustomFilterField,
     CustomFormField,
     Action
-} from '../../src';
+} from '../../src/index.js';
 
-import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } from '../../src';
-import { BUILDING_BLOCK_CONFIG } from '../../src/building-block/processor';
+import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } from '../../src/index.js';
+import { BUILDING_BLOCK_CONFIG } from '../../src/building-block/processor.js';
 import testManifestContent from './sample/building-block/webapp/manifest.json';
-import { clearTestOutput, writeFilesForDebugging } from '../common';
-import { bindingContextAbsolute, type BindingContextType } from '../../src/building-block/types';
-import { i18nNamespaces, translate } from '../../src/i18n';
-import { Placement } from '../../src/common/types';
-import type { IdGeneratorFunction } from '../../src/common/file';
+import { clearTestOutput, writeFilesForDebugging } from '../common/index.js';
+import { bindingContextAbsolute, type BindingContextType } from '../../src/building-block/types.js';
+import { i18nNamespaces, translate } from '../../src/i18n.js';
+import { Placement } from '../../src/common/types.js';
+import type { IdGeneratorFunction } from '../../src/common/file.js';
 import { findFilesByExtensionMock } from '../__mocks__/project-access-file.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

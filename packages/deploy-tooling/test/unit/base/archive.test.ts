@@ -1,6 +1,6 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { getAppDescriptorVariant } from '../../../src/base/archive';
+import { getAppDescriptorVariant } from '../../../src/base/archive.js';
 import AdmZip from 'adm-zip';
 import { readFileSync } from 'node:fs';
 
