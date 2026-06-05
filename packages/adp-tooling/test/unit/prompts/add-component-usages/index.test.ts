@@ -16,8 +16,8 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     validateEmptySpaces: mockValidateEmptySpaces
 }));
 
-const { getPrompts } = await import('../../../../src/prompts/add-component-usages');
-const i18n = await import('../../../../src/i18n');
+const { getPrompts } = await import('../../../../src/prompts/add-component-usages/index.js');
+const i18n = await import('../../../../src/i18n.js');
 
 describe('getPrompts', () => {
     const isLazyDropDownOptions = [

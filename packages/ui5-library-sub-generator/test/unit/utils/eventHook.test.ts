@@ -6,7 +6,7 @@ jest.unstable_mockModule('@vscode-logging/logger', () => ({
     getExtensionLogger: jest.fn()
 }));
 
-const { POST_LIB_GEN_COMMAND, runPostLibGenHook } = await import('../../../src/utils/eventHook');
+const { POST_LIB_GEN_COMMAND, runPostLibGenHook } = await import('../../../src/utils/eventHook.js');
 
 describe('runPostLibGenHook', () => {
     const mockExecuteCommand = jest.fn();

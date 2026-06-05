@@ -2,9 +2,9 @@ import { jest } from '@jest/globals';
 import type { TelemetryData } from '../../src/telemetry.js';
 
 const mockInitTelemetrySettings = jest.fn().mockResolvedValue(undefined);
-const mockGetTelemetryClient = jest.fn();
-const mockStartMark = jest.fn();
-const mockEndMark = jest.fn();
+const mockGetTelemetryClient = jest.fn() as jest.Mock;
+const mockStartMark = jest.fn() as jest.Mock;
+const mockEndMark = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/telemetry', () => ({
     initTelemetrySettings: mockInitTelemetrySettings,
@@ -30,7 +30,7 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn().mockReturnValue(false)
 }));
 
-const { TelemetryHelper, mcpServerName } = await import('../../src/telemetry');
+const { TelemetryHelper, mcpServerName } = await import('../../src/telemetry/index.js');
 
 describe('TelemetryHelper', () => {
     const opts = {

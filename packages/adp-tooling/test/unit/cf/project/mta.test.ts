@@ -1,10 +1,10 @@
 import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-const mockGetRouterType = jest.fn();
-const mockGetYamlContent = jest.fn();
-const mockRequestCfApi = jest.fn();
-const mockGetServiceKeyCredentialsWithTags = jest.fn();
+const mockGetRouterType = jest.fn() as jest.Mock;
+const mockGetYamlContent = jest.fn() as jest.Mock;
+const mockRequestCfApi = jest.fn() as jest.Mock;
+const mockGetServiceKeyCredentialsWithTags = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('../../../../src/cf/project/yaml', () => ({
     getRouterType: mockGetRouterType
@@ -31,9 +31,9 @@ const {
     getResources,
     readMta,
     buildVcapServicesFromResources
-} = await import('../../../../src/cf/project/mta');
+} = await import('../../../../src/cf/project/mta.js');
 import type { MtaYaml } from '../../../../src/index.js';
-const { initI18n, t } = await import('../../../../src/i18n');
+const { initI18n, t } = await import('../../../../src/i18n.js');
 
 const mtaProjectPath = '/test/project';
 const mtaFilePath = '/test/mta.yaml';

@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import { promptNames } from '../../../src/types.js';
 
-const mockShowIndexQuestion = jest.fn();
-const mockValidateConfirmQuestion = jest.fn();
+const mockShowIndexQuestion = jest.fn<typeof actualConditions.showIndexQuestion>();
+const mockValidateConfirmQuestion = jest.fn<typeof actualValidators.validateConfirmQuestion>();
 
 const actualConditions = await import('../../../src/prompts/conditions.js');
 const actualValidators = await import('../../../src/prompts/validators.js');

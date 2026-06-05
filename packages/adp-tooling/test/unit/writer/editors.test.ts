@@ -12,10 +12,10 @@ jest.unstable_mockModule('mem-fs', () => ({
     create: mockCreateStorage
 }));
 
-const { generateChange } = await import('../../../src/writer/editors');
-const { ChangeType } = await import('../../../src/types');
-const { WriterFactory } = await import('../../../src/writer/changes/writer-factory');
-import type { AnnotationsData } from '../../../src/types';
+const { generateChange } = await import('../../../src/writer/editors.js');
+const { ChangeType } = await import('../../../src/types.js');
+const { WriterFactory } = await import('../../../src/writer/changes/writer-factory.js');
+import type { AnnotationsData } from '../../../src/types.js';
 
 describe('generateChange', () => {
     const writeSpy = jest.fn();

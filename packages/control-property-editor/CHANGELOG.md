@@ -1,5 +1,17 @@
 # @sap-ux/control-property-editor
 
+## 1.0.3
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+
+## 1.0.2
+
+### Patch Changes
+
+- 3506d2c: fix: i18n translations not loading after ESM migration
+
 ## 1.0.1
 
 ### Patch Changes

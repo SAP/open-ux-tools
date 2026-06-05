@@ -14,9 +14,9 @@ jest.unstable_mockModule('../src/commands', () => ({
     executeNpmUI5VersionsCmd: mockExecuteNpmUI5VersionsCmd
 }));
 
-const { ui5VersionRequestInfo, ui5VersionsCache } = await import('../src/constants');
-const { getLatestUI5Version, getUI5Versions } = await import('../src/ui5-version-info');
-const { defaultUi5Versions } = await import('../src/ui5-version-fallback');
+const { ui5VersionRequestInfo, ui5VersionsCache } = await import('../src/constants.js');
+const { getLatestUI5Version, getUI5Versions } = await import('../src/ui5-version-info.js');
+const { defaultUi5Versions } = await import('../src/ui5-version-fallback.js');
 
 const snapshotVersionsHost = 'http://ui5.versions.snapshots';
 

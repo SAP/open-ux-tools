@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const testDirname = dirname(fileURLToPath(import.meta.url));
 
-const mockSpawn = jest.fn();
+const mockSpawn = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('promisify-child-process', () => ({
     spawn: mockSpawn

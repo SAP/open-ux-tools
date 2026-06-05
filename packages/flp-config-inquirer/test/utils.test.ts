@@ -3,7 +3,7 @@ import { jest } from '@jest/globals';
 // Pre-import real module before mocking to avoid missing export errors
 const realAdpTooling = await import('@sap-ux/adp-tooling');
 
-const mockFlpConfigurationExists = jest.fn();
+const mockFlpConfigurationExists = jest.fn<typeof realAdpTooling.flpConfigurationExists>();
 
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     ...realAdpTooling,
@@ -11,9 +11,9 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
 }));
 
 const adpTooling = await import('@sap-ux/adp-tooling');
-const { getAdpFlpConfigPromptOptions, getAdpFlpInboundsWriterConfig } = await import('../src/utils');
-const { tileActions } = await import('../src/types');
-import type { TileSettingsAnswers, FLPConfigAnswers } from '../src/types';
+const { getAdpFlpConfigPromptOptions, getAdpFlpInboundsWriterConfig } = await import('../src/utils.js');
+const { tileActions } = await import('../src/types.js');
+import type { TileSettingsAnswers, FLPConfigAnswers } from '../src/types.js';
 import type { DescriptorVariant } from '@sap-ux/adp-tooling';
 
 describe('utils', () => {

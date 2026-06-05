@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockTraceChanges = jest.fn();
+const mockTraceChanges = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/trace', () => ({
     traceChanges: mockTraceChanges
 }));
@@ -36,7 +36,7 @@ jest.unstable_mockModule('../../../../src/validation/validation', () => ({
     hasFileDeletes: jest.fn()
 }));
 
-const mockGeneratePreviewFiles = jest.fn();
+const mockGeneratePreviewFiles = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/preview-middleware', () => ({
     generatePreviewFiles: mockGeneratePreviewFiles
 }));
@@ -71,7 +71,7 @@ jest.unstable_mockModule('mem-fs-editor', () => ({
     }
 }));
 
-const { addAddHtmlFilesCmd } = await import('../../../../src/cli/add/html');
+const { addAddHtmlFilesCmd } = await import('../../../../src/cli/add/html.js');
 
 const testArgv = (args: string[]) => ['', '', 'html', appRoot, ...args];
 

@@ -3,9 +3,9 @@ import { fileURLToPath } from 'node:url';
 import { rmSync } from 'node:fs';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Ui5App } from '../src';
-import { generate, isTypescriptEnabled, enableTypescript } from '../src';
-import { updatePackageJSONDependencyToUseLocalPath } from './common';
+import type { Ui5App } from '../src/index.js';
+import { generate, isTypescriptEnabled, enableTypescript } from '../src/index.js';
+import { updatePackageJSONDependencyToUseLocalPath } from './common.js';
 
 describe('UI5 templates', () => {
     const fs = create(createStorage());

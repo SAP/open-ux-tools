@@ -9,10 +9,10 @@ const realProjectAccess = await import('@sap-ux/project-access');
 const realAbapInquirer = await import('@sap-ux/abap-deploy-config-inquirer');
 const realFioriGeneratorShared = await import('@sap-ux/fiori-generator-shared');
 
-const mockIsAppStudio = jest.fn();
-const mockReadUi5Yaml = jest.fn();
-const mockGetPrompts = jest.fn();
-const mockGetHostEnvironment = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockReadUi5Yaml = jest.fn<typeof realProjectAccess.readUi5Yaml>();
+const mockGetPrompts = jest.fn<typeof realAbapInquirer.getPrompts>();
+const mockGetHostEnvironment = jest.fn<typeof realFioriGeneratorShared.getHostEnvironment>();
 
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils,

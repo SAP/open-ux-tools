@@ -1,7 +1,7 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Manifest } from '../../../src';
-import { getRelativeI18nPropertiesPaths, getI18nPropertiesPaths } from '../../../src/project/i18n/i18n';
+import type { Manifest } from '../../../src/index.js';
+import { getRelativeI18nPropertiesPaths, getI18nPropertiesPaths } from '../../../src/project/i18n/i18n.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

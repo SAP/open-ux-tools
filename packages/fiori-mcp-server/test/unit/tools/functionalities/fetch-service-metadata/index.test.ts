@@ -1,6 +1,6 @@
-import fetchServiceMetadata from '../../../../../src/tools/functionalities/fetch-service-metadata';
-import details from '../../../../../src/tools/functionalities/fetch-service-metadata/details';
-import executeFunctionality from '../../../../../src/tools/functionalities/fetch-service-metadata/execute-functionality';
+import fetchServiceMetadata from '../../../../../src/tools/functionalities/fetch-service-metadata/index.js';
+import details from '../../../../../src/tools/functionalities/fetch-service-metadata/details.js';
+import executeFunctionality from '../../../../../src/tools/functionalities/fetch-service-metadata/execute-functionality.js';
 
 describe('fetch-service-metadata index', () => {
     test('should export functionality with correct structure', () => {

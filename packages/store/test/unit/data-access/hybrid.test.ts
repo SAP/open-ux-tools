@@ -27,8 +27,8 @@ jest.unstable_mockModule('../../../src/secure-store', () => ({
     getSecureStore: jest.fn().mockReturnValue(mockSecureStore)
 }));
 
-const { sensitiveData, serializable } = await import('../../../src/decorators');
-const { getHybridStore } = await import('../../../src/data-access/hybrid');
+const { sensitiveData, serializable } = await import('../../../src/decorators/index.js');
+const { getHybridStore } = await import('../../../src/data-access/hybrid.js');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 
 class HasOnlyOrdinaryProps {

@@ -1,12 +1,12 @@
 import { jest } from '@jest/globals';
 import * as path from 'node:path';
 
-const mockReadFile = jest.fn();
-const mockMkdir = jest.fn();
-const mockWriteFile = jest.fn();
-const mockReaddir = jest.fn();
-const mockStat = jest.fn();
-const mockSpawn = jest.fn();
+const mockReadFile = jest.fn() as jest.Mock;
+const mockMkdir = jest.fn() as jest.Mock;
+const mockWriteFile = jest.fn() as jest.Mock;
+const mockReaddir = jest.fn() as jest.Mock;
+const mockStat = jest.fn() as jest.Mock;
+const mockSpawn = jest.fn() as jest.Mock;
 const mockReadline = {
     createInterface: jest.fn()
 };
@@ -18,7 +18,7 @@ const mockLogger = {
     debug: jest.fn()
 };
 
-const mockXMLParserParse = jest.fn();
+const mockXMLParserParse = jest.fn() as jest.Mock;
 const MockXMLParser = jest.fn().mockImplementation(() => ({
     parse: mockXMLParserParse
 }));
@@ -52,7 +52,7 @@ describe('FpmDocumentationBuilder', () => {
         process.env.GITHUB_HOST = 'github.test.com';
         process.env.GITHUB_TOKEN = 'test-token';
 
-        const module = await import('../src/scripts/build-local-docs');
+        const module = await import('../src/scripts/build-local-docs.js');
         FpmDocumentationBuilder = (module as any).FpmDocumentationBuilder;
     });
 

@@ -1,7 +1,7 @@
-import { TelemetrySettings } from '../../src/base/config-state';
-import { logTelemetry, logTelemetryAsync } from '../../src/base/decorator';
-import { EventName, InterceptorTypes, SampleRate, ParamRecordConfig } from '../../src';
-import { ClientFactory } from '../../src/base/client';
+import { TelemetrySettings } from '../../src/base/config-state.js';
+import { logTelemetry, logTelemetryAsync } from '../../src/base/decorator/index.js';
+import { EventName, InterceptorTypes, SampleRate, ParamRecordConfig } from '../../src/index.js';
+import { ClientFactory } from '../../src/base/client/index.js';
 import { promisify } from 'node:util';
 
 describe('Decorator Tests', () => {
