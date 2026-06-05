@@ -1,19 +1,19 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import * as Input from '../types/input';
-import * as Output from '../types/output';
-import { convertToSchema } from '../utils';
-import { generatorConfigODataJson, generatorConfigCAPJson } from './schemas';
+import * as Input from '../types/input.js';
+import * as Output from '../types/output.js';
+import { convertToSchema } from '../utils/index.js';
+import { generatorConfigODataJson, generatorConfigCAPJson } from './schemas/index.js';
 
-export { docSearch } from './hybrid-search';
-export type { SearchResponseData } from './hybrid-search';
-export { listFioriApps } from './list-fiori-apps';
-export { listFunctionalities } from './list-functionalities';
-export { getFunctionalityDetails } from './get-functionality-details';
-export { executeFunctionality } from './execute-functionality';
-export { listSapSystems } from './list-sap-systems';
-export { downloadODataServiceMetadata } from './download-odata-service-metadata';
-export { generateFioriAppOData } from './generate-fiori-app-odata';
-export { generateFioriAppCap } from './generate-fiori-app-cap';
+export { docSearch } from './hybrid-search.js';
+export type { SearchResponseData } from './hybrid-search.js';
+export { listFioriApps } from './list-fiori-apps.js';
+export { listFunctionalities } from './list-functionalities.js';
+export { getFunctionalityDetails } from './get-functionality-details.js';
+export { executeFunctionality } from './execute-functionality.js';
+export { listSapSystems } from './list-sap-systems.js';
+export { downloadODataServiceMetadata } from './download-odata-service-metadata.js';
+export { generateFioriAppOData } from './generate-fiori-app-odata.js';
+export { generateFioriAppCap } from './generate-fiori-app-cap.js';
 
 export const tools = [
     {

@@ -1,7 +1,7 @@
-import type { ExecuteFunctionalityOutput } from '../types';
-import executeOData from './functionalities/generate-fiori-ui-application/execute-functionality';
-import { generatorConfigOData } from './schemas';
-import { GENERATE_FIORI_UI_APPLICATION_ID } from '../constant';
+import type { ExecuteFunctionalityOutput } from '../types/index.js';
+import executeOData from './functionalities/generate-fiori-ui-application/execute-functionality.js';
+import { generatorConfigOData } from './schemas/index.js';
+import { GENERATE_FIORI_UI_APPLICATION_ID } from '../constant.js';
 
 /**
  * Generates a new SAP Fiori UI application for OData (non-CAP) projects.

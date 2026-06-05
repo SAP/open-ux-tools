@@ -1,7 +1,12 @@
-import { listSapSystems } from '../../../src/tools/list-sap-systems';
-import * as serviceMetadata from '../../../src/tools/functionalities/fetch-service-metadata/service-metadata';
+import { jest } from '@jest/globals';
 
-jest.mock('../../../src/tools/functionalities/fetch-service-metadata/service-metadata');
+const mockGetSapSystems = jest.fn<any>();
+
+jest.unstable_mockModule('../../../src/tools/functionalities/fetch-service-metadata/service-metadata', () => ({
+    getSapSystems: mockGetSapSystems
+}));
+
+const { listSapSystems } = await import('../../../src/tools/list-sap-systems.js');
 
 describe('listSapSystems', () => {
     beforeEach(() => {
@@ -13,7 +18,7 @@ describe('listSapSystems', () => {
             { name: 'SystemA', url: 'https://system-a.example.com', client: '100', username: 'user', password: 'pass' },
             { name: 'SystemB', url: 'https://system-b.example.com', client: '200' }
         ];
-        (serviceMetadata.getSapSystems as jest.Mock).mockResolvedValue(mockSystems);
+        mockGetSapSystems.mockResolvedValue(mockSystems);
 
         const result = await listSapSystems();
 
@@ -26,7 +31,7 @@ describe('listSapSystems', () => {
     });
 
     test('should return empty systems array when no systems are stored', async () => {
-        (serviceMetadata.getSapSystems as jest.Mock).mockResolvedValue([]);
+        mockGetSapSystems.mockResolvedValue([]);
 
         const result = await listSapSystems();
 
@@ -34,7 +39,7 @@ describe('listSapSystems', () => {
     });
 
     test('should propagate errors from getSapSystems', async () => {
-        (serviceMetadata.getSapSystems as jest.Mock).mockRejectedValue(new Error('Store unavailable'));
+        mockGetSapSystems.mockRejectedValue(new Error('Store unavailable'));
 
         await expect(listSapSystems()).rejects.toThrow('Store unavailable');
     });
@@ -43,7 +48,7 @@ describe('listSapSystems', () => {
         const mockSystems = [
             { name: 'Sys', url: 'https://example.com', client: '010', username: 'admin', password: 'secret' }
         ];
-        (serviceMetadata.getSapSystems as jest.Mock).mockResolvedValue(mockSystems);
+        mockGetSapSystems.mockResolvedValue(mockSystems);
 
         const result = (await listSapSystems()) as { systems: object[] };
 

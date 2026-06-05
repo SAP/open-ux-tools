@@ -1,6 +1,6 @@
-import type { ExecuteFunctionalityOutput, DownloadODataServiceMetadataInput } from '../types';
-import executeFetchServiceMetadata from './functionalities/fetch-service-metadata/execute-functionality';
-import { FETCH_SERVICE_METADATA_ID } from '../constant';
+import type { ExecuteFunctionalityOutput, DownloadODataServiceMetadataInput } from '../types/index.js';
+import executeFetchServiceMetadata from './functionalities/fetch-service-metadata/execute-functionality.js';
+import { FETCH_SERVICE_METADATA_ID } from '../constant.js';
 
 /**
  * Downloads OData service metadata from a SAP system and saves it as metadata.xml.

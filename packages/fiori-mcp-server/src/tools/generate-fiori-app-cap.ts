@@ -1,7 +1,7 @@
-import type { ExecuteFunctionalityOutput } from '../types';
-import { command } from './functionalities/generate-fiori-ui-application-cap/command';
-import { generatorConfigCAP } from './schemas';
-import { GENERATE_FIORI_UI_APPLICATION_CAP_ID } from '../constant';
+import type { ExecuteFunctionalityOutput } from '../types/index.js';
+import { command } from './functionalities/generate-fiori-ui-application-cap/command.js';
+import { generatorConfigCAP } from './schemas/index.js';
+import { GENERATE_FIORI_UI_APPLICATION_CAP_ID } from '../constant.js';
 
 /**
  * Generates a new SAP Fiori UI application within an existing CAP project.
