@@ -172,8 +172,7 @@ const onnxNodeWasmPlugin = {
             // onnxruntime-web without it being a direct dep of this package.
             contents: [
                 `const ort = require(${JSON.stringify(ortWebNodeEntry)});`,
-                // Point the WASM factory at dist/ — the .wasm and .mjs files are
-                // copied there in Step 4. __dirname in the bundle resolves to dist/.
+                `if (!ort.env?.wasm) throw new Error('onnxruntime-web: env.wasm not available');`,
                 `ort.env.wasm.wasmPaths = __dirname + '/';`,
                 // Override the ORT global so transformers uses WASM on Node.js.
                 `globalThis[Symbol.for('onnxruntime')] = ort;`,
@@ -286,7 +285,11 @@ for (const wasmFile of [
         fs.copyFileSync(src, path.join(DIST, wasmFile));
         console.log(`✓ Copied ${wasmFile}`);
     } else {
-        console.warn(`⚠ WASM file not found: ${wasmFile}`);
+        const msg = `⚠ WASM file not found: ${wasmFile}`;
+        if (wasmFile.endsWith('.wasm')) {
+            throw new Error(msg);
+        }
+        console.warn(msg);
     }
 }
 
