@@ -1,7 +1,12 @@
-import { downloadODataServiceMetadata } from '../../../src/tools/download-odata-service-metadata';
-import * as executeFetchServiceMetadata from '../../../src/tools/functionalities/fetch-service-metadata/execute-functionality';
+import { jest } from '@jest/globals';
 
-jest.mock('../../../src/tools/functionalities/fetch-service-metadata/execute-functionality');
+const mockExecuteDefault = jest.fn<any>();
+
+jest.unstable_mockModule('../../../src/tools/functionalities/fetch-service-metadata/execute-functionality', () => ({
+    default: mockExecuteDefault
+}));
+
+const { downloadODataServiceMetadata } = await import('../../../src/tools/download-odata-service-metadata.js');
 
 describe('downloadODataServiceMetadata', () => {
     const mockAppPath = '/test/project';
@@ -23,7 +28,7 @@ describe('downloadODataServiceMetadata', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        (executeFetchServiceMetadata.default as jest.Mock).mockResolvedValue(mockResult);
+        mockExecuteDefault.mockResolvedValue(mockResult);
     });
 
     test('should call execute function with mapped params when sapSystemQuery provided', async () => {
@@ -33,7 +38,7 @@ describe('downloadODataServiceMetadata', () => {
             appPath: mockAppPath
         });
 
-        expect(executeFetchServiceMetadata.default).toHaveBeenCalledWith({
+        expect(mockExecuteDefault).toHaveBeenCalledWith({
             functionalityId: 'fetch-service-metadata',
             parameters: { sapSystemQuery: 'TestSystem', servicePath: mockServicePath },
             appPath: mockAppPath
@@ -47,7 +52,7 @@ describe('downloadODataServiceMetadata', () => {
             appPath: mockAppPath
         });
 
-        expect(executeFetchServiceMetadata.default).toHaveBeenCalledWith({
+        expect(mockExecuteDefault).toHaveBeenCalledWith({
             functionalityId: 'fetch-service-metadata',
             parameters: { sapSystemQuery: undefined, servicePath: mockServicePath },
             appPath: mockAppPath
@@ -55,7 +60,7 @@ describe('downloadODataServiceMetadata', () => {
     });
 
     test('should propagate errors from execute function', async () => {
-        (executeFetchServiceMetadata.default as jest.Mock).mockRejectedValue(new Error('Network error'));
+        mockExecuteDefault.mockRejectedValue(new Error('Network error'));
 
         await expect(
             downloadODataServiceMetadata({ servicePath: mockServicePath, appPath: mockAppPath })
