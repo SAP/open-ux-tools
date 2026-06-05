@@ -216,13 +216,14 @@ function sortPageAggregationChildren(pageElement: Node): void {
     // Separate leading template comment (first comment node) from element children
     const leadingComment = allChildren.find((n) => n.nodeType === 8 /* Comment */);
     const elementChildren = allChildren.filter((n) => n.nodeType === 1 /* Element */) as Element[];
+    const aggNames = PAGE_AGGREGATIONS as readonly string[];
     const sorted = [...elementChildren].sort((a, b) => {
-        const aLocalName = a.localName as string;
-        const bLocalName = b.localName as string;
-        const aIdx = PAGE_AGGREGATIONS.indexOf(aLocalName as PageAggregationName);
-        const bIdx = PAGE_AGGREGATIONS.indexOf(bLocalName as PageAggregationName);
-        const aPosition = aIdx === -1 ? PAGE_AGGREGATIONS.length : aIdx;
-        const bPosition = bIdx === -1 ? PAGE_AGGREGATIONS.length : bIdx;
+        const aName = typeof a.localName === 'string' ? a.localName : '';
+        const bName = typeof b.localName === 'string' ? b.localName : '';
+        const aIdx = aggNames.indexOf(aName);
+        const bIdx = aggNames.indexOf(bName);
+        const aPosition = aIdx === -1 ? aggNames.length : aIdx;
+        const bPosition = bIdx === -1 ? aggNames.length : bIdx;
         return aPosition - bPosition;
     });
     while (pageElement.firstChild) {
@@ -266,7 +267,7 @@ export async function appendPageBBAggregation(
     const aggContext = { macrosPrefix, mContent };
 
     const aggPath = getTemplatePath(`/building-block/page/${aggName}.xml`);
-    const aggContent = render(fs.read(aggPath), aggContext, {});
+    const aggContent = render(fs.read(aggPath), aggContext, {}); // NOSONAR - template is a controlled file on disk, not user input
     const mNsDecl = fragMNS ? `xmlns:${fragMNS}="sap.m"` : `xmlns="sap.m"`;
     const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" ${mNsDecl}>${aggContent}</root>`;
 
