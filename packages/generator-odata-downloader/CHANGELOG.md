@@ -1,5 +1,25 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.7
+
+### Patch Changes
+
+- 78f39f4: revert odata-downloader to cjs
+
+## 0.3.6
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/fiori-generator-shared@1.0.6
+    - @sap-ux/inquirer-common@1.0.6
+    - @sap-ux/mockserver-config-writer@1.0.5
+    - @sap-ux/odata-service-inquirer@3.0.6
+    - @sap-ux/odata-service-writer@1.0.5
+    - @sap-ux/telemetry@1.0.6
+
 ## 0.3.5
 
 ### Patch Changes
