@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import type { ConfigAnswers, SourceApplication, CfServicesAnswers } from '@sap-ux/adp-tooling';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
 
 const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
@@ -18,7 +18,7 @@ const {
     showInternalQuestions,
     showBusinessSolutionNameQuestion,
     showStoreCredentialsQuestion
-} = await import('../../../../src/app/questions/helper/conditions');
+} = await import('../../../../src/app/questions/helper/conditions.js');
 
 describe('showApplicationQuestion', () => {
     it('should return true when system is provided, no authentication is required, and login is successful', () => {

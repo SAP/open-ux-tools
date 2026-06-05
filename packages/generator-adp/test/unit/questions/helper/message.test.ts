@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
 
 const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
@@ -8,8 +8,8 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: mockIsAppStudio
 }));
 
-const { initI18n, t } = await import('../../../../src/utils/i18n');
-const { getExtProjectMessage } = await import('../../../../src/app/questions/helper/message');
+const { initI18n, t } = await import('../../../../src/utils/i18n.js');
+const { getExtProjectMessage } = await import('../../../../src/app/questions/helper/message.js');
 
 describe('getExtProjectMessage', () => {
     beforeAll(async () => {

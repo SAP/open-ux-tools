@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import type { Logger } from '@sap-ux/logger';
 
 const { keyring } = await import('@zowe/secrets-for-zowe-sdk');
-const { KeyStoreManager } = await import('../../../src/secure-store/key-store');
+const { KeyStoreManager } = await import('../../../src/secure-store/key-store.js');
 
 describe('KeyStoreManager', () => {
     const log: Logger = {

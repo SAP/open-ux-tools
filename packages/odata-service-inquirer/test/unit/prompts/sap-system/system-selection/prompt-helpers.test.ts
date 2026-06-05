@@ -42,7 +42,7 @@ const mockGetService = jest.fn().mockImplementation(() => ({
         const system = backendSystems.find((s) => s.url === key.url);
         return Promise.resolve(system);
     }),
-    partialUpdate: jest.fn().mockImplementation((system: BackendSystem) => {
+    partialUpdate: jest.fn().mockImplementation((system) => {
         return Promise.resolve(system);
     })
 }));

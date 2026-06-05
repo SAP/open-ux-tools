@@ -32,7 +32,7 @@ jest.unstable_mockModule('@sap-ux/edmx-parser', () => ({
 }));
 
 const { findSapSystem, getServiceMetadata } =
-    await import('../../../../../src/tools/functionalities/fetch-service-metadata/service-metadata');
+    await import('../../../../../src/tools/functionalities/fetch-service-metadata/service-metadata.js');
 
 describe('service-metadata', () => {
     let mockGetAll: jest.Mock;

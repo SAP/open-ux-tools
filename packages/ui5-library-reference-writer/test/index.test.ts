@@ -1,5 +1,5 @@
-import { reuseLibs } from './test-input/libs';
-import { generate } from '../src/index';
+import { reuseLibs } from './test-input/libs.js';
+import { generate } from '../src/index.js';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';

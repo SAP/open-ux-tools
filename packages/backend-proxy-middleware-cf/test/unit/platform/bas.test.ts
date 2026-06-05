@@ -10,7 +10,7 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     exposePort: mockExposePort
 }));
 
-const { fetchBasUrlTemplate, resolveBasExternalUrl } = await import('../../../src/platform/bas');
+const { fetchBasUrlTemplate, resolveBasExternalUrl } = await import('../../../src/platform/bas.js');
 
 describe('bas', () => {
     const logger = { info: jest.fn(), error: jest.fn(), debug: jest.fn(), warn: jest.fn() };

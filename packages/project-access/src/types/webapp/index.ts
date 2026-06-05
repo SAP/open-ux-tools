@@ -1,8 +1,10 @@
-// Re-export the entire namespace for backwards compatibility
-export type * as ManifestNamespace from '@ui5/manifest';
+// `@ui5/manifest` only ships `types/manifest.d.ts` and has no `exports`/`main`/`types` field,
+// so under NodeNext we deep-import it. The `.js` extension is required by NodeNext
+// for relative-style subpath imports — TS maps it to the sibling `.d.ts` at type-check time.
+import type * as ManifestNamespace from '@ui5/manifest/types/manifest.js';
 
-// Re-export commonly used types
-export type { SAPJSONSchemaForWebApplicationManifestFile as Manifest } from '@ui5/manifest';
+export type { ManifestNamespace };
+export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile;
 
 export interface AnnotationFile {
     dataSourceUri: string;

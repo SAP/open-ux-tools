@@ -6,7 +6,7 @@ import { type BackendSystem } from '@sap-ux/store';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
 // Mock SystemService
-const mockSystemServiceRead = jest.fn();
+const mockSystemServiceRead = jest.fn<typeof actualStore.read>();
 const actualStore = await import('@sap-ux/store');
 jest.unstable_mockModule('@sap-ux/store', () => ({
     ...actualStore,

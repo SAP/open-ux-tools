@@ -25,7 +25,7 @@ jest.unstable_mockModule('node:fs/promises', () => ({
     readFile: mockReadFile
 }));
 
-const { getFlexChangeLayer } = await import('../../../src/page-editor-api/project');
+const { getFlexChangeLayer } = await import('../../../src/page-editor-api/project.js');
 
 describe('project', () => {
     describe('Test getFlexChangeLayer()', () => {

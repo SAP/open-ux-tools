@@ -1,12 +1,12 @@
 import { jest } from '@jest/globals';
-import type { CapRuntime, CapServiceCdsInfo } from '../../../src';
+import type { CapRuntime, CapServiceCdsInfo } from '../../../src/index.js';
 import memFs from 'mem-fs';
 import editor, { type Editor } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Package } from '@sap-ux/project-access';
 
-const mockGetCdsVersionInfo = jest.fn();
+const mockGetCdsVersionInfo = jest.fn() as jest.Mock;
 const mockSatisfiesMinCdsVersion = jest.fn().mockReturnValue(true);
 const mockCheckCdsUi5PluginEnabled = jest.fn<(...args: unknown[]) => Promise<boolean>>().mockResolvedValue(false);
 const mockGetCapCustomPaths = jest
@@ -54,7 +54,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
         DotGitIgnore: '.gitignore',
         MtaExtYaml: 'mta-ext.mtaext'
     },
-    MinCdsPluginUi5Version: '0.13.0',
+    MinCdsPluginUi5Version: '0.17.0',
     MinCdsVersion: '6.8.2',
     getCdsVersionInfo: mockGetCdsVersionInfo,
     satisfiesMinCdsVersion: mockSatisfiesMinCdsVersion,
@@ -66,7 +66,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     hasDependency: mockHasDependency
 }));
 
-const { updateRootPackageJson, updateAppPackageJson } = await import('../../../src/cap-writer/package-json');
+const { updateRootPackageJson, updateAppPackageJson } = await import('../../../src/cap-writer/package-json.js');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -150,7 +150,7 @@ describe('Writing/package json files', () => {
         const devDependencies = packageJson.devDependencies;
         const scripts = packageJson.scripts;
         expect(devDependencies).toEqual({
-            'cds-plugin-ui5': '^0.13.0'
+            'cds-plugin-ui5': '^0.17.0'
         });
         expect(scripts?.['watch-test-cap-package-sapux']).toBeDefined();
         expect(scripts?.['watch-test-cap-package-sapux']).toEqual(

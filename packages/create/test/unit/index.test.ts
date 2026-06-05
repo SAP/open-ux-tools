@@ -2,7 +2,7 @@ test('Check if loading main index file executes cli, should throw error due to i
     const argv = process.argv;
     process.argv = [];
     try {
-        await import('../../src/index');
+        await import('../../src/index.js');
         process.argv = argv;
         fail('Expected import to throw');
     } catch (error) {

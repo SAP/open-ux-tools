@@ -32,7 +32,7 @@ jest.unstable_mockModule('node:fs', () => ({
     ...actualFs,
     readFileSync: jest
         .fn()
-        .mockImplementation((path: string) =>
+        .mockImplementation((path) =>
             path === serviceKeyFilePath ? JSON.stringify(serviceInfoMock) : unparseableServiceKey
         )
 }));

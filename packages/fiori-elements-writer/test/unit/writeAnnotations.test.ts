@@ -4,7 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 import { TemplateType } from '../../src/types.js';
 
-const mockGenerateAnnotations = jest.fn();
+const mockGenerateAnnotations = jest.fn() as jest.Mock;
 const mockGetCapFolderPathsSync = jest.fn().mockReturnValue({ app: '/mock/app/path' });
 
 jest.unstable_mockModule('@sap-ux/annotation-generator', () => ({

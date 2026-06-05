@@ -1,5 +1,19 @@
 # @sap-ux-private/playwright
 
+## 1.0.2
+
+### Patch Changes
+
+- d2b8d7b: chore: upgrade @playwright/test 1.58.2 → 1.60.0
+
+## 1.0.1
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/logger@1.0.1
+
 ## 1.0.0
 
 ### Major Changes

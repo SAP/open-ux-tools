@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { fetchMock } from 'mock/window';
 import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
@@ -57,7 +58,7 @@ describe('context-menu-service', () => {
 
     beforeEach(() => {
         sendActionMock = jest.fn();
-        subscribeMock = jest.fn<void, [ActionHandler]>();
+        subscribeMock = jest.fn<(handler: ActionHandler) => void>();
         fetchMock.mockRestore();
     });
     test('executeContextMenuAction - default plugin', async () => {

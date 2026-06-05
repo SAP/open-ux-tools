@@ -1,9 +1,10 @@
+import { jest } from '@jest/globals';
 import { sapCoreMock } from 'mock/window';
 import type Element from 'sap/ui/core/Element';
 import ManagedObjectMock from 'mock/sap/ui/base/ManagedObject';
 import type View from 'sap/ui/core/mvc/View';
 import type Component from 'sap/ui/core/Component';
-import { isA, isManagedObject, findViewByControl, getControlBySelector } from '../../../src/utils/core';
+import { isA, isManagedObject, findViewByControl, getControlBySelector } from '../../../src/utils/core.js';
 import JsControlTreeModifierMock from 'mock/sap/ui/core/util/reflection/JsControlTreeModifier';
 import Log from 'mock/sap/base/Log';
 
@@ -28,7 +29,7 @@ describe('ui5Utils', () => {
                 __esModule: true
             }));
 
-            const { getComponent } = await import('../../../src/utils/core');
+            const { getComponent } = await import('../../../src/utils/core.js');
             const component = getComponent(testComponent.id);
 
             expect(sapCoreMock.getComponent).toHaveBeenCalledWith(testComponent.id);
@@ -43,7 +44,7 @@ describe('ui5Utils', () => {
                 default: Component,
                 __esModule: true
             }));
-            const { getComponent } = await import('../../../src/utils/core');
+            const { getComponent } = await import('../../../src/utils/core.js');
             const component = getComponent(testComponent.id);
 
             expect(Component.get).toHaveBeenCalledWith(testComponent.id);
@@ -61,7 +62,7 @@ describe('ui5Utils', () => {
                 __esModule: true
             }));
 
-            const { getComponent } = await import('../../../src/utils/core');
+            const { getComponent } = await import('../../../src/utils/core.js');
             const component = getComponent(testComponent.id);
 
             expect(Component.getComponentById).toHaveBeenCalledWith(testComponent.id);
@@ -89,7 +90,7 @@ describe('isManagedObject', () => {
 describe('isA', () => {
     test('calls "isA" on ManagedObject', () => {
         const managedObject = new ManagedObjectMock();
-        const spy = jest.spyOn(managedObject, 'isA').mockImplementation((type: string | string[]) => {
+        const spy = jest.spyOn(managedObject, 'isA').mockImplementation((type) => {
             return type === 'sap.ui.base.ManagedObject';
         });
         expect(isA('sap.ui.base.ManagedObject', managedObject)).toBe(true);
@@ -118,7 +119,7 @@ describe('findViewByControl', () => {
         const mockView = new ManagedObjectMock() as unknown as View;
         const viewIsASpy = jest
             .spyOn(mockView, 'isA')
-            .mockImplementation((type: string | string[]) => type === 'sap.ui.core.mvc.View');
+            .mockImplementation((type) => type === 'sap.ui.core.mvc.View');
         mockView.getViewName = jest.fn().mockReturnValue('TestView');
 
         // Create a mock parent (parent of the control)

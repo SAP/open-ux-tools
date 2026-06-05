@@ -1,15 +1,15 @@
 import { jest } from '@jest/globals';
 import type { CSDL, CSDLAnnotations } from '@sap-ux/vocabularies/CSDL';
-import type * as VocabulariesType from '../../tools/update';
+import type * as VocabulariesType from '../../tools/update.js';
 
-const mockAxiosGet = jest.fn();
+const mockAxiosGet = jest.fn() as jest.Mock;
 jest.unstable_mockModule('axios', () => ({
     default: { get: mockAxiosGet },
     __esModule: true
 }));
 
-const mockMkdir = jest.fn();
-const mockWriteFile = jest.fn();
+const mockMkdir = jest.fn() as jest.Mock;
+const mockWriteFile = jest.fn() as jest.Mock;
 jest.unstable_mockModule('fs/promises', () => ({
     default: { mkdir: mockMkdir, writeFile: mockWriteFile },
     mkdir: mockMkdir,
@@ -17,8 +17,8 @@ jest.unstable_mockModule('fs/promises', () => ({
     __esModule: true
 }));
 
-const mockFormat = jest.fn();
-const mockResolveConfig = jest.fn();
+const mockFormat = jest.fn() as jest.Mock;
+const mockResolveConfig = jest.fn() as jest.Mock;
 jest.unstable_mockModule('prettier', () => ({
     default: { format: mockFormat, resolveConfig: mockResolveConfig },
     format: mockFormat,
@@ -26,7 +26,7 @@ jest.unstable_mockModule('prettier', () => ({
     __esModule: true
 }));
 
-const Vocabularies = await import('../../tools/update');
+const Vocabularies = await import('../../tools/update.js');
 const { join } = await import('node:path');
 
 describe('vocabularies', () => {

@@ -10,7 +10,7 @@ const mockTryAddPropertiesTexts = jest.fn<(...args: any[]) => Promise<boolean>>(
 const mockTryAddCsvTexts = jest.fn<(...args: any[]) => Promise<boolean>>();
 
 // Get real utils for pass-through
-const realUtils = await import('../../../../src/utils/index');
+const realUtils = await import('../../../../src/utils/index.js');
 
 // Mock the utils module
 jest.unstable_mockModule('../../../../src/utils', () => ({
@@ -55,7 +55,7 @@ jest.unstable_mockModule('../../../../src/write/cap/csv', () => ({
 }));
 
 // Import after mocking
-const { createCapI18nEntries } = await import('../../../../src/write/cap/create');
+const { createCapI18nEntries } = await import('../../../../src/write/cap/create.js');
 
 describe('createCapI18nEntries', () => {
     const env = Object.freeze({

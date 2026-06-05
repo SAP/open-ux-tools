@@ -1,5 +1,5 @@
-import { getDefaultLaunchConfigOptionsForProject } from '../../src';
-import { TestPaths } from '../test-data/utils';
+import { getDefaultLaunchConfigOptionsForProject } from '../../src/index.js';
+import { TestPaths } from '../test-data/utils.js';
 import type { Logger } from '@sap-ux/logger';
 
 interface Mock {

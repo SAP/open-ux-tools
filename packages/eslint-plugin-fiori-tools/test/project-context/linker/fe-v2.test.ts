@@ -5,14 +5,14 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import type { FoundFioriArtifacts, Manifest } from '@sap-ux/project-access';
 import { findFioriArtifacts, normalizePath } from '@sap-ux/project-access';
 
-import type { FeV2ListReport, FeV2ObjectPage, LinkedFeV2App } from '../../../src/project-context/linker/fe-v2';
-import { runFeV2Linker } from '../../../src/project-context/linker/fe-v2';
-import type { LinkerContext } from '../../../src/project-context/linker/types';
-import { ApplicationParser } from '../../../src/project-context/parser';
-import type { ManifestChange } from '../../test-helper';
-import { applyManifestChange, applyXmlAnnotationsChange } from '../../test-helper';
-import { getParsedServiceByName } from '../../../src/project-context/utils';
-import { collectSections } from '../../../src/project-context/linker/annotations';
+import type { FeV2ListReport, FeV2ObjectPage, LinkedFeV2App } from '../../../src/project-context/linker/fe-v2.js';
+import { runFeV2Linker } from '../../../src/project-context/linker/fe-v2.js';
+import type { LinkerContext } from '../../../src/project-context/linker/types.js';
+import { ApplicationParser } from '../../../src/project-context/parser/index.js';
+import type { ManifestChange } from '../../test-helper.js';
+import { applyManifestChange, applyXmlAnnotationsChange } from '../../test-helper.js';
+import { getParsedServiceByName } from '../../../src/project-context/utils.js';
+import { collectSections } from '../../../src/project-context/linker/annotations.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

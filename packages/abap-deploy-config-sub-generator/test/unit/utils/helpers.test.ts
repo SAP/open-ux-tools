@@ -4,9 +4,9 @@ import { jest } from '@jest/globals';
 const realBtpUtils = await import('@sap-ux/btp-utils');
 const realStore = await import('@sap-ux/store');
 
-const mockIsAppStudio = jest.fn();
-const mockListDestinations = jest.fn();
-const mockGetService = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockListDestinations = jest.fn<typeof realBtpUtils.listDestinations>();
+const mockGetService = jest.fn<typeof realStore.getService>();
 
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils,
@@ -19,8 +19,8 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     getService: mockGetService
 }));
 
-const { determineScpFromTarget, determineUrlFromDestination } = await import('../../../src/utils');
-const { determineS4HCFromTarget } = await import('../../../src/utils/helpers');
+const { determineScpFromTarget, determineUrlFromDestination } = await import('../../../src/utils/index.js');
+const { determineS4HCFromTarget } = await import('../../../src/utils/helpers.js');
 
 const mockDestinations = {
     Dest1: {

@@ -1,19 +1,19 @@
 import { jest } from '@jest/globals';
-import type { AbapServiceProvider } from '../../src';
-import type { ServiceInfo } from '../../src/auth';
+import type { AbapServiceProvider } from '../../src/index.js';
+import type { ServiceInfo } from '../../src/auth/index.js';
 import type { InternalAxiosRequestConfig } from 'axios';
 import { AxiosHeaders } from 'axios';
 import { WebIDEUsage as WebIDEUsageType, type Destination } from '@sap-ux/btp-utils';
-import type { ABAPVirtualHostProvider } from '../../src/auth/reentrance-ticket/abap-virtual-host-provider';
+import type { ABAPVirtualHostProvider } from '../../src/auth/reentrance-ticket/abap-virtual-host-provider.js';
 
 const mockGetReentranceTicket = jest.fn<any>();
 jest.unstable_mockModule('../../src/auth/reentrance-ticket', () => ({
     getReentranceTicket: mockGetReentranceTicket
 }));
 
-const { ServiceProvider } = await import('../../src/base/service-provider');
-const { createForDestination } = await import('../../src');
-const { attachUaaAuthInterceptor, getReentranceTicketAuthInterceptor } = await import('../../src/auth');
+const { ServiceProvider } = await import('../../src/base/service-provider.js');
+const { createForDestination } = await import('../../src/index.js');
+const { attachUaaAuthInterceptor, getReentranceTicketAuthInterceptor } = await import('../../src/auth/index.js');
 
 describe('getReentranceTicketAuthInterceptor', () => {
     const getReentranceTicketSpy = mockGetReentranceTicket;

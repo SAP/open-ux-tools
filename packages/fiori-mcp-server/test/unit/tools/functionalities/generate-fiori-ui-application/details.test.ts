@@ -1,4 +1,4 @@
-import details from '../../../../../src/tools/functionalities/generate-fiori-ui-application/details';
+import details from '../../../../../src/tools/functionalities/generate-fiori-ui-application/details.js';
 
 describe('generate-fiori-ui-application details', () => {
     test('should have correct functionalityId', () => {

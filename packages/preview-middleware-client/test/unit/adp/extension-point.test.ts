@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import Controller from 'mock/sap/ui/core/mvc/Controller';
 import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import type UI5Element from 'sap/ui/core/Element';
@@ -14,9 +15,9 @@ jest.unstable_mockModule('open/ux/preview/client/adp/utils', () => ({
     resetReuseComponentChecker: jest.fn()
 }));
 
-import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controller';
+import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controller.js';
 const { default: ExtensionPointService } = await import('open/ux/preview/client/adp/extension-point');
-type ExtensionPointInfo = import('../../../src/adp/extension-point').ExtensionPointInfo;
+type ExtensionPointInfo = import('../../../src/adp/extension-point.js').ExtensionPointInfo;
 
 describe('ExtensionPointService', () => {
     describe('fragmentHandler', () => {
