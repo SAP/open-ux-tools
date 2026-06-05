@@ -165,6 +165,8 @@ Searches SAP Fiori elements, Annotations, UI5, SAP Fiori tools documentation for
 
 Note: the results are based on the most recent indexed version of UI5 documentation
 
+> **First-use download:** `search_docs` uses a local text-embedding model (`all-MiniLM-L6-v2`, ~90 MB) for semantic search. The model is downloaded from HuggingFace Hub on first use and cached locally (location follows the `HF_HOME` / `TRANSFORMERS_CACHE` environment variables, defaulting to `~/.cache/huggingface/hub`). Subsequent starts load the model from the cache with no network access required.
+
 #### `list_fiori_apps`
 Scans a specified directory to find existing SAP Fiori applications that can be modified.
 
