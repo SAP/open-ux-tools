@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { adaptedUrl, normalizeAnnotationNode, normalizeUriInKey } from './raw-metadata-serializer';
-import { npmInstall, PROJECTS, V4_CDS_LATEST } from './projects';
+import { adaptedUrl, normalizeAnnotationNode, normalizeUriInKey } from './raw-metadata-serializer.js';
+import { npmInstall, PROJECTS, V4_CDS_LATEST } from './projects.js';
 
 // Mock @sap/ux-cds-compiler-facade so the spy intercepts calls inside annotation-provider.ts
 const realCdsModule = await import('@sap/ux-cds-compiler-facade');
@@ -15,7 +15,7 @@ jest.unstable_mockModule('@sap/ux-cds-compiler-facade', () => ({
 }));
 
 // Import AFTER mock is registered so annotation-provider.ts picks up the mocked module
-const { CdsAnnotationProvider, getXmlServiceArtifacts } = await import('../../src');
+const { CdsAnnotationProvider, getXmlServiceArtifacts } = await import('../../src/index.js');
 
 describe('annotation provider', () => {
     describe('xml', () => {

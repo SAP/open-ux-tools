@@ -27,7 +27,7 @@ const stubNpmModulesPlugin = {
     }));
 
     build.onLoad({ filter: /.*/, namespace: 'stub-npm-modules' }, () => ({
-      contents: 'export default {};',
+      contents: 'module.exports = {};',
       loader: 'js'
     }));
   }
@@ -78,7 +78,7 @@ const copyPrebuildsPlugin = {
 build({
   entryPoints: ['src/app/index.ts'],
   bundle: true,
-  format: 'esm',
+  format: 'cjs',
   outfile: 'generators/app/index.js',
   minify: production,
   sourcemap: !production,
@@ -87,5 +87,7 @@ build({
   logLevel: 'info',
   external: ['vscode', '@sap-devx/yeoman-ui-types'],
   mainFields: ["module", "main"],
+  banner: { js: "const __importMetaUrl=require('url').pathToFileURL(__filename).href;" },
+  define: { 'import.meta.url': '__importMetaUrl' },
   plugins: [stubNpmModulesPlugin, copyPrebuildsPlugin]
 }).catch(() => process.exit(1));

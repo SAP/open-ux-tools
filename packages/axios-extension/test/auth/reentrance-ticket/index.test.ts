@@ -10,14 +10,14 @@ jest.unstable_mockModule('open', () => ({
     default: mockOpen
 }));
 
-const actualRedirect = await import('../../../src/auth/reentrance-ticket/redirect');
+const actualRedirect = await import('../../../src/auth/reentrance-ticket/redirect.js');
 const mockSetupRedirectHandling = jest.fn<any>();
 jest.unstable_mockModule('../../../src/auth/reentrance-ticket/redirect', () => ({
     ...actualRedirect,
     setupRedirectHandling: mockSetupRedirectHandling
 }));
 
-const { getReentranceTicket } = await import('../../../src/auth/reentrance-ticket');
+const { getReentranceTicket } = await import('../../../src/auth/reentrance-ticket/index.js');
 
 describe('getReentranceTicket()', () => {
     const serverOrigin = 'http://some_url.example';

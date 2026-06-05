@@ -29,7 +29,7 @@ jest.unstable_mockModule('@sap-ux/xml-odata-annotation-converter', () => ({
     convertMetadataDocument: mockConvertMetadataDocument
 }));
 
-const { XMLAnnotationServiceAdapter } = await import('../../../src/xml');
+const { XMLAnnotationServiceAdapter } = await import('../../../src/xml/index.js');
 
 describe('XML Adapter', () => {
     const vocabularyService = new VocabularyService(false);

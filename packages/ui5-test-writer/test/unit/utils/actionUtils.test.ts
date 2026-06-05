@@ -7,7 +7,7 @@ import {
     extractEnumMemberValue,
     buildActionButtonState,
     buildActionStateFromSpecModelKey
-} from '../../../src/utils/actionUtils';
+} from '../../../src/utils/actionUtils.js';
 
 describe('extractActionMethodName()', () => {
     test('extracts method name from fully qualified action with parentheses', () => {

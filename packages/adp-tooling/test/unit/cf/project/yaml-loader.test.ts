@@ -21,7 +21,7 @@ jest.unstable_mockModule('js-yaml', () => ({
 }));
 
 const { getYamlContent, getProjectName, getProjectNameForXsSecurity } =
-    await import('../../../../src/cf/project/yaml-loader');
+    await import('../../../../src/cf/project/yaml-loader.js');
 import type { MtaYaml } from '../../../../src/types.js';
 
 describe('YAML Loader Functions', () => {

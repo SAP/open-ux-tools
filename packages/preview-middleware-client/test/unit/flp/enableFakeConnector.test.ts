@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { documentMock, fetchMock } from 'mock/window';
 import FakeLrepConnector from 'mock/sap/ui/fl/FakeLrepConnector';
 import LrepConnector from 'mock/sap/ui/fl/LrepConnector';

@@ -4,7 +4,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 
 const __testdir = dirname(fileURLToPath(import.meta.url));
 
-import { getExtensionRoutes, loadExtensions, toExtensionModule } from '../../../src/approuter/extensions';
+import { getExtensionRoutes, loadExtensions, toExtensionModule } from '../../../src/approuter/extensions.js';
 
 describe('extensions', () => {
     const logger = { warn: jest.fn() } as unknown as ToolsLogger;

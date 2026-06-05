@@ -8,8 +8,8 @@ jest.unstable_mockModule('hasbin', () => ({
     sync: mockHasbinSync
 }));
 
-const { getDeployTargetQuestion } = await import('../../src/prompts/deploy-target');
-const { abapChoice, cfChoice } = await import('../../src/utils/constants');
+const { getDeployTargetQuestion } = await import('../../src/prompts/deploy-target.js');
+const { abapChoice, cfChoice } = await import('../../src/utils/constants.js');
 
 describe('deploy-target', () => {
     it('should return the deployment target question', () => {

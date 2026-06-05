@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 
-const mockSetup = jest.fn();
-const mockTeardown = jest.fn();
+const mockSetup = jest.fn() as jest.Mock;
+const mockTeardown = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('jest-dev-server', () => ({
     setup: mockSetup,

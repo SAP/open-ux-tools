@@ -6,9 +6,9 @@ import type { UI5VersionChoice } from '@sap-ux/inquirer-common';
 
 const testDirname = dirname(fileURLToPath(import.meta.url));
 
-const mockValidateLibModuleName = jest.fn();
-const mockValidateNamespace = jest.fn();
-const mockValidateProjectFolder = jest.fn();
+const mockValidateLibModuleName = jest.fn() as jest.Mock;
+const mockValidateNamespace = jest.fn() as jest.Mock;
+const mockValidateProjectFolder = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     validateLibModuleName: mockValidateLibModuleName,
@@ -16,9 +16,9 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     validateProjectFolder: mockValidateProjectFolder
 }));
 
-const mockUi5VersionsGrouped = jest.fn();
-const mockSearchChoices = jest.fn();
-const mockAddi18nResourceBundle = jest.fn();
+const mockUi5VersionsGrouped = jest.fn() as jest.Mock;
+const mockSearchChoices = jest.fn() as jest.Mock;
+const mockAddi18nResourceBundle = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
     ui5VersionsGrouped: mockUi5VersionsGrouped,
@@ -26,8 +26,8 @@ jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
     addi18nResourceBundle: mockAddi18nResourceBundle
 }));
 
-const { getQuestions } = await import('../../../src/prompts');
-const { t } = await import('../../../src/i18n');
+const { getQuestions } = await import('../../../src/prompts/index.js');
+const { t } = await import('../../../src/i18n.js');
 
 describe('getPrompts', () => {
     const ui5VersionsGrouped: (UI5VersionChoice | Separator)[] = [

@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { generateInboundNavigationConfig } from '../../../src/navigation-config';
+import { generateInboundNavigationConfig } from '../../../src/navigation-config/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

@@ -31,7 +31,7 @@ const mockCheckProjectIntegrity = jest.fn<(...args: unknown[]) => Promise<unknow
 const mockUpdateProjectIntegrity = jest.fn<(...args: unknown[]) => Promise<void>>();
 
 // Get the real persistence for readIntegrityData
-const realPersistence = await import('../../../src/integrity/persistence');
+const realPersistence = await import('../../../src/integrity/persistence.js');
 
 jest.unstable_mockModule('../../../src/integrity/persistence', () => ({
     readIntegrityData: realPersistence.readIntegrityData,
@@ -39,7 +39,7 @@ jest.unstable_mockModule('../../../src/integrity/persistence', () => ({
 }));
 
 // We need to get the real functions from integrity/project for the non-mocked cases
-const realProject = await import('../../../src/integrity/project');
+const realProject = await import('../../../src/integrity/project.js');
 
 jest.unstable_mockModule('../../../src/integrity/project', () => ({
     checkProjectIntegrity: mockCheckProjectIntegrity,
@@ -58,7 +58,7 @@ const {
     isFioriProjectIntegrityEnabled,
     isFioriProjectIntegrityInitialized,
     updateFioriProjectIntegrity
-} = await import('../../../src/fiori-project');
+} = await import('../../../src/fiori-project/index.js');
 
 beforeEach(() => {
     jest.clearAllMocks();

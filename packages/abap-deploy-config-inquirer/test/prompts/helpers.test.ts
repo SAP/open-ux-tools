@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals';
 import type { AbapDeployConfigAnswersInternal, BackendTarget } from '../../src/types.js';
-import { mockDestinations } from '../fixtures/destinations';
-import { mockTargetSystems } from '../fixtures/targets';
+import { mockDestinations } from '../fixtures/destinations.js';
+import { mockTargetSystems } from '../fixtures/targets.js';
 
-const mockQueryPackages = jest.fn();
+const mockQueryPackages = jest.fn<typeof actualUtils.queryPackages>();
 const actualUtils = await import('../../src/utils.js');
 jest.unstable_mockModule('../../src/utils', () => ({
     ...actualUtils,
