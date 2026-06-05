@@ -1,5 +1,200 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.0.10
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+    - @sap-ux/abap-deploy-config-writer@1.0.5
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/fiori-elements-writer@3.0.10
+    - @sap-ux/fiori-generator-shared@1.0.6
+    - @sap-ux/inquirer-common@1.0.6
+    - @sap-ux/launch-config@1.0.5
+    - @sap-ux/odata-service-inquirer@3.0.6
+    - @sap-ux/project-input-validator@1.0.5
+    - @sap-ux/system-access@1.0.1
+
+## 1.0.9
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.9
+- @sap-ux/odata-service-inquirer@3.0.5
+
+## 1.0.8
+
+### Patch Changes
+
+- Updated dependencies [b326a9a]
+    - @sap-ux/project-access@2.1.0
+    - @sap-ux/abap-deploy-config-writer@1.0.4
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/fiori-elements-writer@3.0.8
+    - @sap-ux/fiori-generator-shared@1.0.5
+    - @sap-ux/inquirer-common@1.0.5
+    - @sap-ux/launch-config@1.0.4
+    - @sap-ux/odata-service-inquirer@3.0.5
+    - @sap-ux/project-input-validator@1.0.4
+    - @sap-ux/system-access@1.0.1
+
+## 1.0.7
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/abap-deploy-config-writer@1.0.3
+    - @sap-ux/project-input-validator@1.0.3
+    - @sap-ux/fiori-generator-shared@1.0.4
+    - @sap-ux/odata-service-inquirer@3.0.4
+    - @sap-ux/fiori-elements-writer@3.0.7
+    - @sap-ux/guided-answers-helper@1.0.1
+    - @sap-ux/fiori-tools-settings@1.0.1
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/inquirer-common@1.0.4
+    - @sap-ux/feature-toggle@1.0.1
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux/launch-config@1.0.3
+    - @sap-ux/system-access@1.0.1
+    - @sap-ux/btp-utils@2.0.1
+    - @sap-ux/ui5-info@1.0.1
+    - @sap-ux/logger@1.0.1
+    - @sap-ux/store@2.0.1
+
+## 1.0.6
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-writer@1.0.2
+- @sap-ux/fiori-elements-writer@3.0.6
+- @sap-ux/launch-config@1.0.2
+- @sap-ux/project-access@2.0.2
+- @sap-ux/odata-service-inquirer@3.0.3
+- @sap-ux/inquirer-common@1.0.3
+- @sap-ux/axios-extension@2.0.0
+- @sap-ux/fiori-generator-shared@1.0.3
+- @sap-ux/project-input-validator@1.0.2
+- @sap-ux/system-access@1.0.0
+
+## 1.0.5
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.5
+- @sap-ux/odata-service-inquirer@3.0.2
+
+## 1.0.4
+
+### Patch Changes
+
+- @sap-ux/odata-service-inquirer@3.0.2
+- @sap-ux/fiori-generator-shared@1.0.2
+- @sap-ux/inquirer-common@1.0.2
+- @sap-ux/fiori-elements-writer@3.0.4
+
+## 1.0.3
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.3
+- @sap-ux/odata-service-inquirer@3.0.1
+
+## 1.0.2
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.2
+- @sap-ux/odata-service-inquirer@3.0.1
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+    - @sap-ux/abap-deploy-config-writer@1.0.1
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/fiori-elements-writer@3.0.1
+    - @sap-ux/fiori-generator-shared@1.0.1
+    - @sap-ux/inquirer-common@1.0.1
+    - @sap-ux/launch-config@1.0.1
+    - @sap-ux/odata-service-inquirer@3.0.1
+    - @sap-ux/project-input-validator@1.0.1
+    - @sap-ux/system-access@1.0.0
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/abap-deploy-config-writer@1.0.0
+    - @sap-ux/project-input-validator@1.0.0
+    - @sap-ux/fiori-generator-shared@1.0.0
+    - @sap-ux/odata-service-inquirer@3.0.0
+    - @sap-ux/fiori-elements-writer@3.0.0
+    - @sap-ux/guided-answers-helper@1.0.0
+    - @sap-ux/fiori-tools-settings@1.0.0
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/inquirer-common@1.0.0
+    - @sap-ux/feature-toggle@1.0.0
+    - @sap-ux/project-access@2.0.0
+    - @sap-ux/launch-config@1.0.0
+    - @sap-ux/system-access@1.0.0
+    - @sap-ux/btp-utils@2.0.0
+    - @sap-ux/ui5-info@1.0.0
+    - @sap-ux/logger@1.0.0
+    - @sap-ux/store@2.0.0
+
+## 0.4.18
+
+### Patch Changes
+
+- Updated dependencies [a1c9cd7]
+    - @sap-ux/guided-answers-helper@0.5.1
+    - @sap-ux/inquirer-common@0.13.6
+    - @sap-ux/odata-service-inquirer@2.23.4
+    - @sap-ux/fiori-elements-writer@2.10.16
+
+## 0.4.17
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.10.15
+- @sap-ux/odata-service-inquirer@2.23.3
+
 ## 0.4.16
 
 ### Patch Changes

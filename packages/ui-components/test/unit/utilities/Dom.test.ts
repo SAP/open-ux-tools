@@ -1,4 +1,4 @@
-import { isHTMLElement } from '../../../src/utilities/Dom';
+import { isHTMLElement } from '../../../src/utilities/Dom.js';
 
 describe('isHTMLElement', () => {
     test('Test HTML Element', () => {

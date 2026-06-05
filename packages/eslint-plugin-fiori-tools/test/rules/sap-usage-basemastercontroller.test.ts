@@ -4,7 +4,7 @@
 // ------------------------------------------------------------------------------
 // Requirements (load "Main ESLint object" and "testing utility for ESLint")
 // ------------------------------------------------------------------------------
-import rule from '../../src/rules/sap-usage-basemastercontroller';
+import rule from '../../src/rules/sap-usage-basemastercontroller.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

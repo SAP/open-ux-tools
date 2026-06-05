@@ -1,4 +1,4 @@
-import { isJsonInput, isString } from '../../../src/utils/type-guards';
+import { isJsonInput, isString } from '../../../src/utils/type-guards.js';
 
 describe('isString', () => {
     it('should return true for string literals', () => {

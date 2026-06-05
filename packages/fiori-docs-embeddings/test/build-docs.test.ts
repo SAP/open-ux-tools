@@ -1,8 +1,13 @@
-import * as fs from 'node:fs/promises';
+import { jest } from '@jest/globals';
 import { join } from 'node:path';
 
 const mockFetch = jest.fn();
 const mockSpawn = jest.fn();
+const mockSetTimeout = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('node:timers/promises', () => ({
+    setTimeout: mockSetTimeout
+}));
 
 const mockLogger = {
     info: jest.fn(),
@@ -11,28 +16,35 @@ const mockLogger = {
     debug: jest.fn()
 };
 
-jest.mock('@sap-ux/logger', () => ({
+jest.unstable_mockModule('@sap-ux/logger', () => ({
     ToolsLogger: jest.fn().mockImplementation(() => mockLogger)
 }));
 
-jest.mock('node-fetch', () => ({
+jest.unstable_mockModule('node-fetch', () => ({
     default: mockFetch
 }));
 
-jest.mock('gray-matter', () => ({
-    default: jest.requireActual('gray-matter')
+// Import real gray-matter before mocking to avoid recursive resolution
+const realGrayMatter = await import('gray-matter');
+jest.unstable_mockModule('gray-matter', () => ({
+    default: realGrayMatter.default
 }));
 
-jest.mock('fs/promises', () => ({
+const mockFs = {
     readFile: jest.fn(),
     mkdir: jest.fn(),
     writeFile: jest.fn(),
     readdir: jest.fn(),
     stat: jest.fn()
+};
+jest.unstable_mockModule('node:fs/promises', () => mockFs);
+
+jest.unstable_mockModule('node:child_process', () => ({
+    spawn: mockSpawn
 }));
 
-jest.mock('child_process', () => ({
-    spawn: mockSpawn
+jest.unstable_mockModule('node:timers/promises', () => ({
+    setTimeout: jest.fn().mockResolvedValue(undefined)
 }));
 
 interface FileContent {
@@ -79,15 +91,16 @@ interface BuilderType {
 
 describe('MultiSourceDocumentationBuilder', () => {
     let MultiSourceDocumentationBuilder: new () => BuilderType;
-    const mockFs = fs as jest.Mocked<typeof fs>;
 
-    beforeEach(async () => {
-        jest.clearAllMocks();
-
-        const module = await import('../src/scripts/build-docs');
+    beforeAll(async () => {
+        const module = await import('../src/scripts/build-docs.js');
         MultiSourceDocumentationBuilder = (
             module as unknown as { MultiSourceDocumentationBuilder: new () => BuilderType }
         ).MultiSourceDocumentationBuilder;
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
     });
 
     describe('constructor', () => {
@@ -837,7 +850,7 @@ describe('MultiSourceDocumentationBuilder', () => {
 
             await builder.createMasterIndex();
 
-            const writeFileCalls = (mockFs.writeFile as jest.Mock).mock.calls;
+            const writeFileCalls = mockFs.writeFile.mock.calls;
             const indexCall = writeFileCalls.find(
                 (call: unknown[]) => typeof call[0] === 'string' && call[0].includes('index.json')
             );
@@ -2411,6 +2424,96 @@ describe('MultiSourceDocumentationBuilder', () => {
             });
 
             expect(mockFetch).toHaveBeenCalled();
+        }, 10000);
+    });
+
+    describe('processSource batch processing loop', () => {
+        beforeEach(() => {
+            mockFetch.mockReset();
+            delete process.env.AI_CORE_SERVICE_KEY;
+        });
+
+        afterEach(() => {
+            delete process.env.AI_CORE_SERVICE_KEY;
+        });
+
+        it('should process files through batch loop with fulfilled and rejected results', async () => {
+            process.env.AI_CORE_SERVICE_KEY = JSON.stringify({
+                serviceurls: { AI_API_URL: 'https://api.test' },
+                clientid: 'test',
+                clientsecret: 'secret',
+                url: 'https://auth.test'
+            });
+
+            const mockApiData = {
+                symbols: [
+                    { name: 'ClassA', kind: 'class', description: 'Class A' },
+                    { name: 'ClassB', kind: 'class', description: 'Class B' }
+                ]
+            };
+
+            mockFetch
+                .mockResolvedValueOnce({ ok: true, json: async () => mockApiData } as never)
+                .mockResolvedValueOnce({ ok: true, json: async () => ({ access_token: 'token' }) } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ resources: [{ name: 'embeddingsscript-gpt-5-mini', id: 'cfg' }] })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        resources: [{ configurationId: 'cfg', status: 'RUNNING', deploymentUrl: 'https://deploy.test' }]
+                    })
+                } as never)
+                .mockResolvedValue({
+                    ok: true,
+                    json: async () => ({ choices: [{ message: { content: '# Optimized' } }] })
+                } as never);
+
+            const builder = new MultiSourceDocumentationBuilder();
+            await builder.processSource({
+                id: 'batch-test',
+                type: 'json-api' as const,
+                url: 'https://api.test/data',
+                category: 'api',
+                enabled: true
+            });
+
+            const sourceResult = (
+                builder as unknown as { sourceResults: Map<string, { success: boolean; documentsAdded: number }> }
+            ).sourceResults.get('batch-test');
+            expect(sourceResult?.success).toBe(true);
+            expect(sourceResult?.documentsAdded).toBeGreaterThanOrEqual(1);
+        }, 30000);
+
+        it('should count failed documents when parseDocument throws', async () => {
+            process.env.AI_CORE_SERVICE_KEY = JSON.stringify({
+                serviceurls: { AI_API_URL: 'https://api.test' },
+                clientid: 'test',
+                clientsecret: 'secret',
+                url: 'https://auth.test'
+            });
+
+            const builder = new MultiSourceDocumentationBuilder();
+
+            // Return a file with no content so parseDocument throws
+            (builder as unknown as { processJsonApiSource: () => Promise<unknown[]> }).processJsonApiSource = jest
+                .fn()
+                .mockResolvedValue([{ name: 'bad.md', path: 'bad.md', type: 'file' }]);
+
+            await builder.processSource({
+                id: 'fail-test',
+                type: 'json-api' as const,
+                url: 'https://api.test/data',
+                category: 'api',
+                enabled: true
+            });
+
+            const sourceResult = (
+                builder as unknown as { sourceResults: Map<string, { success: boolean; documentsAdded: number }> }
+            ).sourceResults.get('fail-test');
+            expect(sourceResult?.success).toBe(true);
+            expect(mockLogger.warn).toHaveBeenCalledWith(expect.stringContaining('Failed to parse document'));
         }, 10000);
     });
 });

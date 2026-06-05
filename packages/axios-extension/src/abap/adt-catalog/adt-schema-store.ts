@@ -1,4 +1,4 @@
-import type { AdtCategory, AdtCategoryId, AdtCollection, AdtSchemaData } from '../types';
+import type { AdtCategory, AdtCategoryId, AdtCollection, AdtSchemaData } from '../types/index.js';
 
 /**
  * This class stores the ADT schema fetched by calling ADT discovery service.

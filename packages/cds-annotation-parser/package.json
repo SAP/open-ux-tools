@@ -1,7 +1,8 @@
 {
     "name": "@sap-ux/cds-annotation-parser",
-    "version": "0.3.1",
+    "version": "1.0.1",
     "description": "Annotation Parser for CDS",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -13,13 +14,13 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "npm-run-all clean compile",
-        "compile": "tsc --build ",
+        "compile": "tsc --build",
         "clean": "rimraf --glob ./coverage ./dist *.tsbuildinfo",
         "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --maxWorkers=2",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=2",
         "test:update": "node scripts/updateTestData.js",
         "test:create": "node scripts/createTestData.js",
         "watch": "tsc  --build ./ -watch"

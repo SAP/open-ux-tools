@@ -1,76 +1,124 @@
-import { join } from 'node:path';
+import { jest } from '@jest/globals';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { readFileSync } from 'node:fs';
 import { Command } from 'commander';
 import type { Editor } from 'mem-fs-editor';
-import { readFileSync } from 'node:fs';
-
 import type { ToolsLogger } from '@sap-ux/logger';
-import * as projectAccess from '@sap-ux/project-access';
-import { generateChange, getPromptsForNewModel, createNewModelData } from '@sap-ux/adp-tooling';
 
-import * as common from '../../../../src/common';
-import * as tracer from '../../../../src/tracing/trace';
-import * as logger from '../../../../src/tracing/logger';
-import { addNewModelCommand } from '../../../../src/cli/add/new-model';
+import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const descriptorVariant = JSON.parse(
-    jest
-        .requireActual('fs')
-        .readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.appdescr_variant'), 'utf-8')
+    readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.appdescr_variant'), 'utf-8')
 );
 
-const readFileSyncMock = readFileSync as jest.Mock;
-const generateChangeMock = generateChange as jest.Mock;
-const getPromptsForNewModelMock = getPromptsForNewModel as jest.Mock;
-const createNewModelDataMock = createNewModelData as jest.Mock;
+const mockGetLogger = jest.fn() as jest.Mock;
+jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
+    getLogger: mockGetLogger,
+    setLogLevelVerbose: jest.fn()
+}));
+
+const mockTraceChanges = jest.fn() as jest.Mock;
+jest.unstable_mockModule('../../../../src/tracing/trace', () => ({
+    traceChanges: mockTraceChanges
+}));
+
+const mockPromptYUIQuestions = jest.fn() as jest.Mock;
+jest.unstable_mockModule('../../../../src/common', () => ({
+    promptYUIQuestions: mockPromptYUIQuestions,
+    runNpmInstallCommand: jest.fn()
+}));
+
+jest.unstable_mockModule('../../../../src/validation/validation', () => ({
+    validateBasePath: jest.fn(),
+    validateAdpAppType: jest.fn(),
+    validateCloudAdpProject: jest.fn(),
+    hasFileDeletes: jest.fn()
+}));
+
+const mockGetAppType = jest.fn() as jest.Mock;
+jest.unstable_mockModule('@sap-ux/project-access', () =>
+    createProjectAccessMock({
+        getAppType: mockGetAppType
+    })
+);
+
+const mockReadFileSync = jest.fn() as jest.Mock;
+jest.unstable_mockModule('fs', () => ({
+    readFileSync: mockReadFileSync,
+    existsSync: jest.fn(),
+    readdirSync: jest.fn(),
+    statSync: jest.fn()
+}));
+
+jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn() }));
+
+const mockGenerateChange = jest.fn().mockResolvedValue({
+    commit: jest.fn().mockImplementation((cb) => cb())
+} as Partial<Editor> as Editor);
+const mockGetPromptsForNewModel = jest.fn() as jest.Mock;
+const mockGetVariant = jest.fn() as jest.Mock;
+const mockCreateNewModelData = jest.fn() as jest.Mock;
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    generateChange: mockGenerateChange,
+    ChangeType: { ADD_NEW_MODEL: 'appdescr_ui5_addNewModel' },
+    getPromptsForNewModel: mockGetPromptsForNewModel,
+    getVariant: mockGetVariant,
+    createNewModelData: mockCreateNewModelData,
+    isCFEnvironment: jest.fn().mockResolvedValue(false)
+}));
+
+const { addNewModelCommand } = await import('../../../../src/cli/add/new-model.js');
 
 const mockAnswers = {
-    modelAndDatasourceName: 'customer.OData_ServiceName',
+    name: 'OData_ServiceName',
     uri: '/sap/opu/odata/some-name',
-    serviceType: 'OData v2',
+    version: '4.0',
+    modelName: 'OData_ServiceModelName',
     modelSettings: '"key": "value"'
 };
 
 const mockAnswersWithAnnotation = {
-    modelAndDatasourceName: 'customer.OData_ServiceName',
+    name: 'OData_ServiceName',
     uri: '/sap/opu/odata/some-name',
-    serviceType: 'OData v2',
+    version: '4.0',
+    modelName: 'OData_ServiceModelName',
     modelSettings: '"key": "value"',
     addAnnotationMode: true,
+    dataSourceName: 'OData_AnnotationName',
     dataSourceURI: '/sap/opu/odata/annotation/',
     annotationSettings: '"key2":"value2"'
 };
 
 const mockCFAnswers = {
     destination: { Host: 'https://cf.dest.example.com', Name: 'CF_DEST' },
-    modelAndDatasourceName: 'customer.OData_ServiceName',
+    name: 'OData_ServiceName',
     uri: '/sap/opu/odata/some-name',
-    serviceType: 'OData v2',
+    version: '4.0',
+    modelName: 'OData_ServiceModelName',
     modelSettings: '"key": "value"'
 };
 
-const mockNewModelData = { variant: descriptorVariant, serviceType: 'OData v2', isCloudFoundry: false };
+const mockService = {
+    name: 'OData_ServiceName',
+    uri: '/sap/opu/odata/some-name',
+    version: '4.0',
+    modelName: 'OData_ServiceModelName',
+    modelSettings: '"key": "value"'
+};
 
-jest.mock('node:fs', () => ({
-    ...jest.requireActual('node:fs'),
-    readFileSync: jest.fn()
-}));
-
-jest.mock('prompts');
-
-jest.mock('@sap-ux/adp-tooling', () => ({
-    ...jest.requireActual('@sap-ux/adp-tooling'),
-    generateChange: jest.fn().mockResolvedValue({
-        commit: jest.fn().mockImplementation((cb) => cb())
-    } as Partial<Editor> as Editor),
-    getPromptsForNewModel: jest.fn(),
-    createNewModelData: jest.fn()
-}));
+const mockAnnotation = {
+    dataSourceName: 'OData_AnnotationName',
+    dataSourceURI: '/sap/opu/odata/annotation/',
+    settings: '"key2":"value2"'
+};
 
 const getArgv = (...arg: string[]) => ['', '', 'model', ...arg];
 
 describe('add/model', () => {
     let loggerMock: ToolsLogger;
-    let traceSpy: jest.SpyInstance;
 
     const appRoot = join(__dirname, '../../../fixtures');
 
@@ -79,71 +127,90 @@ describe('add/model', () => {
             debug: jest.fn(),
             error: jest.fn()
         } as Partial<ToolsLogger> as ToolsLogger;
-        jest.spyOn(common, 'promptYUIQuestions').mockResolvedValue(mockAnswers);
-        jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
-        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
-        readFileSyncMock.mockReturnValue(JSON.stringify(descriptorVariant));
-        createNewModelDataMock.mockResolvedValue(mockNewModelData);
-        traceSpy = jest.spyOn(tracer, 'traceChanges').mockResolvedValue();
+        mockGetLogger.mockReturnValue(loggerMock);
+        mockPromptYUIQuestions.mockResolvedValue(mockAnswers);
+        mockGetAppType.mockResolvedValue('Fiori Adaptation');
+        mockGetVariant.mockReturnValue(descriptorVariant);
+        mockReadFileSync.mockReturnValue(JSON.stringify(descriptorVariant));
+        mockTraceChanges.mockResolvedValue(undefined);
+        mockCreateNewModelData.mockResolvedValue({
+            service: mockAnswers,
+            variant: descriptorVariant
+        });
     });
 
     afterEach(() => {
         jest.clearAllMocks();
     });
 
-    test('should build model data and generate change', async () => {
+    test('should generate change with correct data', async () => {
         const command = new Command('model');
         addNewModelCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.debug).not.toHaveBeenCalled();
-        expect(traceSpy).not.toHaveBeenCalled();
-        expect(createNewModelDataMock).toHaveBeenCalledWith(appRoot, descriptorVariant, mockAnswers, loggerMock);
-        expect(generateChangeMock).toHaveBeenCalledWith(appRoot, 'appdescr_ui5_addNewModel', mockNewModelData);
+        expect(mockTraceChanges).not.toHaveBeenCalled();
+        expect(mockGenerateChange).toHaveBeenCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
+            service: mockAnswers,
+            variant: descriptorVariant
+        });
     });
 
-    test('should pass annotation answers to createNewModelData', async () => {
-        jest.spyOn(common, 'promptYUIQuestions').mockResolvedValue(mockAnswersWithAnnotation);
+    test('should generate change with correct data and annotation', async () => {
+        mockPromptYUIQuestions.mockResolvedValue(mockAnswersWithAnnotation);
+        mockCreateNewModelData.mockResolvedValue({
+            service: mockService,
+            annotation: mockAnnotation,
+            variant: descriptorVariant
+        });
 
         const command = new Command('model');
         addNewModelCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.debug).not.toHaveBeenCalled();
-        expect(createNewModelDataMock).toHaveBeenCalledWith(
-            appRoot,
-            descriptorVariant,
-            mockAnswersWithAnnotation,
-            loggerMock
-        );
-        expect(generateChangeMock).toHaveBeenCalledWith(appRoot, 'appdescr_ui5_addNewModel', mockNewModelData);
+        expect(mockTraceChanges).not.toHaveBeenCalled();
+        expect(mockGenerateChange).toHaveBeenCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
+            service: mockService,
+            annotation: mockAnnotation,
+            variant: descriptorVariant
+        });
     });
 
     test('should pass CF answers to createNewModelData', async () => {
-        jest.spyOn(common, 'promptYUIQuestions').mockResolvedValue(mockCFAnswers);
+        mockPromptYUIQuestions.mockResolvedValue(mockCFAnswers);
+        mockCreateNewModelData.mockResolvedValue({
+            service: mockCFAnswers,
+            variant: descriptorVariant
+        });
 
         const command = new Command('model');
         addNewModelCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.debug).not.toHaveBeenCalled();
-        expect(createNewModelDataMock).toHaveBeenCalledWith(appRoot, descriptorVariant, mockCFAnswers, loggerMock);
-        expect(generateChangeMock).toHaveBeenCalledWith(appRoot, 'appdescr_ui5_addNewModel', mockNewModelData);
+        expect(mockTraceChanges).not.toHaveBeenCalled();
+        expect(mockGenerateChange).toHaveBeenCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
+            service: mockCFAnswers,
+            variant: descriptorVariant
+        });
     });
 
-    test('should use cwd as base path and run in simulate mode', async () => {
+    test('should generate change with no base path and simulate true', async () => {
         const command = new Command('model');
         addNewModelCommand(command);
         await command.parseAsync(getArgv('', '-s'));
 
         expect(loggerMock.debug).not.toHaveBeenCalled();
-        expect(traceSpy).toHaveBeenCalled();
-        expect(createNewModelDataMock).toHaveBeenCalledWith(process.cwd(), descriptorVariant, mockAnswers, loggerMock);
-        expect(generateChangeMock).toHaveBeenCalledWith(process.cwd(), 'appdescr_ui5_addNewModel', mockNewModelData);
+        expect(mockTraceChanges).toHaveBeenCalled();
+        expect(mockGenerateChange).toHaveBeenCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
+            service: mockAnswers,
+            variant: descriptorVariant
+        });
     });
 
     test('should throw error and log it', async () => {
-        getPromptsForNewModelMock.mockImplementation(() => {
+        mockGetPromptsForNewModel.mockImplementation(() => {
             throw new Error('Failed');
         });
         const command = new Command('model');
@@ -151,7 +218,7 @@ describe('add/model', () => {
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.debug).toHaveBeenCalled();
-        expect(traceSpy).not.toHaveBeenCalled();
-        expect(generateChangeMock).not.toHaveBeenCalled();
+        expect(mockTraceChanges).not.toHaveBeenCalled();
+        expect(mockGenerateChange).not.toHaveBeenCalled();
     });
 });

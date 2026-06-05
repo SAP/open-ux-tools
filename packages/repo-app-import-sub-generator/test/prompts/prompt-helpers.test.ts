@@ -1,21 +1,23 @@
-import { fetchAppListForSelectedSystem, formatAppChoices, getYUIDetails } from '../../src/prompts/prompt-helpers';
-import type { RepoAppDownloadAnswers, AppItem } from '../../src/app/types';
-import { PromptNames } from '../../src/app/types';
-import { PromptState } from '../../src/prompts/prompt-state';
+import { jest } from '@jest/globals';
+import type { RepoAppDownloadAnswers, AppItem } from '../../src/app/types.js';
+import { PromptNames } from '../../src/app/types.js';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
-import { generatorTitle, generatorDescription } from '../../src/utils/constants';
-import { t } from '../../src/utils/i18n';
-import RepoAppDownloadLogger from '../../src/utils/logger';
+import { generatorTitle, generatorDescription } from '../../src/utils/constants.js';
+import { t } from '../../src/utils/i18n.js';
 import { DatasourceType, type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
 
-jest.mock('../../src/utils/logger', () => ({
-    logger: {
-        error: jest.fn(),
-        warn: jest.fn(),
-        info: jest.fn(),
-        debug: jest.fn()
-    }
-}));
+jest.unstable_mockModule('../../src/utils/logger', () => {
+    const mock = {
+        logger: { error: jest.fn(), warn: jest.fn(), info: jest.fn(), debug: jest.fn() },
+        configureLogging: jest.fn()
+    };
+    return { default: mock, ...mock };
+});
+
+const { fetchAppListForSelectedSystem, formatAppChoices, getYUIDetails } =
+    await import('../../src/prompts/prompt-helpers.js');
+const { PromptState } = await import('../../src/prompts/prompt-state.js');
+const RepoAppDownloadLogger = (await import('../../src/utils/logger.js')).default;
 
 describe('fetchAppListForSelectedSystem', () => {
     const mockServiceProvider = {
@@ -61,7 +63,7 @@ describe('fetchAppListForSelectedSystem', () => {
 
     it('should log an error if getAppList throws an error', async () => {
         const error = new Error('Mock error');
-        mockServiceProvider.getAppIndex().search = jest.fn().mockRejectedValue(error);
+        mockServiceProvider.getAppIndex().search = jest.fn().mockRejectedValue(error) as any;
         const result = await fetchAppListForSelectedSystem(
             mockAnswers[PromptNames.systemSelection].connectedSystem as ConnectedSystem,
             mockAnswers[PromptNames.selectedApp].appId

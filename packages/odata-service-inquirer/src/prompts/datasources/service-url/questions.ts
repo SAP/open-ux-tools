@@ -12,15 +12,15 @@ import {
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { Question } from 'inquirer';
-import { t } from '../../../i18n';
-import type { OdataServiceAnswers, OdataServiceUrlPromptOptions } from '../../../types';
-import { promptNames } from '../../../types';
-import { PromptState, getPromptHostEnvironment } from '../../../utils';
-import { ConnectionValidator } from '../../connectionValidator';
-import LoggerHelper from '../../logger-helper';
-import { showCollabDraftWarning } from '../service-helpers/service-helpers';
-import { serviceUrlInternalPromptNames } from './types';
-import { validateService } from './validators';
+import { t } from '../../../i18n.js';
+import type { OdataServiceAnswers, OdataServiceUrlPromptOptions } from '../../../types.js';
+import { promptNames } from '../../../types.js';
+import { PromptState, getPromptHostEnvironment } from '../../../utils/index.js';
+import { ConnectionValidator } from '../../connectionValidator.js';
+import LoggerHelper from '../../logger-helper.js';
+import { showCollabDraftWarning } from '../service-helpers/service-helpers.js';
+import { serviceUrlInternalPromptNames } from './types.js';
+import { validateService } from './validators.js';
 
 /**
  * Internal only answers to service URL prompting not returned with OdataServiceAnswers.

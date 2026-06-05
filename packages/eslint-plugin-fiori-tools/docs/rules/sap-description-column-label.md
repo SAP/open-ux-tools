@@ -49,6 +49,16 @@ The "{{textPropertyTarget}}" text property has the same "{{textPropertyLabel}}" 
 </Annotations>
 ```
 
+```cds
+annotate service.MyEntity with {
+    productBaseUnit @Common.Text: to_BaseUnit.unitOfMeasure_Text
+};
+
+annotate service.BaseUnitType with {
+    unitOfMeasure_Text @Common.Label: 'Name'
+};
+```
+
 `duplicateLabel`: The `Common.Label` annotation on the text property is identical to the ID property label:
 
 ```xml
@@ -62,6 +72,19 @@ The "{{textPropertyTarget}}" text property has the same "{{textPropertyLabel}}" 
 <Annotations Target="MyService.SupplierType/CompanyName">
     <Annotation Term="Common.Label" String="Supplier"/>
 </Annotations>
+```
+
+```cds
+annotate service.MyEntity with {
+    supplier @(
+        Common.Text : to_Supplier.companyName,
+        Common.Label: 'Supplier',
+    )
+};
+
+annotate service.SupplierType with {
+    companyName @Common.Label: 'Supplier'
+};
 ```
 
 `trivialLabel` for OData V2: The inline `sap:label` on the text property is too generic. This is reported on the metadata file:
@@ -96,6 +119,16 @@ The `Common.Label` annotation on the text property is meaningful and unique:
 </Annotations>
 ```
 
+```cds
+annotate service.MyEntity with {
+    productBaseUnit @Common.Text: to_BaseUnit.unitOfMeasure_Text
+};
+
+annotate service.BaseUnitType with {
+    unitOfMeasure_Text @Common.Label: 'Unit of Measure'
+};
+```
+
 The `Common.Label` annotations on ID and text properties are unique:
 
 ```xml
@@ -107,6 +140,19 @@ The `Common.Label` annotations on ID and text properties are unique:
 <Annotations Target="MyService.SupplierType/CompanyName">
     <Annotation Term="Common.Label" String="Company Name"/>
 </Annotations>
+```
+
+```cds
+annotate service.MyEntity with {
+    supplier @(
+        Common.Text : to_Supplier.companyName,
+        Common.Label: 'Supplier ID',
+    )
+};
+
+annotate service.SupplierType with {
+    companyName @Common.Label: 'Company Name'
+};
 ```
 
 The `sap:label` values on ID and text property for OData V2 are unique:
