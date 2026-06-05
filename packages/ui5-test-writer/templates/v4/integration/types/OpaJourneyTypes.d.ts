@@ -10,7 +10,7 @@ import type { actions as TemplatePageActions, assertions as TemplatePageAssertio
 <% } -%>
 import type Shell from "sap/fe/test/Shell";
 import type BaseArrangements from "sap/fe/test/BaseArrangements";
-<% pages.forEach(function(page) { -%>
+<% pages.filter((p) => p.template === 'ListReport' || p.template === 'ObjectPage').forEach(function(page) { -%>
 import type { actions as <%- page.targetKey %>CustomActions, assertions as <%- page.targetKey %>CustomAssertions } from "../pages/<%- page.targetKey %>";
 <% }); -%>
 
