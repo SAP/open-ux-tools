@@ -8,7 +8,6 @@ import type { FeV4PageType, Table as TableV4 } from '../project-context/linker/f
 import { createJsonFixer } from '../language/rule-fixer.js';
 import { checkAppTablesConfiguration } from '../utils/helpers.js';
 import { FioriJSONSourceCode } from '../language/json/source-code.js';
-import type { FioriSourceCode } from '../language/fiori-language.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: COPY_TO_CLIPBOARD,
@@ -88,13 +87,10 @@ function checkConfiguration(
     page: FeV4PageType | FeV2PageType,
     table: TableV4 | TableV2,
     parsedApp: ParsedApp,
-    sourceCode: FioriSourceCode,
+    sourceCode: FioriJSONSourceCode,
     problems: CopyToClipboard[],
     pageSectionName?: string
 ): void {
-    if (!(sourceCode instanceof FioriJSONSourceCode)) {
-        return;
-    }
     let config;
     let wrongValue = false;
     if (isV2Table(table)) {

@@ -7,7 +7,6 @@ import type { FeV4PageType, Table } from '../project-context/linker/fe-v4.js';
 import { createJsonFixer } from '../language/rule-fixer.js';
 import { checkAppTablesConfiguration } from '../utils/helpers.js';
 import { FioriJSONSourceCode } from '../language/json/source-code.js';
-import type { FioriSourceCode } from '../language/fiori-language.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: ENABLE_PASTE,
@@ -80,11 +79,11 @@ function checkConfiguration(
     page: FeV4PageType,
     table: Table,
     parsedApp: ParsedApp,
-    sourceCode: FioriSourceCode,
+    sourceCode: FioriJSONSourceCode,
     problems: EnablePaste[],
     pageSectionName?: string
 ): void {
-    if (sourceCode instanceof FioriJSONSourceCode && table.configuration.enablePaste.valueInFile === false) {
+    if (table.configuration.enablePaste.valueInFile === false) {
         const node = sourceCode.getNode(sourceCode.ast.body, table.configuration.enablePaste.configurationPath);
         problems.push({
             type: ENABLE_PASTE,

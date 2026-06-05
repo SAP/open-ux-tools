@@ -6,7 +6,7 @@ import type { Rule } from 'eslint';
 import type { FeV4PageType } from '../project-context/linker/fe-v4.js';
 import type { FeV2PageType } from '../project-context/linker/fe-v2.js';
 import type { ParsedApp } from '../project-context/parser/index.js';
-import type { FioriSourceCode } from '../language/fiori-language.js';
+import type { FioriJSONSourceCode } from '../language/json/source-code.js';
 
 // Type aliases for better readability
 export type ASTNode = Rule.Node;
@@ -807,19 +807,19 @@ export function findDeepestExistingPath(
  *
  * @param page - Application page
  * @param parsedApp - Parsed application
- * @param sourceCode - FioriSourceCode instance
+ * @param sourceCode - FioriJSONSourceCode instance
  * @param checkConfiguration - Function to check a specific property in the table configuration
  * @returns Found rule diagnostic issues
  */
 export function checkAppTablesConfiguration<DiagnosticType>(
     page: FeV4PageType | FeV2PageType,
     parsedApp: ParsedApp,
-    sourceCode: FioriSourceCode,
+    sourceCode: FioriJSONSourceCode,
     checkConfiguration: (
         page: any,
         table: any,
         parsedApp: ParsedApp,
-        sourceCode: FioriSourceCode,
+        sourceCode: FioriJSONSourceCode,
         problems: DiagnosticType[],
         pageSectionLabel?: string
     ) => void

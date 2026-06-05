@@ -7,7 +7,6 @@ import type { FeV4PageType, Table } from '../project-context/linker/fe-v4.js';
 import { createJsonFixer } from '../language/rule-fixer.js';
 import { checkAppTablesConfiguration } from '../utils/helpers.js';
 import { FioriJSONSourceCode } from '../language/json/source-code.js';
-import type { FioriSourceCode } from '../language/fiori-language.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: ENABLE_EXPORT,
@@ -77,11 +76,11 @@ function checkConfiguration(
     page: FeV4PageType,
     table: Table,
     parsedApp: ParsedApp,
-    sourceCode: FioriSourceCode,
+    sourceCode: FioriJSONSourceCode,
     problems: EnableExport[],
     pageSectionName?: string
 ): void {
-    if (sourceCode instanceof FioriJSONSourceCode && table.configuration.enableExport.valueInFile === false) {
+    if (table.configuration.enableExport.valueInFile === false) {
         const node = sourceCode.getNode(sourceCode.ast.body, table.configuration.enableExport.configurationPath);
         problems.push({
             type: ENABLE_EXPORT,
