@@ -1,17 +1,17 @@
 import type { CSSProperties } from 'react';
 import React, { useEffect, useRef, useState } from 'react';
 import { List } from 'react-movable';
-import { UIDefaultButton, UILoader } from '..';
-import { renderTitleRow, UIFlexibleTableRow } from './UIFlexibleTableRow';
-import type { UIFlexibleTableRowProps } from './UIFlexibleTableRow';
-import { UIFlexibleTableRowNoData } from './UIFlexibleTableRowNoData';
-import { UIFlexibleTableLayout } from './types';
-import type { NodeDragAndDropSortingParams, UIFlexibleTableProps, UIFlexibleTableRowType } from './types';
+import { UIDefaultButton, UILoader } from '../index.js';
+import { renderTitleRow, UIFlexibleTableRow } from './UIFlexibleTableRow.js';
+import type { UIFlexibleTableRowProps } from './UIFlexibleTableRow.js';
+import { UIFlexibleTableRowNoData } from './UIFlexibleTableRowNoData.js';
+import { UIFlexibleTableLayout } from './types.js';
+import type { NodeDragAndDropSortingParams, UIFlexibleTableProps, UIFlexibleTableRowType } from './types.js';
 
 import './UIFlexibleTable.scss';
-import { composeClassNames, getRowActionButtonId, getTableActionButtonId } from './utils';
-import { RowActions } from './RowActions';
-import { RowDataCells } from './RowData';
+import { composeClassNames, getRowActionButtonId, getTableActionButtonId } from './utils.js';
+import { RowActions } from './RowActions.js';
+import { RowDataCells } from './RowData.js';
 
 /**
  * @class {ResizeObserver}

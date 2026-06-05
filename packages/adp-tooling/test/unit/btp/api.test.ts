@@ -1,13 +1,22 @@
-import axios from 'axios';
+import { jest } from '@jest/globals';
 
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { Uaa } from '../../../src/types.js';
 
-import { getToken, getBtpDestinationConfig, listBtpDestinations } from '../../../src/btp/api';
-import { initI18n, t } from '../../../src/i18n';
-import type { Uaa } from '../../../src/types';
+const mockAxiosGet = jest.fn() as jest.Mock;
+const mockAxiosPost = jest.fn() as jest.Mock;
 
-jest.mock('axios');
-const mockAxios = axios as jest.Mocked<typeof axios>;
+jest.unstable_mockModule('axios', () => ({
+    default: {
+        get: mockAxiosGet,
+        post: mockAxiosPost
+    },
+    __esModule: true
+}));
+
+const { getToken, getBtpDestinationConfig, listBtpDestinations, getDestinationServiceUaa } =
+    await import('../../../src/btp/api.js');
+const { initI18n, t } = await import('../../../src/i18n.js');
 
 describe('btp/api', () => {
     const mockLogger = {
@@ -37,12 +46,12 @@ describe('btp/api', () => {
                     access_token: 'test-access-token'
                 }
             };
-            mockAxios.post.mockResolvedValue(mockResponse);
+            mockAxiosPost.mockResolvedValue(mockResponse);
 
             const result = await getToken(mockUaa);
 
             expect(result).toBe('test-access-token');
-            expect(mockAxios.post).toHaveBeenCalledWith('/test-uaa/oauth/token', 'grant_type=client_credentials', {
+            expect(mockAxiosPost).toHaveBeenCalledWith('/test-uaa/oauth/token', 'grant_type=client_credentials', {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'Authorization': 'Basic ' + Buffer.from('test-client-id:test-client-secret').toString('base64')
@@ -52,7 +61,7 @@ describe('btp/api', () => {
 
         test('should throw error when token request fails', async () => {
             const error = new Error('Network error');
-            mockAxios.post.mockRejectedValue(error);
+            mockAxiosPost.mockRejectedValue(error);
 
             await expect(getToken(mockUaa)).rejects.toThrow(t('error.failedToGetAuthKey', { error: 'Network error' }));
         });
@@ -61,7 +70,7 @@ describe('btp/api', () => {
             const mockResponse = {
                 data: {}
             };
-            mockAxios.post.mockResolvedValue(mockResponse);
+            mockAxiosPost.mockResolvedValue(mockResponse);
 
             const result = await getToken(mockUaa);
 
@@ -81,21 +90,21 @@ describe('btp/api', () => {
                 URL: '/backend.example',
                 Authentication: 'PrincipalPropagation'
             };
-            mockAxios.get.mockResolvedValue({
+            mockAxiosGet.mockResolvedValue({
                 data: { destinationConfiguration: mockConfig }
             });
 
             const result = await getBtpDestinationConfig(mockUri, mockToken, mockDestinationName, mockLogger);
 
             expect(result).toEqual(mockConfig);
-            expect(mockAxios.get).toHaveBeenCalledWith(
+            expect(mockAxiosGet).toHaveBeenCalledWith(
                 `${mockUri}/destination-configuration/v1/destinations/${mockDestinationName}`,
                 { headers: { Authorization: `Bearer ${mockToken}` } }
             );
         });
 
         test('should return undefined when request fails', async () => {
-            mockAxios.get.mockRejectedValue(new Error('Network error'));
+            mockAxiosGet.mockRejectedValue(new Error('Network error'));
 
             const result = await getBtpDestinationConfig(mockUri, mockToken, mockDestinationName, mockLogger);
 
@@ -106,7 +115,7 @@ describe('btp/api', () => {
         });
 
         test('should return undefined when destinationConfiguration is missing from response', async () => {
-            mockAxios.get.mockResolvedValue({ data: {} });
+            mockAxiosGet.mockResolvedValue({ data: {} });
 
             const result = await getBtpDestinationConfig(mockUri, mockToken, mockDestinationName, mockLogger);
 
@@ -115,11 +124,11 @@ describe('btp/api', () => {
 
         test('should encode destination name in URL', async () => {
             const specialName = 'dest with spaces';
-            mockAxios.get.mockResolvedValue({ data: { destinationConfiguration: { Name: specialName } } });
+            mockAxiosGet.mockResolvedValue({ data: { destinationConfiguration: { Name: specialName } } });
 
             await getBtpDestinationConfig(mockUri, mockToken, specialName, mockLogger);
 
-            expect(mockAxios.get).toHaveBeenCalledWith(
+            expect(mockAxiosGet).toHaveBeenCalledWith(
                 `${mockUri}/destination-configuration/v1/destinations/${encodeURIComponent(specialName)}`,
                 expect.any(Object)
             );
@@ -128,8 +137,12 @@ describe('btp/api', () => {
 
     describe('listBtpDestinations', () => {
         const mockCredentials = {
-            uri: 'https://destination.cfapps.example.com',
-            uaa: { clientid: 'client-id', clientsecret: 'client-secret', url: 'https://auth.example.com' }
+            uaa: {
+                clientid: 'client-id',
+                clientsecret: 'client-secret',
+                url: 'https://auth.example.com',
+                uri: 'https://destination.cfapps.example.com'
+            }
         };
 
         const mockBtpConfigs = [
@@ -151,14 +164,18 @@ describe('btp/api', () => {
         ];
 
         beforeEach(() => {
-            mockAxios.post.mockResolvedValueOnce({ data: { access_token: 'mock-token' } });
+            mockAxiosPost.mockResolvedValueOnce({ data: { access_token: 'mock-token' } });
         });
 
         it('should return a Destinations map built from the BTP API response', async () => {
-            mockAxios.get.mockResolvedValueOnce({ data: mockBtpConfigs });
+            mockAxiosGet.mockResolvedValueOnce({ data: mockBtpConfigs });
 
             const result = await listBtpDestinations(mockCredentials);
 
+            expect(mockAxiosGet).toHaveBeenCalledWith(
+                `${mockCredentials.uaa.uri}/destination-configuration/v1/subaccountDestinations`,
+                { headers: { Authorization: 'Bearer mock-token' } }
+            );
             expect(result).toEqual({
                 DEST_ONE: {
                     Name: 'DEST_ONE',
@@ -186,10 +203,14 @@ describe('btp/api', () => {
                 clientsecret: 'client-secret',
                 url: 'https://auth.example.com'
             };
-            mockAxios.get.mockResolvedValueOnce({ data: mockBtpConfigs });
+            mockAxiosGet.mockResolvedValueOnce({ data: mockBtpConfigs });
 
             const result = await listBtpDestinations(flatCredentials);
 
+            expect(mockAxiosGet).toHaveBeenCalledWith(
+                `${flatCredentials.uri}/destination-configuration/v1/subaccountDestinations`,
+                { headers: { Authorization: 'Bearer mock-token' } }
+            );
             expect(result).toEqual({
                 DEST_ONE: {
                     Name: 'DEST_ONE',
@@ -211,11 +232,55 @@ describe('btp/api', () => {
         });
 
         it('should throw when the BTP destination API call fails', async () => {
-            mockAxios.get.mockRejectedValueOnce(new Error('Network error'));
+            mockAxiosGet.mockRejectedValueOnce(new Error('Network error'));
 
             await expect(listBtpDestinations(mockCredentials)).rejects.toThrow(
                 t('error.failedToListBtpDestinations', { error: 'Network error' })
             );
+        });
+
+        it('should throw when credentials are incomplete', async () => {
+            await expect(listBtpDestinations({ clientid: 'cid' } as any)).rejects.toThrow(
+                t('error.failedToListBtpDestinations', {
+                    error: t('error.incompleteDestinationServiceCredentials')
+                })
+            );
+            expect(mockAxiosGet).not.toHaveBeenCalled();
+            expect(mockAxiosPost).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('getDestinationServiceUaa', () => {
+        it('returns the flat credentials unchanged', () => {
+            const flat = {
+                clientid: 'cid',
+                clientsecret: 'csecret',
+                url: '/auth.example',
+                uri: '/dest.example'
+            };
+
+            expect(getDestinationServiceUaa(flat)).toEqual(flat);
+        });
+
+        it('unwraps the nested uaa shape', () => {
+            const nested = {
+                uaa: {
+                    clientid: 'cid',
+                    clientsecret: 'csecret',
+                    url: '/auth.example',
+                    uri: '/dest.example'
+                }
+            };
+
+            expect(getDestinationServiceUaa(nested)).toEqual(nested.uaa);
+        });
+
+        it('returns undefined when any required field is missing', () => {
+            expect(getDestinationServiceUaa(undefined)).toBeUndefined();
+            expect(
+                getDestinationServiceUaa({ clientid: 'cid', clientsecret: 'csecret', url: '/u' } as any)
+            ).toBeUndefined();
+            expect(getDestinationServiceUaa({ uaa: { clientid: 'cid' } } as any)).toBeUndefined();
         });
     });
 });

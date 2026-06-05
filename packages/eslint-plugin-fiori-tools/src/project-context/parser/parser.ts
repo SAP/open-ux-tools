@@ -3,6 +3,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse as parseJson } from '@humanwhocodes/momoa';
 
 import type { FoundFioriArtifacts, Manifest, ProjectType } from '@sap-ux/project-access';
+import type { ODataVersionType } from '@sap-ux/odata-annotation-core';
 import { getMainService } from '@sap-ux/project-access';
 import {
     CdsAnnotationProvider,
@@ -11,10 +12,17 @@ import {
     type V2Annotation
 } from '@sap-ux/fiori-annotation-api';
 
-import type { LocalFile, RemoteFileWithLocalServiceCache } from '../types';
-import type { Diagnostic } from '../../language/diagnostics';
-import { buildServiceIndex } from './service';
-import type { ParsedProject, ParsedApp, ParsedManifest, FoundODataService, CustomViews, MinUI5Version } from './types';
+import type { LocalFile, RemoteFileWithLocalServiceCache } from '../types.js';
+import type { Diagnostic } from '../../language/diagnostics.js';
+import { buildServiceIndex } from './service.js';
+import type {
+    ParsedProject,
+    ParsedApp,
+    ParsedManifest,
+    FoundODataService,
+    CustomViews,
+    MinUI5Version
+} from './types.js';
 import { uniformUrl } from '@sap-ux/fiori-annotation-api';
 
 export interface ParseResult {
@@ -238,7 +246,7 @@ export class ApplicationParser {
         const customViews: CustomViews = {};
         const services: FoundODataService[] = [];
         const targets = manifest['sap.ui5']?.routing?.targets;
-        for (const [, target] of Object.entries(targets ?? {})) {
+        for (const [, target] of Object.entries((targets ?? {}) as Record<string, RoutingTarget>)) {
             const settings = target.options?.settings;
             if (settings?.entitySet || settings?.contextPath) {
                 if (settings.viewName) {
@@ -264,7 +272,7 @@ export class ApplicationParser {
                     type: 'cap',
                     name: dataSourceName,
                     path: uniformUrl(dataSource.uri),
-                    version: dataSource.settings?.odataVersion ?? '4.0'
+                    version: (dataSource.settings?.odataVersion ?? '4.0') as ODataVersionType
                 });
                 continue;
             }
@@ -276,7 +284,7 @@ export class ApplicationParser {
                 type: 'local',
                 name: dataSourceName,
                 path: uniformUrl(dataSource.uri),
-                version: dataSource.settings?.odataVersion ?? '2.0',
+                version: (dataSource.settings?.odataVersion ?? '2.0') as ODataVersionType,
                 metadata: {
                     type: 'remote',
                     cacheType: 'local-service',
@@ -338,8 +346,19 @@ export class ApplicationParser {
     }
 }
 
-type DataSources = Exclude<Manifest['sap.app']['dataSources'], undefined>;
+type SapApp = Exclude<Manifest['sap.app'], undefined>;
+type DataSources = Exclude<SapApp['dataSources'], undefined>;
 type DataSource = DataSources[keyof DataSources];
+
+interface RoutingTarget {
+    options?: {
+        settings?: {
+            entitySet?: string;
+            contextPath?: string;
+            viewName?: string;
+        };
+    };
+}
 
 /**
  * Retrieves the list of annotation files configured for an OData data source.
@@ -369,7 +388,7 @@ function getAnnotationFiles(
                 type: 'remote',
                 cacheType: 'local-service',
                 cachePath: filePath,
-                relativeBackendPath: uri,
+                relativeBackendPath: uri ?? '',
                 uri: annotationFileUri
             });
         } else {
@@ -411,7 +430,7 @@ function getMinUI5Version(manifest: Manifest): MinUI5Version | undefined {
             patch: 0
         };
     }
-    const [major, minor, patch] = rawValue.split('.').map((part) => Number.parseInt(part, 10));
+    const [major, minor, patch] = rawValue.split('.').map((part: string) => Number.parseInt(part, 10));
     return {
         raw: rawValue,
         major: Number.isNaN(major) ? 0 : major,

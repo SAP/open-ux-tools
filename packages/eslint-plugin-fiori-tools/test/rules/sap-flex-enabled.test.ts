@@ -1,7 +1,7 @@
 import { RuleTester } from 'eslint';
-import flexEnabledRule from '../../src/rules/sap-flex-enabled';
-import { meta, languages } from '../../src/index';
-import { setup, V4_MANIFEST_PATH } from '../test-helper';
+import flexEnabledRule from '../../src/rules/sap-flex-enabled.js';
+import { meta, languages } from '../../src/index.js';
+import { setup, V4_MANIFEST_PATH } from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },

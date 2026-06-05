@@ -2,7 +2,7 @@ import React from 'react';
 
 import type { ILabelProps, ILabelStyleProps, ILabelStyles } from '@fluentui/react';
 import { Label } from '@fluentui/react';
-import { REQUIRED_LABEL_INDICATOR } from '../types';
+import { REQUIRED_LABEL_INDICATOR } from '../types.js';
 
 export type UILabelProps = ILabelProps;
 

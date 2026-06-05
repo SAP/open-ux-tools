@@ -2,7 +2,7 @@ import type { Command } from 'commander';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
-import { getLogger } from '../../tracing';
+import { getLogger } from '../../tracing/index.js';
 
 /**
  * Add the "remove system" subcommand to a passed command.

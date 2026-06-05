@@ -1,15 +1,18 @@
 import { AxiosHeaders } from 'axios';
 import type { Axios, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import type { ServiceProvider } from '../base/service-provider';
-import { getReentranceTicket } from './reentrance-ticket';
-import { RefreshTokenChanged, Uaa } from './uaa';
-import type { AbapServiceProvider } from 'abap/abap-service-provider';
+import type { ServiceProvider } from '../base/service-provider.js';
+import { getReentranceTicket } from './reentrance-ticket/index.js';
+import type { AbapServiceProvider } from '../abap/abap-service-provider.js';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
+import type { RefreshTokenChanged } from './uaa.js';
+import { Uaa } from './uaa.js';
 
-export * from './connection';
-export * from './error';
+export * from './connection.js';
+export * from './error.js';
 
-export { ServiceInfo, RefreshTokenChanged, Uaa };
+export type { ServiceInfo } from '@sap-ux/btp-utils';
+export type { RefreshTokenChanged } from './uaa.js';
+export { Uaa } from './uaa.js';
 
 /**
  * @param provider Basic Auth Provider

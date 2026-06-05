@@ -1,4 +1,4 @@
-import { parsePath } from '../../src/paths/parse';
+import { parsePath } from '../../src/paths/parse.js';
 
 describe('paths', () => {
     describe('parser', () => {

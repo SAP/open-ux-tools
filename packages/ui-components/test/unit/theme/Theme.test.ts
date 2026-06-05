@@ -1,11 +1,25 @@
-import { initTheme } from '../../../src';
-import * as fluentUI from '@fluentui/react';
+import { jest } from '@jest/globals';
+const { createTheme: mockCreateTheme, loadTheme: mockLoadTheme } = await (async () => {
+    const actual = await import('@fluentui/react');
+    const mocked = {
+        ...actual,
+        createTheme: jest.fn(actual.createTheme),
+        loadTheme: jest.fn()
+    };
+    jest.unstable_mockModule('@fluentui/react', () => mocked);
+    return mocked;
+})();
+
+const { initTheme } = await import('../../../src/index.tsx');
 
 describe('initTheme', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
     it('initTheme', () => {
-        const createThemeSpy = jest.spyOn(fluentUI, 'createTheme');
         initTheme();
-        expect(createThemeSpy).toHaveBeenCalledWith({
+        expect(mockCreateTheme).toHaveBeenCalledWith({
             defaultFontStyle: {
                 WebkitFontSmoothing: '',
                 fontFamily: 'var(--vscode-font-family)'

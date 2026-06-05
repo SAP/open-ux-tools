@@ -1,8 +1,8 @@
 import { relative } from 'node:path';
 import type { Command } from 'commander';
 import { enableCdsUi5Plugin } from '@sap-ux/cap-config-writer';
-import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing';
-import { runNpmInstallCommand } from '../../common';
+import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing/index.js';
+import { runNpmInstallCommand } from '../../common/index.js';
 
 /**
  * Add the "add cds-plugin-ui5" command to passed command.

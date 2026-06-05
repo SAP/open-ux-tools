@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import type { IMessageBarProps, IMessageBarStyles } from '@fluentui/react';
 import { MessageBar, MessageBarType } from '@fluentui/react';
 import { UIMessageBar } from '../../../src/components/UIMessageBar';

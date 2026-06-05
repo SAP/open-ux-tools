@@ -4,13 +4,13 @@ import { isFullUrlDestination, isPartialUrlDestination, isAppStudio, type Destin
 import type { InputQuestion, PasswordQuestion, ConfirmQuestion } from '@sap-ux/inquirer-common';
 import type { BackendSystem } from '@sap-ux/store';
 import type { Answers } from 'inquirer';
-import { t } from '../../../../i18n';
-import { promptNames } from '../../../../types';
-import { convertODataVersionType, PromptState, removeCircularFromServiceProvider } from '../../../../utils';
-import type { ConnectionValidator } from '../../../connectionValidator';
-import type { ValidationResult } from '../../../types';
-import type { SystemSelectionAnswerType } from '../system-selection/prompt-helpers';
-import type { NewSystemAnswers } from '../new-system/types';
+import { t } from '../../../../i18n.js';
+import { promptNames } from '../../../../types.js';
+import { convertODataVersionType, PromptState, removeCircularFromServiceProvider } from '../../../../utils/index.js';
+import type { ConnectionValidator } from '../../../connectionValidator.js';
+import type { ValidationResult } from '../../../types.js';
+import type { SystemSelectionAnswerType } from '../system-selection/prompt-helpers.js';
+import type { NewSystemAnswers } from '../new-system/types.js';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 
 export enum BasicCredentialsPromptNames {

@@ -1,5 +1,5 @@
-import { getCachedValue, setCachedValue } from '../../../../src/panels/properties/propertyValuesCache';
-import { InputType } from '../../../../src/panels/properties/types';
+import { getCachedValue, setCachedValue } from '../../../../src/panels/properties/propertyValuesCache.js';
+import { InputType } from '../../../../src/panels/properties/types.js';
 
 describe('propertyValuesCache', () => {
     test('read/write', () => {

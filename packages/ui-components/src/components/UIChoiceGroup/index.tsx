@@ -1,1 +1,1 @@
-export * from './UIChoiceGroup';
+export * from './UIChoiceGroup.js';
