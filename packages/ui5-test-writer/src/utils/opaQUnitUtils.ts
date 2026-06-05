@@ -37,6 +37,14 @@ const SAP_UI_REQUIRE_ARRAY_REGEX = /sap\.ui\.require\s*\(\s*\[([^\]]*)\]\s*,\s*f
 const MAX_FILE_CONTENT_LENGTH = 10000;
 
 /**
+ * Escapes regex metacharacters in a string so it can be safely embedded in a `RegExp` pattern.
+ *
+ * @param value - the string to escape
+ * @returns the escaped string
+ */
+const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/**
  * Splices new module paths into the sap.ui.require array of the content string.
  * Entries that are already present are skipped. All other content is preserved exactly.
  *
@@ -332,7 +340,7 @@ export function splicePageIntoJourneyRunnerTs(fileContent: string, pages: Journe
     }
     // Determine which pages are not yet present by checking for their `Custom<Page>` import line
     const toAdd = pages.filter((page) => {
-        const importPattern = new RegExp(`from\\s+"\\./${page.targetKey}"`);
+        const importPattern = new RegExp(`from\\s+"\\./${escapeRegex(page.targetKey)}"`);
         return !importPattern.test(fileContent);
     });
 

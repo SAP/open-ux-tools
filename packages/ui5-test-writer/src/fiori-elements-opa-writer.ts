@@ -89,6 +89,11 @@ export async function generateOPAFiles(
         dotFileExtension
     };
 
+    // The active context is the one used to actually emit files. In standalone mode without an
+    // existing JourneyRunner it is replaced with the resolved standalone context (which may
+    // override fields like `htmlTarget`); otherwise it stays as the original `writeContext`.
+    let activeContext: WriteContext = writeContext;
+
     if (standalone) {
         const hasJourneyRunner = existsSync(
             join(testOutDirPath, 'integration', 'pages', `JourneyRunner${dotFileExtension}`)
@@ -97,16 +102,11 @@ export async function generateOPAFiles(
         if (hasJourneyRunner) {
             writeJourneyFiles(appFeatures, writeContext, true, true, virtualOPA5Configured);
         } else {
-            const standaloneWriteContext = await resolveStandaloneWriteContext(
-                basePath,
-                testOutDirPath,
-                writeContext,
-                editor
-            );
+            activeContext = await resolveStandaloneWriteContext(basePath, testOutDirPath, writeContext, editor);
             if (!virtualOPA5Configured) {
-                writeCommonAndPageFiles(standaloneWriteContext, rootCommonTemplateDirPath);
+                writeCommonAndPageFiles(activeContext, rootCommonTemplateDirPath);
             }
-            writeJourneyFiles(appFeatures, standaloneWriteContext, true, hasJourneyRunner, virtualOPA5Configured);
+            writeJourneyFiles(appFeatures, activeContext, true, hasJourneyRunner, virtualOPA5Configured);
         }
     } else {
         const useVirtualPreviewEndpoints = options.useVirtualPreviewEndpoints ?? false;
@@ -122,7 +122,7 @@ export async function generateOPAFiles(
     }
 
     if (enableTypeScript) {
-        writeOpaJourneyTypes(writeContext);
+        writeOpaJourneyTypes(activeContext);
     }
 
     return editor;
@@ -603,9 +603,10 @@ function writeJourneyFiles(
     if (appFeatures.fpm?.name) {
         // FPM TypeScript support is out of scope for the initial TS OPA5 work
         // (LROP only). The FPM journey path below is hardcoded `.js` and there is
-        // no `FPM.ts` template, so an LR-OP-FPM mix with `enableTypeScript` would
-        // emit JS FPM files alongside TS LR/OP files (and `writePageObject` would
-        // throw when trying to load the missing `FPM.ts` template). // TODO: add
+        // no `FPM.ts` template, so we force `DotFileExtension.JS` for the FPM
+        // page-object regardless of the configured `dotFileExtension`. Otherwise
+        // an LR-OP-FPM mix with `enableTypeScript` would crash in `writePageObject`
+        // when trying to load the missing `FPM.ts` template. TODO: add
         // FPM.ts/FPMJourney.ts templates and switch to `dotFileExtension`.
         editor.copyTpl(
             join(rootV4TemplateDirPath, 'integration', 'FPMJourney.js'),
@@ -626,7 +627,7 @@ function writeJourneyFiles(
             rootV4TemplateDirPath,
             testOutDirPath,
             editor,
-            dotFileExtension
+            DotFileExtension.JS
         );
         if (fpmPage) {
             newPages.push(fpmPage);

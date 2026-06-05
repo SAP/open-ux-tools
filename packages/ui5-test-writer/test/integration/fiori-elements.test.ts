@@ -1,9 +1,12 @@
 import { generateOPAFiles } from '../../src/fiori-elements-opa-writer.js';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import fileSystem from 'node:fs';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('ui5-test-writer - Integration tests', () => {
     let fs: Editor | undefined;

@@ -13,7 +13,7 @@ const runner = new JourneyRunner({
 <%- pages.map((page) =>
 '        onThe' + page.targetKey + ': new ' + page.template + '(\n' +
 '            {\n' +
-'                appId: "' + appID + '",\n' +
+'                appId: "' + page.appID + '",\n' +
 '                componentId: "' + page.componentID + '",\n' +
 '                entitySet: "' + (page.entitySet || '') + '",\n' +
 '                contextPath: "' + (page.contextPath || '') + '"\n' +
