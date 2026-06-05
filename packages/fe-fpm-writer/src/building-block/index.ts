@@ -104,7 +104,8 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         buildingBlockData.buildingBlockType === BuildingBlockType.Page &&
         (buildingBlockData as Page).templateType === PAGE_TEMPLATE_TYPE_FULL
     ) {
-        appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId, buildingBlockData as Page);
+        const pageData = buildingBlockData as Page;
+        appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId, pageData);
     }
 
     if (
@@ -187,7 +188,7 @@ function appendPageAggregations(
         const mContent = pageData.aggregations?.[aggName] ?? '';
         const aggContext = { macrosPrefix, mContent };
         const aggPath = getTemplatePath(`/building-block/page/${aggName}.xml`);
-        const aggContent = render(fs.read(aggPath), aggContext, {});
+        const aggContent = render(fs.read(aggPath), aggContext, {}); // NOSONAR - template is a controlled file on disk, not user input
         // Wrap with namespace declarations so elements parse correctly.
         // When sap.m is the default namespace (fragMNS=''), declare it as xmlns= to keep
         // bare element names; otherwise declare it as xmlns:m=.
@@ -216,12 +217,16 @@ function sortPageAggregationChildren(pageElement: Node): void {
     const leadingComment = allChildren.find((n) => n.nodeType === 8 /* Comment */);
     const elementChildren = allChildren.filter((n) => n.nodeType === 1 /* Element */) as Element[];
     const sorted = [...elementChildren].sort((a, b) => {
-        const aIdx = PAGE_AGGREGATIONS.indexOf(a.localName as PageAggregationName);
-        const bIdx = PAGE_AGGREGATIONS.indexOf(b.localName as PageAggregationName);
-        return (aIdx === -1 ? PAGE_AGGREGATIONS.length : aIdx) - (bIdx === -1 ? PAGE_AGGREGATIONS.length : bIdx);
+        const aLocalName = a.localName as string;
+        const bLocalName = b.localName as string;
+        const aIdx = PAGE_AGGREGATIONS.indexOf(aLocalName as PageAggregationName);
+        const bIdx = PAGE_AGGREGATIONS.indexOf(bLocalName as PageAggregationName);
+        const aPosition = aIdx === -1 ? PAGE_AGGREGATIONS.length : aIdx;
+        const bPosition = bIdx === -1 ? PAGE_AGGREGATIONS.length : bIdx;
+        return aPosition - bPosition;
     });
     while (pageElement.firstChild) {
-        pageElement.removeChild(pageElement.firstChild);
+        pageElement.removeChild(pageElement.firstChild); // NOSONAR - xmldom nodes do not implement Node.remove()
     }
     if (leadingComment) {
         pageElement.appendChild(leadingComment);

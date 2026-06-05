@@ -282,8 +282,8 @@ const ns1 = {
         'page': {
             'templateType': {
                 'message': 'Page Layout',
-                'full': 'Full',
-                'basic': 'Basic'
+                'basic': 'Basic',
+                'full': 'Full'
             },
             'id': {
                 'message': 'Building Block ID',
