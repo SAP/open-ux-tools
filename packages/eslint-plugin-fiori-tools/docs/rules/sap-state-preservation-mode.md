@@ -140,5 +140,5 @@ If you encounter an issue with this rule, please open a [GitHub issue](https://g
 
 ## Further Reading
 
-- [SAP Fiori Elements: State Preservation](https://ui5.sap.com/#/topic/b2cc3b59f7d54bc3a5fb0e4cc1d0a1f1)
-- [SAP Fiori Elements: Flexible Column Layout](https://ui5.sap.com/#/topic/c4f3d41fc2d54bc3959b4dac3b78fef7)
+- [SAP Fiori Elements: Enabling Discovery/Persistence Mode](https://ui5.sap.com/#/topic/69503c2ac2804b76a903df700cabd24a)
+- [SAP Fiori Elements: Enabling the Flexible Column Layout](https://ui5.sap.com/#/topic/75631b78e3444231bb31cf80b3b50922)
