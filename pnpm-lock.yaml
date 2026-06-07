@@ -14,7 +14,7 @@ overrides:
   fast-xml-parser: 5.8.0
   fast-uri: '>=3.1.2'
   '@babel/plugin-transform-modules-systemjs': '>=7.29.4'
-  '@xmldom/xmldom': ~0.8.13
+  '@xmldom/xmldom': ~0.9.0
   node-forge: '>=1.4.0'
   express-rate-limit: '>=8.5.0'
   serialize-javascript: 7.0.5
@@ -978,8 +978,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       '@xmldom/xmldom':
-        specifier: ~0.8.13
-        version: 0.8.13
+        specifier: ~0.9.0
+        version: 0.9.10
       axios:
         specifier: '>=1.16.0'
         version: 1.16.1
@@ -2104,8 +2104,8 @@ importers:
         specifier: 0.15.0
         version: 0.15.0
       '@xmldom/xmldom':
-        specifier: ~0.8.13
-        version: 0.8.13
+        specifier: ~0.9.0
+        version: 0.9.10
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -10583,9 +10583,9 @@ packages:
   '@xml-tools/parser@1.0.11':
     resolution: {integrity: sha512-aKqQ077XnR+oQtHJlrAflaZaL7qZsulWc/i/ZEooar5JiWj1eLt0+Wg28cpa+XLney107wXqneC+oG1IZvxkTA==}
 
-  '@xmldom/xmldom@0.8.13':
-    resolution: {integrity: sha512-KRYzxepc14G/CEpEGc3Yn+JKaAeT63smlDr+vjB8jRfgTBBI9wRj/nkQEO+ucV8p8I9bfKLWp37uHgFrbntPvw==}
-    engines: {node: '>=10.0.0'}
+  '@xmldom/xmldom@0.9.10':
+    resolution: {integrity: sha512-A9gOqLdi6cV4ibazAjcQufGj0B1y/vDqYrcuP6d/6x8P27gRS8643Dj9o1dEKtB6O7fwxb2FgBmJS2mX7gpvdw==}
+    engines: {node: '>=14.6'}
 
   '@xtuc/ieee754@1.2.0':
     resolution: {integrity: sha512-DX8nKgqcGwsc0eJSqYt5lwP4DH5FlHnmuWWBRy7X0NcaGR0ZtuyeESgMwTYVEtxmsNGY+qit4QYT/MIYTOTPeA==}
@@ -23377,7 +23377,7 @@ snapshots:
       '@sap-ux/logger': 0.8.2
       '@sap-ux/project-access': 1.35.13
       '@sap-ux/vocabularies-types': 0.15.0
-      '@xmldom/xmldom': 0.8.13
+      '@xmldom/xmldom': 0.9.10
       ejs: 3.1.10
       i18next: 25.8.12(typescript@5.9.3)
       mem-fs: 2.1.0
@@ -25823,7 +25823,7 @@ snapshots:
     dependencies:
       chevrotain: 7.1.1
 
-  '@xmldom/xmldom@0.8.13': {}
+  '@xmldom/xmldom@0.9.10': {}
 
   '@xtuc/ieee754@1.2.0': {}
 
@@ -33164,7 +33164,7 @@ snapshots:
 
   read-excel-file@9.0.10:
     dependencies:
-      '@xmldom/xmldom': 0.8.13
+      '@xmldom/xmldom': 0.9.10
       fflate: 0.8.2
       unzipper: 0.12.3
     optional: true
