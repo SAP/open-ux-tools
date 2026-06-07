@@ -1998,8 +1998,8 @@ importers:
         specifier: 0.5.3
         version: 0.5.3
       '@eslint/core':
-        specifier: 1.1.1
-        version: 1.1.1
+        specifier: 1.2.1
+        version: 1.2.1
       '@eslint/js':
         specifier: 10.0.1
         version: 10.0.1(eslint@9.39.1)
@@ -6975,6 +6975,10 @@ packages:
 
   '@eslint/core@1.1.1':
     resolution: {integrity: sha512-QUPblTtE51/7/Zhfv8BDwO0qkkzQL7P/aWWbqcf4xWLEYn1oKjdO0gglQBB4GAsu7u6wjijbCmzsUTy6mnk6oQ==}
+    engines: {node: ^20.19.0 || ^22.13.0 || >=24}
+
+  '@eslint/core@1.2.1':
+    resolution: {integrity: sha512-MwcE1P+AZ4C6DWlpin/OmOA54mmIZ/+xZuJiQd4SyB29oAJjN30UW9wkKNptW2ctp4cEsvhlLY/CsQ1uoHDloQ==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
   '@eslint/eslintrc@3.3.5':
@@ -21158,6 +21162,10 @@ snapshots:
       '@types/json-schema': 7.0.15
 
   '@eslint/core@1.1.1':
+    dependencies:
+      '@types/json-schema': 7.0.15
+
+  '@eslint/core@1.2.1':
     dependencies:
       '@types/json-schema': 7.0.15
 

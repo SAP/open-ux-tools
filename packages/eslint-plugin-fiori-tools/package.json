@@ -38,7 +38,7 @@
         "@babel/parser": "8.0.0-rc.6",
         "@eslint/js": "10.0.1",
         "@eslint/json": "0.14.0",
-        "@eslint/core": "1.1.1",
+        "@eslint/core": "1.2.1",
         "@eslint/config-helpers": "0.5.3",
         "@typescript-eslint/eslint-plugin": "8.57.2",
         "@typescript-eslint/parser": "8.57.2",
