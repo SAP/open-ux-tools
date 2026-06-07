@@ -18,6 +18,7 @@ jobs:
     create-changeset:
         name: Create Dependency Changeset
         runs-on: ubuntu-latest
+        environment: ci-secrets
         permissions:
             contents: write
             pull-requests: read
@@ -46,6 +47,7 @@ jobs:
     update-manifest-fixtures:
         name: Update @ui5/manifest Fixtures & Changeset
         runs-on: ubuntu-latest
+        environment: ci-secrets
         permissions:
             contents: write
             pull-requests: read
