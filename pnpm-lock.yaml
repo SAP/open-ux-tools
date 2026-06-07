@@ -316,11 +316,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui5-application-writer
       '@types/yeoman-environment':
-        specifier: 2.10.8
-        version: 2.10.8
+        specifier: 2.10.11
+        version: 2.10.11
       '@types/yeoman-generator':
-        specifier: 5.2.11
-        version: 5.2.11
+        specifier: 5.2.14
+        version: 5.2.14
       axios:
         specifier: '>=1.16.0'
         version: 1.16.1
@@ -9841,9 +9841,6 @@ packages:
   '@types/deep-eql@4.0.2':
     resolution: {integrity: sha512-c9h9dVVMigMPc4bwTvC5dxqtqJZwQPePsWjPlpSOnojbor6pGqdk541lfA7AqFQr5pB1BRdq0juY9db81BwyFw==}
 
-  '@types/diff@5.0.9':
-    resolution: {integrity: sha512-RWVEhh/zGXpAVF/ZChwNnv7r4rvqzJ7lYNSmZSVTxjV0PBLf6Qu7RNg+SUtkpzxmiNkjCx0Xn2tPp7FIkshJwQ==}
-
   '@types/diff@8.0.0':
     resolution: {integrity: sha512-o7jqJM04gfaYrdCecCVMbZhNdG6T1MHg/oQoRFdERLV+4d+V7FijhiEAbFu0Usww84Yijk9yH58U4Jk4HbtzZw==}
     deprecated: This is a stub types definition. diff provides its own type definitions, so you do not need this installed.
@@ -10186,12 +10183,6 @@ packages:
 
   '@types/yeoman-environment@2.10.11':
     resolution: {integrity: sha512-kIDgoiuPnL9HGHwa2t6h4FiUgYFb411/okY0nKhRKw+IMsRxMOWzQUFhZ/CKQvwXvKoCjFTj+MZI2KXAKxVmug==}
-
-  '@types/yeoman-environment@2.10.8':
-    resolution: {integrity: sha512-/g92Z/PAMXklSoWafGxTW8DxB4admgl5NDHvKn0qMkz2C0GJUvbV7tpU9LbKNnlMO+ynerz5bCVbhuBzEHbb6Q==}
-
-  '@types/yeoman-generator@5.2.11':
-    resolution: {integrity: sha512-Eu56V69QPODdnHhdHil2xzw8SvR6cJdgkQBmGkyYDNz6dTErr3wCCUv+Uvw5jPATZjyB+b2CNyZbidI79KBcdw==}
 
   '@types/yeoman-generator@5.2.14':
     resolution: {integrity: sha512-eIYBqQyURXiAaoU6jvJqMI+tNSG4s7EXtcHucLCgb8EV2vqz4x1WPr91MT0MiWHV8+9dDRrMkc1VZ6LduexuyA==}
@@ -24712,8 +24703,6 @@ snapshots:
 
   '@types/deep-eql@4.0.2': {}
 
-  '@types/diff@5.0.9': {}
-
   '@types/diff@8.0.0':
     dependencies:
       diff: 8.0.4
@@ -25087,38 +25076,16 @@ snapshots:
 
   '@types/yeoman-environment@2.10.11':
     dependencies:
-      '@types/diff': 5.0.9
+      '@types/diff': 8.0.0
       '@types/inquirer': 8.2.6
       '@types/mem-fs': 1.1.2
-      '@types/node': 20.0.0
+      '@types/node': 22.13.14
       '@types/text-table': 0.2.5
       '@types/vinyl': 2.0.12
       '@types/yeoman-generator': 5.2.14
       chalk: 4.1.2
       commander: 9.4.0
       execa: 5.1.1
-      rxjs: 6.6.7
-
-  '@types/yeoman-environment@2.10.8':
-    dependencies:
-      '@types/diff': 5.0.9
-      '@types/inquirer': 8.2.6
-      '@types/mem-fs': 1.1.2
-      '@types/text-table': 0.2.5
-      '@types/vinyl': 2.0.12
-      '@types/yeoman-generator': 5.2.14
-      chalk: 4.1.2
-      commander: 9.4.0
-      execa: 5.1.1
-      rxjs: 6.6.7
-
-  '@types/yeoman-generator@5.2.11':
-    dependencies:
-      '@types/debug': 4.1.13
-      '@types/ejs': 3.1.5
-      '@types/inquirer': 8.2.6
-      '@types/mem-fs-editor': 7.0.1
-      '@types/yeoman-environment': 2.10.11
       rxjs: 6.6.7
 
   '@types/yeoman-generator@5.2.14':
@@ -25127,7 +25094,7 @@ snapshots:
       '@types/ejs': 3.1.5
       '@types/inquirer': 8.2.6
       '@types/mem-fs-editor': 7.0.1
-      '@types/node': 20.19.37
+      '@types/node': 22.13.14
       '@types/yeoman-environment': 2.10.11
       rxjs: 6.6.7
 
