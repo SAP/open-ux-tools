@@ -156,10 +156,10 @@ const sharpStubPlugin = {
 //      inline it without needing it as a direct dependency of this package).
 //   2. Sets env.wasm.wasmPaths so onnxruntime-web finds the .wasm binary at
 //      runtime relative to dist/ (where bundle.mjs copies it in Step 4).
-//   3. Sets globalThis[Symbol.for('onnxruntime')] — the hook @huggingface/transformers
-//      checks at line ~12511 of transformers.node.cjs before falling back to the
-//      native onnxruntime-node. Since require('onnxruntime-node') runs ~4000 lines
-//      before that check in the same CJS init function, the global is set in time.
+//   3. Sets globalThis[Symbol.for('onnxruntime')] — the hook @huggingface/transformers'
+//      getORTEnv() helper checks before falling back to require('onnxruntime-node').
+//      Because CJS module evaluation is synchronous and require('onnxruntime-node')
+//      runs before getORTEnv() in the same init function, the global is set in time.
 const onnxNodeWasmPlugin = {
     name: 'onnxruntime-node-wasm',
     setup(build) {
@@ -173,7 +173,10 @@ const onnxNodeWasmPlugin = {
             contents: [
                 `const ort = require(${JSON.stringify(ortWebNodeEntry)});`,
                 `if (!ort.env?.wasm) throw new Error('onnxruntime-web: env.wasm not available');`,
-                `ort.env.wasm.wasmPaths = __dirname + '/';`,
+                // Use a file:// URL so onnxruntime-web can resolve WASM files on all
+                // platforms — __dirname uses backslashes on Windows, which would break
+                // the path-based lookup in the WASM loader.
+                `ort.env.wasm.wasmPaths = require('url').pathToFileURL(__dirname).href + '/';`,
                 // Override the ORT global so transformers uses WASM on Node.js.
                 `globalThis[Symbol.for('onnxruntime')] = ort;`,
                 `module.exports = ort;`
