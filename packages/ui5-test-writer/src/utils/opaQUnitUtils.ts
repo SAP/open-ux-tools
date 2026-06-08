@@ -42,7 +42,7 @@ const MAX_FILE_CONTENT_LENGTH = 10000;
  * @param value - the string to escape
  * @returns the escaped string
  */
-const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
 
 /**
  * Splices new module paths into the sap.ui.require array of the content string.
@@ -320,6 +320,144 @@ export function splicePageIntoJourneyRunner(fileContent: string, pages: JourneyR
 }
 
 /**
+ * Filters the input page list down to those whose `Custom<targetKey>` import line is not yet
+ * present in the existing JourneyRunner.ts content.
+ *
+ * @param fileContent - the existing JourneyRunner.ts content
+ * @param pages - the candidate pages to splice in
+ * @returns the subset of pages that need to be added
+ */
+function findPagesToAdd(fileContent: string, pages: JourneyRunnerPage[]): JourneyRunnerPage[] {
+    return pages.filter((page) => {
+        const importPattern = new RegExp(String.raw`from\s+"\./${escapeRegex(page.targetKey)}"`);
+        return !importPattern.test(fileContent);
+    });
+}
+
+/**
+ * Returns the offset of the character immediately after the last `import ... from "..."` line in
+ * the given content, or -1 if no import line is found.
+ *
+ * Uses `\b` word boundaries (zero-width) around `import` and `from` so the `[^\n]*?` middle
+ * quantifier doesn't sit next to another quantifier that could match the same characters. This
+ * avoids the consecutive-overlapping-quantifier shape that triggers catastrophic backtracking.
+ *
+ * @param content - the file content to scan
+ * @returns the index immediately after the last import line, or -1 if none found
+ */
+function findLastImportEnd(content: string): number {
+    const importLineRegex = /^import\b[^\n]*?\bfrom[ \t]+["'][^"']+["'];?[ \t]*$/gm;
+    let lastImportEnd = -1;
+    let importMatch: RegExpExecArray | null;
+    while ((importMatch = importLineRegex.exec(content)) !== null) {
+        lastImportEnd = importMatch.index + importMatch[0].length;
+    }
+    return lastImportEnd;
+}
+
+/**
+ * Walks forward from the opening `{` of a `pages: { ... }` object literal, counting braces, and
+ * returns the index of the matching closing `}`. The pages object now contains nested `{}` (the
+ * page-definition object) so a regex with `[^}]*` would stop at the first inner closing brace.
+ *
+ * @param content - the file content
+ * @param openBraceIdx - the index of the `{` that opens the pages object
+ * @returns the index of the matching closing `}` (or `content.length` if not found)
+ */
+function findMatchingClosingBrace(content: string, openBraceIdx: number): number {
+    let depth = 1;
+    let i = openBraceIdx + 1;
+    while (i < content.length && depth > 0) {
+        const ch = content[i];
+        if (ch === '{') {
+            depth++;
+        } else if (ch === '}') {
+            depth--;
+        }
+        if (depth === 0) {
+            break;
+        }
+        i++;
+    }
+    return i;
+}
+
+/**
+ * Builds the source-code block for a single new entry in the `pages: { ... }` object literal.
+ *
+ * @param page - the page to render
+ * @param pageIndent - leading whitespace for the entry's outer line
+ * @param innerIndent - leading whitespace for the entry's nested lines
+ * @returns the multi-line source block
+ */
+function buildPageEntry(page: JourneyRunnerPage, pageIndent: string, innerIndent: string): string {
+    const fw = page.template ?? 'ListReport';
+    return [
+        `${pageIndent}onThe${page.targetKey}: new ${fw}(`,
+        `${innerIndent}{`,
+        `${innerIndent}    appId: "${page.appID ?? ''}",`,
+        `${innerIndent}    componentId: "${page.componentID ?? ''}",`,
+        `${innerIndent}    entitySet: "${page.entitySet ?? ''}",`,
+        `${innerIndent}    contextPath: "${page.contextPath ?? ''}"`,
+        `${innerIndent}},`,
+        `${innerIndent}Custom${page.targetKey}`,
+        `${pageIndent})`
+    ].join('\n');
+}
+
+/**
+ * Inserts the given import lines after the last existing `import` line in `content`. If `content`
+ * has no `import` lines, returns it unchanged.
+ *
+ * @param content - the file content
+ * @param newImportLines - the import lines to insert (each should NOT include a leading newline)
+ * @returns the updated content
+ */
+function insertAfterLastImport(content: string, newImportLines: string[]): string {
+    if (newImportLines.length === 0) {
+        return content;
+    }
+    const lastImportEnd = findLastImportEnd(content);
+    if (lastImportEnd < 0) {
+        return content;
+    }
+    const newImports = newImportLines.map((line) => `\n${line}`).join('');
+    return `${content.slice(0, lastImportEnd)}${newImports}${content.slice(lastImportEnd)}`;
+}
+
+/**
+ * Inserts the given new page entries inside the `pages: { ... }` object literal of `content`. If
+ * `content` has no `pages: {` block, returns it unchanged.
+ *
+ * @param content - the file content
+ * @param toAdd - the pages to add
+ * @returns the updated content
+ */
+function insertIntoPagesObject(content: string, toAdd: JourneyRunnerPage[]): string {
+    const pagesStartMatch = /pages\s*:\s*\{/.exec(content);
+    if (!pagesStartMatch) {
+        return content;
+    }
+    const openBraceIdx = content.indexOf('{', pagesStartMatch.index);
+    const pagesBodyEnd = findMatchingClosingBrace(content, openBraceIdx);
+    const pagesBody = content.slice(openBraceIdx + 1, pagesBodyEnd);
+
+    // Detect indentation from the first existing page entry
+    const pageIndentMatch = /^([ \t]+)on/m.exec(pagesBody);
+    const pageIndent = pageIndentMatch ? pageIndentMatch[1] : '        ';
+    const innerIndent = pageIndent + '    ';
+
+    const newPageEntries = toAdd.map((page) => buildPageEntry(page, pageIndent, innerIndent)).join(',\n');
+
+    // Ensure the last existing entry ends with a comma before we insert after it.
+    const trimmedPagesEnd = content.slice(0, pagesBodyEnd).trimEnd();
+    const needsComma = !trimmedPagesEnd.endsWith(',') && !trimmedPagesEnd.endsWith('{');
+    const commaFix = needsComma ? ',' : '';
+    const trailingWhitespace = content.slice(trimmedPagesEnd.length, pagesBodyEnd);
+    return `${trimmedPagesEnd}${commaFix}\n${newPageEntries}${trailingWhitespace}${content.slice(pagesBodyEnd)}`;
+}
+
+/**
  * Splices new page entries into an existing TypeScript JourneyRunner.ts:
  * - adds a default-import line after the last existing page import
  * - adds an entry inside the `pages: { ... }` object literal
@@ -338,97 +476,26 @@ export function splicePageIntoJourneyRunnerTs(fileContent: string, pages: Journe
     if (fileContent.length > MAX_FILE_CONTENT_LENGTH) {
         return fileContent;
     }
-    // Determine which pages are not yet present by checking for their `Custom<Page>` import line
-    const toAdd = pages.filter((page) => {
-        const importPattern = new RegExp(`from\\s+"\\./${escapeRegex(page.targetKey)}"`);
-        return !importPattern.test(fileContent);
-    });
-
+    const toAdd = findPagesToAdd(fileContent, pages);
     if (toAdd.length === 0) {
         return fileContent;
     }
-
-    let result = fileContent;
 
     // Determine which framework imports (ListReport / ObjectPage) are missing and need to be added.
     const frameworkTemplates = Array.from(
         new Set(toAdd.map((page) => page.template).filter((t): t is string => Boolean(t)))
     );
-    const missingFrameworkImports = frameworkTemplates.filter((tpl) => !result.includes(`from "sap/fe/test/${tpl}"`));
+    const missingFrameworkImports = frameworkTemplates.filter(
+        (tpl) => !fileContent.includes(`from "sap/fe/test/${tpl}"`)
+    );
 
-    // 1. Insert imports after the last existing `import ... from "..."` line.
-    //    Uses `\b` word boundaries (zero-width) around `import` and `from` so the
-    //    `[^\n]*?` middle quantifier doesn't sit next to another quantifier that
-    //    could match the same characters. This avoids the consecutive-overlapping-
-    //    quantifier shape that triggers catastrophic backtracking.
-    const importLineRegex = /^import\b[^\n]*?\bfrom[ \t]+["'][^"']+["'];?[ \t]*$/gm;
-    let lastImportEnd = -1;
-    let importMatch: RegExpExecArray | null;
-    while ((importMatch = importLineRegex.exec(result)) !== null) {
-        lastImportEnd = importMatch.index + importMatch[0].length;
-    }
-    if (lastImportEnd >= 0) {
-        const frameworkImports = missingFrameworkImports.map((tpl) => `\nimport ${tpl} from "sap/fe/test/${tpl}";`);
-        const customImports = toAdd.map((page) => `\nimport Custom${page.targetKey} from "./${page.targetKey}";`);
-        const newImports = [...frameworkImports, ...customImports].join('');
-        result = `${result.slice(0, lastImportEnd)}${newImports}${result.slice(lastImportEnd)}`;
-    }
+    const newImportLines = [
+        ...missingFrameworkImports.map((tpl) => `import ${tpl} from "sap/fe/test/${tpl}";`),
+        ...toAdd.map((page) => `import Custom${page.targetKey} from "./${page.targetKey}";`)
+    ];
 
-    // 2. Splice into the pages object: `pages: { ... }`.
-    //    The pages object now contains nested `{}` (the page-definition object) so we
-    //    walk forward from `pages: {` counting braces to find the matching closing `}`.
-    const pagesStartMatch = /pages\s*:\s*\{/.exec(result);
-    if (pagesStartMatch) {
-        const openBraceIdx = result.indexOf('{', pagesStartMatch.index);
-        let depth = 1;
-        let i = openBraceIdx + 1;
-        while (i < result.length && depth > 0) {
-            const ch = result[i];
-            if (ch === '{') {
-                depth++;
-            } else if (ch === '}') {
-                depth--;
-            }
-            if (depth === 0) {
-                break;
-            }
-            i++;
-        }
-        const pagesBodyEnd = i; // position of the matching `}`
-        const pagesBody = result.slice(openBraceIdx + 1, pagesBodyEnd);
-
-        // Detect indentation from the first existing page entry
-        const pageIndentMatch = /^([ \t]+)on/m.exec(pagesBody);
-        const pageIndent = pageIndentMatch ? pageIndentMatch[1] : '        ';
-        const innerIndent = pageIndent + '    ';
-
-        const newPageEntries = toAdd
-            .map((page) => {
-                const fw = page.template ?? 'ListReport';
-                return [
-                    `${pageIndent}onThe${page.targetKey}: new ${fw}(`,
-                    `${innerIndent}{`,
-                    `${innerIndent}    appId: "${page.appID ?? ''}",`,
-                    `${innerIndent}    componentId: "${page.componentID ?? ''}",`,
-                    `${innerIndent}    entitySet: "${page.entitySet ?? ''}",`,
-                    `${innerIndent}    contextPath: "${page.contextPath ?? ''}"`,
-                    `${innerIndent}},`,
-                    `${innerIndent}Custom${page.targetKey}`,
-                    `${pageIndent})`
-                ].join('\n');
-            })
-            .join(',\n');
-
-        // Ensure the last existing entry ends with a comma before we insert after it.
-        const trimmedPagesEnd = result.slice(0, pagesBodyEnd).trimEnd();
-        const needsComma = !trimmedPagesEnd.endsWith(',') && !trimmedPagesEnd.endsWith('{');
-        const commaFix = needsComma ? ',' : '';
-        const trailingWhitespace = result.slice(trimmedPagesEnd.length, pagesBodyEnd);
-        result =
-            `${trimmedPagesEnd}${commaFix}\n${newPageEntries}` + `${trailingWhitespace}${result.slice(pagesBodyEnd)}`;
-    }
-
-    return result;
+    const withImports = insertAfterLastImport(fileContent, newImportLines);
+    return insertIntoPagesObject(withImports, toAdd);
 }
 
 /**

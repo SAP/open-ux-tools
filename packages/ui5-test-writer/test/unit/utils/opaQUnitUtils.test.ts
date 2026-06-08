@@ -751,6 +751,53 @@ describe('addPagesToJourneyRunner()', () => {
         expect(fs.read).toHaveBeenCalled();
         expect(fs.write).not.toHaveBeenCalled();
     });
+
+    test('returns file unchanged when content has no `import ... from "..."` line', () => {
+        // No import statement → insertAfterLastImport falls through; pages object is also absent so the
+        // pages-splice step is a no-op as well. The function should return the original content.
+        const fileWithoutImports = `function journey() {
+    QUnit.module("Journey");
+}`;
+        const result = splicePageIntoJourneyRunnerTs(fileWithoutImports, [
+            {
+                targetKey: 'NewPage',
+                appPath: 'myApp',
+                template: 'ListReport',
+                appID: 'myApp',
+                componentID: 'NewPage',
+                entitySet: 'New'
+            }
+        ]);
+
+        expect(result).toBe(fileWithoutImports);
+    });
+
+    test('preserves content when there is no `pages: { ... }` object literal', () => {
+        // Imports exist (so the import-insertion path runs) but the `pages: {}` object is missing —
+        // insertIntoPagesObject takes the early-return branch, leaving the import-augmented content as-is.
+        const fileWithoutPagesObject = `import JourneyRunner from "sap/fe/test/JourneyRunner";
+
+const runner = new JourneyRunner({ async: true });
+export default runner;
+`;
+        const result = splicePageIntoJourneyRunnerTs(fileWithoutPagesObject, [
+            {
+                targetKey: 'NewPage',
+                appPath: 'myApp',
+                template: 'ListReport',
+                appID: 'myApp',
+                componentID: 'NewPage',
+                entitySet: 'New'
+            }
+        ]);
+
+        // Imports are augmented but the pages object is untouched (because there isn't one).
+        expect(result).toContain('import CustomNewPage from "./NewPage";');
+        expect(result).toContain('import ListReport from "sap/fe/test/ListReport";');
+        // The original `new JourneyRunner(...)` call is preserved verbatim.
+        expect(result).toContain('const runner = new JourneyRunner({ async: true });');
+        expect(result).not.toContain('onTheNewPage');
+    });
 });
 
 describe('MAX_FILE_CONTENT_LENGTH guard', () => {
