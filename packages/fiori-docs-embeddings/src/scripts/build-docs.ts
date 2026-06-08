@@ -1135,6 +1135,11 @@ Return ONLY the formatted markdown. Do not add any explanations or meta-commenta
         if (!source.filePath) {
             throw new Error(`github-raw source ${source.id} requires a filePath`);
         }
+        // owner/repo are optional in SourceConfig but required to form the raw URL — guard early
+        // to avoid a confusing 404 from https://raw.githubusercontent.com/undefined/undefined/...
+        if (!source.owner || !source.repo) {
+            throw new Error(`github-raw source ${source.id} requires owner and repo`);
+        }
 
         const branch = source.branch ?? 'main';
         const rawUrl = `https://raw.githubusercontent.com/${source.owner}/${source.repo}/${branch}/${source.filePath}`;
@@ -1541,13 +1546,20 @@ Return ONLY the formatted markdown. Do not add any explanations or meta-commenta
         // Merge sources: new source entry replaces the existing one for the same id
         const mergedSources = { ...existingSources, ...newSources };
 
-        // Merge categories: for a category that already exists, union the document lists
-        // so existing documents from other sources are not lost.
+        // Merge categories: for a category that already exists, replace stale document IDs
+        // that belong to the current source, then add the fresh ones.
+        const processedSourceIds = new Set(this.sourceMarkdown.keys());
         const mergedCategoryMap = new Map(existingCategories.map((c) => [c.id, { ...c, documents: [...c.documents] }]));
         for (const cat of newCategories) {
             const existing = mergedCategoryMap.get(cat.id);
             if (existing) {
-                const merged = [...new Set([...existing.documents, ...cat.documents])];
+                // IDs are formed as `${sourceId}-${doc.id}`, so filter by prefix to drop docs
+                // that belonged to this source on the previous run — prevents deleted files from
+                // accumulating in the index across repeated single-source rebuilds.
+                const staleRemoved = existing.documents.filter(
+                    (docId) => !Array.from(processedSourceIds).some((srcId) => docId.startsWith(`${srcId}-`))
+                );
+                const merged = [...new Set([...staleRemoved, ...cat.documents])];
                 mergedCategoryMap.set(cat.id, { ...existing, count: merged.length, documents: merged });
             } else {
                 mergedCategoryMap.set(cat.id, cat);
@@ -1568,6 +1580,23 @@ Return ONLY the formatted markdown. Do not add any explanations or meta-commenta
         await fs.writeFile(indexPath, JSON.stringify(index, null, 2));
         this.logger.info(`✓ Created master index: ${indexPath}`);
     }
+
+    /**
+     * Restrict the build to a single source by its ID. Exits with an error if the ID is not found.
+     *
+     * @param sourceId - The source ID to filter to
+     */
+    filterToSingleSource(sourceId: string): void {
+        const source = this.config.sources.find((s) => s.id === sourceId);
+        if (!source) {
+            this.logger.error(
+                `Unknown source "${sourceId}". Available: ${this.config.sources.map((s) => s.id).join(', ')}`
+            );
+            process.exit(1);
+        }
+        this.config.sources = [source];
+        this.config.singleSource = true;
+    }
 }
 
 // Export the class
@@ -1582,14 +1611,7 @@ if (isMainModule) {
 
     const sourceArg = process.argv.find((a) => a.startsWith('--source='))?.split('=')[1];
     if (sourceArg) {
-        const cfg = (builder as unknown as { config: BuildConfig }).config;
-        const source = cfg.sources.find((s) => s.id === sourceArg);
-        if (!source) {
-            logger.error(`Unknown source "${sourceArg}". Available: ${cfg.sources.map((s) => s.id).join(', ')}`);
-            process.exit(1);
-        }
-        cfg.sources = [source];
-        cfg.singleSource = true;
+        builder.filterToSingleSource(sourceArg);
     }
 
     builder.buildFilestore().catch((error) => {
