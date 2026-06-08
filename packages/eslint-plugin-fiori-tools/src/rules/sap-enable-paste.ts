@@ -8,6 +8,7 @@ import { createJsonFixer } from '../language/rule-fixer.js';
 import { FioriJSONSourceCode } from '../language/json/source-code.js';
 import { checkAppTablesConfiguration, isV2Table } from '../utils/helpers.js';
 import type { FeV2PageType, Table as TableV2 } from '../project-context/linker/fe-v2.js';
+import { FioriChangeSourceCode } from '../language/change/source-code.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: ENABLE_PASTE,
@@ -25,7 +26,10 @@ const rule: FioriRuleDefinition = createFioriRule({
     },
 
     check(context) {
-        if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
+        if (
+            !(context.sourceCode instanceof FioriJSONSourceCode) &&
+            !(context.sourceCode instanceof FioriChangeSourceCode)
+        ) {
             return [];
         }
         const problems: EnablePaste[] = [];
@@ -95,7 +99,7 @@ function checkConfiguration(
     page: FeV4PageType | FeV2PageType,
     table: TableV4 | TableV2,
     parsedApp: ParsedApp,
-    sourceCode: FioriJSONSourceCode,
+    sourceCode: FioriJSONSourceCode | FioriChangeSourceCode,
     problems: EnablePaste[],
     pageSectionName?: string
 ): void {
@@ -109,7 +113,7 @@ function checkConfiguration(
                 changeFileUri: table.configuration.showPasteButton.changeFileUri
             });
         }
-    } else if (table.configuration.enablePaste.valueInFile === false) {
+    } else if (table.configuration.enablePaste.valueInFile === false && sourceCode instanceof FioriJSONSourceCode) {
         const node = sourceCode.getNode(sourceCode.ast.body, table.configuration.enablePaste.configurationPath);
         problems.push({
             type: ENABLE_PASTE,

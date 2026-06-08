@@ -7,6 +7,7 @@ import type { FeV4PageType, Table as TableV4 } from '../project-context/linker/f
 import type { FeV2PageType, Table as TableV2 } from '../project-context/linker/fe-v2.js';
 import type { ParsedApp } from '../project-context/parser/index.js';
 import type { FioriJSONSourceCode } from '../language/json/source-code.js';
+import type { FioriChangeSourceCode } from '../language/change/source-code.js';
 
 // Type aliases for better readability
 export type ASTNode = Rule.Node;
@@ -807,19 +808,19 @@ export function findDeepestExistingPath(
  *
  * @param page - Application page
  * @param parsedApp - Parsed application
- * @param sourceCode - FioriJSONSourceCode instance
+ * @param sourceCode - FioriJSONSourceCode | FioriChangeSourceCode instance
  * @param checkConfiguration - Function to check a specific property in the table configuration
  * @returns Found rule diagnostic issues
  */
 export function checkAppTablesConfiguration<DiagnosticType>(
     page: FeV4PageType | FeV2PageType,
     parsedApp: ParsedApp,
-    sourceCode: FioriJSONSourceCode,
+    sourceCode: FioriJSONSourceCode | FioriChangeSourceCode,
     checkConfiguration: (
         page: any,
         table: any,
         parsedApp: ParsedApp,
-        sourceCode: FioriJSONSourceCode,
+        sourceCode: FioriJSONSourceCode | FioriChangeSourceCode,
         problems: DiagnosticType[],
         pageSectionLabel?: string
     ) => void
