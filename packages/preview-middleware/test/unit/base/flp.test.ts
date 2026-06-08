@@ -1782,7 +1782,7 @@ describe('initAdp', () => {
 
         expect(mockReadManifestFromBuildPath).toHaveBeenCalledWith(cfBuildPath);
         expect(mockAdpPreviewConstructor).toHaveBeenCalled();
-        expect(flpInitMock).toHaveBeenCalledWith(mockManifest, expect.any(String));
+        expect(flpInitMock).toHaveBeenCalledWith(mockManifest, expect.any(String), {}, expect.any(Object));
         expect(flp.rta?.options?.isCloud).toBe(false);
         expect(flp.rta?.options?.isCloudFoundry).toBe(true);
     });

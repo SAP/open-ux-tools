@@ -1238,7 +1238,7 @@ export class FlpSandbox {
         if ('cfBuildPath' in config) {
             const manifest = this.setupCfBuildMode(config.cfBuildPath);
             configureRta(this.rta, layer, variant.id, false, true);
-            await this.init(manifest, variant.reference);
+            await this.init(manifest, variant.reference, {}, adp);
             await this.setupAdpCommonHandlers(adp);
             return;
         }
