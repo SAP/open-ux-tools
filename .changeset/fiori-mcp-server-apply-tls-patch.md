@@ -2,11 +2,10 @@
 "@sap-ux/fiori-mcp-server": patch
 ---
 
-fix(fiori-mcp-server): apply TlsPatch in fetch-service-metadata flow
+Apply TLS patch, fix Zowe keyring loading, format metadata XML, pass real HOME to MCP server
 
-The `fetch-service-metadata` functionality instantiates `AbapServiceProvider`
-directly (bypassing `createForAbap`), so the TLS patch installed by the axios
-factory was never applied. Mirror the `factory.ts` pattern by calling
-`TlsPatch.isPatchRequired(baseURL)` / `TlsPatch.apply()` before constructing
-the provider, so requests to SAP corporate hosts (`*.sap.corp`, `*.net.sap`)
-succeed without requiring `node -r @sap/patchtls` at the host process level.
+- Apply `TlsPatch` in `fetch-service-metadata` before constructing `AbapServiceProvider` (was bypassed by instantiating directly instead of via `createForAbap`)
+- Bundle `@zowe/secrets-for-zowe-sdk` native keyring via an inline shim that loads the platform `.node` binary directly from `dist/prebuilds/`, fixing credential lookup when running from a tgz install
+- Use `SAP_TOOLS_DIR` env var to locate `~/.saptools` independently of `HOME`, so stored SAP systems are found even when the test harness overrides `HOME`
+- Format fetched EDMX metadata with `prettify-xml` (4-space indent) before writing `metadata.xml`
+- Surface the original XML parse error message when EDMX validation fails

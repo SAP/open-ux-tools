@@ -211,28 +211,36 @@ await esbuild.build({
             'const __dirname = __dn(__filename);'
         ].join('\n')
     },
-    external: [
-        'vscode'
-        // onnxruntime-node is no longer external — aliased to the WASM shim above
-    ],
+    external: ['vscode'],
     plugins: [onnxNodeWasmPlugin, pkgJsonShimPlugin, sharpStubPlugin]
 });
 
 console.log('✓ esbuild bundle complete');
 
+// ── Step 1b: rewrite @zowe/secrets-for-zowe-sdk require in bundle ────────────
+// @sap-ux/store calls require('@zowe/secrets-for-zowe-sdk') at runtime via a
+// createRequire-based dynamic require. esbuild inlines the string verbatim and
+// cannot intercept it via onResolve. Post-process the bundle to replace every
+// occurrence with an inline shim that loads the native keyring binary directly
+// from dist/prebuilds/ — no node_modules lookup needed.
+const ZOWE_SHIM = `(()=>{const{join:_j}=require("path"),{existsSync:_e}=require("fs");function _t(){switch(process.platform){case"win32":return"win32-"+process.arch+"-msvc";case"linux":{const m=process.report.getReport().header.glibcVersionRuntime==null,a=m?"musl":"gnu";return process.arch==="arm"?"linux-arm-"+a+"eabihf":"linux-"+process.arch+"-"+a;}default:return process.platform+"-"+process.arch;}}const _p=_j(__dirname,"prebuilds","keyring."+_t()+".node");if(!_e(_p))throw new Error("Zowe keyring native module not found: "+_p);const{deletePassword:dP,findCredentials:fC,findPassword:fP,getPassword:gP,setPassword:sP}=require(_p);return{keyring:{deletePassword:dP,findCredentials:fC,findPassword:fP,getPassword:gP,setPassword:sP}};})()`;
+
+const bundleFile = path.join(DIST, 'index.js');
+let bundleSource = fs.readFileSync(bundleFile, 'utf8');
+const zowePattern = /\w+\(["']@zowe\/secrets-for-zowe-sdk["']\)/g;
+const matchCount = (bundleSource.match(zowePattern) || []).length;
+if (matchCount === 0) {
+    console.warn('⚠ No require("@zowe/secrets-for-zowe-sdk") found in bundle — shim not applied');
+} else {
+    bundleSource = bundleSource.replace(zowePattern, ZOWE_SHIM);
+    fs.writeFileSync(bundleFile, bundleSource, 'utf8');
+    console.log(`✓ Rewrote ${matchCount} @zowe/secrets-for-zowe-sdk require(s) to inline prebuilds shim`);
+}
+
 // ── Step 2: copy @zowe/secrets-for-zowe-sdk prebuilds ────────────────────────
-// @sap-ux/store's keyring loader calls findPrebuildsDir(__dirname) at runtime.
-// When esbuild inlines src/keyring/index.js, __dirname becomes dist/. The loader
-// walks up until it finds a package.json (the root package.json), then looks for
-// prebuilds/keyring.<platform>.node relative to that directory. Copying only the
-// prebuilds/ folder to dist/prebuilds/ satisfies this lookup — same pattern as
-// packages/sap-systems-ext/esbuild.js.
-//
-// @zowe/secrets-for-zowe-sdk is a direct dep of @sap-ux/store, not of this
-// package. Resolve it via store's require context so we don't need to add it
-// to our own devDependencies.
-// @sap-ux/store has a restrictive `exports` field that doesn't expose
-// package.json. Resolve via main entry and walk up to find the package root.
+// The inline shim (above) loads the native keyring binary directly from
+// dist/prebuilds/ at runtime. Copy only the platform-specific prebuilds here;
+// ia32 is excluded as Node 22 dropped ia32 Windows support.
 const storePkgDir = findPkgRoot(req.resolve('@sap-ux/store'), '@sap-ux/store');
 const storeReq = createRequire(path.join(storePkgDir, 'package.json'));
 const zowePkgEntry = storeReq.resolve('@zowe/secrets-for-zowe-sdk');
