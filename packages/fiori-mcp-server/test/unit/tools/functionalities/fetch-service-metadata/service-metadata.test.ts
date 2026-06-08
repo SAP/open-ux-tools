@@ -23,7 +23,9 @@ jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     }
 }));
 
+const realLogger = await import('@sap-ux/logger');
 jest.unstable_mockModule('@sap-ux/logger', () => ({
+    ...realLogger,
     ToolsLogger: jest.fn().mockImplementation(() => ({
         debug: jest.fn(),
         info: jest.fn(),
