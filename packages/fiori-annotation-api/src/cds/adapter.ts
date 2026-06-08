@@ -611,7 +611,12 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
     };
 
     [DELETE_ELEMENT] = (writer: CDSWriter, document: Document, change: DeleteElement): void => {
-        const { pointer } = convertPointer(document.annotationFile, change.pointer, document.ast);
+        const { pointer } = convertPointer(
+            document.annotationFile,
+            change.pointer,
+            document.ast,
+            document.cdsTargetMapping
+        );
         const [currentAstNode, parentAstNode, , greatGrandParentAstNode] = getAstNodesFromPointer(
             document.ast,
             pointer
@@ -671,7 +676,8 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         const { pointer, containsFlattenedNodes } = convertPointer(
             document.annotationFile,
             change.pointer,
-            document.ast
+            document.ast,
+            document.cdsTargetMapping
         );
         const [currentAstNode] = getAstNodesFromPointer(document.ast, pointer).slice(-1);
         if (containsFlattenedNodes) {
@@ -782,7 +788,12 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         }
     }
     [INSERT_ATTRIBUTE] = (writer: CDSWriter, document: Document, change: InsertAttribute): void => {
-        const { pointer } = convertPointer(document.annotationFile, change.pointer, document.ast);
+        const { pointer } = convertPointer(
+            document.annotationFile,
+            change.pointer,
+            document.ast,
+            document.cdsTargetMapping
+        );
         const [currentAstNode] = getAstNodesFromPointer(document.ast, pointer).slice(-1);
         if (pointer) {
             if (currentAstNode.type === ANNOTATION_TYPE && change.name === Edm.Qualifier) {
@@ -827,7 +838,12 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         }
     };
     [DELETE_ATTRIBUTE] = (writer: CDSWriter, document: Document, change: DeleteAttribute): void => {
-        const { pointer } = convertPointer(document.annotationFile, change.pointer, document.ast);
+        const { pointer } = convertPointer(
+            document.annotationFile,
+            change.pointer,
+            document.ast,
+            document.cdsTargetMapping
+        );
         const [node] = getAstNodesFromPointer(document.ast, pointer).slice(-1);
         if (pointer && node?.type === QUALIFIER_TYPE) {
             writer.addChange(createDeleteQualifierChange(pointer));
@@ -839,7 +855,12 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         }
     };
     [UPDATE_ATTRIBUTE_VALUE] = (writer: CDSWriter, document: Document, change: UpdateAttributeValue): void => {
-        const { pointer } = convertPointer(document.annotationFile, change.pointer, document.ast);
+        const { pointer } = convertPointer(
+            document.annotationFile,
+            change.pointer,
+            document.ast,
+            document.cdsTargetMapping
+        );
         if (pointer) {
             writer.addChange(createUpdatePrimitiveValueChange(pointer, change.newValue));
         } else {
@@ -850,7 +871,12 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         }
     };
     [REPLACE_ATTRIBUTE] = (writer: CDSWriter, document: Document, change: ReplaceAttribute): void => {
-        const { pointer } = convertPointer(document.annotationFile, change.pointer, document.ast);
+        const { pointer } = convertPointer(
+            document.annotationFile,
+            change.pointer,
+            document.ast,
+            document.cdsTargetMapping
+        );
         const [currentAstNode] = getAstNodesFromPointer(document.ast, pointer).slice(-1);
         if (pointer) {
             if (currentAstNode.type === RECORD_PROPERTY_TYPE && change.newAttributeValue) {
@@ -868,7 +894,12 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         }
     };
     [REPLACE_ELEMENT] = (writer: CDSWriter, document: Document, change: ReplaceElement): void => {
-        const { pointer } = convertPointer(document.annotationFile, change.pointer, document.ast);
+        const { pointer } = convertPointer(
+            document.annotationFile,
+            change.pointer,
+            document.ast,
+            document.cdsTargetMapping
+        );
         const currentAFNode = getGenericNodeFromPointer(document.annotationFile, change.pointer);
         if (pointer) {
             if (currentAFNode?.type === ELEMENT_TYPE && currentAFNode.name === Edm.PropertyValue) {
@@ -892,7 +923,12 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         }
     };
     [REPLACE_TEXT] = (writer: CDSWriter, document: Document, change: ReplaceText): void => {
-        const { pointer } = convertPointer(document.annotationFile, change.pointer, document.ast);
+        const { pointer } = convertPointer(
+            document.annotationFile,
+            change.pointer,
+            document.ast,
+            document.cdsTargetMapping
+        );
         const segments = change.pointer.split('/');
         const lastSegment = segments.pop();
         const annotationFileNode = getGenericNodeFromPointer(document.annotationFile, segments.join('/'));
@@ -919,7 +955,12 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         }
     };
     [REPLACE_ELEMENT_CONTENT] = (writer: CDSWriter, document: Document, change: ReplaceElementContent): void => {
-        const { pointer } = convertPointer(document.annotationFile, change.pointer, document.ast);
+        const { pointer } = convertPointer(
+            document.annotationFile,
+            change.pointer,
+            document.ast,
+            document.cdsTargetMapping
+        );
         const [currentAstNode] = getAstNodesFromPointer(document.ast, pointer).slice(-1);
         const annotationFileNode = getGenericNodeFromPointer(document.annotationFile, change.pointer);
         const newValue = change.newValue[0];
@@ -962,7 +1003,12 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
     };
     [MOVE_ELEMENT] = (writer: CDSWriter, document: Document, change: MoveElements): void => {
         const { pointer, index } = change;
-        const { pointer: toPointer } = convertPointer(document.annotationFile, pointer, document.ast);
+        const { pointer: toPointer } = convertPointer(
+            document.annotationFile,
+            pointer,
+            document.ast,
+            document.cdsTargetMapping
+        );
         const toNode = getGenericNodeFromPointer(document.annotationFile, pointer);
         if (toPointer && isElementWithName(toNode, 'Collection')) {
             writer.addChange({
@@ -970,7 +1016,12 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
                 pointer: toPointer,
                 index,
                 fromPointers: change.fromPointers.map((ptr) => {
-                    const { pointer } = convertPointer(document.annotationFile, ptr, document.ast);
+                    const { pointer } = convertPointer(
+                        document.annotationFile,
+                        ptr,
+                        document.ast,
+                        document.cdsTargetMapping
+                    );
                     return pointer;
                 })
             });

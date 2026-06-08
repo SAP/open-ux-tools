@@ -46,20 +46,25 @@ class Visitor {
      * @param pointer - Pointer segments.
      * @returns Converted pointer.
      */
-    public document(astNode: CDSDocument, node: AnnotationFile, pointer: string[]): ReturnValue {
+    public document(
+        astNode: CDSDocument,
+        node: AnnotationFile,
+        pointer: string[],
+        cdsTargetMapping: number[]
+    ): ReturnValue {
         const [segment, indexSegment, ...segments] = pointer;
         const index = Number.parseInt(indexSegment, 10);
+        const cdsTargetIndex = cdsTargetMapping[index];
         if (!Number.isNaN(index)) {
             if (segment === 'targets') {
                 if (segments.length === 0) {
                     return {
-                        pointer: [segment, indexSegment]
+                        pointer: [segment, cdsTargetIndex.toFixed(0)]
                     };
                 }
-                const result = this.target(astNode.targets[index], node.targets[index], segments);
+                const result = this.target(astNode.targets[cdsTargetIndex], node.targets[index], segments);
                 if (result) {
-                    result.pointer = [segment, indexSegment, ...result.pointer];
-
+                    result.pointer = [segment, cdsTargetIndex.toFixed(0), ...result.pointer];
                     return result;
                 }
             }
@@ -522,7 +527,8 @@ export function getAstNodesFromPointer(document: CDSDocument, pointer: string): 
 export function convertPointer(
     annotationFile: AnnotationFile,
     pointer: string,
-    cdsDocument: CDSDocument
+    cdsDocument: CDSDocument,
+    cdsTargetMapping: number[]
 ): {
     pointer: string;
     containsFlattenedNodes: boolean;
@@ -532,7 +538,7 @@ export function convertPointer(
         throw new ApiError(`Invalid pointer! ${pointer} must be absolute pointer starting with "/".`);
     }
     const visitor = new Visitor();
-    const result = visitor.document(cdsDocument, annotationFile, segments);
+    const result = visitor.document(cdsDocument, annotationFile, segments, cdsTargetMapping);
     if (result.pointer.length === 0) {
         throw new ApiError(`Could not convert pointer! ${pointer} must lead to existing node in annotation file.`);
     }

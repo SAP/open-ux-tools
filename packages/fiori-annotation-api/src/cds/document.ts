@@ -37,6 +37,7 @@ export interface Document {
     comments: Comment[];
     tokens: CompilerToken[];
     annotationFile: AnnotationFile;
+    cdsTargetMapping: number[];
 }
 
 export type AstNode = Reference | Target | Assignment | AnnotationNode | CDSDocument;
@@ -77,14 +78,15 @@ export function getDocument(
 
     const annotationFile = toAnnotationFile(file.uri, vocabularyService, cdsAnnotationFile, metadataCollector).file;
 
-    filterTargets(serviceName, annotationFile);
+    const cdsTargetMapping = filterTargets(serviceName, annotationFile);
 
     return {
         uri: file.uri,
         comments,
         ast: cdsDocument,
         annotationFile: annotationFile,
-        tokens
+        tokens,
+        cdsTargetMapping
     };
 }
 
@@ -134,7 +136,7 @@ export function getGhostFileDocument(
         propagatedTargetMap
     ).file;
 
-    filterTargets(serviceName, annotationFile);
+    const cdsTargetMapping = filterTargets(serviceName, annotationFile);
 
     annotationFile.uri = '!' + annotationFile.uri;
     const cdsDocument: CDSDocument = {
@@ -150,17 +152,25 @@ export function getGhostFileDocument(
         comments,
         tokens,
         ast: cdsDocument,
-        annotationFile: annotationFile
+        annotationFile: annotationFile,
+        cdsTargetMapping
     };
 }
 
-function filterTargets(serviceName: string, annotationFile: AnnotationFile): void {
+function filterTargets(serviceName: string, annotationFile: AnnotationFile): number[] {
     // only allow targets pointing to current service
+    const index: number[] = [];
     const serviceNamespace = annotationFile.namespace?.name === serviceName ? annotationFile.namespace : undefined;
     const aliasName = serviceNamespace ? serviceNamespace.alias : '';
-    annotationFile.targets = annotationFile.targets.filter(
-        (target) => target.name.startsWith(serviceName + '.') || (aliasName && target.name.startsWith(aliasName + '.'))
-    );
+    annotationFile.targets = annotationFile.targets.filter((target, idx) => {
+        const result =
+            target.name.startsWith(serviceName + '.') || (aliasName && target.name.startsWith(aliasName + '.'));
+        if (result) {
+            index.push(idx);
+        }
+        return result;
+    });
+    return index;
 }
 
 export type ContainerNode = Target | AnnotationGroupItems | Collection | Record;

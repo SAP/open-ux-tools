@@ -12,7 +12,9 @@ import { getCDSDocument } from './utils';
 
 const LOG_ENABLED = false;
 
-async function testRead(text: string): Promise<{ annotationFile: AnnotationFile; ast: CDSDocument }> {
+async function testRead(
+    text: string
+): Promise<{ annotationFile: AnnotationFile; ast: CDSDocument; targetMapping: number[] }> {
     const [, document] = await getCDSDocument(
         PROJECTS.V4_CDS_START.root,
         text,
@@ -20,14 +22,19 @@ async function testRead(text: string): Promise<{ annotationFile: AnnotationFile;
         'IncidentService'
     );
 
-    return { ast: document.ast, annotationFile: document.annotationFile };
+    return { ast: document.ast, annotationFile: document.annotationFile, targetMapping: document.cdsTargetMapping };
 }
 
 describe('convertPointerX - Ast Paths', () => {
     let ast: CDSDocument;
     let annotationFile: AnnotationFile;
     function testPointer(input: string, output: string, flattened = false) {
-        const { pointer, containsFlattenedNodes } = convertPointer(annotationFile, input, ast);
+        const { pointer, containsFlattenedNodes } = convertPointer(
+            annotationFile,
+            input,
+            ast,
+            [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        );
         if (LOG_ENABLED) {
             const [currentAstNode] = getAstNodesFromPointer(ast, pointer).slice(-1);
             const currentAFNode = getGenericNodeFromPointer(annotationFile, input);
@@ -39,8 +46,8 @@ describe('convertPointerX - Ast Paths', () => {
     }
 
     async function testPointerWithFixture(text: string, input: string, output: string) {
-        const { annotationFile, ast } = await testRead(text);
-        const { pointer } = convertPointer(annotationFile, input, ast);
+        const { annotationFile, ast, targetMapping } = await testRead(text);
+        const { pointer } = convertPointer(annotationFile, input, ast, targetMapping);
         expect(pointer).toStrictEqual(output);
     }
     beforeAll(async () => {
@@ -203,6 +210,72 @@ annotate service.Individual with {
             testPointer(
                 '/targets/2/terms/0/content/0/content/0/content/3/content/0/content/0/attributes/Property/value',
                 '/targets/2/assignments/0/value/items/0/annotations/1/value/properties/1/name'
+            );
+        });
+
+        const testCases = [
+            {
+                input: '/targets/0/terms/0/content/0/content/0/content/0/content/0/text',
+                output: '/targets/1/assignments/0/items/items/0/value/properties/0/value/items/0/properties/0/value'
+            },
+            {
+                input: '/targets/1/terms/0/content/0/content/0/content/0/content/0/content/text',
+                output: '/targets/3/assignments/0/value/items/0/properties/0/value'
+            }
+        ];
+        test.each(testCases)('annotation targets from different services', async (testCase) => {
+            await testPointerWithFixture(
+                `
+using IncidentService as service from '../../srv/incidentservice';
+using AnalyticsService as aservice from '../../srv/analytics-service';
+
+annotate aservice.Incidents with @UI: {
+    LineItem        : []
+};
+
+annotate IncidentService.Incidents with @UI: {
+    LineItem        :  {
+        ![@Analytics.DrillURL] : 'test',
+        $value:  [
+            // testing
+            {Value: assignedIndividual_id},
+            {Value: createdAt, },
+            // hello
+            {
+                ![@Common.Heading] : 'Heading', 
+                Value: 'something else', 
+            }
+    
+        ]
+    },
+
+    FieldGroup #test: {Data: [{
+        Value            : category.code,
+
+        Criticality      : #Critical,
+        IconUrl          : 'sap://icon-test',
+        ![@UI.Importance]: #High,
+    }, ], },
+};
+
+annotate aservice.Incidents with @UI: {
+    LineItem#a2 : []
+};
+
+annotate IncidentService.Incidents with @UI.LineItem #test: [{
+    Value                 : modifiedAt,
+    Label                 : 'ok',
+    ![@UI.Hidden],
+    ![@Common.Application]: {
+        $Type               : 'Common.ApplicationType',
+        Component           : 'accepted',
+        ServiceId           : 'Actions',
+        ![@Common.Timestamp]: timestamp'2020-01-01 12:23:23',
+    },
+}];
+`,
+                testCase.input,
+                testCase.output
             );
         });
     });
