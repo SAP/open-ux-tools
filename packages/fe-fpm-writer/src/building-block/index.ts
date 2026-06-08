@@ -287,6 +287,19 @@ export async function appendPageBBAggregation(
     }
 
     const pageElement = pageNodes[0] as Node;
+    const hasExistingAggregation = Array.from(pageElement.childNodes).some(
+        (node) =>
+            node.nodeType === 1 /* Element */ &&
+            (node as Element).localName === aggName &&
+            (node as Element).namespaceURI === 'sap.fe.macros'
+    );
+    if (hasExistingAggregation) {
+        sortPageAggregationChildren(pageElement);
+        const existingXmlContent = new XMLSerializer().serializeToString(xmlDocument);
+        fs.write(join(basePath, viewPath), format(existingXmlContent));
+        return fs;
+    }
+
     const hasExistingChildren = Array.from(pageElement.childNodes).some((n) => n.nodeType === 1 /* Element */);
     if (!hasExistingChildren) {
         pageElement.appendChild(xmlDocument.createComment(PAGE_TEMPLATE_COMMENT));
