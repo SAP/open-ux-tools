@@ -1,4 +1,5 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { existsSync } from 'node:fs';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
@@ -11,12 +12,12 @@ import type {
     JourneyParams,
     AppFeatures,
     WriteContext
-} from './types';
-import { SupportedPageTypes, ValidationError } from './types';
-import { t } from './i18n';
+} from './types.js';
+import { SupportedPageTypes, ValidationError } from './types.js';
+import { t } from './i18n.js';
 import { FileName, DirName, getWebappPath, updatePackageScript } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
-import { getAppFeatures } from './utils/modelUtils';
+import { getAppFeatures } from './utils/modelUtils.js';
 import {
     addIntegrationOldToGitignore,
     addPathsToQUnitJs,
@@ -25,9 +26,11 @@ import {
     readHtmlTargetFromQUnitJs,
     addVirtualTestConfig,
     type JourneyRunnerPage
-} from './utils/opaQUnitUtils';
+} from './utils/opaQUnitUtils.js';
 import { getPackageScripts } from '@sap-ux/fiori-generator-shared';
-import { readHashFromFlpSandbox } from './utils/flpSandboxUtils';
+import { readHashFromFlpSandbox } from './utils/flpSandboxUtils.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Generate OPA test files for a Fiori elements for OData V4 application.
@@ -616,41 +619,4 @@ function writePageObject(
             globOptions: { dot: true }
         }
     );
-}
-
-/**
- * Generate a page object file for a Fiori elements for OData V4 application.
- * Note: this doesn't modify other existing files in the webapp/test folder.
- *
- * @param basePath - the absolute target path where the application will be generated
- * @param pageObjectParameters - parameters for the page
- * @param pageObjectParameters.targetKey - the key of the target in the manifest file corresponding to the page
- * @param pageObjectParameters.appID - the appID. If not specified, will be read from the manifest in sap.app/id
- * @param fs - an optional reference to a mem-fs editor
- * @returns Reference to a mem-fs-editor
- */
-export async function generatePageObjectFile(
-    basePath: string,
-    pageObjectParameters: { targetKey: string; appID?: string },
-    fs?: Editor
-): Promise<Editor> {
-    const editor = fs ?? create(createStorage());
-
-    const manifest = readManifest(editor, basePath);
-    const { applicationType } = getAppTypeAndHideFilterBarFromManifest(manifest);
-
-    const pageConfig = createPageConfig(manifest, pageObjectParameters.targetKey, pageObjectParameters.appID);
-    if (pageConfig) {
-        const rootTemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being
-        const testOutDirPath = join(await getWebappPath(basePath), 'test');
-        writePageObject(pageConfig, rootTemplateDirPath, testOutDirPath, editor);
-    } else {
-        throw new ValidationError(
-            t('error.cannotGeneratePageFile', {
-                targetKey: pageObjectParameters.targetKey
-            })
-        );
-    }
-
-    return editor;
 }

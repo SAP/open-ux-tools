@@ -128,6 +128,7 @@
         "couldNotFetchServiceKeys": "Cannot fetch the service keys. Error: {{error}}",
         "metadataFetchingNotSupportedForCF": "Metadata fetching is not supported for Cloud Foundry projects.",
         "failedToListBtpDestinations": "Failed to list BTP destinations. Error: {{error}}",
+        "incompleteDestinationServiceCredentials": "The credentials for the destination service are incomplete. Regenerate the service key and check the destination service.",
         "destinationServiceNotFoundInMtaYaml": "Destination service instance not found in mta.yaml. Ensure a resource with 'service: destination' is declared.",
         "noServiceKeysFoundForDestination": "No service keys found for destination service instance '{{serviceInstanceName}}'. Ensure the service is provisioned and try again.",
         "errorFetchingDestinations": "An error occurred when fetching destinations. For more information, see the logs.",

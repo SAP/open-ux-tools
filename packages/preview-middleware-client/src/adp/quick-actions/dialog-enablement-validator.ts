@@ -1,8 +1,8 @@
-import { getTextBundle } from '../../i18n';
+import { getTextBundle } from '../../i18n.js';
 
-import { DialogFactory } from '../dialog-factory';
+import { DialogFactory } from '../dialog-factory.js';
 
-import type { EnablementValidator, EnablementValidatorResult } from './enablement-validator';
+import type { EnablementValidator, EnablementValidatorResult } from './enablement-validator.js';
 
 export const DIALOG_ENABLEMENT_VALIDATOR: EnablementValidator = {
     run: async (): Promise<EnablementValidatorResult> => {

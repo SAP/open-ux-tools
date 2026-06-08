@@ -1,2 +1,2 @@
-export * from './matchers';
-export * from './matchers/types';
+export * from './matchers/index.js';
+export * from './matchers/types.js';

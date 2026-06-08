@@ -1,24 +1,35 @@
+import { jest } from '@jest/globals';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import {
-    formatSummary,
-    showAdditionalInfoForOnPrem,
-    summaryMessage,
-    validateBeforeDeploy,
-    checkForCredentials
-} from '../../../src/base/validate';
-import { mockedProvider, mockedAdtService } from '../../__mocks__';
-import { green, red, yellow } from 'chalk';
+import { mockedProvider, mockedAdtService } from '../../__mocks__/index.js';
+import chalk from 'chalk';
 import { TransportChecksService } from '@sap-ux/axios-extension';
 import type { AxiosError } from '@sap-ux/axios-extension';
 import { t } from '@sap-ux/project-input-validator/src/i18n';
-import { isAppStudio, isOnPremiseDestination, listDestinations, Authentication } from '@sap-ux/btp-utils';
+
+const mockIsAppStudio = jest.fn<() => boolean>().mockReturnValue(false);
+const mockListDestinations = jest.fn<typeof realBtpUtils.listDestinations>();
+const mockisOnPremiseDestination = jest.fn().mockReturnValue(false);
+
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio,
+    isOnPremiseDestination: mockisOnPremiseDestination,
+    listDestinations: mockListDestinations,
+    Authentication: {
+        NO_AUTHENTICATION: 'NoAuthentication',
+        BASIC_AUTHENTICATION: 'BasicAuthentication',
+        SAML_ASSERTION: 'SAMLAssertion',
+        OAUTH2_CLIENT_CREDENTIALS: 'OAuth2ClientCredentials',
+        PRINCIPAL_PROPAGATION: 'PrincipalPropagation'
+    }
+}));
+
+const { formatSummary, showAdditionalInfoForOnPrem, summaryMessage, validateBeforeDeploy, checkForCredentials } =
+    await import('../../../src/base/validate.js');
+const { Authentication } = await import('@sap-ux/btp-utils');
 
 const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
-
-jest.mock('@sap-ux/btp-utils');
-const mockIsAppStudio = isAppStudio as jest.Mock;
-const mockListDestinations = listDestinations as jest.Mock;
-const mockisOnPremiseDestination = isOnPremiseDestination as jest.Mock;
 
 describe('deploy-test validation', () => {
     // default app for testing
@@ -57,7 +68,7 @@ describe('deploy-test validation', () => {
             const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(true);
             const summaryStr = formatSummary(output.summary);
-            expect(summaryStr).toContain(`${green('√')} ${summaryMessage.allClientCheckPass}`);
+            expect(summaryStr).toContain(`${chalk.green('√')} ${summaryMessage.allClientCheckPass}`);
         });
 
         test('Capture invalid app name', async () => {
@@ -85,7 +96,7 @@ describe('deploy-test validation', () => {
             );
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
-            expect(summaryStr).toContain(`${red('×')} ${t('deploy.invalidAppNameMultipleReason')}`);
+            expect(summaryStr).toContain(`${chalk.red('×')} ${t('deploy.invalidAppNameMultipleReason')}`);
             expect(summaryStr).toContain(`${t('deploy.abapInvalidAppNameLength', { length: name.length })}`);
             expect(summaryStr).toContain(`${t('deploy.abapInvalidAppName', { prefix })}`);
         });
@@ -104,7 +115,7 @@ describe('deploy-test validation', () => {
             const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(true);
             const summaryStr = formatSummary(output.summary);
-            expect(summaryStr).toContain(`${green('√')} ${summaryMessage.allClientCheckPass}`);
+            expect(summaryStr).toContain(`${chalk.green('√')} ${summaryMessage.allClientCheckPass}`);
             expect(summaryStr).not.toContain(t('deploy.abapInvalidAppName', { prefix: 'ZZ1_' }));
         });
 
@@ -188,8 +199,8 @@ describe('deploy-test validation', () => {
             );
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
-            expect(summaryStr).toContain(`${yellow('?')} ${summaryMessage.adtServiceUndefined} for AtoService`);
-            expect(summaryStr).toContain(`${red('×')} ${t('deploy.invalidAppNameMultipleReason')}`);
+            expect(summaryStr).toContain(`${chalk.yellow('?')} ${summaryMessage.adtServiceUndefined} for AtoService`);
+            expect(summaryStr).toContain(`${chalk.red('×')} ${t('deploy.invalidAppNameMultipleReason')}`);
             expect(summaryStr).toContain(`${t('deploy.abapInvalidAppNameLength', { length: name.length })}`);
             expect(summaryStr).toContain(`${t('deploy.charactersForbiddenInAppName')}`);
         });
@@ -218,8 +229,8 @@ describe('deploy-test validation', () => {
             );
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
-            expect(summaryStr).toContain(`${yellow('?')} ${summaryMessage.atoAdtAccessError}`);
-            expect(summaryStr).toContain(`${red('×')} ${t('deploy.invalidAppNameMultipleReason')}`);
+            expect(summaryStr).toContain(`${chalk.yellow('?')} ${summaryMessage.atoAdtAccessError}`);
+            expect(summaryStr).toContain(`${chalk.red('×')} ${t('deploy.invalidAppNameMultipleReason')}`);
             expect(summaryStr).toContain(`${t('deploy.abapInvalidAppNameLength', { length: name.length })}`);
             expect(summaryStr).toContain(`${t('deploy.charactersForbiddenInAppName')}`);
         });
@@ -240,7 +251,7 @@ describe('deploy-test validation', () => {
             const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(true);
             const summaryStr = formatSummary(output.summary);
-            expect(summaryStr).toContain(`${green('√')} ${summaryMessage.packageCheckPass}`);
+            expect(summaryStr).toContain(`${chalk.green('√')} ${summaryMessage.packageCheckPass}`);
         });
 
         test('Valid package name - small case $tmp', async () => {
@@ -264,9 +275,9 @@ describe('deploy-test validation', () => {
             );
             expect(output.result).toBe(true);
             const summaryStr = formatSummary(output.summary);
-            expect(summaryStr).toContain(`${green('√')} ${summaryMessage.packageCheckPass}`);
+            expect(summaryStr).toContain(`${chalk.green('√')} ${summaryMessage.packageCheckPass}`);
             expect(summaryStr).toContain(
-                `${yellow('?')} Package name contains lower case letter(s). $TMP is used for ADT validation.`
+                `${chalk.yellow('?')} Package name contains lower case letter(s). $TMP is used for ADT validation.`
             );
         });
 
@@ -284,7 +295,7 @@ describe('deploy-test validation', () => {
             const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
-            expect(summaryStr).toContain(`${red('×')} ${summaryMessage.packageNotFound}`);
+            expect(summaryStr).toContain(`${chalk.red('×')} ${summaryMessage.packageNotFound}`);
         });
 
         test('Error validating package name', async () => {
@@ -301,7 +312,7 @@ describe('deploy-test validation', () => {
             const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
-            expect(summaryStr).toContain(`${yellow('?')} ${summaryMessage.pacakgeAdtAccessError}`);
+            expect(summaryStr).toContain(`${chalk.yellow('?')} ${summaryMessage.pacakgeAdtAccessError}`);
         });
 
         test('adtService error', async () => {
@@ -320,7 +331,9 @@ describe('deploy-test validation', () => {
             const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
-            expect(summaryStr).toContain(`${yellow('?')} ${summaryMessage.adtServiceUndefined} for ListPackageService`);
+            expect(summaryStr).toContain(
+                `${chalk.yellow('?')} ${summaryMessage.adtServiceUndefined} for ListPackageService`
+            );
         });
     });
 
@@ -339,7 +352,7 @@ describe('deploy-test validation', () => {
             const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(true);
             const summaryStr = formatSummary(output.summary);
-            expect(summaryStr).toContain(`${green('√')} ${summaryMessage.transportCheckPass}`);
+            expect(summaryStr).toContain(`${chalk.green('√')} ${summaryMessage.transportCheckPass}`);
         });
 
         test('Invalid transport request number', async () => {
@@ -355,7 +368,7 @@ describe('deploy-test validation', () => {
             const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
-            expect(summaryStr).toContain(`${red('×')} ${summaryMessage.transportNotFound}`);
+            expect(summaryStr).toContain(`${chalk.red('×')} ${summaryMessage.transportNotFound}`);
         });
 
         test('Error validate transport request number', async () => {
@@ -368,7 +381,7 @@ describe('deploy-test validation', () => {
             const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
-            expect(summaryStr).toContain(`${yellow('?')} ${summaryMessage.transportAdtAccessError}`);
+            expect(summaryStr).toContain(`${chalk.yellow('?')} ${summaryMessage.transportAdtAccessError}`);
         });
 
         test('Local package', async () => {
@@ -383,7 +396,7 @@ describe('deploy-test validation', () => {
             const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(true);
             const summaryStr = formatSummary(output.summary);
-            expect(summaryStr).toContain(`${green('√')} ${summaryMessage.transportNotRequired}`);
+            expect(summaryStr).toContain(`${chalk.green('√')} ${summaryMessage.transportNotRequired}`);
         });
 
         test('Valid package name - small case local package $tmp', async () => {
@@ -407,9 +420,9 @@ describe('deploy-test validation', () => {
             expect(mockedAdtService.listPackages).toHaveBeenCalledWith({ 'phrase': '$TMP' });
             expect(mockedAdtService.getTransportRequests).toHaveBeenCalledWith('$TMP', 'ZAPP1');
             const summaryStr = formatSummary(output.summary);
-            expect(summaryStr).toContain(`${green('√')} ${summaryMessage.transportNotRequired}`);
+            expect(summaryStr).toContain(`${chalk.green('√')} ${summaryMessage.transportNotRequired}`);
             expect(summaryStr).toContain(
-                `${yellow('?')} Package name contains lower case letter(s). $TMP is used for ADT validation.`
+                `${chalk.yellow('?')} Package name contains lower case letter(s). $TMP is used for ADT validation.`
             );
         });
 
@@ -440,15 +453,15 @@ describe('deploy-test validation', () => {
             expect(mockedAdtService.getTransportRequests).toHaveBeenCalledWith('TEST', 'ZAPP1');
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(
-                `${yellow('?')} Package name contains lower case letter(s). TEST is used for ADT validation.`
+                `${chalk.yellow('?')} Package name contains lower case letter(s). TEST is used for ADT validation.`
             );
             expect(summaryStr).toContain(
-                `${yellow(
+                `${chalk.yellow(
                     '?'
                 )} Transport request number contains lower case letter(s). T000002 is used for ADT validation.`
             );
-            expect(summaryStr).toContain(`${green('√')} ${summaryMessage.packageCheckPass}`);
-            expect(summaryStr).toContain(`${green('√')} ${summaryMessage.transportCheckPass}`);
+            expect(summaryStr).toContain(`${chalk.green('√')} ${summaryMessage.packageCheckPass}`);
+            expect(summaryStr).toContain(`${chalk.green('√')} ${summaryMessage.transportCheckPass}`);
         });
 
         test('adtService error', async () => {
@@ -470,7 +483,7 @@ describe('deploy-test validation', () => {
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(
-                `${yellow('?')} ${summaryMessage.adtServiceUndefined} for TransportChecksService`
+                `${chalk.yellow('?')} ${summaryMessage.adtServiceUndefined} for TransportChecksService`
             );
         });
     });
@@ -486,13 +499,13 @@ describe('deploy-test validation', () => {
             '%s',
             async (
                 desc,
-                isAppStudio,
+                isAppStudioVal,
                 listDestinationsMock,
                 isOnPremiseDestinationMock,
                 destinationMock,
                 expectedResult
             ) => {
-                mockIsAppStudio.mockReturnValue(isAppStudio);
+                mockIsAppStudio.mockReturnValue(isAppStudioVal);
                 mockListDestinations.mockResolvedValue(listDestinationsMock);
                 mockisOnPremiseDestination.mockResolvedValue(isOnPremiseDestinationMock);
                 const result = await showAdditionalInfoForOnPrem(destinationMock);
@@ -521,8 +534,8 @@ describe('deploy-test validation', () => {
             ['NoAuthentication - True', true, destinationsMock, noAuthMock.Name, true],
             ['BasicAuthentication - True', true, destinationsMock, basicAuthMock.Name, true],
             ['If destination not provided', true, destinationsMock, '', true]
-        ])('%s', async (desc, isAppStudio, listDestinationsMock, destinationMock, expectedResult) => {
-            mockIsAppStudio.mockReturnValue(isAppStudio);
+        ])('%s', async (desc, isAppStudioVal, listDestinationsMock, destinationMock, expectedResult) => {
+            mockIsAppStudio.mockReturnValue(isAppStudioVal);
             mockListDestinations.mockResolvedValue(listDestinationsMock);
             const result = await checkForCredentials(destinationMock, mockLogger as any);
             expect(result).toBe(expectedResult);
@@ -535,18 +548,10 @@ describe('deploy-test validation', () => {
     });
 
     describe('Validate error does not show full stack trace', () => {
-        jest.resetAllMocks();
         const mockLogger = {
             error: jest.fn(),
             debug: jest.fn()
         };
-        jest.mock('@sap-ux/logger', () => {
-            const sapUxLogger = jest.requireActual('@sap-ux/logger');
-            return {
-                ...sapUxLogger,
-                ToolsLogger: jest.fn(() => mockLogger)
-            };
-        });
         const mockAxiosError403 = {
             response: {
                 status: 403,

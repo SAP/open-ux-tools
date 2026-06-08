@@ -1,17 +1,34 @@
+import { jest } from '@jest/globals';
 import { Command } from 'commander';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { addSystemGetCommand } from '../../../../src/cli/get/system';
-import * as logger from '../../../../src/tracing/logger';
-import * as btpUtils from '@sap-ux/btp-utils';
-import * as store from '@sap-ux/store';
 import { BackendSystem, SystemType, ConnectionType, AuthenticationType } from '@sap-ux/store';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn().mockReturnValue(false)
+const mockGetLogger = jest.fn() as jest.Mock;
+const mockSetLogLevelVerbose = jest.fn() as jest.Mock;
+jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
+    getLogger: mockGetLogger,
+    setLogLevelVerbose: mockSetLogLevelVerbose
 }));
 
-const { mockedService } = store as unknown as { mockedService: Record<string, jest.Mock> };
-const isAppStudioMock = btpUtils.isAppStudio as jest.Mock;
+const isAppStudioMock = jest.fn().mockReturnValue(false);
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: isAppStudioMock
+}));
+
+const mockedService = {
+    read: jest.fn<any>().mockResolvedValue(undefined),
+    write: jest.fn<any>().mockResolvedValue(undefined),
+    delete: jest.fn<any>().mockResolvedValue(true),
+    getAll: jest.fn<any>().mockResolvedValue([]),
+    partialUpdate: jest.fn<any>().mockResolvedValue(undefined)
+};
+const actualStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...actualStore,
+    getService: jest.fn().mockResolvedValue(mockedService)
+}));
+
+const { addSystemGetCommand } = await import('../../../../src/cli/get/system.js');
 
 const mockSystem = new BackendSystem({
     name: 'My System',
@@ -37,7 +54,7 @@ describe('system/get', () => {
             warn: jest.fn(),
             error: jest.fn()
         } as Partial<ToolsLogger> as ToolsLogger;
-        jest.spyOn(logger, 'getLogger').mockReturnValue(loggerMock);
+        mockGetLogger.mockReturnValue(loggerMock);
         isAppStudioMock.mockReturnValue(false);
         mockedService.read.mockResolvedValue(mockSystem);
     });
@@ -61,20 +78,25 @@ describe('system/get', () => {
 
     test('should output system as JSON', async () => {
         // Given
-        const stdoutSpy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
+        const writes: string[] = [];
+        const stdoutSpy = jest.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
+            writes.push(chunk as string);
+            return true;
+        });
         const command = new Command('get');
         addSystemGetCommand(command);
 
         // When
         await command.parseAsync(getArgv(['system', '--url', 'https://my-sap.example.com', '--json']));
 
-        // Then
-        expect(stdoutSpy).toHaveBeenCalledTimes(1);
-        const parsed = JSON.parse((stdoutSpy.mock.calls[0][0] as string).trim());
+        // Then — find the call that contains the JSON payload (other writes may originate from
+        // the test runner's own stdout output and are not relevant to this assertion).
+        const jsonCall = stdoutSpy.mock.calls.find((call) => typeof call[0] === 'string' && call[0].includes('"name"'));
+        expect(jsonCall).toBeDefined();
+        const parsed = JSON.parse((jsonCall![0] as string).trim());
         expect(parsed.name).toBe('My System');
         expect(parsed.password).toBeUndefined();
         expect(parsed.username).toBeUndefined();
-        stdoutSpy.mockRestore();
     });
 
     test('should log error when system not found', async () => {

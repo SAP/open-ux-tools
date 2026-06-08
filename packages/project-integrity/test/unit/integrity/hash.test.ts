@@ -1,4 +1,4 @@
-import { getFileIntegrity } from '../../../src/integrity/hash';
+import { getFileIntegrity } from '../../../src/integrity/hash.js';
 
 test('Test getFileIntegrity()', async () => {
     try {

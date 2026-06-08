@@ -1,6 +1,8 @@
-import { join } from 'node:path';
+import assert from 'node:assert/strict';
+import { dirname, join } from 'node:path';
 import { readFile } from 'node:fs/promises';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { jest } from '@jest/globals';
 import type { FoundFioriArtifacts, Manifest } from '@sap-ux/project-access';
 import { findFioriArtifacts, normalizePath } from '@sap-ux/project-access';
 import type {
@@ -8,11 +10,11 @@ import type {
     FeV4ObjectPage,
     LinkedFeV4App,
     TableSection
-} from '../../../src/project-context/linker/fe-v4';
-import { runFeV4Linker } from '../../../src/project-context/linker/fe-v4';
-import type { LinkerContext } from '../../../src/project-context/linker/types';
-import { ApplicationParser } from '../../../src/project-context/parser';
-import type { ManifestChange } from '../../test-helper';
+} from '../../../src/project-context/linker/fe-v4.js';
+import { runFeV4Linker } from '../../../src/project-context/linker/fe-v4.js';
+import type { LinkerContext } from '../../../src/project-context/linker/types.js';
+import { ApplicationParser } from '../../../src/project-context/parser/index.js';
+import type { ManifestChange } from '../../test-helper.js';
 import {
     applyManifestChange,
     applyXmlAnnotationsChange,
@@ -20,11 +22,13 @@ import {
     CAP_FACETS_ANNOTATIONS,
     CAP_PROJECT_PATH,
     npmInstall
-} from '../../test-helper';
-import { collectSections, type AnnotationBasedNode } from '../../../src/project-context/linker/annotations';
-import { getParsedServiceByName } from '../../../src/project-context/utils';
+} from '../../test-helper.js';
+import { collectSections, type AnnotationBasedNode } from '../../../src/project-context/linker/annotations.js';
+import { getParsedServiceByName } from '../../../src/project-context/utils.js';
 
 jest.setTimeout(60000); // time needed for Windows
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const parser = new ApplicationParser();
 
@@ -43,7 +47,7 @@ function findListReportPage(app: LinkedFeV4App, index = 0): FeV4ListReport {
             i++;
         }
     }
-    throw new Error('ListReport page not found');
+    assert.fail('ListReport page not found');
 }
 
 function findObjectPage(app: LinkedFeV4App, index = 0): FeV4ObjectPage {
@@ -56,7 +60,7 @@ function findObjectPage(app: LinkedFeV4App, index = 0): FeV4ObjectPage {
             i++;
         }
     }
-    throw new Error('ObjectPage not found');
+    assert.fail('ObjectPage not found');
 }
 
 describe('FE V4 Linker - XML', () => {
@@ -1137,11 +1141,11 @@ describe('FE V4 Linker - CAP', () => {
         const context = await setup({});
         const mainService = getParsedServiceByName(context.app);
         if (!mainService) {
-            fail('Service not found');
+            assert.fail('Service not found');
         }
         const entity = mainService.index.entitySets['Incidents'];
         if (!entity?.structuredType) {
-            fail('Entity not found');
+            assert.fail('Entity not found');
         }
         const sections = collectSections('v4', entity.structuredType, mainService);
         expect(sections).toHaveLength(1);
@@ -1156,11 +1160,11 @@ describe('FE V4 Linker - CAP', () => {
         const context = await setup({});
         const mainService = getParsedServiceByName(context.app);
         if (!mainService) {
-            fail('Service not found');
+            assert.fail('Service not found');
         }
         const entity = mainService.index.entitySets['Priority'];
         if (!entity?.structuredType) {
-            fail('Entity not found');
+            assert.fail('Entity not found');
         }
         const sections = collectSections('v4', entity.structuredType, mainService);
         expect(sections).toHaveLength(0);
@@ -1170,11 +1174,11 @@ describe('FE V4 Linker - CAP', () => {
         const context = await setup({});
         const mainService = getParsedServiceByName(context.app);
         if (!mainService) {
-            fail('Service not found');
+            assert.fail('Service not found');
         }
         const entity = mainService.index.entitySets['Category'];
         if (!entity?.structuredType) {
-            fail('Entity not found');
+            assert.fail('Entity not found');
         }
         const sections = collectSections('v4', entity.structuredType, mainService);
         expect(sections).toHaveLength(0);

@@ -1,6 +1,6 @@
-import { parseCsv } from '../../parser/csv/parser';
-import type { CsvField } from '../../parser/csv/types';
-import type { I18nBundle, I18nEntry, TextNode } from '../../types';
+import { parseCsv } from '../../parser/csv/parser/index.js';
+import type { CsvField } from '../../parser/csv/types.js';
+import type { I18nBundle, I18nEntry, TextNode } from '../../types.js';
 
 /**
  * Convert csv field to text node.

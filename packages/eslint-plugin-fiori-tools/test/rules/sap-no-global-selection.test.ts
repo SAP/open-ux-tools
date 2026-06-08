@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-global-selection';
+import rule from '../../src/rules/sap-no-global-selection.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

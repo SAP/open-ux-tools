@@ -1,12 +1,12 @@
-import type * as ManifestNamespace from '@ui5/manifest/types/manifest';
+import type { SAPJSONSchemaForWebApplicationManifestFile, DataSource } from '@ui5/manifest';
 import Log from 'sap/base/Log';
 import ODataModelV2 from 'sap/ui/model/odata/v2/ODataModel';
 import ODataModelV4 from 'sap/ui/model/odata/v4/ODataModel';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import { ODataDownStatus, ODataHealthStatus, ODataMetadata, ODataUpStatus } from './odata-health-status';
+import { ODataDownStatus, ODataHealthStatus, ODataMetadata, ODataUpStatus } from './odata-health-status.js';
 
-type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile;
-type DataSource = ManifestNamespace.DataSource;
+type Manifest = SAPJSONSchemaForWebApplicationManifestFile;
+type DataSourceType = DataSource;
 
 /**
  * The OData version type.
@@ -48,7 +48,7 @@ export class ODataHealthChecker {
      * @param src The service data source.
      * @returns True if the data source represents an OData service.
      */
-    private readonly isOdataService = (src: DataSource): boolean => src.type === ODataHealthChecker.ODATA_TYPE;
+    private readonly isOdataService = (src: DataSourceType): boolean => src.type === ODataHealthChecker.ODATA_TYPE;
 
     /**
      * Use this helper function to map the OData data source to the internal structure
@@ -56,9 +56,9 @@ export class ODataHealthChecker {
      * @param src The OData service data source.
      * @returns The OData service info object.
      */
-    private readonly toOdataServiceInfo = (src: DataSource): ODataServiceInfo => ({
-        serviceUrl: src.uri,
-        oDataVersion: src.settings?.odataVersion ?? ODataHealthChecker.DEFAULT_ODATA_VERSION
+    private readonly toOdataServiceInfo = (src: DataSourceType): ODataServiceInfo => ({
+        serviceUrl: src.uri ?? '',
+        oDataVersion: (src.settings?.odataVersion as ODataVersion) ?? ODataHealthChecker.DEFAULT_ODATA_VERSION
     });
 
     constructor(private readonly rta: RuntimeAuthoring) {}
@@ -150,8 +150,8 @@ export class ODataHealthChecker {
         if (isCloudFoundry) {
             const manifestObject = rootControl.getManifestObject();
             return odataServices.map((src) => ({
-                serviceUrl: manifestObject.resolveUri(src.uri),
-                oDataVersion: (src.settings?.odataVersion ?? ODataHealthChecker.DEFAULT_ODATA_VERSION)
+                serviceUrl: manifestObject.resolveUri(src.uri ?? ''),
+                oDataVersion: ((src.settings?.odataVersion as ODataVersion) ?? ODataHealthChecker.DEFAULT_ODATA_VERSION)
             }));
         }
 
