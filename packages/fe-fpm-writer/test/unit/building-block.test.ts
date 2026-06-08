@@ -1216,7 +1216,7 @@ describe('Building Blocks', () => {
         expect(fs.exists(join(basePath, 'webapp/ext/main/Main.controller.js'))).toBe(false);
     });
 
-    test('generate Page building block with blank template does not insert aggregations or controller', async () => {
+    test('generate Page building block with basic template does not insert aggregations or controller', async () => {
         const aggregationPath = `/mvc:View/*[local-name()='Page']`;
         const basePath = join(testAppPath, 'generate-page-block-blank');
         fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
