@@ -59,11 +59,20 @@ describe('downloadODataServiceMetadata', () => {
         });
     });
 
-    test('should propagate errors from execute function', async () => {
-        mockExecuteDefault.mockRejectedValue(new Error('Network error'));
+    test('should return error response from execute function on failure', async () => {
+        const errorResult = {
+            functionalityId: 'fetch-service-metadata',
+            status: 'Error',
+            message: 'Network error',
+            parameters: { sapSystemQuery: undefined, servicePath: mockServicePath },
+            appPath: mockAppPath,
+            changes: [],
+            timestamp: '2024-01-01T00:00:00.000Z'
+        };
+        mockExecuteDefault.mockResolvedValue(errorResult);
 
-        await expect(
-            downloadODataServiceMetadata({ servicePath: mockServicePath, appPath: mockAppPath })
-        ).rejects.toThrow('Network error');
+        const result = await downloadODataServiceMetadata({ servicePath: mockServicePath, appPath: mockAppPath });
+        expect(result.status).toBe('Error');
+        expect(result.message).toBe('Network error');
     });
 });

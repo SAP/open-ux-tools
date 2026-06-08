@@ -32,6 +32,7 @@ import type {
     ListFunctionalitiesInput,
     DownloadODataServiceMetadataInput
 } from './types/index.js';
+import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
 import { logger } from './utils/logger.js';
 
 type ToolArgs =
@@ -41,6 +42,8 @@ type ToolArgs =
     | GetFunctionalityDetailsInput
     | ExecuteFunctionalityInput
     | DownloadODataServiceMetadataInput
+    | GeneratorConfigOData
+    | GeneratorConfigCAP
     | Record<string, unknown>;
 
 const FALLBACK_PROTOCOL_VERSION = '2024-11-05';

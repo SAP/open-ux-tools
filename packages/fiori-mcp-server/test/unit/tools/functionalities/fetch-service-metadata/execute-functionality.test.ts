@@ -129,7 +129,7 @@ describe('execute-functionality', () => {
         expect(result.status).toBe('Success');
     });
 
-    test('should throw error when servicePath is missing', async () => {
+    test('should return error when servicePath is missing', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
             functionalityId: 'fetch-service-metadata',
@@ -138,13 +138,15 @@ describe('execute-functionality', () => {
             }
         };
 
-        await expect(executeFunctionality(params)).rejects.toThrow('Missing required parameter: servicePath');
+        const result = await executeFunctionality(params);
+        expect(result.status).toBe('Error');
+        expect(result.message).toBe('Missing required parameter: servicePath');
         expect(mockFindSapSystem).not.toHaveBeenCalled();
         expect(mockGetServiceMetadata).not.toHaveBeenCalled();
         expect(mockWriteFileSync).not.toHaveBeenCalled();
     });
 
-    test('should throw error when servicePath is empty string', async () => {
+    test('should return error when servicePath is empty string', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
             functionalityId: 'fetch-service-metadata',
@@ -154,11 +156,13 @@ describe('execute-functionality', () => {
             }
         };
 
-        await expect(executeFunctionality(params)).rejects.toThrow('Missing required parameter: servicePath');
+        const result = await executeFunctionality(params);
+        expect(result.status).toBe('Error');
+        expect(result.message).toBe('Missing required parameter: servicePath');
         expect(mockFindSapSystem).not.toHaveBeenCalled();
     });
 
-    test('should throw error when servicePath is whitespace only', async () => {
+    test('should return error when servicePath is whitespace only', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
             functionalityId: 'fetch-service-metadata',
@@ -168,10 +172,12 @@ describe('execute-functionality', () => {
             }
         };
 
-        await expect(executeFunctionality(params)).rejects.toThrow('Missing required parameter: servicePath');
+        const result = await executeFunctionality(params);
+        expect(result.status).toBe('Error');
+        expect(result.message).toBe('Missing required parameter: servicePath');
     });
 
-    test('should propagate error from findSapSystem', async () => {
+    test('should return error response from findSapSystem failure', async () => {
         mockFindSapSystem.mockRejectedValue(new Error('System not found'));
 
         const params: ExecuteFunctionalityInput = {
@@ -183,11 +189,13 @@ describe('execute-functionality', () => {
             }
         };
 
-        await expect(executeFunctionality(params)).rejects.toThrow('System not found');
+        const result = await executeFunctionality(params);
+        expect(result.status).toBe('Error');
+        expect(result.message).toBe('System not found');
         expect(mockWriteFileSync).not.toHaveBeenCalled();
     });
 
-    test('should propagate error from getServiceMetadata', async () => {
+    test('should return error response from getServiceMetadata failure', async () => {
         mockGetServiceMetadata.mockRejectedValue(new Error('Metadata fetch failed'));
 
         const params: ExecuteFunctionalityInput = {
@@ -199,7 +207,9 @@ describe('execute-functionality', () => {
             }
         };
 
-        await expect(executeFunctionality(params)).rejects.toThrow('Metadata fetch failed');
+        const result = await executeFunctionality(params);
+        expect(result.status).toBe('Error');
+        expect(result.message).toBe('Metadata fetch failed');
         expect(mockWriteFileSync).not.toHaveBeenCalled();
     });
 
