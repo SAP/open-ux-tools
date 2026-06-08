@@ -3884,7 +3884,7 @@ describe('Building Blocks', () => {
             expect(output).toContain('id="footer"');
         });
 
-        it('generates suffixed id when base id already exists in view', async () => {
+        it('does not append duplicate aggregation when it already exists in view', async () => {
             const basePath = join(testAppPath, 'page-bb-agg-dup');
             const viewWithExistingId = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
     xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
@@ -3901,7 +3901,8 @@ describe('Building Blocks', () => {
             });
 
             const output = result.read(join(basePath, xmlViewFilePath));
-            expect(output).toContain('id="footer1"');
+            expect((output.match(/<macros:footer\b/g) ?? []).length).toBe(1);
+            expect(output).not.toContain('id="footer1"');
         });
 
         it('reorders existing aggregations into canonical PAGE_AGGREGATIONS order', async () => {
