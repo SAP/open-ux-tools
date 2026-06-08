@@ -17,7 +17,7 @@ import type { Package } from '@sap-ux/project-access';
  * @returns {Package} Package.json of the current package.
  */
 export function getPackageInfo(): Package {
-    const moduleDir = typeof __dirname !== 'undefined' ? __dirname : process.cwd();
+    const moduleDir = typeof __dirname === 'undefined' ? process.cwd() : __dirname;
     return JSON.parse(readFileSync(join(moduleDir, '../../package.json'), 'utf-8'));
 }
 

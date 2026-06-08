@@ -12,7 +12,7 @@ import { join } from 'node:path';
  * @returns {string | undefined} The path to the templates directory.
  */
 export function getTemplatesOverwritePath(): string | undefined {
-    const moduleDir = typeof __dirname !== 'undefined' ? __dirname : process.cwd();
+    const moduleDir = typeof __dirname === 'undefined' ? process.cwd() : __dirname;
     const templatePath = join(moduleDir, 'templates');
     if (existsSync(templatePath)) {
         return templatePath;
