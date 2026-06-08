@@ -214,10 +214,27 @@ console.log('✓ esbuild bundle complete');
 //   darwin/arm64, linux/x64, linux/arm64, win32/x64, win32/arm64
 // Note: darwin/x64 is NOT shipped by onnxruntime-node upstream — macOS Intel
 // is unsupported at this version.
+//
+// DirectML/dxcompiler/dxil DLLs are excluded: they are only loaded by
+// onnxruntime.dll when the DML execution provider is explicitly requested for
+// GPU inference. The MCP server runs CPU-only inference, so these ~80 MB of
+// GPU acceleration DLLs are never needed.
+
+const GPU_DLLS = new Set(['DirectML.dll', 'dxcompiler.dll', 'dxil.dll']);
+
+function copyDirExcludeFiles(src, dst, excludeFileNames) {
+    fs.mkdirSync(dst, { recursive: true });
+    for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+        if (entry.isFile() && excludeFileNames.has(entry.name)) continue;
+        const s = path.join(src, entry.name);
+        const d = path.join(dst, entry.name);
+        entry.isDirectory() ? copyDirExcludeFiles(s, d, excludeFileNames) : fs.copyFileSync(s, d);
+    }
+}
 
 const onnxOut = path.join(DIST, 'node_modules', 'onnxruntime-node');
-copyDir(onnxPkgDir, onnxOut);
-console.log('✓ Copied onnxruntime-node');
+copyDirExcludeFiles(onnxPkgDir, onnxOut, GPU_DLLS);
+console.log('✓ Copied onnxruntime-node (GPU DLLs excluded)');
 
 // ── Step 3: copy onnxruntime-common (required by onnxruntime-node) ───────────
 
