@@ -4,14 +4,14 @@ import { fileURLToPath } from 'node:url';
 import * as fsMock from 'node:fs';
 import type * as fsPromisesType from 'node:fs/promises';
 import type { Logger } from '@sap-ux/logger';
-import type * as commandType from '../../src/command';
-import type * as moduleType from '../../src/project/module-loader';
-import type * as fileType from '../../src/file';
+import type * as commandType from '../../src/command/index.js';
+import type * as moduleType from '../../src/project/module-loader.js';
+import type * as fileType from '../../src/file/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Mock constants before importing getSpecification
-const realConstants = await import('../../src/constants');
+const realConstants = await import('../../src/constants.js');
 jest.unstable_mockModule('../../src/constants', () => ({
     ...realConstants,
     moduleCacheRoot: join(__dirname, '../test-data/module-loader'),
@@ -19,21 +19,21 @@ jest.unstable_mockModule('../../src/constants', () => ({
 }));
 
 const mockExecNpmCommand = jest.fn<typeof commandType.execNpmCommand>();
-const realCommand = await import('../../src/command');
+const realCommand = await import('../../src/command/index.js');
 jest.unstable_mockModule('../../src/command', () => ({
     ...realCommand,
     execNpmCommand: mockExecNpmCommand
 }));
 
 const mockDeleteModule = jest.fn<typeof moduleType.deleteModule>();
-const realModule = await import('../../src/project/module-loader');
+const realModule = await import('../../src/project/module-loader.js');
 jest.unstable_mockModule('../../src/project/module-loader', () => ({
     ...realModule,
     deleteModule: mockDeleteModule
 }));
 
-const mockWriteFile = jest.fn<typeof fileType.writeFile>();
-const realFile = await import('../../src/file');
+const mockWriteFile = jest.fn<typeof realFile.writeFile>();
+const realFile = await import('../../src/file/index.js');
 jest.unstable_mockModule('../../src/file', () => ({
     ...realFile,
     writeFile: mockWriteFile
@@ -60,7 +60,7 @@ jest.unstable_mockModule('node:fs/promises', () => ({
 }));
 
 const { FileName, fioriToolsDirectory, getSpecification, getSpecificationPath, refreshSpecificationDistTags } =
-    await import('../../src');
+    await import('../../src/index.js');
 
 describe('Test getSpecification', () => {
     type Specification = { exec: () => string };

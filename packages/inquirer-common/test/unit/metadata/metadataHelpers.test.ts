@@ -7,8 +7,8 @@ import {
     shouldUseAnalyticalTable,
     filterAggregateTransformations,
     convertEdmxToConvertedMetadata
-} from '../../../src/metadata';
-import { initI18nInquirerCommon } from '../../../src/i18n';
+} from '../../../src/metadata/index.js';
+import { initI18nInquirerCommon } from '../../../src/i18n.js';
 import { convert } from '@sap-ux/annotation-converter';
 import { parse } from '@sap-ux/edmx-parser';
 import * as fs from 'node:fs';

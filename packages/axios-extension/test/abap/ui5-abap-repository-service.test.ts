@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import nock from 'nock';
-import type { AppInfo, AbapServiceProvider, ErrorMessage } from '../../src';
+import type { AppInfo, AbapServiceProvider, ErrorMessage } from '../../src/index.js';
 import mockErrorDetails from './mockResponses/errordetails.json';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { WebIDEUsage as WebIDEUsageType, type Destination } from '@sap-ux/btp-utils';
@@ -20,7 +20,7 @@ jest.unstable_mockModule('@sap-ux/logger', () => ({
     ToolsLogger: jest.fn().mockImplementation(() => loggerMock)
 }));
 
-const { Ui5AbapRepositoryService, createForAbap, createForDestination } = await import('../../src');
+const { Ui5AbapRepositoryService, createForAbap, createForDestination } = await import('../../src/index.js');
 
 describe('Ui5AbapRepositoryService', () => {
     const server = 'http://sap.example';

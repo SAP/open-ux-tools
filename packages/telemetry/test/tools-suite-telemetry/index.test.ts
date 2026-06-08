@@ -58,8 +58,8 @@ jest.unstable_mockModule('axios', () => ({
     }
 }));
 
-const { processToolsSuiteTelemetry, getIdeType } = await import('../../src/tooling-telemetry');
-const { ToolingTelemetrySettings } = await import('../../src/tooling-telemetry/config-state');
+const { processToolsSuiteTelemetry, getIdeType } = await import('../../src/tooling-telemetry/index.js');
+const { ToolingTelemetrySettings } = await import('../../src/tooling-telemetry/config-state.js');
 const { CommandRunner } = await import('@sap-ux/nodejs-utils');
 
 describe('Tools Suite Telemetry Tests', () => {

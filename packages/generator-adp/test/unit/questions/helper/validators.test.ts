@@ -2,13 +2,13 @@ import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { CfConfig, SystemLookup } from '@sap-ux/adp-tooling';
 
-const mockIsAppStudio = jest.fn();
-const mockValidateProjectName = jest.fn();
-const mockValidateNamespaceAdp = jest.fn();
-const mockIsExternalLoginEnabled = jest.fn();
-const mockIsMtaProject = jest.fn();
-const mockGetMtaServices = jest.fn();
-const mockExistsSync = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockValidateProjectName = jest.fn<typeof realProjectInputValidator.validateProjectName>();
+const mockValidateNamespaceAdp = jest.fn<typeof realProjectInputValidator.validateNamespaceAdp>();
+const mockIsExternalLoginEnabled = jest.fn<typeof realAdpTooling.isExternalLoginEnabled>();
+const mockIsMtaProject = jest.fn<typeof realAdpTooling.isMtaProject>();
+const mockGetMtaServices = jest.fn<typeof realAdpTooling.getMtaServices>();
+const mockExistsSync = jest.fn<typeof realFs.existsSync>();
 
 const realFs = await import('node:fs');
 jest.unstable_mockModule('node:fs', () => ({
@@ -47,8 +47,8 @@ const {
     validateEnvironment,
     validateProjectPath,
     validateBusinessSolutionName
-} = await import('../../../../src/app/questions/helper/validators');
-const { initI18n, t } = await import('../../../../src/utils/i18n');
+} = await import('../../../../src/app/questions/helper/validators.js');
+const { initI18n, t } = await import('../../../../src/utils/i18n.js');
 
 const availableSystem = 'systemA';
 const nonExistingSystem = 'systemB';

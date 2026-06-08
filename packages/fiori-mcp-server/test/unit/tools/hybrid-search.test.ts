@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { DocSearchInput, SearchResponseData } from '../../../src/tools/hybrid-search';
+import type { DocSearchInput, SearchResponseData } from '../../../src/tools/hybrid-search.js';
 
 // Mock the service dependencies
 const mockInitializeVector = jest.fn<any>();
@@ -26,7 +26,7 @@ jest.unstable_mockModule('../../../src/tools/services/text-embedding', () => ({
     }))
 }));
 
-const { docSearch } = await import('../../../src/tools/hybrid-search');
+const { docSearch } = await import('../../../src/tools/hybrid-search.js');
 
 describe('hybrid-search', () => {
     beforeEach(() => {
@@ -226,10 +226,9 @@ describe('hybrid-search', () => {
             expect(result).toEqual({
                 query: 'test query',
                 searchType: 'limited_fallback',
-                error: 'Embeddings data not available. Please install @sap-ux/fiori-docs-embeddings for full search capabilities.',
+                error: 'Search is currently unavailable. The embeddings service failed to initialize.',
                 results: [],
-                total: 0,
-                suggestion: 'Try running: npm install -g @sap-ux/fiori-docs-embeddings'
+                total: 0
             });
 
             expect(mockGenerateEmbedding).not.toHaveBeenCalled();
@@ -245,10 +244,9 @@ describe('hybrid-search', () => {
             expect(result).toEqual({
                 query: 'test query',
                 searchType: 'limited_fallback',
-                error: 'Embeddings data not available. Please install @sap-ux/fiori-docs-embeddings for full search capabilities.',
+                error: 'Search is currently unavailable. The embeddings service failed to initialize.',
                 results: [],
-                total: 0,
-                suggestion: 'Try running: npm install -g @sap-ux/fiori-docs-embeddings'
+                total: 0
             });
         });
 

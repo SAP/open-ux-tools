@@ -24,14 +24,14 @@ jest.unstable_mockModule('applicationinsights', () => {
     return { TelemetryClient };
 });
 
-const { TelemetrySettings } = await import('../../src/base/config-state');
+const { TelemetrySettings } = await import('../../src/base/config-state.js');
 TelemetrySettings.azureInstrumentationKey = 'AzureInstrumentationKey';
 TelemetrySettings.telemetryLibName = '@sap-ux/telemetry';
 TelemetrySettings.telemetryLibVersion = '0.0.1';
 
-const { ClientFactory } = await import('../../src/base/client');
-const { EventName } = await import('../../src/base/types/event-name');
-const { SampleRate } = await import('../../src/base/types/sample-rate');
+const { ClientFactory } = await import('../../src/base/client/index.js');
+const { EventName } = await import('../../src/base/types/event-name.js');
+const { SampleRate } = await import('../../src/base/types/sample-rate.js');
 
 describe('ClientFactory Send Report Internal Extension', () => {
     test('Test function getTelemetryClient()', async () => {

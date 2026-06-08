@@ -2,14 +2,14 @@ import { jest } from '@jest/globals';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
-const mockWriteAnnotationChange = jest.fn();
-const mockWriteChangeToFolder = jest.fn();
-const mockFindChangeWithInboundId = jest.fn();
-const mockWriteChangeToFile = jest.fn();
+const mockWriteAnnotationChange = jest.fn<typeof realChangeUtils.writeAnnotationChange>();
+const mockWriteChangeToFolder = jest.fn<typeof realChangeUtils.writeChangeToFolder>();
+const mockFindChangeWithInboundId = jest.fn<typeof realChangeUtils.findChangeWithInboundId>();
+const mockWriteChangeToFile = jest.fn<typeof realChangeUtils.writeChangeToFile>();
 const mockGetChange = jest.fn().mockReturnValue({});
-const mockAddConnectivityServiceToMta = jest.fn();
+const mockAddConnectivityServiceToMta = jest.fn<typeof realYaml.addConnectivityServiceToMta>();
 
-const realChangeUtils = await import('../../../../../src/base/change-utils');
+const realChangeUtils = await import('../../../../../src/base/change-utils.js');
 
 jest.unstable_mockModule('../../../../../src/base/change-utils', () => ({
     ...realChangeUtils,
@@ -20,7 +20,7 @@ jest.unstable_mockModule('../../../../../src/base/change-utils', () => ({
     writeChangeToFile: mockWriteChangeToFile
 }));
 
-const realYaml = await import('../../../../../src/cf/project/yaml');
+const realYaml = await import('../../../../../src/cf/project/yaml.js');
 
 jest.unstable_mockModule('../../../../../src/cf/project/yaml', () => ({
     ...realYaml,
@@ -33,8 +33,8 @@ jest.unstable_mockModule('../../../../../src/cf/services/ssh', () => ({
 }));
 
 const { AnnotationsWriter, ComponentUsagesWriter, DataSourceWriter, InboundWriter, NewModelWriter } =
-    await import('../../../../../src/writer/changes/writers');
-const { ChangeType, ServiceType } = await import('../../../../../src');
+    await import('../../../../../src/writer/changes/writers/index.js');
+const { ChangeType, ServiceType } = await import('../../../../../src/index.js');
 import type {
     AnnotationsData,
     ComponentUsagesDataBase,

@@ -19,19 +19,19 @@ jest.unstable_mockModule('chalk', () => ({
     dim: (s: string) => s
 }));
 
-const mockPrompt = jest.fn();
+const mockPrompt = jest.fn() as jest.Mock;
 const mockPromptsModule = Object.assign(mockPrompt, { prompt: mockPrompt, inject: jest.fn() });
 jest.unstable_mockModule('prompts', () => ({
     default: mockPromptsModule
 }));
 
-const mockGenerateVariantsConfig = jest.fn();
+const mockGenerateVariantsConfig = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../src/variants-config/generateVariantsConfig', () => ({
     generateVariantsConfig: mockGenerateVariantsConfig
 }));
 
 const { ensurePreviewMiddlewareDependency, updateVariantsCreationScript } =
-    await import('../../../src/preview-config/package-json');
+    await import('../../../src/preview-config/package-json.js');
 
 describe('package-json', () => {
     const logger = new ToolsLogger();

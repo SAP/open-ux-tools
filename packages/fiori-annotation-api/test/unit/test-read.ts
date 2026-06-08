@@ -1,8 +1,8 @@
 import type { Editor } from 'mem-fs-editor';
 import { getProject } from '@sap-ux/project-access';
-import type { Change } from '../../src/types';
-import { FioriAnnotationService } from '../../src/fiori-service';
-import { createFsEditorForProject } from './virtual-fs';
+import type { Change } from '../../src/types/index.js';
+import { FioriAnnotationService } from '../../src/fiori-service.js';
+import { createFsEditorForProject } from './virtual-fs.js';
 
 export async function testRead(
     root: string,

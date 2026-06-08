@@ -8,7 +8,7 @@ jest.unstable_mockModule('portfinder', () => ({
     getPortPromise: mockGetPortPromise
 }));
 
-const { nextFreePort } = await import('../../src/utils');
+const { nextFreePort } = await import('../../src/utils.js');
 
 describe('utils', () => {
     const logger = { info: jest.fn(), warn: jest.fn() } as unknown as ToolsLogger;

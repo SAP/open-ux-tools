@@ -7,7 +7,7 @@ const require = createRequire(import.meta.url);
 const mockSpawnFactory = require('mock-spawn');
 
 // Create the mock spawn function that we'll control
-const mockSpawnFn = jest.fn();
+const mockSpawnFn = jest.fn() as jest.Mock;
 
 // Mock node:child_process before importing CommandRunner
 jest.unstable_mockModule('node:child_process', () => ({

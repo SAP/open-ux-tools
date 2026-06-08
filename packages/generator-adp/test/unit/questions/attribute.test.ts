@@ -1,16 +1,16 @@
 import { jest } from '@jest/globals';
 import { Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 
-const mockValidateProjectName = jest.fn();
-const mockValidateNamespaceAdp = jest.fn();
-const mockValidateEmptyString = jest.fn();
-const mockValidateProjectFolder = jest.fn();
-const mockValidateUI5VersionExists = jest.fn();
-const mockGetDefaultProjectName = jest.fn();
-const mockGetDefaultNamespace = jest.fn();
-const mockGetDefaultVersion = jest.fn();
-const mockGetProjectNameTooltip = jest.fn();
-const mockGetVersionAdditionalMessages = jest.fn();
+const mockValidateProjectName = jest.fn<typeof realProjectInputValidator.validateProjectName>();
+const mockValidateNamespaceAdp = jest.fn<typeof realProjectInputValidator.validateNamespaceAdp>();
+const mockValidateEmptyString = jest.fn<typeof realProjectInputValidator.validateEmptyString>();
+const mockValidateProjectFolder = jest.fn<typeof realProjectInputValidator.validateProjectFolder>();
+const mockValidateUI5VersionExists = jest.fn<typeof realAdpTooling.validateUI5VersionExists>();
+const mockGetDefaultProjectName = jest.fn() as jest.Mock;
+const mockGetDefaultNamespace = jest.fn() as jest.Mock;
+const mockGetDefaultVersion = jest.fn() as jest.Mock;
+const mockGetProjectNameTooltip = jest.fn() as jest.Mock;
+const mockGetVersionAdditionalMessages = jest.fn() as jest.Mock;
 
 const realProjectInputValidator = await import('@sap-ux/project-input-validator');
 jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
@@ -41,10 +41,10 @@ jest.unstable_mockModule('../../../src/app/questions/helper/additional-messages'
 }));
 
 const { FlexLayer } = await import('@sap-ux/adp-tooling');
-const { attributePromptNames } = await import('../../../src/app/types');
-const { getPrompts } = await import('../../../src/app/questions/attributes');
-const { getWizardPages } = await import('../../../src/utils/steps');
-const { t } = await import('../../../src/utils/i18n');
+const { attributePromptNames } = await import('../../../src/app/types.js');
+const { getPrompts } = await import('../../../src/app/questions/attributes.js');
+const { getWizardPages } = await import('../../../src/utils/steps.js');
+const { t } = await import('../../../src/utils/i18n.js');
 
 const mockPath = '/project';
 const mockConfig = {

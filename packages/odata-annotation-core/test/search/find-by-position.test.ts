@@ -4,8 +4,8 @@ import { fileURLToPath } from 'node:url';
 import { Position, Range } from '@sap-ux/odata-annotation-core-types';
 import type { AnnotationFile } from '@sap-ux/odata-annotation-core-types';
 
-import type { FindPathResult } from '../../src';
-import { findPathToPosition, getPositionData } from '../../src';
+import type { FindPathResult } from '../../src/index.js';
+import { findPathToPosition, getPositionData } from '../../src/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

@@ -3,8 +3,8 @@ import { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { AuthenticationType } from '@sap-ux/store';
 import { t } from '../../src/i18n.js';
 
-const mockCreateAbapServiceProvider = jest.fn();
-const mockIsAppStudio = jest.fn();
+const mockCreateAbapServiceProvider = jest.fn<typeof realSystemAccess.createAbapServiceProvider>();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
 
 const realSystemAccess = await import('@sap-ux/system-access');
 jest.unstable_mockModule('@sap-ux/system-access', () => ({

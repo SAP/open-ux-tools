@@ -2,21 +2,21 @@ import { jest } from '@jest/globals';
 import type { Options } from 'http-proxy-middleware';
 
 // mock required btp-utils functions
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
 const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils,
     isAppStudio: mockIsAppStudio
 }));
 
-const mockPrompt = jest.fn();
+const mockPrompt = jest.fn() as jest.Mock;
 jest.unstable_mockModule('prompts', () => ({
     default: () => mockPrompt(),
     __esModule: true
 }));
 
 const { ToolsLogger, NullTransport } = await import('@sap-ux/logger');
-const { addOptionsForEmbeddedBSP, promptUserPass } = await import('../../src/ext/bsp');
+const { addOptionsForEmbeddedBSP, promptUserPass } = await import('../../src/ext/bsp.js');
 
 describe('bsp', () => {
     const logger = new ToolsLogger({

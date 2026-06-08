@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { ExecuteFunctionalityInput } from '../../../../../src/types';
+import type { ExecuteFunctionalityInput } from '../../../../../src/types/index.js';
 
 // Mock dependencies BEFORE importing the module under test
 const mockReadFile = jest.fn<any>();
@@ -56,7 +56,7 @@ const { promises: fsPromises } = await import('node:fs');
 const mockCheckIfGeneratorInstalled = jest.fn<any>();
 const mockRunCmd = jest.fn<any>();
 const mockValidateWithSchema = jest.fn<any>();
-const actualUtils = await import('../../../../../src/utils');
+const actualUtils = await import('../../../../../src/utils/index.js');
 jest.unstable_mockModule('../../../../../src/utils', () => ({
     ...actualUtils,
     checkIfGeneratorInstalled: mockCheckIfGeneratorInstalled,
@@ -66,7 +66,7 @@ jest.unstable_mockModule('../../../../../src/utils', () => ({
 }));
 
 const { default: executeFunctionality } =
-    await import('../../../../../src/tools/functionalities/generate-fiori-ui-application/execute-functionality');
+    await import('../../../../../src/tools/functionalities/generate-fiori-ui-application/execute-functionality.js');
 
 describe('generate-fiori-ui-application execute-functionality', () => {
     const mockAppPath = '/test/project';
@@ -76,7 +76,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
         jest.clearAllMocks();
         mockCheckIfGeneratorInstalled.mockResolvedValue(undefined);
         mockRunCmd.mockResolvedValue({ stdout: 'Success', stderr: '' });
-        mockValidateWithSchema.mockImplementation((schema: any, data: any) => data.appGenConfig || data);
+        mockValidateWithSchema.mockImplementation((schema, data) => data.appGenConfig || data);
         mockReadFile.mockResolvedValue(mockMetadata);
         mockMkdir.mockResolvedValue(undefined);
         mockWriteFile.mockResolvedValue(undefined);

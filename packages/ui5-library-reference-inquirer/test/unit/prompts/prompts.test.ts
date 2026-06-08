@@ -5,7 +5,7 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ReuseLibType } from '@sap-ux/project-access';
 
 // Mock function for checkDependencies
-const mockCheckDependencies = jest.fn();
+const mockCheckDependencies = jest.fn() as jest.Mock;
 
 // Mock @sap-ux/project-access - list all exports to satisfy ESM linker (avoid importing actual - causes OOM)
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
@@ -84,9 +84,9 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 }));
 
 // Dynamic imports after mocking
-const { initI18n, t } = await import('../../../src/i18n');
-const { getQuestions } = await import('../../../src/prompts/');
-const { promptNames } = await import('../../../src/types');
+const { initI18n, t } = await import('../../../src/i18n.js');
+const { getQuestions } = await import('../../../src/prompts//index.js');
+const { promptNames } = await import('../../../src/types.js');
 
 // ReuseLibType is a const enum, inlined at compile time - use string values directly
 const ReuseLibTypeLibrary: ReuseLibType = 'library' as ReuseLibType;

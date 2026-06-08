@@ -1,6 +1,6 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { getTemplatePath } from '../../src/templates';
+import { getTemplatePath } from '../../src/templates.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

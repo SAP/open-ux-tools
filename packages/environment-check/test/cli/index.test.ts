@@ -1,15 +1,15 @@
 import { jest } from '@jest/globals';
-import type { Endpoint } from '../../src';
-import { Severity } from '../../src/types';
+import type { Endpoint } from '../../src/index.js';
+import { Severity } from '../../src/types.js';
 
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn<typeof actualBtpUtils.isAppStudio>();
 const actualBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...actualBtpUtils,
     isAppStudio: mockIsAppStudio
 }));
 
-const mockWriteFile = jest.fn();
+const mockWriteFile = jest.fn() as jest.Mock;
 jest.unstable_mockModule('node:fs', () => ({
     __esModule: true,
     default: {
@@ -18,17 +18,17 @@ jest.unstable_mockModule('node:fs', () => ({
     writeFile: (...args: any[]) => mockWriteFile(...args)
 }));
 
-const mockCheckEnvironment = jest.fn();
+const mockCheckEnvironment = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/checks/environment', () => ({
     checkEnvironment: mockCheckEnvironment
 }));
 
-const mockStoreResultsZip = jest.fn();
+const mockStoreResultsZip = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/output', () => ({
     storeResultsZip: mockStoreResultsZip
 }));
 
-const { cli } = await import('../../src/cli/index');
+const { cli } = await import('../../src/cli/index.js');
 
 describe('Test for cli()', () => {
     beforeEach(() => {
@@ -162,7 +162,7 @@ describe('Test for cli()', () => {
         };
         mockCheckEnvironment.mockImplementation(() => Promise.resolve(result));
 
-        mockWriteFile.mockImplementation((options: any, content: any, callback: any) => {
+        mockWriteFile.mockImplementation((options, content, callback) => {
             checkWriteOtions = options;
             checkContent = content;
             callback('' as unknown as NodeJS.ErrnoException);
@@ -188,7 +188,7 @@ describe('Test for cli()', () => {
         };
         mockCheckEnvironment.mockImplementation(() => Promise.resolve(result));
 
-        mockWriteFile.mockImplementation((options: any, content: any, callback: any) => {
+        mockWriteFile.mockImplementation((options, content, callback) => {
             checkWriteOtions = options;
             checkContent = content;
             callback('' as unknown as NodeJS.ErrnoException);

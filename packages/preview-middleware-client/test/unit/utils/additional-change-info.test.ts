@@ -1,6 +1,7 @@
+import { jest } from '@jest/globals';
 import FlexChange from 'mock/sap/ui/fl/Change';
-import type { FlexChange as Change } from '../../../src/flp/common';
-import type { AddXMLAdditionalInfo } from '../../../src/cpe/additional-change-info/add-xml-additional-info';
+import type { FlexChange as Change } from '../../../src/flp/common.js';
+import type { AddXMLAdditionalInfo } from '../../../src/cpe/additional-change-info/add-xml-additional-info.js';
 
 const getAddXMLAdditionalInfoMock = jest.fn();
 jest.unstable_mockModule('open/ux/preview/client/cpe/additional-change-info/add-xml-additional-info', () => ({

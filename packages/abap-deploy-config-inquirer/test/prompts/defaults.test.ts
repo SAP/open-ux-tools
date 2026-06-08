@@ -7,7 +7,7 @@ import {
     defaultTransportRequestChoice
 } from '../../src/prompts/defaults.js';
 import { getAbapSystemChoices } from '../../src/prompts/helpers.js';
-import { mockTargetSystems } from '../fixtures/targets';
+import { mockTargetSystems } from '../fixtures/targets.js';
 import { PromptState } from '../../src/prompts/prompt-state.js';
 import { PackageInputChoices, TargetSystemType, TransportChoices, type TransportConfig } from '../../src/types.js';
 

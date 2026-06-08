@@ -67,7 +67,7 @@ export class UIActionButton extends React.Component<UIButtonProps, {}> {
                 color: 'var(--vscode-foreground)',
                 backgroundColor: 'var(--vscode-menubar-selectionBackground)',
                 outline: '1px solid var(--vscode-contrastActiveBorder)',
-                borderRadius: 3,
+                borderRadius: 'var(--vscode-cornerRadius-small, 4px)',
                 textDecoration: 'none',
                 selectors: {
                     color: 'var(--vscode-foreground)'

@@ -2,7 +2,6 @@ import { jest } from '@jest/globals';
 import { join } from 'node:path';
 
 const mockPipeline = jest.fn();
-const mockConnect = jest.fn();
 
 const mockLogger = {
     info: jest.fn(),
@@ -15,12 +14,9 @@ jest.unstable_mockModule('@sap-ux/logger', () => ({
     ToolsLogger: jest.fn().mockImplementation(() => mockLogger)
 }));
 
-jest.unstable_mockModule('@xenova/transformers', () => ({
-    pipeline: mockPipeline
-}));
-
-jest.unstable_mockModule('@lancedb/lancedb', () => ({
-    connect: mockConnect
+jest.unstable_mockModule('@huggingface/transformers', () => ({
+    pipeline: mockPipeline,
+    env: { cacheDir: '' }
 }));
 
 const mockFs = {
@@ -28,9 +24,13 @@ const mockFs = {
     mkdir: jest.fn(),
     writeFile: jest.fn(),
     readdir: jest.fn(),
-    stat: jest.fn()
+    stat: jest.fn(),
+    rm: jest.fn()
 };
-jest.unstable_mockModule('node:fs/promises', () => mockFs);
+jest.unstable_mockModule('node:fs/promises', () => ({
+    ...mockFs,
+    default: mockFs
+}));
 
 interface EmbeddingBuilderType {
     config: {
@@ -39,7 +39,6 @@ interface EmbeddingBuilderType {
         chunkSize: number;
         chunkOverlap: number;
         batchSize: number;
-        maxVectorsPerTable: number;
     };
     pipeline: unknown;
     documents: Array<unknown>;
@@ -60,7 +59,7 @@ describe('EmbeddingBuilder', () => {
     beforeEach(async () => {
         jest.clearAllMocks();
 
-        const module = await import('../src/scripts/build-embeddings');
+        const module = await import('../src/scripts/build-embeddings.js');
         EmbeddingBuilder = (module as unknown as { EmbeddingBuilder: new () => EmbeddingBuilderType }).EmbeddingBuilder;
     });
 
@@ -75,7 +74,6 @@ describe('EmbeddingBuilder', () => {
             expect(builder.config.chunkSize).toBe(2000);
             expect(builder.config.chunkOverlap).toBe(100);
             expect(builder.config.batchSize).toBe(20);
-            expect(builder.config.maxVectorsPerTable).toBe(5000);
         });
     });
 
@@ -91,7 +89,6 @@ describe('EmbeddingBuilder', () => {
                 'feature-extraction',
                 'Xenova/all-MiniLM-L6-v2',
                 expect.objectContaining({
-                    quantized: false,
                     progress_callback: expect.any(Function)
                 })
             );
@@ -183,7 +180,7 @@ This is another test content.`;
 
         it('should chunk large documents', () => {
             const builder = new EmbeddingBuilder();
-            const longContent = 'A'.repeat(5000); // Much longer than chunkSize (2000) to ensure multiple chunks
+            const longContent = 'A'.repeat(5000);
             const doc = {
                 id: 'test-doc',
                 title: 'Test Document',
@@ -232,9 +229,7 @@ This is another test content.`;
 
             const breakPoint = builder.findSentenceBreak(text);
 
-            // Function finds the LAST sentence ending WITH SPACE and returns position after it
-            // "Second sentence! " (with space) at position 31, so breakPoint should be 33 (position after "! ")
-            expect(breakPoint).toBe(33); // After "Second sentence! "
+            expect(breakPoint).toBe(33);
         });
 
         it('should find paragraph breaks when no sentence breaks', () => {
@@ -243,7 +238,7 @@ This is another test content.`;
 
             const breakPoint = builder.findSentenceBreak(text);
 
-            expect(breakPoint).toBe(17); // After "First paragraph\n\n"
+            expect(breakPoint).toBe(17);
         });
 
         it('should return text length when no good break point', () => {
@@ -292,16 +287,11 @@ This is another test content.`;
     });
 
     describe('createVectorDatabase', () => {
-        it('should create vector database with LanceDB', async () => {
-            const mockTable = { drop: jest.fn() };
-            const mockDb = {
-                openTable: jest.fn().mockResolvedValue(mockTable),
-                dropTable: jest.fn(),
-                createTable: jest.fn()
-            };
-            mockConnect.mockResolvedValue(mockDb);
+        it('should create flat binary vector store', async () => {
             mockFs.mkdir.mockResolvedValue(undefined);
             mockFs.writeFile.mockResolvedValue(undefined);
+            // readdir returns empty dir (no stale artifacts)
+            mockFs.readdir.mockResolvedValue([] as never);
 
             const builder = new EmbeddingBuilder();
             builder.chunks = [
@@ -342,14 +332,14 @@ This is another test content.`;
             const metadata = await builder.createVectorDatabase();
 
             expect(mockFs.mkdir).toHaveBeenCalledWith('./data/embeddings', { recursive: true });
-            expect(mockConnect).toHaveBeenCalled();
-            expect(mockDb.createTable).toHaveBeenCalledWith('documents_000', expect.any(Array));
             expect(mockFs.writeFile).toHaveBeenCalledWith(
-                expect.stringContaining('table_index.json'),
-                expect.stringContaining('documents_000')
+                expect.stringContaining('embeddings.bin'),
+                expect.any(Buffer)
             );
+            expect(mockFs.writeFile).toHaveBeenCalledWith(expect.stringContaining('records.jsonl'), expect.any(String));
+            expect(mockFs.writeFile).toHaveBeenCalledWith(expect.stringContaining('metadata.json'), expect.any(String));
             expect(metadata).toMatchObject({
-                version: '1.0.0',
+                version: '2.0.0',
                 model: 'Xenova/all-MiniLM-L6-v2',
                 dimensions: 3,
                 totalVectors: 1,
@@ -359,44 +349,27 @@ This is another test content.`;
             });
         });
 
-        it('should handle existing table by dropping it', async () => {
-            const mockTable = { drop: jest.fn() };
-            const mockDb = {
-                openTable: jest.fn().mockResolvedValue(mockTable),
-                dropTable: jest.fn(),
-                createTable: jest.fn()
-            };
-            mockConnect.mockResolvedValue(mockDb);
+        it('should remove stale LanceDB artifacts during build', async () => {
             mockFs.mkdir.mockResolvedValue(undefined);
             mockFs.writeFile.mockResolvedValue(undefined);
+            mockFs.rm.mockResolvedValue(undefined);
+            // Simulate a stale .lance directory and table_index.json in the embeddings dir
+            mockFs.readdir.mockResolvedValue([
+                { name: 'documents_000.lance', isDirectory: () => true, isFile: () => false },
+                { name: 'table_index.json', isDirectory: () => false, isFile: () => true }
+            ] as never);
 
             const builder = new EmbeddingBuilder();
-            builder.chunks = [
-                {
-                    id: 'chunk-1',
-                    documentId: 'doc-1',
-                    chunkIndex: 0,
-                    content: 'test content',
-                    title: 'Test',
-                    category: 'test',
-                    path: 'test.md',
-                    vector: [0.1, 0.2, 0.3],
-                    metadata: {
-                        tags: ['test'],
-                        headers: ['Header'],
-                        lastModified: '2023-01-01',
-                        wordCount: 2,
-                        excerpt: 'test content',
-                        totalChunks: 1
-                    }
-                }
-            ];
+            builder.chunks = [];
             builder.documents = [];
 
             await builder.createVectorDatabase();
 
-            expect(mockDb.dropTable).toHaveBeenCalledWith('documents_000');
-            expect(mockDb.createTable).toHaveBeenCalled();
+            expect(mockFs.rm).toHaveBeenCalledWith(expect.stringContaining('documents_000.lance'), {
+                recursive: true,
+                force: true
+            });
+            expect(mockFs.rm).toHaveBeenCalledWith(expect.stringContaining('table_index.json'), { force: true });
         });
     });
 
@@ -404,7 +377,6 @@ This is another test content.`;
         it('should chunk multiple documents and create statistics', async () => {
             const builder = new EmbeddingBuilder();
 
-            // Add documents with different sizes
             builder.documents = [
                 {
                     id: 'doc1',
@@ -421,7 +393,7 @@ This is another test content.`;
                 {
                     id: 'doc2',
                     title: 'Large Doc',
-                    content: 'A'.repeat(5000), // Large content that should be chunked
+                    content: 'A'.repeat(5000),
                     category: 'test',
                     path: 'test/large.md',
                     tags: [],
@@ -440,7 +412,7 @@ This is another test content.`;
                 content: string;
                 metadata: unknown;
             }>;
-            expect(chunks.length).toBeGreaterThan(1); // Large doc should be chunked
+            expect(chunks.length).toBeGreaterThan(1);
             expect(chunks[0]).toMatchObject({
                 id: expect.any(String),
                 documentId: 'doc1',
@@ -455,11 +427,10 @@ This is another test content.`;
             const builder = new EmbeddingBuilder();
             await builder.initialize();
 
-            // Since generateAllEmbeddings is called internally, test through generateEmbedding
             const embedding = await builder.generateEmbedding('test content');
 
             expect(embedding).toEqual(expect.any(Array));
-            expect(embedding).toHaveLength(3); // Mock returns [0.1, 0.2, 0.3]
+            expect(embedding).toHaveLength(3);
         });
     });
 
@@ -468,22 +439,15 @@ This is another test content.`;
             const builder = new EmbeddingBuilder();
             mockLogger.warn.mockClear();
 
-            // Force an error in loadDocuments by making readdir fail
-            mockFs.readdir.mockRejectedValue(new Error('Directory read error'));
+            mockFs.readdir
+                .mockRejectedValueOnce(new Error('Directory read error')) // loadDocuments -> data_local
+                .mockResolvedValue([] as never); // cleanStaleArtifacts -> embeddings path
 
-            // Mock the vector database creation to avoid errors
-            const mockDb = {
-                openTable: jest.fn().mockRejectedValue(new Error('Table not found')),
-                createTable: jest.fn().mockResolvedValue({})
-            };
-            mockConnect.mockResolvedValue(mockDb);
             mockFs.mkdir.mockResolvedValue(undefined as never);
             mockFs.writeFile.mockResolvedValue(undefined as never);
 
-            // loadDocuments catches errors and logs warnings, doesn't throw
             await builder.buildEmbeddings();
 
-            // Verify that the warning was logged
             expect(mockLogger.warn).toHaveBeenCalledWith(
                 expect.stringContaining('Failed to read data_local directory')
             );
@@ -497,14 +461,9 @@ This is another test content.`;
 
 This is test content for embedding generation.`;
 
-            const mockDb = {
-                openTable: jest.fn().mockRejectedValue(new Error('Table not found')),
-                createTable: jest.fn().mockResolvedValue({}),
-                dropTable: jest.fn()
-            };
-
-            mockConnect.mockResolvedValue(mockDb);
-            mockFs.readdir.mockResolvedValue(['test.md'] as never);
+            mockFs.readdir
+                .mockResolvedValueOnce(['test.md'] as never) // loadDocuments -> data_local
+                .mockResolvedValue([] as never); // cleanStaleArtifacts -> embeddings path
             mockFs.readFile.mockResolvedValue(mockMarkdownContent);
             mockFs.mkdir.mockResolvedValue(undefined as never);
             mockFs.writeFile.mockResolvedValue(undefined as never);
@@ -512,7 +471,6 @@ This is test content for embedding generation.`;
             const builder = new EmbeddingBuilder();
             await builder.buildEmbeddings();
 
-            expect(mockConnect).toHaveBeenCalled();
             expect(mockFs.writeFile).toHaveBeenCalledWith(expect.stringContaining('metadata.json'), expect.any(String));
         });
 
@@ -524,14 +482,10 @@ This is test content for embedding generation.`;
                 throw new Error(`process.exit called with code ${code}`);
             }) as never);
 
-            // Make readdir succeed but createVectorDatabase fail
-            mockFs.readdir.mockResolvedValue(['test.md'] as never);
+            mockFs.readdir.mockResolvedValueOnce(['test.md'] as never);
             mockFs.readFile.mockResolvedValue('**TITLE**: Test\n\nContent');
+            mockFs.mkdir.mockRejectedValue(new Error('Disk full'));
 
-            // Make the database connection fail to trigger the error path
-            mockConnect.mockRejectedValue(new Error('Database connection failed'));
-
-            // buildEmbeddings catches errors and calls process.exit, which we mock to throw
             await expect(builder.buildEmbeddings()).rejects.toThrow('process.exit called with code 1');
 
             expect(mockLogger.error).toHaveBeenCalled();
@@ -587,9 +541,7 @@ This is test content for embedding generation.`;
 
             const chunks = builder.chunkDocument(doc) as Array<{ content: string }>;
 
-            // With such a long content, we should get at least one chunk, potentially more
             expect(chunks.length).toBeGreaterThanOrEqual(1);
-            // Test that the content was processed and chunked appropriately
             expect(chunks[0].content).toContain('This is sentence number');
         });
     });
@@ -617,7 +569,6 @@ This is test content for embedding generation.`;
         it('should handle model loading with retry on failure', async () => {
             const mockPipelineInstance = jest.fn().mockResolvedValue([0.1, 0.2, 0.3]);
 
-            // First call fails, second succeeds (fallback)
             mockPipeline
                 .mockRejectedValueOnce(new Error('Model load failed'))
                 .mockResolvedValueOnce(mockPipelineInstance);

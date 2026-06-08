@@ -3,9 +3,9 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-const mockIsAppStudio = jest.fn();
-const mockValidateEmptyString = jest.fn();
-const mockGetConfiguredProvider = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockValidateEmptyString = jest.fn<typeof realProjectInputValidator.validateEmptyString>();
+const mockGetConfiguredProvider = jest.fn<typeof realAdpTooling.getConfiguredProvider>();
 
 const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
@@ -25,9 +25,9 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getConfiguredProvider: mockGetConfiguredProvider
 }));
 
-const { initI18n, t } = await import('../../../../src/utils/i18n');
-const { configPromptNames } = await import('../../../../src/app/types');
-const { getCredentialsPrompts } = await import('../../../../src/base/questions/credentials');
+const { initI18n, t } = await import('../../../../src/utils/i18n.js');
+const { configPromptNames } = await import('../../../../src/app/types.js');
+const { getCredentialsPrompts } = await import('../../../../src/base/questions/credentials.js');
 
 import type { Credentials } from '../../../../src/types.js';
 
