@@ -50,12 +50,14 @@ describe('getTemplatesOverwritePath', () => {
         // The compiled CJS build runs with Node's `__dirname` global defined.
         // Under ts-jest's ESM transform it is undefined, so we simulate it
         // here to exercise the production code path.
-        (globalThis as Record<string, unknown>).__dirname = '/abs/generators/utils';
+        const fakeDir = join('abs', 'generators', 'utils');
+        (globalThis as Record<string, unknown>).__dirname = fakeDir;
         mockExistsSync.mockReturnValue(true);
 
         const result = getTemplatesOverwritePath();
 
-        expect(result).toBe('/abs/generators/utils/templates');
-        expect(mockExistsSync).toHaveBeenCalledWith('/abs/generators/utils/templates');
+        const expected = join(fakeDir, 'templates');
+        expect(result).toBe(expected);
+        expect(mockExistsSync).toHaveBeenCalledWith(expected);
     });
 });
