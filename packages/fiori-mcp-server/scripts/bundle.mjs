@@ -3,8 +3,10 @@
  *
  * Produces a self-contained dist/ directory:
  *
- *   dist/index.js                         bundled JS (TS source + most deps inlined)
- *   dist/node_modules/onnxruntime-node/   ONNX runtime (native .node files)
+ *   dist/index.js                         bundled JS (TS source + all deps inlined)
+ *   dist/ort-wasm-simd-threaded.wasm      ONNX WASM runtime binary (~12 MB)
+ *   dist/ort-wasm-simd-threaded.mjs       WASM factory loader (loaded by ort.node.min.mjs)
+ *   dist/ort-wasm-simd-threaded.jsep.mjs  JSEP WASM factory (used by transformers internally)
  *   dist/prebuilds/                       @zowe/secrets-for-zowe-sdk .node binaries
  *   dist/data/embeddings/                 pre-built binary vector store (embeddings.bin + records.jsonl)
  *   dist/icon.png, dist/icon.svg
@@ -14,12 +16,13 @@
  *   from HuggingFace Hub on first use and cached in the default @huggingface/transformers
  *   cache directory (respects HF_HOME / TRANSFORMERS_CACHE env vars; defaults to
  *   ~/.cache/huggingface/hub on Linux/macOS).
- *   This keeps the published tgz under npm's 100 MB limit.
  *
- * Native binary strategy:
- *   onnxruntime-node — kept external (uses a dynamic require template literal
- *     that esbuild cannot bundle). Copied to
- *     dist/node_modules/onnxruntime-node/ with its bin/ tree intact.
+ * ONNX runtime strategy:
+ *   onnxruntime-node (native binaries, ~140 MB across all platforms) is replaced
+ *   by onnxruntime-web (WASM, ~12 MB, single platform-independent binary).
+ *   scripts/onnxruntime-node-wasm-shim.cjs is aliased as 'onnxruntime-node' in
+ *   the esbuild bundle; it sets globalThis[Symbol.for('onnxruntime')] so that
+ *   @huggingface/transformers uses the WASM backend instead of native.
  */
 
 import esbuild from 'esbuild';
@@ -48,34 +51,6 @@ function copyDir(src, dst) {
     }
 }
 
-// Strip dependency/script fields from package.json files inside dist/node_modules/
-// so package managers (bun, npm, yarn) don't try to resolve or run them when
-// installing the tarball. Node's require() only needs name/main/exports/type.
-function scrubNestedPackageJsons(nodeModulesDir) {
-    const FIELDS_TO_REMOVE = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies', 'scripts'];
-    for (const entry of fs.readdirSync(nodeModulesDir, { withFileTypes: true })) {
-        const dir = path.join(nodeModulesDir, entry.name);
-        if (!entry.isDirectory()) continue;
-        // Handle scoped packages (@scope/pkg)
-        if (entry.name.startsWith('@')) {
-            scrubNestedPackageJsons(dir);
-            continue;
-        }
-        const pkgFile = path.join(dir, 'package.json');
-        if (fs.existsSync(pkgFile)) {
-            const pkg = JSON.parse(fs.readFileSync(pkgFile, 'utf8'));
-            let changed = false;
-            for (const field of FIELDS_TO_REMOVE) {
-                if (field in pkg) {
-                    delete pkg[field];
-                    changed = true;
-                }
-            }
-            if (changed) fs.writeFileSync(pkgFile, JSON.stringify(pkg, null, 2) + '\n');
-        }
-    }
-}
-
 // Walk up from a resolved entry point to find the package root (the directory
 // whose package.json has name === pkgName). Needed for packages like
 // onnxruntime-common whose main entry is at dist/cjs/index.js — a naive
@@ -100,8 +75,8 @@ function findPkgRoot(entryPath, pkgName) {
 // createRequire rooted at the package so pnpm symlinks resolve correctly
 const req = createRequire(path.join(PKG_ROOT, 'package.json'));
 
-// onnxruntime-node is not in fiori-mcp-server's direct deps — it lives inside
-// @huggingface/transformers' node_modules. Resolve via transformers' context.
+// onnxruntime-web is a dep of @huggingface/transformers. Resolve via transformers' context
+// so pnpm symlinks resolve correctly even though onnxruntime-web is not a direct dep here.
 const hfReq = createRequire(req.resolve('@huggingface/transformers'));
 
 // ── resolve key package paths ────────────────────────────────────────────────
@@ -112,11 +87,11 @@ const hfNodeCjs = req.resolve('@huggingface/transformers');
 const hfPkgDir = findPkgRoot(hfNodeCjs, '@huggingface/transformers');
 const hfDistDir = path.join(hfPkgDir, 'dist');
 
-// onnxruntime packages also don't expose package.json — walk up from main entry
-// until the package.json whose name matches is found (onnxruntime-common's entry
-// is at dist/cjs/index.js so a naive single .. would land in dist/, not the root).
-const onnxPkgDir = findPkgRoot(hfReq.resolve('onnxruntime-node'), 'onnxruntime-node');
-const onnxCommonPkgDir = findPkgRoot(hfReq.resolve('onnxruntime-common'), 'onnxruntime-common');
+// onnxruntime-web is a direct dep of @huggingface/transformers.
+const ortWebPkgDir = findPkgRoot(hfReq.resolve('onnxruntime-web'), 'onnxruntime-web');
+const ortWebDistDir = path.join(ortWebPkgDir, 'dist');
+// ort.node.min.js is the Node.js entry point that registers cpu+wasm WASM backends.
+const ortWebNodeEntry = hfReq.resolve('onnxruntime-web');
 
 const embeddingsPkgJson = req.resolve('@sap-ux/fiori-docs-embeddings/package.json');
 const embeddingsDataDir = path.join(path.dirname(embeddingsPkgJson), 'data', 'embeddings');
@@ -172,6 +147,46 @@ const sharpStubPlugin = {
     }
 };
 
+// ── onnxruntime-node WASM alias plugin ────────────────────────────────────────
+// Replaces native onnxruntime-node (multi-platform binaries, ~140 MB) with
+// onnxruntime-web (WASM, ~12 MB, platform-independent).
+//
+// The generated shim:
+//   1. Requires onnxruntime-web via its resolved absolute path (so esbuild can
+//      inline it without needing it as a direct dependency of this package).
+//   2. Sets env.wasm.wasmPaths so onnxruntime-web finds the .wasm binary at
+//      runtime relative to dist/ (where bundle.mjs copies it in Step 4).
+//   3. Sets globalThis[Symbol.for('onnxruntime')] — the hook @huggingface/transformers'
+//      getORTEnv() helper checks before falling back to require('onnxruntime-node').
+//      Because CJS module evaluation is synchronous and require('onnxruntime-node')
+//      runs before getORTEnv() in the same init function, the global is set in time.
+const onnxNodeWasmPlugin = {
+    name: 'onnxruntime-node-wasm',
+    setup(build) {
+        build.onResolve({ filter: /^onnxruntime-node$/ }, () => ({
+            path: 'onnxruntime-node-wasm-shim',
+            namespace: 'onnxruntime-node-wasm-shim'
+        }));
+        build.onLoad({ filter: /.*/, namespace: 'onnxruntime-node-wasm-shim' }, () => ({
+            // Use the resolved absolute path so esbuild can locate and inline
+            // onnxruntime-web without it being a direct dep of this package.
+            contents: [
+                `const ort = require(${JSON.stringify(ortWebNodeEntry)});`,
+                `if (!ort.env?.wasm) throw new Error('onnxruntime-web: env.wasm not available');`,
+                // Use a file:// URL so onnxruntime-web can resolve WASM files on all
+                // platforms — __dirname uses backslashes on Windows, which would break
+                // the path-based lookup in the WASM loader.
+                `ort.env.wasm.wasmPaths = require('url').pathToFileURL(__dirname).href + '/';`,
+                // Override the ORT global so transformers uses WASM on Node.js.
+                `globalThis[Symbol.for('onnxruntime')] = ort;`,
+                `module.exports = ort;`
+            ].join('\n'),
+            loader: 'js',
+            resolveDir: path.dirname(ortWebNodeEntry)
+        }));
+    }
+};
+
 await esbuild.build({
     entryPoints: [path.join(PKG_ROOT, 'src/index.ts')],
     bundle: true,
@@ -197,35 +212,15 @@ await esbuild.build({
         ].join('\n')
     },
     external: [
-        'vscode',
-        // Kept external — copied to dist/node_modules/
-        'onnxruntime-node'
+        'vscode'
+        // onnxruntime-node is no longer external — aliased to the WASM shim above
     ],
-    plugins: [pkgJsonShimPlugin, sharpStubPlugin]
+    plugins: [onnxNodeWasmPlugin, pkgJsonShimPlugin, sharpStubPlugin]
 });
 
 console.log('✓ esbuild bundle complete');
 
-// ── Step 2: copy onnxruntime-node into dist/node_modules/onnxruntime-node/ ───
-// onnxruntime-node uses require(`../bin/napi-v6/${platform}/${arch}/...node`)
-// relative to dist/binding.js, so the entire package directory must be intact.
-//
-// Covered platforms in onnxruntime-node@1.24.3:
-//   darwin/arm64, linux/x64, linux/arm64, win32/x64, win32/arm64
-// Note: darwin/x64 is NOT shipped by onnxruntime-node upstream — macOS Intel
-// is unsupported at this version.
-
-const onnxOut = path.join(DIST, 'node_modules', 'onnxruntime-node');
-copyDir(onnxPkgDir, onnxOut);
-console.log('✓ Copied onnxruntime-node');
-
-// ── Step 3: copy onnxruntime-common (required by onnxruntime-node) ───────────
-
-const onnxCommonOut = path.join(DIST, 'node_modules', 'onnxruntime-common');
-copyDir(onnxCommonPkgDir, onnxCommonOut);
-console.log('✓ Copied onnxruntime-common');
-
-// ── Step 4: copy @zowe/secrets-for-zowe-sdk prebuilds ────────────────────────
+// ── Step 2: copy @zowe/secrets-for-zowe-sdk prebuilds ────────────────────────
 // @sap-ux/store's keyring loader calls findPrebuildsDir(__dirname) at runtime.
 // When esbuild inlines src/keyring/index.js, __dirname becomes dist/. The loader
 // walks up until it finds a package.json (the root package.json), then looks for
@@ -263,39 +258,50 @@ if (fs.existsSync(zowePrebuildsDir)) {
     console.warn('⚠ @zowe/secrets-for-zowe-sdk prebuilds not found at', zowePrebuildsDir);
 }
 
-// ── Step 5: copy embeddings data ─────────────────────────────────────────────
+// ── Step 3: copy embeddings data ─────────────────────────────────────────────
 
 const embeddingsOut = path.join(DIST, 'data', 'embeddings');
 copyDir(embeddingsDataDir, embeddingsOut);
 console.log('✓ Copied embeddings data');
 
-// ── Step 6: copy WASM runtime ─────────────────────────────────────────────────
-// @huggingface/transformers loads ort-wasm-simd-threaded.jsep.mjs from its own
-// dist/ at runtime via a path relative to the transformers bundle. When inlined
-// by esbuild the WASM load path becomes relative to dist/, so we copy it there.
+// ── Step 4: copy WASM runtime files ──────────────────────────────────────────
+// onnxruntime-web's WASM backend needs three files alongside dist/index.js:
+//
+//   ort-wasm-simd-threaded.wasm  — the main ONNX WASM binary (~12 MB)
+//   ort-wasm-simd-threaded.mjs   — WASM factory loaded by ort.node.min.mjs;
+//                                  uses import.meta.url to locate the .wasm
+//   ort-wasm-simd-threaded.jsep.mjs — JSEP factory used by transformers internally
+//
+// The shim sets env.wasm.wasmPaths = __dirname + '/' so onnxruntime-web resolves
+// all three files relative to dist/.
 
-const wasmFile = 'ort-wasm-simd-threaded.jsep.mjs';
-const wasmSrc = path.join(hfDistDir, wasmFile);
-if (fs.existsSync(wasmSrc)) {
-    fs.copyFileSync(wasmSrc, path.join(DIST, wasmFile));
-    console.log('✓ Copied WASM runtime');
-} else {
-    console.warn('⚠ WASM file not found at', wasmSrc);
+for (const wasmFile of [
+    'ort-wasm-simd-threaded.wasm',
+    'ort-wasm-simd-threaded.mjs',
+    'ort-wasm-simd-threaded.jsep.mjs'
+]) {
+    // Prefer onnxruntime-web's copy; fall back to the transformers dist copy
+    const src = fs.existsSync(path.join(ortWebDistDir, wasmFile))
+        ? path.join(ortWebDistDir, wasmFile)
+        : path.join(hfDistDir, wasmFile);
+    if (fs.existsSync(src)) {
+        fs.copyFileSync(src, path.join(DIST, wasmFile));
+        console.log(`✓ Copied ${wasmFile}`);
+    } else {
+        const msg = `⚠ WASM file not found: ${wasmFile}`;
+        if (wasmFile.endsWith('.wasm')) {
+            throw new Error(msg);
+        }
+        console.warn(msg);
+    }
 }
 
-// ── Step 7: copy icons ────────────────────────────────────────────────────────
+// ── Step 5: copy icons ────────────────────────────────────────────────────────
 
 for (const icon of ['icon.png', 'icon.svg']) {
     fs.copyFileSync(path.join(PKG_ROOT, 'assets', icon), path.join(DIST, icon));
 }
 console.log('✓ Copied icons');
-
-// ── Step 8: scrub nested package.json files ──────────────────────────────────
-// Remove dependency/script fields from package.json files inside dist/node_modules/
-// so package managers (bun, npm) don't try to resolve or run them at install time.
-
-scrubNestedPackageJsons(path.join(DIST, 'node_modules'));
-console.log('✓ Scrubbed nested package.json files');
 
 console.log('\nBuild complete. dist/ layout:');
 for (const entry of fs.readdirSync(DIST)) {

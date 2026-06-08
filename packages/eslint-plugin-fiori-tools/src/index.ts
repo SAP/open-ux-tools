@@ -470,7 +470,7 @@ const typescriptConfig: Linter.Config[] = [
 // Fiori language rules (for manifest.json, XML views, CDS files)
 const fioriLanguageConfig: Linter.Config[] = [
     {
-        files: ['**/manifest.json', '**/*.xml', '**/*.cds'],
+        files: ['**/manifest.json', '**/*.xml', '**/*.cds', '**/*.change'],
         language: '@sap-ux/fiori-tools/fiori',
         rules: {
             // fiori tools specific rules
