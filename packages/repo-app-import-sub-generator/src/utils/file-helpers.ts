@@ -1,9 +1,9 @@
-import { adtSourceTemplateId } from './constants';
+import { adtSourceTemplateId } from './constants.js';
 import type { Editor } from 'mem-fs-editor';
 import { type Manifest } from '@sap-ux/project-access';
-import { t } from './i18n';
-import RepoAppDownloadLogger from './logger';
-import type { QfaJsonConfig } from '../app/types';
+import { t } from './i18n.js';
+import RepoAppDownloadLogger from './logger.js';
+import type { QfaJsonConfig } from '../app/types.js';
 
 /**
  *

@@ -12,8 +12,8 @@ import {
     promptNames
 } from '@sap-ux/cf-deploy-config-inquirer';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { destinationQuestionDefaultOption, getCFChoices } from './utils';
-import { t } from '../utils';
+import { destinationQuestionDefaultOption, getCFChoices } from './utils.js';
+import { t } from '../utils/index.js';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { Answers, Question } from 'inquirer';
 import { withCondition } from '@sap-ux/inquirer-common';
@@ -73,7 +73,11 @@ export async function getCFQuestions({
         [promptNames.overwriteCfConfig]: { hide: !addOverwrite, ...promptOptions?.overwriteCfConfig }
     };
 
-    DeploymentGenerator.logger?.debug(t('cfGen.debug.promptOptions', { options: JSON.stringify(options) }));
+    DeploymentGenerator.logger?.debug(
+        t('cfGen.debug.promptOptions', {
+            options: JSON.stringify({ ...options, isCap, addOverwrite, cfDestination, isAbapDirectServiceBinding })
+        })
+    );
     return getPrompts(options, DeploymentGenerator.logger as unknown as Logger);
 }
 

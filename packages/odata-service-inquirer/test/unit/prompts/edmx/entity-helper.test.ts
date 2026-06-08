@@ -2,13 +2,15 @@ import {
     getEntityChoices,
     getNavigationEntityChoices,
     getDefaultTableType
-} from '../../../../src/prompts/edmx/entity-helper';
+} from '../../../../src/prompts/edmx/entity-helper.js';
 import { getRecursiveHierarchyQualifier } from '@sap-ux/inquirer-common';
 import { readFile } from 'node:fs/promises';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('Test entity helper functions', () => {
     let metadataV4WithAggregateTransforms: string;

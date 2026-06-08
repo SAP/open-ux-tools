@@ -1,4 +1,4 @@
-import { ApiError, ApiErrorCode } from '../../src/error';
+import { ApiError, ApiErrorCode } from '../../src/error.js';
 
 describe('API error class', () => {
     test('constructor', () => {

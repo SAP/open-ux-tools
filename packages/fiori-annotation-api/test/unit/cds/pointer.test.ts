@@ -1,14 +1,16 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { promises } from 'node:fs';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import type { AnnotationFile } from '@sap-ux/odata-annotation-core-types';
 
-import { convertPointer, getAstNodesFromPointer } from '../../../src/cds/pointer';
-import { getGenericNodeFromPointer } from '../../../src/utils';
-import type { CDSDocument } from '../../../src/cds/document';
+import { convertPointer, getAstNodesFromPointer } from '../../../src/cds/pointer.js';
+import { getGenericNodeFromPointer } from '../../../src/utils/index.js';
+import type { CDSDocument } from '../../../src/cds/document.js';
 
-import { PROJECTS } from '../projects';
-import { getCDSDocument } from './utils';
+import { PROJECTS } from '../projects.js';
+import { getCDSDocument } from './utils.js';
 
 const LOG_ENABLED = false;
 

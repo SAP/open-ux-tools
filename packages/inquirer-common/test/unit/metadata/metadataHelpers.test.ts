@@ -7,21 +7,26 @@ import {
     shouldUseAnalyticalTable,
     filterAggregateTransformations,
     convertEdmxToConvertedMetadata
-} from '../../../src/metadata';
+} from '../../../src/metadata/index.js';
+import { initI18nInquirerCommon } from '../../../src/i18n.js';
 import { convert } from '@sap-ux/annotation-converter';
 import { parse } from '@sap-ux/edmx-parser';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+const __testdirname = dirname(fileURLToPath(import.meta.url));
 
 describe('metadata entity helpers', () => {
     let metadata: ReturnType<typeof convert>;
 
-    beforeAll(() => {
+    beforeAll(async () => {
         const edmx = fs.readFileSync(
-            path.resolve(__dirname, '../prompts/fixtures/metadataV4WithAggregateTransforms.xml'),
+            path.resolve(__testdirname, '../prompts/fixtures/metadataV4WithAggregateTransforms.xml'),
             'utf-8'
         );
         metadata = convert(parse(edmx));
+        await initI18nInquirerCommon();
     });
 
     describe('aggregate transformation helpers', () => {
@@ -1251,7 +1256,7 @@ describe('metadata entity helpers', () => {
 
         beforeAll(() => {
             validEdmxV4 = fs.readFileSync(
-                path.resolve(__dirname, '../prompts/fixtures/metadataV4WithAggregateTransforms.xml'),
+                path.resolve(__testdirname, '../prompts/fixtures/metadataV4WithAggregateTransforms.xml'),
                 'utf-8'
             );
         });
@@ -1268,7 +1273,7 @@ describe('metadata entity helpers', () => {
         test('should throw error for invalid EDMX', () => {
             const invalidEdmx = 'invalid xml content';
 
-            expect(() => convertEdmxToConvertedMetadata(invalidEdmx)).toThrow('errors.unparseableMetadata');
+            expect(() => convertEdmxToConvertedMetadata(invalidEdmx)).toThrow(/Unable to parse entities/);
         });
 
         test('should throw error for unparseable OData version', () => {
@@ -1289,7 +1294,7 @@ describe('metadata entity helpers', () => {
                     </edmx:DataServices>
                 </edmx:Edmx>`;
 
-            expect(() => convertEdmxToConvertedMetadata(invalidVersionEdmx)).toThrow('errors.unparseableMetadata');
+            expect(() => convertEdmxToConvertedMetadata(invalidVersionEdmx)).toThrow(/Unable to parse entities/);
         });
 
         test('should throw error for EDMX with no version', () => {
@@ -1310,11 +1315,11 @@ describe('metadata entity helpers', () => {
                     </edmx:DataServices>
                 </edmx:Edmx>`;
 
-            expect(() => convertEdmxToConvertedMetadata(noVersionEdmx)).toThrow('errors.unparseableMetadata');
+            expect(() => convertEdmxToConvertedMetadata(noVersionEdmx)).toThrow(/Unable to parse entities/);
         });
 
         test('should handle empty string input', () => {
-            expect(() => convertEdmxToConvertedMetadata('')).toThrow('errors.unparseableMetadata');
+            expect(() => convertEdmxToConvertedMetadata('')).toThrow(/Unable to parse entities/);
         });
 
         test('should handle malformed XML', () => {
@@ -1328,7 +1333,7 @@ describe('metadata entity helpers', () => {
                         </Schema>
                     </edmx:DataServices>`;
 
-            expect(() => convertEdmxToConvertedMetadata(malformedXml)).toThrow('errors.unparseableMetadata');
+            expect(() => convertEdmxToConvertedMetadata(malformedXml)).toThrow(/Unable to parse entities/);
         });
     });
 });

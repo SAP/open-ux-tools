@@ -1,14 +1,14 @@
 import * as z from 'zod';
-import { LATEST_UI5_VERSION } from '../../constant';
-import packageJson from '../../../package.json';
+import { LATEST_UI5_VERSION } from '../../constant.js';
+import { PACKAGE_NAME, PACKAGE_VERSION } from '../../package-info.js';
 
 // Extended type generators API use
 export const PREDEFINED_GENERATOR_VALUES = {
     // Config schema version
     version: '0.2',
     telemetryData: {
-        generationSourceName: packageJson.name,
-        generationSourceVersion: packageJson.version
+        generationSourceName: PACKAGE_NAME,
+        generationSourceVersion: PACKAGE_VERSION
     },
     project: {
         sapux: true

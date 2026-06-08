@@ -1,14 +1,14 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import * as Input from '../types/input';
-import * as Output from '../types/output';
-import { convertToSchema } from '../utils';
+import * as Input from '../types/input.js';
+import * as Output from '../types/output.js';
+import { convertToSchema } from '../utils/index.js';
 
-export { docSearch } from './hybrid-search';
-export type { SearchResponseData } from './hybrid-search';
-export { listFioriApps } from './list-fiori-apps';
-export { listFunctionalities } from './list-functionalities';
-export { getFunctionalityDetails } from './get-functionality-details';
-export { executeFunctionality } from './execute-functionality';
+export { docSearch } from './hybrid-search.js';
+export type { SearchResponseData } from './hybrid-search.js';
+export { listFioriApps } from './list-fiori-apps.js';
+export { listFunctionalities } from './list-functionalities.js';
+export { getFunctionalityDetails } from './get-functionality-details.js';
+export { executeFunctionality } from './execute-functionality.js';
 
 export const tools = [
     {

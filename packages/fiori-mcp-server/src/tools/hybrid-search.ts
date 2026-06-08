@@ -1,6 +1,6 @@
-import { SimpleVectorService } from './services/vector-simple';
-import { TextEmbeddingService } from './services/text-embedding';
-import { logger } from '../utils/logger';
+import { SimpleVectorService } from './services/vector-simple.js';
+import { TextEmbeddingService } from './services/text-embedding.js';
+import { logger } from '../utils/logger.js';
 
 export type DocSearchInput = {
     query: string;
@@ -24,7 +24,6 @@ export interface SearchResponseData {
     results: SearchResultItem[];
     total: number;
     error?: string;
-    suggestion?: string;
 }
 
 export interface SearchContent {
@@ -93,16 +92,13 @@ export async function docSearch(
             };
         }
     } catch (error) {
-        // Fallback when embeddings data is not available
-        // Log warning about embeddings not being available
-        logger.warn(`Embeddings data not available, providing limited search capability: ${error}`);
+        logger.warn(`Search failed: ${error}`);
         return {
             query,
             searchType: 'limited_fallback',
-            error: 'Embeddings data not available. Please install @sap-ux/fiori-docs-embeddings for full search capabilities.',
+            error: 'Search is currently unavailable. The embeddings service failed to initialize.',
             results: [],
-            total: 0,
-            suggestion: 'Try running: npm install -g @sap-ux/fiori-docs-embeddings'
+            total: 0
         };
     }
 }

@@ -4,7 +4,7 @@ import { parse } from '@xml-tools/parser';
 import type { AnnotationFile } from '@sap-ux/odata-annotation-core-types';
 
 import { convertDocument } from '@sap-ux/xml-odata-annotation-converter';
-import { collectUsedNamespaces } from '../../../src/xml/references';
+import { collectUsedNamespaces } from '../../../src/xml/references.js';
 
 function getEdmxFile(schemaContent: string, references: string = ''): string {
     const referenceContent = references.length ? '\n' + references : '';

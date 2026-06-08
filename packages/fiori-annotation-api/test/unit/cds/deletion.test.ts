@@ -1,6 +1,8 @@
 import { readFile } from 'node:fs/promises';
-import { join, normalize } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { dirname, join, normalize } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import type { Range, AnnotationFile } from '@sap-ux/odata-annotation-core';
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
@@ -12,10 +14,10 @@ import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
 import type { Target, CdsAnnotationFile } from '@sap-ux/cds-odata-annotation-converter';
 import { toAnnotationFile, toTargetMap } from '@sap-ux/cds-odata-annotation-converter';
 
-import type { CompilerToken } from '../../../src/cds/cds-compiler-tokens';
-import type { AstNode } from '../../../src/cds/document';
-import { getDeletionRangeForNode, getTextEditsForDeletionRanges } from '../../../src/cds/deletion';
-import { getAnnotationFromAssignment } from '../../../src/cds/utils';
+import type { CompilerToken } from '../../../src/cds/cds-compiler-tokens.js';
+import type { AstNode } from '../../../src/cds/document.js';
+import { getDeletionRangeForNode, getTextEditsForDeletionRanges } from '../../../src/cds/deletion.js';
+import { getAnnotationFromAssignment } from '../../../src/cds/utils.js';
 
 function getTextForRange(content: string, range: Range): string {
     const lines = content.split('\n');

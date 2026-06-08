@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-navigator';
+import rule from '../../src/rules/sap-no-navigator.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

@@ -1,30 +1,36 @@
-import { getQuestions } from '../src/prompts';
-import { isAppStudio } from '@sap-ux/btp-utils';
-import { t } from '../src/i18n';
-import {
-    type CfDeployConfigPromptOptions,
-    type CfSystemChoice,
-    type CfDeployConfigQuestions,
-    type DestinationNamePromptOptions,
-    RouterModuleType
-} from '../src/types';
-import { promptNames } from '../src';
-import { fetchBTPDestinations } from '../src/prompts/prompt-helpers';
-import { type ListQuestion, type YUIQuestion } from '@sap-ux/inquirer-common';
-import type { Logger } from '@sap-ux/logger';
+import { jest } from '@jest/globals';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn()
-}));
-const mockIsAppStudio = isAppStudio as jest.Mock;
+// Pre-import real modules before mocking
+const realBtpUtils = await import('@sap-ux/btp-utils');
+const realPromptHelpers = await import('../src/prompts/prompt-helpers.js');
 
-jest.mock('../src/prompts/prompt-helpers', () => ({
-    ...jest.requireActual('../src/prompts/prompt-helpers'),
-    fetchBTPDestinations: jest.fn()
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockFetchBTPDestinations = jest.fn<typeof realPromptHelpers.fetchBTPDestinations>();
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
 }));
-const mockFetchBTPDestinations = fetchBTPDestinations as jest.Mock;
+
+jest.unstable_mockModule('../src/prompts/prompt-helpers', () => ({
+    ...realPromptHelpers,
+    fetchBTPDestinations: mockFetchBTPDestinations
+}));
+
+const { getQuestions } = await import('../src/prompts/index.js');
+const { t } = await import('../src/i18n.js');
+const { promptNames } = await import('../src/index.js');
+import type {
+    CfDeployConfigPromptOptions,
+    CfSystemChoice,
+    CfDeployConfigQuestions,
+    DestinationNamePromptOptions
+} from '../src/types.js';
+import { RouterModuleType } from '../src/types.js';
+import { type ListQuestion, type YUIQuestion } from '@sap-ux/inquirer-common';
+import type { Logger } from '@sap-ux/logger';
+
 const mockLog = {
     info: jest.fn(),
     warn: jest.fn()

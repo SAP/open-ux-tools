@@ -2,7 +2,7 @@ import { pathToFileURL } from 'node:url';
 
 import type { Project } from '@sap-ux/project-access';
 
-import type { TextFile, LocalEDMXService } from '../types';
+import type { TextFile, LocalEDMXService } from '../types/index.js';
 
 /**
  * Creates local EDMX service structure.

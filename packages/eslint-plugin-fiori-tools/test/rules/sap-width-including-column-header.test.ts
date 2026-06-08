@@ -1,6 +1,6 @@
 import { RuleTester } from 'eslint';
-import widthIncludingColumnHeaderRule from '../../src/rules/sap-width-including-column-header';
-import { meta, languages } from '../../src/index';
+import widthIncludingColumnHeaderRule from '../../src/rules/sap-width-including-column-header.js';
+import { meta, languages } from '../../src/index.js';
 import {
     CAP_ANNOTATIONS,
     CAP_ANNOTATIONS_PATH,
@@ -16,7 +16,7 @@ import {
     V4_FACETS_ANNOTATIONS,
     V4_MANIFEST,
     V4_MANIFEST_PATH
-} from '../test-helper';
+} from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },

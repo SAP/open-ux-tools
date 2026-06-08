@@ -2,10 +2,10 @@ import {
     getCredentialsPrompts,
     type CredentialsAnswers,
     type AdditionalValidation
-} from '../../../src/prompts/credentials';
-import { t, addi18nResourceBundle } from '../../../src/i18n';
+} from '../../../src/prompts/credentials.js';
+import { t, addi18nResourceBundle } from '../../../src/i18n.js';
 
-import type { InputQuestion, PasswordQuestion } from '../../../src/types';
+import type { InputQuestion, PasswordQuestion } from '../../../src/types.js';
 
 describe('getCredentialsPrompts', () => {
     beforeAll(() => {

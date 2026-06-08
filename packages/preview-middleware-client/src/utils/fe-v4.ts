@@ -5,9 +5,9 @@ import AppComponent from 'sap/fe/core/AppComponent';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import type { FlexSettings, Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 
-import { isA } from './core';
+import { isA } from './core.js';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import { getOverlay } from '../cpe/utils';
+import { getOverlay } from '../cpe/utils.js';
 import UI5Element from 'sap/ui/core/Element';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import TableAPI from 'sap/fe/macros/table/TableAPI';
