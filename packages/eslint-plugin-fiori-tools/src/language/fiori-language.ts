@@ -14,15 +14,19 @@ import type { XMLAstNode, XMLDocument, XMLToken } from '@xml-tools/ast';
 import type { AnnotationFile, AnyNode as AnyAnnotationNode } from '@sap-ux/odata-annotation-core';
 import { ANNOTATION_FILE_TYPE } from '@sap-ux/odata-annotation-core';
 import { normalizePath } from '@sap-ux/project-access';
-
 import { FioriJSONSourceCode } from './json/source-code.js';
 import { FioriXMLSourceCode, visitorKeys as xmlVisitorKeys } from './xml/source-code.js';
 import { ProjectContext } from '../project-context/project-context.js';
 import { FioriAnnotationSourceCode, visitorKeys as annotationVisitorKeys } from './annotations/source-code.js';
 import { DiagnosticCache } from './diagnostic-cache.js';
+import { FioriChangeSourceCode } from './change/source-code.js';
 
 export type FioriLanguageOptions = {};
-export type FioriSourceCode = FioriJSONSourceCode | FioriXMLSourceCode | FioriAnnotationSourceCode;
+export type FioriSourceCode =
+    | FioriJSONSourceCode
+    | FioriXMLSourceCode
+    | FioriAnnotationSourceCode
+    | FioriChangeSourceCode;
 export type RootNode = DocumentNode | XMLDocument;
 export type Node = AnyNode | XMLAstNode | XMLToken | AnyAnnotationNode;
 
@@ -41,6 +45,10 @@ export type FioriParseResultAst = {
         | {
               type: 'annotation';
               root: AnnotationFile;
+          }
+        | {
+              type: 'change';
+              root: DocumentNode;
           };
 };
 
@@ -88,6 +96,24 @@ export class FioriLanguage implements Language<{
         DiagnosticCache.clear(uri);
         const projectContext = ProjectContext.updateFile(uri, text);
         const document = projectContext.index.documents[uri];
+        if (path.endsWith('.change')) {
+            return {
+                ok: true,
+                ast: {
+                    uri,
+                    context: projectContext,
+                    document: {
+                        type: 'change',
+                        root: parseJson(text, {
+                            mode: 'json',
+                            ranges: true,
+                            tokens: true,
+                            allowTrailingCommas: false
+                        })
+                    }
+                }
+            };
+        }
         if (!document) {
             if (path.endsWith('.xml')) {
                 try {
@@ -236,6 +262,13 @@ export class FioriLanguage implements Language<{
                 text,
                 ast: document.root,
                 projectContext: parseResult.ast.context
+            });
+        } else if (document.type === 'change') {
+            return new FioriChangeSourceCode({
+                text,
+                ast: document.root,
+                projectContext: parseResult.ast.context,
+                uri: parseResult.ast.uri
             });
         }
         throw new Error('Unsupported parse result AST type');
