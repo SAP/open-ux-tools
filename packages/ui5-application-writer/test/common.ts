@@ -1,5 +1,8 @@
 import { dirname, join } from 'node:path';
+import { createRequire } from 'node:module';
 import type { Editor } from 'mem-fs-editor';
+
+const require = createRequire(import.meta.url);
 
 export const updatePackageJSONDependencyToUseLocalPath = async (rootPath: string, fs: Editor): Promise<void> => {
     const packagePath = join(rootPath, 'package.json');

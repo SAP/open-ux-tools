@@ -19,17 +19,16 @@ export class TextEmbeddingService {
 
         try {
             // Dynamically import the ES Module
-            const { pipeline } = await import('@xenova/transformers');
+            const { pipeline } = await import('@huggingface/transformers');
 
-            // Use the same model as the build process
-            this.pipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
-                quantized: false
-            });
+            // Model (~86 MB) is downloaded from HuggingFace Hub on first use and
+            // cached in the default transformers cache directory.
+            this.pipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
 
             this.initialized = true;
         } catch (error) {
             throw new Error(
-                `Failed to initialize text embedding service: ${error}. Make sure @xenova/transformers is available.`
+                `Failed to initialize text embedding service: ${error}. Make sure @huggingface/transformers is available.`
             );
         }
     }

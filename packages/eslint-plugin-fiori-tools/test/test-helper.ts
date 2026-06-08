@@ -1,13 +1,14 @@
-import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { dirname, join } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { existsSync, readFileSync } from 'node:fs';
+import { jest } from '@jest/globals';
 
 import type { RuleTester } from 'eslint';
 
 import type { Manifest } from '@sap-ux/project-access';
 import { getNodeModulesPath, normalizePath } from '@sap-ux/project-access';
 
-import { ProjectContext } from '../src/project-context/project-context';
+import { ProjectContext } from '../src/project-context/project-context.js';
 import { platform } from 'node:os';
 import { spawnSync } from 'node:child_process';
 
@@ -15,6 +16,8 @@ export interface FileChange {
     filename: string;
     code: string;
 }
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const ROOT = join(__dirname, '..');
 
@@ -110,6 +113,17 @@ export const V2_ANNOTATIONS_PATH = join(
 export const V2_ANNOTATIONS = readFileSync(V2_ANNOTATIONS_PATH, 'utf-8');
 export const V2_METADATA_PATH = join(ROOT, 'test', 'data', 'v2-xml-start', 'webapp', 'localService', 'metadata.xml');
 export const V2_METADATA = readFileSync(V2_METADATA_PATH, 'utf-8');
+export const V2_FLEX_CHANGE_DIR = join(ROOT, 'test', 'data', 'v2-xml-start', 'webapp', 'changes');
+export const V2_FLEX_CHANGE_FILE_PATH = join(
+    ROOT,
+    'test',
+    'data',
+    'v2-xml-start',
+    'webapp',
+    'changes',
+    'id_1779179176282_0_propertyChange.change'
+);
+export const V2_FLEX_CHANGE_CONTENT = Object.freeze(JSON.parse(readFileSync(V2_FLEX_CHANGE_FILE_PATH, 'utf-8')));
 
 const cdsModuleInstalled = (root: string): boolean => {
     const modulePath = join(root, 'node_modules');
@@ -170,10 +184,10 @@ export function setup(name: string, capAppPath?: string) {
 
     beforeEach(() => {
         const key = expect.getState().currentTestName;
-        if (!key) {
+        if (!key || !lookup[key]) {
             return;
         }
-        const { changes = [], filename } = lookup[key] ?? [];
+        const { changes = [], filename } = lookup[key];
         const projectCwdCap = capAppPath && CAP_PROJECT_PATH;
         const projectCwdXml = filename?.includes(V4_PROJECT_PATH) ? V4_PROJECT_PATH : V2_PROJECT_PATH;
         const cwd = projectCwdCap ?? projectCwdXml;

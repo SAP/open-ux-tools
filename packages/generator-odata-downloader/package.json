@@ -2,7 +2,7 @@
     "name": "@sap-ux/generator-odata-downloader",
     "displayName": "Fiori Elements Data Downloader",
     "description": "Yeoman generator that supports download of app data, typically for mock data server use.",
-    "version": "0.2.0",
+    "version": "0.3.7",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -23,13 +23,13 @@
         "watch": "tsc --watch",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global",
-        "bundle": "node esbuild.js",
-        "bundle:dev": "pnpm clean && node esbuild.js --development && pnpm pack",
-        "bundle:prod": "node esbuild.js --production"
+        "bundle": "node esbuild.mjs",
+        "bundle:dev": "pnpm clean && node esbuild.mjs --development && pnpm pack",
+        "bundle:prod": "node esbuild.mjs --production"
     },
     "files": [
         "LICENSE",
@@ -39,8 +39,10 @@
         "prebuilds",
         "yeoman.png"
     ],
-    "dependencies": {},
     "devDependencies": {
+        "@jest/globals": "30.3.0"
+    },
+    "dependencies": {
         "@sap-devx/yeoman-ui-types": "1.25.0",
         "@sap-ux/annotation-converter": "0.10.21",
         "@sap-ux/axios-extension": "workspace:*",

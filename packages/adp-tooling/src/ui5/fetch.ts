@@ -1,8 +1,8 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import type { UI5Version } from '../types';
-import { buildFallbackMap } from './format';
-import { UI5_VERSIONS_CDN_URL, UI5_VERSIONS_NEO_CDN_URL, LATEST_VERSION } from '../base/constants';
+import type { UI5Version } from '../types.js';
+import { buildFallbackMap } from './format.js';
+import { UI5_VERSIONS_CDN_URL, UI5_VERSIONS_NEO_CDN_URL, LATEST_VERSION } from '../base/constants/index.js';
 
 /**
  * Fetches public UI5 version data from the SAP CDN.

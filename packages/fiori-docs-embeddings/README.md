@@ -29,7 +29,7 @@ https://github.com/sap-tutorials/Tutorials/blob/master/tutorials/fiori-tools-moc
 
 - Parses markdown, JSON, TypeScript, and other file types
 - Generates AI-powered vector embeddings using transformers
-- Stores embeddings in a local LanceDB vector database
+- Stores embeddings in a flat binary vector store (`embeddings.bin` + `records.jsonl`)
 - Provides tools for semantic and keyword search across documentation
 
 ## Installation
@@ -103,7 +103,7 @@ Generated data is organized as:
 ```
 data/
 ├── docs/           # Parsed documentation files
-├── embeddings/     # Vector database (LanceDB)
+├── embeddings/     # Flat binary vector store (embeddings.bin, records.jsonl, metadata.json)
 └── search/         # Search indexes
 ```
 
@@ -111,8 +111,8 @@ data/
 
 - **Multi-source indexing** - Supports GitHub repositories and JSON APIs
 - **File type support** - Markdown, JSON, TypeScript, JavaScript, XML, YAML, and more
-- **Vector embeddings** - Uses sentence-transformers/all-MiniLM-L6-v2 model
-- **Local storage** - All data stored locally with LanceDB
+- **Vector embeddings** - Uses `@huggingface/transformers` with the `Xenova/all-MiniLM-L6-v2` model (q8 quantized)
+- **Local storage** - All data stored locally as a flat binary vector store (no native database dependency)
 - **Caching** - Intelligent caching to avoid unnecessary API calls
 - **Chunking** - Smart document chunking for optimal embedding generation
 

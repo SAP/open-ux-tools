@@ -14,11 +14,11 @@ import type {
     CfUI5Yaml,
     MtaYaml,
     ServiceKeys
-} from '../../types';
-import { AppRouterType } from '../../types';
-import { createServices, createServiceInstance, getOrCreateServiceInstanceKeys } from '../services/api';
-import { getProjectNameForXsSecurity, getYamlContent } from './yaml-loader';
-import { getServiceKeyDestinations } from '../app/discovery';
+} from '../../types.js';
+import { AppRouterType } from '../../types.js';
+import { createServices, createServiceInstance, getOrCreateServiceInstanceKeys } from '../services/api.js';
+import { getProjectNameForXsSecurity, getYamlContent } from './yaml-loader.js';
+import { getServiceKeyDestinations } from '../app/discovery.js';
 
 const CF_MANAGED_SERVICE = 'org.cloudfoundry.managed-service';
 const HTML5_APPS_REPO = 'html5-apps-repo';

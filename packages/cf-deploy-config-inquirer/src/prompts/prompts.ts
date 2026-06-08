@@ -1,5 +1,5 @@
 import { type ConfirmQuestion, type InputQuestion, type ListQuestion, searchChoices } from '@sap-ux/inquirer-common';
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 import {
     type CfDeployConfigPromptOptions,
     type CfDeployConfigQuestions,
@@ -10,10 +10,10 @@ import {
     type CfDeployConfigRouterQuestions,
     RouterModuleType,
     promptNames
-} from '../types';
-import * as validators from './validators';
+} from '../types.js';
+import * as validators from './validators.js';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { getCfSystemChoices, fetchBTPDestinations } from './prompt-helpers';
+import { getCfSystemChoices, fetchBTPDestinations } from './prompt-helpers.js';
 import type { Logger } from '@sap-ux/logger';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 

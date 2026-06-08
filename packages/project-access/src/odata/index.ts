@@ -1,1 +1,1 @@
-export { findRecursiveHierarchyKey, getTableCapabilitiesByEntitySet } from './metadata';
+export { findRecursiveHierarchyKey, getTableCapabilitiesByEntitySet } from './metadata.js';

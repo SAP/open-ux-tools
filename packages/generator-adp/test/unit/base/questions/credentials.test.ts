@@ -1,33 +1,35 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { getConfiguredProvider } from '@sap-ux/adp-tooling';
 
-import type { Credentials } from '../../../../src/types';
-import { initI18n, t } from '../../../../src/utils/i18n';
-import { configPromptNames } from '../../../../src/app/types';
-import { getCredentialsPrompts } from '../../../../src/base/questions/credentials';
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockValidateEmptyString = jest.fn<typeof realProjectInputValidator.validateEmptyString>();
+const mockGetConfiguredProvider = jest.fn<typeof realAdpTooling.getConfiguredProvider>();
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn()
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
 }));
 
-jest.mock('@sap-ux/project-input-validator', () => ({
-    ...jest.requireActual('@sap-ux/project-input-validator'),
-    validateEmptyString: jest.fn()
+const realProjectInputValidator = await import('@sap-ux/project-input-validator');
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    ...realProjectInputValidator,
+    validateEmptyString: mockValidateEmptyString
 }));
 
-jest.mock('@sap-ux/adp-tooling', () => ({
-    ...jest.requireActual('@sap-ux/adp-tooling'),
-    getConfiguredProvider: jest.fn()
+const realAdpTooling = await import('@sap-ux/adp-tooling');
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    ...realAdpTooling,
+    getConfiguredProvider: mockGetConfiguredProvider
 }));
 
-const mockIsAppStudio = isAppStudio as jest.MockedFunction<typeof isAppStudio>;
-const mockValidateEmptyString = validateEmptyString as jest.MockedFunction<typeof validateEmptyString>;
-const mockGetConfiguredProvider = getConfiguredProvider as jest.MockedFunction<typeof getConfiguredProvider>;
+const { initI18n, t } = await import('../../../../src/utils/i18n.js');
+const { configPromptNames } = await import('../../../../src/app/types.js');
+const { getCredentialsPrompts } = await import('../../../../src/base/questions/credentials.js');
+
+import type { Credentials } from '../../../../src/types.js';
 
 describe('Credentials Prompts', () => {
     let mockLogger: ToolsLogger;
@@ -80,14 +82,11 @@ describe('Credentials Prompts', () => {
             const result = getCredentialsPrompts(mockAbapTarget, mockLogger);
             const usernamePrompt = result[0];
 
-            expect(usernamePrompt).toEqual({
-                type: 'input',
-                name: configPromptNames.username,
-                message: t('prompts.usernameLabel'),
-                validate: validateEmptyString,
-                guiOptions: {
-                    mandatory: true
-                }
+            expect(usernamePrompt.type).toBe('input');
+            expect(usernamePrompt.name).toBe(configPromptNames.username);
+            expect(usernamePrompt.message).toBe(t('prompts.usernameLabel'));
+            expect(usernamePrompt.guiOptions).toEqual({
+                mandatory: true
             });
         });
 
@@ -95,7 +94,7 @@ describe('Credentials Prompts', () => {
             const result = getCredentialsPrompts(mockAbapTarget, mockLogger);
             const usernamePrompt = result[0];
 
-            expect(usernamePrompt.validate).toBe(validateEmptyString);
+            expect(usernamePrompt.validate).toBe(mockValidateEmptyString);
         });
 
         it('should have mandatory guiOptions', () => {

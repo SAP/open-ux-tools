@@ -1,16 +1,22 @@
-import { join } from 'node:path';
+import { jest } from '@jest/globals';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { readUi5Yaml } from '@sap-ux/project-access';
 import type { FioriToolsServeStaticPath } from '@sap-ux/ui5-config';
-import { generateFlpEmbeddedConfig } from '../../../src';
 
-const fixturesPath = join(__dirname, '../../fixtures/flp-embedded-config');
-
-jest.mock('@sap-ux/project-access', () => ({
-    ...jest.requireActual('@sap-ux/project-access'),
-    isCapProject: jest.fn().mockResolvedValue(false)
+const mockIsCapProject = jest.fn().mockResolvedValue(false);
+const actualProjectAccess = await import('@sap-ux/project-access');
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    isCapProject: mockIsCapProject
 }));
+
+const { generateFlpEmbeddedConfig } = await import('../../../src/index.js');
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const fixturesPath = join(__dirname, '../../fixtures/flp-embedded-config');
 
 describe('generateFlpEmbeddedConfig', () => {
     const getFs = () => create(createStorage());
@@ -106,8 +112,7 @@ describe('generateFlpEmbeddedConfig', () => {
         });
 
         test('throws for CAP projects', async () => {
-            const projectAccess = jest.mocked(await import('@sap-ux/project-access'));
-            (projectAccess.isCapProject as jest.Mock).mockResolvedValueOnce(true);
+            mockIsCapProject.mockResolvedValueOnce(true);
             await expect(generateFlpEmbeddedConfig(fixturesPath, 'myapp')).rejects.toThrow(
                 'CAP projects are not supported'
             );

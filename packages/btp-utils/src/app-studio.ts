@@ -1,15 +1,16 @@
 import type { Logger } from '@sap-ux/logger';
 import { destinations as destinationAPI } from '@sap/bas-sdk';
+
+import type { ServiceInstanceInfo } from '@sap/cf-tools';
 import {
     apiCreateServiceInstance,
     apiGetInstanceCredentials,
     apiGetServicesInstancesFilteredByType,
     cfGetInstanceKeyParameters,
-    cfGetTarget,
-    type ServiceInstanceInfo
+    cfGetTarget
 } from '@sap/cf-tools';
 import axios from 'axios';
-import { ENV } from './app-studio.env';
+import { ENV } from './app-studio.env.js';
 import {
     Authentication,
     type CloudFoundryServiceInfo,
@@ -19,8 +20,8 @@ import {
     isS4HC,
     type ListDestinationOpts,
     OAuthUrlType
-} from './destination';
-import type { ServiceInfo } from './service-info';
+} from './destination.js';
+import type { ServiceInfo } from './service-info.js';
 
 /**
  * ABAP Cloud destination instance name.

@@ -1,7 +1,9 @@
 import * as zod from 'zod';
-import { PageTypeV4, FioriElementsVersion } from '@sap/ux-specification/dist/types/src';
-import type { AllowedNavigationOptions, PageDef } from './types';
-import { EXTENSION_FILE_NAME_PATTERN } from '../../../constant';
+import uxSpec from '@sap/ux-specification';
+const { PageTypeV4, FioriElementsVersion } = uxSpec;
+import type { FioriElementsVersion as FioriElementsVersionType } from '@sap/ux-specification';
+import type { AllowedNavigationOptions, PageDef } from './types.js';
+import { EXTENSION_FILE_NAME_PATTERN } from '../../../constant.js';
 
 /**
  * Enum of allowed page types.
@@ -16,7 +18,7 @@ const PageTypeEnumV2 = zod.enum([PageTypeV4.ObjectPage]);
  * @param version - Fiori elements version of application.
  * @returns A Zod schema for the very first page creation.
  */
-const firstPageSchema = (entities: AllowedNavigationOptions[], version: FioriElementsVersion) => {
+const firstPageSchema = (entities: AllowedNavigationOptions[], version: FioriElementsVersionType) => {
     const pageTypeEntries = version === FioriElementsVersion.v2 ? PageTypeEnumV2 : PageTypeEnumV4;
     return zod.object({
         pageType: pageTypeEntries.describe(
@@ -38,16 +40,12 @@ const firstPageSchema = (entities: AllowedNavigationOptions[], version: FioriEle
  * @param version - Fiori elements version of application.
  * @returns A Zod schema for validating child page creation input.
  */
-const childPageSchema = (page: string, navigations: AllowedNavigationOptions[], version: FioriElementsVersion) => {
+const childPageSchema = (page: string, navigations: AllowedNavigationOptions[], version: FioriElementsVersionType) => {
     const pageTypeEntries = version === FioriElementsVersion.v2 ? PageTypeEnumV2 : PageTypeEnumV4;
     const zodObject: {
         parentPage: zod.ZodLiteral<string>;
-        pageNavigation: zod.ZodEnum;
-        pageType: zod.ZodEnum<{
-            ObjectPage: PageTypeV4.ObjectPage;
-            ListReport?: PageTypeV4.ListReport;
-            CustomPage?: PageTypeV4.CustomPage;
-        }>;
+        pageNavigation: zod.ZodEnum<any>;
+        pageType: zod.ZodEnum<any>;
         pageViewName?: zod.ZodOptional<zod.ZodString>;
     } = {
         parentPage: zod
@@ -94,7 +92,7 @@ const childPageSchema = (page: string, navigations: AllowedNavigationOptions[], 
 export function buildPageCreationSchema(
     navigations: { [key: string]: AllowedNavigationOptions[] },
     entities: AllowedNavigationOptions[] = [],
-    version: FioriElementsVersion = FioriElementsVersion.v4
+    version: FioriElementsVersionType = FioriElementsVersion.v4
 ) {
     const pages = Object.keys(navigations);
 

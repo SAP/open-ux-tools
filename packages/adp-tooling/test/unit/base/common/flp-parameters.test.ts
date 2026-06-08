@@ -1,4 +1,4 @@
-import { type Parameter, parseParameters } from '../../../../src';
+import { type Parameter, parseParameters } from '../../../../src/index.js';
 
 describe('parseParameters', () => {
     it('should parse parameters with default values', () => {

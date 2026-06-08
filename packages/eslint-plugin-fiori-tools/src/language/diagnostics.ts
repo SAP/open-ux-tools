@@ -1,5 +1,5 @@
 import type { Manifest } from '@sap-ux/project-access';
-import type { AnnotationReference } from '../project-context/parser';
+import type { AnnotationReference } from '../project-context/parser/index.js';
 import type { Element } from '@sap-ux/odata-annotation-core';
 import type { SourceLocation } from '@eslint/core';
 export const WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-width-including-column-header';
@@ -73,16 +73,20 @@ export interface CopyToClipboard {
 
 export interface EnableExport {
     type: typeof ENABLE_EXPORT;
+    property: string;
     pageName: string;
     pageSectionName?: string;
-    manifest: ManifestPropertyDiagnosticData;
+    manifest?: ManifestPropertyDiagnosticData; // In ODataV2 apps this setting is defined in a .change file
+    changeFileUri?: string;
 }
 
 export interface EnablePaste {
     type: typeof ENABLE_PASTE;
+    property: string;
     pageName: string;
     pageSectionName?: string;
-    manifest: ManifestPropertyDiagnosticData;
+    manifest?: ManifestPropertyDiagnosticData; // In ODataV2 apps this setting is defined in a .change file
+    changeFileUri?: string;
 }
 
 export type StatePreservationModeMessageId =

@@ -1,6 +1,6 @@
 // When deployment generator is bundled the namespacing is relative to the root generator
 import { TargetName } from '@sap-ux/deploy-config-generator-shared';
-import type { Target } from '../types';
+import type { Target } from '../types/index.js';
 
 export const generatorNamespace = (bundledRootGeneratorName: string, subGenName: string): string =>
     `${bundledRootGeneratorName}_${subGenName}`;

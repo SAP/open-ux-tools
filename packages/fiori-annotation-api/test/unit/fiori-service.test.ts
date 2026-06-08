@@ -1,6 +1,9 @@
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { promises } from 'node:fs';
-import { join, relative, sep, posix } from 'node:path';
+import { dirname, join, posix, relative, sep } from 'node:path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 import { create as createStore } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create as createEditor } from 'mem-fs-editor';
@@ -17,34 +20,28 @@ import type {
 } from '@sap-ux/vocabularies-types';
 import { getProject } from '@sap-ux/project-access';
 
-import type { Change, DeleteChange, InsertAnnotationChange, TextFile } from '../../src/types';
-import { ExpressionType, ChangeType } from '../../src/types';
-import { FioriAnnotationService } from '../../src/fiori-service';
+import type { Change, DeleteChange, InsertAnnotationChange, TextFile } from '../../src/types/index.js';
+import { ExpressionType, ChangeType } from '../../src/types/index.js';
+import { FioriAnnotationService } from '../../src/fiori-service.js';
 
-import { createFsEditorForProject } from './virtual-fs';
-import type { ProjectTestModel } from './projects';
-import { PROJECTS } from './projects';
-import { getLocalEDMXService } from '../../src/xml';
-import { normalizeCdsVersionInPath, serialize, serializeAnnotations } from './raw-metadata-serializer';
+import { createFsEditorForProject } from './virtual-fs.js';
+import type { ProjectTestModel } from './projects.js';
+import { PROJECTS } from './projects.js';
+import { getLocalEDMXService } from '../../src/xml/index.js';
+import { normalizeCdsVersionInPath, serialize, serializeAnnotations } from './raw-metadata-serializer.js';
 
-import { CDSAnnotationServiceAdapter } from '../../src/cds/adapter';
+import { CDSAnnotationServiceAdapter } from '../../src/cds/adapter.js';
 import type { CompilerMessage } from '@sap-ux/odata-annotation-core-types';
 import { DiagnosticSeverity, Range } from '@sap-ux/odata-annotation-core-types';
-import type { ApiError, FioriAnnotationServiceOptions } from '../../src';
+import type { ApiError, FioriAnnotationServiceOptions } from '../../src/index.js';
 
-import { pathFromUri } from '../../src/utils';
+import { pathFromUri } from '../../src/utils/index.js';
+import { testRead } from './test-read.js';
+export { testRead };
 
 /**
  * Configuration
  */
-
-jest.mock('../../src/cds/adapter', () => {
-    const act = jest.requireActual('../../src/cds/adapter');
-    return {
-        __esModule: true,
-        ...act
-    };
-});
 
 const SKIP_TARGETS = new Set<ProjectTestModel<Record<string, string>>>([
     // PROJECTS.V4_XML_START
@@ -217,25 +214,6 @@ function applyChanges(service: FioriAnnotationService, changes: Change[]): Set<s
         uris.add(change.uri);
     }
     return uris;
-}
-
-export async function testRead(
-    root: string,
-    initialChanges: Change[],
-    serviceName = 'mainService',
-    fsEditor?: Editor
-): Promise<FioriAnnotationService> {
-    const editor = fsEditor ?? (await createFsEditorForProject(root));
-    const project = await getProject(root);
-    const service = await FioriAnnotationService.createService(project, serviceName, '', editor, {
-        commitOnSave: false
-    });
-    await service.sync();
-    if (initialChanges.length > 0) {
-        service.edit(initialChanges);
-        await service.save({ resyncAfterSave: true });
-    }
-    return service;
 }
 
 async function testEditWithMockData(

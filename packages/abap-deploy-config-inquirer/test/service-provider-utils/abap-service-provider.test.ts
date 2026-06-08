@@ -1,24 +1,26 @@
-import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
-import { isAppStudio } from '@sap-ux/btp-utils';
-import { createAbapServiceProvider } from '@sap-ux/system-access';
-import { PromptState } from '../../src/prompts/prompt-state';
+import { jest } from '@jest/globals';
 import { AbapServiceProvider } from '@sap-ux/axios-extension';
-import LoggerHelper from '../../src/logger-helper';
 import { AuthenticationType } from '@sap-ux/store';
-import { t } from '../../src/i18n';
-import exp from 'node:constants';
+import { t } from '../../src/i18n.js';
 
-jest.mock('@sap-ux/system-access', () => ({
-    ...jest.requireActual('@sap-ux/system-access'),
-    createAbapServiceProvider: jest.fn()
+const mockCreateAbapServiceProvider = jest.fn<typeof realSystemAccess.createAbapServiceProvider>();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+
+const realSystemAccess = await import('@sap-ux/system-access');
+jest.unstable_mockModule('@sap-ux/system-access', () => ({
+    ...realSystemAccess,
+    createAbapServiceProvider: mockCreateAbapServiceProvider
 }));
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
 }));
 
-const mockCreateAbapServiceProvider = createAbapServiceProvider as jest.Mock;
-const mockIsAppStudio = isAppStudio as jest.Mock;
+const { AbapServiceProviderManager } = await import('../../src/service-provider-utils/abap-service-provider.js');
+const { PromptState } = await import('../../src/prompts/prompt-state.js');
+const LoggerHelper = (await import('../../src/logger-helper.js')).default;
 
 describe('getOrCreateServiceProvider', () => {
     beforeAll(() => {

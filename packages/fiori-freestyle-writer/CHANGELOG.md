@@ -1,5 +1,197 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 3.0.10
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/cap-config-writer@1.0.6
+    - @sap-ux/fiori-generator-shared@1.0.6
+    - @sap-ux/odata-service-writer@1.0.5
+    - @sap-ux/ui5-application-writer@2.0.2
+    - @sap-ux/ui5-test-writer@1.0.10
+
+## 3.0.9
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@1.0.9
+
+## 3.0.8
+
+### Patch Changes
+
+- @sap-ux/cap-config-writer@1.0.5
+- @sap-ux/fiori-generator-shared@1.0.5
+- @sap-ux/odata-service-writer@1.0.4
+- @sap-ux/ui5-application-writer@2.0.2
+- @sap-ux/ui5-test-writer@1.0.8
+
+## 3.0.7
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/fiori-generator-shared@1.0.4
+    - @sap-ux/ui5-application-writer@2.0.2
+    - @sap-ux/odata-service-writer@1.0.3
+    - @sap-ux/cap-config-writer@1.0.4
+    - @sap-ux/ui5-test-writer@1.0.7
+    - @sap-ux/ui5-config@1.0.2
+    - @sap-ux/logger@1.0.1
+
+## 3.0.6
+
+### Patch Changes
+
+- Updated dependencies [9580241]
+    - @sap-ux/ui5-config@1.0.1
+    - @sap-ux/odata-service-writer@1.0.2
+    - @sap-ux/ui5-application-writer@2.0.1
+    - @sap-ux/cap-config-writer@1.0.3
+    - @sap-ux/fiori-generator-shared@1.0.3
+    - @sap-ux/ui5-test-writer@1.0.6
+
+## 3.0.5
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@1.0.5
+
+## 3.0.4
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@1.0.2
+- @sap-ux/ui5-test-writer@1.0.4
+- @sap-ux/cap-config-writer@1.0.2
+
+## 3.0.3
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@1.0.3
+
+## 3.0.2
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@1.0.2
+
+## 3.0.1
+
+### Patch Changes
+
+- @sap-ux/cap-config-writer@1.0.1
+- @sap-ux/fiori-generator-shared@1.0.1
+- @sap-ux/odata-service-writer@1.0.1
+- @sap-ux/ui5-application-writer@2.0.0
+- @sap-ux/ui5-test-writer@1.0.1
+
+## 3.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/fiori-generator-shared@1.0.0
+    - @sap-ux/ui5-application-writer@2.0.0
+    - @sap-ux/odata-service-writer@1.0.0
+    - @sap-ux/cap-config-writer@1.0.0
+    - @sap-ux/ui5-test-writer@1.0.0
+    - @sap-ux/ui5-config@1.0.0
+    - @sap-ux/logger@1.0.0
+
+## 2.7.15
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@0.9.15
+
+## 2.7.14
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@0.9.14
+
+## 2.7.13
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.15.6
+- @sap-ux/ui5-test-writer@0.9.13
+- @sap-ux/cap-config-writer@0.13.6
+
+## 2.7.12
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.15.5
+- @sap-ux/ui5-config@0.31.1
+- @sap-ux/ui5-test-writer@0.9.12
+- @sap-ux/cap-config-writer@0.13.5
+
+## 2.7.11
+
+### Patch Changes
+
+- Updated dependencies [162059e]
+    - @sap-ux/ui5-application-writer@1.9.2
+    - @sap-ux/ui5-test-writer@0.9.11
+
+## 2.7.10
+
+### Patch Changes
+
+- Updated dependencies [03d1cdd]
+    - @sap-ux/ui5-test-writer@0.9.10
+
+## 2.7.9
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.15.4
+- @sap-ux/odata-service-writer@0.32.2
+- @sap-ux/ui5-test-writer@0.9.9
+- @sap-ux/cap-config-writer@0.13.4
+
+## 2.7.8
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@0.9.8
+
 ## 2.7.7
 
 ### Patch Changes

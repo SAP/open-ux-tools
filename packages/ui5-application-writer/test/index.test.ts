@@ -1,18 +1,19 @@
-import { join } from 'node:path';
-import { removeSync } from 'fs-extra';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { rmSync } from 'node:fs';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Ui5App } from '../src';
-import { generate, isTypescriptEnabled, enableTypescript } from '../src';
-import { updatePackageJSONDependencyToUseLocalPath } from './common';
+import type { Ui5App } from '../src/index.js';
+import { generate, isTypescriptEnabled, enableTypescript } from '../src/index.js';
+import { updatePackageJSONDependencyToUseLocalPath } from './common.js';
 
 describe('UI5 templates', () => {
     const fs = create(createStorage());
     const debug = !!process.env['UX_DEBUG'];
-    const outputDir = join(__dirname, '/test-output');
+    const outputDir = join(dirname(fileURLToPath(import.meta.url)), '/test-output');
 
     beforeAll(() => {
-        removeSync(outputDir); // even for in memory
+        rmSync(outputDir, { recursive: true, force: true }); // even for in memory
     });
 
     afterAll(() => {

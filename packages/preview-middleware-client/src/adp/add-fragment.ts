@@ -1,8 +1,8 @@
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type UI5Element from 'sap/ui/core/Element';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import { Deferred, createDeferred } from './utils';
-import { DialogFactory, DialogNames } from './dialog-factory';
+import { Deferred, createDeferred } from './utils.js';
+import { DialogFactory, DialogNames } from './dialog-factory.js';
 import AddXMLPlugin from 'sap/ui/rta/plugin/AddXMLPlugin';
 
 export interface AddFragmentData {
