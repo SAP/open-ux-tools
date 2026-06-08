@@ -1,17 +1,15 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse as parseJson } from '@humanwhocodes/momoa';
-
 import type { FoundFioriArtifacts, Manifest, ProjectType } from '@sap-ux/project-access';
 import type { ODataVersionType } from '@sap-ux/odata-annotation-core';
-import { getMainService } from '@sap-ux/project-access';
+import { getMainService, normalizePath } from '@sap-ux/project-access';
 import {
     CdsAnnotationProvider,
     getXmlServiceArtifacts,
     type ServiceArtifacts,
     type V2Annotation
 } from '@sap-ux/fiori-annotation-api';
-
 import type { LocalFile, RemoteFileWithLocalServiceCache } from '../types.js';
 import type { Diagnostic } from '../../language/diagnostics.js';
 import { buildServiceIndex } from './service.js';
@@ -21,9 +19,11 @@ import type {
     ParsedManifest,
     FoundODataService,
     CustomViews,
-    MinUI5Version
+    MinUI5Version,
+    FlexChange
 } from './types.js';
 import { uniformUrl } from '@sap-ux/fiori-annotation-api';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 
 export interface ParseResult {
     index: ParsedProject;
@@ -82,10 +82,29 @@ export class ApplicationParser {
                 const webappPath = dirname(app.manifestPath);
                 const [parsedManifest, services] = this.parseManifest(webappPath, manifestUri, manifest);
                 const appRootUri = pathToFileURL(app.appRoot).toString();
+                const changes: FlexChange[] = [];
+                if (existsSync(join(app.appRoot, 'webapp', 'changes'))) {
+                    const changeFiles = readdirSync(join(app.appRoot, 'webapp', 'changes'))
+                        .filter((file) => file.endsWith('propertyChange.change'))
+                        .map((file) => normalizePath(join(app.appRoot, 'webapp', 'changes', file)));
+                    for (const changeFile of changeFiles) {
+                        const changeFileUri = pathToFileURL(changeFile).toString();
+                        const fileContent =
+                            fileCache.get(changeFileUri) ?? readFileSync(changeFile, { encoding: 'utf8', flag: 'r' });
+                        const jsonContent = JSON.parse(fileContent);
+                        changes.push({
+                            changeType: jsonContent.changeType,
+                            content: jsonContent.content,
+                            selector: jsonContent.selector,
+                            changeFileUri: pathToFileURL(changeFile).toString()
+                        });
+                    }
+                }
                 const parsedApp: ParsedApp = {
                     manifest: parsedManifest,
                     manifestObject: manifest,
                     projectRootPath: app.projectRoot,
+                    changes,
                     services: {}
                 };
                 this.index.apps[appRootUri] = parsedApp;
@@ -158,12 +177,12 @@ export class ApplicationParser {
             const webappPath = dirname(fileURLToPath(uri));
             const [parsedManifest, services] = this.parseManifest(webappPath, uri, manifest);
             index.documents[uri] = manifestAst;
-
             const parsedApp: ParsedApp = {
                 manifest: parsedManifest,
                 manifestObject: manifest,
                 projectRootPath: previousApp.projectRootPath,
-                services: {}
+                services: {},
+                changes: previousApp.changes
             };
 
             const previouslyFoundServices = Object.values(previousApp.services).map((service) => service.config);
@@ -184,6 +203,41 @@ export class ApplicationParser {
             }
             index.apps[key] = parsedApp;
             break;
+        }
+    }
+
+    /**
+     * Reparses .change property change files and updates the associated app in the project index.
+     *
+     * @param uri - The URI of the property change file to reparse
+     * @param index - The current parsed project index
+     * @param fileCache - Map of file URIs to their contents
+     */
+    private reparseChange(uri: string, index: ParsedProject, fileCache: Map<string, string>): void {
+        const content = fileCache.get(uri) ?? '';
+        const ast = parseJson(content, {
+            mode: 'json',
+            ranges: true,
+            tokens: true,
+            allowTrailingCommas: false
+        });
+        index.documents[uri] = ast;
+        const jsonContent = JSON.parse(content);
+        const change: FlexChange = {
+            changeType: jsonContent.changeType,
+            content: jsonContent.content,
+            selector: jsonContent.selector,
+            changeFileUri: uri
+        };
+        for (const key of Object.keys(index.apps)) {
+            const app = index.apps[key];
+            // Replace the existing entry for this URI, or append if new
+            const existingIndex = app.changes.findIndex((c) => c.changeFileUri === uri);
+            if (existingIndex >= 0) {
+                app.changes[existingIndex] = change;
+            } else {
+                app.changes.push(change);
+            }
         }
     }
 
@@ -227,6 +281,8 @@ export class ApplicationParser {
             this.reparseJSON(uri, index, fileCache);
         } else if (uri.endsWith('.xml')) {
             this.reparseXML(uri, index);
+        } else if (uri.endsWith('.change')) {
+            this.reparseChange(uri, index, fileCache);
         }
         return { index: index, diagnostics: [] };
     }

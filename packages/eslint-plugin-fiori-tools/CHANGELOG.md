@@ -1,5 +1,19 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.6.0
+
+### Minor Changes
+
+- 409ad75: FEAT: Add support to lint .change files. Enable table paste and export rules for ODataV2 tables.
+
+## 10.5.4
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+    - @sap-ux/fiori-annotation-api@1.0.5
+
 ## 10.5.3
 
 ### Patch Changes

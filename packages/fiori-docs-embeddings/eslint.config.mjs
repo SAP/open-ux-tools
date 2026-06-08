@@ -4,7 +4,7 @@ const __dirname = import.meta.dirname;
 
 export default [
     {
-        ignores: ['dist/**', 'data/**', 'coverage/**', 'index.js'],
+        ignores: ['dist/**', 'data/**', 'coverage/**', 'index.js', 'index.d.ts'],
     },
     ...base,
     {

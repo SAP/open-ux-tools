@@ -1,5 +1,30 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.1.3
+
+### Patch Changes
+
+- 74a3c3f: Switch to onnxruntime-web (WASM) to eliminate native binaries and reduce tgz to ~9 MB
+
+## 1.1.2
+
+### Patch Changes
+
+- 5a70fbf: Download ONNX model at runtime to reduce tgz below npm publish 100 MB limit
+
+## 1.1.1
+
+### Patch Changes
+
+- 889a217: Download ONNX model at runtime to reduce tgz below npm publish 100 MB limit
+
+## 1.1.0
+
+### Minor Changes
+
+- 9f33150: Build self-contained dist/ bundle (ONNX model, onnxruntime, embeddings data included);
+  Replace @xenova/transformers with @huggingface/transformers 4.2.0;
+
 ## 1.0.3
 
 ### Patch Changes

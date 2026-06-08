@@ -1,8 +1,8 @@
 import { expect } from '@sap-ux-private/playwright';
 
-import { test } from '../../fixture';
-import { ADP_FIORI_ELEMENTS_V4 } from '../../project';
-import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from '../test-utils';
+import { test } from '../../fixture.js';
+import { ADP_FIORI_ELEMENTS_V4 } from '../../project/index.js';
+import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from '../test-utils.js';
 import { satisfies } from 'semver';
 
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V4 });
