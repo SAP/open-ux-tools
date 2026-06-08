@@ -2540,7 +2540,9 @@ describe('MultiSourceDocumentationBuilder', () => {
                 enabled: true
             };
 
-            const files = await (builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }).processGitHubRawSource(source);
+            const files = await (
+                builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }
+            ).processGitHubRawSource(source);
 
             expect(files).toHaveLength(1);
             expect((files[0] as { name: string }).name).toBe('test.md');
@@ -2568,7 +2570,9 @@ describe('MultiSourceDocumentationBuilder', () => {
                 enabled: true
             };
 
-            await (builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }).processGitHubRawSource(source);
+            await (
+                builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }
+            ).processGitHubRawSource(source);
 
             expect(mockFetch).toHaveBeenCalledWith(
                 'https://raw.githubusercontent.com/test-owner/test-repo/main/docs/guide.md'
@@ -2587,7 +2591,9 @@ describe('MultiSourceDocumentationBuilder', () => {
             };
 
             await expect(
-                (builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }).processGitHubRawSource(source)
+                (
+                    builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }
+                ).processGitHubRawSource(source)
             ).rejects.toThrow('bad-source requires a filePath');
         });
 
@@ -2603,7 +2609,9 @@ describe('MultiSourceDocumentationBuilder', () => {
             };
 
             await expect(
-                (builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }).processGitHubRawSource(source)
+                (
+                    builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }
+                ).processGitHubRawSource(source)
             ).rejects.toThrow('bad-source requires owner and repo');
         });
 
@@ -2619,7 +2627,9 @@ describe('MultiSourceDocumentationBuilder', () => {
             };
 
             await expect(
-                (builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }).processGitHubRawSource(source)
+                (
+                    builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }
+                ).processGitHubRawSource(source)
             ).rejects.toThrow('bad-source requires owner and repo');
         });
 
@@ -2642,7 +2652,9 @@ describe('MultiSourceDocumentationBuilder', () => {
             };
 
             await expect(
-                (builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }).processGitHubRawSource(source)
+                (
+                    builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }
+                ).processGitHubRawSource(source)
             ).rejects.toThrow('HTTP 404 Not Found');
         });
 
@@ -2663,7 +2675,9 @@ describe('MultiSourceDocumentationBuilder', () => {
                 enabled: true
             };
 
-            const files = await (builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }).processGitHubRawSource(source);
+            const files = await (
+                builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }
+            ).processGitHubRawSource(source);
 
             expect((files[0] as { name: string }).name).toBe('guide.md');
         });
@@ -2752,8 +2766,12 @@ describe('MultiSourceDocumentationBuilder', () => {
 
             const builder = new MultiSourceDocumentationBuilder();
 
-            expect(() => builder.filterToSingleSource('non-existent-source')).toThrow('Process.exit called with code 1');
-            expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('Unknown source "non-existent-source"'));
+            expect(() => builder.filterToSingleSource('non-existent-source')).toThrow(
+                'Process.exit called with code 1'
+            );
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                expect.stringContaining('Unknown source "non-existent-source"')
+            );
             expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('Available:'));
 
             mockExit.mockRestore();
@@ -2767,9 +2785,7 @@ describe('MultiSourceDocumentationBuilder', () => {
             const builder = new MultiSourceDocumentationBuilder();
 
             expect(() => builder.filterToSingleSource('bad-id')).toThrow();
-            expect(mockLogger.error).toHaveBeenCalledWith(
-                expect.stringContaining('btp-fiori-tools')
-            );
+            expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('btp-fiori-tools'));
 
             mockExit.mockRestore();
         });
@@ -2786,7 +2802,12 @@ describe('MultiSourceDocumentationBuilder', () => {
                 generatedAt: '2023-01-01T00:00:00.000Z',
                 totalDocuments: 5,
                 categories: [
-                    { id: 'existing-category', name: 'Existing Category', count: 3, documents: ['other-source-doc1', 'other-source-doc2', 'other-source-doc3'] }
+                    {
+                        id: 'existing-category',
+                        name: 'Existing Category',
+                        count: 3,
+                        documents: ['other-source-doc1', 'other-source-doc2', 'other-source-doc3']
+                    }
                 ],
                 sources: {
                     'other-source': { path: 'other-source.md', documentCount: 3 }
@@ -2853,11 +2874,7 @@ describe('MultiSourceDocumentationBuilder', () => {
                         id: 'shared-category',
                         name: 'Shared Category',
                         count: 4,
-                        documents: [
-                            'other-source-old-doc',
-                            'current-source-stale-doc1',
-                            'current-source-stale-doc2'
-                        ]
+                        documents: ['other-source-old-doc', 'current-source-stale-doc1', 'current-source-stale-doc2']
                     }
                 ],
                 sources: {
