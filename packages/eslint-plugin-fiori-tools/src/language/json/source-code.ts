@@ -71,7 +71,7 @@ export class FioriJSONSourceCode extends JSONSourceCode {
      * @param parentNode - Parent node of the searched node
      * @returns
      */
-    private getNodeOrParent = (
+    private readonly getNodeOrParent = (
         node: ValueNode | MemberNode | undefined,
         path: string[],
         parentNode: MemberNode | ValueNode
