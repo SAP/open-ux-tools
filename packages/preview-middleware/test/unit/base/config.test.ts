@@ -52,6 +52,24 @@ describe('config', () => {
             const templateConfig = createFlpTemplateConfig(flpConfig, manifest, resources);
             expect(templateConfig).toMatchSnapshot();
         });
+
+        test('ADP project does not include LocalStorageConnector', () => {
+            const flpConfig = getFlpConfigWithDefaults({});
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest, {}, true);
+            const connectorNames = templateConfig.ui5.flex
+                .filter((c): c is { connector: string; layers: string[] } => 'connector' in c)
+                .map((c) => c.connector);
+            expect(connectorNames).not.toContain('LocalStorageConnector');
+        });
+
+        test('non-ADP project includes LocalStorageConnector', () => {
+            const flpConfig = getFlpConfigWithDefaults({});
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest, {}, false);
+            const connectorNames = templateConfig.ui5.flex
+                .filter((c): c is { connector: string; layers: string[] } => 'connector' in c)
+                .map((c) => c.connector);
+            expect(connectorNames).toContain('LocalStorageConnector');
+        });
     });
 
     describe('createTestTemplateConfig', () => {
