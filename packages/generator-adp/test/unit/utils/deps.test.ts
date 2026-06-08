@@ -49,6 +49,7 @@ describe('installDependencies', () => {
 describe('getPackageInfo', () => {
     afterEach(() => {
         jest.clearAllMocks();
+        delete (globalThis as Record<string, unknown>).__dirname;
     });
 
     it('should return the correct package.json', async () => {
@@ -56,5 +57,18 @@ describe('getPackageInfo', () => {
         const result = getPackageInfo();
 
         expect(result).toEqual(mockPackage);
+    });
+
+    it('should resolve the package.json path via __dirname when defined (CJS runtime)', () => {
+        // The compiled CJS build runs with Node's `__dirname` global defined.
+        // Under ts-jest's ESM transform it is undefined, so we simulate it
+        // here to exercise the production code path.
+        (globalThis as Record<string, unknown>).__dirname = '/abs/generators/utils';
+        mockReadFileSync.mockReturnValue(JSON.stringify(mockPackage));
+
+        const result = getPackageInfo();
+
+        expect(result).toEqual(mockPackage);
+        expect(mockReadFileSync).toHaveBeenCalledWith('/abs/package.json', 'utf-8');
     });
 });
