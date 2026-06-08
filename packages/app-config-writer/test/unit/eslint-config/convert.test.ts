@@ -577,6 +577,28 @@ describe('convertEslintConfig', () => {
             expect(spreadCount).toBe(1);
         });
 
+        test('should not produce a leading comma when migration yields an empty array', async () => {
+            const emptyArrayMjs = `import { defineConfig } from "eslint/config";\n\nexport default defineConfig([]);\n`;
+            mockReadFileSync.mockImplementation((path: string, encoding?: string) => {
+                if (
+                    typeof path === 'string' &&
+                    path.includes('eslint-migration-') &&
+                    path.endsWith('eslint.config.mjs')
+                ) {
+                    return emptyArrayMjs;
+                }
+                const { readFileSync: actualReadFileSync } = jest.requireActual<typeof nodeFs>('node:fs');
+                return actualReadFileSync(path, encoding);
+            });
+
+            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
+            await convertEslintConfig(basePath, { logger: loggerMock, fs, config: 'recommended-for-s4hana' });
+
+            const migratedContent = fs.read(join(basePath, 'eslint.config.mjs'));
+            expect(migratedContent).not.toContain('[,');
+            expect(migratedContent).toContain("\n    ...fioriTools.configs['recommended-for-s4hana'],\n]);");
+        });
+
         test('should log debug message after injection', async () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
             await convertEslintConfig(basePath, { logger: loggerMock, fs });

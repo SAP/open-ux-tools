@@ -281,10 +281,11 @@ async function injectFioriToolsIntoMigratedConfig(
             'Unexpected format of migrated eslint config. Could not inject the SAP Fiori tools plugin configuration.'
         );
     }
+    const beforeBracket = content.slice(0, lastBracketIndex);
+    const isEmptyArray = /\[\s*$/.test(beforeBracket);
+    const separator = isEmptyArray ? '' : ',';
     content =
-        content.slice(0, lastBracketIndex) +
-        `,\n    ...fioriTools.configs['${config}'],\n` +
-        content.slice(lastBracketIndex);
+        beforeBracket + `${separator}\n    ...fioriTools.configs['${config}'],\n` + content.slice(lastBracketIndex);
 
     fs.write(migratedConfigPath, content);
     logger?.debug(`Injected SAP Fiori tools plugin into ${migratedConfigPath}`);
