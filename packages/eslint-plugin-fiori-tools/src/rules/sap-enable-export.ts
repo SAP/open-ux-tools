@@ -3,10 +3,11 @@ import { ENABLE_EXPORT, type EnableExport } from '../language/diagnostics.js';
 import { createFioriRule } from '../language/rule-factory.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import type { ParsedApp } from '../project-context/parser/index.js';
-import type { FeV4PageType, Table } from '../project-context/linker/fe-v4.js';
+import type { FeV4PageType, Table as TableV4 } from '../project-context/linker/fe-v4.js';
 import { createJsonFixer } from '../language/rule-fixer.js';
-import { checkAppTablesConfiguration } from '../utils/helpers.js';
 import { FioriJSONSourceCode } from '../language/json/source-code.js';
+import { checkAppTablesConfiguration, isV2Table } from '../utils/helpers.js';
+import type { FeV2PageType, Table as TableV2 } from '../project-context/linker/fe-v2.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: ENABLE_EXPORT,
@@ -35,14 +36,12 @@ const rule: FioriRuleDefinition = createFioriRule({
             if (!parsedService) {
                 continue;
             }
-            if (app.type === 'fe-v4') {
-                for (const page of app.pages) {
-                    problems.push(
-                        ...(<EnableExport[]>(
-                            checkAppTablesConfiguration(page, parsedApp, context.sourceCode, checkConfiguration)
-                        ))
-                    );
-                }
+            for (const page of app.pages) {
+                problems.push(
+                    ...(<EnableExport[]>(
+                        checkAppTablesConfiguration(page, parsedApp, context.sourceCode, checkConfiguration)
+                    ))
+                );
             }
         }
         return problems;
@@ -60,7 +59,24 @@ const rule: FioriRuleDefinition = createFioriRule({
                     operation: 'delete'
                 })
             });
-        }
+        },
+    createChangeVisitorHandler(context, diagnostic) {
+        return function report(node: MemberNode): void {
+            const deepestPathResult = { validatedPath: ['content', 'newValue'], missingSegments: [] };
+            context.report({
+                node,
+                messageId: ENABLE_EXPORT,
+                data: { sectionText: diagnostic.pageSectionName ? `${diagnostic.pageSectionName} ` : '' },
+                fix: createJsonFixer({
+                    context,
+                    deepestPathResult,
+                    node,
+                    operation: 'update',
+                    value: true
+                })
+            });
+        };
+    }
 });
 
 /**
@@ -73,26 +89,37 @@ const rule: FioriRuleDefinition = createFioriRule({
  * @param pageSectionName
  */
 function checkConfiguration(
-    page: FeV4PageType,
-    table: Table,
+    page: FeV4PageType | FeV2PageType,
+    table: TableV4 | TableV2,
     parsedApp: ParsedApp,
     sourceCode: FioriJSONSourceCode,
     problems: EnableExport[],
     pageSectionName?: string
 ): void {
     if (table.configuration.enableExport.valueInFile === false) {
-        const node = sourceCode.getNode(sourceCode.ast.body, table.configuration.enableExport.configurationPath);
-        problems.push({
-            type: ENABLE_EXPORT,
-            pageName: page.targetName,
-            pageSectionName,
-            manifest: {
-                uri: parsedApp.manifest.manifestUri,
-                object: parsedApp.manifestObject,
-                propertyPath: table.configuration.enableExport.configurationPath,
-                loc: node.loc
-            }
-        });
+        if (isV2Table(table)) {
+            problems.push({
+                type: ENABLE_EXPORT,
+                property: 'enableExport',
+                pageName: page.targetName,
+                pageSectionName,
+                changeFileUri: table.configuration.enableExport.changeFileUri
+            });
+        } else {
+            const node = sourceCode.getNode(sourceCode.ast.body, table.configuration.enableExport.configurationPath);
+            problems.push({
+                type: ENABLE_EXPORT,
+                property: 'enableExport',
+                pageName: page.targetName,
+                pageSectionName,
+                manifest: {
+                    uri: parsedApp.manifest.manifestUri,
+                    object: parsedApp.manifestObject,
+                    propertyPath: table.configuration.enableExport.configurationPath,
+                    loc: node.loc
+                }
+            });
+        }
     }
 }
 export default rule;

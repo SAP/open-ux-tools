@@ -3,8 +3,8 @@
  */
 
 import type { Rule } from 'eslint';
-import type { FeV4PageType } from '../project-context/linker/fe-v4.js';
-import type { FeV2PageType } from '../project-context/linker/fe-v2.js';
+import type { FeV4PageType, Table as TableV4 } from '../project-context/linker/fe-v4.js';
+import type { FeV2PageType, Table as TableV2 } from '../project-context/linker/fe-v2.js';
 import type { ParsedApp } from '../project-context/parser/index.js';
 import type { FioriJSONSourceCode } from '../language/json/source-code.js';
 
@@ -838,4 +838,14 @@ export function checkAppTablesConfiguration<DiagnosticType>(
         }
     }
     return problems;
+}
+
+/**
+ * Checks if given table is ODataV2 type.
+ *
+ * @param table
+ * @returns
+ */
+export function isV2Table(table: TableV2 | TableV4): table is TableV2 {
+    return 'showPasteButton' in (table as TableV2).configuration;
 }
