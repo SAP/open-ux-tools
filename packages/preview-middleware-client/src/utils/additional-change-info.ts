@@ -25,26 +25,24 @@ const additionalChangeInfoMap = new Map<string, AdditionalChangeInfo>();
  * @param appComponent - The app component (optional), used to resolve controls in projects with local IDs.
  */
 export function setAdditionalChangeInfo(changes: FlexXMLChange[], appComponent?: Component): void {
-    changes.reduce((changeInfoByFileNameMap, change) => {
+    changes.forEach((change) => {
         const { fileName } = getChangeDefinition(change);
         const changeInfo = getAddXMLAdditionalInfo(change, appComponent);
 
         if (!changeInfo) {
-            return changeInfoByFileNameMap;
+            return;
         }
 
-        if (changeInfoByFileNameMap.has(fileName)) {
-            const storedChangeInfo = changeInfoByFileNameMap.get(fileName);
-            changeInfoByFileNameMap.set(fileName, {
+        if (additionalChangeInfoMap.has(fileName)) {
+            const storedChangeInfo = additionalChangeInfoMap.get(fileName);
+            additionalChangeInfoMap.set(fileName, {
                 ...changeInfo,
                 ...storedChangeInfo
             });
         } else {
-            changeInfoByFileNameMap.set(fileName, changeInfo);
+            additionalChangeInfoMap.set(fileName, changeInfo);
         }
-
-        return changeInfoByFileNameMap;
-    }, additionalChangeInfoMap);
+    });
 }
 
 export function setAdditionalChangeInfoForChangeFile(
