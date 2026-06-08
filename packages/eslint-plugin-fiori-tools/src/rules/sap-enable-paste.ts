@@ -3,9 +3,10 @@ import { ENABLE_PASTE, type EnablePaste } from '../language/diagnostics.js';
 import { createFioriRule } from '../language/rule-factory.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import type { ParsedApp } from '../project-context/parser/index.js';
-import type { FeV4PageType, Table } from '../project-context/linker/fe-v4.js';
+import type { FeV4PageType, Table as TableV4 } from '../project-context/linker/fe-v4.js';
 import { createJsonFixer } from '../language/rule-fixer.js';
-import { checkAppTablesConfiguration } from '../utils/helpers.js';
+import { checkAppTablesConfiguration, isV2Table } from '../utils/helpers.js';
+import type { FeV2PageType, Table as TableV2 } from '../project-context/linker/fe-v2.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: ENABLE_PASTE,
@@ -31,13 +32,11 @@ const rule: FioriRuleDefinition = createFioriRule({
             if (!parsedService) {
                 continue;
             }
-            if (app.type === 'fe-v4') {
-                for (const page of app.pages) {
-                    if (page.type !== 'object-page') {
-                        continue;
-                    }
-                    problems.push(...(<EnablePaste[]>checkAppTablesConfiguration(page, parsedApp, checkConfiguration)));
+            for (const page of app.pages) {
+                if (page.type !== 'object-page') {
+                    continue;
                 }
+                problems.push(...(<EnablePaste[]>checkAppTablesConfiguration(page, parsedApp, checkConfiguration)));
             }
         }
         return problems;
@@ -47,7 +46,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             context.report({
                 node,
                 messageId: ENABLE_PASTE,
-                data: { sectionText: diagnostic.pageSectionName ? `${diagnostic.pageSectionName} ` : '' },
+                data: { sectionText: `${diagnostic.pageSectionName} ` },
                 fix: createJsonFixer({
                     context,
                     deepestPathResult,
@@ -55,7 +54,24 @@ const rule: FioriRuleDefinition = createFioriRule({
                     operation: 'delete'
                 })
             });
-        }
+        },
+    createChangeVisitorHandler(context, diagnostic) {
+        return function report(node: MemberNode): void {
+            const deepestPathResult = { validatedPath: ['content', 'newValue'], missingSegments: [] };
+            context.report({
+                node,
+                messageId: ENABLE_PASTE,
+                data: { sectionText: `${diagnostic.pageSectionName} ` },
+                fix: createJsonFixer({
+                    context,
+                    deepestPathResult,
+                    node,
+                    operation: 'update',
+                    value: true
+                })
+            });
+        };
+    }
 });
 
 /**
@@ -67,15 +83,26 @@ const rule: FioriRuleDefinition = createFioriRule({
  * @param pageSectionName
  */
 function checkConfiguration(
-    page: FeV4PageType,
-    table: Table,
+    page: FeV4PageType | FeV2PageType,
+    table: TableV4 | TableV2,
     parsedApp: ParsedApp,
     problems: EnablePaste[],
     pageSectionName?: string
 ): void {
-    if (table.configuration.enablePaste.valueInFile === false) {
+    if (isV2Table(table)) {
+        if (table.configuration.showPasteButton.valueInFile === false) {
+            problems.push({
+                type: ENABLE_PASTE,
+                property: 'showPasteButton',
+                pageName: page.targetName,
+                pageSectionName,
+                changeFileUri: table.configuration.showPasteButton.changeFileUri
+            });
+        }
+    } else if (table.configuration.enablePaste.valueInFile === false) {
         problems.push({
             type: ENABLE_PASTE,
+            property: 'enablePaste',
             pageName: page.targetName,
             pageSectionName,
             manifest: {
