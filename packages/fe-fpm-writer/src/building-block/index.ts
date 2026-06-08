@@ -287,8 +287,11 @@ export async function appendPageBBAggregation(
     }
 
     const pageElement = pageNodes[0] as Node;
-    const hasExistingChildren = Array.from(pageElement.childNodes).some((n) => n.nodeType === 1 /* Element */);
-    if (!hasExistingChildren) {
+    const hasExistingElementChildren = Array.from(pageElement.childNodes).some((n) => n.nodeType === 1 /* Element */);
+    const hasTemplateComment = Array.from(pageElement.childNodes).some(
+        (n) => n.nodeType === 8 /* Comment */ && (n as Comment).data?.includes(PAGE_TEMPLATE_COMMENT)
+    );
+    if (!hasExistingElementChildren && !hasTemplateComment) {
         pageElement.appendChild(xmlDocument.createComment(PAGE_TEMPLATE_COMMENT));
     }
     for (const node of Array.from(aggDoc.documentElement.childNodes)) {
