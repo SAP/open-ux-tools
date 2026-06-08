@@ -10,12 +10,12 @@ const mockWriteFile = jest.fn<(...args: unknown[]) => Promise<string | void>>();
 
 // Mock the utils module with async factory
 jest.unstable_mockModule('../../../../src/utils', async () => {
-    const config = await import('../../../../src/utils/config');
-    const resolve = await import('../../../../src/utils/resolve');
-    const path = await import('../../../../src/utils/path');
-    const print = await import('../../../../src/utils/print');
-    const text = await import('../../../../src/utils/text');
-    const key = await import('../../../../src/utils/key');
+    const config = await import('../../../../src/utils/config.js');
+    const resolve = await import('../../../../src/utils/resolve.js');
+    const path = await import('../../../../src/utils/path.js');
+    const print = await import('../../../../src/utils/print.js');
+    const text = await import('../../../../src/utils/text.js');
+    const key = await import('../../../../src/utils/key.js');
     return {
         ...config,
         ...resolve,
@@ -30,7 +30,7 @@ jest.unstable_mockModule('../../../../src/utils', async () => {
 });
 
 // Import after mocking
-const { addJsonTexts, tryAddJsonTexts } = await import('../../../../src/write/cap/json');
+const { addJsonTexts, tryAddJsonTexts } = await import('../../../../src/write/cap/json.js');
 
 describe('json', () => {
     describe('add new i18n entries to json file', () => {

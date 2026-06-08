@@ -7,7 +7,7 @@ const actualProjectAccess = await import('@sap-ux/project-access');
 const actualValidators = await import('@sap-ux/project-input-validator');
 
 // Create mocks
-const mockFilterDataSourcesByType = jest.fn();
+const mockFilterDataSourcesByType = jest.fn<typeof actualProjectAccess.filterDataSourcesByType>();
 const mockExistsSync = jest.fn<typeof actualFs.existsSync>();
 const mockValidateEmptyString = jest.fn<(...args: unknown[]) => unknown>().mockReturnValue(true);
 
@@ -27,8 +27,8 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     validateEmptyString: mockValidateEmptyString
 }));
 
-const { getPrompts } = await import('../../../../src/prompts/add-annotations-to-odata/index');
-const i18n = await import('../../../../src/i18n');
+const { getPrompts } = await import('../../../../src/prompts/add-annotations-to-odata/index.js');
+const i18n = await import('../../../../src/i18n.js');
 
 describe('getPrompts', () => {
     const mockBasePath = '/path/to/project';

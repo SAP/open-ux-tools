@@ -11,9 +11,7 @@ const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils,
     isAppStudio: jest.fn<() => boolean>().mockImplementation(() => mockIsAppStudio),
-    isHTML5DynamicConfigured: jest
-        .fn()
-        .mockImplementation((dest: Record<string, unknown>) => Boolean(dest['HTML5.DynamicDestination'])),
+    isHTML5DynamicConfigured: jest.fn().mockImplementation((dest) => Boolean(dest['HTML5.DynamicDestination'])),
     isOnPremiseDestination: jest.fn().mockReturnValue(false),
     isAbapODataDestination: jest.fn().mockReturnValue(false),
     isFullUrlDestination: jest.fn().mockReturnValue(false),
@@ -33,9 +31,9 @@ jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     getHostEnvironment: jest.fn().mockReturnValue({ name: 'CLI', technical: 'CLI' })
 }));
 
-const { ERROR_TYPE, ErrorHandler } = await import('../../../src/error-handler/error-handler');
-const { initI18nInquirerCommon, t } = await import('../../../src/i18n');
-const telemetryUtils = await import('../../../src/telemetry/telemetry');
+const { ERROR_TYPE, ErrorHandler } = await import('../../../src/error-handler/error-handler.js');
+const { initI18nInquirerCommon, t } = await import('../../../src/i18n.js');
+const telemetryUtils = await import('../../../src/telemetry/telemetry.js');
 const { GUIDED_ANSWERS_ICON, GUIDED_ANSWERS_LAUNCH_CMD_ID, HELP_NODES, HELP_TREE } =
     await import('@sap-ux/guided-answers-helper');
 const { SampleRate } = await import('@sap-ux/telemetry');

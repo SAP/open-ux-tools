@@ -1,10 +1,10 @@
 import { jest } from '@jest/globals';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Manifest, Package } from '../../src';
-import type * as i18nWriteType from '../../src/project/i18n/write';
-import type * as specType from '../../src/project/specification';
-import type * as capType from '../../src/project/cap';
+import type { Manifest, Package } from '../../src/index.js';
+import type * as i18nWriteType from '../../src/project/i18n/write.js';
+import type * as specType from '../../src/project/specification.js';
+import type * as capType from '../../src/project/cap.js';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { promises } from 'node:fs';
@@ -26,21 +26,21 @@ jest.unstable_mockModule('../../src/project/i18n/write', () => ({
     createCapI18nEntries: mockCreateCapI18nEntries
 }));
 
-const realSpec = await import('../../src/project/specification');
+const realSpec = await import('../../src/project/specification.js');
 jest.unstable_mockModule('../../src/project/specification', () => ({
     ...realSpec,
     getSpecification: mockGetSpecification
 }));
 
 // Load real cap module first (this also loads search.ts due to circular dep)
-const realCap = await import('../../src/project/cap');
+const realCap = await import('../../src/project/cap.js');
 jest.unstable_mockModule('../../src/project/cap', () => ({
     ...realCap,
     readCapServiceMetadataEdmx: mockReadCapServiceMetadataEdmx
 }));
 
-const { createApplicationAccess, createProjectAccess } = await import('../../src');
-const { readFile, readJSON } = await import('../../src/file');
+const { createApplicationAccess, createProjectAccess } = await import('../../src/index.js');
+const { readFile, readJSON } = await import('../../src/file/index.js');
 
 describe('Test function createApplicationAccess()', () => {
     let memFs: Editor;

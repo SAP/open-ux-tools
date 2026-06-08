@@ -1,12 +1,12 @@
 import { jest } from '@jest/globals';
 
-const mockAxiosGet = jest.fn();
+const mockAxiosGet = jest.fn() as jest.Mock;
 jest.unstable_mockModule('axios', () => ({
     default: { get: mockAxiosGet },
     __esModule: true
 }));
 
-const { getSapSystemUI5Version } = await import('../src/ui5-version-backend');
+const { getSapSystemUI5Version } = await import('../src/ui5-version-backend.js');
 
 describe('Get UI5 Version used on backend ABAP system', () => {
     beforeEach(() => {

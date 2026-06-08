@@ -30,7 +30,7 @@ describe('<UISmallButton />', () => {
             Object {
               "backgroundColor": "var(--vscode-button-background)",
               "borderColor": "var(--vscode-contrastBorder, var(--vscode-button-background))",
-              "borderRadius": 20,
+              "borderRadius": "var(--vscode-cornerRadius-circle, 9999px)",
               "color": "var(--vscode-button-foreground)",
               "fontSize": "11px",
               "fontWeight": 400,
@@ -60,7 +60,7 @@ describe('<UISmallButton />', () => {
             Object {
               "backgroundColor": "var(--vscode-button-secondaryBackground, #5f6a79)",
               "borderColor": "var(--vscode-contrastBorder, var(--vscode-button-secondaryBackground, #5f6a79))",
-              "borderRadius": 20,
+              "borderRadius": "var(--vscode-cornerRadius-circle, 9999px)",
               "color": "var(--vscode-button-secondaryForeground, #ffffff)",
               "fontSize": "11px",
               "fontWeight": 400,

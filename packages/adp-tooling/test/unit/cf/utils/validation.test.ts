@@ -3,7 +3,7 @@ import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
-const mockGetApplicationType = jest.fn();
+const mockGetApplicationType = jest.fn() as jest.Mock;
 const mockIsSupportedAppTypeForAdp = jest.fn().mockReturnValue(true);
 
 jest.unstable_mockModule('../../../../src/source/manifest', () => ({
@@ -12,9 +12,9 @@ jest.unstable_mockModule('../../../../src/source/manifest', () => ({
 }));
 
 const { validateSmartTemplateApplication, extractXSApp, validateODataEndpoints } =
-    await import('../../../../src/cf/utils/validation');
-const { initI18n, t } = await import('../../../../src/i18n');
-const { ApplicationType } = await import('../../../../src/types');
+    await import('../../../../src/cf/utils/validation.js');
+const { initI18n, t } = await import('../../../../src/i18n.js');
+const { ApplicationType } = await import('../../../../src/types.js');
 import type { ServiceKeys, XsApp } from '../../../../src/types.js';
 
 describe('CF Utils Validation', () => {

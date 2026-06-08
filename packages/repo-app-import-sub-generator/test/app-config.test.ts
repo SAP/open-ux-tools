@@ -1,21 +1,21 @@
 import { jest } from '@jest/globals';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
-import type { AppInfo, QfaJsonConfig } from '../src/app/types';
-import { t } from '../src/utils/i18n';
-import { fioriAppSourcetemplateId, qfaJsonFileName } from '../src/utils/constants';
+import type { AppInfo, QfaJsonConfig } from '../src/app/types.js';
+import { t } from '../src/utils/i18n.js';
+import { fioriAppSourcetemplateId, qfaJsonFileName } from '../src/utils/constants.js';
 import { join } from 'node:path';
 import { type OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 
 // Pre-import actual modules before mocking - avoid importing @sap-ux/project-access
 // directly as it triggers problematic ESM dependency chain
-const actualFileHelpers = await import('../src/utils/file-helpers');
+const actualFileHelpers = await import('../src/utils/file-helpers.js');
 const actualUi5Info = await import('@sap-ux/ui5-info');
 const actualProjectAccess = await import('@sap-ux/project-access');
 
-const mockReadManifest = jest.fn();
-const mockGetUI5Versions = jest.fn();
-const mockGetMinimumUI5Version = jest.fn();
+const mockReadManifest = jest.fn<typeof actualFileHelpers.readManifest>();
+const mockGetUI5Versions = jest.fn<typeof actualUi5Info.getUI5Versions>();
+const mockGetMinimumUI5Version = jest.fn<typeof actualProjectAccess.getMinimumUI5Version>();
 
 jest.unstable_mockModule('../src/utils/logger', () => {
     const mock = {
@@ -44,10 +44,10 @@ jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
     isInternalFeaturesSettingEnabled: jest.fn()
 }));
 
-const { getAppConfig, getAbapDeployConfig } = await import('../src/app/app-config');
-const { PromptState } = await import('../src/prompts/prompt-state');
-const RepoAppDownloadLogger = (await import('../src/utils/logger')).default;
-const { TestFixture } = await import('./fixtures');
+const { getAppConfig, getAbapDeployConfig } = await import('../src/app/app-config.js');
+const { PromptState } = await import('../src/prompts/prompt-state.js');
+const RepoAppDownloadLogger = (await import('../src/utils/logger.js')).default;
+const { TestFixture } = await import('./fixtures/index.js');
 
 const testFixture = new TestFixture();
 const mockQfaJson: QfaJsonConfig = JSON.parse(testFixture.getContents(join('downloaded-app', qfaJsonFileName)));

@@ -11,8 +11,8 @@ jest.unstable_mockModule('../../../src/data-provider/telemetry-setting', () => (
     TelemetryDataProvider: jest.fn().mockImplementation(() => mockDataProviderProto)
 }));
 
-const { getInstance } = await import('../../../src/services/telemetry-setting');
-const { TelemetrySetting, TelemetrySettingKey } = await import('../../../src');
+const { getInstance } = await import('../../../src/services/telemetry-setting.js');
+const { TelemetrySetting, TelemetrySettingKey } = await import('../../../src/index.js');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 
 describe('TelemetrySetting service', () => {

@@ -11,7 +11,7 @@ import { createCdsCompilerFacadeForRoot, getMetadataElementsFromMap } from '@sap
 import { convertMetadataDocument } from '@sap-ux/xml-odata-annotation-converter';
 import { MetadataService } from '@sap-ux/odata-entity-model';
 
-import { convertMetadataToAvtSchema } from '../../../src/avt';
+import { convertMetadataToAvtSchema } from '../../../src/avt/index.js';
 
 const METADATA_FILE_URL = 'file://metadata.xml';
 

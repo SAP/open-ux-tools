@@ -26,7 +26,7 @@ jest.unstable_mockModule('@sap/cf-tools', () => ({
     apiGetInstanceCredentials: jest.fn()
 }));
 
-const { MockMta } = await import('./mockMta');
+const { MockMta } = await import('./mockMta.js');
 jest.unstable_mockModule('@sap/mta-lib', () => ({
     Mta: MockMta
 }));
@@ -34,9 +34,9 @@ jest.unstable_mockModule('@sap/mta-lib', () => ({
 const hasbin = await import('hasbin');
 const cfTools = await import('@sap/cf-tools');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
-const { generateBaseConfig } = await import('../../src');
-const { RouterModuleType } = await import('../../src/types');
-const { MTABinNotFound } = await import('../../src/constants');
+const { generateBaseConfig } = await import('../../src/index.js');
+const { RouterModuleType } = await import('../../src/types/index.js');
+const { MTABinNotFound } = await import('../../src/constants.js');
 
 import type { CFBaseConfig } from '../../src/index.js';
 

@@ -5,7 +5,7 @@ import * as actualFs from 'node:fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockExistsSync = jest.fn();
+const mockExistsSync = jest.fn<typeof actualFs.existsSync>();
 
 jest.unstable_mockModule('node:fs', () => ({
     ...actualFs,
@@ -21,13 +21,13 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     addi18nResourceBundle: jest.fn()
 }));
 
-const { initI18nUi5AppInquirer } = await import('../../../src/i18n');
+const { initI18nUi5AppInquirer } = await import('../../../src/i18n.js');
 const { appPathExists, defaultAppName, hidePrompts, isVersionIncluded } =
-    await import('../../../src/prompts/prompt-helpers');
+    await import('../../../src/prompts/prompt-helpers.js');
 const { latestVersionString } = await import('@sap-ux/ui5-info');
 
-import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../../../src/types';
-const { promptNames } = await import('../../../src/types');
+import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../../../src/types.js';
+const { promptNames } = await import('../../../src/types.js');
 
 describe('prompt-helpers', () => {
     const testTempDir = join(__dirname, './test-tmp');

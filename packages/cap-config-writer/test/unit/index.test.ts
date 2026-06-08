@@ -1,4 +1,4 @@
-import * as capConfigWriter from '../../src';
+import * as capConfigWriter from '../../src/index.js';
 
 test('Smoke test', () => {
     expect(capConfigWriter).toBeDefined();

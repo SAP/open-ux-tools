@@ -1,5 +1,5 @@
 import UIComponentMock from 'mock/sap/ui/core/UIComponent';
-import AppComponentMock from './AppComponent';
+import AppComponentMock from './AppComponent.js';
 export default class TemplateComponentMock extends UIComponentMock {
     isA(type: string): boolean {
         return type === 'sap.fe.core.TemplateComponent';

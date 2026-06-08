@@ -1,4 +1,4 @@
-import { TlsPatch } from '../../src/base/patchTls';
+import { TlsPatch } from '../../src/base/patchTls.js';
 import tls from 'node:tls';
 
 describe('Test for TLS patch isPatchRequired()', () => {

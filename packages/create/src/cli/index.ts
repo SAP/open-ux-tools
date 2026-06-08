@@ -12,6 +12,7 @@ import { getChangeCommands } from './change/index.js';
 import { getConvertCommands } from './convert/index.js';
 import { getListCommands } from './list/index.js';
 import { getGetCommands } from './get/index.js';
+import { getUpdateCommands } from './update/index.js';
 
 /*
  * We've chosen 'commander' over 'minimist' and 'yargs' for this CLI implementation. Reasons:
@@ -104,6 +105,15 @@ function getCommanderProgram(): Command {
                     The available subcommands are: ${getFeatureSummary(removeCommands.commands)}\n`
     );
     program.addCommand(removeCommands);
+
+    // Handler for create-fiori update <feature> ..
+    const updateCommands = getUpdateCommands();
+    updateCommands.description(
+        `Command group for updating saved resources. A subcommand is required.
+                    Usage: \`npx --yes @sap-ux/create@latest update [subcommand] [options]\`
+                    The available subcommands are: ${getFeatureSummary(updateCommands.commands)}\n`
+    );
+    program.addCommand(updateCommands);
 
     // Handler for create-fiori change <feature> ..
     const changeCommands = getChangeCommands();

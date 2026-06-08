@@ -3,13 +3,13 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { generateCustomField } from '../../src/field';
-import type { CustomField } from '../../src/field/types';
-import type { EventHandlerConfiguration, Manifest } from '../../src/common/types';
-import { Placement } from '../../src/common/types';
+import { generateCustomField } from '../../src/field/index.js';
+import type { CustomField } from '../../src/field/types.js';
+import type { EventHandlerConfiguration, Manifest } from '../../src/common/types.js';
+import { Placement } from '../../src/common/types.js';
 import manifest from './sample/field/webapp/manifest.json';
-import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
-import { getEndOfLinesLength, tabSizingTestCases } from '../common';
+import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file.js';
+import { getEndOfLinesLength, tabSizingTestCases } from '../common/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

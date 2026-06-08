@@ -20,13 +20,13 @@ jest.unstable_mockModule('hasbin', () => ({
     sync: jest.fn()
 }));
 
-const { MockMta } = await import('./mockMta');
+const { MockMta } = await import('./mockMta.js');
 jest.unstable_mockModule('@sap/mta-lib', () => ({
     Mta: MockMta
 }));
 
 const hasbin = await import('hasbin');
-const { generateAppConfig } = await import('../../src');
+const { generateAppConfig } = await import('../../src/index.js');
 const { CommandRunner } = await import('@sap-ux/nodejs-utils');
 
 let hasSyncMock: jest.Mock;

@@ -10,13 +10,13 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { ChangeDataSourceAnswers, DescriptorVariant } from '@sap-ux/adp-tooling';
 
-import type { Credentials } from '../../../src/types';
+import type { Credentials } from '../../../src/types.js';
 
-const mockGenerateChange = jest.fn();
-const mockGetVariant = jest.fn();
-const mockGetAdpConfig = jest.fn();
+const mockGenerateChange = jest.fn<typeof realAdpTooling.generateChange>();
+const mockGetVariant = jest.fn<typeof realAdpTooling.getVariant>();
+const mockGetAdpConfig = jest.fn<typeof realAdpTooling.getAdpConfig>();
 const mockIsCFEnvironment = jest.fn().mockResolvedValue(false);
-const mockManifestServiceCFInit = jest.fn();
+const mockManifestServiceCFInit = jest.fn<typeof realAdpTooling.init>();
 
 const realAdpTooling = await import('@sap-ux/adp-tooling');
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
@@ -34,7 +34,7 @@ jest.unstable_mockModule('@sap-ux/system-access', () => ({
 }));
 
 const { ManifestService, SystemLookup, ChangeType } = await import('@sap-ux/adp-tooling');
-const { default: changeDataSourceGen } = await import('../../../src/change-data-source');
+const { default: changeDataSourceGen } = await import('../../../src/change-data-source/index.js');
 
 const manifest = {
     'sap.app': {

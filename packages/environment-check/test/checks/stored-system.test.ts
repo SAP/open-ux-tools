@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
-import type { CatalogServiceResult } from '../../src/types';
-import { Severity } from '../../src/types';
+import type { CatalogServiceResult } from '../../src/types.js';
+import { Severity } from '../../src/types.js';
 
-const mockGetService = jest.fn();
+const mockGetService = jest.fn<typeof realStore.getService>();
 const realStore = await import('@sap-ux/store');
 jest.unstable_mockModule('@sap-ux/store', () => ({
     ...realStore,
@@ -17,10 +17,10 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     }
 }));
 
-const mockCheckCatalogServices = jest.fn();
-const mockCheckAtoCatalog = jest.fn();
-const mockCheckUi5AbapRepository = jest.fn();
-const mockCheckTransportRequests = jest.fn();
+const mockCheckCatalogServices = jest.fn() as jest.Mock;
+const mockCheckAtoCatalog = jest.fn() as jest.Mock;
+const mockCheckUi5AbapRepository = jest.fn() as jest.Mock;
+const mockCheckTransportRequests = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/checks/service-checks', () => ({
     checkCatalogServices: mockCheckCatalogServices,
     checkAtoCatalog: mockCheckAtoCatalog,
@@ -29,7 +29,7 @@ jest.unstable_mockModule('../../src/checks/service-checks', () => ({
     getServiceProvider: jest.fn()
 }));
 
-const { checkStoredSystem, checkStoredSystems } = await import('../../src/checks/stored-system');
+const { checkStoredSystem, checkStoredSystems } = await import('../../src/checks/stored-system.js');
 
 describe('Stored system tests ', () => {
     const checkCatalogServicesResult = {
