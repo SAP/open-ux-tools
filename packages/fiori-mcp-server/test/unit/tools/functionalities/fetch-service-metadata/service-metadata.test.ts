@@ -39,6 +39,9 @@ jest.unstable_mockModule('@sap-ux/edmx-parser', () => ({
     parse: mockParseEdmx
 }));
 
+const mockPrettifyXml = jest.fn<any>((xml: string) => xml);
+jest.unstable_mockModule('prettify-xml', () => ({ default: mockPrettifyXml }));
+
 const { findSapSystem, getServiceMetadata } =
     await import('../../../../../src/tools/functionalities/fetch-service-metadata/service-metadata.js');
 
@@ -92,6 +95,9 @@ describe('service-metadata', () => {
 
         // Mock parseEdmx to return a valid parsed result by default
         mockParseEdmx.mockReturnValue({ edmx: 'parsedMetadata' });
+
+        // Mock prettifyXml to return the input unchanged by default
+        mockPrettifyXml.mockImplementation((xml: string) => xml);
 
         // Default: TlsPatch not required
         mockTlsPatchIsPatchRequired.mockReturnValue(false);

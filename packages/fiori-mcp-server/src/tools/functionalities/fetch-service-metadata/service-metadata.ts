@@ -202,5 +202,9 @@ export async function getServiceMetadata(sapSystem: BackendSystem, servicePath: 
     const service = await getServiceFromSystem(sapSystem, servicePath);
     const metadata = await service.metadata();
     checkMetadata(metadata);
-    return prettifyXml(metadata, { indent: 4 });
+    try {
+        return prettifyXml(metadata, { indent: 4 });
+    } catch {
+        return metadata;
+    }
 }

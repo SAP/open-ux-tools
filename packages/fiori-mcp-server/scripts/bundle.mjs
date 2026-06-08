@@ -230,7 +230,10 @@ let bundleSource = fs.readFileSync(bundleFile, 'utf8');
 const zowePattern = /\w+\(["']@zowe\/secrets-for-zowe-sdk["']\)/g;
 const matchCount = (bundleSource.match(zowePattern) || []).length;
 if (matchCount === 0) {
-    console.warn('⚠ No require("@zowe/secrets-for-zowe-sdk") found in bundle — shim not applied');
+    throw new Error(
+        'No require("@zowe/secrets-for-zowe-sdk") found in bundle — shim not applied. ' +
+        'The bundle may have changed; update the zowePattern regex in bundle.mjs.'
+    );
 } else {
     bundleSource = bundleSource.replace(zowePattern, ZOWE_SHIM);
     fs.writeFileSync(bundleFile, bundleSource, 'utf8');
