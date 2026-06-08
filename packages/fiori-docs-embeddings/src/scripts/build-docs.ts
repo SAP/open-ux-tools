@@ -1596,5 +1596,5 @@ if (isMainModule) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         logger.error(`Build failed: ${errorMessage}`);
         process.exit(1);
-    }
+    });
 }
