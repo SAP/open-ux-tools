@@ -151,18 +151,18 @@ export async function listDestinations(options?: ListDestinationOpts): Promise<D
  * when running inside BAS. No-op when called outside of BAS.
  */
 function patchGlobalAgentProxySettings(): void {
-    if (!isAppStudio() || !global.GLOBAL_AGENT) {
+    if (!isAppStudio() || !globalThis.GLOBAL_AGENT) {
         return;
     }
     // Global agent proxy settings could also be set with GLOBAL_AGENT_HTTP_PROXY
     // and GLOBAL_AGENT_HTTPS_PROXY env variables in that case we do not want to override
     // them.
-    if (!global.GLOBAL_AGENT.HTTP_PROXY) {
-        global.GLOBAL_AGENT.HTTP_PROXY = process.env[ENV.HTTP_PROXY] ?? null;
+    if (!globalThis.GLOBAL_AGENT.HTTP_PROXY) {
+        globalThis.GLOBAL_AGENT.HTTP_PROXY = process.env[ENV.HTTP_PROXY] ?? null;
     }
 
-    if (!global.GLOBAL_AGENT.HTTPS_PROXY) {
-        global.GLOBAL_AGENT.HTTPS_PROXY = process.env[ENV.HTTPS_PROXY] ?? null;
+    if (!globalThis.GLOBAL_AGENT.HTTPS_PROXY) {
+        globalThis.GLOBAL_AGENT.HTTPS_PROXY = process.env[ENV.HTTPS_PROXY] ?? null;
     }
 }
 

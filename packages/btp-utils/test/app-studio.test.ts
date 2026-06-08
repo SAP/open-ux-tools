@@ -208,7 +208,7 @@ describe('App Studio', () => {
             process.env[ENV.H2O_URL] = server;
             process.env[ENV.HTTP_PROXY] = server;
             process.env[ENV.HTTPS_PROXY] = server;
-            global.GLOBAL_AGENT = { HTTP_PROXY: null, HTTPS_PROXY: null };
+            globalThis.GLOBAL_AGENT = { HTTP_PROXY: null, HTTPS_PROXY: null };
         });
 
         afterAll(() => {
@@ -250,8 +250,33 @@ describe('App Studio', () => {
 
             await listDestinations();
 
-            expect(global.GLOBAL_AGENT?.HTTP_PROXY).toBe(server);
-            expect(global.GLOBAL_AGENT?.HTTPS_PROXY).toBe(server);
+            expect(globalThis.GLOBAL_AGENT?.HTTP_PROXY).toBe(server);
+            expect(globalThis.GLOBAL_AGENT?.HTTPS_PROXY).toBe(server);
+        });
+
+        test('does not patch GLOBAL_AGENT when there is no global agent being used', async () => {
+            const savedAgent = globalThis.GLOBAL_AGENT;
+            globalThis.GLOBAL_AGENT = undefined;
+
+            nock(server)
+                .get('/api/listDestinations')
+                .replyWithFile(200, join(__dirname, 'mockResponses/destinations.json'));
+
+            await expect(listDestinations()).resolves.not.toThrow();
+            expect(globalThis.GLOBAL_AGENT).toBeUndefined();
+
+            globalThis.GLOBAL_AGENT = savedAgent;
+        });
+
+        test('does not patch GLOBAL_AGENT when in VSCode', async () => {
+            const h2oUrl = process.env[ENV.H2O_URL];
+            const savedAgent = globalThis.GLOBAL_AGENT;
+            globalThis.GLOBAL_AGENT = undefined;
+            delete process.env[ENV.H2O_URL];
+            await expect(listDestinations()).rejects.toThrow();
+            expect(globalThis.GLOBAL_AGENT).toBeUndefined();
+            process.env[ENV.H2O_URL] = h2oUrl;
+            globalThis.GLOBAL_AGENT = savedAgent;
         });
     });
 
