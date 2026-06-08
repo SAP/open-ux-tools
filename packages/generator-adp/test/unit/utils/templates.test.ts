@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 const mockExistsSync = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('node:fs', () => ({
@@ -9,10 +8,12 @@ jest.unstable_mockModule('node:fs', () => ({
 
 const { getTemplatesOverwritePath } = await import('../../../src/utils/templates.js');
 
-// The source code derives __dirname from import.meta.url, so compute
-// the expected path relative to the actual source file location.
-const srcUtilsDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'src', 'utils');
-const expectedPath = join(srcUtilsDir, 'templates');
+// In the published CJS build, `getTemplatesOverwritePath` resolves the
+// templates folder relative to the compiled module (`generators/utils/`).
+// Under ts-jest's ESM test transform `__dirname`/`__filename` are not
+// defined, so the implementation falls back to `process.cwd()` and the
+// expected path is the package root joined with `templates`.
+const expectedPath = join(process.cwd(), 'templates');
 
 describe('getTemplatesOverwritePath', () => {
     beforeEach(() => {
