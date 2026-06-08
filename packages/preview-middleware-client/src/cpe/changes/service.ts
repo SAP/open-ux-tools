@@ -49,6 +49,33 @@ const TITLE_MAP: { [key: string]: string } = {
     appdescr_app_addAnnotationsToOData: 'Add New Annotation File'
 };
 
+/**
+ * Gets the base URL for API endpoints from element data attributes.
+ * Looks for the data attribute on both #root (outer CPE frame) and #sap-ui-bootstrap (inner UI5 frame).
+ * For component-type projects, this returns the resources path prefix (e.g., '/resources/project1').
+ * For application-type projects, this returns an empty string.
+ *
+ * @returns The base URL string to prepend to API endpoints.
+ */
+function getApiBaseUrl(): string {
+    // Try outer frame's root element first (CPE context), then inner frame's bootstrap element (UI5 context)
+    return (
+        document.getElementById('root')?.dataset.openUxPreviewBaseUrl ??
+        document.getElementById('sap-ui-bootstrap')?.dataset.openUxPreviewBaseUrl ??
+        ''
+    );
+}
+
+/**
+ * Constructs the full API endpoint URL by prepending the base URL.
+ *
+ * @param endpoint - The API endpoint path (e.g., '/preview/api/changes')
+ * @returns The full API URL including the base path for component projects
+ */
+function getApiUrl(endpoint: string): string {
+    return `${getApiBaseUrl()}${endpoint}`;
+}
+
 export const STACK_CHANGE_EVENT = 'STACK_CHANGED';
 export interface StackChangedEventDetail {
     controls: UI5Element[];
@@ -173,7 +200,7 @@ export class ChangeService extends EventTarget {
      */
     private async fetchSavedChanges(): Promise<void> {
         this.changedFiles = {};
-        const savedChangesResponse = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
+        const savedChangesResponse = await fetch(getApiUrl(FlexChangesEndPoints.changes) + `?_=${Date.now()}`);
         const savedChanges = (await savedChangesResponse.json()) as SavedChangesResponse;
         const textBundle = await getTextBundle();
         const changes = (
@@ -271,7 +298,7 @@ export class ChangeService extends EventTarget {
                 return false;
             })
             .map((change) =>
-                fetch(FlexChangesEndPoints.changes, {
+                fetch(getApiUrl(FlexChangesEndPoints.changes), {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'

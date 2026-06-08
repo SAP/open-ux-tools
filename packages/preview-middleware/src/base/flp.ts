@@ -362,7 +362,7 @@ export class FlpSandbox {
         };
         config.features = FeatureToggleAccess.getAllFeatureToggles();
         const appId = this.manifest['sap.app']?.id ?? '';
-        remapResourcesForPath(config, editor.path, appId);
+        remapResourcesForPath(config, editor.path, appId, this.utils);
 
         return render(this.getSandboxTemplate(ui5Version), config);
     }
@@ -407,6 +407,10 @@ export class FlpSandbox {
         let livereloadPort: number = envPort ? Number.parseInt(envPort, 10) : DEFAULT_LIVERELOAD_PORT;
         livereloadPort = Number.isNaN(livereloadPort) ? DEFAULT_LIVERELOAD_PORT : livereloadPort;
         const envLivereloadUrl = isAppStudio() ? await exposePort(livereloadPort) : undefined;
+        // For component projects, baseUrl must include the resources prefix for correct API paths
+        const patchedRouterBaseUrl = req['ui5-patched-router']?.baseUrl ?? '';
+        const resourcesPrefix = getResourcesPathPrefix(this.utils);
+        const baseUrl = resourcesPrefix ? posix.join(patchedRouterBaseUrl, resourcesPrefix) : patchedRouterBaseUrl;
         const html = render(template, {
             previewUrl: templatePreviewUrl,
             telemetry: !!rta.options?.telemetry,
@@ -415,7 +419,7 @@ export class FlpSandbox {
             livereloadPort,
             livereloadUrl: envLivereloadUrl,
             features: JSON.stringify(features),
-            baseUrl: req['ui5-patched-router']?.baseUrl ?? ''
+            baseUrl
         } satisfies RtaDeveloperModeTemplateConfig);
         this.sendResponse(res, 'text/html', 200, html);
     }

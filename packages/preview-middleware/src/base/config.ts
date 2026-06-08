@@ -458,20 +458,40 @@ async function getI18nTextFromProperty(
  * @param config - cloned TemplateConfig already built for the FLP path
  * @param newPagePath - the path of the HTML page that will serve the resources (e.g. `editor.path`)
  * @param appId - the `sap.app.id` used as resource-root key for the primary application
+ * @param utils - middleware utils to determine project type (application vs component)
  */
-export function remapResourcesForPath(config: TemplateConfig, newPagePath: string, appId: string): void {
+export function remapResourcesForPath(
+    config: TemplateConfig,
+    newPagePath: string,
+    appId: string,
+    utils?: MiddlewareUtils
+): void {
     const newBasePath = posix.relative(posix.dirname(newPagePath), '/') || '.';
 
-    // Update the well-known client namespace to be relative to the new page path
-    config.ui5.resources[PREVIEW_URL.client.ns] = PREVIEW_URL.client.getUrl(newBasePath);
-
-    // Update the primary app's resource root (was set to basePath for the main app)
-    if (appId && appId in config.ui5.resources) {
-        config.ui5.resources[appId] = newBasePath;
+    // For component projects, preview client is served under the resources prefix
+    // e.g., /resources/my/namespace/preview/client instead of /preview/client
+    const resourcesPrefix = getResourcesPathPrefix(utils);
+    if (resourcesPrefix) {
+        // Calculate relative path from editor.html to /resources/<ns>/preview/client
+        const clientPath = posix.join(resourcesPrefix, PREVIEW_URL.client.path);
+        config.ui5.resources[PREVIEW_URL.client.ns] = posix.relative(posix.dirname(newPagePath), clientPath) || '.';
+        // For component projects, appBasePath should point to the resources prefix
+        const appPath = posix.relative(posix.dirname(newPagePath), resourcesPrefix) || '.';
+        config.appBasePath = appPath;
+        // Update the primary app's resource root to point to /resources/<ns>
+        if (appId && appId in config.ui5.resources) {
+            config.ui5.resources[appId] = appPath;
+        }
+    } else {
+        // Application project - preview client is at root /preview/client
+        config.ui5.resources[PREVIEW_URL.client.ns] = PREVIEW_URL.client.getUrl(newBasePath);
+        // Keep basePath in sync for any other template usage (e.g. basePath/resources/...)
+        config.appBasePath = newBasePath;
+        // Update the primary app's resource root (was set to basePath for the main app)
+        if (appId && appId in config.ui5.resources) {
+            config.ui5.resources[appId] = newBasePath;
+        }
     }
-
-    // Keep basePath in sync for any other template usage (e.g. basePath/resources/...)
-    config.appBasePath = newBasePath;
 }
 
 /**
