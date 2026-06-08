@@ -15,9 +15,9 @@ jest.unstable_mockModule('../../../src/data-access/filesystem', () => ({
     getFilesystemWatcherFor: jest.fn()
 }));
 
-const { TelemetryDataProvider } = await import('../../../src/data-provider/telemetry-setting');
-const { Entities } = await import('../../../src/data-provider/constants');
-const { TelemetrySetting, TelemetrySettingKey } = await import('../../../src');
+const { TelemetryDataProvider } = await import('../../../src/data-provider/telemetry-setting.js');
+const { Entities } = await import('../../../src/data-provider/constants.js');
+const { TelemetrySetting, TelemetrySettingKey } = await import('../../../src/index.js');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 
 describe('TelemetrySetting data provider', () => {

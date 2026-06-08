@@ -9,7 +9,7 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
-const mockGenerateAnnotations = jest.fn();
+const mockGenerateAnnotations = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/annotation-generator', () => ({
     generateAnnotations: mockGenerateAnnotations

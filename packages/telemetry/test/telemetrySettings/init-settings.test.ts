@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { ProjectInfo } from '../../src/base/types';
+import type { ProjectInfo } from '../../src/base/types/index.js';
 
 jest.unstable_mockModule('applicationinsights', () => {
     class TelemetryClient {
@@ -42,17 +42,17 @@ jest.unstable_mockModule('node:fs', () => ({
     }
 }));
 
-const mockReportRuntimeError = jest.fn().mockImplementation((error: Error) => {
+const mockReportRuntimeError = jest.fn().mockImplementation((error) => {
     throw error;
 });
-const mockReportEnableTelemetryOnOff = jest.fn();
+const mockReportEnableTelemetryOnOff = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/base/utils/reporting', () => ({
     reportRuntimeError: mockReportRuntimeError,
     reportEnableTelemetryOnOff: mockReportEnableTelemetryOnOff
 }));
 
-const mockGetService = jest.fn();
-const mockGetFilesystemWatcherFor = jest.fn();
+const mockGetService = jest.fn<typeof realStore.getService>();
+const mockGetFilesystemWatcherFor = jest.fn<typeof realStore.getFilesystemWatcherFor>();
 const realStore = await import('@sap-ux/store');
 jest.unstable_mockModule('@sap-ux/store', () => ({
     ...realStore,
@@ -68,8 +68,8 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     TelemetrySettingKey: class {}
 }));
 
-const { TelemetrySettings } = await import('../../src/base/config-state');
-const { initTelemetrySettings } = await import('../../src/tooling-telemetry');
+const { TelemetrySettings } = await import('../../src/base/config-state.js');
+const { initTelemetrySettings } = await import('../../src/tooling-telemetry/index.js');
 
 const packageJson = {
     name: 'testProject',

@@ -3,7 +3,7 @@ import nock from 'nock';
 import appIndexMock from './mockResponses/appIndex.json';
 import appInfoJsonMock from './mockResponses/ui5AppInfo.json';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { AxiosError } from '../../src';
+import type { AxiosError } from '../../src/index.js';
 
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),
@@ -18,7 +18,7 @@ jest.unstable_mockModule('@sap-ux/logger', () => ({
     ToolsLogger: jest.fn().mockImplementation(() => loggerMock)
 }));
 
-const { AppIndexService, createForAbap } = await import('../../src');
+const { AppIndexService, createForAbap } = await import('../../src/index.js');
 
 describe('AppIndexService', () => {
     const server = 'https://sap.example';

@@ -7,17 +7,15 @@ import { fileURLToPath } from 'node:url';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-const mockReadUi5Yaml = jest.fn();
+const mockReadUi5Yaml = jest.fn<typeof actualProjectAccess.readUi5Yaml>();
 const actualProjectAccess = await import('@sap-ux/project-access');
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     ...actualProjectAccess,
-    readUi5Yaml: mockReadUi5Yaml.mockImplementation((...args: any[]) =>
-        (actualProjectAccess.readUi5Yaml as any)(...args)
-    )
+    readUi5Yaml: mockReadUi5Yaml.mockImplementation((...args) => (actualProjectAccess.readUi5Yaml as any)(...args))
 }));
 
 const { readUi5DeployConfigTarget, addUi5YamlServeStaticMiddleware } =
-    await import('../../../src/smartlinks-config/ui5-yaml');
+    await import('../../../src/smartlinks-config/ui5-yaml.js');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

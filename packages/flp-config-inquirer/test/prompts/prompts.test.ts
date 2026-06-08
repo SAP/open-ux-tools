@@ -1,13 +1,13 @@
 import { jest } from '@jest/globals';
 
-const mockGetHostEnv = jest.fn();
+const mockGetHostEnv = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     getHostEnvironment: mockGetHostEnv,
     hostEnvironment: { cli: 'CLI', bas: 'BAS', vscode: 'VSCode' }
 }));
 
-const { getQuestions, getTileSettingsQuestions } = await import('../../src/prompts');
+const { getQuestions, getTileSettingsQuestions } = await import('../../src/prompts/index.js');
 const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 
 describe('getQuestions', () => {

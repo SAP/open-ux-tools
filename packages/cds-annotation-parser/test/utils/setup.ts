@@ -3,10 +3,10 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { platform } from 'node:os';
 import type { IToken, CstNode, CstNodeLocation, CstElement } from 'chevrotain';
-import type { DeclarationCstNode } from '../../src/parser/parser';
-import type { Annotation, AnnotationGroup } from '../../src/transformer/annotation-ast-nodes';
-import { hasNaNOrUndefined } from '../../src/utils';
-import { deserialize } from './deserialize-ast';
+import type { DeclarationCstNode } from '../../src/parser/parser.js';
+import type { Annotation, AnnotationGroup } from '../../src/transformer/annotation-ast-nodes.js';
+import { hasNaNOrUndefined } from '../../src/utils/index.js';
+import { deserialize } from './deserialize-ast.js';
 
 const { readFile } = promises;
 

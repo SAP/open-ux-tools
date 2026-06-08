@@ -50,7 +50,7 @@ jest.unstable_mockModule('../../../src/writer/project-utils', () => ({
     getPackageJSONInfo: mockGetPackageJSONInfo
 }));
 
-const { promptGeneratorInput, promptTarget } = await import('../../../src/base/prompt');
+const { promptGeneratorInput, promptTarget } = await import('../../../src/base/prompt.js');
 
 const { ToolsLogger: TL } = await import('@sap-ux/logger');
 const logger = new TL();

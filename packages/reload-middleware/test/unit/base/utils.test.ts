@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-const mockGetPort = jest.fn();
+const mockGetPort = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('portfinder', () => ({
     default: { getPort: mockGetPort },
@@ -20,7 +20,7 @@ describe('Utils', () => {
     });
 
     test('should get the next available port', async () => {
-        mockGetPort.mockImplementation((_options: any, callback: any) => {
+        mockGetPort.mockImplementation((_options, callback) => {
             callback(null, 12345);
         });
         const port = await getAvailablePort(35729, logger);
@@ -28,7 +28,7 @@ describe('Utils', () => {
     });
 
     test('should log an error when getting the next available port fails', async () => {
-        mockGetPort.mockImplementation((_options: any, callback: any) => {
+        mockGetPort.mockImplementation((_options, callback) => {
             callback(new Error('Error'));
         });
         const errorSpy = jest.spyOn(logger, 'error');

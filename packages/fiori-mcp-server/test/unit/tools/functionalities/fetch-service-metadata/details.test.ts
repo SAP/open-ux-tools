@@ -1,4 +1,4 @@
-import details from '../../../../../src/tools/functionalities/fetch-service-metadata/details';
+import details from '../../../../../src/tools/functionalities/fetch-service-metadata/details.js';
 
 describe('fetch-service-metadata details', () => {
     test('should have correct functionalityId', () => {

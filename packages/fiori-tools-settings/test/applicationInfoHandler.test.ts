@@ -7,7 +7,7 @@ import {
     loadApplicationInfoFromSettings,
     appInfoFilePath,
     defaultAppInfoContents
-} from '../src';
+} from '../src/index.js';
 import { promises as fsPromises } from 'node:fs';
 
 describe('Application Info Settings', () => {

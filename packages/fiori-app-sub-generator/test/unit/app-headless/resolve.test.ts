@@ -149,7 +149,7 @@ describe('resolveExternalServices', () => {
 
     test('resolves entityData file path to parsed array', () => {
         existsSyncMock.mockReturnValue(true);
-        readFileSyncMock.mockImplementation((path: string) =>
+        readFileSyncMock.mockImplementation((path) =>
             path.endsWith('.json') ? JSON.stringify(mockEntityData) : mockXml
         );
 

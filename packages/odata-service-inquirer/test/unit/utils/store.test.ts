@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-const mockGetAll = jest.fn();
+const mockGetAll = jest.fn<typeof actualStore.getAll>();
 
 const actualStore = await import('@sap-ux/store');
 

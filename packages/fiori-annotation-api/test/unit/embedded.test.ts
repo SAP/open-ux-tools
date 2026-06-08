@@ -6,12 +6,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import { getProject } from '@sap-ux/project-access';
 
-import { pathFromUri } from '../../src/utils';
-import { FioriAnnotationService } from '../../src';
+import { pathFromUri } from '../../src/utils/index.js';
+import { FioriAnnotationService } from '../../src/index.js';
 
-import { PROJECTS } from './projects';
-import { createFsEditorForProject } from './virtual-fs';
-import { serialize } from './raw-metadata-serializer';
+import { PROJECTS } from './projects.js';
+import { createFsEditorForProject } from './virtual-fs.js';
+import { serialize } from './raw-metadata-serializer.js';
 
 async function updateServiceFile() {
     const srvFilePath = pathFromUri(

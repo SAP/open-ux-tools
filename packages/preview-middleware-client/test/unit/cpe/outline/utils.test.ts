@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
 import OverlayUtil from 'mock/sap/ui/dt/OverlayUtil';
 import ComponentMock from 'mock/sap/ui/core/Component';

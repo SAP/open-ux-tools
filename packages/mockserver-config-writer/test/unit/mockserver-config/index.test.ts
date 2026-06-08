@@ -1,7 +1,7 @@
 import { promises } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { generateMockserverConfig, removeMockserverConfig } from '../../../src';
+import { generateMockserverConfig, removeMockserverConfig } from '../../../src/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

@@ -1,10 +1,10 @@
 import { jest } from '@jest/globals';
 import type { Destinations } from '@sap-ux/btp-utils';
-import type { Endpoint, CatalogServiceResult } from '../../src/types';
-import { Severity, UrlServiceType } from '../../src/types';
-import { t } from '../../src/i18n';
+import type { Endpoint, CatalogServiceResult } from '../../src/types.js';
+import { Severity, UrlServiceType } from '../../src/types.js';
+import { t } from '../../src/i18n.js';
 
-const mockCreateForDestination = jest.fn();
+const mockCreateForDestination = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     createForDestination: mockCreateForDestination,
     createForAbap: jest.fn(),
@@ -20,9 +20,9 @@ jest.unstable_mockModule('@sap/bas-sdk', () => ({
     ...realBasSdk
 }));
 
-const mockIsAppStudio = jest.fn();
-const mockGetAppStudioProxyURL = jest.fn();
-const mockListDestinations = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockGetAppStudioProxyURL = jest.fn<typeof realBtpUtils.getAppStudioProxyURL>();
+const mockListDestinations = jest.fn<typeof realBtpUtils.listDestinations>();
 const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils,
@@ -31,14 +31,14 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     listDestinations: mockListDestinations
 }));
 
-const mockAxiosGet = jest.fn();
+const mockAxiosGet = jest.fn() as jest.Mock;
 jest.unstable_mockModule('axios', () => ({
     __esModule: true,
     default: { get: mockAxiosGet }
 }));
 
-const mockCheckCatalogServices = jest.fn();
-const mockGetServiceProvider = jest.fn();
+const mockCheckCatalogServices = jest.fn() as jest.Mock;
+const mockGetServiceProvider = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../src/checks/service-checks', () => ({
     checkCatalogServices: mockCheckCatalogServices,
     checkAtoCatalog: jest.fn(),
@@ -48,7 +48,7 @@ jest.unstable_mockModule('../../src/checks/service-checks', () => ({
 }));
 
 const { checkBASDestination, checkBASDestinations, needsUsernamePassword } =
-    await import('../../src/checks/destination');
+    await import('../../src/checks/destination.js');
 
 describe('Destination tests, function checkBASDestination()', () => {
     const checkCatalogServicesResult = {

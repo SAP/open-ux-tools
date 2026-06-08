@@ -3,8 +3,8 @@ import path from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-const mockExistsSync = jest.fn();
-const mockReadFileSync = jest.fn();
+const mockExistsSync = jest.fn() as jest.Mock;
+const mockReadFileSync = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('node:fs', () => ({
     default: { existsSync: mockExistsSync, readFileSync: mockReadFileSync },
@@ -12,9 +12,9 @@ jest.unstable_mockModule('node:fs', () => ({
     readFileSync: mockReadFileSync
 }));
 
-const mockGetToken = jest.fn();
-const mockGetBtpDestinationConfig = jest.fn();
-const mockGetDestinationServiceUaa = jest.fn();
+const mockGetToken = jest.fn() as jest.Mock;
+const mockGetBtpDestinationConfig = jest.fn() as jest.Mock;
+const mockGetDestinationServiceUaa = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getToken: mockGetToken,
@@ -27,7 +27,7 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils
 }));
 
-const { hasOnPremiseDestination } = await import('../../../src/tunnel/destination-check');
+const { hasOnPremiseDestination } = await import('../../../src/tunnel/destination-check.js');
 
 describe('destination-check', () => {
     const logger = {

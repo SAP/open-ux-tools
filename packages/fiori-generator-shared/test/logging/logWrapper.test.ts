@@ -24,7 +24,7 @@ jest.unstable_mockModule('@vscode-logging/logger', () => ({
     getExtensionLogger: mockGetExtensionLogger
 }));
 
-const { createCLILogger, DefaultLogger, LogWrapper } = await import('../../src/logging/logWrapper');
+const { createCLILogger, DefaultLogger, LogWrapper } = await import('../../src/logging/logWrapper.js');
 
 describe('Test logWrapper', () => {
     afterEach(() => {

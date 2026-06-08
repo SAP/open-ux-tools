@@ -18,6 +18,7 @@ jobs:
         os: [ubuntu-latest]
         node-version: [22.x]
     runs-on: ${{ matrix.os }}
+    environment: ci-secrets
 
     steps:
       - name: Checkout code repository

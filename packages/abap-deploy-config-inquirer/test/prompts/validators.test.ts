@@ -8,12 +8,12 @@ import type { AbapSystemChoice, BackendTarget } from '../../src/types.js';
 import { ClientChoiceValue, PackageInputChoices, TargetSystemType, TransportChoices } from '../../src/types.js';
 import { mockDestinations } from '../fixtures/destinations.js';
 
-const mockIsAppStudio = jest.fn();
-const mockGetTransportListFromService = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockGetTransportListFromService = jest.fn<typeof actualServiceProviderUtils.getTransportListFromService>();
 
-const mockFindBackendSystemByUrl = jest.fn();
-const mockInitTransportConfig = jest.fn();
-const mockQueryPackages = jest.fn();
+const mockFindBackendSystemByUrl = jest.fn<typeof actualUtils.findBackendSystemByUrl>();
+const mockInitTransportConfig = jest.fn<typeof actualUtils.initTransportConfig>();
+const mockQueryPackages = jest.fn<typeof actualUtils.queryPackages>();
 
 const actualUtils = await import('../../src/utils.js');
 jest.unstable_mockModule('../../src/utils', () => ({
@@ -36,8 +36,8 @@ jest.unstable_mockModule('../../src/utils', () => ({
     })
 }));
 
-const mockGetTransportList = jest.fn();
-const mockCreateTransportNumber = jest.fn();
+const mockGetTransportList = jest.fn() as jest.Mock;
+const mockCreateTransportNumber = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('../../src/validator-utils', () => ({
     getTransportList: mockGetTransportList,

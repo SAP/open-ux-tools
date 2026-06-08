@@ -1,5 +1,5 @@
 import prompts from 'prompts';
-import { promptConfirmation } from '../../../src/base/prompt';
+import { promptConfirmation } from '../../../src/base/prompt.js';
 
 describe('base/prompts', () => {
     const message = 'Test question?';
