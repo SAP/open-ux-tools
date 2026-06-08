@@ -306,7 +306,7 @@ async function injectFioriToolsIntoMigratedConfig(
     }
     const beforeBracket = content.slice(0, lastBracketIndex);
     const matchingOpenIndex = findMatchingOpenBracket(content, lastBracketIndex);
-    const betweenBrackets = matchingOpenIndex !== -1 ? content.slice(matchingOpenIndex + 1, lastBracketIndex) : '';
+    const betweenBrackets = matchingOpenIndex === -1 ? '' : content.slice(matchingOpenIndex + 1, lastBracketIndex);
     const isEmptyArray = /^\s*$/.test(betweenBrackets);
     const separator = isEmptyArray ? '' : ',';
     content =
