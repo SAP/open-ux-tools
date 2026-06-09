@@ -1,5 +1,5 @@
 import type { Command } from 'commander';
-import { enableCardGeneratorConfig } from '@sap-ux/app-config-writer';
+import { enableCardGeneratorConfig, MinimumUI5VersionError } from '@sap-ux/app-config-writer';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing/index.js';
 import { validateBasePath } from '../../validation/index.js';
 import { FileName } from '@sap-ux/project-access';
@@ -49,5 +49,9 @@ async function addCardsGeneratorConfig(basePath: string, simulate: boolean, yaml
     } catch (error) {
         logger.error(`Error while executing add cards generator configuration '${(error as Error).message}'`);
         logger.debug(error as Error);
+        // Exit the process only for UI5 version errors
+        if (error instanceof MinimumUI5VersionError) {
+            process.exit(1);
+        }
     }
 }

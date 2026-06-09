@@ -2,10 +2,10 @@ import type { Manifest } from '@sap-ux/project-access';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
-import { t } from './i18n.js';
+import { NAV_CONFIG_NS, t } from './i18n.js';
 
 /**
- * Validates the basic manifest structure and existence required for inbound navigation addition.
+ * Reads and validates the basic manifest structure for the given application path.
  *
  * @param appPath path to the application
  * @param fs Editor instance
@@ -16,7 +16,7 @@ import { t } from './i18n.js';
 export async function readManifest(
     appPath: string,
     fs: Editor,
-    ns: string
+    ns: string = NAV_CONFIG_NS
 ): Promise<{ manifest: Manifest; manifestPath: string }> {
     const manifestPath = join(await getWebappPath(appPath, fs), FileName.Manifest);
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;

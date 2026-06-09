@@ -28,7 +28,7 @@ export async function generateInboundNavigationConfig(
     if (!fs) {
         fs = create(createStorage());
     }
-    const { manifest, manifestPath } = await readManifest(appRootPath, fs, NAV_CONFIG_NS);
+    const { manifest, manifestPath } = await readManifest(appRootPath, fs);
     const inboundKey = `${semanticObject}-${action}`;
 
     if (!overwrite && manifest['sap.app'].crossNavigation?.inbounds[inboundKey]) {

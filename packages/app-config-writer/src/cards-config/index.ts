@@ -14,6 +14,21 @@ const DEPENDENCY_NAME = '@sap-ux/cards-editor-middleware';
 const CARDS_GENERATOR_MIDDLEWARE = 'sap-cards-generator';
 
 /**
+ * Error thrown when the minimum UI5 version requirement is not met for card generator.
+ */
+export class MinimumUI5VersionError extends Error {
+    /**
+     * Creates a new MinimumUI5VersionError.
+     *
+     * @param message - The error message describing the version requirement issue.
+     */
+    constructor(message: string) {
+        super(message);
+        this.name = 'MinimumUI5VersionError';
+    }
+}
+
+/**
  * Updates the `ui5.yaml` file to add card generator path to preview middleware configuration.
  * Removes the `sap-cards-generator` middleware if it exists.
  *
@@ -120,17 +135,16 @@ export async function enableCardGeneratorConfig(
     fs?: Editor
 ): Promise<Editor> {
     fs = fs ?? create(createStorage());
-    const { manifest } = await readManifest(basePath, fs, 'cards-generator');
+    const { manifest } = await readManifest(basePath, fs);
     const minUI5Version = getMinimumUI5Version(manifest);
 
     const projectType = await getProjectType(basePath);
     const isCapProject = projectType !== 'EDMXBackend';
     const featureVersion = isCapProject ? '1.149.0' : '1.136.0';
     if (minUI5Version && !gte(minUI5Version, featureVersion)) {
-        logger?.error(
-            `The card generator is only supported for projects with UI5 version ${featureVersion} or higher. Detected minimum UI5 version is ${minUI5Version ?? 'unknown'}. Please update the minUI5Version in manifest.json and the version in ui5.yaml (if set) to use the card generator feature, as preview could be based on the yaml version if configured.`
-        );
-        process.exit(1);
+        const errorMessage = `The card generator is only supported for projects with UI5 version ${featureVersion} or higher. Detected minimum UI5 version is ${minUI5Version ?? 'unknown'}. Please update the minUI5Version in manifest.json and the version in ui5.yaml (if set) to use the card generator feature, as preview could be based on the yaml version if configured.`;
+        logger?.error(errorMessage);
+        throw new MinimumUI5VersionError(errorMessage);
     }
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
     await updateMiddlewareConfigWithGeneratorPath(fs, basePath, yamlPath, logger);
