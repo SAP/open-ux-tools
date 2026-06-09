@@ -5,8 +5,10 @@ import { create } from 'mem-fs-editor';
 import { getPreviewMiddleware, getIntentFromPreviewConfig, getCLIForPreview } from '../common/utils.js';
 import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { FileName, type Package, readUi5Yaml } from '@sap-ux/project-access';
+import { FileName, getMinimumUI5Version, getProjectType, type Package, readUi5Yaml } from '@sap-ux/project-access';
 import { updateMiddlewaresForPreview } from '../common/ui5-yaml.js';
+import { readManifest } from '../common.js';
+import { gte } from 'semver';
 
 const DEPENDENCY_NAME = '@sap-ux/cards-editor-middleware';
 const CARDS_GENERATOR_MIDDLEWARE = 'sap-cards-generator';
@@ -118,6 +120,18 @@ export async function enableCardGeneratorConfig(
     fs?: Editor
 ): Promise<Editor> {
     fs = fs ?? create(createStorage());
+    const { manifest } = await readManifest(basePath, fs, 'cards-generator');
+    const minUI5Version = getMinimumUI5Version(manifest);
+
+    const projectType = await getProjectType(basePath);
+    const isCapProject = projectType !== 'EDMXBackend';
+    const featureVersion = isCapProject ? '1.149.0' : '1.136.0';
+    if (minUI5Version && !gte(minUI5Version, featureVersion)) {
+        logger?.error(
+            `The card generator is only supported for projects with UI5 version ${featureVersion} or higher. Detected minimum UI5 version is ${minUI5Version ?? 'unknown'}. Please update the minUI5Version in manifest.json and the version in ui5.yaml (if set) to use the card generator feature, as preview could be based on the yaml version if configured.`
+        );
+        process.exit(1);
+    }
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
     await updateMiddlewareConfigWithGeneratorPath(fs, basePath, yamlPath, logger);
     await updatePackageJson(basePath, fs, yamlPath, logger);
