@@ -44,6 +44,7 @@ class Visitor {
      * @param astNode - CDS document root.
      * @param node - Internal representation root.
      * @param pointer - Pointer segments.
+     * @param cdsTargetMapping
      * @returns Converted pointer.
      */
     public document(
@@ -522,6 +523,7 @@ export function getAstNodesFromPointer(document: CDSDocument, pointer: string): 
  * @param annotationFile - Internal representation root.
  * @param pointer - Pointer pointing to a node in the internal representation tree.
  * @param cdsDocument - Internal representation root.
+ * @param cdsTargetMapping
  * @returns Converted pointer.
  */
 export function convertPointer(
