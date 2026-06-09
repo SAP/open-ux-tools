@@ -18,7 +18,7 @@
         "build": "node esbuild.mjs --production",
         "build:dev": "node esbuild.mjs",
         "check-types": "tsc --noEmit",
-        "watch": "tsc --noEmit --watch",
+        "watch": "node esbuild.mjs --watch",
         "clean": "rimraf --glob lib coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
