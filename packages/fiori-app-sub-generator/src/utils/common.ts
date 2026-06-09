@@ -316,4 +316,5 @@ export async function getAnnotations(
     }
 }
 
+/** @deprecated Import directly from `@sap-ux/fiori-generator-shared` instead. */
 export { restoreServiceProviderLoggers } from '@sap-ux/fiori-generator-shared';
