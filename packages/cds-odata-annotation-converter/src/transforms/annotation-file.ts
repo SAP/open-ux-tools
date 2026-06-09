@@ -167,8 +167,8 @@ export const toTarget = (
     compilerFacade?: CdsCompilerFacade
 ): Target => {
     const kind = Array.isArray(carrier?.definitions)
-        ? (carrier?.definitions[0]?.kind ?? (carrier?.definitions[0] as { _id?: { kind?: string } })?._id?.kind)
-        : (carrier?.definitions?.kind ?? (carrier?.definitions as { _id?: { kind?: string } })?._id?.kind); // remove casting once compiler facade type available publicly
+        ? ((carrier?.definitions[0] as { _id?: { kind?: string } })?._id?.kind ?? carrier?.definitions[0]?.kind)
+        : ((carrier?.definitions as { _id?: { kind?: string } })?._id?.kind ?? carrier?.definitions?.kind); // remove casting once compiler facade type available publicly
     const finalKind = kind ?? 'entity';
     if (['entity', 'view'].includes(finalKind)) {
         carrierName = compilerFacade?.convertNameToEdmx(carrierName) ?? carrierName;
