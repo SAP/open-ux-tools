@@ -1,5 +1,14 @@
 # @sap-ux/fiori-elements-writer
 
+## 3.0.12
+
+### Patch Changes
+
+- Updated dependencies [a328e14]
+    - @sap-ux/fiori-generator-shared@1.0.7
+    - @sap-ux/cap-config-writer@1.0.7
+    - @sap-ux/ui5-test-writer@1.0.12
+
 ## 3.0.11
 
 ### Patch Changes
