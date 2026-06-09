@@ -4,7 +4,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { mergeObjects } from '@sap-ux/ui5-config';
 import { NAV_CONFIG_NS, t } from '../i18n.js';
-import { readManifest } from '../common.js';
+import { readManifest } from '../common/utils.js';
 
 /**
  * Adds a basic inbound navigation configuration to the application manifest.
