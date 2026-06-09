@@ -7,7 +7,7 @@ import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import IsReuseComponentApi from 'sap/ui/rta/util/isReuseComponent';
 import { getControlById } from '../utils/core';
 
-import { getChangeDefinition, getFlexChangeList } from '../utils/additional-change-info';
+import { getChangeDefinition, getFlexChangeList } from '../utils/changes.js';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version.js';
 
 export interface Deferred<T> {
