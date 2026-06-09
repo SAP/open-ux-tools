@@ -31,8 +31,9 @@ function getWorkerPath(name: string): string {
 
     // Try multiple possible worker locations
     const workerPaths = [
-        join(currentDir, name), // src location
-        join(currentDir, '..', '..', 'lib', 'project-context', name) // dist location
+        join(currentDir, name), // src location (ts-node / tsc: lib/project-context/)
+        join(currentDir, '..', '..', 'lib', 'project-context', name), // tsc dist location
+        join(currentDir, 'project-context', name) // esbuild bundle: lib/index.js → lib/project-context/
     ];
 
     let workerPath = null;

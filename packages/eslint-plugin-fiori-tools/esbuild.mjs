@@ -10,13 +10,14 @@ const require = createRequire(import.meta.url);
 const production = process.argv.includes('--production');
 
 // Re-introduce CJS globals in the ESM bundle so bundled CJS dependencies continue to work.
+// Use aliased imports to avoid clashing with identifiers esbuild emits from the source.
 const cjsCompatBanner = [
-    "import{createRequire}from'node:module';",
-    "import{fileURLToPath}from'node:url';",
-    "import{dirname}from'node:path';",
-    "const require=createRequire(import.meta.url);",
-    "const __filename=fileURLToPath(import.meta.url);",
-    "const __dirname=dirname(__filename);"
+    "import{createRequire as __cjsCreateRequire}from'node:module';",
+    "import{fileURLToPath as __cjsFileURLToPath}from'node:url';",
+    "import{dirname as __cjsDirname}from'node:path';",
+    "const require=__cjsCreateRequire(import.meta.url);",
+    "const __filename=__cjsFileURLToPath(import.meta.url);",
+    "const __dirname=__cjsDirname(__filename);"
 ].join('');
 
 /** @type {import('esbuild').BuildOptions} */
