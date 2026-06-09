@@ -1131,29 +1131,7 @@ describe('Building Blocks', () => {
             fs
         );
 
-        const viewContent = fs.read(join(basePath, xmlViewFilePath));
-        expect(viewContent).toContain('showFooter="true"');
-        expect(viewContent).toContain('macros:breadcrumbs');
-        expect(viewContent).toContain('macros:navigationActions');
-        expect(viewContent).toContain('macros:titleContent');
-        expect(viewContent).toContain('macros:actions');
-        expect(viewContent).toContain('macros:headerContent');
-        expect(viewContent).toContain('macros:items');
-        expect(viewContent).toContain('macros:footer');
-        expect(viewContent).toMatch(/<macros:breadcrumbs[^>]*id="breadcrumbs"/);
-        expect(viewContent).toMatch(/<macros:navigationActions[^>]*id="navigationActions"/);
-        expect(viewContent).toMatch(/<macros:titleContent[^>]*id="titleContent"/);
-        expect(viewContent).toMatch(/<macros:actions[^>]*id="actions"/);
-        expect(viewContent).toMatch(/<macros:headerContent[^>]*id="headerContent"/);
-        expect(viewContent).toMatch(/<macros:items[^>]*id="items"/);
-        expect(viewContent).toMatch(/<macros:footer[^>]*id="footer"/);
-        expect(viewContent).toContain('press=".onPressHome"');
-        expect(viewContent).toContain('press=".onPressPage1"');
-        expect(viewContent).toContain('press=".onPressPage2"');
-        expect(viewContent).toContain('press=".onFullScreen"');
-        expect(viewContent).toContain('press=".onClickAction1"');
-        expect(viewContent).toContain('press=".onClickAction2"');
-        expect(viewContent).toContain('This is a sample template, event handlers should be added for implementation');
+        expect(fs.read(join(basePath, xmlViewFilePath))).toMatchSnapshot('generate-page-block-full');
     });
 
     test('generate Page building block with full template creates JS controller', async () => {
