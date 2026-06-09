@@ -414,5 +414,105 @@ describe('config', () => {
             // posix.join('.', 'preview', 'client') normalises to 'preview/client' (no leading './')
             expect(config.ui5.resources['open.ux.preview.client']).toBe('preview/client');
         });
+
+        test('component type: editor in test-resources uses relative paths to /resources/<ns>', () => {
+            const componentAppId = 'my.fe.v2.app';
+            const mockComponentUtils = {
+                getProject() {
+                    return {
+                        getType: () => 'component',
+                        getNamespace: () => 'my/fe/v2/app'
+                    };
+                }
+            } as unknown as MiddlewareUtils;
+
+            // Build config for component project - appBasePath will be /resources/my/fe/v2/app
+            const flpConfig = getFlpConfigWithDefaults(
+                { path: '/test-resources/my/fe/v2/app/flp.html' },
+                mockComponentUtils
+            );
+            const config = createFlpTemplateConfig(
+                flpConfig,
+                { 'sap.app': { id: componentAppId } } as Manifest,
+                {},
+                mockComponentUtils
+            );
+            config.ui5.resources[componentAppId] = config.appBasePath;
+
+            // Remap for editor at /test-resources/my/fe/v2/app/editor.html
+            remapResourcesForPath(
+                config,
+                '/test-resources/my/fe/v2/app/editor.html',
+                componentAppId,
+                mockComponentUtils
+            );
+
+            // appBasePath should be relative from editor to /resources/my/fe/v2/app
+            // /test-resources/my/fe/v2/app/ is 5 levels deep, so need 5 '../' to root
+            expect(config.appBasePath).toBe('../../../../../resources/my/fe/v2/app');
+            expect(config.ui5.resources[componentAppId]).toBe('../../../../../resources/my/fe/v2/app');
+            // Preview client should be relative to /resources/my/fe/v2/app/preview/client
+            expect(config.ui5.resources['open.ux.preview.client']).toBe(
+                '../../../../../resources/my/fe/v2/app/preview/client'
+            );
+        });
+
+        test('component type: editor at root uses relative paths to /resources/<ns>', () => {
+            const componentAppId = 'my.app';
+            const mockComponentUtils = {
+                getProject() {
+                    return {
+                        getType: () => 'component',
+                        getNamespace: () => 'my/app'
+                    };
+                }
+            } as unknown as MiddlewareUtils;
+
+            const flpConfig = getFlpConfigWithDefaults({ path: '/test-resources/my/app/flp.html' }, mockComponentUtils);
+            const config = createFlpTemplateConfig(
+                flpConfig,
+                { 'sap.app': { id: componentAppId } } as Manifest,
+                {},
+                mockComponentUtils
+            );
+            config.ui5.resources[componentAppId] = config.appBasePath;
+
+            // Remap for editor at root level
+            remapResourcesForPath(config, '/editor.html', componentAppId, mockComponentUtils);
+
+            // From root, relative path to /resources/my/app is just the path itself
+            expect(config.appBasePath).toBe('resources/my/app');
+            expect(config.ui5.resources[componentAppId]).toBe('resources/my/app');
+            expect(config.ui5.resources['open.ux.preview.client']).toBe('resources/my/app/preview/client');
+        });
+
+        test('component type: non-absolute newPagePath is normalized before relative calculation', () => {
+            const componentAppId = 'my.ns';
+            const mockComponentUtils = {
+                getProject() {
+                    return {
+                        getType: () => 'component',
+                        getNamespace: () => 'my/ns'
+                    };
+                }
+            } as unknown as MiddlewareUtils;
+
+            const flpConfig = getFlpConfigWithDefaults({ path: '/test-resources/my/ns/flp.html' }, mockComponentUtils);
+            const config = createFlpTemplateConfig(
+                flpConfig,
+                { 'sap.app': { id: componentAppId } } as Manifest,
+                {},
+                mockComponentUtils
+            );
+            config.ui5.resources[componentAppId] = config.appBasePath;
+
+            // Pass non-absolute path (without leading slash) - should be normalized
+            remapResourcesForPath(config, 'test/editor.html', componentAppId, mockComponentUtils);
+
+            // Should still compute correct relative path (treated as /test/editor.html)
+            expect(config.appBasePath).toBe('../resources/my/ns');
+            expect(config.ui5.resources[componentAppId]).toBe('../resources/my/ns');
+            expect(config.ui5.resources['open.ux.preview.client']).toBe('../resources/my/ns/preview/client');
+        });
     });
 });
