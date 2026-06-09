@@ -467,34 +467,20 @@ export function remapResourcesForPath(
     utils?: MiddlewareUtils
 ): void {
     const normalizedPagePath = posix.isAbsolute(newPagePath) ? newPagePath : posix.join('/', newPagePath);
-    const newBasePath = posix.relative(posix.dirname(normalizedPagePath), '/') || '.';
-
-    // For component projects, preview client is served under the resources prefix
-    // e.g., /resources/my/namespace/preview/client instead of /preview/client
     const resourcesPrefix = getResourcesPathPrefix(utils);
-    if (resourcesPrefix) {
-        // Calculate directory from the normalized page path
-        const pageDir = posix.dirname(normalizedPagePath);
-        // Calculate relative path from editor.html to /resources/<ns>/preview/client
-        const clientPath = posix.join(resourcesPrefix, PREVIEW_URL.client.path);
-        config.ui5.resources[PREVIEW_URL.client.ns] = posix.relative(pageDir, clientPath) || '.';
-        // For component projects, appBasePath should point to the resources prefix
-        const appPath = posix.relative(pageDir, resourcesPrefix) || '.';
-        config.appBasePath = appPath;
-        // Update the primary app's resource root to point to /resources/<ns>
-        if (appId && appId in config.ui5.resources) {
-            config.ui5.resources[appId] = appPath;
-        }
-    } else {
-        // Application project - preview client is at root /preview/client
-        config.ui5.resources[PREVIEW_URL.client.ns] = PREVIEW_URL.client.getUrl(newBasePath);
-        // Keep basePath in sync for any other template usage (e.g. basePath/resources/...)
-        config.appBasePath = newBasePath;
-        // Update the primary app's resource root (was set to basePath for the main app)
-        if (appId && appId in config.ui5.resources) {
-            config.ui5.resources[appId] = newBasePath;
-        }
+    const base = resourcesPrefix ?? '/';
+    const newBasePath = posix.relative(posix.dirname(normalizedPagePath), base) || '.';
+
+    // Update the well-known client namespace to be relative to the new page path
+    config.ui5.resources[PREVIEW_URL.client.ns] = PREVIEW_URL.client.getUrl(newBasePath);
+
+    // Update the primary app's resource root (was set to appBasePath for the main app)
+    if (appId && appId in config.ui5.resources) {
+        config.ui5.resources[appId] = newBasePath;
     }
+
+    // Keep appBasePath in sync for any other template usage
+    config.appBasePath = newBasePath;
 }
 
 /**
