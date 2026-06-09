@@ -50,20 +50,16 @@ const TITLE_MAP: { [key: string]: string } = {
 };
 
 /**
- * Gets the base URL for API endpoints from element data attributes.
- * Looks for the data attribute on both #root (outer CPE frame) and #sap-ui-bootstrap (inner UI5 frame).
+ * Gets the base URL for API endpoints from the bootstrap element's data attribute.
  * For component-type projects, this returns the resources path prefix (e.g., '/resources/project1').
  * For application-type projects, this returns an empty string.
+ *
+ * ChangeService runs in the inner UI5 frame where only #sap-ui-bootstrap exists.
  *
  * @returns The base URL string to prepend to API endpoints.
  */
 function getApiBaseUrl(): string {
-    // Try outer frame's root element first (CPE context), then inner frame's bootstrap element (UI5 context)
-    return (
-        document.getElementById('root')?.dataset.openUxPreviewBaseUrl ??
-        document.getElementById('sap-ui-bootstrap')?.dataset.openUxPreviewBaseUrl ??
-        ''
-    );
+    return document.getElementById('sap-ui-bootstrap')?.dataset.openUxPreviewBaseUrl ?? '';
 }
 
 /**

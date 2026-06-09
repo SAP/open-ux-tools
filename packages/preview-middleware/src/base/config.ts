@@ -472,11 +472,15 @@ export function remapResourcesForPath(
     // e.g., /resources/my/namespace/preview/client instead of /preview/client
     const resourcesPrefix = getResourcesPathPrefix(utils);
     if (resourcesPrefix) {
+        // Ensure page directory is absolute for correct relative path calculation
+        const pageDir = posix.isAbsolute(newPagePath)
+            ? posix.dirname(newPagePath)
+            : posix.dirname(posix.join('/', newPagePath));
         // Calculate relative path from editor.html to /resources/<ns>/preview/client
         const clientPath = posix.join(resourcesPrefix, PREVIEW_URL.client.path);
-        config.ui5.resources[PREVIEW_URL.client.ns] = posix.relative(posix.dirname(newPagePath), clientPath) || '.';
+        config.ui5.resources[PREVIEW_URL.client.ns] = posix.relative(pageDir, clientPath) || '.';
         // For component projects, appBasePath should point to the resources prefix
-        const appPath = posix.relative(posix.dirname(newPagePath), resourcesPrefix) || '.';
+        const appPath = posix.relative(pageDir, resourcesPrefix) || '.';
         config.appBasePath = appPath;
         // Update the primary app's resource root to point to /resources/<ns>
         if (appId && appId in config.ui5.resources) {
