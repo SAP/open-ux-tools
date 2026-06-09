@@ -17,21 +17,21 @@ import {
     reportTelemetry
 } from '@sap-ux-private/control-property-editor-common';
 
-import type { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
+import type { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types.js';
 
 import type {
     QuickActionActivationContext,
     QuickActionContext,
     QuickActionDefinition
-} from './quick-action-definition';
-import type { QuickActionDefinitionRegistry } from './registry';
-import type { OutlineService } from '../outline/service';
-import type { TextBundle } from '../../i18n';
-import { getTextBundle } from '../../i18n';
-import type { ChangeService } from '../changes';
-import { DialogFactory } from '../../adp/dialog-factory';
-import { getApplicationType } from '../../utils/application';
-import { getUi5Version } from '../../utils/version';
+} from './quick-action-definition.js';
+import type { QuickActionDefinitionRegistry } from './registry.js';
+import type { OutlineService } from '../outline/service.js';
+import type { TextBundle } from '../../i18n.js';
+import { getTextBundle } from '../../i18n.js';
+import type { ChangeService } from '../changes/index.js';
+import { DialogFactory } from '../../adp/dialog-factory.js';
+import { getApplicationType } from '../../utils/application.js';
+import { getUi5Version } from '../../utils/version.js';
 
 /**
  * Service providing Quick Actions.
@@ -72,8 +72,9 @@ export class QuickActionService implements Service {
 
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (executeQuickAction.match(action)) {
-                const actionInstance = this.actions
-                    .findLast((quickActionDefinition) => quickActionDefinition.id === action.payload.id);
+                const actionInstance = this.actions.findLast(
+                    (quickActionDefinition) => quickActionDefinition.id === action.payload.id
+                );
                 if (!actionInstance) {
                     return;
                 }

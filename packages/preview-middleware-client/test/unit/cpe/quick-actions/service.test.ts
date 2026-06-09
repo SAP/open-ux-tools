@@ -10,9 +10,9 @@ import {
     externalFileChange
 } from '@sap-ux-private/control-property-editor-common';
 
-import type { ChangeService } from '../../../../src/cpe/changes/service';
-import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
-import { OutlineService } from '../../../../src/cpe/outline/service';
+import type { ChangeService } from '../../../../src/cpe/changes/service.js';
+import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service.js';
+import { OutlineService } from '../../../../src/cpe/outline/service.js';
 import type {
     QuickActionActivationContext,
     QuickActionContext,
@@ -22,15 +22,12 @@ import type {
 import { QuickActionDefinitionRegistry } from 'open/ux/preview/client/cpe/quick-actions/registry';
 
 class MockDefinition implements SimpleQuickActionDefinition {
-    
     private telemetryEventIdentifier: string;
     readonly kind = 'simple';
     readonly type = 'MOCK_DEFINITION';
     public get id(): string {
         return `${this.context.key}-${this.type}`;
     }
-
-   
 
     isApplicable = false;
     constructor(private context: QuickActionContext) {}
@@ -56,15 +53,13 @@ class MockDefinition implements SimpleQuickActionDefinition {
 
     runEnablementValidators(): void | Promise<void> {}
 
-   public getTelemetryIdentifier (update?: boolean) {
+    public getTelemetryIdentifier(update?: boolean) {
         if (update === true) {
             this.telemetryEventIdentifier = new Date().toISOString();
         }
         return this.telemetryEventIdentifier;
     }
 }
-
-
 
 class MockRegistry extends QuickActionDefinitionRegistry<string> {
     getDefinitions(_context: QuickActionActivationContext): QuickActionDefinitionGroup[] {
@@ -96,14 +91,9 @@ describe('quick action service', () => {
     test('initialize simple action definition', async () => {
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
         const registry = new MockRegistry();
-        const service = new QuickActionService(
-            rtaMock,
-            new OutlineService(rtaMock, mockChangeService),
-            [registry],
-            {
-                onStackChange: jest.fn()
-            } as any
-        );
+        const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry], {
+            onStackChange: jest.fn()
+        } as any);
         await service.init(sendActionMock, subscribeMock);
 
         await service.reloadQuickActions({});
@@ -138,12 +128,7 @@ describe('quick action service', () => {
         } as any;
         const outlineService = new OutlineService(rtaMock, mockChangeService);
         const onOutlineChangeCbSpy = jest.spyOn(outlineService, 'onOutlineChange');
-        const service = new QuickActionService(
-            rtaMock,
-            outlineService,
-            [registry],
-            onStackChangeMock
-        );
+        const service = new QuickActionService(rtaMock, outlineService, [registry], onStackChangeMock);
         await service.init(sendActionMock, subscribeMock);
         const reloadQuickActions = jest.spyOn(service, 'reloadQuickActions');
         const controlIndex = {
@@ -169,14 +154,9 @@ describe('quick action service', () => {
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
         const outlineService = new OutlineService(rtaMock, mockChangeService);
         const registry = new MockRegistry();
-        const service = new QuickActionService(
-            rtaMock,
-            outlineService,
-            [registry],
-            {
-                onStackChange: jest.fn()
-            } as any
-        );
+        const service = new QuickActionService(rtaMock, outlineService, [registry], {
+            onStackChange: jest.fn()
+        } as any);
         const onOutlineChangeCbSpy = jest.spyOn(outlineService, 'onOutlineChange');
         const reloadQuickActions = jest.spyOn(service, 'reloadQuickActions');
         await service.init(sendActionMock, subscribeMock);

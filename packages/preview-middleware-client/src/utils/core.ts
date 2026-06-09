@@ -6,7 +6,7 @@ import View from 'sap/ui/core/mvc/View';
 import type Selector from 'sap/ui/fl/Selector';
 import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
 import Log from 'sap/base/Log';
-import { getError } from './error';
+import { getError } from './error.js';
 
 /**
  * Gets Component by id.
@@ -93,7 +93,7 @@ export function isA<T extends ManagedObject>(type: string, element: ManagedObjec
     return !!element?.isA(type);
 }
 
-export function hasParent(component: ManagedObject, parentIdToFind: string): boolean  {
+export function hasParent(component: ManagedObject, parentIdToFind: string): boolean {
     const parent = component.getParent();
     if (!parent) {
         return false;
@@ -119,7 +119,7 @@ function getElementParent(element: Element | ManagedObject): ManagedObject | nul
 /**
  * Finds the view that contains the given control.
  *
- * @param control - Control instance  
+ * @param control - Control instance
  * @returns View instance if found, undefined otherwise
  */
 export function findViewByControl(control: Element | ManagedObject): View | undefined {
@@ -136,10 +136,7 @@ export function findViewByControl(control: Element | ManagedObject): View | unde
     return findViewByControl(parent);
 }
 
-export function findNestedElements(
-    ownerElement: Element,
-    candidates: Element[]
-): Element[] {
+export function findNestedElements(ownerElement: Element, candidates: Element[]): Element[] {
     const ownerId = ownerElement.getId();
     return candidates.filter((item) => hasParent(item, ownerId));
 }

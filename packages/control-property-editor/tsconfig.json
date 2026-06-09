@@ -1,40 +1,24 @@
 {
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "jsx": "react",
-    "incremental": true,
-    "lib": [
-      "ES2023",
-      "dom"
-    ],
-    "strictNullChecks": true,
-    "outDir": "dist",
-    "module": "ES6",
-    "rootDir": ".",
-    "baseUrl": ".",
-    "types": [
-      "node",
-      "jest"
-    ]
-  },
-  "include": [
-    "src/**/*.json",
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "test/**/*.ts",
-    "test/**/*.tsx"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "coverage"
-  ],
-  "references": [
-    {
-      "path": "../control-property-editor-common"
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "jsx": "react",
+        "incremental": true,
+        "lib": ["ES2023", "dom"],
+        "strictNullChecks": true,
+        "outDir": "dist",
+        "module": "NodeNext",
+        "rootDir": ".",
+        "baseUrl": ".",
+        "types": ["node", "jest"]
     },
-    {
-      "path": "../ui-components"
-    }
-  ]
+    "include": ["src/**/*.json", "src/**/*.ts", "src/**/*.tsx"],
+    "exclude": ["dist", "node_modules", "coverage", "test"],
+    "references": [
+        {
+            "path": "../control-property-editor-common"
+        },
+        {
+            "path": "../ui-components"
+        }
+    ]
 }

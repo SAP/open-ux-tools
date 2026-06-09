@@ -1,5 +1,44 @@
-import * as storeMock from '@sap-ux/store';
-import { getTelemetrySetting } from '../../src/tooling-telemetry';
+import { jest } from '@jest/globals';
+
+const mockGetService = jest.fn<typeof realStore.getService>();
+
+jest.unstable_mockModule('applicationinsights', () => {
+    class TelemetryClient {
+        public config: any;
+        public channel: any;
+        public addTelemetryProcessor: any;
+        public trackEvent: any;
+        constructor() {
+            this.config = { samplingPercentage: 0 };
+            this.channel = { setUseDiskRetryCaching: jest.fn() };
+            this.addTelemetryProcessor = jest.fn();
+            this.trackEvent = jest.fn();
+        }
+    }
+    return { TelemetryClient };
+});
+
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils
+}));
+const realStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
+    getService: mockGetService,
+    getFilesystemWatcherFor: jest.fn(),
+    Entity: { TelemetrySetting: 'telemetrySetting' },
+    TelemetrySetting: class {
+        enableTelemetry: boolean;
+        constructor(opts: any) {
+            this.enableTelemetry = opts?.enableTelemetry;
+        }
+    },
+    TelemetrySettingKey: class {},
+    Service: {}
+}));
+
+const { getTelemetrySetting } = await import('../../src/tooling-telemetry/index.js');
 
 describe('Tests for getTelemetrySetting()', () => {
     beforeEach(() => {
@@ -8,11 +47,9 @@ describe('Tests for getTelemetrySetting()', () => {
 
     it('Telemetry setting should be enabled', async () => {
         // Mock setup
-        jest.spyOn(storeMock, 'getService').mockImplementation(() =>
-            Promise.resolve({
-                read: () => Promise.resolve({ enableTelemetry: true })
-            } as unknown as storeMock.Service<storeMock.TelemetrySetting, storeMock.TelemetrySettingKey>)
-        );
+        mockGetService.mockResolvedValue({
+            read: () => Promise.resolve({ enableTelemetry: true })
+        });
 
         // Test execution
         const setting = await getTelemetrySetting();
@@ -23,11 +60,9 @@ describe('Tests for getTelemetrySetting()', () => {
 
     it('Telemetry setting should be disabled', async () => {
         // Mock setup
-        jest.spyOn(storeMock, 'getService').mockImplementation(() =>
-            Promise.resolve({
-                read: () => Promise.resolve({ enableTelemetry: false })
-            } as unknown as storeMock.Service<storeMock.TelemetrySetting, storeMock.TelemetrySettingKey>)
-        );
+        mockGetService.mockResolvedValue({
+            read: () => Promise.resolve({ enableTelemetry: false })
+        });
 
         // Test execution
         const setting = await getTelemetrySetting();
@@ -38,11 +73,9 @@ describe('Tests for getTelemetrySetting()', () => {
 
     it('Telemetry setting should be undefined', async () => {
         // Mock setup
-        jest.spyOn(storeMock, 'getService').mockImplementation(() =>
-            Promise.resolve({
-                read: () => Promise.resolve(undefined)
-            } as unknown as storeMock.Service<storeMock.TelemetrySetting, storeMock.TelemetrySettingKey>)
-        );
+        mockGetService.mockResolvedValue({
+            read: () => Promise.resolve(undefined)
+        });
 
         // Test execution
         const setting = await getTelemetrySetting();
@@ -53,11 +86,9 @@ describe('Tests for getTelemetrySetting()', () => {
 
     it('Error thrown while getTelemetrySetting() - should be undefined', async () => {
         // Mock setup
-        jest.spyOn(storeMock, 'getService').mockImplementation(() =>
-            Promise.resolve({
-                read: () => Promise.reject()
-            } as unknown as storeMock.Service<storeMock.TelemetrySetting, storeMock.TelemetrySettingKey>)
-        );
+        mockGetService.mockResolvedValue({
+            read: () => Promise.reject()
+        });
 
         // Test execution
         const setting = await getTelemetrySetting();

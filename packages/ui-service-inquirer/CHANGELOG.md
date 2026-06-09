@@ -1,5 +1,274 @@
 # @sap-ux/ui-service-inquirer
 
+## 1.0.7
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@2.0.7
+- @sap-ux/inquirer-common@1.0.7
+- @sap-ux/odata-service-inquirer@3.0.7
+
+## 1.0.6
+
+### Patch Changes
+
+- @sap-ux/axios-extension@2.0.1
+- @sap-ux/inquirer-common@1.0.6
+- @sap-ux/odata-service-inquirer@3.0.6
+- @sap-ux/telemetry@1.0.6
+- @sap-ux/abap-deploy-config-inquirer@2.0.6
+
+## 1.0.5
+
+### Patch Changes
+
+- @sap-ux/axios-extension@2.0.1
+- @sap-ux/inquirer-common@1.0.5
+- @sap-ux/odata-service-inquirer@3.0.5
+- @sap-ux/telemetry@1.0.5
+- @sap-ux/abap-deploy-config-inquirer@2.0.5
+
+## 1.0.4
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/abap-deploy-config-inquirer@2.0.4
+    - @sap-ux/odata-service-inquirer@3.0.4
+    - @sap-ux/guided-answers-helper@1.0.1
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/inquirer-common@1.0.4
+    - @sap-ux/btp-utils@2.0.1
+    - @sap-ux/telemetry@1.0.4
+    - @sap-ux/logger@1.0.1
+
+## 1.0.3
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@2.0.3
+- @sap-ux/telemetry@1.0.3
+- @sap-ux/odata-service-inquirer@3.0.3
+- @sap-ux/inquirer-common@1.0.3
+- @sap-ux/axios-extension@2.0.0
+
+## 1.0.2
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@2.0.2
+- @sap-ux/odata-service-inquirer@3.0.2
+- @sap-ux/telemetry@1.0.2
+- @sap-ux/inquirer-common@1.0.2
+
+## 1.0.1
+
+### Patch Changes
+
+- @sap-ux/axios-extension@2.0.0
+- @sap-ux/inquirer-common@1.0.1
+- @sap-ux/odata-service-inquirer@3.0.1
+- @sap-ux/telemetry@1.0.1
+- @sap-ux/abap-deploy-config-inquirer@2.0.1
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/abap-deploy-config-inquirer@2.0.0
+    - @sap-ux/odata-service-inquirer@3.0.0
+    - @sap-ux/guided-answers-helper@1.0.0
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/inquirer-common@1.0.0
+    - @sap-ux/btp-utils@2.0.0
+    - @sap-ux/telemetry@1.0.0
+    - @sap-ux/logger@1.0.0
+
+## 0.3.8
+
+### Patch Changes
+
+- Updated dependencies [a1c9cd7]
+    - @sap-ux/guided-answers-helper@0.5.1
+    - @sap-ux/abap-deploy-config-inquirer@1.9.7
+    - @sap-ux/inquirer-common@0.13.6
+    - @sap-ux/odata-service-inquirer@2.23.4
+
+## 0.3.7
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.9.6
+- @sap-ux/odata-service-inquirer@2.23.3
+- @sap-ux/telemetry@0.7.5
+- @sap-ux/inquirer-common@0.13.5
+
+## 0.3.6
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.9.5
+- @sap-ux/odata-service-inquirer@2.23.2
+- @sap-ux/telemetry@0.7.4
+- @sap-ux/inquirer-common@0.13.4
+
+## 0.3.5
+
+### Patch Changes
+
+- Updated dependencies [01b70ca]
+- Updated dependencies [01b70ca]
+    - @sap-ux/axios-extension@1.26.1
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/abap-deploy-config-inquirer@1.9.4
+    - @sap-ux/odata-service-inquirer@2.23.1
+    - @sap-ux/inquirer-common@0.13.3
+    - @sap-ux/telemetry@0.7.3
+
+## 0.3.4
+
+### Patch Changes
+
+- Updated dependencies [acb9875]
+    - @sap-ux/odata-service-inquirer@2.23.0
+
+## 0.3.3
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.9.3
+- @sap-ux/telemetry@0.7.2
+- @sap-ux/odata-service-inquirer@2.22.2
+- @sap-ux/inquirer-common@0.13.2
+- @sap-ux/axios-extension@1.26.0
+
+## 0.3.2
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.26.0
+- @sap-ux/inquirer-common@0.13.1
+- @sap-ux/odata-service-inquirer@2.22.1
+- @sap-ux/telemetry@0.7.1
+- @sap-ux/abap-deploy-config-inquirer@1.9.2
+
+## 0.3.1
+
+### Patch Changes
+
+- 2c76f8f: chore: upgrade @sap-devx/yeoman-ui-types 1.23.0 → 1.25.0
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+- Updated dependencies [2c76f8f]
+    - @sap-ux/inquirer-common@0.13.0
+    - @sap-ux/odata-service-inquirer@2.22.0
+    - @sap-ux/abap-deploy-config-inquirer@1.9.1
+
+## 0.3.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/abap-deploy-config-inquirer@1.9.0
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/guided-answers-helper@0.5.0
+    - @sap-ux/inquirer-common@0.12.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/odata-service-inquirer@2.21.0
+    - @sap-ux/telemetry@0.7.0
+
+## 0.2.174
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.48
+- @sap-ux/odata-service-inquirer@2.20.25
+- @sap-ux/abap-deploy-config-inquirer@1.8.23
+
+## 0.2.173
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/abap-deploy-config-inquirer@1.8.22
+    - @sap-ux/axios-extension@1.25.37
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/guided-answers-helper@0.4.3
+    - @sap-ux/inquirer-common@0.11.47
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/odata-service-inquirer@2.20.24
+    - @sap-ux/telemetry@0.6.106
+
+## 0.2.172
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/axios-extension@1.25.36
+    - @sap-ux/odata-service-inquirer@2.20.23
+    - @sap-ux/abap-deploy-config-inquirer@1.8.21
+    - @sap-ux/inquirer-common@0.11.46
+    - @sap-ux/telemetry@0.6.105
+
+## 0.2.171
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.8.20
+- @sap-ux/inquirer-common@0.11.45
+- @sap-ux/odata-service-inquirer@2.20.22
+
+## 0.2.170
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/axios-extension@1.25.35
+    - @sap-ux/btp-utils@1.1.15
+    - @sap-ux/inquirer-common@0.11.44
+    - @sap-ux/odata-service-inquirer@2.20.21
+    - @sap-ux/telemetry@0.6.104
+    - @sap-ux/abap-deploy-config-inquirer@1.8.19
+
 ## 0.2.169
 
 ### Patch Changes

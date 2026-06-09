@@ -1,31 +1,50 @@
 import * as React from 'react';
-import { render } from '@testing-library/react';
+import Enzyme from 'enzyme';
 import type { UILoaderProps } from '../../../src/components/UILoader/UILoader';
 import { UILoader } from '../../../src/components/UILoader/UILoader';
 import { Overlay } from '@fluentui/react';
 
 describe('<UILoader />', () => {
+    let wrapper: Enzyme.ReactWrapper<UILoaderProps>;
+
+    beforeEach(() => {
+        wrapper = Enzyme.mount(<UILoader />);
+    });
+
+    afterEach(() => {
+        wrapper.unmount();
+    });
+
     it('Should render a UILoader component', () => {
-        const { container } = render(<UILoader />);
-        expect(container.querySelector('.ms-Spinner-circle')).toBeInTheDocument();
-        expect(container.querySelector('.ms-Overlay')).not.toBeInTheDocument();
+        expect(wrapper.find('.ms-Spinner-circle').length).toEqual(1);
+        expect(wrapper.find(Overlay).length).toEqual(0);
     });
 
     it('Block DOM', () => {
-        const { container } = render(<UILoader blockDOM={true} />);
-        expect(container.querySelector('div.ui-loader-blocker')).toBeInTheDocument();
-        expect(container.querySelector('.ms-Overlay')).toBeInTheDocument();
+        wrapper.setProps({
+            blockDOM: true
+        });
+        expect(wrapper.find('div.ui-loader-blocker').length).toEqual(1);
+        expect(wrapper.find(Overlay).length).toEqual(1);
     });
 
-    it('Property "delayed" with block', () => {
-        const { container } = render(<UILoader blockDOM={true} delayed={true} />);
-        expect(container.querySelector('div.ui-loader--delayed')).toBeInTheDocument();
-        expect(container.querySelector('.ms-Overlay')).toBeInTheDocument();
-    });
+    describe('<UILoader />', () => {
+        it('Property "delayed" with block', () => {
+            wrapper.setProps({
+                blockDOM: true,
+                delayed: true
+            });
+            expect(wrapper.find('div.ui-loader--delayed').length).toEqual(1);
+            expect(wrapper.find(Overlay).length).toEqual(1);
+        });
 
-    it('Property "delayed" without block', () => {
-        const { container } = render(<UILoader blockDOM={false} delayed={true} />);
-        expect(container.querySelector('div.ui-loader--delayed')).not.toBeInTheDocument();
-        expect(container.querySelector('.ms-Overlay')).not.toBeInTheDocument();
+        it('Property "delayed" without block', () => {
+            wrapper.setProps({
+                blockDOM: false,
+                delayed: true
+            });
+            expect(wrapper.find('div.ui-loader--delayed').length).toEqual(0);
+            expect(wrapper.find(Overlay).length).toEqual(0);
+        });
     });
 });

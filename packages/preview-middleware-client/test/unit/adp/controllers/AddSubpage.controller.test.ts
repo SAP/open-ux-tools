@@ -10,7 +10,7 @@ import type AppComponentV2 from 'sap/suite/ui/generic/template/lib/AppComponent'
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
 import { fetchMock, sapCoreMock } from 'mock/window';
 
-import ControlUtils from '../../../../src/adp/control-utils';
+import ControlUtils from '../../../../src/adp/control-utils.js';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { ValueState } from 'mock/sap/ui/core/library';
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
@@ -133,7 +133,7 @@ describe('AddSubpage controller', () => {
             const getTestModel = () =>
                 ({
                     setProperty: setPropertySpy,
-                    getProperty: jest.fn().mockImplementation((propName: string) => {
+                    getProperty: jest.fn().mockImplementation((propName) => {
                         switch (propName) {
                             case '/navigationData':
                                 return [
@@ -296,7 +296,7 @@ describe('AddSubpage controller', () => {
 
         const setPropertySpy = jest.fn();
         const testModel = {
-            getProperty: jest.fn().mockImplementation((name: string) => {
+            getProperty: jest.fn().mockImplementation((name) => {
                 const props: Record<string, any> = {
                     '/navigationData': [
                         { entitySet: 'Bookings', navProperty: 'to_Booking' },
@@ -404,12 +404,12 @@ describe('AddSubpage controller', () => {
                 ({
                     setProperty: jest.fn(),
                     getProperty: jest.fn()
-                } as unknown as JSONModel);
+                }) as unknown as JSONModel;
 
             let beginBtnSetEnabledMock: jest.Mock<any, any, any>;
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             const testModel = {
-                getProperty: jest.fn().mockImplementation((name: string) => {
+                getProperty: jest.fn().mockImplementation((name) => {
                     const props: Record<string, any> = {
                         '/navigationData': [
                             { entitySet: 'Bookings', navProperty: 'to_Booking' },

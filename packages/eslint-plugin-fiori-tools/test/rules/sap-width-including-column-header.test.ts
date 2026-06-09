@@ -1,6 +1,6 @@
 import { RuleTester } from 'eslint';
-import widthIncludingColumnHeaderRule from '../../src/rules/sap-width-including-column-header';
-import { meta, languages } from '../../src/index';
+import widthIncludingColumnHeaderRule from '../../src/rules/sap-width-including-column-header.js';
+import { meta, languages } from '../../src/index.js';
 import {
     CAP_ANNOTATIONS,
     CAP_ANNOTATIONS_PATH,
@@ -16,7 +16,7 @@ import {
     V4_FACETS_ANNOTATIONS,
     V4_MANIFEST,
     V4_MANIFEST_PATH
-} from '../test-helper';
+} from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
@@ -161,7 +161,8 @@ ruleTester.run(`${TEST_NAME} - XML`, widthIncludingColumnHeaderRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'width-including-column-header-manifest',
+                        message:
+                            'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width. Add it to the control configuration of the table.',
                         line: 124,
                         column: 19
                     }
@@ -199,7 +200,8 @@ ruleTester.run(`${TEST_NAME} - XML`, widthIncludingColumnHeaderRule, {
                 ...FACETS,
                 errors: [
                     {
-                        messageId: 'width-including-column-header',
+                        message:
+                            'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width.',
                         line: 29,
                         column: 18
                     }
@@ -244,7 +246,8 @@ ruleTester.run(`${TEST_NAME} - XML`, widthIncludingColumnHeaderRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'width-including-column-header-manifest',
+                        message:
+                            'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width. Add it to the control configuration of the Products table.',
                         line: 139,
                         column: 13
                     }
@@ -370,7 +373,8 @@ ruleTester.run(`${TEST_NAME} - CAP`, widthIncludingColumnHeaderRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'width-including-column-header-manifest',
+                        message:
+                            'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width. Add it to the control configuration of the table.',
                         line: 114,
                         column: 17
                     }
@@ -411,7 +415,8 @@ ruleTester.run(`${TEST_NAME} - CAP`, widthIncludingColumnHeaderRule, {
                 code: CAP_ANNOTATIONS + CAP_FACETS_ANNOTATIONS,
                 errors: [
                     {
-                        messageId: 'width-including-column-header',
+                        message:
+                            'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width.',
                         line: 53,
                         column: 38
                     }
@@ -461,7 +466,8 @@ ruleTester.run(`${TEST_NAME} - CAP`, widthIncludingColumnHeaderRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'width-including-column-header-manifest',
+                        message:
+                            'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width. Add it to the control configuration of the table_section table.',
                         line: 128,
                         column: 13
                     }

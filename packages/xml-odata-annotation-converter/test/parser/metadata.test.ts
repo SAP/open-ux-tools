@@ -4,7 +4,7 @@ import { parse } from '@xml-tools/parser';
 
 import type { MetadataElement } from '@sap-ux/odata-annotation-core-types';
 
-import { convertMetadataDocument } from '../../src/parser';
+import { convertMetadataDocument, convertMetadataDocumentV2 } from '../../src/parser/index.js';
 
 function parseV4(text: string): MetadataElement[] {
     const markup = `<?xml version="1.0" encoding="utf-8"?>
@@ -60,6 +60,20 @@ function parseWithMarkup(text: string): MetadataElement[] {
     const { cst, tokenVector } = parse(markup);
     const ast = buildAst(cst as DocumentCstNode, tokenVector);
     return convertMetadataDocument('file://annotations.xml', ast);
+}
+
+function parseWithMarkupV2(text: string): ReturnType<typeof convertMetadataDocumentV2> {
+    const markup = `<?xml version="1.0" encoding="utf-8"?>
+  <edmx:Edmx Version="1.0"
+          xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">
+      <edmx:DataServices>
+          <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="Z2SEPMRA_C_PD_PRODUCT_CDS">${text}</Schema>
+      </edmx:DataServices>
+  </edmx:Edmx>
+  `;
+    const { cst, tokenVector } = parse(markup);
+    const ast = buildAst(cst as DocumentCstNode, tokenVector);
+    return convertMetadataDocumentV2('file://annotations.xml', ast);
 }
 
 describe('parse', () => {
@@ -777,6 +791,60 @@ describe('parse', () => {
               `);
 
             expect(result).toMatchSnapshot();
+        });
+
+        test('V2 property with sap:text and sap:label', () => {
+            const [, v2Annotations] = parseWithMarkupV2(
+                `<EntityType Name="ProductType">
+                <Key>
+                    <PropertyRef Name="Product"/>
+                </Key>
+                <Property Name="Product" Type="Edm.String" Nullable="false" MaxLength="10" sap:text="ProductName" sap:label="Product ID" />
+                <Property Name="ProductName" Type="Edm.String" MaxLength="40" sap:label="Name" />
+                <Property Name="Quantity" Type="Edm.Int32" />
+            </EntityType>`
+            );
+
+            // Property with both sap:text and sap:label
+            const productText = v2Annotations.find((a) => a.target.name === 'Product' && a.name === 'sap:text');
+            const productLabel = v2Annotations.find((a) => a.target.name === 'Product' && a.name === 'sap:label');
+            expect(productText?.value).toBe('ProductName');
+            expect(productText?.valueRange).toBeDefined();
+            expect(productLabel?.value).toBe('Product ID');
+            expect(productLabel?.valueRange).toBeDefined();
+
+            // Property with only sap:label
+            const productNameLabel = v2Annotations.find(
+                (a) => a.target.name === 'ProductName' && a.name === 'sap:label'
+            );
+            const productNameText = v2Annotations.find((a) => a.target.name === 'ProductName' && a.name === 'sap:text');
+            expect(productNameText).toBeUndefined();
+            expect(productNameLabel?.value).toBe('Name');
+            expect(productNameLabel?.valueRange).toBeDefined();
+
+            // Property without sap:text or sap:label
+            const quantityAnnotations = v2Annotations.filter((a) => a.target.name === 'Quantity');
+            expect(quantityAnnotations).toHaveLength(0);
+        });
+
+        test('V2 sap:text and sap:label not set on non-Property elements', () => {
+            const [, v2Annotations] = parseWithMarkupV2(
+                `<EntityType Name="OrderType" sap:label="Order">
+                <Key>
+                    <PropertyRef Name="OrderID"/>
+                </Key>
+                <Property Name="OrderID" Type="Edm.String" Nullable="false" />
+                <NavigationProperty Name="to_Items" Relationship="Z2SEPMRA_C_PD_PRODUCT_CDS.assoc_OrderItems" FromRole="FromRole_assoc_OrderItems" ToRole="ToRole_assoc_OrderItems"/>
+            </EntityType>
+            <Association Name="assoc_OrderItems" sap:content-version="1">
+                <End Type="Z2SEPMRA_C_PD_PRODUCT_CDS.OrderType" Multiplicity="1" Role="FromRole_assoc_OrderItems"/>
+                <End Type="Z2SEPMRA_C_PD_PRODUCT_CDS.OrderType" Multiplicity="*" Role="ToRole_assoc_OrderItems"/>
+            </Association>`
+            );
+
+            // NavigationProperty has no sap:* attributes → no V2Annotations for it
+            const navPropAnnotations = v2Annotations.filter((a) => a.target.name === 'to_Items');
+            expect(navPropAnnotations).toHaveLength(0);
         });
 
         test('type definition and enum type', () => {

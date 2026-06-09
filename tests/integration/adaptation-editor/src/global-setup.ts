@@ -1,10 +1,14 @@
 import { readFile } from 'node:fs/promises';
-import path, { join } from 'node:path';
+import path, { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 
 import express from 'express';
 import ZipFile from 'adm-zip';
 import type { ManifestNamespace } from '@sap-ux/project-access';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 interface Change {
     changeType: string;

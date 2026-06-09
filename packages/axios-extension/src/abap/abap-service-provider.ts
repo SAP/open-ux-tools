@@ -1,12 +1,12 @@
 import { join as joinPosix } from 'node:path/posix';
 
-import { ODataVersion } from '../base/odata-service';
-import { ServiceProvider } from '../base/service-provider';
-import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
-import { AppIndexService } from './app-index-service';
-import type { CatalogService } from './catalog';
-import { V2CatalogService, V4CatalogService } from './catalog';
-import { LayeredRepositoryService } from './lrep-service';
+import { ODataVersion } from '../base/odata-service.js';
+import { ServiceProvider } from '../base/service-provider.js';
+import { AdtCatalogService } from './adt-catalog/adt-catalog-service.js';
+import { AppIndexService } from './app-index-service.js';
+import type { CatalogService } from './catalog/index.js';
+import { V2CatalogService, V4CatalogService } from './catalog/index.js';
+import { LayeredRepositoryService } from './lrep-service.js';
 import type {
     AbapCDSView,
     AtoSettings,
@@ -14,17 +14,17 @@ import type {
     ExternalService,
     ExternalServiceReference,
     SystemInfo
-} from './types';
-import { TenantType } from './types';
-import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
+} from './types/index.js';
+import { TenantType } from './types/index.js';
+import { Ui5AbapRepositoryService } from './ui5-abap-repository-service.js';
 // Can't use an `import type` here. We need the classname at runtime to create object instances:
 
-import { ODataServiceGenerator } from './adt-catalog/generators/odata-service-generator';
-import type { GeneratorEntry } from './adt-catalog/generators/types';
-import { UiServiceGenerator } from './adt-catalog/generators/ui-service-generator';
-import { type AdtService, AtoService, GeneratorService, RapGeneratorService } from './adt-catalog/services';
-import { SystemInfoService } from './adt-catalog/services/systeminfo-service';
-import { UI5VersionService } from './ui5-version-service';
+import { ODataServiceGenerator } from './adt-catalog/generators/odata-service-generator.js';
+import type { GeneratorEntry } from './adt-catalog/generators/types.js';
+import { UiServiceGenerator } from './adt-catalog/generators/ui-service-generator.js';
+import { type AdtService, AtoService, GeneratorService, RapGeneratorService } from './adt-catalog/services/index.js';
+import { SystemInfoService } from './adt-catalog/services/systeminfo-service.js';
+import { UI5VersionService } from './ui5-version-service.js';
 
 /**
  * Extension of the service provider for ABAP services.

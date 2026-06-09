@@ -6,11 +6,11 @@ import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type {
     QuickActionContext,
     NestedQuickActionDefinition
-} from '../../../cpe/quick-actions/quick-action-definition';
-import { getControlById, isA } from '../../../utils/core';
-import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
-import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
-import { M_TABLE_TYPE, SMART_TABLE_TYPE } from '../control-types';
+} from '../../../cpe/quick-actions/quick-action-definition.js';
+import { getControlById, isA } from '../../../utils/core.js';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base.js';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator.js';
+import { M_TABLE_TYPE, SMART_TABLE_TYPE } from '../control-types.js';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const CONTROL_TYPES = [SMART_TABLE_TYPE];

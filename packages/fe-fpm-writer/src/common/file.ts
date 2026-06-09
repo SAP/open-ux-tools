@@ -1,7 +1,8 @@
 import type { CopyOptions, Editor } from 'mem-fs-editor';
-import type { TabInfo } from '../common/types';
+import type { TabInfo } from '../common/types.js';
 import { sep, normalize } from 'node:path';
-import { findFilesByExtension, isUI5IdUnique } from '@sap-ux/project-access';
+import { findFilesByExtension } from '@sap-ux/project-access/dist/file/index.js';
+import { isUI5IdUnique } from '@sap-ux/project-access';
 
 /**
  * Options for creating an ID generator with cached file contents.

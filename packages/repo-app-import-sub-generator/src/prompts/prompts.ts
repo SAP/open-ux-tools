@@ -1,15 +1,20 @@
 import type { AppIndex } from '@sap-ux/axios-extension';
 import { getSystemSelectionQuestions } from '@sap-ux/odata-service-inquirer';
-import type { RepoAppDownloadAnswers, RepoAppDownloadQuestions, QuickDeployedAppConfig, AppInfo } from '../app/types';
-import { PromptNames } from '../app/types';
-import { t } from '../utils/i18n';
+import type {
+    RepoAppDownloadAnswers,
+    RepoAppDownloadQuestions,
+    QuickDeployedAppConfig,
+    AppInfo
+} from '../app/types.js';
+import { PromptNames } from '../app/types.js';
+import { t } from '../utils/i18n.js';
 import { validateFioriAppTargetFolder } from '@sap-ux/project-input-validator';
-import { PromptState } from './prompt-state';
-import { fetchAppListForSelectedSystem, formatAppChoices } from './prompt-helpers';
+import { PromptState } from './prompt-state.js';
+import { fetchAppListForSelectedSystem, formatAppChoices } from './prompt-helpers.js';
 import type { FileBrowserQuestion } from '@sap-ux/inquirer-common';
-import { validateAppSelection } from '../utils/validators';
+import { validateAppSelection } from '../utils/validators.js';
 import type { AppWizard, IValidationLink } from '@sap-devx/yeoman-ui-types';
-import RepoAppDownloadLogger from '../utils/logger';
+import RepoAppDownloadLogger from '../utils/logger.js';
 import { type Question } from 'inquirer';
 
 /**

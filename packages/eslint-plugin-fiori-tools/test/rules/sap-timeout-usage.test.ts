@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-timeout-usage';
+import rule from '../../src/rules/sap-timeout-usage.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

@@ -1,27 +1,32 @@
-import { parseParameters } from '@sap-ux/adp-tooling';
-import * as inputValidator from '@sap-ux/project-input-validator';
+import { jest } from '@jest/globals';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
-import {
+// Pre-import real modules before mocking to avoid missing export errors
+const realAdpTooling = await import('@sap-ux/adp-tooling');
+const realProjectInputValidator = await import('@sap-ux/project-input-validator');
+
+const mockParseParameters = jest.fn<typeof realAdpTooling.parseParameters>();
+const mockValidateEmptyString = jest.fn<typeof realProjectInputValidator.validateEmptyString>();
+
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    ...realAdpTooling,
+    parseParameters: mockParseParameters
+}));
+
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    ...realProjectInputValidator,
+    validateEmptyString: mockValidateEmptyString
+}));
+
+const {
     getInboundIdsPrompt,
     getParameterStringPrompt,
     getExistingFlpConfigInfoPrompt,
     getIconPrompt,
     getConfirmReplacePrompt
-} from '../../../src/prompts/questions';
-import { t } from '../../../src/i18n';
-import { promptNames } from '../../../src';
-import { add } from 'lodash';
-
-const parseParametersMock = parseParameters as jest.Mock;
-
-jest.mock('@sap-ux/adp-tooling', () => ({
-    parseParameters: jest.fn()
-}));
-
-jest.mock('@sap-ux/project-input-validator', () => ({
-    validateEmptyString: jest.fn()
-}));
+} = await import('../../../src/prompts/questions/index.js');
+const { t } = await import('../../../src/i18n.js');
+const { promptNames } = await import('../../../src/index.js');
 
 describe('advanced prompts', () => {
     const inbounds = {
@@ -65,17 +70,15 @@ describe('advanced prompts', () => {
         });
 
         it('should validate using validateEmptyString', () => {
-            const validateEmptyStringMock = jest.spyOn(inputValidator, 'validateEmptyString').mockReturnValue(true);
+            mockValidateEmptyString.mockReturnValue(true);
             const prompt = getInboundIdsPrompt(inbounds);
             (prompt.validate as Function)(inbounds['display-bank']);
-            expect(validateEmptyStringMock).toHaveBeenCalledWith(inbounds['display-bank'].semanticObject);
-            expect(validateEmptyStringMock).toHaveBeenCalledWith(inbounds['display-bank'].action);
+            expect(mockValidateEmptyString).toHaveBeenCalledWith(inbounds['display-bank'].semanticObject);
+            expect(mockValidateEmptyString).toHaveBeenCalledWith(inbounds['display-bank'].action);
         });
     });
 
     describe('getParameterStringPrompt', () => {
-        const inboundIds: string[] = [];
-
         it('should return a valid parameter string prompt configuration', () => {
             const prompt = getParameterStringPrompt();
 
@@ -114,7 +117,7 @@ describe('advanced prompts', () => {
         });
 
         it('should validate successfully when parseParameters does not throw an error', () => {
-            parseParametersMock.mockImplementation(() => undefined);
+            mockParseParameters.mockImplementation(() => undefined);
 
             const prompt = getParameterStringPrompt();
 
@@ -124,7 +127,7 @@ describe('advanced prompts', () => {
 
         it('should return an error message when parseParameters throws an error', () => {
             const errorMessage = 'Invalid JSON format';
-            parseParametersMock.mockImplementation(() => {
+            mockParseParameters.mockImplementation(() => {
                 throw new Error(errorMessage);
             });
 
@@ -216,6 +219,26 @@ describe('advanced prompts', () => {
 
         it('should return the additional message with information severity', () => {
             const prompt = getConfirmReplacePrompt();
+            const additionalMessage = (prompt.additionalMessages as Function)();
+
+            expect(additionalMessage).toEqual({
+                severity: Severity.information,
+                message: t('additionalMessages.confirmReplaceAdditionalMessage')
+            });
+        });
+
+        it('should return the CF additional message when isCF is true', () => {
+            const prompt = getConfirmReplacePrompt({ isCF: true });
+            const additionalMessage = (prompt.additionalMessages as Function)();
+
+            expect(additionalMessage).toEqual({
+                severity: Severity.information,
+                message: t('additionalMessages.confirmReplaceAdditionalMessageCF')
+            });
+        });
+
+        it('should return the ABAP additional message when isCF is false', () => {
+            const prompt = getConfirmReplacePrompt({ isCF: false });
             const additionalMessage = (prompt.additionalMessages as Function)();
 
             expect(additionalMessage).toEqual({

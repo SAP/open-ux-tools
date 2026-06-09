@@ -1,2 +1,2 @@
-export * from './questions';
-export * from './types';
+export * from './questions.js';
+export * from './types.js';

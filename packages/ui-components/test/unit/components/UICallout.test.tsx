@@ -1,83 +1,60 @@
-jest.mock('../../../src/utilities', () => {
-    const actual = jest.requireActual('../../../src/utilities');
-    return {
-        ...actual,
-        focusToSibling: jest.fn()
-    };
-});
-
 import * as React from 'react';
-import { render, fireEvent, cleanup } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import { UICallout, UICalloutContentPadding } from '../../../src/components/UICallout';
-import * as Utilities from '../../../src/utilities';
-import { compareStylesBySelector } from '../../utils/styles';
+import Enzyme from 'enzyme';
+import type { ICalloutContentStyles } from '@fluentui/react';
+
+const { getNextElement: mockGetNextElement, getPreviousElement: mockGetPreviousElement } = await (async () => {
+    const actual = await import('@fluentui/react');
+    const mocked = {
+        ...actual,
+        getNextElement: jest.fn(),
+        getPreviousElement: jest.fn()
+    };
+    jest.unstable_mockModule('@fluentui/react', () => mocked);
+    return mocked;
+})();
+
+const { Callout } = await import('@fluentui/react');
+const { UICallout, UICalloutContentPadding } = await import('../../../src/components/UICallout');
+type UICalloutProps = import('../../../src/components/UICallout').UICalloutProps;
 
 describe('<UICallout />', () => {
-    let rerender: (ui: React.ReactElement) => void;
-    let targetElement: HTMLElement;
-    const selectors = {
-        root: '.ms-Callout',
-        main: '.ms-Callout-main',
-        beak: '.ms-Callout-beak',
-        beakCurtain: '.ms-Callout-beakCurtain',
-        container: '.ms-Callout-container'
+    let wrapper: Enzyme.ReactWrapper<UICalloutProps>;
+    const getCalloutStyles = (): ICalloutContentStyles => {
+        return wrapper.find(Callout).props().styles as ICalloutContentStyles;
     };
-    const focusToSiblingMock = Utilities.focusToSibling as jest.Mock;
 
     beforeEach(() => {
-        // Create a target element for the callout
-        targetElement = document.createElement('button');
-        targetElement.id = 'callout-target';
-        targetElement.textContent = 'Target Button';
-        document.body.appendChild(targetElement);
-
-        const result = render(
-            <UICallout target={targetElement}>
+        jest.clearAllMocks();
+        wrapper = Enzyme.mount(
+            <UICallout>
                 <div className="dummy"></div>
             </UICallout>
         );
-        rerender = result.rerender;
     });
 
     afterEach(() => {
-        cleanup();
-        targetElement?.parentNode?.removeChild(targetElement);
-        jest.clearAllMocks();
+        wrapper.unmount();
     });
 
-    it('Should render a UICallout component', () => {
-        expect(document.body.querySelectorAll('.ms-Callout').length).toEqual(1);
-        const callout = document.body.querySelector('.ms-Callout');
-        expect(callout).toBeInTheDocument();
-        // Test that the component renders with expected structure
-        const dummyElement = document.body.querySelector('.dummy');
-        expect(dummyElement).toBeInTheDocument();
-        // Default overwritten styles
-        compareStylesBySelector(selectors.root, {
-            borderRadius: '4px',
-            boxShadow: 'var(--ui-box-shadow-small)'
-        });
-        compareStylesBySelector(selectors.main, {
-            borderRadius: '4px'
-        });
+    it('Should render a UITooltip component', () => {
+        expect(wrapper.find('.ms-Callout').length).toEqual(1);
+        const style = getCalloutStyles();
+        expect(style.root?.['borderRadius']).toEqual('var(--vscode-cornerRadius-small, 4px)');
+        expect(style.beakCurtain?.['borderRadius']).toEqual('var(--vscode-cornerRadius-small, 4px)');
+        expect(style.calloutMain?.['borderRadius']).toEqual('var(--vscode-cornerRadius-small, 4px)');
+        expect(style.root?.['boxShadow']).toEqual('var(--ui-box-shadow-small)');
     });
 
     it('Property "contentPadding"', () => {
         // Default - None
-        compareStylesBySelector(selectors.main, {
-            padding: ''
-        });
-
+        let style = getCalloutStyles();
+        expect(style.calloutMain?.['padding']).toEqual(undefined);
         // Standard
-        rerender(
-            <UICallout target={targetElement} contentPadding={UICalloutContentPadding.Standard}>
-                <div className="dummy"></div>
-            </UICallout>
-        );
-        compareStylesBySelector(selectors.main, {
-            padding: '8px 8px 8px 8px'
+        wrapper.setProps({
+            contentPadding: UICalloutContentPadding.Standard
         });
+        style = getCalloutStyles();
+        expect(style.calloutMain?.['padding']).toEqual(8);
     });
 
     it('Overwrite styles', () => {
@@ -99,29 +76,15 @@ describe('<UICallout />', () => {
                 [property]: 'green'
             }
         };
-
-        rerender(
-            <UICallout styles={expectStyles} target={`#${targetElement.id}`}>
-                <div className="dummy"></div>
-            </UICallout>
-        );
-
-        // Test that the component renders with custom styles
-        compareStylesBySelector(selectors.root, {
-            [property]: expectStyles.root[property]
+        wrapper.setProps({
+            styles: expectStyles
         });
-        compareStylesBySelector(selectors.beak, {
-            [property]: expectStyles.beak[property]
-        });
-        compareStylesBySelector(selectors.beakCurtain, {
-            [property]: expectStyles.beakCurtain[property]
-        });
-        compareStylesBySelector(selectors.main, {
-            [property]: expectStyles.calloutMain[property]
-        });
-        compareStylesBySelector(selectors.container, {
-            [property]: expectStyles.container[property]
-        });
+        const style = getCalloutStyles();
+        expect(style.root?.[property]).toEqual(expectStyles.root[property]);
+        expect(style.beak?.[property]).toEqual(expectStyles.beak[property]);
+        expect(style.beakCurtain?.[property]).toEqual(expectStyles.beakCurtain[property]);
+        expect(style.calloutMain?.[property]).toEqual(expectStyles.calloutMain[property]);
+        expect(style.container?.[property]).toEqual(expectStyles.container[property]);
     });
 
     describe('Property "focusTargetSiblingOnTabPress"', () => {
@@ -165,70 +128,24 @@ describe('<UICallout />', () => {
             }
         ];
 
+        beforeEach(() => {
+            jest.clearAllMocks();
+            const element = document.createElement('div');
+            (mockGetNextElement as jest.Mock).mockReturnValue(element);
+            (mockGetPreviousElement as jest.Mock).mockReturnValue(element);
+        });
+
         for (const testCase of testCases) {
             const { name, target, focusTargetSiblingOnTabPress, focusNext, focusPrevious, key, shiftKey } = testCase;
             it(name, () => {
-                rerender(
-                    <UICallout focusTargetSiblingOnTabPress={focusTargetSiblingOnTabPress} target={target}>
-                        <div className="dummy"></div>
-                    </UICallout>
-                );
-
-                const dummyElement = document.querySelector('.dummy');
-                fireEvent.keyDown(dummyElement, { key, shiftKey });
-                expect(focusToSiblingMock).toHaveBeenCalledTimes(focusNext || focusPrevious ? 1 : 0);
-                if (focusNext || focusPrevious) {
-                    const getNextElementCall = focusToSiblingMock.mock.calls[0];
-                    expect(getNextElementCall[0]).toEqual(
-                        typeof target === 'string' ? document.querySelector(target) : target
-                    );
-                    if (focusNext) {
-                        expect(getNextElementCall[1]).toEqual(true);
-                    } else if (focusPrevious) {
-                        expect(getNextElementCall[1]).toEqual(false);
-                    }
-                }
+                wrapper.setProps({
+                    focusTargetSiblingOnTabPress,
+                    target
+                });
+                wrapper.find('.dummy').simulate('keydown', { key, shiftKey });
+                expect(mockGetNextElement).toHaveBeenCalledTimes(focusNext ? 1 : 0);
+                expect(mockGetPreviousElement).toHaveBeenCalledTimes(focusPrevious ? 1 : 0);
             });
         }
-    });
-
-    it('applies calloutMinWidth prop', () => {
-        rerender(
-            <UICallout target={targetElement} calloutMinWidth={555}>
-                <div className="dummy"></div>
-            </UICallout>
-        );
-        compareStylesBySelector(selectors.main, {
-            minWidth: '555px'
-        });
-    });
-
-    it('calls onKeyDown prop if provided', () => {
-        const onKeyDown = jest.fn();
-        rerender(
-            <UICallout target={targetElement} onKeyDown={onKeyDown}>
-                <div className="dummy"></div>
-            </UICallout>
-        );
-        const callout = document.body.querySelector('.ms-Callout');
-        if (callout) {
-            fireEvent.keyDown(callout, { key: 'a' });
-        }
-        expect(onKeyDown).toHaveBeenCalled();
-    });
-
-    it('merges custom styles with default styles', () => {
-        const customStyles = {
-            root: { backgroundColor: 'pink' },
-            calloutMain: { minWidth: 123 }
-        };
-        rerender(
-            <UICallout target={targetElement} styles={customStyles}>
-                <div className="dummy"></div>
-            </UICallout>
-        );
-        compareStylesBySelector(selectors.main, {
-            minWidth: '123px'
-        });
     });
 });

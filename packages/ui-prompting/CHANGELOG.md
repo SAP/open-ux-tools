@@ -1,5 +1,127 @@
 # @sap-ux/ui-prompting
 
+## 1.0.2
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/ui-components@3.0.2
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [21cadc3]
+    - @sap-ux/ui-components@3.0.1
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/ui-components@3.0.0
+
+## 0.7.5
+
+### Patch Changes
+
+- Updated dependencies [b0a922a]
+    - @sap-ux/ui-components@2.2.5
+
+## 0.7.4
+
+### Patch Changes
+
+- Updated dependencies [bc315f0]
+    - @sap-ux/ui-components@2.2.4
+
+## 0.7.3
+
+### Patch Changes
+
+- Updated dependencies [01b70ca]
+- Updated dependencies [a97d926]
+    - @sap-ux/ui-components@2.2.3
+
+## 0.7.2
+
+### Patch Changes
+
+- Updated dependencies [882d45b]
+    - @sap-ux/ui-components@2.2.2
+
+## 0.7.1
+
+### Patch Changes
+
+- Updated dependencies [742d896]
+    - @sap-ux/ui-components@2.2.1
+
+## 0.7.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/ui-components@2.2.0
+
+## 0.6.29
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/ui-components@2.1.16
+
+## 0.6.28
+
+### Patch Changes
+
+- Updated dependencies [189ad98]
+    - @sap-ux/ui-components@2.1.15
+
+## 0.6.27
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/ui-components@2.1.14
+
 ## 0.6.26
 
 ### Patch Changes

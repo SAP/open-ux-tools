@@ -6,13 +6,12 @@ import ComponentContainer from 'sap/ui/core/ComponentContainer';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import UIComponent from 'sap/ui/core/UIComponent';
 
-import { getComponent } from '../utils/core';
+import { getComponent } from '../utils/core.js';
 import { DesigntimeSetting } from 'sap/ui/dt/DesignTimeMetadata';
-import { ChangeService } from './changes';
+import { ChangeService } from './changes/index.js';
 import UI5Element from 'sap/ui/core/Element';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
-
 
 export interface PropertiesInfo {
     defaultValue: string;
@@ -137,8 +136,8 @@ export function getManifestProperties(
                     ...item,
                     defaultValue: item.value,
                     configuration: true,
-                    name: item.id,
-                    readableName: item.name,
+                    name: item.name ?? item.id,
+                    readableName: item.name ?? item.id,
                     manifestPropertyPath: `${overlayData?.manifestPropertyPath(control)}/${propertyId}`,
                     type: item.type === 'number' ? 'int' : (item.type as 'string' | 'boolean' | 'undefined'),
                     value: propertyValue

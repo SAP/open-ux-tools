@@ -11,9 +11,9 @@ import type {
     SIMPLE_QUICK_ACTION_KIND
 } from '@sap-ux-private/control-property-editor-common';
 
-import type { TextBundle } from '../../i18n';
-import type { ControlTreeIndex } from '../types';
-import type { ChangeService } from '../changes';
+import type { TextBundle } from '../../i18n.js';
+import type { ControlTreeIndex } from '../types.js';
+import type { ChangeService } from '../changes/index.js';
 
 export interface QuickActionActivationContext {
     controlIndex: ControlTreeIndex;
@@ -64,8 +64,8 @@ interface QuickActionDefinitionBase {
     readonly forceRefreshAfterExecution?: boolean;
     /**
      * Indicates the number of user steps involved in the Quick Action flow.
-     * This value helps distinguish between single-step and multi-step quick actions for telemetry 
-    */
+     * This value helps distinguish between single-step and multi-step quick actions for telemetry
+     */
     quickActionSteps?: number;
     /**
      * Indicates that the Quick Action is applicable to the given context and should be displayed.

@@ -1,23 +1,22 @@
 import * as React from 'react';
-import { render } from '@testing-library/react';
-import '@testing-library/jest-dom';
+import Enzyme from 'enzyme';
 
+import type { UIPersonaProps } from '../../../src/components/UIPersona';
 import { UIPersona, UIPersonaSize } from '../../../src/components/UIPersona';
 
 describe('<UIPersona />', () => {
-    let renderResult: ReturnType<typeof render>;
+    let wrapper: Enzyme.ReactWrapper<UIPersonaProps>;
 
     beforeEach(() => {
-        renderResult = render(<UIPersona text="John Doe" size={UIPersonaSize.size72} />);
+        wrapper = Enzyme.mount(<UIPersona text="John Doe" size={UIPersonaSize.size72} />);
     });
 
     afterEach(() => {
-        renderResult.unmount();
+        wrapper.unmount();
     });
 
     it('Should render a UIPersona component', () => {
-        const { container } = renderResult;
-        expect(container.querySelector('.ms-Persona')).toBeTruthy();
-        expect(container.querySelectorAll('.ms-Persona--size72').length).toEqual(2);
+        expect(wrapper.find('.ms-Persona').length).toEqual(1);
+        expect(wrapper.find('.ms-Persona--size72').length).toEqual(2);
     });
 });

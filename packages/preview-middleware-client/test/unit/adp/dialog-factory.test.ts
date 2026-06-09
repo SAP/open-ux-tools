@@ -6,18 +6,17 @@ import Fragment, { attachBeforeClose } from 'mock/sap/ui/core/Fragment';
 import Controller from 'mock/sap/ui/core/mvc/Controller';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 
-import { DialogFactory, DialogNames } from '../../../src/adp/dialog-factory';
-import AddFragment from '../../../src/adp/controllers/AddFragment.controller';
-import ControllerExtension from '../../../src/adp/controllers/ControllerExtension.controller';
-import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controller';
-import AddTableColumnFragments from '../../../src/adp/controllers/AddTableColumnFragments.controller';
-import FileExistsDialog from '../../../src/adp/controllers/FileExistsDialog.controller';
-import AddCustomFragment from '../../../src/adp/controllers/AddCustomFragment.controller';
-import AddActionFragment from '../../../src/adp/controllers/AddActionFragment.controller';
+import { DialogFactory, DialogNames } from '../../../src/adp/dialog-factory.js';
+import AddFragment from '../../../src/adp/controllers/AddFragment.controller.js';
+import ControllerExtension from '../../../src/adp/controllers/ControllerExtension.controller.js';
+import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controller.js';
+import AddTableColumnFragments from '../../../src/adp/controllers/AddTableColumnFragments.controller.js';
+import FileExistsDialog from '../../../src/adp/controllers/FileExistsDialog.controller.js';
+import AddCustomFragment from '../../../src/adp/controllers/AddCustomFragment.controller.js';
+import AddActionFragment from '../../../src/adp/controllers/AddActionFragment.controller.js';
 
 describe('DialogFactory', () => {
     afterEach(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const closeDialogFunction = attachBeforeClose.mock.calls[0]?.[0];
         if (typeof closeDialogFunction === 'function') {
             // make sure that dialog factory is in clean state after each test
@@ -176,11 +175,11 @@ describe('DialogFactory', () => {
             rtaMock as unknown as RuntimeAuthoring,
             DialogNames.ADD_CUSTOM_FRAGMENT
         );
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].name).toStrictEqual('open.ux.preview.client.adp.ui.AddCustomFragment');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].id).toStrictEqual(undefined);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].controller).toBeInstanceOf(AddCustomFragment);
 
         expect(DialogFactory.canOpenDialog).toBe(false);
@@ -197,11 +196,11 @@ describe('DialogFactory', () => {
             rtaMock as unknown as RuntimeAuthoring,
             DialogNames.ADD_ACTION
         );
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].name).toStrictEqual('open.ux.preview.client.adp.ui.AddAction');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].id).toStrictEqual(undefined);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].controller).toBeInstanceOf(AddActionFragment);
 
         expect(DialogFactory.canOpenDialog).toBe(false);

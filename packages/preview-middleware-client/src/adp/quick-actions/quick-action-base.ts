@@ -1,7 +1,7 @@
-import type { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition';
+import type { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition.js';
 
-import { EnablementValidator, EnablementValidatorError, EnablementValidatorResult } from './enablement-validator';
-import { DIALOG_ENABLEMENT_VALIDATOR } from './dialog-enablement-validator';
+import { EnablementValidator, EnablementValidatorError, EnablementValidatorResult } from './enablement-validator.js';
+import { DIALOG_ENABLEMENT_VALIDATOR } from './dialog-enablement-validator.js';
 
 /**
  * Base class for all  quick actions.
@@ -21,11 +21,9 @@ export abstract class QuickActionDefinitionBase<T extends string> {
     }
 
     public get quickActionSteps(): number {
-        return this.enablementValidators.find((item) => item === DIALOG_ENABLEMENT_VALIDATOR) 
-            ? 2
-            : 1;
+        return this.enablementValidators.find((item) => item === DIALOG_ENABLEMENT_VALIDATOR) ? 2 : 1;
     }
-    
+
     /**
      * Quick Actions tooltip.
      */

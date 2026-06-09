@@ -1,23 +1,15 @@
+import { jest } from '@jest/globals';
+import type { Ui5VersionInfo } from 'open/ux/preview/client/utils/version';
 import RuntimeAuthoring, { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import FlexBox from 'sap/m/FlexBox';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { attachBeforeClose } from 'mock/sap/ui/core/Fragment';
 import ODataModelV4 from 'sap/ui/model/odata/v4/ODataModel';
 import type AppComponentV4 from 'sap/fe/core/AppComponent';
-import * as cpeCommon from '@sap-ux-private/control-property-editor-common';
-import type { ChangeService } from '../../../../src/cpe/changes/service';
-const mockChangeService = {
-    syncOutlineChanges: jest.fn()
-} as unknown as ChangeService;
 
 import type { QuickAction } from '@sap-ux-private/control-property-editor-common';
 import { quickActionListChanged, executeQuickAction } from '@sap-ux-private/control-property-editor-common';
 
-import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
-import { OutlineService } from '../../../../src/cpe/outline/service';
-import { FeatureService } from '../../../../src/cpe/feature-service';
-
-import FEV4QuickActionRegistry from 'open/ux/preview/client/adp/quick-actions/fe-v4/registry';
 import { sapCoreMock, fetchMock, sapMock } from 'mock/window';
 import NavContainer from 'mock/sap/m/NavContainer';
 import XMLView from 'mock/sap/ui/core/mvc/XMLView';
@@ -33,7 +25,6 @@ import ComponentMock from 'mock/sap/ui/core/Component';
 import type UIComponent from 'sap/ui/core/UIComponent';
 import AppComponentMock from 'mock/sap/fe/core/AppComponent';
 import FlexRuntimeInfoAPI from 'mock/sap/ui/fl/apply/api/FlexRuntimeInfoAPI';
-import { DialogFactory, DialogNames } from '../../../../src/adp/dialog-factory';
 import {
     ANALYTICAL_TABLE_TYPE,
     GRID_TABLE_TYPE,
@@ -41,17 +32,83 @@ import {
     MDC_TABLE_TYPE,
     TREE_TABLE_TYPE,
     M_TABLE_TYPE
-} from '../../../../src/adp/quick-actions/control-types';
-import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
+} from 'open/ux/preview/client/adp/quick-actions/control-types';
 import ManagedObject from 'sap/ui/base/ManagedObject';
-import * as versionUtils from '../../../../src/utils/version';
-import * as utils from '../../../../src/utils/fe-v4';
-import * as adpUtils from '../../../../src/adp/utils';
 import OverlayUtil from 'mock/sap/ui/dt/OverlayUtil';
-import * as appUtils from '../../../../src/utils/application';
-import * as apiHandler from '../../../../src/adp/api-handler';
-import * as fev4QAUtils from '../../../../src/adp/quick-actions/fe-v4/utils';
 import * as MacroTableHelper from 'mock/sap/fe/macros/table/designtime/Table.designtime.helper';
+
+// Pre-import for spread - modules that don't depend on mocked modules
+const _cpeCommon = await import('@sap-ux-private/control-property-editor-common');
+const _QCUtils = await import('open/ux/preview/client/cpe/quick-actions/utils');
+const _versionUtils = await import('open/ux/preview/client/utils/version');
+const _utils = await import('open/ux/preview/client/utils/fe-v4');
+const _appUtils = await import('open/ux/preview/client/utils/application');
+
+// Register mocks for modules that other modules depend on
+const getUi5VersionMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/version', () => ({
+    ..._versionUtils,
+    getUi5Version: getUi5VersionMock
+}));
+
+const reportTelemetryMock = jest.fn();
+jest.unstable_mockModule('@sap-ux-private/control-property-editor-common', () => ({
+    ..._cpeCommon,
+    reportTelemetry: reportTelemetryMock
+}));
+
+const getApplicationTypeMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/application', () => ({
+    ..._appUtils,
+    getApplicationType: getApplicationTypeMock
+}));
+
+const getV4AppComponentMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/fe-v4', () => ({
+    ..._utils,
+    getV4AppComponent: getV4AppComponentMock
+}));
+
+// Import modules that depend on already-mocked modules so their internal
+// references resolve to the mocked versions.
+const _adpUtils = await import('open/ux/preview/client/adp/utils');
+const _apiHandler = await import('open/ux/preview/client/adp/api-handler');
+const _fev4QAUtils = await import('open/ux/preview/client/adp/quick-actions/fe-v4/utils');
+
+const getParentContainerMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/cpe/quick-actions/utils', () => ({
+    ..._QCUtils,
+    getParentContainer: getParentContainerMock
+}));
+
+const checkForExistingChangeMock = jest.fn().mockReturnValue(false);
+jest.unstable_mockModule('open/ux/preview/client/adp/utils', () => ({
+    ..._adpUtils,
+    checkForExistingChange: checkForExistingChangeMock
+}));
+
+const getExistingControllerMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/adp/api-handler', () => ({
+    ..._apiHandler,
+    getExistingController: getExistingControllerMock
+}));
+
+const getPropertyPathMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/adp/quick-actions/fe-v4/utils', () => ({
+    ..._fev4QAUtils,
+    getPropertyPath: getPropertyPathMock
+}));
+
+const { QuickActionService } = await import('open/ux/preview/client/cpe/quick-actions/quick-action-service');
+const { OutlineService } = await import('open/ux/preview/client/cpe/outline/service');
+const { FeatureService } = await import('open/ux/preview/client/cpe/feature-service');
+const { default: FEV4QuickActionRegistry } = await import('open/ux/preview/client/adp/quick-actions/fe-v4/registry');
+const { DialogFactory, DialogNames } = await import('open/ux/preview/client/adp/dialog-factory');
+
+type ChangeService = import('open/ux/preview/client/cpe/changes/service').ChangeService;
+const mockChangeService = {
+    syncOutlineChanges: jest.fn()
+} as unknown as ChangeService;
 
 let telemetryEventIdentifier: string;
 const mockTelemetryEventIdentifier = () => {
@@ -68,10 +125,19 @@ describe('FE V4 quick actions', () => {
         subscribeMock = jest.fn();
         jest.spyOn(DialogFactory, 'createDialog').mockResolvedValue();
         jest.clearAllMocks();
+        // Re-establish pass-through defaults after clearAllMocks wipes implementations.
+        // With jest.unstable_mockModule + spread pattern, jest.fn() mocks lose their
+        // implementation on clearAllMocks, unlike jest.spyOn which preserves it.
+        getUi5VersionMock.mockImplementation((...args) => (_versionUtils.getUi5Version as Function)(...args));
+        checkForExistingChangeMock.mockReturnValue(false);
+        getV4AppComponentMock.mockImplementation((...args) => (_utils.getV4AppComponent as Function)(...args));
+        getParentContainerMock.mockImplementation((...args) => (_QCUtils.getParentContainer as Function)(...args));
+        getExistingControllerMock.mockImplementation((...args) =>
+            (_apiHandler.getExistingController as Function)(...args)
+        );
     });
 
     afterEach(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const closeDialogFunction = attachBeforeClose.mock.calls[0]?.[0];
         if (typeof closeDialogFunction === 'function') {
             // make sure that dialog factory is in clean state after each test
@@ -82,7 +148,7 @@ describe('FE V4 quick actions', () => {
 
     describe('ListReport', () => {
         beforeEach(() => {
-            jest.spyOn(FeatureService, 'isFeatureEnabled').mockImplementation((feature: string) => {
+            jest.spyOn(FeatureService, 'isFeatureEnabled').mockImplementation((feature) => {
                 if (feature === 'cpe.beta.quick-actions') {
                     return true;
                 }
@@ -168,7 +234,7 @@ describe('FE V4 quick actions', () => {
                 jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                     return 'component-id';
                 });
-                jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                     if (id === 'component-id') {
                         return component as unknown as ComponentMock;
                     }
@@ -234,7 +300,7 @@ describe('FE V4 quick actions', () => {
                         } as any
                     ]
                 });
-                jest.spyOn(apiHandler, 'getExistingController').mockResolvedValue({
+                getExistingControllerMock.mockResolvedValue({
                     controllerPathFromRoot: 'adp.v4/test.js',
                     controllerExists: true,
                     isRunningInBAS: false,
@@ -348,7 +414,7 @@ describe('FE V4 quick actions', () => {
 
             async function setupContext(actionFilter: 'CustomAction' | 'DataFieldForAction' | 'both' = 'both') {
                 const pageView = new XMLView();
-                pageView.getLocalId.mockImplementation((id: string) => id.split('dummyProjectId--')[1]);
+                pageView.getLocalId.mockImplementation((id) => id.split('dummyProjectId--')[1]);
                 pageView.getViewData.mockImplementation(() => ({
                     stableId: 'dummyProjectIdppId::ProductsList'
                 }));
@@ -428,7 +494,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -482,16 +548,14 @@ describe('FE V4 quick actions', () => {
                         } as any
                     ]
                 });
-                jest.spyOn(apiHandler, 'getExistingController').mockResolvedValue({
+                getExistingControllerMock.mockResolvedValue({
                     controllerPathFromRoot: 'adp/v4/test.js',
                     controllerExists: true,
                     isRunningInBAS: false,
                     controllerPath: 'webapp/adp/v4/test.js',
                     isTsSupported: false
                 });
-                jest.spyOn(fev4QAUtils, 'getPropertyPath').mockReturnValue(
-                    '@com.sap.vocabularies.UI.v1.LineItem/actions/'
-                );
+                getPropertyPathMock.mockReturnValue('@com.sap.vocabularies.UI.v1.LineItem/actions/');
             }
             test('not available on UI5 version prior 1.120', async () => {
                 VersionInfo.load.mockResolvedValue({
@@ -512,7 +576,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -528,7 +592,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -562,7 +626,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -578,7 +642,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -594,7 +658,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -608,7 +672,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -665,7 +729,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -681,7 +745,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -697,7 +761,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -711,7 +775,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -803,7 +867,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -927,16 +991,16 @@ describe('FE V4 quick actions', () => {
             beforeEach(() => {
                 jest.clearAllMocks();
 
-                reportTelemetrySpy = jest.spyOn(cpeCommon, 'reportTelemetry');
-                jest.spyOn(appUtils, 'getApplicationType').mockReturnValue('fe-v4');
-                jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue({
+                reportTelemetrySpy = reportTelemetryMock;
+                getApplicationTypeMock.mockReturnValue('fe-v4');
+                getUi5VersionMock.mockResolvedValue({
                     major: 1,
                     minor: 127,
                     patch: 0
                 });
             });
             test('initialize and execute action', async () => {
-                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+                checkForExistingChangeMock.mockReturnValue(false);
                 const pageView = new XMLView();
                 mockTelemetryEventIdentifier();
                 FlexUtils.getViewForControl.mockImplementation(() => {
@@ -993,7 +1057,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -1071,7 +1135,7 @@ describe('FE V4 quick actions', () => {
             });
 
             test('initialize and execute action with existing controller change', async () => {
-                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
+                checkForExistingChangeMock.mockReturnValue(true);
                 const pageView = new XMLView();
                 mockTelemetryEventIdentifier();
                 FlexUtils.getViewForControl.mockImplementation(() => {
@@ -1128,7 +1192,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -1248,7 +1312,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -1265,7 +1329,7 @@ describe('FE V4 quick actions', () => {
 
                 const execute = jest.fn();
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-                jest.spyOn(rtaMock, 'getService').mockImplementation((serviceName: string): any => {
+                jest.spyOn(rtaMock, 'getService').mockImplementation((serviceName): any => {
                     if (serviceName === 'action') {
                         return {
                             get: (controlId: string) => {
@@ -1373,7 +1437,7 @@ describe('FE V4 quick actions', () => {
 
             async function setupContext(lineItemFields: any[]) {
                 const pageView = new XMLView();
-                pageView.getLocalId.mockImplementation((id: string) => id.split('dummyProjectId--')[1]);
+                pageView.getLocalId.mockImplementation((id) => id.split('dummyProjectId--')[1]);
                 pageView.getViewData.mockImplementation(() => ({
                     stableId: 'dummyProjectIdppId::ProductsList'
                 }));
@@ -1445,7 +1509,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -1499,16 +1563,14 @@ describe('FE V4 quick actions', () => {
                         } as any
                     ]
                 });
-                jest.spyOn(apiHandler, 'getExistingController').mockResolvedValue({
+                getExistingControllerMock.mockResolvedValue({
                     controllerPathFromRoot: 'adp/v4/test.js',
                     controllerExists: true,
                     isRunningInBAS: false,
                     controllerPath: 'webapp/adp/v4/test.js',
                     isTsSupported: false
                 });
-                jest.spyOn(fev4QAUtils, 'getPropertyPath').mockReturnValue(
-                    '@com.sap.vocabularies.UI.v1.LineItem/columns/'
-                );
+                getPropertyPathMock.mockReturnValue('@com.sap.vocabularies.UI.v1.LineItem/columns/');
             }
             test('not available on UI5 version prior 1.120', async () => {
                 VersionInfo.load.mockResolvedValue({
@@ -1541,7 +1603,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -1557,7 +1619,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -1603,7 +1665,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -1619,7 +1681,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -1635,7 +1697,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -1649,7 +1711,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -1715,7 +1777,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -1731,7 +1793,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -1747,7 +1809,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -1761,7 +1823,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -1827,7 +1889,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -1843,7 +1905,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -1859,7 +1921,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -1873,7 +1935,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: true,
                                             children: []
                                         }
@@ -1967,7 +2029,7 @@ describe('FE V4 quick actions', () => {
                 // pendingPath does NOT match the regex (it lacks the controlConfiguration prefix)
                 // so idInPendingChanges will be false → exercise the MDC column check path instead
                 expect(originalFn('existingColId')).toBe(false); // exists as CustomColumn → false
-                expect(originalFn('brandNewId')).toBe(true);     // no matching column → true
+                expect(originalFn('brandNewId')).toBe(true); // no matching column → true
                 // Verify the regex itself works for the idInPendingChanges branch coverage
                 const matchingPendingPath =
                     'controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/columns/pendingColumnId';
@@ -2056,7 +2118,7 @@ describe('FE V4 quick actions', () => {
                 // Use a metaPath that does NOT contain 'LineItem' to trigger the IIFE branch in findAnchor()
                 // which pops the last segment and delegates to getLineItemAnnotation() for the annotation
                 const pageView = new XMLView();
-                pageView.getLocalId.mockImplementation((id: string) => id.split('dummyProjectId--')[1]);
+                pageView.getLocalId.mockImplementation((id) => id.split('dummyProjectId--')[1]);
                 pageView.getViewData.mockImplementation(() => ({
                     stableId: 'dummyProjectIdppId::ProductsList'
                 }));
@@ -2109,7 +2171,7 @@ describe('FE V4 quick actions', () => {
                         pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ListReport.ListReport');
                         const componentContainer = new ComponentContainer();
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => 'component-id');
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') return component as unknown as ComponentMock;
                         });
                         container.getCurrentPage.mockImplementation(() => componentContainer);
@@ -2140,9 +2202,7 @@ describe('FE V4 quick actions', () => {
                     'sap.ui.mdc.Table': [{ controlId: 'Table' } as any],
                     'sap.m.NavContainer': [{ controlId: 'NavContainer' } as any]
                 });
-                jest.spyOn(fev4QAUtils, 'getPropertyPath').mockReturnValue(
-                    '@com.sap.vocabularies.UI.v1.LineItem/columns/'
-                );
+                getPropertyPathMock.mockReturnValue('@com.sap.vocabularies.UI.v1.LineItem/columns/');
 
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-create-table-custom-column', kind: 'nested', path: '0' })
@@ -2191,7 +2251,7 @@ describe('FE V4 quick actions', () => {
 
             async function setupContext(lineItemFields: any[]) {
                 const pageView = new XMLView();
-                pageView.getLocalId.mockImplementation((id: string) => id.split('dummyProjectId--')[1]);
+                pageView.getLocalId.mockImplementation((id) => id.split('dummyProjectId--')[1]);
                 pageView.getViewData.mockImplementation(() => ({
                     stableId: 'dummyProjectIdppId::ProductsList'
                 }));
@@ -2373,7 +2433,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -2435,16 +2495,14 @@ describe('FE V4 quick actions', () => {
                         } as any
                     ]
                 });
-                jest.spyOn(apiHandler, 'getExistingController').mockResolvedValue({
+                getExistingControllerMock.mockResolvedValue({
                     controllerPathFromRoot: 'adp/v4/test.js',
                     controllerExists: true,
                     isRunningInBAS: false,
                     controllerPath: 'webapp/adp/v4/test.js',
                     isTsSupported: false
                 });
-                jest.spyOn(fev4QAUtils, 'getPropertyPath').mockReturnValue(
-                    '@com.sap.vocabularies.UI.v1.LineItem/columns/'
-                );
+                getPropertyPathMock.mockReturnValue('@com.sap.vocabularies.UI.v1.LineItem/columns/');
             }
             test('create column disabled for table with same metapath as BuildingBlocktable', async () => {
                 sapMock.ui.require.mockImplementation(() => MacroTableHelper);
@@ -2479,7 +2537,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyFirstTab\' table',
+                                            label: "'MyFirstTab' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -2487,7 +2545,7 @@ describe('FE V4 quick actions', () => {
                                         },
                                         {
                                             path: '1',
-                                            label: '\'MySecondTab\' table',
+                                            label: "'MySecondTab' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
@@ -2504,7 +2562,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -2512,7 +2570,7 @@ describe('FE V4 quick actions', () => {
                                         },
                                         {
                                             path: '1',
-                                            label: '\'MyTable\' table',
+                                            label: "'MyTable' table",
                                             enabled: false,
                                             tooltip:
                                                 'This action has been disabled because variant management is disabled. Enable variant management and try again.',
@@ -2529,11 +2587,11 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyFirstTab\' table',
+                                            label: "'MyFirstTab' table",
                                             enabled: true,
                                             children: []
                                         },
-                                        { path: '1', label: '\'MySecondTab\' table', enabled: true, children: [] }
+                                        { path: '1', label: "'MySecondTab' table", enabled: true, children: [] }
                                     ]
                                 },
                                 {
@@ -2544,13 +2602,13 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             path: '0',
-                                            label: '\'MyFirstTab\' table',
+                                            label: "'MyFirstTab' table",
                                             enabled: false,
                                             children: [],
                                             tooltip:
                                                 'Custom columns defined in the manifest.json file are not supported when using the Table building block.'
                                         },
-                                        { path: '1', label: '\'MySecondTab\' table', enabled: true, children: [] }
+                                        { path: '1', label: "'MySecondTab' table", enabled: true, children: [] }
                                     ]
                                 }
                             ]
@@ -2563,7 +2621,7 @@ describe('FE V4 quick actions', () => {
         describe('enable table filtering', () => {
             const testCases: {
                 p13nMode: string[];
-                ui5version?: versionUtils.Ui5VersionInfo;
+                ui5version?: Ui5VersionInfo;
                 expectedIsNotApplicable?: boolean;
                 expectedIsEnabled: boolean;
                 expectedTooltip?: string;
@@ -2584,9 +2642,7 @@ describe('FE V4 quick actions', () => {
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 const pageView = new XMLView();
-                jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
-                    testCase.ui5version ?? { major: 1, minor: 131 }
-                );
+                getUi5VersionMock.mockResolvedValue(testCase.ui5version ?? { major: 1, minor: 131 });
                 jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(true);
                 const scrollIntoView = jest.fn();
                 const appComponent = new AppComponentMock();
@@ -2625,7 +2681,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -2804,7 +2860,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -2939,7 +2995,7 @@ describe('FE V4 quick actions', () => {
             const testCases: {
                 supportedVersion: boolean;
                 varianManagmentValue?: string;
-                ui5version?: versionUtils.Ui5VersionInfo;
+                ui5version?: Ui5VersionInfo;
             }[] = [
                 {
                     supportedVersion: true,
@@ -2959,11 +3015,9 @@ describe('FE V4 quick actions', () => {
                 }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+                checkForExistingChangeMock.mockReturnValue(false);
                 const pageView = new XMLView();
-                jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
-                    testCase.ui5version ?? { major: 1, minor: 131 }
-                );
+                getUi5VersionMock.mockResolvedValue(testCase.ui5version ?? { major: 1, minor: 131 });
                 fetchMock.mockResolvedValue({
                     json: jest
                         .fn()
@@ -2999,7 +3053,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -3092,7 +3146,6 @@ describe('FE V4 quick actions', () => {
                 let tooltip;
                 let enabled = true;
                 if (testCase.varianManagmentValue === 'Control') {
-                     
                     ((tooltip =
                         'This option has been disabled because variant management is already enabled for tables and charts'),
                         (enabled = false));
@@ -3172,7 +3225,7 @@ describe('FE V4 quick actions', () => {
                     }
                 ];
                 test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-                    jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+                    checkForExistingChangeMock.mockReturnValue(false);
                     mockTelemetryEventIdentifier();
                     const pageView = new XMLView();
                     FlexUtils.getViewForControl.mockImplementation(() => {
@@ -3234,7 +3287,7 @@ describe('FE V4 quick actions', () => {
                             jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                                 return 'component-id';
                             });
-                            jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                                 if (id === 'component-id') {
                                     return component as unknown as ComponentMock;
                                 }
@@ -3320,7 +3373,7 @@ describe('FE V4 quick actions', () => {
                     tableType: string;
                     toString: () => string;
                     isWithHeader: boolean;
-                    ui5version?: versionUtils.Ui5VersionInfo;
+                    ui5version?: Ui5VersionInfo;
                     expectDisabledReason?: string;
                     value?: string;
                     expectUnsupported?: boolean;
@@ -3370,9 +3423,7 @@ describe('FE V4 quick actions', () => {
                 test.each(testCases)(
                     'initialize and execute action (%s)',
                     async (testCase) => {
-                        jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
-                            testCase.ui5version ?? { major: 1, minor: 131 }
-                        );
+                        getUi5VersionMock.mockResolvedValue(testCase.ui5version ?? { major: 1, minor: 131 });
 
                         const pageView = new XMLView();
                         const scrollIntoView = jest.fn();
@@ -3380,7 +3431,7 @@ describe('FE V4 quick actions', () => {
 
                         const setSelectedSubSectionMock = jest.fn();
                         const fakeSubSection = new ManagedObject() as any;
-                        jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
+                        getParentContainerMock.mockImplementation((control, type) => {
                             if (type === 'sap.uxap.ObjectPageSection') {
                                 // Return a mock object with the getSubSections method
                                 return {
@@ -3488,13 +3539,11 @@ describe('FE V4 quick actions', () => {
                                 jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                                     return 'component-id';
                                 });
-                                jest.spyOn(Component, 'getComponentById').mockImplementation(
-                                    (id: string | undefined) => {
-                                        if (id === 'component-id') {
-                                            return component as unknown as ComponentMock;
-                                        }
+                                jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
+                                    if (id === 'component-id') {
+                                        return component as unknown as ComponentMock;
                                     }
-                                );
+                                });
                                 container.getCurrentPage.mockImplementation(() => {
                                     return componentContainer;
                                 });
@@ -3614,11 +3663,11 @@ describe('FE V4 quick actions', () => {
                 );
             });
             describe('enable variant management in tables and charts', () => {
-                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+                checkForExistingChangeMock.mockReturnValue(false);
                 const testCases: {
                     supportedVersion: boolean;
                     varianManagmentValue?: string;
-                    ui5version?: versionUtils.Ui5VersionInfo;
+                    ui5version?: Ui5VersionInfo;
                 }[] = [
                     {
                         supportedVersion: true,
@@ -3639,9 +3688,7 @@ describe('FE V4 quick actions', () => {
                 ];
                 test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                     const pageView = new XMLView();
-                    jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
-                        testCase.ui5version ?? { major: 1, minor: 131 }
-                    );
+                    getUi5VersionMock.mockResolvedValue(testCase.ui5version ?? { major: 1, minor: 131 });
                     fetchMock.mockResolvedValue({
                         json: jest
                             .fn()
@@ -3678,7 +3725,7 @@ describe('FE V4 quick actions', () => {
                             jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                                 return 'component-id';
                             });
-                            jest.spyOn(ComponentMock, 'getComponentById').mockImplementation((id: string) => {
+                            jest.spyOn(ComponentMock, 'getComponentById').mockImplementation((id) => {
                                 if (id === 'component-id') {
                                     return component as unknown as ComponentMock;
                                 }
@@ -3773,7 +3820,6 @@ describe('FE V4 quick actions', () => {
                     let tooltip;
                     let enabled = true;
                     if (testCase.varianManagmentValue === 'Control') {
-                         
                         ((tooltip =
                             'This option has been disabled because variant management is already enabled for tables and charts'),
                             (enabled = false));
@@ -3862,7 +3908,7 @@ describe('FE V4 quick actions', () => {
 
             describe('add custom section', () => {
                 test('initialize and execute action', async () => {
-                    jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+                    checkForExistingChangeMock.mockReturnValue(false);
                     mockTelemetryEventIdentifier();
                     const pageView = new XMLView();
                     FlexUtils.getViewForControl.mockImplementation(() => {
@@ -3934,7 +3980,7 @@ describe('FE V4 quick actions', () => {
                             jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                                 return 'component-id';
                             });
-                            jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                                 if (id === 'component-id') {
                                     return component as unknown as ComponentMock;
                                 }
@@ -4104,7 +4150,7 @@ describe('FE V4 quick actions', () => {
                     jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                         return 'component-id';
                     });
-                    jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                    jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                         if (id === 'component-id') {
                             return component as unknown as ComponentMock;
                         }
@@ -4158,7 +4204,7 @@ describe('FE V4 quick actions', () => {
                             jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                                 return 'component-id';
                             });
-                            jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                                 if (id === 'component-id') {
                                     return component as unknown as ComponentMock;
                                 }
@@ -4212,7 +4258,7 @@ describe('FE V4 quick actions', () => {
                             } as any
                         ]
                     });
-                    jest.spyOn(apiHandler, 'getExistingController').mockResolvedValue({
+                    getExistingControllerMock.mockResolvedValue({
                         controllerPathFromRoot: 'adp.v4/test.js',
                         controllerExists: true,
                         isRunningInBAS: false,
@@ -4270,6 +4316,13 @@ describe('FE V4 quick actions', () => {
                             {
                                 title: 'OBJECT PAGE',
                                 actions: [
+                                    {
+                                        'kind': 'simple',
+                                        id: 'objectPage0-add-controller-to-page',
+                                        title: 'Add Controller to Page',
+                                        enabled: true,
+                                        tooltip: undefined
+                                    },
                                     {
                                         'kind': 'simple',
                                         id: 'objectPage0-add-page-action',
@@ -4344,7 +4397,7 @@ describe('FE V4 quick actions', () => {
 
     describe('Add subpage', () => {
         const testCases: {
-            ui5version?: versionUtils.Ui5VersionInfo;
+            ui5version?: Ui5VersionInfo;
             isNewPageUnavailable?: boolean;
             isUnexpectedOwnerComponent?: boolean;
             componentHasNoEntitySet?: boolean;
@@ -4441,9 +4494,7 @@ describe('FE V4 quick actions', () => {
         });
         test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
             mockTelemetryEventIdentifier();
-            jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
-                testCase.ui5version ?? { major: 1, minor: 135 }
-            );
+            getUi5VersionMock.mockResolvedValue(testCase.ui5version ?? { major: 1, minor: 135 });
             jest.spyOn(FeatureService, 'isFeatureEnabled').mockReturnValue(!testCase.isBetaFeatureDisabled);
 
             const pageView = new XMLView();
@@ -4523,7 +4574,7 @@ describe('FE V4 quick actions', () => {
 
                     jest.spyOn(view, 'getComponent').mockReturnValue('component-id');
 
-                    jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                    jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                         if (id === 'component-id') {
                             return component;
                         }
@@ -4631,10 +4682,10 @@ describe('FE V4 quick actions', () => {
             });
 
             const dummyAppComponent = {} as unknown as AppComponentV4;
-            jest.spyOn(utils, 'getV4AppComponent').mockReturnValue(dummyAppComponent);
+            getV4AppComponentMock.mockReturnValue(dummyAppComponent);
 
             const metaModelMock = {
-                requestObject: jest.fn().mockImplementation((path: string) => {
+                requestObject: jest.fn().mockImplementation((path) => {
                     if (path.split('/').length > 2) {
                         switch (path) {
                             case '/TravelType/_Booking':
@@ -4906,7 +4957,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id) => {
                             if (id === 'component-id') {
                                 return component as unknown as ComponentMock;
                             }
@@ -4923,7 +4974,7 @@ describe('FE V4 quick actions', () => {
             });
 
             const execute = jest.fn();
-            const getMock = jest.fn().mockImplementation((controlId: string) => {
+            const getMock = jest.fn().mockImplementation((controlId) => {
                 if (controlId === 'Toolbar') {
                     return testCase.isActionNotSupported
                         ? []
@@ -4931,7 +4982,7 @@ describe('FE V4 quick actions', () => {
                 }
             });
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            jest.spyOn(rtaMock, 'getService').mockImplementation((serviceName: string): any => {
+            jest.spyOn(rtaMock, 'getService').mockImplementation((serviceName): any => {
                 if (serviceName === 'action') {
                     return {
                         get: getMock,

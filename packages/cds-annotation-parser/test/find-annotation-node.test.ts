@@ -1,8 +1,8 @@
 import { Position } from '@sap-ux/odata-annotation-core';
 
-import { parse } from '../src';
-import { findAnnotationNode, getNode, getAstNodes } from '../src/find-annotation-node';
-import { getAst } from './utils';
+import { parse } from '../src/index.js';
+import { findAnnotationNode, getNode, getAstNodes } from '../src/find-annotation-node.js';
+import { getAst } from './utils/index.js';
 
 declare const expect: jest.Expect;
 

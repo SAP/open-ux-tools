@@ -1,6 +1,6 @@
 import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from './translations/inquirer-common.i18n.json';
+import translations from './translations/inquirer-common.i18n.json' with { type: 'json' };
 
 const inquirerCommonI18nNamespace = 'inquirer-common';
 export const i18n: i18nNext = i18next.createInstance();
@@ -50,5 +50,5 @@ export function t(key: string, options?: TOptions): string {
 }
 
 initI18nInquirerCommon().catch(() => {
-    // Needed for lint
+    // In case of an error during initialization, we catch it to prevent the application from crashing.
 });

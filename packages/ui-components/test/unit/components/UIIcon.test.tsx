@@ -1,25 +1,31 @@
 import * as React from 'react';
-import { render } from '@testing-library/react';
+import Enzyme from 'enzyme';
 import type { IIconProps } from '@fluentui/react';
+import { Icon } from '@fluentui/react';
 import { UIIcon } from '../../../src/components/UIIcon';
 
 describe('<UIIcon />', () => {
+    let wrapper: Enzyme.ReactWrapper<IIconProps>;
     const globalClassNames = {
         root: 'ts-icon'
     };
 
+    beforeEach(() => {
+        wrapper = Enzyme.mount(<UIIcon />);
+    });
+
+    afterEach(() => {
+        wrapper.unmount();
+    });
+
     it('Should render a UIIcon component', () => {
-        const { container } = render(<UIIcon />);
-        const iconElement = container.querySelector(`.${globalClassNames.root}`);
-        expect(iconElement).toBeTruthy();
-        expect(iconElement?.className).toContain(globalClassNames.root);
+        expect(wrapper.find(Icon).prop('className')).toEqual(globalClassNames.root);
     });
 
     it('Property "classname"', () => {
-        const { container } = render(<UIIcon className="dummy" />);
-        const iconElement = container.querySelector(`.${globalClassNames.root}`);
-        expect(iconElement).toBeTruthy();
-        expect(iconElement?.className).toContain(globalClassNames.root);
-        expect(iconElement?.className).toContain('dummy');
+        wrapper.setProps({
+            className: 'dummy'
+        });
+        expect(wrapper.find(Icon).prop('className')).toEqual(`${globalClassNames.root} dummy`);
     });
 });

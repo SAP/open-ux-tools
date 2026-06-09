@@ -1,9 +1,9 @@
 import LrepConnector from 'sap/ui/fl/LrepConnector';
 import FakeLrepConnector from 'sap/ui/fl/FakeLrepConnector';
-import { getAdditionalChangeInfo } from '../utils/additional-change-info';
+import { getAdditionalChangeInfo } from '../utils/additional-change-info.js';
 
-import type { FlexChange } from './common';
-import { CHANGES_API_PATH as CHANGES_API_PATH_STATIC, getFlexSettings } from './common';
+import type { FlexChange } from './common.js';
+import { CHANGES_API_PATH as CHANGES_API_PATH_STATIC, getFlexSettings } from './common.js';
 
 interface FetchedChanges {
     [key: string]: FlexChange;
@@ -46,7 +46,12 @@ export async function create(changes: FlexChange | FlexChange[]): Promise<void> 
 
             if (typeof FakeLrepConnector.fileChangeRequestNotifier === 'function' && change.fileName) {
                 try {
-                    FakeLrepConnector.fileChangeRequestNotifier(change.fileName, 'create', change, additionalChangeInfo);
+                    FakeLrepConnector.fileChangeRequestNotifier(
+                        change.fileName,
+                        'create',
+                        change,
+                        additionalChangeInfo
+                    );
                 } catch {
                     // exceptions in the listener call are ignored
                 }
@@ -56,7 +61,6 @@ export async function create(changes: FlexChange | FlexChange[]): Promise<void> 
                 change,
                 additionalChangeInfo
             };
-
 
             return fetch(changesApiPath, {
                 method: 'POST',

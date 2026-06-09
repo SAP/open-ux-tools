@@ -1,26 +1,20 @@
 {
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src",
-    "lib": [
-      "ES2023",
-      "ESNext.BigInt"
-    ],
-    "preserveConstEnums": false
-  },
-  "include": [
-    "src"
-  ],
-  "references": [
-    {
-      "path": "../odata-annotation-core-types"
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "dist",
+        "rootDir": "src",
+        "lib": ["ES2023", "ESNext.BigInt"]
     },
-    {
-      "path": "../odata-entity-model"
-    },
-    {
-      "path": "../text-document-utils"
-    }
-  ]
+    "include": ["src"],
+    "references": [
+        {
+            "path": "../odata-annotation-core-types"
+        },
+        {
+            "path": "../odata-entity-model"
+        },
+        {
+            "path": "../text-document-utils"
+        }
+    ]
 }

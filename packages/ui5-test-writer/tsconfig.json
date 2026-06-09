@@ -1,29 +1,28 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": [
-    "../../types/mem-fs-editor.d.ts",
-    "src",
-    "src/**/*.json"
-  ],
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist"
-  },
-  "references": [
-    {
-      "path": "../fiori-generator-shared"
+    "extends": "../../tsconfig.json",
+    "include": ["../../types/mem-fs-editor.d.ts", "src", "src/**/*.json"],
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist"
     },
-    {
-      "path": "../jest-file-matchers"
-    },
-    {
-      "path": "../logger"
-    },
-    {
-      "path": "../project-access"
-    },
-    {
-      "path": "../ui5-application-writer"
-    }
-  ]
+    "references": [
+        {
+            "path": "../fiori-generator-shared"
+        },
+        {
+            "path": "../jest-file-matchers"
+        },
+        {
+            "path": "../logger"
+        },
+        {
+            "path": "../preview-middleware"
+        },
+        {
+            "path": "../project-access"
+        },
+        {
+            "path": "../ui5-application-writer"
+        }
+    ]
 }

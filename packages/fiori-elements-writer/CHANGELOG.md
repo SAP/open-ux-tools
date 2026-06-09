@@ -1,5 +1,385 @@
 # @sap-ux/fiori-elements-writer
 
+## 3.0.12
+
+### Patch Changes
+
+- Updated dependencies [a328e14]
+    - @sap-ux/fiori-generator-shared@1.0.7
+    - @sap-ux/cap-config-writer@1.0.7
+    - @sap-ux/ui5-test-writer@1.0.12
+
+## 3.0.11
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@1.0.11
+
+## 3.0.10
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/cap-config-writer@1.0.6
+    - @sap-ux/annotation-generator@1.0.5
+    - @sap-ux/fe-fpm-writer@1.0.5
+    - @sap-ux/fiori-generator-shared@1.0.6
+    - @sap-ux/odata-service-writer@1.0.5
+    - @sap-ux/ui5-application-writer@2.0.2
+    - @sap-ux/ui5-test-writer@1.0.10
+
+## 3.0.9
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@1.0.9
+
+## 3.0.8
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@1.0.4
+- @sap-ux/cap-config-writer@1.0.5
+- @sap-ux/fe-fpm-writer@1.0.4
+- @sap-ux/fiori-generator-shared@1.0.5
+- @sap-ux/odata-service-writer@1.0.4
+- @sap-ux/ui5-application-writer@2.0.2
+- @sap-ux/ui5-test-writer@1.0.8
+
+## 3.0.7
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/fiori-generator-shared@1.0.4
+    - @sap-ux/ui5-application-writer@2.0.2
+    - @sap-ux/annotation-generator@1.0.3
+    - @sap-ux/odata-service-writer@1.0.3
+    - @sap-ux/cap-config-writer@1.0.4
+    - @sap-ux/ui5-test-writer@1.0.7
+    - @sap-ux/fe-fpm-writer@1.0.3
+    - @sap-ux/ui5-config@1.0.2
+    - @sap-ux/logger@1.0.1
+
+## 3.0.6
+
+### Patch Changes
+
+- Updated dependencies [9580241]
+    - @sap-ux/ui5-config@1.0.1
+    - @sap-ux/odata-service-writer@1.0.2
+    - @sap-ux/ui5-application-writer@2.0.1
+    - @sap-ux/annotation-generator@1.0.2
+    - @sap-ux/cap-config-writer@1.0.3
+    - @sap-ux/fe-fpm-writer@1.0.2
+    - @sap-ux/fiori-generator-shared@1.0.3
+    - @sap-ux/ui5-test-writer@1.0.6
+
+## 3.0.5
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@1.0.5
+
+## 3.0.4
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@1.0.2
+- @sap-ux/ui5-test-writer@1.0.4
+- @sap-ux/cap-config-writer@1.0.2
+
+## 3.0.3
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@1.0.3
+
+## 3.0.2
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@1.0.2
+
+## 3.0.1
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@1.0.1
+- @sap-ux/cap-config-writer@1.0.1
+- @sap-ux/fe-fpm-writer@1.0.1
+- @sap-ux/fiori-generator-shared@1.0.1
+- @sap-ux/odata-service-writer@1.0.1
+- @sap-ux/ui5-application-writer@2.0.0
+- @sap-ux/ui5-test-writer@1.0.1
+
+## 3.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/fiori-generator-shared@1.0.0
+    - @sap-ux/ui5-application-writer@2.0.0
+    - @sap-ux/annotation-generator@1.0.0
+    - @sap-ux/odata-service-writer@1.0.0
+    - @sap-ux/cap-config-writer@1.0.0
+    - @sap-ux/ui5-test-writer@1.0.0
+    - @sap-ux/fe-fpm-writer@1.0.0
+    - @sap-ux/ui5-config@1.0.0
+    - @sap-ux/logger@1.0.0
+
+## 2.10.16
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@0.9.15
+
+## 2.10.15
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@0.9.14
+
+## 2.10.14
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.15.6
+- @sap-ux/ui5-test-writer@0.9.13
+- @sap-ux/cap-config-writer@0.13.6
+
+## 2.10.13
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.15.5
+- @sap-ux/ui5-config@0.31.1
+- @sap-ux/ui5-test-writer@0.9.12
+- @sap-ux/cap-config-writer@0.13.5
+
+## 2.10.12
+
+### Patch Changes
+
+- Updated dependencies [162059e]
+    - @sap-ux/ui5-application-writer@1.9.2
+    - @sap-ux/ui5-test-writer@0.9.11
+
+## 2.10.11
+
+### Patch Changes
+
+- Updated dependencies [03d1cdd]
+    - @sap-ux/ui5-test-writer@0.9.10
+
+## 2.10.10
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.15.4
+- @sap-ux/odata-service-writer@0.32.2
+- @sap-ux/ui5-test-writer@0.9.9
+- @sap-ux/cap-config-writer@0.13.4
+- @sap-ux/fe-fpm-writer@0.44.3
+
+## 2.10.9
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@0.9.8
+
+## 2.10.8
+
+### Patch Changes
+
+- Updated dependencies [9752c40]
+    - @sap-ux/ui5-config@0.31.1
+    - @sap-ux/odata-service-writer@0.32.2
+    - @sap-ux/ui5-application-writer@1.9.1
+    - @sap-ux/annotation-generator@0.5.3
+    - @sap-ux/cap-config-writer@0.13.3
+    - @sap-ux/fe-fpm-writer@0.44.3
+    - @sap-ux/fiori-generator-shared@0.15.3
+    - @sap-ux/ui5-test-writer@0.9.7
+
+## 2.10.7
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@0.9.6
+
+## 2.10.6
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@0.5.2
+- @sap-ux/fe-fpm-writer@0.44.2
+- @sap-ux/ui5-application-writer@1.9.0
+
+## 2.10.5
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@0.5.1
+- @sap-ux/cap-config-writer@0.13.2
+- @sap-ux/fe-fpm-writer@0.44.1
+- @sap-ux/fiori-generator-shared@0.15.2
+- @sap-ux/odata-service-writer@0.32.1
+- @sap-ux/ui5-application-writer@1.9.0
+- @sap-ux/ui5-test-writer@0.9.5
+
+## 2.10.4
+
+### Patch Changes
+
+- Updated dependencies [8d4a8a4]
+    - @sap-ux/ui5-test-writer@0.9.4
+
+## 2.10.3
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@0.9.3
+
+## 2.10.2
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@0.9.2
+
+## 2.10.1
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/fiori-generator-shared@0.15.1
+    - @sap-ux/cap-config-writer@0.13.1
+    - @sap-ux/ui5-test-writer@0.9.1
+
+## 2.10.0
+
+### Minor Changes
+
+- 2f0c182: feat: support virtual preview endpoints for test generation
+
+    When `useVirtualPreviewEndpoints` is enabled, test harness files (testsuite, unitTests, opaTests) are served virtually and not written to disk. UI5 yaml files are updated with `flp.path: test/flp.html` and test framework entries (OPA5, Testsuite, QUnit) are added to ui5-mock.yaml.
+
+### Patch Changes
+
+- Updated dependencies [2f0c182]
+    - @sap-ux/ui5-test-writer@0.9.0
+
+## 2.9.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/annotation-generator@0.5.0
+    - @sap-ux/cap-config-writer@0.13.0
+    - @sap-ux/fe-fpm-writer@0.44.0
+    - @sap-ux/fiori-generator-shared@0.15.0
+    - @sap-ux/logger@0.9.0
+    - @sap-ux/odata-service-writer@0.32.0
+    - @sap-ux/ui5-application-writer@1.9.0
+    - @sap-ux/ui5-config@0.31.0
+    - @sap-ux/ui5-test-writer@0.8.0
+
+## 2.8.140
+
+### Patch Changes
+
+- Updated dependencies [138246a]
+    - @sap-ux/odata-service-writer@0.31.15
+
+## 2.8.139
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/annotation-generator@0.4.57
+    - @sap-ux/cap-config-writer@0.12.100
+    - @sap-ux/fe-fpm-writer@0.43.30
+    - @sap-ux/fiori-generator-shared@0.14.2
+    - @sap-ux/logger@0.8.6
+    - @sap-ux/odata-service-writer@0.31.14
+    - @sap-ux/ui5-application-writer@1.8.9
+    - @sap-ux/ui5-config@0.30.5
+    - @sap-ux/ui5-test-writer@0.7.114
+
+## 2.8.138
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/odata-service-writer@0.31.13
+    - @sap-ux/fiori-generator-shared@0.14.1
+    - @sap-ux/annotation-generator@0.4.56
+    - @sap-ux/cap-config-writer@0.12.99
+    - @sap-ux/fe-fpm-writer@0.43.29
+    - @sap-ux/ui5-application-writer@1.8.8
+    - @sap-ux/ui5-test-writer@0.7.113
+
+## 2.8.137
+
+### Patch Changes
+
+- Updated dependencies [9360ea5]
+    - @sap-ux/fiori-generator-shared@0.14.0
+    - @sap-ux/cap-config-writer@0.12.98
+    - @sap-ux/ui5-test-writer@0.7.112
+
+## 2.8.136
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+- Updated dependencies [678a08e]
+    - @sap-ux/ui5-config@0.30.4
+    - @sap-ux/fiori-generator-shared@0.13.105
+    - @sap-ux/odata-service-writer@0.31.12
+    - @sap-ux/ui5-application-writer@1.8.8
+    - @sap-ux/cap-config-writer@0.12.97
+    - @sap-ux/ui5-test-writer@0.7.111
+    - @sap-ux/annotation-generator@0.4.55
+    - @sap-ux/fe-fpm-writer@0.43.28
+
 ## 2.8.135
 
 ### Patch Changes

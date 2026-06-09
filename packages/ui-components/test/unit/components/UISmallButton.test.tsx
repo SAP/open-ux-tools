@@ -1,28 +1,36 @@
 import * as React from 'react';
-import { render } from '@testing-library/react';
-import type { IButtonProps, IButtonStyles } from '@fluentui/react';
+import Enzyme from 'enzyme';
+import type { IButtonProps } from '@fluentui/react';
+import { DefaultButton } from '@fluentui/react';
 import { UISmallButton } from '../../../src/components/UIButton/UISmallButton';
 
-class UISmallButtonTestHelper extends UISmallButton {
-    public callSetStyle(props: IButtonProps): IButtonStyles {
-        return this.setStyle(props);
-    }
-}
-
 describe('<UISmallButton />', () => {
+    let wrapper: Enzyme.ReactWrapper<IButtonProps>;
+
+    beforeEach(() => {
+        wrapper = Enzyme.mount(<UISmallButton>Dummy</UISmallButton>);
+    });
+
+    afterEach(() => {
+        wrapper.unmount();
+    });
+
     it('Should render a UISmallButton component', () => {
-        const { container } = render(<UISmallButton>Dummy</UISmallButton>);
-        expect(container.querySelector('.ms-Button')).toBeInTheDocument();
+        expect(wrapper.find('.ms-Button').length).toEqual(1);
     });
 
     it('Styles - primary', () => {
-        const helper = new UISmallButtonTestHelper({ children: 'Dummy' });
-        const styles = helper.callSetStyle({ primary: true });
-        expect(styles.root).toMatchInlineSnapshot(`
+        wrapper.setProps({
+            primary: true
+        });
+        const styles = wrapper.find(DefaultButton).props().styles;
+        expect(styles?.root).toMatchInlineSnapshot(
+            {},
+            `
             Object {
               "backgroundColor": "var(--vscode-button-background)",
               "borderColor": "var(--vscode-contrastBorder, var(--vscode-button-background))",
-              "borderRadius": 20,
+              "borderRadius": "var(--vscode-cornerRadius-circle, 9999px)",
               "color": "var(--vscode-button-foreground)",
               "fontSize": "11px",
               "fontWeight": 400,
@@ -37,17 +45,22 @@ describe('<UISmallButton />', () => {
                 },
               },
             }
-        `);
+        `
+        );
     });
 
     it('Styles - secondary', () => {
-        const helper = new UISmallButtonTestHelper({ children: 'Dummy' });
-        const styles = helper.callSetStyle({ primary: false });
-        expect(styles.root).toMatchInlineSnapshot(`
+        wrapper.setProps({
+            primary: false
+        });
+        const styles = wrapper.find(DefaultButton).props().styles;
+        expect(styles?.root).toMatchInlineSnapshot(
+            {},
+            `
             Object {
               "backgroundColor": "var(--vscode-button-secondaryBackground, #5f6a79)",
               "borderColor": "var(--vscode-contrastBorder, var(--vscode-button-secondaryBackground, #5f6a79))",
-              "borderRadius": 20,
+              "borderRadius": "var(--vscode-cornerRadius-circle, 9999px)",
               "color": "var(--vscode-button-secondaryForeground, #ffffff)",
               "fontSize": "11px",
               "fontWeight": 400,
@@ -62,6 +75,7 @@ describe('<UISmallButton />', () => {
                 },
               },
             }
-        `);
+        `
+        );
     });
 });

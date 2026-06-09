@@ -1,5 +1,168 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.1.3
+
+### Patch Changes
+
+- 74a3c3f: Switch to onnxruntime-web (WASM) to eliminate native binaries and reduce tgz to ~9 MB
+
+## 1.1.2
+
+### Patch Changes
+
+- 5a70fbf: Download ONNX model at runtime to reduce tgz below npm publish 100 MB limit
+
+## 1.1.1
+
+### Patch Changes
+
+- 889a217: Download ONNX model at runtime to reduce tgz below npm publish 100 MB limit
+
+## 1.1.0
+
+### Minor Changes
+
+- 9f33150: Build self-contained dist/ bundle (ONNX model, onnxruntime, embeddings data included);
+  Replace @xenova/transformers with @huggingface/transformers 4.2.0;
+
+## 1.0.3
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/fiori-docs-embeddings@1.0.1
+    - @sap-ux/store@2.0.1
+
+## 1.0.2
+
+### Patch Changes
+
+- 0268c25: Replace negated typeof checks to avoid SonarQube findings
+    - @sap-ux/fiori-docs-embeddings@1.0.0
+
+## 1.0.1
+
+### Patch Changes
+
+- 35962a9: fix: bundle odata-annotation-core, odata-annotation-core-types and text-document-utils instead of marking them as external
+
+    These packages have no bundling obstacles and should be inlined into the dist rather than left as unresolved external imports that cause `ERR_MODULE_NOT_FOUND` when the server is run via npx.
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/fiori-docs-embeddings@1.0.0
+    - @sap-ux/store@2.0.0
+
+## 0.7.2
+
+### Patch Changes
+
+- Updated dependencies [c12420a]
+    - @sap-ux/store@1.6.1
+    - @sap-ux/fiori-docs-embeddings@0.5.1
+
+## 0.7.1
+
+### Patch Changes
+
+- Updated dependencies [12137f6]
+    - @sap-ux/fiori-docs-embeddings@0.5.1
+
+## 0.7.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/fiori-docs-embeddings@0.5.0
+    - @sap-ux/store@1.6.0
+
+## 0.6.60
+
+### Patch Changes
+
+- 59537d3: chore: override sharp to >=0.33.5 to fix CI build on darwin-arm64
+- Updated dependencies [59537d3]
+    - @sap-ux/fiori-docs-embeddings@0.4.20
+
+## 0.6.59
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/fiori-docs-embeddings@0.4.19
+    - @sap-ux/store@1.5.14
+
+## 0.6.58
+
+### Patch Changes
+
+- 4101c21: fix: connect stdio transport before telemetry init to fix Claude Desktop extension disconnect
+
+## 0.6.57
+
+### Patch Changes
+
+- c4bd625: Improve documentation Claude code, etc...
+
+## 0.6.56
+
+### Patch Changes
+
+- Updated dependencies [a5c05a8]
+    - @sap-ux/fiori-docs-embeddings@0.4.18
+
+## 0.6.55
+
+### Patch Changes
+
+- 2781f39: fix: add missing apache-arrow runtime dependency required by @lancedb/lancedb
+
+## 0.6.54
+
+### Patch Changes
+
+- 35f4b68: chore: update plugin.json manifest name to sap-fiori-mcp-server and fix author metadata
+
 ## 0.6.53
 
 ### Patch Changes

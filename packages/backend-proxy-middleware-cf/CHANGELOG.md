@@ -1,5 +1,238 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.3.9
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.9
+
+## 0.3.8
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.8
+
+## 0.3.7
+
+### Patch Changes
+
+- Updated dependencies [fb84c0e]
+    - @sap-ux/adp-tooling@1.0.7
+
+## 0.3.6
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.6
+
+## 0.3.5
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/adp-tooling@1.0.5
+    - @sap-ux/btp-utils@2.0.1
+    - @sap-ux/logger@1.0.1
+
+## 0.3.4
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.4
+
+## 0.3.3
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.3
+
+## 0.3.2
+
+### Patch Changes
+
+- a8e4cf0: fix: handle both nested (`{ uaa: {...} }`) and flat destination-service credential shapes when fetching BTP destinations and when checking for OnPremise destinations during adaptation-project startup. A new `getDestinationServiceUaa` helper in `@sap-ux/adp-tooling` is reused by `@sap-ux/backend-proxy-middleware-cf` to avoid duplicate shape-handling logic.
+- Updated dependencies [a8e4cf0]
+    - @sap-ux/adp-tooling@1.0.2
+
+## 0.3.1
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.1
+
+## 0.3.0
+
+### Minor Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/adp-tooling@1.0.0
+    - @sap-ux/btp-utils@2.0.0
+    - @sap-ux/logger@1.0.0
+
+## 0.2.11
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.11
+
+## 0.2.10
+
+### Patch Changes
+
+- Updated dependencies [9a980a9]
+    - @sap-ux/adp-tooling@0.19.10
+
+## 0.2.9
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.9
+
+## 0.2.8
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.8
+
+## 0.2.7
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade @sap/bas-sdk 3.13.6 → 3.13.7, @sap/approuter ^21.5.0 → ^22.0.0 (security: ws vulnerability)
+- Updated dependencies [01b70ca]
+    - @sap-ux/adp-tooling@0.19.7
+    - @sap-ux/btp-utils@1.2.1
+
+## 0.2.6
+
+### Patch Changes
+
+- Updated dependencies [758b0d4]
+    - @sap-ux/adp-tooling@0.19.6
+
+## 0.2.5
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.5
+
+## 0.2.4
+
+### Patch Changes
+
+- Updated dependencies [dab1aa2]
+    - @sap-ux/adp-tooling@0.19.4
+
+## 0.2.3
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.19.3
+
+## 0.2.2
+
+### Patch Changes
+
+- Updated dependencies [342c544]
+    - @sap-ux/adp-tooling@0.19.2
+
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies [2c76f8f]
+    - @sap-ux/adp-tooling@0.19.1
+
+## 0.2.0
+
+### Minor Changes
+
+- 72695e5: chore: upgrade @sap/approuter ^20.8.0 → ^21.5.0 for Node 24 support
+  and drop Node 20 support as it is no longer maintained
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux/adp-tooling@0.19.0
+    - @sap-ux/btp-utils@1.2.0
+    - @sap-ux/logger@0.9.0
+
+## 0.1.25
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.134
+
+## 0.1.24
+
+### Patch Changes
+
+- Updated dependencies [8c4185a]
+    - @sap-ux/adp-tooling@0.18.133
+
+## 0.1.23
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+- Updated dependencies [50a8ba5]
+    - @sap-ux/adp-tooling@0.18.132
+    - @sap-ux/btp-utils@1.1.16
+    - @sap-ux/logger@0.8.6
+
+## 0.1.22
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.131
+
+## 0.1.21
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.130
+
+## 0.1.20
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+- Updated dependencies [678a08e]
+    - @sap-ux/adp-tooling@0.18.129
+    - @sap-ux/btp-utils@1.1.15
+
 ## 0.1.19
 
 ### Patch Changes

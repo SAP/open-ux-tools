@@ -1,5 +1,5 @@
 import type * as React from 'react';
-import type { ToggleGroupOption } from '../UIToggleGroup.types';
+import type { ToggleGroupOption } from '../UIToggleGroup.types.js';
 
 export interface UIToggleGroupOptionProps extends Omit<ToggleGroupOption, 'key'> {
     itemKey: string;

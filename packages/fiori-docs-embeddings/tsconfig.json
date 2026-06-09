@@ -1,19 +1,16 @@
 {
-  "extends": "../../tsconfig-esm.json",
-  "include": [
-    "src",
-    "src/**/*.json"
-  ],
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist"
-  },
-  "references": [
-    {
-      "path": "../create"
+    "extends": "../../tsconfig.json",
+    "include": ["src", "src/**/*.json"],
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist"
     },
-    {
-      "path": "../logger"
-    }
-  ]
+    "references": [
+        {
+            "path": "../create"
+        },
+        {
+            "path": "../logger"
+        }
+    ]
 }

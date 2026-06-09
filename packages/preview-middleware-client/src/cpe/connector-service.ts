@@ -1,8 +1,8 @@
 import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import { reloadApplication, storageFileChanged } from '@sap-ux-private/control-property-editor-common';
-import type { ActionSenderFunction, SubscribeFunction } from './types';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
-import { AdditionalChangeInfo } from '../utils/additional-change-info';
+import type { ActionSenderFunction, SubscribeFunction } from './types.js';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version.js';
+import { AdditionalChangeInfo } from '../utils/additional-change-info.js';
 /**
  * A Class of WorkspaceConnectorService
  */
@@ -64,7 +64,11 @@ export class WorkspaceConnectorService {
         ) {
             this.sendAction(storageFileChanged(fileName?.replace('sap.ui.fl.', '')));
         }
-        if (changeType === 'addXML' && (additionalChangeInfo as AdditionalChangeInfo )?.templateName && content?.fragmentPath) {
+        if (
+            changeType === 'addXML' &&
+            (additionalChangeInfo as AdditionalChangeInfo)?.templateName &&
+            content?.fragmentPath
+        ) {
             // If there is template available, then we save and reload right away,
             // so we should ignore the first file change event that comes for the fragment.
             // (We don't want to show "Reload" button)

@@ -1,41 +1,32 @@
 import * as React from 'react';
-import { render } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import type { ITextFieldStyleProps, ITextFieldStyles } from '@fluentui/react';
+import Enzyme from 'enzyme';
+import type { IStyleFunction, ITextFieldStyleProps, ITextFieldStyles } from '@fluentui/react';
+import { TextField } from '@fluentui/react';
 import type { InputRenderProps, UITextInputProps } from '../../../src/components/UIInput';
 import { UITextInput } from '../../../src/components/UIInput';
 
-class UITextInputTestHelper extends UITextInput {
-    public callGetStyles(styleProps: Partial<ITextFieldStyleProps> = {}): Partial<ITextFieldStyles> {
-        return (this as any).getStyles(styleProps);
-    }
-}
+describe('<UIToggle />', () => {
+    let wrapper: Enzyme.ReactWrapper<UITextInputProps>;
 
-describe('<UITextInput />', () => {
-    let renderResult: ReturnType<typeof render>;
-    let container: HTMLElement;
-
-    const getStyles = (
-        componentProps: Partial<UITextInputProps> = {},
-        styleProps: Partial<ITextFieldStyleProps> = {}
-    ): Partial<ITextFieldStyles> => {
-        const helper = new UITextInputTestHelper(componentProps);
-        return helper.callGetStyles(styleProps);
+    const getStyles = (additionalProps?: Partial<ITextFieldStyleProps>): ITextFieldStyles => {
+        const textfieldProps = wrapper.find(TextField).props();
+        const styles = (textfieldProps.styles as IStyleFunction<{}, {}>)({
+            ...textfieldProps,
+            ...additionalProps
+        }) as ITextFieldStyles;
+        return styles;
     };
 
     beforeEach(() => {
-        renderResult = render(<UITextInput />);
-        container = renderResult.container;
+        wrapper = Enzyme.mount(<UITextInput />);
     });
 
     afterEach(() => {
-        if (renderResult) {
-            renderResult.unmount();
-        }
+        wrapper.unmount();
     });
 
     it('Should render a UITextInput component', () => {
-        expect(container.querySelectorAll('.ms-TextField').length).toEqual(1);
+        expect(wrapper.find('.ms-TextField').length).toEqual(1);
     });
 
     it('Styles - default', () => {
@@ -43,7 +34,10 @@ describe('<UITextInput />', () => {
     });
 
     it('Styles - required', () => {
-        expect(getStyles({ required: true })).toMatchSnapshot();
+        wrapper.setProps({
+            required: true
+        });
+        expect(getStyles()).toMatchSnapshot();
     });
 
     const testCases = [
@@ -82,31 +76,32 @@ describe('<UITextInput />', () => {
     ];
     for (const testCase of testCases) {
         it(`Styles - multiline=${testCase.multiline}, disabled=${testCase.disabled}, readOnly=${testCase.readOnly}`, () => {
-            expect(
-                getStyles({
-                    multiline: testCase.multiline,
-                    disabled: testCase.disabled,
-                    readOnly: testCase.readOnly
-                })
-            ).toMatchSnapshot();
+            wrapper.setProps({
+                multiline: testCase.multiline,
+                disabled: testCase.disabled,
+                readOnly: testCase.readOnly
+            });
+            expect(getStyles()).toMatchSnapshot();
         });
     }
 
     it('Readonly input field with value', () => {
-        expect(
-            getStyles({
-                readOnly: true,
-                value: 'test'
-            })
-        ).toMatchSnapshot();
+        wrapper.setProps({
+            readOnly: true,
+            value: 'test'
+        });
+        expect(getStyles()).toMatchSnapshot();
     });
 
     it('Disabled textfield, but input should be readonly', () => {
-        renderResult.rerender(<UITextInput disabled={true} value="test" />);
-        const input = container.querySelector('input.ms-TextField-field') as HTMLInputElement;
-        expect(input?.disabled).toEqual(false);
-        expect(input?.readOnly).toEqual(true);
-        expect(input?.getAttribute('aria-disabled')).toEqual('true');
+        wrapper.setProps({
+            disabled: true,
+            value: 'test'
+        });
+        const inputProps = wrapper.find('input.ms-TextField-field')?.props();
+        expect(inputProps?.disabled).toEqual(undefined);
+        expect(inputProps?.readOnly).toEqual(true);
+        expect(inputProps?.['aria-disabled']).toEqual(true);
     });
 
     const focusTestCases = [
@@ -118,85 +113,81 @@ describe('<UITextInput />', () => {
         }
     ];
     for (const errorMessage of focusTestCases) {
-        it(`Focus styles, "errorMessage=${errorMessage.errorMessage}"`, () => {
+        it(`Focus styles, "errorMessage=${errorMessage}"`, () => {
+            wrapper.setProps({
+                errorMessage: errorMessage.errorMessage ? 'dummy' : undefined
+            });
             expect(
-                getStyles(
-                    { errorMessage: errorMessage.errorMessage ? 'dummy' : undefined },
-                    { focused: true }
-                )
+                getStyles({
+                    focused: true
+                })
             ).toMatchSnapshot();
         });
     }
 
     describe('Styles - error message', () => {
         it('Error', () => {
-            expect(
-                getStyles({
-                    errorMessage: 'dummy'
-                })
-            ).toMatchSnapshot();
+            wrapper.setProps({
+                errorMessage: 'dummy'
+            });
+            expect(getStyles()).toMatchSnapshot();
         });
 
         it('Warning', () => {
-            expect(
-                getStyles({
-                    warningMessage: 'dummy'
-                })
-            ).toMatchSnapshot();
+            wrapper.setProps({
+                warningMessage: 'dummy'
+            });
+            expect(getStyles()).toMatchSnapshot();
         });
 
         it('Info', () => {
-            expect(
-                getStyles({
-                    infoMessage: 'dummy'
-                })
-            ).toMatchSnapshot();
+            wrapper.setProps({
+                infoMessage: 'dummy'
+            });
+            expect(getStyles()).toMatchSnapshot();
         });
 
         it('Error - custom component', async () => {
-            const localRenderResult = render(<UITextInput errorMessage={<div className="dummyError">TEST</div>} />);
+            wrapper.setProps({
+                errorMessage: <div className="dummyError">TEST</div>
+            });
+            wrapper.update();
             await new Promise((resolve) => setTimeout(resolve, 100));
-            expect(localRenderResult.container.querySelectorAll('.dummyError').length).toEqual(1);
-            localRenderResult.unmount();
+            const element = wrapper.getDOMNode();
+            expect(element.querySelectorAll('.dummyError').length).toEqual(1);
         });
     });
 
     describe('Custom renderers for "onRenderInput"', () => {
         it('External "onRenderInput"', () => {
-            const localRenderResult = render(
-                <UITextInput
-                    onRenderInput={(
-                        props?: InputRenderProps,
-                        defaultRender?: (props?: InputRenderProps) => JSX.Element | null
-                    ) => {
-                        return <div className="custom-render-option">{defaultRender?.(props)}</div>;
-                    }}
-                />
-            );
-            expect(localRenderResult.container.querySelectorAll('.custom-render-option').length).toEqual(1);
-            const input = localRenderResult.container.querySelector('input.ms-TextField-field') as HTMLInputElement;
-            expect(input?.disabled).toEqual(false);
-            expect(input?.readOnly).toEqual(false);
-            localRenderResult.unmount();
+            wrapper.setProps({
+                onRenderInput: (
+                    props?: InputRenderProps,
+                    defaultRender?: (props?: InputRenderProps) => JSX.Element | null
+                ) => {
+                    return <div className="custom-render-option">{defaultRender?.(props)}</div>;
+                }
+            });
+            expect(wrapper.find('.custom-render-option').length).toEqual(1);
+            const inputProps = wrapper.find('input.ms-TextField-field')?.props();
+            expect(inputProps?.disabled).toEqual(undefined);
+            expect(inputProps?.readOnly).toEqual(undefined);
         });
 
         it('External and internal "onRenderInput"', () => {
-            const localRenderResult = render(
-                <UITextInput
-                    disabled={true}
-                    onRenderInput={(
-                        props?: InputRenderProps,
-                        defaultRender?: (props?: InputRenderProps) => JSX.Element | null
-                    ) => {
-                        return <div className="custom-render-option">{defaultRender?.(props)}</div>;
-                    }}
-                />
-            );
-            expect(localRenderResult.container.querySelectorAll('.custom-render-option').length).toEqual(1);
-            const input = localRenderResult.container.querySelector('input.ms-TextField-field') as HTMLInputElement;
-            expect(input?.disabled).toEqual(false);
-            expect(input?.readOnly).toEqual(true);
-            localRenderResult.unmount();
+            wrapper.setProps({
+                disabled: true,
+                onRenderInput: (
+                    props?: InputRenderProps,
+                    defaultRender?: (props?: InputRenderProps) => JSX.Element | null
+                ) => {
+                    return <div className="custom-render-option">{defaultRender?.(props)}</div>;
+                }
+            });
+            expect(wrapper.find('.custom-render-option').length).toEqual(1);
+            const inputProps = wrapper.find('input.ms-TextField-field')?.props();
+            expect(inputProps?.disabled).toEqual(undefined);
+            expect(inputProps?.readOnly).toEqual(true);
         });
     });
 });

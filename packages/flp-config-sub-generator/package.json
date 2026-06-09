@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/flp-config-sub-generator",
     "description": "Generator for creating Fiori Launcpad configuration",
-    "version": "0.3.199",
+    "version": "1.0.9",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -10,6 +10,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue"
     },
+    "type": "module",
     "license": "Apache-2.0",
     "main": "generators/app/index.js",
     "scripts": {
@@ -18,8 +19,8 @@
         "watch": "tsc --watch",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
@@ -30,7 +31,7 @@
         "!generators/**/*.map"
     ],
     "dependencies": {
-        "@sap-devx/yeoman-ui-types": "1.23.0",
+        "@sap-devx/yeoman-ui-types": "1.25.0",
         "@sap-ux/app-config-writer": "workspace:*",
         "@sap-ux/deploy-config-generator-shared": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",
@@ -44,6 +45,7 @@
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@jest/types": "30.3.0",
         "@types/inquirer": "8.2.6",
         "@types/mem-fs": "1.1.2",
@@ -52,7 +54,7 @@
         "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-test": "4.0.6",
         "@sap-ux/nodejs-utils": "workspace:*",
-        "@vscode-logging/logger": "2.0.8",
+        "@vscode-logging/logger": "2.0.9",
         "memfs": "3.4.13",
         "mem-fs-editor": "9.4.0",
         "lodash": "4.18.1",
@@ -62,6 +64,6 @@
         "yeoman-test": "6.3.0"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

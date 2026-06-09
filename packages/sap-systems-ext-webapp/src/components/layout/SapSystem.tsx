@@ -1,10 +1,10 @@
 import React, { type ReactElement } from 'react';
-import type { SystemState } from '../../types';
+import type { SystemState } from '../../types/index.js';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { SystemHeader } from './header';
-import { SystemMain } from './main';
-import { LoadingState } from '../../types';
+import { SystemHeader } from './header/index.js';
+import { SystemMain } from './main/index.js';
+import { LoadingState } from '../../types/index.js';
 
 /**
  * Renders the SAP System details layout.

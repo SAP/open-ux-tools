@@ -14,12 +14,12 @@ import {
 import Utils from 'sap/ui/fl/Utils';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
-import type { MergedSetting, ManagedObjectMetadataProperties } from './utils';
-import { getManifestProperties } from './utils';
-import type { UI5ControlProperty } from './types';
+import type { MergedSetting, ManagedObjectMetadataProperties } from './utils.js';
+import { getManifestProperties } from './utils.js';
+import type { UI5ControlProperty } from './types.js';
 import DataType from 'sap/ui/base/DataType';
-import { getV4PageType } from '../utils/fe-v4';
-import type { ChangeService } from './changes';
+import { getV4PageType } from '../utils/fe-v4.js';
+import type { ChangeService } from './changes/index.js';
 import type { TemplateType } from 'sap/ui/dt/DesignTimeMetadata';
 
 type AnalyzedType = Pick<UI5ControlProperty, 'isArray' | 'primitiveType' | 'ui5Type' | 'enumValues'>;
@@ -111,7 +111,7 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
         // enum values are created differently and use DataType as prototype, which only has stubs for instance functions -> getName returns undefined
         // array and base types also return undefined, but we have already handled those above
         // https://github.com/SAP/openui5/blob/203ce22763a76e28b7a422f6c635a42480f733f1/src/sap.ui.core/src/sap/ui/base/DataType.js#L430
-         
+
         const name = (Object.getPrototypeOf(propertyDataType) as DataType).getName();
         if (!name) {
             analyzedType.primitiveType = 'enum';
@@ -245,8 +245,7 @@ function processConfigProperty(property: MergedSetting, control: ManagedObject):
     const analyzedType = analyzeManifestProperty(property);
     if (
         !analyzedType ||
-        (property?.restrictedTo?.length &&
-            !property?.restrictedTo?.includes(getV4PageType(control) as TemplateType))
+        (property?.restrictedTo?.length && !property?.restrictedTo?.includes(getV4PageType(control) as TemplateType))
     ) {
         return undefined;
     }

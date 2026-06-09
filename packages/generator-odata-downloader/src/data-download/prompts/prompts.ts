@@ -12,13 +12,13 @@ import { getSystemSelectionQuestions, OdataVersion } from '@sap-ux/odata-service
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Answers, CheckboxChoiceOptions, Question } from 'inquirer';
-import { t } from '../../utils/i18n';
-import { ODataDownloadGenerator } from '../odata-download-generator';
-import type { EntitySetsFlat } from '../odata-query';
-import type { AppConfig, ReferencedEntities } from '../types';
-import { getEntityModel } from '../utils';
-import { createEntityChoices, getData, getServiceDetails, getSpecification } from './prompt-helpers';
-import { PromptState } from '../prompt-state';
+import { t } from '../../utils/i18n.js';
+import { ODataDownloadGenerator } from '../odata-download-generator.js';
+import type { EntitySetsFlat } from '../odata-query.js';
+import type { AppConfig, ReferencedEntities } from '../types.js';
+import { getEntityModel } from '../utils.js';
+import { createEntityChoices, getData, getServiceDetails, getSpecification } from './prompt-helpers.js';
+import { PromptState } from '../prompt-state.js';
 
 let debounceTimer: ReturnType<typeof setTimeout> | undefined;
 const debouncedGetData = (...args: Parameters<typeof getData>): Promise<Awaited<ReturnType<typeof getData>>> => {
@@ -36,6 +36,7 @@ export const promptNames = {
     updateMainServiceMetadata: 'updateMainServiceMetadata'
 };
 
+const guidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const invalidEntityKeyFilterChars = ['.'];
 
 /**
@@ -51,10 +52,17 @@ async function validateKeysAndFetchData(
     odataServiceAnswers: Partial<OdataServiceAnswers>,
     appConfig: AppConfig
 ): Promise<string | { odataQueryResult: [] }> {
-    const hasKeyInput = Object.entries(answers).find(
-        ([key, value]) => key.startsWith('entityKeyIdx:') && !!value?.trim()
-    );
-    if (!hasKeyInput) {
+    // Query will only execute if we have at least one input value and no invalid inputs
+    let hasOneValidKeyValue = false;
+    const validKeyInputs = appConfig.referencedEntities?.listEntity.semanticKeys.every((key, index) => {
+        if (key.name !== 'IsActiveEntity' && !hasOneValidKeyValue) {
+            hasOneValidKeyValue = !!key.value;
+        }
+        // if we have a value but not an answer the value was invalid
+        return (key.value !== undefined && key.value !== '') || !answers[`entityKeyIdx:${index}`];
+    });
+
+    if (!validKeyInputs || !hasOneValidKeyValue) {
         return t('prompts.skipDataDownload.validation.keyRequired');
     }
 
@@ -296,6 +304,9 @@ function getEntitySelectionPrompt(
         choices: () => relatedEntityChoices.choices,
         validate: async (selectedEntities, answers: Answers): Promise<boolean | string> => {
             relatedEntityChoices.choices.forEach((entityChoice) => {
+                if (entityChoice.disabled) {
+                    return;
+                }
                 entityChoice.checked = selectedEntities.some(
                     (selectedEntity: SelectedEntityAnswer) => selectedEntity.fullPath === entityChoice.value.fullPath
                 );
@@ -320,7 +331,7 @@ function getEntitySelectionPrompt(
             }
             return undefined;
         }
-    };
+    } as CheckBoxQuestion;
 }
 
 /**
@@ -372,6 +383,9 @@ function getResetSelectionPrompt(
             // Dont apply a reset unless the value was changed as this validate function is triggered by any earlier prompt inputs
             if (reset !== previousReset) {
                 relatedEntityChoices.choices.forEach((entityChoice) => {
+                    if (entityChoice.disabled) {
+                        return;
+                    }
                     const entityChoiceValue = entityChoice.value as SelectedEntityAnswer;
                     entityChoice.checked = reset === false ? entityChoiceValue.entity.defaultSelected : false; // Restore default selection
                 });
@@ -406,8 +420,8 @@ function getKeyPrompts(
     const getEntityKeyInputPrompt = (keypart: number): InputQuestion =>
         ({
             when: async () => {
-                /* !answers?.[promptNames.skipDataDownload]?.[0] && */
-                const showPrompt = !!appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name;
+                const key = appConfig.referencedEntities?.listEntity.semanticKeys[keypart];
+                const showPrompt = !!key?.name && key.name !== 'IsActiveEntity'; // `IsActiveEntity` is hardcoded to true, dont show
                 // Store the index of the last shown prompt so we can run the query on this one only
                 if (showPrompt && keypart > lastKeyPart) {
                     lastKeyPart = keypart;
@@ -417,22 +431,23 @@ function getKeyPrompts(
             name: `entityKeyIdx:${keypart}`,
             message: () =>
                 t('prompts.entityKey.message', {
-                    keyName: appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name
+                    keyName: `${appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name} (${appConfig.referencedEntities?.listEntity.entitySetName})`
                 }),
             type: 'input',
             guiOptions: {
                 hint: t('prompts.entityKey.hint')
             },
             validate: async (keyValue: string, answers: Answers): Promise<boolean | string> => {
+                const keyRef = appConfig.referencedEntities?.listEntity.semanticKeys[keypart];
+                // Clear validated value upfront; only re-set if validation passes
+                if (keyRef) {
+                    delete keyRef.value;
+                }
+
                 if (invalidEntityKeyFilterChars.includes(keyValue)) {
                     return t('prompts.entityKey.validation.invalidKeyValueChars', {
                         chars: invalidEntityKeyFilterChars.join()
                     });
-                }
-                const keyRef = appConfig.referencedEntities?.listEntity.semanticKeys[keypart];
-                // Clear key values
-                if (!keyValue && keyRef) {
-                    delete keyRef.value;
                 }
 
                 if (keyValue && keyRef) {
@@ -442,17 +457,28 @@ function getKeyPrompts(
                         } catch {
                             return t('prompts.entityKey.validation.invalidBooleanValue');
                         }
+                    } else if (['Edm.UUID', 'Edm.Guid'].includes(keyRef.type)) {
+                        const guidParts = keyValue.split(',');
+                        for (const part of guidParts) {
+                            if (!guidRegex.test(part.trim())) {
+                                return t('prompts.entityKey.validation.invalidGuidValue');
+                            }
+                        }
+                        keyRef.value = keyValue.trim();
                     } else {
                         keyRef.value = keyValue.trim();
                     }
                 }
 
                 const filterAndParts = keyValue.split(',');
-                // Dont validate as range if its a UUID, its not supported
-                if (keyRef?.type !== 'Edm.UUID') {
+                // Dont validate as range if its a UUID/GUID, its not supported
+                if (keyRef?.type && !['Edm.UUID', 'Edm.Guid'].includes(keyRef.type)) {
                     for (const filterPart of filterAndParts) {
                         const filterRangeParts = filterPart.split('-');
                         if (filterRangeParts.length > 2) {
+                            if (keyRef) {
+                                delete keyRef.value;
+                            }
                             return t('prompts.entityKey.validation.invalidRangeSpecified');
                         }
                     }
@@ -523,7 +549,7 @@ function getUpdateMainServiceMetadataPrompt(
     odataServiceAnswers: Partial<OdataServiceAnswers>,
     appConfig: AppConfig
 ): ConfirmQuestion {
-    let entityModelResult: ReferencedEntities | undefined;
+    let entityModelResult: ReferencedEntities | undefined | string;
     const question: ConfirmQuestion = {
         when: async () => {
             if (appConfig.appAccess && appConfig.specification && odataServiceAnswers?.metadata) {

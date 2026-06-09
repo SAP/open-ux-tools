@@ -1,0 +1,9 @@
+{
+    "name": "test-app",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "start": "fiori run --open index.html",
+        "build": "ui5 build"
+    }
+}

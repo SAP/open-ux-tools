@@ -1,43 +1,38 @@
 import * as React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import type { IToggleStyleProps, IToggleStyles, IRawStyle } from '@fluentui/react';
+import Enzyme from 'enzyme';
+import type { IStyleFunction, IToggleStyles, IRawStyle } from '@fluentui/react';
+import { Toggle } from '@fluentui/react';
 import type { UIToggleProps } from '../../../src/components/UIToggle/UIToggle';
 import { UIToggle, UIToggleSize } from '../../../src/components/UIToggle/UIToggle';
 
-class UIToggleTestHelper extends UIToggle {
-    public callStyles(styleProps: Partial<IToggleStyleProps> = {}): Partial<IToggleStyles> {
-        const element = this.render() as React.ReactElement;
-        // render() returns either <Toggle> or <MessageWrapper><Toggle/></MessageWrapper>
-        const stylesFunc = element.props.styles ?? element.props.children?.props?.styles;
-        return stylesFunc(styleProps);
-    }
-}
-
 describe('<UIToggle />', () => {
+    let wrapper: Enzyme.ReactWrapper<UIToggleProps>;
     const handleChangeMock = jest.fn();
 
     beforeEach(() => {
-        handleChangeMock.mockClear();
+        wrapper = Enzyme.mount(<UIToggle onChange={handleChangeMock} checked={false} />);
+    });
+
+    afterEach(() => {
+        wrapper.unmount();
     });
 
     it('Should render a UIToggle component', () => {
-        render(<UIToggle onChange={handleChangeMock} checked={false} />);
-        expect(document.querySelector('.ms-Toggle')).toBeInTheDocument();
+        expect(wrapper.find('.ms-Toggle').length).toEqual(1);
     });
 
     it('Should toggle the checked state correctly', () => {
-        const { rerender } = render(<UIToggle onChange={handleChangeMock} checked={false} />);
-        expect(document.querySelector('.ms-Toggle.is-checked')).not.toBeInTheDocument();
+        expect(wrapper.find('.ms-Toggle.is-checked').length).toEqual(0);
 
         // Simulate toggle behavior
-        const button = screen.getByRole('switch');
-        fireEvent.click(button);
+        wrapper.find('button').simulate('click');
         // Assert that handleChange was called once
         expect(handleChangeMock).toHaveBeenCalledTimes(1);
-        rerender(<UIToggle onChange={handleChangeMock} checked={true} />); // Simulating controlled prop change
+        wrapper.setProps({ checked: true }); // Simulating controlled prop change
+        wrapper.update();
 
         // New state: checked
-        expect(document.querySelector('.ms-Toggle.is-checked')).toBeInTheDocument();
+        expect(wrapper.find('.ms-Toggle.is-checked').length).toEqual(1);
     });
 
     describe('Styles', () => {
@@ -90,8 +85,10 @@ describe('<UIToggle />', () => {
         ];
         for (const testCase of testCases) {
             it(`Property "size" - value ${testCase.name}`, () => {
-                const helper = new UIToggleTestHelper({ onChange: handleChangeMock, checked: false, size: testCase.size });
-                const styles = helper.callStyles({});
+                wrapper.setProps({
+                    size: testCase.size
+                });
+                const styles = (wrapper.find(Toggle).props().styles as IStyleFunction<{}, {}>)({}) as IToggleStyles;
                 const rootStyles = styles.root as IRawStyle;
                 const labelStyles = styles.label as IRawStyle;
                 const pillStyles = styles.pill as IRawStyle;
@@ -110,8 +107,7 @@ describe('<UIToggle />', () => {
         }
 
         it('Default', () => {
-            const helper = new UIToggleTestHelper({ onChange: handleChangeMock, checked: false });
-            const styles = helper.callStyles({});
+            const styles = (wrapper.find(Toggle).props().styles as IStyleFunction<{}, {}>)({}) as IToggleStyles;
             expect(styles.pill).toMatchInlineSnapshot(`
                 Object {
                   ":disabled": Object {
@@ -129,6 +125,7 @@ describe('<UIToggle />', () => {
                   },
                   "background": "var(--vscode-editorWidget-background)",
                   "borderColor": "var(--vscode-editorWidget-border)",
+                  "borderRadius": "var(--vscode-cornerRadius-circle, 9999px)",
                   "borderStyle": "solid",
                   "height": 18,
                   "padding": "0 1px",
@@ -165,8 +162,8 @@ describe('<UIToggle />', () => {
         });
 
         it('Checked', () => {
-            const helper = new UIToggleTestHelper({ onChange: handleChangeMock, checked: true });
-            const styles = helper.callStyles({ checked: true });
+            const styleProps = { checked: true };
+            const styles = (wrapper.find(Toggle).props().styles as IStyleFunction<{}, {}>)(styleProps) as IToggleStyles;
             expect(styles.pill).toMatchInlineSnapshot(`
                 Object {
                   ":disabled": Object {
@@ -184,6 +181,7 @@ describe('<UIToggle />', () => {
                   },
                   "background": "var(--vscode-editorWidget-background)",
                   "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-editorWidget-border))",
+                  "borderRadius": "var(--vscode-cornerRadius-circle, 9999px)",
                   "borderStyle": "solid",
                   "height": 18,
                   "padding": "0 1px",
@@ -222,29 +220,39 @@ describe('<UIToggle />', () => {
 
     describe('Validation message', () => {
         it('Error - standard', () => {
-            const { container } = render(
-                <UIToggle onChange={handleChangeMock} checked={false} errorMessage="dummy" inlineLabel={false} />
-            );
-            expect(container.querySelector('.ts-message-wrapper--error')).toBeInTheDocument();
+            wrapper.setProps({
+                errorMessage: 'dummy',
+                inlineLabel: false
+            });
+            const styles = (wrapper.find(Toggle).props().styles as IStyleFunction<{}, {}>)({}) as IToggleStyles;
+            const rootStyles = styles.root as IRawStyle;
+            expect(rootStyles.marginBottom).toEqual(4);
+            expect(wrapper.find('.ts-message-wrapper--error').length).toEqual(1);
         });
 
         it('Error - inline', () => {
-            const { container } = render(
-                <UIToggle onChange={handleChangeMock} checked={false} errorMessage="dummy" inlineLabel={true} />
-            );
-            expect(container.querySelector('.ts-message-wrapper--error')).toBeInTheDocument();
+            wrapper.setProps({
+                errorMessage: 'dummy',
+                inlineLabel: true
+            });
+            const styles = (wrapper.find(Toggle).props().styles as IStyleFunction<{}, {}>)({}) as IToggleStyles;
+            const rootStyles = styles.root as IRawStyle;
+            expect(rootStyles.marginBottom).toEqual(0);
+            expect(wrapper.find('.ts-message-wrapper--error').length).toEqual(1);
         });
 
         it('Warning', () => {
-            const { container } = render(
-                <UIToggle onChange={handleChangeMock} checked={false} warningMessage="dummy" />
-            );
-            expect(container.querySelector('.ts-message-wrapper--warning')).toBeInTheDocument();
+            wrapper.setProps({
+                warningMessage: 'dummy'
+            });
+            expect(wrapper.find('.ts-message-wrapper--warning').length).toEqual(1);
         });
 
         it('Info', () => {
-            const { container } = render(<UIToggle onChange={handleChangeMock} checked={false} infoMessage="dummy" />);
-            expect(container.querySelector('.ts-message-wrapper--info')).toBeInTheDocument();
+            wrapper.setProps({
+                infoMessage: 'dummy'
+            });
+            expect(wrapper.find('.ts-message-wrapper--info').length).toEqual(1);
         });
     });
 });

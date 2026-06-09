@@ -1,10 +1,10 @@
 import UI5Element from 'sap/ui/core/Element';
-import { getPropertyPath } from '../../../../src/adp/quick-actions/fe-v4/utils';
-import { MacroTable } from '../../../../src/utils/fe-v4';
+import { getPropertyPath } from '../../../../src/adp/quick-actions/fe-v4/utils.js';
+import { MacroTable } from '../../../../src/utils/fe-v4.js';
 
 describe('getActionsPropertyPath', () => {
     let mockTable: MacroTable;
-    let mdcTable: UI5Element
+    let mdcTable: UI5Element;
     let mockMetaModel: any;
 
     beforeEach(() => {

@@ -1,25 +1,31 @@
 import * as React from 'react';
-import { render } from '@testing-library/react';
-import type { ILinkStyles } from '@fluentui/react';
+import Enzyme from 'enzyme';
+import type { IStyleFunction, ILinkStyles } from '@fluentui/react';
+import { Link } from '@fluentui/react';
 import type { UILinkProps } from '../../../src/components/UILink';
 import { UILink } from '../../../src/components/UILink';
 
-class UILinkTestHelper extends UILink {
-    public callLinkStyles(): Partial<ILinkStyles> {
-        const element = this.render() as React.ReactElement;
-        return (element.props.styles as () => Partial<ILinkStyles>)();
-    }
-}
-
 describe('<UILink />', () => {
+    let wrapper: Enzyme.ReactWrapper<UILinkProps>;
+
+    const getStyles = (): ILinkStyles => {
+        return (wrapper.find(Link).props().styles as IStyleFunction<{}, {}>)({}) as ILinkStyles;
+    };
+
+    beforeEach(() => {
+        wrapper = Enzyme.mount(<UILink>Dummy</UILink>);
+    });
+
+    afterEach(() => {
+        wrapper.unmount();
+    });
+
     it('Should render a UILink component', () => {
-        const { container } = render(<UILink>Dummy</UILink>);
-        expect(container.querySelector('.ms-Link')).toBeInTheDocument();
+        expect(wrapper.find('.ms-Link').length).toEqual(1);
     });
 
     it('Styles - primary', () => {
-        const helper = new UILinkTestHelper({ children: 'Dummy' });
-        const styles = helper.callLinkStyles();
+        const styles = getStyles();
         expect(styles.root).toMatchInlineSnapshot(`
             Object {
               "color": "var(--vscode-textLink-foreground)",
@@ -46,8 +52,10 @@ describe('<UILink />', () => {
     });
 
     it('Styles - secondary', () => {
-        const helper = new UILinkTestHelper({ children: 'Dummy', secondary: true });
-        const styles = helper.callLinkStyles();
+        wrapper.setProps({
+            secondary: true
+        });
+        const styles = getStyles();
         expect(styles.root).toMatchInlineSnapshot(`
             Object {
               "color": "var(--vscode-foreground)",
@@ -74,8 +82,10 @@ describe('<UILink />', () => {
     });
 
     it('Styles - primary with no underline', () => {
-        const helper = new UILinkTestHelper({ children: 'Dummy', underline: false });
-        const styles = helper.callLinkStyles();
+        wrapper.setProps({
+            underline: false
+        });
+        const styles = getStyles();
         expect(styles.root).toMatchInlineSnapshot(`
             Object {
               "color": "var(--vscode-textLink-foreground)",
@@ -102,8 +112,10 @@ describe('<UILink />', () => {
     });
 
     it('Styles - disabled', () => {
-        const helper = new UILinkTestHelper({ children: 'Dummy', disabled: true });
-        const styles = helper.callLinkStyles();
+        wrapper.setProps({
+            disabled: true
+        });
+        const styles = getStyles();
         expect(styles.root).toMatchInlineSnapshot(`
             Object {
               "color": "var(--vscode-textLink-foreground)",

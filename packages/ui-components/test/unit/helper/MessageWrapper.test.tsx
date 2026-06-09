@@ -1,18 +1,17 @@
 import * as React from 'react';
-import { render } from '@testing-library/react';
-import '@testing-library/jest-dom';
+import Enzyme from 'enzyme';
 import type { MessageWrapperProps } from '../../../src/helper/ValidationMessage';
 import { MessageWrapper, getMessageInfo } from '../../../src/helper/ValidationMessage';
 
 describe('<MessageWrapper />', () => {
-    let renderResult: ReturnType<typeof render>;
+    let wrapper: Enzyme.ReactWrapper<MessageWrapperProps>;
 
     const messageInfo = getMessageInfo({
         warningMessage: 'dummy'
     });
 
     beforeEach(() => {
-        renderResult = render(
+        wrapper = Enzyme.mount(
             <MessageWrapper message={messageInfo}>
                 <div className="dummyInput"></div>
             </MessageWrapper>
@@ -20,38 +19,31 @@ describe('<MessageWrapper />', () => {
     });
 
     afterEach(() => {
-        renderResult.unmount();
+        wrapper.unmount();
     });
 
     it('Should render a MessageWrapper component', () => {
-        const { container } = renderResult;
-        expect(container.querySelectorAll('.dummyInput').length).toEqual(1);
-        expect(container.querySelectorAll('.ts-message-wrapper').length).toEqual(1);
-        expect(container.querySelectorAll('.ts-message-wrapper--warning').length).toEqual(1);
+        expect(wrapper.find('.dummyInput').length).toEqual(1);
+        expect(wrapper.find('.ts-message-wrapper').length).toEqual(1);
+        expect(wrapper.find('.ts-message-wrapper--warning').length).toEqual(1);
     });
 
     it('Default message - error', () => {
         const messageTemp = JSON.parse(JSON.stringify(messageInfo));
         messageTemp.type = undefined;
-        renderResult.rerender(
-            <MessageWrapper message={messageTemp}>
-                <div className="dummyInput"></div>
-            </MessageWrapper>
-        );
-        const { container } = renderResult;
-        expect(container.querySelectorAll('.ts-message-wrapper--error').length).toEqual(1);
+        wrapper.setProps({
+            message: messageTemp
+        });
+        expect(wrapper.find('.ts-message-wrapper--error').length).toEqual(1);
     });
 
     it('Info message', () => {
         const messageTemp = getMessageInfo({
             infoMessage: 'dummy'
         });
-        renderResult.rerender(
-            <MessageWrapper message={messageTemp}>
-                <div className="dummyInput"></div>
-            </MessageWrapper>
-        );
-        const { container } = renderResult;
-        expect(container.querySelectorAll('.ts-message-wrapper--info').length).toEqual(1);
+        wrapper.setProps({
+            message: messageTemp
+        });
+        expect(wrapper.find('.ts-message-wrapper--info').length).toEqual(1);
     });
 });

@@ -1,7 +1,10 @@
 import type { Dirent } from 'node:fs';
-import path from 'node:path';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import { DirName, getWebappPath } from '@sap-ux/project-access';
 import {
@@ -15,9 +18,9 @@ import {
     type PropertyValueType,
     ChangeTypeMap,
     type AdpWriterConfig
-} from '../types';
+} from '../types.js';
 import { renderFile } from 'ejs';
-import { replaceTextsWithI18nBindings, writeKeyUserTranslations } from '../writer/i18n/key-user-translations';
+import { replaceTextsWithI18nBindings, writeKeyUserTranslations } from '../writer/i18n/key-user-translations.js';
 
 export type ChangeMetadata = Pick<DescriptorVariant, 'id' | 'layer' | 'namespace'>;
 

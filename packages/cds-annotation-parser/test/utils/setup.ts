@@ -1,13 +1,16 @@
 import { promises, readdirSync, stat, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { platform } from 'node:os';
 import type { IToken, CstNode, CstNodeLocation, CstElement } from 'chevrotain';
-import type { DeclarationCstNode } from '../../src/parser/parser';
-import type { Annotation, AnnotationGroup } from '../../src/transformer/annotation-ast-nodes';
-import { hasNaNOrUndefined } from '../../src/utils';
-import { deserialize } from './deserialize-ast';
+import type { DeclarationCstNode } from '../../src/parser/parser.js';
+import type { Annotation, AnnotationGroup } from '../../src/transformer/annotation-ast-nodes.js';
+import { hasNaNOrUndefined } from '../../src/utils/index.js';
+import { deserialize } from './deserialize-ast.js';
 
 const { readFile } = promises;
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const getBase = () => join(__dirname, '..', 'data');
 
@@ -104,7 +107,8 @@ export const getAllNormalizeFolderPath = (base = getBase(), allFolderPath: strin
         } else if (itemPath.endsWith('.txt')) {
             const dirPath = dirname(itemPath);
             const relativeLike = dirPath.split(getBase())[1];
-            const normalizedPath = relativeLike.replace(platform() === 'win32' ? /\\/g : /\//g, '/');
+            // Only replace backslashes with forward slashes on Windows
+            const normalizedPath = platform() === 'win32' ? relativeLike.replace(/\\/g, '/') : relativeLike;
             allFolderPath.push(normalizedPath);
         }
     });

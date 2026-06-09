@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import type Dialog from 'sap/m/Dialog';
 import type Event from 'sap/ui/base/Event';
 import type UI5Element from 'sap/ui/core/Element';
@@ -8,18 +9,34 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
 import { fetchMock, sapCoreMock, sapMock } from 'mock/window';
 
-import ControlUtils from '../../../../src/adp/control-utils';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { ValueState } from 'mock/sap/ui/core/library';
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
-import AddTableColumnFragments from 'open/ux/preview/client/adp/controllers/AddTableColumnFragments.controller';
 import SimpleForm from 'sap/ui/layout/form';
 import Control from 'sap/ui/core/Control';
-import * as adpUtils from 'open/ux/preview/client/adp/utils';
-import { getAdditionalChangeInfo } from '../../../../src/utils/additional-change-info';
-import { FlexChange } from 'open/ux/preview/client/flp/common';
-import * as core from '../../../../src/utils/core';
+
+// Pre-import for spread
+const _adpUtils = await import('open/ux/preview/client/adp/utils');
+const _core = await import('open/ux/preview/client/utils/core');
+
+const checkForExistingChangeMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/adp/utils', () => ({
+    ..._adpUtils,
+    checkForExistingChange: checkForExistingChangeMock
+}));
+
+const getControlByIdMock = jest.fn().mockImplementation((...args) => (_core.getControlById as Function)(...args));
+jest.unstable_mockModule('open/ux/preview/client/utils/core', () => ({
+    ..._core,
+    getControlById: getControlByIdMock
+}));
+
+const { default: AddTableColumnFragments } =
+    await import('open/ux/preview/client/adp/controllers/AddTableColumnFragments.controller');
+const { default: ControlUtils } = await import('open/ux/preview/client/adp/control-utils');
+const { getAdditionalChangeInfo } = await import('open/ux/preview/client/utils/additional-change-info');
+type FlexChange = import('open/ux/preview/client/flp/common').FlexChange;
 
 const mocks = {
     setValueStateMock: jest.fn(),
@@ -236,7 +253,7 @@ describe('AddTableColumnsFragments controller', () => {
 
         describe('duplicate fragment names', () => {
             test('sets error when column and cell fragments have the same name', () => {
-                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+                checkForExistingChangeMock.mockReturnValue(false);
                 const event = mockInputEvent('Name1');
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
                 rtaMock.getFlexSettings.mockReturnValue({
@@ -286,7 +303,7 @@ describe('AddTableColumnsFragments controller', () => {
                 rtaMock.getFlexSettings.mockReturnValue({
                     projectId: 'adp.app'
                 });
-                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+                checkForExistingChangeMock.mockReturnValue(false);
                 const event = mockInputEvent('Name2');
 
                 createDialog(
@@ -374,7 +391,7 @@ describe('AddTableColumnsFragments controller', () => {
         });
 
         test('does not crash if composite command exists in command stack', () => {
-            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+            checkForExistingChangeMock.mockReturnValue(false);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
 
             const command = {
@@ -398,7 +415,7 @@ describe('AddTableColumnsFragments controller', () => {
         });
 
         test('sets error when the fragment name already exists in command stack', () => {
-            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
+            checkForExistingChangeMock.mockReturnValue(true);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             const change = {
                 content: {
@@ -428,7 +445,7 @@ describe('AddTableColumnsFragments controller', () => {
         });
 
         test('sets error when the fragment name already exists in command stack (command is "composite")', () => {
-            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
+            checkForExistingChangeMock.mockReturnValue(true);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             const change = {
                 content: {
@@ -462,7 +479,7 @@ describe('AddTableColumnsFragments controller', () => {
         });
 
         test('sets create button to true when the fragment name is valid', () => {
-            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+            checkForExistingChangeMock.mockReturnValue(false);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             rtaMock.getCommandStack.mockReturnValue({
                 getCommands: jest.fn().mockReturnValue([])
@@ -497,7 +514,7 @@ describe('AddTableColumnsFragments controller', () => {
                 getAggregation: getAggregationMock,
                 getId: jest.fn().mockReturnValue('runtime-control-id')
             } as unknown as ManagedObject);
-            jest.spyOn(core, 'getControlById').mockReturnValue({
+            getControlByIdMock.mockReturnValue({
                 sId: 'some-id'
             } as any);
 
@@ -642,7 +659,7 @@ describe('AddTableColumnsFragments controller', () => {
                 };
             };
             const commandStack: CommandBase[] = [];
-            const addCommandMock = jest.fn().mockImplementation((cmd: CommandBase) => {
+            const addCommandMock = jest.fn().mockImplementation((cmd) => {
                 commandStack.push(cmd);
             });
             CommandFactory.getCommandFor = nCallsMock([
