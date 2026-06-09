@@ -1,4 +1,4 @@
-import { build } from 'esbuild';
+import { context, build } from 'esbuild';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -8,6 +8,7 @@ const __dirname = dirname(__filename);
 
 const require = createRequire(import.meta.url);
 const production = process.argv.includes('--production');
+const watch = process.argv.includes('--watch');
 
 // Re-introduce CJS globals in the ESM bundle so bundled CJS dependencies continue to work.
 // Use aliased imports to avoid clashing with identifiers esbuild emits from the source.
@@ -37,26 +38,24 @@ const sharedOptions = {
 // dynamically at runtime so esbuild cannot trace or inline it.
 const externalDependencies = ['eslint', 'typescript-eslint', '@babel/core', '@babel/eslint-parser', '@babel/parser'];
 
-// Main plugin entry point
-await build({
-    ...sharedOptions,
-    entryPoints: [join(__dirname, 'src/index.ts')],
-    outfile: join(__dirname, 'lib/index.js'),
-    external: externalDependencies
-});
+const entryPoints = [
+    { in: join(__dirname, 'src/index.ts'), out: join(__dirname, 'lib/index.js') },
+    { in: join(__dirname, 'src/project-context/artifacts.ts'), out: join(__dirname, 'lib/project-context/artifacts.js') },
+    { in: join(__dirname, 'src/worker-getPathMappingsSync.ts'), out: join(__dirname, 'lib/worker-getPathMappingsSync.js') }
+];
 
-// Worker: finds Fiori artifacts (called via synckit from project-context.ts)
-await build({
-    ...sharedOptions,
-    entryPoints: [join(__dirname, 'src/project-context/artifacts.ts')],
-    outfile: join(__dirname, 'lib/project-context/artifacts.js'),
-    external: externalDependencies
-});
-
-// Worker: resolves path mappings synchronously (called via synckit from index.ts)
-await build({
-    ...sharedOptions,
-    entryPoints: [join(__dirname, 'src/worker-getPathMappingsSync.ts')],
-    outfile: join(__dirname, 'lib/worker-getPathMappingsSync.js'),
-    external: externalDependencies
-});
+if (watch) {
+    const contexts = await Promise.all(
+        entryPoints.map(({ in: entryPoint, out: outfile }) =>
+            context({ ...sharedOptions, entryPoints: [entryPoint], outfile, external: externalDependencies })
+        )
+    );
+    await Promise.all(contexts.map((ctx) => ctx.watch()));
+    console.log('[watch] watching for changes...');
+} else {
+    await Promise.all(
+        entryPoints.map(({ in: entryPoint, out: outfile }) =>
+            build({ ...sharedOptions, entryPoints: [entryPoint], outfile, external: externalDependencies })
+        )
+    );
+}
