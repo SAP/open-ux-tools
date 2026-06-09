@@ -29,11 +29,16 @@ function getWorkerPath(name: string): string {
     // Create sync function to call the working draft-toggle-worker
     const currentDir = dirname(fileURLToPath(import.meta.url));
 
-    // Try multiple possible worker locations
+    // Try multiple possible worker locations.
+    // import.meta.url differs by build tool:
+    //   tsc:     lib/project-context/project-context.js  → currentDir = lib/project-context/
+    //   esbuild: lib/index.js                            → currentDir = lib/
+    // Path 2 (../../lib/project-context/) only resolves correctly for tsc inside the workspace;
+    // when installed in node_modules ../../ exits the package root entirely.
     const workerPaths = [
-        join(currentDir, name), // src location (ts-node / tsc: lib/project-context/)
-        join(currentDir, '..', '..', 'lib', 'project-context', name), // tsc dist location
-        join(currentDir, 'project-context', name) // esbuild bundle: lib/index.js → lib/project-context/
+        join(currentDir, name), // tsc: lib/project-context/ → lib/project-context/artifacts.js
+        join(currentDir, 'project-context', name), // esbuild: lib/ → lib/project-context/artifacts.js
+        join(currentDir, '..', '..', 'lib', 'project-context', name) // ts-node from src/ during development
     ];
 
     let workerPath = null;
