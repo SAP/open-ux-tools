@@ -36,7 +36,10 @@ await build({
     ...sharedOptions,
     entryPoints: [join(__dirname, 'src/index.ts')],
     outfile: join(__dirname, 'lib/index.js'),
-    external: ['eslint', 'typescript-eslint'],
+    // eslint and typescript-eslint are peerDependencies provided by the consumer.
+    // @babel/core is a peerDependency of @babel/eslint-parser — it's required
+    // dynamically at runtime so esbuild cannot trace or inline it.
+    external: ['eslint', 'typescript-eslint', '@babel/core', 'globals'],
 });
 
 // Worker: finds Fiori artifacts (called via synckit from project-context.ts)
