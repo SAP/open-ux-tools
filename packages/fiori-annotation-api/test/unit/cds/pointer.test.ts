@@ -30,13 +30,9 @@ async function testRead(
 describe('convertPointerX - Ast Paths', () => {
     let ast: CDSDocument;
     let annotationFile: AnnotationFile;
+    let mapping: number[] = [];
     function testPointer(input: string, output: string, flattened = false) {
-        const { pointer, containsFlattenedNodes } = convertPointer(
-            annotationFile,
-            input,
-            ast,
-            [0, 1, 2, 3, 4, 5, 6, 7, 8]
-        );
+        const { pointer, containsFlattenedNodes } = convertPointer(annotationFile, input, ast, mapping);
         if (LOG_ENABLED) {
             const [currentAstNode] = getAstNodesFromPointer(ast, pointer).slice(-1);
             const currentAFNode = getGenericNodeFromPointer(annotationFile, input);
@@ -58,6 +54,7 @@ describe('convertPointerX - Ast Paths', () => {
         const result = await testRead(fixture);
         ast = result.ast;
         annotationFile = result.annotationFile;
+        mapping = result.targetMapping;
     });
     test('Target', () => {
         testPointer('/targets/0', '/targets/0');
