@@ -204,7 +204,7 @@ function appendPageAggregations(
 
 /**
  * Reorders the child elements of a macros:Page node to match the canonical PAGE_AGGREGATIONS order.
- * Preserves relative order of siblings with the same local name. Text/comment nodes are dropped
+ * Preserves relative order of siblings with the same local name. Whitespace text nodes are dropped
  * because the xml-formatter call that follows will regenerate proper indentation.
  *
  * @param pageElement - the macros:Page DOM node whose children should be sorted
