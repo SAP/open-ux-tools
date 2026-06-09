@@ -333,7 +333,7 @@ function getEntitySelectionPrompt(
         },
         showOutputTabLink: () => {
             return {
-                show: true,
+                show: !!result,
                 linkMessage: t('prompts.relatedEntitySelection.openLogs')
             };
         }
