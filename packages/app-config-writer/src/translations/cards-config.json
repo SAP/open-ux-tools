@@ -1,7 +1,0 @@
-{
-    "error": {
-        "sapAppNotDefined": "The `manifest.json` file is missing the `sap.app` required section.",
-        "manifestNotFound": "The `manifest.json` file was not found at path: {{- path}}. Check the file exists.",
-        "minUI5VersionNotMet": "The card generator is only supported for projects with UI5 version {{featureVersion}} or higher. Detected minimum UI5 version is {{minUI5Version}}. Please update the minUI5Version in manifest.json and the version in ui5.yaml (if set) to use the card generator feature, as preview could be based on the yaml version if configured."
-    }
-}

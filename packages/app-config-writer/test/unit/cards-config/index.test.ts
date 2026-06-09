@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { enableCardGeneratorConfig, MinimumUI5VersionError } from '../../../src/cards-config/index.js';
+import { enableCardGeneratorConfig } from '../../../src/cards-config/index.js';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
@@ -21,31 +21,6 @@ function createTestFs(basePath: string) {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('enableCardGenerator', () => {
-    test('Throws MinimumUI5VersionError when UI5 version is too low', async () => {
-        const basePath = join(__dirname, '../../fixtures/cards-config/lrop-v4');
-        const fs = createTestFs(basePath);
-        // Override manifest with low UI5 version
-        fs.writeJSON(join(basePath, 'webapp/manifest.json'), {
-            'sap.app': {
-                id: 'test.id',
-                title: 'Test App'
-            },
-            'sap.ui5': {
-                dependencies: {
-                    minUI5Version: '1.120.0'
-                }
-            }
-        });
-
-        await expect(enableCardGeneratorConfig(basePath, join(basePath, 'ui5.yaml'), undefined, fs)).rejects.toThrow(
-            MinimumUI5VersionError
-        );
-
-        await expect(enableCardGeneratorConfig(basePath, join(basePath, 'ui5.yaml'), undefined, fs)).rejects.toThrow(
-            /The card generator is only supported for projects with UI5 version/
-        );
-    });
-
     test('Valid LROP', async () => {
         const basePath = join(__dirname, '../../fixtures/cards-config/lrop-v4');
         const fs = createTestFs(basePath);

@@ -2,11 +2,9 @@ import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18next from 'i18next';
 import smartLinksRes from './translations/smartlinks-config.json' with { type: 'json' };
 import navConfigRes from './translations/navigation-config.json' with { type: 'json' };
-import cardsGeneratorRes from './translations/cards-config.json' with { type: 'json' };
 
 export const SMART_LINKS_NS = 'app-config-writer:smartLinksConfig';
 export const NAV_CONFIG_NS = 'app-config-writer:navConfig';
-export const CARDS_GENERATOR_NS = 'app-config-writer:cardsGenerator';
 export const i18n: i18nNext = i18next.createInstance();
 
 /**
@@ -17,14 +15,13 @@ export async function initI18n(): Promise<void> {
         resources: {
             en: {
                 [SMART_LINKS_NS]: smartLinksRes,
-                [NAV_CONFIG_NS]: navConfigRes,
-                [CARDS_GENERATOR_NS]: cardsGeneratorRes
+                [NAV_CONFIG_NS]: navConfigRes
             }
         },
         lng: 'en',
         fallbackLng: 'en',
         defaultNS: SMART_LINKS_NS, // Default since first to add translations
-        ns: [SMART_LINKS_NS, NAV_CONFIG_NS, CARDS_GENERATOR_NS],
+        ns: [SMART_LINKS_NS, NAV_CONFIG_NS],
         showSupportNotice: false
     });
 }

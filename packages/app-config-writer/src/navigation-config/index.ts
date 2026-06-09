@@ -1,10 +1,11 @@
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
+import { FileName, getWebappPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { mergeObjects } from '@sap-ux/ui5-config';
+import { join } from 'node:path';
 import { NAV_CONFIG_NS, t } from '../i18n.js';
-import { readManifest } from '../common/utils.js';
 
 /**
  * Adds a basic inbound navigation configuration to the application manifest.
@@ -56,4 +57,30 @@ export async function generateInboundNavigationConfig(
 
     fs.extendJSON(manifestPath, { 'sap.app': Object.assign(manifest['sap.app'], { crossNavigation }) });
     return fs;
+}
+
+/**
+ * Validates the basic manifest structure and existence required for inbound navigation addition.
+ *
+ * @param appPath path to the application
+ * @param fs Editor instance
+ * @throws an error specifiying the validation failure
+ * @returns the manifest object and manifest path
+ */
+export async function readManifest(appPath: string, fs: Editor): Promise<{ manifest: Manifest; manifestPath: string }> {
+    const manifestPath = join(await getWebappPath(appPath, fs), FileName.Manifest);
+    const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
+
+    if (!manifest) {
+        throw Error(t('error.manifestNotFound', { path: manifestPath, ns: NAV_CONFIG_NS }));
+    }
+
+    if (!manifest['sap.app']) {
+        throw Error(t('error.sapAppNotDefined', { ns: NAV_CONFIG_NS }));
+    }
+
+    return {
+        manifest,
+        manifestPath
+    };
 }

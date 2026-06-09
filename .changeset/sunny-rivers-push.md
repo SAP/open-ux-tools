@@ -1,5 +1,4 @@
 ---
-'@sap-ux/app-config-writer': minor
 '@sap-ux/create': minor
 ---
 
