@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.1.3
+
+### Patch Changes
+
+- 74a3c3f: Switch to onnxruntime-web (WASM) to eliminate native binaries and reduce tgz to ~9 MB
+
 ## 1.1.2
 
 ### Patch Changes
