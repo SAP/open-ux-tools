@@ -8,7 +8,7 @@ import format from 'xml-formatter';
 import * as xpath from 'xpath';
 import type { Editor } from 'mem-fs-editor';
 
-import { getMinimumUI5Version } from '@sap-ux/project-access';
+import { getMinimumUI5Version, getAppProgrammingLanguage } from '@sap-ux/project-access';
 import {
     BuildingBlockType,
     PAGE_AGGREGATIONS,
@@ -100,10 +100,11 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         templateConfig
     );
 
-    if (
+    const isFullPageTemplate =
         buildingBlockData.buildingBlockType === BuildingBlockType.Page &&
-        (buildingBlockData as Page).templateType === PAGE_TEMPLATE_TYPE_FULL
-    ) {
+        (buildingBlockData as Page).templateType === PAGE_TEMPLATE_TYPE_FULL;
+
+    if (isFullPageTemplate) {
         const pageData = buildingBlockData as Page;
         appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId, pageData);
     }
@@ -130,11 +131,8 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         config.replace
     );
 
-    if (
-        buildingBlockData.buildingBlockType === BuildingBlockType.Page &&
-        (buildingBlockData as Page).templateType === PAGE_TEMPLATE_TYPE_FULL
-    ) {
-        applyPageControllerTemplate(fs, basePath, viewOrFragmentPath);
+    if (isFullPageTemplate) {
+        await applyPageControllerTemplate(fs, basePath, viewOrFragmentPath);
     }
 
     if (allowAutoAddDependencyLib && manifest && !validateDependenciesLibs(manifest, ['sap.fe.macros'])) {
@@ -323,15 +321,20 @@ export async function appendPageBBAggregation(
 
 /**
  * Copies the Page controller template (JS or TS) into the view directory if no controller file exists yet.
+ * Uses getAppProgrammingLanguage for reliable detection, with a fallback to checking for an existing
+ * .controller.ts sibling file for edge cases where language detection returns blank.
  *
  * @param {Editor} fs - the memfs editor instance
  * @param {string} basePath - the base path of the application
  * @param {string} viewOrFragmentPath - the relative path of the view/fragment file
  */
-function applyPageControllerTemplate(fs: Editor, basePath: string, viewOrFragmentPath: string): void {
+async function applyPageControllerTemplate(fs: Editor, basePath: string, viewOrFragmentPath: string): Promise<void> {
     const { dir: viewDir, name: viewName } = parse(viewOrFragmentPath);
     const viewBaseName = viewName.replace(/\.view$/, '');
-    const isTypeScript = fs.exists(join(basePath, viewDir, `${viewBaseName}.controller.ts`));
+    const detectedLanguage = await getAppProgrammingLanguage(basePath, fs);
+    const isTypeScript =
+        detectedLanguage === 'TypeScript' ||
+        (!detectedLanguage && fs.exists(join(basePath, viewDir, `${viewBaseName}.controller.ts`)));
     const controllerExt = isTypeScript ? 'ts' : 'js';
     const controllerPath = join(basePath, viewDir, `${viewBaseName}.controller.${controllerExt}`);
     if (!fs.exists(controllerPath)) {
