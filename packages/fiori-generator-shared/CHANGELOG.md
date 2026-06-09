@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 1.0.7
+
+### Patch Changes
+
+- a328e14: refactor: move restoreServiceProviderLoggers to @sap-ux/fiori-generator-shared
+
 ## 1.0.6
 
 ### Patch Changes

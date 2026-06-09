@@ -1,5 +1,20 @@
 # @sap-ux/generator-adp
 
+## 1.0.10
+
+### Patch Changes
+
+- Updated dependencies [a328e14]
+    - @sap-ux/fiori-generator-shared@1.0.7
+    - @sap-ux/inquirer-common@1.0.7
+    - @sap-ux/adp-tooling@1.0.9
+
+## 1.0.9
+
+### Patch Changes
+
+- 604f289: revert generator-adp to cjs
+
 ## 1.0.8
 
 ### Patch Changes

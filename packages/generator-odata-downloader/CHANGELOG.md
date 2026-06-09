@@ -1,5 +1,14 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.8
+
+### Patch Changes
+
+- Updated dependencies [a328e14]
+    - @sap-ux/fiori-generator-shared@1.0.7
+    - @sap-ux/inquirer-common@1.0.7
+    - @sap-ux/odata-service-inquirer@3.0.7
+
 ## 0.3.7
 
 ### Patch Changes

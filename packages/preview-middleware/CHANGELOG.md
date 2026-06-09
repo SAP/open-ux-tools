@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 1.0.12
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.9
+
+## 1.0.11
+
+### Patch Changes
+
+- bcfe9e3: Fix: Inconsistent property naming between RTA and CPE
+
 ## 1.0.10
 
 ### Patch Changes
