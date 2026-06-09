@@ -23,6 +23,15 @@ import {
 } from './destination.js';
 import type { ServiceInfo } from './service-info.js';
 
+declare global {
+    var GLOBAL_AGENT:
+        | {
+              HTTP_PROXY: string | null;
+              HTTPS_PROXY: string | null;
+          }
+        | undefined;
+}
+
 /**
  * ABAP Cloud destination instance name.
  */
@@ -48,7 +57,7 @@ export function isAppStudio(): boolean {
  * @returns the proxy url or undefined if called outside of BAS.
  */
 export function getAppStudioProxyURL(): string | undefined {
-    return process.env[ENV.PROXY_URL];
+    return process.env[ENV.HTTP_PROXY];
 }
 
 /**
@@ -120,7 +129,8 @@ function stripS4HCApiHost(host: string): string {
  */
 export async function listDestinations(options?: ListDestinationOpts): Promise<Destinations> {
     const destinations: Destinations = {};
-    await axios.get('/reload', { baseURL: process.env[ENV.PROXY_URL] });
+    await axios.get('/reload', { baseURL: process.env[ENV.HTTP_PROXY] });
+    patchGlobalAgentProxySettings();
     const response = await axios.get<Destination[]>('/api/listDestinations', { baseURL: process.env[ENV.H2O_URL] });
     const list = Array.isArray(response.data) ? response.data : [];
     list.forEach((destination) => {
@@ -133,6 +143,27 @@ export async function listDestinations(options?: ListDestinationOpts): Promise<D
         }
     });
     return destinations;
+}
+
+/**
+ * Patches the global HTTP/HTTPS proxy agent settings in SAP Business Application Studio.
+ * This ensures that the global-agent library uses the correct proxy environment variables
+ * when running inside BAS. No-op when called outside of BAS.
+ */
+function patchGlobalAgentProxySettings(): void {
+    if (!isAppStudio() || !globalThis.GLOBAL_AGENT) {
+        return;
+    }
+    // Global agent proxy settings could also be set with GLOBAL_AGENT_HTTP_PROXY
+    // and GLOBAL_AGENT_HTTPS_PROXY env variables in that case we do not want to override
+    // them.
+    if (!globalThis.GLOBAL_AGENT.HTTP_PROXY) {
+        globalThis.GLOBAL_AGENT.HTTP_PROXY = process.env[ENV.HTTP_PROXY] ?? null;
+    }
+
+    if (!globalThis.GLOBAL_AGENT.HTTPS_PROXY) {
+        globalThis.GLOBAL_AGENT.HTTPS_PROXY = process.env[ENV.HTTPS_PROXY] ?? null;
+    }
 }
 
 /**

@@ -2,14 +2,15 @@ import { jest } from '@jest/globals';
 
 // Mock the transformers module
 const mockPipeline = jest.fn<any>();
-jest.unstable_mockModule('@xenova/transformers', () => ({
+jest.unstable_mockModule('@huggingface/transformers', () => ({
     pipeline: mockPipeline
 }));
 
 const { TextEmbeddingService } = await import('../../../../src/tools/services/text-embedding.js');
+type TextEmbeddingServiceType = InstanceType<typeof TextEmbeddingService>;
 
 describe('TextEmbeddingService', () => {
-    let service: TextEmbeddingService;
+    let service: TextEmbeddingServiceType;
 
     beforeEach(() => {
         service = new TextEmbeddingService();
