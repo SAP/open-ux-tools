@@ -15,9 +15,9 @@ const cjsCompatBanner = [
     "import{createRequire as __cjsCreateRequire}from'node:module';",
     "import{fileURLToPath as __cjsFileURLToPath}from'node:url';",
     "import{dirname as __cjsDirname}from'node:path';",
-    "const require=__cjsCreateRequire(import.meta.url);",
-    "const __filename=__cjsFileURLToPath(import.meta.url);",
-    "const __dirname=__cjsDirname(__filename);"
+    'const require=__cjsCreateRequire(import.meta.url);',
+    'const __filename=__cjsFileURLToPath(import.meta.url);',
+    'const __dirname=__cjsDirname(__filename);'
 ].join('');
 
 /** @type {import('esbuild').BuildOptions} */
@@ -40,19 +40,19 @@ await build({
     // eslint and typescript-eslint are peerDependencies provided by the consumer.
     // @babel/core is a peerDependency of @babel/eslint-parser — it's required
     // dynamically at runtime so esbuild cannot trace or inline it.
-    external: ['eslint', 'typescript-eslint', '@babel/core'],
+    external: ['eslint', 'typescript-eslint', '@babel/core', '@babel/eslint-parser', '@babel/parser']
 });
 
 // Worker: finds Fiori artifacts (called via synckit from project-context.ts)
 await build({
     ...sharedOptions,
     entryPoints: [join(__dirname, 'src/project-context/artifacts.ts')],
-    outfile: join(__dirname, 'lib/project-context/artifacts.js'),
+    outfile: join(__dirname, 'lib/project-context/artifacts.js')
 });
 
 // Worker: resolves path mappings synchronously (called via synckit from index.ts)
 await build({
     ...sharedOptions,
     entryPoints: [join(__dirname, 'src/worker-getPathMappingsSync.ts')],
-    outfile: join(__dirname, 'lib/worker-getPathMappingsSync.js'),
+    outfile: join(__dirname, 'lib/worker-getPathMappingsSync.js')
 });

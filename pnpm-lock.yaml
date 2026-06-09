@@ -1988,16 +1988,16 @@ importers:
       '@babel/core':
         specifier: 8.0.0-rc.6
         version: 8.0.0-rc.6
-      typescript-eslint:
-        specifier: ^8.57.2
-        version: 8.57.2(eslint@9.39.1)(typescript@5.9.3)
-    devDependencies:
       '@babel/eslint-parser':
         specifier: 8.0.0-rc.6
         version: 8.0.0-rc.6(@babel/core@8.0.0-rc.6)(eslint@9.39.1)
       '@babel/parser':
         specifier: 8.0.0-rc.6
         version: 8.0.0-rc.6
+      typescript-eslint:
+        specifier: ^8.57.2
+        version: 8.57.2(eslint@9.39.1)(typescript@5.9.3)
+    devDependencies:
       '@eslint/config-helpers':
         specifier: 0.5.3
         version: 0.5.3
