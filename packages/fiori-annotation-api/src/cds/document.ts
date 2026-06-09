@@ -163,14 +163,15 @@ function filterTargets(serviceName: string, annotationFile: AnnotationFile): num
     const serviceNamespace = annotationFile.namespace?.name === serviceName ? annotationFile.namespace : undefined;
     const aliasName = serviceNamespace ? serviceNamespace.alias : '';
     const filteredTargets: CoreTarget[] = [];
-    annotationFile.targets.forEach((target, idx) => {
-        const result =
+    for (let idx = 0; idx < annotationFile.targets.length; idx++) {
+        const target = annotationFile.targets[idx];
+        const isInService =
             target.name.startsWith(serviceName + '.') || (aliasName && target.name.startsWith(aliasName + '.'));
-        if (result) {
+        if (isInService) {
             filteredTargets.push(target);
             index.push(idx);
         }
-    });
+    }
     annotationFile.targets = filteredTargets;
     return index;
 }
