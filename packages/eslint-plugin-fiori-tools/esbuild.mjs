@@ -20,13 +20,12 @@ const cjsCompatBanner = [
     'const __dirname=__cjsDirname(__filename);'
 ].join('');
 
-// eslint and typescript-eslint are peerDependencies provided by the consumer.
-// @typescript-eslint/eslint-plugin and @typescript-eslint/parser are covered by the
-// typescript-eslint peer — marking them external drops the ~3.5 MB typescript.js from the bundle.
+// eslint is a peerDependency provided by the consumer.
+// @typescript-eslint/eslint-plugin and @typescript-eslint/parser are runtime dependencies —
+// marking them external drops the ~3.5 MB typescript.js from the bundle.
 // @babel/* are peerDependencies of @babel/eslint-parser — required dynamically at runtime.
 const externalDependencies = [
     'eslint',
-    'typescript-eslint',
     '@typescript-eslint/eslint-plugin',
     '@typescript-eslint/parser',
     '@babel/core',
