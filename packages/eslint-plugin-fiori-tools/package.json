@@ -24,8 +24,7 @@
         "lint": "eslint",
         "lint:fix": "eslint --fix",
         "test": "cross-env \"NODE_OPTIONS=--experimental-vm-modules\" jest --ci --forceExit --detectOpenHandles --colors --maxWorkers=50%",
-        "tgz:package": "pnpm pack",
-        "run-import": "node scripts/index.js"
+        "tgz:package": "pnpm pack"
     },
     "dependencies": {
         "@babel/core": "8.0.0-rc.6",
