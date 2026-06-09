@@ -218,20 +218,25 @@ annotate service.Individual with {
         const testCases = [
             {
                 input: '/targets/0/terms/0/content/0/content/0/content/0/content/0/text',
-                output: '/targets/1/assignments/0/items/items/0/value/properties/0/value/items/0/properties/0/value'
+                output: '/targets/2/assignments/0/items/items/0/value/properties/0/value/items/0/properties/0/value'
             },
             {
                 input: '/targets/1/terms/0/content/0/content/0/content/0/content/0/content/text',
-                output: '/targets/3/assignments/0/value/items/0/properties/0/value'
+                output: '/targets/4/assignments/0/value/items/0/properties/0/value'
             }
         ];
         test.each(testCases)('annotation targets from different services', async (testCase) => {
             await testPointerWithFixture(
                 `
 using IncidentService as service from '../../srv/incidentservice';
-using AnalyticsService as aservice from '../../srv/analytics-service';
+using scp.cloud from '../db/schema';
 
-annotate aservice.Incidents with @UI: {
+service AnalyticsService {
+  @readonly
+  entity Incidents as projection on cloud.Incidents;
+}
+
+annotate AnalyticsService.Incidents with @UI: {
     LineItem        : []
 };
 
@@ -260,7 +265,7 @@ annotate IncidentService.Incidents with @UI: {
     }, ], },
 };
 
-annotate aservice.Incidents with @UI: {
+annotate AnalyticsService.Incidents with @UI: {
     LineItem#a2 : []
 };
 
