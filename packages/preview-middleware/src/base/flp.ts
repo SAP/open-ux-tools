@@ -323,11 +323,10 @@ export class FlpSandbox {
      * Computes the base URL for API endpoints, combining the patched router base URL
      * with the resources prefix for component-type projects.
      *
-     * @param req - The enhanced request containing the patched router info
+     * @param patchedRouterBaseUrl - The base URL from ui5-patched-router
      * @returns The base URL string for API endpoints
      */
-    private getBaseUrl(req: EnhancedRequest): string {
-        const patchedRouterBaseUrl = req['ui5-patched-router']?.baseUrl ?? '';
+    private getBaseUrl(patchedRouterBaseUrl: string): string {
         const resourcesPrefix = getResourcesPathPrefix(this.utils);
         return resourcesPrefix ? posix.join(patchedRouterBaseUrl, resourcesPrefix) : patchedRouterBaseUrl;
     }
@@ -346,8 +345,8 @@ export class FlpSandbox {
             : '@sap-ux/preview-middleware';
 
         await this.setApplicationDependencies();
-        const baseUrl = this.getBaseUrl(req);
         const patchedRouterBaseUrl = req['ui5-patched-router']?.baseUrl ?? '';
+        const baseUrl = this.getBaseUrl(patchedRouterBaseUrl);
         const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, patchedRouterBaseUrl);
         this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
         if (ui5Version.major === 1 && ui5Version.minor <= 71) {
@@ -420,7 +419,8 @@ export class FlpSandbox {
         livereloadPort = Number.isNaN(livereloadPort) ? DEFAULT_LIVERELOAD_PORT : livereloadPort;
         const envLivereloadUrl = isAppStudio() ? await exposePort(livereloadPort) : undefined;
         // For component projects, baseUrl must include the resources prefix for correct API paths
-        const baseUrl = this.getBaseUrl(req);
+        const patchedRouterBaseUrl = req['ui5-patched-router']?.baseUrl ?? '';
+        const baseUrl = this.getBaseUrl(patchedRouterBaseUrl);
         const html = render(template, {
             previewUrl: templatePreviewUrl,
             telemetry: !!rta.options?.telemetry,
