@@ -842,6 +842,17 @@ describe('Test prompts', () => {
                 jest.useRealTimers();
             });
         });
+
+        describe('showOutputTabLink', () => {
+            it('should show output tab link with localized link message', () => {
+                const showOutputTabLinkFn = (entitySelectionPrompt as any).showOutputTabLink;
+                expect(showOutputTabLinkFn).toBeDefined();
+                expect(showOutputTabLinkFn()).toEqual({
+                    show: true,
+                    linkMessage: realT('prompts.relatedEntitySelection.openLogs')
+                });
+            });
+        });
     });
 
     describe('Reset Selection Prompt', () => {

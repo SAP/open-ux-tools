@@ -330,6 +330,12 @@ function getEntitySelectionPrompt(
                 };
             }
             return undefined;
+        },
+        showOutputTabLink: () => {
+            return {
+                show: true,
+                linkMessage: t('prompts.relatedEntitySelection.openLogs')
+            };
         }
     } as CheckBoxQuestion;
 }
