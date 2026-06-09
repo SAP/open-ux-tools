@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url';
 
-import type { AnnotationFile, Namespace, Reference } from '@sap-ux/odata-annotation-core-types';
+import type { AnnotationFile, Namespace, Reference, Target as CoreTarget } from '@sap-ux/odata-annotation-core-types';
 import { Range } from '@sap-ux/odata-annotation-core-types';
 import type { Target } from '@sap-ux/cds-odata-annotation-converter';
 import type {
@@ -162,14 +162,16 @@ function filterTargets(serviceName: string, annotationFile: AnnotationFile): num
     const index: number[] = [];
     const serviceNamespace = annotationFile.namespace?.name === serviceName ? annotationFile.namespace : undefined;
     const aliasName = serviceNamespace ? serviceNamespace.alias : '';
-    annotationFile.targets = annotationFile.targets.filter((target, idx) => {
+    const filteredTargets: CoreTarget[] = [];
+    annotationFile.targets.forEach((target, idx) => {
         const result =
             target.name.startsWith(serviceName + '.') || (aliasName && target.name.startsWith(aliasName + '.'));
         if (result) {
+            filteredTargets.push(target);
             index.push(idx);
         }
-        return result;
     });
+    annotationFile.targets = filteredTargets;
     return index;
 }
 

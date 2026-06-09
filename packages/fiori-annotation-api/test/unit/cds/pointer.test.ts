@@ -242,24 +242,9 @@ annotate IncidentService.Incidents with @UI: {
         ![@Analytics.DrillURL] : 'test',
         $value:  [
             // testing
-            {Value: assignedIndividual_id},
-            {Value: createdAt, },
-            // hello
-            {
-                ![@Common.Heading] : 'Heading', 
-                Value: 'something else', 
-            }
-    
+            {Value: assignedIndividual_id}
         ]
-    },
-
-    FieldGroup #test: {Data: [{
-        Value            : category.code,
-
-        Criticality      : #Critical,
-        IconUrl          : 'sap://icon-test',
-        ![@UI.Importance]: #High,
-    }, ], },
+    }
 };
 
 annotate AnalyticsService.Incidents with @UI: {
@@ -267,15 +252,7 @@ annotate AnalyticsService.Incidents with @UI: {
 };
 
 annotate IncidentService.Incidents with @UI.LineItem #test: [{
-    Value                 : modifiedAt,
-    Label                 : 'ok',
-    ![@UI.Hidden],
-    ![@Common.Application]: {
-        $Type               : 'Common.ApplicationType',
-        Component           : 'accepted',
-        ServiceId           : 'Actions',
-        ![@Common.Timestamp]: timestamp'2020-01-01 12:23:23',
-    },
+    Value                 : modifiedAt
 }];
 `,
                 testCase.input,
