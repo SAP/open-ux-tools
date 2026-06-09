@@ -1,8 +1,12 @@
 import { exit } from 'node:process';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { defineConfig, devices } from '@sap-ux-private/playwright';
 import type { PlaywrightTestConfig, Project, ReporterDescription } from '@sap-ux-private/playwright';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 /**
  * Read environment variables from `.env` file.
@@ -73,6 +77,6 @@ const config: PlaywrightTestConfig<TestOptions> = {
             ui5Version: version
         }
     })) as Project<{}, TestOptions>[],
-    globalSetup: require.resolve('./src/global-setup')
+    globalSetup: fileURLToPath(new URL('./src/global-setup.ts', import.meta.url))
 };
 export default defineConfig(config);
