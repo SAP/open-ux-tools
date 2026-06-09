@@ -1,5 +1,5 @@
 ---
-'@sap-ux/ui5-test-writer': patch
+'@sap-ux/ui5-test-writer': minor
 ---
 
 Add TypeScript support for OPA test generation

@@ -606,8 +606,8 @@ function writeJourneyFiles(
         // no `FPM.ts` template, so we force `DotFileExtension.JS` for the FPM
         // page-object regardless of the configured `dotFileExtension`. Otherwise
         // an LR-OP-FPM mix with `enableTypeScript` would crash in `writePageObject`
-        // when trying to load the missing `FPM.ts` template. TODO: add
-        // FPM.ts/FPMJourney.ts templates and switch to `dotFileExtension`.
+        // when trying to load the missing `FPM.ts` template.
+        // Future work: add FPM.ts/FPMJourney.ts templates and switch to `dotFileExtension`.
         editor.copyTpl(
             join(rootV4TemplateDirPath, 'integration', 'FPMJourney.js'),
             join(testOutDirPath, 'integration', `${appFeatures.fpm.name}Journey.js`),
