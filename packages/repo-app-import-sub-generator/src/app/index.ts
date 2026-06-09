@@ -3,9 +3,16 @@ import RepoAppDownloadLogger from '../utils/logger';
 import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import type { Logger } from '@sap-ux/logger';
-import { generatorTitle, extractedFilePath, generatorName, defaultAnswers, qfaJsonFileName } from '../utils/constants';
-import { t } from '../utils/i18n';
+import {
+    downloadTypeConfig,
+    extractedFilePath,
+    generatorName,
+    defaultAnswers,
+    qfaJsonFileName
+} from '../utils/constants';
+import { t, initI18n } from '../utils/i18n';
 import { extractZip } from '../utils/download-utils';
+import { cleanupDebugFiles, makeValidJson, addPackageJsonIfNotFound } from '../utils/file-helpers';
 import { EventName } from '../telemetryEvents';
 import {
     getDefaultTargetFolder,
@@ -16,7 +23,13 @@ import {
     isCli,
     setYeomanEnvConflicterForce
 } from '@sap-ux/fiori-generator-shared';
-import type { RepoAppDownloadOptions, RepoAppDownloadAnswers, RepoAppDownloadQuestions, QfaJsonConfig } from './types';
+import type {
+    RepoAppDownloadOptions,
+    RepoAppDownloadAnswers,
+    RepoAppDownloadQuestions,
+    QfaJsonConfig,
+    AppDownloadContext
+} from './types';
 import { getPrompts } from '../prompts/prompts';
 import { generate, TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
 import { join, basename } from 'node:path';
@@ -30,14 +43,15 @@ import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import { generate as generateDeployConfig } from '@sap-ux/abap-deploy-config-writer';
 import { PromptState } from '../prompts/prompt-state';
-import { PromptNames } from './types';
-import { getAbapDeployConfig, getAppConfig, type AppDownloadContext } from './app-config';
+import { AppDownloadType, PromptNames } from './types';
+import { getAppConfig, getAdtDeployConfig } from './app-config-quick-deploy';
+import { getAbapRepoAppConfig, getAbapRepoDeployConfig, type AbapRepoAppConfig } from './app-config-abap-repo';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
-import { makeValidJson } from '../utils/file-helpers';
 import { replaceWebappFiles, validateAndUpdateManifestUI5Version } from '../utils/updates';
 import { getYUIDetails } from '../prompts/prompt-helpers';
 import { isValidPromptState, validateQfaJsonFile } from '../utils/validators';
 import { FileName, DirName } from '@sap-ux/project-access';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 /**
  * Generator class for downloading a basic app from a repository.
@@ -47,12 +61,14 @@ export default class extends Generator {
     private readonly appWizard: AppWizard;
     private readonly vscode?: any;
     private readonly appRootPath: string;
-    private readonly prompts: Prompts;
     private readonly answers: RepoAppDownloadAnswers = defaultAnswers;
+    private readonly downloadType: AppDownloadType;
     public options: RepoAppDownloadOptions;
+    private prompts: Prompts;
     private projectPath: string;
     private extractedProjectPath: string;
     private debugOptions: DebugOptions;
+    private deployConfig: AbapDeployConfig | undefined;
     setPromptsCallback: (fn: object) => void;
 
     /**
@@ -69,6 +85,7 @@ export default class extends Generator {
         this.vscode = opts.vscode;
         this.appRootPath = opts?.appRootPath ?? getDefaultTargetFolder(this.vscode) ?? this.destinationRoot();
         this.options = opts;
+        this.downloadType = opts.data?.appDownloadType ?? AppDownloadType.ADTQuickDeploy;
 
         // Configure logging
         RepoAppDownloadLogger.configureLogging(
@@ -80,9 +97,6 @@ export default class extends Generator {
             this.vscode
         );
 
-        // Initialise prompts and callbacks if not launched as a subgenerator
-        this.appWizard.setHeaderTitle(generatorTitle);
-        this.prompts = new Prompts(getYUIDetails());
         this.setPromptsCallback = (fn): void => {
             if (this.prompts) {
                 this.prompts.setCallback(fn);
@@ -95,6 +109,9 @@ export default class extends Generator {
      */
     public async initializing(): Promise<void> {
         setYeomanEnvConflicterForce(this.env, this.options.force);
+        await initI18n();
+        this.appWizard.setHeaderTitle(downloadTypeConfig[this.downloadType].generatorTitle);
+        this.prompts = new Prompts(getYUIDetails(this.downloadType));
         // Initialise telemetry settings
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
@@ -115,7 +132,8 @@ export default class extends Generator {
             this.appRootPath,
             quickDeployedAppConfig,
             this.appWizard,
-            isCli()
+            isCli(),
+            this.downloadType
         );
         const answers: RepoAppDownloadAnswers = await this.prompt(questions);
         const { targetFolder } = answers;
@@ -139,14 +157,68 @@ export default class extends Generator {
      * Writes the configuration files for the project, including deployment config, and README.
      */
     public async writing(): Promise<void> {
+        if (this.downloadType === AppDownloadType.AbapRepository) {
+            await this._generateAbapRepositoryApp();
+        } else {
+            await this._generateAdtQuickDeployApp();
+        }
+    }
+
+    /**
+     * Writing phase for ABAP Repository downloads.
+     */
+    private async _generateAbapRepositoryApp(): Promise<void> {
+        const webappPath = join(this.projectPath, DirName.Webapp);
+        await extractZip(webappPath, this.fs);
+
+        cleanupDebugFiles(webappPath, this.fs);
+        const appConfig = getAbapRepoAppConfig(this.extractedProjectPath, this.answers.selectedApp, this.fs);
+
+        // If package.json does not exist in the extracted app, add a minimal one with the appId as the package name.
+        addPackageJsonIfNotFound(this.projectPath, appConfig.app.id, this.fs);
+
+        // Generate deploy config
+        const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
+        const context: AppDownloadContext = {
+            serviceProvider,
+            appDownloadType: AppDownloadType.AbapRepository
+        };
+        this.deployConfig = await getAbapRepoDeployConfig(this.answers.selectedApp, context);
+
+        if (this.vscode) {
+            // Generate Fiori launch config
+            const fioriOptions = this._getLaunchConfig(appConfig);
+            // Create launch configuration
+            await createLaunchConfig(
+                this.projectPath,
+                fioriOptions,
+                this.fs,
+                RepoAppDownloadLogger.logger as unknown as Logger
+            );
+            writeApplicationInfoSettings(this.projectPath);
+        }
+
+        // Generate README
+        const readMeConfig = this._getReadMeConfig(appConfig);
+        generateAppGenInfo(this.projectPath, readMeConfig, this.fs);
+    }
+
+    /**
+     * Writing phase for ADT Quick Deploy downloads.
+     * Generates a full Fiori project from qfa.json metadata including deploy config.
+     */
+    private async _generateAdtQuickDeployApp(): Promise<void> {
         await extractZip(this.extractedProjectPath, this.fs);
         // Check if the qfa.json file
         const qfaJsonFilePath = join(this.extractedProjectPath, qfaJsonFileName);
         const qfaJson: QfaJsonConfig = makeValidJson(qfaJsonFilePath, this.fs);
         // Generate project files
-        validateQfaJsonFile(qfaJson);
+        if (!validateQfaJsonFile(qfaJson)) {
+            throw new Error(t('error.qfaJsonValidationFailed', { jsonFileName: qfaJsonFileName }));
+        }
         const context: AppDownloadContext = {
-            qfaJson
+            qfaJson,
+            appDownloadType: AppDownloadType.ADTQuickDeploy
         };
 
         // Generate app config
@@ -160,7 +232,7 @@ export default class extends Generator {
         await generate(this.projectPath, config, this.fs);
 
         // Generate deploy config
-        const deployConfig: AbapDeployConfig = await getAbapDeployConfig(context);
+        const deployConfig: AbapDeployConfig = await getAdtDeployConfig(context);
         await generateDeployConfig(this.projectPath, deployConfig, undefined, this.fs);
 
         if (this.vscode) {
@@ -194,7 +266,7 @@ export default class extends Generator {
      * @param config - The app configuration object.
      * @returns {AppGenInfo} The configuration for generating the README.
      */
-    private _getReadMeConfig(config: FioriElementsApp<LROPSettings>): AppGenInfo {
+    private _getReadMeConfig(config: FioriElementsApp<LROPSettings> | AbapRepoAppConfig): AppGenInfo {
         const readMeConfig: AppGenInfo = {
             appName: config.app.id,
             appTitle: config.app.title ?? '',
@@ -217,7 +289,7 @@ export default class extends Generator {
      * @param config - The app configuration object.
      * @returns {FioriOptions} The launch configuration options.
      */
-    private _getLaunchConfig(config: FioriElementsApp<LROPSettings>): FioriOptions {
+    private _getLaunchConfig(config: FioriElementsApp<LROPSettings> | AbapRepoAppConfig): FioriOptions {
         const debugOptions: DebugOptions = {
             vscode: this.vscode,
             addStartCmd: true,
@@ -315,7 +387,8 @@ export default class extends Generator {
             await runPostAppGenHook({
                 path: this.projectPath,
                 vscodeInstance: this.vscode,
-                postGenCommand: this.options.data?.postGenCommand
+                postGenCommand: this.options.data?.postGenCommand,
+                deployConfig: this.deployConfig
             });
         }
     }
@@ -325,7 +398,10 @@ export default class extends Generator {
      */
     async end(): Promise<void> {
         try {
-            this.appWizard.showInformation(t('info.repoAppDownloadCompleteMsg'), MessageType.notification);
+            this.appWizard.showInformation(
+                downloadTypeConfig[this.downloadType].generatorSuccessMsg,
+                MessageType.notification
+            );
             await this._handlePostAppGeneration();
             await sendTelemetry(
                 EventName.GENERATION_SUCCESS,

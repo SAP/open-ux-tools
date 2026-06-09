@@ -1,5 +1,6 @@
 import { validateQfaJsonFile, validateAppSelection, isValidPromptState } from '../../src/utils/validators';
 import type { QfaJsonConfig, QuickDeployedAppConfig, AppInfo } from '../../src/app/types';
+import { AppDownloadType } from '../../src/app/types';
 import { t } from '../../src/utils/i18n';
 import RepoAppDownloadLogger from '../../src/utils/logger';
 import { downloadApp, hasQfaJson } from '../../src/utils/download-utils';
@@ -65,7 +66,9 @@ describe('validateQfaJsonFile', () => {
 
         const result = validateQfaJsonFile(invalidMetadataConfig);
         expect(result).toBe(false);
-        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.invalidMetadataPackage'));
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+            t('error.validationErrors.invalidMetadataPackage')
+        );
     });
 
     it('should return false and log an error when service binding details validation fails', () => {
@@ -79,7 +82,7 @@ describe('validateQfaJsonFile', () => {
 
         const result = validateQfaJsonFile(invalidServiceBindingConfig);
         expect(result).toBe(false);
-        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.invalidServiceName'));
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.validationErrors.invalidServiceName'));
     });
 
     it('should return false and log an error when service binding version is not provided', () => {
@@ -93,7 +96,9 @@ describe('validateQfaJsonFile', () => {
 
         const result = validateQfaJsonFile(invalidServiceBindingConfig);
         expect(result).toBe(false);
-        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.invalidServiceVersion'));
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+            t('error.validationErrors.invalidServiceVersion')
+        );
     });
 
     it('should return false and log an error when main entity name is missing', () => {
@@ -107,7 +112,9 @@ describe('validateQfaJsonFile', () => {
 
         const result = validateQfaJsonFile(invalidServiceBindingConfig);
         expect(result).toBe(false);
-        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.invalidMainEntityName'));
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+            t('error.validationErrors.invalidMainEntityName')
+        );
     });
 
     it('should return false and log an error when project attribute validation fails', () => {
@@ -118,7 +125,7 @@ describe('validateQfaJsonFile', () => {
 
         const result = validateQfaJsonFile(invalidProjectAttributeConfig);
         expect(result).toBe(false);
-        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.invalidModuleName'));
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.validationErrors.invalidModuleName'));
     });
 
     it('should return false and log an error when deployment details validation fails', () => {
@@ -129,7 +136,9 @@ describe('validateQfaJsonFile', () => {
 
         const result = validateQfaJsonFile(invalidDeploymentDetailsConfig);
         expect(result).toBe(false);
-        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.invalidRepositoryName'));
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+            t('error.validationErrors.invalidRepositoryName')
+        );
     });
 });
 
@@ -216,6 +225,24 @@ describe('validateAppSelection', () => {
         const result = await validateAppSelection({} as AppInfo, appList);
 
         expect(result).toBe(false);
+    });
+
+    it('should skip qfa.json check and return true for ABAP repository download type', async () => {
+        const appList: AppIndex = [{ appId: '12345', repoName: 'testRepo' }];
+        const answers = { appId: '12345', repoName: 'testRepo' } as AppInfo;
+        mockDownloadApp.mockResolvedValue(undefined);
+        (hasQfaJson as jest.Mock).mockReturnValue(false);
+
+        const result = await validateAppSelection(
+            answers,
+            appList,
+            undefined,
+            undefined,
+            AppDownloadType.AbapRepository
+        );
+
+        expect(mockDownloadApp).toHaveBeenCalledWith('testRepo');
+        expect(result).toBe(true);
     });
 });
 

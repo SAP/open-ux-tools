@@ -15,6 +15,15 @@ import type { Question } from 'yeoman-generator';
 
 ErrorHandler.getHelpLink = jest.fn();
 
+jest.mock('../../src/utils/logger', () => ({
+    logger: {
+        error: jest.fn(),
+        warn: jest.fn(),
+        info: jest.fn(),
+        debug: jest.fn()
+    }
+}));
+
 jest.mock('@sap-ux/odata-service-inquirer', () => ({
     ...jest.requireActual('@sap-ux/odata-service-inquirer'),
     getSystemSelectionQuestions: jest.fn()
@@ -335,5 +344,37 @@ describe('getPrompts', () => {
         expect(await (appSelectionPrompt as any)?.validate(appList[0].value)).toBe(
             t('error.appDownloadErrors.appDownloadFailure', { error: error.message })
         );
+    });
+
+    it('should log error from getCliValidatePrompts when validateAppSelection throws with Error instance', async () => {
+        (formatAppChoices as jest.Mock).mockReturnValue(appList);
+        mockFetchAppList.mockResolvedValue(appList);
+        const errorMsg = 'Validation failed';
+        (validateAppSelection as jest.Mock).mockRejectedValue(new Error(errorMsg));
+
+        const prompts = await getPrompts(appRootPath, undefined, undefined, true); // CLI mode
+
+        const validationPrompt = prompts.find((p) => p.name === `${PromptNames.selectedApp}-validation`);
+        expect(validationPrompt).toBeDefined();
+        const result = await (validationPrompt as any)?.when({ [PromptNames.selectedApp]: appList[0].value });
+        expect(result).toBe(false);
+    });
+
+    it('should log generic error from getCliValidatePrompts when validateAppSelection throws non-Error', async () => {
+        (formatAppChoices as jest.Mock).mockReturnValue(appList);
+        mockFetchAppList.mockResolvedValue(appList);
+        (validateAppSelection as jest.Mock).mockRejectedValue('string error');
+
+        const prompts = await getPrompts(appRootPath, undefined, undefined, true); // CLI mode
+
+        const validationPrompt = prompts.find((p) => p.name === `${PromptNames.selectedApp}-validation`);
+        expect(validationPrompt).toBeDefined();
+        const result = await (validationPrompt as any)?.when({ [PromptNames.selectedApp]: appList[0].value });
+        expect(result).toBe(false);
+    });
+
+    it('should throw when getSystemSelectionQuestions fails', async () => {
+        mockGetSystemSelectionQuestions.mockRejectedValue(new Error('System questions failed'));
+        await expect(getPrompts(appRootPath)).rejects.toThrow('Failed to generate prompts: System questions failed');
     });
 });

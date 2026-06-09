@@ -1,10 +1,34 @@
 import type Generator from 'yeoman-generator';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { VSCodeInstance, TelemetryData, LogWrapper } from '@sap-ux/fiori-generator-shared';
-import type { AppIndex } from '@sap-ux/axios-extension';
+import type { AppIndex, AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+
+/**
+ * Identifies which download flow is active.
+ * ADTQuickDeploy: app was quick-deployed via ADT; uses qfa.json for config.
+ * AbapRepository: app lives in ABAP UI5 repository; config is read from manifest.
+ */
+export const AppDownloadType = {
+    ADTQuickDeploy: 'adtQuickDeploy',
+    AbapRepository: 'abapRepository'
+};
+
+export type AppDownloadType = (typeof AppDownloadType)[keyof typeof AppDownloadType];
+
+/**
+ * Shared context for downloading and deploying ABAP applications.
+ */
+export interface AppDownloadContext {
+    /** The ABAP service provider instance */
+    serviceProvider?: AbapServiceProvider;
+    /** qfaJson is only available for ADTQuickDeploy apps */
+    qfaJson?: QfaJsonConfig;
+    /** Determines the type of app download */
+    appDownloadType?: AppDownloadType;
+}
 
 /**
  * Quick deploy app config are applicable only in scenarios where an application
@@ -51,6 +75,9 @@ export interface RepoAppDownloadOptions extends Generator.GeneratorOptions {
 
     /** Logger instance for logging operations. */
     logWrapper?: LogWrapper;
+
+    /** The type of app download. */
+    appDownloadType?: AppDownloadType;
 }
 
 /**

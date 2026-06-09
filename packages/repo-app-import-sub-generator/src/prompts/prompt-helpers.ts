@@ -1,6 +1,6 @@
-import { appListSearchParams, appListResultFields, generatorTitle, generatorDescription } from '../utils/constants';
+import { appListResultFields, downloadTypeConfig, adtSourceTemplateId } from '../utils/constants';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
-import type { AppInfo, AppItem } from '../app/types';
+import { AppDownloadType, type AppInfo, type AppItem } from '../app/types';
 import { PromptState } from './prompt-state';
 import { t } from '../utils/i18n';
 import RepoAppDownloadLogger from '../utils/logger';
@@ -8,15 +8,12 @@ import { type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
 /**
  * Returns the details for the YUI prompt.
  *
+ * @param downloadType - The type of app download to determine which details to return.
  * @returns step details
  */
-export function getYUIDetails(): { name: string; description: string }[] {
-    return [
-        {
-            name: generatorTitle,
-            description: generatorDescription
-        }
-    ];
+export function getYUIDetails(downloadType: AppDownloadType): { name: string; description: string }[] {
+    const { generatorTitle, generatorDescription } = downloadTypeConfig[downloadType];
+    return [{ name: generatorTitle, description: generatorDescription }];
 }
 
 /**
@@ -74,20 +71,30 @@ export const formatAppChoices = (appList: AppIndex): Array<{ name: string; value
  *
  * @param {AbapServiceProvider} provider - The ABAP service provider.
  * @param {string} appId - Application ID to filter the list.
+ * @param {AppDownloadType} downloadType - The download type determining which search params to use.
  * @returns {Promise<AppIndex>} A list of applications filtered by source template.
  */
-async function getAppList(provider: AbapServiceProvider, appId?: string): Promise<AppIndex> {
+async function getAppList(
+    provider: AbapServiceProvider,
+    appId?: string,
+    downloadType: AppDownloadType = AppDownloadType.ADTQuickDeploy
+): Promise<AppIndex> {
     try {
+        const baseSearchParams = downloadTypeConfig[downloadType].searchParams;
         const searchParams = appId
             ? {
-                  ...appListSearchParams,
+                  ...baseSearchParams,
                   'sap.app/id': appId
               }
-            : appListSearchParams;
-        return await provider.getAppIndex().search(searchParams, appListResultFields);
+            : baseSearchParams;
+        const results = await provider.getAppIndex().search(searchParams, appListResultFields);
+        if (downloadType === AppDownloadType.AbapRepository) {
+            // For ABAP Repository downloads, filter out apps with the ADT source template as they follow the quick deploy app download flow.
+            return results.filter((app) => app['sap.app/sourceTemplate/id'] !== adtSourceTemplateId);
+        }
+        return results;
     } catch (error) {
         RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: error.message }));
-        RepoAppDownloadLogger.logger?.debug(t('error.applicationListFetchError', { error: JSON.stringify(error) }));
         return [];
     }
 }
@@ -97,17 +104,19 @@ async function getAppList(provider: AbapServiceProvider, appId?: string): Promis
  *
  * @param {ConnectedSystem} connectedSystem - The ABAP service provider.
  * @param {string} appId - Application ID to be downloaded.
+ * @param {AppDownloadType} downloadType - The download type determining which search params to use.
  * @returns {Promise<AppIndex>} A list of applications filtered by source template.
  */
 export async function fetchAppListForSelectedSystem(
     connectedSystem: ConnectedSystem,
-    appId?: string
+    appId?: string,
+    downloadType: AppDownloadType = AppDownloadType.ADTQuickDeploy
 ): Promise<AppIndex> {
     if (connectedSystem?.serviceProvider) {
         PromptState.systemSelection = {
             connectedSystem: connectedSystem
         };
-        return await getAppList(connectedSystem.serviceProvider as AbapServiceProvider, appId);
+        return await getAppList(connectedSystem.serviceProvider as AbapServiceProvider, appId, downloadType);
     }
     return [];
 }

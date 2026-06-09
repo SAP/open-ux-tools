@@ -1,9 +1,9 @@
 import { fetchAppListForSelectedSystem, formatAppChoices, getYUIDetails } from '../../src/prompts/prompt-helpers';
 import type { RepoAppDownloadAnswers, AppItem } from '../../src/app/types';
-import { PromptNames } from '../../src/app/types';
+import { AppDownloadType, PromptNames } from '../../src/app/types';
 import { PromptState } from '../../src/prompts/prompt-state';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
-import { generatorTitle, generatorDescription } from '../../src/utils/constants';
+import { adtSourceTemplateId, downloadTypeConfig } from '../../src/utils/constants';
 import { t } from '../../src/utils/i18n';
 import RepoAppDownloadLogger from '../../src/utils/logger';
 import { DatasourceType, type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
@@ -57,6 +57,23 @@ describe('fetchAppListForSelectedSystem', () => {
     it('should return an empty array when serviceProvider is not provided', async () => {
         const result = await fetchAppListForSelectedSystem(undefined as unknown as ConnectedSystem);
         expect(result).toEqual([]);
+    });
+
+    it('should filter out ADT source template apps for AbapRepository download type', async () => {
+        const adtApp = { 'sap.app/sourceTemplate/id': adtSourceTemplateId, id: 'adt-app' };
+        const regularApp = { 'sap.app/sourceTemplate/id': 'some/other/template', id: 'regular-app' };
+        const noTemplateApp = { id: 'no-template-app' };
+        const mockSearch = jest.fn().mockResolvedValue([adtApp, regularApp, noTemplateApp]);
+        const provider = {
+            getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })
+        } as unknown as AbapServiceProvider;
+
+        const result = await fetchAppListForSelectedSystem(
+            { serviceProvider: provider } as ConnectedSystem,
+            undefined,
+            AppDownloadType.AbapRepository
+        );
+        expect(result).toEqual([regularApp, noTemplateApp]);
     });
 
     it('should log an error if getAppList throws an error', async () => {
@@ -131,12 +148,22 @@ describe('formatAppChoices', () => {
 });
 
 describe('getYUIDetails', () => {
-    it('should return an array with the correct name and description', () => {
-        const result = getYUIDetails();
+    it('should return an array with the correct name and description for download of ADTQuickDeploy apps', () => {
+        const result = getYUIDetails(AppDownloadType.ADTQuickDeploy);
         expect(result).toEqual([
             {
-                name: generatorTitle,
-                description: generatorDescription
+                name: downloadTypeConfig[AppDownloadType.ADTQuickDeploy].generatorTitle,
+                description: downloadTypeConfig[AppDownloadType.ADTQuickDeploy].generatorDescription
+            }
+        ]);
+    });
+
+    it('should return an array with the correct name and description for download of AbapRepository apps', () => {
+        const result = getYUIDetails(AppDownloadType.AbapRepository);
+        expect(result).toEqual([
+            {
+                name: downloadTypeConfig[AppDownloadType.AbapRepository].generatorTitle,
+                description: downloadTypeConfig[AppDownloadType.AbapRepository].generatorDescription
             }
         ]);
     });
