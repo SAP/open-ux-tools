@@ -1,5 +1,26 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 1.0.12
+
+### Patch Changes
+
+- a328e14: refactor: move restoreServiceProviderLoggers to @sap-ux/fiori-generator-shared
+- Updated dependencies [a328e14]
+    - @sap-ux/fiori-generator-shared@1.0.7
+    - @sap-ux/cap-config-writer@1.0.7
+    - @sap-ux/fiori-elements-writer@3.0.12
+    - @sap-ux/fiori-freestyle-writer@3.0.12
+    - @sap-ux/odata-service-inquirer@3.0.7
+    - @sap-ux/ui5-application-inquirer@1.0.7
+
+## 1.0.11
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.11
+- @sap-ux/fiori-freestyle-writer@3.0.11
+- @sap-ux/odata-service-inquirer@3.0.6
+
 ## 1.0.10
 
 ### Patch Changes

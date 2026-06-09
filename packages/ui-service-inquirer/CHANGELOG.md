@@ -1,5 +1,13 @@
 # @sap-ux/ui-service-inquirer
 
+## 1.0.7
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@2.0.7
+- @sap-ux/inquirer-common@1.0.7
+- @sap-ux/odata-service-inquirer@3.0.7
+
 ## 1.0.6
 
 ### Patch Changes
