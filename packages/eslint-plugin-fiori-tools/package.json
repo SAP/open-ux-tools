@@ -16,8 +16,7 @@
     "main": "./lib/index.js",
     "scripts": {
         "build": "node esbuild.mjs --production",
-        "bundle:dev": "node esbuild.mjs",
-        "bundle:prod": "node esbuild.mjs --production",
+        "build:dev": "node esbuild.mjs",
         "check-types": "tsc --noEmit",
         "watch": "tsc --noEmit --watch",
         "clean": "rimraf --glob lib coverage *.tsbuildinfo",
