@@ -137,8 +137,8 @@ export function getManifestProperties(
                     ...item,
                     defaultValue: item.value,
                     configuration: true,
-                    name: item.id,
-                    readableName: item.name,
+                    name: item.name ?? item.id,
+                    readableName: item.name ?? item.id,
                     manifestPropertyPath: `${overlayData?.manifestPropertyPath(control)}/${propertyId}`,
                     type: item.type === 'number' ? 'int' : (item.type as 'string' | 'boolean' | 'undefined'),
                     value: propertyValue
