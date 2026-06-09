@@ -1,5 +1,13 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.0.11
+
+### Patch Changes
+
+- bcfe9e3: Fix: Inconsistent property naming between RTA and CPE
+- Updated dependencies [bcfe9e3]
+    - @sap-ux-private/control-property-editor-common@1.0.2
+
 ## 1.0.10
 
 ## 1.0.9
