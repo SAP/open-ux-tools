@@ -32,27 +32,31 @@ const sharedOptions = {
     banner: { js: cjsCompatBanner }
 };
 
+// eslint and typescript-eslint are peerDependencies provided by the consumer.
+// @babel/core is a peerDependency of @babel/eslint-parser — it's required
+// dynamically at runtime so esbuild cannot trace or inline it.
+const externalDependencies = ['eslint', 'typescript-eslint', '@babel/core', '@babel/eslint-parser', '@babel/parser'];
+
 // Main plugin entry point
 await build({
     ...sharedOptions,
     entryPoints: [join(__dirname, 'src/index.ts')],
     outfile: join(__dirname, 'lib/index.js'),
-    // eslint and typescript-eslint are peerDependencies provided by the consumer.
-    // @babel/core is a peerDependency of @babel/eslint-parser — it's required
-    // dynamically at runtime so esbuild cannot trace or inline it.
-    external: ['eslint', 'typescript-eslint', '@babel/core', '@babel/eslint-parser', '@babel/parser']
+    external: externalDependencies
 });
 
 // Worker: finds Fiori artifacts (called via synckit from project-context.ts)
 await build({
     ...sharedOptions,
     entryPoints: [join(__dirname, 'src/project-context/artifacts.ts')],
-    outfile: join(__dirname, 'lib/project-context/artifacts.js')
+    outfile: join(__dirname, 'lib/project-context/artifacts.js'),
+    external: externalDependencies
 });
 
 // Worker: resolves path mappings synchronously (called via synckit from index.ts)
 await build({
     ...sharedOptions,
     entryPoints: [join(__dirname, 'src/worker-getPathMappingsSync.ts')],
-    outfile: join(__dirname, 'lib/worker-getPathMappingsSync.js')
+    outfile: join(__dirname, 'lib/worker-getPathMappingsSync.js'),
+    external: externalDependencies
 });
