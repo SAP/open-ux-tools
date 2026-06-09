@@ -7,6 +7,8 @@ import {
     setup,
     V2_FLEX_CHANGE_CONTENT,
     V2_FLEX_CHANGE_FILE_PATH,
+    V2_MANIFEST,
+    V2_MANIFEST_PATH,
     V4_ANNOTATIONS,
     V4_ANNOTATIONS_PATH,
     V4_FACETS_ANNOTATIONS,
@@ -27,32 +29,34 @@ const FACETSV4 = {
 const TEST_NAME = 'sap-enable-export';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
-const v2FlexChangeExportEnabledOP = {
+type PropertyName = 'enableExport' | 'useExportToExcel';
+
+const v2FlexChangeExportEnabledOP = (property: PropertyName) => ({
     ...V2_FLEX_CHANGE_CONTENT,
-    content: { ...V2_FLEX_CHANGE_CONTENT.content, property: 'enableExport' },
+    content: { ...V2_FLEX_CHANGE_CONTENT.content, property },
     selector: {
         ...V2_FLEX_CHANGE_CONTENT.selector,
         id: 'v2xmlstart::sap.suite.ui.generic.template.ObjectPage.view.Details::Z_SEPMRA_SO_SALESORDERANALYSIS--Products::Table'
     }
-};
+});
 
-const v2FlexChangeExportEnabledLR = {
-    ...v2FlexChangeExportEnabledOP,
+const v2FlexChangeExportEnabledLR = (property: PropertyName) => ({
+    ...v2FlexChangeExportEnabledOP(property),
     selector: {
-        ...v2FlexChangeExportEnabledOP.selector,
+        ...v2FlexChangeExportEnabledOP(property).selector,
         id: 'v2xmlstart::sap.suite.ui.generic.template.AnalyticalListPage.view.AnalyticalListPage::Z_SEPMRA_SO_SALESORDERANALYSIS--listReport'
     }
-};
+});
 
-const v2FlexChangeExportDisabledOP = {
-    ...v2FlexChangeExportEnabledOP,
-    content: { ...v2FlexChangeExportEnabledOP.content, newValue: false }
-};
+const v2FlexChangeExportDisabledOP = (property: PropertyName) => ({
+    ...v2FlexChangeExportEnabledOP(property),
+    content: { ...v2FlexChangeExportEnabledOP(property).content, newValue: false }
+});
 
-const v2FlexChangeExportDisabledLR = {
-    ...v2FlexChangeExportEnabledLR,
-    content: { ...v2FlexChangeExportEnabledLR.content, newValue: false }
-};
+const v2FlexChangeExportDisabledLR = (property: PropertyName) => ({
+    ...v2FlexChangeExportEnabledLR(property),
+    content: { ...(v2FlexChangeExportEnabledLR(property) as any).content, newValue: false }
+});
 
 ruleTester.run(TEST_NAME, enableExportRule, {
     valid: [
@@ -100,7 +104,7 @@ ruleTester.run(TEST_NAME, enableExportRule, {
             {
                 name: 'V2 - object page table - enableExport is true on object page',
                 filename: V2_FLEX_CHANGE_FILE_PATH,
-                code: JSON.stringify(v2FlexChangeExportEnabledOP, undefined, 2)
+                code: JSON.stringify(v2FlexChangeExportEnabledOP('enableExport'), undefined, 2)
             },
             []
         ),
@@ -108,9 +112,45 @@ ruleTester.run(TEST_NAME, enableExportRule, {
             {
                 name: 'V2 - object page table - enableExport is true on list report page',
                 filename: V2_FLEX_CHANGE_FILE_PATH,
-                code: JSON.stringify(v2FlexChangeExportEnabledLR, undefined, 2)
+                code: JSON.stringify(v2FlexChangeExportEnabledLR('enableExport'), undefined, 2)
             },
             []
+        ),
+        createValidTest(
+            {
+                name: 'V2 - object page table - useExportToExcel is true on object page - minUI5Version < 1.145',
+                filename: V2_FLEX_CHANGE_FILE_PATH,
+                code: JSON.stringify(v2FlexChangeExportEnabledOP('useExportToExcel'), undefined, 2)
+            },
+            [
+                {
+                    filename: V2_MANIFEST_PATH,
+                    code: getManifestAsCode(V2_MANIFEST, [
+                        {
+                            path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                            value: '1.120.0'
+                        }
+                    ])
+                }
+            ]
+        ),
+        createValidTest(
+            {
+                name: 'V2 - object page table - useExportToExcel is true on list report page - minUI5Version < 1.145',
+                filename: V2_FLEX_CHANGE_FILE_PATH,
+                code: JSON.stringify(v2FlexChangeExportEnabledLR('useExportToExcel'), undefined, 2)
+            },
+            [
+                {
+                    filename: V2_MANIFEST_PATH,
+                    code: getManifestAsCode(V2_MANIFEST, [
+                        {
+                            path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                            value: '1.120.0'
+                        }
+                    ])
+                }
+            ]
         )
     ],
 
@@ -219,7 +259,7 @@ ruleTester.run(TEST_NAME, enableExportRule, {
             {
                 name: 'V2 - list report page - enableExport is false',
                 filename: V2_FLEX_CHANGE_FILE_PATH,
-                code: JSON.stringify(v2FlexChangeExportDisabledLR, undefined, 2),
+                code: JSON.stringify(v2FlexChangeExportDisabledLR('enableExport'), undefined, 2),
                 errors: [
                     {
                         message: 'Export functionality in the table must be enabled',
@@ -227,15 +267,25 @@ ruleTester.run(TEST_NAME, enableExportRule, {
                         column: 5
                     }
                 ],
-                output: JSON.stringify(v2FlexChangeExportEnabledLR, undefined, 2)
+                output: JSON.stringify(v2FlexChangeExportEnabledLR('enableExport'), undefined, 2)
             },
-            []
+            [
+                {
+                    filename: V2_MANIFEST_PATH,
+                    code: getManifestAsCode(V2_MANIFEST, [
+                        {
+                            path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                            value: '1.146.0'
+                        }
+                    ])
+                }
+            ]
         ),
         createInvalidTest(
             {
                 name: 'V2 - object page - enableExport is false',
                 filename: V2_FLEX_CHANGE_FILE_PATH,
-                code: JSON.stringify(v2FlexChangeExportDisabledOP, undefined, 2),
+                code: JSON.stringify(v2FlexChangeExportDisabledOP('enableExport'), undefined, 2),
                 errors: [
                     {
                         message: 'Export functionality in the Products table must be enabled',
@@ -243,9 +293,71 @@ ruleTester.run(TEST_NAME, enableExportRule, {
                         column: 5
                     }
                 ],
-                output: JSON.stringify(v2FlexChangeExportEnabledOP, undefined, 2)
+                output: JSON.stringify(v2FlexChangeExportEnabledOP('enableExport'), undefined, 2)
             },
-            []
+            [
+                {
+                    filename: V2_MANIFEST_PATH,
+                    code: getManifestAsCode(V2_MANIFEST, [
+                        {
+                            path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                            value: '1.145.0'
+                        }
+                    ])
+                }
+            ]
+        ),
+        createInvalidTest(
+            {
+                name: 'V2 - list report page - useExportToExcel is false - UI5Version < 1.145',
+                filename: V2_FLEX_CHANGE_FILE_PATH,
+                code: JSON.stringify(v2FlexChangeExportDisabledLR('useExportToExcel'), undefined, 2),
+                errors: [
+                    {
+                        message: 'Export functionality in the table must be enabled',
+                        line: 10,
+                        column: 5
+                    }
+                ],
+                output: JSON.stringify(v2FlexChangeExportEnabledLR('useExportToExcel'), undefined, 2)
+            },
+            [
+                {
+                    filename: V2_MANIFEST_PATH,
+                    code: getManifestAsCode(V2_MANIFEST, [
+                        {
+                            path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                            value: '1.144.0'
+                        }
+                    ])
+                }
+            ]
+        ),
+        createInvalidTest(
+            {
+                name: 'V2 - object page - useExportToExcel is false - UI5Version < 1.145',
+                filename: V2_FLEX_CHANGE_FILE_PATH,
+                code: JSON.stringify(v2FlexChangeExportDisabledOP('useExportToExcel'), undefined, 2),
+                errors: [
+                    {
+                        message: 'Export functionality in the Products table must be enabled',
+                        line: 10,
+                        column: 5
+                    }
+                ],
+                output: JSON.stringify(v2FlexChangeExportEnabledOP('useExportToExcel'), undefined, 2)
+            },
+            [
+                {
+                    filename: V2_MANIFEST_PATH,
+                    code: getManifestAsCode(V2_MANIFEST, [
+                        {
+                            path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                            value: '1.142.0'
+                        }
+                    ])
+                }
+            ]
         )
     ]
 });
