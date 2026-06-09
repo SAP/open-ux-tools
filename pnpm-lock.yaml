@@ -2582,6 +2582,9 @@ importers:
 
   packages/fiori-generator-shared:
     dependencies:
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -2616,9 +2619,6 @@ importers:
       '@jest/globals':
         specifier: 30.3.0
         version: 30.3.0
-      '@sap-ux/axios-extension':
-        specifier: workspace:*
-        version: link:../axios-extension
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
