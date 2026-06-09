@@ -6,5 +6,9 @@
         "cannotGeneratePageFile": "Cannot generate the page file for target: {{ targetKey }}.",
         "errorCopyingFreestyleTestTemplates": "An error occurred when copying freestyle test templates: {{ error }}",
         "errorWritingTsConfig": "An error occurred when writing the `tsconfig.json` file: {{ error }}"
+    },
+    "warn": {
+        "cannotUpdateJourneyRunner": "Could not update `JourneyRunner.js`. The existing file may be missing or unreadable; new pages were not registered.",
+        "cannotUpdateOpaTestsQunit": "Could not update `opaTests.qunit.js`. The existing file may be missing or unreadable; new journey paths were not registered."
     }
 }
