@@ -1994,6 +1994,12 @@ importers:
       '@babel/parser':
         specifier: 8.0.0-rc.6
         version: 8.0.0-rc.6
+      '@typescript-eslint/eslint-plugin':
+        specifier: 8.57.2
+        version: 8.57.2(@typescript-eslint/parser@8.57.2(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3)
+      '@typescript-eslint/parser':
+        specifier: 8.57.2
+        version: 8.57.2(eslint@9.39.1)(typescript@5.9.3)
       typescript-eslint:
         specifier: ^8.57.2
         version: 8.57.2(eslint@9.39.1)(typescript@5.9.3)
@@ -2040,12 +2046,6 @@ importers:
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: 8.57.2
-        version: 8.57.2(@typescript-eslint/parser@8.57.2(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3)
-      '@typescript-eslint/parser':
-        specifier: 8.57.2
-        version: 8.57.2(eslint@9.39.1)(typescript@5.9.3)
       '@typescript-eslint/rule-tester':
         specifier: 8.57.2
         version: 8.57.2(eslint@9.39.1)(typescript@5.9.3)

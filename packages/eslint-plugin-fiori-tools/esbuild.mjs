@@ -21,41 +21,46 @@ const cjsCompatBanner = [
     'const __dirname=__cjsDirname(__filename);'
 ].join('');
 
+// eslint and typescript-eslint are peerDependencies provided by the consumer.
+// @typescript-eslint/eslint-plugin and @typescript-eslint/parser are covered by the
+// typescript-eslint peer — marking them external drops the ~3.5 MB typescript.js from the bundle.
+// @babel/* are peerDependencies of @babel/eslint-parser — required dynamically at runtime.
+const externalDependencies = [
+    'eslint',
+    'typescript-eslint',
+    '@typescript-eslint/eslint-plugin',
+    '@typescript-eslint/parser',
+    '@babel/core',
+    '@babel/eslint-parser',
+    '@babel/parser'
+];
+
 /** @type {import('esbuild').BuildOptions} */
-const sharedOptions = {
+const buildOptions = {
     bundle: true,
     platform: 'node',
     format: 'esm',
     target: 'node22',
     mainFields: ['module', 'main'],
+    // splitting extracts shared code (e.g. @sap-ux/project-access) into a single chunk
+    // instead of duplicating it across index.js and each worker bundle.
+    splitting: true,
+    outdir: join(__dirname, 'lib'),
+    entryPoints: [
+        { in: join(__dirname, 'src/index.ts'), out: 'index' },
+        { in: join(__dirname, 'src/project-context/artifacts.ts'), out: 'project-context/artifacts' },
+        { in: join(__dirname, 'src/worker-getPathMappingsSync.ts'), out: 'worker-getPathMappingsSync' }
+    ],
     minify: production,
     sourcemap: !production,
-    banner: { js: cjsCompatBanner }
+    banner: { js: cjsCompatBanner },
+    external: externalDependencies
 };
 
-// eslint and typescript-eslint are peerDependencies provided by the consumer.
-// @babel/core is a peerDependency of @babel/eslint-parser — it's required
-// dynamically at runtime so esbuild cannot trace or inline it.
-const externalDependencies = ['eslint', 'typescript-eslint', '@babel/core', '@babel/eslint-parser', '@babel/parser'];
-
-const entryPoints = [
-    { in: join(__dirname, 'src/index.ts'), out: join(__dirname, 'lib/index.js') },
-    { in: join(__dirname, 'src/project-context/artifacts.ts'), out: join(__dirname, 'lib/project-context/artifacts.js') },
-    { in: join(__dirname, 'src/worker-getPathMappingsSync.ts'), out: join(__dirname, 'lib/worker-getPathMappingsSync.js') }
-];
-
 if (watch) {
-    const contexts = await Promise.all(
-        entryPoints.map(({ in: entryPoint, out: outfile }) =>
-            context({ ...sharedOptions, entryPoints: [entryPoint], outfile, external: externalDependencies })
-        )
-    );
-    await Promise.all(contexts.map((ctx) => ctx.watch()));
+    const ctx = await context(buildOptions);
+    await ctx.watch();
     console.log('[watch] watching for changes...');
 } else {
-    await Promise.all(
-        entryPoints.map(({ in: entryPoint, out: outfile }) =>
-            build({ ...sharedOptions, entryPoints: [entryPoint], outfile, external: externalDependencies })
-        )
-    );
+    await build(buildOptions);
 }
