@@ -4,6 +4,7 @@ export * from './environment.js';
 export * from './system-utils.js';
 export * from './telemetry/index.js';
 export * from './logging/logWrapper.js';
+export * from './logging/serviceProvider.js';
 export * from './types/index.js';
 export { getPackageScripts } from './npm-package-scripts/getPackageScripts.js';
 export { getBootstrapResourceUrls } from './ui5/ui5.js';
