@@ -1,2 +1,2 @@
-export { UiServiceGenerator } from './ui-service-generator';
-export { ODataServiceGenerator } from './odata-service-generator';
+export { UiServiceGenerator } from './ui-service-generator.js';
+export { ODataServiceGenerator } from './odata-service-generator.js';

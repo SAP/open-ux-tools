@@ -1,7 +1,7 @@
 import { AuthenticationType } from '@sap-ux/store';
-import type { BspApp, FioriToolsProxyConfig, UI5ProxyConfig } from '../src';
-import { UI5Config } from '../src';
-import { fioriToolsProxy } from '../src/constants';
+import type { BspApp, FioriToolsProxyConfig, UI5ProxyConfig } from '../src/index.js';
+import { UI5Config } from '../src/index.js';
+import { fioriToolsProxy } from '../src/constants.js';
 
 describe('UI5Config', () => {
     // values for testing
@@ -110,6 +110,26 @@ describe('UI5Config', () => {
             ui5Config.setMetadata({ name: 'replace.me', copyright: 'Should not exist after replace' });
             ui5Config.setMetadata({ name: 'the.replaced.name' });
             expect(ui5Config.toString()).toMatchSnapshot();
+        });
+    });
+
+    describe('getMetadata', () => {
+        test('returns name and copyright after setMetadata', () => {
+            ui5Config.setMetadata({ name: 'my.app', copyright: '© SAP' });
+            const metadata = ui5Config.getMetadata();
+            expect(metadata?.name).toBe('my.app');
+            expect(metadata?.copyright).toBe('© SAP');
+        });
+
+        test('returns only name when copyright is not set', () => {
+            ui5Config.setMetadata({ name: 'simple.app' });
+            const metadata = ui5Config.getMetadata();
+            expect(metadata?.name).toBe('simple.app');
+            expect(metadata?.copyright).toBeUndefined();
+        });
+
+        test('returns undefined when metadata section is absent', () => {
+            expect(ui5Config.getMetadata()).toBeUndefined();
         });
     });
 

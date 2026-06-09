@@ -3,8 +3,8 @@ import path from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { mergeEffectiveOptions } from '../../../src/config/config';
-import { loadAndPrepareXsappConfig, buildRouteEntries } from '../../../src/proxy/routes';
+import { mergeEffectiveOptions } from '../../../src/config/config.js';
+import { loadAndPrepareXsappConfig, buildRouteEntries } from '../../../src/proxy/routes.js';
 
 describe('routes', () => {
     const rootPath = '/project/root';
@@ -155,7 +155,7 @@ describe('routes', () => {
 
             test('injects changes and i18n routes when manifest.appdescr_variant exists', () => {
                 jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-                jest.spyOn(fs, 'readFileSync').mockImplementation((filePath: fs.PathOrFileDescriptor) => {
+                jest.spyOn(fs, 'readFileSync').mockImplementation((filePath) => {
                     const p = String(filePath);
                     if (p.endsWith('manifest.appdescr_variant')) {
                         return manifestContent;
@@ -219,7 +219,7 @@ describe('routes', () => {
 
             test('logs warning when manifest.appdescr_variant is invalid JSON', () => {
                 jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-                jest.spyOn(fs, 'readFileSync').mockImplementation((filePath: fs.PathOrFileDescriptor) => {
+                jest.spyOn(fs, 'readFileSync').mockImplementation((filePath) => {
                     const p = String(filePath);
                     if (p.endsWith('manifest.appdescr_variant')) {
                         return '{ invalid json';

@@ -19,11 +19,11 @@ import type {
     Range
 } from '@sap-ux/odata-annotation-core-types';
 import { ELEMENT_TYPE, Edm, TEXT_TYPE } from '@sap-ux/odata-annotation-core-types';
-import { ApiError } from '../error';
+import { ApiError } from '../error.js';
 
-import { PRIMITIVE_TYPE_NAMES } from '../utils';
+import { PRIMITIVE_TYPE_NAMES } from '../utils/index.js';
 
-import type { CDSDocument, AstNode } from './document';
+import type { CDSDocument, AstNode } from './document.js';
 
 interface ReturnValue {
     pointer: string[];

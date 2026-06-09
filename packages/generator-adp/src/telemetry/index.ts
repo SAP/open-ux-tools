@@ -1,2 +1,2 @@
-export * from './collector';
-export * from './events';
+export * from './collector.js';
+export * from './events.js';

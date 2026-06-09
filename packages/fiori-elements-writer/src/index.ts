@@ -1,6 +1,9 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 import type { App, Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import {
@@ -10,30 +13,30 @@ import {
     type OdataService
 } from '@sap-ux/odata-service-writer';
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
-import cloneDeep from 'lodash/cloneDeep';
-import type { FioriElementsApp } from './types';
-import { TemplateType } from './types';
-import { validateApp, validateRequiredProperties } from './validate';
+import cloneDeep from 'lodash/cloneDeep.js';
+import type { FioriElementsApp } from './types.js';
+import { TemplateType } from './types.js';
+import { validateApp, validateRequiredProperties } from './validate.js';
 import {
     setAppDefaults,
     setDefaultTemplateSettings,
     getTemplateOptions,
     setVirtualEndpointDefaults
-} from './data/defaults';
+} from './data/defaults.js';
 import {
     TemplateTypeAttributes,
     minSupportedUI5Version,
     minSupportedUI5VersionV4,
     escapeFLPText
-} from './data/templateAttributes';
-import { extendManifestJson } from './data/manifestSettings';
+} from './data/templateAttributes.js';
+import { extendManifestJson } from './data/manifestSettings.js';
 import semVer from 'semver';
-import { initI18n } from './i18n';
+import { initI18n } from './i18n.js';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
-import { generateFpmConfig } from './fpmConfig';
+import { generateFpmConfig } from './fpmConfig.js';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 import type { Logger } from '@sap-ux/logger';
-import { writeAnnotations } from './writeAnnotations';
+import { writeAnnotations } from './writeAnnotations.js';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -69,17 +72,15 @@ function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coerc
  * @param appOpts - relevant app options for retrieving the opa config
  * @param appOpts.useVirtualPreviewEndpoints - if virtual endpoints will be used for preview
  * @param flpAppId - the flp app id
- * @returns - the opa config { htmlTarget }
+ * @returns - the opa config { htmlTarget, useVirtualPreviewEndpoints }
  */
 function getOpaConfig(
     { useVirtualPreviewEndpoints }: { useVirtualPreviewEndpoints?: boolean },
     flpAppId?: string
-): { htmlTarget: string } {
+): { htmlTarget: string; useVirtualPreviewEndpoints?: boolean } {
     const flpTarget = useVirtualPreviewEndpoints ? 'flp' : 'flpSandbox';
     const htmlTarget = `test/${flpTarget}.html#${flpAppId}`;
-    return {
-        htmlTarget
-    };
+    return { htmlTarget, useVirtualPreviewEndpoints };
 }
 
 /**
@@ -271,9 +272,7 @@ async function generate<T extends {}>(
     // OPA tests must be generated last since they depend on other parts of the app, such as annotations, being in place
     if (addTest) {
         const opaConfig = getOpaConfig(
-            {
-                useVirtualPreviewEndpoints: feApp.appOptions?.useVirtualPreviewEndpoints
-            },
+            { useVirtualPreviewEndpoints: feApp.appOptions?.useVirtualPreviewEndpoints },
             feApp.app.flpAppId
         );
         await generateOPAFiles(basePath, opaConfig, data.service.metadata, fs, log);
@@ -282,4 +281,4 @@ async function generate<T extends {}>(
 }
 
 export { generate, FioriElementsApp, App, TemplateTypeAttributes, minSupportedUI5Version, minSupportedUI5VersionV4 };
-export * from './types';
+export * from './types.js';

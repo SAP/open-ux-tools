@@ -1,11 +1,16 @@
+import { jest } from '@jest/globals';
 import { type UrlAbapTarget, isUrlTarget } from '@sap-ux/system-access';
-import { getConfigForLogging, validateConfig } from '../../../src/base/config';
-import type { AbapDeployConfig } from '../../../src/types';
+import type { AbapDeployConfig } from '../../../src/types/index.js';
 
-import { isAppStudio } from '@sap-ux/btp-utils';
+const mockIsAppStudio = jest.fn<() => boolean>().mockReturnValue(false);
 
-jest.mock('@sap-ux/btp-utils');
-const mockIsAppStudio = isAppStudio as jest.Mock;
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
+}));
+
+const { getConfigForLogging, validateConfig } = await import('../../../src/base/config.js');
 
 describe('base/config', () => {
     test('isUrlTarget', () => {

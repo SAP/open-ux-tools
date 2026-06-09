@@ -1,5 +1,5 @@
-import type { PromptContext, Prompts, Subset } from './types';
-import { PromptsType } from './types';
+import type { PromptContext, Prompts, Subset } from './types.js';
+import { PromptsType } from './types.js';
 import {
     getChartBuildingBlockPrompts,
     getTableBuildingBlockPrompts,
@@ -9,7 +9,7 @@ import {
     getBuildingBlockTypePrompts,
     getRichTextEditorBuildingBlockPrompts,
     getRichTextEditorButtonGroupsBuildingBlockPrompts
-} from '../building-block/prompts/questions';
+} from '../building-block/prompts/questions/index.js';
 import type {
     ChartPromptsAnswer,
     TablePromptsAnswer,
@@ -19,8 +19,8 @@ import type {
     BuildingBlockTypePromptsAnswer,
     RichTextEditorPromptsAnswer,
     RichTextEditorButtonGroupsPromptsAnswer
-} from '../building-block/prompts/questions';
-import { generateBuildingBlock, getSerializedFileContent } from '../building-block';
+} from '../building-block/prompts/questions/index.js';
+import { generateBuildingBlock, getSerializedFileContent } from '../building-block/index.js';
 
 type AnswerMapping = {
     [PromptsType.Chart]: ChartPromptsAnswer;

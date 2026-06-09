@@ -1,18 +1,23 @@
-import { readManifest, makeValidJson, cleanupDebugFiles, addPackageJsonIfNotFound } from '../../src/utils/file-helpers';
+import { jest } from '@jest/globals';
 import type { Editor } from 'mem-fs-editor';
-import { t } from '../../src/utils/i18n';
-import RepoAppDownloadLogger from '../../src/utils/logger';
+import { t } from '../../src/utils/i18n.js';
+import { adtSourceTemplateId } from '../../src/utils/constants.js';
 import { join } from 'node:path';
 import { PromptState } from '../../src/prompts/prompt-state';
+import { addPackageJsonIfNotFound, cleanupDebugFiles } from '../../src/utils/file-helpers.js';
 
 jest.mock('adm-zip');
 
-jest.mock('../../src/utils/logger', () => ({
-    logger: {
-        error: jest.fn(),
-        debug: jest.fn()
-    }
-}));
+jest.unstable_mockModule('../../src/utils/logger', () => {
+    const mock = {
+        logger: { error: jest.fn(), warn: jest.fn(), info: jest.fn(), debug: jest.fn() },
+        configureLogging: jest.fn()
+    };
+    return { default: mock, ...mock };
+});
+
+const { readManifest } = await import('../../src/utils/file-helpers.js');
+const RepoAppDownloadLogger = (await import('../../src/utils/logger.js')).default;
 
 describe('readManifest', () => {
     const mockReadJSON = jest.fn();

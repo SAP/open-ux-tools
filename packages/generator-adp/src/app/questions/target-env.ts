@@ -6,11 +6,11 @@ import type { CfConfig } from '@sap-ux/adp-tooling';
 import { getDefaultTargetFolder } from '@sap-ux/fiori-generator-shared';
 import type { InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
-import { t } from '../../utils/i18n';
-import { TargetEnv } from '../types';
-import { getTargetEnvAdditionalMessages } from './helper/additional-messages';
-import { validateEnvironment, validateProjectPath } from './helper/validators';
-import type { ProjectLocationAnswers, TargetEnvAnswers, TargetEnvQuestion } from '../types';
+import { t } from '../../utils/i18n.js';
+import { TargetEnv } from '../types.js';
+import { getTargetEnvAdditionalMessages } from './helper/additional-messages.js';
+import { validateEnvironment, validateProjectPath } from './helper/validators.js';
+import type { ProjectLocationAnswers, TargetEnvAnswers, TargetEnvQuestion } from '../types.js';
 
 type EnvironmentChoice = { name: string; value: TargetEnv };
 

@@ -1,6 +1,7 @@
 import { DatasourceType } from '@sap-ux/odata-service-inquirer';
-import { PromptNames, AppDownloadType, type RepoAppDownloadAnswers } from '../app/types';
-import { t } from './i18n';
+import { PromptNames, type RepoAppDownloadAnswers } from '../app/types.js';
+import { AppDownloadType } from '../app/types.js';
+import { t } from './i18n.js';
 
 export interface DownloadTypeConfig {
     generatorTitle: string;

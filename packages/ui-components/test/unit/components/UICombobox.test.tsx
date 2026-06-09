@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import type { UIComboBoxOption, UIComboBoxProps, UIComboBoxState } from '../../../src/components/UIComboBox';
 import { UIComboBox, UIComboBoxLoaderType, UISelectableOptionMenuItemType } from '../../../src/components/UIComboBox';
 import { data as originalData, groupsData as originalGroupsData } from '../../__mock__/select-data';
@@ -79,6 +79,9 @@ describe('<UIComboBox />', () => {
                 "stylesheetKey": "ComboBox",
                 "window": [Window],
               },
+              "callout": Object {
+                "boxShadow": "var(--ui-box-shadow-small)",
+              },
               "errorMessage": Array [
                 Object {
                   "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
@@ -119,6 +122,9 @@ describe('<UIComboBox />', () => {
                 "inShadow": false,
                 "stylesheetKey": "ComboBox",
                 "window": [Window],
+              },
+              "callout": Object {
+                "boxShadow": "var(--ui-box-shadow-small)",
               },
               "errorMessage": Array [
                 Object {

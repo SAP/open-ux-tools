@@ -1,6 +1,6 @@
 import { Range } from '@sap-ux/text-document-utils';
-import type { I18nAnnotationNode, ValueNode, SapTextType, TextNode } from './../../types';
-import type { CommentLine, PropertyLine } from '../../parser/properties/types';
+import type { I18nAnnotationNode, ValueNode, SapTextType, TextNode } from './../../types.js';
+import type { CommentLine, PropertyLine } from '../../parser/properties/types.js';
 
 /**
  * Convert text to value node with range information.

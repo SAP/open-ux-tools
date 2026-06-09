@@ -1,4 +1,4 @@
-import { csvToI18nBundle } from '../../../../src';
+import { csvToI18nBundle } from '../../../../src/index.js';
 
 describe('csv', () => {
     test('csvToI18nBundle', () => {

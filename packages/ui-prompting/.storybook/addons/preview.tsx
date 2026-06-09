@@ -1,6 +1,6 @@
-import { AddonPanel, Form, SyntaxHighlighter } from '@storybook/components';
+import { AddonPanel, Form, SyntaxHighlighter } from 'storybook/internal/components';
 import React, { useEffect, useState } from 'react';
-import { addons } from '@storybook/manager-api';
+import { addons } from 'storybook/manager-api';
 
 const storageKey = 'storybook-answers';
 function getCurrentAnswers(): string {

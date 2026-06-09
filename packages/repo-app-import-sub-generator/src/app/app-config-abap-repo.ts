@@ -1,15 +1,15 @@
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
-import type { AppDownloadContext, AppInfo } from '../app/types';
-import { PromptState } from '../prompts/prompt-state';
+import type { AppDownloadContext, AppInfo } from '../app/types.js';
+import { PromptState } from '../prompts/prompt-state.js';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
-import RepoAppDownloadLogger from '../utils/logger';
-import { t } from '../utils/i18n';
+import RepoAppDownloadLogger from '../utils/logger.js';
+import { t } from '../utils/i18n.js';
 import { FileName } from '@sap-ux/project-access';
-import { resolveTransportRequest } from '../utils/download-utils';
+import { resolveTransportRequest } from '../utils/download-utils.js';
 import { AuthenticationType } from '@sap-ux/store';
-import { readManifest } from '../utils/file-helpers';
+import { readManifest } from '../utils/file-helpers.js';
 import { join } from 'node:path/win32';
 
 /**

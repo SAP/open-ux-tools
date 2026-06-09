@@ -1,36 +1,42 @@
-import { validateQfaJsonFile, validateAppSelection, isValidPromptState } from '../../src/utils/validators';
-import type { QfaJsonConfig, QuickDeployedAppConfig, AppInfo } from '../../src/app/types';
-import { AppDownloadType } from '../../src/app/types';
-import { t } from '../../src/utils/i18n';
-import RepoAppDownloadLogger from '../../src/utils/logger';
-import { downloadApp, hasQfaJson } from '../../src/utils/download-utils';
+import { jest } from '@jest/globals';
+import type { QfaJsonConfig, QuickDeployedAppConfig, AppInfo } from '../../src/app/types.js';
+import { t } from '../../src/utils/i18n.js';
 import type { AppIndex, AbapServiceProvider } from '@sap-ux/axios-extension';
-import { ErrorHandler, ERROR_TYPE } from '@sap-ux/inquirer-common';
 import { HELP_NODES } from '@sap-ux/guided-answers-helper';
-import { PromptState } from '../../src/prompts/prompt-state';
-import { qfaJsonFileName } from '../../src/utils/constants';
+import { qfaJsonFileName } from '../../src/utils/constants.js';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
+import { AppDownloadType } from '../../src/app/types.js';
 
-jest.mock('../../src/utils/logger', () => ({
-    logger: {
-        error: jest.fn(),
-        warn: jest.fn(),
-        info: jest.fn(),
-        debug: jest.fn()
-    }
+const mockDownloadApp = jest.fn() as jest.Mock;
+const mockHasQfaJson = jest.fn<() => boolean>().mockReturnValue(true);
+
+jest.unstable_mockModule('../../src/utils/logger', () => {
+    const mock = {
+        logger: { error: jest.fn(), warn: jest.fn(), info: jest.fn(), debug: jest.fn() },
+        configureLogging: jest.fn()
+    };
+    return { default: mock, ...mock };
+});
+
+jest.unstable_mockModule('../../src/utils/download-utils', () => ({
+    downloadApp: mockDownloadApp,
+    hasQfaJson: mockHasQfaJson
 }));
 
-jest.mock('../../src/utils/download-utils', () => ({
-    downloadApp: jest.fn(),
-    hasQfaJson: jest.fn(() => true)
+// Pre-import actual inquirer-common before mocking
+const actualInquirerCommon = await import('@sap-ux/inquirer-common');
+
+jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
+    ...actualInquirerCommon
 }));
 
-jest.mock('@sap-ux/inquirer-common', () => ({
-    ...jest.requireActual('@sap-ux/inquirer-common')
-}));
+const { validateQfaJsonFile, validateAppSelection, isValidPromptState } = await import('../../src/utils/validators.js');
+const RepoAppDownloadLogger = (await import('../../src/utils/logger.js')).default;
+const { ErrorHandler, ERROR_TYPE } = await import('@sap-ux/inquirer-common');
+const { PromptState } = await import('../../src/prompts/prompt-state.js');
 
-ErrorHandler.getHelpLink = jest.fn();
+ErrorHandler.getHelpLink = jest.fn() as any;
 
 describe('validateQfaJsonFile', () => {
     const validConfig: QfaJsonConfig = {
@@ -143,8 +149,7 @@ describe('validateQfaJsonFile', () => {
 });
 
 describe('validateAppSelection', () => {
-    const mockGetHelpLink = ErrorHandler.getHelpLink as jest.Mock;
-    const mockDownloadApp = downloadApp as jest.Mock;
+    const mockGetHelpLink = ErrorHandler.getHelpLink as ReturnType<typeof jest.fn>;
     const mockHelpLink = { url: 'https://GA-link.com' };
 
     beforeEach(() => {
@@ -162,7 +167,7 @@ describe('validateAppSelection', () => {
         expect(mockGetHelpLink).toHaveBeenCalledWith(
             HELP_NODES.ADT_APP_NOT_FOUND_ERROR,
             ERROR_TYPE.INTERNAL_SERVER_ERROR,
-            'error.noAppsDeployed'
+            t('error.noAppsDeployed')
         );
         expect(result).toBe(mockHelpLink);
     });
@@ -176,7 +181,7 @@ describe('validateAppSelection', () => {
         expect(mockGetHelpLink).toHaveBeenCalledWith(
             HELP_NODES.ADT_APP_NOT_FOUND_ERROR,
             ERROR_TYPE.INTERNAL_SERVER_ERROR,
-            'error.noAppsDeployed'
+            t('error.noAppsDeployed')
         );
         expect(result).toBe(mockHelpLink);
     });
@@ -190,7 +195,7 @@ describe('validateAppSelection', () => {
         } as unknown as AppWizard;
         const appList: AppIndex = [{ appId: '12345', repoName: 'testRepo' }];
         const answers = { appId: '12345', repoName: 'testRepo' } as AppInfo;
-        (hasQfaJson as jest.Mock).mockReturnValue(false);
+        mockHasQfaJson.mockReturnValue(false);
         await validateAppSelection(answers, appList, undefined, mockAppWizard);
         expect(mockAppWizard.showError).toHaveBeenCalledWith(
             t('error.qfaJsonNotFound', { jsonFileName: qfaJsonFileName }),
@@ -202,7 +207,7 @@ describe('validateAppSelection', () => {
         const appList: AppIndex = [{ appId: '12345', repoName: 'testRepo' }];
         const answers = { appId: '12345', repoName: 'testRepo' } as AppInfo;
         mockDownloadApp.mockResolvedValue(undefined);
-        (hasQfaJson as jest.Mock).mockReturnValue(true);
+        mockHasQfaJson.mockReturnValue(true);
         const result = await validateAppSelection(answers, appList);
 
         expect(mockDownloadApp).toHaveBeenCalledWith('testRepo');

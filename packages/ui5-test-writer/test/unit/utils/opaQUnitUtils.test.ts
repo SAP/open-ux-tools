@@ -1,20 +1,28 @@
-import {
+import { jest } from '@jest/globals';
+import { join } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
+
+const actualProjectAccess = await import('@sap-ux/project-access');
+const getAllUi5YamlFileNamesMock = jest.fn();
+const readUi5YamlMock = jest.fn();
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    getAllUi5YamlFileNames: getAllUi5YamlFileNamesMock,
+    readUi5Yaml: readUi5YamlMock
+}));
+
+const {
     addPathsToQUnitJs,
     addPagesToJourneyRunner,
     spliceModulesIntoQUnitContent,
     splicePageIntoJourneyRunner,
     readHtmlTargetFromQUnitJs,
     addIntegrationOldToGitignore,
-    hasVirtualOPA5
-} from '../../../src/utils/opaQUnitUtils';
-import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
-import { getAllUi5YamlFileNames, readUi5Yaml } from '@sap-ux/project-access';
-
-jest.mock('@sap-ux/project-access', () => ({
-    getAllUi5YamlFileNames: jest.fn(),
-    readUi5Yaml: jest.fn()
-}));
+    hasVirtualOPA5,
+    addVirtualTestConfig
+} = await import('../../../src/utils/opaQUnitUtils.js');
 
 /**
  * Matches the actual template output: the last entry has no trailing newline
@@ -287,7 +295,7 @@ describe('readHtmlTargetFromQUnitJs()', () => {
         const opaTestsPath = join(testPath, 'integration_old', 'opaTests.qunit.js');
         const opaPath = join(testPath, 'integration_old', 'Opa.qunit.js');
         const fs = {
-            exists: jest.fn().mockImplementation((path: string) => path !== opaTestsPath),
+            exists: jest.fn().mockImplementation((path) => path !== opaTestsPath),
             read: jest.fn().mockReturnValue(content)
         } as unknown as Editor;
 
@@ -549,8 +557,8 @@ describe('MAX_FILE_CONTENT_LENGTH guard', () => {
 });
 
 describe('hasVirtualOPA5()', () => {
-    const mockGetAllUi5YamlFileNames = getAllUi5YamlFileNames as jest.MockedFunction<typeof getAllUi5YamlFileNames>;
-    const mockReadUi5Yaml = readUi5Yaml as jest.MockedFunction<typeof readUi5Yaml>;
+    const mockGetAllUi5YamlFileNames = getAllUi5YamlFileNamesMock;
+    const mockReadUi5Yaml = readUi5YamlMock;
     const basePath = join('/', 'project');
 
     beforeEach(() => {
@@ -637,5 +645,81 @@ describe('hasVirtualOPA5()', () => {
 
         expect(await hasVirtualOPA5(basePath)).toBe(true);
         expect(mockReadUi5Yaml).toHaveBeenCalledTimes(1);
+    });
+
+    describe('addVirtualTestConfig', () => {
+        const previewYaml = `specVersion: '4.0'
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_fiori_3
+`;
+        const mockYaml = `specVersion: '4.0'
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_fiori_3
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+`;
+        const noPreviewYaml = `specVersion: '4.0'
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: false
+`;
+        let addVirtualTestConfigReal: typeof addVirtualTestConfig;
+        beforeAll(async () => {
+            /**
+             * These tests use unmocked @sap-ux/project-access
+             */
+            jest.unstable_unmockModule('@sap-ux/project-access');
+            jest.resetModules();
+            ({ addVirtualTestConfig: addVirtualTestConfigReal } = await import('../../../src/utils/opaQUnitUtils.js'));
+        });
+
+        it('adds test entries to ui5-mock.yaml', async () => {
+            const fs = create(createStorage());
+            const basePath = '/test/project';
+            fs.write(join(basePath, 'ui5.yaml'), previewYaml);
+            fs.write(join(basePath, 'ui5-local.yaml'), previewYaml);
+            fs.write(join(basePath, 'ui5-mock.yaml'), mockYaml);
+
+            const testFrameworks = [{ framework: 'OPA5' as const, path: '/test/integration/opaTests.qunit.html' }];
+            await addVirtualTestConfigReal(basePath, testFrameworks, fs);
+
+            expect(fs.read(join(basePath, 'ui5-mock.yaml'))).toContain('framework: OPA5');
+        });
+
+        it('skips when ui5-mock.yaml does not exist', async () => {
+            const fs = create(createStorage());
+            const basePath = '/test/project-no-mock';
+            fs.write(join(basePath, 'ui5.yaml'), previewYaml);
+            fs.write(join(basePath, 'ui5-local.yaml'), previewYaml);
+
+            await expect(addVirtualTestConfigReal(basePath, [{ framework: 'OPA5' }], fs)).resolves.not.toThrow();
+            expect(fs.exists(join(basePath, 'ui5-mock.yaml'))).toBe(false);
+        });
+
+        it('skips middleware update when fiori-tools-preview is not present', async () => {
+            const fs = create(createStorage());
+            const basePath = '/test/project-no-preview';
+            fs.write(join(basePath, 'ui5.yaml'), noPreviewYaml);
+            fs.write(join(basePath, 'ui5-local.yaml'), noPreviewYaml);
+            fs.write(join(basePath, 'ui5-mock.yaml'), noPreviewYaml);
+
+            await addVirtualTestConfigReal(basePath, [{ framework: 'OPA5' }], fs);
+            expect(fs.read(join(basePath, 'ui5-mock.yaml'))).not.toContain('framework: OPA5');
+        });
     });
 });

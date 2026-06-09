@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { readFile } from 'node:fs/promises';
 import ZipFile from 'adm-zip';
-import type { CliOptions } from '../types';
+import type { CliOptions } from '../types/index.js';
 import type { Logger } from '@sap-ux/logger';
 import { Agent } from 'node:https';
 

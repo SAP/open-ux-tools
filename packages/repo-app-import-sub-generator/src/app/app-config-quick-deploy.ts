@@ -2,18 +2,19 @@ import { TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
-import { t } from '../utils/i18n';
-import type { AppDownloadContext, AppInfo } from '../app/types';
-import { readManifest } from '../utils/file-helpers';
-import { adtSourceTemplateId, fioriAppSourcetemplateId } from '../utils/constants';
-import { PromptState } from '../prompts/prompt-state';
+import { t } from '../utils/i18n.js';
+import type { AppInfo } from '../app/types.js';
+import { AppDownloadContext } from './types.js';
+import { readManifest } from '../utils/file-helpers.js';
+import { fioriAppSourcetemplateId, adtSourceTemplateId } from '../utils/constants.js';
+import { PromptState } from '../prompts/prompt-state.js';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
-import RepoAppDownloadLogger from '../utils/logger';
+import RepoAppDownloadLogger from '../utils/logger.js';
 import { FileName } from '@sap-ux/project-access';
 import { join } from 'node:path';
 import { getUI5Versions, type UI5Version } from '@sap-ux/ui5-info';
 import { type OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
-import { resolveTransportRequest } from '../utils/download-utils';
+import { resolveTransportRequest } from '../utils/download-utils.js';
 
 /**
  * Fetches the metadata of a given service from the provided ABAP service provider.

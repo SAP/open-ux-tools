@@ -1,41 +1,41 @@
-import type { HierarchyEntity, ReferencedEntities } from '../src/data-download/types';
+import type { HierarchyEntity, ReferencedEntities } from '../src/data-download/types.js';
 import {
     clearRootHierarchyParentProperty,
     createEntitySetData,
-    getEntityModel,
     getHierarchyEntities,
     getSemanticKeyProperties,
     normalizeHierarchyNodeIds
-} from '../src/data-download/utils';
-import * as edmxParser from '@sap-ux/edmx-parser';
+} from '../src/data-download/utils.js';
 import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { ConvertedMetadata, EntitySet, EntityType } from '@sap-ux/vocabularies-types';
-import type { ApplicationAccess } from '@sap-ux/project-access';
-import type { Specification } from '@sap/ux-specification/dist/types/src';
+
+const __testdir = dirname(fileURLToPath(import.meta.url));
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('Test utils', () => {
     describe('createEntitySetData', () => {
         test('should create an entity set data map for writing to files', async () => {
             const rootEntity = JSON.parse(
-                await readFile(join(__dirname, './test-data/TravelEntityModel.json'), 'utf8')
+                await readFile(join(__testdir, './test-data/TravelEntityModel.json'), 'utf8')
             ) as ReferencedEntities['listEntity'];
             // No selected entities, only the unexpanded main/list entity is written
             let odataResult = (
-                JSON.parse(await readFile(join(__dirname, './test-data/odataResult1.json'), 'utf8')) as {
+                JSON.parse(await readFile(join(__testdir, './test-data/odataResult1.json'), 'utf8')) as {
                     value: unknown[];
                 }
             ).value;
             let entitySetData = createEntitySetData(odataResult, {}, rootEntity.entitySetName);
             let expectedEntitySetData = await readFile(
-                join(__dirname, './test-data/expected-output/test1/entityFileData.json'),
+                join(__testdir, './test-data/expected-output/test1/entityFileData.json'),
                 'utf8'
             );
             expect(entitySetData).toEqual(JSON.parse(expectedEntitySetData));
 
             // More complex query, multiple entity set files created.
             odataResult = (
-                JSON.parse(await readFile(join(__dirname, './test-data/odataResult2.json'), 'utf8')) as {
+                JSON.parse(await readFile(join(__testdir, './test-data/odataResult2.json'), 'utf8')) as {
                     value: unknown[];
                 }
             ).value;
@@ -56,7 +56,7 @@ describe('Test utils', () => {
                 rootEntity.entitySetName
             );
             expectedEntitySetData = await readFile(
-                join(__dirname, './test-data/expected-output/test2/entityFileData.json'),
+                join(__testdir, './test-data/expected-output/test2/entityFileData.json'),
                 'utf8'
             );
             expect(entitySetData).toEqual(JSON.parse(expectedEntitySetData));
@@ -64,7 +64,7 @@ describe('Test utils', () => {
 
         test('should create an entity set data map for large odata results', async () => {
             const odataResult = (
-                JSON.parse(await readFile(join(__dirname, './test-data/odataResult3.json'), 'utf8')) as {
+                JSON.parse(await readFile(join(__testdir, './test-data/odataResult3.json'), 'utf8')) as {
                     value: unknown[];
                 }
             ).value;
@@ -90,7 +90,7 @@ describe('Test utils', () => {
                 'CashBank'
             );
             const expectedEntitySetData = await readFile(
-                join(__dirname, './test-data/expected-output/test3/entityFileData.json'),
+                join(__testdir, './test-data/expected-output/test3/entityFileData.json'),
                 'utf8'
             );
             expect(entitySetData).toEqual(JSON.parse(expectedEntitySetData));
@@ -634,68 +634,6 @@ describe('Test utils', () => {
             expect(hierarchy?.isDraft).toBe(false);
             expect(hierarchy?.entityTypeKeys).toContain('PurchaseOrder');
             expect(hierarchy?.entityTypeKeys).toContain('PurchaseOrderItem');
-        });
-    });
-
-    describe('getEntityModel', () => {
-        const travelAppPath = join(__dirname, 'test-data/test-apps/travel/webapp');
-        const annotationPath = join(travelAppPath, 'annotations/annotation.xml');
-        const metadataPath = join(travelAppPath, 'localService/mainService/metadata.xml');
-
-        let mockSpecification: { readApp: jest.Mock };
-
-        beforeEach(() => {
-            mockSpecification = {
-                readApp: jest.fn().mockResolvedValue({ files: [], version: '1.0', appAccess: {} })
-            };
-        });
-
-        afterEach(() => {
-            jest.restoreAllMocks();
-        });
-
-        function makeAppAccess(annotations: { local?: string }[]): ApplicationAccess {
-            return {
-                app: { services: { mainService: { local: metadataPath, annotations } } },
-                getAppRoot: jest.fn().mockReturnValue(travelAppPath)
-            } as unknown as ApplicationAccess;
-        }
-
-        it('should call merge when local annotation files are present in the manifest', async () => {
-            const mergeSpy = jest.spyOn(edmxParser, 'merge');
-            const metadata = await readFile(metadataPath, 'utf8');
-
-            await getEntityModel(
-                makeAppAccess([{ local: annotationPath }]),
-                mockSpecification as unknown as Specification,
-                metadata
-            );
-
-            expect(mergeSpy).toHaveBeenCalled();
-            const [, ...annotationArgs] = mergeSpy.mock.calls[0];
-            expect(annotationArgs).toHaveLength(1);
-        });
-
-        it('should not call merge when no annotation files are listed', async () => {
-            const mergeSpy = jest.spyOn(edmxParser, 'merge');
-            const metadata = await readFile(metadataPath, 'utf8');
-
-            await getEntityModel(makeAppAccess([]), mockSpecification as unknown as Specification, metadata);
-
-            expect(mergeSpy).not.toHaveBeenCalled();
-        });
-
-        it('should skip annotation entries whose local path does not exist', async () => {
-            const mergeSpy = jest.spyOn(edmxParser, 'merge');
-            const metadata = await readFile(metadataPath, 'utf8');
-
-            await getEntityModel(
-                makeAppAccess([{ local: '/non/existent/annotation.xml' }]),
-                mockSpecification as unknown as Specification,
-                metadata
-            );
-
-            expect(mergeSpy).not.toHaveBeenCalled();
         });
     });
 

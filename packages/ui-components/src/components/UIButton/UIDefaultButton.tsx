@@ -1,10 +1,10 @@
 import React from 'react';
 import type { IButtonProps, IButtonStyles, IStyle } from '@fluentui/react';
 import { DefaultButton } from '@fluentui/react';
-import { UIContextualMenu } from '../UIContextualMenu';
-import type { UIIContextualMenuProps } from '../UIContextualMenu';
-import { COMMON_INPUT_STYLES } from '../UIInput';
-import { UiIcons } from '../Icons';
+import { UIContextualMenu } from '../UIContextualMenu/index.js';
+import type { UIIContextualMenuProps } from '../UIContextualMenu/index.js';
+import { COMMON_INPUT_STYLES } from '../UIInput/index.js';
+import { UiIcons } from '../Icons.js';
 
 const VSCODE_BORDER_COLOR = 'var(--vscode-button-border, transparent)';
 export const BASE_STYLES = {
@@ -371,7 +371,7 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                 minHeight: BASE_STYLES.height,
                 height: BASE_STYLES.height,
                 boxSizing: 'border-box',
-                borderRadius: `0 ${COMMON_INPUT_STYLES.borderRadius}px ${COMMON_INPUT_STYLES.borderRadius}px 0 !important`,
+                borderRadius: `0 ${COMMON_INPUT_STYLES.borderRadius} ${COMMON_INPUT_STYLES.borderRadius} 0 !important`,
                 borderLeft: 'none',
                 outline: 'transparent',
                 userSelect: 'none',

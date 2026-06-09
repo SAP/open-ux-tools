@@ -3,11 +3,11 @@ import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import FlexUtils from 'sap/ui/fl/Utils';
 import IsReuseComponentApi from 'sap/ui/rta/util/isReuseComponent';
-import { getControlById } from '../utils/core';
+import { getControlById } from '../utils/core.js';
 import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
+import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version.js';
 
 export interface Deferred<T> {
     promise: Promise<T>;

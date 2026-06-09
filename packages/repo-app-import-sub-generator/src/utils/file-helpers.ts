@@ -1,10 +1,10 @@
 import type { Editor } from 'mem-fs-editor';
 import { type Manifest } from '@sap-ux/project-access';
-import { t } from './i18n';
-import RepoAppDownloadLogger from './logger';
-import type { QfaJsonConfig } from '../app/types';
+import { t } from './i18n.js';
+import RepoAppDownloadLogger from './logger.js';
+import type { QfaJsonConfig } from '../app/types.js';
+import { PromptState } from '../prompts/prompt-state.js';
 import { join } from 'node:path';
-import { PromptState } from '../prompts/prompt-state';
 
 /**
  *
