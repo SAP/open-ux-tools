@@ -1375,13 +1375,13 @@ describe('FlpSandbox', () => {
         test('EDMXBackend below 1.136 - disables card generator and warns', async () => {
             const { server, flp } = await setupMiddleware('EDMXBackend');
             mockUi5Version('1.135.0');
-            const response = await server.get(
-                `/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`
-            );
+            const response = await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
             expect(response.status).toBe(200);
             expect(flp.templateConfig.enableCardGenerator).toBe(false);
             expect(logger.warn).toHaveBeenCalledWith(
-                expect.stringContaining("does not meet the minimum required version 1.136.0 for project type 'EDMXBackend'")
+                expect.stringContaining(
+                    "does not meet the minimum required version 1.136.0 for project type 'EDMXBackend'"
+                )
             );
         });
 
@@ -1399,7 +1399,9 @@ describe('FlpSandbox', () => {
             await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
             expect(flp.templateConfig.enableCardGenerator).toBe(false);
             expect(logger.warn).toHaveBeenCalledWith(
-                expect.stringContaining("does not meet the minimum required version 1.149.0 for project type 'CAPNodejs'")
+                expect.stringContaining(
+                    "does not meet the minimum required version 1.149.0 for project type 'CAPNodejs'"
+                )
             );
         });
 
@@ -1434,9 +1436,11 @@ describe('FlpSandbox', () => {
             mockUi5Version('1.135.0');
             await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
             await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
-            expect((logger.warn as ReturnType<typeof jest.fn>).mock.calls.filter(
-                (call) => (call[0] as string).includes('cardGenerator')
-            )).toHaveLength(2);
+            expect(
+                (logger.warn as ReturnType<typeof jest.fn>).mock.calls.filter((call) =>
+                    (call[0] as string).includes('cardGenerator')
+                )
+            ).toHaveLength(2);
         });
     });
 
