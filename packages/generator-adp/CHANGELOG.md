@@ -1,5 +1,11 @@
 # @sap-ux/generator-adp
 
+## 1.0.9
+
+### Patch Changes
+
+- 604f289: revert generator-adp to cjs
+
 ## 1.0.8
 
 ### Patch Changes
