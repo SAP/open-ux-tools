@@ -2,6 +2,7 @@ import { jest } from '@jest/globals';
 import type { ChildLoggerOptions, Logger as SapUxLogger, Transport } from '@sap-ux/logger';
 import type { IVSCodeExtLogger } from '@vscode-logging/logger';
 import type { Logger as YoLogger } from 'yeoman-environment';
+import type { ServiceProvider } from '@sap-ux/axios-extension';
 
 const mockGetExtensionLogger = jest.fn().mockReturnValue({
     fatal: jest.fn(),
@@ -25,6 +26,7 @@ jest.unstable_mockModule('@vscode-logging/logger', () => ({
 }));
 
 const { createCLILogger, DefaultLogger, LogWrapper } = await import('../../src/logging/logWrapper.js');
+const { restoreServiceProviderLoggers } = await import('../../src/logging/serviceProvider.js');
 
 describe('Test logWrapper', () => {
     afterEach(() => {
@@ -156,5 +158,33 @@ describe('Test logWrapper', () => {
         expect(yoLoggerSpy).toHaveBeenLastCalledWith(
             expect.stringContaining('Log method `child(options)` not implemented.')
         );
+    });
+});
+
+describe('restoreServiceProviderLoggers', () => {
+    test('restoreServiceProviderLoggers should re-add removed log ref', () => {
+        const logger = {
+            info: jest.fn(),
+            warn: jest.fn(),
+            error: jest.fn()
+        } as unknown as SapUxLogger;
+
+        const serviceProvider = {
+            log: {},
+            services: {
+                service1: { log: {} },
+                service2: { log: {} }
+            }
+        } as unknown as ServiceProvider;
+
+        const restoredServiceProvider = restoreServiceProviderLoggers(logger, serviceProvider);
+        expect(restoredServiceProvider?.log).toBe(logger);
+        expect((restoredServiceProvider as any)?.services.service1.log).toBe(logger);
+        expect((restoredServiceProvider as any)?.services.service2.log).toBe(logger);
+    });
+
+    test('should return undefined when no serviceProvider given', () => {
+        const logger = { info: jest.fn() } as unknown as SapUxLogger;
+        expect(restoreServiceProviderLoggers(logger, undefined)).toBeUndefined();
     });
 });
