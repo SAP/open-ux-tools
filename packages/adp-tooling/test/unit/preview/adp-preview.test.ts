@@ -344,7 +344,7 @@ describe('AdaptationProject', () => {
             expect(adp.isCloudFoundry).toBe(true);
         });
 
-        test('isCloudFoundry returns false when cfBuildPath is not configured', async () => {
+        test('isCloudFoundry returns false when cfBuildPath is not configured', () => {
             const adp = new AdpPreview(
                 {
                     target: {
