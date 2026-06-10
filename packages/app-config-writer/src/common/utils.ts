@@ -110,11 +110,11 @@ export async function readManifest(appPath: string, fs: Editor): Promise<{ manif
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
 
     if (!manifest) {
-        throw Error(`The \`manifest.json\` file was not found at path: ${manifestPath}. Check the file exists.`);
+        throw new Error(`The \`manifest.json\` file was not found at path: ${manifestPath}. Check the file exists.`);
     }
 
     if (!manifest['sap.app']) {
-        throw Error(`The \`manifest.json\` file is missing the \`sap.app\` required section.`);
+        throw new Error(`The \`manifest.json\` file is missing the \`sap.app\` required section.`);
     }
 
     return {
