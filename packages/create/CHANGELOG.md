@@ -1,5 +1,11 @@
 # @sap-ux/create
 
+## 1.0.16
+
+### Patch Changes
+
+- 9a82ef4: fix(create): correct error message to use 'update system' instead of 'change system'
+
 ## 1.0.15
 
 ### Patch Changes
