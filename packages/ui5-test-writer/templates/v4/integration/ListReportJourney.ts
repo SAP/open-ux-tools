@@ -17,6 +17,14 @@
 
 import opaTest from "sap/ui/test/opaQunit";
 import type { Given, When, Then } from "./types/OpaJourneyTypes";
+<%_
+const usesFilterFieldIdentifier =
+    (!hideFilterBar && filterBarItems && filterBarItems.length > 0) ||
+    (semanticKey && semanticKey.missingFromFilterBar && semanticKey.missingFromFilterBar.length > 0);
+-%>
+<% if (usesFilterFieldIdentifier) { -%>
+import type { FilterFieldIdentifier } from "sap/fe/test/api/FilterBarAPI";
+<% } -%>
 import runner from "./pages/JourneyRunner";
 
 function journey() {
@@ -32,7 +40,7 @@ function journey() {
     <%_ if (!hideFilterBar && filterBarItems && filterBarItems.length > 0) { -%>
     opaTest("Check filter bar", function (_Given: Given, _When: When, Then: Then) {
         <%_ filterBarItems.forEach(function(item) { _%>
-        Then.onThe<%- startLR%>.onFilterBar().iCheckFilterField({ property: "<%- item %>" });
+        Then.onThe<%- startLR%>.onFilterBar().iCheckFilterField("<%- item %>" as unknown as FilterFieldIdentifier);
         <%_ }); -%>
     });
 <%_ } -%>
@@ -44,7 +52,7 @@ function journey() {
         <%_ }); -%>
         Then.onThe<%- startLR%>.onFilterBar().iConfirmFilterAdaptation();
         <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
-        Then.onThe<%- startLR%>.onFilterBar().iCheckFilterField({ property: "<%- property %>" });
+        Then.onThe<%- startLR%>.onFilterBar().iCheckFilterField("<%- property %>" as unknown as FilterFieldIdentifier);
         <%_ }); -%>
         <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
         // Then.onThe<%- startLR%>.onFilterBar().iChangeFilterField({ property: "<%- property %>" });

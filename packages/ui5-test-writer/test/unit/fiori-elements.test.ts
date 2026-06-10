@@ -954,10 +954,11 @@ describe('ui5-test-writer', () => {
             expect(lrJourneyPath).toBeDefined();
             const lrContent = dumped[lrJourneyPath!].contents as string;
 
-            // TS-shape filter assertions (object form, not plain string)
-            expect(lrContent).toContain('iCheckFilterField({ property: "TravelID" })');
-            expect(lrContent).toContain('iCheckFilterField({ property: "AgencyID" })');
-            expect(lrContent).toContain('iCheckFilterField({ property: "Kunden ID" })');
+            // TS-shape filter assertions: plain string identifier (matches JS template) cast to
+            // FilterFieldIdentifier to satisfy `@sapui5/types` which mistypes the parameter.
+            expect(lrContent).toContain('iCheckFilterField("TravelID" as unknown as FilterFieldIdentifier)');
+            expect(lrContent).toContain('iCheckFilterField("AgencyID" as unknown as FilterFieldIdentifier)');
+            expect(lrContent).toContain('iCheckFilterField("Kunden ID" as unknown as FilterFieldIdentifier)');
 
             // TS adaptation: onTable("") instead of onTable()
             expect(lrContent).toContain('onTable("")');
@@ -989,7 +990,7 @@ describe('ui5-test-writer', () => {
             expect(content).toContain('iOpenFilterAdaptation()');
             expect(content).toContain('iAddAdaptationFilterField("TravelID")');
             expect(content).toContain('iConfirmFilterAdaptation()');
-            expect(content).toContain('iCheckFilterField({ property: "TravelID" })');
+            expect(content).toContain('iCheckFilterField("TravelID" as unknown as FilterFieldIdentifier)');
             // Commented-out global search example uses the typed function signature
             expect(content).toContain('function (Given: Given, When: When, Then: Then)');
         });
