@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { platform } from 'node:os';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
-import { PromptNames } from '../src/app/types.js';
+import { PromptNames, AppDownloadType } from '../src/app/types.js';
 import fs from 'node:fs';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
@@ -25,9 +25,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const actualPromptHelpers = await import('../src/prompts/prompt-helpers.js');
 const actualLaunchConfig = await import('@sap-ux/launch-config');
 const actualAppConfig = await import('../src/app/app-config-quick-deploy.js');
+const actualAbapRepoConfig = await import('../src/app/app-config-abap-repo.js');
 const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
 const actualUi5Info = await import('@sap-ux/ui5-info');
 const actualProjectAccess = await import('@sap-ux/project-access');
+const actualFileHelpers = await import('../src/utils/file-helpers.js');
+const actualEventHook = await import('../src/utils/event-hook.js');
 
 const mockGetAppConfig = jest.fn<typeof actualAppConfig.getAppConfig>();
 const mockIsValidPromptState = jest.fn() as jest.Mock;
@@ -62,9 +65,16 @@ jest.unstable_mockModule('../src/utils/download-utils', () => ({
     downloadApp: jest.fn().mockResolvedValue(undefined)
 }));
 
-jest.unstable_mockModule('../src/app/app-config', () => ({
+jest.unstable_mockModule('../src/app/app-config-quick-deploy', () => ({
     ...actualAppConfig,
-    getAppConfig: mockGetAppConfig
+    getAppConfig: mockGetAppConfig,
+    getAdtDeployConfig: jest.fn()
+}));
+
+jest.unstable_mockModule('../src/app/app-config-abap-repo', () => ({
+    ...actualAbapRepoConfig,
+    getAbapRepoAppConfig: jest.fn(),
+    getAbapRepoDeployConfig: jest.fn()
 }));
 
 jest.unstable_mockModule('../src/utils/validators', () => ({
@@ -105,15 +115,33 @@ jest.unstable_mockModule('../src/prompts/prompts', () => ({
     getPrompts: mockGetPrompts
 }));
 
+jest.unstable_mockModule('../src/utils/file-helpers', () => ({
+    ...actualFileHelpers,
+    cleanupDebugFiles: jest.fn(),
+    addPackageJsonIfNotFound: jest.fn()
+}));
+
+jest.unstable_mockModule('../src/utils/event-hook', () => ({
+    ...actualEventHook,
+    runPostAppGenHook: jest.fn()
+}));
+
 const yeomanTest = (await import('yeoman-test')).default;
 const RepoAppDownloadGeneratorModule = await import('../src/app/index.js');
 const RepoAppDownloadGenerator = RepoAppDownloadGeneratorModule.default;
 const { TestFixture } = await import('./fixtures/index.js');
 const RepoAppDownloadLogger = (await import('../src/utils/logger.js')).default;
 const { TelemetryHelper } = await import('@sap-ux/fiori-generator-shared');
-const { handleWorkspaceConfig } = await import('@sap-ux/launch-config');
+const { handleWorkspaceConfig, createLaunchConfig } = await import('@sap-ux/launch-config');
 const env = (await import('yeoman-environment')).default;
 const { FileName, DirName } = await import('@sap-ux/project-access');
+const { getUI5Versions } = await import('@sap-ux/ui5-info');
+const { validateQfaJsonFile } = await import('../src/utils/validators.js');
+const { getAdtDeployConfig } = await import('../src/app/app-config-quick-deploy.js');
+const { getAbapRepoDeployConfig, getAbapRepoAppConfig } = await import('../src/app/app-config-abap-repo.js');
+const { runPostAppGenHook } = await import('../src/utils/event-hook.js');
+const downloadUtils = await import('../src/utils/download-utils.js');
+const fileHelpers = await import('../src/utils/file-helpers.js');
 
 function createAppConfig(appId: string, metadata: string): FioriElementsApp<LROPSettings> {
     return {
@@ -536,7 +564,7 @@ describe('Repo App Download', () => {
     );
 
     it('should pass deployConfig to runPostAppGenHook for AbapRepository download type', async () => {
-        (isValidPromptState as jest.Mock).mockReturnValue(true);
+        (mockIsValidPromptState as jest.Mock).mockReturnValue(true);
         const mockDeployConfig = {
             target: { url: 'https://test-url.com', client: '100' },
             app: { name: 'app-1-repo', package: 'MY_PKG', description: '', transport: 'TR000123' }
@@ -720,7 +748,7 @@ describe('Repo App Download', () => {
     });
 
     it('should successfully run app download for AbapRepository download type', async () => {
-        (isValidPromptState as jest.Mock).mockReturnValue(true);
+        (mockIsValidPromptState as jest.Mock).mockReturnValue(true);
 
         await expect(
             yeomanTest
@@ -754,7 +782,7 @@ describe('Repo App Download', () => {
     });
 
     it('should generate README for AbapRepository download type', async () => {
-        (isValidPromptState as jest.Mock).mockReturnValue(true);
+        (mockIsValidPromptState as jest.Mock).mockReturnValue(true);
 
         await yeomanTest
             .run(RepoAppDownloadGenerator, { resolved: repoAppDownloadGenPath })
@@ -784,7 +812,7 @@ describe('Repo App Download', () => {
     });
 
     it('should generate launch config for AbapRepository download type when vscode is provided', async () => {
-        (isValidPromptState as jest.Mock).mockReturnValue(true);
+        (mockIsValidPromptState as jest.Mock).mockReturnValue(true);
         (handleWorkspaceConfig as jest.Mock).mockReturnValue({
             launchJsonPath: join(testOutputDir, '.vscode', 'launch.json'),
             cwd: testOutputDir,

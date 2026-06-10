@@ -10,7 +10,7 @@ import {
     qfaJsonFileName,
     downloadTypeConfig
 } from '../utils/constants.js';
-import { t } from '../utils/i18n.js';
+import { t, initI18n } from '../utils/i18n.js';
 import { extractZip } from '../utils/download-utils.js';
 import { EventName } from '../telemetryEvents/index.js';
 import {
@@ -29,7 +29,7 @@ import type {
     QfaJsonConfig,
     AppDownloadContext
 } from './types.js';
-import { AppDownloadType } from './types.js';
+import { AppDownloadType, PromptNames } from './types.js';
 import { getPrompts } from '../prompts/prompts.js';
 import { generate, TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
 import { join, basename } from 'node:path';
@@ -43,18 +43,15 @@ import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import { generate as generateDeployConfig } from '@sap-ux/abap-deploy-config-writer';
 import { PromptState } from '../prompts/prompt-state.js';
-import { PromptNames } from './types.js';
 import { getAppConfig, getAdtDeployConfig } from './app-config-quick-deploy.js';
 import { getAbapRepoAppConfig, getAbapRepoDeployConfig, type AbapRepoAppConfig } from './app-config-abap-repo.js';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
-import { makeValidJson } from '../utils/file-helpers.js';
+import { makeValidJson, cleanupDebugFiles, addPackageJsonIfNotFound } from '../utils/file-helpers.js';
 import { replaceWebappFiles, validateAndUpdateManifestUI5Version } from '../utils/updates.js';
 import { getYUIDetails } from '../prompts/prompt-helpers.js';
 import { isValidPromptState, validateQfaJsonFile } from '../utils/validators.js';
 import { FileName, DirName } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { initI18n } from '../utils/i18n.js';
-import { cleanupDebugFiles, addPackageJsonIfNotFound } from '../utils/file-helpers.js';
 
 /**
  * Generator class for downloading a basic app from a repository.
@@ -175,7 +172,7 @@ export default class extends Generator {
         await extractZip(webappPath, this.fs);
 
         cleanupDebugFiles(webappPath, this.fs);
-        const appConfig = getAbapRepoAppConfig(this.extractedProjectPath, this.answers.selectedApp, this.fs);
+        const appConfig = getAbapRepoAppConfig(webappPath, this.answers.selectedApp, this.fs);
 
         // If package.json does not exist in the extracted app, add a minimal one with the appId as the package name.
         addPackageJsonIfNotFound(this.projectPath, appConfig.app.id, this.fs);

@@ -46,6 +46,8 @@ jest.unstable_mockModule('../../src/utils/validators', () => ({
 const { getPrompts } = await import('../../src/prompts/prompts.js');
 const { PromptState } = await import('../../src/prompts/prompt-state.js');
 const { ErrorHandler } = await import('@sap-ux/inquirer-common');
+const { formatAppChoices } = await import('../../src/prompts/prompt-helpers.js');
+const { validateAppSelection } = await import('../../src/utils/validators.js');
 
 ErrorHandler.getHelpLink = jest.fn() as any;
 

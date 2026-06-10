@@ -1,5 +1,4 @@
 import { jest } from '@jest/globals';
-import { getAppConfig, getAdtDeployConfig } from '../src/app/app-config-quick-deploy.js';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { TransportChecksService } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
@@ -9,8 +8,6 @@ import { fioriAppSourcetemplateId, qfaJsonFileName, adtSourceTemplateId } from '
 import { join } from 'node:path';
 import { type OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 import { AppDownloadType } from '../src/app/types.js';
-import { readManifest } from '../src/utils/file-helpers.js';
-
 // Pre-import actual modules before mocking - avoid importing @sap-ux/project-access
 // directly as it triggers problematic ESM dependency chain
 const actualFileHelpers = await import('../src/utils/file-helpers.js');
@@ -290,7 +287,7 @@ describe('getAppConfig', () => {
     });
 
     it('should log an error when sourceTemplate id does not match adtSourceTemplateId', async () => {
-        (readManifest as jest.Mock).mockReturnValue({
+        mockReadManifest.mockReturnValue({
             'sap.app': {
                 sourceTemplate: { id: 'some-other-template-id' },
                 dataSources: { mainService: { uri: '/odata/service', settings: { odataVersion: '4.0' } } },
@@ -312,7 +309,7 @@ describe('getAppConfig', () => {
     });
 
     it('should not log sourceTemplate error when sourceTemplate id matches adtSourceTemplateId', async () => {
-        (readManifest as jest.Mock).mockReturnValue({
+        mockReadManifest.mockReturnValue({
             'sap.app': {
                 sourceTemplate: { id: adtSourceTemplateId },
                 dataSources: { mainService: { uri: '/odata/service', settings: { odataVersion: '4.0' } } },
@@ -432,7 +429,7 @@ describe('getAppConfig', () => {
 
     it('should log and rethrow error when getAppConfig fails unexpectedly', async () => {
         const errorMsg = 'Unexpected failure';
-        (readManifest as jest.Mock).mockImplementation(() => {
+        mockReadManifest.mockImplementation(() => {
             throw new Error(errorMsg);
         });
         const context = {

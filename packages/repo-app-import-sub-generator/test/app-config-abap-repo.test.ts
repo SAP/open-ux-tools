@@ -1,28 +1,38 @@
-import { getAbapRepoAppConfig, getAbapRepoDeployConfig } from '../src/app/app-config-abap-repo';
+import { jest } from '@jest/globals';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
-import { PromptState } from '../src/prompts/prompt-state';
-import { AppDownloadType, type AppInfo } from '../src/app/types';
-import { FileName } from '@sap-ux/project-access';
-import RepoAppDownloadLogger from '../src/utils/logger';
-import { join } from 'node:path';
+import { PromptState } from '../src/prompts/prompt-state.js';
+import { AppDownloadType, type AppInfo } from '../src/app/types.js';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
-import { resolveTransportRequest } from '../src/utils/download-utils';
 
-jest.mock('../src/utils/logger', () => ({
-    logger: {
-        error: jest.fn(),
-        info: jest.fn(),
-        warn: jest.fn(),
-        debug: jest.fn()
-    }
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const mockResolveTransportRequest = jest.fn();
+
+jest.unstable_mockModule('../src/utils/logger', () => {
+    const mock = {
+        logger: {
+            error: jest.fn(),
+            info: jest.fn(),
+            warn: jest.fn(),
+            debug: jest.fn()
+        },
+        configureLogging: jest.fn()
+    };
+    return { default: mock, ...mock };
+});
+
+jest.unstable_mockModule('../src/utils/download-utils', () => ({
+    resolveTransportRequest: mockResolveTransportRequest
 }));
 
-jest.mock('../src/utils/download-utils', () => ({
-    resolveTransportRequest: jest.fn()
-}));
+const { getAbapRepoAppConfig, getAbapRepoDeployConfig } = await import('../src/app/app-config-abap-repo.js');
+const RepoAppDownloadLogger = (await import('../src/utils/logger.js')).default;
+const { resolveTransportRequest } = await import('../src/utils/download-utils.js');
 
-const fixtureManifestPath = join(__dirname, 'fixtures', 'abap-repository-app', 'webapp', FileName.Manifest);
+const fixtureWebappPath = join(__dirname, 'fixtures', 'abap-repository-app', 'webapp');
 
 const mockAppInfo: AppInfo = {
     appId: 'abapRepositoryTestApp',
@@ -69,7 +79,7 @@ describe('getAbapRepoAppConfig', () => {
             }
         } as any);
 
-        const result = getAbapRepoAppConfig(fixtureManifestPath, mockAppInfo, mockFs as unknown as Editor);
+        const result = getAbapRepoAppConfig(fixtureWebappPath, mockAppInfo, mockFs as unknown as Editor);
 
         expect(result).toEqual({
             app: {
@@ -99,7 +109,7 @@ describe('getAbapRepoAppConfig', () => {
             'sap.ui5': {}
         } as any);
 
-        const result = getAbapRepoAppConfig(fixtureManifestPath, mockAppInfo, mockFs as unknown as Editor);
+        const result = getAbapRepoAppConfig(fixtureWebappPath, mockAppInfo, mockFs as unknown as Editor);
 
         expect(result.app.id).toBe(mockAppInfo.appId);
         expect(result.app.title).toBe(mockAppInfo.title);
@@ -119,7 +129,7 @@ describe('getAbapRepoAppConfig', () => {
             }
         } as any);
 
-        const result = getAbapRepoAppConfig(fixtureManifestPath, mockAppInfo, mockFs as unknown as Editor);
+        const result = getAbapRepoAppConfig(fixtureWebappPath, mockAppInfo, mockFs as unknown as Editor);
 
         expect(result.service.version).toBe(OdataVersion.v2);
     });
@@ -132,7 +142,7 @@ describe('getAbapRepoAppConfig', () => {
             }
         } as any);
 
-        const result = getAbapRepoAppConfig(fixtureManifestPath, mockAppInfo, mockFs as unknown as Editor);
+        const result = getAbapRepoAppConfig(fixtureWebappPath, mockAppInfo, mockFs as unknown as Editor);
 
         expect(result.ui5.version).toBe('1.120.0');
     });
@@ -145,7 +155,7 @@ describe('getAbapRepoAppConfig', () => {
             }
         } as any);
 
-        const result = getAbapRepoAppConfig(fixtureManifestPath, mockAppInfo, mockFs as unknown as Editor);
+        const result = getAbapRepoAppConfig(fixtureWebappPath, mockAppInfo, mockFs as unknown as Editor);
 
         expect(result.app.flpAppId).toBe('myappid123test-tile');
     });
@@ -166,16 +176,16 @@ describe('getAbapRepoDeployConfig', () => {
                 serviceProvider: {}
             }
         } as any;
-        (resolveTransportRequest as jest.Mock).mockResolvedValue(mockTransport);
+        mockResolveTransportRequest.mockResolvedValue(mockTransport);
     });
 
     it('should build deploy config from repo info when service provider is available', async () => {
-        const mockGetInfo = jest.fn().mockResolvedValue({
+        const mockGetInfo = (jest.fn() as jest.Mock).mockResolvedValue({
             Package: 'MY_PACKAGE',
             Description: 'My app description'
         });
         const mockServiceProvider = {
-            getUi5AbapRepository: jest.fn().mockReturnValue({ getInfo: mockGetInfo })
+            getUi5AbapRepository: (jest.fn() as jest.Mock).mockReturnValue({ getInfo: mockGetInfo })
         } as unknown as AbapServiceProvider;
 
         const context = {
@@ -195,12 +205,12 @@ describe('getAbapRepoDeployConfig', () => {
     });
 
     it('should fall back to appInfo description when repo has no description', async () => {
-        const mockGetInfo = jest.fn().mockResolvedValue({
+        const mockGetInfo = (jest.fn() as jest.Mock).mockResolvedValue({
             Package: 'MY_PACKAGE',
             Description: ''
         });
         const mockServiceProvider = {
-            getUi5AbapRepository: jest.fn().mockReturnValue({ getInfo: mockGetInfo })
+            getUi5AbapRepository: (jest.fn() as jest.Mock).mockReturnValue({ getInfo: mockGetInfo })
         } as unknown as AbapServiceProvider;
 
         const context = {

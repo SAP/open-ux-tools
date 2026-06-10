@@ -32,6 +32,7 @@ jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
 }));
 
 const { validateQfaJsonFile, validateAppSelection, isValidPromptState } = await import('../../src/utils/validators.js');
+const { hasQfaJson } = await import('../../src/utils/download-utils.js');
 const RepoAppDownloadLogger = (await import('../../src/utils/logger.js')).default;
 const { ErrorHandler, ERROR_TYPE } = await import('@sap-ux/inquirer-common');
 const { PromptState } = await import('../../src/prompts/prompt-state.js');

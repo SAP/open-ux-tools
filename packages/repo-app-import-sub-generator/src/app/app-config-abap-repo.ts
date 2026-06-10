@@ -10,7 +10,7 @@ import { FileName } from '@sap-ux/project-access';
 import { resolveTransportRequest } from '../utils/download-utils.js';
 import { AuthenticationType } from '@sap-ux/store';
 import { readManifest } from '../utils/file-helpers.js';
-import { join } from 'node:path/win32';
+import { join } from 'node:path';
 
 /**
  * Derived app configuration for the ABAP repository download flow.
@@ -37,13 +37,13 @@ export interface AbapRepoAppConfig {
  * the downloaded manifest. Returns a typed config object used as the single source
  * of truth for README generation, launch config, and deploy config.
  *
- * @param {string} extractedProjectPath - Path to the extracted project.
+ * @param {string} webappPath - Path to the webapp folder.
  * @param {AppInfo} appInfo - The selected app info from prompts.
  * @param {Editor} fs - The file system editor.
  * @returns {AbapRepoAppConfig} Derived app configuration.
  */
-export function getAbapRepoAppConfig(extractedProjectPath: string, appInfo: AppInfo, fs: Editor): AbapRepoAppConfig {
-    const manifest = readManifest(join(extractedProjectPath, FileName.Manifest), fs);
+export function getAbapRepoAppConfig(webappPath: string, appInfo: AppInfo, fs: Editor): AbapRepoAppConfig {
+    const manifest = readManifest(join(webappPath, FileName.Manifest), fs);
     const appId = manifest?.['sap.app']?.id ?? appInfo.appId;
     const appTitle = manifest?.['sap.app']?.title ?? appInfo.title ?? '';
     const minUI5Version = manifest?.['sap.ui5']?.dependencies?.minUI5Version ?? '';

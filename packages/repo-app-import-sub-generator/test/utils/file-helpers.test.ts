@@ -1,10 +1,8 @@
 import { jest } from '@jest/globals';
 import type { Editor } from 'mem-fs-editor';
 import { t } from '../../src/utils/i18n.js';
-import { adtSourceTemplateId } from '../../src/utils/constants.js';
 import { join } from 'node:path';
-import { PromptState } from '../../src/prompts/prompt-state';
-import { addPackageJsonIfNotFound, cleanupDebugFiles } from '../../src/utils/file-helpers.js';
+import { PromptState } from '../../src/prompts/prompt-state.js';
 
 jest.mock('adm-zip');
 
@@ -16,7 +14,8 @@ jest.unstable_mockModule('../../src/utils/logger', () => {
     return { default: mock, ...mock };
 });
 
-const { readManifest } = await import('../../src/utils/file-helpers.js');
+const { readManifest, makeValidJson, addPackageJsonIfNotFound, cleanupDebugFiles } =
+    await import('../../src/utils/file-helpers.js');
 const RepoAppDownloadLogger = (await import('../../src/utils/logger.js')).default;
 
 describe('readManifest', () => {
@@ -88,8 +87,8 @@ describe('cleanupDebugFiles', () => {
     it('should copy -dbg.js content to corresponding .js file and delete debug file', () => {
         const dbgContent = 'unminified content';
         const entries = [{ entryName: 'Component-dbg.js', getData: jest.fn(() => Buffer.from(dbgContent)) }];
-        PromptState.admZip = Buffer.from('dummy') as any;
-        (PromptState.admZip as any).getEntries = jest.fn(() => entries);
+        const mockAdmZip = { getEntries: jest.fn(() => entries) };
+        (PromptState as any)['_admZipInstance'] = mockAdmZip;
 
         cleanupDebugFiles('/webapp', mockFs as any);
 
@@ -103,8 +102,8 @@ describe('cleanupDebugFiles', () => {
             { entryName: 'Component.js.map' },
             { entryName: 'Component.js' }
         ];
-        PromptState.admZip = Buffer.from('dummy') as any;
-        (PromptState.admZip as any).getEntries = jest.fn(() => entries);
+        const mockAdmZip = { getEntries: jest.fn(() => entries) };
+        (PromptState as any)['_admZipInstance'] = mockAdmZip;
         mockFs.exists.mockReturnValue(true);
 
         cleanupDebugFiles('/webapp', mockFs as any);
@@ -116,8 +115,8 @@ describe('cleanupDebugFiles', () => {
 
     it('should not delete preload or map file if it does not exist in mem-fs', () => {
         const entries = [{ entryName: 'Component-preload.js' }];
-        PromptState.admZip = Buffer.from('dummy') as any;
-        (PromptState.admZip as any).getEntries = jest.fn(() => entries);
+        const mockAdmZip = { getEntries: jest.fn(() => entries) };
+        (PromptState as any)['_admZipInstance'] = mockAdmZip;
         mockFs.exists.mockReturnValue(false);
 
         cleanupDebugFiles('/webapp', mockFs as any);
