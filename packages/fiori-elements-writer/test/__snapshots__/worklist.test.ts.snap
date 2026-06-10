@@ -14433,7 +14433,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
 ",
     "state": "modified",
   },
-  "webapp/test/integration/BookingObjectPageJourney.js": Object {
+  "webapp/test/integration/BookingObjectPageJourney.gen.js": Object {
     "contents": "/******************************************************************************
  * ╔═══════════════════════════════════════════════════════════════════════╗ *
  * ║                                                                       ║ *
@@ -14463,32 +14463,32 @@ sap.ui.define([
         opaTest(\\"Navigate to BookingObjectPageObjectPage\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
-            Then.onTheTravelList.onTable().iCheckRows();
-            When.onTheTravelList.onTable().iPressRow(0);
+            Then.onTheTravelListGenerated.onTable().iCheckRows();
+            When.onTheTravelListGenerated.onTable().iPressRow(0);
 
-            Then.onTheTravelObjectPage.iSeeThisPage();
-            Then.onTheTravelObjectPage.onTable({ property: \\"_Booking\\" }).iCheckRows();
-            When.onTheTravelObjectPage.onTable({ property: \\"_Booking\\" }).iPressRow(0);
+            Then.onTheTravelObjectPageGenerated.iSeeThisPage();
+            Then.onTheTravelObjectPageGenerated.onTable({ property: \\"_Booking\\" }).iCheckRows();
+            When.onTheTravelObjectPageGenerated.onTable({ property: \\"_Booking\\" }).iPressRow(0);
 
-            Then.onTheBookingObjectPage.iSeeThisPage();
+            Then.onTheBookingObjectPageGenerated.iSeeThisPage();
         });
 
 
 
         opaTest(\\"Check body sections of the Object Page\\", function (Given, When, Then) {
-            Then.onTheBookingObjectPage.iCheckNumberOfSections(2);
-            When.onTheBookingObjectPage.iPressSectionIconTabFilterButton(\\"Booking\\");
-            Then.onTheBookingObjectPage.iCheckSection({ section: \\"Booking\\" });
-            Then.onTheBookingObjectPage.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"BookingID\\" });
-            Then.onTheBookingObjectPage.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"BookingDate\\" });
-            Then.onTheBookingObjectPage.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"CustomerID\\" });
-            Then.onTheBookingObjectPage.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"AirlineID\\" });
-            Then.onTheBookingObjectPage.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"ConnectionID\\" });
-            Then.onTheBookingObjectPage.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"FlightDate\\" });
-            Then.onTheBookingObjectPage.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"FlightPrice\\" });
-            Then.onTheBookingObjectPage.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"DestinationRisk\\" });
-            When.onTheBookingObjectPage.iPressSectionIconTabFilterButton(\\"BookingSupplement\\");
-            Then.onTheBookingObjectPage.iCheckSection({ section: \\"BookingSupplement\\" });
+            Then.onTheBookingObjectPageGenerated.iCheckNumberOfSections(2);
+            When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Booking\\");
+            Then.onTheBookingObjectPageGenerated.iCheckSection({ section: \\"Booking\\" });
+            Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"BookingID\\" });
+            Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"BookingDate\\" });
+            Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"CustomerID\\" });
+            Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"AirlineID\\" });
+            Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"ConnectionID\\" });
+            Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"FlightDate\\" });
+            Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"FlightPrice\\" });
+            Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"DestinationRisk\\" });
+            When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton(\\"BookingSupplement\\");
+            Then.onTheBookingObjectPageGenerated.iCheckSection({ section: \\"BookingSupplement\\" });
        });
 
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
@@ -14501,43 +14501,7 @@ sap.ui.define([
 });",
     "state": "modified",
   },
-  "webapp/test/integration/FirstJourney.js": Object {
-    "contents": "sap.ui.define([
-    \\"sap/ui/test/opaQunit\\",
-    \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
-    \\"use strict\\";
-
-    function journey() {
-        QUnit.module(\\"First journey\\");
-
-        opaTest(\\"Start application\\", function (Given, When, Then) {
-            Given.iStartMyApp();
-            Then.onTheTravelList.iSeeThisPage();
-        });
-
-
-        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
-            // Note: this test will fail if the ListReport page doesn't show any data
-            
-            Then.onTheTravelList.onTable().iCheckRows();
-
-            When.onTheTravelList.onTable().iPressRow(0);
-            Then.onTheTravelObjectPage.iSeeThisPage();
-
-        });
-
-        opaTest(\\"Teardown\\", function (Given, When, Then) { 
-            // Cleanup
-            Given.iTearDownMyApp();
-        });
-    }
-
-    runner.run([journey]);
-});",
-    "state": "modified",
-  },
-  "webapp/test/integration/TravelListJourney.js": Object {
+  "webapp/test/integration/TravelListJourney.gen.js": Object {
     "contents": "/******************************************************************************
  * ╔═══════════════════════════════════════════════════════════════════════╗ *
  * ║                                                                       ║ *
@@ -14567,37 +14531,37 @@ sap.ui.define([
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
-            Then.onTheTravelList.iSeeThisPage();
+            Then.onTheTravelListGenerated.iSeeThisPage();
         });
 
 
         // Note: this test will only work if the ListReport page has a search field and shows data that matches the search term. Please ensure that the test data and search term are set up accordingly.
         // opaTest(\\"Perform a global search and check the result\\", function (Given, When, Then) {
-        //     When.onTheTravelList.onFilterBar().iChangeSearchField(\\"Search Term\\");
-        //     When.onTheTravelList.onFilterBar().iExecuteSearch();
-        //     Then.onTheTravelList.onTable().iCheckRows();
+        //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(\\"Search Term\\");
+        //     When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
+        //     Then.onTheTravelListGenerated.onTable().iCheckRows();
         // });
 
         opaTest(\\"Check table columns and actions\\", function (Given, When, Then) {
-            Then.onTheTravelList.onTable().iCheckCreate({ visible: true });
-            // Then.ontheTravelList.onTable().iPressCreate();
-            // Then.ontheTravelList.onTable().iPressDelete();
-            Then.onTheTravelList.onTable().iCheckDelete({ visible: true });
-            // Then.onTheTravelList.onTable().iPressAction(\\"Draft Template\\");
-            Then.onTheTravelList.onTable().iCheckAction(\\"Draft Template\\", { enabled: true });
-            // Then.onTheTravelList.onTable().iPressAction(\\"Active Template\\");
-            Then.onTheTravelList.onTable().iCheckAction(\\"Active Template\\", { enabled: true });
-            // Then.onTheTravelList.onTable().iPressAction(\\"Deduct Discount\\");
-            Then.onTheTravelList.onTable().iCheckAction(\\"Deduct Discount\\", { enabled: false });
-            // Then.onTheTravelList.onTable().iPressAction(\\"Check Travel\\");
-            Then.onTheTravelList.onTable().iCheckAction(\\"Check Travel\\", { enabled: false });
-            // Then.onTheTravelList.onTable().iPressAction(\\"Set To New\\");
-            Then.onTheTravelList.onTable().iCheckAction(\\"Set To New\\", { enabled: false });
-            // Then.onTheTravelList.onTable().iPressAction(\\"Set To Booked\\");
-            Then.onTheTravelList.onTable().iCheckAction(\\"Set To Booked\\", { enabled: false });
-            // Then.onTheTravelList.onTable().iPressAction(\\"Set Cancel Date to Tomorrow\\");
-            Then.onTheTravelList.onTable().iCheckAction(\\"Set Cancel Date to Tomorrow\\", { enabled: false });
-            Then.onTheTravelList.onTable().iCheckColumns(undefined, {\\"TravelID\\":{\\"header\\":\\"Travel ID\\"},\\"AgencyID\\":{\\"header\\":\\"Agency ID\\"},\\"CustomerID\\":{\\"header\\":\\"Customer ID\\"},\\"BeginDate\\":{\\"header\\":\\"Starting Date\\"},\\"EndDate\\":{\\"header\\":\\"End Date\\"},\\"BookingFee\\":{\\"header\\":\\"Booking Fee\\"},\\"TotalPrice\\":{\\"header\\":\\"Total Price\\"},\\"LatestCancellationDate\\":{\\"header\\":\\"Latest Cancellation Date\\"},\\"Memo\\":{\\"header\\":\\"Description\\"},\\"Status\\":{\\"header\\":\\"Travel Status\\"}});
+            Then.onTheTravelListGenerated.onTable().iCheckCreate({ visible: true });
+            // Then.onTheTravelListGenerated.onTable().iPressCreate();
+            // Then.onTheTravelListGenerated.onTable().iPressDelete();
+            Then.onTheTravelListGenerated.onTable().iCheckDelete({ visible: true });
+            // Then.onTheTravelListGenerated.onTable().iPressAction(\\"Draft Template\\");
+            Then.onTheTravelListGenerated.onTable().iCheckAction(\\"Draft Template\\", { enabled: true });
+            // Then.onTheTravelListGenerated.onTable().iPressAction(\\"Active Template\\");
+            Then.onTheTravelListGenerated.onTable().iCheckAction(\\"Active Template\\", { enabled: true });
+            // Then.onTheTravelListGenerated.onTable().iPressAction(\\"Deduct Discount\\");
+            Then.onTheTravelListGenerated.onTable().iCheckAction(\\"Deduct Discount\\", { enabled: false });
+            // Then.onTheTravelListGenerated.onTable().iPressAction(\\"Check Travel\\");
+            Then.onTheTravelListGenerated.onTable().iCheckAction(\\"Check Travel\\", { enabled: false });
+            // Then.onTheTravelListGenerated.onTable().iPressAction(\\"Set To New\\");
+            Then.onTheTravelListGenerated.onTable().iCheckAction(\\"Set To New\\", { enabled: false });
+            // Then.onTheTravelListGenerated.onTable().iPressAction(\\"Set To Booked\\");
+            Then.onTheTravelListGenerated.onTable().iCheckAction(\\"Set To Booked\\", { enabled: false });
+            // Then.onTheTravelListGenerated.onTable().iPressAction(\\"Set Cancel Date to Tomorrow\\");
+            Then.onTheTravelListGenerated.onTable().iCheckAction(\\"Set Cancel Date to Tomorrow\\", { enabled: false });
+            Then.onTheTravelListGenerated.onTable().iCheckColumns(undefined, {\\"TravelID\\":{\\"header\\":\\"Travel ID\\"},\\"AgencyID\\":{\\"header\\":\\"Agency ID\\"},\\"CustomerID\\":{\\"header\\":\\"Customer ID\\"},\\"BeginDate\\":{\\"header\\":\\"Starting Date\\"},\\"EndDate\\":{\\"header\\":\\"End Date\\"},\\"BookingFee\\":{\\"header\\":\\"Booking Fee\\"},\\"TotalPrice\\":{\\"header\\":\\"Total Price\\"},\\"LatestCancellationDate\\":{\\"header\\":\\"Latest Cancellation Date\\"},\\"Memo\\":{\\"header\\":\\"Description\\"},\\"Status\\":{\\"header\\":\\"Travel Status\\"}});
 
         });
 
@@ -14606,10 +14570,10 @@ sap.ui.define([
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
-            Then.onTheTravelList.onTable().iCheckRows();
+            Then.onTheTravelListGenerated.onTable().iCheckRows();
 
-            When.onTheTravelList.onTable().iPressRow(0);
-            Then.onTheTravelObjectPage.iSeeThisPage();
+            When.onTheTravelListGenerated.onTable().iPressRow(0);
+            Then.onTheTravelObjectPageGenerated.iSeeThisPage();
 
         });
 
@@ -14623,7 +14587,7 @@ sap.ui.define([
 });",
     "state": "modified",
   },
-  "webapp/test/integration/TravelObjectPageJourney.js": Object {
+  "webapp/test/integration/TravelObjectPageJourney.gen.js": Object {
     "contents": "/******************************************************************************
  * ╔═══════════════════════════════════════════════════════════════════════╗ *
  * ║                                                                       ║ *
@@ -14653,45 +14617,45 @@ sap.ui.define([
         opaTest(\\"Navigate to TravelObjectPageObjectPage\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
-            Then.onTheTravelList.onTable().iCheckRows();
-            When.onTheTravelList.onTable().iPressRow(0);
+            Then.onTheTravelListGenerated.onTable().iCheckRows();
+            When.onTheTravelListGenerated.onTable().iPressRow(0);
 
-            Then.onTheTravelObjectPage.iSeeThisPage();
+            Then.onTheTravelObjectPageGenerated.iSeeThisPage();
         });
 
         opaTest(\\"Check header actions of the Object Page\\", function (Given, When, Then) {
             // Ensure the opened entity is not in Draft state before uncommenting
-            // Then.onTheTravelObjectPage.onHeader().iCheckEdit({ visible: true });
-            // When.onTheTravelObjectPage.onHeader().iPressEdit();
-            Then.onTheTravelObjectPage.onHeader().iCheckAction(\\"Set Cancel Date to Tomorrow\\" /* , { enabled: true } */);
-            // When.onTheTravelObjectPage.onHeader().iPressAction(\\"Set Cancel Date to Tomorrow\\");
-            Then.onTheTravelObjectPage.onHeader().iCheckAction(\\"Set To Booked\\" /* , { enabled: true } */);
-            // When.onTheTravelObjectPage.onHeader().iPressAction(\\"Set To Booked\\");
-            Then.onTheTravelObjectPage.onHeader().iCheckAction(\\"Set To New\\" /* , { enabled: true } */);
-            // When.onTheTravelObjectPage.onHeader().iPressAction(\\"Set To New\\");
-            Then.onTheTravelObjectPage.onHeader().iCheckAction(\\"Check Travel\\" /* , { enabled: true } */);
-            // When.onTheTravelObjectPage.onHeader().iPressAction(\\"Check Travel\\");
-            Then.onTheTravelObjectPage.onHeader().iCheckAction(\\"Deduct Discount\\" /* , { enabled: true } */);
-            // When.onTheTravelObjectPage.onHeader().iPressAction(\\"Deduct Discount\\");
+            // Then.onTheTravelObjectPageGenerated.onHeader().iCheckEdit({ visible: true });
+            // When.onTheTravelObjectPageGenerated.onHeader().iPressEdit();
+            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction(\\"Set Cancel Date to Tomorrow\\" /* , { enabled: true } */);
+            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction(\\"Set Cancel Date to Tomorrow\\");
+            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction(\\"Set To Booked\\" /* , { enabled: true } */);
+            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction(\\"Set To Booked\\");
+            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction(\\"Set To New\\" /* , { enabled: true } */);
+            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction(\\"Set To New\\");
+            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction(\\"Check Travel\\" /* , { enabled: true } */);
+            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction(\\"Check Travel\\");
+            Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction(\\"Deduct Discount\\" /* , { enabled: true } */);
+            // When.onTheTravelObjectPageGenerated.onHeader().iPressAction(\\"Deduct Discount\\");
         });
 
 
         opaTest(\\"Check body sections of the Object Page\\", function (Given, When, Then) {
-            Then.onTheTravelObjectPage.iCheckNumberOfSections(2);
-            When.onTheTravelObjectPage.iPressSectionIconTabFilterButton(\\"Travel\\");
-            Then.onTheTravelObjectPage.iCheckSection({ section: \\"Travel\\" });
-            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"TravelID\\" });
-            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"AgencyID\\" });
-            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"CustomerID\\" });
-            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"BeginDate\\" });
-            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"EndDate\\" });
-            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"BookingFee\\" });
-            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"TotalPrice\\" });
-            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"LatestCancellationDate\\" });
-            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"Memo\\" });
-            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"Status\\" });
-            When.onTheTravelObjectPage.iPressSectionIconTabFilterButton(\\"Booking\\");
-            Then.onTheTravelObjectPage.iCheckSection({ section: \\"Booking\\" });
+            Then.onTheTravelObjectPageGenerated.iCheckNumberOfSections(2);
+            When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Travel\\");
+            Then.onTheTravelObjectPageGenerated.iCheckSection({ section: \\"Travel\\" });
+            Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"TravelID\\" });
+            Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"AgencyID\\" });
+            Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"CustomerID\\" });
+            Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"BeginDate\\" });
+            Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"EndDate\\" });
+            Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"BookingFee\\" });
+            Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"TotalPrice\\" });
+            Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"LatestCancellationDate\\" });
+            Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"Memo\\" });
+            Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"Status\\" });
+            When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Booking\\");
+            Then.onTheTravelObjectPageGenerated.iCheckSection({ section: \\"Booking\\" });
        });
 
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
@@ -14760,10 +14724,9 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
-    \\"fewrk2/test/integration/FirstJourney\\",
-    \\"fewrk2/test/integration/TravelListJourney\\",
-    \\"fewrk2/test/integration/TravelObjectPageJourney\\",
-    \\"fewrk2/test/integration/BookingObjectPageJourney\\",
+    \\"fewrk2/test/integration/TravelListJourney.gen\\",
+    \\"fewrk2/test/integration/TravelObjectPageJourney.gen\\",
+    \\"fewrk2/test/integration/BookingObjectPageJourney.gen\\",
 ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
@@ -14771,8 +14734,25 @@ sap.ui.require(
 ",
     "state": "modified",
   },
-  "webapp/test/integration/pages/BookingObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+  "webapp/test/integration/pages/BookingObjectPage.gen.js": Object {
+    "contents": "/******************************************************************************
+ * ╔═══════════════════════════════════════════════════════════════════════╗ *
+ * ║                                                                       ║ *
+ * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
+ * ║                                                                       ║ *
+ * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
+ * ║   overwritten when you run the OPA test generator again.              ║ *
+ * ║                                                                       ║ *
+ * ║   To add your own custom pages:                                       ║ *
+ * ║   - Create a new page file in this directory.                         ║ *
+ * ║   - Follow the same pattern as this file.                             ║ *
+ * ║   - Add the new file to the JourneyRunner.                            ║ *
+ * ║   - Custom page files are not overwritten.                            ║ *
+ * ║                                                                       ║ *
+ * ╚═══════════════════════════════════════════════════════════════════════╝ *
+ ******************************************************************************/
+
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
@@ -14801,18 +14781,18 @@ sap.ui.require(
   "webapp/test/integration/pages/JourneyRunner.js": Object {
     "contents": "sap.ui.define([
     \\"sap/fe/test/JourneyRunner\\",
-	\\"fewrk2/test/integration/pages/TravelList\\",
-	\\"fewrk2/test/integration/pages/TravelObjectPage\\",
-	\\"fewrk2/test/integration/pages/BookingObjectPage\\"
-], function (JourneyRunner, TravelList, TravelObjectPage, BookingObjectPage) {
+	\\"fewrk2/test/integration/pages/TravelList.gen\\",
+	\\"fewrk2/test/integration/pages/TravelObjectPage.gen\\",
+	\\"fewrk2/test/integration/pages/BookingObjectPage.gen\\"
+], function (JourneyRunner, TravelListGenerated, TravelObjectPageGenerated, BookingObjectPageGenerated) {
     'use strict';
 
     var runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('fewrk2') + '/test/flpSandbox.html#fewrk2-tile',
         pages: {
-			onTheTravelList: TravelList,
-			onTheTravelObjectPage: TravelObjectPage,
-			onTheBookingObjectPage: BookingObjectPage
+			onTheTravelListGenerated: TravelListGenerated,
+			onTheTravelObjectPageGenerated: TravelObjectPageGenerated,
+			onTheBookingObjectPageGenerated: BookingObjectPageGenerated
         },
         async: true
     });
@@ -14823,8 +14803,25 @@ sap.ui.require(
 ",
     "state": "modified",
   },
-  "webapp/test/integration/pages/TravelList.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+  "webapp/test/integration/pages/TravelList.gen.js": Object {
+    "contents": "/******************************************************************************
+ * ╔═══════════════════════════════════════════════════════════════════════╗ *
+ * ║                                                                       ║ *
+ * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
+ * ║                                                                       ║ *
+ * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
+ * ║   overwritten when you run the OPA test generator again.              ║ *
+ * ║                                                                       ║ *
+ * ║   To add your own custom pages:                                       ║ *
+ * ║   - Create a new page file in this directory.                         ║ *
+ * ║   - Follow the same pattern as this file.                             ║ *
+ * ║   - Add the new file to the JourneyRunner.                            ║ *
+ * ║   - Custom page files are not overwritten.                            ║ *
+ * ║                                                                       ║ *
+ * ╚═══════════════════════════════════════════════════════════════════════╝ *
+ ******************************************************************************/
+
+sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
     var CustomPageDefinitions = {
@@ -14843,8 +14840,25 @@ sap.ui.require(
 });",
     "state": "modified",
   },
-  "webapp/test/integration/pages/TravelObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+  "webapp/test/integration/pages/TravelObjectPage.gen.js": Object {
+    "contents": "/******************************************************************************
+ * ╔═══════════════════════════════════════════════════════════════════════╗ *
+ * ║                                                                       ║ *
+ * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
+ * ║                                                                       ║ *
+ * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
+ * ║   overwritten when you run the OPA test generator again.              ║ *
+ * ║                                                                       ║ *
+ * ║   To add your own custom pages:                                       ║ *
+ * ║   - Create a new page file in this directory.                         ║ *
+ * ║   - Follow the same pattern as this file.                             ║ *
+ * ║   - Add the new file to the JourneyRunner.                            ║ *
+ * ║   - Custom page files are not overwritten.                            ║ *
+ * ║                                                                       ║ *
+ * ╚═══════════════════════════════════════════════════════════════════════╝ *
+ ******************************************************************************/
+
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
