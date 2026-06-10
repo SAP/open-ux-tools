@@ -102,10 +102,6 @@ server:
           url: https://ui5.sap.com
           version: 1.133.0
 builder:
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
   customTasks:
     - name: app-variant-bundler-build
       beforeTask: escapeNonAsciiCharacters
@@ -118,6 +114,10 @@ builder:
         target:
           url: http://sap.example
           ignoreCertErrors: false
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -226,10 +226,6 @@ server:
           url: https://ui5.sap.com
           version: 1.133.0
 builder:
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
   customTasks:
     - name: app-variant-bundler-build
       beforeTask: escapeNonAsciiCharacters
@@ -242,6 +238,10 @@ builder:
         target:
           url: http://sap.example
           ignoreCertErrors: false
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -351,10 +351,6 @@ server:
           url: https://ui5.sap.com
           version: 1.122.1
 builder:
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
   customTasks:
     - name: app-variant-bundler-build
       beforeTask: escapeNonAsciiCharacters
@@ -367,6 +363,10 @@ builder:
         target:
           destination: DUMMY_DESTINATION
           url: https://REQUIRED_FOR_VSCODE.example
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -787,10 +787,6 @@ server:
           url: https://ui5.sap.com
           version: 1.133.0
 builder:
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -800,6 +796,10 @@ builder:
         omitTSFromBuildResult: true
         transformModulesToUI5:
           overridesToOverride: true
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1549,10 +1549,6 @@ server:
           url: https://ui5.sap.com
           version: 1.133.0
 builder:
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
   customTasks:
     - name: app-variant-bundler-build
       beforeTask: escapeNonAsciiCharacters
@@ -1565,6 +1561,10 @@ builder:
         target:
           url: http://sap.example
           ignoreCertErrors: false
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1707,10 +1707,6 @@ server:
           url: https://ui5.sap.com
           version: 1.122.1
 builder:
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
   customTasks:
     - name: app-variant-bundler-build
       beforeTask: escapeNonAsciiCharacters
@@ -1723,6 +1719,10 @@ builder:
         target:
           destination: DUMMY_DESTINATION
           url: https://REQUIRED_FOR_VSCODE.example
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1864,10 +1864,6 @@ server:
           url: https://ui5.sap.com
           version: 1.133.0
 builder:
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
   customTasks:
     - name: app-variant-bundler-build
       beforeTask: escapeNonAsciiCharacters
@@ -1880,6 +1876,10 @@ builder:
         target:
           url: http://sap.example
           ignoreCertErrors: false
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -2046,10 +2046,6 @@ server:
           url: https://ui5.sap.com
           version: 1.133.0
 builder:
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -2059,6 +2055,10 @@ builder:
         omitTSFromBuildResult: true
         transformModulesToUI5:
           overridesToOverride: true
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },

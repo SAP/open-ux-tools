@@ -154,8 +154,8 @@ export async function writeUI5Yaml(projectPath: string, data: AdpWriterConfig, f
         enhanceUI5YamlWithCustomConfig(ui5Config, data.customConfig);
         enhanceUI5YamlWithTranspileMiddleware(ui5Config, data);
         enhanceUI5Yaml(ui5Config, data);
-        ui5Config.addBuilderResourceExcludes();
         enhanceUI5YamlWithCustomTask(ui5Config, data as AdpWriterConfig & { app: CloudApp });
+        ui5Config.addBuilderResourceExcludes();
 
         fs.write(ui5ConfigPath, ui5Config.toString());
     } catch (e) {
