@@ -1,5 +1,11 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.11
+
+### Patch Changes
+
+- a11a7c7: Adds `Show Logs` link`
+
 ## 0.3.10
 
 ### Patch Changes
