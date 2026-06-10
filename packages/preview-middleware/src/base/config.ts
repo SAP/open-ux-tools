@@ -212,7 +212,8 @@ export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}): FlpCo
         libs: config.libs,
         theme: config.theme,
         init: config.init,
-        enhancedHomePage: config.enhancedHomePage === true
+        enhancedHomePage: config.enhancedHomePage === true,
+        useNewSandbox: config.useNewSandbox !== false
     } satisfies FlpConfig;
     if (!flpConfig.path.startsWith('/')) {
         flpConfig.path = `/${flpConfig.path}`;

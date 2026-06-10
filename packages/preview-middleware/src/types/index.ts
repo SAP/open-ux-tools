@@ -66,6 +66,11 @@ export interface FlpConfig {
      * Optional: if set to true then the new FLP homepage will be enabled
      */
     enhancedHomePage?: boolean;
+    /**
+     * Optional: if set to false, opts out of the new FLP Sandbox even when the UI5 version qualifies.
+     * Defaults to true.
+     */
+    useNewSandbox?: boolean;
 }
 
 /**

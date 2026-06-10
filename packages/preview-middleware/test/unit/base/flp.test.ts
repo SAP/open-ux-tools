@@ -2009,9 +2009,12 @@ describe('FlpSandbox fioriSandboxAppConfig.json route', () => {
 
     let server: ReturnType<typeof supertest>;
 
-    const setupServer = async (projectByPath: jest.Mock = jest.fn().mockResolvedValue(undefined)) => {
+    const setupServer = async (
+        projectByPath: jest.Mock = jest.fn().mockResolvedValue(undefined),
+        flpConfig: Record<string, unknown> = {}
+    ) => {
         (mockProject as unknown as { byPath: jest.Mock }).byPath = projectByPath;
-        const flp = new FlpSandbox({}, mockProject as unknown as ReaderCollection, mockUtils, logger);
+        const flp = new FlpSandbox({ flp: flpConfig }, mockProject as unknown as ReaderCollection, mockUtils, logger);
         const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
         await flp.init(manifest);
         const app = express();
@@ -2052,7 +2055,7 @@ describe('FlpSandbox fioriSandboxAppConfig.json route', () => {
         expect(body.customProp).toBe('userValue');
     });
 
-    test('emits legacy warning once when appconfig/fioriSandboxConfig.json exists with UI5 2.x', async () => {
+    test('emits legacy warning when appconfig/fioriSandboxConfig.json exists with UI5 2.x', async () => {
         const legacyFile = { getString: () => Promise.resolve('{}') };
         const byPathMock = jest.fn().mockImplementation((p: string) => {
             if (p === '/appconfig/fioriSandboxConfig.json') {
@@ -2072,5 +2075,45 @@ describe('FlpSandbox fioriSandboxAppConfig.json route', () => {
         });
         await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
         expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('fioriSandboxConfig.json'));
+    });
+
+    test('useNewSandbox:false uses sandbox1 template for UI5 2.x and suppresses legacy warning', async () => {
+        const legacyFile = { getString: () => Promise.resolve('{}') };
+        const byPathMock = jest.fn().mockImplementation((p: string) => {
+            if (p === '/appconfig/fioriSandboxConfig.json') {
+                return Promise.resolve(legacyFile);
+            }
+            return Promise.resolve(undefined);
+        });
+        await setupServer(byPathMock, { useNewSandbox: false });
+        fetchMock.mockResolvedValue({
+            json: () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '2.0.0' }]
+                }),
+            text: jest.fn(),
+            ok: true
+        });
+        const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+        expect(response.text).not.toContain('SandboxBootTask');
+        expect(logger.warn).not.toHaveBeenCalledWith(expect.stringContaining('fioriSandboxConfig.json'));
+        expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('New FLP Sandbox disabled in configuration.'));
+    });
+
+    test('useNewSandbox:false uses sandbox1 template for legacy-free UI5 version', async () => {
+        await setupServer(jest.fn().mockResolvedValue(undefined), { useNewSandbox: false });
+        fetchMock.mockResolvedValue({
+            json: () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.136.0-legacy-free' }]
+                }),
+            text: jest.fn(),
+            ok: true
+        });
+        const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+        expect(response.text).not.toContain('SandboxBootTask');
+        expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('New FLP Sandbox disabled in configuration.'));
     });
 });

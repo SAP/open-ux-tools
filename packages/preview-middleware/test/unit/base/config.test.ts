@@ -35,6 +35,15 @@ describe('config', () => {
             const flpConfig = getFlpConfigWithDefaults({ path, intent });
             expect(flpConfig).toMatchObject({ path, intent });
         });
+        test('useNewSandbox defaults to true when not set', () => {
+            expect(getFlpConfigWithDefaults({}).useNewSandbox).toBe(true);
+        });
+        test('useNewSandbox:false is preserved', () => {
+            expect(getFlpConfigWithDefaults({ useNewSandbox: false }).useNewSandbox).toBe(false);
+        });
+        test('useNewSandbox:true is preserved', () => {
+            expect(getFlpConfigWithDefaults({ useNewSandbox: true }).useNewSandbox).toBe(true);
+        });
     });
 
     describe('createFlpTemplateConfig', () => {

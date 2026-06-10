@@ -129,7 +129,6 @@ export class FlpSandbox {
     private readonly project: ReaderCollection;
     private readonly cardGenerator?: CardGeneratorConfig;
     private projectType: ProjectType;
-    private warnedLegacyConfig = false;
 
     /**
      * Constructor setting defaults and keeping reference to workspace resources.
@@ -680,7 +679,12 @@ export class FlpSandbox {
                 ui5Version.label ? `-${ui5Version.label}` : ''
             }.`
         );
-        const filePrefix = ui5Version.major > 1 || ui5Version.label?.includes('legacy-free') ? '2' : '';
+        const qualifiesForNewSandbox = ui5Version.major > 1 || ui5Version.label?.includes('legacy-free');
+        const useNewSandbox = qualifiesForNewSandbox && this.flpConfig.useNewSandbox !== false;
+        if (qualifiesForNewSandbox && !useNewSandbox) {
+            this.logger.info('New FLP Sandbox disabled in configuration.');
+        }
+        const filePrefix = useNewSandbox ? '2' : '';
         const template = this.flpConfig.enhancedHomePage ? 'cdm' : 'sandbox';
         return readFileSync(join(__dirname, `../../templates/flp/${template}${filePrefix}.ejs`), 'utf-8');
     }
@@ -705,8 +709,8 @@ export class FlpSandbox {
      * @private
      */
     private async warnIfLegacySandboxConfigExists(ui5Version: Ui5Version): Promise<void> {
-        if ((ui5Version.major > 1 || ui5Version.label?.includes('legacy-free')) && !this.warnedLegacyConfig) {
-            this.warnedLegacyConfig = true;
+        const qualifiesForNewSandbox = ui5Version.major > 1 || ui5Version.label?.includes('legacy-free');
+        if (qualifiesForNewSandbox && this.flpConfig.useNewSandbox !== false) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const legacyFile = await this.project.byPath(
                 `${this.templateConfig.baseUrl}/appconfig/fioriSandboxConfig.json`
