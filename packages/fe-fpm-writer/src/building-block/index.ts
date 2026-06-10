@@ -672,7 +672,10 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
             'text/xml'
         );
         appendPageAggregations(fs, nsDoc, snippetDoc, fnGenerateId, pageData);
-        viewOrFragmentContent = format(new XMLSerializer().serializeToString(snippetDoc.documentElement.firstChild!));
+        const pageNode = snippetDoc.documentElement.firstChild;
+        viewOrFragmentContent = pageNode
+            ? format(new XMLSerializer().serializeToString(pageNode))
+            : content;
     }
     const filePathProps = getFilePathProps(basePath, viewOrFragmentPath);
     // Snippet for fragment xml
