@@ -1,15 +1,16 @@
 import { jest } from '@jest/globals';
+import { findProjectRoot } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 
 const mockGetMinimumUI5Version = jest.fn();
 const mockGetProjectType = jest.fn();
-const mockFindRootsForPath = jest.fn();
+const mockFindProjectRoot = jest.fn();
 const mockReadManifest = jest.fn();
 
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     getMinimumUI5Version: mockGetMinimumUI5Version,
     getProjectType: mockGetProjectType,
-    findRootsForPath: mockFindRootsForPath
+    findProjectRoot: mockFindProjectRoot
 }));
 
 jest.unstable_mockModule('../../../src/common/utils.js', () => ({
@@ -35,10 +36,8 @@ describe('cards-config/prerequisites', () => {
             }
         });
 
-        // Mock findRootsForPath to return a valid project root
-        mockFindRootsForPath.mockResolvedValue({
-            projectRoot: '/test/path'
-        });
+        // Mock findProjectRoot to return a valid project root
+        mockFindProjectRoot.mockResolvedValue('/test/path');
     });
 
     describe('EDMX projects', () => {

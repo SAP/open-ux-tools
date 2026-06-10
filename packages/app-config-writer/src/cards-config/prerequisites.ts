@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import { findRootsForPath, getMinimumUI5Version, getProjectType } from '@sap-ux/project-access';
+import { getMinimumUI5Version, getProjectType, findProjectRoot } from '@sap-ux/project-access';
 import { gte } from 'semver';
 import { readManifest } from '../common/utils.js';
 
@@ -18,7 +18,7 @@ const MIN_UI5_VERSION_CAP = '1.149.0';
 export async function ensureMinUI5Version(basePath: string, fs: Editor): Promise<void> {
     const { manifest } = await readManifest(basePath, fs);
     const minUI5Version = getMinimumUI5Version(manifest);
-    const projectRoot = (await findRootsForPath(basePath, { memFs: fs }))?.projectRoot ?? basePath;
+    const projectRoot = await findProjectRoot(basePath, true, true, fs);
     const isEdmx = (await getProjectType(projectRoot)) === 'EDMXBackend';
     const featureVersion = isEdmx ? MIN_UI5_VERSION_EDMX : MIN_UI5_VERSION_CAP;
 
