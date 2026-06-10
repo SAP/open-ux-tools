@@ -13,32 +13,44 @@ Set up ESLint with `@sap-ux/eslint-plugin-fiori-tools` for a SAP Fiori or CAP pr
 
 ## Step 1 — Detect project type and app location
 
-First, determine whether this is:
-- **Standalone Fiori app** — `webapp/manifest.json` exists at the project root
-- **CAP project** — `app/` folder exists containing one or more Fiori apps (each with their own `webapp/manifest.json`)
+**1a — Check if this is a CAP project** by looking for `@sap/cds` in `package.json` (most reliable, works regardless of folder layout):
 
 ```bash
-# Check for standalone Fiori app
-ls webapp/manifest.json 2>/dev/null && echo "standalone" || echo "not-standalone"
-
-# Check for CAP project: app/ folder AND @sap/cds in package.json
-if ls app/ 2>/dev/null && grep -q '"@sap/cds"' package.json 2>/dev/null; then echo "cap"; else echo "not-cap"; fi
+grep -q '"@sap/cds"' package.json 2>/dev/null && echo "cap" || echo "standalone"
 ```
+
+**1b — If CAP: get the configured app folder** using the CDS CLI (avoids hardcoding `app/`):
+
+```bash
+npx cds env get folders.app 2>/dev/null
+```
+
+This returns the actual app folder path (e.g. `app`, `applications`, or a custom name). If the command fails, fall back to checking for `app/`.
+
+**1c — Find the Fiori app(s)** by locating `manifest.json` files one level below the app folder:
+
+```bash
+# Replace <app-folder> with the result from 1b
+find <app-folder> -maxdepth 2 -name "manifest.json" 2>/dev/null
+```
+
+For a standalone Fiori app, search from the project root:
+
+```bash
+find . -maxdepth 3 -name "manifest.json" 2>/dev/null
+```
+
+**1d — Determine the webapp path** from the `manifest.json` location. The directory containing `manifest.json` is the webapp root (e.g. `webapp/`, `src/`, or any custom path). Do **not** assume `webapp/`.
 
 ## Step 2 — Determine the correct config location
 
-**IMPORTANT**: The `eslint.config.mjs` must be placed at the **app level**, not the CAP project root.
+**IMPORTANT**: The `eslint.config.mjs` must be placed at the **app level** (the folder containing the webapp root), not the CAP project root.
 
 | Project type | Config location |
 |---|---|
-| Standalone Fiori | `./eslint.config.mjs` (project root) |
-| CAP — single app | `./app/<app-name>/eslint.config.mjs` |
-| CAP — multiple apps | One `eslint.config.mjs` per app: `./app/<app-name>/eslint.config.mjs` |
-
-For CAP projects, list the apps:
-```bash
-ls app/
-```
+| Standalone Fiori | Project root (next to the webapp folder) |
+| CAP — single app | `<app-folder>/<app-name>/` (next to the webapp folder) |
+| CAP — multiple apps | One `eslint.config.mjs` per app, each next to its own webapp folder |
 
 ## Step 3 — Check if config already exists
 
@@ -48,8 +60,8 @@ Before creating anything, check if a config already exists:
 # Standalone
 ls eslint.config.mjs eslint.config.js .eslintrc .eslintrc.js .eslintrc.json .eslintrc.yml 2>/dev/null
 
-# CAP app level (replace <app-name> with actual app folder name)
-ls app/<app-name>/eslint.config.mjs app/<app-name>/.eslintrc 2>/dev/null
+# CAP app level (use the path resolved in Step 1)
+ls <app-folder>/<app-name>/eslint.config.mjs <app-folder>/<app-name>/.eslintrc 2>/dev/null
 ```
 
 If a config already exists, inform the user and offer to:
@@ -146,26 +158,26 @@ If the project's `package.json` has a `scripts` section but no `lint` script, of
 }
 ```
 
-For CAP apps where the config is in a subfolder, the script should be run from within that subfolder (e.g., `cd app/<app-name> && eslint webapp/`) or by passing `--config app/<app-name>/eslint.config.mjs` from the project root.
+For CAP apps where the config is in a subfolder, the script should be run from within that subfolder (e.g., `cd <app-folder>/<app-name> && eslint <webapp-path>/`) or by passing `--config <app-folder>/<app-name>/eslint.config.mjs` from the project root.
 
 ## Step 8 — Verify the setup
 
-Run ESLint to verify the config works:
+Run ESLint to verify the config works (replace `<webapp-path>` with the path resolved in Step 1d):
 
 ```bash
-npx eslint --print-config webapp/Component.js 2>/dev/null | head -20
+npx eslint --print-config <webapp-path>/Component.js 2>/dev/null | head -20
 ```
 
 Or run a quick lint to confirm no config errors:
 
 ```bash
-npx eslint webapp/ --max-warnings 9999 2>&1 | head -20
+npx eslint <webapp-path>/ --max-warnings 9999 2>&1 | head -20
 ```
 
 ## Important notes
 
 - ESLint 9+ requires Node.js >= 18.18.0
-- The plugin expects `webapp/` relative to the config file location
+- The plugin expects the webapp path relative to the config file location — use the path resolved from `manifest.json` in Step 1d, do not assume `webapp/`
 - Do NOT place the config at the CAP project root if apps have their own `package.json` — ESLint will not resolve the plugin correctly
 - Use `.eslintignore` patterns in the `ignores` array of `eslint.config.mjs` (flat config has no `.eslintignore` support)
 - The `recommended` config already includes ignores for `target/`, `localService/`, `backup/`, and `*.d.ts` files
