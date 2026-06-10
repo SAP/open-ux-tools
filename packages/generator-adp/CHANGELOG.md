@@ -1,5 +1,34 @@
 # @sap-ux/generator-adp
 
+## 1.0.11
+
+### Patch Changes
+
+- Updated dependencies [0fa8305]
+    - @sap-ux/btp-utils@2.0.2
+    - @sap-ux/adp-tooling@1.0.10
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/fiori-generator-shared@1.0.8
+    - @sap-ux/inquirer-common@1.0.8
+    - @sap-ux/system-access@1.0.2
+    - @sap-ux/telemetry@1.0.7
+    - @sap-ux/odata-service-writer@1.0.5
+
+## 1.0.10
+
+### Patch Changes
+
+- Updated dependencies [a328e14]
+    - @sap-ux/fiori-generator-shared@1.0.7
+    - @sap-ux/inquirer-common@1.0.7
+    - @sap-ux/adp-tooling@1.0.9
+
+## 1.0.9
+
+### Patch Changes
+
+- 604f289: revert generator-adp to cjs
+
 ## 1.0.8
 
 ### Patch Changes
