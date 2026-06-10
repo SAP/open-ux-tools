@@ -1,7 +1,7 @@
 ---
 name: sap-fiori-add-visual-filter
-description: 'Add visual filters with charts to SAP Fiori Elements filter bar. Use when: adding interactive charts to filter fields, displaying aggregated data as visual filters, adding bar or line charts to filter bar, configuring visual filters with aggregation, implementing OData V4 visual filters in Fiori Elements applications.'
-argument-hint: 'Filter field name, dimension field, measure field, chart type (Bar/Line)'
+description: Add visual filters (chart-based) to SAP Fiori Elements filter bar/value help using CAP or ABAP RAP.
+argument-hint: field name (e.g., Category, Status)
 metadata:
   author: sap-fiori-tools
   version: "0.0.5"
