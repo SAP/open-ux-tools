@@ -27,8 +27,8 @@
             "zipExtractionError": "An error occurred when extracting the zip file: {{- error}}. For more information, view the logs.",
             "validationError": "An error occurred when validating the application selection: {{- error}}. For more information, view the logs."
         },
-        "dataSourcesNotFound": "Error: No data sources found in the manifest. Check the manifest is valid.",
-        "qfaJsonValidationFailed": "The {{- jsonFileName}} file contains invalid or missing fields. Check the logs for details.",
+        "dataSourcesNotFound": "No data sources found in the `manifest.json` file. Check the `manifest.json` file is valid.",
+        "qfaJsonValidationFailed": "The {{- jsonFileName}} file contains invalid or missing fields. For more information, view the logs.",
         "eventHookErrors": {
             "vscodeInstanceMissing": "Error: Missing VS Code instance in event hook.",
             "postGenCommandMissing": "Error: Missing `postGenCommand` in event hook.",
@@ -72,17 +72,17 @@
             "repoAppDownloadCompleteMsg": "The selected application has been downloaded and updated to support SAP Fiori tools."
         },
         "abapRepository": {
-            "repoAppDownloadCompleteMsg": "After the application is downloaded, the Fiori migration tool will launch so that the project can be migrated to support Fiori tools"
+            "repoAppDownloadCompleteMsg": "After the application is downloaded, the SAP Fiori migration tool launches so that the project can be migrated to support SAP Fiori tools."
         }
     },
     "generatorConfig": {
         "adtQuickDeploy": {
-            "title": "Download ADT deployed app from UI5 ABAP repository",
-            "description": "Download an application that was generated with the ADT Quick Fiori Application generator"
+            "title": "Download ADT deployed app from SAPUI5 ABAP repository",
+            "description": "Download an application that was generated with the ADT Quick SAP Fiori Application generator"
         },
         "abapRepository": {
             "title": "Download app from UI5 ABAP repository",
-            "description": "Download an application from an SAP BTP ABAP environment repository"
+            "description": "Download app from SAPUI5 ABAP repository"
         }
     }
 }

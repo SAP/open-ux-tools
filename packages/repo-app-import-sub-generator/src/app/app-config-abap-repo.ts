@@ -1,7 +1,7 @@
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
-import type { AppDownloadContext, AppInfo } from '../app/types.js';
+import type { AppInfo, AbapRepositoryContext } from '../app/types.js';
 import { PromptState } from '../prompts/prompt-state.js';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import RepoAppDownloadLogger from '../utils/logger.js';
@@ -73,7 +73,7 @@ export function getAbapRepoAppConfig(webappPath: string, appInfo: AppInfo, fs: E
  * @param {AppDownloadContext} context - The download context.
  * @returns {Promise<AbapDeployConfig>} The deployment configuration.
  */
-export async function getAbapRepoDeployConfig(app: AppInfo, context: AppDownloadContext): Promise<AbapDeployConfig> {
+export async function getAbapRepoDeployConfig(app: AppInfo, context: AbapRepositoryContext): Promise<AbapDeployConfig> {
     const { serviceProvider } = context;
     let packageName = '';
     let description = '';

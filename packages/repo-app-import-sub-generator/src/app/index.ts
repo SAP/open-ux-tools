@@ -230,8 +230,8 @@ export default class extends Generator {
         await generate(this.projectPath, config, this.fs);
 
         // Generate deploy config
-        const deployConfig: AbapDeployConfig = await getAdtDeployConfig(context);
-        await generateDeployConfig(this.projectPath, deployConfig, undefined, this.fs);
+        this.deployConfig = await getAdtDeployConfig(context);
+        await generateDeployConfig(this.projectPath, this.deployConfig, undefined, this.fs);
 
         if (this.vscode) {
             // Generate Fiori launch config
