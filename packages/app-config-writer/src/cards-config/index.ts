@@ -7,8 +7,7 @@ import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middlewa
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName, type Package, readUi5Yaml } from '@sap-ux/project-access';
 import { updateMiddlewaresForPreview } from '../common/ui5-yaml.js';
-import { checkMinUI5Version } from './prerequisites.js';
-import { t, CARDS_CONFIG_NS } from '../i18n.js';
+import { ensureMinUI5Version } from './prerequisites.js';
 
 const DEPENDENCY_NAME = '@sap-ux/cards-editor-middleware';
 const CARDS_GENERATOR_MIDDLEWARE = 'sap-cards-generator';
@@ -123,11 +122,8 @@ export async function enableCardGeneratorConfig(
 ): Promise<Editor> {
     fs = fs ?? create(createStorage());
 
-    // Check minimum UI5 version requirement before proceeding
-    const versionCheckPassed = await checkMinUI5Version(basePath, fs, logger);
-    if (!versionCheckPassed) {
-        throw new Error(t('error.prerequisitesNotMet', { ns: CARDS_CONFIG_NS }));
-    }
+    // asserts minimum UI5 version requirement before proceeding
+    await ensureMinUI5Version(basePath, fs);
 
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
     await updateMiddlewareConfigWithGeneratorPath(fs, basePath, yamlPath, logger);

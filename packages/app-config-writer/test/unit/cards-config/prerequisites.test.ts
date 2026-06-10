@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
 import type { Editor } from 'mem-fs-editor';
-import type { ToolsLogger } from '@sap-ux/logger';
 
 const mockGetMinimumUI5Version = jest.fn();
 const mockGetProjectType = jest.fn();
@@ -17,21 +16,14 @@ jest.unstable_mockModule('../../../src/common/utils.js', () => ({
     readManifest: mockReadManifest
 }));
 
-const { checkMinUI5Version } = await import('../../../src/cards-config/prerequisites.js');
+const { ensureMinUI5Version } = await import('../../../src/cards-config/prerequisites.js');
 
 describe('cards-config/prerequisites', () => {
     let mockFs: Editor;
-    let mockLogger: ToolsLogger;
 
     beforeEach(() => {
         jest.resetAllMocks();
         mockFs = {} as Editor;
-        mockLogger = {
-            debug: jest.fn(),
-            info: jest.fn(),
-            warn: jest.fn(),
-            error: jest.fn()
-        } as unknown as ToolsLogger;
 
         mockReadManifest.mockResolvedValue({
             manifest: {
@@ -54,37 +46,23 @@ describe('cards-config/prerequisites', () => {
             mockGetProjectType.mockResolvedValue('EDMXBackend');
         });
 
-        test('should return true when UI5 version meets minimum requirement (1.136.0)', async () => {
+        test('should not throw when UI5 version meets minimum requirement (1.136.0)', async () => {
             mockGetMinimumUI5Version.mockReturnValue('1.136.0');
 
-            const result = await checkMinUI5Version('/test/path', mockFs, mockLogger);
-
-            expect(result).toBe(true);
-            expect(mockLogger.error).not.toHaveBeenCalled();
+            await expect(ensureMinUI5Version('/test/path', mockFs)).resolves.toBeUndefined();
         });
 
-        test('should return true when UI5 version exceeds minimum requirement', async () => {
+        test('should not throw when UI5 version exceeds minimum requirement', async () => {
             mockGetMinimumUI5Version.mockReturnValue('1.140.0');
 
-            const result = await checkMinUI5Version('/test/path', mockFs, mockLogger);
-
-            expect(result).toBe(true);
-            expect(mockLogger.error).not.toHaveBeenCalled();
+            await expect(ensureMinUI5Version('/test/path', mockFs)).resolves.toBeUndefined();
         });
 
-        test('should return false and log error when UI5 version is below minimum (1.136.0)', async () => {
+        test('should throw error when UI5 version is below minimum (1.136.0)', async () => {
             mockGetMinimumUI5Version.mockReturnValue('1.120.0');
 
-            const result = await checkMinUI5Version('/test/path', mockFs, mockLogger);
-
-            expect(result).toBe(false);
-            expect(mockLogger.error).toHaveBeenCalledWith(
-                expect.stringContaining(
-                    'The card generator is only supported for projects with a minimum SAPUI5 version of 1.136.0 or higher'
-                )
-            );
-            expect(mockLogger.error).toHaveBeenCalledWith(
-                expect.stringContaining('The detected minimum SAPUI5 version is 1.120.0')
+            await expect(ensureMinUI5Version('/test/path', mockFs)).rejects.toThrow(
+                'The card generator is only supported for projects with a minimum SAPUI5 version of 1.136.0 or higher. The detected minimum SAPUI5 version is 1.120.0'
             );
         });
     });
@@ -94,54 +72,31 @@ describe('cards-config/prerequisites', () => {
             mockGetProjectType.mockResolvedValue('CAPNodejs');
         });
 
-        test('should return true when UI5 version meets minimum requirement (1.149.0)', async () => {
+        test('should not throw when UI5 version meets minimum requirement (1.149.0)', async () => {
             mockGetMinimumUI5Version.mockReturnValue('1.149.0');
 
-            const result = await checkMinUI5Version('/test/path', mockFs, mockLogger);
-
-            expect(result).toBe(true);
-            expect(mockLogger.error).not.toHaveBeenCalled();
+            await expect(ensureMinUI5Version('/test/path', mockFs)).resolves.toBeUndefined();
         });
 
-        test('should return true when UI5 version exceeds minimum requirement', async () => {
+        test('should not throw when UI5 version exceeds minimum requirement', async () => {
             mockGetMinimumUI5Version.mockReturnValue('1.150.0');
 
-            const result = await checkMinUI5Version('/test/path', mockFs, mockLogger);
-
-            expect(result).toBe(true);
-            expect(mockLogger.error).not.toHaveBeenCalled();
+            await expect(ensureMinUI5Version('/test/path', mockFs)).resolves.toBeUndefined();
         });
 
-        test('should return false and log error when UI5 version is below minimum (1.149.0)', async () => {
+        test('should throw error when UI5 version is below minimum (1.149.0)', async () => {
             mockGetMinimumUI5Version.mockReturnValue('1.140.0');
 
-            const result = await checkMinUI5Version('/test/path', mockFs, mockLogger);
-
-            expect(result).toBe(false);
-            expect(mockLogger.error).toHaveBeenCalledWith(
-                expect.stringContaining(
-                    'The card generator is only supported for projects with a minimum SAPUI5 version of 1.149.0'
-                )
+            await expect(ensureMinUI5Version('/test/path', mockFs)).rejects.toThrow(
+                'The card generator is only supported for projects with a minimum SAPUI5 version of 1.149.0'
             );
         });
-    });
-
-    test('should work without logger', async () => {
-        mockGetProjectType.mockResolvedValue('EDMXBackend');
-        mockGetMinimumUI5Version.mockReturnValue('1.136.0');
-
-        const result = await checkMinUI5Version('/test/path', mockFs);
-
-        expect(result).toBe(true);
     });
 
     test('should handle missing minUI5Version gracefully', async () => {
         mockGetProjectType.mockResolvedValue('EDMXBackend');
         mockGetMinimumUI5Version.mockReturnValue(undefined);
 
-        const result = await checkMinUI5Version('/test/path', mockFs, mockLogger);
-
-        expect(result).toBe(true);
-        expect(mockLogger.error).not.toHaveBeenCalled();
+        await expect(ensureMinUI5Version('/test/path', mockFs)).resolves.toBeUndefined();
     });
 });

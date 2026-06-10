@@ -5,7 +5,6 @@ import type { PreviewConfigOptions, FioriToolsDeprecatedPreviewConfig } from '..
 import type { Editor } from 'mem-fs-editor';
 import { basename, join } from 'node:path';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { t, NAV_CONFIG_NS } from '../i18n.js';
 /**
  * Type guard to check if the given configuration is a deprecated preview middleware configuration.
  *
@@ -111,11 +110,11 @@ export async function readManifest(appPath: string, fs: Editor): Promise<{ manif
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
 
     if (!manifest) {
-        throw Error(t('error.manifestNotFound', { path: manifestPath, ns: NAV_CONFIG_NS }));
+        throw Error(`The \`manifest.json\` file was not found at path: ${manifestPath}. Check the file exists.`);
     }
 
     if (!manifest['sap.app']) {
-        throw Error(t('error.sapAppNotDefined', { ns: NAV_CONFIG_NS }));
+        throw Error(`The \`manifest.json\` file is missing the \`sap.app\` required section.`);
     }
 
     return {
