@@ -656,9 +656,10 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
 
     // For the full Page template, augment the snippet with all 7 aggregations
     let viewOrFragmentContent = content;
+    const pageData = buildingBlockData as Page;
     const isFullPage =
         buildingBlockData.buildingBlockType === BuildingBlockType.Page &&
-        (buildingBlockData as Page).templateType === PAGE_TEMPLATE_TYPE_FULL;
+        pageData.templateType === PAGE_TEMPLATE_TYPE_FULL;
     if (isFullPage) {
         // Use the real view document for namespace resolution if available, otherwise create a minimal fallback
         const nsDoc =
@@ -671,7 +672,7 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
             `<root xmlns:macros="sap.fe.macros">${content}</root>`,
             'text/xml'
         );
-        appendPageAggregations(fs, nsDoc, snippetDoc, fnGenerateId, buildingBlockData as Page);
+        appendPageAggregations(fs, nsDoc, snippetDoc, fnGenerateId, pageData);
         viewOrFragmentContent = format(new XMLSerializer().serializeToString(snippetDoc.documentElement.firstChild!));
     }
     const filePathProps = getFilePathProps(basePath, viewOrFragmentPath);
