@@ -1,30 +1,9 @@
 import type { FeatureToggle } from './types.js';
 import { extensionConfigKeys, tokenToggleGuid, FeatureToggleKey, ExperimentalFeatures } from './constants.js';
+import { getVSCodeInstance } from './vscode.js';
 
-/**
- * Returns an instance of vscode if available.
- *
- * @returns instance of vscode
- */
-async function getVSCodeInstance(): Promise<any> {
-    let vscode;
-    try {
-        vscode = await import('vscode');
-    } catch {
-        // Vscode not available. Normally in CLI
-    }
-    return vscode;
-}
-
-// Module-level vscode instance cache
-let _vscodeInstance: any = null;
-
-// Initialize vscode instance without top-level await
-// This uses an IIFE to start the async initialization immediately
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-(async () => {
-    _vscodeInstance = await getVSCodeInstance();
-})();
+// Module-level vscode instance cache, resolved synchronously at module evaluation time.
+const _vscodeInstance: any = getVSCodeInstance();
 
 /**
  * Utility class for accessing and managing feature toggles.
