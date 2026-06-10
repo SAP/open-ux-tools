@@ -64,7 +64,7 @@ describe('config', () => {
 
         test('non-ADP project includes LocalStorageConnector', () => {
             const flpConfig = getFlpConfigWithDefaults({});
-            const templateConfig = createFlpTemplateConfig(flpConfig, manifest, {}, false);
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest, {});
             const connectorNames = templateConfig.ui5.flex
                 .filter((c): c is { connector: string; layers: string[] } => 'connector' in c)
                 .map((c) => c.connector);
