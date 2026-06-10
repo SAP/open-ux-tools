@@ -316,7 +316,7 @@ describe('ui5-test-writer', () => {
             );
         });
 
-        describe('standalone mode for existing app (scenarios b, c, d)', () => {
+        describe('standalone mode for existing app', () => {
             let realExistsSync: typeof actualFs.existsSync;
 
             beforeAll(() => {
@@ -330,7 +330,7 @@ describe('ui5-test-writer', () => {
                 addPathsToQUnitJsMock.mockImplementation(actualOpaQUnitUtils.addPathsToQUnitJs);
             });
 
-            // Helper that mocks node:fs.existsSync for the writer's scenario detection.
+            // Helper that mocks node:fs.existsSync for the writer's existing-test-setup detection.
             // Any path NOT under test-output falls through to the real implementation
             // so template files keep resolving.
             function mockProjectExistsSync(flags: {
@@ -364,7 +364,7 @@ describe('ui5-test-writer', () => {
                 });
             }
 
-            describe('scenario b — existing app, no integration folder', () => {
+            describe('existing app with no integration folder', () => {
                 beforeEach(() => {
                     hasVirtualOPA5Mock.mockResolvedValue(false);
                 });
@@ -423,7 +423,7 @@ describe('ui5-test-writer', () => {
                 });
             });
 
-            describe('scenario c — existing app, compatible setup', () => {
+            describe('existing app with compatible test setup (own JourneyRunner.js present)', () => {
                 beforeEach(() => {
                     hasVirtualOPA5Mock.mockResolvedValue(false);
                 });
@@ -476,7 +476,7 @@ describe('ui5-test-writer', () => {
 
                     fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
 
-                    // FirstJourney template must not be rendered in scenario c
+                    // FirstJourney template must not be rendered when a compatible test setup already exists
                     const firstJourneyCalls = copyTplSpy.mock.calls.filter(
                         (call) => typeof call[0] === 'string' && call[0].endsWith('FirstJourney.js')
                     );
@@ -485,7 +485,7 @@ describe('ui5-test-writer', () => {
                 });
             });
 
-            describe('scenario d — existing app, incompatible setup', () => {
+            describe('existing app with incompatible test setup (no own JourneyRunner.js, AllJourneys.json or JourneyRunner reference in opaTests.qunit.js)', () => {
                 const incompatibleMessage =
                     'testsuite.qunit and opaTest.qunit files were not updated due to an incompatible existing test setup.';
 

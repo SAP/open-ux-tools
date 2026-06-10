@@ -17404,7 +17404,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 }
 `;
 
-exports[`ui5-test-writer generateOPAFiles standalone mode for existing app (scenarios b, c, d) virtual OPA5 skips opaTests.qunit.* writes and adds OPA5 framework config in compatible setup 1`] = `
+exports[`ui5-test-writer generateOPAFiles standalone mode for existing app virtual OPA5 skips opaTests.qunit.* writes and adds OPA5 framework config in compatible setup 1`] = `
 Object {
   "package.json": Object {
     "contents": "{
