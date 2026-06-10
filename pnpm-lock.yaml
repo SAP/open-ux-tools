@@ -2760,6 +2760,9 @@ importers:
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)
+      xml-formatter:
+        specifier: 3.7.0
+        version: 3.7.0
       zod:
         specifier: 4.3.6
         version: 4.3.6
