@@ -2,7 +2,7 @@
 
 # [`@sap-ux/ui5-test-writer`](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-test-writer)
 
-OPA files writer for use within Yeoman generator and other prompting libraries. 
+OPA files writer for use within Yeoman generator and other prompting libraries.
 
 
 ## Installation
@@ -17,7 +17,7 @@ Pnpm
 
 ## Usage
 
-2 public methods are available: one to generate all OPA test files for a Fiori elements for OData V4 application, another one to generate an additional page object file for a Fiori elements for OData V4 application.
+The `generateOPAFiles` function creates an OPA5 test suite for a Fiori elements for OData V4 application.
 
 ### Generate all OPA test files for a Fiori elements for OData V4 application
 
@@ -56,25 +56,25 @@ await exampleWriter();
 
 ```
 
-### Generate an additional page object file
+### TypeScript output
 
-Calling the `generatePageObjectFile` function
+Pass `enableTypeScript: true` in the options to generate the OPA test suite as TypeScript instead of JavaScript. The generated files use ES module syntax (`import` / `export default`) instead of AMD `sap.ui.define`, and include typed `Given` / `When` / `Then` parameters in journey functions.
+
 ```javascript
-import { generatePageObjectFile } from '@sap-ux/ui5-test-writer'
+import { generateOPAFiles } from '@sap-ux/ui5-test-writer'
 
-const exampleWriter = async () => {
-    const myProjectPath = 'path/to/my/project'; // Path to the root of the Fiori app
-    const targetKey = 'MyNewPage';  // Key of the target in the app descriptor (in sap.ui5/routing/targets)
-    const fs = await generatePageObjectFile(myProjectPath, { targetKey });
-    return new Promise((resolve) => {
-        fs.commit(resolve); // When using with Yeoman it handle the fs commit.
-    });
-}
-
-// Calling the function
-await exampleWriter();
-
+const fs = await generateOPAFiles(myProjectPath, { enableTypeScript: true });
 ```
+
+What changes in the generated output:
+
+- Page objects, journeys, and `JourneyRunner` are emitted as `.ts` files.
+- A `webapp/test/integration/types/OpaJourneyTypes.d.ts` file is generated with `Given` / `When` / `Then` definitions tailored to the app's pages.
+- The QUnit bootstrap (`opaTests.qunit.js`) and the HTML harness stay as `.js` / `.html` (they are loaded directly by the browser).
+
+When run in standalone mode against an existing project, `enableTypeScript` is auto-detected from the presence of a `tsconfig.json`. An explicit value passed in the options always takes precedence.
+
+Scope: TypeScript output is currently supported for List Report and Object Page templates.
 
 ## Keywords
 SAP Fiori Elements
