@@ -2,4 +2,4 @@
 '@sap-ux/fiori-mcp-server': patch
 ---
 
-FEAT: update visual filter skill
+FEAT: update visual filter skill with ABAP RAP support.

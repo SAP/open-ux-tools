@@ -4,7 +4,7 @@ description: Add visual filters (chart-based) to SAP Fiori Elements filter bar/v
 argument-hint: field name (e.g., Category, Status)
 metadata:
   author: sap-fiori-tools
-  version: "0.0.5"
+  version: "0.0.4"
 ---
 
 # SAP Fiori Visual Filter
@@ -61,6 +61,13 @@ UI.Chart #visualFilter : {
 ```
 
 ✅ Uses **DynamicMeasures**
+
+### PresentationVariant
+```cds
+UI.PresentationVariant #visualFilter: {
+  Visualizations: ['@UI.Chart#visualFilter']
+}
+```
 
 ### ValueList (on Dimension Field)
 ```cds
@@ -122,6 +129,19 @@ define root view entity ZC_ENTITY
 
 ✅ Uses **Measures (not DynamicMeasures)**  
 ❌ Metadata is **read-only**
+
+### PresentationVariant Annotation
+```xml
+<Annotation Term="UI.PresentationVariant" Qualifier="visualFilter">
+  <Record Type="UI.PresentationVariantType">
+    <PropertyValue Property="Visualizations">
+      <Collection>
+        <AnnotationPath>@UI.Chart#visualFilter</AnnotationPath>
+      </Collection>
+    </PropertyValue>
+  </Record>
+</Annotation>
+```
 
 ### ValueList Annotation
 ```xml
@@ -187,7 +207,7 @@ npm run start-mock # Needs metadata refresh
 
 npm start          # No refresh needed - fetches metadata from live backend at runtime
 ```
-- Consult fiori mcp server if available on how to refresh metadata for backend systems in case of RAP
+- Consult fiori mcp server if available on how to refresh metadata for sap/cloud systems in case of RAP
 
 ---
 
