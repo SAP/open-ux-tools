@@ -219,6 +219,15 @@ exports[`UI5Config addBackendToFioriToolsProxyMiddleware should add comments wit
 "
 `;
 
+exports[`UI5Config addBuilderResourceExcludes adds both default excludes to empty config 1`] = `
+"builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+"
+`;
+
 exports[`UI5Config addCloudFoundryDeployTask add modules task 1`] = `
 "builder:
   resources:
