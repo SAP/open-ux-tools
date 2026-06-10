@@ -1,5 +1,28 @@
 # @sap-ux/fiori-generator-shared
 
+## 1.0.8
+
+### Patch Changes
+
+- Updated dependencies [0fa8305]
+    - @sap-ux/btp-utils@2.0.2
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/telemetry@1.0.7
+
+## 1.0.7
+
+### Patch Changes
+
+- a328e14: refactor: move restoreServiceProviderLoggers to @sap-ux/fiori-generator-shared
+
+## 1.0.6
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+    - @sap-ux/telemetry@1.0.6
+
 ## 1.0.5
 
 ### Patch Changes

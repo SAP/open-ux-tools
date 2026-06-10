@@ -74,7 +74,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
         DotGitIgnore: '.gitignore',
         MtaExtYaml: 'mta-ext.mtaext'
     },
-    MinCdsPluginUi5Version: '0.13.0',
+    MinCdsPluginUi5Version: '0.17.0',
     MinCdsVersion: '6.8.2',
     getCapCustomPaths: mockGetCapCustomPaths,
     getWebappPath: mockGetWebappPath,
