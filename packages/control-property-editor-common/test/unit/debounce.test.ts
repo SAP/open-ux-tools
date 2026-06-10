@@ -1,4 +1,4 @@
-import { debounce } from '../../src/debounce';
+import { debounce } from '../../src/debounce.js';
 
 describe('debounce', () => {
     beforeAll(() => {

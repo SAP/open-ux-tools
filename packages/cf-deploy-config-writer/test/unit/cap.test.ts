@@ -20,7 +20,7 @@ jest.unstable_mockModule('hasbin', () => ({
     sync: jest.fn()
 }));
 
-const { MockMta } = await import('./mockMta');
+const { MockMta } = await import('./mockMta.js');
 jest.unstable_mockModule('@sap/mta-lib', () => ({
     Mta: MockMta
 }));
@@ -36,8 +36,8 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 const hasbin = await import('hasbin');
 const btpUtils = await import('@sap-ux/btp-utils');
 const projectAccess = await import('@sap-ux/project-access');
-const { generateAppConfig } = await import('../../src');
-const { DefaultMTADestination, MTABinNotFound } = await import('../../src/constants');
+const { generateAppConfig } = await import('../../src/index.js');
+const { DefaultMTADestination, MTABinNotFound } = await import('../../src/constants.js');
 const { CommandRunner } = await import('@sap-ux/nodejs-utils');
 
 const isAppStudioMock = btpUtils.isAppStudio as jest.Mock;

@@ -85,12 +85,12 @@ jest.unstable_mockModule('yeoman-test/lib/adapter', async () => {
 
 // Dynamic imports after mocks
 const yeomanTest = await import('yeoman-test');
-const { default: ReuseLibGen } = await import('../../src/app');
+const { default: ReuseLibGen } = await import('../../src/app/index.js');
 const { CommandRunner } = await import('@sap-ux/nodejs-utils');
 
 // Import the real generate function from source path to bypass the jest mock
 // Jest's module mock only applies to the package name, not direct source imports
-const { generate: realGenerate } = await import('../../../ui5-library-writer/src/index');
+const { generate: realGenerate } = await import('../../../ui5-library-writer/src/index.js');
 
 // Default mockGenerate to call the real implementation
 mockGenerate.mockImplementation(realGenerate);

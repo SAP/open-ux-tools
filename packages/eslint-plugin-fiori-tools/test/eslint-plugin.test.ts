@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { writeFileSync, mkdirSync, rmSync } from 'node:fs';
 // Import the plugin to use it directly
-import * as plugin from '../src/index';
+import * as plugin from '../src/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

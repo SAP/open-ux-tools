@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-cross-application-navigation';
+import rule from '../../src/rules/sap-cross-application-navigation.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

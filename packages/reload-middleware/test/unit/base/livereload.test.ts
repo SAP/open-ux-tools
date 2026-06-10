@@ -4,11 +4,11 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Mock functions
-const mockConnectLivereload = jest.fn();
-const mockIsAppStudio = jest.fn();
-const mockExposePort = jest.fn();
-const mockCreateServer = jest.fn();
-const mockGetPort = jest.fn();
+const mockConnectLivereload = jest.fn() as jest.Mock;
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockExposePort = jest.fn<typeof realBtpUtils.exposePort>();
+const mockCreateServer = jest.fn() as jest.Mock;
+const mockGetPort = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('connect-livereload', () => ({
     default: mockConnectLivereload
@@ -45,7 +45,7 @@ describe('Livereload', () => {
                 config: { port: 35729 }
             };
         });
-        mockGetPort.mockImplementation((options: any, callback: any) => {
+        mockGetPort.mockImplementation((options, callback) => {
             callback(null, options.port);
         });
     });
@@ -139,7 +139,7 @@ describe('adp backend sync', () => {
                 config: { port: 35729 }
             };
         });
-        mockGetPort.mockImplementation((options: any, callback: any) => {
+        mockGetPort.mockImplementation((options, callback) => {
             callback(null, options.port);
         });
     });

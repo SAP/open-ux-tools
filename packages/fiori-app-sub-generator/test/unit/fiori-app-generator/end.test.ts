@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import type { BackendSystem } from '@sap-ux/store';
-import { PLATFORMS, ApiHubType, EventName, State } from '../../../src/types';
+import { PLATFORMS, ApiHubType, EventName, State } from '../../../src/types/index.js';
 import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { CapService } from '@sap-ux/odata-service-inquirer';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
@@ -11,18 +11,18 @@ import { MessageType } from '@sap-devx/yeoman-ui-types';
 import { join } from 'node:path';
 
 // Pre-import actual modules
-const actualUtils = await import('../../../src/utils');
+const actualUtils = await import('../../../src/utils/index.js');
 const actualStore = await import('@sap-ux/store');
 const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
 
-const mockGenerateLaunchConfig = jest.fn();
-const mockRunHooks = jest.fn();
+const mockGenerateLaunchConfig = jest.fn<typeof actualUtils.generateLaunchConfig>();
+const mockRunHooks = jest.fn<typeof actualUtils.runHooks>();
 const storeServiceWriteMock = jest.fn().mockResolvedValue({});
 const mockGetService = jest.fn().mockImplementation(() => ({
     write: storeServiceWriteMock
 }));
-const mockSendTelemetry = jest.fn();
-const mockGetHostEnvironment = jest.fn();
+const mockSendTelemetry = jest.fn<typeof actualFioriGenShared.sendTelemetry>();
+const mockGetHostEnvironment = jest.fn<typeof actualFioriGenShared.getHostEnvironment>();
 
 jest.unstable_mockModule('../../../src/utils', () => ({
     ...actualUtils,
@@ -45,8 +45,8 @@ jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     getHostEnvironment: mockGetHostEnvironment
 }));
 
-const { runPostGenerationTasks } = await import('../../../src/fiori-app-generator/end');
-const { t } = await import('../../../src/utils');
+const { runPostGenerationTasks } = await import('../../../src/fiori-app-generator/end.js');
+const { t } = await import('../../../src/utils/index.js');
 const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 
 describe('runPostGenerationTasks', () => {

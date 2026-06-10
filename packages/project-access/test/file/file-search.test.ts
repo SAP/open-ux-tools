@@ -1,7 +1,7 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { getFilePaths } from '../../src';
-import { findBy, findFiles, findFilesByExtension, findFileUp } from '../../src/file';
+import { getFilePaths } from '../../src/index.js';
+import { findBy, findFiles, findFilesByExtension, findFileUp } from '../../src/file/index.js';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 

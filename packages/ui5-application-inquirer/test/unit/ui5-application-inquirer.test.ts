@@ -5,11 +5,11 @@ import * as actualFs from 'node:fs';
 import * as actualProjectAccess from '@sap-ux/project-access';
 
 import type { UI5Version, UI5VersionFilterOptions } from '@sap-ux/ui5-info';
-import type { InquirerAdapter, UI5ApplicationAnswers, UI5ApplicationPromptOptions } from '../../src';
+import type { InquirerAdapter, UI5ApplicationAnswers, UI5ApplicationPromptOptions } from '../../src/index.js';
 import { gte, lt } from 'semver';
 
 // Mock node:fs to control existsSync
-const mockExistsSync = jest.fn();
+const mockExistsSync = jest.fn<typeof actualFs.existsSync>();
 jest.unstable_mockModule('node:fs', () => ({
     ...actualFs,
     existsSync: mockExistsSync
@@ -31,7 +31,7 @@ jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
 }));
 
 // Mock inquirer for createPromptModule (CJS module)
-const mockRegisterPrompt = jest.fn();
+const mockRegisterPrompt = jest.fn() as jest.Mock;
 const mockCreatePromptModule = jest.fn().mockReturnValue({
     registerPrompt: mockRegisterPrompt
 });

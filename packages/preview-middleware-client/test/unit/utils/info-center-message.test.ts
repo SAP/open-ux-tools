@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
 import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 
@@ -6,7 +7,7 @@ jest.unstable_mockModule('open/ux/preview/client/i18n', () => ({
         Promise.resolve({
             getText: jest
                 .fn()
-                .mockImplementation((key: string, params: string[] | undefined) =>
+                .mockImplementation((key, params) =>
                     Array.isArray(params) ? `${key} - ${params.join(', ')}` : key
                 )
         })

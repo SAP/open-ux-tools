@@ -1,5 +1,17 @@
 # @sap-ux/control-property-editor
 
+## 1.0.4
+
+### Patch Changes
+
+- bcfe9e3: Fix: Inconsistent property naming between RTA and CPE
+
+## 1.0.3
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+
 ## 1.0.2
 
 ### Patch Changes

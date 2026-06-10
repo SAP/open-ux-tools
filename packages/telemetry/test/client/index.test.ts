@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { Client } from '../../src/base/client/client';
+import type { Client } from '../../src/base/client/client.js';
 
 const spyTrackEvent = jest.fn();
 
@@ -25,8 +25,8 @@ jest.unstable_mockModule('applicationinsights', () => {
     return { TelemetryClient };
 });
 
-const { ClientFactory } = await import('../../src/base/client');
-const { TelemetrySettings } = await import('../../src/base/config-state');
+const { ClientFactory } = await import('../../src/base/client/index.js');
+const { TelemetrySettings } = await import('../../src/base/config-state.js');
 
 describe('ClientFactory Tests', () => {
     test('Test function getTelemetryClient()', () => {

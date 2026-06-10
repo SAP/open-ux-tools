@@ -1,5 +1,52 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.6.1
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@1.0.6
+
+## 10.6.0
+
+### Minor Changes
+
+- 409ad75: FEAT: Add support to lint .change files. Enable table paste and export rules for ODataV2 tables.
+
+## 10.5.4
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+    - @sap-ux/fiori-annotation-api@1.0.5
+
+## 10.5.3
+
+### Patch Changes
+
+- Updated dependencies [b326a9a]
+    - @sap-ux/project-access@2.1.0
+    - @sap-ux/fiori-annotation-api@1.0.4
+
+## 10.5.2
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/odata-annotation-core@1.0.1
+    - @sap-ux/fiori-annotation-api@1.0.3
+    - @sap-ux/odata-entity-model@1.0.1
+    - @sap-ux/odata-vocabularies@1.0.1
+    - @sap-ux/project-access@2.0.3
+
+## 10.5.1
+
+### Patch Changes
+
+- @sap-ux/project-access@2.0.2
+- @sap-ux/fiori-annotation-api@1.0.2
+
 ## 10.5.0
 
 ### Minor Changes

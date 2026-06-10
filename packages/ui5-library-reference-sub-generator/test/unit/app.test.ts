@@ -19,7 +19,7 @@ const actualUi5LibRefWriter = await import('@sap-ux/ui5-library-reference-writer
 const actualUi5LibRefInquirer = await import('@sap-ux/ui5-library-reference-inquirer');
 
 // Mock functions
-const mockSendTelemetry = jest.fn();
+const mockSendTelemetry = jest.fn<typeof actualFioriGenShared.sendTelemetry>();
 const mockIsExtensionInstalled = jest.fn().mockReturnValue(true);
 const mockGenerate = jest.fn<(...args: any[]) => Promise<any>>().mockImplementation(actualUi5LibRefWriter.generate);
 const mockPrompt = jest
@@ -65,10 +65,10 @@ jest.unstable_mockModule('yeoman-test/lib/adapter', () => {
 });
 
 const yeomanTest = (await import('yeoman-test')).default;
-const RefLibGenerator = (await import('../../src/app')).default;
-const { reuseLibs } = await import('./util/constants');
-const { EventName } = await import('../../src/telemetryEvents');
-const { t } = await import('../../src/utils/i18n');
+const RefLibGenerator = (await import('../../src/app/index.js')).default;
+const { reuseLibs } = await import('./util/constants.js');
+const { EventName } = await import('../../src/telemetryEvents/index.js');
+const { t } = await import('../../src/utils/i18n.js');
 
 afterAll(() => {
     process.chdir(originalCwd); // Generation changes the cwd, this breaks sonar report so we restore later

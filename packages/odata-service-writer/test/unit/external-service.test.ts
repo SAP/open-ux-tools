@@ -11,8 +11,8 @@ import { create as createStorage } from 'mem-fs';
 import type { RawMetadata } from '@sap-ux/vocabularies-types';
 import { parse } from '@sap-ux/edmx-parser';
 
-import { getExternalServiceReferences, writeExternalServiceMetadata } from '../../src/data/external-services';
-import { OdataVersion } from '../../src';
+import { getExternalServiceReferences, writeExternalServiceMetadata } from '../../src/data/external-services.js';
+import { OdataVersion } from '../../src/index.js';
 
 async function readEdmxFile(filePath: string): Promise<RawMetadata> {
     const text = await readFile(filePath, 'utf-8');

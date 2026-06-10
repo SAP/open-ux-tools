@@ -1,4 +1,4 @@
-import { getError } from '../../../src/utils/error';
+import { getError } from '../../../src/utils/error.js';
 
 describe('utils/error', () => {
     test('getError with Error', async () => {

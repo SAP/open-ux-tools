@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import ObjectStorageConnector from 'mock/sap/ui/fl/write/api/connectors/ObjectStorageConnector';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { documentMock, fetchMock } from 'mock/window';
@@ -52,7 +53,7 @@ describe('flp/WorkspaceConnector', () => {
             const mockBaseUrl = '/test.base.url';
 
             // Mock BEFORE isolating modules
-            documentMock.getElementById.mockImplementation((id: string) => {
+            documentMock.getElementById.mockImplementation((id) => {
                 if (id === 'sap-ui-bootstrap') {
                     return {
                         dataset: {

@@ -3,13 +3,13 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { generateCustomView } from '../../src';
-import type { CustomView } from '../../src/view/types';
+import { generateCustomView } from '../../src/index.js';
+import type { CustomView } from '../../src/view/types.js';
 import manifest from './sample/view/webapp/manifest.json';
-import type { Views, EventHandlerConfiguration } from '../../src/common/types';
+import type { Views, EventHandlerConfiguration } from '../../src/common/types.js';
 import type { Manifest } from '@sap-ux/project-access';
-import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
-import { getEndOfLinesLength, tabSizingTestCases } from '../common';
+import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file.js';
+import { getEndOfLinesLength, tabSizingTestCases } from '../common/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

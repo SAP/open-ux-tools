@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-const mockReadFileSync = jest.fn();
+const mockReadFileSync = jest.fn<typeof realFs.readFileSync>();
 
 const realFs = await import('node:fs');
 jest.unstable_mockModule('node:fs', () => ({
@@ -10,7 +10,7 @@ jest.unstable_mockModule('node:fs', () => ({
     readFileSync: mockReadFileSync
 }));
 
-const { setHeaderTitle } = await import('../../../src/utils/opts');
+const { setHeaderTitle } = await import('../../../src/utils/opts.js');
 
 const mockPackage = { name: '@sap-ux/generator-adp', version: '0.0.1', displayName: 'SAPUI5 Adaptation Project' };
 

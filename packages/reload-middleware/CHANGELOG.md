@@ -1,5 +1,21 @@
 # @sap-ux/reload-middleware
 
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies [0fa8305]
+    - @sap-ux/btp-utils@2.0.2
+
+## 1.0.1
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/btp-utils@2.0.1
+    - @sap-ux/logger@1.0.1
+
 ## 1.0.0
 
 ### Major Changes

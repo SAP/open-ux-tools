@@ -9,8 +9,8 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
 // Mock functions
-const mockApplyCAPUpdates = jest.fn();
-const mockGenerateAnnotations = jest.fn();
+const mockApplyCAPUpdates = jest.fn() as jest.Mock;
+const mockGenerateAnnotations = jest.fn() as jest.Mock;
 
 // Mock read-pkg-up
 jest.unstable_mockModule('read-pkg-up', () => ({

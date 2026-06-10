@@ -4,13 +4,13 @@ import type { ListQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
-const mockShowPackageInputChoiceQuestion = jest.fn();
-const mockDefaultOrShowManualPackageQuestion = jest.fn();
-const mockDefaultOrShowSearchPackageQuestion = jest.fn();
-const mockValidatePackageChoiceInput = jest.fn();
-const mockValidatePackageChoiceInputForCli = jest.fn();
-const mockValidatePackage = jest.fn();
-const mockGetPackageChoices = jest.fn();
+const mockShowPackageInputChoiceQuestion = jest.fn<typeof actualConditions.showPackageInputChoiceQuestion>();
+const mockDefaultOrShowManualPackageQuestion = jest.fn<typeof actualConditions.defaultOrShowManualPackageQuestion>();
+const mockDefaultOrShowSearchPackageQuestion = jest.fn<typeof actualConditions.defaultOrShowSearchPackageQuestion>();
+const mockValidatePackageChoiceInput = jest.fn<typeof actualValidators.validatePackageChoiceInput>();
+const mockValidatePackageChoiceInputForCli = jest.fn<typeof actualValidators.validatePackageChoiceInputForCli>();
+const mockValidatePackage = jest.fn<typeof actualValidators.validatePackage>();
+const mockGetPackageChoices = jest.fn<typeof actualHelpers.getPackageChoices>();
 
 const actualConditions = await import('../../../../src/prompts/conditions.js');
 const actualValidators = await import('../../../../src/prompts/validators.js');
