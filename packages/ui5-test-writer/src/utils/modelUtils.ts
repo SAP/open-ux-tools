@@ -2,19 +2,19 @@ import type { Editor } from 'mem-fs-editor';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Manifest } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
-import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page';
-import type { ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src';
-import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
+import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/index.js';
+import type { ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src/index.js';
+import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
 import type {
     TreeAggregation,
     TreeAggregations,
     TreeModel,
     ApplicationModel
-} from '@sap/ux-specification/dist/types/src/parser';
-import type { AppFeatures, FPMFeatures } from '../types';
-import { getObjectPageFeatures, getObjectPages } from './objectPageUtils';
-import { getFilterFieldNames, getListReportFeatures } from './listReportUtils';
-import { extractTableColumnsFromNode } from './tableUtils';
+} from '@sap/ux-specification/dist/types/src/parser/index.js';
+import type { AppFeatures, FPMFeatures } from '../types.js';
+import { getObjectPageFeatures, getObjectPages } from './objectPageUtils.js';
+import { getFilterFieldNames, getListReportFeatures } from './listReportUtils.js';
+import { extractTableColumnsFromNode } from './tableUtils.js';
 
 export interface AggregationItem extends TreeAggregation {
     description: string;
@@ -116,7 +116,12 @@ export async function getAppFeatures(
         }
         if (objectPages) {
             log?.warn('Extracting Object Page features from application model');
-            featureData.objectPages = await getObjectPageFeatures(objectPages, listReportPage?.name, log);
+            featureData.objectPages = await getObjectPageFeatures(
+                objectPages,
+                listReportPage?.name,
+                log,
+                projectMetadata
+            );
             log?.warn('objectPages features extracted: ' + JSON.stringify(featureData.objectPages));
         }
         if (fpmPage) {

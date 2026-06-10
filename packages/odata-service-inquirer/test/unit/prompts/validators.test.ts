@@ -1,6 +1,6 @@
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { validateODataVersion } from '../../../src/prompts/validators';
-import { initI18nOdataServiceInquirer } from '../../../src/i18n';
+import { validateODataVersion } from '../../../src/prompts/validators.js';
+import { initI18nOdataServiceInquirer } from '../../../src/i18n.js';
 
 const validMetadataV2 =
     '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">' +

@@ -2,11 +2,11 @@ import { join, basename } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { getPreviewMiddleware, getIntentFromPreviewConfig, getCLIForPreview } from '../common/utils';
+import { getPreviewMiddleware, getIntentFromPreviewConfig, getCLIForPreview } from '../common/utils.js';
 import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName, type Package, readUi5Yaml } from '@sap-ux/project-access';
-import { updateMiddlewaresForPreview } from '../common/ui5-yaml';
+import { updateMiddlewaresForPreview } from '../common/ui5-yaml.js';
 
 const DEPENDENCY_NAME = '@sap-ux/cards-editor-middleware';
 const CARDS_GENERATOR_MIDDLEWARE = 'sap-cards-generator';

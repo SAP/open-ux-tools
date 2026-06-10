@@ -1,5 +1,5 @@
-import generateFioriUiApplication from '../../../../../src/tools/functionalities/generate-fiori-ui-application';
-import details from '../../../../../src/tools/functionalities/generate-fiori-ui-application/details';
+import generateFioriUiApplication from '../../../../../src/tools/functionalities/generate-fiori-ui-application/index.js';
+import details from '../../../../../src/tools/functionalities/generate-fiori-ui-application/details.js';
 
 describe('generate-fiori-ui-application index', () => {
     test('should export functionality with correct structure', () => {

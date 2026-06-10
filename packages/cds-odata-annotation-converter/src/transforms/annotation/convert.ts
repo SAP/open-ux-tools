@@ -1,10 +1,10 @@
 import type { Assignment } from '@sap-ux/cds-annotation-parser';
 import type { ExtendedDiagnostic, Element, PositionPointer, Range } from '@sap-ux/odata-annotation-core-types';
 
-import { VisitorState } from './visitor-state';
-import { visitor } from './visitor';
-import type { ToTermsOptions } from '../types';
-import { findNode } from './find-node';
+import { VisitorState } from './visitor-state.js';
+import { visitor } from './visitor.js';
+import type { ToTermsOptions } from '../types.js';
+import { findNode } from './find-node.js';
 
 export interface AnnotationConversionResult {
     terms: Element[];

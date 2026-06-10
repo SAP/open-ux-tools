@@ -1,32 +1,40 @@
+import { jest } from '@jest/globals';
 import net from 'node:net';
 import { EventEmitter } from 'node:events';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-import { ensureTunnelAppExists, enableSshAndRestart } from '@sap-ux/adp-tooling';
-import { spawn } from 'node:child_process';
+import type { ConnectivityProxyInfo, EffectiveOptions } from '../../../src/types.js';
 
-import type { ConnectivityProxyInfo, EffectiveOptions } from '../../../src/types';
-import { startSshTunnelIfNeeded, setupSshTunnel } from '../../../src/tunnel/tunnel';
-import { hasOnPremiseDestination } from '../../../src/tunnel/destination-check';
+const mockIsAppStudio = jest.fn().mockReturnValue(false);
 
-jest.mock('node:child_process', () => ({
-    spawn: jest.fn()
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
 }));
 
-jest.mock('@sap-ux/adp-tooling', () => ({
-    ensureTunnelAppExists: jest.fn(),
-    enableSshAndRestart: jest.fn(),
+const mockEnsureTunnelAppExists = jest.fn() as jest.Mock;
+const mockEnableSshAndRestart = jest.fn() as jest.Mock;
+
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    ensureTunnelAppExists: mockEnsureTunnelAppExists,
+    enableSshAndRestart: mockEnableSshAndRestart,
     DEFAULT_TUNNEL_APP_NAME: 'adp-ssh-tunnel-app'
 }));
 
-jest.mock('../../../src/tunnel/destination-check', () => ({
-    hasOnPremiseDestination: jest.fn()
+const mockHasOnPremiseDestination = jest.fn() as jest.Mock;
+
+jest.unstable_mockModule('../../../src/tunnel/destination-check', () => ({
+    hasOnPremiseDestination: mockHasOnPremiseDestination
 }));
 
-const mockSpawn = spawn as jest.Mock;
-const mockEnsureTunnel = ensureTunnelAppExists as jest.Mock;
-const mockEnableSsh = enableSshAndRestart as jest.Mock;
-const mockHasOnPremise = hasOnPremiseDestination as jest.Mock;
+const mockSpawn = jest.fn() as jest.Mock;
+
+jest.unstable_mockModule('node:child_process', () => ({
+    spawn: mockSpawn
+}));
+
+const { startSshTunnelIfNeeded, setupSshTunnel } = await import('../../../src/tunnel/tunnel.js');
 
 function createMockChildProcess(): EventEmitter & { killed: boolean; kill: jest.Mock; stderr: EventEmitter } {
     const child = new EventEmitter() as EventEmitter & { killed: boolean; kill: jest.Mock; stderr: EventEmitter };
@@ -87,10 +95,10 @@ describe('tunnel', () => {
 
     const connectivityInfo: ConnectivityProxyInfo = { host: 'localhost', port: 20003 };
 
-    let processOnSpy: jest.SpyInstance;
-    let processOnceSpy: jest.SpyInstance;
-    let createServerSpy: jest.SpyInstance;
-    let connectSpy: jest.SpyInstance;
+    let processOnSpy: jest.SpiedFunction<typeof process.on>;
+    let processOnceSpy: jest.SpiedFunction<typeof process.once>;
+    let createServerSpy: jest.SpiedFunction<typeof net.createServer>;
+    let connectSpy: jest.SpiedFunction<typeof net.connect>;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -133,11 +141,11 @@ describe('tunnel', () => {
             mockNetPortAvailableAndReady();
             const child = createMockChildProcess();
             mockSpawn.mockReturnValue(child);
-            mockEnableSsh.mockResolvedValue(undefined);
+            mockEnableSshAndRestart.mockResolvedValue(undefined);
 
             const result = await startSshTunnelIfNeeded(connectivityInfo, 'tunnel-app', logger);
 
-            expect(mockEnableSsh).toHaveBeenCalledWith('tunnel-app', logger);
+            expect(mockEnableSshAndRestart).toHaveBeenCalledWith('tunnel-app', logger);
             expect(result).toBe(child);
         });
 
@@ -148,7 +156,7 @@ describe('tunnel', () => {
 
             await startSshTunnelIfNeeded(connectivityInfo, 'tunnel-app', logger, { skipSshEnable: true });
 
-            expect(mockEnableSsh).not.toHaveBeenCalled();
+            expect(mockEnableSshAndRestart).not.toHaveBeenCalled();
         });
 
         test('should spawn cf ssh with correct arguments', async () => {
@@ -205,7 +213,7 @@ describe('tunnel', () => {
         });
 
         test('should return undefined and log warning on error', async () => {
-            mockEnableSsh.mockRejectedValue(new Error('SSH enable failed'));
+            mockEnableSshAndRestart.mockRejectedValue(new Error('SSH enable failed'));
 
             const result = await startSshTunnelIfNeeded(connectivityInfo, 'tunnel-app', logger);
 
@@ -227,31 +235,33 @@ describe('tunnel', () => {
         } as unknown as EffectiveOptions;
 
         test('should skip when no OnPremise destination found', async () => {
-            mockHasOnPremise.mockResolvedValue(false);
+            mockHasOnPremiseDestination.mockResolvedValue(false);
 
             await setupSshTunnel('/root', connectivityInfo, effectiveOptions, logger);
 
-            expect(mockEnsureTunnel).not.toHaveBeenCalled();
+            expect(mockEnsureTunnelAppExists).not.toHaveBeenCalled();
             expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('No OnPremise destination'));
         });
 
         test('should deploy tunnel app and start tunnel when OnPremise found', async () => {
-            mockHasOnPremise.mockResolvedValue(true);
-            mockEnsureTunnel.mockResolvedValue(undefined);
+            mockHasOnPremiseDestination.mockResolvedValue(true);
+            mockEnsureTunnelAppExists.mockResolvedValue(undefined);
+            mockIsAppStudio.mockReturnValue(true);
 
             await setupSshTunnel('/root', connectivityInfo, effectiveOptions, logger);
 
-            expect(mockEnsureTunnel).toHaveBeenCalledWith('adp-ssh-tunnel-app', logger);
+            expect(mockEnsureTunnelAppExists).toHaveBeenCalledWith('adp-ssh-tunnel-app', logger);
         });
 
         test('should use custom tunnelAppName from options', async () => {
-            mockHasOnPremise.mockResolvedValue(true);
-            mockEnsureTunnel.mockResolvedValue(undefined);
+            mockHasOnPremiseDestination.mockResolvedValue(true);
+            mockEnsureTunnelAppExists.mockResolvedValue(undefined);
+            mockIsAppStudio.mockReturnValue(true);
 
             const opts = { ...effectiveOptions, tunnelAppName: 'custom-app' } as unknown as EffectiveOptions;
             await setupSshTunnel('/root', connectivityInfo, opts, logger);
 
-            expect(mockEnsureTunnel).toHaveBeenCalledWith('custom-app', logger);
+            expect(mockEnsureTunnelAppExists).toHaveBeenCalledWith('custom-app', logger);
         });
     });
 });

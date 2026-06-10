@@ -1,4 +1,4 @@
-import { extractMessage } from '../../src/matchers/utils';
+import { extractMessage } from '../../src/matchers/utils.js';
 
 describe('extractMessage function', () => {
     it('should add message to messages array if getMessage function returns a message', () => {

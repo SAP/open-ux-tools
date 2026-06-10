@@ -1,7 +1,7 @@
 import { ENTITY_TYPE_KIND, PROPERTY_KIND, COLLECTION_KIND, ENTITY_SET_KIND } from '@sap-ux/odata-annotation-core-types';
 import type { AliasInformation } from '@sap-ux/odata-annotation-core-types';
-import { TermApplicability } from '../src/types/vocabulary-service';
-import { VocabularyService } from '../src/vocabulary-service';
+import { TermApplicability } from '../src/types/vocabulary-service.js';
+import { VocabularyService } from '../src/vocabulary-service.js';
 declare const expect: jest.Expect;
 
 const vocabularyService = new VocabularyService();

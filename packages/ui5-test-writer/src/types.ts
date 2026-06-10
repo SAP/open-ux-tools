@@ -125,6 +125,9 @@ export type BodySectionFeatureData = {
     fields: SectionFormField[];
     tableColumns: TableColumnFeatureData;
     subSections: BodySubSectionFeatureData[];
+    actions?: ActionButtonState[];
+    createButton?: ButtonState;
+    deleteButton?: ButtonState;
 };
 
 export type ObjectPageFeatures = {
@@ -134,6 +137,8 @@ export type ObjectPageFeatures = {
     headerDescription?: string;
     headerSections?: HeaderSectionFeatureData[];
     bodySections?: BodySectionFeatureData[];
+    headerActions?: ActionButtonState[];
+    editButton?: ButtonState;
 };
 
 export type ListReportFeatures = {
@@ -145,17 +150,25 @@ export type ListReportFeatures = {
     };
     deleteButton?: {
         enabled?: boolean | string;
-        visible: boolean;
+        visible?: boolean;
         dynamicPath?: string;
     };
     filterBarItems?: string[];
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
     toolBarActions?: ActionButtonState[];
     isALP?: boolean;
+    semanticKey?: {
+        semanticKeyProperties?: string[];
+        missingFromFilterBar?: string[];
+    };
 };
 
 export interface ActionButtonState {
     label: string;
+    /**
+     * For List Report actions: the full OData binding path (e.g. "namespace.ActionName(entityType=@odata.context)").
+     * For Object Page actions extracted from the spec model: the method name only (e.g. "Copy").
+     */
     action: string;
     visible: boolean;
     /**
@@ -174,6 +187,16 @@ export interface ActionButtonState {
      * The invocation grouping type if specified (e.g., "Isolated", "ChangeSet").
      */
     invocationGrouping?: string;
+    /**
+     * OData schema namespace used as the `service` parameter in iCheckAction({ service, action, unbound }).
+     * Populated for Object Page actions extracted via the spec model + metadata.
+     */
+    service?: string;
+    /**
+     * Whether the action is unbound (not bound to a specific entity instance).
+     * Populated for Object Page actions extracted via the spec model + metadata.
+     */
+    unbound?: boolean;
 }
 
 export type FPMFeatures = {

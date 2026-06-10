@@ -5,7 +5,7 @@
  */
 
 import type { Rule, SourceCode } from 'eslint';
-import { contains } from '../utils/helpers';
+import { contains } from '../utils/helpers.js';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement

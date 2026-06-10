@@ -5,7 +5,7 @@ export {
     initProject,
     isProjectIntegrityEnabled,
     updateProjectIntegrity
-} from './integrity';
+} from './integrity/index.js';
 export {
     checkFioriProjectIntegrity,
     disableFioriProjectIntegrity,
@@ -14,4 +14,4 @@ export {
     isFioriProjectIntegrityEnabled,
     isFioriProjectIntegrityInitialized,
     updateFioriProjectIntegrity
-} from './fiori-project';
+} from './fiori-project/index.js';

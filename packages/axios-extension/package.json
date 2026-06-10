@@ -1,7 +1,8 @@
 {
     "name": "@sap-ux/axios-extension",
-    "version": "1.26.0",
+    "version": "2.0.2",
     "description": "Extension of the Axios module adding convenience methods to interact with SAP systems especially with OData services.",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -20,8 +21,8 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
@@ -34,7 +35,7 @@
         "fast-xml-parser": "5.8.0",
         "lodash": "4.18.1",
         "open": "8.4.2",
-        "qs": "6.15.0",
+        "qs": "6.15.2",
         "xpath": "0.0.34",
         "@xmldom/xmldom": "0.8.13",
         "https-proxy-agent": "7.0.6",
@@ -42,6 +43,7 @@
         "proxy-from-env": "1.1.0"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@sap-ux/vocabularies-types": "0.15.0",
         "@sap-ux/project-access": "workspace:*",
         "@types/lodash": "4.17.24",

@@ -1,8 +1,8 @@
 import { createWriteStream } from 'node:fs';
 import * as archiver from 'archiver';
-import type { EnvironmentCheckResult } from '../types';
-import { byteNumberToSizeString } from '../formatter';
-import { convertResultsToMarkdown } from './markdown';
+import type { EnvironmentCheckResult } from '../types.js';
+import { byteNumberToSizeString } from '../formatter.js';
+import { convertResultsToMarkdown } from './markdown.js';
 
 /**
  * Store output results to zip archive. This includes the markdown report and the raw JSON.

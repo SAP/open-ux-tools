@@ -1,10 +1,10 @@
-import type { Diagnostic } from '../../language/diagnostics';
-import type { ParsedProject } from '../parser';
-import type { LinkedFeV2App } from './fe-v2';
-import { runFeV2Linker } from './fe-v2';
-import type { LinkedFeV4App } from './fe-v4';
-import { runFeV4Linker } from './fe-v4';
-import type { LinkerContext } from './types';
+import type { Diagnostic } from '../../language/diagnostics.js';
+import type { ParsedProject } from '../parser/index.js';
+import type { LinkedFeV2App } from './fe-v2.js';
+import { runFeV2Linker } from './fe-v2.js';
+import type { LinkedFeV4App } from './fe-v4.js';
+import { runFeV4Linker } from './fe-v4.js';
+import type { LinkerContext } from './types.js';
 
 export type LinkedApp = LinkedFeV4App | LinkedFeV2App;
 

@@ -4,6 +4,7 @@ import fetch from 'node-fetch';
 import { marked } from 'marked';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { spawn, type SpawnOptionsWithoutStdio } from 'node:child_process';
 import matter from 'gray-matter';
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
@@ -500,6 +501,7 @@ Return ONLY the formatted markdown. Do not add any explanations or meta-commenta
             }
         }
 
+        /* istanbul ignore next */
         return `# ${doc.title}\n\n${doc.content}`;
     }
 
@@ -1506,12 +1508,15 @@ export { MultiSourceDocumentationBuilder };
 
 // Run the builder
 /* istanbul ignore if */
-if (require.main === module) {
+const isMainModule = fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
+if (isMainModule) {
     const logger = new ToolsLogger();
     const builder = new MultiSourceDocumentationBuilder();
-    builder.buildFilestore().catch((error) => {
+    try {
+        await builder.buildFilestore();
+    } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         logger.error(`Build failed: ${errorMessage}`);
         process.exit(1);
-    });
+    }
 }

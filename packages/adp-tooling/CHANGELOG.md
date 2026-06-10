@@ -1,5 +1,259 @@
 # @sap-ux/adp-tooling
 
+## 1.0.11
+
+### Patch Changes
+
+- c8e8f7e: fix: write builder.resources.excludes to base ui5.yaml as well as ui5-deploy.yaml
+- Updated dependencies [c8e8f7e]
+    - @sap-ux/ui5-config@1.0.3
+    - @sap-ux/odata-service-writer@1.0.6
+    - @sap-ux/project-access@2.1.2
+    - @sap-ux/inquirer-common@1.0.9
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/project-input-validator@1.0.6
+    - @sap-ux/system-access@1.0.2
+
+## 1.0.10
+
+### Patch Changes
+
+- Updated dependencies [0fa8305]
+    - @sap-ux/btp-utils@2.0.2
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/inquirer-common@1.0.8
+    - @sap-ux/nodejs-utils@1.0.3
+    - @sap-ux/system-access@1.0.2
+    - @sap-ux/odata-service-writer@1.0.5
+
+## 1.0.9
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@1.0.7
+
+## 1.0.8
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/inquirer-common@1.0.6
+    - @sap-ux/odata-service-writer@1.0.5
+    - @sap-ux/project-input-validator@1.0.5
+    - @sap-ux/system-access@1.0.1
+
+## 1.0.7
+
+### Patch Changes
+
+- fb84c0e: chore: enhance incomplete destination service key credentials error message
+
+## 1.0.6
+
+### Patch Changes
+
+- Updated dependencies [b326a9a]
+    - @sap-ux/project-access@2.1.0
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/inquirer-common@1.0.5
+    - @sap-ux/odata-service-writer@1.0.4
+    - @sap-ux/project-input-validator@1.0.4
+    - @sap-ux/system-access@1.0.1
+
+## 1.0.5
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/project-input-validator@1.0.3
+    - @sap-ux/odata-service-writer@1.0.3
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/inquirer-common@1.0.4
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux/system-access@1.0.1
+    - @sap-ux/nodejs-utils@1.0.2
+    - @sap-ux/ui5-config@1.0.2
+    - @sap-ux/btp-utils@2.0.1
+    - @sap-ux/ui5-info@1.0.1
+    - @sap-ux/logger@1.0.1
+    - @sap-ux/store@2.0.1
+    - @sap-ux/i18n@1.0.1
+
+## 1.0.4
+
+### Patch Changes
+
+- Updated dependencies [9580241]
+    - @sap-ux/ui5-config@1.0.1
+    - @sap-ux/odata-service-writer@1.0.2
+    - @sap-ux/project-access@2.0.2
+    - @sap-ux/inquirer-common@1.0.3
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/project-input-validator@1.0.2
+    - @sap-ux/system-access@1.0.0
+
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies [41f327a]
+    - @sap-ux/nodejs-utils@1.0.1
+    - @sap-ux/inquirer-common@1.0.2
+
+## 1.0.2
+
+### Patch Changes
+
+- a8e4cf0: fix: handle both nested (`{ uaa: {...} }`) and flat destination-service credential shapes when fetching BTP destinations and when checking for OnPremise destinations during adaptation-project startup. A new `getDestinationServiceUaa` helper in `@sap-ux/adp-tooling` is reused by `@sap-ux/backend-proxy-middleware-cf` to avoid duplicate shape-handling logic.
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/inquirer-common@1.0.1
+    - @sap-ux/odata-service-writer@1.0.1
+    - @sap-ux/project-input-validator@1.0.1
+    - @sap-ux/system-access@1.0.0
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/project-input-validator@1.0.0
+    - @sap-ux/odata-service-writer@1.0.0
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/inquirer-common@1.0.0
+    - @sap-ux/project-access@2.0.0
+    - @sap-ux/system-access@1.0.0
+    - @sap-ux/nodejs-utils@1.0.0
+    - @sap-ux/ui5-config@1.0.0
+    - @sap-ux/btp-utils@2.0.0
+    - @sap-ux/ui5-info@1.0.0
+    - @sap-ux/logger@1.0.0
+    - @sap-ux/store@2.0.0
+    - @sap-ux/i18n@1.0.0
+
+## 0.19.11
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.13.6
+
+## 0.19.10
+
+### Patch Changes
+
+- 9a980a9: fix: Prioritize local workspace fragments over deployed versions in adaptation project editor
+
+    When previewing an adaptation project connected to an ABAP system, locally created fragments and controllers are now correctly prioritized over their deployed counterparts. The LREP flex data response from the ABAP system includes inlined module content (fragment XMLs, controller JS) which prevented UI5 from requesting local workspace versions. The fix strips these inlined modules from the response so that UI5 falls back to HTTP requests, which the existing ADP proxy serves from the local workspace. Flex changes are left untouched as UI5 deduplicates them natively by fileName.
+
+## 0.19.9
+
+### Patch Changes
+
+- Updated dependencies [ea9cbb1]
+    - @sap-ux/nodejs-utils@0.3.2
+    - @sap-ux/inquirer-common@0.13.5
+
+## 0.19.8
+
+### Patch Changes
+
+- Updated dependencies [c12420a]
+    - @sap-ux/store@1.6.1
+    - @sap-ux/system-access@0.8.2
+    - @sap-ux/ui5-config@0.31.1
+    - @sap-ux/inquirer-common@0.13.4
+
+## 0.19.7
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade @sap/bas-sdk 3.13.6 → 3.13.7, @sap/approuter ^21.5.0 → ^22.0.0 (security: ws vulnerability)
+- Updated dependencies [01b70ca]
+- Updated dependencies [01b70ca]
+    - @sap-ux/axios-extension@1.26.1
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/odata-service-writer@0.32.2
+    - @sap-ux/system-access@0.8.1
+    - @sap-ux/inquirer-common@0.13.3
+    - @sap-ux/nodejs-utils@0.3.1
+
+## 0.19.6
+
+### Patch Changes
+
+- 758b0d4: fix: show error message when fetching destination fails
+
+## 0.19.5
+
+### Patch Changes
+
+- Updated dependencies [9752c40]
+    - @sap-ux/ui5-config@0.31.1
+    - @sap-ux/odata-service-writer@0.32.2
+    - @sap-ux/project-access@1.38.1
+    - @sap-ux/inquirer-common@0.13.2
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/project-input-validator@0.7.2
+    - @sap-ux/system-access@0.8.0
+
+## 0.19.4
+
+### Patch Changes
+
+- dab1aa2: fix: When we get the service uri from the ui5.yaml > adp > target object we use the context to determine whether to use the destination in the target or the url.
+
+## 0.19.3
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+    - @sap-ux/axios-extension@1.26.0
+    - @sap-ux/inquirer-common@0.13.1
+    - @sap-ux/odata-service-writer@0.32.1
+    - @sap-ux/project-input-validator@0.7.1
+    - @sap-ux/system-access@0.8.0
+
 ## 0.19.2
 
 ### Patch Changes

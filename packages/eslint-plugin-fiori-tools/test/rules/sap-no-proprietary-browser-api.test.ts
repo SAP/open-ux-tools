@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-proprietary-browser-api';
+import rule from '../../src/rules/sap-no-proprietary-browser-api.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

@@ -1,7 +1,8 @@
 {
     "name": "@sap-ux/project-integrity",
-    "version": "0.3.0",
+    "version": "1.0.6",
     "description": "Library to check the integrity of projects",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -19,7 +20,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
         "watch": "tsc --watch"
     },
     "files": [
@@ -34,5 +35,8 @@
     "dependencies": {
         "@sap-ux/project-access": "workspace:*",
         "lz-string": "1.5.0"
+    },
+    "devDependencies": {
+        "@jest/globals": "30.3.0"
     }
 }

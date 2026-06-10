@@ -17,9 +17,9 @@ import {
 } from '@sap-ux/store';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
-import type { ApiHubConfig } from '../types';
-import { ApiHubType } from '../types';
-import { buildSapClientParam, generateLaunchConfig, runHooks, t } from '../utils';
+import type { ApiHubConfig } from '../types/index.js';
+import { ApiHubType } from '../types/index.js';
+import { buildSapClientParam, generateLaunchConfig, runHooks, t } from '../utils/index.js';
 
 /**
  * Save API Hub key to the store.
