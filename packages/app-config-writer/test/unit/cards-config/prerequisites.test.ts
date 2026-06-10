@@ -45,8 +45,8 @@ describe('cards-config/prerequisites', () => {
             mockGetProjectType.mockResolvedValue('EDMXBackend');
         });
 
-        test('should not throw when UI5 version meets minimum requirement (1.136.0)', async () => {
-            mockGetMinimumUI5Version.mockReturnValue('1.136.0');
+        test('should not throw when UI5 version meets minimum requirement (1.121.0)', async () => {
+            mockGetMinimumUI5Version.mockReturnValue('1.121.0');
 
             await expect(ensureMinUI5Version('/test/path', mockFs)).resolves.toBeUndefined();
         });
@@ -57,7 +57,7 @@ describe('cards-config/prerequisites', () => {
             await expect(ensureMinUI5Version('/test/path', mockFs)).resolves.toBeUndefined();
         });
 
-        test('should throw error when UI5 version is below minimum (1.136.0)', async () => {
+        test('should throw error when UI5 version is below minimum (1.121.0)', async () => {
             mockGetMinimumUI5Version.mockReturnValue('1.120.0');
 
             await expect(ensureMinUI5Version('/test/path', mockFs)).rejects.toThrow(

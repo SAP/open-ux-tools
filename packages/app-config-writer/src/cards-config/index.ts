@@ -112,7 +112,7 @@ async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string
  * @param {ToolsLogger} [logger] - Optional logger instance for logging messages.
  * @param {Editor} [fs] - Optional `mem-fs-editor` instance for file system operations. If not provided, a new instance will be created.
  * @returns {Promise<Editor>} A promise that resolves to the updated `mem-fs-editor` instance.
- * @throws {Error} If minimum UI5 version requirement is not met (EDMX: ≥1.136.0, CAP: ≥1.149.0).
+ * @throws {Error} If minimum UI5 version requirement is not met (EDMX: ≥1.121.0, CAP: ≥1.149.0).
  */
 export async function enableCardGeneratorConfig(
     basePath: string,
