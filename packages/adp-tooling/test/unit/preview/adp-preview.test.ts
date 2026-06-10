@@ -341,6 +341,22 @@ describe('AdaptationProject', () => {
             expect(adp['descriptorVariantId']).toBe(parsedVariant.id);
             expect(adp['routesHandler']).toBeDefined();
             expect(adp['provider']).toBeUndefined();
+            expect(adp.isCloudFoundry).toBe(true);
+        });
+
+        test('isCloudFoundry returns false when cfBuildPath is not configured', async () => {
+            const adp = new AdpPreview(
+                {
+                    target: {
+                        url: backend
+                    }
+                },
+                mockProject as unknown as ReaderCollection,
+                middlewareUtil,
+                logger
+            );
+
+            expect(adp.isCloudFoundry).toBe(false);
         });
     });
 

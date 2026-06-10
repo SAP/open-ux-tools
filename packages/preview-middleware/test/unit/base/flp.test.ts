@@ -1021,6 +1021,62 @@ describe('FlpSandbox', () => {
             const appDeps = flp.templateConfig.apps['app-preview'].applicationDependencies;
             expect(appDeps?.manifest?.['sap.ui5']?.flexExtensionPointEnabled).toBe(true);
         });
+
+        test('CF ADP skips applicationDependencies assignment (no descriptor merge available)', async () => {
+            const jsonSpy = () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.142.0' }]
+                });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            const componendId = 'myComponent';
+            const resources = {
+                'myResources1': 'myResourcesUrl1'
+            };
+            const syncSpy = jest.fn().mockResolvedValueOnce({});
+            // CF mode: descriptor must NOT be read; throw if anyone tries.
+            const cfAdpToolingMock = {
+                init: () => 'CUSTOMER_BASE',
+                get descriptor(): never {
+                    throw new Error('Not initialized');
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn(),
+                isCloudFoundry: true
+            } as unknown as adpTooling.AdpPreview;
+
+            await flp.init(manifest, componendId, resources, cfAdpToolingMock);
+            const app = express();
+            app.use(flp.router);
+            const server = await supertest(app);
+
+            await server
+                .get(
+                    '/my/editor.html.inner.html?fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true'
+                )
+                .expect(200);
+
+            // sync() must not be called and descriptor must not be assigned
+            expect(syncSpy).not.toHaveBeenCalled();
+            const appDeps = flp.templateConfig.apps['app-preview'].applicationDependencies;
+            expect(appDeps).toBeUndefined();
+        });
     });
 
     describe('router with enableCardGenerator', () => {
