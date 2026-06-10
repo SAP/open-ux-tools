@@ -147,6 +147,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -186,6 +191,11 @@ server:
           intent:
             object: fefpmjs
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -3920,6 +3930,10 @@ server:
             generateMockData: true
         annotations: []
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -3975,6 +3989,10 @@ server:
         excludePatterns:
           - /Component-preload.js
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
