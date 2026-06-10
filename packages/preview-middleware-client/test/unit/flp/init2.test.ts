@@ -1,13 +1,12 @@
 import { fetchMock, sapMock, documentMock } from 'mock/window';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
-import { execute } from '../../../src/flp/init2';
 
-jest.mock('../../../src/flp/common', () => ({
+jest.unstable_mockModule('open/ux/preview/client/flp/common', () => ({
     registerComponentDependencyPaths: jest.fn().mockResolvedValue(undefined)
 }));
 
-import { registerComponentDependencyPaths } from '../../../src/flp/common';
-
+const { execute } = await import('open/ux/preview/client/flp/init2');
+const { registerComponentDependencyPaths } = await import('open/ux/preview/client/flp/common');
 const registerPathsMock = registerComponentDependencyPaths as jest.Mock;
 
 describe('flp/init2', () => {
