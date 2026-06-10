@@ -2,4 +2,4 @@
 '@sap-ux/generator-odata-downloader': patch
 ---
 
-Adds `Show Logs` link`
+Fix for hierarchy parent property incorrectly set as `target` instead of `source`
