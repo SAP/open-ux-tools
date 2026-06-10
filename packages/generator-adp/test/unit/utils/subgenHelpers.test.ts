@@ -5,16 +5,16 @@ import { FlexLayer, type AttributesAnswers, type ConfigAnswers, type SystemLooku
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-const mockGetExtensionProjectData = jest.fn();
+const mockGetExtensionProjectData = jest.fn<typeof realExtProject.getExtensionProjectData>();
 
-const realExtProject = await import('../../../src/app/extension-project');
+const realExtProject = await import('../../../src/app/extension-project/index.js');
 jest.unstable_mockModule('../../../src/app/extension-project', () => ({
     ...realExtProject,
     getExtensionProjectData: mockGetExtensionProjectData
 }));
 
-const { t } = await import('../../../src/utils/i18n');
-const { addFlpGen, addDeployGen, addExtProjectGen } = await import('../../../src/utils/subgenHelpers');
+const { t } = await import('../../../src/utils/i18n.js');
+const { addFlpGen, addDeployGen, addExtProjectGen } = await import('../../../src/utils/subgenHelpers.js');
 
 describe('Sub-generator helpers', () => {
     const wizard = {} as unknown as AppWizard;

@@ -1,4 +1,4 @@
-import { EventHeader } from '../src/base/types/event-header';
+import { EventHeader } from '../src/base/types/event-header.js';
 
 describe('Telemetry API Tests', () => {
     test('Test EventHeader class', () => {

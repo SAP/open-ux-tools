@@ -2,8 +2,8 @@ import { jest } from '@jest/globals';
 import nock from 'nock';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Destination, ServiceInfo } from '../src';
-import { ENV } from '../src/app-studio.env';
+import type { Destination, ServiceInfo } from '../src/index.js';
+import { ENV } from '../src/app-studio.env.js';
 import destinationList from './mockResponses/destinations.json';
 import type { ServiceInstanceInfo } from '@sap/cf-tools';
 import { ToolsLogger } from '@sap-ux/logger';
@@ -60,7 +60,7 @@ const mockApiCreateServiceInstance = jest.fn().mockImplementation(() => {});
 const mockApiGetInstanceCredentials = jest.fn(() => Promise.resolve(uaaCredentialsMock));
 
 // Mock function for @sap/bas-sdk destinations.createDestination
-const mockCreateDestination = jest.fn();
+const mockCreateDestination = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap/cf-tools', () => ({
     cfGetInstanceKeyParameters: mockCfGetInstanceKeyParameters,
@@ -85,13 +85,13 @@ const {
     getCredentialsForDestinationService,
     exposePort,
     createOAuth2UserTokenExchangeDest
-} = await import('../src');
+} = await import('../src/index.js');
 
 describe('App Studio', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         // Re-assign default mock implementations that may get cleared
-        mockCfGetInstanceKeyParameters.mockImplementation((name?: string) => {
+        mockCfGetInstanceKeyParameters.mockImplementation((name) => {
             if (name === 'invalid') {
                 throw new Error();
             } else if (name === 'noinstance') {
@@ -130,12 +130,12 @@ describe('App Studio', () => {
     describe('getAppStudioProxyURL', () => {
         it('returns the url from the correct env var when set', () => {
             const PROXY_URL = 'http://proxy';
-            process.env[ENV.PROXY_URL] = PROXY_URL;
+            process.env[ENV.HTTP_PROXY] = PROXY_URL;
             expect(getAppStudioProxyURL()).toBe(PROXY_URL);
         });
 
         it('returns undefined when env var is not set', () => {
-            delete process.env[ENV.PROXY_URL];
+            delete process.env[ENV.HTTP_PROXY];
             expect(getAppStudioProxyURL()).toBeUndefined();
         });
     });
@@ -206,12 +206,15 @@ describe('App Studio', () => {
         beforeAll(() => {
             nock(server).get('/reload').reply(200).persist();
             process.env[ENV.H2O_URL] = server;
-            process.env[ENV.PROXY_URL] = server;
+            process.env[ENV.HTTP_PROXY] = server;
+            process.env[ENV.HTTPS_PROXY] = server;
         });
 
         afterAll(() => {
             delete process.env[ENV.H2O_URL];
-            delete process.env[ENV.PROXY_URL];
+            delete process.env[ENV.HTTP_PROXY];
+            delete process.env[ENV.HTTPS_PROXY];
+            delete globalThis.GLOBAL_AGENT;
         });
 
         test('only destinations for development returned', async () => {
@@ -238,6 +241,39 @@ describe('App Studio', () => {
                 .replyWithFile(200, join(__dirname, 'mockResponses/destinations.json'));
             const destinationsWithOpts = await listDestinations({ stripS4HCApiHosts: true });
             expect(destinationsWithOpts['S4HC'].Host).toBe('https://s4hc-example.sap.example');
+        });
+
+        test('patches global agent proxy settings when running in BAS', async () => {
+            globalThis.GLOBAL_AGENT = { HTTP_PROXY: null, HTTPS_PROXY: null };
+
+            nock(server)
+                .get('/api/listDestinations')
+                .replyWithFile(200, join(__dirname, 'mockResponses/destinations.json'));
+
+            await listDestinations();
+
+            expect(globalThis.GLOBAL_AGENT?.HTTP_PROXY).toBe(server);
+            expect(globalThis.GLOBAL_AGENT?.HTTPS_PROXY).toBe(server);
+        });
+
+        test('does not patch GLOBAL_AGENT when there is no global agent being used', async () => {
+            delete globalThis.GLOBAL_AGENT;
+
+            nock(server)
+                .get('/api/listDestinations')
+                .replyWithFile(200, join(__dirname, 'mockResponses/destinations.json'));
+
+            await expect(listDestinations()).resolves.not.toThrow();
+            expect(globalThis.GLOBAL_AGENT).toBeUndefined();
+        });
+
+        test('does not patch GLOBAL_AGENT when in VSCode', async () => {
+            const h2oUrl = process.env[ENV.H2O_URL];
+            delete globalThis.GLOBAL_AGENT;
+            delete process.env[ENV.H2O_URL];
+            await expect(listDestinations()).rejects.toThrow();
+            expect(globalThis.GLOBAL_AGENT).toBeUndefined();
+            process.env[ENV.H2O_URL] = h2oUrl;
         });
     });
 
@@ -271,7 +307,7 @@ describe('App Studio', () => {
             envH20Settings = process.env[ENV.H2O_URL];
             envWSBaseURLSettings = process.env['WS_BASE_URL'];
             process.env[ENV.H2O_URL] = server;
-            process.env[ENV.PROXY_URL] = server;
+            process.env[ENV.HTTP_PROXY] = server;
         });
 
         afterAll(() => {

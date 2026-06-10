@@ -15,7 +15,7 @@ jest.unstable_mockModule('@vscode-logging/logger', () => ({
     getExtensionLogger: jest.fn()
 }));
 
-const { getCapFolderPathsSync } = await import('../../src/');
+const { getCapFolderPathsSync } = await import('../../src//index.js');
 
 describe('getCapFolderPaths', () => {
     const testCapProject = join(__dirname, '../fixtures/test-cap-project');

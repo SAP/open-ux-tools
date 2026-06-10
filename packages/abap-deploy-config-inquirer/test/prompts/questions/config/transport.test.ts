@@ -2,12 +2,14 @@ import { jest } from '@jest/globals';
 import { promptNames, TransportChoices } from '../../../../src/types.js';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 
-const mockShowTransportInputChoice = jest.fn();
-const mockDefaultOrShowTransportCreatedQuestion = jest.fn();
-const mockDefaultOrShowTransportListQuestion = jest.fn();
-const mockDefaultOrShowManualTransportQuestion = jest.fn();
-const mockValidateTransportChoiceInput = jest.fn();
-const mockValidateTransportQuestion = jest.fn();
+const mockShowTransportInputChoice = jest.fn<typeof actualConditions.showTransportInputChoice>();
+const mockDefaultOrShowTransportCreatedQuestion =
+    jest.fn<typeof actualConditions.defaultOrShowTransportCreatedQuestion>();
+const mockDefaultOrShowTransportListQuestion = jest.fn<typeof actualConditions.defaultOrShowTransportListQuestion>();
+const mockDefaultOrShowManualTransportQuestion =
+    jest.fn<typeof actualConditions.defaultOrShowManualTransportQuestion>();
+const mockValidateTransportChoiceInput = jest.fn<typeof actualValidators.validateTransportChoiceInput>();
+const mockValidateTransportQuestion = jest.fn<typeof actualValidators.validateTransportQuestion>();
 
 const actualConditions = await import('../../../../src/prompts/conditions.js');
 const actualValidators = await import('../../../../src/prompts/validators.js');

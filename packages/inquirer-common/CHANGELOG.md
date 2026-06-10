@@ -1,5 +1,76 @@
 # @sap-ux/inquirer-common
 
+## 1.0.9
+
+### Patch Changes
+
+- @sap-ux/odata-service-writer@1.0.6
+- @sap-ux/project-access@2.1.2
+- @sap-ux/telemetry@1.0.8
+- @sap-ux/fiori-generator-shared@1.0.9
+
+## 1.0.8
+
+### Patch Changes
+
+- Updated dependencies [0fa8305]
+    - @sap-ux/btp-utils@2.0.2
+    - @sap-ux/fiori-generator-shared@1.0.8
+    - @sap-ux/telemetry@1.0.7
+    - @sap-ux/odata-service-writer@1.0.5
+
+## 1.0.7
+
+### Patch Changes
+
+- Updated dependencies [a328e14]
+    - @sap-ux/fiori-generator-shared@1.0.7
+
+## 1.0.6
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+    - @sap-ux/fiori-generator-shared@1.0.6
+    - @sap-ux/odata-service-writer@1.0.5
+    - @sap-ux/telemetry@1.0.6
+
+## 1.0.5
+
+### Patch Changes
+
+- Updated dependencies [b326a9a]
+    - @sap-ux/project-access@2.1.0
+    - @sap-ux/fiori-generator-shared@1.0.5
+    - @sap-ux/odata-service-writer@1.0.4
+    - @sap-ux/telemetry@1.0.5
+
+## 1.0.4
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/fiori-generator-shared@1.0.4
+    - @sap-ux/guided-answers-helper@1.0.1
+    - @sap-ux/odata-service-writer@1.0.3
+    - @sap-ux/feature-toggle@1.0.1
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux/btp-utils@2.0.1
+    - @sap-ux/telemetry@1.0.4
+    - @sap-ux/ui5-info@1.0.1
+    - @sap-ux/logger@1.0.1
+
+## 1.0.3
+
+### Patch Changes
+
+- @sap-ux/odata-service-writer@1.0.2
+- @sap-ux/project-access@2.0.2
+- @sap-ux/telemetry@1.0.3
+- @sap-ux/fiori-generator-shared@1.0.3
+
 ## 1.0.2
 
 ### Patch Changes

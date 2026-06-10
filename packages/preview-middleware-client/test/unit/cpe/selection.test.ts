@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { type ExternalAction, type Control } from '@sap-ux-private/control-property-editor-common';
 import type Element from 'sap/ui/core/Element';
 import type { ID } from 'sap/ui/core/library';
@@ -111,11 +112,11 @@ describe('SelectionService', () => {
     test('attaches to RTA selection change', async () => {
         let handler: ((event: Event) => Promise<void>) | undefined;
         const cache = new Map();
-        sapCoreMock.byId.mockImplementation((id: ID) => {
+        sapCoreMock.byId.mockImplementation((id) => {
             return cache.get(id);
         });
         const selectionChangeGetParameterSpy = jest.fn().mockReturnValue([]);
-        const attachSelectionChange = jest.fn().mockImplementation((newHandler: (event: Event) => Promise<void>) => {
+        const attachSelectionChange = jest.fn().mockImplementation((newHandler: (e: Event) => Promise<void>) => {
             handler = newHandler;
         });
         const rta = {
@@ -138,7 +139,7 @@ describe('SelectionService', () => {
         let propertyChangeHandler: ((event: Event) => Promise<void>) | undefined;
         const attachEventSpy = jest
             .fn()
-            .mockImplementation((eventName: string, newHandler: (event: Event) => Promise<void>) => {
+            .mockImplementation((eventName: string, newHandler: (e: Event) => Promise<void>) => {
                 if (eventName === '_change') {
                     propertyChangeHandler = newHandler;
                 }
@@ -290,7 +291,7 @@ describe('SelectionService', () => {
                 }
             ]
         ]);
-        sapCoreMock.byId.mockImplementation((id: ID) => {
+        sapCoreMock.byId.mockImplementation((id) => {
             return cache.get(id);
         });
         const selectionChangeGetParameterSpy = jest.fn().mockReturnValue([
@@ -298,7 +299,7 @@ describe('SelectionService', () => {
                 getId: () => 'overlayControl1'
             }
         ]);
-        const attachSelectionChange = jest.fn().mockImplementation((newHandler: (event: Event) => Promise<void>) => {
+        const attachSelectionChange = jest.fn().mockImplementation((newHandler: (e: Event) => Promise<void>) => {
             handler = newHandler;
         });
         const rta = {
@@ -349,7 +350,7 @@ describe('SelectionService', () => {
         let propertyChangeHandler: ((event: Event) => void) | undefined;
         const attachEventSpy = jest
             .fn()
-            .mockImplementation((eventName: string, newHandler: (event: Event) => Promise<void>) => {
+            .mockImplementation((eventName: string, newHandler: (e: Event) => Promise<void>) => {
                 if (eventName === '_change') {
                     propertyChangeHandler = newHandler;
                 }
@@ -366,7 +367,7 @@ describe('SelectionService', () => {
                 {
                     getElementInstance: jest.fn().mockReturnValue({
                         attachEvent: attachEventSpy,
-                        detachEvent: jest.fn().mockImplementation((eventName: string) => {
+                        detachEvent: jest.fn().mockImplementation((eventName) => {
                             if (eventName === '_change') {
                                 propertyChangeHandler = undefined;
                             }
@@ -506,7 +507,7 @@ describe('SelectionService', () => {
                 }
             ]
         ]);
-        sapCoreMock.byId.mockImplementation((id: ID) => {
+        sapCoreMock.byId.mockImplementation((id) => {
             return cache.get(id);
         });
         const selectionChangeGetParameterSpy = jest.fn().mockReturnValue([
@@ -514,7 +515,7 @@ describe('SelectionService', () => {
                 getId: () => 'overlayControl1'
             }
         ]);
-        const attachSelectionChange = jest.fn().mockImplementation((newHandler: (event: Event) => Promise<void>) => {
+        const attachSelectionChange = jest.fn().mockImplementation((newHandler: (e: Event) => Promise<void>) => {
             handler = newHandler;
         });
         const rta = {
@@ -600,7 +601,7 @@ describe('SelectionService', () => {
             })
         } as any);
 
-        sapCoreMock.byId.mockImplementation((id: ID) => {
+        sapCoreMock.byId.mockImplementation((id) => {
             return cache.get(id);
         });
         sapCoreMock.getComponent.mockImplementation(() => {
@@ -686,7 +687,7 @@ describe('SelectionService', () => {
 
         mockOverlay.isSelectable.mockReturnValue(true);
         mockOverlay.isSelectable.mockReturnValue(false);
-        const attachSelectionChange = jest.fn().mockImplementation();
+        const attachSelectionChange = jest.fn().mockImplementation(() => {});
         const rta = {
             attachSelectionChange,
             getSelection: jest.fn().mockReturnValue([{ setSelected: jest.fn() }, { setSelected: jest.fn() }]),
@@ -734,7 +735,7 @@ describe('SelectionService', () => {
         let propertyChangeHandler: ((event: Event) => Promise<void>) | undefined;
         const attachEventSpy = jest
             .fn()
-            .mockImplementation((eventName: string, newHandler: (event: Event) => Promise<void>) => {
+            .mockImplementation((eventName: string, newHandler: (e: Event) => Promise<void>) => {
                 if (eventName === '_change') {
                     propertyChangeHandler = newHandler;
                 }
@@ -764,7 +765,7 @@ describe('SelectionService', () => {
                 }
             ]
         ]);
-        sapCoreMock.byId.mockImplementation((id: ID) => {
+        sapCoreMock.byId.mockImplementation((id) => {
             return cache.get(id);
         });
         const selectionChangeGetParameterSpy = jest.fn().mockReturnValue([
@@ -772,7 +773,7 @@ describe('SelectionService', () => {
                 getId: () => 'overlayControl1'
             }
         ]);
-        const attachSelectionChange = jest.fn().mockImplementation((newHandler: (event: Event) => Promise<void>) => {
+        const attachSelectionChange = jest.fn().mockImplementation((newHandler: (e: Event) => Promise<void>) => {
             handler = newHandler;
         });
         const rta = {

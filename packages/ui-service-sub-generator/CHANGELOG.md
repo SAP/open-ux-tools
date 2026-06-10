@@ -1,5 +1,87 @@
 # @sap-ux/ui-service-sub-generator
 
+## 1.0.9
+
+### Patch Changes
+
+- @sap-ux/telemetry@1.0.8
+- @sap-ux/ui-service-inquirer@1.0.9
+- @sap-ux/inquirer-common@1.0.9
+- @sap-ux/axios-extension@2.0.2
+- @sap-ux/fiori-generator-shared@1.0.9
+- @sap-ux/system-access@1.0.2
+
+## 1.0.8
+
+### Patch Changes
+
+- Updated dependencies [0fa8305]
+    - @sap-ux/btp-utils@2.0.2
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/fiori-generator-shared@1.0.8
+    - @sap-ux/inquirer-common@1.0.8
+    - @sap-ux/system-access@1.0.2
+    - @sap-ux/telemetry@1.0.7
+    - @sap-ux/ui-service-inquirer@1.0.8
+
+## 1.0.7
+
+### Patch Changes
+
+- Updated dependencies [a328e14]
+    - @sap-ux/fiori-generator-shared@1.0.7
+    - @sap-ux/inquirer-common@1.0.7
+    - @sap-ux/ui-service-inquirer@1.0.7
+
+## 1.0.6
+
+### Patch Changes
+
+- @sap-ux/axios-extension@2.0.1
+- @sap-ux/fiori-generator-shared@1.0.6
+- @sap-ux/inquirer-common@1.0.6
+- @sap-ux/system-access@1.0.1
+- @sap-ux/telemetry@1.0.6
+- @sap-ux/ui-service-inquirer@1.0.6
+
+## 1.0.5
+
+### Patch Changes
+
+- @sap-ux/axios-extension@2.0.1
+- @sap-ux/fiori-generator-shared@1.0.5
+- @sap-ux/inquirer-common@1.0.5
+- @sap-ux/system-access@1.0.1
+- @sap-ux/telemetry@1.0.5
+- @sap-ux/ui-service-inquirer@1.0.5
+
+## 1.0.4
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/fiori-generator-shared@1.0.4
+    - @sap-ux/ui-service-inquirer@1.0.4
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/inquirer-common@1.0.4
+    - @sap-ux/feature-toggle@1.0.1
+    - @sap-ux/system-access@1.0.1
+    - @sap-ux/btp-utils@2.0.1
+    - @sap-ux/telemetry@1.0.4
+    - @sap-ux/logger@1.0.1
+
+## 1.0.3
+
+### Patch Changes
+
+- @sap-ux/telemetry@1.0.3
+- @sap-ux/ui-service-inquirer@1.0.3
+- @sap-ux/inquirer-common@1.0.3
+- @sap-ux/axios-extension@2.0.0
+- @sap-ux/fiori-generator-shared@1.0.3
+- @sap-ux/system-access@1.0.0
+
 ## 1.0.2
 
 ### Patch Changes

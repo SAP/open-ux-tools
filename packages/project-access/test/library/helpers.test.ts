@@ -1,18 +1,19 @@
 import { jest } from '@jest/globals';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { LibraryXml, Manifest, ReuseLib } from '../../src';
+import type { LibraryXml, Manifest, ReuseLib } from '../../src/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const realFileUtils = await import('../../src/file');
+const realFileUtils = await import('../../src/file/index.js');
 const mockFindFiles = jest.fn(realFileUtils.findFiles);
 jest.unstable_mockModule('../../src/file', () => ({
     ...realFileUtils,
     findFiles: mockFindFiles
 }));
 
-const { checkDependencies, getReuseLibs, getLibraryDesc, getManifestDesc } = await import('../../src/library/helpers');
+const { checkDependencies, getReuseLibs, getLibraryDesc, getManifestDesc } =
+    await import('../../src/library/helpers.js');
 const manifestJson =
     await import('../test-data/libs/sap.reuse.ex.test.lib.attachmentservice/src/sap/reuse/ex/test/lib/attachmentservice/manifest.json');
 

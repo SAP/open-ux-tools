@@ -21,7 +21,7 @@ jest.unstable_mockModule('../../../../src/services/api-hub/migration', () => ({
     LEGACY_API_HUB_API_SERVICE: 'legacy-service'
 }));
 
-const { ApiHubSettingsService } = await import('../../../../src/services/api-hub/service');
+const { ApiHubSettingsService } = await import('../../../../src/services/api-hub/service.js');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 
 describe('api-hub service', () => {

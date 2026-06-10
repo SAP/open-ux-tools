@@ -2,14 +2,14 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
 import supertest from 'supertest';
-import type { ServeStaticConfig } from '../../src';
+import type { ServeStaticConfig } from '../../src/index.js';
 
 const testDirname = dirname(fileURLToPath(import.meta.url));
 const localUI5Path = join(testDirname, '..', 'fixtures', 'local');
 
 // middleware function wrapper for testing to simplify tests
 async function getTestServer(configuration: ServeStaticConfig): Promise<any> {
-    const { default: middleware } = await import('../../src/ui5/middleware');
+    const { default: middleware } = await import('../../src/ui5/middleware.js');
     const router = await middleware({
         options: { configuration },
         middlewareUtil: {

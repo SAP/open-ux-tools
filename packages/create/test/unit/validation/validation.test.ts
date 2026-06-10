@@ -10,7 +10,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
 }));
 
 const adp = await import('@sap-ux/adp-tooling');
-const { validateCloudAdpProject } = await import('../../../src/validation/validation');
+const { validateCloudAdpProject } = await import('../../../src/validation/validation.js');
 
 describe('validation', () => {
     describe('validateCloudAdpProject', () => {

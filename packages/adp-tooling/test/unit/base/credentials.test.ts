@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { SystemLookup } from '../../../src/source/systems';
+import type { SystemLookup } from '../../../src/source/systems.js';
 
 // MOCKS - use jest.unstable_mockModule for ESM compatibility
-const mockGetService = jest.fn();
+const mockGetService = jest.fn<typeof realStore.getService>();
 const realStore = await import('@sap-ux/store');
 jest.unstable_mockModule('@sap-ux/store', () => ({
     ...realStore,
@@ -30,7 +30,7 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     SapTools: {}
 }));
 
-const { storeCredentials } = await import('../../../src/base/credentials');
+const { storeCredentials } = await import('../../../src/base/credentials.js');
 
 describe('Credential Storage Logic', () => {
     let mockSystemService: any;

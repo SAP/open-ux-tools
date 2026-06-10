@@ -14,44 +14,44 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 import { type Logger, ToolsLogger } from '@sap-ux/logger';
 
 // Named mocks for fs
-const mockExistsSyncFn = jest.fn();
-const mockWriteFileSyncFn = jest.fn();
-const mockMkdirSyncFn = jest.fn();
-const mockCopyFileSyncFn = jest.fn();
+const mockExistsSyncFn = jest.fn<typeof realFs.existsSync>();
+const mockWriteFileSyncFn = jest.fn<typeof realFs.writeFileSync>();
+const mockMkdirSyncFn = jest.fn<typeof realFs.mkdirSync>();
+const mockCopyFileSyncFn = jest.fn<typeof realFs.copyFileSync>();
 
 // Named mocks for helper
-const mockGetExistingAdpProjectType = jest.fn();
-const mockGetVariant = jest.fn();
-const mockGetAdpConfig = jest.fn();
-const mockIsTypescriptSupported = jest.fn();
+const mockGetExistingAdpProjectType = jest.fn<typeof realHelper.getExistingAdpProjectType>();
+const mockGetVariant = jest.fn<typeof realHelper.getVariant>();
+const mockGetAdpConfig = jest.fn<typeof realHelper.getAdpConfig>();
+const mockIsTypescriptSupported = jest.fn<typeof realHelper.isTypescriptSupported>();
 
 // Named mocks for other namespace modules
-const mockCreateAbapServiceProvider = jest.fn();
-const mockGetAnnotationNamespaces = jest.fn();
-const mockGenerateChange = jest.fn();
-const mockInitMergedManifest = jest.fn();
+const mockCreateAbapServiceProvider = jest.fn<typeof realSystemAccess.createAbapServiceProvider>();
+const mockGetAnnotationNamespaces = jest.fn<typeof realServiceWriter.getAnnotationNamespaces>();
+const mockGenerateChange = jest.fn<typeof realEditors.generateChange>();
+const mockInitMergedManifest = jest.fn() as jest.Mock;
 
 // Named mocks for change-handler
-const mockTryFixChange = jest.fn();
-const mockAddXmlFragment = jest.fn();
-const mockAddControllerExtension = jest.fn();
+const mockTryFixChange = jest.fn<typeof realChangeHandler.tryFixChange>();
+const mockAddXmlFragment = jest.fn<typeof realChangeHandler.addXmlFragment>();
+const mockAddControllerExtension = jest.fn<typeof realChangeHandler.addControllerExtension>();
 
 // Named mock for descriptor-change-handler
-const mockAddCustomFragment = jest.fn();
+const mockAddCustomFragment = jest.fn<typeof realDescriptorChangeHandler.addCustomFragment>();
 
 // Named mock for ejs
-const mockRenderFile = jest.fn();
+const mockRenderFile = jest.fn<typeof realEjs.renderFile>();
 
 // Named mock for store
-const mockGetService = jest.fn();
+const mockGetService = jest.fn<typeof realStore.getService>();
 
 // Pre-load real modules for spreading
-const realHelper = await import('../../../src/base/helper');
+const realHelper = await import('../../../src/base/helper.js');
 const realSystemAccess = await import('@sap-ux/system-access/dist/base/connect');
 const realServiceWriter = await import('@sap-ux/odata-service-writer/dist/data/annotations');
-const realEditors = await import('../../../src/writer/editors');
-const realChangeHandler = await import('../../../src/preview/change-handler');
-const realDescriptorChangeHandler = await import('../../../src/preview/descriptor-change-handler');
+const realEditors = await import('../../../src/writer/editors.js');
+const realChangeHandler = await import('../../../src/preview/change-handler.js');
+const realDescriptorChangeHandler = await import('../../../src/preview/descriptor-change-handler.js');
 const realStore = await import('@sap-ux/store');
 const realEjs = await import('ejs');
 const realOs = await import('node:os');
@@ -144,10 +144,10 @@ jest.unstable_mockModule('../../../src/base/abap/manifest-service', () => ({
     ManifestService: { initMergedManifest: mockInitMergedManifest }
 }));
 
-const { AdpPreview } = await import('../../../src');
+const { AdpPreview } = await import('../../../src/index.js');
 import type { AddXMLChange, AdpPreviewConfig, CommonChangeProperties } from '../../../src/index.js';
-const { addXmlFragment, tryFixChange, addControllerExtension } = await import('../../../src/preview/change-handler');
-const { addCustomFragment } = await import('../../../src/preview/descriptor-change-handler');
+const { addXmlFragment, tryFixChange, addControllerExtension } = await import('../../../src/preview/change-handler.js');
+const { addCustomFragment } = await import('../../../src/preview/descriptor-change-handler.js');
 const { AdaptationProjectType } = await import('@sap-ux/axios-extension');
 
 interface GetFragmentsResponse {
@@ -863,9 +863,14 @@ describe('AdaptationProject', () => {
 
         test('POST /adp/api/controller - creates controller', async () => {
             mockExistsSyncFn.mockReturnValue(false);
-            mockRenderFile.mockImplementation((templatePath: any, data: any, options: any, callback: any) => {
+            mockRenderFile.mockImplementation(((
+                _templatePath: string,
+                _data: object,
+                _options: object,
+                callback: Function
+            ) => {
                 callback(undefined, 'test-js-controller');
-            });
+            }) as unknown as typeof realEjs.renderFile);
             const controllerName = 'Share';
             const controllerPath = join('/adp.project', 'webapp', 'changes', 'coding', 'Share.js');
             const response = await server.post('/adp/api/controller').send({ controllerName }).expect(201);
@@ -880,9 +885,14 @@ describe('AdaptationProject', () => {
         test('POST /adp/api/controller - creates TypeScript controller', async () => {
             mockExistsSyncFn.mockReturnValue(false);
             mockIsTypescriptSupported.mockReturnValue(true);
-            mockRenderFile.mockImplementation((templatePath: any, data: any, options: any, callback: any) => {
+            mockRenderFile.mockImplementation(((
+                _templatePath: string,
+                _data: object,
+                _options: object,
+                callback: Function
+            ) => {
                 callback(undefined, 'test-ts-controller');
-            });
+            }) as unknown as typeof realEjs.renderFile);
 
             const controllerName = 'Share';
             const controllerPath = join('/adp.project', 'webapp', 'changes', 'coding', 'Share.ts');
@@ -898,9 +908,14 @@ describe('AdaptationProject', () => {
         test('POST /adp/api/controller - throws error during rendering a ts template', async () => {
             mockExistsSyncFn.mockReturnValue(false);
             mockIsTypescriptSupported.mockReturnValue(true);
-            mockRenderFile.mockImplementation((templatePath: any, data: any, options: any, callback: any) => {
+            mockRenderFile.mockImplementation(((
+                _templatePath: string,
+                _data: object,
+                _options: object,
+                callback: Function
+            ) => {
                 callback(new Error('Failed to render template'), '');
-            });
+            }) as unknown as typeof realEjs.renderFile);
 
             const controllerName = 'Share';
             const response = await server.post('/adp/api/controller').send({ controllerName }).expect(500);

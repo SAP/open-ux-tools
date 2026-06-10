@@ -1,11 +1,11 @@
 import { jest } from '@jest/globals';
-import { mockedStoreService, MockToolsLogger, MockNullTransport } from '../../__mocks__';
+import { mockedStoreService, MockToolsLogger, MockNullTransport } from '../../__mocks__/index.js';
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 
 // Dynamic imports after mocks are set up
 const { default: prompts } = await import('prompts');
 const { getCredentialsWithPrompts, getCredentialsFromStore, getCredentialsFromEnvVariables, storeCredentials } =
-    await import('../../../src/base/credentials');
+    await import('../../../src/base/credentials.js');
 
 describe('base/credentials', () => {
     const logger = new MockToolsLogger({ transports: [new MockNullTransport()] }) as any;
@@ -46,7 +46,7 @@ describe('base/credentials', () => {
         });
 
         test('fallback read without client parameter', async () => {
-            mockedStoreService.read.mockImplementation((key: BackendSystemKey) =>
+            mockedStoreService.read.mockImplementation((key) =>
                 key.getId().includes(target.client as string) ? undefined : {}
             );
             const credentials = await getCredentialsFromStore(target, logger);

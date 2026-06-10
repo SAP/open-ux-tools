@@ -1,5 +1,53 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 1.0.9
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@1.0.9
+
+## 1.0.8
+
+### Patch Changes
+
+- Updated dependencies [0fa8305]
+    - @sap-ux/btp-utils@2.0.2
+    - @sap-ux/inquirer-common@1.0.8
+
+## 1.0.7
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@1.0.7
+
+## 1.0.6
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@1.0.6
+
+## 1.0.5
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@1.0.5
+
+## 1.0.4
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/inquirer-common@1.0.4
+    - @sap-ux/btp-utils@2.0.1
+    - @sap-ux/logger@1.0.1
+
+## 1.0.3
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@1.0.3
+
 ## 1.0.2
 
 ### Patch Changes

@@ -6,7 +6,7 @@ import {
     getManifestAppdescr,
     request,
     writeFragment
-} from '../../../src/adp/api-handler';
+} from '../../../src/adp/api-handler.js';
 import { documentMock, fetchMock } from 'mock/window';
 
 describe('API Handler', () => {
@@ -29,7 +29,7 @@ describe('API Handler', () => {
 
         test('GET - parses the response (with baseUrl from ui5-patched-router)', async () => {
             const mockBaseUrl = '/test.base.url';
-            documentMock.getElementById.mockImplementation((id: string) => {
+            documentMock.getElementById.mockImplementation((id) => {
                 if (id === 'root') {
                     return {
                         dataset: {

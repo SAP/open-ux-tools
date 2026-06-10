@@ -4,35 +4,35 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import type { CfConfig, CFApp, ServiceInfo, CfServicesAnswers } from '@sap-ux/adp-tooling';
 
-const mockValidateBusinessSolutionName = jest.fn();
-const mockGetAppRouterChoices = jest.fn();
-const mockGetCFAppChoices = jest.fn();
-const mockShowBusinessSolutionNameQuestion = jest.fn();
-const mockGetModuleNames = jest.fn();
-const mockGetApprouterType = jest.fn();
-const mockHasApprouter = jest.fn();
-const mockIsLoggedInCf = jest.fn();
-const mockGetMtaServices = jest.fn();
-const mockGetCfApps = jest.fn();
-const mockDownloadAppContent = jest.fn();
-const mockValidateSmartTemplateApplication = jest.fn();
-const mockValidateODataEndpoints = jest.fn();
-const mockGetBusinessServiceInfo = jest.fn();
+const mockValidateBusinessSolutionName = jest.fn<typeof realValidators.validateBusinessSolutionName>();
+const mockGetAppRouterChoices = jest.fn<typeof realChoices.getAppRouterChoices>();
+const mockGetCFAppChoices = jest.fn<typeof realChoices.getCFAppChoices>();
+const mockShowBusinessSolutionNameQuestion = jest.fn<typeof realConditions.showBusinessSolutionNameQuestion>();
+const mockGetModuleNames = jest.fn<typeof realAdpTooling.getModuleNames>();
+const mockGetApprouterType = jest.fn<typeof realAdpTooling.getApprouterType>();
+const mockHasApprouter = jest.fn<typeof realAdpTooling.hasApprouter>();
+const mockIsLoggedInCf = jest.fn<typeof realAdpTooling.isLoggedInCf>();
+const mockGetMtaServices = jest.fn<typeof realAdpTooling.getMtaServices>();
+const mockGetCfApps = jest.fn<typeof realAdpTooling.getCfApps>();
+const mockDownloadAppContent = jest.fn<typeof realAdpTooling.downloadAppContent>();
+const mockValidateSmartTemplateApplication = jest.fn<typeof realAdpTooling.validateSmartTemplateApplication>();
+const mockValidateODataEndpoints = jest.fn<typeof realAdpTooling.validateODataEndpoints>();
+const mockGetBusinessServiceInfo = jest.fn<typeof realAdpTooling.getBusinessServiceInfo>();
 
-const realValidators = await import('../../../src/app/questions/helper/validators');
+const realValidators = await import('../../../src/app/questions/helper/validators.js');
 jest.unstable_mockModule('../../../src/app/questions/helper/validators', () => ({
     ...realValidators,
     validateBusinessSolutionName: mockValidateBusinessSolutionName
 }));
 
-const realChoices = await import('../../../src/app/questions/helper/choices');
+const realChoices = await import('../../../src/app/questions/helper/choices.js');
 jest.unstable_mockModule('../../../src/app/questions/helper/choices', () => ({
     ...realChoices,
     getAppRouterChoices: mockGetAppRouterChoices,
     getCFAppChoices: mockGetCFAppChoices
 }));
 
-const realConditions = await import('../../../src/app/questions/helper/conditions');
+const realConditions = await import('../../../src/app/questions/helper/conditions.js');
 jest.unstable_mockModule('../../../src/app/questions/helper/conditions', () => ({
     ...realConditions,
     showBusinessSolutionNameQuestion: mockShowBusinessSolutionNameQuestion
@@ -54,8 +54,8 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
 }));
 
 const { AppRouterType, cfServicesPromptNames } = await import('@sap-ux/adp-tooling');
-const { initI18n, t } = await import('../../../src/utils/i18n');
-const { CFServicesPrompter } = await import('../../../src/app/questions/cf-services');
+const { initI18n, t } = await import('../../../src/utils/i18n.js');
+const { CFServicesPrompter } = await import('../../../src/app/questions/cf-services.js');
 
 const mockCfConfig: CfConfig = {
     org: { GUID: 'org-guid', Name: 'test-org' },

@@ -3,15 +3,15 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { generateControllerExtension } from '../../src';
-import type { ControllerExtension } from '../../src/controller-extension/types';
-import { ControllerExtensionPageType } from '../../src/controller-extension/types';
+import { generateControllerExtension } from '../../src/index.js';
+import type { ControllerExtension } from '../../src/controller-extension/types.js';
+import { ControllerExtensionPageType } from '../../src/controller-extension/types.js';
 import {
     UI5_CONTROLLER_EXTENSION_LIST_REPORT,
     UI5_CONTROLLER_EXTENSION_OBJECT_PAGE
-} from '../../src/controller-extension';
-import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
-import { tabSizingTestCases } from '../common';
+} from '../../src/controller-extension/index.js';
+import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file.js';
+import { tabSizingTestCases } from '../common/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

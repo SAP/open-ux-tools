@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals';
 import axios from 'axios';
 
-const mockValidateEmptyString = jest.fn();
-const mockGetOfficialBaseUI5VersionUrl = jest.fn();
-const mockGetFormattedVersion = jest.fn();
+const mockValidateEmptyString = jest.fn() as jest.Mock;
+const mockGetOfficialBaseUI5VersionUrl = jest.fn() as jest.Mock;
+const mockGetFormattedVersion = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     validateEmptyString: mockValidateEmptyString
@@ -14,8 +14,8 @@ jest.unstable_mockModule('../../../src/ui5/format', () => ({
     getFormattedVersion: mockGetFormattedVersion
 }));
 
-const { validateUI5VersionExists } = await import('../../../src/ui5/validator');
-const { t, initI18n } = await import('../../../src/i18n');
+const { validateUI5VersionExists } = await import('../../../src/ui5/validator.js');
+const { t, initI18n } = await import('../../../src/i18n.js');
 
 const validateEmptyStringMock = mockValidateEmptyString;
 const getOfficialBaseUI5VersionUrlMock = mockGetOfficialBaseUI5VersionUrl;

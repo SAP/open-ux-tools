@@ -11,9 +11,9 @@ jest.unstable_mockModule('node:fs', () => ({
     default: { ...realFs.default, readFileSync: mockReadFileSync }
 }));
 
-const mockGetTypesPackage = jest.fn();
-const mockGetTypesVersion = jest.fn();
-const mockGetEsmTypesVersion = jest.fn();
+const mockGetTypesPackage = jest.fn<typeof realUi5Config.getTypesPackage>();
+const mockGetTypesVersion = jest.fn<typeof realUi5Config.getTypesVersion>();
+const mockGetEsmTypesVersion = jest.fn<typeof realUi5Config.getEsmTypesVersion>();
 
 const realUi5Config = await import('@sap-ux/ui5-config');
 
@@ -25,8 +25,8 @@ jest.unstable_mockModule('@sap-ux/ui5-config', () => ({
 }));
 
 const { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml, writeCfUI5Yaml, getPackageJSONInfo, getTypes } =
-    await import('../../../src/writer/project-utils');
-const { AppRouterType, FlexLayer } = await import('../../../src/types');
+    await import('../../../src/writer/project-utils.js');
+const { AppRouterType, FlexLayer } = await import('../../../src/types.js');
 import type { AdpWriterConfig } from '../../../src/index.js';
 
 const UI5_DEFAULT = {
@@ -127,9 +127,9 @@ describe('Project Utils', () => {
         });
 
         it('should return default package info on read failure', () => {
-            mockReadFileSync.mockImplementation(() => {
+            mockReadFileSync.mockImplementation((() => {
                 throw new Error('File not found');
-            });
+            }) as unknown as typeof realFs.readFileSync);
 
             const result = getPackageJSONInfo();
 

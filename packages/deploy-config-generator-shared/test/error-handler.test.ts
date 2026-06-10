@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
-const mockGetHostEnvironment = jest.fn();
+const mockGetHostEnvironment = jest.fn<typeof actualFioriGeneratorShared.getHostEnvironment>();
 const mockDefaultLogger = {
     info: jest.fn(),
     error: jest.fn(),

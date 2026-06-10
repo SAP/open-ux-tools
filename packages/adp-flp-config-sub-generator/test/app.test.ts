@@ -79,12 +79,12 @@ jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     isCli: jest.fn().mockReturnValue(false)
 }));
 
-const mockToolsLogger = jest.fn();
+const mockToolsLogger = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/logger', () => ({
     ToolsLogger: mockToolsLogger
 }));
 
-const mockGetAppType = jest.fn();
+const mockGetAppType = jest.fn<typeof realProjectAccess.getAppType>();
 const realProjectAccess = await import('@sap-ux/project-access');
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     ...realProjectAccess,

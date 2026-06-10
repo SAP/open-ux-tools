@@ -2,15 +2,15 @@ import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 // MOCKS - use jest.unstable_mockModule for ESM compatibility
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
 const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils,
     isAppStudio: mockIsAppStudio
 }));
 
-const { SystemLookup } = await import('../../../src/source/systems');
-const { getProviderConfig } = await import('../../../src/abap/config');
+const { SystemLookup } = await import('../../../src/source/systems.js');
+const { getProviderConfig } = await import('../../../src/abap/config.js');
 import type { RequestOptions } from '../../../src/abap/config.js';
 
 const logger = {

@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import * as mcpTypes from '@modelcontextprotocol/sdk/types.js';
-import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from '../../src/constant';
+import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from '../../src/constant.js';
 
 const setRequestHandlerMock = jest.fn();
 const connectMock = jest.fn();
@@ -36,7 +36,7 @@ const mockListFunctionalities = jest.fn<any>();
 const mockGetFunctionalityDetails = jest.fn<any>();
 const mockExecuteFunctionality = jest.fn<any>();
 const mockDocSearch = jest.fn<any>();
-const actualTools = await import('../../src/tools');
+const actualTools = await import('../../src/tools/index.js');
 jest.unstable_mockModule('../../src/tools', () => ({
     ...actualTools,
     listFioriApps: mockListFioriApps,
@@ -48,9 +48,9 @@ jest.unstable_mockModule('../../src/tools', () => ({
 
 // Dynamic imports after mocks
 const { Server } = await import('@modelcontextprotocol/sdk/server/index.js');
-const { FioriFunctionalityServer } = await import('../../src/server');
-const { TelemetryHelper, unknownTool } = await import('../../src/telemetry');
-const tools = await import('../../src/tools');
+const { FioriFunctionalityServer } = await import('../../src/server.js');
+const { TelemetryHelper, unknownTool } = await import('../../src/telemetry/index.js');
+const tools = await import('../../src/tools/index.js');
 
 describe('FioriFunctionalityServer', () => {
     afterEach(() => {
@@ -877,7 +877,7 @@ describe('FioriFunctionalityServer', () => {
         });
 
         test('should log error message when setupTelemetry rejects with an Error instance', async () => {
-            const loggerModule = await import('../../src/utils/logger');
+            const loggerModule = await import('../../src/utils/logger.js');
             const loggerErrorSpy = jest.spyOn(loggerModule.logger, 'error').mockImplementation(jest.fn());
             jest.spyOn(TelemetryHelper, 'initTelemetrySettings').mockRejectedValue(new Error('telemetry failed'));
 
@@ -890,7 +890,7 @@ describe('FioriFunctionalityServer', () => {
         });
 
         test('should log error message when setupTelemetry rejects with a non-Error value', async () => {
-            const loggerModule = await import('../../src/utils/logger');
+            const loggerModule = await import('../../src/utils/logger.js');
             const loggerErrorSpy = jest.spyOn(loggerModule.logger, 'error').mockImplementation(jest.fn());
             jest.spyOn(TelemetryHelper, 'initTelemetrySettings').mockRejectedValue('string error');
 

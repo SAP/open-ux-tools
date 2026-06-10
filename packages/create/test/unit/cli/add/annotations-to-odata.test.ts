@@ -6,28 +6,28 @@ import { Command } from 'commander';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createProjectAccessMock } from '../__mocks__/project-access-mock';
+import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockGetLogger = jest.fn();
+const mockGetLogger = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
     setLogLevelVerbose: jest.fn()
 }));
 
-const mockTraceChanges = jest.fn();
+const mockTraceChanges = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/trace', () => ({
     traceChanges: mockTraceChanges
 }));
 
-const mockPromptYUIQuestions = jest.fn();
+const mockPromptYUIQuestions = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/common', () => ({
     promptYUIQuestions: mockPromptYUIQuestions,
     runNpmInstallCommand: jest.fn()
 }));
 
-const mockValidateAdpAppType = jest.fn();
+const mockValidateAdpAppType = jest.fn() as jest.Mock;
 const validationMock = {
     validateBasePath: jest.fn(),
     validateAdpAppType: mockValidateAdpAppType,
@@ -37,24 +37,24 @@ const validationMock = {
 jest.unstable_mockModule('../../../../src/validation', () => validationMock);
 jest.unstable_mockModule('../../../../src/validation/validation', () => validationMock);
 
-const mockGetAppType = jest.fn();
+const mockGetAppType = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/project-access', () =>
     createProjectAccessMock({
         getAppType: mockGetAppType
     })
 );
 
-const mockGetAnnotationNamespaces = jest.fn();
+const mockGetAnnotationNamespaces = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/odata-service-writer', () => ({
     getAnnotationNamespaces: mockGetAnnotationNamespaces
 }));
 
-const mockIsCFEnvironment = jest.fn();
-const mockGetAdpConfig = jest.fn();
-const mockGetVariant = jest.fn();
-const mockGenerateChange = jest.fn();
-const mockGetPromptsForAddAnnotationsToOData = jest.fn();
-const mockInitMergedManifest = jest.fn();
+const mockIsCFEnvironment = jest.fn() as jest.Mock;
+const mockGetAdpConfig = jest.fn() as jest.Mock;
+const mockGetVariant = jest.fn() as jest.Mock;
+const mockGenerateChange = jest.fn() as jest.Mock;
+const mockGetPromptsForAddAnnotationsToOData = jest.fn() as jest.Mock;
+const mockInitMergedManifest = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     isCFEnvironment: mockIsCFEnvironment,
     getAdpConfig: mockGetAdpConfig,
@@ -72,7 +72,7 @@ jest.unstable_mockModule('@sap-ux/system-access', () => ({
     createAbapServiceProvider: jest.fn()
 }));
 
-const { addAnnotationsToOdataCommand } = await import('../../../../src/cli/add/annotations-to-odata');
+const { addAnnotationsToOdataCommand } = await import('../../../../src/cli/add/annotations-to-odata.js');
 
 const mockDataSources = {
     'annotation': {

@@ -851,6 +851,16 @@ export class MtaConfig {
     }
 
     /**
+     * Validate if mta contains a specific resource i.e. destination
+     *
+     * @param resourceName
+     * @returns {boolean} true if the mta contains an XSUAA resource
+     */
+    public hasResource(resourceName: string): boolean {
+        return this.resources.has(resourceName);
+    }
+
+    /**
      * Add an mta extension config, either creating a new mtaext file or extending an existing one.
      *
      * @param {string} instanceDestName The name of the instance destination that will be created

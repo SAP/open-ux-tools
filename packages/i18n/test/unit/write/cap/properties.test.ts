@@ -10,12 +10,12 @@ const mockWriteFile = jest.fn<(...args: unknown[]) => Promise<string | void>>();
 
 // Mock utils module
 jest.unstable_mockModule('../../../../src/utils', async () => {
-    const config = await import('../../../../src/utils/config');
-    const resolve = await import('../../../../src/utils/resolve');
-    const path = await import('../../../../src/utils/path');
-    const print = await import('../../../../src/utils/print');
-    const text = await import('../../../../src/utils/text');
-    const key = await import('../../../../src/utils/key');
+    const config = await import('../../../../src/utils/config.js');
+    const resolve = await import('../../../../src/utils/resolve.js');
+    const path = await import('../../../../src/utils/path.js');
+    const print = await import('../../../../src/utils/print.js');
+    const text = await import('../../../../src/utils/text.js');
+    const key = await import('../../../../src/utils/key.js');
     return {
         ...config,
         ...resolve,
@@ -37,7 +37,7 @@ jest.unstable_mockModule('../../../../src/write/cap/csv', () => ({
 }));
 
 // Import modules under test AFTER mocking
-const { tryAddPropertiesTexts } = await import('../../../../src/write/cap/properties');
+const { tryAddPropertiesTexts } = await import('../../../../src/write/cap/properties.js');
 
 describe('properties', () => {
     describe('tryAddPropertiesTexts', () => {

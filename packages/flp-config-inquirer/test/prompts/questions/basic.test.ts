@@ -4,7 +4,7 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 // Pre-import real module before mocking to avoid missing export errors
 const realProjectInputValidator = await import('@sap-ux/project-input-validator');
 
-const mockValidateText = jest.fn();
+const mockValidateText = jest.fn<typeof realProjectInputValidator.validateText>();
 
 jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     ...realProjectInputValidator,
@@ -12,10 +12,10 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
 }));
 
 const { getActionPrompt, getOverwritePrompt, getSemanticObjectPrompt, getSubTitlePrompt, getTitlePrompt } =
-    await import('../../../src/prompts/questions');
-const { initI18n, t } = await import('../../../src/i18n');
-const { promptNames } = await import('../../../src/types');
-import type { FLPConfigAnswers } from '../../../src/types';
+    await import('../../../src/prompts/questions/index.js');
+const { initI18n, t } = await import('../../../src/i18n.js');
+const { promptNames } = await import('../../../src/types.js');
+import type { FLPConfigAnswers } from '../../../src/types.js';
 
 describe('basic prompts', () => {
     const inbounds = {

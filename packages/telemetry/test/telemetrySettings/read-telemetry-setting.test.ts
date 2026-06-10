@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-const mockGetService = jest.fn();
+const mockGetService = jest.fn<typeof realStore.getService>();
 
 jest.unstable_mockModule('applicationinsights', () => {
     class TelemetryClient {
@@ -38,7 +38,7 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     Service: {}
 }));
 
-const { getTelemetrySetting } = await import('../../src/tooling-telemetry');
+const { getTelemetrySetting } = await import('../../src/tooling-telemetry/index.js');
 
 describe('Tests for getTelemetrySetting()', () => {
     beforeEach(() => {
