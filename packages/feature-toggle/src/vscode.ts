@@ -1,6 +1,15 @@
 import { createRequire } from 'node:module';
+import type * as vscode from 'vscode';
 
 const require = createRequire(import.meta.url);
+
+/**
+ * Minimal shape of the vscode module that this package consumes.
+ *
+ * We only use the `workspace` namespace (specifically `getConfiguration`), so we
+ * narrow the type rather than depending on the full `typeof vscode` surface.
+ */
+export type VSCodeApi = Pick<typeof vscode, 'workspace'>;
 
 /**
  * Resolves the vscode instance synchronously.
@@ -15,9 +24,9 @@ const require = createRequire(import.meta.url);
  * @returns the vscode instance, or `undefined` when not running inside the extension
  *          host (e.g. CLI, plain Node).
  */
-export function getVSCodeInstance(): any {
+export function getVSCodeInstance(): VSCodeApi | undefined {
     try {
-        return require('vscode');
+        return require('vscode') as VSCodeApi;
     } catch {
         // Vscode not available, normally in CLI.
         return undefined;

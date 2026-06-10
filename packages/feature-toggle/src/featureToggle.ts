@@ -1,9 +1,9 @@
 import type { FeatureToggle } from './types.js';
 import { extensionConfigKeys, tokenToggleGuid, FeatureToggleKey, ExperimentalFeatures } from './constants.js';
-import { getVSCodeInstance } from './vscode.js';
+import { getVSCodeInstance, type VSCodeApi } from './vscode.js';
 
 // Module-level vscode instance cache, resolved synchronously at module evaluation time.
-const _vscodeInstance: any = getVSCodeInstance();
+const _vscodeInstance: VSCodeApi | undefined = getVSCodeInstance();
 
 /**
  * Utility class for accessing and managing feature toggles.
@@ -14,7 +14,7 @@ export class FeatureToggleAccess {
      *
      * @returns instance of vscode or undefined
      */
-    public static get vscode(): any {
+    public static get vscode(): VSCodeApi | undefined {
         return _vscodeInstance;
     }
 
@@ -25,12 +25,13 @@ export class FeatureToggleAccess {
      * @returns the toggle state of the feature.
      */
     public static getFeatureToggle(feature: string): FeatureToggle {
-        let toggleConfigValue: boolean | undefined;
+        let toggleConfigValue: boolean | string | undefined;
 
-        if ((feature.includes(FeatureToggleKey) || feature === ExperimentalFeatures) && FeatureToggleAccess.vscode) {
+        const vscode = FeatureToggleAccess.vscode;
+        if ((feature.includes(FeatureToggleKey) || feature === ExperimentalFeatures) && vscode) {
             const toggleKey = feature.slice(0, feature.lastIndexOf('.'));
             const toggleId = feature.slice(feature.lastIndexOf('.') + 1, feature.length);
-            toggleConfigValue = FeatureToggleAccess.vscode.workspace.getConfiguration(toggleKey)?.get(toggleId);
+            toggleConfigValue = vscode.workspace.getConfiguration(toggleKey)?.get<boolean | string>(toggleId);
         } else {
             toggleConfigValue = false;
         }
@@ -66,23 +67,20 @@ export class FeatureToggleAccess {
      */
     public static getAllFeatureToggles(): Array<FeatureToggle> {
         const definedToggles: Array<FeatureToggle> = [];
-        if (FeatureToggleAccess.vscode) {
+        const vscode = FeatureToggleAccess.vscode;
+        if (vscode) {
             Object.keys(extensionConfigKeys).forEach((toggleConfigKey: string) => {
                 const toggleKey = `${extensionConfigKeys[toggleConfigKey]}.${FeatureToggleKey}`;
                 let toggles = {};
                 try {
-                    toggles = JSON.parse(
-                        JSON.stringify(FeatureToggleAccess.vscode.workspace.getConfiguration(toggleKey))
-                    );
+                    toggles = JSON.parse(JSON.stringify(vscode.workspace.getConfiguration(toggleKey)));
                 } catch {
                     // Not valid toggles. Skip.
                 }
 
                 Object.keys(toggles).forEach((toggleId: string) => {
                     // get full toggle value
-                    const toggleConfigValue = FeatureToggleAccess.vscode.workspace
-                        .getConfiguration(`${toggleKey}`)
-                        .get(`${toggleId}`);
+                    const toggleConfigValue = vscode.workspace.getConfiguration(`${toggleKey}`).get(`${toggleId}`);
                     const toggle: FeatureToggle = {
                         feature: `${toggleKey}.${toggleId}`,
                         isEnabled: toggleConfigValue ? (toggleConfigValue as boolean) : false
@@ -142,9 +140,10 @@ export function isFeatureEnabled(feature: string): boolean {
 export function isInternalFeaturesSettingEnabled(): boolean {
     const enableInternalFeaturesSetting = 'sap.ux.internal.enableInternalFeatures';
     let internalEnabled = false;
-    if (FeatureToggleAccess.vscode) {
-        const internalSetting = FeatureToggleAccess.vscode.workspace
-            ? FeatureToggleAccess.vscode.workspace.getConfiguration()?.get(enableInternalFeaturesSetting)
+    const vscode = FeatureToggleAccess.vscode;
+    if (vscode) {
+        const internalSetting = vscode.workspace
+            ? vscode.workspace.getConfiguration().get<boolean>(enableInternalFeaturesSetting)
             : false;
         internalEnabled = internalSetting ?? false;
     }
