@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-const mockExistsSync = jest.fn();
+const mockExistsSync = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('node:fs', () => ({
     existsSync: mockExistsSync
@@ -16,8 +16,8 @@ const {
     validateProjectName,
     validateProjectNameExternal,
     validateProjectNameInternal
-} = await import('../src/adp/validators');
-const { t } = await import('../src/i18n');
+} = await import('../src/adp/validators.js');
+const { t } = await import('../src/i18n.js');
 
 describe('project input validators', () => {
     beforeEach(() => {

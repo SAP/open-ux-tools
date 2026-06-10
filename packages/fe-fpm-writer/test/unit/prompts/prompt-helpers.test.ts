@@ -1,16 +1,16 @@
 import { jest } from '@jest/globals';
 import type { EntitySet } from '@sap-ux/vocabularies-types';
-import { bindingContextAbsolute, bindingContextRelative } from '../../../src/building-block/types';
-import type { PromptContext } from '../../../src/prompts/types';
-import { i18nNamespaces, translate } from '../../../src/i18n';
-import { BUTTON_GROUP_CONFIGS } from '../../../src/building-block/processor';
+import { bindingContextAbsolute, bindingContextRelative } from '../../../src/building-block/types.js';
+import type { PromptContext } from '../../../src/prompts/types.js';
+import { i18nNamespaces, translate } from '../../../src/i18n.js';
+import { BUTTON_GROUP_CONFIGS } from '../../../src/building-block/processor.js';
 
-const mockGetExistingButtonGroups = jest.fn();
+const mockGetExistingButtonGroups = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../src/building-block/prompts/utils/xml', () => ({
     getExistingButtonGroups: mockGetExistingButtonGroups
 }));
 
-const mockGetEntitySets = jest.fn();
+const mockGetEntitySets = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../src/building-block/prompts/utils/service', () => ({
     getEntitySets: mockGetEntitySets
 }));
@@ -21,7 +21,7 @@ const {
     resolveBindingContextTypeChoices,
     entitySetCache,
     getButtonGroupsChoices
-} = await import('../../../src/building-block/prompts/utils/prompt-helpers');
+} = await import('../../../src/building-block/prompts/utils/prompt-helpers.js');
 
 const t = translate(i18nNamespaces.buildingBlock, 'prompts.');
 

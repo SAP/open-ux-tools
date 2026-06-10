@@ -29,8 +29,8 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     addPackageDevDependency: jest.fn().mockResolvedValue(undefined)
 }));
 
-const { installDependencies } = await import('../../../src/fiori-app-generator/install');
-const { CommandRunner, initI18nFioriAppSubGenerator, t } = await import('../../../src/utils');
+const { installDependencies } = await import('../../../src/fiori-app-generator/install.js');
+const { CommandRunner, initI18nFioriAppSubGenerator, t } = await import('../../../src/utils/index.js');
 const { DefaultLogger } = await import('@sap-ux/fiori-generator-shared');
 
 describe('Test install queue functions', () => {

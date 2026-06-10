@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import { mockTargetSystems } from './fixtures/targets.js';
 import type { AbapDeployConfigAnswersInternal } from '../src/types.js';
 
-const mockGetService = jest.fn();
+const mockGetService = jest.fn<typeof realStore.getService>();
 const realStore = await import('@sap-ux/store');
 
 jest.unstable_mockModule('@sap-ux/store', () => ({

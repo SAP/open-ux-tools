@@ -1,10 +1,10 @@
 import { jest } from '@jest/globals';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { Uaa } from '../../../src/types';
+import type { Uaa } from '../../../src/types.js';
 
-const mockAxiosGet = jest.fn();
-const mockAxiosPost = jest.fn();
+const mockAxiosGet = jest.fn() as jest.Mock;
+const mockAxiosPost = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('axios', () => ({
     default: {
@@ -14,8 +14,9 @@ jest.unstable_mockModule('axios', () => ({
     __esModule: true
 }));
 
-const { getToken, getBtpDestinationConfig, listBtpDestinations } = await import('../../../src/btp/api');
-const { initI18n, t } = await import('../../../src/i18n');
+const { getToken, getBtpDestinationConfig, listBtpDestinations, getDestinationServiceUaa } =
+    await import('../../../src/btp/api.js');
+const { initI18n, t } = await import('../../../src/i18n.js');
 
 describe('btp/api', () => {
     const mockLogger = {
@@ -136,8 +137,12 @@ describe('btp/api', () => {
 
     describe('listBtpDestinations', () => {
         const mockCredentials = {
-            uri: 'https://destination.cfapps.example.com',
-            uaa: { clientid: 'client-id', clientsecret: 'client-secret', url: 'https://auth.example.com' }
+            uaa: {
+                clientid: 'client-id',
+                clientsecret: 'client-secret',
+                url: 'https://auth.example.com',
+                uri: 'https://destination.cfapps.example.com'
+            }
         };
 
         const mockBtpConfigs = [
@@ -167,6 +172,10 @@ describe('btp/api', () => {
 
             const result = await listBtpDestinations(mockCredentials);
 
+            expect(mockAxiosGet).toHaveBeenCalledWith(
+                `${mockCredentials.uaa.uri}/destination-configuration/v1/subaccountDestinations`,
+                { headers: { Authorization: 'Bearer mock-token' } }
+            );
             expect(result).toEqual({
                 DEST_ONE: {
                     Name: 'DEST_ONE',
@@ -198,6 +207,10 @@ describe('btp/api', () => {
 
             const result = await listBtpDestinations(flatCredentials);
 
+            expect(mockAxiosGet).toHaveBeenCalledWith(
+                `${flatCredentials.uri}/destination-configuration/v1/subaccountDestinations`,
+                { headers: { Authorization: 'Bearer mock-token' } }
+            );
             expect(result).toEqual({
                 DEST_ONE: {
                     Name: 'DEST_ONE',
@@ -224,6 +237,50 @@ describe('btp/api', () => {
             await expect(listBtpDestinations(mockCredentials)).rejects.toThrow(
                 t('error.failedToListBtpDestinations', { error: 'Network error' })
             );
+        });
+
+        it('should throw when credentials are incomplete', async () => {
+            await expect(listBtpDestinations({ clientid: 'cid' } as any)).rejects.toThrow(
+                t('error.failedToListBtpDestinations', {
+                    error: t('error.incompleteDestinationServiceCredentials')
+                })
+            );
+            expect(mockAxiosGet).not.toHaveBeenCalled();
+            expect(mockAxiosPost).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('getDestinationServiceUaa', () => {
+        it('returns the flat credentials unchanged', () => {
+            const flat = {
+                clientid: 'cid',
+                clientsecret: 'csecret',
+                url: '/auth.example',
+                uri: '/dest.example'
+            };
+
+            expect(getDestinationServiceUaa(flat)).toEqual(flat);
+        });
+
+        it('unwraps the nested uaa shape', () => {
+            const nested = {
+                uaa: {
+                    clientid: 'cid',
+                    clientsecret: 'csecret',
+                    url: '/auth.example',
+                    uri: '/dest.example'
+                }
+            };
+
+            expect(getDestinationServiceUaa(nested)).toEqual(nested.uaa);
+        });
+
+        it('returns undefined when any required field is missing', () => {
+            expect(getDestinationServiceUaa(undefined)).toBeUndefined();
+            expect(
+                getDestinationServiceUaa({ clientid: 'cid', clientsecret: 'csecret', url: '/u' } as any)
+            ).toBeUndefined();
+            expect(getDestinationServiceUaa({ uaa: { clientid: 'cid' } } as any)).toBeUndefined();
         });
     });
 });

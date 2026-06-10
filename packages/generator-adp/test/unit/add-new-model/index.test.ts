@@ -13,14 +13,14 @@ import type {
     UI5YamlCustomTaskConfiguration
 } from '@sap-ux/adp-tooling';
 
-const mockGenerateChange = jest.fn();
-const mockGetVariant = jest.fn();
-const mockIsCFEnvironment = jest.fn();
-const mockIsLoggedInCf = jest.fn();
-const mockLoadCfConfig = jest.fn();
-const mockCreateNewModelData = jest.fn();
-const mockReadUi5Config = jest.fn();
-const mockExtractCfBuildTask = jest.fn();
+const mockGenerateChange = jest.fn<typeof realAdpTooling.generateChange>();
+const mockGetVariant = jest.fn<typeof realAdpTooling.getVariant>();
+const mockIsCFEnvironment = jest.fn<typeof realAdpTooling.isCFEnvironment>();
+const mockIsLoggedInCf = jest.fn<typeof realAdpTooling.isLoggedInCf>();
+const mockLoadCfConfig = jest.fn<typeof realAdpTooling.loadCfConfig>();
+const mockCreateNewModelData = jest.fn<typeof realAdpTooling.createNewModelData>();
+const mockReadUi5Config = jest.fn<typeof realAdpTooling.readUi5Config>();
+const mockExtractCfBuildTask = jest.fn<typeof realAdpTooling.extractCfBuildTask>();
 
 // Get real module for ChangeType and other constants
 const realAdpTooling = await import('@sap-ux/adp-tooling');
@@ -38,7 +38,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     extractCfBuildTask: mockExtractCfBuildTask
 }));
 
-const { default: newModelGen } = await import('../../../src/add-new-model');
+const { default: newModelGen } = await import('../../../src/add-new-model/index.js');
 
 const variant = {
     reference: 'customer.adp.variant',

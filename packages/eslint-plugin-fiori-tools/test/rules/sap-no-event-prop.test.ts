@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-event-prop';
+import rule from '../../src/rules/sap-no-event-prop.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

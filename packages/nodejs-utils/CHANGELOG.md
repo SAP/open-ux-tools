@@ -1,5 +1,26 @@
 # @sap-ux/nodejs-utils
 
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies [0fa8305]
+    - @sap-ux/btp-utils@2.0.2
+
+## 1.0.2
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/btp-utils@2.0.1
+
+## 1.0.1
+
+### Patch Changes
+
+- 41f327a: update to use yo directly to check version rather than npm
+
 ## 1.0.0
 
 ### Major Changes

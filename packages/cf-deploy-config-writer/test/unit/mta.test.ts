@@ -16,12 +16,12 @@ ufs.use(realFs as any).use(memfs.vol as any);
 
 jest.unstable_mockModule('node:fs', () => ufs);
 
-const { MockMta } = await import('./mockMta');
+const { MockMta } = await import('./mockMta.js');
 jest.unstable_mockModule('@sap/mta-lib', () => ({
     Mta: MockMta
 }));
 
-const realWaitForMta = await import('../../src/mta-config/wait-for-mta');
+const realWaitForMta = await import('../../src/mta-config/wait-for-mta.js');
 const mockWaitForMtaFile = jest.fn().mockImplementation(realWaitForMta.waitForMtaFile);
 jest.unstable_mockModule('../../src/mta-config/wait-for-mta', () => ({
     ...realWaitForMta,
@@ -30,8 +30,8 @@ jest.unstable_mockModule('../../src/mta-config/wait-for-mta', () => ({
 
 const fs = await import('node:fs');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
-const { isMTAFound, useAbapDirectServiceBinding, MtaConfig, getMtaConfig } = await import('../../src/');
-const { deployMode, SRV_API } = await import('../../src/constants');
+const { isMTAFound, useAbapDirectServiceBinding, MtaConfig, getMtaConfig } = await import('../../src//index.js');
+const { deployMode, SRV_API } = await import('../../src/constants.js');
 
 describe('Validate common functionality', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -104,6 +104,10 @@ describe('Validate MtaConfig Instance', () => {
     );
     const managedRouterConfigCap = fs.readFileSync(join(__dirname, 'fixtures/mta-types/managed-cap/mta.yaml'), 'utf-8');
     const managedRouterConfig = fs.readFileSync(join(__dirname, 'fixtures/mta-types/managed-apps/mta.yaml'), 'utf-8');
+    const managedRouterConfigCapSrvApi = fs.readFileSync(
+        join(__dirname, 'fixtures/mta-types/appfront-cap/mta.yaml'),
+        'utf-8'
+    );
     const appDir = `${OUTPUT_DIR_PREFIX}/app1`;
 
     beforeEach(() => {
@@ -136,6 +140,18 @@ describe('Validate MtaConfig Instance', () => {
         `);
     });
 
+    it('hasResource returns true for existing resource and false for missing resource', async () => {
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: managedRouterConfig
+            },
+            '/'
+        );
+        const mtaConfig = await MtaConfig.newInstance(appDir);
+        expect(mtaConfig.hasResource('destination')).toBeTruthy();
+        expect(mtaConfig.hasResource('nonexistent')).toBeFalsy();
+    });
+
     it('Validate destinations are retrieved for an mta config missing destinations', async () => {
         memfs.vol.fromNestedJSON(
             {
@@ -165,6 +181,17 @@ describe('Validate MtaConfig Instance', () => {
               "northwind",
             ]
         `);
+    });
+
+    it('(CAP frontend) Validate srv-api destination is not exposed without WebIDEUsage (html5-repo + app-front deployer)', async () => {
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: managedRouterConfigCapSrvApi
+            },
+            '/'
+        );
+        const mtaConfig = await MtaConfig.newInstance(appDir);
+        expect(mtaConfig.getExposedDestinations()).toMatchInlineSnapshot(`Array []`);
     });
 
     it.each([

@@ -20,7 +20,7 @@ Object {
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
@@ -44,7 +44,7 @@ Object {
     Object {
       "backgroundColor": "var(--vscode-input-background)",
       "borderColor": "var(--vscode-editorWidget-border)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "borderStyle": "solid",
       "borderWidth": 1,
       "boxSizing": "initial",
@@ -69,7 +69,7 @@ Object {
       "selectors": Object {
         ":after": Object {
           "border": "1px solid var(var(--vscode-inputValidation-errorBorder))",
-          "borderRadius": 4,
+          "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
         },
       },
     },
@@ -123,7 +123,7 @@ Object {
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
@@ -147,7 +147,7 @@ Object {
     Object {
       "backgroundColor": "var(--vscode-input-background)",
       "borderColor": "var(--vscode-editorWidget-border)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "borderStyle": "solid",
       "borderWidth": 1,
       "boxSizing": "initial",
@@ -172,7 +172,7 @@ Object {
       "selectors": Object {
         ":after": Object {
           "border": "1px solid var(--vscode-focusBorder)",
-          "borderRadius": 4,
+          "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
         },
       },
     },
@@ -226,7 +226,7 @@ Object {
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
@@ -253,7 +253,7 @@ Object {
     Object {
       "backgroundColor": "var(--vscode-input-background)",
       "borderColor": "var(--vscode-editorWidget-border)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "borderStyle": "solid",
       "borderWidth": 1,
       "boxSizing": "initial",
@@ -329,7 +329,7 @@ Object {
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
@@ -353,7 +353,7 @@ Object {
     Object {
       "backgroundColor": "var(--vscode-input-background)",
       "borderColor": "var(--vscode-editorWidget-border)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "borderStyle": "solid",
       "borderWidth": 1,
       "boxSizing": "initial",
@@ -425,7 +425,7 @@ Object {
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
@@ -449,7 +449,7 @@ Object {
     Object {
       "backgroundColor": "var(--vscode-input-background)",
       "borderColor": "var(--vscode-editorWidget-border)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "borderStyle": "solid",
       "borderWidth": 1,
       "boxSizing": "initial",
@@ -521,7 +521,7 @@ Object {
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
@@ -545,7 +545,7 @@ Object {
     Object {
       "backgroundColor": "var(--vscode-input-background)",
       "borderColor": "var(--vscode-editorWidget-border)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "borderStyle": "solid",
       "borderWidth": 1,
       "boxSizing": "initial",
@@ -617,7 +617,7 @@ Object {
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
@@ -641,7 +641,7 @@ Object {
     Object {
       "backgroundColor": "var(--vscode-input-background)",
       "borderColor": "var(--vscode-editorWidget-border)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "borderStyle": "solid",
       "borderWidth": 1,
       "boxSizing": "initial",
@@ -713,7 +713,7 @@ Object {
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
@@ -739,7 +739,7 @@ Object {
     Object {
       "backgroundColor": "var(--vscode-input-background)",
       "borderColor": "var(--vscode-editorWidget-border)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "borderStyle": "solid",
       "borderWidth": 1,
       "boxSizing": "initial",
@@ -753,7 +753,7 @@ Object {
     false,
     Object {
       "backgroundColor": "var(--vscode-editor-inactiveSelectionBackground)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "opacity": 0.5,
     },
     undefined,
@@ -811,7 +811,7 @@ Object {
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
@@ -838,7 +838,7 @@ Object {
     Object {
       "backgroundColor": "var(--vscode-input-background)",
       "borderColor": "var(--vscode-editorWidget-border)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "borderStyle": "solid",
       "borderWidth": 1,
       "boxSizing": "initial",
@@ -918,7 +918,7 @@ Object {
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
@@ -942,7 +942,7 @@ Object {
     Object {
       "backgroundColor": "var(--vscode-input-background)",
       "borderColor": "var(--vscode-editorWidget-border)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "borderStyle": "solid",
       "borderWidth": 1,
       "boxSizing": "initial",
@@ -1014,7 +1014,7 @@ Object {
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
@@ -1042,7 +1042,7 @@ Object {
     Object {
       "backgroundColor": "var(--vscode-input-background)",
       "borderColor": "var(--vscode-editorWidget-border)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "borderStyle": "solid",
       "borderWidth": 1,
       "boxSizing": "initial",
@@ -1052,7 +1052,7 @@ Object {
     false,
     Object {
       "backgroundColor": "var(--vscode-editor-inactiveSelectionBackground)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "opacity": 0.5,
     },
     undefined,
@@ -1110,7 +1110,7 @@ Object {
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
@@ -1139,7 +1139,7 @@ Object {
     Object {
       "backgroundColor": "var(--vscode-input-background)",
       "borderColor": "var(--vscode-editorWidget-border)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "borderStyle": "solid",
       "borderWidth": 1,
       "boxSizing": "initial",
@@ -1215,7 +1215,7 @@ Object {
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
@@ -1241,7 +1241,7 @@ Object {
     Object {
       "backgroundColor": "var(--vscode-input-background)",
       "borderColor": "var(--vscode-editorWidget-border)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "borderStyle": "solid",
       "borderWidth": 1,
       "boxSizing": "initial",
@@ -1309,7 +1309,7 @@ Object {
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
@@ -1333,7 +1333,7 @@ Object {
     Object {
       "backgroundColor": "var(--vscode-input-background)",
       "borderColor": "var(--vscode-editorWidget-border)",
-      "borderRadius": 4,
+      "borderRadius": "var(--vscode-cornerRadius-small, 4px)",
       "borderStyle": "solid",
       "borderWidth": 1,
       "boxSizing": "initial",

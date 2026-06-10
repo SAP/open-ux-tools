@@ -2,8 +2,8 @@ import { jest } from '@jest/globals';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import nock from 'nock';
-import type { AbapCloudOptions, AxiosError, AxiosRequestConfig, ProviderConfiguration } from '../../src';
-import type { ArchiveFileNode, SystemInfo } from '../../src/abap/types';
+import type { AbapCloudOptions, AxiosError, AxiosRequestConfig, ProviderConfiguration } from '../../src/index.js';
+import type { ArchiveFileNode, SystemInfo } from '../../src/abap/types/index.js';
 import fs from 'node:fs';
 import cloneDeep from 'lodash/cloneDeep';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -34,7 +34,7 @@ jest.unstable_mockModule('../../src/auth/reentrance-ticket', () => ({
 }));
 
 // Mock auth modules to allow spying on their exports
-const actualAuth = await import('../../src/auth');
+const actualAuth = await import('../../src/auth/index.js');
 const mockAttachReentranceTicketAuthInterceptor = jest.fn(actualAuth.attachReentranceTicketAuthInterceptor);
 const mockAttachUaaAuthInterceptor = jest.fn(actualAuth.attachUaaAuthInterceptor);
 jest.unstable_mockModule('../../src/auth', () => ({
@@ -55,9 +55,9 @@ const {
     GeneratorService,
     UI5RtVersionService,
     AbapCDSViewService
-} = await import('../../src');
-const { UiServiceGenerator } = await import('../../src/abap/adt-catalog/generators/ui-service-generator');
-const { Uaa } = await import('../../src/auth/uaa');
+} = await import('../../src/index.js');
+const { UiServiceGenerator } = await import('../../src/abap/adt-catalog/generators/ui-service-generator.js');
+const { Uaa } = await import('../../src/auth/uaa.js');
 
 /**
  * URL are specific to the discovery schema.

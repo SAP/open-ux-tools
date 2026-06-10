@@ -1,5 +1,5 @@
-import { FioriAppGenerator } from '../../../src/fiori-app-generator/fioriAppGenerator';
-import { initI18nFioriAppSubGenerator } from '../../../src/utils/i18n';
+import { FioriAppGenerator } from '../../../src/fiori-app-generator/fioriAppGenerator.js';
+import { initI18nFioriAppSubGenerator } from '../../../src/utils/i18n.js';
 
 export class TestWritingGenerator extends FioriAppGenerator {
     async initializing(): Promise<void> {
@@ -18,8 +18,8 @@ export class TestWritingGenerator extends FioriAppGenerator {
  * since mocks must be registered before the modules are loaded.
  */
 export async function createTestWritingGeneratorClass(): Promise<typeof TestWritingGenerator> {
-    const { FioriAppGenerator: FioriAppGen } = await import('../../../src/fiori-app-generator/fioriAppGenerator');
-    const { initI18nFioriAppSubGenerator: initI18n } = await import('../../../src/utils/i18n');
+    const { FioriAppGenerator: FioriAppGen } = await import('../../../src/fiori-app-generator/fioriAppGenerator.js');
+    const { initI18nFioriAppSubGenerator: initI18n } = await import('../../../src/utils/i18n.js');
 
     return class DynamicTestWritingGenerator extends FioriAppGen {
         async initializing(): Promise<void> {

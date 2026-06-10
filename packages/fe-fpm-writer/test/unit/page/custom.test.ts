@@ -4,13 +4,13 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { CustomPage } from '../../../src';
-import { generateCustomPage, validateBasePath } from '../../../src';
-import { FCL_ROUTER } from '../../../src/common/defaults';
-import { detectTabSpacing } from '../../../src/common/file';
-import { tabSizingTestCases } from '../../common';
+import type { CustomPage } from '../../../src/index.js';
+import { generateCustomPage, validateBasePath } from '../../../src/index.js';
+import { FCL_ROUTER } from '../../../src/common/defaults.js';
+import { detectTabSpacing } from '../../../src/common/file.js';
+import { tabSizingTestCases } from '../../common/index.js';
 import type { Logger } from '@sap-ux/logger';
-import { i18nNamespaces, translate } from '../../../src/i18n';
+import { i18nNamespaces, translate } from '../../../src/i18n.js';
 import { findFilesByExtensionMock } from '../../__mocks__/project-access-file.mjs';
 
 describe('CustomPage', () => {

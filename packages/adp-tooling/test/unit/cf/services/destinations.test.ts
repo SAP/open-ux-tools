@@ -2,9 +2,9 @@ import { jest } from '@jest/globals';
 import { join, dirname } from 'node:path';
 
 // Create mocks before any imports
-const mockGetOrCreateServiceInstanceKeys = jest.fn();
-const mockListBtpDestinations = jest.fn();
-const mockGetYamlContent = jest.fn();
+const mockGetOrCreateServiceInstanceKeys = jest.fn() as jest.Mock;
+const mockListBtpDestinations = jest.fn() as jest.Mock;
+const mockGetYamlContent = jest.fn() as jest.Mock;
 
 const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
@@ -23,8 +23,8 @@ jest.unstable_mockModule('../../../../src/cf/project/yaml-loader', () => ({
     getYamlContent: mockGetYamlContent
 }));
 
-const { getBtpDestinations } = await import('../../../../src/cf/services/destinations');
-const { initI18n, t } = await import('../../../../src/i18n');
+const { getBtpDestinations } = await import('../../../../src/cf/services/destinations.js');
+const { initI18n, t } = await import('../../../../src/i18n.js');
 
 const mockProjectPath = join('path', 'to', 'project');
 
@@ -58,8 +58,12 @@ const mockDestinations = {
 };
 
 const mockCredentials = {
-    uri: 'https://destination.cfapps.example.com',
-    uaa: { clientid: 'client-id', clientsecret: 'client-secret', url: 'https://auth.example.com' }
+    uaa: {
+        clientid: 'client-id',
+        clientsecret: 'client-secret',
+        url: 'https://auth.example.com',
+        uri: 'https://destination.cfapps.example.com'
+    }
 };
 
 const mockServiceInfo = {

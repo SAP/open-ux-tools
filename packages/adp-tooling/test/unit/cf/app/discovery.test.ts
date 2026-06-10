@@ -2,10 +2,10 @@ import { jest } from '@jest/globals';
 import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-const mockGetFDCApps = jest.fn();
-const mockExtractXSApp = jest.fn();
-const mockIsAppStudio = jest.fn();
-const mockCreate = jest.fn();
+const mockGetFDCApps = jest.fn() as jest.Mock;
+const mockExtractXSApp = jest.fn() as jest.Mock;
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockCreate = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('mem-fs-editor', () => ({
     create: mockCreate
@@ -28,8 +28,8 @@ jest.unstable_mockModule('../../../../src/cf/utils/validation', () => ({
 }));
 
 const { getAppHostIds, getCfApps, getOAuthPathsFromXsApp, getBackendUrlsFromServiceKeys, getServiceKeyDestinations } =
-    await import('../../../../src/cf/app/discovery');
-const { initI18n, t } = await import('../../../../src/i18n');
+    await import('../../../../src/cf/app/discovery.js');
+const { initI18n, t } = await import('../../../../src/i18n.js');
 import type { CFApp, CfConfig, ServiceKeys, Organization, Space, Uaa, XsApp } from '../../../../src/types.js';
 
 const mockApps: CFApp[] = [

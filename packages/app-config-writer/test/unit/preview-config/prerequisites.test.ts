@@ -18,7 +18,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     checkCdsUi5PluginEnabled: mockCheckCdsUi5PluginEnabled
 }));
 
-const { checkPrerequisites } = await import('../../../src/preview-config/prerequisites');
+const { checkPrerequisites } = await import('../../../src/preview-config/prerequisites.js');
 
 describe('prerequisites', () => {
     const logger = new ToolsLogger();

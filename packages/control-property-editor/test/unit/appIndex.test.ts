@@ -1,11 +1,11 @@
 import { jest } from '@jest/globals';
 import * as actualUiComponents from '@sap-ux/ui-components';
 
-const mockInitI18n = jest.fn();
-const mockRegisterAppIcons = jest.fn();
-const mockInitIcons = jest.fn();
-const mockInitTheme = jest.fn();
-const mockReactDOMRender = jest.fn();
+const mockInitI18n = jest.fn() as jest.Mock;
+const mockRegisterAppIcons = jest.fn() as jest.Mock;
+const mockInitIcons = jest.fn<typeof actualUiComponents.initIcons>();
+const mockInitTheme = jest.fn<typeof actualUiComponents.initTheme>();
+const mockReactDOMRender = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('../../src/i18n', () => ({
     initI18n: mockInitI18n
@@ -28,8 +28,8 @@ jest.unstable_mockModule('react-dom', () => ({
 }));
 
 const { start } = await import('../../src/index');
-const { store } = await import('../../src/store');
-const { initializeLivereload, setFeatureToggles, setProjectScenario } = await import('../../src/slice');
+const { store } = await import('../../src/store.js');
+const { initializeLivereload, setFeatureToggles, setProjectScenario } = await import('../../src/slice.js');
 
 describe('index', () => {
     const dispatchSpy = jest.spyOn(store, 'dispatch');

@@ -6,9 +6,9 @@ import { copyFileSync, promises as fsPromise, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { rimraf } from 'rimraf';
-import { FloorplanFF, type State } from '../../../src/types';
-import { cleanTestDir, getTestDir, ignoreMatcherOpts, runWritingPhaseGen } from '../test-utils';
-import { initI18nFioriAppSubGenerator } from '../../../src';
+import { FloorplanFF, type State } from '../../../src/types/index.js';
+import { cleanTestDir, getTestDir, ignoreMatcherOpts, runWritingPhaseGen } from '../test-utils/index.js';
+import { initI18nFioriAppSubGenerator } from '../../../src/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

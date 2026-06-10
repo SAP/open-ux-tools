@@ -7,14 +7,14 @@ import type { ToolsLogger } from '@sap-ux/logger';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockGetLogger = jest.fn();
+const mockGetLogger = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
     setLogLevelVerbose: jest.fn()
 }));
 
-const { traceChanges } = await import('../../../src/tracing');
+const { traceChanges } = await import('../../../src/tracing/index.js');
 
 describe('Test traceChanges()', () => {
     let loggerMock: ToolsLogger;

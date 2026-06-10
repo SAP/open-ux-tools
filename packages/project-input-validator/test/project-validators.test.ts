@@ -2,10 +2,10 @@ import { jest } from '@jest/globals';
 import { join } from 'node:path';
 
 // Mock functions
-const mockFindCapProjectRoot = jest.fn();
-const mockGetCapProjectType = jest.fn();
-const mockFindRootsForPath = jest.fn();
-const mockValidateProjectFolder = jest.fn();
+const mockFindCapProjectRoot = jest.fn() as jest.Mock;
+const mockGetCapProjectType = jest.fn() as jest.Mock;
+const mockFindRootsForPath = jest.fn() as jest.Mock;
+const mockValidateProjectFolder = jest.fn() as jest.Mock;
 const mockValidateWindowsPathLength = jest.fn<() => true | string>().mockReturnValue(true);
 
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
@@ -22,15 +22,15 @@ jest.unstable_mockModule('../src/ui5/validators', () => ({
 }));
 
 // Need to get the real implementations for general/validators, then mock only validateWindowsPathLength
-const realGeneralValidators = await import('../src/general/validators');
+const realGeneralValidators = await import('../src/general/validators.js');
 
 jest.unstable_mockModule('../src/general/validators', () => ({
     ...realGeneralValidators,
     validateWindowsPathLength: mockValidateWindowsPathLength
 }));
 
-const { validateFioriAppTargetFolder } = await import('../src/general/project-path-validators');
-const { initI18nProjectValidators, t } = await import('../src/i18n');
+const { validateFioriAppTargetFolder } = await import('../src/general/project-path-validators.js');
+const { initI18nProjectValidators, t } = await import('../src/i18n.js');
 
 describe('validateFioriAppTargetFolder', () => {
     beforeAll(async () => {

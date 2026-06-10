@@ -1,5 +1,23 @@
 # @sap-ux/ui-components
 
+## 3.0.3
+
+### Patch Changes
+
+- a1235d6: feat: add ValidationWarning icon to UiIcons
+
+## 3.0.2
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+
+## 3.0.1
+
+### Patch Changes
+
+- 21cadc3: fix: use VSCode cornerRadius CSS variables instead of hardcoded border-radius values in buttons, callouts, dialogs and toggle
+
 ## 3.0.0
 
 ### Major Changes

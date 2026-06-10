@@ -1,5 +1,75 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.3.11
+
+### Patch Changes
+
+- Updated dependencies [c8e8f7e]
+    - @sap-ux/adp-tooling@1.0.11
+
+## 0.3.10
+
+### Patch Changes
+
+- Updated dependencies [0fa8305]
+    - @sap-ux/btp-utils@2.0.2
+    - @sap-ux/adp-tooling@1.0.10
+
+## 0.3.9
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.9
+
+## 0.3.8
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.8
+
+## 0.3.7
+
+### Patch Changes
+
+- Updated dependencies [fb84c0e]
+    - @sap-ux/adp-tooling@1.0.7
+
+## 0.3.6
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.6
+
+## 0.3.5
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/adp-tooling@1.0.5
+    - @sap-ux/btp-utils@2.0.1
+    - @sap-ux/logger@1.0.1
+
+## 0.3.4
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.4
+
+## 0.3.3
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.3
+
+## 0.3.2
+
+### Patch Changes
+
+- a8e4cf0: fix: handle both nested (`{ uaa: {...} }`) and flat destination-service credential shapes when fetching BTP destinations and when checking for OnPremise destinations during adaptation-project startup. A new `getDestinationServiceUaa` helper in `@sap-ux/adp-tooling` is reused by `@sap-ux/backend-proxy-middleware-cf` to avoid duplicate shape-handling logic.
+- Updated dependencies [a8e4cf0]
+    - @sap-ux/adp-tooling@1.0.2
+
 ## 0.3.1
 
 ### Patch Changes

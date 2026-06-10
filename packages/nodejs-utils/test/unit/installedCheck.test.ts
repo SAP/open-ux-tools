@@ -47,7 +47,7 @@ let mockTestPackage1: { packageJson: Record<string, any>; path: string } = {
 };
 
 // Mock functions
-const mockIsAppStudio = jest.fn();
+const mockIsAppStudio = jest.fn() as jest.Mock;
 const mockFastGlob = jest.fn(async (globPat: string, { cwd }: { cwd: string }) => {
     if (globPat === `**/*${TEST_PACKAGE2_NAME_SUBSTRING}*`) {
         if (fastGlobMockCondition === MOCK_FAST_GLOB_PATH.LOCAL_NM_PATH && cwd.indexOf(mockNMPath) > -1) {
@@ -80,9 +80,7 @@ const mockReadPkgUp = jest.fn(async ({ cwd }: { cwd: string }) => {
 });
 
 // Mock modules before importing
-const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
-    ...realBtpUtils,
     isAppStudio: mockIsAppStudio
 }));
 
@@ -97,8 +95,8 @@ jest.unstable_mockModule('read-pkg-up', () => ({
 }));
 
 // Import after mocking
-const { findInstalledPackages } = await import('../../src/installedCheck');
-const { CommandRunner } = await import('../../src/commandRunner');
+const { findInstalledPackages } = await import('../../src/installedCheck.js');
+const { CommandRunner } = await import('../../src/commandRunner.js');
 
 describe('Installed module checker', () => {
     // CommandRunner mock npm 'npm -g root'
@@ -107,7 +105,7 @@ describe('Installed module checker', () => {
         has: jest.fn(),
         inspect: jest.fn(),
         update: jest.fn(),
-        get: jest.fn().mockImplementation((id: string) => {
+        get: jest.fn().mockImplementation((id) => {
             if (id === 'ApplicationWizard.installationLocation') {
                 return customInstallLoc;
             }

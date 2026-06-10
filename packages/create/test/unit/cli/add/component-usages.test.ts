@@ -8,24 +8,24 @@ import { readFileSync } from 'node:fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockGetLogger = jest.fn();
+const mockGetLogger = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
     setLogLevelVerbose: jest.fn()
 }));
 
-const mockTraceChanges = jest.fn();
+const mockTraceChanges = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/trace', () => ({
     traceChanges: mockTraceChanges
 }));
 
-const mockPromptYUIQuestions = jest.fn();
+const mockPromptYUIQuestions = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/common', () => ({
     promptYUIQuestions: mockPromptYUIQuestions,
     runNpmInstallCommand: jest.fn()
 }));
 
-const mockValidateAdpAppType = jest.fn();
+const mockValidateAdpAppType = jest.fn() as jest.Mock;
 const validationMock = {
     validateBasePath: jest.fn(),
     validateAdpAppType: mockValidateAdpAppType,
@@ -37,10 +37,10 @@ jest.unstable_mockModule('../../../../src/validation/validation', () => validati
 
 jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn() }));
 
-const mockIsCFEnvironment = jest.fn();
-const mockGetVariant = jest.fn();
-const mockGenerateChange = jest.fn();
-const mockGetPromptsForAddComponentUsages = jest.fn();
+const mockIsCFEnvironment = jest.fn() as jest.Mock;
+const mockGetVariant = jest.fn() as jest.Mock;
+const mockGenerateChange = jest.fn() as jest.Mock;
+const mockGetPromptsForAddComponentUsages = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     isCFEnvironment: mockIsCFEnvironment,
     getVariant: mockGetVariant,
@@ -49,7 +49,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getPromptsForAddComponentUsages: mockGetPromptsForAddComponentUsages
 }));
 
-const { addComponentUsagesCommand } = await import('../../../../src/cli/add/component-usages');
+const { addComponentUsagesCommand } = await import('../../../../src/cli/add/component-usages.js');
 
 describe('add/component-usages', () => {
     let loggerMock: ToolsLogger;

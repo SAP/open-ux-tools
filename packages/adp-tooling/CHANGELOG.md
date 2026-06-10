@@ -1,5 +1,114 @@
 # @sap-ux/adp-tooling
 
+## 1.0.11
+
+### Patch Changes
+
+- c8e8f7e: fix: write builder.resources.excludes to base ui5.yaml as well as ui5-deploy.yaml
+- Updated dependencies [c8e8f7e]
+    - @sap-ux/ui5-config@1.0.3
+    - @sap-ux/odata-service-writer@1.0.6
+    - @sap-ux/project-access@2.1.2
+    - @sap-ux/inquirer-common@1.0.9
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/project-input-validator@1.0.6
+    - @sap-ux/system-access@1.0.2
+
+## 1.0.10
+
+### Patch Changes
+
+- Updated dependencies [0fa8305]
+    - @sap-ux/btp-utils@2.0.2
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/inquirer-common@1.0.8
+    - @sap-ux/nodejs-utils@1.0.3
+    - @sap-ux/system-access@1.0.2
+    - @sap-ux/odata-service-writer@1.0.5
+
+## 1.0.9
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@1.0.7
+
+## 1.0.8
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/inquirer-common@1.0.6
+    - @sap-ux/odata-service-writer@1.0.5
+    - @sap-ux/project-input-validator@1.0.5
+    - @sap-ux/system-access@1.0.1
+
+## 1.0.7
+
+### Patch Changes
+
+- fb84c0e: chore: enhance incomplete destination service key credentials error message
+
+## 1.0.6
+
+### Patch Changes
+
+- Updated dependencies [b326a9a]
+    - @sap-ux/project-access@2.1.0
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/inquirer-common@1.0.5
+    - @sap-ux/odata-service-writer@1.0.4
+    - @sap-ux/project-input-validator@1.0.4
+    - @sap-ux/system-access@1.0.1
+
+## 1.0.5
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/project-input-validator@1.0.3
+    - @sap-ux/odata-service-writer@1.0.3
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/inquirer-common@1.0.4
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux/system-access@1.0.1
+    - @sap-ux/nodejs-utils@1.0.2
+    - @sap-ux/ui5-config@1.0.2
+    - @sap-ux/btp-utils@2.0.1
+    - @sap-ux/ui5-info@1.0.1
+    - @sap-ux/logger@1.0.1
+    - @sap-ux/store@2.0.1
+    - @sap-ux/i18n@1.0.1
+
+## 1.0.4
+
+### Patch Changes
+
+- Updated dependencies [9580241]
+    - @sap-ux/ui5-config@1.0.1
+    - @sap-ux/odata-service-writer@1.0.2
+    - @sap-ux/project-access@2.0.2
+    - @sap-ux/inquirer-common@1.0.3
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/project-input-validator@1.0.2
+    - @sap-ux/system-access@1.0.0
+
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies [41f327a]
+    - @sap-ux/nodejs-utils@1.0.1
+    - @sap-ux/inquirer-common@1.0.2
+
+## 1.0.2
+
+### Patch Changes
+
+- a8e4cf0: fix: handle both nested (`{ uaa: {...} }`) and flat destination-service credential shapes when fetching BTP destinations and when checking for OnPremise destinations during adaptation-project startup. A new `getDestinationServiceUaa` helper in `@sap-ux/adp-tooling` is reused by `@sap-ux/backend-proxy-middleware-cf` to avoid duplicate shape-handling logic.
+
 ## 1.0.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { CapProjectType, WorkspaceFolder } from '../../src';
+import type { CapProjectType, WorkspaceFolder } from '../../src/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 import {
@@ -11,7 +11,7 @@ import {
     findProjectRoot,
     findRootsForPath,
     getAppRootFromWebappPath
-} from '../../src';
+} from '../../src/index.js';
 
 /**
  * To get CAP project type we call cds --version using child_process.spawn() and cache global install path.
