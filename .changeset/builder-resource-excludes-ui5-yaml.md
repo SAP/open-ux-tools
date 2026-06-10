@@ -1,4 +1,5 @@
 ---
+"@sap-ux/ui5-application-writer": patch
 "@sap-ux/adp-tooling": patch
 ---
 
