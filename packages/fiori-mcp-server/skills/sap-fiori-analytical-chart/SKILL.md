@@ -56,13 +56,16 @@ UI.Chart #Chart: {
 
 ## ABAP RAP Implementation
 
-- Aggregation.ApplySupported and Aggregation.CustomAggregate annotations must be avilable in metadata.xml(RAP). If not, below backend configuration is required.
+- Aggregation.ApplySupported and Aggregation.CustomAggregate annotations must be available in metadata.xml(RAP). If not, below backend configuration is required.
 
 ### Backend CDS (MANDATORY) - 
 ```abap
 @OData.applySupportedForAggregation: #FULL
 define root view entity ZC_ENTITY
-  provider contract transactional_query {
+  provider contract transactional_query
+  as projection on ZI_ENTITY
+{
+  key EntityID,
 
   @Aggregation.default: #SUM
   Amount,
@@ -130,6 +133,8 @@ cds watch
 ### RAP Projects
 ```bash
 npm run start-mock # Needs metadata refresh
+
+npm start          # No refresh needed - fetches metadata from live backend at runtime
 ```
 - Consult fiori mcp server if available on how to refresh metadata for backend systems in case of RAP
 
