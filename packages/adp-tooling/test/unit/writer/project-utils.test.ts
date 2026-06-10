@@ -272,6 +272,18 @@ describe('Project Utils', () => {
                 expect(error.message).toBe(`Could not write ui5.yaml file. Reason: ${errMsg}`);
             }
         });
+
+        it('should include builder.resources.excludes in written ui5.yaml', async () => {
+            const captureFs = {
+                write: jest.fn(),
+                read: jest.fn().mockReturnValue(ui5Yaml)
+            };
+            await writeUI5Yaml(projectPath, data, captureFs as unknown as Editor);
+            const writtenContent: string = captureFs.write.mock.calls[0][1];
+            expect(writtenContent).toContain('builder:');
+            expect(writtenContent).toContain('/test/**');
+            expect(writtenContent).toContain('/localService/**');
+        });
     });
 
     describe('writeUI5DeployYaml', () => {
@@ -356,6 +368,18 @@ metadata:
             } catch (error: any) {
                 expect(error.message).toBe(`Could not write ui5.yaml file. Reason: ${errMsg}`);
             }
+        });
+
+        it('should include builder.resources.excludes in written ui5.yaml', async () => {
+            const captureFs = {
+                write: jest.fn(),
+                read: jest.fn().mockReturnValue(ui5YamlContent)
+            };
+            await writeCfUI5Yaml(projectPath, cfData, captureFs as unknown as Editor);
+            const writtenContent: string = captureFs.write.mock.calls[0][1];
+            expect(writtenContent).toContain('builder:');
+            expect(writtenContent).toContain('/test/**');
+            expect(writtenContent).toContain('/localService/**');
         });
     });
 });

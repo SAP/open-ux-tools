@@ -102,6 +102,10 @@ server:
           url: https://ui5.sap.com
           version: 1.133.0
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: app-variant-bundler-build
       beforeTask: escapeNonAsciiCharacters
@@ -222,6 +226,10 @@ server:
           url: https://ui5.sap.com
           version: 1.133.0
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: app-variant-bundler-build
       beforeTask: escapeNonAsciiCharacters
@@ -343,6 +351,10 @@ server:
           url: https://ui5.sap.com
           version: 1.122.1
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: app-variant-bundler-build
       beforeTask: escapeNonAsciiCharacters
@@ -502,6 +514,11 @@ server:
           path: /sap
         options:
           secure: true
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -632,6 +649,11 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -765,6 +787,10 @@ server:
           url: https://ui5.sap.com
           version: 1.133.0
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -858,6 +884,11 @@ server:
           path: /sap
         options:
           secure: true
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -972,6 +1003,11 @@ server:
           path: /sap
         options:
           secure: true
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1115,6 +1151,11 @@ server:
           path: /sap
         options:
           secure: true
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1248,6 +1289,11 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1357,6 +1403,11 @@ server:
           path: /sap
         options:
           secure: true
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1498,6 +1549,10 @@ server:
           url: https://ui5.sap.com
           version: 1.133.0
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: app-variant-bundler-build
       beforeTask: escapeNonAsciiCharacters
@@ -1652,6 +1707,10 @@ server:
           url: https://ui5.sap.com
           version: 1.122.1
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: app-variant-bundler-build
       beforeTask: escapeNonAsciiCharacters
@@ -1805,6 +1864,10 @@ server:
           url: https://ui5.sap.com
           version: 1.133.0
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: app-variant-bundler-build
       beforeTask: escapeNonAsciiCharacters
@@ -1983,6 +2046,10 @@ server:
           url: https://ui5.sap.com
           version: 1.133.0
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -2115,6 +2182,11 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: 1.133.0
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
