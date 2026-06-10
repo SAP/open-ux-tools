@@ -49,6 +49,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -779,6 +784,10 @@ server:
         excludePatterns:
           - /Component-preload.js
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -1512,6 +1521,11 @@ server:
           intent:
             object: nods1
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -2356,6 +2370,10 @@ server:
             generateMockData: true
         annotations: []
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -2411,6 +2429,10 @@ server:
         excludePatterns:
           - /Component-preload.js
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -3235,6 +3257,10 @@ server:
             generateMockData: true
         annotations: []
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -3290,6 +3316,10 @@ server:
         excludePatterns:
           - /Component-preload.js
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -4099,6 +4129,10 @@ server:
             generateMockData: true
         annotations: []
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -4154,6 +4188,10 @@ server:
         excludePatterns:
           - /Component-preload.js
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -4741,6 +4779,10 @@ server:
             generateMockData: true
         annotations: []
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -4796,6 +4838,10 @@ server:
         excludePatterns:
           - /Component-preload.js
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -5305,6 +5351,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -5344,6 +5395,11 @@ server:
           intent:
             object: nods1
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -5868,6 +5924,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -5907,6 +5968,11 @@ server:
           intent:
             object: nods1
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -6700,6 +6766,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -6739,6 +6810,11 @@ server:
           intent:
             object: nods1
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -7522,6 +7598,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -7561,6 +7642,11 @@ server:
           intent:
             object: nods1
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -8344,6 +8430,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -8383,6 +8474,11 @@ server:
           intent:
             object: nods1
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -9159,6 +9255,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -9194,6 +9295,11 @@ server:
       configuration:
         flp:
           theme: sap_belize
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -9648,6 +9754,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -9687,6 +9798,11 @@ server:
           intent:
             object: nods1
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
