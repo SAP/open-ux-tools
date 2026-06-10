@@ -14,11 +14,17 @@ Add **analytical chart + table (hybrid view)** to visualize aggregated data.
 
 ---
 
-## Inputs - ask if not provided in prompt
-- Entity  
-- Dimension (grouping field) 
-- Measure (numeric field)
-- Aggregation (sum, avg, min, max)
+## MANDATORY: Gather Required Inputs First
+
+**STOP and ASK the user for ALL of these inputs if ANY are missing from the prompt:**
+
+1. **Entity** - Which entity to add the analytical chart to
+2. **Dimension field** - The field to group by (e.g., Category, Status, Destination)
+3. **Measure field** - The numeric field to aggregate (e.g., Amount, TotalPrice, ReservationPrice)
+4. **Aggregation method** - How to aggregate: sum, avg, min, or max
+5. **Chart type** - Bar,Column, Line, Pie, HeatMap, Waterfall, HorizontalWaterfall
+
+**DO NOT proceed with implementation until all inputs are confirmed.**
 
 ---
 
@@ -136,7 +142,7 @@ npm run start-mock # Needs metadata refresh
 
 npm start          # No refresh needed - fetches metadata from live backend at runtime
 ```
-- Consult fiori mcp server if available on how to refresh metadata for backend systems in case of RAP
+- Consult fiori mcp server if available on how to refresh metadata for sap/cloud systems in case of RAP
 
 ---
 
