@@ -46,6 +46,8 @@ const PLACEHOLDERS = {
     'qualifier': 'REPLACE_WITH_A_QUALIFIER'
 };
 
+const PAGE_TEMPLATE_COMMENT = 'This is a sample template, event handlers should be added for implementation';
+
 interface MetadataPath {
     contextPath?: string;
     metaPath: string;
@@ -151,11 +153,6 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     return fs;
 }
 
-export { PAGE_AGGREGATIONS } from './types.js';
-export type { PageAggregationName } from './types.js';
-
-const PAGE_TEMPLATE_COMMENT = 'This is a sample template, event handlers should be added for implementation';
-
 /**
  * Appends the 7 Page building block aggregation fragments as child elements of the templateDocument root.
  *
@@ -175,7 +172,6 @@ function appendPageAggregations(
     const macrosNS = getOrAddNamespace(xmlDocument, 'sap.fe.macros', 'macros');
     const mNS = getOrAddNamespace(xmlDocument, 'sap.m', 'm');
     const fragMacrosNS = macrosNS || 'macros';
-    const fragMNS = mNS;
     const macrosPrefix = `${fragMacrosNS}:`;
     const pageElement = templateDocument.documentElement;
     const aggErrorHandler = (level: string, message: string): never => {
@@ -184,18 +180,19 @@ function appendPageAggregations(
     pageElement.appendChild(templateDocument.createComment(PAGE_TEMPLATE_COMMENT));
     for (const aggName of PAGE_AGGREGATIONS) {
         const mContent = pageData.aggregations?.[aggName] ?? '';
-        const aggContext = { macrosPrefix, mContent };
+        const aggId = generateId(aggName);
+        const aggContext = { macrosPrefix, mContent, aggId };
         const aggPath = getTemplatePath(`/building-block/page/${aggName}.xml`);
         const aggContent = render(fs.read(aggPath), aggContext, {}); // NOSONAR - template is a controlled file on disk, not user input
         // Wrap with namespace declarations so elements parse correctly.
-        // When sap.m is the default namespace (fragMNS=''), declare it as xmlns= to keep
+        // When sap.m is the default namespace (mNS=''), declare it as xmlns= to keep
         // bare element names; otherwise declare it as xmlns:m=.
-        const mNsDecl = fragMNS ? `xmlns:${fragMNS}="sap.m"` : `xmlns="sap.m"`;
+        const mNsDecl = mNS ? `xmlns:${mNS}="sap.m"` : `xmlns="sap.m"`;
         const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" ${mNsDecl}>${aggContent}</root>`;
         const aggDoc = new DOMParser({ errorHandler: aggErrorHandler }).parseFromString(wrapped, 'text/xml');
         for (const node of Array.from(aggDoc.documentElement.childNodes)) {
             if (node.nodeType === 1 /* Element */) {
-                (node as Element).setAttribute('id', generateId(aggName));
+                (node as Element).setAttribute('id', aggId);
                 pageElement.appendChild(templateDocument.importNode(node, true));
             }
         }
@@ -256,17 +253,17 @@ export async function appendPageBBAggregation(
     const xmlDocument = getUI5XmlDocument(basePath, viewPath, fs);
 
     const generateId = await createIdGenerator({ basePath, fsEditor: fs });
+    const aggId = generateId(aggName);
 
     const macrosNS = getOrAddNamespace(xmlDocument, 'sap.fe.macros', 'macros');
     const mNS = getOrAddNamespace(xmlDocument, 'sap.m', 'm');
     const fragMacrosNS = macrosNS || 'macros';
-    const fragMNS = mNS;
     const macrosPrefix = `${fragMacrosNS}:`;
-    const aggContext = { macrosPrefix, mContent };
+    const aggContext = { macrosPrefix, mContent, aggId };
 
     const aggPath = getTemplatePath(`/building-block/page/${aggName}.xml`);
     const aggContent = render(fs.read(aggPath), aggContext, {}); // NOSONAR - template is a controlled file on disk, not user input
-    const mNsDecl = fragMNS ? `xmlns:${fragMNS}="sap.m"` : `xmlns="sap.m"`;
+    const mNsDecl = mNS ? `xmlns:${mNS}="sap.m"` : `xmlns="sap.m"`;
     const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" ${mNsDecl}>${aggContent}</root>`;
 
     const errorHandler = (level: string, message: string): never => {
@@ -285,7 +282,8 @@ export async function appendPageBBAggregation(
     }
 
     const pageElement = pageNodes[0] as Node;
-    const hasExistingAggregation = Array.from(pageElement.childNodes).some(
+    const childNodes = Array.from(pageElement.childNodes);
+    const hasExistingAggregation = childNodes.some(
         (node) =>
             node.nodeType === 1 /* Element */ &&
             (node as Element).localName === aggName &&
@@ -298,8 +296,8 @@ export async function appendPageBBAggregation(
         return fs;
     }
 
-    const hasExistingElementChildren = Array.from(pageElement.childNodes).some((n) => n.nodeType === 1 /* Element */);
-    const hasTemplateComment = Array.from(pageElement.childNodes).some(
+    const hasExistingElementChildren = childNodes.some((n) => n.nodeType === 1 /* Element */);
+    const hasTemplateComment = childNodes.some(
         (n) => n.nodeType === 8 /* Comment */ && (n as Comment).data?.includes(PAGE_TEMPLATE_COMMENT)
     );
     if (!hasExistingElementChildren && !hasTemplateComment) {
@@ -307,7 +305,7 @@ export async function appendPageBBAggregation(
     }
     for (const node of Array.from(aggDoc.documentElement.childNodes)) {
         if (node.nodeType === 1 /* Element */) {
-            (node as Element).setAttribute('id', generateId(aggName));
+            (node as Element).setAttribute('id', aggId);
             pageElement.appendChild(xmlDocument.importNode(node, true));
         }
     }
@@ -647,11 +645,39 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
     // Read the view xml and template files and get content of the view xml file
     const xmlDocument = viewOrFragmentPath ? getUI5XmlDocument(basePath, viewOrFragmentPath, fs) : undefined;
     const { content: manifest, path: manifestPath } = await getManifest(basePath, fs, false);
-    const content = getTemplateContent(buildingBlockData, xmlDocument, manifest, fs, true);
+    const fnGenerateId = buildingBlockData.generateId ?? (await createIdGenerator({ basePath, fsEditor: fs }));
+    const content = getTemplateContent(
+        { ...buildingBlockData, generateId: fnGenerateId },
+        xmlDocument,
+        manifest,
+        fs,
+        true
+    );
+
+    // For the full Page template, augment the snippet with all 7 aggregations
+    let viewOrFragmentContent = content;
+    const isFullPage =
+        buildingBlockData.buildingBlockType === BuildingBlockType.Page &&
+        (buildingBlockData as Page).templateType === PAGE_TEMPLATE_TYPE_FULL;
+    if (isFullPage) {
+        // Use the real view document for namespace resolution if available, otherwise create a minimal fallback
+        const nsDoc =
+            xmlDocument ??
+            new DOMParser().parseFromString(
+                '<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns="sap.m"/>',
+                'text/xml'
+            );
+        const snippetDoc = new DOMParser().parseFromString(
+            `<root xmlns:macros="sap.fe.macros">${content}</root>`,
+            'text/xml'
+        );
+        appendPageAggregations(fs, nsDoc, snippetDoc, fnGenerateId, buildingBlockData as Page);
+        viewOrFragmentContent = format(new XMLSerializer().serializeToString(snippetDoc.documentElement.firstChild!));
+    }
     const filePathProps = getFilePathProps(basePath, viewOrFragmentPath);
     // Snippet for fragment xml
     snippets['viewOrFragmentPath'] = {
-        content,
+        content: viewOrFragmentContent,
         language: CodeSnippetLanguage.XML,
         filePathProps
     };

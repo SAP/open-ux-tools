@@ -1901,9 +1901,9 @@ exports[`Building Blocks generate Page building block with full template inserts
         </macros:headerContent>
         <macros:items id=\\"items\\">
             <!-- Main content -->
-            <IconTabBar id=\\"stickySubheaderBar\\" class=\\"sapUiResponsiveContentPadding\\">
+            <IconTabBar id=\\"iconTabBaritems\\" class=\\"sapUiResponsiveContentPadding\\">
                 <items>
-                    <IconTabFilter text=\\"Tab 1\\">
+                    <IconTabFilter id=\\"iconTabFilteritems\\" text=\\"Tab 1\\">
                     </IconTabFilter>
                 </items>
             </IconTabBar>
