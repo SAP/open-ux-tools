@@ -1,6 +1,6 @@
 ---
 name: sap-fiori-eslint-setup
-description: Set up ESLint for a SAP Fiori or CAP project using @sap-ux/eslint-plugin-fiori-tools. Use when a Fiori project is missing an eslint.config.mjs, when the user asks to configure or add ESLint, or when linting has never been set up. Handles standalone Fiori apps and CAP projects where Fiori apps live inside an app/ subfolder.
+description: Set up ESLint with @sap-ux/eslint-plugin-fiori-tools for a Fiori app — standalone or inside a CAP project. Use when a Fiori project is missing an eslint.config.mjs, when the user asks to configure or add ESLint, or when linting has never been set up.
 compatibility: Requires Node.js with npm, pnpm, or yarn. Designed for SAP Fiori freestyle and Fiori elements projects.
 metadata:
   author: sap-fiori-tools
