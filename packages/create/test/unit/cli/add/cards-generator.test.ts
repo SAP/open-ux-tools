@@ -25,12 +25,10 @@ jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
 
 const mockFindProjectRoot = jest.fn() as jest.Mock;
 const mockGetProjectType = jest.fn() as jest.Mock;
-const mockGetMinimumUI5Version = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/project-access', () =>
     createProjectAccessMock({
         findProjectRoot: mockFindProjectRoot,
-        getProjectType: mockGetProjectType,
-        getMinimumUI5Version: mockGetMinimumUI5Version
+        getProjectType: mockGetProjectType
     })
 );
 
@@ -55,10 +53,8 @@ jest.unstable_mockModule('mem-fs-editor', () => ({
 }));
 
 const mockEnableCardGeneratorConfig = jest.fn() as jest.Mock;
-const mockReadManifest = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/app-config-writer', () => ({
-    enableCardGeneratorConfig: mockEnableCardGeneratorConfig,
-    readManifest: mockReadManifest
+    enableCardGeneratorConfig: mockEnableCardGeneratorConfig
 }));
 
 jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn() }));
@@ -71,17 +67,7 @@ const testArgv = (args: string[]) => ['', '', 'cards-editor', appRoot, ...args];
 describe('add/cards-generator', () => {
     beforeEach(() => {
         mockFindProjectRoot.mockResolvedValue('');
-        (mockGetProjectType as any).mockResolvedValue('EDMXBackend');
-        (mockReadManifest as any).mockResolvedValue({
-            manifest: {
-                'sap.ui5': {
-                    dependencies: {
-                        minUI5Version: '1.140.0'
-                    }
-                }
-            }
-        });
-        (mockGetMinimumUI5Version as any).mockReturnValue('1.140.0');
+        mockGetProjectType.mockResolvedValue('EDMXBackend');
     });
 
     afterEach(() => {
@@ -100,8 +86,7 @@ describe('add/cards-generator', () => {
     });
 
     test('add cards-generator CAP', async () => {
-        (mockGetProjectType as any).mockResolvedValue('CAPNodejs');
-        (mockGetMinimumUI5Version as any).mockReturnValue('1.150.0');
+        mockGetProjectType.mockResolvedValue('CAPNodejs');
         // Test execution
         const command = new Command('add');
         addCardsEditorConfigCommand(command);
@@ -122,71 +107,5 @@ describe('add/cards-generator', () => {
         // Flow check
         expect(mockEnableCardGeneratorConfig).toHaveBeenCalled();
         expect(mockTraceChanges).toHaveBeenCalled();
-    });
-
-    test('should exit with error when UI5 version is too low for EDMX project', async () => {
-        const mockExit = jest.spyOn(process, 'exit').mockImplementation((() => {
-            throw new Error('process.exit called');
-        }) as any);
-        (mockGetProjectType as any).mockResolvedValue('EDMXBackend');
-        (mockGetMinimumUI5Version as any).mockReturnValue('1.120.0');
-
-        const command = new Command('add');
-        addCardsEditorConfigCommand(command);
-
-        try {
-            await command.parseAsync(testArgv([]));
-        } catch (error: any) {
-            // Expected to throw due to process.exit
-            expect(error.message).toBe('process.exit called');
-        }
-
-        expect(mockExit).toHaveBeenCalledWith(1);
-
-        mockExit.mockRestore();
-    });
-
-    test('should exit with error when UI5 version is too low for CAP project', async () => {
-        const mockExit = jest.spyOn(process, 'exit').mockImplementation((() => {
-            throw new Error('process.exit called');
-        }) as any);
-        (mockGetProjectType as any).mockResolvedValue('CAPNodejs');
-        (mockGetMinimumUI5Version as any).mockReturnValue('1.140.0');
-
-        const command = new Command('add');
-        addCardsEditorConfigCommand(command);
-
-        try {
-            await command.parseAsync(testArgv([]));
-        } catch (error: any) {
-            // Expected to throw due to process.exit
-            expect(error.message).toBe('process.exit called');
-        }
-
-        expect(mockExit).toHaveBeenCalledWith(1);
-
-        mockExit.mockRestore();
-    });
-
-    test('should proceed when UI5 version meets EDMX requirement (1.136.0)', async () => {
-        (mockGetProjectType as any).mockResolvedValue('EDMXBackend');
-        (mockGetMinimumUI5Version as any).mockReturnValue('1.136.0');
-
-        const command = new Command('add');
-        addCardsEditorConfigCommand(command);
-        await command.parseAsync(testArgv([]));
-
-        expect(mockEnableCardGeneratorConfig).toHaveBeenCalled();
-    });
-
-    test('should proceed when UI5 version meets CAP requirement (1.149.0)', async () => {
-        (mockGetProjectType as any).mockResolvedValue('CAPNodejs');
-        (mockGetMinimumUI5Version as any).mockReturnValue('1.149.0');
-
-        const command = new Command('add');
-        addCardsEditorConfigCommand(command);
-        await command.parseAsync(testArgv([]));
-
-        expect(mockEnableCardGeneratorConfig).toHaveBeenCalled();
     });
 });

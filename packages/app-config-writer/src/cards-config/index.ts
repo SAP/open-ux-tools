@@ -7,6 +7,8 @@ import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middlewa
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName, type Package, readUi5Yaml } from '@sap-ux/project-access';
 import { updateMiddlewaresForPreview } from '../common/ui5-yaml.js';
+import { checkMinUI5Version } from './prerequisites.js';
+import { t, CARDS_CONFIG_NS } from '../i18n.js';
 
 const DEPENDENCY_NAME = '@sap-ux/cards-editor-middleware';
 const CARDS_GENERATOR_MIDDLEWARE = 'sap-cards-generator';
@@ -102,7 +104,8 @@ async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string
 /**
  * Enables the card generator configuration for the given application.
  *
- * This function updates the `ui5.yaml` file to include the necessary middlewares for the card generator
+ * This function validates that the project meets the minimum UI5 version requirements,
+ * then updates the `ui5.yaml` file to include the necessary middlewares for the card generator
  * and modifies the `package.json` file to add a script for starting the card generator.
  *
  * @param {string} basePath - The path to the project root.
@@ -110,6 +113,7 @@ async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string
  * @param {ToolsLogger} [logger] - Optional logger instance for logging messages.
  * @param {Editor} [fs] - Optional `mem-fs-editor` instance for file system operations. If not provided, a new instance will be created.
  * @returns {Promise<Editor>} A promise that resolves to the updated `mem-fs-editor` instance.
+ * @throws {Error} If minimum UI5 version requirement is not met (EDMX: ≥1.136.0, CAP: ≥1.149.0).
  */
 export async function enableCardGeneratorConfig(
     basePath: string,
@@ -118,6 +122,13 @@ export async function enableCardGeneratorConfig(
     fs?: Editor
 ): Promise<Editor> {
     fs = fs ?? create(createStorage());
+
+    // Check minimum UI5 version requirement before proceeding
+    const versionCheckPassed = await checkMinUI5Version(basePath, fs, logger);
+    if (!versionCheckPassed) {
+        throw new Error(t('error.prerequisitesNotMet', { ns: CARDS_CONFIG_NS }));
+    }
+
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
     await updateMiddlewareConfigWithGeneratorPath(fs, basePath, yamlPath, logger);
     await updatePackageJson(basePath, fs, yamlPath, logger);

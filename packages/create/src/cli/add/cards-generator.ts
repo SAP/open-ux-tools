@@ -1,11 +1,8 @@
 import type { Command } from 'commander';
-import { enableCardGeneratorConfig, readManifest } from '@sap-ux/app-config-writer';
+import { enableCardGeneratorConfig } from '@sap-ux/app-config-writer';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing/index.js';
 import { validateBasePath } from '../../validation/index.js';
-import { FileName, getMinimumUI5Version, getProjectType } from '@sap-ux/project-access';
-import { create as createStorage } from 'mem-fs';
-import { create } from 'mem-fs-editor';
-import { gte } from 'semver';
+import { FileName } from '@sap-ux/project-access';
 
 /**
  * Add the cards-editor command.
@@ -43,28 +40,11 @@ async function addCardsGeneratorConfig(basePath: string, simulate: boolean, yaml
         logger.debug(`Called add cards-generator-config for path '${basePath}', simulate is '${simulate}'`);
         await validateBasePath(basePath);
 
-        // Validate UI5 version before proceeding
-        const fs = create(createStorage());
-        const { manifest } = await readManifest(basePath, fs);
-        if (manifest) {
-            const minUI5Version = getMinimumUI5Version(manifest);
-            const isEdmx = (await getProjectType(basePath)) === 'EDMXBackend';
-            const featureVersion = isEdmx ? '1.136.0' : '1.149.0';
-
-            if (minUI5Version && !gte(minUI5Version, featureVersion)) {
-                logger.error(
-                    `The card generator is only supported for projects with UI5 version ${featureVersion} or higher. Detected minimum UI5 version is ${minUI5Version}. Please update the minUI5Version in manifest.json and the version in ui5.yaml (if set) to use the card generator feature, as preview could be based on the yaml version if configured.`
-                );
-                process.exit(1);
-            }
-        }
-
-        // Version check passed, proceed with configuration
-        const resultFs = await enableCardGeneratorConfig(basePath, yamlPath, logger, fs);
+        const fs = await enableCardGeneratorConfig(basePath, yamlPath, logger);
         if (!simulate) {
-            resultFs.commit(() => logger.info(`Card Generator configuration written.`));
+            fs.commit(() => logger.info(`Card Generator configuration written.`));
         } else {
-            await traceChanges(resultFs);
+            await traceChanges(fs);
         }
     } catch (error) {
         logger.error(`Error while executing add cards generator configuration '${(error as Error).message}'`);

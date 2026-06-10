@@ -1,5 +1,5 @@
 ---
-'@sap-ux/create': minor
+'@sap-ux/app-config-writer': minor
 ---
 
-Add minUI5Version validation to card generator configuration (1.149.0+ for CAP, 1.136.0+ for EDMX)
+fix: minUI5Version validation to card generator configuration (1.149.0+ for CAP, 1.136.0+ for EDMX)

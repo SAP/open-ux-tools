@@ -98,8 +98,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     getWebappPath: jest.fn(),
     getProjectType: jest.fn(),
     execNpmCommand: jest.fn(),
-    findProjectRoot: jest.fn(),
-    getMinimumUI5Version: jest.fn()
+    findProjectRoot: jest.fn()
 }));
 
 jest.unstable_mockModule('@sap-ux/app-config-writer', () => ({

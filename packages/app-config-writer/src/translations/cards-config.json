@@ -1,0 +1,6 @@
+{
+    "error": {
+        "minUI5VersionNotMet": "The card generator is only supported for projects with UI5 version ${featureVersion} or higher. Detected minimum UI5 version is ${minUI5Version}. Update the 'sap.ui5.minUI5Version' property in the 'manifest.json' file to be able to use the cards generator feature. Also make sure the UI5 version used when starting the cards generator is ${featureVersion} or higher (Check run configurations, ui5 yaml configuration files, etc.)",
+        "prerequisitesNotMet": "Minimum UI5 version requirement for card generator is not met."
+    }
+}

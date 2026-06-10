@@ -1689,9 +1689,6 @@ importers:
       prompts:
         specifier: 2.4.2
         version: 2.4.2
-      semver:
-        specifier: 7.7.4
-        version: 7.7.4
     devDependencies:
       '@jest/globals':
         specifier: 30.3.0
@@ -1714,9 +1711,6 @@ importers:
       '@types/prompts':
         specifier: 2.4.9
         version: 2.4.9
-      '@types/semver':
-        specifier: 7.7.1
-        version: 7.7.1
 
   packages/deploy-config-generator-shared:
     dependencies:
