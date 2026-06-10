@@ -7,6 +7,7 @@ import RepoAppDownloadLogger from '../utils/logger.js';
 import { qfaJsonFileName } from './constants.js';
 import { type Logger } from '@sap-ux/logger';
 import { TransportChecksService } from '@sap-ux/axios-extension';
+import { restoreServiceProviderLoggers } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Checks whether the ZIP archive contains an entry named qfa.json
@@ -80,6 +81,9 @@ export async function resolveTransportRequest(
     if (packageName === '$TMP') {
         return '';
     }
+
+    // Restore loggers lost during odata-service-inquirer serialization to prevent 'this.log.error is not a function' errors in service calls
+    restoreServiceProviderLoggers(RepoAppDownloadLogger.logger as unknown as Logger, serviceProvider);
 
     try {
         const transportService = await serviceProvider?.getAdtService<TransportChecksService>(TransportChecksService);
