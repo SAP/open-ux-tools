@@ -275,7 +275,13 @@ async function generate<T extends {}>(
             { useVirtualPreviewEndpoints: feApp.appOptions?.useVirtualPreviewEndpoints },
             feApp.app.flpAppId
         );
-        await generateOPAFiles(basePath, opaConfig, data.service.metadata, fs, log);
+        await generateOPAFiles(
+            basePath,
+            { ...opaConfig, enableTypeScript: feApp.appOptions?.typescript },
+            data.service.metadata,
+            fs,
+            log
+        );
     }
     return fs;
 }
