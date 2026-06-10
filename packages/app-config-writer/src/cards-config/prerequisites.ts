@@ -1,6 +1,6 @@
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { getMinimumUI5Version, getProjectType } from '@sap-ux/project-access';
+import { findRootsForPath, getMinimumUI5Version, getProjectType } from '@sap-ux/project-access';
 import { gte } from 'semver';
 import { readManifest } from '../common/utils.js';
 import { t, CARDS_CONFIG_NS } from '../i18n.js';
@@ -21,7 +21,8 @@ const MIN_UI5_VERSION_CAP = '1.149.0';
 export async function checkMinUI5Version(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<boolean> {
     const { manifest } = await readManifest(basePath, fs);
     const minUI5Version = getMinimumUI5Version(manifest);
-    const isEdmx = (await getProjectType(basePath)) === 'EDMXBackend';
+    const projectRoot = (await findRootsForPath(basePath, { memFs: fs }))?.projectRoot ?? basePath;
+    const isEdmx = (await getProjectType(projectRoot)) === 'EDMXBackend';
     const featureVersion = isEdmx ? MIN_UI5_VERSION_EDMX : MIN_UI5_VERSION_CAP;
 
     // No or invalid sap.ui5.minUi5Version property value will lead to the check being passed
@@ -35,6 +36,5 @@ export async function checkMinUI5Version(basePath: string, fs: Editor, logger?: 
         );
         return false;
     }
-
     return true;
 }

@@ -4,21 +4,17 @@ import type { ToolsLogger } from '@sap-ux/logger';
 
 const mockGetMinimumUI5Version = jest.fn();
 const mockGetProjectType = jest.fn();
+const mockFindRootsForPath = jest.fn();
 const mockReadManifest = jest.fn();
-const mockT = jest.fn();
 
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     getMinimumUI5Version: mockGetMinimumUI5Version,
-    getProjectType: mockGetProjectType
+    getProjectType: mockGetProjectType,
+    findRootsForPath: mockFindRootsForPath
 }));
 
 jest.unstable_mockModule('../../../src/common/utils.js', () => ({
     readManifest: mockReadManifest
-}));
-
-jest.unstable_mockModule('../../../src/i18n.js', () => ({
-    t: mockT,
-    CARDS_CONFIG_NS: 'app-config-writer:cardsConfig'
 }));
 
 const { checkMinUI5Version } = await import('../../../src/cards-config/prerequisites.js');
@@ -47,13 +43,9 @@ describe('cards-config/prerequisites', () => {
             }
         });
 
-        // Mock i18n translation function to interpolate variables
-        mockT.mockImplementation((key: string, options?: any) => {
-            if (key === 'error.minUI5VersionNotMet') {
-                const { featureVersion, minUI5Version } = options || {};
-                return `The card generator is only supported for projects with UI5 version ${featureVersion} or higher. Detected minimum UI5 version is ${minUI5Version}. Update the 'sap.ui5.minUI5Version' property in the 'manifest.json' file to be able to use the cards generator feature. Also make sure the UI5 version used when starting the cards generator is ${featureVersion} or higher (Check run configurations, ui5 yaml configuration files, etc.)`;
-            }
-            return key;
+        // Mock findRootsForPath to return a valid project root
+        mockFindRootsForPath.mockResolvedValue({
+            projectRoot: '/test/path'
         });
     });
 
