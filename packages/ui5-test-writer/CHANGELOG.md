@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 1.1.0
+
+### Minor Changes
+
+- c084184: Add TypeScript support for OPA test generation
+
 ## 1.0.14
 
 ### Patch Changes
