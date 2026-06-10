@@ -170,7 +170,6 @@ function appendPageAggregations(
     pageData: Page
 ): void {
     const macrosNS = getOrAddNamespace(xmlDocument, 'sap.fe.macros', 'macros');
-    const mNS = getOrAddNamespace(xmlDocument, 'sap.m', 'm');
     const fragMacrosNS = macrosNS || 'macros';
     const macrosPrefix = `${fragMacrosNS}:`;
     const pageElement = templateDocument.documentElement;
@@ -184,11 +183,9 @@ function appendPageAggregations(
         const aggContext = { macrosPrefix, mContent, aggId };
         const aggPath = getTemplatePath(`/building-block/page/${aggName}.xml`);
         const aggContent = render(fs.read(aggPath), aggContext, {}); // NOSONAR - template is a controlled file on disk, not user input
-        // Wrap with namespace declarations so elements parse correctly.
-        // When sap.m is the default namespace (mNS=''), declare it as xmlns= to keep
-        // bare element names; otherwise declare it as xmlns:m=.
-        const mNsDecl = mNS ? `xmlns:${mNS}="sap.m"` : `xmlns="sap.m"`;
-        const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" ${mNsDecl}>${aggContent}</root>`;
+        // Always declare both default and prefixed sap.m namespaces so bare element names (e.g. IconTabBar)
+        // and prefixed names (e.g. m:Button) both parse correctly regardless of the view's namespace config.
+        const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" xmlns="sap.m" xmlns:m="sap.m">${aggContent}</root>`;
         const aggDoc = new DOMParser({ errorHandler: aggErrorHandler }).parseFromString(wrapped, 'text/xml');
         for (const node of Array.from(aggDoc.documentElement.childNodes)) {
             if (node.nodeType === 1 /* Element */) {
@@ -256,15 +253,15 @@ export async function appendPageBBAggregation(
     const aggId = generateId(aggName);
 
     const macrosNS = getOrAddNamespace(xmlDocument, 'sap.fe.macros', 'macros');
-    const mNS = getOrAddNamespace(xmlDocument, 'sap.m', 'm');
     const fragMacrosNS = macrosNS || 'macros';
     const macrosPrefix = `${fragMacrosNS}:`;
     const aggContext = { macrosPrefix, mContent, aggId };
 
     const aggPath = getTemplatePath(`/building-block/page/${aggName}.xml`);
     const aggContent = render(fs.read(aggPath), aggContext, {}); // NOSONAR - template is a controlled file on disk, not user input
-    const mNsDecl = mNS ? `xmlns:${mNS}="sap.m"` : `xmlns="sap.m"`;
-    const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" ${mNsDecl}>${aggContent}</root>`;
+    // Always declare both default and prefixed sap.m namespaces so bare element names (e.g. IconTabBar)
+    // and prefixed names (e.g. m:Button) both parse correctly regardless of the view's namespace config.
+    const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" xmlns="sap.m" xmlns:m="sap.m">${aggContent}</root>`;
 
     const errorHandler = (level: string, message: string): never => {
         throw new Error(`Unable to parse page aggregation fragment. Details: [${level}] - ${message}`);
@@ -275,7 +272,9 @@ export async function appendPageBBAggregation(
     if (!firstChildView) {
         throw new Error(`Unable to read namespace map from view ${viewPath}.`);
     }
-    const xpathSelect = xpath.useNamespaces((firstChildView as any)._nsMap);
+    // Merge the view's namespace map with the macros prefix so the XPath query works even when
+    // _nsMap does not include the macros prefix under the same key.
+    const xpathSelect = xpath.useNamespaces({ ...(firstChildView as any)._nsMap, [fragMacrosNS]: 'sap.fe.macros' });
     const pageNodes = xpathSelect(`//${fragMacrosNS}:Page`, xmlDocument);
     if (!pageNodes || !Array.isArray(pageNodes) || pageNodes.length === 0) {
         throw new Error(`macros:Page element not found in view ${viewPath}.`);
