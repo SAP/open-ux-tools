@@ -1,6 +1,6 @@
 ---
 name: sap-fiori-eslint-lint
-description: Run ESLint on a SAP Fiori project and report results or auto-fix issues using @sap-ux/eslint-plugin-fiori-tools. Use when the user asks to lint, check code quality, fix ESLint errors, or run code style checks on a Fiori app.
+description: Run ESLint on a SAP Fiori project and report results or auto-fix issues using @sap-ux/eslint-plugin-fiori-tools. Use when the user asks to lint, check code quality, fix ESLint errors, or run code style checks on a SAP Fiori app.
 compatibility: Requires Node.js and an eslint.config.mjs configured with @sap-ux/eslint-plugin-fiori-tools. If not configured, use the sap-fiori-eslint-setup skill first.
 metadata:
   author: sap-fiori-tools
