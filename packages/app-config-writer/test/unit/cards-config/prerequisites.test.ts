@@ -80,11 +80,11 @@ describe('cards-config/prerequisites', () => {
             expect(result).toBe(false);
             expect(mockLogger.error).toHaveBeenCalledWith(
                 expect.stringContaining(
-                    'The card generator is only supported for projects with UI5 version 1.136.0 or higher'
+                    'The card generator is only supported for projects with a minimum SAPUI5 version of 1.136.0 or higher'
                 )
             );
             expect(mockLogger.error).toHaveBeenCalledWith(
-                expect.stringContaining('Detected minimum UI5 version is 1.120.0')
+                expect.stringContaining('The detected minimum SAPUI5 version is 1.120.0')
             );
         });
     });
@@ -120,11 +120,8 @@ describe('cards-config/prerequisites', () => {
             expect(result).toBe(false);
             expect(mockLogger.error).toHaveBeenCalledWith(
                 expect.stringContaining(
-                    'The card generator is only supported for projects with UI5 version 1.149.0 or higher'
+                    'The card generator is only supported for projects with a minimum SAPUI5 version of 1.149.0'
                 )
-            );
-            expect(mockLogger.error).toHaveBeenCalledWith(
-                expect.stringContaining('Detected minimum UI5 version is 1.140.0')
             );
         });
     });
