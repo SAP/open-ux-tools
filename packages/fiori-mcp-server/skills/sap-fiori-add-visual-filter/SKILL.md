@@ -30,7 +30,6 @@ Add **chart-based filters (Bar/Line)** to filter bar or value help dialog (OData
 
 ## CAP Implementation
 
-### Enable Aggregation (MANDATORY)
 
 ### Enable Aggregation (MANDATORY)
 ```cds
