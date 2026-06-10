@@ -61,7 +61,7 @@ export const tools = [
         name: 'list_sap_systems',
         description: `Lists all SAP systems stored in the user's environment (e.g. SAP Fiori tools system store).
                     Use this tool when the user references a SAP system by name or when you need to discover available systems
-                    before calling 'download_odata_service_metadata' or generating a Fiori application.`,
+                    before calling 'fetch-service-metadata' or generating a Fiori application.`,
         annotations: {
             title: 'List SAP Systems',
             readOnlyHint: true,
@@ -74,12 +74,12 @@ export const tools = [
         }
     },
     {
-        name: 'download_odata_service_metadata',
+        name: 'fetch-service-metadata',
         description: `Downloads the metadata (EDMX) of a specific OData service from a SAP system and saves it as metadata.xml.
                     Use this before calling 'generate_fiori_app_odata' when the user provides a SAP system reference or service URL.
                     - If the user provides a system name or host, use 'list_sap_systems' first to resolve it.
                     - Pass the full URL as sapSystemQuery if a full URL is provided; pass only the path as servicePath.
-                    - Returns host, servicePath, client and metadataFilePath needed for 'generate_fiori_app_odata'.
+                    - Returns host, servicePath, client and metadataFilePath needed for 'generate-fiori-ui-application'.
                     **IMPORTANT**: If the service requires authentication and the system is not already stored, ask the user to store it first. Do not ask for credentials directly.`,
         annotations: {
             title: 'Download OData Service Metadata',
@@ -90,13 +90,13 @@ export const tools = [
         inputSchema: convertToSchema(Input.DownloadODataServiceMetadataInputSchema)
     },
     {
-        name: 'generate_fiori_app_odata',
+        name: 'generate-fiori-ui-application',
         description: `Creates (generates) a new SAP Fiori UI application within an existing project (RAP or other non-CAP).
 
         Steps:
         1. Construct the appGenConfig JSON argument.
            - If the user has not provided a valid servicePath and host (URL), you **MUST** ask for it.
-           - If the user provided a SAP system reference or URL, you **MUST** first call 'download_odata_service_metadata'
+           - If the user provided a SAP system reference or URL, you **MUST** first call 'fetch-service-metadata'
              to retrieve the metadata and get the host, servicePath, client and metadataFilePath for the config.
            - **IMPORTANT**: If the service requires authentication and is not already stored, ask the user to store it first. Never ask for credentials directly.
 
@@ -113,7 +113,7 @@ export const tools = [
         inputSchema: generatorConfigODataJson
     },
     {
-        name: 'generate_fiori_app_cap',
+        name: 'generate-fiori-ui-application-cap',
         description: `Creates (generates) a new SAP Fiori UI application within an existing CAP project.
                     To populate parameters, you **MUST** use the ***CDS MCP*** to search the model for service definitions, entities, associations, and UI annotations.
                     As a fallback, only if no such tool is available, manually read and parse all .cds files in the projectPath.
@@ -137,7 +137,7 @@ export const tools = [
                     You MUST NOT use a functionalityId as a tool name.
                     Do not guess or assume functionalityIds — only use what this tool returns.
                     **Note: If the target application is not known, use 'list_fiori_apps' first.**
-                    **Note: To generate a new app, use 'generate_fiori_app_odata' or 'generate_fiori_app_cap' instead.**
+                    **Note: To generate a new app, use 'generate-fiori-ui-application' or 'generate-fiori-ui-application-cap' instead.**
                     If the functionality list does not cover your goal, use 'search_docs' as a fallback.`,
         annotations: {
             title: 'List Supported Fiori Modification Functionalities',

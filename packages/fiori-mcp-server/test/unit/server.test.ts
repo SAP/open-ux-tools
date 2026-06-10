@@ -97,9 +97,9 @@ describe('FioriFunctionalityServer', () => {
             'search_docs',
             'list_fiori_apps',
             'list_sap_systems',
-            'download_odata_service_metadata',
-            'generate_fiori_app_odata',
-            'generate_fiori_app_cap',
+            'fetch-service-metadata',
+            'generate-fiori-ui-application',
+            'generate-fiori-ui-application-cap',
             'list_functionality',
             'get_functionality_details',
             'execute_functionality'
@@ -342,9 +342,9 @@ describe('FioriFunctionalityServer', () => {
                 'search_docs',
                 'list_fiori_apps',
                 'list_sap_systems',
-                'download_odata_service_metadata',
-                'generate_fiori_app_odata',
-                'generate_fiori_app_cap',
+                'fetch-service-metadata',
+                'generate-fiori-ui-application',
+                'generate-fiori-ui-application-cap',
                 'list_functionality',
                 'get_functionality_details',
                 'execute_functionality'
@@ -489,7 +489,7 @@ describe('FioriFunctionalityServer', () => {
             );
         });
 
-        test('download_odata_service_metadata', async () => {
+        test('fetch-service-metadata', async () => {
             const mockResult = {
                 functionalityId: 'fetch-service-metadata',
                 status: 'Success',
@@ -509,16 +509,16 @@ describe('FioriFunctionalityServer', () => {
             const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
             const result = await onRequestCB({
                 params: {
-                    name: 'download_odata_service_metadata',
+                    name: 'fetch-service-metadata',
                     arguments: { sapSystemQuery: 'SysA', servicePath: '/sap/opu/', appPath: '/project' }
                 }
             });
             expect(mockDownloadODataServiceMetadata).toHaveBeenCalledTimes(1);
             expect(result.structuredContent).toEqual(mockResult);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
-                'download_odata_service_metadata',
+                'fetch-service-metadata',
                 {
-                    tool: 'download_odata_service_metadata',
+                    tool: 'fetch-service-metadata',
                     mcpClientName: 'unknown-client',
                     mcpClientVersion: 'unknown-version'
                 },
@@ -526,7 +526,7 @@ describe('FioriFunctionalityServer', () => {
             );
         });
 
-        test('generate_fiori_app_odata', async () => {
+        test('generate-fiori-ui-application', async () => {
             const mockResult = {
                 functionalityId: 'generate-fiori-ui-application',
                 status: 'Success',
@@ -541,7 +541,7 @@ describe('FioriFunctionalityServer', () => {
             const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
             const result = await onRequestCB({
                 params: {
-                    name: 'generate_fiori_app_odata',
+                    name: 'generate-fiori-ui-application',
                     arguments: {
                         floorplan: 'FE_LROP',
                         project: { name: 'myapp', description: 'Test', targetFolder: '/project' }
@@ -551,9 +551,9 @@ describe('FioriFunctionalityServer', () => {
             expect(mockGenerateFioriAppOData).toHaveBeenCalledTimes(1);
             expect(result.structuredContent).toEqual(mockResult);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
-                'generate_fiori_app_odata',
+                'generate-fiori-ui-application',
                 {
-                    tool: 'generate_fiori_app_odata',
+                    tool: 'generate-fiori-ui-application',
                     mcpClientName: 'unknown-client',
                     mcpClientVersion: 'unknown-version'
                 },
@@ -561,7 +561,7 @@ describe('FioriFunctionalityServer', () => {
             );
         });
 
-        test('generate_fiori_app_cap', async () => {
+        test('generate-fiori-ui-application-cap', async () => {
             const mockResult = {
                 functionalityId: 'generate-fiori-ui-application-cap',
                 status: 'Success',
@@ -576,7 +576,7 @@ describe('FioriFunctionalityServer', () => {
             const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
             const result = await onRequestCB({
                 params: {
-                    name: 'generate_fiori_app_cap',
+                    name: 'generate-fiori-ui-application-cap',
                     arguments: {
                         floorplan: 'FE_LROP',
                         project: { name: 'myapp', description: 'Test', targetFolder: '/cap-project' }
@@ -586,9 +586,9 @@ describe('FioriFunctionalityServer', () => {
             expect(mockGenerateFioriAppCap).toHaveBeenCalledTimes(1);
             expect(result.structuredContent).toEqual(mockResult);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
-                'generate_fiori_app_cap',
+                'generate-fiori-ui-application-cap',
                 {
-                    tool: 'generate_fiori_app_cap',
+                    tool: 'generate-fiori-ui-application-cap',
                     mcpClientName: 'unknown-client',
                     mcpClientVersion: 'unknown-version'
                 },
@@ -769,7 +769,7 @@ describe('FioriFunctionalityServer', () => {
             });
             expect(result.content).toEqual([
                 {
-                    text: 'Error: Unknown tool: unknown-tool-id. Try one of: list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality.',
+                    text: 'Error: Unknown tool: unknown-tool-id. Try one of: list_fiori_apps, list_sap_systems, fetch-service-metadata, generate-fiori-ui-application, generate-fiori-ui-application-cap, list_functionality, get_functionality_details, execute_functionality.',
                     type: 'text'
                 }
             ]);
@@ -790,7 +790,7 @@ describe('FioriFunctionalityServer', () => {
             });
             expect(result.content).toEqual([
                 {
-                    text: 'Error: Unknown tool: unknown-tool-id2. Try one of: list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality.',
+                    text: 'Error: Unknown tool: unknown-tool-id2. Try one of: list_fiori_apps, list_sap_systems, fetch-service-metadata, generate-fiori-ui-application, generate-fiori-ui-application-cap, list_functionality, get_functionality_details, execute_functionality.',
                     type: 'text'
                 }
             ]);
@@ -812,7 +812,7 @@ describe('FioriFunctionalityServer', () => {
             });
             expect(result.content).toEqual([
                 {
-                    text: 'Error: Unknown tool: unknown-tool-id2. Try one of: list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality.',
+                    text: 'Error: Unknown tool: unknown-tool-id2. Try one of: list_fiori_apps, list_sap_systems, fetch-service-metadata, generate-fiori-ui-application, generate-fiori-ui-application-cap, list_functionality, get_functionality_details, execute_functionality.',
                     type: 'text'
                 }
             ]);
