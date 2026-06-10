@@ -156,10 +156,13 @@ const sharpStubPlugin = {
 //      inline it without needing it as a direct dependency of this package).
 //   2. Sets env.wasm.wasmPaths so onnxruntime-web finds the .wasm binary at
 //      runtime relative to dist/ (where bundle.mjs copies it in Step 4).
-//   3. Sets globalThis[Symbol.for('onnxruntime')] — the hook @huggingface/transformers'
-//      getORTEnv() helper checks before falling back to require('onnxruntime-node').
-//      Because CJS module evaluation is synchronous and require('onnxruntime-node')
-//      runs before getORTEnv() in the same init function, the global is set in time.
+//
+// The shim intentionally does NOT set globalThis[Symbol.for('onnxruntime')].
+// Setting that global causes @huggingface/transformers to skip its IS_NODE_ENV
+// device registration branch entirely, leaving supportedDevices=[] and making
+// pipeline() fail with "Unsupported device: cpu. Should be one of: .".
+// Instead transformers uses its normal Node.js path (which registers 'cpu') and
+// resolves require('onnxruntime-node') to this shim (i.e. onnxruntime-web/WASM).
 const onnxNodeWasmPlugin = {
     name: 'onnxruntime-node-wasm',
     setup(build) {
@@ -170,6 +173,15 @@ const onnxNodeWasmPlugin = {
         build.onLoad({ filter: /.*/, namespace: 'onnxruntime-node-wasm-shim' }, () => ({
             // Use the resolved absolute path so esbuild can locate and inline
             // onnxruntime-web without it being a direct dep of this package.
+            //
+            // Do NOT set globalThis[Symbol.for('onnxruntime')] here — doing so causes
+            // @huggingface/transformers to skip its Node.js device registration branch
+            // entirely, leaving supportedDevices=[] and making all device validation fail
+            // (error: "Unsupported device: cpu. Should be one of: .").
+            // Instead, let transformers run its normal IS_NODE_ENV path which registers
+            // 'cpu' as a supported device — it will require('onnxruntime-node') which
+            // esbuild aliases to onnxruntime-web (this shim), so the WASM backend is
+            // used transparently.
             contents: [
                 `const ort = require(${JSON.stringify(ortWebNodeEntry)});`,
                 `if (!ort.env?.wasm) throw new Error('onnxruntime-web: env.wasm not available');`,
@@ -177,8 +189,6 @@ const onnxNodeWasmPlugin = {
                 // platforms — __dirname uses backslashes on Windows, which would break
                 // the path-based lookup in the WASM loader.
                 `ort.env.wasm.wasmPaths = require('url').pathToFileURL(__dirname).href + '/';`,
-                // Override the ORT global so transformers uses WASM on Node.js.
-                `globalThis[Symbol.for('onnxruntime')] = ort;`,
                 `module.exports = ort;`
             ].join('\n'),
             loader: 'js',
