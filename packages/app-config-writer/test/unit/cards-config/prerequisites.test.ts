@@ -1,5 +1,4 @@
 import { jest } from '@jest/globals';
-import { findProjectRoot } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 
 const mockGetMinimumUI5Version = jest.fn();
