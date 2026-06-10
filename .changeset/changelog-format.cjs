@@ -43,19 +43,23 @@ function getReleaseDateSection(packageName) {
 
 /**
  * Extracts the category label and message text from a changeset summary.
- * Falls back to no label for summaries without a recognised prefix so that
- * old-style entries do not break the formatter.
+ * Bot-generated changesets (e.g. Renovate `fix(deps): ...`) use scoped conventional commit style
+ * and bypass prefix validation — they are normalized to `BUMP:` so they render under
+ * `#### Dependency Updates` rather than the `#### Changes` fallback.
  * @param {string} summary - Raw summary text from the changeset file body.
- * @returns {ParsedSummary} Object containing the category label (or empty string if no prefix) and the message text with the prefix removed.
+ * @returns {ParsedSummary} Object containing the category label and the message text with the prefix removed.
  */
 function parseSummary(summary) {
     const trimmed = summary.trim();
+    // Normalize scoped conventional commit style (e.g. `fix(deps): ...`, `chore(dev-deps): ...`)
+    // to BUMP: - only bot-generated changesets use this format and bypass prefix validation.
+    const normalized = trimmed.replace(/^[a-z]+\([a-z-]+\): /i, 'BUMP: ');
     for (const { regex, label } of PREFIX_MAP) {
-        if (regex.test(trimmed)) {
-            return { label, text: trimmed.replace(regex, '').trim() };
+        if (regex.test(normalized)) {
+            return { label, text: normalized.replace(regex, '').trim() };
         }
     }
-    return { label: 'Changes', text: trimmed };
+    return { label: 'Changes', text: normalized };
 }
 
 /**

@@ -20,6 +20,11 @@ function validateChangesets() {
     const errors = [];
 
     for (const file of changesetFiles) {
+        // Skip prefix validation for bot-generated dependency changesets (e.g. Renovate)
+        if (file.match(/^dependencies-GH-\d+\.md$/)) {
+            continue;
+        }
+
         const filePath = path.join(CHANGESET_DIR, file);
         const content = fs.readFileSync(filePath, 'utf8');
 
