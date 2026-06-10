@@ -100,6 +100,11 @@ server:
         flp:
           theme: sap_fiori_3
           path: test/flpSandbox.html
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },

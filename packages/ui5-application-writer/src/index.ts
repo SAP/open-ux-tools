@@ -66,6 +66,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         }
     });
     ui5Config.addFioriToolsAppReloadMiddleware();
+    ui5Config.addBuilderResourceExcludes();
 
     const previewMiddleWareOpts = getPreviewMiddlewareOpts(
         ui5App.app,
