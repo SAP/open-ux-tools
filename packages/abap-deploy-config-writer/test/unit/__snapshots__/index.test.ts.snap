@@ -66,7 +66,6 @@ builder:
           transport: TR123
         exclude:
           - /test/
-          - /localService/
 ",
     "state": "modified",
   },
@@ -150,7 +149,6 @@ builder:
           transport: TR123
         exclude:
           - /test/
-          - /localService/
 ",
     "state": "modified",
   },
@@ -255,10 +253,9 @@ builder:
           package: TESTPKG12
           description: Mock deployment description
           transport: TR123
+        lrep: MOCK_LREP
         exclude:
           - /test/
-          - /localService/
-        lrep: MOCK_LREP
 ",
     "state": "modified",
   },
@@ -355,7 +352,6 @@ builder:
           transport: TR123
         exclude:
           - /test/
-          - /localService/
 ",
     "state": "modified",
   },
@@ -451,7 +447,6 @@ builder:
           transport: TR123
         exclude:
           - /test/
-          - /localService/
 ",
     "state": "modified",
   },
@@ -552,7 +547,6 @@ builder:
           transport: TR123
         exclude:
           - /test/
-          - /localService/
   resources:
     excludes:
       - /test/**
