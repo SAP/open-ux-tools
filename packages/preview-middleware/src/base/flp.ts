@@ -576,7 +576,7 @@ export class FlpSandbox {
                     // check for min ui5 version of card generator feature
                     const baseUrl = 'ui5-patched-router' in req ? (req['ui5-patched-router']?.baseUrl ?? '') : '';
                     const ui5Version = await this.getUi5VersionFromRequest(req, baseUrl);
-                    const minMinor = this.projectType === 'CAPNodejs' || this.projectType === 'CAPJava' ? 149 : 136;
+                    const minMinor = this.projectType === 'CAPNodejs' || this.projectType === 'CAPJava' ? 149 : 121;
                     if (
                         (ui5Version.major === 1 && ui5Version.minor < minMinor) ||
                         ui5Version.major >= 2 ||

@@ -1372,22 +1372,22 @@ describe('FlpSandbox', () => {
             mockGetProjectType.mockResolvedValue('EDMXBackend');
         });
 
-        test('EDMXBackend below 1.136 - disables card generator and warns', async () => {
+        test('EDMXBackend below 1.121 - disables card generator and warns', async () => {
             const { server, flp } = await setupMiddleware('EDMXBackend');
-            mockUi5Version('1.135.0');
+            mockUi5Version('1.120.0');
             const response = await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
             expect(response.status).toBe(200);
             expect(flp.templateConfig.enableCardGenerator).toBe(false);
             expect(logger.warn).toHaveBeenCalledWith(
                 expect.stringContaining(
-                    "does not meet the minimum required version 1.136.0 for project type 'EDMXBackend'"
+                    "does not meet the minimum required version 1.121.0 for project type 'EDMXBackend'"
                 )
             );
         });
 
-        test('EDMXBackend at 1.136 - enables card generator and does not warn', async () => {
+        test('EDMXBackend at 1.121 - enables card generator and does not warn', async () => {
             const { server, flp } = await setupMiddleware('EDMXBackend');
-            mockUi5Version('1.136.0');
+            mockUi5Version('1.121.0');
             await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
             expect(flp.templateConfig.enableCardGenerator).toBe(true);
             expect(logger.warn).not.toHaveBeenCalledWith(expect.stringContaining('cardGenerator'));
@@ -1425,7 +1425,7 @@ describe('FlpSandbox', () => {
 
         test('legacy-free label - disables card generator regardless of minor version', async () => {
             const { server, flp } = await setupMiddleware('EDMXBackend');
-            mockUi5Version('1.136.0-legacy-free');
+            mockUi5Version('1.121.0-legacy-free');
             await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
             expect(flp.templateConfig.enableCardGenerator).toBe(false);
             expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('cardGenerator'));
@@ -1433,7 +1433,7 @@ describe('FlpSandbox', () => {
 
         test('warns on every request to the card generator endpoint', async () => {
             const { server } = await setupMiddleware('EDMXBackend');
-            mockUi5Version('1.135.0');
+            mockUi5Version('1.120.0');
             await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
             await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
             expect(
