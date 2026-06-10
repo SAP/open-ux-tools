@@ -3,12 +3,12 @@ import { findRootsForPath, getMinimumUI5Version, getProjectType } from '@sap-ux/
 import { gte } from 'semver';
 import { readManifest } from '../common/utils.js';
 
-const MIN_UI5_VERSION_EDMX = '1.136.0';
+const MIN_UI5_VERSION_EDMX = '1.121.0';
 const MIN_UI5_VERSION_CAP = '1.149.0';
 
 /**
  * Ensures the minimum UI5 version requirement for card generator is met.
- * - For EDMX projects: UI5 version 1.136.0 or higher is required.
+ * - For EDMX projects: UI5 version 1.121.0 or higher is required.
  * - For CAP projects: UI5 version 1.149.0 or higher is required.
  *
  * @param basePath - base path to be used for the check

@@ -62,7 +62,7 @@ describe('cards-config/prerequisites', () => {
             mockGetMinimumUI5Version.mockReturnValue('1.120.0');
 
             await expect(ensureMinUI5Version('/test/path', mockFs)).rejects.toThrow(
-                'The card generator is only supported for projects with a minimum SAPUI5 version of 1.136.0 or higher. The detected minimum SAPUI5 version is 1.120.0'
+                'The card generator is only supported for projects with a minimum SAPUI5 version of 1.121.0 or higher. The detected minimum SAPUI5 version is 1.120.0'
             );
         });
     });
