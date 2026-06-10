@@ -4,13 +4,13 @@ import type { AxiosRequestConfig, ODataService, ODataServiceInfo } from '@sap-ux
 import { AbapServiceProvider, ODataVersion, TlsPatch } from '@sap-ux/axios-extension';
 import { getService, getSapToolsDirectory } from '@sap-ux/store';
 import { parse as parseEdmx } from '@sap-ux/edmx-parser';
-import prettifyXml from 'prettify-xml';
+import format from 'xml-formatter';
 import { logger } from '../../../utils/index.js';
 
 // Capture the real SAP tools directory at module load time. In test environments the
 // HOME env var may be overridden after process start; SAP_TOOLS_DIR can be set by the
 // test harness to point to the real ~/.saptools regardless of HOME.
-const SAP_TOOLS_BASE_DIRECTORY = process.env.SAP_TOOLS_DIR ?? getSapToolsDirectory();
+const SAP_TOOLS_BASE_DIRECTORY = process.env.SAP_TOOLS_DIR || getSapToolsDirectory();
 
 /**
  * Fetches SAP backend systems.
@@ -203,7 +203,7 @@ export async function getServiceMetadata(sapSystem: BackendSystem, servicePath: 
     const metadata = await service.metadata();
     checkMetadata(metadata);
     try {
-        return prettifyXml(metadata, { indent: 4 });
+        return format(metadata, { indentation: '    ', lineSeparator: '\n' });
     } catch {
         return metadata;
     }
