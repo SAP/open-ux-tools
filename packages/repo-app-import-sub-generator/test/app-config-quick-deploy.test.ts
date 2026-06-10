@@ -589,14 +589,4 @@ describe('getAdtDeployConfig', () => {
         const result = await getAdtDeployConfig(context);
         expect(result.app.transport).toBe('');
     });
-
-    it('should throw when qfaJson is missing for ADTQuickDeploy', async () => {
-        const context = {
-            appInfo: mockApp,
-            appDownloadType: AppDownloadType.ADTQuickDeploy
-        };
-        await expect(getAdtDeployConfig(context)).rejects.toThrow(
-            t('error.qfaJsonNotFound', { jsonFileName: 'qfa.json' })
-        );
-    });
 });

@@ -19,16 +19,26 @@ export const AppDownloadType = {
 export type AppDownloadType = (typeof AppDownloadType)[keyof typeof AppDownloadType];
 
 /**
- * Shared context for downloading and deploying ABAP applications.
+ * Context for the ADT Quick Deploy download flow.
  */
-export interface AppDownloadContext {
-    /** The ABAP service provider instance */
+export interface AdtQuickDeployContext {
+    appDownloadType: typeof AppDownloadType.ADTQuickDeploy;
+    qfaJson: QfaJsonConfig;
     serviceProvider?: AbapServiceProvider;
-    /** qfaJson is only available for ADTQuickDeploy apps */
-    qfaJson?: QfaJsonConfig;
-    /** Determines the type of app download */
-    appDownloadType?: AppDownloadType;
 }
+
+/**
+ * Context for the ABAP Repository download flow.
+ */
+export interface AbapRepositoryContext {
+    appDownloadType: typeof AppDownloadType.AbapRepository;
+    serviceProvider?: AbapServiceProvider;
+}
+
+/**
+ * Union of download contexts.
+ */
+export type AppDownloadContext = AdtQuickDeployContext | AbapRepositoryContext;
 
 /**
  * Quick deploy app config are applicable only in scenarios where an application

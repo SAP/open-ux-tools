@@ -14,7 +14,7 @@ jest.unstable_mockModule('../../src/utils/logger', () => {
     return { default: mock, ...mock };
 });
 
-const { readManifest, makeValidJson, addPackageJsonIfNotFound, cleanupDebugFiles } =
+const { readManifest, makeValidJson, addPackageJsonIfNotFound, processDebugArtifacts } =
     await import('../../src/utils/file-helpers.js');
 const RepoAppDownloadLogger = (await import('../../src/utils/logger.js')).default;
 
@@ -73,7 +73,7 @@ describe('makeValidJson', () => {
     });
 });
 
-describe('cleanupDebugFiles', () => {
+describe('processDebugArtifacts', () => {
     const mockFs = {
         exists: jest.fn(),
         delete: jest.fn(),
@@ -90,7 +90,7 @@ describe('cleanupDebugFiles', () => {
         const mockAdmZip = { getEntries: jest.fn(() => entries) };
         (PromptState as any)['_admZipInstance'] = mockAdmZip;
 
-        cleanupDebugFiles('/webapp', mockFs as any);
+        processDebugArtifacts('/webapp', mockFs as any);
 
         expect(mockFs.write).toHaveBeenCalledWith(join('/webapp', 'Component.js'), dbgContent);
         expect(mockFs.delete).toHaveBeenCalledWith(join('/webapp', 'Component-dbg.js'));
@@ -106,7 +106,7 @@ describe('cleanupDebugFiles', () => {
         (PromptState as any)['_admZipInstance'] = mockAdmZip;
         mockFs.exists.mockReturnValue(true);
 
-        cleanupDebugFiles('/webapp', mockFs as any);
+        processDebugArtifacts('/webapp', mockFs as any);
 
         expect(mockFs.delete).toHaveBeenCalledWith(join('/webapp', 'Component-preload.js'));
         expect(mockFs.delete).toHaveBeenCalledWith(join('/webapp', 'Component.js.map'));
@@ -119,7 +119,7 @@ describe('cleanupDebugFiles', () => {
         (PromptState as any)['_admZipInstance'] = mockAdmZip;
         mockFs.exists.mockReturnValue(false);
 
-        cleanupDebugFiles('/webapp', mockFs as any);
+        processDebugArtifacts('/webapp', mockFs as any);
 
         expect(mockFs.delete).not.toHaveBeenCalled();
     });
@@ -127,7 +127,7 @@ describe('cleanupDebugFiles', () => {
     it('should do nothing when admZip is not set', () => {
         PromptState.reset();
 
-        cleanupDebugFiles('/webapp', mockFs as any);
+        processDebugArtifacts('/webapp', mockFs as any);
 
         expect(mockFs.delete).not.toHaveBeenCalled();
         expect(mockFs.write).not.toHaveBeenCalled();

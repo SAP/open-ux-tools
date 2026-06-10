@@ -46,7 +46,7 @@ import { PromptState } from '../prompts/prompt-state.js';
 import { getAppConfig, getAdtDeployConfig } from './app-config-quick-deploy.js';
 import { getAbapRepoAppConfig, getAbapRepoDeployConfig, type AbapRepoAppConfig } from './app-config-abap-repo.js';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
-import { makeValidJson, cleanupDebugFiles, addPackageJsonIfNotFound } from '../utils/file-helpers.js';
+import { makeValidJson, processDebugArtifacts, addPackageJsonIfNotFound } from '../utils/file-helpers.js';
 import { replaceWebappFiles, validateAndUpdateManifestUI5Version } from '../utils/updates.js';
 import { getYUIDetails } from '../prompts/prompt-helpers.js';
 import { isValidPromptState, validateQfaJsonFile } from '../utils/validators.js';
@@ -171,7 +171,7 @@ export default class extends Generator {
         const webappPath = join(this.projectPath, DirName.Webapp);
         await extractZip(webappPath, this.fs);
 
-        cleanupDebugFiles(webappPath, this.fs);
+        processDebugArtifacts(webappPath, this.fs);
         const appConfig = getAbapRepoAppConfig(webappPath, this.answers.selectedApp, this.fs);
 
         // If package.json does not exist in the extracted app, add a minimal one with the appId as the package name.
@@ -213,9 +213,7 @@ export default class extends Generator {
         const qfaJsonFilePath = join(this.extractedProjectPath, qfaJsonFileName);
         const qfaJson: QfaJsonConfig = makeValidJson(qfaJsonFilePath, this.fs);
         // Generate project files
-        if (!validateQfaJsonFile(qfaJson)) {
-            throw new Error(t('error.qfaJsonValidationFailed', { jsonFileName: qfaJsonFileName }));
-        }
+        validateQfaJsonFile(qfaJson);
         const context: AppDownloadContext = {
             qfaJson,
             appDownloadType: AppDownloadType.ADTQuickDeploy

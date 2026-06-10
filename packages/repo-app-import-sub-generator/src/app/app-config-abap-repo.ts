@@ -13,9 +13,8 @@ import { readManifest } from '../utils/file-helpers.js';
 import { join } from 'node:path';
 
 /**
- * Derived app configuration for the ABAP repository download flow.
- * Built from the downloaded manifest and used as the single source of truth
- * for README generation, launch config, and deploy config.
+ * App configuration derived from the downloaded manifest for the ABAP repository flow.
+ * Used only for README generation, launch config creation, and adding a minimal package.json.
  */
 export interface AbapRepoAppConfig {
     app: {
@@ -34,8 +33,7 @@ export interface AbapRepoAppConfig {
 
 /**
  * Builds the app configuration for the ABAP repository download flow by reading
- * the downloaded manifest. Returns a typed config object used as the single source
- * of truth for README generation, launch config, and deploy config.
+ * the downloaded manifest. Returns a typed config object used for README generation, launch config, and deploy config.
  *
  * @param {string} webappPath - Path to the webapp folder.
  * @param {AppInfo} appInfo - The selected app info from prompts.

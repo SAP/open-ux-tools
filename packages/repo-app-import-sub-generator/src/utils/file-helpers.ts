@@ -52,7 +52,7 @@ export function readManifest(manifestFilePath: string, fs: Editor): Manifest {
  * @param {string} extractedProjectPath - The path where the app files are extracted.
  * @param {Editor} fs - The file system editor.
  */
-export function cleanupDebugFiles(extractedProjectPath: string, fs: Editor): void {
+export function processDebugArtifacts(extractedProjectPath: string, fs: Editor): void {
     PromptState.admZip?.getEntries().forEach((entry) => {
         const name = entry.entryName;
         if (name.endsWith('-dbg.js')) {
@@ -61,13 +61,13 @@ export function cleanupDebugFiles(extractedProjectPath: string, fs: Editor): voi
             fs.write(extractedDebugPath, entry.getData().toString('utf8'));
             fs.delete(debugPath);
             RepoAppDownloadLogger.logger?.debug(
-                `cleanupDebugFiles: Copied "${debugPath}" -> "${extractedDebugPath}" and removed debug file`
+                `processDebugArtifacts: Copied "${debugPath}" -> "${extractedDebugPath}" and removed debug file`
             );
         } else if (name.endsWith('-preload.js') || name.endsWith('.js.map')) {
             const filePath = join(extractedProjectPath, name);
             if (fs.exists(filePath)) {
                 fs.delete(filePath);
-                RepoAppDownloadLogger.logger?.debug(`cleanupDebugFiles: Removed file: "${filePath}"`);
+                RepoAppDownloadLogger.logger?.debug(`processDebugArtifacts: Removed file: "${filePath}"`);
             }
         }
     });

@@ -3,7 +3,7 @@ import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 import { t } from '../utils/i18n.js';
-import type { AppInfo, AppDownloadContext } from '../app/types.js';
+import type { AppInfo, AppDownloadContext, AdtQuickDeployContext } from '../app/types.js';
 import { readManifest } from '../utils/file-helpers.js';
 import { fioriAppSourcetemplateId, adtSourceTemplateId } from '../utils/constants.js';
 import { PromptState } from '../prompts/prompt-state.js';
@@ -36,10 +36,10 @@ const fetchServiceMetadata = async (provider: AbapServiceProvider, serviceUrl: s
  * Gets the application configuration based on the provided user answers and manifest data.
  * This configuration will be used to initialize a new Fiori application.
  *
- * @param {AppInfo} app - The application information collected from user prompts.
+ * @param {AppInfo} app - Selected app information.
  * @param {string} extractedProjectPath - Path where the app files are extracted.
  * @param {AppDownloadContext} context - The download context with service provider and qfa info.
- * @param {OdataServiceAnswers} systemSelection - The system selection answers.
+ * @param {OdataServiceAnswers} systemSelection - User's selection of the OData service and system.
  * @param {Editor} fs - The file system editor to manipulate project files.
  * @returns {Promise<FioriElementsApp<LROPSettings>>} - A promise resolving to the generated app configuration.
  * @throws {Error} - Throws an error if there are issues generating the configuration.
@@ -47,7 +47,7 @@ const fetchServiceMetadata = async (provider: AbapServiceProvider, serviceUrl: s
 export async function getAppConfig(
     app: AppInfo,
     extractedProjectPath: string,
-    context: AppDownloadContext,
+    context: AdtQuickDeployContext,
     systemSelection: OdataServiceAnswers,
     fs: Editor
 ): Promise<FioriElementsApp<LROPSettings>> {
@@ -97,7 +97,7 @@ export async function getAppConfig(
                 type: TemplateType.ListReportObjectPage,
                 settings: {
                     entityConfig: {
-                        mainEntityName: context.qfaJson?.serviceBindingDetails.mainEntityName ?? ''
+                        mainEntityName: context.qfaJson.serviceBindingDetails.mainEntityName
                     }
                 }
             },
@@ -130,14 +130,11 @@ export async function getAppConfig(
 /**
  * Generates the deployment configuration for an ADT Quick Deploy application.
  *
- * @param {AppDownloadContext} context - The download context.
+ * @param {AdtQuickDeployContext} context - The download context.
  * @returns {Promise<AbapDeployConfig>} The deployment configuration.
  */
-export async function getAdtDeployConfig(context: AppDownloadContext): Promise<AbapDeployConfig> {
+export async function getAdtDeployConfig(context: AdtQuickDeployContext): Promise<AbapDeployConfig> {
     const { qfaJson, serviceProvider } = context;
-    if (!qfaJson) {
-        throw new Error(t('error.qfaJsonNotFound', { jsonFileName: 'qfa.json' }));
-    }
     const packageName = qfaJson.metadata.package;
     const transport = await resolveTransportRequest(
         serviceProvider,

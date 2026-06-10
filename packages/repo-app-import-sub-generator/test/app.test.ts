@@ -117,7 +117,7 @@ jest.unstable_mockModule('../src/prompts/prompts', () => ({
 
 jest.unstable_mockModule('../src/utils/file-helpers', () => ({
     ...actualFileHelpers,
-    cleanupDebugFiles: jest.fn(),
+    processDebugArtifacts: jest.fn(),
     addPackageJsonIfNotFound: jest.fn()
 }));
 
@@ -777,7 +777,7 @@ describe('Repo App Download', () => {
         ).resolves.not.toThrow();
 
         expect(downloadUtils.extractZip).toHaveBeenCalled();
-        expect(fileHelpers.cleanupDebugFiles).toHaveBeenCalled();
+        expect(fileHelpers.processDebugArtifacts).toHaveBeenCalled();
         expect(getAbapRepoDeployConfig).toHaveBeenCalled();
     });
 

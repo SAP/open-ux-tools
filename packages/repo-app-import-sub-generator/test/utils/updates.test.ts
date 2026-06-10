@@ -75,7 +75,7 @@ describe('validateAndUpdateManifestUI5Version', () => {
         ).rejects.toThrow(t('error.readManifestErrors.invalidManifestStructureError'));
     });
 
-    it('should keep minUI5Version unchanged if it is a known released version', async () => {
+    it('should not modify the manifest if minUI5Version is valid', async () => {
         const manifest = {
             'sap.ui5': { dependencies: { minUI5Version: '1.90.0' } },
             'sap.app': { sourceTemplate: { id: 'old-template-id' } }
@@ -87,7 +87,7 @@ describe('validateAndUpdateManifestUI5Version', () => {
         expect(fs.writeJSON).toHaveBeenCalledWith('path/to/manifest.json', manifest, undefined, 2);
     });
 
-    it('should update minUI5Version to internal snapshot version when internal features are enabled', async () => {
+    it('should update minUI5Version to internal version if internal features are enabled', async () => {
         const manifest = {
             'sap.ui5': { dependencies: { minUI5Version: '1.80.0' } },
             'sap.app': { sourceTemplate: { id: 'old-template-id' } }
@@ -109,7 +109,7 @@ describe('validateAndUpdateManifestUI5Version', () => {
         );
     });
 
-    it('should fall back to the latest released version and update sourceTemplate', async () => {
+    it('should update minUI5Version to the closest available version if invalid', async () => {
         const manifest = {
             'sap.ui5': { dependencies: { minUI5Version: '1.70.0' } },
             'sap.app': { sourceTemplate: { id: 'old-template-id' } }

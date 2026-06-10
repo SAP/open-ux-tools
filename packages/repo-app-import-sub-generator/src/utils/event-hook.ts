@@ -10,7 +10,7 @@ import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 export interface RepoAppGenContext {
     // The file path for the generated project
     path: string;
-    // One or more post-generation commands to be executed sequentially
+    // The post-generation command to be executed
     postGenCommand: string;
     // The VSCode instance to execute the commands
     vscodeInstance?: VSCodeInstance;
@@ -21,7 +21,7 @@ export interface RepoAppGenContext {
 /**
  * Executes the post-generation command for the app.
  *
- * @param {RepoAppGenContext} context - The context containing the project path, post-generation commands, and optional VSCode instance.
+ * @param {RepoAppGenContext} context - The context containing the project path, post-generation command, and optional VSCode instance.
  */
 export async function runPostAppGenHook(context: RepoAppGenContext): Promise<void> {
     try {
