@@ -71,16 +71,23 @@ export class FeatureToggleAccess {
         if (vscode) {
             Object.keys(extensionConfigKeys).forEach((toggleConfigKey: string) => {
                 const toggleKey = `${extensionConfigKeys[toggleConfigKey]}.${FeatureToggleKey}`;
-                let toggles = {};
+                let toggleIds: string[] = [];
                 try {
-                    toggles = JSON.parse(JSON.stringify(vscode.workspace.getConfiguration(toggleKey)));
+                    // Read enumerable keys directly off the WorkspaceConfiguration proxy.
+                    // Replaces a previous `JSON.parse(JSON.stringify(...))` deep-clone idiom that
+                    // was only being used as a "give me the keys" hack — `structuredClone` would
+                    // have thrown on the proxy's methods, and the values aren't needed here.
+                    // Filtering out function-valued keys preserves the original behavior of
+                    // `JSON.stringify`, which silently drops function values.
+                    const config = vscode.workspace.getConfiguration(toggleKey);
+                    toggleIds = Object.keys(config).filter((key) => typeof config[key] !== 'function');
                 } catch {
                     // Not valid toggles. Skip.
                 }
 
-                Object.keys(toggles).forEach((toggleId: string) => {
+                toggleIds.forEach((toggleId: string) => {
                     // get full toggle value
-                    const toggleConfigValue = vscode.workspace.getConfiguration(`${toggleKey}`).get(`${toggleId}`);
+                    const toggleConfigValue = vscode.workspace.getConfiguration(toggleKey).get(toggleId);
                     const toggle: FeatureToggle = {
                         feature: `${toggleKey}.${toggleId}`,
                         isEnabled: toggleConfigValue ? (toggleConfigValue as boolean) : false
