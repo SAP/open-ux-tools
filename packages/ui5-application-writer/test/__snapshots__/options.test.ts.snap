@@ -72,6 +72,11 @@ server:
           intent:
             object: appwithnamespace
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -108,6 +113,11 @@ server:
           intent:
             object: appwithnamespace
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -327,6 +337,11 @@ server:
         flp:
           theme: sap_fiori_3
           path: test/flpSandbox.html
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -360,6 +375,11 @@ server:
         flp:
           theme: sap_fiori_3
           path: test/flpSandbox.html
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -822,6 +842,11 @@ server:
         flp:
           theme: sap_fiori_3
           path: test/flpSandbox.html
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -855,6 +880,11 @@ server:
         flp:
           theme: sap_fiori_3
           path: test/flpSandbox.html
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1354,6 +1384,11 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1386,6 +1421,11 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1739,6 +1779,10 @@ server:
           theme: sap_fiori_3
           path: test/flpSandbox.html
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -1794,6 +1838,10 @@ server:
       afterMiddleware: compression
       configuration: {}
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
