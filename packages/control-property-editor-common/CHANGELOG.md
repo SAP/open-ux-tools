@@ -1,5 +1,11 @@
 # @sap-ux-private/control-property-editor-common
 
+## 1.0.2
+
+### Patch Changes
+
+- bcfe9e3: Fix: Inconsistent property naming between RTA and CPE
+
 ## 1.0.1
 
 ### Patch Changes

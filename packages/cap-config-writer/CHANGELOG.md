@@ -1,5 +1,40 @@
 # @sap-ux/cap-config-writer
 
+## 1.0.10
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@1.0.10
+
+## 1.0.9
+
+### Patch Changes
+
+- @sap-ux/project-access@2.1.2
+- @sap-ux/fiori-generator-shared@1.0.9
+
+## 1.0.8
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@1.0.8
+
+## 1.0.7
+
+### Patch Changes
+
+- Updated dependencies [a328e14]
+    - @sap-ux/fiori-generator-shared@1.0.7
+
+## 1.0.6
+
+### Patch Changes
+
+- fff7490: fix: bump min `cds-plugin-ui5` version to `^0.17.0` to avoid welcome-page injection error reported with `^0.13.0` ("Failed to inject application pages to welcome page")
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+    - @sap-ux/fiori-generator-shared@1.0.6
+
 ## 1.0.5
 
 ### Patch Changes
