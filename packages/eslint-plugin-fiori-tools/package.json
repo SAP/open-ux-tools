@@ -27,13 +27,13 @@
         "tgz:package": "pnpm pack"
     },
     "dependencies": {
-        "@babel/core": "8.0.0-rc.6",
-        "@babel/eslint-parser": "8.0.0-rc.6",
-        "@babel/parser": "8.0.0-rc.6",
         "@typescript-eslint/eslint-plugin": "8.57.2",
         "@typescript-eslint/parser": "8.57.2"
     },
     "devDependencies": {
+        "@babel/core": "8.0.0-rc.6",
+        "@babel/eslint-parser": "8.0.0-rc.6",
+        "@babel/parser": "8.0.0-rc.6",
         "@eslint/js": "10.0.1",
         "@eslint/json": "0.14.0",
         "@eslint/core": "1.1.1",

@@ -389,8 +389,16 @@ const prodConfig: Linter.Config[] = [
 
         languageOptions: {
             parser: babelParser,
+            sourceType: 'module',
+            ecmaVersion: 'latest',
             parserOptions: {
-                requireConfigFile: false
+                requireConfigFile: false,
+                sourceType: 'module',
+                babelOptions: {
+                    parserOpts: {
+                        plugins: ['typescript']
+                    }
+                }
             },
             globals: globalsConfig
         },
@@ -408,8 +416,16 @@ const testConfig: Linter.Config[] = [
 
         languageOptions: {
             parser: babelParser,
+            sourceType: 'module',
+            ecmaVersion: 'latest',
             parserOptions: {
-                requireConfigFile: false
+                requireConfigFile: false,
+                sourceType: 'module',
+                babelOptions: {
+                    parserOpts: {
+                        plugins: ['typescript']
+                    }
+                }
             },
             globals: globalsConfig
         },
@@ -504,9 +520,9 @@ export const configs: Record<string, Linter.Config[]> = {
                 }
             }
         },
-        ...typescriptConfig,
         ...prodConfig,
-        ...testConfig
+        ...testConfig,
+        ...typescriptConfig
     ],
     'recommended-for-s4hana': [
         {
@@ -518,9 +534,9 @@ export const configs: Record<string, Linter.Config[]> = {
                 }
             }
         },
-        ...typescriptConfig,
         ...prodConfig,
         ...testConfig,
+        ...typescriptConfig,
         ...fioriLanguageConfig
     ]
 };
