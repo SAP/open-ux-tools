@@ -8,6 +8,7 @@ import {
     splicePageIntoJourneyRunner,
     type JourneyRunnerPage
 } from '../../../src/utils/journeyRunnerUtils.js';
+import { MAX_FILE_CONTENT_LENGTH } from '../../../src/utils/fileWritingUtils.js';
 import { initI18n } from '../../../src/i18n.js';
 
 await initI18n();
@@ -185,7 +186,7 @@ describe('addPagesToJourneyRunner()', () => {
         } as unknown as Editor;
         const log = { warn: jest.fn() } as unknown as Logger;
 
-        addPagesToJourneyRunner([makePage('NewPage')], testOutDirPath, fs, log);
+        addPagesToJourneyRunner([makePage('NewPage')], testOutDirPath, fs, undefined, log);
 
         expect(log.warn).toHaveBeenCalledWith(expect.stringContaining('JourneyRunner.js'));
     });
@@ -193,7 +194,7 @@ describe('addPagesToJourneyRunner()', () => {
 
 describe('MAX_FILE_CONTENT_LENGTH guard', () => {
     test('splicePageIntoJourneyRunner returns content unchanged when it exceeds the limit', () => {
-        const oversized = JOURNEY_RUNNER_FILE + ' '.repeat(10_001);
+        const oversized = JOURNEY_RUNNER_FILE + ' '.repeat(MAX_FILE_CONTENT_LENGTH + 1);
         const result = splicePageIntoJourneyRunner(oversized, [makePage('NewPage')]);
         expect(result).toBe(oversized);
     });

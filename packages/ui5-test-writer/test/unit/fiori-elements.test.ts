@@ -709,20 +709,20 @@ describe('ui5-test-writer', () => {
             expect(typesContent).toContain('export type When');
             expect(typesContent).toContain('export type Then');
             expect(typesContent).toContain(
-                'onTheEmployeesList: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListCustomActions'
+                'onTheEmployeesListGenerated: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListGeneratedCustomActions'
             );
             expect(typesContent).toContain(
-                'onTheEmployeesObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & typeof EmployeesObjectPageCustomActions'
+                'onTheEmployeesObjectPageGenerated: Opa5 & ObjectPageActions & TemplatePageActions & typeof EmployeesObjectPageGeneratedCustomActions'
             );
             expect(typesContent).toContain(
-                'onTheEmployeesObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof EmployeesObjectPageCustomAssertions'
+                'onTheEmployeesObjectPageGenerated: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof EmployeesObjectPageGeneratedCustomAssertions'
             );
             expect(typesContent).toContain('onTheShell: Shell');
             expect(typesContent).toContain('import type Opa5 from "sap/ui/test/Opa5"');
             expect(typesContent).toContain('import type { actions as ListReportActions');
             expect(typesContent).toContain('import type { actions as ObjectPageActions');
             expect(typesContent).toContain(
-                'import type { actions as EmployeesObjectPageCustomActions, assertions as EmployeesObjectPageCustomAssertions }'
+                'import type { actions as EmployeesObjectPageGeneratedCustomActions, assertions as EmployeesObjectPageGeneratedCustomAssertions }'
             );
         });
 
@@ -749,7 +749,7 @@ describe('ui5-test-writer', () => {
             fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
 
             const dumped = fs.dump(projectDir);
-            const lrPagePath = Object.keys(dumped).find((p) => p.includes('pages/EmployeesList.ts'));
+            const lrPagePath = Object.keys(dumped).find((p) => p.includes('pages/EmployeesList.gen.ts'));
             expect(lrPagePath).toBeDefined();
 
             const lrContent = dumped[lrPagePath!].contents as string;
@@ -763,7 +763,7 @@ describe('ui5-test-writer', () => {
             expect(lrContent).not.toContain('sap/fe/test/ListReport');
             expect(lrContent).not.toContain('sap.ui.define');
 
-            const opPagePath = Object.keys(dumped).find((p) => p.includes('pages/EmployeesObjectPage.ts'));
+            const opPagePath = Object.keys(dumped).find((p) => p.includes('pages/EmployeesObjectPage.gen.ts'));
             expect(opPagePath).toBeDefined();
 
             const opContent = dumped[opPagePath!].contents as string;
@@ -790,14 +790,15 @@ describe('ui5-test-writer', () => {
             expect(content).toContain('import JourneyRunner from "sap/fe/test/JourneyRunner"');
             expect(content).toContain('import ListReport from "sap/fe/test/ListReport"');
             expect(content).toContain('import ObjectPage from "sap/fe/test/ObjectPage"');
-            // Custom-class imports (renamed with `Custom` prefix to avoid shadowing the framework class)
-            expect(content).toContain('import CustomEmployeesList from "./EmployeesList"');
-            expect(content).toContain('import CustomEmployeesObjectPage from "./EmployeesObjectPage"');
+            // Custom-class imports (renamed with `Custom` prefix to avoid shadowing the framework class,
+            // and the `Generated` suffix to disambiguate from any user-authored hand-written page bindings)
+            expect(content).toContain('import CustomEmployeesListGenerated from "./EmployeesList.gen"');
+            expect(content).toContain('import CustomEmployeesObjectPageGenerated from "./EmployeesObjectPage.gen"');
             // Each page is constructed inline with the framework class + custom class
-            expect(content).toContain('onTheEmployeesList: new ListReport(');
-            expect(content).toContain('onTheEmployeesObjectPage: new ObjectPage(');
-            expect(content).toContain('CustomEmployeesList');
-            expect(content).toContain('CustomEmployeesObjectPage');
+            expect(content).toContain('onTheEmployeesListGenerated: new ListReport(');
+            expect(content).toContain('onTheEmployeesObjectPageGenerated: new ObjectPage(');
+            expect(content).toContain('CustomEmployeesListGenerated');
+            expect(content).toContain('CustomEmployeesObjectPageGenerated');
             expect(content).toContain('export default runner');
             expect(content).not.toContain('sap.ui.define');
         });
@@ -834,7 +835,7 @@ describe('ui5-test-writer', () => {
             fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
 
             const dumped = fs.dump(projectDir);
-            const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.ts'));
+            const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.gen.ts'));
             expect(lrJourneyPath).toBeDefined();
             const lrContent = dumped[lrJourneyPath!].contents as string;
 
@@ -852,11 +853,9 @@ describe('ui5-test-writer', () => {
             expect(lrContent).toContain('function (Given: Given, _When: When, Then: Then)');
             expect(lrContent).not.toContain('sap.ui.define');
 
-            // Sanity: FirstJourney has no filter assertions (matches JS Worklistv4 test)
+            // Sanity: FirstJourney is the rework's fallback and must NOT be emitted when LR/OP/FPM journeys are produced.
             const firstJourneyPath = Object.keys(dumped).find((p) => p.includes('FirstJourney.ts'));
-            expect(firstJourneyPath).toBeDefined();
-            const firstContent = dumped[firstJourneyPath!].contents as string;
-            expect(firstContent).not.toContain('iCheckFilterField');
+            expect(firstJourneyPath).toBeUndefined();
         });
 
         it('generates TypeScript filter tests for LROPv4 app (missing semantic filter)', async () => {
@@ -865,7 +864,7 @@ describe('ui5-test-writer', () => {
             fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadataMissingSemanticFilter, fs);
 
             const dumped = fs.dump(projectDir);
-            const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.ts'));
+            const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.gen.ts'));
             expect(lrJourneyPath).toBeDefined();
             const content = dumped[lrJourneyPath!].contents as string;
 
@@ -885,7 +884,7 @@ describe('ui5-test-writer', () => {
             fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
 
             const dumped = fs.dump(projectDir);
-            const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.ts'));
+            const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.gen.ts'));
             expect(lrJourneyPath).toBeDefined();
             const content = dumped[lrJourneyPath!].contents as string;
 
@@ -910,7 +909,7 @@ describe('ui5-test-writer', () => {
             );
 
             const dumped = fs.dump(projectDir);
-            const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.ts'));
+            const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.gen.ts'));
             expect(lrJourneyPath).toBeDefined();
             const content = dumped[lrJourneyPath!].contents as string;
 
@@ -939,7 +938,7 @@ describe('ui5-test-writer', () => {
             );
 
             const dumped = fs.dump(projectDir);
-            const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.ts'));
+            const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.gen.ts'));
             expect(lrJourneyPath).toBeDefined();
             const content = dumped[lrJourneyPath!].contents as string;
 
@@ -960,7 +959,7 @@ describe('ui5-test-writer', () => {
             fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, subOPMetadata, fs);
 
             const dumped = fs.dump(projectDir);
-            const opJourneyPath = Object.keys(dumped).find((p) => p.includes('BookingObjectPageJourney.ts'));
+            const opJourneyPath = Object.keys(dumped).find((p) => p.includes('BookingObjectPageJourney.gen.ts'));
             expect(opJourneyPath).toBeDefined();
             const content = dumped[opJourneyPath!].contents as string;
 

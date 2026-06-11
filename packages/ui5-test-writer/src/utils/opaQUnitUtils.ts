@@ -8,38 +8,17 @@ import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 import { readHashFromFlpSandbox } from './flpSandboxUtils.js';
+import { MAX_FILE_CONTENT_LENGTH } from './fileWritingUtils.js';
 import { t } from '../i18n.js';
-import { DotFileExtension } from '../types.js';
 
 /** Relative path from the test output directory to opaTests.qunit.js */
 const OPA_QUNIT_FILE = join('integration', 'opaTests.qunit.js');
 
 /**
- * The regex matches the opening bracket of the sap.ui.require array and
- * captures everything up to (but not including) the closing bracket followed
- * by `], function`.  This lets us splice new entries in without disturbing
- * any other part of the file.
- *
- * Matches:
- *   sap.ui.require(\n  [\n    "a",\n    "b",\n  ], function
- *                           ^^^^^^^^^^^^^^^^^
- *                           captured as group 1
- *
- * The `d` flag enables `match.indices` so we can read the capture group's
- * exact start/end positions without fragile string searching.
+ * Captures the body of the `sap.ui.require([...], function ...)` array (group 1).
+ * The `d` flag exposes `match.indices` for precise splice positions.
  */
 const SAP_UI_REQUIRE_ARRAY_REGEX = /sap\.ui\.require\s*\(\s*\[([^\]]*)\]\s*,\s*function/d;
-
-/** ReDoS mitigation: files larger than this are returned unchanged rather than matched with regex. */
-const MAX_FILE_CONTENT_LENGTH = 10000;
-
-/**
- * Escapes regex metacharacters in a string so it can be safely embedded in a `RegExp` pattern.
- *
- * @param value - the string to escape
- * @returns the escaped string
- */
-const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
 
 /**
  * Splices new module paths into the sap.ui.require array of the content string.

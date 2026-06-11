@@ -12002,19 +12002,19 @@ function journey() {
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
         Given.iStartMyApp();
-        Then.onTheEmployeesList.iSeeThisPage();
+        Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
 
 
     opaTest(\\"Navigate to ObjectPage\\", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data
         
-        When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+        When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesList.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListGenerated.onTable(\\"\\").iCheckRows();
 
-        When.onTheEmployeesList.onTable(\\"\\").iPressRow(0);
-        Then.onTheEmployeesObjectPage.iSeeThisPage();
+        When.onTheEmployeesListGenerated.onTable(\\"\\").iPressRow(0);
+        Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
     });
 
@@ -12092,7 +12092,7 @@ sap.ui.require(
 ",
     "state": "modified",
   },
-  "webapp/test/integration/pages/EmployeesList.ts": Object {
+  "webapp/test/integration/pages/EmployeesList.gen.ts": Object {
     "contents": "export const actions = {};
 
 export const assertions = {};
@@ -12104,7 +12104,7 @@ export default class ListReport {
 ",
     "state": "modified",
   },
-  "webapp/test/integration/pages/EmployeesObjectPage.ts": Object {
+  "webapp/test/integration/pages/EmployeesObjectPage.gen.ts": Object {
     "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
@@ -12130,29 +12130,29 @@ export default class ObjectPage {
     "contents": "import JourneyRunner from \\"sap/fe/test/JourneyRunner\\";
 import ListReport from \\"sap/fe/test/ListReport\\";
 import ObjectPage from \\"sap/fe/test/ObjectPage\\";
-import CustomEmployeesList from \\"./EmployeesList\\";
-import CustomEmployeesObjectPage from \\"./EmployeesObjectPage\\";
+import CustomEmployeesListGenerated from \\"./EmployeesList.gen\\";
+import CustomEmployeesObjectPageGenerated from \\"./EmployeesObjectPage.gen\\";
 
 const runner = new JourneyRunner({
     launchUrl: sap.ui.require.toUrl(\\"ui5-test-writer/test/employees\\") + \\"/index.html\\",
     pages: {
-        onTheEmployeesList: new ListReport(
+        onTheEmployeesListGenerated: new ListReport(
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesList\\",
                 entitySet: \\"Employees\\",
                 contextPath: \\"\\"
             },
-            CustomEmployeesList
+            CustomEmployeesListGenerated
         ),
-        onTheEmployeesObjectPage: new ObjectPage(
+        onTheEmployeesObjectPageGenerated: new ObjectPage(
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesObjectPage\\",
                 entitySet: \\"Employees\\",
                 contextPath: \\"\\"
             },
-            CustomEmployeesObjectPage
+            CustomEmployeesObjectPageGenerated
         )
     },
     async: true
@@ -12169,8 +12169,8 @@ import type { actions as ObjectPageActions, assertions as ObjectPageAssertions }
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
 import type Shell from \\"sap/fe/test/Shell\\";
 import type BaseArrangements from \\"sap/fe/test/BaseArrangements\\";
-import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"../pages/EmployeesList\\";
-import type { actions as EmployeesObjectPageCustomActions, assertions as EmployeesObjectPageCustomAssertions } from \\"../pages/EmployeesObjectPage\\";
+import type { actions as EmployeesListGeneratedCustomActions, assertions as EmployeesListGeneratedCustomAssertions } from \\"../pages/EmployeesList.gen\\";
+import type { actions as EmployeesObjectPageGeneratedCustomActions, assertions as EmployeesObjectPageGeneratedCustomAssertions } from \\"../pages/EmployeesObjectPage.gen\\";
 
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
@@ -12179,14 +12179,14 @@ export type Given = Opa5 & BaseArrangements & {
 };
 
 export type When = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListCustomActions;
-    onTheEmployeesObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & typeof EmployeesObjectPageCustomActions;
+    onTheEmployeesListGenerated: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListGeneratedCustomActions;
+    onTheEmployeesObjectPageGenerated: Opa5 & ObjectPageActions & TemplatePageActions & typeof EmployeesObjectPageGeneratedCustomActions;
     onTheShell: Shell;
 };
 
 export type Then = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof EmployeesListCustomAssertions;
-    onTheEmployeesObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof EmployeesObjectPageCustomAssertions;
+    onTheEmployeesListGenerated: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof EmployeesListGeneratedCustomAssertions;
+    onTheEmployeesObjectPageGenerated: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof EmployeesObjectPageGeneratedCustomAssertions;
     onTheShell: Shell;
 };
 ",
@@ -12406,19 +12406,19 @@ function journey() {
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
         Given.iStartMyApp();
-        Then.onTheEmployeesList.iSeeThisPage();
+        Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
 
 
     opaTest(\\"Navigate to ObjectPage\\", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data
         
-        When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+        When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesList.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListGenerated.onTable(\\"\\").iCheckRows();
 
-        When.onTheEmployeesList.onTable(\\"\\").iPressRow(0);
-        Then.onTheEmployeesObjectPage.iSeeThisPage();
+        When.onTheEmployeesListGenerated.onTable(\\"\\").iPressRow(0);
+        Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
     });
 
@@ -12496,7 +12496,7 @@ sap.ui.require(
 ",
     "state": "modified",
   },
-  "webapp/test/integration/pages/EmployeesList.ts": Object {
+  "webapp/test/integration/pages/EmployeesList.gen.ts": Object {
     "contents": "export const actions = {};
 
 export const assertions = {};
@@ -12508,7 +12508,7 @@ export default class ListReport {
 ",
     "state": "modified",
   },
-  "webapp/test/integration/pages/EmployeesObjectPage.ts": Object {
+  "webapp/test/integration/pages/EmployeesObjectPage.gen.ts": Object {
     "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
@@ -12534,29 +12534,29 @@ export default class ObjectPage {
     "contents": "import JourneyRunner from \\"sap/fe/test/JourneyRunner\\";
 import ListReport from \\"sap/fe/test/ListReport\\";
 import ObjectPage from \\"sap/fe/test/ObjectPage\\";
-import CustomEmployeesList from \\"./EmployeesList\\";
-import CustomEmployeesObjectPage from \\"./EmployeesObjectPage\\";
+import CustomEmployeesListGenerated from \\"./EmployeesList.gen\\";
+import CustomEmployeesObjectPageGenerated from \\"./EmployeesObjectPage.gen\\";
 
 const runner = new JourneyRunner({
     launchUrl: sap.ui.require.toUrl(\\"ui5-test-writer/test/employees\\") + \\"/index.html\\",
     pages: {
-        onTheEmployeesList: new ListReport(
+        onTheEmployeesListGenerated: new ListReport(
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesList\\",
                 entitySet: \\"Employees\\",
                 contextPath: \\"\\"
             },
-            CustomEmployeesList
+            CustomEmployeesListGenerated
         ),
-        onTheEmployeesObjectPage: new ObjectPage(
+        onTheEmployeesObjectPageGenerated: new ObjectPage(
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesObjectPage\\",
                 entitySet: \\"Employees\\",
                 contextPath: \\"\\"
             },
-            CustomEmployeesObjectPage
+            CustomEmployeesObjectPageGenerated
         )
     },
     async: true
@@ -12573,8 +12573,8 @@ import type { actions as ObjectPageActions, assertions as ObjectPageAssertions }
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
 import type Shell from \\"sap/fe/test/Shell\\";
 import type BaseArrangements from \\"sap/fe/test/BaseArrangements\\";
-import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"../pages/EmployeesList\\";
-import type { actions as EmployeesObjectPageCustomActions, assertions as EmployeesObjectPageCustomAssertions } from \\"../pages/EmployeesObjectPage\\";
+import type { actions as EmployeesListGeneratedCustomActions, assertions as EmployeesListGeneratedCustomAssertions } from \\"../pages/EmployeesList.gen\\";
+import type { actions as EmployeesObjectPageGeneratedCustomActions, assertions as EmployeesObjectPageGeneratedCustomAssertions } from \\"../pages/EmployeesObjectPage.gen\\";
 
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
@@ -12583,14 +12583,14 @@ export type Given = Opa5 & BaseArrangements & {
 };
 
 export type When = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListCustomActions;
-    onTheEmployeesObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & typeof EmployeesObjectPageCustomActions;
+    onTheEmployeesListGenerated: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListGeneratedCustomActions;
+    onTheEmployeesObjectPageGenerated: Opa5 & ObjectPageActions & TemplatePageActions & typeof EmployeesObjectPageGeneratedCustomActions;
     onTheShell: Shell;
 };
 
 export type Then = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof EmployeesListCustomAssertions;
-    onTheEmployeesObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof EmployeesObjectPageCustomAssertions;
+    onTheEmployeesListGenerated: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof EmployeesListGeneratedCustomAssertions;
+    onTheEmployeesObjectPageGenerated: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof EmployeesObjectPageGeneratedCustomAssertions;
     onTheShell: Shell;
 };
 ",
@@ -12810,19 +12810,19 @@ function journey() {
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
         Given.iStartMyApp();
-        Then.onTheEmployeesList.iSeeThisPage();
+        Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
 
 
     opaTest(\\"Navigate to ObjectPage\\", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data
         
-        When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+        When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesList.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListGenerated.onTable(\\"\\").iCheckRows();
 
-        When.onTheEmployeesList.onTable(\\"\\").iPressRow(0);
-        Then.onTheEmployeesObjectPage.iSeeThisPage();
+        When.onTheEmployeesListGenerated.onTable(\\"\\").iPressRow(0);
+        Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
     });
 
@@ -12900,7 +12900,7 @@ sap.ui.require(
 ",
     "state": "modified",
   },
-  "webapp/test/integration/pages/EmployeesList.ts": Object {
+  "webapp/test/integration/pages/EmployeesList.gen.ts": Object {
     "contents": "export const actions = {};
 
 export const assertions = {};
@@ -12912,7 +12912,7 @@ export default class ListReport {
 ",
     "state": "modified",
   },
-  "webapp/test/integration/pages/EmployeesObjectPage.ts": Object {
+  "webapp/test/integration/pages/EmployeesObjectPage.gen.ts": Object {
     "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
@@ -12938,29 +12938,29 @@ export default class ObjectPage {
     "contents": "import JourneyRunner from \\"sap/fe/test/JourneyRunner\\";
 import ListReport from \\"sap/fe/test/ListReport\\";
 import ObjectPage from \\"sap/fe/test/ObjectPage\\";
-import CustomEmployeesList from \\"./EmployeesList\\";
-import CustomEmployeesObjectPage from \\"./EmployeesObjectPage\\";
+import CustomEmployeesListGenerated from \\"./EmployeesList.gen\\";
+import CustomEmployeesObjectPageGenerated from \\"./EmployeesObjectPage.gen\\";
 
 const runner = new JourneyRunner({
     launchUrl: sap.ui.require.toUrl(\\"ui5-test-writer/test/employees\\") + \\"/index.html\\",
     pages: {
-        onTheEmployeesList: new ListReport(
+        onTheEmployeesListGenerated: new ListReport(
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesList\\",
                 entitySet: \\"\\",
                 contextPath: \\"/Employees\\"
             },
-            CustomEmployeesList
+            CustomEmployeesListGenerated
         ),
-        onTheEmployeesObjectPage: new ObjectPage(
+        onTheEmployeesObjectPageGenerated: new ObjectPage(
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesObjectPage\\",
                 entitySet: \\"\\",
                 contextPath: \\"/Employees\\"
             },
-            CustomEmployeesObjectPage
+            CustomEmployeesObjectPageGenerated
         )
     },
     async: true
@@ -12977,8 +12977,8 @@ import type { actions as ObjectPageActions, assertions as ObjectPageAssertions }
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
 import type Shell from \\"sap/fe/test/Shell\\";
 import type BaseArrangements from \\"sap/fe/test/BaseArrangements\\";
-import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"../pages/EmployeesList\\";
-import type { actions as EmployeesObjectPageCustomActions, assertions as EmployeesObjectPageCustomAssertions } from \\"../pages/EmployeesObjectPage\\";
+import type { actions as EmployeesListGeneratedCustomActions, assertions as EmployeesListGeneratedCustomAssertions } from \\"../pages/EmployeesList.gen\\";
+import type { actions as EmployeesObjectPageGeneratedCustomActions, assertions as EmployeesObjectPageGeneratedCustomAssertions } from \\"../pages/EmployeesObjectPage.gen\\";
 
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
@@ -12987,14 +12987,14 @@ export type Given = Opa5 & BaseArrangements & {
 };
 
 export type When = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListCustomActions;
-    onTheEmployeesObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & typeof EmployeesObjectPageCustomActions;
+    onTheEmployeesListGenerated: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListGeneratedCustomActions;
+    onTheEmployeesObjectPageGenerated: Opa5 & ObjectPageActions & TemplatePageActions & typeof EmployeesObjectPageGeneratedCustomActions;
     onTheShell: Shell;
 };
 
 export type Then = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof EmployeesListCustomAssertions;
-    onTheEmployeesObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof EmployeesObjectPageCustomAssertions;
+    onTheEmployeesListGenerated: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof EmployeesListGeneratedCustomAssertions;
+    onTheEmployeesObjectPageGenerated: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof EmployeesObjectPageGeneratedCustomAssertions;
     onTheShell: Shell;
 };
 ",
@@ -13191,16 +13191,16 @@ function journey() {
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
         Given.iStartMyApp();
-        Then.onTheEmployeesList.iSeeThisPage();
+        Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
 
 
     opaTest(\\"Navigate to ObjectPage\\", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data
         
-        When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+        When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesList.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListGenerated.onTable(\\"\\").iCheckRows();
 
     });
 
@@ -13278,7 +13278,7 @@ sap.ui.require(
 ",
     "state": "modified",
   },
-  "webapp/test/integration/pages/EmployeesList.ts": Object {
+  "webapp/test/integration/pages/EmployeesList.gen.ts": Object {
     "contents": "export const actions = {};
 
 export const assertions = {};
@@ -13293,19 +13293,19 @@ export default class ListReport {
   "webapp/test/integration/pages/JourneyRunner.ts": Object {
     "contents": "import JourneyRunner from \\"sap/fe/test/JourneyRunner\\";
 import ListReport from \\"sap/fe/test/ListReport\\";
-import CustomEmployeesList from \\"./EmployeesList\\";
+import CustomEmployeesListGenerated from \\"./EmployeesList.gen\\";
 
 const runner = new JourneyRunner({
     launchUrl: sap.ui.require.toUrl(\\"ui5-test-writer/test/employees\\") + \\"/index.html\\",
     pages: {
-        onTheEmployeesList: new ListReport(
+        onTheEmployeesListGenerated: new ListReport(
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesList\\",
                 entitySet: \\"Employees\\",
                 contextPath: \\"\\"
             },
-            CustomEmployeesList
+            CustomEmployeesListGenerated
         )
     },
     async: true
@@ -13321,7 +13321,7 @@ import type { actions as ListReportActions, assertions as ListReportAssertions }
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
 import type Shell from \\"sap/fe/test/Shell\\";
 import type BaseArrangements from \\"sap/fe/test/BaseArrangements\\";
-import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"../pages/EmployeesList\\";
+import type { actions as EmployeesListGeneratedCustomActions, assertions as EmployeesListGeneratedCustomAssertions } from \\"../pages/EmployeesList.gen\\";
 
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
@@ -13330,12 +13330,12 @@ export type Given = Opa5 & BaseArrangements & {
 };
 
 export type When = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListCustomActions;
+    onTheEmployeesListGenerated: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListGeneratedCustomActions;
     onTheShell: Shell;
 };
 
 export type Then = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof EmployeesListCustomAssertions;
+    onTheEmployeesListGenerated: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof EmployeesListGeneratedCustomAssertions;
     onTheShell: Shell;
 };
 ",
@@ -13598,19 +13598,19 @@ function journey() {
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
         Given.iStartMyApp();
-        Then.onTheEmployeesList.iSeeThisPage();
+        Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
 
 
     opaTest(\\"Navigate to ObjectPage\\", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data
         
-        When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+        When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesList.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListGenerated.onTable(\\"\\").iCheckRows();
 
-        When.onTheEmployeesList.onTable(\\"\\").iPressRow(0);
-        Then.onTheEmployeesObjectPage.iSeeThisPage();
+        When.onTheEmployeesListGenerated.onTable(\\"\\").iPressRow(0);
+        Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
     });
 
@@ -13688,7 +13688,7 @@ sap.ui.require(
 ",
     "state": "modified",
   },
-  "webapp/test/integration/pages/EmployeesList.ts": Object {
+  "webapp/test/integration/pages/EmployeesList.gen.ts": Object {
     "contents": "export const actions = {};
 
 export const assertions = {};
@@ -13700,7 +13700,7 @@ export default class ListReport {
 ",
     "state": "modified",
   },
-  "webapp/test/integration/pages/EmployeesObjectPage.ts": Object {
+  "webapp/test/integration/pages/EmployeesObjectPage.gen.ts": Object {
     "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
@@ -13726,49 +13726,49 @@ export default class ObjectPage {
     "contents": "import JourneyRunner from \\"sap/fe/test/JourneyRunner\\";
 import ListReport from \\"sap/fe/test/ListReport\\";
 import ObjectPage from \\"sap/fe/test/ObjectPage\\";
-import CustomEmployeesList from \\"./EmployeesList\\";
-import CustomEmployeesObjectPage from \\"./EmployeesObjectPage\\";
-import CustomPositionsObjectPage from \\"./PositionsObjectPage\\";
-import CustomTrainingsObjectPage from \\"./TrainingsObjectPage\\";
+import CustomEmployeesListGenerated from \\"./EmployeesList.gen\\";
+import CustomEmployeesObjectPageGenerated from \\"./EmployeesObjectPage.gen\\";
+import CustomPositionsObjectPageGenerated from \\"./PositionsObjectPage.gen\\";
+import CustomTrainingsObjectPageGenerated from \\"./TrainingsObjectPage.gen\\";
 
 const runner = new JourneyRunner({
     launchUrl: sap.ui.require.toUrl(\\"vesc/demo/employee/project2\\") + \\"/index.html\\",
     pages: {
-        onTheEmployeesList: new ListReport(
+        onTheEmployeesListGenerated: new ListReport(
             {
                 appId: \\"vesc.demo.employee.project2\\",
                 componentId: \\"EmployeesList\\",
                 entitySet: \\"Employees\\",
                 contextPath: \\"\\"
             },
-            CustomEmployeesList
+            CustomEmployeesListGenerated
         ),
-        onTheEmployeesObjectPage: new ObjectPage(
+        onTheEmployeesObjectPageGenerated: new ObjectPage(
             {
                 appId: \\"vesc.demo.employee.project2\\",
                 componentId: \\"EmployeesObjectPage\\",
                 entitySet: \\"Employees\\",
                 contextPath: \\"\\"
             },
-            CustomEmployeesObjectPage
+            CustomEmployeesObjectPageGenerated
         ),
-        onThePositionsObjectPage: new ObjectPage(
+        onThePositionsObjectPageGenerated: new ObjectPage(
             {
                 appId: \\"vesc.demo.employee.project2\\",
                 componentId: \\"PositionsObjectPage\\",
                 entitySet: \\"Positions\\",
                 contextPath: \\"\\"
             },
-            CustomPositionsObjectPage
+            CustomPositionsObjectPageGenerated
         ),
-        onTheTrainingsObjectPage: new ObjectPage(
+        onTheTrainingsObjectPageGenerated: new ObjectPage(
             {
                 appId: \\"vesc.demo.employee.project2\\",
                 componentId: \\"TrainingsObjectPage\\",
                 entitySet: \\"Trainings\\",
                 contextPath: \\"\\"
             },
-            CustomTrainingsObjectPage
+            CustomTrainingsObjectPageGenerated
         )
     },
     async: true
@@ -13778,7 +13778,7 @@ export default runner;
 ",
     "state": "modified",
   },
-  "webapp/test/integration/pages/PositionsObjectPage.ts": Object {
+  "webapp/test/integration/pages/PositionsObjectPage.gen.ts": Object {
     "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
@@ -13800,7 +13800,7 @@ export default class ObjectPage {
 ",
     "state": "modified",
   },
-  "webapp/test/integration/pages/TrainingsObjectPage.ts": Object {
+  "webapp/test/integration/pages/TrainingsObjectPage.gen.ts": Object {
     "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
 import Press from \\"sap/ui/test/actions/Press\\";
 
@@ -13829,10 +13829,10 @@ import type { actions as ObjectPageActions, assertions as ObjectPageAssertions }
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
 import type Shell from \\"sap/fe/test/Shell\\";
 import type BaseArrangements from \\"sap/fe/test/BaseArrangements\\";
-import type { actions as EmployeesListCustomActions, assertions as EmployeesListCustomAssertions } from \\"../pages/EmployeesList\\";
-import type { actions as EmployeesObjectPageCustomActions, assertions as EmployeesObjectPageCustomAssertions } from \\"../pages/EmployeesObjectPage\\";
-import type { actions as PositionsObjectPageCustomActions, assertions as PositionsObjectPageCustomAssertions } from \\"../pages/PositionsObjectPage\\";
-import type { actions as TrainingsObjectPageCustomActions, assertions as TrainingsObjectPageCustomAssertions } from \\"../pages/TrainingsObjectPage\\";
+import type { actions as EmployeesListGeneratedCustomActions, assertions as EmployeesListGeneratedCustomAssertions } from \\"../pages/EmployeesList.gen\\";
+import type { actions as EmployeesObjectPageGeneratedCustomActions, assertions as EmployeesObjectPageGeneratedCustomAssertions } from \\"../pages/EmployeesObjectPage.gen\\";
+import type { actions as PositionsObjectPageGeneratedCustomActions, assertions as PositionsObjectPageGeneratedCustomAssertions } from \\"../pages/PositionsObjectPage.gen\\";
+import type { actions as TrainingsObjectPageGeneratedCustomActions, assertions as TrainingsObjectPageGeneratedCustomAssertions } from \\"../pages/TrainingsObjectPage.gen\\";
 
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
@@ -13841,18 +13841,18 @@ export type Given = Opa5 & BaseArrangements & {
 };
 
 export type When = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListCustomActions;
-    onTheEmployeesObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & typeof EmployeesObjectPageCustomActions;
-    onThePositionsObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & typeof PositionsObjectPageCustomActions;
-    onTheTrainingsObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & typeof TrainingsObjectPageCustomActions;
+    onTheEmployeesListGenerated: Opa5 & ListReportActions & TemplatePageActions & typeof EmployeesListGeneratedCustomActions;
+    onTheEmployeesObjectPageGenerated: Opa5 & ObjectPageActions & TemplatePageActions & typeof EmployeesObjectPageGeneratedCustomActions;
+    onThePositionsObjectPageGenerated: Opa5 & ObjectPageActions & TemplatePageActions & typeof PositionsObjectPageGeneratedCustomActions;
+    onTheTrainingsObjectPageGenerated: Opa5 & ObjectPageActions & TemplatePageActions & typeof TrainingsObjectPageGeneratedCustomActions;
     onTheShell: Shell;
 };
 
 export type Then = Opa5 & BaseArrangements & {
-    onTheEmployeesList: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof EmployeesListCustomAssertions;
-    onTheEmployeesObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof EmployeesObjectPageCustomAssertions;
-    onThePositionsObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof PositionsObjectPageCustomAssertions;
-    onTheTrainingsObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof TrainingsObjectPageCustomAssertions;
+    onTheEmployeesListGenerated: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof EmployeesListGeneratedCustomAssertions;
+    onTheEmployeesObjectPageGenerated: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof EmployeesObjectPageGeneratedCustomAssertions;
+    onThePositionsObjectPageGenerated: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof PositionsObjectPageGeneratedCustomAssertions;
+    onTheTrainingsObjectPageGenerated: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof TrainingsObjectPageGeneratedCustomAssertions;
     onTheShell: Shell;
 };
 ",

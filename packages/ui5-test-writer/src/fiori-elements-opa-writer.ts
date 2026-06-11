@@ -22,6 +22,7 @@ import { getAppFeatures } from './utils/modelUtils.js';
 import { addPathsToQUnitJs, readHtmlTargetFromQUnitJs } from './utils/opaQUnitUtils.js';
 import { type JourneyRunnerPage, addPagesToJourneyRunner } from './utils/journeyRunnerUtils.js';
 import { hasVirtualOPA5, addVirtualTestConfig } from './utils/virtualOpaUtils.js';
+import { addJourneysToOpaJourneyTypes } from './utils/opaJourneyTypesUtils.js';
 import { getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { readHashFromFlpSandbox } from './utils/flpSandboxUtils.js';
 
@@ -83,7 +84,8 @@ export async function generateOPAFiles(
         editor,
         log,
         journeyParams,
-        dotFileExtension
+        dotFileExtension,
+        modifiedFiles: []
     };
 
     if (standalone) {
@@ -110,9 +112,9 @@ async function generateOPAFilesForExistingApp(writeContext: WriteContext, appFea
     handleJourneyRunner(standaloneWriteContext, generatedPages);
     await handleOpaTestsStartupFiles(standaloneWriteContext, virtualOPA5Configured, generatedJourneys);
     if (standaloneWriteContext.dotFileExtension === DotFileExtension.TS) {
-        writeOpaJourneyTypes(standaloneWriteContext);
+        handleOPAJourneyTypes(standaloneWriteContext, generatedPages);
     }
-    logGeneratedJourneyFiles(standaloneWriteContext.log, generatedJourneys);
+    logGeneratedAndModifiedFiles(standaloneWriteContext, generatedJourneys, generatedPages);
 }
 
 /**
@@ -122,7 +124,7 @@ async function generateOPAFilesForExistingApp(writeContext: WriteContext, appFea
  * @param appFeatures - object containing feature data for list report, object pages, and FPM, used for generating the journey files
  */
 async function generateOPAFilesForNewApp(writeContext: WriteContext, appFeatures: AppFeatures): Promise<void> {
-    writePageFiles(writeContext);
+    const generatedPages = writePageFiles(writeContext);
     writeJourneyRunner(writeContext);
     const generatedJourneys = writeJourneyFiles(appFeatures, writeContext);
     await handleOpaTestsStartupFiles(
@@ -134,19 +136,77 @@ async function generateOPAFilesForNewApp(writeContext: WriteContext, appFeatures
     if (writeContext.dotFileExtension === DotFileExtension.TS) {
         writeOpaJourneyTypes(writeContext);
     }
-    logGeneratedJourneyFiles(writeContext.log, generatedJourneys);
+    logGeneratedAndModifiedFiles(writeContext, generatedJourneys, generatedPages);
 }
 
 /**
- * Logs the generated journey files.
+ * Log a summary of all files the generator produced or updated, grouped into journeys, pages,
+ * and other modified files (JourneyRunner, qunit harness, type definitions, etc.).
+ *
+ * @param writeContext - shared write context (provides logger, file extension, and modifiedFiles accumulator)
+ * @param generatedJourneys - feature names for which a `<name>Journey.gen.<ext>` file was written
+ * @param generatedPages - page objects written under `pages/`
+ */
+function logGeneratedAndModifiedFiles(
+    writeContext: WriteContext,
+    generatedJourneys: string[],
+    generatedPages: JourneyRunnerPage[]
+): void {
+    const { log, dotFileExtension, modifiedFiles } = writeContext;
+    if (!log?.info) {
+        return;
+    }
+    logGeneratedJourneyFiles(log, generatedJourneys, dotFileExtension);
+    logGeneratedPageFiles(log, generatedPages, dotFileExtension);
+    logModifiedFiles(log, modifiedFiles ?? []);
+}
+
+/**
+ * Log the generated journey files (one per line) under a "Generated Journeys:" heading.
  *
  * @param log - logger instance to use for logging
- * @param generatedJourneys - array of generated journey file names
+ * @param generatedJourneys - feature names for which a `<name>Journey.gen.<ext>` file was written
+ * @param dotFileExtension - the journey file extension (`.js` or `.ts`)
  */
-function logGeneratedJourneyFiles(log: Logger | undefined, generatedJourneys: string[]): void {
-    if (log && generatedJourneys.length > 0) {
-        log.info(generatedJourneys.map((journey) => `${journey}Journey.gen.js`).join(', '));
+function logGeneratedJourneyFiles(log: Logger, generatedJourneys: string[], dotFileExtension: DotFileExtension): void {
+    if (generatedJourneys.length === 0) {
+        return;
     }
+    const lines = generatedJourneys.map((journey) => `  ${journey}Journey.gen${dotFileExtension}`);
+    log.info?.(['Generated Journeys:', ...lines].join('\n'));
+}
+
+/**
+ * Log the generated page files (one per line) under a "Generated Pages:" heading.
+ *
+ * @param log - logger instance to use for logging
+ * @param generatedPages - page objects written under `pages/`
+ * @param dotFileExtension - the page file extension (`.js` or `.ts`)
+ */
+function logGeneratedPageFiles(
+    log: Logger,
+    generatedPages: JourneyRunnerPage[],
+    dotFileExtension: DotFileExtension
+): void {
+    if (generatedPages.length === 0) {
+        return;
+    }
+    const lines = generatedPages.map((page) => `  pages/${page.fileName}${dotFileExtension}`);
+    log.info?.(['Generated Pages:', ...lines].join('\n'));
+}
+
+/**
+ * Log the additional files updated during generation (one per line) under a "Modified files:" heading.
+ *
+ * @param log - logger instance to use for logging
+ * @param modifiedFiles - paths (relative to the test output dir) of files that were written or spliced
+ */
+function logModifiedFiles(log: Logger, modifiedFiles: string[]): void {
+    if (modifiedFiles.length === 0) {
+        return;
+    }
+    const lines = modifiedFiles.map((file) => `  ${file}`);
+    log.info?.(['Modified files:', ...lines].join('\n'));
 }
 
 /**
@@ -185,6 +245,7 @@ async function resolveWriteContextForMissingIntegrationFolder(writeContext: Writ
         const script = getPackageScripts({ localOnly: false, addTest: true })['int-test'];
         if (script) {
             await updatePackageScript(writeContext.basePath, 'int-test', script, writeContext.editor);
+            writeContext.modifiedFiles?.push('package.json');
         }
     }
     if (existsSync(join(writeContext.testOutDirPath, 'flpSandbox.html'))) {
@@ -217,13 +278,14 @@ async function hasIncompatibleTestSetup(basePath: string, editor: Editor): Promi
 }
 
 /**
- * Checks whether the existing test setup contains its own JourneyRunner.js file.
+ * Checks whether the existing test setup contains its own JourneyRunner.js or JourneyRunner.ts file.
  *
  * @param basePath - the root folder of the app
- * @returns true if the JourneyRunner.js file exists, false otherwise
+ * @returns true if the JourneyRunner.js or JourneyRunner.ts file exists, false otherwise
  */
 async function hasJourneyRunnerFile(basePath: string): Promise<boolean> {
-    return existsSync(join(basePath, 'test', 'integration', 'pages', 'JourneyRunner.js'));
+    const pagesDir = join(basePath, 'test', 'integration', 'pages');
+    return existsSync(join(pagesDir, 'JourneyRunner.js')) || existsSync(join(pagesDir, 'JourneyRunner.ts'));
 }
 
 /**
@@ -526,16 +588,17 @@ function writePageFiles(writeContext: WriteContext): JourneyRunnerPage[] {
  * @param writeContext - shared write context (config, paths, editor, journey params)
  */
 function writeJourneyRunner(writeContext: WriteContext): void {
-    const { config, rootV4TemplateDirPath, testOutDirPath, editor } = writeContext;
+    const { config, rootV4TemplateDirPath, testOutDirPath, editor, dotFileExtension, modifiedFiles } = writeContext;
     editor.copyTpl(
-        join(rootV4TemplateDirPath, 'integration', 'pages', `JourneyRunner${writeContext.dotFileExtension}`),
-        join(testOutDirPath, 'integration', 'pages', `JourneyRunner${writeContext.dotFileExtension}`),
+        join(rootV4TemplateDirPath, 'integration', 'pages', `JourneyRunner${dotFileExtension}`),
+        join(testOutDirPath, 'integration', 'pages', `JourneyRunner${dotFileExtension}`),
         config,
         undefined,
         {
             globOptions: { dot: true }
         }
     );
+    modifiedFiles?.push(`integration/pages/JourneyRunner${dotFileExtension}`);
 }
 
 /**
@@ -544,7 +607,7 @@ function writeJourneyRunner(writeContext: WriteContext): void {
  * @param writeContext - shared write context (config, paths, editor, journey params)
  */
 function writeOpaJourneyTypes(writeContext: WriteContext): void {
-    const { config, rootV4TemplateDirPath, testOutDirPath, editor } = writeContext;
+    const { config, rootV4TemplateDirPath, testOutDirPath, editor, modifiedFiles } = writeContext;
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration', 'types', 'OpaJourneyTypes.d.ts'),
         join(testOutDirPath, 'integration', 'types', 'OpaJourneyTypes.d.ts'),
@@ -554,6 +617,7 @@ function writeOpaJourneyTypes(writeContext: WriteContext): void {
             globOptions: { dot: true }
         }
     );
+    modifiedFiles?.push('integration/types/OpaJourneyTypes.d.ts');
 }
 
 /**
@@ -642,16 +706,40 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
  * @param writeContext - shared write context (config, paths, editor, journey params)
  */
 function writeFallbackJourney(writeContext: WriteContext): void {
-    const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams } = writeContext;
+    const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams, dotFileExtension } = writeContext;
     editor.copyTpl(
-        join(rootV4TemplateDirPath, 'integration', 'FirstJourney.js'),
-        join(testOutDirPath, 'integration', `${config.opaJourneyFileName}.js`),
+        join(rootV4TemplateDirPath, 'integration', `FirstJourney${dotFileExtension}`),
+        join(testOutDirPath, 'integration', `${config.opaJourneyFileName}${dotFileExtension}`),
         journeyParams,
         undefined,
         {
             globOptions: { dot: true }
         }
     );
+}
+
+/**
+ * Update the `OpaJourneyTypes.d.ts` type-definition file used by generated TypeScript OPA tests.
+ *
+ * @param writeContext - shared write context (config, paths, editor, journey params)
+ * @param generatedPages - pages whose journeys should be reflected in the type definitions
+ */
+function handleOPAJourneyTypes(writeContext: WriteContext, generatedPages: JourneyRunnerPage[]): void {
+    if (writeContext.incompatibleTestSetup) {
+        writeContext.log?.info(t('info.opaJourneyTypesNotUpdated'));
+        return;
+    }
+    if (writeContext.hasPreexistingTests) {
+        addJourneysToOpaJourneyTypes(
+            generatedPages,
+            writeContext.testOutDirPath,
+            writeContext.editor,
+            writeContext.log
+        );
+        writeContext.modifiedFiles?.push('integration/types/OpaJourneyTypes.d.ts');
+    } else {
+        writeOpaJourneyTypes(writeContext);
+    }
 }
 
 /**
@@ -678,9 +766,10 @@ function handleJourneyRunner(writeContext: WriteContext, generatedPages: Journey
  * @param generatedPages - an array of page objects that were generated, each containing a targetKey and appPath
  */
 function updatePagesInJourneyRunner(writeContext: WriteContext, generatedPages: JourneyRunnerPage[]): void {
-    const { testOutDirPath, editor, log } = writeContext;
+    const { testOutDirPath, editor, log, dotFileExtension, modifiedFiles } = writeContext;
     if (generatedPages.length > 0) {
-        addPagesToJourneyRunner(generatedPages, testOutDirPath, editor, log);
+        addPagesToJourneyRunner(generatedPages, testOutDirPath, editor, dotFileExtension, log);
+        modifiedFiles?.push(`integration/pages/JourneyRunner${dotFileExtension}`);
     }
 }
 
@@ -704,6 +793,7 @@ async function handleOpaTestsStartupFiles(
             [{ framework: 'OPA5', path: '/test/integration/opaTests.qunit.html' }, { framework: 'Testsuite' }],
             writeContext.editor
         );
+        writeContext.modifiedFiles?.push('ui5-mock.yaml');
         return;
     } else if (writeContext.incompatibleTestSetup) {
         writeContext.log?.info(
@@ -713,10 +803,17 @@ async function handleOpaTestsStartupFiles(
     } else if (writeContext.hasPreexistingTests) {
         // update existing opaTests.qunit.js only in a compatible setup, as long as virtual OPA5 is not used
         updateReferencesInOpaTestsStartupFiles(writeContext, generatedJourneys);
+        writeContext.modifiedFiles?.push('integration/opaTests.qunit.js');
     } else {
         // new app or missing integration folder: write all files
         writeOpaTestsStartupFiles(writeContext, generatedJourneys);
         writeTestsuiteFiles(writeContext);
+        writeContext.modifiedFiles?.push(
+            'integration/opaTests.qunit.html',
+            'integration/opaTests.qunit.js',
+            'testsuite.qunit.html',
+            'testsuite.qunit.js'
+        );
     }
 }
 
@@ -787,6 +884,11 @@ function writePageObject(
         targetKey: pageConfig.targetKey,
         appPath: pageConfig.appPath,
         fileName: `${pageConfig.targetKey}.gen`,
-        fileExtension: 'js'
+        fileExtension: ext,
+        template: pageConfig.template,
+        appID: pageConfig.appID,
+        componentID: pageConfig.componentID,
+        entitySet: pageConfig.entitySet,
+        contextPath: pageConfig.contextPath
     };
 }

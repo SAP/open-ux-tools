@@ -250,6 +250,7 @@ export type WriteContext = {
     hasPreexistingTests?: boolean;
     incompatibleTestSetup?: boolean;
     dotFileExtension: DotFileExtension;
+    modifiedFiles?: string[];
 };
 
 export type FormField = {

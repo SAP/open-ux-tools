@@ -8,6 +8,7 @@ import {
     spliceModulesIntoQUnitContent,
     readHtmlTargetFromQUnitJs
 } from '../../../src/utils/opaQUnitUtils.js';
+import { MAX_FILE_CONTENT_LENGTH } from '../../../src/utils/fileWritingUtils.js';
 import { initI18n } from '../../../src/i18n.js';
 
 await initI18n();
@@ -305,13 +306,13 @@ describe('readHtmlTargetFromQUnitJs()', () => {
 
 describe('MAX_FILE_CONTENT_LENGTH guard', () => {
     test('spliceModulesIntoQUnitContent returns content unchanged when it exceeds the limit', () => {
-        const oversized = BASE_FILE + ' '.repeat(10_001);
+        const oversized = BASE_FILE + ' '.repeat(MAX_FILE_CONTENT_LENGTH + 1);
         const result = spliceModulesIntoQUnitContent(oversized, ['myApp/test/integration/NewJourney']);
         expect(result).toBe(oversized);
     });
 
     test('addPathsToQUnitJs does not write when file content exceeds the limit', () => {
-        const oversized = BASE_FILE + ' '.repeat(10_001);
+        const oversized = BASE_FILE + ' '.repeat(MAX_FILE_CONTENT_LENGTH + 1);
         const fs = {
             read: jest.fn().mockReturnValue(oversized),
             write: jest.fn()

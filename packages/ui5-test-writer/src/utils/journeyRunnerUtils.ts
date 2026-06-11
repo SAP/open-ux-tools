@@ -2,37 +2,52 @@ import type { Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 import { join } from 'node:path';
 import { t } from '../i18n.js';
+import { DotFileExtension } from '../types.js';
+import { MAX_FILE_CONTENT_LENGTH, escapeRegex } from './fileWritingUtils.js';
 
 /**
- * Page entry to splice into an existing JourneyRunner.js.
+ * Page entry to splice into an existing JourneyRunner.js / JourneyRunner.ts.
+ *
+ * The variable name and `onThe...` key emitted by the splicer always use the `Generated` suffix
+ * (e.g. `TravelListGenerated`, `onTheTravelListGenerated`) so that generator-owned `.gen` page
+ * entries can coexist with hand-authored pages bound to the same `targetKey`.
  */
 export interface JourneyRunnerPage {
-    /** The page's targetKey, used as both the variable name and `onThe<targetKey>` key */
+    /** The page's targetKey; used as the base for the `onThe<targetKey>Generated` key. */
     targetKey: string;
     /** The app module path prefix (e.g. "project1/test/integration/pages") */
     appPath: string;
-    /** The file name of the page object, including the suffix (e.g. "ListReportPage.gen") */
+    /** The file name of the page object, including the `.gen` suffix (e.g. "TravelList.gen") */
     fileName: string;
-    /** The file extension of the page object (e.g. ".js") */
+    /** The file extension of the page object (e.g. ".js" or ".ts") */
     fileExtension: string;
+    /** The framework page template (`'ListReport'` or `'ObjectPage'`); only needed by the TS splicer. */
+    template?: string;
+    /** The app id (sap.app.id from the manifest); only needed by the TS splicer. */
+    appID?: string;
+    /** The component id (defined in the target section); only needed by the TS splicer. */
+    componentID?: string;
+    /** The entity set name (if the page uses an entitySet rather than a contextPath); only needed by the TS splicer. */
+    entitySet?: string;
+    /** The context path (if the page uses a contextPath rather than an entitySet); only needed by the TS splicer. */
+    contextPath?: string;
 }
 
-/** Relative path from the test output directory to JourneyRunner.js */
-const JOURNEY_RUNNER_FILE = join('integration', 'pages', 'JourneyRunner.js');
-/** ReDoS mitigation: files larger than this are returned unchanged rather than matched with regex. */
-const MAX_FILE_CONTENT_LENGTH = 10000;
+/**
+ * Returns the relative path from the test output directory to the JourneyRunner file
+ * for the requested file extension.
+ *
+ * @param dotFileExtension - file extension ('.ts' or '.js')
+ * @returns the relative path
+ */
+function getJourneyRunnerFilePath(dotFileExtension: DotFileExtension): string {
+    return join('integration', 'pages', `JourneyRunner${dotFileExtension}`);
+}
 
 /**
- * Splices new page entries into the three locations of an existing JourneyRunner.js:
- * - the sap.ui.define dependency array
- * - the function parameter list
- * - the pages object literal
- *
- * Pages already present (detected by their module path in the define array) are skipped.
- * All other content — formatting, comments, whitespace — is preserved exactly.
- *
- * Note: files exceeding MAX_FILE_CONTENT_LENGTH characters are returned unchanged to prevent
- * ReDoS on crafted inputs. Valid generated files are well within this limit.
+ * Splice new page entries into the three locations of an existing AMD `JourneyRunner.js`:
+ * the `sap.ui.define` dependency array, the function parameter list, and the `pages` object literal.
+ * Pages already referenced by their `.gen` module path are skipped; all other content is preserved.
  *
  * @param fileContent - the full content of the JourneyRunner.js file
  * @param pages - pages to add
@@ -71,7 +86,6 @@ export function splicePageIntoJourneyRunner(fileContent: string, pages: JourneyR
             .join('\n');
 
         // Ensure the last existing entry ends with a comma before we insert after it.
-        // The trimmed body ends at bodyEnd; look back from there for the last non-whitespace char.
         const trimmedEnd = result.slice(0, bodyEnd).trimEnd();
         const needsComma = !trimmedEnd.endsWith(',');
         const commaFix = needsComma ? ',' : '';
@@ -118,13 +132,13 @@ export function splicePageIntoJourneyRunner(fileContent: string, pages: JourneyR
 }
 
 /**
- * Reads JourneyRunner.js from the project, adds new page entries to all three
- * locations (define array, function params, pages object), and writes the updated
- * content back. Pages already present are skipped.
+ * Read the JourneyRunner from disk, splice new page entries into it, and write the result back.
+ * Pages already present are skipped. Dispatches between the AMD (`.js`) and ES module (`.ts`) splicers.
  *
  * @param pages - pages to add
  * @param testOutDirPath - path to the test output directory (`.../webapp/test`)
  * @param fs - mem-fs-editor instance used to read and write the file
+ * @param dotFileExtension - file extension of the JourneyRunner ('.ts' or '.js'); defaults to '.js'
  * @param log - optional logger instance used to surface warnings when the file
  *   cannot be read or updated
  */
@@ -132,16 +146,194 @@ export function addPagesToJourneyRunner(
     pages: JourneyRunnerPage[],
     testOutDirPath: string,
     fs: Editor,
+    dotFileExtension: DotFileExtension = DotFileExtension.JS,
     log?: Logger
 ): void {
+    if (pages.length === 0) {
+        return;
+    }
     try {
-        const filePath = join(testOutDirPath, JOURNEY_RUNNER_FILE);
+        const filePath = join(testOutDirPath, getJourneyRunnerFilePath(dotFileExtension));
         const content = fs.read(filePath);
-        const updated = splicePageIntoJourneyRunner(content, pages);
+        const splice =
+            dotFileExtension === DotFileExtension.TS ? splicePageIntoJourneyRunnerTs : splicePageIntoJourneyRunner;
+        const updated = splice(content, pages);
         if (updated !== content) {
             fs.write(filePath, updated);
         }
     } catch {
         log?.warn(t('warn.cannotUpdateJourneyRunner'));
     }
+}
+
+/**
+ * Filter `pages` down to those whose `Custom<targetKey>Generated` import line is not yet present.
+ * The import path matched is `./<fileName>` (with the `.gen` suffix), so user-authored bindings
+ * to `./<targetKey>` are correctly treated as different.
+ *
+ * @param fileContent - the existing JourneyRunner.ts content
+ * @param pages - candidate pages to splice in
+ * @returns the subset of pages that need to be added
+ */
+function findPagesToAdd(fileContent: string, pages: JourneyRunnerPage[]): JourneyRunnerPage[] {
+    return pages.filter((page) => {
+        const importPattern = new RegExp(String.raw`from\s+"\./${escapeRegex(page.fileName)}"`);
+        return !importPattern.test(fileContent);
+    });
+}
+
+/**
+ * Return the index immediately after the last `import ... from "..."` line in `content`,
+ * or `-1` if the content has no `import` lines.
+ *
+ * Word boundaries around `import` and `from` keep the middle quantifier from sitting next to
+ * another quantifier — that shape would risk catastrophic backtracking on hand-edited files.
+ *
+ * @param content - the file content to scan
+ * @returns the index immediately after the last import line, or -1 if none found
+ */
+function findLastImportEnd(content: string): number {
+    const importLineRegex = /^import\b[^\n]*?\bfrom[ \t]+["'][^"']+["'];?[ \t]*$/gm;
+    let lastImportEnd = -1;
+    let importMatch: RegExpExecArray | null;
+    while ((importMatch = importLineRegex.exec(content)) !== null) {
+        lastImportEnd = importMatch.index + importMatch[0].length;
+    }
+    return lastImportEnd;
+}
+
+/**
+ * Walk forward from `openBraceIdx` and return the index of the matching closing `}`,
+ * accounting for nested braces (e.g. the per-page definition object inside `pages: { ... }`).
+ *
+ * @param content - the file content
+ * @param openBraceIdx - the index of the `{` that opens the block
+ * @returns the index of the matching closing `}` (or `content.length` if unterminated)
+ */
+function findMatchingClosingBrace(content: string, openBraceIdx: number): number {
+    let depth = 1;
+    let index = openBraceIdx + 1;
+    while (index < content.length && depth > 0) {
+        const character = content[index];
+        if (character === '{') {
+            depth++;
+        } else if (character === '}') {
+            depth--;
+        }
+        if (depth === 0) {
+            break;
+        }
+        index++;
+    }
+    return index;
+}
+
+/**
+ * Build the source-code block for a single new entry in the `pages: { ... }` object literal.
+ *
+ * @param page - the page to render
+ * @param pageIndent - leading whitespace for the entry's outer line
+ * @param innerIndent - leading whitespace for the entry's nested lines
+ * @returns the multi-line source block
+ */
+function buildPageEntry(page: JourneyRunnerPage, pageIndent: string, innerIndent: string): string {
+    const framework = page.template ?? 'ListReport';
+    return [
+        `${pageIndent}onThe${page.targetKey}Generated: new ${framework}(`,
+        `${innerIndent}{`,
+        `${innerIndent}    appId: "${page.appID ?? ''}",`,
+        `${innerIndent}    componentId: "${page.componentID ?? ''}",`,
+        `${innerIndent}    entitySet: "${page.entitySet ?? ''}",`,
+        `${innerIndent}    contextPath: "${page.contextPath ?? ''}"`,
+        `${innerIndent}},`,
+        `${innerIndent}Custom${page.targetKey}Generated`,
+        `${pageIndent})`
+    ].join('\n');
+}
+
+/**
+ * Insert `newImportLines` after the last existing `import` line in `content`.
+ * Returns `content` unchanged if it has no `import` lines.
+ *
+ * @param content - the file content
+ * @param newImportLines - the import lines to insert (no leading newline)
+ * @returns the updated content
+ */
+function insertAfterLastImport(content: string, newImportLines: string[]): string {
+    if (newImportLines.length === 0) {
+        return content;
+    }
+    const lastImportEnd = findLastImportEnd(content);
+    if (lastImportEnd < 0) {
+        return content;
+    }
+    const newImports = newImportLines.map((line) => `\n${line}`).join('');
+    return `${content.slice(0, lastImportEnd)}${newImports}${content.slice(lastImportEnd)}`;
+}
+
+/**
+ * Insert new page entries inside the `pages: { ... }` object literal of `content`.
+ * Returns `content` unchanged if it has no `pages: {` block.
+ *
+ * @param content - the file content
+ * @param toAdd - the pages to add
+ * @returns the updated content
+ */
+function insertIntoPagesObject(content: string, toAdd: JourneyRunnerPage[]): string {
+    const pagesStartMatch = /pages\s*:\s*\{/.exec(content);
+    if (!pagesStartMatch) {
+        return content;
+    }
+    const openBraceIdx = content.indexOf('{', pagesStartMatch.index);
+    const pagesBodyEnd = findMatchingClosingBrace(content, openBraceIdx);
+    const pagesBody = content.slice(openBraceIdx + 1, pagesBodyEnd);
+
+    // Detect indentation from the first existing page entry
+    const pageIndentMatch = /^([ \t]+)on/m.exec(pagesBody);
+    const pageIndent = pageIndentMatch ? pageIndentMatch[1] : '        ';
+    const innerIndent = pageIndent + '    ';
+
+    const newPageEntries = toAdd.map((page) => buildPageEntry(page, pageIndent, innerIndent)).join(',\n');
+
+    // Ensure the last existing entry ends with a comma before we insert after it.
+    const trimmedPagesEnd = content.slice(0, pagesBodyEnd).trimEnd();
+    const needsComma = !trimmedPagesEnd.endsWith(',') && !trimmedPagesEnd.endsWith('{');
+    const commaFix = needsComma ? ',' : '';
+    const trailingWhitespace = content.slice(trimmedPagesEnd.length, pagesBodyEnd);
+    return `${trimmedPagesEnd}${commaFix}\n${newPageEntries}${trailingWhitespace}${content.slice(pagesBodyEnd)}`;
+}
+
+/**
+ * Splice new page entries into an existing TypeScript `JourneyRunner.ts` by adding the
+ * required `Custom<targetKey>Generated` imports and an entry inside `pages: { ... }`.
+ * Pages already imported are skipped; all other content is preserved.
+ *
+ * @param fileContent - the full content of the JourneyRunner.ts file
+ * @param pages - pages to add
+ * @returns the updated file content, or the original content unchanged if nothing was added
+ */
+export function splicePageIntoJourneyRunnerTs(fileContent: string, pages: JourneyRunnerPage[]): string {
+    if (fileContent.length > MAX_FILE_CONTENT_LENGTH) {
+        return fileContent;
+    }
+    const toAdd = findPagesToAdd(fileContent, pages);
+    if (toAdd.length === 0) {
+        return fileContent;
+    }
+
+    // Determine which framework imports (ListReport / ObjectPage) are missing and need to be added.
+    const frameworkTemplates = Array.from(
+        new Set(toAdd.map((page) => page.template).filter((template): template is string => Boolean(template)))
+    );
+    const missingFrameworkImports = frameworkTemplates.filter(
+        (template) => !fileContent.includes(`from "sap/fe/test/${template}"`)
+    );
+
+    const newImportLines = [
+        ...missingFrameworkImports.map((template) => `import ${template} from "sap/fe/test/${template}";`),
+        ...toAdd.map((page) => `import Custom${page.targetKey}Generated from "./${page.fileName}";`)
+    ];
+
+    const withImports = insertAfterLastImport(fileContent, newImportLines);
+    return insertIntoPagesObject(withImports, toAdd);
 }
