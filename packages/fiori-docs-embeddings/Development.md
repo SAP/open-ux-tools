@@ -59,6 +59,18 @@ This process fetches and processes documentation from various Fiori sources usin
 GITHUB_HOST=git_hostname GITHUB_TOKEN=your_token AI_CORE_SERVICE_KEY='{"serviceurls":{"AI_API_URL":""},"appname":"","clientid":"","clientsecret":"","identityzone":"","identityzoneid":"","url":""}' pnpm run update-docs
 ```
 
+To run a single source instead of all sources, use the `--source=<id>` flag:
+
+```bash
+# Using the dedicated script shortcut
+AI_CORE_SERVICE_KEY='...' pnpm run update-docs-opa-guide
+
+# Or run any source by ID
+AI_CORE_SERVICE_KEY='...' pnpm run update-docs-script -- --source=fiori-tools-opa-guide
+```
+
+Available source IDs: `btp-fiori-tools`, `sapui5`, `fiori-samples`, `fiori-showcase`, `tools-suite`, `fiori-tools-opa-guide`
+
 ### Environment Variables
 
 The `AI_CORE_SERVICE_KEY` must be a JSON string containing the following fields:
@@ -76,6 +88,17 @@ For sources requiring authenticated access (e.g., internal repositories):
 - `GITHUB_HOST`: The GitHub host URL (e.g., `https://github.com`)
 - `GITHUB_TOKEN`: Your GitHub personal access token for authentication
 
+### Sources
+
+| ID | Type | Description |
+|---|---|---|
+| `btp-fiori-tools` | github | SAP-docs/btp-fiori-tools — Fiori Tools documentation |
+| `sapui5` | github | SAP-docs/sapui5 — UI5 Fiori Elements documentation |
+| `fiori-samples` | github | SAP-samples/fiori-tools-samples — Sample applications |
+| `fiori-showcase` | github | SAP-samples/fiori-elements-feature-showcase — Feature examples |
+| `tools-suite` | github | ux-engineering/tools-suite — Internal Fiori Tools commands (requires `GITHUB_TOKEN`) |
+| `fiori-tools-opa-guide` | github-raw | sap-tutorials/Tutorials — OPA mock server testing guide |
+
 ### Output
 
 This command generates or updates the following files:
@@ -84,6 +107,7 @@ This command generates or updates the following files:
 data_local/btp-fiori-tools.md
 data_local/fiori-samples.md
 data_local/fiori-showcase.md
+data_local/fiori-tools-opa-guide.md
 data_local/sapui5.md
 data_local/tools-suite.md
 ```
