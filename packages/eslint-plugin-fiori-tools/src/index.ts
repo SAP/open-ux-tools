@@ -393,7 +393,6 @@ const prodConfig: Linter.Config[] = [
             ecmaVersion: 'latest',
             parserOptions: {
                 requireConfigFile: false,
-                sourceType: 'module',
                 babelOptions: {
                     parserOpts: {
                         plugins: ['typescript']
@@ -420,7 +419,6 @@ const testConfig: Linter.Config[] = [
             ecmaVersion: 'latest',
             parserOptions: {
                 requireConfigFile: false,
-                sourceType: 'module',
                 babelOptions: {
                     parserOpts: {
                         plugins: ['typescript']

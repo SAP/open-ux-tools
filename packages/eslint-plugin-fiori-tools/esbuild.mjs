@@ -8,9 +8,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Resolve @babel/eslint-parser's worker from this package's dependency tree.
+// Resolve via package.json (not the main entry) so dirname() gives the package
+// root regardless of where the main field points.
 const req = createRequire(join(__dirname, 'package.json'));
-const babelEslintParserDir = dirname(req.resolve('@babel/eslint-parser'));
-const babelEslintParserWorker = resolve(babelEslintParserDir, 'worker/index.js');
+const babelEslintParserRoot = dirname(req.resolve('@babel/eslint-parser/package.json'));
+const babelEslintParserWorker = resolve(babelEslintParserRoot, 'lib/worker/index.js');
 
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
@@ -38,7 +40,7 @@ const patchBabelEslintParser = {
         build.onLoad({ filter: /@babel[\\/]eslint-parser[\\/]lib[\\/]index\.js$/ }, (args) => {
             let source = readFileSync(args.path, 'utf8');
             const patched = source.replace(
-                /const require\$1 = createRequire\(import\.meta\.url\);\nconst babelParser = require\$1\(require\$1\.resolve\("@babel\/parser",\s*\{\s*paths:\s*\[require\$1\.resolve\("@babel\/core\/package\.json"\)\]\s*\}\)\);/,
+                /const require\$1 = createRequire\(import\.meta\.url\);\r?\nconst babelParser = require\$1\(require\$1\.resolve\("@babel\/parser",\s*\{\s*paths:\s*\[require\$1\.resolve\("@babel\/core\/package\.json"\)\]\s*\}\)\);/,
                 'import * as babelParser from "@babel/parser";'
             );
             if (patched === source) {
