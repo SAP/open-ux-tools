@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.3.0
+
+### Minor Changes
+
+- c1d3564: FEAT: Add skill for analytical chart
+
 ## 1.2.0
 
 ### Minor Changes
