@@ -1,5 +1,21 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.13
+
+### Patch Changes
+
+- Updated dependencies [7bfa518]
+    - @sap-ux/telemetry@1.0.9
+    - @sap-ux/fiori-generator-shared@1.0.10
+    - @sap-ux/inquirer-common@1.0.10
+    - @sap-ux/odata-service-inquirer@3.0.10
+
+## 0.3.12
+
+### Patch Changes
+
+- 8abbd6f: Fix for hierarchy parent property incorrectly set as `target` instead of `source`
+
 ## 0.3.11
 
 ### Patch Changes

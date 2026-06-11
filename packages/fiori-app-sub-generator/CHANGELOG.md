@@ -1,5 +1,42 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 1.0.20
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.20
+- @sap-ux/fiori-freestyle-writer@3.0.18
+- @sap-ux/odata-service-inquirer@3.0.10
+
+## 1.0.19
+
+### Patch Changes
+
+- Updated dependencies [7bfa518]
+    - @sap-ux/telemetry@1.0.9
+    - @sap-ux/fiori-generator-shared@1.0.10
+    - @sap-ux/odata-service-inquirer@3.0.10
+    - @sap-ux/cap-config-writer@1.0.10
+    - @sap-ux/fiori-elements-writer@3.0.19
+    - @sap-ux/fiori-freestyle-writer@3.0.17
+    - @sap-ux/ui5-application-inquirer@1.0.10
+
+## 1.0.18
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@1.0.8
+- @sap-ux/fiori-elements-writer@3.0.18
+- @sap-ux/odata-service-inquirer@3.0.9
+
+## 1.0.17
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.17
+- @sap-ux/fiori-freestyle-writer@3.0.16
+- @sap-ux/odata-service-inquirer@3.0.9
+
 ## 1.0.16
 
 ### Patch Changes
