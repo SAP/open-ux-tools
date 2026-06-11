@@ -168,7 +168,7 @@ function insertIntoTypeUnion(content: string, exportName: 'When' | 'Then', newEn
     // Insert before the closing brace, with a leading newline so the new lines sit on their own.
     const head = content.slice(0, closeBraceIdx);
     const tail = content.slice(closeBraceIdx);
-    return `${head.replace(/\s*$/, '\n')}${insertion}\n${tail}`;
+    return `${head.trimEnd()}\n${insertion}\n${tail}`;
 }
 
 /**

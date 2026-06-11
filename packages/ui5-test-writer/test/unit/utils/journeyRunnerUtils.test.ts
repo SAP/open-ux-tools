@@ -6,9 +6,11 @@ import type { Logger } from '@sap-ux/logger';
 import {
     addPagesToJourneyRunner,
     splicePageIntoJourneyRunner,
+    splicePageIntoJourneyRunnerTs,
     type JourneyRunnerPage
 } from '../../../src/utils/journeyRunnerUtils.js';
 import { MAX_FILE_CONTENT_LENGTH } from '../../../src/utils/fileWritingUtils.js';
+import { DotFileExtension } from '../../../src/types.js';
 import { initI18n } from '../../../src/i18n.js';
 
 await initI18n();
@@ -51,6 +53,54 @@ const JOURNEY_RUNNER_FILE = `sap.ui.define([
 
     return runner;
 });
+`;
+
+/**
+ * Builds a TS-shaped `JourneyRunnerPage` with all the metadata fields the TS splicer needs.
+ *
+ * @param targetKey - the page's target key
+ * @param template - the framework template
+ * @returns a fully populated JourneyRunnerPage
+ */
+function makeTsPage(targetKey: string, template: 'ListReport' | 'ObjectPage'): JourneyRunnerPage {
+    return {
+        targetKey,
+        appPath: 'myApp',
+        fileName: `${targetKey}.gen`,
+        fileExtension: '.ts',
+        template,
+        appID: 'my.app',
+        componentID: targetKey,
+        entitySet: '',
+        contextPath: '/Travel'
+    };
+}
+
+/**
+ * Realistic post-rework JourneyRunner.ts produced by the template — `Generated` suffixes,
+ * `.gen` import paths, and the inlined `new <Framework>({...}, Custom<Page>Generated)` entries.
+ */
+const JOURNEY_RUNNER_TS_FILE = `import JourneyRunner from "sap/fe/test/JourneyRunner";
+import ListReport from "sap/fe/test/ListReport";
+import CustomTravelListGenerated from "./TravelList.gen";
+
+const runner = new JourneyRunner({
+    launchUrl: sap.ui.require.toUrl("myApp") + "/test/flp.html#app-preview",
+    pages: {
+        onTheTravelListGenerated: new ListReport(
+            {
+                appId: "my.app",
+                componentId: "TravelList",
+                entitySet: "",
+                contextPath: "/Travel"
+            },
+            CustomTravelListGenerated
+        )
+    },
+    async: true
+});
+
+export default runner;
 `;
 
 describe('splicePageIntoJourneyRunner()', () => {
@@ -197,5 +247,74 @@ describe('MAX_FILE_CONTENT_LENGTH guard', () => {
         const oversized = JOURNEY_RUNNER_FILE + ' '.repeat(MAX_FILE_CONTENT_LENGTH + 1);
         const result = splicePageIntoJourneyRunner(oversized, [makePage('NewPage')]);
         expect(result).toBe(oversized);
+    });
+
+    test('splicePageIntoJourneyRunnerTs returns content unchanged when it exceeds the limit', () => {
+        const oversized = JOURNEY_RUNNER_TS_FILE + ' '.repeat(MAX_FILE_CONTENT_LENGTH + 1);
+        const result = splicePageIntoJourneyRunnerTs(oversized, [makeTsPage('NewPage', 'ListReport')]);
+        expect(result).toBe(oversized);
+    });
+});
+
+describe('splicePageIntoJourneyRunnerTs()', () => {
+    test('returns the original content when all pages are already imported', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [makeTsPage('TravelList', 'ListReport')]);
+        expect(result).toBe(JOURNEY_RUNNER_TS_FILE);
+    });
+
+    test('returns the original content when no pages are passed', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, []);
+        expect(result).toBe(JOURNEY_RUNNER_TS_FILE);
+    });
+
+    test('adds a Custom<Target>Generated import for the new page', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
+            makeTsPage('TravelObjectPage', 'ObjectPage')
+        ]);
+        expect(result).toContain('import CustomTravelObjectPageGenerated from "./TravelObjectPage.gen";');
+    });
+
+    test('adds the framework import for any new framework in use', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
+            makeTsPage('TravelObjectPage', 'ObjectPage')
+        ]);
+        // ObjectPage was missing from the base file; the splicer must add its framework import.
+        expect(result).toContain('import ObjectPage from "sap/fe/test/ObjectPage";');
+        // ListReport was already imported; the splicer must not re-add it.
+        const occurrences = result.match(/import ListReport from "sap\/fe\/test\/ListReport";/g) ?? [];
+        expect(occurrences).toHaveLength(1);
+    });
+
+    test('inserts the new entry into the pages object literal with Generated suffix', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
+            makeTsPage('TravelObjectPage', 'ObjectPage')
+        ]);
+        expect(result).toContain('onTheTravelObjectPageGenerated: new ObjectPage(');
+        expect(result).toContain('CustomTravelObjectPageGenerated');
+    });
+});
+
+describe('addPagesToJourneyRunner() — TS dispatch', () => {
+    const testOutDirPath = join('/', 'project', 'webapp', 'test');
+    const expectedTsFilePath = join(testOutDirPath, 'integration', 'pages', 'JourneyRunner.ts');
+
+    test('reads JourneyRunner.ts and writes spliced content when dotFileExtension is .ts', () => {
+        const fs = {
+            read: jest.fn().mockReturnValue(JOURNEY_RUNNER_TS_FILE),
+            write: jest.fn()
+        } as unknown as Editor;
+
+        addPagesToJourneyRunner(
+            [makeTsPage('TravelObjectPage', 'ObjectPage')],
+            testOutDirPath,
+            fs,
+            DotFileExtension.TS
+        );
+
+        expect(fs.read).toHaveBeenCalledWith(expectedTsFilePath);
+        expect(fs.write).toHaveBeenCalledWith(
+            expectedTsFilePath,
+            expect.stringContaining('onTheTravelObjectPageGenerated: new ObjectPage(')
+        );
     });
 });

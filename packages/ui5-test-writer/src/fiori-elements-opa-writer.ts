@@ -110,7 +110,11 @@ async function generateOPAFilesForExistingApp(writeContext: WriteContext, appFea
     const generatedPages = writePageFiles(standaloneWriteContext);
     const generatedJourneys = writeJourneyFiles(appFeatures, standaloneWriteContext);
     handleJourneyRunner(standaloneWriteContext, generatedPages);
-    await handleOpaTestsStartupFiles(standaloneWriteContext, virtualOPA5Configured, generatedJourneys);
+    if (virtualOPA5Configured) {
+        await addVirtualOpa5Config(standaloneWriteContext);
+    } else {
+        handleOpaTestsStartupFiles(standaloneWriteContext, generatedJourneys);
+    }
     if (standaloneWriteContext.dotFileExtension === DotFileExtension.TS) {
         handleOPAJourneyTypes(standaloneWriteContext, generatedPages);
     }
@@ -127,11 +131,11 @@ async function generateOPAFilesForNewApp(writeContext: WriteContext, appFeatures
     const generatedPages = writePageFiles(writeContext);
     writeJourneyRunner(writeContext);
     const generatedJourneys = writeJourneyFiles(appFeatures, writeContext);
-    await handleOpaTestsStartupFiles(
-        writeContext,
-        writeContext.config.useVirtualPreviewEndpoints ?? false,
-        generatedJourneys
-    );
+    if (writeContext.config.useVirtualPreviewEndpoints) {
+        await addVirtualOpa5Config(writeContext);
+    } else {
+        handleOpaTestsStartupFiles(writeContext, generatedJourneys);
+    }
 
     if (writeContext.dotFileExtension === DotFileExtension.TS) {
         writeOpaJourneyTypes(writeContext);
@@ -774,32 +778,32 @@ function updatePagesInJourneyRunner(writeContext: WriteContext, generatedPages: 
 }
 
 /**
- * Handles the opaTests.qunit.html and opaTests.qunit.js files.
- * In case of virtual OPA5, only the config is added to serve the tests virtually.
+ * Configures `ui5-mock.yaml` to serve the OPA harness virtually so the qunit/testsuite files
+ * do not need to be written to disk. Used when virtual OPA5 is configured for the app.
  *
  * @param writeContext - shared write context (config, paths, editor, journey params)
- * @param virtualOPA5Configured - whether virtual OPA5 is configured for the app
- * @param generatedJourneys - an array of feature names for which journey files were generated, used for conditionally adding the test configuration for the virtual OPA5 setup
  */
-async function handleOpaTestsStartupFiles(
-    writeContext: WriteContext,
-    virtualOPA5Configured: boolean,
-    generatedJourneys: string[] = []
-): Promise<void> {
-    // in case of virtual OPA5, add the config only
-    if (virtualOPA5Configured) {
-        await addVirtualTestConfig(
-            writeContext.basePath,
-            [{ framework: 'OPA5', path: '/test/integration/opaTests.qunit.html' }, { framework: 'Testsuite' }],
-            writeContext.editor
-        );
-        writeContext.modifiedFiles?.push('ui5-mock.yaml');
-        return;
-    } else if (writeContext.incompatibleTestSetup) {
+async function addVirtualOpa5Config(writeContext: WriteContext): Promise<void> {
+    await addVirtualTestConfig(
+        writeContext.basePath,
+        [{ framework: 'OPA5', path: '/test/integration/opaTests.qunit.html' }, { framework: 'Testsuite' }],
+        writeContext.editor
+    );
+    writeContext.modifiedFiles?.push('ui5-mock.yaml');
+}
+
+/**
+ * Handles the opaTests.qunit.html, opaTests.qunit.js, and testsuite.qunit.* files for non-virtual setups.
+ * For virtual OPA5 setups, call `addVirtualOpa5Config` instead.
+ *
+ * @param writeContext - shared write context (config, paths, editor, journey params)
+ * @param generatedJourneys - an array of feature names for which journey files were generated
+ */
+function handleOpaTestsStartupFiles(writeContext: WriteContext, generatedJourneys: string[] = []): void {
+    if (writeContext.incompatibleTestSetup) {
         writeContext.log?.info(
             'testsuite.qunit and opaTest.qunit files were not updated due to an incompatible existing test setup.'
         );
-        return;
     } else if (writeContext.hasPreexistingTests) {
         // update existing opaTests.qunit.js only in a compatible setup, as long as virtual OPA5 is not used
         updateReferencesInOpaTestsStartupFiles(writeContext, generatedJourneys);
