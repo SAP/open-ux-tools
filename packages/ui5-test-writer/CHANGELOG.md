@@ -1,5 +1,26 @@
 # @sap-ux/ui5-test-writer
 
+## 1.1.3
+
+### Patch Changes
+
+- Updated dependencies [e66a8a9]
+    - @sap-ux/ui5-application-writer@2.0.4
+    - @sap-ux/preview-middleware@1.0.16
+
+## 1.1.2
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@1.0.10
+- @sap-ux/preview-middleware@1.0.15
+
+## 1.1.1
+
+### Patch Changes
+
+- c9b0659: force js file for fpm opa tests
+
 ## 1.1.0
 
 ### Minor Changes
