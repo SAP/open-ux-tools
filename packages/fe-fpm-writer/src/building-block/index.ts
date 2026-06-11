@@ -208,7 +208,7 @@ function sortPageAggregationChildren(pageElement: Node): void {
     const aggNames = PAGE_AGGREGATIONS as readonly string[];
 
     // Build pairs of [preceding comments, element] to preserve all user comments.
-    // The PAGE_TEMPLATE_COMMENT is a special leading comment that always stays first.
+    // The PAGE_TEMPLATE_COMMENT is treated as a leading comment and will remain before all aggregation elements.
     type NodeGroup = { comments: Node[]; element: Element };
     const groups: NodeGroup[] = [];
     const leadingComments: Node[] = [];
@@ -309,7 +309,7 @@ export async function appendPageBBAggregation(
     const xpathSelect = xpath.useNamespaces({ ...(firstChildView as any)._nsMap, [fragMacrosNS]: 'sap.fe.macros' });
     const pageNodes = xpathSelect(`//${fragMacrosNS}:Page`, xmlDocument);
     if (!pageNodes || !Array.isArray(pageNodes) || pageNodes.length === 0) {
-        throw new Error(`macros:Page element not found in view ${viewPath}.`);
+        throw new Error(`${fragMacrosNS}:Page element not found in view ${viewPath}.`);
     }
 
     const pageElement = pageNodes[0] as Node;
@@ -363,15 +363,17 @@ async function applyPageControllerTemplate(fs: Editor, basePath: string, viewOrF
     }
     const { dir: viewDir, name: viewName } = parse(viewOrFragmentPath);
     const viewBaseName = viewName.replace(/\.view$/, '');
-    const detectedLanguage = await getAppProgrammingLanguage(basePath, fs);
-    const isTypeScript =
-        detectedLanguage === 'TypeScript' ||
-        (!detectedLanguage && fs.exists(join(basePath, viewDir, `${viewBaseName}.controller.ts`)));
-    const controllerExt = isTypeScript ? 'ts' : 'js';
-    const controllerPath = join(basePath, viewDir, `${viewBaseName}.controller.${controllerExt}`);
-    if (!fs.exists(controllerPath)) {
-        copyTpl(fs, getTemplatePath(`/building-block/page/Controller.${controllerExt}`), controllerPath);
+    const tsControllerPath = join(basePath, viewDir, `${viewBaseName}.controller.ts`);
+    const jsControllerPath = join(basePath, viewDir, `${viewBaseName}.controller.js`);
+    // Skip if a controller already exists in either language to avoid duplicate stubs
+    if (fs.exists(tsControllerPath) || fs.exists(jsControllerPath)) {
+        return;
     }
+    const detectedLanguage = await getAppProgrammingLanguage(basePath, fs);
+    const isTypeScript = detectedLanguage === 'TypeScript';
+    const controllerExt = isTypeScript ? 'ts' : 'js';
+    const controllerPath = isTypeScript ? tsControllerPath : jsControllerPath;
+    copyTpl(fs, getTemplatePath(`/building-block/page/Controller.${controllerExt}`), controllerPath);
 }
 
 /**
