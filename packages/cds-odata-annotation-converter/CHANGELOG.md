@@ -1,5 +1,11 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 1.0.2
+
+### Patch Changes
+
+- 79047c2: fix: access target kind from \_id.kind with fallback to definitions.kind for backward compatibility
+
 ## 1.0.1
 
 ### Patch Changes

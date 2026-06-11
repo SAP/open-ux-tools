@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 const mockExistsSync = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('node:fs', () => ({
@@ -9,14 +8,22 @@ jest.unstable_mockModule('node:fs', () => ({
 
 const { getTemplatesOverwritePath } = await import('../../../src/utils/templates.js');
 
-// The source code derives __dirname from import.meta.url, so compute
-// the expected path relative to the actual source file location.
-const srcUtilsDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'src', 'utils');
-const expectedPath = join(srcUtilsDir, 'templates');
+// Mirror getTemplatesOverwritePath's `__dirname || process.cwd()` resolution
+// so this expectation stays correct regardless of whether the jest config
+// runs tests as ESM (where __dirname is undefined and the function falls
+// back to process.cwd()) or as CJS (where __dirname is the compiled module
+// directory). See packages/generator-adp/src/utils/templates.ts.
+declare const __dirname: string | undefined;
+const moduleDir = typeof __dirname !== 'undefined' ? __dirname : process.cwd();
+const expectedPath = join(moduleDir, 'templates');
 
 describe('getTemplatesOverwritePath', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+    });
+
+    afterEach(() => {
+        delete (globalThis as Record<string, unknown>).__dirname;
     });
 
     it('should return template path when templates directory exists', () => {
@@ -37,5 +44,20 @@ describe('getTemplatesOverwritePath', () => {
         expect(result).toBeUndefined();
         expect(mockExistsSync).toHaveBeenCalledWith(expectedPath);
         expect(mockExistsSync).toHaveBeenCalledTimes(1);
+    });
+
+    it('should resolve the templates path via __dirname when defined (CJS runtime)', () => {
+        // The compiled CJS build runs with Node's `__dirname` global defined.
+        // Under ts-jest's ESM transform it is undefined, so we simulate it
+        // here to exercise the production code path.
+        const fakeDir = join('abs', 'generators', 'utils');
+        (globalThis as Record<string, unknown>).__dirname = fakeDir;
+        mockExistsSync.mockReturnValue(true);
+
+        const result = getTemplatesOverwritePath();
+
+        const expected = join(fakeDir, 'templates');
+        expect(result).toBe(expected);
+        expect(mockExistsSync).toHaveBeenCalledWith(expected);
     });
 });

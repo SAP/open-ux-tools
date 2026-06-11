@@ -1,5 +1,25 @@
 # @sap-ux/fiori-annotation-api
 
+## 1.0.8
+
+### Patch Changes
+
+- 3443820: fix: Fixed a bug where pointers were not generated correctly when annotations were applied to targets belonging to different services in the same CDS file.
+
+## 1.0.7
+
+### Patch Changes
+
+- @sap-ux/project-access@2.1.2
+- @sap-ux/cds-odata-annotation-converter@1.0.2
+
+## 1.0.6
+
+### Patch Changes
+
+- Updated dependencies [79047c2]
+    - @sap-ux/cds-odata-annotation-converter@1.0.2
+
 ## 1.0.5
 
 ### Patch Changes
