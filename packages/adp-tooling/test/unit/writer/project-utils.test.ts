@@ -280,6 +280,7 @@ describe('Project Utils', () => {
             };
             await writeUI5Yaml(projectPath, data, captureFs as unknown as Editor);
             const writtenContent: string = captureFs.write.mock.calls[0][1];
+            expect(writtenContent).toContain('builder:');
             expect(writtenContent).toContain('resources:');
             expect(writtenContent).toContain('excludes:');
             expect(writtenContent).toContain('/test/**');
@@ -378,6 +379,7 @@ metadata:
             };
             await writeCfUI5Yaml(projectPath, cfData, captureFs as unknown as Editor);
             const writtenContent: string = captureFs.write.mock.calls[0][1];
+            expect(writtenContent).toContain('builder:');
             expect(writtenContent).toContain('resources:');
             expect(writtenContent).toContain('excludes:');
             expect(writtenContent).toContain('/test/**');
