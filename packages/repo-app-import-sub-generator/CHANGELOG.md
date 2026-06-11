@@ -1,5 +1,11 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.1.0
+
+### Minor Changes
+
+- ad59554: feat(repo-app-import-sub-generator): support ABAP Repository app download alongside ADT Quick Deploy flow
+
 ## 1.0.20
 
 ### Patch Changes
