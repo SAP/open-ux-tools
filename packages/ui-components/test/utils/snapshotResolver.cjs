@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 const path = require('path');
 
-const _rootDir = path.resolve(__dirname, '..');
-
 module.exports = {
     /**
      * resolves from test to snapshot path
