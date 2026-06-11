@@ -707,8 +707,8 @@ export class UI5Config {
         } = {
             target,
             app,
-            lrep,
-            ...(deployExclude.length > 0 ? { exclude: deployExclude } : {})
+            ...(deployExclude.length > 0 ? { exclude: deployExclude } : {}),
+            lrep
         };
 
         if (index) {
