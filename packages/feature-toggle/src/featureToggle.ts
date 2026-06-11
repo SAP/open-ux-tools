@@ -71,23 +71,24 @@ export class FeatureToggleAccess {
         if (vscode) {
             Object.keys(extensionConfigKeys).forEach((toggleConfigKey: string) => {
                 const toggleKey = `${extensionConfigKeys[toggleConfigKey]}.${FeatureToggleKey}`;
+                let config: ReturnType<typeof vscode.workspace.getConfiguration> | undefined;
                 let toggleIds: string[] = [];
                 try {
-                    // Read enumerable keys directly off the WorkspaceConfiguration proxy.
-                    // Replaces a previous `JSON.parse(JSON.stringify(...))` deep-clone idiom that
-                    // was only being used as a "give me the keys" hack — `structuredClone` would
-                    // have thrown on the proxy's methods, and the values aren't needed here.
-                    // Filtering out function-valued keys preserves the original behavior of
-                    // `JSON.stringify`, which silently drops function values.
-                    const config = vscode.workspace.getConfiguration(toggleKey);
-                    toggleIds = Object.keys(config).filter((key) => typeof config[key] !== 'function');
+                    // Read enumerable keys off the WorkspaceConfiguration proxy and drop
+                    // function-valued ones (mirrors the old `JSON.stringify` behavior).
+                    config = vscode.workspace.getConfiguration(toggleKey);
+                    toggleIds = Object.keys(config).filter((key) => typeof config?.[key] !== 'function');
                 } catch {
                     // Not valid toggles. Skip.
                 }
 
+                if (!config) {
+                    return;
+                }
+
                 toggleIds.forEach((toggleId: string) => {
                     // get full toggle value
-                    const toggleConfigValue = vscode.workspace.getConfiguration(toggleKey).get(toggleId);
+                    const toggleConfigValue = config.get(toggleId);
                     const toggle: FeatureToggle = {
                         feature: `${toggleKey}.${toggleId}`,
                         isEnabled: toggleConfigValue ? (toggleConfigValue as boolean) : false
