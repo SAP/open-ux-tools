@@ -1,9 +1,14 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const path = require('path');
 
-const rootDir = path.resolve(__dirname, '..');
+const _rootDir = path.resolve(__dirname, '..');
 
 module.exports = {
-    /** resolves from test to snapshot path */
+    /**
+     * resolves from test to snapshot path
+     * @param testPath
+     * @param snapshotExtension
+     */
     resolveSnapshotPath: (testPath, snapshotExtension) => {
         return (
             testPath
@@ -12,7 +17,11 @@ module.exports = {
         );
     },
 
-    /** resolves from snapshot to test path */
+    /**
+     * resolves from snapshot to test path
+     * @param snapshotFilePath
+     * @param snapshotExtension
+     */
     resolveTestPath: (snapshotFilePath, snapshotExtension) => {
         return snapshotFilePath
             .replace('test/__snapshots__/', 'test/unit/components/')

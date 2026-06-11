@@ -3,12 +3,12 @@ import reactPlugin from 'eslint-plugin-react';
 import globals from 'globals';
 
 export default [
-    { ignores: ['stories', 'storybook', 'test'] },
+    { ignores: ['stories', 'storybook'] },
     ...base,
     reactPlugin.configs.flat.recommended,
     //   ...storybook,
     {
-        ignores: ['stories', './test/**/*.tsx'],
+        ignores: ['stories'],
         plugins: {
             reactPlugin
         },
@@ -34,9 +34,6 @@ export default [
         }
     },
     {
-        languageOptions: {
-            'parser': '@typescript-eslint/parser'
-        },
         files: ['./test/**/*.tsx'],
         rules: {
             'no-loop-func': 'off'
