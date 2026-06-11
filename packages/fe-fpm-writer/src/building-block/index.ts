@@ -326,6 +326,9 @@ export async function appendPageBBAggregation(
  * @param {string} viewOrFragmentPath - the relative path of the view/fragment file
  */
 async function applyPageControllerTemplate(fs: Editor, basePath: string, viewOrFragmentPath: string): Promise<void> {
+    if (!viewOrFragmentPath.endsWith('.view.xml')) {
+        return;
+    }
     const { dir: viewDir, name: viewName } = parse(viewOrFragmentPath);
     const viewBaseName = viewName.replace(/\.view$/, '');
     const detectedLanguage = await getAppProgrammingLanguage(basePath, fs);
