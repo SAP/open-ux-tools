@@ -1,10 +1,17 @@
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import type { AxiosRequestConfig, ODataService, ODataServiceInfo } from '@sap-ux/axios-extension';
 
-import { AbapServiceProvider, ODataVersion } from '@sap-ux/axios-extension';
-import { getService } from '@sap-ux/store';
+import { AbapServiceProvider, ODataVersion, TlsPatch } from '@sap-ux/axios-extension';
+import { getService, getSapToolsDirectory } from '@sap-ux/store';
 import { ToolsLogger } from '@sap-ux/logger';
 import { parse as parseEdmx } from '@sap-ux/edmx-parser';
+import format from 'xml-formatter';
+import { logger } from '../../../utils/index.js';
+
+// Capture the real SAP tools directory at module load time. In test environments the
+// HOME env var may be overridden after process start; SAP_TOOLS_DIR can be set by the
+// test harness to point to the real ~/.saptools regardless of HOME.
+const SAP_TOOLS_BASE_DIRECTORY = process.env.SAP_TOOLS_DIR || getSapToolsDirectory();
 
 /**
  * Fetches SAP backend systems.
@@ -15,7 +22,8 @@ export async function getSapSystems(): Promise<BackendSystem[]> {
     const logger = new ToolsLogger({ logPrefix: 'fiori-mcp-server' });
     const systemStore = await getService<BackendSystem, BackendSystemKey>({
         logger: logger,
-        entityName: 'system'
+        entityName: 'system',
+        options: { baseDirectory: SAP_TOOLS_BASE_DIRECTORY }
     });
     return systemStore.getAll({ includeSensitiveData: true });
 }
@@ -136,6 +144,9 @@ async function getServiceFromSystem(backendSystem: BackendSystem, servicePath: s
             password: backendSystem.password
         };
     }
+    if (TlsPatch.isPatchRequired(providerConfig.baseURL ?? '')) {
+        TlsPatch.apply();
+    }
     const serviceProvider = new AbapServiceProvider(providerConfig);
 
     let services: ODataServiceInfo[] = [];
@@ -169,13 +180,16 @@ async function getServiceFromSystem(backendSystem: BackendSystem, servicePath: s
  */
 function checkMetadata(metadata: string): void {
     let parsedMetadata: unknown;
+    let parseError: unknown;
     try {
         parsedMetadata = parseEdmx(metadata);
-    } catch {
-        /* error handled below */
+    } catch (error) {
+        parseError = error;
+        logger.debug(error);
     }
     if (!parsedMetadata) {
-        throw new Error('Failed to parse service metadata. The service may not be a valid OData V4 service.');
+        const detail = parseError instanceof Error ? ` Reason: ${parseError.message}` : '';
+        throw new Error(`Failed to parse service metadata. The service may not be a valid OData V4 service.${detail}`);
     }
 }
 
@@ -190,5 +204,9 @@ export async function getServiceMetadata(sapSystem: BackendSystem, servicePath: 
     const service = await getServiceFromSystem(sapSystem, servicePath);
     const metadata = await service.metadata();
     checkMetadata(metadata);
-    return metadata;
+    try {
+        return format(metadata, { indentation: '    ', lineSeparator: '\n' });
+    } catch {
+        return metadata;
+    }
 }

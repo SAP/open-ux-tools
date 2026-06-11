@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { Annotations, ServiceProvider } from '@sap-ux/axios-extension';
+import type { Annotations } from '@sap-ux/axios-extension';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import type { CapService } from '@sap-ux/odata-service-inquirer';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
@@ -70,8 +70,7 @@ const {
     getMinSupportedUI5Version,
     getODataVersion,
     getReadMeDataSourceLabel,
-    getRequiredOdataVersion,
-    restoreServiceProviderLoggers
+    getRequiredOdataVersion
 } = await import('../../../src/utils/common.js');
 
 describe('Test utils', () => {
@@ -393,26 +392,5 @@ describe('Test utils', () => {
             expect(mockCreateLaunchConfig).toHaveBeenCalledWith(projectPath, expectedFioriOptions, editor, {});
             expect(mockWriteApplicationInfoSettings).toHaveBeenCalledWith(projectPath);
         });
-    });
-
-    test('restoreServiceProviderLoggers should re-add removed log ref', () => {
-        const logger = {
-            info: jest.fn(),
-            warn: jest.fn(),
-            error: jest.fn()
-        } as unknown as Logger;
-
-        const serviceProvider = {
-            log: {},
-            services: {
-                service1: { log: {} },
-                service2: { log: {} }
-            }
-        } as unknown as ServiceProvider;
-
-        const restoredServiceProvider = restoreServiceProviderLoggers(logger, serviceProvider);
-        expect(restoredServiceProvider?.log).toBe(logger);
-        expect((restoredServiceProvider as any)?.services.service1.log).toBe(logger);
-        expect((restoredServiceProvider as any)?.services.service2.log).toBe(logger);
     });
 });
