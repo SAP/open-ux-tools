@@ -4,7 +4,7 @@
 
 ### For OData V2 Applications
 
-Since the `enableExport` is a flex change property, this rule checks if there is a `.change` file for the `enableExport` property, where the `newValue` is set to `false`. This property defines whether to enable the export button in a table. This property rule is applicable to OData V2 applications with minUI5Version of 1.145 or higher. For OData V2 applications with lower minUI5Version, the property name for table export button enablement is `useExportToExcel`.
+Since the `enableExport` is a flex change property, this rule checks if there is a `.change` file for the `enableExport` property, where the `newValue` is set to `false`. This property defines whether to enable the export button in a table. This property rule is applicable to OData V2 applications with a minimum SAPUI5 version of 1.145 or higher. For OData V2 applications with a lower minimum SAPUI5 version, the property name to enable the table export button is `useExportToExcel`.
 
 ### For OData V4 Applications
 
