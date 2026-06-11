@@ -686,7 +686,6 @@ describe('Change Utils', () => {
         });
 
         it('should write each change with the suffix matching its fileType', async () => {
-            // Mirrors the bug-report payload: two ctrl_variant entries and one change entry.
             const changes: KeyUserChangeContent[] = [
                 {
                     content: {
