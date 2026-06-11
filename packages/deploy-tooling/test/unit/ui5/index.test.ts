@@ -188,12 +188,9 @@ describe('ui5', () => {
                 task({ workspace, options: { projectName, configuration: configWithExclude } } as any)
             ).resolves.not.toThrow();
 
-            expect(mockCreateUi5Archive).toHaveBeenCalledWith(
-                expect.anything(),
-                expect.anything(),
-                expect.anything(),
-                ['/test/']
-            );
+            expect(mockCreateUi5Archive).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.anything(), [
+                '/test/'
+            ]);
         });
 
         test('merges configuration.exclude with builder.resources.excludes when both present', async () => {
