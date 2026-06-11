@@ -33,3 +33,8 @@ server:
           intent:
             object: testNameSpacelropv2file
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

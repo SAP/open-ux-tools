@@ -155,6 +155,7 @@ export async function writeUI5Yaml(projectPath: string, data: AdpWriterConfig, f
         enhanceUI5YamlWithTranspileMiddleware(ui5Config, data);
         enhanceUI5Yaml(ui5Config, data);
         enhanceUI5YamlWithCustomTask(ui5Config, data as AdpWriterConfig & { app: CloudApp });
+        ui5Config.addBuilderResourceExcludes();
 
         fs.write(ui5ConfigPath, ui5Config.toString());
     } catch (e) {
@@ -181,6 +182,7 @@ export async function writeCfUI5Yaml(projectPath: string, data: CfAdpWriterConfi
         enhanceUI5YamlWithCfCustomTask(ui5Config, data);
         /** Middlewares */
         enhanceUI5YamlWithFioriToolsMiddleware(ui5Config);
+        ui5Config.addBuilderResourceExcludes();
 
         fs.write(ui5ConfigPath, ui5Config.toString());
     } catch (e) {
