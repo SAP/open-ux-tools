@@ -13,6 +13,7 @@
         "cannotUpdateOpaJourneyTypes": "Could not update `OpaJourneyTypes.d.ts`. The existing file may be missing or unreadable; new journey type definitions were not registered."
     },
     "info": {
-        "opaJourneyTypesNotUpdated": "OpaJourneyTypes.d.ts was not updated due to an incompatible existing test setup."
+        "opaJourneyTypesNotUpdated": "OpaJourneyTypes.d.ts was not updated due to an incompatible existing test setup.",
+        "incompatibleTestSetupSkipped": "testsuite.qunit and opaTests.qunit files were not updated due to an incompatible existing test setup."
     }
 }

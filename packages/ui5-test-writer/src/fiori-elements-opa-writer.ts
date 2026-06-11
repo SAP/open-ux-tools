@@ -227,7 +227,10 @@ async function resolveStandaloneWriteContext(writeContext: WriteContext): Promis
 
     // preexisting tests
     if (writeContext.hasPreexistingTests) {
-        writeContext.incompatibleTestSetup = await hasIncompatibleTestSetup(writeContext.basePath, writeContext.editor);
+        writeContext.incompatibleTestSetup = await hasIncompatibleTestSetup(
+            writeContext.testOutDirPath,
+            writeContext.editor
+        );
         writeContext.config.htmlTarget =
             readHtmlTargetFromQUnitJs(writeContext.testOutDirPath, writeContext.editor) ?? config.htmlTarget;
         return writeContext;
@@ -262,21 +265,21 @@ async function resolveWriteContextForMissingIntegrationFolder(writeContext: Writ
             writeContext.config.htmlTarget = `test/flpSandbox.html#${hashFromFlpSandbox}`;
         }
     }
-
+    writeContext.hasPreexistingTests = false;
     return writeContext;
 }
 
 /**
  * Checks for incompatible test setup in case the integration folder already exists but there is no own JourneyRunner.js file, which can be the case for older test setups where tests directly use the JourneyRunner from the OPA5 library and/or have an AllJourneys.json file.
  *
- * @param basePath - the root folder of the app
+ * @param testOutDirPath - path to the test output directory (`.../webapp/test`)
  * @param editor - a reference to a mem-fs editor
  * @returns true if the test setup is incompatible, false otherwise
  */
-async function hasIncompatibleTestSetup(basePath: string, editor: Editor): Promise<boolean> {
-    const noJourneyRunner = !(await hasJourneyRunnerFile(basePath));
-    const hasJourneyRunnerInOpaTestsQunitJs = await hasJourneyRunnerInOpaTestsQunitJsFile(basePath, editor);
-    const hasAllJourneysJson = await hasAllJourneysJsonFile(basePath);
+async function hasIncompatibleTestSetup(testOutDirPath: string, editor: Editor): Promise<boolean> {
+    const noJourneyRunner = !(await hasJourneyRunnerFile(testOutDirPath));
+    const hasJourneyRunnerInOpaTestsQunitJs = await hasJourneyRunnerInOpaTestsQunitJsFile(testOutDirPath, editor);
+    const hasAllJourneysJson = await hasAllJourneysJsonFile(testOutDirPath);
 
     return noJourneyRunner && (hasJourneyRunnerInOpaTestsQunitJs || hasAllJourneysJson);
 }
@@ -284,25 +287,25 @@ async function hasIncompatibleTestSetup(basePath: string, editor: Editor): Promi
 /**
  * Checks whether the existing test setup contains its own JourneyRunner.js or JourneyRunner.ts file.
  *
- * @param basePath - the root folder of the app
+ * @param testOutDirPath - path to the test output directory (`.../webapp/test`)
  * @returns true if the JourneyRunner.js or JourneyRunner.ts file exists, false otherwise
  */
-async function hasJourneyRunnerFile(basePath: string): Promise<boolean> {
-    const pagesDir = join(basePath, 'test', 'integration', 'pages');
+async function hasJourneyRunnerFile(testOutDirPath: string): Promise<boolean> {
+    const pagesDir = join(testOutDirPath, 'integration', 'pages');
     return existsSync(join(pagesDir, 'JourneyRunner.js')) || existsSync(join(pagesDir, 'JourneyRunner.ts'));
 }
 
 /**
  * Checks whether the existing opaTests.qunit.js file contains references to JourneyRunner, which indicates that the tests are directly using the JourneyRunner from the OPA5 library and thus have an incompatible test setup in case there is no own JourneyRunner.js file.
  *
- * @param basePath - the root folder of the app
+ * @param testOutDirPath - path to the test output directory (`.../webapp/test`)
  * @param editor - a reference to a mem-fs editor
  * @returns true if the opaTests.qunit.js file contains references to JourneyRunner, false otherwise
  */
-async function hasJourneyRunnerInOpaTestsQunitJsFile(basePath: string, editor: Editor): Promise<boolean> {
-    const hasQUnitJs = existsSync(join(basePath, 'test', 'integration', 'opaTests.qunit.js'));
-    if (hasQUnitJs) {
-        const content = editor.read(join(basePath, 'test', 'integration', 'opaTests.qunit.js'));
+async function hasJourneyRunnerInOpaTestsQunitJsFile(testOutDirPath: string, editor: Editor): Promise<boolean> {
+    const qunitJsPath = join(testOutDirPath, 'integration', 'opaTests.qunit.js');
+    if (existsSync(qunitJsPath)) {
+        const content = editor.read(qunitJsPath);
         return content.includes('JourneyRunner');
     }
     return false;
@@ -311,11 +314,11 @@ async function hasJourneyRunnerInOpaTestsQunitJsFile(basePath: string, editor: E
 /**
  * Checks whether the AllJourneys.json file exists in the test setup, which indicates an incompatible test setup in case there is no own JourneyRunner.js file, as this can be a leftover of older test setups.
  *
- * @param basePath - the root folder of the app
+ * @param testOutDirPath - path to the test output directory (`.../webapp/test`)
  * @returns true if the AllJourneys.json file exists, false otherwise
  */
-async function hasAllJourneysJsonFile(basePath: string): Promise<boolean> {
-    return existsSync(join(basePath, 'test', 'integration', 'AllJourneys.json'));
+async function hasAllJourneysJsonFile(testOutDirPath: string): Promise<boolean> {
+    return existsSync(join(testOutDirPath, 'integration', 'AllJourneys.json'));
 }
 
 /**
@@ -734,13 +737,15 @@ function handleOPAJourneyTypes(writeContext: WriteContext, generatedPages: Journ
         return;
     }
     if (writeContext.hasPreexistingTests) {
-        addJourneysToOpaJourneyTypes(
+        const written = addJourneysToOpaJourneyTypes(
             generatedPages,
             writeContext.testOutDirPath,
             writeContext.editor,
             writeContext.log
         );
-        writeContext.modifiedFiles?.push('integration/types/OpaJourneyTypes.d.ts');
+        if (written) {
+            writeContext.modifiedFiles?.push('integration/types/OpaJourneyTypes.d.ts');
+        }
     } else {
         writeOpaJourneyTypes(writeContext);
     }
@@ -801,9 +806,7 @@ async function addVirtualOpa5Config(writeContext: WriteContext): Promise<void> {
  */
 function handleOpaTestsStartupFiles(writeContext: WriteContext, generatedJourneys: string[] = []): void {
     if (writeContext.incompatibleTestSetup) {
-        writeContext.log?.info(
-            'testsuite.qunit and opaTest.qunit files were not updated due to an incompatible existing test setup.'
-        );
+        writeContext.log?.info(t('info.incompatibleTestSetupSkipped'));
     } else if (writeContext.hasPreexistingTests) {
         // update existing opaTests.qunit.js only in a compatible setup, as long as virtual OPA5 is not used
         updateReferencesInOpaTestsStartupFiles(writeContext, generatedJourneys);

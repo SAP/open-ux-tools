@@ -245,15 +245,16 @@ export function spliceJourneysIntoOpaJourneyTypes(fileContent: string, pages: Jo
  * @param fs - mem-fs-editor instance used to read and write the file
  * @param log - optional logger instance used to surface warnings when the file
  *   cannot be read or updated
+ * @returns true if the file was written, false otherwise
  */
 export function addJourneysToOpaJourneyTypes(
     pages: JourneyRunnerPage[],
     testOutDirPath: string,
     fs: Editor,
     log?: Logger
-): void {
+): boolean {
     if (pages.length === 0) {
-        return;
+        return false;
     }
     try {
         const filePath = join(testOutDirPath, OPA_JOURNEY_TYPES_FILE);
@@ -261,8 +262,10 @@ export function addJourneysToOpaJourneyTypes(
         const updated = spliceJourneysIntoOpaJourneyTypes(content, pages);
         if (updated !== content) {
             fs.write(filePath, updated);
+            return true;
         }
     } catch {
         log?.warn(t('warn.cannotUpdateOpaJourneyTypes'));
     }
+    return false;
 }

@@ -104,28 +104,33 @@ export function splicePageIntoJourneyRunner(fileContent: string, pages: JourneyR
     }
 
     // 3. Splice into the pages object: `pages: { onTheFoo: Foo, ... }`.
-    //    Captures everything between `pages: {` and the closing `}`.
-    const pagesObjectRegex = /pages\s*:\s*\{([^}]*)\}/d;
-    const pagesMatch = pagesObjectRegex.exec(result);
-    if (pagesMatch?.indices?.[1]) {
-        const [, pagesBodyEnd] = pagesMatch.indices[1];
-        const pagesBody = result.slice(pagesMatch.indices[1][0], pagesBodyEnd);
+    //    Use brace counting so nested braces inside per-page object literals are handled correctly.
+    const pagesHeaderRegex = /pages\s*:\s*\{/d;
+    const pagesHeaderMatch = pagesHeaderRegex.exec(result);
+    if (pagesHeaderMatch?.indices?.[0]) {
+        const [, headerEnd] = pagesHeaderMatch.indices[0];
+        const openBraceIdx = headerEnd - 1;
+        const pagesBodyEnd = findMatchingClosingBrace(result, openBraceIdx);
+        if (pagesBodyEnd < result.length) {
+            const pagesBody = result.slice(openBraceIdx + 1, pagesBodyEnd);
 
-        // Detect indentation from the first existing page entry
-        const pageIndentMatch = /^([ \t]+)on/m.exec(pagesBody);
-        const pageIndent = pageIndentMatch ? pageIndentMatch[1] : '\t\t\t';
+            // Detect indentation from the first existing page entry
+            const pageIndentMatch = /^([ \t]+)on/m.exec(pagesBody);
+            const pageIndent = pageIndentMatch ? pageIndentMatch[1] : '\t\t\t';
 
-        const newPageEntries = toAdd
-            .map((page) => `${pageIndent}onThe${page.targetKey}Generated: ${page.targetKey}Generated,`)
-            .join('\n');
+            const newPageEntries = toAdd
+                .map((page) => `${pageIndent}onThe${page.targetKey}Generated: ${page.targetKey}Generated,`)
+                .join('\n');
 
-        // Ensure the last existing entry ends with a comma before we insert after it.
-        const trimmedPagesEnd = result.slice(0, pagesBodyEnd).trimEnd();
-        const needsComma = !trimmedPagesEnd.endsWith(',');
-        const commaFix = needsComma ? ',' : '';
-        const trailingWhitespace = result.slice(trimmedPagesEnd.length, pagesBodyEnd);
-        result =
-            `${trimmedPagesEnd}${commaFix}\n${newPageEntries}` + `${trailingWhitespace}${result.slice(pagesBodyEnd)}`;
+            // Ensure the last existing entry ends with a comma before we insert after it.
+            const trimmedPagesEnd = result.slice(0, pagesBodyEnd).trimEnd();
+            const needsComma = !trimmedPagesEnd.endsWith(',');
+            const commaFix = needsComma ? ',' : '';
+            const trailingWhitespace = result.slice(trimmedPagesEnd.length, pagesBodyEnd);
+            result =
+                `${trimmedPagesEnd}${commaFix}\n${newPageEntries}` +
+                `${trailingWhitespace}${result.slice(pagesBodyEnd)}`;
+        }
     }
 
     return result;

@@ -487,7 +487,7 @@ describe('ui5-test-writer', () => {
 
             describe('existing app with incompatible test setup (no own JourneyRunner.js, AllJourneys.json or JourneyRunner reference in opaTests.qunit.js)', () => {
                 const incompatibleMessage =
-                    'testsuite.qunit and opaTest.qunit files were not updated due to an incompatible existing test setup.';
+                    'testsuite.qunit and opaTests.qunit files were not updated due to an incompatible existing test setup.';
 
                 beforeEach(() => {
                     hasVirtualOPA5Mock.mockResolvedValue(false);
@@ -533,10 +533,9 @@ describe('ui5-test-writer', () => {
                         hasJourneyRunner: false,
                         hasOpaTestsQunitJs: true
                     });
-                    // The detection helper reads from `<basePath>/test/integration/opaTests.qunit.js`
-                    // (note: not via getWebappPath — this matches the writer's current path).
+                    // The detection helper reads from `<webappPath>/test/integration/opaTests.qunit.js`.
                     fs!.write(
-                        join(projectDir, 'test', 'integration', 'opaTests.qunit.js'),
+                        join(projectDir, 'webapp', 'test', 'integration', 'opaTests.qunit.js'),
                         '// uses JourneyRunner from sap.fe.test\n'
                     );
                     addPathsToQUnitJsMock.mockImplementation(jest.fn());

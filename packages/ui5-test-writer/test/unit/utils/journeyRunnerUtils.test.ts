@@ -174,6 +174,27 @@ describe('splicePageIntoJourneyRunner()', () => {
         expect(newDefineLine).toMatch(/^ {4}"/);
     });
 
+    test('handles a hand-edited pages object containing nested braces', () => {
+        // Simulate a user who has converted a page entry to an inline `new <Page>({...})` literal.
+        const handEdited = JOURNEY_RUNNER_FILE.replace(
+            'onTheTravelObjectPageGenerated: TravelObjectPageGenerated',
+            'onTheTravelObjectPageGenerated: new TravelObjectPageGenerated({ appId: "my.app", componentId: "TravelObjectPage" })'
+        );
+
+        const result = splicePageIntoJourneyRunner(handEdited, [makePage('NewPage')]);
+
+        // Splicer must not stop at the first nested `}` — the new entry should be appended after the
+        // hand-edited inline literal, not inserted into the middle of it.
+        expect(result).toContain('onTheNewPageGenerated: NewPageGenerated,');
+        expect(result.indexOf('onTheNewPageGenerated')).toBeGreaterThan(
+            result.indexOf('componentId: "TravelObjectPage"')
+        );
+        // Existing inline literal preserved unchanged
+        expect(result).toContain(
+            'onTheTravelObjectPageGenerated: new TravelObjectPageGenerated({ appId: "my.app", componentId: "TravelObjectPage" })'
+        );
+    });
+
     test('new page object entries use same indentation as existing entries', () => {
         const result = splicePageIntoJourneyRunner(JOURNEY_RUNNER_FILE, [makePage('NewPage')]);
 
