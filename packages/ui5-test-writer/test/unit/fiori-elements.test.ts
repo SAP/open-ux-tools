@@ -1203,7 +1203,12 @@ describe('ui5-test-writer', () => {
             expect(paths.some((p) => p.includes('OpaJourneyTypes.d.ts'))).toBe(false);
 
             hasVirtualOPA5Mock.mockReset();
-            existsSyncMock.mockImplementation(realExistsSync);
+            existsSyncMock.mockImplementation(actualFs.existsSync);
+        });
+
+        afterEach(() => {
+            hasVirtualOPA5Mock.mockReset();
+            existsSyncMock.mockImplementation(actualFs.existsSync);
         });
     });
 });
