@@ -11,9 +11,10 @@ import type {
     FEV4ManifestTarget,
     JourneyParams,
     AppFeatures,
-    WriteContext
+    WriteContext,
+    OPAGenerationOptions
 } from './types.js';
-import { SupportedPageTypes, ValidationError } from './types.js';
+import { SupportedPageTypes, ValidationError, DotFileExtension } from './types.js';
 import { t } from './i18n.js';
 import { FileName, DirName, getWebappPath, updatePackageScript } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
@@ -26,18 +27,12 @@ import { readHashFromFlpSandbox } from './utils/flpSandboxUtils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-type OpaConfig = { scriptName?: string; appID?: string; htmlTarget?: string; useVirtualPreviewEndpoints?: boolean };
-
 /**
  * Generate OPA test files for a Fiori elements for OData V4 application.
  * Note: this can potentially overwrite existing files in the webapp/test folder.
  *
  * @param basePath - the absolute target path where the application will be generated
- * @param opaConfig - parameters for the generation
- * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
- * @param opaConfig.htmlTarget - the name of the html that will be used in OPA journey file. If not specified, 'index.html' will be used
- * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
- * @param opaConfig.useVirtualPreviewEndpoints - when true, OPA harness files are served virtually; skip writing them to disk
+ * @param options - OPA generation options
  * @param metadata - optional metadata for the OPA test generation
  * @param fs - an optional reference to a mem-fs editor
  * @param log - optional logger instance
@@ -46,7 +41,7 @@ type OpaConfig = { scriptName?: string; appID?: string; htmlTarget?: string; use
  */
 export async function generateOPAFiles(
     basePath: string,
-    opaConfig: OpaConfig,
+    options: OPAGenerationOptions,
     metadata?: string,
     fs?: Editor,
     log?: Logger,
@@ -57,8 +52,12 @@ export async function generateOPAFiles(
     const manifest = readManifest(editor, basePath);
     const { applicationType, hideFilterBar } = getAppTypeAndHideFilterBarFromManifest(manifest);
 
-    const config = createConfig(manifest, opaConfig, hideFilterBar);
+    const config = createConfig(manifest, options, hideFilterBar);
 
+    // In standalone mode, auto-detect TS vs JS from the project (presence of `tsconfig.json`)
+    // when the caller has not made an explicit choice. This enforces "TS app → TS tests, JS app → JS tests".
+    const enableTypeScript = options.enableTypeScript ?? (standalone && existsSync(join(basePath, FileName.Tsconfig)));
+    const dotFileExtension: DotFileExtension = enableTypeScript ? DotFileExtension.TS : DotFileExtension.JS;
     const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
     const rootV4TemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being
     const testOutDirPath = join(await getWebappPath(basePath), 'test');
@@ -83,7 +82,8 @@ export async function generateOPAFiles(
         testOutDirPath,
         editor,
         log,
-        journeyParams
+        journeyParams,
+        dotFileExtension
     };
 
     if (standalone) {
@@ -109,6 +109,9 @@ async function generateOPAFilesForExistingApp(writeContext: WriteContext, appFea
     const generatedJourneys = writeJourneyFiles(appFeatures, standaloneWriteContext);
     handleJourneyRunner(standaloneWriteContext, generatedPages);
     await handleOpaTestsStartupFiles(standaloneWriteContext, virtualOPA5Configured, generatedJourneys);
+    if (standaloneWriteContext.dotFileExtension === DotFileExtension.TS) {
+        writeOpaJourneyTypes(standaloneWriteContext);
+    }
     logGeneratedJourneyFiles(standaloneWriteContext.log, generatedJourneys);
 }
 
@@ -127,6 +130,10 @@ async function generateOPAFilesForNewApp(writeContext: WriteContext, appFeatures
         writeContext.config.useVirtualPreviewEndpoints ?? false,
         generatedJourneys
     );
+
+    if (writeContext.dotFileExtension === DotFileExtension.TS) {
+        writeOpaJourneyTypes(writeContext);
+    }
     logGeneratedJourneyFiles(writeContext.log, generatedJourneys);
 }
 
@@ -374,25 +381,22 @@ function createPageConfig(manifest: Manifest, targetKey: string, forcedAppID?: s
  * Create the configuration object from the app descriptor.
  *
  * @param manifest - the app descriptor of the target app
- * @param opaConfig - parameters for the generation
- * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
- * @param opaConfig.htmlTarget - the name of the html file that will be used in the OPA journey file. If not specified, 'index.html' will be used
- * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
+ * @param options - OPA generation options
  * @param hideFilterBar - whether the filter bar should be hidden in the generated tests
  * @returns OPA test configuration object
  */
-function createConfig(manifest: Manifest, opaConfig: OpaConfig, hideFilterBar: boolean): FEV4OPAConfig {
+function createConfig(manifest: Manifest, options: OPAGenerationOptions, hideFilterBar: boolean): FEV4OPAConfig {
     // General application info
-    const { appID, appPath } = getAppFromManifest(manifest, opaConfig.appID);
+    const { appID, appPath } = getAppFromManifest(manifest, options.appID);
 
     const config: FEV4OPAConfig = {
         appID,
         appPath,
         pages: [],
-        opaJourneyFileName: opaConfig.scriptName ?? 'FirstJourney',
-        htmlTarget: opaConfig.htmlTarget ?? 'index.html',
+        opaJourneyFileName: options.scriptName ?? 'FirstJourney',
+        htmlTarget: options.htmlTarget ?? 'index.html',
         hideFilterBar,
-        useVirtualPreviewEndpoints: opaConfig.useVirtualPreviewEndpoints ?? false
+        useVirtualPreviewEndpoints: options.useVirtualPreviewEndpoints ?? false
     };
 
     // Identify startup targets from the routes
@@ -409,7 +413,7 @@ function createConfig(manifest: Manifest, opaConfig: OpaConfig, hideFilterBar: b
     // Create page configurations in supported cases
     const appTargets = manifest['sap.ui5']?.routing?.targets;
     for (const targetKey in appTargets) {
-        const pageConfig = createPageConfig(manifest, targetKey, opaConfig.appID);
+        const pageConfig = createPageConfig(manifest, targetKey, options.appID);
         if (pageConfig) {
             pageConfig.isStartup = startupTargets.includes(targetKey);
             config.pages.push(pageConfig);
@@ -508,7 +512,9 @@ function writePageFiles(writeContext: WriteContext): JourneyRunnerPage[] {
     const writtenPages: JourneyRunnerPage[] = [];
 
     config.pages.forEach((page) => {
-        writtenPages.push(writePageObject(page, rootV4TemplateDirPath, testOutDirPath, editor));
+        writtenPages.push(
+            writePageObject(page, rootV4TemplateDirPath, testOutDirPath, editor, writeContext.dotFileExtension)
+        );
     });
 
     return writtenPages;
@@ -522,8 +528,26 @@ function writePageFiles(writeContext: WriteContext): JourneyRunnerPage[] {
 function writeJourneyRunner(writeContext: WriteContext): void {
     const { config, rootV4TemplateDirPath, testOutDirPath, editor } = writeContext;
     editor.copyTpl(
-        join(rootV4TemplateDirPath, 'integration', 'pages', 'JourneyRunner.js'),
-        join(testOutDirPath, 'integration', 'pages', 'JourneyRunner.js'),
+        join(rootV4TemplateDirPath, 'integration', 'pages', `JourneyRunner${writeContext.dotFileExtension}`),
+        join(testOutDirPath, 'integration', 'pages', `JourneyRunner${writeContext.dotFileExtension}`),
+        config,
+        undefined,
+        {
+            globOptions: { dot: true }
+        }
+    );
+}
+
+/**
+ * Writes the OpaJourneyTypes.d.ts type definition file used by generated TypeScript OPA tests.
+ *
+ * @param writeContext - shared write context (config, paths, editor, journey params)
+ */
+function writeOpaJourneyTypes(writeContext: WriteContext): void {
+    const { config, rootV4TemplateDirPath, testOutDirPath, editor } = writeContext;
+    editor.copyTpl(
+        join(rootV4TemplateDirPath, 'integration', 'types', 'OpaJourneyTypes.d.ts'),
+        join(testOutDirPath, 'integration', 'types', 'OpaJourneyTypes.d.ts'),
         config,
         undefined,
         {
@@ -540,16 +564,17 @@ function writeJourneyRunner(writeContext: WriteContext): void {
  * @returns an array of feature names for which journey files were generated
  */
 function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext): string[] {
-    const { rootV4TemplateDirPath, testOutDirPath, editor, journeyParams } = writeContext;
+    const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams, dotFileExtension } = writeContext;
     const generatedJourneys: string[] = [];
 
     if (appFeatures.listReport?.name) {
         editor.copyTpl(
-            join(rootV4TemplateDirPath, 'integration', 'ListReportJourney.js'),
-            join(testOutDirPath, 'integration', `${appFeatures.listReport.name}Journey.gen.js`),
+            join(rootV4TemplateDirPath, 'integration', `ListReportJourney${dotFileExtension}`),
+            join(testOutDirPath, 'integration', `${appFeatures.listReport.name}Journey.gen${dotFileExtension}`),
             {
                 ...journeyParams,
-                ...appFeatures.listReport
+                ...appFeatures.listReport,
+                appPath: config.appPath
             },
             undefined,
             {
@@ -563,11 +588,12 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
         appFeatures.objectPages.forEach((objectPage) => {
             if (objectPage.name) {
                 editor.copyTpl(
-                    join(rootV4TemplateDirPath, 'integration', 'ObjectPageJourney.js'),
-                    join(testOutDirPath, 'integration', `${objectPage.name}Journey.gen.js`),
+                    join(rootV4TemplateDirPath, 'integration', `ObjectPageJourney${dotFileExtension}`),
+                    join(testOutDirPath, 'integration', `${objectPage.name}Journey.gen${dotFileExtension}`),
                     {
                         ...journeyParams,
-                        ...objectPage
+                        ...objectPage,
+                        appPath: config.appPath
                     },
                     undefined,
                     {
@@ -580,6 +606,13 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
     }
 
     if (appFeatures.fpm?.name) {
+        // FPM TypeScript support is out of scope for the initial TS OPA5 work
+        // (LROP only). The FPM journey path below is hardcoded `.js` and there is
+        // no `FPM.ts` template, so we force `DotFileExtension.JS` for the FPM
+        // page-object regardless of the configured `dotFileExtension`. Otherwise
+        // an LR-OP-FPM mix with `enableTypeScript` would crash in `writePageObject`
+        // when trying to load the missing `FPM.ts` template.
+        // Future work: add FPM.ts/FPMJourney.ts templates and switch to `dotFileExtension`.
         editor.copyTpl(
             join(rootV4TemplateDirPath, 'integration', 'FPMJourney.js'),
             join(testOutDirPath, 'integration', `${appFeatures.fpm.name}Journey.gen.js`),
@@ -729,17 +762,21 @@ function updateReferencesInOpaTestsStartupFiles(writeContext: WriteContext, gene
  * @param rootTemplateDirPath - template root directory
  * @param testOutDirPath - output test directory (.../webapp/test)
  * @param fs - a reference to a mem-fs editor
+ * @param dotFileExtension - file extension ('.ts' or '.js')
  * @returns path to the written page object
  */
 function writePageObject(
     pageConfig: FEV4OPAPageConfig,
     rootTemplateDirPath: string,
     testOutDirPath: string,
-    fs: Editor
+    fs: Editor,
+    dotFileExtension: DotFileExtension
 ): JourneyRunnerPage {
+    // FPM has no .ts template; force .js regardless of the configured extension
+    const ext = pageConfig.template === 'FPM' ? DotFileExtension.JS : dotFileExtension;
     fs.copyTpl(
-        join(rootTemplateDirPath, 'integration', 'pages', `${pageConfig.template}.js`),
-        join(testOutDirPath, 'integration', 'pages', `${pageConfig.targetKey}.gen.js`),
+        join(rootTemplateDirPath, 'integration', 'pages', `${pageConfig.template}${ext}`),
+        join(testOutDirPath, 'integration', 'pages', `${pageConfig.targetKey}.gen${ext}`),
         pageConfig,
         undefined,
         {

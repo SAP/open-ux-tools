@@ -9,6 +9,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 import { readHashFromFlpSandbox } from './flpSandboxUtils.js';
 import { t } from '../i18n.js';
+import { DotFileExtension } from '../types.js';
 
 /** Relative path from the test output directory to opaTests.qunit.js */
 const OPA_QUNIT_FILE = join('integration', 'opaTests.qunit.js');
@@ -31,6 +32,14 @@ const SAP_UI_REQUIRE_ARRAY_REGEX = /sap\.ui\.require\s*\(\s*\[([^\]]*)\]\s*,\s*f
 
 /** ReDoS mitigation: files larger than this are returned unchanged rather than matched with regex. */
 const MAX_FILE_CONTENT_LENGTH = 10000;
+
+/**
+ * Escapes regex metacharacters in a string so it can be safely embedded in a `RegExp` pattern.
+ *
+ * @param value - the string to escape
+ * @returns the escaped string
+ */
+const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
 
 /**
  * Splices new module paths into the sap.ui.require array of the content string.
