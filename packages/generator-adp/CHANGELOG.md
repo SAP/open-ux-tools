@@ -1,5 +1,51 @@
 # @sap-ux/generator-adp
 
+## 1.0.14
+
+### Patch Changes
+
+- Updated dependencies [e66a8a9]
+    - @sap-ux/adp-tooling@1.0.13
+
+## 1.0.13
+
+### Patch Changes
+
+- Updated dependencies [7bfa518]
+    - @sap-ux/telemetry@1.0.9
+    - @sap-ux/fiori-generator-shared@1.0.10
+    - @sap-ux/inquirer-common@1.0.10
+    - @sap-ux/adp-tooling@1.0.12
+
+## 1.0.12
+
+### Patch Changes
+
+- Updated dependencies [c8e8f7e]
+    - @sap-ux/adp-tooling@1.0.11
+    - @sap-ux/odata-service-writer@1.0.6
+    - @sap-ux/project-access@2.1.2
+    - @sap-ux/telemetry@1.0.8
+    - @sap-ux/inquirer-common@1.0.9
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/fiori-generator-shared@1.0.9
+    - @sap-ux/project-input-validator@1.0.6
+    - @sap-ux/system-access@1.0.2
+
+## 1.0.11
+
+### Patch Changes
+
+- Updated dependencies [0fa8305]
+    - @sap-ux/btp-utils@2.0.2
+    - @sap-ux/adp-tooling@1.0.10
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/fiori-generator-shared@1.0.8
+    - @sap-ux/inquirer-common@1.0.8
+    - @sap-ux/system-access@1.0.2
+    - @sap-ux/telemetry@1.0.7
+    - @sap-ux/odata-service-writer@1.0.5
+
 ## 1.0.10
 
 ### Patch Changes

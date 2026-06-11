@@ -6,6 +6,7 @@ import type { Linter } from 'eslint';
 import type { Plugin } from '@eslint/config-helpers';
 import babelParser from '@babel/eslint-parser';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
+import globals from 'globals';
 import { rules } from './rules/index.js';
 import { FioriLanguage } from './language/fiori-language.js';
 import { createSyncFn } from 'synckit';
@@ -19,8 +20,6 @@ const require = createRequire(import.meta.url);
 // Use CommonJS require for modules with resolution issues
 
 const tsParser = require('@typescript-eslint/parser') as any;
-
-const globals = require('globals') as any;
 
 // Read package.json to get version
 const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8')) as {
