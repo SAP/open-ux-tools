@@ -63,8 +63,8 @@ export default class extends Generator {
     private readonly appRootPath: string;
     private readonly answers: RepoAppDownloadAnswers = defaultAnswers;
     private readonly downloadType: AppDownloadType;
+    private readonly prompts: Prompts;
     public options: RepoAppDownloadOptions;
-    private prompts: Prompts;
     private projectPath: string;
     private extractedProjectPath: string;
     private debugOptions: DebugOptions;
