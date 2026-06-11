@@ -5,4 +5,4 @@
 '@sap-ux/preview-middleware': patch
 ---
 
-fix regression writing wrong manifest path via the changes created via properties panel and remove unused contorl-property-editor-common code
+fix regression writing wrong manifest path via the changes created via properties panel and remove unused control-property-editor-common code
