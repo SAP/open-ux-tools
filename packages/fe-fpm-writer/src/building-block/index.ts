@@ -217,11 +217,11 @@ function sortPageAggregationChildren(pageElement: Node): void {
 
     for (const node of allChildren) {
         if (node.nodeType === 8 /* Comment */) {
-            if (!firstElementSeen) {
+            if (firstElementSeen) {
+                pendingComments.push(node);
+            } else {
                 // Comments before the first element are always leading comments
                 leadingComments.push(node);
-            } else {
-                pendingComments.push(node);
             }
         } else if (node.nodeType === 1 /* Element */) {
             firstElementSeen = true;
