@@ -1,3 +1,9 @@
+// Before the appInsights import:
+// Prevent applicationinsights from monkey-patching console and other modules via
+// diagnostic-channel. We use manual TelemetryClient, not auto-instrumentation,
+// so this channel provides no benefit and causes console.time/timeEnd warnings in
+// apps (e.g. CAP) that hold pre-existing console timers.
+process.env.APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL ??= 'true';
 import { Client } from './client.js';
 import * as appInsights from 'applicationinsights';
 import { EventHeader } from '../types/event-header.js';
