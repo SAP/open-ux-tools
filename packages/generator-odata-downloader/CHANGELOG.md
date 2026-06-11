@@ -1,5 +1,11 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.12
+
+### Patch Changes
+
+- 8abbd6f: Fix for hierarchy parent property incorrectly set as `target` instead of `source`
+
 ## 0.3.11
 
 ### Patch Changes

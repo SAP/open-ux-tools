@@ -677,9 +677,11 @@ function writePageObject(
     fs: Editor,
     dotFileExtension: DotFileExtension
 ): void {
+    // FPM has no .ts template; force .js regardless of the configured extension
+    const ext = pageConfig.template === 'FPM' ? DotFileExtension.JS : dotFileExtension;
     fs.copyTpl(
-        join(rootTemplateDirPath, 'integration', 'pages', `${pageConfig.template}${dotFileExtension}`),
-        join(testOutDirPath, 'integration', 'pages', `${pageConfig.targetKey}${dotFileExtension}`),
+        join(rootTemplateDirPath, 'integration', 'pages', `${pageConfig.template}${ext}`),
+        join(testOutDirPath, 'integration', 'pages', `${pageConfig.targetKey}${ext}`),
         pageConfig,
         undefined,
         {
