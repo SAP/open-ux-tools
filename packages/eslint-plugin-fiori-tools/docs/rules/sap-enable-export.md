@@ -75,7 +75,7 @@ The `enableExport` property is correctly set to `true` or omitted from  `tableSe
 }
 ```
 
-or for applications with minUI5Version lower than 1.145:
+or for applications with a minimum SAPUI5 version lower than 1.145:
 
 ```json
 {
