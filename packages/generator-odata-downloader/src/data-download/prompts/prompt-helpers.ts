@@ -6,7 +6,6 @@ import { FileName, getSpecificationModuleFromCache } from '@sap-ux/project-acces
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { EntityType } from '@sap-ux/vocabularies-types';
 import type { CollectionFacet } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import { UIAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
 import type { CheckboxChoiceOptions } from 'inquirer';
 import { readFile } from 'node:fs/promises';
@@ -93,13 +92,13 @@ export async function getData(
 function getAllReferenceFacets(collectionFacet: CollectionFacet): string[] {
     const refTargetPaths: string[] = [];
     collectionFacet.Facets.forEach((facet) => {
-        if (facet.$Type === UIAnnotationTypes.ReferenceFacet && facet.Target.type === 'AnnotationPath') {
+        if (facet.$Type === 'com.sap.vocabularies.UI.v1.ReferenceFacet' && facet.Target.type === 'AnnotationPath') {
             const value = facet.Target.value;
             const pathSepIndex = value.lastIndexOf('/');
             if (pathSepIndex > -1) {
                 refTargetPaths.push(value.substring(0, value.lastIndexOf('/')));
             }
-        } else if (facet.$Type === UIAnnotationTypes.CollectionFacet) {
+        } else if (facet.$Type === 'com.sap.vocabularies.UI.v1.CollectionFacet') {
             refTargetPaths.push(...getAllReferenceFacets(facet));
         }
     });
@@ -117,14 +116,14 @@ function getDefaultSelectionPaths(entityType: EntityType): string[] {
     }
     const refTargetPaths: string[] = [];
     entityType.annotations?.UI?.Facets?.forEach((facet) => {
-        if (facet.$Type === UIAnnotationTypes.ReferenceFacet && facet.Target?.type === 'AnnotationPath') {
+        if (facet.$Type === 'com.sap.vocabularies.UI.v1.ReferenceFacet' && facet.Target?.type === 'AnnotationPath') {
             const value = facet.Target.value;
             const pathSepIndex = value?.lastIndexOf('/');
             if (pathSepIndex > -1) {
                 refTargetPaths.push(value.substring(0, value.lastIndexOf('/')));
             }
         }
-        if (facet.$Type === UIAnnotationTypes.CollectionFacet) {
+        if (facet.$Type === 'com.sap.vocabularies.UI.v1.CollectionFacet') {
             refTargetPaths.push(...getAllReferenceFacets(facet));
         }
     });

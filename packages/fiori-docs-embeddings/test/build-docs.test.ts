@@ -2516,4 +2516,395 @@ describe('MultiSourceDocumentationBuilder', () => {
             expect(mockLogger.warn).toHaveBeenCalledWith(expect.stringContaining('Failed to parse document'));
         }, 10000);
     });
+
+    describe('processGitHubRawSource', () => {
+        beforeEach(() => {
+            mockFetch.mockReset();
+        });
+
+        it('should fetch and return raw file content', async () => {
+            mockFetch.mockResolvedValueOnce({
+                ok: true,
+                text: async () => '# Raw Markdown Content\n\nSome content here.'
+            } as never);
+
+            const builder = new MultiSourceDocumentationBuilder();
+            const source = {
+                id: 'fiori-tools-opa-guide',
+                type: 'github-raw' as const,
+                owner: 'sap-tutorials',
+                repo: 'Tutorials',
+                branch: 'master',
+                filePath: 'tutorials/test/test.md',
+                category: 'fiori-tools',
+                enabled: true
+            };
+
+            const files = await (
+                builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }
+            ).processGitHubRawSource(source);
+
+            expect(files).toHaveLength(1);
+            expect((files[0] as { name: string }).name).toBe('test.md');
+            expect((files[0] as { path: string }).path).toBe('tutorials/test/test.md');
+            expect((files[0] as { content: string }).content).toContain('# Raw Markdown Content');
+            expect(mockFetch).toHaveBeenCalledWith(
+                'https://raw.githubusercontent.com/sap-tutorials/Tutorials/master/tutorials/test/test.md'
+            );
+        });
+
+        it('should use default branch "main" when branch is not specified', async () => {
+            mockFetch.mockResolvedValueOnce({
+                ok: true,
+                text: async () => '# Content'
+            } as never);
+
+            const builder = new MultiSourceDocumentationBuilder();
+            const source = {
+                id: 'test-raw',
+                type: 'github-raw' as const,
+                owner: 'test-owner',
+                repo: 'test-repo',
+                filePath: 'docs/guide.md',
+                category: 'test',
+                enabled: true
+            };
+
+            await (
+                builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }
+            ).processGitHubRawSource(source);
+
+            expect(mockFetch).toHaveBeenCalledWith(
+                'https://raw.githubusercontent.com/test-owner/test-repo/main/docs/guide.md'
+            );
+        });
+
+        it('should throw when filePath is missing', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const source = {
+                id: 'bad-source',
+                type: 'github-raw' as const,
+                owner: 'owner',
+                repo: 'repo',
+                category: 'test',
+                enabled: true
+            };
+
+            await expect(
+                (
+                    builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }
+                ).processGitHubRawSource(source)
+            ).rejects.toThrow('bad-source requires a filePath');
+        });
+
+        it('should throw when owner is missing', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const source = {
+                id: 'bad-source',
+                type: 'github-raw' as const,
+                repo: 'repo',
+                filePath: 'docs/guide.md',
+                category: 'test',
+                enabled: true
+            };
+
+            await expect(
+                (
+                    builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }
+                ).processGitHubRawSource(source)
+            ).rejects.toThrow('bad-source requires owner and repo');
+        });
+
+        it('should throw when repo is missing', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const source = {
+                id: 'bad-source',
+                type: 'github-raw' as const,
+                owner: 'owner',
+                filePath: 'docs/guide.md',
+                category: 'test',
+                enabled: true
+            };
+
+            await expect(
+                (
+                    builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }
+                ).processGitHubRawSource(source)
+            ).rejects.toThrow('bad-source requires owner and repo');
+        });
+
+        it('should throw when HTTP response is not ok', async () => {
+            mockFetch.mockResolvedValueOnce({
+                ok: false,
+                status: 404,
+                statusText: 'Not Found'
+            } as never);
+
+            const builder = new MultiSourceDocumentationBuilder();
+            const source = {
+                id: 'test-raw',
+                type: 'github-raw' as const,
+                owner: 'owner',
+                repo: 'repo',
+                filePath: 'docs/missing.md',
+                category: 'test',
+                enabled: true
+            };
+
+            await expect(
+                (
+                    builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }
+                ).processGitHubRawSource(source)
+            ).rejects.toThrow('HTTP 404 Not Found');
+        });
+
+        it('should use filePath as name when it has no slashes', async () => {
+            mockFetch.mockResolvedValueOnce({
+                ok: true,
+                text: async () => '# Content'
+            } as never);
+
+            const builder = new MultiSourceDocumentationBuilder();
+            const source = {
+                id: 'test-raw',
+                type: 'github-raw' as const,
+                owner: 'owner',
+                repo: 'repo',
+                filePath: 'guide.md',
+                category: 'test',
+                enabled: true
+            };
+
+            const files = await (
+                builder as unknown as { processGitHubRawSource: (s: unknown) => Promise<unknown[]> }
+            ).processGitHubRawSource(source);
+
+            expect((files[0] as { name: string }).name).toBe('guide.md');
+        });
+    });
+
+    describe('processSource with github-raw type', () => {
+        beforeEach(() => {
+            mockFetch.mockReset();
+            delete process.env.AI_CORE_SERVICE_KEY;
+        });
+
+        afterEach(() => {
+            delete process.env.AI_CORE_SERVICE_KEY;
+        });
+
+        it('should process github-raw source type end-to-end', async () => {
+            process.env.AI_CORE_SERVICE_KEY = JSON.stringify({
+                serviceurls: { AI_API_URL: 'https://api.test' },
+                clientid: 'test',
+                clientsecret: 'secret',
+                url: 'https://auth.test'
+            });
+
+            mockFetch
+                .mockResolvedValueOnce({
+                    ok: true,
+                    text: async () => '# OPA Testing Guide\n\nThis guide covers OPA testing with mockserver.'
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ access_token: 'token' })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ resources: [{ name: 'embeddingsscript-gpt-5-mini', id: 'cfg' }] })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        resources: [{ configurationId: 'cfg', status: 'RUNNING', deploymentUrl: 'https://deploy.test' }]
+                    })
+                } as never)
+                .mockResolvedValue({
+                    ok: true,
+                    json: async () => ({ choices: [{ message: { content: '# Optimized OPA Guide' } }] })
+                } as never);
+
+            const builder = new MultiSourceDocumentationBuilder();
+            await builder.processSource({
+                id: 'opa-test',
+                type: 'github-raw' as const,
+                owner: 'sap-tutorials',
+                repo: 'Tutorials',
+                branch: 'master',
+                filePath: 'tutorials/fiori-tools-mockserver-opa-testing/fiori-tools-mockserver-opa-testing.md',
+                category: 'fiori-tools',
+                enabled: true
+            });
+
+            const sourceResult = (
+                builder as unknown as { sourceResults: Map<string, { success: boolean; documentsAdded: number }> }
+            ).sourceResults.get('opa-test');
+            expect(sourceResult?.success).toBe(true);
+            expect(sourceResult?.documentsAdded).toBe(1);
+        }, 15000);
+    });
+
+    describe('filterToSingleSource', () => {
+        it('should filter to the specified source', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const initialSourceCount = builder.config.sources.length;
+
+            expect(initialSourceCount).toBeGreaterThan(1);
+
+            builder.filterToSingleSource('btp-fiori-tools');
+
+            expect(builder.config.sources).toHaveLength(1);
+            expect(builder.config.sources[0].id).toBe('btp-fiori-tools');
+            expect((builder.config as unknown as { singleSource: boolean }).singleSource).toBe(true);
+        });
+
+        it('should exit process when source ID is unknown', () => {
+            const mockExit = jest.spyOn(process, 'exit').mockImplementation(((code?: number) => {
+                throw new Error(`Process.exit called with code ${code}`);
+            }) as never);
+
+            const builder = new MultiSourceDocumentationBuilder();
+
+            expect(() => builder.filterToSingleSource('non-existent-source')).toThrow(
+                'Process.exit called with code 1'
+            );
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                expect.stringContaining('Unknown source "non-existent-source"')
+            );
+            expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('Available:'));
+
+            mockExit.mockRestore();
+        });
+
+        it('should include all available source IDs in the error message', () => {
+            const mockExit = jest.spyOn(process, 'exit').mockImplementation(((code?: number) => {
+                throw new Error(`Process.exit called with code ${code}`);
+            }) as never);
+
+            const builder = new MultiSourceDocumentationBuilder();
+
+            expect(() => builder.filterToSingleSource('bad-id')).toThrow();
+            expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('btp-fiori-tools'));
+
+            mockExit.mockRestore();
+        });
+    });
+
+    describe('createMasterIndex with singleSource mode', () => {
+        it('should merge with existing index when singleSource is true and index exists', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+
+            (builder.config as unknown as { singleSource: boolean }).singleSource = true;
+
+            const existingIndex = {
+                version: '1.0.0',
+                generatedAt: '2023-01-01T00:00:00.000Z',
+                totalDocuments: 5,
+                categories: [
+                    {
+                        id: 'existing-category',
+                        name: 'Existing Category',
+                        count: 3,
+                        documents: ['other-source-doc1', 'other-source-doc2', 'other-source-doc3']
+                    }
+                ],
+                sources: {
+                    'other-source': { path: 'other-source.md', documentCount: 3 }
+                }
+            };
+
+            mockFs.readFile.mockResolvedValueOnce(JSON.stringify(existingIndex));
+            mockFs.writeFile.mockResolvedValue(undefined as never);
+
+            (builder as unknown as { categories: Map<string, string[]> }).categories = new Map([
+                ['new-category', ['current-source-doc1']]
+            ]);
+            (builder as unknown as { sourceMarkdown: Map<string, string[]> }).sourceMarkdown = new Map([
+                ['current-source', ['# New content']]
+            ]);
+
+            await builder.createMasterIndex();
+
+            const writeCall = mockFs.writeFile.mock.calls[0];
+            const indexContent = JSON.parse(writeCall[1] as string);
+
+            expect(indexContent.categories).toHaveLength(2);
+            expect(indexContent.categories.some((c: { id: string }) => c.id === 'existing-category')).toBe(true);
+            expect(indexContent.categories.some((c: { id: string }) => c.id === 'new-category')).toBe(true);
+            expect(indexContent.sources['other-source']).toBeDefined();
+            expect(indexContent.sources['current-source']).toBeDefined();
+        });
+
+        it('should start fresh when singleSource is true but index file does not exist', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+
+            (builder.config as unknown as { singleSource: boolean }).singleSource = true;
+
+            mockFs.readFile.mockRejectedValueOnce(new Error('ENOENT: no such file'));
+            mockFs.writeFile.mockResolvedValue(undefined as never);
+
+            (builder as unknown as { categories: Map<string, string[]> }).categories = new Map([
+                ['fresh-category', ['doc1']]
+            ]);
+            (builder as unknown as { sourceMarkdown: Map<string, string[]> }).sourceMarkdown = new Map([
+                ['fresh-source', ['# Fresh content']]
+            ]);
+
+            await builder.createMasterIndex();
+
+            const writeCall = mockFs.writeFile.mock.calls[0];
+            const indexContent = JSON.parse(writeCall[1] as string);
+
+            expect(indexContent.categories).toHaveLength(1);
+            expect(indexContent.categories[0].id).toBe('fresh-category');
+        });
+
+        it('should replace stale documents from the current source in an existing category', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+
+            (builder.config as unknown as { singleSource: boolean }).singleSource = true;
+
+            const existingIndex = {
+                version: '1.0.0',
+                generatedAt: '2023-01-01T00:00:00.000Z',
+                totalDocuments: 4,
+                categories: [
+                    {
+                        id: 'shared-category',
+                        name: 'Shared Category',
+                        count: 4,
+                        documents: ['other-source-old-doc', 'current-source-stale-doc1', 'current-source-stale-doc2']
+                    }
+                ],
+                sources: {
+                    'other-source': { path: 'other-source.md', documentCount: 1 },
+                    'current-source': { path: 'current-source.md', documentCount: 2 }
+                }
+            };
+
+            mockFs.readFile.mockResolvedValueOnce(JSON.stringify(existingIndex));
+            mockFs.writeFile.mockResolvedValue(undefined as never);
+
+            (builder as unknown as { categories: Map<string, string[]> }).categories = new Map([
+                ['shared-category', ['current-source-new-doc']]
+            ]);
+            (builder as unknown as { sourceMarkdown: Map<string, string[]> }).sourceMarkdown = new Map([
+                ['current-source', ['# Updated content']]
+            ]);
+
+            await builder.createMasterIndex();
+
+            const writeCall = mockFs.writeFile.mock.calls[0];
+            const indexContent = JSON.parse(writeCall[1] as string);
+
+            const sharedCategory = indexContent.categories.find((c: { id: string }) => c.id === 'shared-category');
+            expect(sharedCategory).toBeDefined();
+            // stale docs from current-source should be gone, other-source doc preserved, new doc added
+            expect(sharedCategory.documents).toContain('other-source-old-doc');
+            expect(sharedCategory.documents).toContain('current-source-new-doc');
+            expect(sharedCategory.documents).not.toContain('current-source-stale-doc1');
+            expect(sharedCategory.documents).not.toContain('current-source-stale-doc2');
+        });
+    });
 });
