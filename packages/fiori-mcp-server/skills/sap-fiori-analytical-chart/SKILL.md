@@ -205,7 +205,6 @@ UI.PresentationVariant #TableView: {
     </PropertyValue>
   </Record>
 </Annotation>
-</Annotation>
 
 <Annotation Term="UI.PresentationVariant" Qualifier="TableView">
   <Record Type="UI.PresentationVariantType">
