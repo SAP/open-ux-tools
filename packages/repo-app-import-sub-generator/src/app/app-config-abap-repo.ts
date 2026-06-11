@@ -6,7 +6,9 @@ import { PromptState } from '../prompts/prompt-state.js';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import RepoAppDownloadLogger from '../utils/logger.js';
 import { t } from '../utils/i18n.js';
-import { FileName } from '@sap-ux/project-access';
+import { getFlpId } from '@sap-ux/fiori-generator-shared';
+import { FileName, getMainService } from '@sap-ux/project-access';
+import type { ODataVersion } from '@sap-ux/project-access';
 import { resolveTransportRequest } from '../utils/download-utils.js';
 import { AuthenticationType } from '@sap-ux/store';
 import { readManifest } from '../utils/file-helpers.js';
@@ -46,14 +48,16 @@ export function getAbapRepoAppConfig(webappPath: string, appInfo: AppInfo, fs: E
     const appTitle = manifest?.['sap.app']?.title ?? appInfo.title ?? '';
     const minUI5Version = manifest?.['sap.ui5']?.dependencies?.minUI5Version ?? '';
     const ui5Version = Array.isArray(minUI5Version) ? (minUI5Version[0] ?? '') : minUI5Version;
-    const odataVersion = manifest?.['sap.app']?.dataSources?.mainService?.settings?.odataVersion?.startsWith('4')
-        ? OdataVersion.v4
-        : OdataVersion.v2;
+    const mainServiceName = getMainService(manifest);
+    const odataVersionStr = (
+        mainServiceName ? manifest?.['sap.app']?.dataSources?.[mainServiceName]?.settings?.odataVersion : undefined
+    ) as ODataVersion | undefined;
+    const odataVersion = odataVersionStr === '4.0' ? OdataVersion.v4 : OdataVersion.v2;
     return {
         app: {
             id: appId,
             title: appTitle,
-            flpAppId: `${appId.replace(/[-_.#]/g, '')}-tile`
+            flpAppId: `${getFlpId(appId)}-tile`
         },
         service: {
             url: PromptState.baseURL,

@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import type { RepoAppDownloadAnswers, AppItem } from '../../src/app/types.js';
 import { PromptNames, AppDownloadType } from '../../src/app/types.js';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
-import { adtSourceTemplateId, downloadTypeConfig } from '../../src/utils/constants.js';
+import { adtSourceTemplateId, generatorTitleConfig } from '../../src/utils/constants.js';
 import { t } from '../../src/utils/i18n.js';
 import { DatasourceType, type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
 
@@ -154,8 +154,8 @@ describe('getYUIDetails', () => {
         const result = getYUIDetails(AppDownloadType.ADTQuickDeploy);
         expect(result).toEqual([
             {
-                name: downloadTypeConfig[AppDownloadType.ADTQuickDeploy].generatorTitle,
-                description: downloadTypeConfig[AppDownloadType.ADTQuickDeploy].generatorDescription
+                name: generatorTitleConfig[AppDownloadType.ADTQuickDeploy].title,
+                description: generatorTitleConfig[AppDownloadType.ADTQuickDeploy].description
             }
         ]);
     });
@@ -164,8 +164,8 @@ describe('getYUIDetails', () => {
         const result = getYUIDetails(AppDownloadType.AbapRepository);
         expect(result).toEqual([
             {
-                name: downloadTypeConfig[AppDownloadType.AbapRepository].generatorTitle,
-                description: downloadTypeConfig[AppDownloadType.AbapRepository].generatorDescription
+                name: generatorTitleConfig[AppDownloadType.AbapRepository].title,
+                description: generatorTitleConfig[AppDownloadType.AbapRepository].description
             }
         ]);
     });

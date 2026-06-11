@@ -1,4 +1,9 @@
-import { appListResultFields, downloadTypeConfig, adtSourceTemplateId } from '../utils/constants.js';
+import {
+    appListResultFields,
+    downloadTypeConfig,
+    generatorTitleConfig,
+    adtSourceTemplateId
+} from '../utils/constants.js';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
 import type { AppInfo, AppItem } from '../app/types.js';
 import { AppDownloadType } from '../app/types.js';
@@ -13,8 +18,8 @@ import { type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
  * @returns step details
  */
 export function getYUIDetails(downloadType: AppDownloadType): { name: string; description: string }[] {
-    const { generatorTitle, generatorDescription } = downloadTypeConfig[downloadType];
-    return [{ name: generatorTitle, description: generatorDescription }];
+    const { title, description } = generatorTitleConfig[downloadType];
+    return [{ name: title, description }];
 }
 
 /**

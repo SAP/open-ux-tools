@@ -70,12 +70,13 @@ describe('getAbapRepoAppConfig', () => {
                 title: 'App From Manifest',
                 dataSources: {
                     mainService: {
-                        settings: { odataVersion: '4.01' }
+                        settings: { odataVersion: '4.0' }
                     }
                 }
             },
             'sap.ui5': {
-                dependencies: { minUI5Version: '1.145.2' }
+                dependencies: { minUI5Version: '1.145.2' },
+                models: { '': { dataSource: 'mainService' } }
             }
         } as any);
 
@@ -106,7 +107,9 @@ describe('getAbapRepoAppConfig', () => {
                     }
                 }
             },
-            'sap.ui5': {}
+            'sap.ui5': {
+                models: { '': { dataSource: 'mainService' } }
+            }
         } as any);
 
         const result = getAbapRepoAppConfig(fixtureWebappPath, mockAppInfo, mockFs as unknown as Editor);
@@ -117,7 +120,7 @@ describe('getAbapRepoAppConfig', () => {
         expect(result.ui5.version).toBe('');
     });
 
-    it('should use OdataVersion.v2 when odataVersion does not start with "4"', () => {
+    it('should use OdataVersion.v2 when odataVersion is not "4.0"', () => {
         mockFs.readJSON.mockReturnValue({
             'sap.app': {
                 id: 'testApp',
@@ -126,6 +129,9 @@ describe('getAbapRepoAppConfig', () => {
                         settings: { odataVersion: '2.0' }
                     }
                 }
+            },
+            'sap.ui5': {
+                models: { '': { dataSource: 'mainService' } }
             }
         } as any);
 
@@ -152,12 +158,29 @@ describe('getAbapRepoAppConfig', () => {
             'sap.app': {
                 id: 'my-app.id_123#test',
                 dataSources: { mainService: { settings: { odataVersion: '4.0' } } }
+            },
+            'sap.ui5': {
+                models: { '': { dataSource: 'mainService' } }
             }
         } as any);
 
         const result = getAbapRepoAppConfig(fixtureWebappPath, mockAppInfo, mockFs as unknown as Editor);
 
         expect(result.app.flpAppId).toBe('myappid123test-tile');
+    });
+
+    it('should default to OdataVersion.v2 when no sap.ui5 model entry exists', () => {
+        mockFs.readJSON.mockReturnValue({
+            'sap.app': {
+                id: 'testApp',
+                dataSources: { myService: { settings: { odataVersion: '4.0' } } }
+            },
+            'sap.ui5': {}
+        } as any);
+
+        const result = getAbapRepoAppConfig(fixtureWebappPath, mockAppInfo, mockFs as unknown as Editor);
+
+        expect(result.service.version).toBe(OdataVersion.v2);
     });
 });
 

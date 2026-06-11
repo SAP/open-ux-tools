@@ -63,8 +63,12 @@
         }
     },
     "readMe": {
-        "appDescription": "This application was converted from an SAP Fiori application that was deployed from ADT using the ADT Quick Fiori Application generator.",
-        "abapRepositoryAppDescription": "This application was downloaded from an SAP ABAP repository.",
+        "adtQuickDeploy": {
+            "appDescription": "This application was converted from an SAP Fiori application that was deployed from ADT using the ADT Quick Fiori Application generator."
+        },
+        "abapRepository": {
+            "appDescription": "This application was downloaded from an SAP ABAP repository."
+        },
         "launchText": "To launch the generated application, run the following command from the generated app root folder:\n\n```\n    npm start\n```"
     },
     "info": {
@@ -73,16 +77,6 @@
         },
         "abapRepository": {
             "repoAppDownloadCompleteMsg": "After the application is downloaded, the SAP Fiori migration tool launches so that the project can be migrated to support SAP Fiori tools."
-        }
-    },
-    "generatorConfig": {
-        "adtQuickDeploy": {
-            "title": "Download ADT deployed app from SAPUI5 ABAP repository",
-            "description": "Download an application that was generated with the ADT Quick SAP Fiori Application generator"
-        },
-        "abapRepository": {
-            "title": "Download app from UI5 ABAP repository",
-            "description": "Download app from SAPUI5 ABAP repository"
         }
     }
 }

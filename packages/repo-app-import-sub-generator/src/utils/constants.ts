@@ -4,9 +4,8 @@ import { AppDownloadType } from '../app/types.js';
 import { t } from './i18n.js';
 
 export interface DownloadTypeConfig {
-    generatorTitle: string;
-    generatorDescription: string;
     generatorSuccessMsg: string;
+    readMeAppDescription: string;
     /** OData filter params used to narrow the app list to apps relevant for this flow. */
     searchParams: Record<string, string>;
 }
@@ -15,31 +14,39 @@ export interface DownloadTypeConfig {
 export const adtSourceTemplateId = '@sap.adt.sevicebinding.deploy:lrop';
 
 /**
+ * Title and description config per download flow, used in the constructor
+ */
+export const generatorTitleConfig: Record<AppDownloadType, { title: string; description: string }> = {
+    [AppDownloadType.ADTQuickDeploy]: {
+        title: 'Download ADT deployed app from SAPUI5 ABAP repository',
+        description: 'Download an application that was generated with the ADT Quick SAP Fiori Application generator'
+    },
+    [AppDownloadType.AbapRepository]: {
+        title: 'Download app from UI5 ABAP repository',
+        description: 'Download app from SAPUI5 ABAP repository'
+    }
+};
+
+/**
  * Per-flow configuration looked up at runtime via `downloadTypeConfig[this.downloadType]`.
  * Getters are used so i18n strings are resolved after the i18n instance is initialised.
  */
 export const downloadTypeConfig: Record<AppDownloadType, DownloadTypeConfig> = {
     [AppDownloadType.ADTQuickDeploy]: {
-        get generatorTitle() {
-            return t('generatorConfig.adtQuickDeploy.title');
-        },
-        get generatorDescription() {
-            return t('generatorConfig.adtQuickDeploy.description');
-        },
         get generatorSuccessMsg() {
             return t('info.adtQuickDeploy.repoAppDownloadCompleteMsg');
+        },
+        get readMeAppDescription() {
+            return t('readMe.adtQuickDeploy.appDescription');
         },
         searchParams: { 'sap.app/sourceTemplate/id': adtSourceTemplateId }
     },
     [AppDownloadType.AbapRepository]: {
-        get generatorTitle() {
-            return t('generatorConfig.abapRepository.title');
-        },
-        get generatorDescription() {
-            return t('generatorConfig.abapRepository.description');
-        },
         get generatorSuccessMsg() {
             return t('info.abapRepository.repoAppDownloadCompleteMsg');
+        },
+        get readMeAppDescription() {
+            return t('readMe.abapRepository.appDescription');
         },
         searchParams: { 'sap.app/type': 'application' }
     }

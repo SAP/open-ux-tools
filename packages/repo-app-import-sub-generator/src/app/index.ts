@@ -10,7 +10,7 @@ import {
     qfaJsonFileName,
     downloadTypeConfig
 } from '../utils/constants.js';
-import { t, initI18n } from '../utils/i18n.js';
+import { t } from '../utils/i18n.js';
 import { extractZip } from '../utils/download-utils.js';
 import { EventName } from '../telemetryEvents/index.js';
 import {
@@ -97,6 +97,7 @@ export default class extends Generator {
             this.vscode
         );
 
+        this.prompts = new Prompts(getYUIDetails(this.downloadType));
         this.setPromptsCallback = (fn): void => {
             if (this.prompts) {
                 this.prompts.setCallback(fn);
@@ -109,9 +110,6 @@ export default class extends Generator {
      */
     public async initializing(): Promise<void> {
         setYeomanEnvConflicterForce(this.env, this.options.force);
-        await initI18n();
-        this.appWizard.setHeaderTitle(downloadTypeConfig[this.downloadType].generatorTitle);
-        this.prompts = new Prompts(getYUIDetails(this.downloadType));
         // Initialise telemetry settings
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
@@ -269,7 +267,7 @@ export default class extends Generator {
             appName: config.app.id,
             appTitle: config.app.title ?? '',
             appNamespace: config.app.id.substring(0, config.app.id.lastIndexOf('.')),
-            appDescription: t('readMe.appDescription'),
+            appDescription: downloadTypeConfig[this.downloadType].readMeAppDescription,
             ui5Theme: getDefaultUI5Theme(config.ui5?.version),
             generatorName: generatorName,
             generatorVersion: this.rootGeneratorVersion(),
