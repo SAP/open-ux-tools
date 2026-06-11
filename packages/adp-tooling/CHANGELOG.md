@@ -1,5 +1,17 @@
 # @sap-ux/adp-tooling
 
+## 1.0.13
+
+### Patch Changes
+
+- e66a8a9: fix: append builder.resources.excludes to generated ui5.yaml
+
+## 1.0.12
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@1.0.10
+
 ## 1.0.11
 
 ### Patch Changes
