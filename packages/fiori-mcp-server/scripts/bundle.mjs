@@ -156,10 +156,13 @@ const sharpStubPlugin = {
 //      inline it without needing it as a direct dependency of this package).
 //   2. Sets env.wasm.wasmPaths so onnxruntime-web finds the .wasm binary at
 //      runtime relative to dist/ (where bundle.mjs copies it in Step 4).
-//   3. Sets globalThis[Symbol.for('onnxruntime')] — the hook @huggingface/transformers'
-//      getORTEnv() helper checks before falling back to require('onnxruntime-node').
-//      Because CJS module evaluation is synchronous and require('onnxruntime-node')
-//      runs before getORTEnv() in the same init function, the global is set in time.
+//
+// The shim intentionally does NOT set globalThis[Symbol.for('onnxruntime')].
+// Setting that global causes @huggingface/transformers to skip its IS_NODE_ENV
+// device registration branch entirely, leaving supportedDevices=[] and making
+// pipeline() fail with "Unsupported device: cpu. Should be one of: .".
+// Instead transformers uses its normal Node.js path (which registers 'cpu') and
+// resolves require('onnxruntime-node') to this shim (i.e. onnxruntime-web/WASM).
 const onnxNodeWasmPlugin = {
     name: 'onnxruntime-node-wasm',
     setup(build) {
@@ -170,6 +173,15 @@ const onnxNodeWasmPlugin = {
         build.onLoad({ filter: /.*/, namespace: 'onnxruntime-node-wasm-shim' }, () => ({
             // Use the resolved absolute path so esbuild can locate and inline
             // onnxruntime-web without it being a direct dep of this package.
+            //
+            // Do NOT set globalThis[Symbol.for('onnxruntime')] here — doing so causes
+            // @huggingface/transformers to skip its Node.js device registration branch
+            // entirely, leaving supportedDevices=[] and making all device validation fail
+            // (error: "Unsupported device: cpu. Should be one of: .").
+            // Instead, let transformers run its normal IS_NODE_ENV path which registers
+            // 'cpu' as a supported device — it will require('onnxruntime-node') which
+            // esbuild aliases to onnxruntime-web (this shim), so the WASM backend is
+            // used transparently.
             contents: [
                 `const ort = require(${JSON.stringify(ortWebNodeEntry)});`,
                 `if (!ort.env?.wasm) throw new Error('onnxruntime-web: env.wasm not available');`,
@@ -177,8 +189,6 @@ const onnxNodeWasmPlugin = {
                 // platforms — __dirname uses backslashes on Windows, which would break
                 // the path-based lookup in the WASM loader.
                 `ort.env.wasm.wasmPaths = require('url').pathToFileURL(__dirname).href + '/';`,
-                // Override the ORT global so transformers uses WASM on Node.js.
-                `globalThis[Symbol.for('onnxruntime')] = ort;`,
                 `module.exports = ort;`
             ].join('\n'),
             loader: 'js',
@@ -211,28 +221,39 @@ await esbuild.build({
             'const __dirname = __dn(__filename);'
         ].join('\n')
     },
-    external: [
-        'vscode'
-        // onnxruntime-node is no longer external — aliased to the WASM shim above
-    ],
+    external: ['vscode'],
     plugins: [onnxNodeWasmPlugin, pkgJsonShimPlugin, sharpStubPlugin]
 });
 
 console.log('✓ esbuild bundle complete');
 
+// ── Step 1b: rewrite @zowe/secrets-for-zowe-sdk require in bundle ────────────
+// @sap-ux/store calls require('@zowe/secrets-for-zowe-sdk') at runtime via a
+// createRequire-based dynamic require. esbuild inlines the string verbatim and
+// cannot intercept it via onResolve. Post-process the bundle to replace every
+// occurrence with an inline shim that loads the native keyring binary directly
+// from dist/prebuilds/ — no node_modules lookup needed.
+const ZOWE_SHIM = `(()=>{const{join:_j}=require("path"),{existsSync:_e}=require("fs");function _t(){switch(process.platform){case"win32":return"win32-"+process.arch+"-msvc";case"linux":{const m=process.report.getReport().header.glibcVersionRuntime==null,a=m?"musl":"gnu";return process.arch==="arm"?"linux-arm-"+a+"eabihf":"linux-"+process.arch+"-"+a;}default:return process.platform+"-"+process.arch;}}const _p=_j(__dirname,"prebuilds","keyring."+_t()+".node");if(!_e(_p))throw new Error("Zowe keyring native module not found: "+_p);const{deletePassword:dP,findCredentials:fC,findPassword:fP,getPassword:gP,setPassword:sP}=require(_p);return{keyring:{deletePassword:dP,findCredentials:fC,findPassword:fP,getPassword:gP,setPassword:sP}};})()`;
+
+const bundleFile = path.join(DIST, 'index.js');
+let bundleSource = fs.readFileSync(bundleFile, 'utf8');
+const zowePattern = /\w+\(["']@zowe\/secrets-for-zowe-sdk["']\)/g;
+const matchCount = (bundleSource.match(zowePattern) || []).length;
+if (matchCount === 0) {
+    throw new Error(
+        'No require("@zowe/secrets-for-zowe-sdk") found in bundle — shim not applied. ' +
+        'The bundle may have changed; update the zowePattern regex in bundle.mjs.'
+    );
+} else {
+    bundleSource = bundleSource.replace(zowePattern, ZOWE_SHIM);
+    fs.writeFileSync(bundleFile, bundleSource, 'utf8');
+    console.log(`✓ Rewrote ${matchCount} @zowe/secrets-for-zowe-sdk require(s) to inline prebuilds shim`);
+}
+
 // ── Step 2: copy @zowe/secrets-for-zowe-sdk prebuilds ────────────────────────
-// @sap-ux/store's keyring loader calls findPrebuildsDir(__dirname) at runtime.
-// When esbuild inlines src/keyring/index.js, __dirname becomes dist/. The loader
-// walks up until it finds a package.json (the root package.json), then looks for
-// prebuilds/keyring.<platform>.node relative to that directory. Copying only the
-// prebuilds/ folder to dist/prebuilds/ satisfies this lookup — same pattern as
-// packages/sap-systems-ext/esbuild.js.
-//
-// @zowe/secrets-for-zowe-sdk is a direct dep of @sap-ux/store, not of this
-// package. Resolve it via store's require context so we don't need to add it
-// to our own devDependencies.
-// @sap-ux/store has a restrictive `exports` field that doesn't expose
-// package.json. Resolve via main entry and walk up to find the package root.
+// The inline shim (above) loads the native keyring binary directly from
+// dist/prebuilds/ at runtime. Copy only the platform-specific prebuilds here;
+// ia32 is excluded as Node 22 dropped ia32 Windows support.
 const storePkgDir = findPkgRoot(req.resolve('@sap-ux/store'), '@sap-ux/store');
 const storeReq = createRequire(path.join(storePkgDir, 'package.json'));
 const zowePkgEntry = storeReq.resolve('@zowe/secrets-for-zowe-sdk');
