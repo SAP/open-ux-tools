@@ -201,6 +201,28 @@ describe('ui5', () => {
             );
         });
 
+        test('normalises glob patterns without leading slash', async () => {
+            mockReadFile.mockResolvedValue('builder:\n  resources:\n    excludes:\n      - test/**\n');
+            mockGetBuilderResourceExcludes.mockReturnValue(['test/**']);
+            mockUi5ConfigNewInstance.mockResolvedValue({
+                getBuilderResourceExcludes: mockGetBuilderResourceExcludes
+            });
+
+            const configWithoutExclude: AbapDeployConfig = { ...configuration };
+            delete (configWithoutExclude as any).exclude;
+
+            await expect(
+                task({ workspace, options: { projectName, configuration: configWithoutExclude } } as any)
+            ).resolves.not.toThrow();
+
+            expect(mockCreateUi5Archive).toHaveBeenCalledWith(
+                expect.anything(),
+                expect.anything(),
+                expect.anything(),
+                expect.arrayContaining(['/test/'])
+            );
+        });
+
         test('deduplicates overlapping entries from both sources', async () => {
             // Same pattern appears in both config.exclude and builder excludes (after globToPrefix)
             mockReadFile.mockResolvedValue('builder:\n  resources:\n    excludes:\n      - /test/**\n');

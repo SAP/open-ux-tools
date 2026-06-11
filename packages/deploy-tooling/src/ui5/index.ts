@@ -35,13 +35,16 @@ function resolveLogLevel(value: string | number | undefined): LogLevel {
 
 /**
  * Convert a glob pattern to a regex-safe prefix string.
- * Strips trailing `/**` or `/*` so `/test/**` becomes `/test/`.
+ * Strips trailing `/**` or `/*` and normalises to an absolute directory prefix.
+ * Examples: `/test/**` → `/test/`, `localService/**` → `/localService/`
  *
- * @param pattern - glob pattern to convert
- * @returns prefix string safe for regex matching
+ * @param pattern - glob pattern to convert (e.g. `/test/**`)
+ * @returns absolute directory prefix safe for archive regex matching (e.g. `/test/`)
  */
 function globToPrefix(pattern: string): string {
-    return pattern.replace(/\/\*+$/, '/');
+    const prefix = pattern.replace(/\/?\*+$/, '');
+    const withTrailingSlash = prefix.endsWith('/') ? prefix : `${prefix}/`;
+    return withTrailingSlash.startsWith('/') ? withTrailingSlash : `/${withTrailingSlash}`;
 }
 
 /**
