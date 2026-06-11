@@ -50,7 +50,7 @@ or for applications with minUI5Version lower than 1.145:
 }
 ```
 
-The `newValue` of the `enableExport` property is set to `false` which hides the "Export" button.
+The `newValue` of the `enableExport` or `useExportToExcel` property is set to `false` which hides the "Export" button.
 
 #### Correct `manifest.json` File in OData V4
 
