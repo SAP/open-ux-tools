@@ -1,5 +1,34 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.1.1
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.21
+- @sap-ux/odata-service-inquirer@3.0.10
+
+## 1.1.0
+
+### Minor Changes
+
+- ad59554: feat(repo-app-import-sub-generator): support ABAP Repository app download alongside ADT Quick Deploy flow
+
+## 1.0.20
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.20
+- @sap-ux/odata-service-inquirer@3.0.10
+
+## 1.0.19
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@1.0.10
+- @sap-ux/inquirer-common@1.0.10
+- @sap-ux/odata-service-inquirer@3.0.10
+- @sap-ux/fiori-elements-writer@3.0.19
+
 ## 1.0.18
 
 ### Patch Changes
