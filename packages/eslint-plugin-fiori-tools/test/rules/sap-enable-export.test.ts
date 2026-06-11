@@ -55,7 +55,7 @@ const v2FlexChangeExportDisabledOP = (property: PropertyName) => ({
 
 const v2FlexChangeExportDisabledLR = (property: PropertyName) => ({
     ...v2FlexChangeExportEnabledLR(property),
-    content: { ...(v2FlexChangeExportEnabledLR(property) as any).content, newValue: false }
+    content: { ...v2FlexChangeExportEnabledLR(property).content, newValue: false }
 });
 
 ruleTester.run(TEST_NAME, enableExportRule, {
@@ -301,6 +301,7 @@ ruleTester.run(TEST_NAME, enableExportRule, {
                     code: getManifestAsCode(V2_MANIFEST, [
                         {
                             path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                            // Boundary test: at exactly 1.145.0, 'enableExport' must be used (not 'useExportToExcel')
                             value: '1.145.0'
                         }
                     ])
