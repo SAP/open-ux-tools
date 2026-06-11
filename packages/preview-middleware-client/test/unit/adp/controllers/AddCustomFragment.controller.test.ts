@@ -33,8 +33,7 @@ jest.unstable_mockModule('open/ux/preview/client/adp/utils', () => ({
     checkForExistingChange: checkForExistingChangeMock
 }));
 
-const { default: AddCustomFragment } =
-    await import('open/ux/preview/client/adp/controllers/AddCustomFragment.controller');
+const { default: AddCustomFragment } = await import('open/ux/preview/client/adp/controllers/AddCustomFragment.controller');
 const { default: ControlUtils } = await import('open/ux/preview/client/adp/control-utils');
 
 const mocks = {
@@ -663,7 +662,8 @@ describe('AddCustomFragment', () => {
             return addFragment;
         };
 
-        beforeEach(() => {
+
+         beforeEach(() => {
             mocks.setValueStateTextMock = jest.fn();
             mocks.setValueStateMock = jest.fn().mockReturnValue({
                 setValueStateText: mocks.setValueStateTextMock
@@ -691,7 +691,7 @@ describe('AddCustomFragment', () => {
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
             expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(
                 1,
-                "Column with ID ''test'' is already defined."
+                'Column with ID \'\'test\'\' is already defined.'
             );
         });
 
@@ -711,7 +711,10 @@ describe('AddCustomFragment', () => {
             addFragment.model = testModel;
             addFragment.onIdInputChange(event as unknown as Event);
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
-            expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(1, 'Column ID is required.');
+            expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(
+                1,
+                'Column ID is required.'
+            );
         });
 
         test('sets error when id invalid format', async () => {

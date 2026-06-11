@@ -115,10 +115,16 @@ describe('FE V2 quick actions', () => {
         // Re-set default mock return values after clearAllMocks.
         // Use the original getUi5Version as fallback so tests that set up VersionInfo.load
         // still work correctly through areManifestChangesSupported etc.
-        getUi5VersionMock.mockImplementation((...args) => (_versionUtils.getUi5Version as Function)(...args));
+        getUi5VersionMock.mockImplementation((...args) =>
+            (_versionUtils.getUi5Version as Function)(...args)
+        );
         checkForExistingChangeMock.mockReturnValue(false);
-        getV2AppComponentMock.mockImplementation((...args) => (_utils.getV2AppComponent as Function)(...args));
-        getParentContainerMock.mockImplementation((...args) => (_QCUtils.getParentContainer as Function)(...args));
+        getV2AppComponentMock.mockImplementation((...args) =>
+            (_utils.getV2AppComponent as Function)(...args)
+        );
+        getParentContainerMock.mockImplementation((...args) =>
+            (_QCUtils.getParentContainer as Function)(...args)
+        );
     });
     afterEach(() => {
         fetchMock.mockRestore();
@@ -134,6 +140,7 @@ describe('FE V2 quick actions', () => {
             });
         });
         afterEach(() => {
+             
             const closeDialogFunction = attachBeforeClose.mock.calls[0]?.[0];
             if (typeof closeDialogFunction === 'function') {
                 // make sure that dialog factory is in clean state after each test

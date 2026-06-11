@@ -1,23 +1,21 @@
-sap.ui.define(
-    [
-        'sap/fe/test/JourneyRunner',
-        'testNameSpace/lropv4/test/integration/pages/TravelList',
-        'testNameSpace/lropv4/test/integration/pages/TravelObjectPage',
-        'testNameSpace/lropv4/test/integration/pages/BookingObjectPage'
-    ],
-    function (JourneyRunner, TravelList, TravelObjectPage, BookingObjectPage) {
-        'use strict';
+sap.ui.define([
+    "sap/fe/test/JourneyRunner",
+	"testNameSpace/lropv4/test/integration/pages/TravelList",
+	"testNameSpace/lropv4/test/integration/pages/TravelObjectPage",
+	"testNameSpace/lropv4/test/integration/pages/BookingObjectPage"
+], function (JourneyRunner, TravelList, TravelObjectPage, BookingObjectPage) {
+    'use strict';
 
-        var runner = new JourneyRunner({
-            launchUrl: sap.ui.require.toUrl('testNameSpace/lropv4') + '/test/flp.html#app-preview',
-            pages: {
-                onTheTravelList: TravelList,
-                onTheTravelObjectPage: TravelObjectPage,
-                onTheBookingObjectPage: BookingObjectPage
-            },
-            async: true
-        });
+    var runner = new JourneyRunner({
+        launchUrl: sap.ui.require.toUrl('testNameSpace/lropv4') + '/test/flp.html#app-preview',
+        pages: {
+			onTheTravelList: TravelList,
+			onTheTravelObjectPage: TravelObjectPage,
+			onTheBookingObjectPage: BookingObjectPage
+        },
+        async: true
+    });
 
-        return runner;
-    }
-);
+    return runner;
+});
+

@@ -7,7 +7,9 @@ jest.unstable_mockModule('open/ux/preview/client/i18n', () => ({
         Promise.resolve({
             getText: jest
                 .fn()
-                .mockImplementation((key, params) => (Array.isArray(params) ? `${key} - ${params.join(', ')}` : key))
+                .mockImplementation((key, params) =>
+                    Array.isArray(params) ? `${key} - ${params.join(', ')}` : key
+                )
         })
 }));
 

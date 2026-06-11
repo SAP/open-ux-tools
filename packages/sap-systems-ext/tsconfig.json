@@ -1,40 +1,47 @@
 {
-    "extends": "../../tsconfig-cjs.json",
-    "compilerOptions": {
-        "sourceMap": true,
-        "outDir": "dist",
-        "module": "commonjs",
-        "moduleResolution": "node"
+  "extends": "../../tsconfig-cjs.json",
+  "compilerOptions": {
+    "sourceMap": true,
+    "outDir": "dist",
+    "module": "commonjs",
+    "moduleResolution": "node"
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.json",
+    "package.json"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ],
+  "references": [
+    {
+      "path": "../axios-extension"
     },
-    "include": ["src/**/*.ts", "src/**/*.json", "package.json"],
-    "exclude": ["dist", "node_modules"],
-    "references": [
-        {
-            "path": "../axios-extension"
-        },
-        {
-            "path": "../feature-toggle"
-        },
-        {
-            "path": "../guided-answers-helper"
-        },
-        {
-            "path": "../logger"
-        },
-        {
-            "path": "../sap-systems-ext-types"
-        },
-        {
-            "path": "../sap-systems-ext-webapp"
-        },
-        {
-            "path": "../store"
-        },
-        {
-            "path": "../telemetry"
-        },
-        {
-            "path": "../ui-components"
-        }
-    ]
+    {
+      "path": "../feature-toggle"
+    },
+    {
+      "path": "../guided-answers-helper"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../sap-systems-ext-types"
+    },
+    {
+      "path": "../sap-systems-ext-webapp"
+    },
+    {
+      "path": "../store"
+    },
+    {
+      "path": "../telemetry"
+    },
+    {
+      "path": "../ui-components"
+    }
+  ]
 }

@@ -54,8 +54,9 @@ jest.unstable_mockModule('open/ux/preview/client/adp/command-executor', () => {
     };
 });
 
-const { default: ControllerExtension } =
-    await import('open/ux/preview/client/adp/controllers/ControllerExtension.controller');
+const { default: ControllerExtension } = await import(
+    'open/ux/preview/client/adp/controllers/ControllerExtension.controller'
+);
 
 describe('ControllerExtension', () => {
     beforeAll(() => {

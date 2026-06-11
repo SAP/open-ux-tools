@@ -7,7 +7,9 @@ jest.unstable_mockModule('open/ux/preview/client/i18n', () => ({
         Promise.resolve({
             getText: jest
                 .fn()
-                .mockImplementation((key, params) => (Array.isArray(params) ? `${key} - ${params.join(', ')}` : key))
+                .mockImplementation((key, params) =>
+                    Array.isArray(params) ? `${key} - ${params.join(', ')}` : key
+                )
         })
 }));
 
@@ -143,14 +145,15 @@ describe('change-file-validator', () => {
         await initOrphanedChangeDetection();
 
         console.error(
-            "Change 'id_addXML_1' could not be applied. Error: resource com/sap/app/changes/fragments/MyFragment.fragment.xml could not be loaded"
+            'Change \'id_addXML_1\' could not be applied. Error: resource com/sap/app/changes/fragments/MyFragment.fragment.xml could not be loaded'
         );
         await flushPromises();
 
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(
             showInfoCenterMessage({
                 title: 'ADP_ORPHANED_CHANGE_ERROR_TITLE',
-                description: 'ADP_ORPHANED_FILE_DESCRIPTION - fragments/MyFragment.fragment.xml, id_addXML_1.change',
+                description:
+                    'ADP_ORPHANED_FILE_DESCRIPTION - fragments/MyFragment.fragment.xml, id_addXML_1.change',
                 type: MessageBarType.error
             })
         );
@@ -170,7 +173,7 @@ describe('change-file-validator', () => {
         await initOrphanedChangeDetection();
 
         console.error(
-            "Change 'id_codeExt_1' could not be applied. Error: resource com/sap/app/changes/coding/MyController.js could not be loaded"
+            'Change \'id_codeExt_1\' could not be applied. Error: resource com/sap/app/changes/coding/MyController.js could not be loaded'
         );
         await flushPromises();
 
@@ -270,7 +273,8 @@ describe('change-file-validator', () => {
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(
             showInfoCenterMessage({
                 title: 'ADP_ORPHANED_CHANGE_ERROR_TITLE',
-                description: 'ADP_ORPHANED_FILE_DESCRIPTION - fragments/Custom.fragment.xml, id_addXML_1.change',
+                description:
+                    'ADP_ORPHANED_FILE_DESCRIPTION - fragments/Custom.fragment.xml, id_addXML_1.change',
                 type: MessageBarType.error
             })
         );
@@ -302,7 +306,8 @@ describe('change-file-validator', () => {
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(
             showInfoCenterMessage({
                 title: 'ADP_ORPHANED_CHANGE_ERROR_TITLE',
-                description: 'ADP_ORPHANED_FILE_DESCRIPTION - fragments/B.fragment.xml, id_addXML_2.change',
+                description:
+                    'ADP_ORPHANED_FILE_DESCRIPTION - fragments/B.fragment.xml, id_addXML_2.change',
                 type: MessageBarType.error
             })
         );
@@ -415,7 +420,7 @@ describe('change-file-validator', () => {
         await initOrphanedChangeDetection();
 
         console.error(
-            "Change 'id_addXML_1' could not be applied.",
+            'Change \'id_addXML_1\' could not be applied.',
             'resource com/sap/app/changes/fragments/Multi.fragment.xml could not be loaded'
         );
         await flushPromises();
@@ -423,7 +428,8 @@ describe('change-file-validator', () => {
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(
             showInfoCenterMessage({
                 title: 'ADP_ORPHANED_CHANGE_ERROR_TITLE',
-                description: 'ADP_ORPHANED_FILE_DESCRIPTION - fragments/Multi.fragment.xml, id_addXML_1.change',
+                description:
+                    'ADP_ORPHANED_FILE_DESCRIPTION - fragments/Multi.fragment.xml, id_addXML_1.change',
                 type: MessageBarType.error
             })
         );

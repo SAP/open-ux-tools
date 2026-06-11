@@ -14,16 +14,16 @@ jobs:
             - name: Read UI5 versions from cache
               uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
               with:
-                  path: |
-                      tests/integration/adaptation-editor/versions.json
-                  key: ui5-versions
-                  restore-keys: ui5-versions-
+                path: |
+                  tests/integration/adaptation-editor/versions.json
+                key: ui5-versions
+                restore-keys: ui5-versions-
             - name: Output UI5 versions
               id: output-ui5-versions
               run: |
                   cat tests/integration/adaptation-editor/versions.json
                   echo "ui5_versions=$(cat tests/integration/adaptation-editor/versions.json)" >> $GITHUB_OUTPUT
-
+   
     playwright-tests:
         # if: github.repository == 'SAP/open-ux-tools' && github.event_name == 'push' && github.ref == 'refs/heads/main'
         strategy:
@@ -59,35 +59,36 @@ jobs:
             - name: Run build
               run: pnpm run build
               env:
-                  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+                NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Cache playwright browsers
               id: cache-playwright-browsers
               uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
               with:
-                  path: |
-                      ~/.cache/ms-playwright
-                  key: playwright-browsers-chromium-os-ubuntu-latest-node-version-22.x
+                path: |
+                    ~/.cache/ms-playwright
+                key: playwright-browsers-chromium-os-ubuntu-latest-node-version-22.x
             - name: Install playwright chromium browsers
               if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
               run: npx playwright install chromium
             - name: Read UI5 versions from cache
               uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
               with:
-                  path: |
-                      tests/integration/adaptation-editor/versions.json
-                  key: ui5-versions-
-                  restore-keys: ui5-versions
+                path: |
+                  tests/integration/adaptation-editor/versions.json
+                key: ui5-versions-
+                restore-keys: ui5-versions
             - name: Run playwright tests
               run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=${{ matrix.ui5-version }} --reporter=blob
               env:
-                  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+                NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Upload blob report to GitHub Actions Artifacts
               if: ${{ !cancelled() }}
               uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
               with:
-                  name: blob-report-${{ matrix.ui5-version }}
-                  path: tests/integration/adaptation-editor/blob-report
-                  retention-days: 1
+                
+                name: blob-report-${{ matrix.ui5-version }}
+                path: tests/integration/adaptation-editor/blob-report
+                retention-days: 1
     merge-reports:
         # Merge reports after playwright-tests, even if some shards have failed
         if: ${{ !cancelled() }}

@@ -71,11 +71,11 @@
     color: var(--vscode-settings-textInputForeground);
 }
 
-code {
-    font-family: var(--vscode-editor-font-family);
-    font-size: 85%;
-    padding: 2px 4px;
-    border-radius: var(--vscode-cornerRadius-small, 4px);
-    color: var(--vscode-textPreformat-foreground);
-    background-color: var(--vscode-textPreformat-background);
-}
+code {                                                                                       
+      font-family: var(--vscode-editor-font-family);                                         
+      font-size: 85%;                                                                          
+      padding: 2px 4px;                                                                        
+      border-radius: var(--vscode-cornerRadius-small, 4px);                                                                      
+      color: var(--vscode-textPreformat-foreground);                                           
+      background-color: var(--vscode-textPreformat-background);                                
+    }

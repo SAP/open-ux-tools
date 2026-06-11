@@ -2,6 +2,7 @@
  * Data directory access point for @sap-ux/fiori-docs-embeddings
  */
 
+
 const __dirname = import.meta.dirname;
 
 /**

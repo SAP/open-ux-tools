@@ -1,23 +1,23 @@
 {
-    "name": "test_cap",
-    "version": "0",
-    "description": "Test file",
-    "dependencies": {
-        "@sap/cds": "^6.8.2"
-    },
-    "sapux": [
-        "app/1",
-        "app/2",
-        "app/3",
-        "app/feop_v4_cap"
-    ],
-    "workspaces": [
-        "app/*"
-    ],
-    "devDependencies": {
-        "cds-plugin-ui5": "^0.17.0"
-    },
-    "scripts": {
-        "watch-feop_v4_cap": "cds watch --open testNameSpace.feopv4cap/index.html?sap-ui-xx-viewCache=false --livereload false"
-    }
+  "name": "test_cap",
+  "version": "0",
+  "description": "Test file",
+  "dependencies": {
+    "@sap/cds": "^6.8.2"
+  },
+  "sapux": [
+    "app/1",
+    "app/2",
+    "app/3",
+    "app/feop_v4_cap"
+  ],
+  "workspaces": [
+    "app/*"
+  ],
+  "devDependencies": {
+    "cds-plugin-ui5": "^0.17.0"
+  },
+  "scripts": {
+    "watch-feop_v4_cap": "cds watch --open testNameSpace.feopv4cap/index.html?sap-ui-xx-viewCache=false --livereload false"
+  }
 }

@@ -151,7 +151,7 @@ export class ODataHealthChecker {
             const manifestObject = rootControl.getManifestObject();
             return odataServices.map((src) => ({
                 serviceUrl: manifestObject.resolveUri(src.uri ?? ''),
-                oDataVersion: (src.settings?.odataVersion as ODataVersion) ?? ODataHealthChecker.DEFAULT_ODATA_VERSION
+                oDataVersion: ((src.settings?.odataVersion as ODataVersion) ?? ODataHealthChecker.DEFAULT_ODATA_VERSION)
             }));
         }
 

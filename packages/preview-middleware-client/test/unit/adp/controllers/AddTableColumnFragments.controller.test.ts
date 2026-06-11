@@ -32,8 +32,7 @@ jest.unstable_mockModule('open/ux/preview/client/utils/core', () => ({
     getControlById: getControlByIdMock
 }));
 
-const { default: AddTableColumnFragments } =
-    await import('open/ux/preview/client/adp/controllers/AddTableColumnFragments.controller');
+const { default: AddTableColumnFragments } = await import('open/ux/preview/client/adp/controllers/AddTableColumnFragments.controller');
 const { default: ControlUtils } = await import('open/ux/preview/client/adp/control-utils');
 const { getAdditionalChangeInfo } = await import('open/ux/preview/client/utils/additional-change-info');
 type FlexChange = import('open/ux/preview/client/flp/common').FlexChange;

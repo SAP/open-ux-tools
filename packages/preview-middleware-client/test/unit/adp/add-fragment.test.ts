@@ -58,9 +58,12 @@ describe('AddFragmentService', () => {
             const result = await fragmentHandler(mockOverlay);
 
             expect(createDeferredMock).toHaveBeenCalledWith();
-            expect(createDialogMock).toHaveBeenCalledWith(mockOverlay, mockRta, 'ADD_FRAGMENT', {
-                deferred: mockDeferred
-            });
+            expect(createDialogMock).toHaveBeenCalledWith(
+                mockOverlay,
+                mockRta,
+                'ADD_FRAGMENT',
+                { deferred: mockDeferred }
+            );
             expect(result).toEqual('mockDeferredData');
         });
     });

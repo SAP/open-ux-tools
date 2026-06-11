@@ -63,10 +63,8 @@ describe('context-menu-service', () => {
     });
     test('executeContextMenuAction - default plugin', async () => {
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
-        getControlByIdMock.mockReturnValue({
-            getMetadata: jest.fn().mockReturnValue({ getName: jest.fn().mockReturnValue('sap.m.Button') })
-        });
-        getUi5VersionMock.mockReturnValue({ major: 1, minor: 127, patch: 0 });
+        getControlByIdMock.mockReturnValue({ getMetadata: jest.fn().mockReturnValue({getName: jest.fn().mockReturnValue('sap.m.Button')})});
+        getUi5VersionMock.mockReturnValue({major: 1, minor:127, patch:0});
         getApplicationTypeMock.mockReturnValue('fe-v4');
         const actionServiceExecuteSpy = jest.fn();
         rtaMock.getService.mockResolvedValue({ execute: actionServiceExecuteSpy });
@@ -77,12 +75,12 @@ describe('context-menu-service', () => {
             executeContextMenuAction({ actionName: 'TESTACTION01', controlId: 'test-control' })
         );
         expect(reportTelemetryMock).toHaveBeenCalledWith({
-            category: 'OutlineContextMenu',
-            actionName: 'TESTACTION01',
-            controlName: 'sap.m.Button',
-            ui5Version: '1.127.0',
-            appType: 'fe-v4'
-        });
+                                category: 'OutlineContextMenu',
+                                actionName: 'TESTACTION01',
+                                controlName: 'sap.m.Button',
+                                ui5Version: '1.127.0',
+                                appType : 'fe-v4'
+                            });
         expect(actionServiceExecuteSpy).toHaveBeenCalledWith('test-control', 'TESTACTION01');
     });
 

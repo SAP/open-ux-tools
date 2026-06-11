@@ -79,8 +79,8 @@ const Entity = {
 const realStore = await import('@sap-ux/store');
 
 jest.unstable_mockModule('@sap-ux/store', () => ({
-    ...realStore,
-    getService: mockGetService,
+
+    ...realStore,    getService: mockGetService,
     AuthenticationType,
     SystemType,
     ConnectionType,

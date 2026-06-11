@@ -117,7 +117,9 @@ describe('findViewByControl', () => {
     test('traverses up the parent hierarchy to find a view', () => {
         // Create a mock view (grandparent)
         const mockView = new ManagedObjectMock() as unknown as View;
-        const viewIsASpy = jest.spyOn(mockView, 'isA').mockImplementation((type) => type === 'sap.ui.core.mvc.View');
+        const viewIsASpy = jest
+            .spyOn(mockView, 'isA')
+            .mockImplementation((type) => type === 'sap.ui.core.mvc.View');
         mockView.getViewName = jest.fn().mockReturnValue('TestView');
 
         // Create a mock parent (parent of the control)

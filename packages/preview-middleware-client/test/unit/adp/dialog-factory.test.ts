@@ -17,6 +17,7 @@ import AddActionFragment from '../../../src/adp/controllers/AddActionFragment.co
 
 describe('DialogFactory', () => {
     afterEach(() => {
+         
         const closeDialogFunction = attachBeforeClose.mock.calls[0]?.[0];
         if (typeof closeDialogFunction === 'function') {
             // make sure that dialog factory is in clean state after each test
@@ -175,11 +176,11 @@ describe('DialogFactory', () => {
             rtaMock as unknown as RuntimeAuthoring,
             DialogNames.ADD_CUSTOM_FRAGMENT
         );
-
+         
         expect(Fragment.load.mock.calls[0][0].name).toStrictEqual('open.ux.preview.client.adp.ui.AddCustomFragment');
-
+         
         expect(Fragment.load.mock.calls[0][0].id).toStrictEqual(undefined);
-
+         
         expect(Fragment.load.mock.calls[0][0].controller).toBeInstanceOf(AddCustomFragment);
 
         expect(DialogFactory.canOpenDialog).toBe(false);
@@ -196,11 +197,11 @@ describe('DialogFactory', () => {
             rtaMock as unknown as RuntimeAuthoring,
             DialogNames.ADD_ACTION
         );
-
+         
         expect(Fragment.load.mock.calls[0][0].name).toStrictEqual('open.ux.preview.client.adp.ui.AddAction');
-
+         
         expect(Fragment.load.mock.calls[0][0].id).toStrictEqual(undefined);
-
+         
         expect(Fragment.load.mock.calls[0][0].controller).toBeInstanceOf(AddActionFragment);
 
         expect(DialogFactory.canOpenDialog).toBe(false);

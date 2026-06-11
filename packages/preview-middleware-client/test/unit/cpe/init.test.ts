@@ -81,13 +81,15 @@ describe('main', () => {
     const UNHEALTHY_ODATA_SERVICE_STATUS = new ODataDownStatus('/service-a', 'Service not configured properly');
 
     VersionInfo.load.mockResolvedValue({ version: '1.120.4' });
-    applyChangeMock.mockResolvedValueOnce(undefined).mockRejectedValueOnce({
-        toString: jest
-            .fn()
-            .mockReturnValue(
-                'Error: Applying property changes failed: Error: "" is of type string, expected boolean for property "enabled" of Element sap.m.Buttonx#v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--action::SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities::SEPMRA_C_PD_ProductCopy'
-            )
-    });
+    applyChangeMock
+        .mockResolvedValueOnce(undefined)
+        .mockRejectedValueOnce({
+            toString: jest
+                .fn()
+                .mockReturnValue(
+                    'Error: Applying property changes failed: Error: "" is of type string, expected boolean for property "enabled" of Element sap.m.Buttonx#v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--action::SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities::SEPMRA_C_PD_ProductCopy'
+                )
+        });
     const initOutlineSpy = jest.spyOn(OutlineService.prototype, 'init');
     const rtaSpy = jest.spyOn(RtaService.prototype, 'init');
     const changesServiceSpy = jest.spyOn(ChangeService.prototype, 'init');

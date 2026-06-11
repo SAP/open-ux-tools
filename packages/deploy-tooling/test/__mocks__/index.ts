@@ -63,23 +63,19 @@ jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
 const realStore = await import('@sap-ux/store');
 
 jest.unstable_mockModule('@sap-ux/store', () => ({
-    ...realStore,
-    getService: jest.fn().mockResolvedValue(mockedStoreService),
+
+    ...realStore,    getService: jest.fn().mockResolvedValue(mockedStoreService),
     SystemService: class {},
     BackendSystem: class {},
     BackendSystemKey: class {
-        static from(system: any) {
-            return new this({ url: system?.url, client: system?.client });
-        }
+        static from(system: any) { return new this({ url: system?.url, client: system?.client }); }
         private url: string;
         private client?: string;
         constructor({ url, client }: { url: string; client?: string }) {
             this.url = url;
             this.client = client;
         }
-        getId() {
-            return this.url + (this.client ? '/' + this.client : '');
-        }
+        getId() { return this.url + (this.client ? '/' + this.client : ''); }
     },
     Entity: { BackendSystem: 'system', TelemetrySetting: 'telemetrySetting' },
     AuthenticationType: {

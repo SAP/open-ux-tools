@@ -16,8 +16,9 @@ jest.unstable_mockModule('open/ux/preview/client/utils/core', () => ({
     findNestedElements: jest.fn()
 }));
 
-const { getAddXMLAdditionalInfo } =
-    await import('open/ux/preview/client/cpe/additional-change-info/add-xml-additional-info');
+const { getAddXMLAdditionalInfo } = await import(
+    'open/ux/preview/client/cpe/additional-change-info/add-xml-additional-info'
+);
 
 // Helper function to create mock elements with isA method
 function createMockElement(metadataName: string): Element {
@@ -25,7 +26,7 @@ function createMockElement(metadataName: string): Element {
         getMetadata: () =>
             ({
                 getName: () => metadataName
-            }) as unknown as ElementMetadata,
+            } as unknown as ElementMetadata),
         isA: jest.fn(() => false)
     } as unknown as Element;
 }
@@ -42,7 +43,7 @@ function createMockElementWithParent(metadataName: string, parentMetadataName: s
         getMetadata: () =>
             ({
                 getName: () => metadataName
-            }) as unknown as ElementMetadata,
+            } as unknown as ElementMetadata),
         isA: jest.fn(() => false)
     } as unknown as Element;
 }
@@ -62,7 +63,7 @@ function createMockElementWithView(metadataName: string): Element {
         getMetadata: () =>
             ({
                 getName: () => metadataName
-            }) as unknown as ElementMetadata,
+            } as unknown as ElementMetadata),
         isA: jest.fn(() => false)
     } as unknown as Element;
 }
@@ -201,7 +202,9 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return targetAggregation, viewName and controlType if no matching templateName is found', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'content' });
-            getControlBySelectorMock.mockReturnValue(createMockElementWithView('sap.uxap.ObjectPageLayout'));
+            getControlBySelectorMock.mockReturnValue(
+                createMockElementWithView('sap.uxap.ObjectPageLayout')
+            );
             findViewByControlMock.mockReturnValue({ getViewName: () => 'TestView' });
 
             const result = getAddXMLAdditionalInfo(mockChange);

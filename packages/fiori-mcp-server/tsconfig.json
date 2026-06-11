@@ -1,56 +1,60 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": ["../../types/mem-fs-editor.d.ts", "src", "src/**/*.json"],
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "dist",
-        "isolatedModules": false
+  "extends": "../../tsconfig.json",
+  "include": [
+    "../../types/mem-fs-editor.d.ts",
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "isolatedModules": false
+  },
+  "references": [
+    {
+      "path": "../axios-extension"
     },
-    "references": [
-        {
-            "path": "../axios-extension"
-        },
-        {
-            "path": "../btp-utils"
-        },
-        {
-            "path": "../feature-toggle"
-        },
-        {
-            "path": "../fiori-annotation-api"
-        },
-        {
-            "path": "../fiori-docs-embeddings"
-        },
-        {
-            "path": "../i18n"
-        },
-        {
-            "path": "../logger"
-        },
-        {
-            "path": "../nodejs-utils"
-        },
-        {
-            "path": "../odata-annotation-core"
-        },
-        {
-            "path": "../odata-annotation-core-types"
-        },
-        {
-            "path": "../odata-entity-model"
-        },
-        {
-            "path": "../project-access"
-        },
-        {
-            "path": "../store"
-        },
-        {
-            "path": "../telemetry"
-        },
-        {
-            "path": "../text-document-utils"
-        }
-    ]
+    {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../feature-toggle"
+    },
+    {
+      "path": "../fiori-annotation-api"
+    },
+    {
+      "path": "../fiori-docs-embeddings"
+    },
+    {
+      "path": "../i18n"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../nodejs-utils"
+    },
+    {
+      "path": "../odata-annotation-core"
+    },
+    {
+      "path": "../odata-annotation-core-types"
+    },
+    {
+      "path": "../odata-entity-model"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../store"
+    },
+    {
+      "path": "../telemetry"
+    },
+    {
+      "path": "../text-document-utils"
+    }
+  ]
 }

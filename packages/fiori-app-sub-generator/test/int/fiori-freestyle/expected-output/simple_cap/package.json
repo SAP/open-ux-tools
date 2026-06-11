@@ -1,17 +1,17 @@
 {
-    "name": "test_cap",
-    "version": "0",
-    "description": "Test CAP Project",
-    "dependencies": {
-        "@sap/cds": "^6.8.2"
-    },
-    "workspaces": [
-        "app/*"
-    ],
-    "devDependencies": {
-        "cds-plugin-ui5": "^0.17.0"
-    },
-    "scripts": {
-        "watch-simple_cap": "cds watch --open simplecap/index.html?sap-ui-xx-viewCache=false --livereload false"
-    }
+  "name": "test_cap",
+  "version": "0",
+  "description": "Test CAP Project",
+  "dependencies": {
+    "@sap/cds": "^6.8.2"
+  },
+  "workspaces": [
+    "app/*"
+  ],
+  "devDependencies": {
+    "cds-plugin-ui5": "^0.17.0"
+  },
+  "scripts": {
+    "watch-simple_cap": "cds watch --open simplecap/index.html?sap-ui-xx-viewCache=false --livereload false"
+  }
 }

@@ -11,11 +11,9 @@ jest.unstable_mockModule('open/ux/preview/client/utils/additional-change-info', 
     setAdditionalChangeInfoForChangeFile: jest.fn()
 }));
 
-const {
-    default: enableFakeConnector,
-    create,
-    loadChanges
-} = await import('open/ux/preview/client/flp/enableFakeConnector');
+const { default: enableFakeConnector, create, loadChanges } = await import(
+    'open/ux/preview/client/flp/enableFakeConnector'
+);
 
 describe('flp/FakeLrepConnector', () => {
     getAdditionalChangeInfoMock.mockReturnValue(undefined);
@@ -68,6 +66,7 @@ describe('flp/FakeLrepConnector', () => {
             expect(result.changes.changes.length).toBe(1);
             expect(result.changes.changes[0].changeType).toBe('propertyChange');
         });
+
     });
 
     describe('create', () => {

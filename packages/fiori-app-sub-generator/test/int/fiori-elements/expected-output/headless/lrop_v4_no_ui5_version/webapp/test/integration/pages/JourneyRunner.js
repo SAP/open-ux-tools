@@ -1,23 +1,21 @@
-sap.ui.define(
-    [
-        'sap/fe/test/JourneyRunner',
-        'testnamepsace/lropv4noui5version/test/integration/pages/TravelList',
-        'testnamepsace/lropv4noui5version/test/integration/pages/TravelObjectPage',
-        'testnamepsace/lropv4noui5version/test/integration/pages/BookingObjectPage'
-    ],
-    function (JourneyRunner, TravelList, TravelObjectPage, BookingObjectPage) {
-        'use strict';
+sap.ui.define([
+    "sap/fe/test/JourneyRunner",
+	"testnamepsace/lropv4noui5version/test/integration/pages/TravelList",
+	"testnamepsace/lropv4noui5version/test/integration/pages/TravelObjectPage",
+	"testnamepsace/lropv4noui5version/test/integration/pages/BookingObjectPage"
+], function (JourneyRunner, TravelList, TravelObjectPage, BookingObjectPage) {
+    'use strict';
 
-        var runner = new JourneyRunner({
-            launchUrl: sap.ui.require.toUrl('testnamepsace/lropv4noui5version') + '/test/flp.html#app-preview',
-            pages: {
-                onTheTravelList: TravelList,
-                onTheTravelObjectPage: TravelObjectPage,
-                onTheBookingObjectPage: BookingObjectPage
-            },
-            async: true
-        });
+    var runner = new JourneyRunner({
+        launchUrl: sap.ui.require.toUrl('testnamepsace/lropv4noui5version') + '/test/flp.html#app-preview',
+        pages: {
+			onTheTravelList: TravelList,
+			onTheTravelObjectPage: TravelObjectPage,
+			onTheBookingObjectPage: BookingObjectPage
+        },
+        async: true
+    });
 
-        return runner;
-    }
-);
+    return runner;
+});
+
