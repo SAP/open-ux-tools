@@ -39,7 +39,7 @@ The `enableExport` property is set to `false` which hides the "Export" button.
 }
 ```
 
-or for applications witn minUI5Version lower than 1.145:
+or for applications with minUI5Version lower than 1.145:
 
 ```json
 {
@@ -62,7 +62,7 @@ The `newValue` of the `enableExport` property is set to `false` which hides the 
 }
 ```
 
-The `enableExport` or `useExportToExcel` property is correctly set to `true` or omitted from  `tableSettings`.
+The `enableExport` property is correctly set to `true` or omitted from  `tableSettings`.
 
 #### Correct `.change` File in OData V2
 
@@ -75,7 +75,7 @@ The `enableExport` or `useExportToExcel` property is correctly set to `true` or 
 }
 ```
 
-or for applications witn minUI5Version lower than 1.145:
+or for applications with minUI5Version lower than 1.145:
 
 ```json
 {
