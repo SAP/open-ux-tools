@@ -198,7 +198,7 @@ function appendPageAggregations(
 
 /**
  * Reorders the child elements of a macros:Page node to match the canonical PAGE_AGGREGATIONS order.
- * Preserves relative order of siblings with the same local name. Whitespace text nodes are dropped
+ * Preserves relative order of siblings with the same local name. Pure whitespace text nodes are dropped
  * because the xml-formatter call that follows will regenerate proper indentation.
  *
  * @param pageElement - the macros:Page DOM node whose children should be sorted
@@ -227,8 +227,11 @@ function sortPageAggregationChildren(pageElement: Node): void {
             firstElementSeen = true;
             groups.push({ comments: pendingComments, element: node as Element });
             pendingComments = [];
+        } else if (node.nodeType === 3 /* Text */ && (node as Text).data?.trim()) {
+            // Preserve non-whitespace text nodes with their surrounding group
+            pendingComments.push(node);
         }
-        // whitespace text nodes are intentionally dropped (xml-formatter regenerates indentation)
+        // Pure whitespace text nodes are intentionally dropped (xml-formatter regenerates indentation)
     }
 
     groups.sort((a, b) => {
@@ -350,8 +353,7 @@ export async function appendPageBBAggregation(
 
 /**
  * Copies the Page controller template (JS or TS) into the view directory if no controller file exists yet.
- * Uses getAppProgrammingLanguage for reliable detection, with a fallback to checking for an existing
- * .controller.ts sibling file for edge cases where language detection returns blank.
+ * Uses getAppProgrammingLanguage to decide whether to generate a JS or TS controller stub.
  *
  * @param {Editor} fs - the memfs editor instance
  * @param {string} basePath - the base path of the application
