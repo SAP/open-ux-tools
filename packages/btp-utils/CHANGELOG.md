@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 2.0.2
+
+### Patch Changes
+
+- 0fa8305: fix: Patch missing global-agent proxy settings in BAS.
+
 ## 2.0.1
 
 ### Patch Changes
