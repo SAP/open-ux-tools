@@ -670,13 +670,15 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
                 '<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns="sap.m"/>',
                 'text/xml'
             );
+        // Parse content directly so documentElement IS the <macros:Page> element,
+        // matching what appendPageAggregations expects as templateDocument.documentElement.
         const snippetDoc = new DOMParser().parseFromString(
-            `<root xmlns:macros="sap.fe.macros">${content}</root>`,
+            `${content}`,
             'text/xml'
         );
         appendPageAggregations(fs, nsDoc, snippetDoc, fnGenerateId, pageData);
-        const pageNode = snippetDoc.documentElement.firstChild;
-        viewOrFragmentContent = pageNode ? format(new XMLSerializer().serializeToString(pageNode)) : content;
+        const resultNode = snippetDoc.documentElement;
+        viewOrFragmentContent = resultNode ? format(new XMLSerializer().serializeToString(resultNode)) : content;
     }
     const filePathProps = getFilePathProps(basePath, viewOrFragmentPath);
     // Snippet for fragment xml
