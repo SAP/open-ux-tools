@@ -39,7 +39,7 @@ The `enableExport` property is set to `false` which hides the "Export" button.
 }
 ```
 
-or for applications with minUI5Version lower than 1.145:
+or for applications with a minimum SAPUI5 version lower than 1.145:
 
 ```json
 {
