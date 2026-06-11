@@ -104,6 +104,9 @@ exports[`UI5Config addAbapDeployTask AppStudio + Steampunk settings 1`] = `
           description: ~description
           package: ~package
           transport: ~transport
+        exclude:
+          - /test/
+          - /localService/
 "
 `;
 
@@ -125,6 +128,9 @@ exports[`UI5Config addAbapDeployTask local settings 1`] = `
           description: ~description
           package: ~package
           transport: ~transport
+        exclude:
+          - /test/
+          - /localService/
 "
 `;
 
@@ -146,6 +152,7 @@ exports[`UI5Config addAbapDeployTask minimal adp settings 1`] = `
         lrep: apps/workcenter/appVariants/customer.app.variant
         exclude:
           - /test/
+          - /localService/
 "
 `;
 
@@ -170,6 +177,7 @@ exports[`UI5Config addAbapDeployTask use open source task 1`] = `
           transport: ~transport
         exclude:
           - /test/
+          - /localService/
         index: true
 "
 `;

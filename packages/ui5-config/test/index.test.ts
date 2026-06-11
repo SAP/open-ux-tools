@@ -964,19 +964,23 @@ describe('UI5Config', () => {
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
-        test('does not write configuration.exclude when no exclude param is passed', () => {
+        test('writes configuration.exclude with builder-derived excludes when no explicit exclude param is passed', () => {
             ui5Config.addAbapDeployTask({ url, client }, app);
             const result = ui5Config.toString();
-            expect(result).not.toContain('exclude:');
-            // builder.resources.excludes is still written
+            // builder.resources.excludes are written and mirrored into configuration.exclude
             expect(result).toContain('builder:\n  resources:\n    excludes:');
+            expect(result).toContain('exclude:');
+            expect(result).toContain('/test/');
+            expect(result).toContain('/localService/');
         });
 
-        test('writes configuration.exclude only when explicit exclude array is passed', () => {
+        test('merges explicit exclude array with builder-derived excludes', () => {
             ui5Config.addAbapDeployTask({ url, client }, app, true, ['/custom/']);
             const result = ui5Config.toString();
             expect(result).toContain('exclude:');
             expect(result).toContain('/custom/');
+            expect(result).toContain('/test/');
+            expect(result).toContain('/localService/');
         });
     });
 

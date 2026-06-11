@@ -13,21 +13,9 @@ jest.unstable_mockModule('dotenv', () => ({
     config: mockDotenvConfig
 }));
 
-// Mockable readFile for node:fs/promises
-const mockReadFile = jest.fn() as jest.Mock;
-const realFsPromises = await import('node:fs/promises');
-jest.unstable_mockModule('node:fs/promises', () => ({
-    ...realFsPromises,
-    readFile: mockReadFile
-}));
-
-// Mockable UI5Config for @sap-ux/ui5-config
-const mockGetBuilderResourceExcludes = jest.fn().mockReturnValue([]) as jest.Mock;
-const mockUi5ConfigNewInstance = jest.fn().mockResolvedValue({
-    getBuilderResourceExcludes: mockGetBuilderResourceExcludes
-}) as jest.Mock;
+const realUi5Config = await import('@sap-ux/ui5-config');
 jest.unstable_mockModule('@sap-ux/ui5-config', () => ({
-    UI5Config: { newInstance: mockUi5ConfigNewInstance },
+    ...realUi5Config,
     replaceEnvVariables: jest.fn()
 }));
 
@@ -66,12 +54,6 @@ describe('ui5', () => {
     const options = { projectName, configuration };
 
     beforeEach(() => {
-        // By default, readFile rejects so builder excludes fall back to []
-        mockReadFile.mockRejectedValue(new Error('ENOENT: no such file'));
-        mockGetBuilderResourceExcludes.mockReturnValue([]);
-        mockUi5ConfigNewInstance.mockResolvedValue({
-            getBuilderResourceExcludes: mockGetBuilderResourceExcludes
-        });
         mockCreateUi5Archive.mockResolvedValue(Buffer.from(''));
     });
 
@@ -122,7 +104,6 @@ describe('ui5', () => {
     describe('exclude handling', () => {
         beforeEach(() => {
             jest.clearAllMocks();
-            // Reset workspace mock after clearAllMocks
             (workspace.byGlob as jest.Mock).mockReturnValue(
                 readdirSync(join(__testdirname, '../../fixtures/simple-app/webapp')).map((file) => ({
                     getPath: () => `/resources/${projectName}/${file}`,
@@ -133,97 +114,22 @@ describe('ui5', () => {
             mockCreateUi5Archive.mockResolvedValue(Buffer.from(''));
         });
 
-        test('reads builder.resources.excludes from ui5-deploy.yaml when configuration.exclude is absent', async () => {
-            // Setup: yaml file exists with builder excludes
-            mockReadFile.mockResolvedValue(
-                'builder:\n  resources:\n    excludes:\n      - /test/**\n      - /localService/**\n'
-            );
-            mockGetBuilderResourceExcludes.mockReturnValue(['/test/**', '/localService/**']);
-            mockUi5ConfigNewInstance.mockResolvedValue({
-                getBuilderResourceExcludes: mockGetBuilderResourceExcludes
-            });
-
-            const configWithoutExclude: AbapDeployConfig = { ...configuration };
-            delete (configWithoutExclude as any).exclude;
-
-            await expect(
-                task({ workspace, options: { projectName, configuration: configWithoutExclude } } as any)
-            ).resolves.not.toThrow();
-
-            // Implementation must call UI5Config.newInstance to parse the yaml
-            expect(mockUi5ConfigNewInstance).toHaveBeenCalled();
-            // Builder excludes (glob-stripped) must reach createUi5Archive as 4th argument
-            expect(mockCreateUi5Archive).toHaveBeenCalledWith(
-                expect.anything(),
-                expect.anything(),
-                expect.anything(),
-                expect.arrayContaining(['/test/', '/localService/'])
-            );
-        });
-
-        test('falls back gracefully when ui5-deploy.yaml cannot be read', async () => {
-            // readFile throws ENOENT (file not found) — expected for old projects without builder excludes
-            const enoentError = Object.assign(new Error('ENOENT: no such file or directory'), { code: 'ENOENT' });
-            mockReadFile.mockRejectedValue(enoentError);
-
-            const configWithExclude: AbapDeployConfig = { ...configuration, exclude: ['/test/', '/localService/'] };
+        test('passes configuration.exclude directly to createUi5Archive', async () => {
+            const configWithExclude: AbapDeployConfig = {
+                ...configuration,
+                exclude: ['/test/', '/localService/']
+            };
             await expect(
                 task({ workspace, options: { projectName, configuration: configWithExclude } } as any)
             ).resolves.not.toThrow();
 
-            // config.exclude alone must reach createUi5Archive when yaml is unreadable
             expect(mockCreateUi5Archive).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.anything(), [
                 '/test/',
                 '/localService/'
             ]);
         });
 
-        test('falls back gracefully and does not throw on unexpected yaml parse error', async () => {
-            // readFile succeeds but UI5Config.newInstance fails (malformed yaml)
-            mockReadFile.mockResolvedValue('invalid: yaml: {{{');
-            mockUi5ConfigNewInstance.mockRejectedValue(new Error('YAML parse error'));
-
-            const configWithExclude: AbapDeployConfig = { ...configuration, exclude: ['/test/'] };
-            await expect(
-                task({ workspace, options: { projectName, configuration: configWithExclude } } as any)
-            ).resolves.not.toThrow();
-
-            expect(mockCreateUi5Archive).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.anything(), [
-                '/test/'
-            ]);
-        });
-
-        test('merges configuration.exclude with builder.resources.excludes when both present', async () => {
-            // Setup: yaml has /localService/** but config already has /test/
-            mockReadFile.mockResolvedValue('builder:\n  resources:\n    excludes:\n      - /localService/**\n');
-            mockGetBuilderResourceExcludes.mockReturnValue(['/localService/**']);
-            mockUi5ConfigNewInstance.mockResolvedValue({
-                getBuilderResourceExcludes: mockGetBuilderResourceExcludes
-            });
-
-            const configWithExclude: AbapDeployConfig = { ...configuration, exclude: ['/test/'] };
-            await expect(
-                task({ workspace, options: { projectName, configuration: configWithExclude } } as any)
-            ).resolves.not.toThrow();
-
-            // Implementation must call UI5Config.newInstance to parse the yaml
-            expect(mockUi5ConfigNewInstance).toHaveBeenCalled();
-            // Merged array must contain both sources
-            expect(mockCreateUi5Archive).toHaveBeenCalledWith(
-                expect.anything(),
-                expect.anything(),
-                expect.anything(),
-                expect.arrayContaining(['/test/', '/localService/'])
-            );
-        });
-
-        test('normalises glob patterns without leading slash', async () => {
-            mockReadFile.mockResolvedValue('builder:\n  resources:\n    excludes:\n      - test/**\n');
-            mockGetBuilderResourceExcludes.mockReturnValue(['test/**']);
-            mockUi5ConfigNewInstance.mockResolvedValue({
-                getBuilderResourceExcludes: mockGetBuilderResourceExcludes
-            });
-
+        test('passes empty array to createUi5Archive when configuration.exclude is absent', async () => {
             const configWithoutExclude: AbapDeployConfig = { ...configuration };
             delete (configWithoutExclude as any).exclude;
 
@@ -235,28 +141,8 @@ describe('ui5', () => {
                 expect.anything(),
                 expect.anything(),
                 expect.anything(),
-                expect.arrayContaining(['/test/'])
+                []
             );
-        });
-
-        test('deduplicates overlapping entries from both sources', async () => {
-            // Same pattern appears in both config.exclude and builder excludes (after globToPrefix)
-            mockReadFile.mockResolvedValue('builder:\n  resources:\n    excludes:\n      - /test/**\n');
-            mockGetBuilderResourceExcludes.mockReturnValue(['/test/**']);
-            mockUi5ConfigNewInstance.mockResolvedValue({
-                getBuilderResourceExcludes: mockGetBuilderResourceExcludes
-            });
-
-            // config.exclude uses the already-stripped prefix form
-            const configWithExclude: AbapDeployConfig = { ...configuration, exclude: ['/test/'] };
-            await expect(
-                task({ workspace, options: { projectName, configuration: configWithExclude } } as any)
-            ).resolves.not.toThrow();
-
-            // Dedup: /test/ appears once only
-            expect(mockCreateUi5Archive).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.anything(), [
-                '/test/'
-            ]);
         });
     });
 });

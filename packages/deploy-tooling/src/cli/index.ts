@@ -79,7 +79,11 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
             .option('--description <description>', 'Project description of the app')
             // SafeMode: Example: If the deployment would overwrite a repository that contains an app with a different sap.app/id and SafeMode is true, HTTP status code 412 (Precondition Failed) with further information would be returned.
             .option('--safe', 'Prevents accidentally breaking deployments.')
-            .option('--keep', 'Keep a copy of the deployed archive in the project folder.');
+            .option('--keep', 'Keep a copy of the deployed archive in the project folder.')
+            .option(
+                '--exclude <patterns...>',
+                'Exclude files matching these path prefix patterns from the deployment archive (e.g. /test/ /localService/)'
+            );
 
         // alternatives to provide the archive
         command
@@ -150,7 +154,7 @@ export async function runDeploy(): Promise<void> {
     const cmd = createCommand('deploy');
     try {
         const { logger, options, config } = await prepareRun(cmd);
-        const archive = await getArchive(logger, options);
+        const archive = await getArchive(logger, options, config.exclude ?? []);
         await deploy(archive, config, logger);
     } catch (error) {
         cmd.error((error as Error).message);

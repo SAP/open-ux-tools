@@ -167,7 +167,11 @@ describe('cli', () => {
                     expect(mockWriteFileSync.mock.calls[0][0]).toBe('archive.zip');
                 }
                 expect(mockGetArchive).toHaveBeenCalled();
-                expect(mockGetArchive).toHaveBeenCalledWith(expect.any(ToolsLogger), expect.objectContaining(object));
+                expect(mockGetArchive).toHaveBeenCalledWith(
+                    expect.any(ToolsLogger),
+                    expect.objectContaining(object),
+                    expect.any(Array)
+                );
             }
         );
     });

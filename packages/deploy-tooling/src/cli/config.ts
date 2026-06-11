@@ -183,6 +183,7 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
     config.createTransport = mergeFlag(options.createTransport, taskConfig.createTransport);
     config.retry = process.env.NO_RETRY ? !process.env.NO_RETRY : mergeFlag(options.retry, taskConfig.retry);
     config.lrep = options.lrep;
+    config.exclude = options.exclude ?? taskConfig.exclude;
 
     if (!options.archiveUrl && !options.archivePath && !options.archiveFolder) {
         options.archiveFolder = 'dist';
