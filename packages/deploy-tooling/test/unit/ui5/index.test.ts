@@ -162,8 +162,9 @@ describe('ui5', () => {
         });
 
         test('falls back gracefully when ui5-deploy.yaml cannot be read', async () => {
-            // readFile throws (file not found) — should fall back to empty builder excludes
-            mockReadFile.mockRejectedValue(new Error('ENOENT: no such file'));
+            // readFile throws ENOENT (file not found) — expected for old projects without builder excludes
+            const enoentError = Object.assign(new Error('ENOENT: no such file or directory'), { code: 'ENOENT' });
+            mockReadFile.mockRejectedValue(enoentError);
 
             const configWithExclude: AbapDeployConfig = { ...configuration, exclude: ['/test/', '/localService/'] };
             await expect(
@@ -175,6 +176,24 @@ describe('ui5', () => {
                 '/test/',
                 '/localService/'
             ]);
+        });
+
+        test('falls back gracefully and does not throw on unexpected yaml parse error', async () => {
+            // readFile succeeds but UI5Config.newInstance fails (malformed yaml)
+            mockReadFile.mockResolvedValue('invalid: yaml: {{{');
+            mockUi5ConfigNewInstance.mockRejectedValue(new Error('YAML parse error'));
+
+            const configWithExclude: AbapDeployConfig = { ...configuration, exclude: ['/test/'] };
+            await expect(
+                task({ workspace, options: { projectName, configuration: configWithExclude } } as any)
+            ).resolves.not.toThrow();
+
+            expect(mockCreateUi5Archive).toHaveBeenCalledWith(
+                expect.anything(),
+                expect.anything(),
+                expect.anything(),
+                ['/test/']
+            );
         });
 
         test('merges configuration.exclude with builder.resources.excludes when both present', async () => {

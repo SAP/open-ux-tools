@@ -51,14 +51,18 @@ function globToPrefix(pattern: string): string {
  * Read builder.resources.excludes from ui5-deploy.yaml in the current working directory.
  * Returns an empty array if the file cannot be read or the path is absent.
  *
+ * @param logger - logger instance for debug output on unexpected read/parse failures
  * @returns array of prefix strings derived from builder.resources.excludes
  */
-async function readBuilderExcludes(): Promise<string[]> {
+async function readBuilderExcludes(logger: ToolsLogger): Promise<string[]> {
     try {
         const content = await readFile(join(process.cwd(), 'ui5-deploy.yaml'), 'utf-8');
         const ui5Config = await UI5Config.newInstance(content);
         return ui5Config.getBuilderResourceExcludes().map(globToPrefix);
-    } catch {
+    } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+            logger.debug(`Could not read builder.resources.excludes from ui5-deploy.yaml: ${String(error)}`);
+        }
         return [];
     }
 }
@@ -85,7 +89,7 @@ async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): P
     // Merge configuration.exclude (old format, backward compat) with
     // builder.resources.excludes read from ui5-deploy.yaml (new format).
     // Dedup so both sources can coexist without duplicate patterns.
-    const builderExcludes = await readBuilderExcludes();
+    const builderExcludes = await readBuilderExcludes(logger);
     const mergedExclude = [...new Set([...(config.exclude ?? []), ...builderExcludes])];
 
     // The calling client can use either the projectNamespace or projectName when creating the workspace, needs to match when creating the archive.
