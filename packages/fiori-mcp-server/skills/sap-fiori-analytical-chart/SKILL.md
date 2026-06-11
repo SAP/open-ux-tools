@@ -68,7 +68,7 @@ UI.Chart #Chart: {
 ```abap
 @OData.applySupportedForAggregation: #FULL
 define root view entity ZC_ENTITY
-  provider contract transactional_query
+  provider contract analytical_query
   as projection on ZI_ENTITY
 {
   key EntityID,
@@ -82,7 +82,7 @@ define root view entity ZC_ENTITY
 
 ### Chart Annotation
 ```xml
-<Annotation Term="UI.Chart" Qualifier="Chart">
+<Annotation Term="UI.Chart" Qualifier="AnalyticalChart">
   <Record Type="UI.ChartDefinitionType">
     <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Column"/>
     <PropertyValue Property="Dimensions">
@@ -106,12 +106,14 @@ define root view entity ZC_ENTITY
 
 ## Manifest Configuration (Common)
 
+### Approach 1: Hybrid View (Chart + Table Together)
+
 ```json
 "views": {
   "paths": [
     {
       "primary": [
-        { "annotationPath": "com.sap.vocabularies.UI.v1.Chart#Chart" }
+        { "annotationPath": "com.sap.vocabularies.UI.v1.Chart#AnalyticalChart" }
       ],
       "secondary": [
         { "annotationPath": "com.sap.vocabularies.UI.v1.LineItem" }
@@ -122,8 +124,119 @@ define root view entity ZC_ENTITY
 }
 ```
 
-✅ Shows **chart + table together**  
-❌ Do NOT use `PresentationVariant`
+✅ Shows **chart + table together in same view**  
+✅ Simple configuration
+
+### Approach 2: Multiple View Tabs with PresentationVariant
+
+**Annotations (CDS for CAP):**
+```cds
+UI.Chart #AnalyticalChart: {
+  $Type: 'UI.ChartDefinitionType',
+  Title: 'Chart Title',
+  ChartType: #Column,
+  Dimensions: [Category],
+  DynamicMeasures: ['@Analytics.AggregatedProperty#Amount_avg'],
+  MeasureAttributes: [{
+    $Type: 'UI.ChartMeasureAttributeType',
+    DynamicMeasure: '@Analytics.AggregatedProperty#Amount_avg',
+    Role: #Axis1
+  }],
+  DimensionAttributes: [{
+    $Type: 'UI.ChartDimensionAttributeType',
+    Dimension: Category,
+    Role: #Category
+  }]
+},
+UI.PresentationVariant #ChartView: {
+  $Type: 'UI.PresentationVariantType',
+  Text: 'Chart View',
+  Visualizations: ['@UI.Chart#AnalyticalChart']
+},
+UI.PresentationVariant #TableView: {
+  $Type: 'UI.PresentationVariantType',
+  Text: 'Table View',
+  Visualizations: ['@UI.LineItem']
+}
+```
+
+**Annotations (XML for RAP):**
+```xml
+<Annotation Term="UI.Chart" Qualifier="AnalyticalChart">
+  <Record Type="UI.ChartDefinitionType">
+    <PropertyValue Property="Title" String="Chart Title"/>
+    <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Column"/>
+    <PropertyValue Property="Dimensions">
+      <Collection>
+        <PropertyPath>Category</PropertyPath>
+      </Collection>
+    </PropertyValue>
+    <PropertyValue Property="Measures">
+      <Collection>
+        <PropertyPath>Amount</PropertyPath>
+      </Collection>
+    </PropertyValue>
+    <PropertyValue Property="MeasureAttributes">
+      <Collection>
+        <Record Type="UI.ChartMeasureAttributeType">
+          <PropertyValue Property="Measure" PropertyPath="Amount"/>
+          <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+        </Record>
+      </Collection>
+    </PropertyValue>
+    <PropertyValue Property="DimensionAttributes">
+      <Collection>
+        <Record Type="UI.ChartDimensionAttributeType">
+          <PropertyValue Property="Dimension" PropertyPath="Category"/>
+          <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
+        </Record>
+      </Collection>
+    </PropertyValue>
+  </Record>
+</Annotation>
+
+<Annotation Term="UI.PresentationVariant" Qualifier="ChartView">
+  <Record Type="UI.PresentationVariantType">
+    <PropertyValue Property="Text" String="Chart View"/>
+    <PropertyValue Property="Visualizations">
+      <Collection>
+        <AnnotationPath>@UI.Chart#AnalyticalChart</AnnotationPath>
+      </Collection>
+    </PropertyValue>
+  </Record>
+</Annotation>
+</Annotation>
+
+<Annotation Term="UI.PresentationVariant" Qualifier="TableView">
+  <Record Type="UI.PresentationVariantType">
+    <PropertyValue Property="Text" String="Table View"/>
+    <PropertyValue Property="Visualizations">
+      <Collection>
+        <AnnotationPath>@UI.LineItem</AnnotationPath>
+      </Collection>
+    </PropertyValue>
+  </Record>
+</Annotation>
+```
+
+**Manifest:**
+```json
+"views": {
+  "paths": [
+    {
+      "key": "ChartView",
+      "annotationPath": "com.sap.vocabularies.UI.v1.PresentationVariant#ChartView"
+    },
+    {
+      "key": "TableView",
+      "annotationPath": "com.sap.vocabularies.UI.v1.PresentationVariant#TableView"
+    }
+  ]
+}
+```
+
+✅ Allows **switching between chart and table as separate view tabs**  
+✅ Users can toggle between visualizations
 
 ---
 
@@ -160,7 +273,7 @@ npm start          # No refresh needed - fetches metadata from live backend at r
 
 - Missing backend aggregation (RAP)  
 - Wrong manifest config  
-- Using PresentationVariant  
+- Mixing Approach 1 and Approach 2 configurations
 - Non-numeric measure  
 - Wrong qualifier  
 
@@ -170,4 +283,5 @@ npm start          # No refresh needed - fetches metadata from live backend at r
 
 - Use 1 dimension + 1–2 measures  
 - Prefer Column/Bar charts  
-- Use "defaultPath": "both" for hybrid view  
+- **Approach 1**: Use "defaultPath": "both" for chart + table side-by-side in same view
+- **Approach 2**: Use `PresentationVariant` for separate view tabs (chart or table)  
