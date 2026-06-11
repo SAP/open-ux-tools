@@ -205,27 +205,59 @@ function appendPageAggregations(
  */
 function sortPageAggregationChildren(pageElement: Node): void {
     const allChildren = Array.from(pageElement.childNodes);
-    // Separate leading template comment (first comment node) from element children
-    const leadingComment = allChildren.find((n) => n.nodeType === 8 /* Comment */);
-    const elementChildren = allChildren.filter((n) => n.nodeType === 1 /* Element */) as Element[];
     const aggNames = PAGE_AGGREGATIONS as readonly string[];
-    const sorted = [...elementChildren].sort((a, b) => {
-        const aName = typeof a.localName === 'string' ? a.localName : '';
-        const bName = typeof b.localName === 'string' ? b.localName : '';
+
+    // Build pairs of [preceding comments, element] to preserve all user comments.
+    // The PAGE_TEMPLATE_COMMENT is a special leading comment that always stays first.
+    type NodeGroup = { comments: Node[]; element: Element };
+    const groups: NodeGroup[] = [];
+    const leadingComments: Node[] = [];
+    let pendingComments: Node[] = [];
+    let firstElementSeen = false;
+
+    for (const node of allChildren) {
+        if (node.nodeType === 8 /* Comment */) {
+            if (!firstElementSeen) {
+                // Comments before the first element are always leading comments
+                leadingComments.push(node);
+            } else {
+                pendingComments.push(node);
+            }
+        } else if (node.nodeType === 1 /* Element */) {
+            firstElementSeen = true;
+            groups.push({ comments: pendingComments, element: node as Element });
+            pendingComments = [];
+        }
+        // whitespace text nodes are intentionally dropped (xml-formatter regenerates indentation)
+    }
+
+    groups.sort((a, b) => {
+        const aName = typeof a.element.localName === 'string' ? a.element.localName : '';
+        const bName = typeof b.element.localName === 'string' ? b.element.localName : '';
         const aIdx = aggNames.indexOf(aName);
         const bIdx = aggNames.indexOf(bName);
-        const aPosition = aIdx === -1 ? aggNames.length : aIdx;
-        const bPosition = bIdx === -1 ? aggNames.length : bIdx;
-        return aPosition - bPosition;
+        return (aIdx === -1 ? aggNames.length : aIdx) - (bIdx === -1 ? aggNames.length : bIdx);
     });
+
     while (pageElement.firstChild) {
         pageElement.removeChild(pageElement.firstChild); // NOSONAR - xmldom nodes do not implement Node.remove()
     }
-    if (leadingComment) {
-        pageElement.appendChild(leadingComment);
+
+    // Re-insert leading comments first (always before any element)
+    for (const comment of leadingComments) {
+        pageElement.appendChild(comment);
     }
-    for (const el of sorted) {
-        pageElement.appendChild(el);
+
+    for (const { comments, element } of groups) {
+        for (const comment of comments) {
+            pageElement.appendChild(comment);
+        }
+        pageElement.appendChild(element);
+    }
+
+    // Trailing orphan comments (after the last element)
+    for (const comment of pendingComments) {
+        pageElement.appendChild(comment);
     }
 }
 
