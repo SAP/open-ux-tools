@@ -12,12 +12,20 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
 }));
 
 const mockAbapServiceProvider = jest.fn<any>();
+const mockTlsPatchApply = jest.fn();
+const mockTlsPatchIsPatchRequired = jest.fn<(url: string) => boolean>().mockReturnValue(false);
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     AbapServiceProvider: mockAbapServiceProvider,
-    ODataVersion
+    ODataVersion,
+    TlsPatch: {
+        isPatchRequired: mockTlsPatchIsPatchRequired,
+        apply: mockTlsPatchApply
+    }
 }));
 
+const realLogger = await import('@sap-ux/logger');
 jest.unstable_mockModule('@sap-ux/logger', () => ({
+    ...realLogger,
     ToolsLogger: jest.fn().mockImplementation(() => ({
         debug: jest.fn(),
         info: jest.fn(),
@@ -30,6 +38,9 @@ const mockParseEdmx = jest.fn<any>();
 jest.unstable_mockModule('@sap-ux/edmx-parser', () => ({
     parse: mockParseEdmx
 }));
+
+const mockFormatXml = jest.fn<any>((xml: string) => xml);
+jest.unstable_mockModule('xml-formatter', () => ({ default: mockFormatXml }));
 
 const { findSapSystem, getServiceMetadata } =
     await import('../../../../../src/tools/functionalities/fetch-service-metadata/service-metadata.js');
@@ -84,6 +95,12 @@ describe('service-metadata', () => {
 
         // Mock parseEdmx to return a valid parsed result by default
         mockParseEdmx.mockReturnValue({ edmx: 'parsedMetadata' });
+
+        // Mock formatXml to return the input unchanged by default
+        mockFormatXml.mockImplementation((xml: string) => xml);
+
+        // Default: TlsPatch not required
+        mockTlsPatchIsPatchRequired.mockReturnValue(false);
     });
     describe('findSapSystem', () => {
         test('should find system by exact name match', async () => {
@@ -158,6 +175,36 @@ describe('service-metadata', () => {
 
         beforeEach(() => {
             mockAbapServiceProvider.mockImplementation(() => mockServiceProvider);
+        });
+
+        test('should apply TlsPatch when baseURL requires it', async () => {
+            mockTlsPatchIsPatchRequired.mockReturnValue(true);
+            const sapSystem: BackendSystem = {
+                name: 'CorpSystem',
+                url: 'https://corp-system.example.com',
+                client: '000',
+                ...commonSystemProps
+            };
+
+            await getServiceMetadata(sapSystem, '/sap/opu/odata4/service1');
+
+            expect(mockTlsPatchIsPatchRequired).toHaveBeenCalledWith('https://corp-system.example.com');
+            expect(mockTlsPatchApply).toHaveBeenCalledTimes(1);
+        });
+
+        test('should not apply TlsPatch when baseURL does not require it', async () => {
+            mockTlsPatchIsPatchRequired.mockReturnValue(false);
+            const sapSystem: BackendSystem = {
+                name: 'PublicSystem',
+                url: 'https://test.example.com',
+                client: '100',
+                ...commonSystemProps
+            };
+
+            await getServiceMetadata(sapSystem, '/sap/opu/odata4/service1');
+
+            expect(mockTlsPatchIsPatchRequired).toHaveBeenCalledWith('https://test.example.com');
+            expect(mockTlsPatchApply).not.toHaveBeenCalled();
         });
 
         test('should fetch service metadata successfully', async () => {

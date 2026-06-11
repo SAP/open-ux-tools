@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 1.1.1
+
+### Patch Changes
+
+- c9b0659: force js file for fpm opa tests
+
 ## 1.1.0
 
 ### Minor Changes
