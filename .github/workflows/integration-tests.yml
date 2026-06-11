@@ -15,6 +15,7 @@ jobs:
               uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
               with:
                   fetch-depth: 0
+                  ref: ${{ github.ref }}
             - name: Read UI5 versions from cache
               uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
               with:
@@ -43,6 +44,7 @@ jobs:
               uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
               with:
                   fetch-depth: 0
+                  ref: ${{ github.ref }}
             - name: Use Node.js 22.x
               uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
               with:
@@ -62,10 +64,9 @@ jobs:
             - name: Install pnpm modules
               run: pnpm install
             - name: Run build
-              run: pnpm run build
+              run: pnpm run build --skip-nx-cache
               env:
                 NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
-                NX_REJECT_UNKNOWN_LOCAL_CACHE: 0
             - name: Cache playwright browsers
               id: cache-playwright-browsers
               uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
@@ -105,6 +106,7 @@ jobs:
               uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
               with:
                   fetch-depth: 0
+                  ref: ${{ github.ref }}
             - name: Use Node.js 22.x
               uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
               with:
