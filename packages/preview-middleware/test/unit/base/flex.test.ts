@@ -12,7 +12,7 @@ import {
     readLocalModulePaths,
     stripLocalModulesFromLrepResponse,
     deleteChange
-} from '../../../src/base/flex';
+} from '../../../src/base/flex.js';
 
 describe('flex', () => {
     const logger = new ToolsLogger();

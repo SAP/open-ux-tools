@@ -6,10 +6,10 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { CfConfig } from '@sap-ux/adp-tooling';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 
-const mockGetDefaultTargetFolder = jest.fn();
-const mockGetTargetEnvAdditionalMessages = jest.fn();
-const mockValidateEnvironment = jest.fn();
-const mockValidateProjectPath = jest.fn();
+const mockGetDefaultTargetFolder = jest.fn<typeof realFioriGenShared.getDefaultTargetFolder>();
+const mockGetTargetEnvAdditionalMessages = jest.fn() as jest.Mock;
+const mockValidateEnvironment = jest.fn() as jest.Mock;
+const mockValidateProjectPath = jest.fn() as jest.Mock;
 
 const realFioriGenShared = await import('@sap-ux/fiori-generator-shared');
 jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
@@ -26,11 +26,11 @@ jest.unstable_mockModule('../../../src/app/questions/helper/validators', () => (
     validateProjectPath: mockValidateProjectPath
 }));
 
-const { initI18n, t } = await import('../../../src/utils/i18n');
-const { TargetEnv } = await import('../../../src/app/types');
+const { initI18n, t } = await import('../../../src/utils/i18n.js');
+const { TargetEnv } = await import('../../../src/app/types.js');
 import type { TargetEnvAnswers } from '../../../src/app/types.js';
 const { getTargetEnvPrompt, getEnvironments, getProjectPathPrompt } =
-    await import('../../../src/app/questions/target-env');
+    await import('../../../src/app/questions/target-env.js');
 
 describe('Target Environment', () => {
     const mockAppWizard: AppWizard = {

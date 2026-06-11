@@ -3,11 +3,11 @@ import type * as hpm from 'http-proxy-middleware';
 
 // Define mock functions
 const mockCreateProxyMiddleware = jest.fn<any>();
-const mockProxyRequestHandler = jest.fn();
-const mockProxyResponseHandler = jest.fn();
-const mockProxyErrorHandler = jest.fn();
-const mockFilterCompressedHtmlFiles = jest.fn();
-const mockUpdateProxyEnv = jest.fn();
+const mockProxyRequestHandler = jest.fn() as jest.Mock;
+const mockProxyResponseHandler = jest.fn() as jest.Mock;
+const mockProxyErrorHandler = jest.fn() as jest.Mock;
+const mockFilterCompressedHtmlFiles = jest.fn() as jest.Mock;
+const mockUpdateProxyEnv = jest.fn() as jest.Mock;
 const mockGetPathRewrite = jest.fn<any>().mockReturnValue(jest.fn());
 
 // Mock http-proxy-middleware
@@ -41,7 +41,7 @@ jest.unstable_mockModule('proxy-from-env', () => ({
 }));
 
 // Import after mocking
-const { ui5Proxy } = await import('../../src/base/proxy');
+const { ui5Proxy } = await import('../../src/base/proxy.js');
 const { ToolsLogger } = await import('@sap-ux/logger');
 
 describe('proxy', () => {

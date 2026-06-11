@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-const mockGetOrCreateServiceProvider = jest.fn();
+const mockGetOrCreateServiceProvider = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('../../src/service-provider-utils/abap-service-provider.js', () => ({
     AbapServiceProviderManager: { getOrCreateServiceProvider: mockGetOrCreateServiceProvider }

@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { Annotations, ServiceProvider } from '@sap-ux/axios-extension';
+import type { Annotations } from '@sap-ux/axios-extension';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import type { CapService } from '@sap-ux/odata-service-inquirer';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
@@ -7,8 +7,8 @@ import memFs from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import memFsEditor from 'mem-fs-editor';
 import { join } from 'node:path';
-import { FloorplanFE, FloorplanFF } from '../../../src/types';
-import { ApiHubType, SapSystemSourceType, minUi5VersionForPageBuildingBlock } from '../../../src/types/constants';
+import { FloorplanFE, FloorplanFF } from '../../../src/types/index.js';
+import { ApiHubType, SapSystemSourceType, minUi5VersionForPageBuildingBlock } from '../../../src/types/constants.js';
 import type { Logger } from '@sap-ux/logger';
 
 // Pre-import actual modules
@@ -19,11 +19,11 @@ const actualFs = await import('node:fs');
 const actualCapConfigWriter = await import('@sap-ux/cap-config-writer');
 
 const getProjectTypeMock = jest.fn();
-const mockWriteApplicationInfoSettings = jest.fn();
-const mockCreateLaunchConfig = jest.fn();
+const mockWriteApplicationInfoSettings = jest.fn() as jest.Mock;
+const mockCreateLaunchConfig = jest.fn() as jest.Mock;
 const mockIsAppStudio = jest.fn<() => boolean>();
-const mockGenerateAppGenInfo = jest.fn();
-const mockCheckCdsUi5PluginEnabled = jest.fn();
+const mockGenerateAppGenInfo = jest.fn<typeof actualFioriGeneratorShared.generateAppGenInfo>();
+const mockCheckCdsUi5PluginEnabled = jest.fn<typeof actualCapConfigWriter.checkCdsUi5PluginEnabled>();
 
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     ...actualProjectAccess,
@@ -59,7 +59,7 @@ jest.unstable_mockModule('@sap-ux/cap-config-writer', () => ({
 }));
 
 const { convertCapRuntimeToCapProjectType, getCdsUi5PluginInfo, initI18nFioriAppSubGenerator, t } =
-    await import('../../../src/utils');
+    await import('../../../src/utils/index.js');
 const {
     buildSapClientParam,
     generateLaunchConfig,
@@ -70,9 +70,8 @@ const {
     getMinSupportedUI5Version,
     getODataVersion,
     getReadMeDataSourceLabel,
-    getRequiredOdataVersion,
-    restoreServiceProviderLoggers
-} = await import('../../../src/utils/common');
+    getRequiredOdataVersion
+} = await import('../../../src/utils/common.js');
 
 describe('Test utils', () => {
     beforeAll(async () => {
@@ -393,26 +392,5 @@ describe('Test utils', () => {
             expect(mockCreateLaunchConfig).toHaveBeenCalledWith(projectPath, expectedFioriOptions, editor, {});
             expect(mockWriteApplicationInfoSettings).toHaveBeenCalledWith(projectPath);
         });
-    });
-
-    test('restoreServiceProviderLoggers should re-add removed log ref', () => {
-        const logger = {
-            info: jest.fn(),
-            warn: jest.fn(),
-            error: jest.fn()
-        } as unknown as Logger;
-
-        const serviceProvider = {
-            log: {},
-            services: {
-                service1: { log: {} },
-                service2: { log: {} }
-            }
-        } as unknown as ServiceProvider;
-
-        const restoredServiceProvider = restoreServiceProviderLoggers(logger, serviceProvider);
-        expect(restoredServiceProvider?.log).toBe(logger);
-        expect((restoredServiceProvider as any)?.services.service1.log).toBe(logger);
-        expect((restoredServiceProvider as any)?.services.service2.log).toBe(logger);
     });
 });

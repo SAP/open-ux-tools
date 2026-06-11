@@ -6,21 +6,21 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const mockGetLogger = jest.fn();
-const mockSetLogLevelVerbose = jest.fn();
+const mockGetLogger = jest.fn() as jest.Mock;
+const mockSetLogLevelVerbose = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
     getLogger: mockGetLogger,
     setLogLevelVerbose: mockSetLogLevelVerbose
 }));
 
-const mockRemoveMockserverConfig = jest.fn();
+const mockRemoveMockserverConfig = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/mockserver-config-writer', () => ({
     removeMockserverConfig: mockRemoveMockserverConfig,
     generateMockserverConfig: jest.fn(),
     getMockserverConfigQuestions: jest.fn()
 }));
 
-const mockValidateBasePath = jest.fn();
+const mockValidateBasePath = jest.fn() as jest.Mock;
 const mockHasFileDeletes = jest.fn().mockReturnValue(false);
 jest.unstable_mockModule('../../../../src/validation', () => ({
     validateBasePath: mockValidateBasePath,
@@ -42,13 +42,13 @@ jest.unstable_mockModule('node:child_process', () => ({
     exec: jest.fn()
 }));
 
-const mockPrompt = jest.fn();
+const mockPrompt = jest.fn() as jest.Mock;
 jest.unstable_mockModule('prompts', () => ({
     default: mockPrompt,
     prompt: mockPrompt
 }));
 
-const { addRemoveMockserverConfigCommand } = await import('../../../../src/cli/remove/mockserver-config');
+const { addRemoveMockserverConfigCommand } = await import('../../../../src/cli/remove/mockserver-config.js');
 
 describe('Test command add mockserver-config', () => {
     const appRoot = join(__dirname, '../../../fixtures/bare-minimum');

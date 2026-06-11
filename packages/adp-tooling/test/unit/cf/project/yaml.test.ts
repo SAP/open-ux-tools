@@ -5,13 +5,13 @@ import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 // Create mocks before any source modules are loaded
-const mockExistsSync = jest.fn();
-const mockCreateServices = jest.fn();
-const mockCreateServiceInstance = jest.fn();
-const mockGetOrCreateServiceInstanceKeys = jest.fn();
-const mockGetYamlContent = jest.fn();
-const mockGetProjectNameForXsSecurity = jest.fn();
-const mockGetServiceKeyDestinations = jest.fn().mockImplementation((serviceKeys: any[]) => {
+const mockExistsSync = jest.fn<typeof realFs.existsSync>();
+const mockCreateServices = jest.fn() as jest.Mock;
+const mockCreateServiceInstance = jest.fn() as jest.Mock;
+const mockGetOrCreateServiceInstanceKeys = jest.fn() as jest.Mock;
+const mockGetYamlContent = jest.fn() as jest.Mock;
+const mockGetProjectNameForXsSecurity = jest.fn() as jest.Mock;
+const mockGetServiceKeyDestinations = jest.fn().mockImplementation((serviceKeys) => {
     const results: Array<{ name: string; url: string }> = [];
     for (const key of serviceKeys) {
         const endpoints = key.credentials?.endpoints;
@@ -56,8 +56,8 @@ const {
     getAppParamsFromUI5Yaml,
     adjustMtaYaml,
     addConnectivityServiceToMta
-} = await import('../../../../src/cf/project/yaml');
-const { AppRouterType } = await import('../../../../src/types');
+} = await import('../../../../src/cf/project/yaml.js');
+const { AppRouterType } = await import('../../../../src/types.js');
 import type { MtaYaml, CfUI5Yaml, ServiceKeys } from '../../../../src/types.js';
 
 describe('YAML Project Functions', () => {

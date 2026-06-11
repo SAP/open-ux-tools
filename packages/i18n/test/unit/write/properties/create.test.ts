@@ -5,7 +5,7 @@ import { basename } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
 // Get real utils exports before mocking
-const realUtils = await import('../../../../src/utils/index');
+const realUtils = await import('../../../../src/utils/index.js');
 
 // Mock functions for utils
 const mockDoesExist = jest.fn<typeof realUtils.doesExist>();
@@ -48,7 +48,7 @@ jest.unstable_mockModule('../../../../src/write/utils', () => ({
 
 // Import after mocking
 const { createPropertiesI18nEntries, removeAndCreateI18nEntries } =
-    await import('../../../../src/write/properties/create');
+    await import('../../../../src/write/properties/create.js');
 
 describe('create', () => {
     describe('createPropertiesI18nEntries', () => {

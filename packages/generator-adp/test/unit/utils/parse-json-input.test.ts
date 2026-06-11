@@ -1,6 +1,6 @@
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { JsonInput } from '../../../src/app/types';
-import { getFirstArgAsString, parseJsonInput } from '../../../src/utils/parse-json-input';
+import type { JsonInput } from '../../../src/app/types.js';
+import { getFirstArgAsString, parseJsonInput } from '../../../src/utils/parse-json-input.js';
 
 const logger = {
     debug: jest.fn()

@@ -7,7 +7,7 @@ import { create } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Project } from '@sap-ux/project-access';
-import { bindingContextAbsolute, bindingContextRelative } from '../../../../../src/building-block/types';
+import { bindingContextAbsolute, bindingContextRelative } from '../../../../../src/building-block/types.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -25,8 +25,8 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     getCapServiceName: mockGetCapServiceName
 }));
 
-const mockGetEntitySetOptions = jest.fn();
-const actualPromptHelpers = await import('../../../../../src/building-block/prompts/utils/prompt-helpers');
+const mockGetEntitySetOptions = jest.fn<typeof actualPromptHelpers.getEntitySetOptions>();
+const actualPromptHelpers = await import('../../../../../src/building-block/prompts/utils/prompt-helpers.js');
 jest.unstable_mockModule('../../../../../src/building-block/prompts/utils/prompt-helpers', () => ({
     ...actualPromptHelpers,
     getEntitySetOptions: mockGetEntitySetOptions
@@ -46,8 +46,8 @@ const {
     getTargetPropertiesPrompt,
     getFilterBarIdPrompt,
     getViewOrFragmentPathPrompt
-} = await import('../../../../../src/building-block/prompts/utils/questions');
-import type { ListPromptQuestion, PromptContext } from '../../../../../src/prompts/types';
+} = await import('../../../../../src/building-block/prompts/utils/questions.js');
+import type { ListPromptQuestion, PromptContext } from '../../../../../src/prompts/types.js';
 
 const projectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts');
 const capProjectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts-cap');

@@ -18,8 +18,8 @@ import {
     getSemanticKeyPropertiesFromMetadata,
     isSemanticKeyInFilterBar,
     safeGetSemanticKeyProperties
-} from '../../../src/utils/listReportUtils';
-import type { ButtonState, FEV4ManifestTarget } from '../../../src/types';
+} from '../../../src/utils/listReportUtils.js';
+import type { ButtonState, FEV4ManifestTarget } from '../../../src/types.js';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';

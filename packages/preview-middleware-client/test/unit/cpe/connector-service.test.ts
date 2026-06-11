@@ -2,7 +2,8 @@ import * as common from '@sap-ux-private/control-property-editor-common';
 import FakeLrepConnector from 'mock/sap/ui/fl/FakeLrepConnector';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { fetchMock } from 'mock/window';
-import { ActionHandler } from '../../../src/cpe/types';
+import type { ActionHandler } from '../../../src/cpe/types';
+import { jest } from '@jest/globals';
 
 const getAdditionalChangeInfoMock = jest.fn();
 jest.unstable_mockModule('open/ux/preview/client/utils/additional-change-info', () => ({
@@ -88,7 +89,7 @@ describe('connector-service', () => {
             libraries: [{ name: 'sap.ui.core', version: '1.120.4' }]
         });
         const wsConnector = new WorkspaceConnectorService();
-        const subscribeSpy = jest.fn<void, [ActionHandler]>();
+        const subscribeSpy = jest.fn<(arg: ActionHandler) => void>();
         await wsConnector.init(sendActionMock, subscribeSpy);
 
         subscribeSpy.mock.calls[0][0](common.reloadApplication({ save: false }));
@@ -107,7 +108,7 @@ describe('connector-service', () => {
             libraries: [{ name: 'sap.ui.core', version: '1.120.4' }]
         });
         const wsConnector = new WorkspaceConnectorService();
-        const subscribeSpy = jest.fn<void, [ActionHandler]>();
+        const subscribeSpy = jest.fn<(arg: ActionHandler) => void>();
         await wsConnector.init(sendActionMock, subscribeSpy);
 
         subscribeSpy.mock.calls[0][0](common.reloadApplication({ save: true }));
@@ -127,7 +128,7 @@ describe('connector-service', () => {
             libraries: [{ name: 'sap.ui.core', version: '1.120.4' }]
         });
         const wsConnector = new WorkspaceConnectorService();
-        const subscribeSpy = jest.fn<void, [ActionHandler]>();
+        const subscribeSpy = jest.fn<(arg: ActionHandler) => void>();
         await wsConnector.init(sendActionMock, subscribeSpy);
         getAdditionalChangeInfoMock.mockReturnValue({ templateName: 'my-template' });
 

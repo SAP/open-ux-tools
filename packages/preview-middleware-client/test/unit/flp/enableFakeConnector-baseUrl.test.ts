@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { documentMock, fetchMock } from 'mock/window';
 import LrepConnector from 'mock/sap/ui/fl/LrepConnector';
 
@@ -6,7 +7,7 @@ const mockBaseUrl = '/test.base.url';
 // Set up document mock BEFORE importing the module so that the module-level
 // `const baseUrl = document.getElementById('sap-ui-bootstrap')?.dataset.openUxPreviewBaseUrl ?? ''`
 // evaluates to our custom value.
-documentMock.getElementById.mockImplementation((id: string) => {
+documentMock.getElementById.mockImplementation((id) => {
     if (id === 'sap-ui-bootstrap') {
         return {
             dataset: {

@@ -19,21 +19,21 @@ jest.unstable_mockModule('chalk', () => ({
     dim: (s: string) => s
 }));
 
-const mockPrompt = jest.fn();
+const mockPrompt = jest.fn() as jest.Mock;
 const mockPromptsModule = Object.assign(mockPrompt, { prompt: mockPrompt, inject: jest.fn() });
 jest.unstable_mockModule('prompts', () => ({
     default: mockPromptsModule
 }));
 
 const mockUpdateVariantsCreationScript = jest.fn().mockResolvedValue(undefined);
-const actualPackageJson = await import('../../../src/preview-config/package-json');
+const actualPackageJson = await import('../../../src/preview-config/package-json.js');
 jest.unstable_mockModule('../../../src/preview-config/package-json', () => ({
     ...actualPackageJson,
     updateVariantsCreationScript: mockUpdateVariantsCreationScript
 }));
 
 const mockUpdatePreviewMiddlewareConfigs = jest.fn().mockResolvedValue(undefined);
-const actualUi5Yaml = await import('../../../src/preview-config/ui5-yaml');
+const actualUi5Yaml = await import('../../../src/preview-config/ui5-yaml.js');
 jest.unstable_mockModule('../../../src/preview-config/ui5-yaml', () => ({
     ...actualUi5Yaml,
     updatePreviewMiddlewareConfigs: mockUpdatePreviewMiddlewareConfigs
@@ -41,7 +41,7 @@ jest.unstable_mockModule('../../../src/preview-config/ui5-yaml', () => ({
 
 const mockRenameDefaultSandboxes = jest.fn().mockResolvedValue(undefined);
 const mockDeleteNoLongerUsedFiles = jest.fn().mockResolvedValue(undefined);
-const actualPreviewFiles = await import('../../../src/preview-config/preview-files');
+const actualPreviewFiles = await import('../../../src/preview-config/preview-files.js');
 jest.unstable_mockModule('../../../src/preview-config/preview-files', () => ({
     ...actualPreviewFiles,
     renameDefaultSandboxes: mockRenameDefaultSandboxes,
@@ -49,13 +49,13 @@ jest.unstable_mockModule('../../../src/preview-config/preview-files', () => ({
 }));
 
 const mockCheckPrerequisites = jest.fn().mockResolvedValue(true);
-const actualPrerequisites = await import('../../../src/preview-config/prerequisites');
+const actualPrerequisites = await import('../../../src/preview-config/prerequisites.js');
 jest.unstable_mockModule('../../../src/preview-config/prerequisites', () => ({
     ...actualPrerequisites,
     checkPrerequisites: mockCheckPrerequisites
 }));
 
-const { convertToVirtualPreview } = await import('../../../src');
+const { convertToVirtualPreview } = await import('../../../src/index.js');
 
 jest.useFakeTimers();
 

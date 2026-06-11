@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals';
-import type { RepoAppDownloadAnswers, AppItem } from '../../src/app/types';
-import { PromptNames } from '../../src/app/types';
+import type { RepoAppDownloadAnswers, AppItem } from '../../src/app/types.js';
+import { PromptNames } from '../../src/app/types.js';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
-import { generatorTitle, generatorDescription } from '../../src/utils/constants';
-import { t } from '../../src/utils/i18n';
+import { generatorTitle, generatorDescription } from '../../src/utils/constants.js';
+import { t } from '../../src/utils/i18n.js';
 import { DatasourceType, type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
 
 jest.unstable_mockModule('../../src/utils/logger', () => {
@@ -15,9 +15,9 @@ jest.unstable_mockModule('../../src/utils/logger', () => {
 });
 
 const { fetchAppListForSelectedSystem, formatAppChoices, getYUIDetails } =
-    await import('../../src/prompts/prompt-helpers');
-const { PromptState } = await import('../../src/prompts/prompt-state');
-const RepoAppDownloadLogger = (await import('../../src/utils/logger')).default;
+    await import('../../src/prompts/prompt-helpers.js');
+const { PromptState } = await import('../../src/prompts/prompt-state.js');
+const RepoAppDownloadLogger = (await import('../../src/utils/logger.js')).default;
 
 describe('fetchAppListForSelectedSystem', () => {
     const mockServiceProvider = {

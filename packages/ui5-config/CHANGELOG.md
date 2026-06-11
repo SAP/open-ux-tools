@@ -1,5 +1,19 @@
 # @sap-ux/ui5-config
 
+## 1.0.3
+
+### Patch Changes
+
+- c8e8f7e: fix: write builder.resources.excludes to base ui5.yaml as well as ui5-deploy.yaml
+
+## 1.0.2
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/yaml@1.0.1
+
 ## 1.0.1
 
 ### Patch Changes

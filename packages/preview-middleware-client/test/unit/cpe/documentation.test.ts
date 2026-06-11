@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
 import Log from 'mock/sap/base/Log';
 import { fetchMock } from 'mock/window';

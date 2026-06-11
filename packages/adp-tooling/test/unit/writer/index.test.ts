@@ -2,10 +2,10 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { generate } from '../../../src';
-import type { AdpWriterConfig } from '../../../src/types';
+import { generate } from '../../../src/index.js';
+import type { AdpWriterConfig } from '../../../src/types.js';
 import { rimraf } from 'rimraf';
-import { migrate } from '../../../src/writer';
+import { migrate } from '../../../src/writer/index.js';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

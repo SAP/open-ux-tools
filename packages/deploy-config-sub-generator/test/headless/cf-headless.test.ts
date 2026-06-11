@@ -73,10 +73,10 @@ const {
     INPUT_LCAP_CHANGES,
     INPUT_PARENT_APP,
     ignoreMatcherOpts
-} = await import('./fixtures/constants');
-const { runHeadlessGen } = await import('./utils');
-const { generatorNamespace, initI18n } = await import('../../src/utils');
-const { default: HeadlessGenerator } = await import('../../src/headless');
+} = await import('./fixtures/constants/index.js');
+const { runHeadlessGen } = await import('./utils.js');
+const { generatorNamespace, initI18n } = await import('../../src/utils/index.js');
+const { default: HeadlessGenerator } = await import('../../src/headless/index.js');
 
 expect.extend({ toMatchFolder });
 

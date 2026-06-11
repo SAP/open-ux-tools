@@ -17,7 +17,7 @@ jest.unstable_mockModule('lz-string', () => ({
 
 // We need the real persistence module's readIntegrityData but mock writeIntegrityData
 // To achieve this, import the real module and wrap it
-const realPersistence = await import('../../../src/integrity/persistence');
+const realPersistence = await import('../../../src/integrity/persistence.js');
 const realReadIntegrityData = realPersistence.readIntegrityData;
 
 jest.unstable_mockModule('../../../src/integrity/persistence', () => ({
@@ -32,8 +32,8 @@ const {
     initProject,
     isProjectIntegrityEnabled,
     updateProjectIntegrity
-} = await import('../../../src/integrity/project');
-const persistence = await import('../../../src/integrity/persistence');
+} = await import('../../../src/integrity/project.js');
+const persistence = await import('../../../src/integrity/persistence.js');
 
 describe('Test initProject()', () => {
     beforeEach(() => {

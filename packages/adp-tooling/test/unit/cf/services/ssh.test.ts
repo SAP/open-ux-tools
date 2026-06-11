@@ -6,8 +6,8 @@ import type { ToolsLogger } from '@sap-ux/logger';
 const mockTmpDir = path.join('/tmp', 'adp-tunnel-mock');
 
 const mockMkdtempSync = jest.fn<() => string>().mockReturnValue(mockTmpDir);
-const mockWriteFileSync = jest.fn();
-const mockRmSync = jest.fn();
+const mockWriteFileSync = jest.fn() as jest.Mock;
+const mockRmSync = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('node:fs', () => ({
     default: {
@@ -32,7 +32,7 @@ jest.unstable_mockModule('../../../../src/cf/services/cli', () => ({
     restartApp: mockRestartApp
 }));
 
-const { ensureTunnelAppExists, enableSshAndRestart } = await import('../../../../src/cf/services/ssh');
+const { ensureTunnelAppExists, enableSshAndRestart } = await import('../../../../src/cf/services/ssh.js');
 
 describe('SSH Services', () => {
     const mockLogger = {

@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { AppWizardCache } from '../../src/utils/appWizardCache';
+import type { AppWizardCache } from '../../src/utils/appWizardCache.js';
 
 jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     getHostEnvironment: jest.fn(),
@@ -11,7 +11,7 @@ jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     }
 }));
 
-const { initAppWizardCache, addToCache, getFromCache, deleteCache } = await import('../../src/utils/appWizardCache');
+const { initAppWizardCache, addToCache, getFromCache, deleteCache } = await import('../../src/utils/appWizardCache.js');
 
 const ADP_FLP_CONFIG_CACHE = '$adp-flp-config-cache';
 

@@ -21,4 +21,4 @@ export class TestFixture {
     }
 }
 
-export { mockDestinations } from './destinations';
+export { mockDestinations } from './destinations.js';

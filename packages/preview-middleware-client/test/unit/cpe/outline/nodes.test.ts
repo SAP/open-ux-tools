@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
 
 import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';

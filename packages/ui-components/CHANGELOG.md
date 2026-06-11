@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 3.0.3
+
+### Patch Changes
+
+- a1235d6: feat: add ValidationWarning icon to UiIcons
+
+## 3.0.2
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+
 ## 3.0.1
 
 ### Patch Changes

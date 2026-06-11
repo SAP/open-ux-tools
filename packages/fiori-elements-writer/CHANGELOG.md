@@ -1,5 +1,119 @@
 # @sap-ux/fiori-elements-writer
 
+## 3.0.18
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@1.0.8
+- @sap-ux/fe-fpm-writer@1.0.8
+
+## 3.0.17
+
+### Patch Changes
+
+- Updated dependencies [c9b0659]
+    - @sap-ux/ui5-test-writer@1.1.1
+
+## 3.0.16
+
+### Patch Changes
+
+- Updated dependencies [c084184]
+    - @sap-ux/ui5-test-writer@1.1.0
+
+## 3.0.15
+
+### Patch Changes
+
+- Updated dependencies [c8e8f7e]
+    - @sap-ux/ui5-config@1.0.3
+    - @sap-ux/odata-service-writer@1.0.6
+    - @sap-ux/ui5-application-writer@2.0.3
+    - @sap-ux/annotation-generator@1.0.7
+    - @sap-ux/cap-config-writer@1.0.9
+    - @sap-ux/fe-fpm-writer@1.0.7
+    - @sap-ux/fiori-generator-shared@1.0.9
+    - @sap-ux/ui5-test-writer@1.0.14
+
+## 3.0.14
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@1.0.6
+- @sap-ux/fe-fpm-writer@1.0.6
+- @sap-ux/ui5-application-writer@2.0.2
+
+## 3.0.13
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@1.0.8
+- @sap-ux/odata-service-writer@1.0.5
+- @sap-ux/cap-config-writer@1.0.8
+- @sap-ux/ui5-test-writer@1.0.13
+
+## 3.0.12
+
+### Patch Changes
+
+- Updated dependencies [a328e14]
+    - @sap-ux/fiori-generator-shared@1.0.7
+    - @sap-ux/cap-config-writer@1.0.7
+    - @sap-ux/ui5-test-writer@1.0.12
+
+## 3.0.11
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@1.0.11
+
+## 3.0.10
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/cap-config-writer@1.0.6
+    - @sap-ux/annotation-generator@1.0.5
+    - @sap-ux/fe-fpm-writer@1.0.5
+    - @sap-ux/fiori-generator-shared@1.0.6
+    - @sap-ux/odata-service-writer@1.0.5
+    - @sap-ux/ui5-application-writer@2.0.2
+    - @sap-ux/ui5-test-writer@1.0.10
+
+## 3.0.9
+
+### Patch Changes
+
+- @sap-ux/ui5-test-writer@1.0.9
+
+## 3.0.8
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@1.0.4
+- @sap-ux/cap-config-writer@1.0.5
+- @sap-ux/fe-fpm-writer@1.0.4
+- @sap-ux/fiori-generator-shared@1.0.5
+- @sap-ux/odata-service-writer@1.0.4
+- @sap-ux/ui5-application-writer@2.0.2
+- @sap-ux/ui5-test-writer@1.0.8
+
+## 3.0.7
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/fiori-generator-shared@1.0.4
+    - @sap-ux/ui5-application-writer@2.0.2
+    - @sap-ux/annotation-generator@1.0.3
+    - @sap-ux/odata-service-writer@1.0.3
+    - @sap-ux/cap-config-writer@1.0.4
+    - @sap-ux/ui5-test-writer@1.0.7
+    - @sap-ux/fe-fpm-writer@1.0.3
+    - @sap-ux/ui5-config@1.0.2
+    - @sap-ux/logger@1.0.1
+
 ## 3.0.6
 
 ### Patch Changes

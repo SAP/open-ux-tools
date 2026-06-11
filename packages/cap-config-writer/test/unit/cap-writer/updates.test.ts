@@ -3,11 +3,11 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { CapServiceCdsInfo, CapProjectSettings } from '../../../src/cap-config/types';
+import type { CapServiceCdsInfo, CapProjectSettings } from '../../../src/cap-config/types.js';
 import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 
-const mockYamlNewInstance = jest.fn();
+const mockYamlNewInstance = jest.fn() as jest.Mock;
 const mockYamlDocumentToYamlString = jest.fn((doc: Record<string, Record<string, string>>) => {
     const lines: string[] = [];
     for (const [key, value] of Object.entries(doc)) {
@@ -74,7 +74,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
         DotGitIgnore: '.gitignore',
         MtaExtYaml: 'mta-ext.mtaext'
     },
-    MinCdsPluginUi5Version: '0.13.0',
+    MinCdsPluginUi5Version: '0.17.0',
     MinCdsVersion: '6.8.2',
     getCapCustomPaths: mockGetCapCustomPaths,
     getWebappPath: mockGetWebappPath,
@@ -84,7 +84,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     checkCdsUi5PluginEnabled: mockCheckCdsUi5PluginEnabled
 }));
 
-const { applyCAPUpdates } = await import('../../../src/cap-writer');
+const { applyCAPUpdates } = await import('../../../src/cap-writer/index.js');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

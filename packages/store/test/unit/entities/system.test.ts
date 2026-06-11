@@ -1,5 +1,5 @@
-import type { BackendSystem } from '../../../src/entities/backend-system';
-import { BackendSystemKey } from '../../../src/entities/backend-system';
+import type { BackendSystem } from '../../../src/entities/backend-system.js';
+import { BackendSystemKey } from '../../../src/entities/backend-system.js';
 
 describe('getSystemEntityKey', () => {
     describe('getId', () => {

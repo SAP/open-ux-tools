@@ -1,5 +1,86 @@
 # @sap-ux/ui5-test-writer
 
+## 1.1.1
+
+### Patch Changes
+
+- c9b0659: force js file for fpm opa tests
+
+## 1.1.0
+
+### Minor Changes
+
+- c084184: Add TypeScript support for OPA test generation
+
+## 1.0.14
+
+### Patch Changes
+
+- @sap-ux/project-access@2.1.2
+- @sap-ux/ui5-application-writer@2.0.3
+- @sap-ux/preview-middleware@1.0.14
+- @sap-ux/fiori-generator-shared@1.0.9
+
+## 1.0.13
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@1.0.8
+- @sap-ux/preview-middleware@1.0.13
+
+## 1.0.12
+
+### Patch Changes
+
+- Updated dependencies [a328e14]
+    - @sap-ux/fiori-generator-shared@1.0.7
+    - @sap-ux/preview-middleware@1.0.12
+
+## 1.0.11
+
+### Patch Changes
+
+- Updated dependencies [bcfe9e3]
+    - @sap-ux/preview-middleware@1.0.11
+
+## 1.0.10
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+    - @sap-ux/fiori-generator-shared@1.0.6
+    - @sap-ux/preview-middleware@1.0.10
+    - @sap-ux/ui5-application-writer@2.0.2
+
+## 1.0.9
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@1.0.9
+
+## 1.0.8
+
+### Patch Changes
+
+- Updated dependencies [b326a9a]
+    - @sap-ux/project-access@2.1.0
+    - @sap-ux/preview-middleware@1.0.8
+    - @sap-ux/fiori-generator-shared@1.0.5
+    - @sap-ux/ui5-application-writer@2.0.2
+
+## 1.0.7
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/fiori-generator-shared@1.0.4
+    - @sap-ux/ui5-application-writer@2.0.2
+    - @sap-ux/preview-middleware@1.0.7
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux/logger@1.0.1
+
 ## 1.0.6
 
 ### Patch Changes

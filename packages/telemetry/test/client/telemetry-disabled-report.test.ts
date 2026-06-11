@@ -24,10 +24,10 @@ jest.unstable_mockModule('applicationinsights', () => {
     return { TelemetryClient };
 });
 
-const { ClientFactory } = await import('../../src/base/client');
-const { TelemetrySettings } = await import('../../src/base/config-state');
-const { EventName } = await import('../../src/base/types/event-name');
-const { SampleRate } = await import('../../src/base/types/sample-rate');
+const { ClientFactory } = await import('../../src/base/client/index.js');
+const { TelemetrySettings } = await import('../../src/base/config-state.js');
+const { EventName } = await import('../../src/base/types/event-name.js');
+const { SampleRate } = await import('../../src/base/types/sample-rate.js');
 
 describe('ClientFactory Send Report Tests', () => {
     beforeEach(() => {

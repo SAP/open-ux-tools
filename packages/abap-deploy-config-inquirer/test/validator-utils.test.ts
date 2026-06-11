@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 
-const mockListPackagesFromService = jest.fn();
-const mockGetTransportListFromService = jest.fn();
-const mockCreateTransportNumberFromService = jest.fn();
+const mockListPackagesFromService = jest.fn() as jest.Mock;
+const mockGetTransportListFromService = jest.fn() as jest.Mock;
+const mockCreateTransportNumberFromService = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('../src/service-provider-utils', () => ({
     listPackagesFromService: mockListPackagesFromService,
