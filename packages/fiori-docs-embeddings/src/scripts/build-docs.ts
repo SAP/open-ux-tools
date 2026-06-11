@@ -1549,6 +1549,7 @@ Return ONLY the formatted markdown. Do not add any explanations or meta-commenta
         // Merge categories: for a category that already exists, replace stale document IDs
         // that belong to the current source, then add the fresh ones.
         const processedSourceIds = new Set(this.sourceMarkdown.keys());
+        const processedSourceArray = Array.from(processedSourceIds);
         const mergedCategoryMap = new Map(existingCategories.map((c) => [c.id, { ...c, documents: [...c.documents] }]));
         for (const cat of newCategories) {
             const existing = mergedCategoryMap.get(cat.id);
@@ -1557,7 +1558,7 @@ Return ONLY the formatted markdown. Do not add any explanations or meta-commenta
                 // that belonged to this source on the previous run — prevents deleted files from
                 // accumulating in the index across repeated single-source rebuilds.
                 const staleRemoved = existing.documents.filter(
-                    (docId) => !Array.from(processedSourceIds).some((srcId) => docId.startsWith(`${srcId}-`))
+                    (docId) => !processedSourceArray.some((srcId) => docId.startsWith(`${srcId}-`))
                 );
                 const merged = [...new Set([...staleRemoved, ...cat.documents])];
                 mergedCategoryMap.set(cat.id, { ...existing, count: merged.length, documents: merged });
@@ -1614,9 +1615,11 @@ if (isMainModule) {
         builder.filterToSingleSource(sourceArg);
     }
 
-    builder.buildFilestore().catch((error) => {
+    try {
+        await builder.buildFilestore();
+    } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         logger.error(`Build failed: ${errorMessage}`);
         process.exit(1);
-    });
+    }
 }
