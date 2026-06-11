@@ -89,13 +89,13 @@ UI.SelectionFields: [Category]
 
 ## ABAP RAP Implementation
 
-- Aggregation.ApplySupported and Aggregation.CustomAggregate annotations must be available in metadata.xml (RAP). If not, backend configuration is required.
+- Aggregation.ApplySupported and Aggregation.CustomAggregate annotations must be available in metadata.xml (RAP). If not, below backend configuration is required.
 
 ### Backend CDS (MANDATORY)
 ```abap
 @OData.applySupportedForAggregation: #FULL
 define root view entity ZC_ENTITY
-  provider contract transactional_query
+  provider contract analytical_query
   as projection on ZI_ENTITY
 {
   key EntityID,
