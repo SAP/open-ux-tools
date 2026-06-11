@@ -2760,6 +2760,9 @@ importers:
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)
+      xml-formatter:
+        specifier: 3.7.0
+        version: 3.7.0
       zod:
         specifier: 4.3.6
         version: 4.3.6
@@ -33506,7 +33509,7 @@ snapshots:
 
   retry-axios@2.6.0(axios@1.16.1):
     dependencies:
-      axios: 1.16.1
+      axios: 1.16.1(debug@4.3.4)
     optional: true
 
   retry@0.12.0: {}
