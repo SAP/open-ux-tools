@@ -704,10 +704,7 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
             );
         // Parse content directly so documentElement IS the <macros:Page> element,
         // matching what appendPageAggregations expects as templateDocument.documentElement.
-        const snippetDoc = new DOMParser().parseFromString(
-            `${content}`,
-            'text/xml'
-        );
+        const snippetDoc = new DOMParser().parseFromString(`${content}`, 'text/xml');
         appendPageAggregations(fs, nsDoc, snippetDoc, fnGenerateId, pageData);
         const resultNode = snippetDoc.documentElement;
         viewOrFragmentContent = resultNode ? format(new XMLSerializer().serializeToString(resultNode)) : content;
