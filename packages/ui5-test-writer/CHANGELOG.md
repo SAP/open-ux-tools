@@ -1,5 +1,47 @@
 # @sap-ux/ui5-test-writer
 
+## 1.1.7
+
+### Patch Changes
+
+- Updated dependencies [6f3b596]
+    - @sap-ux/preview-middleware@1.0.19
+
+## 1.1.6
+
+### Patch Changes
+
+- Updated dependencies [0110219]
+    - @sap-ux/preview-middleware@1.0.18
+
+## 1.1.5
+
+### Patch Changes
+
+- @sap-ux/preview-middleware@1.0.17
+- @sap-ux/fiori-generator-shared@1.0.11
+
+## 1.1.4
+
+### Patch Changes
+
+- f02b950: fix(ui5-test-writer): force JS test file generation when any page uses the FPM template, ignoring enableTypeScript and tsconfig auto-detection
+
+## 1.1.3
+
+### Patch Changes
+
+- Updated dependencies [e66a8a9]
+    - @sap-ux/ui5-application-writer@2.0.4
+    - @sap-ux/preview-middleware@1.0.16
+
+## 1.1.2
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@1.0.10
+- @sap-ux/preview-middleware@1.0.15
+
 ## 1.1.1
 
 ### Patch Changes
