@@ -1,4 +1,3 @@
-import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
 import type Component from 'sap/ui/core/Component';
 import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
@@ -9,7 +8,7 @@ import {
     startRtaForAppInstance
 } from './common.js';
 import initConnectors from './initConnectors.js';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version.js';
+import { getUi5Version } from '../utils/version.js';
 
 /**
  * AfterFlpStart hook for FLP Sandbox 2.0.
@@ -46,14 +45,12 @@ export async function execute(): Promise<void> {
         });
     }
 
-    // Wire up card generator if enabled and UI5 version supports it
-    if (enableCardGenerator && !isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 121 })) {
+    // Wire up card generator if enabled
+    if (enableCardGenerator) {
         const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
         lifecycleService.attachAppLoaded((event) => {
             addCardGenerationUserAction(event.getParameter('componentInstance') as unknown as Component, container);
         });
-    } else if (enableCardGenerator) {
-        Log.warning('Card generator is not supported for the current UI5 version.');
     }
 
     // Initialize RTA connectors

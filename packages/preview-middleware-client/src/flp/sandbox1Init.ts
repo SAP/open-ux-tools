@@ -5,7 +5,7 @@ import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 import type Component from 'sap/ui/core/Component';
 import { getError } from '../utils/error.js';
 import initConnectors from './initConnectors.js';
-import { getUi5Version, isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version.js';
+import { getUi5Version, Ui5VersionInfo } from '../utils/version.js';
 import {
     addCardGenerationUserAction,
     loadI18nResourceBundle,
@@ -62,7 +62,7 @@ export async function init({
             });
         });
     }
-    if (enableCardGenerator && !isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 121 })) {
+    if (enableCardGenerator) {
         container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
@@ -70,8 +70,6 @@ export async function init({
                 addCardGenerationUserAction(componentInstance as unknown as Component, container);
             });
         });
-    } else {
-        Log.warning('Card generator is not supported for the current UI5 version.');
     }
 
     // reset app state if requested
