@@ -101,7 +101,13 @@ describe('Prompt Generation Tests', () => {
             // ensure additional choice is added to the BTP destination list
             expect(((destinationNamePrompt as ListQuestion)?.choices as Function)()).toStrictEqual([
                 ...additionalChoiceList,
-                { name: 'btpTestDest - btpTestDest', value: 'btpTestDest', scp: false, url: 'btpTestDest', isFullUrl: false }
+                {
+                    name: 'btpTestDest - btpTestDest',
+                    value: 'btpTestDest',
+                    scp: false,
+                    url: 'btpTestDest',
+                    isFullUrl: false
+                }
             ]);
         });
 
