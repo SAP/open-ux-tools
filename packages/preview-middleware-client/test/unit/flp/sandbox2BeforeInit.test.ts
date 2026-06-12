@@ -5,11 +5,11 @@ jest.unstable_mockModule('open/ux/preview/client/flp/common', () => ({
     registerComponentDependencyPaths: jest.fn().mockResolvedValue(undefined)
 }));
 
-const { execute } = await import('open/ux/preview/client/flp/init2');
+const { execute } = await import('open/ux/preview/client/flp/sandbox2BeforeInit');
 const { registerComponentDependencyPaths } = await import('open/ux/preview/client/flp/common');
 const registerPathsMock = registerComponentDependencyPaths as jest.Mock;
 
-describe('flp/init2', () => {
+describe('flp/sandbox2BeforeInit', () => {
     let bootstrapEl: HTMLScriptElement;
 
     beforeEach(() => {

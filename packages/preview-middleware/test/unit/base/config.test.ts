@@ -387,7 +387,8 @@ describe('config', () => {
                 url: '..'
             };
             const result = generateSandboxAppConfig(templateConfig, flpConfig);
-            expect(result.beforeFlpStart).toBe('module:open/ux/preview/client/flp/init2');
+            expect(result.beforeFlpStart).toBe('module:open/ux/preview/client/flp/sandbox2BeforeInit');
+            expect(result.afterFlpStart).toBe('module:open/ux/preview/client/flp/sandbox2AfterInit');
             expect(result.restricted.flexibilityServices).toHaveLength(1);
             expect(result.restricted.flexibilityServices[0]).toEqual({
                 applyConnector: workspaceConnector,

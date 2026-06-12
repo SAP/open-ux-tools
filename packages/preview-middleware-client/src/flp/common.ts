@@ -6,10 +6,13 @@ import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import type AppState from 'sap/ushell/services/AppState';
-import { getManifestAppdescr } from '../adp/api-handler';
-import { getError } from '../utils/error';
-import { isLowerThanMinimalUi5Version, type Ui5VersionInfo } from '../utils/version';
-import { sendInfoCenterMessage } from '../utils/info-center-message';
+import type Component from 'sap/ui/core/Component';
+import type Extension from 'sap/ushell/services/Extension';
+import type { CardGeneratorType } from 'sap/cards/ap/generator';
+import { getManifestAppdescr } from '../adp/api-handler.js';
+import { getError } from '../utils/error.js';
+import { isLowerThanMinimalUi5Version, type Ui5VersionInfo } from '../utils/version.js';
+import { sendInfoCenterMessage } from '../utils/info-center-message.js';
 
 type GlobalErrorEvent = ErrorEvent | PromiseRejectionEvent;
 
@@ -306,68 +309,80 @@ export async function handleHigherLayerChanges(error: unknown, ui5VersionInfo: U
 }
 
 /**
- * Attaches the RTA renderer-created listener that starts UI adaptation when the app loads.
- * Shared by both sandbox 1 (init.ts) and sandbox 2 (init2.ts).
+ * Starts UI adaptation (RTA) for the given component instance.
+ * Contains the inner logic shared between sandbox 1 (sandbox1Init.ts) and sandbox 2 (sandbox2AfterInit.ts).
  *
- * @param container the UShell container
- * @param flex serialised JSON string of FlexSettings from the bootstrap dataset
- * @param ui5VersionInfo current UI5 version
- * @returns the scenario string extracted from the flex settings, or undefined if flex is not provided
+ * @param view - the component instance returned by AppLifeCycle attachAppLoaded
+ * @param flexSettings - the parsed flex settings
+ * @param ui5VersionInfo - current UI5 version
  */
-export function attachRtaListener(
-    container: typeof sap.ushell.Container,
-    flex: string,
+export function startRtaForAppInstance(
+    view: unknown,
+    flexSettings: FlexSettings,
     ui5VersionInfo: Ui5VersionInfo
-): string | undefined {
-    const flexSettings = JSON.parse(flex) as FlexSettings;
-    const scenario = flexSettings.scenario;
+): void {
+    const pluginScript = flexSettings.pluginScript ?? '';
+    const libs: string[] = [];
 
-    registerForControllerExtensionErrors();
-    container.attachRendererCreatedEvent(async function () {
-        const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
-        lifecycleService.attachAppLoaded((event) => {
-            // Prevent starting RTA when the FLP home component (#Shell-home) fires attachAppLoaded before the user navigates to the actual app.
-            if (!globalThis.location.hash || globalThis.location.hash.startsWith('#Shell-home')) {
-                return;
+    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 72 })) {
+        libs.push('open/ux/preview/client/flp/initRta');
+    } else {
+        libs.push('sap/ui/rta/api/startAdaptation');
+    }
+
+    if (flexSettings.pluginScript) {
+        libs.push(pluginScript as string);
+        delete flexSettings.pluginScript;
+    }
+
+    const options: RTAOptions = {
+        rootControl: view,
+        validateAppVersion: false,
+        flexSettings
+    };
+
+    sap.ui.require(
+        libs,
+        async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
+            try {
+                await startAdaptation(options, pluginScript);
+            } catch (error) {
+                await sendInfoCenterMessage({
+                    title: { key: 'FLP_ADAPTATION_START_FAILED_TITLE' },
+                    description: getError(error).message,
+                    type: MessageBarType.error
+                });
+                await handleHigherLayerChanges(error, ui5VersionInfo);
             }
-            const view = event.getParameter('componentInstance');
-            const pluginScript = flexSettings.pluginScript ?? '';
-            const libs: string[] = [];
+        }
+    );
+}
 
-            if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 72 })) {
-                libs.push('open/ux/preview/client/flp/initRta');
-            } else {
-                libs.push('sap/ui/rta/api/startAdaptation');
+/**
+ * Dynamically adds a "Generate Card" action to the SAP Fiori Launchpad for the given component instance.
+ *
+ * @param componentInstance - The component instance for which the card generation action is added.
+ * @param container - The SAP Fiori Launchpad container used to access services.
+ */
+export function addCardGenerationUserAction(
+    componentInstance: Component,
+    container: typeof sap.ushell.Container
+): void {
+    sap.ui.require(['sap/cards/ap/generator/CardGenerator'], async (CardGenerator: CardGeneratorType) => {
+        const extensionService = await container.getServiceAsync<Extension>('Extension');
+        const controlProperties = {
+            icon: 'sap-icon://add',
+            id: 'generate_card',
+            text: 'Generate Card',
+            tooltip: 'Generate Card',
+            press: () => {
+                CardGenerator.initializeAsync(componentInstance);
             }
-
-            if (flexSettings.pluginScript) {
-                libs.push(pluginScript as string);
-                delete flexSettings.pluginScript;
-            }
-
-            const options: RTAOptions = {
-                rootControl: view,
-                validateAppVersion: false,
-                flexSettings
-            };
-
-            sap.ui.require(
-                libs,
-                async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
-                    try {
-                        await startAdaptation(options, pluginScript);
-                    } catch (error) {
-                        await sendInfoCenterMessage({
-                            title: { key: 'FLP_ADAPTATION_START_FAILED_TITLE' },
-                            description: getError(error).message,
-                            type: MessageBarType.error
-                        });
-                        await handleHigherLayerChanges(error, ui5VersionInfo);
-                    }
-                }
-            );
-        });
+        };
+        const parameters = {
+            controlType: 'sap.ushell.ui.launchpad.ActionItem'
+        };
+        const generateCardAction = await extensionService.createUserAction(controlProperties, parameters);
+        generateCardAction.showForCurrentApp();
     });
-
-    return scenario;
 }

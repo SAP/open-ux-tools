@@ -2158,13 +2158,18 @@ describe('FlpSandbox fioriSandboxAppConfig.json route', () => {
         await setupServer();
         const response = await server.get('/test/fioriSandboxAppConfig.json').expect(200);
         const body = JSON.parse(response.text) as Record<string, unknown>;
-        expect(body.beforeFlpStart).toBe('module:open/ux/preview/client/flp/init2');
+        expect(body.beforeFlpStart).toBe('module:open/ux/preview/client/flp/sandbox2BeforeInit');
+        expect(body.afterFlpStart).toBe('module:open/ux/preview/client/flp/sandbox2AfterInit');
         expect((body.restricted as Record<string, unknown>)?.flexibilityServices).toHaveLength(1);
         expect(response.text).toMatchSnapshot();
     });
 
-    test('merges user-provided fioriSandboxAppConfig.json but keeps our beforeFlpStart', async () => {
-        const userConfig = { customProp: 'userValue', beforeFlpStart: 'module:user/init' };
+    test('merges user-provided fioriSandboxAppConfig.json but keeps our beforeFlpStart and afterFlpStart', async () => {
+        const userConfig = {
+            customProp: 'userValue',
+            beforeFlpStart: 'module:user/init',
+            afterFlpStart: 'module:user/afterInit'
+        };
         const userFileMock = {
             getString: () => Promise.resolve(JSON.stringify(userConfig))
         };
@@ -2178,7 +2183,8 @@ describe('FlpSandbox fioriSandboxAppConfig.json route', () => {
         await setupServer(byPathMock);
         const response = await server.get('/test/fioriSandboxAppConfig.json').expect(200);
         const body = JSON.parse(response.text) as Record<string, unknown>;
-        expect(body.beforeFlpStart).toBe('module:open/ux/preview/client/flp/init2');
+        expect(body.beforeFlpStart).toBe('module:open/ux/preview/client/flp/sandbox2BeforeInit');
+        expect(body.afterFlpStart).toBe('module:open/ux/preview/client/flp/sandbox2AfterInit');
         expect(body.customProp).toBe('userValue');
     });
 

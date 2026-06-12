@@ -335,7 +335,8 @@ Object {
 
 exports[`config generateSandboxAppConfig matches snapshot 1`] = `
 Object {
-  "beforeFlpStart": "module:open/ux/preview/client/flp/init2",
+  "afterFlpStart": "module:open/ux/preview/client/flp/sandbox2AfterInit",
+  "beforeFlpStart": "module:open/ux/preview/client/flp/sandbox2BeforeInit",
   "restricted": Object {
     "flexibilityServices": Array [
       Object {

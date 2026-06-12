@@ -591,8 +591,9 @@ export class FlpSandbox {
                     config = {
                         ...config,
                         ...userConfig,
-                        // beforeFlpStart must always point to our init2
-                        beforeFlpStart: config.beforeFlpStart
+                        // beforeFlpStart and afterFlpStart must always point to our hooks
+                        beforeFlpStart: config.beforeFlpStart,
+                        afterFlpStart: config.afterFlpStart
                     };
                 }
                 this.sendResponse(res, 'application/json', 200, JSON.stringify(config));
@@ -692,7 +693,10 @@ export class FlpSandbox {
                 ui5Version.label ? `-${ui5Version.label}` : ''
             }.`
         );
-        const qualifiesForNewSandbox = ui5Version.major > 1 || ui5Version.label?.includes('legacy-free');
+        const qualifiesForNewSandbox =
+            ui5Version.major > 1 ||
+            ui5Version.label?.includes('legacy-free') ||
+            (ui5Version.major === 1 && ui5Version.minor >= 150);
         const useNewSandbox = qualifiesForNewSandbox && this.flpConfig.useNewSandbox !== false;
         if (qualifiesForNewSandbox && !useNewSandbox) {
             this.logger.info('New FLP Sandbox disabled in configuration.');
@@ -722,7 +726,10 @@ export class FlpSandbox {
      * @private
      */
     private async warnIfLegacySandboxConfigExists(ui5Version: Ui5Version): Promise<void> {
-        const qualifiesForNewSandbox = ui5Version.major > 1 || ui5Version.label?.includes('legacy-free');
+        const qualifiesForNewSandbox =
+            ui5Version.major > 1 ||
+            ui5Version.label?.includes('legacy-free') ||
+            (ui5Version.major === 1 && ui5Version.minor >= 150);
         if (qualifiesForNewSandbox && this.flpConfig.useNewSandbox !== false) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const legacyFile = await this.project.byPath(

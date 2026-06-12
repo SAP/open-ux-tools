@@ -33,6 +33,7 @@ export interface SandboxAppConfig {
     tiles: { semanticObject: string; action: string; rootPath: string }[];
     rootIntent?: string;
     beforeFlpStart: string;
+    afterFlpStart: string;
     restricted: {
         flexibilityServices: CustomConnector[];
     };
@@ -496,7 +497,8 @@ export function generateSandboxAppConfig(templateConfig: TemplateConfig, _flpCon
         tiles,
         //todo: introduce new param 'skipFLP' for direct navigation to apps without FLP shell and only set rootIntent if skipFLP is false
         // rootIntent: `${flpConfig.intent.object}-${flpConfig.intent.action}`,
-        beforeFlpStart: 'module:open/ux/preview/client/flp/init2',
+        beforeFlpStart: 'module:open/ux/preview/client/flp/sandbox2BeforeInit',
+        afterFlpStart: 'module:open/ux/preview/client/flp/sandbox2AfterInit',
         restricted: {
             flexibilityServices: [
                 {

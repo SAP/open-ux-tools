@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { MessageBarType, showInfoCenterMessage, type Scenario } from '@sap-ux-private/control-property-editor-common';
+import { MessageBarType, type Scenario } from '@sap-ux-private/control-property-editor-common';
 import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
 import IconPoolMock from 'mock/sap/ui/core/IconPool';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
@@ -8,7 +8,6 @@ import NewsContainer from 'sap/cux/home/NewsContainer';
 import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 import type Component from 'sap/ui/core/Component';
 import type { InitRtaScript, RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
-import { Window } from 'types/global';
 
 const _apiHandler = await import('open/ux/preview/client/adp/api-handler');
 const getManifestAppdescrMock = jest.fn();
@@ -26,18 +25,18 @@ jest.unstable_mockModule('open/ux/preview/client/utils/info-center-message', () 
 }));
 
 import MyHomeController from '../../../src/flp/homepage/controller/MyHome.controller.js';
+const { init } = await import('open/ux/preview/client/flp/sandbox1Init');
 const {
-    init,
     loadI18nResourceBundle,
     registerComponentDependencyPaths,
     registerSAPFonts,
     resetAppState,
     setI18nTitle
-} = await import('open/ux/preview/client/flp/init');
+} = await import('open/ux/preview/client/flp/common');
 const infoCenterMessage = await import('open/ux/preview/client/utils/info-center-message');
 type ManifestAppdescr = import('../../../src/adp/api-handler.js').ManifestAppdescr;
 
-describe('flp/init', () => {
+describe('flp/sandbox1Init', () => {
     afterEach(() => {
         sapMock.ushell.Container.getServiceAsync.mockReset();
         window.location.hash = '';
