@@ -17,7 +17,8 @@ const isSentenceCase = (text: string): boolean => {
     if (!text || text.length === 0 || !isUpperCase(text.charCodeAt(0))) {
         return false;
     }
-    // Sentence case should have spaces between words
+    // Check for PascalCase/camelCase pattern: lowercase followed by uppercase
+    // This catches "ToolbarContentMove" but allows "XMLHTTPRequest" (all caps)
     for (let i = 0; i < text.length; i++) {
         const code = text.charCodeAt(i);
         if (code === 32) {
@@ -25,8 +26,13 @@ const isSentenceCase = (text: string): boolean => {
         } else if (code === 45 || code === 95) {
             // Has hyphens or underscores - not sentence case
             return false;
+        } else if (i > 0 && isUpperCase(code) && isLowerCase(text.charCodeAt(i - 1))) {
+            // Lowercase followed by uppercase = PascalCase/camelCase (e.g., "toolBar", "ToolBar")
+            return false;
         }
     }
+    // If we get here: either has no spaces (single word or all caps like "XMLHTTPRequest")
+    // Treat single words and all-caps as sentence case to avoid conversion
     return true;
 };
 
