@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.4.0
+
+### Minor Changes
+
+- a7ed101: Add opa5_docu.md to doc_search
+
 ## 1.3.0
 
 ### Minor Changes

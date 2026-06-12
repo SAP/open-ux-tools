@@ -1345,6 +1345,105 @@ describe('FlpSandbox', () => {
         });
     });
 
+    describe('router with enableCardGenerator - version gating', () => {
+        const mockConfig = { editors: { cardGenerator: { path: '/test/flpCardGeneratorSandbox.html' } } };
+
+        const setupMiddleware = async (projectType: string) => {
+            mockGetProjectType.mockResolvedValue(projectType);
+            const flp = new FlpSandbox(mockConfig as MiddlewareConfig, mockProject, mockUtils, logger);
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+            const app = express();
+            app.use(flp.router);
+            return { server: supertest(app), flp };
+        };
+
+        const mockUi5Version = (version: string, name = 'SAPUI5 Distribution') => {
+            const jsonSpy = () => Promise.resolve({ name, libraries: [{ name: 'sap.ui.core', version }] });
+            fetchMock.mockResolvedValue({ json: jsonSpy, text: jest.fn(), ok: true } as unknown as Response);
+        };
+
+        beforeEach(() => {
+            (logger.warn as ReturnType<typeof jest.fn>).mockClear();
+        });
+
+        afterEach(() => {
+            fetchMock.mockRestore();
+            mockGetProjectType.mockResolvedValue('EDMXBackend');
+        });
+
+        test('EDMXBackend below 1.121 - disables card generator and warns', async () => {
+            const { server, flp } = await setupMiddleware('EDMXBackend');
+            mockUi5Version('1.120.0');
+            const response = await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
+            expect(response.status).toBe(200);
+            expect(flp.templateConfig.enableCardGenerator).toBe(false);
+            expect(logger.warn).toHaveBeenCalledWith(
+                expect.stringContaining(
+                    "does not meet the minimum required version 1.121.0 for project type 'EDMXBackend'"
+                )
+            );
+        });
+
+        test('EDMXBackend at 1.121 - enables card generator and does not warn', async () => {
+            const { server, flp } = await setupMiddleware('EDMXBackend');
+            mockUi5Version('1.121.0');
+            await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
+            expect(flp.templateConfig.enableCardGenerator).toBe(true);
+            expect(logger.warn).not.toHaveBeenCalledWith(expect.stringContaining('cardGenerator'));
+        });
+
+        test('CAPNodejs below 1.149 - disables card generator and warns', async () => {
+            const { server, flp } = await setupMiddleware('CAPNodejs');
+            mockUi5Version('1.148.0');
+            await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
+            expect(flp.templateConfig.enableCardGenerator).toBe(false);
+            expect(logger.warn).toHaveBeenCalledWith(
+                expect.stringContaining(
+                    "does not meet the minimum required version 1.149.0 for project type 'CAPNodejs'"
+                )
+            );
+        });
+
+        test('CAPNodejs at 1.149 - enables card generator and does not warn', async () => {
+            const { server, flp } = await setupMiddleware('CAPNodejs');
+            mockUi5Version('1.149.0');
+            await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
+            expect(flp.templateConfig.enableCardGenerator).toBe(true);
+            expect(logger.warn).not.toHaveBeenCalledWith(expect.stringContaining('cardGenerator'));
+        });
+
+        test('CAPJava below 1.149 - disables card generator and warns', async () => {
+            const { server, flp } = await setupMiddleware('CAPJava');
+            mockUi5Version('1.148.0');
+            await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
+            expect(flp.templateConfig.enableCardGenerator).toBe(false);
+            expect(logger.warn).toHaveBeenCalledWith(
+                expect.stringContaining("does not meet the minimum required version 1.149.0 for project type 'CAPJava'")
+            );
+        });
+
+        test('legacy-free label - disables card generator regardless of minor version', async () => {
+            const { server, flp } = await setupMiddleware('EDMXBackend');
+            mockUi5Version('1.121.0-legacy-free');
+            await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
+            expect(flp.templateConfig.enableCardGenerator).toBe(false);
+            expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('cardGenerator'));
+        });
+
+        test('warns on every request to the card generator endpoint', async () => {
+            const { server } = await setupMiddleware('EDMXBackend');
+            mockUi5Version('1.120.0');
+            await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
+            await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
+            expect(
+                (logger.warn as ReturnType<typeof jest.fn>).mock.calls.filter((call) =>
+                    (call[0] as string).includes('cardGenerator')
+                )
+            ).toHaveLength(2);
+        });
+    });
+
     describe('router with test suite', () => {
         let server!: supertest.Agent;
 
