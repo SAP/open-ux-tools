@@ -32,8 +32,10 @@ import Input from 'sap/m/Input';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import Control from 'sap/ui/core/Control';
 import { ValueState } from 'sap/ui/core/library';
+import Change from 'sap/ui/fl/Change';
 import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition.js';
 import { setAdditionalChangeInfoForChangeFile } from '../../utils/additional-change-info.js';
+import { getChangeDefinition } from '../../utils/changes.js';
 import { getError } from '../../utils/error.js';
 import { sendInfoCenterMessage } from '../../utils/info-center-message.js';
 import { getFragments } from '../api-handler.js';
@@ -295,8 +297,10 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
 
             const templateName =
                 fragment.targetAggregation === COLUMNS_AGGREGATION ? `V2_SMART_TABLE_COLUMN` : 'V2_SMART_TABLE_CELL';
-            const preparedChange = command.getPreparedChange();
-            setAdditionalChangeInfoForChangeFile(preparedChange.getDefinition().fileName, { templateName });
+            const preparedChange =
+                command.getPreparedChange() as unknown as Change<AddTableCellFragmentChangeContentType>;
+            const { fileName } = getChangeDefinition(preparedChange);
+            setAdditionalChangeInfoForChangeFile(fileName, { templateName });
             compositeCommand.addCommand(command, false);
         }
 
