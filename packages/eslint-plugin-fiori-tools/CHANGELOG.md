@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.6.2
+
+### Patch Changes
+
+- e3d69d5: chore(eslint-plugin-fiori-tools): switch build from tsc to esbuild bundling
+
+## 10.6.1
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@1.0.6
+
 ## 10.6.0
 
 ### Minor Changes
