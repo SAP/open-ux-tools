@@ -1,5 +1,11 @@
 # @sap-ux/telemetry
 
+## 1.0.9
+
+### Patch Changes
+
+- 7bfa518: fix console.time/timeEnd warnings
+
 ## 1.0.8
 
 ### Patch Changes
