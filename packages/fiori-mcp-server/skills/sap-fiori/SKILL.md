@@ -70,6 +70,6 @@ The Fiori MCP can add the following page types to existing applications:
    - Otherwise, ask the user to provide the SAP system name.
 3. **Fetching OData Service Metadata**: consult the Service Center MCP Server for discovering and selecting service from the backend system; if not available, fallback to the Fiori MCP Server.
 4. On any follow-up request to change or modify the UI of a RAP-based Fiori application, modify local annotation file (defined in manifest.json).
-5. RAP apps connect to remote OData V4 services (defined in `manifest.json` dataSources). 
+5. RAP apps connect to remote OData V4 services (defined in `manifest.json` dataSources).
 6. **Mock Data Generation**: To generate or manage mock data for standalone fiori apps based on RAP, consult the Fiori MCP Server with the query "generate mock data using data editor".
 7. Metadata is **read-only**
