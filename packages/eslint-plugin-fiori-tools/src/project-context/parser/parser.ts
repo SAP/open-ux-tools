@@ -212,7 +212,11 @@ export class ApplicationParser {
             });
             index.apps[key].changes = existingChanges;
         }
-        const content = fileCache.get(uri) ?? '';
+        const content = fileCache.get(uri);
+        if (!content) {
+            // File was deleted, already removed from changes arrays above.
+            return;
+        }
         const ast = parseJson(content, {
             mode: 'json',
             ranges: true,
