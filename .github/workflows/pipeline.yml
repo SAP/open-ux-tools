@@ -23,6 +23,15 @@ jobs:
               uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
               with:
                   fetch-depth: 0
+            - name: Enable long paths on Windows
+              if: runner.os == 'Windows'
+              shell: pwsh
+              run: |
+                  # node-gyp extracts deeply nested OpenSSL headers during native module builds
+                  # (e.g. better-sqlite3), which exceeds the default 260-char MAX_PATH limit.
+                  # The registry key enables long-path support OS-wide; git config covers git ops.
+                  git config --system core.longpaths true
+                  New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
               with:

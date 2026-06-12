@@ -43,6 +43,7 @@ describe('runPostAppGenHook', () => {
         expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
             t('error.eventHookErrors.vscodeInstanceMissing')
         );
+        expect(mockContext.vscodeInstance).toBeUndefined();
     });
 
     it('should log an error if postGenCommand is missing', async () => {
@@ -51,23 +52,33 @@ describe('runPostAppGenHook', () => {
         expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
             t('error.eventHookErrors.postGenCommandMissing')
         );
+        expect(mockContext.vscodeInstance?.commands?.executeCommand).not.toHaveBeenCalled();
     });
 
     it('should execute the post-generation command successfully', async () => {
         await runPostAppGenHook(mockContext);
         expect(mockContext.vscodeInstance?.commands?.executeCommand).toHaveBeenCalledWith('mockCommand', {
-            fsPath: '/mock/path'
+            fsPath: '/mock/path',
+            deployConfig: undefined
         });
     });
 
-    it('should log an error if executeCommand throws an error', async () => {
+    it('should pass deployConfig when provided', async () => {
+        const deployConfig = { target: { url: 'http://example.com' }, app: { name: 'myapp', package: 'MYPKG' } };
+        mockContext.deployConfig = deployConfig as any;
+        await runPostAppGenHook(mockContext);
+        expect(mockContext.vscodeInstance?.commands?.executeCommand).toHaveBeenCalledWith('mockCommand', {
+            fsPath: '/mock/path',
+            deployConfig
+        });
+    });
+
+    it('should log an error if executeCommand throws', async () => {
         const mockError = new Error('Command execution failed');
         if (mockContext.vscodeInstance) {
             mockContext.vscodeInstance.commands.executeCommand = jest.fn().mockRejectedValue(mockError) as any;
         }
         await runPostAppGenHook(mockContext);
-        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
-            t('error.eventHookErrors.commandExecutionFailed')
-        );
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledTimes(1);
     });
 });

@@ -1985,15 +1985,6 @@ importers:
 
   packages/eslint-plugin-fiori-tools:
     dependencies:
-      '@babel/core':
-        specifier: 8.0.0-rc.6
-        version: 8.0.0-rc.6
-      '@babel/eslint-parser':
-        specifier: 8.0.0-rc.6
-        version: 8.0.0-rc.6(@babel/core@8.0.0-rc.6)(eslint@9.39.1)
-      '@babel/parser':
-        specifier: 8.0.0-rc.6
-        version: 8.0.0-rc.6
       '@typescript-eslint/eslint-plugin':
         specifier: 8.57.2
         version: 8.57.2(@typescript-eslint/parser@8.57.2(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3)
@@ -2004,6 +1995,15 @@ importers:
         specifier: ^8.57.2
         version: 8.57.2(eslint@9.39.1)(typescript@5.9.3)
     devDependencies:
+      '@babel/core':
+        specifier: 8.0.0-rc.6
+        version: 8.0.0-rc.6
+      '@babel/eslint-parser':
+        specifier: 8.0.0-rc.6
+        version: 8.0.0-rc.6(@babel/core@8.0.0-rc.6)(eslint@9.39.1)
+      '@babel/parser':
+        specifier: 8.0.0-rc.6
+        version: 8.0.0-rc.6
       '@eslint/config-helpers':
         specifier: 0.5.3
         version: 0.5.3
@@ -33509,7 +33509,7 @@ snapshots:
 
   retry-axios@2.6.0(axios@1.16.1):
     dependencies:
-      axios: 1.16.1
+      axios: 1.16.1(debug@4.3.4)
     optional: true
 
   retry@0.12.0: {}
