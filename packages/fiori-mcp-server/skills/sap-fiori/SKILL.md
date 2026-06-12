@@ -20,7 +20,7 @@ metadata:
 4. The data model must be suitable for SAP Fiori elements: one main entity with one or more navigation properties to related entities.
 5. Each property of an entity must have a proper datatype.
 6. When modifying the SAP Fiori elements application (e.g., adding columns), **do not** use screen personalization.
-7. Before modifying the code directly - first check whether Fiori MCP server provides a suitable function.
+7. Before modifying the code directly - first check whether Fiori MCP server provides a suitable function or tool.
 
 ### Available Application Templates (Both CAP and RAP)
 
@@ -65,11 +65,18 @@ The Fiori MCP can add the following page types to existing applications:
 ## RAP/ABAP-Specific Guidelines
 
 1. For standalone Fiori applications based on RAP/ABAP backend, the application is created at the root level by Fiori MCP tools.
-2. **SAP System/Destination Name**: If the SAP system or destination name (e.g., UI3CLNT000) is not provided by the user:
-   - If Service Center MCP Server is available, show the list of available destinations for the user to select.
-   - Otherwise, ask the user to provide the SAP system name.
-3. **Fetching OData Service Metadata**: consult the Service Center MCP Server for discovering and selecting service from the backend system; if not available, fallback to the Fiori MCP Server.
-4. On any follow-up request to change or modify the UI of a RAP-based Fiori application, modify local annotation file (defined in manifest.json).
+2. **SAP System/Destination Name**: If the user doesn't provide an SAP system or destination name (e.g., DEVCLNT000), use the Fiori MCP Server to retrieve and present available systems/destinations for user selection.
+3. **Fetching OData Service Metadata**: Use the Fiori MCP Server to discover and select services from the backend system. If the service metadata cannot be retrieved, try the Service Center MCP Server as an alternative.
+4. **UI Modifications**: For any follow-up requests to change or modify the UI of a RAP-based Fiori application, modify the local annotation file (e.g., `/webapp/annotations/annotation.xml`) referenced in `manifest.json` with matching `uri` and `localUri` values:
+   ```json
+   "annotation": {
+     "type": "ODataAnnotation",
+     "uri": "annotations/annotation.xml",
+     "settings": {
+       "localUri": "annotations/annotation.xml"
+     }
+   }
+   ```
 5. RAP apps connect to remote OData V4 services (defined in `manifest.json` dataSources).
 6. **Mock Data Generation**: To generate or manage mock data for standalone fiori apps based on RAP, consult the Fiori MCP Server with the query "generate mock data using data editor".
 7. Metadata is **read-only**
