@@ -20,7 +20,8 @@ export const DESCRIPTION_COLUMN_LABEL = 'sap-description-column-label';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
-    manifest: ManifestPropertyDiagnosticData;
+    manifest: Partial<ManifestPropertyDiagnosticData> &
+        Pick<ManifestPropertyDiagnosticData, 'uri' | 'object' | 'propertyPath'>;
     pageName: string;
     pageSectionName?: string;
     annotation: {

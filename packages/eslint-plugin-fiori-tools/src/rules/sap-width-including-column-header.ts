@@ -1,6 +1,6 @@
 import type { Element, AliasInformation } from '@sap-ux/odata-annotation-core';
 import { Edm, elementsWithName, elements } from '@sap-ux/odata-annotation-core';
-import type { LocationRange, MemberNode } from '@humanwhocodes/momoa';
+import type { MemberNode } from '@humanwhocodes/momoa';
 import { createFioriRule } from '../language/rule-factory.js';
 import type { FioriRuleDefinition } from '../types.js';
 import type { WidthIncludingColumnHeaderDiagnostic } from '../language/diagnostics.js';
@@ -73,16 +73,13 @@ function checkTable(
     const aliasInfo = parsedService.artifacts.aliasInfo[table.annotation.annotation.top.uri];
 
     if (shouldTableHaveWidthIncludingColumnHeader(table, aliasInfo)) {
-        let loc: LocationRange = {
-            start: { column: 0, line: 0, offset: 0 },
-            end: { column: 0, line: 0, offset: 0 }
-        };
-        if (sourceCode instanceof FioriJSONSourceCode) {
-            loc = sourceCode.getNode(
-                sourceCode.ast.body,
-                table.configuration.widthIncludingColumnHeader.configurationPath
-            ).loc;
-        }
+        const loc =
+            sourceCode instanceof FioriJSONSourceCode
+                ? sourceCode.getNode(
+                      sourceCode.ast.body,
+                      table.configuration.widthIncludingColumnHeader.configurationPath
+                  ).loc
+                : undefined;
         problems.push({
             type: WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
             pageName: page.targetName,
