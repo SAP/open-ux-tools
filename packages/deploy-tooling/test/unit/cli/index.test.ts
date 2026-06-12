@@ -174,6 +174,26 @@ describe('cli', () => {
                 );
             }
         );
+
+        test('passes exclude from config file to getArchive', async () => {
+            process.argv = minimumConfigCmd;
+            await runDeploy();
+            expect(mockGetArchive).toHaveBeenCalledWith(
+                expect.any(ToolsLogger),
+                expect.anything(),
+                ['/test/']
+            );
+        });
+
+        test('passes --exclude CLI patterns to getArchive', async () => {
+            process.argv = [...cliCmd, '--exclude', '/test/', '/localService/', '/MyFolder/'];
+            await runDeploy();
+            expect(mockGetArchive).toHaveBeenCalledWith(
+                expect.any(ToolsLogger),
+                expect.anything(),
+                ['/test/', '/localService/', '/MyFolder/']
+            );
+        });
     });
 
     describe('runUndeploy', () => {
