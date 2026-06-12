@@ -1,3 +1,4 @@
+--------------------------------
 # OPA5 Integration Tests for SAP Fiori Elements applications
 
 ## Introduction
