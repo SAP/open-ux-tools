@@ -255,10 +255,10 @@ builder:
           package: TESTPKG12
           description: Mock deployment description
           transport: TR123
-        lrep: MOCK_LREP
         exclude:
           - /test/
           - /localService/
+        lrep: MOCK_LREP
 ",
     "state": "modified",
   },

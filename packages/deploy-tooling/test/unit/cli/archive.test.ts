@@ -44,6 +44,14 @@ describe('cli/archive', () => {
                 expect(error).toBeDefined();
             }
         });
+
+        test('excludes entries matching patterns', async () => {
+            const archiveFolder = join(__testdirname, '../../fixtures/simple-app/webapp');
+            const archive = await getArchive(nullLogger, { archiveFolder } as any, ['ext/']);
+            const entries = new AdmZip(archive).getEntries().map((entry) => entry.entryName);
+            expect(entries.some((e) => e.startsWith('ext/'))).toBe(false);
+            expect(entries.length).toBeGreaterThan(0);
+        });
     });
 
     describe('getArchiveFromPath', () => {

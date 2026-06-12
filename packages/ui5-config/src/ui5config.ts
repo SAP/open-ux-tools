@@ -693,7 +693,13 @@ export class UI5Config {
     ): this {
         this.addBuilderResourceExcludes();
         const builderExcludes = this.getBuilderResourceExcludes().map((p) => {
-            const prefix = p.replace(/\/?\*+$/, '');
+            let prefix = p;
+            while (prefix.endsWith('*')) {
+                prefix = prefix.slice(0, -1);
+            }
+            if (prefix !== p && prefix.endsWith('/')) {
+                prefix = prefix.slice(0, -1);
+            }
             const withSlash = prefix.endsWith('/') ? prefix : `${prefix}/`;
             return withSlash.startsWith('/') ? withSlash : `/${withSlash}`;
         });
