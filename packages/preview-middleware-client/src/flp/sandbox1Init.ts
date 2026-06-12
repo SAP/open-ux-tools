@@ -5,7 +5,7 @@ import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 import type Component from 'sap/ui/core/Component';
 import { getError } from '../utils/error.js';
 import initConnectors from './initConnectors.js';
-import { getUi5Version, Ui5VersionInfo } from '../utils/version.js';
+import { getUi5Version } from '../utils/version.js';
 import {
     addCardGenerationUserAction,
     loadI18nResourceBundle,
