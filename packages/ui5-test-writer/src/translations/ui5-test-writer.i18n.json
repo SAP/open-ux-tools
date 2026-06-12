@@ -8,12 +8,12 @@
         "errorWritingTsConfig": "An error occurred when writing the `tsconfig.json` file: {{ error }}"
     },
     "warn": {
-        "cannotUpdateJourneyRunner": "Could not update `JourneyRunner.js`. The existing file may be missing or unreadable; new pages were not registered.",
-        "cannotUpdateOpaTestsQunit": "Could not update `opaTests.qunit.js`. The existing file may be missing or unreadable; new journey paths were not registered.",
-        "cannotUpdateOpaJourneyTypes": "Could not update `OpaJourneyTypes.d.ts`. The existing file may be missing or unreadable; new journey type definitions were not registered."
+        "cannotUpdateJourneyRunner": "Could not update `JourneyRunner.js`. The existing file may be missing or unreadable. New pages were not registered.",
+        "cannotUpdateOpaTestsQunit": "Could not update `opaTests.qunit.js`. The existing file may be missing or unreadable. New journey paths were not registered.",
+        "cannotUpdateOpaJourneyTypes": "Could not update `OpaJourneyTypes.d.ts`. The existing file may be missing or unreadable. New journey type definitions were not registered."
     },
     "info": {
-        "opaJourneyTypesNotUpdated": "OpaJourneyTypes.d.ts was not updated due to an incompatible existing test setup.",
-        "incompatibleTestSetupSkipped": "testsuite.qunit and opaTests.qunit files were not updated due to an incompatible existing test setup."
+        "opaJourneyTypesNotUpdated": "`OpaJourneyTypes.d.ts` was not updated due to an incompatible existing test setup.",
+        "incompatibleTestSetupSkipped": "`testsuite.qunit` and `opaTests.qunit` files were not updated due to an incompatible existing test setup."
     }
 }

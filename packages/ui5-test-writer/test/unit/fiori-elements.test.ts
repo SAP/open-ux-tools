@@ -487,7 +487,7 @@ describe('ui5-test-writer', () => {
 
             describe('existing app with incompatible test setup (no own JourneyRunner.js, AllJourneys.json or JourneyRunner reference in opaTests.qunit.js)', () => {
                 const incompatibleMessage =
-                    'testsuite.qunit and opaTests.qunit files were not updated due to an incompatible existing test setup.';
+                    '`testsuite.qunit` and `opaTests.qunit` files were not updated due to an incompatible existing test setup.';
 
                 beforeEach(() => {
                     hasVirtualOPA5Mock.mockResolvedValue(false);
