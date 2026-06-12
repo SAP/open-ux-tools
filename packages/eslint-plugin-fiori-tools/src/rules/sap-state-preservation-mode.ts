@@ -130,11 +130,10 @@ const rule: FioriRuleDefinition = createFioriRule({
                 continue;
             }
 
-            const node =
-                context.sourceCode.getNode(
-                    context.sourceCode.ast.body,
-                    linkedApp.configuration.statePreservationMode.configurationPath
-                ) ?? context.sourceCode.ast.body;
+            const node = context.sourceCode.getNode(
+                context.sourceCode.ast.body,
+                linkedApp.configuration.statePreservationMode.configurationPath
+            );
 
             // Check if the value is valid for V2
             const invalidProblem = checkInvalidMode(statePreservationMode, validValues, hasFCL, linkedApp, app, node);

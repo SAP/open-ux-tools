@@ -101,7 +101,10 @@ function checkConfiguration(
         wrongValue = true;
     }
     if (config?.valueInFile === wrongValue) {
-        const node = (sourceCode as FioriJSONSourceCode).getNode(sourceCode.ast.body, config.configurationPath);
+        if (!(sourceCode instanceof FioriJSONSourceCode)) {
+            return;
+        }
+        const node = sourceCode.getNode(sourceCode.ast.body, config.configurationPath);
         const copyIssue: CopyToClipboard | undefined = {
             type: COPY_TO_CLIPBOARD,
             pageName: page.targetName,

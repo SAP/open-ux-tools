@@ -69,7 +69,7 @@ export class FioriJSONSourceCode extends JSONSourceCode {
      * @param node - Initial node, start from ast body or closer to the searched node
      * @param path - Path to the node
      * @param parentNode - Parent node of the searched node
-     * @returns
+     * @returns Node at the given path, or the closest ancestor if the full path is not found
      */
     private readonly getNodeOrParent = (
         node: ValueNode | MemberNode | undefined,
