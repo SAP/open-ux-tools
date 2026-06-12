@@ -73,6 +73,16 @@ async function getDestinationNamePrompt(
         validate: (destination: string): string | boolean => {
             return validators.validateDestinationQuestion(destination, !destination && isBAS);
         },
+        additionalMessages: (selectedDestination: string) => {
+            const choice = destinationList.find((c) => c.value === selectedDestination);
+            if (choice?.isFullUrl) {
+                return {
+                    message: t('warning.fullUrlDestinationWarning'),
+                    severity: Severity.warning
+                };
+            }
+            return undefined;
+        },
         source: (prevAnswers: CfDeployConfigAnswers, input: string) => searchChoices(input, destinationList),
         choices: () => destinationList
     } as InputQuestion<CfDeployConfigAnswers>;

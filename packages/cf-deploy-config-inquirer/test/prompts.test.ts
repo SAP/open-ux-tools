@@ -101,7 +101,7 @@ describe('Prompt Generation Tests', () => {
             // ensure additional choice is added to the BTP destination list
             expect(((destinationNamePrompt as ListQuestion)?.choices as Function)()).toStrictEqual([
                 ...additionalChoiceList,
-                { name: 'btpTestDest - btpTestDest', value: 'btpTestDest', scp: false, url: 'btpTestDest' }
+                { name: 'btpTestDest - btpTestDest', value: 'btpTestDest', scp: false, url: 'btpTestDest', isFullUrl: false }
             ]);
         });
 
@@ -192,6 +192,43 @@ describe('Prompt Generation Tests', () => {
             expect((destinationNamePrompt?.source as Function)()).toEqual(additionalChoiceList);
             // Default should be used
             expect((destinationNamePrompt?.default as Function)()).toEqual(additionalChoiceList[0].name);
+        });
+
+        it('shows warning additionalMessage when selected destination is a full URL destination', async () => {
+            const fullUrlChoice: CfSystemChoice = {
+                name: 'fullUrlDest - https://example.com/sap/opu/odata',
+                value: 'fullUrlDest',
+                scp: false,
+                url: 'https://example.com/sap/opu/odata',
+                isFullUrl: true
+            };
+            promptOptions = {
+                [promptNames.destinationName]: {
+                    ...destinationPrompts,
+                    additionalChoiceList: [fullUrlChoice],
+                    addBTPDestinationList: false
+                }
+            };
+            mockIsAppStudio.mockReturnValueOnce(false);
+            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
+            const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
+            const result = ((destinationNamePrompt as YUIQuestion)?.additionalMessages as Function)('fullUrlDest');
+            expect(result).toEqual({ message: t('warning.fullUrlDestinationWarning'), severity: Severity.warning });
+        });
+
+        it('returns undefined additionalMessage when selected destination is not a full URL destination', async () => {
+            promptOptions = {
+                [promptNames.destinationName]: {
+                    ...destinationPrompts,
+                    additionalChoiceList,
+                    addBTPDestinationList: false
+                }
+            };
+            mockIsAppStudio.mockReturnValueOnce(false);
+            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
+            const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
+            const result = ((destinationNamePrompt as YUIQuestion)?.additionalMessages as Function)('testValue');
+            expect(result).toBeUndefined();
         });
     });
 
