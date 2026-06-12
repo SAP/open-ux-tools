@@ -3,7 +3,7 @@ import { networkInterfaces } from 'node:os';
 import { devspace } from '@sap/bas-sdk';
 import type { ToolsLogger } from '@sap-ux/logger';
 import QRCode from 'qrcode';
-import type { LogCollector } from './utils/logCollector';
+import type { LogCollector } from './utils/logCollector.js';
 
 /**
  * Log remote URL for mobile device access.

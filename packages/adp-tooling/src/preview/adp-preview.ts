@@ -15,15 +15,15 @@ import type {
     MergedAppDescriptor
 } from '@sap-ux/axios-extension';
 
-import RoutesHandler from './routes-handler';
-import OvpRoutesHandler from './ovp-routes-handler';
+import RoutesHandler from './routes-handler.js';
+import OvpRoutesHandler from './ovp-routes-handler.js';
 import type {
     AdpPreviewConfig,
     CommonChangeProperties,
     DescriptorVariant,
     OperationType,
     CommonAdditionalChangeInfoProperties
-} from '../types';
+} from '../types.js';
 import type { Editor } from 'mem-fs-editor';
 import {
     addAnnotationFile,
@@ -35,9 +35,9 @@ import {
     moduleNameContentMap,
     tryFixChange,
     isV4DescriptorChange
-} from './change-handler';
-import { addCustomFragment } from './descriptor-change-handler';
-import { getExistingAdpProjectType } from '../base/helper';
+} from './change-handler.js';
+import { addCustomFragment } from './descriptor-change-handler.js';
+import { getExistingAdpProjectType } from '../base/helper.js';
 import path from 'node:path';
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
@@ -118,10 +118,17 @@ export class AdpPreview {
     }
 
     /**
-     * @returns {AdaptationProjectType | undefined} The project type.
+     * @returns The project type.
      */
     get projectType(): AdaptationProjectType | undefined {
         return this.projectTypeValue;
+    }
+
+    /**
+     * @returns the ABAP service provider used to connect to the backend, or undefined if not initialized or in CF build mode.
+     */
+    get serviceProvider(): AbapServiceProvider | undefined {
+        return this.provider;
     }
 
     /**

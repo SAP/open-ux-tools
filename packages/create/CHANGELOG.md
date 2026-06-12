@@ -1,5 +1,322 @@
 # @sap-ux/create
 
+## 1.0.19
+
+### Patch Changes
+
+- Updated dependencies [e66a8a9]
+    - @sap-ux/adp-tooling@1.0.13
+    - @sap-ux/app-config-writer@1.0.9
+    - @sap-ux/flp-config-inquirer@1.0.13
+    - @sap-ux/preview-middleware@1.0.16
+
+## 1.0.18
+
+### Patch Changes
+
+- Updated dependencies [28648e0]
+    - @sap-ux/app-config-writer@1.0.8
+
+## 1.0.17
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@2.0.10
+- @sap-ux/cap-config-writer@1.0.10
+- @sap-ux/flp-config-inquirer@1.0.12
+- @sap-ux/adp-tooling@1.0.12
+- @sap-ux/preview-middleware@1.0.15
+- @sap-ux/app-config-writer@1.0.7
+
+## 1.0.16
+
+### Patch Changes
+
+- 9a82ef4: fix(create): correct error message to use 'update system' instead of 'change system'
+
+## 1.0.15
+
+### Patch Changes
+
+- Updated dependencies [c8e8f7e]
+    - @sap-ux/ui5-config@1.0.3
+    - @sap-ux/abap-deploy-config-writer@1.0.7
+    - @sap-ux/adp-tooling@1.0.11
+    - @sap-ux/abap-deploy-config-inquirer@2.0.9
+    - @sap-ux/app-config-writer@1.0.7
+    - @sap-ux/mockserver-config-writer@1.0.6
+    - @sap-ux/odata-service-writer@1.0.6
+    - @sap-ux/project-access@2.1.2
+    - @sap-ux/flp-config-inquirer@1.0.11
+    - @sap-ux/preview-middleware@1.0.14
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/cap-config-writer@1.0.9
+    - @sap-ux/system-access@1.0.2
+
+## 1.0.14
+
+### Patch Changes
+
+- Updated dependencies [0fa8305]
+    - @sap-ux/btp-utils@2.0.2
+    - @sap-ux/abap-deploy-config-inquirer@2.0.8
+    - @sap-ux/adp-tooling@1.0.10
+    - @sap-ux/app-config-writer@1.0.6
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/flp-config-inquirer@1.0.10
+    - @sap-ux/nodejs-utils@1.0.3
+    - @sap-ux/preview-middleware@1.0.13
+    - @sap-ux/system-access@1.0.2
+    - @sap-ux/odata-service-writer@1.0.5
+    - @sap-ux/cap-config-writer@1.0.8
+    - @sap-ux/abap-deploy-config-writer@1.0.6
+
+## 1.0.13
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@2.0.7
+- @sap-ux/cap-config-writer@1.0.7
+- @sap-ux/flp-config-inquirer@1.0.9
+- @sap-ux/adp-tooling@1.0.9
+- @sap-ux/preview-middleware@1.0.12
+- @sap-ux/app-config-writer@1.0.5
+
+## 1.0.12
+
+### Patch Changes
+
+- Updated dependencies [bcfe9e3]
+    - @sap-ux/preview-middleware@1.0.11
+    - @sap-ux/app-config-writer@1.0.5
+
+## 1.0.11
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+    - @sap-ux/cap-config-writer@1.0.6
+    - @sap-ux/abap-deploy-config-writer@1.0.5
+    - @sap-ux/adp-tooling@1.0.8
+    - @sap-ux/app-config-writer@1.0.5
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/flp-config-inquirer@1.0.8
+    - @sap-ux/mockserver-config-writer@1.0.5
+    - @sap-ux/odata-service-writer@1.0.5
+    - @sap-ux/preview-middleware@1.0.10
+    - @sap-ux/system-access@1.0.1
+    - @sap-ux/abap-deploy-config-inquirer@2.0.6
+
+## 1.0.10
+
+### Patch Changes
+
+- Updated dependencies [fb84c0e]
+    - @sap-ux/adp-tooling@1.0.7
+    - @sap-ux/flp-config-inquirer@1.0.7
+    - @sap-ux/preview-middleware@1.0.9
+    - @sap-ux/app-config-writer@1.0.4
+
+## 1.0.9
+
+### Patch Changes
+
+- Updated dependencies [b326a9a]
+- Updated dependencies [b326a9a]
+    - @sap-ux/flp-config-inquirer@1.0.6
+    - @sap-ux/project-access@2.1.0
+    - @sap-ux/preview-middleware@1.0.8
+    - @sap-ux/abap-deploy-config-writer@1.0.4
+    - @sap-ux/adp-tooling@1.0.6
+    - @sap-ux/app-config-writer@1.0.4
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/cap-config-writer@1.0.5
+    - @sap-ux/mockserver-config-writer@1.0.4
+    - @sap-ux/odata-service-writer@1.0.4
+    - @sap-ux/system-access@1.0.1
+    - @sap-ux/abap-deploy-config-inquirer@2.0.5
+
+## 1.0.8
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/abap-deploy-config-inquirer@2.0.4
+    - @sap-ux/abap-deploy-config-writer@1.0.3
+    - @sap-ux/mockserver-config-writer@1.0.3
+    - @sap-ux/odata-service-writer@1.0.3
+    - @sap-ux/flp-config-inquirer@1.0.5
+    - @sap-ux/preview-middleware@1.0.7
+    - @sap-ux/app-config-writer@1.0.3
+    - @sap-ux/cap-config-writer@1.0.4
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux/system-access@1.0.1
+    - @sap-ux/nodejs-utils@1.0.2
+    - @sap-ux/adp-tooling@1.0.5
+    - @sap-ux/ui5-config@1.0.2
+    - @sap-ux/btp-utils@2.0.1
+    - @sap-ux/logger@1.0.1
+    - @sap-ux/store@2.0.1
+
+## 1.0.7
+
+### Patch Changes
+
+- Updated dependencies [9580241]
+    - @sap-ux/ui5-config@1.0.1
+    - @sap-ux/abap-deploy-config-inquirer@2.0.3
+    - @sap-ux/abap-deploy-config-writer@1.0.2
+    - @sap-ux/adp-tooling@1.0.4
+    - @sap-ux/app-config-writer@1.0.2
+    - @sap-ux/mockserver-config-writer@1.0.2
+    - @sap-ux/odata-service-writer@1.0.2
+    - @sap-ux/project-access@2.0.2
+    - @sap-ux/flp-config-inquirer@1.0.4
+    - @sap-ux/preview-middleware@1.0.6
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/cap-config-writer@1.0.3
+    - @sap-ux/system-access@1.0.0
+
+## 1.0.6
+
+### Patch Changes
+
+- 3140dcc: FIX: replace `change system` with `update system`
+
+## 1.0.5
+
+### Patch Changes
+
+- Updated dependencies [3506d2c]
+    - @sap-ux/preview-middleware@1.0.5
+    - @sap-ux/app-config-writer@1.0.1
+
+## 1.0.4
+
+### Patch Changes
+
+- Updated dependencies [41f327a]
+    - @sap-ux/nodejs-utils@1.0.1
+    - @sap-ux/abap-deploy-config-inquirer@2.0.2
+    - @sap-ux/adp-tooling@1.0.3
+    - @sap-ux/flp-config-inquirer@1.0.3
+    - @sap-ux/preview-middleware@1.0.4
+    - @sap-ux/app-config-writer@1.0.1
+    - @sap-ux/cap-config-writer@1.0.2
+
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies [a8e4cf0]
+    - @sap-ux/adp-tooling@1.0.2
+    - @sap-ux/flp-config-inquirer@1.0.2
+    - @sap-ux/preview-middleware@1.0.3
+    - @sap-ux/app-config-writer@1.0.1
+
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies [8024912]
+    - @sap-ux/preview-middleware@1.0.2
+    - @sap-ux/app-config-writer@1.0.1
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+    - @sap-ux/abap-deploy-config-writer@1.0.1
+    - @sap-ux/adp-tooling@1.0.1
+    - @sap-ux/app-config-writer@1.0.1
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/cap-config-writer@1.0.1
+    - @sap-ux/flp-config-inquirer@1.0.1
+    - @sap-ux/mockserver-config-writer@1.0.1
+    - @sap-ux/odata-service-writer@1.0.1
+    - @sap-ux/preview-middleware@1.0.1
+    - @sap-ux/system-access@1.0.0
+    - @sap-ux/abap-deploy-config-inquirer@2.0.1
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/abap-deploy-config-inquirer@2.0.0
+    - @sap-ux/abap-deploy-config-writer@1.0.0
+    - @sap-ux/mockserver-config-writer@1.0.0
+    - @sap-ux/odata-service-writer@1.0.0
+    - @sap-ux/flp-config-inquirer@1.0.0
+    - @sap-ux/preview-middleware@1.0.0
+    - @sap-ux/app-config-writer@1.0.0
+    - @sap-ux/cap-config-writer@1.0.0
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/project-access@2.0.0
+    - @sap-ux/system-access@1.0.0
+    - @sap-ux/nodejs-utils@1.0.0
+    - @sap-ux/adp-tooling@1.0.0
+    - @sap-ux/ui5-config@1.0.0
+    - @sap-ux/btp-utils@2.0.0
+    - @sap-ux/logger@1.0.0
+    - @sap-ux/store@2.0.0
+
+## 0.17.6
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.9.7
+- @sap-ux/adp-tooling@0.19.11
+- @sap-ux/flp-config-inquirer@0.5.11
+- @sap-ux/preview-middleware@0.26.12
+- @sap-ux/app-config-writer@0.7.6
+
+## 0.17.5
+
+### Patch Changes
+
+- Updated dependencies [9a980a9]
+    - @sap-ux/preview-middleware@0.26.11
+    - @sap-ux/adp-tooling@0.19.10
+    - @sap-ux/app-config-writer@0.7.6
+    - @sap-ux/flp-config-inquirer@0.5.10
+
 ## 0.17.4
 
 ### Patch Changes

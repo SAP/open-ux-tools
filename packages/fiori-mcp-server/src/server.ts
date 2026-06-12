@@ -9,7 +9,7 @@ import {
     SUPPORTED_PROTOCOL_VERSIONS,
     type CallToolResult
 } from '@modelcontextprotocol/sdk/types.js';
-import packageJson from '../package.json';
+import { PACKAGE_VERSION } from './package-info.js';
 import {
     docSearch,
     listFioriApps,
@@ -17,17 +17,17 @@ import {
     getFunctionalityDetails,
     executeFunctionality,
     tools
-} from './tools';
-import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry';
-import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from './constant';
+} from './tools/index.js';
+import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry/index.js';
+import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from './constant.js';
 import type {
     ExecuteFunctionalityInput,
     GetFunctionalityDetailsInput,
     DocSearchInput,
     ListFioriAppsInput,
     ListFunctionalitiesInput
-} from './types';
-import { logger } from './utils/logger';
+} from './types/index.js';
+import { logger } from './utils/logger.js';
 
 type ToolArgs =
     | DocSearchInput
@@ -67,7 +67,7 @@ export class FioriFunctionalityServer {
         this.server = new Server(
             {
                 name: 'fiori-mcp',
-                version: packageJson.version,
+                version: PACKAGE_VERSION,
                 icons: [
                     {
                         src: 'https://raw.githubusercontent.com/SAP/open-ux-tools/main/packages/fiori-mcp-server/assets/icon.svg',
@@ -136,7 +136,7 @@ export class FioriFunctionalityServer {
                 },
                 serverInfo: {
                     name: 'fiori-mcp',
-                    version: packageJson.version
+                    version: PACKAGE_VERSION
                 }
             };
         });
@@ -164,7 +164,7 @@ export class FioriFunctionalityServer {
                     mcpClientName: this.mcpClientName,
                     mcpClientVersion: this.mcpClientVersion
                 };
-                if ('functionalityId' in args) {
+                if (args && 'functionalityId' in args) {
                     const { functionalityId } = args;
                     const shouldPrefixWithPropertyChange =
                         Array.isArray(functionalityId) && functionalityId.length >= 1;
@@ -268,7 +268,7 @@ export class FioriFunctionalityServer {
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
         logger.info(
-            `SAP Fiori - Model Context Protocol (MCP) server (@sap-ux/fiori-mcp-server@${packageJson.version}) running on stdio`
+            `SAP Fiori - Model Context Protocol (MCP) server (@sap-ux/fiori-mcp-server@${PACKAGE_VERSION}) running on stdio`
         );
         // The remaining (slow) telemetry init runs fire-and-forget after transport.connect() so it
         // never blocks the MCP handshake. This is required for Claude Desktop's built-in Node runner,

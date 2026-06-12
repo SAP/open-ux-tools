@@ -1,5 +1,5 @@
 import Utils from 'mock/sap/ui/fl/Utils';
-import { buildControlData } from '../../../src/cpe/control-data';
+import { buildControlData } from '../../../src/cpe/control-data.js';
 import { getNameMock } from 'mock/sap/ui/base/DataType';
 import { sapMock } from 'mock/window';
 import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
@@ -7,7 +7,7 @@ import type { DesigntimeSetting, ManifestSettingsValue } from 'sap/ui/dt/DesignT
 
 describe('controlData', () => {
     // prepare
-    sapMock.ui.require.mockImplementation((path: any) => {
+    sapMock.ui.require.mockImplementation((path) => {
         if (path === 'sap/ui/core/aria/HasPopup') {
             return { None: 'None', Menu: 'Menu', ListBox: 'ListBox' };
         }

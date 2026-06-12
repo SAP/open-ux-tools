@@ -1,4 +1,4 @@
-import { getLineOffsets } from '../src/line-offsets';
+import { getLineOffsets } from '../src/line-offsets.js';
 
 describe('getLineOffsets', () => {
     test('should return [0] for an empty string', () => {

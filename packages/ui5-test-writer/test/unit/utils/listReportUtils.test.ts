@@ -18,14 +18,17 @@ import {
     getSemanticKeyPropertiesFromMetadata,
     isSemanticKeyInFilterBar,
     safeGetSemanticKeyProperties
-} from '../../../src/utils/listReportUtils';
-import type { ButtonState, FEV4ManifestTarget } from '../../../src/types';
+} from '../../../src/utils/listReportUtils.js';
+import type { ButtonState, FEV4ManifestTarget } from '../../../src/types.js';
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 import type { Manifest } from '@sap-ux/project-access';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('Test buildButtonState()', () => {
     test('should return visible false when buttonState is undefined', () => {

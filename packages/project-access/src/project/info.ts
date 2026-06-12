@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { join, relative } from 'node:path';
-import { DirName, FileName } from '../constants';
-import { fileExists, findFilesByExtension, readJSON } from '../file';
+import { DirName, FileName } from '../constants.js';
+import { fileExists, findFilesByExtension, readJSON } from '../file/index.js';
 import type {
     AllAppResults,
     ApplicationStructure,
@@ -11,14 +11,14 @@ import type {
     Package,
     Project,
     ProjectType
-} from '../types';
-import { getCapCustomPaths, getCapProjectType } from './cap';
-import { getI18nPropertiesPaths } from './i18n/i18n';
-import { findAllApps, findFioriArtifacts } from './search';
-import { getMainService, getServicesAndAnnotations } from './service';
-import { getWebappPath } from './ui5-config';
+} from '../types/index.js';
+import { getCapCustomPaths, getCapProjectType } from './cap.js';
+import { getI18nPropertiesPaths } from './i18n/i18n.js';
+import { findAllApps, findFioriArtifacts } from './search.js';
+import { getMainService, getServicesAndAnnotations } from './service.js';
+import { getWebappPath } from './ui5-config.js';
 import { gte, valid } from 'semver';
-import { normalizePath } from '../path';
+import { normalizePath } from '../path/index.js';
 
 /**
  * Returns the project structure for a given Fiori project.

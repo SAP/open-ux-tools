@@ -1,4 +1,4 @@
-import type { CustomElement, InternalCustomElement, WriterConfig } from '../common/types';
+import type { CustomElement, InternalCustomElement, WriterConfig } from '../common/types.js';
 
 /**
  * Incoming navigation configuration.

@@ -1,7 +1,7 @@
+import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { mergeEffectiveOptions } from '../../../src/config/config';
-import { createResponseInterceptor, createProxy } from '../../../src/proxy/proxy';
+import { mergeEffectiveOptions } from '../../../src/config/config.js';
 
 type InterceptorCallback = (
     responseBuffer: Buffer,
@@ -22,7 +22,7 @@ let capturedProxyOptions: {
     on?: ProxyOnHandlers;
 } | null = null;
 
-jest.mock('http-proxy-middleware', () => ({
+jest.unstable_mockModule('http-proxy-middleware', () => ({
     createProxyMiddleware: jest.fn((options: typeof capturedProxyOptions) => {
         capturedProxyOptions = options;
         return (_req: unknown, _res: unknown, next: () => void) => next();
@@ -32,6 +32,8 @@ jest.mock('http-proxy-middleware', () => ({
         return (_proxyRes: unknown, _req: unknown, _res: unknown) => Promise.resolve(Buffer.from(''));
     })
 }));
+
+const { createResponseInterceptor, createProxy } = await import('../../../src/proxy/proxy.js');
 
 describe('proxy', () => {
     describe('createResponseInterceptor', () => {

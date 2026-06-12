@@ -323,7 +323,7 @@ export default class MyHomeController extends Controller {
 
             const cardCount = cards.length;
             const viewModel = view.getModel('view') as JSONModel;
-            viewModel?.setProperty('/cards', []);
+            viewModel?.setProperty('/cards', cards);
             (view.byId('insightsTitle') as Title)?.setText(
                 `${this.getText('insightsTitle')}${cardCount > 0 ? ` (${cardCount})` : ''}`
             );

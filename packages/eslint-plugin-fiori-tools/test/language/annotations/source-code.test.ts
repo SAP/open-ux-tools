@@ -1,10 +1,10 @@
 import type { AnnotationFile } from '@sap-ux/odata-annotation-core';
 import { getXmlServiceArtifacts } from '@sap-ux/fiori-annotation-api';
 
-import type { ProjectContext } from '../../../src/project-context/project-context';
-import { FioriAnnotationSourceCode } from '../../../src/language/annotations/source-code';
-import { STEP_PHASE } from '../../../src/language/annotations/traversal-step';
-import { getAnnotationsAsXmlCode, V4_ANNOTATIONS, V4_METADATA } from '../../test-helper';
+import type { ProjectContext } from '../../../src/project-context/project-context.js';
+import { FioriAnnotationSourceCode } from '../../../src/language/annotations/source-code.js';
+import { STEP_PHASE } from '../../../src/language/annotations/traversal-step.js';
+import { getAnnotationsAsXmlCode, V4_ANNOTATIONS, V4_METADATA } from '../../test-helper.js';
 
 function getAst(annotations?: string): AnnotationFile {
     const annotationContent = annotations ? getAnnotationsAsXmlCode(V4_ANNOTATIONS, annotations) : V4_ANNOTATIONS;

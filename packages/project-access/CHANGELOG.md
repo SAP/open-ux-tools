@@ -1,5 +1,95 @@
 # @sap-ux/project-access
 
+## 2.1.2
+
+### Patch Changes
+
+- Updated dependencies [c8e8f7e]
+    - @sap-ux/ui5-config@1.0.3
+
+## 2.1.1
+
+### Patch Changes
+
+- fff7490: fix: bump min `cds-plugin-ui5` version to `^0.17.0` to avoid welcome-page injection error reported with `^0.13.0` ("Failed to inject application pages to welcome page")
+
+## 2.1.0
+
+### Minor Changes
+
+- b326a9a: fix(project-access): restore strict types from `@ui5/manifest` for the `Manifest` and `ManifestNamespace` exports
+
+    Removes the local ambient module declaration that was redeclaring `@ui5/manifest`
+    with permissive `[key: string]: any` shapes (and an optional `'sap.app'`).
+    Consumers now receive the real, strict types shipped by `@ui5/manifest`. This
+    matches the pre-ESM behaviour and brings back accurate compile-time checking
+    of manifest structures (e.g. `Manifest['sap.app']` is required again).
+
+    `@ui5/manifest` is also promoted from `devDependencies` to `dependencies`
+    because the emitted `.d.ts` files reference its types, so consumers now need
+    the package available at type-check time.
+
+## 2.0.3
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/ui5-config@1.0.2
+    - @sap-ux/i18n@1.0.1
+
+## 2.0.2
+
+### Patch Changes
+
+- Updated dependencies [9580241]
+    - @sap-ux/ui5-config@1.0.1
+
+## 2.0.1
+
+### Patch Changes
+
+- aed799d: `loadModuleFromProject` throws error on Windows: `Only URLs with a scheme in: file, data, node, and electron are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'`
+
+## 2.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/ui5-config@1.0.0
+    - @sap-ux/i18n@1.0.0
+
 ## 1.38.1
 
 ### Patch Changes

@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/deploy-tooling",
     "description": "UI5 CLI tasks to deploy to ABAP systems",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -9,7 +10,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Adeploy-tooling"
     },
-    "version": "0.19.7",
+    "version": "1.0.10",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -24,8 +25,8 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
@@ -50,9 +51,10 @@
         "dotenv": "17.4.2",
         "prompts": "2.4.2",
         "adm-zip": "0.5.16",
-        "chalk": "4.1.2"
+        "chalk": "5.3.0"
     },
     "devDependencies": {
+        "@jest/globals": "30.3.0",
         "@sap-ux/store": "workspace:*",
         "@types/prompts": "2.4.9",
         "@types/adm-zip": "0.5.8"

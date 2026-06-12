@@ -1,8 +1,24 @@
-import { getAddXMLAdditionalInfo } from '../../../../src/cpe/additional-change-info/add-xml-additional-info';
-import * as utilsCore from '../../../../src/utils/core';
+import { jest } from '@jest/globals';
 import ElementMetadata from 'sap/ui/core/ElementMetadata';
 import Element from 'sap/ui/core/Element';
 import FlexChange from 'mock/sap/ui/fl/Change';
+
+const getControlBySelectorMock = jest.fn();
+const findViewByControlMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/core', () => ({
+    getControlById: jest.fn(),
+    getControlBySelector: getControlBySelectorMock,
+    getComponent: jest.fn(),
+    isManagedObject: jest.fn(),
+    isA: jest.fn(),
+    hasParent: jest.fn(),
+    findViewByControl: findViewByControlMock,
+    findNestedElements: jest.fn()
+}));
+
+const { getAddXMLAdditionalInfo } = await import(
+    'open/ux/preview/client/cpe/additional-change-info/add-xml-additional-info'
+);
 
 // Helper function to create mock elements with isA method
 function createMockElement(metadataName: string): Element {
@@ -58,21 +74,15 @@ describe('add-xml-additional-info.ts', () => {
         changeType: 'testType',
         layer: 'CUSTOMER_BASE'
     });
-    let getControlBySelectorSpy: jest.SpyInstance;
 
     beforeEach(() => {
         jest.clearAllMocks();
-        getControlBySelectorSpy = jest.spyOn(utilsCore, 'getControlBySelector');
-    });
-
-    afterEach(() => {
-        getControlBySelectorSpy.mockRestore();
     });
 
     describe('getAddXMLAdditionalInfo', () => {
         it('should return templateName for OBJECT_PAGE_CUSTOM_SECTION', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'sections' });
-            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.uxap.ObjectPageLayout'));
+            getControlBySelectorMock.mockReturnValue(createMockElement('sap.uxap.ObjectPageLayout'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -81,7 +91,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for CUSTOM_ACTION', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'actions' });
-            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.f.DynamicPageTitle'));
+            getControlBySelectorMock.mockReturnValue(createMockElement('sap.f.DynamicPageTitle'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -90,7 +100,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for CUSTOM_ACTION - sap.m.OverflowToolbar', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'content' });
-            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.m.OverflowToolbar'));
+            getControlBySelectorMock.mockReturnValue(createMockElement('sap.m.OverflowToolbar'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -99,7 +109,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for OBJECT_PAGE_HEADER_FIELD - sap.m.FlexBox, sap.uxap.ObjectPageDynamicHeaderContent', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'items' });
-            getControlBySelectorSpy.mockReturnValue(
+            getControlBySelectorMock.mockReturnValue(
                 createMockElementWithParent('sap.m.FlexBox', 'sap.uxap.ObjectPageDynamicHeaderContent')
             );
 
@@ -110,7 +120,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for OBJECT_PAGE_HEADER_FIELD - sap.m.FlexBox, sap.uxap.ObjectPageLayout', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'items' });
-            getControlBySelectorSpy.mockReturnValue(
+            getControlBySelectorMock.mockReturnValue(
                 createMockElementWithParent('sap.m.FlexBox', 'sap.uxap.ObjectPageLayout')
             );
 
@@ -121,7 +131,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for OBJECT_PAGE_HEADER_FIELD', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'headerContent' });
-            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.uxap.ObjectPageLayout'));
+            getControlBySelectorMock.mockReturnValue(createMockElement('sap.uxap.ObjectPageLayout'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -130,7 +140,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for V4_MDC_TABLE_COLUMN', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'columns' });
-            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.ui.mdc.Table'));
+            getControlBySelectorMock.mockReturnValue(createMockElement('sap.ui.mdc.Table'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -139,7 +149,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for GRID_TREE_TABLE_COLUMN - sap.ui.table.Table', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'columns' });
-            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.ui.table.Table'));
+            getControlBySelectorMock.mockReturnValue(createMockElement('sap.ui.table.Table'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -148,7 +158,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for GRID_TREE_TABLE_COLUMN - sap.ui.table.TreeTable', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'columns' });
-            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.ui.table.TreeTable'));
+            getControlBySelectorMock.mockReturnValue(createMockElement('sap.ui.table.TreeTable'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -157,7 +167,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for ANALYTICAL_TABLE_COLUMN', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'columns' });
-            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.ui.table.AnalyticalTable'));
+            getControlBySelectorMock.mockReturnValue(createMockElement('sap.ui.table.AnalyticalTable'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -166,7 +176,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return templateName for TABLE_ACTION', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'actions' });
-            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.ui.mdc.Table'));
+            getControlBySelectorMock.mockReturnValue(createMockElement('sap.ui.mdc.Table'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -175,7 +185,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return undefined for templateName', () => {
             mockChange.getContent.mockReturnValue({});
-            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.ui.test.TestControl'));
+            getControlBySelectorMock.mockReturnValue(createMockElement('sap.ui.test.TestControl'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -183,7 +193,7 @@ describe('add-xml-additional-info.ts', () => {
         });
 
         it('should return undefined if no matching templateName is found', () => {
-            getControlBySelectorSpy.mockReturnValue(createMockElement('sap.uxap.ObjectPageLayout'));
+            getControlBySelectorMock.mockReturnValue(createMockElement('sap.uxap.ObjectPageLayout'));
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -192,9 +202,10 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return targetAggregation, viewName and controlType if no matching templateName is found', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'content' });
-            getControlBySelectorSpy.mockReturnValue(
+            getControlBySelectorMock.mockReturnValue(
                 createMockElementWithView('sap.uxap.ObjectPageLayout')
             );
+            findViewByControlMock.mockReturnValue({ getViewName: () => 'TestView' });
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -207,7 +218,7 @@ describe('add-xml-additional-info.ts', () => {
 
         it('should return undefined if control is not found', () => {
             mockChange.getContent.mockReturnValue({ targetAggregation: 'sections' });
-            getControlBySelectorSpy.mockReturnValue(undefined);
+            getControlBySelectorMock.mockReturnValue(undefined);
 
             const result = getAddXMLAdditionalInfo(mockChange);
 
@@ -217,7 +228,7 @@ describe('add-xml-additional-info.ts', () => {
         it('should return undefined if missing selectorId and targetAggregation', () => {
             mockChange.getSelector.mockReturnValue(undefined);
             mockChange.getContent.mockReturnValue(undefined);
-            getControlBySelectorSpy.mockReturnValue(undefined);
+            getControlBySelectorMock.mockReturnValue(undefined);
 
             const result = getAddXMLAdditionalInfo(mockChange);
 

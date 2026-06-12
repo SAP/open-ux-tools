@@ -1,4 +1,6 @@
 import type { JSONSchema7 } from 'json-schema';
+import uxSpec from '@sap/ux-specification';
+const { DirName, SchemaType, PageTypeV4, FileName } = uxSpec;
 import type {
     v4,
     ExportParametersV4Type,
@@ -13,14 +15,13 @@ import type {
     ExportParametersV2Type,
     ReadAppResult,
     Parser
-} from '@sap/ux-specification/dist/types/src';
-import { DirName, SchemaType, PageTypeV4, FileName } from '@sap/ux-specification/dist/types/src';
+} from '@sap/ux-specification';
 import { basename, join } from 'node:path';
 import type { ApplicationAccess, Manifest } from '@sap-ux/project-access';
 import { getSpecificationModuleFromCache, readFlexChanges } from '@sap-ux/project-access';
-import { getFlexChangeLayer, getManifest, getUI5Version } from './project';
-import { logger, specificationLogger } from '../utils/logger';
-import { mergeChanges, writeFlexChanges } from './flex';
+import { getFlexChangeLayer, getManifest, getUI5Version } from './project.js';
+import { logger, specificationLogger } from '../utils/logger.js';
+import { mergeChanges, writeFlexChanges } from './flex.js';
 
 export interface PageData {
     pageId: string;
@@ -117,10 +118,13 @@ export class SapuxFtfsFileIO {
             const appData = await this.readApp(true);
             files = appData.files;
         }
-        const appJson = files.find((file) => file.dataSourceUri === FileName.App);
+        if (!files) {
+            throw new Error('No files available to read app data');
+        }
+        const appJson = files.find((file: File) => file.dataSourceUri === FileName.App);
         const appConfig = JSON.parse(appJson?.fileContent ?? '{}') as Application;
         const schemaPath = join('.schemas', basename(join(appConfig?.$schema ?? '')));
-        const schemaFile = files.find((file) => join(file.dataSourceUri) === schemaPath);
+        const schemaFile = files.find((file: File) => join(file.dataSourceUri) === schemaPath);
         return {
             config: appConfig,
             schema: schemaFile?.fileContent ?? '{}'

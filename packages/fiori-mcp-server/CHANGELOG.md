@@ -1,5 +1,117 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.3.0
+
+### Minor Changes
+
+- c1d3564: FEAT: Add skill for analytical chart
+
+## 1.2.0
+
+### Minor Changes
+
+- 14c8584: FEAT: update visual filter skill with ABAP RAP support.
+
+## 1.1.4
+
+### Patch Changes
+
+- 2dffcb0: FIX: Apply TLS patch, fix Zowe keyring loading, format metadata XML, pass real HOME to MCP server,
+    - Apply `TlsPatch` in `fetch-service-metadata` before constructing `AbapServiceProvider` (was bypassed by instantiating directly instead of via `createForAbap`)
+    - Bundle `@zowe/secrets-for-zowe-sdk` native keyring via an inline shim that loads the platform `.node` binary directly from `dist/prebuilds/`, fixing credential lookup when running from a tgz install
+    - Use `SAP_TOOLS_DIR || getSapToolsDirectory()` to locate `~/.saptools` independently of `HOME`, so stored SAP systems are found even when the test harness overrides `HOME`
+    - Format fetched EDMX metadata with `xml-formatter` (4-space indent) before writing `metadata.xml`
+    - Surface the original XML parse error message when EDMX validation fails
+    - search_docs fails in BAS/Docker with "Unsupported device: cpu"
+
+## 1.1.3
+
+### Patch Changes
+
+- 74a3c3f: Switch to onnxruntime-web (WASM) to eliminate native binaries and reduce tgz to ~9 MB
+
+## 1.1.2
+
+### Patch Changes
+
+- 5a70fbf: Download ONNX model at runtime to reduce tgz below npm publish 100 MB limit
+
+## 1.1.1
+
+### Patch Changes
+
+- 889a217: Download ONNX model at runtime to reduce tgz below npm publish 100 MB limit
+
+## 1.1.0
+
+### Minor Changes
+
+- 9f33150: Build self-contained dist/ bundle (ONNX model, onnxruntime, embeddings data included);
+  Replace @xenova/transformers with @huggingface/transformers 4.2.0;
+
+## 1.0.3
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/fiori-docs-embeddings@1.0.1
+    - @sap-ux/store@2.0.1
+
+## 1.0.2
+
+### Patch Changes
+
+- 0268c25: Replace negated typeof checks to avoid SonarQube findings
+    - @sap-ux/fiori-docs-embeddings@1.0.0
+
+## 1.0.1
+
+### Patch Changes
+
+- 35962a9: fix: bundle odata-annotation-core, odata-annotation-core-types and text-document-utils instead of marking them as external
+
+    These packages have no bundling obstacles and should be inlined into the dist rather than left as unresolved external imports that cause `ERR_MODULE_NOT_FOUND` when the server is run via npx.
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/fiori-docs-embeddings@1.0.0
+    - @sap-ux/store@2.0.0
+
 ## 0.7.2
 
 ### Patch Changes

@@ -1,7 +1,10 @@
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import type { CdmAdditionalConfig, TemplateConfig } from './config';
-import { type FLPCdmConfig, FLPHomePageDefaults } from '../types';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import type { CdmAdditionalConfig, TemplateConfig } from './config.js';
+import { type FLPCdmConfig, FLPHomePageDefaults } from '../types/index.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 type FlpTarget = {
     type?: string;

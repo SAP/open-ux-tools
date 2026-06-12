@@ -1,6 +1,9 @@
 import type { Logger } from '@sap-ux/logger';
-import type { NewsItem } from '../utils/newsAdapter';
-import path from 'node:path';
+import type { NewsItem } from '../utils/newsAdapter.js';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const SAP_WHATSNEW_URL = 'https://help.sap.com/http.svc/whatsnew';
 const FIORI_TOOLS_LOIO = 'd29596a7d7b040d88a20a73dee29a1ec';
@@ -171,22 +174,31 @@ export class WhatsNewSource {
             return [];
         }
 
-        // Group results by category
-        const byCategory = new Map<string, WhatsNewResult[]>();
+        // Group results by category, then by type (e.g. "New", "Changed") within each category
+        const byCategory = new Map<string, Map<string, WhatsNewResult[]>>();
         for (const result of latestResults) {
             const category = result.Category[0] ?? 'Other';
-            const existing = byCategory.get(category) ?? [];
+            const type = result.Type[0] ?? 'Other';
+            const typeMap = byCategory.get(category) ?? new Map<string, WhatsNewResult[]>();
+            const existing = typeMap.get(type) ?? [];
             existing.push(result);
-            byCategory.set(category, existing);
+            typeMap.set(type, existing);
+            byCategory.set(category, typeMap);
         }
 
-        // Build a single HTML description with intro + all categories
+        // Build a single HTML description with intro + all categories grouped by type
         const categorySections = [...byCategory.entries()]
-            .map(([category, items]) => {
-                const listItems = items
-                    .map((item) => `<li>${WhatsNewSource.stripHtml(item.Description)}</li>`)
+            .map(([category, typeMap]) => {
+                const typeSections = [...typeMap.entries()]
+                    .sort(([a], [b]) => WhatsNewSource.compareTypes(a, b))
+                    .map(([type, items]) => {
+                        const listItems = items
+                            .map((item) => `<li>${WhatsNewSource.stripHtml(item.Description)}</li>`)
+                            .join('');
+                        return `<h4>${type}</h4><ul>${listItems}</ul>`;
+                    })
                     .join('');
-                return `<h3>${category}</h3><ul>${listItems}</ul>`;
+                return `<h3>${category}</h3>${typeSections}`;
             })
             .join('<hr>');
 
@@ -216,8 +228,7 @@ export class WhatsNewSource {
             : 'SAP Fiori Tools';
         return (
             `Learn about changes and new features that are available for ${embeddedFioriTools} ${latestVersion}. ` +
-            'To use all new features, ensure your extensions are up to date. ' +
-            'You can always update your extensions in your preferred Integrated Development Environment (IDE).'
+            'To use all new features, ensure your Fiori tools extensions and packages are up to date.'
         );
     }
 
@@ -252,6 +263,24 @@ export class WhatsNewSource {
         });
 
         return sorted[0];
+    }
+
+    /**
+     * Comparator that orders type labels with "New" first, then "Changed",
+     * with all other labels following alphabetically.
+     *
+     * @param a first type label
+     * @param b second type label
+     * @returns negative, zero, or positive per Array.prototype.sort
+     */
+    private static compareTypes(a: string, b: string): number {
+        const order = ['New', 'Changed'];
+        const ai = order.indexOf(a);
+        const bi = order.indexOf(b);
+        if (ai !== -1 || bi !== -1) {
+            return (ai === -1 ? order.length : ai) - (bi === -1 ? order.length : bi);
+        }
+        return a.localeCompare(b);
     }
 
     /**
