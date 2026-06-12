@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 1.0.21
+
+### Patch Changes
+
+- 00ddb82: feat: adjust default pattern for OPA5 journey collection
+
 ## 1.0.20
 
 ### Patch Changes
