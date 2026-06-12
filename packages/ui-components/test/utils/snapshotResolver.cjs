@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-const path = require('path');
-
 module.exports = {
     /**
      * resolves from test to snapshot path
-     * @param testPath
-     * @param snapshotExtension
+     * @param {string}testPath - the test path
+     * @param {string}snapshotExtension - the snapshot extension
+     * @returns {string} snapshot path
      */
     resolveSnapshotPath: (testPath, snapshotExtension) => {
         return (
@@ -17,8 +15,9 @@ module.exports = {
 
     /**
      * resolves from snapshot to test path
-     * @param snapshotFilePath
-     * @param snapshotExtension
+     * @param {string}snapshotFilePath - the snapshot path
+     * @param {string}snapshotExtension - the snapshot extension
+     * @returns {string} test path
      */
     resolveTestPath: (snapshotFilePath, snapshotExtension) => {
         return snapshotFilePath
