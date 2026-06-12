@@ -55,9 +55,13 @@ export async function generateOPAFiles(
 
     const config = createConfig(manifest, options, hideFilterBar);
 
+    // When any page in the app uses the FPM template, all generated files must be JS.
+    // FPM has no TypeScript templates, so a mixed FPM + LR/OP app cannot use TS test files.
+    const hasFPMPage = config.pages.some((page) => page.template === 'FPM');
     // In standalone mode, auto-detect TS vs JS from the project (presence of `tsconfig.json`)
     // when the caller has not made an explicit choice. This enforces "TS app → TS tests, JS app → JS tests".
-    const enableTypeScript = options.enableTypeScript ?? (standalone && existsSync(join(basePath, FileName.Tsconfig)));
+    const enableTypeScript =
+        !hasFPMPage && (options.enableTypeScript ?? (standalone && existsSync(join(basePath, FileName.Tsconfig))));
     const dotFileExtension: DotFileExtension = enableTypeScript ? DotFileExtension.TS : DotFileExtension.JS;
     const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
     const rootV4TemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being

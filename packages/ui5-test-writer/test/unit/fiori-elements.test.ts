@@ -1033,4 +1033,64 @@ describe('ui5-test-writer', () => {
             expect(tsconfigAfter).toEqual(tsconfigBefore);
         });
     });
+
+    describe('generateOPAFiles FPM forces JavaScript', () => {
+        const metadata = readFileSync(join(__dirname, '../fixtures/metadata.xml')).toString();
+
+        it('generates .js files when app has an FPM page and enableTypeScript is true', async () => {
+            const projectDir = prepareTestFiles('CustomOP');
+            fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+            const paths = Object.keys(fs.dump(projectDir));
+            const integrationFiles = paths.filter(
+                (p) => p.includes('integration/') && !p.includes('opaTests.qunit') && !p.includes('OpaJourneyTypes')
+            );
+            for (const file of integrationFiles) {
+                expect(file).toMatch(/\.js$/);
+            }
+            expect(paths.some((p) => p.endsWith('.ts') && p.includes('integration/'))).toBe(false);
+            expect(paths.some((p) => p.includes('OpaJourneyTypes.d.ts'))).toBe(false);
+        });
+
+        it('generates .js files when app has an FPM page and tsconfig.json exists in standalone mode', async () => {
+            const realExistsSync = actualFs.existsSync;
+            const projectDir = prepareTestFiles('CustomOP');
+            hasVirtualOPA5Mock.mockResolvedValue(false);
+            existsSyncMock.mockImplementation((p: string) => {
+                if (p.endsWith('tsconfig.json')) {
+                    return true;
+                }
+                if (p.includes('test-output') && p.includes('JourneyRunner')) {
+                    return false;
+                }
+                if (p.includes('test-output') && p.endsWith('integration')) {
+                    return false;
+                }
+                return realExistsSync(p);
+            });
+
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs, undefined, true);
+
+            const paths = Object.keys(fs.dump(projectDir));
+            const integrationFiles = paths.filter(
+                (p) =>
+                    p.includes('integration/') &&
+                    !p.includes('opaTests.qunit') &&
+                    !p.includes('OpaJourneyTypes') &&
+                    !p.includes('integration_old')
+            );
+            for (const file of integrationFiles) {
+                expect(file).toMatch(/\.js$/);
+            }
+            expect(paths.some((p) => p.includes('OpaJourneyTypes.d.ts'))).toBe(false);
+
+            hasVirtualOPA5Mock.mockReset();
+            existsSyncMock.mockImplementation(actualFs.existsSync);
+        });
+
+        afterEach(() => {
+            hasVirtualOPA5Mock.mockReset();
+            existsSyncMock.mockImplementation(actualFs.existsSync);
+        });
+    });
 });
