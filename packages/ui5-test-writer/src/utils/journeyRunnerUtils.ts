@@ -68,72 +68,98 @@ export function splicePageIntoJourneyRunner(fileContent: string, pages: JourneyR
     }
 
     let result = fileContent;
-
-    // 1. Splice into the sap.ui.define([...]) array.
-    //    Captures everything between the opening `[` and the closing `]` before `, function`.
-    const defineArrayRegex = /sap\.ui\.define\s*\(\s*\[([^\]]*)\]\s*,\s*function/d;
-    const defineMatch = defineArrayRegex.exec(result);
-    if (defineMatch?.indices?.[1]) {
-        const [bodyStart, bodyEnd] = defineMatch.indices[1];
-        const arrayBody = result.slice(bodyStart, bodyEnd);
-
-        // Detect indentation from the first existing module entry line
-        const indentMatch = /^([ \t]+)"/m.exec(arrayBody);
-        const indent = indentMatch ? indentMatch[1] : '\t';
-
-        const newEntries = toAdd
-            .map((page) => `${indent}"${page.appPath}/test/integration/pages/${page.fileName}",`)
-            .join('\n');
-
-        // Ensure the last existing entry ends with a comma before we insert after it.
-        const trimmedEnd = result.slice(0, bodyEnd).trimEnd();
-        const needsComma = !trimmedEnd.endsWith(',');
-        const commaFix = needsComma ? ',' : '';
-        const trailingWhitespace = result.slice(trimmedEnd.length, bodyEnd);
-        result = `${trimmedEnd}${commaFix}\n${newEntries}` + `${trailingWhitespace}${result.slice(bodyEnd)}`;
-    }
-
-    // 2. Splice into the function parameter list: `function (JourneyRunner, A, B)`.
-    //    Captures everything between `(` and `)` of the function signature.
-    const funcParamRegex = /\]\s*,\s*function\s*\(([^)]*)\)\s*\{/d;
-    const funcMatch = funcParamRegex.exec(result);
-    if (funcMatch?.indices?.[1]) {
-        const [, paramEnd] = funcMatch.indices[1];
-        const newParams = toAdd.map((page) => `, ${page.targetKey}Generated`).join('');
-        result = `${result.slice(0, paramEnd)}${newParams}${result.slice(paramEnd)}`;
-    }
-
-    // 3. Splice into the pages object: `pages: { onTheFoo: Foo, ... }`.
-    //    Use brace counting so nested braces inside per-page object literals are handled correctly.
-    const pagesHeaderRegex = /pages\s*:\s*\{/d;
-    const pagesHeaderMatch = pagesHeaderRegex.exec(result);
-    if (pagesHeaderMatch?.indices?.[0]) {
-        const [, headerEnd] = pagesHeaderMatch.indices[0];
-        const openBraceIdx = headerEnd - 1;
-        const pagesBodyEnd = findMatchingClosingBrace(result, openBraceIdx);
-        if (pagesBodyEnd < result.length) {
-            const pagesBody = result.slice(openBraceIdx + 1, pagesBodyEnd);
-
-            // Detect indentation from the first existing page entry
-            const pageIndentMatch = /^([ \t]+)on/m.exec(pagesBody);
-            const pageIndent = pageIndentMatch ? pageIndentMatch[1] : '\t\t\t';
-
-            const newPageEntries = toAdd
-                .map((page) => `${pageIndent}onThe${page.targetKey}Generated: ${page.targetKey}Generated,`)
-                .join('\n');
-
-            // Ensure the last existing entry ends with a comma before we insert after it.
-            const trimmedPagesEnd = result.slice(0, pagesBodyEnd).trimEnd();
-            const needsComma = !trimmedPagesEnd.endsWith(',');
-            const commaFix = needsComma ? ',' : '';
-            const trailingWhitespace = result.slice(trimmedPagesEnd.length, pagesBodyEnd);
-            result =
-                `${trimmedPagesEnd}${commaFix}\n${newPageEntries}` +
-                `${trailingWhitespace}${result.slice(pagesBodyEnd)}`;
-        }
-    }
-
+    result = spliceIntoDefineArray(result, toAdd);
+    result = spliceIntoFunctionParams(result, toAdd);
+    result = spliceIntoJsPagesObject(result, toAdd);
     return result;
+}
+
+/**
+ * Insert new entries before the closing `]` of the `sap.ui.define([...])` dependency array.
+ *
+ * @param content - the file content
+ * @param toAdd - pages to add
+ * @returns the updated content (or unchanged if the define array can't be located)
+ */
+function spliceIntoDefineArray(content: string, toAdd: JourneyRunnerPage[]): string {
+    const defineArrayRegex = /sap\.ui\.define\s*\(\s*\[([^\]]*)\]\s*,\s*function/d;
+    const match = defineArrayRegex.exec(content);
+    if (!match?.indices?.[1]) {
+        return content;
+    }
+    const [bodyStart, bodyEnd] = match.indices[1];
+    const arrayBody = content.slice(bodyStart, bodyEnd);
+    const indentMatch = /^([ \t]+)"/m.exec(arrayBody);
+    const indent = indentMatch ? indentMatch[1] : '\t';
+
+    const newEntries = toAdd
+        .map((page) => `${indent}"${page.appPath}/test/integration/pages/${page.fileName}",`)
+        .join('\n');
+    return insertBeforePosition(content, bodyEnd, newEntries);
+}
+
+/**
+ * Append the new `, <Target>Generated` parameters to the JourneyRunner module factory's signature.
+ *
+ * @param content - the file content
+ * @param toAdd - pages to add
+ * @returns the updated content (or unchanged if the function signature can't be located)
+ */
+function spliceIntoFunctionParams(content: string, toAdd: JourneyRunnerPage[]): string {
+    const funcParamRegex = /\]\s*,\s*function\s*\(([^)]*)\)\s*\{/d;
+    const match = funcParamRegex.exec(content);
+    if (!match?.indices?.[1]) {
+        return content;
+    }
+    const [, paramEnd] = match.indices[1];
+    const newParams = toAdd.map((page) => `, ${page.targetKey}Generated`).join('');
+    return `${content.slice(0, paramEnd)}${newParams}${content.slice(paramEnd)}`;
+}
+
+/**
+ * Insert new `onThe<Target>Generated: <Target>Generated,` entries into the AMD `pages: { ... }`
+ * object literal, using brace counting to handle nested braces in user hand-edits.
+ *
+ * @param content - the file content
+ * @param toAdd - pages to add
+ * @returns the updated content (or unchanged if the pages object can't be located)
+ */
+function spliceIntoJsPagesObject(content: string, toAdd: JourneyRunnerPage[]): string {
+    const pagesHeaderRegex = /pages\s*:\s*\{/d;
+    const match = pagesHeaderRegex.exec(content);
+    if (!match?.indices?.[0]) {
+        return content;
+    }
+    const [, headerEnd] = match.indices[0];
+    const openBraceIdx = headerEnd - 1;
+    const pagesBodyEnd = findMatchingClosingBrace(content, openBraceIdx);
+    if (pagesBodyEnd >= content.length) {
+        return content;
+    }
+    const pagesBody = content.slice(openBraceIdx + 1, pagesBodyEnd);
+    const pageIndentMatch = /^([ \t]+)on/m.exec(pagesBody);
+    const pageIndent = pageIndentMatch ? pageIndentMatch[1] : '\t\t\t';
+
+    const newPageEntries = toAdd
+        .map((page) => `${pageIndent}onThe${page.targetKey}Generated: ${page.targetKey}Generated,`)
+        .join('\n');
+    return insertBeforePosition(content, pagesBodyEnd, newPageEntries);
+}
+
+/**
+ * Insert `newEntries` immediately before `position` in `content`, preserving the trailing
+ * whitespace at `position` and ensuring the preceding token ends with a comma.
+ *
+ * @param content - the file content
+ * @param position - the index to insert before
+ * @param newEntries - the new lines (no leading newline) to insert
+ * @returns the updated content
+ */
+function insertBeforePosition(content: string, position: number, newEntries: string): string {
+    const trimmedEnd = content.slice(0, position).trimEnd();
+    const commaFix = trimmedEnd.endsWith(',') ? '' : ',';
+    const trailingWhitespace = content.slice(trimmedEnd.length, position);
+    return `${trimmedEnd}${commaFix}\n${newEntries}${trailingWhitespace}${content.slice(position)}`;
 }
 
 /**
