@@ -1,12 +1,10 @@
 import type { Dirent } from 'node:fs';
-import path, { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
 import { DirName, getWebappPath } from '@sap-ux/project-access';
+import { getTemplatePath } from '../templates.js';
 import {
     FlexLayer,
     TemplateFileName,
@@ -62,7 +60,7 @@ export async function writeAnnotationChange(
         if (!annotation.filePath) {
             const annotationsTemplate = templatesPath
                 ? path.join(templatesPath, 'changes', TemplateFileName.Annotation)
-                : path.join(__dirname, '..', '..', 'templates', 'changes', TemplateFileName.Annotation);
+                : getTemplatePath(`changes/${TemplateFileName.Annotation}`);
             const { namespaces, serviceUrl } = annotation;
             const schemaNamespace = `local_${timestamp}`;
             renderFile(annotationsTemplate, { namespaces, path: serviceUrl, schemaNamespace }, {}, (err, str) => {
