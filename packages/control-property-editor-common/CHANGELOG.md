@@ -1,5 +1,11 @@
 # @sap-ux-private/control-property-editor-common
 
+## 1.0.3
+
+### Patch Changes
+
+- 0110219: fix regression writing wrong manifest path via the changes created via properties panel and remove unused control-property-editor-common code
+
 ## 1.0.2
 
 ### Patch Changes

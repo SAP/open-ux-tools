@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.6.3
+
+### Patch Changes
+
+- 0425d5f: fix(eslint-plugin-fiori-tools): bundle @babel/core, @babel/eslint-parser, @babel/parser to prevent version conflicts with ui5-tooling-transpile in consumer projects
+
+## 10.6.2
+
+### Patch Changes
+
+- e3d69d5: chore(eslint-plugin-fiori-tools): switch build from tsc to esbuild bundling
+
 ## 10.6.1
 
 ### Patch Changes

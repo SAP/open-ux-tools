@@ -1,5 +1,99 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.1.4
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.24
+- @sap-ux/odata-service-inquirer@3.0.11
+
+## 1.1.3
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.23
+- @sap-ux/odata-service-inquirer@3.0.11
+
+## 1.1.2
+
+### Patch Changes
+
+- Updated dependencies [41b3908]
+    - @sap-ux/feature-toggle@1.0.2
+    - @sap-ux/axios-extension@2.0.3
+    - @sap-ux/inquirer-common@1.0.11
+    - @sap-ux/odata-service-inquirer@3.0.11
+    - @sap-ux/fiori-generator-shared@1.0.11
+    - @sap-ux/system-access@1.0.3
+    - @sap-ux/fiori-elements-writer@3.0.22
+    - @sap-ux/abap-deploy-config-writer@1.0.8
+
+## 1.1.1
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.21
+- @sap-ux/odata-service-inquirer@3.0.10
+
+## 1.1.0
+
+### Minor Changes
+
+- ad59554: feat(repo-app-import-sub-generator): support ABAP Repository app download alongside ADT Quick Deploy flow
+
+## 1.0.20
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.20
+- @sap-ux/odata-service-inquirer@3.0.10
+
+## 1.0.19
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@1.0.10
+- @sap-ux/inquirer-common@1.0.10
+- @sap-ux/odata-service-inquirer@3.0.10
+- @sap-ux/fiori-elements-writer@3.0.19
+
+## 1.0.18
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.18
+- @sap-ux/odata-service-inquirer@3.0.9
+
+## 1.0.17
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.17
+- @sap-ux/odata-service-inquirer@3.0.9
+
+## 1.0.16
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.16
+- @sap-ux/odata-service-inquirer@3.0.9
+
+## 1.0.15
+
+### Patch Changes
+
+- Updated dependencies [c8e8f7e]
+    - @sap-ux/abap-deploy-config-writer@1.0.7
+    - @sap-ux/fiori-elements-writer@3.0.15
+    - @sap-ux/launch-config@1.0.6
+    - @sap-ux/project-access@2.1.2
+    - @sap-ux/odata-service-inquirer@3.0.9
+    - @sap-ux/inquirer-common@1.0.9
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/fiori-generator-shared@1.0.9
+    - @sap-ux/project-input-validator@1.0.6
+    - @sap-ux/system-access@1.0.2
+
 ## 1.0.14
 
 ### Patch Changes
