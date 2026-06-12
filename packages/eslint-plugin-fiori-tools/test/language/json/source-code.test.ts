@@ -1,3 +1,4 @@
+import { parse } from '@humanwhocodes/momoa';
 import { FioriJSONSourceCode } from '../../../src/language/json/source-code.js';
 import type { ProjectContext } from '../../../src/project-context/project-context.js';
 
@@ -8,7 +9,7 @@ describe('FioriJSONSourceCode', () => {
     it('should get parent node if requested path array is empty', () => {
         const jsonText =
             '{"type": "Object", "name": "StartNode", "members": [{"name": {"type": "String", "value": "dummy_name"}}]}';
-        const ast = JSON.parse(jsonText);
+        const ast = parse(jsonText);
         const sourceCode = new FioriJSONSourceCode({
             text: jsonText,
             ast,
@@ -16,13 +17,13 @@ describe('FioriJSONSourceCode', () => {
             uri: ''
         });
 
-        expect(sourceCode.getNode(ast, [])).toBe(ast);
+        expect(sourceCode.getNode(ast.body, [])).toBe(ast.body);
     });
 
     it('should get parent node if requested node not found', () => {
         const jsonText =
             '{"type": "Object", "name": "StartNode", "members": [{"name": {"type": "Boolean", "value": "true"}}]}';
-        const ast = JSON.parse(jsonText);
+        const ast = parse(jsonText);
         const sourceCode = new FioriJSONSourceCode({
             text: jsonText,
             ast,
@@ -30,14 +31,13 @@ describe('FioriJSONSourceCode', () => {
             uri: ''
         });
 
-        expect(sourceCode.getNode(ast, ['path', 'to', 'node'])).toBe(ast);
+        expect(sourceCode.getNode(ast.body, ['path', 'to', 'node'])).toBe(ast.body);
     });
 
     it('should get found node', () => {
         const dummyNodeText = '{"type": "Member", "name": {"type": "String", "value": "DummyNode"}}';
         const jsonText = `{"type": "Object", "name": "StartNode", "members": [${dummyNodeText}]}`;
-        const ast = JSON.parse(jsonText);
-        const dummyNode = JSON.parse(dummyNodeText);
+        const ast = parse(jsonText);
         const sourceCode = new FioriJSONSourceCode({
             text: jsonText,
             ast,
@@ -45,6 +45,18 @@ describe('FioriJSONSourceCode', () => {
             uri: ''
         });
 
-        expect(sourceCode.getNode(ast, ['DummyNode'])).toMatchObject(dummyNode);
+        const foundNode = sourceCode.getNode(ast.body, ['DummyNode']);
+        expect(foundNode.loc).toMatchObject({
+            start: {
+                column: 1,
+                line: 1,
+                offset: 0
+            },
+            end: {
+                column: 123,
+                line: 1,
+                offset: 122
+            }
+        });
     });
 });
