@@ -421,7 +421,7 @@ async function generateControllerFile(rootPath: string, filePath: string, name: 
     const id = (await getVariant(rootPath))?.id;
     const isTsSupported = isTypescriptSupported(rootPath);
     const tmplFileName = isTsSupported ? TemplateFileName.TSController : TemplateFileName.Controller;
-    const tmplPath = path.join(getTemplatePath('rta'), tmplFileName);
+    const tmplPath = getTemplatePath(`rta/${tmplFileName}`);
     const extensionPath = `${id}.${name}`;
 
     const templateData = isTsSupported ? { name, ns: id } : { extensionPath };
