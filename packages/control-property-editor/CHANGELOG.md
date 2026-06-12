@@ -1,5 +1,17 @@
 # @sap-ux/control-property-editor
 
+## 1.0.5
+
+### Patch Changes
+
+- 0110219: fix regression writing wrong manifest path via the changes created via properties panel and remove unused control-property-editor-common code
+
+## 1.0.4
+
+### Patch Changes
+
+- bcfe9e3: Fix: Inconsistent property naming between RTA and CPE
+
 ## 1.0.3
 
 ### Patch Changes

@@ -1,5 +1,63 @@
 # @sap-ux/preview-middleware
 
+## 1.0.18
+
+### Patch Changes
+
+- 0110219: fix regression writing wrong manifest path via the changes created via properties panel and remove unused control-property-editor-common code
+
+## 1.0.17
+
+### Patch Changes
+
+- Updated dependencies [41b3908]
+    - @sap-ux/feature-toggle@1.0.2
+    - @sap-ux/adp-tooling@1.0.14
+    - @sap-ux/system-access@1.0.3
+
+## 1.0.16
+
+### Patch Changes
+
+- Updated dependencies [e66a8a9]
+    - @sap-ux/adp-tooling@1.0.13
+
+## 1.0.15
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.12
+
+## 1.0.14
+
+### Patch Changes
+
+- Updated dependencies [c8e8f7e]
+    - @sap-ux/adp-tooling@1.0.11
+    - @sap-ux/project-access@2.1.2
+    - @sap-ux/system-access@1.0.2
+
+## 1.0.13
+
+### Patch Changes
+
+- Updated dependencies [0fa8305]
+    - @sap-ux/btp-utils@2.0.2
+    - @sap-ux/adp-tooling@1.0.10
+    - @sap-ux/system-access@1.0.2
+
+## 1.0.12
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@1.0.9
+
+## 1.0.11
+
+### Patch Changes
+
+- bcfe9e3: Fix: Inconsistent property naming between RTA and CPE
+
 ## 1.0.10
 
 ### Patch Changes

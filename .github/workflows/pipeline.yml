@@ -16,12 +16,22 @@ jobs:
                 # os: [ubuntu-latest, windows-2025, macos-13, macos-14, macos-14-large, macos-15, macos-latest-large]
                 node-version: [22.x, 24.x]
         runs-on: ${{ matrix.os }}
+        environment: ci-secrets
         timeout-minutes: 60
         steps:
             - name: Checkout code repository
               uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
               with:
                   fetch-depth: 0
+            - name: Enable long paths on Windows
+              if: runner.os == 'Windows'
+              shell: pwsh
+              run: |
+                  # node-gyp extracts deeply nested OpenSSL headers during native module builds
+                  # (e.g. better-sqlite3), which exceeds the default 260-char MAX_PATH limit.
+                  # The registry key enables long-path support OS-wide; git config covers git ops.
+                  git config --system core.longpaths true
+                  New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
               with:
@@ -124,6 +134,9 @@ jobs:
         if: github.repository == 'SAP/open-ux-tools' && github.event_name == 'push' && github.ref == 'refs/heads/main'
         runs-on: ubuntu-latest
         needs: build
+        environment: release
+        permissions:
+            contents: write
         outputs:
             changes: ${{ steps.changesetVersion.outputs.changes }} # map step output to job output
         steps:
@@ -175,6 +188,7 @@ jobs:
         if: github.repository == 'SAP/open-ux-tools' && github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.version.outputs.changes == 'false'
         runs-on: ubuntu-latest
         needs: version
+        environment: npm-release
         permissions:
             id-token: write
             contents: write
@@ -230,7 +244,7 @@ jobs:
               with:
                   publish: pnpm ci:publish
               env:
-                  GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             - name: Detect extension publication
               if: steps.changesetPublish.outputs.published == 'true'
               run: |
@@ -269,7 +283,7 @@ jobs:
                   files: ${{ env.EXT_DIR }}/*.vsix
                   fail_on_unmatched_files: true
               env:
-                  GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             - name: Prepare Slack notification message (published packages)
               if: steps.changesetPublish.outputs.published == 'true'
               run: |

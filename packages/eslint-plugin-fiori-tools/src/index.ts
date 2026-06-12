@@ -6,6 +6,7 @@ import type { Linter } from 'eslint';
 import type { Plugin } from '@eslint/config-helpers';
 import babelParser from '@babel/eslint-parser';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
+import globals from 'globals';
 import { rules } from './rules/index.js';
 import { FioriLanguage } from './language/fiori-language.js';
 import { createSyncFn } from 'synckit';
@@ -19,8 +20,6 @@ const require = createRequire(import.meta.url);
 // Use CommonJS require for modules with resolution issues
 
 const tsParser = require('@typescript-eslint/parser') as any;
-
-const globals = require('globals') as any;
 
 // Read package.json to get version
 const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8')) as {
@@ -390,8 +389,15 @@ const prodConfig: Linter.Config[] = [
 
         languageOptions: {
             parser: babelParser,
+            sourceType: 'module',
+            ecmaVersion: 'latest',
             parserOptions: {
-                requireConfigFile: false
+                requireConfigFile: false,
+                babelOptions: {
+                    parserOpts: {
+                        plugins: ['typescript']
+                    }
+                }
             },
             globals: globalsConfig
         },
@@ -409,8 +415,15 @@ const testConfig: Linter.Config[] = [
 
         languageOptions: {
             parser: babelParser,
+            sourceType: 'module',
+            ecmaVersion: 'latest',
             parserOptions: {
-                requireConfigFile: false
+                requireConfigFile: false,
+                babelOptions: {
+                    parserOpts: {
+                        plugins: ['typescript']
+                    }
+                }
             },
             globals: globalsConfig
         },
@@ -470,7 +483,7 @@ const typescriptConfig: Linter.Config[] = [
 // Fiori language rules (for manifest.json, XML views, CDS files)
 const fioriLanguageConfig: Linter.Config[] = [
     {
-        files: ['**/manifest.json', '**/*.xml', '**/*.cds'],
+        files: ['**/manifest.json', '**/*.xml', '**/*.cds', '**/*.change'],
         language: '@sap-ux/fiori-tools/fiori',
         rules: {
             // fiori tools specific rules
@@ -505,9 +518,9 @@ export const configs: Record<string, Linter.Config[]> = {
                 }
             }
         },
-        ...typescriptConfig,
         ...prodConfig,
-        ...testConfig
+        ...testConfig,
+        ...typescriptConfig
     ],
     'recommended-for-s4hana': [
         {
@@ -519,9 +532,9 @@ export const configs: Record<string, Linter.Config[]> = {
                 }
             }
         },
-        ...typescriptConfig,
         ...prodConfig,
         ...testConfig,
+        ...typescriptConfig,
         ...fioriLanguageConfig
     ]
 };

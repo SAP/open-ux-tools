@@ -1,5 +1,27 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 1.0.8
+
+### Patch Changes
+
+- @sap-ux/system-access@1.0.3
+
+## 1.0.7
+
+### Patch Changes
+
+- c8e8f7e: fix: write builder.resources.excludes to base ui5.yaml as well as ui5-deploy.yaml
+- Updated dependencies [c8e8f7e]
+    - @sap-ux/ui5-config@1.0.3
+    - @sap-ux/project-access@2.1.2
+    - @sap-ux/system-access@1.0.2
+
+## 1.0.6
+
+### Patch Changes
+
+- @sap-ux/system-access@1.0.2
+
 ## 1.0.5
 
 ### Patch Changes

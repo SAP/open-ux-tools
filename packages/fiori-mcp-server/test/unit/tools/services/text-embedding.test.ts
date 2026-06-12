@@ -3,11 +3,7 @@ import { jest } from '@jest/globals';
 // Mock the transformers module
 const mockPipeline = jest.fn<any>();
 jest.unstable_mockModule('@huggingface/transformers', () => ({
-    pipeline: mockPipeline,
-    env: {
-        localModelPath: '',
-        allowRemoteModels: false
-    }
+    pipeline: mockPipeline
 }));
 
 const { TextEmbeddingService } = await import('../../../../src/tools/services/text-embedding.js');

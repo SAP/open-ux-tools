@@ -1,5 +1,47 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.3.0
+
+### Minor Changes
+
+- c1d3564: FEAT: Add skill for analytical chart
+
+## 1.2.0
+
+### Minor Changes
+
+- 14c8584: FEAT: update visual filter skill with ABAP RAP support.
+
+## 1.1.4
+
+### Patch Changes
+
+- 2dffcb0: FIX: Apply TLS patch, fix Zowe keyring loading, format metadata XML, pass real HOME to MCP server,
+    - Apply `TlsPatch` in `fetch-service-metadata` before constructing `AbapServiceProvider` (was bypassed by instantiating directly instead of via `createForAbap`)
+    - Bundle `@zowe/secrets-for-zowe-sdk` native keyring via an inline shim that loads the platform `.node` binary directly from `dist/prebuilds/`, fixing credential lookup when running from a tgz install
+    - Use `SAP_TOOLS_DIR || getSapToolsDirectory()` to locate `~/.saptools` independently of `HOME`, so stored SAP systems are found even when the test harness overrides `HOME`
+    - Format fetched EDMX metadata with `xml-formatter` (4-space indent) before writing `metadata.xml`
+    - Surface the original XML parse error message when EDMX validation fails
+    - search_docs fails in BAS/Docker with "Unsupported device: cpu"
+
+## 1.1.3
+
+### Patch Changes
+
+- 74a3c3f: Switch to onnxruntime-web (WASM) to eliminate native binaries and reduce tgz to ~9 MB
+
+## 1.1.2
+
+### Patch Changes
+
+- 5a70fbf: Download ONNX model at runtime to reduce tgz below npm publish 100 MB limit
+
+## 1.1.1
+
+### Patch Changes
+
+- 889a217: Download ONNX model at runtime to reduce tgz below npm publish 100 MB limit
+
 ## 1.1.0
 
 ### Minor Changes
