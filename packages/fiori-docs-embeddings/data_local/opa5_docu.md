@@ -1001,3 +1001,4 @@ sap.ui.define([
 | Flaky test on slow CI | 🔵 Advisory | OPA timeout too low | Increase `opaConfig.timeout` |
 
 ---
+--------------------------------
