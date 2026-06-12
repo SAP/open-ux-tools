@@ -73,6 +73,10 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 server:
   customMiddleware:
     - name: backend-proxy-middleware-cf
@@ -226,6 +230,10 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 server:
   customMiddleware:
     - name: backend-proxy-middleware-cf
@@ -384,6 +392,10 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 server:
   customMiddleware:
     - name: backend-proxy-middleware-cf
@@ -537,6 +549,10 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 server:
   customMiddleware:
     - name: backend-proxy-middleware-cf
@@ -726,6 +742,10 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 server:
   customMiddleware:
     - name: backend-proxy-middleware-cf
@@ -884,6 +904,10 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 server:
   customMiddleware:
     - name: backend-proxy-middleware-cf

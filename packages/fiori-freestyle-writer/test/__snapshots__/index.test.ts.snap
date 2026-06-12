@@ -95,6 +95,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -144,6 +149,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -183,6 +193,11 @@ server:
           intent:
             object: testme
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1223,6 +1238,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1272,6 +1292,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1311,6 +1336,11 @@ server:
           intent:
             object: testme
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -3906,6 +3936,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -3955,6 +3990,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -3994,6 +4034,11 @@ server:
           intent:
             object: testme
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },

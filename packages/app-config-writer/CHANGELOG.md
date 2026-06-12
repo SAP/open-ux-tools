@@ -1,5 +1,18 @@
 # @sap-ux/app-config-writer
 
+## 1.0.9
+
+### Patch Changes
+
+- Updated dependencies [e66a8a9]
+    - @sap-ux/ui5-application-writer@2.0.4
+
+## 1.0.8
+
+### Patch Changes
+
+- 28648e0: fix extra leading comma in eslint.config.mjs
+
 ## 1.0.7
 
 ### Patch Changes
