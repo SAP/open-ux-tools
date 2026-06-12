@@ -1,5 +1,11 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 1.2.0
+
+### Minor Changes
+
+- 08fb7a1: Add opa5_docu.md
+
 ## 1.1.1
 
 ### Patch Changes
