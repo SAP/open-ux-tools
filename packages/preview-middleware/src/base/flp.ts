@@ -78,7 +78,11 @@ import { generateCdm } from './cdm.js';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { getIntegrationCard } from './utils/cards.js';
 import { NewsAdapter, type ODataNewsResponse, type NewsItem } from './utils/newsAdapter.js';
-import { WhatsNewSource } from './dataSources/whatsNewSource.js';
+import {
+    WhatsNewSource,
+    FIORI_TOOLS_WHATSNEW_CONFIG,
+    FIORI_ELEMENTS_WHATSNEW_CONFIG
+} from './dataSources/whatsNewSource.js';
 import { LogCollector } from './utils/logCollector.js';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
@@ -145,7 +149,7 @@ export class FlpSandbox {
     private readonly project: ReaderCollection;
     private readonly cardGenerator?: CardGeneratorConfig;
     private readonly newsAdapter: NewsAdapter;
-    private readonly newsSource: WhatsNewSource;
+    private readonly newsSources: WhatsNewSource[];
     public readonly logCollector: LogCollector;
     private readonly objectCardCache = new Map<string, object>();
     private projectType: ProjectType;
@@ -178,7 +182,10 @@ export class FlpSandbox {
         this.router = createRouter();
         this.cardGenerator = config.editors?.cardGenerator;
         this.newsAdapter = new NewsAdapter();
-        this.newsSource = new WhatsNewSource(this.logger);
+        this.newsSources = [
+            new WhatsNewSource(this.logger, FIORI_TOOLS_WHATSNEW_CONFIG),
+            new WhatsNewSource(this.logger, FIORI_ELEMENTS_WHATSNEW_CONFIG)
+        ];
     }
 
     /**
@@ -843,14 +850,14 @@ export class FlpSandbox {
 
     /**
      * Fetches news from all registered data sources and merges them into a single list.
-     * Currently fetches from the SAP What's New source. Additional sources can be
-     * added here in the future.
+     * Currently fetches from the SAP What's New feeds for Fiori Tools and Fiori Elements.
+     * Additional sources can be added here in the future.
      *
      * @returns a combined list of news items from all data sources
      */
     private async fetchAllNews(): Promise<NewsItem[]> {
-        const whatsNew = await this.newsSource.fetchNews();
-        return [...whatsNew];
+        const results = await Promise.all(this.newsSources.map((source) => source.fetchNews()));
+        return results.flat();
     }
 
     /**

@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 1.0.11
+
+### Patch Changes
+
+- @sap-ux/axios-extension@2.0.3
+
 ## 1.0.10
 
 ### Patch Changes
