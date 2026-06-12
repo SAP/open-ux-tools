@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 1.0.19
+
+### Patch Changes
+
+- 6f3b596: fix: (Adaptation Editor) FL Variant changes do not appear in the unsaved changes list (history panel).
+- Updated dependencies [6e4a71a]
+    - @sap-ux/adp-tooling@1.0.15
+
 ## 1.0.18
 
 ### Patch Changes
