@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 1.0.21
+
+### Patch Changes
+
+- 00ddb82: feat: adjust default pattern for OPA5 journey collection
+
+## 1.0.20
+
+### Patch Changes
+
+- d4e24a7: fix: add min UI5 version check to card generator endpoint
+
 ## 1.0.19
 
 ### Patch Changes
