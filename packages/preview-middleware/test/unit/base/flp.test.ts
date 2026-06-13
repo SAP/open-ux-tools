@@ -2259,7 +2259,7 @@ describe('FlpSandbox fioriSandboxAppConfig.json route', () => {
         const body = JSON.parse(response.text) as Record<string, unknown>;
         expect(body.beforeFlpStart).toBe('module:open/ux/preview/client/flp/sandbox2BeforeInit');
         expect(body.afterFlpStart).toBe('module:open/ux/preview/client/flp/sandbox2AfterInit');
-        expect((body.restricted as Record<string, unknown>)?.flexibilityServices).toHaveLength(1);
+        expect((body.restricted as Record<string, unknown>)?.flexibilityServices).toHaveLength(2);
         expect(response.text).toMatchSnapshot();
     });
 

@@ -35,7 +35,7 @@ export interface SandboxAppConfig {
     beforeFlpStart: string;
     afterFlpStart: string;
     restricted: {
-        flexibilityServices: CustomConnector[];
+        flexibilityServices: (CustomConnector | FlexConnector)[];
     };
 }
 
@@ -481,7 +481,6 @@ export function createTestTemplateConfig(config: CompleteTestConfig, id: string,
  * @returns the sandbox app config object
  */
 export function generateSandboxAppConfig(templateConfig: TemplateConfig, _flpConfig: FlpConfig): SandboxAppConfig {
-    const workspaceConnectorPath = 'open/ux/preview/client/flp/WorkspaceConnector';
     const tiles = Object.entries(templateConfig.apps).map(([appName, app]) => {
         const dashIndex = appName.indexOf('-');
         const semanticObject = dashIndex === -1 ? appName : appName.substring(0, dashIndex);
@@ -500,13 +499,8 @@ export function generateSandboxAppConfig(templateConfig: TemplateConfig, _flpCon
         beforeFlpStart: 'module:open/ux/preview/client/flp/sandbox2BeforeInit',
         afterFlpStart: 'module:open/ux/preview/client/flp/sandbox2AfterInit',
         restricted: {
-            flexibilityServices: [
-                {
-                    applyConnector: workspaceConnectorPath,
-                    writeConnector: workspaceConnectorPath,
-                    custom: true
-                }
-            ]
+            // todo: pass isAdp flag once PR #4794 is merged so LocalStorageConnector is omitted for ADP projects
+            flexibilityServices: getFlexSettings()
         }
     };
 }

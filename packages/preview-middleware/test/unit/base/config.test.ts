@@ -389,8 +389,13 @@ describe('config', () => {
             const result = generateSandboxAppConfig(templateConfig, flpConfig);
             expect(result.beforeFlpStart).toBe('module:open/ux/preview/client/flp/sandbox2BeforeInit');
             expect(result.afterFlpStart).toBe('module:open/ux/preview/client/flp/sandbox2AfterInit');
-            expect(result.restricted.flexibilityServices).toHaveLength(1);
+            expect(result.restricted.flexibilityServices).toHaveLength(2);
             expect(result.restricted.flexibilityServices[0]).toEqual({
+                connector: 'LrepConnector',
+                layers: [],
+                url: '/sap/bc/lrep'
+            });
+            expect(result.restricted.flexibilityServices[1]).toEqual({
                 applyConnector: workspaceConnector,
                 writeConnector: workspaceConnector,
                 custom: true

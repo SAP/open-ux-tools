@@ -340,6 +340,11 @@ Object {
   "restricted": Object {
     "flexibilityServices": Array [
       Object {
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
         "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
         "custom": true,
         "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",

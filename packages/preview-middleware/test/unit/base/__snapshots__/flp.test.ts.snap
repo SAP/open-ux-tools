@@ -179,7 +179,7 @@ exports[`FlpSandbox cds-plugin-ui5 test/flp.html 1`] = `
 </html>"
 `;
 
-exports[`FlpSandbox fioriSandboxAppConfig.json route returns generated fioriSandboxAppConfig.json when no real file exists 1`] = `"{\\"tiles\\":[{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"rootPath\\":\\"../\\"}],\\"beforeFlpStart\\":\\"module:open/ux/preview/client/flp/sandbox2BeforeInit\\",\\"afterFlpStart\\":\\"module:open/ux/preview/client/flp/sandbox2AfterInit\\",\\"restricted\\":{\\"flexibilityServices\\":[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]}}"`;
+exports[`FlpSandbox fioriSandboxAppConfig.json route returns generated fioriSandboxAppConfig.json when no real file exists 1`] = `"{\\"tiles\\":[{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"rootPath\\":\\"../\\"}],\\"beforeFlpStart\\":\\"module:open/ux/preview/client/flp/sandbox2BeforeInit\\",\\"afterFlpStart\\":\\"module:open/ux/preview/client/flp/sandbox2AfterInit\\",\\"restricted\\":{\\"flexibilityServices\\":[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]}}"`;
 
 exports[`FlpSandbox init Card generator is enabled for the application 1`] = `
 Object {
