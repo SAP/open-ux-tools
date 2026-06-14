@@ -22,6 +22,13 @@ Object {
         "custom": true,
         "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
       },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell",
     "resources": Object {
@@ -53,6 +60,13 @@ Object {
         "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
         "custom": true,
         "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
       },
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell",
@@ -119,7 +133,7 @@ exports[`config generatePreviewFiles minimum settings 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -193,7 +207,7 @@ Object {
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"/apps/simple-app\\",\\"test.fe.v2.other\\":\\"/apps/other-app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -270,7 +284,7 @@ Object {
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -348,6 +362,13 @@ Object {
         "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
         "custom": true,
         "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
       },
     ],
   },

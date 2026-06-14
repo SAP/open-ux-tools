@@ -62,6 +62,24 @@ describe('config', () => {
             const templateConfig = createFlpTemplateConfig(flpConfig, manifest, resources);
             expect(templateConfig).toMatchSnapshot();
         });
+
+        test('ADP project does not include LocalStorageConnector', () => {
+            const flpConfig = getFlpConfigWithDefaults({});
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest, {}, true);
+            const connectorNames = templateConfig.ui5.flex
+                .filter((c): c is { connector: string; layers: string[] } => 'connector' in c)
+                .map((c) => c.connector);
+            expect(connectorNames).not.toContain('LocalStorageConnector');
+        });
+
+        test('non-ADP project includes LocalStorageConnector', () => {
+            const flpConfig = getFlpConfigWithDefaults({});
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest, {});
+            const connectorNames = templateConfig.ui5.flex
+                .filter((c): c is { connector: string; layers: string[] } => 'connector' in c)
+                .map((c) => c.connector);
+            expect(connectorNames).toContain('LocalStorageConnector');
+        });
     });
 
     describe('createTestTemplateConfig', () => {
@@ -389,7 +407,7 @@ describe('config', () => {
             const result = generateSandboxAppConfig(templateConfig, flpConfig);
             expect(result.beforeFlpStart).toBe('module:open/ux/preview/client/flp/sandbox2BeforeInit');
             expect(result.afterFlpStart).toBe('module:open/ux/preview/client/flp/sandbox2AfterInit');
-            expect(result.restricted.flexibilityServices).toHaveLength(2);
+            expect(result.restricted.flexibilityServices).toHaveLength(3);
             expect(result.restricted.flexibilityServices[0]).toEqual({
                 connector: 'LrepConnector',
                 layers: [],

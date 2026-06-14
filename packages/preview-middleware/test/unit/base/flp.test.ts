@@ -612,7 +612,7 @@ describe('FlpSandbox', () => {
             const manifest = {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
-            const componendId = 'myComponent';
+            const componentId = 'myComponent';
             const resources = {
                 'myResources1': 'myResourcesUrl1',
                 'myResources2': 'myResourcesUrl2'
@@ -638,7 +638,7 @@ describe('FlpSandbox', () => {
                 addApis: jest.fn()
             } as unknown as adpTooling.AdpPreview;
 
-            await flp.init(manifest, componendId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            await flp.init(manifest, componentId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
             const app = express();
             app.use(flp.router);
             const server = await supertest(app);
@@ -662,7 +662,7 @@ describe('FlpSandbox', () => {
             const manifest = {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
-            const componendId = 'myComponent';
+            const componentId = 'myComponent';
             const resources = {
                 'myResources1': 'myResourcesUrl1',
                 'myResources2': 'myResourcesUrl2'
@@ -688,7 +688,7 @@ describe('FlpSandbox', () => {
                 addApis: jest.fn()
             } as unknown as adpTooling.AdpPreview;
 
-            await flp.init(manifest, componendId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            await flp.init(manifest, componentId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
             const app = express();
             app.use(flp.router);
             const server = await supertest(app);
@@ -863,7 +863,7 @@ describe('FlpSandbox', () => {
             const manifest = {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
-            const componendId = 'myComponent';
+            const componentId = 'myComponent';
             const resources = {
                 'myResources1': 'myResourcesUrl1',
                 'myResources2': 'myResourcesUrl2'
@@ -894,7 +894,7 @@ describe('FlpSandbox', () => {
                 addApis: jest.fn()
             } as unknown as adpTooling.AdpPreview;
 
-            await flp.init(manifest, componendId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            await flp.init(manifest, componentId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
             const app = express();
             app.use(flp.router);
             const server = await supertest(app);
@@ -928,7 +928,7 @@ describe('FlpSandbox', () => {
             const manifest = {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
-            const componendId = 'myComponent';
+            const componentId = 'myComponent';
             const resources = {
                 'myResources1': 'myResourcesUrl1'
             };
@@ -951,7 +951,7 @@ describe('FlpSandbox', () => {
                 addApis: jest.fn()
             } as unknown as adpTooling.AdpPreview;
 
-            await flp.init(manifest, componendId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            await flp.init(manifest, componentId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
             const app = express();
             app.use(flp.router);
             const server = await supertest(app);
@@ -986,7 +986,7 @@ describe('FlpSandbox', () => {
             const manifest = {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
-            const componendId = 'myComponent';
+            const componentId = 'myComponent';
             const resources = { 'myResources1': 'myResourcesUrl1' };
             const url = 'http://sap.example';
             const syncSpy = jest.fn().mockResolvedValueOnce({});
@@ -1007,7 +1007,7 @@ describe('FlpSandbox', () => {
                 addApis: jest.fn()
             } as unknown as adpTooling.AdpPreview;
 
-            await flp.init(manifest, componendId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            await flp.init(manifest, componentId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
             const app = express();
             app.use(flp.router);
             const server = await supertest(app);
@@ -1020,6 +1020,62 @@ describe('FlpSandbox', () => {
 
             const appDeps = flp.templateConfig.apps['app-preview'].applicationDependencies;
             expect(appDeps?.manifest?.['sap.ui5']?.flexExtensionPointEnabled).toBe(true);
+        });
+
+        test('CF ADP skips applicationDependencies assignment (no descriptor merge available)', async () => {
+            const jsonSpy = () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.142.0' }]
+                });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            const componentId = 'myComponent';
+            const resources = {
+                'myResources1': 'myResourcesUrl1'
+            };
+            const syncSpy = jest.fn().mockResolvedValueOnce({});
+            // CF mode: descriptor must NOT be read; throw if anyone tries.
+            const cfAdpToolingMock = {
+                init: () => 'CUSTOMER_BASE',
+                get descriptor(): never {
+                    throw new Error('Not initialized');
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn(),
+                isCloudFoundry: true
+            } as unknown as adpTooling.AdpPreview;
+
+            await flp.init(manifest, componentId, resources, cfAdpToolingMock);
+            const app = express();
+            app.use(flp.router);
+            const server = await supertest(app);
+
+            await server
+                .get(
+                    '/my/editor.html.inner.html?fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true'
+                )
+                .expect(200);
+
+            // sync() must not be called and descriptor must not be assigned
+            expect(syncSpy).not.toHaveBeenCalled();
+            const appDeps = flp.templateConfig.apps['app-preview'].applicationDependencies;
+            expect(appDeps).toBeUndefined();
         });
     });
 
@@ -1881,7 +1937,7 @@ describe('initAdp', () => {
 
         expect(mockReadManifestFromBuildPath).toHaveBeenCalledWith(cfBuildPath);
         expect(mockAdpPreviewConstructor).toHaveBeenCalled();
-        expect(flpInitMock).toHaveBeenCalledWith(mockManifest, expect.any(String));
+        expect(flpInitMock).toHaveBeenCalledWith(mockManifest, expect.any(String), {}, expect.any(Object));
         expect(flp.rta?.options?.isCloud).toBe(false);
         expect(flp.rta?.options?.isCloudFoundry).toBe(true);
     });
@@ -2259,7 +2315,7 @@ describe('FlpSandbox fioriSandboxAppConfig.json route', () => {
         const body = JSON.parse(response.text) as Record<string, unknown>;
         expect(body.beforeFlpStart).toBe('module:open/ux/preview/client/flp/sandbox2BeforeInit');
         expect(body.afterFlpStart).toBe('module:open/ux/preview/client/flp/sandbox2AfterInit');
-        expect((body.restricted as Record<string, unknown>)?.flexibilityServices).toHaveLength(2);
+        expect((body.restricted as Record<string, unknown>)?.flexibilityServices).toHaveLength(3);
         expect(response.text).toMatchSnapshot();
     });
 

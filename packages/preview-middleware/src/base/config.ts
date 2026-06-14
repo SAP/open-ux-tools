@@ -273,13 +273,14 @@ export function sanitizeRtaConfig(deprecatedRtaConfig: MiddlewareConfig['rta'], 
 /**
  * Retrieves the configuration settings for UI5 flexibility services.
  *
+ * @param isAdp whether this is an adaptation project - LocalStorageConnector is omitted for ADP
  * @returns An array of flexibility service configurations, each specifying a connector
  *          and its options, such as the layers it applies to and its service URL, if applicable.
  */
-function getFlexSettings(): TemplateConfig['ui5']['flex'] {
+function getFlexSettings(isAdp = false): TemplateConfig['ui5']['flex'] {
     const localConnectorPath = 'open/ux/preview/client/flp/WorkspaceConnector';
 
-    return [
+    const connectors: TemplateConfig['ui5']['flex'] = [
         { connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' },
         {
             applyConnector: localConnectorPath,
@@ -287,6 +288,10 @@ function getFlexSettings(): TemplateConfig['ui5']['flex'] {
             custom: true
         }
     ];
+    if (!isAdp) {
+        connectors.push({ connector: 'LocalStorageConnector', layers: ['CUSTOMER', 'USER'] });
+    }
+    return connectors;
 }
 
 /**
@@ -416,14 +421,16 @@ export function remapResourcesForPath(config: TemplateConfig, newPagePath: strin
  * @param config FLP configuration
  * @param manifest application manifest
  * @param resources additional resources
+ * @param isAdp whether this is an adaptation project
  * @returns configuration object for the sandbox.html template
  */
 export function createFlpTemplateConfig(
     config: FlpConfig,
     manifest: Partial<Manifest>,
-    resources: Record<string, string> = {}
+    resources: Record<string, string> = {},
+    isAdp = false
 ): TemplateConfig {
-    const flex = getFlexSettings();
+    const flex = getFlexSettings(isAdp);
     const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
     const ui5Theme = config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
     const id = manifest['sap.app']?.id ?? '';
@@ -478,9 +485,14 @@ export function createTestTemplateConfig(config: CompleteTestConfig, id: string,
  *
  * @param templateConfig the current template configuration containing apps
  * @param _flpConfig the FLP configuration containing the intent
+ * @param isAdp whether this is an adaptation project - LocalStorageConnector is omitted for ADP
  * @returns the sandbox app config object
  */
-export function generateSandboxAppConfig(templateConfig: TemplateConfig, _flpConfig: FlpConfig): SandboxAppConfig {
+export function generateSandboxAppConfig(
+    templateConfig: TemplateConfig,
+    _flpConfig: FlpConfig,
+    isAdp = false
+): SandboxAppConfig {
     const tiles = Object.entries(templateConfig.apps).map(([appName, app]) => {
         const dashIndex = appName.indexOf('-');
         const semanticObject = dashIndex === -1 ? appName : appName.substring(0, dashIndex);
@@ -499,8 +511,7 @@ export function generateSandboxAppConfig(templateConfig: TemplateConfig, _flpCon
         beforeFlpStart: 'module:open/ux/preview/client/flp/sandbox2BeforeInit',
         afterFlpStart: 'module:open/ux/preview/client/flp/sandbox2AfterInit',
         restricted: {
-            // todo: pass isAdp flag once PR #4794 is merged so LocalStorageConnector is omitted for ADP projects
-            flexibilityServices: getFlexSettings()
+            flexibilityServices: getFlexSettings(isAdp)
         }
     };
 }

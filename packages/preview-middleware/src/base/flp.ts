@@ -192,7 +192,7 @@ export class FlpSandbox {
         this.createFlexHandler();
         this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app']?.id ?? '';
-        this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources);
+        this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources, adp !== undefined);
         this.adp = adp;
         this.manifest = manifest;
 
@@ -369,7 +369,7 @@ export class FlpSandbox {
      * @returns Promise that resolves when the application dependencies are set
      */
     private async setApplicationDependencies(): Promise<void> {
-        if (this.adp) {
+        if (this.adp && !this.adp.isCloudFoundry) {
             await this.adp.sync();
             const appName = getAppName(this.manifest, this.flpConfig.intent);
             this.templateConfig.apps[appName].applicationDependencies = this.adp.descriptor;
@@ -578,7 +578,7 @@ export class FlpSandbox {
                 // check for user-provided fioriSandboxAppConfig.json and merge if present
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const userConfigFile = await this.project.byPath(`${baseUrl}${configJsonPath}`);
-                let config = generateSandboxAppConfig(this.templateConfig, this.flpConfig);
+                let config = generateSandboxAppConfig(this.templateConfig, this.flpConfig, this.adp !== undefined);
                 if (userConfigFile) {
                     const userConfig = JSON.parse(await userConfigFile.getString()) as Record<string, unknown>;
                     config = {
@@ -1342,7 +1342,7 @@ export class FlpSandbox {
         if ('cfBuildPath' in config) {
             const manifest = this.setupCfBuildMode(config.cfBuildPath);
             configureRta(this.rta, layer, variant.id, false, true);
-            await this.init(manifest, variant.reference);
+            await this.init(manifest, variant.reference, {}, adp);
             await this.setupAdpCommonHandlers(adp);
             return;
         }

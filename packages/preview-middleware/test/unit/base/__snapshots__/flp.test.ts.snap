@@ -86,7 +86,7 @@ exports[`FlpSandbox cds-plugin-ui5 rta 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -161,7 +161,7 @@ exports[`FlpSandbox cds-plugin-ui5 test/flp.html 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -179,7 +179,7 @@ exports[`FlpSandbox cds-plugin-ui5 test/flp.html 1`] = `
 </html>"
 `;
 
-exports[`FlpSandbox fioriSandboxAppConfig.json route returns generated fioriSandboxAppConfig.json when no real file exists 1`] = `"{\\"tiles\\":[{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"rootPath\\":\\"../\\"}],\\"beforeFlpStart\\":\\"module:open/ux/preview/client/flp/sandbox2BeforeInit\\",\\"afterFlpStart\\":\\"module:open/ux/preview/client/flp/sandbox2AfterInit\\",\\"restricted\\":{\\"flexibilityServices\\":[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]}}"`;
+exports[`FlpSandbox fioriSandboxAppConfig.json route returns generated fioriSandboxAppConfig.json when no real file exists 1`] = `"{\\"tiles\\":[{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"rootPath\\":\\"../\\"}],\\"beforeFlpStart\\":\\"module:open/ux/preview/client/flp/sandbox2BeforeInit\\",\\"afterFlpStart\\":\\"module:open/ux/preview/client/flp/sandbox2AfterInit\\",\\"restricted\\":{\\"flexibilityServices\\":[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]}}"`;
 
 exports[`FlpSandbox init Card generator is enabled for the application 1`] = `
 Object {
@@ -210,6 +210,13 @@ Object {
         "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
         "custom": true,
         "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
       },
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell",
@@ -275,6 +282,13 @@ Object {
         "custom": true,
         "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
       },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell",
     "resources": Object {
@@ -333,6 +347,13 @@ Object {
         "custom": true,
         "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
       },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template",
     "resources": Object {
@@ -373,6 +394,13 @@ Object {
         "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
         "custom": true,
         "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
       },
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell",
@@ -415,6 +443,13 @@ Object {
         "custom": true,
         "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
       },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell",
     "resources": Object {
@@ -455,6 +490,13 @@ Object {
         "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
         "custom": true,
         "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
       },
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell",
@@ -497,6 +539,13 @@ Object {
         "custom": true,
         "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
       },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell",
     "resources": Object {
@@ -537,6 +586,13 @@ Object {
         "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
         "custom": true,
         "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
       },
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template",
@@ -580,6 +636,13 @@ Object {
         "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
         "custom": true,
         "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
       },
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template",
@@ -646,7 +709,7 @@ exports[`FlpSandbox router - connect API GET default routes with connect API (us
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -808,7 +871,7 @@ exports[`FlpSandbox router - connect API GET default routes with connect API (us
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -866,7 +929,7 @@ exports[`FlpSandbox router - connect API GET default routes with connect API whe
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -1033,7 +1096,7 @@ exports[`FlpSandbox router enhanced homepage disabled editor with config 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -1105,7 +1168,7 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -1177,7 +1240,7 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 1.76.0 f
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -1321,7 +1384,7 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 snapshot
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -1395,7 +1458,7 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html sap-ui-xx-vi
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -1453,7 +1516,7 @@ exports[`FlpSandbox router enhanced homepage enabled editor with config 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -1514,7 +1577,7 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -1587,7 +1650,7 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 1.76.0 fr
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -1717,7 +1780,7 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 snapshot 
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -1778,7 +1841,7 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html sap-ui-xx-vie
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -1851,7 +1914,7 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html should fallba
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -2311,7 +2374,7 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -2404,7 +2467,7 @@ exports[`FlpSandbox router rta with url parameters 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -2649,7 +2712,7 @@ exports[`FlpSandbox rta with new config rta w/o layer 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -2758,7 +2821,7 @@ exports[`FlpSandbox rta with new config rta with url parameters 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
