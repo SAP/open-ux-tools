@@ -52,7 +52,7 @@
         "@xml-tools/ast": "5.0.5",
         "@xml-tools/parser": "1.0.11",
         "cross-env": "10.1.0",
-        "esbuild": "0.27.4",
+        "esbuild": "0.28.1",
         "eslint": "9.39.1",
         "eslint-plugin-eslint-plugin": "7.3.2",
         "globals": "17.4.0",
