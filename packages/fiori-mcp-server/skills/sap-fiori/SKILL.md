@@ -17,7 +17,7 @@ metadata:
     - Inform the user that the UI has been created successfully
     - Ask if they need help with anything else
     - Do not double-check or verify if the UI was created successfully - trust that the Fiori MCP Server tools completed the task as intended.
-4. The data model must be suitable for SAP Fiori elements: one main entity with one or more navigation properties to related entities.
+4. The data model should be suitable for SAP Fiori elements: at minimum one entity type that serves as the main entity for the application. Navigation properties to related entities are optional but enable richer UI patterns.
 5. Each property of an entity must have a proper datatype.
 6. When modifying the SAP Fiori elements application (e.g., adding columns), **do not** use screen personalization.
 7. Before modifying the code directly - first check whether Fiori MCP server provides a suitable function or tool.
@@ -46,8 +46,8 @@ The Fiori MCP can add the following page types to existing applications:
 - When asked to create a SAP Fiori elements app, check whether the user input can be interpreted as an application organized into one or more pages containing table data or forms.
 - Applications typically start with a **List Report** page showing data in a table, but other templates are available (see above).
 - Details of a specific table row are shown in an **Object Page** based on the base entity.
-- An Object Page can contain one or more table sections based on to-many associations of its entity type.
-- Details of a table section row can be shown in another Object Page based on the association's target entity.
+- An Object Page can contain sections based on navigation properties (both to-one (0..1) and to-many associations) of its entity type.
+- Details of a table section row (for to-many associations) can be shown in another Object Page based on the association's target entity.
 
 ### Application Preview Guidelines
 - Use the most specific script for the app in `package.json`.
