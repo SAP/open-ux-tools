@@ -536,6 +536,50 @@ export class FlpSandbox {
     }
 
     /**
+     * Handler for GET requests to fioriSandboxAppConfig.json (Sandbox 2.0).
+     * Serves a virtual config, optionally merged with a user-provided file.
+     * If a real HTML file exists at the FLP path, no virtual config is served.
+     *
+     * @param req incoming request
+     * @param res server response
+     * @param next next middleware function
+     * @param configJsonPath project-relative path to fioriSandboxAppConfig.json
+     */
+    private async sandboxAppConfigGetHandler(
+        req: EnhancedRequest | connect.IncomingMessage,
+        res: Response | http.ServerResponse,
+        next: NextFunction,
+        configJsonPath: string
+    ): Promise<void> {
+        const baseUrl = (this.templateConfig.baseUrl =
+            ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '');
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const file = await this.project.byPath(`${baseUrl}${this.flpConfig.path}`);
+        if (file) {
+            this.logger.info(
+                `HTML file returned at '${this.flpConfig.path}'. No virtual 'fioriSandboxAppConfig.json' will be served.`
+            );
+            next();
+            return;
+        }
+        // check for user-provided fioriSandboxAppConfig.json and merge if present
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const userConfigFile = await this.project.byPath(`${baseUrl}${configJsonPath}`);
+        let config = generateSandboxAppConfig(this.templateConfig, this.flpConfig, this.adp !== undefined);
+        if (userConfigFile) {
+            const userConfig = JSON.parse(await userConfigFile.getString()) as Record<string, unknown>;
+            config = {
+                ...config,
+                ...userConfig,
+                // beforeFlpStart and afterFlpStart must always point to our hooks
+                beforeFlpStart: config.beforeFlpStart,
+                afterFlpStart: config.afterFlpStart
+            };
+        }
+        this.sendResponse(res, 'application/json', 200, JSON.stringify(config));
+    }
+
+    /**
      * Add routes for html and scripts required for a local FLP.
      */
     private addStandardRoutes(): void {
@@ -554,44 +598,20 @@ export class FlpSandbox {
             }
         );
 
-        // add route for fioriSandboxAppConfig.json (Sandbox 2.0)
-        // case 1: no real file exists at the FLP path
-        // case 2: file exists at the FLP path -> merge with virtual
-        const configJsonPath = `${dirname(this.flpConfig.path)}/fioriSandboxAppConfig.json`;
-        this.router.get(
-            configJsonPath,
-            async (
-                req: EnhancedRequest | connect.IncomingMessage,
-                res: Response | http.ServerResponse,
-                next: NextFunction
-            ) => {
-                const baseUrl = (this.templateConfig.baseUrl =
-                    ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '');
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                const file = await this.project.byPath(`${baseUrl}${this.flpConfig.path}`);
-                if (file) {
-                    this.logger.info(
-                        `HTML file returned at '${this.flpConfig.path}'. No virtual 'fioriSandboxAppConfig.json' will be served.`
-                    );
-                    next();
+        // add route for fioriSandboxAppConfig.json (Sandbox 2.0) — only when sandbox 2 is not explicitly disabled
+        if (this.flpConfig.useNewSandbox !== false) {
+            const configJsonPath = `${dirname(this.flpConfig.path)}/fioriSandboxAppConfig.json`;
+            this.router.get(
+                configJsonPath,
+                async (
+                    req: EnhancedRequest | connect.IncomingMessage,
+                    res: Response | http.ServerResponse,
+                    next: NextFunction
+                ) => {
+                    await this.sandboxAppConfigGetHandler(req, res, next, configJsonPath);
                 }
-                // check for user-provided fioriSandboxAppConfig.json and merge if present
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                const userConfigFile = await this.project.byPath(`${baseUrl}${configJsonPath}`);
-                let config = generateSandboxAppConfig(this.templateConfig, this.flpConfig, this.adp !== undefined);
-                if (userConfigFile) {
-                    const userConfig = JSON.parse(await userConfigFile.getString()) as Record<string, unknown>;
-                    config = {
-                        ...config,
-                        ...userConfig,
-                        // beforeFlpStart and afterFlpStart must always point to our hooks
-                        beforeFlpStart: config.beforeFlpStart,
-                        afterFlpStart: config.afterFlpStart
-                    };
-                }
-                this.sendResponse(res, 'application/json', 200, JSON.stringify(config));
-            }
-        );
+            );
+        }
     }
 
     /**
