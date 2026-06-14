@@ -1,5 +1,12 @@
 # @sap-ux/ui5-test-writer
 
+## 1.1.10
+
+### Patch Changes
+
+- Updated dependencies [adae40d]
+    - @sap-ux/preview-middleware@1.0.22
+
 ## 1.1.9
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # @sap-ux/preview-middleware
 
+## 1.0.22
+
+### Patch Changes
+
+- adae40d: fix: restore LocalStorageConnector for non-ADP projects
+
+    PR #4122 removed LocalStorageConnector globally but it should only be omitted for adaptation projects (ADP). Non-ADP Fiori projects still need the connector for local variant storage on CUSTOMER/USER layers.
+
+- Updated dependencies [adae40d]
+    - @sap-ux/adp-tooling@1.0.16
+
 ## 1.0.21
 
 ### Patch Changes
