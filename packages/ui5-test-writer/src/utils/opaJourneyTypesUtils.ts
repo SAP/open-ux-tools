@@ -2,8 +2,13 @@ import type { Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 import { join } from 'node:path';
 import { t } from '../i18n.js';
-import type { JourneyRunnerPage } from './journeyRunnerUtils.js';
-import { MAX_FILE_CONTENT_LENGTH, escapeRegex } from './fileWritingUtils.js';
+import type { OpaPageWriteInfo } from './journeyRunnerUtils.js';
+import {
+    MAX_FILE_CONTENT_LENGTH,
+    escapeRegex,
+    findMatchingClosingBrace,
+    insertAfterLastImport
+} from './fileWritingUtils.js';
 
 /** Relative path from the test output directory to OpaJourneyTypes.d.ts */
 const OPA_JOURNEY_TYPES_FILE = join('integration', 'types', 'OpaJourneyTypes.d.ts');
@@ -19,48 +24,11 @@ const SUPPORTED_FRAMEWORKS = new Set(['ListReport', 'ObjectPage']);
  * @param pages - candidate pages to splice in
  * @returns the subset of pages that need to be added
  */
-function findPagesToAdd(fileContent: string, pages: JourneyRunnerPage[]): JourneyRunnerPage[] {
+function findPagesToAdd(fileContent: string, pages: OpaPageWriteInfo[]): OpaPageWriteInfo[] {
     return pages.filter((page) => {
         const importPattern = new RegExp(String.raw`from\s+"\.\./pages/${escapeRegex(page.fileName)}"`);
         return !importPattern.test(fileContent);
     });
-}
-
-/**
- * Return the index immediately after the last `import ... from "..."` line in `content`,
- * or `-1` if the content has no `import` lines.
- *
- * @param content - the file content to scan
- * @returns the index immediately after the last import line, or -1 if none found
- */
-function findLastImportEnd(content: string): number {
-    const importLineRegex = /^import\b[^\n]*?\bfrom[ \t]+["'][^"']+["'];?[ \t]*$/gm;
-    let lastImportEnd = -1;
-    let importMatch: RegExpExecArray | null;
-    while ((importMatch = importLineRegex.exec(content)) !== null) {
-        lastImportEnd = importMatch.index + importMatch[0].length;
-    }
-    return lastImportEnd;
-}
-
-/**
- * Insert `newImportLines` after the last existing `import` line in `content`.
- * Returns `content` unchanged if it has no `import` lines.
- *
- * @param content - the file content
- * @param newImportLines - the import lines to insert (no leading newline)
- * @returns the updated content
- */
-function insertAfterLastImport(content: string, newImportLines: string[]): string {
-    if (newImportLines.length === 0) {
-        return content;
-    }
-    const lastImportEnd = findLastImportEnd(content);
-    if (lastImportEnd < 0) {
-        return content;
-    }
-    const newImports = newImportLines.map((line) => `\n${line}`).join('');
-    return `${content.slice(0, lastImportEnd)}${newImports}${content.slice(lastImportEnd)}`;
 }
 
 /**
@@ -71,7 +39,7 @@ function insertAfterLastImport(content: string, newImportLines: string[]): strin
  * @param pages - the new pages being added
  * @returns the list of framework-import lines to insert
  */
-function buildMissingFrameworkImports(fileContent: string, pages: JourneyRunnerPage[]): string[] {
+function buildMissingFrameworkImports(fileContent: string, pages: OpaPageWriteInfo[]): string[] {
     const lines: string[] = [];
     const templates = new Set(
         pages.map((page) => page.template).filter((template): template is string => Boolean(template))
@@ -103,7 +71,7 @@ function buildMissingFrameworkImports(fileContent: string, pages: JourneyRunnerP
  * @param page - the page to render
  * @returns the import line
  */
-function buildPageCustomImportLine(page: JourneyRunnerPage): string {
+function buildPageCustomImportLine(page: OpaPageWriteInfo): string {
     return (
         `import type { actions as ${page.targetKey}GeneratedCustomActions, ` +
         `assertions as ${page.targetKey}GeneratedCustomAssertions } from "../pages/${page.fileName}";`
@@ -119,7 +87,7 @@ function buildPageCustomImportLine(page: JourneyRunnerPage): string {
  * @returns the source line, or undefined if the page's framework is not supported
  */
 function buildPageUnionEntry(
-    page: JourneyRunnerPage,
+    page: OpaPageWriteInfo,
     mode: 'actions' | 'assertions',
     indent: string
 ): string | undefined {
@@ -172,32 +140,6 @@ function insertIntoTypeUnion(content: string, exportName: 'When' | 'Then', newEn
 }
 
 /**
- * Walk forward from `openBraceIdx` and return the index of the matching closing `}`,
- * accounting for nested braces inside member type expressions.
- *
- * @param content - the file content
- * @param openBraceIdx - the index of the `{` that opens the block
- * @returns the index of the matching closing `}` (or `content.length` if unterminated)
- */
-function findMatchingClosingBrace(content: string, openBraceIdx: number): number {
-    let depth = 1;
-    let index = openBraceIdx + 1;
-    while (index < content.length && depth > 0) {
-        const character = content[index];
-        if (character === '{') {
-            depth++;
-        } else if (character === '}') {
-            depth--;
-        }
-        if (depth === 0) {
-            break;
-        }
-        index++;
-    }
-    return index;
-}
-
-/**
  * Splice new journey entries into an existing `OpaJourneyTypes.d.ts`: framework imports,
  * per-page custom actions/assertions imports, and `onThe<targetKey>Generated` members in
  * the `When` and `Then` unions. Pages already imported are skipped; all other content is preserved.
@@ -206,7 +148,7 @@ function findMatchingClosingBrace(content: string, openBraceIdx: number): number
  * @param pages - pages to add
  * @returns the updated file content, or the original content unchanged if nothing was added
  */
-export function spliceJourneysIntoOpaJourneyTypes(fileContent: string, pages: JourneyRunnerPage[]): string {
+export function spliceJourneysIntoOpaJourneyTypes(fileContent: string, pages: OpaPageWriteInfo[]): string {
     if (fileContent.length > MAX_FILE_CONTENT_LENGTH) {
         return fileContent;
     }
@@ -248,7 +190,7 @@ export function spliceJourneysIntoOpaJourneyTypes(fileContent: string, pages: Jo
  * @returns true if the file was written, false otherwise
  */
 export function addJourneysToOpaJourneyTypes(
-    pages: JourneyRunnerPage[],
+    pages: OpaPageWriteInfo[],
     testOutDirPath: string,
     fs: Editor,
     log?: Logger

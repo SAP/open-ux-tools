@@ -20,7 +20,7 @@ import { FileName, DirName, getWebappPath, updatePackageScript } from '@sap-ux/p
 import type { Logger } from '@sap-ux/logger';
 import { getAppFeatures } from './utils/modelUtils.js';
 import { addPathsToQUnitJs, readHtmlTargetFromQUnitJs } from './utils/opaQUnitUtils.js';
-import { type JourneyRunnerPage, addPagesToJourneyRunner } from './utils/journeyRunnerUtils.js';
+import { type OpaPageWriteInfo, addPagesToJourneyRunner } from './utils/journeyRunnerUtils.js';
 import { hasVirtualOPA5, addVirtualTestConfig } from './utils/virtualOpaUtils.js';
 import { addJourneysToOpaJourneyTypes } from './utils/opaJourneyTypesUtils.js';
 import { getPackageScripts } from '@sap-ux/fiori-generator-shared';
@@ -158,7 +158,7 @@ async function generateOPAFilesForNewApp(writeContext: WriteContext, appFeatures
 function logGeneratedAndModifiedFiles(
     writeContext: WriteContext,
     generatedJourneys: string[],
-    generatedPages: JourneyRunnerPage[]
+    generatedPages: OpaPageWriteInfo[]
 ): void {
     const { log, dotFileExtension, modifiedFiles } = writeContext;
     if (!log?.info) {
@@ -193,7 +193,7 @@ function logGeneratedJourneyFiles(log: Logger, generatedJourneys: string[], dotF
  */
 function logGeneratedPageFiles(
     log: Logger,
-    generatedPages: JourneyRunnerPage[],
+    generatedPages: OpaPageWriteInfo[],
     dotFileExtension: DotFileExtension
 ): void {
     if (generatedPages.length === 0) {
@@ -218,34 +218,36 @@ function logModifiedFiles(log: Logger, modifiedFiles: string[]): void {
 }
 
 /**
- * Resolves the write context for standalone mode when no JourneyRunner.js exists yet.
- * Marks the test setup as incompatible if an old test setup is detected (no own JourneyRunner.js file but direct usage of JourneyRunner in opaTests.qunit.js or presence of AllJourneys.json)
- * and resolves the htmlTarget from flpSandbox.html if present.
+ * Resolve the standalone-mode write context: detect preexisting integration tests and an
+ * incompatible legacy setup, and resolve the htmlTarget from flpSandbox.html if present.
  *
  * @param writeContext - shared write context to base the resolved context on
  * @returns a new WriteContext with the resolved values for the standalone generation
  */
 async function resolveStandaloneWriteContext(writeContext: WriteContext): Promise<WriteContext> {
-    const { config } = writeContext;
-    writeContext.hasPreexistingTests = existsSync(join(writeContext.testOutDirPath, 'integration'));
+    const hasPreexistingTests = existsSync(join(writeContext.testOutDirPath, 'integration'));
 
-    // preexisting tests
-    if (writeContext.hasPreexistingTests) {
-        writeContext.incompatibleTestSetup = await hasIncompatibleTestSetup(
-            writeContext.testOutDirPath,
-            writeContext.editor
-        );
-        writeContext.config.htmlTarget =
-            readHtmlTargetFromQUnitJs(writeContext.testOutDirPath, writeContext.editor) ?? config.htmlTarget;
-        return writeContext;
-    } else {
-        // app has no integration tests yet
-        return await resolveWriteContextForMissingIntegrationFolder(writeContext);
+    if (hasPreexistingTests) {
+        return {
+            ...writeContext,
+            hasPreexistingTests: true,
+            incompatibleTestSetup: await hasIncompatibleTestSetup(writeContext.testOutDirPath, writeContext.editor),
+            config: {
+                ...writeContext.config,
+                htmlTarget:
+                    readHtmlTargetFromQUnitJs(writeContext.testOutDirPath, writeContext.editor) ??
+                    writeContext.config.htmlTarget
+            }
+        };
     }
+    // app has no integration tests yet
+    return await resolveWriteContextForMissingIntegrationFolder(writeContext);
 }
 
 /**
- * Resolves the write context in case there is no integration folder yet, which means there are no OPA tests yet, but there might still be an incompatible test setup (old test setup with direct usage of JourneyRunner from OPA5 and/or AllJourneys.json) and the htmlTarget needs to be resolved in case flpSandbox.html is present.
+ * Resolve the standalone-mode write context for the case where the integration folder is
+ * missing entirely: there are no OPA tests yet, the int-test package script may need to be
+ * added, and the htmlTarget is resolved from flpSandbox.html if present.
  *
  * @param writeContext - shared write context to base the resolved context on
  * @returns a new WriteContext with the resolved values for the standalone generation
@@ -259,6 +261,7 @@ async function resolveWriteContextForMissingIntegrationFolder(writeContext: Writ
             writeContext.modifiedFiles?.push('package.json');
         }
     }
+    let htmlTarget = writeContext.config.htmlTarget;
     if (existsSync(join(writeContext.testOutDirPath, 'flpSandbox.html'))) {
         const hashFromFlpSandbox = readHashFromFlpSandbox(
             join('test', 'flpSandbox.html'),
@@ -266,11 +269,14 @@ async function resolveWriteContextForMissingIntegrationFolder(writeContext: Writ
             writeContext.editor
         );
         if (hashFromFlpSandbox) {
-            writeContext.config.htmlTarget = `test/flpSandbox.html#${hashFromFlpSandbox}`;
+            htmlTarget = `test/flpSandbox.html#${hashFromFlpSandbox}`;
         }
     }
-    writeContext.hasPreexistingTests = false;
-    return writeContext;
+    return {
+        ...writeContext,
+        hasPreexistingTests: false,
+        config: { ...writeContext.config, htmlTarget }
+    };
 }
 
 /**
@@ -580,9 +586,9 @@ function writeTestsuiteFiles(writeContext: WriteContext): void {
  * @param writeContext - shared write context (config, paths, editor, journey params)
  * @returns an array of the written page objects with their targetKey and appPath
  */
-function writePageFiles(writeContext: WriteContext): JourneyRunnerPage[] {
+function writePageFiles(writeContext: WriteContext): OpaPageWriteInfo[] {
     const { config, rootV4TemplateDirPath, testOutDirPath, editor } = writeContext;
-    const writtenPages: JourneyRunnerPage[] = [];
+    const writtenPages: OpaPageWriteInfo[] = [];
 
     config.pages.forEach((page) => {
         writtenPages.push(
@@ -735,7 +741,7 @@ function writeFallbackJourney(writeContext: WriteContext): void {
  * @param writeContext - shared write context (config, paths, editor, journey params)
  * @param generatedPages - pages whose journeys should be reflected in the type definitions
  */
-function handleOPAJourneyTypes(writeContext: WriteContext, generatedPages: JourneyRunnerPage[]): void {
+function handleOPAJourneyTypes(writeContext: WriteContext, generatedPages: OpaPageWriteInfo[]): void {
     if (writeContext.incompatibleTestSetup) {
         writeContext.log?.info(t('info.opaJourneyTypesNotUpdated'));
         return;
@@ -762,7 +768,7 @@ function handleOPAJourneyTypes(writeContext: WriteContext, generatedPages: Journ
  * @param writeContext - shared write context (config, paths, editor, journey params)
  * @param generatedPages - an array of page objects that were generated, each containing a targetKey and appPath
  */
-function handleJourneyRunner(writeContext: WriteContext, generatedPages: JourneyRunnerPage[]): void {
+function handleJourneyRunner(writeContext: WriteContext, generatedPages: OpaPageWriteInfo[]): void {
     if (writeContext.incompatibleTestSetup) {
         return;
     } else if (writeContext.hasPreexistingTests) {
@@ -778,7 +784,7 @@ function handleJourneyRunner(writeContext: WriteContext, generatedPages: Journey
  * @param writeContext - shared write context (config, paths, editor, journey params)
  * @param generatedPages - an array of page objects that were generated, each containing a targetKey and appPath
  */
-function updatePagesInJourneyRunner(writeContext: WriteContext, generatedPages: JourneyRunnerPage[]): void {
+function updatePagesInJourneyRunner(writeContext: WriteContext, generatedPages: OpaPageWriteInfo[]): void {
     const { testOutDirPath, editor, log, dotFileExtension, modifiedFiles } = writeContext;
     if (generatedPages.length > 0) {
         addPagesToJourneyRunner(generatedPages, testOutDirPath, editor, dotFileExtension, log);
@@ -879,7 +885,7 @@ function writePageObject(
     testOutDirPath: string,
     fs: Editor,
     dotFileExtension: DotFileExtension
-): JourneyRunnerPage {
+): OpaPageWriteInfo {
     // FPM has no .ts template; force .js regardless of the configured extension
     const ext = pageConfig.template === 'FPM' ? DotFileExtension.JS : dotFileExtension;
     fs.copyTpl(
@@ -895,7 +901,7 @@ function writePageObject(
         targetKey: pageConfig.targetKey,
         appPath: pageConfig.appPath,
         fileName: `${pageConfig.targetKey}.gen`,
-        fileExtension: ext,
+        dotFileExtension: ext,
         template: pageConfig.template,
         appID: pageConfig.appID,
         componentID: pageConfig.componentID,

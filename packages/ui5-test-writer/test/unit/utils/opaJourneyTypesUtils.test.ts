@@ -7,26 +7,26 @@ import {
     addJourneysToOpaJourneyTypes,
     spliceJourneysIntoOpaJourneyTypes
 } from '../../../src/utils/opaJourneyTypesUtils.js';
-import type { JourneyRunnerPage } from '../../../src/utils/journeyRunnerUtils.js';
+import type { OpaPageWriteInfo } from '../../../src/utils/journeyRunnerUtils.js';
 import { MAX_FILE_CONTENT_LENGTH } from '../../../src/utils/fileWritingUtils.js';
 import { initI18n } from '../../../src/i18n.js';
 
 await initI18n();
 
 /**
- * Builds a `JourneyRunnerPage` with the rework-shape: `.gen` filename, plus the
+ * Builds a `OpaPageWriteInfo` with the rework-shape: `.gen` filename, plus the
  * metadata fields the TS / type-defs splicer relies on.
  *
  * @param targetKey - the page's target key
  * @param template - the framework template
- * @returns a fully populated JourneyRunnerPage
+ * @returns a fully populated OpaPageWriteInfo
  */
-function makePage(targetKey: string, template: 'ListReport' | 'ObjectPage' = 'ListReport'): JourneyRunnerPage {
+function makePage(targetKey: string, template: 'ListReport' | 'ObjectPage' = 'ListReport'): OpaPageWriteInfo {
     return {
         targetKey,
         appPath: 'myApp',
         fileName: `${targetKey}.gen`,
-        fileExtension: '.ts',
+        dotFileExtension: '.ts',
         template,
         appID: 'my.app',
         componentID: targetKey,

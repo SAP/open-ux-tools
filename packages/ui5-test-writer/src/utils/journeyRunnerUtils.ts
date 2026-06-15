@@ -3,7 +3,7 @@ import type { Logger } from '@sap-ux/logger';
 import { join } from 'node:path';
 import { t } from '../i18n.js';
 import { DotFileExtension } from '../types.js';
-import { MAX_FILE_CONTENT_LENGTH, escapeRegex } from './fileWritingUtils.js';
+import { MAX_FILE_CONTENT_LENGTH, escapeRegex, findBracedBlock, insertAfterLastImport } from './fileWritingUtils.js';
 
 /**
  * Page entry to splice into an existing JourneyRunner.js / JourneyRunner.ts.
@@ -12,15 +12,15 @@ import { MAX_FILE_CONTENT_LENGTH, escapeRegex } from './fileWritingUtils.js';
  * (e.g. `TravelListGenerated`, `onTheTravelListGenerated`) so that generator-owned `.gen` page
  * entries can coexist with hand-authored pages bound to the same `targetKey`.
  */
-export interface JourneyRunnerPage {
+export interface OpaPageWriteInfo {
     /** The page's targetKey; used as the base for the `onThe<targetKey>Generated` key. */
     targetKey: string;
     /** The app module path prefix (e.g. "project1/test/integration/pages") */
     appPath: string;
     /** The file name of the page object, including the `.gen` suffix (e.g. "TravelList.gen") */
     fileName: string;
-    /** The file extension of the page object (e.g. ".js" or ".ts") */
-    fileExtension: string;
+    /** The file extension of the page object, including the leading dot (e.g. ".js" or ".ts") */
+    dotFileExtension: string;
     /** The framework page template (`'ListReport'` or `'ObjectPage'`); only needed by the TS splicer. */
     template?: string;
     /** The app id (sap.app.id from the manifest); only needed by the TS splicer. */
@@ -53,7 +53,7 @@ function getJourneyRunnerFilePath(dotFileExtension: DotFileExtension): string {
  * @param pages - pages to add
  * @returns the updated file content, or the original content unchanged if nothing was added
  */
-export function splicePageIntoJourneyRunner(fileContent: string, pages: JourneyRunnerPage[]): string {
+export function splicePageIntoJourneyRunner(fileContent: string, pages: OpaPageWriteInfo[]): string {
     if (fileContent.length > MAX_FILE_CONTENT_LENGTH) {
         return fileContent;
     }
@@ -81,7 +81,7 @@ export function splicePageIntoJourneyRunner(fileContent: string, pages: JourneyR
  * @param toAdd - pages to add
  * @returns the updated content (or unchanged if the define array can't be located)
  */
-function spliceIntoDefineArray(content: string, toAdd: JourneyRunnerPage[]): string {
+function spliceIntoDefineArray(content: string, toAdd: OpaPageWriteInfo[]): string {
     const defineArrayRegex = /sap\.ui\.define\s*\(\s*\[([^\]]*)\]\s*,\s*function/d;
     const match = defineArrayRegex.exec(content);
     if (!match?.indices?.[1]) {
@@ -105,7 +105,7 @@ function spliceIntoDefineArray(content: string, toAdd: JourneyRunnerPage[]): str
  * @param toAdd - pages to add
  * @returns the updated content (or unchanged if the function signature can't be located)
  */
-function spliceIntoFunctionParams(content: string, toAdd: JourneyRunnerPage[]): string {
+function spliceIntoFunctionParams(content: string, toAdd: OpaPageWriteInfo[]): string {
     const funcParamRegex = /\]\s*,\s*function\s*\(([^)]*)\)\s*\{/d;
     const match = funcParamRegex.exec(content);
     if (!match?.indices?.[1]) {
@@ -124,26 +124,20 @@ function spliceIntoFunctionParams(content: string, toAdd: JourneyRunnerPage[]): 
  * @param toAdd - pages to add
  * @returns the updated content (or unchanged if the pages object can't be located)
  */
-function spliceIntoJsPagesObject(content: string, toAdd: JourneyRunnerPage[]): string {
-    const pagesHeaderRegex = /pages\s*:\s*\{/d;
-    const match = pagesHeaderRegex.exec(content);
-    if (!match?.indices?.[0]) {
+function spliceIntoJsPagesObject(content: string, toAdd: OpaPageWriteInfo[]): string {
+    const block = findBracedBlock(content, /pages\s*:\s*\{/);
+    if (!block) {
         return content;
     }
-    const [, headerEnd] = match.indices[0];
-    const openBraceIdx = headerEnd - 1;
-    const pagesBodyEnd = findMatchingClosingBrace(content, openBraceIdx);
-    if (pagesBodyEnd >= content.length) {
-        return content;
-    }
-    const pagesBody = content.slice(openBraceIdx + 1, pagesBodyEnd);
+    const { openBraceIdx, closeBraceIdx } = block;
+    const pagesBody = content.slice(openBraceIdx + 1, closeBraceIdx);
     const pageIndentMatch = /^([ \t]+)on/m.exec(pagesBody);
     const pageIndent = pageIndentMatch ? pageIndentMatch[1] : '\t\t\t';
 
     const newPageEntries = toAdd
         .map((page) => `${pageIndent}onThe${page.targetKey}Generated: ${page.targetKey}Generated,`)
         .join('\n');
-    return insertBeforePosition(content, pagesBodyEnd, newPageEntries);
+    return insertBeforePosition(content, closeBraceIdx, newPageEntries);
 }
 
 /**
@@ -174,7 +168,7 @@ function insertBeforePosition(content: string, position: number, newEntries: str
  *   cannot be read or updated
  */
 export function addPagesToJourneyRunner(
-    pages: JourneyRunnerPage[],
+    pages: OpaPageWriteInfo[],
     testOutDirPath: string,
     fs: Editor,
     dotFileExtension: DotFileExtension = DotFileExtension.JS,
@@ -206,57 +200,11 @@ export function addPagesToJourneyRunner(
  * @param pages - candidate pages to splice in
  * @returns the subset of pages that need to be added
  */
-function findPagesToAdd(fileContent: string, pages: JourneyRunnerPage[]): JourneyRunnerPage[] {
+function findPagesToAdd(fileContent: string, pages: OpaPageWriteInfo[]): OpaPageWriteInfo[] {
     return pages.filter((page) => {
         const importPattern = new RegExp(String.raw`from\s+"\./${escapeRegex(page.fileName)}"`);
         return !importPattern.test(fileContent);
     });
-}
-
-/**
- * Return the index immediately after the last `import ... from "..."` line in `content`,
- * or `-1` if the content has no `import` lines.
- *
- * Word boundaries around `import` and `from` keep the middle quantifier from sitting next to
- * another quantifier — that shape would risk catastrophic backtracking on hand-edited files.
- *
- * @param content - the file content to scan
- * @returns the index immediately after the last import line, or -1 if none found
- */
-function findLastImportEnd(content: string): number {
-    const importLineRegex = /^import\b[^\n]*?\bfrom[ \t]+["'][^"']+["'];?[ \t]*$/gm;
-    let lastImportEnd = -1;
-    let importMatch: RegExpExecArray | null;
-    while ((importMatch = importLineRegex.exec(content)) !== null) {
-        lastImportEnd = importMatch.index + importMatch[0].length;
-    }
-    return lastImportEnd;
-}
-
-/**
- * Walk forward from `openBraceIdx` and return the index of the matching closing `}`,
- * accounting for nested braces (e.g. the per-page definition object inside `pages: { ... }`).
- *
- * @param content - the file content
- * @param openBraceIdx - the index of the `{` that opens the block
- * @returns the index of the matching closing `}` (or `content.length` if unterminated)
- */
-function findMatchingClosingBrace(content: string, openBraceIdx: number): number {
-    let depth = 1;
-    let index = openBraceIdx + 1;
-    while (index < content.length && depth > 0) {
-        const character = content[index];
-        if (character === '{') {
-            depth++;
-        } else if (character === '}') {
-            depth--;
-        }
-        if (depth === 0) {
-            break;
-        }
-        index++;
-    }
-    return index;
 }
 
 /**
@@ -267,39 +215,26 @@ function findMatchingClosingBrace(content: string, openBraceIdx: number): number
  * @param innerIndent - leading whitespace for the entry's nested lines
  * @returns the multi-line source block
  */
-function buildPageEntry(page: JourneyRunnerPage, pageIndent: string, innerIndent: string): string {
+function buildPageEntry(page: OpaPageWriteInfo, pageIndent: string, innerIndent: string): string {
     const framework = page.template ?? 'ListReport';
+    const innerProps: string[] = [
+        `${innerIndent}    appId: "${page.appID ?? ''}"`,
+        `${innerIndent}    componentId: "${page.componentID ?? ''}"`
+    ];
+    if (page.entitySet) {
+        innerProps.push(`${innerIndent}    entitySet: "${page.entitySet}"`);
+    }
+    if (page.contextPath) {
+        innerProps.push(`${innerIndent}    contextPath: "${page.contextPath}"`);
+    }
     return [
         `${pageIndent}onThe${page.targetKey}Generated: new ${framework}(`,
         `${innerIndent}{`,
-        `${innerIndent}    appId: "${page.appID ?? ''}",`,
-        `${innerIndent}    componentId: "${page.componentID ?? ''}",`,
-        `${innerIndent}    entitySet: "${page.entitySet ?? ''}",`,
-        `${innerIndent}    contextPath: "${page.contextPath ?? ''}"`,
+        innerProps.join(',\n'),
         `${innerIndent}},`,
         `${innerIndent}Custom${page.targetKey}Generated`,
         `${pageIndent})`
     ].join('\n');
-}
-
-/**
- * Insert `newImportLines` after the last existing `import` line in `content`.
- * Returns `content` unchanged if it has no `import` lines.
- *
- * @param content - the file content
- * @param newImportLines - the import lines to insert (no leading newline)
- * @returns the updated content
- */
-function insertAfterLastImport(content: string, newImportLines: string[]): string {
-    if (newImportLines.length === 0) {
-        return content;
-    }
-    const lastImportEnd = findLastImportEnd(content);
-    if (lastImportEnd < 0) {
-        return content;
-    }
-    const newImports = newImportLines.map((line) => `\n${line}`).join('');
-    return `${content.slice(0, lastImportEnd)}${newImports}${content.slice(lastImportEnd)}`;
 }
 
 /**
@@ -310,14 +245,13 @@ function insertAfterLastImport(content: string, newImportLines: string[]): strin
  * @param toAdd - the pages to add
  * @returns the updated content
  */
-function insertIntoPagesObject(content: string, toAdd: JourneyRunnerPage[]): string {
-    const pagesStartMatch = /pages\s*:\s*\{/.exec(content);
-    if (!pagesStartMatch) {
+function insertIntoPagesObject(content: string, toAdd: OpaPageWriteInfo[]): string {
+    const block = findBracedBlock(content, /pages\s*:\s*\{/);
+    if (!block) {
         return content;
     }
-    const openBraceIdx = content.indexOf('{', pagesStartMatch.index);
-    const pagesBodyEnd = findMatchingClosingBrace(content, openBraceIdx);
-    const pagesBody = content.slice(openBraceIdx + 1, pagesBodyEnd);
+    const { openBraceIdx, closeBraceIdx } = block;
+    const pagesBody = content.slice(openBraceIdx + 1, closeBraceIdx);
 
     // Detect indentation from the first existing page entry
     const pageIndentMatch = /^([ \t]+)on/m.exec(pagesBody);
@@ -327,11 +261,11 @@ function insertIntoPagesObject(content: string, toAdd: JourneyRunnerPage[]): str
     const newPageEntries = toAdd.map((page) => buildPageEntry(page, pageIndent, innerIndent)).join(',\n');
 
     // Ensure the last existing entry ends with a comma before we insert after it.
-    const trimmedPagesEnd = content.slice(0, pagesBodyEnd).trimEnd();
+    const trimmedPagesEnd = content.slice(0, closeBraceIdx).trimEnd();
     const needsComma = !trimmedPagesEnd.endsWith(',') && !trimmedPagesEnd.endsWith('{');
     const commaFix = needsComma ? ',' : '';
-    const trailingWhitespace = content.slice(trimmedPagesEnd.length, pagesBodyEnd);
-    return `${trimmedPagesEnd}${commaFix}\n${newPageEntries}${trailingWhitespace}${content.slice(pagesBodyEnd)}`;
+    const trailingWhitespace = content.slice(trimmedPagesEnd.length, closeBraceIdx);
+    return `${trimmedPagesEnd}${commaFix}\n${newPageEntries}${trailingWhitespace}${content.slice(closeBraceIdx)}`;
 }
 
 /**
@@ -343,7 +277,7 @@ function insertIntoPagesObject(content: string, toAdd: JourneyRunnerPage[]): str
  * @param pages - pages to add
  * @returns the updated file content, or the original content unchanged if nothing was added
  */
-export function splicePageIntoJourneyRunnerTs(fileContent: string, pages: JourneyRunnerPage[]): string {
+export function splicePageIntoJourneyRunnerTs(fileContent: string, pages: OpaPageWriteInfo[]): string {
     if (fileContent.length > MAX_FILE_CONTENT_LENGTH) {
         return fileContent;
     }

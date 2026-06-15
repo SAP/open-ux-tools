@@ -11,8 +11,7 @@ const runner = new JourneyRunner({
             {
                 appId: "testNameSpace.alpv4captypescript",
                 componentId: "BooksList",
-                entitySet: "Books",
-                contextPath: ""
+                entitySet: "Books"
             },
             CustomBooksListGenerated
         ),
@@ -20,8 +19,7 @@ const runner = new JourneyRunner({
             {
                 appId: "testNameSpace.alpv4captypescript",
                 componentId: "BooksObjectPage",
-                entitySet: "Books",
-                contextPath: ""
+                entitySet: "Books"
             },
             CustomBooksObjectPageGenerated
         )

@@ -7,7 +7,7 @@ import {
     addPagesToJourneyRunner,
     splicePageIntoJourneyRunner,
     splicePageIntoJourneyRunnerTs,
-    type JourneyRunnerPage
+    type OpaPageWriteInfo
 } from '../../../src/utils/journeyRunnerUtils.js';
 import { MAX_FILE_CONTENT_LENGTH } from '../../../src/utils/fileWritingUtils.js';
 import { DotFileExtension } from '../../../src/types.js';
@@ -16,18 +16,18 @@ import { initI18n } from '../../../src/i18n.js';
 await initI18n();
 
 /**
- * Builds a `JourneyRunnerPage` with the same shape that the writer produces:
- * `fileName` carries the `.gen` suffix and `fileExtension` is the file's extension.
+ * Builds a `OpaPageWriteInfo` with the same shape that the writer produces:
+ * `fileName` carries the `.gen` suffix and `dotFileExtension` is the file's extension with leading dot.
  *
  * @param targetKey - the page's target key (matches the manifest target id)
- * @returns a fully populated JourneyRunnerPage
+ * @returns a fully populated OpaPageWriteInfo
  */
-function makePage(targetKey: string): JourneyRunnerPage {
+function makePage(targetKey: string): OpaPageWriteInfo {
     return {
         targetKey,
         appPath: 'myApp',
         fileName: `${targetKey}.gen`,
-        fileExtension: 'js'
+        dotFileExtension: '.js'
     };
 }
 
@@ -56,18 +56,18 @@ const JOURNEY_RUNNER_FILE = `sap.ui.define([
 `;
 
 /**
- * Builds a TS-shaped `JourneyRunnerPage` with all the metadata fields the TS splicer needs.
+ * Builds a TS-shaped `OpaPageWriteInfo` with all the metadata fields the TS splicer needs.
  *
  * @param targetKey - the page's target key
  * @param template - the framework template
- * @returns a fully populated JourneyRunnerPage
+ * @returns a fully populated OpaPageWriteInfo
  */
-function makeTsPage(targetKey: string, template: 'ListReport' | 'ObjectPage'): JourneyRunnerPage {
+function makeTsPage(targetKey: string, template: 'ListReport' | 'ObjectPage'): OpaPageWriteInfo {
     return {
         targetKey,
         appPath: 'myApp',
         fileName: `${targetKey}.gen`,
-        fileExtension: '.ts',
+        dotFileExtension: '.ts',
         template,
         appID: 'my.app',
         componentID: targetKey,

@@ -25322,8 +25322,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"lrop_v4_addtests_cds\\",
                 componentId: \\"TravelList\\",
-                entitySet: \\"Travel\\",
-                contextPath: \\"\\"
+                entitySet: \\"Travel\\"
             },
             CustomTravelListGenerated
         ),
@@ -25331,8 +25330,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"lrop_v4_addtests_cds\\",
                 componentId: \\"TravelObjectPage\\",
-                entitySet: \\"Travel\\",
-                contextPath: \\"\\"
+                entitySet: \\"Travel\\"
             },
             CustomTravelObjectPageGenerated
         ),
@@ -25340,8 +25338,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"lrop_v4_addtests_cds\\",
                 componentId: \\"BookingObjectPage\\",
-                entitySet: \\"Booking\\",
-                contextPath: \\"\\"
+                entitySet: \\"Booking\\"
             },
             CustomBookingObjectPageGenerated
         )
