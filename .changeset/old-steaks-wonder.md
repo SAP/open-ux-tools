@@ -9,4 +9,4 @@
 '@sap-ux/create': minor
 ---
 
-Add support for ui5 project type 'component' (UI5 cli v5)
+FEAT: Add support for ui5 project type 'component' (UI5 cli v5)
