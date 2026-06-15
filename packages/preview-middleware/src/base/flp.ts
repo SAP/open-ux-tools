@@ -191,7 +191,7 @@ export class FlpSandbox {
         this.createFlexHandler();
         this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app']?.id ?? '';
-        this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources);
+        this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources, adp !== undefined);
         this.adp = adp;
         this.manifest = manifest;
 
@@ -368,7 +368,7 @@ export class FlpSandbox {
      * @returns Promise that resolves when the application dependencies are set
      */
     private async setApplicationDependencies(): Promise<void> {
-        if (this.adp) {
+        if (this.adp && !this.adp.isCloudFoundry) {
             await this.adp.sync();
             const appName = getAppName(this.manifest, this.flpConfig.intent);
             this.templateConfig.apps[appName].applicationDependencies = this.adp.descriptor;
@@ -1269,7 +1269,7 @@ export class FlpSandbox {
         if ('cfBuildPath' in config) {
             const manifest = this.setupCfBuildMode(config.cfBuildPath);
             configureRta(this.rta, layer, variant.id, false, true);
-            await this.init(manifest, variant.reference);
+            await this.init(manifest, variant.reference, {}, adp);
             await this.setupAdpCommonHandlers(adp);
             return;
         }
