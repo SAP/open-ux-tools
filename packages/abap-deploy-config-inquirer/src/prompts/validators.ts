@@ -84,7 +84,7 @@ async function validateAdpDestinationQuestion(
         return adpProjectTypeValidation;
     }
 
-    return !!destination.trim();
+    return !!destination?.trim();
 }
 
 /**
