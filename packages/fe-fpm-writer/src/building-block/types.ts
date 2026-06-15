@@ -387,6 +387,18 @@ export interface Table extends BuildingBlock {
  * <macro:Page title="My Page Title" description="My Page Description" />
  * @extends {BuildingBlock}
  */
+export const PAGE_AGGREGATIONS = [
+    'breadcrumbs',
+    'navigationActions',
+    'titleContent',
+    'actions',
+    'headerContent',
+    'items',
+    'footer'
+] as const;
+
+export type PageAggregationName = (typeof PAGE_AGGREGATIONS)[number];
+
 export interface Page extends BuildingBlock {
     /**
      * The title of the page.
@@ -409,7 +421,7 @@ export interface Page extends BuildingBlock {
      * Optional mContent strings keyed by aggregation name.
      * When templateType is 'full', each entry is written as the inner XML of the corresponding aggregation.
      */
-    aggregations?: Record<string, string>;
+    aggregations?: Partial<Record<PageAggregationName, string>>;
 }
 
 export const PAGE_TEMPLATE_TYPE_FULL = 'full' as const;

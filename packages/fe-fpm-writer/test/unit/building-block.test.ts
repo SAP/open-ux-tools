@@ -10,7 +10,6 @@ import type {
     Field,
     FilterBar,
     Form,
-    Page,
     Table,
     CustomColumn,
     CustomFilterField,
@@ -1131,29 +1130,7 @@ describe('Building Blocks', () => {
             fs
         );
 
-        const viewContent = fs.read(join(basePath, xmlViewFilePath));
-        expect(viewContent).toContain('showFooter="true"');
-        expect(viewContent).toContain('macros:breadcrumbs');
-        expect(viewContent).toContain('macros:navigationActions');
-        expect(viewContent).toContain('macros:titleContent');
-        expect(viewContent).toContain('macros:actions');
-        expect(viewContent).toContain('macros:headerContent');
-        expect(viewContent).toContain('macros:items');
-        expect(viewContent).toContain('macros:footer');
-        expect(viewContent).toMatch(/<macros:breadcrumbs[^>]*id="breadcrumbs"/);
-        expect(viewContent).toMatch(/<macros:navigationActions[^>]*id="navigationActions"/);
-        expect(viewContent).toMatch(/<macros:titleContent[^>]*id="titleContent"/);
-        expect(viewContent).toMatch(/<macros:actions[^>]*id="actions"/);
-        expect(viewContent).toMatch(/<macros:headerContent[^>]*id="headerContent"/);
-        expect(viewContent).toMatch(/<macros:items[^>]*id="items"/);
-        expect(viewContent).toMatch(/<macros:footer[^>]*id="footer"/);
-        expect(viewContent).toContain('press=".onPressHome"');
-        expect(viewContent).toContain('press=".onPressPage1"');
-        expect(viewContent).toContain('press=".onPressPage2"');
-        expect(viewContent).toContain('press=".onFullScreen"');
-        expect(viewContent).toContain('press=".onClickAction1"');
-        expect(viewContent).toContain('press=".onClickAction2"');
-        expect(viewContent).toContain('This is a sample template, event handlers should be added for implementation');
+        expect(fs.read(join(basePath, xmlViewFilePath))).toMatchSnapshot('generate-page-block-full');
     });
 
     test('generate Page building block with full template creates JS controller', async () => {
@@ -1216,7 +1193,7 @@ describe('Building Blocks', () => {
         expect(fs.exists(join(basePath, 'webapp/ext/main/Main.controller.js'))).toBe(false);
     });
 
-    test('generate Page building block with blank template does not insert aggregations or controller', async () => {
+    test('generate Page building block with basic template does not insert aggregations or controller', async () => {
         const aggregationPath = `/mvc:View/*[local-name()='Page']`;
         const basePath = join(testAppPath, 'generate-page-block-blank');
         fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
@@ -3884,7 +3861,7 @@ describe('Building Blocks', () => {
             expect(output).toContain('id="footer"');
         });
 
-        it('generates suffixed id when base id already exists in view', async () => {
+        it('does not append duplicate aggregation when it already exists in view', async () => {
             const basePath = join(testAppPath, 'page-bb-agg-dup');
             const viewWithExistingId = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
     xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
@@ -3901,7 +3878,8 @@ describe('Building Blocks', () => {
             });
 
             const output = result.read(join(basePath, xmlViewFilePath));
-            expect(output).toContain('id="footer1"');
+            expect((output.match(/<macros:footer\b/g) ?? []).length).toBe(1);
+            expect(output).not.toContain('id="footer1"');
         });
 
         it('reorders existing aggregations into canonical PAGE_AGGREGATIONS order', async () => {
