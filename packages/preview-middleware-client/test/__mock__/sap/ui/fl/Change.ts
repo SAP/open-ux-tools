@@ -14,7 +14,7 @@ export default class Change<ContentType> {
     public getLayer = jest.fn().mockImplementation(() => {
         return this.change.layer;
     });
-    public getDefinition = jest.fn().mockImplementation(() => {
+    public convertToFileContent = jest.fn().mockImplementation(() => {
         return { fileName: this.change.fileName };
     });
     public getContent = jest.fn().mockImplementation(() => {

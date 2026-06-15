@@ -1,6 +1,7 @@
 import baseConfig from '../../jest.base.mjs';
 const config = {
     ...baseConfig,
+    globals: { ...baseConfig.globals, __filename: import.meta.filename },
     transform: {
         '^.+\\.[jt]s$': [
             'ts-jest',
