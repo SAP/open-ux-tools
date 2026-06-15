@@ -183,9 +183,12 @@ function appendPageAggregations(
         const aggContext = { macrosPrefix, mContent, aggId };
         const aggPath = getTemplatePath(`/building-block/page/${aggName}.xml`);
         const aggContent = render(fs.read(aggPath), aggContext, {}); // NOSONAR - template is a controlled file on disk, not user input
-        // Always declare both default and prefixed sap.m namespaces so bare element names (e.g. IconTabBar)
-        // and prefixed names (e.g. m:Button) both parse correctly regardless of the view's namespace config.
-        const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" xmlns="sap.m" xmlns:m="sap.m">${aggContent}</root>`;
+        // Inherit all xmlns:* declarations from the view root so mContent can use any view-declared prefix.
+        const extraNamespaces = Array.from(xmlDocument.documentElement.attributes)
+            .filter((a) => a.name.startsWith('xmlns:') && a.name !== `xmlns:${fragMacrosNS}` && a.name !== 'xmlns:m')
+            .map((a) => `${a.name}="${a.value}"`)
+            .join(' ');
+        const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" xmlns="sap.m" xmlns:m="sap.m" ${extraNamespaces}>${aggContent}</root>`;
         const aggDoc = new DOMParser({ errorHandler: aggErrorHandler }).parseFromString(wrapped, 'text/xml');
         for (const node of Array.from(aggDoc.documentElement.childNodes)) {
             if (node.nodeType === 1 /* Element */) {
@@ -294,9 +297,12 @@ export async function appendPageBBAggregation(
 
     const aggPath = getTemplatePath(`/building-block/page/${aggName}.xml`);
     const aggContent = render(fs.read(aggPath), aggContext, {}); // NOSONAR - template is a controlled file on disk, not user input
-    // Always declare both default and prefixed sap.m namespaces so bare element names (e.g. IconTabBar)
-    // and prefixed names (e.g. m:Button) both parse correctly regardless of the view's namespace config.
-    const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" xmlns="sap.m" xmlns:m="sap.m">${aggContent}</root>`;
+    // Inherit all xmlns:* declarations from the view root so mContent can use any view-declared prefix.
+    const extraNamespaces = Array.from(xmlDocument.documentElement.attributes)
+        .filter((a) => a.name.startsWith('xmlns:') && a.name !== `xmlns:${fragMacrosNS}` && a.name !== 'xmlns:m')
+        .map((a) => `${a.name}="${a.value}"`)
+        .join(' ');
+    const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" xmlns="sap.m" xmlns:m="sap.m" ${extraNamespaces}>${aggContent}</root>`;
 
     const errorHandler = (level: string, message: string): never => {
         throw new Error(`Unable to parse page aggregation fragment. Details: [${level}] - ${message}`);
@@ -307,12 +313,11 @@ export async function appendPageBBAggregation(
     if (!firstChildView) {
         throw new Error(`Unable to read namespace map from view ${viewPath}.`);
     }
-    // Merge the view's namespace map with the macros prefix so the XPath query works even when
-    // _nsMap does not include the macros prefix under the same key.
-    const xpathSelect = xpath.useNamespaces({ ...(firstChildView as any)._nsMap, [fragMacrosNS]: 'sap.fe.macros' });
-    const pageNodes = xpathSelect(`//${fragMacrosNS}:Page`, xmlDocument);
+    // Prefix-agnostic XPath — works regardless of the alias used in the view for sap.fe.macros.
+    const xpathSelect = xpath.useNamespaces({ ...((firstChildView as any)?._nsMap ?? {}) });
+    const pageNodes = xpathSelect(`//*[local-name()='Page' and namespace-uri()='sap.fe.macros']`, xmlDocument);
     if (!pageNodes || !Array.isArray(pageNodes) || pageNodes.length === 0) {
-        throw new Error(`${fragMacrosNS}:Page element not found in view ${viewPath}.`);
+        throw new Error(`Page element (sap.fe.macros) not found in view ${viewPath}.`);
     }
 
     const pageElement = pageNodes[0] as Node;
@@ -709,7 +714,10 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
             );
         // Parse content directly so documentElement IS the <macros:Page> element,
         // matching what appendPageAggregations expects as templateDocument.documentElement.
-        const snippetDoc = new DOMParser().parseFromString(`${content}`, 'text/xml');
+        const snippetErrorHandler = (level: string, message: string): never => {
+            throw new Error(`Unable to parse Page building block snippet. Details: [${level}] - ${message}`);
+        };
+        const snippetDoc = new DOMParser({ errorHandler: snippetErrorHandler }).parseFromString(`${content}`, 'text/xml');
         appendPageAggregations(fs, nsDoc, snippetDoc, fnGenerateId, pageData);
         const resultNode = snippetDoc.documentElement;
         viewOrFragmentContent = resultNode ? format(new XMLSerializer().serializeToString(resultNode)) : content;
