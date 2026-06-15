@@ -219,7 +219,31 @@ describe('Prompt Generation Tests', () => {
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
             const result = ((destinationNamePrompt as YUIQuestion)?.additionalMessages as Function)('fullUrlDest');
-            expect(result).toEqual({ message: t('warning.fullUrlDestinationWarning'), severity: Severity.warning });
+            expect(result).toEqual({ message: t('warning.fullUrlDestination'), severity: Severity.warning });
+        });
+
+        it('shows warning via raw destinations fallback when destination is filtered from choice list', async () => {
+            // Destination has no Host so it is filtered out by createDestinationChoices,
+            // but the raw destinations map still has it — the fallback lookup fires
+            mockFetchBTPDestinations.mockResolvedValueOnce({
+                btpFullUrlDest: {
+                    Name: 'btpFullUrlDest',
+                    WebIDEAdditionalData: 'full_url',
+                    WebIDEUsage: 'odata_gen'
+                } as any
+            });
+            promptOptions = {
+                [promptNames.destinationName]: {
+                    ...destinationPrompts,
+                    additionalChoiceList: [],
+                    addBTPDestinationList: true
+                }
+            };
+            mockIsAppStudio.mockReturnValueOnce(false);
+            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
+            const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
+            const result = ((destinationNamePrompt as YUIQuestion)?.additionalMessages as Function)('btpFullUrlDest');
+            expect(result).toEqual({ message: t('warning.fullUrlDestination'), severity: Severity.warning });
         });
 
         it('returns undefined additionalMessage when selected destination is not a full URL destination', async () => {
