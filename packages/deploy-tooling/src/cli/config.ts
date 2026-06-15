@@ -171,13 +171,7 @@ async function readBuilderExcludes(deployConfigPath: string): Promise<string[]> 
         const content = readFileSync(deployConfigPath, 'utf-8');
         const ui5Config = await UI5Config.newInstance(content);
         return ui5Config.getBuilderResourceExcludes().map((p) => {
-            let prefix = p;
-            while (prefix.endsWith('*')) {
-                prefix = prefix.slice(0, -1);
-            }
-            if (prefix !== p && prefix.endsWith('/')) {
-                prefix = prefix.slice(0, -1);
-            }
+            const prefix = p.replace(/\/\*+$/, '/');
             const withSlash = prefix.endsWith('/') ? prefix : `${prefix}/`;
             return withSlash.startsWith('/') ? withSlash : `/${withSlash}`;
         });
