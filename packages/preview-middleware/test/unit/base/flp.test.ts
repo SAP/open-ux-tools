@@ -2404,4 +2404,36 @@ describe('FlpSandbox fioriSandboxAppConfig.json route', () => {
         expect(response.text).not.toContain('SandboxBootTask');
         expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('New FLP Sandbox disabled in configuration.'));
     });
+
+    test('sandbox2 template for UI5 1.x includes SandboxBootTask.js but not data-sap-ui-boot-manifest', async () => {
+        await setupServer(jest.fn().mockResolvedValue(undefined));
+        fetchMock.mockResolvedValue({
+            json: () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.150.0' }]
+                }),
+            text: jest.fn(),
+            ok: true
+        });
+        const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+        expect(response.text).toContain('SandboxBootTask.js');
+        expect(response.text).not.toContain('data-sap-ui-boot-manifest');
+    });
+
+    test('sandbox2 template for UI5 2.x includes data-sap-ui-boot-manifest but not SandboxBootTask.js', async () => {
+        await setupServer(jest.fn().mockResolvedValue(undefined));
+        fetchMock.mockResolvedValue({
+            json: () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '2.0.0' }]
+                }),
+            text: jest.fn(),
+            ok: true
+        });
+        const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+        expect(response.text).not.toContain('SandboxBootTask.js');
+        expect(response.text).toContain('data-sap-ui-boot-manifest');
+    });
 });

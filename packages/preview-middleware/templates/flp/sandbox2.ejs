@@ -8,7 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Local FLP Sandbox</title>
 
+<% if (ui5.versionMajor === 1) { -%>
+    <!-- FLP Sandbox Boot task - registers ConfigurationProvider via xx-bootTask mechanism -->
     <script src="<%- basePath %>/resources/sap/ushell/sandbox/SandboxBootTask.js"></script>
+
+<% } -%>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frame-options="allow"' is a NON-SECURE setting for test environments -->
     <script id="sap-ui-bootstrap"
         src="<%- basePath %>/resources/sap-ui-core.js"
@@ -16,8 +20,8 @@
         data-sap-ui-theme="<%- ui5.theme %>"
         data-sap-ui-compat-version="edge"
         data-sap-ui-resource-roots='<%- JSON.stringify(ui5.resources) %>'
-        data-sap-ui-frame-options="allow"
-        data-sap-ui-boot-manifest="sap/ushell/sandbox/sandboxManifest.json"<%- ui5.bootstrapOptions %><% if (enableCardGenerator) { %>
+        data-sap-ui-frame-options="allow"<% if (ui5.versionMajor !== 1) { %>
+        data-sap-ui-boot-manifest="sap/ushell/sandbox/sandboxManifest.json"<% } %><%- ui5.bootstrapOptions %><% if (enableCardGenerator) { %>
         data-open-ux-preview-enable-card-generator="<%- enableCardGenerator %>"
         <% } %><% if (locals.init) { %>
         data-open-ux-preview-custom-init='<%- init %>'<% } if (locals.flexSettings) { %>
@@ -26,9 +30,8 @@
         data-open-ux-preview-libs-manifests='<%- JSON.stringify(Object.values(apps).map(app => app.url)) %>'<% } %>
         data-open-ux-preview-base-url='<%- baseUrl %>'>
     </script>
-
 <% if (locals.flexSettings && flexSettings?.developerMode) { %>
-        <!-- Hides Rta native toolbar  -->
+    <!-- Hides Rta native toolbar  -->
     <style>
         #shell-header, .sapUiRtaToolbar {
             visibility: hidden;

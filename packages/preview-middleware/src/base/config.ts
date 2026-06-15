@@ -91,6 +91,14 @@ export interface TemplateConfig {
         flex: (CustomConnector | FlexConnector)[];
         bootstrapOptions: string;
         resources: Record<string, string>;
+        /**
+         * Major version of the UI5 framework being used.
+         *
+         * @remarks Mutated per request in flpGetHandler based on the resolved UI5 version.
+         *          Used by sandbox2.ejs to conditionally include SandboxBootTask.js (major 1) or
+         *          data-sap-ui-boot-manifest (major 2).
+         */
+        versionMajor: number;
     };
     init?: string;
     flexSettings?: {
@@ -454,7 +462,8 @@ export function createFlpTemplateConfig(
                 ...resources,
                 [PREVIEW_URL.client.ns]: PREVIEW_URL.client.getUrl(basePath)
             },
-            bootstrapOptions: ''
+            bootstrapOptions: '',
+            versionMajor: 1
         },
         locateReuseLibsScript: config.libs,
         enhancedHomePage: config.enhancedHomePage,

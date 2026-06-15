@@ -35,6 +35,7 @@ Object {
       "open.ux.preview.client": "../preview/client",
     },
     "theme": "sap_horizon",
+    "versionMajor": 1,
   },
 }
 `;
@@ -75,6 +76,7 @@ Object {
       "open.ux.preview.client": "../preview/client",
     },
     "theme": "sap_horizon",
+    "versionMajor": 1,
   },
 }
 `;

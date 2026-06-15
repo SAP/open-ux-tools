@@ -524,6 +524,7 @@ export class FlpSandbox {
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             this.templateConfig.baseUrl = ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '';
             const ui5Version = await this.getUi5VersionFromRequest(req, this.templateConfig.baseUrl);
+            this.templateConfig.ui5.versionMajor = ui5Version.major;
             this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
             if (ui5Version.major === 1 && ui5Version.minor < 120) {
                 this.removeFlexExtensionPointEnabled();
@@ -598,19 +599,40 @@ export class FlpSandbox {
             }
         );
 
-        // add route for fioriSandboxAppConfig.json (Sandbox 2.0) — only when sandbox 2 is not explicitly disabled
+        // add routes for fioriSandboxAppConfig.json (Sandbox 2.0) — only when sandbox 2 is not explicitly disabled.
+        // The config must be served at the directory of every sandbox HTML endpoint,
+        // since each endpoint fetches fioriSandboxAppConfig.json relative to its own location.
         if (this.flpConfig.useNewSandbox !== false) {
-            const configJsonPath = `${dirname(this.flpConfig.path)}/fioriSandboxAppConfig.json`;
-            this.router.get(
-                configJsonPath,
-                async (
-                    req: EnhancedRequest | connect.IncomingMessage,
-                    res: Response | http.ServerResponse,
-                    next: NextFunction
-                ) => {
-                    await this.sandboxAppConfigGetHandler(req, res, next, configJsonPath);
+            const sandboxDirs = new Set<string>();
+            sandboxDirs.add(dirname(this.flpConfig.path));
+            if (this.cardGenerator?.path) {
+                const cardGeneratorPath = this.cardGenerator.path.startsWith('/')
+                    ? this.cardGenerator.path
+                    : `/${this.cardGenerator.path}`;
+                sandboxDirs.add(dirname(cardGeneratorPath));
+            }
+            if (this.rta) {
+                for (const editor of this.rta.endpoints) {
+                    sandboxDirs.add(dirname(editor.path));
                 }
-            );
+            }
+            // Register one route per directory rather than passing an array to router.get()
+            // sandboxAppConfigGetHandler needs the concrete configJsonPath to look up the user-provided
+            // file via project.byPath(), and connect.IncomingMessage does not expose req.path,
+            // so we cannot derive the path from the request inside the handler.
+            for (const dir of sandboxDirs) {
+                const configJsonPath = `${dir}/fioriSandboxAppConfig.json`;
+                this.router.get(
+                    configJsonPath,
+                    async (
+                        req: EnhancedRequest | connect.IncomingMessage,
+                        res: Response | http.ServerResponse,
+                        next: NextFunction
+                    ) => {
+                        await this.sandboxAppConfigGetHandler(req, res, next, configJsonPath);
+                    }
+                );
+            }
         }
     }
 

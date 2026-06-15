@@ -225,6 +225,7 @@ Object {
       "open.ux.preview.client": "../preview/client",
     },
     "theme": "sap_horizon",
+    "versionMajor": 1,
   },
 }
 `;
@@ -299,6 +300,7 @@ Object {
       "test.fe.v2.other": "/yet/another/app",
     },
     "theme": "sap_horizon",
+    "versionMajor": 1,
   },
 }
 `;
@@ -361,6 +363,7 @@ Object {
       "test.fe.v2.app": "..",
     },
     "theme": "sap_horizon_dark",
+    "versionMajor": 1,
   },
 }
 `;
@@ -409,6 +412,7 @@ Object {
       "open.ux.preview.client": "../preview/client",
     },
     "theme": "sap_horizon",
+    "versionMajor": 1,
   },
 }
 `;
@@ -457,6 +461,7 @@ Object {
       "open.ux.preview.client": "../preview/client",
     },
     "theme": "sap_horizon",
+    "versionMajor": 1,
   },
 }
 `;
@@ -505,6 +510,7 @@ Object {
       "open.ux.preview.client": "../preview/client",
     },
     "theme": "sap_horizon",
+    "versionMajor": 1,
   },
 }
 `;
@@ -553,6 +559,7 @@ Object {
       "open.ux.preview.client": "../preview/client",
     },
     "theme": "sap_horizon",
+    "versionMajor": 1,
   },
 }
 `;
@@ -601,6 +608,7 @@ Object {
       "test.fe.v2.app": "..",
     },
     "theme": "sap_horizon_dark",
+    "versionMajor": 1,
   },
 }
 `;
@@ -651,6 +659,7 @@ Object {
       "test.fe.v2.app": "..",
     },
     "theme": "sap_fiori_3",
+    "versionMajor": 1,
   },
 }
 `;
@@ -1269,7 +1278,6 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 2.x 1`] 
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
     <title>Local FLP Sandbox</title>
 
-    <script src=\\"../resources/sap/ushell/sandbox/SandboxBootTask.js\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frame-options=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -1281,7 +1289,6 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 2.x 1`] 
         data-sap-ui-boot-manifest=\\"sap/ushell/sandbox/sandboxManifest.json\\"
         data-open-ux-preview-base-url=''>
     </script>
-
 
 </head>
 
@@ -1305,7 +1312,9 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 legacy-f
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
     <title>Local FLP Sandbox</title>
 
+    <!-- FLP Sandbox Boot task - registers ConfigurationProvider via xx-bootTask mechanism -->
     <script src=\\"../resources/sap/ushell/sandbox/SandboxBootTask.js\\"></script>
+
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frame-options=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -1314,10 +1323,8 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 legacy-f
         data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frame-options=\\"allow\\"
-        data-sap-ui-boot-manifest=\\"sap/ushell/sandbox/sandboxManifest.json\\"
         data-open-ux-preview-base-url=''>
     </script>
-
 
 </head>
 
@@ -1679,7 +1686,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 2.x 1`] =
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
     <title>Local FLP Sandbox</title>
 
-    <script src=\\"../resources/sap/ushell/sandbox/SandboxBootTask.js\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frame-options=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -1691,7 +1697,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 2.x 1`] =
         data-sap-ui-boot-manifest=\\"sap/ushell/sandbox/sandboxManifest.json\\"
         data-open-ux-preview-base-url=''>
     </script>
-
 
 </head>
 
@@ -1715,7 +1720,9 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 legacy-fr
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
     <title>Local FLP Sandbox</title>
 
+    <!-- FLP Sandbox Boot task - registers ConfigurationProvider via xx-bootTask mechanism -->
     <script src=\\"../resources/sap/ushell/sandbox/SandboxBootTask.js\\"></script>
+
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frame-options=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -1724,10 +1731,8 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 legacy-fr
         data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frame-options=\\"allow\\"
-        data-sap-ui-boot-manifest=\\"sap/ushell/sandbox/sandboxManifest.json\\"
         data-open-ux-preview-base-url=''>
     </script>
-
 
 </head>
 
@@ -1981,6 +1986,7 @@ Object {
       "test.fe.v2.other": "/yet/another/app",
     },
     "theme": "sap_horizon",
+    "versionMajor": 1,
   },
 }
 `;
@@ -2104,6 +2110,7 @@ Object {
       "test.fe.v2.other": "/yet/another/app",
     },
     "theme": "sap_horizon",
+    "versionMajor": 1,
   },
 }
 `;
@@ -2276,7 +2283,9 @@ exports[`FlpSandbox router rta with developerMode=true UI5 version 2.x 2`] = `
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
     <title>Local FLP Sandbox</title>
 
+    <!-- FLP Sandbox Boot task - registers ConfigurationProvider via xx-bootTask mechanism -->
     <script src=\\"../resources/sap/ushell/sandbox/SandboxBootTask.js\\"></script>
+
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frame-options=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -2285,7 +2294,6 @@ exports[`FlpSandbox router rta with developerMode=true UI5 version 2.x 2`] = `
         data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frame-options=\\"allow\\"
-        data-sap-ui-boot-manifest=\\"sap/ushell/sandbox/sandboxManifest.json\\"
         data-sap-ui-xx-design-mode=\\"true\\"
         data-sap-ui-xx-suppress-deactivation-of-controller-code=\\"true\\"
         data-sap-ui-xx-view-cache=\\"false\\"
@@ -2294,8 +2302,7 @@ exports[`FlpSandbox router rta with developerMode=true UI5 version 2.x 2`] = `
         data-open-ux-preview-base-url=''>
     </script>
 
-
-        <!-- Hides Rta native toolbar  -->
+    <!-- Hides Rta native toolbar  -->
     <style>
         #shell-header, .sapUiRtaToolbar {
             visibility: hidden;
@@ -2535,6 +2542,7 @@ Object {
       "test.fe.v2.other": "/yet/another/app",
     },
     "theme": "sap_horizon",
+    "versionMajor": 1,
   },
 }
 `;
