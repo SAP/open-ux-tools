@@ -71,6 +71,12 @@ export interface FlpConfig {
      * Defaults to true.
      */
     useNewSandbox?: boolean;
+    /**
+     * Optional: if set to true, the new FLP Sandbox will navigate directly to the app on startup
+     * instead of showing the FLP home screen first. Only applies when the new Sandbox is active.
+     * Defaults to false.
+     */
+    navigateToApp?: boolean;
 }
 
 /**

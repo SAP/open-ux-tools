@@ -459,5 +459,25 @@ describe('config', () => {
             };
             expect(generateSandboxAppConfig(templateConfig, flpConfig)).toMatchSnapshot();
         });
+
+        test('navigateToApp: false does not set rootIntent', () => {
+            const flpConfig = getFlpConfigWithDefaults({
+                intent: { object: 'app', action: 'preview' },
+                navigateToApp: false
+            });
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
+            const result = generateSandboxAppConfig(templateConfig, flpConfig);
+            expect(result.rootIntent).toBeUndefined();
+        });
+
+        test('navigateToApp: true sets rootIntent from intent config', () => {
+            const flpConfig = getFlpConfigWithDefaults({
+                intent: { object: 'SalesOrder', action: 'manage' },
+                navigateToApp: true
+            });
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
+            const result = generateSandboxAppConfig(templateConfig, flpConfig);
+            expect(result.rootIntent).toBe('SalesOrder-manage');
+        });
     });
 });

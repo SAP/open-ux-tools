@@ -225,7 +225,8 @@ export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}): FlpCo
         theme: config.theme,
         init: config.init,
         enhancedHomePage: config.enhancedHomePage === true,
-        useNewSandbox: config.useNewSandbox !== false
+        useNewSandbox: config.useNewSandbox !== false,
+        navigateToApp: config.navigateToApp === true
     } satisfies FlpConfig;
     if (!flpConfig.path.startsWith('/')) {
         flpConfig.path = `/${flpConfig.path}`;
@@ -493,13 +494,13 @@ export function createTestTemplateConfig(config: CompleteTestConfig, id: string,
  * Generates the fioriSandboxAppConfig.json content for Sandbox 2.0.
  *
  * @param templateConfig the current template configuration containing apps
- * @param _flpConfig the FLP configuration containing the intent
+ * @param flpConfig the FLP configuration containing the intent
  * @param isAdp whether this is an adaptation project - LocalStorageConnector is omitted for ADP
  * @returns the sandbox app config object
  */
 export function generateSandboxAppConfig(
     templateConfig: TemplateConfig,
-    _flpConfig: FlpConfig,
+    flpConfig: FlpConfig,
     isAdp = false
 ): SandboxAppConfig {
     const tiles = Object.entries(templateConfig.apps).map(([appName, app]) => {
@@ -515,8 +516,9 @@ export function generateSandboxAppConfig(
     });
     return {
         tiles,
-        //todo: introduce new param 'skipFLP' for direct navigation to apps without FLP shell and only set rootIntent if skipFLP is false
-        // rootIntent: `${flpConfig.intent.object}-${flpConfig.intent.action}`,
+        ...(flpConfig.navigateToApp && {
+            rootIntent: `${flpConfig.intent.object}-${flpConfig.intent.action}`
+        }),
         beforeFlpStart: 'module:open/ux/preview/client/flp/sandbox2BeforeInit',
         afterFlpStart: 'module:open/ux/preview/client/flp/sandbox2AfterInit',
         restricted: {
