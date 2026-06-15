@@ -29,3 +29,8 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

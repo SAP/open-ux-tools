@@ -1,5 +1,29 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.0.22
+
+## 1.0.21
+
+## 1.0.20
+
+## 1.0.19
+
+### Patch Changes
+
+- 6f3b596: fix: (Adaptation Editor) FL Variant changes do not appear in the unsaved changes list (history panel).
+
+## 1.0.18
+
+### Patch Changes
+
+- 0110219: fix regression writing wrong manifest path via the changes created via properties panel and remove unused control-property-editor-common code
+- Updated dependencies [0110219]
+    - @sap-ux-private/control-property-editor-common@1.0.3
+
+## 1.0.17
+
+## 1.0.16
+
 ## 1.0.15
 
 ## 1.0.14
