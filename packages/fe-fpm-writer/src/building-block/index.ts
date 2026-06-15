@@ -233,12 +233,16 @@ function sortPageAggregationChildren(pageElement: Node): void {
         // Pure whitespace text nodes are intentionally dropped (xml-formatter regenerates indentation)
     }
 
+    const itemsIdx = aggNames.indexOf('items');
+    const fallbackIdx = itemsIdx === -1 ? aggNames.length : itemsIdx;
     groups.sort((a, b) => {
         const aName = typeof a.element.localName === 'string' ? a.element.localName : '';
         const bName = typeof b.element.localName === 'string' ? b.element.localName : '';
         const aIdx = aggNames.indexOf(aName);
         const bIdx = aggNames.indexOf(bName);
-        return (aIdx === -1 ? aggNames.length : aIdx) - (bIdx === -1 ? aggNames.length : bIdx);
+        const aOrder = aIdx === -1 ? fallbackIdx : aIdx;
+        const bOrder = bIdx === -1 ? fallbackIdx : bIdx;
+        return aOrder - bOrder;
     });
 
     while (pageElement.firstChild) {
