@@ -88,7 +88,7 @@ function journey() {
 <% if (section.form) { -%>
 <% section.fields.forEach(function(field) { -%>
         Then.onThe<%- name%>Generated.onHeader().iCheckFieldInFieldGroup({
-            fieldGroup: "FieldGroup::<%- field.fieldGroupQualifier %>",
+            fieldGroup: "<%- field.fieldGroupQualifier %>",
             field: "<%- field.field %>",
             targetAnnotation: "<%- field.targetAnnotation %>"
         } as unknown as FieldIdentifier);

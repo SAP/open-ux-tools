@@ -780,7 +780,7 @@ export type Then = Opa5 & BaseArrangements & {
             expect(bookingObjPageJourneyContent).toContain('iCheckHeaderFacet({ facetId: "DataPoint::BookingDate" }');
             expect(bookingObjPageJourneyContent).toContain('iCheckHeaderFacet({ facetId: "FieldGroup::Names" }');
             expect(bookingObjPageJourneyContent).toContain('iCheckFieldInFieldGroup');
-            expect(bookingObjPageJourneyContent).toContain('fieldGroup: "FieldGroup::Names"');
+            expect(bookingObjPageJourneyContent).toContain('fieldGroup: "Names"');
             expect(bookingObjPageJourneyContent).toContain('field: "AirlineName"');
             expect(bookingObjPageJourneyContent).toContain('field: "CustomerName"');
             expect(bookingObjPageJourneyContent).toContain('field: "carrier"');
@@ -1153,7 +1153,7 @@ export type Then = Opa5 & BaseArrangements & {
 
             // ─── iCheckFieldInFieldGroup with FieldIdentifier cast (TS adaptation) ───
             expect(content).toContain('iCheckFieldInFieldGroup');
-            expect(content).toContain('fieldGroup: "FieldGroup::Names"');
+            expect(content).toContain('fieldGroup: "Names"');
             expect(content).toContain('field: "AirlineName"');
             expect(content).toContain('field: "CustomerName"');
             expect(content).toContain('field: "carrier"');
