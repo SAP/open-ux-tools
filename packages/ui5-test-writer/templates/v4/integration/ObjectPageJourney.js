@@ -65,7 +65,7 @@ sap.ui.define([
 <% if (section.microChart) { -%>
             Then.onThe<%- name%>Generated.onHeader().iCheckMicroChart("<%- section.title %>");
 <% } else { -%>
-            Then.onThe<%- name%>Generated.onHeader().iCheckHeaderFacet({ facetId: "<%- section.facetId %>" });
+            Then.onThe<%- name%>Generated.onHeader().iCheckHeaderFacet({ facetId: "<%- section.facetId %>"<% if (section.custom) { %>, custom: true<% } %> });
 <% if (section.form) { -%>
 <% section.fields.forEach(function(field) { -%>
             Then.onThe<%- name%>Generated.onHeader().iCheckFieldInFieldGroup({
