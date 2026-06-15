@@ -109,6 +109,9 @@ export async function init({
 // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-dom-access,@sap-ux/fiori-tools/sap-browser-api-warning, @sap-ux/fiori-tools/sap-no-global-variable
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
+    // DO NOT refactor to top-level await. This module is loaded via sap.ui.define (AMD),
+    // and using `await` at the top level of an AMD module callback prevents sap.ui.define
+    // from completing module registration.
     init({
         appUrls: bootstrapConfig.dataset.openUxPreviewLibsManifests,
         flex: bootstrapConfig.dataset.openUxPreviewFlexSettings,
