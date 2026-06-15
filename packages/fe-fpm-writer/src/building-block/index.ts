@@ -288,7 +288,11 @@ export async function appendPageBBAggregation(
     const aggId = generateId(aggName);
 
     const macrosNS = getOrAddNamespace(xmlDocument, 'sap.fe.macros', 'macros');
-    const fragMacrosNS = macrosNS || 'macros';
+    let fragMacrosNS = macrosNS;
+    if (fragMacrosNS === '') {
+        xmlDocument.documentElement.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:macros', 'sap.fe.macros');
+        fragMacrosNS = 'macros';
+    }
     const macrosPrefix = `${fragMacrosNS}:`;
     const aggContext = { macrosPrefix, mContent, aggId };
 
@@ -621,7 +625,8 @@ function updateViewFile(
     if (!firstChild) {
         throw new Error(`Unable to read namespace map from view ${viewPath}.`);
     }
-    const xpathSelect = xpath.useNamespaces((firstChild as any)._nsMap);
+    const nsMap = (firstChild as any)?._nsMap ?? {};
+    const xpathSelect = xpath.useNamespaces(nsMap);
 
     // Find target aggregated element and append template as child
     const targetNodes = xpathSelect(aggregationPath, viewDocument);
