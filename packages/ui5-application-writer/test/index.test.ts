@@ -69,6 +69,15 @@ describe('UI5 templates', () => {
         `);
     });
 
+    it('generated ui5.yaml contains builder.resources.excludes', async () => {
+        const projectDir = join(outputDir, 'testapp-builder-excludes');
+        await generate(projectDir, ui5AppConfig, fs);
+        const ui5Yaml = fs.read(join(projectDir, 'ui5.yaml'));
+        expect(ui5Yaml).toContain('builder:');
+        expect(ui5Yaml).toContain('/test/**');
+        expect(ui5Yaml).toContain('/localService/**');
+    });
+
     // Test to ensure the appid does not contain any characters that result in malfored docs
     it('validate appid', async () => {
         const projectDir = join(outputDir, 'testapp-fail');
@@ -189,6 +198,11 @@ describe('UI5 templates', () => {
                   configuration:
                     flp:
                       theme: sap_fiori_3
+            builder:
+              resources:
+                excludes:
+                  - /test/**
+                  - /localService/**
             "
         `);
     });
