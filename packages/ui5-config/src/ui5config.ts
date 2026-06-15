@@ -692,18 +692,6 @@ export class UI5Config {
         comments: NodeComment<CustomTask<AbapDeployConfig>>[] = []
     ): this {
         this.addBuilderResourceExcludes();
-        const builderExcludes = this.getBuilderResourceExcludes().map((p) => {
-            let prefix = p;
-            while (prefix.endsWith('*')) {
-                prefix = prefix.slice(0, -1);
-            }
-            if (prefix !== p && prefix.endsWith('/')) {
-                prefix = prefix.slice(0, -1);
-            }
-            const withSlash = prefix.endsWith('/') ? prefix : `${prefix}/`;
-            return withSlash.startsWith('/') ? withSlash : `/${withSlash}`;
-        });
-        const deployExclude = [...new Set([...(exclude ?? []), ...builderExcludes])];
         const configuration: {
             target: AbapTarget;
             app: BspApp | Adp;
@@ -713,7 +701,7 @@ export class UI5Config {
         } = {
             target,
             app,
-            ...(deployExclude.length > 0 ? { exclude: deployExclude } : {}),
+            ...(exclude?.length ? { exclude } : {}),
             lrep
         };
 

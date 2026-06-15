@@ -61,7 +61,11 @@ function createArchiveFromFolder(logger: Logger, path: string, exclude: string[]
         const zip = new ZipFile();
         zip.addLocalFolder(path);
         for (const entry of zip.getEntries()) {
-            if (exclude.some((pattern) => new RegExp(pattern, 'g').exec(entry.entryName))) {
+            if (
+                exclude.some((pattern) =>
+                    entry.entryName.startsWith(pattern.startsWith('/') ? pattern.slice(1) : pattern)
+                )
+            ) {
                 logger.debug(`Excluding ${entry.entryName}`);
                 zip.deleteFile(entry.entryName);
             } else {

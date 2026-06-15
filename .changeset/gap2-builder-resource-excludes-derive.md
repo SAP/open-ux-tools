@@ -4,4 +4,4 @@
 "@sap-ux/deploy-tooling": patch
 ---
 
-fix: derive configuration.exclude from builder.resources.excludes at runtime; remove hardcoded excludes from generated configs
+FIX: derive configuration.exclude from builder.resources.excludes at runtime
