@@ -212,7 +212,7 @@ function sortPageAggregationChildren(pageElement: Node): void {
 
     // Build pairs of [preceding comments, element] to preserve all user comments.
     // The PAGE_TEMPLATE_COMMENT is treated as a leading comment and will remain before all aggregation elements.
-    type NodeGroup = { comments: Node[]; element: Element };
+    type NodeGroup = { comments: Node[]; element: Element; originalIndex: number };
     const groups: NodeGroup[] = [];
     const leadingComments: Node[] = [];
     let pendingComments: Node[] = [];
@@ -224,7 +224,7 @@ function sortPageAggregationChildren(pageElement: Node): void {
             (firstElementSeen ? pendingComments : leadingComments).push(node);
         } else if (node.nodeType === 1 /* Element */) {
             firstElementSeen = true;
-            groups.push({ comments: pendingComments, element: node as Element });
+            groups.push({ comments: pendingComments, element: node as Element, originalIndex: groups.length });
             pendingComments = [];
         } else if (node.nodeType === 3 /* Text */ && (node as Text).data?.trim()) {
             // Preserve non-whitespace text nodes with their surrounding group
@@ -242,7 +242,7 @@ function sortPageAggregationChildren(pageElement: Node): void {
         const bIdx = aggNames.indexOf(bName);
         const aOrder = aIdx === -1 ? fallbackIdx : aIdx;
         const bOrder = bIdx === -1 ? fallbackIdx : bIdx;
-        return aOrder - bOrder;
+        return aOrder !== bOrder ? aOrder - bOrder : a.originalIndex - b.originalIndex;
     });
 
     while (pageElement.firstChild) {
