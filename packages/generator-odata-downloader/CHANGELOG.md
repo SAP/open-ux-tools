@@ -1,5 +1,15 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.14
+
+### Patch Changes
+
+- @sap-ux/axios-extension@2.0.3
+- @sap-ux/inquirer-common@1.0.11
+- @sap-ux/odata-service-inquirer@3.0.11
+- @sap-ux/fiori-generator-shared@1.0.11
+- @sap-ux/odata-service-writer@1.0.6
+
 ## 0.3.13
 
 ### Patch Changes
@@ -236,11 +246,15 @@
 
 ## 0.0.8
 
+*Released: 2026-03-19T15:30:29Z*
+
 ### Patch Changes
 
 - 42b558b: Updates readme. Move deps tto devDeps
 
 ## 0.0.7
+
+*Released: 2026-03-18T16:51:44Z*
 
 ### Patch Changes
 
@@ -251,6 +265,8 @@
 
 ## 0.0.6
 
+*Released: 2026-03-17T07:55:04Z*
+
 ### Patch Changes
 
 - Updated dependencies [a854433]
@@ -260,6 +276,8 @@
     - @sap-ux/odata-service-writer@0.30.1
 
 ## 0.0.5
+
+*Released: 2026-03-17T01:04:22Z*
 
 ### Patch Changes
 
@@ -279,12 +297,16 @@
 
 ## 0.0.4
 
+*Released: 2026-03-16T23:16:05Z*
+
 ### Patch Changes
 
 - 1b7094e: fix(deps): update dependency @sap/ux-specification to v1.144.0
     - @sap-ux/odata-service-inquirer@2.19.11
 
 ## 0.0.3
+
+*Released: 2026-03-13T18:19:04Z*
 
 ### Patch Changes
 
