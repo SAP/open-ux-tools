@@ -59,23 +59,25 @@ export async function validateDestinationQuestion(
     PromptState.resetAbapDeployConfig();
     updateDestinationPromptState(destination, destinations);
 
-    if (adpProjectType) {
-        return validateAdpDestinationQuestion(destination, adpProjectType, backendTarget);
+    if (!destination?.trim()) {
+        return false;
     }
 
-    return !!destination?.trim();
+    if (adpProjectType) {
+        return validateAdpDestinationQuestion(adpProjectType, backendTarget);
+    }
+
+    return true;
 }
 
 /**
  * Validates internally the destination when in ADP workflow.
  *
- * @param destination - The destination.
  * @param adpProjectType - The adaptation project type.
  * @param backendTarget The backend target.
  * @returns Promise<boolean|string>
  */
 async function validateAdpDestinationQuestion(
-    destination: string,
     adpProjectType: AdaptationProjectType,
     backendTarget?: BackendTarget
 ): Promise<boolean | string> {
@@ -84,7 +86,7 @@ async function validateAdpDestinationQuestion(
         return adpProjectTypeValidation;
     }
 
-    return !!destination?.trim();
+    return true;
 }
 
 /**
