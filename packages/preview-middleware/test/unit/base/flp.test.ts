@@ -654,7 +654,7 @@ describe('FlpSandbox', () => {
                 addApis: jest.fn()
             } as unknown as AdpPreview;
 
-            await flp.init(manifest, componentId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            await flp.init(manifest, componentId, resources, adpToolingMock);
             const app = express();
             app.use(flp.router);
             const server = await supertest(app);
@@ -704,7 +704,7 @@ describe('FlpSandbox', () => {
                 addApis: jest.fn()
             } as unknown as AdpPreview;
 
-            await flp.init(manifest, componentId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            await flp.init(manifest, componentId, resources, adpToolingMock);
             const app = express();
             app.use(flp.router);
             const server = await supertest(app);
@@ -910,7 +910,7 @@ describe('FlpSandbox', () => {
                 addApis: jest.fn()
             } as unknown as AdpPreview;
 
-            await flp.init(manifest, componentId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            await flp.init(manifest, componentId, resources, adpToolingMock);
             const app = express();
             app.use(flp.router);
             const server = await supertest(app);
@@ -967,7 +967,7 @@ describe('FlpSandbox', () => {
                 addApis: jest.fn()
             } as unknown as AdpPreview;
 
-            await flp.init(manifest, componentId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            await flp.init(manifest, componentId, resources, adpToolingMock);
             const app = express();
             app.use(flp.router);
             const server = await supertest(app);
@@ -1023,7 +1023,7 @@ describe('FlpSandbox', () => {
                 addApis: jest.fn()
             } as unknown as AdpPreview;
 
-            await flp.init(manifest, componentId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            await flp.init(manifest, componentId, resources, adpToolingMock);
             const app = express();
             app.use(flp.router);
             const server = await supertest(app);
@@ -1062,7 +1062,7 @@ describe('FlpSandbox', () => {
             const resources = {
                 'myResources1': 'myResourcesUrl1'
             };
-            const syncSpy = jest.fn().mockResolvedValueOnce({});
+            const syncSpy = jest.fn<() => Promise<void>>().mockResolvedValueOnce(undefined);
             // CF mode: descriptor must NOT be read; throw if anyone tries.
             const cfAdpToolingMock = {
                 init: () => 'CUSTOMER_BASE',
@@ -1075,7 +1075,7 @@ describe('FlpSandbox', () => {
                 onChangeRequest: jest.fn(),
                 addApis: jest.fn(),
                 isCloudFoundry: true
-            } as unknown as adpTooling.AdpPreview;
+            } as unknown as AdpPreview;
 
             await flp.init(manifest, componentId, resources, cfAdpToolingMock);
             const app = express();
@@ -1866,11 +1866,12 @@ describe('FlpSandbox', () => {
         });
 
         test('POST /resources/test/fe/v2/app/preview/api/changes', async () => {
-            await server
+            const response = await server
                 .post('/resources/test/fe/v2/app/preview/api/changes')
                 .set('Content-Type', 'application/json')
                 .send({ change: { fileName: 'componentChange', fileType: 'ctrl_variant' } })
                 .expect(200);
+            expect(response.text).toMatchInlineSnapshot(`"FILE_CREATED componentChange.ctrl_variant"`);
             // bare path must NOT respond
             await server
                 .post('/preview/api/changes')
@@ -1889,10 +1890,11 @@ describe('FlpSandbox', () => {
                 fileName: 'manifest.json',
                 manifests: []
             };
-            await server
+            const response = await server
                 .post(`/resources/test/fe/v2/app${CARD_GENERATOR_DEFAULT.cardsStore}`)
                 .send(payload)
                 .expect(201);
+            expect(response.text).toBe('Files were updated/created');
             // bare path must NOT be registered for type:component
             await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send(payload).expect(404);
         });
@@ -1900,10 +1902,11 @@ describe('FlpSandbox', () => {
         test('POST /resources/test/fe/v2/app/editor/i18n', async () => {
             mockCreatePropertiesI18nEntries.mockResolvedValueOnce(true);
             const newI18nEntry = [{ key: 'KEY', value: 'Value' }];
-            await server
+            const response = await server
                 .post(`/resources/test/fe/v2/app${CARD_GENERATOR_DEFAULT.i18nStore}`)
                 .send(newI18nEntry)
                 .expect(201);
+            expect(response.text).toBe('i18n file updated.');
             // bare path must NOT be registered for type:component
             await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send(newI18nEntry).expect(404);
         });
