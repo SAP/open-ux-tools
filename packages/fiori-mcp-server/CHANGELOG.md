@@ -1,5 +1,23 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.4.0
+
+### Minor Changes
+
+- a7ed101: Add opa5_docu.md to doc_search
+
+## 1.3.0
+
+### Minor Changes
+
+- c1d3564: FEAT: Add skill for analytical chart
+
+## 1.2.0
+
+### Minor Changes
+
+- 14c8584: FEAT: update visual filter skill with ABAP RAP support.
+
 ## 1.1.4
 
 ### Patch Changes

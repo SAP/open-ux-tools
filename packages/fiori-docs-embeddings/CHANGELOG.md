@@ -1,5 +1,17 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 1.2.0
+
+### Minor Changes
+
+- 08fb7a1: Add opa5_docu.md
+
+## 1.1.1
+
+### Patch Changes
+
+- 4124656: Add OPA mock server testing guide as github-raw doc source and --source CLI flag for single-source builds
+
 ## 1.1.0
 
 ### Minor Changes
