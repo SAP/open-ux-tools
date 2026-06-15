@@ -50,15 +50,21 @@ export async function updateVariant(basePath: string, variant: DescriptorVariant
 /**
  * Checks if FLP configuration changes exist in the manifest.appdescr_variant.
  *
- * This function determines whether there are changes of type `appdescr_app_changeInbound`
- * or `appdescr_app_addNewInbound` present in the content of the descriptor variant.
+ * This function determines whether there are changes of type `appdescr_app_setInbounds`,
+ * `appdescr_app_changeInbound`, or `appdescr_app_addNewInbound` present in the content of the
+ * descriptor variant. `appdescr_app_setInbounds` is the change type written by the current
+ * cloud-ADP FLP configuration writer; `appdescr_app_changeInbound` and `appdescr_app_addNewInbound`
+ * are retained for variants written by older versions of the tooling.
  *
  * @param {DescriptorVariant} variant - The descriptor variant object to check for FLP configuration changes.
- * @returns {Promise<boolean>} Returns `true` if FLP configuration changes exist, otherwise `false`.
+ * @returns {boolean} Returns `true` if FLP configuration changes exist, otherwise `false`.
  */
 export function flpConfigurationExists(variant: DescriptorVariant): boolean {
     return variant.content?.some(
-        ({ changeType }) => changeType === 'appdescr_app_changeInbound' || changeType === 'appdescr_app_addNewInbound'
+        ({ changeType }) =>
+            changeType === 'appdescr_app_setInbounds' ||
+            changeType === 'appdescr_app_changeInbound' ||
+            changeType === 'appdescr_app_addNewInbound'
     );
 }
 

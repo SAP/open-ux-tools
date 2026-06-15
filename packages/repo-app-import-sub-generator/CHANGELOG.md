@@ -1,5 +1,221 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.1.7
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.27
+- @sap-ux/odata-service-inquirer@3.0.11
+
+## 1.1.6
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.26
+- @sap-ux/odata-service-inquirer@3.0.11
+
+## 1.1.5
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.25
+- @sap-ux/odata-service-inquirer@3.0.11
+
+## 1.1.4
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.24
+- @sap-ux/odata-service-inquirer@3.0.11
+
+## 1.1.3
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.23
+- @sap-ux/odata-service-inquirer@3.0.11
+
+## 1.1.2
+
+### Patch Changes
+
+- Updated dependencies [41b3908]
+    - @sap-ux/feature-toggle@1.0.2
+    - @sap-ux/axios-extension@2.0.3
+    - @sap-ux/inquirer-common@1.0.11
+    - @sap-ux/odata-service-inquirer@3.0.11
+    - @sap-ux/fiori-generator-shared@1.0.11
+    - @sap-ux/system-access@1.0.3
+    - @sap-ux/fiori-elements-writer@3.0.22
+    - @sap-ux/abap-deploy-config-writer@1.0.8
+
+## 1.1.1
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.21
+- @sap-ux/odata-service-inquirer@3.0.10
+
+## 1.1.0
+
+### Minor Changes
+
+- ad59554: feat(repo-app-import-sub-generator): support ABAP Repository app download alongside ADT Quick Deploy flow
+
+## 1.0.20
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.20
+- @sap-ux/odata-service-inquirer@3.0.10
+
+## 1.0.19
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@1.0.10
+- @sap-ux/inquirer-common@1.0.10
+- @sap-ux/odata-service-inquirer@3.0.10
+- @sap-ux/fiori-elements-writer@3.0.19
+
+## 1.0.18
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.18
+- @sap-ux/odata-service-inquirer@3.0.9
+
+## 1.0.17
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.17
+- @sap-ux/odata-service-inquirer@3.0.9
+
+## 1.0.16
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.16
+- @sap-ux/odata-service-inquirer@3.0.9
+
+## 1.0.15
+
+### Patch Changes
+
+- Updated dependencies [c8e8f7e]
+    - @sap-ux/abap-deploy-config-writer@1.0.7
+    - @sap-ux/fiori-elements-writer@3.0.15
+    - @sap-ux/launch-config@1.0.6
+    - @sap-ux/project-access@2.1.2
+    - @sap-ux/odata-service-inquirer@3.0.9
+    - @sap-ux/inquirer-common@1.0.9
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/fiori-generator-shared@1.0.9
+    - @sap-ux/project-input-validator@1.0.6
+    - @sap-ux/system-access@1.0.2
+
+## 1.0.14
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.14
+- @sap-ux/odata-service-inquirer@3.0.8
+
+## 1.0.13
+
+### Patch Changes
+
+- Updated dependencies [0fa8305]
+    - @sap-ux/btp-utils@2.0.2
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/fiori-generator-shared@1.0.8
+    - @sap-ux/inquirer-common@1.0.8
+    - @sap-ux/odata-service-inquirer@3.0.8
+    - @sap-ux/system-access@1.0.2
+    - @sap-ux/fiori-elements-writer@3.0.13
+    - @sap-ux/abap-deploy-config-writer@1.0.6
+
+## 1.0.12
+
+### Patch Changes
+
+- Updated dependencies [a328e14]
+    - @sap-ux/fiori-generator-shared@1.0.7
+    - @sap-ux/fiori-elements-writer@3.0.12
+    - @sap-ux/inquirer-common@1.0.7
+    - @sap-ux/odata-service-inquirer@3.0.7
+
+## 1.0.11
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.11
+- @sap-ux/odata-service-inquirer@3.0.6
+
+## 1.0.10
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+    - @sap-ux/abap-deploy-config-writer@1.0.5
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/fiori-elements-writer@3.0.10
+    - @sap-ux/fiori-generator-shared@1.0.6
+    - @sap-ux/inquirer-common@1.0.6
+    - @sap-ux/launch-config@1.0.5
+    - @sap-ux/odata-service-inquirer@3.0.6
+    - @sap-ux/project-input-validator@1.0.5
+    - @sap-ux/system-access@1.0.1
+
+## 1.0.9
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@3.0.9
+- @sap-ux/odata-service-inquirer@3.0.5
+
+## 1.0.8
+
+### Patch Changes
+
+- Updated dependencies [b326a9a]
+    - @sap-ux/project-access@2.1.0
+    - @sap-ux/abap-deploy-config-writer@1.0.4
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/fiori-elements-writer@3.0.8
+    - @sap-ux/fiori-generator-shared@1.0.5
+    - @sap-ux/inquirer-common@1.0.5
+    - @sap-ux/launch-config@1.0.4
+    - @sap-ux/odata-service-inquirer@3.0.5
+    - @sap-ux/project-input-validator@1.0.4
+    - @sap-ux/system-access@1.0.1
+
+## 1.0.7
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/abap-deploy-config-writer@1.0.3
+    - @sap-ux/project-input-validator@1.0.3
+    - @sap-ux/fiori-generator-shared@1.0.4
+    - @sap-ux/odata-service-inquirer@3.0.4
+    - @sap-ux/fiori-elements-writer@3.0.7
+    - @sap-ux/guided-answers-helper@1.0.1
+    - @sap-ux/fiori-tools-settings@1.0.1
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/inquirer-common@1.0.4
+    - @sap-ux/feature-toggle@1.0.1
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux/launch-config@1.0.3
+    - @sap-ux/system-access@1.0.1
+    - @sap-ux/btp-utils@2.0.1
+    - @sap-ux/ui5-info@1.0.1
+    - @sap-ux/logger@1.0.1
+    - @sap-ux/store@2.0.1
+
 ## 1.0.6
 
 ### Patch Changes
@@ -786,6 +1002,8 @@
 
 ## 0.3.291
 
+*Released: 2026-03-20T16:07:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [25e5177]
@@ -802,6 +1020,8 @@
 
 ## 0.3.290
 
+*Released: 2026-03-19T16:10:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [b516f01]
@@ -809,6 +1029,8 @@
     - @sap-ux/odata-service-inquirer@2.19.14
 
 ## 0.3.289
+
+*Released: 2026-03-18T16:51:44Z*
 
 ### Patch Changes
 
@@ -820,6 +1042,8 @@
 
 ## 0.3.288
 
+*Released: 2026-03-18T14:50:43Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.104
@@ -827,12 +1051,16 @@
 
 ## 0.3.287
 
+*Released: 2026-03-18T12:34:00Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.103
 - @sap-ux/odata-service-inquirer@2.19.13
 
 ## 0.3.286
+
+*Released: 2026-03-17T07:55:04Z*
 
 ### Patch Changes
 
@@ -844,6 +1072,8 @@
     - @sap-ux/abap-deploy-config-writer@0.2.93
 
 ## 0.3.285
+
+*Released: 2026-03-17T01:04:22Z*
 
 ### Patch Changes
 
@@ -865,12 +1095,16 @@
 
 ## 0.3.284
 
+*Released: 2026-03-16T23:16:05Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.101
 - @sap-ux/odata-service-inquirer@2.19.11
 
 ## 0.3.283
+
+*Released: 2026-03-16T17:06:45Z*
 
 ### Patch Changes
 
@@ -879,12 +1113,16 @@
 
 ## 0.3.282
 
+*Released: 2026-03-11T16:49:00Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.99
 - @sap-ux/odata-service-inquirer@2.19.11
 
 ## 0.3.281
+
+*Released: 2026-03-11T11:14:18Z*
 
 ### Patch Changes
 
@@ -893,12 +1131,16 @@
 
 ## 0.3.280
 
+*Released: 2026-03-10T10:25:55Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.97
 - @sap-ux/odata-service-inquirer@2.19.11
 
 ## 0.3.279
+
+*Released: 2026-03-10T07:46:29Z*
 
 ### Patch Changes
 
@@ -907,12 +1149,16 @@
 
 ## 0.3.278
 
+*Released: 2026-03-06T14:12:58Z*
+
 ### Patch Changes
 
 - Updated dependencies [32d028b]
     - @sap-ux/odata-service-inquirer@2.19.11
 
 ## 0.3.277
+
+*Released: 2026-03-06T13:19:33Z*
 
 ### Patch Changes
 
@@ -922,12 +1168,16 @@
 
 ## 0.3.276
 
+*Released: 2026-03-06T12:16:42Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.94
 - @sap-ux/odata-service-inquirer@2.19.9
 
 ## 0.3.275
+
+*Released: 2026-03-05T23:21:37Z*
 
 ### Patch Changes
 
@@ -939,6 +1189,8 @@
     - @sap-ux/abap-deploy-config-writer@0.2.91
 
 ## 0.3.274
+
+*Released: 2026-03-05T16:08:22Z*
 
 ### Patch Changes
 
@@ -956,12 +1208,16 @@
 
 ## 0.3.273
 
+*Released: 2026-03-05T13:30:55Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.92
 - @sap-ux/odata-service-inquirer@2.19.7
 
 ## 0.3.272
+
+*Released: 2026-03-05T12:30:25Z*
 
 ### Patch Changes
 
@@ -979,6 +1235,8 @@
 
 ## 0.3.271
 
+*Released: 2026-03-05T10:41:09Z*
+
 ### Patch Changes
 
 - 5aff25c: fix(deps): update dependency fs-extra to v11
@@ -989,6 +1247,8 @@
     - @sap-ux/inquirer-common@0.11.20
 
 ## 0.3.270
+
+*Released: 2026-03-04T22:42:20Z*
 
 ### Patch Changes
 
@@ -1014,6 +1274,8 @@
 
 ## 0.3.269
 
+*Released: 2026-03-04T15:52:08Z*
+
 ### Patch Changes
 
 - Updated dependencies [2302698]
@@ -1027,6 +1289,8 @@
     - @sap-ux/abap-deploy-config-writer@0.2.86
 
 ## 0.3.268
+
+*Released: 2026-03-04T14:39:10Z*
 
 ### Patch Changes
 
@@ -1043,12 +1307,16 @@
 
 ## 0.3.267
 
+*Released: 2026-03-04T11:44:41Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.86
 - @sap-ux/odata-service-inquirer@2.19.2
 
 ## 0.3.266
+
+*Released: 2026-03-04T10:34:42Z*
 
 ### Patch Changes
 
@@ -1057,6 +1325,8 @@
 
 ## 0.3.265
 
+*Released: 2026-03-04T09:03:38Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.84
@@ -1064,12 +1334,16 @@
 
 ## 0.3.264
 
+*Released: 2026-03-03T20:14:02Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.83
 - @sap-ux/odata-service-inquirer@2.19.2
 
 ## 0.3.263
+
+*Released: 2026-03-03T08:27:12Z*
 
 ### Patch Changes
 
@@ -1083,6 +1357,8 @@
 
 ## 0.3.262
 
+*Released: 2026-02-27T17:32:57Z*
+
 ### Patch Changes
 
 - Updated dependencies [bda1120]
@@ -1090,12 +1366,16 @@
 
 ## 0.3.261
 
+*Released: 2026-02-27T16:28:36Z*
+
 ### Patch Changes
 
 - Updated dependencies [698fd9e]
     - @sap-ux/odata-service-inquirer@2.19.0
 
 ## 0.3.260
+
+*Released: 2026-02-27T15:42:39Z*
 
 ### Patch Changes
 
@@ -1113,6 +1393,8 @@
 
 ## 0.3.259
 
+*Released: 2026-02-26T10:46:59Z*
+
 ### Patch Changes
 
 - 6c993f3: fix: turn off i18next support notice
@@ -1129,12 +1411,16 @@
 
 ## 0.3.258
 
+*Released: 2026-02-25T12:30:29Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.79
 - @sap-ux/odata-service-inquirer@2.18.11
 
 ## 0.3.257
+
+*Released: 2026-02-23T22:35:31Z*
 
 ### Patch Changes
 
@@ -1154,6 +1440,8 @@
 
 ## 0.3.256
 
+*Released: 2026-02-23T19:07:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [0ecc5f1]
@@ -1170,6 +1458,8 @@
 
 ## 0.3.255
 
+*Released: 2026-02-20T21:31:31Z*
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-writer@0.2.79
@@ -1184,6 +1474,8 @@
 - @sap-ux/system-access@0.6.56
 
 ## 0.3.254
+
+*Released: 2026-02-20T20:20:17Z*
 
 ### Patch Changes
 
@@ -1201,6 +1493,8 @@
 
 ## 0.3.253
 
+*Released: 2026-02-20T16:17:11Z*
+
 ### Patch Changes
 
 - cbd340a: fix(deps): update dependency i18next to v25.8.12
@@ -1216,6 +1510,8 @@
     - @sap-ux/abap-deploy-config-writer@0.2.77
 
 ## 0.3.252
+
+*Released: 2026-02-20T13:46:55Z*
 
 ### Patch Changes
 
@@ -1237,6 +1533,8 @@
 
 ## 0.3.251
 
+*Released: 2026-02-18T21:45:35Z*
+
 ### Patch Changes
 
 - Updated dependencies [d57cc47]
@@ -1253,12 +1551,16 @@
 
 ## 0.3.250
 
+*Released: 2026-02-17T01:38:30Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.71
 - @sap-ux/odata-service-inquirer@2.18.4
 
 ## 0.3.249
+
+*Released: 2026-02-16T18:48:13Z*
 
 ### Patch Changes
 
@@ -1273,6 +1575,8 @@
     - @sap-ux/abap-deploy-config-writer@0.2.74
 
 ## 0.3.248
+
+*Released: 2026-02-16T16:08:11Z*
 
 ### Patch Changes
 
@@ -1290,6 +1594,8 @@
 
 ## 0.3.247
 
+*Released: 2026-02-16T13:12:09Z*
+
 ### Patch Changes
 
 - Updated dependencies [1a922e7]
@@ -1297,6 +1603,8 @@
     - @sap-ux/odata-service-inquirer@2.18.2
 
 ## 0.3.246
+
+*Released: 2026-02-13T16:18:58Z*
 
 ### Patch Changes
 
@@ -1310,6 +1618,8 @@
     - @sap-ux/fiori-elements-writer@2.8.67
 
 ## 0.3.245
+
+*Released: 2026-02-13T09:54:38Z*
 
 ### Patch Changes
 
@@ -1327,12 +1637,16 @@
 
 ## 0.3.244
 
+*Released: 2026-02-12T12:53:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [bb5eea0]
     - @sap-ux/odata-service-inquirer@2.18.0
 
 ## 0.3.243
+
+*Released: 2026-02-12T10:29:41Z*
 
 ### Patch Changes
 
@@ -1349,6 +1663,8 @@
     - @sap-ux/system-access@0.6.50
 
 ## 0.3.242
+
+*Released: 2026-02-10T23:50:15Z*
 
 ### Patch Changes
 
@@ -1368,12 +1684,16 @@
 
 ## 0.3.241
 
+*Released: 2026-02-10T21:03:43Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.63
 - @sap-ux/odata-service-inquirer@2.17.1
 
 ## 0.3.240
+
+*Released: 2026-02-10T17:22:04Z*
 
 ### Patch Changes
 
@@ -1383,6 +1703,8 @@
 
 ## 0.3.239
 
+*Released: 2026-02-09T15:13:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [1ad56d1]
@@ -1390,6 +1712,8 @@
     - @sap-ux/inquirer-common@0.11.1
 
 ## 0.3.238
+
+*Released: 2026-02-09T11:21:43Z*
 
 ### Patch Changes
 
@@ -1407,6 +1731,8 @@
 
 ## 0.3.237
 
+*Released: 2026-02-09T10:08:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [14e914a]
@@ -1415,6 +1741,8 @@
 
 ## 0.3.236
 
+*Released: 2026-02-07T13:20:19Z*
+
 ### Patch Changes
 
 - Updated dependencies [722266d]
@@ -1422,12 +1750,16 @@
 
 ## 0.3.235
 
+*Released: 2026-02-06T10:18:27Z*
+
 ### Patch Changes
 
 - Updated dependencies [ac865af]
     - @sap-ux/odata-service-inquirer@2.16.9
 
 ## 0.3.234
+
+*Released: 2026-02-05T20:09:45Z*
 
 ### Patch Changes
 
@@ -1445,6 +1777,8 @@
 
 ## 0.3.233
 
+*Released: 2026-02-05T13:53:56Z*
+
 ### Patch Changes
 
 - Updated dependencies [38e215e]
@@ -1459,6 +1793,8 @@
 
 ## 0.3.232
 
+*Released: 2026-02-05T11:39:04Z*
+
 ### Patch Changes
 
 - Updated dependencies [83e3b70]
@@ -1471,6 +1807,8 @@
     - @sap-ux/fiori-elements-writer@2.8.58
 
 ## 0.3.231
+
+*Released: 2026-02-05T08:38:39Z*
 
 ### Patch Changes
 
@@ -1489,6 +1827,8 @@
 
 ## 0.3.230
 
+*Released: 2026-02-04T22:31:27Z*
+
 ### Patch Changes
 
 - 9f11dd2: chore - address audit issues
@@ -1505,6 +1845,8 @@
 
 ## 0.3.229
 
+*Released: 2026-02-04T15:08:32Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.55
@@ -1512,12 +1854,16 @@
 
 ## 0.3.228
 
+*Released: 2026-02-04T14:42:07Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.54
 - @sap-ux/odata-service-inquirer@2.16.3
 
 ## 0.3.227
+
+*Released: 2026-02-03T15:42:23Z*
 
 ### Patch Changes
 
@@ -1534,6 +1880,8 @@
     - @sap-ux/project-input-validator@0.6.49
 
 ## 0.3.226
+
+*Released: 2026-01-30T16:59:27Z*
 
 ### Patch Changes
 
@@ -1556,12 +1904,16 @@
 
 ## 0.3.225
 
+*Released: 2026-01-30T10:53:11Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.51
 - @sap-ux/odata-service-inquirer@2.16.1
 
 ## 0.3.224
+
+*Released: 2026-01-29T14:02:02Z*
 
 ### Patch Changes
 
@@ -1581,12 +1933,16 @@
 
 ## 0.3.223
 
+*Released: 2026-01-29T13:15:38Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.49
 - @sap-ux/odata-service-inquirer@2.16.0
 
 ## 0.3.222
+
+*Released: 2026-01-28T15:52:09Z*
 
 ### Patch Changes
 
@@ -1595,12 +1951,16 @@
 
 ## 0.3.221
 
+*Released: 2026-01-28T12:56:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [1d3e398]
     - @sap-ux/odata-service-inquirer@2.15.0
 
 ## 0.3.220
+
+*Released: 2026-01-28T00:19:05Z*
 
 ### Patch Changes
 
@@ -1615,6 +1975,8 @@
 
 ## 0.3.219
 
+*Released: 2026-01-26T13:25:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [4368c00]
@@ -1622,6 +1984,8 @@
     - @sap-ux/odata-service-inquirer@2.14.18
 
 ## 0.3.218
+
+*Released: 2026-01-26T09:14:13Z*
 
 ### Patch Changes
 
@@ -1634,6 +1998,8 @@
 
 ## 0.3.217
 
+*Released: 2026-01-23T23:57:30Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.57
@@ -1642,6 +2008,8 @@
 - @sap-ux/fiori-elements-writer@2.8.46
 
 ## 0.3.216
+
+*Released: 2026-01-23T22:30:10Z*
 
 ### Patch Changes
 
@@ -1655,12 +2023,16 @@
 
 ## 0.3.215
 
+*Released: 2026-01-23T14:04:48Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.44
 - @sap-ux/odata-service-inquirer@2.14.15
 
 ## 0.3.214
+
+*Released: 2026-01-23T12:49:27Z*
 
 ### Patch Changes
 
@@ -1675,12 +2047,16 @@
 
 ## 0.3.213
 
+*Released: 2026-01-23T10:10:07Z*
+
 ### Patch Changes
 
 - Updated dependencies [e746e10]
     - @sap-ux/odata-service-inquirer@2.14.14
 
 ## 0.3.212
+
+*Released: 2026-01-22T13:16:27Z*
 
 ### Patch Changes
 
@@ -1689,12 +2065,16 @@
 
 ## 0.3.211
 
+*Released: 2026-01-21T17:53:12Z*
+
 ### Patch Changes
 
 - Updated dependencies [f31a340]
     - @sap-ux/odata-service-inquirer@2.14.12
 
 ## 0.3.210
+
+*Released: 2026-01-21T14:01:11Z*
 
 ### Patch Changes
 
@@ -1703,12 +2083,16 @@
 
 ## 0.3.209
 
+*Released: 2026-01-20T14:28:12Z*
+
 ### Patch Changes
 
 - Updated dependencies [33d92e4]
     - @sap-ux/odata-service-inquirer@2.14.10
 
 ## 0.3.208
+
+*Released: 2026-01-20T12:48:23Z*
 
 ### Patch Changes
 
@@ -1717,6 +2101,8 @@
 
 ## 0.3.207
 
+*Released: 2026-01-20T12:04:18Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.41
@@ -1724,12 +2110,16 @@
 
 ## 0.3.206
 
+*Released: 2026-01-20T11:22:57Z*
+
 ### Patch Changes
 
 - Updated dependencies [090cdec]
     - @sap-ux/odata-service-inquirer@2.14.9
 
 ## 0.3.205
+
+*Released: 2026-01-19T12:47:48Z*
 
 ### Patch Changes
 
@@ -1741,6 +2131,8 @@
 
 ## 0.3.204
 
+*Released: 2026-01-16T14:56:13Z*
+
 ### Patch Changes
 
 - 7597059: add new promp option to hide 'New System' from system selection list
@@ -1748,6 +2140,8 @@
     - @sap-ux/odata-service-inquirer@2.14.7
 
 ## 0.3.203
+
+*Released: 2026-01-16T13:57:39Z*
 
 ### Patch Changes
 
@@ -1765,6 +2159,8 @@
 
 ## 0.3.202
 
+*Released: 2026-01-16T12:32:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [c9fd939]
@@ -1778,12 +2174,16 @@
 
 ## 0.3.201
 
+*Released: 2026-01-16T10:16:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [4ec10e4]
     - @sap-ux/odata-service-inquirer@2.14.4
 
 ## 0.3.200
+
+*Released: 2026-01-15T14:14:39Z*
 
 ### Patch Changes
 
@@ -1801,12 +2201,16 @@
 
 ## 0.3.199
 
+*Released: 2026-01-15T12:16:35Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.37
 - @sap-ux/odata-service-inquirer@2.14.2
 
 ## 0.3.198
+
+*Released: 2026-01-14T17:56:49Z*
 
 ### Patch Changes
 
@@ -1824,6 +2228,8 @@
 
 ## 0.3.197
 
+*Released: 2026-01-13T18:24:08Z*
+
 ### Patch Changes
 
 - Updated dependencies [5d2a018]
@@ -1831,12 +2237,16 @@
 
 ## 0.3.196
 
+*Released: 2026-01-13T10:50:18Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.35
 - @sap-ux/odata-service-inquirer@2.14.0
 
 ## 0.3.195
+
+*Released: 2026-01-12T12:01:34Z*
 
 ### Patch Changes
 
@@ -1854,12 +2264,16 @@
 
 ## 0.3.194
 
+*Released: 2026-01-12T09:10:27Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.33
 - @sap-ux/odata-service-inquirer@2.13.10
 
 ## 0.3.193
+
+*Released: 2026-01-09T11:35:48Z*
 
 ### Patch Changes
 
@@ -1877,6 +2291,8 @@
 
 ## 0.3.192
 
+*Released: 2026-01-08T17:12:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [2204ad3]
@@ -1890,6 +2306,8 @@
 
 ## 0.3.191
 
+*Released: 2026-01-07T16:03:58Z*
+
 ### Patch Changes
 
 - Updated dependencies [4e0f204]
@@ -1901,6 +2319,8 @@
 
 ## 0.3.190
 
+*Released: 2026-01-07T10:20:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [6382440]
@@ -1908,6 +2328,8 @@
     - @sap-ux/odata-service-inquirer@2.13.7
 
 ## 0.3.189
+
+*Released: 2026-01-06T14:37:31Z*
 
 ### Patch Changes
 
@@ -1921,6 +2343,8 @@
 
 ## 0.3.188
 
+*Released: 2026-01-05T14:16:22Z*
+
 ### Patch Changes
 
 - 62bb798: set conflicter option
@@ -1932,6 +2356,8 @@
 
 ## 0.3.187
 
+*Released: 2025-12-23T18:45:16Z*
+
 ### Patch Changes
 
 - Updated dependencies [d24f36d]
@@ -1939,6 +2365,8 @@
     - @sap-ux/odata-service-inquirer@2.13.4
 
 ## 0.3.186
+
+*Released: 2025-12-22T17:36:43Z*
 
 ### Patch Changes
 
@@ -1951,6 +2379,8 @@
 
 ## 0.3.185
 
+*Released: 2025-12-19T15:33:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [dad2bd7]
@@ -1958,6 +2388,8 @@
     - @sap-ux/odata-service-inquirer@2.13.3
 
 ## 0.3.184
+
+*Released: 2025-12-19T11:36:13Z*
 
 ### Patch Changes
 
@@ -1980,6 +2412,8 @@
 
 ## 0.3.183
 
+*Released: 2025-12-18T21:05:02Z*
+
 ### Patch Changes
 
 - a9471d0: fix sonar issues
@@ -2001,12 +2435,16 @@
 
 ## 0.3.182
 
+*Released: 2025-12-18T14:44:52Z*
+
 ### Patch Changes
 
 - Updated dependencies [cda79d4]
     - @sap-ux/odata-service-inquirer@2.13.1
 
 ## 0.3.181
+
+*Released: 2025-12-18T13:13:52Z*
 
 ### Patch Changes
 
@@ -2016,6 +2454,8 @@
     - @sap-ux/inquirer-common@0.10.1
 
 ## 0.3.180
+
+*Released: 2025-12-18T08:56:52Z*
 
 ### Patch Changes
 
@@ -2030,12 +2470,16 @@
 
 ## 0.3.179
 
+*Released: 2025-12-17T11:17:40Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.22
 - @sap-ux/odata-service-inquirer@2.11.22
 
 ## 0.3.178
+
+*Released: 2025-12-16T13:10:35Z*
 
 ### Patch Changes
 
@@ -2044,6 +2488,8 @@
     - @sap-ux/odata-service-inquirer@2.11.22
 
 ## 0.3.177
+
+*Released: 2025-12-16T11:43:52Z*
 
 ### Patch Changes
 
@@ -2057,6 +2503,8 @@
     - @sap-ux/fiori-elements-writer@2.8.20
 
 ## 0.3.176
+
+*Released: 2025-12-15T10:50:50Z*
 
 ### Patch Changes
 
@@ -2082,6 +2530,8 @@
 
 ## 0.3.175
 
+*Released: 2025-12-12T12:38:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [7217d7d]
@@ -2098,6 +2548,8 @@
 
 ## 0.3.174
 
+*Released: 2025-12-12T09:02:37Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.17
@@ -2105,6 +2557,8 @@
 - @sap-ux/odata-service-inquirer@2.11.19
 
 ## 0.3.173
+
+*Released: 2025-12-10T20:04:51Z*
 
 ### Patch Changes
 
@@ -2122,6 +2576,8 @@
 
 ## 0.3.172
 
+*Released: 2025-12-10T09:08:56Z*
+
 ### Patch Changes
 
 - Updated dependencies [985223a]
@@ -2138,6 +2594,8 @@
 
 ## 0.3.171
 
+*Released: 2025-12-08T17:56:48Z*
+
 ### Patch Changes
 
 - 037a430: fix high severity Sonar issues
@@ -2153,6 +2611,8 @@
 
 ## 0.3.170
 
+*Released: 2025-12-08T11:51:00Z*
+
 ### Patch Changes
 
 - Updated dependencies [f71a139]
@@ -2164,12 +2624,16 @@
 
 ## 0.3.169
 
+*Released: 2025-12-05T13:00:51Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.13
 - @sap-ux/odata-service-inquirer@2.11.14
 
 ## 0.3.168
+
+*Released: 2025-12-05T12:18:49Z*
 
 ### Patch Changes
 
@@ -2180,6 +2644,8 @@
     - @sap-ux/odata-service-inquirer@2.11.14
 
 ## 0.3.167
+
+*Released: 2025-12-04T10:42:12Z*
 
 ### Patch Changes
 
@@ -2197,6 +2663,8 @@
 
 ## 0.3.166
 
+*Released: 2025-12-04T09:20:42Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.10
@@ -2204,12 +2672,16 @@
 
 ## 0.3.165
 
+*Released: 2025-12-01T15:39:41Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.9
 - @sap-ux/odata-service-inquirer@2.11.12
 
 ## 0.3.164
+
+*Released: 2025-11-27T14:58:09Z*
 
 ### Patch Changes
 
@@ -2227,12 +2699,16 @@
 
 ## 0.3.163
 
+*Released: 2025-11-26T16:43:07Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.7
 - @sap-ux/odata-service-inquirer@2.11.11
 
 ## 0.3.162
+
+*Released: 2025-11-26T14:39:37Z*
 
 ### Patch Changes
 
@@ -2250,6 +2726,8 @@
 
 ## 0.3.161
 
+*Released: 2025-11-26T12:17:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [1c45a4d]
@@ -2260,6 +2738,8 @@
 
 ## 0.3.160
 
+*Released: 2025-11-26T00:12:42Z*
+
 ### Patch Changes
 
 - Updated dependencies [597834f]
@@ -2268,6 +2748,8 @@
     - @sap-ux/fiori-elements-writer@2.8.5
 
 ## 0.3.159
+
+*Released: 2025-11-24T12:45:14Z*
 
 ### Patch Changes
 
@@ -2286,12 +2768,16 @@
 
 ## 0.3.158
 
+*Released: 2025-11-19T18:58:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [5eb784b]
     - @sap-ux/odata-service-inquirer@2.11.7
 
 ## 0.3.157
+
+*Released: 2025-11-18T22:51:59Z*
 
 ### Patch Changes
 
@@ -2300,6 +2786,8 @@
 
 ## 0.3.156
 
+*Released: 2025-11-15T17:01:08Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.3
@@ -2307,12 +2795,16 @@
 
 ## 0.3.155
 
+*Released: 2025-11-14T07:12:13Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.8.2
 - @sap-ux/odata-service-inquirer@2.11.5
 
 ## 0.3.154
+
+*Released: 2025-11-12T16:47:06Z*
 
 ### Patch Changes
 
@@ -2322,6 +2814,8 @@
 
 ## 0.3.153
 
+*Released: 2025-11-12T10:01:42Z*
+
 ### Patch Changes
 
 - Updated dependencies [caff0ca]
@@ -2329,11 +2823,15 @@
 
 ## 0.3.152
 
+*Released: 2025-11-11T09:02:15Z*
+
 ### Patch Changes
 
 - d2aae59: Resolve Transport request in adt app download logic
 
 ## 0.3.151
+
+*Released: 2025-11-10T14:56:50Z*
 
 ### Patch Changes
 
@@ -2343,12 +2841,16 @@
 
 ## 0.3.150
 
+*Released: 2025-11-07T14:33:42Z*
+
 ### Patch Changes
 
 - Updated dependencies [2e75589]
     - @sap-ux/odata-service-inquirer@2.11.4
 
 ## 0.3.149
+
+*Released: 2025-11-07T13:23:57Z*
 
 ### Patch Changes
 
@@ -2360,6 +2862,8 @@
 
 ## 0.3.148
 
+*Released: 2025-11-06T15:12:51Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.33
@@ -2368,6 +2872,8 @@
 - @sap-ux/fiori-elements-writer@2.7.37
 
 ## 0.3.147
+
+*Released: 2025-11-05T06:53:42Z*
 
 ### Patch Changes
 
@@ -2393,12 +2899,16 @@
 
 ## 0.3.146
 
+*Released: 2025-11-04T14:07:00Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.7.35
 - @sap-ux/odata-service-inquirer@2.11.0
 
 ## 0.3.145
+
+*Released: 2025-11-03T15:21:45Z*
 
 ### Patch Changes
 
@@ -2407,6 +2917,8 @@
 
 ## 0.3.144
 
+*Released: 2025-11-03T10:50:00Z*
+
 ### Patch Changes
 
 - Updated dependencies [4ddcff3]
@@ -2414,6 +2926,8 @@
     - @sap-ux/inquirer-common@0.9.0
 
 ## 0.3.143
+
+*Released: 2025-10-31T13:35:34Z*
 
 ### Patch Changes
 
@@ -2428,6 +2942,8 @@
 
 ## 0.3.142
 
+*Released: 2025-10-30T10:09:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [3253294]
@@ -2438,6 +2954,8 @@
     - @sap-ux/abap-deploy-config-writer@0.2.31
 
 ## 0.3.141
+
+*Released: 2025-10-29T17:02:38Z*
 
 ### Patch Changes
 
@@ -2452,6 +2970,8 @@
 
 ## 0.3.140
 
+*Released: 2025-10-29T11:04:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [36b0f19]
@@ -2465,6 +2985,8 @@
 
 ## 0.3.139
 
+*Released: 2025-10-28T13:36:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [cdeb18b]
@@ -2476,12 +2998,16 @@
 
 ## 0.3.138
 
+*Released: 2025-10-28T11:21:49Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.7.31
 - @sap-ux/odata-service-inquirer@2.9.9
 
 ## 0.3.137
+
+*Released: 2025-10-27T13:41:31Z*
 
 ### Patch Changes
 
@@ -2499,6 +3025,8 @@
 
 ## 0.3.136
 
+*Released: 2025-10-22T18:56:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [fa9580c]
@@ -2513,12 +3041,16 @@
 
 ## 0.3.135
 
+*Released: 2025-10-22T10:38:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [1b5d459]
     - @sap-ux/odata-service-inquirer@2.9.7
 
 ## 0.3.134
+
+*Released: 2025-10-22T09:32:12Z*
 
 ### Patch Changes
 
@@ -2536,6 +3068,8 @@
 
 ## 0.3.133
 
+*Released: 2025-10-21T09:37:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [06bc541]
@@ -2543,6 +3077,8 @@
     - @sap-ux/inquirer-common@0.8.4
 
 ## 0.3.132
+
+*Released: 2025-10-21T07:47:50Z*
 
 ### Patch Changes
 
@@ -2560,12 +3096,16 @@
 
 ## 0.3.131
 
+*Released: 2025-10-20T07:42:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [7b89529]
     - @sap-ux/odata-service-inquirer@2.9.3
 
 ## 0.3.130
+
+*Released: 2025-10-17T11:37:38Z*
 
 ### Patch Changes
 
@@ -2580,6 +3120,8 @@
 
 ## 0.3.129
 
+*Released: 2025-10-17T09:45:11Z*
+
 ### Patch Changes
 
 - Updated dependencies [d4dabbd]
@@ -2590,6 +3132,8 @@
 
 ## 0.3.128
 
+*Released: 2025-10-15T16:45:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [4053369]
@@ -2598,12 +3142,16 @@
 
 ## 0.3.127
 
+*Released: 2025-10-15T14:30:03Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.7.24
 - @sap-ux/odata-service-inquirer@2.8.13
 
 ## 0.3.126
+
+*Released: 2025-10-15T11:57:34Z*
 
 ### Patch Changes
 
@@ -2612,6 +3160,8 @@
 
 ## 0.3.125
 
+*Released: 2025-10-14T21:48:08Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.7.22
@@ -2619,12 +3169,16 @@
 
 ## 0.3.124
 
+*Released: 2025-10-14T14:20:59Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.7.21
 - @sap-ux/odata-service-inquirer@2.8.13
 
 ## 0.3.123
+
+*Released: 2025-10-14T13:22:30Z*
 
 ### Patch Changes
 
@@ -2641,6 +3195,8 @@
 
 ## 0.3.122
 
+*Released: 2025-10-13T14:40:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [247a5a9]
@@ -2648,6 +3204,8 @@
     - @sap-ux/odata-service-inquirer@2.8.12
 
 ## 0.3.121
+
+*Released: 2025-10-10T13:53:56Z*
 
 ### Patch Changes
 
@@ -2658,6 +3216,8 @@
     - @sap-ux/odata-service-inquirer@2.8.11
 
 ## 0.3.120
+
+*Released: 2025-10-10T12:22:06Z*
 
 ### Patch Changes
 
@@ -2675,11 +3235,15 @@
 
 ## 0.3.119
 
+*Released: 2025-10-10T09:39:17Z*
+
 ### Patch Changes
 
 - e015869: chore: patch inquirer dependency
 
 ## 0.3.118
+
+*Released: 2025-10-08T13:16:50Z*
 
 ### Patch Changes
 
@@ -2687,6 +3251,8 @@
 - @sap-ux/odata-service-inquirer@2.8.9
 
 ## 0.3.117
+
+*Released: 2025-10-07T13:15:25Z*
 
 ### Patch Changes
 
@@ -2696,6 +3262,8 @@
 - @sap-ux/fiori-elements-writer@2.7.17
 
 ## 0.3.116
+
+*Released: 2025-10-06T17:09:01Z*
 
 ### Patch Changes
 
@@ -2718,6 +3286,8 @@
 
 ## 0.3.115
 
+*Released: 2025-10-06T10:53:53Z*
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-writer@0.2.19
@@ -2733,12 +3303,16 @@
 
 ## 0.3.114
 
+*Released: 2025-10-03T09:25:07Z*
+
 ### Patch Changes
 
 - Updated dependencies [4b0b8fb]
     - @sap-ux/abap-deploy-config-writer@0.2.18
 
 ## 0.3.113
+
+*Released: 2025-09-29T12:29:29Z*
 
 ### Patch Changes
 
@@ -2747,12 +3321,16 @@
 
 ## 0.3.112
 
+*Released: 2025-09-26T12:52:39Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.7.13
 - @sap-ux/odata-service-inquirer@2.8.6
 
 ## 0.3.111
+
+*Released: 2025-09-26T11:12:01Z*
 
 ### Patch Changes
 
@@ -2761,12 +3339,16 @@
 
 ## 0.3.110
 
+*Released: 2025-09-25T12:07:53Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.7.11
 - @sap-ux/odata-service-inquirer@2.8.6
 
 ## 0.3.109
+
+*Released: 2025-09-23T20:14:56Z*
 
 ### Patch Changes
 
@@ -2782,12 +3364,16 @@
 
 ## 0.3.108
 
+*Released: 2025-09-23T16:06:33Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.7.9
 - @sap-ux/odata-service-inquirer@2.8.5
 
 ## 0.3.107
+
+*Released: 2025-09-19T16:36:41Z*
 
 ### Patch Changes
 
@@ -2807,12 +3393,16 @@
 
 ## 0.3.106
 
+*Released: 2025-09-19T12:41:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [c15aa4f]
     - @sap-ux/abap-deploy-config-writer@0.2.15
 
 ## 0.3.105
+
+*Released: 2025-09-19T00:44:48Z*
 
 ### Patch Changes
 
@@ -2830,6 +3420,8 @@
 
 ## 0.3.104
 
+*Released: 2025-09-18T07:30:28Z*
+
 ### Patch Changes
 
 - Updated dependencies [c385a76]
@@ -2846,6 +3438,8 @@
 
 ## 0.3.103
 
+*Released: 2025-09-17T12:37:03Z*
+
 ### Patch Changes
 
 - Updated dependencies [8e8d781]
@@ -2853,12 +3447,16 @@
 
 ## 0.3.102
 
+*Released: 2025-09-16T20:04:56Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.7.5
 - @sap-ux/odata-service-inquirer@2.8.2
 
 ## 0.3.101
+
+*Released: 2025-09-16T06:28:11Z*
 
 ### Patch Changes
 
@@ -2875,12 +3473,16 @@
 
 ## 0.3.100
 
+*Released: 2025-09-12T07:38:54Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.7.3
 - @sap-ux/odata-service-inquirer@2.8.1
 
 ## 0.3.99
+
+*Released: 2025-09-11T11:04:24Z*
 
 ### Patch Changes
 
@@ -2892,12 +3494,16 @@
 
 ## 0.3.98
 
+*Released: 2025-09-09T08:01:21Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.7.1
 - @sap-ux/odata-service-inquirer@2.8.0
 
 ## 0.3.97
+
+*Released: 2025-09-02T19:52:12Z*
 
 ### Patch Changes
 
@@ -2906,6 +3512,8 @@
     - @sap-ux/odata-service-inquirer@2.8.0
 
 ## 0.3.96
+
+*Released: 2025-09-02T13:22:05Z*
 
 ### Patch Changes
 
@@ -2920,6 +3528,8 @@
 
 ## 0.3.95
 
+*Released: 2025-09-01T12:06:20Z*
+
 ### Patch Changes
 
 - Updated dependencies [77c1459]
@@ -2933,12 +3543,16 @@
 
 ## 0.3.94
 
+*Released: 2025-08-29T18:55:54Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.6.4
 - @sap-ux/odata-service-inquirer@2.7.2
 
 ## 0.3.93
+
+*Released: 2025-08-28T13:37:07Z*
 
 ### Patch Changes
 
@@ -2959,6 +3573,8 @@
 
 ## 0.3.92
 
+*Released: 2025-08-26T14:19:56Z*
+
 ### Patch Changes
 
 - Updated dependencies [6e1008e]
@@ -2966,12 +3582,16 @@
 
 ## 0.3.91
 
+*Released: 2025-08-26T10:18:25Z*
+
 ### Patch Changes
 
 - Updated dependencies [2d11a6d]
     - @sap-ux/odata-service-inquirer@2.7.0
 
 ## 0.3.90
+
+*Released: 2025-08-21T14:27:46Z*
 
 ### Patch Changes
 
@@ -2986,12 +3606,16 @@
 
 ## 0.3.89
 
+*Released: 2025-08-20T14:17:32Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.6.1
 - @sap-ux/odata-service-inquirer@2.6.0
 
 ## 0.3.88
+
+*Released: 2025-08-20T09:55:47Z*
 
 ### Patch Changes
 
@@ -3001,12 +3625,16 @@
 
 ## 0.3.87
 
+*Released: 2025-08-19T15:08:38Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.5.30
 - @sap-ux/odata-service-inquirer@2.5.33
 
 ## 0.3.86
+
+*Released: 2025-08-19T14:29:06Z*
 
 ### Patch Changes
 
@@ -3015,12 +3643,16 @@
 
 ## 0.3.85
 
+*Released: 2025-08-19T12:23:05Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.5.28
 - @sap-ux/odata-service-inquirer@2.5.33
 
 ## 0.3.84
+
+*Released: 2025-08-14T15:20:59Z*
 
 ### Patch Changes
 
@@ -3029,6 +3661,8 @@
     - @sap-ux/odata-service-inquirer@2.5.33
 
 ## 0.3.83
+
+*Released: 2025-08-14T14:36:13Z*
 
 ### Patch Changes
 
@@ -3047,6 +3681,8 @@
 
 ## 0.3.82
 
+*Released: 2025-08-13T10:00:10Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.5.25
@@ -3062,6 +3698,8 @@
 
 ## 0.3.81
 
+*Released: 2025-08-12T14:05:27Z*
+
 ### Patch Changes
 
 - Updated dependencies [b6ce4a2]
@@ -3071,12 +3709,16 @@
 
 ## 0.3.80
 
+*Released: 2025-08-12T07:55:40Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.5.24
 - @sap-ux/odata-service-inquirer@2.5.30
 
 ## 0.3.79
+
+*Released: 2025-08-11T13:59:55Z*
 
 ### Patch Changes
 
@@ -3086,12 +3728,16 @@
 
 ## 0.3.78
 
+*Released: 2025-08-07T14:27:31Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.5.22
 - @sap-ux/odata-service-inquirer@2.5.30
 
 ## 0.3.77
+
+*Released: 2025-08-07T06:27:29Z*
 
 ### Patch Changes
 
@@ -3102,12 +3748,16 @@
 
 ## 0.3.76
 
+*Released: 2025-08-05T13:27:24Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.5.20
 - @sap-ux/odata-service-inquirer@2.5.29
 
 ## 0.3.75
+
+*Released: 2025-08-01T13:45:39Z*
 
 ### Patch Changes
 
@@ -3119,6 +3769,8 @@
     - @sap-ux/abap-deploy-config-writer@0.2.5
 
 ## 0.3.74
+
+*Released: 2025-08-01T09:39:39Z*
 
 ### Patch Changes
 
@@ -3135,6 +3787,8 @@
 
 ## 0.3.73
 
+*Released: 2025-07-31T11:23:22Z*
+
 ### Patch Changes
 
 - Updated dependencies [9fa7f0b]
@@ -3142,6 +3796,8 @@
     - @sap-ux/inquirer-common@0.7.30
 
 ## 0.3.72
+
+*Released: 2025-07-30T19:33:46Z*
 
 ### Patch Changes
 
@@ -3157,6 +3813,8 @@
 - @sap-ux/inquirer-common@0.7.29
 
 ## 0.3.71
+
+*Released: 2025-07-28T22:57:52Z*
 
 ### Patch Changes
 
@@ -3174,6 +3832,8 @@
 
 ## 0.3.70
 
+*Released: 2025-07-28T21:20:33Z*
+
 ### Patch Changes
 
 - Updated dependencies [2cae662]
@@ -3181,6 +3841,8 @@
     - @sap-ux/fiori-elements-writer@2.5.16
 
 ## 0.3.69
+
+*Released: 2025-07-28T08:36:50Z*
 
 ### Patch Changes
 
@@ -3193,6 +3855,8 @@
 
 ## 0.3.68
 
+*Released: 2025-07-25T11:40:41Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.5.15
@@ -3200,11 +3864,15 @@
 
 ## 0.3.67
 
+*Released: 2025-07-24T07:43:22Z*
+
 ### Patch Changes
 
 - c073a1b: set only css: [] in manifest resources to avoid deprecated 'sap.ui5/resources/js' linter errors in repo-app-import-sub-generator
 
 ## 0.3.66
+
+*Released: 2025-07-23T09:52:23Z*
 
 ### Patch Changes
 
@@ -3212,6 +3880,8 @@
     - @sap-ux/odata-service-inquirer@2.5.22
 
 ## 0.3.65
+
+*Released: 2025-07-22T13:05:35Z*
 
 ### Patch Changes
 
@@ -3223,6 +3893,8 @@
 
 ## 0.3.64
 
+*Released: 2025-07-21T13:01:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [07d4e25]
@@ -3233,11 +3905,15 @@
 
 ## 0.3.63
 
+*Released: 2025-07-17T13:47:26Z*
+
 ### Patch Changes
 
 - @sap-ux/odata-service-inquirer@2.5.19
 
 ## 0.3.62
+
+*Released: 2025-07-16T14:40:22Z*
 
 ### Patch Changes
 
@@ -3245,6 +3921,8 @@
     - @sap-ux/abap-deploy-config-writer@0.2.0
 
 ## 0.3.61
+
+*Released: 2025-07-16T12:23:18Z*
 
 ### Patch Changes
 
@@ -3255,6 +3933,8 @@
 
 ## 0.3.60
 
+*Released: 2025-07-11T15:10:00Z*
+
 ### Patch Changes
 
 - Updated dependencies [a1f282f]
@@ -3262,6 +3942,8 @@
     - @sap-ux/odata-service-inquirer@2.5.17
 
 ## 0.3.59
+
+*Released: 2025-07-10T11:49:34Z*
 
 ### Patch Changes
 
@@ -3273,11 +3955,15 @@
 
 ## 0.3.58
 
+*Released: 2025-07-10T10:15:42Z*
+
 ### Patch Changes
 
 - 5a465db: Add useVirtualPreviewEndpoints defaulted to true to App Configuration of repo app import sub generator
 
 ## 0.3.57
+
+*Released: 2025-07-08T12:06:04Z*
 
 ### Patch Changes
 
@@ -3295,6 +3981,8 @@
 
 ## 0.3.56
 
+*Released: 2025-07-07T08:44:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [58abe82]
@@ -3304,6 +3992,8 @@
     - @sap-ux/odata-service-inquirer@2.5.14
 
 ## 0.3.55
+
+*Released: 2025-07-04T15:18:17Z*
 
 ### Patch Changes
 
@@ -3321,6 +4011,8 @@
 
 ## 0.3.54
 
+*Released: 2025-07-04T09:34:59Z*
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-writer@0.1.15
@@ -3336,12 +4028,16 @@
 
 ## 0.3.53
 
+*Released: 2025-07-03T13:23:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [a41030c]
     - @sap-ux/odata-service-inquirer@2.5.11
 
 ## 0.3.52
+
+*Released: 2025-07-03T12:14:55Z*
 
 ### Patch Changes
 
@@ -3359,6 +4055,8 @@
 
 ## 0.3.51
 
+*Released: 2025-06-30T08:46:50Z*
+
 ### Patch Changes
 
 - b9675bb: Improve Fiori Tools UI Texts
@@ -3371,6 +4069,8 @@
     - @sap-ux/launch-config@0.10.9
 
 ## 0.3.50
+
+*Released: 2025-06-27T16:39:38Z*
 
 ### Patch Changes
 
@@ -3388,6 +4088,8 @@
 
 ## 0.3.49
 
+*Released: 2025-06-27T07:08:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [77b3b22]
@@ -3401,12 +4103,16 @@
 
 ## 0.3.48
 
+*Released: 2025-06-26T09:58:33Z*
+
 ### Patch Changes
 
 - Updated dependencies [bac9dbc]
     - @sap-ux/launch-config@0.10.7
 
 ## 0.3.47
+
+*Released: 2025-06-25T10:51:12Z*
 
 ### Patch Changes
 
@@ -3416,12 +4122,16 @@
 
 ## 0.3.46
 
+*Released: 2025-06-24T15:00:12Z*
+
 ### Patch Changes
 
 - Updated dependencies [15c1608]
     - @sap-ux/launch-config@0.10.6
 
 ## 0.3.45
+
+*Released: 2025-06-24T14:02:12Z*
 
 ### Patch Changes
 
@@ -3432,6 +4142,8 @@
     - @sap-ux/odata-service-inquirer@2.5.5
 
 ## 0.3.44
+
+*Released: 2025-06-24T07:18:46Z*
 
 ### Patch Changes
 
@@ -3449,6 +4161,8 @@
 
 ## 0.3.43
 
+*Released: 2025-06-23T22:19:01Z*
+
 ### Patch Changes
 
 - Updated dependencies [14214a3]
@@ -3459,11 +4173,15 @@
 
 ## 0.3.42
 
+*Released: 2025-06-19T14:29:25Z*
+
 ### Patch Changes
 
 - 1afb7a3: update validation logic to return ValidationLink or string in repo-app-import-sub-generator when no app is selected
 
 ## 0.3.41
+
+*Released: 2025-06-19T10:31:56Z*
 
 ### Patch Changes
 
@@ -3475,6 +4193,8 @@
 
 ## 0.3.40
 
+*Released: 2025-06-19T04:44:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [aaf0c14]
@@ -3485,12 +4205,16 @@
 
 ## 0.3.39
 
+*Released: 2025-06-18T16:15:15Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.5.2
 - @sap-ux/odata-service-inquirer@2.5.0
 
 ## 0.3.38
+
+*Released: 2025-06-18T14:50:19Z*
 
 ### Patch Changes
 
@@ -3501,6 +4225,8 @@
 
 ## 0.3.37
 
+*Released: 2025-06-18T12:01:34Z*
+
 ### Patch Changes
 
 - Updated dependencies [45e1035]
@@ -3509,12 +4235,16 @@
 
 ## 0.3.36
 
+*Released: 2025-06-17T14:16:05Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.4.20
 - @sap-ux/odata-service-inquirer@2.4.23
 
 ## 0.3.35
+
+*Released: 2025-06-17T13:40:19Z*
 
 ### Patch Changes
 
@@ -3523,6 +4253,8 @@
     - @sap-ux/odata-service-inquirer@2.4.23
 
 ## 0.3.34
+
+*Released: 2025-06-17T07:58:40Z*
 
 ### Patch Changes
 
@@ -3534,12 +4266,16 @@
 
 ## 0.3.33
 
+*Released: 2025-06-16T13:15:49Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.4.18
 - @sap-ux/odata-service-inquirer@2.4.21
 
 ## 0.3.32
+
+*Released: 2025-06-16T09:52:52Z*
 
 ### Patch Changes
 
@@ -3551,6 +4287,8 @@
 
 ## 0.3.31
 
+*Released: 2025-06-13T14:12:57Z*
+
 ### Patch Changes
 
 - Updated dependencies [7f35f6c]
@@ -3561,6 +4299,8 @@
 
 ## 0.3.30
 
+*Released: 2025-06-13T10:58:52Z*
+
 ### Patch Changes
 
 - Updated dependencies [bf752f3]
@@ -3569,12 +4309,16 @@
 
 ## 0.3.29
 
+*Released: 2025-06-12T12:47:49Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.4.17
 - @sap-ux/odata-service-inquirer@2.4.18
 
 ## 0.3.28
+
+*Released: 2025-06-11T12:23:45Z*
 
 ### Patch Changes
 
@@ -3586,6 +4330,8 @@
 
 ## 0.3.27
 
+*Released: 2025-06-10T17:08:16Z*
+
 ### Patch Changes
 
 - Updated dependencies [4303f99]
@@ -3596,6 +4342,8 @@
 
 ## 0.3.26
 
+*Released: 2025-06-10T11:56:07Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.4.16
@@ -3603,12 +4351,16 @@
 
 ## 0.3.25
 
+*Released: 2025-06-10T10:19:01Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.4.15
 - @sap-ux/odata-service-inquirer@2.4.16
 
 ## 0.3.24
+
+*Released: 2025-06-10T07:40:27Z*
 
 ### Patch Changes
 
@@ -3620,6 +4372,8 @@
 
 ## 0.3.23
 
+*Released: 2025-06-09T09:48:34Z*
+
 ### Patch Changes
 
 - Updated dependencies [d6943aa]
@@ -3628,6 +4382,8 @@
 
 ## 0.3.22
 
+*Released: 2025-06-06T12:32:43Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.4.13
@@ -3635,12 +4391,16 @@
 
 ## 0.3.21
 
+*Released: 2025-06-05T16:14:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [18c7e5d]
     - @sap-ux/odata-service-inquirer@2.4.14
 
 ## 0.3.20
+
+*Released: 2025-06-05T12:32:35Z*
 
 ### Patch Changes
 
@@ -3652,6 +4412,8 @@
 
 ## 0.3.19
 
+*Released: 2025-06-05T07:23:07Z*
+
 ### Patch Changes
 
 - Updated dependencies [15ec5c4]
@@ -3662,11 +4424,15 @@
 
 ## 0.3.18
 
+*Released: 2025-06-04T16:17:18Z*
+
 ### Patch Changes
 
 - 6273a09: Fix deployment config for download ADT App (ui5-deploy.yaml)
 
 ## 0.3.17
+
+*Released: 2025-06-04T10:59:54Z*
 
 ### Patch Changes
 
@@ -3678,6 +4444,8 @@
 
 ## 0.3.16
 
+*Released: 2025-05-30T16:18:42Z*
+
 ### Patch Changes
 
 - 345d8c0: fix: missing localUri in datasource settings breaks Fiori tools
@@ -3685,12 +4453,16 @@
 
 ## 0.3.15
 
+*Released: 2025-05-30T15:02:23Z*
+
 ### Patch Changes
 
 - Updated dependencies [944a0cd]
     - @sap-ux/odata-service-inquirer@2.4.10
 
 ## 0.3.14
+
+*Released: 2025-05-30T09:02:15Z*
 
 ### Patch Changes
 
@@ -3701,6 +4473,8 @@
     - @sap-ux/odata-service-inquirer@2.4.9
 
 ## 0.3.13
+
+*Released: 2025-05-30T07:18:36Z*
 
 ### Patch Changes
 
@@ -3716,12 +4490,16 @@
 
 ## 0.3.12
 
+*Released: 2025-05-29T08:13:17Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.4.8
 - @sap-ux/odata-service-inquirer@2.4.7
 
 ## 0.3.11
+
+*Released: 2025-05-27T17:59:17Z*
 
 ### Patch Changes
 
@@ -3734,6 +4512,8 @@
 
 ## 0.3.10
 
+*Released: 2025-05-27T15:05:11Z*
+
 ### Patch Changes
 
 - Updated dependencies [b3fe5b8]
@@ -3742,6 +4522,8 @@
 
 ## 0.3.9
 
+*Released: 2025-05-27T12:59:01Z*
+
 ### Patch Changes
 
 - Updated dependencies [2b9e7af]
@@ -3749,12 +4531,16 @@
 
 ## 0.3.8
 
+*Released: 2025-05-26T11:57:48Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.4.6
 - @sap-ux/odata-service-inquirer@2.4.4
 
 ## 0.3.7
+
+*Released: 2025-05-23T13:35:39Z*
 
 ### Patch Changes
 
@@ -3765,12 +4551,16 @@
 
 ## 0.3.6
 
+*Released: 2025-05-23T13:07:21Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.4.5
 - @sap-ux/odata-service-inquirer@2.4.3
 
 ## 0.3.5
+
+*Released: 2025-05-22T16:20:10Z*
 
 ### Patch Changes
 
@@ -3779,12 +4569,16 @@
 
 ## 0.3.4
 
+*Released: 2025-05-21T14:23:57Z*
+
 ### Patch Changes
 
 - Updated dependencies [d1b5ab7]
     - @sap-ux/odata-service-inquirer@2.4.3
 
 ## 0.3.3
+
+*Released: 2025-05-20T15:02:49Z*
 
 ### Patch Changes
 
@@ -3794,6 +4588,8 @@
 
 ## 0.3.2
 
+*Released: 2025-05-20T09:29:26Z*
+
 ### Patch Changes
 
 - Updated dependencies [06d3ba3]
@@ -3801,6 +4597,8 @@
     - @sap-ux/odata-service-inquirer@2.4.1
 
 ## 0.3.1
+
+*Released: 2025-05-15T13:36:04Z*
 
 ### Patch Changes
 
@@ -3816,6 +4614,8 @@
     - @sap-ux/project-input-validator@0.6.1
 
 ## 0.3.0
+
+*Released: 2025-05-14T22:35:53Z*
 
 ### Minor Changes
 
@@ -3843,12 +4643,16 @@
 
 ## 0.2.25
 
+*Released: 2025-05-14T15:30:12Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.3.8
 - @sap-ux/odata-service-inquirer@2.3.15
 
 ## 0.2.24
+
+*Released: 2025-05-13T10:46:10Z*
 
 ### Patch Changes
 
@@ -3861,6 +4665,8 @@
 
 ## 0.2.23
 
+*Released: 2025-05-08T10:12:31Z*
+
 ### Patch Changes
 
 - Updated dependencies [6cb23c8]
@@ -3869,6 +4675,8 @@
 
 ## 0.2.22
 
+*Released: 2025-05-07T16:24:47Z*
+
 ### Patch Changes
 
 - Updated dependencies [f2aca4a]
@@ -3876,12 +4684,16 @@
 
 ## 0.2.21
 
+*Released: 2025-05-07T15:17:23Z*
+
 ### Patch Changes
 
 - Updated dependencies [f1608ab]
     - @sap-ux/odata-service-inquirer@2.3.12
 
 ## 0.2.20
+
+*Released: 2025-05-05T13:48:20Z*
 
 ### Patch Changes
 
@@ -3898,6 +4710,8 @@
 
 ## 0.2.19
 
+*Released: 2025-05-02T10:00:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [1a01c5e]
@@ -3906,6 +4720,8 @@
     - @sap-ux/abap-deploy-config-writer@0.0.108
 
 ## 0.2.18
+
+*Released: 2025-05-01T13:52:16Z*
 
 ### Patch Changes
 
@@ -3917,12 +4733,16 @@
 
 ## 0.2.17
 
+*Released: 2025-05-01T11:45:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [38519fa]
     - @sap-ux/odata-service-inquirer@2.3.8
 
 ## 0.2.16
+
+*Released: 2025-04-30T17:25:02Z*
 
 ### Patch Changes
 
@@ -3931,12 +4751,16 @@
 
 ## 0.2.15
 
+*Released: 2025-04-30T10:38:47Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.3.5
 - @sap-ux/odata-service-inquirer@2.3.7
 
 ## 0.2.14
+
+*Released: 2025-04-30T08:50:36Z*
 
 ### Patch Changes
 
@@ -3947,6 +4771,8 @@
 
 ## 0.2.13
 
+*Released: 2025-04-29T17:55:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [ab4e908]
@@ -3954,11 +4780,15 @@
 
 ## 0.2.12
 
+*Released: 2025-04-29T12:46:24Z*
+
 ### Patch Changes
 
 - a5c77fc: refactor: update logging for missing required fields and enhance prompt options
 
 ## 0.2.11
+
+*Released: 2025-04-29T08:08:36Z*
 
 ### Patch Changes
 
@@ -3966,6 +4796,8 @@
 - @sap-ux/odata-service-inquirer@2.3.5
 
 ## 0.2.10
+
+*Released: 2025-04-28T14:29:23Z*
 
 ### Patch Changes
 
@@ -3977,12 +4809,16 @@
 
 ## 0.2.9
 
+*Released: 2025-04-28T07:24:41Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.3.3
 - @sap-ux/odata-service-inquirer@2.3.4
 
 ## 0.2.8
+
+*Released: 2025-04-25T15:42:49Z*
 
 ### Patch Changes
 
@@ -3991,11 +4827,15 @@
 
 ## 0.2.7
 
+*Released: 2025-04-25T09:58:38Z*
+
 ### Patch Changes
 
 - f01b502: Improve test coverage and add App Validation for @sap-ux/repo-app-import-sub-generator
 
 ## 0.2.6
+
+*Released: 2025-04-24T15:01:01Z*
 
 ### Patch Changes
 
@@ -4010,6 +4850,8 @@
 - @sap-ux/inquirer-common@0.6.39
 
 ## 0.2.5
+
+*Released: 2025-04-23T15:22:38Z*
 
 ### Patch Changes
 
@@ -4026,6 +4868,8 @@
 
 ## 0.2.4
 
+*Released: 2025-04-23T13:59:14Z*
+
 ### Patch Changes
 
 - Updated dependencies [1ca4004]
@@ -4041,6 +4885,8 @@
 
 ## 0.2.3
 
+*Released: 2025-04-23T10:09:45Z*
+
 ### Patch Changes
 
 - Updated dependencies [afd26c8]
@@ -4049,6 +4895,8 @@
 
 ## 0.2.2
 
+*Released: 2025-04-22T12:39:21Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.1.41
@@ -4056,11 +4904,15 @@
 
 ## 0.2.1
 
+*Released: 2025-04-18T12:20:00Z*
+
 ### Patch Changes
 
 - d729875: Handle adt app download generator crash due to invalid destinations
 
 ## 0.2.0
+
+*Released: 2025-04-18T10:46:28Z*
 
 ### Minor Changes
 
@@ -4073,17 +4925,23 @@
 
 ## 0.1.5
 
+*Released: 2025-04-18T09:33:54Z*
+
 ### Patch Changes
 
 - f220e1e: ADT Quick Deploy UI Text Review
 
 ## 0.1.4
 
+*Released: 2025-04-17T15:32:49Z*
+
 ### Patch Changes
 
 - 98e0172: fix to enable local preview for adt downloaded app
 
 ## 0.1.3
+
+*Released: 2025-04-17T12:52:13Z*
 
 ### Patch Changes
 
@@ -4095,6 +4953,8 @@
 
 ## 0.1.2
 
+*Released: 2025-04-17T09:03:34Z*
+
 ### Patch Changes
 
 - Updated dependencies [2db2c33]
@@ -4103,6 +4963,8 @@
 
 ## 0.1.1
 
+*Released: 2025-04-16T15:50:22Z*
+
 ### Patch Changes
 
 - Updated dependencies [1bc1cf2]
@@ -4110,11 +4972,15 @@
 
 ## 0.1.0
 
+*Released: 2025-04-16T15:25:51Z*
+
 ### Minor Changes
 
 - 770f90b: Removed Jest timeout from test and mocked \_runNpmInstall method when skipInstall is false
 
 ## 0.0.3
+
+*Released: 2025-04-16T13:54:40Z*
 
 ### Patch Changes
 
@@ -4123,6 +4989,8 @@
 
 ## 0.0.2
 
+*Released: 2025-04-16T12:27:23Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-elements-writer@2.1.39
@@ -4130,17 +4998,23 @@
 
 ## 0.0.1
 
+*Released: 2025-04-15T22:47:02Z*
+
 ### Patch Changes
 
 - 92726b5: Add new module @sap-ux/repo-app-import-sub-generator
 
 ## 0.1.1
 
+*Released: 2025-04-16T15:50:22Z*
+
 ### Patch Changes
 
 - 24c8498: Fix unit tests for download utils
 
 ## 0.1.0
+
+*Released: 2025-04-16T15:25:51Z*
 
 ### Minor Changes
 

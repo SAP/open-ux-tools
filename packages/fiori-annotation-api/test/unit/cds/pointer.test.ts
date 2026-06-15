@@ -14,7 +14,9 @@ import { getCDSDocument } from './utils.js';
 
 const LOG_ENABLED = false;
 
-async function testRead(text: string): Promise<{ annotationFile: AnnotationFile; ast: CDSDocument }> {
+async function testRead(
+    text: string
+): Promise<{ annotationFile: AnnotationFile; ast: CDSDocument; targetMapping: number[] }> {
     const [, document] = await getCDSDocument(
         PROJECTS.V4_CDS_START.root,
         text,
@@ -22,14 +24,15 @@ async function testRead(text: string): Promise<{ annotationFile: AnnotationFile;
         'IncidentService'
     );
 
-    return { ast: document.ast, annotationFile: document.annotationFile };
+    return { ast: document.ast, annotationFile: document.annotationFile, targetMapping: document.cdsTargetMapping };
 }
 
 describe('convertPointerX - Ast Paths', () => {
     let ast: CDSDocument;
     let annotationFile: AnnotationFile;
+    let mapping: number[] = [];
     function testPointer(input: string, output: string, flattened = false) {
-        const { pointer, containsFlattenedNodes } = convertPointer(annotationFile, input, ast);
+        const { pointer, containsFlattenedNodes } = convertPointer(annotationFile, input, ast, mapping);
         if (LOG_ENABLED) {
             const [currentAstNode] = getAstNodesFromPointer(ast, pointer).slice(-1);
             const currentAFNode = getGenericNodeFromPointer(annotationFile, input);
@@ -41,8 +44,8 @@ describe('convertPointerX - Ast Paths', () => {
     }
 
     async function testPointerWithFixture(text: string, input: string, output: string) {
-        const { annotationFile, ast } = await testRead(text);
-        const { pointer } = convertPointer(annotationFile, input, ast);
+        const { annotationFile, ast, targetMapping } = await testRead(text);
+        const { pointer } = convertPointer(annotationFile, input, ast, targetMapping);
         expect(pointer).toStrictEqual(output);
     }
     beforeAll(async () => {
@@ -51,6 +54,7 @@ describe('convertPointerX - Ast Paths', () => {
         const result = await testRead(fixture);
         ast = result.ast;
         annotationFile = result.annotationFile;
+        mapping = result.targetMapping;
     });
     test('Target', () => {
         testPointer('/targets/0', '/targets/0');
@@ -205,6 +209,54 @@ annotate service.Individual with {
             testPointer(
                 '/targets/2/terms/0/content/0/content/0/content/3/content/0/content/0/attributes/Property/value',
                 '/targets/2/assignments/0/value/items/0/annotations/1/value/properties/1/name'
+            );
+        });
+
+        const testCases = [
+            {
+                input: '/targets/0/terms/0/content/0/content/0/content/0/content/0/text',
+                output: '/targets/2/assignments/0/items/items/0/value/properties/0/value/items/0/properties/0/value'
+            },
+            {
+                input: '/targets/1/terms/0/content/0/content/0/content/0/content/0/content/text',
+                output: '/targets/4/assignments/0/value/items/0/properties/0/value'
+            }
+        ];
+        test.each(testCases)('annotation targets from different services', async (testCase) => {
+            await testPointerWithFixture(
+                `
+using IncidentService as service from '../../srv/incidentservice';
+using scp.cloud from '../db/schema';
+
+service AnalyticsService {
+  @readonly
+  entity Incidents as projection on cloud.Incidents;
+}
+
+annotate AnalyticsService.Incidents with @UI: {
+    LineItem        : []
+};
+
+annotate IncidentService.Incidents with @UI: {
+    LineItem        :  {
+        ![@Analytics.DrillURL] : 'test',
+        $value:  [
+            // testing
+            {Value: assignedIndividual_id}
+        ]
+    }
+};
+
+annotate AnalyticsService.Incidents with @UI: {
+    LineItem#a2 : []
+};
+
+annotate IncidentService.Incidents with @UI.LineItem #test: [{
+    Value                 : modifiedAt
+}];
+`,
+                testCase.input,
+                testCase.output
             );
         });
     });
