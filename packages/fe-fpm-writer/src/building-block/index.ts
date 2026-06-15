@@ -717,7 +717,10 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
         const snippetErrorHandler = (level: string, message: string): never => {
             throw new Error(`Unable to parse Page building block snippet. Details: [${level}] - ${message}`);
         };
-        const snippetDoc = new DOMParser({ errorHandler: snippetErrorHandler }).parseFromString(`${content}`, 'text/xml');
+        const snippetDoc = new DOMParser({ errorHandler: snippetErrorHandler }).parseFromString(
+            `${content}`,
+            'text/xml'
+        );
         appendPageAggregations(fs, nsDoc, snippetDoc, fnGenerateId, pageData);
         const resultNode = snippetDoc.documentElement;
         viewOrFragmentContent = resultNode ? format(new XMLSerializer().serializeToString(resultNode)) : content;
