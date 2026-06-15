@@ -314,7 +314,7 @@ export async function appendPageBBAggregation(
         throw new Error(`Unable to read namespace map from view ${viewPath}.`);
     }
     // Prefix-agnostic XPath — works regardless of the alias used in the view for sap.fe.macros.
-    const xpathSelect = xpath.useNamespaces({ ...((firstChildView as any)?._nsMap ?? {}) });
+    const xpathSelect = xpath.useNamespaces({ ...(firstChildView as any)?._nsMap });
     const pageNodes = xpathSelect(`//*[local-name()='Page' and namespace-uri()='sap.fe.macros']`, xmlDocument);
     if (!pageNodes || !Array.isArray(pageNodes) || pageNodes.length === 0) {
         throw new Error(`Page element (sap.fe.macros) not found in view ${viewPath}.`);
