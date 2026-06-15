@@ -1,5 +1,18 @@
 # @sap-ux/ui5-application-writer
 
+## 2.0.4
+
+### Patch Changes
+
+- e66a8a9: fix: append builder.resources.excludes to generated ui5.yaml
+
+## 2.0.3
+
+### Patch Changes
+
+- Updated dependencies [c8e8f7e]
+    - @sap-ux/ui5-config@1.0.3
+
 ## 2.0.2
 
 ### Patch Changes

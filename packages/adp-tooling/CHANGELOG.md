@@ -1,5 +1,54 @@
 # @sap-ux/adp-tooling
 
+## 1.0.16
+
+### Patch Changes
+
+- adae40d: fix: restore LocalStorageConnector for non-ADP projects
+
+    PR #4122 removed LocalStorageConnector globally but it should only be omitted for adaptation projects (ADP). Non-ADP Fiori projects still need the connector for local variant storage on CUSTOMER/USER layers.
+
+## 1.0.15
+
+### Patch Changes
+
+- 6e4a71a: fix: detect `appdescr_app_setInbounds` in `flpConfigurationExists` so the FLP configuration sub-generator shows the existing-FLP-config info text for cloud ADP projects (regression from #4633).
+
+## 1.0.14
+
+### Patch Changes
+
+- @sap-ux/axios-extension@2.0.3
+- @sap-ux/inquirer-common@1.0.11
+- @sap-ux/odata-service-writer@1.0.6
+- @sap-ux/system-access@1.0.3
+
+## 1.0.13
+
+### Patch Changes
+
+- e66a8a9: fix: append builder.resources.excludes to generated ui5.yaml
+
+## 1.0.12
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@1.0.10
+
+## 1.0.11
+
+### Patch Changes
+
+- c8e8f7e: fix: write builder.resources.excludes to base ui5.yaml as well as ui5-deploy.yaml
+- Updated dependencies [c8e8f7e]
+    - @sap-ux/ui5-config@1.0.3
+    - @sap-ux/odata-service-writer@1.0.6
+    - @sap-ux/project-access@2.1.2
+    - @sap-ux/inquirer-common@1.0.9
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/project-input-validator@1.0.6
+    - @sap-ux/system-access@1.0.2
+
 ## 1.0.10
 
 ### Patch Changes
