@@ -109,17 +109,21 @@ async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string
  * @param {string} [yamlPath] - Optional path to the `ui5.yaml` configuration file.
  * @param {ToolsLogger} [logger] - Optional logger instance for logging messages.
  * @param {Editor} [fs] - Optional `mem-fs-editor` instance for file system operations. If not provided, a new instance will be created.
+ * @param {boolean} [updatePackage] - Optional flag to update the `package.json` file. Defaults to true.
  * @returns {Promise<Editor>} A promise that resolves to the updated `mem-fs-editor` instance.
  */
 export async function enableCardGeneratorConfig(
     basePath: string,
     yamlPath?: string,
     logger?: ToolsLogger,
-    fs?: Editor
+    fs?: Editor,
+    updatePackage = true
 ): Promise<Editor> {
     fs = fs ?? create(createStorage());
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
     await updateMiddlewareConfigWithGeneratorPath(fs, basePath, yamlPath, logger);
-    await updatePackageJson(basePath, fs, yamlPath, logger);
+    if (updatePackage) {
+        await updatePackageJson(basePath, fs, yamlPath, logger);
+    }
     return fs;
 }
