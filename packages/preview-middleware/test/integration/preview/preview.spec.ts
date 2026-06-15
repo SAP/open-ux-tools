@@ -45,8 +45,6 @@ server:
               flp:
                 path: /my/custom/path/preview.html
                 libs: true
-                rta:
-                  layer: CUSTOMER_BASE
               debug: true
         - name: ui5-proxy-middleware
           afterMiddleware: preview-middleware

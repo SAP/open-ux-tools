@@ -612,7 +612,7 @@ export class FlpSandbox {
                 sandboxDirs.add(dirname(cardGeneratorPath));
             }
             if (this.rta) {
-                for (const editor of this.rta.endpoints) {
+                for (const editor of this.rta.endpoints ?? []) {
                     sandboxDirs.add(dirname(editor.path));
                 }
             }
