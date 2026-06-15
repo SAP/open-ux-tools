@@ -217,12 +217,8 @@ function sortPageAggregationChildren(pageElement: Node): void {
 
     for (const node of allChildren) {
         if (node.nodeType === 8 /* Comment */) {
-            if (firstElementSeen) {
-                pendingComments.push(node);
-            } else {
-                // Comments before the first element are always leading comments
-                leadingComments.push(node);
-            }
+            // Comments before the first element are leading; after, they are pending
+            (firstElementSeen ? pendingComments : leadingComments).push(node);
         } else if (node.nodeType === 1 /* Element */) {
             firstElementSeen = true;
             groups.push({ comments: pendingComments, element: node as Element });
