@@ -256,7 +256,7 @@ Packages with `"private": true` in their `package.json` are NOT published to npm
 "@sap-ux-private/preview-middleware-client": patch
 ---
 
-chore(preview-middleware-client): upgrade shared devDependencies (jest 30)
+BUMP: Upgrade shared devDependencies (jest 30)
 ```
 
 To identify private packages in the repo:
@@ -294,15 +294,46 @@ You can also create changeset files manually in `.changeset/`. Use a descriptive
 "@sap-ux/package-name": patch
 ---
 
-chore: upgrade i18next 25.8.18 → 25.8.20
+BUMP: Upgrade i18next 25.8.18 → 25.8.20
 ```
 
 **Changeset message conventions:**
-- Use conventional commit prefixes: `fix`, `feat`, `chore`, etc.
-- For dependency-only upgrades: `chore: upgrade <dep> <old> → <new>`
-- For multiple dep upgrades: `chore: upgrade runtime dependencies (<dep1> <ver>, <dep2> <ver>)`
-- For formatting/lint autofixes: `chore: reformat <description> (Prettier upgrade autofix)`
-- For type compatibility fixes: `fix: <description> for <@types/package> <version> compatibility`
+
+Every changeset summary **must** start with one of these prefixes (enforced by `pnpm validate:changesets`):
+
+| Prefix | Use for |
+|---|---|
+| `FEAT:` | New features or behaviour additions |
+| `FIX:` | Bug fixes, security patches, CVE upgrades |
+| `BUMP:` | Dependency-only upgrades with no behaviour change |
+
+Do **not** include the package name in the summary — it is already declared in the frontmatter.
+
+Examples:
+
+```markdown
+---
+"@sap-ux/preview-middleware": minor
+---
+
+FEAT: Add middleware option for custom preview routes
+```
+
+```markdown
+---
+"@sap-ux/preview-middleware": patch
+---
+
+FIX: Handle missing configuration without crashing the preview server
+```
+
+```markdown
+---
+"@sap-ux/preview-middleware": patch
+---
+
+BUMP: Upgrade express 4.18 → 4.19
+```
 
 **Changeset workflow:**
 1. Interactive CLI prompts for:
@@ -318,6 +349,7 @@ chore: upgrade i18next 25.8.18 → 25.8.20
 The build process includes `pnpm validate:changesets` to check:
 - Changesets have valid frontmatter
 - No blocked major version bumps (see [scripts/validate-changesets.js](scripts/validate-changesets.js))
+- Summary starts with a valid prefix (`FEAT:`, `FIX:`, or `BUMP:`)
 
 ## Quality Gates
 
