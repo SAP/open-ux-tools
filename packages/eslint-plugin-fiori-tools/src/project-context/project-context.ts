@@ -221,6 +221,11 @@ export class ProjectContext {
      * @returns The ProjectContext instance for the file
      */
     public static updateFile(uri: string, content: string): ProjectContext {
+        const cachedFile = this.fileCache.get(uri);
+        if (!cachedFile) {
+            // New file created
+            this.forceReindexOnFirstUpdate = true;
+        }
         this.fileCache.set(uri, content);
         const numberOfUpdates = this.updateCache.get(uri) ?? 0;
         this.updateCache.set(uri, numberOfUpdates + 1);
