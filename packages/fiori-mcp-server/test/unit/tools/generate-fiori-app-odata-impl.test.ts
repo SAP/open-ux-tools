@@ -65,8 +65,7 @@ jest.unstable_mockModule('../../../src/utils', () => ({
     getDefaultExtensionFolder: jest.fn()
 }));
 
-const { default: executeFunctionality } =
-    await import('../../../src/tools/generate-fiori-app-odata-impl.js');
+const { default: executeFunctionality } = await import('../../../src/tools/generate-fiori-app-odata-impl.js');
 
 describe('generate-fiori-ui-application execute-functionality', () => {
     const mockAppPath = '/test/project';

@@ -3,12 +3,9 @@ import { jest } from '@jest/globals';
 const mockExecuteODataDefault = jest.fn<any>();
 const mockParse = jest.fn<any>();
 
-jest.unstable_mockModule(
-    '../../../src/tools/generate-fiori-app-odata-impl',
-    () => ({
-        default: mockExecuteODataDefault
-    })
-);
+jest.unstable_mockModule('../../../src/tools/generate-fiori-app-odata-impl', () => ({
+    default: mockExecuteODataDefault
+}));
 jest.unstable_mockModule('../../../src/tools/schemas/index', () => ({
     generatorConfigOData: { parse: mockParse },
     generatorConfigCAP: { parse: jest.fn() },

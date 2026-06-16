@@ -42,8 +42,7 @@ jest.unstable_mockModule('@sap-ux/edmx-parser', () => ({
 const mockFormatXml = jest.fn<any>((xml: string) => xml);
 jest.unstable_mockModule('xml-formatter', () => ({ default: mockFormatXml }));
 
-const { findSapSystem, getServiceMetadata } =
-    await import('../../../src/tools/services/sap-system.js');
+const { findSapSystem, getServiceMetadata } = await import('../../../src/tools/services/sap-system.js');
 
 describe('service-metadata', () => {
     let mockGetAll: jest.Mock;

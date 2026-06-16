@@ -29,8 +29,7 @@ jest.unstable_mockModule('fs', () => ({
     writeFileSync: mockWriteFileSync
 }));
 
-const { default: executeFunctionality } =
-    await import('../../../src/tools/download-odata-service-metadata-impl.js');
+const { default: executeFunctionality } = await import('../../../src/tools/download-odata-service-metadata-impl.js');
 
 describe('execute-functionality', () => {
     const mockAppPath = '/test/app/path';

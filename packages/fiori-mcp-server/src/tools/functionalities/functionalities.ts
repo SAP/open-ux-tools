@@ -9,11 +9,7 @@ import {
     CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY,
     createControllerExtensionHandlers
 } from './controller-extension/index.js';
-import {
-    ADD_PAGE,
-    CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID,
-    DELETE_PAGE
-} from '../../constant.js';
+import { ADD_PAGE, CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID, DELETE_PAGE } from '../../constant.js';
 
 export const FUNCTIONALITIES_DETAILS = [
     ADD_PAGE_FUNCTIONALITY,

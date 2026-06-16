@@ -385,11 +385,8 @@ describe('executeFunctionality', () => {
         mockExec.mockImplementation((cmd, opts, callback) => {
             throw new Error('Dummy');
         });
-        await expect(
-            command(
-                undefined as unknown as ExecuteFunctionalityInput
-            )
-        ).rejects.toThrowErrorMatchingInlineSnapshot(`
+        await expect(command(undefined as unknown as ExecuteFunctionalityInput)).rejects
+            .toThrowErrorMatchingInlineSnapshot(`
             "Missing required fields in parameters. [
                 {
                     \\"expected\\": \\"object\\",
