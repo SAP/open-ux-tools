@@ -2,15 +2,14 @@ import { isAbsolute, resolve } from 'node:path';
 import { searchChoices, ui5VersionsGrouped, getDefaultUI5VersionChoice } from '@sap-ux/inquirer-common';
 import { getMtaPath } from '@sap-ux/project-access';
 import { validateModuleName, validateNamespace, validateFioriAppTargetFolder } from '@sap-ux/project-input-validator';
-import { t } from '../i18n';
-import { promptNames } from '../types';
-import { defaultAppName } from './prompt-helpers';
-import { validateAppName } from './validators';
+import { t } from '../i18n.js';
+import { promptNames } from '../types.js';
+import { defaultAppName } from './prompt-helpers.js';
+import { validateAppName } from './validators.js';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import type { ListChoiceOptions } from 'inquirer';
-import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types';
+import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types.js';
 import type { ConfirmQuestion, FileBrowserQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
-import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
 
 /**
  * Gets the `name` prompt.
@@ -278,10 +277,9 @@ export function getAddFlpConfigPrompt(
 /**
  * Get the `enableVirtualEndpoints` prompt.
  *
- * @param capCdsInfo optional CDS UI5 plugin information for CAP projects
  * @returns the `enableVirtualEndpoints` prompt
  */
-export function getEnableVirtualEndpoints(capCdsInfo?: CdsUi5PluginInfo): UI5ApplicationQuestion {
+export function getEnableVirtualEndpoints(): UI5ApplicationQuestion {
     return {
         type: 'confirm',
         name: promptNames.enableVirtualEndpoints,
@@ -290,13 +288,6 @@ export function getEnableVirtualEndpoints(capCdsInfo?: CdsUi5PluginInfo): UI5App
             breadcrumb: t('prompts.enableVirtualEndpoints.breadcrumb')
         },
         message: (): string => t('prompts.enableVirtualEndpoints.message'),
-        default: true,
-        when: (answers: UI5ApplicationAnswers): boolean => {
-            if (!capCdsInfo) {
-                return true;
-            }
-            // For CAP Node.js: only show when cds-plugin-ui5 is present OR TypeScript is selected
-            return capCdsInfo.hasCdsUi5Plugin || answers.enableTypeScript === true;
-        }
+        default: true
     };
 }

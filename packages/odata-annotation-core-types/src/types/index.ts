@@ -1,3 +1,3 @@
-export * from './vocabularies';
-export * from './metadata';
-export * from './common';
+export * from './vocabularies.js';
+export * from './metadata.js';
+export * from './common.js';

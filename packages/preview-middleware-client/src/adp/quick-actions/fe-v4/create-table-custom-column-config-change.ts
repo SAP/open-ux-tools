@@ -1,17 +1,17 @@
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 
-import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
-import { DialogFactory, DialogNames } from '../../dialog-factory';
-import { SMART_TABLE_TYPE, GRID_TABLE_TYPE, MDC_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types';
-import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
+import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition.js';
+import { DialogFactory, DialogNames } from '../../dialog-factory.js';
+import { SMART_TABLE_TYPE, GRID_TABLE_TYPE, MDC_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types.js';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base.js';
 
-import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator.js';
 import Table from 'sap/ui/mdc/Table';
-import { getV4AppComponent, isMacroTable } from '../../../utils/fe-v4';
-import { getLineItemAnnotation, getPropertyPath } from './utils';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
-import { isA } from '../../../utils/core';
+import { getV4AppComponent, isMacroTable } from '../../../utils/fe-v4.js';
+import { getLineItemAnnotation, getPropertyPath } from './utils.js';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version.js';
+import { isA } from '../../../utils/core.js';
 import UI5Element from 'sap/ui/core/Element';
 
 interface ViewDataType {

@@ -1,11 +1,13 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
-import { PromptState } from '../prompts/prompt-state';
-import { t } from './i18n';
-import RepoAppDownloadLogger from '../utils/logger';
-import { qfaJsonFileName } from './constants';
+import { PromptState } from '../prompts/prompt-state.js';
+import { t } from './i18n.js';
+import RepoAppDownloadLogger from '../utils/logger.js';
+import { qfaJsonFileName } from './constants.js';
 import { type Logger } from '@sap-ux/logger';
+import { TransportChecksService } from '@sap-ux/axios-extension';
+import { restoreServiceProviderLoggers } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Checks whether the ZIP archive contains an entry named qfa.json
@@ -57,4 +59,45 @@ export async function downloadApp(repoName: string): Promise<void> {
     RepoAppDownloadLogger.logger?.debug(`App download completed: ${repoName}`);
     // store downloaded package in prompt state
     PromptState.admZip = downloadedAppPackage;
+}
+
+/**
+ * Resolve a transport request for the given app/package.
+ *
+ * @param serviceProvider - The ABAP service provider instance.
+ * @param packageName - The ABAP package name.
+ * @param appName - The repository/app name used for transport lookup.
+ * @returns { Promise<string> }
+ *  - '' when package is local ('$TMP')
+ *  - '<transport-request-id>' when transport request is found
+ *  - 'REPLACE_WITH_TRANSPORT' when no transport request is found
+ * @throws Error when the transport check fails
+ */
+export async function resolveTransportRequest(
+    serviceProvider: AbapServiceProvider | undefined,
+    packageName: string,
+    appName: string
+): Promise<string> {
+    if (packageName === '$TMP') {
+        return '';
+    }
+
+    // Restore loggers lost during odata-service-inquirer serialization to prevent 'this.log.error is not a function' errors in service calls
+    restoreServiceProviderLoggers(RepoAppDownloadLogger.logger as unknown as Logger, serviceProvider);
+
+    try {
+        const transportService = await serviceProvider?.getAdtService<TransportChecksService>(TransportChecksService);
+        const transportRequests = await transportService?.getTransportRequests(packageName, appName);
+        if (transportRequests?.length === 1) {
+            return transportRequests[0].transportNumber;
+        }
+        return 'REPLACE_WITH_TRANSPORT';
+    } catch (error) {
+        if (error.message === TransportChecksService.LocalPackageError) {
+            return '';
+        }
+        const msg = t('error.transportCheckFailed', { error: error?.message });
+        RepoAppDownloadLogger.logger?.error(msg);
+        throw new Error(msg);
+    }
 }

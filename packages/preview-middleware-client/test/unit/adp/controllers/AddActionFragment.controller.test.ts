@@ -8,7 +8,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
 import { fetchMock, sapCoreMock } from 'mock/window';
 
-import ControlUtils from '../../../../src/adp/control-utils';
+import ControlUtils from '../../../../src/adp/control-utils.js';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { ValueState } from 'mock/sap/ui/core/library';
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';

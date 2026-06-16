@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { createSyncFn } from 'synckit';
@@ -9,12 +9,12 @@ import { normalizePath, type FoundFioriArtifacts, type Manifest } from '@sap-ux/
 import type { AnnotationFile } from '@sap-ux/odata-annotation-core';
 import type { XMLDocument } from '@xml-tools/ast';
 
-import type { WorkerResult } from './types';
-import type { ParsedApp, ParsedProject, ParsedService } from './parser';
-import { ApplicationParser } from './parser';
-import { DiagnosticCache } from '../language/diagnostic-cache';
-import type { LinkedModel } from './linker';
-import { linkProject } from './linker';
+import type { WorkerResult } from './types.js';
+import type { ParsedApp, ParsedProject, ParsedService } from './parser/index.js';
+import { ApplicationParser } from './parser/index.js';
+import { DiagnosticCache } from '../language/diagnostic-cache.js';
+import type { LinkedModel } from './linker/index.js';
+import { linkProject } from './linker/index.js';
 
 // Sync function for worker calls
 let artifactWorker: (file: string) => WorkerResult;
@@ -27,12 +27,18 @@ let artifactWorker: (file: string) => WorkerResult;
  */
 function getWorkerPath(name: string): string {
     // Create sync function to call the working draft-toggle-worker
-    const currentDir = __dirname;
+    const currentDir = dirname(fileURLToPath(import.meta.url));
 
-    // Try multiple possible worker locations
+    // Try multiple possible worker locations.
+    // import.meta.url differs by build tool:
+    //   tsc:     lib/project-context/project-context.js  → currentDir = lib/project-context/
+    //   esbuild: lib/index.js                            → currentDir = lib/
+    // Path 2 (../../lib/project-context/) only resolves correctly for tsc inside the workspace;
+    // when installed in node_modules ../../ exits the package root entirely.
     const workerPaths = [
-        join(currentDir, name), // src location
-        join(currentDir, '..', '..', 'lib', 'project-context', name) // dist location
+        join(currentDir, name), // tsc: lib/project-context/ → lib/project-context/artifacts.js
+        join(currentDir, 'project-context', name), // esbuild: lib/ → lib/project-context/artifacts.js
+        join(currentDir, '..', '..', 'lib', 'project-context', name) // ts-node from src/ during development
     ];
 
     let workerPath = null;

@@ -4,9 +4,9 @@ import { type Editor, create } from 'mem-fs-editor';
 
 import { type NewI18nEntry, SapShortTextType, removeAndCreateI18nEntries } from '@sap-ux/i18n';
 
-import { getVariant, updateVariant } from '../';
-import type { Content, InternalInboundNavigation, DescriptorVariantContent } from '../types';
-import { enhanceManifestChangeContentWithFlpConfig as enhanceInboundConfig } from './options';
+import { getVariant, updateVariant } from '../index.js';
+import type { Content, InternalInboundNavigation, DescriptorVariantContent } from '../types.js';
+import { enhanceManifestChangeContentWithFlpConfig as enhanceInboundConfig } from './options.js';
 
 /**
  * Generates and writes the inbound configuration to the manifest.appdescr_variant file.

@@ -1,4 +1,4 @@
-import { getV4AppComponent, getReference, getV4PageType } from '../../../../src/utils/fe-v4';
+import { getV4AppComponent, getReference, getV4PageType } from '../../../../src/utils/fe-v4.js';
 import ComponentMock from 'mock/sap/ui/core/Component';
 
 describe('fe-v4/utils', () => {

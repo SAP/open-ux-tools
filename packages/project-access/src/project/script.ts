@@ -1,8 +1,8 @@
 import { join } from 'node:path';
-import { FileName } from '../constants';
-import type { Package } from '../types';
+import { FileName } from '../constants.js';
+import type { Package } from '../types/index.js';
 import type { Editor } from 'mem-fs-editor';
-import { readJSON, updatePackageJSON } from '../file';
+import { readJSON, updatePackageJSON } from '../file/index.js';
 import semVer from 'semver';
 
 /**

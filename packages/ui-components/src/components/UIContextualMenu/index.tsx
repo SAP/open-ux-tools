@@ -1,2 +1,2 @@
-export * from './UIContextualMenu';
-export * from './UIHighlightMenuOption';
+export * from './UIContextualMenu.js';
+export * from './UIHighlightMenuOption.js';

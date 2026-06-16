@@ -1,37 +1,46 @@
-import { join } from 'node:path';
-import type { ExecuteFunctionalityInput } from '../../../../../src/types';
-import type { GeneratorConfigCAPWithAPI } from '../../../../../src/tools/schemas';
-import packageJson from '../../../../../package.json';
+import { jest } from '@jest/globals';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import type { ExecuteFunctionalityInput } from '../../../../../src/types/index.js';
+import type { GeneratorConfigCAPWithAPI } from '../../../../../src/tools/schemas/index.js';
+import { existsSync, promises as fsPromises } from 'node:fs';
 
-const mockFindInstalledPackages = jest.fn().mockResolvedValue([
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const mockFindInstalledPackages = jest.fn<any>().mockResolvedValue([
     {
         path: 'node_modules/@sap/generator-fiori',
-        /** Path to the package.json */
         packageJsonPath: 'node_modules/@sap/generator-fiori/package.json',
-        /** The parsed package info */
         packageInfo: {
             name: '@sap/generator-fiori',
             version: '1.18.5'
         }
     }
 ]);
-jest.mock('@sap-ux/nodejs-utils', () => ({
+jest.unstable_mockModule('@sap-ux/nodejs-utils', () => ({
     findInstalledPackages: mockFindInstalledPackages
 }));
 
-import {
-    GENERATE_FIORI_UI_APPLICATION_CAP,
-    generateFioriUIApplicationCapHandlers
-} from '../../../../../src/tools/functionalities/generate-fiori-ui-application-cap';
-import { existsSync, promises as fsPromises } from 'node:fs';
-
 // Mock child_process.exec
-const mockExec = jest.fn();
-const testOutputDir = join(__dirname, '../../../../test-output/');
-
-jest.mock('child_process', () => ({
+const mockExec = jest.fn<any>();
+const actualChildProcess = await import('node:child_process');
+jest.unstable_mockModule('child_process', () => ({
+    ...actualChildProcess,
     exec: (...args: any) => mockExec(...args)
 }));
+jest.unstable_mockModule('node:child_process', () => ({
+    ...actualChildProcess,
+    exec: (...args: any) => mockExec(...args)
+}));
+
+const { GENERATE_FIORI_UI_APPLICATION_CAP, generateFioriUIApplicationCapHandlers } =
+    await import('../../../../../src/tools/functionalities/generate-fiori-ui-application-cap/index.js');
+
+// Read package.json for version
+const packageJsonModule = await import('../../../../../package.json', { with: { type: 'json' } });
+const packageJson = packageJsonModule.default;
+
+const testOutputDir = join(__dirname, '../../../../test-output/');
 
 describe('getFunctionalityDetails', () => {
     test('getFunctionalityDetails', async () => {
@@ -77,7 +86,7 @@ const paramTest: GeneratorConfigCAPWithAPI = {
 
 const mockFileWrite = (cb: (content: string) => void) => {
     const originalWriteFile = fsPromises.writeFile;
-    fsPromises.writeFile = jest.fn().mockImplementation(async (path: string, content: string) => {
+    fsPromises.writeFile = jest.fn<any>().mockImplementation(async (path: string, content: string) => {
         if (path.endsWith('generator-config.json')) {
             cb(content);
         }

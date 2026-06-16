@@ -1,6 +1,6 @@
 import { Position, Range } from '@sap-ux/text-document-utils';
 import { copyRange, copyPosition, ANNOTATION_GROUP_TYPE, ANNOTATION_TYPE, parse } from '@sap-ux/cds-annotation-parser';
-import { convertAnnotation } from './annotation';
+import { convertAnnotation } from './annotation/index.js';
 import type { Annotation, AnnotationGroup, Assignment, Identifier } from '@sap-ux/cds-annotation-parser';
 import type { CdsVocabulary, VocabularyService } from '@sap-ux/odata-vocabularies';
 
@@ -13,7 +13,7 @@ import type {
     PropagatedTargetMap
 } from '@sap/ux-cds-compiler-facade';
 
-import type { ToTermsOptions } from './types';
+import type { ToTermsOptions } from './types.js';
 
 import {
     getElementAttribute,
@@ -167,12 +167,13 @@ export const toTarget = (
     compilerFacade?: CdsCompilerFacade
 ): Target => {
     const kind = Array.isArray(carrier?.definitions)
-        ? carrier?.definitions[0].kind
-        : carrier?.definitions?.kind || 'entity';
-    if (['entity', 'view'].includes(kind)) {
+        ? ((carrier?.definitions[0] as { _id?: { kind?: string } })?._id?.kind ?? carrier?.definitions[0]?.kind)
+        : ((carrier?.definitions as { _id?: { kind?: string } })?._id?.kind ?? carrier?.definitions?.kind); // remove casting once compiler facade type available publicly
+    const finalKind = kind ?? 'entity';
+    if (['entity', 'view'].includes(finalKind)) {
         carrierName = compilerFacade?.convertNameToEdmx(carrierName) ?? carrierName;
     }
-    return { type: TARGET_TYPE, name: carrierName, nameRange: carrier?.range, assignments: [], kind };
+    return { type: TARGET_TYPE, name: carrierName, nameRange: carrier?.range, assignments: [], kind: finalKind };
 };
 
 export interface CdsAnnotationFile {

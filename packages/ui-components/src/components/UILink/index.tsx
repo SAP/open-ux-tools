@@ -1,1 +1,1 @@
-export * from './UILink';
+export * from './UILink.js';

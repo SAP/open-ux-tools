@@ -3,22 +3,22 @@ import type UI5Element from 'sap/ui/core/Element';
 import Fragment from 'sap/ui/core/Fragment';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import { getTextBundle } from '../i18n';
+import { getTextBundle } from '../i18n.js';
 
-import type { AddFragmentOptions } from './controllers/AddFragment.controller';
-import AddFragment from './controllers/AddFragment.controller';
-import AddTableColumnFragments from './controllers/AddTableColumnFragments.controller';
-import ControllerExtension from './controllers/ControllerExtension.controller';
-import ExtensionPoint from './controllers/ExtensionPoint.controller';
+import type { AddFragmentOptions } from './controllers/AddFragment.controller.js';
+import AddFragment from './controllers/AddFragment.controller.js';
+import AddTableColumnFragments from './controllers/AddTableColumnFragments.controller.js';
+import ControllerExtension from './controllers/ControllerExtension.controller.js';
+import ExtensionPoint from './controllers/ExtensionPoint.controller.js';
 
-import type { ExtensionPointData } from './extension-point';
-import { AddFragmentData } from './add-fragment';
-import { ExtendControllerData } from './extend-controller';
-import FileExistsDialog, { FileExistsDialogOptions } from './controllers/FileExistsDialog.controller';
-import AddSubpage, { AddSubpageOptions } from './controllers/AddSubpage.controller';
-import { QuickActionTelemetryData } from '../cpe/quick-actions/quick-action-definition';
-import AddCustomFragment, { AddCustomFragmentOptions } from './controllers/AddCustomFragment.controller';
-import AddActionFragment, { AddActionOptions } from './controllers/AddActionFragment.controller';
+import type { ExtensionPointData } from './extension-point.js';
+import { AddFragmentData } from './add-fragment.js';
+import { ExtendControllerData } from './extend-controller.js';
+import FileExistsDialog, { FileExistsDialogOptions } from './controllers/FileExistsDialog.controller.js';
+import AddSubpage, { AddSubpageOptions } from './controllers/AddSubpage.controller.js';
+import { QuickActionTelemetryData } from '../cpe/quick-actions/quick-action-definition.js';
+import AddCustomFragment, { AddCustomFragmentOptions } from './controllers/AddCustomFragment.controller.js';
+import AddActionFragment, { AddActionOptions } from './controllers/AddActionFragment.controller.js';
 
 export const enum DialogNames {
     ADD_FRAGMENT = 'AddFragment',

@@ -255,7 +255,7 @@ archive.zip
         \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\"
     },
     \\"dependencies\\": {
-        \\"@sap/approuter\\": \\"^21.0.0\\"
+        \\"@sap/approuter\\": \\"^22.0.0\\"
     }
 }",
     "state": "modified",
@@ -414,7 +414,7 @@ archive.zip
         \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\"
     },
     \\"dependencies\\": {
-        \\"@sap/approuter\\": \\"^21.0.0\\"
+        \\"@sap/approuter\\": \\"^22.0.0\\"
     }
 }",
     "state": "modified",

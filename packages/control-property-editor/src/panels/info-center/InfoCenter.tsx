@@ -3,11 +3,11 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Label, Stack } from '@fluentui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import type { InfoCenterItem } from '../../slice';
-import { clearAllInfoCenterMessages, expandableMessage } from '../../slice';
+import type { InfoCenterItem } from '../../slice.js';
+import { clearAllInfoCenterMessages, expandableMessage } from '../../slice.js';
 import { UIIconButton, UiIcons } from '@sap-ux/ui-components';
-import type { RootState } from '../../store';
-import { InfoMessageItem } from './InfoMessageItem';
+import type { RootState } from '../../store.js';
+import { InfoMessageItem } from './InfoMessageItem.js';
 import './InfoCenter.scss';
 
 /**

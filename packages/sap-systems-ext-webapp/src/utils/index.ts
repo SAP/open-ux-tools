@@ -1,4 +1,4 @@
-import type { VsCodeApi } from '../types';
+import type { VsCodeApi } from '../types/index.js';
 
 // Global access to postMessage is required for controls that do not have state and so do not use redux middleware
 declare global {

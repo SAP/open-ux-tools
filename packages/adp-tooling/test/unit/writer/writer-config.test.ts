@@ -1,10 +1,34 @@
-import { join } from 'node:path';
+import { jest } from '@jest/globals';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, Package } from '@sap-ux/project-access';
 import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
 
+const mockGetProviderConfig = jest.fn() as jest.Mock;
+const mockGetSupportedProject = jest.fn() as jest.Mock;
+
+const realSystems = await import('../../../src/source/systems.js');
+
+jest.unstable_mockModule('../../../src/abap/config', () => ({
+    getProviderConfig: mockGetProviderConfig
+}));
+
+jest.unstable_mockModule('../../../src/source/systems', () => ({
+    getSupportedProject: mockGetSupportedProject,
+    SystemLookup: realSystems.SystemLookup,
+    getEndpointNames: realSystems.getEndpointNames,
+    transformBackendSystem: realSystems.transformBackendSystem,
+    SupportedProject: realSystems.SupportedProject
+}));
+
+const { FlexLayer, getConfig, SupportedProject } = await import('../../../src/index.js');
+const { getCfConfig } = await import('../../../src/writer/writer-config.js');
+const { t } = await import('../../../src/i18n.js');
+const { AppRouterType } = await import('../../../src/types.js');
 import type {
     AttributesAnswers,
     ConfigAnswers,
@@ -12,24 +36,11 @@ import type {
     Language,
     SourceApplication,
     VersionDetail
-} from '../../../src';
-import { t } from '../../../src/i18n';
-import { AppRouterType } from '../../../src/types';
-import { getCfConfig } from '../../../src/writer/writer-config';
-import { FlexLayer, getProviderConfig, getConfig, getSupportedProject, SupportedProject } from '../../../src';
-import type { CfConfig, CfServicesAnswers, CreateCfConfigParams } from '../../../src/types';
+} from '../../../src/index.js';
+import type { CfConfig, CfServicesAnswers, CreateCfConfigParams } from '../../../src/types.js';
 
 const basePath = join(__dirname, '../../fixtures/base-app/manifest.json');
 const manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
-
-jest.mock('../../../src/abap/config.ts', () => ({
-    getProviderConfig: jest.fn()
-}));
-
-jest.mock('../../../src/source/systems.ts', () => ({
-    ...jest.requireActual('../../../src/source/systems.ts'),
-    getSupportedProject: jest.fn()
-}));
 
 const systemDetails = {
     client: '010',
@@ -49,8 +60,6 @@ const mockAbapProvider = {
         getSystemInfo: getSystemInfoMock
     })
 } as unknown as AbapServiceProvider;
-const getSupportedProjectMock = getSupportedProject as jest.MockedFunction<typeof getSupportedProject>;
-const getProviderConfigMock = getProviderConfig as jest.Mock;
 
 const configAnswers: ConfigAnswers = {
     application: { id: '1', bspName: 'bsp.name' } as SourceApplication,
@@ -85,8 +94,8 @@ const baseConfig: ConfigOptions = {
 
 describe('getConfig', () => {
     beforeEach(() => {
-        getProviderConfigMock.mockResolvedValue(systemDetails);
-        getSupportedProjectMock.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
+        mockGetProviderConfig.mockResolvedValue(systemDetails);
+        mockGetSupportedProject.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
     });
 
     it('returns the correct config with provided parameters when system and the project type are cloud ready', async () => {

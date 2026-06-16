@@ -11,11 +11,11 @@ import { BackendSystemKey, getService } from '@sap-ux/store';
 import type { ConvertedMetadata, EntitySet, EntityType } from '@sap-ux/vocabularies-types';
 import { FioriElementsVersion, PageTypeV4, type Specification } from '@sap/ux-specification/dist/types/src';
 import type { PagesV4 } from '@sap/ux-specification/dist/types/src/v4';
-import { t } from '../utils/i18n';
-import { ODataDownloadGenerator } from './odata-download-generator';
-import type { EntitySetsFlat } from './odata-query';
-import type { Entity, ReferencedEntities, SemanticKeyFilter, HierarchyEntity } from './types';
-import { navPropNameExclusions } from './types';
+import { t } from '../utils/i18n.js';
+import { ODataDownloadGenerator } from './odata-download-generator.js';
+import type { EntitySetsFlat } from './odata-query.js';
+import type { Entity, ReferencedEntities, SemanticKeyFilter, HierarchyEntity } from './types.js';
+import { navPropNameExclusions } from './types.js';
 
 /**
  * Merges entity set data by concatenating arrays and deduplicating using Set for O(n) performance.
@@ -384,6 +384,7 @@ function resolveParentPropertyFromFile(
     if (!jsFile || !existsSync(jsFile)) {
         return undefined;
     }
+
     const existing = createRequire(__filename)(jsFile) as {
         getReferentialConstraints?: (nav: {
             name: string;
@@ -394,7 +395,7 @@ function resolveParentPropertyFromFile(
     ODataDownloadGenerator.logger.debug(
         `getHierarchyEntities: '${entitySetName}' loaded constraints from existing file: ${JSON.stringify(constraints)}`
     );
-    return constraints[0]?.targetProperty;
+    return constraints[0]?.sourceProperty;
 }
 
 function resolveParentProperty(

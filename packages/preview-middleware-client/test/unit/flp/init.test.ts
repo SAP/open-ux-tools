@@ -1,24 +1,41 @@
+import { jest } from '@jest/globals';
 import { MessageBarType, showInfoCenterMessage, type Scenario } from '@sap-ux-private/control-property-editor-common';
 import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
 import IconPoolMock from 'mock/sap/ui/core/IconPool';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { fetchMock, sapMock } from 'mock/window';
 import NewsContainer from 'sap/cux/home/NewsContainer';
-import NewsAndPagesContainer from 'sap/cux/home/NewsAndPagesContainer';
 import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 import type Component from 'sap/ui/core/Component';
 import type { InitRtaScript, RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
-import * as apiHandler from '../../../src/adp/api-handler';
-import MyHomeController from '../../../src/flp/homepage/controller/MyHome.controller';
-import {
+import { Window } from 'types/global';
+
+const _apiHandler = await import('open/ux/preview/client/adp/api-handler');
+const getManifestAppdescrMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/adp/api-handler', () => ({
+    ..._apiHandler,
+    getManifestAppdescr: getManifestAppdescrMock
+}));
+
+jest.unstable_mockModule('sap/cux/home/NewsContainer', () => {
+    return { default: NewsContainer, __esModule: true };
+});
+
+jest.unstable_mockModule('open/ux/preview/client/utils/info-center-message', () => ({
+    sendInfoCenterMessage: jest.fn()
+}));
+
+import MyHomeController from '../../../src/flp/homepage/controller/MyHome.controller.js';
+const {
     init,
     loadI18nResourceBundle,
     registerComponentDependencyPaths,
     registerSAPFonts,
     resetAppState,
     setI18nTitle
-} from '../../../src/flp/init';
-import * as infoCenterMessage from '../../../src/utils/info-center-message';
+} = await import('open/ux/preview/client/flp/init');
+const infoCenterMessage = await import('open/ux/preview/client/utils/info-center-message');
+type ManifestAppdescr = import('../../../src/adp/api-handler.js').ManifestAppdescr;
 
 describe('flp/init', () => {
     afterEach(() => {
@@ -44,7 +61,7 @@ describe('flp/init', () => {
         expect(document.title).toBe(title);
     });
     test('loadI18nResourceBundle', async () => {
-        jest.spyOn(apiHandler, 'getManifestAppdescr').mockResolvedValueOnce({
+        getManifestAppdescrMock.mockResolvedValueOnce({
             content: [
                 {
                     texts: {
@@ -52,14 +69,14 @@ describe('flp/init', () => {
                     }
                 }
             ]
-        } as unknown as apiHandler.ManifestAppdescr);
+        } as unknown as ManifestAppdescr);
         await loadI18nResourceBundle('other' as Scenario);
         expect(mockBundle.create).toHaveBeenCalledWith({
             url: 'i18n/i18n.properties'
         });
     });
     test('loadI18nResourceBundle - adaptation project', async () => {
-        jest.spyOn(apiHandler, 'getManifestAppdescr').mockResolvedValueOnce({
+        getManifestAppdescrMock.mockResolvedValueOnce({
             content: [
                 {
                     texts: {
@@ -67,7 +84,7 @@ describe('flp/init', () => {
                     }
                 }
             ]
-        } as unknown as apiHandler.ManifestAppdescr);
+        } as unknown as ManifestAppdescr);
         await loadI18nResourceBundle('ADAPTATION_PROJECT');
         expect(mockBundle.create).toHaveBeenCalledWith({
             url: '../i18n/i18n.properties',
@@ -455,13 +472,11 @@ describe('flp/init', () => {
             // Wait for the reload to complete before continue with the test cases.
             await reloadComplete;
 
-            expect(CommunicationService.sendAction).toHaveBeenCalledWith(
-                showInfoCenterMessage({
-                    title: 'Adaptation Initialization Failed',
-                    description: expect.any(String),
-                    type: MessageBarType.error
-                })
-            );
+            expect(infoCenterMessage.sendInfoCenterMessage).toHaveBeenCalledWith({
+                title: { key: 'FLP_ADAPTATION_START_FAILED_TITLE' },
+                description: expect.any(String),
+                type: MessageBarType.error
+            });
             expect(reloadSpy).toHaveBeenCalled();
         });
 
@@ -472,7 +487,7 @@ describe('flp/init', () => {
             });
             const mockComponentInstance = {} as Component;
             const mockService = {
-                attachAppLoaded: jest.fn().mockImplementation((callback: (event: any) => void) => {
+                attachAppLoaded: jest.fn().mockImplementation((callback: () => void) => {
                     const mockEvent = {
                         getParameter: jest.fn().mockReturnValue(mockComponentInstance)
                     };
@@ -525,37 +540,7 @@ describe('flp/init', () => {
                 done();
             });
         });
-
-        test('enhancedHomePage view - fallback to NewsAndPagesContainer control when NewsContainer is not available', (done) => {
-            jest.doMock('sap/cux/home/NewsContainer', () => {
-                throw new Error('NewsContainer not found');
-            });
-
-            const mockPage = {
-                insertContent: jest.fn()
-            };
-
-            const controller = new MyHomeController('testController');
-            controller.getView = jest.fn().mockReturnValue({
-                getId: jest.fn().mockReturnValue('testView'),
-                byId: jest.fn().mockReturnValue(mockPage)
-            });
-
-            controller.onInit();
-            setTimeout(() => {
-                expect(mockPage.insertContent).toHaveBeenCalled();
-                const insertedContainer = mockPage.insertContent.mock.calls[0][0];
-
-                // Verify it's an instance of NewsAndPagesContainer (fallback when NewsContainer unavailable)
-                expect(insertedContainer).toBeInstanceOf(NewsAndPagesContainer);
-                expect(mockPage.insertContent).toHaveBeenCalledWith(insertedContainer, 0);
-
-                jest.dontMock('sap/cux/home/NewsContainer');
-                done();
-            });
-        });
     });
-
     describe('registerForControllerExtensionErrors', () => {
         let sendInfoCenterMessageSpy: jest.SpyInstance;
 

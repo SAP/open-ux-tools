@@ -1,15 +1,19 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
 
-import { getCDSCompilerFacade } from '../setup';
-import { toAbsoluteUriString } from '../../src';
-import { toAnnotationFile, toTarget, toTargetMap } from '../../src/transforms/annotation-file';
+import { getCDSCompilerFacade } from '../setup.js';
+import { toAbsoluteUriString } from '../../src/index.js';
+import { toAnnotationFile, toTarget, toTargetMap } from '../../src/transforms/annotation-file.js';
 
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import cdsCompilerFacadeModule from '@sap/ux-cds-compiler-facade';
 import type { MetadataElementMap, CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
 import type { MetadataElement } from '@sap-ux/odata-annotation-core-types';
-import { createMetadataCollector } from '@sap/ux-cds-compiler-facade';
+
+const { createMetadataCollector } = cdsCompilerFacadeModule;
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const testDataFolder = '../data';
 const cdsProjectFolder = 'bookshop';

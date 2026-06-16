@@ -49,6 +49,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -779,6 +784,10 @@ server:
         excludePatterns:
           - /Component-preload.js
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -1476,6 +1485,11 @@ server:
       afterMiddleware: compression
       configuration:
         ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1512,6 +1526,11 @@ server:
           intent:
             object: nods1
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -2291,6 +2310,10 @@ server:
             generateMockData: true
         annotations: []
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -2356,6 +2379,10 @@ server:
             generateMockData: true
         annotations: []
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -2411,6 +2438,10 @@ server:
         excludePatterns:
           - /Component-preload.js
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -3170,6 +3201,10 @@ server:
             generateMockData: true
         annotations: []
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -3235,6 +3270,10 @@ server:
             generateMockData: true
         annotations: []
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -3290,6 +3329,10 @@ server:
         excludePatterns:
           - /Component-preload.js
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -4034,6 +4077,10 @@ server:
             generateMockData: true
         annotations: []
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -4099,6 +4146,10 @@ server:
             generateMockData: true
         annotations: []
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -4154,6 +4205,10 @@ server:
         excludePatterns:
           - /Component-preload.js
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -4676,6 +4731,10 @@ server:
             generateMockData: true
         annotations: []
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -4741,6 +4800,10 @@ server:
             generateMockData: true
         annotations: []
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -4796,6 +4859,10 @@ server:
         excludePatterns:
           - /Component-preload.js
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -5256,6 +5323,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -5305,6 +5377,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -5344,6 +5421,11 @@ server:
           intent:
             object: nods1
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -5819,6 +5901,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -5868,6 +5955,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -5907,6 +5999,11 @@ server:
           intent:
             object: nods1
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -6468,10 +6565,17 @@ function (JSONModel, Device) {
                                 // set up test service for local testing
                                 server.init();
                                 // initialize the ushell sandbox component
-                                sap.ui.require([\\"sap/ushell/Container\\"], async function (Container) {
-                                    Container.createRenderer(true).then(function (component) {
-                                        component.placeAt(\\"content\\");
-                                    });
+                                sap.ui.require([\\"sap/ushell/Container\\"], function (Container) {
+                                    (typeof Container.createRendererInternal === 'function'
+                                        ? Container.createRendererInternal(undefined, true)
+                                        : Container.createRenderer(undefined, true))
+                                        .then(function (component) {
+                                            component.placeAt(\\"content\\");
+                                        })
+                                        .catch(function () {
+                                            // support older versions of ui5
+                                            Container.createRenderer().placeAt(\\"content\\");
+                                        });
                                 });
                             });
                         });        
@@ -6502,15 +6606,17 @@ function (JSONModel, Device) {
                     Core.ready(() => {
                         registerSAPFonts();
                         // initialize the ushell sandbox component
-                        sap.ui.require([\\"sap/ushell/Container\\"], async function (Container) {
-                            try {
-                            Container.createRenderer(true).then(function (component) {
-                                component.placeAt(\\"content\\");
-                            });
-                            } catch (error) {
-                                // support older versions of ui5 
-                                Container.createRenderer().placeAt(\\"content\\");
-                            }
+                        sap.ui.require([\\"sap/ushell/Container\\"], function (Container) {
+                            (typeof Container.createRendererInternal === 'function'
+                                ? Container.createRendererInternal(undefined, true)
+                                : Container.createRenderer(undefined, true))
+                                .then(function (component) {
+                                    component.placeAt(\\"content\\");
+                                })
+                                .catch(function () {
+                                    // support older versions of ui5
+                                    Container.createRenderer().placeAt(\\"content\\");
+                                });
                         });
                     });
                 });
@@ -6642,6 +6748,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -6691,6 +6802,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -6730,6 +6846,11 @@ server:
           intent:
             object: nods1
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -7464,6 +7585,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -7513,6 +7639,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -7552,6 +7683,11 @@ server:
           intent:
             object: nods1
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -8286,6 +8422,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -8335,6 +8476,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -8374,6 +8520,11 @@ server:
           intent:
             object: nods1
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -9105,6 +9256,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -9150,6 +9306,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -9185,6 +9346,11 @@ server:
       configuration:
         flp:
           theme: sap_belize
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -9590,6 +9756,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -9639,6 +9810,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -9678,6 +9854,11 @@ server:
           intent:
             object: nods1
             action: display
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
