@@ -92,6 +92,15 @@ export class AdpPreview {
     }
 
     /**
+     * @returns `true` when the preview was initialized for a Cloud Foundry adaptation
+     * project that serves a pre-built bundle from `cfBuildPath`. CF mode skips the
+     * backend descriptor merge, so callers must avoid touching `descriptor`/`resources`.
+     */
+    get isCloudFoundry(): boolean {
+        return 'cfBuildPath' in this.config;
+    }
+
+    /**
      * @returns a list of resources required to the adaptation project as well as the original app.
      */
     get resources(): {

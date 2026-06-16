@@ -1,5 +1,22 @@
 # @sap-ux/odata-service-writer
 
+## 1.0.6
+
+### Patch Changes
+
+- Updated dependencies [c8e8f7e]
+    - @sap-ux/ui5-config@1.0.3
+    - @sap-ux/mockserver-config-writer@1.0.6
+    - @sap-ux/project-access@2.1.2
+
+## 1.0.5
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+    - @sap-ux/mockserver-config-writer@1.0.5
+
 ## 1.0.4
 
 ### Patch Changes
@@ -237,6 +254,8 @@
 
 ## 0.31.0
 
+*Released: 2026-03-20T16:07:49Z*
+
 ### Minor Changes
 
 - 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
@@ -250,6 +269,8 @@
 
 ## 0.30.1
 
+*Released: 2026-03-17T01:04:22Z*
+
 ### Patch Changes
 
 - 55417bb: fix(deps): update dependency i18next to v25.8.18
@@ -259,11 +280,15 @@
 
 ## 0.30.0
 
+*Released: 2026-03-06T13:19:33Z*
+
 ### Minor Changes
 
 - 3edf6d7: Preserve preview path during service sync
 
 ## 0.29.34
+
+*Released: 2026-03-05T16:08:22Z*
 
 ### Patch Changes
 
@@ -272,6 +297,8 @@
     - @sap-ux/mockserver-config-writer@0.9.62
 
 ## 0.29.33
+
+*Released: 2026-03-05T12:30:25Z*
 
 ### Patch Changes
 
@@ -283,11 +310,15 @@
 
 ## 0.29.32
 
+*Released: 2026-03-05T10:41:09Z*
+
 ### Patch Changes
 
 - 5aff25c: fix(deps): update dependency fs-extra to v11
 
 ## 0.29.31
+
+*Released: 2026-03-04T22:42:20Z*
 
 ### Patch Changes
 
@@ -297,11 +328,15 @@
 
 ## 0.29.30
 
+*Released: 2026-03-04T15:52:08Z*
+
 ### Patch Changes
 
 - 2302698: fix(deps): update dependency @sap-ux/edmx-parser to v0.10.0
 
 ## 0.29.29
+
+*Released: 2026-03-04T14:39:10Z*
 
 ### Patch Changes
 
@@ -311,6 +346,8 @@
     - @sap-ux/project-access@1.35.11
 
 ## 0.29.28
+
+*Released: 2026-02-27T15:42:39Z*
 
 ### Patch Changes
 
@@ -324,6 +361,8 @@
 
 ## 0.29.27
 
+*Released: 2026-02-26T10:46:59Z*
+
 ### Patch Changes
 
 - 6c993f3: fix: turn off i18next support notice
@@ -333,12 +372,16 @@
 
 ## 0.29.26
 
+*Released: 2026-02-23T22:35:31Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.35.9
 - @sap-ux/mockserver-config-writer@0.9.57
 
 ## 0.29.25
+
+*Released: 2026-02-23T19:07:48Z*
 
 ### Patch Changes
 
@@ -347,6 +390,8 @@
     - @sap-ux/mockserver-config-writer@0.9.56
 
 ## 0.29.24
+
+*Released: 2026-02-20T21:31:31Z*
 
 ### Patch Changes
 
@@ -357,11 +402,15 @@
 
 ## 0.29.23
 
+*Released: 2026-02-20T20:20:17Z*
+
 ### Patch Changes
 
 - ff634b0: fix(deps): update dependency @sap-ux/edmx-parser to v0.9.8
 
 ## 0.29.22
+
+*Released: 2026-02-20T16:17:11Z*
 
 ### Patch Changes
 
@@ -371,6 +420,8 @@
     - @sap-ux/ui5-config@0.29.18
 
 ## 0.29.21
+
+*Released: 2026-02-20T13:46:55Z*
 
 ### Patch Changes
 
@@ -383,6 +434,8 @@
 
 ## 0.29.20
 
+*Released: 2026-02-18T21:45:35Z*
+
 ### Patch Changes
 
 - d57cc47: Update fast-xml-parser
@@ -391,6 +444,8 @@
     - @sap-ux/mockserver-config-writer@0.9.52
 
 ## 0.29.19
+
+*Released: 2026-02-16T16:08:11Z*
 
 ### Patch Changes
 
@@ -401,6 +456,8 @@
 
 ## 0.29.18
 
+*Released: 2026-02-13T09:54:38Z*
+
 ### Patch Changes
 
 - Updated dependencies [346f09c]
@@ -409,6 +466,8 @@
 
 ## 0.29.17
 
+*Released: 2026-02-12T10:29:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [d2b772d]
@@ -416,6 +475,8 @@
     - @sap-ux/mockserver-config-writer@0.9.49
 
 ## 0.29.16
+
+*Released: 2026-02-10T23:50:15Z*
 
 ### Patch Changes
 
@@ -426,6 +487,8 @@
 
 ## 0.29.15
 
+*Released: 2026-02-09T11:21:43Z*
+
 ### Patch Changes
 
 - Updated dependencies [a5ecd7f]
@@ -434,6 +497,8 @@
 
 ## 0.29.14
 
+*Released: 2026-02-05T20:09:45Z*
+
 ### Patch Changes
 
 - Updated dependencies [467e6aa]
@@ -441,6 +506,8 @@
     - @sap-ux/mockserver-config-writer@0.9.46
 
 ## 0.29.13
+
+*Released: 2026-02-05T08:38:39Z*
 
 ### Patch Changes
 
@@ -452,6 +519,8 @@
 
 ## 0.29.12
 
+*Released: 2026-02-03T15:42:23Z*
+
 ### Patch Changes
 
 - 89175fe: fix(deps): update dependency fast-xml-parser to v5 [security]
@@ -460,6 +529,8 @@
     - @sap-ux/mockserver-config-writer@0.9.44
 
 ## 0.29.11
+
+*Released: 2026-01-30T16:59:27Z*
 
 ### Patch Changes
 
@@ -471,6 +542,8 @@
 
 ## 0.29.10
 
+*Released: 2026-01-29T14:02:02Z*
+
 ### Patch Changes
 
 - 6d71400: Changes to support v4.01 odata services
@@ -480,6 +553,8 @@
 
 ## 0.29.9
 
+*Released: 2026-01-23T22:30:10Z*
+
 ### Patch Changes
 
 - d11943d: fix(deps): update dependency i18next to v25.8.0
@@ -487,6 +562,8 @@
     - @sap-ux/mockserver-config-writer@0.9.41
 
 ## 0.29.8
+
+*Released: 2026-01-16T13:57:39Z*
 
 ### Patch Changes
 
@@ -498,6 +575,8 @@
 
 ## 0.29.7
 
+*Released: 2026-01-15T14:14:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [55ac9f0]
@@ -505,6 +584,8 @@
     - @sap-ux/mockserver-config-writer@0.9.39
 
 ## 0.29.6
+
+*Released: 2026-01-14T17:56:49Z*
 
 ### Patch Changes
 
@@ -514,6 +595,8 @@
 
 ## 0.29.5
 
+*Released: 2026-01-12T12:01:34Z*
+
 ### Patch Changes
 
 - Updated dependencies [f13d1c2]
@@ -521,6 +604,8 @@
     - @sap-ux/mockserver-config-writer@0.9.37
 
 ## 0.29.4
+
+*Released: 2026-01-09T11:35:48Z*
 
 ### Patch Changes
 
@@ -530,11 +615,15 @@
 
 ## 0.29.3
 
+*Released: 2026-01-08T17:12:17Z*
+
 ### Patch Changes
 
 - 2204ad3: fix(deps): update dependencies @sap-ux/annotation-converter to v0.10.19 and @sap-ux/vocabularies-types to v0.14.5
 
 ## 0.29.2
+
+*Released: 2025-12-19T11:36:13Z*
 
 ### Patch Changes
 
@@ -544,6 +633,8 @@
     - @sap-ux/ui5-config@0.29.12
 
 ## 0.29.1
+
+*Released: 2025-12-18T21:05:02Z*
 
 ### Patch Changes
 
@@ -555,17 +646,23 @@
 
 ## 0.29.0
 
+*Released: 2025-12-18T13:13:52Z*
+
 ### Minor Changes
 
 - 691ab27: Prompt user to download value helps for V4 services with associated value helps. Add downloaded value helps as multiple metadata files alongside the service in the generated project.
 
 ## 0.28.0
 
+*Released: 2025-12-18T08:56:52Z*
+
 ### Minor Changes
 
 - 5287327: Updated @sap-ux/annotation-converter to version 0.10.9 and @sap-ux/vocabularies-types to version 0.13.2 across multiple packages. These changes ensure that the latest versions with potential fixes and enhancements are used.
 
 ## 0.27.38
+
+*Released: 2025-12-15T10:50:50Z*
 
 ### Patch Changes
 
@@ -577,6 +674,8 @@
 
 ## 0.27.37
 
+*Released: 2025-12-12T12:38:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [7217d7d]
@@ -585,11 +684,15 @@
 
 ## 0.27.36
 
+*Released: 2025-12-12T09:02:37Z*
+
 ### Patch Changes
 
 - e1647fe: fix: write external service metadata during project generation.
 
 ## 0.27.35
+
+*Released: 2025-12-10T20:04:51Z*
 
 ### Patch Changes
 
@@ -599,6 +702,8 @@
 
 ## 0.27.34
 
+*Released: 2025-12-10T09:08:56Z*
+
 ### Patch Changes
 
 - Updated dependencies [985223a]
@@ -606,6 +711,8 @@
     - @sap-ux/mockserver-config-writer@0.9.30
 
 ## 0.27.33
+
+*Released: 2025-12-04T10:42:12Z*
 
 ### Patch Changes
 
@@ -615,6 +722,8 @@
 
 ## 0.27.32
 
+*Released: 2025-11-27T14:58:09Z*
+
 ### Patch Changes
 
 - Updated dependencies [07725fe]
@@ -622,6 +731,8 @@
     - @sap-ux/mockserver-config-writer@0.9.28
 
 ## 0.27.31
+
+*Released: 2025-11-26T14:39:37Z*
 
 ### Patch Changes
 
@@ -633,6 +744,8 @@
 
 ## 0.27.30
 
+*Released: 2025-11-24T12:45:14Z*
+
 ### Patch Changes
 
 - Updated dependencies [7c09c8e]
@@ -641,6 +754,8 @@
     - @sap-ux/mockserver-config-writer@0.9.26
 
 ## 0.27.29
+
+*Released: 2025-11-05T06:53:42Z*
 
 ### Patch Changes
 
@@ -652,6 +767,8 @@
 
 ## 0.27.28
 
+*Released: 2025-10-27T13:41:31Z*
+
 ### Patch Changes
 
 - Updated dependencies [d895232]
@@ -659,6 +776,8 @@
     - @sap-ux/mockserver-config-writer@0.9.24
 
 ## 0.27.27
+
+*Released: 2025-10-22T09:32:12Z*
 
 ### Patch Changes
 
@@ -668,6 +787,8 @@
 
 ## 0.27.26
 
+*Released: 2025-10-21T07:47:50Z*
+
 ### Patch Changes
 
 - Updated dependencies [c5d7915]
@@ -675,6 +796,8 @@
     - @sap-ux/mockserver-config-writer@0.9.22
 
 ## 0.27.25
+
+*Released: 2025-10-10T12:22:06Z*
 
 ### Patch Changes
 
@@ -684,6 +807,8 @@
     - @sap-ux/project-access@1.32.4
 
 ## 0.27.24
+
+*Released: 2025-10-06T17:09:01Z*
 
 ### Patch Changes
 
@@ -695,6 +820,8 @@
 
 ## 0.27.23
 
+*Released: 2025-10-06T10:53:53Z*
+
 ### Patch Changes
 
 - Updated dependencies [d866995]
@@ -703,6 +830,8 @@
     - @sap-ux/project-access@1.32.2
 
 ## 0.27.22
+
+*Released: 2025-09-19T16:36:41Z*
 
 ### Patch Changes
 
@@ -713,6 +842,8 @@
 
 ## 0.27.21
 
+*Released: 2025-09-19T00:44:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [f9b4afe]
@@ -721,6 +852,8 @@
 
 ## 0.27.20
 
+*Released: 2025-09-18T07:30:28Z*
+
 ### Patch Changes
 
 - Updated dependencies [c385a76]
@@ -728,6 +861,8 @@
     - @sap-ux/mockserver-config-writer@0.9.16
 
 ## 0.27.19
+
+*Released: 2025-09-16T06:28:11Z*
 
 ### Patch Changes
 
@@ -738,6 +873,8 @@
 
 ## 0.27.18
 
+*Released: 2025-08-28T13:37:07Z*
+
 ### Patch Changes
 
 - Updated dependencies [4cfebaf]
@@ -746,6 +883,8 @@
     - @sap-ux/project-access@1.30.13
 
 ## 0.27.17
+
+*Released: 2025-08-14T14:36:13Z*
 
 ### Patch Changes
 
@@ -757,12 +896,16 @@
 
 ## 0.27.16
 
+*Released: 2025-08-13T10:00:10Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.30.11
 - @sap-ux/mockserver-config-writer@0.9.12
 
 ## 0.27.15
+
+*Released: 2025-08-01T09:39:39Z*
 
 ### Patch Changes
 
@@ -773,12 +916,16 @@
 
 ## 0.27.14
 
+*Released: 2025-07-30T19:33:46Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.30.9
 - @sap-ux/mockserver-config-writer@0.9.10
 
 ## 0.27.13
+
+*Released: 2025-07-28T22:57:52Z*
 
 ### Patch Changes
 
@@ -788,6 +935,8 @@
 
 ## 0.27.12
 
+*Released: 2025-07-08T12:06:04Z*
+
 ### Patch Changes
 
 - Updated dependencies [58cdce6]
@@ -795,6 +944,8 @@
     - @sap-ux/mockserver-config-writer@0.9.8
 
 ## 0.27.11
+
+*Released: 2025-07-04T15:18:17Z*
 
 ### Patch Changes
 
@@ -805,6 +956,8 @@
 
 ## 0.27.10
 
+*Released: 2025-07-04T09:34:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [c0fa1d1]
@@ -814,6 +967,8 @@
 
 ## 0.27.9
 
+*Released: 2025-07-03T12:14:55Z*
+
 ### Patch Changes
 
 - Updated dependencies [7a4543e]
@@ -822,11 +977,15 @@
 
 ## 0.27.8
 
+*Released: 2025-06-30T08:46:50Z*
+
 ### Patch Changes
 
 - b9675bb: Improve Fiori Tools UI Texts
 
 ## 0.27.7
+
+*Released: 2025-06-27T16:39:38Z*
 
 ### Patch Changes
 
@@ -837,12 +996,16 @@
 
 ## 0.27.6
 
+*Released: 2025-06-24T07:18:46Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.30.3
 - @sap-ux/mockserver-config-writer@0.9.3
 
 ## 0.27.5
+
+*Released: 2025-05-30T07:18:36Z*
 
 ### Patch Changes
 
@@ -853,11 +1016,15 @@
 
 ## 0.27.4
 
+*Released: 2025-05-29T08:13:17Z*
+
 ### Patch Changes
 
 - f9e4913: Allow to only update annotation and metada files without YAML file changes.
 
 ## 0.27.3
+
+*Released: 2025-05-26T11:57:48Z*
 
 ### Patch Changes
 
@@ -865,11 +1032,15 @@
 
 ## 0.27.2
 
+*Released: 2025-05-22T16:20:10Z*
+
 ### Patch Changes
 
 - 07eaebf: Generation of a unique service name (if such service exists) and error for existing service URI.
 
 ## 0.27.1
+
+*Released: 2025-05-15T13:36:04Z*
 
 ### Patch Changes
 
@@ -880,6 +1051,8 @@
     - @sap-ux/project-access@1.30.1
 
 ## 0.27.0
+
+*Released: 2025-05-14T22:35:53Z*
 
 ### Minor Changes
 
@@ -894,6 +1067,8 @@
 
 ## 0.26.18
 
+*Released: 2025-05-05T13:48:20Z*
+
 ### Patch Changes
 
 - Updated dependencies [ea0e2c0]
@@ -902,11 +1077,15 @@
 
 ## 0.26.17
 
+*Released: 2025-04-30T10:38:47Z*
+
 ### Patch Changes
 
 - 8d4bca6: Write service annotations using `name` instead of `technicalName` to avoid sub folders
 
 ## 0.26.16
+
+*Released: 2025-04-24T15:01:01Z*
 
 ### Patch Changes
 
@@ -917,6 +1096,8 @@
 
 ## 0.26.15
 
+*Released: 2025-04-23T15:22:38Z*
+
 ### Patch Changes
 
 - Updated dependencies [294bbe3]
@@ -925,6 +1106,8 @@
     - @sap-ux/mockserver-config-writer@0.8.13
 
 ## 0.26.14
+
+*Released: 2025-04-23T13:59:14Z*
 
 ### Patch Changes
 
@@ -935,6 +1118,8 @@
 
 ## 0.26.13
 
+*Released: 2025-03-19T08:54:25Z*
+
 ### Patch Changes
 
 - Updated dependencies [c3ebc82]
@@ -942,6 +1127,8 @@
     - @sap-ux/mockserver-config-writer@0.8.11
 
 ## 0.26.12
+
+*Released: 2025-03-18T09:41:03Z*
 
 ### Patch Changes
 
@@ -953,6 +1140,8 @@
 
 ## 0.26.11
 
+*Released: 2025-03-10T20:40:35Z*
+
 ### Patch Changes
 
 - Updated dependencies [011c8c5]
@@ -962,6 +1151,8 @@
 
 ## 0.26.10
 
+*Released: 2025-03-06T16:16:20Z*
+
 ### Patch Changes
 
 - Updated dependencies [1ce7fe9]
@@ -970,6 +1161,8 @@
 
 ## 0.26.9
 
+*Released: 2025-03-05T11:16:53Z*
+
 ### Patch Changes
 
 - Updated dependencies [3cc8f8a]
@@ -977,6 +1170,8 @@
     - @sap-ux/mockserver-config-writer@0.8.7
 
 ## 0.26.8
+
+*Released: 2025-03-05T09:14:02Z*
 
 ### Patch Changes
 
@@ -987,12 +1182,16 @@
 
 ## 0.26.7
 
+*Released: 2025-03-04T08:55:15Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.29.12
 - @sap-ux/mockserver-config-writer@0.8.5
 
 ## 0.26.6
+
+*Released: 2025-02-28T15:10:48Z*
 
 ### Patch Changes
 
@@ -1001,6 +1200,8 @@
     - @sap-ux/mockserver-config-writer@0.8.4
 
 ## 0.26.5
+
+*Released: 2025-02-27T14:15:03Z*
 
 ### Patch Changes
 
@@ -1011,6 +1212,8 @@
 
 ## 0.26.4
 
+*Released: 2025-02-27T08:22:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [c8c292c]
@@ -1019,11 +1222,15 @@
 
 ## 0.26.3
 
+*Released: 2025-02-18T18:24:37Z*
+
 ### Patch Changes
 
 - dbd725a: Write metadata.xml in update in odata-service-writer
 
 ## 0.26.2
+
+*Released: 2025-02-17T16:12:15Z*
 
 ### Patch Changes
 
@@ -1032,6 +1239,8 @@
 
 ## 0.26.1
 
+*Released: 2025-02-17T13:42:22Z*
+
 ### Patch Changes
 
 - Updated dependencies [c50e09f]
@@ -1039,6 +1248,8 @@
     - @sap-ux/mockserver-config-writer@0.8.0
 
 ## 0.26.0
+
+*Released: 2025-02-14T10:07:13Z*
 
 ### Minor Changes
 
@@ -1051,6 +1262,8 @@
 
 ## 0.25.10
 
+*Released: 2025-02-13T10:58:34Z*
+
 ### Patch Changes
 
 - Updated dependencies [2c0d657]
@@ -1058,6 +1271,8 @@
     - @sap-ux/mockserver-config-writer@0.7.3
 
 ## 0.25.9
+
+*Released: 2025-02-07T19:58:32Z*
 
 ### Patch Changes
 
@@ -1069,6 +1284,8 @@
 
 ## 0.25.8
 
+*Released: 2025-02-05T17:08:20Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.29.5
@@ -1076,11 +1293,15 @@
 
 ## 0.25.7
 
+*Released: 2025-02-05T15:41:32Z*
+
 ### Patch Changes
 
 - 4a90030: `@sap-ux/project-access` moved to dependencies.
 
 ## 0.25.6
+
+*Released: 2025-02-05T09:24:10Z*
 
 ### Patch Changes
 
@@ -1088,11 +1309,15 @@
 
 ## 0.25.5
 
+*Released: 2025-01-28T17:41:21Z*
+
 ### Patch Changes
 
 - 9910e7f: Improved set function for the default service model.
 
 ## 0.25.4
+
+*Released: 2025-01-27T18:57:16Z*
 
 ### Patch Changes
 
@@ -1102,6 +1327,8 @@
 
 ## 0.25.3
 
+*Released: 2025-01-17T09:30:45Z*
+
 ### Patch Changes
 
 - 625bca8: Removed local annotation definitions from mockserver middleware in ui5-local.yaml and ui5-mock.yaml files.
@@ -1110,11 +1337,15 @@
 
 ## 0.25.2
 
+*Released: 2025-01-09T12:31:59Z*
+
 ### Patch Changes
 
 - 326cd59: Uses "" model for mainService during generation if model for mainService already exists.
 
 ## 0.25.1
+
+*Released: 2025-01-07T16:24:13Z*
 
 ### Patch Changes
 
@@ -1122,11 +1353,15 @@
 
 ## 0.25.0
 
+*Released: 2024-12-16T11:25:26Z*
+
 ### Minor Changes
 
 - 036b48b: Removed ejs for manifest enhancements.
 
 ## 0.24.2
+
+*Released: 2024-12-11T18:23:38Z*
 
 ### Patch Changes
 
@@ -1134,11 +1369,15 @@
 
 ## 0.24.1
 
+*Released: 2024-12-06T07:34:32Z*
+
 ### Patch Changes
 
 - 0c9e896: Update existing services in a way that is required for multiple services support - service files in their respective folders.
 
 ## 0.24.0
+
+*Released: 2024-12-02T16:28:38Z*
 
 ### Minor Changes
 
@@ -1152,6 +1391,8 @@
 
 ## 0.23.3
 
+*Released: 2024-11-18T20:38:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [1beac7e]
@@ -1160,11 +1401,15 @@
 
 ## 0.23.2
 
+*Released: 2024-11-17T22:14:47Z*
+
 ### Patch Changes
 
 - 8237f83: feat: add namespaces to annotation template
 
 ## 0.23.1
+
+*Released: 2024-11-05T21:46:19Z*
 
 ### Patch Changes
 
@@ -1173,6 +1418,8 @@
     - @sap-ux/mockserver-config-writer@0.6.6
 
 ## 0.23.0
+
+*Released: 2024-09-23T10:02:33Z*
 
 ### Minor Changes
 
@@ -1186,12 +1433,16 @@
 
 ## 0.22.5
 
+*Released: 2024-09-03T19:06:21Z*
+
 ### Patch Changes
 
 - d962ce1: Move hasUI5CliV3 to project-access for common re-use
     - @sap-ux/mockserver-config-writer@0.6.4
 
 ## 0.22.4
+
+*Released: 2024-08-28T11:16:50Z*
 
 ### Patch Changes
 
@@ -1201,6 +1452,8 @@
 
 ## 0.22.3
 
+*Released: 2024-08-19T11:34:45Z*
+
 ### Patch Changes
 
 - Updated dependencies [61721f2]
@@ -1208,6 +1461,8 @@
     - @sap-ux/mockserver-config-writer@0.6.3
 
 ## 0.22.2
+
+*Released: 2024-08-01T17:28:17Z*
 
 ### Patch Changes
 
@@ -1217,6 +1472,8 @@
 
 ## 0.22.1
 
+*Released: 2024-07-23T09:01:05Z*
+
 ### Patch Changes
 
 - d549173: - Adjusts getMinUI5VersionAsArray so that semver valid check is included; the function now only returns valid versions.
@@ -1224,6 +1481,8 @@
     - @sap-ux/mockserver-config-writer@0.6.1
 
 ## 0.22.0
+
+*Released: 2024-07-16T11:43:42Z*
 
 ### Minor Changes
 
@@ -1239,6 +1498,8 @@
 
 ## 0.21.1
 
+*Released: 2024-07-12T08:50:08Z*
+
 ### Patch Changes
 
 - Updated dependencies [22e4ad8]
@@ -1246,6 +1507,8 @@
     - @sap-ux/mockserver-config-writer@0.6.1
 
 ## 0.21.0
+
+*Released: 2024-07-05T15:03:05Z*
 
 ### Minor Changes
 
@@ -1259,6 +1522,8 @@
 
 ## 0.20.5
 
+*Released: 2024-06-26T13:30:18Z*
+
 ### Patch Changes
 
 - Updated dependencies [1a1baeb0]
@@ -1266,6 +1531,8 @@
     - @sap-ux/mockserver-config-writer@0.5.8
 
 ## 0.20.4
+
+*Released: 2024-06-25T14:41:22Z*
 
 ### Patch Changes
 
@@ -1275,6 +1542,8 @@
 
 ## 0.20.3
 
+*Released: 2024-06-18T15:06:09Z*
+
 ### Patch Changes
 
 - Updated dependencies [a140cf8b]
@@ -1282,6 +1551,8 @@
     - @sap-ux/mockserver-config-writer@0.5.6
 
 ## 0.20.2
+
+*Released: 2024-06-12T15:20:44Z*
 
 ### Patch Changes
 
@@ -1291,6 +1562,8 @@
 
 ## 0.20.1
 
+*Released: 2024-06-07T14:16:07Z*
+
 ### Patch Changes
 
 - @sap-ux/ui5-config@0.22.6
@@ -1298,11 +1571,15 @@
 
 ## 0.20.0
 
+*Released: 2024-06-06T14:34:12Z*
+
 ### Minor Changes
 
 - e9a007af: Add support for CAP project services and annotations, based on the service type.
 
 ## 0.19.2
+
+*Released: 2024-05-27T13:04:53Z*
 
 ### Patch Changes
 
@@ -1312,6 +1589,8 @@
 
 ## 0.19.1
 
+*Released: 2024-05-14T08:36:35Z*
+
 ### Patch Changes
 
 - Updated dependencies [e3d2324c]
@@ -1320,11 +1599,15 @@
 
 ## 0.19.0
 
+*Released: 2024-05-10T10:45:20Z*
+
 ### Minor Changes
 
 - a47d0f5e: support for memfs within mockserver logic
 
 ## 0.18.0
+
+*Released: 2024-05-10T09:32:39Z*
 
 ### Minor Changes
 
@@ -1332,11 +1615,15 @@
 
 ## 0.17.2
 
+*Released: 2024-05-07T14:01:29Z*
+
 ### Patch Changes
 
 - 4e267684: chore - ejs upgrade
 
 ## 0.17.1
+
+*Released: 2024-05-02T14:43:18Z*
 
 ### Patch Changes
 
@@ -1345,6 +1632,8 @@
     - @sap-ux/mockserver-config-writer@0.5.1
 
 ## 0.17.0
+
+*Released: 2024-05-02T10:43:05Z*
 
 ### Minor Changes
 
@@ -1357,6 +1646,8 @@
 
 ## 0.16.5
 
+*Released: 2024-04-23T22:35:35Z*
+
 ### Patch Changes
 
 - Updated dependencies [b7d95fb3]
@@ -1364,11 +1655,15 @@
 
 ## 0.16.4
 
+*Released: 2024-04-08T19:47:20Z*
+
 ### Patch Changes
 
 - 1ec097f8: append annotations to ui5-mock.yaml during creation.
 
 ## 0.16.3
+
+*Released: 2024-04-04T13:19:16Z*
 
 ### Patch Changes
 
@@ -1377,12 +1672,16 @@
 
 ## 0.16.2
 
+*Released: 2024-03-21T16:21:01Z*
+
 ### Patch Changes
 
 - Updated dependencies [ec509c40]
     - @sap-ux/ui5-config@0.22.0
 
 ## 0.16.1
+
+*Released: 2024-02-27T22:07:50Z*
 
 ### Patch Changes
 
@@ -1392,11 +1691,15 @@
 
 ## 0.16.0
 
+*Released: 2023-12-11T16:37:44Z*
+
 ### Minor Changes
 
 - 446f290c: adds new service type
 
 ## 0.15.1
+
+*Released: 2023-11-22T08:53:28Z*
 
 ### Patch Changes
 
@@ -1404,6 +1707,8 @@
     - @sap-ux/ui5-config@0.21.0
 
 ## 0.15.0
+
+*Released: 2023-10-19T12:06:19Z*
 
 ### Minor Changes
 
@@ -1416,11 +1721,15 @@
 
 ## 0.14.36
 
+*Released: 2023-10-18T13:59:49Z*
+
 ### Patch Changes
 
 - cbcad88d: fix(deps): update dependencies [i18next]
 
 ## 0.14.35
+
+*Released: 2023-10-17T08:28:48Z*
 
 ### Patch Changes
 
@@ -1428,12 +1737,16 @@
 
 ## 0.14.34
 
+*Released: 2023-10-09T17:37:13Z*
+
 ### Patch Changes
 
 - Updated dependencies [65010b09]
     - @sap-ux/ui5-config@0.19.4
 
 ## 0.14.33
+
+*Released: 2023-09-20T13:13:51Z*
 
 ### Patch Changes
 
@@ -1443,12 +1756,16 @@
 
 ## 0.14.32
 
+*Released: 2023-09-19T15:51:30Z*
+
 ### Patch Changes
 
 - Updated dependencies [3137514f]
     - @sap-ux/ui5-config@0.19.2
 
 ## 0.14.31
+
+*Released: 2023-09-19T14:02:55Z*
 
 ### Patch Changes
 
@@ -1458,11 +1775,15 @@
 
 ## 0.14.30
 
+*Released: 2023-09-08T12:21:47Z*
+
 ### Patch Changes
 
 - f50523da: TechnicalName key might not be present in all scenarios
 
 ## 0.14.29
+
+*Released: 2023-09-04T15:26:51Z*
 
 ### Patch Changes
 
@@ -1470,11 +1791,15 @@
 
 ## 0.14.28
 
+*Released: 2023-09-01T07:49:28Z*
+
 ### Patch Changes
 
 - 6e403f27: fix(deps): update dependency fast-xml-parser to v4.2.7
 
 ## 0.14.27
+
+*Released: 2023-08-11T09:14:46Z*
 
 ### Patch Changes
 
@@ -1482,6 +1807,8 @@
     - @sap-ux/ui5-config@0.19.0
 
 ## 0.14.26
+
+*Released: 2023-06-27T14:58:54Z*
 
 ### Patch Changes
 
@@ -1491,6 +1818,8 @@
 
 ## 0.14.25
 
+*Released: 2023-06-26T15:34:40Z*
+
 ### Patch Changes
 
 - d9355692: Upgrade vulnerable modules semver and fast-xml-parser
@@ -1499,12 +1828,16 @@
 
 ## 0.14.24
 
+*Released: 2023-06-21T06:38:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [59863d93]
     - @sap-ux/ui5-config@0.18.0
 
 ## 0.14.23
+
+*Released: 2023-06-12T06:59:29Z*
 
 ### Patch Changes
 
@@ -1514,11 +1847,15 @@
 
 ## 0.14.22
 
+*Released: 2023-06-09T06:11:17Z*
+
 ### Patch Changes
 
 - e4f9748b: Upgrade vulnerable module fast-xml-parser
 
 ## 0.14.21
+
+*Released: 2023-06-01T08:16:47Z*
 
 ### Patch Changes
 
@@ -1526,6 +1863,8 @@
     - @sap-ux/ui5-config@0.17.0
 
 ## 0.14.20
+
+*Released: 2023-04-26T14:34:08Z*
 
 ### Patch Changes
 
@@ -1535,6 +1874,8 @@
 
 ## 0.14.19
 
+*Released: 2023-03-24T14:54:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [e7614e5]
@@ -1542,11 +1883,15 @@
 
 ## 0.14.18
 
+*Released: 2023-03-08T17:28:51Z*
+
 ### Patch Changes
 
 - 35d1e15: tbi: Support @ui5/cli v3 in the generated projects
 
 ## 0.14.17
+
+*Released: 2023-02-23T13:56:23Z*
 
 ### Patch Changes
 
@@ -1556,11 +1901,15 @@
 
 ## 0.14.16
 
+*Released: 2023-02-17T07:56:11Z*
+
 ### Patch Changes
 
 - @sap-ux/ui5-config@0.16.3
 
 ## 0.14.15
+
+*Released: 2023-02-10T14:09:06Z*
 
 ### Patch Changes
 
@@ -1570,6 +1919,8 @@
 
 ## 0.14.14
 
+*Released: 2022-12-05T07:50:58Z*
+
 ### Patch Changes
 
 - 070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
@@ -1578,6 +1929,8 @@
 
 ## 0.14.13
 
+*Released: 2022-11-04T17:06:16Z*
+
 ### Patch Changes
 
 - Updated dependencies [d760b69]
@@ -1585,11 +1938,15 @@
 
 ## 0.14.12
 
+*Released: 2022-10-21T07:04:47Z*
+
 ### Patch Changes
 
 - @sap-ux/ui5-config@0.15.4
 
 ## 0.14.11
+
+*Released: 2022-10-14T14:52:33Z*
 
 ### Patch Changes
 
@@ -1598,6 +1955,8 @@
 
 ## 0.14.10
 
+*Released: 2022-10-11T14:06:32Z*
+
 ### Patch Changes
 
 - Updated dependencies [5b487ef]
@@ -1605,11 +1964,15 @@
 
 ## 0.14.9
 
+*Released: 2022-10-04T15:02:00Z*
+
 ### Patch Changes
 
 - @sap-ux/ui5-config@0.15.1
 
 ## 0.14.8
+
+*Released: 2022-09-28T15:31:46Z*
 
 ### Patch Changes
 
@@ -1617,12 +1980,16 @@
 
 ## 0.14.7
 
+*Released: 2022-09-14T16:06:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [83a7a1a]
     - @sap-ux/ui5-config@0.15.0
 
 ## 0.14.6
+
+*Released: 2022-08-25T13:08:21Z*
 
 ### Patch Changes
 
@@ -1632,11 +1999,15 @@
 
 ## 0.14.5
 
+*Released: 2022-07-28T16:33:41Z*
+
 ### Patch Changes
 
 - 6c22256: Fix: Prevent ejs.render() using oDataService props as options
 
 ## 0.14.4
+
+*Released: 2022-07-27T08:51:11Z*
 
 ### Patch Changes
 
@@ -1646,6 +2017,8 @@
 
 ## 0.14.3
 
+*Released: 2022-07-21T14:10:31Z*
+
 ### Patch Changes
 
 - 09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
@@ -1654,12 +2027,16 @@
 
 ## 0.14.2
 
+*Released: 2022-07-20T14:42:08Z*
+
 ### Patch Changes
 
 - Updated dependencies [7c4a4df]
     - @sap-ux/ui5-config@0.14.2
 
 ## 0.14.1
+
+*Released: 2022-07-04T13:03:56Z*
 
 ### Patch Changes
 
@@ -1669,11 +2046,15 @@
 
 ## 0.14.0
 
+*Released: 2022-06-15T14:52:21Z*
+
 ### Minor Changes
 
 - c29bf99: Support for different project structures
 
 ## 0.13.0
+
+*Released: 2022-06-13T09:53:27Z*
 
 ### Minor Changes
 
@@ -1686,6 +2067,8 @@
 
 ## 0.12.2
 
+*Released: 2022-05-19T14:38:34Z*
+
 ### Patch Changes
 
 - c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
@@ -1693,6 +2076,8 @@
     - @sap-ux/ui5-config@0.13.3
 
 ## 0.12.1
+
+*Released: 2022-04-27T16:48:18Z*
 
 ### Patch Changes
 
@@ -1702,11 +2087,15 @@
 
 ## 0.12.0
 
+*Released: 2022-04-26T13:41:08Z*
+
 ### Minor Changes
 
 - cfca196: Feature: Adds support for Overview Page floorplan with odata v4 services. Fix: Use batch mode by default for v4 services.
 
 ## 0.11.6
+
+*Released: 2022-04-01T07:00:29Z*
 
 ### Patch Changes
 
@@ -1714,6 +2103,8 @@
     - @sap-ux/ui5-config@0.13.1
 
 ## 0.11.5
+
+*Released: 2022-03-31T13:41:16Z*
 
 ### Patch Changes
 
@@ -1723,6 +2114,8 @@
 
 ## 0.11.4
 
+*Released: 2022-03-29T13:57:37Z*
+
 ### Patch Changes
 
 - c18fc5c: chore(open-ux-tools) update devDependencies and change dependabot config
@@ -1730,6 +2123,8 @@
     - @sap-ux/ui5-config@0.12.3
 
 ## 0.11.3
+
+*Released: 2022-03-24T07:10:57Z*
 
 ### Patch Changes
 
@@ -1739,6 +2134,8 @@
 
 ## 0.11.2
 
+*Released: 2022-03-22T19:34:16Z*
+
 ### Patch Changes
 
 - 7107fbc: chore - use import type in TS code.
@@ -1747,6 +2144,8 @@
 
 ## 0.11.1
 
+*Released: 2022-02-18T09:46:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [2b12f4f]
@@ -1754,11 +2153,15 @@
 
 ## 0.11.0
 
+*Released: 2022-02-02T17:47:04Z*
+
 ### Minor Changes
 
 - d56ea73: Adds local annotations support
 
 ## 0.10.2
+
+*Released: 2022-01-17T14:31:10Z*
 
 ### Patch Changes
 
@@ -1767,6 +2170,8 @@
 
 ## 0.10.1
 
+*Released: 2021-12-14T12:31:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [3783887]
@@ -1774,17 +2179,23 @@
 
 ## 0.10.0
 
+*Released: 2021-10-22T12:53:00Z*
+
 ### Minor Changes
 
 - a9ef807: Reorganized how different middlewares are added to the ui5\*.yaml files
 
 ## 0.9.8
 
+*Released: 2021-11-15T18:37:14Z*
+
 ### Patch Changes
 
 - ccff534: Add inline schema in ui5\*.yaml files for yaml-language-server
 
 ## 0.9.7
+
+*Released: 2021-11-03T14:20:52Z*
 
 ### Patch Changes
 
@@ -1794,6 +2205,8 @@
 
 ## 0.9.6
 
+*Released: 2021-11-01T18:18:45Z*
+
 ### Patch Changes
 
 - 8de261b: Update npm dep and devDeps
@@ -1801,6 +2214,8 @@
     - @sap-ux/ui5-config@0.10.2
 
 ## 0.9.5
+
+*Released: 2021-10-28T12:12:48Z*
 
 ### Patch Changes
 
@@ -1810,6 +2225,8 @@
 
 ## 0.9.4
 
+*Released: 2021-10-27T16:42:33Z*
+
 ### Patch Changes
 
 - d37c8bd: Added support for selecting a custom view name for Fiori freestyle - Basic template
@@ -1817,6 +2234,8 @@
     - @sap-ux/ui5-config@0.10.0
 
 ## 0.9.3
+
+*Released: 2021-10-22T16:07:57Z*
 
 ### Patch Changes
 
@@ -1826,6 +2245,8 @@
 
 ## 0.9.2
 
+*Released: 2021-10-22T14:11:14Z*
+
 ### Patch Changes
 
 - a16d4e7: fix versions in modules for patch instead of minor
@@ -1833,6 +2254,8 @@
     - @sap-ux/ui5-config@0.9.2
 
 ## 0.10.0
+
+*Released: 2021-10-22T12:53:00Z*
 
 ### Minor Changes
 

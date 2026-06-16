@@ -66,6 +66,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         }
     });
     ui5Config.addFioriToolsAppReloadMiddleware();
+    ui5Config.addBuilderResourceExcludes();
 
     const previewMiddleWareOpts = getPreviewMiddlewareOpts(
         ui5App.app,
@@ -90,6 +91,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
             ui5App.ui5.ui5Theme
         );
         ui5LocalConfig.addFioriToolsAppReloadMiddleware();
+        ui5LocalConfig.addBuilderResourceExcludes();
         // Add optional features
         await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config, ui5LocalConfig]);
         // add preview middleware to ui5LocalConfig

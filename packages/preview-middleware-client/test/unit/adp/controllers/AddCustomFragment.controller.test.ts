@@ -450,7 +450,9 @@ describe('AddCustomFragment', () => {
             };
             const command = {
                 getProperty: jest.fn().mockReturnValue(''),
-                getPreparedChange: jest.fn().mockReturnValue({ getDefinition: jest.fn().mockReturnValue(change) })
+                getPreparedChange: jest
+                    .fn()
+                    .mockReturnValue({ convertToFileContent: jest.fn().mockReturnValue(change) })
             };
 
             rtaMock.getCommandStack.mockReturnValue({
@@ -510,7 +512,9 @@ describe('AddCustomFragment', () => {
             };
             const command = {
                 getProperty: jest.fn().mockReturnValue('addXMLAtExtensionPoint'),
-                getPreparedChange: jest.fn().mockReturnValue({ getDefinition: jest.fn().mockReturnValue(change) })
+                getPreparedChange: jest
+                    .fn()
+                    .mockReturnValue({ convertToFileContent: jest.fn().mockReturnValue(change) })
             };
             const compositeCommand = {
                 getProperty: jest.fn().mockReturnValue('composite'),
@@ -662,8 +666,7 @@ describe('AddCustomFragment', () => {
             return addFragment;
         };
 
-
-         beforeEach(() => {
+        beforeEach(() => {
             mocks.setValueStateTextMock = jest.fn();
             mocks.setValueStateMock = jest.fn().mockReturnValue({
                 setValueStateText: mocks.setValueStateTextMock
@@ -711,10 +714,7 @@ describe('AddCustomFragment', () => {
             addFragment.model = testModel;
             addFragment.onIdInputChange(event as unknown as Event);
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
-            expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(
-                1,
-                'Column ID is required.'
-            );
+            expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(1, 'Column ID is required.');
         });
 
         test('sets error when id invalid format', async () => {
