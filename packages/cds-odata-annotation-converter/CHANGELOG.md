@@ -1,5 +1,11 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 1.0.2
+
+### Patch Changes
+
+- 79047c2: fix: access target kind from \_id.kind with fallback to definitions.kind for backward compatibility
+
 ## 1.0.1
 
 ### Patch Changes
@@ -113,11 +119,15 @@
 
 ## 0.7.14
 
+*Released: 2026-03-17T01:04:22Z*
+
 ### Patch Changes
 
 - 55417bb: fix(deps): update dependency i18next to v25.8.18
 
 ## 0.7.13
+
+*Released: 2026-03-16T17:06:45Z*
 
 ### Patch Changes
 
@@ -127,6 +137,8 @@
 
 ## 0.7.12
 
+*Released: 2026-03-11T16:49:00Z*
+
 ### Patch Changes
 
 - Updated dependencies [79e69b9]
@@ -135,11 +147,15 @@
 
 ## 0.7.11
 
+*Released: 2026-03-10T07:46:29Z*
+
 ### Patch Changes
 
 - e1ef0ba: chore update `@sap/ux-cds-compiler-facade` dependency
 
 ## 0.7.10
+
+*Released: 2026-03-04T09:03:38Z*
 
 ### Patch Changes
 
@@ -149,11 +165,15 @@
 
 ## 0.7.9
 
+*Released: 2026-02-26T10:46:59Z*
+
 ### Patch Changes
 
 - 6c993f3: fix: turn off i18next support notice
 
 ## 0.7.8
+
+*Released: 2026-02-23T19:07:48Z*
 
 ### Patch Changes
 
@@ -165,11 +185,15 @@
 
 ## 0.7.7
 
+*Released: 2026-02-20T16:17:11Z*
+
 ### Patch Changes
 
 - cbd340a: fix(deps): update dependency i18next to v25.8.12
 
 ## 0.7.6
+
+*Released: 2026-02-17T01:38:30Z*
 
 ### Patch Changes
 
@@ -179,6 +203,8 @@
 
 ## 0.7.5
 
+*Released: 2026-02-10T23:50:15Z*
+
 ### Patch Changes
 
 - Updated dependencies [2fc459c]
@@ -186,6 +212,8 @@
     - @sap-ux/cds-annotation-parser@0.2.29
 
 ## 0.7.4
+
+*Released: 2026-02-10T21:03:43Z*
 
 ### Patch Changes
 
@@ -197,6 +225,8 @@
 
 ## 0.7.3
 
+*Released: 2026-01-29T14:02:02Z*
+
 ### Patch Changes
 
 - @sap-ux/odata-annotation-core@0.2.13
@@ -205,11 +235,15 @@
 
 ## 0.7.2
 
+*Released: 2026-01-23T22:30:10Z*
+
 ### Patch Changes
 
 - d11943d: fix(deps): update dependency i18next to v25.8.0
 
 ## 0.7.1
+
+*Released: 2026-01-15T12:16:35Z*
 
 ### Patch Changes
 
@@ -217,11 +251,15 @@
 
 ## 0.7.0
 
+*Released: 2026-01-14T17:56:49Z*
+
 ### Minor Changes
 
 - b132944: feat: add consistency rules `sap-flex-enabled`, `sap-disable-copy-to-clipboard` and `sap-width-including-column-header`.
 
 ## 0.6.19
+
+*Released: 2026-01-12T09:10:27Z*
 
 ### Patch Changes
 
@@ -229,6 +267,8 @@
 - @sap-ux/odata-annotation-core@0.2.12
 
 ## 0.6.18
+
+*Released: 2026-01-09T11:35:48Z*
 
 ### Patch Changes
 
@@ -239,6 +279,8 @@
 
 ## 0.6.17
 
+*Released: 2025-12-18T21:05:02Z*
+
 ### Patch Changes
 
 - a9471d0: fix sonar issues
@@ -247,6 +289,8 @@
     - @sap-ux/cds-annotation-parser@0.2.24
 
 ## 0.6.16
+
+*Released: 2025-12-15T10:50:50Z*
 
 ### Patch Changes
 
@@ -259,6 +303,8 @@
 
 ## 0.6.15
 
+*Released: 2025-12-04T09:20:42Z*
+
 ### Patch Changes
 
 - Updated dependencies [76742fa]
@@ -266,6 +312,8 @@
     - @sap-ux/cds-annotation-parser@0.2.22
 
 ## 0.6.14
+
+*Released: 2025-11-05T06:53:42Z*
 
 ### Patch Changes
 
@@ -278,6 +326,8 @@
 
 ## 0.6.13
 
+*Released: 2025-10-15T11:57:34Z*
+
 ### Patch Changes
 
 - Updated dependencies [ccb5285]
@@ -286,11 +336,15 @@
 
 ## 0.6.12
 
+*Released: 2025-10-08T13:16:50Z*
+
 ### Patch Changes
 
 - 376daf5: chore update `@sap/ux-cds-compiler-facade` dependency
 
 ## 0.6.11
+
+*Released: 2025-10-06T17:09:01Z*
 
 ### Patch Changes
 
@@ -302,6 +356,8 @@
 
 ## 0.6.10
 
+*Released: 2025-09-23T16:06:33Z*
+
 ### Patch Changes
 
 - @sap-ux/odata-annotation-core@0.2.8
@@ -310,6 +366,8 @@
 
 ## 0.6.9
 
+*Released: 2025-09-19T16:36:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [9872384]
@@ -317,6 +375,8 @@
     - @sap-ux/cds-annotation-parser@0.2.17
 
 ## 0.6.8
+
+*Released: 2025-09-16T20:04:56Z*
 
 ### Patch Changes
 
@@ -327,6 +387,8 @@
 
 ## 0.6.7
 
+*Released: 2025-08-28T13:37:07Z*
+
 ### Patch Changes
 
 - Updated dependencies [4cfebaf]
@@ -335,11 +397,15 @@
 
 ## 0.6.6
 
+*Released: 2025-08-19T12:23:05Z*
+
 ### Patch Changes
 
 - 48c6aaa: fix: crash on empty flattened annotation term conversion
 
 ## 0.6.5
+
+*Released: 2025-08-13T10:00:10Z*
 
 ### Patch Changes
 
@@ -352,17 +418,23 @@
 
 ## 0.6.4
 
+*Released: 2025-07-04T15:18:17Z*
+
 ### Patch Changes
 
 - 69f62ec: i18next upgrade to 25.3.0
 
 ## 0.6.3
 
+*Released: 2025-06-17T14:16:05Z*
+
 ### Patch Changes
 
 - bdff312: chore: update `@sap/ux-cds-compiler-facade` dependency.
 
 ## 0.6.2
+
+*Released: 2025-06-16T13:15:49Z*
 
 ### Patch Changes
 
@@ -372,6 +444,8 @@
 
 ## 0.6.1
 
+*Released: 2025-06-12T12:47:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [be6febe]
@@ -379,11 +453,15 @@
 
 ## 0.6.0
 
+*Released: 2025-06-10T11:56:07Z*
+
 ### Minor Changes
 
 - d2c10e7: feat: write cds annotations using new syntax without `![]` escape sequence.
 
 ## 0.5.9
+
+*Released: 2025-06-10T10:19:01Z*
 
 ### Patch Changes
 
@@ -392,6 +470,8 @@
 - @sap-ux/cds-annotation-parser@0.2.11
 
 ## 0.5.8
+
+*Released: 2025-05-14T22:35:53Z*
 
 ### Patch Changes
 
@@ -403,11 +483,15 @@
 
 ## 0.5.7
 
+*Released: 2025-04-29T08:08:36Z*
+
 ### Patch Changes
 
 - 2024a9f: chore: update `@sap/ux-cds-compiler-facade` dependency
 
 ## 0.5.6
+
+*Released: 2025-04-28T07:24:41Z*
 
 ### Patch Changes
 
@@ -417,17 +501,23 @@
 
 ## 0.5.5
 
+*Released: 2025-04-16T13:54:40Z*
+
 ### Patch Changes
 
 - fb49882: fix: add flattened record type info in generic format
 
 ## 0.5.4
 
+*Released: 2025-04-16T12:27:23Z*
+
 ### Patch Changes
 
 - 7cda000: fix: writing empty path values results in a compile error in CDS projects
 
 ## 0.5.3
+
+*Released: 2025-03-20T17:18:47Z*
 
 ### Patch Changes
 
@@ -437,6 +527,8 @@
 
 ## 0.5.2
 
+*Released: 2025-03-10T20:40:35Z*
+
 ### Patch Changes
 
 - Updated dependencies [011c8c5]
@@ -445,17 +537,23 @@
 
 ## 0.5.1
 
+*Released: 2025-03-05T12:32:21Z*
+
 ### Patch Changes
 
 - 282dd9a: Fix: creation of complex type annotation target
 
 ## 0.5.0
 
+*Released: 2025-02-27T08:22:17Z*
+
 ### Minor Changes
 
 - 4373718: Updated UI texts.
 
 ## 0.4.1
+
+*Released: 2025-02-11T12:08:20Z*
 
 ### Patch Changes
 
@@ -465,11 +563,15 @@
 
 ## 0.4.0
 
+*Released: 2025-01-28T14:20:43Z*
+
 ### Minor Changes
 
 - e6f42df: Update @sap-ux/annotation-converter, @sap-ux/vocabularies-types, @sap/ux-cds-compiler-facade dependencies
 
 ## 0.3.10
+
+*Released: 2025-01-15T13:31:47Z*
 
 ### Patch Changes
 
@@ -479,11 +581,15 @@
 
 ## 0.3.9
 
+*Released: 2024-11-13T15:30:16Z*
+
 ### Patch Changes
 
 - 0235973: Update @sap/ux-cds-compiler-facade dependency
 
 ## 0.3.8
+
+*Released: 2024-10-22T09:42:10Z*
 
 ### Patch Changes
 
@@ -492,6 +598,8 @@
     - @sap-ux/cds-annotation-parser@0.2.4
 
 ## 0.3.7
+
+*Released: 2024-10-04T15:21:13Z*
 
 ### Patch Changes
 
@@ -503,11 +611,15 @@
 
 ## 0.3.6
 
+*Released: 2024-09-09T11:35:24Z*
+
 ### Patch Changes
 
 - 2f64664: Refactor unit tests and remove cdsArtifacts method
 
 ## 0.3.5
+
+*Released: 2024-08-19T09:48:14Z*
 
 ### Patch Changes
 
@@ -517,11 +629,15 @@
 
 ## 0.3.4
 
+*Released: 2024-08-12T11:41:22Z*
+
 ### Patch Changes
 
 - 26379ea: - Updated dependencies - @sap/ux-cds-compiler-facade@1.14.1
 
 ## 0.3.3
+
+*Released: 2024-08-07T11:06:05Z*
 
 ### Patch Changes
 
@@ -534,17 +650,23 @@
 
 ## 0.3.2
 
+*Released: 2024-08-01T17:28:17Z*
+
 ### Patch Changes
 
 - e69db46: Upgrade fast-xml-parser
 
 ## 0.3.1
 
+*Released: 2024-07-09T14:03:41Z*
+
 ### Patch Changes
 
 - 94cee16: Cds compiler facade version bump in dependencies
 
 ## 0.3.0
+
+*Released: 2024-07-05T15:03:05Z*
 
 ### Minor Changes
 
@@ -559,6 +681,8 @@
 
 ## 0.2.9
 
+*Released: 2024-06-20T13:03:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [d09edfd5]
@@ -567,6 +691,8 @@
 
 ## 0.2.8
 
+*Released: 2024-06-19T07:38:28Z*
+
 ### Patch Changes
 
 - Updated dependencies [4d8e6c65]
@@ -574,17 +700,23 @@
 
 ## 0.2.7
 
+*Released: 2024-06-13T13:08:09Z*
+
 ### Patch Changes
 
 - 30064346: feat: add fiori annotation api package
 
 ## 0.2.6
 
+*Released: 2024-06-07T08:16:59Z*
+
 ### Patch Changes
 
 - ca2385e5: fix: facade version
 
 ## 0.2.5
+
+*Released: 2024-04-03T09:16:44Z*
 
 ### Patch Changes
 
@@ -594,6 +726,8 @@
 
 ## 0.2.4
 
+*Released: 2024-03-22T08:51:54Z*
+
 ### Patch Changes
 
 - Updated dependencies [61b46bc8]
@@ -601,6 +735,8 @@
     - @sap-ux/cds-annotation-parser@0.1.10
 
 ## 0.2.3
+
+*Released: 2024-03-14T15:29:35Z*
 
 ### Patch Changes
 
@@ -610,6 +746,8 @@
 
 ## 0.2.2
 
+*Released: 2024-02-07T11:10:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [eb0b7b37]
@@ -618,6 +756,8 @@
     - @sap-ux/odata-vocabularies@0.3.4
 
 ## 0.2.1
+
+*Released: 2024-01-30T14:04:28Z*
 
 ### Patch Changes
 

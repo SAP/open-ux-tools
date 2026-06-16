@@ -12,6 +12,8 @@ import type { AbapDeployConfig, AbapTarget, CustomTask, NodeComment } from '@sap
  * @param fs - the memfs editor instance
  */
 export function updateBaseConfig(isLib: boolean, basePath: string, baseConfig: UI5Config, fs: Editor) {
+    const before = baseConfig.toString();
+    baseConfig.addBuilderResourceExcludes();
     if (isLib) {
         if (!baseConfig.findCustomTask(UI5_TASK_FLATTEN_LIB)) {
             const customTask = {
@@ -20,7 +22,13 @@ export function updateBaseConfig(isLib: boolean, basePath: string, baseConfig: U
             };
             baseConfig.addCustomTasks([customTask]);
         }
+    }
+    // Only write when content changed to avoid unnecessary file modification
+    if (baseConfig.toString() !== before) {
         fs.write(basePath, baseConfig.toString());
+    }
+    // Remove builder AFTER writing so getDeployConfig receives a clean base without lib-specific tasks
+    if (isLib) {
         baseConfig.removeConfig('builder');
     }
 }
