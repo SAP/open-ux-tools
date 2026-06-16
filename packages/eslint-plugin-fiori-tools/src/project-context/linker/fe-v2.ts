@@ -1,9 +1,10 @@
 import type { MetadataElement } from '@sap-ux/odata-annotation-core';
-import type { LinkerContext, ConfigurationBase } from './types';
-import { getParsedServiceByName } from '../utils';
-import type { ParsedService } from '../parser';
-import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations';
-import { collectHeaderSections, collectSections, collectTables, getConfigurationKey } from './annotations';
+import type { LinkerContext, ConfigurationBase } from './types.js';
+import { getParsedServiceByName } from '../utils.js';
+import type { ParsedService } from '../parser/index.js';
+import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations.js';
+import { collectHeaderSections, collectSections, collectTables, getConfigurationKey } from './annotations.js';
+import type { FlexChange, PropertyChangeConfig } from '../parser/types.js';
 
 export interface FlexibleColumnLayoutSettings {
     defaultTwoColumnLayoutType: string;
@@ -31,7 +32,11 @@ export interface TableSettings {
     createMode: string;
     tableType: string;
     copy: boolean;
+    showPasteButton: boolean;
+    enableExport: boolean;
 }
+
+export type FlexChangeProperty = 'enableExport' | 'showPasteButton';
 
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
 export type Table = AnnotationBasedNode<TableNode, TableSettings>;
@@ -72,13 +77,28 @@ export interface AnnotationBasedNode<
     Children = never
 > extends ConfigurationBase<T['type'], Configuration> {
     annotation?: T;
-
+    label?: string;
     children: Children[];
 }
 
 const createModeValues = ['creationRows', 'creationRowsHiddenInEditMode', 'newPage'];
 const tableTypeValues = ['Table', 'ResponsiveTable', 'AnalyticalTable', 'GridTable'];
 const statePreservationModeValues = ['persistence', 'discovery'];
+
+const getTablePropertyChangeConfig = (
+    pageTableChanges: FlexChange[],
+    property: FlexChangeProperty
+): PropertyChangeConfig | undefined => {
+    const propertyChange = pageTableChanges.find((change: FlexChange) => change.content.property === property);
+    if (propertyChange) {
+        return {
+            property,
+            value: propertyChange.content.newValue,
+            selector: propertyChange.selector.id,
+            changeFileUri: propertyChange.changeFileUri
+        };
+    }
+};
 
 /**
  * Creates table configuration object
@@ -87,13 +107,17 @@ const statePreservationModeValues = ['persistence', 'discovery'];
  * @param createMode
  * @param tableType
  * @param copy
+ * @param pageTableChanges
  */
 function createTableConfiguration(
     pathToPage: string[],
     createMode: string | undefined,
     tableType: string | undefined,
-    copy: boolean | undefined
+    copy: boolean | undefined,
+    pageTableChanges: FlexChange[]
 ) {
+    const enableExport = getTablePropertyChangeConfig(pageTableChanges, 'enableExport');
+    const showPasteButton = getTablePropertyChangeConfig(pageTableChanges, 'showPasteButton');
     return {
         createMode: {
             values: createModeValues,
@@ -109,6 +133,20 @@ function createTableConfiguration(
             values: [true, false],
             configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'copy'],
             valueInFile: copy
+        },
+        enableExport: {
+            values: [true, false],
+            selector: enableExport?.selector ?? '',
+            valueInFile: enableExport?.value,
+            changeFileUri: enableExport?.changeFileUri ?? '',
+            configurationPath: []
+        },
+        showPasteButton: {
+            values: [true, false],
+            selector: showPasteButton?.selector ?? '',
+            valueInFile: showPasteButton?.value,
+            changeFileUri: showPasteButton?.changeFileUri ?? '',
+            configurationPath: []
         }
     };
 }
@@ -121,14 +159,18 @@ function createTableConfiguration(
  * @param createMode
  * @param tableType
  * @param copy
+ * @param pageTableChanges
  */
 function createSectionTableConfiguration(
     pathToPage: string[],
     sectionKey: string,
     createMode: string | undefined,
     tableType: string | undefined,
-    copy: boolean | undefined
+    copy: boolean | undefined,
+    pageTableChanges: FlexChange[]
 ) {
+    const enableExport = getTablePropertyChangeConfig(pageTableChanges, 'enableExport');
+    const showPasteButton = getTablePropertyChangeConfig(pageTableChanges, 'showPasteButton');
     return {
         createMode: {
             values: createModeValues,
@@ -160,6 +202,20 @@ function createSectionTableConfiguration(
                 'copy'
             ],
             valueInFile: copy
+        },
+        enableExport: {
+            values: [true, false],
+            selector: enableExport?.selector ?? '',
+            valueInFile: enableExport?.value,
+            changeFileUri: enableExport?.changeFileUri ?? '',
+            configurationPath: []
+        },
+        showPasteButton: {
+            values: [true, false],
+            selector: showPasteButton?.selector ?? '',
+            valueInFile: showPasteButton?.value,
+            changeFileUri: showPasteButton?.changeFileUri ?? '',
+            configurationPath: []
         }
     };
 }
@@ -208,11 +264,13 @@ function findSectionSettings(configuration: ManifestPageSettings): {
  * @param sectionSettings.createMode
  * @param sectionSettings.tableType
  * @param sectionSettings.copy
+ * @param pageTableChanges
  */
 function createLinkedTableForSection(
     table: TableNode,
     pathToPage: string[],
-    sectionSettings: { sectionKey: string; createMode?: string; tableType?: string; copy?: boolean }
+    sectionSettings: { sectionKey: string; createMode?: string; tableType?: string; copy?: boolean },
+    pageTableChanges: FlexChange[]
 ): Table {
     return {
         type: table.type,
@@ -222,7 +280,8 @@ function createLinkedTableForSection(
             sectionSettings.sectionKey,
             sectionSettings.createMode,
             sectionSettings.tableType,
-            sectionSettings.copy
+            sectionSettings.copy,
+            pageTableChanges
         ),
         children: []
     };
@@ -284,7 +343,7 @@ export function runFeV2Linker(context: LinkerContext): LinkedFeV2App {
         return linkedApp;
     }
     if (config) {
-        for (const [name, target] of Object.entries(config?.pages ?? {})) {
+        for (const [name, target] of Object.entries((config?.pages ?? {}) as Record<string, ManifestPageSettings>)) {
             linkPage(context, service, linkedApp, ['sap.ui.generic.app', 'pages'], name, target);
         }
     }
@@ -375,7 +434,7 @@ function linkListReportPage(
         lookup: {}
     };
 
-    linkListReportTable(page, [...path, name], table, target);
+    linkListReportTable(page, [...path, name], table, target, context.app.changes);
     linkedApp.pages.push(page);
 }
 
@@ -430,7 +489,8 @@ function linkObjectPagePage(
         entity,
         mainService,
         sections.filter((section) => section.type === 'table-section'),
-        target
+        target,
+        context.app.changes
     );
     for (const section of sections.filter((section) => section.type === 'header-section')) {
         collectHeaderSections(section, page);
@@ -474,6 +534,29 @@ function linkPage(
 }
 
 /**
+ * Filters flex changes related to a given page.
+ *
+ * @param changes - All changes in the project
+ * @param page - Page to select changes for
+ * @param section
+ * @returns - An array of property changes in a page
+ */
+const getPageTableChanges = (changes: FlexChange[], page: FeV2PageType, section?: TableSectionNode): FlexChange[] => {
+    // Examples:
+    // LR change id: lrpv2products::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--listReport
+    // OP change id: lrpv2products::sap.suite.ui.generic.template.ObjectPage.view.Details::SEPMRA_C_PD_Product--ProductTextFacetID::Table
+    return changes.filter((change) => {
+        let changeIdSubstring;
+        if (page.type === 'list-report-page') {
+            changeIdSubstring = `::${page.componentName}.view.${page.componentName.split('.').pop()}::${page.entitySetName}`;
+        } else if (page.type === 'object-page') {
+            changeIdSubstring = `::${page.componentName}.view.Details::${page.entitySetName}--${section?.id}::Table`;
+        }
+        return changeIdSubstring && change.selector.id.includes(changeIdSubstring);
+    });
+};
+
+/**
  * Links tables in a List Report page with their configuration.
  * Creates linked table structures from annotation nodes and manifest settings.
  *
@@ -481,12 +564,14 @@ function linkPage(
  * @param pathToPage - Path to page in manifest structure
  * @param tables - Array of table annotation nodes
  * @param configuration - Manifest page settings containing table configuration
+ * @param changes - Array of property changes related to the page
  */
 function linkListReportTable(
     page: FeV2ListReport,
     pathToPage: string[],
     tables: TableNode[],
-    configuration: ManifestPageSettings
+    configuration: ManifestPageSettings,
+    changes: FlexChange[]
 ): void {
     const controls: Record<string, Table | OrphanTable> = {};
 
@@ -497,10 +582,11 @@ function linkListReportTable(
         const tableType = tableSettingsConfig.type;
         const copy = tableSettingsConfig.copy;
 
+        const pageTableChanges = getPageTableChanges(changes, page);
         const linkedTable: Table = {
             type: table.type,
             annotation: table,
-            configuration: createTableConfiguration(pathToPage, createMode, tableType, copy),
+            configuration: createTableConfiguration(pathToPage, createMode, tableType, copy, pageTableChanges),
             children: []
         };
 
@@ -516,7 +602,7 @@ function linkListReportTable(
         if (!tableControl) {
             const orphanedSection: OrphanTable = {
                 type: 'orphan-table',
-                configuration: createSectionTableConfiguration(pathToPage, sectionKey, createMode, tableType, copy)
+                configuration: createSectionTableConfiguration(pathToPage, sectionKey, createMode, tableType, copy, [])
             };
             controls[`${orphanedSection.type}|${sectionKey}`] = orphanedSection;
         }
@@ -537,6 +623,7 @@ function linkListReportTable(
  * @param service - The parsed OData service
  * @param sections - Array of table section nodes to link
  * @param configuration - Manifest page settings
+ * @param changes - Array of property changes related to the page
  */
 function linkObjectPageSections(
     page: FeV2ObjectPage,
@@ -544,10 +631,10 @@ function linkObjectPageSections(
     entity: MetadataElement,
     service: ParsedService,
     sections: TableSectionNode[],
-    configuration: ManifestPageSettings
+    configuration: ManifestPageSettings,
+    changes: FlexChange[]
 ): void {
     const controls: Record<string, Section | Table> = {};
-
     for (const section of sections) {
         if (section.type !== 'table-section') {
             continue;
@@ -568,8 +655,8 @@ function linkObjectPageSections(
         controls[`${section.type}|${configurationKey}`] = linkedSection;
 
         const sectionSettings = findSectionSettings(configuration);
-        const linkedTable = createLinkedTableForSection(table, pathToPage, sectionSettings);
-
+        const pageSectionTableChanges = getPageTableChanges(changes, page, section);
+        const linkedTable = createLinkedTableForSection(table, pathToPage, sectionSettings, pageSectionTableChanges);
         linkedSection.children.push(linkedTable);
         controls[`${linkedTable.type}|${configurationKey}`] = linkedTable;
     }
@@ -581,10 +668,9 @@ function linkObjectPageSections(
             const createMode = sectionConfig.createMode;
             const tableType = sectionConfig.tableSettings?.type;
             const copy = sectionConfig.tableSettings?.copy;
-
             const orphanedSection: OrphanSection = {
                 type: 'orphan-section',
-                configuration: createSectionTableConfiguration(pathToPage, sectionKey, createMode, tableType, copy)
+                configuration: createSectionTableConfiguration(pathToPage, sectionKey, createMode, tableType, copy, [])
             };
             controls[`${orphanedSection.type}|${sectionKey}|`] = orphanedSection;
         }

@@ -2,7 +2,7 @@ import type { Answers, Question } from 'inquirer';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { getProject, type Project } from '@sap-ux/project-access';
-import { getAnswer } from './utils';
+import { getAnswer } from './utils.js';
 import type {
     Prompts,
     ValidationResults,
@@ -12,11 +12,11 @@ import type {
     PromptContextOptions,
     CodeSnippet,
     PromptsType
-} from './types';
-import { i18nNamespaces, initI18n, translate } from '../i18n';
+} from './types.js';
+import { i18nNamespaces, initI18n, translate } from '../i18n.js';
 import { join } from 'node:path';
-import type { SupportedPrompts, NarrowPrompt, SupportedGeneratorPrompts } from './map';
-import { PromptsQuestionsMap, PromptsGeneratorsMap, PromptsCodePreviewMap } from './map';
+import type { SupportedPrompts, NarrowPrompt, SupportedGeneratorPrompts } from './map.js';
+import { PromptsQuestionsMap, PromptsGeneratorsMap, PromptsCodePreviewMap } from './map.js';
 
 const unsupportedPrompts = (): Prompts<Answers> => ({
     questions: []

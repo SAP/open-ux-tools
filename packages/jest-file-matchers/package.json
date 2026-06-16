@@ -1,7 +1,8 @@
 {
     "name": "@sap-ux/jest-file-matchers",
-    "version": "0.2.11",
+    "version": "1.0.1",
     "description": "Jest matchers for files and folders",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -10,6 +11,17 @@
     "license": "Apache-2.0",
     "private": false,
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./dist/setup": {
+            "types": "./dist/setup/index.d.ts",
+            "default": "./dist/setup/index.js"
+        }
+    },
     "scripts": {
         "build": "tsc --build",
         "watch": "tsc --watch",
@@ -17,7 +29,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
@@ -28,14 +40,14 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "chalk": "4.1.2",
+        "chalk": "5.3.0",
         "dir-compare": "5.0.0",
         "filenamify": "4.3.0",
         "jest-diff": "30.2.0",
         "minimatch": "3.1.5"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     },
     "eslint-formatter-multiple": {
         "formatters": [

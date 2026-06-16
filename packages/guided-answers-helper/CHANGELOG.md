@@ -1,6 +1,65 @@
 # @sap-ux/guided-answers-helper
 
+## 1.0.1
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+## 0.5.1
+
+### Patch Changes
+
+- a1c9cd7: feat: warn when using a full URL destination during preview and deployment
+
+## 0.5.0
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 0.4.3
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
 ## 0.4.2
+
+*Released: 2025-12-15T10:50:50Z*
 
 ### Patch Changes
 
@@ -8,11 +67,15 @@
 
 ## 0.4.1
 
+*Released: 2025-11-05T06:53:42Z*
+
 ### Patch Changes
 
 - cfe9c13: Add deep link to package and changelog to README.md
 
 ## 0.4.0
+
+*Released: 2025-08-12T14:05:27Z*
 
 ### Minor Changes
 
@@ -20,11 +83,15 @@
 
 ## 0.3.1
 
+*Released: 2025-07-16T12:23:18Z*
+
 ### Patch Changes
 
 - 485ae8d: Resize the guided answers icon.
 
 ## 0.3.0
+
+*Released: 2025-05-14T22:35:53Z*
 
 ### Minor Changes
 
@@ -32,11 +99,15 @@
 
 ## 0.2.2
 
+*Released: 2025-04-17T12:52:13Z*
+
 ### Patch Changes
 
 - e5f4915: Added GA link and moved validate logic to a function
 
 ## 0.2.1
+
+*Released: 2025-01-22T17:11:37Z*
 
 ### Patch Changes
 
@@ -44,11 +115,15 @@
 
 ## 0.2.0
 
+*Released: 2025-01-08T11:51:44Z*
+
 ### Minor Changes
 
 - dac696a: Fix for incorrect error messsages connecting to destinations. Correct incorrect GA node name.
 
 ## 0.1.1
+
+*Released: 2024-12-04T15:30:32Z*
 
 ### Patch Changes
 
@@ -56,11 +131,15 @@
 
 ## 0.1.0
 
+*Released: 2024-11-11T17:55:13Z*
+
 ### Minor Changes
 
 - 3734fe8: Adds system prompting to `@sap-ux/odata-service-inquirer`
 
 ## 0.0.2
+
+*Released: 2024-08-28T13:09:47Z*
 
 ### Patch Changes
 

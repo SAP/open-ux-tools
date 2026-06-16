@@ -3,20 +3,21 @@
     "displayName": "Control Property Editor Common",
     "description": "A common module for Control Property Editor react app and ui5",
     "license": "Apache-2.0",
-    "version": "0.7.7",
+    "version": "1.0.3",
     "main": "dist/index.js",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/control-property-editor-common"
     },
+    "type": "module",
     "private": true,
     "scripts": {
         "clean": "rimraf --glob dist reports *.tsbuildinfo",
         "build": "npm-run-all -l -s clean -p build:compile",
         "build:compile": "tsc --build ./tsconfig.json --pretty",
         "watch": "build:compile --watch",
-        "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
         "lint": "eslint",
         "lint:fix": "eslint --fix"
     },
@@ -27,7 +28,7 @@
         "ts-jest": "29.4.9"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     },
     "files": [
         "dist"

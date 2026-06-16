@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/xml-odata-annotation-converter",
     "description": "Converter for OData annotations in XML format.",
-    "version": "0.4.13",
+    "version": "1.0.1",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -9,6 +9,7 @@
     },
     "publisher": "SAPSE",
     "author": "SAP SE",
+    "type": "module",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -22,7 +23,7 @@
         "lint:report": "eslint . -f multiple ",
         "lint:summary": "eslint . -f summary",
         "pre-commit": "lint-staged --quiet",
-        "test": "jest --maxWorkers=2",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=2",
         "test:update": "node scripts/update-parser-fixtures.mjs",
         "watch": "tsc  --build ./ -watch"
     },
@@ -42,7 +43,7 @@
         "prettier": "3.8.1"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     },
     "eslint-formatter-multiple": {
         "formatters": [

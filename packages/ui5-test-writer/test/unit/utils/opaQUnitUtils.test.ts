@@ -1,20 +1,30 @@
-import {
+import { jest } from '@jest/globals';
+import { join } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
+
+const actualProjectAccess = await import('@sap-ux/project-access');
+const getAllUi5YamlFileNamesMock = jest.fn();
+const readUi5YamlMock = jest.fn();
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    getAllUi5YamlFileNames: getAllUi5YamlFileNamesMock,
+    readUi5Yaml: readUi5YamlMock
+}));
+
+const {
     addPathsToQUnitJs,
     addPagesToJourneyRunner,
     spliceModulesIntoQUnitContent,
     splicePageIntoJourneyRunner,
+    splicePageIntoJourneyRunnerTs,
     readHtmlTargetFromQUnitJs,
     addIntegrationOldToGitignore,
-    hasVirtualOPA5
-} from '../../../src/utils/opaQUnitUtils';
-import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
-import { getAllUi5YamlFileNames, readUi5Yaml } from '@sap-ux/project-access';
-
-jest.mock('@sap-ux/project-access', () => ({
-    getAllUi5YamlFileNames: jest.fn(),
-    readUi5Yaml: jest.fn()
-}));
+    hasVirtualOPA5,
+    addVirtualTestConfig
+} = await import('../../../src/utils/opaQUnitUtils.js');
+const { DotFileExtension } = await import('../../../src/types.js');
 
 /**
  * Matches the actual template output: the last entry has no trailing newline
@@ -287,7 +297,7 @@ describe('readHtmlTargetFromQUnitJs()', () => {
         const opaTestsPath = join(testPath, 'integration_old', 'opaTests.qunit.js');
         const opaPath = join(testPath, 'integration_old', 'Opa.qunit.js');
         const fs = {
-            exists: jest.fn().mockImplementation((path: string) => path !== opaTestsPath),
+            exists: jest.fn().mockImplementation((path) => path !== opaTestsPath),
             read: jest.fn().mockReturnValue(content)
         } as unknown as Editor;
 
@@ -472,6 +482,174 @@ describe('splicePageIntoJourneyRunner()', () => {
     });
 });
 
+/** Realistic JourneyRunner.ts matching what the TS template generates */
+const JOURNEY_RUNNER_TS_FILE = `import JourneyRunner from "sap/fe/test/JourneyRunner";
+import ListReport from "sap/fe/test/ListReport";
+import ObjectPage from "sap/fe/test/ObjectPage";
+import CustomTravelList from "./TravelList";
+import CustomTravelObjectPage from "./TravelObjectPage";
+
+const runner = new JourneyRunner({
+    launchUrl: sap.ui.require.toUrl("myApp") + "/index.html",
+    pages: {
+        onTheTravelList: new ListReport(
+            {
+                appId: "myApp",
+                componentId: "TravelList",
+                entitySet: "",
+                contextPath: "/Travel"
+            },
+            CustomTravelList
+        ),
+        onTheTravelObjectPage: new ObjectPage(
+            {
+                appId: "myApp",
+                componentId: "TravelObjectPage",
+                entitySet: "",
+                contextPath: "/Travel"
+            },
+            CustomTravelObjectPage
+        )
+    },
+    async: true
+});
+
+export default runner;
+`;
+
+describe('splicePageIntoJourneyRunnerTs()', () => {
+    test('returns file unchanged when all pages already exist', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
+            { targetKey: 'TravelList', appPath: 'myApp' },
+            { targetKey: 'TravelObjectPage', appPath: 'myApp' }
+        ]);
+
+        expect(result).toBe(JOURNEY_RUNNER_TS_FILE);
+    });
+
+    test('returns file unchanged when pages array is empty', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, []);
+        expect(result).toBe(JOURNEY_RUNNER_TS_FILE);
+    });
+
+    test('adds a new page to both import block and pages object', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
+            {
+                targetKey: 'NewPage',
+                appPath: 'myApp',
+                template: 'ObjectPage',
+                appID: 'myApp',
+                componentID: 'NewPage',
+                contextPath: '/New'
+            }
+        ]);
+
+        // Custom-class import follows the existing imports
+        expect(result).toContain('import CustomNewPage from "./NewPage";');
+        // New entry inside pages: { ... } constructs the framework instance
+        expect(result).toMatch(/onTheNewPage:\s*new ObjectPage\(/);
+        expect(result).toContain('CustomNewPage');
+        expect(result).toContain('contextPath: "/New"');
+    });
+
+    test('adds multiple new pages', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
+            {
+                targetKey: 'PageA',
+                appPath: 'myApp',
+                template: 'ListReport',
+                appID: 'myApp',
+                componentID: 'PageA',
+                entitySet: 'A'
+            },
+            {
+                targetKey: 'PageB',
+                appPath: 'myApp',
+                template: 'ObjectPage',
+                appID: 'myApp',
+                componentID: 'PageB',
+                contextPath: '/B'
+            }
+        ]);
+
+        expect(result).toContain('import CustomPageA from "./PageA";');
+        expect(result).toContain('import CustomPageB from "./PageB";');
+        expect(result).toMatch(/onThePageA:\s*new ListReport\(/);
+        expect(result).toMatch(/onThePageB:\s*new ObjectPage\(/);
+        expect(result).toContain('entitySet: "A"');
+        expect(result).toContain('contextPath: "/B"');
+    });
+
+    test('skips pages already present when adding new ones', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
+            {
+                targetKey: 'TravelList',
+                appPath: 'myApp',
+                template: 'ListReport',
+                appID: 'myApp',
+                componentID: 'TravelList',
+                contextPath: '/Travel'
+            },
+            {
+                targetKey: 'NewPage',
+                appPath: 'myApp',
+                template: 'ObjectPage',
+                appID: 'myApp',
+                componentID: 'NewPage',
+                contextPath: '/New'
+            }
+        ]);
+
+        // Existing import not duplicated
+        const travelListImports = result.match(/import CustomTravelList from/g) ?? [];
+        expect(travelListImports.length).toBe(1);
+        // New entry inserted
+        expect(result).toContain('import CustomNewPage from "./NewPage";');
+        expect(result).toMatch(/onTheNewPage:\s*new ObjectPage\(/);
+    });
+
+    test('inserts new imports after the last existing import line', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
+            {
+                targetKey: 'NewPage',
+                appPath: 'myApp',
+                template: 'ObjectPage',
+                appID: 'myApp',
+                componentID: 'NewPage',
+                contextPath: '/New'
+            }
+        ]);
+
+        const lines = result.split('\n');
+        const lastTravelImportIdx = lines.findIndex((l) => l.includes('import CustomTravelObjectPage from'));
+        const newPageImportIdx = lines.findIndex((l) => l.includes('import CustomNewPage from'));
+        expect(newPageImportIdx).toBe(lastTravelImportIdx + 1);
+    });
+
+    test('preserves all content outside the patched locations', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
+            { targetKey: 'NewPage', appPath: 'myApp' }
+        ]);
+
+        // Sentinels: header import, runner construction, async flag, default export
+        expect(result).toContain('import JourneyRunner from "sap/fe/test/JourneyRunner";');
+        expect(result).toContain('const runner = new JourneyRunner({');
+        expect(result).toContain('async: true');
+        expect(result).toContain('export default runner;');
+    });
+
+    test('new page object entries use same indentation as existing entries', () => {
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [
+            { targetKey: 'NewPage', appPath: 'myApp' }
+        ]);
+
+        const lines = result.split('\n');
+        const newPageLine = lines.find((l) => l.includes('onTheNewPage'));
+        // Existing entries use 8-space indentation in the template
+        expect(newPageLine).toMatch(/^ {8}/);
+    });
+});
+
 describe('addPagesToJourneyRunner()', () => {
     const testOutDirPath = join('/', 'project', 'webapp', 'test');
     const expectedFilePath = join(testOutDirPath, 'integration', 'pages', 'JourneyRunner.js');
@@ -522,6 +700,104 @@ describe('addPagesToJourneyRunner()', () => {
         }).not.toThrow();
         expect(fs.write).not.toHaveBeenCalled();
     });
+
+    test('returns early without reading when pages array is empty', () => {
+        const fs = makeFsMock(JOURNEY_RUNNER_FILE) as unknown as Editor;
+        addPagesToJourneyRunner([], testOutDirPath, fs);
+
+        expect(fs.read).not.toHaveBeenCalled();
+        expect(fs.write).not.toHaveBeenCalled();
+    });
+
+    test('reads JourneyRunner.ts and writes updated content when dotFileExtension is TS', () => {
+        const tsFilePath = join(testOutDirPath, 'integration', 'pages', 'JourneyRunner.ts');
+        const fs = makeFsMock(JOURNEY_RUNNER_TS_FILE) as unknown as Editor;
+        addPagesToJourneyRunner(
+            [
+                {
+                    targetKey: 'NewPage',
+                    appPath: 'myApp',
+                    template: 'ObjectPage',
+                    appID: 'myApp',
+                    componentID: 'NewPage',
+                    contextPath: '/New'
+                }
+            ],
+            testOutDirPath,
+            fs,
+            DotFileExtension.TS
+        );
+
+        expect(fs.read).toHaveBeenCalledWith(tsFilePath);
+        expect(fs.write).toHaveBeenCalledWith(
+            tsFilePath,
+            expect.stringContaining('import CustomNewPage from "./NewPage";')
+        );
+        expect(fs.write).toHaveBeenCalledWith(tsFilePath, expect.stringMatching(/onTheNewPage:\s*new ObjectPage\(/));
+    });
+
+    test('does not write when all pages already exist in TS JourneyRunner', () => {
+        const fs = makeFsMock(JOURNEY_RUNNER_TS_FILE) as unknown as Editor;
+        addPagesToJourneyRunner(
+            [
+                { targetKey: 'TravelList', appPath: 'myApp' },
+                { targetKey: 'TravelObjectPage', appPath: 'myApp' }
+            ],
+            testOutDirPath,
+            fs,
+            DotFileExtension.TS
+        );
+
+        expect(fs.read).toHaveBeenCalled();
+        expect(fs.write).not.toHaveBeenCalled();
+    });
+
+    test('returns file unchanged when content has no `import ... from "..."` line', () => {
+        // No import statement → insertAfterLastImport falls through; pages object is also absent so the
+        // pages-splice step is a no-op as well. The function should return the original content.
+        const fileWithoutImports = `function journey() {
+    QUnit.module("Journey");
+}`;
+        const result = splicePageIntoJourneyRunnerTs(fileWithoutImports, [
+            {
+                targetKey: 'NewPage',
+                appPath: 'myApp',
+                template: 'ListReport',
+                appID: 'myApp',
+                componentID: 'NewPage',
+                entitySet: 'New'
+            }
+        ]);
+
+        expect(result).toBe(fileWithoutImports);
+    });
+
+    test('preserves content when there is no `pages: { ... }` object literal', () => {
+        // Imports exist (so the import-insertion path runs) but the `pages: {}` object is missing —
+        // insertIntoPagesObject takes the early-return branch, leaving the import-augmented content as-is.
+        const fileWithoutPagesObject = `import JourneyRunner from "sap/fe/test/JourneyRunner";
+
+const runner = new JourneyRunner({ async: true });
+export default runner;
+`;
+        const result = splicePageIntoJourneyRunnerTs(fileWithoutPagesObject, [
+            {
+                targetKey: 'NewPage',
+                appPath: 'myApp',
+                template: 'ListReport',
+                appID: 'myApp',
+                componentID: 'NewPage',
+                entitySet: 'New'
+            }
+        ]);
+
+        // Imports are augmented but the pages object is untouched (because there isn't one).
+        expect(result).toContain('import CustomNewPage from "./NewPage";');
+        expect(result).toContain('import ListReport from "sap/fe/test/ListReport";');
+        // The original `new JourneyRunner(...)` call is preserved verbatim.
+        expect(result).toContain('const runner = new JourneyRunner({ async: true });');
+        expect(result).not.toContain('onTheNewPage');
+    });
 });
 
 describe('MAX_FILE_CONTENT_LENGTH guard', () => {
@@ -549,8 +825,8 @@ describe('MAX_FILE_CONTENT_LENGTH guard', () => {
 });
 
 describe('hasVirtualOPA5()', () => {
-    const mockGetAllUi5YamlFileNames = getAllUi5YamlFileNames as jest.MockedFunction<typeof getAllUi5YamlFileNames>;
-    const mockReadUi5Yaml = readUi5Yaml as jest.MockedFunction<typeof readUi5Yaml>;
+    const mockGetAllUi5YamlFileNames = getAllUi5YamlFileNamesMock;
+    const mockReadUi5Yaml = readUi5YamlMock;
     const basePath = join('/', 'project');
 
     beforeEach(() => {
@@ -637,5 +913,81 @@ describe('hasVirtualOPA5()', () => {
 
         expect(await hasVirtualOPA5(basePath)).toBe(true);
         expect(mockReadUi5Yaml).toHaveBeenCalledTimes(1);
+    });
+
+    describe('addVirtualTestConfig', () => {
+        const previewYaml = `specVersion: '4.0'
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_fiori_3
+`;
+        const mockYaml = `specVersion: '4.0'
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_fiori_3
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+`;
+        const noPreviewYaml = `specVersion: '4.0'
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: false
+`;
+        let addVirtualTestConfigReal: typeof addVirtualTestConfig;
+        beforeAll(async () => {
+            /**
+             * These tests use unmocked @sap-ux/project-access
+             */
+            jest.unstable_unmockModule('@sap-ux/project-access');
+            jest.resetModules();
+            ({ addVirtualTestConfig: addVirtualTestConfigReal } = await import('../../../src/utils/opaQUnitUtils.js'));
+        });
+
+        it('adds test entries to ui5-mock.yaml', async () => {
+            const fs = create(createStorage());
+            const basePath = '/test/project';
+            fs.write(join(basePath, 'ui5.yaml'), previewYaml);
+            fs.write(join(basePath, 'ui5-local.yaml'), previewYaml);
+            fs.write(join(basePath, 'ui5-mock.yaml'), mockYaml);
+
+            const testFrameworks = [{ framework: 'OPA5' as const, path: '/test/integration/opaTests.qunit.html' }];
+            await addVirtualTestConfigReal(basePath, testFrameworks, fs);
+
+            expect(fs.read(join(basePath, 'ui5-mock.yaml'))).toContain('framework: OPA5');
+        });
+
+        it('skips when ui5-mock.yaml does not exist', async () => {
+            const fs = create(createStorage());
+            const basePath = '/test/project-no-mock';
+            fs.write(join(basePath, 'ui5.yaml'), previewYaml);
+            fs.write(join(basePath, 'ui5-local.yaml'), previewYaml);
+
+            await expect(addVirtualTestConfigReal(basePath, [{ framework: 'OPA5' }], fs)).resolves.not.toThrow();
+            expect(fs.exists(join(basePath, 'ui5-mock.yaml'))).toBe(false);
+        });
+
+        it('skips middleware update when fiori-tools-preview is not present', async () => {
+            const fs = create(createStorage());
+            const basePath = '/test/project-no-preview';
+            fs.write(join(basePath, 'ui5.yaml'), noPreviewYaml);
+            fs.write(join(basePath, 'ui5-local.yaml'), noPreviewYaml);
+            fs.write(join(basePath, 'ui5-mock.yaml'), noPreviewYaml);
+
+            await addVirtualTestConfigReal(basePath, [{ framework: 'OPA5' }], fs);
+            expect(fs.read(join(basePath, 'ui5-mock.yaml'))).not.toContain('framework: OPA5');
+        });
     });
 });

@@ -1,4 +1,4 @@
-﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/fiori-mcp-server/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-mcp-server)
+[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/fiori-mcp-server/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-mcp-server)
 
 # [`@sap-ux/fiori-mcp-server`](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-mcp-server)
 
@@ -16,11 +16,18 @@ The server helps AI models create or modify SAP Fiori applications based on prom
 
 For the best experience we recommend using this server alongside [@cap-js/mcp-server](https://www.npmjs.com/package/@cap-js/mcp-server) and [@ui5/mcp-server](https://www.npmjs.com/package/@ui5/mcp-server).
 
-## [Usage](#usage)
+## [Setup](#setup)
 
-### Method 1: npx
+The server uses `stdio` transport and is launched via `npx` — no global installation required. Pick the section for your MCP client below.
 
-Configure your MCP client to start the server with command `fiori-mcp`. Here is a sample configuration for Cline:
+### Claude Code
+
+**Option A — CLI (recommended):**
+```bash
+claude mcp add fiori-mcp -- npx --yes @sap-ux/fiori-mcp-server@latest fiori-mcp
+```
+
+**Option B — drop a `.mcp.json` file in your project root:**
 ```json
 {
   "mcpServers": {
@@ -28,18 +35,93 @@ Configure your MCP client to start the server with command `fiori-mcp`. Here is 
       "type": "stdio",
       "timeout": 600,
       "command": "npx",
-      "args": ["--yes","@sap-ux/fiori-mcp-server@latest", "fiori-mcp"]
+      "args": ["--yes", "@sap-ux/fiori-mcp-server@latest", "fiori-mcp"]
     }
   }
 }
 ```
-### Method 2: npm
 
-First, install the required package globally using `npm`:
+### Cline
+
+Open the Cline extension settings and add the server under **MCP Servers**:
+
+```json
+{
+  "mcpServers": {
+    "fiori-mcp": {
+      "type": "stdio",
+      "timeout": 600,
+      "command": "npx",
+      "args": ["--yes", "@sap-ux/fiori-mcp-server@latest", "fiori-mcp"]
+    }
+  }
+}
+```
+
+### Cursor
+
+Edit (or create) the MCP config file for your scope:
+
+- **Global:** `~/.cursor/mcp.json`
+- **Project:** `.cursor/mcp.json` in your project root
+
+```json
+{
+  "mcpServers": {
+    "fiori-mcp": {
+      "type": "stdio",
+      "timeout": 600,
+      "command": "npx",
+      "args": ["--yes", "@sap-ux/fiori-mcp-server@latest", "fiori-mcp"]
+    }
+  }
+}
+```
+
+### Windsurf
+
+Edit `~/.codeium/windsurf/mcp_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "fiori-mcp": {
+      "type": "stdio",
+      "timeout": 600,
+      "command": "npx",
+      "args": ["--yes", "@sap-ux/fiori-mcp-server@latest", "fiori-mcp"]
+    }
+  }
+}
+```
+
+### Other clients
+
+For any other MCP client, use the following `npx`-based configuration:
+
+```json
+{
+  "mcpServers": {
+    "fiori-mcp": {
+      "type": "stdio",
+      "timeout": 600,
+      "command": "npx",
+      "args": ["--yes", "@sap-ux/fiori-mcp-server@latest", "fiori-mcp"]
+    }
+  }
+}
+```
+
+### Global npm install (any client)
+
+If you prefer **not** to use `npx`, install the package globally first:
+
 ```bash
 npm install -g @sap-ux/fiori-mcp-server
 ```
-Then, configure your MCP client to start the server with command `fiori-mcp`. Here is a sample configuration for Cline:
+
+Then use `fiori-mcp` as the command (no `args` needed):
+
 ```json
 {
   "mcpServers": {
@@ -54,7 +136,12 @@ Then, configure your MCP client to start the server with command `fiori-mcp`. He
 
 ## [Rules](#rules)
 
-The following rules help guide the LLM to use the server correctly:
+The following rules help guide the AI model to use the server correctly. Add them to your system prompt or rules file:
+
+- **Claude Code:** `AGENTS.md` or `CLAUDE.md` in your project root
+- **Cline:** Custom Instructions in the Cline extension settings
+- **Cursor:** `.cursorrules` in your project root
+- **Windsurf:** Global Rules or project-level `.windsurfrules`
 
 ```markdown
 ## Rules for creation or modification of SAP Fiori elements apps
@@ -71,14 +158,14 @@ The following rules help guide the LLM to use the server correctly:
 - When previewing the SAP Fiori elements application use the most specific `npm run watch-*` script for the app in the `package.json`.
 ```
 
-Add these rules to your existing global or project-specific [`AGENTS.md`](https://agents.md/) (specifics may vary based on respective MCP client).
-
 ## [Available Tools](#available-tools)
 
 #### `search_docs`
 Searches SAP Fiori elements, Annotations, UI5, SAP Fiori tools documentation for the given query.
 
 Note: the results are based on the most recent indexed version of UI5 documentation
+
+> **First-use download:** `search_docs` uses a local text-embedding model (`all-MiniLM-L6-v2`, ~86 MB) for semantic search. The model is downloaded from HuggingFace Hub on first use and cached locally (location follows the `HF_HOME` / `TRANSFORMERS_CACHE` environment variables, defaulting to `~/.cache/huggingface/hub`). Subsequent starts load the model from the cache with no network access required.
 
 #### `list_fiori_apps`
 Scans a specified directory to find existing SAP Fiori applications that can be modified.

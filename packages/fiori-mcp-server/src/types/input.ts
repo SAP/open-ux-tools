@@ -1,5 +1,5 @@
 import * as zod from 'zod';
-import { FunctionalityIdSchema } from './basic';
+import { FunctionalityIdSchema } from './basic.js';
 
 /**
  * Input interface for the 'list_fiori_apps' functionality

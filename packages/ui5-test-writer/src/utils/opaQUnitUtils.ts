@@ -6,8 +6,13 @@
 
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
-import { readHashFromFlpSandbox } from './flpSandboxUtils';
-import { getAllUi5YamlFileNames, readUi5Yaml } from '@sap-ux/project-access';
+import { readHashFromFlpSandbox } from './flpSandboxUtils.js';
+import { getAllUi5YamlFileNames, readUi5Yaml, FileName } from '@sap-ux/project-access';
+import { DotFileExtension } from '../types.js';
+import type {
+    TestConfig as PreviewMiddlewareTestConfig,
+    MiddlewareConfig as PreviewMiddlewareConfig
+} from '@sap-ux/preview-middleware';
 
 /** Relative path from the test output directory to opaTests.qunit.js */
 const OPA_QUNIT_FILE = join('integration', 'opaTests.qunit.js');
@@ -30,6 +35,14 @@ const SAP_UI_REQUIRE_ARRAY_REGEX = /sap\.ui\.require\s*\(\s*\[([^\]]*)\]\s*,\s*f
 
 /** ReDoS mitigation: files larger than this are returned unchanged rather than matched with regex. */
 const MAX_FILE_CONTENT_LENGTH = 10000;
+
+/**
+ * Escapes regex metacharacters in a string so it can be safely embedded in a `RegExp` pattern.
+ *
+ * @param value - the string to escape
+ * @returns the escaped string
+ */
+const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
 
 /**
  * Splices new module paths into the sap.ui.require array of the content string.
@@ -182,17 +195,33 @@ export function addPathsToQUnitJs(filePaths: string[], projectPath: string, fs: 
     }
 }
 
-/** Relative path from the test output directory to JourneyRunner.js */
-const JOURNEY_RUNNER_FILE = join('integration', 'pages', 'JourneyRunner.js');
+/**
+ * Builds the relative path from the test output directory to the JourneyRunner file.
+ *
+ * @param dotFileExtension - file extension ('.ts' or '.js')
+ * @returns the relative path
+ */
+const getJourneyRunnerFilePath = (dotFileExtension: DotFileExtension): string =>
+    join('integration', 'pages', `JourneyRunner${dotFileExtension}`);
 
 /**
- * Page entry to splice into an existing JourneyRunner.js.
+ * Page entry to splice into an existing JourneyRunner.js / JourneyRunner.ts.
  */
 export interface JourneyRunnerPage {
     /** The page's targetKey, used as both the variable name and `onThe<targetKey>` key */
     targetKey: string;
     /** The app module path prefix (e.g. "project1/test/integration/pages") */
     appPath: string;
+    /** The framework page template (`'ListReport'` or `'ObjectPage'`); used by the TS splicer to construct `new <FW>(definition, Custom<Page>)`. */
+    template?: string;
+    /** The app id (sap.app.id from the manifest); only needed by the TS splicer. */
+    appID?: string;
+    /** The component id (defined in the target section); only needed by the TS splicer. */
+    componentID?: string;
+    /** The entity set name (if the page uses an entitySet rather than a contextPath); only needed by the TS splicer. */
+    entitySet?: string;
+    /** The context path (if the page uses a contextPath rather than an entitySet); only needed by the TS splicer. */
+    contextPath?: string;
 }
 
 /**
@@ -291,36 +320,215 @@ export function splicePageIntoJourneyRunner(fileContent: string, pages: JourneyR
 }
 
 /**
- * Reads JourneyRunner.js from the project, adds new page entries to all three
- * locations (define array, function params, pages object), and writes the updated
- * content back. Pages already present are skipped.
+ * Filters the input page list down to those whose `Custom<targetKey>` import line is not yet
+ * present in the existing JourneyRunner.ts content.
+ *
+ * @param fileContent - the existing JourneyRunner.ts content
+ * @param pages - the candidate pages to splice in
+ * @returns the subset of pages that need to be added
+ */
+function findPagesToAdd(fileContent: string, pages: JourneyRunnerPage[]): JourneyRunnerPage[] {
+    return pages.filter((page) => {
+        const importPattern = new RegExp(String.raw`from\s+"\./${escapeRegex(page.targetKey)}"`);
+        return !importPattern.test(fileContent);
+    });
+}
+
+/**
+ * Returns the offset of the character immediately after the last `import ... from "..."` line in
+ * the given content, or -1 if no import line is found.
+ *
+ * Uses `\b` word boundaries (zero-width) around `import` and `from` so the `[^\n]*?` middle
+ * quantifier doesn't sit next to another quantifier that could match the same characters. This
+ * avoids the consecutive-overlapping-quantifier shape that triggers catastrophic backtracking.
+ *
+ * @param content - the file content to scan
+ * @returns the index immediately after the last import line, or -1 if none found
+ */
+function findLastImportEnd(content: string): number {
+    const importLineRegex = /^import\b[^\n]*?\bfrom[ \t]+["'][^"']+["'];?[ \t]*$/gm;
+    let lastImportEnd = -1;
+    let importMatch: RegExpExecArray | null;
+    while ((importMatch = importLineRegex.exec(content)) !== null) {
+        lastImportEnd = importMatch.index + importMatch[0].length;
+    }
+    return lastImportEnd;
+}
+
+/**
+ * Walks forward from the opening `{` of a `pages: { ... }` object literal, counting braces, and
+ * returns the index of the matching closing `}`. The pages object now contains nested `{}` (the
+ * page-definition object) so a regex with `[^}]*` would stop at the first inner closing brace.
+ *
+ * @param content - the file content
+ * @param openBraceIdx - the index of the `{` that opens the pages object
+ * @returns the index of the matching closing `}` (or `content.length` if not found)
+ */
+function findMatchingClosingBrace(content: string, openBraceIdx: number): number {
+    let depth = 1;
+    let i = openBraceIdx + 1;
+    while (i < content.length && depth > 0) {
+        const ch = content[i];
+        if (ch === '{') {
+            depth++;
+        } else if (ch === '}') {
+            depth--;
+        }
+        if (depth === 0) {
+            break;
+        }
+        i++;
+    }
+    return i;
+}
+
+/**
+ * Builds the source-code block for a single new entry in the `pages: { ... }` object literal.
+ *
+ * @param page - the page to render
+ * @param pageIndent - leading whitespace for the entry's outer line
+ * @param innerIndent - leading whitespace for the entry's nested lines
+ * @returns the multi-line source block
+ */
+function buildPageEntry(page: JourneyRunnerPage, pageIndent: string, innerIndent: string): string {
+    const fw = page.template ?? 'ListReport';
+    return [
+        `${pageIndent}onThe${page.targetKey}: new ${fw}(`,
+        `${innerIndent}{`,
+        `${innerIndent}    appId: "${page.appID ?? ''}",`,
+        `${innerIndent}    componentId: "${page.componentID ?? ''}",`,
+        `${innerIndent}    entitySet: "${page.entitySet ?? ''}",`,
+        `${innerIndent}    contextPath: "${page.contextPath ?? ''}"`,
+        `${innerIndent}},`,
+        `${innerIndent}Custom${page.targetKey}`,
+        `${pageIndent})`
+    ].join('\n');
+}
+
+/**
+ * Inserts the given import lines after the last existing `import` line in `content`. If `content`
+ * has no `import` lines, returns it unchanged.
+ *
+ * @param content - the file content
+ * @param newImportLines - the import lines to insert (each should NOT include a leading newline)
+ * @returns the updated content
+ */
+function insertAfterLastImport(content: string, newImportLines: string[]): string {
+    if (newImportLines.length === 0) {
+        return content;
+    }
+    const lastImportEnd = findLastImportEnd(content);
+    if (lastImportEnd < 0) {
+        return content;
+    }
+    const newImports = newImportLines.map((line) => `\n${line}`).join('');
+    return `${content.slice(0, lastImportEnd)}${newImports}${content.slice(lastImportEnd)}`;
+}
+
+/**
+ * Inserts the given new page entries inside the `pages: { ... }` object literal of `content`. If
+ * `content` has no `pages: {` block, returns it unchanged.
+ *
+ * @param content - the file content
+ * @param toAdd - the pages to add
+ * @returns the updated content
+ */
+function insertIntoPagesObject(content: string, toAdd: JourneyRunnerPage[]): string {
+    const pagesStartMatch = /pages\s*:\s*\{/.exec(content);
+    if (!pagesStartMatch) {
+        return content;
+    }
+    const openBraceIdx = content.indexOf('{', pagesStartMatch.index);
+    const pagesBodyEnd = findMatchingClosingBrace(content, openBraceIdx);
+    const pagesBody = content.slice(openBraceIdx + 1, pagesBodyEnd);
+
+    // Detect indentation from the first existing page entry
+    const pageIndentMatch = /^([ \t]+)on/m.exec(pagesBody);
+    const pageIndent = pageIndentMatch ? pageIndentMatch[1] : '        ';
+    const innerIndent = pageIndent + '    ';
+
+    const newPageEntries = toAdd.map((page) => buildPageEntry(page, pageIndent, innerIndent)).join(',\n');
+
+    // Ensure the last existing entry ends with a comma before we insert after it.
+    const trimmedPagesEnd = content.slice(0, pagesBodyEnd).trimEnd();
+    const needsComma = !trimmedPagesEnd.endsWith(',') && !trimmedPagesEnd.endsWith('{');
+    const commaFix = needsComma ? ',' : '';
+    const trailingWhitespace = content.slice(trimmedPagesEnd.length, pagesBodyEnd);
+    return `${trimmedPagesEnd}${commaFix}\n${newPageEntries}${trailingWhitespace}${content.slice(pagesBodyEnd)}`;
+}
+
+/**
+ * Splices new page entries into an existing TypeScript JourneyRunner.ts:
+ * - adds a default-import line after the last existing page import
+ * - adds an entry inside the `pages: { ... }` object literal
+ *
+ * Pages already present (detected by their import line) are skipped.
+ * All other content — formatting, comments, whitespace — is preserved exactly.
+ *
+ * Note: files exceeding MAX_FILE_CONTENT_LENGTH characters are returned unchanged to prevent
+ * ReDoS on crafted inputs. Valid generated files are well within this limit.
+ *
+ * @param fileContent - the full content of the JourneyRunner.ts file
+ * @param pages - pages to add
+ * @returns the updated file content, or the original content unchanged if nothing was added
+ */
+export function splicePageIntoJourneyRunnerTs(fileContent: string, pages: JourneyRunnerPage[]): string {
+    if (fileContent.length > MAX_FILE_CONTENT_LENGTH) {
+        return fileContent;
+    }
+    const toAdd = findPagesToAdd(fileContent, pages);
+    if (toAdd.length === 0) {
+        return fileContent;
+    }
+
+    // Determine which framework imports (ListReport / ObjectPage) are missing and need to be added.
+    const frameworkTemplates = Array.from(
+        new Set(toAdd.map((page) => page.template).filter((t): t is string => Boolean(t)))
+    );
+    const missingFrameworkImports = frameworkTemplates.filter(
+        (tpl) => !fileContent.includes(`from "sap/fe/test/${tpl}"`)
+    );
+
+    const newImportLines = [
+        ...missingFrameworkImports.map((tpl) => `import ${tpl} from "sap/fe/test/${tpl}";`),
+        ...toAdd.map((page) => `import Custom${page.targetKey} from "./${page.targetKey}";`)
+    ];
+
+    const withImports = insertAfterLastImport(fileContent, newImportLines);
+    return insertIntoPagesObject(withImports, toAdd);
+}
+
+/**
+ * Reads JourneyRunner from the project, adds new page entries, and writes the updated
+ * content back. Pages already present are skipped. Both AMD (`.js`) and ES module
+ * (`.ts`) variants are supported and dispatched on `dotFileExtension`.
  *
  * @param pages - pages to add
  * @param testOutDirPath - path to the test output directory (`.../webapp/test`)
  * @param fs - mem-fs-editor instance used to read and write the file
+ * @param dotFileExtension - file extension of the JourneyRunner ('.ts' or '.js'); defaults to '.js'
  */
-export function addPagesToJourneyRunner(pages: JourneyRunnerPage[], testOutDirPath: string, fs: Editor): void {
+export function addPagesToJourneyRunner(
+    pages: JourneyRunnerPage[],
+    testOutDirPath: string,
+    fs: Editor,
+    dotFileExtension: DotFileExtension = DotFileExtension.JS
+): void {
+    if (pages.length === 0) {
+        return;
+    }
     try {
-        const filePath = join(testOutDirPath, JOURNEY_RUNNER_FILE);
+        const filePath = join(testOutDirPath, getJourneyRunnerFilePath(dotFileExtension));
         const content = fs.read(filePath);
-        const updated = splicePageIntoJourneyRunner(content, pages);
+        const splice =
+            dotFileExtension === DotFileExtension.TS ? splicePageIntoJourneyRunnerTs : splicePageIntoJourneyRunner;
+        const updated = splice(content, pages);
         if (updated !== content) {
             fs.write(filePath, updated);
         }
     } catch {
         // If the file doesn't exist or can't be read, do nothing
     }
-}
-
-/** Shape of one entry in the `test` array of a `fiori-tools-preview` middleware configuration */
-interface PreviewTestEntry {
-    framework?: string;
-    path?: string;
-}
-
-/** Shape of the `fiori-tools-preview` middleware configuration relevant to OPA5 detection */
-interface PreviewMiddlewareConfig {
-    test?: PreviewTestEntry[];
 }
 
 /**
@@ -345,4 +553,30 @@ export async function hasVirtualOPA5(basePath: string): Promise<boolean> {
         }
     }
     return false;
+}
+
+/**
+ * Updates the fiori-tools-preview middleware in ui5-mock.yaml to support virtual OPA test endpoints.
+ * Adds test framework entries to ui5-mock.yaml.
+ *
+ * @param basePath - the absolute target path of the application
+ * @param testFrameworks - the test framework entries to add to ui5-mock.yaml
+ * @param fs - the memfs editor instance
+ */
+export async function addVirtualTestConfig(
+    basePath: string,
+    testFrameworks: PreviewMiddlewareTestConfig[],
+    fs: Editor
+): Promise<void> {
+    const yamlPath = join(basePath, FileName.Ui5MockYaml);
+    if (!fs.exists(yamlPath)) {
+        return;
+    }
+    const yamlConfig = await readUi5Yaml(basePath, FileName.Ui5MockYaml, fs);
+    const previewMiddleware = yamlConfig.findCustomMiddleware<PreviewMiddlewareConfig>('fiori-tools-preview');
+    if (previewMiddleware?.configuration && !previewMiddleware.configuration.test?.length) {
+        previewMiddleware.configuration.test = [...testFrameworks];
+        yamlConfig.updateCustomMiddleware(previewMiddleware);
+        fs.write(yamlPath, yamlConfig.toString());
+    }
 }

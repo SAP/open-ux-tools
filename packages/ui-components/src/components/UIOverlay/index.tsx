@@ -1,1 +1,1 @@
-export * from './UIOverlay';
+export * from './UIOverlay.js';

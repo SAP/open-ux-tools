@@ -3,22 +3,23 @@
     "displayName": "Control Property Editor",
     "description": "Control Property Editor",
     "license": "Apache-2.0",
-    "version": "0.7.25",
+    "version": "1.0.5",
     "main": "dist/app.js",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/control-property-editor"
     },
+    "type": "module",
     "private": false,
     "scripts": {
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "build": "npm-run-all -l -s clean -p build:compile build:webapp",
         "build:compile": "tsc --noEmit",
-        "build:webapp": "node esbuild.js",
+        "build:webapp": "node esbuild.mjs",
         "watch": "npm-run-all -p watch:*",
-        "watch:webapp": "node esbuild.js --watch --minify=false",
-        "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
+        "watch:webapp": "node esbuild.mjs --watch --minify=false",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
         "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --colors",
         "lint": "eslint",
         "lint:fix": "eslint --fix"
@@ -26,6 +27,7 @@
     "devDependencies": {
         "@fluentui/react": "8.125.5",
         "@fluentui/react-hooks": "8.10.2",
+        "@jest/globals": "30.3.0",
         "@reduxjs/toolkit": "1.6.1",
         "@sap-ux/ui-components": "workspace:*",
         "@testing-library/jest-dom": "6.9.1",
@@ -64,6 +66,6 @@
         "uuid": "11.1.1"
     },
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

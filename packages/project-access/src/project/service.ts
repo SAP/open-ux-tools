@@ -1,7 +1,12 @@
 import { dirname, join } from 'node:path';
-import type { Manifest, ManifestNamespace, ServiceSpecification } from '../types';
-import { readJSON } from '../file';
+import type { Manifest, ManifestNamespace, ServiceSpecification } from '../types/index.js';
+import { readJSON } from '../file/index.js';
 import type { Editor } from 'mem-fs-editor';
+
+export interface UsedEntity {
+    service: string;
+    entity: string;
+}
 
 /**
  * Get the main service name from the manifest.
@@ -99,4 +104,76 @@ export function filterDataSourcesByType(
     type: string
 ): Record<string, ManifestNamespace.DataSource> {
     return Object.fromEntries(Object.entries(dataSources).filter(([, data]) => data.type === type));
+}
+
+/**
+ * Extracts view paths from target settings if present.
+ *
+ * @param settings - target settings object
+ * @returns - array of view path entries, or empty array if not present
+ */
+function getViewPaths(settings: object): unknown[] {
+    if (
+        'views' in settings &&
+        settings.views &&
+        typeof settings.views === 'object' &&
+        'paths' in settings.views &&
+        Array.isArray(settings.views.paths)
+    ) {
+        return settings.views.paths;
+    }
+    return [];
+}
+
+/**
+ * Find used service entities by analyzing manifest.json
+ * Currently we do not return entities for Fiori element V2 apps and entities for Fiori Elements V4 apps that use contextPath instead of entitySet
+ *
+ * @param manifest - parsed manifest.json
+ * @returns - array of used entities, each with service URI and entity name
+ */
+export function getUsedEntitiesFromManifest(manifest: Manifest): UsedEntity[] {
+    const targets = manifest['sap.ui5']?.routing?.targets;
+    if (!targets || typeof targets !== 'object') {
+        return [];
+    }
+    const mainService = getMainService(manifest) ?? '';
+    const mainServiceUri = manifest['sap.app']?.dataSources?.[mainService]?.uri ?? '';
+    const seen = new Set<string>();
+    const usedEntities: UsedEntity[] = [];
+
+    const addEntity = (entitySet: unknown): void => {
+        if (typeof entitySet !== 'string') {
+            return;
+        }
+        const key = `${mainServiceUri}${entitySet}`;
+        if (!seen.has(key)) {
+            seen.add(key);
+            usedEntities.push({ service: mainServiceUri, entity: entitySet });
+        }
+    };
+
+    for (const targetName in targets) {
+        const target = targets[targetName];
+        // Resolve settings object with multiple safe checks
+        const settings =
+            target.options && typeof target.options === 'object' && 'settings' in target.options
+                ? target.options.settings
+                : undefined;
+        if (!settings || typeof settings !== 'object') {
+            continue;
+        }
+        // Resolve entitySet from page
+        if ('entitySet' in settings) {
+            addEntity(settings.entitySet);
+        }
+        // Resolve entitySet from page views
+        const viewPaths = getViewPaths(settings);
+        for (const path of viewPaths) {
+            if (path && typeof path === 'object' && 'entitySet' in path) {
+                addEntity(path.entitySet);
+            }
+        }
+    }
+    return usedEntities;
 }
