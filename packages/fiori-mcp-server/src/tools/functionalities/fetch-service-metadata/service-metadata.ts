@@ -16,16 +16,17 @@ const SAP_TOOLS_BASE_DIRECTORY = process.env.SAP_TOOLS_DIR || getSapToolsDirecto
 /**
  * Fetches SAP backend systems.
  *
+ * @param includeSensitiveData - Whether to include sensitive fields (credentials). Defaults to false.
  * @returns A promise that resolves to an array of BackendSystem objects.
  */
-export async function getSapSystems(): Promise<BackendSystem[]> {
+export async function getSapSystems(includeSensitiveData = false): Promise<BackendSystem[]> {
     const logger = new ToolsLogger({ logPrefix: 'fiori-mcp-server' });
     const systemStore = await getService<BackendSystem, BackendSystemKey>({
         logger: logger,
         entityName: 'system',
         options: { baseDirectory: SAP_TOOLS_BASE_DIRECTORY }
     });
-    return systemStore.getAll({ includeSensitiveData: true });
+    return systemStore.getAll({ includeSensitiveData });
 }
 
 /**
@@ -84,7 +85,7 @@ function matchSystemByUrl(systems: BackendSystem[], url: string): BackendSystem[
  * @returns The matching system if found.
  */
 export async function findSapSystem(query: string): Promise<BackendSystem> {
-    const systems = await getSapSystems();
+    const systems = await getSapSystems(true);
 
     // try exact match
     let matchingSystems = systems.filter((s) => s.name === query);
