@@ -2,7 +2,7 @@
 "@sap-ux/ui5-test-writer": minor
 ---
 
-fix(ui5-test-writer): rework standalone OPA regeneration to preserve user files
+FEAT: Rework standalone OPA regeneration to preserve user files
 
 Standalone OPA regeneration (`generateOPAFiles(..., standalone=true)`) no longer relocates an existing `integration/` folder to `integration_old/`. Instead the generator now coexists with the existing setup:
 
