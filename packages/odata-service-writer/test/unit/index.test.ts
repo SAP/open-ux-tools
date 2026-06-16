@@ -125,32 +125,37 @@ describe('generate', () => {
                 fs
             );
             expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toMatchInlineSnapshot(`
-                            "resources:
-                              configuration: {}
-                            server:
-                              customMiddleware:
-                                - name: fiori-tools-proxy
-                                  afterMiddleware: compression
-                                  configuration:
-                                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-                                    backend:
-                                      - path: /sap
-                                        url: https://localhost/updated
-                                - name: sap-fe-mockserver
-                                  beforeMiddleware: csp
-                                  configuration:
-                                    mountPath: /
-                                    services:
-                                      - urlPath: /sap
-                                        metadataPath: ./webapp/localService/mainService/metadata.xml
-                                        mockdataPath: ./webapp/localService/mainService/data
-                                        generateMockData: true
-                                        resolveExternalServiceReferences: true
-                                    annotations:
-                                      - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
-                                        urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
-                            "
-                    `);
+                "resources:
+                  configuration: {}
+                builder:
+                  resources:
+                    excludes:
+                      - /test/**
+                      - /localService/**
+                server:
+                  customMiddleware:
+                    - name: fiori-tools-proxy
+                      afterMiddleware: compression
+                      configuration:
+                        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                        backend:
+                          - path: /sap
+                            url: https://localhost/updated
+                    - name: sap-fe-mockserver
+                      beforeMiddleware: csp
+                      configuration:
+                        mountPath: /
+                        services:
+                          - urlPath: /sap
+                            metadataPath: ./webapp/localService/mainService/metadata.xml
+                            mockdataPath: ./webapp/localService/mainService/data
+                            generateMockData: true
+                            resolveExternalServiceReferences: true
+                        annotations:
+                          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
+                            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+                "
+            `);
             // Value List references are saved
             expect(
                 fs.read(
@@ -570,6 +575,11 @@ describe('generate', () => {
                             apiHub: true
                             scp: false
                             pathPrefix: /~prefix
+                builder:
+                  resources:
+                    excludes:
+                      - /test/**
+                      - /localService/**
                 "
             `);
             // verify the updated package.json

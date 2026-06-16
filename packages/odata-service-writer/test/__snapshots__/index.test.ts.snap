@@ -22,7 +22,12 @@ Object {
     "state": "modified",
   },
   "ui5-local.yaml": Object {
-    "contents": "server:
+    "contents": "builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+server:
   customMiddleware:
     - name: fiori-tools-proxy
       afterMiddleware: compression
@@ -73,6 +78,11 @@ Object {
         annotations:
           - localPath: ./webapp/localService/mainService/sepmra_annotations_tech_name.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='sepmra_annotations_tech_name',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -91,6 +101,11 @@ Object {
         backend:
           - path: /sap
             url: http://localhost
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -2802,7 +2817,12 @@ Object {
     "state": "modified",
   },
   "ui5-local.yaml": Object {
-    "contents": "server:
+    "contents": "builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+server:
   customMiddleware:
     - name: fiori-tools-proxy
       afterMiddleware: compression
@@ -2853,6 +2873,11 @@ Object {
         annotations:
           - localPath: ./webapp/localService/mainService/SEPM_XYZ_SERVICE.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='%2FSEPM_XYZ%2FSERVICE',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -2871,6 +2896,11 @@ Object {
         backend:
           - path: /sap
             url: http://localhost
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
