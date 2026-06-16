@@ -210,8 +210,8 @@ function sortPageAggregationChildren(pageElement: Node): void {
     const allChildren = Array.from(pageElement.childNodes);
     const aggNames = PAGE_AGGREGATIONS as readonly string[];
 
-    // Build pairs of [preceding comments, element] to preserve all user comments.
-    // The PAGE_TEMPLATE_COMMENT is treated as a leading comment and will remain before all aggregation elements.
+    // Build pairs of [preceding comments, element] to preserve user comments.
+    // Comments that appear before the first element are treated as leading and will remain before all aggregation elements.
     type NodeGroup = { comments: Node[]; element: Element; originalIndex: number };
     const groups: NodeGroup[] = [];
     const leadingComments: Node[] = [];
