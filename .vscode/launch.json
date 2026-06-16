@@ -656,7 +656,8 @@
             },
             "cwd": "${workspaceFolder}/packages/fiori-annotation-api",
             "env": {
-                "UX_DEBUG": "false"
+                "UX_DEBUG": "false",
+                "NODE_OPTIONS": "--experimental-vm-modules"
             }
         },
         {
