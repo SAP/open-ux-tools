@@ -1,11 +1,11 @@
-import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types/index.js';
-import type { GeneratorConfigOData, GeneratorConfigODataWithAPI } from '../../schemas/index.js';
+import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../types/index.js';
+import type { GeneratorConfigOData, GeneratorConfigODataWithAPI } from './schemas/index.js';
 
 import { promises as FSpromises, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { generatorConfigOData, PREDEFINED_GENERATOR_VALUES } from '../../schemas/index.js';
-import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../../../utils/index.js';
-import details from './details.js';
+import { generatorConfigOData, PREDEFINED_GENERATOR_VALUES } from './schemas/index.js';
+import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../utils/index.js';
+import { GENERATE_FIORI_UI_APPLICATION_ID } from '../constant.js';
 
 /**
  * Method to generate fiori app.
@@ -60,7 +60,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
     } catch (error) {
         logger.error(`Error generating application: ${error}`);
         return {
-            functionalityId: details.functionalityId,
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
             status: 'Error',
             message: 'Error generating application: ' + error.message,
             parameters: params.parameters,
@@ -79,7 +79,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
     }
 
     return {
-        functionalityId: details.functionalityId,
+        functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
         status: 'Success',
         message: `Generation completed successfully. You must run \`npm install\` in ${appPath} first, and then run the application using \`npm run start\`.`,
         parameters: params.parameters,

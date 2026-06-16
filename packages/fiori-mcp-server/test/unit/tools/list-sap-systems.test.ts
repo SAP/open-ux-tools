@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 
 const mockGetSapSystems = jest.fn<any>();
 
-jest.unstable_mockModule('../../../src/tools/functionalities/fetch-service-metadata/service-metadata', () => ({
+jest.unstable_mockModule('../../../src/tools/services/sap-system', () => ({
     getSapSystems: mockGetSapSystems
 }));
 

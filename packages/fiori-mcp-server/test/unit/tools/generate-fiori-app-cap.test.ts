@@ -3,7 +3,7 @@ import { jest } from '@jest/globals';
 const mockCapCommand = jest.fn<any>();
 const mockParse = jest.fn<any>();
 
-jest.unstable_mockModule('../../../src/tools/functionalities/generate-fiori-ui-application-cap/command', () => ({
+jest.unstable_mockModule('../../../src/tools/generate-fiori-app-cap-impl', () => ({
     command: mockCapCommand
 }));
 jest.unstable_mockModule('../../../src/tools/schemas/index', () => ({

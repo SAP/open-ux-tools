@@ -1,11 +1,11 @@
 import { jest } from '@jest/globals';
-import type { ExecuteFunctionalityInput } from '../../../../../src/types/index.js';
+import type { ExecuteFunctionalityInput } from '../../../src/types/index.js';
 import path from 'node:path';
 
 // Mock dependencies
 const mockFindSapSystem = jest.fn<any>();
 const mockGetServiceMetadata = jest.fn<any>();
-jest.unstable_mockModule('../../../../../src/tools/functionalities/fetch-service-metadata/service-metadata', () => ({
+jest.unstable_mockModule('../../../src/tools/services/sap-system', () => ({
     findSapSystem: mockFindSapSystem,
     getServiceMetadata: mockGetServiceMetadata
 }));
@@ -30,7 +30,7 @@ jest.unstable_mockModule('fs', () => ({
 }));
 
 const { default: executeFunctionality } =
-    await import('../../../../../src/tools/functionalities/fetch-service-metadata/execute-functionality.js');
+    await import('../../../src/tools/download-odata-service-metadata-impl.js');
 
 describe('execute-functionality', () => {
     const mockAppPath = '/test/app/path';

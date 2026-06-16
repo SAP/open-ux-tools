@@ -1,9 +1,9 @@
-import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types/index.js';
+import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../types/index.js';
 
 import path from 'node:path';
 import fs from 'node:fs';
-import { getServiceMetadata, findSapSystem } from './service-metadata.js';
-import details from './details.js';
+import { getServiceMetadata, findSapSystem } from './services/sap-system.js';
+import { FETCH_SERVICE_METADATA_ID } from '../constant.js';
 
 /**
  * Executes the tool's functionality.
@@ -17,7 +17,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
 
     if (!servicePath) {
         return {
-            functionalityId: details.functionalityId,
+            functionalityId: FETCH_SERVICE_METADATA_ID,
             status: 'Error',
             message: 'Missing required parameter: servicePath',
             parameters: params.parameters,
@@ -34,7 +34,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
         fs.writeFileSync(metadataFilePath, metadata, 'utf-8');
 
         return {
-            functionalityId: details.functionalityId,
+            functionalityId: FETCH_SERVICE_METADATA_ID,
             status: 'Success',
             message: 'Fetched systems successfully.',
             changes: [],
@@ -49,7 +49,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
         };
     } catch (error) {
         return {
-            functionalityId: details.functionalityId,
+            functionalityId: FETCH_SERVICE_METADATA_ID,
             status: 'Error',
             message: error?.message ?? String(error),
             parameters: params.parameters,

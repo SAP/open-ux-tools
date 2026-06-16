@@ -4,7 +4,7 @@ const mockExecuteODataDefault = jest.fn<any>();
 const mockParse = jest.fn<any>();
 
 jest.unstable_mockModule(
-    '../../../src/tools/functionalities/generate-fiori-ui-application/execute-functionality',
+    '../../../src/tools/generate-fiori-app-odata-impl',
     () => ({
         default: mockExecuteODataDefault
     })

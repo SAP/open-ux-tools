@@ -1,5 +1,5 @@
 import type { ExecuteFunctionalityOutput } from '../types/index.js';
-import { command } from './functionalities/generate-fiori-ui-application-cap/command.js';
+import { command } from './generate-fiori-app-cap-impl.js';
 import { generatorConfigCAP, type GeneratorConfigCAP } from './schemas/index.js';
 import { GENERATE_FIORI_UI_APPLICATION_CAP_ID } from '../constant.js';
 

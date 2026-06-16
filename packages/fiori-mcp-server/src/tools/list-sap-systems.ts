@@ -1,4 +1,4 @@
-import { getSapSystems } from './functionalities/fetch-service-metadata/service-metadata.js';
+import { getSapSystems } from './services/sap-system.js';
 
 /**
  * Lists all SAP systems stored in the user's environment.

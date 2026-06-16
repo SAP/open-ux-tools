@@ -1,5 +1,5 @@
 import type { ExecuteFunctionalityOutput } from '../types/index.js';
-import executeOData from './functionalities/generate-fiori-ui-application/execute-functionality.js';
+import executeOData from './generate-fiori-app-odata-impl.js';
 import { generatorConfigOData, type GeneratorConfigOData } from './schemas/index.js';
 import { GENERATE_FIORI_UI_APPLICATION_ID } from '../constant.js';
 

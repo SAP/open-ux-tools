@@ -1,5 +1,5 @@
 import type { ExecuteFunctionalityOutput, DownloadODataServiceMetadataInput } from '../types/index.js';
-import executeFetchServiceMetadata from './functionalities/fetch-service-metadata/execute-functionality.js';
+import executeFetchServiceMetadata from './download-odata-service-metadata-impl.js';
 import { FETCH_SERVICE_METADATA_ID } from '../constant.js';
 
 /**

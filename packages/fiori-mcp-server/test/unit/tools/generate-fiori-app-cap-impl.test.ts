@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { ExecuteFunctionalityInput } from '../../../../../src/types/index.js';
-import type { GeneratorConfigCAPWithAPI } from '../../../../../src/tools/schemas/index.js';
+import type { ExecuteFunctionalityInput } from '../../../src/types/index.js';
+import type { GeneratorConfigCAPWithAPI } from '../../../src/tools/schemas/index.js';
 import { existsSync, promises as fsPromises } from 'node:fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -33,24 +33,15 @@ jest.unstable_mockModule('node:child_process', () => ({
     exec: (...args: any) => mockExec(...args)
 }));
 
-const { GENERATE_FIORI_UI_APPLICATION_CAP, generateFioriUIApplicationCapHandlers } =
-    await import('../../../../../src/tools/functionalities/generate-fiori-ui-application-cap/index.js');
+const { command } = await import('../../../src/tools/generate-fiori-app-cap-impl.js');
+const { GENERATE_FIORI_UI_APPLICATION_CAP_ID } = await import('../../../src/constant.js');
 
 // Read package.json for version
-const packageJsonModule = await import('../../../../../package.json', { with: { type: 'json' } });
+const packageJsonModule = await import('../../../package.json', { with: { type: 'json' } });
 const packageJson = packageJsonModule.default;
 
-const testOutputDir = join(__dirname, '../../../../test-output/');
+const testOutputDir = join(__dirname, '../../test-output/');
 
-describe('getFunctionalityDetails', () => {
-    test('getFunctionalityDetails', async () => {
-        const details = await generateFioriUIApplicationCapHandlers.getFunctionalityDetails({
-            appPath: join(testOutputDir, 'app1'),
-            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP.functionalityId
-        });
-        expect(details).toMatchSnapshot();
-    });
-});
 const paramTest: GeneratorConfigCAPWithAPI = {
     floorplan: 'FE_LROP',
     version: '0.2',
@@ -104,9 +95,9 @@ describe('executeFunctionality', () => {
         mockFileWrite((content) => {
             generatedConfigContent = content;
         });
-        const result = await generateFioriUIApplicationCapHandlers.executeFunctionality({
+        const result = await command({
             appPath: join(testOutputDir, 'app1'),
-            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP.functionalityId,
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
             parameters: paramTest
         });
         expect(result).toEqual(
@@ -201,9 +192,9 @@ describe('executeFunctionality', () => {
         mockFileWrite((content) => {
             generatedConfigContent = content;
         });
-        await generateFioriUIApplicationCapHandlers.executeFunctionality({
+        await command({
             appPath: join(testOutputDir, 'app1'),
-            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP.functionalityId,
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
             parameters: {
                 ...paramTest,
                 floorplan: 'FF_SIMPLE'
@@ -221,9 +212,9 @@ describe('executeFunctionality', () => {
         mockFileWrite((content) => {
             generatedConfigContent = content;
         });
-        const result = await generateFioriUIApplicationCapHandlers.executeFunctionality({
+        const result = await command({
             appPath: join(testOutputDir, 'app1'),
-            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP.functionalityId,
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
             parameters: {
                 floorplan: 'FF_SIMPLE',
                 project: {
@@ -247,9 +238,9 @@ describe('executeFunctionality', () => {
         mockExec.mockImplementation((cmd, opts, callback) => {
             throw new Error('Dummy');
         });
-        const result = await generateFioriUIApplicationCapHandlers.executeFunctionality({
+        const result = await command({
             appPath: join(testOutputDir, 'app1'),
-            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP.functionalityId,
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
             parameters: paramTest
         });
         expect(result).toEqual(
@@ -270,9 +261,9 @@ describe('executeFunctionality', () => {
             throw new Error('Dummy');
         });
         await expect(
-            generateFioriUIApplicationCapHandlers.executeFunctionality({
+            command({
                 appPath: '',
-                functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP.functionalityId,
+                functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
                 parameters: {}
             })
         ).rejects.toThrowErrorMatchingInlineSnapshot(`
@@ -373,9 +364,9 @@ describe('executeFunctionality', () => {
             throw new Error('Dummy');
         });
         await expect(
-            generateFioriUIApplicationCapHandlers.executeFunctionality({
+            command({
                 appPath: 'app1',
-                functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP.functionalityId,
+                functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
                 parameters: 'dummy'
             } as unknown as ExecuteFunctionalityInput)
         ).rejects.toThrowErrorMatchingInlineSnapshot(`
@@ -395,7 +386,7 @@ describe('executeFunctionality', () => {
             throw new Error('Dummy');
         });
         await expect(
-            generateFioriUIApplicationCapHandlers.executeFunctionality(
+            command(
                 undefined as unknown as ExecuteFunctionalityInput
             )
         ).rejects.toThrowErrorMatchingInlineSnapshot(`

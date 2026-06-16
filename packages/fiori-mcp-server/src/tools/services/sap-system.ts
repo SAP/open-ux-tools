@@ -6,7 +6,7 @@ import { getService, getSapToolsDirectory } from '@sap-ux/store';
 import { ToolsLogger } from '@sap-ux/logger';
 import { parse as parseEdmx } from '@sap-ux/edmx-parser';
 import format from 'xml-formatter';
-import { logger } from '../../../utils/index.js';
+import { logger } from '../../utils/index.js';
 
 // Capture the real SAP tools directory at module load time. In test environments the
 // HOME env var may be overridden after process start; SAP_TOOLS_DIR can be set by the

@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 
 const mockExecuteDefault = jest.fn<any>();
 
-jest.unstable_mockModule('../../../src/tools/functionalities/fetch-service-metadata/execute-functionality', () => ({
+jest.unstable_mockModule('../../../src/tools/download-odata-service-metadata-impl', () => ({
     default: mockExecuteDefault
 }));
 
