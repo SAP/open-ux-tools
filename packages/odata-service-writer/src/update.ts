@@ -55,8 +55,9 @@ function extendBackendMiddleware(
     service: OdataService,
     ui5Config: UI5Config,
     ui5ConfigPath: string,
-    update = false
+    update: boolean = false
 ): void {
+    ui5Config.addBuilderResourceExcludes();
     if (update) {
         ui5Config.updateBackendToFioriToolsProxyMiddleware(service.previewSettings as ProxyBackend);
     } else {
@@ -102,12 +103,10 @@ async function updateUI5YamlConfigs(
 
     if (paths.ui5Yaml) {
         ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
-        ui5Config.addBuilderResourceExcludes();
         extendBackendMiddleware(fs, service, ui5Config, paths.ui5Yaml);
 
         if (paths.ui5LocalYaml) {
             ui5LocalConfig = await UI5Config.newInstance(fs.read(paths.ui5LocalYaml));
-            ui5LocalConfig.addBuilderResourceExcludes();
             extendBackendMiddleware(fs, service, ui5LocalConfig, paths.ui5LocalYaml);
         }
     }
