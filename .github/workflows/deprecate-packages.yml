@@ -37,19 +37,23 @@ jobs:
 
             - name: Run deprecation script (dry run)
               if: inputs.dry_run == true
+              env:
+                PACKAGES_INPUT: ${{ inputs.packages }}
               run: |
                   ARGS=""
-                  if [ -n "${{ inputs.packages }}" ]; then
-                    ARGS="--packages ${{ inputs.packages }}"
+                  if [ -n "$PACKAGES_INPUT" ]; then
+                    ARGS="--packages $PACKAGES_INPUT"
                   fi
                   node_modules/.bin/ts-node scripts/deprecate-packages.ts $ARGS | tee deprecation-report.txt
 
             - name: Run deprecation script (execute)
               if: inputs.dry_run == false
+              env:
+                PACKAGES_INPUT: ${{ inputs.packages }}
               run: |
                   ARGS="--execute"
-                  if [ -n "${{ inputs.packages }}" ]; then
-                    ARGS="$ARGS --packages ${{ inputs.packages }}"
+                  if [ -n "$PACKAGES_INPUT" ]; then
+                    ARGS="$ARGS --packages $PACKAGES_INPUT"
                   fi
                   node_modules/.bin/ts-node scripts/deprecate-packages.ts $ARGS | tee deprecation-report.txt
 
