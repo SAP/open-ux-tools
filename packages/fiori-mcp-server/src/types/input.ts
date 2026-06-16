@@ -158,8 +158,33 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
         )
 });
 
+export const AdpMetadataInputSchema = zod.object({
+    appPath: zod
+        .string()
+        .describe(
+            'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant resides).'
+        ),
+    saveLocal: zod
+        .boolean()
+        .optional()
+        .describe(
+            'Whether to save fetched metadata locally in the project under the "context" folder. Defaults to false.'
+        )
+});
+
+export const ODataServiceInputSchema = zod.object({
+    appPath: zod
+        .string()
+        .describe(
+            'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant resides).'
+        ),
+    filter: zod.string().optional().describe('Filter string to match service names')
+});
+
 export type DownloadODataServiceMetadataInput = zod.infer<typeof DownloadODataServiceMetadataInputSchema>;
 export type GenerateAdaptationProjectInput = zod.infer<typeof GenerateAdaptationProjectInputSchema>;
 export type OpenAdaptationEditorInput = zod.infer<typeof OpenAdaptationEditorInputSchema>;
 export type AdpControllerExtensionInput = zod.infer<typeof AdpControllerExtensionInputSchema>;
 export type RunRtaWorkflowStepInput = zod.infer<typeof RunRtaWorkflowStepInputSchema>;
+export type AdpMetadataInput = zod.infer<typeof AdpMetadataInputSchema>;
+export type ODataServiceInput = zod.infer<typeof ODataServiceInputSchema>;

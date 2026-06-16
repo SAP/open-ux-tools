@@ -23,6 +23,9 @@ import {
     openAdaptationEditor,
     adpControllerExtension,
     runRtaWorkflowStep,
+    listLibrariesFromSystem,
+    readODataMetadataAdp,
+    listODataServices,
     tools
 } from './tools';
 import { stopBrowser } from './tools/run-rta-workflow-step/browser';
@@ -38,7 +41,8 @@ import type {
     GenerateAdaptationProjectInput,
     OpenAdaptationEditorInput,
     AdpControllerExtensionInput,
-    RunRtaWorkflowStepInput
+    RunRtaWorkflowStepInput,
+    AdpMetadataInput
 } from './types';
 import { logger } from './utils/logger';
 
@@ -209,6 +213,15 @@ export class FioriFunctionalityServer {
                         break;
                     case 'run_rta_workflow_step':
                         result = await runRtaWorkflowStep(args as RunRtaWorkflowStepInput);
+                        break;
+                    case 'list_libraries_from_system':
+                        result = await listLibrariesFromSystem(args as ListFunctionalitiesInput);
+                        break;
+                    case 'list_odata_services_from_system':
+                        result = await listODataServices(args as ListFunctionalitiesInput);
+                        break;
+                    case 'read_odata_metadata_adp':
+                        result = await readODataMetadataAdp(args as AdpMetadataInput);
                         break;
                     case 'list_functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);

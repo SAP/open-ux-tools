@@ -50,6 +50,9 @@
       "path": "../store"
     },
     {
+      "path": "../system-access"
+    },
+    {
       "path": "../telemetry"
     },
     {
