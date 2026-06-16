@@ -1,7 +1,6 @@
 import { MetadataService } from '@sap-ux/odata-entity-model';
 import type { AnnotationFile } from '@sap-ux/odata-annotation-core';
-import type { ServiceArtifacts } from '@sap-ux/fiori-annotation-api/src/types';
-import type { V2Annotation } from '@sap-ux/fiori-annotation-api';
+import type { ServiceArtifacts, V2Annotation } from '@sap-ux/fiori-annotation-api';
 
 import { buildAnnotationIndexKey, buildServiceIndex } from '../../../src/project-context/parser/service.js';
 import { COMMON_LABEL, COMMON_TEXT } from '../../../src/constants.js';
