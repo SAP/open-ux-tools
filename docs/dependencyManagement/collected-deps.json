@@ -1,6 +1,6 @@
 {
   "totalPackages": 97,
-  "totalDependencies": 299,
+  "totalDependencies": 295,
   "dependencies": {
     "@changesets/cli": {
       "versions": [
@@ -29,7 +29,7 @@
     },
     "@playwright/test": {
       "versions": [
-        "1.58.2"
+        "1.60.0"
       ],
       "usedInPackages": [
         "@sap-ux-private/adaptation-editor-tests",
@@ -47,7 +47,7 @@
     },
     "@types/node": {
       "versions": [
-        "20.19.37"
+        "22.13.14"
       ],
       "usedInPackages": [
         "@sap-ux/fiori-docs-embeddings",
@@ -70,11 +70,25 @@
         "@sap-ux/open-ux-tools-root"
       ]
     },
+    "cross-env": {
+      "versions": [
+        "10.1.0"
+      ],
+      "usedInPackages": [
+        "@sap-ux/adp-tooling",
+        "@sap-ux/eslint-plugin-fiori-tools",
+        "@sap-ux/fiori-mcp-server",
+        "@sap-ux/jest-environment-ui5",
+        "@sap-ux/open-ux-tools-root",
+        "sap-ux-sap-systems-ext"
+      ]
+    },
     "esbuild": {
       "versions": [
         "0.27.4"
       ],
       "usedInPackages": [
+        "@sap-ux/eslint-plugin-fiori-tools",
         "@sap-ux/fiori-mcp-server",
         "@sap-ux/open-ux-tools-root"
       ]
@@ -295,6 +309,7 @@
       ],
       "usedInPackages": [
         "@sap-ux-private/control-property-editor-common",
+        "@sap-ux/abap-deploy-config-sub-generator",
         "@sap-ux/adp-flp-config-sub-generator",
         "@sap-ux/adp-tooling",
         "@sap-ux/cf-deploy-config-sub-generator",
@@ -599,6 +614,7 @@
         "@sap-ux/adp-tooling",
         "@sap-ux/backend-proxy-middleware",
         "@sap-ux/backend-proxy-middleware-cf",
+        "@sap-ux/create",
         "@sap-ux/deploy-config-sub-generator",
         "@sap-ux/deploy-tooling",
         "@sap-ux/odata-cli",
@@ -609,7 +625,7 @@
     },
     "fast-xml-parser": {
       "versions": [
-        "5.7.2"
+        "5.8.0"
       ],
       "usedInPackages": [
         "@sap-ux/axios-extension",
@@ -716,7 +732,7 @@
     },
     "sanitize-html": {
       "versions": [
-        "2.17.3"
+        "2.17.4"
       ],
       "usedInPackages": [
         "@sap-ux-private/ui-prompting-examples",
@@ -725,7 +741,8 @@
     },
     "@babel/core": {
       "versions": [
-        "7.29.0"
+        "7.29.0",
+        "8.0.0-rc.6"
       ],
       "usedInPackages": [
         "@sap-ux-private/ui-prompting-examples",
@@ -774,27 +791,9 @@
         "@sap-ux/ui-prompting"
       ]
     },
-    "@storybook/components": {
-      "versions": [
-        "8.6.14"
-      ],
-      "usedInPackages": [
-        "@sap-ux-private/ui-prompting-examples",
-        "@sap-ux/ui-prompting"
-      ]
-    },
-    "@storybook/manager-api": {
-      "versions": [
-        "8.6.17"
-      ],
-      "usedInPackages": [
-        "@sap-ux-private/ui-prompting-examples",
-        "@sap-ux/ui-prompting"
-      ]
-    },
     "@storybook/react": {
       "versions": [
-        "8.6.17"
+        "10.4.0"
       ],
       "usedInPackages": [
         "@sap-ux-private/ui-prompting-examples",
@@ -804,7 +803,7 @@
     },
     "@storybook/react-webpack5": {
       "versions": [
-        "8.6.17"
+        "10.4.0"
       ],
       "usedInPackages": [
         "@sap-ux-private/ui-prompting-examples",
@@ -962,7 +961,7 @@
     },
     "storybook": {
       "versions": [
-        "8.6.17"
+        "10.4.0"
       ],
       "usedInPackages": [
         "@sap-ux-private/ui-prompting-examples",
@@ -1014,7 +1013,7 @@
     },
     "ws": {
       "versions": [
-        "8.20.0"
+        "8.21.0"
       ],
       "usedInPackages": [
         "@sap-ux-private/ui-prompting-examples"
@@ -1053,6 +1052,7 @@
         "@sap-ux/inquirer-common",
         "@sap-ux/launch-config",
         "@sap-ux/mockserver-config-writer",
+        "@sap-ux/nodejs-utils",
         "@sap-ux/odata-service-inquirer",
         "@sap-ux/odata-service-writer",
         "@sap-ux/project-input-validator",
@@ -1075,7 +1075,7 @@
     },
     "@sap-devx/yeoman-ui-types": {
       "versions": [
-        "1.23.0"
+        "1.25.0"
       ],
       "usedInPackages": [
         "@sap-ux/abap-deploy-config-inquirer",
@@ -1113,6 +1113,78 @@
         "@sap-ux/repo-app-import-sub-generator",
         "@sap-ux/ui5-application-inquirer",
         "@sap-ux/ui5-library-inquirer"
+      ]
+    },
+    "@jest/globals": {
+      "versions": [
+        "30.0.0",
+        "30.3.0"
+      ],
+      "usedInPackages": [
+        "@sap-ux-private/playwright",
+        "@sap-ux-private/preview-middleware-client",
+        "@sap-ux/abap-deploy-config-inquirer",
+        "@sap-ux/abap-deploy-config-sub-generator",
+        "@sap-ux/adp-flp-config-sub-generator",
+        "@sap-ux/adp-tooling",
+        "@sap-ux/app-config-writer",
+        "@sap-ux/axios-extension",
+        "@sap-ux/backend-proxy-middleware",
+        "@sap-ux/backend-proxy-middleware-cf",
+        "@sap-ux/btp-utils",
+        "@sap-ux/cap-config-writer",
+        "@sap-ux/cf-deploy-config-inquirer",
+        "@sap-ux/cf-deploy-config-sub-generator",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/control-property-editor",
+        "@sap-ux/create",
+        "@sap-ux/deploy-config-generator-shared",
+        "@sap-ux/deploy-config-sub-generator",
+        "@sap-ux/deploy-tooling",
+        "@sap-ux/environment-check",
+        "@sap-ux/eslint-plugin-fiori-tools",
+        "@sap-ux/fe-fpm-writer",
+        "@sap-ux/feature-toggle",
+        "@sap-ux/fiori-annotation-api",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/fiori-docs-embeddings",
+        "@sap-ux/fiori-elements-writer",
+        "@sap-ux/fiori-freestyle-writer",
+        "@sap-ux/fiori-generator-shared",
+        "@sap-ux/fiori-mcp-server",
+        "@sap-ux/flp-config-inquirer",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/generator-adp",
+        "@sap-ux/generator-odata-downloader",
+        "@sap-ux/i18n",
+        "@sap-ux/inquirer-common",
+        "@sap-ux/launch-config",
+        "@sap-ux/nodejs-utils",
+        "@sap-ux/odata-service-inquirer",
+        "@sap-ux/odata-service-writer",
+        "@sap-ux/odata-vocabularies",
+        "@sap-ux/preview-middleware",
+        "@sap-ux/project-access",
+        "@sap-ux/project-input-validator",
+        "@sap-ux/project-integrity",
+        "@sap-ux/reload-middleware",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/sap-systems-ext-webapp",
+        "@sap-ux/serve-static-middleware",
+        "@sap-ux/store",
+        "@sap-ux/system-access",
+        "@sap-ux/telemetry",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-service-inquirer",
+        "@sap-ux/ui-service-sub-generator",
+        "@sap-ux/ui5-application-inquirer",
+        "@sap-ux/ui5-info",
+        "@sap-ux/ui5-library-inquirer",
+        "@sap-ux/ui5-library-reference-inquirer",
+        "@sap-ux/ui5-library-reference-sub-generator",
+        "@sap-ux/ui5-library-sub-generator",
+        "@sap-ux/ui5-proxy-middleware",
+        "@sap-ux/ui5-test-writer"
       ]
     },
     "@types/inquirer-autocomplete-prompt": {
@@ -1575,17 +1647,6 @@
         "@sap-ux/ui5-proxy-middleware"
       ]
     },
-    "cross-env": {
-      "versions": [
-        "10.1.0"
-      ],
-      "usedInPackages": [
-        "@sap-ux/adp-tooling",
-        "@sap-ux/eslint-plugin-fiori-tools",
-        "@sap-ux/jest-environment-ui5",
-        "sap-ux-sap-systems-ext"
-      ]
-    },
     "express": {
       "versions": [
         "4",
@@ -1670,7 +1731,7 @@
     },
     "chalk": {
       "versions": [
-        "4.1.2"
+        "5.3.0"
       ],
       "usedInPackages": [
         "@sap-ux/app-config-writer",
@@ -1717,7 +1778,7 @@
     },
     "qs": {
       "versions": [
-        "6.15.0"
+        "6.15.2"
       ],
       "usedInPackages": [
         "@sap-ux/axios-extension"
@@ -1819,7 +1880,7 @@
     },
     "@sap/approuter": {
       "versions": [
-        "20.8.0"
+        "22.0.0"
       ],
       "usedInPackages": [
         "@sap-ux/backend-proxy-middleware-cf"
@@ -1871,7 +1932,7 @@
     },
     "@sap/bas-sdk": {
       "versions": [
-        "3.13.6"
+        "3.13.7"
       ],
       "usedInPackages": [
         "@sap-ux/btp-utils",
@@ -2240,9 +2301,33 @@
         "@sap-ux/environment-check"
       ]
     },
+    "@typescript-eslint/eslint-plugin": {
+      "versions": [
+        "8.57.2"
+      ],
+      "usedInPackages": [
+        "@sap-ux/eslint-plugin-fiori-tools"
+      ]
+    },
+    "@typescript-eslint/parser": {
+      "versions": [
+        "8.57.2"
+      ],
+      "usedInPackages": [
+        "@sap-ux/eslint-plugin-fiori-tools"
+      ]
+    },
     "@babel/eslint-parser": {
       "versions": [
-        "7.28.5"
+        "8.0.0-rc.6"
+      ],
+      "usedInPackages": [
+        "@sap-ux/eslint-plugin-fiori-tools"
+      ]
+    },
+    "@babel/parser": {
+      "versions": [
+        "8.0.0-rc.6"
       ],
       "usedInPackages": [
         "@sap-ux/eslint-plugin-fiori-tools"
@@ -2272,15 +2357,23 @@
         "@sap-ux/eslint-plugin-fiori-tools"
       ]
     },
-    "@typescript-eslint/eslint-plugin": {
+    "@eslint/plugin-kit": {
       "versions": [
-        "8.57.2"
+        "0.6.1"
       ],
       "usedInPackages": [
         "@sap-ux/eslint-plugin-fiori-tools"
       ]
     },
-    "@typescript-eslint/parser": {
+    "@humanwhocodes/momoa": {
+      "versions": [
+        "3.3.9"
+      ],
+      "usedInPackages": [
+        "@sap-ux/eslint-plugin-fiori-tools"
+      ]
+    },
+    "@typescript-eslint/rule-tester": {
       "versions": [
         "8.57.2"
       ],
@@ -2308,17 +2401,9 @@
         "@sap-ux/xml-odata-annotation-converter"
       ]
     },
-    "@humanwhocodes/momoa": {
+    "eslint-plugin-eslint-plugin": {
       "versions": [
-        "3.3.9"
-      ],
-      "usedInPackages": [
-        "@sap-ux/eslint-plugin-fiori-tools"
-      ]
-    },
-    "@eslint/plugin-kit": {
-      "versions": [
-        "0.6.1"
+        "7.3.2"
       ],
       "usedInPackages": [
         "@sap-ux/eslint-plugin-fiori-tools"
@@ -2340,28 +2425,13 @@
         "@sap-ux/eslint-plugin-fiori-tools"
       ]
     },
-    "@typescript-eslint/rule-tester": {
-      "versions": [
-        "8.57.2"
-      ],
-      "usedInPackages": [
-        "@sap-ux/eslint-plugin-fiori-tools"
-      ]
-    },
-    "eslint-plugin-eslint-plugin": {
-      "versions": [
-        "7.3.2"
-      ],
-      "usedInPackages": [
-        "@sap-ux/eslint-plugin-fiori-tools"
-      ]
-    },
     "xml-formatter": {
       "versions": [
         "3.7.0"
       ],
       "usedInPackages": [
-        "@sap-ux/fe-fpm-writer"
+        "@sap-ux/fe-fpm-writer",
+        "@sap-ux/fiori-mcp-server"
       ]
     },
     "jest-when": {
@@ -2406,7 +2476,7 @@
     },
     "@sap/service-provider-apis": {
       "versions": [
-        "2.8.0"
+        "2.10.0"
       ],
       "usedInPackages": [
         "@sap-ux/fiori-app-sub-generator",
@@ -2456,18 +2526,9 @@
         "@sap-ux/fiori-docs-embeddings"
       ]
     },
-    "@lancedb/lancedb": {
+    "@huggingface/transformers": {
       "versions": [
-        "0.22.0"
-      ],
-      "usedInPackages": [
-        "@sap-ux/fiori-docs-embeddings",
-        "@sap-ux/fiori-mcp-server"
-      ]
-    },
-    "@xenova/transformers": {
-      "versions": [
-        "2.17.2"
+        "4.2.0"
       ],
       "usedInPackages": [
         "@sap-ux/fiori-docs-embeddings",
@@ -2525,9 +2586,17 @@
         "@sap-ux/logger"
       ]
     },
-    "apache-arrow": {
+    "@langchain/core": {
       "versions": [
-        "18.1.0"
+        "1.1.40"
+      ],
+      "usedInPackages": [
+        "@sap-ux/fiori-mcp-server"
+      ]
+    },
+    "@langchain/mcp-adapters": {
+      "versions": [
+        "1.1.3"
       ],
       "usedInPackages": [
         "@sap-ux/fiori-mcp-server"
@@ -2536,6 +2605,22 @@
     "@modelcontextprotocol/sdk": {
       "versions": [
         "1.29.0"
+      ],
+      "usedInPackages": [
+        "@sap-ux/fiori-mcp-server"
+      ]
+    },
+    "@sap-ai-sdk/foundation-models": {
+      "versions": [
+        "2.9.0"
+      ],
+      "usedInPackages": [
+        "@sap-ux/fiori-mcp-server"
+      ]
+    },
+    "@sap-ai-sdk/langchain": {
+      "versions": [
+        "2.9.0"
       ],
       "usedInPackages": [
         "@sap-ux/fiori-mcp-server"
@@ -2559,49 +2644,17 @@
         "@sap-ux/fiori-mcp-server"
       ]
     },
+    "promptfoo": {
+      "versions": [
+        "0.121.12"
+      ],
+      "usedInPackages": [
+        "@sap-ux/fiori-mcp-server"
+      ]
+    },
     "zod": {
       "versions": [
         "4.3.6"
-      ],
-      "usedInPackages": [
-        "@sap-ux/fiori-mcp-server"
-      ]
-    },
-    "@sap-ai-sdk/foundation-models": {
-      "versions": [
-        "2.9.0"
-      ],
-      "usedInPackages": [
-        "@sap-ux/fiori-mcp-server"
-      ]
-    },
-    "@sap-ai-sdk/langchain": {
-      "versions": [
-        "2.9.0"
-      ],
-      "usedInPackages": [
-        "@sap-ux/fiori-mcp-server"
-      ]
-    },
-    "promptfoo": {
-      "versions": [
-        "0.121.3"
-      ],
-      "usedInPackages": [
-        "@sap-ux/fiori-mcp-server"
-      ]
-    },
-    "@langchain/mcp-adapters": {
-      "versions": [
-        "1.1.3"
-      ],
-      "usedInPackages": [
-        "@sap-ux/fiori-mcp-server"
-      ]
-    },
-    "@langchain/core": {
-      "versions": [
-        "1.1.40"
       ],
       "usedInPackages": [
         "@sap-ux/fiori-mcp-server"
@@ -2668,7 +2721,8 @@
     },
     "jest-environment-jsdom": {
       "versions": [
-        "29.7.0"
+        "29.7.0",
+        "30.4.1"
       ],
       "usedInPackages": [
         "@sap-ux/jest-environment-ui5",
@@ -2808,14 +2862,6 @@
         "@sap-ux/odata-service-inquirer"
       ]
     },
-    "@sap-ux/logger": {
-      "versions": [
-        "0.8.5"
-      ],
-      "usedInPackages": [
-        "@sap-ux-private/playwright"
-      ]
-    },
     "jest-dev-server": {
       "versions": [
         "11.0.0"
@@ -2852,14 +2898,6 @@
     "qrcode": {
       "versions": [
         "1.5.4"
-      ],
-      "usedInPackages": [
-        "@sap-ux/preview-middleware"
-      ]
-    },
-    "@sap-ux-private/playwright": {
-      "versions": [
-        "0.2.15"
       ],
       "usedInPackages": [
         "@sap-ux/preview-middleware"
