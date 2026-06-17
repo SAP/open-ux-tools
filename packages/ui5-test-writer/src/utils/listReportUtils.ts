@@ -14,6 +14,7 @@ import {
     type AggregationItem,
     getAggregations
 } from './modelUtils.js';
+import { extractContactCardColumnsFromNode } from './tableUtils.js';
 import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
@@ -172,6 +173,7 @@ export function getListReportFeatures(
         deleteButton: buildButtonState(buttonVisibility?.delete),
         filterBarItems,
         tableColumns: getTableColumnData(listReportPage.model, log),
+        contactCardColumns: extractContactCardColumnsFromNode(listReportPage.model.root),
         toolBarActions,
         isALP: manifest ? isALPFromManifest(manifest, listReportPage.name) : false,
         semanticKey: {

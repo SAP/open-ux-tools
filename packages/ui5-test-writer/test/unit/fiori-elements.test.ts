@@ -753,19 +753,27 @@ export type Then = Opa5 & BaseArrangements & {
             expect(bookingObjPageJourneyContent).toContain('field: "CustomerName"');
             expect(bookingObjPageJourneyContent).toContain('field: "carrier"');
             expect(bookingObjPageJourneyContent).toContain('targetAnnotation: "Contact"');
+            expect(bookingObjPageJourneyContent).toContain('onHeader().iClickLink({ property: "carrier/Contact" })');
+            expect(bookingObjPageJourneyContent).toContain(
+                'onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })'
+            );
             expect(bookingObjPageJourneyContent).toContain('iCheckMicroChart("Supplement Price")');
             expect(bookingObjPageJourneyContent).toContain('onHeader().iCheckAction("Activate", { enabled: false })');
             expect(bookingObjPageJourneyContent).toContain('iCheckNumberOfSections(3)');
-            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("BookingDetails")');
+            expect(bookingObjPageJourneyContent).not.toContain('iPressSectionIconTabFilterButton');
+            expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "BookingDetails" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "BookingDetails" })');
+            expect(bookingObjPageJourneyContent).toContain(
+                'iGoToSection({ section: "BookingDetails", subSection: "BookingData" })'
+            );
             expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "BookingData" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "AdministrativeData" })');
-            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("FlightData")');
+            expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "FlightData" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "FlightData" })');
             expect(bookingObjPageJourneyContent).toContain(
                 '.iCheckAction("Deduct Discount" /* , { enabled: true } */)'
             );
-            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("PriceData")');
+            expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "PriceData" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "PriceData" })');
             expect(bookingObjPageJourneyContent).toContain(
                 'onTable({ property: "_BookSupplement" }).iCheckAction("Create Template", { enabled: true })'
@@ -776,9 +784,31 @@ export type Then = Opa5 & BaseArrangements & {
             expect(bookingObjPageJourneyContent).toContain(
                 'onForm({ section: "BookingData" }).iCheckField({ property: "FlightDate" })'
             );
+            // OP-7: body-section form Contact Card
+            expect(bookingObjPageJourneyContent).toContain(
+                'onForm({ section: "BookingData" }).iClickLink({ property: "_Customer/Contact" })'
+            );
             expect(bookingObjPageJourneyContent).toContain('onTable({ property: "_Supplements" }).iCheckColumns(');
             expect(bookingObjPageJourneyContent).toContain('"ConnectionId":{"header":"Connection"}');
             expect(bookingObjPageJourneyContent).toContain('"AirportCode":{"header":"Airport"}');
+            // Contact-card column included in iCheckColumns map keyed by aggregation key (matches MDC propertyKey)
+            expect(bookingObjPageJourneyContent).toContain(
+                '"DataFieldForAnnotation::_Carrier::Contact":{"header":"Carrier"}'
+            );
+            // OP table Contact Card
+            expect(bookingObjPageJourneyContent).toContain(
+                'onTable({ property: "_Supplements" }).iClickLink(0, "DataFieldForAnnotation::_Carrier::Contact")'
+            );
+
+            // LR-10: list-report table Contact Card
+            const travelListJourneyContent =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js'].contents;
+            expect(travelListJourneyContent).toContain(
+                'onTable().iClickLink(0, "DataFieldForAnnotation::_Agency::Contact")'
+            );
+            expect(travelListJourneyContent).toContain(
+                'onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })'
+            );
         });
     });
 
@@ -913,13 +943,11 @@ export type Then = Opa5 & BaseArrangements & {
             expect(opPagePath).toBeDefined();
 
             const opContent = dumped[opPagePath!].contents as string;
-            expect(opContent).toContain('import type Opa5 from "sap/ui/test/Opa5"');
-            expect(opContent).toContain('import Press from "sap/ui/test/actions/Press"');
             expect(opContent).toContain('export const actions');
             expect(opContent).toContain('export const assertions');
             expect(opContent).toContain('export default class ObjectPage');
-            expect(opContent).toContain('iPressSectionIconTabFilterButton');
-            expect(opContent).toContain('this: Opa5');
+            expect(opContent).not.toContain('iPressSectionIconTabFilterButton');
+            expect(opContent).not.toContain('sap/ui/test/actions/Press');
             expect(opContent).not.toContain('sap/fe/test/ObjectPage');
         });
 
@@ -1136,14 +1164,22 @@ export type Then = Opa5 & BaseArrangements & {
 
             // ─── Section navigation ───
             expect(content).toContain('iCheckNumberOfSections(3)');
-            expect(content).toContain('iPressSectionIconTabFilterButton("BookingDetails")');
+            expect(content).not.toContain('iPressSectionIconTabFilterButton');
+            expect(content).toContain('iGoToSection({ section: "BookingDetails" })');
             expect(content).toContain('iCheckSection({ section: "BookingDetails" }, {})');
+            expect(content).toContain('iGoToSection({ section: "BookingDetails", subSection: "BookingData" })');
             expect(content).toContain('iCheckSubSection({ section: "BookingData" })');
             expect(content).toContain('iCheckSubSection({ section: "AdministrativeData" })');
-            expect(content).toContain('iPressSectionIconTabFilterButton("FlightData")');
+            expect(content).toContain('iGoToSection({ section: "FlightData" })');
             expect(content).toContain('iCheckSection({ section: "FlightData" }, {})');
-            expect(content).toContain('iPressSectionIconTabFilterButton("PriceData")');
+            expect(content).toContain('iGoToSection({ section: "PriceData" })');
             expect(content).toContain('iCheckSection({ section: "PriceData" }, {})');
+
+            // ─── Header Contact Card (OP-8) ───
+            expect(content).toContain(
+                'onHeader().iClickLink({ property: "carrier/Contact" } as unknown as FieldIdentifier)'
+            );
+            expect(content).toContain('onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })');
 
             // ─── Section actions (table action with dynamic enabled) ───
             expect(content).toContain('.iCheckAction("Deduct Discount" /* , { enabled: true } */)');
@@ -1158,11 +1194,28 @@ export type Then = Opa5 & BaseArrangements & {
             expect(content).toContain(
                 'onForm({ section: "BookingData" } as unknown as FormIdentifier).iCheckField({ property: "FlightDate" })'
             );
+            // OP-7: body-section form Contact Card
+            expect(content).toContain(
+                'onForm({ section: "BookingData" } as unknown as FormIdentifier).iClickLink({ property: "_Customer/Contact" })'
+            );
 
             // ─── Sub-section table columns ───
             expect(content).toContain('onTable({ property: "_Supplements" }).iCheckColumns(');
             expect(content).toContain('"ConnectionId":{"header":"Connection"}');
             expect(content).toContain('"AirportCode":{"header":"Airport"}');
+            // Contact-card column included in iCheckColumns map keyed by aggregation key (matches MDC propertyKey)
+            expect(content).toContain('"DataFieldForAnnotation::_Carrier::Contact":{"header":"Carrier"}');
+            // OP table Contact Card
+            expect(content).toContain(
+                'onTable({ property: "_Supplements" }).iClickLink(0, "DataFieldForAnnotation::_Carrier::Contact")'
+            );
+
+            // ─── LR-10: list-report table Contact Card ───
+            const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.gen.ts'));
+            expect(lrJourneyPath).toBeDefined();
+            const lrContent = dumped[lrJourneyPath!].contents as string;
+            expect(lrContent).toContain('onTable("").iClickLink(0, "DataFieldForAnnotation::_Agency::Contact")');
+            expect(lrContent).toContain('onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })');
 
             // ─── No JS leakage ───
             expect(content).not.toContain('sap.ui.define');

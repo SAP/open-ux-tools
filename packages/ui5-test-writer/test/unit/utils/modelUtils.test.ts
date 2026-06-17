@@ -254,6 +254,37 @@ describe('Test getFeatureData()', () => {
     });
 });
 
+describe('parseDataFieldForAnnotationName()', () => {
+    test('parses a Contact-annotated field name', () => {
+        expect(parseDataFieldForAnnotationName('DataFieldForAnnotation::_Customer::Contact')).toEqual({
+            property: '_Customer',
+            targetAnnotation: 'Contact'
+        });
+    });
+
+    test('parses a non-Contact annotation field name', () => {
+        expect(parseDataFieldForAnnotationName('DataFieldForAnnotation::Status::DataPoint')).toEqual({
+            property: 'Status',
+            targetAnnotation: 'DataPoint'
+        });
+    });
+
+    test('returns undefined for plain field names', () => {
+        expect(parseDataFieldForAnnotationName('DataField::CompanyCode')).toBeUndefined();
+        expect(parseDataFieldForAnnotationName('PlainField')).toBeUndefined();
+    });
+
+    test('returns undefined for undefined or empty input', () => {
+        expect(parseDataFieldForAnnotationName(undefined)).toBeUndefined();
+        expect(parseDataFieldForAnnotationName('')).toBeUndefined();
+    });
+
+    test('returns undefined when property or annotation segment is empty', () => {
+        expect(parseDataFieldForAnnotationName('DataFieldForAnnotation::::Contact')).toBeUndefined();
+        expect(parseDataFieldForAnnotationName('DataFieldForAnnotation::Customer::')).toBeUndefined();
+    });
+});
+
 describe('Test edge cases for better branch coverage', () => {
     test('getAggregations should handle node with empty aggregations', () => {
         const node = { aggregations: {} } as TreeAggregation;

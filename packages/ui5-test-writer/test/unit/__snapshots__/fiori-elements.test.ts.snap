@@ -354,18 +354,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -787,18 +780,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -1197,18 +1183,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -1607,18 +1586,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -2283,18 +2255,11 @@ sap.ui.require(
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -2624,18 +2589,11 @@ sap.ui.require(
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -3075,18 +3033,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -3146,18 +3097,11 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -3190,18 +3134,11 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -3620,18 +3557,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -3691,18 +3621,11 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -3735,18 +3658,11 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -4177,18 +4093,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -6037,18 +5946,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -7738,18 +7640,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -9566,18 +9461,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -11400,18 +11288,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -11719,18 +11600,11 @@ sap.ui.require(
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -12093,24 +11967,7 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesList.gen.ts": Object {
-    "contents": "/******************************************************************************
- * ╔═══════════════════════════════════════════════════════════════════════╗ *
- * ║                                                                       ║ *
- * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
- * ║                                                                       ║ *
- * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
- * ║   overwritten when you run the OPA test generator again.              ║ *
- * ║                                                                       ║ *
- * ║   To add your own custom pages:                                       ║ *
- * ║   - Create a new page file in this directory.                         ║ *
- * ║   - Follow the same pattern as this file.                             ║ *
- * ║   - Add the new file to the JourneyRunner.                            ║ *
- * ║   - Custom page files are not overwritten.                            ║ *
- * ║                                                                       ║ *
- * ╚═══════════════════════════════════════════════════════════════════════╝ *
- ******************************************************************************/
-
-export const actions = {};
+    "contents": "export const actions = {};
 
 export const assertions = {};
 
@@ -12122,34 +11979,7 @@ export default class ListReport {
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.gen.ts": Object {
-    "contents": "/******************************************************************************
- * ╔═══════════════════════════════════════════════════════════════════════╗ *
- * ║                                                                       ║ *
- * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
- * ║                                                                       ║ *
- * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
- * ║   overwritten when you run the OPA test generator again.              ║ *
- * ║                                                                       ║ *
- * ║   To add your own custom pages:                                       ║ *
- * ║   - Create a new page file in this directory.                         ║ *
- * ║   - Follow the same pattern as this file.                             ║ *
- * ║   - Add the new file to the JourneyRunner.                            ║ *
- * ║   - Custom page files are not overwritten.                            ║ *
- * ║                                                                       ║ *
- * ╚═══════════════════════════════════════════════════════════════════════╝ *
- ******************************************************************************/
-
-import type Opa5 from \\"sap/ui/test/Opa5\\";
-import Press from \\"sap/ui/test/actions/Press\\";
-
-export const actions = {
-    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
-        return this.waitFor({
-            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-            actions: new Press()
-        });
-    }
-};
+    "contents": "export const actions = {};
 
 export const assertions = {};
 
@@ -12195,20 +12025,7 @@ export default runner;
     "state": "modified",
   },
   "webapp/test/integration/types/OpaJourneyTypes.d.ts": Object {
-    "contents": "/******************************************************************************
- * ╔═══════════════════════════════════════════════════════════════════════╗ *
- * ║                                                                       ║ *
- * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
- * ║                                                                       ║ *
- * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
- * ║   overwritten when you run the OPA test generator again.              ║ *
- * ║                                                                       ║ *
- * ║   Do not edit this file directly. Any changes will be lost.           ║ *
- * ║                                                                       ║ *
- * ╚═══════════════════════════════════════════════════════════════════════╝ *
- ******************************************************************************/
-
-import type Opa5 from \\"sap/ui/test/Opa5\\";
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
 import type { actions as ListReportActions, assertions as ListReportAssertions } from \\"sap/fe/test/ListReport\\";
 import type { actions as ObjectPageActions, assertions as ObjectPageAssertions } from \\"sap/fe/test/ObjectPage\\";
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
@@ -12542,24 +12359,7 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesList.gen.ts": Object {
-    "contents": "/******************************************************************************
- * ╔═══════════════════════════════════════════════════════════════════════╗ *
- * ║                                                                       ║ *
- * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
- * ║                                                                       ║ *
- * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
- * ║   overwritten when you run the OPA test generator again.              ║ *
- * ║                                                                       ║ *
- * ║   To add your own custom pages:                                       ║ *
- * ║   - Create a new page file in this directory.                         ║ *
- * ║   - Follow the same pattern as this file.                             ║ *
- * ║   - Add the new file to the JourneyRunner.                            ║ *
- * ║   - Custom page files are not overwritten.                            ║ *
- * ║                                                                       ║ *
- * ╚═══════════════════════════════════════════════════════════════════════╝ *
- ******************************************************************************/
-
-export const actions = {};
+    "contents": "export const actions = {};
 
 export const assertions = {};
 
@@ -12571,34 +12371,7 @@ export default class ListReport {
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.gen.ts": Object {
-    "contents": "/******************************************************************************
- * ╔═══════════════════════════════════════════════════════════════════════╗ *
- * ║                                                                       ║ *
- * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
- * ║                                                                       ║ *
- * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
- * ║   overwritten when you run the OPA test generator again.              ║ *
- * ║                                                                       ║ *
- * ║   To add your own custom pages:                                       ║ *
- * ║   - Create a new page file in this directory.                         ║ *
- * ║   - Follow the same pattern as this file.                             ║ *
- * ║   - Add the new file to the JourneyRunner.                            ║ *
- * ║   - Custom page files are not overwritten.                            ║ *
- * ║                                                                       ║ *
- * ╚═══════════════════════════════════════════════════════════════════════╝ *
- ******************************************************************************/
-
-import type Opa5 from \\"sap/ui/test/Opa5\\";
-import Press from \\"sap/ui/test/actions/Press\\";
-
-export const actions = {
-    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
-        return this.waitFor({
-            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-            actions: new Press()
-        });
-    }
-};
+    "contents": "export const actions = {};
 
 export const assertions = {};
 
@@ -12644,20 +12417,7 @@ export default runner;
     "state": "modified",
   },
   "webapp/test/integration/types/OpaJourneyTypes.d.ts": Object {
-    "contents": "/******************************************************************************
- * ╔═══════════════════════════════════════════════════════════════════════╗ *
- * ║                                                                       ║ *
- * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
- * ║                                                                       ║ *
- * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
- * ║   overwritten when you run the OPA test generator again.              ║ *
- * ║                                                                       ║ *
- * ║   Do not edit this file directly. Any changes will be lost.           ║ *
- * ║                                                                       ║ *
- * ╚═══════════════════════════════════════════════════════════════════════╝ *
- ******************************************************************************/
-
-import type Opa5 from \\"sap/ui/test/Opa5\\";
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
 import type { actions as ListReportActions, assertions as ListReportAssertions } from \\"sap/fe/test/ListReport\\";
 import type { actions as ObjectPageActions, assertions as ObjectPageAssertions } from \\"sap/fe/test/ObjectPage\\";
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
@@ -12991,24 +12751,7 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesList.gen.ts": Object {
-    "contents": "/******************************************************************************
- * ╔═══════════════════════════════════════════════════════════════════════╗ *
- * ║                                                                       ║ *
- * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
- * ║                                                                       ║ *
- * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
- * ║   overwritten when you run the OPA test generator again.              ║ *
- * ║                                                                       ║ *
- * ║   To add your own custom pages:                                       ║ *
- * ║   - Create a new page file in this directory.                         ║ *
- * ║   - Follow the same pattern as this file.                             ║ *
- * ║   - Add the new file to the JourneyRunner.                            ║ *
- * ║   - Custom page files are not overwritten.                            ║ *
- * ║                                                                       ║ *
- * ╚═══════════════════════════════════════════════════════════════════════╝ *
- ******************************************************************************/
-
-export const actions = {};
+    "contents": "export const actions = {};
 
 export const assertions = {};
 
@@ -13020,34 +12763,7 @@ export default class ListReport {
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.gen.ts": Object {
-    "contents": "/******************************************************************************
- * ╔═══════════════════════════════════════════════════════════════════════╗ *
- * ║                                                                       ║ *
- * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
- * ║                                                                       ║ *
- * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
- * ║   overwritten when you run the OPA test generator again.              ║ *
- * ║                                                                       ║ *
- * ║   To add your own custom pages:                                       ║ *
- * ║   - Create a new page file in this directory.                         ║ *
- * ║   - Follow the same pattern as this file.                             ║ *
- * ║   - Add the new file to the JourneyRunner.                            ║ *
- * ║   - Custom page files are not overwritten.                            ║ *
- * ║                                                                       ║ *
- * ╚═══════════════════════════════════════════════════════════════════════╝ *
- ******************************************************************************/
-
-import type Opa5 from \\"sap/ui/test/Opa5\\";
-import Press from \\"sap/ui/test/actions/Press\\";
-
-export const actions = {
-    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
-        return this.waitFor({
-            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-            actions: new Press()
-        });
-    }
-};
+    "contents": "export const actions = {};
 
 export const assertions = {};
 
@@ -13093,20 +12809,7 @@ export default runner;
     "state": "modified",
   },
   "webapp/test/integration/types/OpaJourneyTypes.d.ts": Object {
-    "contents": "/******************************************************************************
- * ╔═══════════════════════════════════════════════════════════════════════╗ *
- * ║                                                                       ║ *
- * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
- * ║                                                                       ║ *
- * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
- * ║   overwritten when you run the OPA test generator again.              ║ *
- * ║                                                                       ║ *
- * ║   Do not edit this file directly. Any changes will be lost.           ║ *
- * ║                                                                       ║ *
- * ╚═══════════════════════════════════════════════════════════════════════╝ *
- ******************************************************************************/
-
-import type Opa5 from \\"sap/ui/test/Opa5\\";
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
 import type { actions as ListReportActions, assertions as ListReportAssertions } from \\"sap/fe/test/ListReport\\";
 import type { actions as ObjectPageActions, assertions as ObjectPageAssertions } from \\"sap/fe/test/ObjectPage\\";
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
@@ -13414,24 +13117,7 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesList.gen.ts": Object {
-    "contents": "/******************************************************************************
- * ╔═══════════════════════════════════════════════════════════════════════╗ *
- * ║                                                                       ║ *
- * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
- * ║                                                                       ║ *
- * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
- * ║   overwritten when you run the OPA test generator again.              ║ *
- * ║                                                                       ║ *
- * ║   To add your own custom pages:                                       ║ *
- * ║   - Create a new page file in this directory.                         ║ *
- * ║   - Follow the same pattern as this file.                             ║ *
- * ║   - Add the new file to the JourneyRunner.                            ║ *
- * ║   - Custom page files are not overwritten.                            ║ *
- * ║                                                                       ║ *
- * ╚═══════════════════════════════════════════════════════════════════════╝ *
- ******************************************************************************/
-
-export const actions = {};
+    "contents": "export const actions = {};
 
 export const assertions = {};
 
@@ -13467,20 +13153,7 @@ export default runner;
     "state": "modified",
   },
   "webapp/test/integration/types/OpaJourneyTypes.d.ts": Object {
-    "contents": "/******************************************************************************
- * ╔═══════════════════════════════════════════════════════════════════════╗ *
- * ║                                                                       ║ *
- * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
- * ║                                                                       ║ *
- * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
- * ║   overwritten when you run the OPA test generator again.              ║ *
- * ║                                                                       ║ *
- * ║   Do not edit this file directly. Any changes will be lost.           ║ *
- * ║                                                                       ║ *
- * ╚═══════════════════════════════════════════════════════════════════════╝ *
- ******************************************************************************/
-
-import type Opa5 from \\"sap/ui/test/Opa5\\";
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
 import type { actions as ListReportActions, assertions as ListReportAssertions } from \\"sap/fe/test/ListReport\\";
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
 import type Shell from \\"sap/fe/test/Shell\\";
@@ -13853,24 +13526,7 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesList.gen.ts": Object {
-    "contents": "/******************************************************************************
- * ╔═══════════════════════════════════════════════════════════════════════╗ *
- * ║                                                                       ║ *
- * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
- * ║                                                                       ║ *
- * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
- * ║   overwritten when you run the OPA test generator again.              ║ *
- * ║                                                                       ║ *
- * ║   To add your own custom pages:                                       ║ *
- * ║   - Create a new page file in this directory.                         ║ *
- * ║   - Follow the same pattern as this file.                             ║ *
- * ║   - Add the new file to the JourneyRunner.                            ║ *
- * ║   - Custom page files are not overwritten.                            ║ *
- * ║                                                                       ║ *
- * ╚═══════════════════════════════════════════════════════════════════════╝ *
- ******************************************************************************/
-
-export const actions = {};
+    "contents": "export const actions = {};
 
 export const assertions = {};
 
@@ -13882,34 +13538,7 @@ export default class ListReport {
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.gen.ts": Object {
-    "contents": "/******************************************************************************
- * ╔═══════════════════════════════════════════════════════════════════════╗ *
- * ║                                                                       ║ *
- * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
- * ║                                                                       ║ *
- * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
- * ║   overwritten when you run the OPA test generator again.              ║ *
- * ║                                                                       ║ *
- * ║   To add your own custom pages:                                       ║ *
- * ║   - Create a new page file in this directory.                         ║ *
- * ║   - Follow the same pattern as this file.                             ║ *
- * ║   - Add the new file to the JourneyRunner.                            ║ *
- * ║   - Custom page files are not overwritten.                            ║ *
- * ║                                                                       ║ *
- * ╚═══════════════════════════════════════════════════════════════════════╝ *
- ******************************************************************************/
-
-import type Opa5 from \\"sap/ui/test/Opa5\\";
-import Press from \\"sap/ui/test/actions/Press\\";
-
-export const actions = {
-    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
-        return this.waitFor({
-            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-            actions: new Press()
-        });
-    }
-};
+    "contents": "export const actions = {};
 
 export const assertions = {};
 
@@ -13973,34 +13602,7 @@ export default runner;
     "state": "modified",
   },
   "webapp/test/integration/pages/PositionsObjectPage.gen.ts": Object {
-    "contents": "/******************************************************************************
- * ╔═══════════════════════════════════════════════════════════════════════╗ *
- * ║                                                                       ║ *
- * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
- * ║                                                                       ║ *
- * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
- * ║   overwritten when you run the OPA test generator again.              ║ *
- * ║                                                                       ║ *
- * ║   To add your own custom pages:                                       ║ *
- * ║   - Create a new page file in this directory.                         ║ *
- * ║   - Follow the same pattern as this file.                             ║ *
- * ║   - Add the new file to the JourneyRunner.                            ║ *
- * ║   - Custom page files are not overwritten.                            ║ *
- * ║                                                                       ║ *
- * ╚═══════════════════════════════════════════════════════════════════════╝ *
- ******************************************************************************/
-
-import type Opa5 from \\"sap/ui/test/Opa5\\";
-import Press from \\"sap/ui/test/actions/Press\\";
-
-export const actions = {
-    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
-        return this.waitFor({
-            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-            actions: new Press()
-        });
-    }
-};
+    "contents": "export const actions = {};
 
 export const assertions = {};
 
@@ -14012,34 +13614,7 @@ export default class ObjectPage {
     "state": "modified",
   },
   "webapp/test/integration/pages/TrainingsObjectPage.gen.ts": Object {
-    "contents": "/******************************************************************************
- * ╔═══════════════════════════════════════════════════════════════════════╗ *
- * ║                                                                       ║ *
- * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
- * ║                                                                       ║ *
- * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
- * ║   overwritten when you run the OPA test generator again.              ║ *
- * ║                                                                       ║ *
- * ║   To add your own custom pages:                                       ║ *
- * ║   - Create a new page file in this directory.                         ║ *
- * ║   - Follow the same pattern as this file.                             ║ *
- * ║   - Add the new file to the JourneyRunner.                            ║ *
- * ║   - Custom page files are not overwritten.                            ║ *
- * ║                                                                       ║ *
- * ╚═══════════════════════════════════════════════════════════════════════╝ *
- ******************************************************************************/
-
-import type Opa5 from \\"sap/ui/test/Opa5\\";
-import Press from \\"sap/ui/test/actions/Press\\";
-
-export const actions = {
-    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
-        return this.waitFor({
-            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-            actions: new Press()
-        });
-    }
-};
+    "contents": "export const actions = {};
 
 export const assertions = {};
 
@@ -14051,20 +13626,7 @@ export default class ObjectPage {
     "state": "modified",
   },
   "webapp/test/integration/types/OpaJourneyTypes.d.ts": Object {
-    "contents": "/******************************************************************************
- * ╔═══════════════════════════════════════════════════════════════════════╗ *
- * ║                                                                       ║ *
- * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
- * ║                                                                       ║ *
- * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
- * ║   overwritten when you run the OPA test generator again.              ║ *
- * ║                                                                       ║ *
- * ║   Do not edit this file directly. Any changes will be lost.           ║ *
- * ║                                                                       ║ *
- * ╚═══════════════════════════════════════════════════════════════════════╝ *
- ******************************************************************************/
-
-import type Opa5 from \\"sap/ui/test/Opa5\\";
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
 import type { actions as ListReportActions, assertions as ListReportAssertions } from \\"sap/fe/test/ListReport\\";
 import type { actions as ObjectPageActions, assertions as ObjectPageAssertions } from \\"sap/fe/test/ObjectPage\\";
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
@@ -15788,6 +15350,8 @@ sap.ui.define([
 
 
 
+
+
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
@@ -15952,18 +15516,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -17656,6 +17213,8 @@ sap.ui.define([
 
 
 
+
+
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
@@ -17820,18 +17379,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -19520,6 +19072,8 @@ sap.ui.define([
 
 
 
+
+
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
@@ -19682,18 +19236,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -21810,18 +21357,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 

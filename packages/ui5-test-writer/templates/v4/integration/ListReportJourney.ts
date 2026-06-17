@@ -91,7 +91,17 @@ function journey() {
         <%_ } -%>
         <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
         Then.onThe<%- startLR %>Generated.onTable("").iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
-        <%_ } %>
+        <%_ } _%>
+    });
+<%_ } %>
+
+<%_ if (contactCardColumns.length > 0) { -%>
+    opaTest("Check contact card links", function (_Given: Given, When: When, Then: Then) {
+        <%_ contactCardColumns.forEach(function(column) { _%>
+        // May fail if the mock data has no row at index 0 or that row does not render the contact link; adjust the row selector if needed.
+        When.onThe<%- startLR %>Generated.onTable("").iClickLink(0, "<%- column.property %>");
+        Then.onThe<%- startLR %>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
+        <%_ }); -%>
     });
 <%_ } %>
 
