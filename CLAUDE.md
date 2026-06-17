@@ -9,6 +9,7 @@ Before implementing:
 - If multiple interpretations exist, present them - don't pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
 - If something is unclear, stop. Name what's confusing. Ask.
+- Don't use `as SomeType` to silence a TypeScript error — narrow the type with a guard or conditional instead. Casting hides real bugs that surface at runtime.
 
 ## Surgical Changes
 
@@ -19,6 +20,8 @@ When editing existing code:
 - Don't refactor things that aren't broken.
 - Match existing style, even if you'd do it differently.
 - If you notice unrelated dead code, mention it - don't delete it.
+- Don't rewrite or restructure existing tests unrelated to your change. If you spot something improvable, mention it and ask before touching it.
+- If a snapshot fails after your change, update only the affected snapshots — never bulk-update with `--updateSnapshot` as it silently hides regressions.
 
 When your changes create orphans:
 - Remove imports/variables/functions that YOUR changes made unused.
@@ -41,3 +44,5 @@ For multi-step tasks, state a brief plan:
 2. [Step] → verify: [check]
 3. [Step] → verify: [check]
 ```
+
+If mid-task you discover the goal was wrong (e.g. the real issue is elsewhere), stop. Restate the correct goal and confirm before continuing — don't finish the wrong task just because you started it.
