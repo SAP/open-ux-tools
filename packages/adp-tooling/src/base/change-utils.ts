@@ -28,6 +28,22 @@ interface InboundChange extends ManifestChangeProperties {
 }
 
 /**
+ * Returns the change file extension matching the change's `fileType` (e.g. `.ctrl_variant`,
+ * `.annotation_change`, `.change`). Falls back to `.change` when `fileType` is missing or
+ * empty so malformed or legacy payloads do not produce extension-less files.
+ *
+ * The UI5 Flex frontend routes change files by their suffix; the suffix must match the
+ * embedded `fileType`, otherwise non-`change` types (e.g. `ctrl_variant`, `annotation_change`)
+ * are misclassified at runtime.
+ *
+ * @param fileType - The change's `fileType` value, if present.
+ * @returns The file extension, including the leading dot.
+ */
+function getChangeFileExtension(fileType: string | undefined): string {
+    return fileType ? `.${fileType}` : '.change';
+}
+
+/**
  * Writes annotation changes to the specified project path using the provided `mem-fs-editor` instance.
  *
  * @param {string} projectPath - The root path of the project.
@@ -52,7 +68,7 @@ export async function writeAnnotationChange(
         const annotationsFolderPath = path.join(changesFolderPath, DirName.Annotations);
 
         if (change) {
-            const changeFileName = `${change.fileName}.change`;
+            const changeFileName = `${change.fileName}${getChangeFileExtension(change.fileType)}`;
             const changeFilePath = path.join(changesFolderPath, changeFileName);
             writeChangeToFile(changeFilePath, change, fs);
         }
@@ -176,7 +192,7 @@ export async function writeChangeToFolder(
             targetFolderPath = path.join(targetFolderPath, dir);
         }
 
-        const fileName = `${change.fileName}.change`;
+        const fileName = `${change.fileName}${getChangeFileExtension(change.fileType)}`;
         const filePath = path.join(targetFolderPath, fileName);
         writeChangeToFile(filePath, change, fs);
     } catch (e) {

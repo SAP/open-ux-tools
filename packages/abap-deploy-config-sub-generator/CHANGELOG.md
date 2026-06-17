@@ -1,5 +1,20 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 1.0.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.11 → 2.0.12
+
+## 1.0.16
+
+### Patch Changes
+
+- Updated dependencies [adae40d]
+    - @sap-ux/adp-tooling@1.0.16
+
 ## 1.0.15
 
 ### Patch Changes
@@ -761,6 +776,8 @@
 
 ## 0.3.0
 
+_Released: 2026-03-20T16:07:49Z_
+
 ### Minor Changes
 
 - 25e5177: support full service url systems in the application generator and generated apps for preview and deployment
@@ -779,6 +796,8 @@
 
 ## 0.2.33
 
+_Released: 2026-03-18T16:51:44Z_
+
 ### Patch Changes
 
 - Updated dependencies [ae6758f]
@@ -789,6 +808,8 @@
 
 ## 0.2.32
 
+_Released: 2026-03-18T15:22:00Z_
+
 ### Patch Changes
 
 - Updated dependencies [4f86250]
@@ -796,12 +817,16 @@
 
 ## 0.2.31
 
+_Released: 2026-03-17T08:35:25Z_
+
 ### Patch Changes
 
 - Updated dependencies [3626b55]
     - @sap-ux/adp-tooling@0.18.94
 
 ## 0.2.30
+
+_Released: 2026-03-17T07:55:04Z_
 
 ### Patch Changes
 
@@ -814,6 +839,8 @@
     - @sap-ux/abap-deploy-config-writer@0.2.93
 
 ## 0.2.29
+
+_Released: 2026-03-17T01:04:22Z_
 
 ### Patch Changes
 
@@ -831,6 +858,8 @@
 
 ## 0.2.28
 
+_Released: 2026-03-13T07:45:50Z_
+
 ### Patch Changes
 
 - Updated dependencies [53af342]
@@ -838,12 +867,16 @@
 
 ## 0.2.27
 
+_Released: 2026-03-10T13:28:49Z_
+
 ### Patch Changes
 
 - Updated dependencies [05f3f4c]
     - @sap-ux/adp-tooling@0.18.90
 
 ## 0.2.26
+
+_Released: 2026-03-06T13:19:33Z_
 
 ### Patch Changes
 
@@ -853,12 +886,16 @@
 
 ## 0.2.25
 
+_Released: 2026-03-06T10:26:32Z_
+
 ### Patch Changes
 
 - Updated dependencies [f14a3d1]
     - @sap-ux/adp-tooling@0.18.88
 
 ## 0.2.24
+
+_Released: 2026-03-05T23:21:37Z_
 
 ### Patch Changes
 
@@ -871,6 +908,8 @@
     - @sap-ux/abap-deploy-config-writer@0.2.91
 
 ## 0.2.23
+
+_Released: 2026-03-05T16:08:22Z_
 
 ### Patch Changes
 
@@ -885,12 +924,16 @@
 
 ## 0.2.22
 
+_Released: 2026-03-05T15:09:36Z_
+
 ### Patch Changes
 
 - Updated dependencies [5d458c7]
     - @sap-ux/adp-tooling@0.18.85
 
 ## 0.2.21
+
+_Released: 2026-03-05T12:30:25Z_
 
 ### Patch Changes
 
@@ -908,6 +951,8 @@
 
 ## 0.2.20
 
+_Released: 2026-03-05T10:41:09Z_
+
 ### Patch Changes
 
 - Updated dependencies [5aff25c]
@@ -917,6 +962,8 @@
     - @sap-ux/deploy-config-generator-shared@0.1.102
 
 ## 0.2.19
+
+_Released: 2026-03-04T22:42:20Z_
 
 ### Patch Changes
 
@@ -937,6 +984,8 @@
 
 ## 0.2.18
 
+_Released: 2026-03-04T15:52:08Z_
+
 ### Patch Changes
 
 - Updated dependencies [96e9b9e]
@@ -948,6 +997,8 @@
     - @sap-ux/abap-deploy-config-writer@0.2.86
 
 ## 0.2.17
+
+_Released: 2026-03-04T14:39:10Z_
 
 ### Patch Changes
 
@@ -963,12 +1014,16 @@
 
 ## 0.2.16
 
+_Released: 2026-03-04T11:03:29Z_
+
 ### Patch Changes
 
 - Updated dependencies [2d42592]
     - @sap-ux/adp-tooling@0.18.79
 
 ## 0.2.15
+
+_Released: 2026-03-03T08:27:12Z_
 
 ### Patch Changes
 
@@ -981,6 +1036,8 @@
     - @sap-ux/abap-deploy-config-writer@0.2.84
 
 ## 0.2.14
+
+_Released: 2026-02-27T15:42:39Z_
 
 ### Patch Changes
 
@@ -995,12 +1052,16 @@
 
 ## 0.2.13
 
+_Released: 2026-02-27T14:38:29Z_
+
 ### Patch Changes
 
 - Updated dependencies [0e2d686]
     - @sap-ux/abap-deploy-config-inquirer@1.7.10
 
 ## 0.2.12
+
+_Released: 2026-02-26T10:46:59Z_
 
 ### Patch Changes
 
@@ -1015,12 +1076,16 @@
 
 ## 0.2.11
 
+_Released: 2026-02-25T14:21:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [ed1399d]
     - @sap-ux/adp-tooling@0.18.75
 
 ## 0.2.10
+
+_Released: 2026-02-23T22:35:31Z_
 
 ### Patch Changes
 
@@ -1035,6 +1100,8 @@
 
 ## 0.2.9
 
+_Released: 2026-02-23T19:07:48Z_
+
 ### Patch Changes
 
 - Updated dependencies [0ecc5f1]
@@ -1048,12 +1115,16 @@
 
 ## 0.2.8
 
+_Released: 2026-02-23T15:13:48Z_
+
 ### Patch Changes
 
 - Updated dependencies [ce9f074]
     - @sap-ux/adp-tooling@0.18.72
 
 ## 0.2.7
+
+_Released: 2026-02-20T21:31:31Z_
 
 ### Patch Changes
 
@@ -1069,6 +1140,8 @@
 
 ## 0.2.6
 
+_Released: 2026-02-20T20:20:17Z_
+
 ### Patch Changes
 
 - Updated dependencies [d588c26]
@@ -1082,6 +1155,8 @@
 
 ## 0.2.5
 
+_Released: 2026-02-20T16:17:11Z_
+
 ### Patch Changes
 
 - cbd340a: fix(deps): update dependency i18next to v25.8.12
@@ -1094,6 +1169,8 @@
     - @sap-ux/abap-deploy-config-writer@0.2.77
 
 ## 0.2.4
+
+_Released: 2026-02-20T13:46:55Z_
 
 ### Patch Changes
 
@@ -1111,12 +1188,16 @@
 
 ## 0.2.3
 
+_Released: 2026-02-20T11:22:50Z_
+
 ### Patch Changes
 
 - Updated dependencies [d1b13c4]
     - @sap-ux/adp-tooling@0.18.67
 
 ## 0.2.2
+
+_Released: 2026-02-18T21:45:35Z_
 
 ### Patch Changes
 
@@ -1131,6 +1212,8 @@
 
 ## 0.2.1
 
+_Released: 2026-02-16T18:48:13Z_
+
 ### Patch Changes
 
 - Updated dependencies [dd2131c]
@@ -1143,6 +1226,8 @@
     - @sap-ux/abap-deploy-config-writer@0.2.74
 
 ## 0.2.0
+
+_Released: 2026-02-16T16:08:11Z_
 
 ### Minor Changes
 
@@ -1163,6 +1248,8 @@
 
 ## 0.1.148
 
+_Released: 2026-02-13T16:18:58Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.99
@@ -1172,6 +1259,8 @@
 - @sap-ux/abap-deploy-config-writer@0.2.72
 
 ## 0.1.147
+
+_Released: 2026-02-13T09:54:38Z_
 
 ### Patch Changes
 
@@ -1184,6 +1273,8 @@
 
 ## 0.1.146
 
+_Released: 2026-02-12T10:29:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [d2b772d]
@@ -1194,6 +1285,8 @@
     - @sap-ux/deploy-config-generator-shared@0.1.88
 
 ## 0.1.145
+
+_Released: 2026-02-10T23:50:15Z_
 
 ### Patch Changes
 
@@ -1208,6 +1301,8 @@
 
 ## 0.1.144
 
+_Released: 2026-02-10T08:40:44Z_
+
 ### Patch Changes
 
 - Updated dependencies [ede6ae8]
@@ -1215,12 +1310,16 @@
 
 ## 0.1.143
 
+_Released: 2026-02-09T15:13:41Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.94
 - @sap-ux/deploy-config-generator-shared@0.1.86
 
 ## 0.1.142
+
+_Released: 2026-02-09T11:21:43Z_
 
 ### Patch Changes
 
@@ -1233,6 +1332,8 @@
 
 ## 0.1.141
 
+_Released: 2026-02-05T20:09:45Z_
+
 ### Patch Changes
 
 - Updated dependencies [467e6aa]
@@ -1244,6 +1345,8 @@
 
 ## 0.1.140
 
+_Released: 2026-02-05T13:53:56Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.91
@@ -1254,6 +1357,8 @@
 
 ## 0.1.139
 
+_Released: 2026-02-05T11:39:04Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.90
@@ -1263,6 +1368,8 @@
 - @sap-ux/abap-deploy-config-writer@0.2.65
 
 ## 0.1.138
+
+_Released: 2026-02-05T08:38:39Z_
 
 ### Patch Changes
 
@@ -1276,6 +1383,8 @@
 
 ## 0.1.137
 
+_Released: 2026-02-04T22:31:27Z_
+
 ### Patch Changes
 
 - Updated dependencies [9f11dd2]
@@ -1288,6 +1397,8 @@
 
 ## 0.1.136
 
+_Released: 2026-02-03T15:42:23Z_
+
 ### Patch Changes
 
 - Updated dependencies [89175fe]
@@ -1298,6 +1409,8 @@
     - @sap-ux/abap-deploy-config-writer@0.2.62
 
 ## 0.1.135
+
+_Released: 2026-01-30T16:59:27Z_
 
 ### Patch Changes
 
@@ -1313,6 +1426,8 @@
 
 ## 0.1.134
 
+_Released: 2026-01-29T14:02:02Z_
+
 ### Patch Changes
 
 - Updated dependencies [6d71400]
@@ -1324,6 +1439,8 @@
 
 ## 0.1.133
 
+_Released: 2026-01-28T00:19:05Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.84
@@ -1334,6 +1451,8 @@
 
 ## 0.1.132
 
+_Released: 2026-01-26T09:14:13Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.83
@@ -1343,6 +1462,8 @@
 
 ## 0.1.131
 
+_Released: 2026-01-23T23:57:30Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.57
@@ -1350,6 +1471,8 @@
 - @sap-ux/deploy-config-generator-shared@0.1.76
 
 ## 0.1.130
+
+_Released: 2026-01-23T22:30:10Z_
 
 ### Patch Changes
 
@@ -1361,6 +1484,8 @@
 
 ## 0.1.129
 
+_Released: 2026-01-23T12:49:27Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.80
@@ -1371,12 +1496,16 @@
 
 ## 0.1.128
 
+_Released: 2026-01-19T12:47:48Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.79
 - @sap-ux/deploy-config-generator-shared@0.1.73
 
 ## 0.1.127
+
+_Released: 2026-01-16T13:57:39Z_
 
 ### Patch Changes
 
@@ -1391,6 +1520,8 @@
 
 ## 0.1.126
 
+_Released: 2026-01-16T12:32:24Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.77
@@ -1400,6 +1531,8 @@
 - @sap-ux/abap-deploy-config-writer@0.2.55
 
 ## 0.1.125
+
+_Released: 2026-01-15T14:14:39Z_
 
 ### Patch Changes
 
@@ -1412,6 +1545,8 @@
 
 ## 0.1.124
 
+_Released: 2026-01-14T17:56:49Z_
+
 ### Patch Changes
 
 - Updated dependencies [b132944]
@@ -1422,6 +1557,8 @@
     - @sap-ux/deploy-config-generator-shared@0.1.70
 
 ## 0.1.123
+
+_Released: 2026-01-12T12:01:34Z_
 
 ### Patch Changes
 
@@ -1434,12 +1571,16 @@
 
 ## 0.1.122
 
+_Released: 2026-01-12T09:10:27Z_
+
 ### Patch Changes
 
 - Updated dependencies [234dc8b]
     - @sap-ux/abap-deploy-config-inquirer@1.6.73
 
 ## 0.1.121
+
+_Released: 2026-01-09T11:35:48Z_
 
 ### Patch Changes
 
@@ -1452,6 +1593,8 @@
 
 ## 0.1.120
 
+_Released: 2026-01-08T17:12:17Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.71
@@ -1460,6 +1603,8 @@
 - @sap-ux/abap-deploy-config-writer@0.2.50
 
 ## 0.1.119
+
+_Released: 2026-01-07T16:03:58Z_
 
 ### Patch Changes
 
@@ -1470,12 +1615,16 @@
 
 ## 0.1.118
 
+_Released: 2026-01-07T10:20:40Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.69
 - @sap-ux/deploy-config-generator-shared@0.1.67
 
 ## 0.1.117
+
+_Released: 2026-01-06T14:37:31Z_
 
 ### Patch Changes
 
@@ -1485,6 +1634,8 @@
     - @sap-ux/deploy-config-generator-shared@0.1.67
 
 ## 0.1.116
+
+_Released: 2026-01-05T14:16:22Z_
 
 ### Patch Changes
 
@@ -1496,6 +1647,8 @@
 
 ## 0.1.115
 
+_Released: 2025-12-22T17:36:43Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.66
@@ -1504,6 +1657,8 @@
 - @sap-ux/abap-deploy-config-writer@0.2.48
 
 ## 0.1.114
+
+_Released: 2025-12-19T11:36:13Z_
 
 ### Patch Changes
 
@@ -1520,6 +1675,8 @@
 
 ## 0.1.113
 
+_Released: 2025-12-18T21:05:02Z_
+
 ### Patch Changes
 
 - a9471d0: fix sonar issues
@@ -1535,12 +1692,16 @@
 
 ## 0.1.112
 
+_Released: 2025-12-18T13:13:52Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.63
 - @sap-ux/deploy-config-generator-shared@0.1.63
 
 ## 0.1.111
+
+_Released: 2025-12-18T08:56:52Z_
 
 ### Patch Changes
 
@@ -1551,6 +1712,8 @@
 
 ## 0.1.110
 
+_Released: 2025-12-16T11:43:52Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.61
@@ -1560,6 +1723,8 @@
 - @sap-ux/abap-deploy-config-writer@0.2.44
 
 ## 0.1.109
+
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -1577,6 +1742,8 @@
 
 ## 0.1.108
 
+_Released: 2025-12-12T12:38:21Z_
+
 ### Patch Changes
 
 - Updated dependencies [7217d7d]
@@ -1588,12 +1755,16 @@
 
 ## 0.1.107
 
+_Released: 2025-12-12T09:02:37Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.58
 - @sap-ux/deploy-config-generator-shared@0.1.60
 
 ## 0.1.106
+
+_Released: 2025-12-10T20:04:51Z_
 
 ### Patch Changes
 
@@ -1606,6 +1777,8 @@
 
 ## 0.1.105
 
+_Released: 2025-12-10T09:08:56Z_
+
 ### Patch Changes
 
 - Updated dependencies [985223a]
@@ -1616,6 +1789,8 @@
     - @sap-ux/deploy-config-generator-shared@0.1.59
 
 ## 0.1.104
+
+_Released: 2025-12-08T17:56:48Z_
 
 ### Patch Changes
 
@@ -1629,6 +1804,8 @@
 
 ## 0.1.103
 
+_Released: 2025-12-08T11:51:00Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.54
@@ -1638,6 +1815,8 @@
 
 ## 0.1.102
 
+_Released: 2025-12-05T12:18:49Z_
+
 ### Patch Changes
 
 - Updated dependencies [d202c17]
@@ -1646,6 +1825,8 @@
     - @sap-ux/deploy-config-generator-shared@0.1.57
 
 ## 0.1.101
+
+_Released: 2025-12-04T10:42:12Z_
 
 ### Patch Changes
 
@@ -1658,6 +1839,8 @@
 
 ## 0.1.100
 
+_Released: 2025-11-27T14:58:09Z_
+
 ### Patch Changes
 
 - Updated dependencies [07725fe]
@@ -1668,6 +1851,8 @@
     - @sap-ux/deploy-config-generator-shared@0.1.55
 
 ## 0.1.99
+
+_Released: 2025-11-26T14:39:37Z_
 
 ### Patch Changes
 
@@ -1681,6 +1866,8 @@
 
 ## 0.1.98
 
+_Released: 2025-11-26T12:17:21Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.49
@@ -1688,12 +1875,16 @@
 
 ## 0.1.97
 
+_Released: 2025-11-26T00:12:42Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.48
 - @sap-ux/deploy-config-generator-shared@0.1.53
 
 ## 0.1.96
+
+_Released: 2025-11-24T12:45:14Z_
 
 ### Patch Changes
 
@@ -1707,12 +1898,16 @@
 
 ## 0.1.95
 
+_Released: 2025-11-07T13:23:57Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.46
 - @sap-ux/deploy-config-generator-shared@0.1.52
 
 ## 0.1.94
+
+_Released: 2025-11-06T15:12:51Z_
 
 ### Patch Changes
 
@@ -1721,6 +1916,8 @@
 - @sap-ux/deploy-config-generator-shared@0.1.52
 
 ## 0.1.93
+
+_Released: 2025-11-05T06:53:42Z_
 
 ### Patch Changes
 
@@ -1738,12 +1935,16 @@
 
 ## 0.1.92
 
+_Released: 2025-11-03T10:50:00Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.43
 - @sap-ux/deploy-config-generator-shared@0.1.50
 
 ## 0.1.91
+
+_Released: 2025-10-31T13:35:34Z_
 
 ### Patch Changes
 
@@ -1755,6 +1956,8 @@
 
 ## 0.1.90
 
+_Released: 2025-10-30T10:09:21Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.41
@@ -1763,6 +1966,8 @@
 - @sap-ux/abap-deploy-config-writer@0.2.31
 
 ## 0.1.89
+
+_Released: 2025-10-29T17:02:38Z_
 
 ### Patch Changes
 
@@ -1774,6 +1979,8 @@
 
 ## 0.1.88
 
+_Released: 2025-10-29T11:04:17Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.39
@@ -1784,6 +1991,8 @@
 
 ## 0.1.87
 
+_Released: 2025-10-28T13:36:39Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.38
@@ -1792,6 +2001,8 @@
 - @sap-ux/abap-deploy-config-writer@0.2.28
 
 ## 0.1.86
+
+_Released: 2025-10-27T13:41:31Z_
 
 ### Patch Changes
 
@@ -1804,6 +2015,8 @@
 
 ## 0.1.85
 
+_Released: 2025-10-22T18:56:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [fa9580c]
@@ -1814,6 +2027,8 @@
     - @sap-ux/abap-deploy-config-writer@0.2.26
 
 ## 0.1.84
+
+_Released: 2025-10-22T09:32:12Z_
 
 ### Patch Changes
 
@@ -1826,12 +2041,16 @@
 
 ## 0.1.83
 
+_Released: 2025-10-21T09:37:06Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.34
 - @sap-ux/deploy-config-generator-shared@0.1.45
 
 ## 0.1.82
+
+_Released: 2025-10-21T07:47:50Z_
 
 ### Patch Changes
 
@@ -1844,6 +2063,8 @@
 
 ## 0.1.81
 
+_Released: 2025-10-17T11:37:38Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.32
@@ -1854,6 +2075,8 @@
 
 ## 0.1.80
 
+_Released: 2025-10-17T09:45:11Z_
+
 ### Patch Changes
 
 - Updated dependencies [d4dabbd]
@@ -1863,12 +2086,16 @@
 
 ## 0.1.79
 
+_Released: 2025-10-15T16:45:46Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.30
 - @sap-ux/deploy-config-generator-shared@0.1.42
 
 ## 0.1.78
+
+_Released: 2025-10-14T13:22:30Z_
 
 ### Patch Changes
 
@@ -1883,12 +2110,16 @@
 
 ## 0.1.77
 
+_Released: 2025-10-10T13:53:56Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.28
 - @sap-ux/deploy-config-generator-shared@0.1.41
 
 ## 0.1.76
+
+_Released: 2025-10-10T12:22:06Z_
 
 ### Patch Changes
 
@@ -1902,6 +2133,8 @@
 
 ## 0.1.75
 
+_Released: 2025-10-07T13:15:25Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.26
@@ -1909,6 +2142,8 @@
 - @sap-ux/fiori-generator-shared@0.13.21
 
 ## 0.1.74
+
+_Released: 2025-10-06T17:09:01Z_
 
 ### Patch Changes
 
@@ -1924,6 +2159,8 @@
 
 ## 0.1.73
 
+_Released: 2025-10-06T10:53:53Z_
+
 ### Patch Changes
 
 - Updated dependencies [d866995]
@@ -1936,6 +2173,8 @@
 
 ## 0.1.72
 
+_Released: 2025-10-03T09:25:07Z_
+
 ### Patch Changes
 
 - 4b0b8fb: fix: Missing build script for ADP onPremise projects leads to error during deployment
@@ -1944,11 +2183,15 @@
 
 ## 0.1.71
 
+_Released: 2025-10-01T12:59:50Z_
+
 ### Patch Changes
 
 - 30cf923: fix: "lrep" property is not added when the deploy config is created from within the ADP Generator
 
 ## 0.1.70
+
+_Released: 2025-09-26T12:52:39Z_
 
 ### Patch Changes
 
@@ -1956,6 +2199,8 @@
     - @sap-ux/abap-deploy-config-inquirer@1.6.23
 
 ## 0.1.69
+
+_Released: 2025-09-23T20:14:56Z_
 
 ### Patch Changes
 
@@ -1968,12 +2213,16 @@
 
 ## 0.1.68
 
+_Released: 2025-09-23T12:40:54Z_
+
 ### Patch Changes
 
 - Updated dependencies [bfdbaca]
     - @sap-ux/abap-deploy-config-inquirer@1.6.21
 
 ## 0.1.67
+
+_Released: 2025-09-19T16:36:41Z_
 
 ### Patch Changes
 
@@ -1988,12 +2237,16 @@
 
 ## 0.1.66
 
+_Released: 2025-09-19T12:41:40Z_
+
 ### Patch Changes
 
 - Updated dependencies [c15aa4f]
     - @sap-ux/abap-deploy-config-writer@0.2.15
 
 ## 0.1.65
+
+_Released: 2025-09-19T00:44:48Z_
 
 ### Patch Changes
 
@@ -2006,6 +2259,8 @@
 
 ## 0.1.64
 
+_Released: 2025-09-18T07:30:28Z_
+
 ### Patch Changes
 
 - Updated dependencies [c385a76]
@@ -2016,6 +2271,8 @@
     - @sap-ux/deploy-config-generator-shared@0.1.34
 
 ## 0.1.63
+
+_Released: 2025-09-16T06:28:11Z_
 
 ### Patch Changes
 
@@ -2030,6 +2287,8 @@
 
 ## 0.1.62
 
+_Released: 2025-09-11T11:04:24Z_
+
 ### Patch Changes
 
 - Updated dependencies [3c094af]
@@ -2039,6 +2298,8 @@
 
 ## 0.1.61
 
+_Released: 2025-09-03T14:26:25Z_
+
 ### Patch Changes
 
 - Updated dependencies [f46dd02]
@@ -2046,12 +2307,16 @@
 
 ## 0.1.60
 
+_Released: 2025-09-03T13:57:15Z_
+
 ### Patch Changes
 
 - Updated dependencies [2aecea7]
     - @sap-ux/abap-deploy-config-inquirer@1.6.14
 
 ## 0.1.59
+
+_Released: 2025-09-02T13:22:05Z_
 
 ### Patch Changes
 
@@ -2064,6 +2329,8 @@
 
 ## 0.1.58
 
+_Released: 2025-09-01T12:06:20Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.12
@@ -2073,6 +2340,8 @@
 - @sap-ux/fiori-generator-shared@0.13.12
 
 ## 0.1.57
+
+_Released: 2025-08-28T13:37:07Z_
 
 ### Patch Changes
 
@@ -2087,12 +2356,16 @@
 
 ## 0.1.56
 
+_Released: 2025-08-25T12:19:51Z_
+
 ### Patch Changes
 
 - Updated dependencies [384bb40]
     - @sap-ux/abap-deploy-config-inquirer@1.6.10
 
 ## 0.1.55
+
+_Released: 2025-08-21T14:27:46Z_
 
 ### Patch Changes
 
@@ -2103,6 +2376,8 @@
 - @sap-ux/fiori-generator-shared@0.13.10
 
 ## 0.1.54
+
+_Released: 2025-08-14T14:36:13Z_
 
 ### Patch Changes
 
@@ -2117,6 +2392,8 @@
 
 ## 0.1.53
 
+_Released: 2025-08-13T10:00:10Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.30.11
@@ -2127,12 +2404,16 @@
 
 ## 0.1.52
 
+_Released: 2025-08-12T14:05:27Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.6
 - @sap-ux/deploy-config-generator-shared@0.1.26
 
 ## 0.1.51
+
+_Released: 2025-08-07T06:27:29Z_
 
 ### Patch Changes
 
@@ -2142,6 +2423,8 @@
 
 ## 0.1.50
 
+_Released: 2025-08-01T13:45:39Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.4
@@ -2150,6 +2433,8 @@
 - @sap-ux/abap-deploy-config-writer@0.2.5
 
 ## 0.1.49
+
+_Released: 2025-08-01T09:39:39Z_
 
 ### Patch Changes
 
@@ -2163,12 +2448,16 @@
 
 ## 0.1.48
 
+_Released: 2025-07-31T11:23:22Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.6.2
 - @sap-ux/deploy-config-generator-shared@0.1.24
 
 ## 0.1.47
+
+_Released: 2025-07-30T19:33:46Z_
 
 ### Patch Changes
 
@@ -2180,6 +2469,8 @@
 
 ## 0.1.46
 
+_Released: 2025-07-30T11:42:24Z_
+
 ### Patch Changes
 
 - 6e2c5aa: fix overwrite prompt conflict
@@ -2187,6 +2478,8 @@
     - @sap-ux/abap-deploy-config-inquirer@1.6.0
 
 ## 0.1.45
+
+_Released: 2025-07-28T22:57:52Z_
 
 ### Patch Changes
 
@@ -2199,6 +2492,8 @@
 
 ## 0.1.44
 
+_Released: 2025-07-28T08:36:50Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.5.1
@@ -2208,12 +2503,16 @@
 
 ## 0.1.43
 
+_Released: 2025-07-24T09:25:40Z_
+
 ### Patch Changes
 
 - Updated dependencies [089b56f]
     - @sap-ux/abap-deploy-config-inquirer@1.5.0
 
 ## 0.1.42
+
+_Released: 2025-07-22T13:05:35Z_
 
 ### Patch Changes
 
@@ -2224,12 +2523,16 @@
 
 ## 0.1.41
 
+_Released: 2025-07-21T13:01:41Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.4.37
 - @sap-ux/deploy-config-generator-shared@0.1.21
 
 ## 0.1.40
+
+_Released: 2025-07-17T13:47:26Z_
 
 ### Patch Changes
 
@@ -2238,6 +2541,8 @@
 
 ## 0.1.39
 
+_Released: 2025-07-16T14:40:22Z_
+
 ### Patch Changes
 
 - Updated dependencies [e53c1f8]
@@ -2245,12 +2550,16 @@
 
 ## 0.1.38
 
+_Released: 2025-07-16T12:23:18Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.4.35
 - @sap-ux/deploy-config-generator-shared@0.1.20
 
 ## 0.1.37
+
+_Released: 2025-07-10T11:49:34Z_
 
 ### Patch Changes
 
@@ -2260,6 +2569,8 @@
     - @sap-ux/deploy-config-generator-shared@0.1.20
 
 ## 0.1.36
+
+_Released: 2025-07-08T12:06:04Z_
 
 ### Patch Changes
 
@@ -2272,6 +2583,8 @@
 
 ## 0.1.35
 
+_Released: 2025-07-07T08:44:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [58abe82]
@@ -2280,6 +2593,8 @@
     - @sap-ux/deploy-config-generator-shared@0.1.18
 
 ## 0.1.34
+
+_Released: 2025-07-04T15:18:17Z_
 
 ### Patch Changes
 
@@ -2293,6 +2608,8 @@
 
 ## 0.1.33
 
+_Released: 2025-07-04T09:34:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [c0fa1d1]
@@ -2305,6 +2622,8 @@
 
 ## 0.1.32
 
+_Released: 2025-07-03T12:14:55Z_
+
 ### Patch Changes
 
 - Updated dependencies [7a4543e]
@@ -2316,6 +2635,8 @@
 
 ## 0.1.31
 
+_Released: 2025-06-30T08:46:50Z_
+
 ### Patch Changes
 
 - b9675bb: Improve Fiori Tools UI Texts
@@ -2325,6 +2646,8 @@
     - @sap-ux/fiori-generator-shared@0.12.13
 
 ## 0.1.30
+
+_Released: 2025-06-27T16:39:38Z_
 
 ### Patch Changes
 
@@ -2338,6 +2661,8 @@
 
 ## 0.1.29
 
+_Released: 2025-06-27T07:08:06Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.4.26
@@ -2348,6 +2673,8 @@
 
 ## 0.1.28
 
+_Released: 2025-06-24T14:02:12Z_
+
 ### Patch Changes
 
 - Updated dependencies [4fef16a]
@@ -2356,6 +2683,8 @@
     - @sap-ux/deploy-config-generator-shared@0.1.11
 
 ## 0.1.27
+
+_Released: 2025-06-24T07:18:46Z_
 
 ### Patch Changes
 
@@ -2367,6 +2696,8 @@
 
 ## 0.1.26
 
+_Released: 2025-06-23T22:19:01Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.4.23
@@ -2375,12 +2706,16 @@
 
 ## 0.1.25
 
+_Released: 2025-06-20T08:26:14Z_
+
 ### Patch Changes
 
 - Updated dependencies [5a88606]
     - @sap-ux/abap-deploy-config-inquirer@1.4.22
 
 ## 0.1.24
+
+_Released: 2025-06-19T10:31:56Z_
 
 ### Patch Changes
 
@@ -2390,6 +2725,8 @@
 
 ## 0.1.23
 
+_Released: 2025-06-19T04:44:24Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.4.20
@@ -2398,12 +2735,16 @@
 
 ## 0.1.22
 
+_Released: 2025-06-18T14:50:19Z_
+
 ### Patch Changes
 
 - Updated dependencies [3ea811a]
     - @sap-ux/abap-deploy-config-writer@0.1.7
 
 ## 0.1.21
+
+_Released: 2025-06-17T07:58:40Z_
 
 ### Patch Changes
 
@@ -2414,6 +2755,8 @@
 
 ## 0.1.20
 
+_Released: 2025-06-16T09:52:52Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.4.18
@@ -2421,12 +2764,16 @@
 
 ## 0.1.19
 
+_Released: 2025-06-13T14:12:57Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.4.17
 - @sap-ux/deploy-config-generator-shared@0.1.8
 
 ## 0.1.18
+
+_Released: 2025-06-13T10:58:52Z_
 
 ### Patch Changes
 
@@ -2436,6 +2783,8 @@
 
 ## 0.1.17
 
+_Released: 2025-06-11T12:23:45Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.4.15
@@ -2444,6 +2793,8 @@
 
 ## 0.1.16
 
+_Released: 2025-06-10T17:08:16Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.4.14
@@ -2451,6 +2802,8 @@
 - @sap-ux/abap-deploy-config-writer@0.1.5
 
 ## 0.1.15
+
+_Released: 2025-06-10T07:40:27Z_
 
 ### Patch Changes
 
@@ -2461,11 +2814,15 @@
 
 ## 0.1.14
 
+_Released: 2025-06-09T13:13:13Z_
+
 ### Patch Changes
 
 - 7132e18: add conflicter force prop for yui usage
 
 ## 0.1.13
+
+_Released: 2025-06-09T09:48:34Z_
 
 ### Patch Changes
 
@@ -2475,11 +2832,15 @@
 
 ## 0.1.12
 
+_Released: 2025-06-06T09:19:35Z_
+
 ### Patch Changes
 
 - 3630ec9: fixs for abap headless
 
 ## 0.1.11
+
+_Released: 2025-06-05T16:14:06Z_
 
 ### Patch Changes
 
@@ -2487,6 +2848,8 @@
     - @sap-ux/abap-deploy-config-inquirer@1.4.11
 
 ## 0.1.10
+
+_Released: 2025-06-05T12:32:35Z_
 
 ### Patch Changes
 
@@ -2496,6 +2859,8 @@
     - @sap-ux/deploy-config-generator-shared@0.1.6
 
 ## 0.1.9
+
+_Released: 2025-06-05T07:23:07Z_
 
 ### Patch Changes
 
@@ -2507,6 +2872,8 @@
 
 ## 0.1.8
 
+_Released: 2025-06-04T10:59:54Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.4.8
@@ -2514,6 +2881,8 @@
 - @sap-ux/abap-deploy-config-writer@0.1.4
 
 ## 0.1.7
+
+_Released: 2025-05-30T09:02:15Z_
 
 ### Patch Changes
 
@@ -2523,6 +2892,8 @@
     - @sap-ux/deploy-config-generator-shared@0.1.4
 
 ## 0.1.6
+
+_Released: 2025-05-30T07:18:36Z_
 
 ### Patch Changes
 
@@ -2537,6 +2908,8 @@
 
 ## 0.1.5
 
+_Released: 2025-05-28T07:35:56Z_
+
 ### Patch Changes
 
 - 4c6b7a1: add package default to fiori gen settings
@@ -2544,6 +2917,8 @@
     - @sap-ux/abap-deploy-config-inquirer@1.4.5
 
 ## 0.1.4
+
+_Released: 2025-05-27T17:59:17Z_
 
 ### Patch Changes
 
@@ -2555,12 +2930,16 @@
 
 ## 0.1.3
 
+_Released: 2025-05-27T15:05:11Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.4.3
 - @sap-ux/deploy-config-generator-shared@0.1.1
 
 ## 0.1.2
+
+_Released: 2025-05-23T13:35:39Z_
 
 ### Patch Changes
 
@@ -2569,6 +2948,8 @@
 - @sap-ux/abap-deploy-config-writer@0.1.2
 
 ## 0.1.1
+
+_Released: 2025-05-15T13:36:04Z_
 
 ### Patch Changes
 
@@ -2582,6 +2963,8 @@
     - @sap-ux/fiori-generator-shared@0.12.1
 
 ## 0.1.0
+
+_Released: 2025-05-14T22:35:53Z_
 
 ### Minor Changes
 
@@ -2603,6 +2986,8 @@
 
 ## 0.0.75
 
+_Released: 2025-05-13T10:46:10Z_
+
 ### Patch Changes
 
 - Updated dependencies [5585f0d]
@@ -2612,6 +2997,8 @@
     - @sap-ux/abap-deploy-config-writer@0.0.110
 
 ## 0.0.74
+
+_Released: 2025-05-05T13:48:20Z_
 
 ### Patch Changes
 
@@ -2625,12 +3012,16 @@
 
 ## 0.0.73
 
+_Released: 2025-05-02T16:07:01Z_
+
 ### Patch Changes
 
 - Updated dependencies [cb8ff79]
     - @sap-ux/abap-deploy-config-inquirer@1.3.0
 
 ## 0.0.72
+
+_Released: 2025-05-02T10:00:21Z_
 
 ### Patch Changes
 
@@ -2640,12 +3031,16 @@
 
 ## 0.0.71
 
+_Released: 2025-05-01T13:52:16Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.2.50
 - @sap-ux/deploy-config-generator-shared@0.0.46
 
 ## 0.0.70
+
+_Released: 2025-04-30T09:58:47Z_
 
 ### Patch Changes
 
@@ -2655,6 +3050,8 @@
 
 ## 0.0.69
 
+_Released: 2025-04-30T08:50:36Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.2.48
@@ -2663,12 +3060,16 @@
 
 ## 0.0.68
 
+_Released: 2025-04-28T14:29:23Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.2.47
 - @sap-ux/deploy-config-generator-shared@0.0.46
 
 ## 0.0.67
+
+_Released: 2025-04-28T10:13:20Z_
 
 ### Patch Changes
 
@@ -2677,12 +3078,16 @@
 
 ## 0.0.66
 
+_Released: 2025-04-28T08:38:04Z_
+
 ### Patch Changes
 
 - Updated dependencies [55e7ebd]
     - @sap-ux/abap-deploy-config-inquirer@1.2.46
 
 ## 0.0.65
+
+_Released: 2025-04-24T15:01:01Z_
 
 ### Patch Changes
 
@@ -2697,6 +3102,8 @@
 
 ## 0.0.64
 
+_Released: 2025-04-23T15:22:38Z_
+
 ### Patch Changes
 
 - Updated dependencies [294bbe3]
@@ -2709,6 +3116,8 @@
     - @sap-ux/deploy-config-generator-shared@0.0.44
 
 ## 0.0.63
+
+_Released: 2025-04-23T13:59:14Z_
 
 ### Patch Changes
 
@@ -2723,12 +3132,16 @@
 
 ## 0.0.62
 
+_Released: 2025-04-17T12:52:13Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.2.42
 - @sap-ux/deploy-config-generator-shared@0.0.42
 
 ## 0.0.61
+
+_Released: 2025-04-15T14:18:17Z_
 
 ### Patch Changes
 
@@ -2737,6 +3150,8 @@
 - @sap-ux/abap-deploy-config-writer@0.0.103
 
 ## 0.0.60
+
+_Released: 2025-04-15T10:10:52Z_
 
 ### Patch Changes
 
@@ -2747,6 +3162,8 @@
     - @sap-ux/deploy-config-generator-shared@0.0.42
 
 ## 0.0.59
+
+_Released: 2025-04-14T22:24:07Z_
 
 ### Patch Changes
 
@@ -2760,6 +3177,8 @@
 
 ## 0.0.58
 
+_Released: 2025-04-10T13:52:38Z_
+
 ### Patch Changes
 
 - Updated dependencies [23e055a]
@@ -2769,6 +3188,8 @@
 
 ## 0.0.57
 
+_Released: 2025-04-04T14:37:20Z_
+
 ### Patch Changes
 
 - Updated dependencies [36518cc]
@@ -2776,12 +3197,16 @@
 
 ## 0.0.56
 
+_Released: 2025-04-01T14:03:23Z_
+
 ### Patch Changes
 
 - Updated dependencies [5629071]
     - @sap-ux/abap-deploy-config-inquirer@1.2.36
 
 ## 0.0.55
+
+_Released: 2025-03-26T12:15:41Z_
 
 ### Patch Changes
 
@@ -2791,6 +3216,8 @@
 
 ## 0.0.54
 
+_Released: 2025-03-20T14:57:37Z_
+
 ### Patch Changes
 
 - 1bca2d8: Adapt Deploy Config Inquirer and Deploy Config Sub Generator to support ADP Projects
@@ -2798,6 +3225,8 @@
     - @sap-ux/abap-deploy-config-inquirer@1.2.34
 
 ## 0.0.53
+
+_Released: 2025-03-19T08:54:25Z_
 
 ### Patch Changes
 
@@ -2811,6 +3240,8 @@
 
 ## 0.0.52
 
+_Released: 2025-03-18T09:41:03Z_
+
 ### Patch Changes
 
 - Updated dependencies [224494c]
@@ -2823,6 +3254,8 @@
     - @sap-ux/deploy-config-generator-shared@0.0.38
 
 ## 0.0.51
+
+_Released: 2025-03-10T20:40:35Z_
 
 ### Patch Changes
 
@@ -2838,6 +3271,8 @@
 
 ## 0.0.50
 
+_Released: 2025-03-06T16:16:20Z_
+
 ### Patch Changes
 
 - Updated dependencies [1ce7fe9]
@@ -2850,6 +3285,8 @@
 
 ## 0.0.49
 
+_Released: 2025-03-06T10:25:49Z_
+
 ### Patch Changes
 
 - 19a19dd: add new main deploy gen module
@@ -2858,6 +3295,8 @@
     - @sap-ux/abap-deploy-config-inquirer@1.2.29
 
 ## 0.0.48
+
+_Released: 2025-03-05T11:16:53Z_
 
 ### Patch Changes
 
@@ -2870,6 +3309,8 @@
     - @sap-ux/deploy-config-generator-shared@0.0.34
 
 ## 0.0.47
+
+_Released: 2025-03-05T09:14:02Z_
 
 ### Patch Changes
 
@@ -2884,12 +3325,16 @@
 
 ## 0.0.46
 
+_Released: 2025-03-04T14:54:47Z_
+
 ### Patch Changes
 
 - Updated dependencies [2202356]
     - @sap-ux/abap-deploy-config-inquirer@1.2.26
 
 ## 0.0.45
+
+_Released: 2025-03-04T08:55:15Z_
 
 ### Patch Changes
 
@@ -2902,6 +3347,8 @@
 
 ## 0.0.44
 
+_Released: 2025-03-03T11:06:12Z_
+
 ### Patch Changes
 
 - Updated dependencies [d47a1b1]
@@ -2911,6 +3358,8 @@
 
 ## 0.0.43
 
+_Released: 2025-03-03T08:50:39Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.2.23
@@ -2918,6 +3367,8 @@
 - @sap-ux/abap-deploy-config-writer@0.0.93
 
 ## 0.0.42
+
+_Released: 2025-02-28T15:10:48Z_
 
 ### Patch Changes
 
@@ -2931,11 +3382,15 @@
 
 ## 0.0.41
 
+_Released: 2025-02-27T19:24:50Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.2.21
 
 ## 0.0.40
+
+_Released: 2025-02-27T14:15:03Z_
 
 ### Patch Changes
 
@@ -2949,6 +3404,8 @@
 
 ## 0.0.39
 
+_Released: 2025-02-27T08:22:17Z_
+
 ### Patch Changes
 
 - Updated dependencies [c8c292c]
@@ -2961,12 +3418,16 @@
 
 ## 0.0.38
 
+_Released: 2025-02-24T10:50:02Z_
+
 ### Patch Changes
 
 - Updated dependencies [d6118c9]
     - @sap-ux/deploy-config-generator-shared@0.0.27
 
 ## 0.0.37
+
+_Released: 2025-02-24T09:17:17Z_
 
 ### Patch Changes
 
@@ -2976,6 +3437,8 @@
     - @sap-ux/deploy-config-generator-shared@0.0.26
 
 ## 0.0.36
+
+_Released: 2025-02-17T13:42:22Z_
 
 ### Patch Changes
 
@@ -2989,6 +3452,8 @@
 
 ## 0.0.35
 
+_Released: 2025-02-17T11:44:22Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.2.16
@@ -2996,6 +3461,8 @@
 - @sap-ux/abap-deploy-config-writer@0.0.88
 
 ## 0.0.34
+
+_Released: 2025-02-13T17:39:11Z_
 
 ### Patch Changes
 
@@ -3005,6 +3472,8 @@
     - @sap-ux/deploy-config-generator-shared@0.0.24
 
 ## 0.0.33
+
+_Released: 2025-02-13T10:58:34Z_
 
 ### Patch Changes
 
@@ -3018,12 +3487,16 @@
 
 ## 0.0.32
 
+_Released: 2025-02-13T10:39:20Z_
+
 ### Patch Changes
 
 - Updated dependencies [7c96039]
     - @sap-ux/deploy-config-generator-shared@0.0.22
 
 ## 0.0.31
+
+_Released: 2025-02-07T19:58:32Z_
 
 ### Patch Changes
 
@@ -3038,12 +3511,16 @@
 
 ## 0.0.30
 
+_Released: 2025-02-05T20:45:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [c08e1e3]
     - @sap-ux/abap-deploy-config-inquirer@1.2.12
 
 ## 0.0.29
+
+_Released: 2025-02-05T17:08:20Z_
 
 ### Patch Changes
 
@@ -3055,6 +3532,8 @@
 - @sap-ux/deploy-config-generator-shared@0.0.20
 
 ## 0.0.28
+
+_Released: 2025-02-05T14:44:29Z_
 
 ### Patch Changes
 
@@ -3068,6 +3547,8 @@
 
 ## 0.0.27
 
+_Released: 2025-02-05T10:10:11Z_
+
 ### Patch Changes
 
 - 9b755fc: adds new cf generator
@@ -3075,6 +3556,8 @@
     - @sap-ux/deploy-config-generator-shared@0.0.18
 
 ## 0.0.26
+
+_Released: 2025-02-04T15:39:07Z_
 
 ### Patch Changes
 
@@ -3088,6 +3571,8 @@
 
 ## 0.0.25
 
+_Released: 2025-02-04T14:25:43Z_
+
 ### Patch Changes
 
 - Updated dependencies [9980073]
@@ -3099,6 +3584,8 @@
     - @sap-ux/abap-deploy-config-writer@0.0.82
 
 ## 0.0.24
+
+_Released: 2025-01-30T10:04:50Z_
 
 ### Patch Changes
 
@@ -3112,11 +3599,15 @@
 
 ## 0.0.23
 
+_Released: 2025-01-29T17:41:08Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.2.6
 
 ## 0.0.22
+
+_Released: 2025-01-29T13:31:31Z_
 
 ### Patch Changes
 
@@ -3130,6 +3621,8 @@
 
 ## 0.0.21
 
+_Released: 2025-01-28T10:44:06Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.2.4
@@ -3137,6 +3630,8 @@
 - @sap-ux/abap-deploy-config-writer@0.0.79
 
 ## 0.0.20
+
+_Released: 2025-01-28T09:20:06Z_
 
 ### Patch Changes
 
@@ -3150,12 +3645,16 @@
 
 ## 0.0.19
 
+_Released: 2025-01-27T22:28:20Z_
+
 ### Patch Changes
 
 - Updated dependencies [ccb96dd]
     - @sap-ux/abap-deploy-config-writer@0.0.77
 
 ## 0.0.18
+
+_Released: 2025-01-27T18:57:16Z_
 
 ### Patch Changes
 
@@ -3170,11 +3669,15 @@
 
 ## 0.0.17
 
+_Released: 2025-01-22T17:11:37Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.2.1
 
 ## 0.0.16
+
+_Released: 2025-01-22T09:48:33Z_
 
 ### Patch Changes
 
@@ -3184,6 +3687,8 @@
 
 ## 0.0.15
 
+_Released: 2025-01-20T11:37:42Z_
+
 ### Patch Changes
 
 - 6b6c64a: adds new module cf deploy config sub gen
@@ -3192,12 +3697,16 @@
 
 ## 0.0.14
 
+_Released: 2025-01-17T14:33:24Z_
+
 ### Patch Changes
 
 - Updated dependencies [fc5916a]
     - @sap-ux/abap-deploy-config-inquirer@1.2.0
 
 ## 0.0.13
+
+_Released: 2025-01-16T02:22:29Z_
 
 ### Patch Changes
 
@@ -3211,6 +3720,8 @@
 
 ## 0.0.12
 
+_Released: 2025-01-14T16:54:17Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.1.20
@@ -3219,17 +3730,23 @@
 
 ## 0.0.11
 
+_Released: 2025-01-08T15:30:03Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.1.19
 
 ## 0.0.10
 
+_Released: 2025-01-08T11:51:44Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.1.18
 
 ## 0.0.9
+
+_Released: 2025-01-08T10:44:36Z_
 
 ### Patch Changes
 
@@ -3238,6 +3755,8 @@
 - @sap-ux/abap-deploy-config-writer@0.0.72
 
 ## 0.0.8
+
+_Released: 2024-12-20T15:43:15Z_
 
 ### Patch Changes
 
@@ -3249,17 +3768,23 @@
 
 ## 0.0.7
 
+_Released: 2024-12-19T17:24:19Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.1.15
 
 ## 0.0.6
 
+_Released: 2024-12-18T10:32:41Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.1.14
 
 ## 0.0.5
+
+_Released: 2024-12-17T15:31:53Z_
 
 ### Patch Changes
 
@@ -3273,6 +3798,8 @@
 
 ## 0.0.4
 
+_Released: 2024-12-17T13:32:02Z_
+
 ### Patch Changes
 
 - Updated dependencies [cb54b44]
@@ -3285,6 +3812,8 @@
 
 ## 0.0.3
 
+_Released: 2024-12-10T16:04:29Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.1.11
@@ -3296,11 +3825,15 @@
 
 ## 0.0.2
 
+_Released: 2024-12-10T14:32:00Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.1.10
 
 ## 0.0.1
+
+_Released: 2025-01-08T11:51:44Z_
 
 ### Patch Changes
 

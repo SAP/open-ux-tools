@@ -10,6 +10,7 @@ const BLOCKED_MAJOR_PACKAGES = [
 ];
 
 const __dirname = import.meta.dirname;
+const VALID_SUMMARY_PREFIX = /^(FEAT|FIX|BUMP):/i;
 const CHANGESET_DIR = path.join(__dirname, '..', '.changeset');
 
 function validateChangesets() {
@@ -19,6 +20,11 @@ function validateChangesets() {
     const errors = [];
 
     for (const file of changesetFiles) {
+        // Skip prefix validation for bot-generated dependency changesets (e.g. Renovate)
+        if (file.match(/^dependencies-GH-\d+\.md$/)) {
+            continue;
+        }
+
         const filePath = path.join(CHANGESET_DIR, file);
         const content = fs.readFileSync(filePath, 'utf8');
 
@@ -39,6 +45,17 @@ function validateChangesets() {
                         `   Please use 'minor' or 'patch' instead.`
                 );
             }
+        }
+
+        // Check summary prefix
+        const bodyMatch = content.match(/^---\n[\s\S]*?\n---\n\n?([\s\S]*)/);
+        const summary = bodyMatch ? bodyMatch[1].trim() : '';
+        if (summary && !VALID_SUMMARY_PREFIX.test(summary)) {
+            errors.push(
+                `❌ Invalid changeset summary in ${file}\n` +
+                `   Summary: "${summary.slice(0, 80)}"\n` +
+                `   Must start with FEAT:, FIX:, or BUMP:`
+            );
         }
     }
 
