@@ -209,6 +209,7 @@ function appendPageAggregations(
 function sortPageAggregationChildren(pageElement: Node): void {
     const allChildren = Array.from(pageElement.childNodes);
     const aggNames = PAGE_AGGREGATIONS as readonly string[];
+    const getLocalName = (el: Element): string => (typeof el.localName === 'string' ? el.localName : '');
 
     // Build pairs of [preceding comments, element] to preserve user comments.
     // Comments that appear before the first element are treated as leading and will remain before all aggregation elements.
@@ -236,13 +237,11 @@ function sortPageAggregationChildren(pageElement: Node): void {
     const itemsIdx = aggNames.indexOf('items');
     const fallbackIdx = itemsIdx === -1 ? aggNames.length : itemsIdx;
     groups.sort((a, b) => {
-        const aName = typeof a.element.localName === 'string' ? a.element.localName : '';
-        const bName = typeof b.element.localName === 'string' ? b.element.localName : '';
-        const aIdx = aggNames.indexOf(aName);
-        const bIdx = aggNames.indexOf(bName);
+        const aIdx = aggNames.indexOf(getLocalName(a.element));
+        const bIdx = aggNames.indexOf(getLocalName(b.element));
         const aOrder = aIdx === -1 ? fallbackIdx : aIdx;
         const bOrder = bIdx === -1 ? fallbackIdx : bIdx;
-        return aOrder !== bOrder ? aOrder - bOrder : a.originalIndex - b.originalIndex;
+        return aOrder === bOrder ? a.originalIndex - b.originalIndex : aOrder - bOrder;
     });
 
     while (pageElement.firstChild) {
