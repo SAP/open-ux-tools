@@ -9,6 +9,7 @@ Before implementing:
 - If multiple interpretations exist, present them - don't pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
 - If something is unclear, stop. Name what's confusing. Ask.
+- If mid-task you discover the goal was wrong (e.g. the real issue is elsewhere), stop. Restate the correct goal and confirm before continuing — don't finish the wrong task just because you started it.
 - Prefer type guards over `as SomeType` casts. If a cast is unavoidable after a runtime check, add a comment explaining why.
 
 ## Surgical Changes
@@ -43,5 +44,3 @@ For multi-step tasks, state a brief plan:
 2. [Step] → verify: [check]
 3. [Step] → verify: [check]
 ```
-
-If mid-task you discover the goal was wrong (e.g. the real issue is elsewhere), stop. Restate the correct goal and confirm before continuing — don't finish the wrong task just because you started it.
