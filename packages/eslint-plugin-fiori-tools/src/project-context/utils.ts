@@ -35,7 +35,6 @@ export function collectFlexChanges(changeFiles: string[]): FlexChange[] {
             });
         } catch {
             // skip unreadable or malformed change files
-            continue;
         }
     }
     return changes;
