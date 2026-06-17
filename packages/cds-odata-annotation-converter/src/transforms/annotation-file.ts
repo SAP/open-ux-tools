@@ -167,12 +167,13 @@ export const toTarget = (
     compilerFacade?: CdsCompilerFacade
 ): Target => {
     const kind = Array.isArray(carrier?.definitions)
-        ? carrier?.definitions[0].kind
-        : carrier?.definitions?.kind || 'entity';
-    if (['entity', 'view'].includes(kind)) {
+        ? ((carrier?.definitions[0] as { _id?: { kind?: string } })?._id?.kind ?? carrier?.definitions[0]?.kind)
+        : ((carrier?.definitions as { _id?: { kind?: string } })?._id?.kind ?? carrier?.definitions?.kind); // remove casting once compiler facade type available publicly
+    const finalKind = kind ?? 'entity';
+    if (['entity', 'view'].includes(finalKind)) {
         carrierName = compilerFacade?.convertNameToEdmx(carrierName) ?? carrierName;
     }
-    return { type: TARGET_TYPE, name: carrierName, nameRange: carrier?.range, assignments: [], kind };
+    return { type: TARGET_TYPE, name: carrierName, nameRange: carrier?.range, assignments: [], kind: finalKind };
 };
 
 export interface CdsAnnotationFile {

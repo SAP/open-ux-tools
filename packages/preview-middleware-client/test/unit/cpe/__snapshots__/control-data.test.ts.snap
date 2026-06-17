@@ -207,7 +207,7 @@ Object {
         },
       ],
       "propertyType": "configuration",
-      "readableName": "Type",
+      "readableName": "Table Type",
       "type": "string",
       "ui5Type": undefined,
       "value": "responsiveTable",

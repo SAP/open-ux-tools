@@ -20,7 +20,7 @@ describe('test', () => {
                 framework: 'OPA5',
                 path: '/test/opaTests.qunit.html',
                 init: '/test/opaTests.qunit.js',
-                pattern: '/test/**/*Journey.{js,ts}'
+                pattern: '/test/**/*Journey{,.gen}.{js,ts}'
             });
         });
 

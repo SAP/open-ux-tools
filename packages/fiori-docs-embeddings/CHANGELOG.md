@@ -1,5 +1,29 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 1.2.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-16
+
+#### Bug Fixes
+
+- OPA5 embeddings chunk formatting [[70f934e](https://github.com/SAP/open-ux-tools/commit/70f934e20e2e91aabccc02fc6e3d8f25940edc95)]
+
+## 1.2.0
+
+### Minor Changes
+
+- 08fb7a1: Add opa5_docu.md
+
+## 1.1.1
+
+### Patch Changes
+
+- 4124656: Add OPA mock server testing guide as github-raw doc source and --source CLI flag for single-source builds
+
 ## 1.1.0
 
 ### Minor Changes
@@ -83,6 +107,8 @@
 
 ## 0.4.16
 
+_Released: 2026-02-27T15:42:39Z_
+
 ### Patch Changes
 
 - ca2566b: Update fast-xml-parser
@@ -91,11 +117,15 @@
 
 ## 0.4.15
 
+_Released: 2026-02-18T21:45:35Z_
+
 ### Patch Changes
 
 - d57cc47: Update fast-xml-parser
 
 ## 0.4.14
+
+_Released: 2026-02-10T21:03:43Z_
 
 ### Patch Changes
 
@@ -103,11 +133,15 @@
 
 ## 0.4.13
 
+_Released: 2026-02-03T15:42:23Z_
+
 ### Patch Changes
 
 - c3a1e07: fix: add documentation sources
 
 ## 0.4.12
+
+_Released: 2026-01-30T16:18:20Z_
 
 ### Patch Changes
 
@@ -115,11 +149,15 @@
 
 ## 0.4.11
 
+_Released: 2026-01-28T10:59:00Z_
+
 ### Patch Changes
 
 - a686522: feat: add Fiori Tools commands and update total document count
 
 ## 0.4.10
+
+_Released: 2026-01-23T17:12:38Z_
 
 ### Patch Changes
 
@@ -127,11 +165,15 @@
 
 ## 0.4.9
 
+_Released: 2026-01-12T09:10:27Z_
+
 ### Patch Changes
 
 - d667a5e: fix: add repository field to package.json
 
 ## 0.4.8
+
+_Released: 2026-01-09T11:35:48Z_
 
 ### Patch Changes
 
@@ -139,11 +181,15 @@
 
 ## 0.4.7
 
+_Released: 2025-12-18T21:05:02Z_
+
 ### Patch Changes
 
 - a9471d0: fix sonar issues
 
 ## 0.4.6
+
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -151,11 +197,15 @@
 
 ## 0.4.5
 
+_Released: 2025-12-01T17:31:14Z_
+
 ### Patch Changes
 
 - 7cb3db2: feat: enhance downloaded readme content for better chunking
 
 ## 0.4.4
+
+_Released: 2025-11-13T12:25:56Z_
 
 ### Patch Changes
 
@@ -163,11 +213,15 @@
 
 ## 0.4.3
 
+_Released: 2025-11-11T19:29:27Z_
+
 ### Patch Changes
 
 - a990ed6: feat: add @sap-ux/create/README.md as resource
 
 ## 0.4.2
+
+_Released: 2025-11-05T06:53:42Z_
 
 ### Patch Changes
 
@@ -175,11 +229,15 @@
 
 ## 0.4.1
 
+_Released: 2025-10-22T18:56:41Z_
+
 ### Patch Changes
 
 - fa9580c: chore - Rimraf upgrade
 
 ## 0.4.0
+
+_Released: 2025-10-20T15:41:39Z_
 
 ### Minor Changes
 
@@ -187,11 +245,15 @@
 
 ## 0.3.0
 
+_Released: 2025-10-15T11:11:41Z_
+
 ### Minor Changes
 
 - e75b594: Add Fiori Development portal documentation to embeddings
 
 ## 0.2.0
+
+_Released: 2025-10-09T12:00:16Z_
 
 ### Minor Changes
 
@@ -199,11 +261,15 @@
 
 ## 0.1.1
 
+_Released: 2025-10-06T17:09:01Z_
+
 ### Patch Changes
 
 - 43a2446: chore: fix Sonar issues
 
 ## 0.1.0
+
+_Released: 2025-10-06T11:26:22Z_
 
 ### Minor Changes
 
@@ -211,11 +277,15 @@
 
 ## 0.0.2
 
+_Released: 2025-09-18T23:50:28Z_
+
 ### Patch Changes
 
 - 306561e: Fix publishing of embeddings package
 
 ## 0.0.1
+
+_Released: 2025-09-17T14:22:31Z_
 
 ### Patch Changes
 

@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/fiori-docs-embeddings",
-    "version": "1.1.0",
+    "version": "1.2.1",
     "description": "SAP Fiori documentation indexing",
     "type": "module",
     "repository": {
@@ -15,6 +15,7 @@
         "fetch-ux-ui5-tooling-readme": "tsx src/scripts/load-readme-from-npm.ts @sap/ux-ui5-tooling",
         "build": "npm-run-all -l -p build-compile copy-create-readme fetch-ux-ui5-tooling-readme update-embeddings-script",
         "update-docs-script": "tsx src/scripts/build-docs.ts",
+        "update-docs-opa-guide": "tsx src/scripts/build-docs.ts --source=fiori-tools-opa-guide",
         "update-local-docs": "tsx src/scripts/build-local-docs.ts",
         "update-docs": "npm-run-all -l -s clean-data update-docs-script",
         "prepublishOnly": "npm run build",

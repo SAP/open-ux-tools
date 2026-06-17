@@ -1,5 +1,93 @@
 # @sap-ux/generator-adp
 
+## 1.0.17
+
+### Patch Changes
+
+- Updated dependencies [adae40d]
+    - @sap-ux/adp-tooling@1.0.16
+
+## 1.0.16
+
+### Patch Changes
+
+- Updated dependencies [6e4a71a]
+    - @sap-ux/adp-tooling@1.0.15
+
+## 1.0.15
+
+### Patch Changes
+
+- Updated dependencies [41b3908]
+    - @sap-ux/feature-toggle@1.0.2
+    - @sap-ux/axios-extension@2.0.3
+    - @sap-ux/inquirer-common@1.0.11
+    - @sap-ux/adp-tooling@1.0.14
+    - @sap-ux/fiori-generator-shared@1.0.11
+    - @sap-ux/odata-service-writer@1.0.6
+    - @sap-ux/system-access@1.0.3
+
+## 1.0.14
+
+### Patch Changes
+
+- Updated dependencies [e66a8a9]
+    - @sap-ux/adp-tooling@1.0.13
+
+## 1.0.13
+
+### Patch Changes
+
+- Updated dependencies [7bfa518]
+    - @sap-ux/telemetry@1.0.9
+    - @sap-ux/fiori-generator-shared@1.0.10
+    - @sap-ux/inquirer-common@1.0.10
+    - @sap-ux/adp-tooling@1.0.12
+
+## 1.0.12
+
+### Patch Changes
+
+- Updated dependencies [c8e8f7e]
+    - @sap-ux/adp-tooling@1.0.11
+    - @sap-ux/odata-service-writer@1.0.6
+    - @sap-ux/project-access@2.1.2
+    - @sap-ux/telemetry@1.0.8
+    - @sap-ux/inquirer-common@1.0.9
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/fiori-generator-shared@1.0.9
+    - @sap-ux/project-input-validator@1.0.6
+    - @sap-ux/system-access@1.0.2
+
+## 1.0.11
+
+### Patch Changes
+
+- Updated dependencies [0fa8305]
+    - @sap-ux/btp-utils@2.0.2
+    - @sap-ux/adp-tooling@1.0.10
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/fiori-generator-shared@1.0.8
+    - @sap-ux/inquirer-common@1.0.8
+    - @sap-ux/system-access@1.0.2
+    - @sap-ux/telemetry@1.0.7
+    - @sap-ux/odata-service-writer@1.0.5
+
+## 1.0.10
+
+### Patch Changes
+
+- Updated dependencies [a328e14]
+    - @sap-ux/fiori-generator-shared@1.0.7
+    - @sap-ux/inquirer-common@1.0.7
+    - @sap-ux/adp-tooling@1.0.9
+
+## 1.0.9
+
+### Patch Changes
+
+- 604f289: revert generator-adp to cjs
+
 ## 1.0.8
 
 ### Patch Changes
@@ -757,6 +845,8 @@
 
 ## 0.9.35
 
+*Released: 2026-03-20T16:07:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [25e5177]
@@ -772,11 +862,15 @@
 
 ## 0.9.34
 
+*Released: 2026-03-20T08:26:34Z*
+
 ### Patch Changes
 
 - 5307571: fix: Add logging and user friendly error messages for key user API calls in the generator
 
 ## 0.9.33
+
+*Released: 2026-03-18T16:51:44Z*
 
 ### Patch Changes
 
@@ -787,6 +881,8 @@
 
 ## 0.9.32
 
+*Released: 2026-03-18T15:22:00Z*
+
 ### Patch Changes
 
 - 4f86250: feat: Adjust mini wizard behavior for CF scenario
@@ -795,12 +891,16 @@
 
 ## 0.9.31
 
+*Released: 2026-03-17T08:35:25Z*
+
 ### Patch Changes
 
 - Updated dependencies [3626b55]
     - @sap-ux/adp-tooling@0.18.94
 
 ## 0.9.30
+
+*Released: 2026-03-17T07:55:04Z*
 
 ### Patch Changes
 
@@ -813,6 +913,8 @@
     - @sap-ux/system-access@0.6.66
 
 ## 0.9.29
+
+*Released: 2026-03-17T01:04:22Z*
 
 ### Patch Changes
 
@@ -832,6 +934,8 @@
 
 ## 0.9.28
 
+*Released: 2026-03-13T07:45:50Z*
+
 ### Patch Changes
 
 - 53af342: feat: Create service keys
@@ -840,6 +944,8 @@
 
 ## 0.9.27
 
+*Released: 2026-03-10T13:28:49Z*
+
 ### Patch Changes
 
 - 05f3f4c: fix: Various ADP Generator fixes for CF flow
@@ -847,6 +953,8 @@
     - @sap-ux/adp-tooling@0.18.90
 
 ## 0.9.26
+
+*Released: 2026-03-06T13:19:33Z*
 
 ### Patch Changes
 
@@ -857,12 +965,16 @@
 
 ## 0.9.25
 
+*Released: 2026-03-06T10:26:32Z*
+
 ### Patch Changes
 
 - Updated dependencies [f14a3d1]
     - @sap-ux/adp-tooling@0.18.88
 
 ## 0.9.24
+
+*Released: 2026-03-05T23:21:37Z*
 
 ### Patch Changes
 
@@ -874,6 +986,8 @@
     - @sap-ux/system-access@0.6.64
 
 ## 0.9.23
+
+*Released: 2026-03-05T16:08:22Z*
 
 ### Patch Changes
 
@@ -890,6 +1004,8 @@
 
 ## 0.9.22
 
+*Released: 2026-03-05T15:09:36Z*
+
 ### Patch Changes
 
 - 5d458c7: fix(deps): update dependency uuid to v13
@@ -897,6 +1013,8 @@
     - @sap-ux/adp-tooling@0.18.85
 
 ## 0.9.21
+
+*Released: 2026-03-05T12:30:25Z*
 
 ### Patch Changes
 
@@ -916,6 +1034,8 @@
 
 ## 0.9.20
 
+*Released: 2026-03-05T10:41:09Z*
+
 ### Patch Changes
 
 - 5aff25c: fix(deps): update dependency fs-extra to v11
@@ -925,6 +1045,8 @@
     - @sap-ux/inquirer-common@0.11.20
 
 ## 0.9.19
+
+*Released: 2026-03-04T22:42:20Z*
 
 ### Patch Changes
 
@@ -948,11 +1070,15 @@
 
 ## 0.9.18
 
+*Released: 2026-03-04T18:02:04Z*
+
 ### Patch Changes
 
 - b0bffc9: feat(generator-adp): Developer taking over Key-User changes using JSON input
 
 ## 0.9.17
+
+*Released: 2026-03-04T15:52:08Z*
 
 ### Patch Changes
 
@@ -966,6 +1092,8 @@
     - @sap-ux/system-access@0.6.61
 
 ## 0.9.16
+
+*Released: 2026-03-04T14:39:10Z*
 
 ### Patch Changes
 
@@ -982,6 +1110,8 @@
 
 ## 0.9.15
 
+*Released: 2026-03-04T11:03:29Z*
+
 ### Patch Changes
 
 - 2d42592: fix: Various fixes for Adaptation Project for Cloud Foundry scenario
@@ -989,6 +1119,8 @@
     - @sap-ux/adp-tooling@0.18.79
 
 ## 0.9.14
+
+*Released: 2026-03-03T08:27:12Z*
 
 ### Patch Changes
 
@@ -1000,6 +1132,8 @@
     - @sap-ux/system-access@0.6.60
 
 ## 0.9.13
+
+*Released: 2026-02-27T15:42:39Z*
 
 ### Patch Changes
 
@@ -1016,6 +1150,8 @@
 
 ## 0.9.12
 
+*Released: 2026-02-26T10:46:59Z*
+
 ### Patch Changes
 
 - 6c993f3: fix: turn off i18next support notice
@@ -1031,12 +1167,16 @@
 
 ## 0.9.11
 
+*Released: 2026-02-25T14:21:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [ed1399d]
     - @sap-ux/adp-tooling@0.18.75
 
 ## 0.9.10
+
+*Released: 2026-02-23T22:35:31Z*
 
 ### Patch Changes
 
@@ -1054,6 +1194,8 @@
 
 ## 0.9.9
 
+*Released: 2026-02-23T19:07:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [0ecc5f1]
@@ -1069,6 +1211,8 @@
 
 ## 0.9.8
 
+*Released: 2026-02-23T15:13:48Z*
+
 ### Patch Changes
 
 - ce9f074: chore: bump adaptation project for cf dependency versions
@@ -1076,6 +1220,8 @@
     - @sap-ux/adp-tooling@0.18.72
 
 ## 0.9.7
+
+*Released: 2026-02-20T21:31:31Z*
 
 ### Patch Changes
 
@@ -1090,6 +1236,8 @@
 - @sap-ux/system-access@0.6.56
 
 ## 0.9.6
+
+*Released: 2026-02-20T20:20:17Z*
 
 ### Patch Changes
 
@@ -1106,6 +1254,8 @@
 
 ## 0.9.5
 
+*Released: 2026-02-20T16:17:11Z*
+
 ### Patch Changes
 
 - cbd340a: fix(deps): update dependency i18next to v25.8.12
@@ -1120,6 +1270,8 @@
     - @sap-ux/telemetry@0.6.77
 
 ## 0.9.4
+
+*Released: 2026-02-20T13:46:55Z*
 
 ### Patch Changes
 
@@ -1139,12 +1291,16 @@
 
 ## 0.9.3
 
+*Released: 2026-02-20T11:22:50Z*
+
 ### Patch Changes
 
 - Updated dependencies [d1b13c4]
     - @sap-ux/adp-tooling@0.18.67
 
 ## 0.9.2
+
+*Released: 2026-02-18T21:45:35Z*
 
 ### Patch Changes
 
@@ -1161,6 +1317,8 @@
 
 ## 0.9.1
 
+*Released: 2026-02-16T18:48:13Z*
+
 ### Patch Changes
 
 - Updated dependencies [dd2131c]
@@ -1174,6 +1332,8 @@
     - @sap-ux/odata-service-writer@0.29.19
 
 ## 0.9.0
+
+*Released: 2026-02-16T16:08:11Z*
 
 ### Minor Changes
 
@@ -1195,6 +1355,8 @@
 
 ## 0.8.18
 
+*Released: 2026-02-13T16:18:58Z*
+
 ### Patch Changes
 
 - Updated dependencies [9f94937]
@@ -1206,6 +1368,8 @@
     - @sap-ux/inquirer-common@0.11.5
 
 ## 0.8.17
+
+*Released: 2026-02-13T09:54:38Z*
 
 ### Patch Changes
 
@@ -1223,6 +1387,8 @@
 
 ## 0.8.16
 
+*Released: 2026-02-12T10:29:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [d2b772d]
@@ -1237,6 +1403,8 @@
     - @sap-ux/telemetry@0.6.70
 
 ## 0.8.15
+
+*Released: 2026-02-10T23:50:15Z*
 
 ### Patch Changes
 
@@ -1254,6 +1422,8 @@
 
 ## 0.8.14
 
+*Released: 2026-02-09T15:13:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [1ad56d1]
@@ -1261,6 +1431,8 @@
     - @sap-ux/adp-tooling@0.18.59
 
 ## 0.8.13
+
+*Released: 2026-02-09T11:21:43Z*
 
 ### Patch Changes
 
@@ -1277,6 +1449,8 @@
 
 ## 0.8.12
 
+*Released: 2026-02-05T20:09:45Z*
+
 ### Patch Changes
 
 - Updated dependencies [467e6aa]
@@ -1292,6 +1466,8 @@
 
 ## 0.8.11
 
+*Released: 2026-02-05T13:53:56Z*
+
 ### Patch Changes
 
 - Updated dependencies [38e215e]
@@ -1304,6 +1480,8 @@
 
 ## 0.8.10
 
+*Released: 2026-02-05T13:02:56Z*
+
 ### Patch Changes
 
 - df61c3a: feat: Prompt for credentials when not available in VSCode for adp generator
@@ -1311,6 +1489,8 @@
     - @sap-ux/adp-tooling@0.18.55
 
 ## 0.8.9
+
+*Released: 2026-02-05T11:39:04Z*
 
 ### Patch Changes
 
@@ -1324,12 +1504,16 @@
 
 ## 0.8.8
 
+*Released: 2026-02-05T09:48:57Z*
+
 ### Patch Changes
 
 - Updated dependencies [8a56942]
     - @sap-ux/adp-tooling@0.18.53
 
 ## 0.8.7
+
+*Released: 2026-02-05T08:38:39Z*
 
 ### Patch Changes
 
@@ -1346,6 +1530,8 @@
 
 ## 0.8.6
 
+*Released: 2026-02-05T06:48:22Z*
+
 ### Patch Changes
 
 - f1e6ed6: fix: Incorrect Adaptation Project configuration for Cloud Foundry projects
@@ -1353,6 +1539,8 @@
     - @sap-ux/adp-tooling@0.18.51
 
 ## 0.8.5
+
+*Released: 2026-02-04T22:31:27Z*
 
 ### Patch Changes
 
@@ -1370,6 +1558,8 @@
 
 ## 0.8.4
 
+*Released: 2026-02-03T15:42:23Z*
+
 ### Patch Changes
 
 - Updated dependencies [89175fe]
@@ -1384,6 +1574,8 @@
     - @sap-ux/telemetry@0.6.62
 
 ## 0.8.3
+
+*Released: 2026-01-30T16:59:27Z*
 
 ### Patch Changes
 
@@ -1403,6 +1595,8 @@
 
 ## 0.8.2
 
+*Released: 2026-01-29T14:02:02Z*
+
 ### Patch Changes
 
 - Updated dependencies [6d71400]
@@ -1418,6 +1612,8 @@
 
 ## 0.8.1
 
+*Released: 2026-01-28T00:19:05Z*
+
 ### Patch Changes
 
 - Updated dependencies [be6ea11]
@@ -1429,6 +1625,8 @@
     - @sap-ux/inquirer-common@0.10.18
 
 ## 0.8.0
+
+*Released: 2026-01-26T09:14:13Z*
 
 ### Minor Changes
 
@@ -1445,6 +1643,8 @@
 
 ## 0.7.44
 
+*Released: 2026-01-23T23:57:30Z*
+
 ### Patch Changes
 
 - Updated dependencies [c707af1]
@@ -1454,6 +1654,8 @@
     - @sap-ux/inquirer-common@0.10.17
 
 ## 0.7.43
+
+*Released: 2026-01-23T22:30:10Z*
 
 ### Patch Changes
 
@@ -1467,6 +1669,8 @@
 
 ## 0.7.42
 
+*Released: 2026-01-23T12:49:27Z*
+
 ### Patch Changes
 
 - Updated dependencies [32f8644]
@@ -1479,12 +1683,16 @@
 
 ## 0.7.41
 
+*Released: 2026-01-19T12:47:48Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.41
 - @sap-ux/inquirer-common@0.10.14
 
 ## 0.7.40
+
+*Released: 2026-01-16T13:57:39Z*
 
 ### Patch Changes
 
@@ -1501,6 +1709,8 @@
 
 ## 0.7.39
 
+*Released: 2026-01-16T12:32:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [c9fd939]
@@ -1512,6 +1722,8 @@
     - @sap-ux/inquirer-common@0.10.12
 
 ## 0.7.38
+
+*Released: 2026-01-15T14:14:39Z*
 
 ### Patch Changes
 
@@ -1528,6 +1740,8 @@
 
 ## 0.7.37
 
+*Released: 2026-01-14T17:56:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [b132944]
@@ -1543,12 +1757,16 @@
 
 ## 0.7.36
 
+*Released: 2026-01-14T13:30:42Z*
+
 ### Patch Changes
 
 - Updated dependencies [ce4b29c]
     - @sap-ux/adp-tooling@0.18.36
 
 ## 0.7.35
+
+*Released: 2026-01-12T12:01:34Z*
 
 ### Patch Changes
 
@@ -1565,6 +1783,8 @@
 
 ## 0.7.34
 
+*Released: 2026-01-09T11:35:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [e111d0d]
@@ -1580,6 +1800,8 @@
 
 ## 0.7.33
 
+*Released: 2026-01-08T17:12:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [2204ad3]
@@ -1592,6 +1814,8 @@
 
 ## 0.7.32
 
+*Released: 2026-01-07T16:03:58Z*
+
 ### Patch Changes
 
 - Updated dependencies [4e0f204]
@@ -1603,6 +1827,8 @@
 
 ## 0.7.31
 
+*Released: 2026-01-07T10:20:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [6382440]
@@ -1610,6 +1836,8 @@
     - @sap-ux/adp-tooling@0.18.31
 
 ## 0.7.30
+
+*Released: 2026-01-06T14:37:31Z*
 
 ### Patch Changes
 
@@ -1619,6 +1847,8 @@
     - @sap-ux/adp-tooling@0.18.30
 
 ## 0.7.29
+
+*Released: 2026-01-05T14:16:22Z*
 
 ### Patch Changes
 
@@ -1630,6 +1860,8 @@
 
 ## 0.7.28
 
+*Released: 2025-12-22T17:36:43Z*
+
 ### Patch Changes
 
 - Updated dependencies [14a1bc2]
@@ -1640,6 +1872,8 @@
     - @sap-ux/system-access@0.6.37
 
 ## 0.7.27
+
+*Released: 2025-12-19T11:36:13Z*
 
 ### Patch Changes
 
@@ -1660,6 +1894,8 @@
 
 ## 0.7.26
 
+*Released: 2025-12-18T21:05:02Z*
+
 ### Patch Changes
 
 - a9471d0: fix sonar issues
@@ -1679,6 +1915,8 @@
 
 ## 0.7.25
 
+*Released: 2025-12-18T13:13:52Z*
+
 ### Patch Changes
 
 - Updated dependencies [691ab27]
@@ -1687,6 +1925,8 @@
     - @sap-ux/inquirer-common@0.10.1
 
 ## 0.7.24
+
+*Released: 2025-12-18T08:56:52Z*
 
 ### Patch Changes
 
@@ -1700,6 +1940,8 @@
 
 ## 0.7.23
 
+*Released: 2025-12-17T13:45:40Z*
+
 ### Patch Changes
 
 - a79eb1b: feat: Adding points of telemetry data for ADP generator
@@ -1707,6 +1949,8 @@
     - @sap-ux/adp-tooling@0.18.23
 
 ## 0.7.22
+
+*Released: 2025-12-16T11:43:52Z*
 
 ### Patch Changes
 
@@ -1718,6 +1962,8 @@
     - @sap-ux/inquirer-common@0.9.17
 
 ## 0.7.21
+
+*Released: 2025-12-15T10:50:50Z*
 
 ### Patch Changes
 
@@ -1738,6 +1984,8 @@
 
 ## 0.7.20
 
+*Released: 2025-12-12T12:38:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [7217d7d]
@@ -1752,6 +2000,8 @@
 
 ## 0.7.19
 
+*Released: 2025-12-12T09:02:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [e1647fe]
@@ -1760,6 +2010,8 @@
     - @sap-ux/inquirer-common@0.9.14
 
 ## 0.7.18
+
+*Released: 2025-12-10T20:04:51Z*
 
 ### Patch Changes
 
@@ -1775,6 +2027,8 @@
 
 ## 0.7.17
 
+*Released: 2025-12-10T09:08:56Z*
+
 ### Patch Changes
 
 - Updated dependencies [985223a]
@@ -1788,6 +2042,8 @@
     - @sap-ux/inquirer-common@0.9.12
 
 ## 0.7.16
+
+*Released: 2025-12-08T17:56:48Z*
 
 ### Patch Changes
 
@@ -1803,6 +2059,8 @@
 
 ## 0.7.15
 
+*Released: 2025-12-08T11:51:00Z*
+
 ### Patch Changes
 
 - f71a139: fix(adp): Problems with login in the Replace OData Service change editor.
@@ -1815,6 +2073,8 @@
 
 ## 0.7.14
 
+*Released: 2025-12-05T12:18:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [d202c17]
@@ -1823,6 +2083,8 @@
     - @sap-ux/adp-tooling@0.18.14
 
 ## 0.7.13
+
+*Released: 2025-12-04T10:42:12Z*
 
 ### Patch Changes
 
@@ -1838,6 +2100,8 @@
 
 ## 0.7.12
 
+*Released: 2025-12-04T07:10:48Z*
+
 ### Patch Changes
 
 - 324d8ed: feat: Enable Adaptation Editor for CF projects
@@ -1846,12 +2110,16 @@
 
 ## 0.7.11
 
+*Released: 2025-11-28T13:51:14Z*
+
 ### Patch Changes
 
 - Updated dependencies [9c66de4]
     - @sap-ux/adp-tooling@0.18.11
 
 ## 0.7.10
+
+*Released: 2025-11-27T14:58:09Z*
 
 ### Patch Changes
 
@@ -1867,6 +2135,8 @@
 
 ## 0.7.9
 
+*Released: 2025-11-26T14:39:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [5d0598d]
@@ -1881,12 +2151,16 @@
 
 ## 0.7.8
 
+*Released: 2025-11-26T12:17:21Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.8
 - @sap-ux/inquirer-common@0.9.6
 
 ## 0.7.7
+
+*Released: 2025-11-26T00:12:42Z*
 
 ### Patch Changes
 
@@ -1895,6 +2169,8 @@
     - @sap-ux/adp-tooling@0.18.7
 
 ## 0.7.6
+
+*Released: 2025-11-24T12:45:14Z*
 
 ### Patch Changes
 
@@ -1911,6 +2187,8 @@
 
 ## 0.7.5
 
+*Released: 2025-11-21T15:52:30Z*
+
 ### Patch Changes
 
 - 6872b31: fix: System SAPUI5 version not available for selection in ADP generator
@@ -1919,12 +2197,16 @@
 
 ## 0.7.4
 
+*Released: 2025-11-18T12:29:09Z*
+
 ### Patch Changes
 
 - Updated dependencies [5475b5b]
     - @sap-ux/adp-tooling@0.18.4
 
 ## 0.7.3
+
+*Released: 2025-11-12T16:47:06Z*
 
 ### Patch Changes
 
@@ -1934,6 +2216,8 @@
 
 ## 0.7.2
 
+*Released: 2025-11-12T13:11:21Z*
+
 ### Patch Changes
 
 - 92ec778: feat: Replace existing inbounds scenario now replaces all inbounds in FLP configuration generator for ADP
@@ -1942,6 +2226,8 @@
 
 ## 0.7.1
 
+*Released: 2025-11-12T08:08:16Z*
+
 ### Patch Changes
 
 - 3017ce7: chore: Update @sap/cf-tools version to latest to avoid security issues
@@ -1949,6 +2235,8 @@
     - @sap-ux/adp-tooling@0.18.1
 
 ## 0.7.0
+
+*Released: 2025-11-10T14:56:50Z*
 
 ### Minor Changes
 
@@ -1961,12 +2249,16 @@
 
 ## 0.6.8
 
+*Released: 2025-11-07T13:23:57Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.17.8
 - @sap-ux/inquirer-common@0.9.3
 
 ## 0.6.7
+
+*Released: 2025-11-06T15:12:51Z*
 
 ### Patch Changes
 
@@ -1975,6 +2267,8 @@
 - @sap-ux/adp-tooling@0.17.7
 
 ## 0.6.6
+
+*Released: 2025-11-05T06:53:42Z*
 
 ### Patch Changes
 
@@ -1995,6 +2289,8 @@
 
 ## 0.6.5
 
+*Released: 2025-11-03T10:50:00Z*
+
 ### Patch Changes
 
 - Updated dependencies [4ddcff3]
@@ -2002,6 +2298,8 @@
     - @sap-ux/adp-tooling@0.17.5
 
 ## 0.6.4
+
+*Released: 2025-10-31T13:35:34Z*
 
 ### Patch Changes
 
@@ -2014,6 +2312,8 @@
 
 ## 0.6.3
 
+*Released: 2025-10-30T10:09:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [3253294]
@@ -2023,6 +2323,8 @@
     - @sap-ux/system-access@0.6.26
 
 ## 0.6.2
+
+*Released: 2025-10-29T17:02:38Z*
 
 ### Patch Changes
 
@@ -2035,6 +2337,8 @@
 
 ## 0.6.1
 
+*Released: 2025-10-29T11:04:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [36b0f19]
@@ -2045,6 +2349,8 @@
     - @sap-ux/inquirer-common@0.8.8
 
 ## 0.6.0
+
+*Released: 2025-10-28T13:36:39Z*
 
 ### Minor Changes
 
@@ -2060,6 +2366,8 @@
 
 ## 0.5.16
 
+*Released: 2025-10-28T09:08:24Z*
+
 ### Patch Changes
 
 - 05ecba6: feat: Adapt CF projects' structure to work with preview-middleware
@@ -2067,6 +2375,8 @@
     - @sap-ux/adp-tooling@0.16.14
 
 ## 0.5.15
+
+*Released: 2025-10-27T13:41:31Z*
 
 ### Patch Changes
 
@@ -2082,6 +2392,8 @@
 
 ## 0.5.14
 
+*Released: 2025-10-22T18:56:41Z*
+
 ### Patch Changes
 
 - fa9580c: chore - Rimraf upgrade
@@ -2095,6 +2407,8 @@
 
 ## 0.5.13
 
+*Released: 2025-10-22T12:44:17Z*
+
 ### Patch Changes
 
 - 27fb53e: fix: CF integration tests and sonar issues
@@ -2102,6 +2416,8 @@
     - @sap-ux/adp-tooling@0.16.11
 
 ## 0.5.12
+
+*Released: 2025-10-22T09:32:12Z*
 
 ### Patch Changes
 
@@ -2117,6 +2433,8 @@
 
 ## 0.5.11
 
+*Released: 2025-10-21T09:37:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [06bc541]
@@ -2124,6 +2442,8 @@
     - @sap-ux/adp-tooling@0.16.9
 
 ## 0.5.10
+
+*Released: 2025-10-21T07:47:50Z*
 
 ### Patch Changes
 
@@ -2139,12 +2459,16 @@
 
 ## 0.5.9
 
+*Released: 2025-10-17T14:58:57Z*
+
 ### Patch Changes
 
 - Updated dependencies [233259c]
     - @sap-ux/adp-tooling@0.16.7
 
 ## 0.5.8
+
+*Released: 2025-10-17T11:37:38Z*
 
 ### Patch Changes
 
@@ -2157,6 +2481,8 @@
 
 ## 0.5.7
 
+*Released: 2025-10-17T09:45:11Z*
+
 ### Patch Changes
 
 - Updated dependencies [d4dabbd]
@@ -2166,6 +2492,8 @@
 
 ## 0.5.6
 
+*Released: 2025-10-15T16:45:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [4053369]
@@ -2173,6 +2501,8 @@
     - @sap-ux/adp-tooling@0.16.4
 
 ## 0.5.5
+
+*Released: 2025-10-15T14:30:03Z*
 
 ### Patch Changes
 
@@ -2182,11 +2512,15 @@
 
 ## 0.5.4
 
+*Released: 2025-10-14T17:44:44Z*
+
 ### Patch Changes
 
 - 3d63709: fix: Project name appears twice under system and password prompts when cloud system is selected.
 
 ## 0.5.3
+
+*Released: 2025-10-14T16:42:16Z*
 
 ### Patch Changes
 
@@ -2194,12 +2528,16 @@
 
 ## 0.5.2
 
+*Released: 2025-10-14T15:08:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [3e4bf96]
     - @sap-ux/adp-tooling@0.16.2
 
 ## 0.5.1
+
+*Released: 2025-10-14T13:22:30Z*
 
 ### Patch Changes
 
@@ -2214,6 +2552,8 @@
 
 ## 0.5.0
 
+*Released: 2025-10-13T14:40:48Z*
+
 ### Minor Changes
 
 - 247a5a9: feat: Add ADP Generator Cloud Foundry prompting code
@@ -2226,6 +2566,8 @@
 
 ## 0.4.13
 
+*Released: 2025-10-13T07:04:12Z*
+
 ### Patch Changes
 
 - Updated dependencies [1df9184]
@@ -2233,12 +2575,16 @@
 
 ## 0.4.12
 
+*Released: 2025-10-10T13:53:56Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.15.37
 - @sap-ux/inquirer-common@0.7.50
 
 ## 0.4.11
+
+*Released: 2025-10-10T12:22:06Z*
 
 ### Patch Changes
 
@@ -2253,12 +2599,16 @@
 
 ## 0.4.10
 
+*Released: 2025-10-10T09:39:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [e015869]
     - @sap-ux/adp-tooling@0.15.35
 
 ## 0.4.9
+
+*Released: 2025-10-07T13:15:25Z*
 
 ### Patch Changes
 
@@ -2267,6 +2617,8 @@
 - @sap-ux/inquirer-common@0.7.48
 
 ## 0.4.8
+
+*Released: 2025-10-06T17:09:01Z*
 
 ### Patch Changes
 
@@ -2285,6 +2637,8 @@
 
 ## 0.4.7
 
+*Released: 2025-10-06T10:53:53Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.15.32
@@ -2298,6 +2652,8 @@
 
 ## 0.4.6
 
+*Released: 2025-09-29T08:22:50Z*
+
 ### Patch Changes
 
 - de2f350: fix: When the user creates ADP project and the system requires authentication the project type is displayed as an additional message beneath
@@ -2305,11 +2661,15 @@
 
 ## 0.4.5
 
+*Released: 2025-09-25T08:38:24Z*
+
 ### Patch Changes
 
 - 2e86e1e: fix: In Cloud ADP project with selected unsupported application we should stop the ADP generator.
 
 ## 0.4.4
+
+*Released: 2025-09-23T20:14:56Z*
 
 ### Patch Changes
 
@@ -2322,6 +2682,8 @@
     - @sap-ux/system-access@0.6.18
 
 ## 0.4.3
+
+*Released: 2025-09-19T16:36:41Z*
 
 ### Patch Changes
 
@@ -2338,6 +2700,8 @@
 
 ## 0.4.2
 
+*Released: 2025-09-19T00:44:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [f9b4afe]
@@ -2351,6 +2715,8 @@
     - @sap-ux/inquirer-common@0.7.43
 
 ## 0.4.1
+
+*Released: 2025-09-18T07:30:28Z*
 
 ### Patch Changes
 
@@ -2366,11 +2732,15 @@
 
 ## 0.4.0
 
+*Released: 2025-09-16T12:22:44Z*
+
 ### Minor Changes
 
 - e36b965: fix(adp-generator): In case the base app inbounds api call fails for the selected application we display the error next to the application prompt.
 
 ## 0.3.78
+
+*Released: 2025-09-16T06:28:11Z*
 
 ### Patch Changes
 
@@ -2385,6 +2755,8 @@
 
 ## 0.3.77
 
+*Released: 2025-09-11T11:04:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [3c094af]
@@ -2394,11 +2766,15 @@
 
 ## 0.3.76
 
+*Released: 2025-09-10T14:30:03Z*
+
 ### Patch Changes
 
 - 66cc543: fix: Extensibility generator cannot be resolved in the bundled ADP generator
 
 ## 0.3.75
+
+*Released: 2025-09-03T14:26:25Z*
 
 ### Patch Changes
 
@@ -2406,6 +2782,8 @@
     - @sap-ux/adp-tooling@0.15.25
 
 ## 0.3.74
+
+*Released: 2025-09-02T13:22:05Z*
 
 ### Patch Changes
 
@@ -2419,6 +2797,8 @@
 
 ## 0.3.73
 
+*Released: 2025-09-01T12:06:20Z*
+
 ### Patch Changes
 
 - Updated dependencies [77c1459]
@@ -2429,6 +2809,8 @@
     - @sap-ux/inquirer-common@0.7.38
 
 ## 0.3.72
+
+*Released: 2025-08-28T13:37:07Z*
 
 ### Patch Changes
 
@@ -2445,6 +2827,8 @@
 
 ## 0.3.71
 
+*Released: 2025-08-25T12:19:51Z*
+
 ### Patch Changes
 
 - 384bb40: fix: Deploy Config generator does not show cloud-specific prompts for ADP when login is required
@@ -2452,6 +2836,8 @@
     - @sap-ux/adp-tooling@0.15.21
 
 ## 0.3.70
+
+*Released: 2025-08-21T14:27:46Z*
 
 ### Patch Changes
 
@@ -2464,17 +2850,23 @@
 
 ## 0.3.69
 
+*Released: 2025-08-21T13:08:27Z*
+
 ### Patch Changes
 
 - 49ee46c: fix: ADP Generator shows project type even if request for system info is failing
 
 ## 0.3.68
 
+*Released: 2025-08-21T07:12:17Z*
+
 ### Patch Changes
 
 - 73ef87a: fix: ADP Generator shows misleading additional message when system requires auth
 
 ## 0.3.67
+
+*Released: 2025-08-20T12:18:39Z*
 
 ### Patch Changes
 
@@ -2484,6 +2876,8 @@
 
 ## 0.3.66
 
+*Released: 2025-08-20T06:12:11Z*
+
 ### Patch Changes
 
 - Updated dependencies [9f84298]
@@ -2491,6 +2885,8 @@
     - @sap-ux/adp-flp-config-sub-generator@0.1.64
 
 ## 0.3.65
+
+*Released: 2025-08-14T14:36:13Z*
 
 ### Patch Changes
 
@@ -2508,6 +2904,8 @@
 
 ## 0.3.64
 
+*Released: 2025-08-13T10:00:10Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.15.16
@@ -2522,6 +2920,8 @@
 
 ## 0.3.63
 
+*Released: 2025-08-12T14:05:27Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.33
@@ -2530,11 +2930,15 @@
 
 ## 0.3.62
 
+*Released: 2025-08-08T10:12:20Z*
+
 ### Patch Changes
 
 - f5f6a31: fix: Pass the same prompt options when running deployment generator as a step or standalone
 
 ## 0.3.61
+
+*Released: 2025-08-07T06:27:29Z*
 
 ### Patch Changes
 
@@ -2545,6 +2949,8 @@
 
 ## 0.3.60
 
+*Released: 2025-08-04T07:58:35Z*
+
 ### Patch Changes
 
 - Updated dependencies [98fbd93]
@@ -2552,6 +2958,8 @@
     - @sap-ux/adp-flp-config-sub-generator@0.1.59
 
 ## 0.3.59
+
+*Released: 2025-08-01T13:45:39Z*
 
 ### Patch Changes
 
@@ -2563,6 +2971,8 @@
     - @sap-ux/system-access@0.6.12
 
 ## 0.3.58
+
+*Released: 2025-08-01T09:39:39Z*
 
 ### Patch Changes
 
@@ -2578,6 +2988,8 @@
 
 ## 0.3.57
 
+*Released: 2025-07-31T11:23:22Z*
+
 ### Patch Changes
 
 - Updated dependencies [9fa7f0b]
@@ -2586,6 +2998,8 @@
     - @sap-ux/adp-tooling@0.15.10
 
 ## 0.3.56
+
+*Released: 2025-07-30T19:33:46Z*
 
 ### Patch Changes
 
@@ -2600,6 +3014,8 @@
 - @sap-ux/inquirer-common@0.7.29
 
 ## 0.3.55
+
+*Released: 2025-07-28T22:57:52Z*
 
 ### Patch Changes
 
@@ -2616,6 +3032,8 @@
 
 ## 0.3.54
 
+*Released: 2025-07-28T08:36:50Z*
+
 ### Patch Changes
 
 - Updated dependencies [ffac61c]
@@ -2627,6 +3045,8 @@
 
 ## 0.3.53
 
+*Released: 2025-07-25T11:40:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [e25ee86]
@@ -2634,6 +3054,8 @@
     - @sap-ux/adp-flp-config-sub-generator@0.1.52
 
 ## 0.3.52
+
+*Released: 2025-07-25T09:16:43Z*
 
 ### Patch Changes
 
@@ -2644,11 +3066,15 @@
 
 ## 0.3.51
 
+*Released: 2025-07-24T09:25:40Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-flp-config-sub-generator@0.1.50
 
 ## 0.3.50
+
+*Released: 2025-07-22T13:05:35Z*
 
 ### Patch Changes
 
@@ -2660,6 +3086,8 @@
 
 ## 0.3.49
 
+*Released: 2025-07-21T13:01:41Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.15.3
@@ -2668,12 +3096,16 @@
 
 ## 0.3.48
 
+*Released: 2025-07-17T13:47:26Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.15.2
 - @sap-ux/adp-flp-config-sub-generator@0.1.47
 
 ## 0.3.47
+
+*Released: 2025-07-17T08:59:54Z*
 
 ### Patch Changes
 
@@ -2684,6 +3116,8 @@
 
 ## 0.3.46
 
+*Released: 2025-07-16T14:40:22Z*
+
 ### Patch Changes
 
 - Updated dependencies [e53c1f8]
@@ -2692,6 +3126,8 @@
 
 ## 0.3.45
 
+*Released: 2025-07-16T12:23:18Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.25
@@ -2699,6 +3135,8 @@
 - @sap-ux/adp-tooling@0.14.44
 
 ## 0.3.44
+
+*Released: 2025-07-11T15:10:00Z*
 
 ### Patch Changes
 
@@ -2709,6 +3147,8 @@
 
 ## 0.3.43
 
+*Released: 2025-07-10T11:49:34Z*
+
 ### Patch Changes
 
 - Updated dependencies [d75db00]
@@ -2718,6 +3158,8 @@
     - @sap-ux/adp-tooling@0.14.42
 
 ## 0.3.42
+
+*Released: 2025-07-08T12:06:04Z*
 
 ### Patch Changes
 
@@ -2733,6 +3175,8 @@
 
 ## 0.3.41
 
+*Released: 2025-07-07T08:44:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [58abe82]
@@ -2742,6 +3186,8 @@
     - @sap-ux/adp-tooling@0.14.40
 
 ## 0.3.40
+
+*Released: 2025-07-04T15:18:17Z*
 
 ### Patch Changes
 
@@ -2757,6 +3203,8 @@
 
 ## 0.3.39
 
+*Released: 2025-07-04T10:48:56Z*
+
 ### Patch Changes
 
 - e9beeb4: fix: Various bugs in FLP config generator for Adaptation Project
@@ -2765,6 +3213,8 @@
     - @sap-ux/adp-tooling@0.14.38
 
 ## 0.3.38
+
+*Released: 2025-07-04T09:34:59Z*
 
 ### Patch Changes
 
@@ -2778,6 +3228,8 @@
 - @sap-ux/inquirer-common@0.7.20
 
 ## 0.3.37
+
+*Released: 2025-07-03T12:14:55Z*
 
 ### Patch Changes
 
@@ -2793,11 +3245,15 @@
 
 ## 0.3.36
 
+*Released: 2025-07-02T14:29:55Z*
+
 ### Patch Changes
 
 - e10af5d: feat(generator-adp): Various improvements for ADP generator
 
 ## 0.3.35
+
+*Released: 2025-07-02T05:46:03Z*
 
 ### Patch Changes
 
@@ -2806,6 +3262,8 @@
     - @sap-ux/adp-flp-config-sub-generator@0.1.35
 
 ## 0.3.34
+
+*Released: 2025-06-30T08:46:50Z*
 
 ### Patch Changes
 
@@ -2818,6 +3276,8 @@
     - @sap-ux/adp-tooling@0.14.34
 
 ## 0.3.33
+
+*Released: 2025-06-27T16:39:38Z*
 
 ### Patch Changes
 
@@ -2833,6 +3293,8 @@
 
 ## 0.3.32
 
+*Released: 2025-06-27T07:08:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [77b3b22]
@@ -2845,6 +3307,8 @@
 
 ## 0.3.31
 
+*Released: 2025-06-25T10:51:12Z*
+
 ### Patch Changes
 
 - 83109eb: feat(generator-adp): Various bug fixes and improvements for ADP generator
@@ -2855,6 +3319,8 @@
 
 ## 0.3.30
 
+*Released: 2025-06-24T14:02:12Z*
+
 ### Patch Changes
 
 - Updated dependencies [4fef16a]
@@ -2864,6 +3330,8 @@
     - @sap-ux/adp-tooling@0.14.30
 
 ## 0.3.29
+
+*Released: 2025-06-24T07:18:46Z*
 
 ### Patch Changes
 
@@ -2879,6 +3347,8 @@
 
 ## 0.3.28
 
+*Released: 2025-06-23T22:19:01Z*
+
 ### Patch Changes
 
 - Updated dependencies [14214a3]
@@ -2888,6 +3358,8 @@
     - @sap-ux/system-access@0.6.7
 
 ## 0.3.27
+
+*Released: 2025-06-19T10:31:56Z*
 
 ### Patch Changes
 
@@ -2899,6 +3371,8 @@
 
 ## 0.3.26
 
+*Released: 2025-06-19T04:44:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [aaf0c14]
@@ -2909,6 +3383,8 @@
 
 ## 0.3.25
 
+*Released: 2025-06-17T13:40:19Z*
+
 ### Patch Changes
 
 - Updated dependencies [c9f79c1]
@@ -2917,6 +3393,8 @@
     - @sap-ux/adp-flp-config-sub-generator@0.1.25
 
 ## 0.3.24
+
+*Released: 2025-06-17T07:58:40Z*
 
 ### Patch Changes
 
@@ -2928,6 +3406,8 @@
 
 ## 0.3.23
 
+*Released: 2025-06-16T09:52:52Z*
+
 ### Patch Changes
 
 - Updated dependencies [20cc54f]
@@ -2936,6 +3416,8 @@
     - @sap-ux/adp-flp-config-sub-generator@0.1.23
 
 ## 0.3.22
+
+*Released: 2025-06-16T05:54:38Z*
 
 ### Patch Changes
 
@@ -2946,6 +3428,8 @@
 
 ## 0.3.21
 
+*Released: 2025-06-13T14:12:57Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.14.21
@@ -2953,6 +3437,8 @@
 - @sap-ux/adp-flp-config-sub-generator@0.1.21
 
 ## 0.3.20
+
+*Released: 2025-06-13T10:58:52Z*
 
 ### Patch Changes
 
@@ -2962,6 +3448,8 @@
     - @sap-ux/adp-tooling@0.14.20
 
 ## 0.3.19
+
+*Released: 2025-06-11T12:23:45Z*
 
 ### Patch Changes
 
@@ -2973,6 +3461,8 @@
 
 ## 0.3.18
 
+*Released: 2025-06-10T17:08:16Z*
+
 ### Patch Changes
 
 - Updated dependencies [4303f99]
@@ -2983,6 +3473,8 @@
 
 ## 0.3.17
 
+*Released: 2025-06-10T09:28:31Z*
+
 ### Patch Changes
 
 - f4439f1: feat(generator-adp): Consume FLP generator and Deployment generator
@@ -2991,6 +3483,8 @@
     - @sap-ux/adp-tooling@0.14.17
 
 ## 0.3.16
+
+*Released: 2025-06-10T07:40:27Z*
 
 ### Patch Changes
 
@@ -3001,6 +3495,8 @@
 
 ## 0.3.15
 
+*Released: 2025-06-09T09:48:34Z*
+
 ### Patch Changes
 
 - Updated dependencies [d6943aa]
@@ -3008,6 +3504,8 @@
     - @sap-ux/adp-tooling@0.14.15
 
 ## 0.3.14
+
+*Released: 2025-06-05T12:32:35Z*
 
 ### Patch Changes
 
@@ -3018,6 +3516,8 @@
 
 ## 0.3.13
 
+*Released: 2025-06-05T07:23:07Z*
+
 ### Patch Changes
 
 - Updated dependencies [15ec5c4]
@@ -3026,6 +3526,8 @@
     - @sap-ux/adp-tooling@0.14.13
 
 ## 0.3.12
+
+*Released: 2025-06-04T10:59:54Z*
 
 ### Patch Changes
 
@@ -3036,6 +3538,8 @@
 
 ## 0.3.11
 
+*Released: 2025-05-30T09:02:15Z*
+
 ### Patch Changes
 
 - Updated dependencies [91726b0]
@@ -3044,6 +3548,8 @@
     - @sap-ux/adp-tooling@0.14.11
 
 ## 0.3.10
+
+*Released: 2025-05-30T07:18:36Z*
 
 ### Patch Changes
 
@@ -3058,11 +3564,15 @@
 
 ## 0.3.9
 
+*Released: 2025-05-29T08:13:17Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.14.9
 
 ## 0.3.8
+
+*Released: 2025-05-27T17:59:17Z*
 
 ### Patch Changes
 
@@ -3073,6 +3583,8 @@
 
 ## 0.3.7
 
+*Released: 2025-05-27T15:05:11Z*
+
 ### Patch Changes
 
 - Updated dependencies [b3fe5b8]
@@ -3081,11 +3593,15 @@
 
 ## 0.3.6
 
+*Released: 2025-05-26T11:57:48Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.14.6
 
 ## 0.3.5
+
+*Released: 2025-05-23T13:35:39Z*
 
 ### Patch Changes
 
@@ -3096,6 +3612,8 @@
 
 ## 0.3.4
 
+*Released: 2025-05-23T12:26:54Z*
+
 ### Patch Changes
 
 - Updated dependencies [8e44d02]
@@ -3103,11 +3621,15 @@
 
 ## 0.3.3
 
+*Released: 2025-05-22T16:20:10Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.14.3
 
 ## 0.3.2
+
+*Released: 2025-05-15T14:05:09Z*
 
 ### Patch Changes
 
@@ -3115,6 +3637,8 @@
     - @sap-ux/adp-tooling@0.14.2
 
 ## 0.3.1
+
+*Released: 2025-05-15T13:36:04Z*
 
 ### Patch Changes
 
@@ -3128,6 +3652,8 @@
     - @sap-ux/system-access@0.6.0
 
 ## 0.3.0
+
+*Released: 2025-05-14T22:35:53Z*
 
 ### Minor Changes
 
@@ -3150,6 +3676,8 @@
 
 ## 0.2.3
 
+*Released: 2025-05-14T12:10:48Z*
+
 ### Patch Changes
 
 - 2ba9fe9: feat: Improve ADP generator writer by refactoring its logic
@@ -3157,6 +3685,8 @@
     - @sap-ux/adp-tooling@0.13.45
 
 ## 0.2.2
+
+*Released: 2025-05-13T10:46:10Z*
 
 ### Patch Changes
 
@@ -3169,6 +3699,8 @@
 
 ## 0.2.1
 
+*Released: 2025-05-08T10:12:31Z*
+
 ### Patch Changes
 
 - 6cb23c8: feat: Add the Extension Project functionality and internal support information
@@ -3178,11 +3710,15 @@
 
 ## 0.2.0
 
+*Released: 2025-05-07T07:54:03Z*
+
 ### Minor Changes
 
 - fc8d7da: feat(generator-adp): Make possible to configure the Adaptation project generator from a json
 
 ## 0.1.21
+
+*Released: 2025-05-05T13:48:20Z*
 
 ### Patch Changes
 
@@ -3197,6 +3733,8 @@
 
 ## 0.1.20
 
+*Released: 2025-05-02T10:00:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [1a01c5e]
@@ -3206,12 +3744,16 @@
 
 ## 0.1.19
 
+*Released: 2025-05-02T07:45:43Z*
+
 ### Patch Changes
 
 - Updated dependencies [9e7fa23]
     - @sap-ux/adp-tooling@0.13.40
 
 ## 0.1.18
+
+*Released: 2025-05-01T13:52:16Z*
 
 ### Patch Changes
 
@@ -3220,11 +3762,15 @@
 
 ## 0.1.17
 
+*Released: 2025-04-30T10:38:47Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.13.38
 
 ## 0.1.16
+
+*Released: 2025-04-30T08:50:36Z*
 
 ### Patch Changes
 
@@ -3235,6 +3781,8 @@
 
 ## 0.1.15
 
+*Released: 2025-04-28T14:29:23Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.40
@@ -3242,12 +3790,16 @@
 
 ## 0.1.14
 
+*Released: 2025-04-25T13:08:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [258ecca]
     - @sap-ux/adp-tooling@0.13.35
 
 ## 0.1.13
+
+*Released: 2025-04-24T15:01:01Z*
 
 ### Patch Changes
 
@@ -3260,6 +3812,8 @@
 - @sap-ux/inquirer-common@0.6.39
 
 ## 0.1.12
+
+*Released: 2025-04-23T15:22:38Z*
 
 ### Patch Changes
 
@@ -3274,6 +3828,8 @@
 
 ## 0.1.11
 
+*Released: 2025-04-23T13:59:14Z*
+
 ### Patch Changes
 
 - Updated dependencies [1ca4004]
@@ -3287,12 +3843,16 @@
 
 ## 0.1.10
 
+*Released: 2025-04-17T12:52:13Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.36
 - @sap-ux/adp-tooling@0.13.31
 
 ## 0.1.9
+
+*Released: 2025-04-17T09:03:34Z*
 
 ### Patch Changes
 
@@ -3303,6 +3863,8 @@
 
 ## 0.1.8
 
+*Released: 2025-04-15T14:18:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [28c6594]
@@ -3312,6 +3874,8 @@
 
 ## 0.1.7
 
+*Released: 2025-04-15T10:10:52Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.10.2
@@ -3319,6 +3883,8 @@
 - @sap-ux/adp-tooling@0.13.28
 
 ## 0.1.6
+
+*Released: 2025-04-14T22:24:07Z*
 
 ### Patch Changes
 
@@ -3332,12 +3898,16 @@
 
 ## 0.1.5
 
+*Released: 2025-04-11T08:09:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [c4278fb]
     - @sap-ux/adp-tooling@0.13.26
 
 ## 0.1.4
+
+*Released: 2025-04-10T13:52:38Z*
 
 ### Patch Changes
 
@@ -3348,6 +3918,8 @@
 
 ## 0.1.3
 
+*Released: 2025-04-09T06:44:54Z*
+
 ### Patch Changes
 
 - c81864a: fix: ADP Generator integration test mocking
@@ -3355,6 +3927,8 @@
     - @sap-ux/adp-tooling@0.13.24
 
 ## 0.1.2
+
+*Released: 2025-04-08T13:20:49Z*
 
 ### Patch Changes
 
@@ -3364,6 +3938,8 @@
 
 ## 0.1.1
 
+*Released: 2025-03-30T09:30:38Z*
+
 ### Patch Changes
 
 - fbdf2d0: fix(generator-adp): Generator running in the CLI context
@@ -3371,6 +3947,8 @@
     - @sap-ux/adp-tooling@0.13.22
 
 ## 0.1.0
+
+*Released: 2025-03-26T12:15:41Z*
 
 ### Minor Changes
 

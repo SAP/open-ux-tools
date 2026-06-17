@@ -1,5 +1,74 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.14
+
+### Patch Changes
+
+- @sap-ux/axios-extension@2.0.3
+- @sap-ux/inquirer-common@1.0.11
+- @sap-ux/odata-service-inquirer@3.0.11
+- @sap-ux/fiori-generator-shared@1.0.11
+- @sap-ux/odata-service-writer@1.0.6
+
+## 0.3.13
+
+### Patch Changes
+
+- Updated dependencies [7bfa518]
+    - @sap-ux/telemetry@1.0.9
+    - @sap-ux/fiori-generator-shared@1.0.10
+    - @sap-ux/inquirer-common@1.0.10
+    - @sap-ux/odata-service-inquirer@3.0.10
+
+## 0.3.12
+
+### Patch Changes
+
+- 8abbd6f: Fix for hierarchy parent property incorrectly set as `target` instead of `source`
+
+## 0.3.11
+
+### Patch Changes
+
+- a11a7c7: Adds `Show Logs` link`
+
+## 0.3.10
+
+### Patch Changes
+
+- Updated dependencies [c8e8f7e]
+    - @sap-ux/ui5-config@1.0.3
+    - @sap-ux/mockserver-config-writer@1.0.6
+    - @sap-ux/odata-service-writer@1.0.6
+    - @sap-ux/project-access@2.1.2
+    - @sap-ux/telemetry@1.0.8
+    - @sap-ux/odata-service-inquirer@3.0.9
+    - @sap-ux/inquirer-common@1.0.9
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/fiori-generator-shared@1.0.9
+
+## 0.3.9
+
+### Patch Changes
+
+- Updated dependencies [0fa8305]
+    - @sap-ux/btp-utils@2.0.2
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/fiori-generator-shared@1.0.8
+    - @sap-ux/inquirer-common@1.0.8
+    - @sap-ux/odata-service-inquirer@3.0.8
+    - @sap-ux/telemetry@1.0.7
+    - @sap-ux/odata-service-writer@1.0.5
+
+## 0.3.8
+
+### Patch Changes
+
+- Updated dependencies [a328e14]
+    - @sap-ux/fiori-generator-shared@1.0.7
+    - @sap-ux/inquirer-common@1.0.7
+    - @sap-ux/odata-service-inquirer@3.0.7
+
 ## 0.3.7
 
 ### Patch Changes
@@ -177,11 +246,15 @@
 
 ## 0.0.8
 
+*Released: 2026-03-19T15:30:29Z*
+
 ### Patch Changes
 
 - 42b558b: Updates readme. Move deps tto devDeps
 
 ## 0.0.7
+
+*Released: 2026-03-18T16:51:44Z*
 
 ### Patch Changes
 
@@ -192,6 +265,8 @@
 
 ## 0.0.6
 
+*Released: 2026-03-17T07:55:04Z*
+
 ### Patch Changes
 
 - Updated dependencies [a854433]
@@ -201,6 +276,8 @@
     - @sap-ux/odata-service-writer@0.30.1
 
 ## 0.0.5
+
+*Released: 2026-03-17T01:04:22Z*
 
 ### Patch Changes
 
@@ -220,12 +297,16 @@
 
 ## 0.0.4
 
+*Released: 2026-03-16T23:16:05Z*
+
 ### Patch Changes
 
 - 1b7094e: fix(deps): update dependency @sap/ux-specification to v1.144.0
     - @sap-ux/odata-service-inquirer@2.19.11
 
 ## 0.0.3
+
+*Released: 2026-03-13T18:19:04Z*
 
 ### Patch Changes
 
