@@ -161,7 +161,7 @@ The following rules help guide the AI model to use the server correctly. Add the
 ## [Available Tools](#available-tools)
 
 #### `search_docs`
-Searches SAP Fiori elements, Annotations, UI5, SAP Fiori tools documentation for the given query.
+Searches SAP Fiori elements, Annotations, UI5, OPA5 Guides, SAP Fiori tools documentation for the given query.
 
 Note: the results are based on the most recent indexed version of UI5 documentation
 
