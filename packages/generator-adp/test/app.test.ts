@@ -734,7 +734,7 @@ describe('Adaptation Project Generator Integration Test', () => {
             const changesDir = join(projectFolder, 'webapp', 'changes');
             expect(fs.existsSync(changesDir)).toBe(true);
 
-            const changeFiles = fs.readdirSync(changesDir).filter((file) => file.endsWith('.change'));
+            const changeFiles = fs.readdirSync(changesDir).filter((file) => file.endsWith('.annotation_change'));
             expect(changeFiles.length).toBeGreaterThan(0);
 
             // Verify the change file content

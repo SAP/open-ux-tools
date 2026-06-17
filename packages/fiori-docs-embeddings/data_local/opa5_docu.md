@@ -1,4 +1,8 @@
 --------------------------------
+**TITLE**: OPA5 Integration Tests for SAP Fiori Elements applications
+
+**TAGS**: OPA5, integration-tests, fiori-elements, sap.fe.test, journey, page-objects, V4, V2, testing
+
 # OPA5 Integration Tests for SAP Fiori Elements applications
 
 ## Introduction
@@ -740,7 +744,7 @@ The V2 test library uses a completely different API. Never mix V4 and V2.
 ### V2 API Comparison
 
 | Task | V4 (`sap.fe.test`) | V2 (`fioriElementsTestLibrary`) |
-|------|--------------------|--------------------------------------|
+|------|--------------------|-----------------------------|
 | Start app | `Given.iStartMyApp()` | `Given.iStartMyAppInAFrame("./index.html")` |
 | Search | `onFilterBar().iExecuteSearch()` | `iExecuteTheSearch()` |
 | Check rows | `onTable().iCheckRows(n)` | `theResultListContainsTheCorrectNumberOfItems(n)` |
