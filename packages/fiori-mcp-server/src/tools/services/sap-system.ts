@@ -8,10 +8,10 @@ import { parse as parseEdmx } from '@sap-ux/edmx-parser';
 import format from 'xml-formatter';
 import { logger } from '../../utils/index.js';
 import {
+    Authentication,
     type Destination,
     isAbapODataDestination,
     isAppStudio,
-    isGenericODataDestination,
     listDestinations
 } from '@sap-ux/btp-utils';
 
@@ -128,7 +128,9 @@ function findDestination(destinations: Destination[], query: string): Destinatio
 export async function getSystemsOrDestinations(): Promise<Destination[] | BackendSystem[]> {
     if (isAppStudio()) {
         const destinations = await listDestinations({ stripS4HCApiHosts: true });
-        return Object.values(destinations).filter((d) => isGenericODataDestination(d) || isAbapODataDestination(d));
+        return Object.values(destinations).filter(
+            (d) => isAbapODataDestination(d) && d.Authentication !== Authentication.NO_AUTHENTICATION
+        );
     }
     return getSapSystems();
 }

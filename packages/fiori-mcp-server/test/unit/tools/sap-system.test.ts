@@ -46,18 +46,17 @@ jest.unstable_mockModule('xml-formatter', () => ({ default: mockFormatXml }));
 
 const mockIsAppStudio = jest.fn<() => boolean>().mockReturnValue(false);
 const mockListDestinations = jest.fn<any>();
-const mockIsGenericODataDestination = jest.fn<any>().mockReturnValue(true);
-const mockIsAbapODataDestination = jest.fn<any>().mockReturnValue(false);
+const mockIsAbapODataDestination = jest.fn<any>().mockReturnValue(true);
 const actualBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...actualBtpUtils,
     isAppStudio: mockIsAppStudio,
     listDestinations: mockListDestinations,
-    isGenericODataDestination: mockIsGenericODataDestination,
     isAbapODataDestination: mockIsAbapODataDestination
 }));
 
-const { findSystem, getServiceMetadata, getSystemsOrDestinations } = await import('../../../src/tools/services/sap-system.js');
+const { findSystem, getServiceMetadata, getSystemsOrDestinations } =
+    await import('../../../src/tools/services/sap-system.js');
 
 describe('service-metadata', () => {
     let mockGetAll: jest.Mock;
@@ -575,16 +574,33 @@ describe('service-metadata', () => {
 
     describe('BAS / AppStudio destination handling', () => {
         const mockDestinations = {
-            DEST_A: { Name: 'DEST_A', Host: 'https://dest-a.example.com', 'sap-client': '100', Type: 'HTTP' },
-            DEST_B: { Name: 'DEST_B', Host: 'https://dest-b.example.com', 'sap-client': '200', Type: 'HTTP' },
-            DEST_HOST: { Name: 'HostDest', Host: 'https://host-match.example.com', 'sap-client': '300', Type: 'HTTP' }
+            DEST_A: {
+                Name: 'DEST_A',
+                Host: 'https://dest-a.example.com',
+                'sap-client': '100',
+                Authentication: 'BasicAuthentication',
+                Type: 'HTTP'
+            },
+            DEST_B: {
+                Name: 'DEST_B',
+                Host: 'https://dest-b.example.com',
+                'sap-client': '200',
+                Authentication: 'BasicAuthentication',
+                Type: 'HTTP'
+            },
+            DEST_HOST: {
+                Name: 'HostDest',
+                Host: 'https://host-match.example.com',
+                'sap-client': '300',
+                Authentication: 'BasicAuthentication',
+                Type: 'HTTP'
+            }
         };
 
         beforeEach(() => {
             mockIsAppStudio.mockReturnValue(true);
             mockListDestinations.mockResolvedValue(mockDestinations);
-            mockIsGenericODataDestination.mockReturnValue(true);
-            mockIsAbapODataDestination.mockReturnValue(false);
+            mockIsAbapODataDestination.mockReturnValue(true);
         });
 
         describe('getSystemsOrDestinations', () => {
@@ -594,11 +610,25 @@ describe('service-metadata', () => {
                 expect(result).toHaveLength(3);
             });
 
-            test('should filter out non-OData destinations', async () => {
-                mockIsGenericODataDestination.mockReturnValue(false);
+            test('should filter out non-ABAP destinations', async () => {
                 mockIsAbapODataDestination.mockReturnValue(false);
                 const result = await getSystemsOrDestinations();
                 expect(result).toHaveLength(0);
+            });
+
+            test('should filter out NoAuthentication destinations', async () => {
+                mockListDestinations.mockResolvedValue({
+                    ...mockDestinations,
+                    NO_AUTH_DEST: {
+                        Name: 'NO_AUTH_DEST',
+                        Host: 'https://no-auth.example.com',
+                        Authentication: 'NoAuthentication',
+                        Type: 'HTTP'
+                    }
+                });
+                const result = await getSystemsOrDestinations();
+                expect((result as any[]).find((d: any) => d.Name === 'NO_AUTH_DEST')).toBeUndefined();
+                expect(result).toHaveLength(3);
             });
 
             test('should return backend systems when not in BAS', async () => {
