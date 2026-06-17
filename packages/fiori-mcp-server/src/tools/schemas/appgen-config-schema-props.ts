@@ -105,7 +105,7 @@ export const entityConfig = z.object({
             .describe(
                 'The name of the main entity. EntitySet Name attribute in OData Metadata. Required for all floorplans except FF_SIMPLE.'
             )
-            .meta({ examples: ["'SalesOrder'", "'PurchaseOrderHeader'", "'MyEntity'"] })
+            .meta({ examples: ['SalesOrder', 'PurchaseOrderHeader', 'MyEntity'] })
     }),
     generateFormAnnotations: z
         .boolean()

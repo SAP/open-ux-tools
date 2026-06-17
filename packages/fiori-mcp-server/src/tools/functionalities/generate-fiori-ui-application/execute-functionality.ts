@@ -25,6 +25,12 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
     };
     generatorConfig.project.sapux = generatorConfig.floorplan !== 'FF_SIMPLE';
 
+    if (generatorConfig.entityConfig?.mainEntity?.entityName) {
+        generatorConfig.entityConfig.mainEntity.entityName = generatorConfig.entityConfig.mainEntity.entityName
+            .replace(/^'(.*)'$/, '$1')
+            .trim();
+    }
+
     const projectPath = generatorConfig?.project?.targetFolder ?? params.appPath;
     if (!projectPath || typeof projectPath !== 'string') {
         throw new Error('Please provide a valid path to the non-CAP project folder.');

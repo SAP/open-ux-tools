@@ -36,9 +36,9 @@ Object {
               "entityName": Object {
                 "description": "The name of the main entity. EntitySet Name attribute in OData Metadata. Required for all floorplans except FF_SIMPLE.",
                 "examples": Array [
-                  "'SalesOrder'",
-                  "'PurchaseOrderHeader'",
-                  "'MyEntity'",
+                  "SalesOrder",
+                  "PurchaseOrderHeader",
+                  "MyEntity",
                 ],
                 "type": "string",
               },

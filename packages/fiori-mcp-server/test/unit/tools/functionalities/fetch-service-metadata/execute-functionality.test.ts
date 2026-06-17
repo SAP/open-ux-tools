@@ -29,6 +29,13 @@ jest.unstable_mockModule('fs', () => ({
     writeFileSync: mockWriteFileSync
 }));
 
+const mockIsAppStudio = jest.fn<() => boolean>().mockReturnValue(false);
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    isAppStudio: mockIsAppStudio
+}));
+
 const { default: executeFunctionality } =
     await import('../../../../../src/tools/functionalities/fetch-service-metadata/execute-functionality.js');
 
@@ -46,6 +53,7 @@ describe('execute-functionality', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockIsAppStudio.mockReturnValue(false);
         mockFindSystem.mockResolvedValue(mockSapSystem);
         mockGetServiceMetadata.mockResolvedValue(mockMetadata);
         mockWriteFileSync.mockImplementation(() => {});
@@ -296,5 +304,85 @@ describe('execute-functionality', () => {
         const result = await executeFunctionality(params);
 
         expect(result.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+    });
+
+    describe('AppStudio (BAS) destination handling', () => {
+        const mockDestination = {
+            Name: 'MY_DESTINATION',
+            Host: 'https://bas-system.example.com',
+            'sap-client': '200',
+            Type: 'HTTP',
+            Authentication: 'BasicAuthentication'
+        };
+
+        beforeEach(() => {
+            mockIsAppStudio.mockReturnValue(true);
+            mockFindSystem.mockResolvedValue(mockDestination);
+        });
+
+        test('should return destination name when isAppStudio is true', async () => {
+            const params: ExecuteFunctionalityInput = {
+                appPath: mockAppPath,
+                functionalityId: 'fetch-service-metadata',
+                parameters: {
+                    sapSystemQuery: 'MY_DESTINATION',
+                    servicePath: mockServicePath
+                }
+            };
+
+            const result = await executeFunctionality(params);
+
+            expect(result.status).toBe('Success');
+            expect((result.parameters as any).destination).toBe('MY_DESTINATION');
+        });
+
+        test('should use destination Host as host when isAppStudio is true', async () => {
+            const params: ExecuteFunctionalityInput = {
+                appPath: mockAppPath,
+                functionalityId: 'fetch-service-metadata',
+                parameters: {
+                    sapSystemQuery: 'MY_DESTINATION',
+                    servicePath: mockServicePath
+                }
+            };
+
+            const result = await executeFunctionality(params);
+
+            expect((result.parameters as any).host).toBe('https://bas-system.example.com');
+        });
+
+        test('should use destination sap-client as client when isAppStudio is true', async () => {
+            const params: ExecuteFunctionalityInput = {
+                appPath: mockAppPath,
+                functionalityId: 'fetch-service-metadata',
+                parameters: {
+                    sapSystemQuery: 'MY_DESTINATION',
+                    servicePath: mockServicePath
+                }
+            };
+
+            const result = await executeFunctionality(params);
+
+            expect((result.parameters as any).client).toBe('200');
+        });
+
+        test('should not return destination when isAppStudio is false', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            mockFindSystem.mockResolvedValue(mockSapSystem);
+
+            const params: ExecuteFunctionalityInput = {
+                appPath: mockAppPath,
+                functionalityId: 'fetch-service-metadata',
+                parameters: {
+                    sapSystemQuery: 'TestSystem',
+                    servicePath: mockServicePath
+                }
+            };
+
+            const result = await executeFunctionality(params);
+
+            expect((result.parameters as any).destination).toBeUndefined();
+            expect((result.parameters as any).host).toBe('https://test.example.com');
+        });
     });
 });
