@@ -57,7 +57,8 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAbapODataDestination: mockIsAbapODataDestination
 }));
 
-const { findSystem, getServiceMetadata, getSystemsOrDestinations } = await import('../../../src/tools/services/sap-system.js');
+const { findSystem, getServiceMetadata, getSystemsOrDestinations } =
+    await import('../../../src/tools/services/sap-system.js');
 
 describe('service-metadata', () => {
     let mockGetAll: jest.Mock;
