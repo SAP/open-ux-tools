@@ -2,6 +2,7 @@ import type { Logger } from '@sap-ux/logger';
 import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser/index.js';
 import type {
     ActionButtonState,
+    ContactCardField,
     FormField,
     SectionFormField,
     BodySectionFeatureData,
@@ -17,9 +18,10 @@ import {
     type FieldItem,
     type HeaderSectionItem,
     type SectionItem,
-    getAggregations
+    getAggregations,
+    parseDataFieldForAnnotationName
 } from './modelUtils.js';
-import { extractTableColumnsFromNode } from './tableUtils.js';
+import { extractContactCardColumnsFromNode, extractTableColumnsFromNode } from './tableUtils.js';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page.js';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
@@ -157,10 +159,12 @@ function extractObjectPageHeaderSectionsData(objectPage: PageWithModelV4): Heade
                 microChart: isSectionMicroChart(section),
                 form: isFormSection(section),
                 // collection: false // TODO: find out how to identify collection facets
-                title: section.title
+                title: section.title,
+                contactCardFields: []
             };
             if (sectionData.form) {
                 sectionData.fields = getHeaderSectionFormFields(section);
+                sectionData.contactCardFields = pickContactCardFieldsFromHeader(sectionData.fields);
             }
             headerSections.push(sectionData);
         });
@@ -193,14 +197,20 @@ function extractObjectPageBodySectionsData(
             const sectionId = getSectionIdentifier(section) ?? sectionKey;
             const subSections = extractBodySubSectionsData(section, sectionId);
             const navigationProperty = getNavigationPropertyFromKey(sectionKey);
+            const fields = section.custom || section.isTable ? [] : extractFormFields(section);
+            const tableColumns = section.custom || !section.isTable ? {} : extractTableColumnsFromNode(section);
+            const contactCardColumns =
+                section.custom || !section.isTable ? [] : extractContactCardColumnsFromNode(section);
             const sectionData: BodySectionFeatureData = {
                 id: sectionId,
                 navigationProperty,
                 isTable: !!section.isTable,
                 custom: !!section.custom,
                 order: section?.order ?? -1,
-                fields: section.custom || section.isTable ? [] : extractFormFields(section),
-                tableColumns: section.custom || !section.isTable ? {} : extractTableColumnsFromNode(section),
+                fields,
+                contactCardFields: pickContactCardFields(fields),
+                tableColumns,
+                contactCardColumns,
                 subSections,
                 actions:
                     !section.custom && convertedMetadata && schemaNamespace
@@ -298,21 +308,56 @@ function extractSectionActions(
  */
 function extractBodySubSectionsData(section: SectionItem, parentSectionId: string): BodySubSectionFeatureData[] {
     const subSections: BodySubSectionFeatureData[] = [];
-    const subSectionsAggregation = getAggregations(section)['subSections'];
+    const sectionAggregations = getAggregations(section);
+    const subSectionsAggregation = sectionAggregations['subSections'] ?? sectionAggregations['subsections'];
     const subSectionItems = getAggregations(subSectionsAggregation) as Record<string, BodySectionItem>;
     Object.entries(subSectionItems).forEach(([subSectionKey, subSection]) => {
         const subSectionId = getSectionIdentifier(subSection) ?? `${parentSectionId}_${subSectionKey}`;
+        const fields = subSection.custom || subSection.isTable ? [] : extractFormFields(subSection);
+        const tableColumns = subSection.custom || !subSection.isTable ? {} : extractTableColumnsFromNode(subSection);
+        const contactCardColumns =
+            subSection.custom || !subSection.isTable ? [] : extractContactCardColumnsFromNode(subSection);
         subSections.push({
             id: subSectionId,
             navigationProperty: getNavigationPropertyFromKey(subSectionKey),
             isTable: !!subSection.isTable,
             custom: !!subSection.custom,
             order: subSection?.order ?? -1, // put a negative order number to signal that order was not in spec
-            fields: subSection.custom || subSection.isTable ? [] : extractFormFields(subSection),
-            tableColumns: subSection.custom || !subSection.isTable ? {} : extractTableColumnsFromNode(subSection)
+            fields,
+            contactCardFields: pickContactCardFields(fields),
+            tableColumns,
+            contactCardColumns
         });
     });
     return subSections;
+}
+
+/**
+ * Filters form fields down to those rendered as Contact-card links (`@Communication.Contact`).
+ *
+ * @param fields - all form fields of a (sub-)section
+ * @returns Contact-card fields, addressed via the qualified `<property>/<targetAnnotation>` form
+ */
+function pickContactCardFields(fields: SectionFormField[]): ContactCardField[] {
+    return fields
+        .filter((field) => field.targetAnnotation === 'Contact')
+        .map((field) => ({ property: field.property }));
+}
+
+/**
+ * Filters header field-group fields down to Contact-card entries and projects them to
+ * the `<property>/Contact` form expected by `onHeader().iClickLink({ property })`.
+ *
+ * @param fields - header field-group fields with optional `field` and `targetAnnotation`
+ * @returns Contact-card descriptors usable as `iClickLink` / `iCheckLink` arguments
+ */
+function pickContactCardFieldsFromHeader(fields: FormField[] | undefined): ContactCardField[] {
+    if (!fields) {
+        return [];
+    }
+    return fields
+        .filter((field) => field.targetAnnotation === 'Contact' && field.field)
+        .map((field) => ({ property: `${field.field}/${field.targetAnnotation}` }));
 }
 
 /**
@@ -329,10 +374,21 @@ function extractFormFields(subSection: BodySectionItem): SectionFormField[] {
     }
     const fieldsAggregation = getAggregations(formAggregation)['fields'] as AggregationItem;
     const fieldItems = getAggregations(fieldsAggregation) as Record<string, FieldItem>;
-    Object.values(fieldItems).forEach((field) => {
-        const property = field.schema?.keys?.find((key) => key.name === 'Value')?.value;
-        if (property) {
-            fields.push({ property });
+    Object.values(fieldItems).forEach((fieldItem) => {
+        const annotationParts = parseDataFieldForAnnotationName(fieldItem.name);
+        const valueProperty = fieldItem.schema?.keys?.find((key) => key.name === 'Value')?.value;
+        const baseProperty = valueProperty ?? annotationParts?.property;
+        if (!baseProperty) {
+            return;
+        }
+
+        if (annotationParts) {
+            fields.push({
+                property: `${baseProperty}/${annotationParts.targetAnnotation}`,
+                targetAnnotation: annotationParts.targetAnnotation
+            });
+        } else {
+            fields.push({ property: baseProperty });
         }
     });
     return fields;
