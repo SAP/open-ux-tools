@@ -1,12 +1,19 @@
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import type { AxiosRequestConfig, ODataService, ODataServiceInfo } from '@sap-ux/axios-extension';
 
-import { AbapServiceProvider, ODataVersion, TlsPatch } from '@sap-ux/axios-extension';
+import { AbapServiceProvider, ODataVersion, TlsPatch, createForDestination } from '@sap-ux/axios-extension';
 import { getService, getSapToolsDirectory } from '@sap-ux/store';
 import { ToolsLogger } from '@sap-ux/logger';
 import { parse as parseEdmx } from '@sap-ux/edmx-parser';
 import format from 'xml-formatter';
 import { logger } from '../../utils/index.js';
+import {
+    type Destination,
+    isAbapODataDestination,
+    isAppStudio,
+    isGenericODataDestination,
+    listDestinations
+} from '@sap-ux/btp-utils';
 
 // Capture the real SAP tools directory at module load time. In test environments the
 // HOME env var may be overridden after process start; SAP_TOOLS_DIR can be set by the
@@ -79,35 +86,86 @@ function matchSystemByUrl(systems: BackendSystem[], url: string): BackendSystem[
 }
 
 /**
- * Finds a system by its name, or url and client (partial match).
+ * Finds a destination by name first, then by host if no name match is found.
  *
- * @param query - The partial name to match.
+ * @param destinations - The list of destinations to search.
+ * @param query - The query string to match against name or host.
+ * @returns The matching destination, or undefined if not found.
+ */
+function findDestination(destinations: Destination[], query: string): Destination | undefined {
+    const queryLower = query.toLocaleLowerCase();
+
+    let match = destinations.find((d) => d.Name === query);
+    if (!match) {
+        match = destinations.find((d) => d.Name.toLocaleLowerCase() === queryLower);
+    }
+    if (!match) {
+        match = destinations.find((d) => d.Name.toLocaleLowerCase().startsWith(queryLower));
+    }
+    if (!match) {
+        match = destinations.find((d) => d.Name.toLocaleLowerCase().includes(queryLower));
+    }
+
+    // Fall back to matching by Host
+    if (!match) {
+        const { origin } = parseUrl(query);
+        const hostQuery = origin || queryLower;
+        match = destinations.find((d) => d.Host.toLocaleLowerCase() === hostQuery.toLocaleLowerCase());
+        if (!match) {
+            match = destinations.find((d) => d.Host.toLocaleLowerCase().includes(hostQuery.toLocaleLowerCase()));
+        }
+    }
+
+    return match;
+}
+
+/**
+ * Returns all available systems or destinations depending on the current platform.
+ * In BAS returns filtered Destination[], in VSCode returns BackendSystem[].
+ *
+ * @returns A promise resolving to an array of destinations or backend systems.
+ */
+export async function getSystemsOrDestinations(): Promise<Destination[] | BackendSystem[]> {
+    if (isAppStudio()) {
+        const destinations = await listDestinations({ stripS4HCApiHosts: true });
+        return Object.values(destinations).filter((d) => isGenericODataDestination(d) || isAbapODataDestination(d));
+    }
+    return getSapSystems();
+}
+
+/**
+ * Finds a system by its name, or url and client (partial match).
+ * In BAS returns a Destination, in VSCode returns a BackendSystem.
+ *
+ * @param query - The name, host or URL to match.
  * @returns The matching system if found.
  */
-export async function findSapSystem(query: string): Promise<BackendSystem> {
-    const systems = await getSapSystems(true);
+export async function findSystem(query: string): Promise<BackendSystem | Destination | undefined> {
+    if (isAppStudio()) {
+        try {
+            return findDestination((await getSystemsOrDestinations()) as Destination[], query);
+        } catch (e) {
+            logger.error(`Error retrieving destinations: ${e}`);
+            return undefined;
+        }
+    }
+    return findSapSystem((await getSystemsOrDestinations()) as BackendSystem[], query);
+}
 
-    // try exact match
+function findSapSystem(systems: BackendSystem[], query: string): BackendSystem {
     let matchingSystems = systems.filter((s) => s.name === query);
 
-    // try case insensitive
     const queryLower = query.toLocaleLowerCase();
 
     if (matchingSystems?.length !== 1) {
         matchingSystems = systems.filter((s) => s.name.toLocaleLowerCase() === queryLower);
     }
-
-    // try partial match from start
     if (matchingSystems?.length !== 1) {
         matchingSystems = systems.filter((s) => s.name.toLocaleLowerCase().startsWith(queryLower));
     }
-
-    // try partial match anywhere in name
     if (matchingSystems?.length !== 1) {
         matchingSystems = systems.filter((s) => s.name.toLocaleLowerCase().includes(queryLower));
     }
-
-    // try match system by host url
     if (matchingSystems?.length !== 1) {
         matchingSystems = matchSystemByUrl(systems, query);
     }
@@ -126,24 +184,23 @@ export async function findSapSystem(query: string): Promise<BackendSystem> {
 }
 
 /**
- * Fetches the OData V4 services for a given backend system.
+ * Creates an ODataService from a BackendSystem.
  *
- * @param backendSystem - The backend system to fetch services from.
- * @param servicePath - The path of the service to match.
- * @returns A promise that resolves to an array of ODataServiceInfo objects.
+ * @param backendSystem - The backend system to connect to.
+ * @param servicePath - The OData service path.
+ * @returns A promise resolving to the ODataService instance.
  */
-async function getServiceFromSystem(backendSystem: BackendSystem, servicePath: string): Promise<ODataService> {
+async function getServiceFromBackendSystem(backendSystem: BackendSystem, servicePath: string): Promise<ODataService> {
+    const normalizedPath = servicePath.startsWith('http')
+        ? parseUrl(servicePath).path.replace(/\/\$metadata$/, '')
+        : servicePath.replace(/\/\$metadata$/, '');
+
     const providerConfig: AxiosRequestConfig = {
         baseURL: backendSystem.url,
-        params: {
-            'sap-client': backendSystem.client
-        }
+        params: { 'sap-client': backendSystem.client }
     };
     if (backendSystem.username && backendSystem.password) {
-        providerConfig.auth = {
-            username: backendSystem.username,
-            password: backendSystem.password
-        };
+        providerConfig.auth = { username: backendSystem.username, password: backendSystem.password };
     }
     if (TlsPatch.isPatchRequired(providerConfig.baseURL ?? '')) {
         TlsPatch.apply();
@@ -154,23 +211,27 @@ async function getServiceFromSystem(backendSystem: BackendSystem, servicePath: s
     try {
         services = await serviceProvider.catalog(ODataVersion.v4).listServices();
     } catch {
-        // no services found
+        // no services found, fall through to direct path
     }
 
-    const matchedServices = services.filter((s) => s.path === servicePath);
+    const matched = services.filter((s) => s.path === normalizedPath);
+    if (matched.length > 1) {
+        throw new Error(`Multiple OData V4 services found matching path: ${normalizedPath}`);
+    }
+    return serviceProvider.service(matched.length === 1 ? matched[0].path : normalizedPath) as ODataService;
+}
 
-    if (matchedServices.length > 1) {
-        throw new Error(`Multiple ODATA V4 Services found matching path: ${servicePath}`);
-    }
-    if (matchedServices.length === 1) {
-        return serviceProvider.service(matchedServices[0].path) as ODataService;
-    }
-
-    // try to fetch service directly (if user provided full URL as servicePath)
-    if (servicePath.startsWith('http')) {
-        servicePath = parseUrl(servicePath).path;
-    }
-    return serviceProvider.service(servicePath) as ODataService;
+/**
+ * Creates an ODataService from a BTP Destination.
+ *
+ * @param destination - The BTP destination to connect to.
+ * @param servicePath - The OData service path.
+ * @returns The ODataService instance.
+ */
+function getServiceFromDestination(destination: Destination, servicePath: string): ODataService {
+    const normalizedPath = servicePath.replace(/\/\$metadata$/, '');
+    const serviceProvider = createForDestination({}, destination);
+    return serviceProvider.service(normalizedPath) as ODataService;
 }
 
 /**
@@ -195,14 +256,18 @@ function checkMetadata(metadata: string): void {
 }
 
 /**
- * Fetches the service metadata for a given SAP system and service path.
+ * Fetches the service metadata for a given SAP system or destination and service path.
  *
- * @param sapSystem - The SAP system object.
+ * @param system - The BackendSystem or Destination to connect to.
  * @param servicePath - The path of the service.
  * @returns A promise that resolves to a EDMX metadata XML as string.
  */
-export async function getServiceMetadata(sapSystem: BackendSystem, servicePath: string): Promise<string> {
-    const service = await getServiceFromSystem(sapSystem, servicePath);
+export async function getServiceMetadata(system: BackendSystem | Destination, servicePath: string): Promise<string> {
+    // isAppStudio() is the authoritative discriminant: BAS always yields Destination, VSCode always BackendSystem
+    const service = isAppStudio()
+        ? getServiceFromDestination(system as Destination, servicePath)
+        : await getServiceFromBackendSystem(system as BackendSystem, servicePath);
+
     const metadata = await service.metadata();
     checkMetadata(metadata);
     try {

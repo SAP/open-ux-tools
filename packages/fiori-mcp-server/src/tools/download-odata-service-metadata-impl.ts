@@ -2,7 +2,10 @@ import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../t
 
 import path from 'node:path';
 import fs from 'node:fs';
-import { getServiceMetadata, findSapSystem } from './services/sap-system.js';
+import { isAppStudio } from '@sap-ux/btp-utils';
+import type { Destination } from '@sap-ux/btp-utils';
+import type { BackendSystem } from '@sap-ux/store';
+import { getServiceMetadata, findSystem } from './services/sap-system.js';
 import { FETCH_SERVICE_METADATA_ID } from '../constant.js';
 
 /**
@@ -28,10 +31,29 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
     }
 
     try {
-        const sapSystem = await findSapSystem(sapSystemQuery || servicePath);
-        const metadata = await getServiceMetadata(sapSystem, servicePath);
+        const foundSystem = await findSystem(sapSystemQuery || servicePath);
+        if (!foundSystem) {
+            return {
+                functionalityId: FETCH_SERVICE_METADATA_ID,
+                status: 'Error',
+                message: 'The requested system could not be found',
+                parameters: params.parameters,
+                appPath: params.appPath,
+                changes: [],
+                timestamp: new Date().toISOString()
+            };
+        }
+
+        const metadata = await getServiceMetadata(foundSystem, servicePath);
         const metadataFilePath = path.join(params.appPath, 'metadata.xml');
         fs.writeFileSync(metadataFilePath, metadata, 'utf-8');
+
+        const isAS = isAppStudio();
+        const dest = foundSystem as Destination;
+        const backend = foundSystem as BackendSystem;
+        const host = isAS ? dest.Host : backend.url;
+        const client = isAS ? dest['sap-client'] : backend.client;
+        const destination = isAS ? dest.Name : undefined;
 
         return {
             functionalityId: FETCH_SERVICE_METADATA_ID,
@@ -39,10 +61,11 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
             message: 'Fetched systems successfully.',
             changes: [],
             parameters: {
-                host: sapSystem.url,
-                client: sapSystem.client,
-                servicePath: servicePath,
-                metadataFilePath
+                host,
+                client,
+                servicePath,
+                metadataFilePath,
+                destination
             },
             appPath: params.appPath,
             timestamp: new Date().toISOString()

@@ -3,10 +3,10 @@ import type { ExecuteFunctionalityInput } from '../../../src/types/index.js';
 import path from 'node:path';
 
 // Mock dependencies
-const mockFindSapSystem = jest.fn<any>();
+const mockFindSystem = jest.fn<any>();
 const mockGetServiceMetadata = jest.fn<any>();
 jest.unstable_mockModule('../../../src/tools/services/sap-system', () => ({
-    findSapSystem: mockFindSapSystem,
+    findSystem: mockFindSystem,
     getServiceMetadata: mockGetServiceMetadata
 }));
 
@@ -29,6 +29,13 @@ jest.unstable_mockModule('fs', () => ({
     writeFileSync: mockWriteFileSync
 }));
 
+const mockIsAppStudio = jest.fn<() => boolean>().mockReturnValue(false);
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    isAppStudio: mockIsAppStudio
+}));
+
 const { default: executeFunctionality } = await import('../../../src/tools/download-odata-service-metadata-impl.js');
 
 describe('execute-functionality', () => {
@@ -45,7 +52,8 @@ describe('execute-functionality', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockFindSapSystem.mockResolvedValue(mockSapSystem);
+        mockIsAppStudio.mockReturnValue(false);
+        mockFindSystem.mockResolvedValue(mockSapSystem);
         mockGetServiceMetadata.mockResolvedValue(mockMetadata);
         mockWriteFileSync.mockImplementation(() => {});
     });
@@ -62,7 +70,7 @@ describe('execute-functionality', () => {
 
         const result = await executeFunctionality(params);
 
-        expect(mockFindSapSystem).toHaveBeenCalledWith('TestSystem');
+        expect(mockFindSystem).toHaveBeenCalledWith('TestSystem');
         expect(mockGetServiceMetadata).toHaveBeenCalledWith(mockSapSystem, mockServicePath);
         expect(mockWriteFileSync).toHaveBeenCalledWith(path.join(mockAppPath, 'metadata.xml'), mockMetadata, 'utf-8');
         expect(result).toMatchObject({
@@ -93,7 +101,7 @@ describe('execute-functionality', () => {
 
         const result = await executeFunctionality(params);
 
-        expect(mockFindSapSystem).toHaveBeenCalledWith('https://test.example.com?sap-client=100');
+        expect(mockFindSystem).toHaveBeenCalledWith('https://test.example.com?sap-client=100');
         expect(result.status).toBe('Success');
     });
 
@@ -108,7 +116,7 @@ describe('execute-functionality', () => {
 
         const result = await executeFunctionality(params);
 
-        expect(mockFindSapSystem).toHaveBeenCalledWith(mockServicePath);
+        expect(mockFindSystem).toHaveBeenCalledWith(mockServicePath);
         expect(result.status).toBe('Success');
     });
 
@@ -124,8 +132,27 @@ describe('execute-functionality', () => {
 
         const result = await executeFunctionality(params);
 
-        expect(mockFindSapSystem).toHaveBeenCalledWith(mockServicePath);
+        expect(mockFindSystem).toHaveBeenCalledWith(mockServicePath);
         expect(result.status).toBe('Success');
+    });
+
+    test('should return error when system not found', async () => {
+        mockFindSystem.mockResolvedValue(undefined);
+
+        const params: ExecuteFunctionalityInput = {
+            appPath: mockAppPath,
+            functionalityId: 'fetch-service-metadata',
+            parameters: {
+                sapSystemQuery: 'Unknown',
+                servicePath: mockServicePath
+            }
+        };
+
+        const result = await executeFunctionality(params);
+        expect(result.status).toBe('Error');
+        expect(result.message).toBe('The requested system could not be found');
+        expect(mockGetServiceMetadata).not.toHaveBeenCalled();
+        expect(mockWriteFileSync).not.toHaveBeenCalled();
     });
 
     test('should return error when servicePath is missing', async () => {
@@ -140,7 +167,7 @@ describe('execute-functionality', () => {
         const result = await executeFunctionality(params);
         expect(result.status).toBe('Error');
         expect(result.message).toBe('Missing required parameter: servicePath');
-        expect(mockFindSapSystem).not.toHaveBeenCalled();
+        expect(mockFindSystem).not.toHaveBeenCalled();
         expect(mockGetServiceMetadata).not.toHaveBeenCalled();
         expect(mockWriteFileSync).not.toHaveBeenCalled();
     });
@@ -158,7 +185,7 @@ describe('execute-functionality', () => {
         const result = await executeFunctionality(params);
         expect(result.status).toBe('Error');
         expect(result.message).toBe('Missing required parameter: servicePath');
-        expect(mockFindSapSystem).not.toHaveBeenCalled();
+        expect(mockFindSystem).not.toHaveBeenCalled();
     });
 
     test('should return error when servicePath is whitespace only', async () => {
@@ -176,8 +203,8 @@ describe('execute-functionality', () => {
         expect(result.message).toBe('Missing required parameter: servicePath');
     });
 
-    test('should return error response from findSapSystem failure', async () => {
-        mockFindSapSystem.mockRejectedValue(new Error('System not found'));
+    test('should return error response from findSystem failure', async () => {
+        mockFindSystem.mockRejectedValue(new Error('System not found'));
 
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
@@ -218,7 +245,7 @@ describe('execute-functionality', () => {
             url: 'https://test.example.com',
             client: ''
         };
-        mockFindSapSystem.mockResolvedValue(systemWithoutClient);
+        mockFindSystem.mockResolvedValue(systemWithoutClient);
 
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
@@ -246,7 +273,7 @@ describe('execute-functionality', () => {
 
         await executeFunctionality(params);
 
-        expect(mockFindSapSystem).toHaveBeenCalledWith('TestSystem');
+        expect(mockFindSystem).toHaveBeenCalledWith('TestSystem');
         expect(mockGetServiceMetadata).toHaveBeenCalledWith(mockSapSystem, '/sap/opu/odata4/test/service');
     });
 
@@ -278,7 +305,7 @@ describe('execute-functionality', () => {
 
         await executeFunctionality(params);
 
-        expect(mockFindSapSystem).toHaveBeenCalledWith('123');
+        expect(mockFindSystem).toHaveBeenCalledWith('123');
         expect(mockGetServiceMetadata).toHaveBeenCalledWith(mockSapSystem, '456');
     });
 
@@ -295,5 +322,85 @@ describe('execute-functionality', () => {
         const result = await executeFunctionality(params);
 
         expect(result.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+    });
+
+    describe('AppStudio (BAS) destination handling', () => {
+        const mockDestination = {
+            Name: 'MY_DESTINATION',
+            Host: 'https://bas-system.example.com',
+            'sap-client': '200',
+            Type: 'HTTP',
+            Authentication: 'BasicAuthentication'
+        };
+
+        beforeEach(() => {
+            mockIsAppStudio.mockReturnValue(true);
+            mockFindSystem.mockResolvedValue(mockDestination);
+        });
+
+        test('should return destination name when isAppStudio is true', async () => {
+            const params: ExecuteFunctionalityInput = {
+                appPath: mockAppPath,
+                functionalityId: 'fetch-service-metadata',
+                parameters: {
+                    sapSystemQuery: 'MY_DESTINATION',
+                    servicePath: mockServicePath
+                }
+            };
+
+            const result = await executeFunctionality(params);
+
+            expect(result.status).toBe('Success');
+            expect((result.parameters as any).destination).toBe('MY_DESTINATION');
+        });
+
+        test('should use destination Host as host when isAppStudio is true', async () => {
+            const params: ExecuteFunctionalityInput = {
+                appPath: mockAppPath,
+                functionalityId: 'fetch-service-metadata',
+                parameters: {
+                    sapSystemQuery: 'MY_DESTINATION',
+                    servicePath: mockServicePath
+                }
+            };
+
+            const result = await executeFunctionality(params);
+
+            expect((result.parameters as any).host).toBe('https://bas-system.example.com');
+        });
+
+        test('should use destination sap-client as client when isAppStudio is true', async () => {
+            const params: ExecuteFunctionalityInput = {
+                appPath: mockAppPath,
+                functionalityId: 'fetch-service-metadata',
+                parameters: {
+                    sapSystemQuery: 'MY_DESTINATION',
+                    servicePath: mockServicePath
+                }
+            };
+
+            const result = await executeFunctionality(params);
+
+            expect((result.parameters as any).client).toBe('200');
+        });
+
+        test('should not return destination when isAppStudio is false', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            mockFindSystem.mockResolvedValue(mockSapSystem);
+
+            const params: ExecuteFunctionalityInput = {
+                appPath: mockAppPath,
+                functionalityId: 'fetch-service-metadata',
+                parameters: {
+                    sapSystemQuery: 'TestSystem',
+                    servicePath: mockServicePath
+                }
+            };
+
+            const result = await executeFunctionality(params);
+
+            expect((result.parameters as any).destination).toBeUndefined();
+            expect((result.parameters as any).host).toBe('https://test.example.com');
+        });
     });
 });

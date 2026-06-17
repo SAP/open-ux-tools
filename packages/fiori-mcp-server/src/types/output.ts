@@ -51,8 +51,40 @@ export const GetFunctionalityDetailsOutputSchema = zod.object({
 });
 
 /**
- * Output interface for the 'execute_functionality' functionality
+ * Output interface for the 'fetch-service-metadata' tool
  */
+export const FetchServiceMetadataOutputSchema = zod.object({
+    functionalityId: FunctionalityIdSchema,
+    status: zod.string(),
+    message: zod.string(),
+    parameters: zod.object({
+        host: zod
+            .string()
+            .describe('The host URL of the OData service. Pass as service.host to generate-fiori-ui-application.'),
+        servicePath: zod
+            .string()
+            .describe('The OData endpoint path. Pass as service.servicePath to generate-fiori-ui-application.'),
+        client: zod
+            .string()
+            .optional()
+            .describe('The SAP client. Pass as service.client to generate-fiori-ui-application.'),
+        destination: zod
+            .string()
+            .optional()
+            .describe(
+                'The BTP destination name (BAS only). Pass as service.destination to generate-fiori-ui-application.'
+            ),
+        metadataFilePath: zod
+            .string()
+            .describe(
+                'Path to the saved metadata.xml. Pass as service.metadataFilePath to generate-fiori-ui-application.'
+            )
+    }),
+    appPath: zod.string(),
+    changes: zod.array(zod.string()),
+    timestamp: zod.string()
+});
+
 export const ExecuteFunctionalityOutputSchema = zod.object({
     /** ID or array of IDs of the executed functionality(ies) */
     functionalityId: FunctionalityIdSchema,
