@@ -222,7 +222,9 @@ export class ProjectContext {
      */
     public static updateFile(uri: string, content: string): ProjectContext {
         const cachedFile = this.fileCache.get(uri);
-        if (!cachedFile) {
+        if (cachedFile) {
+            this.forceReindexOnFirstUpdate = false;
+        } else {
             // New file created
             this.forceReindexOnFirstUpdate = true;
         }
