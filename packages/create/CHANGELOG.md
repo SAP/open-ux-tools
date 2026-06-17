@@ -1,5 +1,18 @@
 # @sap-ux/create
 
+## 1.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.16 → 1.0.17
+- @sap-ux/odata-service-writer 1.0.6 → 1.0.7
+- @sap-ux/flp-config-inquirer 1.0.16 → 1.0.17
+- @sap-ux/preview-middleware 1.0.23 → 1.0.24
+- @sap-ux/app-config-writer 1.0.10 → 1.0.10
+- @sap-ux/abap-deploy-config-inquirer 2.0.12 → 2.0.13
+
 ## 1.0.27
 
 ### Patch Changes
