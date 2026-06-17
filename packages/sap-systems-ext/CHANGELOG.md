@@ -2,17 +2,23 @@
 
 ## 1.0.2
 
+*Released: 2026-06-03T14:58:37Z*
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
 
 ## 1.0.1
 
+*Released: 2026-06-02T12:38:22Z*
+
 ### Patch Changes
 
 - 93591d4: fix(sap-systems-ext): remove unsafe Logger/ExtensionLogger casts in SystemsLogger
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -47,11 +53,15 @@
 
 ## 0.6.0
 
+*Released: 2026-05-15T08:12:20Z*
+
 ### Minor Changes
 
 - 72695e5: chore: drop Node 20 support as it is no longer maintained
 
 ## 0.5.3
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -59,17 +69,23 @@
 
 ## 0.5.2
 
+*Released: 2026-05-12T12:59:14Z*
+
 ### Patch Changes
 
 - ac6381f: remove default selected key for sap systems ext
 
 ## 0.5.1
 
+*Released: 2026-05-11T10:59:15Z*
+
 ### Patch Changes
 
 - 9661c7b: adds new internal create command to avoid collisions with other registered commands
 
 ## 0.5.0
+
+*Released: 2026-04-30T12:29:22Z*
 
 ### Minor Changes
 
@@ -79,11 +95,15 @@
 
 ## 0.4.5
 
+*Released: 2026-04-09T14:24:08Z*
+
 ### Patch Changes
 
 - 66e2099: Fix right click options on systems
 
 ## 0.4.4
+
+*Released: 2026-03-31T14:52:03Z*
 
 ### Patch Changes
 
@@ -91,11 +111,15 @@
 
 ## 0.4.3
 
+*Released: 2026-03-30T22:24:11Z*
+
 ### Patch Changes
 
 - c53a4ba: chore(sap-systems-ext): upgrade shared devDependencies (jest 30, i18next 25)
 
 ## 0.4.2
+
+*Released: 2026-03-30T12:11:57Z*
 
 ### Patch Changes
 
@@ -103,11 +127,15 @@
 
 ## 0.4.1
 
+*Released: 2026-03-30T09:06:01Z*
+
 ### Patch Changes
 
 - e976fdb: bump vscode version to align with @types/vscode
 
 ## 0.4.0
+
+*Released: 2026-03-28T09:24:50Z*
 
 ### Minor Changes
 

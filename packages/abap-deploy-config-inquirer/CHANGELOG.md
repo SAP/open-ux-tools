@@ -14,6 +14,8 @@
 
 ## 2.0.11
 
+*Released: 2026-06-12T06:53:23Z*
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@2.0.3
@@ -23,12 +25,16 @@
 
 ## 2.0.10
 
+*Released: 2026-06-11T10:54:17Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@1.0.10
 - @sap-ux/inquirer-common@1.0.10
 
 ## 2.0.9
+
+*Released: 2026-06-10T09:57:42Z*
 
 ### Patch Changes
 
@@ -40,6 +46,8 @@
     - @sap-ux/system-access@1.0.2
 
 ## 2.0.8
+
+*Released: 2026-06-09T14:35:01Z*
 
 ### Patch Changes
 
@@ -53,6 +61,8 @@
 
 ## 2.0.7
 
+*Released: 2026-06-09T13:18:16Z*
+
 ### Patch Changes
 
 - Updated dependencies [a328e14]
@@ -60,6 +70,8 @@
     - @sap-ux/inquirer-common@1.0.7
 
 ## 2.0.6
+
+*Released: 2026-06-04T13:54:21Z*
 
 ### Patch Changes
 
@@ -70,6 +82,8 @@
 
 ## 2.0.5
 
+*Released: 2026-06-04T10:19:37Z*
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@2.0.1
@@ -78,6 +92,8 @@
 - @sap-ux/system-access@1.0.1
 
 ## 2.0.4
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -96,6 +112,8 @@
 
 ## 2.0.3
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - Updated dependencies [9580241]
@@ -107,6 +125,8 @@
 
 ## 2.0.2
 
+*Released: 2026-06-02T11:35:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [41f327a]
@@ -116,6 +136,8 @@
 
 ## 2.0.1
 
+*Released: 2026-06-01T15:15:26Z*
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@2.0.0
@@ -124,6 +146,8 @@
 - @sap-ux/system-access@1.0.0
 
 ## 2.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -172,6 +196,8 @@
 
 ## 1.9.7
 
+*Released: 2026-05-29T12:50:34Z*
+
 ### Patch Changes
 
 - Updated dependencies [a1c9cd7]
@@ -179,6 +205,8 @@
     - @sap-ux/inquirer-common@0.13.6
 
 ## 1.9.6
+
+*Released: 2026-05-27T11:39:21Z*
 
 ### Patch Changes
 
@@ -188,6 +216,8 @@
     - @sap-ux/inquirer-common@0.13.5
 
 ## 1.9.5
+
+*Released: 2026-05-27T10:42:47Z*
 
 ### Patch Changes
 
@@ -199,6 +229,8 @@
     - @sap-ux/inquirer-common@0.13.4
 
 ## 1.9.4
+
+*Released: 2026-05-26T16:40:21Z*
 
 ### Patch Changes
 
@@ -213,6 +245,8 @@
 
 ## 1.9.3
 
+*Released: 2026-05-21T16:21:11Z*
+
 ### Patch Changes
 
 - Updated dependencies [9752c40]
@@ -224,6 +258,8 @@
 
 ## 1.9.2
 
+*Released: 2026-05-19T15:16:46Z*
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.26.0
@@ -232,6 +268,8 @@
 - @sap-ux/system-access@0.8.0
 
 ## 1.9.1
+
+*Released: 2026-05-15T13:12:06Z*
 
 ### Patch Changes
 
@@ -242,6 +280,8 @@
     - @sap-ux/inquirer-common@0.13.0
 
 ## 1.9.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -263,11 +303,15 @@
 
 ## 1.8.23
 
+*Released: 2026-05-14T21:28:41Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.48
 
 ## 1.8.22
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -286,6 +330,8 @@
 
 ## 1.8.21
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -296,6 +342,8 @@
 
 ## 1.8.20
 
+*Released: 2026-05-12T18:00:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [9360ea5]
@@ -303,6 +351,8 @@
     - @sap-ux/inquirer-common@0.11.45
 
 ## 1.8.19
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -318,6 +368,8 @@
 
 ## 1.8.18
 
+*Released: 2026-04-30T14:23:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [c160401]
@@ -327,6 +379,8 @@
     - @sap-ux/inquirer-common@0.11.43
 
 ## 1.8.17
+
+*Released: 2026-04-29T15:24:37Z*
 
 ### Patch Changes
 
@@ -339,6 +393,8 @@
 
 ## 1.8.16
 
+*Released: 2026-04-27T19:47:46Z*
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.25.32
@@ -348,6 +404,8 @@
 
 ## 1.8.15
 
+*Released: 2026-04-23T12:54:21Z*
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.25.32
@@ -356,6 +414,8 @@
 - @sap-ux/system-access@0.7.8
 
 ## 1.8.14
+
+*Released: 2026-04-23T06:48:55Z*
 
 ### Patch Changes
 
@@ -367,11 +427,15 @@
 
 ## 1.8.13
 
+*Released: 2026-04-22T12:38:46Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.38
 
 ## 1.8.12
+
+*Released: 2026-04-15T11:53:17Z*
 
 ### Patch Changes
 
@@ -379,6 +443,8 @@
 - @sap-ux/inquirer-common@0.11.37
 
 ## 1.8.11
+
+*Released: 2026-04-14T20:26:28Z*
 
 ### Patch Changes
 
@@ -392,6 +458,8 @@
 
 ## 1.8.10
 
+*Released: 2026-04-14T12:35:35Z*
+
 ### Patch Changes
 
 - Updated dependencies [cc4450c]
@@ -404,6 +472,8 @@
     - @sap-ux/nodejs-utils@0.2.20
 
 ## 1.8.9
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -421,6 +491,8 @@
 
 ## 1.8.8
 
+*Released: 2026-04-01T11:49:37Z*
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.25.28
@@ -429,6 +501,8 @@
 - @sap-ux/system-access@0.7.4
 
 ## 1.8.7
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -450,12 +524,16 @@
 
 ## 1.8.6
 
+*Released: 2026-03-27T15:37:24Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.93
 - @sap-ux/inquirer-common@0.11.31
 
 ## 1.8.5
+
+*Released: 2026-03-27T11:58:49Z*
 
 ### Patch Changes
 
@@ -469,6 +547,8 @@
 
 ## 1.8.4
 
+*Released: 2026-03-26T20:06:10Z*
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.25.26
@@ -477,6 +557,8 @@
 - @sap-ux/system-access@0.7.2
 
 ## 1.8.3
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -501,6 +583,8 @@
 
 ## 1.8.2
 
+*Released: 2026-03-25T12:56:41Z*
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.25.25
@@ -509,6 +593,8 @@
 - @sap-ux/system-access@0.7.1
 
 ## 1.8.1
+
+*Released: 2026-03-23T18:25:40Z*
 
 ### Patch Changes
 

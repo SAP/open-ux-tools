@@ -2,6 +2,8 @@
 
 ## 1.0.16
 
+*Released: 2026-06-14T10:40:09Z*
+
 ### Patch Changes
 
 - Updated dependencies [adae40d]
@@ -9,12 +11,16 @@
 
 ## 1.0.15
 
+*Released: 2026-06-12T10:49:08Z*
+
 ### Patch Changes
 
 - Updated dependencies [6e4a71a]
     - @sap-ux/adp-tooling@1.0.15
 
 ## 1.0.14
+
+*Released: 2026-06-12T06:53:23Z*
 
 ### Patch Changes
 
@@ -25,12 +31,16 @@
 
 ## 1.0.13
 
+*Released: 2026-06-11T13:37:16Z*
+
 ### Patch Changes
 
 - Updated dependencies [e66a8a9]
     - @sap-ux/adp-tooling@1.0.13
 
 ## 1.0.12
+
+*Released: 2026-06-11T10:54:17Z*
 
 ### Patch Changes
 
@@ -39,6 +49,8 @@
 - @sap-ux/adp-tooling@1.0.12
 
 ## 1.0.11
+
+*Released: 2026-06-10T09:57:42Z*
 
 ### Patch Changes
 
@@ -52,6 +64,8 @@
 
 ## 1.0.10
 
+*Released: 2026-06-09T14:35:01Z*
+
 ### Patch Changes
 
 - Updated dependencies [0fa8305]
@@ -63,6 +77,8 @@
 
 ## 1.0.9
 
+*Released: 2026-06-09T13:18:16Z*
+
 ### Patch Changes
 
 - Updated dependencies [a328e14]
@@ -71,6 +87,8 @@
     - @sap-ux/adp-tooling@1.0.9
 
 ## 1.0.8
+
+*Released: 2026-06-04T13:54:21Z*
 
 ### Patch Changes
 
@@ -84,12 +102,16 @@
 
 ## 1.0.7
 
+*Released: 2026-06-04T12:10:05Z*
+
 ### Patch Changes
 
 - Updated dependencies [fb84c0e]
     - @sap-ux/adp-tooling@1.0.7
 
 ## 1.0.6
+
+*Released: 2026-06-04T10:19:37Z*
 
 ### Patch Changes
 
@@ -110,6 +132,8 @@
 
 ## 1.0.5
 
+*Released: 2026-06-03T14:58:37Z*
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
@@ -124,6 +148,8 @@
 
 ## 1.0.4
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@1.0.4
@@ -135,6 +161,8 @@
 
 ## 1.0.3
 
+*Released: 2026-06-02T11:35:17Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@1.0.3
@@ -143,12 +171,16 @@
 
 ## 1.0.2
 
+*Released: 2026-06-02T08:56:31Z*
+
 ### Patch Changes
 
 - Updated dependencies [a8e4cf0]
     - @sap-ux/adp-tooling@1.0.2
 
 ## 1.0.1
+
+*Released: 2026-06-01T15:15:26Z*
 
 ### Patch Changes
 
@@ -161,6 +193,8 @@
     - @sap-ux/project-input-validator@1.0.1
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -206,6 +240,8 @@
 
 ## 0.5.11
 
+*Released: 2026-05-29T12:50:34Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.13.6
@@ -213,12 +249,16 @@
 
 ## 0.5.10
 
+*Released: 2026-05-29T06:59:27Z*
+
 ### Patch Changes
 
 - Updated dependencies [9a980a9]
     - @sap-ux/adp-tooling@0.19.10
 
 ## 0.5.9
+
+*Released: 2026-05-27T11:39:21Z*
 
 ### Patch Changes
 
@@ -228,6 +268,8 @@
 
 ## 0.5.8
 
+*Released: 2026-05-27T10:42:47Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.19.8
@@ -235,6 +277,8 @@
 - @sap-ux/inquirer-common@0.13.4
 
 ## 0.5.7
+
+*Released: 2026-05-26T16:40:21Z*
 
 ### Patch Changes
 
@@ -248,12 +292,16 @@
 
 ## 0.5.6
 
+*Released: 2026-05-22T13:30:05Z*
+
 ### Patch Changes
 
 - Updated dependencies [758b0d4]
     - @sap-ux/adp-tooling@0.19.6
 
 ## 0.5.5
+
+*Released: 2026-05-21T16:21:11Z*
 
 ### Patch Changes
 
@@ -266,12 +314,16 @@
 
 ## 0.5.4
 
+*Released: 2026-05-21T14:58:44Z*
+
 ### Patch Changes
 
 - Updated dependencies [dab1aa2]
     - @sap-ux/adp-tooling@0.19.4
 
 ## 0.5.3
+
+*Released: 2026-05-19T15:16:46Z*
 
 ### Patch Changes
 
@@ -285,12 +337,16 @@
 
 ## 0.5.2
 
+*Released: 2026-05-18T08:15:14Z*
+
 ### Patch Changes
 
 - Updated dependencies [342c544]
     - @sap-ux/adp-tooling@0.19.2
 
 ## 0.5.1
+
+*Released: 2026-05-15T13:12:06Z*
 
 ### Patch Changes
 
@@ -302,6 +358,8 @@
     - @sap-ux/adp-tooling@0.19.1
 
 ## 0.5.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -320,6 +378,8 @@
 
 ## 0.4.194
 
+*Released: 2026-05-14T21:28:41Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.134
@@ -327,12 +387,16 @@
 
 ## 0.4.193
 
+*Released: 2026-05-14T14:16:50Z*
+
 ### Patch Changes
 
 - Updated dependencies [8c4185a]
     - @sap-ux/adp-tooling@0.18.133
 
 ## 0.4.192
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -348,6 +412,8 @@
 
 ## 0.4.191
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -360,6 +426,8 @@
 
 ## 0.4.190
 
+*Released: 2026-05-12T18:00:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [9360ea5]
@@ -369,11 +437,15 @@
 
 ## 0.4.189
 
+*Released: 2026-05-11T12:52:25Z*
+
 ### Patch Changes
 
 - 3ca8866: fix: change confirm replace additional message based on environment
 
 ## 0.4.188
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -390,6 +462,8 @@
 
 ## 0.4.187
 
+*Released: 2026-05-01T15:46:09Z*
+
 ### Patch Changes
 
 - Updated dependencies [b2ffc7e]
@@ -397,12 +471,16 @@
 
 ## 0.4.186
 
+*Released: 2026-04-30T19:47:20Z*
+
 ### Patch Changes
 
 - Updated dependencies [fcaa70c]
     - @sap-ux/adp-tooling@0.18.127
 
 ## 0.4.185
+
+*Released: 2026-04-30T14:23:24Z*
 
 ### Patch Changes
 
@@ -416,6 +494,8 @@
 
 ## 0.4.184
 
+*Released: 2026-04-30T13:10:33Z*
+
 ### Patch Changes
 
 - Updated dependencies [a4b90ca]
@@ -423,6 +503,8 @@
     - @sap-ux/adp-tooling@0.18.125
 
 ## 0.4.183
+
+*Released: 2026-04-29T15:24:37Z*
 
 ### Patch Changes
 
@@ -437,6 +519,8 @@
 
 ## 0.4.182
 
+*Released: 2026-04-27T19:47:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -449,12 +533,16 @@
 
 ## 0.4.181
 
+*Released: 2026-04-27T07:30:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [10847a1]
     - @sap-ux/adp-tooling@0.18.122
 
 ## 0.4.180
+
+*Released: 2026-04-23T12:54:21Z*
 
 ### Patch Changes
 
@@ -468,6 +556,8 @@
 
 ## 0.4.179
 
+*Released: 2026-04-23T06:48:55Z*
+
 ### Patch Changes
 
 - Updated dependencies [237371b]
@@ -478,12 +568,16 @@
 
 ## 0.4.178
 
+*Released: 2026-04-22T12:38:46Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.119
 - @sap-ux/inquirer-common@0.11.38
 
 ## 0.4.177
+
+*Released: 2026-04-15T11:53:17Z*
 
 ### Patch Changes
 
@@ -494,12 +588,16 @@
 
 ## 0.4.176
 
+*Released: 2026-04-15T08:11:32Z*
+
 ### Patch Changes
 
 - Updated dependencies [8fb08a2]
     - @sap-ux/adp-tooling@0.18.117
 
 ## 0.4.175
+
+*Released: 2026-04-14T20:26:28Z*
 
 ### Patch Changes
 
@@ -511,6 +609,8 @@
     - @sap-ux/inquirer-common@0.11.36
 
 ## 0.4.174
+
+*Released: 2026-04-14T12:35:35Z*
 
 ### Patch Changes
 
@@ -525,6 +625,8 @@
 
 ## 0.4.173
 
+*Released: 2026-04-14T11:39:16Z*
+
 ### Patch Changes
 
 - Updated dependencies [497317c]
@@ -532,12 +634,16 @@
 
 ## 0.4.172
 
+*Released: 2026-04-09T07:00:16Z*
+
 ### Patch Changes
 
 - Updated dependencies [7a8613b]
     - @sap-ux/adp-tooling@0.18.113
 
 ## 0.4.171
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -554,6 +660,8 @@
 
 ## 0.4.170
 
+*Released: 2026-04-07T11:09:34Z*
+
 ### Patch Changes
 
 - Updated dependencies [1b10e9f]
@@ -561,12 +669,16 @@
 
 ## 0.4.169
 
+*Released: 2026-04-01T14:51:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [6b74074]
     - @sap-ux/adp-tooling@0.18.110
 
 ## 0.4.168
+
+*Released: 2026-04-01T11:49:37Z*
 
 ### Patch Changes
 
@@ -580,12 +692,16 @@
 
 ## 0.4.167
 
+*Released: 2026-04-01T06:34:51Z*
+
 ### Patch Changes
 
 - Updated dependencies [68b5523]
     - @sap-ux/adp-tooling@0.18.108
 
 ## 0.4.166
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -605,6 +721,8 @@
 
 ## 0.4.165
 
+*Released: 2026-03-27T15:37:24Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.93
@@ -612,6 +730,8 @@
 - @sap-ux/adp-tooling@0.18.106
 
 ## 0.4.164
+
+*Released: 2026-03-27T11:58:49Z*
 
 ### Patch Changes
 
@@ -623,6 +743,8 @@
     - @sap-ux/inquirer-common@0.11.30
 
 ## 0.4.163
+
+*Released: 2026-03-26T20:06:10Z*
 
 ### Patch Changes
 
@@ -636,6 +758,8 @@
 
 ## 0.4.162
 
+*Released: 2026-03-26T16:48:32Z*
+
 ### Patch Changes
 
 - Updated dependencies [96a689b]
@@ -643,12 +767,16 @@
 
 ## 0.4.161
 
+*Released: 2026-03-26T15:15:10Z*
+
 ### Patch Changes
 
 - Updated dependencies [3dcd3f7]
     - @sap-ux/adp-tooling@0.18.102
 
 ## 0.4.160
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -670,6 +798,8 @@
 
 ## 0.4.159
 
+*Released: 2026-03-25T12:56:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [f384ace]
@@ -682,6 +812,8 @@
 
 ## 0.4.158
 
+*Released: 2026-03-23T18:25:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [c0e05ab]
@@ -690,6 +822,8 @@
     - @sap-ux/fiori-generator-shared@0.13.88
 
 ## 0.4.157
+
+*Released: 2026-03-23T10:51:10Z*
 
 ### Patch Changes
 
