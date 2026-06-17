@@ -3,7 +3,7 @@
 "@sap-ux-private/ui-prompting-examples": minor
 ---
 
-FEAT: (fe-fpm-writer) add Page building block full and basic template support
+FEAT: Add Page building block full and basic template support
 
 - Add `appendPageAggregations` to generate all 7 Page BB aggregations (`breadcrumbs`, `navigationActions`, `titleContent`, `actions`, `headerContent`, `items`, `footer`) with EJS templates and per-aggregation IDs
 - Add `appendPageBBAggregation` API to append a single named aggregation to an existing `<macros:Page>` element in a view XML file

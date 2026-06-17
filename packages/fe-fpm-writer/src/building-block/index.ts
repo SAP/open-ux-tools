@@ -171,7 +171,11 @@ function appendPageAggregations(
     pageData: Page
 ): void {
     const macrosNS = getOrAddNamespace(xmlDocument, 'sap.fe.macros', 'macros');
-    const fragMacrosNS = macrosNS || 'macros';
+    let fragMacrosNS = macrosNS;
+    if (fragMacrosNS === '') {
+        xmlDocument.documentElement.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:macros', 'sap.fe.macros');
+        fragMacrosNS = 'macros';
+    }
     const macrosPrefix = `${fragMacrosNS}:`;
     const pageElement = templateDocument.documentElement;
     const aggErrorHandler = (level: string, message: string): never => {
@@ -742,8 +746,13 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
         const snippetErrorHandler = (level: string, message: string): never => {
             throw new Error(`Unable to parse Page building block snippet. Details: [${level}] - ${message}`);
         };
+        const snippetMacrosNS = getOrAddNamespace(nsDoc, 'sap.fe.macros', 'macros') || 'macros';
+        const snippetContent = `${content}`.replace(
+            new RegExp(`^<(${snippetMacrosNS}:Page)`),
+            `<$1 xmlns:${snippetMacrosNS}="sap.fe.macros"`
+        );
         const snippetDoc = new DOMParser({ errorHandler: snippetErrorHandler }).parseFromString(
-            `${content}`,
+            snippetContent,
             'text/xml'
         );
         appendPageAggregations(fs, nsDoc, snippetDoc, fnGenerateId, pageData);
