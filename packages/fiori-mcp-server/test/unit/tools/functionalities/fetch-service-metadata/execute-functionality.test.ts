@@ -3,10 +3,10 @@ import type { ExecuteFunctionalityInput } from '../../../../../src/types/index.j
 import path from 'node:path';
 
 // Mock dependencies
-const mockFindSapSystem = jest.fn<any>();
+const mockFindSystem = jest.fn<any>();
 const mockGetServiceMetadata = jest.fn<any>();
 jest.unstable_mockModule('../../../../../src/tools/functionalities/fetch-service-metadata/service-metadata', () => ({
-    findSapSystem: mockFindSapSystem,
+    findSystem: mockFindSystem,
     getServiceMetadata: mockGetServiceMetadata
 }));
 
@@ -46,7 +46,7 @@ describe('execute-functionality', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockFindSapSystem.mockResolvedValue(mockSapSystem);
+        mockFindSystem.mockResolvedValue(mockSapSystem);
         mockGetServiceMetadata.mockResolvedValue(mockMetadata);
         mockWriteFileSync.mockImplementation(() => {});
     });
@@ -63,7 +63,7 @@ describe('execute-functionality', () => {
 
         const result = await executeFunctionality(params);
 
-        expect(mockFindSapSystem).toHaveBeenCalledWith('TestSystem');
+        expect(mockFindSystem).toHaveBeenCalledWith('TestSystem');
         expect(mockGetServiceMetadata).toHaveBeenCalledWith(mockSapSystem, mockServicePath);
         expect(mockWriteFileSync).toHaveBeenCalledWith(path.join(mockAppPath, 'metadata.xml'), mockMetadata, 'utf-8');
         expect(result).toMatchObject({
@@ -94,7 +94,7 @@ describe('execute-functionality', () => {
 
         const result = await executeFunctionality(params);
 
-        expect(mockFindSapSystem).toHaveBeenCalledWith('https://test.example.com?sap-client=100');
+        expect(mockFindSystem).toHaveBeenCalledWith('https://test.example.com?sap-client=100');
         expect(result.status).toBe('Success');
     });
 
@@ -109,7 +109,7 @@ describe('execute-functionality', () => {
 
         const result = await executeFunctionality(params);
 
-        expect(mockFindSapSystem).toHaveBeenCalledWith(mockServicePath);
+        expect(mockFindSystem).toHaveBeenCalledWith(mockServicePath);
         expect(result.status).toBe('Success');
     });
 
@@ -125,7 +125,7 @@ describe('execute-functionality', () => {
 
         const result = await executeFunctionality(params);
 
-        expect(mockFindSapSystem).toHaveBeenCalledWith(mockServicePath);
+        expect(mockFindSystem).toHaveBeenCalledWith(mockServicePath);
         expect(result.status).toBe('Success');
     });
 
@@ -141,7 +141,7 @@ describe('execute-functionality', () => {
         const result = await executeFunctionality(params);
         expect(result.status).toBe('Error');
         expect(result.message).toBe('Missing required parameter: servicePath');
-        expect(mockFindSapSystem).not.toHaveBeenCalled();
+        expect(mockFindSystem).not.toHaveBeenCalled();
         expect(mockGetServiceMetadata).not.toHaveBeenCalled();
         expect(mockWriteFileSync).not.toHaveBeenCalled();
     });
@@ -159,7 +159,7 @@ describe('execute-functionality', () => {
         const result = await executeFunctionality(params);
         expect(result.status).toBe('Error');
         expect(result.message).toBe('Missing required parameter: servicePath');
-        expect(mockFindSapSystem).not.toHaveBeenCalled();
+        expect(mockFindSystem).not.toHaveBeenCalled();
     });
 
     test('should return error when servicePath is whitespace only', async () => {
@@ -178,7 +178,7 @@ describe('execute-functionality', () => {
     });
 
     test('should return error response from findSapSystem failure', async () => {
-        mockFindSapSystem.mockRejectedValue(new Error('System not found'));
+        mockFindSystem.mockRejectedValue(new Error('System not found'));
 
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
@@ -219,7 +219,7 @@ describe('execute-functionality', () => {
             url: 'https://test.example.com',
             client: ''
         };
-        mockFindSapSystem.mockResolvedValue(systemWithoutClient);
+        mockFindSystem.mockResolvedValue(systemWithoutClient);
 
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
@@ -247,7 +247,7 @@ describe('execute-functionality', () => {
 
         await executeFunctionality(params);
 
-        expect(mockFindSapSystem).toHaveBeenCalledWith('TestSystem');
+        expect(mockFindSystem).toHaveBeenCalledWith('TestSystem');
         expect(mockGetServiceMetadata).toHaveBeenCalledWith(mockSapSystem, '/sap/opu/odata4/test/service');
     });
 
@@ -279,7 +279,7 @@ describe('execute-functionality', () => {
 
         await executeFunctionality(params);
 
-        expect(mockFindSapSystem).toHaveBeenCalledWith('123');
+        expect(mockFindSystem).toHaveBeenCalledWith('123');
         expect(mockGetServiceMetadata).toHaveBeenCalledWith(mockSapSystem, '456');
     });
 

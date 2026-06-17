@@ -12,7 +12,9 @@ export default {
             - If the user provided a reference to a SAP system (name, host or full URL), or provided a full URL as a service,
                 you **MUST** try to retrieve the service's metadata using the "fetch-service-metadata" functionality with "execute_functionality" tool.
                 This tool will store the metadata EDMX file in the user selected folder as metadata.xml for the next step,
-                and provide you with service's host, servicePath and client, needed for the appGenConfig JSON argument.
+                and provide you with the service's host, servicePath, client, and destination (if available on BAS) needed for the appGenConfig JSON argument.
+                In SAP Business Application Studio, both host and destination are returned and **MUST** be passed in the service config.
+                On VSCode, only host is returned — pass it as service.host.
 
                 **IMPORTANT**: If the service requires authentication, and it does not belong to a SAP system previously mentioned by the user, you MUST NOT ask the user for credentials!
                 Instead, ask them to store the SAP system first and then repeat the request.

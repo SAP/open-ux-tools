@@ -53,6 +53,13 @@ export const serviceOdata = z.object({
             'The host of the OData service. Must be an HTTPS endpoint. If the parameter is not provided, the agent should ask the user for it.'
         ),
     client: z.optional(z.string().describe('The client to be used for the OData service.')),
+    destination: z.optional(
+        z
+            .string()
+            .describe(
+                'The BTP destination name to be used for the OData service. This must be provided on SAP Business Application Studio.'
+            )
+    ),
     metadataFilePath: z.optional(z.string().describe('Path to a local metadata.xml file.'))
 });
 

@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals';
 
-const mockGetSapSystems = jest.fn<any>();
+const mockGetSystemsOrDestinations = jest.fn<any>();
 
 jest.unstable_mockModule('../../../src/tools/functionalities/fetch-service-metadata/service-metadata', () => ({
-    getSapSystems: mockGetSapSystems
+    getSystemsOrDestinations: mockGetSystemsOrDestinations
 }));
 
 const { listSapSystems } = await import('../../../src/tools/list-sap-systems.js');
@@ -18,7 +18,7 @@ describe('listSapSystems', () => {
             { name: 'SystemA', url: 'https://system-a.example.com', client: '100', username: 'user', password: 'pass' },
             { name: 'SystemB', url: 'https://system-b.example.com', client: '200' }
         ];
-        mockGetSapSystems.mockResolvedValue(mockSystems);
+        mockGetSystemsOrDestinations.mockResolvedValue(mockSystems);
 
         const result = await listSapSystems();
 
@@ -31,7 +31,7 @@ describe('listSapSystems', () => {
     });
 
     test('should return empty systems array when no systems are stored', async () => {
-        mockGetSapSystems.mockResolvedValue([]);
+        mockGetSystemsOrDestinations.mockResolvedValue([]);
 
         const result = await listSapSystems();
 
@@ -39,7 +39,7 @@ describe('listSapSystems', () => {
     });
 
     test('should propagate errors from getSapSystems', async () => {
-        mockGetSapSystems.mockRejectedValue(new Error('Store unavailable'));
+        mockGetSystemsOrDestinations.mockRejectedValue(new Error('Store unavailable'));
 
         await expect(listSapSystems()).rejects.toThrow('Store unavailable');
     });
@@ -48,7 +48,7 @@ describe('listSapSystems', () => {
         const mockSystems = [
             { name: 'Sys', url: 'https://example.com', client: '010', username: 'admin', password: 'secret' }
         ];
-        mockGetSapSystems.mockResolvedValue(mockSystems);
+        mockGetSystemsOrDestinations.mockResolvedValue(mockSystems);
 
         const result = (await listSapSystems()) as { systems: object[] };
 

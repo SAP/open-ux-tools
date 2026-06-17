@@ -12,10 +12,12 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
 }));
 
 const mockAbapServiceProvider = jest.fn<any>();
+const mockCreateForDestination = jest.fn<any>();
 const mockTlsPatchApply = jest.fn();
 const mockTlsPatchIsPatchRequired = jest.fn<(url: string) => boolean>().mockReturnValue(false);
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     AbapServiceProvider: mockAbapServiceProvider,
+    createForDestination: mockCreateForDestination,
     ODataVersion,
     TlsPatch: {
         isPatchRequired: mockTlsPatchIsPatchRequired,
@@ -42,7 +44,7 @@ jest.unstable_mockModule('@sap-ux/edmx-parser', () => ({
 const mockFormatXml = jest.fn<any>((xml: string) => xml);
 jest.unstable_mockModule('xml-formatter', () => ({ default: mockFormatXml }));
 
-const { findSapSystem, getServiceMetadata } =
+const { findSystem, getServiceMetadata } =
     await import('../../../../../src/tools/functionalities/fetch-service-metadata/service-metadata.js');
 
 describe('service-metadata', () => {
@@ -102,40 +104,40 @@ describe('service-metadata', () => {
         // Default: TlsPatch not required
         mockTlsPatchIsPatchRequired.mockReturnValue(false);
     });
-    describe('findSapSystem', () => {
+    describe('findSystem', () => {
         test('should find system by exact name match', async () => {
-            const result = await findSapSystem('TestSystem1');
+            const result = await findSystem('TestSystem1');
             expect(result).toEqual(mockSystems[0]);
         });
 
         test('should find system by case-insensitive exact name match', async () => {
-            const result = await findSapSystem('testsystem1');
+            const result = await findSystem('testsystem1');
             expect(result).toEqual(mockSystems[0]);
         });
 
         test('should find system by partial name match anywhere in name', async () => {
-            const result = await findSapSystem('Production');
+            const result = await findSystem('Production');
             expect(result).toEqual(mockSystems[2]);
         });
 
         test('should find system by URL with client', async () => {
-            const result = await findSapSystem('https://test1.example.com?sap-client=100');
+            const result = await findSystem('https://test1.example.com?sap-client=100');
             expect(result).toEqual(mockSystems[0]);
         });
 
         test('should find system by URL without client', async () => {
-            const result = await findSapSystem('https://test1.example.com');
+            const result = await findSystem('https://test1.example.com');
             expect(result).toEqual(mockSystems[0]);
         });
 
         test('should find system by URL with different client (fallback)', async () => {
-            const result = await findSapSystem('https://test1.example.com?sap-client=999');
+            const result = await findSystem('https://test1.example.com?sap-client=999');
             // Should still match by URL only
             expect(result).toEqual(mockSystems[0]);
         });
 
         test('should return raw system when URL not stored', async () => {
-            const result = await findSapSystem('https://unknown.example.com?sap-client=500');
+            const result = await findSystem('https://unknown.example.com?sap-client=500');
             expect(result).toEqual({
                 name: 'https://unknown.example.com',
                 url: 'https://unknown.example.com',
@@ -148,12 +150,12 @@ describe('service-metadata', () => {
             mockGetAll.mockResolvedValueOnce([]);
 
             // When no match is found, matchSystemByUrl creates a synthetic system
-            const result = await findSapSystem('https://nonexistent.example.com');
+            const result = await findSystem('https://nonexistent.example.com');
             expect(result.url).toBe('https://nonexistent.example.com');
         });
 
         test('should find unique system by case-insensitive partial match', async () => {
-            const result = await findSapSystem('dev');
+            const result = await findSystem('dev');
             expect(result).toEqual(mockSystems[3]);
         });
     });
@@ -331,7 +333,7 @@ describe('service-metadata', () => {
             };
 
             await expect(getServiceMetadata(sapSystem, '/sap/opu/odata4/service1')).rejects.toThrow(
-                'Multiple ODATA V4 Services found matching path: /sap/opu/odata4/service1'
+                'Multiple OData V4 services found matching path: /sap/opu/odata4/service1'
             );
         });
 
@@ -532,18 +534,18 @@ describe('service-metadata', () => {
 
     describe('URL parsing edge cases', () => {
         test('should handle URL with multiple query parameters', async () => {
-            const result = await findSapSystem('https://test1.example.com?sap-client=100&param=value');
+            const result = await findSystem('https://test1.example.com?sap-client=100&param=value');
             expect(result).toEqual(mockSystems[0]);
         });
 
         test('should find system when partial query at start matches single system', async () => {
-            const result = await findSapSystem('Dev');
+            const result = await findSystem('Dev');
             expect(result).toEqual(mockSystems[3]);
         });
 
         test('should create synthetic system from valid URL not in storage', async () => {
             mockGetAll.mockResolvedValueOnce([]);
-            const result = await findSapSystem('https://new-system.example.com?sap-client=999');
+            const result = await findSystem('https://new-system.example.com?sap-client=999');
             expect(result).toEqual({
                 name: 'https://new-system.example.com',
                 url: 'https://new-system.example.com',

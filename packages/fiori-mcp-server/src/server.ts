@@ -200,7 +200,7 @@ export class FioriFunctionalityServer {
                         result = await downloadODataServiceMetadata(args as DownloadODataServiceMetadataInput);
                         break;
                     case 'generate-fiori-ui-application':
-                        result = await generateFioriAppOData(args as Record<string, unknown>);
+                        result = await generateFioriAppOData(args as GeneratorConfigOData);
                         break;
                     case 'generate-fiori-ui-application-cap':
                         result = await generateFioriAppCap(args as Record<string, unknown>);
