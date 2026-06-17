@@ -18,6 +18,7 @@ import {
     type BuildingBlockMetaPath,
     type Page,
     type PageAggregationName,
+    type XmlAggregationGroup,
     bindingContextAbsolute,
     type TemplateConfig
 } from './types.js';
@@ -200,6 +201,37 @@ function appendPageAggregations(
 }
 
 /**
+ * Returns the local name of an Element, or an empty string if localName is not a string.
+ *
+ * @param el - the DOM Element
+ * @returns the local name string
+ */
+function getElementLocalName(el: Element): string {
+    return typeof el.localName === 'string' ? el.localName : '';
+}
+
+/**
+ * Builds a comparator for sorting XmlAggregationGroups by their position in aggNames.
+ * Unknown elements fall back to the position of 'items'. Ties are broken by original index.
+ *
+ * @param aggNames - ordered list of aggregation names
+ * @returns comparator function for Array.prototype.sort
+ */
+function buildAggregationComparator(
+    aggNames: readonly string[]
+): (a: XmlAggregationGroup, b: XmlAggregationGroup) => number {
+    const itemsIdx = aggNames.indexOf('items');
+    const fallbackIdx = itemsIdx === -1 ? aggNames.length : itemsIdx;
+    return (a, b) => {
+        const aIdx = aggNames.indexOf(getElementLocalName(a.element));
+        const bIdx = aggNames.indexOf(getElementLocalName(b.element));
+        const aOrder = aIdx === -1 ? fallbackIdx : aIdx;
+        const bOrder = bIdx === -1 ? fallbackIdx : bIdx;
+        return aOrder === bOrder ? a.originalIndex - b.originalIndex : aOrder - bOrder;
+    };
+}
+
+/**
  * Reorders the child elements of a macros:Page node to match the canonical PAGE_AGGREGATIONS order.
  * Preserves relative order of siblings with the same local name. Pure whitespace text nodes are dropped
  * because the xml-formatter call that follows will regenerate proper indentation.
@@ -209,12 +241,10 @@ function appendPageAggregations(
 function sortPageAggregationChildren(pageElement: Node): void {
     const allChildren = Array.from(pageElement.childNodes);
     const aggNames = PAGE_AGGREGATIONS as readonly string[];
-    const getLocalName = (el: Element): string => (typeof el.localName === 'string' ? el.localName : '');
 
     // Build pairs of [preceding comments, element] to preserve user comments.
     // Comments that appear before the first element are treated as leading and will remain before all aggregation elements.
-    type NodeGroup = { comments: Node[]; element: Element; originalIndex: number };
-    const groups: NodeGroup[] = [];
+    const groups: XmlAggregationGroup[] = [];
     const leadingComments: Node[] = [];
     let pendingComments: Node[] = [];
     let firstElementSeen = false;
@@ -234,15 +264,7 @@ function sortPageAggregationChildren(pageElement: Node): void {
         // Pure whitespace text nodes are intentionally dropped (xml-formatter regenerates indentation)
     }
 
-    const itemsIdx = aggNames.indexOf('items');
-    const fallbackIdx = itemsIdx === -1 ? aggNames.length : itemsIdx;
-    groups.sort((a, b) => {
-        const aIdx = aggNames.indexOf(getLocalName(a.element));
-        const bIdx = aggNames.indexOf(getLocalName(b.element));
-        const aOrder = aIdx === -1 ? fallbackIdx : aIdx;
-        const bOrder = bIdx === -1 ? fallbackIdx : bIdx;
-        return aOrder === bOrder ? a.originalIndex - b.originalIndex : aOrder - bOrder;
-    });
+    groups.sort(buildAggregationComparator(aggNames));
 
     while (pageElement.firstChild) {
         pageElement.removeChild(pageElement.firstChild); // NOSONAR - xmldom nodes do not implement Node.remove()

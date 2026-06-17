@@ -429,6 +429,12 @@ export const PAGE_TEMPLATE_TYPE_BASIC = 'basic' as const;
 export type PageTemplateType = typeof PAGE_TEMPLATE_TYPE_FULL | typeof PAGE_TEMPLATE_TYPE_BASIC;
 
 /**
+ * A group of XML nodes representing one Page aggregation element and its preceding sibling comments.
+ * Used when re-ordering aggregation children under a macros:Page element.
+ */
+export type XmlAggregationGroup = { comments: Node[]; element: Element; originalIndex: number };
+
+/**
  * Represents a custom filter to be used inside the FilterBar.
  * The template for the FilterField has to be provided as the default aggregation.
  *
