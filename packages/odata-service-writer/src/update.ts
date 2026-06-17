@@ -55,8 +55,9 @@ function extendBackendMiddleware(
     service: OdataService,
     ui5Config: UI5Config,
     ui5ConfigPath: string,
-    update = false
+    update: boolean = false
 ): void {
+    ui5Config.addBuilderResourceExcludes();
     if (update) {
         ui5Config.updateBackendToFioriToolsProxyMiddleware(service.previewSettings as ProxyBackend);
     } else {
