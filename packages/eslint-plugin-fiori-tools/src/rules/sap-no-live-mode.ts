@@ -4,7 +4,6 @@ import { createFioriRule } from '../language/rule-factory.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import { createJsonFixer } from '../language/rule-fixer.js';
 import { FioriJSONSourceCode } from '../language/json/source-code.js';
-import { FioriChangeSourceCode } from '../language/change/source-code.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: NO_LIVE_MODE,
@@ -12,19 +11,19 @@ const rule: FioriRuleDefinition = createFioriRule({
         type: 'suggestion',
         docs: {
             recommended: true,
-            description: '',
+            description:
+                'Checks the liveMode property is not enabled, so the "GO" button is displayed in the application filter bar.',
             url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-no-live-mode.md'
         },
         messages: {
-            [NO_LIVE_MODE]: 'no live mode'
+            [NO_LIVE_MODE]:
+                'The Go Button must always be present in the application filter bar, so the liveMode property should not be used.'
         },
         fixable: 'code'
     },
 
     check(context) {
-        if (
-            !(context.sourceCode instanceof FioriJSONSourceCode || context.sourceCode instanceof FioriChangeSourceCode)
-        ) {
+        if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
             return [];
         }
         const problems: NoLiveMode[] = [];
@@ -34,25 +33,23 @@ const rule: FioriRuleDefinition = createFioriRule({
             if (!parsedService) {
                 continue;
             }
-            if (app.type === 'fe-v4') {
-                // manifest property
-                for (const page of app.pages) {
-                    if (page.type === 'list-report-page') {
-                        if (page.liveMode) {
-                            problems.push({
-                                type: NO_LIVE_MODE,
-                                pageName: page.targetName,
-                                manifest: {
-                                    uri: parsedApp.manifest.manifestUri,
-                                    object: parsedApp.manifestObject,
-                                    propertyPath: page.liveMode.configurationPath
-                                }
-                            });
-                        }
+            if (app.type !== 'fe-v4') {
+                return [];
+            }
+            for (const page of app.pages) {
+                if (page.type === 'list-report-page') {
+                    if (page.liveMode.valueInFile) {
+                        problems.push({
+                            type: NO_LIVE_MODE,
+                            pageName: page.targetName,
+                            manifest: {
+                                uri: parsedApp.manifest.manifestUri,
+                                object: parsedApp.manifestObject,
+                                propertyPath: page.liveMode.configurationPath
+                            }
+                        });
                     }
                 }
-            } else if (app.type === 'fe-v2') {
-                // flex change property
             }
         }
         return problems;
