@@ -30,8 +30,7 @@ import {
     MbtPackage,
     MTABuildScript,
     CDSDKPackage,
-    CDSPackage,
-    MAX_MTA_PREFIX_LENGTH
+    CDSPackage
 } from './constants.js';
 import { type MTABaseConfig, type CFBaseConfig, type CFAppConfig } from './types/index.js';
 import { fileURLToPath } from 'node:url';
