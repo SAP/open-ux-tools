@@ -1,4 +1,4 @@
-// Last content update: Fri Mar 06 2026 12:24:45 GMT+0100 (Central European Standard Time)
+// Last content update: Wed Jun 17 2026 10:15:00 GMT+0200 (Central European Summer Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -244,7 +244,7 @@ export default {
                         '@Org.OData.Core.V1.Description':
                             'Collection of aggregation levels forming a leveled hierarchy',
                         '@Org.OData.Core.V1.LongDescription':
-                            'Each element in the collection defines the properties that constitute one level.\n            A property must not be referenced by more than one level.\n            The first element in the collection defines the property names of the coarsest level,\n            the following elements define the property names of consecutively finer-grained aggregation levels.\n            The function result is the leveled hierarchy with these levels in preorder,\n            entries on the finest-grained level cannot be expanded further.\n            The result does not contain a level representing a root or grand total.\n            All referenced properties must be groupable.'
+                            'Each element in the collection defines the properties that constitute one level.\n            A property must not be referenced by more than one level.\n            The first element in the collection defines the property names of the coarsest level,\n            the following elements define the property names of consecutively finer-grained aggregation levels.\n            The function result is the leveled hierarchy with these levels in preorder,\n            entries on the finest-grained level cannot be expanded further.\n            If the finest-grained level includes all key properties, entries on that level additionally contain\n            all other non-aggregated properties even if they are not referenced in `LevelProperties`.\n            The result does not contain a level representing a root or grand total.\n            All referenced properties must be groupable.'
                     },
                     {
                         '$Name': 'Aggregation',

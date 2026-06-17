@@ -1,4 +1,4 @@
-// Last content update: Fri Mar 06 2026 12:24:45 GMT+0100 (Central European Standard Time)
+// Last content update: Wed Jun 17 2026 10:15:00 GMT+0200 (Central European Summer Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -520,7 +520,7 @@ export default {
             '$Type': 'Edm.ComplexType',
             '@Org.OData.Core.V1.Description': 'Collection of end-user messages',
             '@Org.OData.Core.V1.LongDescription':
-                'The name of the message type is service-specific, its structure components are identified by naming convention, following the names of the OData error response structure.\n\nThe minimum structure is\n- `code: Edm.String`\n- `message: Edm.String`\n- `target: Edm.String nullable`\n- `additionalTargets: Collection(Edm.String)`\n- `transition: Edm.Boolean`\n- `numericSeverity: Edm.Byte`\n- `longtextUrl: Edm.String nullable`\n          '
+                'The name of the message type is service-specific, its structure components are identified by naming convention, following the names of the OData error response structure.\n\nThe minimum structure is\n- `code: Edm.String`\n- `message: Edm.String`\n- `target: Edm.String nullable`\n- `additionalTargets: Collection(Edm.String)`\n- `transition: Edm.Boolean`\n- `numericSeverity: Edm.Byte`\n- `longtextUrl: Edm.String nullable`\n\nWhen the value of this annotation dynamically references a property, the service MAY omit that property\nfrom the default set of properties and clients SHOULD include it in `$select` when needed.\n          '
         },
         'additionalTargets': {
             '$Kind': 'Term',
@@ -1401,6 +1401,24 @@ export default {
                 '@Org.OData.Core.V1.Description':
                     'Changes to one or more of these entities may affect the targets. An null value means the annotation target.'
             },
+            'SourceEntitiesInserted': {
+                '$Collection': true,
+                '$Type': 'Edm.NavigationPropertyPath',
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
+                '@Org.OData.Core.V1.Description': 'Creating one or more of these entities may affect the targets.'
+            },
+            'SourceEntitiesUpdated': {
+                '$Collection': true,
+                '$Type': 'Edm.NavigationPropertyPath',
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
+                '@Org.OData.Core.V1.Description': 'Updating one or more of these entities may affect the targets.'
+            },
+            'SourceEntitiesDeleted': {
+                '$Collection': true,
+                '$Type': 'Edm.NavigationPropertyPath',
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
+                '@Org.OData.Core.V1.Description': 'Deleting one or more of these entities may affect the targets.'
+            },
             'SourceEvents': {
                 '$Collection': true,
                 '@com.sap.vocabularies.Common.v1.Experimental': true,
@@ -1677,7 +1695,6 @@ export default {
         'WebSocketBaseURL': {
             '$Kind': 'Term',
             '$AppliesTo': ['EntityContainer'],
-            '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.IsURL': true,
             '@Org.OData.Core.V1.Description': 'Base URL for WebSocket connections',
             '@Org.OData.Core.V1.LongDescription': 'This annotation MUST be unqualified.'
@@ -1686,7 +1703,6 @@ export default {
             '$Kind': 'Term',
             '$Nullable': true,
             '$AppliesTo': ['EntityContainer'],
-            '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description': 'Channel for WebSocket connections',
             '@Org.OData.Core.V1.LongDescription':
                 'Messages sent over the channel follow the [ABAP Push Channel Protocol](https://community.sap.com/t5/application-development-blog-posts/specification-of-the-push-channel-protocol-pcp/ba-p/13137541).\nTo consume a channel, the client opens a web socket connection at the [`WebSocketBaseURL`](#WebSocketBaseURL)\nfollowed by URL parameters\n- parameter name = annotation qualifier, parameter value = channel ID (see below)\n- parameter name = `relatedService`, parameter value = base URL (relative to server root) of the OData service of the app\n\nSupported qualifiers and channel IDs:\n<dl>\n<dt>`sideEffects` <dd>Notifications about side effects to be triggered by the client (channel ID = non-null annotation value)\n</dl>'

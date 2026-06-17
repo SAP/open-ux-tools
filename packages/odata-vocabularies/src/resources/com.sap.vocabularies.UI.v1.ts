@@ -1,4 +1,4 @@
-// Last content update: Fri Mar 06 2026 12:24:45 GMT+0100 (Central European Standard Time)
+// Last content update: Wed Jun 17 2026 10:15:00 GMT+0200 (Central European Summer Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -1883,6 +1883,7 @@ export default {
                 'com.sap.vocabularies.UI.v1.Importance',
                 'com.sap.vocabularies.UI.v1.PartOfPreview',
                 'com.sap.vocabularies.UI.v1.Placeholder',
+                'com.sap.vocabularies.UI.v1.Emphasized',
                 'com.sap.vocabularies.HTML5.v1.CssDefaults',
                 'com.sap.vocabularies.HTML5.v1.RowSpanForDuplicateValues',
                 'com.sap.vocabularies.Common.v1.FieldControl'
@@ -2169,7 +2170,6 @@ export default {
             '$Type': 'Org.OData.Core.V1.Tag',
             '$DefaultValue': true,
             '$AppliesTo': ['Record'],
-            '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description': 'Highlight something that is of special interest',
             '@Org.OData.Core.V1.LongDescription':
                 "The usage of a property or operation should be highlighted as it's of special interest for the end user"

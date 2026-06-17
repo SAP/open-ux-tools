@@ -1,4 +1,4 @@
-// Last content update: Fri Mar 06 2026 12:24:45 GMT+0100 (Central European Standard Time)
+// Last content update: Wed Jun 17 2026 10:15:00 GMT+0200 (Central European Summer Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -187,7 +187,15 @@ export default {
                     '@Org.OData.Core.V1.Description':
                         'Defines a date that marks when the provider of the data will block these',
                     '@Org.OData.Core.V1.LongDescription':
-                        'Defines a date that marks when the provider of the data will block these. This is the point in time when the processing of a set of personal data is no longer required for the active business, for example, when a contract is fulfilled. After it has been reached, the data is blocked in the source and can only be displayed by users with special authorizations (for example, tax auditors); however, it is not allowed to create/change/copy/follow-up blocked data. Consumers of the data should consider if there is an additional purpose to process the data beyond the defined blocking date.'
+                        'Defines a date that marks when the provider of the data will block these. This is the point in time when the processing of a set of personal data is no longer required for the active business, for example, when a contract is fulfilled. After it has been reached, the data is blocked in the source and can only be displayed by users with special authorizations (for example, tax auditors); however, it is not allowed to create/change/copy/follow-up blocked data. Consumers of the data should consider if there is an additional purpose to process the data beyond the defined blocking date. Personal data that is blocked for processing MAY be indicated by either BlockingDate or IsBlockedIndicator.'
+                },
+                {
+                    '@com.sap.vocabularies.Common.v1.Experimental': true,
+                    'Value': 'IsBlockedIndicator',
+                    '@Org.OData.Core.V1.Description':
+                        'The indicator shows if the personal data is blocked from further processing by the provider',
+                    '@Org.OData.Core.V1.LongDescription':
+                        'The indicator shows if the personal data is blocked from further processing by the provider. A value of true means that the provider no longer needs to process this data for active business purposes, such as after a contract has been completed.  Data consumers should evaluate whether there are any additional legitimate reasons to process the data beyond its blocked status. Personal data that is blocked for processing MAY be indicated by either BlockingDate or IsBlockedIndicator.'
                 },
                 {
                     '@com.sap.vocabularies.Common.v1.Experimental': true,
@@ -195,6 +203,13 @@ export default {
                     '@Org.OData.Core.V1.Description': 'Defines the date when the provider destroys the data',
                     '@Org.OData.Core.V1.LongDescription':
                         'Defines a date that marks when the provider of the data can destroy these. Consumers of the data should consider if there is an additional purpose (or a legal hold) to process the data beyond the defined destruction date.'
+                },
+                {
+                    '@com.sap.vocabularies.Common.v1.Experimental': true,
+                    'Value': 'DataCategoryID',
+                    '@Org.OData.Core.V1.Description': 'Defines a unique identifier for a local data category',
+                    '@Org.OData.Core.V1.LongDescription':
+                        'Defines a unique identifier for a local data category that is assigned to this instance.'
                 }
             ]
         },
@@ -211,10 +226,19 @@ export default {
             '$Kind': 'Term',
             '$Type': 'Org.OData.Core.V1.Tag',
             '$DefaultValue': true,
-            '$AppliesTo': ['Property'],
+            '$AppliesTo': ['Property', 'EntityType'],
             '@Org.OData.Core.V1.Description': 'Property contains potentially sensitive personal data',
             '@Org.OData.Core.V1.LongDescription':
                 'Sensitive personal data is a category of personal data that needs special handling. The determination which personal data is sensitive may differ for different legal areas or industries. Examples of sensitive personal data:\n                      - Special categories of personal data, such as data revealing racial or ethnic origin, political opinions, religious or philosophical beliefs, trade union membership, genetic data, biometric data, data concerning health or sex life or sexual orientation.\n                      - Personal data subject to professional secrecy. \n                      - Personal data relating to criminal or administrative offences.\n                      - Personal data concerning insurances and bank or credit card accounts.\n          '
+        },
+        'RelatedDataCategoryID': {
+            '$Kind': 'Term',
+            '$Collection': true,
+            '$AppliesTo': ['Property', 'EntityType'],
+            '@Org.OData.Core.V1.Description':
+                'Annotation with the assignment of multiple data categories to one entity or property',
+            '@Org.OData.Core.V1.LongDescription':
+                'The annotation value is an array of strings, enabling the assignment of multiple data categories to one entity or field. The strings must adhere to the format of an Correlation ID corresponding to the concept name "dataCategory" in conjunction with an localIdentifier introduced herein (refer to ORD Specification | Open Resource Discovery).\n          Example: sap.s4com:dataCategory:SalesOrder\n          '
         }
     }
 } as CSDL;
