@@ -1185,5 +1185,5 @@ function isMatchingAnnotation(node: AstNode, prefix: string, term: string | unde
     term ??= node.term.value;
     const [match, next] = term.split(prefix);
 
-    return match === '' && next.startsWith('.') && node.qualifier?.value === qualifier;
+    return match === '' && (next.startsWith('.') || next.startsWith('#')) && node.qualifier?.value === qualifier;
 }
