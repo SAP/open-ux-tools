@@ -2,6 +2,13 @@ import { jest } from '@jest/globals';
 
 const mockGetSystemsOrDestinations = jest.fn<any>();
 
+const mockIsAppStudio = jest.fn<() => boolean>().mockReturnValue(false);
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    isAppStudio: mockIsAppStudio
+}));
+
 jest.unstable_mockModule('../../../src/tools/services/sap-system', () => ({
     getSystemsOrDestinations: mockGetSystemsOrDestinations
 }));
@@ -11,6 +18,7 @@ const { listSapSystems } = await import('../../../src/tools/list-sap-systems.js'
 describe('listSapSystems', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        mockIsAppStudio.mockReturnValue(false);
     });
 
     test('should return mapped list of SAP systems', async () => {
@@ -54,5 +62,36 @@ describe('listSapSystems', () => {
 
         expect(result.systems[0]).not.toHaveProperty('username');
         expect(result.systems[0]).not.toHaveProperty('password');
+    });
+
+    describe('BAS / AppStudio destination handling', () => {
+        beforeEach(() => {
+            mockIsAppStudio.mockReturnValue(true);
+        });
+
+        test('should map destinations using Name, Host and sap-client when isAppStudio is true', async () => {
+            const mockDestinations = [
+                { Name: 'DEST_A', Host: 'https://dest-a.example.com', 'sap-client': '100' },
+                { Name: 'DEST_B', Host: 'https://dest-b.example.com', 'sap-client': '200' }
+            ];
+            mockGetSystemsOrDestinations.mockResolvedValue(mockDestinations);
+
+            const result = await listSapSystems();
+
+            expect(result).toEqual({
+                systems: [
+                    { name: 'DEST_A', url: 'https://dest-a.example.com', client: '100' },
+                    { name: 'DEST_B', url: 'https://dest-b.example.com', client: '200' }
+                ]
+            });
+        });
+
+        test('should return empty systems when no destinations available in BAS', async () => {
+            mockGetSystemsOrDestinations.mockResolvedValue([]);
+
+            const result = await listSapSystems();
+
+            expect(result).toEqual({ systems: [] });
+        });
     });
 });

@@ -44,7 +44,20 @@ jest.unstable_mockModule('@sap-ux/edmx-parser', () => ({
 const mockFormatXml = jest.fn<any>((xml: string) => xml);
 jest.unstable_mockModule('xml-formatter', () => ({ default: mockFormatXml }));
 
-const { findSystem, getServiceMetadata } = await import('../../../src/tools/services/sap-system.js');
+const mockIsAppStudio = jest.fn<() => boolean>().mockReturnValue(false);
+const mockListDestinations = jest.fn<any>();
+const mockIsGenericODataDestination = jest.fn<any>().mockReturnValue(true);
+const mockIsAbapODataDestination = jest.fn<any>().mockReturnValue(false);
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    isAppStudio: mockIsAppStudio,
+    listDestinations: mockListDestinations,
+    isGenericODataDestination: mockIsGenericODataDestination,
+    isAbapODataDestination: mockIsAbapODataDestination
+}));
+
+const { findSystem, getServiceMetadata, getSystemsOrDestinations } = await import('../../../src/tools/services/sap-system.js');
 
 describe('service-metadata', () => {
     let mockGetAll: jest.Mock;
@@ -87,6 +100,7 @@ describe('service-metadata', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockIsAppStudio.mockReturnValue(false);
 
         // Mock SystemService
         mockGetAll = jest.fn<any>().mockResolvedValue(mockSystems);
@@ -549,6 +563,114 @@ describe('service-metadata', () => {
                 name: 'https://new-system.example.com',
                 url: 'https://new-system.example.com',
                 client: '999'
+            });
+        });
+
+        test('should return empty array when URL is not http', async () => {
+            mockGetAll.mockResolvedValueOnce([]);
+            const result = await findSystem('not-a-url');
+            expect(result).toBeUndefined();
+        });
+    });
+
+    describe('BAS / AppStudio destination handling', () => {
+        const mockDestinations = {
+            DEST_A: { Name: 'DEST_A', Host: 'https://dest-a.example.com', 'sap-client': '100', Type: 'HTTP' },
+            DEST_B: { Name: 'DEST_B', Host: 'https://dest-b.example.com', 'sap-client': '200', Type: 'HTTP' },
+            DEST_HOST: { Name: 'HostDest', Host: 'https://host-match.example.com', 'sap-client': '300', Type: 'HTTP' }
+        };
+
+        beforeEach(() => {
+            mockIsAppStudio.mockReturnValue(true);
+            mockListDestinations.mockResolvedValue(mockDestinations);
+            mockIsGenericODataDestination.mockReturnValue(true);
+            mockIsAbapODataDestination.mockReturnValue(false);
+        });
+
+        describe('getSystemsOrDestinations', () => {
+            test('should return filtered destinations in BAS', async () => {
+                const result = await getSystemsOrDestinations();
+                expect(mockListDestinations).toHaveBeenCalledWith({ stripS4HCApiHosts: true });
+                expect(result).toHaveLength(3);
+            });
+
+            test('should filter out non-OData destinations', async () => {
+                mockIsGenericODataDestination.mockReturnValue(false);
+                mockIsAbapODataDestination.mockReturnValue(false);
+                const result = await getSystemsOrDestinations();
+                expect(result).toHaveLength(0);
+            });
+
+            test('should return backend systems when not in BAS', async () => {
+                mockIsAppStudio.mockReturnValue(false);
+                const result = await getSystemsOrDestinations();
+                expect(mockListDestinations).not.toHaveBeenCalled();
+                expect(result).toEqual(mockSystems);
+            });
+        });
+
+        describe('findSystem in BAS', () => {
+            test('should find destination by exact name match', async () => {
+                const result = await findSystem('DEST_A');
+                expect(result).toEqual(mockDestinations.DEST_A);
+            });
+
+            test('should find destination by case-insensitive name match', async () => {
+                const result = await findSystem('dest_a');
+                expect(result).toEqual(mockDestinations.DEST_A);
+            });
+
+            test('should find destination by partial name starts-with', async () => {
+                const result = await findSystem('DEST');
+                expect(result).toEqual(mockDestinations.DEST_A);
+            });
+
+            test('should find destination by host URL', async () => {
+                const result = await findSystem('https://dest-a.example.com');
+                expect(result).toEqual(mockDestinations.DEST_A);
+            });
+
+            test('should return undefined when destination not found and listDestinations throws', async () => {
+                mockListDestinations.mockRejectedValue(new Error('BAS API unavailable'));
+                const result = await findSystem('UNKNOWN');
+                expect(result).toBeUndefined();
+            });
+        });
+
+        describe('getServiceMetadata in BAS', () => {
+            const mockMetadata =
+                '<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">...</edmx:Edmx>';
+            const mockService = { metadata: jest.fn<any>().mockResolvedValue(mockMetadata) };
+            const mockDestServiceProvider = { service: jest.fn<any>().mockReturnValue(mockService) };
+
+            beforeEach(() => {
+                mockCreateForDestination.mockReturnValue(mockDestServiceProvider);
+            });
+
+            test('should use getServiceFromDestination when isAppStudio is true', async () => {
+                const destination = mockDestinations.DEST_A;
+
+                const result = await getServiceMetadata(destination, '/sap/opu/odata4/service1');
+
+                expect(mockCreateForDestination).toHaveBeenCalledWith({}, destination);
+                expect(mockDestServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service1');
+                expect(result).toBe(mockMetadata);
+            });
+
+            test('should strip $metadata suffix from service path', async () => {
+                const destination = mockDestinations.DEST_A;
+
+                await getServiceMetadata(destination, '/sap/opu/odata4/service1/$metadata');
+
+                expect(mockDestServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service1');
+            });
+
+            test('should not use AbapServiceProvider when isAppStudio is true', async () => {
+                const destination = mockDestinations.DEST_A;
+
+                await getServiceMetadata(destination, '/sap/opu/odata4/service1');
+
+                expect(mockAbapServiceProvider).not.toHaveBeenCalled();
             });
         });
     });
