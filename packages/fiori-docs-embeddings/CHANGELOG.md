@@ -1,5 +1,17 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 1.2.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-18
+
+#### Bug Fixes
+
+- Update opa5_docu.md: clear filter fields [[6776415](https://github.com/SAP/open-ux-tools/commit/6776415f52f25bbbf29728bec85e026a868e8687)]
+
 ## 1.2.1
 
 ### Patch Changes
