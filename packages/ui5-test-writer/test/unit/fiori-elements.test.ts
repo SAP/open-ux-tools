@@ -338,8 +338,6 @@ describe('ui5-test-writer', () => {
                 hasJourneyRunner: boolean;
                 hasJourneyRunnerTs?: boolean;
                 hasTsconfig?: boolean;
-                hasAllJourneysJson?: boolean;
-                hasOpaTestsQunitJs?: boolean;
                 hasFlpSandbox?: boolean;
             }): void {
                 existsSyncMock.mockImplementation((rawPath) => {
@@ -355,12 +353,6 @@ describe('ui5-test-writer', () => {
                     }
                     if (p.endsWith('tsconfig.json')) {
                         return flags.hasTsconfig ?? false;
-                    }
-                    if (p.endsWith('AllJourneys.json')) {
-                        return flags.hasAllJourneysJson ?? false;
-                    }
-                    if (p.endsWith('opaTests.qunit.js')) {
-                        return flags.hasOpaTestsQunitJs ?? false;
                     }
                     if (p.endsWith('flpSandbox.html')) {
                         return flags.hasFlpSandbox ?? false;
@@ -496,7 +488,7 @@ describe('ui5-test-writer', () => {
                 });
             });
 
-            describe('existing app with incompatible test setup (no own JourneyRunner.js, AllJourneys.json or JourneyRunner reference in opaTests.qunit.js)', () => {
+            describe('existing app with incompatible test setup (no own JourneyRunner.js)', () => {
                 const incompatibleMessage =
                     '`testsuite.qunit` and `opaTests.qunit` files were not updated due to an incompatible existing test setup.';
 
@@ -504,13 +496,12 @@ describe('ui5-test-writer', () => {
                     hasVirtualOPA5Mock.mockResolvedValue(false);
                 });
 
-                it('writes only .gen Journey/Page files when AllJourneys.json signals legacy setup', async () => {
+                it('writes only .gen Journey/Page files when no JourneyRunner.js is present', async () => {
                     const projectDir = prepareTestFiles('LropVirtualTests');
                     readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                     mockProjectExistsSync({
                         hasIntegration: true,
-                        hasJourneyRunner: false,
-                        hasAllJourneysJson: true
+                        hasJourneyRunner: false
                     });
                     addPathsToQUnitJsMock.mockImplementation(jest.fn());
                     const log = { info: jest.fn(), warn: jest.fn() } as unknown as Logger;
@@ -534,28 +525,6 @@ describe('ui5-test-writer', () => {
                     expect(log.info).toHaveBeenCalledWith(incompatibleMessage);
 
                     copyTplSpy.mockRestore();
-                });
-
-                it('detects legacy setup via JourneyRunner reference in opaTests.qunit.js', async () => {
-                    const projectDir = prepareTestFiles('LropVirtualTests');
-                    readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
-                    mockProjectExistsSync({
-                        hasIntegration: true,
-                        hasJourneyRunner: false,
-                        hasOpaTestsQunitJs: true
-                    });
-                    // The detection helper reads from `<webappPath>/test/integration/opaTests.qunit.js`.
-                    fs!.write(
-                        join(projectDir, 'webapp', 'test', 'integration', 'opaTests.qunit.js'),
-                        '// uses JourneyRunner from sap.fe.test\n'
-                    );
-                    addPathsToQUnitJsMock.mockImplementation(jest.fn());
-                    const log = { info: jest.fn(), warn: jest.fn() } as unknown as Logger;
-
-                    fs = await generateOPAFiles(projectDir, {}, metadata, fs, log, true);
-
-                    expect(addPathsToQUnitJsMock).not.toHaveBeenCalled();
-                    expect(log.info).toHaveBeenCalledWith(incompatibleMessage);
                 });
             });
 
@@ -749,8 +718,7 @@ export type Then = Opa5 & BaseArrangements & {
                     readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                     mockProjectExistsSync({
                         hasIntegration: true,
-                        hasJourneyRunner: false,
-                        hasAllJourneysJson: true
+                        hasJourneyRunner: false
                     });
                     const copyTplSpy = jest.spyOn(fs!, 'copyTpl');
 
