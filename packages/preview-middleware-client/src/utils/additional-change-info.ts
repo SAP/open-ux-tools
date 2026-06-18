@@ -1,5 +1,5 @@
 import type Component from 'sap/ui/core/Component';
-import FlexChange from 'sap/ui/fl/Change';
+import type FlexChange from 'sap/ui/fl/Change';
 import {
     getAddXMLAdditionalInfo,
     type AddXMLAdditionalInfo,

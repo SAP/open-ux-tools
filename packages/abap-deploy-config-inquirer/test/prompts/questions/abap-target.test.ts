@@ -12,6 +12,7 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { UrlAbapTarget } from '@sap-ux/system-access';
 
 const mockIsOnPremiseDestination = jest.fn<typeof realBtpUtils.isOnPremiseDestination>();
+const mockIsFullUrlDestination = jest.fn<typeof realBtpUtils.isFullUrlDestination>();
 const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
 const mockGetAbapSystems = jest.fn<typeof actualUtils.getAbapSystems>();
 
@@ -19,7 +20,8 @@ const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils,
     isAppStudio: mockIsAppStudio,
-    isOnPremiseDestination: mockIsOnPremiseDestination
+    isOnPremiseDestination: mockIsOnPremiseDestination,
+    isFullUrlDestination: mockIsFullUrlDestination
 }));
 
 const actualUtils = await import('../../../src/utils.js');
@@ -212,6 +214,38 @@ describe('getAbapTargetPrompts', () => {
         } else {
             throw new Error('Destination prompt not found');
         }
+    });
+
+    test('should show full URL destination warning when destination is a full URL destination', async () => {
+        mockIsAppStudio.mockReturnValue(true);
+        mockGetAbapSystems.mockResolvedValueOnce({
+            destinations: mockDestinations,
+            backendSystems: undefined
+        });
+        mockIsFullUrlDestination.mockReturnValueOnce(true);
+
+        const abapTargetPrompts = await getAbapTargetPrompts({} as AbapDeployConfigPromptOptions);
+        const destPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.destination);
+
+        expect(((destPrompt as ListQuestion).additionalMessages as Function)('Dest1')).toStrictEqual({
+            message: t('warnings.fullUrlDestination'),
+            severity: Severity.warning
+        });
+    });
+
+    test('should return undefined additionalMessage when destination is neither full URL nor on-premise', async () => {
+        mockIsAppStudio.mockReturnValue(true);
+        mockGetAbapSystems.mockResolvedValueOnce({
+            destinations: mockDestinations,
+            backendSystems: undefined
+        });
+        mockIsFullUrlDestination.mockReturnValueOnce(false);
+        mockIsOnPremiseDestination.mockReturnValueOnce(false);
+
+        const abapTargetPrompts = await getAbapTargetPrompts({} as AbapDeployConfigPromptOptions);
+        const destPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.destination);
+
+        expect(((destPrompt as ListQuestion).additionalMessages as Function)('Dest1')).toBeUndefined();
     });
 
     test('should return expected values from destination prompt methods on CLI', async () => {
