@@ -18,7 +18,7 @@ export const CodePreview = (props: { active?: boolean }): React.ReactElement => 
         answers: {},
         codeSnippets: []
     });
-    const theme = useTheme() as { base: string };
+    const theme = useTheme();
 
     useEffect(function () {
         const handleMessage = (responseAction: Actions) => {
@@ -55,7 +55,7 @@ export const CodePreview = (props: { active?: boolean }): React.ReactElement => 
             <div
                 style={{
                     height: '100%',
-                    background: theme.base === 'dark' ? '#1a1a1a' : '#ffffff'
+                    background: 'base' in theme && theme.base === 'dark' ? '#1a1a1a' : '#ffffff'
                 }}>
                 {preview.codeSnippets.map((snippet) => (
                     <Form.Field label={snippet.fileName} key={snippet.fileName}>
