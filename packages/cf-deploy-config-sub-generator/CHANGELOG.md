@@ -1,5 +1,13 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 1.0.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-inquirer 1.0.12 → 1.0.13
+
 ## 1.0.14
 
 ### Patch Changes
