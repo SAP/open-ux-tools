@@ -1,5 +1,5 @@
 import { writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, resolve, sep } from 'node:path';
 import type { Packument } from '@npm/types';
 import { ToolsLogger } from '@sap-ux/logger';
 
@@ -53,9 +53,19 @@ async function fetchAndSaveReadme(packageName: string, logger: ToolsLogger): Pro
     logger.info(`Fetching README for ${packageName}...`);
     const readmeContent = await getPackageReadme(packageName, logger);
     if (readmeContent) {
-        const outputFileName = `${packageName.split('/').pop()}-README.md`;
+        const baseName = packageName.split('/').pop();
+        if (!baseName || baseName.includes('..') || baseName.includes('/') || baseName.includes('\\')) {
+            logger.error(`Invalid package name: ${packageName}`);
+            return;
+        }
+        const outputFileName = `${baseName}-README.md`;
         try {
-            const outputPath = join('data_local', outputFileName);
+            const outputDir = resolve('data_local');
+            const outputPath = join(outputDir, outputFileName);
+            // Ensure the resolved path stays within the intended directory
+            if (!outputPath.startsWith(outputDir + sep)) {
+                throw new Error(`Path traversal detected: ${outputPath}`);
+            }
             await writeFile(outputPath, enhanceReadmeContent(readmeContent), 'utf-8');
             logger.info(`Successfully saved README to './data_local'`);
         } catch (error) {
