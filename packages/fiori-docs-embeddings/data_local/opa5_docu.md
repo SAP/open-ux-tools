@@ -192,7 +192,7 @@ Then.onTheListReport.onFilterBar()
 // Multiple filters
 When.onTheListReport.onFilterBar()
     .iChangeFilterField("Status", "Active")
-    .and.iChangeFilterField("Category", "Electronics")
+    .and.iChangeFilterField("CategoryId", "Electronics")
     .and.iExecuteSearch();
 
 // Open filter adaptation panel
@@ -200,8 +200,11 @@ When.onTheListReport.onFilterBar().iOpenFilterAdaptation();
 When.onTheListReport.onFilterBar().iConfirmFilterAdaptation();
 When.onTheListReport.onFilterBar().iCancelFilterAdaptation();
 
-// Reset all active filters
-When.onTheListReport.onFilterBar().iResetFilters();
+// Clear all values for filter fields 
+When.onTheListReport.onFilterBar()
+    .iChangeFilterField("Status", null, true)
+    .and.iChangeFilterField("CategoryId", null, true)
+    .and.iExecuteSearch();
 ```
 
 **Pattern: FilterBar Field Not Found (🟡 Category 02)**
