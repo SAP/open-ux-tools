@@ -172,7 +172,7 @@ async function createCAPMTAAppFrontend(config: CAPConfig, fs: Editor): Promise<v
         mtaVersion: config.mtaVersion ?? MTAVersion
     });
     // Add missing configurations
-    addXSSecurityConfig(config, fs, false);
+    addXSSecurityConfig(config, fs);
     LoggerHelper.logger?.debug(t('debug.mtaCreated', { mtaPath: config.mtaPath }));
 }
 
