@@ -82,13 +82,13 @@ Attach a controller extension JS file to a view. Use this when fragment event ha
 |---|---|
 | "add a button / field / column / section / dialog opener" | `CTX_ADDXML` (fragment carries the new control) |
 | "make this button do X" / "open a dialog when …" / "change behavior" | `CTX_EXTEND_CONTROLLER` (handler lives in the controller extension) |
-| "add a button that opens a dialog" | **Both**, in this order: `CTX_ADDXML` for the button, then `CTX_EXTEND_CONTROLLER` for the press handler. Run as two separate iterations of Steps 4–8. |
+| "add a button that opens a dialog" | **Both**, in this order: `CTX_ADDXML` for the button, then `CTX_EXTEND_CONTROLLER` for the press handler. Run as two separate iterations of Steps 4–9. |
 
 If `get_actions` returns more actions than these for a control, surface them to the user rather than picking — this skill is only authoritative for `CTX_ADDXML` and `CTX_EXTEND_CONTROLLER`.
 
 ## Confidence & HITL Gating
 
-Three steps in this workflow are AI judgment calls, not deterministic lookups: control selection (Step 3), action selection (Step 5), and payload preparation (Step 7). Wrong choices at these points either edit the wrong UI or silently corrupt the change. To make HITL reliable, **rate every such decision with a self-assessed confidence in `[0, 1]`** and gate behavior on per-decision thresholds.
+Three steps in this workflow are AI judgment calls, not deterministic lookups: control selection (Step 3), action selection (Step 5), and payload preparation (Step 8). Wrong choices at these points either edit the wrong UI or silently corrupt the change. To make HITL reliable, **rate every such decision with a self-assessed confidence in `[0, 1]`** and gate behavior on per-decision thresholds.
 
 ### Confidence rubric
 
@@ -143,9 +143,9 @@ Phrasing template:
 
 | Decision | High ≥ | Ask < | Reasoning |
 |---|---|---|---|
-| Step 3 — Control selection | 0.80 | 0.60 | Cheap to undo if wrong (the action will fail or look obviously wrong). |
+| Step 3 — Control selection | 0.95 | 0.60 | Cheap to undo if wrong (the action will fail or look obviously wrong). |
 | Step 5 — Action selection | 0.85 | 0.65 | Few options, usually obvious; bump slightly higher because the wrong action causes a wrong *kind* of change. |
-| Step 7 — Payload preparation | 0.90 | 0.70 | **Highest risk.** Action can succeed yet produce a broken/misplaced change. Bias toward asking. |
+| Step 8 — Payload preparation | 0.90 | 0.70 | **Highest risk.** Action can succeed yet produce a broken/misplaced change. Bias toward asking. |
 
 ### Ambiguity overrides confidence (must ask)
 
@@ -156,7 +156,7 @@ The Medium band is for "I know which one and the runner-up is materially worse, 
 
 Concrete example: a ListReport page has both a `TableToolbar` and a `FooterToolbar`. The user said "the toolbar." Both are `sap.m.OverflowToolbar`. Don't pick — ask.
 
-### Required-field rule (Step 7)
+### Required-field rule (Step 8)
 
 A required field whose value cannot be derived from (a) the action's payload schema, (b) the element context, or (c) explicit user instructions **caps the whole-payload confidence at 0.55** regardless of how strong the other fields are. That puts payload prep into the "ask" band by default whenever guessing is required.
 
@@ -166,7 +166,7 @@ When executing many changes in one session, the cumulative chance of a wrong sil
 
 ### Reporting
 
-The final summary (Step 12) must include, per change: chosen control, action, and the confidence the model assigned to each AI decision. This makes silent high-confidence decisions auditable after the fact.
+The final summary (Step 13) must include, per change: chosen control, action, and the confidence the model assigned to each AI decision. This makes silent high-confidence decisions auditable after the fact.
 
 ## Workflow
 
@@ -180,17 +180,27 @@ Call `step: "get_overlays"`. Returns the editable controls on the page.
 
 ### Step 3 — Select target control (AI decision)
 
-Match the user's instruction against the overlays:
+Match the user's instruction against the overlays, examples:
 - "the title" → controls with `Title` or `Header` in `controlType`
 - "the table" → `sap.ui.table.Table` or `sap.m.Table`
 - "button X" → `sap.m.Button` with matching label
 - "toolbar" → `sap.m.Toolbar` or `sap.m.OverflowToolbar`
 
-**Confidence gating** (see *Confidence & HITL Gating*; thresholds: high ≥ 0.80, ask < 0.60):
-- Score every plausible overlay against the instruction; rank them; assign confidence to the top candidate using the rubric.
-- **High** → use the chosen `controlId` silently.
-- **Medium** → announce: `Using <label> (<controlType>, confidence 0.7x). Continuing — interrupt to change.`
-- **Low** or no candidates ≥ 0.40 → list the top 3 with confidences and ask.
+**Template handling**
+
+In RTA, changes are always made on template clones and mapped to the template internally. When you want to change a template of a binding, pick an arbitrary instance and pass it to further steps.
+
+**Data-loaded gate (hard stop for data-bound containers).**
+
+When the target is a `SmartTable`, `SmartList`, `sap.m.Table`, `sap.ui.table.Table`, `SmartChart`, or any control whose intent involves binding to rows/items, you **MUST** confirm row data is loaded before calling `get_actions`. Structural overlays (columns, headers, toolbars) are **not** evidence of loaded data — they appear before any rows exist.
+
+Evidence required (one of):
+- The user explicitly states data is loaded.
+- You observe row-level overlays in `get_overlays` (e.g. `sap.m.ColumnListItem`, `sap.ui.table.Row`, or overlays whose `controlId` contains a row index).
+
+If neither is present, **stop and ask** the user to trigger data loading (click "Go", apply a filter, expand a node), then re-run `get_overlays` and inspect the child elements for further binding context. Do not proceed on the assumption that columns imply rows.
+
+**The gate is unconditional.** It applies even when the change feels purely structural (adding a column, reordering, renaming, changing a header label). Do not reason about whether data "matters" for this particular change — if the target is a data-bound container and row-level overlays are absent, stop. The action set returned by `get_actions` can differ based on data state, and a structurally-correct change against the wrong action variant is exactly the silent failure this skill is built to prevent. "This is just a structural edit, so the gate doesn't apply" is not a valid exception — it is the rationalization the gate exists to block.
 
 Store the chosen `controlId` and its confidence for the final summary.
 
@@ -219,17 +229,67 @@ Store `actionId`, the action's `payload` schema, and the confidence value.
 
 Call `step: "get_context"`, payload `{ controlId, actionId }`. Returns `viewName`, `controlType`, aggregation info, etc. Used to fill structural payload fields.
 
-### Step 7 — Prepare action payload (AI decision)
+#### Looking up aggregation descriptions
+
+`get_context` tells you which aggregations exist (`aggregationsByClass[]`, `parentAggregationName`, `defaultChildAggregation`) and which control defines each one (`definedIn` + `libraryName`), but **not what they're for**. When picking `targetAggregation` for `CTX_ADDXML` (Step 8) you frequently need the aggregation's purpose, allowed type, and cardinality to avoid putting a button into the wrong slot.
+
+Run the bundled script to fetch the aggregation's official UI5 docs:
+
+```bash
+node .claude/skills/adp-controller-extension-flow/scripts/lookup-aggregation.mjs \
+  --lib <libraryName from aggregationsByClass> \
+  --control <definedIn from aggregationsByClass> \
+  --aggregation <aggregation name>
+```
+
+The script:
+- Walks up from `cwd` to find `ui5.yaml` (or pass `--ui5-yaml <path>`) and reads `ui5.url` + `ui5.version` from any `ui5:` block in the proxy/preview middleware config.
+- Fetches `<ui5.url>/<version>/test-resources/<lib path>/designtime/api.json` first (configured base + version).
+- Falls back through: configured base + latest → `https://ui5.sap.com/<version>/...` → `https://ui5.sap.com/test-resources/...` (latest). Handles 404s on removed versions.
+- Caches each api.json for 24 h under `~/.cache/adp-aggregation-lookup/`.
+- Prints JSON with `description`, `type`, `cardinality`, `since`, plus a `source` block showing which URL/version actually served the data.
+
+**Always pass the control from `definedIn`, not the leaf control.** The script does not walk the inheritance chain — for an aggregation inherited from `sap.m.FlexBox`, pass `--control sap.m.FlexBox --lib sap.m`, not the SmartTable. `aggregationsByClass[].definedIn` already gives you this.
+
+Use this whenever:
+- Picking `targetAggregation` and several look plausible (`content` vs `items` vs `headerContent`).
+- Picking `targetAggregation` but none seems plausible with a high enough confidence (you might have selected the wrong control)
+- The aggregation's `controlType` doesn't obviously match what you intend to insert (verify the type accepts what your fragment provides).
+- You're unsure whether an aggregation is `0..1` (single child — inserting will replace) vs `0..n` (multi — `index` matters).
+
+### Step 7 — Read OData metadata (conditional, only when a data binding is involved)
+
+Run this step only if the user's intention involves binding the element to a data source.
+
+**IMPORTANT** Call `mcp__fiori-mcp__read_odata_metadata_adp` with the adaptation project path to retrieve the metadata (EDMX) of the OData services available to the application. Always use this tool — do not curl, fetch, or grep EDMX from disk. Use the returned entities, properties, navigation paths, key fields, and annotations as context to decide:
+
+- Which entity set / entity type to bind against
+- The exact property name and path (including any navigation traversal)
+- Whether the property is suitable for the target control (type, nullability, length)
+- Any annotation-driven formatting hints that should be applied
+
+Typical triggers:
+
+- Binding a control property to an OData field (e.g. `text="{Customer/Name}"`)
+- Adding a bound text/value/description/title to a control
+- Binding a table column or list item to an entity property
+- Wiring a new control, fragment, or section to a backing entity set, navigation property, or function import
+
+If the change is purely structural or behavioral (static labels, visibility toggles, controller-only logic, etc.) and does not reference any backing data, skip this step.
+
+Feed these decisions into Step 8 (payload preparation) and into the fragment XML / controller extension content generated in Step 12. If the metadata does not contain a property matching the user's request, stop and ask — do not invent a binding path.
+
+### Step 8 — Prepare action payload (AI decision)
 
 Build `actionPayload` from the action's `payload` schema (Step 5), the element context (Step 6), and the user's instructions. **Use the exact field names from the Actions Reference** — `fragmentPath` (not `fragmentName`), `codeRef`, `viewId`, etc.
 
 **For `CTX_ADDXML`:**
-- `fragmentPath`: `fragments/<Name>.fragment.xml` — pick `<Name>` from the user's intent (e.g. `OrderDetailsButton`). The fragment file itself is created in Step 11.
-- `targetAggregation`: from `get_context` (e.g. `content` for a Toolbar).
+- `fragmentPath`: `fragments/<Name>.fragment.xml` — pick `<Name>` from the user's intent (e.g. `OrderDetailsButton`). The fragment file itself is created in Step 12.
+- `targetAggregation`: from `get_context` (e.g. `content` for a Toolbar). When two aggregations on the same control look plausible (e.g. `content` vs `items`, `customToolbar` vs `headerToolbar`), call the `lookup-aggregation.mjs` script (see Step 6) before picking — getting this wrong inserts the fragment into the wrong slot and `call_action` will still report `success: true`.
 - `index`: `0` for "at the beginning"; the current child count for "at the end"; ask if the user said "after the X" and the position isn't determinable from context.
 
 **For `CTX_EXTEND_CONTROLLER`:**
-- `codeRef`: `coding/<Name>.js` — `<Name>` typically matches the fragment's controller name (e.g. `OrderDetailsExt`). The JS file itself is created in Step 11.
+- `codeRef`: `coding/<Name>.js` — `<Name>` typically matches the fragment's controller name (e.g. `OrderDetailsExt`). The JS file itself is created in Step 12.
 - `viewId`: the `controlId` of the current selection works; otherwise the view id from `get_context`.
 - `instanceSpecific`: omit unless the user explicitly asked to scope to one instance.
 
@@ -246,21 +306,23 @@ General rules:
 
 Store the payload + confidence for the final summary.
 
-### Step 8 — Execute action
+### Step 9 — Execute action
 
 Call `step: "call_action"`, payload `{ controlId, actionId, actionPayload }`. On `success: true`, continue. On error, report and offer to retry with adjusted parameters.
 
-### Step 9 — Loop for multiple changes
+### Step 10 — Loop for multiple changes
 
-If the user requested multiple changes, repeat Steps 2–8 once per change (the UI may have changed, so re-run `get_overlays` between changes). If a single request implies multiple operations (e.g. "add a button that calls a function" = fragment + controller extension), execute each as a separate iteration.
+If the user requested multiple changes, repeat Steps 2–9 once per change (the UI may have changed, so re-run `get_overlays` between changes).
+A single change request can still require multiple operations and changes to be created.
+If a single request implies multiple operations (e.g. "add a button that calls a function" = fragment + controller extension), execute each as a separate iteration.
 
 Create all changes before saving.
 
-### Step 10 — Save
+### Step 11 — Save
 
 Call `step: "save"`. Returns `{ saved: true }` on success.
 
-### Step 11 — Generate fragment and controller extension content
+### Step 12 — Generate fragment and controller extension content
 
 After saving, use `mcp__fiori-mcp__adp_controller_extension` to fill in the content for any fragments and controller extensions that were created.
 
@@ -298,7 +360,7 @@ Include XML comments inside fragments for context hints:
 <!-- targetAggregation: <from context> -->
 ```
 
-### Step 12 — Cleanup
+### Step 13 — Cleanup
 
 Call `step: "stop"`. The server closes the session; if it was the last one, the browser shuts down too.
 
@@ -331,11 +393,11 @@ Report to the user: summary of all changes made, files created, any issues encou
 
 When the user requests multiple changes:
 1. Parse all intended changes upfront.
-2. Execute Steps 2–8 once per change, all under the same `sessionId`.
-3. Save once at the end (Step 10).
+2. Execute Steps 2–9 once per change, all under the same `sessionId`.
+3. Save once at the end (Step 11).
 4. If one change fails, save the successful ones and report which failed.
-5. Generate content for all fragments / extensions together in Step 11.
-6. Stop the session (Step 12) only after everything is done.
+5. Generate content for all fragments / extensions together in Step 12.
+6. Stop the session (Step 13) only after everything is done.
 
 ## Example Session
 
