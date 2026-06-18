@@ -4,7 +4,7 @@ description: Add analytical chart (chart + table hybrid) to SAP Fiori Elements L
 argument-hint: Entity, dimension, measure, aggregation
 metadata:
   author: sap-fiori-tools
-  version: "0.0.1"
+  version: "0.0.2"
 ---
 
 # SAP Fiori Analytical Chart
@@ -22,7 +22,10 @@ Add **analytical chart + table (hybrid view)** to visualize aggregated data.
 2. **Dimension field** - The field to group by (e.g., Category, Status, Destination)
 3. **Measure field** - The numeric field to aggregate (e.g., Amount, TotalPrice, ReservationPrice)
 4. **Aggregation method** - How to aggregate: sum, avg, min, or max
-5. **Chart type** - Bar,Column, Line, Pie, HeatMap, Waterfall, HorizontalWaterfall
+5. **Chart type** - Bar, Column, Line, Pie, HeatMap, Waterfall, HorizontalWaterfall
+6. **Display mode** - How the chart should be shown:
+   - **Separate tabs** (Approach 2)
+   - **Hybrid view** (Approach 1)
 
 **DO NOT proceed with implementation until all inputs are confirmed.**
 
@@ -62,18 +65,52 @@ UI.Chart #Chart: {
 
 ## ABAP RAP Implementation
 
-- Aggregation.ApplySupported and Aggregation.CustomAggregate annotations must be available in metadata.xml(RAP). If not, below backend configuration is required.
+## 3-Step Implementation Approach
 
-### Backend CDS (MANDATORY) - 
+**Always follow this systematic 3-step process for ABAP RAP:**
+
+1. **Backend CDS Configuration** - Enable aggregation support by adding `@OData.applySupportedForAggregation: #FULL` to the CDS view and `@Aggregation.default` to measure fields.
+2. **Chart Annotations** - Add `@UI.chart` annotation in the metadata extension (preferred) or frontend annotation.xml with chart type, dimensions, and measures.
+3. **Frontend Manifest** - Configure the `views` section in manifest.json to display the chart alongside the table in a hybrid view or as separate tabs.
+
+---
+
+## CRITICAL: Verify Service Connection First using ADT MCP.
+
+**BEFORE making any changes, verify which CDS view is exposed by the service:**
+
+1. Check the frontend `manifest.json` for the service URI (e.g., `/sap/opu/odata4/sap/zzui_travel_o4/...`)
+2. If ADT MCP is available:
+   - Search for the service definition by name (e.g., `ZZUI_TRAVEL_O4`)
+   - Open the service definition `.srvd.acds` file
+   - Identify the exposed CDS view (e.g., `expose ZZC_TRAVEL001 as Travel`)
+   - Use THIS CDS view for modifications, not similarly named views
+3. The service name in the URI must match the service definition being modified
+
+⚠️ **Common Mistake:** Modifying a CDS view that is NOT exposed by the service your app uses!
+
+## Annotation Placement Strategy (ABAP RAP)
+
+- **Preferred:** Backend **Metadata Extension** (when ADT MCP is available)
+  - Single source of truth
+  - Reusable across apps
+  - Properly transported
+  - Type-safe
+  
+- **Fallback:** Frontend `annotation.xml` (when backend access is not available)
+  - Verify `Aggregation.ApplySupported` exists in metadata.xml
+  - If missing, backend CDS configuration is required
+
+### Backend CDS (MANDATORY) - Aggregation Support
 ```abap
 @OData.applySupportedForAggregation: #FULL
 define root view entity ZC_ENTITY
-  provider contract analytical_query
+  provider contract transactional_query
   as projection on ZI_ENTITY
 {
   key EntityID,
 
-  @Aggregation.default: #SUM
+  @Aggregation.default: #SUM  // or #AVG, #MIN, #MAX
   Amount,
 
   Category
@@ -100,7 +137,7 @@ define root view entity ZC_ENTITY
 ```
 
 ✅ Uses **Measures (not DynamicMeasures)**  
-❌ Metadata is **read-only**
+### CRITICAL: NEVER EDIT metadata.xml - IT IS READ-ONLY!
 
 ---
 
@@ -160,7 +197,59 @@ UI.PresentationVariant #TableView: {
 }
 ```
 
-**Annotations (XML for RAP):**
+**Backend Metadata Extension (Recommended for RAP):**
+```abap
+@UI.chart: [{
+  qualifier: 'AnalyticalChart',
+  title: 'Chart Title',
+  description: 'Chart description',
+  chartType: #COLUMN,
+  dimensions: ['Category'],
+  measures: ['Amount'],
+  dimensionAttributes: [{
+    dimension: 'Category',
+    role: #CATEGORY
+  }],
+  measureAttributes: [{
+    measure: 'Amount',
+    role: #AXIS_1
+  }]
+}]
+@UI.presentationVariant: [{
+  qualifier: 'ChartView',
+  text: 'Chart View',
+  sortOrder: [{
+    by: 'SomeDate',
+    direction: #DESC
+  }],
+  visualizations: [{
+    type: #AS_CHART,
+    qualifier: 'AnalyticalChart'
+  }]
+},
+{
+  qualifier: 'TableView',
+  text: 'Table View',
+  sortOrder: [{
+    by: 'SomeDate',
+    direction: #DESC
+  }],
+  visualizations: [{
+    type: #AS_LINEITEM
+  }]
+}]
+annotate view ZC_ENTITY with
+{
+  // Other field annotations...
+  @EndUserText.label: 'Amount'
+  Amount;
+  
+  @EndUserText.label: 'Category'
+  Category;
+}
+```
+
+**Annotations (fallback: XML for RAP):**
 ```xml
 <Annotation Term="UI.Chart" Qualifier="AnalyticalChart">
   <Record Type="UI.ChartDefinitionType">
@@ -260,27 +349,49 @@ npm start          # No refresh needed - fetches metadata from live backend at r
 
 ## Key Differences
 
-- CAP: Aggregation + measures defined in CDS  
-- RAP: Aggregation defined in backend CDS only  
-- CAP: Uses DynamicMeasures  
-- RAP: Uses Measures  
-- RAP metadata: read-only  
+CAP:
+- Aggregation + measures defined in CDS  
+- Uses DynamicMeasures  
+
+RAP:
+- Aggregation defined in backend CDS only  
+- Uses Measures  
 
 ---
 
-## Common Mistakes
+## Common Mistakes 
 
-- Missing backend aggregation (RAP)  
+Both CAP & RAP:
 - Wrong manifest config  
 - Mixing Approach 1 and Approach 2 configurations
 - Non-numeric measure  
-- Wrong qualifier  
+- Wrong qualifier 
+
+RAP:
+- Missing backend aggregation support 
+- Adding UI annotations directly in CDS projection
+- Annotating interface views instead of projection views
+- Ignoring @Metadata.allowExtensions: true
+- Mixing backend & frontend annotations unnecessarily
 
 ---
 
 ## Best Practices
 
+Both CAP & RAP:
 - Use 1 dimension + 1–2 measures  
 - Prefer Column/Bar charts  
 - **Approach 1**: Use "defaultPath": "both" for chart + table side-by-side in same view
 - **Approach 2**: Use `PresentationVariant` for separate view tabs (chart or table)  
+
+RAP:
+- Always annotate projection view, not interface view
+- Always prefer Metadata Extension over inline annotations
+- Keep CDS clean (no UI logic inside core model)
+- Backend first → Frontend fallback
+- Backend available → Use Metadata Extension (.mdext)
+- No backend access → Use local annotation(annotation.xml) in frontend.
+
+## References
+
+- **ABAP RAP Aggregation support**: https://help.sap.com/docs/abap-cloud/abap-rap/projection-view
