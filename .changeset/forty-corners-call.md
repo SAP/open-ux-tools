@@ -2,4 +2,4 @@
 'sap-ux-sap-systems-ext': patch
 ---
 
-patch bump for release
+BUMP: Bump version for release
