@@ -1,7 +1,14 @@
 import { RuleTester } from 'eslint';
 import noLiveModeRule from '../../src/rules/sap-no-live-mode.js';
 import { meta, languages } from '../../src/index.js';
-import { getManifestAsCode, setup, V4_MANIFEST, V4_MANIFEST_PATH } from '../test-helper.js';
+import {
+    getManifestAsCode,
+    setup,
+    V2_MANIFEST,
+    V2_MANIFEST_PATH,
+    V4_MANIFEST,
+    V4_MANIFEST_PATH
+} from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
@@ -47,6 +54,14 @@ ruleTester.run(TEST_NAME, noLiveModeRule, {
                         value: false
                     }
                 ])
+            },
+            []
+        ),
+        createValidTest(
+            {
+                name: 'V2 - ODataV2 application is not checked',
+                filename: V2_MANIFEST_PATH,
+                code: JSON.stringify(V2_MANIFEST, undefined, 2)
             },
             []
         )
