@@ -340,18 +340,18 @@ export async function appendBuildingBlockAggregation(
     };
     const aggDoc = new DOMParser({ errorHandler }).parseFromString(wrapped, 'text/xml');
 
-    const firstChildView = xmlDocument.firstChild;
-    if (!firstChildView) {
-        throw new Error(`Unable to read namespace map from view ${viewPath}.`);
-    }
+    const nsMap = (xmlDocument.documentElement as any)?._nsMap ?? {};
     // Prefix-agnostic XPath — works regardless of the alias used in the view for sap.fe.macros.
-    const xpathSelect = xpath.useNamespaces({ ...(firstChildView as any)?._nsMap });
+    const xpathSelect = xpath.useNamespaces(nsMap);
     const pageNodes = xpathSelect(`//*[local-name()='Page' and namespace-uri()='sap.fe.macros']`, xmlDocument);
     if (!pageNodes || !Array.isArray(pageNodes) || pageNodes.length === 0) {
         throw new Error(`Page element (sap.fe.macros) not found in view ${viewPath}.`);
     }
 
     const pageElement = pageNodes[0] as Node;
+    if (aggName === 'footer' && pageElement.nodeType === 1 /* Element */) {
+        (pageElement as Element).setAttribute('showFooter', 'true');
+    }
     const childNodes = Array.from(pageElement.childNodes);
     const hasExistingAggregation = childNodes.some(
         (node) =>

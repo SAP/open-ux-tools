@@ -6,7 +6,7 @@
 FEAT: Add Page building block full and basic template support
 
 - Add `appendPageAggregations` to generate all 7 Page BB aggregations (`breadcrumbs`, `navigationActions`, `titleContent`, `actions`, `headerContent`, `items`, `footer`) with EJS templates and per-aggregation IDs
-- Add `appendPageBBAggregation` API to append a single named aggregation to an existing `<macros:Page>` element in a view XML file
+- Add `appendBuildingBlockAggregation` API to append a single named aggregation to an existing `<macros:Page>` element in a view XML file
 - Add `sortPageAggregationChildren` to reorder aggregation elements into the canonical `PAGE_AGGREGATIONS` order after insertion
 - Add `PAGE_AGGREGATIONS` constant and `PageAggregationName` type (moved to `types.ts` for compile-time safety in `aggregations?: Partial<Record<PageAggregationName, string>>`)
 - Add `PAGE_TEMPLATE_TYPE_FULL` / `PAGE_TEMPLATE_TYPE_BASIC` constants and `PageTemplateType` type
