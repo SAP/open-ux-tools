@@ -54,7 +54,7 @@ async function fetchAndSaveReadme(packageName: string, logger: ToolsLogger): Pro
     const readmeContent = await getPackageReadme(packageName, logger);
     if (readmeContent) {
         const baseName = packageName.split('/').pop();
-        if (!baseName || baseName.includes('..') || baseName.includes('/') || baseName.includes('\\')) {
+        if (!baseName || baseName.includes('..') || baseName.includes('\\')) {
             logger.error(`Invalid package name: ${packageName}`);
             return;
         }
