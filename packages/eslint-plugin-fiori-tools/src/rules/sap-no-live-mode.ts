@@ -34,7 +34,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                 continue;
             }
             if (app.type !== 'fe-v4') {
-                return [];
+                continue;
             }
             for (const page of app.pages) {
                 if (page.type === 'list-report-page') {
