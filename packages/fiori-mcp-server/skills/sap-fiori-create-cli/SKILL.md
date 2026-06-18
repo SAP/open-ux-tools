@@ -325,6 +325,8 @@ The available subcommands are: `preview-config` and `eslint-config`
 
 ## [`convert preview-config`](#convert-preview-config)
 
+> For the full workflow guide including prerequisites and manual steps, read `references/convert-preview-config.md`.
+
 Executed in the root folder of an app, it converts the respective app to the preview with virtual endpoints. It uses the configuration from the scripts in the `package.json` file to adjust the UI5 configuration YAML files accordingly. The obsolete JS and TS sources are deleted and the HTML files previously used for the preview are renamed to `*_old.html`.
 
 Examples:
