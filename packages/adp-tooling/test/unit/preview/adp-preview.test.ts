@@ -388,6 +388,7 @@ describe('AdaptationProject', () => {
 
         afterEach(() => {
             global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+            mockProject.byGlob.mockClear();
         });
 
         test('should return early when cfBuildPath is set', async () => {
@@ -569,6 +570,7 @@ describe('AdaptationProject', () => {
 
         afterEach(() => {
             global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+            mockProject.byGlob.mockClear();
         });
 
         test('/manifest.json with sync', async () => {
@@ -606,38 +608,23 @@ describe('AdaptationProject', () => {
         });
 
         test('/i18n/i18n.properties is passed through (not redirected)', async () => {
-            // Given: the ADP project would have a matching local i18n bundle that, before
-            // the fix, was substituted via 302 redirect — hiding the base app's full bundle
-            // and breaking {@i18n>...} lookups in annotations.
-            const byGlobSpy = mockProject.byGlob.mockResolvedValue([{ getPath: () => '/i18n/i18n.properties' }]);
-
-            // When: a request for the default i18n bundle hits the proxy.
             const response = await server.get(`${mockMergedDescriptor.url}/i18n/i18n.properties`);
 
-            // Then: the proxy calls next() (status 200 from the catch-all handler) and
-            // never invokes byGlob — i18n is checked early and unconditionally falls
-            // through to the next middleware, regardless of any matching local file.
             expect(response.status).toBe(200);
-            expect(byGlobSpy).not.toHaveBeenCalledWith('/i18n/i18n.properties.*');
+            expect(mockProject.byGlob).not.toHaveBeenCalled();
         });
 
         test('/i18n/i18n_de.properties (locale variant) is passed through', async () => {
-            const byGlobSpy = mockProject.byGlob.mockResolvedValue([]);
             const response = await server.get(`${mockMergedDescriptor.url}/i18n/i18n_de.properties`);
             expect(response.status).toBe(200);
-            expect(byGlobSpy).not.toHaveBeenCalledWith('/i18n/i18n_de.properties.*');
+            expect(mockProject.byGlob).not.toHaveBeenCalled();
         });
 
         test('/i18n/ListReport/Foo/i18n.properties (per-page bundle) is passed through', async () => {
-            // Given: Fiori Elements V2 LROP loads per-page bundles whose paths include
-            // the page name and entity set. These must also fall through, not be
-            // substituted from the ADP webapp.
-            const byGlobSpy = mockProject.byGlob.mockResolvedValue([]);
-
             const response = await server.get(`${mockMergedDescriptor.url}/i18n/ListReport/Foo/i18n.properties`);
 
             expect(response.status).toBe(200);
-            expect(byGlobSpy).not.toHaveBeenCalledWith('/i18n/ListReport/Foo/i18n.properties.*');
+            expect(mockProject.byGlob).not.toHaveBeenCalled();
         });
     });
 
