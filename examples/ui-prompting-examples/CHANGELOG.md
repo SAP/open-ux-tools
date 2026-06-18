@@ -1,5 +1,21 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 1.0.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-18
+
+#### Bug Fixes
+
+- Code preview in Storybook examples was hard to read due to background color [[e3b09f8](https://github.com/SAP/open-ux-tools/commit/e3b09f83d9ea244a4d3b107ed4e50615a1c45367)]
+
+#### Workspace Updates
+
+- @sap-ux/ui-prompting 1.0.3 → 1.0.4
+
 ## 1.0.3
 
 ### Patch Changes
