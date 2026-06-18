@@ -8,7 +8,7 @@ Enabling `liveMode` makes the content area load automatically during the initial
 
 #### Incorrect `manifest.json` File for ODataV4
 
-```(json)
+```json
 {
     "sap.ui5": {
         "routing": {
@@ -18,11 +18,11 @@ Enabling `liveMode` makes the content area load automatically during the initial
                     "options": {
                         "settings": {
                         "liveMode": true,
-                        ...
+                        // ...
                         }
-                    ...
+                    // ...
                     }
-                ...
+                // ...
                 }
             }
         }
