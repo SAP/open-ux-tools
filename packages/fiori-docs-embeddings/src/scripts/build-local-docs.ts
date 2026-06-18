@@ -188,11 +188,11 @@ class FpmDocumentationBuilder {
 
         // Validate that host and token contain only safe characters to prevent argument injection
         // Host must be a valid hostname (alphanumeric, dots, hyphens only)
-        if (!/^[a-zA-Z0-9.\-]+$/.test(this.githubHost)) {
+        if (!/^[a-zA-Z0-9.-]+$/.test(this.githubHost)) {
             throw new Error('Invalid GitHub host: must contain only alphanumeric characters, dots, and hyphens');
         }
         // Token must not contain characters that could break URL or shell argument parsing
-        if (!/^[a-zA-Z0-9._\-]+$/.test(this.githubToken)) {
+        if (!/^[a-zA-Z0-9._-]+$/.test(this.githubToken)) {
             throw new Error(
                 'Invalid GitHub token: must contain only alphanumeric characters, dots, underscores, and hyphens'
             );
