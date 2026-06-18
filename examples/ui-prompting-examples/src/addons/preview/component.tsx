@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { addons } from 'storybook/manager-api';
 import { UPDATE_CODE_SNIPPET, getWebSocket, onMessageAttach } from '../../utils/index.js';
 import type { Actions } from '../../utils/index.js';
+import { useTheme } from 'storybook/theming';
 
 getWebSocket(false);
 
@@ -17,6 +18,7 @@ export const CodePreview = (props: { active?: boolean }): React.ReactElement => 
         answers: {},
         codeSnippets: []
     });
+    const theme = useTheme() as { base: string };
 
     useEffect(function () {
         const handleMessage = (responseAction: Actions) => {
@@ -50,7 +52,11 @@ export const CodePreview = (props: { active?: boolean }): React.ReactElement => 
 
     return (
         <AddonPanel key="panel" active={active}>
-            <div>
+            <div
+                style={{
+                    height: '100%',
+                    background: theme.base === 'dark' ? '#1a1a1a' : '#ffffff'
+                }}>
                 {preview.codeSnippets.map((snippet) => (
                     <Form.Field label={snippet.fileName} key={snippet.fileName}>
                         <SyntaxHighlighter language={snippet.language ?? 'html'}>{snippet.content}</SyntaxHighlighter>
