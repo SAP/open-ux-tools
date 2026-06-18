@@ -75,7 +75,8 @@ export function spliceModulesIntoQUnitContent(fileContent: string, moduleNames: 
     const trailingWhitespace = fileContent.slice(trimmedBefore.length, insertPosition);
     const after = fileContent.slice(insertPosition);
 
-    return `${trimmedBefore}${commaFix}\n${newLines}\n${trailingWhitespace}${after}`;
+    const separator = trailingWhitespace.length > 0 ? '' : '\n';
+    return `${trimmedBefore}${commaFix}\n${newLines}${separator}${trailingWhitespace}${after}`;
 }
 
 /**
