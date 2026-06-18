@@ -13,7 +13,7 @@ import {
 import { EOL } from 'node:os';
 import type { AbapDeployConfig } from '../types/index.js';
 import type { Destinations } from '@sap-ux/btp-utils';
-import { isAppStudio, isOnPremiseDestination, listDestinations, Authentication } from '@sap-ux/btp-utils';
+import { isAppStudio, isFullUrlDestination, isOnPremiseDestination, listDestinations, Authentication } from '@sap-ux/btp-utils';
 
 export type ValidationInputs = {
     appName: string;
@@ -443,4 +443,21 @@ async function getDestinations(): Promise<Destinations> {
         cachedDestinationsList = await listDestinations();
     }
     return cachedDestinationsList;
+}
+
+/**
+ * Warns if the destination is configured as a full URL destination.
+ *
+ * @param destination Identifier for destination to be checked.
+ * @param logger Logger from the calling context.
+ */
+export async function warnOnFullUrlDestination(destination: string | undefined, logger: Logger): Promise<void> {
+    if (destination && isAppStudio()) {
+        const destinations = await listDestinations();
+        if (destinations[destination] && isFullUrlDestination(destinations[destination])) {
+            logger.warn(
+                'The destination is configured as a full URL destination. Deployment may not work as expected due to duplicated path segments when routing requests. For more information, see SAP Guided Answers: https://ga.support.sap.com/index.html#/tree/3046/actions/45995:52881:52892:68172'
+            );
+        }
+    }
 }

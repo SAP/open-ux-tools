@@ -13,7 +13,7 @@ import { getConfigForLogging, isBspConfig, throwConfigMissingError } from './con
 import { promptConfirmation } from './prompt.js';
 import { createAbapServiceProvider, getCredentialsWithPrompts } from '@sap-ux/system-access';
 import { getAppDescriptorVariant } from './archive.js';
-import { validateBeforeDeploy, formatSummary, showAdditionalInfoForOnPrem, checkForCredentials } from './validate.js';
+import { validateBeforeDeploy, formatSummary, showAdditionalInfoForOnPrem, checkForCredentials, warnOnFullUrlDestination } from './validate.js';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 
 /**
@@ -349,6 +349,7 @@ export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: 
         writeFileSync(`archive.zip`, new Uint8Array(archive));
     }
     const provider = await createProvider(config, logger);
+    await warnOnFullUrlDestination(config.target.destination, logger);
     logger.info(`Starting to deploy${config.test === true ? ' in test mode' : ''}.`);
     await tryDeploy(provider, config, logger, archive);
 }
