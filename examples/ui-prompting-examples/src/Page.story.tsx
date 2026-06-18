@@ -5,10 +5,6 @@ import { BuildingBlockQuestions } from './BuildingBlock.js';
 export default { title: 'Building Blocks/Page' };
 
 export const Default = (): JSX.Element => {
-    return <BuildingBlockQuestions type={PromptsType.Page} />;
-};
-
-export const BasicTemplate = (): JSX.Element => {
     return (
         <BuildingBlockQuestions
             type={PromptsType.Page}
