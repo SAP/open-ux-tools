@@ -236,7 +236,7 @@ export class ProjectContext {
 
         return context;
     }
-    public static fileCache = new Map<string, string>();
+    public static fileCache = new Map<string, string>(); // NOSONAR - Property must be mutable for test setup
     private static readonly fileCacheProxy = new Proxy(this.fileCache, {
         get: (target, prop: string) => {
             if (prop === 'get') {
