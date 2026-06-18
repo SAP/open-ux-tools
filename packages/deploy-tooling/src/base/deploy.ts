@@ -13,7 +13,13 @@ import { getConfigForLogging, isBspConfig, throwConfigMissingError } from './con
 import { promptConfirmation } from './prompt.js';
 import { createAbapServiceProvider, getCredentialsWithPrompts } from '@sap-ux/system-access';
 import { getAppDescriptorVariant } from './archive.js';
-import { validateBeforeDeploy, formatSummary, showAdditionalInfoForOnPrem, checkForCredentials, warnOnFullUrlDestination } from './validate.js';
+import {
+    validateBeforeDeploy,
+    formatSummary,
+    showAdditionalInfoForOnPrem,
+    checkForCredentials,
+    warnOnFullUrlDestination
+} from './validate.js';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 
 /**

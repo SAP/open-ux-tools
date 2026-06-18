@@ -27,8 +27,14 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     }
 }));
 
-const { formatSummary, showAdditionalInfoForOnPrem, summaryMessage, validateBeforeDeploy, checkForCredentials, warnOnFullUrlDestination } =
-    await import('../../../src/base/validate.js');
+const {
+    formatSummary,
+    showAdditionalInfoForOnPrem,
+    summaryMessage,
+    validateBeforeDeploy,
+    checkForCredentials,
+    warnOnFullUrlDestination
+} = await import('../../../src/base/validate.js');
 const { Authentication } = await import('@sap-ux/btp-utils');
 
 const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });

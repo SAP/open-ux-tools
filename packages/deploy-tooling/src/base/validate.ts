@@ -13,7 +13,13 @@ import {
 import { EOL } from 'node:os';
 import type { AbapDeployConfig } from '../types/index.js';
 import type { Destinations } from '@sap-ux/btp-utils';
-import { isAppStudio, isFullUrlDestination, isOnPremiseDestination, listDestinations, Authentication } from '@sap-ux/btp-utils';
+import {
+    isAppStudio,
+    isFullUrlDestination,
+    isOnPremiseDestination,
+    listDestinations,
+    Authentication
+} from '@sap-ux/btp-utils';
 
 export type ValidationInputs = {
     appName: string;
