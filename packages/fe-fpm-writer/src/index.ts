@@ -47,8 +47,12 @@ export type {
     PageTemplateType
 } from './building-block/types.js';
 export { PAGE_TEMPLATE_TYPE_FULL, PAGE_TEMPLATE_TYPE_BASIC, PAGE_AGGREGATIONS } from './building-block/types.js';
-export type { PageAggregationName } from './building-block/types.js';
-export { generateBuildingBlock, getSerializedFileContent, appendPageBBAggregation } from './building-block/index.js';
+export type { PageAggregationName, AppendBuildingBlockAggregationConfig } from './building-block/types.js';
+export {
+    generateBuildingBlock,
+    getSerializedFileContent,
+    appendBuildingBlockAggregation
+} from './building-block/index.js';
 export type {
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,

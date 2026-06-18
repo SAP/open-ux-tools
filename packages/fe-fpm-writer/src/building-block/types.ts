@@ -435,6 +435,20 @@ export type PageTemplateType = typeof PAGE_TEMPLATE_TYPE_FULL | typeof PAGE_TEMP
 export type XmlAggregationGroup = { comments: Node[]; element: Element; originalIndex: number };
 
 /**
+ * Configuration for appending a named aggregation to an existing building block element in a view XML file.
+ */
+export interface AppendBuildingBlockAggregationConfig {
+    /** Path to the view XML file, relative to basePath. */
+    viewPath: string;
+    /** Type of the building block whose aggregation should be appended. Currently only 'Page' is supported. */
+    buildingBlockType: BuildingBlockType;
+    /** Name of the aggregation to append. */
+    aggregationName: PageAggregationName;
+    /** Optional inner XML content for the aggregation. */
+    mContent?: string;
+}
+
+/**
  * Represents a custom filter to be used inside the FilterBar.
  * The template for the FilterField has to be provided as the default aggregation.
  *

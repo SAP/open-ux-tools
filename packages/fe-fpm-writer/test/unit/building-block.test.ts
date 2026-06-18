@@ -21,7 +21,7 @@ import {
     BuildingBlockType,
     generateBuildingBlock,
     getSerializedFileContent,
-    appendPageBBAggregation
+    appendBuildingBlockAggregation
 } from '../../src/index.js';
 import { BUILDING_BLOCK_CONFIG } from '../../src/building-block/processor.js';
 import testManifestContent from './sample/building-block/webapp/manifest.json';
@@ -3841,7 +3841,7 @@ describe('Building Blocks', () => {
         });
     });
 
-    describe('appendPageBBAggregation', () => {
+    describe('appendBuildingBlockAggregation', () => {
         const pageViewContent = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
     xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
     <macros:Page id="Page" title="pageTitle">
@@ -3852,10 +3852,16 @@ describe('Building Blocks', () => {
             const basePath = join(testAppPath, 'page-bb-agg');
             fs.write(join(basePath, xmlViewFilePath), pageViewContent);
 
-            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, {
-                aggregationName: 'footer',
-                mContent: ''
-            });
+            const result = await appendBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'footer',
+                    mContent: ''
+                },
+                fs
+            );
 
             const output = result.read(join(basePath, xmlViewFilePath));
             expect(output).toContain('id="footer"');
@@ -3872,10 +3878,16 @@ describe('Building Blocks', () => {
             fs.write(join(basePath, xmlViewFilePath), viewWithExistingId);
             findFilesByExtensionMock.mockResolvedValue([join(basePath, xmlViewFilePath)]);
 
-            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, {
-                aggregationName: 'footer',
-                mContent: ''
-            });
+            const result = await appendBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'footer',
+                    mContent: ''
+                },
+                fs
+            );
 
             const output = result.read(join(basePath, xmlViewFilePath));
             expect((output.match(/<macros:footer\b/g) ?? []).length).toBe(1);
@@ -3895,10 +3907,16 @@ describe('Building Blocks', () => {
             fs.write(join(basePath, xmlViewFilePath), viewOutOfOrder);
 
             // Adding navigationActions (index 1) should trigger a full sort
-            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, {
-                aggregationName: 'navigationActions',
-                mContent: ''
-            });
+            const result = await appendBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'navigationActions',
+                    mContent: ''
+                },
+                fs
+            );
 
             const output = result.read(join(basePath, xmlViewFilePath));
             const navPos = output.indexOf('macros:navigationActions');
@@ -3912,10 +3930,16 @@ describe('Building Blocks', () => {
             const basePath = join(testAppPath, 'page-bb-agg-comment');
             fs.write(join(basePath, xmlViewFilePath), pageViewContent);
 
-            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, {
-                aggregationName: 'items',
-                mContent: ''
-            });
+            const result = await appendBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'items',
+                    mContent: ''
+                },
+                fs
+            );
 
             const output = result.read(join(basePath, xmlViewFilePath));
             expect(output).toContain('This is a sample template, event handlers should be added for implementation');
@@ -3935,10 +3959,16 @@ describe('Building Blocks', () => {
 </mvc:View>`;
             fs.write(join(basePath, xmlViewFilePath), viewWithExisting);
 
-            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, {
-                aggregationName: 'items',
-                mContent: ''
-            });
+            const result = await appendBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'items',
+                    mContent: ''
+                },
+                fs
+            );
 
             const output = result.read(join(basePath, xmlViewFilePath));
             // Comment should not be added again if children already exist
@@ -3957,10 +3987,16 @@ describe('Building Blocks', () => {
 </mvc:View>`;
             fs.write(join(basePath, xmlViewFilePath), viewWithComment);
 
-            const result = await appendPageBBAggregation(fs, basePath, xmlViewFilePath, {
-                aggregationName: 'navigationActions',
-                mContent: ''
-            });
+            const result = await appendBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'navigationActions',
+                    mContent: ''
+                },
+                fs
+            );
 
             const output = result.read(join(basePath, xmlViewFilePath));
             expect(output).toContain('This is a sample template, event handlers should be added for implementation');
