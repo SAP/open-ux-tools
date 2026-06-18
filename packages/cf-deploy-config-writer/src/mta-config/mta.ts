@@ -207,7 +207,7 @@ export class MtaConfig {
                 path: './xs-security.json',
                 'service-name': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-xsuaa-service`,
                 config: {
-                    xsappname: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}` + '-${space-guid}',
+                    xsappname: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-\${org}-\${space}`,
                     'tenant-mode': 'dedicated'
                 }
             }
@@ -402,14 +402,10 @@ export class MtaConfig {
                 service: 'xsuaa',
                 'service-name': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-xsuaa-service`,
                 'service-plan': 'application',
-                ...(this.modules.has('nodejs') && this.modules.has('com.sap.application.content:appfront')
-                    ? {
-                          config: {
-                              xsappname: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-\${org}-\${space}`,
-                              'tenant-mode': 'dedicated'
-                          }
-                      }
-                    : {})
+                config: {
+                    xsappname: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-\${org}-\${space}`,
+                    'tenant-mode': 'dedicated'
+                }
             }
         };
         await this.mta?.addResource(resource);
