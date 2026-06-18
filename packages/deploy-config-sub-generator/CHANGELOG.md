@@ -1,5 +1,41 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 1.0.20
+
+### Patch Changes
+
+#### Bug Fixes
+
+- align xs-security.json and XSUAA mta.yaml config with CDS convention [[f17f880](https://github.com/SAP/open-ux-tools/commit/f17f880229efb91320f9740a4f36e15bbccc1e60)]
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-sub-generator 1.0.13 → 1.0.14
+
+## 1.0.19
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-18
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-sub-generator 1.0.12 → 1.0.13
+
+## 1.0.18
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-sub-generator 1.0.17 → 1.0.18
+- @sap-ux/inquirer-common 1.0.11 → 1.0.12
+- @sap-ux/odata-service-inquirer 3.0.11 → 3.0.12
+- @sap-ux/cf-deploy-config-sub-generator 1.0.11 → 1.0.12
+- @sap-ux/deploy-config-generator-shared 1.0.11 → 1.0.11
+
 ## 1.0.17
 
 ### Patch Changes

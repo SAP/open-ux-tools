@@ -5,6 +5,7 @@ This document provides essential guidelines for AI-powered tools working with th
 ## Table of Contents
 
 - [Overview](#overview)
+- [AI Agent Behavior](#ai-agent-behavior)
 - [Critical Requirements](#critical-requirements)
 - [Quality Gates](#quality-gates)
 - [Development Standards](#development-standards)
@@ -24,6 +25,51 @@ The SAP UX Tools is a monorepo for building SAP Fiori applications. All packages
 - **Testing**: Jest for unit tests, Playwright for integration tests
 - **Versioning**: Changesets for automated version management
 - **Publishing**: Automated via GitHub Actions to npmjs.com
+
+## AI Agent Behavior
+
+### Think Before Coding
+
+**Don't assume. Don't hide confusion. Surface tradeoffs.**
+
+Before implementing:
+- State your assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them - don't pick silently.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop. Name what's confusing. Ask.
+- If mid-task you discover the goal was wrong (e.g. the real issue is elsewhere), stop. Restate the correct goal and confirm before continuing — don't finish the wrong task just because you started it.
+
+### Surgical Changes
+
+**Touch only what you must. Clean up only your own mess.**
+
+When editing existing code:
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken.
+- Match existing style, even if you'd do it differently.
+- If you notice unrelated dead code, mention it - don't delete it.
+
+When your changes create orphans:
+- Remove imports/variables/functions that YOUR changes made unused.
+- Don't remove pre-existing dead code unless asked.
+
+The test: Every changed line should trace directly to the user's request.
+
+### Goal-Driven Execution
+
+**Define success criteria. Loop until verified.**
+
+Transform tasks into verifiable goals:
+- "Add validation" → "Write tests for invalid inputs, then make them pass"
+- "Fix the bug" → "Write a test that reproduces it, then make it pass"
+- "Refactor X" → "Ensure tests pass before and after"
+
+For multi-step tasks, state a brief plan:
+```
+1. [Step] → verify: [check]
+2. [Step] → verify: [check]
+3. [Step] → verify: [check]
+```
 
 ## Critical Requirements
 
@@ -196,6 +242,7 @@ pnpm audit
 - Avoid `any` type - use `unknown` or proper types
 - **Avoid TypeScript enums** - prefer union types or const objects for better type safety and tree-shaking
 - Avoid using the non-null assertion operator (!). Use optional chaining (?.), nullish coalescing (??), or explicit type guards to handle potentially null/undefined values.
+- Prefer type guards over `as SomeType` casts. If a cast is unavoidable after a runtime check, add a comment explaining why.
 
 **TypeScript config** (from [tsconfig.json](tsconfig.json)):
 - Strict mode enabled
@@ -547,6 +594,8 @@ pnpm test # Coverage is collected by default
 - Follow given/when/then structure
 - Test edge cases and error conditions
 - Use snapshots for generated files
+- If a snapshot fails after your change, update only the affected snapshots — never bulk-update with `--updateSnapshot` as it silently hides regressions.
+- Don't rewrite or restructure existing tests unrelated to your change. If you spot something improvable, mention it and ask before touching it.
 - Mock external dependencies
 - Keep tests fast and isolated
 
