@@ -55,6 +55,16 @@ interface MetadataPath {
 }
 
 /**
+ * Returns true if the building block data represents a Page building block with the full template type.
+ *
+ * @param data - the building block data
+ * @returns true if full Page template
+ */
+function isFullPageTemplate(data: BuildingBlock): boolean {
+    return data.buildingBlockType === BuildingBlockType.Page && (data as Page).templateType === PAGE_TEMPLATE_TYPE_FULL;
+}
+
+/**
  * Generates a building block into the provided xml view file.
  *
  * @param {string} basePath - the base path
@@ -103,11 +113,9 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         templateConfig
     );
 
-    const isFullPageTemplate =
-        buildingBlockData.buildingBlockType === BuildingBlockType.Page &&
-        (buildingBlockData as Page).templateType === PAGE_TEMPLATE_TYPE_FULL;
+    const fullPageTemplate = isFullPageTemplate(buildingBlockData);
 
-    if (isFullPageTemplate) {
+    if (fullPageTemplate) {
         const pageData = buildingBlockData as Page;
         appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId, pageData);
     }
@@ -134,7 +142,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         config.replace
     );
 
-    if (isFullPageTemplate) {
+    if (fullPageTemplate) {
         await applyPageControllerTemplate(fs, basePath, viewOrFragmentPath);
     }
 
@@ -155,6 +163,57 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
 }
 
 /**
+ * Resolves the sap.fe.macros namespace prefix from the view document.
+ * If sap.fe.macros is the default namespace (no prefix), declares xmlns:macros on the document element
+ * so that generated prefixed elements like <macros:items> remain valid.
+ *
+ * @param xmlDocument - the view XML document
+ * @returns the resolved namespace prefix string (e.g. 'macros')
+ */
+function resolveMacrosPrefix(xmlDocument: Document): string {
+    const prefix = getOrAddNamespace(xmlDocument, 'sap.fe.macros', 'macros');
+    if (prefix === '') {
+        xmlDocument.documentElement.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:macros', 'sap.fe.macros');
+        return 'macros';
+    }
+    return prefix;
+}
+
+/**
+ * Renders a Page aggregation EJS template and parses it as an XML fragment document.
+ * Inherits all xmlns:* declarations from the view root so inner content can use any view-declared prefix.
+ *
+ * @param fs - the memfs editor instance
+ * @param aggName - the aggregation name (e.g. 'footer', 'items')
+ * @param aggContext - the EJS template context
+ * @param aggContext.macrosPrefix - the namespace prefix string (e.g. 'macros:')
+ * @param aggContext.mContent - optional inner XML content for the aggregation
+ * @param aggContext.aggId - the generated unique ID for the aggregation element
+ * @param fragMacrosNS - the namespace prefix resolved for sap.fe.macros
+ * @param xmlDocument - the view XML document (used to inherit namespace declarations)
+ * @returns parsed XML document whose documentElement contains the aggregation child nodes
+ */
+function buildPageAggregationFragment(
+    fs: Editor,
+    aggName: string,
+    aggContext: { macrosPrefix: string; mContent: string; aggId: string },
+    fragMacrosNS: string,
+    xmlDocument: Document
+): Document {
+    const aggPath = getTemplatePath(`/building-block/page/${aggName}.xml`);
+    const aggContent = render(fs.read(aggPath), aggContext, {}); // NOSONAR - template is a controlled file on disk, not user input
+    const extraNamespaces = Array.from(xmlDocument.documentElement.attributes)
+        .filter((a) => a.name.startsWith('xmlns:') && a.name !== `xmlns:${fragMacrosNS}` && a.name !== 'xmlns:m')
+        .map((a) => `${a.name}="${a.value}"`)
+        .join(' ');
+    const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" xmlns="sap.m" xmlns:m="sap.m" ${extraNamespaces}>${aggContent}</root>`;
+    const errorHandler = (level: string, message: string): never => {
+        throw new Error(`Unable to parse page aggregation fragment. Details: [${level}] - ${message}`);
+    };
+    return new DOMParser({ errorHandler }).parseFromString(wrapped, 'text/xml');
+}
+
+/**
  * Appends the 7 Page building block aggregation fragments as child elements of the templateDocument root.
  *
  * @param {Editor} fs - the memfs editor instance
@@ -170,31 +229,15 @@ function appendPageAggregations(
     generateId: IdGeneratorFunction,
     pageData: Page
 ): void {
-    const macrosNS = getOrAddNamespace(xmlDocument, 'sap.fe.macros', 'macros');
-    let fragMacrosNS = macrosNS;
-    if (fragMacrosNS === '') {
-        xmlDocument.documentElement.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:macros', 'sap.fe.macros');
-        fragMacrosNS = 'macros';
-    }
+    const fragMacrosNS = resolveMacrosPrefix(xmlDocument);
     const macrosPrefix = `${fragMacrosNS}:`;
     const pageElement = templateDocument.documentElement;
-    const aggErrorHandler = (level: string, message: string): never => {
-        throw new Error(`Unable to parse page aggregation fragment. Details: [${level}] - ${message}`);
-    };
     pageElement.appendChild(templateDocument.createComment(PAGE_TEMPLATE_COMMENT));
     for (const aggName of PAGE_AGGREGATIONS) {
         const mContent = pageData.aggregations?.[aggName] ?? '';
         const aggId = generateId(aggName);
         const aggContext = { macrosPrefix, mContent, aggId };
-        const aggPath = getTemplatePath(`/building-block/page/${aggName}.xml`);
-        const aggContent = render(fs.read(aggPath), aggContext, {}); // NOSONAR - template is a controlled file on disk, not user input
-        // Inherit all xmlns:* declarations from the view root so mContent can use any view-declared prefix.
-        const extraNamespaces = Array.from(xmlDocument.documentElement.attributes)
-            .filter((a) => a.name.startsWith('xmlns:') && a.name !== `xmlns:${fragMacrosNS}` && a.name !== 'xmlns:m')
-            .map((a) => `${a.name}="${a.value}"`)
-            .join(' ');
-        const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" xmlns="sap.m" xmlns:m="sap.m" ${extraNamespaces}>${aggContent}</root>`;
-        const aggDoc = new DOMParser({ errorHandler: aggErrorHandler }).parseFromString(wrapped, 'text/xml');
+        const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
         for (const node of Array.from(aggDoc.documentElement.childNodes)) {
             if (node.nodeType === 1 /* Element */) {
                 (node as Element).setAttribute('id', aggId);
@@ -317,28 +360,10 @@ export async function appendBuildingBlockAggregation(
     const generateId = await createIdGenerator({ basePath, fsEditor: fs });
     const aggId = generateId(aggName);
 
-    const macrosNS = getOrAddNamespace(xmlDocument, 'sap.fe.macros', 'macros');
-    let fragMacrosNS = macrosNS;
-    if (fragMacrosNS === '') {
-        xmlDocument.documentElement.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:macros', 'sap.fe.macros');
-        fragMacrosNS = 'macros';
-    }
+    const fragMacrosNS = resolveMacrosPrefix(xmlDocument);
     const macrosPrefix = `${fragMacrosNS}:`;
     const aggContext = { macrosPrefix, mContent, aggId };
-
-    const aggPath = getTemplatePath(`/building-block/page/${aggName}.xml`);
-    const aggContent = render(fs.read(aggPath), aggContext, {}); // NOSONAR - template is a controlled file on disk, not user input
-    // Inherit all xmlns:* declarations from the view root so mContent can use any view-declared prefix.
-    const extraNamespaces = Array.from(xmlDocument.documentElement.attributes)
-        .filter((a) => a.name.startsWith('xmlns:') && a.name !== `xmlns:${fragMacrosNS}` && a.name !== 'xmlns:m')
-        .map((a) => `${a.name}="${a.value}"`)
-        .join(' ');
-    const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" xmlns="sap.m" xmlns:m="sap.m" ${extraNamespaces}>${aggContent}</root>`;
-
-    const errorHandler = (level: string, message: string): never => {
-        throw new Error(`Unable to parse page aggregation fragment. Details: [${level}] - ${message}`);
-    };
-    const aggDoc = new DOMParser({ errorHandler }).parseFromString(wrapped, 'text/xml');
+    const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
 
     const nsMap = (xmlDocument.documentElement as any)?._nsMap ?? {};
     // Prefix-agnostic XPath — works regardless of the alias used in the view for sap.fe.macros.
@@ -732,9 +757,7 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
     // For the full Page template, augment the snippet with all 7 aggregations
     let viewOrFragmentContent = content;
     const pageData = buildingBlockData as Page;
-    const isFullPage =
-        buildingBlockData.buildingBlockType === BuildingBlockType.Page &&
-        pageData.templateType === PAGE_TEMPLATE_TYPE_FULL;
+    const isFullPage = isFullPageTemplate(buildingBlockData);
     if (isFullPage) {
         // Use the real view document for namespace resolution if available, otherwise create a minimal fallback
         const nsDoc =
