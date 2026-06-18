@@ -555,6 +555,9 @@ describe('AdaptationProject', () => {
             const app = express();
             app.use(adp.descriptor.url, adp.proxy.bind(adp));
             app.get(`${mockMergedDescriptor.url}/original.file`, next);
+            // Catch i18n .properties pass-throughs so tests can verify proxy() called next()
+            // without redirecting. Mirrors how fiori-tools-proxy would handle them in real runs.
+            app.get(new RegExp(`^${mockMergedDescriptor.url}/i18n/.*\\.properties$`), next);
             app.use((req) => fail(`${req.path} should have been intercepted.`));
 
             server = supertest(app);
@@ -600,6 +603,41 @@ describe('AdaptationProject', () => {
         test('/original.file', async () => {
             await server.get(`${mockMergedDescriptor.url}/original.file`).expect(200);
             expect(next).toHaveBeenCalled();
+        });
+
+        test('/i18n/i18n.properties is passed through (not redirected)', async () => {
+            // Given: the ADP project would have a matching local i18n bundle that, before
+            // the fix, was substituted via 302 redirect — hiding the base app's full bundle
+            // and breaking {@i18n>...} lookups in annotations.
+            const byGlobSpy = mockProject.byGlob.mockResolvedValue([{ getPath: () => '/i18n/i18n.properties' }]);
+
+            // When: a request for the default i18n bundle hits the proxy.
+            const response = await server.get(`${mockMergedDescriptor.url}/i18n/i18n.properties`);
+
+            // Then: the proxy calls next() (status 200 from the catch-all handler) and
+            // never invokes byGlob — i18n is checked early and unconditionally falls
+            // through to the next middleware, regardless of any matching local file.
+            expect(response.status).toBe(200);
+            expect(byGlobSpy).not.toHaveBeenCalledWith('/i18n/i18n.properties.*');
+        });
+
+        test('/i18n/i18n_de.properties (locale variant) is passed through', async () => {
+            const byGlobSpy = mockProject.byGlob.mockResolvedValue([]);
+            const response = await server.get(`${mockMergedDescriptor.url}/i18n/i18n_de.properties`);
+            expect(response.status).toBe(200);
+            expect(byGlobSpy).not.toHaveBeenCalledWith('/i18n/i18n_de.properties.*');
+        });
+
+        test('/i18n/ListReport/Foo/i18n.properties (per-page bundle) is passed through', async () => {
+            // Given: Fiori Elements V2 LROP loads per-page bundles whose paths include
+            // the page name and entity set. These must also fall through, not be
+            // substituted from the ADP webapp.
+            const byGlobSpy = mockProject.byGlob.mockResolvedValue([]);
+
+            const response = await server.get(`${mockMergedDescriptor.url}/i18n/ListReport/Foo/i18n.properties`);
+
+            expect(response.status).toBe(200);
+            expect(byGlobSpy).not.toHaveBeenCalledWith('/i18n/ListReport/Foo/i18n.properties.*');
         });
     });
 
