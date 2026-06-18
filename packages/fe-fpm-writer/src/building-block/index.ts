@@ -208,7 +208,7 @@ function buildPageAggregationFragment(
         .join(' ');
     const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" xmlns="sap.m" xmlns:m="sap.m" ${extraNamespaces}>${aggContent}</root>`;
     const errorHandler = (level: string, message: string): never => {
-        throw new Error(`Unable to parse page aggregation fragment. Details: [${level}] - ${message}`);
+        throw new Error(`Unable to parse page aggregation fragment '${aggName}'. Details: [${level}] - ${message}`);
     };
     return new DOMParser({ errorHandler }).parseFromString(wrapped, 'text/xml');
 }
@@ -248,12 +248,16 @@ function appendPageAggregations(
 }
 
 /**
- * Returns the local name of an Element, or an empty string if localName is not a string.
+ * Returns the local name of an Element if it belongs to the sap.fe.macros namespace, otherwise an empty string.
+ * This ensures only Page aggregation elements are sorted by position; non-macros elements fall back to the items slot.
  *
  * @param el - the DOM Element
- * @returns the local name string
+ * @returns the local name string, or '' if not a sap.fe.macros element
  */
 function getElementLocalName(el: Element): string {
+    if (el.namespaceURI !== 'sap.fe.macros') {
+        return '';
+    }
     return typeof el.localName === 'string' ? el.localName : '';
 }
 
