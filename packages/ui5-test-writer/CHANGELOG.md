@@ -1,5 +1,13 @@
 # @sap-ux/ui5-test-writer
 
+## 1.1.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.23 → 1.0.24
+
 ## 1.1.11
 
 ### Patch Changes
