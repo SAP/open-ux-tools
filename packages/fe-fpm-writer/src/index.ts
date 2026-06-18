@@ -10,7 +10,8 @@ export { TargetControl as ActionMenuTargetControl } from './action-menu/types.js
 export { generateActionMenu } from './action-menu/index.js';
 
 export type { CustomTableColumn } from './column/types.js';
-export { generateCustomColumn } from './column/index.js';
+export type { Fragment } from './column/index.js';
+export { generateCustomColumn, generateFragment } from './column/index.js';
 
 export type { CustomHeaderSection, CustomSection, CustomSubSection } from './section/types.js';
 export { RequestGroupId, DesignTime } from './section/types.js';

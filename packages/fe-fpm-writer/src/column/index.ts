@@ -2,7 +2,7 @@ import { render } from 'ejs';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import type { CustomTableColumn, InternalCustomTableColumn } from './types.js';
 import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults.js';
 import type { Manifest } from '../common/types.js';
@@ -67,6 +67,61 @@ function enhanceConfig(
     config.content = config.control || getDefaultFragmentContent(content, generateId, config.eventHandler);
 
     return config as InternalCustomTableColumn;
+}
+
+/**
+ * Fragment generation configuration.
+ */
+export interface Fragment {
+    /**
+     * Fragment name (without .fragment.xml extension).
+     */
+    name: string;
+    /**
+     * Optional folder path relative to webapp (default: 'ext/fragment').
+     */
+    folder?: string;
+    /**
+     * Optional custom content for the fragment. If not provided, generates default <Text> content.
+     */
+    content?: string;
+}
+
+/**
+ * Generate a standalone fragment file with default content.
+ * Reuses the same template as custom columns: <Text text="Sample Text" />
+ * Does NOT modify manifest.json - fragment-only generation.
+ *
+ * @param {string} basePath - the base path
+ * @param {Fragment} fragment - fragment generation configuration
+ * @param {Editor} [fs] - the mem-fs editor instance
+ * @returns {Promise<Editor>} the updated mem-fs editor instance
+ */
+export async function generateFragment(
+    basePath: string,
+    fragment: Fragment,
+    fs?: Editor
+): Promise<Editor> {
+    fs ??= create(createStorage());
+    await validateBasePath(basePath, fs);
+    const fnGenerateId = await createIdGenerator({ basePath, fsEditor: fs });
+
+    const { path: manifestPath } = await getManifest(basePath, fs);
+
+    // Calculate path for fragment
+    const folder = fragment.folder || 'ext/fragment';
+    const path = join(dirname(manifestPath), folder);
+
+    // Generate default content if not provided
+    const content = fragment.content || getDefaultFragmentContent('Sample Text', fnGenerateId);
+
+    // Create fragment file
+    const viewPath = join(path, `${fragment.name}.fragment.xml`);
+    if (!fs.exists(viewPath)) {
+        copyTpl(fs, getTemplatePath('common/Fragment.xml'), viewPath, { content }, fnGenerateId);
+    }
+
+    return fs;
 }
 
 /**
