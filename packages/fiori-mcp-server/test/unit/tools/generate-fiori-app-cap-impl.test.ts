@@ -100,10 +100,7 @@ describe('executeFunctionality', () => {
             message: `Generation completed successfully: ${join(
                 testOutputDir,
                 'app1/app/app1'
-            )}. You must run \`npm install\` in ${join(
-                testOutputDir,
-                'app1'
-            )} before trying to run the application.`,
+            )}. You must run \`npm install\` in ${join(testOutputDir, 'app1')} before trying to run the application.`,
             status: 'Success'
         });
         expect(existsSync(join(testOutputDir, 'app1', 'default-generator-config.json'))).toBeFalsy();

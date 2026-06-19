@@ -29,7 +29,11 @@ const mockUnlink = jest.fn<any>().mockResolvedValue(undefined);
 const mockExistsSync = jest.fn<any>().mockReturnValue(false);
 jest.unstable_mockModule('node:fs', () => ({
     ...actualFs,
-    default: { ...actualFs, existsSync: mockExistsSync, promises: { readFile: mockReadFile, mkdir: mockMkdir, writeFile: mockWriteFile, unlink: mockUnlink } },
+    default: {
+        ...actualFs,
+        existsSync: mockExistsSync,
+        promises: { readFile: mockReadFile, mkdir: mockMkdir, writeFile: mockWriteFile, unlink: mockUnlink }
+    },
     existsSync: mockExistsSync,
     promises: { readFile: mockReadFile, mkdir: mockMkdir, writeFile: mockWriteFile, unlink: mockUnlink }
 }));
