@@ -24,6 +24,9 @@ import {
     openAdaptationEditor,
     adpControllerExtension,
     runRtaWorkflowStep,
+    listLibrariesFromSystem,
+    readODataMetadataAdp,
+    listODataServices,
     tools
 } from './tools/index.js';
 import { stopBrowser } from './tools/run-rta-workflow-step/browser/index.js';
@@ -39,7 +42,8 @@ import type {
     GenerateAdaptationProjectInput,
     OpenAdaptationEditorInput,
     AdpControllerExtensionInput,
-    RunRtaWorkflowStepInput
+    RunRtaWorkflowStepInput,
+    AdpMetadataInput
 } from './types/index.js';
 import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
 import { logger } from './utils/logger.js';
@@ -57,6 +61,7 @@ type ToolArgs =
     | OpenAdaptationEditorInput
     | AdpControllerExtensionInput
     | RunRtaWorkflowStepInput
+    | AdpMetadataInput
     | Record<string, unknown>;
 
 const FALLBACK_PROTOCOL_VERSION = '2024-11-05';
@@ -230,6 +235,15 @@ export class FioriFunctionalityServer {
                         break;
                     case 'run_rta_workflow_step':
                         result = await runRtaWorkflowStep(args as RunRtaWorkflowStepInput);
+                        break;
+                    case 'list_libraries_from_system':
+                        result = await listLibrariesFromSystem(args as ListFunctionalitiesInput);
+                        break;
+                    case 'list_odata_services_from_system':
+                        result = await listODataServices(args as ListFunctionalitiesInput);
+                        break;
+                    case 'read_odata_metadata_adp':
+                        result = await readODataMetadataAdp(args as AdpMetadataInput);
                         break;
                     case 'list_functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);

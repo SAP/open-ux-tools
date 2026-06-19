@@ -5,7 +5,7 @@ export default {
     setupFilesAfterEnv: ['<rootDir>/test/jest.setup.ts'],
     modulePathIgnorePatterns: [...baseConfig.modulePathIgnorePatterns, '<rootDir>/test/data/'],
     transformIgnorePatterns: [
-        'node_modules/(?!(@huggingface|@sap-ux|@sap-ux-private|@sap/ux-specification|@sap/ux-cds-compiler-facade|@sap-devx)/)'
+        'node_modules/(?!(@huggingface|@sap-ux|@sap-ux-private|@sap/ux-specification|@sap/ux-cds-compiler-facade)/)'
     ],
     // Routes @sap/ux-cds-compiler-facade to .mjs ESM mock
     resolver: '<rootDir>/jest.resolver.cjs',
@@ -24,7 +24,7 @@ export default {
         // Stub fe-fpm-writer to prevent the CJS require chain: ux-specification → fe-fpm-writer →
         // fiori-annotation-api → @sap/ux-cds-compiler-facade which conflicts with the ESM mock
         '^@sap-ux/fe-fpm-writer$': '<rootDir>/test/__mocks__/@sap-ux/fe-fpm-writer.cjs',
-        '^@sap-ux/adp-tooling$': '<rootDir>/test/__mocks__/@sap-ux/adp-tooling.cjs',
+        '^@sap-devx/yeoman-ui-types$': '<rootDir>/test/__mocks__/@sap-devx/yeoman-ui-types.mjs',
         '^@sap/ux-specification$': '<rootDir>/test/__mocks__/@sap/ux-specification.mjs',
         ...baseConfig.moduleNameMapper,
         '^@huggingface/transformers$': '<rootDir>/test/__mocks__/@huggingface/transformers.cjs'
