@@ -2,11 +2,15 @@
 
 ## 1.0.1
 
+*Released: 2026-06-03T14:58:37Z*
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -41,11 +45,15 @@
 
 ## 0.4.0
 
+*Released: 2026-05-15T08:12:20Z*
+
 ### Minor Changes
 
 - 72695e5: chore: drop Node 20 support as it is no longer maintained
 
 ## 0.3.2
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -53,11 +61,15 @@
 
 ## 0.3.1
 
+*Released: 2026-05-12T12:59:14Z*
+
 ### Patch Changes
 
 - ac6381f: remove default selected key for sap systems ext
 
 ## 0.3.0
+
+*Released: 2026-04-30T12:29:22Z*
 
 ### Minor Changes
 
@@ -67,11 +79,15 @@
 
 ## 0.2.1
 
+*Released: 2026-03-30T22:24:11Z*
+
 ### Patch Changes
 
 - c53a4ba: chore(sap-systems-ext-webapp): upgrade shared devDependencies (jest 30, i18next 25)
 
 ## 0.2.0
+
+*Released: 2026-03-28T09:24:50Z*
 
 ### Minor Changes
 
@@ -79,11 +95,15 @@
 
 ## 0.1.5
 
+*Released: 2026-03-17T01:04:22Z*
+
 ### Patch Changes
 
 - 55417bb: fix(deps): update dependency i18next to v25.8.18
 
 ## 0.1.4
+
+*Released: 2026-02-26T10:46:59Z*
 
 ### Patch Changes
 
@@ -91,11 +111,15 @@
 
 ## 0.1.3
 
+*Released: 2026-02-23T23:44:05Z*
+
 ### Patch Changes
 
 - 4d381b7: fix(deps): update dependencies [react]
 
 ## 0.1.2
+
+*Released: 2026-02-21T00:10:36Z*
 
 ### Patch Changes
 
@@ -103,11 +127,15 @@
 
 ## 0.1.1
 
+*Released: 2026-02-20T16:17:11Z*
+
 ### Patch Changes
 
 - cbd340a: fix(deps): update dependency i18next to v25.8.12
 
 ## 0.1.0
+
+*Released: 2026-02-13T16:18:58Z*
 
 ### Minor Changes
 
@@ -115,11 +143,15 @@
 
 ## 0.0.12
 
+*Released: 2026-02-10T21:03:43Z*
+
 ### Patch Changes
 
 - 3795bb2: Add Node.js engine requirement (>=20.x)
 
 ## 0.0.11
+
+*Released: 2026-01-29T15:31:52Z*
 
 ### Patch Changes
 
@@ -127,11 +159,15 @@
 
 ## 0.0.10
 
+*Released: 2026-01-23T11:19:50Z*
+
 ### Patch Changes
 
 - 3ffe28e: fix input background styling when Chrome autofill is applied
 
 ## 0.0.9
+
+*Released: 2026-01-22T13:16:27Z*
 
 ### Patch Changes
 
@@ -139,11 +175,15 @@
 
 ## 0.0.8
 
+*Released: 2026-01-22T10:26:02Z*
+
 ### Patch Changes
 
 - fc67b03: reword the readme
 
 ## 0.0.7
+
+*Released: 2026-01-12T09:10:27Z*
 
 ### Patch Changes
 
@@ -151,11 +191,15 @@
 
 ## 0.0.6
 
+*Released: 2025-12-16T11:43:52Z*
+
 ### Patch Changes
 
 - ba58398: adds mandatory props to backend systems and migrates existing
 
 ## 0.0.5
+
+*Released: 2025-12-15T10:50:50Z*
 
 ### Patch Changes
 
@@ -163,11 +207,15 @@
 
 ## 0.0.4
 
+*Released: 2025-11-12T10:01:42Z*
+
 ### Patch Changes
 
 - caff0ca: fix for saving systems
 
 ## 0.0.3
+
+*Released: 2025-11-06T15:44:36Z*
 
 ### Patch Changes
 
@@ -175,11 +223,15 @@
 
 ## 0.0.2
 
+*Released: 2025-11-03T13:24:11Z*
+
 ### Patch Changes
 
 - 1e57e54: Adds a warning regarding OS credential manager policies.
 
 ## 0.0.1
+
+*Released: 2026-01-23T11:19:50Z*
 
 ### Patch Changes
 

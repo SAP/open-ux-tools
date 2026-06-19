@@ -219,6 +219,45 @@ describe('helper', () => {
             expect(result).toBe(true);
         });
 
+        it('should return true when an appdescr_app_setInbounds change exists', () => {
+            const variantContent = {
+                content: [
+                    { changeType: 'appdescr_app_setInbounds' },
+                    { changeType: 'appdescr_ui5_addNewModelEnhanceWith' }
+                ]
+            };
+
+            const result = flpConfigurationExists(variantContent as unknown as DescriptorVariant);
+
+            expect(result).toBe(true);
+        });
+
+        it('should return true when an appdescr_app_addNewInbound change exists', () => {
+            const variantContent = {
+                content: [
+                    { changeType: 'appdescr_app_addNewInbound' },
+                    { changeType: 'appdescr_ui5_addNewModelEnhanceWith' }
+                ]
+            };
+
+            const result = flpConfigurationExists(variantContent as unknown as DescriptorVariant);
+
+            expect(result).toBe(true);
+        });
+
+        it('should return false when only unrelated change types exist', () => {
+            const variantContent = {
+                content: [
+                    { changeType: 'appdescr_ui5_addNewModelEnhanceWith' },
+                    { changeType: 'appdescr_app_removeAllInboundsExceptOne' }
+                ]
+            };
+
+            const result = flpConfigurationExists(variantContent as unknown as DescriptorVariant);
+
+            expect(result).toBe(false);
+        });
+
         it('should return false if no valid FLP configuration exists', async () => {
             const variantContent = {
                 content: []

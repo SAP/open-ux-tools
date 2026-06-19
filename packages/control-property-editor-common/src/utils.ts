@@ -13,36 +13,7 @@ const isUpperCase = (code: number): boolean => code >= 65 && code <= 90;
 const isLowerCase = (code: number): boolean => code >= 97 && code <= 122;
 const isWordDelimiter = (code: number): boolean => code === 45 || code === 95 || code === 32; // - or _ or space
 
-const isSentenceCase = (text: string): boolean => {
-    if (!text || text.length === 0 || !isUpperCase(text.charCodeAt(0))) {
-        return false;
-    }
-    // Sentence case should have spaces between words
-    for (let i = 0; i < text.length; i++) {
-        const code = text.charCodeAt(i);
-        if (code === 32) {
-            return true;
-        } else if (code === 45 || code === 95) {
-            // Has hyphens or underscores - not sentence case
-            return false;
-        }
-    }
-    return true;
-};
-
-const isEndOfAbbreviatedWord = (text: string, index: number): boolean => {
-    if (index + 2 >= text.length) {
-        return false;
-    }
-    return isUpperCase(text.charCodeAt(index + 1)) && isLowerCase(text.charCodeAt(index + 2));
-};
-
 export const convertCamelCaseToPascalCase = (text: string): string => {
-    // Early return if already in sentence case
-    if (isSentenceCase(text)) {
-        return text;
-    }
-
     const words = [];
     let word = '';
     let lookForUpperCase = true;
@@ -54,7 +25,7 @@ export const convertCamelCaseToPascalCase = (text: string): string => {
             if (isLowerCase(text.charCodeAt(i + 1))) {
                 // First lower case character after upper case character -> switch mode to collect only lower case characters
                 lookForUpperCase = false;
-            } else if (isEndOfAbbreviatedWord(text, i)) {
+            } else if (isUpperCase(text.charCodeAt(i + 1)) && isLowerCase(text.charCodeAt(i + 2))) {
                 // Next character is the last uppercase character after a sequence of upper case character -> create an abbreviated word
                 words.push(word);
                 word = '';
