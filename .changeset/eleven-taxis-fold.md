@@ -68,4 +68,4 @@
 '@sap-ux/yaml': patch
 ---
 
-fix SONAR issues
+fix: SONAR issues
