@@ -59,8 +59,8 @@ describe('Utility Functions', () => {
     describe('getCfSystemChoices', () => {
         it('should return destination choices when destinations are provided', async () => {
             const choices: CfSystemChoice[] = [
-                { name: 'Dest1 - host', value: '', scp: false, url: 'host' },
-                { name: 'Unknown - host', value: 'Dest1', scp: false, url: 'host' }
+                { name: 'Dest1 - host', value: '', scp: false, url: 'host', isFullUrl: false },
+                { name: 'Unknown - host', value: 'Dest1', scp: false, url: 'host', isFullUrl: false }
             ];
             mockGetDisplayName.mockReturnValueOnce('Dest1');
             mockIsAbapEnvironmentOnBtp.mockReturnValueOnce(false);
@@ -93,8 +93,8 @@ describe('Utility Functions', () => {
             const result = await getCfSystemChoices(destinations);
 
             expect(result).toEqual([
-                { name: 'Dest1 - host', value: 'Dest1', scp: false, url: 'host' },
-                { name: 'Dest2 - host2', value: 'Dest2', scp: false, url: 'host2' }
+                { name: 'Dest1 - host', value: 'Dest1', scp: false, url: 'host', isFullUrl: false },
+                { name: 'Dest2 - host2', value: 'Dest2', scp: false, url: 'host2', isFullUrl: false }
             ]);
         });
     });

@@ -41,11 +41,12 @@ const execCommand = (
 
 interface SourceConfig {
     id: string;
-    type: 'github' | 'json-api';
+    type: 'github' | 'json-api' | 'github-raw';
     owner?: string;
     repo?: string;
     branch?: string;
     docsPath?: string;
+    filePath?: string;
     url?: string;
     category: string;
     enabled: boolean;
@@ -56,6 +57,7 @@ interface BuildConfig {
     outputPath: string;
     gitReposPath?: string;
     sources: SourceConfig[];
+    singleSource?: boolean;
 }
 
 interface LLMClient {
@@ -403,6 +405,16 @@ class MultiSourceDocumentationBuilder {
                     category: 'fiori-tools',
                     enabled: true,
                     useEnvAuth: true
+                },
+                {
+                    id: 'fiori-tools-opa-guide',
+                    type: 'github-raw',
+                    owner: 'sap-tutorials',
+                    repo: 'Tutorials',
+                    branch: 'master',
+                    filePath: 'tutorials/fiori-tools-mockserver-opa-testing/fiori-tools-mockserver-opa-testing.md',
+                    category: 'fiori-tools',
+                    enabled: true
                 }
             ]
         };
@@ -998,6 +1010,9 @@ Return ONLY the formatted markdown. Do not add any explanations or meta-commenta
                 case 'github':
                     files = await this.processGitHubSource(source);
                     break;
+                case 'github-raw':
+                    files = await this.processGitHubRawSource(source);
+                    break;
                 case 'json-api':
                     files = await this.processJsonApiSource(source);
                     break;
@@ -1108,6 +1123,37 @@ Return ONLY the formatted markdown. Do not add any explanations or meta-commenta
         }
 
         this.sourceResults.set(source.id, result);
+    }
+
+    /**
+     * Process a single raw file from a GitHub repository without cloning.
+     *
+     * @param source - Source configuration with filePath pointing to the target file
+     * @returns Promise resolving to array containing the single file content
+     */
+    async processGitHubRawSource(source: SourceConfig): Promise<FileContent[]> {
+        if (!source.filePath) {
+            throw new Error(`github-raw source ${source.id} requires a filePath`);
+        }
+        // owner/repo are optional in SourceConfig but required to form the raw URL — guard early
+        // to avoid a confusing 404 from https://raw.githubusercontent.com/undefined/undefined/...
+        if (!source.owner || !source.repo) {
+            throw new Error(`github-raw source ${source.id} requires owner and repo`);
+        }
+
+        const branch = source.branch ?? 'main';
+        const rawUrl = `https://raw.githubusercontent.com/${source.owner}/${source.repo}/${branch}/${source.filePath}`;
+        this.logger.info(`📥 Fetching raw file: ${rawUrl}`);
+
+        const response = await fetch(rawUrl);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch ${rawUrl}: HTTP ${response.status} ${response.statusText}`);
+        }
+
+        const content = await response.text();
+        const fileName = source.filePath.split('/').pop() ?? source.filePath;
+
+        return [{ name: fileName, path: source.filePath, content }];
     }
 
     /**
@@ -1466,40 +1512,91 @@ Return ONLY the formatted markdown. Do not add any explanations or meta-commenta
     async createMasterIndex(): Promise<void> {
         this.logger.info('\n📋 Creating master index...');
 
-        const categories = Array.from(this.categories.entries()).map(([id, docIds]) => {
+        const indexPath = path.join(this.config.outputPath, 'index.json');
+
+        // When running a single source, load and merge into the existing index
+        // so entries for other sources are preserved.
+        let existingCategories: { id: string; name: string; count: number; documents: string[] }[] = [];
+        let existingSources: Record<string, { path: string; documentCount: number }> = {};
+
+        if (this.config.singleSource) {
+            try {
+                const existing = JSON.parse(await fs.readFile(indexPath, 'utf-8'));
+                existingCategories = existing.categories ?? [];
+                existingSources = existing.sources ?? {};
+            } catch {
+                // No existing index yet — start fresh
+            }
+        }
+
+        // Build new entries from the current run
+        const newCategories = Array.from(this.categories.entries()).map(([id, docIds]) => {
             const categoryName = id
                 .split('-')
                 .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
                 .join(' ');
-
-            return {
-                id,
-                name: categoryName,
-                count: docIds.length,
-                documents: docIds
-            };
+            return { id, name: categoryName, count: docIds.length, documents: docIds };
         });
 
-        const sourceFiles: Record<string, { path: string; documentCount: number }> = {};
+        const newSources: Record<string, { path: string; documentCount: number }> = {};
         for (const [sourceId, markdownChunks] of this.sourceMarkdown) {
-            sourceFiles[sourceId] = {
-                path: `${sourceId}.md`,
-                documentCount: markdownChunks.length
-            };
+            newSources[sourceId] = { path: `${sourceId}.md`, documentCount: markdownChunks.length };
         }
+
+        // Merge sources: new source entry replaces the existing one for the same id
+        const mergedSources = { ...existingSources, ...newSources };
+
+        // Merge categories: for a category that already exists, replace stale document IDs
+        // that belong to the current source, then add the fresh ones.
+        const processedSourceIds = new Set(this.sourceMarkdown.keys());
+        const processedSourceArray = Array.from(processedSourceIds);
+        const mergedCategoryMap = new Map(existingCategories.map((c) => [c.id, { ...c, documents: [...c.documents] }]));
+        for (const cat of newCategories) {
+            const existing = mergedCategoryMap.get(cat.id);
+            if (existing) {
+                // IDs are formed as `${sourceId}-${doc.id}`, so filter by prefix to drop docs
+                // that belonged to this source on the previous run — prevents deleted files from
+                // accumulating in the index across repeated single-source rebuilds.
+                const staleRemoved = existing.documents.filter(
+                    (docId) => !processedSourceArray.some((srcId) => docId.startsWith(`${srcId}-`))
+                );
+                const merged = [...new Set([...staleRemoved, ...cat.documents])];
+                mergedCategoryMap.set(cat.id, { ...existing, count: merged.length, documents: merged });
+            } else {
+                mergedCategoryMap.set(cat.id, cat);
+            }
+        }
+        const mergedCategories = Array.from(mergedCategoryMap.values());
+
+        const totalDocuments = mergedCategories.reduce((sum, c) => sum + c.count, 0);
 
         const index = {
             version: '1.0.0',
             generatedAt: new Date().toISOString(),
-            totalDocuments: this.documents.size,
-            categories,
-            sources: sourceFiles
+            totalDocuments,
+            categories: mergedCategories,
+            sources: mergedSources
         };
 
-        const indexPath = path.join(this.config.outputPath, 'index.json');
         await fs.writeFile(indexPath, JSON.stringify(index, null, 2));
-
         this.logger.info(`✓ Created master index: ${indexPath}`);
+    }
+
+    /**
+     * Restrict the build to a single source by its ID. Exits with an error if the ID is not found.
+     *
+     * @param sourceId - The source ID to filter to
+     */
+    filterToSingleSource(sourceId: string): void {
+        const source = this.config.sources.find((s) => s.id === sourceId);
+        if (!source) {
+            this.logger.error(
+                `Unknown source "${sourceId}". Available: ${this.config.sources.map((s) => s.id).join(', ')}`
+            );
+            process.exit(1);
+        }
+        this.config.sources = [source];
+        this.config.singleSource = true;
     }
 }
 
@@ -1512,6 +1609,12 @@ const isMainModule = fileURLToPath(import.meta.url) === path.resolve(process.arg
 if (isMainModule) {
     const logger = new ToolsLogger();
     const builder = new MultiSourceDocumentationBuilder();
+
+    const sourceArg = process.argv.find((a) => a.startsWith('--source='))?.split('=')[1];
+    if (sourceArg) {
+        builder.filterToSingleSource(sourceArg);
+    }
+
     try {
         await builder.buildFilestore();
     } catch (error) {

@@ -76,6 +76,11 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: 1.134.1
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 "
 `;
 
@@ -182,5 +187,10 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: 1.134.1
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 "
 `;
