@@ -10,7 +10,7 @@ const BLOCKED_MAJOR_PACKAGES = [
 ];
 
 const __dirname = import.meta.dirname;
-const VALID_SUMMARY_PREFIX = /^(FEAT|FIX|BUMP):/i;
+const VALID_SUMMARY_PREFIX = /^(FEAT|FIX|BUMP|INFRA):/i;
 const CHANGESET_DIR = path.join(__dirname, '..', '.changeset');
 
 function validateChangesets() {

@@ -15,7 +15,7 @@ import { getAbapSystems } from '../../utils.js';
 import { PromptState } from '../prompt-state.js';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
-import { isAppStudio, isOnPremiseDestination, type Destinations } from '@sap-ux/btp-utils';
+import { isAppStudio, isOnPremiseDestination, isFullUrlDestination, type Destinations } from '@sap-ux/btp-utils';
 import {
     promptNames,
     ClientChoiceValue,
@@ -60,14 +60,21 @@ function getDestinationPrompt(
             validate: async (destination: string): Promise<boolean | string> =>
                 await validateDestinationQuestion(destination, destinations, backendTarget, adpProjectType),
             additionalMessages: (destination: string): IMessageSeverity | undefined => {
-                let additionalMessage;
-                if (destinations && destination && isOnPremiseDestination(destinations[destination])) {
-                    additionalMessage = {
-                        message: t('warnings.virtualHost'),
-                        severity: Severity.information
-                    };
+                if (destinations && destination) {
+                    if (isFullUrlDestination(destinations[destination])) {
+                        return {
+                            message: t('warnings.fullUrlDestination'),
+                            severity: Severity.warning
+                        };
+                    }
+                    if (isOnPremiseDestination(destinations[destination])) {
+                        return {
+                            message: t('warnings.virtualHost'),
+                            severity: Severity.information
+                        };
+                    }
                 }
-                return additionalMessage;
+                return undefined;
             }
         } as ListQuestion<AbapDeployConfigAnswersInternal>
     ];

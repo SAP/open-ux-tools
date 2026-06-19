@@ -2,6 +2,8 @@
 
 ## 1.4.1
 
+*Released: 2026-06-16T21:19:36Z*
+
 ### Patch Changes
 
 #### Bug Fixes
@@ -10,11 +12,15 @@
 
 ## 1.4.0
 
+*Released: 2026-06-12T13:04:20Z*
+
 ### Minor Changes
 
 - a7ed101: Add opa5_docu.md to doc_search
 
 ## 1.3.0
+
+*Released: 2026-06-11T19:07:40Z*
 
 ### Minor Changes
 
@@ -22,11 +28,15 @@
 
 ## 1.2.0
 
+*Released: 2026-06-11T16:48:19Z*
+
 ### Minor Changes
 
 - 14c8584: FEAT: update visual filter skill with ABAP RAP support.
 
 ## 1.1.4
+
+*Released: 2026-06-10T16:48:39Z*
 
 ### Patch Changes
 
@@ -40,11 +50,15 @@
 
 ## 1.1.3
 
+*Released: 2026-06-08T12:39:24Z*
+
 ### Patch Changes
 
 - 74a3c3f: Switch to onnxruntime-web (WASM) to eliminate native binaries and reduce tgz to ~9 MB
 
 ## 1.1.2
+
+*Released: 2026-06-05T20:41:12Z*
 
 ### Patch Changes
 
@@ -52,11 +66,15 @@
 
 ## 1.1.1
 
+*Released: 2026-06-05T16:17:23Z*
+
 ### Patch Changes
 
 - 889a217: Download ONNX model at runtime to reduce tgz below npm publish 100 MB limit
 
 ## 1.1.0
+
+*Released: 2026-06-05T11:08:04Z*
 
 ### Minor Changes
 
@@ -64,6 +82,8 @@
   Replace @xenova/transformers with @huggingface/transformers 4.2.0;
 
 ## 1.0.3
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -74,12 +94,16 @@
 
 ## 1.0.2
 
+*Released: 2026-06-01T17:22:37Z*
+
 ### Patch Changes
 
 - 0268c25: Replace negated typeof checks to avoid SonarQube findings
     - @sap-ux/fiori-docs-embeddings@1.0.0
 
 ## 1.0.1
+
+*Released: 2026-05-31T21:32:23Z*
 
 ### Patch Changes
 
@@ -88,6 +112,8 @@
     These packages have no bundling obstacles and should be inlined into the dist rather than left as unresolved external imports that cause `ERR_MODULE_NOT_FOUND` when the server is run via npx.
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -128,6 +154,8 @@
 
 ## 0.7.2
 
+*Released: 2026-05-27T10:42:47Z*
+
 ### Patch Changes
 
 - Updated dependencies [c12420a]
@@ -136,12 +164,16 @@
 
 ## 0.7.1
 
+*Released: 2026-05-21T05:46:16Z*
+
 ### Patch Changes
 
 - Updated dependencies [12137f6]
     - @sap-ux/fiori-docs-embeddings@0.5.1
 
 ## 0.7.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -155,6 +187,8 @@
 
 ## 0.6.60
 
+*Released: 2026-05-14T12:51:22Z*
+
 ### Patch Changes
 
 - 59537d3: chore: override sharp to >=0.33.5 to fix CI build on darwin-arm64
@@ -162,6 +196,8 @@
     - @sap-ux/fiori-docs-embeddings@0.4.20
 
 ## 0.6.59
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -172,17 +208,23 @@
 
 ## 0.6.58
 
+*Released: 2026-05-13T17:45:03Z*
+
 ### Patch Changes
 
 - 4101c21: fix: connect stdio transport before telemetry init to fix Claude Desktop extension disconnect
 
 ## 0.6.57
 
+*Released: 2026-05-12T23:31:37Z*
+
 ### Patch Changes
 
 - c4bd625: Improve documentation Claude code, etc...
 
 ## 0.6.56
+
+*Released: 2026-05-11T09:58:34Z*
 
 ### Patch Changes
 
@@ -191,17 +233,23 @@
 
 ## 0.6.55
 
+*Released: 2026-05-07T13:23:43Z*
+
 ### Patch Changes
 
 - 2781f39: fix: add missing apache-arrow runtime dependency required by @lancedb/lancedb
 
 ## 0.6.54
 
+*Released: 2026-05-07T11:24:28Z*
+
 ### Patch Changes
 
 - 35f4b68: chore: update plugin.json manifest name to sap-fiori-mcp-server and fix author metadata
 
 ## 0.6.53
+
+*Released: 2026-05-04T15:49:13Z*
 
 ### Patch Changes
 
@@ -210,11 +258,15 @@
 
 ## 0.6.52
 
+*Released: 2026-04-28T09:04:02Z*
+
 ### Patch Changes
 
 - cf59d8e: feat: add Claude Code plugin support
 
 ## 0.6.51
+
+*Released: 2026-04-23T10:18:53Z*
 
 ### Patch Changes
 
@@ -222,17 +274,23 @@
 
 ## 0.6.50
 
+*Released: 2026-04-23T09:36:26Z*
+
 ### Patch Changes
 
 - c88661f: fix(deps): update dependency @langchain/core to v1.1.40
 
 ## 0.6.49
 
+*Released: 2026-04-14T09:46:36Z*
+
 ### Patch Changes
 
 - 7746b58: feat: add MCP registry manifest for registry.modelcontextprotocol.io
 
 ## 0.6.48
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -241,6 +299,8 @@
     - @sap-ux/store@1.5.13
 
 ## 0.6.47
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -251,6 +311,8 @@
 
 ## 0.6.46
 
+*Released: 2026-03-26T12:07:04Z*
+
 ### Patch Changes
 
 - Updated dependencies [a41533f]
@@ -258,6 +320,8 @@
     - @sap-ux/fiori-docs-embeddings@0.4.16
 
 ## 0.6.45
+
+*Released: 2026-03-23T14:11:51Z*
 
 ### Patch Changes
 
