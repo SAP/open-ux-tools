@@ -15,7 +15,8 @@ import type {
     ListFioriAppsOutputSchema,
     ListFunctionalitiesOutputSchema,
     FetchServiceMetadataOutputSchema,
-    GenerateAppOutputSchema
+    GenerateAppOutputSchema,
+    ListSapSystemsOutputSchema
 } from './output.js';
 
 export type FioriApp = zod.infer<typeof FioriAppSchema>;
@@ -39,6 +40,7 @@ export type DocSearchInput = zod.infer<typeof DocSearchInputSchema>;
 export type DownloadODataServiceMetadataInput = zod.infer<typeof DownloadODataServiceMetadataInputSchema>;
 export type DownloadODataServiceMetadataOutput = zod.infer<typeof FetchServiceMetadataOutputSchema>;
 export type GenerateAppOutput = zod.infer<typeof GenerateAppOutputSchema>;
+export type ListSapSystemsOutput = zod.infer<typeof ListSapSystemsOutputSchema>;
 
 /**
  * Interface for functionality handlers

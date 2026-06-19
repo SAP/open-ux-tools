@@ -51,6 +51,19 @@ export const GetFunctionalityDetailsOutputSchema = zod.object({
 });
 
 /**
+ * Output schema for the 'list_sap_systems' tool
+ */
+export const ListSapSystemsOutputSchema = zod.object({
+    systems: zod.array(
+        zod.object({
+            name: zod.string().describe('The display name of the SAP system or destination.'),
+            url: zod.string().describe('The host URL of the SAP system.'),
+            client: zod.string().optional().describe('The SAP client')
+        })
+    )
+});
+
+/**
  * Output interface for the 'download_odata_service_metadata' tool
  */
 export const FetchServiceMetadataOutputSchema = zod.object({

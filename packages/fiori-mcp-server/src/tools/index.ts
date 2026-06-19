@@ -72,7 +72,8 @@ export const tools = [
         inputSchema: {
             type: 'object',
             properties: {}
-        }
+        },
+        outputSchema: convertToSchema(Output.ListSapSystemsOutputSchema)
     },
     {
         name: 'download_odata_service_metadata',
