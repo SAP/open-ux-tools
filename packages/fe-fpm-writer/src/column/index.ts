@@ -3,7 +3,7 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join, dirname } from 'node:path';
-import type { CustomTableColumn, InternalCustomTableColumn } from './types.js';
+import type { CustomTableColumn, InternalCustomTableColumn, Fragment } from './types.js';
 import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults.js';
 import type { Manifest } from '../common/types.js';
 import { validateVersion, validateBasePath } from '../common/validate.js';
@@ -67,24 +67,6 @@ function enhanceConfig(
     config.content = config.control || getDefaultFragmentContent(content, generateId, config.eventHandler);
 
     return config as InternalCustomTableColumn;
-}
-
-/**
- * Fragment generation configuration.
- */
-export interface Fragment {
-    /**
-     * Fragment name (without .fragment.xml extension).
-     */
-    name: string;
-    /**
-     * Optional folder path relative to webapp (default: 'ext/fragment').
-     */
-    folder?: string;
-    /**
-     * Optional custom content for the fragment. If not provided, generates default <Text> content.
-     */
-    content?: string;
 }
 
 /**
