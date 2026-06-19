@@ -211,6 +211,26 @@ describe('addPathsToQUnitJs()', () => {
 
         expect(log.warn).toHaveBeenCalledWith(expect.stringContaining('opaTests.qunit.js'));
     });
+
+    test('returns true when the file was written, false otherwise', () => {
+        const writingFs = makeFsMock(BASE_FILE) as unknown as Editor;
+        expect(addPathsToQUnitJs(['myApp/test/integration/NewJourney'], testOutDirPath, writingFs)).toBe(true);
+
+        const noopFs = makeFsMock(BASE_FILE) as unknown as Editor;
+        expect(addPathsToQUnitJs(['myApp/test/integration/TravelListJourney'], testOutDirPath, noopFs)).toBe(false);
+    });
+
+    test('warns and returns false when the file exceeds MAX_FILE_CONTENT_LENGTH', () => {
+        const oversized = BASE_FILE + ' '.repeat(MAX_FILE_CONTENT_LENGTH + 1);
+        const fs = makeFsMock(oversized) as unknown as Editor;
+        const log = { warn: jest.fn() } as unknown as Logger;
+
+        const written = addPathsToQUnitJs(['myApp/test/integration/NewJourney'], testOutDirPath, fs, log);
+
+        expect(written).toBe(false);
+        expect(fs.write).not.toHaveBeenCalled();
+        expect(log.warn).toHaveBeenCalledWith(expect.stringContaining('opaTests.qunit.js'));
+    });
 });
 
 describe('readHtmlTargetFromQUnitJs()', () => {

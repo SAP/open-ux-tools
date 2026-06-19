@@ -136,16 +136,23 @@ export function readHtmlTargetFromQUnitJs(testPath: string, fs: Editor): string 
  * @param fs - mem-fs-editor instance used to read and write the file
  * @param log - optional logger instance used to surface warnings when the file
  *   cannot be read or updated
+ * @returns true if the file was written, false otherwise
  */
-export function addPathsToQUnitJs(filePaths: string[], projectPath: string, fs: Editor, log?: Logger): void {
+export function addPathsToQUnitJs(filePaths: string[], projectPath: string, fs: Editor, log?: Logger): boolean {
     try {
         const filePath = join(projectPath, OPA_QUNIT_FILE);
         const content = fs.read(filePath);
+        if (content.length > MAX_FILE_CONTENT_LENGTH) {
+            log?.warn(t('warn.cannotUpdateOpaTestsQunit'));
+            return false;
+        }
         const updated = spliceModulesIntoQUnitContent(content, filePaths);
         if (updated !== content) {
             fs.write(filePath, updated);
+            return true;
         }
     } catch {
         log?.warn(t('warn.cannotUpdateOpaTestsQunit'));
     }
+    return false;
 }

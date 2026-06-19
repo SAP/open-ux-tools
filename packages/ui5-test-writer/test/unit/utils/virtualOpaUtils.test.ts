@@ -104,6 +104,18 @@ describe('hasVirtualOPA5()', () => {
         expect(await hasVirtualOPA5(basePath)).toBe(true);
         expect(readUi5YamlMock).toHaveBeenCalledTimes(1);
     });
+
+    test('returns true when only the preview-middleware (not fiori-tools-preview) middleware has OPA5', async () => {
+        getAllUi5YamlFileNamesMock.mockResolvedValue(['ui5.yaml']);
+        // Only return a middleware config when the lookup is for `preview-middleware`.
+        readUi5YamlMock.mockResolvedValue({
+            findCustomMiddleware: jest.fn((name: string) =>
+                name === 'preview-middleware' ? { configuration: { test: [{ framework: 'OPA5' }] } } : undefined
+            )
+        } as any);
+
+        expect(await hasVirtualOPA5(basePath)).toBe(true);
+    });
 });
 
 describe('addVirtualTestConfig', () => {

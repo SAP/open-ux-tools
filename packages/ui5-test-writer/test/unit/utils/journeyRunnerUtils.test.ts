@@ -261,6 +261,29 @@ describe('addPagesToJourneyRunner()', () => {
 
         expect(log.warn).toHaveBeenCalledWith(expect.stringContaining('JourneyRunner.js'));
     });
+
+    test('returns true when the file was written, false otherwise', () => {
+        const writingFs = makeFsMock(JOURNEY_RUNNER_FILE) as unknown as Editor;
+        expect(addPagesToJourneyRunner([makePage('NewPage')], testOutDirPath, writingFs)).toBe(true);
+
+        const noopFs = makeFsMock(JOURNEY_RUNNER_FILE) as unknown as Editor;
+        expect(addPagesToJourneyRunner([makePage('TravelList')], testOutDirPath, noopFs)).toBe(false);
+
+        const emptyFs = makeFsMock(JOURNEY_RUNNER_FILE) as unknown as Editor;
+        expect(addPagesToJourneyRunner([], testOutDirPath, emptyFs)).toBe(false);
+    });
+
+    test('warns and returns false when the file exceeds MAX_FILE_CONTENT_LENGTH', () => {
+        const oversized = JOURNEY_RUNNER_FILE + ' '.repeat(MAX_FILE_CONTENT_LENGTH + 1);
+        const fs = makeFsMock(oversized) as unknown as Editor;
+        const log = { warn: jest.fn() } as unknown as Logger;
+
+        const written = addPagesToJourneyRunner([makePage('NewPage')], testOutDirPath, fs, undefined, log);
+
+        expect(written).toBe(false);
+        expect(fs.write).not.toHaveBeenCalled();
+        expect(log.warn).toHaveBeenCalledWith(expect.stringContaining('JourneyRunner.js'));
+    });
 });
 
 describe('MAX_FILE_CONTENT_LENGTH guard', () => {

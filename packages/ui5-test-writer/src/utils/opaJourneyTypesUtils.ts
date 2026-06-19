@@ -3,12 +3,7 @@ import type { Logger } from '@sap-ux/logger';
 import { join } from 'node:path';
 import { t } from '../i18n.js';
 import type { OpaPageWriteInfo } from './journeyRunnerUtils.js';
-import {
-    MAX_FILE_CONTENT_LENGTH,
-    escapeRegex,
-    findMatchingClosingBrace,
-    insertAfterLastImport
-} from './fileWritingUtils.js';
+import { MAX_FILE_CONTENT_LENGTH, escapeRegex, findBracedBlock, insertAfterLastImport } from './fileWritingUtils.js';
 
 /** Relative path from the test output directory to OpaJourneyTypes.d.ts */
 const OPA_JOURNEY_TYPES_FILE = join('integration', 'types', 'OpaJourneyTypes.d.ts');
@@ -115,19 +110,11 @@ function insertIntoTypeUnion(content: string, exportName: 'When' | 'Then', newEn
     if (newEntries.length === 0) {
         return content;
     }
-    const headerRegex = new RegExp(String.raw`export\s+type\s+${exportName}\b[^=]*=\s*[^{]*\{`);
-    const headerMatch = headerRegex.exec(content);
-    if (!headerMatch) {
+    const block = findBracedBlock(content, new RegExp(String.raw`export\s+type\s+${exportName}\b[^=]*=\s*[^{]*\{`));
+    if (!block) {
         return content;
     }
-    const openBraceIdx = content.indexOf('{', headerMatch.index + headerMatch[0].length - 1);
-    if (openBraceIdx < 0) {
-        return content;
-    }
-    const closeBraceIdx = findMatchingClosingBrace(content, openBraceIdx);
-    if (closeBraceIdx >= content.length) {
-        return content;
-    }
+    const { openBraceIdx, closeBraceIdx } = block;
     const body = content.slice(openBraceIdx + 1, closeBraceIdx);
     const indentMatch = /^([ \t]+)\S/m.exec(body);
     const indent = indentMatch ? indentMatch[1] : '    ';
@@ -201,6 +188,10 @@ export function addJourneysToOpaJourneyTypes(
     try {
         const filePath = join(testOutDirPath, OPA_JOURNEY_TYPES_FILE);
         const content = fs.read(filePath);
+        if (content.length > MAX_FILE_CONTENT_LENGTH) {
+            log?.warn(t('warn.cannotUpdateOpaJourneyTypes'));
+            return false;
+        }
         const updated = spliceJourneysIntoOpaJourneyTypes(content, pages);
         if (updated !== content) {
             fs.write(filePath, updated);

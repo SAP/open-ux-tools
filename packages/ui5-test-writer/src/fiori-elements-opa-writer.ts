@@ -160,13 +160,18 @@ function logGeneratedAndModifiedFiles(
     generatedJourneys: string[],
     generatedPages: OpaPageWriteInfo[]
 ): void {
-    const { log, dotFileExtension, modifiedFiles } = writeContext;
+    const { log, dotFileExtension, modifiedFiles, incompatibleTestSetup } = writeContext;
     if (!log?.info) {
         return;
     }
     logGeneratedJourneyFiles(log, generatedJourneys, dotFileExtension);
     logGeneratedPageFiles(log, generatedPages, dotFileExtension);
-    logModifiedFiles(log, modifiedFiles ?? []);
+    logModifiedFiles(log, modifiedFiles);
+    // In an incompatible existing setup, the qunit/testsuite files are not touched, so the
+    // generated `.gen` Journeys/Pages must be wired in by the app owner.
+    if (incompatibleTestSetup && (generatedJourneys.length > 0 || generatedPages.length > 0)) {
+        log.info(t('info.manualIntegrationRequired'));
+    }
 }
 
 /**
@@ -231,7 +236,7 @@ async function resolveStandaloneWriteContext(writeContext: WriteContext): Promis
         return {
             ...writeContext,
             hasPreexistingTests: true,
-            incompatibleTestSetup: await hasIncompatibleTestSetup(writeContext.testOutDirPath),
+            incompatibleTestSetup: hasIncompatibleTestSetup(writeContext.testOutDirPath),
             config: {
                 ...writeContext.config,
                 htmlTarget:
@@ -258,7 +263,7 @@ async function resolveWriteContextForMissingIntegrationFolder(writeContext: Writ
         const script = getPackageScripts({ localOnly: false, addTest: true })['int-test'];
         if (script) {
             await updatePackageScript(writeContext.basePath, 'int-test', script, writeContext.editor);
-            writeContext.modifiedFiles?.push('package.json');
+            writeContext.modifiedFiles.push('package.json');
         }
     }
     let htmlTarget = writeContext.config.htmlTarget;
@@ -285,8 +290,8 @@ async function resolveWriteContextForMissingIntegrationFolder(writeContext: Writ
  * @param testOutDirPath - path to the test output directory (`.../webapp/test`)
  * @returns true if the test setup is incompatible, false otherwise
  */
-async function hasIncompatibleTestSetup(testOutDirPath: string): Promise<boolean> {
-    return !(await hasJourneyRunnerFile(testOutDirPath));
+function hasIncompatibleTestSetup(testOutDirPath: string): boolean {
+    return !hasJourneyRunnerFile(testOutDirPath);
 }
 
 /**
@@ -295,7 +300,7 @@ async function hasIncompatibleTestSetup(testOutDirPath: string): Promise<boolean
  * @param testOutDirPath - path to the test output directory (`.../webapp/test`)
  * @returns true if the JourneyRunner.js or JourneyRunner.ts file exists, false otherwise
  */
-async function hasJourneyRunnerFile(testOutDirPath: string): Promise<boolean> {
+function hasJourneyRunnerFile(testOutDirPath: string): boolean {
     const pagesDir = join(testOutDirPath, 'integration', 'pages');
     return existsSync(join(pagesDir, 'JourneyRunner.js')) || existsSync(join(pagesDir, 'JourneyRunner.ts'));
 }
@@ -584,7 +589,7 @@ function writeJourneyRunner(writeContext: WriteContext): void {
             globOptions: { dot: true }
         }
     );
-    modifiedFiles?.push(`integration/pages/JourneyRunner${dotFileExtension}`);
+    modifiedFiles.push(`integration/pages/JourneyRunner${dotFileExtension}`);
 }
 
 /**
@@ -603,7 +608,7 @@ function writeOpaJourneyTypes(writeContext: WriteContext): void {
             globOptions: { dot: true }
         }
     );
-    modifiedFiles?.push('integration/types/OpaJourneyTypes.d.ts');
+    modifiedFiles.push('integration/types/OpaJourneyTypes.d.ts');
 }
 
 /**
@@ -723,7 +728,7 @@ function handleOPAJourneyTypes(writeContext: WriteContext, generatedPages: OpaPa
             writeContext.log
         );
         if (written) {
-            writeContext.modifiedFiles?.push('integration/types/OpaJourneyTypes.d.ts');
+            writeContext.modifiedFiles.push('integration/types/OpaJourneyTypes.d.ts');
         }
     } else {
         writeOpaJourneyTypes(writeContext);
@@ -756,8 +761,10 @@ function handleJourneyRunner(writeContext: WriteContext, generatedPages: OpaPage
 function updatePagesInJourneyRunner(writeContext: WriteContext, generatedPages: OpaPageWriteInfo[]): void {
     const { testOutDirPath, editor, log, dotFileExtension, modifiedFiles } = writeContext;
     if (generatedPages.length > 0) {
-        addPagesToJourneyRunner(generatedPages, testOutDirPath, editor, dotFileExtension, log);
-        modifiedFiles?.push(`integration/pages/JourneyRunner${dotFileExtension}`);
+        const written = addPagesToJourneyRunner(generatedPages, testOutDirPath, editor, dotFileExtension, log);
+        if (written) {
+            modifiedFiles.push(`integration/pages/JourneyRunner${dotFileExtension}`);
+        }
     }
 }
 
@@ -773,7 +780,7 @@ async function addVirtualOpa5Config(writeContext: WriteContext): Promise<void> {
         [{ framework: 'OPA5', path: '/test/integration/opaTests.qunit.html' }, { framework: 'Testsuite' }],
         writeContext.editor
     );
-    writeContext.modifiedFiles?.push('ui5-mock.yaml');
+    writeContext.modifiedFiles.push('ui5-mock.yaml');
 }
 
 /**
@@ -788,13 +795,15 @@ function handleOpaTestsStartupFiles(writeContext: WriteContext, generatedJourney
         writeContext.log?.info(t('info.incompatibleTestSetupSkipped'));
     } else if (writeContext.hasPreexistingTests) {
         // update existing opaTests.qunit.js only in a compatible setup, as long as virtual OPA5 is not used
-        updateReferencesInOpaTestsStartupFiles(writeContext, generatedJourneys);
-        writeContext.modifiedFiles?.push('integration/opaTests.qunit.js');
+        const written = updateReferencesInOpaTestsStartupFiles(writeContext, generatedJourneys);
+        if (written) {
+            writeContext.modifiedFiles.push('integration/opaTests.qunit.js');
+        }
     } else {
         // new app or missing integration folder: write all files
         writeOpaTestsStartupFiles(writeContext, generatedJourneys);
         writeTestsuiteFiles(writeContext);
-        writeContext.modifiedFiles?.push(
+        writeContext.modifiedFiles.push(
             'integration/opaTests.qunit.html',
             'integration/opaTests.qunit.js',
             'testsuite.qunit.html',
@@ -826,9 +835,10 @@ function writeOpaTestsStartupFiles(writeContext: WriteContext, generatedJourneys
  *
  * @param writeContext - shared write context (config, paths, editor, journey params)
  * @param generatedJourneys - an array of feature names for which journey files were generated, used for conditionally adding the test configuration for the virtual OPA5 setup
+ * @returns true if the file was written, false otherwise
  */
-function updateReferencesInOpaTestsStartupFiles(writeContext: WriteContext, generatedJourneys: string[] = []): void {
-    addPathsToQUnitJs(
+function updateReferencesInOpaTestsStartupFiles(writeContext: WriteContext, generatedJourneys: string[] = []): boolean {
+    return addPathsToQUnitJs(
         generatedJourneys.map((page) => {
             return `${writeContext.config.appPath}/test/integration/${page}Journey.gen`;
         }),

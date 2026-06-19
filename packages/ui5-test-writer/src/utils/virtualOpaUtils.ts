@@ -6,9 +6,13 @@ import type {
     MiddlewareConfig as PreviewMiddlewareConfig
 } from '@sap-ux/preview-middleware';
 
+/** Custom middleware names that may carry a virtual-test config. */
+const PREVIEW_MIDDLEWARE_NAMES = ['fiori-tools-preview', 'preview-middleware'] as const;
+
 /**
- * Returns true if any UI5 yaml file in the project contains a `fiori-tools-preview`
- * middleware whose `test` array includes an entry with `framework: OPA5`.
+ * Returns true if any UI5 yaml file in the project has a preview middleware
+ * (`fiori-tools-preview` or `preview-middleware`) whose `test` array includes an entry
+ * with `framework: OPA5`.
  *
  * @param basePath - project root directory
  * @returns true when OPA5 is configured in a preview middleware, false otherwise
@@ -18,7 +22,9 @@ export async function hasVirtualOPA5(basePath: string): Promise<boolean> {
     for (const fileName of yamlFileNames) {
         try {
             const ui5Config = await readUi5Yaml(basePath, fileName);
-            const previewMiddleware = ui5Config.findCustomMiddleware<PreviewMiddlewareConfig>('fiori-tools-preview');
+            const previewMiddleware = PREVIEW_MIDDLEWARE_NAMES.map((name) =>
+                ui5Config.findCustomMiddleware<PreviewMiddlewareConfig>(name)
+            ).find((middleware) => middleware !== undefined);
             const testEntries = previewMiddleware?.configuration?.test;
             if (testEntries?.some((entry) => entry.framework === 'OPA5')) {
                 return true;

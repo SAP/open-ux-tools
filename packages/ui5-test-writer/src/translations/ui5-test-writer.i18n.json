@@ -14,6 +14,7 @@
     },
     "info": {
         "opaJourneyTypesNotUpdated": "`OpaJourneyTypes.d.ts` was not updated due to an incompatible existing test setup.",
-        "incompatibleTestSetupSkipped": "`testsuite.qunit` and `opaTests.qunit` files were not updated due to an incompatible existing test setup."
+        "incompatibleTestSetupSkipped": "`testsuite.qunit` and `opaTests.qunit` files were not updated due to an incompatible existing test setup.",
+        "manualIntegrationRequired": "Please ensure the generated Journeys and Pages are integrated into your existing OPA5 test setup."
     }
 }

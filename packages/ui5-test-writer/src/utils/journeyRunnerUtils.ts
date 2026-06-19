@@ -166,6 +166,7 @@ function insertBeforePosition(content: string, position: number, newEntries: str
  * @param dotFileExtension - file extension of the JourneyRunner ('.ts' or '.js'); defaults to '.js'
  * @param log - optional logger instance used to surface warnings when the file
  *   cannot be read or updated
+ * @returns true if the file was written, false otherwise
  */
 export function addPagesToJourneyRunner(
     pages: OpaPageWriteInfo[],
@@ -173,22 +174,28 @@ export function addPagesToJourneyRunner(
     fs: Editor,
     dotFileExtension: DotFileExtension = DotFileExtension.JS,
     log?: Logger
-): void {
+): boolean {
     if (pages.length === 0) {
-        return;
+        return false;
     }
     try {
         const filePath = join(testOutDirPath, getJourneyRunnerFilePath(dotFileExtension));
         const content = fs.read(filePath);
+        if (content.length > MAX_FILE_CONTENT_LENGTH) {
+            log?.warn(t('warn.cannotUpdateJourneyRunner'));
+            return false;
+        }
         const splice =
             dotFileExtension === DotFileExtension.TS ? splicePageIntoJourneyRunnerTs : splicePageIntoJourneyRunner;
         const updated = splice(content, pages);
         if (updated !== content) {
             fs.write(filePath, updated);
+            return true;
         }
     } catch {
         log?.warn(t('warn.cannotUpdateJourneyRunner'));
     }
+    return false;
 }
 
 /**

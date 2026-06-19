@@ -183,4 +183,21 @@ describe('addJourneysToOpaJourneyTypes()', () => {
 
         expect(log.warn).toHaveBeenCalledWith(expect.stringContaining('OpaJourneyTypes.d.ts'));
     });
+
+    test('warns and returns false when the file exceeds MAX_FILE_CONTENT_LENGTH', () => {
+        const oversized = BASE_FILE + ' '.repeat(MAX_FILE_CONTENT_LENGTH + 1);
+        const fs = makeFsMock(oversized) as unknown as Editor;
+        const log = { warn: jest.fn() } as unknown as Logger;
+
+        const written = addJourneysToOpaJourneyTypes(
+            [makePage('TravelObjectPage', 'ObjectPage')],
+            testOutDirPath,
+            fs,
+            log
+        );
+
+        expect(written).toBe(false);
+        expect(fs.write).not.toHaveBeenCalled();
+        expect(log.warn).toHaveBeenCalledWith(expect.stringContaining('OpaJourneyTypes.d.ts'));
+    });
 });
