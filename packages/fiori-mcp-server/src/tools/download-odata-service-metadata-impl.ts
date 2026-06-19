@@ -58,7 +58,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
         return {
             functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             status: 'Success',
-            message: 'Fetched systems successfully.',
+            message: 'Service metadata downloaded successfully.',
             changes: [],
             parameters: {
                 host,
