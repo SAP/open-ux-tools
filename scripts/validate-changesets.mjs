@@ -10,12 +10,15 @@ const BLOCKED_MAJOR_PACKAGES = [
 ];
 
 /**
- * Packages that use esbuild to bundle their devDependencies into the dist output.
- * Any @sap-ux/* or @sap-ux-private/* devDependency of these packages will be
- * treated as a bundled dep — if one is released, the bundler must be re-published too.
+ * Packages that use esbuild to bundle their entire dependency graph into the
+ * dist output. esbuild resolves the full module graph at build time, so ALL
+ * transitive workspace dependencies (not just direct devDeps) end up inlined.
+ *
+ * When any transitive workspace dep is released, the bundler must be
+ * re-published so consumers receive the updated bundle.
  *
  * Add a package here when it gains an esbuild-based bundle step. Remove it if
- * the package stops bundling its devDependencies.
+ * the package stops bundling its dependencies.
  */
 const ESBUILD_BUNDLING_PACKAGES = [
     '@sap-ux/fiori-mcp-server',
@@ -29,34 +32,52 @@ const VALID_SUMMARY_PREFIX = /^(FEAT|FIX|BUMP|INFRA):/i;
 const CHANGESET_DIR = path.join(ROOT, '.changeset');
 const PACKAGES_DIR = path.join(ROOT, 'packages');
 
-/** Read a package.json from the packages/ directory by package name. */
-function readPackageJson(packageName) {
+/** Build a name → packageJson map for all workspace packages. */
+function buildPackageMap() {
+    /** @type {Map<string, object>} */
+    const map = new Map();
     for (const dir of fs.readdirSync(PACKAGES_DIR)) {
         const pkgJsonPath = path.join(PACKAGES_DIR, dir, 'package.json');
         if (!fs.existsSync(pkgJsonPath)) continue;
         try {
             const pkg = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf8'));
-            if (pkg.name === packageName) return pkg;
+            map.set(pkg.name, pkg);
         } catch {
             // ignore malformed package.json
         }
     }
-    return null;
+    return map;
 }
 
 /**
- * Build reverse map: bundled workspace devDep → set of bundling packages.
- * Derived by reading each bundling package's devDependencies and collecting
- * those scoped to @sap-ux/* or @sap-ux-private/*.
+ * Collect all transitive workspace dependencies of a package (including itself).
+ * Walks dependencies, devDependencies, and peerDependencies recursively.
+ * esbuild bundles the full module graph, so transitive deps are inlined too.
  */
-function buildBundledDepReverseMap() {
+function transitiveWorkspaceDeps(startName, pkgMap, visited = new Set()) {
+    if (visited.has(startName)) return visited;
+    visited.add(startName);
+    const pkg = pkgMap.get(startName);
+    if (!pkg) return visited;
+    const allDeps = { ...pkg.dependencies, ...pkg.devDependencies, ...pkg.peerDependencies };
+    for (const dep of Object.keys(allDeps)) {
+        if (pkgMap.has(dep)) transitiveWorkspaceDeps(dep, pkgMap, visited);
+    }
+    return visited;
+}
+
+/**
+ * Build reverse map: transitive workspace dep → set of bundling packages that
+ * include it. Derived by walking the full dependency graph of each bundler.
+ */
+function buildBundledDepReverseMap(pkgMap) {
     /** @type {Map<string, Set<string>>} */
     const reverse = new Map();
     for (const bundler of ESBUILD_BUNDLING_PACKAGES) {
-        const pkg = readPackageJson(bundler);
-        if (!pkg) continue;
-        for (const dep of Object.keys(pkg.devDependencies ?? {})) {
-            if (!dep.startsWith('@sap-ux/') && !dep.startsWith('@sap-ux-private/')) continue;
+        if (!pkgMap.has(bundler)) continue;
+        const allDeps = transitiveWorkspaceDeps(bundler, pkgMap);
+        allDeps.delete(bundler); // exclude self
+        for (const dep of allDeps) {
             if (!reverse.has(dep)) reverse.set(dep, new Set());
             reverse.get(dep).add(bundler);
         }
@@ -119,9 +140,11 @@ function validateChangesets() {
         }
     }
 
-    // Check that bundling packages have a changeset whenever one of their
-    // bundled workspace devDependencies is being released.
-    const reverseMap = buildBundledDepReverseMap();
+    // Check that bundling packages have a changeset whenever any transitive
+    // workspace dependency is being released. esbuild inlines the full module
+    // graph at build time, so even indirect deps end up in the bundle.
+    const pkgMap = buildPackageMap();
+    const reverseMap = buildBundledDepReverseMap(pkgMap);
     for (const [dep, bundlers] of reverseMap.entries()) {
         if (!packagesWithChangesets.has(dep)) continue;
 
