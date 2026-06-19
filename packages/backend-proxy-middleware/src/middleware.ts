@@ -71,4 +71,3 @@ export default async ({ options }: MiddlewareParameters<BackendMiddlewareConfig>
         throw new Error(message);
     }
 };
-
