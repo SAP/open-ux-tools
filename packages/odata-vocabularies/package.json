@@ -26,7 +26,7 @@
         "lint:report": "eslint . -f multiple ",
         "pre-commit": "lint-staged --quiet",
         "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
-        "update:vocabularies": "ts-node --project tsconfig.eslint.json --cwdMode tools/run-update.ts",
+        "update:vocabularies": "tsx tools/run-update.ts",
         "watch": "tsc --build ./ -watch"
     },
     "dependencies": {
@@ -37,6 +37,7 @@
         "axios": "1.16.0",
         "npm-run-all2": "8.0.4",
         "prettier": "3.8.1",
+        "tsx": "^4.7.0",
         "ts-node": "10.9.2"
     },
     "engines": {
