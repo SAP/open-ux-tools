@@ -121,16 +121,17 @@ function findDestination(destinations: Destination[], query: string): Destinatio
  * Returns all available systems or destinations depending on the current platform.
  * In BAS returns filtered Destination[], in VSCode returns BackendSystem[].
  *
+ * @param includeSensitiveData - Whether to include credentials. Defaults to false.
  * @returns A promise resolving to an array of destinations or backend systems.
  */
-export async function getSystemsOrDestinations(): Promise<Destination[] | BackendSystem[]> {
+export async function getSystemsOrDestinations(includeSensitiveData = false): Promise<Destination[] | BackendSystem[]> {
     if (isAppStudio()) {
         const destinations = await listDestinations({ stripS4HCApiHosts: true });
         return Object.values(destinations).filter(
             (d) => isAbapODataDestination(d) && d.Authentication !== Authentication.NO_AUTHENTICATION
         );
     }
-    return getSapSystems();
+    return getSapSystems(includeSensitiveData);
 }
 
 /**
@@ -150,7 +151,7 @@ export async function findSystem(query: string): Promise<BackendSystem | Destina
         }
     }
     try {
-        return findSapSystem((await getSystemsOrDestinations()) as BackendSystem[], query);
+        return findSapSystem((await getSystemsOrDestinations(true)) as BackendSystem[], query);
     } catch (e) {
         logger.error(`Error retrieving systems: ${e}`);
         return undefined;
