@@ -74,11 +74,6 @@ function validateChangesets() {
     const packagesWithChangesets = new Set();
 
     for (const file of changesetFiles) {
-        // Skip prefix validation for bot-generated dependency changesets (e.g. Renovate)
-        if (file.match(/^dependencies-GH-\d+\.md$/)) {
-            continue;
-        }
-
         const filePath = path.join(CHANGESET_DIR, file);
         const content = fs.readFileSync(filePath, 'utf8');
 
@@ -90,9 +85,15 @@ function validateChangesets() {
 
         const frontmatter = yaml.parse(frontmatterMatch[1]);
 
-        // Collect all packages that have a changeset
+        // Always collect packages — bot changesets (e.g. Renovate) must still
+        // trigger the cascade check even though their prefix/bump validation is skipped.
         for (const pkg of Object.keys(frontmatter)) {
             packagesWithChangesets.add(pkg);
+        }
+
+        // Skip prefix/bump-type validation for bot-generated dependency changesets (e.g. Renovate)
+        if (file.match(/^dependencies-GH-\d+\.md$/)) {
+            continue;
         }
 
         // Check each package in the changeset
