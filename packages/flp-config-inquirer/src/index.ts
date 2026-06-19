@@ -3,12 +3,9 @@ import isNil from 'lodash/isNil.js';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
 
-import { initI18n, addi18nResourceBundle } from './i18n.js';
-import { promptNames } from './types.js';
-import { getExistingFlpConfigInfoPrompt } from './prompts/questions/index.js';
-import { getQuestions, getTileSettingsQuestions } from './prompts/index.js';
-import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions, TileSettingsAnswers } from './types.js';
-import { getAdpFlpConfigPromptOptions, getAdpFlpInboundsWriterConfig } from './utils.js';
+import { initI18n } from './i18n.js';
+import { getQuestions } from './prompts/index.js';
+import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions } from './types.js';
 
 /**
  * Retrieves the inquirer prompts for the FLP configuration.
