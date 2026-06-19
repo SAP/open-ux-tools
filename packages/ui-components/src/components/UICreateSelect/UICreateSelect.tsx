@@ -6,6 +6,10 @@ import type {
     ClearIndicatorProps,
     LoadingIndicatorProps,
     OptionProps,
+    ActionMeta,
+    MultiValue,
+    Options,
+    OptionsOrGroups,
     GetOptionLabel,
     GetOptionValue,
     SelectInstance
@@ -14,18 +18,18 @@ import type { CreatableProps } from 'react-select/creatable';
 import { components } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 
-import { UIIcon } from '../UIIcon';
-import { UILoader } from '../UILoader';
-import { UIHighlightMenuOption } from '../UIContextualMenu';
+import { UIIcon } from '../UIIcon/index.js';
+import { UILoader } from '../UILoader/index.js';
+import { UIHighlightMenuOption } from '../UIContextualMenu/index.js';
 
 import './UICreateSelect.scss';
-import { COMMON_INPUT_STYLES } from '../UIInput';
+import { COMMON_INPUT_STYLES } from '../UIInput/index.js';
 
-export type { MultiValue as UICreateSelectMultiValue } from 'react-select';
-export type { ActionMeta as UICreateSelectActionMeta } from 'react-select';
-export type { Options as UICreateSelectOptions } from 'react-select';
-export type { OptionsOrGroups as UICreateSelectOptionsOrGroups } from 'react-select';
-export { SelectInstance as UICreateSelectInstance } from 'react-select';
+export type { MultiValue as UICreateSelectMultiValue };
+export type { ActionMeta as UICreateSelectActionMeta };
+export type { Options as UICreateSelectOptions };
+export type { OptionsOrGroups as UICreateSelectOptionsOrGroups };
+export type { SelectInstance as UICreateSelectInstance } from 'react-select';
 
 export interface UICreateSelectOptionEntry {
     readonly label: string;

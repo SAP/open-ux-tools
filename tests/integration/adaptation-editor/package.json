@@ -1,9 +1,10 @@
 {
     "name": "@sap-ux-private/adaptation-editor-tests",
     "description": "Adaptation Editor UI tests",
-    "version": "0.0.85",
+    "version": "1.0.6",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
+    "type": "module",
     "main": "dist/index.js",
     "private": true,
     "scripts": {
@@ -21,7 +22,7 @@
         "@sap-ux-private/playwright": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/yaml": "workspace:*",
-        "@playwright/test": "1.58.2",
+        "@playwright/test": "1.60.0",
         "adm-zip": "0.5.16",
         "dotenv": "17.4.2",
         "express": "4.22.1",

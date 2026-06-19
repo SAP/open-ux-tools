@@ -1,9 +1,9 @@
-import { buildControlData } from '../control-data';
-import { getRuntimeControl } from '../utils';
+import { buildControlData } from '../control-data.js';
+import { getRuntimeControl } from '../utils.js';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import { getComponent } from '../../utils/core';
-import type { ChangeService } from '../changes';
+import { getComponent } from '../../utils/core.js';
+import type { ChangeService } from '../changes/index.js';
 
 export const isEditable = (changeService: ChangeService, id = ''): boolean => {
     let editable = false;

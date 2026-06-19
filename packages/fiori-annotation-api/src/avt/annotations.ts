@@ -21,8 +21,8 @@ import {
 } from '@sap-ux/odata-annotation-core';
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 
-import type { NamespaceMap } from './utils';
-import { resolveEnumMemberValue, resolvePath } from './utils';
+import type { NamespaceMap } from './utils.js';
+import { resolveEnumMemberValue, resolvePath } from './utils.js';
 
 /**
  * Types for adding more origin information to annotations

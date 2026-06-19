@@ -38,6 +38,4 @@ export function t(key: string, options?: TOptions): string {
     return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-initI18nODataDownloadGenerator().catch(() => {
-    // Needed for lint
-});
+void initI18nODataDownloadGenerator().catch((error) => console.error('Failed to initialize i18n:', error));

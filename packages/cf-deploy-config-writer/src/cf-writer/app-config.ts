@@ -33,7 +33,7 @@ import {
     UI5DeployBuildScriptForCap,
     undeployMTAScript,
     WelcomeFile
-} from '../constants';
+} from '../constants.js';
 import {
     addCommonPackageDependencies,
     enforceValidRouterConfig,
@@ -44,7 +44,7 @@ import {
     readManifest,
     toPosixPath,
     updateRootPackage
-} from '../utils';
+} from '../utils.js';
 import {
     createMTA,
     doesCDSBinaryExist,
@@ -54,10 +54,10 @@ import {
     getMtaId,
     type MtaConfig,
     toMtaModuleName
-} from '../mta-config';
-import LoggerHelper from '../logger-helper';
-import { t } from '../i18n';
-import { type XSAppDocument, ApiHubType, type CFAppConfig, type CFConfig, type MTABaseConfig } from '../types';
+} from '../mta-config/index.js';
+import LoggerHelper from '../logger-helper.js';
+import { t } from '../i18n.js';
+import { type XSAppDocument, ApiHubType, type CFAppConfig, type CFConfig, type MTABaseConfig } from '../types/index.js';
 
 /**
  * Add a managed approuter configuration to an existing HTML5 application, any exceptions thrown will be handled by the calling client.
@@ -281,31 +281,42 @@ export async function generateMTAFile(cfConfig: CFConfig, fs: Editor): Promise<v
  */
 async function appendAppRouter(cfConfig: CFConfig, fs: Editor): Promise<void> {
     const mtaInstance = await getMtaConfig(cfConfig.rootPath);
-    if (mtaInstance) {
-        await mtaInstance.addRoutingModules({
-            isManagedApp: cfConfig.addManagedAppRouter,
-            isAppFrontApp: cfConfig.addAppFrontendRouter,
-            addMissingModules: !cfConfig.addAppFrontendRouter
-        });
-        const appModule = cfConfig.appId;
-        const appRelativePath = toPosixPath(relative(cfConfig.rootPath, cfConfig.appPath));
-        await mtaInstance.addApp(appModule, appRelativePath ?? '.');
-        if ((cfConfig.addMtaDestination && cfConfig.isCap) || cfConfig.destinationName === DefaultMTADestination) {
-            // If the destination instance identifier is passed, create a destination instance
-            cfConfig.destinationName =
-                cfConfig.destinationName === DefaultMTADestination ? SRV_API : cfConfig.destinationName;
-            await mtaInstance.addDestinationToAppRouter(cfConfig.destinationName);
-            // This is required where a managed or standalone router hasn't been added yet to mta.yaml
-            if (!mtaInstance.hasManagedXsuaaResource()) {
-                cfConfig.destinationAuthentication = Authentication.NO_AUTHENTICATION;
-            }
-        }
-        cleanupStandaloneRoutes(cfConfig, mtaInstance, fs);
-        await saveMta(cfConfig, mtaInstance);
-        // Modify existing config, required in later steps
-        cfConfig.cloudServiceName = mtaInstance.cloudServiceName;
-        cfConfig.addAppFrontendRouter = mtaInstance.hasAppFrontendRouter();
+    if (!mtaInstance) {
+        return;
     }
+
+    await mtaInstance.addRoutingModules({
+        isManagedApp: cfConfig.addManagedAppRouter,
+        isAppFrontApp: cfConfig.addAppFrontendRouter,
+        addMissingModules: !cfConfig.addAppFrontendRouter
+    });
+
+    const appRelativePath = toPosixPath(relative(cfConfig.rootPath, cfConfig.appPath));
+    await mtaInstance.addApp(cfConfig.appId, appRelativePath ?? '.');
+
+    // Resolve destination name before any mutations — DefaultMTADestination is a sentinel for "use SRV_API"
+    const shouldAddDestination =
+        (!!cfConfig.addMtaDestination && !!cfConfig.isCap) || cfConfig.destinationName === DefaultMTADestination;
+    const destinationNameForMta =
+        cfConfig.destinationName === DefaultMTADestination ? SRV_API : cfConfig.destinationName;
+    const resolvedDestinationName = shouldAddDestination ? destinationNameForMta : cfConfig.destinationName;
+
+    if (shouldAddDestination) {
+        await mtaInstance.addDestinationToAppRouter(resolvedDestinationName);
+    }
+
+    cleanupStandaloneRoutes(cfConfig, mtaInstance, fs);
+
+    // Apply all config mutations together once MTA state is finalised
+    cfConfig.destinationName = resolvedDestinationName;
+    // Required where a managed or standalone router hasn't been added yet to mta.yaml
+    if (shouldAddDestination && !mtaInstance.hasManagedXsuaaResource()) {
+        cfConfig.destinationAuthentication = Authentication.NO_AUTHENTICATION;
+    }
+    cfConfig.cloudServiceName = mtaInstance.cloudServiceName;
+    cfConfig.addAppFrontendRouter = mtaInstance.hasAppFrontendRouter();
+
+    await saveMta(cfConfig, mtaInstance);
 }
 
 /**

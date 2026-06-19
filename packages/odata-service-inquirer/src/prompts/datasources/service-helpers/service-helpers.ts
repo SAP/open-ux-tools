@@ -1,7 +1,7 @@
 import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
-import { filterDraftEnabledEntities } from '../../edmx/entity-helper';
-import LoggerHelper from '../../logger-helper';
-import { t } from '../../../i18n';
+import { filterDraftEnabledEntities } from '../../edmx/entity-helper.js';
+import LoggerHelper from '../../logger-helper.js';
+import { t } from '../../../i18n.js';
 import { convert } from '@sap-ux/annotation-converter';
 import { parse } from '@sap-ux/edmx-parser';
 

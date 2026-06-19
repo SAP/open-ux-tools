@@ -1,5 +1,5 @@
-import type { CsvParseResult } from './csv/types';
-import type { PropertiesParseResult } from './properties/types';
+import type { CsvParseResult } from './csv/types.js';
+import type { PropertiesParseResult } from './properties/types.js';
 
 export enum FileFormat {
     properties = 'properties',

@@ -20,10 +20,10 @@ import {
 } from '@sap-ux/odata-annotation-core';
 import type { MetadataService } from '@sap-ux/odata-entity-model';
 
-import { ApiError, ApiErrorCode } from '../error';
-import type { Document } from './document';
-import type { ProjectInfo } from '../types';
-import { toUnifiedUri } from './utils';
+import { ApiError, ApiErrorCode } from '../error.js';
+import type { Document } from './document.js';
+import type { ProjectInfo } from '../types/index.js';
+import { toUnifiedUri } from './utils.js';
 
 function buildDefinitionIndex(
     metadataService: MetadataService,

@@ -73,6 +73,10 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 server:
   customMiddleware:
     - name: backend-proxy-middleware-cf
@@ -226,6 +230,10 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 server:
   customMiddleware:
     - name: backend-proxy-middleware-cf
@@ -384,6 +392,10 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 server:
   customMiddleware:
     - name: backend-proxy-middleware-cf
@@ -537,6 +549,10 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 server:
   customMiddleware:
     - name: backend-proxy-middleware-cf
@@ -624,10 +640,10 @@ test.namespace_sap.app.title=Test CF App",
 	\\"name\\": \\"test-cf-project-approuter\\",
 	\\"description\\": \\"Node.js based application router service for html5-apps\\",
 	\\"engines\\": {
-		\\"node\\": \\"^10.0.0\\"
+		\\"node\\": \\">=22.0.0\\"
 	},
 	\\"dependencies\\": {
-		\\"@sap/approuter\\": \\"^20.8.0\\"
+		\\"@sap/approuter\\": \\"^22.0.0\\"
 	},
 	\\"scripts\\": {
 		\\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\"
@@ -726,6 +742,10 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 server:
   customMiddleware:
     - name: backend-proxy-middleware-cf
@@ -884,6 +904,10 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 server:
   customMiddleware:
     - name: backend-proxy-middleware-cf

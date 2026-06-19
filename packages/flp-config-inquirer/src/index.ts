@@ -1,11 +1,14 @@
-import isNil from 'lodash/isNil';
+import isNil from 'lodash/isNil.js';
 
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
 
-import { initI18n } from './i18n';
-import type { promptNames, FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions } from './types';
-import { getQuestions } from './prompts';
+import { initI18n, addi18nResourceBundle } from './i18n.js';
+import { promptNames } from './types.js';
+import { getExistingFlpConfigInfoPrompt } from './prompts/questions/index.js';
+import { getQuestions, getTileSettingsQuestions } from './prompts/index.js';
+import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions, TileSettingsAnswers } from './types.js';
+import { getAdpFlpConfigPromptOptions, getAdpFlpInboundsWriterConfig } from './utils.js';
 
 /**
  * Retrieves the inquirer prompts for the FLP configuration.
@@ -95,13 +98,13 @@ function getDefaultValue(
 }
 
 export { getPrompts, prompt };
-export { promptNames } from './types';
+export { promptNames } from './types.js';
 export type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
-export type { FLPConfigAnswers, FLPConfigPromptOptions, FLPConfigQuestion, TileSettingsAnswers } from './types';
+export type { FLPConfigAnswers, FLPConfigPromptOptions, FLPConfigQuestion, TileSettingsAnswers } from './types.js';
 
-export { getExistingFlpConfigInfoPrompt } from './prompts/questions';
-export { addi18nResourceBundle } from './i18n';
-export { getTileSettingsQuestions } from './prompts';
-export { getAdpFlpConfigPromptOptions, getAdpFlpInboundsWriterConfig } from './utils';
+export { getExistingFlpConfigInfoPrompt } from './prompts/questions/index.js';
+export { addi18nResourceBundle } from './i18n.js';
+export { getTileSettingsQuestions } from './prompts/index.js';
+export { getAdpFlpConfigPromptOptions, getAdpFlpInboundsWriterConfig } from './utils.js';
 
-export { tileActions, tilePromptNames } from './types';
+export { tileActions, tilePromptNames } from './types.js';

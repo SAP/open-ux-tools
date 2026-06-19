@@ -1,9 +1,9 @@
-import type { DataProvider, DataProviderConstructor } from '.';
-import type { DataAccess } from '../data-access';
-import { getFilesystemStore } from '../data-access/filesystem';
-import type { TelemetrySetting } from '../entities/telemetry-setting';
-import { TelemetrySettingKey } from '../entities/telemetry-setting';
-import { Entities } from './constants';
+import type { DataProvider, DataProviderConstructor } from './index.js';
+import type { DataAccess } from '../data-access/index.js';
+import { getFilesystemStore } from '../data-access/filesystem.js';
+import type { TelemetrySetting } from '../entities/telemetry-setting.js';
+import { TelemetrySettingKey } from '../entities/telemetry-setting.js';
+import { Entities } from './constants.js';
 import type { Logger } from '@sap-ux/logger';
 
 export const TelemetryDataProvider: DataProviderConstructor<TelemetrySetting, TelemetrySettingKey> =

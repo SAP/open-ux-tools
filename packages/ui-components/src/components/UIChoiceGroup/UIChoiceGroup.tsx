@@ -3,16 +3,17 @@ import type {
     IChoiceGroupOption,
     IChoiceGroupProps,
     IChoiceGroupStyles,
-    IChoiceGroupOptionProps
+    IChoiceGroupOptionProps,
+    IChoiceGroup
 } from '@fluentui/react';
 import { ChoiceGroup } from '@fluentui/react';
-import { labelGlobalStyle } from '../UILabel';
-import { REQUIRED_LABEL_INDICATOR } from '../types';
+import { labelGlobalStyle } from '../UILabel/index.js';
+import { REQUIRED_LABEL_INDICATOR } from '../types.js';
 
 export type ChoiceGroupOption = IChoiceGroupOption;
 export type ChoiceGroupOptionProps = IChoiceGroupOptionProps;
 
-export { IChoiceGroup } from '@fluentui/react';
+export { IChoiceGroup };
 
 export interface ChoiceGroupProps extends IChoiceGroupProps {
     // Render each radio option

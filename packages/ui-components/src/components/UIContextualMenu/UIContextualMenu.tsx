@@ -9,14 +9,14 @@ import type {
     IContextualMenuProps,
     IContextualMenuItem
 } from '@fluentui/react';
-import { ContextualMenu } from '@fluentui/react';
-export { IContextualMenuItem } from '@fluentui/react';
+import { ContextualMenu, ContextualMenuItemType } from '@fluentui/react';
+export type { IContextualMenuItem } from '@fluentui/react';
 
-export { IContextualMenuItem as UIContextualMenuItem } from '@fluentui/react';
-export { IContextualMenuProps as UIContextualMenuProps } from '@fluentui/react';
-export { ContextualMenuItemType as UIContextualMenuItemType } from '@fluentui/react';
+export type { IContextualMenuItem as UIContextualMenuItem } from '@fluentui/react';
+export type { IContextualMenuProps as UIContextualMenuProps } from '@fluentui/react';
+export { ContextualMenuItemType as UIContextualMenuItemType };
 
-import { UiIcons } from '../Icons';
+import { UiIcons } from '../Icons.js';
 
 export enum UIContextualMenuLayoutType {
     DropdownMenu = 'DropdownMenu',

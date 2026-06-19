@@ -1,6 +1,6 @@
 import WinstonTransport from 'winston-transport';
-import type { TransportOptions } from '../types';
-import { LogLevel, Transport } from '../types';
+import type { TransportOptions } from '../types.js';
+import { LogLevel, Transport } from '../types.js';
 
 export type ConsoleTransportOptions = TransportOptions;
 /**

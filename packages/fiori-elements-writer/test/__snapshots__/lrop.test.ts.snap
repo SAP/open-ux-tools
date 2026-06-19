@@ -103,6 +103,11 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -155,6 +160,11 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -195,6 +205,11 @@ server:
           intent:
             object: felrop2
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -3033,7 +3048,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },
@@ -3737,6 +3752,11 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -3789,6 +3809,11 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -3829,6 +3854,11 @@ server:
           intent:
             object: felrop2
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -7434,6 +7464,10 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -7502,6 +7536,10 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -7558,6 +7596,10 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -10404,7 +10446,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },
@@ -10876,6 +10918,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -10925,6 +10972,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -10964,6 +11016,11 @@ server:
           intent:
             object: felrop1
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -14572,6 +14629,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -14621,6 +14683,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -14660,6 +14727,11 @@ server:
           intent:
             object: felrop194
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -18264,6 +18336,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -18313,6 +18390,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -18348,6 +18430,11 @@ server:
       configuration:
         flp:
           theme: sap_belize
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -18962,6 +19049,61 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
 ",
     "state": "modified",
   },
+  "webapp/test/integration/BookingObjectPageJourney.js": Object {
+    "contents": "/******************************************************************************
+ * ╔═══════════════════════════════════════════════════════════════════════╗ *
+ * ║                                                                       ║ *
+ * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
+ * ║                                                                       ║ *
+ * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
+ * ║   overwritten when you run the OPA test generator again.              ║ *
+ * ║                                                                       ║ *
+ * ║   To add your own custom tests:                                       ║ *
+ * ║   - Create a new journey test file in this directory.                 ║ *
+ * ║   - Follow the same pattern as this file.                             ║ *
+ * ║   - Add the new file to the opaTests.qunit.js config file.            ║ *
+ * ║   - Custom journey files are not overwritten.                         ║ *
+ * ║                                                                       ║ *
+ * ╚═══════════════════════════════════════════════════════════════════════╝ *
+ ******************************************************************************/
+
+sap.ui.define([
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (opaTest, runner) {
+    \\"use strict\\";
+
+    function journey() {
+        QUnit.module(\\"BookingObjectPageObjectPage journey\\");
+
+        opaTest(\\"Navigate to BookingObjectPageObjectPage\\", function (Given, When, Then) {
+            Given.iStartMyApp();
+
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+
+            Then.onTheTravelList.onTable().iCheckRows();
+            When.onTheTravelList.onTable().iPressRow(0);
+
+            Then.onTheTravelObjectPage.iSeeThisPage();
+            Then.onTheTravelObjectPage.onTable({ property: \\"_Booking\\" }).iCheckRows();
+            When.onTheTravelObjectPage.onTable({ property: \\"_Booking\\" }).iPressRow(0);
+
+            Then.onTheBookingObjectPage.iSeeThisPage();
+        });
+
+
+
+
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
+    }
+
+    runner.run([journey]);
+});",
+    "state": "modified",
+  },
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
@@ -18989,6 +19131,123 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
             Then.onTheTravelObjectPage.iSeeThisPage();
 
         });
+
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
+    }
+
+    runner.run([journey]);
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/TravelListJourney.js": Object {
+    "contents": "/******************************************************************************
+ * ╔═══════════════════════════════════════════════════════════════════════╗ *
+ * ║                                                                       ║ *
+ * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
+ * ║                                                                       ║ *
+ * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
+ * ║   overwritten when you run the OPA test generator again.              ║ *
+ * ║                                                                       ║ *
+ * ║   To add your own custom tests:                                       ║ *
+ * ║   - Create a new journey test file in this directory.                 ║ *
+ * ║   - Follow the same pattern as this file.                             ║ *
+ * ║   - Add the new file to the opaTests.qunit.js config file.            ║ *
+ * ║   - Custom journey files are not overwritten.                         ║ *
+ * ║                                                                       ║ *
+ * ╚═══════════════════════════════════════════════════════════════════════╝ *
+ ******************************************************************************/
+
+sap.ui.define([
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (opaTest, runner) {
+    \\"use strict\\";
+
+    function journey() {
+        QUnit.module(\\"TravelListListReport journey\\");
+
+        opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iStartMyApp();
+
+            Then.onTheTravelList.iSeeThisPage();
+        });
+
+
+        // Note: this test will only work if the ListReport page has a search field and shows data that matches the search term. Please ensure that the test data and search term are set up accordingly.
+        // opaTest(\\"Perform a global search and check the result\\", function (Given, When, Then) {
+        //     When.onTheTravelList.onFilterBar().iChangeSearchField(\\"Search Term\\");
+        //     When.onTheTravelList.onFilterBar().iExecuteSearch();
+        //     Then.onTheTravelList.onTable().iCheckRows();
+        // });
+
+
+
+
+        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+            // Note: this test will fail if the ListReport page doesn't show any data
+            
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+            
+            Then.onTheTravelList.onTable().iCheckRows();
+
+            When.onTheTravelList.onTable().iPressRow(0);
+            Then.onTheTravelObjectPage.iSeeThisPage();
+
+        });
+
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
+    }
+
+    runner.run([journey]);
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/TravelObjectPageJourney.js": Object {
+    "contents": "/******************************************************************************
+ * ╔═══════════════════════════════════════════════════════════════════════╗ *
+ * ║                                                                       ║ *
+ * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
+ * ║                                                                       ║ *
+ * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
+ * ║   overwritten when you run the OPA test generator again.              ║ *
+ * ║                                                                       ║ *
+ * ║   To add your own custom tests:                                       ║ *
+ * ║   - Create a new journey test file in this directory.                 ║ *
+ * ║   - Follow the same pattern as this file.                             ║ *
+ * ║   - Add the new file to the opaTests.qunit.js config file.            ║ *
+ * ║   - Custom journey files are not overwritten.                         ║ *
+ * ║                                                                       ║ *
+ * ╚═══════════════════════════════════════════════════════════════════════╝ *
+ ******************************************************************************/
+
+sap.ui.define([
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (opaTest, runner) {
+    \\"use strict\\";
+
+    function journey() {
+        QUnit.module(\\"TravelObjectPageObjectPage journey\\");
+
+        opaTest(\\"Navigate to TravelObjectPageObjectPage\\", function (Given, When, Then) {
+            Given.iStartMyApp();
+
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+
+            Then.onTheTravelList.onTable().iCheckRows();
+            When.onTheTravelList.onTable().iPressRow(0);
+
+            Then.onTheTravelObjectPage.iSeeThisPage();
+        });
+
+
+
 
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
@@ -19443,6 +19702,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -19492,6 +19756,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -19531,6 +19800,11 @@ server:
           intent:
             object: lropv4addtests
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -22796,6 +23070,76 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
 ",
     "state": "modified",
   },
+  "webapp/test/integration/BookingObjectPageJourney.js": Object {
+    "contents": "/******************************************************************************
+ * ╔═══════════════════════════════════════════════════════════════════════╗ *
+ * ║                                                                       ║ *
+ * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
+ * ║                                                                       ║ *
+ * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
+ * ║   overwritten when you run the OPA test generator again.              ║ *
+ * ║                                                                       ║ *
+ * ║   To add your own custom tests:                                       ║ *
+ * ║   - Create a new journey test file in this directory.                 ║ *
+ * ║   - Follow the same pattern as this file.                             ║ *
+ * ║   - Add the new file to the opaTests.qunit.js config file.            ║ *
+ * ║   - Custom journey files are not overwritten.                         ║ *
+ * ║                                                                       ║ *
+ * ╚═══════════════════════════════════════════════════════════════════════╝ *
+ ******************************************************************************/
+
+sap.ui.define([
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (opaTest, runner) {
+    \\"use strict\\";
+
+    function journey() {
+        QUnit.module(\\"BookingObjectPageObjectPage journey\\");
+
+        opaTest(\\"Navigate to BookingObjectPageObjectPage\\", function (Given, When, Then) {
+            Given.iStartMyApp();
+
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+
+            Then.onTheTravelList.onTable().iCheckRows();
+            When.onTheTravelList.onTable().iPressRow(0);
+
+            Then.onTheTravelObjectPage.iSeeThisPage();
+            Then.onTheTravelObjectPage.onTable({ property: \\"_Booking\\" }).iCheckRows();
+            When.onTheTravelObjectPage.onTable({ property: \\"_Booking\\" }).iPressRow(0);
+
+            Then.onTheBookingObjectPage.iSeeThisPage();
+        });
+
+
+
+        opaTest(\\"Check body sections of the Object Page\\", function (Given, When, Then) {
+            Then.onTheBookingObjectPage.iCheckNumberOfSections(2);
+            When.onTheBookingObjectPage.iPressSectionIconTabFilterButton(\\"Booking\\");
+            Then.onTheBookingObjectPage.iCheckSection({ section: \\"Booking\\" });
+            Then.onTheBookingObjectPage.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"BookingID\\" });
+            Then.onTheBookingObjectPage.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"BookingDate\\" });
+            Then.onTheBookingObjectPage.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"CustomerID\\" });
+            Then.onTheBookingObjectPage.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"AirlineID\\" });
+            Then.onTheBookingObjectPage.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"ConnectionID\\" });
+            Then.onTheBookingObjectPage.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"FlightDate\\" });
+            Then.onTheBookingObjectPage.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"FlightPrice\\" });
+            Then.onTheBookingObjectPage.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"DestinationRisk\\" });
+            When.onTheBookingObjectPage.iPressSectionIconTabFilterButton(\\"BookingSupplement\\");
+            Then.onTheBookingObjectPage.iCheckSection({ section: \\"BookingSupplement\\" });
+       });
+
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
+    }
+
+    runner.run([journey]);
+});",
+    "state": "modified",
+  },
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
@@ -22823,6 +23167,182 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
             Then.onTheTravelObjectPage.iSeeThisPage();
 
         });
+
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
+    }
+
+    runner.run([journey]);
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/TravelListJourney.js": Object {
+    "contents": "/******************************************************************************
+ * ╔═══════════════════════════════════════════════════════════════════════╗ *
+ * ║                                                                       ║ *
+ * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
+ * ║                                                                       ║ *
+ * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
+ * ║   overwritten when you run the OPA test generator again.              ║ *
+ * ║                                                                       ║ *
+ * ║   To add your own custom tests:                                       ║ *
+ * ║   - Create a new journey test file in this directory.                 ║ *
+ * ║   - Follow the same pattern as this file.                             ║ *
+ * ║   - Add the new file to the opaTests.qunit.js config file.            ║ *
+ * ║   - Custom journey files are not overwritten.                         ║ *
+ * ║                                                                       ║ *
+ * ╚═══════════════════════════════════════════════════════════════════════╝ *
+ ******************************************************************************/
+
+sap.ui.define([
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (opaTest, runner) {
+    \\"use strict\\";
+
+    function journey() {
+        QUnit.module(\\"TravelListListReport journey\\");
+
+        opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iStartMyApp();
+
+            Then.onTheTravelList.iSeeThisPage();
+        });
+
+        opaTest(\\"Check filter bar\\", function (Given, When, Then) {
+            Then.onTheTravelList.onFilterBar().iCheckFilterField(\\"Travel ID\\");
+            Then.onTheTravelList.onFilterBar().iCheckFilterField(\\"Agency ID\\");
+            Then.onTheTravelList.onFilterBar().iCheckFilterField(\\"Customer ID\\");
+        });
+
+        // Note: this test will only work if the ListReport page has a search field and shows data that matches the search term. Please ensure that the test data and search term are set up accordingly.
+        // opaTest(\\"Perform a global search and check the result\\", function (Given, When, Then) {
+        //     When.onTheTravelList.onFilterBar().iChangeSearchField(\\"Search Term\\");
+        //     When.onTheTravelList.onFilterBar().iExecuteSearch();
+        //     Then.onTheTravelList.onTable().iCheckRows();
+        // });
+
+        opaTest(\\"Check table columns and actions\\", function (Given, When, Then) {
+            Then.onTheTravelList.onTable().iCheckCreate({ visible: true });
+            // Then.ontheTravelList.onTable().iPressCreate();
+            // Then.ontheTravelList.onTable().iPressDelete();
+            Then.onTheTravelList.onTable().iCheckDelete({ visible: true });
+            // Then.onTheTravelList.onTable().iPressAction(\\"Draft Template\\");
+            Then.onTheTravelList.onTable().iCheckAction(\\"Draft Template\\", { enabled: true });
+            // Then.onTheTravelList.onTable().iPressAction(\\"Active Template\\");
+            Then.onTheTravelList.onTable().iCheckAction(\\"Active Template\\", { enabled: true });
+            // Then.onTheTravelList.onTable().iPressAction(\\"Deduct Discount\\");
+            Then.onTheTravelList.onTable().iCheckAction(\\"Deduct Discount\\", { enabled: false });
+            // Then.onTheTravelList.onTable().iPressAction(\\"Check Travel\\");
+            Then.onTheTravelList.onTable().iCheckAction(\\"Check Travel\\", { enabled: false });
+            // Then.onTheTravelList.onTable().iPressAction(\\"Set To New\\");
+            Then.onTheTravelList.onTable().iCheckAction(\\"Set To New\\", { enabled: false });
+            // Then.onTheTravelList.onTable().iPressAction(\\"Set To Booked\\");
+            Then.onTheTravelList.onTable().iCheckAction(\\"Set To Booked\\", { enabled: false });
+            // Then.onTheTravelList.onTable().iPressAction(\\"Set Cancel Date to Tomorrow\\");
+            Then.onTheTravelList.onTable().iCheckAction(\\"Set Cancel Date to Tomorrow\\", { enabled: false });
+            Then.onTheTravelList.onTable().iCheckColumns(undefined, {\\"TravelID\\":{\\"header\\":\\"Travel ID\\"},\\"AgencyID\\":{\\"header\\":\\"Agency ID\\"},\\"CustomerID\\":{\\"header\\":\\"Customer ID\\"},\\"BeginDate\\":{\\"header\\":\\"Starting Date\\"},\\"EndDate\\":{\\"header\\":\\"End Date\\"},\\"BookingFee\\":{\\"header\\":\\"Booking Fee\\"},\\"TotalPrice\\":{\\"header\\":\\"Total Price\\"},\\"LatestCancellationDate\\":{\\"header\\":\\"Latest Cancellation Date\\"},\\"Memo\\":{\\"header\\":\\"Description\\"},\\"Status\\":{\\"header\\":\\"Travel Status\\"}});
+
+        });
+
+
+
+        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+            // Note: this test will fail if the ListReport page doesn't show any data
+            
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+            
+            Then.onTheTravelList.onTable().iCheckRows();
+
+            When.onTheTravelList.onTable().iPressRow(0);
+            Then.onTheTravelObjectPage.iSeeThisPage();
+
+        });
+
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
+    }
+
+    runner.run([journey]);
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/TravelObjectPageJourney.js": Object {
+    "contents": "/******************************************************************************
+ * ╔═══════════════════════════════════════════════════════════════════════╗ *
+ * ║                                                                       ║ *
+ * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
+ * ║                                                                       ║ *
+ * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
+ * ║   overwritten when you run the OPA test generator again.              ║ *
+ * ║                                                                       ║ *
+ * ║   To add your own custom tests:                                       ║ *
+ * ║   - Create a new journey test file in this directory.                 ║ *
+ * ║   - Follow the same pattern as this file.                             ║ *
+ * ║   - Add the new file to the opaTests.qunit.js config file.            ║ *
+ * ║   - Custom journey files are not overwritten.                         ║ *
+ * ║                                                                       ║ *
+ * ╚═══════════════════════════════════════════════════════════════════════╝ *
+ ******************************************************************************/
+
+sap.ui.define([
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (opaTest, runner) {
+    \\"use strict\\";
+
+    function journey() {
+        QUnit.module(\\"TravelObjectPageObjectPage journey\\");
+
+        opaTest(\\"Navigate to TravelObjectPageObjectPage\\", function (Given, When, Then) {
+            Given.iStartMyApp();
+
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+
+            Then.onTheTravelList.onTable().iCheckRows();
+            When.onTheTravelList.onTable().iPressRow(0);
+
+            Then.onTheTravelObjectPage.iSeeThisPage();
+        });
+
+        opaTest(\\"Check header actions of the Object Page\\", function (Given, When, Then) {
+            // Ensure the opened entity is not in Draft state before uncommenting
+            // Then.onTheTravelObjectPage.onHeader().iCheckEdit({ visible: true });
+            // When.onTheTravelObjectPage.onHeader().iPressEdit();
+            Then.onTheTravelObjectPage.onHeader().iCheckAction(\\"Set Cancel Date to Tomorrow\\" /* , { enabled: true } */);
+            // When.onTheTravelObjectPage.onHeader().iPressAction(\\"Set Cancel Date to Tomorrow\\");
+            Then.onTheTravelObjectPage.onHeader().iCheckAction(\\"Set To Booked\\" /* , { enabled: true } */);
+            // When.onTheTravelObjectPage.onHeader().iPressAction(\\"Set To Booked\\");
+            Then.onTheTravelObjectPage.onHeader().iCheckAction(\\"Set To New\\" /* , { enabled: true } */);
+            // When.onTheTravelObjectPage.onHeader().iPressAction(\\"Set To New\\");
+            Then.onTheTravelObjectPage.onHeader().iCheckAction(\\"Check Travel\\" /* , { enabled: true } */);
+            // When.onTheTravelObjectPage.onHeader().iPressAction(\\"Check Travel\\");
+            Then.onTheTravelObjectPage.onHeader().iCheckAction(\\"Deduct Discount\\" /* , { enabled: true } */);
+            // When.onTheTravelObjectPage.onHeader().iPressAction(\\"Deduct Discount\\");
+        });
+
+
+        opaTest(\\"Check body sections of the Object Page\\", function (Given, When, Then) {
+            Then.onTheTravelObjectPage.iCheckNumberOfSections(2);
+            When.onTheTravelObjectPage.iPressSectionIconTabFilterButton(\\"Travel\\");
+            Then.onTheTravelObjectPage.iCheckSection({ section: \\"Travel\\" });
+            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"TravelID\\" });
+            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"AgencyID\\" });
+            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"CustomerID\\" });
+            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"BeginDate\\" });
+            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"EndDate\\" });
+            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"BookingFee\\" });
+            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"TotalPrice\\" });
+            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"LatestCancellationDate\\" });
+            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"Memo\\" });
+            Then.onTheTravelObjectPage.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"Status\\" });
+            When.onTheTravelObjectPage.iPressSectionIconTabFilterButton(\\"Booking\\");
+            Then.onTheTravelObjectPage.iCheckSection({ section: \\"Booking\\" });
+       });
 
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
@@ -22891,6 +23411,9 @@ sap.ui.require(
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
     \\"lrop_v4_addtests/test/integration/FirstJourney\\",
+    \\"lrop_v4_addtests/test/integration/TravelListJourney\\",
+    \\"lrop_v4_addtests/test/integration/TravelObjectPageJourney\\",
+    \\"lrop_v4_addtests/test/integration/BookingObjectPageJourney\\",
 ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
@@ -25148,6 +25671,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -25197,6 +25725,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -25236,6 +25769,11 @@ server:
           intent:
             object: lropv4annotationreuselib
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -25973,6 +26511,61 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
 ",
     "state": "modified",
   },
+  "webapp/test/integration/BookingObjectPageJourney.js": Object {
+    "contents": "/******************************************************************************
+ * ╔═══════════════════════════════════════════════════════════════════════╗ *
+ * ║                                                                       ║ *
+ * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
+ * ║                                                                       ║ *
+ * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
+ * ║   overwritten when you run the OPA test generator again.              ║ *
+ * ║                                                                       ║ *
+ * ║   To add your own custom tests:                                       ║ *
+ * ║   - Create a new journey test file in this directory.                 ║ *
+ * ║   - Follow the same pattern as this file.                             ║ *
+ * ║   - Add the new file to the opaTests.qunit.js config file.            ║ *
+ * ║   - Custom journey files are not overwritten.                         ║ *
+ * ║                                                                       ║ *
+ * ╚═══════════════════════════════════════════════════════════════════════╝ *
+ ******************************************************************************/
+
+sap.ui.define([
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (opaTest, runner) {
+    \\"use strict\\";
+
+    function journey() {
+        QUnit.module(\\"BookingObjectPageObjectPage journey\\");
+
+        opaTest(\\"Navigate to BookingObjectPageObjectPage\\", function (Given, When, Then) {
+            Given.iStartMyApp();
+
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+
+            Then.onTheTravelList.onTable().iCheckRows();
+            When.onTheTravelList.onTable().iPressRow(0);
+
+            Then.onTheTravelObjectPage.iSeeThisPage();
+            Then.onTheTravelObjectPage.onTable({ property: \\"_Booking\\" }).iCheckRows();
+            When.onTheTravelObjectPage.onTable({ property: \\"_Booking\\" }).iPressRow(0);
+
+            Then.onTheBookingObjectPage.iSeeThisPage();
+        });
+
+
+
+
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
+    }
+
+    runner.run([journey]);
+});",
+    "state": "modified",
+  },
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
@@ -26000,6 +26593,123 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
             Then.onTheTravelObjectPage.iSeeThisPage();
 
         });
+
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
+    }
+
+    runner.run([journey]);
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/TravelListJourney.js": Object {
+    "contents": "/******************************************************************************
+ * ╔═══════════════════════════════════════════════════════════════════════╗ *
+ * ║                                                                       ║ *
+ * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
+ * ║                                                                       ║ *
+ * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
+ * ║   overwritten when you run the OPA test generator again.              ║ *
+ * ║                                                                       ║ *
+ * ║   To add your own custom tests:                                       ║ *
+ * ║   - Create a new journey test file in this directory.                 ║ *
+ * ║   - Follow the same pattern as this file.                             ║ *
+ * ║   - Add the new file to the opaTests.qunit.js config file.            ║ *
+ * ║   - Custom journey files are not overwritten.                         ║ *
+ * ║                                                                       ║ *
+ * ╚═══════════════════════════════════════════════════════════════════════╝ *
+ ******************************************************************************/
+
+sap.ui.define([
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (opaTest, runner) {
+    \\"use strict\\";
+
+    function journey() {
+        QUnit.module(\\"TravelListListReport journey\\");
+
+        opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iStartMyApp();
+
+            Then.onTheTravelList.iSeeThisPage();
+        });
+
+
+        // Note: this test will only work if the ListReport page has a search field and shows data that matches the search term. Please ensure that the test data and search term are set up accordingly.
+        // opaTest(\\"Perform a global search and check the result\\", function (Given, When, Then) {
+        //     When.onTheTravelList.onFilterBar().iChangeSearchField(\\"Search Term\\");
+        //     When.onTheTravelList.onFilterBar().iExecuteSearch();
+        //     Then.onTheTravelList.onTable().iCheckRows();
+        // });
+
+
+
+
+        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+            // Note: this test will fail if the ListReport page doesn't show any data
+            
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+            
+            Then.onTheTravelList.onTable().iCheckRows();
+
+            When.onTheTravelList.onTable().iPressRow(0);
+            Then.onTheTravelObjectPage.iSeeThisPage();
+
+        });
+
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
+    }
+
+    runner.run([journey]);
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/TravelObjectPageJourney.js": Object {
+    "contents": "/******************************************************************************
+ * ╔═══════════════════════════════════════════════════════════════════════╗ *
+ * ║                                                                       ║ *
+ * ║   WARNING: AUTO-GENERATED FILE                                        ║ *
+ * ║                                                                       ║ *
+ * ║   This file is automatically generated by SAP Fiori tools and is      ║ *
+ * ║   overwritten when you run the OPA test generator again.              ║ *
+ * ║                                                                       ║ *
+ * ║   To add your own custom tests:                                       ║ *
+ * ║   - Create a new journey test file in this directory.                 ║ *
+ * ║   - Follow the same pattern as this file.                             ║ *
+ * ║   - Add the new file to the opaTests.qunit.js config file.            ║ *
+ * ║   - Custom journey files are not overwritten.                         ║ *
+ * ║                                                                       ║ *
+ * ╚═══════════════════════════════════════════════════════════════════════╝ *
+ ******************************************************************************/
+
+sap.ui.define([
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (opaTest, runner) {
+    \\"use strict\\";
+
+    function journey() {
+        QUnit.module(\\"TravelObjectPageObjectPage journey\\");
+
+        opaTest(\\"Navigate to TravelObjectPageObjectPage\\", function (Given, When, Then) {
+            Given.iStartMyApp();
+
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+
+            Then.onTheTravelList.onTable().iCheckRows();
+            When.onTheTravelList.onTable().iPressRow(0);
+
+            Then.onTheTravelObjectPage.iSeeThisPage();
+        });
+
+
+
 
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
@@ -26068,6 +26778,9 @@ sap.ui.require(
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
     \\"lrop_v4_annotation_reuse_lib/test/integration/FirstJourney\\",
+    \\"lrop_v4_annotation_reuse_lib/test/integration/TravelListJourney\\",
+    \\"lrop_v4_annotation_reuse_lib/test/integration/TravelObjectPageJourney\\",
+    \\"lrop_v4_annotation_reuse_lib/test/integration/BookingObjectPageJourney\\",
 ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
@@ -26543,6 +27256,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -26592,6 +27310,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -26631,6 +27354,11 @@ server:
           intent:
             object: felropui5
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -30239,6 +30967,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -30288,6 +31021,11 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -30327,6 +31065,11 @@ server:
           intent:
             object: felropui5
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -33942,6 +34685,11 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -33994,6 +34742,11 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -34034,6 +34787,11 @@ server:
           intent:
             object: felrop3
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -36872,7 +37630,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },
@@ -37574,6 +38332,11 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -37622,6 +38385,11 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -37658,6 +38426,11 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -40496,7 +41269,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },
@@ -40636,6 +41409,11 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -40688,6 +41466,11 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -40728,6 +41511,11 @@ server:
           intent:
             object: lropV2settoolsId
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -43567,7 +44355,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },
@@ -44271,6 +45059,11 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -44323,6 +45116,11 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -44363,6 +45161,11 @@ server:
           intent:
             object: lropV2settoolsIdonly
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -47202,7 +48005,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },
@@ -47969,6 +48772,10 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -48037,6 +48844,10 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -48093,6 +48904,10 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -50939,7 +51754,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },
@@ -51469,6 +52284,10 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -51537,6 +52356,10 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -51593,6 +52416,10 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -54439,7 +55266,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },
@@ -54969,6 +55796,10 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -55037,6 +55868,10 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -55093,6 +55928,10 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -57939,7 +58778,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },
@@ -58388,6 +59227,11 @@ server:
         backend:
           - path: /sap
             url: http://localhost
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -58427,6 +59271,11 @@ server:
           intent:
             object: lropv2ts
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -58625,7 +59474,7 @@ appDescription=A Fiori application.",
               \\"controlConfiguration\\": {
                 \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
                   \\"tableSettings\\": {
-                    \\"type\\": \\"TreeTable\\"
+                    \\"type\\": \\"ResponsiveTable\\"
                   }
                 }
               }
@@ -58870,6 +59719,11 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -58922,6 +59776,11 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -58962,6 +59821,11 @@ server:
           intent:
             object: lropv2ts
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -61762,7 +62626,7 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"type\\": \\"TreeTable\\"
+              \\"type\\": \\"ResponsiveTable\\"
             }
           }
         },

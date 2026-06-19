@@ -1,3 +1,3 @@
-export { FlpSandbox } from './flp';
-export { generatePreviewFiles, getPreviewPaths, sanitizeRtaConfig } from './config';
-export { logRemoteUrl, isRemoteConnectionsEnabled } from './remote-url';
+export { FlpSandbox } from './flp.js';
+export { generatePreviewFiles, getPreviewPaths, sanitizeRtaConfig } from './config.js';
+export { logRemoteUrl, isRemoteConnectionsEnabled } from './remote-url.js';

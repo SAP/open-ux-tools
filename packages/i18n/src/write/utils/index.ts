@@ -1,9 +1,9 @@
-import type { NewI18nEntry } from '../../types';
-import { printPropertiesI18nEntry, readFile, writeFile } from '../../utils';
+import type { NewI18nEntry } from '../../types.js';
+import { printPropertiesI18nEntry, readFile, writeFile } from '../../utils/index.js';
 import type { Editor } from 'mem-fs-editor';
 import { Range, TextEdit } from '@sap-ux/text-document-utils';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { parseProperties } from '../../parser/properties/parser';
+import { parseProperties } from '../../parser/properties/parser/index.js';
 
 /**
  * Write i18n entries to an existing i18n.properties file.

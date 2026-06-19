@@ -1,6 +1,51 @@
 # Change Log
 
+## 6.0.0
+
+*Released: 2026-05-30T20:54:07Z*
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+## 5.4.1
+
+*Released: 2026-05-29T15:48:29Z*
+
+### Patch Changes
+
+- 1b19ed5: Bump jsdom environment
+
 ## 5.4.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -8,11 +53,15 @@
 
 ## 5.3.21
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
 
 ## 5.3.20
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -20,11 +69,15 @@
 
 ## 5.3.19
 
+*Released: 2026-03-05T12:30:25Z*
+
 ### Patch Changes
 
 - 83ca0e9: fix(deps): update dependency cross-env to v10
 
 ## 5.3.18
+
+*Released: 2026-03-02T19:30:12Z*
 
 ### Patch Changes
 
@@ -34,11 +87,15 @@
 
 ## 5.3.17
 
+*Released: 2026-02-19T22:23:51Z*
+
 ### Patch Changes
 
 - 88c68c9: fix(deps): update dependency @ui5/cli to v4.0.44
 
 ## 5.3.16
+
+*Released: 2026-02-10T21:03:43Z*
 
 ### Patch Changes
 
@@ -46,11 +103,15 @@
 
 ## 5.3.15
 
+*Released: 2026-01-09T11:35:48Z*
+
 ### Patch Changes
 
 - e111d0d: fix sonar issues
 
 ## 5.3.14
+
+*Released: 2025-12-18T21:05:02Z*
 
 ### Patch Changes
 
@@ -58,11 +119,15 @@
 
 ## 5.3.13
 
+*Released: 2025-12-15T10:50:50Z*
+
 ### Patch Changes
 
 - 4ecfbe2: Chore - upgrade eslint devDependenies, convert to flat config and fix lint issues.
 
 ## 5.3.12
+
+*Released: 2025-11-12T16:47:06Z*
 
 ### Patch Changes
 
@@ -70,11 +135,15 @@
 
 ## 5.3.11
 
+*Released: 2025-11-05T06:53:42Z*
+
 ### Patch Changes
 
 - cfe9c13: Add deep link to package and changelog to README.md
 
 ## 5.3.10
+
+*Released: 2025-08-28T13:37:07Z*
 
 ### Patch Changes
 
@@ -82,11 +151,15 @@
 
 ## 5.3.9
 
+*Released: 2025-08-22T10:10:41Z*
+
 ### Patch Changes
 
 - cefd15e: We improved the support the ui5 legacy free
 
 ## 5.3.8
+
+*Released: 2025-07-30T06:34:41Z*
 
 ### Patch Changes
 
@@ -94,11 +167,15 @@
 
 ## 5.3.7
 
+*Released: 2025-01-28T15:13:21Z*
+
 ### Patch Changes
 
 - 642d507: Fix the canvas dependency issue
 
 ## 5.3.6
+
+*Released: 2025-01-24T10:35:19Z*
 
 ### Patch Changes
 
@@ -106,11 +183,15 @@
 
 ## 5.3.5
 
+*Released: 2025-01-08T14:39:24Z*
+
 ### Patch Changes
 
 - 264458a: Do not reassign global.navigator
 
 ## 5.3.4
+
+*Released: 2024-12-11T14:54:19Z*
 
 ### Patch Changes
 
@@ -118,17 +199,23 @@
 
 ## 5.3.3
 
+*Released: 2024-12-06T10:22:57Z*
+
 ### Patch Changes
 
 - a0f9244: fix: impossible snapshots due to version
 
 ## 5.3.2
 
+*Released: 2024-12-06T08:51:59Z*
+
 ### Patch Changes
 
 - 9a80888: We now properly generate a sap-ui-version.json for ui5 mapping strategy
 
 ## 5.3.1
+
+*Released: 2024-11-28T15:00:20Z*
 
 ### Patch Changes
 

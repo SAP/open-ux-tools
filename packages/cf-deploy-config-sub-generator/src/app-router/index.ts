@@ -1,7 +1,8 @@
 import { join } from 'node:path';
-import hasbin = require('hasbin');
+import * as hasbin from 'hasbin';
 import { platform } from 'node:os';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard as AppWizardType, Prompts as PromptsType } from '@sap-devx/yeoman-ui-types';
 import {
     DeploymentGenerator,
     ERROR_TYPE,
@@ -10,10 +11,10 @@ import {
 } from '@sap-ux/deploy-config-generator-shared';
 import { getAppRouterPrompts, appRouterPromptNames } from '@sap-ux/cf-deploy-config-inquirer';
 import { generateBaseConfig } from '@sap-ux/cf-deploy-config-writer';
-import { t, initI18n } from '../utils';
-import { defaultMtaVersion, generatorTitle, prompts } from './constants';
+import { t, initI18n } from '../utils/index.js';
+import { defaultMtaVersion, generatorTitle, prompts } from './constants.js';
 import type { Logger } from '@sap-ux/logger';
-import type { CfApprouterGenOptions } from './types';
+import type { CfApprouterGenOptions } from './types.js';
 import type { CFBaseConfig, RouterModuleType } from '@sap-ux/cf-deploy-config-writer';
 import type {
     CfAppRouterDeployConfigPromptOptions,
@@ -25,9 +26,9 @@ import type {
  *
  * @extends DeploymentGenerator
  */
-export default class CfAppRouterGenerator extends DeploymentGenerator {
-    private readonly appWizard: AppWizard;
-    private readonly prompts: Prompts;
+export default class extends DeploymentGenerator {
+    private readonly appWizard: AppWizardType;
+    private readonly prompts: PromptsType;
     private answers: CfAppRouterDeployConfigAnswers;
     private abort = false;
 

@@ -1,7 +1,7 @@
 import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { Answers } from 'inquirer';
 import { join, relative } from 'node:path';
-import { getAnnotationPathQualifiers } from './service';
+import { getAnnotationPathQualifiers } from './service.js';
 import { getCapServiceName } from '@sap-ux/project-access';
 import type { Project } from '@sap-ux/project-access';
 import type {
@@ -10,14 +10,14 @@ import type {
     PromptListChoices,
     WithRequired,
     PromptContext
-} from '../../../prompts/types';
-import { bindingContextAbsolute, BuildingBlockType } from '../../types';
-import type { BindingContextType } from '../../types';
-import { getFilterBarIdsInFile, getXPathStringsForXmlFile } from './xml';
-import { i18nNamespaces, initI18n, translate } from '../../../i18n';
-import { getEntitySetOptions, resolveEntitySetTargets, loadEntitySets } from './prompt-helpers';
-import { getFragmentAndViewFiles } from '../../../common/file';
-import { isElementIdAvailable } from '../../../common/utils';
+} from '../../../prompts/types.js';
+import { bindingContextAbsolute, BuildingBlockType } from '../../types.js';
+import type { BindingContextType } from '../../types.js';
+import { getFilterBarIdsInFile, getXPathStringsForXmlFile } from './xml.js';
+import { i18nNamespaces, initI18n, translate } from '../../../i18n.js';
+import { getEntitySetOptions, resolveEntitySetTargets, loadEntitySets } from './prompt-helpers.js';
+import { getFragmentAndViewFiles } from '../../../common/file.js';
+import { isElementIdAvailable } from '../../../common/utils.js';
 
 /* eslint-disable @typescript-eslint/no-floating-promises */
 initI18n();

@@ -1,6 +1,6 @@
-import { parseProperties } from '../../parser/properties/parser';
-import type { I18nEntry } from './../../types';
-import { getAnnotation } from './annotation';
+import { parseProperties } from '../../parser/properties/parser/index.js';
+import type { I18nEntry } from './../../types.js';
+import { getAnnotation } from './annotation.js';
 
 /**
  * Convert `.properties` content to i18n entries.

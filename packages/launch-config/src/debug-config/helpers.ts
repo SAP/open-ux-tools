@@ -1,5 +1,5 @@
 import { posix, basename, dirname, join } from 'node:path';
-import type { WorkspaceHandlerInfo } from '../types';
+import type { WorkspaceHandlerInfo } from '../types/index.js';
 
 /**
  * Retrieves the file system path to the `launch.json` file within the first opened folder.

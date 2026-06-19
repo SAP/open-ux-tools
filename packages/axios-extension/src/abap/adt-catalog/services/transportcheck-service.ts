@@ -1,6 +1,6 @@
-import { AdtService } from './adt-service';
-import { LocalPackageText } from '../../types';
-import type { AdtCategory, AdtTransportStatus, TransportRequest } from '../../types';
+import { AdtService } from './adt-service.js';
+import { LocalPackageText } from '../../types/index.js';
+import type { AdtCategory, AdtTransportStatus, TransportRequest } from '../../types/index.js';
 import { XMLValidator } from 'fast-xml-parser';
 import * as xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';

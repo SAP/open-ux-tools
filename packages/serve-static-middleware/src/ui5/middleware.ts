@@ -1,14 +1,11 @@
-import { serveStaticMiddleware } from '../base';
-import type { ServeStaticConfig } from '../base';
+import { serveStaticMiddleware } from '../base/index.js';
+import type { ServeStaticConfig } from '../base/index.js';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareParameters } from '@ui5/server';
 import type { RequestHandler } from 'express';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 
-const serveStaticUI5Middleware = ({
-    options,
-    middlewareUtil
-}: MiddlewareParameters<ServeStaticConfig>): RequestHandler => {
+export default ({ options, middlewareUtil }: MiddlewareParameters<ServeStaticConfig>): RequestHandler => {
     const log = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'serve-static-middleware' })]
     });
@@ -23,5 +20,3 @@ const serveStaticUI5Middleware = ({
         throw new Error(message);
     }
 };
-
-module.exports = serveStaticUI5Middleware;

@@ -4,12 +4,12 @@ import type {
     FunctionalityId,
     GetFunctionalityDetailsOutput,
     Parameter
-} from '../types';
-import { getFunctionalityDetails, resolveFunctionality } from './get-functionality-details';
-import type { PropertyPath } from '../page-editor-api';
-import { PageEditorApi } from '../page-editor-api';
-import { FUNCTIONALITIES_HANDLERS } from './functionalities';
-import { resolveApplication } from '../utils';
+} from '../types/index.js';
+import { getFunctionalityDetails, resolveFunctionality } from './get-functionality-details.js';
+import type { PropertyPath } from '../page-editor-api/index.js';
+import { PageEditorApi } from '../page-editor-api/index.js';
+import { FUNCTIONALITIES_HANDLERS } from './functionalities/index.js';
+import { resolveApplication } from '../utils/index.js';
 
 /**
  * Executes a functionality based on the provided parameters.
@@ -113,7 +113,7 @@ async function generateChanges(
         changes.push('Modified webapp/manifest.json');
     }
     if (exportResult?.flexChanges) {
-        changes.push(...exportResult.flexChanges.map((flexChange) => `Modified ${flexChange}`));
+        changes.push(...exportResult.flexChanges.map((flexChange: string) => `Modified ${flexChange}`));
     }
 
     return changes;

@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/App';
+import App from './components/App.js';
 import { Provider } from 'react-redux';
-import { actions, store } from './state';
-import { initI18n } from './i18n';
+import { actions, store } from './state/index.js';
+import { initI18n } from './i18n/index.js';
 import { initIcons, initTheme } from '@sap-ux/ui-components';
 
 /**

@@ -4,21 +4,22 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { getCapCustomPaths } from '@sap-ux/project-access';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { Question } from 'inquirer';
-import { t } from '../../../i18n';
-import type { CapServiceChoice, OdataServicePromptOptions } from '../../../types';
-import { promptNames } from '../../../types';
-import { PromptState, getPromptHostEnvironment } from '../../../utils';
-import { errorHandler } from '../../prompt-helpers';
-import { enterCapPathChoiceValue, getCapEdmx, getCapProjectChoices, getCapServiceChoices } from './cap-helpers';
+import { t } from '../../../i18n.js';
+import type { CapServiceChoice, OdataServicePromptOptions } from '../../../types.js';
+import { promptNames } from '../../../types.js';
+import { PromptState, getPromptHostEnvironment } from '../../../utils/index.js';
+import { errorHandler } from '../../prompt-helpers.js';
+import { enterCapPathChoiceValue, getCapEdmx, getCapProjectChoices, getCapServiceChoices } from './cap-helpers.js';
 import {
     capInternalPromptNames,
     type CapProjectChoice,
     type CapProjectPaths,
     type CapProjectRootPath,
     type CapServiceAnswers
-} from './types';
-import { validateCapPath } from './validators';
+} from './types.js';
+import { validateCapPath } from './validators.js';
 import { realpath } from 'node:fs/promises';
+import { isAbsolute, resolve } from 'node:path';
 
 /**
  * Find the specified choice in the list of CAP project choices and return its index.
@@ -97,6 +98,12 @@ export function getLocalCapProjectPrompts(
                 }
             },
             guiOptions: { mandatory: true, breadcrumb: t('prompts.capProject.breadcrumb') },
+            filter: (input: string) => {
+                if (PromptState.isYUI) {
+                    return input;
+                }
+                return input && !isAbsolute(input) ? resolve(input) : input;
+            },
             validate: async (projectPath: string): Promise<string | boolean> => {
                 validCapPath = await validateCapPath(projectPath);
                 // Load the cap paths if the path is valid

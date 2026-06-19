@@ -1,25 +1,25 @@
-import { PromptState } from '../../prompt-state';
+import { PromptState } from '../../prompt-state.js';
 import {
     defaultOrShowManualPackageQuestion,
     defaultOrShowSearchPackageQuestion,
     showPackageInputChoiceQuestion
-} from '../../conditions';
-import { t } from '../../../i18n';
-import { getSystemConfig } from '../../../utils';
-import { getPackageChoices, getPackageInputChoices, shouldRunValidation } from '../../helpers';
-import { defaultPackage, defaultPackageChoice } from '../../defaults';
-import { validatePackageChoiceInput, validatePackageChoiceInputForCli, validatePackage } from '../../validators';
+} from '../../conditions.js';
+import { t } from '../../../i18n.js';
+import { getSystemConfig } from '../../../utils.js';
+import { getPackageChoices, getPackageInputChoices, shouldRunValidation } from '../../helpers.js';
+import { defaultPackage, defaultPackageChoice } from '../../defaults.js';
+import { validatePackageChoiceInput, validatePackageChoiceInputForCli, validatePackage } from '../../validators.js';
 import {
     promptNames,
     type PackageInputChoices,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions
-} from '../../../types';
+} from '../../../types.js';
 import type { InputQuestion, ListChoiceOptions, ListQuestion, Question } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import type { IValidationLink, IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { Severity } from '@sap-devx/yeoman-ui-types';
-import { DEFAULT_PACKAGE_ABAP } from '../../../constants';
+import { DEFAULT_PACKAGE_ABAP } from '../../../constants.js';
 
 /**
  * Returns the package prompts.

@@ -318,7 +318,7 @@ resources:
       path: ./xs-security.json
       service-name: captestproject-xsuaa-service
       config:
-        xsappname: captestproject-\${space-guid}
+        xsappname: captestproject-\${org}-\${space}
         tenant-mode: dedicated
   - name: captestproject-html5-repo-runtime
     type: org.cloudfoundry.managed-service
@@ -374,7 +374,7 @@ exports[`CF Writer CAP Validate generation of CAP mta configurations standard 3`
         \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\"
     },
     \\"dependencies\\": {
-        \\"@sap/approuter\\": \\"^21.0.0\\"
+        \\"@sap/approuter\\": \\"^22.0.0\\"
     }
 }"
 `;

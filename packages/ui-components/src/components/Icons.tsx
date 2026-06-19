@@ -170,6 +170,7 @@ export enum UiIcons {
     ValidateError = 'ValidateError',
     ValidateInfo = 'ValidateInfo',
     ValidateWarning = 'ValidateWarning',
+    ValidationWarning = 'ValidationWarning',
     ValueHelp = 'ValueHelp',
     VerticalGrip = 'VerticalGrip',
     ViewMockup = 'ViewMockup',
@@ -2414,6 +2415,24 @@ export function initIcons(): void {
                         clipRule="evenodd"
                         d="M15.1176 9.65441C15.4941 8.94853 16.5059 8.94853 16.8823 9.65441L23.2157 21.5294C23.5709 22.1955 23.0883 23 22.3333 23H9.66666C8.91174 23 8.42905 22.1955 8.78431 21.5294L15.1176 9.65441ZM15.5 19V13H16.5V19H15.5ZM15.5 20V21H16.5V20H15.5Z"
                         fill={COLORS.warning}
+                    />
+                </svg>
+            ),
+            [UiIcons.ValidationWarning]: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M9.08079 6.76228L4.40757 15.259C4.2243 15.5923 4.46538 16 4.84568 16H14.617C15.0056 16 15.2457 15.576 15.0457 15.2427L9.94765 6.74599C9.74917 6.41519 9.2667 6.42425 9.08079 6.76228ZM9 9H10V13H9V9ZM10 14H9V15H10V14Z"
+                        fill={COLORS.warning}
+                    />
+                    <path
+                        d="M13 6.5C13 7.39932 12.8174 8.25598 12.4872 9.03492L11.8159 7.91624C11.936 7.46437 12 6.98966 12 6.5C12 3.46243 9.53757 1 6.5 1C3.46243 1 1 3.46243 1 6.5C1 9.07194 2.76537 11.2316 5.15047 11.8332L4.65483 12.7344C1.96372 11.9391 0 9.44889 0 6.5C0 2.91015 2.91015 0 6.5 0C10.0899 0 13 2.91015 13 6.5Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        d="M6.25145 8.7985L9.69642 3.87711L8.87719 3.30365L5.43222 8.22504L3.00008 5.79289L2.29297 6.5L4.72511 8.93214C5.16479 9.37182 5.89487 9.3079 6.25145 8.7985Z"
+                        fill={COLORS.default}
                     />
                 </svg>
             ),

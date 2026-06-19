@@ -230,10 +230,9 @@ builder:
   },
   "xs-security.json": Object {
     "contents": "{
-  \\"xsappname\\": \\"basicapp\\",
-  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
+  \\"attributes\\": [],
   \\"role-templates\\": []
 }
 ",
@@ -331,6 +330,9 @@ resources:
       service: xsuaa
       service-name: basicapp-xsuaa-service
       service-plan: application
+      config:
+        xsappname: basicapp-\${org}-\${space}
+        tenant-mode: dedicated
   - name: basicapp-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -622,10 +624,9 @@ builder:
   },
   "xs-security.json": Object {
     "contents": "{
-  \\"xsappname\\": \\"multiproject\\",
-  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
+  \\"attributes\\": [],
   \\"role-templates\\": []
 }
 ",
@@ -720,6 +721,9 @@ resources:
       service: xsuaa
       service-name: multiproject-xsuaa-service
       service-plan: application
+      config:
+        xsappname: multiproject-\${org}-\${space}
+        tenant-mode: dedicated
   - name: multiproject-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -1014,10 +1018,9 @@ builder:
   },
   "xs-security.json": Object {
     "contents": "{
-  \\"xsappname\\": \\"comfioritoolslrop\\",
-  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
+  \\"attributes\\": [],
   \\"role-templates\\": []
 }
 ",
@@ -1115,6 +1118,9 @@ resources:
       service: xsuaa
       service-name: comfioritoolslrop-xsuaa-service
       service-plan: application
+      config:
+        xsappname: comfioritoolslrop-\${org}-\${space}
+        tenant-mode: dedicated
   - name: comfioritoolslrop-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -1354,10 +1360,9 @@ builder:
   },
   "xs-security.json": Object {
     "contents": "{
-  \\"xsappname\\": \\"basicappnodatasource\\",
-  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
+  \\"attributes\\": [],
   \\"role-templates\\": []
 }
 ",
@@ -1596,10 +1601,9 @@ builder:
   },
   "xs-security.json": Object {
     "contents": "{
-  \\"xsappname\\": \\"basicapp\\",
-  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
+  \\"attributes\\": [],
   \\"role-templates\\": []
 }
 ",
@@ -1642,10 +1646,9 @@ archive.zip
 
 exports[`CF Writer App Generate deployment configs - generateSupportingConfig read mtaId read from file 3`] = `
 "{
-  \\"xsappname\\": \\"captestproject\\",
-  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
+  \\"attributes\\": [],
   \\"role-templates\\": []
 }
 "
@@ -1790,7 +1793,7 @@ exports[`CF Writer App Generate deployment configs - standalone approuter cleanu
         \\"start-local\\": \\"node node_modules/@sap/html5-repo-mock/index.js\\"
     },
     \\"dependencies\\": {
-        \\"@sap/approuter\\": \\"^21.0.0\\"
+        \\"@sap/approuter\\": \\"^22.0.0\\"
     },
     \\"devDependencies\\": {
         \\"@sap/html5-repo-mock\\": \\"^2.1.0\\"

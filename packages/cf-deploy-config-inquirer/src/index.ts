@@ -1,24 +1,21 @@
-import { getQuestions, getAppRouterQuestions } from './prompts';
+import { getQuestions, getAppRouterQuestions } from './prompts/index.js';
 import type {
     CfDeployConfigPromptOptions,
     CfDeployConfigQuestions,
+    CfSystemChoice,
     CfDeployConfigAnswers,
     CfAppRouterDeployConfigPromptOptions,
-    CfAppRouterDeployConfigQuestions
-} from './types';
-import { promptNames } from './types';
-export type {
-    CfSystemChoice,
+    CfAppRouterDeployConfigQuestions,
     CfAppRouterDeployConfigAnswers,
     CfDeployConfigRouterAnswers,
     CfDeployConfigRouterQuestions
-} from './types';
-export { appRouterPromptNames, RouterModuleType } from './types';
-import { initI18nCfDeployConfigInquirer } from './i18n';
+} from './types.js';
+import { promptNames, appRouterPromptNames, RouterModuleType } from './types.js';
+import { initI18nCfDeployConfigInquirer } from './i18n.js';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
 import autocomplete from 'inquirer-autocomplete-prompt';
 import type { Logger } from '@sap-ux/logger';
-import LoggerHelper from './logger-helper';
+import LoggerHelper from './logger-helper.js';
 
 /**
  * Retrieves Cloud Foundry deployment configuration prompts.
@@ -84,11 +81,17 @@ async function prompt(
 export {
     getPrompts,
     type CfDeployConfigPromptOptions,
+    type CfSystemChoice,
     promptNames,
     prompt,
+    appRouterPromptNames,
     getAppRouterPrompts,
     type CfAppRouterDeployConfigPromptOptions,
+    RouterModuleType,
     type CfDeployConfigQuestions,
-    type CfDeployConfigAnswers
+    type CfDeployConfigAnswers,
+    type CfAppRouterDeployConfigAnswers,
+    type CfAppRouterDeployConfigQuestions,
+    type CfDeployConfigRouterAnswers,
+    type CfDeployConfigRouterQuestions
 };
-export type { CfAppRouterDeployConfigQuestions } from './types';

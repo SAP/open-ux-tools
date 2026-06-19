@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-window-alert';
+import rule from '../../src/rules/sap-no-window-alert.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

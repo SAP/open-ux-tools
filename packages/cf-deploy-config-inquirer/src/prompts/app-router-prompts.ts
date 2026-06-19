@@ -1,12 +1,12 @@
 import type { ListQuestion, ConfirmQuestion, InputQuestion } from '@sap-ux/inquirer-common';
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 import type {
     CfAppRouterDeployConfigQuestions,
     CfAppRouterDeployConfigAnswers,
     CfAppRouterDeployConfigPromptOptions
-} from '../types';
-import { appRouterPromptNames, RouterModuleType } from '../types';
-import { validateMtaPath, validateMtaId, validateAbapService } from './validators';
+} from '../types.js';
+import { appRouterPromptNames, RouterModuleType } from '../types.js';
+import { validateMtaPath, validateMtaId, validateAbapService } from './validators.js';
 import type { Logger } from '@sap-ux/logger';
 import { getCFAbapInstanceChoices, ErrorHandler } from '@sap-ux/inquirer-common';
 import type { ListChoiceOptions } from 'inquirer';

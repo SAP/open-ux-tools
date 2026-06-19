@@ -2,8 +2,8 @@ import { join } from 'node:path';
 import { getWebappPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { TEST_CONFIG_DEFAULTS } from '../common/ui5-yaml';
-import { deleteFiles } from '../common/utils';
+import { TEST_CONFIG_DEFAULTS } from '../common/ui5-yaml.js';
+import { deleteFiles } from '../common/utils.js';
 
 const renameMessage = (filePath: string): string =>
     `Renamed '${filePath}' to '${filePath.slice(

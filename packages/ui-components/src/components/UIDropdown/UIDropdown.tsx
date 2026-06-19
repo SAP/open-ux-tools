@@ -8,18 +8,18 @@ import type {
 } from '@fluentui/react';
 import { Dropdown, DropdownMenuItemType, ResponsiveMode } from '@fluentui/react';
 
-import { UIIcon } from '../UIIcon';
-import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
-import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
-import { labelGlobalStyle } from '../UILabel';
-import { isDropdownEmpty, getCalloutCollisionTransformationPropsForDropdown } from './utils';
-import { CalloutCollisionTransform } from '../UICallout';
-import { REQUIRED_LABEL_INDICATOR } from '../types';
+import { UIIcon } from '../UIIcon/index.js';
+import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage/index.js';
+import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage/index.js';
+import { labelGlobalStyle } from '../UILabel/index.js';
+import { isDropdownEmpty, getCalloutCollisionTransformationPropsForDropdown } from './utils.js';
+import { CalloutCollisionTransform } from '../UICallout/index.js';
+import { REQUIRED_LABEL_INDICATOR } from '../types.js';
 
 import './UIDropdown.scss';
 
-export { IDropdownOption as UIDropdownOption } from '@fluentui/react';
-export { DropdownMenuItemType as UIDropdownMenuItemType } from '@fluentui/react';
+export type { IDropdownOption as UIDropdownOption } from '@fluentui/react';
+export { DropdownMenuItemType as UIDropdownMenuItemType };
 
 export interface UIDropdownProps extends IDropdownProps, UIMessagesExtendedProps {
     /**

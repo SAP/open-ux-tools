@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import type { IStyleFunction, IToggleStyles, IRawStyle } from '@fluentui/react';
 import { Toggle } from '@fluentui/react';
 import type { UIToggleProps } from '../../../src/components/UIToggle/UIToggle';
@@ -125,6 +125,7 @@ describe('<UIToggle />', () => {
                   },
                   "background": "var(--vscode-editorWidget-background)",
                   "borderColor": "var(--vscode-editorWidget-border)",
+                  "borderRadius": "var(--vscode-cornerRadius-circle, 9999px)",
                   "borderStyle": "solid",
                   "height": 18,
                   "padding": "0 1px",
@@ -180,6 +181,7 @@ describe('<UIToggle />', () => {
                   },
                   "background": "var(--vscode-editorWidget-background)",
                   "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-editorWidget-border))",
+                  "borderRadius": "var(--vscode-cornerRadius-circle, 9999px)",
                   "borderStyle": "solid",
                   "height": 18,
                   "padding": "0 1px",

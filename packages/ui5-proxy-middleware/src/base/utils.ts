@@ -4,7 +4,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
 import type { RequestHandler, NextFunction, Request, Response } from 'express';
 import type http from 'node:http';
-import type { ProxyConfig } from './types';
+import type { ProxyConfig } from './types.js';
 import {
     BOOTSTRAP_LINK,
     BOOTSTRAP_REPLACE_REGEX,
@@ -12,9 +12,9 @@ import {
     SANDBOX_REPLACE_REGEX,
     SANDBOX2_LINK,
     SANDBOX2_REPLACE_REGEX
-} from './constants';
+} from './constants.js';
 import type { Url } from 'node:url';
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 import type { Socket } from 'node:net';

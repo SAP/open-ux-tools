@@ -1,5 +1,6 @@
 import { rm, stat, symlink } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { existsSync } from 'node:fs';
 
 import { getPortPromise } from 'portfinder';
@@ -8,16 +9,19 @@ import { setup, teardown } from 'jest-dev-server';
 import type { FrameLocator } from '@sap-ux-private/playwright';
 import { test as base, expect } from '@sap-ux-private/playwright';
 
-import { SERVER_TIMEOUT, TIMEOUT } from './constant';
+import { SERVER_TIMEOUT, TIMEOUT } from './constant.js';
 import {
     ADAPTATION_EDITOR_PATH,
     generateUi5Project,
     generateAdpProject,
     SIMPLE_APP,
     type ProjectConfig
-} from './project';
+} from './project/index.js';
 import { satisfies } from 'semver';
-import { generateFeV4Project } from './project/builder';
+import { generateFeV4Project } from './project/builder.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export type TestOptions = {
     previewFrame: FrameLocator;

@@ -1,6 +1,66 @@
 # @sap-ux/store
 
+## 2.0.1
+
+*Released: 2026-06-03T14:58:37Z*
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/logger@1.0.1
+
+## 2.0.0
+
+*Released: 2026-05-30T20:54:07Z*
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/logger@1.0.0
+
+## 1.6.1
+
+*Released: 2026-05-27T10:42:47Z*
+
+### Patch Changes
+
+- c12420a: correction for log levels
+
 ## 1.6.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -13,6 +73,8 @@
 
 ## 1.5.14
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -21,12 +83,16 @@
 
 ## 1.5.13
 
+*Released: 2026-04-08T13:10:18Z*
+
 ### Patch Changes
 
 - Updated dependencies [f1e4481]
     - @sap-ux/logger@0.8.5
 
 ## 1.5.12
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -36,6 +102,8 @@
 
 ## 1.5.11
 
+*Released: 2026-03-26T12:07:04Z*
+
 ### Patch Changes
 
 - a41533f: chore(store): upgrade runtime dependencies (i18next 25.8.20, reflect-metadata 0.2.2)
@@ -44,11 +112,15 @@
 
 ## 1.5.10
 
+*Released: 2026-03-17T01:04:22Z*
+
 ### Patch Changes
 
 - 55417bb: fix(deps): update dependency i18next to v25.8.18
 
 ## 1.5.9
+
+*Released: 2026-03-04T22:42:20Z*
 
 ### Patch Changes
 
@@ -57,11 +129,15 @@
 
 ## 1.5.8
 
+*Released: 2026-02-26T10:46:59Z*
+
 ### Patch Changes
 
 - 6c993f3: fix: turn off i18next support notice
 
 ## 1.5.7
+
+*Released: 2026-02-20T16:17:11Z*
 
 ### Patch Changes
 
@@ -69,11 +145,15 @@
 
 ## 1.5.6
 
+*Released: 2026-02-13T16:18:58Z*
+
 ### Patch Changes
 
 - 9f94937: support adding full service urls as a new connection type
 
 ## 1.5.5
+
+*Released: 2026-02-05T13:53:56Z*
 
 ### Patch Changes
 
@@ -81,11 +161,15 @@
 
 ## 1.5.4
 
+*Released: 2026-02-05T11:39:04Z*
+
 ### Patch Changes
 
 - 83e3b70: check for presence of legacy systems.json file
 
 ## 1.5.3
+
+*Released: 2026-01-30T16:59:27Z*
 
 ### Patch Changes
 
@@ -94,11 +178,15 @@
 
 ## 1.5.2
 
+*Released: 2026-01-28T00:19:05Z*
+
 ### Patch Changes
 
 - be6ea11: fix(deps): update dependency i18next to v25.8.0
 
 ## 1.5.1
+
+*Released: 2026-01-23T12:49:27Z*
 
 ### Patch Changes
 
@@ -106,11 +194,15 @@
 
 ## 1.5.0
 
+*Released: 2026-01-16T12:32:24Z*
+
 ### Minor Changes
 
 - c9fd939: update backend systems with system info from adt api
 
 ## 1.4.2
+
+*Released: 2025-12-19T11:36:13Z*
 
 ### Patch Changes
 
@@ -118,6 +210,8 @@
     - @sap-ux/logger@0.8.0
 
 ## 1.4.1
+
+*Released: 2025-12-18T21:05:02Z*
 
 ### Patch Changes
 
@@ -127,11 +221,15 @@
 
 ## 1.4.0
 
+*Released: 2025-12-16T11:43:52Z*
+
 ### Minor Changes
 
 - ba58398: adds mandatory props to backend systems and migrates existing
 
 ## 1.3.5
+
+*Released: 2025-12-15T10:50:50Z*
 
 ### Patch Changes
 
@@ -141,11 +239,15 @@
 
 ## 1.3.4
 
+*Released: 2025-12-08T17:56:48Z*
+
 ### Patch Changes
 
 - 037a430: fix high severity Sonar issues
 
 ## 1.3.3
+
+*Released: 2025-11-05T06:53:42Z*
 
 ### Patch Changes
 
@@ -155,11 +257,15 @@
 
 ## 1.3.2
 
+*Released: 2025-10-31T13:35:34Z*
+
 ### Patch Changes
 
 - cc65eec: adds new vscode sap systems extension
 
 ## 1.3.1
+
+*Released: 2025-10-29T17:02:38Z*
 
 ### Patch Changes
 
@@ -167,11 +273,15 @@
 
 ## 1.3.0
 
+*Released: 2025-10-29T11:04:17Z*
+
 ### Minor Changes
 
 - 36b0f19: migrate backend system file from .fioritools to .saptools
 
 ## 1.2.1
+
+*Released: 2025-10-17T11:37:38Z*
 
 ### Patch Changes
 
@@ -179,11 +289,15 @@
 
 ## 1.2.0
 
+*Released: 2025-10-14T13:22:30Z*
+
 ### Minor Changes
 
 - bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
 
 ## 1.1.5
+
+*Released: 2025-10-06T17:09:01Z*
 
 ### Patch Changes
 
@@ -191,11 +305,15 @@
 
 ## 1.1.4
 
+*Released: 2025-09-01T12:06:20Z*
+
 ### Patch Changes
 
 - 77c1459: fix for returning systems after recovery
 
 ## 1.1.3
+
+*Released: 2025-08-21T14:27:46Z*
 
 ### Patch Changes
 
@@ -203,17 +321,23 @@
 
 ## 1.1.2
 
+*Released: 2025-07-04T15:18:17Z*
+
 ### Patch Changes
 
 - 69f62ec: i18next upgrade to 25.3.0
 
 ## 1.1.1
 
+*Released: 2025-06-27T07:08:06Z*
+
 ### Patch Changes
 
 - 77b3b22: update fiori gen to fetch credentials only upon system selection
 
 ## 1.1.0
+
+*Released: 2025-05-14T22:35:53Z*
 
 ### Minor Changes
 
@@ -226,11 +350,15 @@
 
 ## 1.0.0
 
+*Released: 2024-12-10T16:04:29Z*
+
 ### Major Changes
 
 - 3ebd767: Replace keytar with @zowe/secrets-for-zowe-sdk
 
 ## 0.9.3
+
+*Released: 2024-11-01T22:26:57Z*
 
 ### Patch Changes
 
@@ -238,11 +366,15 @@
 
 ## 0.9.2
 
+*Released: 2024-10-04T15:21:13Z*
+
 ### Patch Changes
 
 - 93f8a83: chore - upgrade typescript 5.6.2
 
 ## 0.9.1
+
+*Released: 2024-08-16T14:27:07Z*
 
 ### Patch Changes
 
@@ -250,17 +382,23 @@
 
 ## 0.9.0
 
+*Released: 2024-08-14T12:04:43Z*
+
 ### Minor Changes
 
 - e7a6c68: Load keytar from application modeler extension
 
 ## 0.8.0
 
+*Released: 2024-08-14T08:37:46Z*
+
 ### Minor Changes
 
 - dced368: Load keytar from application modeler extension
 
 ## 0.7.0
+
+*Released: 2024-07-05T15:03:05Z*
 
 ### Minor Changes
 
@@ -273,17 +411,23 @@
 
 ## 0.6.0
 
+*Released: 2024-06-19T15:33:01Z*
+
 ### Minor Changes
 
 - d02be637: Replaces AuthenticationType with const and string literal type
 
 ## 0.5.0
 
+*Released: 2024-03-06T14:41:52Z*
+
 ### Minor Changes
 
 - e443e534: Allow to disable access to secure storage via environment variable FIORI_TOOLS_DISABLE_SECURE_STORE
 
 ## 0.4.3
+
+*Released: 2024-02-27T22:07:50Z*
 
 ### Patch Changes
 
@@ -293,6 +437,8 @@
 
 ## 0.4.2
 
+*Released: 2024-02-08T13:37:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [2e0b1a6d]
@@ -300,11 +446,15 @@
 
 ## 0.4.1
 
+*Released: 2024-02-07T11:10:48Z*
+
 ### Patch Changes
 
 - eb0b7b37: Chore - TypeScript 5 upgrade
 
 ## 0.4.0
+
+*Released: 2023-10-19T12:06:19Z*
 
 ### Minor Changes
 
@@ -317,11 +467,15 @@
 
 ## 0.3.16
 
+*Released: 2023-10-18T13:59:49Z*
+
 ### Patch Changes
 
 - cbcad88d: fix(deps): update dependencies [i18next]
 
 ## 0.3.15
+
+*Released: 2023-10-17T08:28:48Z*
 
 ### Patch Changes
 
@@ -331,6 +485,8 @@
 
 ## 0.3.14
 
+*Released: 2023-09-20T13:13:51Z*
+
 ### Patch Changes
 
 - 63c698a8: chore - fix publishing of modules missed in failed release build
@@ -339,11 +495,15 @@
 
 ## 0.3.13
 
+*Released: 2023-09-19T15:06:34Z*
+
 ### Patch Changes
 
 - 0dbad1b8: chore(deps): update dependency typescript to v4.9.5
 
 ## 0.3.12
+
+*Released: 2023-06-27T14:58:54Z*
 
 ### Patch Changes
 
@@ -353,6 +513,8 @@
 
 ## 0.3.11
 
+*Released: 2023-06-12T06:59:29Z*
+
 ### Patch Changes
 
 - 25911701: Fix for 'promises must be awaited' sonar issues
@@ -360,6 +522,8 @@
     - @sap-ux/logger@0.3.6
 
 ## 0.3.10
+
+*Released: 2023-02-23T13:56:23Z*
 
 ### Patch Changes
 
@@ -369,6 +533,8 @@
 
 ## 0.3.9
 
+*Released: 2023-02-10T14:09:06Z*
+
 ### Patch Changes
 
 - ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
@@ -377,12 +543,16 @@
 
 ## 0.3.8
 
+*Released: 2022-12-16T11:48:52Z*
+
 ### Patch Changes
 
 - Updated dependencies [c6f4c8c]
     - @sap-ux/logger@0.3.3
 
 ## 0.3.7
+
+*Released: 2022-12-05T07:50:58Z*
 
 ### Patch Changes
 
@@ -392,11 +562,15 @@
 
 ## 0.3.6
 
+*Released: 2022-10-25T02:04:00Z*
+
 ### Patch Changes
 
 - 0439760: Upgrade to keytar@7.9.0
 
 ## 0.3.5
+
+*Released: 2022-10-11T14:06:32Z*
 
 ### Patch Changes
 
@@ -406,11 +580,15 @@
 
 ## 0.3.4
 
+*Released: 2022-09-20T11:29:57Z*
+
 ### Patch Changes
 
 - dd98509: New module @sap-ux/ui-components. Remove unused dependencies from @sap-ux/store.
 
 ## 0.3.3
+
+*Released: 2022-08-26T23:41:09Z*
 
 ### Patch Changes
 
@@ -418,6 +596,8 @@
     - @sap-ux/logger@0.3.0
 
 ## 0.3.2
+
+*Released: 2022-07-21T14:10:31Z*
 
 ### Patch Changes
 
@@ -427,6 +607,8 @@
 
 ## 0.3.1
 
+*Released: 2022-07-04T13:03:56Z*
+
 ### Patch Changes
 
 - cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
@@ -435,11 +617,15 @@
 
 ## 0.3.0
 
+*Released: 2022-06-24T14:55:09Z*
+
 ### Minor Changes
 
 - ebc59b4: Added support for migrating api-hub settings from old to new format.
 
 ## 0.2.0
+
+*Released: 2022-06-13T09:53:27Z*
 
 ### Minor Changes
 
@@ -452,6 +638,8 @@
 
 ## 0.1.5
 
+*Released: 2022-05-19T14:38:34Z*
+
 ### Patch Changes
 
 - c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
@@ -460,11 +648,15 @@
 
 ## 0.1.4
 
+*Released: 2022-05-18T15:24:28Z*
+
 ### Patch Changes
 
 - 9f84d52: Intrdocded new backend-proxy-middleware.
 
 ## 0.1.3
+
+*Released: 2022-03-29T13:57:37Z*
 
 ### Patch Changes
 
@@ -475,6 +667,8 @@
 
 ## 0.1.2
 
+*Released: 2022-03-24T07:10:57Z*
+
 ### Patch Changes
 
 - 0837ac1: Add missing information to package.json and enforced use of higher version of minimist
@@ -482,6 +676,8 @@
     - @sap-ux/logger@0.1.4
 
 ## 0.1.1
+
+*Released: 2022-03-22T19:34:16Z*
 
 ### Patch Changes
 
@@ -491,11 +687,15 @@
 
 ## 0.1.0
 
+*Released: 2022-03-07T19:54:59Z*
+
 ### Minor Changes
 
 - 51daada: tbi: add central telemetry settings api to be managed by store
 
 ## 0.0.3
+
+*Released: 2022-02-03T20:45:25Z*
 
 ### Patch Changes
 

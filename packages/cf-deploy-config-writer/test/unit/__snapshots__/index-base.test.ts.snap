@@ -36,10 +36,9 @@ archive.zip
   },
   "xs-security.json": Object {
     "contents": "{
-  \\"xsappname\\": \\"appfrontend\\",
-  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
+  \\"attributes\\": [],
   \\"role-templates\\": []
 }
 ",
@@ -78,6 +77,9 @@ resources:
       service: xsuaa
       service-name: appfrontend-xsuaa-service
       service-plan: application
+      config:
+        xsappname: appfrontend-\${org}-\${space}
+        tenant-mode: dedicated
   - name: appfrontend-app-front
     type: org.cloudfoundry.managed-service
     parameters:
@@ -123,10 +125,9 @@ archive.zip
   },
   "xs-security.json": Object {
     "contents": "{
-  \\"xsappname\\": \\"managed\\",
-  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
+  \\"attributes\\": [],
   \\"role-templates\\": []
 }
 ",
@@ -200,6 +201,9 @@ resources:
       service: xsuaa
       service-name: managed-xsuaa-service
       service-plan: application
+      config:
+        xsappname: managed-\${org}-\${space}
+        tenant-mode: dedicated
   - name: managed-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
@@ -251,7 +255,7 @@ archive.zip
         \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\"
     },
     \\"dependencies\\": {
-        \\"@sap/approuter\\": \\"^21.0.0\\"
+        \\"@sap/approuter\\": \\"^22.0.0\\"
     }
 }",
     "state": "modified",
@@ -287,10 +291,9 @@ archive.zip
   },
   "xs-security.json": Object {
     "contents": "{
-  \\"xsappname\\": \\"standalonewithabapserviceprovider\\",
-  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
+  \\"attributes\\": [],
   \\"role-templates\\": []
 }
 ",
@@ -333,7 +336,7 @@ resources:
       path: ./xs-security.json
       service-name: standalonewithabapserviceprovider-xsuaa-service
       config:
-        xsappname: standalonewithabapserviceprovider-\${space-guid}
+        xsappname: standalonewithabapserviceprovider-\${org}-\${space}
         tenant-mode: dedicated
   - name: standalonewithabapserviceprovider-html5-repo-runtime
     type: org.cloudfoundry.managed-service
@@ -411,7 +414,7 @@ archive.zip
         \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\"
     },
     \\"dependencies\\": {
-        \\"@sap/approuter\\": \\"^21.0.0\\"
+        \\"@sap/approuter\\": \\"^22.0.0\\"
     }
 }",
     "state": "modified",
@@ -439,10 +442,9 @@ archive.zip
   },
   "xs-security.json": Object {
     "contents": "{
-  \\"xsappname\\": \\"standalone-with-connectivity-service\\",
-  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
+  \\"attributes\\": [],
   \\"role-templates\\": []
 }
 ",
@@ -485,7 +487,7 @@ resources:
       path: ./xs-security.json
       service-name: standalone-with-connectivity-service-xsuaa-service
       config:
-        xsappname: standalone-with-connectivity-service-\${space-guid}
+        xsappname: standalone-with-connectivity-service-\${org}-\${space}
         tenant-mode: dedicated
   - name: standalone-with-connectivity-service-html5-repo-runtime
     type: org.cloudfoundry.managed-service

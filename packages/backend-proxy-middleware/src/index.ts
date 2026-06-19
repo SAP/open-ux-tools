@@ -1,13 +1,11 @@
-import { initI18n } from './base/proxy';
+import { generateProxyMiddlewareOptions, createProxy, initI18n } from './base/proxy.js';
 
-export { generateProxyMiddlewareOptions, createProxy } from './base/proxy';
+export { generateProxyMiddlewareOptions, createProxy };
 export type {
     LocalBackendConfig,
     DestinationBackendConfig,
     BackendConfig,
     BackendMiddlewareConfig
-} from './base/types';
+} from './base/types.js';
 
-initI18n().catch(() => {
-    // Ignore any errors since the middleware will still work
-});
+initI18n().catch(() => undefined);
