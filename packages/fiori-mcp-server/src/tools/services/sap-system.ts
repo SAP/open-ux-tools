@@ -149,10 +149,15 @@ export async function findSystem(query: string): Promise<BackendSystem | Destina
             return undefined;
         }
     }
-    return findSapSystem((await getSystemsOrDestinations()) as BackendSystem[], query);
+    try {
+        return findSapSystem((await getSystemsOrDestinations()) as BackendSystem[], query);
+    } catch (e) {
+        logger.error(`Error retrieving systems: ${e}`);
+        return undefined;
+    }
 }
 
-function findSapSystem(systems: BackendSystem[], query: string): BackendSystem {
+function findSapSystem(systems: BackendSystem[], query: string): BackendSystem | undefined {
     let matchingSystems = systems.filter((s) => s.name === query);
 
     const queryLower = query.toLocaleLowerCase();
@@ -170,14 +175,14 @@ function findSapSystem(systems: BackendSystem[], query: string): BackendSystem {
         matchingSystems = matchSystemByUrl(systems, query);
     }
 
-    if (!matchingSystems || !Array.isArray(matchingSystems)) {
-        throw new Error(`No matching system found for: ${query}`);
+    if (!matchingSystems.length) {
+        logger.debug(`No matching system found for: ${query}`);
+        return undefined;
     }
     if (matchingSystems.length > 1) {
         const names = matchingSystems.map((s) => s.name).join(', ');
-        throw new Error(
-            `Multiple systems found matching: ${query}. Please be more specific. Matched systems: ${names}`
-        );
+        logger.debug(`Multiple systems found matching: ${query}. Matched systems: ${names}`);
+        return undefined;
     }
 
     return matchingSystems[0];
