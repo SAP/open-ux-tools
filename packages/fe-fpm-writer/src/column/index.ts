@@ -79,11 +79,7 @@ function enhanceConfig(
  * @param {Editor} [fs] - the mem-fs editor instance
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
-export async function generateFragment(
-    basePath: string,
-    fragment: Fragment,
-    fs?: Editor
-): Promise<Editor> {
+export async function generateFragment(basePath: string, fragment: Fragment, fs?: Editor): Promise<Editor> {
     fs ??= create(createStorage());
     await validateBasePath(basePath, fs);
     const fnGenerateId = await createIdGenerator({ basePath, fsEditor: fs });
