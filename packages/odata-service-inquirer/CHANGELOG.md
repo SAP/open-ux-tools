@@ -10,6 +10,8 @@
 
 ## 3.0.11
 
+*Released: 2026-06-12T06:53:23Z*
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@2.0.3
@@ -17,6 +19,8 @@
 - @sap-ux/fiori-generator-shared@1.0.11
 
 ## 3.0.10
+
+*Released: 2026-06-11T10:54:17Z*
 
 ### Patch Changes
 
@@ -26,6 +30,8 @@
     - @sap-ux/inquirer-common@1.0.10
 
 ## 3.0.9
+
+*Released: 2026-06-10T09:57:42Z*
 
 ### Patch Changes
 
@@ -37,6 +43,8 @@
 - @sap-ux/project-input-validator@1.0.6
 
 ## 3.0.8
+
+*Released: 2026-06-09T14:35:01Z*
 
 ### Patch Changes
 
@@ -50,6 +58,8 @@
 
 ## 3.0.7
 
+*Released: 2026-06-09T13:18:16Z*
+
 ### Patch Changes
 
 - Updated dependencies [a328e14]
@@ -57,6 +67,8 @@
     - @sap-ux/inquirer-common@1.0.7
 
 ## 3.0.6
+
+*Released: 2026-06-04T13:54:21Z*
 
 ### Patch Changes
 
@@ -70,6 +82,8 @@
 
 ## 3.0.5
 
+*Released: 2026-06-04T10:19:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [b326a9a]
@@ -81,6 +95,8 @@
     - @sap-ux/telemetry@1.0.5
 
 ## 3.0.4
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -100,6 +116,8 @@
 
 ## 3.0.3
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@2.0.2
@@ -111,6 +129,8 @@
 
 ## 3.0.2
 
+*Released: 2026-06-02T11:35:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [41f327a]
@@ -120,6 +140,8 @@
     - @sap-ux/inquirer-common@1.0.2
 
 ## 3.0.1
+
+*Released: 2026-06-01T15:15:26Z*
 
 ### Patch Changes
 
@@ -132,6 +154,8 @@
     - @sap-ux/telemetry@1.0.1
 
 ## 3.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -181,6 +205,8 @@
 
 ## 2.23.4
 
+*Released: 2026-05-29T12:50:34Z*
+
 ### Patch Changes
 
 - Updated dependencies [a1c9cd7]
@@ -188,6 +214,8 @@
     - @sap-ux/inquirer-common@0.13.6
 
 ## 2.23.3
+
+*Released: 2026-05-27T11:39:21Z*
 
 ### Patch Changes
 
@@ -199,6 +227,8 @@
 
 ## 2.23.2
 
+*Released: 2026-05-27T10:42:47Z*
+
 ### Patch Changes
 
 - Updated dependencies [c12420a]
@@ -208,6 +238,8 @@
     - @sap-ux/inquirer-common@0.13.4
 
 ## 2.23.1
+
+*Released: 2026-05-26T16:40:21Z*
 
 ### Patch Changes
 
@@ -222,11 +254,15 @@
 
 ## 2.23.0
 
+*Released: 2026-05-25T14:44:33Z*
+
 ### Minor Changes
 
 - acb9875: Adds relative path support to CAP and non-CAP target folder prompts
 
 ## 2.22.2
+
+*Released: 2026-05-21T16:21:11Z*
 
 ### Patch Changes
 
@@ -239,6 +275,8 @@
 
 ## 2.22.1
 
+*Released: 2026-05-19T15:16:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [63e6846]
@@ -250,6 +288,8 @@
     - @sap-ux/telemetry@0.7.1
 
 ## 2.22.0
+
+*Released: 2026-05-15T13:12:06Z*
 
 ### Minor Changes
 
@@ -264,6 +304,8 @@
     - @sap-ux/inquirer-common@0.13.0
 
 ## 2.21.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -286,11 +328,15 @@
 
 ## 2.20.25
 
+*Released: 2026-05-14T21:28:41Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.48
 
 ## 2.20.24
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -310,6 +356,8 @@
 
 ## 2.20.23
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - 21abda3: chore: upgrade fast-xml-parser 5.7.2 → 5.8.0 (fixes fast-xml-builder CVE-2025-47916)
@@ -323,6 +371,8 @@
 
 ## 2.20.22
 
+*Released: 2026-05-12T18:00:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [9360ea5]
@@ -330,6 +380,8 @@
     - @sap-ux/inquirer-common@0.11.45
 
 ## 2.20.21
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -347,6 +399,8 @@
 
 ## 2.20.20
 
+*Released: 2026-04-30T14:23:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [c160401]
@@ -359,6 +413,8 @@
 
 ## 2.20.19
 
+*Released: 2026-04-30T13:10:33Z*
+
 ### Patch Changes
 
 - Updated dependencies [a4b90ca]
@@ -366,11 +422,15 @@
 
 ## 2.20.18
 
+*Released: 2026-04-29T16:22:20Z*
+
 ### Patch Changes
 
 - 8b2c55b: Fix for system selection change incorrectly validated as true
 
 ## 2.20.17
+
+*Released: 2026-04-29T15:24:37Z*
 
 ### Patch Changes
 
@@ -386,6 +446,8 @@
 
 ## 2.20.16
 
+*Released: 2026-04-27T19:47:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -397,6 +459,8 @@
     - @sap-ux/telemetry@0.6.101
 
 ## 2.20.15
+
+*Released: 2026-04-23T12:54:21Z*
 
 ### Patch Changes
 
@@ -410,6 +474,8 @@
 
 ## 2.20.14
 
+*Released: 2026-04-23T06:48:55Z*
+
 ### Patch Changes
 
 - Updated dependencies [237371b]
@@ -419,11 +485,15 @@
 
 ## 2.20.13
 
+*Released: 2026-04-22T12:38:46Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.38
 
 ## 2.20.12
+
+*Released: 2026-04-15T11:53:17Z*
 
 ### Patch Changes
 
@@ -433,6 +503,8 @@
     - @sap-ux/inquirer-common@0.11.37
 
 ## 2.20.11
+
+*Released: 2026-04-14T20:26:28Z*
 
 ### Patch Changes
 
@@ -445,6 +517,8 @@
     - @sap-ux/telemetry@0.6.98
 
 ## 2.20.10
+
+*Released: 2026-04-14T12:35:35Z*
 
 ### Patch Changes
 
@@ -460,6 +534,8 @@
     - @sap-ux/project-input-validator@0.6.76
 
 ## 2.20.9
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -478,6 +554,8 @@
 
 ## 2.20.8
 
+*Released: 2026-04-01T11:49:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [3291f6c]
@@ -489,6 +567,8 @@
     - @sap-ux/telemetry@0.6.95
 
 ## 2.20.7
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -513,6 +593,8 @@
 
 ## 2.20.6
 
+*Released: 2026-03-27T15:37:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [e92850e]
@@ -521,6 +603,8 @@
     - @sap-ux/inquirer-common@0.11.31
 
 ## 2.20.5
+
+*Released: 2026-03-27T11:58:49Z*
 
 ### Patch Changes
 
@@ -534,6 +618,8 @@
 
 ## 2.20.4
 
+*Released: 2026-03-26T20:06:10Z*
+
 ### Patch Changes
 
 - Updated dependencies [b66e827]
@@ -545,6 +631,8 @@
     - @sap-ux/telemetry@0.6.91
 
 ## 2.20.3
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -571,6 +659,8 @@
 
 ## 2.20.2
 
+*Released: 2026-03-25T12:56:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [f384ace]
@@ -582,6 +672,8 @@
     - @sap-ux/telemetry@0.6.89
 
 ## 2.20.1
+
+*Released: 2026-03-23T18:25:40Z*
 
 ### Patch Changes
 

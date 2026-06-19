@@ -2,6 +2,8 @@
 
 ## 1.0.1
 
+*Released: 2026-06-03T14:58:37Z*
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
@@ -9,6 +11,8 @@
     - @sap-ux/text-document-utils@1.0.1
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -48,11 +52,15 @@
 
 ## 0.6.1
 
+*Released: 2026-05-20T13:39:22Z*
+
 ### Patch Changes
 
 - 2f1ece0: [rule] Add rule to check that a Common.Text description property has a meaningful Common.Label annotation
 
 ## 0.6.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -65,6 +73,8 @@
 
 ## 0.5.9
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -72,6 +82,8 @@
     - @sap-ux/text-document-utils@0.3.5
 
 ## 0.5.8
+
+*Released: 2026-04-30T14:23:24Z*
 
 ### Patch Changes
 

@@ -10,12 +10,16 @@
 
 ## 1.0.3
 
+*Released: 2026-06-10T07:55:58Z*
+
 ### Patch Changes
 
 - Updated dependencies [a1235d6]
     - @sap-ux/ui-components@3.0.3
 
 ## 1.0.2
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -25,12 +29,16 @@
 
 ## 1.0.1
 
+*Released: 2026-06-03T10:37:52Z*
+
 ### Patch Changes
 
 - Updated dependencies [21cadc3]
     - @sap-ux/ui-components@3.0.1
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -70,6 +78,8 @@
 
 ## 0.7.5
 
+*Released: 2026-05-29T09:10:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [b0a922a]
@@ -77,12 +87,16 @@
 
 ## 0.7.4
 
+*Released: 2026-05-27T08:56:54Z*
+
 ### Patch Changes
 
 - Updated dependencies [bc315f0]
     - @sap-ux/ui-components@2.2.4
 
 ## 0.7.3
+
+*Released: 2026-05-26T16:40:21Z*
 
 ### Patch Changes
 
@@ -92,6 +106,8 @@
 
 ## 0.7.2
 
+*Released: 2026-05-22T06:20:19Z*
+
 ### Patch Changes
 
 - Updated dependencies [882d45b]
@@ -99,12 +115,16 @@
 
 ## 0.7.1
 
+*Released: 2026-05-15T10:52:26Z*
+
 ### Patch Changes
 
 - Updated dependencies [742d896]
     - @sap-ux/ui-components@2.2.1
 
 ## 0.7.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -117,6 +137,8 @@
 
 ## 0.6.29
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -125,12 +147,16 @@
 
 ## 0.6.28
 
+*Released: 2026-05-11T17:25:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [189ad98]
     - @sap-ux/ui-components@2.1.15
 
 ## 0.6.27
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -139,12 +165,16 @@
 
 ## 0.6.26
 
+*Released: 2026-05-06T14:01:23Z*
+
 ### Patch Changes
 
 - Updated dependencies [7f8a712]
     - @sap-ux/ui-components@2.1.13
 
 ## 0.6.25
+
+*Released: 2026-04-30T14:23:24Z*
 
 ### Patch Changes
 
@@ -153,12 +183,16 @@
 
 ## 0.6.24
 
+*Released: 2026-04-22T14:26:13Z*
+
 ### Patch Changes
 
 - Updated dependencies [f77f003]
     - @sap-ux/ui-components@2.1.11
 
 ## 0.6.23
+
+*Released: 2026-04-14T21:37:37Z*
 
 ### Patch Changes
 
@@ -167,12 +201,16 @@
 
 ## 0.6.22
 
+*Released: 2026-04-01T10:25:12Z*
+
 ### Patch Changes
 
 - Updated dependencies [9357457]
     - @sap-ux/ui-components@2.1.9
 
 ## 0.6.21
+
+*Released: 2026-03-31T17:04:36Z*
 
 ### Patch Changes
 
@@ -181,6 +219,8 @@
 
 ## 0.6.20
 
+*Released: 2026-03-31T10:49:34Z*
+
 ### Patch Changes
 
 - Updated dependencies [f101671]
@@ -188,12 +228,16 @@
 
 ## 0.6.19
 
+*Released: 2026-03-31T08:19:05Z*
+
 ### Patch Changes
 
 - Updated dependencies [6b622e0]
     - @sap-ux/ui-components@2.1.6
 
 ## 0.6.18
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -208,12 +252,16 @@
 
 ## 0.6.17
 
+*Released: 2026-03-26T12:07:04Z*
+
 ### Patch Changes
 
 - Updated dependencies [a41533f]
     - @sap-ux/ui-components@2.1.4
 
 ## 0.6.16
+
+*Released: 2026-03-24T09:40:46Z*
 
 ### Patch Changes
 
