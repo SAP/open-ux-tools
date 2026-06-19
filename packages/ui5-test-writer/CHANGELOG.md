@@ -10,6 +10,8 @@
 
 ## 1.1.11
 
+*Released: 2026-06-15T21:05:56Z*
+
 ### Patch Changes
 
 #### Workspace Updates
@@ -18,12 +20,16 @@
 
 ## 1.1.10
 
+*Released: 2026-06-14T10:40:09Z*
+
 ### Patch Changes
 
 - Updated dependencies [adae40d]
     - @sap-ux/preview-middleware@1.0.22
 
 ## 1.1.9
+
+*Released: 2026-06-12T19:01:39Z*
 
 ### Patch Changes
 
@@ -32,12 +38,16 @@
 
 ## 1.1.8
 
+*Released: 2026-06-12T14:48:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [d4e24a7]
     - @sap-ux/preview-middleware@1.0.20
 
 ## 1.1.7
+
+*Released: 2026-06-12T10:49:08Z*
 
 ### Patch Changes
 
@@ -46,12 +56,16 @@
 
 ## 1.1.6
 
+*Released: 2026-06-12T08:50:00Z*
+
 ### Patch Changes
 
 - Updated dependencies [0110219]
     - @sap-ux/preview-middleware@1.0.18
 
 ## 1.1.5
+
+*Released: 2026-06-12T06:53:23Z*
 
 ### Patch Changes
 
@@ -60,11 +74,15 @@
 
 ## 1.1.4
 
+*Released: 2026-06-11T19:22:44Z*
+
 ### Patch Changes
 
 - f02b950: fix(ui5-test-writer): force JS test file generation when any page uses the FPM template, ignoring enableTypeScript and tsconfig auto-detection
 
 ## 1.1.3
+
+*Released: 2026-06-11T13:37:16Z*
 
 ### Patch Changes
 
@@ -74,6 +92,8 @@
 
 ## 1.1.2
 
+*Released: 2026-06-11T10:54:17Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@1.0.10
@@ -81,17 +101,23 @@
 
 ## 1.1.1
 
+*Released: 2026-06-10T16:18:03Z*
+
 ### Patch Changes
 
 - c9b0659: force js file for fpm opa tests
 
 ## 1.1.0
 
+*Released: 2026-06-10T12:57:40Z*
+
 ### Minor Changes
 
 - c084184: Add TypeScript support for OPA test generation
 
 ## 1.0.14
+
+*Released: 2026-06-10T09:57:42Z*
 
 ### Patch Changes
 
@@ -102,12 +128,16 @@
 
 ## 1.0.13
 
+*Released: 2026-06-09T14:35:01Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@1.0.8
 - @sap-ux/preview-middleware@1.0.13
 
 ## 1.0.12
+
+*Released: 2026-06-09T13:18:16Z*
 
 ### Patch Changes
 
@@ -117,12 +147,16 @@
 
 ## 1.0.11
 
+*Released: 2026-06-09T09:41:14Z*
+
 ### Patch Changes
 
 - Updated dependencies [bcfe9e3]
     - @sap-ux/preview-middleware@1.0.11
 
 ## 1.0.10
+
+*Released: 2026-06-04T13:54:21Z*
 
 ### Patch Changes
 
@@ -134,11 +168,15 @@
 
 ## 1.0.9
 
+*Released: 2026-06-04T12:10:05Z*
+
 ### Patch Changes
 
 - @sap-ux/preview-middleware@1.0.9
 
 ## 1.0.8
+
+*Released: 2026-06-04T10:19:37Z*
 
 ### Patch Changes
 
@@ -149,6 +187,8 @@
     - @sap-ux/ui5-application-writer@2.0.2
 
 ## 1.0.7
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -162,6 +202,8 @@
 
 ## 1.0.6
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@2.0.2
@@ -171,12 +213,16 @@
 
 ## 1.0.5
 
+*Released: 2026-06-02T21:37:28Z*
+
 ### Patch Changes
 
 - Updated dependencies [3506d2c]
     - @sap-ux/preview-middleware@1.0.5
 
 ## 1.0.4
+
+*Released: 2026-06-02T11:35:17Z*
 
 ### Patch Changes
 
@@ -185,11 +231,15 @@
 
 ## 1.0.3
 
+*Released: 2026-06-02T08:56:31Z*
+
 ### Patch Changes
 
 - @sap-ux/preview-middleware@1.0.3
 
 ## 1.0.2
+
+*Released: 2026-06-01T17:22:37Z*
 
 ### Patch Changes
 
@@ -197,6 +247,8 @@
     - @sap-ux/preview-middleware@1.0.2
 
 ## 1.0.1
+
+*Released: 2026-06-01T15:15:26Z*
 
 ### Patch Changes
 
@@ -207,6 +259,8 @@
     - @sap-ux/ui5-application-writer@2.0.0
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -250,11 +304,15 @@
 
 ## 0.9.15
 
+*Released: 2026-05-29T12:50:34Z*
+
 ### Patch Changes
 
 - @sap-ux/preview-middleware@0.26.12
 
 ## 0.9.14
+
+*Released: 2026-05-29T06:59:27Z*
 
 ### Patch Changes
 
@@ -263,12 +321,16 @@
 
 ## 0.9.13
 
+*Released: 2026-05-27T11:39:21Z*
+
 ### Patch Changes
 
 - @sap-ux/preview-middleware@0.26.10
 - @sap-ux/fiori-generator-shared@0.15.6
 
 ## 0.9.12
+
+*Released: 2026-05-27T10:42:47Z*
 
 ### Patch Changes
 
@@ -277,6 +339,8 @@
 
 ## 0.9.11
 
+*Released: 2026-05-27T09:55:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [162059e]
@@ -284,11 +348,15 @@
 
 ## 0.9.10
 
+*Released: 2026-05-26T21:32:06Z*
+
 ### Patch Changes
 
 - 03d1cdd: add OPA tests for LR semantic key filters and global search
 
 ## 0.9.9
+
+*Released: 2026-05-26T16:40:21Z*
 
 ### Patch Changes
 
@@ -298,11 +366,15 @@
 
 ## 0.9.8
 
+*Released: 2026-05-22T13:30:05Z*
+
 ### Patch Changes
 
 - @sap-ux/preview-middleware@0.26.7
 
 ## 0.9.7
+
+*Released: 2026-05-21T16:21:11Z*
 
 ### Patch Changes
 
@@ -313,11 +385,15 @@
 
 ## 0.9.6
 
+*Released: 2026-05-21T14:58:44Z*
+
 ### Patch Changes
 
 - @sap-ux/preview-middleware@0.26.5
 
 ## 0.9.5
+
+*Released: 2026-05-19T15:16:46Z*
 
 ### Patch Changes
 
@@ -329,11 +405,15 @@
 
 ## 0.9.4
 
+*Released: 2026-05-19T10:17:18Z*
+
 ### Patch Changes
 
 - 8d4a8a4: Generate tests for Actions on the Object Page
 
 ## 0.9.3
+
+*Released: 2026-05-18T08:15:14Z*
 
 ### Patch Changes
 
@@ -341,12 +421,16 @@
 
 ## 0.9.2
 
+*Released: 2026-05-15T20:38:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [fb00faa]
     - @sap-ux/preview-middleware@0.26.2
 
 ## 0.9.1
+
+*Released: 2026-05-15T13:12:06Z*
 
 ### Patch Changes
 
@@ -356,6 +440,8 @@
 
 ## 0.9.0
 
+*Released: 2026-05-15T12:26:02Z*
+
 ### Minor Changes
 
 - 2f0c182: feat: support virtual preview endpoints for test generation
@@ -363,6 +449,8 @@
     When `useVirtualPreviewEndpoints` is enabled, test harness files (testsuite, unitTests, opaTests) are served virtually and not written to disk. UI5 yaml files are updated with `flp.path: test/flp.html` and test framework entries (OPA5, Testsuite, QUnit) are added to ui5-mock.yaml.
 
 ## 0.8.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -378,6 +466,8 @@
 
 ## 0.7.114
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -389,6 +479,8 @@
 
 ## 0.7.113
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -398,12 +490,16 @@
 
 ## 0.7.112
 
+*Released: 2026-05-12T18:00:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [9360ea5]
     - @sap-ux/fiori-generator-shared@0.14.0
 
 ## 0.7.111
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -414,11 +510,15 @@
 
 ## 0.7.110
 
+*Released: 2026-04-30T15:37:27Z*
+
 ### Patch Changes
 
 - 865fb96: fixes for app info generation
 
 ## 0.7.109
+
+*Released: 2026-04-30T14:23:24Z*
 
 ### Patch Changes
 
@@ -426,6 +526,8 @@
 - @sap-ux/project-access@1.36.2
 
 ## 0.7.108
+
+*Released: 2026-04-29T15:24:37Z*
 
 ### Patch Changes
 
@@ -436,6 +538,8 @@
 
 ## 0.7.107
 
+*Released: 2026-04-27T19:47:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -444,12 +548,16 @@
 
 ## 0.7.106
 
+*Released: 2026-04-27T15:50:47Z*
+
 ### Patch Changes
 
 - Updated dependencies [165a6c2]
     - @sap-ux/ui5-application-writer@1.8.7
 
 ## 0.7.105
+
+*Released: 2026-04-23T12:54:21Z*
 
 ### Patch Changes
 
@@ -459,17 +567,23 @@
 
 ## 0.7.104
 
+*Released: 2026-04-22T15:02:56Z*
+
 ### Patch Changes
 
 - d36d5d7: app info generation fixes
 
 ## 0.7.103
 
+*Released: 2026-04-14T21:37:37Z*
+
 ### Patch Changes
 
 - 4357b0b: generate opa5 tests from app info
 
 ## 0.7.102
+
+*Released: 2026-04-14T12:35:35Z*
 
 ### Patch Changes
 
@@ -478,11 +592,15 @@
 
 ## 0.7.101
 
+*Released: 2026-04-09T20:40:49Z*
+
 ### Patch Changes
 
 - 17d8e42: fixes for object page opa test failures
 
 ## 0.7.100
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -493,6 +611,8 @@
 
 ## 0.7.99
 
+*Released: 2026-04-01T11:49:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [3291f6c]
@@ -501,17 +621,23 @@
 
 ## 0.7.98
 
+*Released: 2026-04-01T09:52:29Z*
+
 ### Patch Changes
 
 - 9d272d7: Fix header form field identifier values
 
 ## 0.7.97
 
+*Released: 2026-03-31T14:07:26Z*
+
 ### Patch Changes
 
 - 791e9b9: Generate OPA5 existence checks for object page sections & subsections
 
 ## 0.7.96
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -524,11 +650,15 @@
 
 ## 0.7.95
 
+*Released: 2026-03-27T16:43:53Z*
+
 ### Patch Changes
 
 - aa2baf3: fix action button state test based on line item selection
 
 ## 0.7.94
+
+*Released: 2026-03-26T20:06:10Z*
 
 ### Patch Changes
 
@@ -537,6 +667,8 @@
     - @sap-ux/ui5-application-writer@1.8.2
 
 ## 0.7.93
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -549,6 +681,8 @@
     - @sap-ux/ui5-application-writer@1.8.2
 
 ## 0.7.92
+
+*Released: 2026-03-25T12:56:41Z*
 
 ### Patch Changes
 

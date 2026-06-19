@@ -2,11 +2,15 @@
 
 ## 1.0.9
 
+*Released: 2026-06-11T10:54:17Z*
+
 ### Patch Changes
 
 - 7bfa518: fix console.time/timeEnd warnings
 
 ## 1.0.8
+
+*Released: 2026-06-10T09:57:42Z*
 
 ### Patch Changes
 
@@ -16,6 +20,8 @@
 
 ## 1.0.7
 
+*Released: 2026-06-09T14:35:01Z*
+
 ### Patch Changes
 
 - Updated dependencies [0fa8305]
@@ -24,6 +30,8 @@
 
 ## 1.0.6
 
+*Released: 2026-06-04T13:54:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [fff7490]
@@ -31,12 +39,16 @@
 
 ## 1.0.5
 
+*Released: 2026-06-04T10:19:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [b326a9a]
     - @sap-ux/project-access@2.1.0
 
 ## 1.0.4
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -51,6 +63,8 @@
 
 ## 1.0.3
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - Updated dependencies [9580241]
@@ -59,6 +73,8 @@
 
 ## 1.0.2
 
+*Released: 2026-06-02T11:35:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [41f327a]
@@ -66,12 +82,16 @@
 
 ## 1.0.1
 
+*Released: 2026-06-01T15:15:26Z*
+
 ### Patch Changes
 
 - Updated dependencies [aed799d]
     - @sap-ux/project-access@2.0.1
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -116,12 +136,16 @@
 
 ## 0.7.5
 
+*Released: 2026-05-27T11:39:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [ea9cbb1]
     - @sap-ux/nodejs-utils@0.3.2
 
 ## 0.7.4
+
+*Released: 2026-05-27T10:42:47Z*
 
 ### Patch Changes
 
@@ -131,6 +155,8 @@
 
 ## 0.7.3
 
+*Released: 2026-05-26T16:40:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [01b70ca]
@@ -138,6 +164,8 @@
     - @sap-ux/nodejs-utils@0.3.1
 
 ## 0.7.2
+
+*Released: 2026-05-21T16:21:11Z*
 
 ### Patch Changes
 
@@ -147,12 +175,16 @@
 
 ## 0.7.1
 
+*Released: 2026-05-19T15:16:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [63e6846]
     - @sap-ux/project-access@1.38.0
 
 ## 0.7.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -170,6 +202,8 @@
 
 ## 0.6.106
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -183,12 +217,16 @@
 
 ## 0.6.105
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
     - @sap-ux/project-access@1.36.4
 
 ## 0.6.104
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -201,12 +239,16 @@
 
 ## 0.6.103
 
+*Released: 2026-04-30T14:23:24Z*
+
 ### Patch Changes
 
 - c160401: fix: SONAR issues
     - @sap-ux/project-access@1.36.2
 
 ## 0.6.102
+
+*Released: 2026-04-29T15:24:37Z*
 
 ### Patch Changes
 
@@ -215,12 +257,16 @@
 
 ## 0.6.101
 
+*Released: 2026-04-27T19:47:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
     - @sap-ux/project-access@1.36.0
 
 ## 0.6.100
+
+*Released: 2026-04-23T12:54:21Z*
 
 ### Patch Changes
 
@@ -229,11 +275,15 @@
 
 ## 0.6.99
 
+*Released: 2026-04-15T11:53:17Z*
+
 ### Patch Changes
 
 - 67d1f8b: Bump dotenv and configure "quiet" option
 
 ## 0.6.98
+
+*Released: 2026-04-14T20:26:28Z*
 
 ### Patch Changes
 
@@ -242,6 +292,8 @@
     - @sap-ux/nodejs-utils@0.2.21
 
 ## 0.6.97
+
+*Released: 2026-04-14T12:35:35Z*
 
 ### Patch Changes
 
@@ -253,6 +305,8 @@
     - @sap-ux/project-access@1.35.20
 
 ## 0.6.96
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -266,12 +320,16 @@
 
 ## 0.6.95
 
+*Released: 2026-04-01T11:49:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [3291f6c]
     - @sap-ux/project-access@1.35.18
 
 ## 0.6.94
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -287,11 +345,15 @@
 
 ## 0.6.93
 
+*Released: 2026-03-27T15:37:24Z*
+
 ### Patch Changes
 
 - e92850e: IDE Type Detection for Telemetry
 
 ## 0.6.92
+
+*Released: 2026-03-27T11:58:49Z*
 
 ### Patch Changes
 
@@ -301,12 +363,16 @@
 
 ## 0.6.91
 
+*Released: 2026-03-26T20:06:10Z*
+
 ### Patch Changes
 
 - Updated dependencies [b66e827]
     - @sap-ux/project-access@1.35.17
 
 ## 0.6.90
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -324,6 +390,8 @@
     - @sap-ux/ui5-config@0.30.1
 
 ## 0.6.89
+
+*Released: 2026-03-25T12:56:41Z*
 
 ### Patch Changes
 

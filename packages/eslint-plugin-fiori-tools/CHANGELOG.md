@@ -2,11 +2,15 @@
 
 ## 10.6.3
 
+*Released: 2026-06-12T08:20:17Z*
+
 ### Patch Changes
 
 - 0425d5f: fix(eslint-plugin-fiori-tools): bundle @babel/core, @babel/eslint-parser, @babel/parser to prevent version conflicts with ui5-tooling-transpile in consumer projects
 
 ## 10.6.2
+
+*Released: 2026-06-10T09:12:01Z*
 
 ### Patch Changes
 
@@ -14,17 +18,23 @@
 
 ## 10.6.1
 
+*Released: 2026-06-09T19:59:54Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@1.0.6
 
 ## 10.6.0
 
+*Released: 2026-06-08T10:14:19Z*
+
 ### Minor Changes
 
 - 409ad75: FEAT: Add support to lint .change files. Enable table paste and export rules for ODataV2 tables.
 
 ## 10.5.4
+
+*Released: 2026-06-04T13:54:21Z*
 
 ### Patch Changes
 
@@ -34,6 +44,8 @@
 
 ## 10.5.3
 
+*Released: 2026-06-04T10:19:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [b326a9a]
@@ -41,6 +53,8 @@
     - @sap-ux/fiori-annotation-api@1.0.4
 
 ## 10.5.2
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -54,6 +68,8 @@
 
 ## 10.5.1
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@2.0.2
@@ -61,11 +77,15 @@
 
 ## 10.5.0
 
+*Released: 2026-06-02T16:09:55Z*
+
 ### Minor Changes
 
 - ca7d40f: fix: support ESLint 10 by upgrading `@babel/eslint-parser` and `@babel/core` to `8.0.0-rc.6` and adding `@babel/parser@8.0.0-rc.6` as a runtime dependency. This avoids `@babel/eslint-parser`'s `createRequire` failing to load `@babel/parser@8` (pure ESM) under pnpm's strict `node_modules` isolation, where `@babel/parser` is otherwise not visible from the consumer's resolution paths.
 
 ## 10.4.1
+
+*Released: 2026-06-01T15:15:26Z*
 
 ### Patch Changes
 
@@ -74,6 +94,8 @@
     - @sap-ux/fiori-annotation-api@1.0.1
 
 ## 10.4.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Minor Changes
 
@@ -92,11 +114,15 @@
 
 ## 10.3.0
 
+*Released: 2026-05-29T18:38:26Z*
+
 ### Minor Changes
 
 - 0d6c80c: feat: enhance ESLint rules to support CDS annotations for sap-description-column-label and sap-text-arrangement-hidden
 
 ## 10.2.2
+
+*Released: 2026-05-25T09:31:33Z*
 
 ### Patch Changes
 
@@ -104,12 +130,16 @@
 
 ## 10.2.1
 
+*Released: 2026-05-21T16:21:11Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.38.1
 - @sap-ux/fiori-annotation-api@0.11.1
 
 ## 10.2.0
+
+*Released: 2026-05-20T13:39:22Z*
 
 ### Minor Changes
 
@@ -125,6 +155,8 @@
 
 ## 10.1.2
 
+*Released: 2026-05-19T15:16:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [63e6846]
@@ -133,11 +165,15 @@
 
 ## 10.1.1
 
+*Released: 2026-05-15T14:04:17Z*
+
 ### Patch Changes
 
 - b090449: Enable sap-no-data-field-intent-based-navigation rule to check UI.HeaderFacet annotation in CAP apps.
 
 ## 10.1.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -154,11 +190,15 @@
 
 ## 10.0.8
 
+*Released: 2026-05-15T06:38:20Z*
+
 ### Patch Changes
 
 - a34e4c2: Update table configuration related eslint rules to include object page section label in the reported issue message.
 
 ## 10.0.7
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -172,6 +212,8 @@
 
 ## 10.0.6
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -180,11 +222,15 @@
 
 ## 10.0.5
 
+*Released: 2026-05-11T06:59:50Z*
+
 ### Patch Changes
 
 - c520b5e: Add cds annotation code examples to rules documentation.
 
 ## 10.0.4
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -192,6 +238,8 @@
 - @sap-ux/fiori-annotation-api@0.9.48
 
 ## 10.0.3
+
+*Released: 2026-04-30T14:23:24Z*
 
 ### Patch Changes
 
@@ -204,6 +252,8 @@
 
 ## 10.0.2
 
+*Released: 2026-04-29T15:24:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [3945459]
@@ -211,6 +261,8 @@
     - @sap-ux/fiori-annotation-api@0.9.46
 
 ## 10.0.1
+
+*Released: 2026-04-27T19:47:46Z*
 
 ### Patch Changes
 
@@ -220,11 +272,15 @@
 
 ## 10.0.0
 
+*Released: 2026-04-27T15:50:47Z*
+
 ### Major Changes
 
 - 165a6c2: feat: support ESLint 10
 
 ## 9.13.0
+
+*Released: 2026-04-24T09:57:47Z*
 
 ### Minor Changes
 
@@ -237,6 +293,8 @@
 
 ## 9.12.3
 
+*Released: 2026-04-23T12:54:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [03d3ea1]
@@ -245,11 +303,15 @@
 
 ## 9.12.2
 
+*Released: 2026-04-21T09:57:38Z*
+
 ### Patch Changes
 
 - 291351f: Update sap-no-data-field-intent-based-navigation rule documentation with information on semantic link navigation.
 
 ## 9.12.1
+
+*Released: 2026-04-14T12:35:35Z*
 
 ### Patch Changes
 
@@ -258,17 +320,23 @@
 
 ## 9.12.0
 
+*Released: 2026-04-13T07:28:19Z*
+
 ### Minor Changes
 
 - 524690a: [rule] Add rule to check that a text property for a field with UI.TextArrangement is not hidden.
 
 ## 9.11.7
 
+*Released: 2026-04-09T11:02:11Z*
+
 ### Patch Changes
 
 - 9696e29: Add legacy fiori_tools_configure.eslintrc for `recommended` and `recommended-for-s4hana`
 
 ## 9.11.6
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -278,11 +346,15 @@
 
 ## 9.11.5
 
+*Released: 2026-04-07T07:42:21Z*
+
 ### Patch Changes
 
 - 0f7f5f3: Fix: Check minUI5 version for the sap-width-including-column-header rule
 
 ## 9.11.4
+
+*Released: 2026-04-02T16:11:10Z*
 
 ### Patch Changes
 
@@ -290,11 +362,15 @@
 
 ## 9.11.3
 
+*Released: 2026-04-01T13:59:33Z*
+
 ### Patch Changes
 
 - 0153757: add es2020 globals
 
 ## 9.11.2
+
+*Released: 2026-04-01T11:49:37Z*
 
 ### Patch Changes
 
@@ -304,17 +380,23 @@
 
 ## 9.11.1
 
+*Released: 2026-03-31T15:15:08Z*
+
 ### Patch Changes
 
 - 896be16: Add legacy eslint config from file `fiori_tools_configure.eslintrc` and `fiori_tools_testcode.eslintrc` for recommended-for-s4hana
 
 ## 9.11.0
 
+*Released: 2026-03-31T12:37:32Z*
+
 ### Minor Changes
 
 - a61cb9b: [rule] Add rule to check that intent-based navigation data fields are not used.
 
 ## 9.10.5
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -326,6 +408,8 @@
 
 ## 9.10.4
 
+*Released: 2026-03-26T20:06:10Z*
+
 ### Patch Changes
 
 - Updated dependencies [b66e827]
@@ -333,6 +417,8 @@
     - @sap-ux/fiori-annotation-api@0.9.38
 
 ## 9.10.3
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -346,6 +432,8 @@
     - @sap-ux/project-access@1.35.16
 
 ## 9.10.2
+
+*Released: 2026-03-25T12:56:41Z*
 
 ### Patch Changes
 

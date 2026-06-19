@@ -12,6 +12,8 @@
 
 ## 0.3.14
 
+*Released: 2026-06-12T06:53:23Z*
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@2.0.3
@@ -21,6 +23,8 @@
 - @sap-ux/odata-service-writer@1.0.6
 
 ## 0.3.13
+
+*Released: 2026-06-11T10:54:17Z*
 
 ### Patch Changes
 
@@ -32,17 +36,23 @@
 
 ## 0.3.12
 
+*Released: 2026-06-10T17:43:20Z*
+
 ### Patch Changes
 
 - 8abbd6f: Fix for hierarchy parent property incorrectly set as `target` instead of `source`
 
 ## 0.3.11
 
+*Released: 2026-06-10T10:53:28Z*
+
 ### Patch Changes
 
 - a11a7c7: Adds `Show Logs` link`
 
 ## 0.3.10
+
+*Released: 2026-06-10T09:57:42Z*
 
 ### Patch Changes
 
@@ -59,6 +69,8 @@
 
 ## 0.3.9
 
+*Released: 2026-06-09T14:35:01Z*
+
 ### Patch Changes
 
 - Updated dependencies [0fa8305]
@@ -72,6 +84,8 @@
 
 ## 0.3.8
 
+*Released: 2026-06-09T13:18:16Z*
+
 ### Patch Changes
 
 - Updated dependencies [a328e14]
@@ -81,11 +95,15 @@
 
 ## 0.3.7
 
+*Released: 2026-06-04T14:49:00Z*
+
 ### Patch Changes
 
 - 78f39f4: revert odata-downloader to cjs
 
 ## 0.3.6
+
+*Released: 2026-06-04T13:54:21Z*
 
 ### Patch Changes
 
@@ -101,6 +119,8 @@
 
 ## 0.3.5
 
+*Released: 2026-06-04T10:19:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [b326a9a]
@@ -114,6 +134,8 @@
     - @sap-ux/telemetry@1.0.5
 
 ## 0.3.4
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -133,6 +155,8 @@
 
 ## 0.3.3
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - Updated dependencies [9580241]
@@ -148,6 +172,8 @@
 
 ## 0.3.2
 
+*Released: 2026-06-02T11:35:17Z*
+
 ### Patch Changes
 
 - @sap-ux/odata-service-inquirer@3.0.2
@@ -156,6 +182,8 @@
 - @sap-ux/inquirer-common@1.0.2
 
 ## 0.3.1
+
+*Released: 2026-06-01T15:15:26Z*
 
 ### Patch Changes
 
@@ -170,6 +198,8 @@
     - @sap-ux/telemetry@1.0.1
 
 ## 0.3.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Minor Changes
 
@@ -220,11 +250,15 @@
 
 ## 0.2.0
 
+*Released: 2026-05-15T08:12:20Z*
+
 ### Minor Changes
 
 - 72695e5: chore: drop Node 20 support as it is no longer maintained
 
 ## 0.1.2
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -232,11 +266,15 @@
 
 ## 0.1.1
 
+*Released: 2026-05-11T16:10:02Z*
+
 ### Patch Changes
 
 - 18e298b: Package is self contained, no external dependencies required.
 
 ## 0.1.0
+
+*Released: 2026-05-07T12:44:55Z*
 
 ### Minor Changes
 
@@ -244,11 +282,15 @@
 
 ## 0.0.10
 
+*Released: 2026-03-30T22:24:11Z*
+
 ### Patch Changes
 
 - c53a4ba: chore(generator-odata-downloader): upgrade shared devDependencies (jest 30, i18next 25, @types/yeoman-generator 5.2.14)
 
 ## 0.0.9
+
+*Released: 2026-03-23T14:11:51Z*
 
 ### Patch Changes
 

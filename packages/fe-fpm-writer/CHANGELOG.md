@@ -2,12 +2,16 @@
 
 ## 1.0.8
 
+*Released: 2026-06-11T07:16:28Z*
+
 ### Patch Changes
 
 - Updated dependencies [3443820]
     - @sap-ux/fiori-annotation-api@1.0.8
 
 ## 1.0.7
+
+*Released: 2026-06-10T09:57:42Z*
 
 ### Patch Changes
 
@@ -16,11 +20,15 @@
 
 ## 1.0.6
 
+*Released: 2026-06-09T19:59:54Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@1.0.6
 
 ## 1.0.5
+
+*Released: 2026-06-04T13:54:21Z*
 
 ### Patch Changes
 
@@ -30,6 +38,8 @@
 
 ## 1.0.4
 
+*Released: 2026-06-04T10:19:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [b326a9a]
@@ -37,6 +47,8 @@
     - @sap-ux/fiori-annotation-api@1.0.4
 
 ## 1.0.3
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -49,12 +61,16 @@
 
 ## 1.0.2
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@2.0.2
 - @sap-ux/fiori-annotation-api@1.0.2
 
 ## 1.0.1
+
+*Released: 2026-06-01T15:15:26Z*
 
 ### Patch Changes
 
@@ -63,6 +79,8 @@
     - @sap-ux/fiori-annotation-api@1.0.1
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -105,12 +123,16 @@
 
 ## 0.44.3
 
+*Released: 2026-05-21T16:21:11Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.38.1
 - @sap-ux/fiori-annotation-api@0.11.1
 
 ## 0.44.2
+
+*Released: 2026-05-20T13:39:22Z*
 
 ### Patch Changes
 
@@ -119,6 +141,8 @@
 
 ## 0.44.1
 
+*Released: 2026-05-19T15:16:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [63e6846]
@@ -126,6 +150,8 @@
     - @sap-ux/fiori-annotation-api@0.10.1
 
 ## 0.44.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -141,6 +167,8 @@
 
 ## 0.43.30
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -152,6 +180,8 @@
 
 ## 0.43.29
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -160,12 +190,16 @@
 
 ## 0.43.28
 
+*Released: 2026-05-06T23:02:00Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.36.3
 - @sap-ux/fiori-annotation-api@0.9.48
 
 ## 0.43.27
+
+*Released: 2026-04-30T14:23:24Z*
 
 ### Patch Changes
 
@@ -177,6 +211,8 @@
 
 ## 0.43.26
 
+*Released: 2026-04-29T15:24:37Z*
+
 ### Patch Changes
 
 - 3945459: chore: upgrade @xmldom/xmldom 0.8.12 to 0.8.13 (security fix for XML injection vulnerabilities)
@@ -186,11 +222,15 @@
 
 ## 0.43.25
 
+*Released: 2026-04-28T12:02:15Z*
+
 ### Patch Changes
 
 - d45b5a4: fix(fpm-writer): custom form field view.xml update
 
 ## 0.43.24
+
+*Released: 2026-04-27T19:47:46Z*
 
 ### Patch Changes
 
@@ -202,12 +242,16 @@
 
 ## 0.43.23
 
+*Released: 2026-04-24T09:57:47Z*
+
 ### Patch Changes
 
 - Updated dependencies [52f6549]
     - @sap-ux/fiori-annotation-api@0.9.44
 
 ## 0.43.22
+
+*Released: 2026-04-23T12:54:21Z*
 
 ### Patch Changes
 
@@ -217,6 +261,8 @@
 
 ## 0.43.21
 
+*Released: 2026-04-14T12:35:35Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.35.20
@@ -224,11 +270,15 @@
 
 ## 0.43.20
 
+*Released: 2026-04-13T13:12:49Z*
+
 ### Patch Changes
 
 - 9700a95: feat(fpm-writer): Support custom fields for form building block
 
 ## 0.43.19
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -240,6 +290,8 @@
 
 ## 0.43.18
 
+*Released: 2026-04-01T11:49:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [3291f6c]
@@ -247,6 +299,8 @@
     - @sap-ux/fiori-annotation-api@0.9.40
 
 ## 0.43.17
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -258,6 +312,8 @@
 
 ## 0.43.16
 
+*Released: 2026-03-26T20:06:10Z*
+
 ### Patch Changes
 
 - Updated dependencies [b66e827]
@@ -265,6 +321,8 @@
     - @sap-ux/fiori-annotation-api@0.9.38
 
 ## 0.43.15
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -280,6 +338,8 @@
 
 ## 0.43.14
 
+*Released: 2026-03-25T12:56:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [f384ace]
@@ -287,6 +347,8 @@
     - @sap-ux/fiori-annotation-api@0.9.36
 
 ## 0.43.13
+
+*Released: 2026-03-24T08:12:44Z*
 
 ### Patch Changes
 
