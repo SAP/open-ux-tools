@@ -1,5 +1,13 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 1.1.0
+
+### Minor Changes
+
+#### Features
+
+- Add full template support for the Page building block with all 7 aggregations and controller stub generation [[5a4f633](https://github.com/SAP/open-ux-tools/commit/5a4f633fdd1a1c7d5415221c0863089e7e540aca)]
+
 ## 1.0.4
 
 ### Patch Changes
