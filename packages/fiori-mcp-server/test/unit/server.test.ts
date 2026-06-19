@@ -129,9 +129,11 @@ describe('FioriFunctionalityServer', () => {
                 serverInfo: {
                     name: 'fiori-mcp',
                     version: expect.any(String)
-                }
+                },
+                instructions: expect.any(String)
             });
             expect(result.protocolVersion).toBeTruthy();
+            expect(result.instructions).toBeTruthy();
         });
 
         test('should use default values when clientInfo is not provided', async () => {
@@ -151,7 +153,8 @@ describe('FioriFunctionalityServer', () => {
                 serverInfo: {
                     name: 'fiori-mcp',
                     version: expect.any(String)
-                }
+                },
+                instructions: expect.any(String)
             });
             expect(result.protocolVersion).toBeTruthy();
         });
