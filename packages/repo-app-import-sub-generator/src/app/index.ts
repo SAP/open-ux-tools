@@ -29,7 +29,7 @@ import type {
     QfaJsonConfig,
     AppDownloadContext
 } from './types.js';
-import { AppDownloadType, PromptNames } from './types.js';
+import { AppDownloadType } from './types.js';
 import { getPrompts } from '../prompts/prompts.js';
 import { generate, TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
 import { join, basename } from 'node:path';

@@ -16,8 +16,7 @@ import {
     generatorNamespace,
     getBackendConfig,
     getSupportedTargets,
-    generatorTitle,
-    promptNames
+    generatorTitle
 } from '../utils/index.js';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import type { AppWizard as AppWizardType, Prompts as PromptsType } from '@sap-devx/yeoman-ui-types';
