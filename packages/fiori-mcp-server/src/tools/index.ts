@@ -66,7 +66,7 @@ export const tools = [
         description: `Lists all SAP systems from the user's environment. This will be SAP Fiori tools system store on VSCode or destinations on Business Application.
                     Also use this tool when the user asks to 'list destinations', 'list systems', 'list backends', or any equivalent phrasing.
                     Use this tool when the user references a SAP system by name or when you need to discover available systems
-                    before calling 'download_odata_service_metadata', 'generate_adaptation_project', or generating a Fiori application.`,
+                    before calling 'fetch-service-metadata', 'generate_adaptation_project', or generating a Fiori application.`,
         annotations: {
             title: 'List SAP Systems',
             readOnlyHint: true,
