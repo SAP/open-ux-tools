@@ -10,12 +10,16 @@
 
 ## 0.3.16
 
+*Released: 2026-06-14T10:40:09Z*
+
 ### Patch Changes
 
 - Updated dependencies [adae40d]
     - @sap-ux/adp-tooling@1.0.16
 
 ## 0.3.15
+
+*Released: 2026-06-12T10:49:08Z*
 
 ### Patch Changes
 
@@ -24,11 +28,15 @@
 
 ## 0.3.14
 
+*Released: 2026-06-12T06:53:23Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@1.0.14
 
 ## 0.3.13
+
+*Released: 2026-06-11T13:37:16Z*
 
 ### Patch Changes
 
@@ -37,11 +45,15 @@
 
 ## 0.3.12
 
+*Released: 2026-06-11T10:54:17Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@1.0.12
 
 ## 0.3.11
+
+*Released: 2026-06-10T09:57:42Z*
 
 ### Patch Changes
 
@@ -49,6 +61,8 @@
     - @sap-ux/adp-tooling@1.0.11
 
 ## 0.3.10
+
+*Released: 2026-06-09T14:35:01Z*
 
 ### Patch Changes
 
@@ -58,17 +72,23 @@
 
 ## 0.3.9
 
+*Released: 2026-06-09T13:18:16Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@1.0.9
 
 ## 0.3.8
 
+*Released: 2026-06-04T13:54:21Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@1.0.8
 
 ## 0.3.7
+
+*Released: 2026-06-04T12:10:05Z*
 
 ### Patch Changes
 
@@ -77,11 +97,15 @@
 
 ## 0.3.6
 
+*Released: 2026-06-04T10:19:37Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@1.0.6
 
 ## 0.3.5
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -93,17 +117,23 @@
 
 ## 0.3.4
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@1.0.4
 
 ## 0.3.3
 
+*Released: 2026-06-02T11:35:17Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@1.0.3
 
 ## 0.3.2
+
+*Released: 2026-06-02T08:56:31Z*
 
 ### Patch Changes
 
@@ -113,11 +143,15 @@
 
 ## 0.3.1
 
+*Released: 2026-06-01T15:15:26Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@1.0.1
 
 ## 0.3.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Minor Changes
 
@@ -159,11 +193,15 @@
 
 ## 0.2.11
 
+*Released: 2026-05-29T12:50:34Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.19.11
 
 ## 0.2.10
+
+*Released: 2026-05-29T06:59:27Z*
 
 ### Patch Changes
 
@@ -172,17 +210,23 @@
 
 ## 0.2.9
 
+*Released: 2026-05-27T11:39:21Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.19.9
 
 ## 0.2.8
 
+*Released: 2026-05-27T10:42:47Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.19.8
 
 ## 0.2.7
+
+*Released: 2026-05-26T16:40:21Z*
 
 ### Patch Changes
 
@@ -193,6 +237,8 @@
 
 ## 0.2.6
 
+*Released: 2026-05-22T13:30:05Z*
+
 ### Patch Changes
 
 - Updated dependencies [758b0d4]
@@ -200,11 +246,15 @@
 
 ## 0.2.5
 
+*Released: 2026-05-21T16:21:11Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.19.5
 
 ## 0.2.4
+
+*Released: 2026-05-21T14:58:44Z*
 
 ### Patch Changes
 
@@ -213,11 +263,15 @@
 
 ## 0.2.3
 
+*Released: 2026-05-19T15:16:46Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.19.3
 
 ## 0.2.2
+
+*Released: 2026-05-18T08:15:14Z*
 
 ### Patch Changes
 
@@ -226,12 +280,16 @@
 
 ## 0.2.1
 
+*Released: 2026-05-15T13:12:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [2c76f8f]
     - @sap-ux/adp-tooling@0.19.1
 
 ## 0.2.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -247,11 +305,15 @@
 
 ## 0.1.25
 
+*Released: 2026-05-14T21:28:41Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.134
 
 ## 0.1.24
+
+*Released: 2026-05-14T14:16:50Z*
 
 ### Patch Changes
 
@@ -259,6 +321,8 @@
     - @sap-ux/adp-tooling@0.18.133
 
 ## 0.1.23
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -270,17 +334,23 @@
 
 ## 0.1.22
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.131
 
 ## 0.1.21
 
+*Released: 2026-05-12T18:00:39Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.130
 
 ## 0.1.20
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -291,12 +361,16 @@
 
 ## 0.1.19
 
+*Released: 2026-05-01T15:46:09Z*
+
 ### Patch Changes
 
 - Updated dependencies [b2ffc7e]
     - @sap-ux/adp-tooling@0.18.128
 
 ## 0.1.18
+
+*Released: 2026-04-30T19:47:20Z*
 
 ### Patch Changes
 
@@ -305,11 +379,15 @@
 
 ## 0.1.17
 
+*Released: 2026-04-30T14:23:24Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.126
 
 ## 0.1.16
+
+*Released: 2026-04-30T13:10:33Z*
 
 ### Patch Changes
 
@@ -317,17 +395,23 @@
 
 ## 0.1.15
 
+*Released: 2026-04-29T15:24:37Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.124
 
 ## 0.1.14
 
+*Released: 2026-04-27T19:47:46Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.123
 
 ## 0.1.13
+
+*Released: 2026-04-27T07:30:24Z*
 
 ### Patch Changes
 
@@ -336,11 +420,15 @@
 
 ## 0.1.12
 
+*Released: 2026-04-23T12:54:21Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.121
 
 ## 0.1.11
+
+*Released: 2026-04-23T06:48:55Z*
 
 ### Patch Changes
 
@@ -348,17 +436,23 @@
 
 ## 0.1.10
 
+*Released: 2026-04-22T12:38:46Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.119
 
 ## 0.1.9
 
+*Released: 2026-04-17T10:02:58Z*
+
 ### Patch Changes
 
 - 37d4ded: fix: SSH tunnel not started in BAS for on-premise connectivity for CF ADP
 
 ## 0.1.8
+
+*Released: 2026-04-15T11:53:17Z*
 
 ### Patch Changes
 
@@ -367,12 +461,16 @@
 
 ## 0.1.7
 
+*Released: 2026-04-15T08:11:32Z*
+
 ### Patch Changes
 
 - Updated dependencies [8fb08a2]
     - @sap-ux/adp-tooling@0.18.117
 
 ## 0.1.6
+
+*Released: 2026-04-14T20:26:28Z*
 
 ### Patch Changes
 
@@ -382,6 +480,8 @@
 
 ## 0.1.5
 
+*Released: 2026-04-14T12:35:35Z*
+
 ### Patch Changes
 
 - Updated dependencies [cc4450c]
@@ -390,12 +490,16 @@
 
 ## 0.1.4
 
+*Released: 2026-04-14T11:39:16Z*
+
 ### Patch Changes
 
 - Updated dependencies [497317c]
     - @sap-ux/adp-tooling@0.18.114
 
 ## 0.1.3
+
+*Released: 2026-04-09T07:00:16Z*
 
 ### Patch Changes
 
@@ -404,6 +508,8 @@
     - @sap-ux/adp-tooling@0.18.113
 
 ## 0.1.2
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -414,6 +520,8 @@
 
 ## 0.1.1
 
+*Released: 2026-04-07T11:09:34Z*
+
 ### Patch Changes
 
 - 1b10e9f: feat: Adapt CF ADP project structure to work with approuter backend middleware
@@ -421,6 +529,8 @@
     - @sap-ux/adp-tooling@0.18.111
 
 ## 0.1.0
+
+*Released: 2026-04-01T14:51:40Z*
 
 ### Minor Changes
 
@@ -433,6 +543,8 @@
 
 ## 0.0.99
 
+*Released: 2026-04-01T11:49:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [3291f6c]
@@ -441,12 +553,16 @@
 
 ## 0.0.98
 
+*Released: 2026-04-01T06:34:51Z*
+
 ### Patch Changes
 
 - Updated dependencies [68b5523]
     - @sap-ux/adp-tooling@0.18.108
 
 ## 0.0.97
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -458,17 +574,23 @@
 
 ## 0.0.96
 
+*Released: 2026-03-27T15:37:24Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.106
 
 ## 0.0.95
 
+*Released: 2026-03-27T11:58:49Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.105
 
 ## 0.0.94
+
+*Released: 2026-03-26T20:06:10Z*
 
 ### Patch Changes
 
@@ -478,6 +600,8 @@
 
 ## 0.0.93
 
+*Released: 2026-03-26T16:48:32Z*
+
 ### Patch Changes
 
 - Updated dependencies [96a689b]
@@ -485,12 +609,16 @@
 
 ## 0.0.92
 
+*Released: 2026-03-26T15:15:10Z*
+
 ### Patch Changes
 
 - Updated dependencies [3dcd3f7]
     - @sap-ux/adp-tooling@0.18.102
 
 ## 0.0.91
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -504,6 +632,8 @@
 
 ## 0.0.90
 
+*Released: 2026-03-25T12:56:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [f384ace]
@@ -512,11 +642,15 @@
 
 ## 0.0.89
 
+*Released: 2026-03-23T18:25:40Z*
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.99
 
 ## 0.0.88
+
+*Released: 2026-03-23T10:51:10Z*
 
 ### Patch Changes
 

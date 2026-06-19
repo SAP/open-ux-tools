@@ -2,6 +2,8 @@
 
 ## 2.1.2
 
+*Released: 2026-06-10T09:57:42Z*
+
 ### Patch Changes
 
 - Updated dependencies [c8e8f7e]
@@ -9,11 +11,15 @@
 
 ## 2.1.1
 
+*Released: 2026-06-04T13:54:21Z*
+
 ### Patch Changes
 
 - fff7490: fix: bump min `cds-plugin-ui5` version to `^0.17.0` to avoid welcome-page injection error reported with `^0.13.0` ("Failed to inject application pages to welcome page")
 
 ## 2.1.0
+
+*Released: 2026-06-04T10:19:37Z*
 
 ### Minor Changes
 
@@ -31,6 +37,8 @@
 
 ## 2.0.3
 
+*Released: 2026-06-03T14:58:37Z*
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
@@ -40,6 +48,8 @@
 
 ## 2.0.2
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - Updated dependencies [9580241]
@@ -47,11 +57,15 @@
 
 ## 2.0.1
 
+*Released: 2026-06-01T15:15:26Z*
+
 ### Patch Changes
 
 - aed799d: `loadModuleFromProject` throws error on Windows: `Only URLs with a scheme in: file, data, node, and electron are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'`
 
 ## 2.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -92,6 +106,8 @@
 
 ## 1.38.1
 
+*Released: 2026-05-21T16:21:11Z*
+
 ### Patch Changes
 
 - Updated dependencies [9752c40]
@@ -99,11 +115,15 @@
 
 ## 1.38.0
 
+*Released: 2026-05-19T15:16:46Z*
+
 ### Minor Changes
 
 - 63e6846: add method `getUsedEntitiesFromManifest` returning used entitySets by page and views from manifest.json
 
 ## 1.37.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -117,6 +137,8 @@
 
 ## 1.36.5
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -126,11 +148,15 @@
 
 ## 1.36.4
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - 21abda3: chore: upgrade fast-xml-parser 5.7.2 → 5.8.0 (fixes fast-xml-builder CVE-2025-47916)
 
 ## 1.36.3
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -139,17 +165,23 @@
 
 ## 1.36.2
 
+*Released: 2026-04-30T14:23:24Z*
+
 ### Patch Changes
 
 - @sap-ux/i18n@0.3.11
 
 ## 1.36.1
 
+*Released: 2026-04-29T15:24:37Z*
+
 ### Patch Changes
 
 - 3945459: chore: upgrade fast-xml-parser 5.5.9 to 5.7.2 (security fix for XML comment/CDATA injection)
 
 ## 1.36.0
+
+*Released: 2026-04-27T19:47:46Z*
 
 ### Minor Changes
 
@@ -158,11 +190,15 @@
 
 ## 1.35.21
 
+*Released: 2026-04-23T12:54:21Z*
+
 ### Patch Changes
 
 - 03d3ea1: fix(deps): Update dependency @ui5/manifest to v1.85.0
 
 ## 1.35.20
+
+*Released: 2026-04-14T12:35:35Z*
 
 ### Patch Changes
 
@@ -171,6 +207,8 @@
 
 ## 1.35.19
 
+*Released: 2026-04-08T13:10:18Z*
+
 ### Patch Changes
 
 - Updated dependencies [f1e4481]
@@ -178,17 +216,23 @@
 
 ## 1.35.18
 
+*Released: 2026-04-01T11:49:37Z*
+
 ### Patch Changes
 
 - 3291f6c: Fix: guard against undefined URL in uniformUrl to prevent TypeError when service endpoints have no path
 
 ## 1.35.17
 
+*Released: 2026-03-26T20:06:10Z*
+
 ### Patch Changes
 
 - b66e827: Enhance `getCapServiceName` to return service by ignoring prefix for service URL in parameter `datasourceUri`.
 
 ## 1.35.16
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -199,6 +243,8 @@
     - @sap-ux/ui5-config@0.30.1
 
 ## 1.35.15
+
+*Released: 2026-03-25T12:56:41Z*
 
 ### Patch Changes
 

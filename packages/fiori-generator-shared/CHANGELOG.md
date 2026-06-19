@@ -2,11 +2,15 @@
 
 ## 1.0.11
 
+*Released: 2026-06-12T06:53:23Z*
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@2.0.3
 
 ## 1.0.10
+
+*Released: 2026-06-11T10:54:17Z*
 
 ### Patch Changes
 
@@ -15,6 +19,8 @@
 
 ## 1.0.9
 
+*Released: 2026-06-10T09:57:42Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@2.1.2
@@ -22,6 +28,8 @@
 - @sap-ux/axios-extension@2.0.2
 
 ## 1.0.8
+
+*Released: 2026-06-09T14:35:01Z*
 
 ### Patch Changes
 
@@ -32,11 +40,15 @@
 
 ## 1.0.7
 
+*Released: 2026-06-09T13:18:16Z*
+
 ### Patch Changes
 
 - a328e14: refactor: move restoreServiceProviderLoggers to @sap-ux/fiori-generator-shared
 
 ## 1.0.6
+
+*Released: 2026-06-04T13:54:21Z*
 
 ### Patch Changes
 
@@ -46,6 +58,8 @@
 
 ## 1.0.5
 
+*Released: 2026-06-04T10:19:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [b326a9a]
@@ -53,6 +67,8 @@
     - @sap-ux/telemetry@1.0.5
 
 ## 1.0.4
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -64,6 +80,8 @@
 
 ## 1.0.3
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@2.0.2
@@ -71,11 +89,15 @@
 
 ## 1.0.2
 
+*Released: 2026-06-02T11:35:17Z*
+
 ### Patch Changes
 
 - @sap-ux/telemetry@1.0.2
 
 ## 1.0.1
+
+*Released: 2026-06-01T15:15:26Z*
 
 ### Patch Changes
 
@@ -84,6 +106,8 @@
     - @sap-ux/telemetry@1.0.1
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -125,17 +149,23 @@
 
 ## 0.15.6
 
+*Released: 2026-05-27T11:39:21Z*
+
 ### Patch Changes
 
 - @sap-ux/telemetry@0.7.5
 
 ## 0.15.5
 
+*Released: 2026-05-27T10:42:47Z*
+
 ### Patch Changes
 
 - @sap-ux/telemetry@0.7.4
 
 ## 0.15.4
+
+*Released: 2026-05-26T16:40:21Z*
 
 ### Patch Changes
 
@@ -145,12 +175,16 @@
 
 ## 0.15.3
 
+*Released: 2026-05-21T16:21:11Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.38.1
 - @sap-ux/telemetry@0.7.2
 
 ## 0.15.2
+
+*Released: 2026-05-19T15:16:46Z*
 
 ### Patch Changes
 
@@ -160,11 +194,15 @@
 
 ## 0.15.1
 
+*Released: 2026-05-15T13:12:06Z*
+
 ### Patch Changes
 
 - 2c76f8f: refactor(fiori-generator-shared): remove dead ExternalServiceConfig type and externalServices field from AppConfig
 
 ## 0.15.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -179,6 +217,8 @@
 
 ## 0.14.2
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -189,6 +229,8 @@
 
 ## 0.14.1
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -197,6 +239,8 @@
 
 ## 0.14.0
 
+*Released: 2026-05-12T18:00:39Z*
+
 ### Minor Changes
 
 - 9360ea5: feat(fiori-app-sub-generator): support virtual endpoints in headless generator, defaulting to true
@@ -204,6 +248,8 @@
     Added `enableVirtualEndpoints` option to `AppConfig` in `fiori-generator-shared`. When used in the headless generator, this defaults to `true`, causing virtual preview endpoints to be used instead of generating `flpSandbox.html` and related test files.
 
 ## 0.13.105
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -215,6 +261,8 @@
 
 ## 0.13.104
 
+*Released: 2026-04-30T14:23:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [c160401]
@@ -222,6 +270,8 @@
     - @sap-ux/project-access@1.36.2
 
 ## 0.13.103
+
+*Released: 2026-04-29T15:24:37Z*
 
 ### Patch Changes
 
@@ -231,6 +281,8 @@
 
 ## 0.13.102
 
+*Released: 2026-04-27T19:47:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -238,6 +290,8 @@
     - @sap-ux/telemetry@0.6.101
 
 ## 0.13.101
+
+*Released: 2026-04-23T12:54:21Z*
 
 ### Patch Changes
 
@@ -247,6 +301,8 @@
 
 ## 0.13.100
 
+*Released: 2026-04-23T06:48:55Z*
+
 ### Patch Changes
 
 - 237371b: fix(axios-extension): export EntitySetData type
@@ -255,12 +311,16 @@
 
 ## 0.13.99
 
+*Released: 2026-04-15T11:53:17Z*
+
 ### Patch Changes
 
 - Updated dependencies [67d1f8b]
     - @sap-ux/telemetry@0.6.99
 
 ## 0.13.98
+
+*Released: 2026-04-14T20:26:28Z*
 
 ### Patch Changes
 
@@ -269,6 +329,8 @@
     - @sap-ux/telemetry@0.6.98
 
 ## 0.13.97
+
+*Released: 2026-04-14T12:35:35Z*
 
 ### Patch Changes
 
@@ -279,6 +341,8 @@
 
 ## 0.13.96
 
+*Released: 2026-04-08T13:10:18Z*
+
 ### Patch Changes
 
 - @sap-ux/btp-utils@1.1.12
@@ -287,6 +351,8 @@
 
 ## 0.13.95
 
+*Released: 2026-04-01T11:49:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [3291f6c]
@@ -294,6 +360,8 @@
     - @sap-ux/telemetry@0.6.95
 
 ## 0.13.94
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -305,12 +373,16 @@
 
 ## 0.13.93
 
+*Released: 2026-03-27T15:37:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [e92850e]
     - @sap-ux/telemetry@0.6.93
 
 ## 0.13.92
+
+*Released: 2026-03-27T11:58:49Z*
 
 ### Patch Changes
 
@@ -320,6 +392,8 @@
 
 ## 0.13.91
 
+*Released: 2026-03-26T20:06:10Z*
+
 ### Patch Changes
 
 - Updated dependencies [b66e827]
@@ -327,6 +401,8 @@
     - @sap-ux/telemetry@0.6.91
 
 ## 0.13.90
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -338,6 +414,8 @@
     - @sap-ux/telemetry@0.6.90
 
 ## 0.13.89
+
+*Released: 2026-03-25T12:56:41Z*
 
 ### Patch Changes
 
