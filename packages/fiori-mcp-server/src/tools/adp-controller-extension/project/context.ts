@@ -1,9 +1,9 @@
 import { basename } from 'node:path';
 import { getVariant } from '@sap-ux/adp-tooling';
-import type { ExecuteFunctionalityOutput } from '../../../types';
-import { logger } from '../../../utils/logger';
-import { buildOutput } from '../output';
-import type { ProjectContext } from '../types';
+import type { ExecuteFunctionalityOutput } from '../../../types/index.js';
+import { logger } from '../../../utils/logger.js';
+import { buildOutput } from '../output.js';
+import type { ProjectContext } from '../types.js';
 
 /**
  * Reads the descriptor variant and assembles a {@link ProjectContext}. Errors

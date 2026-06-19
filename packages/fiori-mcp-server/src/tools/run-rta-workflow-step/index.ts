@@ -9,10 +9,10 @@ import {
     saveChanges,
     startRta,
     type EditorPage
-} from './rta';
-import { logger } from '../../utils/logger';
-import { defaultTransport } from './browser';
-import { STEPS, type RunRtaWorkflowStepInput, type RunRtaWorkflowStepResult } from './types';
+} from './rta/index.js';
+import { logger } from '../../utils/logger.js';
+import { defaultTransport } from './browser/index.js';
+import { STEPS, type RunRtaWorkflowStepInput, type RunRtaWorkflowStepResult } from './types.js';
 
 const sessions: Map<string, EditorPage> = new Map();
 

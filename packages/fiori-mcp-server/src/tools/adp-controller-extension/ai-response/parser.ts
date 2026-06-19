@@ -1,4 +1,4 @@
-import type { ExtractedFile } from '../types';
+import type { ExtractedFile } from '../types.js';
 
 const PATH_MARKER = /\*\*Path:\*\*\s*(.+)/;
 const FENCE_OPEN = /^```(\w+)?/;

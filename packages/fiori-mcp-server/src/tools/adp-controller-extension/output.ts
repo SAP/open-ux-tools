@@ -1,5 +1,5 @@
-import type { ExecuteFunctionalityOutput } from '../../types';
-import { ADP_CONTROLLER_EXTENSION_FUNCTIONALITY_ID } from '../../constant';
+import type { ExecuteFunctionalityOutput } from '../../types/index.js';
+import { ADP_CONTROLLER_EXTENSION_FUNCTIONALITY_ID } from '../../constant.js';
 
 /**
  * Statuses surfaced by the `adp_controller_extension` tool.

@@ -1,9 +1,9 @@
 import { existsSync, promises as FSpromises } from 'node:fs';
 import { extname, join, relative } from 'node:path';
-import { logger } from '../../../utils/logger';
-import { MAX_SCANNED_FILE_SIZE, SCANNABLE_EXTENSIONS } from '../constants';
-import { isChangeFile } from '../ai-response/parser';
-import type { ExistingProjectFile } from '../types';
+import { logger } from '../../../utils/logger.js';
+import { MAX_SCANNED_FILE_SIZE, SCANNABLE_EXTENSIONS } from '../constants.js';
+import { isChangeFile } from '../ai-response/parser.js';
+import type { ExistingProjectFile } from '../types.js';
 
 /**
  * Scans `webapp/changes` for existing controller extensions and fragments so

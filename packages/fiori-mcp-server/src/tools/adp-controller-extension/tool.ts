@@ -1,8 +1,8 @@
-import type { AdpControllerExtensionInput, ExecuteFunctionalityOutput } from '../../types';
-import { logger } from '../../utils/logger';
-import { processAiResponse } from './ai-response';
-import { buildKnowledgeBaseResponse } from './knowledge-base';
-import { loadProjectContext, scanExistingProjectFiles } from './project';
+import type { AdpControllerExtensionInput, ExecuteFunctionalityOutput } from '../../types/index.js';
+import { logger } from '../../utils/logger.js';
+import { processAiResponse } from './ai-response/index.js';
+import { buildKnowledgeBaseResponse } from './knowledge-base.js';
+import { loadProjectContext, scanExistingProjectFiles } from './project/index.js';
 
 /**
  * Processes AI-generated controller extensions and fragments for SAPUI5

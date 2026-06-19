@@ -7,8 +7,8 @@ jest.mock('@sap-ux/adp-tooling', () => ({
 }));
 
 import { getVariant } from '@sap-ux/adp-tooling';
-import { adpControllerExtension } from '../../../../src/tools/adp-controller-extension/tool';
-import { ADP_CONTROLLER_EXTENSION_FUNCTIONALITY_ID } from '../../../../src/constant';
+import { adpControllerExtension } from '../../../../src/tools/adp-controller-extension/tool.js';
+import { ADP_CONTROLLER_EXTENSION_FUNCTIONALITY_ID } from '../../../../src/constant.js';
 
 const mockedGetVariant = getVariant as jest.MockedFunction<typeof getVariant>;
 

@@ -1,8 +1,8 @@
-import type { ExecuteFunctionalityOutput, GenerateAdaptationProjectInput } from '../types';
+import type { ExecuteFunctionalityOutput, GenerateAdaptationProjectInput } from '../types/index.js';
 import { join } from 'node:path';
 import { existsSync, promises as FSpromises } from 'node:fs';
-import { runCmd, logger } from '../utils';
-import { GENERATE_ADAPTATION_PROJECT_ID } from '../constant';
+import { runCmd, logger } from '../utils/index.js';
+import { GENERATE_ADAPTATION_PROJECT_ID } from '../constant.js';
 
 /**
  * Generates a new SAP Fiori adaptation project by invoking the @sap-ux/adp Yeoman generator.

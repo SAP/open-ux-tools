@@ -1,2 +1,2 @@
-export { loadProjectContext } from './context';
-export { scanExistingProjectFiles } from './scanner';
+export { loadProjectContext } from './context.js';
+export { scanExistingProjectFiles } from './scanner.js';

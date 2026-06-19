@@ -1,9 +1,9 @@
-import type { ExecuteFunctionalityOutput, OpenAdaptationEditorInput } from '../types';
+import type { ExecuteFunctionalityOutput, OpenAdaptationEditorInput } from '../types/index.js';
 import { spawn, type ChildProcess, exec } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import { promisify } from 'node:util';
-import { logger } from '../utils';
-import { OPEN_ADAPTATION_EDITOR_ID } from '../constant';
+import { logger } from '../utils/index.js';
+import { OPEN_ADAPTATION_EDITOR_ID } from '../constant.js';
 
 const TIMEOUT_MS = 30000;
 const execAsync = promisify(exec);

@@ -1,6 +1,6 @@
 import { chromium, type Browser, type Frame, type Page } from 'playwright-core';
-import { logger } from '../../../utils/logger';
-import type { FrontendActionResult, FrontendActionTransport } from './types';
+import { logger } from '../../../utils/logger.js';
+import type { FrontendActionResult, FrontendActionTransport } from './types.js';
 
 // Module-scope singleton state.
 //   `browser` — launched once and reused for the lifetime of the Node process.
@@ -215,24 +215,47 @@ export async function callFrontendAction<TReturn = unknown>(
     let rpc = connectionRegistry.get(site);
 
     if (!rpc) {
-        const context = await activeBrowser.newContext({ viewport: null });
-        const page: Page = await context.newPage();
-
-        page.on('pageerror', (err) => {
-            logger.warn(`Page error for ${site}: ${err.message}`);
-        });
-
-        page.on('close', () => {
-            connectionRegistry.delete(site);
-        });
-
-        await page.goto(site, { waitUntil: 'networkidle', timeout: 60000 });
-
-        rpc = await createPageRPC(page);
+        rpc = await openNewPage(activeBrowser, site);
         connectionRegistry.set(site, rpc);
+    } else {
+        const alive = await isPageAlive(rpc);
+        if (!alive) {
+            connectionRegistry.delete(site);
+            rpc = await openNewPage(activeBrowser, site);
+            connectionRegistry.set(site, rpc);
+        }
     }
 
     return rpc.callFrontendAction<TReturn>(actionName, payload, frameId);
+}
+
+async function openNewPage(activeBrowser: Browser, site: string): Promise<PageRPC> {
+    const context = await activeBrowser.newContext({ viewport: null });
+    const page: Page = await context.newPage();
+
+    page.on('pageerror', (err) => {
+        logger.warn(`Page error for ${site}: ${err.message}`);
+    });
+
+    page.on('close', () => {
+        connectionRegistry.delete(site);
+    });
+
+    await page.goto(site, { waitUntil: 'networkidle', timeout: 60000 });
+    return createPageRPC(page);
+}
+
+async function isPageAlive(rpc: PageRPC): Promise<boolean> {
+    try {
+        await rpc.callFrontendAction('__liveness__', {});
+        return true;
+    } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        if (message.includes('not registered')) {
+            return true;
+        }
+        return false;
+    }
 }
 
 /**

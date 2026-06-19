@@ -1,5 +1,5 @@
 import { EventEmitter } from 'node:events';
-import type * as PlaywrightBridgeModule from '../../../../../src/tools/run-rta-workflow-step/browser/playwright-bridge';
+import type * as PlaywrightBridgeModule from '../../../../../src/tools/run-rta-workflow-step/browser/playwright-bridge.js';
 
 // --- playwright-core mock --------------------------------------------------
 
@@ -56,14 +56,10 @@ class FakeBrowser extends EventEmitter {
 
 const launchMock = jest.fn();
 
-jest.mock('playwright-core', () => ({
+jest.unstable_mockModule('playwright-core', () => ({
     chromium: {
         launch: (...args: unknown[]) => launchMock(...args)
     }
-}));
-
-jest.mock('../../../../../src/utils/logger', () => ({
-    logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() }
 }));
 
 // --- helpers ---------------------------------------------------------------

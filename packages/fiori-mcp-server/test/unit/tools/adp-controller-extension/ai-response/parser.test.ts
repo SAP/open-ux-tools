@@ -1,7 +1,7 @@
 import {
     extractFilesFromResponse,
     isChangeFile
-} from '../../../../../src/tools/adp-controller-extension/ai-response/parser';
+} from '../../../../../src/tools/adp-controller-extension/ai-response/parser.js';
 
 describe('ai-response/parser', () => {
     describe('extractFilesFromResponse', () => {

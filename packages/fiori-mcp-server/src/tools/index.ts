@@ -16,8 +16,8 @@ export { generateFioriAppOData } from './generate-fiori-app-odata.js';
 export { generateFioriAppCap } from './generate-fiori-app-cap.js';
 export { generateAdaptationProject } from './generate-adaptation-project.js';
 export { openAdaptationEditor } from './open-adaptation-editor.js';
-export { adpControllerExtension } from './adp-controller-extension.js';
-export { runRtaWorkflowStep } from './run-rta-workflow-step.js';
+export { adpControllerExtension } from './adp-controller-extension/index.js';
+export { runRtaWorkflowStep } from './run-rta-workflow-step/index.js';
 
 export const tools = [
     {

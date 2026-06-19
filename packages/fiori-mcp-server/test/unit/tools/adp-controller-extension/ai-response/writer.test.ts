@@ -5,7 +5,7 @@ import {
     PathTraversalError,
     resolveWithinAppPath,
     writeExtractedFile
-} from '../../../../../src/tools/adp-controller-extension/ai-response/writer';
+} from '../../../../../src/tools/adp-controller-extension/ai-response/writer.js';
 
 describe('ai-response/writer', () => {
     let appPath: string;

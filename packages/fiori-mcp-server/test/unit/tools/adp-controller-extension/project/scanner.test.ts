@@ -1,8 +1,8 @@
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { scanExistingProjectFiles } from '../../../../../src/tools/adp-controller-extension/project/scanner';
-import { MAX_SCANNED_FILE_SIZE } from '../../../../../src/tools/adp-controller-extension/constants';
+import { scanExistingProjectFiles } from '../../../../../src/tools/adp-controller-extension/project/scanner.js';
+import { MAX_SCANNED_FILE_SIZE } from '../../../../../src/tools/adp-controller-extension/constants.js';
 
 describe('project/scanner', () => {
     let appPath: string;

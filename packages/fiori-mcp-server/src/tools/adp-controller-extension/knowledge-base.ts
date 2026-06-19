@@ -1,6 +1,6 @@
-import type { ExecuteFunctionalityOutput } from '../../types';
-import { buildOutput } from './output';
-import type { ExistingProjectFile, ProjectContext } from './types';
+import type { ExecuteFunctionalityOutput } from '../../types/index.js';
+import { buildOutput } from './output.js';
+import type { ExistingProjectFile, ProjectContext } from './types.js';
 
 const KNOWLEDGE_BASE = `You are a SAPUI5 Adaptation Project expert specializing in controller extensions and xml fragments for adaptation projects.
 

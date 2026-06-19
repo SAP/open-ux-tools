@@ -1,2 +1,2 @@
-export { adpControllerExtension } from './tool';
-export type { ExistingProjectFile, ExtractedFile, ProjectContext } from './types';
+export { adpControllerExtension } from './tool.js';
+export type { ExistingProjectFile, ExtractedFile, ProjectContext } from './types.js';

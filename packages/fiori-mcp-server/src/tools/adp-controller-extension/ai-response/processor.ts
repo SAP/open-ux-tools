@@ -1,8 +1,8 @@
-import type { AdpControllerExtensionInput, ExecuteFunctionalityOutput } from '../../../types';
-import { logger } from '../../../utils/logger';
-import { buildOutput } from '../output';
-import { extractFilesFromResponse, isChangeFile } from './parser';
-import { PathTraversalError, writeExtractedFile } from './writer';
+import type { AdpControllerExtensionInput, ExecuteFunctionalityOutput } from '../../../types/index.js';
+import { logger } from '../../../utils/logger.js';
+import { buildOutput } from '../output.js';
+import { extractFilesFromResponse, isChangeFile } from './parser.js';
+import { PathTraversalError, writeExtractedFile } from './writer.js';
 
 /**
  * Returns the input parameters with `aiResponse` stripped, so the tool

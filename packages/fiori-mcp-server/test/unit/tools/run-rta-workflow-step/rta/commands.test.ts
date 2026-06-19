@@ -1,7 +1,7 @@
 import type {
     FrontendActionResult,
     FrontendActionTransport
-} from '../../../../../src/tools/run-rta-workflow-step/browser/types';
+} from '../../../../../src/tools/run-rta-workflow-step/browser/types.js';
 import {
     FrontendActionError,
     executeAction,
@@ -12,7 +12,7 @@ import {
     startRta,
     startVisualization,
     stopRta
-} from '../../../../../src/tools/run-rta-workflow-step/rta/commands';
+} from '../../../../../src/tools/run-rta-workflow-step/rta/commands.js';
 
 const SITE = 'http://localhost:8080/test/adaptation-editor.html';
 const FRAME = 'preview';

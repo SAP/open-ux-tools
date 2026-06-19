@@ -1,7 +1,7 @@
 import { promises as FSpromises } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
-import { logger } from '../../../utils/logger';
-import type { ExtractedFile } from '../types';
+import { logger } from '../../../utils/logger.js';
+import type { ExtractedFile } from '../types.js';
 
 /**
  * Raised when an extracted file path resolves outside the adaptation project

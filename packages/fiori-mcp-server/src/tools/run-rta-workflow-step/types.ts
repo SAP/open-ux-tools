@@ -1,4 +1,4 @@
-import type { Action, ElementContext, Overlay } from './rta/types';
+import type { Action, ElementContext, Overlay } from './rta/types.js';
 
 /**
  * The seven steps run_rta_workflow_step accepts. Single source of truth —

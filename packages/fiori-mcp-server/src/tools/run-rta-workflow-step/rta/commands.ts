@@ -1,5 +1,5 @@
-import type { FrontendActionResult, FrontendActionTransport } from '../browser';
-import type { Action, EditorPage, ElementContext, Overlay } from './types';
+import type { FrontendActionResult, FrontendActionTransport } from '../browser/index.js';
+import type { Action, EditorPage, ElementContext, Overlay } from './types.js';
 
 const ACTION_PREFIX = 'com.sap.ui.flex';
 const ACTION_VERSION = 'v1';

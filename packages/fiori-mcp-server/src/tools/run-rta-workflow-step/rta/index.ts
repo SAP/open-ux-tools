@@ -8,5 +8,5 @@ export {
     startRta,
     startVisualization,
     stopRta
-} from './commands';
-export type { Action, ActionPayloadProperty, EditorPage, ElementContext, Overlay } from './types';
+} from './commands.js';
+export type { Action, ActionPayloadProperty, EditorPage, ElementContext, Overlay } from './types.js';
