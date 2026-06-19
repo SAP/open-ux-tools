@@ -25,7 +25,7 @@ const ESBUILD_BUNDLING_PACKAGES = [
 
 const __dirname = import.meta.dirname;
 const ROOT = path.join(__dirname, '..');
-const VALID_SUMMARY_PREFIX = /^(FEAT|FIX|BUMP):/i;
+const VALID_SUMMARY_PREFIX = /^(FEAT|FIX|BUMP|INFRA):/i;
 const CHANGESET_DIR = path.join(ROOT, '.changeset');
 const PACKAGES_DIR = path.join(ROOT, 'packages');
 
@@ -114,7 +114,7 @@ function validateChangesets() {
             errors.push(
                 `❌ Invalid changeset summary in ${file}\n` +
                 `   Summary: "${summary.slice(0, 80)}"\n` +
-                `   Must start with FEAT:, FIX:, or BUMP:`
+                `   Must start with FEAT:, FIX:, BUMP:, or INFRA:`
             );
         }
     }

@@ -13,6 +13,8 @@
 
 ## 1.0.17
 
+*Released: 2026-06-14T10:40:09Z*
+
 ### Patch Changes
 
 - @sap-ux/app-config-writer@1.0.10
@@ -20,12 +22,16 @@
 
 ## 1.0.16
 
+*Released: 2026-06-12T10:49:08Z*
+
 ### Patch Changes
 
 - @sap-ux/flp-config-inquirer@1.0.15
 - @sap-ux/app-config-writer@1.0.10
 
 ## 1.0.15
+
+*Released: 2026-06-12T06:53:23Z*
 
 ### Patch Changes
 
@@ -39,6 +45,8 @@
 
 ## 1.0.14
 
+*Released: 2026-06-11T13:37:16Z*
+
 ### Patch Changes
 
 - @sap-ux/app-config-writer@1.0.9
@@ -46,12 +54,16 @@
 
 ## 1.0.13
 
+*Released: 2026-06-11T12:06:20Z*
+
 ### Patch Changes
 
 - Updated dependencies [28648e0]
     - @sap-ux/app-config-writer@1.0.8
 
 ## 1.0.12
+
+*Released: 2026-06-11T10:54:17Z*
 
 ### Patch Changes
 
@@ -62,6 +74,8 @@
 - @sap-ux/app-config-writer@1.0.7
 
 ## 1.0.11
+
+*Released: 2026-06-10T09:57:42Z*
 
 ### Patch Changes
 
@@ -74,6 +88,8 @@
 
 ## 1.0.10
 
+*Released: 2026-06-09T14:35:01Z*
+
 ### Patch Changes
 
 - @sap-ux/app-config-writer@1.0.6
@@ -83,6 +99,8 @@
 - @sap-ux/inquirer-common@1.0.8
 
 ## 1.0.9
+
+*Released: 2026-06-09T13:18:16Z*
 
 ### Patch Changes
 
@@ -94,6 +112,8 @@
     - @sap-ux/app-config-writer@1.0.5
 
 ## 1.0.8
+
+*Released: 2026-06-04T13:54:21Z*
 
 ### Patch Changes
 
@@ -107,12 +127,16 @@
 
 ## 1.0.7
 
+*Released: 2026-06-04T12:10:05Z*
+
 ### Patch Changes
 
 - @sap-ux/flp-config-inquirer@1.0.7
 - @sap-ux/app-config-writer@1.0.4
 
 ## 1.0.6
+
+*Released: 2026-06-04T10:19:37Z*
 
 ### Patch Changes
 
@@ -126,6 +150,8 @@
     - @sap-ux/deploy-config-generator-shared@1.0.5
 
 ## 1.0.5
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -142,6 +168,8 @@
 
 ## 1.0.4
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - @sap-ux/app-config-writer@1.0.2
@@ -153,6 +181,8 @@
 
 ## 1.0.3
 
+*Released: 2026-06-02T11:35:17Z*
+
 ### Patch Changes
 
 - @sap-ux/deploy-config-generator-shared@1.0.2
@@ -163,12 +193,16 @@
 
 ## 1.0.2
 
+*Released: 2026-06-02T08:56:31Z*
+
 ### Patch Changes
 
 - @sap-ux/flp-config-inquirer@1.0.2
 - @sap-ux/app-config-writer@1.0.1
 
 ## 1.0.1
+
+*Released: 2026-06-01T15:15:26Z*
 
 ### Patch Changes
 
@@ -181,6 +215,8 @@
     - @sap-ux/deploy-config-generator-shared@1.0.1
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -227,6 +263,8 @@
 
 ## 0.4.13
 
+*Released: 2026-05-29T12:50:34Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.13.6
@@ -236,12 +274,16 @@
 
 ## 0.4.12
 
+*Released: 2026-05-29T06:59:27Z*
+
 ### Patch Changes
 
 - @sap-ux/app-config-writer@0.7.6
 - @sap-ux/flp-config-inquirer@0.5.10
 
 ## 0.4.11
+
+*Released: 2026-05-27T11:39:21Z*
 
 ### Patch Changes
 
@@ -253,6 +295,8 @@
 
 ## 0.4.10
 
+*Released: 2026-05-27T10:42:47Z*
+
 ### Patch Changes
 
 - @sap-ux/app-config-writer@0.7.6
@@ -263,11 +307,15 @@
 
 ## 0.4.9
 
+*Released: 2026-05-27T09:55:48Z*
+
 ### Patch Changes
 
 - @sap-ux/app-config-writer@0.7.5
 
 ## 0.4.8
+
+*Released: 2026-05-26T16:40:21Z*
 
 ### Patch Changes
 
@@ -279,12 +327,16 @@
 
 ## 0.4.7
 
+*Released: 2026-05-22T13:30:05Z*
+
 ### Patch Changes
 
 - @sap-ux/flp-config-inquirer@0.5.6
 - @sap-ux/app-config-writer@0.7.3
 
 ## 0.4.6
+
+*Released: 2026-05-21T16:21:11Z*
 
 ### Patch Changes
 
@@ -298,12 +350,16 @@
 
 ## 0.4.5
 
+*Released: 2026-05-21T14:58:44Z*
+
 ### Patch Changes
 
 - @sap-ux/flp-config-inquirer@0.5.4
 - @sap-ux/app-config-writer@0.7.2
 
 ## 0.4.4
+
+*Released: 2026-05-19T15:16:46Z*
 
 ### Patch Changes
 
@@ -317,12 +373,16 @@
 
 ## 0.4.3
 
+*Released: 2026-05-18T08:15:14Z*
+
 ### Patch Changes
 
 - @sap-ux/flp-config-inquirer@0.5.2
 - @sap-ux/app-config-writer@0.7.1
 
 ## 0.4.2
+
+*Released: 2026-05-15T13:12:06Z*
 
 ### Patch Changes
 
@@ -338,12 +398,16 @@
 
 ## 0.4.1
 
+*Released: 2026-05-15T12:26:02Z*
+
 ### Patch Changes
 
 - Updated dependencies [2f0c182]
     - @sap-ux/app-config-writer@0.7.1
 
 ## 0.4.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -363,6 +427,8 @@
 
 ## 0.3.206
 
+*Released: 2026-05-14T21:28:41Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.48
@@ -372,12 +438,16 @@
 
 ## 0.3.205
 
+*Released: 2026-05-14T14:16:50Z*
+
 ### Patch Changes
 
 - @sap-ux/flp-config-inquirer@0.4.193
 - @sap-ux/app-config-writer@0.6.145
 
 ## 0.3.204
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -394,6 +464,8 @@
 
 ## 0.3.203
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -406,6 +478,8 @@
 
 ## 0.3.202
 
+*Released: 2026-05-12T18:00:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [9360ea5]
@@ -417,12 +491,16 @@
 
 ## 0.3.201
 
+*Released: 2026-05-11T12:52:25Z*
+
 ### Patch Changes
 
 - Updated dependencies [3ca8866]
     - @sap-ux/flp-config-inquirer@0.4.189
 
 ## 0.3.200
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -437,6 +515,8 @@
 
 ## 0.3.199
 
+*Released: 2026-05-01T15:46:09Z*
+
 ### Patch Changes
 
 - @sap-ux/flp-config-inquirer@0.4.187
@@ -444,12 +524,16 @@
 
 ## 0.3.198
 
+*Released: 2026-04-30T19:47:20Z*
+
 ### Patch Changes
 
 - @sap-ux/flp-config-inquirer@0.4.186
 - @sap-ux/app-config-writer@0.6.142
 
 ## 0.3.197
+
+*Released: 2026-04-30T14:23:24Z*
 
 ### Patch Changes
 
@@ -463,12 +547,16 @@
 
 ## 0.3.196
 
+*Released: 2026-04-30T13:10:33Z*
+
 ### Patch Changes
 
 - @sap-ux/flp-config-inquirer@0.4.184
 - @sap-ux/app-config-writer@0.6.141
 
 ## 0.3.195
+
+*Released: 2026-04-29T15:24:37Z*
 
 ### Patch Changes
 
@@ -482,6 +570,8 @@
 
 ## 0.3.194
 
+*Released: 2026-04-27T19:47:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -494,6 +584,8 @@
 
 ## 0.3.193
 
+*Released: 2026-04-27T15:50:47Z*
+
 ### Patch Changes
 
 - Updated dependencies [165a6c2]
@@ -501,12 +593,16 @@
 
 ## 0.3.192
 
+*Released: 2026-04-27T07:30:24Z*
+
 ### Patch Changes
 
 - @sap-ux/flp-config-inquirer@0.4.181
 - @sap-ux/app-config-writer@0.6.138
 
 ## 0.3.191
+
+*Released: 2026-04-23T12:54:21Z*
 
 ### Patch Changes
 
@@ -520,6 +616,8 @@
 
 ## 0.3.190
 
+*Released: 2026-04-23T06:48:55Z*
+
 ### Patch Changes
 
 - Updated dependencies [237371b]
@@ -531,6 +629,8 @@
 
 ## 0.3.189
 
+*Released: 2026-04-22T12:38:46Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.38
@@ -539,6 +639,8 @@
 - @sap-ux/app-config-writer@0.6.136
 
 ## 0.3.188
+
+*Released: 2026-04-15T11:53:17Z*
 
 ### Patch Changes
 
@@ -550,12 +652,16 @@
 
 ## 0.3.187
 
+*Released: 2026-04-15T08:11:32Z*
+
 ### Patch Changes
 
 - @sap-ux/flp-config-inquirer@0.4.176
 - @sap-ux/app-config-writer@0.6.136
 
 ## 0.3.186
+
+*Released: 2026-04-14T20:26:28Z*
 
 ### Patch Changes
 
@@ -566,6 +672,8 @@
 - @sap-ux/inquirer-common@0.11.36
 
 ## 0.3.185
+
+*Released: 2026-04-14T12:35:35Z*
 
 ### Patch Changes
 
@@ -579,12 +687,16 @@
 
 ## 0.3.184
 
+*Released: 2026-04-14T11:39:16Z*
+
 ### Patch Changes
 
 - @sap-ux/flp-config-inquirer@0.4.173
 - @sap-ux/app-config-writer@0.6.134
 
 ## 0.3.183
+
+*Released: 2026-04-10T09:18:00Z*
 
 ### Patch Changes
 
@@ -593,12 +705,16 @@
 
 ## 0.3.182
 
+*Released: 2026-04-09T07:00:16Z*
+
 ### Patch Changes
 
 - @sap-ux/flp-config-inquirer@0.4.172
 - @sap-ux/app-config-writer@0.6.133
 
 ## 0.3.181
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -612,6 +728,8 @@
 
 ## 0.3.180
 
+*Released: 2026-04-07T11:09:34Z*
+
 ### Patch Changes
 
 - @sap-ux/flp-config-inquirer@0.4.170
@@ -619,12 +737,16 @@
 
 ## 0.3.179
 
+*Released: 2026-04-01T14:51:40Z*
+
 ### Patch Changes
 
 - @sap-ux/flp-config-inquirer@0.4.169
 - @sap-ux/app-config-writer@0.6.132
 
 ## 0.3.178
+
+*Released: 2026-04-01T11:49:37Z*
 
 ### Patch Changes
 
@@ -638,12 +760,16 @@
 
 ## 0.3.177
 
+*Released: 2026-04-01T06:34:51Z*
+
 ### Patch Changes
 
 - @sap-ux/flp-config-inquirer@0.4.167
 - @sap-ux/app-config-writer@0.6.131
 
 ## 0.3.176
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -664,6 +790,8 @@
 
 ## 0.3.175
 
+*Released: 2026-03-27T15:37:24Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.93
@@ -674,6 +802,8 @@
 
 ## 0.3.174
 
+*Released: 2026-03-27T11:58:49Z*
+
 ### Patch Changes
 
 - @sap-ux/app-config-writer@0.6.130
@@ -683,6 +813,8 @@
 - @sap-ux/inquirer-common@0.11.30
 
 ## 0.3.173
+
+*Released: 2026-03-26T20:06:10Z*
 
 ### Patch Changes
 
@@ -696,6 +828,8 @@
 
 ## 0.3.172
 
+*Released: 2026-03-26T16:48:32Z*
+
 ### Patch Changes
 
 - @sap-ux/flp-config-inquirer@0.4.162
@@ -703,12 +837,16 @@
 
 ## 0.3.171
 
+*Released: 2026-03-26T15:15:10Z*
+
 ### Patch Changes
 
 - @sap-ux/flp-config-inquirer@0.4.161
 - @sap-ux/app-config-writer@0.6.128
 
 ## 0.3.170
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -730,6 +868,8 @@
 
 ## 0.3.169
 
+*Released: 2026-03-25T12:56:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [f384ace]
@@ -742,6 +882,8 @@
 
 ## 0.3.168
 
+*Released: 2026-03-23T18:25:40Z*
+
 ### Patch Changes
 
 - @sap-ux/app-config-writer@0.6.126
@@ -751,12 +893,16 @@
 
 ## 0.3.167
 
+*Released: 2026-03-23T16:28:28Z*
+
 ### Patch Changes
 
 - Updated dependencies [cfb79f9]
     - @sap-ux/app-config-writer@0.6.125
 
 ## 0.3.166
+
+*Released: 2026-03-23T10:51:10Z*
 
 ### Patch Changes
 

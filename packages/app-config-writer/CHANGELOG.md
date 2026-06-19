@@ -2,11 +2,15 @@
 
 ## 1.0.10
 
+*Released: 2026-06-12T06:53:23Z*
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@2.0.3
 
 ## 1.0.9
+
+*Released: 2026-06-11T13:37:16Z*
 
 ### Patch Changes
 
@@ -15,11 +19,15 @@
 
 ## 1.0.8
 
+*Released: 2026-06-11T12:06:20Z*
+
 ### Patch Changes
 
 - 28648e0: fix extra leading comma in eslint.config.mjs
 
 ## 1.0.7
+
+*Released: 2026-06-10T09:57:42Z*
 
 ### Patch Changes
 
@@ -31,6 +39,8 @@
 
 ## 1.0.6
 
+*Released: 2026-06-09T14:35:01Z*
+
 ### Patch Changes
 
 - Updated dependencies [0fa8305]
@@ -38,6 +48,8 @@
     - @sap-ux/axios-extension@2.0.2
 
 ## 1.0.5
+
+*Released: 2026-06-04T13:54:21Z*
 
 ### Patch Changes
 
@@ -48,6 +60,8 @@
 
 ## 1.0.4
 
+*Released: 2026-06-04T10:19:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [b326a9a]
@@ -56,6 +70,8 @@
     - @sap-ux/ui5-application-writer@2.0.2
 
 ## 1.0.3
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -71,6 +87,8 @@
 
 ## 1.0.2
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - Updated dependencies [9580241]
@@ -81,6 +99,8 @@
 
 ## 1.0.1
 
+*Released: 2026-06-01T15:15:26Z*
+
 ### Patch Changes
 
 - Updated dependencies [aed799d]
@@ -89,6 +109,8 @@
     - @sap-ux/ui5-application-writer@2.0.0
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -134,6 +156,8 @@
 
 ## 0.7.6
 
+*Released: 2026-05-27T10:42:47Z*
+
 ### Patch Changes
 
 - Updated dependencies [c12420a]
@@ -142,12 +166,16 @@
 
 ## 0.7.5
 
+*Released: 2026-05-27T09:55:48Z*
+
 ### Patch Changes
 
 - Updated dependencies [162059e]
     - @sap-ux/ui5-application-writer@1.9.2
 
 ## 0.7.4
+
+*Released: 2026-05-26T16:40:21Z*
 
 ### Patch Changes
 
@@ -157,6 +185,8 @@
     - @sap-ux/btp-utils@1.2.1
 
 ## 0.7.3
+
+*Released: 2026-05-21T16:21:11Z*
 
 ### Patch Changes
 
@@ -169,6 +199,8 @@
 
 ## 0.7.2
 
+*Released: 2026-05-19T15:16:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [63e6846]
@@ -178,6 +210,8 @@
 
 ## 0.7.1
 
+*Released: 2026-05-15T12:26:02Z*
+
 ### Patch Changes
 
 - 2f0c182: feat: support virtual preview endpoints for test generation
@@ -185,6 +219,8 @@
     When `useVirtualPreviewEndpoints` is enabled, test harness files (testsuite, unitTests, opaTests) are served virtually and not written to disk. UI5 yaml files are updated with `flp.path: test/flp.html` and test framework entries (OPA5, Testsuite, QUnit) are added to ui5-mock.yaml.
 
 ## 0.7.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -203,6 +239,8 @@
 
 ## 0.6.145
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -217,6 +255,8 @@
 
 ## 0.6.144
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -225,6 +265,8 @@
     - @sap-ux/ui5-application-writer@1.8.8
 
 ## 0.6.143
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -237,6 +279,8 @@
 
 ## 0.6.142
 
+*Released: 2026-04-30T14:23:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [c160401]
@@ -245,6 +289,8 @@
     - @sap-ux/project-access@1.36.2
 
 ## 0.6.141
+
+*Released: 2026-04-29T15:24:37Z*
 
 ### Patch Changes
 
@@ -256,6 +302,8 @@
 
 ## 0.6.140
 
+*Released: 2026-04-27T19:47:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -265,6 +313,8 @@
 
 ## 0.6.139
 
+*Released: 2026-04-27T15:50:47Z*
+
 ### Patch Changes
 
 - 165a6c2: feat: support ESLint 10
@@ -272,6 +322,8 @@
     - @sap-ux/ui5-application-writer@1.8.7
 
 ## 0.6.138
+
+*Released: 2026-04-23T12:54:21Z*
 
 ### Patch Changes
 
@@ -282,12 +334,16 @@
 
 ## 0.6.137
 
+*Released: 2026-04-23T06:48:55Z*
+
 ### Patch Changes
 
 - Updated dependencies [237371b]
     - @sap-ux/axios-extension@1.25.32
 
 ## 0.6.136
+
+*Released: 2026-04-14T20:26:28Z*
 
 ### Patch Changes
 
@@ -296,6 +352,8 @@
     - @sap-ux/axios-extension@1.25.31
 
 ## 0.6.135
+
+*Released: 2026-04-14T12:35:35Z*
 
 ### Patch Changes
 
@@ -308,11 +366,15 @@
 
 ## 0.6.134
 
+*Released: 2026-04-10T09:18:00Z*
+
 ### Patch Changes
 
 - 75bed3b: fix(app-config-writer): convert eslint-config to be aware of plugins used by eslint-plugin-fiori-tools
 
 ## 0.6.133
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -328,6 +390,8 @@
 
 ## 0.6.132
 
+*Released: 2026-04-01T11:49:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [3291f6c]
@@ -336,6 +400,8 @@
     - @sap-ux/ui5-application-writer@1.8.3
 
 ## 0.6.131
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -354,6 +420,8 @@
 
 ## 0.6.130
 
+*Released: 2026-03-27T11:58:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [2e17a6b]
@@ -361,6 +429,8 @@
     - @sap-ux/axios-extension@1.25.27
 
 ## 0.6.129
+
+*Released: 2026-03-26T20:06:10Z*
 
 ### Patch Changes
 
@@ -370,6 +440,8 @@
     - @sap-ux/ui5-application-writer@1.8.2
 
 ## 0.6.128
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -391,6 +463,8 @@
 
 ## 0.6.127
 
+*Released: 2026-03-25T12:56:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [f384ace]
@@ -400,12 +474,16 @@
 
 ## 0.6.126
 
+*Released: 2026-03-23T18:25:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [c0e05ab]
     - @sap-ux/axios-extension@1.25.25
 
 ## 0.6.125
+
+*Released: 2026-03-23T16:28:28Z*
 
 ### Patch Changes
 
