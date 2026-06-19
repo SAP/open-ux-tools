@@ -18,7 +18,7 @@ import {
     type BuildingBlockMetaPath,
     type Page,
     type XmlAggregationGroup,
-    type AppendBuildingBlockAggregationConfig,
+    type GenerateBuildingBlockAggregationConfig,
     bindingContextAbsolute,
     type TemplateConfig
 } from './types.js';
@@ -343,20 +343,20 @@ function sortPageAggregationChildren(pageElement: Node): void {
  * Appends a single Page building block aggregation template to an existing `<macros:Page>` element in a view XML file.
  *
  * @param {string} basePath - the base path of the application
- * @param {AppendBuildingBlockAggregationConfig} config - the aggregation configuration containing aggregationName and mContent
+ * @param {GenerateBuildingBlockAggregationConfig} config - the aggregation configuration containing aggregationName and mContent
  * @param {Editor} [fs] - the memfs editor instance
  * @returns {Editor} the updated memfs editor instance
  */
-export async function appendBuildingBlockAggregation(
+export async function generateBuildingBlockAggregation(
     basePath: string,
-    config: AppendBuildingBlockAggregationConfig,
+    config: GenerateBuildingBlockAggregationConfig,
     fs?: Editor
 ): Promise<Editor> {
     const { viewPath, buildingBlockType, aggregationName: aggName, mContent = '' } = config;
     fs ??= create(createStorage());
     if (buildingBlockType !== BuildingBlockType.Page) {
         throw new Error(
-            `appendBuildingBlockAggregation: unsupported building block type '${buildingBlockType}'. Only 'Page' is currently supported.`
+            `generateBuildingBlockAggregation: unsupported building block type '${buildingBlockType}'. Only 'Page' is currently supported.`
         );
     }
     const xmlDocument = getUI5XmlDocument(basePath, viewPath, fs);

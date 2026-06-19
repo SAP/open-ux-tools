@@ -437,7 +437,7 @@ export type XmlAggregationGroup = { comments: Node[]; element: Element; original
 /**
  * Configuration for appending a named aggregation to an existing building block element in a view XML file.
  */
-export interface AppendBuildingBlockAggregationConfig {
+export interface GenerateBuildingBlockAggregationConfig {
     /** Path to the view XML file, relative to basePath. */
     viewPath: string;
     /** Type of the building block whose aggregation should be appended. Currently only 'Page' is supported. */

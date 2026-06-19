@@ -21,7 +21,7 @@ import {
     BuildingBlockType,
     generateBuildingBlock,
     getSerializedFileContent,
-    appendBuildingBlockAggregation
+    generateBuildingBlockAggregation
 } from '../../src/index.js';
 import { BUILDING_BLOCK_CONFIG } from '../../src/building-block/processor.js';
 import testManifestContent from './sample/building-block/webapp/manifest.json';
@@ -3841,7 +3841,7 @@ describe('Building Blocks', () => {
         });
     });
 
-    describe('appendBuildingBlockAggregation', () => {
+    describe('generateBuildingBlockAggregation', () => {
         const pageViewContent = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
     xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
     <macros:Page id="Page" title="pageTitle">
@@ -3852,7 +3852,7 @@ describe('Building Blocks', () => {
             const basePath = join(testAppPath, 'page-bb-agg');
             fs.write(join(basePath, xmlViewFilePath), pageViewContent);
 
-            const result = await appendBuildingBlockAggregation(
+            const result = await generateBuildingBlockAggregation(
                 basePath,
                 {
                     viewPath: xmlViewFilePath,
@@ -3878,7 +3878,7 @@ describe('Building Blocks', () => {
             fs.write(join(basePath, xmlViewFilePath), viewWithExistingId);
             findFilesByExtensionMock.mockResolvedValue([join(basePath, xmlViewFilePath)]);
 
-            const result = await appendBuildingBlockAggregation(
+            const result = await generateBuildingBlockAggregation(
                 basePath,
                 {
                     viewPath: xmlViewFilePath,
@@ -3907,7 +3907,7 @@ describe('Building Blocks', () => {
             fs.write(join(basePath, xmlViewFilePath), viewOutOfOrder);
 
             // Adding navigationActions (index 1) should trigger a full sort
-            const result = await appendBuildingBlockAggregation(
+            const result = await generateBuildingBlockAggregation(
                 basePath,
                 {
                     viewPath: xmlViewFilePath,
@@ -3930,7 +3930,7 @@ describe('Building Blocks', () => {
             const basePath = join(testAppPath, 'page-bb-agg-comment');
             fs.write(join(basePath, xmlViewFilePath), pageViewContent);
 
-            const result = await appendBuildingBlockAggregation(
+            const result = await generateBuildingBlockAggregation(
                 basePath,
                 {
                     viewPath: xmlViewFilePath,
@@ -3959,7 +3959,7 @@ describe('Building Blocks', () => {
 </mvc:View>`;
             fs.write(join(basePath, xmlViewFilePath), viewWithExisting);
 
-            const result = await appendBuildingBlockAggregation(
+            const result = await generateBuildingBlockAggregation(
                 basePath,
                 {
                     viewPath: xmlViewFilePath,
@@ -3987,7 +3987,7 @@ describe('Building Blocks', () => {
 </mvc:View>`;
             fs.write(join(basePath, xmlViewFilePath), viewWithComment);
 
-            const result = await appendBuildingBlockAggregation(
+            const result = await generateBuildingBlockAggregation(
                 basePath,
                 {
                     viewPath: xmlViewFilePath,
