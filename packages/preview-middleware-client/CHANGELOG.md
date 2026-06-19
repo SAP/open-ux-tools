@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.0.24
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-17
+
+#### Bug Fixes
+
+- remove static import and use type-only imports to avoid eager sap.ui.rta load [[dec7cc5](https://github.com/SAP/open-ux-tools/commit/dec7cc5d001a561be36b59e3dfa6835b9e8e49e9)]
+
 ## 1.0.23
 
 *Released: 2026-06-15T21:05:56Z*

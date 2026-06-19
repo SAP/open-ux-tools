@@ -107,6 +107,38 @@ describe('download readme from npmjs', () => {
         );
     });
 
+    it('should reject package names containing double-dot traversal', async () => {
+        process.argv = ['node', 'script.js', '..'];
+        global.fetch = jest.fn<typeof fetch>().mockResolvedValue({
+            ok: true,
+            json: jest.fn().mockResolvedValue({
+                readme: testReadmeContent
+            })
+        } as any);
+
+        const script = await import('../src/scripts/load-readme-from-npm.js');
+        await script.execution;
+
+        expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('Invalid package name'));
+        expect(mockWriteFile).not.toHaveBeenCalled();
+    });
+
+    it('should reject package names containing backslash traversal', async () => {
+        process.argv = ['node', 'script.js', 'foo\\..\\bar'];
+        global.fetch = jest.fn<typeof fetch>().mockResolvedValue({
+            ok: true,
+            json: jest.fn().mockResolvedValue({
+                readme: testReadmeContent
+            })
+        } as any);
+
+        const script = await import('../src/scripts/load-readme-from-npm.js');
+        await script.execution;
+
+        expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('Invalid package name'));
+        expect(mockWriteFile).not.toHaveBeenCalled();
+    });
+
     it('should handle no package name error', async () => {
         //this test should always be the last one because we are overriding process.argv
         process.argv = ['node', 'script.js'];

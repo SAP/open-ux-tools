@@ -1,5 +1,29 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 1.2.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-18
+
+#### Bug Fixes
+
+- Validate GitHub host/token inputs to prevent argument injection; validate output path to prevent path traversal [[74a9959](https://github.com/SAP/open-ux-tools/commit/74a9959edf34f8f9ef99ca125fa71524c741aabd)]
+
+## 1.2.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-18
+
+#### Bug Fixes
+
+- Update opa5_docu.md: clear filter fields [[6776415](https://github.com/SAP/open-ux-tools/commit/6776415f52f25bbbf29728bec85e026a868e8687)]
+
 ## 1.2.1
 
 ### Patch Changes
