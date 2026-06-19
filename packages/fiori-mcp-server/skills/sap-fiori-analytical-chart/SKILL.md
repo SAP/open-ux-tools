@@ -52,122 +52,6 @@ Analytics.AggregatedProperty #Amount_avg: {
 
 ### Chart
 ```cds
-UI.Chart #Chart: {
-  ChartType: #Column,
-  Dimensions: [Category],
-  DynamicMeasures: ['@Analytics.AggregatedProperty#Amount_avg']
-}
-```
-
-✅ Uses **DynamicMeasures**
-
----
-
-## ABAP RAP Implementation
-
-## 3-Step Implementation Approach
-
-**Always follow this systematic 3-step process for ABAP RAP:**
-
-1. **Backend CDS Configuration** - Enable aggregation support by adding `@OData.applySupportedForAggregation: #FULL` to the CDS view and `@Aggregation.default` to measure fields.
-2. **Chart Annotations** - Add `@UI.chart` annotation in the metadata extension (preferred) or frontend annotation.xml with chart type, dimensions, and measures.
-3. **Frontend Manifest** - Configure the `views` section in manifest.json to display the chart alongside the table in a hybrid view or as separate tabs.
-
----
-
-## CRITICAL: Verify Service Connection First using ADT MCP.
-
-**BEFORE making any changes, verify which CDS view is exposed by the service:**
-
-1. Check the frontend `manifest.json` for the service URI (e.g., `/sap/opu/odata4/sap/zzui_travel_o4/...`)
-2. If ADT MCP is available:
-   - Search for the service definition by name (e.g., `ZZUI_TRAVEL_O4`)
-   - Open the service definition `.srvd.acds` file
-   - Identify the exposed CDS view (e.g., `expose ZZC_TRAVEL001 as Travel`)
-   - Use THIS CDS view for modifications, not similarly named views
-3. The service name in the URI must match the service definition being modified
-
-⚠️ **Common Mistake:** Modifying a CDS view that is NOT exposed by the service your app uses!
-
-## Annotation Placement Strategy (ABAP RAP)
-
-- **Preferred:** Backend **Metadata Extension** (when ADT MCP is available)
-  - Single source of truth
-  - Reusable across apps
-  - Properly transported
-  - Type-safe
-  
-- **Fallback:** Frontend `annotation.xml` (when backend access is not available)
-  - Verify `Aggregation.ApplySupported` exists in metadata.xml
-  - If missing, backend CDS configuration is required
-
-### Backend CDS (MANDATORY) - Aggregation Support
-```abap
-@OData.applySupportedForAggregation: #FULL
-define root view entity ZC_ENTITY
-  provider contract transactional_query
-  as projection on ZI_ENTITY
-{
-  key EntityID,
-
-  @Aggregation.default: #SUM  // or #AVG, #MIN, #MAX
-  Amount,
-
-  Category
-}
-```
-
-### Chart Annotation
-```xml
-<Annotation Term="UI.Chart" Qualifier="AnalyticalChart">
-  <Record Type="UI.ChartDefinitionType">
-    <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Column"/>
-    <PropertyValue Property="Dimensions">
-      <Collection>
-        <PropertyPath>Category</PropertyPath>
-      </Collection>
-    </PropertyValue>
-    <PropertyValue Property="Measures">
-      <Collection>
-        <PropertyPath>Amount</PropertyPath>
-      </Collection>
-    </PropertyValue>
-  </Record>
-</Annotation>
-```
-
-✅ Uses **Measures (not DynamicMeasures)**  
-### CRITICAL: NEVER EDIT metadata.xml - IT IS READ-ONLY!
-
----
-
-## Manifest Configuration (Common)
-
-### Approach 1: Hybrid View (Chart + Table Together)
-
-```json
-"views": {
-  "paths": [
-    {
-      "primary": [
-        { "annotationPath": "com.sap.vocabularies.UI.v1.Chart#AnalyticalChart" }
-      ],
-      "secondary": [
-        { "annotationPath": "com.sap.vocabularies.UI.v1.LineItem" }
-      ],
-      "defaultPath": "both"
-    }
-  ]
-}
-```
-
-✅ Shows **chart + table together in same view**  
-✅ Simple configuration
-
-### Approach 2: Multiple View Tabs with PresentationVariant
-
-**Annotations (CDS for CAP):**
-```cds
 UI.Chart #AnalyticalChart: {
   $Type: 'UI.ChartDefinitionType',
   Title: 'Chart Title',
@@ -197,7 +81,61 @@ UI.PresentationVariant #TableView: {
 }
 ```
 
-**Backend Metadata Extension (Recommended for RAP):**
+✅ Uses **DynamicMeasures**
+
+---
+
+## ABAP RAP Implementation (2 Steps + Manifest Configuration)
+
+### CRITICAL: NEVER EDIT metadata.xml - IT IS READ-ONLY!
+
+### ⚠️ PRE-FLIGHT CHECKLIST - Verify BEFORE Implementation
+
+**Missing ANY of these will cause the app to fail/not load:**
+
+- [ ] `@OData.applySupportedForAggregation: #FULL` on **projection view** (ZC_*)
+- [ ] `@Aggregation.default: #AVG` (or #SUM, #MIN, #MAX) on **measure field**
+- [ ] `@UI.chart` annotation with correct **qualifier** in metadata extension
+- [ ] Manifest `views.paths` configuration
+- [ ] All CDS objects **activated**
+
+---
+
+### 1. Backend Projection View (MANDATORY) - Enable Aggregation Support
+
+⚠️ **CRITICAL: @OData.applySupportedForAggregation annotation is MANDATORY**
+
+**WITHOUT this annotation:**
+- OData service will NOT support aggregation
+- App will FAIL TO LOAD (blank screen/errors)
+- Chart annotations will be ignored
+
+**Placement:**
+- ✅ **MUST be on PROJECTION view** (ZC_* or ZZZC_*) with `TRANSACTIONAL_QUERY` contract
+- ❌ **NOT on interface view** (ZR_* or ZZZR_*)
+
+**CORRECT Example:**
+```abap
+@OData.applySupportedForAggregation: #FULL  ← MANDATORY! Must be present!
+define root view entity ZC_ENTITY
+  provider contract TRANSACTIONAL_QUERY
+  as projection on ZR_ENTITY
+{
+  @Aggregation.default: #AVG  ← Specify aggregation method for measure
+  Amount;
+  Category;  ← Dimension field (no aggregation annotation needed)
+}
+```
+
+**WRONG Example:**
+```abap
+// ❌ WRONG - Don't put on interface view
+@OData.applySupportedForAggregation: #FULL  ← WRONG PLACE!
+define root view entity ZR_ENTITY
+  as select from TABLE
+```
+
+### 2. Backend Metadata Extension (MANDATORY) - Add Chart, PresentationVariant Annotations
 ```abap
 @UI.chart: [{
   qualifier: 'AnalyticalChart',
@@ -248,64 +186,29 @@ annotate view ZC_ENTITY with
   Category;
 }
 ```
+---
 
-**Annotations (fallback: XML for RAP):**
-```xml
-<Annotation Term="UI.Chart" Qualifier="AnalyticalChart">
-  <Record Type="UI.ChartDefinitionType">
-    <PropertyValue Property="Title" String="Chart Title"/>
-    <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Column"/>
-    <PropertyValue Property="Dimensions">
-      <Collection>
-        <PropertyPath>Category</PropertyPath>
-      </Collection>
-    </PropertyValue>
-    <PropertyValue Property="Measures">
-      <Collection>
-        <PropertyPath>Amount</PropertyPath>
-      </Collection>
-    </PropertyValue>
-    <PropertyValue Property="MeasureAttributes">
-      <Collection>
-        <Record Type="UI.ChartMeasureAttributeType">
-          <PropertyValue Property="Measure" PropertyPath="Amount"/>
-          <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
-        </Record>
-      </Collection>
-    </PropertyValue>
-    <PropertyValue Property="DimensionAttributes">
-      <Collection>
-        <Record Type="UI.ChartDimensionAttributeType">
-          <PropertyValue Property="Dimension" PropertyPath="Category"/>
-          <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
-        </Record>
-      </Collection>
-    </PropertyValue>
-  </Record>
-</Annotation>
+## Manifest Configuration (Common)
 
-<Annotation Term="UI.PresentationVariant" Qualifier="ChartView">
-  <Record Type="UI.PresentationVariantType">
-    <PropertyValue Property="Text" String="Chart View"/>
-    <PropertyValue Property="Visualizations">
-      <Collection>
-        <AnnotationPath>@UI.Chart#AnalyticalChart</AnnotationPath>
-      </Collection>
-    </PropertyValue>
-  </Record>
-</Annotation>
+### Approach 1: Hybrid View (Chart + Table Together)
 
-<Annotation Term="UI.PresentationVariant" Qualifier="TableView">
-  <Record Type="UI.PresentationVariantType">
-    <PropertyValue Property="Text" String="Table View"/>
-    <PropertyValue Property="Visualizations">
-      <Collection>
-        <AnnotationPath>@UI.LineItem</AnnotationPath>
-      </Collection>
-    </PropertyValue>
-  </Record>
-</Annotation>
+```json
+"views": {
+  "paths": [
+    {
+      "primary": [
+        { "annotationPath": "com.sap.vocabularies.UI.v1.Chart#AnalyticalChart" }
+      ],
+      "secondary": [
+        { "annotationPath": "com.sap.vocabularies.UI.v1.LineItem" }
+      ],
+      "defaultPath": "both"
+    }
+  ]
+}
 ```
+
+### Approach 2: Multiple View Tabs with PresentationVariant
 
 **Manifest:**
 ```json
@@ -322,10 +225,6 @@ annotate view ZC_ENTITY with
   ]
 }
 ```
-
-✅ Allows **switching between chart and table as separate view tabs**  
-✅ Users can toggle between visualizations
-
 ---
 
 ## Testing
@@ -347,13 +246,63 @@ npm start          # No refresh needed - fetches metadata from live backend at r
 
 ---
 
+## Implementation Order (RAP)
+
+**Follow this sequence to avoid errors:**
+
+1. **Modify Projection View (ZC_ENTITY)**
+   - Add `@OData.applySupportedForAggregation: #FULL` at top
+   - Add `@Aggregation.default: #AVG` to measure field
+   - Activate projection view
+
+2. **Modify Metadata Extension**
+   - Add `@UI.chart` annotation
+   - Add `@UI.presentationVariant` annotations
+   - Activate metadata extension
+
+3. **Update Fiori App Manifest**
+   - Add `views.paths` configuration
+   - Save manifest.json
+
+4. **Test**
+   - Run `npm start` (fetches live metadata - no republishing needed)
+   - Service binding does NOT need to be republished
+
+---
+
+## Troubleshooting
+
+### Symptom: App doesn't load / Blank screen / Chart not visible
+
+**Cause 1:** Missing `@OData.applySupportedForAggregation: #FULL`
+- **Solution:** Add to projection view (ZC_*), activate, restart app
+
+**Cause 2:** Annotation on wrong view
+- **Solution:** Move from interface view (ZR_*) to projection view (ZC_*)
+
+**Cause 3:** Measure field not numeric
+- **Solution:** Verify field is numeric type (Amount, Quantity, Decimal, Integer)
+
+**Cause 4:** Wrong qualifier in manifest
+- **Solution:** Verify qualifier in manifest matches `@UI.chart: [{ qualifier: 'AnalyticalChart' }]`
+
+**Cause 5:** Missing `@Aggregation.default` on measure
+- **Solution:** Add `@Aggregation.default: #AVG` (or #SUM, #MIN, #MAX) to measure field
+
+### Symptom: Chart shows but with wrong data
+
+**Cause:** Wrong aggregation method
+- **Solution:** Change `@Aggregation.default` value (#AVG, #SUM, #MIN, #MAX)
+
+---
+
 ## Key Differences
 
-CAP:
+**CAP:**
 - Aggregation + measures defined in CDS  
 - Uses DynamicMeasures  
 
-RAP:
+**RAP:**
 - Aggregation defined in backend CDS only  
 - Uses Measures  
 
@@ -361,36 +310,26 @@ RAP:
 
 ## Common Mistakes 
 
-Both CAP & RAP:
+**General:**
 - Wrong manifest config  
 - Mixing Approach 1 and Approach 2 configurations
-- Non-numeric measure  
-- Wrong qualifier 
+- Non-numeric measure field
+- Wrong qualifier (manifest doesn't match annotation)
 
-RAP:
-- Missing backend aggregation support 
-- Adding UI annotations directly in CDS projection
-- Annotating interface views instead of projection views
-- Ignoring @Metadata.allowExtensions: true
-- Mixing backend & frontend annotations unnecessarily
+**RAP-Specific:**
+- ❌ **MOST COMMON:** Missing `@OData.applySupportedForAggregation: #FULL` → App won't load
+- ❌ Placing aggregation annotation on interface view instead of projection view
+- ❌ Missing `@Aggregation.default` on measure field
+- ❌ Forgetting to activate CDS objects after changes
+- ❌ Using wrong view contract (must be `TRANSACTIONAL_QUERY`)
 
 ---
 
 ## Best Practices
-
-Both CAP & RAP:
 - Use 1 dimension + 1–2 measures  
 - Prefer Column/Bar charts  
 - **Approach 1**: Use "defaultPath": "both" for chart + table side-by-side in same view
 - **Approach 2**: Use `PresentationVariant` for separate view tabs (chart or table)  
-
-RAP:
-- Always annotate projection view, not interface view
-- Always prefer Metadata Extension over inline annotations
-- Keep CDS clean (no UI logic inside core model)
-- Backend first → Frontend fallback
-- Backend available → Use Metadata Extension (.mdext)
-- No backend access → Use local annotation(annotation.xml) in frontend.
 
 ## References
 
