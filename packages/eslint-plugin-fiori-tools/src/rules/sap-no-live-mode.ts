@@ -12,12 +12,11 @@ const rule: FioriRuleDefinition = createFioriRule({
         docs: {
             recommended: true,
             description:
-                'Checks the liveMode property is not enabled, so the "GO" button is displayed in the application filter bar.',
+                'The rule checks that live mode is not used. When enabled, content area loads automatically and refreshes with every filter value change.',
             url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-no-live-mode.md'
         },
         messages: {
-            [NO_LIVE_MODE]:
-                'The Go Button must always be present in the application filter bar, so the liveMode property should not be used.'
+            [NO_LIVE_MODE]: 'Live mode should not be used as it has a negative impact on performance'
         },
         fixable: 'code'
     },
