@@ -7457,6 +7457,10 @@ server:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -7464,10 +7468,6 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
 ",
     "state": "modified",
   },
@@ -7529,6 +7529,10 @@ server:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -7536,10 +7540,6 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
 ",
     "state": "modified",
   },
@@ -7589,6 +7589,10 @@ server:
         excludePatterns:
           - /Component-preload.js
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -7596,10 +7600,6 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
 ",
     "state": "modified",
   },
@@ -23841,6 +23841,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -24750,6 +24755,10 @@ server:
         excludePatterns:
           - /Component-preload.js
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -25100,42 +25109,40 @@ appDescription=A Fiori application.",
 ",
     "state": "modified",
   },
-  "webapp/test/integration/FirstJourney.js": Object {
-    "contents": "sap.ui.define([
-    \\"sap/ui/test/opaQunit\\",
-    \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
-    \\"use strict\\";
+  "webapp/test/integration/FirstJourney.ts": Object {
+    "contents": "import opaTest from \\"sap/ui/test/opaQunit\\";
+import type { Given, When, Then } from \\"./types/OpaJourneyTypes\\";
+import runner from \\"./pages/JourneyRunner\\";
 
-    function journey() {
-        QUnit.module(\\"First journey\\");
+function journey() {
+    QUnit.module(\\"First journey\\");
 
-        opaTest(\\"Start application\\", function (Given, When, Then) {
-            Given.iStartMyApp();
-            Then.onTheTravelList.iSeeThisPage();
-        });
+    opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iStartMyApp();
+        Then.onTheTravelList.iSeeThisPage();
+    });
 
 
-        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
-            // Note: this test will fail if the ListReport page doesn't show any data
-            
-            When.onTheTravelList.onFilterBar().iExecuteSearch();
-            
-            Then.onTheTravelList.onTable().iCheckRows();
+    opaTest(\\"Navigate to ObjectPage\\", function (_Given: Given, When: When, Then: Then) {
+        // Note: this test will fail if the ListReport page doesn't show any data
+        
+        When.onTheTravelList.onFilterBar().iExecuteSearch();
+        
+        Then.onTheTravelList.onTable(\\"\\").iCheckRows();
 
-            When.onTheTravelList.onTable().iPressRow(0);
-            Then.onTheTravelObjectPage.iSeeThisPage();
+        When.onTheTravelList.onTable(\\"\\").iPressRow(0);
+        Then.onTheTravelObjectPage.iSeeThisPage();
 
-        });
+    });
 
-        opaTest(\\"Teardown\\", function (Given, When, Then) { 
-            // Cleanup
-            Given.iTearDownMyApp();
-        });
-    }
+    opaTest(\\"Teardown\\", function (Given: Given) {
+        // Cleanup
+        Given.iTearDownMyApp();
+    });
+}
 
-    runner.run([journey]);
-});",
+runner.run([journey]);
+",
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.html": Object {
@@ -25202,103 +25209,139 @@ sap.ui.require(
 ",
     "state": "modified",
   },
-  "webapp/test/integration/pages/BookingObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
-    'use strict';
+  "webapp/test/integration/pages/BookingObjectPage.ts": Object {
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
+import Press from \\"sap/ui/test/actions/Press\\";
 
-    var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
-        assertions: {}
-    };
+export const actions = {
+    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
+        return this.waitFor({
+            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+            actions: new Press()
+        });
+    }
+};
 
-    return new ObjectPage(
-        {
-            appId: 'lrop_v4_addtests_cds',
-            componentId: 'BookingObjectPage',
-            entitySet: 'Booking'
-        },
-        CustomPageDefinitions
-    );
-});",
-    "state": "modified",
-  },
-  "webapp/test/integration/pages/JourneyRunner.js": Object {
-    "contents": "sap.ui.define([
-    \\"sap/fe/test/JourneyRunner\\",
-	\\"lrop_v4_addtests_cds/test/integration/pages/TravelList\\",
-	\\"lrop_v4_addtests_cds/test/integration/pages/TravelObjectPage\\",
-	\\"lrop_v4_addtests_cds/test/integration/pages/BookingObjectPage\\"
-], function (JourneyRunner, TravelList, TravelObjectPage, BookingObjectPage) {
-    'use strict';
+export const assertions = {};
 
-    var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds') + '/test/flpSandbox.html#lropv4addtestscds-tile',
-        pages: {
-			onTheTravelList: TravelList,
-			onTheTravelObjectPage: TravelObjectPage,
-			onTheBookingObjectPage: BookingObjectPage
-        },
-        async: true
-    });
-
-    return runner;
-});
-
+export default class ObjectPage {
+    actions = actions;
+    assertions = assertions;
+}
 ",
     "state": "modified",
   },
-  "webapp/test/integration/pages/TravelList.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
-    'use strict';
+  "webapp/test/integration/pages/JourneyRunner.ts": Object {
+    "contents": "import JourneyRunner from \\"sap/fe/test/JourneyRunner\\";
+import ListReport from \\"sap/fe/test/ListReport\\";
+import ObjectPage from \\"sap/fe/test/ObjectPage\\";
+import CustomTravelList from \\"./TravelList\\";
+import CustomTravelObjectPage from \\"./TravelObjectPage\\";
+import CustomBookingObjectPage from \\"./BookingObjectPage\\";
 
-    var CustomPageDefinitions = {
-        actions: {},
-        assertions: {}
-    };
+const runner = new JourneyRunner({
+    launchUrl: sap.ui.require.toUrl(\\"lrop_v4_addtests_cds\\") + \\"/test/flpSandbox.html#lropv4addtestscds-tile\\",
+    pages: {
+        onTheTravelList: new ListReport(
+            {
+                appId: \\"lrop_v4_addtests_cds\\",
+                componentId: \\"TravelList\\",
+                entitySet: \\"Travel\\",
+                contextPath: \\"\\"
+            },
+            CustomTravelList
+        ),
+        onTheTravelObjectPage: new ObjectPage(
+            {
+                appId: \\"lrop_v4_addtests_cds\\",
+                componentId: \\"TravelObjectPage\\",
+                entitySet: \\"Travel\\",
+                contextPath: \\"\\"
+            },
+            CustomTravelObjectPage
+        ),
+        onTheBookingObjectPage: new ObjectPage(
+            {
+                appId: \\"lrop_v4_addtests_cds\\",
+                componentId: \\"BookingObjectPage\\",
+                entitySet: \\"Booking\\",
+                contextPath: \\"\\"
+            },
+            CustomBookingObjectPage
+        )
+    },
+    async: true
+});
 
-    return new ListReport(
-        {
-            appId: 'lrop_v4_addtests_cds',
-            componentId: 'TravelList',
-            entitySet: 'Travel'
-        },
-        CustomPageDefinitions
-    );
-});",
+export default runner;
+",
     "state": "modified",
   },
-  "webapp/test/integration/pages/TravelObjectPage.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
-    'use strict';
+  "webapp/test/integration/pages/TravelList.ts": Object {
+    "contents": "export const actions = {};
 
-    var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
-        assertions: {}
-    };
+export const assertions = {};
 
-    return new ObjectPage(
-        {
-            appId: 'lrop_v4_addtests_cds',
-            componentId: 'TravelObjectPage',
-            entitySet: 'Travel'
-        },
-        CustomPageDefinitions
-    );
-});",
+export default class ListReport {
+    actions = actions;
+    assertions = assertions;
+}
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/TravelObjectPage.ts": Object {
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
+import Press from \\"sap/ui/test/actions/Press\\";
+
+export const actions = {
+    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
+        return this.waitFor({
+            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+            actions: new Press()
+        });
+    }
+};
+
+export const assertions = {};
+
+export default class ObjectPage {
+    actions = actions;
+    assertions = assertions;
+}
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/types/OpaJourneyTypes.d.ts": Object {
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
+import type { actions as ListReportActions, assertions as ListReportAssertions } from \\"sap/fe/test/ListReport\\";
+import type { actions as ObjectPageActions, assertions as ObjectPageAssertions } from \\"sap/fe/test/ObjectPage\\";
+import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from \\"sap/fe/test/TemplatePage\\";
+import type Shell from \\"sap/fe/test/Shell\\";
+import type BaseArrangements from \\"sap/fe/test/BaseArrangements\\";
+import type { actions as TravelListCustomActions, assertions as TravelListCustomAssertions } from \\"../pages/TravelList\\";
+import type { actions as TravelObjectPageCustomActions, assertions as TravelObjectPageCustomAssertions } from \\"../pages/TravelObjectPage\\";
+import type { actions as BookingObjectPageCustomActions, assertions as BookingObjectPageCustomAssertions } from \\"../pages/BookingObjectPage\\";
+
+export type Given = Opa5 & BaseArrangements & {
+    iTearDownMyApp: () => Given;
+    iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    and: Given;
+};
+
+export type When = Opa5 & BaseArrangements & {
+    onTheTravelList: Opa5 & ListReportActions & TemplatePageActions & typeof TravelListCustomActions;
+    onTheTravelObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & typeof TravelObjectPageCustomActions;
+    onTheBookingObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & typeof BookingObjectPageCustomActions;
+    onTheShell: Shell;
+};
+
+export type Then = Opa5 & BaseArrangements & {
+    onTheTravelList: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof TravelListCustomAssertions;
+    onTheTravelObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof TravelObjectPageCustomAssertions;
+    onTheBookingObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof BookingObjectPageCustomAssertions;
+    onTheShell: Shell;
+};
+",
     "state": "modified",
   },
   "webapp/test/locate-reuse-libs.js": Object {
@@ -48765,6 +48808,10 @@ server:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -48772,10 +48819,6 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
 ",
     "state": "modified",
   },
@@ -48837,6 +48880,10 @@ server:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -48844,10 +48891,6 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
 ",
     "state": "modified",
   },
@@ -48897,6 +48940,10 @@ server:
         excludePatterns:
           - /Component-preload.js
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -48904,10 +48951,6 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
 ",
     "state": "modified",
   },
@@ -52277,6 +52320,10 @@ server:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -52284,10 +52331,6 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
 ",
     "state": "modified",
   },
@@ -52349,6 +52392,10 @@ server:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -52356,10 +52403,6 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
 ",
     "state": "modified",
   },
@@ -52409,6 +52452,10 @@ server:
         excludePatterns:
           - /Component-preload.js
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -52416,10 +52463,6 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
 ",
     "state": "modified",
   },
@@ -55789,6 +55832,10 @@ server:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -55796,10 +55843,6 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
 ",
     "state": "modified",
   },
@@ -55861,6 +55904,10 @@ server:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -55868,10 +55915,6 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
 ",
     "state": "modified",
   },
@@ -55921,6 +55964,10 @@ server:
         excludePatterns:
           - /Component-preload.js
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -55928,10 +55975,6 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
 ",
     "state": "modified",
   },

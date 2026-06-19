@@ -3851,6 +3851,10 @@ server:
             generateMockData: true
         annotations: []
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -3858,10 +3862,6 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
 ",
     "state": "modified",
   },
@@ -3920,6 +3920,10 @@ server:
             generateMockData: true
         annotations: []
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -3927,10 +3931,6 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
 ",
     "state": "modified",
   },
@@ -3979,6 +3979,10 @@ server:
         excludePatterns:
           - /Component-preload.js
 builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
@@ -3986,10 +3990,6 @@ builder:
         debug: true
         transformModulesToUI5:
           overridesToOverride: true
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
 ",
     "state": "modified",
   },
