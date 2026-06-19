@@ -1,6 +1,7 @@
 import { AddonPanel, Form, SyntaxHighlighter } from 'storybook/internal/components';
 import React, { useEffect, useState } from 'react';
 import { addons } from 'storybook/manager-api';
+import { useTheme } from 'storybook/theming';
 
 const storageKey = 'storybook-answers';
 function getCurrentAnswers(): string {
@@ -10,6 +11,7 @@ function getCurrentAnswers(): string {
 export const CodePreview = (props: { active?: boolean }): React.ReactElement => {
     const { active = false } = props;
     const [answers, setAnswers] = useState(getCurrentAnswers());
+    const theme = useTheme();
     useEffect(() => {
         window.addEventListener('storage', (event: StorageEvent) => {
             if (event.key !== storageKey) {
@@ -27,9 +29,15 @@ export const CodePreview = (props: { active?: boolean }): React.ReactElement => 
 
     return (
         <AddonPanel key="panel" active={active}>
-            <Form.Field label="Answers">
-                <SyntaxHighlighter language="json">{answers}</SyntaxHighlighter>
-            </Form.Field>
+            <div
+                style={{
+                    height: '100%',
+                    background: theme.base === 'dark' ? '#1a1a1a' : '#ffffff'
+                }}>
+                <Form.Field label="Answers">
+                    <SyntaxHighlighter language="json">{answers}</SyntaxHighlighter>
+                </Form.Field>
+            </div>
         </AddonPanel>
     );
 };

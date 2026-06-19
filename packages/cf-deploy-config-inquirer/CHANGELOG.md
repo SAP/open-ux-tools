@@ -1,5 +1,17 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 1.0.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-18
+
+#### Features
+
+- show warning when a full URL destination is selected [[d905991](https://github.com/SAP/open-ux-tools/commit/d905991ddc0ac82d5cde833cf4489d8a72bd7ad5)]
+
 ## 1.0.12
 
 ### Patch Changes

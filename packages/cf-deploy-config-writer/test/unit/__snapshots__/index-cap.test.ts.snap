@@ -318,7 +318,7 @@ resources:
       path: ./xs-security.json
       service-name: captestproject-xsuaa-service
       config:
-        xsappname: captestproject-\${space-guid}
+        xsappname: captestproject-\${org}-\${space}
         tenant-mode: dedicated
   - name: captestproject-html5-repo-runtime
     type: org.cloudfoundry.managed-service

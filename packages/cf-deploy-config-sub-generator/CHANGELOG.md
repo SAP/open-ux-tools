@@ -1,5 +1,25 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 1.0.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-inquirer 1.0.12 → 1.0.13
+
+## 1.0.14
+
+### Patch Changes
+
+#### Bug Fixes
+
+- align xs-security.json and XSUAA mta.yaml config with CDS convention [[f17f880](https://github.com/SAP/open-ux-tools/commit/f17f880229efb91320f9740a4f36e15bbccc1e60)]
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-writer 1.0.9 → 1.0.10
+
 ## 1.0.13
 
 ### Patch Changes

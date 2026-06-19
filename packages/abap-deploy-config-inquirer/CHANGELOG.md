@@ -1,5 +1,13 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 2.0.14
+
+### Patch Changes
+
+#### Features
+
+- show warning when a full URL destination is selected [[d905991](https://github.com/SAP/open-ux-tools/commit/d905991ddc0ac82d5cde833cf4489d8a72bd7ad5)]
+
 ## 2.0.13
 
 ### Patch Changes

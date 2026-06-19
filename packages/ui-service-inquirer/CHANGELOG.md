@@ -1,5 +1,13 @@
 # @sap-ux/ui-service-inquirer
 
+## 1.0.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.13 → 2.0.14
+
 ## 1.0.13
 
 ### Patch Changes
