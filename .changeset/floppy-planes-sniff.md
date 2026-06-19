@@ -97,4 +97,4 @@
 '@sap-ux/types': patch
 ---
 
-Add standalone fragment generation support
+FEAT: Add standalone fragment generation support
