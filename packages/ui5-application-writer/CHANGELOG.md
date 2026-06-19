@@ -2,11 +2,15 @@
 
 ## 2.0.4
 
+*Released: 2026-06-11T13:37:16Z*
+
 ### Patch Changes
 
 - e66a8a9: fix: append builder.resources.excludes to generated ui5.yaml
 
 ## 2.0.3
+
+*Released: 2026-06-10T09:57:42Z*
 
 ### Patch Changes
 
@@ -14,6 +18,8 @@
     - @sap-ux/ui5-config@1.0.3
 
 ## 2.0.2
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -23,12 +29,16 @@
 
 ## 2.0.1
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - Updated dependencies [9580241]
     - @sap-ux/ui5-config@1.0.1
 
 ## 2.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -68,11 +78,15 @@
 
 ## 1.9.2
 
+*Released: 2026-05-27T09:55:48Z*
+
 ### Patch Changes
 
 - 162059e: Fix locate-reuse-libs.js to support UI5 2.x by using createRendererInternal when createRenderer is not available
 
 ## 1.9.1
+
+*Released: 2026-05-21T16:21:11Z*
 
 ### Patch Changes
 
@@ -80,6 +94,8 @@
     - @sap-ux/ui5-config@0.31.1
 
 ## 1.9.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -92,6 +108,8 @@
 
 ## 1.8.9
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -100,6 +118,8 @@
 
 ## 1.8.8
 
+*Released: 2026-05-06T23:02:00Z*
+
 ### Patch Changes
 
 - Updated dependencies [678a08e]
@@ -107,11 +127,15 @@
 
 ## 1.8.7
 
+*Released: 2026-04-27T15:50:47Z*
+
 ### Patch Changes
 
 - 165a6c2: feat: support ESLint 10
 
 ## 1.8.6
+
+*Released: 2026-04-23T12:54:21Z*
 
 ### Patch Changes
 
@@ -119,12 +143,16 @@
 
 ## 1.8.5
 
+*Released: 2026-04-14T12:35:35Z*
+
 ### Patch Changes
 
 - Updated dependencies [cc4450c]
     - @sap-ux/ui5-config@0.30.3
 
 ## 1.8.4
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -134,12 +162,16 @@
 
 ## 1.8.3
 
+*Released: 2026-03-30T22:24:11Z*
+
 ### Patch Changes
 
 - c53a4ba: chore(ui5-application-writer): upgrade shared devDependencies (jest 30, i18next 25)
     - @sap-ux/ui5-config@0.30.1
 
 ## 1.8.2
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
