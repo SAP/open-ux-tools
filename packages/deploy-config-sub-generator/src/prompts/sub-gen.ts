@@ -110,15 +110,15 @@ export async function getSubGenPrompts(
 
     // Combine all prompts
     let questions: Question[] = [];
-    if (!targetDeployment) {
+    if (targetDeployment) {
+        questions = targetDeployment === TargetName.ABAP ? (abapPrompts as Question[]) : (cfPrompts as Question[]);
+    } else {
         questions = combineAllPrompts(options.projectRoot, {
             supportedTargets,
             abapPrompts,
             cfPrompts,
             promptOptions
         });
-    } else {
-        questions = targetDeployment === TargetName.ABAP ? (abapPrompts as Question[]) : (cfPrompts as Question[]);
     }
 
     return { questions, abapAnswers: abapAnswers };
@@ -151,9 +151,9 @@ function combineAllPrompts(
 ): Question[] {
     const questions = getDeployTargetQuestion(supportedTargets, projectRoot);
     questions.push(
-        ...withCondition(abapPrompts as Question[], (answers: Answers) => answers.targetName === TargetName.ABAP)
+        ...withCondition(abapPrompts as Question[], (answers: Answers) => answers.targetName === TargetName.ABAP),
+        ...withCondition(cfPrompts, (answers: Answers) => answers.targetName === TargetName.CF)
     );
-    questions.push(...withCondition(cfPrompts, (answers: Answers) => answers.targetName === TargetName.CF));
 
     return promptOptions
         ? extendWithOptions(questions as YUIQuestion[], promptOptions as Record<string, CommonPromptOptions>)

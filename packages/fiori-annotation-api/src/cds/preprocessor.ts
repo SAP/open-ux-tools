@@ -304,7 +304,7 @@ class ChangePreprocessor {
         deletionMap: Record<string, DeletionIndex[]>,
         insertionMap: Record<string, boolean>
     ): void {
-        const childPointers = new Set([...parent.assignments.map((_, i) => `${parentPointer}/assignments/${i}`)]);
+        const childPointers = new Set(parent.assignments.map((_, i) => `${parentPointer}/assignments/${i}`));
         for (const indexedValue of deletionMap[parentPointer]) {
             childPointers.delete(indexedValue.change.pointer);
         }
@@ -333,7 +333,7 @@ class ChangePreprocessor {
         deletionMap: Record<string, DeletionIndex[]>,
         insertionMap: Record<string, boolean>
     ): void {
-        const childPointers = new Set([...parent.items.map((_, i) => `${parentPointer}/items/${i}`)]);
+        const childPointers = new Set(parent.items.map((_, i) => `${parentPointer}/items/${i}`));
         for (const indexedValue of deletionMap[parentPointer]) {
             childPointers.delete(indexedValue.change.pointer);
         }
@@ -443,8 +443,7 @@ class ChangePreprocessor {
             pointerFragments.push(index.toString());
         } else {
             const index = change.index ?? (parent as Target).assignments.length - 1;
-            pointerFragments.push('assignments');
-            pointerFragments.push(index.toString());
+            pointerFragments.push('assignments', index.toString());
         }
         const pointer = pointerFragments.join('/');
         const deletionChangeIndex = this.input.findIndex(
@@ -594,9 +593,7 @@ class ChangePreprocessor {
         i: number
     ): void {
         // make sure that the assignment isn't already a compound assignment
-        const startPosition =
-            (target as Target).assignments[(target as Target).assignments.length - 1]?.range?.start ??
-            target.range?.start;
+        const startPosition = (target as Target).assignments.at(-1)?.range?.start ?? target.range?.start;
         if (!startPosition) {
             return;
         }

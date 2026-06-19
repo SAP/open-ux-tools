@@ -91,10 +91,10 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
             }
         );
 
-        if (!simulate) {
-            await new Promise((resolve) => fs.commit(resolve));
-        } else {
+        if (simulate) {
             await traceChanges(fs);
+        } else {
+            await new Promise((resolve) => fs.commit(resolve));
         }
     } catch (error) {
         logger.error(error.message);

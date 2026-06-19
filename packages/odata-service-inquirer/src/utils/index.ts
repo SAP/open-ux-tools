@@ -21,10 +21,10 @@ import { BackendSystemKey } from '@sap-ux/store';
  * @returns the platform name and technical name
  */
 export function getPromptHostEnvironment(): { name: string; technical: HostEnvironmentId } {
-    if (!PromptState.isYUI) {
-        return hostEnvironment.cli;
-    } else {
+    if (PromptState.isYUI) {
         return isAppStudio() ? hostEnvironment.bas : hostEnvironment.vscode;
+    } else {
+        return hostEnvironment.cli;
     }
 }
 

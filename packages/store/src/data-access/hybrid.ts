@@ -25,20 +25,20 @@ class HybridStore<E extends object> implements DataAccess<E> {
 
     public async read({ entityName, id }: { entityName: string; id: string }): Promise<undefined | E> {
         const serialized = await this.filesystem.read({ entityName, id });
-        if (!serialized) {
-            this.logger.debug(`hybrid/read - id: [${id}], nothing on the filesystem`);
-        } else {
+        if (serialized) {
             this.logger.debug(`hybrid/read - id: [${id}], filesystem: ${inspect(serialized)}`);
+        } else {
+            this.logger.debug(`hybrid/read - id: [${id}], nothing on the filesystem`);
         }
 
         const sensitiveData: E | undefined = await this.secureStore.retrieve(
             getFullyQualifiedServiceName(entityName),
             id
         );
-        if (!sensitiveData) {
-            this.logger.debug(`hybrid/read - id: [${id}], nothing in the secure store`);
-        } else {
+        if (sensitiveData) {
             this.logger.debug(`hybrid/read - id: [${id}]. Found sensitive data in secure store`);
+        } else {
+            this.logger.debug(`hybrid/read - id: [${id}], nothing in the secure store`);
         }
 
         if (serialized || sensitiveData) {
@@ -100,7 +100,7 @@ class HybridStore<E extends object> implements DataAccess<E> {
 
         if (serializableProps.length > 0 && sensitiveProps.length > 0) {
             for (let i = 0; i < serializableProps.length; i = i + 1) {
-                if (sensitiveProps.indexOf(serializableProps[i]) !== -1) {
+                if (sensitiveProps.includes(serializableProps[i])) {
                     this.logger.debug(
                         `hybrid/write - [${String(
                             serializableProps[i]

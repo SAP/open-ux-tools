@@ -74,18 +74,20 @@ export const getInputTypeToggleOptions = (property: ControlProperty, t?: TFuncti
     const inputTypeToggleOptions: InputTypeToggleOptionProps[] = [];
     switch (editor) {
         case CHECKBOX_EDITOR_TYPE:
-            inputTypeToggleOptions.push({
-                inputType: InputType.booleanTrue,
-                tooltip: getToolTip('BOOLEAN_TYPE_TRUE', t),
-                iconName: IconName.boolTrue,
-                selected: typeof value === 'boolean' && value === true
-            });
-            inputTypeToggleOptions.push({
-                inputType: InputType.booleanFalse,
-                tooltip: getToolTip('BOOLEAN_TYPE_FALSE', t),
-                iconName: IconName.boolFalse,
-                selected: typeof value === 'boolean' && value === false
-            });
+            inputTypeToggleOptions.push(
+                {
+                    inputType: InputType.booleanTrue,
+                    tooltip: getToolTip('BOOLEAN_TYPE_TRUE', t),
+                    iconName: IconName.boolTrue,
+                    selected: typeof value === 'boolean' && value === true
+                },
+                {
+                    inputType: InputType.booleanFalse,
+                    tooltip: getToolTip('BOOLEAN_TYPE_FALSE', t),
+                    iconName: IconName.boolFalse,
+                    selected: typeof value === 'boolean' && value === false
+                }
+            );
             break;
         case DROPDOWN_EDITOR_TYPE:
             inputTypeToggleOptions.push({

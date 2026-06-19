@@ -276,7 +276,7 @@ export function convertPrimitiveValueToInternal(
         return text;
     } else if (type === Edm.EnumMember) {
         return getAliasedEnumMember(aliasInfo, text);
-    } else if (type.indexOf('Path') >= 0) {
+    } else if (type.includes('Path')) {
         return getAliasedPath(aliasInfo, text);
     } else if (type === Edm.Type || type === Edm.Term) {
         return toAliasQualifiedName(text, aliasInfo);
@@ -358,7 +358,7 @@ function getAliasedSegment(aliasInfo: AliasInformation, segment: string): string
     const [path, term] = segment.split('@');
     if (term) {
         return `${path}@${toAliasQualifiedName(term, aliasInfo)}`;
-    } else if (segment.indexOf('.') > -1) {
+    } else if (segment.includes('.')) {
         return toAliasQualifiedName(segment, aliasInfo);
     } else {
         return segment;

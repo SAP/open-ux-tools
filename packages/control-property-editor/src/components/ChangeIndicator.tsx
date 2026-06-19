@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { IconName } from '../../src/icons.js';
 
 interface ChangeIndicatorProps {
-    saved: number;
-    pending: number;
-    id?: string;
-    type: string;
+    readonly saved: number;
+    readonly pending: number;
+    readonly id?: string;
+    readonly type: string;
 }
 
 /**

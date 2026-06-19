@@ -27,8 +27,10 @@ export function getDatasourceTypeChoices({
         }
     ];
 
-    choices.push({ name: t('prompts.datasourceType.capProjectChoiceText'), value: DatasourceType.capProject });
-    choices.push({ name: t('prompts.datasourceType.metadataFileChoiceText'), value: DatasourceType.metadataFile });
+    choices.push(
+        { name: t('prompts.datasourceType.capProjectChoiceText'), value: DatasourceType.capProject },
+        { name: t('prompts.datasourceType.metadataFileChoiceText'), value: DatasourceType.metadataFile }
+    );
 
     if (includeNone) {
         choices.unshift({ name: t('prompts.datasourceType.choiceNone'), value: DatasourceType.none });

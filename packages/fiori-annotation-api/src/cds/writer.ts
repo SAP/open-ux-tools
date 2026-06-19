@@ -760,9 +760,7 @@ export class CDSWriter implements ChangeHandler {
             range.start.character++; // range includes '{' or '[' characters
             range.end.character--; // range includes '}' or ']' characters
 
-            fragments.push('\n');
-            fragments.push(newElements);
-            fragments.push(',');
+            fragments.push('\n', newElements, ',');
             const text = indent(deIndent(fragments.join('')), {
                 level: indentLevel + 1,
                 skipFirstLine: true
@@ -784,9 +782,7 @@ export class CDSWriter implements ChangeHandler {
                 this.edits.push(TextEdit.insert(anchor.commaPosition, ','));
             }
 
-            fragments.push('\n');
-            fragments.push(newElements);
-            fragments.push(',');
+            fragments.push('\n', newElements, ',');
             let finalText = fragments.join('');
             finalText = deIndent(finalText);
             const text = indent(finalText, {
@@ -885,7 +881,7 @@ function convertToCompoundAnnotation(
     }
 
     // All assignments are grouped to the same target, but we only need to replace the last one.
-    const startPosition = node.assignments[node.assignments.length - 1]?.range?.start ?? node.range?.start;
+    const startPosition = node.assignments.at(-1)?.range?.start ?? node.range?.start;
     const startToken = findLastTokenBeforePosition(ANNOTATION_START_PATTERN, tokens, startPosition);
     if (!startToken) {
         return [];
@@ -1211,7 +1207,7 @@ function deIndent(text: string): string {
 }
 
 function getInsertReferencePosition(references: Reference[]): { position: Position; prependNewLine: boolean } {
-    const range = references[references.length - 1]?.uriRange;
+    const range = references.at(-1)?.uriRange;
     if (!range) {
         return { position: Position.create(0, 0), prependNewLine: false };
     }
@@ -1399,10 +1395,10 @@ function makeCut(originalText: string, suffix: string | undefined, cutRange: Cut
         const indent = '    '.repeat(difference * -1);
         cut = cut.replaceAll('\n' + indent, '\n');
     }
-    if (suffix !== undefined) {
-        return cut + suffix;
-    } else {
+    if (suffix === undefined) {
         return cut;
+    } else {
+        return cut + suffix;
     }
 }
 
@@ -1428,26 +1424,25 @@ function getContainerContent(
     comments: Comment[],
     tokens: CompilerToken[]
 ): ContainerContentBlock[] {
-    if (!collection.range) {
-        return [];
+    if (collection.range) {
+        const collectionRange = collection.range;
+        const items = getItems(collection);
+        const commas = getCommas(collection, tokens);
+        const commentsInContent = comments
+            .filter((comment) => rangeContained(collectionRange, comment.range))
+            .filter((comment) => !items.some((item) => item.range && rangeContained(item.range, comment.range)));
+        const source = [...commas, ...items, ...commentsInContent].sort(compareByRange);
+        const content: ContainerContentBlock[] = [];
+        for (const node of source) {
+            processNode(content, node);
+        }
+        return content;
     }
-    const items = getItems(collection);
-    const commas = getCommas(collection, tokens);
-    const commentsInContent = (
-        collection.range !== undefined
-            ? comments.filter((comment) => rangeContained(collection.range!, comment.range))
-            : []
-    ).filter((comment) => !items.some((item) => item.range && rangeContained(item.range, comment.range)));
-    const source = [...commas, ...items, ...commentsInContent].sort(compareByRange);
-    const content: ContainerContentBlock[] = [];
-    for (const node of source) {
-        processNode(content, node);
-    }
-    return content;
+    return [];
 }
 
 function processNode(content: ContainerContentBlock[], item: Comment | AstNode): void {
-    const previousItem = content[content.length - 1];
+    const previousItem = content.at(-1);
 
     if (!item.range) {
         return;
@@ -1496,7 +1491,7 @@ function skipCommaInsertion(
             return false;
         }
         const astNodes = getAstNodesFromPointer(document, change.pointer);
-        const toBeDeletedNodes = astNodes[astNodes.length - 1];
+        const toBeDeletedNodes = astNodes.at(-1);
         const node = content[insertAfterIndex];
         if (node.type === 'element' && node?.element === toBeDeletedNodes) {
             if (toBeDeletedNodes.type === ANNOTATION_TYPE && content.length === 1) {

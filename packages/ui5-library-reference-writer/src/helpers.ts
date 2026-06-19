@@ -63,7 +63,7 @@ function getServeStaticPaths(reuseLibs: ReuseLibConfig[], projectPath: string): 
     reuseLibs.forEach((lib) => {
         const reuseLibRefs: ServeStaticPath[] = [
             {
-                path: `/resources/${lib.name.replace(/\./g, '/')}`,
+                path: `/resources/${lib.name.replaceAll('.', '/')}`,
                 src: relative(projectPath, lib.path),
                 fallthrough: false
             }
@@ -71,7 +71,7 @@ function getServeStaticPaths(reuseLibs: ReuseLibConfig[], projectPath: string): 
 
         if (lib.uri) {
             reuseLibRefs.push({
-                path: `${lib.uri.replace(/\/bsp\//g, '/ui5_ui5/')}`,
+                path: `${lib.uri.replaceAll('/bsp/', '/ui5_ui5/')}`,
                 src: relative(projectPath, lib.path),
                 fallthrough: false
             });

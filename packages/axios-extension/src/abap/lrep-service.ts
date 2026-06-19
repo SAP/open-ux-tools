@@ -207,7 +207,7 @@ type Layer = 'VENDOR' | 'CUSTOMER_BASE';
  * @returns serialized namespace
  */
 function getNamespaceAsString(namespace: Namespace): string {
-    return typeof namespace !== 'string' ? `apps/${namespace['reference']}/appVariants/${namespace['id']}/` : namespace;
+    return typeof namespace === 'string' ? namespace : `apps/${namespace['reference']}/appVariants/${namespace['id']}/`;
 }
 
 /**

@@ -75,10 +75,10 @@ async function changeDataSource(basePath: string, simulate: boolean, yamlPath: s
             service: answers
         });
 
-        if (!simulate) {
-            await new Promise((resolve) => fs.commit(resolve));
-        } else {
+        if (simulate) {
             await traceChanges(fs);
+        } else {
+            await new Promise((resolve) => fs.commit(resolve));
         }
     } catch (error) {
         logger.error(error.message);

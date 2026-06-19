@@ -3,7 +3,7 @@ import Generator from 'yeoman-generator';
 import FlpGenLogger from '../utils/logger.js';
 import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import { handleErrorMessage, getExtensionGenPromptOpts } from '@sap-ux/deploy-config-generator-shared';
-import { getPrompts, promptNames } from '@sap-ux/flp-config-inquirer';
+import { getPrompts } from '@sap-ux/flp-config-inquirer';
 import { generateInboundNavigationConfig } from '@sap-ux/app-config-writer';
 import { FileName, getWebappPath, getI18nPropertiesPaths } from '@sap-ux/project-access';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
@@ -32,7 +32,7 @@ const flpConfigSubGenNamespace = '@sap-ux/flp-config-sub-generator';
 /**
  * FLP config generator adds an inbound navigation config to an existing manifest.json.
  */
-export default class extends Generator {
+export default class FlpConfigGenerator extends Generator {
     private readonly appWizard: AppWizard;
     private readonly vscode?: VSCodeInstance;
     private readonly launchFlpConfigAsSubGenerator: boolean;
@@ -290,5 +290,5 @@ export default class extends Generator {
     }
 }
 
-export { promptNames };
+export { promptNames } from '@sap-ux/flp-config-inquirer';
 export type { FlpConfigOptions, FLPConfigPromptOptions };

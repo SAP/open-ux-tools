@@ -151,14 +151,14 @@ export function validateNamespaceAdp(
         return validationResult;
     }
 
-    if (!isCustomerBase) {
-        if (namespace !== projectName) {
-            return t('adp.differentNamespaceThanProjectName');
+    if (isCustomerBase) {
+        if (namespace.toLowerCase().startsWith('customer.')) {
+            namespace = namespace.slice('customer.'.length, namespace.length);
+        } else {
+            return t('adp.namespaceSameAsProjectNameError');
         }
-    } else if (namespace.toLowerCase().startsWith('customer.') !== true) {
-        return t('adp.namespaceSameAsProjectNameError');
-    } else {
-        namespace = namespace.slice('customer.'.length, namespace.length);
+    } else if (namespace !== projectName) {
+        return t('adp.differentNamespaceThanProjectName');
     }
 
     if (namespace.length > 61 || namespace.toLowerCase().endsWith('component') === true) {

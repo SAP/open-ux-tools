@@ -10,7 +10,7 @@ export class ApiHubSettings {
 }
 
 export class ApiHubSettingsKey implements EntityKey {
-    static SINGLETON: string = 'API_HUB_API_KEY';
+    static readonly SINGLETON: string = 'API_HUB_API_KEY';
 
     public getId(): string {
         return ApiHubSettingsKey.SINGLETON;

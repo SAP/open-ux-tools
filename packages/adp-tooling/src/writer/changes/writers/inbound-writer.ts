@@ -87,16 +87,16 @@ export class InboundWriter implements IWriter<InboundData> {
         );
         const timestamp = Date.now();
 
-        if (!changeWithInboundId) {
-            const content = this.constructContent(data);
-            const change = getChange(data.variant, timestamp, content, ChangeType.CHANGE_INBOUND);
-
-            await writeChangeToFolder(this.projectPath, change, this.fs);
-        } else {
+        if (changeWithInboundId) {
             if (changeWithInboundId.content) {
                 this.getEnhancedContent(data, changeWithInboundId.content);
             }
             writeChangeToFile(filePath, changeWithInboundId, this.fs);
+        } else {
+            const content = this.constructContent(data);
+            const change = getChange(data.variant, timestamp, content, ChangeType.CHANGE_INBOUND);
+
+            await writeChangeToFolder(this.projectPath, change, this.fs);
         }
     }
 }

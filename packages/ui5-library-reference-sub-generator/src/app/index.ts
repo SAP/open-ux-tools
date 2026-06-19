@@ -26,7 +26,7 @@ import type { InquirerAdapter, UI5LibraryReferenceAnswers } from '@sap-ux/ui5-li
  *
  * @extends Generator
  */
-export default class extends Generator implements UI5ReferenceLibGenerator {
+export default class UI5LibraryReferenceGenerator extends Generator implements UI5ReferenceLibGenerator {
     answers: UI5LibraryReferenceAnswers = {};
     prompts: Prompts;
     appWizard: AppWizard;

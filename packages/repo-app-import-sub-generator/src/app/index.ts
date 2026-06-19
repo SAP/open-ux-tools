@@ -29,7 +29,7 @@ import type {
     QfaJsonConfig,
     AppDownloadContext
 } from './types.js';
-import { AppDownloadType, PromptNames } from './types.js';
+import { AppDownloadType } from './types.js';
 import { getPrompts } from '../prompts/prompts.js';
 import { generate, TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
 import { join, basename } from 'node:path';
@@ -314,7 +314,9 @@ export default class extends Generator {
      * Installs npm dependencies for the project.
      */
     public async install(): Promise<void> {
-        if (!this.options.skipInstall) {
+        if (this.options.skipInstall) {
+            RepoAppDownloadLogger.logger?.info(t('info.installationErrors.skippedInstallation'));
+        } else {
             try {
                 RepoAppDownloadLogger.logger?.debug('Running npm install...');
                 await this._runNpmInstall(this.projectPath);
@@ -322,8 +324,6 @@ export default class extends Generator {
             } catch (error) {
                 RepoAppDownloadLogger.logger?.error(t('error.installationErrors.npmInstall', { error }));
             }
-        } else {
-            RepoAppDownloadLogger.logger?.info(t('info.installationErrors.skippedInstallation'));
         }
     }
 
@@ -414,5 +414,5 @@ export default class extends Generator {
     }
 }
 
-export { PromptNames };
+export { PromptNames } from './types.js';
 export type { RepoAppDownloadOptions };

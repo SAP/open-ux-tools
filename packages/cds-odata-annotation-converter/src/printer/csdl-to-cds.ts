@@ -62,7 +62,7 @@ export const resolveTarget = (
     let isBoundActionFunction = false;
     const segments = targetPath.split('/');
     const actionSegmentIndex = checkParenthesis(segments);
-    if (actionSegmentIndex >= 0 && segments[actionSegmentIndex].indexOf('()') < 0) {
+    if (actionSegmentIndex >= 0 && !segments[actionSegmentIndex].includes('()')) {
         isBoundActionFunction = true;
     }
     rootElementName = segments[0];
@@ -163,7 +163,7 @@ export const printTarget = (target: Target, complexTypePathSegments?: string[]):
     const options: FormatterOptions = { ...defaultPrintOptions, useSnippetSyntax: false };
 
     const terms = [...target.terms.flatMap((term) => internalPrint(term, options))];
-    if (terms.length > 1 && !terms[terms.length - 1].endsWith(',')) {
+    if (terms.length > 1 && !terms.at(-1)?.endsWith(',')) {
         // make sure there is trailing comma
         terms[terms.length - 1] += ',';
     }
@@ -464,7 +464,7 @@ const printRecord = (element: Element, context: Element[], options: FormatterOpt
 };
 
 const printPathValue = (path: string): string => {
-    if (path.indexOf('@') >= 0) {
+    if (path.includes('@')) {
         // if @ contained: use special syntax
         return delimitedIdentifier(path);
     } else {

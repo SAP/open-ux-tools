@@ -377,24 +377,24 @@ export class VocabularyService {
         const namespace = this.getVocabularyNamespace(termName);
         if (!term && !this.supportedVocabularies.has(namespace as VocabularyNamespace)) {
             return TermApplicability.UnSupportedVocabulary;
-        } else if (!term) {
-            return TermApplicability.UnknownTerm;
-        } else {
-            let applicable = this.byTarget.get('')?.has(termName);
-            for (let i = 0; i < targetKinds.length && !applicable; i++) {
-                applicable = this.byTarget.get(targetKinds[i])?.has(termName);
-            }
-            if (!applicable) {
-                return TermApplicability.TermNotApplicable;
-            } else if (targetType && term.constraints?.requiresType) {
-                const requiredType = term.constraints.requiresType;
-                return this.isOfType(requiredType, targetType)
-                    ? TermApplicability.Applicable
-                    : TermApplicability.TypeNotApplicable;
-            } else {
-                return TermApplicability.Applicable;
-            }
         }
+        if (!term) {
+            return TermApplicability.UnknownTerm;
+        }
+        let applicable = this.byTarget.get('')?.has(termName);
+        for (let i = 0; i < targetKinds.length && !applicable; i++) {
+            applicable = this.byTarget.get(targetKinds[i])?.has(termName);
+        }
+        if (!applicable) {
+            return TermApplicability.TermNotApplicable;
+        }
+        if (targetType && term.constraints?.requiresType) {
+            const requiredType = term.constraints.requiresType;
+            return this.isOfType(requiredType, targetType)
+                ? TermApplicability.Applicable
+                : TermApplicability.TypeNotApplicable;
+        }
+        return TermApplicability.Applicable;
     }
 
     /**
@@ -467,24 +467,24 @@ export class VocabularyService {
         }`;
         const languageDependentDesc = this.getTerm('Org.OData.Core.V1.IsLanguageDependent')?.description ?? '';
 
-        values.push(...this.checkExperimentalElement(element, experimentalDescription));
-        values.push(...this.checkDeprecatedElement(element));
-        values.push(...this.getElementKindIsProperty(element));
-        values.push(...this.getElementDescription(element));
-        values.push(...this.getElementLongDescription(element));
+        values.push(
+            ...this.checkExperimentalElement(element, experimentalDescription),
+            ...this.checkDeprecatedElement(element),
+            ...this.getElementKindIsProperty(element),
+            ...this.getElementDescription(element),
+            ...this.getElementLongDescription(element)
+        );
 
         if (element.kind === TERM_KIND && element.baseTerm) {
             values.push(`**Base Term:** ${element.baseTerm} \n`);
         }
-        values.push(...this.getElementAppliesToValue(element));
-
-        values.push(...this.getElementKindIsMemberAndTerm(element, elementType, aliasInfo));
-
-        values.push(...this.getElementTypeDescription(element, elementType, experimentalDescription, aliasInfo));
-
-        values.push(...this.getElementIsLanguageDependent(element, languageDependentDesc));
-
-        values.push(...this.getElementDefaultValue(element));
+        values.push(
+            ...this.getElementAppliesToValue(element),
+            ...this.getElementKindIsMemberAndTerm(element, elementType, aliasInfo),
+            ...this.getElementTypeDescription(element, elementType, experimentalDescription, aliasInfo),
+            ...this.getElementIsLanguageDependent(element, languageDependentDesc),
+            ...this.getElementDefaultValue(element)
+        );
 
         if (element.kind !== 'Member' && element.kind !== 'EnumType') {
             values.push(this.getFormattedNullableText(element));
@@ -788,7 +788,7 @@ export class VocabularyService {
      */
     getType(typeName: FullyQualifiedName): VocabularyType | undefined {
         const vocabularyObject = this.dictionary.get(typeName);
-        return vocabularyObject?.kind !== TERM_KIND ? vocabularyObject : undefined;
+        return vocabularyObject?.kind === TERM_KIND ? undefined : vocabularyObject;
     }
 
     /**

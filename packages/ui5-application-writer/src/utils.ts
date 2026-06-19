@@ -92,7 +92,7 @@ export function copyTemplates(options: {
         undefined,
         {
             globOptions: { dot: true, ignore },
-            processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
+            processDestinationPath: (filePath: string) => filePath.replaceAll('gitignore.tmpl', '.gitignore')
         }
     );
 }

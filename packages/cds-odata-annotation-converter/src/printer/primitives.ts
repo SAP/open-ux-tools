@@ -49,7 +49,7 @@ export const struct = (properties: ContainerItemType[]): string => container('{'
 export const collection = (items: ContainerItemType[]): string => container('[', ']', items);
 
 export const stringLiteral = (value: string): string =>
-    value.indexOf('\n') !== -1 ? `\`\`\`${value}\`\`\`` : `'${value}'`;
+    value.indexOf('\n') === -1 ? `'${value}'` : `\`\`\`${value}\`\`\``;
 export const delimitedIdentifier = (value: string): string => `![${value}]`;
 export const valuePair = (key: string, value: string): string => `${key} : ${value}`;
 export const keyAlone = (key: string): string => `${key}`;

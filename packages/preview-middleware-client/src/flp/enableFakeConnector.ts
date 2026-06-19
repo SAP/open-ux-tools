@@ -102,7 +102,7 @@ export async function loadChanges(...args: []): Promise<LoadChangesResult> {
  *
  * @returns {void}
  */
-export default function (): void {
+export default function enableFakeConnector(): void {
     // eslint-disable-next-line no-undef
     jQuery.extend(FakeLrepConnector.prototype, {
         create,

@@ -10,12 +10,12 @@ import { convertCamelCaseToPascalCase, deletePropertyChanges } from '@sap-ux-pri
 import { getFormattedDateAndTime } from './utils.js';
 
 export interface UnknownChangeProps {
-    fileName: string;
-    title?: string;
-    timestamp?: number;
-    controlId?: string;
-    isActive: boolean;
-    header?: boolean;
+    readonly fileName: string;
+    readonly title?: string;
+    readonly timestamp?: number;
+    readonly controlId?: string;
+    readonly isActive: boolean;
+    readonly header?: boolean;
 }
 
 /**
@@ -42,7 +42,7 @@ export function UnknownChange(unknownChangeProps: UnknownChangeProps): ReactElem
     }
 
     const parts = fileName.split('_');
-    const changeName = parts[parts.length - 1];
+    const changeName = parts.at(-1) ?? '';
     const name = convertCamelCaseToPascalCase(changeName);
     const headerText = title ?? `${name} ${t('CHANGE')}`;
     return (

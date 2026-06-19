@@ -176,18 +176,18 @@ export class ChangeConverter {
         if (targetIndex === -1 || targetIndex === undefined) {
             // no existing target found, we need to create one
             const changesForUri = this.newTargetChanges.get(change.uri);
-            if (!changesForUri) {
-                this.newTargetChanges.set(
-                    change.uri,
-                    new Map<string, InsertAnnotationChange[]>([[targetName, [change]]])
-                );
-            } else {
+            if (changesForUri) {
                 const changesForTarget = changesForUri.get(targetName);
                 if (changesForTarget) {
                     changesForTarget.push(change);
                 } else {
                     changesForUri.set(targetName, [change]);
                 }
+            } else {
+                this.newTargetChanges.set(
+                    change.uri,
+                    new Map<string, InsertAnnotationChange[]>([[targetName, [change]]])
+                );
             }
         } else {
             // add annotation to existing target
@@ -653,18 +653,20 @@ export class ChangeConverter {
             };
             this.annotationFileChanges.push(internalChange);
         } else if (content.value.type === Edm.Null) {
-            this.annotationFileChanges.push({
-                type: DELETE_ATTRIBUTE,
-                uri: fileUri,
-                pointer: pointer
-            });
-            this.annotationFileChanges.push({
-                type: INSERT_ELEMENT,
-                uri: fileUri,
-                target: targetName,
-                pointer: pointer.split('/').slice(0, -2).join('/'),
-                element: createElementNode({ name: Edm.Null })
-            });
+            this.annotationFileChanges.push(
+                {
+                    type: DELETE_ATTRIBUTE,
+                    uri: fileUri,
+                    pointer: pointer
+                },
+                {
+                    type: INSERT_ELEMENT,
+                    uri: fileUri,
+                    target: targetName,
+                    pointer: pointer.split('/').slice(0, -2).join('/'),
+                    element: createElementNode({ name: Edm.Null })
+                }
+            );
         } else {
             // attribute notation
             const internalChange: ReplaceAttribute = {

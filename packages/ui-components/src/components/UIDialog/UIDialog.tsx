@@ -316,7 +316,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
                 },
                 styles: {
                     button: {
-                        display: !closeButtonVisible ? 'none' : undefined
+                        display: closeButtonVisible ? undefined : 'none'
                     },
                     inner: {
                         padding: '0',

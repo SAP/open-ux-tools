@@ -20,10 +20,10 @@ import { TargetType } from '../types/index.js';
  * @returns boolean or error message
  */
 const validator = (value: string, error: string): boolean | string => {
-    if (!value?.trim()) {
-        return t(error);
-    } else {
+    if (value?.trim()) {
         return true;
+    } else {
+        return t(error);
     }
 };
 
@@ -45,26 +45,28 @@ const addAppStudioQuestions = (questions: PromptObject[], target?: DeployTarget)
         });
     }
     // Offer destination or url configuration
-    questions.push({
-        name: 'select',
-        type: (prev) => (!prev ? 'select' : null),
-        message: t('questions.target', { type: '', file: '' }),
-        choices: [
-            { title: t('questions.enter', { type: TargetType.destination }), value: TargetType.destination },
-            { title: t('questions.enter', { type: TargetType.url }), value: TargetType.url }
-        ]
-    });
-    // destination
-    questions.push({
-        type: (prev) => (prev === TargetType.destination ? 'text' : null),
-        name: TargetType.destination,
-        initial: target?.destination,
-        message: t('questions.target', {
-            type: TargetType.destination,
-            file: target?.destination ? `(${FileName.UI5DeployYaml})` : ''
-        }),
-        validate: (value: string) => validator(value, 'error.target')
-    });
+    questions.push(
+        {
+            name: 'select',
+            type: (prev) => (prev ? null : 'select'),
+            message: t('questions.target', { type: '', file: '' }),
+            choices: [
+                { title: t('questions.enter', { type: TargetType.destination }), value: TargetType.destination },
+                { title: t('questions.enter', { type: TargetType.url }), value: TargetType.url }
+            ]
+        },
+        // destination
+        {
+            type: (prev) => (prev === TargetType.destination ? 'text' : null),
+            name: TargetType.destination,
+            initial: target?.destination,
+            message: t('questions.target', {
+                type: TargetType.destination,
+                file: target?.destination ? `(${FileName.UI5DeployYaml})` : ''
+            }),
+            validate: (value: string) => validator(value, 'error.target')
+        }
+    );
 };
 
 /**
@@ -136,10 +138,10 @@ export async function promptUserPass(log?: ToolsLogger): Promise<AxiosBasicCrede
                 name: 'username',
                 message: `${chalk.cyan(t('info.username'))}`,
                 validate: (value: string): boolean | string => {
-                    if (!value?.trim()) {
-                        return `${t('error.emptyUsername')}`;
-                    } else {
+                    if (value?.trim()) {
                         return true;
+                    } else {
+                        return `${t('error.emptyUsername')}`;
                     }
                 }
             },
@@ -148,10 +150,10 @@ export async function promptUserPass(log?: ToolsLogger): Promise<AxiosBasicCrede
                 name: 'password',
                 message: `${chalk.cyan(t('info.password'))}`,
                 validate: (value: string): boolean | string => {
-                    if (!value?.trim()) {
-                        return `${t('error.emptyPassword')}`;
-                    } else {
+                    if (value?.trim()) {
                         return true;
+                    } else {
+                        return `${t('error.emptyPassword')}`;
                     }
                 }
             }

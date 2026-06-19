@@ -16,7 +16,7 @@ type UILoadButtonProps = ButtonProps & UILoadButtonBusyProps;
  * Component to render load button with spin indicator.
  */
 export class UILoadButton extends React.Component<UILoadButtonProps, UILoadButtonState> {
-    private minLoaderTimer: number | undefined = undefined;
+    private minLoaderTimer: ReturnType<typeof setTimeout> | undefined = undefined;
     /**
      * Constructor method for load button.
      *
@@ -44,7 +44,7 @@ export class UILoadButton extends React.Component<UILoadButtonProps, UILoadButto
 
     componentWillUnmount(): void {
         if (this.minLoaderTimer) {
-            window.clearTimeout(this.minLoaderTimer);
+            globalThis.clearTimeout(this.minLoaderTimer);
         }
     }
 
@@ -79,9 +79,9 @@ export class UILoadButton extends React.Component<UILoadButtonProps, UILoadButto
                 newState = {
                     busy: true
                 };
-                window.clearTimeout(this.minLoaderTimer);
+                globalThis.clearTimeout(this.minLoaderTimer);
                 if (props.useMinWaitingTime) {
-                    this.minLoaderTimer = window.setTimeout(
+                    this.minLoaderTimer = globalThis.setTimeout(
                         this.handleMinWaitingTime.bind(this),
                         this.getMinimalWaitingTime()
                     );

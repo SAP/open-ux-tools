@@ -143,7 +143,7 @@ interface ComboBoxRef extends IComboBox {
  */
 export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState> {
     // Default values for public component properties
-    static defaultProps = { openMenuOnClick: true };
+    static readonly defaultProps = { openMenuOnClick: true };
     // Reference to fluent ui combobox
     private readonly comboBox = React.createRef<ComboBoxRef>();
     private readonly comboboxDomRef = React.createRef<HTMLDivElement>();
@@ -299,7 +299,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             const input = event.target;
             const selectionEnd = input.selectionEnd;
             if (selectionEnd !== input.value.length) {
-                window.requestAnimationFrame(() => {
+                globalThis.requestAnimationFrame(() => {
                     input.selectionStart = selectionEnd;
                     input.selectionEnd = selectionEnd;
                 });
@@ -412,14 +412,14 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                 props.title = props.text;
             }
             const selected = props.index !== undefined && this.getCurrentSelectedIndex() === props.index;
-            return !props.hidden ? (
+            return props.hidden ? null : (
                 <div
                     key={props.key}
                     ref={selected ? this.selectedElement : undefined}
                     className={`${selected ? 'ts-ComboBox--selected' : ''}`}>
                     {defaultRender(props)}
                 </div>
-            ) : null;
+            );
         }
         return null;
     };

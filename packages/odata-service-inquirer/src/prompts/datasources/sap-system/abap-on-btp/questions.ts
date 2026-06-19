@@ -59,24 +59,23 @@ export function getAbapOnBTPSystemQuestions(
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
     const questions: Question<AbapOnBtpAnswers & ServiceAnswer>[] = [];
-    questions.push({
-        type: 'list',
-        name: abapOnBtpPromptNames.abapOnBtpAuthType,
-        choices: [
-            { name: t('prompts.abapOnBTPType.choiceCloudFoundry'), value: 'cloudFoundry' as AbapOnBTPType },
-            { name: t('prompts.abapOnBTPType.choiceReentranceTicket'), value: 'reentranceTicket' as AbapOnBTPType }
-        ],
-        message: t('prompts.abapOnBTPType.message'),
-        // Only runs on YUI, but we only need to reset on YUI as the user cannot change previous values on the Yo CLI
-        validate: () => {
-            connectValidator.resetConnectionState(true);
-            PromptState.resetConnectedSystem();
-            return true;
-        }
-    } as ListQuestion);
-
-    // Re-entrance ticket system prompt
     questions.push(
+        {
+            type: 'list',
+            name: abapOnBtpPromptNames.abapOnBtpAuthType,
+            choices: [
+                { name: t('prompts.abapOnBTPType.choiceCloudFoundry'), value: 'cloudFoundry' as AbapOnBTPType },
+                { name: t('prompts.abapOnBTPType.choiceReentranceTicket'), value: 'reentranceTicket' as AbapOnBTPType }
+            ],
+            message: t('prompts.abapOnBTPType.message'),
+            // Only runs on YUI, but we only need to reset on YUI as the user cannot change previous values on the Yo CLI
+            validate: () => {
+                connectValidator.resetConnectionState(true);
+                PromptState.resetConnectedSystem();
+                return true;
+            }
+        } as ListQuestion,
+        // Re-entrance ticket system prompt
         withCondition(
             [
                 getSystemUrlQuestion<AbapOnBtpAnswers>(

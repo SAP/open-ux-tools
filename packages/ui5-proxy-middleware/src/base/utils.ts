@@ -133,9 +133,9 @@ export function updateProxyEnv(proxyFromConfig?: string): void {
  */
 export const getHtmlFile = (url: string): string => {
     let html = url;
-    if (html.indexOf('?') !== -1) {
+    if (html.includes('?')) {
         html = html.split('?')[0].replace(/["']/g, '');
-    } else if (html.indexOf('#') !== -1) {
+    } else if (html.includes('#')) {
         html = html.split('#')[0].replace(/["']/g, '');
     } else {
         html = html.replace(/["']/g, '');
@@ -152,7 +152,7 @@ export const getHtmlFile = (url: string): string => {
  */
 export const getYamlFile = (args: string[]): string => {
     let yaml = 'ui5.yaml';
-    const index = args.indexOf('--config') !== -1 ? args.indexOf('--config') : args.indexOf('-c');
+    const index = args.includes('--config') ? args.indexOf('--config') : args.indexOf('-c');
 
     if (index !== -1) {
         yaml = args[index + 1];
@@ -197,12 +197,12 @@ export async function resolveUI5Version(version?: string, log?: ToolsLogger, man
     if (process.env.FIORI_TOOLS_UI5_VERSION || process.env.FIORI_TOOLS_UI5_VERSION === '') {
         ui5Version = process.env.FIORI_TOOLS_UI5_VERSION;
         ui5VersionLocation = 'CLI arguments / Run configuration';
-    } else if (version !== undefined) {
-        ui5Version = version ? version : '';
-        ui5VersionLocation = getYamlFile(process.argv);
-    } else {
+    } else if (version === undefined) {
         ui5Version = (manifest && getMinimumUI5Version(manifest)) || '';
         ui5VersionLocation = 'manifest.json';
+    } else {
+        ui5Version = version ? version : '';
+        ui5VersionLocation = getYamlFile(process.argv);
     }
 
     if (log) {

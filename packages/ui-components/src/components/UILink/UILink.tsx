@@ -47,8 +47,9 @@ export class UILink extends React.Component<UILinkProps, {}> {
                 root: {
                     color: styles.color,
                     textDecoration: underline === false ? undefined : 'underline',
-                    selectors: !disabled
-                        ? {
+                    selectors: disabled
+                        ? undefined
+                        : {
                               '&:hover, &:hover:focus, &:hover:active': {
                                   color: styles.hoverColor,
                                   textDecoration: underline === false ? 'underline' : 'none'
@@ -64,8 +65,7 @@ export class UILink extends React.Component<UILinkProps, {}> {
                                   outline: '1px solid var(--vscode-focusBorder)',
                                   outlineOffset: '-1px'
                               }
-                          }
-                        : undefined,
+                          },
                     opacity: disabled ? 0.4 : undefined
                 }
             };

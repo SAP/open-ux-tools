@@ -19,7 +19,7 @@ const require = createRequire(import.meta.url);
  */
 export async function getModulePath(projectRoot: string, moduleName: string): Promise<string> {
     if (!getNodeModulesPath(projectRoot, moduleName)) {
-        throw Error('Path to module not found.');
+        throw new Error('Path to module not found.');
     }
     return require.resolve(moduleName, { paths: [projectRoot] });
 }
@@ -43,7 +43,7 @@ export async function loadModuleFromProject<T>(projectRoot: string, moduleName: 
         const modulePath = await getModulePath(projectRoot, moduleName);
         module = (await import(pathToFileURL(modulePath).href)) as T;
     } catch (error) {
-        throw Error(`Module '${moduleName}' not installed in project '${projectRoot}'.\n${error.toString()}`);
+        throw new Error(`Module '${moduleName}' not installed in project '${projectRoot}'.\n${error.toString()}`);
     }
     return module;
 }

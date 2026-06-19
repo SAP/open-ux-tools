@@ -82,10 +82,10 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
 
         let variant: Variant;
 
-        if (!isAdp) {
-            variant = { isAdp: false, content: undefined };
-        } else {
+        if (isAdp) {
             variant = { isAdp: true, content: await getVariant(basePath, fs) };
+        } else {
+            variant = { isAdp: false, content: undefined };
         }
 
         const inbounds = await getInbounds(basePath, yamlPath, fs, logger, variant);
@@ -112,10 +112,10 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
             inbounds
         );
 
-        if (!simulate) {
-            fs.commit(() => logger.info(`Inbound navigation configuration complete.`));
-        } else {
+        if (simulate) {
             await traceChanges(fs);
+        } else {
+            fs.commit(() => logger.info(`Inbound navigation configuration complete.`));
         }
     } catch (error) {
         logger.error(`Error while executing add inbound navigation configuration '${(error as Error).message}'`);
@@ -205,14 +205,14 @@ async function getUserAnswers(
 ): Promise<FLPConfigAnswers | undefined> {
     let promptOptions: FLPConfigPromptOptions;
 
-    if (!isAdp) {
+    if (isAdp) {
+        promptOptions = getAdpFlpConfigPromptOptions(tileSettingsAnswers as TileSettingsAnswers, inbounds);
+    } else {
         promptOptions = {
             inboundId: { hide: true },
             additionalParameters: { hide: true },
             confirmReplace: { hide: true }
         };
-    } else {
-        promptOptions = getAdpFlpConfigPromptOptions(tileSettingsAnswers as TileSettingsAnswers, inbounds);
     }
 
     const prompts = await filterLabelTypeQuestions<FLPConfigAnswers>(await getPrompts(inbounds, promptOptions));

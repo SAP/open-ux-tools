@@ -296,7 +296,7 @@ function getV2ConfigurationChange(
     const { entityPropertyChange, parentPage } = change.content;
     const propertyPathSegments = entityPropertyChange.propertyPath.split('/');
     const propertyName =
-        Object.keys(entityPropertyChange.propertyValue)?.[0] ?? propertyPathSegments[propertyPathSegments.length - 1];
+        Object.keys(entityPropertyChange.propertyValue)?.[0] ?? propertyPathSegments.at(-1);
     const propertyValue = entityPropertyChange.propertyValue?.[propertyName] ?? entityPropertyChange.propertyValue;
 
     return {

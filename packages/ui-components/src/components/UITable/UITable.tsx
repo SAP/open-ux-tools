@@ -113,7 +113,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         this.onDocMousedown = this.onDocumentMousedown;
         document.addEventListener('mousedown', this.onDocMousedown, true);
 
-        window.dispatchEvent(new Event('resize'));
+        globalThis.dispatchEvent(new Event('resize'));
         this._setTextRefs();
     }
 

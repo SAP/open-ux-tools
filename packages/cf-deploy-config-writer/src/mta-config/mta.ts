@@ -376,10 +376,10 @@ export class MtaConfig {
         const serverModule = this.modules.get(moduleType);
         if (serverModule) {
             if (appendSrvApi && !serverModule.provides?.some((ele) => ele.name === SRV_API)) {
-                serverModule.provides = [...(serverModule.provides ?? []), ...[ServiceAPIRequires]];
+                serverModule.provides = [...(serverModule.provides ?? []), ServiceAPIRequires];
             }
             if (mtaResource && !serverModule.requires?.some((ele) => ele.name === mtaResource.name)) {
-                serverModule.requires = [...(serverModule.requires ?? []), ...[{ name: mtaResource.name }]];
+                serverModule.requires = [...(serverModule.requires ?? []), { name: mtaResource.name }];
             }
             await this.mta?.updateModule(serverModule);
             this.modules.set(moduleType, serverModule);
@@ -584,16 +584,16 @@ export class MtaConfig {
                 contentModule[MTABuildParams].requires?.findIndex(
                     (app: mta.Requires & { artifacts?: { [key: string]: any } }) =>
                         app.artifacts?.includes?.(artifactName)
-                ) !== -1
+                ) === -1
             ) {
-                this.log?.debug(t('debug.html5AlreadyExists', { appName }));
-                isHTML5AlreadyExisting = true;
-            } else {
                 contentModule[MTABuildParams].requires.push({
                     name: appName.slice(0, MAX_MTA_ID_LENGTH),
                     artifacts: [artifactName],
                     'target-path': `${contentModule[MTABuildParams][MTABuildResult]}/`.replace(/\/{2,}/g, '/') // Matches two or more consecutive slashes where at least 2 repetitions of /
                 });
+            } else {
+                this.log?.debug(t('debug.html5AlreadyExists', { appName }));
+                isHTML5AlreadyExisting = true;
             }
             await this.mta?.updateModule(contentModule);
             this.dirty = true;
@@ -900,21 +900,7 @@ export class MtaConfig {
             this.log?.info(t('info.existingMTAExtensionNotFound', { error: err.message }));
         }
 
-        // Create a new mta extension file
-        if (!mtaExtensionYamlFile) {
-            const mtaExt = {
-                appMtaId,
-                mtaExtensionId: `${appMtaId}-ext`,
-                destinationName: instanceDestName,
-                destinationUrl: destUrl,
-                headerKey: headerConfig.key,
-                headerValue: headerConfig.value,
-                destinationServiceName: destinationServiceName,
-                mtaVersion: '1.0.0'
-            };
-            renderTemplateToDisk(`app/${FileName.MtaExtYaml}`, mtaExtFilePath, mtaExt);
-            this.log?.info(t('info.mtaExtensionCreated', { appMtaId, mtaExtFile: FileName.MtaExtYaml }));
-        } else {
+        if (mtaExtensionYamlFile) {
             // Create an entry in an existing mta extension file
             const resources: YAMLSeq = mtaExtensionYamlFile.getSequence({ path: 'resources' });
             const resIdx = resources.items.findIndex((item) => {
@@ -938,6 +924,20 @@ export class MtaConfig {
             } else {
                 this.log?.error(t('error.updatingMTAExtensionFailed', { mtaExtFilePath }));
             }
+        } else {
+            // Create a new mta extension file
+            const mtaExt = {
+                appMtaId,
+                mtaExtensionId: `${appMtaId}-ext`,
+                destinationName: instanceDestName,
+                destinationUrl: destUrl,
+                headerKey: headerConfig.key,
+                headerValue: headerConfig.value,
+                destinationServiceName: destinationServiceName,
+                mtaVersion: '1.0.0'
+            };
+            renderTemplateToDisk(`app/${FileName.MtaExtYaml}`, mtaExtFilePath, mtaExt);
+            this.log?.info(t('info.mtaExtensionCreated', { appMtaId, mtaExtFile: FileName.MtaExtYaml }));
         }
     }
 
@@ -997,11 +997,9 @@ export class MtaConfig {
             if (!destinationResource.requires?.some((ele) => ele.name === SRV_API)) {
                 destinationResource.requires = [
                     ...(destinationResource.requires ?? []),
-                    ...[
-                        {
-                            name: SRV_API
-                        }
-                    ]
+                    {
+                        name: SRV_API
+                    }
                 ];
             }
             // Part 2. Only append the default destination if it does not exist already
@@ -1261,7 +1259,8 @@ export class MtaConfig {
      */
     public async addMtaDeployParameters(): Promise<void> {
         let params = await this.getParameters();
-        params = { ...(params ?? {}), ...{} } as mta.Parameters;
+        params ??= {} as mta.Parameters;
+        params = { ...params } as mta.Parameters;
         params[deployMode] = 'html5-repo';
         params[enableParallelDeployments] = true;
         await this.updateParameters(params);

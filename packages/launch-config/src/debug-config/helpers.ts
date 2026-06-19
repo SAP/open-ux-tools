@@ -74,7 +74,7 @@ export function handleAppsNotInWorkspace(projectPath: string, isAppStudio: boole
     return {
         cwd: formatCwd(),
         launchJsonPath,
-        workspaceFolderUri: !isAppStudio ? vscode.Uri?.file(launchJsonPath) : undefined,
+        workspaceFolderUri: isAppStudio ? undefined : vscode.Uri?.file(launchJsonPath),
         appNotInWorkspace: true
     };
 }

@@ -10,7 +10,7 @@ import { XMLParser, XMLValidator } from 'fast-xml-parser';
  */
 export class AdtCatalogService extends Axios {
     // Discovery service url provided by ADT team
-    public static ADT_DISCOVERY_SERVICE_PATH = '/sap/bc/adt/discovery';
+    public static readonly ADT_DISCOVERY_SERVICE_PATH = '/sap/bc/adt/discovery';
     // Cache of fetched discovery schema
     protected schemaStore = new AdtSchemaStore();
     // Instantiated by calling ServiceProvider.createService()
@@ -44,14 +44,16 @@ export class AdtCatalogService extends Axios {
      * @returns boolean boolean result of schema validity
      */
     private validateServiceSchema(adtCategory: AdtCategory, serviceSchema: AdtCollection): boolean {
-        if (!serviceSchema) {
+        if (serviceSchema) {
+            if (serviceSchema.href) {
+                return true;
+            } else {
+                this.log.warn(`Empty href in schema: ${adtCategory.term} - ${adtCategory.scheme}`);
+                return false;
+            }
+        } else {
             this.log.warn(`Schema Not Found: ${adtCategory.term} - ${adtCategory.scheme}`);
             return false;
-        } else if (!serviceSchema.href) {
-            this.log.warn(`Empty href in schema: ${adtCategory.term} - ${adtCategory.scheme}`);
-            return false;
-        } else {
-            return true;
         }
     }
 

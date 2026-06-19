@@ -188,7 +188,7 @@ export function getFioriOptions(
         }
         const stringArguments = launchConfig.args.toString().toLowerCase();
         // filter configurations containing input:UI5MinVersion, this will be supported later
-        visible = visible || stringArguments.indexOf('${input:') === -1;
+        visible = visible || !stringArguments.includes('${input:');
     }
     return {
         name: launchConfig.name,

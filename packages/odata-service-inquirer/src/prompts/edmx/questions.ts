@@ -229,37 +229,38 @@ export function getEntitySelectionQuestions(
 function getPageBuildingBlockQuestions(): Question<PageBuildingBlockAnswers>[] {
     const pageBuildingBlockQuestions: Question<PageBuildingBlockAnswers>[] = [];
 
-    pageBuildingBlockQuestions.push({
-        type: 'confirm',
-        name: EntityPromptNames.addPageBuildingBlock,
-        message: t('prompts.pageBuildingBlock.message'),
-        default: false,
-        guiOptions: {
-            breadcrumb: true,
-            hint: t('prompts.pageBuildingBlock.tooltip')
-        },
-        additionalMessages: (addPageBuildingBlock: boolean) => {
-            if (addPageBuildingBlock) {
-                return {
-                    message: t('prompts.pageBuildingBlock.warning'),
-                    severity: Severity.warning
-                };
+    pageBuildingBlockQuestions.push(
+        {
+            type: 'confirm',
+            name: EntityPromptNames.addPageBuildingBlock,
+            message: t('prompts.pageBuildingBlock.message'),
+            default: false,
+            guiOptions: {
+                breadcrumb: true,
+                hint: t('prompts.pageBuildingBlock.tooltip')
+            },
+            additionalMessages: (addPageBuildingBlock: boolean) => {
+                if (addPageBuildingBlock) {
+                    return {
+                        message: t('prompts.pageBuildingBlock.warning'),
+                        severity: Severity.warning
+                    };
+                }
             }
-        }
-    } as ConfirmQuestion<PageBuildingBlockAnswers>);
-
-    // If the user wants to add a Page Building Block, ask for the title
-    pageBuildingBlockQuestions.push({
-        when: (answers: EntitySelectionAnswers & PageBuildingBlockAnswers) => answers.addPageBuildingBlock === true,
-        type: 'input',
-        name: EntityPromptNames.pageBuildingBlockTitle,
-        message: t('prompts.pageBuildingBlock.titleMessage'),
-        guiOptions: {
-            breadcrumb: true,
-            mandatory: true
-        },
-        validate: (input: string) => !!input
-    } as InputQuestion<PageBuildingBlockAnswers>);
+        } as ConfirmQuestion<PageBuildingBlockAnswers>,
+        // If the user wants to add a Page Building Block, ask for the title
+        {
+            when: (answers: EntitySelectionAnswers & PageBuildingBlockAnswers) => answers.addPageBuildingBlock === true,
+            type: 'input',
+            name: EntityPromptNames.pageBuildingBlockTitle,
+            message: t('prompts.pageBuildingBlock.titleMessage'),
+            guiOptions: {
+                breadcrumb: true,
+                mandatory: true
+            },
+            validate: (input: string) => !!input
+        } as InputQuestion<PageBuildingBlockAnswers>
+    );
 
     return pageBuildingBlockQuestions;
 }
@@ -294,98 +295,99 @@ function getTableLayoutQuestions(
         // Variables to track selected entity and default table type
         let selectedEntity: EntityAnswer | undefined;
         let defaultTableType: TableType | undefined;
-        tableLayoutQuestions.push({
-            when: (prevAnswers: EntitySelectionAnswers) => !!prevAnswers.mainEntity,
-            type: 'list',
-            name: EntityPromptNames.tableType,
-            message: t('prompts.tableType.message'),
-            guiOptions: {
-                hint: t('prompts.tableType.hint'),
-                breadcrumb: true,
-                mandatory: true,
-                applyDefaultWhenDirty: true // set table type on entity selection change
-            },
-            // Workaround for YUI bug: Despite mandatory=true, YUI allows clearing mandatory list selections
-            validate: (value: TableType | null | undefined) => {
-                if (!value) {
-                    return t('prompts.tableType.requiredError');
-                }
-                return true;
-            },
-            choices: tableTypeChoices,
-            default: (prevAnswers: EntitySelectionAnswers & TableConfigAnswers) => {
-                const currentEntity = prevAnswers?.mainEntity;
+        tableLayoutQuestions.push(
+            {
+                when: (prevAnswers: EntitySelectionAnswers) => !!prevAnswers.mainEntity,
+                type: 'list',
+                name: EntityPromptNames.tableType,
+                message: t('prompts.tableType.message'),
+                guiOptions: {
+                    hint: t('prompts.tableType.hint'),
+                    breadcrumb: true,
+                    mandatory: true,
+                    applyDefaultWhenDirty: true // set table type on entity selection change
+                },
+                // Workaround for YUI bug: Despite mandatory=true, YUI allows clearing mandatory list selections
+                validate: (value: TableType | null | undefined) => {
+                    if (!value) {
+                        return t('prompts.tableType.requiredError');
+                    }
+                    return true;
+                },
+                choices: tableTypeChoices,
+                default: (prevAnswers: EntitySelectionAnswers & TableConfigAnswers) => {
+                    const currentEntity = prevAnswers?.mainEntity;
 
-                // Only re-evaluate if entity has changed or no previous selection exists
-                if (currentEntity?.entitySetName !== selectedEntity?.entitySetName || !prevAnswers?.tableType) {
-                    defaultTableType = getDefaultTableType(
-                        templateType,
-                        metadata,
-                        odataVersion,
-                        isCapService,
-                        currentEntity?.entitySetName
-                    );
+                    // Only re-evaluate if entity has changed or no previous selection exists
+                    if (currentEntity?.entitySetName !== selectedEntity?.entitySetName || !prevAnswers?.tableType) {
+                        defaultTableType = getDefaultTableType(
+                            templateType,
+                            metadata,
+                            odataVersion,
+                            isCapService,
+                            currentEntity?.entitySetName
+                        );
 
-                    // Update tracking variables
-                    selectedEntity = currentEntity;
-                    return defaultTableType;
-                }
+                        // Update tracking variables
+                        selectedEntity = currentEntity;
+                        return defaultTableType;
+                    }
 
-                // Entity hasn't changed and user has a selection - preserve their choice
-                // Reset the default table type since this is user's choice, not system default
-                defaultTableType = undefined;
-                return prevAnswers.tableType;
-            },
-            additionalMessages: (selectedTableType: TableType) => {
-                // Show responsive table info whenever ResponsiveTable is selected
-                if (selectedTableType === 'ResponsiveTable') {
-                    return {
-                        message: t('prompts.tableType.responsiveTableInfo'),
-                        severity: Severity.information
-                    };
+                    // Entity hasn't changed and user has a selection - preserve their choice
+                    // Reset the default table type since this is user's choice, not system default
+                    defaultTableType = undefined;
+                    return prevAnswers.tableType;
+                },
+                additionalMessages: (selectedTableType: TableType) => {
+                    // Show responsive table info whenever ResponsiveTable is selected
+                    if (selectedTableType === 'ResponsiveTable') {
+                        return {
+                            message: t('prompts.tableType.responsiveTableInfo'),
+                            severity: Severity.information
+                        };
+                    }
+                    // Show default type info when the default is selected
+                    if (defaultTableType === 'AnalyticalTable' && selectedTableType === 'AnalyticalTable') {
+                        return {
+                            message: t('prompts.tableType.analyticalTableDefault'),
+                            severity: Severity.information
+                        };
+                    } else if (defaultTableType === 'TreeTable' && selectedTableType === 'TreeTable') {
+                        return {
+                            message: t('prompts.tableType.treeTableDefault'),
+                            severity: Severity.information
+                        };
+                    }
+                    return undefined;
                 }
-                // Show default type info when the default is selected
-                if (defaultTableType === 'AnalyticalTable' && selectedTableType === 'AnalyticalTable') {
-                    return {
-                        message: t('prompts.tableType.analyticalTableDefault'),
-                        severity: Severity.information
-                    };
-                } else if (defaultTableType === 'TreeTable' && selectedTableType === 'TreeTable') {
-                    return {
-                        message: t('prompts.tableType.treeTableDefault'),
-                        severity: Severity.information
-                    };
+            } as ListQuestion<TableConfigAnswers>,
+            {
+                when: (prevAnswers: TableConfigAnswers) =>
+                    prevAnswers?.tableType === 'TreeTable' && odataVersion === OdataVersion.v4,
+                type: 'input',
+                name: EntityPromptNames.hierarchyQualifier,
+                message: t('prompts.hierarchyQualifier.message'),
+                guiOptions: {
+                    hint: t('prompts.hierarchyQualifier.hint'),
+                    breadcrumb: true,
+                    mandatory: true
+                },
+                default: (prevAnswers: EntitySelectionAnswers & TableConfigAnswers) => {
+                    // Auto-populate qualifier from RecursiveHierarchy annotation if available
+                    if (prevAnswers?.mainEntity?.entitySetName) {
+                        const entitySet = findEntitySetByName(metadata, prevAnswers.mainEntity.entitySetName);
+                        return entitySet ? getRecursiveHierarchyQualifierForEntitySet(entitySet) : '';
+                    }
+                    return '';
+                },
+                validate: (input: string) => {
+                    if (!input) {
+                        return t('prompts.hierarchyQualifier.qualifierRequiredForV4Warning');
+                    }
+                    return true;
                 }
-                return undefined;
-            }
-        } as ListQuestion<TableConfigAnswers>);
-
-        tableLayoutQuestions.push({
-            when: (prevAnswers: TableConfigAnswers) =>
-                prevAnswers?.tableType === 'TreeTable' && odataVersion === OdataVersion.v4,
-            type: 'input',
-            name: EntityPromptNames.hierarchyQualifier,
-            message: t('prompts.hierarchyQualifier.message'),
-            guiOptions: {
-                hint: t('prompts.hierarchyQualifier.hint'),
-                breadcrumb: true,
-                mandatory: true
-            },
-            default: (prevAnswers: EntitySelectionAnswers & TableConfigAnswers) => {
-                // Auto-populate qualifier from RecursiveHierarchy annotation if available
-                if (prevAnswers?.mainEntity?.entitySetName) {
-                    const entitySet = findEntitySetByName(metadata, prevAnswers.mainEntity.entitySetName);
-                    return entitySet ? getRecursiveHierarchyQualifierForEntitySet(entitySet) : '';
-                }
-                return '';
-            },
-            validate: (input: string) => {
-                if (!input) {
-                    return t('prompts.hierarchyQualifier.qualifierRequiredForV4Warning');
-                }
-                return true;
-            }
-        } as InputQuestion<TableConfigAnswers>);
+            } as InputQuestion<TableConfigAnswers>
+        );
     }
     return tableLayoutQuestions;
 }

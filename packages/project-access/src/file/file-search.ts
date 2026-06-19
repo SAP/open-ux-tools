@@ -205,7 +205,7 @@ export async function findFileUp(fileName: string, startPath: string, fs?: Edito
     if (await fileExists(filePath, fs)) {
         return filePath;
     } else {
-        return dirname(startPath) !== startPath ? findFileUp(fileName, dirname(startPath), fs) : undefined;
+        return dirname(startPath) === startPath ? undefined : findFileUp(fileName, dirname(startPath), fs);
     }
 }
 /**

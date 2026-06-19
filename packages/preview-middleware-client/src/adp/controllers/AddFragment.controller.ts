@@ -201,7 +201,11 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             }
         );
 
-        if (defaultAggregation !== null) {
+        if (defaultAggregation === null) {
+            this.model.setProperty('/selectedAggregation/key', controlAggregation[0].key);
+            this.model.setProperty('/selectedAggregation/value', controlAggregation[0].value);
+            this.specialIndexHandling(controlAggregation[0].value);
+        } else {
             controlAggregation.forEach((obj) => {
                 if (obj.value === defaultAggregation) {
                     obj.key = 'default';
@@ -210,10 +214,6 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
                     this.specialIndexHandling(obj.value);
                 }
             });
-        } else {
-            this.model.setProperty('/selectedAggregation/key', controlAggregation[0].key);
-            this.model.setProperty('/selectedAggregation/value', controlAggregation[0].value);
-            this.specialIndexHandling(controlAggregation[0].value);
         }
 
         try {

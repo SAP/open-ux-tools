@@ -406,7 +406,7 @@ function moveKeysToBeginning(isListReport: boolean, entityType: EntityType, prop
     if (isListReport) {
         keys = entityType.keys.filter((key) => key.isKey).map((key) => key.name);
         entityType.annotations.Common?.SemanticKey?.forEach((key) => (key.value ? keys.push(key.value) : undefined));
-        keys = Array.from(new Set([...keys])); // to remove duplicates?
+        keys = Array.from(new Set(keys)); // to remove duplicates?
         keys.forEach((key) => {
             const index = properties.map((sE) => sE.name).indexOf(key);
             const element = properties.splice(index, 1);

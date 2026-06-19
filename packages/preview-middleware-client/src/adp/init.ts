@@ -25,7 +25,7 @@ import { sendInfoCenterMessage } from '../utils/info-center-message.js';
 import { CommunicationService } from '../cpe/communication-service.js';
 import { initOrphanedChangeDetection } from './change-file-validator.js';
 
-export default async function (rta: RuntimeAuthoring) {
+export default async function initAdp(rta: RuntimeAuthoring) {
     const flexSettings = rta.getFlexSettings();
     if (flexSettings.telemetry === true) {
         enableTelemetry();

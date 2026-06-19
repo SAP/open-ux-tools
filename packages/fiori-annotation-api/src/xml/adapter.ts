@@ -938,7 +938,7 @@ function convertPointerSegment(
         // which in general should be true
         elementIndex = Object.keys(currentNode).indexOf(segment);
     }
-    const mappedSegment = elementIndex !== -1 ? elementIndex.toString() : segment;
+    const mappedSegment = elementIndex === -1 ? segment : elementIndex.toString();
     return { mappedSegment, nextNode };
 }
 

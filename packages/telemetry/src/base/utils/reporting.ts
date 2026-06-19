@@ -21,7 +21,7 @@ const parseErrorStack = (errorStack: string): string[] => {
         }
 
         let filepath = null;
-        const normalizedFilepath = location[2].replace(/\\/g, '/');
+        const normalizedFilepath = location[2].replaceAll('\\', '/');
         for (const regexp of regexps) {
             const match = regexp.exec(normalizedFilepath);
             if (match) {

@@ -84,17 +84,17 @@ export class EnableObjectPageVariantManagementQuickAction
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, sectionInfo, iconTabBarFilterKey } = this.tableMap[path];
         if (!table) {
-            throw Error('Internal error. Table element not found');
+            throw new Error('Internal error. Table element not found');
         }
 
         const entitySet = this.context.view.getParent()?.getProperty('entitySet') as string | undefined;
         if (!entitySet) {
-            throw Error('Internal error. Object Page entity set not found');
+            throw new Error('Internal error. Object Page entity set not found');
         }
 
         const sectionId = table.data('sectionId') as string | undefined | null;
         if (!sectionId) {
-            throw Error('Internal error. Table sectionId property not found');
+            throw new Error('Internal error. Table sectionId property not found');
         }
 
         preprocessActionExecution(table, sectionInfo, this.iconTabBar, iconTabBarFilterKey);

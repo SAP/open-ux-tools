@@ -54,7 +54,7 @@ export class UI5Config {
             const path = join(__dirname, '..', 'dist', 'schema', 'ui5.yaml.json');
             const schema = JSON.parse(await readFile(path, 'utf8')) as SomeJSONSchema | null;
             if (!schema) {
-                throw Error('The schema file was not found. Validation is not possible.');
+                throw new Error('The schema file was not found. Validation is not possible.');
             }
             UI5Config.validate = new Ajv({ strict: false }).compile<SomeJSONSchema>(schema);
         }
@@ -63,7 +63,7 @@ export class UI5Config {
         try {
             isValid = yaml.loadAll(this.document.toString()).every((document) => UI5Config.validate(document));
         } catch (error) {
-            throw Error(`No validation possible. Error: ${error}`);
+            throw new Error(`No validation possible. Error: ${error}`);
         }
         return isValid;
     }
@@ -134,7 +134,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public setConfiguration(config: Configuration): UI5Config {
+    public setConfiguration(config: Configuration): this {
         this.document.setIn({
             path: 'resources',
             value: { configuration: config }
@@ -150,7 +150,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public setMetadata(value: Ui5Document['metadata']): UI5Config {
+    public setMetadata(value: Ui5Document['metadata']): this {
         this.document.setIn({ path: 'metadata', value });
         return this;
     }
@@ -173,7 +173,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public setType(value: Ui5Document['type']): UI5Config {
+    public setType(value: Ui5Document['type']): this {
         this.document.setIn({ path: 'type', value });
         return this;
     }
@@ -237,7 +237,7 @@ export class UI5Config {
         ui5Version: string,
         ui5Libraries: string[],
         ui5Theme = 'sap_fiori_3'
-    ): UI5Config {
+    ): this {
         const libraryObjs = [];
         for (const library of ui5Libraries) {
             libraryObjs.push({ name: library });
@@ -260,7 +260,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addCustomTasks(tasks: CustomTask<any>[], comments?: NodeComment<CustomMiddleware<any>>[]): UI5Config {
+    public addCustomTasks(tasks: CustomTask<any>[], comments?: NodeComment<CustomMiddleware<any>>[]): this {
         for (const task of tasks) {
             this.document.appendTo({ path: 'builder.customTasks', value: task, comments });
         }
@@ -278,7 +278,7 @@ export class UI5Config {
     public addCustomMiddleware(
         middlewares: CustomMiddleware<unknown>[],
         comments?: NodeComment<CustomMiddleware<unknown>>[]
-    ): UI5Config {
+    ): this {
         for (const mw of middlewares) {
             this.document.appendTo({ path: 'server.customMiddleware', value: mw, comments });
         }
@@ -291,7 +291,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addFioriToolsAppReloadMiddleware(): UI5Config {
+    public addFioriToolsAppReloadMiddleware(): this {
         this.document.appendTo({
             path: 'server.customMiddleware',
             value: getAppReloadMiddlewareConfig()
@@ -307,7 +307,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addFioriToolsProxyMiddleware(proxyConfig: FioriToolsProxyConfig, afterMiddleware?: string): UI5Config {
+    public addFioriToolsProxyMiddleware(proxyConfig: FioriToolsProxyConfig, afterMiddleware?: string): this {
         // Support both old and new property names for backward compatibility
         const resolvedIgnoreCertErrors = proxyConfig?.ignoreCertErrors ?? proxyConfig?.ignoreCertError ?? false; // NOSONAR
 
@@ -430,9 +430,7 @@ export class UI5Config {
      */
     public removeBackendFromFioriToolsProxyMiddleware(path: string): this {
         const fioriToolsProxyMiddleware = this.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy);
-        if (!fioriToolsProxyMiddleware) {
-            throw new Error('Could not find fiori-tools-proxy');
-        } else {
+        if (fioriToolsProxyMiddleware) {
             const proxyMiddlewareConfig = fioriToolsProxyMiddleware?.configuration;
             // Remove backend from middleware configurations in yaml
             if (proxyMiddlewareConfig?.backend) {
@@ -449,6 +447,8 @@ export class UI5Config {
                 });
                 this.updateCustomMiddleware(fioriToolsProxyMiddleware);
             }
+        } else {
+            throw new Error('Could not find fiori-tools-proxy');
         }
         return this;
     }
@@ -546,9 +546,7 @@ export class UI5Config {
         annotationsConfig: MockserverConfig['annotations'] = []
     ): this {
         const mockserverMiddleware = this.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver');
-        if (!mockserverMiddleware) {
-            throw new Error('Could not find sap-fe-mockserver');
-        } else {
+        if (mockserverMiddleware) {
             // Else append new data to current middleware config and then run middleware update
             const serviceRoot = `.${posix.sep}${relative(
                 basePath,
@@ -587,6 +585,8 @@ export class UI5Config {
                 });
             }
             this.updateCustomMiddleware(mockserverMiddleware);
+        } else {
+            throw new Error('Could not find sap-fe-mockserver');
         }
         return this;
     }
@@ -601,9 +601,7 @@ export class UI5Config {
      */
     public removeServiceFromMockServerMiddleware(servicePath: string, annotationPaths: string[]): this {
         const mockserverMiddleware = this.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver');
-        if (!mockserverMiddleware) {
-            throw new Error('Could not find sap-fe-mockserver');
-        } else {
+        if (mockserverMiddleware) {
             const mockserverMiddlewareConfig = mockserverMiddleware?.configuration;
             // Remove service from middleware configurations in yaml
             if (mockserverMiddlewareConfig?.services) {
@@ -622,6 +620,8 @@ export class UI5Config {
                 });
             }
             this.updateCustomMiddleware(mockserverMiddleware);
+        } else {
+            throw new Error('Could not find sap-fe-mockserver');
         }
         return this;
     }
@@ -760,7 +760,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public removeCustomMiddleware(name: string): UI5Config {
+    public removeCustomMiddleware(name: string): this {
         this.document.deleteAt({
             path: 'server.customMiddleware',
             matcher: { key: 'name', value: name }
@@ -775,7 +775,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public removeCustomTask(name: string): UI5Config {
+    public removeCustomTask(name: string): this {
         this.document.deleteAt({
             path: 'builder.customTasks',
             matcher: { key: 'name', value: name }
@@ -860,7 +860,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public updateCustomMiddleware(middleware: CustomMiddleware<unknown>): UI5Config {
+    public updateCustomMiddleware(middleware: CustomMiddleware<unknown>): this {
         const name = middleware.name;
         if (this.findCustomMiddleware(name)) {
             this.document.updateAt({

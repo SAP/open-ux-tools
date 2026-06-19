@@ -34,7 +34,7 @@ export const pathHandler: NodeHandler<Path> = {
 
         const pathText = node.value
             .split('@')
-            .map((segment, i) => (i === 0 ? segment.replace(/\./g, '/') : segment))
+            .map((segment, i) => (i === 0 ? segment.replaceAll('.', '/') : segment))
             .join('@');
 
         const fragmentRanges = calculateFragmentRanges(state, node);

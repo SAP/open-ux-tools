@@ -342,7 +342,7 @@ export class AnnotationParser extends CstParser {
      */
     private adjustAssignmentRange(previousToken: IToken): void {
         // adjust location since value is missing
-        const node: AssignmentCstNode = this['CST_STACK'][this['CST_STACK'].length - 1];
+        const node: AssignmentCstNode = this['CST_STACK'].at(-1) as AssignmentCstNode;
         if (node && previousToken && node.location) {
             // token length is not taken into account for position information
             const length = previousToken.image.length;
@@ -620,7 +620,7 @@ export class AnnotationParser extends CstParser {
         if (lines.length) {
             // ignore subsequent lines, in the future we may consider also remaining lines
             const line = lines[0];
-            const assignmentCstNode: AssignmentCstNode = this['CST_STACK'][this['CST_STACK'].length - 1];
+            const assignmentCstNode: AssignmentCstNode = this['CST_STACK'].at(-1) as AssignmentCstNode;
 
             if (hasItems(assignmentCstNode.children[VALUE_TYPE])) {
                 const valueNode = assignmentCstNode.children[VALUE_TYPE][0];

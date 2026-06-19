@@ -71,7 +71,7 @@ export function watchManifestChanges(livereload: LiveReloadServer): void {
     livereload.watcher.on('all', async (_event, path) => {
         const fileExtension = extname(path);
         if (fileExtension === '.appdescr_variant') {
-            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
+            globalThis.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
         } else if (fileExtension === '.change') {
             if (
                 path.endsWith('appdescr_fe_changePageConfiguration.change') ||
@@ -82,7 +82,7 @@ export function watchManifestChanges(livereload: LiveReloadServer): void {
                 path.endsWith('appdescr_fe_addNewPage.change') ||
                 path.endsWith('appdescr_ui5_setFlexExtensionPointEnabled.change')
             ) {
-                global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
+                globalThis.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
             }
         }
     });

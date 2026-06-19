@@ -138,7 +138,7 @@ export async function getLaunchConfigByName(
         }
         const launchConfig = launchJson.configurations.find((c: LaunchConfig) => c.name === name);
         if (!launchConfig) {
-            throw Error(`No config '${name}'`);
+            throw new Error(`No config '${name}'`);
         }
         return launchConfig;
     } catch (error) {

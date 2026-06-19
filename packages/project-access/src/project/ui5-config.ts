@@ -132,7 +132,7 @@ export async function readUi5Yaml(
         const yamlString = await readFile(ui5YamlPath, memFs);
         return await UI5Config.newInstance(yamlString, { validateSchema: options?.validateSchema });
     }
-    throw Error(`File '${fileName}' not found in project '${projectRoot}'`);
+    throw new Error(`File '${fileName}' not found in project '${projectRoot}'`);
 }
 
 /**

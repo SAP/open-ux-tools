@@ -60,13 +60,11 @@ export function getDefaultFragmentContentData(
             attributes.push(requireAttribute);
         }
         if (prefferInput) {
-            attributes.push(`value="${text}"`);
-            attributes.push(`change="handler.${method}"`);
+            attributes.push(`value="${text}"`, `change="handler.${method}"`);
             const id = generateId('Input');
             content = `<Input id="${id}" ${attributes.join(' ')} />`;
         } else {
-            attributes.push(`text="${text}"`);
-            attributes.push(`press="handler.${method}"`);
+            attributes.push(`text="${text}"`, `press="handler.${method}"`);
             const id = generateId('Button');
             content = `<Button id="${id}" ${attributes.join(' ')} />`;
         }

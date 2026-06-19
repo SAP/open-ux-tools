@@ -28,7 +28,7 @@ const rules: ParameterRules = {
         if (paramString.trim().startsWith('>')) {
             return {
                 shouldApply: true,
-                value: paramString.trim().replace(/>/g, '')
+                value: paramString.trim().replaceAll('>', '')
             };
         }
 
@@ -39,7 +39,7 @@ const rules: ParameterRules = {
         if (paramString.startsWith('%%') && paramString.endsWith('%%')) {
             return {
                 shouldApply: true,
-                value: paramString.replace(/%/g, '')
+                value: paramString.replaceAll('%', '')
             };
         }
         return defaultParamCheck;

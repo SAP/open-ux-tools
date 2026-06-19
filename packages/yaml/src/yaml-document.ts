@@ -86,13 +86,7 @@ export class YamlDocument {
      * @returns {YamlDocument} the YamlDocument instance
      * @memberof YamlDocument
      */
-    addDocumentComment({
-        comment,
-        location = 'beginning'
-    }: {
-        comment: string;
-        location?: 'beginning' | 'end';
-    }): YamlDocument {
+    addDocumentComment({ comment, location = 'beginning' }: { comment: string; location?: 'beginning' | 'end' }): this {
         switch (location) {
             case 'beginning':
                 this.documents[0].commentBefore = comment;
@@ -163,7 +157,7 @@ export class YamlDocument {
         value: unknown;
         createIntermediateKeys?: boolean;
         comment?: string;
-    }): YamlDocument {
+    }): this {
         const pathArray = this.toPathArray(path);
 
         if (pathArray.length > 1) {
@@ -209,7 +203,7 @@ export class YamlDocument {
         createIntermediateKeys?: boolean;
         nodeComment?: string;
         comments?: Array<NodeComment<T>>;
-    }): YamlDocument {
+    }): this {
         const pathArray = this.toPathArray(path);
         // Create a copy to work to modify
         const documentCopy = this.documents[0].clone();
@@ -282,7 +276,7 @@ export class YamlDocument {
         matcher: { key: string; value: string };
         value: T;
         mode?: 'merge' | 'overwrite';
-    }): YamlDocument {
+    }): this {
         const pathArray = this.toPathArray(path);
         const seq = this.documents[0].getIn(pathArray) as YAMLSeq<yaml.Node>;
         if (!seq) {
@@ -324,7 +318,7 @@ export class YamlDocument {
      * @returns {YamlDocument} the YamlDocument instance
      * @memberof YamlDocument
      */
-    deleteAt({ path, matcher }: { path: string; matcher: { key: string; value: string } }): YamlDocument {
+    deleteAt({ path, matcher }: { path: string; matcher: { key: string; value: string } }): this {
         const pathArray = this.toPathArray(path);
         const seq = this.documents[0].getIn(pathArray) as YAMLSeq<yaml.Node>;
         if (!seq?.items) {
@@ -362,10 +356,10 @@ export class YamlDocument {
         const pathArray = this.toPathArray(path);
         const node = start || this.documents[0];
         const targetNode = node?.getIn(pathArray);
-        if (!targetNode) {
-            throw new YAMLError(interpolate(errorTemplate.nodeNotFound, { path }), errorCode.nodeNotFound);
-        } else {
+        if (targetNode) {
             return targetNode;
+        } else {
+            throw new YAMLError(interpolate(errorTemplate.nodeNotFound, { path }), errorCode.nodeNotFound);
         }
     }
 
@@ -377,10 +371,10 @@ export class YamlDocument {
      */
     getSequence({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): YAMLSeq {
         const a = this.getNode({ start, path });
-        if (!isSeq(a)) {
-            throw new YAMLError(interpolate(errorTemplate.seqDoesNotExist, { path }), errorCode.seqDoesNotExist);
-        } else {
+        if (isSeq(a)) {
             return a as YAMLSeq<Node>;
+        } else {
+            throw new YAMLError(interpolate(errorTemplate.seqDoesNotExist, { path }), errorCode.seqDoesNotExist);
         }
     }
 
@@ -392,10 +386,10 @@ export class YamlDocument {
      */
     getMap({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): YAMLMap {
         const a = this.getNode({ start, path });
-        if (!isMap(a)) {
-            throw new YAMLError(interpolate(errorTemplate.nodeNotAMap, { path }), errorCode.nodeNotAMap);
-        } else {
+        if (isMap(a)) {
             return a as YAMLMap<Node>;
+        } else {
+            throw new YAMLError(interpolate(errorTemplate.nodeNotAMap, { path }), errorCode.nodeNotAMap);
         }
     }
 

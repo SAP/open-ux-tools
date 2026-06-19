@@ -49,7 +49,7 @@ export default async ({ options }: MiddlewareParameters<BackendMiddlewareConfig>
     const router = express.Router();
 
     const configOptions = options.configuration?.options ?? {};
-    configOptions.secure = configOptions.secure !== undefined ? !!configOptions.secure : true;
+    configOptions.secure = configOptions.secure === undefined ? true : !!configOptions.secure;
     configOptions.logger = options.configuration?.debug ? logger : undefined;
 
     try {

@@ -291,28 +291,26 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
         const messageInfo = getMessageInfo(this.props);
         const additionalProps = this.getAccessibilityProps();
         const dropdownStyles = (): Partial<IDropdownStyles> => ({
-            ...{
-                label: {
-                    ...labelGlobalStyle,
-                    ...(this.props.disabled && {
-                        opacity: '0.4'
-                    }),
-                    ...(this.props.required && {
-                        selectors: {
-                            '::after': {
-                                content: REQUIRED_LABEL_INDICATOR,
-                                color: ERROR_BORDER_COLOR,
-                                paddingRight: 12
-                            }
+            label: {
+                ...labelGlobalStyle,
+                ...(this.props.disabled && {
+                    opacity: '0.4'
+                }),
+                ...(this.props.required && {
+                    selectors: {
+                        '::after': {
+                            content: REQUIRED_LABEL_INDICATOR,
+                            color: ERROR_BORDER_COLOR,
+                            paddingRight: 12
                         }
-                    })
-                },
+                    }
+                })
+            },
 
-                errorMessage: [messageInfo.style],
+            errorMessage: [messageInfo.style],
 
-                callout: {
-                    boxShadow: 'var(--ui-box-shadow-small)'
-                }
+            callout: {
+                boxShadow: 'var(--ui-box-shadow-small)'
             }
         });
 

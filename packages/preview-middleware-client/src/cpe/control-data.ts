@@ -113,10 +113,10 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
         // https://github.com/SAP/openui5/blob/203ce22763a76e28b7a422f6c635a42480f733f1/src/sap.ui.core/src/sap/ui/base/DataType.js#L430
          
         const name = (Object.getPrototypeOf(propertyDataType) as DataType).getName();
-        if (!name) {
-            analyzedType.primitiveType = 'enum';
-        } else {
+        if (name) {
             analyzedType.primitiveType = name;
+        } else {
+            analyzedType.primitiveType = 'enum';
         }
         analyzedType.ui5Type = typeName;
 

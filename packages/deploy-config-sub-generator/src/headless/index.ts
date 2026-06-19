@@ -38,7 +38,7 @@ export default class extends DeploymentGenerator {
             });
             // Is this a file path or app config as string
             if (Object.keys(this.options.appConfig ?? {}).length === 0) {
-                throw Error(t('headless.error.headlessGenOptions'));
+                throw new Error(t('headless.error.headlessGenOptions'));
             }
 
             // Support direct cli/process execution

@@ -33,7 +33,7 @@ export class VisitorState {
      * @returns context
      */
     get context(): Context {
-        const context = this._contextStack[this._contextStack.length - 1];
+        const context = this._contextStack.at(-1);
 
         if (context) {
             return context;

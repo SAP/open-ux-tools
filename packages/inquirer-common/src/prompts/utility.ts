@@ -63,11 +63,11 @@ export function ui5VersionsGrouped(
         .map(
             (mainV) =>
                 ({
-                    name: !includeSeparators
-                        ? `${mainV.version} - (${t('ui5VersionLabels.maintained')} ${t('ui5VersionLabels.version', {
+                    name: includeSeparators
+                        ? mainV.version
+                        : `${mainV.version} - (${t('ui5VersionLabels.maintained')} ${t('ui5VersionLabels.version', {
                               count: 1
-                          })})`
-                        : mainV.version,
+                          })})`,
                     value: mainV.version
                 }) as UI5VersionChoice
         );
@@ -76,12 +76,12 @@ export function ui5VersionsGrouped(
         .map(
             (mainV) =>
                 ({
-                    name: !includeSeparators
-                        ? `${mainV.version} - (${t('ui5VersionLabels.outOfMaintenance')} ${t(
+                    name: includeSeparators
+                        ? mainV.version
+                        : `${mainV.version} - (${t('ui5VersionLabels.outOfMaintenance')} ${t(
                               'ui5VersionLabels.version',
                               { count: 1 }
-                          )})`
-                        : mainV.version,
+                          )})`,
                     value: mainV.version
                 }) as UI5VersionChoice
         );

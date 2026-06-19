@@ -4,10 +4,10 @@ import type { UIFlexibleTableProps, UIFlexibleTableRowType } from './types.js';
 import { composeClassNames } from './utils.js';
 
 interface RowDataCellsProps<T> {
-    tableProps: UIFlexibleTableProps<T>;
-    row: UIFlexibleTableRowType<T>;
-    rowIndex: number;
-    isInRowLayout: boolean;
+    readonly tableProps: UIFlexibleTableProps<T>;
+    readonly row: UIFlexibleTableRowType<T>;
+    readonly rowIndex: number;
+    readonly isInRowLayout: boolean;
 }
 
 /**
@@ -117,10 +117,10 @@ export function RowDataCells<T>(props: RowDataCellsProps<T>): React.ReactElement
         );
     }
 
-    if (!alternativeContent) {
-        rowCellsData.push(...getRowDataCells(props));
-    } else {
+    if (alternativeContent) {
         rowCellsData.push(alternativeContent);
+    } else {
+        rowCellsData.push(...getRowDataCells(props));
     }
 
     // Add data cells

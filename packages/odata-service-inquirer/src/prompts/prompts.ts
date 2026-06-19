@@ -72,24 +72,15 @@ async function getDatasourceTypeConditionalQuestions(
         ...(withCondition(
             (await getSystemSelectionQuestions(promptOptions, connectedSystem)) as Question[],
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.sapSystem
-        ) as OdataServiceQuestion[])
-    );
-
-    conditionalQuestions.push(
+        ) as OdataServiceQuestion[]),
         ...(withCondition(
             [getMetadataFileQuestion(promptOptions?.metadataFilePath) as Question],
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.metadataFile
-        ) as OdataServiceQuestion[])
-    );
-
-    conditionalQuestions.push(
+        ) as OdataServiceQuestion[]),
         ...(withCondition(
             getLocalCapProjectPrompts(promptOptions) as Question[],
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.capProject
-        ) as OdataServiceQuestion[])
-    );
-
-    conditionalQuestions.push(
+        ) as OdataServiceQuestion[]),
         ...(withCondition(
             getServiceUrlQuestions(promptOptions?.serviceUrl) as Question[],
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.odataServiceUrl

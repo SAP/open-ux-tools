@@ -15,12 +15,12 @@ const CARD_TYPES = {
 function prepareIntegrationCardForSaving(cardManifest: CardManifest): void {
     const version = packageJson.version;
     const insights = cardManifest?.['sap.insights'];
-    if (!insights.versions) {
+    if (insights.versions) {
+        insights.versions.dtpMiddleware = version;
+    } else {
         insights.versions = {
             dtpMiddleware: version
         };
-    } else {
-        insights.versions.dtpMiddleware = version;
     }
 }
 

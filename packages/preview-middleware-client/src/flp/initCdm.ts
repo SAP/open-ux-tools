@@ -9,7 +9,7 @@ import type { Window } from 'types/global';
     const initScript = document.getElementById('init-cdm');
     const basePath = initScript?.dataset.basePath ?? '';
 
-    (window as unknown as Window)['sap-ushell-config'] = {
+    (globalThis as unknown as Window)['sap-ushell-config'] = {
         defaultRenderer: 'fiori2',
         renderers: {
             fiori2: {

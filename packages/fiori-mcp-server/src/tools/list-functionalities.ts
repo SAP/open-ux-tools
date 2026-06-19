@@ -64,7 +64,7 @@ async function getAppFunctionalities(
     const pageEditorApi = new PageEditorApi(appAccess, application);
     const tree = await pageEditorApi.getPageTree();
 
-    const settingsNode = tree.children.find((node) => node.path[node.path.length - 1] === 'settings');
+    const settingsNode = tree.children.find((node) => node.path.at(-1) === 'settings');
     if (!settingsNode) {
         return [];
     }

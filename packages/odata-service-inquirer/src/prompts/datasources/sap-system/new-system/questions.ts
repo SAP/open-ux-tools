@@ -35,9 +35,7 @@ export function getNewSystemQuestions(
         ...withCondition(
             getAbapOnPremQuestions(promptOptions) as Question[],
             (answers: Answers) => (answers as NewSystemAnswers).newSystemType === 'abapOnPrem'
-        )
-    );
-    questions.push(
+        ),
         ...withCondition(
             getAbapOnBTPSystemQuestions(promptOptions, connectedSystem) as Question[],
             (answers: Answers) => (answers as NewSystemAnswers).newSystemType === 'abapOnBtp'

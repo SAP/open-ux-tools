@@ -51,14 +51,13 @@ async function readEnableTelemetry(storeService: Service<TelemetrySetting, Telem
         // ignore read failure, assume file doens't exist and thus setting is undefined
     }
 
-    if (!setting) {
+    if (setting) {
+        TelemetrySettings.telemetryEnabled = setting.enableTelemetry;
+    } else {
         // If no telemetry setting found in .fioritools folder,
         // check telemetry setting in vscode settings for extensions
         const deprecatedSettingPath = definePath(deprecatedSettingPaths);
-        if (!deprecatedSettingPath) {
-            // If no vscode setting found, default central telemetry setting to true
-            await setEnableTelemetry(true);
-        } else {
+        if (deprecatedSettingPath) {
             // If deprecated vscode setting exists, set central telemetry setting to false if any of vscode setting was false
             let content: string;
             try {
@@ -77,9 +76,10 @@ async function readEnableTelemetry(storeService: Service<TelemetrySetting, Telem
                 // ignore read failure and content is undefined
                 await setEnableTelemetry(true);
             }
+        } else {
+            // If no vscode setting found, default central telemetry setting to true
+            await setEnableTelemetry(true);
         }
-    } else {
-        TelemetrySettings.telemetryEnabled = setting.enableTelemetry;
     }
 }
 

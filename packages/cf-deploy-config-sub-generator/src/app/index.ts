@@ -288,11 +288,11 @@ export default class extends DeploymentGenerator {
             return;
         }
 
-        if (!this.launchDeployConfigAsSubGenerator) {
-            await this._writing();
-        } else {
+        if (this.launchDeployConfigAsSubGenerator) {
             // Need to delay `init` as the yaml configurations won't be ready!
             await this._init();
+            await this._writing();
+        } else {
             await this._writing();
         }
     }
@@ -343,7 +343,9 @@ export default class extends DeploymentGenerator {
     }
 
     private async _install(): Promise<void> {
-        if (!this.options.skipInstall) {
+        if (this.options.skipInstall) {
+            DeploymentGenerator.logger?.info(t('cfGen.info.skippedInstallation'));
+        } else {
             try {
                 await this._runNpmInstall(this.projectRoot);
 
@@ -354,8 +356,6 @@ export default class extends DeploymentGenerator {
             } catch (error) {
                 handleErrorMessage(this.appWizard, { errorMsg: t('cfGen.error.install', { error: error.message }) });
             }
-        } else {
-            DeploymentGenerator.logger?.info(t('cfGen.info.skippedInstallation'));
         }
     }
 

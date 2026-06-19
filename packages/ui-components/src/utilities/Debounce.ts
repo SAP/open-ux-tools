@@ -6,11 +6,11 @@
  * @returns A wrapper function that should be called to invoke the callback function after delay
  */
 export function debounce<T extends unknown[]>(callback: (...args: T) => void, delay: number): (...args: T) => void {
-    let timerId: number;
+    let timerId: ReturnType<typeof setTimeout>;
     return (...args: T): void => {
         clearTimeout(timerId);
 
-        timerId = window.setTimeout(() => {
+        timerId = globalThis.setTimeout(() => {
             callback(...args);
         }, delay);
     };

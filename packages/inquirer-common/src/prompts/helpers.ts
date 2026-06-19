@@ -92,24 +92,22 @@ export function applyExtensionFunction<T extends Answers = Answers>(
  */
 export function withCondition(questions: Question[], condition: (answers: Answers) => boolean): Question[] {
     questions.forEach((question) => {
-        if (question.when !== undefined) {
-            if (typeof question.when === 'function') {
-                const when = question.when as (answers: Answers) => boolean | Promise<boolean>;
-                question.when = (answers: Answers): boolean | Promise<boolean> => {
-                    if (condition(answers)) {
-                        return when(answers);
-                    } else {
-                        return false;
-                    }
-                };
-            } else {
-                const whenValue = question.when as boolean;
-                question.when = (answers: Answers): boolean => {
-                    return condition(answers) && whenValue;
-                };
-            }
-        } else {
+        if (question.when === undefined) {
             question.when = condition;
+        } else if (typeof question.when === 'function') {
+            const when = question.when as (answers: Answers) => boolean | Promise<boolean>;
+            question.when = (answers: Answers): boolean | Promise<boolean> => {
+                if (condition(answers)) {
+                    return when(answers);
+                } else {
+                    return false;
+                }
+            };
+        } else {
+            const whenValue = question.when as boolean;
+            question.when = (answers: Answers): boolean => {
+                return condition(answers) && whenValue;
+            };
         }
     });
     return questions;

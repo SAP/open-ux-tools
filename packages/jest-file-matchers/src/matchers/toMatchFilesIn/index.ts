@@ -26,7 +26,7 @@ export function toMatchFilesIn(
 
     getAllFileNames({ dir: receivedFolder, filter: options }).forEach((fileName) => {
         const snapshotFilename = fileName.replace(receivedFolder, expectedFolder);
-        const fileContents = fs.readFileSync(fileName, 'utf-8').replace(/\r\n/g, '\n');
+        const fileContents = fs.readFileSync(fileName, 'utf-8').replaceAll('\r\n', '\n');
 
         const { pass: snapshotPass, message: getMessage } = toMatchFileSnapshot(
             fileContents,

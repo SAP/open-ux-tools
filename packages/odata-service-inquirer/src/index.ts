@@ -11,10 +11,7 @@ import {
     type SystemSelectionAnswers,
     getSystemSelectionQuestions as getSystemSelectionQuestionsBase
 } from './prompts/datasources/sap-system/system-selection/index.js';
-import {
-    CfAbapEnvServiceChoice,
-    NewSystemChoice
-} from './prompts/datasources/sap-system/system-selection/prompt-helpers.js';
+import { NewSystemChoice } from './prompts/datasources/sap-system/system-selection/prompt-helpers.js';
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { TemplateType } from '@sap-ux/fiori-elements-writer';
 import { getEntitySelectionQuestions } from './prompts/edmx/questions.js';
@@ -162,7 +159,6 @@ async function prompt(
 }
 
 export {
-    CfAbapEnvServiceChoice,
     // @deprecated - temp export to support to support open source migration
     DatasourceType,
     // @deprecated - temp export to support to support open source migration
@@ -180,6 +176,7 @@ export {
 export { promptNames } from './types.js';
 // @deprecated - temp export to support to support open source migration
 export type { SystemSelectionAnswerType } from './prompts/datasources/sap-system/system-selection/prompt-helpers.js';
+export type { CfAbapEnvServiceChoice } from './prompts/datasources/sap-system/system-selection/prompt-helpers.js';
 export type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';
 export type { InquirerAdapter } from '@sap-ux/inquirer-common';
 export type {

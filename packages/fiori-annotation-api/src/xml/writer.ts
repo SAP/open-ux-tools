@@ -181,8 +181,10 @@ export class XMLWriter {
                     continue;
                 }
                 const { textEdits, text } = this.prepareXmlElementMoveChange(moveChange, changes);
-                edits.push(...textEdits);
-                edits.push(...handleXmlElementMoveChange(element, childIndentLevel, text, insertPosition));
+                edits.push(
+                    ...textEdits,
+                    ...handleXmlElementMoveChange(element, childIndentLevel, text, insertPosition)
+                );
             }
         } else {
             edits.push(...handleXmlElementAttributeInserts(element, attributeInserts));
@@ -245,14 +247,15 @@ function handleXmlAttributeChanges(
     } else {
         // if attribute is deleted, then we can ignore updates
         const nameRange = transformRange(element.syntax.key);
-        if (nameRange && attributeNameUpdates.length > 0) {
-            const newName = attributeNameUpdates[attributeNameUpdates.length - 1].newName;
-            edits.push(TextEdit.replace(nameRange, newName));
+        const lastNameUpdate = attributeNameUpdates.at(-1);
+        if (nameRange && lastNameUpdate) {
+            edits.push(TextEdit.replace(nameRange, lastNameUpdate.newName));
         }
 
         const valueRange = transformRange(element.syntax.value);
-        if (valueRange && attributeValueUpdates.length > 0) {
-            const newValue = attributeValueUpdates[attributeValueUpdates.length - 1].newValue;
+        const lastValueUpdate = attributeValueUpdates.at(-1);
+        if (valueRange && lastValueUpdate) {
+            const newValue = lastValueUpdate.newValue;
             // shift from start quote
             valueRange.start.character++;
             // shift from end quote
@@ -448,8 +451,12 @@ function convertUpdateElementNameToTextEdits(
     element: XMLAstNode | undefined
 ): TextEdit[] {
     const edits: TextEdit[] = [];
-    if (elementNameUpdates.length > 0 && element?.type === 'XMLElement') {
-        const newName = elementNameUpdates[elementNameUpdates.length - 1].newName;
+    if (element?.type === 'XMLElement') {
+        const lastNameUpdate = elementNameUpdates.at(-1);
+        if (!lastNameUpdate) {
+            return edits;
+        }
+        const newName = lastNameUpdate.newName;
         const openTagRange = transformRange(element.syntax.openBody);
         const closeTagRange = transformRange(element.syntax.closeBody);
         if (openTagRange) {
@@ -523,12 +530,7 @@ function convertInsertElementToTextEdits(
         return [];
     }
 
-    if (!element) {
-        const change = changes.slice(-1)[0];
-        const namespaceMap = getNamespaceMapForNewRootNode(change.element);
-        const newElements = insertElementToText([change], childIndentLevel, namespaceMap);
-        return [TextEdit.insert(Position.create(0, 0), newElements)];
-    } else {
+    if (element) {
         const namespaceMap = getNamespaceMap(element);
         const openTagRange = transformRange(element.syntax.openBody);
         if (element.syntax.isSelfClosing && openTagRange) {
@@ -552,6 +554,11 @@ function convertInsertElementToTextEdits(
         } else {
             return insertIntoElementWithContent(comments, element, changes, childIndentLevel, namespaceMap);
         }
+    } else {
+        const change = changes.slice(-1)[0];
+        const namespaceMap = getNamespaceMapForNewRootNode(change.element);
+        const newElements = insertElementToText([change], childIndentLevel, namespaceMap);
+        return [TextEdit.insert(Position.create(0, 0), newElements)];
     }
 }
 
@@ -672,7 +679,7 @@ function findInsertPosition(
 ):
     | { position: Position; type: 'parent' | 'child'; requiresNewLine: boolean; redundantWhitespace?: Range }
     | { type: 'none' } {
-    const child = index !== -1 ? element.subElements[index] : undefined;
+    const child = index === -1 ? undefined : element.subElements[index];
 
     if (child) {
         const childRange = sourcePositionToRange(child.position);
@@ -832,7 +839,7 @@ function getElementContent(element: XMLElement, comments: Comment[]): ElementCon
             elementRange: range,
             range: copyRange(range)
         };
-        const previousItem = content[content.length - 1];
+        const previousItem = content.at(-1);
         const previousLine = element.range.start.line - 1;
         if (
             previousItem?.type === 'comment' &&
@@ -997,7 +1004,7 @@ function findInsertPositionForMove(
         const range = transformRange(element.syntax.openBody);
         return range?.end;
     } else if (index === undefined || index >= element.subElements.length) {
-        const child = element.subElements[element.subElements.length - 1];
+        const child = element.subElements.at(-1);
         if (!child) {
             return undefined;
         }
@@ -1108,7 +1115,7 @@ function removeDuplicates(changes: XMLDocumentChange[]): XMLDocumentChange[] {
     const result: XMLDocumentChange[] = [];
     for (const change of changes) {
         if (change.type === 'delete-element') {
-            if (existingDeletions.indexOf(change.pointer) === -1) {
+            if (!existingDeletions.includes(change.pointer)) {
                 existingDeletions.push(change.pointer);
                 result.push(change);
             }

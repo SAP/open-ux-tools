@@ -41,7 +41,7 @@ export function getODataVersion(edmx: string): OdataVersion {
         const convertedMetadata = convert(parse(edmx));
         return convertedMetadata.version.startsWith('4') ? OdataVersion.v4 : OdataVersion.v2;
     } catch (error) {
-        throw Error(t('error.appConfigUnparseableEdmx'));
+        throw new Error(t('error.appConfigUnparseableEdmx'));
     }
 }
 
@@ -151,7 +151,7 @@ export async function getCdsAnnotations(
     const { appPath: capAppPath = 'app', projectPath, serviceCdsPath, serviceName } = capService;
     if (serviceCdsPath) {
         // Construct the annotation path and service cds URI
-        const annotationPath = join(capAppPath, projectName, 'annotation.cds').replace(/\\/g, '/');
+        const annotationPath = join(capAppPath, projectName, 'annotation.cds').replaceAll('\\', '/');
         const serviceCdsUri = await toReferenceUri(projectPath, annotationPath, serviceCdsPath);
         // Create the contents of the annotation CDS file
         const annotationCdsContents = `using ${serviceName} as service from '${serviceCdsUri}';`;

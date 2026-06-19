@@ -139,4 +139,4 @@ export default class extends DeploymentGenerator {
     }
 }
 
-export { CfApprouterGenOptions };
+export type { CfApprouterGenOptions };

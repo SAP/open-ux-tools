@@ -53,9 +53,7 @@ export async function validateBasePath(
     }
 
     const manifestPath = await getManifestPath(basePath, fs);
-    if (!fs.exists(manifestPath)) {
-        throw new Error(`Invalid project folder. Cannot find required file ${manifestPath}`);
-    } else {
+    if (fs.exists(manifestPath)) {
         const manifest = fs.readJSON(manifestPath) as Manifest;
         if (!validateDependenciesLibs(manifest, dependencies)) {
             if (dependencies.length === 1) {
@@ -70,6 +68,8 @@ export async function validateBasePath(
                 );
             }
         }
+    } else {
+        throw new Error(`Invalid project folder. Cannot find required file ${manifestPath}`);
     }
 
     return true;

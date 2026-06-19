@@ -113,7 +113,7 @@ async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<C
         addAppFrontendRouter: cfAppConfig.addAppFrontendRouter,
         addMtaDestination: cfAppConfig.addMtaDestination ?? false,
         cloudServiceName: cfAppConfig.cloudServiceName,
-        lcapMode: !isCap ? false : isLCAP, // Restricting local changes is only applicable for CAP flows
+        lcapMode: isCap ? isLCAP : false, // Restricting local changes is only applicable for CAP flows
         isMtaRoot: hasRoot ?? false,
         serviceHost: cfAppConfig.serviceHost ?? serviceHost,
         rootPath: rootPath.replace(/\/$/, ''),

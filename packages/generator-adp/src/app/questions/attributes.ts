@@ -163,14 +163,14 @@ function getNamespacePrompt(isCustomerBase: boolean, options?: NamespacePromptOp
         store: false
     } as InputQuestion;
 
-    if (!isCustomerBase) {
-        prompt.guiOptions!.type = 'label';
-        prompt.when = (answers): boolean => !!answers.projectName;
-    } else {
+    if (isCustomerBase) {
         prompt.guiOptions!.mandatory = true;
         prompt.guiOptions!.breadcrumb = true;
         prompt.validate = (value, answers: AttributesAnswers) =>
             validateNamespaceAdp(value, answers.projectName, isCustomerBase);
+    } else {
+        prompt.guiOptions!.type = 'label';
+        prompt.when = (answers): boolean => !!answers.projectName;
     }
 
     return prompt;

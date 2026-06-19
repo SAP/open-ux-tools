@@ -502,7 +502,7 @@ function mergeAnnotations(
     mergeSplitAnnotations: boolean
 ): Record<string, Record<string, string>> {
     const fileMergeMaps: Record<string, Record<string, string>> = {};
-    for (const annotationFile of [...compiledService.annotationFiles]) {
+    for (const annotationFile of compiledService.annotationFiles) {
         const mergeMap = {};
         fileMergeMaps[annotationFile.uri] = mergeMap;
         const targets = convertAnnotationFile(annotationFile, serviceName, {

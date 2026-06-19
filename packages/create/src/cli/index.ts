@@ -30,7 +30,9 @@ import { getUpdateCommands } from './update/index.js';
 export function handleCreateFioriCommand(argv: string[]): void {
     const logger = getLogger();
     if (!Array.isArray(argv) || argv.length < 2) {
-        throw Error(`This function must be called from command line interface (cli). Or provide meaningful arguments.`);
+        throw new Error(
+            `This function must be called from command line interface (cli). Or provide meaningful arguments.`
+        );
     }
     try {
         const program = getCommanderProgram();

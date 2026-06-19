@@ -25,10 +25,10 @@ import { UIHighlightMenuOption } from '../UIContextualMenu/index.js';
 import './UICreateSelect.scss';
 import { COMMON_INPUT_STYLES } from '../UIInput/index.js';
 
-export { MultiValue as UICreateSelectMultiValue };
-export { ActionMeta as UICreateSelectActionMeta };
-export { Options as UICreateSelectOptions };
-export { OptionsOrGroups as UICreateSelectOptionsOrGroups };
+export type { MultiValue as UICreateSelectMultiValue };
+export type { ActionMeta as UICreateSelectActionMeta };
+export type { Options as UICreateSelectOptions };
+export type { OptionsOrGroups as UICreateSelectOptionsOrGroups };
 export type { SelectInstance as UICreateSelectInstance } from 'react-select';
 
 export interface UICreateSelectOptionEntry {
@@ -210,9 +210,9 @@ export const UICreateSelect: FC<UICreateSelectProps> = (props: UICreateSelectPro
                     padding: '0px 8px',
                     fontSize: '13px',
                     '&:hover': {
-                        backgroundColor: !state.isSelected
-                            ? 'var(--vscode-list-hoverBackground)'
-                            : getBackgroundColor(state),
+                        backgroundColor: state.isSelected
+                            ? getBackgroundColor(state)
+                            : 'var(--vscode-list-hoverBackground)',
                         color: state.isSelected
                             ? 'var(--vscode-editorSuggestWidget-selectedForeground, var(--vscode-quickInputList-focusForeground, var(--vscode-editorSuggestWidget-foreground)))'
                             : 'var(--vscode-editorSuggestWidget-foreground)',

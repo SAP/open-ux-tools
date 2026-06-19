@@ -35,7 +35,7 @@ async function getDestinationFromApp(appRoot: string): Promise<string[]> {
             }
         }
     } else {
-        throw Error(t('error.ui5YamlMissing', { appRoot }));
+        throw new Error(t('error.ui5YamlMissing', { appRoot }));
     }
     return appDestinations;
 }

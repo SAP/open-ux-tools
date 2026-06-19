@@ -72,10 +72,10 @@ async function convertPreview(
     try {
         const fs = await convertToVirtualPreview(basePath, { convertTests, logger });
 
-        if (!simulate) {
-            fs.commit(() => logger.info(`The changes for preview conversion have been written.`));
-        } else {
+        if (simulate) {
             await traceChanges(fs);
+        } else {
+            fs.commit(() => logger.info(`The changes for preview conversion have been written.`));
         }
     } catch (error) {
         logger.error(error?.message);
