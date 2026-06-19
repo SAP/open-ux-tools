@@ -98,9 +98,6 @@ function findDestination(destinations: Destination[], query: string): Destinatio
         match = destinations.find((d) => d.Name.toLocaleLowerCase() === queryLower);
     }
     if (!match) {
-        match = destinations.find((d) => d.Name.toLocaleLowerCase().startsWith(queryLower));
-    }
-    if (!match) {
         match = destinations.find((d) => d.Name.toLocaleLowerCase().includes(queryLower));
     }
 
@@ -147,7 +144,8 @@ export async function findSystem(
     if (isAppStudio()) {
         try {
             const system = findDestination((await getSystemsOrDestinations()) as Destination[], query);
-            return { system };
+            const message = system ? undefined : `No matching destination found for: ${query}`;
+            return { system, message };
         } catch (e) {
             logger.error(`Error retrieving destinations: ${e}`);
             return { system: undefined, message: `Error retrieving destinations: ${e}` };

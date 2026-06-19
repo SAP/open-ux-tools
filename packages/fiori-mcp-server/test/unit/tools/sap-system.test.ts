@@ -662,7 +662,7 @@ describe('service-metadata', () => {
                 expect(result.system).toEqual(mockDestinations.DEST_A);
             });
 
-            test('should find destination by partial name starts-with', async () => {
+            test('should find destination by partial name (includes)', async () => {
                 const result = await findSystem('DEST');
                 expect(result.system).toEqual(mockDestinations.DEST_A);
             });
@@ -670,6 +670,12 @@ describe('service-metadata', () => {
             test('should find destination by host URL', async () => {
                 const result = await findSystem('https://dest-a.example.com');
                 expect(result.system).toEqual(mockDestinations.DEST_A);
+            });
+
+            test('should return undefined system with message when no destination matches', async () => {
+                const result = await findSystem('NONEXISTENT');
+                expect(result.system).toBeUndefined();
+                expect(result.message).toContain('NONEXISTENT');
             });
 
             test('should return undefined system with message when listDestinations throws', async () => {
