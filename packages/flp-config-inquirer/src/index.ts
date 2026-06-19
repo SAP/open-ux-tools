@@ -5,8 +5,7 @@ import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-commo
 
 import { initI18n } from './i18n.js';
 import { getQuestions } from './prompts/index.js';
-import { promptNames } from './types.js';
-import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions } from './types.js';
+import type { promptNames, FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions } from './types.js';
 
 /**
  * Retrieves the inquirer prompts for the FLP configuration.
