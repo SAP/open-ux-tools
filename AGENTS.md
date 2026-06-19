@@ -296,11 +296,15 @@ pnpm audit
 
 **Bundled devDependency cascades:**
 
-Some packages use esbuild to inline their `devDependencies` into the dist bundle at build time. When one of those bundled workspace packages is released, the bundling consumer **must also have a changeset** — otherwise it will not be re-published and consumers will keep running the old bundled code.
+Some packages use esbuild to inline their dependency graph into the dist bundle at build time. When any workspace package in that graph is released, the bundling consumer **must also have a changeset** — otherwise it will not be re-published and consumers will keep running the old bundled code.
 
-Currently affected bundling packages are declared in [`scripts/validate-changesets.mjs`](scripts/validate-changesets.mjs) (`ESBUILD_BUNDLING_PACKAGES` array). Their bundled workspace devDeps are derived automatically from each package's `package.json` devDependencies (any `@sap-ux/*` or `@sap-ux-private/*` scoped package). This is enforced automatically: `pnpm build` and `pnpm cset` both run `pnpm validate:changesets` and will error with an actionable message if a cascade changeset is missing.
+The affected bundling packages are declared in [`scripts/validate-changesets.mjs`](scripts/validate-changesets.mjs) (`ESBUILD_BUNDLING_PACKAGES` array). The set of bundled deps is derived automatically by walking the dependency graph:
+- The bundler's own `devDependencies` are included (esbuild reads them directly)
+- For transitive deps, only their `dependencies` are followed — their `devDependencies` are not installed in the bundler's `node_modules` tree and are never bundled
 
-**If you release a package that is a bundled devDep** (e.g. `@sap-ux/fiori-docs-embeddings`), you must also add a patch changeset for each consumer listed in the script. Example:
+This is enforced automatically: `pnpm build` and `pnpm cset` both run `pnpm validate:changesets` and will error with an actionable message if a cascade changeset is missing.
+
+**If you release any workspace package** (direct devDep or transitive dep via `dependencies`), check whether it is in the bundle of any `ESBUILD_BUNDLING_PACKAGES` consumer — `pnpm validate:changesets` will tell you. Example cascade changeset:
 
 ```markdown
 ---
@@ -310,7 +314,7 @@ Currently affected bundling packages are declared in [`scripts/validate-changese
 BUMP: Rebuild bundle with updated @sap-ux/fiori-docs-embeddings
 ```
 
-**If you add a new esbuild-bundling package**, add its name to `ESBUILD_BUNDLING_PACKAGES` in `scripts/validate-changesets.mjs` — its bundled deps are derived automatically from its `package.json`.
+**If you add a new esbuild-bundling package**, add its name to `ESBUILD_BUNDLING_PACKAGES` in `scripts/validate-changesets.mjs` — its bundled dep set is derived automatically from the dependency graph.
 
 **Private packages and changesets:**
 
