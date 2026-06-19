@@ -2,11 +2,15 @@
 
 ## 1.0.2
 
+*Released: 2026-06-09T19:59:54Z*
+
 ### Patch Changes
 
 - 79047c2: fix: access target kind from \_id.kind with fallback to definitions.kind for backward compatibility
 
 ## 1.0.1
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -18,6 +22,8 @@
     - @sap-ux/odata-vocabularies@1.0.1
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -60,6 +66,8 @@
 
 ## 0.8.1
 
+*Released: 2026-05-20T13:39:22Z*
+
 ### Patch Changes
 
 - @sap-ux/odata-annotation-core@0.3.1
@@ -67,6 +75,8 @@
 - @sap-ux/cds-annotation-parser@0.3.1
 
 ## 0.8.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -82,6 +92,8 @@
 
 ## 0.7.18
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -92,6 +104,8 @@
     - @sap-ux/text-document-utils@0.3.5
 
 ## 0.7.17
+
+*Released: 2026-04-30T14:23:24Z*
 
 ### Patch Changes
 
@@ -104,6 +118,8 @@
 
 ## 0.7.16
 
+*Released: 2026-03-30T22:24:11Z*
+
 ### Patch Changes
 
 - c53a4ba: chore(cds-odata-annotation-converter): upgrade shared devDependencies (jest 30)
@@ -112,6 +128,8 @@
     - @sap-ux/cds-annotation-parser@0.2.35
 
 ## 0.7.15
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 

@@ -2,6 +2,8 @@
 
 ## 2.0.3
 
+*Released: 2026-06-12T06:53:23Z*
+
 ### Patch Changes
 
 - Updated dependencies [41b3908]
@@ -9,12 +11,16 @@
 
 ## 2.0.2
 
+*Released: 2026-06-09T14:35:01Z*
+
 ### Patch Changes
 
 - Updated dependencies [0fa8305]
     - @sap-ux/btp-utils@2.0.2
 
 ## 2.0.1
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -25,6 +31,8 @@
     - @sap-ux/logger@1.0.1
 
 ## 2.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -66,6 +74,8 @@
 
 ## 1.26.1
 
+*Released: 2026-05-26T16:40:21Z*
+
 ### Patch Changes
 
 - 01b70ca: chore: upgrade qs 6.15.0 → 6.15.2 (GHSA-q8mj-m7cp-5q26)
@@ -73,6 +83,8 @@
     - @sap-ux/btp-utils@1.2.1
 
 ## 1.26.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -87,6 +99,8 @@
 
 ## 1.25.37
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -97,11 +111,15 @@
 
 ## 1.25.36
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - 21abda3: chore: upgrade fast-xml-parser 5.7.2 → 5.8.0 (fixes fast-xml-builder CVE-2025-47916)
 
 ## 1.25.35
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -111,11 +129,15 @@
 
 ## 1.25.34
 
+*Released: 2026-04-30T14:23:24Z*
+
 ### Patch Changes
 
 - c160401: fix: SONAR issues
 
 ## 1.25.33
+
+*Released: 2026-04-29T15:24:37Z*
 
 ### Patch Changes
 
@@ -123,6 +145,8 @@
 - 3945459: chore: upgrade @xmldom/xmldom 0.8.12 to 0.8.13 (security fix for XML injection vulnerabilities)
 
 ## 1.25.32
+
+*Released: 2026-04-23T06:48:55Z*
 
 ### Patch Changes
 
@@ -132,12 +156,16 @@
 
 ## 1.25.31
 
+*Released: 2026-04-14T20:26:28Z*
+
 ### Patch Changes
 
 - Updated dependencies [ee68603]
     - @sap-ux/btp-utils@1.1.14
 
 ## 1.25.30
+
+*Released: 2026-04-14T12:35:35Z*
 
 ### Patch Changes
 
@@ -146,6 +174,8 @@
     - @sap-ux/btp-utils@1.1.13
 
 ## 1.25.29
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -156,6 +186,8 @@
     - @sap-ux/btp-utils@1.1.12
 
 ## 1.25.28
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -168,12 +200,16 @@
 
 ## 1.25.27
 
+*Released: 2026-03-27T11:58:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [2e17a6b]
     - @sap-ux/btp-utils@1.1.12
 
 ## 1.25.26
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -184,6 +220,8 @@
     - @sap-ux/logger@0.8.3
 
 ## 1.25.25
+
+*Released: 2026-03-23T18:25:40Z*
 
 ### Patch Changes
 

@@ -1,19 +1,11 @@
 import base from '../../eslint.config.mjs';
 
-const __dirname = import.meta.dirname;
-
 export default [
     {
         ignores: ['jest.resolver.cjs', 'test/__cjs-proxies/**']
     },
     ...base,
     {
-        languageOptions: {
-            parserOptions: {
-                tsconfigRootDir: __dirname,
-                project: './tsconfig.eslint.json'
-            }
-        },
         rules: {
             'jsdoc/require-jsdoc': [
                 'error',
