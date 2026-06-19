@@ -20,7 +20,7 @@ import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
 import cdsCompilerFacade from '@sap/ux-cds-compiler-facade';
 const { createMetadataCollector } = cdsCompilerFacade;
 
-import type { Annotation, Collection, Token } from '@sap-ux/cds-annotation-parser';
+import type { Annotation, AnnotationGroup, Collection, Token } from '@sap-ux/cds-annotation-parser';
 import {
     copyRange,
     ENUM_TYPE,
@@ -445,14 +445,16 @@ export class CDSWriter implements ChangeHandler {
         );
 
         const ranges = astNode.assignments
-            .flatMap((assignment) => (assignment.type === ANNOTATION_TYPE ? [assignment] : assignment.items.items))
+            .flatMap((assignment) =>
+                assignment.type === ANNOTATION_TYPE ? [assignment] : (assignment as AnnotationGroup).items.items
+            )
             .map((annotation, i) => {
                 return getDeletionRangeForNode(
                     this.vocabularyService,
                     this.vocabularyAliases,
                     i,
                     this.tokens,
-                    annotation,
+                    annotation as Annotation,
                     edmxPath
                 );
             })

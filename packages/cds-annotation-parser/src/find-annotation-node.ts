@@ -19,7 +19,8 @@ import {
     CORRECT_EXPRESSION_TYPE,
     UNSUPPORTED_OPERATOR_EXPRESSION_TYPE,
     INCORRECT_EXPRESSION_TYPE,
-    OPERATOR_TYPE
+    OPERATOR_TYPE,
+    FLATTENED_EXPRESSION_TYPE
 } from './transformer/index.js';
 import { positionContained } from '@sap-ux/odata-annotation-core';
 
@@ -65,6 +66,7 @@ class PositionVisitor {
         this.createNodeHandler(CORRECT_EXPRESSION_TYPE, [], ['operators', 'operands']);
         this.createNodeHandler(INCORRECT_EXPRESSION_TYPE, [], ['operators', 'operands']);
         this.createNodeHandler(UNSUPPORTED_OPERATOR_EXPRESSION_TYPE, [], ['operators', 'operands']);
+        this.createNodeHandler(FLATTENED_EXPRESSION_TYPE, [], ['value']);
     }
 
     /**
@@ -119,12 +121,15 @@ class PositionVisitor {
             }
             for (const propertyName of collectionProperties) {
                 let i = 0;
-                for (const item of (node as unknown as { [key: string]: AnnotationNode[] })[propertyName] || []) {
-                    const children = this.visit(item, options, i);
-                    if (children.length) {
-                        return [segment, propertyName, ...children];
+                const property = (node as unknown as { [key: string]: AnnotationNode[] })[propertyName];
+                if (Array.isArray(property)) {
+                    for (const item of property || []) {
+                        const children = this.visit(item, options, i);
+                        if (children.length) {
+                            return [segment, propertyName, ...children];
+                        }
+                        i++;
                     }
-                    i++;
                 }
             }
             return [segment];
