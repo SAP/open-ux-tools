@@ -10,12 +10,14 @@ const BLOCKED_MAJOR_PACKAGES = [
 ];
 
 /**
- * Packages that use esbuild to bundle their entire dependency graph into the
- * dist output. esbuild resolves the full module graph at build time, so ALL
- * transitive workspace dependencies (not just direct devDeps) end up inlined.
+ * Packages that use esbuild to bundle their dependency graph into the dist output.
  *
- * When any transitive workspace dep is released, the bundler must be
- * re-published so consumers receive the updated bundle.
+ * When any of a bundler's transitive workspace deps is released, the bundler
+ * must be re-published so consumers receive the updated bundle.
+ *
+ * Walk rule: the bundler's own devDependencies are bundled directly; for
+ * transitive deps only their `dependencies` are followed (their devDependencies
+ * are not installed in the bundler's node_modules and are never bundled).
  *
  * Add a package here when it gains an esbuild-based bundle step. Remove it if
  * the package stops bundling its dependencies.
@@ -50,19 +52,30 @@ function buildPackageMap() {
 }
 
 /**
- * Collect all transitive workspace dependencies of a package (including itself).
- * Walks dependencies, devDependencies, and peerDependencies recursively.
- * esbuild bundles the full module graph, so transitive deps are inlined too.
+ * Collect all workspace packages that end up in a bundler's esbuild output.
+ *
+ * esbuild resolves from node_modules, so the rule is:
+ * - The bundler's own devDependencies ARE bundled (esbuild reads them directly)
+ * - For every transitive dep, only its `dependencies` are followed — its
+ *   devDependencies are not part of its published artifact and are never
+ *   installed as part of the bundler's node_modules tree
  */
-function transitiveWorkspaceDeps(startName, pkgMap, visited = new Set()) {
-    if (visited.has(startName)) return visited;
-    visited.add(startName);
-    const pkg = pkgMap.get(startName);
-    if (!pkg) return visited;
-    const allDeps = { ...pkg.dependencies, ...pkg.devDependencies, ...pkg.peerDependencies };
-    for (const dep of Object.keys(allDeps)) {
-        if (pkgMap.has(dep)) transitiveWorkspaceDeps(dep, pkgMap, visited);
+function transitiveWorkspaceDeps(startName, pkgMap) {
+    const visited = new Set();
+    function walk(name, isRoot) {
+        if (visited.has(name)) return;
+        visited.add(name);
+        const pkg = pkgMap.get(name);
+        if (!pkg) return;
+        const toFollow = isRoot
+            ? { ...pkg.dependencies, ...pkg.devDependencies }
+            : { ...pkg.dependencies };
+        for (const dep of Object.keys(toFollow)) {
+            if (pkgMap.has(dep)) walk(dep, false);
+        }
     }
+    walk(startName, true);
+    visited.delete(startName); // exclude self
     return visited;
 }
 
