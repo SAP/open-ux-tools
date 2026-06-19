@@ -139,26 +139,33 @@ export async function getSystemsOrDestinations(includeSensitiveData = false): Pr
  * In BAS returns a Destination, in VSCode returns a BackendSystem.
  *
  * @param query - The name, host or URL to match.
- * @returns The matching system if found.
+ * @returns An object with the matched system (or undefined) and an optional diagnostic message.
  */
-export async function findSystem(query: string): Promise<BackendSystem | Destination | undefined> {
+export async function findSystem(
+    query: string
+): Promise<{ system: BackendSystem | Destination | undefined; message?: string }> {
     if (isAppStudio()) {
         try {
-            return findDestination((await getSystemsOrDestinations()) as Destination[], query);
+            const system = findDestination((await getSystemsOrDestinations()) as Destination[], query);
+            return { system };
         } catch (e) {
             logger.error(`Error retrieving destinations: ${e}`);
-            return undefined;
+            return { system: undefined, message: `Error retrieving destinations: ${e}` };
         }
     }
     try {
-        return findSapSystem((await getSystemsOrDestinations(true)) as BackendSystem[], query);
+        const result = findSapSystem((await getSystemsOrDestinations(true)) as BackendSystem[], query);
+        return result;
     } catch (e) {
         logger.error(`Error retrieving systems: ${e}`);
-        return undefined;
+        return { system: undefined, message: `Error retrieving systems: ${e}` };
     }
 }
 
-function findSapSystem(systems: BackendSystem[], query: string): BackendSystem | undefined {
+function findSapSystem(
+    systems: BackendSystem[],
+    query: string
+): { system: BackendSystem | undefined; message?: string } {
     let matchingSystems = systems.filter((s) => s.name === query);
 
     const queryLower = query.toLocaleLowerCase();
@@ -177,16 +184,18 @@ function findSapSystem(systems: BackendSystem[], query: string): BackendSystem |
     }
 
     if (!matchingSystems.length) {
-        logger.debug(`No matching system found for: ${query}`);
-        return undefined;
+        const message = `No matching system found for: ${query}`;
+        logger.debug(message);
+        return { system: undefined, message };
     }
     if (matchingSystems.length > 1) {
         const names = matchingSystems.map((s) => s.name).join(', ');
-        logger.debug(`Multiple systems found matching: ${query}. Matched systems: ${names}`);
-        return undefined;
+        const message = `Multiple systems found matching: ${query}. Please be more specific. Matched systems: ${names}`;
+        logger.debug(message);
+        return { system: undefined, message };
     }
 
-    return matchingSystems[0];
+    return { system: matchingSystems[0] };
 }
 
 /**

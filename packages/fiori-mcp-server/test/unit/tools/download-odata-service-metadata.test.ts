@@ -53,7 +53,7 @@ describe('downloadODataServiceMetadata', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockIsAppStudio.mockReturnValue(false);
-        mockFindSystem.mockResolvedValue(mockSapSystem);
+        mockFindSystem.mockResolvedValue({ system: mockSapSystem });
         mockGetServiceMetadata.mockResolvedValue(mockMetadata);
         mockWriteFileSync.mockImplementation(() => {});
     });
@@ -124,7 +124,7 @@ describe('downloadODataServiceMetadata', () => {
     });
 
     test('should return error when system not found', async () => {
-        mockFindSystem.mockResolvedValue(undefined);
+        mockFindSystem.mockResolvedValue({ system: undefined, message: 'No matching system found for: Unknown' });
 
         const params: DownloadODataServiceMetadataInput = {
             appPath: mockAppPath,
@@ -134,7 +134,7 @@ describe('downloadODataServiceMetadata', () => {
 
         const result = await downloadODataServiceMetadata(params);
         expect(result.status).toBe('Error');
-        expect(result.message).toBe('The requested system could not be found');
+        expect(result.message).toBe('No matching system found for: Unknown');
         expect(mockGetServiceMetadata).not.toHaveBeenCalled();
         expect(mockWriteFileSync).not.toHaveBeenCalled();
     });
@@ -215,7 +215,7 @@ describe('downloadODataServiceMetadata', () => {
             url: 'https://test.example.com',
             client: ''
         };
-        mockFindSystem.mockResolvedValue(systemWithoutClient);
+        mockFindSystem.mockResolvedValue({ system: systemWithoutClient });
 
         const params: DownloadODataServiceMetadataInput = {
             appPath: mockAppPath,
@@ -290,7 +290,7 @@ describe('downloadODataServiceMetadata', () => {
 
         beforeEach(() => {
             mockIsAppStudio.mockReturnValue(true);
-            mockFindSystem.mockResolvedValue(mockDestination);
+            mockFindSystem.mockResolvedValue({ system: mockDestination });
         });
 
         test('should return destination name when isAppStudio is true', async () => {
@@ -332,7 +332,7 @@ describe('downloadODataServiceMetadata', () => {
 
         test('should not return destination when isAppStudio is false', async () => {
             mockIsAppStudio.mockReturnValue(false);
-            mockFindSystem.mockResolvedValue(mockSapSystem);
+            mockFindSystem.mockResolvedValue({ system: mockSapSystem });
 
             const params: DownloadODataServiceMetadataInput = {
                 appPath: mockAppPath,

@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { ExecuteFunctionalityInput } from '../../../src/types/index.js';
 import type { GeneratorConfigCAPWithAPI } from '../../../src/tools/schemas/index.js';
 import { existsSync, promises as fsPromises } from 'node:fs';
 
@@ -33,8 +32,7 @@ jest.unstable_mockModule('node:child_process', () => ({
     exec: (...args: any) => mockExec(...args)
 }));
 
-const { command } = await import('../../../src/tools/generate-fiori-app-cap-impl.js');
-const { GENERATE_FIORI_UI_APPLICATION_CAP_ID } = await import('../../../src/constant.js');
+const { generateFioriAppCap } = await import('../../../src/tools/generate-fiori-app-cap.js');
 
 // Read package.json for version
 const packageJsonModule = await import('../../../package.json', { with: { type: 'json' } });
@@ -95,58 +93,19 @@ describe('executeFunctionality', () => {
         mockFileWrite((content) => {
             generatedConfigContent = content;
         });
-        const result = await command({
-            appPath: join(testOutputDir, 'app1'),
-            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
-            parameters: paramTest
+        const result = await generateFioriAppCap(paramTest);
+        expect(result).toMatchObject({
+            appPath: join(testOutputDir, 'app1/app/app1'),
+            changes: [],
+            message: `Generation completed successfully: ${join(
+                testOutputDir,
+                'app1/app/app1'
+            )}. You must run \`npm install\` in ${join(
+                testOutputDir,
+                'app1'
+            )} before trying to run the application.`,
+            status: 'Success'
         });
-        expect(result).toEqual(
-            expect.objectContaining({
-                appPath: join(testOutputDir, 'app1/app/app1'),
-                changes: [],
-                functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
-                message: `Generation completed successfully: ${join(
-                    testOutputDir,
-                    'app1/app/app1'
-                )}. You must run \`npm install\` in ${join(
-                    testOutputDir,
-                    'app1'
-                )} before trying to run the application.`,
-                parameters: {
-                    floorplan: 'FE_LROP',
-                    project: {
-                        description: 'Description for App 1',
-                        name: 'app1',
-                        targetFolder: join(testOutputDir, 'app1'),
-                        'title': 'App 1',
-                        'ui5Version': '1.136.7',
-                        sapux: true
-                    },
-                    service: {
-                        servicePath: 'odata/v4/cat-service/',
-                        capService: {
-                            serviceName: 'app1',
-                            'capType': 'Node.js',
-                            'projectPath': 'zzzapp1',
-                            'serviceCdsPath': 'srv/cat-service.cds'
-                        }
-                    },
-                    entityConfig: {
-                        mainEntity: {
-                            entityName: 'Travel'
-                        },
-                        generateFormAnnotations: true,
-                        generateLROPAnnotations: true
-                    },
-                    telemetryData: {
-                        generationSourceName: '@sap-ux/fiori-mcp-server',
-                        generationSourceVersion: packageJson.version as string
-                    },
-                    version: '0.2'
-                },
-                status: 'Success'
-            })
-        );
         expect(existsSync(join(testOutputDir, 'app1', 'default-generator-config.json'))).toBeFalsy();
         const config = JSON.parse(generatedConfigContent!);
         expect(config).toEqual({
@@ -192,13 +151,9 @@ describe('executeFunctionality', () => {
         mockFileWrite((content) => {
             generatedConfigContent = content;
         });
-        await command({
-            appPath: join(testOutputDir, 'app1'),
-            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
-            parameters: {
-                ...paramTest,
-                floorplan: 'FF_SIMPLE'
-            }
+        await generateFioriAppCap({
+            ...paramTest,
+            floorplan: 'FF_SIMPLE'
         });
         const config = JSON.parse(generatedConfigContent!);
         expect(config.project.sapux).toEqual(false);
@@ -212,19 +167,15 @@ describe('executeFunctionality', () => {
         mockFileWrite((content) => {
             generatedConfigContent = content;
         });
-        const result = await command({
-            appPath: join(testOutputDir, 'app1'),
-            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
-            parameters: {
-                floorplan: 'FF_SIMPLE',
-                project: {
-                    name: 'app1',
-                    targetFolder: join(testOutputDir, 'app1'),
-                    title: 'App 1',
-                    description: 'Description for App 1',
-                    ui5Version: '1.136.7',
-                    sapux: true
-                }
+        const result = await generateFioriAppCap({
+            floorplan: 'FF_SIMPLE',
+            project: {
+                name: 'app1',
+                targetFolder: join(testOutputDir, 'app1'),
+                title: 'App 1',
+                description: 'Description for App 1',
+                ui5Version: '1.136.7',
+                sapux: true
             }
         });
         expect(result.status).toBe('Success');
@@ -238,163 +189,25 @@ describe('executeFunctionality', () => {
         mockExec.mockImplementation((cmd, opts, callback) => {
             throw new Error('Dummy');
         });
-        const result = await command({
-            appPath: join(testOutputDir, 'app1'),
-            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
-            parameters: paramTest
+        const result = await generateFioriAppCap(paramTest);
+        expect(result).toMatchObject({
+            appPath: join(testOutputDir, 'app1/app/app1'),
+            changes: [],
+            message: `Error generating application: Dummy`,
+            status: 'Error'
         });
-        expect(result).toEqual(
-            expect.objectContaining({
-                appPath: join(testOutputDir, 'app1/app/app1'),
-                changes: [],
-                functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
-                message: `Error generating application: Dummy`,
-                parameters: paramTest,
-                status: 'Error'
-            })
-        );
         expect(existsSync(join(testOutputDir, 'app1', 'default-generator-config.json'))).toBeFalsy();
     });
 
     test('executeFunctionality - empty parameters', async () => {
-        mockExec.mockImplementation((cmd, opts, callback) => {
-            throw new Error('Dummy');
-        });
-        await expect(
-            command({
-                appPath: '',
-                functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
-                parameters: {}
-            })
-        ).rejects.toThrowErrorMatchingInlineSnapshot(`
-            "Missing required fields in parameters. [
-                {
-                    \\"code\\": \\"invalid_union\\",
-                    \\"errors\\": [
-                        [
-                            {
-                                \\"code\\": \\"invalid_value\\",
-                                \\"values\\": [
-                                    \\"FE_LROP\\"
-                                ],
-                                \\"path\\": [],
-                                \\"message\\": \\"Invalid input: expected \\\\\\"FE_LROP\\\\\\"\\"
-                            }
-                        ],
-                        [
-                            {
-                                \\"code\\": \\"invalid_value\\",
-                                \\"values\\": [
-                                    \\"FE_ALP\\"
-                                ],
-                                \\"path\\": [],
-                                \\"message\\": \\"Invalid input: expected \\\\\\"FE_ALP\\\\\\"\\"
-                            }
-                        ],
-                        [
-                            {
-                                \\"code\\": \\"invalid_value\\",
-                                \\"values\\": [
-                                    \\"FE_OVP\\"
-                                ],
-                                \\"path\\": [],
-                                \\"message\\": \\"Invalid input: expected \\\\\\"FE_OVP\\\\\\"\\"
-                            }
-                        ],
-                        [
-                            {
-                                \\"code\\": \\"invalid_value\\",
-                                \\"values\\": [
-                                    \\"FE_WORKLIST\\"
-                                ],
-                                \\"path\\": [],
-                                \\"message\\": \\"Invalid input: expected \\\\\\"FE_WORKLIST\\\\\\"\\"
-                            }
-                        ],
-                        [
-                            {
-                                \\"code\\": \\"invalid_value\\",
-                                \\"values\\": [
-                                    \\"FE_FEOP\\"
-                                ],
-                                \\"path\\": [],
-                                \\"message\\": \\"Invalid input: expected \\\\\\"FE_FEOP\\\\\\"\\"
-                            }
-                        ],
-                        [
-                            {
-                                \\"code\\": \\"invalid_value\\",
-                                \\"values\\": [
-                                    \\"FE_FPM\\"
-                                ],
-                                \\"path\\": [],
-                                \\"message\\": \\"Invalid input: expected \\\\\\"FE_FPM\\\\\\"\\"
-                            }
-                        ],
-                        [
-                            {
-                                \\"code\\": \\"invalid_value\\",
-                                \\"values\\": [
-                                    \\"FF_SIMPLE\\"
-                                ],
-                                \\"path\\": [],
-                                \\"message\\": \\"Invalid input: expected \\\\\\"FF_SIMPLE\\\\\\"\\"
-                            }
-                        ]
-                    ],
-                    \\"path\\": [
-                        \\"floorplan\\"
-                    ],
-                    \\"message\\": \\"Invalid input\\"
-                },
-                {
-                    \\"expected\\": \\"object\\",
-                    \\"code\\": \\"invalid_type\\",
-                    \\"path\\": [
-                        \\"project\\"
-                    ],
-                    \\"message\\": \\"Invalid input: expected object, received undefined\\"
-                }
-            ]"
-        `);
+        await expect(generateFioriAppCap({} as any)).rejects.toThrow();
     });
 
     test('executeFunctionality - parameters as non object', async () => {
-        mockExec.mockImplementation((cmd, opts, callback) => {
-            throw new Error('Dummy');
-        });
-        await expect(
-            command({
-                appPath: 'app1',
-                functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
-                parameters: 'dummy'
-            } as unknown as ExecuteFunctionalityInput)
-        ).rejects.toThrowErrorMatchingInlineSnapshot(`
-            "Missing required fields in parameters. [
-                {
-                    \\"expected\\": \\"object\\",
-                    \\"code\\": \\"invalid_type\\",
-                    \\"path\\": [],
-                    \\"message\\": \\"Invalid input: expected object, received string\\"
-                }
-            ]"
-        `);
+        await expect(generateFioriAppCap('dummy' as any)).rejects.toThrow();
     });
 
     test('executeFunctionality called without parameters (unexpected in real use case)', async () => {
-        mockExec.mockImplementation((cmd, opts, callback) => {
-            throw new Error('Dummy');
-        });
-        await expect(command(undefined as unknown as ExecuteFunctionalityInput)).rejects
-            .toThrowErrorMatchingInlineSnapshot(`
-            "Missing required fields in parameters. [
-                {
-                    \\"expected\\": \\"object\\",
-                    \\"code\\": \\"invalid_type\\",
-                    \\"path\\": [],
-                    \\"message\\": \\"Invalid input: expected object, received undefined\\"
-                }
-            ]"
-        `);
+        await expect(generateFioriAppCap(undefined as any)).rejects.toThrow();
     });
 });

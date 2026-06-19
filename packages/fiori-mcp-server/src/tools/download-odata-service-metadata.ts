@@ -7,6 +7,12 @@ import type { Destination } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
 import { getServiceMetadata, findSystem } from './services/sap-system.js';
 
+const EMPTY_PARAMS: DownloadODataServiceMetadataOutput['parameters'] = {
+    host: '',
+    servicePath: '',
+    metadataFilePath: ''
+};
+
 /**
  * Downloads OData service metadata from a SAP system and saves it as metadata.xml.
  *
@@ -23,7 +29,7 @@ export async function downloadODataServiceMetadata(
         return {
             status: 'Error',
             message: 'Missing required parameter: servicePath',
-            parameters: params as any,
+            parameters: EMPTY_PARAMS,
             appPath: params.appPath,
             changes: [],
             timestamp: new Date().toISOString()
@@ -31,17 +37,18 @@ export async function downloadODataServiceMetadata(
     }
 
     try {
-        const foundSystem = await findSystem(sapSystemQuery || servicePath);
-        if (!foundSystem) {
+        const findResult = await findSystem(sapSystemQuery || servicePath);
+        if (!findResult.system) {
             return {
                 status: 'Error',
-                message: 'The requested system could not be found',
-                parameters: params as any,
+                message: findResult.message ?? 'The requested system could not be found',
+                parameters: EMPTY_PARAMS,
                 appPath: params.appPath,
                 changes: [],
                 timestamp: new Date().toISOString()
             };
         }
+        const foundSystem = findResult.system;
 
         const metadata = await getServiceMetadata(foundSystem, servicePath);
         const metadataFilePath = path.join(params.appPath, 'metadata.xml');
@@ -71,8 +78,8 @@ export async function downloadODataServiceMetadata(
     } catch (error) {
         return {
             status: 'Error',
-            message: error?.message ?? String(error),
-            parameters: params as any,
+            message: error instanceof Error ? error.message : String(error),
+            parameters: EMPTY_PARAMS,
             appPath: params.appPath,
             changes: [],
             timestamp: new Date().toISOString()

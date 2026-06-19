@@ -77,6 +77,18 @@ export const FetchServiceMetadataOutputSchema = zod.object({
     timestamp: zod.string()
 });
 
+/**
+ * Output schema for the 'generate_fiori_app_odata' and 'generate_fiori_app_cap' tools
+ */
+export const GenerateAppOutputSchema = zod.object({
+    status: zod.string(),
+    message: zod.string(),
+    parameters: zod.unknown(),
+    appPath: zod.string(),
+    changes: zod.array(zod.string()),
+    timestamp: zod.string()
+});
+
 export const ExecuteFunctionalityOutputSchema = zod.object({
     /** ID or array of IDs of the executed functionality(ies) */
     functionalityId: FunctionalityIdSchema,
