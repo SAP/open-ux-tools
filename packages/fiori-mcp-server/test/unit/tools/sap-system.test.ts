@@ -705,7 +705,7 @@ describe('service-metadata', () => {
 
                 await getServiceMetadata(destination, '/sap/opu/odata4/service1/$metadata');
 
-                expect(mockDestServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service1');
+                expect(mockDestServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service1/');
             });
 
             test('should not use AbapServiceProvider when isAppStudio is true', async () => {

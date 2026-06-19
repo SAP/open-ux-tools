@@ -78,7 +78,7 @@ export const tools = [
     {
         name: 'download_odata_service_metadata',
         description: `Downloads the metadata (EDMX) of a specific OData service from a SAP system and saves it as metadata.xml.
-                    Also known as 'fetch-service-metadata' (previous name, kept for backwards compatibility).
+                    Note: this tool replaces the old 'fetch-service-metadata' functionality that was previously available via the 'execute_functionality' workflow — use this tool directly instead.
                     Use this before calling 'generate_fiori_app_odata' when the user provides a SAP system reference or service URL.
                     - If the user provides a system name or host, use 'list_sap_systems' first to resolve it.
                     - Pass the full URL as sapSystemQuery if a full URL is provided; pass only the path as servicePath.

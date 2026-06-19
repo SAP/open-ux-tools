@@ -207,8 +207,8 @@ function findSapSystem(
  */
 async function getServiceFromBackendSystem(backendSystem: BackendSystem, servicePath: string): Promise<ODataService> {
     const normalizedPath = servicePath.startsWith('http')
-        ? parseUrl(servicePath).path.replace(/\/\$metadata$/, '')
-        : servicePath.replace(/\/\$metadata$/, '');
+        ? parseUrl(servicePath).path.replace(/\$metadata$/, '')
+        : servicePath.replace(/\$metadata$/, '');
 
     const providerConfig: AxiosRequestConfig = {
         baseURL: backendSystem.url,
@@ -244,7 +244,7 @@ async function getServiceFromBackendSystem(backendSystem: BackendSystem, service
  * @returns The ODataService instance.
  */
 function getServiceFromDestination(destination: Destination, servicePath: string): ODataService {
-    const normalizedPath = servicePath.replace(/\/\$metadata$/, '');
+    const normalizedPath = servicePath.replace(/\$metadata$/, '');
     const serviceProvider = createForDestination({}, destination);
     return serviceProvider.service(normalizedPath) as ODataService;
 }

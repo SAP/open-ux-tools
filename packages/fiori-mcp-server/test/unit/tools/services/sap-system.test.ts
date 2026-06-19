@@ -262,7 +262,7 @@ describe('getServiceMetadata — VSCode', () => {
 
     test('strips $metadata suffix from service path', async () => {
         await getServiceMetadata(SYSTEM_A, '/sap/opu/odata4/svc/$metadata');
-        expect(mockServiceFn).toHaveBeenCalledWith('/sap/opu/odata4/svc');
+        expect(mockServiceFn).toHaveBeenCalledWith('/sap/opu/odata4/svc/');
     });
 
     test('uses catalog match when service is listed', async () => {
@@ -325,7 +325,7 @@ describe('getServiceMetadata — BAS', () => {
 
     test('strips $metadata suffix from service path', async () => {
         await getServiceMetadata(DEST_A, '/sap/opu/odata4/svc/$metadata');
-        expect(mockServiceFn).toHaveBeenCalledWith('/sap/opu/odata4/svc');
+        expect(mockServiceFn).toHaveBeenCalledWith('/sap/opu/odata4/svc/');
     });
 
     test('fetches and returns formatted metadata', async () => {

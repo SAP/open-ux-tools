@@ -133,7 +133,7 @@ describe('FioriFunctionalityServer', () => {
                 instructions: expect.any(String)
             });
             expect(result.protocolVersion).toBeTruthy();
-            expect(result.instructions).toBeTruthy();
+            expect(result.instructions).toMatchSnapshot();
         });
 
         test('should use default values when clientInfo is not provided', async () => {
@@ -157,6 +157,7 @@ describe('FioriFunctionalityServer', () => {
                 instructions: expect.any(String)
             });
             expect(result.protocolVersion).toBeTruthy();
+            expect(result.instructions).toMatchSnapshot();
         });
 
         test('should use default values when clientInfo.name is missing', async () => {
