@@ -74,15 +74,17 @@ ruleTester.run(TEST_NAME, noLiveModeRule, {
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
                     {
-                        path: ['sap.ui5', 'routing', 'targets', 'IncidentsList', 'options', 'settings', 'liveMode'],
-                        value: true
+                        path: ['sap.ui5', 'routing', 'targets', 'IncidentsList', 'options', 'settings'],
+                        value: {
+                            entitySet: 'Incidents',
+                            liveMode: true
+                        }
                     }
                 ]),
                 errors: [
                     {
-                        message:
-                            'The Go Button must always be present in the application filter bar, so the liveMode property should not be used.',
-                        line: 130,
+                        message: 'Live mode should not be used as it has a negative impact on performance',
+                        line: 114,
                         column: 15
                     }
                 ],
@@ -91,23 +93,7 @@ ruleTester.run(TEST_NAME, noLiveModeRule, {
                         path: ['sap.ui5', 'routing', 'targets', 'IncidentsList', 'options', 'settings'],
                         value: {
                             // liveMode property removed
-                            entitySet: 'Incidents',
-                            variantManagement: 'Page',
-                            navigation: {
-                                Incidents: {
-                                    detail: {
-                                        route: 'IncidentsObjectPage'
-                                    }
-                                }
-                            },
-                            controlConfiguration: {
-                                '@com.sap.vocabularies.UI.v1.LineItem': {
-                                    tableSettings: {
-                                        type: 'ResponsiveTable',
-                                        selectionMode: 'Auto'
-                                    }
-                                }
-                            }
+                            entitySet: 'Incidents'
                         }
                     }
                 ])
