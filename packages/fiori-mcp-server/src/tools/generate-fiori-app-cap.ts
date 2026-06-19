@@ -9,11 +9,14 @@ import { GENERATE_FIORI_UI_APPLICATION_CAP_ID } from '../constant.js';
  * @param args - Input parameters matching the generatorConfigCAP schema.
  * @returns A promise resolving to the generation execution output.
  */
-export async function generateFioriAppCap(args: GeneratorConfigCAP): Promise<ExecuteFunctionalityOutput> {
+export async function generateFioriAppCap(
+    args: GeneratorConfigCAP
+): Promise<Omit<ExecuteFunctionalityOutput, 'functionalityId'>> {
     const validated = generatorConfigCAP.parse(args);
-    return command({
+    const { functionalityId: _id, ...result } = await command({
         functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
         parameters: validated,
         appPath: validated.project?.targetFolder ?? ''
     });
+    return result;
 }

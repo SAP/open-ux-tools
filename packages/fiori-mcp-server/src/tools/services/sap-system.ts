@@ -3,7 +3,6 @@ import type { AxiosRequestConfig, ODataService, ODataServiceInfo } from '@sap-ux
 
 import { AbapServiceProvider, ODataVersion, TlsPatch, createForDestination } from '@sap-ux/axios-extension';
 import { getService, getSapToolsDirectory } from '@sap-ux/store';
-import { ToolsLogger } from '@sap-ux/logger';
 import { parse as parseEdmx } from '@sap-ux/edmx-parser';
 import format from 'xml-formatter';
 import { logger } from '../../utils/index.js';
@@ -27,7 +26,6 @@ const SAP_TOOLS_BASE_DIRECTORY = process.env.SAP_TOOLS_DIR || getSapToolsDirecto
  * @returns A promise that resolves to an array of BackendSystem objects.
  */
 export async function getSapSystems(includeSensitiveData = false): Promise<BackendSystem[]> {
-    const logger = new ToolsLogger({ logPrefix: 'fiori-mcp-server' });
     const systemStore = await getService<BackendSystem, BackendSystemKey>({
         logger: logger,
         entityName: 'system',
@@ -253,7 +251,7 @@ function checkMetadata(metadata: string): void {
     }
     if (!parsedMetadata) {
         const detail = parseError instanceof Error ? ` Reason: ${parseError.message}` : '';
-        throw new Error(`Failed to parse service metadata. The service may not be a valid OData V4 service.${detail}`);
+        throw new Error(`Failed to parse service metadata. The service may not be a valid OData V4 service. ${detail}`);
     }
 }
 

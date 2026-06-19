@@ -104,7 +104,7 @@ describe('executeFunctionality', () => {
             expect.objectContaining({
                 appPath: join(testOutputDir, 'app1/app/app1'),
                 changes: [],
-                functionalityId: 'generate-fiori-ui-application-cap',
+                functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
                 message: `Generation completed successfully: ${join(
                     testOutputDir,
                     'app1/app/app1'
@@ -247,7 +247,7 @@ describe('executeFunctionality', () => {
             expect.objectContaining({
                 appPath: join(testOutputDir, 'app1/app/app1'),
                 changes: [],
-                functionalityId: 'generate-fiori-ui-application-cap',
+                functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
                 message: `Error generating application: Dummy`,
                 parameters: paramTest,
                 status: 'Error'

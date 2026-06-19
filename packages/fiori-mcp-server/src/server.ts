@@ -196,13 +196,13 @@ export class FioriFunctionalityServer {
                     case 'list_sap_systems':
                         result = await listSapSystems();
                         break;
-                    case 'fetch-service-metadata':
+                    case 'download_odata_service_metadata':
                         result = await downloadODataServiceMetadata(args as DownloadODataServiceMetadataInput);
                         break;
-                    case 'generate-fiori-ui-application':
+                    case 'generate_fiori_app_odata':
                         result = await generateFioriAppOData(args as GeneratorConfigOData);
                         break;
-                    case 'generate-fiori-ui-application-cap':
+                    case 'generate_fiori_app_cap':
                         result = await generateFioriAppCap(args as GeneratorConfigCAP);
                         break;
                     case 'list_functionality':
@@ -218,7 +218,7 @@ export class FioriFunctionalityServer {
                         // Do not pass telemetryProperties to unknownTool
                         await TelemetryHelper.sendTelemetry(unknownTool, {}, (args as any)?.appPath);
                         throw new Error(
-                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_sap_systems, fetch-service-metadata, generate-fiori-ui-application, generate-fiori-ui-application-cap, list_functionality, get_functionality_details, execute_functionality.`
+                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality.`
                         );
                 }
                 await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);

@@ -7,14 +7,28 @@ jest.unstable_mockModule('../../../src/tools/download-odata-service-metadata-imp
 }));
 
 const { downloadODataServiceMetadata } = await import('../../../src/tools/download-odata-service-metadata.js');
+const { DOWNLOAD_ODATA_SERVICE_METADATA_ID } = await import('../../../src/constant.js');
 
 describe('downloadODataServiceMetadata', () => {
     const mockAppPath = '/test/project';
     const mockServicePath = '/sap/opu/odata4/test/service';
-    const mockResult = {
-        functionalityId: 'fetch-service-metadata',
+    const mockImplResult = {
+        functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
         status: 'Success',
-        message: 'Fetched systems successfully.',
+        message: 'Service metadata downloaded successfully.',
+        changes: [],
+        parameters: {
+            host: 'https://example.com',
+            client: '100',
+            servicePath: mockServicePath,
+            metadataFilePath: `${mockAppPath}/metadata.xml`
+        },
+        appPath: mockAppPath,
+        timestamp: '2024-01-01T00:00:00.000Z'
+    };
+    const mockResult = {
+        status: 'Success',
+        message: 'Service metadata downloaded successfully.',
         changes: [],
         parameters: {
             host: 'https://example.com',
@@ -28,7 +42,7 @@ describe('downloadODataServiceMetadata', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockExecuteDefault.mockResolvedValue(mockResult);
+        mockExecuteDefault.mockResolvedValue(mockImplResult);
     });
 
     test('should call execute function with mapped params when sapSystemQuery provided', async () => {
@@ -39,7 +53,7 @@ describe('downloadODataServiceMetadata', () => {
         });
 
         expect(mockExecuteDefault).toHaveBeenCalledWith({
-            functionalityId: 'fetch-service-metadata',
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             parameters: { sapSystemQuery: 'TestSystem', servicePath: mockServicePath },
             appPath: mockAppPath
         });
@@ -53,7 +67,7 @@ describe('downloadODataServiceMetadata', () => {
         });
 
         expect(mockExecuteDefault).toHaveBeenCalledWith({
-            functionalityId: 'fetch-service-metadata',
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             parameters: { sapSystemQuery: undefined, servicePath: mockServicePath },
             appPath: mockAppPath
         });
@@ -61,7 +75,7 @@ describe('downloadODataServiceMetadata', () => {
 
     test('should return error response from execute function on failure', async () => {
         const errorResult = {
-            functionalityId: 'fetch-service-metadata',
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             status: 'Error',
             message: 'Network error',
             parameters: { sapSystemQuery: undefined, servicePath: mockServicePath },

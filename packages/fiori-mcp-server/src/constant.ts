@@ -1,7 +1,7 @@
 export const LATEST_UI5_VERSION = '1.136.7';
-export const GENERATE_FIORI_UI_APPLICATION_CAP_ID = 'generate-fiori-ui-application-cap';
-export const GENERATE_FIORI_UI_APPLICATION_ID = 'generate-fiori-ui-application';
-export const FETCH_SERVICE_METADATA_ID = 'fetch-service-metadata';
+export const GENERATE_FIORI_UI_APPLICATION_CAP_ID = 'generate_fiori_app_cap';
+export const GENERATE_FIORI_UI_APPLICATION_ID = 'generate_fiori_app_odata';
+export const DOWNLOAD_ODATA_SERVICE_METADATA_ID = 'download_odata_service_metadata';
 export const ADD_PAGE = 'add-page';
 export const DELETE_PAGE = 'delete-page';
 export const CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID = 'create-controller-extension';

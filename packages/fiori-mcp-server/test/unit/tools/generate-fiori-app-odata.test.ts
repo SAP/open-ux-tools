@@ -19,7 +19,6 @@ const { GENERATE_FIORI_UI_APPLICATION_ID } = await import('../../../src/constant
 
 describe('generateFioriAppOData', () => {
     const mockResult = {
-        functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
         status: 'Success',
         message: 'Generation completed successfully.',
         parameters: {},
@@ -27,6 +26,7 @@ describe('generateFioriAppOData', () => {
         changes: [],
         timestamp: '2024-01-01T00:00:00.000Z'
     };
+    const mockImplResult = { functionalityId: GENERATE_FIORI_UI_APPLICATION_ID, ...mockResult };
 
     const validArgs = {
         floorplan: 'FE_LROP',
@@ -36,7 +36,7 @@ describe('generateFioriAppOData', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockExecuteODataDefault.mockResolvedValue(mockResult);
+        mockExecuteODataDefault.mockResolvedValue(mockImplResult);
         mockParse.mockReturnValue(validArgs);
     });
 

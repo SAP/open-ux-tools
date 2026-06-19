@@ -66,6 +66,7 @@ jest.unstable_mockModule('../../../src/utils', () => ({
 }));
 
 const { default: executeFunctionality } = await import('../../../src/tools/generate-fiori-app-odata-impl.js');
+const { GENERATE_FIORI_UI_APPLICATION_ID } = await import('../../../src/constant.js');
 
 describe('generate-fiori-ui-application execute-functionality', () => {
     const mockAppPath = '/test/project';
@@ -86,7 +87,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
     test('should successfully generate application with valid parameters', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-application',
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -105,7 +106,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
         const result = await executeFunctionality(params);
 
         expect(result.status).toBe('Success');
-        expect(result.functionalityId).toBe('generate-fiori-ui-application');
+        expect(result.functionalityId).toBe(GENERATE_FIORI_UI_APPLICATION_ID);
         expect(result.message).toContain('Generation completed successfully');
         expect(result.appPath).toContain('testapp');
         expect(mockCheckIfGeneratorInstalled).toHaveBeenCalled();
@@ -115,7 +116,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
     test('should read metadata from file', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-application',
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -142,7 +143,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
         const customMetadataPath = '/custom/path/metadata.xml';
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-application',
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -167,7 +168,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
     test('should write generator config file', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-application',
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -195,7 +196,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
     test('should run generator command with correct parameters', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-application',
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -222,7 +223,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
     test('should clean up temporary files after generation', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-application',
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -248,7 +249,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
     test('should throw error when projectPath is invalid', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: '',
-            functionalityId: 'generate-fiori-ui-application',
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -273,7 +274,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
 
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-application',
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -298,7 +299,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
     test('should set sapux to false for FF_SIMPLE floorplan', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-application',
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
             parameters: {
                 appGenConfig: {
                     floorplan: 'FF_SIMPLE',
@@ -324,7 +325,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
     test('should succeed for FF_SIMPLE without service (no data source)', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-application',
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
             parameters: {
                 appGenConfig: {
                     floorplan: 'FF_SIMPLE',
@@ -349,7 +350,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
     test('should only clean up metadata file when service is provided', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-application',
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
             parameters: {
                 appGenConfig: {
                     floorplan: 'FF_SIMPLE',
@@ -371,7 +372,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
     test('should set sapux to true for non-FF_SIMPLE floorplan', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-application',
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -399,7 +400,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
 
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-application',
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -425,7 +426,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
 
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-application',
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -449,7 +450,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
     test('should return timestamp in ISO format', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-application',
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -473,7 +474,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
     test('should use default app name when not provided', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-application',
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_ID,
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',

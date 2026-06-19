@@ -62,7 +62,7 @@ export const tools = [
         description: `Lists all SAP systems from the user's environment. This will be SAP Fiori tools system store on VSCode or destinations on Business Application.
                     Also use this tool when the user asks to 'list destinations', 'list systems', 'list backends', or any equivalent phrasing.
                     Use this tool when the user references a SAP system by name or when you need to discover available systems
-                    before calling 'fetch-service-metadata' or generating a Fiori application.`,
+                    before calling 'download_odata_service_metadata' or generating a Fiori application.`,
         annotations: {
             title: 'List SAP Systems',
             readOnlyHint: true,
@@ -75,13 +75,14 @@ export const tools = [
         }
     },
     {
-        name: 'fetch-service-metadata',
+        name: 'download_odata_service_metadata',
         description: `Downloads the metadata (EDMX) of a specific OData service from a SAP system and saves it as metadata.xml.
-                    Use this before calling 'generate-fiori-ui-application' when the user provides a SAP system reference or service URL.
+                    Also known as 'fetch-service-metadata' (previous name, kept for backwards compatibility).
+                    Use this before calling 'generate_fiori_app_odata' when the user provides a SAP system reference or service URL.
                     - If the user provides a system name or host, use 'list_sap_systems' first to resolve it.
                     - Pass the full URL as sapSystemQuery if a full URL is provided; pass only the path as servicePath.
                     - Returns host, servicePath, client, metadataFilePath and destination (on SAP Business Application Studio) inside the result's parameters object.
-                    - Pass ALL returned fields directly into the service config of 'generate-fiori-ui-application'. On BAS, destination is mandatory and must be included.
+                    - Pass ALL returned fields directly into the service config of 'generate_fiori_app_odata'. On BAS, destination is mandatory and must be included.
                     **IMPORTANT**: On VSCode, if the service requires authentication and the system is not already stored, ask the user to store it first. Do not ask for credentials directly.`,
         annotations: {
             title: 'Download OData Service Metadata',
@@ -93,15 +94,15 @@ export const tools = [
         outputSchema: convertToSchema(Output.FetchServiceMetadataOutputSchema)
     },
     {
-        name: 'generate-fiori-ui-application',
+        name: 'generate_fiori_app_odata',
         description: `Creates (generates) a new SAP Fiori UI application within an existing project (RAP or other non-CAP).
 
         Steps:
         1. Construct the appGenConfig JSON argument.
-           - If the user provided a SAP system reference or URL, you **MUST** first call 'fetch-service-metadata'
+           - If the user provided a SAP system reference or URL, you **MUST** first call 'download_odata_service_metadata'
              to retrieve the metadata. Use ALL fields it returns (host, servicePath, client, destination, metadataFilePath) directly in the service config.
-           - In SAP Business Application Studio, 'fetch-service-metadata' returns both host and destination — both **MUST** be passed in the service config.
-           - On VSCode, 'fetch-service-metadata' returns a host URL — pass it as service.host. If the host is not provided, you **MUST** ask for it.
+           - In SAP Business Application Studio, 'download_odata_service_metadata' returns both host and destination — both **MUST** be passed in the service config.
+           - On VSCode, 'download_odata_service_metadata' returns a host URL — pass it as service.host. If the host is not provided, you **MUST** ask for it.
            - **IMPORTANT**: On VSCode, if the service requires authentication and is not already stored, ask the user to store it first. Never ask for credentials directly.
 
         2. Parse the metadata.xml to understand the data model (entities, associations).
@@ -117,7 +118,7 @@ export const tools = [
         inputSchema: generatorConfigODataJson
     },
     {
-        name: 'generate-fiori-ui-application-cap',
+        name: 'generate_fiori_app_cap',
         description: `Creates (generates) a new SAP Fiori UI application within an existing CAP project.
                     To populate parameters, you **MUST** use the ***CDS MCP*** to search the model for service definitions, entities, associations, and UI annotations.
                     As a fallback, only if no such tool is available, manually read and parse all .cds files in the projectPath.
@@ -141,7 +142,7 @@ export const tools = [
                     You MUST NOT use a functionalityId as a tool name.
                     Do not guess or assume functionalityIds — only use what this tool returns.
                     **Note: If the target application is not known, use 'list_fiori_apps' first.**
-                    **Note: To generate a new app, use 'generate-fiori-ui-application' or 'generate-fiori-ui-application-cap' instead.**
+                    **Note: To generate a new app, use 'generate_fiori_app_odata' or 'generate_fiori_app_cap' instead.**
                     If the functionality list does not cover your goal, use 'search_docs' as a fallback.`,
         annotations: {
             title: 'List Supported Fiori Modification Functionalities',

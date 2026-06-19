@@ -37,6 +37,7 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
 }));
 
 const { default: executeFunctionality } = await import('../../../src/tools/download-odata-service-metadata-impl.js');
+const { DOWNLOAD_ODATA_SERVICE_METADATA_ID } = await import('../../../src/constant.js');
 
 describe('execute-functionality', () => {
     const mockAppPath = '/test/app/path';
@@ -61,7 +62,7 @@ describe('execute-functionality', () => {
     test('should successfully execute functionality with sapSystemQuery', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'fetch-service-metadata',
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             parameters: {
                 sapSystemQuery: 'TestSystem',
                 servicePath: mockServicePath
@@ -74,7 +75,7 @@ describe('execute-functionality', () => {
         expect(mockGetServiceMetadata).toHaveBeenCalledWith(mockSapSystem, mockServicePath);
         expect(mockWriteFileSync).toHaveBeenCalledWith(path.join(mockAppPath, 'metadata.xml'), mockMetadata, 'utf-8');
         expect(result).toMatchObject({
-            functionalityId: 'fetch-service-metadata',
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             status: 'Success',
             message: 'Fetched systems successfully.',
             changes: [],
@@ -92,7 +93,7 @@ describe('execute-functionality', () => {
     test('should successfully execute functionality with URL as sapSystemQuery', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'fetch-service-metadata',
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             parameters: {
                 sapSystemQuery: 'https://test.example.com?sap-client=100',
                 servicePath: mockServicePath
@@ -108,7 +109,7 @@ describe('execute-functionality', () => {
     test('should successfully execute functionality without sapSystemQuery', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'fetch-service-metadata',
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             parameters: {
                 servicePath: mockServicePath
             }
@@ -123,7 +124,7 @@ describe('execute-functionality', () => {
     test('should successfully execute functionality with empty sapSystemQuery', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'fetch-service-metadata',
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             parameters: {
                 sapSystemQuery: '',
                 servicePath: mockServicePath
@@ -141,7 +142,7 @@ describe('execute-functionality', () => {
 
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'fetch-service-metadata',
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             parameters: {
                 sapSystemQuery: 'Unknown',
                 servicePath: mockServicePath
@@ -158,7 +159,7 @@ describe('execute-functionality', () => {
     test('should return error when servicePath is missing', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'fetch-service-metadata',
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             parameters: {
                 sapSystemQuery: 'TestSystem'
             }
@@ -175,7 +176,7 @@ describe('execute-functionality', () => {
     test('should return error when servicePath is empty string', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'fetch-service-metadata',
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             parameters: {
                 sapSystemQuery: 'TestSystem',
                 servicePath: ''
@@ -191,7 +192,7 @@ describe('execute-functionality', () => {
     test('should return error when servicePath is whitespace only', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'fetch-service-metadata',
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             parameters: {
                 sapSystemQuery: 'TestSystem',
                 servicePath: '   '
@@ -208,7 +209,7 @@ describe('execute-functionality', () => {
 
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'fetch-service-metadata',
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             parameters: {
                 sapSystemQuery: 'NonExistent',
                 servicePath: mockServicePath
@@ -226,7 +227,7 @@ describe('execute-functionality', () => {
 
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'fetch-service-metadata',
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             parameters: {
                 sapSystemQuery: 'TestSystem',
                 servicePath: mockServicePath
@@ -249,7 +250,7 @@ describe('execute-functionality', () => {
 
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'fetch-service-metadata',
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             parameters: {
                 sapSystemQuery: 'TestSystem',
                 servicePath: mockServicePath
@@ -264,7 +265,7 @@ describe('execute-functionality', () => {
     test('should trim whitespace from parameters', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'fetch-service-metadata',
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             parameters: {
                 sapSystemQuery: '  TestSystem  ',
                 servicePath: '  /sap/opu/odata4/test/service  '
@@ -281,7 +282,7 @@ describe('execute-functionality', () => {
         const customAppPath = '/custom/app/path';
         const params: ExecuteFunctionalityInput = {
             appPath: customAppPath,
-            functionalityId: 'fetch-service-metadata',
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             parameters: {
                 sapSystemQuery: 'TestSystem',
                 servicePath: mockServicePath
@@ -296,7 +297,7 @@ describe('execute-functionality', () => {
     test('should handle non-string parameters gracefully', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'fetch-service-metadata',
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             parameters: {
                 sapSystemQuery: 123 as any,
                 servicePath: 456 as any
@@ -312,7 +313,7 @@ describe('execute-functionality', () => {
     test('should return timestamp in ISO format', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'fetch-service-metadata',
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             parameters: {
                 sapSystemQuery: 'TestSystem',
                 servicePath: mockServicePath
@@ -341,7 +342,7 @@ describe('execute-functionality', () => {
         test('should return destination name when isAppStudio is true', async () => {
             const params: ExecuteFunctionalityInput = {
                 appPath: mockAppPath,
-                functionalityId: 'fetch-service-metadata',
+                functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
                 parameters: {
                     sapSystemQuery: 'MY_DESTINATION',
                     servicePath: mockServicePath
@@ -357,7 +358,7 @@ describe('execute-functionality', () => {
         test('should use destination Host as host when isAppStudio is true', async () => {
             const params: ExecuteFunctionalityInput = {
                 appPath: mockAppPath,
-                functionalityId: 'fetch-service-metadata',
+                functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
                 parameters: {
                     sapSystemQuery: 'MY_DESTINATION',
                     servicePath: mockServicePath
@@ -372,7 +373,7 @@ describe('execute-functionality', () => {
         test('should use destination sap-client as client when isAppStudio is true', async () => {
             const params: ExecuteFunctionalityInput = {
                 appPath: mockAppPath,
-                functionalityId: 'fetch-service-metadata',
+                functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
                 parameters: {
                     sapSystemQuery: 'MY_DESTINATION',
                     servicePath: mockServicePath
@@ -390,7 +391,7 @@ describe('execute-functionality', () => {
 
             const params: ExecuteFunctionalityInput = {
                 appPath: mockAppPath,
-                functionalityId: 'fetch-service-metadata',
+                functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
                 parameters: {
                     sapSystemQuery: 'TestSystem',
                     servicePath: mockServicePath

@@ -6,7 +6,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
 import { getServiceMetadata, findSystem } from './services/sap-system.js';
-import { FETCH_SERVICE_METADATA_ID } from '../constant.js';
+import { DOWNLOAD_ODATA_SERVICE_METADATA_ID } from '../constant.js';
 
 /**
  * Executes the tool's functionality.
@@ -20,7 +20,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
 
     if (!servicePath) {
         return {
-            functionalityId: FETCH_SERVICE_METADATA_ID,
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             status: 'Error',
             message: 'Missing required parameter: servicePath',
             parameters: params.parameters,
@@ -34,7 +34,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
         const foundSystem = await findSystem(sapSystemQuery || servicePath);
         if (!foundSystem) {
             return {
-                functionalityId: FETCH_SERVICE_METADATA_ID,
+                functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
                 status: 'Error',
                 message: 'The requested system could not be found',
                 parameters: params.parameters,
@@ -56,7 +56,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
         const destination = isAS ? dest.Name : undefined;
 
         return {
-            functionalityId: FETCH_SERVICE_METADATA_ID,
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             status: 'Success',
             message: 'Fetched systems successfully.',
             changes: [],
@@ -72,7 +72,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
         };
     } catch (error) {
         return {
-            functionalityId: FETCH_SERVICE_METADATA_ID,
+            functionalityId: DOWNLOAD_ODATA_SERVICE_METADATA_ID,
             status: 'Error',
             message: error?.message ?? String(error),
             parameters: params.parameters,
