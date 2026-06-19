@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-const { createTheme: mockCreateTheme, loadTheme: mockLoadTheme } = await (async () => {
+const { createTheme: mockCreateTheme, loadTheme: _mockLoadTheme } = await (async () => {
     const actual = await import('@fluentui/react');
     const mocked = {
         ...actual,
