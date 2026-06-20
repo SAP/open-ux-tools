@@ -635,7 +635,7 @@ export class FlpSandbox {
     private async getUi5VersionFromRequest(
         req: EnhancedRequest | connect.IncomingMessage,
         baseUrl: string = ''
-    ): Promise<Ui5Version> {
+    ): Promise<Ui5VersionInfo> {
         // use protocol from request header referer as fallback for connect API (karma test runner)
         const protocol =
             'protocol' in req
