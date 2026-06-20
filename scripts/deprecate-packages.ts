@@ -82,12 +82,12 @@ const execute = args.includes('--execute');
 const dryRun = !execute;
 
 const packagesArgIdx = args.indexOf('--packages');
-const packagesArgValue = packagesArgIdx !== -1 ? args[packagesArgIdx + 1] : undefined;
+const packagesArgValue = packagesArgIdx >= 0 ? args[packagesArgIdx + 1] : undefined;
 const packagesFilter = packagesArgValue ? packagesArgValue.split(',').map((s) => s.trim()) : undefined;
 
 const configArgIdx = args.indexOf('--config');
 const configPath =
-    configArgIdx !== -1
+    configArgIdx >= 0
         ? path.resolve(args[configArgIdx + 1])
         : path.resolve(scriptDir, 'deprecation-config.json');
 
@@ -113,6 +113,8 @@ function fetchJson(url: string): Promise<unknown> {
     });
 }
 
+const UPPER_BOUND_RE = /<[=]?\s*(\d+)/;
+
 function nodeRangeSupportsOnlyUnsupportedMajors(range: string | undefined, supportedMajors: number[]): boolean {
     if (!range) {
         return false; // no constraint = assume compatible
@@ -121,7 +123,7 @@ function nodeRangeSupportsOnlyUnsupportedMajors(range: string | undefined, suppo
 
     // Check for an explicit upper bound that excludes all supported majors.
     // Patterns: "<20", "<=19", "< 20", "<= 19"
-    const upperBoundMatch = range.match(/<[=]?\s*(\d+)/);
+    const upperBoundMatch = UPPER_BOUND_RE.exec(range);
     if (upperBoundMatch) {
         const upperBound = Number(upperBoundMatch[1]);
         // e.g. "<20" with supportedMajors [22,24]: upperBound=20 <= minSupported=22 → all supported majors excluded
@@ -147,8 +149,10 @@ function semverCompare(a: string, b: string): number {
     return 0;
 }
 
+const SEMVER_RE = /^(\d+)\.(\d+)\.(\d+)/;
+
 function parseSemver(v: string): { major: number; minor: number; patch: number } | null {
-    const m = v.match(/^(\d+)\.(\d+)\.(\d+)/);
+    const m = SEMVER_RE.exec(v);
     if (!m) return null;
     return { major: Number(m[1]), minor: Number(m[2]), patch: Number(m[3]) };
 }
@@ -188,6 +192,82 @@ function resolveAnchorReason(anchor: LegacyAnchor): string | undefined {
 // Core deprecation logic
 // ---------------------------------------------------------------------------
 
+function applyAgeFilter(
+    allVersions: string[],
+    timeMap: Record<string, string>,
+    cutoffStr: string,
+    decisions: Map<string, VersionDecision>
+): string[] {
+    const survivors: string[] = [];
+    for (const v of allVersions) {
+        if (decisions.has(v)) {
+            survivors.push(v);
+            continue;
+        }
+        const publishedAt = timeMap[v].slice(0, 10);
+        if (publishedAt < cutoffStr) {
+            decisions.set(v, { version: v, status: 'deprecate', deprecateReason: { kind: 'age', publishedAt, cutoff: cutoffStr } });
+        } else {
+            survivors.push(v);
+        }
+    }
+    return survivors;
+}
+
+function applyNodeFilter(
+    versions: string[],
+    doc: NpmRegistryDoc,
+    supportedNodeMajors: number[],
+    decisions: Map<string, VersionDecision>
+): string[] {
+    const survivors: string[] = [];
+    for (const v of versions) {
+        if (decisions.has(v)) {
+            survivors.push(v);
+            continue;
+        }
+        const nodeRange = doc.versions[v]?.engines?.node;
+        if (nodeRangeSupportsOnlyUnsupportedMajors(nodeRange, supportedNodeMajors)) {
+            decisions.set(v, { version: v, status: 'deprecate', deprecateReason: { kind: 'node-unsupported', engines: nodeRange ?? '' } });
+        } else {
+            survivors.push(v);
+        }
+    }
+    return survivors;
+}
+
+function applyPerDayCollapse(
+    versions: string[],
+    timeMap: Record<string, string>,
+    decisions: Map<string, VersionDecision>
+): string[] {
+    const minorDayMap = new Map<string, string[]>();
+    for (const v of versions) {
+        if (decisions.has(v)) continue;
+        const parsed = parseSemver(v);
+        if (!parsed) continue;
+        const day = timeMap[v].slice(0, 10);
+        const key = `${parsed.minor}|${day}`;
+        if (!minorDayMap.has(key)) minorDayMap.set(key, []);
+        minorDayMap.get(key)!.push(v);
+    }
+
+    const survivors: string[] = [];
+    for (const [key, group] of minorDayMap) {
+        group.sort((a, b) => semverCompare(b, a));
+        survivors.push(group[0]);
+        const [minorStr, day] = key.split('|');
+        for (const dup of group.slice(1)) {
+            decisions.set(dup, {
+                version: dup,
+                status: 'deprecate',
+                deprecateReason: { kind: 'same-day-duplicate', minor: Number(minorStr), day, supersededBy: group[0] }
+            });
+        }
+    }
+    return survivors;
+}
+
 function computeDecisions(
     doc: NpmRegistryDoc,
     config: DeprecationConfig,
@@ -204,8 +284,6 @@ function computeDecisions(
 
     const timeMap = doc.time;
     const allVersions = Object.keys(timeMap).filter((v) => v !== 'created' && v !== 'modified');
-
-    // Sort newest first
     allVersions.sort((a, b) => new Date(timeMap[b]).getTime() - new Date(timeMap[a]).getTime());
 
     const decisions = new Map<string, VersionDecision>();
@@ -213,108 +291,30 @@ function computeDecisions(
     // Mark anchors first — they survive all rules
     for (const v of allVersions) {
         if (anchorVersionSet.has(v)) {
-            decisions.set(v, {
-                version: v,
-                status: 'anchor',
-                anchorReason: anchorVersionSet.get(v)
-            });
+            decisions.set(v, { version: v, status: 'anchor', anchorReason: anchorVersionSet.get(v) });
         }
     }
 
-    // Step 1: Age filter
-    const afterAge: string[] = [];
-    for (const v of allVersions) {
-        if (decisions.has(v)) {
-            afterAge.push(v);
-            continue;
-        }
-        const publishedAt = timeMap[v].slice(0, 10);
-        if (publishedAt < cutoffStr) {
-            decisions.set(v, {
-                version: v,
-                status: 'deprecate',
-                deprecateReason: { kind: 'age', publishedAt, cutoff: cutoffStr }
-            });
-        } else {
-            afterAge.push(v);
-        }
-    }
-
-    // Step 2: Node support filter
-    const afterNode: string[] = [];
-    for (const v of afterAge) {
-        if (decisions.has(v)) {
-            afterNode.push(v);
-            continue;
-        }
-        const nodeRange = doc.versions[v]?.engines?.node;
-        if (nodeRangeSupportsOnlyUnsupportedMajors(nodeRange, config.supportedNodeMajors)) {
-            decisions.set(v, {
-                version: v,
-                status: 'deprecate',
-                deprecateReason: { kind: 'node-unsupported', engines: nodeRange ?? '' }
-            });
-        } else {
-            afterNode.push(v);
-        }
-    }
-
-    // Step 3: Per-minor/per-day collapse
-    // Group by (minor, day) — keep newest patch per group
-    const minorDayMap = new Map<string, string[]>();
-    for (const v of afterNode) {
-        if (decisions.has(v)) continue;
-        const parsed = parseSemver(v);
-        if (!parsed) continue;
-        const day = timeMap[v].slice(0, 10);
-        const key = `${parsed.minor}|${day}`;
-        if (!minorDayMap.has(key)) minorDayMap.set(key, []);
-        minorDayMap.get(key)!.push(v);
-    }
-
-    const afterCollapse: string[] = [];
-    for (const [key, versions] of minorDayMap) {
-        // Sort by semver descending — keep first
-        versions.sort((a, b) => semverCompare(b, a));
-        afterCollapse.push(versions[0]);
-        const [minorStr, day] = key.split('|');
-        for (const dup of versions.slice(1)) {
-            decisions.set(dup, {
-                version: dup,
-                status: 'deprecate',
-                deprecateReason: {
-                    kind: 'same-day-duplicate',
-                    minor: Number(minorStr),
-                    day,
-                    supersededBy: versions[0]
-                }
-            });
-        }
-    }
+    // Steps 1-3: age → node → per-day collapse
+    const afterAge = applyAgeFilter(allVersions, timeMap, cutoffStr, decisions);
+    const afterNode = applyNodeFilter(afterAge, doc, config.supportedNodeMajors, decisions);
+    const afterCollapse = applyPerDayCollapse(afterNode, timeMap, decisions);
 
     // Re-sort after collapse (still newest first)
     afterCollapse.sort((a, b) => new Date(timeMap[b]).getTime() - new Date(timeMap[a]).getTime());
 
-    // Step 4: Count cap — keep max N newest, deprecate the rest
-    // Anchors don't count toward the cap
+    // Step 4: Count cap — keep max N newest, deprecate the rest (anchors don't count)
     const nonAnchorSurvivors = afterCollapse.filter((v) => !anchorVersionSet.has(v));
-    const kept = nonAnchorSurvivors.slice(0, config.maxSupportedVersions);
-    const capped = nonAnchorSurvivors.slice(config.maxSupportedVersions);
-
-    for (const v of kept) {
+    for (const v of nonAnchorSurvivors.slice(0, config.maxSupportedVersions)) {
         if (!decisions.has(v)) {
             decisions.set(v, { version: v, status: 'active' });
         }
     }
-    capped.forEach((v, i) => {
+    nonAnchorSurvivors.slice(config.maxSupportedVersions).forEach((v, i) => {
         decisions.set(v, {
             version: v,
             status: 'deprecate',
-            deprecateReason: {
-                kind: 'count-cap',
-                rank: config.maxSupportedVersions + i + 1,
-                max: config.maxSupportedVersions
-            }
+            deprecateReason: { kind: 'count-cap', rank: config.maxSupportedVersions + i + 1, max: config.maxSupportedVersions }
         });
     });
 
@@ -325,7 +325,6 @@ function computeDecisions(
         }
     }
 
-    // Return sorted newest-first
     return allVersions.map((v) => decisions.get(v)!);
 }
 
@@ -344,9 +343,7 @@ function buildCrossRefMap(
             for (const [depPkg, depVer] of Object.entries(meta.dependencies ?? {})) {
                 if (!allDocs.has(depPkg)) continue; // only care about intra-monorepo deps
                 // Handle npm: aliases like "@sap-ux/control-property-editor-sources": "npm:@sap-ux/control-property-editor@0.8.1"
-                const resolvedDepVer = depVer.startsWith('npm:')
-                    ? depVer.replace(/^npm:[^@]+@/, '')
-                    : depVer;
+                const resolvedDepVer = depVer.startsWith('npm:') ? depVer.replace(/^npm:[^@]+@/, '') : depVer;
                 if (!crossRefMap.has(depPkg)) crossRefMap.set(depPkg, new Map());
                 const pkgMap = crossRefMap.get(depPkg)!;
                 if (!pkgMap.has(resolvedDepVer)) pkgMap.set(resolvedDepVer, new Set());
@@ -358,21 +355,12 @@ function buildCrossRefMap(
     return crossRefMap;
 }
 
+const RESCUED_STATUSES = new Set(['active', 'anchor', 'rescued']);
+
 function applyFixpoint(
     allDecisions: Map<string, VersionDecision[]>,
     crossRefMap: Map<string, Map<string, Set<string>>>
 ): void {
-    // Worklist: start with all versions currently marked for deprecation
-    const worklist: Array<{ pkg: string; ver: string }> = [];
-
-    for (const [pkg, decisions] of allDecisions) {
-        for (const d of decisions) {
-            if (d.status === 'deprecate') {
-                worklist.push({ pkg, ver: d.version });
-            }
-        }
-    }
-
     // Build a fast lookup: pkg+ver → decision object
     const decisionIndex = new Map<string, VersionDecision>();
     for (const [pkg, decisions] of allDecisions) {
@@ -381,8 +369,14 @@ function applyFixpoint(
         }
     }
 
-    // Worklist: process until empty
-    // When we rescue a version, we add it to the worklist so its own dependents get re-checked
+    // Worklist: start with all versions currently marked for deprecation
+    const worklist: Array<{ pkg: string; ver: string }> = [];
+    for (const [pkg, decisions] of allDecisions) {
+        for (const d of decisions) {
+            if (d.status === 'deprecate') worklist.push({ pkg, ver: d.version });
+        }
+    }
+
     const processed = new Set<string>();
 
     while (worklist.length > 0) {
@@ -392,7 +386,7 @@ function applyFixpoint(
         processed.add(key);
 
         const decision = decisionIndex.get(key);
-        if (!decision || decision.status !== 'deprecate') continue;
+        if (decision?.status !== 'deprecate') continue;
 
         // Check if any non-deprecated version of any package depends on this version
         const dependents = crossRefMap.get(pkg)?.get(ver);
@@ -400,8 +394,7 @@ function applyFixpoint(
 
         for (const dependent of dependents) {
             const depDecision = decisionIndex.get(dependent);
-            if (!depDecision) continue;
-            if (depDecision.status === 'active' || depDecision.status === 'anchor' || depDecision.status === 'rescued') {
+            if (depDecision && RESCUED_STATUSES.has(depDecision.status)) {
                 // This version is referenced by a non-deprecated version — rescue it
                 decision.status = 'rescued';
                 decision.rescuedBy = dependent;
@@ -417,82 +410,96 @@ function applyFixpoint(
 // Reporting
 // ---------------------------------------------------------------------------
 
+function formatDeprecateDetail(d: VersionDecision): string {
+    const r = d.deprecateReason;
+    if (r?.kind === 'age') return `published ${r.publishedAt}`;
+    if (r?.kind === 'node-unsupported') return `engines.node: "${r.engines}"`;
+    if (r?.kind === 'same-day-duplicate') return `superseded by ${r.supersededBy} on ${r.day}`;
+    if (r?.kind === 'count-cap') return `rank ${r.rank} > max ${r.max}`;
+    return '';
+}
+
+function formatDeprecateBlock(toDeprecate: VersionDecision[]): string[] {
+    const lines: string[] = [`\n  To deprecate (${toDeprecate.length}):`];
+    const byKind = new Map<string, VersionDecision[]>();
+    for (const d of toDeprecate) {
+        const k = d.deprecateReason?.kind ?? 'unknown';
+        if (!byKind.has(k)) byKind.set(k, []);
+        byKind.get(k)!.push(d);
+    }
+    for (const [kind, items] of byKind) {
+        lines.push(`    [${kind}] (${items.length} versions)`);
+        for (const d of items.slice(0, 5)) {
+            lines.push(`      ${d.version}  (${formatDeprecateDetail(d)})`);
+        }
+        if (items.length > 5) lines.push(`      ... and ${items.length - 5} more`);
+    }
+    return lines;
+}
+
+function formatPackageBlock(report: PackageReport): string[] {
+    const active = report.decisions.filter((d) => d.status === 'active');
+    const anchors = report.decisions.filter((d) => d.status === 'anchor');
+    const toDeprecate = report.decisions.filter((d) => d.status === 'deprecate');
+    const rescued = report.decisions.filter((d) => d.status === 'rescued');
+
+    const lines: string[] = [
+        `\n${'─'.repeat(70)}`,
+        `${report.name}  (${report.totalVersions} versions total)`,
+        `${'─'.repeat(70)}`,
+        `  active      : ${active.length}`,
+        `  anchored    : ${anchors.length}`,
+        `  to deprecate: ${toDeprecate.length}`,
+        `  rescued     : ${rescued.length}`
+    ];
+
+    if (anchors.length > 0) {
+        lines.push(`\n  Anchors:`);
+        for (const d of anchors) {
+            lines.push(`    ${d.version}${d.anchorReason ? `  [${d.anchorReason}]` : ''}`);
+        }
+    }
+
+    if (rescued.length > 0) {
+        lines.push(`\n  Rescued (cross-dep):`);
+        for (const d of rescued) {
+            lines.push(`    ${d.version}  ← referenced by ${d.rescuedBy}`);
+        }
+    }
+
+    if (toDeprecate.length > 0) {
+        lines.push(...formatDeprecateBlock(toDeprecate));
+    }
+
+    return lines;
+}
+
 function formatReport(reports: PackageReport[]): string {
-    const lines: string[] = [];
     let totalDeprecate = 0;
     let totalRescued = 0;
     let totalActive = 0;
     let totalAnchor = 0;
 
+    const lines: string[] = [];
     for (const report of reports) {
-        const active = report.decisions.filter((d) => d.status === 'active');
-        const anchors = report.decisions.filter((d) => d.status === 'anchor');
-        const toDeprecate = report.decisions.filter((d) => d.status === 'deprecate');
-        const rescued = report.decisions.filter((d) => d.status === 'rescued');
-
-        totalActive += active.length;
-        totalAnchor += anchors.length;
-        totalDeprecate += toDeprecate.length;
-        totalRescued += rescued.length;
-
-        lines.push(`\n${'─'.repeat(70)}`);
-        lines.push(`${report.name}  (${report.totalVersions} versions total)`);
-        lines.push(`${'─'.repeat(70)}`);
-        lines.push(`  active      : ${active.length}`);
-        lines.push(`  anchored    : ${anchors.length}`);
-        lines.push(`  to deprecate: ${toDeprecate.length}`);
-        lines.push(`  rescued     : ${rescued.length}`);
-
-        if (anchors.length > 0) {
-            lines.push(`\n  Anchors:`);
-            for (const d of anchors) {
-                const reason = d.anchorReason ? `  [${d.anchorReason}]` : '';
-                lines.push(`    ${d.version}${reason}`);
-            }
-        }
-
-        if (rescued.length > 0) {
-            lines.push(`\n  Rescued (cross-dep):`);
-            for (const d of rescued) {
-                lines.push(`    ${d.version}  ← referenced by ${d.rescuedBy}`);
-            }
-        }
-
-        if (toDeprecate.length > 0) {
-            lines.push(`\n  To deprecate (${toDeprecate.length}):`);
-            // Group by reason kind for readability
-            const byKind = new Map<string, VersionDecision[]>();
-            for (const d of toDeprecate) {
-                const k = d.deprecateReason?.kind ?? 'unknown';
-                if (!byKind.has(k)) byKind.set(k, []);
-                byKind.get(k)!.push(d);
-            }
-            for (const [kind, items] of byKind) {
-                lines.push(`    [${kind}] (${items.length} versions)`);
-                // Show first 5 examples
-                for (const d of items.slice(0, 5)) {
-                    let detail = '';
-                    const r = d.deprecateReason;
-                    if (r?.kind === 'age') detail = `published ${r.publishedAt}`;
-                    else if (r?.kind === 'node-unsupported') detail = `engines.node: "${r.engines}"`;
-                    else if (r?.kind === 'same-day-duplicate') detail = `superseded by ${r.supersededBy} on ${r.day}`;
-                    else if (r?.kind === 'count-cap') detail = `rank ${r.rank} > max ${r.max}`;
-                    lines.push(`      ${d.version}  (${detail})`);
-                }
-                if (items.length > 5) lines.push(`      ... and ${items.length - 5} more`);
-            }
-        }
+        totalActive += report.decisions.filter((d) => d.status === 'active').length;
+        totalAnchor += report.decisions.filter((d) => d.status === 'anchor').length;
+        totalDeprecate += report.decisions.filter((d) => d.status === 'deprecate').length;
+        totalRescued += report.decisions.filter((d) => d.status === 'rescued').length;
+        lines.push(...formatPackageBlock(report));
     }
 
-    lines.push(`\n${'═'.repeat(70)}`);
-    lines.push(`SUMMARY`);
-    lines.push(`${'═'.repeat(70)}`);
-    lines.push(`  Packages processed : ${reports.length}`);
-    lines.push(`  Active             : ${totalActive}`);
-    lines.push(`  Anchored           : ${totalAnchor}`);
-    lines.push(`  Rescued (cross-dep): ${totalRescued}`);
-    lines.push(`  To deprecate       : ${totalDeprecate}`);
-    lines.push('');
+    lines.push(
+        `\n${'═'.repeat(70)}`,
+        `SUMMARY`,
+        `${'═'.repeat(70)}`,
+        `  Packages processed : ${reports.length}`,
+        `  Active             : ${totalActive}`,
+        `  Anchored           : ${totalAnchor}`,
+        `  Rescued (cross-dep): ${totalRescued}`,
+        `  To deprecate       : ${totalDeprecate}`,
+        ''
+    );
 
     return lines.join('\n');
 }
@@ -534,7 +541,7 @@ async function main(): Promise<void> {
     // Resolve package list
     let packages: string[];
     if (packagesFilter) {
-        packages = packagesFilter;
+        packages = packagesFilter.filter((p) => !config.excludePackages.includes(p));
     } else if (config.packages === '*') {
         packages = discoverPublicPackages(repoRoot, config);
     } else {
@@ -569,8 +576,7 @@ async function main(): Promise<void> {
     const allDecisions = new Map<string, VersionDecision[]>();
     for (const [pkg, doc] of allDocs) {
         const anchors = config.legacyAnchors[pkg] ?? [];
-        const decisions = computeDecisions(doc, config, anchors);
-        allDecisions.set(pkg, decisions);
+        allDecisions.set(pkg, computeDecisions(doc, config, anchors));
     }
 
     // Step 5: Cross-dependency fixpoint
@@ -590,8 +596,7 @@ async function main(): Promise<void> {
     }
     reports.sort((a, b) => a.name.localeCompare(b.name));
 
-    const report = formatReport(reports);
-    console.log(report);
+    console.log(formatReport(reports));
 
     if (dryRun) {
         console.log('DRY RUN — no changes made. Re-run with --execute to apply deprecations.');
@@ -601,7 +606,9 @@ async function main(): Promise<void> {
     }
 }
 
-main().catch((e) => {
+try {
+    await main();
+} catch (e) {
     console.error('Fatal error:', e);
     process.exit(1);
-});
+}
