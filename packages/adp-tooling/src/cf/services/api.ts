@@ -1,12 +1,8 @@
 import * as fs from 'node:fs';
 import axios from 'axios';
 import * as path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import type { AxiosRequestConfig } from 'axios';
 import { Cli } from '@sap/cf-tools';
-
-import { dirname } from 'node:path';
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -30,6 +26,7 @@ import type {
 import { t } from '../../i18n.js';
 import { getProjectNameForXsSecurity } from '../project/index.js';
 import { createServiceKey, getServiceKeys, requestCfApi } from './cli.js';
+import { getTemplatePath } from '../../templates.js';
 
 interface FDCResponse {
     results: CFApp[];
@@ -260,7 +257,7 @@ export async function createServiceInstance(
         if (xsSecurityProjectName) {
             let xsSecurity = null;
             try {
-                const baseTmplPath = path.join(__dirname, '../../../templates');
+                const baseTmplPath = getTemplatePath();
                 const templatePath = templatePathOverwrite ?? baseTmplPath;
                 const filePath = path.resolve(templatePath, 'cf/xs-security.json');
                 const xsContent = fs.readFileSync(filePath, 'utf-8');
