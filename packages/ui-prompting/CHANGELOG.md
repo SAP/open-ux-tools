@@ -1,6 +1,25 @@
 # @sap-ux/ui-prompting
 
+## 1.0.4
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Code preview in Storybook examples was hard to read due to background color [[e3b09f8](https://github.com/SAP/open-ux-tools/commit/e3b09f83d9ea244a4d3b107ed4e50615a1c45367)]
+
+## 1.0.3
+
+*Released: 2026-06-10T07:55:58Z*
+
+### Patch Changes
+
+- Updated dependencies [a1235d6]
+    - @sap-ux/ui-components@3.0.3
+
 ## 1.0.2
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -10,12 +29,16 @@
 
 ## 1.0.1
 
+*Released: 2026-06-03T10:37:52Z*
+
 ### Patch Changes
 
 - Updated dependencies [21cadc3]
     - @sap-ux/ui-components@3.0.1
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -55,6 +78,8 @@
 
 ## 0.7.5
 
+*Released: 2026-05-29T09:10:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [b0a922a]
@@ -62,12 +87,16 @@
 
 ## 0.7.4
 
+*Released: 2026-05-27T08:56:54Z*
+
 ### Patch Changes
 
 - Updated dependencies [bc315f0]
     - @sap-ux/ui-components@2.2.4
 
 ## 0.7.3
+
+*Released: 2026-05-26T16:40:21Z*
 
 ### Patch Changes
 
@@ -77,6 +106,8 @@
 
 ## 0.7.2
 
+*Released: 2026-05-22T06:20:19Z*
+
 ### Patch Changes
 
 - Updated dependencies [882d45b]
@@ -84,12 +115,16 @@
 
 ## 0.7.1
 
+*Released: 2026-05-15T10:52:26Z*
+
 ### Patch Changes
 
 - Updated dependencies [742d896]
     - @sap-ux/ui-components@2.2.1
 
 ## 0.7.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -102,6 +137,8 @@
 
 ## 0.6.29
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -110,12 +147,16 @@
 
 ## 0.6.28
 
+*Released: 2026-05-11T17:25:40Z*
+
 ### Patch Changes
 
 - Updated dependencies [189ad98]
     - @sap-ux/ui-components@2.1.15
 
 ## 0.6.27
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -124,12 +165,16 @@
 
 ## 0.6.26
 
+*Released: 2026-05-06T14:01:23Z*
+
 ### Patch Changes
 
 - Updated dependencies [7f8a712]
     - @sap-ux/ui-components@2.1.13
 
 ## 0.6.25
+
+*Released: 2026-04-30T14:23:24Z*
 
 ### Patch Changes
 
@@ -138,12 +183,16 @@
 
 ## 0.6.24
 
+*Released: 2026-04-22T14:26:13Z*
+
 ### Patch Changes
 
 - Updated dependencies [f77f003]
     - @sap-ux/ui-components@2.1.11
 
 ## 0.6.23
+
+*Released: 2026-04-14T21:37:37Z*
 
 ### Patch Changes
 
@@ -152,12 +201,16 @@
 
 ## 0.6.22
 
+*Released: 2026-04-01T10:25:12Z*
+
 ### Patch Changes
 
 - Updated dependencies [9357457]
     - @sap-ux/ui-components@2.1.9
 
 ## 0.6.21
+
+*Released: 2026-03-31T17:04:36Z*
 
 ### Patch Changes
 
@@ -166,6 +219,8 @@
 
 ## 0.6.20
 
+*Released: 2026-03-31T10:49:34Z*
+
 ### Patch Changes
 
 - Updated dependencies [f101671]
@@ -173,12 +228,16 @@
 
 ## 0.6.19
 
+*Released: 2026-03-31T08:19:05Z*
+
 ### Patch Changes
 
 - Updated dependencies [6b622e0]
     - @sap-ux/ui-components@2.1.6
 
 ## 0.6.18
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -193,12 +252,16 @@
 
 ## 0.6.17
 
+*Released: 2026-03-26T12:07:04Z*
+
 ### Patch Changes
 
 - Updated dependencies [a41533f]
     - @sap-ux/ui-components@2.1.4
 
 ## 0.6.16
+
+*Released: 2026-03-24T09:40:46Z*
 
 ### Patch Changes
 
@@ -207,12 +270,16 @@
 
 ## 0.6.15
 
+_Released: 2026-03-16T13:36:45Z_
+
 ### Patch Changes
 
 - Updated dependencies [addfdee]
     - @sap-ux/ui-components@2.1.2
 
 ## 0.6.14
+
+_Released: 2026-03-16T12:21:56Z_
 
 ### Patch Changes
 
@@ -221,12 +288,16 @@
 
 ## 0.6.13
 
+_Released: 2026-03-16T09:52:00Z_
+
 ### Patch Changes
 
 - Updated dependencies [24bd091]
     - @sap-ux/ui-components@2.1.0
 
 ## 0.6.12
+
+_Released: 2026-03-12T15:14:05Z_
 
 ### Patch Changes
 
@@ -235,12 +306,16 @@
 
 ## 0.6.11
 
+_Released: 2026-03-05T15:09:36Z_
+
 ### Patch Changes
 
 - Updated dependencies [5d458c7]
     - @sap-ux/ui-components@2.0.2
 
 ## 0.6.10
+
+_Released: 2026-03-05T12:30:25Z_
 
 ### Patch Changes
 
@@ -250,12 +325,16 @@
 
 ## 0.6.9
 
+_Released: 2026-03-04T12:59:11Z_
+
 ### Patch Changes
 
 - Updated dependencies [c4839f5]
     - @sap-ux/ui-components@2.0.0
 
 ## 0.6.8
+
+_Released: 2026-03-03T11:24:48Z_
 
 ### Patch Changes
 
@@ -265,12 +344,16 @@
 
 ## 0.6.7
 
+_Released: 2026-02-24T13:51:51Z_
+
 ### Patch Changes
 
 - Updated dependencies [4e6c4d5]
     - @sap-ux/ui-components@1.27.9
 
 ## 0.6.6
+
+_Released: 2026-02-23T23:44:05Z_
 
 ### Patch Changes
 
@@ -280,6 +363,8 @@
 
 ## 0.6.5
 
+_Released: 2026-02-23T19:07:48Z_
+
 ### Patch Changes
 
 - cc1c422: fix(deps): update dependency npm-run-all2 to v8
@@ -287,6 +372,8 @@
     - @sap-ux/ui-components@1.27.7
 
 ## 0.6.4
+
+_Released: 2026-02-20T16:17:11Z_
 
 ### Patch Changes
 
@@ -296,12 +383,16 @@
 
 ## 0.6.3
 
+_Released: 2026-02-16T16:08:11Z_
+
 ### Patch Changes
 
 - Updated dependencies [a22d236]
     - @sap-ux/ui-components@1.27.5
 
 ## 0.6.2
+
+_Released: 2026-02-10T21:03:43Z_
 
 ### Patch Changes
 
@@ -311,6 +402,8 @@
 
 ## 0.6.1
 
+_Released: 2026-02-06T13:45:47Z_
+
 ### Patch Changes
 
 - Updated dependencies [b990534]
@@ -318,11 +411,15 @@
 
 ## 0.6.0
 
+_Released: 2026-01-20T12:48:23Z_
+
 ### Minor Changes
 
 - 68b0e54: Add hidden, calloutCollisionTransformation and checked support for multi select component
 
 ## 0.5.13
+
+_Released: 2026-01-16T11:48:02Z_
 
 ### Patch Changes
 
@@ -331,12 +428,16 @@
 
 ## 0.5.12
 
+_Released: 2026-01-09T11:35:48Z_
+
 ### Patch Changes
 
 - Updated dependencies [e111d0d]
     - @sap-ux/ui-components@1.27.1
 
 ## 0.5.11
+
+_Released: 2025-12-30T13:15:47Z_
 
 ### Patch Changes
 
@@ -345,6 +446,8 @@
 
 ## 0.5.10
 
+_Released: 2025-12-19T12:55:00Z_
+
 ### Patch Changes
 
 - Updated dependencies [87a6696]
@@ -352,12 +455,16 @@
 
 ## 0.5.9
 
+_Released: 2025-12-18T21:05:02Z_
+
 ### Patch Changes
 
 - Updated dependencies [a9471d0]
     - @sap-ux/ui-components@1.26.18
 
 ## 0.5.8
+
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -367,6 +474,8 @@
 
 ## 0.5.7
 
+_Released: 2025-12-08T17:56:48Z_
+
 ### Patch Changes
 
 - Updated dependencies [037a430]
@@ -374,12 +483,16 @@
 
 ## 0.5.6
 
+_Released: 2025-11-11T14:10:21Z_
+
 ### Patch Changes
 
 - Updated dependencies [afb4be5]
     - @sap-ux/ui-components@1.26.15
 
 ## 0.5.5
+
+_Released: 2025-11-05T06:53:42Z_
 
 ### Patch Changes
 
@@ -389,6 +502,8 @@
 
 ## 0.5.4
 
+_Released: 2025-10-15T14:30:03Z_
+
 ### Patch Changes
 
 - 6debb89: support for disabled options in Select choice lists
@@ -397,6 +512,8 @@
 
 ## 0.5.3
 
+_Released: 2025-10-10T08:12:15Z_
+
 ### Patch Changes
 
 - Updated dependencies [4c448a7]
@@ -404,11 +521,15 @@
 
 ## 0.5.2
 
+_Released: 2025-10-06T17:09:01Z_
+
 ### Patch Changes
 
 - 43a2446: chore: fix Sonar issues
 
 ## 0.5.1
+
+_Released: 2025-10-01T14:21:20Z_
 
 ### Patch Changes
 
@@ -417,11 +538,15 @@
 
 ## 0.5.0
 
+_Released: 2025-09-26T11:12:01Z_
+
 ### Minor Changes
 
 - 1276258: Add support for Rich text editor
 
 ## 0.4.2
+
+_Released: 2025-08-19T15:08:38Z_
 
 ### Patch Changes
 
@@ -430,11 +555,15 @@
 
 ## 0.4.1
 
+_Released: 2025-08-19T09:29:58Z_
+
 ### Patch Changes
 
 - 2d0380a: Improve answer change handling and dependent question choice requests in Questions component in ui prompting
 
 ## 0.4.0
+
+_Released: 2025-08-12T07:55:40Z_
 
 ### Minor Changes
 
@@ -442,11 +571,15 @@
 
 ## 0.3.37
 
+_Released: 2025-08-05T13:27:24Z_
+
 ### Patch Changes
 
 - e4197e0: Support index-based default values for 'list' type questions. New property 'defaultIndex' for 'list' question.
 
 ## 0.3.36
+
+_Released: 2025-08-01T17:01:04Z_
 
 ### Patch Changes
 
@@ -455,12 +588,16 @@
 
 ## 0.3.35
 
+_Released: 2025-06-23T14:13:34Z_
+
 ### Patch Changes
 
 - Updated dependencies [282f30e]
     - @sap-ux/ui-components@1.26.8
 
 ## 0.3.34
+
+_Released: 2025-06-20T07:40:14Z_
 
 ### Patch Changes
 
@@ -469,12 +606,16 @@
 
 ## 0.3.33
 
+_Released: 2025-06-13T11:42:58Z_
+
 ### Patch Changes
 
 - Updated dependencies [12faf8b]
     - @sap-ux/ui-components@1.26.6
 
 ## 0.3.32
+
+_Released: 2025-05-30T12:59:04Z_
 
 ### Patch Changes
 
@@ -483,12 +624,16 @@
 
 ## 0.3.31
 
+_Released: 2025-05-19T15:23:07Z_
+
 ### Patch Changes
 
 - Updated dependencies [739045a]
     - @sap-ux/ui-components@1.26.4
 
 ## 0.3.30
+
+_Released: 2025-04-28T05:54:02Z_
 
 ### Patch Changes
 
@@ -497,12 +642,16 @@
 
 ## 0.3.29
 
+_Released: 2025-04-22T16:27:34Z_
+
 ### Patch Changes
 
 - Updated dependencies [077eae5]
     - @sap-ux/ui-components@1.26.2
 
 ## 0.3.28
+
+_Released: 2025-04-17T14:55:33Z_
 
 ### Patch Changes
 
@@ -511,12 +660,16 @@
 
 ## 0.3.27
 
+_Released: 2025-03-31T13:28:17Z_
+
 ### Patch Changes
 
 - Updated dependencies [e21805c]
     - @sap-ux/ui-components@1.26.0
 
 ## 0.3.26
+
+_Released: 2025-03-31T12:27:46Z_
 
 ### Patch Changes
 
@@ -525,12 +678,16 @@
 
 ## 0.3.25
 
+_Released: 2025-03-14T19:30:43Z_
+
 ### Patch Changes
 
 - Updated dependencies [3a01535]
     - @sap-ux/ui-components@1.24.12
 
 ## 0.3.24
+
+_Released: 2025-03-12T23:05:41Z_
 
 ### Patch Changes
 
@@ -539,12 +696,16 @@
 
 ## 0.3.23
 
+_Released: 2025-03-12T08:27:36Z_
+
 ### Patch Changes
 
 - Updated dependencies [17847f9]
     - @sap-ux/ui-components@1.24.10
 
 ## 0.3.22
+
+_Released: 2025-03-06T11:37:39Z_
 
 ### Patch Changes
 
@@ -553,12 +714,16 @@
 
 ## 0.3.21
 
+_Released: 2025-03-05T14:45:32Z_
+
 ### Patch Changes
 
 - Updated dependencies [8568e6b]
     - @sap-ux/ui-components@1.24.8
 
 ## 0.3.20
+
+_Released: 2025-03-04T09:51:37Z_
 
 ### Patch Changes
 
@@ -567,12 +732,16 @@
 
 ## 0.3.19
 
+_Released: 2025-02-28T12:18:07Z_
+
 ### Patch Changes
 
 - Updated dependencies [689f1b8]
     - @sap-ux/ui-components@1.24.6
 
 ## 0.3.18
+
+_Released: 2025-02-18T13:23:57Z_
 
 ### Patch Changes
 
@@ -581,12 +750,16 @@
 
 ## 0.3.17
 
+_Released: 2025-02-18T11:24:40Z_
+
 ### Patch Changes
 
 - Updated dependencies [1215e5b]
     - @sap-ux/ui-components@1.24.4
 
 ## 0.3.16
+
+_Released: 2025-02-11T13:17:16Z_
 
 ### Patch Changes
 
@@ -595,11 +768,15 @@
 
 ## 0.3.15
 
+_Released: 2025-02-06T22:08:41Z_
+
 ### Patch Changes
 
 - 59453ba: fix(security): security findings from github
 
 ## 0.3.14
+
+_Released: 2025-01-27T11:41:12Z_
 
 ### Patch Changes
 
@@ -608,12 +785,16 @@
 
 ## 0.3.13
 
+_Released: 2025-01-14T15:34:10Z_
+
 ### Patch Changes
 
 - Updated dependencies [7b5e3b9]
     - @sap-ux/ui-components@1.24.1
 
 ## 0.3.12
+
+_Released: 2025-01-09T16:10:30Z_
 
 ### Patch Changes
 
@@ -622,12 +803,16 @@
 
 ## 0.3.11
 
+_Released: 2024-12-20T09:13:58Z_
+
 ### Patch Changes
 
 - Updated dependencies [c570683]
     - @sap-ux/ui-components@1.23.0
 
 ## 0.3.10
+
+_Released: 2024-12-19T10:24:13Z_
 
 ### Patch Changes
 
@@ -636,12 +821,16 @@
 
 ## 0.3.9
 
+_Released: 2024-12-17T17:15:28Z_
+
 ### Patch Changes
 
 - Updated dependencies [318477a]
     - @sap-ux/ui-components@1.22.2
 
 ## 0.3.8
+
+_Released: 2024-12-17T08:02:28Z_
 
 ### Patch Changes
 
@@ -650,12 +839,16 @@
 
 ## 0.3.7
 
+_Released: 2024-12-16T14:46:46Z_
+
 ### Patch Changes
 
 - Updated dependencies [0f9d186]
     - @sap-ux/ui-components@1.22.0
 
 ## 0.3.6
+
+_Released: 2024-12-10T13:07:23Z_
 
 ### Patch Changes
 
@@ -664,12 +857,16 @@
 
 ## 0.3.5
 
+_Released: 2024-12-02T12:10:17Z_
+
 ### Patch Changes
 
 - Updated dependencies [bb0531d]
     - @sap-ux/ui-components@1.21.3
 
 ## 0.3.4
+
+_Released: 2024-11-19T15:25:45Z_
 
 ### Patch Changes
 
@@ -679,12 +876,16 @@
 
 ## 0.3.3
 
+_Released: 2024-11-15T09:46:36Z_
+
 ### Patch Changes
 
 - Updated dependencies [32191dd]
     - @sap-ux/ui-components@1.21.1
 
 ## 0.3.2
+
+_Released: 2024-11-11T09:33:19Z_
 
 ### Patch Changes
 
@@ -693,6 +894,8 @@
 
 ## 0.3.1
 
+_Released: 2024-11-11T08:02:21Z_
+
 ### Patch Changes
 
 - Updated dependencies [1c8b59f]
@@ -700,11 +903,15 @@
 
 ## 0.3.0
 
+_Released: 2024-11-06T09:55:42Z_
+
 ### Minor Changes
 
 - a52de73: Enhance the translation input to allow passing i18n annotation information.
 
 ## 0.2.13
+
+_Released: 2024-10-29T12:32:46Z_
 
 ### Patch Changes
 
@@ -713,12 +920,16 @@
 
 ## 0.2.12
 
+_Released: 2024-10-28T20:28:02Z_
+
 ### Patch Changes
 
 - Updated dependencies [9d06579]
     - @sap-ux/ui-components@1.20.2
 
 ## 0.2.11
+
+_Released: 2024-10-25T05:28:32Z_
 
 ### Patch Changes
 
@@ -727,12 +938,16 @@
 
 ## 0.2.10
 
+_Released: 2024-10-23T17:57:31Z_
+
 ### Patch Changes
 
 - Updated dependencies [ae2a993]
     - @sap-ux/ui-components@1.20.0
 
 ## 0.2.9
+
+_Released: 2024-10-18T13:47:38Z_
 
 ### Patch Changes
 
@@ -741,12 +956,16 @@
 
 ## 0.2.8
 
+_Released: 2024-10-15T21:45:56Z_
+
 ### Patch Changes
 
 - Updated dependencies [b403459]
     - @sap-ux/ui-components@1.18.11
 
 ## 0.2.7
+
+_Released: 2024-10-15T16:25:45Z_
 
 ### Patch Changes
 
@@ -755,12 +974,16 @@
 
 ## 0.2.6
 
+_Released: 2024-10-11T10:01:35Z_
+
 ### Patch Changes
 
 - Updated dependencies [4c6f92c]
     - @sap-ux/ui-components@1.18.9
 
 ## 0.2.5
+
+_Released: 2024-10-10T17:50:56Z_
 
 ### Patch Changes
 
@@ -769,6 +992,8 @@
 
 ## 0.2.4
 
+_Released: 2024-10-10T05:24:04Z_
+
 ### Patch Changes
 
 - Updated dependencies [e65bb7f]
@@ -776,11 +1001,15 @@
 
 ## 0.2.3
 
+_Released: 2024-10-07T19:10:12Z_
+
 ### Patch Changes
 
 - 0b8a374: Do not show the translation input if the translation props are not provided (i.e., no I18N bundle and no translation event handler).
 
 ## 0.2.2
+
+_Released: 2024-10-07T09:17:53Z_
 
 ### Patch Changes
 
@@ -788,6 +1017,8 @@
     - @sap-ux/ui-components@1.18.6
 
 ## 0.2.1
+
+_Released: 2024-10-04T15:21:13Z_
 
 ### Patch Changes
 
@@ -797,11 +1028,15 @@
 
 ## 0.2.0
 
+_Released: 2024-09-27T11:06:11Z_
+
 ### Minor Changes
 
 - 05b554d: Support translation input
 
 ## 0.1.14
+
+_Released: 2024-09-23T13:16:17Z_
 
 ### Patch Changes
 
@@ -810,12 +1045,16 @@
 
 ## 0.1.13
 
+_Released: 2024-09-20T13:10:30Z_
+
 ### Patch Changes
 
 - Updated dependencies [89ec1c3]
     - @sap-ux/ui-components@1.18.3
 
 ## 0.1.12
+
+_Released: 2024-09-20T07:56:40Z_
 
 ### Patch Changes
 
@@ -824,12 +1063,16 @@
 
 ## 0.1.11
 
+_Released: 2024-09-19T18:22:44Z_
+
 ### Patch Changes
 
 - Updated dependencies [15c57bc]
     - @sap-ux/ui-components@1.18.1
 
 ## 0.1.10
+
+_Released: 2024-09-18T17:27:54Z_
 
 ### Patch Changes
 
@@ -838,12 +1081,16 @@
 
 ## 0.1.9
 
+_Released: 2024-09-11T11:29:10Z_
+
 ### Patch Changes
 
 - Updated dependencies [a492b41]
     - @sap-ux/ui-components@1.18.0
 
 ## 0.1.8
+
+_Released: 2024-08-30T10:03:37Z_
 
 ### Patch Changes
 
@@ -852,12 +1099,16 @@
 
 ## 0.1.7
 
+_Released: 2024-08-29T16:31:35Z_
+
 ### Patch Changes
 
 - Updated dependencies [b124873]
     - @sap-ux/ui-components@1.17.8
 
 ## 0.1.6
+
+_Released: 2024-08-29T09:14:28Z_
 
 ### Patch Changes
 
@@ -866,12 +1117,16 @@
 
 ## 0.1.5
 
+_Released: 2024-08-23T17:49:39Z_
+
 ### Patch Changes
 
 - Updated dependencies [7710aa5]
     - @sap-ux/ui-components@1.17.6
 
 ## 0.1.4
+
+_Released: 2024-08-20T14:24:47Z_
 
 ### Patch Changes
 
@@ -880,11 +1135,15 @@
 
 ## 0.1.3
 
+_Released: 2024-08-20T13:58:47Z_
+
 ### Patch Changes
 
 - 3de01ca: Remove left margin from prompt group element when in multi-column view
 
 ## 0.1.2
+
+_Released: 2024-08-20T07:11:53Z_
 
 ### Patch Changes
 
@@ -893,12 +1152,16 @@
 
 ## 0.1.1
 
+_Released: 2024-08-07T08:31:04Z_
+
 ### Patch Changes
 
 - Updated dependencies [0084205]
     - @sap-ux/ui-components@1.17.3
 
 ## 0.1.0
+
+_Released: 2024-08-01T18:27:11Z_
 
 ### Minor Changes
 

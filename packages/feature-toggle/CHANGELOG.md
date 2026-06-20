@@ -1,12 +1,28 @@
 # @sap-ux/feature-toggle
 
+## 1.0.2
+
+*Released: 2026-06-12T06:53:23Z*
+
+### Patch Changes
+
+- 41b3908: fix(feature-toggle): resolve vscode synchronously to fix first-run feature toggle race after ESM migration
+
+    The async IIFE introduced during the ESM migration left `_vscodeInstance` as `null` on the first call into the module, because synchronous consumers (e.g. the ADP generator constructor) read the cache before the deferred `import('vscode')` microtask resolved. Subsequent calls within the same process worked because the IIFE had completed in the meantime — making the bug invisible in warm sessions.
+
+    Resolution now uses `createRequire(import.meta.url)` to load `vscode` synchronously at module evaluation time, restoring the pre-migration behavior. The vscode resolver was also extracted into its own `src/vscode.ts` module to provide a clean test seam — `index.test.ts` now mocks `./vscode.js` via `jest.unstable_mockModule`. Public API is unchanged.
+
 ## 1.0.1
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -41,11 +57,15 @@
 
 ## 0.4.0
 
+*Released: 2026-05-15T08:12:20Z*
+
 ### Minor Changes
 
 - 72695e5: chore: drop Node 20 support as it is no longer maintained
 
 ## 0.3.9
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -53,11 +73,15 @@
 
 ## 0.3.8
 
+*Released: 2026-03-30T22:24:11Z*
+
 ### Patch Changes
 
 - c53a4ba: chore(feature-toggle): upgrade jest-when 3.x → 4.x; upgrade shared devDependencies (jest 30)
 
 ## 0.3.7
+
+*Released: 2026-02-20T20:20:17Z*
 
 ### Patch Changes
 
@@ -65,11 +89,15 @@
 
 ## 0.3.6
 
+*Released: 2026-02-04T22:31:27Z*
+
 ### Patch Changes
 
 - 9f11dd2: chore - address audit issues
 
 ## 0.3.5
+
+*Released: 2025-12-15T10:50:50Z*
 
 ### Patch Changes
 
@@ -77,11 +105,15 @@
 
 ## 0.3.4
 
+*Released: 2025-11-05T06:53:42Z*
+
 ### Patch Changes
 
 - cfe9c13: Add deep link to package and changelog to README.md
 
 ## 0.3.3
+
+*Released: 2025-10-22T18:56:41Z*
 
 ### Patch Changes
 
@@ -89,11 +121,15 @@
 
 ## 0.3.2
 
+*Released: 2025-10-14T13:22:30Z*
+
 ### Patch Changes
 
 - bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
 
 ## 0.3.1
+
+*Released: 2025-09-02T13:22:05Z*
 
 ### Patch Changes
 
@@ -101,11 +137,15 @@
 
 ## 0.3.0
 
+*Released: 2025-05-14T22:35:53Z*
+
 ### Minor Changes
 
 - a28357d: chore - drop node18 support as it is out of maintenance
 
 ## 0.2.4
+
+*Released: 2025-05-13T10:46:10Z*
 
 ### Patch Changes
 
@@ -113,11 +153,15 @@
 
 ## 0.2.3
 
+*Released: 2024-12-04T11:05:53Z*
+
 ### Patch Changes
 
 - d04a40e: Add new toggles for ai module
 
 ## 0.2.2
+
+*Released: 2024-10-16T14:50:28Z*
 
 ### Patch Changes
 
@@ -125,11 +169,15 @@
 
 ## 0.2.1
 
+*Released: 2024-10-04T15:21:13Z*
+
 ### Patch Changes
 
 - 93f8a83: chore - upgrade typescript 5.6.2
 
 ## 0.2.0
+
+*Released: 2024-07-05T15:03:05Z*
 
 ### Minor Changes
 
@@ -137,11 +185,15 @@
 
 ## 0.1.1
 
+*Released: 2024-02-27T22:07:50Z*
+
 ### Patch Changes
 
 - c15435b6: fix: remove engines pnpm from package.json
 
 ## 0.1.0
+
+*Released: 2024-02-27T14:50:39Z*
 
 ### Minor Changes
 

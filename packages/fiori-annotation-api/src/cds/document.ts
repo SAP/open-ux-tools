@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url';
 
-import type { AnnotationFile, Namespace, Reference } from '@sap-ux/odata-annotation-core-types';
+import type { AnnotationFile, Namespace, Reference, Target as CoreTarget } from '@sap-ux/odata-annotation-core-types';
 import { Range } from '@sap-ux/odata-annotation-core-types';
 import type { Target } from '@sap-ux/cds-odata-annotation-converter';
 import type {
@@ -37,6 +37,7 @@ export interface Document {
     comments: Comment[];
     tokens: CompilerToken[];
     annotationFile: AnnotationFile;
+    cdsTargetMapping: number[];
 }
 
 export type AstNode = Reference | Target | Assignment | AnnotationNode | CDSDocument;
@@ -77,14 +78,15 @@ export function getDocument(
 
     const annotationFile = toAnnotationFile(file.uri, vocabularyService, cdsAnnotationFile, metadataCollector).file;
 
-    filterTargets(serviceName, annotationFile);
+    const cdsTargetMapping = filterTargets(serviceName, annotationFile);
 
     return {
         uri: file.uri,
         comments,
         ast: cdsDocument,
         annotationFile: annotationFile,
-        tokens
+        tokens,
+        cdsTargetMapping
     };
 }
 
@@ -134,7 +136,7 @@ export function getGhostFileDocument(
         propagatedTargetMap
     ).file;
 
-    filterTargets(serviceName, annotationFile);
+    const cdsTargetMapping = filterTargets(serviceName, annotationFile);
 
     annotationFile.uri = '!' + annotationFile.uri;
     const cdsDocument: CDSDocument = {
@@ -150,17 +152,28 @@ export function getGhostFileDocument(
         comments,
         tokens,
         ast: cdsDocument,
-        annotationFile: annotationFile
+        annotationFile: annotationFile,
+        cdsTargetMapping
     };
 }
 
-function filterTargets(serviceName: string, annotationFile: AnnotationFile): void {
+function filterTargets(serviceName: string, annotationFile: AnnotationFile): number[] {
     // only allow targets pointing to current service
+    const index: number[] = [];
     const serviceNamespace = annotationFile.namespace?.name === serviceName ? annotationFile.namespace : undefined;
     const aliasName = serviceNamespace ? serviceNamespace.alias : '';
-    annotationFile.targets = annotationFile.targets.filter(
-        (target) => target.name.startsWith(serviceName + '.') || (aliasName && target.name.startsWith(aliasName + '.'))
-    );
+    const filteredTargets: CoreTarget[] = [];
+    for (let idx = 0; idx < annotationFile.targets.length; idx++) {
+        const target = annotationFile.targets[idx];
+        const isInService =
+            target.name.startsWith(serviceName + '.') || (aliasName && target.name.startsWith(aliasName + '.'));
+        if (isInService) {
+            filteredTargets.push(target);
+            index.push(idx);
+        }
+    }
+    annotationFile.targets = filteredTargets;
+    return index;
 }
 
 export type ContainerNode = Target | AnnotationGroupItems | Collection | Record;
