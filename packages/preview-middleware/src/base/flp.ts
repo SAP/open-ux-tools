@@ -326,6 +326,18 @@ export class FlpSandbox {
     }
 
     /**
+     * Computes the fully-resolved base URL for template rendering, combining the patched router
+     * mount prefix with the resources namespace prefix for component-type projects.
+     *
+     * @param patchedRouterBaseUrl - The router mount prefix from ui5-patched-router (e.g. /app/myapp)
+     * @returns The combined base URL written into data-open-ux-preview-base-url on the HTML
+     */
+    private getTemplateBaseUrl(patchedRouterBaseUrl: string): string {
+        const resourcesPrefix = getResourcesPathPrefix(this.utils);
+        return resourcesPrefix ? posix.join(patchedRouterBaseUrl, resourcesPrefix) : patchedRouterBaseUrl;
+    }
+
+    /**
      * Generates the FLP sandbox for an editor.
      *
      * @param req the request
@@ -340,8 +352,7 @@ export class FlpSandbox {
 
         await this.setApplicationDependencies();
         const patchedRouterBaseUrl = req['ui5-patched-router']?.baseUrl ?? '';
-        const resourcesPrefix = getResourcesPathPrefix(this.utils);
-        const baseUrl = resourcesPrefix ? posix.join(patchedRouterBaseUrl, resourcesPrefix) : patchedRouterBaseUrl;
+        const baseUrl = this.getTemplateBaseUrl(patchedRouterBaseUrl);
         const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, patchedRouterBaseUrl);
         this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
         if (ui5Version.major === 1 && ui5Version.minor <= 71) {
@@ -368,7 +379,7 @@ export class FlpSandbox {
         };
         config.features = FeatureToggleAccess.getAllFeatureToggles();
         const appId = this.manifest['sap.app']?.id ?? '';
-        remapResourcesForPath(config, editor.path, appId);
+        remapResourcesForPath(config, editor.path, appId, this.utils);
 
         return render(this.getSandboxTemplate(ui5Version), config);
     }
@@ -413,6 +424,9 @@ export class FlpSandbox {
         let livereloadPort: number = envPort ? Number.parseInt(envPort, 10) : DEFAULT_LIVERELOAD_PORT;
         livereloadPort = Number.isNaN(livereloadPort) ? DEFAULT_LIVERELOAD_PORT : livereloadPort;
         const envLivereloadUrl = isAppStudio() ? await exposePort(livereloadPort) : undefined;
+        // For component projects, baseUrl must include the resources prefix for correct API paths
+        const patchedRouterBaseUrl = req['ui5-patched-router']?.baseUrl ?? '';
+        const baseUrl = this.getTemplateBaseUrl(patchedRouterBaseUrl);
         const html = render(template, {
             previewUrl: templatePreviewUrl,
             telemetry: !!rta.options?.telemetry,
@@ -421,7 +435,7 @@ export class FlpSandbox {
             livereloadPort,
             livereloadUrl: envLivereloadUrl,
             features: JSON.stringify(features),
-            baseUrl: req['ui5-patched-router']?.baseUrl ?? ''
+            baseUrl
         } satisfies RtaDeveloperModeTemplateConfig);
         this.sendResponse(res, 'text/html', 200, html);
     }
@@ -544,8 +558,7 @@ export class FlpSandbox {
         } else {
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             const patchedRouterBaseUrl = ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '';
-            const resourcesPrefix = getResourcesPathPrefix(this.utils);
-            const baseUrl = resourcesPrefix ? posix.join(patchedRouterBaseUrl, resourcesPrefix) : patchedRouterBaseUrl;
+            const baseUrl = this.getTemplateBaseUrl(patchedRouterBaseUrl);
             const ui5Version = await this.getUi5VersionFromRequest(req, patchedRouterBaseUrl);
             this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
             if (ui5Version.major === 1 && ui5Version.minor < 120) {

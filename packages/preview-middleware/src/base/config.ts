@@ -463,19 +463,28 @@ async function getI18nTextFromProperty(
  * @param config - cloned TemplateConfig already built for the FLP path
  * @param newPagePath - the path of the HTML page that will serve the resources (e.g. `editor.path`)
  * @param appId - the `sap.app.id` used as resource-root key for the primary application
+ * @param utils - middleware utils to determine project type (application vs component)
  */
-export function remapResourcesForPath(config: TemplateConfig, newPagePath: string, appId: string): void {
-    const newBasePath = posix.relative(posix.dirname(newPagePath), '/') || '.';
+export function remapResourcesForPath(
+    config: TemplateConfig,
+    newPagePath: string,
+    appId: string,
+    utils?: MiddlewareUtils
+): void {
+    const normalizedPagePath = posix.isAbsolute(newPagePath) ? newPagePath : posix.join('/', newPagePath);
+    const resourcesPrefix = getResourcesPathPrefix(utils);
+    const base = resourcesPrefix ?? '/';
+    const newBasePath = posix.relative(posix.dirname(normalizedPagePath), base) || '.';
 
     // Update the well-known client namespace to be relative to the new page path
     config.ui5.resources[PREVIEW_URL.client.ns] = PREVIEW_URL.client.getUrl(newBasePath);
 
-    // Update the primary app's resource root (was set to basePath for the main app)
+    // Update the primary app's resource root (was set to appBasePath for the main app)
     if (appId && appId in config.ui5.resources) {
         config.ui5.resources[appId] = newBasePath;
     }
 
-    // Keep basePath in sync for any other template usage (e.g. basePath/resources/...)
+    // Keep appBasePath in sync for any other template usage
     config.appBasePath = newBasePath;
 }
 

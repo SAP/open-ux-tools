@@ -11,7 +11,7 @@ import {
 } from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
-import { fetchMock } from 'mock/window';
+import { documentMock, fetchMock } from 'mock/window';
 import JsControlTreeModifierMock from 'mock/sap/ui/core/util/reflection/JsControlTreeModifier';
 import type Control from 'sap/ui/core/Control';
 import ChangesWriteAPIMock from 'mock/sap/ui/fl/write/api/ChangesWriteAPI';
@@ -1911,5 +1911,104 @@ describe('ChangeService', () => {
                 type: MessageBarType.error
             })
         );
+    });
+
+    describe('baseUrl for component projects', () => {
+        const mockBaseUrl = '/resources/my/component';
+
+        beforeEach(() => {
+            documentMock.getElementById.mockImplementation((id) => {
+                if (id === 'sap-ui-bootstrap') {
+                    return {
+                        dataset: {
+                            openUxPreviewBaseUrl: mockBaseUrl
+                        }
+                    };
+                }
+                return null;
+            });
+        });
+
+        afterEach(() => {
+            documentMock.getElementById.mockReset();
+        });
+
+        test('fetch changes uses baseUrl from sap-ui-bootstrap data attribute', async () => {
+            fetchMock.mockResolvedValue({
+                json: () =>
+                    Promise.resolve({
+                        change1: {
+                            changeType: 'propertyChange',
+                            fileName: 'id_123_propertyChange',
+                            content: {
+                                property: 'enabled',
+                                newValue: true
+                            },
+                            selector: {
+                                id: 'testControl',
+                                type: 'sap.m.Button'
+                            },
+                            creation: '2021-12-21T17:12:37.301Z'
+                        }
+                    })
+            });
+            jest.spyOn(Date, 'now').mockReturnValueOnce(123);
+
+            const service = new ChangeService({ rta: rtaMock } as any);
+            await service.init(sendActionMock, subscribeMock);
+
+            // Verify that fetch was called with the baseUrl prepended
+            expect(fetchMock).toHaveBeenCalledWith(`${mockBaseUrl}/preview/api/changes?_=123`);
+        });
+
+        test('delete changes uses baseUrl from sap-ui-bootstrap data attribute', async () => {
+            // Setup: init with one saved change
+            const jsonMock = jest.fn().mockResolvedValue({
+                change1: {
+                    changeType: 'propertyChange',
+                    fileName: 'id_123_propertyChange',
+                    content: {
+                        property: 'enabled',
+                        newValue: true
+                    },
+                    selector: {
+                        id: 'testControl',
+                        type: 'sap.m.Button'
+                    },
+                    creation: '2021-12-21T17:12:37.301Z'
+                }
+            });
+            fetchMock.mockResolvedValue({
+                ok: true,
+                json: jsonMock
+            });
+
+            const service = new ChangeService({ rta: rtaMock } as any);
+            await service.init(sendActionMock, subscribeMock);
+
+            // Clear fetch mock to capture delete call
+            fetchMock.mockClear();
+            fetchMock.mockResolvedValue({
+                ok: true,
+                json: jest.fn().mockResolvedValue({})
+            });
+
+            // Trigger delete via the subscriber callback
+            await subscribeMock.mock.calls[0][0](
+                deletePropertyChanges({
+                    controlId: 'testControl',
+                    propertyName: 'enabled',
+                    fileName: 'id_123_propertyChange'
+                })
+            );
+
+            // Verify that fetch DELETE was called with the baseUrl prepended
+            expect(fetchMock).toHaveBeenCalledWith(
+                `${mockBaseUrl}/preview/api/changes`,
+                expect.objectContaining({
+                    method: 'DELETE'
+                })
+            );
+        });
     });
 });
