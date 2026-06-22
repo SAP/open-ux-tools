@@ -1,4 +1,8 @@
 --------------------------------
+**TITLE**: OPA5 Integration Tests for SAP Fiori Elements applications
+
+**TAGS**: OPA5, integration-tests, fiori-elements, sap.fe.test, journey, page-objects, V4, V2, testing
+
 # OPA5 Integration Tests for SAP Fiori Elements applications
 
 ## Introduction
@@ -188,7 +192,7 @@ Then.onTheListReport.onFilterBar()
 // Multiple filters
 When.onTheListReport.onFilterBar()
     .iChangeFilterField("Status", "Active")
-    .and.iChangeFilterField("Category", "Electronics")
+    .and.iChangeFilterField("CategoryId", "Electronics")
     .and.iExecuteSearch();
 
 // Open filter adaptation panel
@@ -196,8 +200,11 @@ When.onTheListReport.onFilterBar().iOpenFilterAdaptation();
 When.onTheListReport.onFilterBar().iConfirmFilterAdaptation();
 When.onTheListReport.onFilterBar().iCancelFilterAdaptation();
 
-// Reset all active filters
-When.onTheListReport.onFilterBar().iResetFilters();
+// Clear all values for filter fields 
+When.onTheListReport.onFilterBar()
+    .iChangeFilterField("Status", null, true)
+    .and.iChangeFilterField("CategoryId", null, true)
+    .and.iExecuteSearch();
 ```
 
 **Pattern: FilterBar Field Not Found (🟡 Category 02)**
@@ -740,7 +747,7 @@ The V2 test library uses a completely different API. Never mix V4 and V2.
 ### V2 API Comparison
 
 | Task | V4 (`sap.fe.test`) | V2 (`fioriElementsTestLibrary`) |
-|------|--------------------|--------------------------------------|
+|------|--------------------|-----------------------------|
 | Start app | `Given.iStartMyApp()` | `Given.iStartMyAppInAFrame("./index.html")` |
 | Search | `onFilterBar().iExecuteSearch()` | `iExecuteTheSearch()` |
 | Check rows | `onTable().iCheckRows(n)` | `theResultListContainsTheCorrectNumberOfItems(n)` |

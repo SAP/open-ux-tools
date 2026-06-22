@@ -1,6 +1,50 @@
 # @sap-ux/create
 
+## 1.0.30
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.17 → 1.0.18
+- @sap-ux/flp-config-inquirer 1.0.17 → 1.0.18
+- @sap-ux/preview-middleware 1.0.24 → 1.0.25
+- @sap-ux/app-config-writer 1.0.10 → 1.0.10
+
+## 1.0.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.13 → 2.0.14
+
+## 1.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.16 → 1.0.17
+- @sap-ux/odata-service-writer 1.0.6 → 1.0.7
+- @sap-ux/flp-config-inquirer 1.0.16 → 1.0.17
+- @sap-ux/preview-middleware 1.0.23 → 1.0.24
+- @sap-ux/app-config-writer 1.0.10 → 1.0.10
+- @sap-ux/abap-deploy-config-inquirer 2.0.12 → 2.0.13
+
+## 1.0.27
+
+_Released: 2026-06-16T21:19:36Z_
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.11 → 2.0.12
+
 ## 1.0.26
+
+_Released: 2026-06-15T21:05:56Z_
 
 ### Patch Changes
 
@@ -10,6 +54,8 @@
 - @sap-ux/app-config-writer 1.0.10 → 1.0.10
 
 ## 1.0.25
+
+_Released: 2026-06-14T10:40:09Z_
 
 ### Patch Changes
 
@@ -21,6 +67,8 @@
 
 ## 1.0.24
 
+_Released: 2026-06-12T19:01:39Z_
+
 ### Patch Changes
 
 - Updated dependencies [00ddb82]
@@ -29,6 +77,8 @@
 
 ## 1.0.23
 
+_Released: 2026-06-12T14:48:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [d4e24a7]
@@ -36,6 +86,8 @@
     - @sap-ux/app-config-writer@1.0.10
 
 ## 1.0.22
+
+_Released: 2026-06-12T10:49:08Z_
 
 ### Patch Changes
 
@@ -48,6 +100,8 @@
 
 ## 1.0.21
 
+_Released: 2026-06-12T08:50:00Z_
+
 ### Patch Changes
 
 - Updated dependencies [0110219]
@@ -55,6 +109,8 @@
     - @sap-ux/app-config-writer@1.0.10
 
 ## 1.0.20
+
+_Released: 2026-06-12T06:53:23Z_
 
 ### Patch Changes
 
@@ -71,6 +127,8 @@
 
 ## 1.0.19
 
+_Released: 2026-06-11T13:37:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [e66a8a9]
@@ -81,12 +139,16 @@
 
 ## 1.0.18
 
+_Released: 2026-06-11T12:06:20Z_
+
 ### Patch Changes
 
 - Updated dependencies [28648e0]
     - @sap-ux/app-config-writer@1.0.8
 
 ## 1.0.17
+
+_Released: 2026-06-11T10:54:17Z_
 
 ### Patch Changes
 
@@ -99,11 +161,15 @@
 
 ## 1.0.16
 
+_Released: 2026-06-10T12:27:36Z_
+
 ### Patch Changes
 
 - 9a82ef4: fix(create): correct error message to use 'update system' instead of 'change system'
 
 ## 1.0.15
+
+_Released: 2026-06-10T09:57:42Z_
 
 ### Patch Changes
 
@@ -124,6 +190,8 @@
 
 ## 1.0.14
 
+_Released: 2026-06-09T14:35:01Z_
+
 ### Patch Changes
 
 - Updated dependencies [0fa8305]
@@ -142,6 +210,8 @@
 
 ## 1.0.13
 
+_Released: 2026-06-09T13:18:16Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@2.0.7
@@ -153,6 +223,8 @@
 
 ## 1.0.12
 
+_Released: 2026-06-09T09:41:14Z_
+
 ### Patch Changes
 
 - Updated dependencies [bcfe9e3]
@@ -160,6 +232,8 @@
     - @sap-ux/app-config-writer@1.0.5
 
 ## 1.0.11
+
+_Released: 2026-06-04T13:54:21Z_
 
 ### Patch Changes
 
@@ -179,6 +253,8 @@
 
 ## 1.0.10
 
+_Released: 2026-06-04T12:10:05Z_
+
 ### Patch Changes
 
 - Updated dependencies [fb84c0e]
@@ -188,6 +264,8 @@
     - @sap-ux/app-config-writer@1.0.4
 
 ## 1.0.9
+
+_Released: 2026-06-04T10:19:37Z_
 
 ### Patch Changes
 
@@ -207,6 +285,8 @@
     - @sap-ux/abap-deploy-config-inquirer@2.0.5
 
 ## 1.0.8
+
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -232,6 +312,8 @@
 
 ## 1.0.7
 
+_Released: 2026-06-03T13:52:44Z_
+
 ### Patch Changes
 
 - Updated dependencies [9580241]
@@ -251,11 +333,15 @@
 
 ## 1.0.6
 
+_Released: 2026-06-03T10:10:17Z_
+
 ### Patch Changes
 
 - 3140dcc: FIX: replace `change system` with `update system`
 
 ## 1.0.5
+
+_Released: 2026-06-02T21:37:28Z_
 
 ### Patch Changes
 
@@ -264,6 +350,8 @@
     - @sap-ux/app-config-writer@1.0.1
 
 ## 1.0.4
+
+_Released: 2026-06-02T11:35:17Z_
 
 ### Patch Changes
 
@@ -278,6 +366,8 @@
 
 ## 1.0.3
 
+_Released: 2026-06-02T08:56:31Z_
+
 ### Patch Changes
 
 - Updated dependencies [a8e4cf0]
@@ -288,6 +378,8 @@
 
 ## 1.0.2
 
+_Released: 2026-06-01T17:22:37Z_
+
 ### Patch Changes
 
 - Updated dependencies [8024912]
@@ -295,6 +387,8 @@
     - @sap-ux/app-config-writer@1.0.1
 
 ## 1.0.1
+
+_Released: 2026-06-01T15:15:26Z_
 
 ### Patch Changes
 
@@ -313,6 +407,8 @@
     - @sap-ux/abap-deploy-config-inquirer@2.0.1
 
 ## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -368,6 +464,8 @@
 
 ## 0.17.6
 
+_Released: 2026-05-29T12:50:34Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.9.7
@@ -378,6 +476,8 @@
 
 ## 0.17.5
 
+_Released: 2026-05-29T06:59:27Z_
+
 ### Patch Changes
 
 - Updated dependencies [9a980a9]
@@ -387,6 +487,8 @@
     - @sap-ux/flp-config-inquirer@0.5.10
 
 ## 0.17.4
+
+_Released: 2026-05-27T11:39:21Z_
 
 ### Patch Changes
 
@@ -400,6 +502,8 @@
     - @sap-ux/cap-config-writer@0.13.6
 
 ## 0.17.3
+
+_Released: 2026-05-27T10:42:47Z_
 
 ### Patch Changes
 
@@ -417,11 +521,15 @@
 
 ## 0.17.2
 
+_Released: 2026-05-27T09:55:48Z_
+
 ### Patch Changes
 
 - @sap-ux/app-config-writer@0.7.5
 
 ## 0.17.1
+
+_Released: 2026-05-26T16:40:21Z_
 
 ### Patch Changes
 
@@ -443,11 +551,15 @@
 
 ## 0.17.0
 
+_Released: 2026-05-25T11:58:02Z_
+
 ### Minor Changes
 
 - f6af206: feat: add CLI commands for managing saved backend systems (#37734)
 
 ## 0.16.8
+
+_Released: 2026-05-22T13:30:05Z_
 
 ### Patch Changes
 
@@ -458,6 +570,8 @@
     - @sap-ux/app-config-writer@0.7.3
 
 ## 0.16.7
+
+_Released: 2026-05-21T16:21:11Z_
 
 ### Patch Changes
 
@@ -480,6 +594,8 @@
 
 ## 0.16.6
 
+_Released: 2026-05-21T14:58:44Z_
+
 ### Patch Changes
 
 - Updated dependencies [dab1aa2]
@@ -489,6 +605,8 @@
     - @sap-ux/app-config-writer@0.7.2
 
 ## 0.16.5
+
+_Released: 2026-05-19T15:16:46Z_
 
 ### Patch Changes
 
@@ -508,6 +626,8 @@
 
 ## 0.16.4
 
+_Released: 2026-05-18T08:15:14Z_
+
 ### Patch Changes
 
 - Updated dependencies [342c544]
@@ -518,6 +638,8 @@
 
 ## 0.16.3
 
+_Released: 2026-05-15T20:38:24Z_
+
 ### Patch Changes
 
 - Updated dependencies [fb00faa]
@@ -525,6 +647,8 @@
     - @sap-ux/app-config-writer@0.7.1
 
 ## 0.16.2
+
+_Released: 2026-05-15T13:12:06Z_
 
 ### Patch Changes
 
@@ -538,12 +662,16 @@
 
 ## 0.16.1
 
+_Released: 2026-05-15T12:26:02Z_
+
 ### Patch Changes
 
 - Updated dependencies [2f0c182]
     - @sap-ux/app-config-writer@0.7.1
 
 ## 0.16.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -571,6 +699,8 @@
 
 ## 0.15.99
 
+_Released: 2026-05-14T21:28:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [138246a]
@@ -583,6 +713,8 @@
 
 ## 0.15.98
 
+_Released: 2026-05-14T14:16:50Z_
+
 ### Patch Changes
 
 - Updated dependencies [8c4185a]
@@ -592,6 +724,8 @@
     - @sap-ux/app-config-writer@0.6.145
 
 ## 0.15.97
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -616,6 +750,8 @@
 
 ## 0.15.96
 
+_Released: 2026-05-13T09:36:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -634,6 +770,8 @@
 
 ## 0.15.95
 
+_Released: 2026-05-12T18:00:39Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.8.20
@@ -645,6 +783,8 @@
 
 ## 0.15.94
 
+_Released: 2026-05-12T07:58:27Z_
+
 ### Patch Changes
 
 - Updated dependencies [be5476f]
@@ -653,12 +793,16 @@
 
 ## 0.15.93
 
+_Released: 2026-05-11T12:52:25Z_
+
 ### Patch Changes
 
 - Updated dependencies [3ca8866]
     - @sap-ux/flp-config-inquirer@0.4.189
 
 ## 0.15.92
+
+_Released: 2026-05-11T08:53:48Z_
 
 ### Patch Changes
 
@@ -668,12 +812,16 @@
 
 ## 0.15.91
 
+_Released: 2026-05-07T07:06:42Z_
+
 ### Patch Changes
 
 - @sap-ux/preview-middleware@0.25.40
 - @sap-ux/app-config-writer@0.6.143
 
 ## 0.15.90
+
+_Released: 2026-05-06T23:02:00Z_
 
 ### Patch Changes
 
@@ -697,12 +845,16 @@
 
 ## 0.15.89
 
+_Released: 2026-05-04T08:49:55Z_
+
 ### Patch Changes
 
 - @sap-ux/preview-middleware@0.25.38
 - @sap-ux/app-config-writer@0.6.142
 
 ## 0.15.88
+
+_Released: 2026-05-01T15:46:09Z_
 
 ### Patch Changes
 
@@ -714,6 +866,8 @@
 
 ## 0.15.87
 
+_Released: 2026-04-30T19:47:20Z_
+
 ### Patch Changes
 
 - Updated dependencies [fcaa70c]
@@ -723,6 +877,8 @@
     - @sap-ux/app-config-writer@0.6.142
 
 ## 0.15.86
+
+_Released: 2026-04-30T14:23:24Z_
 
 ### Patch Changes
 
@@ -742,6 +898,8 @@
 
 ## 0.15.85
 
+_Released: 2026-04-30T13:10:33Z_
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.125
@@ -750,6 +908,8 @@
 - @sap-ux/app-config-writer@0.6.141
 
 ## 0.15.84
+
+_Released: 2026-04-29T15:24:37Z_
 
 ### Patch Changes
 
@@ -770,6 +930,8 @@
 
 ## 0.15.83
 
+_Released: 2026-04-27T19:47:46Z_
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -788,6 +950,8 @@
 
 ## 0.15.82
 
+_Released: 2026-04-27T15:50:47Z_
+
 ### Patch Changes
 
 - Updated dependencies [165a6c2]
@@ -795,6 +959,8 @@
     - @sap-ux/preview-middleware@0.25.31
 
 ## 0.15.81
+
+_Released: 2026-04-27T07:30:24Z_
 
 ### Patch Changes
 
@@ -805,6 +971,8 @@
     - @sap-ux/app-config-writer@0.6.138
 
 ## 0.15.80
+
+_Released: 2026-04-23T12:54:21Z_
 
 ### Patch Changes
 
@@ -824,6 +992,8 @@
 
 ## 0.15.79
 
+_Released: 2026-04-23T06:48:55Z_
+
 ### Patch Changes
 
 - Updated dependencies [237371b]
@@ -840,6 +1010,8 @@
 
 ## 0.15.78
 
+_Released: 2026-04-22T12:38:46Z_
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.119
@@ -849,6 +1021,8 @@
 - @sap-ux/app-config-writer@0.6.136
 
 ## 0.15.77
+
+_Released: 2026-04-15T11:53:17Z_
 
 ### Patch Changes
 
@@ -862,6 +1036,8 @@
 
 ## 0.15.76
 
+_Released: 2026-04-15T08:11:32Z_
+
 ### Patch Changes
 
 - 8fb08a2: feat: Extend add-new-model generator to support external services for CF projects
@@ -872,6 +1048,8 @@
     - @sap-ux/app-config-writer@0.6.136
 
 ## 0.15.75
+
+_Released: 2026-04-14T20:26:28Z_
 
 ### Patch Changes
 
@@ -889,6 +1067,8 @@
     - @sap-ux/abap-deploy-config-writer@0.3.10
 
 ## 0.15.74
+
+_Released: 2026-04-14T12:35:35Z_
 
 ### Patch Changes
 
@@ -910,6 +1090,8 @@
 
 ## 0.15.73
 
+_Released: 2026-04-14T11:39:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [497317c]
@@ -920,6 +1102,8 @@
 
 ## 0.15.72
 
+_Released: 2026-04-10T09:18:00Z_
+
 ### Patch Changes
 
 - Updated dependencies [75bed3b]
@@ -927,12 +1111,16 @@
 
 ## 0.15.71
 
+_Released: 2026-04-09T11:02:11Z_
+
 ### Patch Changes
 
 - @sap-ux/preview-middleware@0.25.21
 - @sap-ux/app-config-writer@0.6.133
 
 ## 0.15.70
+
+_Released: 2026-04-09T07:00:16Z_
 
 ### Patch Changes
 
@@ -943,6 +1131,8 @@
     - @sap-ux/app-config-writer@0.6.133
 
 ## 0.15.69
+
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -966,6 +1156,8 @@
 
 ## 0.15.68
 
+_Released: 2026-04-07T11:09:34Z_
+
 ### Patch Changes
 
 - 1b10e9f: feat: Adapt CF ADP project structure to work with approuter backend middleware
@@ -977,6 +1169,8 @@
 
 ## 0.15.67
 
+_Released: 2026-04-06T06:37:05Z_
+
 ### Patch Changes
 
 - Updated dependencies [4237e59]
@@ -984,6 +1178,8 @@
     - @sap-ux/app-config-writer@0.6.132
 
 ## 0.15.66
+
+_Released: 2026-04-01T14:51:40Z_
 
 ### Patch Changes
 
@@ -995,6 +1191,8 @@
 
 ## 0.15.65
 
+_Released: 2026-04-01T13:59:33Z_
+
 ### Patch Changes
 
 - Updated dependencies [0153757]
@@ -1002,6 +1200,8 @@
     - @sap-ux/app-config-writer@0.6.132
 
 ## 0.15.64
+
+_Released: 2026-04-01T11:49:37Z_
 
 ### Patch Changes
 
@@ -1021,6 +1221,8 @@
 
 ## 0.15.63
 
+_Released: 2026-04-01T06:34:51Z_
+
 ### Patch Changes
 
 - 68b5523: feat: Adjust FLP configuration wizard for CF scenario
@@ -1032,6 +1234,8 @@
 
 ## 0.15.62
 
+_Released: 2026-03-31T06:45:29Z_
+
 ### Patch Changes
 
 - Updated dependencies [f305285]
@@ -1039,6 +1243,8 @@
     - @sap-ux/app-config-writer@0.6.131
 
 ## 0.15.61
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -1070,6 +1276,8 @@
 
 ## 0.15.60
 
+_Released: 2026-03-30T14:18:57Z_
+
 ### Patch Changes
 
 - Updated dependencies [8408e10]
@@ -1077,6 +1285,8 @@
     - @sap-ux/app-config-writer@0.6.130
 
 ## 0.15.59
+
+_Released: 2026-03-27T15:37:24Z_
 
 ### Patch Changes
 
@@ -1089,6 +1299,8 @@
 
 ## 0.15.58
 
+_Released: 2026-03-27T12:51:40Z_
+
 ### Patch Changes
 
 - Updated dependencies [3013bf0]
@@ -1096,6 +1308,8 @@
     - @sap-ux/app-config-writer@0.6.130
 
 ## 0.15.57
+
+_Released: 2026-03-27T11:58:49Z_
 
 ### Patch Changes
 
@@ -1112,6 +1326,8 @@
 - @sap-ux/abap-deploy-config-writer@0.3.5
 
 ## 0.15.56
+
+_Released: 2026-03-26T20:06:10Z_
 
 ### Patch Changes
 
@@ -1131,6 +1347,8 @@
 
 ## 0.15.55
 
+_Released: 2026-03-26T16:48:32Z_
+
 ### Patch Changes
 
 - Updated dependencies [96a689b]
@@ -1141,6 +1359,8 @@
 
 ## 0.15.54
 
+_Released: 2026-03-26T16:10:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [8e7d529]
@@ -1148,6 +1368,8 @@
     - @sap-ux/app-config-writer@0.6.128
 
 ## 0.15.53
+
+_Released: 2026-03-26T15:15:10Z_
 
 ### Patch Changes
 
@@ -1158,6 +1380,8 @@
     - @sap-ux/app-config-writer@0.6.128
 
 ## 0.15.52
+
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -1193,6 +1417,8 @@
 
 ## 0.15.51
 
+_Released: 2026-03-25T12:56:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [f384ace]
@@ -1211,6 +1437,8 @@
 
 ## 0.15.50
 
+_Released: 2026-03-24T10:27:55Z_
+
 ### Patch Changes
 
 - Updated dependencies [997f605]
@@ -1218,6 +1446,8 @@
     - @sap-ux/app-config-writer@0.6.126
 
 ## 0.15.49
+
+_Released: 2026-03-23T18:25:40Z_
 
 ### Patch Changes
 
@@ -1234,6 +1464,8 @@
 
 ## 0.15.48
 
+_Released: 2026-03-23T16:28:28Z_
+
 ### Patch Changes
 
 - cfb79f9: fix: npm install issues using convert eslint-config command
@@ -1241,6 +1473,8 @@
     - @sap-ux/app-config-writer@0.6.125
 
 ## 0.15.47
+
+_Released: 2026-03-23T10:51:10Z_
 
 ### Patch Changes
 

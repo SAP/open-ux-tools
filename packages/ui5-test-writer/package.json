@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui5-test-writer",
     "description": "SAP UI5 tests writer",
-    "version": "1.1.11",
+    "version": "1.2.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -22,6 +22,7 @@
         "lint:fix": "eslint --fix",
         "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
+        "run-generator": "npm run build && npx ts-node --esm test/manual/run-generator.ts",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },

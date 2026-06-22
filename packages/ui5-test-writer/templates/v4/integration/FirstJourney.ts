@@ -7,19 +7,19 @@ function journey() {
 
     opaTest("Start application", function (Given: Given, _When: When<% if (startLR) { %>, Then: Then<% } else { %>, _Then: Then<% } %>) {
         Given.iStartMyApp();
-        <% if (startLR) { %>Then.onThe<%- startLR %>.iSeeThisPage();<%} %>
+        <% if (startLR) { %>Then.onThe<%- startLR %>Generated.iSeeThisPage();<%} %>
     });
 
 <% if (startLR) { %>
     opaTest("Navigate to ObjectPage", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data
         <% if (!hideFilterBar) { %>
-        When.onThe<%- startLR%>.onFilterBar().iExecuteSearch();
+        When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
         <%} %>
-        Then.onThe<%- startLR%>.onTable("").iCheckRows();
+        Then.onThe<%- startLR%>Generated.onTable("").iCheckRows();
 <% if (navigatedOP) { %>
-        When.onThe<%- startLR%>.onTable("").iPressRow(0);
-        Then.onThe<%- navigatedOP%>.iSeeThisPage();
+        When.onThe<%- startLR%>Generated.onTable("").iPressRow(0);
+        Then.onThe<%- navigatedOP%>Generated.iSeeThisPage();
 <%} %>
     });
 <%} %>

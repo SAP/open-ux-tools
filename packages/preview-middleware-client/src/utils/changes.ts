@@ -1,5 +1,6 @@
-import FlexChange, { ChangeDefinition } from 'sap/ui/fl/Change';
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FlexChange from 'sap/ui/fl/Change';
+import type { ChangeDefinition } from 'sap/ui/fl/Change';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import { AddXMLChangeContent } from '../cpe/additional-change-info/add-xml-additional-info.js';
 import { ADD_XML_CHANGE } from '../cpe/changes/generic-change';
 

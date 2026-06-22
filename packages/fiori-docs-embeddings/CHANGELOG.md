@@ -1,6 +1,44 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 1.2.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-18
+
+#### Bug Fixes
+
+- Validate GitHub host/token inputs to prevent argument injection; validate output path to prevent path traversal [[74a9959](https://github.com/SAP/open-ux-tools/commit/74a9959edf34f8f9ef99ca125fa71524c741aabd)]
+
+## 1.2.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-18
+
+#### Bug Fixes
+
+- Update opa5_docu.md: clear filter fields [[6776415](https://github.com/SAP/open-ux-tools/commit/6776415f52f25bbbf29728bec85e026a868e8687)]
+
+## 1.2.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-16
+
+#### Bug Fixes
+
+- OPA5 embeddings chunk formatting [[70f934e](https://github.com/SAP/open-ux-tools/commit/70f934e20e2e91aabccc02fc6e3d8f25940edc95)]
+
 ## 1.2.0
+
+*Released: 2026-06-12T08:20:17Z*
 
 ### Minor Changes
 
@@ -8,11 +46,15 @@
 
 ## 1.1.1
 
+*Released: 2026-06-11T15:27:53Z*
+
 ### Patch Changes
 
 - 4124656: Add OPA mock server testing guide as github-raw doc source and --source CLI flag for single-source builds
 
 ## 1.1.0
+
+*Released: 2026-06-05T11:08:04Z*
 
 ### Minor Changes
 
@@ -20,11 +62,15 @@
 
 ## 1.0.1
 
+*Released: 2026-06-03T14:58:37Z*
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -59,11 +105,15 @@
 
 ## 0.5.1
 
+*Released: 2026-05-21T05:46:16Z*
+
 ### Patch Changes
 
 - 12137f6: update doc for fiori extension
 
 ## 0.5.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -71,11 +121,15 @@
 
 ## 0.4.20
 
+*Released: 2026-05-14T12:51:22Z*
+
 ### Patch Changes
 
 - 59537d3: chore: override sharp to >=0.33.5 to fix CI build on darwin-arm64
 
 ## 0.4.19
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -83,11 +137,15 @@
 
 ## 0.4.18
 
+*Released: 2026-05-11T09:58:34Z*
+
 ### Patch Changes
 
 - a5c05a8: Add additional guidance on the adding of extension in fiori
 
 ## 0.4.17
+
+*Released: 2026-05-04T15:49:13Z*
 
 ### Patch Changes
 
@@ -95,7 +153,7 @@
 
 ## 0.4.16
 
-*Released: 2026-02-27T15:42:39Z*
+_Released: 2026-02-27T15:42:39Z_
 
 ### Patch Changes
 
@@ -105,7 +163,7 @@
 
 ## 0.4.15
 
-*Released: 2026-02-18T21:45:35Z*
+_Released: 2026-02-18T21:45:35Z_
 
 ### Patch Changes
 
@@ -113,7 +171,7 @@
 
 ## 0.4.14
 
-*Released: 2026-02-10T21:03:43Z*
+_Released: 2026-02-10T21:03:43Z_
 
 ### Patch Changes
 
@@ -121,7 +179,7 @@
 
 ## 0.4.13
 
-*Released: 2026-02-03T15:42:23Z*
+_Released: 2026-02-03T15:42:23Z_
 
 ### Patch Changes
 
@@ -129,7 +187,7 @@
 
 ## 0.4.12
 
-*Released: 2026-01-30T16:18:20Z*
+_Released: 2026-01-30T16:18:20Z_
 
 ### Patch Changes
 
@@ -137,7 +195,7 @@
 
 ## 0.4.11
 
-*Released: 2026-01-28T10:59:00Z*
+_Released: 2026-01-28T10:59:00Z_
 
 ### Patch Changes
 
@@ -145,7 +203,7 @@
 
 ## 0.4.10
 
-*Released: 2026-01-23T17:12:38Z*
+_Released: 2026-01-23T17:12:38Z_
 
 ### Patch Changes
 
@@ -153,7 +211,7 @@
 
 ## 0.4.9
 
-*Released: 2026-01-12T09:10:27Z*
+_Released: 2026-01-12T09:10:27Z_
 
 ### Patch Changes
 
@@ -161,7 +219,7 @@
 
 ## 0.4.8
 
-*Released: 2026-01-09T11:35:48Z*
+_Released: 2026-01-09T11:35:48Z_
 
 ### Patch Changes
 
@@ -169,7 +227,7 @@
 
 ## 0.4.7
 
-*Released: 2025-12-18T21:05:02Z*
+_Released: 2025-12-18T21:05:02Z_
 
 ### Patch Changes
 
@@ -177,7 +235,7 @@
 
 ## 0.4.6
 
-*Released: 2025-12-15T10:50:50Z*
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -185,7 +243,7 @@
 
 ## 0.4.5
 
-*Released: 2025-12-01T17:31:14Z*
+_Released: 2025-12-01T17:31:14Z_
 
 ### Patch Changes
 
@@ -193,7 +251,7 @@
 
 ## 0.4.4
 
-*Released: 2025-11-13T12:25:56Z*
+_Released: 2025-11-13T12:25:56Z_
 
 ### Patch Changes
 
@@ -201,7 +259,7 @@
 
 ## 0.4.3
 
-*Released: 2025-11-11T19:29:27Z*
+_Released: 2025-11-11T19:29:27Z_
 
 ### Patch Changes
 
@@ -209,7 +267,7 @@
 
 ## 0.4.2
 
-*Released: 2025-11-05T06:53:42Z*
+_Released: 2025-11-05T06:53:42Z_
 
 ### Patch Changes
 
@@ -217,7 +275,7 @@
 
 ## 0.4.1
 
-*Released: 2025-10-22T18:56:41Z*
+_Released: 2025-10-22T18:56:41Z_
 
 ### Patch Changes
 
@@ -225,7 +283,7 @@
 
 ## 0.4.0
 
-*Released: 2025-10-20T15:41:39Z*
+_Released: 2025-10-20T15:41:39Z_
 
 ### Minor Changes
 
@@ -233,7 +291,7 @@
 
 ## 0.3.0
 
-*Released: 2025-10-15T11:11:41Z*
+_Released: 2025-10-15T11:11:41Z_
 
 ### Minor Changes
 
@@ -241,7 +299,7 @@
 
 ## 0.2.0
 
-*Released: 2025-10-09T12:00:16Z*
+_Released: 2025-10-09T12:00:16Z_
 
 ### Minor Changes
 
@@ -249,7 +307,7 @@
 
 ## 0.1.1
 
-*Released: 2025-10-06T17:09:01Z*
+_Released: 2025-10-06T17:09:01Z_
 
 ### Patch Changes
 
@@ -257,7 +315,7 @@
 
 ## 0.1.0
 
-*Released: 2025-10-06T11:26:22Z*
+_Released: 2025-10-06T11:26:22Z_
 
 ### Minor Changes
 
@@ -265,7 +323,7 @@
 
 ## 0.0.2
 
-*Released: 2025-09-18T23:50:28Z*
+_Released: 2025-09-18T23:50:28Z_
 
 ### Patch Changes
 
@@ -273,7 +331,7 @@
 
 ## 0.0.1
 
-*Released: 2025-09-17T14:22:31Z*
+_Released: 2025-09-17T14:22:31Z_
 
 ### Patch Changes
 

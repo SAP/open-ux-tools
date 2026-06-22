@@ -1,6 +1,9 @@
 import { jest } from '@jest/globals';
-import path, { join } from 'node:path';
+import path, { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const realFs = await import('node:fs');
 const mockReadFileSync = jest.fn<typeof realFs.readFileSync>();
@@ -124,6 +127,8 @@ describe('Project Utils', () => {
             const result = getPackageJSONInfo();
 
             expect(result).toEqual(mockJSON);
+            const packageJsonPath = mockReadFileSync.mock.calls[0][0];
+            expect(packageJsonPath).toEqual(join(__dirname, '../../../package.json'));
         });
 
         it('should return default package info on read failure', () => {
