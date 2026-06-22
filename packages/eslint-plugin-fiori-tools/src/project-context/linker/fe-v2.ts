@@ -4,7 +4,8 @@ import { getParsedServiceByName } from '../utils.js';
 import type { ParsedService } from '../parser/index.js';
 import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations.js';
 import { collectHeaderSections, collectSections, collectTables, getConfigurationKey } from './annotations.js';
-import type { FlexChange, PropertyChangeConfig } from '../parser/types.js';
+import type { FlexChange, MinUI5Version, ParsedApp, PropertyChangeConfig } from '../parser/types.js';
+import { isLowerThanMinimalUi5Version } from '../../utils/version.js';
 
 export interface FlexibleColumnLayoutSettings {
     defaultTwoColumnLayoutType: string;
@@ -36,7 +37,7 @@ export interface TableSettings {
     enableExport: boolean;
 }
 
-export type FlexChangeProperty = 'enableExport' | 'showPasteButton';
+export type FlexChangeProperty = 'enableExport' | 'showPasteButton' | 'useExportToExcel';
 
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
 export type Table = AnnotationBasedNode<TableNode, TableSettings>;
@@ -104,6 +105,7 @@ const getTablePropertyChangeConfig = (
  * Creates table configuration object
  *
  * @param pathToPage
+ * @param minUI5Version
  * @param createMode
  * @param tableType
  * @param copy
@@ -111,12 +113,17 @@ const getTablePropertyChangeConfig = (
  */
 function createTableConfiguration(
     pathToPage: string[],
+    minUI5Version: MinUI5Version | undefined,
     createMode: string | undefined,
     tableType: string | undefined,
     copy: boolean | undefined,
     pageTableChanges: FlexChange[]
 ) {
-    const enableExport = getTablePropertyChangeConfig(pageTableChanges, 'enableExport');
+    const exportProperty =
+        minUI5Version && isLowerThanMinimalUi5Version(minUI5Version, { major: 1, minor: 145 })
+            ? 'useExportToExcel'
+            : 'enableExport';
+    const enableExport = getTablePropertyChangeConfig(pageTableChanges, exportProperty);
     const showPasteButton = getTablePropertyChangeConfig(pageTableChanges, 'showPasteButton');
     return {
         createMode: {
@@ -155,6 +162,7 @@ function createTableConfiguration(
  * Creates section table configuration object
  *
  * @param pathToPage
+ * @param minUI5Version
  * @param sectionKey
  * @param createMode
  * @param tableType
@@ -163,13 +171,18 @@ function createTableConfiguration(
  */
 function createSectionTableConfiguration(
     pathToPage: string[],
+    minUI5Version: MinUI5Version | undefined,
     sectionKey: string,
     createMode: string | undefined,
     tableType: string | undefined,
     copy: boolean | undefined,
     pageTableChanges: FlexChange[]
 ) {
-    const enableExport = getTablePropertyChangeConfig(pageTableChanges, 'enableExport');
+    const exportProperty =
+        minUI5Version && isLowerThanMinimalUi5Version(minUI5Version, { major: 1, minor: 145 })
+            ? 'useExportToExcel'
+            : 'enableExport';
+    const enableExport = getTablePropertyChangeConfig(pageTableChanges, exportProperty);
     const showPasteButton = getTablePropertyChangeConfig(pageTableChanges, 'showPasteButton');
     return {
         createMode: {
@@ -258,6 +271,7 @@ function findSectionSettings(configuration: ManifestPageSettings): {
  * Creates linked table for a section
  *
  * @param table
+ * @param minUI5Version
  * @param pathToPage
  * @param sectionSettings
  * @param sectionSettings.sectionKey
@@ -268,6 +282,7 @@ function findSectionSettings(configuration: ManifestPageSettings): {
  */
 function createLinkedTableForSection(
     table: TableNode,
+    minUI5Version: MinUI5Version | undefined,
     pathToPage: string[],
     sectionSettings: { sectionKey: string; createMode?: string; tableType?: string; copy?: boolean },
     pageTableChanges: FlexChange[]
@@ -277,6 +292,7 @@ function createLinkedTableForSection(
         annotation: table,
         configuration: createSectionTableConfiguration(
             pathToPage,
+            minUI5Version,
             sectionSettings.sectionKey,
             sectionSettings.createMode,
             sectionSettings.tableType,
@@ -434,7 +450,7 @@ function linkListReportPage(
         lookup: {}
     };
 
-    linkListReportTable(page, [...path, name], table, target, context.app.changes);
+    linkListReportTable(page, [...path, name], table, target, context.app);
     linkedApp.pages.push(page);
 }
 
@@ -490,7 +506,7 @@ function linkObjectPagePage(
         mainService,
         sections.filter((section) => section.type === 'table-section'),
         target,
-        context.app.changes
+        context.app
     );
     for (const section of sections.filter((section) => section.type === 'header-section')) {
         collectHeaderSections(section, page);
@@ -564,14 +580,14 @@ const getPageTableChanges = (changes: FlexChange[], page: FeV2PageType, section?
  * @param pathToPage - Path to page in manifest structure
  * @param tables - Array of table annotation nodes
  * @param configuration - Manifest page settings containing table configuration
- * @param changes - Array of property changes related to the page
+ * @param app - Parsed app
  */
 function linkListReportTable(
     page: FeV2ListReport,
     pathToPage: string[],
     tables: TableNode[],
     configuration: ManifestPageSettings,
-    changes: FlexChange[]
+    app: ParsedApp
 ): void {
     const controls: Record<string, Table | OrphanTable> = {};
 
@@ -582,11 +598,19 @@ function linkListReportTable(
         const tableType = tableSettingsConfig.type;
         const copy = tableSettingsConfig.copy;
 
-        const pageTableChanges = getPageTableChanges(changes, page);
+        const pageTableChanges = getPageTableChanges(app.changes, page);
+        const minUI5Version = app.manifest.minUI5Version;
         const linkedTable: Table = {
             type: table.type,
             annotation: table,
-            configuration: createTableConfiguration(pathToPage, createMode, tableType, copy, pageTableChanges),
+            configuration: createTableConfiguration(
+                pathToPage,
+                minUI5Version,
+                createMode,
+                tableType,
+                copy,
+                pageTableChanges
+            ),
             children: []
         };
 
@@ -602,7 +626,15 @@ function linkListReportTable(
         if (!tableControl) {
             const orphanedSection: OrphanTable = {
                 type: 'orphan-table',
-                configuration: createSectionTableConfiguration(pathToPage, sectionKey, createMode, tableType, copy, [])
+                configuration: createSectionTableConfiguration(
+                    pathToPage,
+                    app.manifest.minUI5Version,
+                    sectionKey,
+                    createMode,
+                    tableType,
+                    copy,
+                    []
+                )
             };
             controls[`${orphanedSection.type}|${sectionKey}`] = orphanedSection;
         }
@@ -623,7 +655,7 @@ function linkListReportTable(
  * @param service - The parsed OData service
  * @param sections - Array of table section nodes to link
  * @param configuration - Manifest page settings
- * @param changes - Array of property changes related to the page
+ * @param app - Parsed app
  */
 function linkObjectPageSections(
     page: FeV2ObjectPage,
@@ -632,7 +664,7 @@ function linkObjectPageSections(
     service: ParsedService,
     sections: TableSectionNode[],
     configuration: ManifestPageSettings,
-    changes: FlexChange[]
+    app: ParsedApp
 ): void {
     const controls: Record<string, Section | Table> = {};
     for (const section of sections) {
@@ -655,8 +687,14 @@ function linkObjectPageSections(
         controls[`${section.type}|${configurationKey}`] = linkedSection;
 
         const sectionSettings = findSectionSettings(configuration);
-        const pageSectionTableChanges = getPageTableChanges(changes, page, section);
-        const linkedTable = createLinkedTableForSection(table, pathToPage, sectionSettings, pageSectionTableChanges);
+        const pageSectionTableChanges = getPageTableChanges(app.changes, page, section);
+        const linkedTable = createLinkedTableForSection(
+            table,
+            app.manifest.minUI5Version,
+            pathToPage,
+            sectionSettings,
+            pageSectionTableChanges
+        );
         linkedSection.children.push(linkedTable);
         controls[`${linkedTable.type}|${configurationKey}`] = linkedTable;
     }
@@ -670,7 +708,15 @@ function linkObjectPageSections(
             const copy = sectionConfig.tableSettings?.copy;
             const orphanedSection: OrphanSection = {
                 type: 'orphan-section',
-                configuration: createSectionTableConfiguration(pathToPage, sectionKey, createMode, tableType, copy, [])
+                configuration: createSectionTableConfiguration(
+                    pathToPage,
+                    app.manifest.minUI5Version,
+                    sectionKey,
+                    createMode,
+                    tableType,
+                    copy,
+                    []
+                )
             };
             controls[`${orphanedSection.type}|${sectionKey}|`] = orphanedSection;
         }
