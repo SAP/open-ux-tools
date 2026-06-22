@@ -310,7 +310,7 @@ const ns1 = {
         'minUi5VersionRequirement':
             'The Page building block feature requires SAPUI5 {{ minUi5VersionForPageBuildingBlock }} or higher. The current version is {{ minUI5Version }}, so the Page building block will not be added.',
         'minUi5VersionRequirementFullLayout':
-            'The Page building block full layout requires SAPUI5 {{ minUi5VersionForFullLayout }} or higher. The current version is {{ minUI5Version }}, so Basic layout will be applied instead.'
+            'Full Layout requires SAPUI5 {{ minUi5VersionForFullLayout }} or higher. The current version is {{ minUI5Version }}, so Basic Layout will be applied instead.'
     },
     'richTextEditorBuildingBlock': {
         'minUi5VersionRequirement':

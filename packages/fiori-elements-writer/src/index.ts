@@ -288,10 +288,3 @@ async function generate<T extends {}>(
 
 export { generate, FioriElementsApp, App, TemplateTypeAttributes, minSupportedUI5Version, minSupportedUI5VersionV4 };
 export * from './types.js';
-export type { PageTemplateType } from '@sap-ux/fe-fpm-writer';
-export {
-    PAGE_TEMPLATE_TYPE_FULL,
-    PAGE_TEMPLATE_TYPE_BASIC,
-    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
-    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
-} from '@sap-ux/fe-fpm-writer';

@@ -1,5 +1,13 @@
 import type { IdGeneratorFunction } from '../common/file.js';
 import type { CustomElement, CustomFragment, EventHandler, FragmentContentData, Position } from '../common/types.js';
+import type { PageTemplateType } from '@sap-ux/fiori-generator-shared';
+export type { PageTemplateType };
+export {
+    PAGE_TEMPLATE_TYPE_FULL,
+    PAGE_TEMPLATE_TYPE_BASIC,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+} from '@sap-ux/fiori-generator-shared';
 
 /**
  * Building block type.
@@ -423,15 +431,6 @@ export interface Page extends BuildingBlock {
      */
     aggregations?: Partial<Record<PageAggregationName, string>>;
 }
-
-export const PAGE_TEMPLATE_TYPE_FULL = 'full' as const;
-export const PAGE_TEMPLATE_TYPE_BASIC = 'basic' as const;
-export type PageTemplateType = typeof PAGE_TEMPLATE_TYPE_FULL | typeof PAGE_TEMPLATE_TYPE_BASIC;
-
-// The minimum UI5 version required for page building block feature
-export const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK = '1.136.0';
-// The minimum UI5 version required for the full layout page building block
-export const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT = '1.145.0';
 
 /**
  * A group of XML nodes representing one Page aggregation element and its preceding sibling comments.

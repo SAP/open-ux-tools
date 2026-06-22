@@ -5,12 +5,12 @@ import type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';
 import { checkCdsUi5PluginEnabled, getAppLaunchText } from '@sap-ux/cap-config-writer';
 import { parse } from '@sap-ux/edmx-parser';
 import type { TemplateType as FETemplateType } from '@sap-ux/fiori-elements-writer';
+import { TemplateTypeAttributes } from '@sap-ux/fiori-elements-writer';
 import {
-    TemplateTypeAttributes,
     PAGE_TEMPLATE_TYPE_FULL,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
-} from '@sap-ux/fiori-elements-writer';
+} from '@sap-ux/fiori-generator-shared';
 import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import { createLaunchConfig } from '@sap-ux/launch-config';

@@ -2094,6 +2094,9 @@ importers:
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
       '@sap-ux/i18n':
         specifier: workspace:*
         version: link:../i18n

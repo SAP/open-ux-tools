@@ -1,12 +1,12 @@
 import { jest } from '@jest/globals';
 import { Severity } from '@sap-devx/yeoman-ui-types';
+import { TableType } from '@sap-ux/fiori-elements-writer';
 import {
-    TableType,
     PAGE_TEMPLATE_TYPE_FULL,
     PAGE_TEMPLATE_TYPE_BASIC,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
-} from '@sap-ux/fiori-elements-writer';
+} from '@sap-ux/fiori-generator-shared';
 import type { ConfirmQuestion, ListQuestion, InputQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';

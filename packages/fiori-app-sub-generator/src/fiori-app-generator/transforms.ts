@@ -10,7 +10,7 @@ import type {
     OVPSettings,
     Template as TemplateSettingsFE
 } from '@sap-ux/fiori-elements-writer';
-import { OdataVersion, TemplateType as TemplateTypeFE, PAGE_TEMPLATE_TYPE_BASIC } from '@sap-ux/fiori-elements-writer';
+import { OdataVersion, TemplateType as TemplateTypeFE } from '@sap-ux/fiori-elements-writer';
 import type { FreestyleApp, Template as TemplateSettingsFF, BasicAppSettings } from '@sap-ux/fiori-freestyle-writer';
 import { TemplateType as TemplateTypeFF } from '@sap-ux/fiori-freestyle-writer';
 import { DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
@@ -18,6 +18,7 @@ import { ServiceType, type OdataService } from '@sap-ux/odata-service-writer';
 import { AuthenticationType } from '@sap-ux/store';
 import { latestVersionString } from '@sap-ux/ui5-info';
 import type { Floorplan, State, Service } from '../types/index.js';
+import { PAGE_TEMPLATE_TYPE_BASIC, hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     DEFAULT_HOST,
     DEFAULT_SERVICE_PATH,
@@ -38,7 +39,6 @@ import {
 } from '../utils/index.js';
 import type { Package } from '@sap-ux/project-access';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
-import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 /**

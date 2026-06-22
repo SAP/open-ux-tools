@@ -6,7 +6,7 @@ import {
     PAGE_TEMPLATE_TYPE_BASIC,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
-} from '@sap-ux/fiori-elements-writer';
+} from '@sap-ux/fiori-generator-shared';
 import type { ConfirmQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import {
     searchChoices,

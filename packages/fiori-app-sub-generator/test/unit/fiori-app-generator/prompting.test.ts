@@ -14,7 +14,7 @@ import 'jest-extended';
 import { join } from 'node:path';
 import type { Adapter } from 'yeoman-environment';
 import { type Service, FloorplanFE } from '../../../src/types/index.js';
-import { MIN_UI5_VERSION_PAGE_BUILDING_BLOCK } from '@sap-ux/fiori-elements-writer';
+import { MIN_UI5_VERSION_PAGE_BUILDING_BLOCK } from '@sap-ux/fiori-generator-shared';
 
 // Pre-import actuals
 const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
