@@ -4,8 +4,8 @@ import type { actions as ObjectPageActions, assertions as ObjectPageAssertions }
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from "sap/fe/test/TemplatePage";
 import type Shell from "sap/fe/test/Shell";
 import type BaseArrangements from "sap/fe/test/BaseArrangements";
-import type { actions as BooksListCustomActions, assertions as BooksListCustomAssertions } from "../pages/BooksList";
-import type { actions as BooksObjectPageCustomActions, assertions as BooksObjectPageCustomAssertions } from "../pages/BooksObjectPage";
+import type { actions as BooksListGeneratedCustomActions, assertions as BooksListGeneratedCustomAssertions } from "../pages/BooksList.gen";
+import type { actions as BooksObjectPageGeneratedCustomActions, assertions as BooksObjectPageGeneratedCustomAssertions } from "../pages/BooksObjectPage.gen";
 
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
@@ -14,13 +14,13 @@ export type Given = Opa5 & BaseArrangements & {
 };
 
 export type When = Opa5 & BaseArrangements & {
-    onTheBooksList: Opa5 & ListReportActions & TemplatePageActions & typeof BooksListCustomActions;
-    onTheBooksObjectPage: Opa5 & ObjectPageActions & TemplatePageActions & typeof BooksObjectPageCustomActions;
+    onTheBooksListGenerated: Opa5 & ListReportActions & TemplatePageActions & typeof BooksListGeneratedCustomActions;
+    onTheBooksObjectPageGenerated: Opa5 & ObjectPageActions & TemplatePageActions & typeof BooksObjectPageGeneratedCustomActions;
     onTheShell: Shell;
 };
 
 export type Then = Opa5 & BaseArrangements & {
-    onTheBooksList: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof BooksListCustomAssertions;
-    onTheBooksObjectPage: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof BooksObjectPageCustomAssertions;
+    onTheBooksListGenerated: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof BooksListGeneratedCustomAssertions;
+    onTheBooksObjectPageGenerated: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof BooksObjectPageGeneratedCustomAssertions;
     onTheShell: Shell;
 };
