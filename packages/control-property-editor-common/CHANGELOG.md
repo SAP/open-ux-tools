@@ -2,17 +2,23 @@
 
 ## 1.0.3
 
+*Released: 2026-06-12T08:50:00Z*
+
 ### Patch Changes
 
 - 0110219: fix regression writing wrong manifest path via the changes created via properties panel and remove unused control-property-editor-common code
 
 ## 1.0.2
 
+*Released: 2026-06-09T09:41:14Z*
+
 ### Patch Changes
 
 - bcfe9e3: Fix: Inconsistent property naming between RTA and CPE
 
 ## 1.0.1
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -53,11 +59,15 @@
 
 ## 0.8.0
 
+*Released: 2026-05-15T08:12:20Z*
+
 ### Minor Changes
 
 - 72695e5: chore: drop Node 20 support as it is no longer maintained
 
 ## 0.7.8
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 

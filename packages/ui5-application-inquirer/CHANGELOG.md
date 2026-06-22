@@ -10,17 +10,23 @@
 
 ## 1.0.11
 
+*Released: 2026-06-12T06:53:23Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@1.0.11
 
 ## 1.0.10
 
+*Released: 2026-06-11T10:54:17Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@1.0.10
 
 ## 1.0.9
+
+*Released: 2026-06-10T09:57:42Z*
 
 ### Patch Changes
 
@@ -30,17 +36,23 @@
 
 ## 1.0.8
 
+*Released: 2026-06-09T14:35:01Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@1.0.8
 
 ## 1.0.7
 
+*Released: 2026-06-09T13:18:16Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@1.0.7
 
 ## 1.0.6
+
+*Released: 2026-06-04T13:54:21Z*
 
 ### Patch Changes
 
@@ -51,6 +63,8 @@
 
 ## 1.0.5
 
+*Released: 2026-06-04T10:19:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [b326a9a]
@@ -59,6 +73,8 @@
     - @sap-ux/project-input-validator@1.0.4
 
 ## 1.0.4
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -71,6 +87,8 @@
 
 ## 1.0.3
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@2.0.2
@@ -79,11 +97,15 @@
 
 ## 1.0.2
 
+*Released: 2026-06-02T11:35:17Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@1.0.2
 
 ## 1.0.1
+
+*Released: 2026-06-01T15:15:26Z*
 
 ### Patch Changes
 
@@ -93,6 +115,8 @@
     - @sap-ux/project-input-validator@1.0.1
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -135,11 +159,15 @@
 
 ## 0.19.5
 
+*Released: 2026-05-29T12:50:34Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.13.6
 
 ## 0.19.4
+
+*Released: 2026-05-27T11:39:21Z*
 
 ### Patch Changes
 
@@ -147,11 +175,15 @@
 
 ## 0.19.3
 
+*Released: 2026-05-27T10:42:47Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.13.4
 
 ## 0.19.2
+
+*Released: 2026-05-27T08:23:20Z*
 
 ### Patch Changes
 
@@ -166,11 +198,15 @@
 
 ## 0.19.1
 
+*Released: 2026-05-26T16:40:21Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.13.3
 
 ## 0.19.0
+
+*Released: 2026-05-25T14:44:33Z*
 
 ### Minor Changes
 
@@ -178,11 +214,15 @@
 
 ## 0.18.5
 
+*Released: 2026-05-25T11:58:02Z*
+
 ### Patch Changes
 
 - f6af206: feat: add CLI commands for managing saved backend systems (#37734)
 
 ## 0.18.4
+
+*Released: 2026-05-21T16:21:11Z*
 
 ### Patch Changes
 
@@ -192,11 +232,15 @@
 
 ## 0.18.3
 
+*Released: 2026-05-21T06:20:29Z*
+
 ### Patch Changes
 
 - eda2ce4: Adds support for default name generation export. Adds default support for `title` prompt
 
 ## 0.18.2
+
+*Released: 2026-05-19T15:16:46Z*
 
 ### Patch Changes
 
@@ -207,12 +251,16 @@
 
 ## 0.18.1
 
+*Released: 2026-05-15T13:12:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [2c76f8f]
     - @sap-ux/inquirer-common@0.13.0
 
 ## 0.18.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -228,11 +276,15 @@
 
 ## 0.17.25
 
+*Released: 2026-05-14T21:28:41Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.48
 
 ## 0.17.24
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -245,6 +297,8 @@
 
 ## 0.17.23
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -254,11 +308,15 @@
 
 ## 0.17.22
 
+*Released: 2026-05-12T18:00:39Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.45
 
 ## 0.17.21
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -270,6 +328,8 @@
 
 ## 0.17.20
 
+*Released: 2026-04-30T14:23:24Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.43
@@ -278,12 +338,16 @@
 
 ## 0.17.19
 
+*Released: 2026-04-30T13:10:33Z*
+
 ### Patch Changes
 
 - Updated dependencies [a4b90ca]
     - @sap-ux/project-input-validator@0.6.80
 
 ## 0.17.18
+
+*Released: 2026-04-29T15:24:37Z*
 
 ### Patch Changes
 
@@ -294,6 +358,8 @@
 
 ## 0.17.17
 
+*Released: 2026-04-27T19:47:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -302,6 +368,8 @@
     - @sap-ux/project-input-validator@0.6.78
 
 ## 0.17.16
+
+*Released: 2026-04-23T12:54:21Z*
 
 ### Patch Changes
 
@@ -312,11 +380,15 @@
 
 ## 0.17.15
 
+*Released: 2026-04-23T06:48:55Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.39
 
 ## 0.17.14
+
+*Released: 2026-04-22T12:38:46Z*
 
 ### Patch Changes
 
@@ -326,17 +398,23 @@
 
 ## 0.17.13
 
+*Released: 2026-04-15T11:53:17Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.37
 
 ## 0.17.12
 
+*Released: 2026-04-14T20:26:28Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.36
 
 ## 0.17.11
+
+*Released: 2026-04-14T12:35:35Z*
 
 ### Patch Changes
 
@@ -347,6 +425,8 @@
     - @sap-ux/project-input-validator@0.6.76
 
 ## 0.17.10
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -359,6 +439,8 @@
 
 ## 0.17.9
 
+*Released: 2026-04-01T11:49:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [3291f6c]
@@ -367,6 +449,8 @@
     - @sap-ux/project-input-validator@0.6.74
 
 ## 0.17.8
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -380,17 +464,23 @@
 
 ## 0.17.7
 
+*Released: 2026-03-27T15:37:24Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.31
 
 ## 0.17.6
 
+*Released: 2026-03-27T11:58:49Z*
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.30
 
 ## 0.17.5
+
+*Released: 2026-03-26T20:06:10Z*
 
 ### Patch Changes
 
@@ -400,6 +490,8 @@
     - @sap-ux/project-input-validator@0.6.72
 
 ## 0.17.4
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -414,6 +506,8 @@
     - @sap-ux/ui5-info@0.13.16
 
 ## 0.17.3
+
+*Released: 2026-03-25T12:56:41Z*
 
 ### Patch Changes
 

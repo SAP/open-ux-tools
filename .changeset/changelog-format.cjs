@@ -2,8 +2,8 @@
 'use strict';
 
 /**
- * @typedef {{ regex: RegExp; label: string }} PrefixEntry
- * @typedef {{ label: string; text: string }} ParsedSummary
+ * @typedef {{ regex: RegExp; label: string | null }} PrefixEntry
+ * @typedef {{ label: string | null; text: string }} ParsedSummary
  * @typedef {{ name: string; newVersion: string; oldVersion?: string }} DependencyRelease
  * @typedef {{ name: string; type: string }} ChangesetRelease
  * @typedef {{ summary: string; commit?: string; releases?: ChangesetRelease[] }} Changeset
@@ -15,7 +15,8 @@ const REPO_URL = 'https://github.com/SAP/open-ux-tools';
 const PREFIX_MAP = [
     { regex: /^FEAT:/i, label: 'Features' },
     { regex: /^FIX:/i, label: 'Bug Fixes' },
-    { regex: /^BUMP:/i, label: 'Dependency Updates' }
+    { regex: /^BUMP:/i, label: 'Dependency Updates' },
+    { regex: /^INFRA:/i, label: null }
 ];
 
 /**
@@ -66,15 +67,21 @@ function parseSummary(summary) {
  * Formats a single changeset entry into a changelog bullet.
  * Always called before getDependencyReleaseLine, so the release date header is
  * emitted here on the first call per package and skipped on subsequent calls.
+ * INFRA: entries return an empty string — the version bump is published but nothing
+ * is written to the changelog.
  * @param {Changeset} changeset - The changeset object provided by the `@changesets/cli`.
  * @param {string} _type - Release type ('major' | 'minor' | 'patch') — unused; label comes from prefix.
- * @returns {Promise<string>} Markdown string for this changelog entry.
+ * @returns {Promise<string>} Markdown string for this changelog entry, or empty string for INFRA entries.
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function getReleaseLine(changeset, _type) {
     const packageName = changeset.releases?.find((r) => r.type !== 'none')?.name ?? '';
-    const dateHeader = getReleaseDateSection(packageName);
     const { label, text } = parseSummary(changeset.summary);
+    // INFRA entries trigger a publish but produce no changelog output
+    if (label === null) {
+        return '';
+    }
+    const dateHeader = getReleaseDateSection(packageName);
     const [firstLine, ...remainingLines] = text.split('\n').map((l) => l.trimEnd());
     const continuationLines = remainingLines.filter((l) => l.trim() !== '');
     const commitLink = changeset.commit
