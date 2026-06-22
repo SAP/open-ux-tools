@@ -38,7 +38,20 @@ ruleTester.run(TEST_NAME, noLiveModeRule, {
         ),
         createValidTest(
             {
-                name: 'V4 - object page table - liveMode is false, property is not checked',
+                name: 'V4 - list report table - liveMode is false',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'routing', 'targets', 'IncidentsList', 'options', 'settings', 'liveMode'],
+                        value: false
+                    }
+                ])
+            },
+            []
+        ),
+        createValidTest(
+            {
+                name: 'V4 - object page table - liveMode is true, but property is not checked',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
                     {
@@ -51,7 +64,7 @@ ruleTester.run(TEST_NAME, noLiveModeRule, {
                             'settings',
                             'liveMode'
                         ],
-                        value: false
+                        value: true
                     }
                 ])
             },
