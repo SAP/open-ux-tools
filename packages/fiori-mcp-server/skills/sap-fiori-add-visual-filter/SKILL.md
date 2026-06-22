@@ -174,8 +174,12 @@ refer to the "Manifest Configuration" section below.
   }
 }
 ```
+---
+
 ## CRITICAL: Manifest Configuration Structure
 **NEVER nest visualFilter inside a `settings` property!**
+
+---
 
 ## Testing
 

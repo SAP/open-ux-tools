@@ -156,10 +156,6 @@ define root view entity ZR_ENTITY
 @UI.presentationVariant: [{
   qualifier: 'ChartView',
   text: 'Chart View',
-  sortOrder: [{
-    by: 'SomeDate',
-    direction: #DESC
-  }],
   visualizations: [{
     type: #AS_CHART,
     qualifier: 'AnalyticalChart'
@@ -168,10 +164,6 @@ define root view entity ZR_ENTITY
 {
   qualifier: 'TableView',
   text: 'Table View',
-  sortOrder: [{
-    by: 'SomeDate',
-    direction: #DESC
-  }],
   visualizations: [{
     type: #AS_LINEITEM
   }]
@@ -192,6 +184,7 @@ annotate view ZC_ENTITY with
 
 ### Approach 1: Hybrid View (Chart + Table Together)
 
+**Manifest:**
 ```json
 "views": {
   "paths": [
