@@ -539,6 +539,13 @@ Object {
         "custom": true,
         "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
       },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell",
     "resources": Object {
