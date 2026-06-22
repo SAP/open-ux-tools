@@ -25,10 +25,11 @@ import {
 import Log from 'sap/base/Log';
 import type Event from 'sap/ui/base/Event';
 import UI5Element from 'sap/ui/core/Element';
-import { ChangeDefinition } from 'sap/ui/fl/Change';
+import Change, { ChangeDefinition } from 'sap/ui/fl/Change';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import { getTextBundle } from '../../i18n.js';
 import { setAdditionalChangeInfo } from '../../utils/additional-change-info.js';
+import { getChangeDefinition, getFlexChangeList, getFlexXMLChangeList } from '../../utils/changes.js';
 import { getControlById, isA } from '../../utils/core.js';
 import { getError } from '../../utils/error.js';
 import { sendInfoCenterMessage } from '../../utils/info-center-message.js';
@@ -78,6 +79,12 @@ export interface StackChangedEventDetail {
 }
 
 type SavedChangesResponse = Record<string, ConfigChange | GenericChange>;
+
+interface ChangeContent {
+    property: string;
+    newValue: string;
+    newBinding: string;
+}
 
 /**
  * Modify rta message.
@@ -439,11 +446,11 @@ export class ChangeService extends EventTarget {
         index: number,
         pendingChanges: PendingChange[]
     ): Promise<void> {
-        setAdditionalChangeInfo(command?.getPreparedChange?.(), this.options.rta.getRootControlInstance());
-        const pendingChange = await this.prepareChangeType(command, inactiveCommandCount, index);
-        if (pendingChange) {
-            pendingChanges.push(pendingChange);
-        }
+        const flexXMLChanges = getFlexXMLChangeList(command);
+        const rootController = this.options.rta.getRootControlInstance();
+        setAdditionalChangeInfo(flexXMLChanges, rootController);
+        const changes = await this.buildPendingChanges(command, inactiveCommandCount, index);
+        pendingChanges.push(...changes);
     }
 
     private trackPendingConfigChanges(result: PendingGenericChange): void {
@@ -463,7 +470,6 @@ export class ChangeService extends EventTarget {
      * @param changeType - the change type string
      * @param handler - the generic change handler
      * @param isActive - whether the change is currently active
-     * @param fileName - file name of the change
      * @param textBundle - i18n text bundle
      * @returns Promise resolving to PendingGenericChange
      */
@@ -472,9 +478,9 @@ export class ChangeService extends EventTarget {
         changeType: string,
         handler: ChangeHandler<GenericChange>,
         isActive: boolean,
-        fileName: string,
         textBundle: Awaited<ReturnType<typeof getTextBundle>>
     ): Promise<PendingGenericChange> {
+        const fileName = changeDefinition.fileName;
         const {
             properties,
             changeTitle,
@@ -545,39 +551,42 @@ export class ChangeService extends EventTarget {
     }
 
     /**
-     * Prepares the type of change based on the command and other parameters.
+     * Build the list of pending changes based on the command and other parameters.
      *
      * @param {FlexCommand} command - The command to process.
      * @param {number} inactiveCommandCount - The number of inactive commands.
      * @param {number} index - The index of the current command being processed.
-     * @returns {Promise<PendingChange | undefined>} - A promise that resolves to a `PendingChange` or `undefined`.
+     * @returns {Promise<PendingChange[]>} - A promise that resolves to a `PendingChange` list.
      */
-    private async prepareChangeType(
+    private async buildPendingChanges(
         command: FlexCommand,
         inactiveCommandCount: number,
         index: number
-    ): Promise<PendingChange | undefined> {
-        const change = command?.getPreparedChange?.();
+    ): Promise<PendingChange[]> {
         const textBundle = await getTextBundle();
-        const selectorId =
-            typeof change?.getSelector === 'function'
-                ? await getControlIdByChange(change, this.options.rta.getRootControlInstance())
-                : this.getCommandSelectorId(command);
+        const rootController = this.options.rta.getRootControlInstance();
+        return Promise.all(
+            getFlexChangeList(command).map(async (change) => {
+                const selectorId =
+                    typeof change?.getSelector === 'function'
+                        ? await getControlIdByChange(change as Change<ChangeContent>, rootController)
+                        : this.getCommandSelectorId(command);
 
-        const changeType = this.getCommandChangeType(command);
+                const changeType = change.getChangeType?.() ?? command.getChangeType?.();
 
-        if (!changeType) {
-            return undefined;
-        }
+                const changeDefinition = getChangeDefinition(change);
+                const { fileName } = changeDefinition;
 
-        const changeDefinition = change.getDefinition ? change.getDefinition() : (change.getJson() as ChangeDefinition);
-        const { fileName } = changeDefinition;
-        const handler = GENERIC_CHANGE_HANDLER[changeType as ChangeType] as unknown as ChangeHandler<GenericChange>;
-        const isActive = index >= inactiveCommandCount;
-        if (handler) {
-            return this.buildGenericChange(changeDefinition, changeType, handler, isActive, fileName, textBundle);
-        }
-        return this.buildFallbackChange(changeType, selectorId, isActive, fileName);
+                const handler = GENERIC_CHANGE_HANDLER[
+                    changeType as ChangeType
+                ] as unknown as ChangeHandler<GenericChange>;
+                const isActive = index >= inactiveCommandCount;
+
+                return handler
+                    ? this.buildGenericChange(changeDefinition, changeType, handler, isActive, textBundle)
+                    : this.buildFallbackChange(changeType, selectorId, isActive, fileName);
+            })
+        ).then((pendingChanges) => pendingChanges.filter((change) => !!change));
     }
 
     /**
@@ -600,19 +609,6 @@ export class ChangeService extends EventTarget {
         }
         Log.error('All retry operations failed');
         return undefined;
-    }
-
-    /**
-     * Get command change type.
-     *
-     * @param command to be executed for creating change
-     * @returns command change type or undefined
-     */
-    private getCommandChangeType(command: FlexCommand): string | undefined {
-        return this.retryOperations([
-            () => command.getChangeType(),
-            () => command.getPreparedChange().getDefinition().changeType
-        ]);
     }
 
     /**

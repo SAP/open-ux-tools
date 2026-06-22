@@ -73,7 +73,11 @@ export async function getCFQuestions({
         [promptNames.overwriteCfConfig]: { hide: !addOverwrite, ...promptOptions?.overwriteCfConfig }
     };
 
-    DeploymentGenerator.logger?.debug(t('cfGen.debug.promptOptions', { options: JSON.stringify(options) }));
+    DeploymentGenerator.logger?.debug(
+        t('cfGen.debug.promptOptions', {
+            options: JSON.stringify({ ...options, isCap, addOverwrite, cfDestination, isAbapDirectServiceBinding })
+        })
+    );
     return getPrompts(options, DeploymentGenerator.logger as unknown as Logger);
 }
 

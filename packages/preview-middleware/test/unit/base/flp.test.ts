@@ -628,7 +628,7 @@ describe('FlpSandbox', () => {
             const manifest = {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
-            const componendId = 'myComponent';
+            const componentId = 'myComponent';
             const resources = {
                 'myResources1': 'myResourcesUrl1',
                 'myResources2': 'myResourcesUrl2'
@@ -654,7 +654,7 @@ describe('FlpSandbox', () => {
                 addApis: jest.fn()
             } as unknown as AdpPreview;
 
-            await flp.init(manifest, componendId, resources, adpToolingMock);
+            await flp.init(manifest, componentId, resources, adpToolingMock);
             const app = express();
             app.use(flp.router);
             const server = await supertest(app);
@@ -678,7 +678,7 @@ describe('FlpSandbox', () => {
             const manifest = {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
-            const componendId = 'myComponent';
+            const componentId = 'myComponent';
             const resources = {
                 'myResources1': 'myResourcesUrl1',
                 'myResources2': 'myResourcesUrl2'
@@ -704,7 +704,7 @@ describe('FlpSandbox', () => {
                 addApis: jest.fn()
             } as unknown as AdpPreview;
 
-            await flp.init(manifest, componendId, resources, adpToolingMock);
+            await flp.init(manifest, componentId, resources, adpToolingMock);
             const app = express();
             app.use(flp.router);
             const server = await supertest(app);
@@ -879,7 +879,7 @@ describe('FlpSandbox', () => {
             const manifest = {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
-            const componendId = 'myComponent';
+            const componentId = 'myComponent';
             const resources = {
                 'myResources1': 'myResourcesUrl1',
                 'myResources2': 'myResourcesUrl2'
@@ -910,7 +910,7 @@ describe('FlpSandbox', () => {
                 addApis: jest.fn()
             } as unknown as AdpPreview;
 
-            await flp.init(manifest, componendId, resources, adpToolingMock);
+            await flp.init(manifest, componentId, resources, adpToolingMock);
             const app = express();
             app.use(flp.router);
             const server = await supertest(app);
@@ -944,7 +944,7 @@ describe('FlpSandbox', () => {
             const manifest = {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
-            const componendId = 'myComponent';
+            const componentId = 'myComponent';
             const resources = {
                 'myResources1': 'myResourcesUrl1'
             };
@@ -967,7 +967,7 @@ describe('FlpSandbox', () => {
                 addApis: jest.fn()
             } as unknown as AdpPreview;
 
-            await flp.init(manifest, componendId, resources, adpToolingMock);
+            await flp.init(manifest, componentId, resources, adpToolingMock);
             const app = express();
             app.use(flp.router);
             const server = await supertest(app);
@@ -1002,7 +1002,7 @@ describe('FlpSandbox', () => {
             const manifest = {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
-            const componendId = 'myComponent';
+            const componentId = 'myComponent';
             const resources = { 'myResources1': 'myResourcesUrl1' };
             const url = 'http://sap.example';
             const syncSpy = jest.fn<() => Promise<void>>().mockResolvedValueOnce(undefined);
@@ -1023,7 +1023,7 @@ describe('FlpSandbox', () => {
                 addApis: jest.fn()
             } as unknown as AdpPreview;
 
-            await flp.init(manifest, componendId, resources, adpToolingMock);
+            await flp.init(manifest, componentId, resources, adpToolingMock);
             const app = express();
             app.use(flp.router);
             const server = await supertest(app);
@@ -1036,6 +1036,62 @@ describe('FlpSandbox', () => {
 
             const appDeps = flp.templateConfig.apps['app-preview'].applicationDependencies;
             expect(appDeps?.manifest?.['sap.ui5']?.flexExtensionPointEnabled).toBe(true);
+        });
+
+        test('CF ADP skips applicationDependencies assignment (no descriptor merge available)', async () => {
+            const jsonSpy = () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.142.0' }]
+                });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            const componentId = 'myComponent';
+            const resources = {
+                'myResources1': 'myResourcesUrl1'
+            };
+            const syncSpy = jest.fn<() => Promise<void>>().mockResolvedValueOnce(undefined);
+            // CF mode: descriptor must NOT be read; throw if anyone tries.
+            const cfAdpToolingMock = {
+                init: () => 'CUSTOMER_BASE',
+                get descriptor(): never {
+                    throw new Error('Not initialized');
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn(),
+                isCloudFoundry: true
+            } as unknown as AdpPreview;
+
+            await flp.init(manifest, componentId, resources, cfAdpToolingMock);
+            const app = express();
+            app.use(flp.router);
+            const server = await supertest(app);
+
+            await server
+                .get(
+                    '/my/editor.html.inner.html?fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true'
+                )
+                .expect(200);
+
+            // sync() must not be called and descriptor must not be assigned
+            expect(syncSpy).not.toHaveBeenCalled();
+            const appDeps = flp.templateConfig.apps['app-preview'].applicationDependencies;
+            expect(appDeps).toBeUndefined();
         });
     });
 
@@ -1357,6 +1413,105 @@ describe('FlpSandbox', () => {
                     })
                 ])
             );
+        });
+    });
+
+    describe('router with enableCardGenerator - version gating', () => {
+        const mockConfig = { editors: { cardGenerator: { path: '/test/flpCardGeneratorSandbox.html' } } };
+
+        const setupMiddleware = async (projectType: string) => {
+            mockGetProjectType.mockResolvedValue(projectType);
+            const flp = new FlpSandbox(mockConfig as MiddlewareConfig, mockProject, mockUtils, logger);
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+            const app = express();
+            app.use(flp.router);
+            return { server: supertest(app), flp };
+        };
+
+        const mockUi5Version = (version: string, name = 'SAPUI5 Distribution') => {
+            const jsonSpy = () => Promise.resolve({ name, libraries: [{ name: 'sap.ui.core', version }] });
+            fetchMock.mockResolvedValue({ json: jsonSpy, text: jest.fn(), ok: true } as unknown as Response);
+        };
+
+        beforeEach(() => {
+            (logger.warn as ReturnType<typeof jest.fn>).mockClear();
+        });
+
+        afterEach(() => {
+            fetchMock.mockRestore();
+            mockGetProjectType.mockResolvedValue('EDMXBackend');
+        });
+
+        test('EDMXBackend below 1.121 - disables card generator and warns', async () => {
+            const { server, flp } = await setupMiddleware('EDMXBackend');
+            mockUi5Version('1.120.0');
+            const response = await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
+            expect(response.status).toBe(200);
+            expect(flp.templateConfig.enableCardGenerator).toBe(false);
+            expect(logger.warn).toHaveBeenCalledWith(
+                expect.stringContaining(
+                    "does not meet the minimum required version 1.121.0 for project type 'EDMXBackend'"
+                )
+            );
+        });
+
+        test('EDMXBackend at 1.121 - enables card generator and does not warn', async () => {
+            const { server, flp } = await setupMiddleware('EDMXBackend');
+            mockUi5Version('1.121.0');
+            await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
+            expect(flp.templateConfig.enableCardGenerator).toBe(true);
+            expect(logger.warn).not.toHaveBeenCalledWith(expect.stringContaining('cardGenerator'));
+        });
+
+        test('CAPNodejs below 1.149 - disables card generator and warns', async () => {
+            const { server, flp } = await setupMiddleware('CAPNodejs');
+            mockUi5Version('1.148.0');
+            await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
+            expect(flp.templateConfig.enableCardGenerator).toBe(false);
+            expect(logger.warn).toHaveBeenCalledWith(
+                expect.stringContaining(
+                    "does not meet the minimum required version 1.149.0 for project type 'CAPNodejs'"
+                )
+            );
+        });
+
+        test('CAPNodejs at 1.149 - enables card generator and does not warn', async () => {
+            const { server, flp } = await setupMiddleware('CAPNodejs');
+            mockUi5Version('1.149.0');
+            await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
+            expect(flp.templateConfig.enableCardGenerator).toBe(true);
+            expect(logger.warn).not.toHaveBeenCalledWith(expect.stringContaining('cardGenerator'));
+        });
+
+        test('CAPJava below 1.149 - disables card generator and warns', async () => {
+            const { server, flp } = await setupMiddleware('CAPJava');
+            mockUi5Version('1.148.0');
+            await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
+            expect(flp.templateConfig.enableCardGenerator).toBe(false);
+            expect(logger.warn).toHaveBeenCalledWith(
+                expect.stringContaining("does not meet the minimum required version 1.149.0 for project type 'CAPJava'")
+            );
+        });
+
+        test('legacy-free label - disables card generator regardless of minor version', async () => {
+            const { server, flp } = await setupMiddleware('EDMXBackend');
+            mockUi5Version('1.121.0-legacy-free');
+            await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
+            expect(flp.templateConfig.enableCardGenerator).toBe(false);
+            expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('cardGenerator'));
+        });
+
+        test('warns on every request to the card generator endpoint', async () => {
+            const { server } = await setupMiddleware('EDMXBackend');
+            mockUi5Version('1.120.0');
+            await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
+            await server.get(`/test/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`);
+            expect(
+                (logger.warn as ReturnType<typeof jest.fn>).mock.calls.filter((call) =>
+                    (call[0] as string).includes('cardGenerator')
+                )
+            ).toHaveLength(2);
         });
     });
 
@@ -1711,11 +1866,12 @@ describe('FlpSandbox', () => {
         });
 
         test('POST /resources/test/fe/v2/app/preview/api/changes', async () => {
-            await server
+            const response = await server
                 .post('/resources/test/fe/v2/app/preview/api/changes')
                 .set('Content-Type', 'application/json')
                 .send({ change: { fileName: 'componentChange', fileType: 'ctrl_variant' } })
                 .expect(200);
+            expect(response.text).toMatchInlineSnapshot(`"FILE_CREATED componentChange.ctrl_variant"`);
             // bare path must NOT respond
             await server
                 .post('/preview/api/changes')
@@ -1734,10 +1890,11 @@ describe('FlpSandbox', () => {
                 fileName: 'manifest.json',
                 manifests: []
             };
-            await server
+            const response = await server
                 .post(`/resources/test/fe/v2/app${CARD_GENERATOR_DEFAULT.cardsStore}`)
                 .send(payload)
                 .expect(201);
+            expect(response.text).toBe('Files were updated/created');
             // bare path must NOT be registered for type:component
             await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send(payload).expect(404);
         });
@@ -1745,10 +1902,11 @@ describe('FlpSandbox', () => {
         test('POST /resources/test/fe/v2/app/editor/i18n', async () => {
             mockCreatePropertiesI18nEntries.mockResolvedValueOnce(true);
             const newI18nEntry = [{ key: 'KEY', value: 'Value' }];
-            await server
+            const response = await server
                 .post(`/resources/test/fe/v2/app${CARD_GENERATOR_DEFAULT.i18nStore}`)
                 .send(newI18nEntry)
                 .expect(201);
+            expect(response.text).toBe('i18n file updated.');
             // bare path must NOT be registered for type:component
             await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send(newI18nEntry).expect(404);
         });
@@ -1967,7 +2125,7 @@ describe('initAdp', () => {
 
         expect(mockReadManifestFromBuildPath).toHaveBeenCalledWith(cfBuildPath);
         expect(mockAdpPreviewConstructor).toHaveBeenCalled();
-        expect(flpInitMock).toHaveBeenCalledWith(mockManifest, expect.any(String));
+        expect(flpInitMock).toHaveBeenCalledWith(mockManifest, expect.any(String), {}, expect.any(Object));
         expect(flp.rta?.options?.isCloud).toBe(false);
         expect(flp.rta?.options?.isCloudFoundry).toBe(true);
     });

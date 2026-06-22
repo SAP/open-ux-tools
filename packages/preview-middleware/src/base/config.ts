@@ -337,13 +337,14 @@ export function sanitizeRtaConfig(deprecatedRtaConfig: MiddlewareConfig['rta'], 
 /**
  * Retrieves the configuration settings for UI5 flexibility services.
  *
+ * @param isAdp whether this is an adaptation project - LocalStorageConnector is omitted for ADP
  * @returns An array of flexibility service configurations, each specifying a connector
  *          and its options, such as the layers it applies to and its service URL, if applicable.
  */
-function getFlexSettings(): TemplateConfig['ui5']['flex'] {
+function getFlexSettings(isAdp = false): TemplateConfig['ui5']['flex'] {
     const localConnectorPath = 'open/ux/preview/client/flp/WorkspaceConnector';
 
-    return [
+    const connectors: TemplateConfig['ui5']['flex'] = [
         { connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' },
         {
             applyConnector: localConnectorPath,
@@ -351,6 +352,10 @@ function getFlexSettings(): TemplateConfig['ui5']['flex'] {
             custom: true
         }
     ];
+    if (!isAdp) {
+        connectors.push({ connector: 'LocalStorageConnector', layers: ['CUSTOMER', 'USER'] });
+    }
+    return connectors;
 }
 
 /**
@@ -489,6 +494,7 @@ export function remapResourcesForPath(
  * @param config FLP configuration
  * @param manifest application manifest
  * @param resources additional resources
+ * @param isAdp whether this is an adaptation project
  * @param utils middleware utils
  * @returns configuration object for the sandbox.html template
  */
@@ -496,9 +502,10 @@ export function createFlpTemplateConfig(
     config: FlpConfig,
     manifest: Partial<Manifest>,
     resources: Record<string, string> = {},
+    isAdp = false,
     utils?: MiddlewareUtils
 ): TemplateConfig {
-    const flex = getFlexSettings();
+    const flex = getFlexSettings(isAdp);
     const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
     const ui5Theme = config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
     const rootBasePath = posix.relative(posix.dirname(config.path), '/') || '.';

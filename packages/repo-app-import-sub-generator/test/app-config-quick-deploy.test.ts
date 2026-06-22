@@ -1,12 +1,13 @@
 import { jest } from '@jest/globals';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { TransportChecksService } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 import type { AppInfo, QfaJsonConfig } from '../src/app/types.js';
 import { t } from '../src/utils/i18n.js';
-import { fioriAppSourcetemplateId, qfaJsonFileName } from '../src/utils/constants.js';
+import { fioriAppSourcetemplateId, qfaJsonFileName, adtSourceTemplateId } from '../src/utils/constants.js';
 import { join } from 'node:path';
 import { type OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
-
+import { AppDownloadType } from '../src/app/types.js';
 // Pre-import actual modules before mocking - avoid importing @sap-ux/project-access
 // directly as it triggers problematic ESM dependency chain
 const actualFileHelpers = await import('../src/utils/file-helpers.js');
@@ -44,7 +45,7 @@ jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
     isInternalFeaturesSettingEnabled: jest.fn()
 }));
 
-const { getAppConfig, getAbapDeployConfig } = await import('../src/app/app-config.js');
+const { getAppConfig, getAdtDeployConfig } = await import('../src/app/app-config-quick-deploy.js');
 const { PromptState } = await import('../src/prompts/prompt-state.js');
 const RepoAppDownloadLogger = (await import('../src/utils/logger.js')).default;
 const { TestFixture } = await import('./fixtures/index.js');
@@ -120,9 +121,9 @@ describe('getAppConfig', () => {
             }
         },
         service: {
-            'client': '100',
-            'destination': {
-                'name': 'TEST_DESTINATION'
+            client: '100',
+            destination: {
+                name: 'TEST_DESTINATION'
             },
             path: '/odata/service',
             version: expect.any(String),
@@ -184,7 +185,8 @@ describe('getAppConfig', () => {
         };
         const context = {
             qfaJson: mockQfaJsonWithoutNavEntity,
-            serviceProvider: mockServiceProvider
+            serviceProvider: mockServiceProvider,
+            appDownloadType: AppDownloadType.ADTQuickDeploy
         };
         const result = await getAppConfig(mockApp, '/path/to/project', context, mockSystem, mockFs);
         expect(result).toEqual(expectedAppConfig);
@@ -219,6 +221,7 @@ describe('getAppConfig', () => {
             }
         };
         const context = {
+            appDownloadType: AppDownloadType.ADTQuickDeploy,
             qfaJson: mockQfaJsonJsonWithNavEntity,
             serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider
         };
@@ -256,7 +259,8 @@ describe('getAppConfig', () => {
         };
         const context = {
             qfaJson: mockQfaJsonJsonWithNavEntity,
-            serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider
+            serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider,
+            appDownloadType: AppDownloadType.ADTQuickDeploy
         };
         const result = await getAppConfig(mockApp, '/path/to/project', context, mockSystem, mockFs);
         expect(result).toEqual({
@@ -275,10 +279,55 @@ describe('getAppConfig', () => {
         mockReadManifest.mockReturnValue(mockManifest);
         const context = {
             qfaJson: mockQfaJson,
-            serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider
+            serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider,
+            appDownloadType: AppDownloadType.ADTQuickDeploy
         };
         const result = await getAppConfig(mockApp, '/path/to/project', context, mockSystem, mockFs);
         expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.dataSourcesNotFound'));
+    });
+
+    it('should log an error when sourceTemplate id does not match adtSourceTemplateId', async () => {
+        mockReadManifest.mockReturnValue({
+            'sap.app': {
+                sourceTemplate: { id: 'some-other-template-id' },
+                dataSources: { mainService: { uri: '/odata/service', settings: { odataVersion: '4.0' } } },
+                applicationVersion: { version: '1.0.0' }
+            }
+        });
+        PromptState.systemSelection = { connectedSystem: mockSystem.connectedSystem };
+        const context = {
+            qfaJson: mockQfaJson,
+            serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider,
+            appDownloadType: AppDownloadType.ADTQuickDeploy
+        };
+
+        await getAppConfig(mockApp, '/path/to/project', context, mockSystem, mockFs);
+
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+            t('error.readManifestErrors.sourceTemplateNotSupported')
+        );
+    });
+
+    it('should not log sourceTemplate error when sourceTemplate id matches adtSourceTemplateId', async () => {
+        mockReadManifest.mockReturnValue({
+            'sap.app': {
+                sourceTemplate: { id: adtSourceTemplateId },
+                dataSources: { mainService: { uri: '/odata/service', settings: { odataVersion: '4.0' } } },
+                applicationVersion: { version: '1.0.0' }
+            }
+        });
+        PromptState.systemSelection = { connectedSystem: mockSystem.connectedSystem };
+        const context = {
+            qfaJson: mockQfaJson,
+            serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider,
+            appDownloadType: AppDownloadType.ADTQuickDeploy
+        };
+
+        await getAppConfig(mockApp, '/path/to/project', context, mockSystem, mockFs);
+
+        expect(RepoAppDownloadLogger.logger.error).not.toHaveBeenCalledWith(
+            t('error.readManifestErrors.sourceTemplateNotSupported')
+        );
     });
 
     it('should log an error if fetchServiceMetadata throws an error', async () => {
@@ -316,7 +365,8 @@ describe('getAppConfig', () => {
         mockReadManifest.mockReturnValue(mockManifest);
         const context = {
             qfaJson: mockQfaJson,
-            serviceProvider: mockSystemWithService.connectedSystem?.serviceProvider as AbapServiceProvider
+            serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider,
+            appDownloadType: AppDownloadType.ADTQuickDeploy
         };
         await getAppConfig(mockApp, '/path/to/project', context, mockSystemWithService, mockFs);
         expect(RepoAppDownloadLogger.logger?.error).toHaveBeenCalledWith(
@@ -327,6 +377,7 @@ describe('getAppConfig', () => {
     it('should generate app config when minUi5Version is not provided in manifest', async () => {
         const mockManifest = {
             'sap.app': {
+                sourceTemplate: { id: adtSourceTemplateId },
                 dataSources: {
                     mainService: {
                         uri: '/odata/service',
@@ -369,14 +420,39 @@ describe('getAppConfig', () => {
         } as unknown as QfaJsonConfig;
         const context = {
             qfaJson: mockQfaJsonJsonWithoutUi5Version,
-            serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider
+            serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider,
+            appDownloadType: AppDownloadType.ADTQuickDeploy
         };
         await getAppConfig(mockApp, '/path/to/project', context, mockSystem, mockFs);
         expect(RepoAppDownloadLogger.logger?.error).not.toHaveBeenCalled();
     });
+
+    it('should log and rethrow error when getAppConfig fails unexpectedly', async () => {
+        const errorMsg = 'Unexpected failure';
+        mockReadManifest.mockImplementation(() => {
+            throw new Error(errorMsg);
+        });
+        const context = {
+            qfaJson: mockQfaJson,
+            serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider,
+            appDownloadType: AppDownloadType.ADTQuickDeploy
+        };
+        await expect(getAppConfig(mockApp, '/path/to/project', context, mockSystem, mockFs)).rejects.toThrow(errorMsg);
+        expect(RepoAppDownloadLogger.logger?.error).toHaveBeenCalledWith(
+            t('error.appConfigGenError', { error: errorMsg })
+        );
+    });
 });
 
-describe('getAbapDeployConfig', () => {
+describe('getAdtDeployConfig', () => {
+    const mockApp = {
+        appId: 'testAppId',
+        title: 'Test App',
+        description: 'Test Description',
+        repoName: 'testRepoName',
+        url: 'https://example.com/testApp'
+    } as AppInfo;
+
     beforeEach(() => {
         jest.clearAllMocks();
     });
@@ -395,18 +471,17 @@ describe('getAbapDeployConfig', () => {
                 transport: 'REPLACE_WITH_TRANSPORT'
             }
         };
-        const transportMock: { transportNumber: string }[] = [];
-        const mockTransportService = {
-            getTransportRequests: jest.fn().mockResolvedValue(transportMock)
-        };
+        const mockTransportService = { getTransportRequests: jest.fn().mockResolvedValue([]) };
         const mockServiceProvider = {
             getAdtService: jest.fn().mockResolvedValue(mockTransportService)
         } as unknown as AbapServiceProvider;
         const context = {
             qfaJson: mockQfaJson,
-            serviceProvider: mockServiceProvider
+            serviceProvider: mockServiceProvider,
+            appInfo: expectedConfig.app as unknown as AppInfo,
+            appDownloadType: AppDownloadType.ADTQuickDeploy
         };
-        const result = await getAbapDeployConfig(context);
+        const result = await getAdtDeployConfig(context);
         expect(result).toEqual(expectedConfig);
     });
 
@@ -420,9 +495,11 @@ describe('getAbapDeployConfig', () => {
         } as unknown as AbapServiceProvider;
         const context = {
             qfaJson: localQfa,
-            serviceProvider: mockServiceProvider
+            serviceProvider: mockServiceProvider,
+            appInfo: mockApp,
+            appDownloadType: AppDownloadType.ADTQuickDeploy
         };
-        const result = await getAbapDeployConfig(context);
+        const result = await getAdtDeployConfig(context);
         expect(result.app.transport).toBe('');
     });
 
@@ -437,9 +514,11 @@ describe('getAbapDeployConfig', () => {
 
         const context = {
             qfaJson: mockQfaJson,
-            serviceProvider: mockServiceProvider
+            serviceProvider: mockServiceProvider,
+            appInfo: mockApp,
+            appDownloadType: AppDownloadType.ADTQuickDeploy
         };
-        const result = await getAbapDeployConfig(context);
+        const result = await getAdtDeployConfig(context);
         expect(mockServiceProvider.getAdtService).toHaveBeenCalled();
         expect(result.app.transport).toBe('LT12345');
     });
@@ -454,18 +533,21 @@ describe('getAbapDeployConfig', () => {
 
         const context = {
             qfaJson: mockQfaJson,
-            serviceProvider: mockServiceProvider
+            serviceProvider: mockServiceProvider,
+            appInfo: mockApp,
+            appDownloadType: AppDownloadType.ADTQuickDeploy
         };
-        const result = await getAbapDeployConfig(context);
+        const result = await getAdtDeployConfig(context);
         expect(result.app.transport).toBe('REPLACE_WITH_TRANSPORT');
     });
 
     it('should generate new transport request when serviceProvider is not available in context', async () => {
         const context = {
-            qfaJson: mockQfaJson
-        } as unknown as { qfaJson: QfaJsonConfig };
+            qfaJson: mockQfaJson,
+            appInfo: mockApp
+        };
 
-        const result = await getAbapDeployConfig(context);
+        const result = await getAdtDeployConfig(context);
         expect(result.app.transport).toBe('REPLACE_WITH_TRANSPORT');
     });
 
@@ -480,14 +562,31 @@ describe('getAbapDeployConfig', () => {
 
         const context = {
             qfaJson: mockQfaJson,
-            serviceProvider: mockServiceProvider
+            serviceProvider: mockServiceProvider,
+            appInfo: mockApp
         };
 
-        await expect(getAbapDeployConfig(context)).rejects.toThrow(
-            t('error.transportCheckFailed', { error: errorMsg })
-        );
+        await expect(getAdtDeployConfig(context)).rejects.toThrow(t('error.transportCheckFailed', { error: errorMsg }));
         expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
             t('error.transportCheckFailed', { error: errorMsg })
         );
+    });
+
+    it('should return empty transport when transport service throws LocalPackageError', async () => {
+        const mockTransportService = {
+            getTransportRequests: jest.fn().mockRejectedValue(new Error(TransportChecksService.LocalPackageError))
+        };
+        const mockServiceProvider = {
+            getAdtService: jest.fn().mockResolvedValue(mockTransportService)
+        } as unknown as AbapServiceProvider;
+
+        const context = {
+            qfaJson: mockQfaJson,
+            serviceProvider: mockServiceProvider,
+            appInfo: mockApp,
+            appDownloadType: AppDownloadType.ADTQuickDeploy
+        };
+        const result = await getAdtDeployConfig(context);
+        expect(result.app.transport).toBe('');
     });
 });

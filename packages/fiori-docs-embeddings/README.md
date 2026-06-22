@@ -25,9 +25,11 @@ https://github.com/SAP/open-ux-tools/blob/main/packages/create/README.md (Fiori 
 
 https://www.npmjs.com/package/@sap/ux-ui5-tooling (@sap/ux-ui5-tooling documentation)
 
+https://github.com/sap-tutorials/Tutorials/blob/master/tutorials/fiori-tools-mockserver-opa-testing/fiori-tools-mockserver-opa-testing.md (OPA mock server testing guide)
+
 - Parses markdown, JSON, TypeScript, and other file types
 - Generates AI-powered vector embeddings using transformers
-- Stores embeddings in a local LanceDB vector database
+- Stores embeddings in a flat binary vector store (`embeddings.bin` + `records.jsonl`)
 - Provides tools for semantic and keyword search across documentation
 
 ## Installation
@@ -54,8 +56,14 @@ const embeddingsPath = getEmbeddingsPath();
 # Set GitHub token to avoid rate limits
 export GITHUB_TOKEN=your_github_token
 
-# Build documentation index
+# Build documentation index (all sources)
 npm run update-docs
+
+# Build a single source by ID
+npm run update-docs-script -- --source=fiori-tools-opa-guide
+
+# Shortcut script for the OPA testing guide
+npm run update-docs-opa-guide
 
 # Generate embeddings
 npm run update-embeddings
@@ -66,17 +74,24 @@ npm run update-all
 
 ### Available Scripts
 
-- `update-docs` - Crawl and index documentation from configured sources
+- `update-docs` - Crawl and index documentation from all configured sources
+- `update-docs-script -- --source=<id>` - Crawl a single source by ID
+- `update-docs-opa-guide` - Fetch only the OPA mock server testing guide
 - `update-embeddings` - Generate vector embeddings from indexed documents  
 - `update-all` - Run both documentation indexing and embedding generation
 
 ### Configuration
 
 The module indexes documentation from these sources by default:
-- SAP-docs/btp-fiori-tools (Fiori Tools documentation)
-- SAP-docs/sapui5 (UI5 framework documentation)
-- SAP-samples/fiori-tools-samples (Sample applications)
-- SAP-samples/fiori-elements-feature-showcase (Feature examples)
+
+| Source ID | Description |
+|---|---|
+| `btp-fiori-tools` | SAP-docs/btp-fiori-tools — Fiori Tools documentation |
+| `sapui5` | SAP-docs/sapui5 — UI5 Fiori Elements documentation |
+| `fiori-samples` | SAP-samples/fiori-tools-samples — Sample applications |
+| `fiori-showcase` | SAP-samples/fiori-elements-feature-showcase — Feature examples |
+| `tools-suite` | ux-engineering/tools-suite — Internal Fiori Tools commands (requires `GITHUB_TOKEN`) |
+| `fiori-tools-opa-guide` | sap-tutorials/Tutorials — OPA mock server testing guide |
 
 ### Environment Variables
 
@@ -88,7 +103,7 @@ Generated data is organized as:
 ```
 data/
 ├── docs/           # Parsed documentation files
-├── embeddings/     # Vector database (LanceDB)
+├── embeddings/     # Flat binary vector store (embeddings.bin, records.jsonl, metadata.json)
 └── search/         # Search indexes
 ```
 
@@ -96,8 +111,8 @@ data/
 
 - **Multi-source indexing** - Supports GitHub repositories and JSON APIs
 - **File type support** - Markdown, JSON, TypeScript, JavaScript, XML, YAML, and more
-- **Vector embeddings** - Uses sentence-transformers/all-MiniLM-L6-v2 model
-- **Local storage** - All data stored locally with LanceDB
+- **Vector embeddings** - Uses `@huggingface/transformers` with the `Xenova/all-MiniLM-L6-v2` model (q8 quantized)
+- **Local storage** - All data stored locally as a flat binary vector store (no native database dependency)
 - **Caching** - Intelligent caching to avoid unnecessary API calls
 - **Chunking** - Smart document chunking for optimal embedding generation
 

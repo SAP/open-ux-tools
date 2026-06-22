@@ -61,7 +61,7 @@ async function loadManifest(rootProject: ReaderCollection): Promise<Manifest | u
     }
 }
 
-export default async ({
+const ui5ProxyMiddleware = async ({
     resources,
     options,
     middlewareUtil
@@ -130,3 +130,5 @@ export default async ({
 
     return createRequestHandler(routes);
 };
+
+export default ui5ProxyMiddleware;

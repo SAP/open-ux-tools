@@ -114,6 +114,10 @@ builder:
         target:
           url: http://sap.example
           ignoreCertErrors: false
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -234,6 +238,10 @@ builder:
         target:
           url: http://sap.example
           ignoreCertErrors: false
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -355,6 +363,10 @@ builder:
         target:
           destination: DUMMY_DESTINATION
           url: https://REQUIRED_FOR_VSCODE.example
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -502,6 +514,11 @@ server:
           path: /sap
         options:
           secure: true
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -632,6 +649,11 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -774,6 +796,10 @@ builder:
         omitTSFromBuildResult: true
         transformModulesToUI5:
           overridesToOverride: true
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -858,6 +884,11 @@ server:
           path: /sap
         options:
           secure: true
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -972,6 +1003,11 @@ server:
           path: /sap
         options:
           secure: true
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1115,6 +1151,11 @@ server:
           path: /sap
         options:
           secure: true
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1248,6 +1289,11 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1357,6 +1403,11 @@ server:
           path: /sap
         options:
           secure: true
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1510,6 +1561,10 @@ builder:
         target:
           url: http://sap.example
           ignoreCertErrors: false
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1664,6 +1719,10 @@ builder:
         target:
           destination: DUMMY_DESTINATION
           url: https://REQUIRED_FOR_VSCODE.example
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1817,6 +1876,10 @@ builder:
         target:
           url: http://sap.example
           ignoreCertErrors: false
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1992,6 +2055,10 @@ builder:
         omitTSFromBuildResult: true
         transformModulesToUI5:
           overridesToOverride: true
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -2115,6 +2182,11 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: 1.133.0
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },

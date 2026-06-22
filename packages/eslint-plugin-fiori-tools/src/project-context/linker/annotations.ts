@@ -23,6 +23,7 @@ import { UI_FIELD_GROUP, UI_LINE_ITEM } from '../../constants.js';
 type SectionConfig = {
     index: number;
     referencedEntityType: string;
+    id: string;
     qualifier?: string;
     sectionLabel?: string;
 };
@@ -42,6 +43,7 @@ export interface AnnotationBasedNode<T extends string, Children = never> {
     type: T;
     annotation: IndexedAnnotation;
     label?: string;
+    id?: string;
     /**
      * Path used by Fiori elements to reference this control
      */
@@ -237,7 +239,7 @@ function processReferenceFacetRecord(
     if (term === UI_LINE_ITEM) {
         return createTableSection(
             facets,
-            { index, referencedEntityType, qualifier, sectionLabel },
+            { index, referencedEntityType, qualifier, sectionLabel, id },
             annotationPath,
             aliasInfo,
             service
@@ -247,7 +249,7 @@ function processReferenceFacetRecord(
     if (term === UI_FIELD_GROUP) {
         return addHeaderSection(
             facets,
-            { index, referencedEntityType, qualifier, sectionLabel },
+            { index, referencedEntityType, qualifier, sectionLabel, id },
             annotationPath,
             aliasInfo,
             service
@@ -307,6 +309,7 @@ function createTableSection(
         type: 'table-section',
         annotationPath: `@com.sap.vocabularies.UI.v1.Facets/${config.index}`,
         label: config.sectionLabel,
+        id: config.id,
         annotation: facets,
         children: []
     };
@@ -358,6 +361,7 @@ function addHeaderSection(
         annotationPath: `@com.sap.vocabularies.UI.v1.HeaderFacet/${config.index}`,
         annotation: headerFacets,
         label: config.sectionLabel,
+        id: config.id,
         children: []
     };
 

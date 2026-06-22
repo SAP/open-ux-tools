@@ -452,7 +452,7 @@ describe('ChangeService', () => {
             getElement: () => any;
             getSelector: () => any;
             getChangeType: () => string;
-            getPreparedChange: () => { getDefinition: () => { fileName: string } };
+            getPreparedChange: () => { convertToFileContent: () => { fileName: string } };
         } {
             const cache = new Map(properties);
             return {
@@ -474,7 +474,7 @@ describe('ChangeService', () => {
                     }),
                     getChangeType: jest.fn().mockReturnValue(cache.get('changeType')),
                     getLayer: jest.fn().mockReturnValue('CUSTOMER'),
-                    getDefinition: jest.fn().mockReturnValue({
+                    convertToFileContent: jest.fn().mockReturnValue({
                         fileName: 'testFileName'
                     })
                 })
@@ -535,13 +535,85 @@ describe('ChangeService', () => {
         });
     });
 
+    test('fl variant', async () => {
+        fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
+        const flVariantCommand = {
+            getElement: () => ({
+                getMetadata: () => ({
+                    getName: () => 'sap.ui.fl.variants.VariantManagement'
+                }),
+                getProperty: jest.fn().mockImplementation((name: string) => {
+                    if (name === 'persistencyKey') {
+                        throw new Error(
+                            'Property "persistencyKey" does not exist in Element sap.ui.fl.variants.VariantManagement#sap.ui.demoapps.rta.fev4::ProductsList--fe::PageVariantManagement'
+                        );
+                    }
+                    return name;
+                }),
+                getId: () => 'sap.ui.demoapps.rta.fev4::ProductsList--fe::PageVariantManagement'
+            }),
+            getPreparedChange: () => [
+                {
+                    getChangeType: () => undefined,
+                    getLayer: () => 'CUSTOMER_BASE',
+                    convertToFileContent: () => ({
+                        fileName: 'id_1780394065227_285_flVariant'
+                    })
+                },
+                {
+                    getChangeType: () => 'setDefault',
+                    getLayer: () => 'CUSTOMER_BASE',
+                    convertToFileContent: () => ({
+                        fileName: 'id_1780394065227_286_setDefault'
+                    })
+                }
+            ]
+        };
+        const subCommands = [flVariantCommand];
+        const compositeCommand = [createCompositeCommand(subCommands)];
+        rtaMock.getCommandStack.mockReturnValue({
+            getCommands: jest.fn().mockReturnValue(compositeCommand),
+            getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
+        });
+
+        const service = new ChangeService({ rta: rtaMock } as any);
+        await service.init(sendActionMock, subscribeMock);
+        await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
+
+        expect(sendActionMock).toHaveBeenCalledTimes(4);
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+            type: '[ext] change-stack-modified',
+            payload: {
+                saved: [],
+                pending: [
+                    {
+                        type: 'pending',
+                        kind: 'control',
+                        changeType: undefined,
+                        isActive: true,
+                        fileName: 'id_1780394065227_285_flVariant',
+                        controlId: 'sap.ui.demoapps.rta.fev4::ProductsList--fe::PageVariantManagement'
+                    },
+                    {
+                        type: 'pending',
+                        kind: 'control',
+                        changeType: 'setDefault',
+                        isActive: true,
+                        fileName: 'id_1780394065227_286_setDefault',
+                        controlId: 'sap.ui.demoapps.rta.fev4::ProductsList--fe::PageVariantManagement'
+                    }
+                ]
+            }
+        });
+    });
+
     test('inactive composite command', async () => {
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
         function createCommand(properties: Map<string, any>): {
             getElement: () => any;
             getSelector: () => any;
             getChangeType: () => string;
-            getPreparedChange: () => { getDefinition: () => { fileName: string } };
+            getPreparedChange: () => { convertToFileContent: () => { fileName: string } };
         } {
             const cache = new Map(properties);
             return {
@@ -563,7 +635,7 @@ describe('ChangeService', () => {
                     }),
                     getChangeType: jest.fn().mockReturnValue(cache.get('changeType')),
                     getLayer: jest.fn().mockReturnValue('CUSTOMER'),
-                    getDefinition: jest.fn().mockReturnValue({
+                    convertToFileContent: jest.fn().mockReturnValue({
                         fileName: 'testFileName'
                     })
                 })
@@ -647,7 +719,7 @@ describe('ChangeService', () => {
             getElement: () => any;
             getSelector: () => any;
             getChangeType: () => string;
-            getPreparedChange: () => { getDefinition: () => { fileName: string } };
+            getPreparedChange: () => { convertToFileContent: () => { fileName: string } };
         } {
             const cache = new Map(properties);
             return {
@@ -669,7 +741,7 @@ describe('ChangeService', () => {
                     }),
                     getChangeType: jest.fn().mockReturnValue(cache.get('changeType')),
                     getLayer: jest.fn().mockReturnValue('CUSTOMER'),
-                    getDefinition: jest.fn().mockReturnValue({
+                    convertToFileContent: jest.fn().mockReturnValue({
                         fileName: 'testFileName'
                     })
                 })
@@ -767,7 +839,7 @@ describe('ChangeService', () => {
                     }),
                     getChangeType: jest.fn().mockReturnValue('page'),
                     getLayer: jest.fn().mockReturnValue('CUSTOMER'),
-                    getDefinition: jest.fn().mockReturnValue({
+                    convertToFileContent: jest.fn().mockReturnValue({
                         changeType: 'page',
                         fileName: 'fileName'
                     })
@@ -870,7 +942,7 @@ describe('ChangeService', () => {
                     }),
                     getChangeType: jest.fn().mockReturnValue('page'),
                     getLayer: jest.fn().mockReturnValue('CUSTOMER'),
-                    getDefinition: jest.fn().mockReturnValue({
+                    convertToFileContent: jest.fn().mockReturnValue({
                         changeType: 'page',
                         fileName: 'testFileName'
                     })
@@ -944,7 +1016,7 @@ describe('ChangeService', () => {
                     }),
                     getChangeType: jest.fn().mockReturnValue('page'),
                     getLayer: jest.fn().mockReturnValue('CUSTOMER'),
-                    getDefinition: jest.fn().mockReturnValue({
+                    convertToFileContent: jest.fn().mockReturnValue({
                         changeType: 'page',
                         fileName: 'testFileName'
                     })
@@ -1020,7 +1092,7 @@ describe('ChangeService', () => {
                     }),
                     getChangeType: jest.fn().mockReturnValue('page'),
                     getLayer: jest.fn().mockReturnValue('CUSTOMER'),
-                    getDefinition: jest.fn().mockReturnValue({
+                    convertToFileContent: jest.fn().mockReturnValue({
                         changeType: 'page',
                         fileName: 'testFileName'
                     })
@@ -1096,7 +1168,7 @@ describe('ChangeService', () => {
                     }),
                     getChangeType: jest.fn().mockReturnValue('page'),
                     getLayer: jest.fn().mockReturnValue('CUSTOMER'),
-                    getDefinition: jest.fn().mockReturnValue({
+                    convertToFileContent: jest.fn().mockReturnValue({
                         changeType: 'page',
                         fileName: 'testFileName'
                     })
@@ -1164,7 +1236,7 @@ describe('ChangeService', () => {
                     }),
                     getChangeType: jest.fn().mockReturnValue('page'),
                     getLayer: jest.fn().mockReturnValue('CUSTOMER'),
-                    getDefinition: jest.fn().mockReturnValue({
+                    convertToFileContent: jest.fn().mockReturnValue({
                         changeType: 'page',
                         fileName: 'testFileName'
                     })
@@ -1240,7 +1312,7 @@ describe('ChangeService', () => {
                     }),
                     getChangeType: jest.fn().mockReturnValue('page'),
                     getLayer: jest.fn().mockReturnValue('CUSTOMER'),
-                    getDefinition: jest.fn().mockReturnValue({
+                    convertToFileContent: jest.fn().mockReturnValue({
                         changeType: 'page',
                         fileName: 'testFileName'
                     })
@@ -1308,7 +1380,7 @@ describe('ChangeService', () => {
                     }),
                     getChangeType: jest.fn().mockReturnValue('page'),
                     getLayer: jest.fn().mockReturnValue('CUSTOMER'),
-                    getDefinition: jest.fn().mockReturnValue({
+                    convertToFileContent: jest.fn().mockReturnValue({
                         changeType: 'page',
                         fileName: 'testFileName'
                     })
@@ -1370,7 +1442,7 @@ describe('ChangeService', () => {
             getSelector: () => any;
             getChangeType: () => string;
             getParent: () => any;
-            getPreparedChange: () => { getDefinition: () => { fileName: string } };
+            getPreparedChange: () => { convertToFileContent: () => { fileName: string } };
         } {
             const cache = new Map(properties);
             return {
@@ -1398,7 +1470,7 @@ describe('ChangeService', () => {
                     }),
                     getChangeType: jest.fn().mockReturnValue(cache.get('changeType')),
                     getLayer: jest.fn().mockReturnValue('CUSTOMER'),
-                    getDefinition: jest.fn().mockReturnValue(Object.fromEntries(cache))
+                    convertToFileContent: jest.fn().mockReturnValue(Object.fromEntries(cache))
                 })
             };
         }
@@ -1528,7 +1600,7 @@ describe('ChangeService', () => {
             getSelector: () => any;
             getChangeType: () => string;
             getParent: () => any;
-            getPreparedChange: () => { getDefinition: () => { fileName: string } };
+            getPreparedChange: () => { convertToFileContent: () => { fileName: string } };
         } {
             const cache = new Map(properties);
             return {
@@ -1550,8 +1622,8 @@ describe('ChangeService', () => {
                         getId: () => 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
                     })
                 }),
-                getPreparedChange: (): { getDefinition: () => { fileName: string } } => {
-                    return { getDefinition: jest.fn().mockReturnValue(Object.fromEntries(cache)) };
+                getPreparedChange: (): { convertToFileContent: () => { fileName: string } } => {
+                    return { convertToFileContent: jest.fn().mockReturnValue(Object.fromEntries(cache)) };
                 }
             };
         }
@@ -1660,7 +1732,7 @@ describe('ChangeService', () => {
             getSelector: () => any;
             getChangeType: () => string;
             getParent: () => any;
-            getPreparedChange: () => { getDefinition: () => { fileName: string } };
+            getPreparedChange: () => { convertToFileContent: () => { fileName: string } };
         } {
             const cache = new Map(properties);
             return {
@@ -1682,8 +1754,8 @@ describe('ChangeService', () => {
                         getId: () => 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
                     })
                 }),
-                getPreparedChange: (): { getDefinition: () => { fileName: string } } => {
-                    return { getDefinition: jest.fn().mockReturnValue(Object.fromEntries(cache)) };
+                getPreparedChange: (): { convertToFileContent: () => { fileName: string } } => {
+                    return { convertToFileContent: jest.fn().mockReturnValue(Object.fromEntries(cache)) };
                 }
             };
         }

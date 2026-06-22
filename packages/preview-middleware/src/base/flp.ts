@@ -199,7 +199,13 @@ export class FlpSandbox {
         this.createFlexHandler();
         this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app']?.id ?? '';
-        this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources, this.utils);
+        this.templateConfig = createFlpTemplateConfig(
+            this.flpConfig,
+            manifest,
+            resources,
+            adp !== undefined,
+            this.utils
+        );
         this.adp = adp;
         this.manifest = manifest;
 
@@ -385,7 +391,7 @@ export class FlpSandbox {
      * @returns Promise that resolves when the application dependencies are set
      */
     private async setApplicationDependencies(): Promise<void> {
-        if (this.adp) {
+        if (this.adp && !this.adp.isCloudFoundry) {
             await this.adp.sync();
             const appName = getAppName(this.manifest, this.flpConfig.intent);
             this.templateConfig.apps[appName].applicationDependencies = this.adp.descriptor;
@@ -553,14 +559,7 @@ export class FlpSandbox {
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             const patchedRouterBaseUrl = ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '';
             const baseUrl = this.getTemplateBaseUrl(patchedRouterBaseUrl);
-            const ui5Version = await this.getUi5Version(
-                //use protocol from request header referer as fallback for connect API (karma test runner)
-                'protocol' in req
-                    ? req.protocol
-                    : (req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http'),
-                req.headers.host,
-                patchedRouterBaseUrl
-            );
+            const ui5Version = await this.getUi5VersionFromRequest(req, patchedRouterBaseUrl);
             this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
             if (ui5Version.major === 1 && ui5Version.minor < 120) {
                 this.removeFlexExtensionPointEnabled();
@@ -617,9 +616,46 @@ export class FlpSandbox {
                 next: NextFunction
             ) => {
                 this.templateConfig.enableCardGenerator = !!this.cardGenerator?.path;
+                if (this.templateConfig.enableCardGenerator) {
+                    // check for min ui5 version of card generator feature
+                    const baseUrl = 'ui5-patched-router' in req ? (req['ui5-patched-router']?.baseUrl ?? '') : '';
+                    const ui5Version = await this.getUi5VersionFromRequest(req, baseUrl);
+                    const minMinor = this.projectType === 'CAPNodejs' || this.projectType === 'CAPJava' ? 149 : 121;
+                    if (
+                        (ui5Version.major === 1 && ui5Version.minor < minMinor) ||
+                        ui5Version.major >= 2 ||
+                        ui5Version.label?.includes('legacy-free')
+                    ) {
+                        this.templateConfig.enableCardGenerator = false;
+                        this.logger.warn(
+                            `Feature cardGenerator disabled: UI5 version ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch} does not meet the minimum required version 1.${minMinor}.0 for project type '${this.projectType}'.`
+                        );
+                    }
+                }
                 await this.flpGetHandler(req, res, next);
             }
         );
+    }
+
+    /**
+     * Extracts protocol and baseUrl from a request and calls getUi5Version.
+     * Handles both express Request and connect IncomingMessage (karma test runner).
+     *
+     * @param req - the incoming request
+     * @param baseUrl - the base path to include when fetching the UI5 version
+     * @returns the parsed UI5 version
+     * @private
+     */
+    private async getUi5VersionFromRequest(
+        req: EnhancedRequest | connect.IncomingMessage,
+        baseUrl: string = ''
+    ): Promise<Ui5Version> {
+        // use protocol from request header referer as fallback for connect API (karma test runner)
+        const protocol =
+            'protocol' in req
+                ? req.protocol
+                : (req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http');
+        return this.getUi5Version(protocol, req.headers.host, baseUrl);
     }
 
     /**
@@ -661,6 +697,7 @@ export class FlpSandbox {
         const [major, minor, patch] = version.split('.').map((versionPart) => Number.parseInt(versionPart, 10));
         const label = version.split(/-(.*)/s)?.[1];
 
+        // check for min ui5 version of flp.enhancedHomePage feature
         if (
             this.flpConfig.enhancedHomePage &&
             ((major < 2 && minor < 123) || major >= 2 || label?.includes('legacy-free'))
@@ -1300,7 +1337,7 @@ export class FlpSandbox {
         if ('cfBuildPath' in config) {
             const manifest = this.setupCfBuildMode(config.cfBuildPath);
             configureRta(this.rta, layer, variant.id, false, true);
-            await this.init(manifest, variant.reference);
+            await this.init(manifest, variant.reference, {}, adp);
             await this.setupAdpCommonHandlers(adp);
             return;
         }
