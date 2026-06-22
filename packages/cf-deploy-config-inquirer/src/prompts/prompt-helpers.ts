@@ -4,6 +4,7 @@ import {
     listDestinations,
     getDisplayName,
     isAbapEnvironmentOnBtp,
+    isFullUrlDestination,
     type Destinations
 } from '@sap-ux/btp-utils';
 import LoggerHelper from '../logger-helper.js';
@@ -26,7 +27,8 @@ function createDestinationChoices(destinations: Destinations = {}): CfSystemChoi
             name: `${getDisplayName(destination) ?? 'Unknown'} - ${destination.Host}`,
             value: destination.Name,
             scp: isAbapEnvironmentOnBtp(destination) || false,
-            url: destination.Host
+            url: destination.Host,
+            isFullUrl: isFullUrlDestination(destination)
         }));
 }
 

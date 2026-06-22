@@ -2,11 +2,15 @@
 
 ## 1.0.1
 
+*Released: 2026-06-03T14:58:37Z*
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -41,11 +45,15 @@
 
 ## 0.18.0
 
+*Released: 2026-05-15T08:12:20Z*
+
 ### Minor Changes
 
 - 72695e5: chore: drop Node 20 support as it is no longer maintained
 
 ## 0.17.8
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -53,11 +61,15 @@
 
 ## 0.17.7
 
+*Released: 2026-04-08T13:10:18Z*
+
 ### Patch Changes
 
 - f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
 
 ## 0.17.6
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 

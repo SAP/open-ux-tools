@@ -6,10 +6,9 @@ import XMLView from 'sap/ui/core/mvc/XMLView';
 import type { FlexSettings, Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 
 import { isA } from './core.js';
-import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { getOverlay } from '../cpe/utils.js';
 import UI5Element from 'sap/ui/core/Element';
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import TableAPI from 'sap/fe/macros/table/TableAPI';
 
 export type MacroTable = TableAPI & {
@@ -142,6 +141,7 @@ export async function createManifestPropertyChange(
         selector: manifestPropertyChange.selector
     };
 
+    const CommandFactory = (await import('sap/ui/rta/command/CommandFactory')).default;
     const command = await CommandFactory.getCommandFor(
         modifiedControl,
         'appDescriptor',

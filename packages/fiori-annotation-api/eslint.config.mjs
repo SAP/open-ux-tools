@@ -1,7 +1,5 @@
 import base from '../../eslint.config.mjs';
 
-const __dirname = import.meta.dirname;
-
 export default [
     {
         ignores: ['*.cjs', 'test/__cjs-proxies/**']
@@ -10,12 +8,6 @@ export default [
     {
         files: ['src/**/*.ts'],
         ignores: ['dist', 'test/fixtures/**', 'coverage', 'node_modules/**', 'eslint.config.js'],
-        languageOptions: {
-            parserOptions: {
-                tsconfigRootDir: __dirname,
-                project: './tsconfig.eslint.json'
-            }
-        },
         rules: {
             'jsdoc/require-jsdoc': [
                 'error',
@@ -36,12 +28,6 @@ export default [
     {
         files: ['test/**/*.ts'],
         ignores: ['dist', 'test/fixtures/**', 'coverage', 'node_modules/**', 'eslint.config.js'],
-        languageOptions: {
-            parserOptions: {
-                tsconfigRootDir: __dirname,
-                project: './tsconfig.eslint.json'
-            }
-        },
         rules: {
             'jsdoc/require-jsdoc': 'off'
         }

@@ -1,6 +1,16 @@
 # @sap-ux/odata-service-writer
 
+## 1.0.7
+
+### Patch Changes
+
+#### Bug Fixes
+
+- add builder.resources.excludes to ui5.yaml and ui5-local.yaml when adding an OData service [[51365e2](https://github.com/SAP/open-ux-tools/commit/51365e2da9e26a93b56196af0171f93bcccf5ce5)]
+
 ## 1.0.6
+
+*Released: 2026-06-10T09:57:42Z*
 
 ### Patch Changes
 
@@ -11,6 +21,8 @@
 
 ## 1.0.5
 
+*Released: 2026-06-04T13:54:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [fff7490]
@@ -19,6 +31,8 @@
 
 ## 1.0.4
 
+*Released: 2026-06-04T10:19:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [b326a9a]
@@ -26,6 +40,8 @@
     - @sap-ux/mockserver-config-writer@1.0.4
 
 ## 1.0.3
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -37,6 +53,8 @@
 
 ## 1.0.2
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - Updated dependencies [9580241]
@@ -46,6 +64,8 @@
 
 ## 1.0.1
 
+*Released: 2026-06-01T15:15:26Z*
+
 ### Patch Changes
 
 - Updated dependencies [aed799d]
@@ -53,6 +73,8 @@
     - @sap-ux/mockserver-config-writer@1.0.1
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -94,6 +116,8 @@
 
 ## 0.32.2
 
+*Released: 2026-05-21T16:21:11Z*
+
 ### Patch Changes
 
 - Updated dependencies [9752c40]
@@ -103,6 +127,8 @@
 
 ## 0.32.1
 
+*Released: 2026-05-19T15:16:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [63e6846]
@@ -110,6 +136,8 @@
     - @sap-ux/mockserver-config-writer@0.10.1
 
 ## 0.32.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -124,11 +152,15 @@
 
 ## 0.31.15
 
+*Released: 2026-05-14T21:28:41Z*
+
 ### Patch Changes
 
 - 138246a: fix(odata-service-writer): derive manifest odataVersion from EDMX metadata instead of minUI5Version
 
 ## 0.31.14
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -140,6 +172,8 @@
 
 ## 0.31.13
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - 21abda3: chore: upgrade fast-xml-parser 5.7.2 → 5.8.0 (fixes fast-xml-builder CVE-2025-47916)
@@ -148,6 +182,8 @@
     - @sap-ux/mockserver-config-writer@0.9.77
 
 ## 0.31.12
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -158,12 +194,16 @@
 
 ## 0.31.11
 
+*Released: 2026-04-30T14:23:24Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.36.2
 - @sap-ux/mockserver-config-writer@0.9.75
 
 ## 0.31.10
+
+*Released: 2026-04-29T15:24:37Z*
 
 ### Patch Changes
 
@@ -174,6 +214,8 @@
 
 ## 0.31.9
 
+*Released: 2026-04-27T19:47:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -182,6 +224,8 @@
 
 ## 0.31.8
 
+*Released: 2026-04-23T12:54:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [03d3ea1]
@@ -189,6 +233,8 @@
     - @sap-ux/mockserver-config-writer@0.9.72
 
 ## 0.31.7
+
+*Released: 2026-04-14T12:35:35Z*
 
 ### Patch Changes
 
@@ -199,6 +245,8 @@
 
 ## 0.31.6
 
+*Released: 2026-04-08T13:10:18Z*
+
 ### Patch Changes
 
 - Updated dependencies [f1e4481]
@@ -208,6 +256,8 @@
 
 ## 0.31.5
 
+*Released: 2026-04-01T11:49:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [3291f6c]
@@ -215,6 +265,8 @@
     - @sap-ux/mockserver-config-writer@0.9.69
 
 ## 0.31.4
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -226,6 +278,8 @@
 
 ## 0.31.3
 
+*Released: 2026-03-26T20:06:10Z*
+
 ### Patch Changes
 
 - Updated dependencies [b66e827]
@@ -233,6 +287,8 @@
     - @sap-ux/mockserver-config-writer@0.9.67
 
 ## 0.31.2
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -246,6 +302,8 @@
 
 ## 0.31.1
 
+*Released: 2026-03-25T12:56:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [f384ace]
@@ -254,7 +312,7 @@
 
 ## 0.31.0
 
-*Released: 2026-03-20T16:07:49Z*
+_Released: 2026-03-20T16:07:49Z_
 
 ### Minor Changes
 
@@ -269,7 +327,7 @@
 
 ## 0.30.1
 
-*Released: 2026-03-17T01:04:22Z*
+_Released: 2026-03-17T01:04:22Z_
 
 ### Patch Changes
 
@@ -280,7 +338,7 @@
 
 ## 0.30.0
 
-*Released: 2026-03-06T13:19:33Z*
+_Released: 2026-03-06T13:19:33Z_
 
 ### Minor Changes
 
@@ -288,7 +346,7 @@
 
 ## 0.29.34
 
-*Released: 2026-03-05T16:08:22Z*
+_Released: 2026-03-05T16:08:22Z_
 
 ### Patch Changes
 
@@ -298,7 +356,7 @@
 
 ## 0.29.33
 
-*Released: 2026-03-05T12:30:25Z*
+_Released: 2026-03-05T12:30:25Z_
 
 ### Patch Changes
 
@@ -310,7 +368,7 @@
 
 ## 0.29.32
 
-*Released: 2026-03-05T10:41:09Z*
+_Released: 2026-03-05T10:41:09Z_
 
 ### Patch Changes
 
@@ -318,7 +376,7 @@
 
 ## 0.29.31
 
-*Released: 2026-03-04T22:42:20Z*
+_Released: 2026-03-04T22:42:20Z_
 
 ### Patch Changes
 
@@ -328,7 +386,7 @@
 
 ## 0.29.30
 
-*Released: 2026-03-04T15:52:08Z*
+_Released: 2026-03-04T15:52:08Z_
 
 ### Patch Changes
 
@@ -336,7 +394,7 @@
 
 ## 0.29.29
 
-*Released: 2026-03-04T14:39:10Z*
+_Released: 2026-03-04T14:39:10Z_
 
 ### Patch Changes
 
@@ -347,7 +405,7 @@
 
 ## 0.29.28
 
-*Released: 2026-02-27T15:42:39Z*
+_Released: 2026-02-27T15:42:39Z_
 
 ### Patch Changes
 
@@ -361,7 +419,7 @@
 
 ## 0.29.27
 
-*Released: 2026-02-26T10:46:59Z*
+_Released: 2026-02-26T10:46:59Z_
 
 ### Patch Changes
 
@@ -372,7 +430,7 @@
 
 ## 0.29.26
 
-*Released: 2026-02-23T22:35:31Z*
+_Released: 2026-02-23T22:35:31Z_
 
 ### Patch Changes
 
@@ -381,7 +439,7 @@
 
 ## 0.29.25
 
-*Released: 2026-02-23T19:07:48Z*
+_Released: 2026-02-23T19:07:48Z_
 
 ### Patch Changes
 
@@ -391,7 +449,7 @@
 
 ## 0.29.24
 
-*Released: 2026-02-20T21:31:31Z*
+_Released: 2026-02-20T21:31:31Z_
 
 ### Patch Changes
 
@@ -402,7 +460,7 @@
 
 ## 0.29.23
 
-*Released: 2026-02-20T20:20:17Z*
+_Released: 2026-02-20T20:20:17Z_
 
 ### Patch Changes
 
@@ -410,7 +468,7 @@
 
 ## 0.29.22
 
-*Released: 2026-02-20T16:17:11Z*
+_Released: 2026-02-20T16:17:11Z_
 
 ### Patch Changes
 
@@ -421,7 +479,7 @@
 
 ## 0.29.21
 
-*Released: 2026-02-20T13:46:55Z*
+_Released: 2026-02-20T13:46:55Z_
 
 ### Patch Changes
 
@@ -434,7 +492,7 @@
 
 ## 0.29.20
 
-*Released: 2026-02-18T21:45:35Z*
+_Released: 2026-02-18T21:45:35Z_
 
 ### Patch Changes
 
@@ -445,7 +503,7 @@
 
 ## 0.29.19
 
-*Released: 2026-02-16T16:08:11Z*
+_Released: 2026-02-16T16:08:11Z_
 
 ### Patch Changes
 
@@ -456,7 +514,7 @@
 
 ## 0.29.18
 
-*Released: 2026-02-13T09:54:38Z*
+_Released: 2026-02-13T09:54:38Z_
 
 ### Patch Changes
 
@@ -466,7 +524,7 @@
 
 ## 0.29.17
 
-*Released: 2026-02-12T10:29:41Z*
+_Released: 2026-02-12T10:29:41Z_
 
 ### Patch Changes
 
@@ -476,7 +534,7 @@
 
 ## 0.29.16
 
-*Released: 2026-02-10T23:50:15Z*
+_Released: 2026-02-10T23:50:15Z_
 
 ### Patch Changes
 
@@ -487,7 +545,7 @@
 
 ## 0.29.15
 
-*Released: 2026-02-09T11:21:43Z*
+_Released: 2026-02-09T11:21:43Z_
 
 ### Patch Changes
 
@@ -497,7 +555,7 @@
 
 ## 0.29.14
 
-*Released: 2026-02-05T20:09:45Z*
+_Released: 2026-02-05T20:09:45Z_
 
 ### Patch Changes
 
@@ -507,7 +565,7 @@
 
 ## 0.29.13
 
-*Released: 2026-02-05T08:38:39Z*
+_Released: 2026-02-05T08:38:39Z_
 
 ### Patch Changes
 
@@ -519,7 +577,7 @@
 
 ## 0.29.12
 
-*Released: 2026-02-03T15:42:23Z*
+_Released: 2026-02-03T15:42:23Z_
 
 ### Patch Changes
 
@@ -530,7 +588,7 @@
 
 ## 0.29.11
 
-*Released: 2026-01-30T16:59:27Z*
+_Released: 2026-01-30T16:59:27Z_
 
 ### Patch Changes
 
@@ -542,7 +600,7 @@
 
 ## 0.29.10
 
-*Released: 2026-01-29T14:02:02Z*
+_Released: 2026-01-29T14:02:02Z_
 
 ### Patch Changes
 
@@ -553,7 +611,7 @@
 
 ## 0.29.9
 
-*Released: 2026-01-23T22:30:10Z*
+_Released: 2026-01-23T22:30:10Z_
 
 ### Patch Changes
 
@@ -563,7 +621,7 @@
 
 ## 0.29.8
 
-*Released: 2026-01-16T13:57:39Z*
+_Released: 2026-01-16T13:57:39Z_
 
 ### Patch Changes
 
@@ -575,7 +633,7 @@
 
 ## 0.29.7
 
-*Released: 2026-01-15T14:14:39Z*
+_Released: 2026-01-15T14:14:39Z_
 
 ### Patch Changes
 
@@ -585,7 +643,7 @@
 
 ## 0.29.6
 
-*Released: 2026-01-14T17:56:49Z*
+_Released: 2026-01-14T17:56:49Z_
 
 ### Patch Changes
 
@@ -595,7 +653,7 @@
 
 ## 0.29.5
 
-*Released: 2026-01-12T12:01:34Z*
+_Released: 2026-01-12T12:01:34Z_
 
 ### Patch Changes
 
@@ -605,7 +663,7 @@
 
 ## 0.29.4
 
-*Released: 2026-01-09T11:35:48Z*
+_Released: 2026-01-09T11:35:48Z_
 
 ### Patch Changes
 
@@ -615,7 +673,7 @@
 
 ## 0.29.3
 
-*Released: 2026-01-08T17:12:17Z*
+_Released: 2026-01-08T17:12:17Z_
 
 ### Patch Changes
 
@@ -623,7 +681,7 @@
 
 ## 0.29.2
 
-*Released: 2025-12-19T11:36:13Z*
+_Released: 2025-12-19T11:36:13Z_
 
 ### Patch Changes
 
@@ -634,7 +692,7 @@
 
 ## 0.29.1
 
-*Released: 2025-12-18T21:05:02Z*
+_Released: 2025-12-18T21:05:02Z_
 
 ### Patch Changes
 
@@ -646,7 +704,7 @@
 
 ## 0.29.0
 
-*Released: 2025-12-18T13:13:52Z*
+_Released: 2025-12-18T13:13:52Z_
 
 ### Minor Changes
 
@@ -654,7 +712,7 @@
 
 ## 0.28.0
 
-*Released: 2025-12-18T08:56:52Z*
+_Released: 2025-12-18T08:56:52Z_
 
 ### Minor Changes
 
@@ -662,7 +720,7 @@
 
 ## 0.27.38
 
-*Released: 2025-12-15T10:50:50Z*
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -674,7 +732,7 @@
 
 ## 0.27.37
 
-*Released: 2025-12-12T12:38:21Z*
+_Released: 2025-12-12T12:38:21Z_
 
 ### Patch Changes
 
@@ -684,7 +742,7 @@
 
 ## 0.27.36
 
-*Released: 2025-12-12T09:02:37Z*
+_Released: 2025-12-12T09:02:37Z_
 
 ### Patch Changes
 
@@ -692,7 +750,7 @@
 
 ## 0.27.35
 
-*Released: 2025-12-10T20:04:51Z*
+_Released: 2025-12-10T20:04:51Z_
 
 ### Patch Changes
 
@@ -702,7 +760,7 @@
 
 ## 0.27.34
 
-*Released: 2025-12-10T09:08:56Z*
+_Released: 2025-12-10T09:08:56Z_
 
 ### Patch Changes
 
@@ -712,7 +770,7 @@
 
 ## 0.27.33
 
-*Released: 2025-12-04T10:42:12Z*
+_Released: 2025-12-04T10:42:12Z_
 
 ### Patch Changes
 
@@ -722,7 +780,7 @@
 
 ## 0.27.32
 
-*Released: 2025-11-27T14:58:09Z*
+_Released: 2025-11-27T14:58:09Z_
 
 ### Patch Changes
 
@@ -732,7 +790,7 @@
 
 ## 0.27.31
 
-*Released: 2025-11-26T14:39:37Z*
+_Released: 2025-11-26T14:39:37Z_
 
 ### Patch Changes
 
@@ -744,7 +802,7 @@
 
 ## 0.27.30
 
-*Released: 2025-11-24T12:45:14Z*
+_Released: 2025-11-24T12:45:14Z_
 
 ### Patch Changes
 
@@ -755,7 +813,7 @@
 
 ## 0.27.29
 
-*Released: 2025-11-05T06:53:42Z*
+_Released: 2025-11-05T06:53:42Z_
 
 ### Patch Changes
 
@@ -767,7 +825,7 @@
 
 ## 0.27.28
 
-*Released: 2025-10-27T13:41:31Z*
+_Released: 2025-10-27T13:41:31Z_
 
 ### Patch Changes
 
@@ -777,7 +835,7 @@
 
 ## 0.27.27
 
-*Released: 2025-10-22T09:32:12Z*
+_Released: 2025-10-22T09:32:12Z_
 
 ### Patch Changes
 
@@ -787,7 +845,7 @@
 
 ## 0.27.26
 
-*Released: 2025-10-21T07:47:50Z*
+_Released: 2025-10-21T07:47:50Z_
 
 ### Patch Changes
 
@@ -797,7 +855,7 @@
 
 ## 0.27.25
 
-*Released: 2025-10-10T12:22:06Z*
+_Released: 2025-10-10T12:22:06Z_
 
 ### Patch Changes
 
@@ -808,7 +866,7 @@
 
 ## 0.27.24
 
-*Released: 2025-10-06T17:09:01Z*
+_Released: 2025-10-06T17:09:01Z_
 
 ### Patch Changes
 
@@ -820,7 +878,7 @@
 
 ## 0.27.23
 
-*Released: 2025-10-06T10:53:53Z*
+_Released: 2025-10-06T10:53:53Z_
 
 ### Patch Changes
 
@@ -831,7 +889,7 @@
 
 ## 0.27.22
 
-*Released: 2025-09-19T16:36:41Z*
+_Released: 2025-09-19T16:36:41Z_
 
 ### Patch Changes
 
@@ -842,7 +900,7 @@
 
 ## 0.27.21
 
-*Released: 2025-09-19T00:44:48Z*
+_Released: 2025-09-19T00:44:48Z_
 
 ### Patch Changes
 
@@ -852,7 +910,7 @@
 
 ## 0.27.20
 
-*Released: 2025-09-18T07:30:28Z*
+_Released: 2025-09-18T07:30:28Z_
 
 ### Patch Changes
 
@@ -862,7 +920,7 @@
 
 ## 0.27.19
 
-*Released: 2025-09-16T06:28:11Z*
+_Released: 2025-09-16T06:28:11Z_
 
 ### Patch Changes
 
@@ -873,7 +931,7 @@
 
 ## 0.27.18
 
-*Released: 2025-08-28T13:37:07Z*
+_Released: 2025-08-28T13:37:07Z_
 
 ### Patch Changes
 
@@ -884,7 +942,7 @@
 
 ## 0.27.17
 
-*Released: 2025-08-14T14:36:13Z*
+_Released: 2025-08-14T14:36:13Z_
 
 ### Patch Changes
 
@@ -896,7 +954,7 @@
 
 ## 0.27.16
 
-*Released: 2025-08-13T10:00:10Z*
+_Released: 2025-08-13T10:00:10Z_
 
 ### Patch Changes
 
@@ -905,7 +963,7 @@
 
 ## 0.27.15
 
-*Released: 2025-08-01T09:39:39Z*
+_Released: 2025-08-01T09:39:39Z_
 
 ### Patch Changes
 
@@ -916,7 +974,7 @@
 
 ## 0.27.14
 
-*Released: 2025-07-30T19:33:46Z*
+_Released: 2025-07-30T19:33:46Z_
 
 ### Patch Changes
 
@@ -925,7 +983,7 @@
 
 ## 0.27.13
 
-*Released: 2025-07-28T22:57:52Z*
+_Released: 2025-07-28T22:57:52Z_
 
 ### Patch Changes
 
@@ -935,7 +993,7 @@
 
 ## 0.27.12
 
-*Released: 2025-07-08T12:06:04Z*
+_Released: 2025-07-08T12:06:04Z_
 
 ### Patch Changes
 
@@ -945,7 +1003,7 @@
 
 ## 0.27.11
 
-*Released: 2025-07-04T15:18:17Z*
+_Released: 2025-07-04T15:18:17Z_
 
 ### Patch Changes
 
@@ -956,7 +1014,7 @@
 
 ## 0.27.10
 
-*Released: 2025-07-04T09:34:59Z*
+_Released: 2025-07-04T09:34:59Z_
 
 ### Patch Changes
 
@@ -967,7 +1025,7 @@
 
 ## 0.27.9
 
-*Released: 2025-07-03T12:14:55Z*
+_Released: 2025-07-03T12:14:55Z_
 
 ### Patch Changes
 
@@ -977,7 +1035,7 @@
 
 ## 0.27.8
 
-*Released: 2025-06-30T08:46:50Z*
+_Released: 2025-06-30T08:46:50Z_
 
 ### Patch Changes
 
@@ -985,7 +1043,7 @@
 
 ## 0.27.7
 
-*Released: 2025-06-27T16:39:38Z*
+_Released: 2025-06-27T16:39:38Z_
 
 ### Patch Changes
 
@@ -996,7 +1054,7 @@
 
 ## 0.27.6
 
-*Released: 2025-06-24T07:18:46Z*
+_Released: 2025-06-24T07:18:46Z_
 
 ### Patch Changes
 
@@ -1005,7 +1063,7 @@
 
 ## 0.27.5
 
-*Released: 2025-05-30T07:18:36Z*
+_Released: 2025-05-30T07:18:36Z_
 
 ### Patch Changes
 
@@ -1016,7 +1074,7 @@
 
 ## 0.27.4
 
-*Released: 2025-05-29T08:13:17Z*
+_Released: 2025-05-29T08:13:17Z_
 
 ### Patch Changes
 
@@ -1024,7 +1082,7 @@
 
 ## 0.27.3
 
-*Released: 2025-05-26T11:57:48Z*
+_Released: 2025-05-26T11:57:48Z_
 
 ### Patch Changes
 
@@ -1032,7 +1090,7 @@
 
 ## 0.27.2
 
-*Released: 2025-05-22T16:20:10Z*
+_Released: 2025-05-22T16:20:10Z_
 
 ### Patch Changes
 
@@ -1040,7 +1098,7 @@
 
 ## 0.27.1
 
-*Released: 2025-05-15T13:36:04Z*
+_Released: 2025-05-15T13:36:04Z_
 
 ### Patch Changes
 
@@ -1052,7 +1110,7 @@
 
 ## 0.27.0
 
-*Released: 2025-05-14T22:35:53Z*
+_Released: 2025-05-14T22:35:53Z_
 
 ### Minor Changes
 
@@ -1067,7 +1125,7 @@
 
 ## 0.26.18
 
-*Released: 2025-05-05T13:48:20Z*
+_Released: 2025-05-05T13:48:20Z_
 
 ### Patch Changes
 
@@ -1077,7 +1135,7 @@
 
 ## 0.26.17
 
-*Released: 2025-04-30T10:38:47Z*
+_Released: 2025-04-30T10:38:47Z_
 
 ### Patch Changes
 
@@ -1085,7 +1143,7 @@
 
 ## 0.26.16
 
-*Released: 2025-04-24T15:01:01Z*
+_Released: 2025-04-24T15:01:01Z_
 
 ### Patch Changes
 
@@ -1096,7 +1154,7 @@
 
 ## 0.26.15
 
-*Released: 2025-04-23T15:22:38Z*
+_Released: 2025-04-23T15:22:38Z_
 
 ### Patch Changes
 
@@ -1107,7 +1165,7 @@
 
 ## 0.26.14
 
-*Released: 2025-04-23T13:59:14Z*
+_Released: 2025-04-23T13:59:14Z_
 
 ### Patch Changes
 
@@ -1118,7 +1176,7 @@
 
 ## 0.26.13
 
-*Released: 2025-03-19T08:54:25Z*
+_Released: 2025-03-19T08:54:25Z_
 
 ### Patch Changes
 
@@ -1128,7 +1186,7 @@
 
 ## 0.26.12
 
-*Released: 2025-03-18T09:41:03Z*
+_Released: 2025-03-18T09:41:03Z_
 
 ### Patch Changes
 
@@ -1140,7 +1198,7 @@
 
 ## 0.26.11
 
-*Released: 2025-03-10T20:40:35Z*
+_Released: 2025-03-10T20:40:35Z_
 
 ### Patch Changes
 
@@ -1151,7 +1209,7 @@
 
 ## 0.26.10
 
-*Released: 2025-03-06T16:16:20Z*
+_Released: 2025-03-06T16:16:20Z_
 
 ### Patch Changes
 
@@ -1161,7 +1219,7 @@
 
 ## 0.26.9
 
-*Released: 2025-03-05T11:16:53Z*
+_Released: 2025-03-05T11:16:53Z_
 
 ### Patch Changes
 
@@ -1171,7 +1229,7 @@
 
 ## 0.26.8
 
-*Released: 2025-03-05T09:14:02Z*
+_Released: 2025-03-05T09:14:02Z_
 
 ### Patch Changes
 
@@ -1182,7 +1240,7 @@
 
 ## 0.26.7
 
-*Released: 2025-03-04T08:55:15Z*
+_Released: 2025-03-04T08:55:15Z_
 
 ### Patch Changes
 
@@ -1191,7 +1249,7 @@
 
 ## 0.26.6
 
-*Released: 2025-02-28T15:10:48Z*
+_Released: 2025-02-28T15:10:48Z_
 
 ### Patch Changes
 
@@ -1201,7 +1259,7 @@
 
 ## 0.26.5
 
-*Released: 2025-02-27T14:15:03Z*
+_Released: 2025-02-27T14:15:03Z_
 
 ### Patch Changes
 
@@ -1212,7 +1270,7 @@
 
 ## 0.26.4
 
-*Released: 2025-02-27T08:22:17Z*
+_Released: 2025-02-27T08:22:17Z_
 
 ### Patch Changes
 
@@ -1222,7 +1280,7 @@
 
 ## 0.26.3
 
-*Released: 2025-02-18T18:24:37Z*
+_Released: 2025-02-18T18:24:37Z_
 
 ### Patch Changes
 
@@ -1230,7 +1288,7 @@
 
 ## 0.26.2
 
-*Released: 2025-02-17T16:12:15Z*
+_Released: 2025-02-17T16:12:15Z_
 
 ### Patch Changes
 
@@ -1239,7 +1297,7 @@
 
 ## 0.26.1
 
-*Released: 2025-02-17T13:42:22Z*
+_Released: 2025-02-17T13:42:22Z_
 
 ### Patch Changes
 
@@ -1249,7 +1307,7 @@
 
 ## 0.26.0
 
-*Released: 2025-02-14T10:07:13Z*
+_Released: 2025-02-14T10:07:13Z_
 
 ### Minor Changes
 
@@ -1262,7 +1320,7 @@
 
 ## 0.25.10
 
-*Released: 2025-02-13T10:58:34Z*
+_Released: 2025-02-13T10:58:34Z_
 
 ### Patch Changes
 
@@ -1272,7 +1330,7 @@
 
 ## 0.25.9
 
-*Released: 2025-02-07T19:58:32Z*
+_Released: 2025-02-07T19:58:32Z_
 
 ### Patch Changes
 
@@ -1284,7 +1342,7 @@
 
 ## 0.25.8
 
-*Released: 2025-02-05T17:08:20Z*
+_Released: 2025-02-05T17:08:20Z_
 
 ### Patch Changes
 
@@ -1293,7 +1351,7 @@
 
 ## 0.25.7
 
-*Released: 2025-02-05T15:41:32Z*
+_Released: 2025-02-05T15:41:32Z_
 
 ### Patch Changes
 
@@ -1301,7 +1359,7 @@
 
 ## 0.25.6
 
-*Released: 2025-02-05T09:24:10Z*
+_Released: 2025-02-05T09:24:10Z_
 
 ### Patch Changes
 
@@ -1309,7 +1367,7 @@
 
 ## 0.25.5
 
-*Released: 2025-01-28T17:41:21Z*
+_Released: 2025-01-28T17:41:21Z_
 
 ### Patch Changes
 
@@ -1317,7 +1375,7 @@
 
 ## 0.25.4
 
-*Released: 2025-01-27T18:57:16Z*
+_Released: 2025-01-27T18:57:16Z_
 
 ### Patch Changes
 
@@ -1327,7 +1385,7 @@
 
 ## 0.25.3
 
-*Released: 2025-01-17T09:30:45Z*
+_Released: 2025-01-17T09:30:45Z_
 
 ### Patch Changes
 
@@ -1337,7 +1395,7 @@
 
 ## 0.25.2
 
-*Released: 2025-01-09T12:31:59Z*
+_Released: 2025-01-09T12:31:59Z_
 
 ### Patch Changes
 
@@ -1345,7 +1403,7 @@
 
 ## 0.25.1
 
-*Released: 2025-01-07T16:24:13Z*
+_Released: 2025-01-07T16:24:13Z_
 
 ### Patch Changes
 
@@ -1353,7 +1411,7 @@
 
 ## 0.25.0
 
-*Released: 2024-12-16T11:25:26Z*
+_Released: 2024-12-16T11:25:26Z_
 
 ### Minor Changes
 
@@ -1361,7 +1419,7 @@
 
 ## 0.24.2
 
-*Released: 2024-12-11T18:23:38Z*
+_Released: 2024-12-11T18:23:38Z_
 
 ### Patch Changes
 
@@ -1369,7 +1427,7 @@
 
 ## 0.24.1
 
-*Released: 2024-12-06T07:34:32Z*
+_Released: 2024-12-06T07:34:32Z_
 
 ### Patch Changes
 
@@ -1377,7 +1435,7 @@
 
 ## 0.24.0
 
-*Released: 2024-12-02T16:28:38Z*
+_Released: 2024-12-02T16:28:38Z_
 
 ### Minor Changes
 
@@ -1391,7 +1449,7 @@
 
 ## 0.23.3
 
-*Released: 2024-11-18T20:38:37Z*
+_Released: 2024-11-18T20:38:37Z_
 
 ### Patch Changes
 
@@ -1401,7 +1459,7 @@
 
 ## 0.23.2
 
-*Released: 2024-11-17T22:14:47Z*
+_Released: 2024-11-17T22:14:47Z_
 
 ### Patch Changes
 
@@ -1409,7 +1467,7 @@
 
 ## 0.23.1
 
-*Released: 2024-11-05T21:46:19Z*
+_Released: 2024-11-05T21:46:19Z_
 
 ### Patch Changes
 
@@ -1419,7 +1477,7 @@
 
 ## 0.23.0
 
-*Released: 2024-09-23T10:02:33Z*
+_Released: 2024-09-23T10:02:33Z_
 
 ### Minor Changes
 
@@ -1433,7 +1491,7 @@
 
 ## 0.22.5
 
-*Released: 2024-09-03T19:06:21Z*
+_Released: 2024-09-03T19:06:21Z_
 
 ### Patch Changes
 
@@ -1442,7 +1500,7 @@
 
 ## 0.22.4
 
-*Released: 2024-08-28T11:16:50Z*
+_Released: 2024-08-28T11:16:50Z_
 
 ### Patch Changes
 
@@ -1452,7 +1510,7 @@
 
 ## 0.22.3
 
-*Released: 2024-08-19T11:34:45Z*
+_Released: 2024-08-19T11:34:45Z_
 
 ### Patch Changes
 
@@ -1462,7 +1520,7 @@
 
 ## 0.22.2
 
-*Released: 2024-08-01T17:28:17Z*
+_Released: 2024-08-01T17:28:17Z_
 
 ### Patch Changes
 
@@ -1472,7 +1530,7 @@
 
 ## 0.22.1
 
-*Released: 2024-07-23T09:01:05Z*
+_Released: 2024-07-23T09:01:05Z_
 
 ### Patch Changes
 
@@ -1482,7 +1540,7 @@
 
 ## 0.22.0
 
-*Released: 2024-07-16T11:43:42Z*
+_Released: 2024-07-16T11:43:42Z_
 
 ### Minor Changes
 
@@ -1498,7 +1556,7 @@
 
 ## 0.21.1
 
-*Released: 2024-07-12T08:50:08Z*
+_Released: 2024-07-12T08:50:08Z_
 
 ### Patch Changes
 
@@ -1508,7 +1566,7 @@
 
 ## 0.21.0
 
-*Released: 2024-07-05T15:03:05Z*
+_Released: 2024-07-05T15:03:05Z_
 
 ### Minor Changes
 
@@ -1522,7 +1580,7 @@
 
 ## 0.20.5
 
-*Released: 2024-06-26T13:30:18Z*
+_Released: 2024-06-26T13:30:18Z_
 
 ### Patch Changes
 
@@ -1532,7 +1590,7 @@
 
 ## 0.20.4
 
-*Released: 2024-06-25T14:41:22Z*
+_Released: 2024-06-25T14:41:22Z_
 
 ### Patch Changes
 
@@ -1542,7 +1600,7 @@
 
 ## 0.20.3
 
-*Released: 2024-06-18T15:06:09Z*
+_Released: 2024-06-18T15:06:09Z_
 
 ### Patch Changes
 
@@ -1552,7 +1610,7 @@
 
 ## 0.20.2
 
-*Released: 2024-06-12T15:20:44Z*
+_Released: 2024-06-12T15:20:44Z_
 
 ### Patch Changes
 
@@ -1562,7 +1620,7 @@
 
 ## 0.20.1
 
-*Released: 2024-06-07T14:16:07Z*
+_Released: 2024-06-07T14:16:07Z_
 
 ### Patch Changes
 
@@ -1571,7 +1629,7 @@
 
 ## 0.20.0
 
-*Released: 2024-06-06T14:34:12Z*
+_Released: 2024-06-06T14:34:12Z_
 
 ### Minor Changes
 
@@ -1579,7 +1637,7 @@
 
 ## 0.19.2
 
-*Released: 2024-05-27T13:04:53Z*
+_Released: 2024-05-27T13:04:53Z_
 
 ### Patch Changes
 
@@ -1589,7 +1647,7 @@
 
 ## 0.19.1
 
-*Released: 2024-05-14T08:36:35Z*
+_Released: 2024-05-14T08:36:35Z_
 
 ### Patch Changes
 
@@ -1599,7 +1657,7 @@
 
 ## 0.19.0
 
-*Released: 2024-05-10T10:45:20Z*
+_Released: 2024-05-10T10:45:20Z_
 
 ### Minor Changes
 
@@ -1607,7 +1665,7 @@
 
 ## 0.18.0
 
-*Released: 2024-05-10T09:32:39Z*
+_Released: 2024-05-10T09:32:39Z_
 
 ### Minor Changes
 
@@ -1615,7 +1673,7 @@
 
 ## 0.17.2
 
-*Released: 2024-05-07T14:01:29Z*
+_Released: 2024-05-07T14:01:29Z_
 
 ### Patch Changes
 
@@ -1623,7 +1681,7 @@
 
 ## 0.17.1
 
-*Released: 2024-05-02T14:43:18Z*
+_Released: 2024-05-02T14:43:18Z_
 
 ### Patch Changes
 
@@ -1633,7 +1691,7 @@
 
 ## 0.17.0
 
-*Released: 2024-05-02T10:43:05Z*
+_Released: 2024-05-02T10:43:05Z_
 
 ### Minor Changes
 
@@ -1646,7 +1704,7 @@
 
 ## 0.16.5
 
-*Released: 2024-04-23T22:35:35Z*
+_Released: 2024-04-23T22:35:35Z_
 
 ### Patch Changes
 
@@ -1655,7 +1713,7 @@
 
 ## 0.16.4
 
-*Released: 2024-04-08T19:47:20Z*
+_Released: 2024-04-08T19:47:20Z_
 
 ### Patch Changes
 
@@ -1663,7 +1721,7 @@
 
 ## 0.16.3
 
-*Released: 2024-04-04T13:19:16Z*
+_Released: 2024-04-04T13:19:16Z_
 
 ### Patch Changes
 
@@ -1672,7 +1730,7 @@
 
 ## 0.16.2
 
-*Released: 2024-03-21T16:21:01Z*
+_Released: 2024-03-21T16:21:01Z_
 
 ### Patch Changes
 
@@ -1681,7 +1739,7 @@
 
 ## 0.16.1
 
-*Released: 2024-02-27T22:07:50Z*
+_Released: 2024-02-27T22:07:50Z_
 
 ### Patch Changes
 
@@ -1691,7 +1749,7 @@
 
 ## 0.16.0
 
-*Released: 2023-12-11T16:37:44Z*
+_Released: 2023-12-11T16:37:44Z_
 
 ### Minor Changes
 
@@ -1699,7 +1757,7 @@
 
 ## 0.15.1
 
-*Released: 2023-11-22T08:53:28Z*
+_Released: 2023-11-22T08:53:28Z_
 
 ### Patch Changes
 
@@ -1708,7 +1766,7 @@
 
 ## 0.15.0
 
-*Released: 2023-10-19T12:06:19Z*
+_Released: 2023-10-19T12:06:19Z_
 
 ### Minor Changes
 
@@ -1721,7 +1779,7 @@
 
 ## 0.14.36
 
-*Released: 2023-10-18T13:59:49Z*
+_Released: 2023-10-18T13:59:49Z_
 
 ### Patch Changes
 
@@ -1729,7 +1787,7 @@
 
 ## 0.14.35
 
-*Released: 2023-10-17T08:28:48Z*
+_Released: 2023-10-17T08:28:48Z_
 
 ### Patch Changes
 
@@ -1737,7 +1795,7 @@
 
 ## 0.14.34
 
-*Released: 2023-10-09T17:37:13Z*
+_Released: 2023-10-09T17:37:13Z_
 
 ### Patch Changes
 
@@ -1746,7 +1804,7 @@
 
 ## 0.14.33
 
-*Released: 2023-09-20T13:13:51Z*
+_Released: 2023-09-20T13:13:51Z_
 
 ### Patch Changes
 
@@ -1756,7 +1814,7 @@
 
 ## 0.14.32
 
-*Released: 2023-09-19T15:51:30Z*
+_Released: 2023-09-19T15:51:30Z_
 
 ### Patch Changes
 
@@ -1765,7 +1823,7 @@
 
 ## 0.14.31
 
-*Released: 2023-09-19T14:02:55Z*
+_Released: 2023-09-19T14:02:55Z_
 
 ### Patch Changes
 
@@ -1775,7 +1833,7 @@
 
 ## 0.14.30
 
-*Released: 2023-09-08T12:21:47Z*
+_Released: 2023-09-08T12:21:47Z_
 
 ### Patch Changes
 
@@ -1783,7 +1841,7 @@
 
 ## 0.14.29
 
-*Released: 2023-09-04T15:26:51Z*
+_Released: 2023-09-04T15:26:51Z_
 
 ### Patch Changes
 
@@ -1791,7 +1849,7 @@
 
 ## 0.14.28
 
-*Released: 2023-09-01T07:49:28Z*
+_Released: 2023-09-01T07:49:28Z_
 
 ### Patch Changes
 
@@ -1799,7 +1857,7 @@
 
 ## 0.14.27
 
-*Released: 2023-08-11T09:14:46Z*
+_Released: 2023-08-11T09:14:46Z_
 
 ### Patch Changes
 
@@ -1808,7 +1866,7 @@
 
 ## 0.14.26
 
-*Released: 2023-06-27T14:58:54Z*
+_Released: 2023-06-27T14:58:54Z_
 
 ### Patch Changes
 
@@ -1818,7 +1876,7 @@
 
 ## 0.14.25
 
-*Released: 2023-06-26T15:34:40Z*
+_Released: 2023-06-26T15:34:40Z_
 
 ### Patch Changes
 
@@ -1828,7 +1886,7 @@
 
 ## 0.14.24
 
-*Released: 2023-06-21T06:38:48Z*
+_Released: 2023-06-21T06:38:48Z_
 
 ### Patch Changes
 
@@ -1837,7 +1895,7 @@
 
 ## 0.14.23
 
-*Released: 2023-06-12T06:59:29Z*
+_Released: 2023-06-12T06:59:29Z_
 
 ### Patch Changes
 
@@ -1847,7 +1905,7 @@
 
 ## 0.14.22
 
-*Released: 2023-06-09T06:11:17Z*
+_Released: 2023-06-09T06:11:17Z_
 
 ### Patch Changes
 
@@ -1855,7 +1913,7 @@
 
 ## 0.14.21
 
-*Released: 2023-06-01T08:16:47Z*
+_Released: 2023-06-01T08:16:47Z_
 
 ### Patch Changes
 
@@ -1864,7 +1922,7 @@
 
 ## 0.14.20
 
-*Released: 2023-04-26T14:34:08Z*
+_Released: 2023-04-26T14:34:08Z_
 
 ### Patch Changes
 
@@ -1874,7 +1932,7 @@
 
 ## 0.14.19
 
-*Released: 2023-03-24T14:54:37Z*
+_Released: 2023-03-24T14:54:37Z_
 
 ### Patch Changes
 
@@ -1883,7 +1941,7 @@
 
 ## 0.14.18
 
-*Released: 2023-03-08T17:28:51Z*
+_Released: 2023-03-08T17:28:51Z_
 
 ### Patch Changes
 
@@ -1891,7 +1949,7 @@
 
 ## 0.14.17
 
-*Released: 2023-02-23T13:56:23Z*
+_Released: 2023-02-23T13:56:23Z_
 
 ### Patch Changes
 
@@ -1901,7 +1959,7 @@
 
 ## 0.14.16
 
-*Released: 2023-02-17T07:56:11Z*
+_Released: 2023-02-17T07:56:11Z_
 
 ### Patch Changes
 
@@ -1909,7 +1967,7 @@
 
 ## 0.14.15
 
-*Released: 2023-02-10T14:09:06Z*
+_Released: 2023-02-10T14:09:06Z_
 
 ### Patch Changes
 
@@ -1919,7 +1977,7 @@
 
 ## 0.14.14
 
-*Released: 2022-12-05T07:50:58Z*
+_Released: 2022-12-05T07:50:58Z_
 
 ### Patch Changes
 
@@ -1929,7 +1987,7 @@
 
 ## 0.14.13
 
-*Released: 2022-11-04T17:06:16Z*
+_Released: 2022-11-04T17:06:16Z_
 
 ### Patch Changes
 
@@ -1938,7 +1996,7 @@
 
 ## 0.14.12
 
-*Released: 2022-10-21T07:04:47Z*
+_Released: 2022-10-21T07:04:47Z_
 
 ### Patch Changes
 
@@ -1946,7 +2004,7 @@
 
 ## 0.14.11
 
-*Released: 2022-10-14T14:52:33Z*
+_Released: 2022-10-14T14:52:33Z_
 
 ### Patch Changes
 
@@ -1955,7 +2013,7 @@
 
 ## 0.14.10
 
-*Released: 2022-10-11T14:06:32Z*
+_Released: 2022-10-11T14:06:32Z_
 
 ### Patch Changes
 
@@ -1964,7 +2022,7 @@
 
 ## 0.14.9
 
-*Released: 2022-10-04T15:02:00Z*
+_Released: 2022-10-04T15:02:00Z_
 
 ### Patch Changes
 
@@ -1972,7 +2030,7 @@
 
 ## 0.14.8
 
-*Released: 2022-09-28T15:31:46Z*
+_Released: 2022-09-28T15:31:46Z_
 
 ### Patch Changes
 
@@ -1980,7 +2038,7 @@
 
 ## 0.14.7
 
-*Released: 2022-09-14T16:06:49Z*
+_Released: 2022-09-14T16:06:49Z_
 
 ### Patch Changes
 
@@ -1989,7 +2047,7 @@
 
 ## 0.14.6
 
-*Released: 2022-08-25T13:08:21Z*
+_Released: 2022-08-25T13:08:21Z_
 
 ### Patch Changes
 
@@ -1999,7 +2057,7 @@
 
 ## 0.14.5
 
-*Released: 2022-07-28T16:33:41Z*
+_Released: 2022-07-28T16:33:41Z_
 
 ### Patch Changes
 
@@ -2007,7 +2065,7 @@
 
 ## 0.14.4
 
-*Released: 2022-07-27T08:51:11Z*
+_Released: 2022-07-27T08:51:11Z_
 
 ### Patch Changes
 
@@ -2017,7 +2075,7 @@
 
 ## 0.14.3
 
-*Released: 2022-07-21T14:10:31Z*
+_Released: 2022-07-21T14:10:31Z_
 
 ### Patch Changes
 
@@ -2027,7 +2085,7 @@
 
 ## 0.14.2
 
-*Released: 2022-07-20T14:42:08Z*
+_Released: 2022-07-20T14:42:08Z_
 
 ### Patch Changes
 
@@ -2036,7 +2094,7 @@
 
 ## 0.14.1
 
-*Released: 2022-07-04T13:03:56Z*
+_Released: 2022-07-04T13:03:56Z_
 
 ### Patch Changes
 
@@ -2046,7 +2104,7 @@
 
 ## 0.14.0
 
-*Released: 2022-06-15T14:52:21Z*
+_Released: 2022-06-15T14:52:21Z_
 
 ### Minor Changes
 
@@ -2054,7 +2112,7 @@
 
 ## 0.13.0
 
-*Released: 2022-06-13T09:53:27Z*
+_Released: 2022-06-13T09:53:27Z_
 
 ### Minor Changes
 
@@ -2067,7 +2125,7 @@
 
 ## 0.12.2
 
-*Released: 2022-05-19T14:38:34Z*
+_Released: 2022-05-19T14:38:34Z_
 
 ### Patch Changes
 
@@ -2077,7 +2135,7 @@
 
 ## 0.12.1
 
-*Released: 2022-04-27T16:48:18Z*
+_Released: 2022-04-27T16:48:18Z_
 
 ### Patch Changes
 
@@ -2087,7 +2145,7 @@
 
 ## 0.12.0
 
-*Released: 2022-04-26T13:41:08Z*
+_Released: 2022-04-26T13:41:08Z_
 
 ### Minor Changes
 
@@ -2095,7 +2153,7 @@
 
 ## 0.11.6
 
-*Released: 2022-04-01T07:00:29Z*
+_Released: 2022-04-01T07:00:29Z_
 
 ### Patch Changes
 
@@ -2104,7 +2162,7 @@
 
 ## 0.11.5
 
-*Released: 2022-03-31T13:41:16Z*
+_Released: 2022-03-31T13:41:16Z_
 
 ### Patch Changes
 
@@ -2114,7 +2172,7 @@
 
 ## 0.11.4
 
-*Released: 2022-03-29T13:57:37Z*
+_Released: 2022-03-29T13:57:37Z_
 
 ### Patch Changes
 
@@ -2124,7 +2182,7 @@
 
 ## 0.11.3
 
-*Released: 2022-03-24T07:10:57Z*
+_Released: 2022-03-24T07:10:57Z_
 
 ### Patch Changes
 
@@ -2134,7 +2192,7 @@
 
 ## 0.11.2
 
-*Released: 2022-03-22T19:34:16Z*
+_Released: 2022-03-22T19:34:16Z_
 
 ### Patch Changes
 
@@ -2144,7 +2202,7 @@
 
 ## 0.11.1
 
-*Released: 2022-02-18T09:46:40Z*
+_Released: 2022-02-18T09:46:40Z_
 
 ### Patch Changes
 
@@ -2153,7 +2211,7 @@
 
 ## 0.11.0
 
-*Released: 2022-02-02T17:47:04Z*
+_Released: 2022-02-02T17:47:04Z_
 
 ### Minor Changes
 
@@ -2161,7 +2219,7 @@
 
 ## 0.10.2
 
-*Released: 2022-01-17T14:31:10Z*
+_Released: 2022-01-17T14:31:10Z_
 
 ### Patch Changes
 
@@ -2170,7 +2228,7 @@
 
 ## 0.10.1
 
-*Released: 2021-12-14T12:31:46Z*
+_Released: 2021-12-14T12:31:46Z_
 
 ### Patch Changes
 
@@ -2179,7 +2237,7 @@
 
 ## 0.10.0
 
-*Released: 2021-10-22T12:53:00Z*
+_Released: 2021-10-22T12:53:00Z_
 
 ### Minor Changes
 
@@ -2187,7 +2245,7 @@
 
 ## 0.9.8
 
-*Released: 2021-11-15T18:37:14Z*
+_Released: 2021-11-15T18:37:14Z_
 
 ### Patch Changes
 
@@ -2195,7 +2253,7 @@
 
 ## 0.9.7
 
-*Released: 2021-11-03T14:20:52Z*
+_Released: 2021-11-03T14:20:52Z_
 
 ### Patch Changes
 
@@ -2205,7 +2263,7 @@
 
 ## 0.9.6
 
-*Released: 2021-11-01T18:18:45Z*
+_Released: 2021-11-01T18:18:45Z_
 
 ### Patch Changes
 
@@ -2215,7 +2273,7 @@
 
 ## 0.9.5
 
-*Released: 2021-10-28T12:12:48Z*
+_Released: 2021-10-28T12:12:48Z_
 
 ### Patch Changes
 
@@ -2225,7 +2283,7 @@
 
 ## 0.9.4
 
-*Released: 2021-10-27T16:42:33Z*
+_Released: 2021-10-27T16:42:33Z_
 
 ### Patch Changes
 
@@ -2235,7 +2293,7 @@
 
 ## 0.9.3
 
-*Released: 2021-10-22T16:07:57Z*
+_Released: 2021-10-22T16:07:57Z_
 
 ### Patch Changes
 
@@ -2245,7 +2303,7 @@
 
 ## 0.9.2
 
-*Released: 2021-10-22T14:11:14Z*
+_Released: 2021-10-22T14:11:14Z_
 
 ### Patch Changes
 
@@ -2255,7 +2313,7 @@
 
 ## 0.10.0
 
-*Released: 2021-10-22T12:53:00Z*
+_Released: 2021-10-22T12:53:00Z_
 
 ### Minor Changes
 

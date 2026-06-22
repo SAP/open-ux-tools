@@ -1,6 +1,34 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.17 → 1.0.18
+
+## 1.0.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.13 → 2.0.14
+
+## 1.0.18
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.16 → 1.0.17
+- @sap-ux/abap-deploy-config-inquirer 2.0.12 → 2.0.13
+- @sap-ux/deploy-config-generator-shared 1.0.11 → 1.0.11
+
 ## 1.0.17
+
+_Released: 2026-06-16T21:19:36Z_
 
 ### Patch Changes
 
@@ -10,6 +38,8 @@
 
 ## 1.0.16
 
+_Released: 2026-06-14T10:40:09Z_
+
 ### Patch Changes
 
 - Updated dependencies [adae40d]
@@ -17,12 +47,16 @@
 
 ## 1.0.15
 
+_Released: 2026-06-12T10:49:08Z_
+
 ### Patch Changes
 
 - Updated dependencies [6e4a71a]
     - @sap-ux/adp-tooling@1.0.15
 
 ## 1.0.14
+
+_Released: 2026-06-12T06:53:23Z_
 
 ### Patch Changes
 
@@ -37,12 +71,16 @@
 
 ## 1.0.13
 
+_Released: 2026-06-11T13:37:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [e66a8a9]
     - @sap-ux/adp-tooling@1.0.13
 
 ## 1.0.12
+
+_Released: 2026-06-11T10:54:17Z_
 
 ### Patch Changes
 
@@ -52,6 +90,8 @@
 - @sap-ux/adp-tooling@1.0.12
 
 ## 1.0.11
+
+_Released: 2026-06-10T09:57:42Z_
 
 ### Patch Changes
 
@@ -67,6 +107,8 @@
 
 ## 1.0.10
 
+_Released: 2026-06-09T14:35:01Z_
+
 ### Patch Changes
 
 - Updated dependencies [0fa8305]
@@ -80,6 +122,8 @@
 
 ## 1.0.9
 
+_Released: 2026-06-09T13:18:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [a328e14]
@@ -89,6 +133,8 @@
     - @sap-ux/adp-tooling@1.0.9
 
 ## 1.0.8
+
+_Released: 2026-06-04T13:54:21Z_
 
 ### Patch Changes
 
@@ -103,12 +149,16 @@
 
 ## 1.0.7
 
+_Released: 2026-06-04T12:10:05Z_
+
 ### Patch Changes
 
 - Updated dependencies [fb84c0e]
     - @sap-ux/adp-tooling@1.0.7
 
 ## 1.0.6
+
+_Released: 2026-06-04T10:19:37Z_
 
 ### Patch Changes
 
@@ -122,6 +172,8 @@
     - @sap-ux/deploy-config-generator-shared@1.0.5
 
 ## 1.0.5
+
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -141,6 +193,8 @@
 
 ## 1.0.4
 
+_Released: 2026-06-03T13:52:44Z_
+
 ### Patch Changes
 
 - Updated dependencies [9580241]
@@ -155,6 +209,8 @@
 
 ## 1.0.3
 
+_Released: 2026-06-02T11:35:17Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@2.0.2
@@ -164,12 +220,16 @@
 
 ## 1.0.2
 
+_Released: 2026-06-02T08:56:31Z_
+
 ### Patch Changes
 
 - Updated dependencies [a8e4cf0]
     - @sap-ux/adp-tooling@1.0.2
 
 ## 1.0.1
+
+_Released: 2026-06-01T15:15:26Z_
 
 ### Patch Changes
 
@@ -183,6 +243,8 @@
     - @sap-ux/deploy-config-generator-shared@1.0.1
 
 ## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -232,6 +294,8 @@
 
 ## 0.4.11
 
+_Released: 2026-05-29T12:50:34Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-inquirer@1.9.7
@@ -240,12 +304,16 @@
 
 ## 0.4.10
 
+_Released: 2026-05-29T06:59:27Z_
+
 ### Patch Changes
 
 - Updated dependencies [9a980a9]
     - @sap-ux/adp-tooling@0.19.10
 
 ## 0.4.9
+
+_Released: 2026-05-27T11:39:21Z_
 
 ### Patch Changes
 
@@ -255,6 +323,8 @@
 - @sap-ux/fiori-generator-shared@0.15.6
 
 ## 0.4.8
+
+_Released: 2026-05-27T10:42:47Z_
 
 ### Patch Changes
 
@@ -266,6 +336,8 @@
 - @sap-ux/abap-deploy-config-writer@0.4.4
 
 ## 0.4.7
+
+_Released: 2026-05-26T16:40:21Z_
 
 ### Patch Changes
 
@@ -281,12 +353,16 @@
 
 ## 0.4.6
 
+_Released: 2026-05-22T13:30:05Z_
+
 ### Patch Changes
 
 - Updated dependencies [758b0d4]
     - @sap-ux/adp-tooling@0.19.6
 
 ## 0.4.5
+
+_Released: 2026-05-21T16:21:11Z_
 
 ### Patch Changes
 
@@ -302,12 +378,16 @@
 
 ## 0.4.4
 
+_Released: 2026-05-21T14:58:44Z_
+
 ### Patch Changes
 
 - Updated dependencies [dab1aa2]
     - @sap-ux/adp-tooling@0.19.4
 
 ## 0.4.3
+
+_Released: 2026-05-19T15:16:46Z_
 
 ### Patch Changes
 
@@ -322,12 +402,16 @@
 
 ## 0.4.2
 
+_Released: 2026-05-18T08:15:14Z_
+
 ### Patch Changes
 
 - Updated dependencies [342c544]
     - @sap-ux/adp-tooling@0.19.2
 
 ## 0.4.1
+
+_Released: 2026-05-15T13:12:06Z_
 
 ### Patch Changes
 
@@ -340,6 +424,8 @@
     - @sap-ux/deploy-config-generator-shared@0.2.1
 
 ## 0.4.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -362,6 +448,8 @@
 
 ## 0.3.37
 
+_Released: 2026-05-14T21:28:41Z_
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.134
@@ -370,12 +458,16 @@
 
 ## 0.3.36
 
+_Released: 2026-05-14T14:16:50Z_
+
 ### Patch Changes
 
 - Updated dependencies [8c4185a]
     - @sap-ux/adp-tooling@0.18.133
 
 ## 0.3.35
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -395,6 +487,8 @@
 
 ## 0.3.34
 
+_Released: 2026-05-13T09:36:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -408,6 +502,8 @@
 
 ## 0.3.33
 
+_Released: 2026-05-12T18:00:39Z_
+
 ### Patch Changes
 
 - Updated dependencies [9360ea5]
@@ -417,6 +513,8 @@
     - @sap-ux/adp-tooling@0.18.130
 
 ## 0.3.32
+
+_Released: 2026-05-06T23:02:00Z_
 
 ### Patch Changes
 
@@ -435,6 +533,8 @@
 
 ## 0.3.31
 
+_Released: 2026-05-01T15:46:09Z_
+
 ### Patch Changes
 
 - Updated dependencies [b2ffc7e]
@@ -442,12 +542,16 @@
 
 ## 0.3.30
 
+_Released: 2026-04-30T19:47:20Z_
+
 ### Patch Changes
 
 - Updated dependencies [fcaa70c]
     - @sap-ux/adp-tooling@0.18.127
 
 ## 0.3.29
+
+_Released: 2026-04-30T14:23:24Z_
 
 ### Patch Changes
 
@@ -462,11 +566,15 @@
 
 ## 0.3.28
 
+_Released: 2026-04-30T13:10:33Z_
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.125
 
 ## 0.3.27
+
+_Released: 2026-04-29T15:24:37Z_
 
 ### Patch Changes
 
@@ -482,6 +590,8 @@
 
 ## 0.3.26
 
+_Released: 2026-04-27T19:47:46Z_
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -495,12 +605,16 @@
 
 ## 0.3.25
 
+_Released: 2026-04-27T07:30:24Z_
+
 ### Patch Changes
 
 - Updated dependencies [10847a1]
     - @sap-ux/adp-tooling@0.18.122
 
 ## 0.3.24
+
+_Released: 2026-04-23T12:54:21Z_
 
 ### Patch Changes
 
@@ -515,6 +629,8 @@
 
 ## 0.3.23
 
+_Released: 2026-04-23T06:48:55Z_
+
 ### Patch Changes
 
 - Updated dependencies [237371b]
@@ -527,6 +643,8 @@
 
 ## 0.3.22
 
+_Released: 2026-04-22T12:38:46Z_
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@0.18.119
@@ -534,6 +652,8 @@
 - @sap-ux/deploy-config-generator-shared@0.1.118
 
 ## 0.3.21
+
+_Released: 2026-04-15T11:53:17Z_
 
 ### Patch Changes
 
@@ -545,12 +665,16 @@
 
 ## 0.3.20
 
+_Released: 2026-04-15T08:11:32Z_
+
 ### Patch Changes
 
 - Updated dependencies [8fb08a2]
     - @sap-ux/adp-tooling@0.18.117
 
 ## 0.3.19
+
+_Released: 2026-04-14T20:26:28Z_
 
 ### Patch Changes
 
@@ -564,6 +688,8 @@
     - @sap-ux/abap-deploy-config-writer@0.3.10
 
 ## 0.3.18
+
+_Released: 2026-04-14T12:35:35Z_
 
 ### Patch Changes
 
@@ -580,6 +706,8 @@
 
 ## 0.3.17
 
+_Released: 2026-04-14T11:39:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [497317c]
@@ -587,12 +715,16 @@
 
 ## 0.3.16
 
+_Released: 2026-04-09T07:00:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [7a8613b]
     - @sap-ux/adp-tooling@0.18.113
 
 ## 0.3.15
+
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -611,6 +743,8 @@
 
 ## 0.3.14
 
+_Released: 2026-04-07T11:09:34Z_
+
 ### Patch Changes
 
 - Updated dependencies [1b10e9f]
@@ -618,12 +752,16 @@
 
 ## 0.3.13
 
+_Released: 2026-04-01T14:51:40Z_
+
 ### Patch Changes
 
 - Updated dependencies [6b74074]
     - @sap-ux/adp-tooling@0.18.110
 
 ## 0.3.12
+
+_Released: 2026-04-01T11:49:37Z_
 
 ### Patch Changes
 
@@ -638,12 +776,16 @@
 
 ## 0.3.11
 
+_Released: 2026-04-01T06:34:51Z_
+
 ### Patch Changes
 
 - Updated dependencies [68b5523]
     - @sap-ux/adp-tooling@0.18.108
 
 ## 0.3.10
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -669,6 +811,8 @@
 
 ## 0.3.9
 
+_Released: 2026-03-27T15:37:24Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.93
@@ -677,6 +821,8 @@
 - @sap-ux/adp-tooling@0.18.106
 
 ## 0.3.8
+
+_Released: 2026-03-27T11:58:49Z_
 
 ### Patch Changes
 
@@ -691,6 +837,8 @@
 
 ## 0.3.7
 
+_Released: 2026-03-26T20:06:10Z_
+
 ### Patch Changes
 
 - Updated dependencies [b66e827]
@@ -704,6 +852,8 @@
 
 ## 0.3.6
 
+_Released: 2026-03-26T16:48:32Z_
+
 ### Patch Changes
 
 - Updated dependencies [96a689b]
@@ -711,12 +861,16 @@
 
 ## 0.3.5
 
+_Released: 2026-03-26T15:15:10Z_
+
 ### Patch Changes
 
 - Updated dependencies [3dcd3f7]
     - @sap-ux/adp-tooling@0.18.102
 
 ## 0.3.4
+
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -744,6 +898,8 @@
 
 ## 0.3.3
 
+_Released: 2026-03-25T12:56:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [f384ace]
@@ -757,6 +913,8 @@
 
 ## 0.3.2
 
+_Released: 2026-03-23T18:25:40Z_
+
 ### Patch Changes
 
 - Updated dependencies [c0e05ab]
@@ -768,6 +926,8 @@
     - @sap-ux/abap-deploy-config-writer@0.3.1
 
 ## 0.3.1
+
+_Released: 2026-03-23T10:51:10Z_
 
 ### Patch Changes
 
