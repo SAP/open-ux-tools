@@ -256,7 +256,7 @@ describe('middleware', () => {
             );
         });
 
-        test('secure', async () => {
+        test('secure enabled', async () => {
             await getTestServer({
                 ...config,
                 secure: true
@@ -270,7 +270,7 @@ describe('middleware', () => {
             );
         });
 
-        test('secure', async () => {
+        test('secure disabled', async () => {
             await getTestServer({
                 ...config,
                 secure: false

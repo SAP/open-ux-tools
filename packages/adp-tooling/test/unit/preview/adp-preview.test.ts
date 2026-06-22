@@ -825,7 +825,7 @@ describe('AdaptationProject', () => {
         test('GET /adp/api/fragment - returns empty array of fragment', async () => {
             const response = await server.get('/adp/api/fragment').expect(200);
             const data: GetFragmentsResponse = JSON.parse(response.text);
-            expect(data.fragments.length).toEqual(0);
+            expect(data.fragments).toHaveLength(0);
             expect(data.message).toEqual(`0 fragments found in the project workspace.`);
         });
 
@@ -862,7 +862,7 @@ describe('AdaptationProject', () => {
         test('GET /adp/api/controller - returns empty array of controllers', async () => {
             const response = await server.get('/adp/api/controller').expect(200);
             const data: GetControllersResponse = JSON.parse(response.text);
-            expect(data.controllers.length).toEqual(0);
+            expect(data.controllers).toHaveLength(0);
             expect(data.message).toEqual(`0 controllers found in the project workspace.`);
         });
 

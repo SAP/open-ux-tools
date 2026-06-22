@@ -531,7 +531,7 @@ describe('get configuration for sap-fe-mockserver', () => {
         expect(result).toBe('./webapp/localService/mainService/data');
     });
 
-    it('returns mockdataPath from services', async () => {
+    it('returns mockdataPath from services using ui5-local.yaml', async () => {
         const result = await getMockDataPath(projectPath, FileName.Ui5LocalYaml);
         expect(result).toBe('./webapp/localService/mainService/data');
     });

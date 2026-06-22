@@ -2455,6 +2455,6 @@ describe('initAdp', () => {
         await supertest(app).get('/sap/bc/lrep/flex/data/my.app.Component');
         await supertest(app).get('/sap/bc/lrep/flex/data/my.app.Component');
 
-        expect(byGlobMock.mock.calls.length).toBe(callsAfterInit);
+        expect(byGlobMock.mock.calls).toHaveLength(callsAfterInit);
     });
 });
