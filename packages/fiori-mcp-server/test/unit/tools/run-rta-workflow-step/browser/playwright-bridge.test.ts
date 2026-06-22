@@ -112,10 +112,8 @@ describe('browser/playwright-bridge', () => {
     test('reuses page on second callFrontendAction for same site', async () => {
         const page = new FakePage();
         const { browser } = setupBrowser([page]);
-        // First call: just the actual call. Second call: liveness probe (rejects with "not registered" -> reuse OK), then actual call.
         page.evaluate
             .mockResolvedValueOnce({ isSuccess: true, payload: 'first', error: null })
-            .mockRejectedValueOnce(new Error('Frontend action "__liveness__" not registered'))
             .mockResolvedValueOnce({ isSuccess: true, payload: 'second', error: null });
 
         const fs = await loadPlaywrightBridge();
@@ -131,19 +129,20 @@ describe('browser/playwright-bridge', () => {
         await fs.stopBrowser();
     });
 
-    test('liveness probe failure (real transport error) evicts entry and creates fresh page', async () => {
+    test('page close event evicts entry and creates fresh page on next call', async () => {
         const stalePage = new FakePage();
         const freshPage = new FakePage();
         const { browser } = setupBrowser([stalePage, freshPage]);
 
-        // First call uses stalePage.
         stalePage.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'first', error: null });
-        // Second call: liveness probe throws "page closed" -> evict, open freshPage.
-        stalePage.evaluate.mockRejectedValueOnce(new Error('Target page, context or browser has been closed'));
         freshPage.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'second', error: null });
 
         const fs = await loadPlaywrightBridge();
         await fs.callFrontendAction(SITE_A, 'a');
+
+        // Simulate page close evicting the registry entry
+        await stalePage.close();
+
         const r2 = await fs.callFrontendAction(SITE_A, 'b');
 
         expect(browser.newPage).toHaveBeenCalledTimes(2);

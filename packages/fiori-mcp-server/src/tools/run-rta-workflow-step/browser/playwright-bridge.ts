@@ -215,47 +215,24 @@ export async function callFrontendAction<TReturn = unknown>(
     let rpc = connectionRegistry.get(site);
 
     if (!rpc) {
-        rpc = await openNewPage(activeBrowser, site);
-        connectionRegistry.set(site, rpc);
-    } else {
-        const alive = await isPageAlive(rpc);
-        if (!alive) {
+        const context = await activeBrowser.newContext({ viewport: null });
+        const page: Page = await context.newPage();
+
+        page.on('pageerror', (err) => {
+            logger.warn(`Page error for ${site}: ${err.message}`);
+        });
+
+        page.on('close', () => {
             connectionRegistry.delete(site);
-            rpc = await openNewPage(activeBrowser, site);
-            connectionRegistry.set(site, rpc);
-        }
+        });
+
+        await page.goto(site, { waitUntil: 'networkidle', timeout: 60000 });
+
+        rpc = await createPageRPC(page);
+        connectionRegistry.set(site, rpc);
     }
 
     return rpc.callFrontendAction<TReturn>(actionName, payload, frameId);
-}
-
-async function openNewPage(activeBrowser: Browser, site: string): Promise<PageRPC> {
-    const context = await activeBrowser.newContext({ viewport: null });
-    const page: Page = await context.newPage();
-
-    page.on('pageerror', (err) => {
-        logger.warn(`Page error for ${site}: ${err.message}`);
-    });
-
-    page.on('close', () => {
-        connectionRegistry.delete(site);
-    });
-
-    await page.goto(site, { waitUntil: 'networkidle', timeout: 60000 });
-    return createPageRPC(page);
-}
-
-async function isPageAlive(rpc: PageRPC): Promise<boolean> {
-    try {
-        await rpc.callFrontendAction('__liveness__', {});
-        return true;
-    } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        if (message.includes('not registered')) {
-            return true;
-        }
-        return false;
-    }
 }
 
 /**
