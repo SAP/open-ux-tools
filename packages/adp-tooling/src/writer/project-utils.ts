@@ -1,4 +1,5 @@
-import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
 
@@ -18,6 +19,8 @@ import {
 import type { Package } from '@sap-ux/project-access';
 import { UI5Config, UI5_DEFAULT, getEsmTypesVersion, getTypesPackage, getTypesVersion } from '@sap-ux/ui5-config';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 /**
  * Retrieves the package name and version from the package.json file located two levels up the directory tree.
  *
@@ -30,7 +33,7 @@ export function getPackageJSONInfo(): Package {
     };
 
     try {
-        return JSON.parse(readFileSync(join(getTemplatePath(), '../package.json'), 'utf-8'));
+        return JSON.parse(readFileSync(join(__dirname, '../../package.json'), 'utf-8'));
     } catch (e) {
         return defaultPackage;
     }
