@@ -1,7 +1,12 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
-import { PAGE_TEMPLATE_TYPE_FULL, PAGE_TEMPLATE_TYPE_BASIC } from '@sap-ux/fiori-elements-writer';
+import {
+    PAGE_TEMPLATE_TYPE_FULL,
+    PAGE_TEMPLATE_TYPE_BASIC,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+} from '@sap-ux/fiori-elements-writer';
 import type { ConfirmQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import {
     searchChoices,
@@ -237,7 +242,9 @@ function getPageBuildingBlockQuestions(): Question<PageBuildingBlockAnswers>[] {
         default: false,
         guiOptions: {
             breadcrumb: true,
-            hint: t('prompts.pageBuildingBlock.tooltip')
+            hint: t('prompts.pageBuildingBlock.tooltip', {
+                minUi5VersionForPageBuildingBlock: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK
+            })
         }
     } as ConfirmQuestion<PageBuildingBlockAnswers>);
 
@@ -257,13 +264,17 @@ function getPageBuildingBlockQuestions(): Question<PageBuildingBlockAnswers>[] {
             // input is true when the user selects Basic layout (default/true = Basic)
             if (input === true) {
                 return {
-                    message: t('prompts.pageBuildingBlock.basicLayoutWarning'),
+                    message: t('prompts.pageBuildingBlock.basicLayoutWarning', {
+                        minUi5VersionForPageBuildingBlock: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK
+                    }),
                     severity: Severity.warning
                 };
             }
             // input is false when the user selects Full layout
             return {
-                message: t('prompts.pageBuildingBlock.fullLayoutWarning'),
+                message: t('prompts.pageBuildingBlock.fullLayoutWarning', {
+                    minUi5VersionForFullLayout: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+                }),
                 severity: Severity.warning
             };
         }

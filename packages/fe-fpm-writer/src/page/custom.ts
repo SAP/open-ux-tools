@@ -20,7 +20,13 @@ import { coerce, gte, lt } from 'semver';
 import { addExtensionTypes, getManifestPath } from '../common/utils.js';
 import { copyTpl, extendJSON, createIdGenerator, type IdGeneratorFunction } from '../common/file.js';
 import { generateBuildingBlock } from '../building-block/index.js';
-import { BuildingBlockType, PAGE_TEMPLATE_TYPE_FULL, PAGE_TEMPLATE_TYPE_BASIC } from '../building-block/types.js';
+import {
+    BuildingBlockType,
+    PAGE_TEMPLATE_TYPE_FULL,
+    PAGE_TEMPLATE_TYPE_BASIC,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+} from '../building-block/types.js';
 import type { PageTemplateType } from '../building-block/types.js';
 import { augmentXpathWithLocalNames } from '../building-block/prompts/utils/index.js';
 import type { Logger } from '@sap-ux/logger';
@@ -110,18 +116,29 @@ async function handlePageBuildingBlock(
 ): Promise<void> {
     const minVersion = coerce(data.minUI5Version);
     const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
-    if (minVersion && lt(minVersion.version, '1.136.0')) {
-        log?.warn(t('minUi5VersionRequirement', { minUI5Version: data.minUI5Version }));
+    if (minVersion && lt(minVersion.version, MIN_UI5_VERSION_PAGE_BUILDING_BLOCK)) {
+        log?.warn(
+            t('minUi5VersionRequirement', {
+                minUI5Version: data.minUI5Version,
+                minUi5VersionForPageBuildingBlock: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK
+            })
+        );
         return;
     }
 
+    let templateType = data.pageBuildingBlockTemplateType;
     if (
-        data.pageBuildingBlockTemplateType === PAGE_TEMPLATE_TYPE_FULL &&
+        templateType === PAGE_TEMPLATE_TYPE_FULL &&
         minVersion &&
-        lt(minVersion.version, '1.145.0')
+        lt(minVersion.version, MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT)
     ) {
-        log?.warn(t('minUi5VersionRequirementFullLayout', { minUI5Version: data.minUI5Version }));
-        data.pageBuildingBlockTemplateType = PAGE_TEMPLATE_TYPE_BASIC;
+        log?.warn(
+            t('minUi5VersionRequirementFullLayout', {
+                minUI5Version: data.minUI5Version,
+                minUi5VersionForFullLayout: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+            })
+        );
+        templateType = PAGE_TEMPLATE_TYPE_BASIC;
     }
 
     const pageId = generateId('Page');
@@ -136,7 +153,7 @@ async function handlePageBuildingBlock(
                 buildingBlockType: BuildingBlockType.Page,
                 generateId,
                 title: data.pageBuildingBlockTitle,
-                templateType: data.pageBuildingBlockTemplateType
+                templateType: templateType
             }
         },
         fs

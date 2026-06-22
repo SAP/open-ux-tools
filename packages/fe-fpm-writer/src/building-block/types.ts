@@ -428,6 +428,11 @@ export const PAGE_TEMPLATE_TYPE_FULL = 'full' as const;
 export const PAGE_TEMPLATE_TYPE_BASIC = 'basic' as const;
 export type PageTemplateType = typeof PAGE_TEMPLATE_TYPE_FULL | typeof PAGE_TEMPLATE_TYPE_BASIC;
 
+// The minimum UI5 version required for page building block feature
+export const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK = '1.136.0';
+// The minimum UI5 version required for the full layout page building block
+export const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT = '1.145.0';
+
 /**
  * A group of XML nodes representing one Page aggregation element and its preceding sibling comments.
  * Used when re-ordering aggregation children under a macros:Page element.

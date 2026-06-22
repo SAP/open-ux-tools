@@ -32,7 +32,9 @@ export {
     BuildingBlockType,
     PAGE_TEMPLATE_TYPE_FULL,
     PAGE_TEMPLATE_TYPE_BASIC,
-    PAGE_AGGREGATIONS
+    PAGE_AGGREGATIONS,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
 } from './building-block/types.js';
 export type {
     FilterBar,

@@ -5,7 +5,12 @@ import type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';
 import { checkCdsUi5PluginEnabled, getAppLaunchText } from '@sap-ux/cap-config-writer';
 import { parse } from '@sap-ux/edmx-parser';
 import type { TemplateType as FETemplateType } from '@sap-ux/fiori-elements-writer';
-import { TemplateTypeAttributes, PAGE_TEMPLATE_TYPE_FULL } from '@sap-ux/fiori-elements-writer';
+import {
+    TemplateTypeAttributes,
+    PAGE_TEMPLATE_TYPE_FULL,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+} from '@sap-ux/fiori-elements-writer';
 import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import { createLaunchConfig } from '@sap-ux/launch-config';
@@ -23,13 +28,7 @@ import type { Editor } from 'mem-fs-editor';
 import { basename, join } from 'node:path';
 import { v4 as uuidV4 } from 'uuid';
 import type { GenerateLaunchConfigOptions, Service } from '../types/index.js';
-import {
-    ApiHubType,
-    SapSystemSourceType,
-    FloorplanFE,
-    minUi5VersionForPageBuildingBlock,
-    minUi5VersionForPageBuildingBlockFullLayout
-} from '../types/index.js';
+import { ApiHubType, SapSystemSourceType, FloorplanFE } from '../types/index.js';
 import { minSupportedUi5Version, minSupportedUi5VersionV4 } from '../types/constants.js';
 import { type Floorplan, FloorplanAttributes, FloorplanFF } from '../types/external.js';
 import { t } from './i18n.js';
@@ -88,7 +87,7 @@ export function getRequiredOdataVersion(floorplan: Floorplan): OdataVersion | un
 
 /**
  * Gets the minimum supported UI5 version for the specified OData version, floorplan, and entity configuration.
- * For FPM floorplans with page building blocks, enforces a minimum version of 1.136.0.
+ * For FPM floorplans with page building blocks, enforces a minimum version based on layout type.
  *
  * @param version - The OData version.
  * @param floorplan - The floorplan type.
@@ -102,8 +101,8 @@ export function getMinSupportedUI5Version(
 ): string {
     if (floorplan === FloorplanFE.FE_FPM && entityRelatedConfig?.addPageBuildingBlock) {
         return entityRelatedConfig.pageBuildingBlockLayout === PAGE_TEMPLATE_TYPE_FULL
-            ? minUi5VersionForPageBuildingBlockFullLayout
-            : minUi5VersionForPageBuildingBlock;
+            ? MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+            : MIN_UI5_VERSION_PAGE_BUILDING_BLOCK;
     }
 
     let minUI5Version: string | undefined;

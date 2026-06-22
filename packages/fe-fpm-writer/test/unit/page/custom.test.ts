@@ -12,7 +12,11 @@ import { tabSizingTestCases } from '../../common/index.js';
 import type { Logger } from '@sap-ux/logger';
 import { i18nNamespaces, translate } from '../../../src/i18n.js';
 import { findFilesByExtensionMock } from '../../__mocks__/project-access-file.mjs';
-import { PAGE_TEMPLATE_TYPE_FULL } from '../../../src/building-block/types.js';
+import {
+    PAGE_TEMPLATE_TYPE_FULL,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+} from '../../../src/building-block/types.js';
 
 describe('CustomPage', () => {
     const testDir = '' + Date.now();
@@ -330,7 +334,10 @@ describe('CustomPage', () => {
             await generateCustomPage(target, inputWithPageBuildingBlockTitle, fs, log);
 
             expect(log.warn).toHaveBeenCalledWith(
-                t('minUi5VersionRequirement', { minUI5Version: inputWithPageBuildingBlockTitle.minUI5Version })
+                t('minUi5VersionRequirement', {
+                    minUI5Version: inputWithPageBuildingBlockTitle.minUI5Version,
+                    minUi5VersionForPageBuildingBlock: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK
+                })
             );
 
             // page macros should not be added
@@ -373,7 +380,10 @@ describe('CustomPage', () => {
             await generateCustomPage(target, inputWithFullLayout, fs, log);
 
             expect(log.warn).toHaveBeenCalledWith(
-                t('minUi5VersionRequirementFullLayout', { minUI5Version: inputWithFullLayout.minUI5Version })
+                t('minUi5VersionRequirementFullLayout', {
+                    minUI5Version: inputWithFullLayout.minUI5Version,
+                    minUi5VersionForFullLayout: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+                })
             );
 
             const viewXmlPath = join(target, 'webapp/ext/view/CustomPage.view.xml');
