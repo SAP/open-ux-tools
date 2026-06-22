@@ -320,13 +320,13 @@ export class FlpSandbox {
     }
 
     /**
-     * Computes the base URL for API endpoints, combining the patched router base URL
-     * with the resources prefix for component-type projects.
+     * Computes the fully-resolved base URL for template rendering, combining the patched router
+     * mount prefix with the resources namespace prefix for component-type projects.
      *
-     * @param patchedRouterBaseUrl - The base URL from ui5-patched-router
-     * @returns The base URL string for API endpoints
+     * @param patchedRouterBaseUrl - The router mount prefix from ui5-patched-router (e.g. /app/myapp)
+     * @returns The combined base URL written into data-open-ux-preview-base-url on the HTML
      */
-    private getBaseUrl(patchedRouterBaseUrl: string): string {
+    private getTemplateBaseUrl(patchedRouterBaseUrl: string): string {
         const resourcesPrefix = getResourcesPathPrefix(this.utils);
         return resourcesPrefix ? posix.join(patchedRouterBaseUrl, resourcesPrefix) : patchedRouterBaseUrl;
     }
@@ -346,7 +346,7 @@ export class FlpSandbox {
 
         await this.setApplicationDependencies();
         const patchedRouterBaseUrl = req['ui5-patched-router']?.baseUrl ?? '';
-        const baseUrl = this.getBaseUrl(patchedRouterBaseUrl);
+        const baseUrl = this.getTemplateBaseUrl(patchedRouterBaseUrl);
         const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, patchedRouterBaseUrl);
         this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
         if (ui5Version.major === 1 && ui5Version.minor <= 71) {
@@ -420,7 +420,7 @@ export class FlpSandbox {
         const envLivereloadUrl = isAppStudio() ? await exposePort(livereloadPort) : undefined;
         // For component projects, baseUrl must include the resources prefix for correct API paths
         const patchedRouterBaseUrl = req['ui5-patched-router']?.baseUrl ?? '';
-        const baseUrl = this.getBaseUrl(patchedRouterBaseUrl);
+        const baseUrl = this.getTemplateBaseUrl(patchedRouterBaseUrl);
         const html = render(template, {
             previewUrl: templatePreviewUrl,
             telemetry: !!rta.options?.telemetry,
@@ -552,8 +552,7 @@ export class FlpSandbox {
         } else {
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             const patchedRouterBaseUrl = ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '';
-            const resourcesPrefix = getResourcesPathPrefix(this.utils);
-            const baseUrl = resourcesPrefix ? posix.join(patchedRouterBaseUrl, resourcesPrefix) : patchedRouterBaseUrl;
+            const baseUrl = this.getTemplateBaseUrl(patchedRouterBaseUrl);
             const ui5Version = await this.getUi5Version(
                 //use protocol from request header referer as fallback for connect API (karma test runner)
                 'protocol' in req
