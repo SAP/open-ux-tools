@@ -2,11 +2,15 @@
 
 ## 1.0.3
 
+*Released: 2026-06-12T06:53:23Z*
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@2.0.3
 
 ## 1.0.2
+
+*Released: 2026-06-09T14:35:01Z*
 
 ### Patch Changes
 
@@ -15,6 +19,8 @@
     - @sap-ux/axios-extension@2.0.2
 
 ## 1.0.1
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -26,6 +32,8 @@
     - @sap-ux/store@2.0.1
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -68,11 +76,15 @@
 
 ## 0.13.3
 
+*Released: 2026-05-29T12:50:34Z*
+
 ### Patch Changes
 
 - a1c9cd7: feat: warn when using a full URL destination during preview and deployment
 
 ## 0.13.2
+
+*Released: 2026-05-27T10:42:47Z*
 
 ### Patch Changes
 
@@ -80,6 +92,8 @@
     - @sap-ux/store@1.6.1
 
 ## 0.13.1
+
+*Released: 2026-05-26T16:40:21Z*
 
 ### Patch Changes
 
@@ -89,6 +103,8 @@
     - @sap-ux/btp-utils@1.2.1
 
 ## 0.13.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -104,6 +120,8 @@
 
 ## 0.12.10
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -115,12 +133,16 @@
 
 ## 0.12.9
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
     - @sap-ux/axios-extension@1.25.36
 
 ## 0.12.8
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -130,6 +152,8 @@
 
 ## 0.12.7
 
+*Released: 2026-04-30T14:23:24Z*
+
 ### Patch Changes
 
 - c160401: fix: SONAR issues
@@ -137,6 +161,8 @@
     - @sap-ux/axios-extension@1.25.34
 
 ## 0.12.6
+
+*Released: 2026-04-29T15:24:37Z*
 
 ### Patch Changes
 
@@ -146,6 +172,8 @@
 
 ## 0.12.5
 
+*Released: 2026-04-23T06:48:55Z*
+
 ### Patch Changes
 
 - Updated dependencies [237371b]
@@ -153,11 +181,15 @@
 
 ## 0.12.4
 
+*Released: 2026-04-15T11:53:17Z*
+
 ### Patch Changes
 
 - 67d1f8b: Bump dotenv and configure "quiet" option
 
 ## 0.12.3
+
+*Released: 2026-04-14T20:26:28Z*
 
 ### Patch Changes
 
@@ -167,6 +199,8 @@
 
 ## 0.12.2
 
+*Released: 2026-04-14T12:35:35Z*
+
 ### Patch Changes
 
 - Updated dependencies [cc4450c]
@@ -174,6 +208,8 @@
     - @sap-ux/btp-utils@1.1.13
 
 ## 0.12.1
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -185,6 +221,8 @@
     - @sap-ux/store@1.5.13
 
 ## 0.12.0
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Minor Changes
 
@@ -203,6 +241,8 @@
 
 ## 0.11.3
 
+*Released: 2026-03-27T11:58:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [2e17a6b]
@@ -210,6 +250,8 @@
     - @sap-ux/axios-extension@1.25.27
 
 ## 0.11.2
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -224,6 +266,8 @@
     - @sap-ux/store@1.5.11
 
 ## 0.11.1
+
+*Released: 2026-03-23T18:25:40Z*
 
 ### Patch Changes
 

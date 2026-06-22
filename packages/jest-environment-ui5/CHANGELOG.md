@@ -2,6 +2,8 @@
 
 ## 6.0.0
 
+*Released: 2026-05-30T20:54:07Z*
+
 ### Major Changes
 
 - 32609a7: # Migration to ECMAScript Modules (ESM)
@@ -35,11 +37,15 @@
 
 ## 5.4.1
 
+*Released: 2026-05-29T15:48:29Z*
+
 ### Patch Changes
 
 - 1b19ed5: Bump jsdom environment
 
 ## 5.4.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -47,11 +53,15 @@
 
 ## 5.3.21
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
 
 ## 5.3.20
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 

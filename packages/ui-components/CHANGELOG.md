@@ -2,11 +2,15 @@
 
 ## 3.0.3
 
+*Released: 2026-06-10T07:55:58Z*
+
 ### Patch Changes
 
 - a1235d6: feat: add ValidationWarning icon to UiIcons
 
 ## 3.0.2
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -14,11 +18,15 @@
 
 ## 3.0.1
 
+*Released: 2026-06-03T10:37:52Z*
+
 ### Patch Changes
 
 - 21cadc3: fix: use VSCode cornerRadius CSS variables instead of hardcoded border-radius values in buttons, callouts, dialogs and toggle
 
 ## 3.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -53,17 +61,23 @@
 
 ## 2.2.5
 
+*Released: 2026-05-29T09:10:40Z*
+
 ### Patch Changes
 
 - b0a922a: fix(UITranslationButton): use onCancel for callout onDismiss instead of onToggleCallout
 
 ## 2.2.4
 
+*Released: 2026-05-27T08:56:54Z*
+
 ### Patch Changes
 
 - bc315f0: chore: use VSCode cornerRadius CSS variables instead of hardcoded border-radius values
 
 ## 2.2.3
+
+*Released: 2026-05-26T16:40:21Z*
 
 ### Patch Changes
 
@@ -72,11 +86,15 @@
 
 ## 2.2.2
 
+*Released: 2026-05-22T06:20:19Z*
+
 ### Patch Changes
 
 - 882d45b: Fixed UIDropdown background overflowing past rounded borders.
 
 ## 2.2.1
+
+*Released: 2026-05-15T10:52:26Z*
 
 ### Patch Changes
 
@@ -84,11 +102,15 @@
 
 ## 2.2.0
 
+*Released: 2026-05-15T08:12:20Z*
+
 ### Minor Changes
 
 - 72695e5: chore: drop Node 20 support as it is no longer maintained
 
 ## 2.1.16
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -96,11 +118,15 @@
 
 ## 2.1.15
 
+*Released: 2026-05-11T17:25:40Z*
+
 ### Patch Changes
 
 - 189ad98: UISections/UISplitter: Updated resize splitter UI and set `UISplitterLayoutType.Compact` as the default `splitterLayoutType`.
 
 ## 2.1.14
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -108,11 +134,15 @@
 
 ## 2.1.13
 
+*Released: 2026-05-06T14:01:23Z*
+
 ### Patch Changes
 
 - 7f8a712: Adjust toolbar border and separator color variables
 
 ## 2.1.12
+
+*Released: 2026-04-30T14:23:24Z*
 
 ### Patch Changes
 
@@ -120,11 +150,15 @@
 
 ## 2.1.11
 
+*Released: 2026-04-22T14:26:13Z*
+
 ### Patch Changes
 
 - f77f003: fix(deps): update dependency sanitize-html to v2.17.3 [security]
 
 ## 2.1.10
+
+*Released: 2026-04-14T21:37:37Z*
 
 ### Patch Changes
 
@@ -132,11 +166,15 @@
 
 ## 2.1.9
 
+*Released: 2026-04-01T10:25:12Z*
+
 ### Patch Changes
 
 - 9357457: fix(ui-components): add inline code block styling for VS Code webviews
 
 ## 2.1.8
+
+*Released: 2026-03-31T17:04:36Z*
 
 ### Patch Changes
 
@@ -144,11 +182,15 @@
 
 ## 2.1.7
 
+*Released: 2026-03-31T10:49:34Z*
+
 ### Patch Changes
 
 - f101671: Add line-height to UITranslationInput text
 
 ## 2.1.6
+
+*Released: 2026-03-31T08:19:05Z*
 
 ### Patch Changes
 
@@ -156,17 +198,23 @@
 
 ## 2.1.5
 
+*Released: 2026-03-30T22:24:11Z*
+
 ### Patch Changes
 
 - c53a4ba: chore(ui-components): upgrade @testing-library/jest-dom 5.17.0 → 6.9.1; upgrade sass-loader 13→16, style-loader 3→4, css-loader 6→7; implement custom jsdom env for writable window.location
 
 ## 2.1.4
 
+*Released: 2026-03-26T12:07:04Z*
+
 ### Patch Changes
 
 - a41533f: chore(ui-components): upgrade runtime dependencies (@fluentui/react 8.125.5, sanitize-html 2.17.2)
 
 ## 2.1.3
+
+*Released: 2026-03-24T09:40:46Z*
 
 ### Patch Changes
 

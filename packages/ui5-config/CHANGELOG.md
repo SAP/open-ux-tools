@@ -2,11 +2,15 @@
 
 ## 1.0.3
 
+*Released: 2026-06-10T09:57:42Z*
+
 ### Patch Changes
 
 - c8e8f7e: fix: write builder.resources.excludes to base ui5.yaml as well as ui5-deploy.yaml
 
 ## 1.0.2
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -16,11 +20,15 @@
 
 ## 1.0.1
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - 9580241: fix(ui5-config): addAbapDeployTask always includes /localService/ in deploy task configuration.exclude
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -60,11 +68,15 @@
 
 ## 0.31.1
 
+*Released: 2026-05-21T16:21:11Z*
+
 ### Patch Changes
 
 - 9752c40: feat: add function to read yaml metadata section
 
 ## 0.31.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -77,6 +89,8 @@
 
 ## 0.30.5
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -85,17 +99,23 @@
 
 ## 0.30.4
 
+*Released: 2026-05-06T23:02:00Z*
+
 ### Patch Changes
 
 - 678a08e: chore: upgrade axios 1.15.0 → 1.16.0 (CVE-2025-62718, CVE prototype pollution fixes)
 
 ## 0.30.3
 
+*Released: 2026-04-14T12:35:35Z*
+
 ### Patch Changes
 
 - cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
 
 ## 0.30.2
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -104,6 +124,8 @@
     - @sap-ux/yaml@0.17.7
 
 ## 0.30.1
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 

@@ -2,11 +2,15 @@
 
 ## 1.0.1
 
+*Released: 2026-06-03T14:58:37Z*
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -41,17 +45,23 @@
 
 ## 0.5.1
 
+*Released: 2026-05-29T12:50:34Z*
+
 ### Patch Changes
 
 - a1c9cd7: feat: warn when using a full URL destination during preview and deployment
 
 ## 0.5.0
 
+*Released: 2026-05-15T08:12:20Z*
+
 ### Minor Changes
 
 - 72695e5: chore: drop Node 20 support as it is no longer maintained
 
 ## 0.4.3
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
