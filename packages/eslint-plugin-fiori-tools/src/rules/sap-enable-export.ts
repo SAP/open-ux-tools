@@ -7,6 +7,7 @@ import type { FeV4PageType, Table as TableV4 } from '../project-context/linker/f
 import { createJsonFixer } from '../language/rule-fixer.js';
 import { checkAppTablesConfiguration, isV2Table } from '../utils/helpers.js';
 import type { FeV2PageType, Table as TableV2 } from '../project-context/linker/fe-v2.js';
+import { isLowerThanMinimalUi5Version } from '../utils/version.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: ENABLE_EXPORT,
@@ -25,7 +26,6 @@ const rule: FioriRuleDefinition = createFioriRule({
 
     check(context) {
         const problems: EnableExport[] = [];
-
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
             const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
             const parsedService = context.sourceCode.projectContext.getIndexedServiceForMainService(parsedApp);
@@ -88,9 +88,13 @@ function checkConfiguration(
 ): void {
     if (table.configuration.enableExport.valueInFile === false) {
         if (isV2Table(table)) {
+            const minUI5Version = parsedApp.manifest.minUI5Version;
             problems.push({
                 type: ENABLE_EXPORT,
-                property: 'enableExport',
+                property:
+                    minUI5Version && isLowerThanMinimalUi5Version(minUI5Version, { major: 1, minor: 145 })
+                        ? 'useExportToExcel'
+                        : 'enableExport',
                 pageName: page.targetName,
                 pageSectionName,
                 changeFileUri: table.configuration.enableExport.changeFileUri
@@ -98,7 +102,7 @@ function checkConfiguration(
         } else {
             problems.push({
                 type: ENABLE_EXPORT,
-                property: 'enableExport',
+                property: 'enableExport', // V4
                 pageName: page.targetName,
                 pageSectionName,
                 manifest: {
