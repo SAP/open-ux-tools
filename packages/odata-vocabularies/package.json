@@ -37,8 +37,7 @@
         "axios": "1.16.0",
         "npm-run-all2": "8.0.4",
         "prettier": "3.8.1",
-        "tsx": "^4.7.0",
-        "ts-node": "10.9.2"
+        "tsx": "^4.7.0"
     },
     "engines": {
         "node": ">=22.x"
