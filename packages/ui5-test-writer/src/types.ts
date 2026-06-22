@@ -1,4 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
+import type { Logger } from '@sap-ux/logger';
 
 export const DotFileExtension = {
     JS: '.js',
@@ -38,6 +39,8 @@ export type FEV4OPAPageConfig = {
     contextPath?: string;
     targetKey: string;
     isStartup: boolean;
+    fileName?: string;
+    fileExtension?: string;
 };
 
 export type FEV4OPAConfig = {
@@ -48,6 +51,7 @@ export type FEV4OPAConfig = {
     htmlTarget: string;
     hideFilterBar: boolean;
     filterBarItems?: string[];
+    useVirtualPreviewEndpoints: boolean;
 };
 
 export type JourneyParams = {
@@ -236,11 +240,17 @@ export type AppFeatures = {
 
 export type WriteContext = {
     config: FEV4OPAConfig;
+    basePath: string;
+    rootCommonTemplateDirPath: string;
     rootV4TemplateDirPath: string;
     testOutDirPath: string;
     editor: Editor;
+    log?: Logger;
     journeyParams: JourneyParams;
+    hasPreexistingTests?: boolean;
+    incompatibleTestSetup?: boolean;
     dotFileExtension: DotFileExtension;
+    modifiedFiles: string[];
 };
 
 export type FormField = {
