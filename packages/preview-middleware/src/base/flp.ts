@@ -554,7 +554,7 @@ export class FlpSandbox {
     ): Promise<void> {
         const baseUrl = (this.templateConfig.baseUrl =
             ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
         const file = await this.project.byPath(`${baseUrl}${this.flpConfig.path}`);
         if (file) {
             this.logger.info(
@@ -564,7 +564,7 @@ export class FlpSandbox {
             return;
         }
         // check for user-provided fioriSandboxAppConfig.json and merge if present
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
         const userConfigFile = await this.project.byPath(`${baseUrl}${configJsonPath}`);
         let config = generateSandboxAppConfig(this.templateConfig, this.flpConfig, this.adp !== undefined);
         if (userConfigFile) {
@@ -804,7 +804,6 @@ export class FlpSandbox {
             ui5Version.label?.includes('legacy-free') ||
             (ui5Version.major === 1 && ui5Version.minor >= 150);
         if (qualifiesForNewSandbox && this.flpConfig.useNewSandbox !== false) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const legacyFile = await this.project.byPath(
                 `${this.templateConfig.baseUrl}/appconfig/fioriSandboxConfig.json`
             );
