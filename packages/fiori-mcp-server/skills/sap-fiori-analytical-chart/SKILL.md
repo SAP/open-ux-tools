@@ -180,7 +180,7 @@ annotate view ZC_ENTITY with
 ```
 ---
 
-## Manifest Configuration (Common)
+## Manifest Configuration (Common for CAP and RAP)
 
 ### Approach 1: Hybrid View (Chart + Table Together)
 
