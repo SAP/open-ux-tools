@@ -1,12 +1,13 @@
 /**
  * New system prompting questions for re-use in multiple sap-system datasource prompt sets.
  */
+import { Severity } from '@sap-devx/yeoman-ui-types';
 import { type InputQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { AuthenticationType, BackendSystem, getBackendSystemType } from '@sap-ux/store';
 import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n.js';
-import type { ConnectedSystem, SapSystemType } from '../../../../types.js';
+import type { ConnectedSystem } from '../../../../types.js';
 import { promptNames } from '../../../../types.js';
 import {
     PromptState,
@@ -15,13 +16,12 @@ import {
     removeCircularFromServiceProvider
 } from '../../../../utils/index.js';
 import type { ConnectionValidator, SystemAuthType } from '../../../connectionValidator.js';
-import { type NewSystemAnswers, newSystemPromptNames } from '../new-system/types.js';
-import { suggestSystemName } from '../prompt-helpers.js';
-import { validateSystemName } from '../validators.js';
-import { Severity } from '@sap-devx/yeoman-ui-types';
-import type { SystemSelectionAnswers } from '../system-selection/questions.js';
 import type { AbapOnPremAnswers } from '../abap-on-prem/questions.js';
 import { BasicCredentialsPromptNames } from '../credentials/questions.js';
+import { type NewSystemAnswers, newSystemPromptNames } from '../new-system/types.js';
+import { suggestSystemName } from '../prompt-helpers.js';
+import type { SystemSelectionAnswers } from '../system-selection/questions.js';
+import { validateSystemName } from '../validators.js';
 
 /**
  * Convert the system connection scheme (Service Key, Rentrance Ticket, etc) to the store specific authentication type.
@@ -71,7 +71,7 @@ export function getSystemUrlQuestion<T extends Answers>(
             mandatory: true,
             breadcrumb: true
         },
-        validate: async (url, prevAnswers: NewSystemAnswers) => {
+        validate: async (url) => {
             PromptState.resetConnectedSystem();
             // Backend systems validation supports using a cached connections from a previous step execution to prevent re-authentication (e.g. re-opening a browser window)
             // Only in the case of re-entrance tickets will we reuse an existing connection.
@@ -92,8 +92,7 @@ export function getSystemUrlQuestion<T extends Answers>(
             }
             const valResult = await connectValidator.validateUrl(url, {
                 isSystem: true,
-                odataVersion: convertODataVersionType(requiredOdataVersion),
-                forceReValidation: true // Always revalidate to return the errors not just the validity of the url
+                odataVersion: convertODataVersionType(requiredOdataVersion)
             });
             // If basic auth not required we should have an active connection and be authenticated
             if (valResult === true) {
