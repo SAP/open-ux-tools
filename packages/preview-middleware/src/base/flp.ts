@@ -755,6 +755,20 @@ export class FlpSandbox {
     }
 
     /**
+     * Returns true if the given UI5 version qualifies for FLP Sandbox 2.0.
+     *
+     * @param ui5Version - the UI5 version
+     * @returns true if the version qualifies for the new sandbox
+     */
+    private qualifiesForNewSandbox(ui5Version: Ui5Version): boolean {
+        return (
+            ui5Version.major > 1 ||
+            ui5Version.label?.includes('legacy-free') === true ||
+            (ui5Version.major === 1 && ui5Version.minor >= 150)
+        );
+    }
+
+    /**
      * Read the sandbox template file based on the given UI5 version.
      *
      * @param ui5Version - the UI5 version
@@ -766,10 +780,7 @@ export class FlpSandbox {
                 ui5Version.label ? `-${ui5Version.label}` : ''
             }.`
         );
-        const qualifiesForNewSandbox =
-            ui5Version.major > 1 ||
-            ui5Version.label?.includes('legacy-free') ||
-            (ui5Version.major === 1 && ui5Version.minor >= 150);
+        const qualifiesForNewSandbox = this.qualifiesForNewSandbox(ui5Version);
         const useNewSandbox = qualifiesForNewSandbox && this.flpConfig.useNewSandbox !== false;
         if (qualifiesForNewSandbox && !useNewSandbox) {
             this.logger.info('New FLP Sandbox disabled in configuration.');
@@ -799,11 +810,7 @@ export class FlpSandbox {
      * @private
      */
     private async warnIfLegacySandboxConfigExists(ui5Version: Ui5Version): Promise<void> {
-        const qualifiesForNewSandbox =
-            ui5Version.major > 1 ||
-            ui5Version.label?.includes('legacy-free') ||
-            (ui5Version.major === 1 && ui5Version.minor >= 150);
-        if (qualifiesForNewSandbox && this.flpConfig.useNewSandbox !== false) {
+        if (this.qualifiesForNewSandbox(ui5Version) && this.flpConfig.useNewSandbox !== false) {
             const legacyFile = await this.project.byPath(
                 `${this.templateConfig.baseUrl}/appconfig/fioriSandboxConfig.json`
             );
