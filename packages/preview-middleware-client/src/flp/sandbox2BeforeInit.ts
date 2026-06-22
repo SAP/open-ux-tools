@@ -1,4 +1,4 @@
-import { registerComponentDependencyPaths } from './common';
+import { registerComponentDependencyPaths } from './common.js';
 
 /**
  * BeforeFlpStart hook for FLP Sandbox 2.0.

@@ -63,12 +63,9 @@ describe('flp/WorkspaceConnector', () => {
                 return null;
             });
 
-            jest.resetModules();
-            const { default: testConnector } = await import('open/ux/preview/client/flp/WorkspaceConnector');
-
-            testConnector.storage.fileChangeRequestNotifier = jest.fn();
+            connector.storage.fileChangeRequestNotifier = jest.fn();
             const change = { data: '~Data', fileName: 'dummyFile', changeType: 'property' };
-            await testConnector.storage.setItem('~notUsed', change);
+            await connector.storage.setItem('~notUsed', change);
 
             expect(fetch).toHaveBeenCalledWith(
                 expect.stringContaining(mockBaseUrl),
@@ -84,7 +81,7 @@ describe('flp/WorkspaceConnector', () => {
                     )
                 })
             );
-            expect(testConnector.storage.fileChangeRequestNotifier).toHaveBeenCalledWith(
+            expect(connector.storage.fileChangeRequestNotifier).toHaveBeenCalledWith(
                 'dummyFile',
                 'create',
                 change,
