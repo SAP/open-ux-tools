@@ -6,7 +6,7 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { AuthenticationType, BackendSystem, getBackendSystemType } from '@sap-ux/store';
 import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n.js';
-import type { ConnectedSystem } from '../../../../types.js';
+import type { ConnectedSystem, SapSystemType } from '../../../../types.js';
 import { promptNames } from '../../../../types.js';
 import {
     PromptState,
@@ -71,7 +71,7 @@ export function getSystemUrlQuestion<T extends Answers>(
             mandatory: true,
             breadcrumb: true
         },
-        validate: async (url) => {
+        validate: async (url, prevAnswers: NewSystemAnswers) => {
             PromptState.resetConnectedSystem();
             // Backend systems validation supports using a cached connections from a previous step execution to prevent re-authentication (e.g. re-opening a browser window)
             // Only in the case of re-entrance tickets will we reuse an existing connection.
@@ -92,7 +92,8 @@ export function getSystemUrlQuestion<T extends Answers>(
             }
             const valResult = await connectValidator.validateUrl(url, {
                 isSystem: true,
-                odataVersion: convertODataVersionType(requiredOdataVersion)
+                odataVersion: convertODataVersionType(requiredOdataVersion),
+                forceReValidation: true // Always revalidate to return the errors not just the validity of the url
             });
             // If basic auth not required we should have an active connection and be authenticated
             if (valResult === true) {

@@ -224,6 +224,8 @@ export async function getSystemConnectionQuestions(
                 if (promptOptions?.systemSelection?.useAutoComplete && (selectedSystem as ListChoiceOptions).value) {
                     selectedSystemAnswer = (selectedSystem as ListChoiceOptions).value;
                 }
+                // Reset the connection state if the system type selection has changed
+                connectionValidator.resetConnectionState(true);
                 return (
                     validateSystemSelection(
                         selectedSystemAnswer,
