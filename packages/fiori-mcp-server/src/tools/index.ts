@@ -16,8 +16,7 @@ export { generateFioriAppOData } from './generate-fiori-app-odata.js';
 export { generateFioriAppCap } from './generate-fiori-app-cap.js';
 export { generateAdaptationProject } from './generate-adaptation-project.js';
 export { openAdaptationEditor } from './open-adaptation-editor.js';
-export { buildAdaptationProject } from './build-adaptation-project.js';
-export { validateManifestChanges } from './validate-manifest-changes.js';
+export { getMergedManifest as validateManifestChanges } from './get-merged-manifest.js';
 export { adpControllerExtension } from './adp-controller-extension/index.js';
 export { runRtaWorkflowStep } from './run-rta-workflow-step/index.js';
 
@@ -178,29 +177,7 @@ export const tools = [
         inputSchema: convertToSchema(Input.OpenAdaptationEditorInputSchema)
     },
     {
-        name: 'build_adaptation_project',
-        description: `Builds a SAP UI5 Adaptation Project by invoking the local 'ui5 build' CLI inside the project directory.
-
-        This tool:
-        - Validates the directory is an adaptation project (presence of webapp/manifest.appdescr_variant)
-        - Verifies node_modules/@ui5/cli and node_modules/@ui5/task-adaptation are installed
-        - Confirms ui5.yaml declares the adaptation task (custom-task name 'app-variant-bundler-build', published by @ui5/task-adaptation) under builder.customTasks; if not, returns an error with a template snippet (or, when fixYaml=true, appends a commented template to ui5.yaml so the user can fill in appName, target, and credentials before retrying)
-        - Spawns 'npx ui5 build' with sensible defaults matching the project script: --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest
-        - Streams build output and returns success/failure plus the last log lines
-
-        The actual adaptation step is performed by @ui5/task-adaptation as a UI5 builder custom task — discovered via ui5.yaml — not invoked directly. Configuration values (appName = the original ABAP app reference, target = destination or url+client, credentials = env-var refs like env:ABAP_USERNAME) must be supplied by the user; placeholders will fail at build time.`,
-        annotations: {
-            title: 'Build Adaptation Project',
-            readOnlyHint: false,
-            destructiveHint: false,
-            idempotentHint: true,
-            openWorldHint: false
-        },
-        inputSchema: convertToSchema(Input.BuildAdaptationProjectInputSchema),
-        outputSchema: convertToSchema(Output.ExecuteFunctionalityOutputSchema)
-    },
-    {
-        name: 'validate_manifest_changes',
+        name: 'get_merged_manifest',
         description: `Validates the descriptor (manifest) changes of a SAP UI5 Adaptation Project without running a full build.
 
         This tool:
@@ -218,7 +195,7 @@ export const tools = [
             idempotentHint: true,
             openWorldHint: false
         },
-        inputSchema: convertToSchema(Input.ValidateManifestChangesInputSchema),
+        inputSchema: convertToSchema(Input.GetMergedManifestInputSchema),
         outputSchema: convertToSchema(Output.ExecuteFunctionalityOutputSchema)
     },
     {

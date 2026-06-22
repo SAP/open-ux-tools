@@ -8,8 +8,7 @@ export const CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID = 'create-controller-e
 export const GENERATE_ADAPTATION_PROJECT_ID = 'generate-adaptation-project';
 export const ADP_CONTROLLER_EXTENSION_FUNCTIONALITY_ID = 'adp-controller-extension';
 export const OPEN_ADAPTATION_EDITOR_ID = 'open-adaptation-editor';
-export const BUILD_ADAPTATION_PROJECT_ID = 'build-adaptation-project';
-export const VALIDATE_MANIFEST_CHANGES_ID = 'validate-manifest-changes';
+export const GET_MERGED_MANIFEST = 'get-merged-manifest';
 export const EXTENSION_FILE_NAME_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;
 
 // Telemetry event names

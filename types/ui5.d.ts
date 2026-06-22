@@ -150,3 +150,47 @@ declare module '@ui5/server' {
         middlewareUtil: MiddlewareUtils;
     }
 }
+
+declare module '@ui5/project/graph' {
+    /**
+     * Minimal shape of the ProjectGraph returned by graphFromPackageDependencies.
+     * @ui5/project ships no TypeScript types, so this is hand-rolled — extend as needed.
+     * See https://sap.github.io/ui5-tooling/stable/api/@ui5_project_graph_ProjectGraph.html
+     */
+    export interface ProjectGraph {
+        getRoot(): any;
+        getProject(projectName: string): any;
+        getAllProjects(): any[];
+        getExtension(extensionName: string): any;
+        getAllExtensions(): any[];
+    }
+
+    export interface GraphFromPackageDependenciesOptions {
+        /** Directory to start searching for the root module. Defaults to process.cwd(). */
+        cwd?: string;
+        /** Configuration object to use for the root module instead of reading from a configuration file. */
+        rootConfiguration?: object;
+        /** Configuration file to use for the root module instead the default ui5.yaml. */
+        rootConfigPath?: string;
+        /** Framework version to use instead of the one defined in the root project. */
+        versionOverride?: string;
+        /** Cache mode to use when consuming SNAPSHOT versions of a framework. */
+        cacheMode?: string;
+        /** Whether framework dependencies should be added to the graph. Defaults to true. */
+        resolveFrameworkDependencies?: boolean;
+        /** Name of the workspace configuration that should be used. "default" if not provided. */
+        workspaceName?: string | null;
+        /** Workspace configuration object to use instead of reading from a configuration file. */
+        workspaceConfiguration?: object;
+        /** Workspace configuration file to use if no object has been provided. Defaults to ui5-workspace.yaml. */
+        workspaceConfigPath?: string;
+    }
+
+    /**
+     * Generates a ProjectGraph by resolving dependencies from package.json files
+     * and configuring projects from ui5.yaml files.
+     */
+    export function graphFromPackageDependencies(
+        options?: GraphFromPackageDependenciesOptions
+    ): Promise<ProjectGraph>;
+}

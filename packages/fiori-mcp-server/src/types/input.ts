@@ -161,7 +161,7 @@ export const BuildAdaptationProjectInputSchema = zod.object({
         )
 });
 
-export const ValidateManifestChangesInputSchema = zod.object({
+export const GetMergedManifestInputSchema = zod.object({
     appPath: zod
         .string()
         .describe(

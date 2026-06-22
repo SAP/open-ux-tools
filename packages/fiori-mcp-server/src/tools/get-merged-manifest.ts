@@ -1,11 +1,14 @@
-import { createRequire } from 'node:module';
-import { access, readFile } from 'node:fs/promises';
-import { dirname, join, isAbsolute } from 'node:path';
+import { access } from 'node:fs/promises';
+import path, { join, isAbsolute } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { readUi5Yaml } from '@sap-ux/project-access';
-import type { ValidateManifestChangesInput, ExecuteFunctionalityOutput } from '../types';
-import { logger } from '../utils';
-import { VALIDATE_MANIFEST_CHANGES_ID } from '../constant';
+import type { GetMergedManifestInput, ExecuteFunctionalityOutput } from '../types/index.js';
+import { GET_MERGED_MANIFEST } from '../constant.js';
+// @ui5/project is a runtime dependency of this package (installed alongside it
+// via npm), not bundled. We use it to build a project graph against the user's
+// adaptation project. @ui5/task-adaptation is loaded differently (dynamically
+// from the user's project) because we want to exercise the exact version they
+// installed — see further below in this file.
+import { graphFromPackageDependencies } from '@ui5/project/graph';
 
 interface PreflightOk {
     ok: true;
@@ -16,7 +19,7 @@ interface PreflightError {
 }
 
 /**
- * Checks whether a filesystem path exists and is accessible.
+ * Checks whether a filesystem path exists and is aaccessible.
  *
  * @param path Absolute or relative filesystem path.
  * @returns True when the path is accessible.
@@ -56,6 +59,12 @@ async function preflight(appPath: string): Promise<PreflightOk | PreflightError>
             message: `node_modules/@ui5/task-adaptation not found in ${appPath}. Run npm install before validating.`
         };
     }
+    /*if (!(await fileExists(join(appPath, 'node_modules', '@ui5', 'project')))) {
+        return {
+            ok: false,
+            message: `node_modules/@ui5/project not found in ${appPath}. Run npm install before validating.`
+        };
+    }*/
     return { ok: true };
 }
 
@@ -71,11 +80,11 @@ async function preflight(appPath: string): Promise<PreflightOk | PreflightError>
 function envelope(
     status: 'Success' | 'Error',
     message: string,
-    params: ValidateManifestChangesInput,
+    params: GetMergedManifestInput,
     extra: Record<string, unknown> = {}
 ): ExecuteFunctionalityOutput {
     return {
-        functionalityId: VALIDATE_MANIFEST_CHANGES_ID,
+        functionalityId: GET_MERGED_MANIFEST,
         status,
         message,
         parameters: { ...params, ...extra },
@@ -85,64 +94,8 @@ function envelope(
     };
 }
 
-/**
- * Reads the adaptation custom-task configuration block from `ui5.yaml`. The
- * task-adaptation entry point requires `options.configuration` to pick the
- * landscape-specific offline adapter (`abap` / `cf`).
- *
- * @param appPath Adaptation project root.
- * @returns The configuration object or an error descriptor.
- */
-async function readAdaptationConfiguration(
-    appPath: string
-): Promise<{ ok: true; configuration: Record<string, unknown> } | PreflightError> {
-    try {
-        const ui5Config = await readUi5Yaml(appPath, 'ui5.yaml');
-        const customTask = ui5Config.findCustomTask<Record<string, unknown>>('app-variant-bundler-build');
-        if (!customTask?.configuration) {
-            return {
-                ok: false,
-                message:
-                    `ui5.yaml does not declare the adaptation task (app-variant-bundler-build) under ` +
-                    `builder.customTasks, or the task has no configuration block. Run build_adaptation_project ` +
-                    `with fixYaml=true to scaffold a template, then fill in appName/target/credentials.`
-            };
-        }
-        return { ok: true, configuration: customTask.configuration };
-    } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        return { ok: false, message: `Failed to read ui5.yaml: ${message}` };
-    }
-}
-
-/**
- * Builds a minimal stand-in for `@ui5/project`'s `TaskUtil`. The
- * task-adaptation `OmitDeletedResourcesCommand` only calls `setTag(resource,
- * STANDARD_TAGS.OmitFromBuildResult, true)`. Since validation does not write
- * back to a real workspace, tagging is a no-op here.
- *
- * @returns A duck-typed object compatible with the bits of `TaskUtil` used
- *          during manifest validation.
- */
-function createTaskUtilStub(): unknown {
-    return {
-        STANDARD_TAGS: {
-            OmitFromBuildResult: 'OmitFromBuildResult',
-            IsBundle: 'IsBundle',
-            IsDebugVariant: 'IsDebugVariant',
-            HasDebugVariant: 'HasDebugVariant'
-        },
-        setTag(): void {
-            // no-op: validation does not produce build artifacts
-        },
-        getTag(): undefined {
-            return undefined;
-        },
-        clearTag(): void {
-            // no-op
-        }
-    };
-}
+// eslint-disable-next-line no-new-func
+const dynamicImport = new Function('specifier', 'return import(specifier)') as (specifier: string) => Promise<any>;
 
 /**
  * Validates the descriptor changes of an SAP UI5 Adaptation Project by calling
@@ -159,9 +112,7 @@ function createTaskUtilStub(): unknown {
  * @param params Tool input.
  * @returns Standard tool execution envelope.
  */
-export async function validateManifestChanges(
-    params: ValidateManifestChangesInput
-): Promise<ExecuteFunctionalityOutput> {
+export async function getMergedManifest(params: GetMergedManifestInput): Promise<ExecuteFunctionalityOutput> {
     const { appPath } = params;
     if (!appPath) {
         return envelope('Error', 'Missing required parameter: appPath.', params);
@@ -172,6 +123,38 @@ export async function validateManifestChanges(
         return envelope('Error', preflightStatus.message, params);
     }
 
+    const graph = await graphFromPackageDependencies({
+        cwd: params.appPath,
+        resolveFrameworkDependencies: false
+    });
+
+    const project = graph.getRoot() as any;
+
+    const workspace = project.getWorkspace();
+    const projectNamespace = project.getNamespace();
+    const configuration =
+        (project.getCustomTasks() ?? []).find((t: any) => t.name === 'app-variant-bundler-build')?.configuration ?? {};
+
+    //console.info?.(`task-adaptation configuration: ${JSON.stringify(configuration)}`);
+
+    const entry = path.join(params.appPath, 'node_modules', '@ui5', 'task-adaptation', 'dist', 'index.js');
+    const mod = await dynamicImport(pathToFileURL(entry).href);
+    const previewManifest = mod.previewManifest ?? mod.default?.previewManifest;
+    if (typeof previewManifest !== 'function') {
+        throw new Error(`@ui5/task-adaptation does not export previewManifest (keys: ${Object.keys(mod).join(', ')})`);
+    }
+
+    return previewManifest({
+        workspace,
+        options: { configuration, projectNamespace },
+        taskUtil: {
+            getTag: () => undefined,
+            setTag: () => {},
+            clearTag: () => {},
+            STANDARD_TAGS: { OmitFromBuildResult: 'OmitFromBuildResult' }
+        }
+    });
+    /*
     let validate: (args: {
         workspace: unknown;
         options: { projectNamespace: string; configuration: Record<string, unknown> };
@@ -236,8 +219,6 @@ export async function validateManifestChanges(
     const workspace = createWorkspace({ reader: projectReader });
     const taskUtil = createTaskUtilStub();
 
-    logger.info(`Validating manifest changes for ${appPath} (namespace=${projectNamespace})`);
-
     try {
         const mergedFiles = await validate({
             workspace,
@@ -254,5 +235,5 @@ export async function validateManifestChanges(
             ? ` Run a full build (build_adaptation_project) at least once to populate the task-adaptation cache, then re-run validation.`
             : '';
         return envelope('Error', `Manifest validation failed: ${message}${hint}`, params, { projectNamespace });
-    }
+    }*/
 }

@@ -22,8 +22,6 @@ import {
     generateFioriAppCap,
     generateAdaptationProject,
     openAdaptationEditor,
-    buildAdaptationProject,
-    validateManifestChanges,
     adpControllerExtension,
     runRtaWorkflowStep,
     tools
@@ -42,11 +40,12 @@ import type {
     OpenAdaptationEditorInput,
     AdpControllerExtensionInput,
     BuildAdaptationProjectInput,
-    ValidateManifestChangesInput,
+    GetMergedManifestInput,
     RunRtaWorkflowStepInput
 } from './types/index.js';
 import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
 import { logger } from './utils/logger.js';
+import { getMergedManifest } from './tools/get-merged-manifest.js';
 
 type ToolArgs =
     | DocSearchInput
@@ -61,7 +60,7 @@ type ToolArgs =
     | OpenAdaptationEditorInput
     | AdpControllerExtensionInput
     | BuildAdaptationProjectInput
-    | ValidateManifestChangesInput
+    | GetMergedManifestInput
     | RunRtaWorkflowStepInput
     | Record<string, unknown>;
 
@@ -233,11 +232,8 @@ export class FioriFunctionalityServer {
                     case 'open_adaptation_editor':
                         result = await openAdaptationEditor(args as OpenAdaptationEditorInput);
                         break;
-                    case 'build_adaptation_project':
-                        result = await buildAdaptationProject(args as BuildAdaptationProjectInput);
-                        break;
-                    case 'validate_manifest_changes':
-                        result = await validateManifestChanges(args as ValidateManifestChangesInput);
+                    case 'get_merged_manifest':
+                        result = await getMergedManifest(args as GetMergedManifestInput);
                         break;
                     case 'adp_controller_extension':
                         result = await adpControllerExtension(args as AdpControllerExtensionInput);
@@ -258,7 +254,7 @@ export class FioriFunctionalityServer {
                         // Do not pass telemetryProperties to unknownTool
                         await TelemetryHelper.sendTelemetry(unknownTool, {}, (args as any)?.appPath);
                         throw new Error(
-                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, generate_adaptation_project, open_adaptation_editor, build_adaptation_project, validate_manifest_changes, adp_controller_extension, run_rta_workflow_step, list_functionality, get_functionality_details, execute_functionality.`
+                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, generate_adaptation_project, open_adaptation_editor, get_merged_manifest, adp_controller_extension, run_rta_workflow_step, list_functionality, get_functionality_details, execute_functionality.`
                         );
                 }
                 await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
