@@ -20,7 +20,8 @@ import { coerce, gte, lt } from 'semver';
 import { addExtensionTypes, getManifestPath } from '../common/utils.js';
 import { copyTpl, extendJSON, createIdGenerator, type IdGeneratorFunction } from '../common/file.js';
 import { generateBuildingBlock } from '../building-block/index.js';
-import { BuildingBlockType } from '../building-block/types.js';
+import { BuildingBlockType, PAGE_TEMPLATE_TYPE_FULL, PAGE_TEMPLATE_TYPE_BASIC } from '../building-block/types.js';
+import type { PageTemplateType } from '../building-block/types.js';
 import { augmentXpathWithLocalNames } from '../building-block/prompts/utils/index.js';
 import type { Logger } from '@sap-ux/logger';
 import { i18nNamespaces, translate } from '../i18n.js';
@@ -89,8 +90,9 @@ export function getTemplateRoot(ui5Version?: string): string {
  * Handles the creation of a page building block for a custom page.
  *
  * @param {string} basePath - The base path of the UI5 application.
- * @param {{ pageBuildingBlockTitle: string; minUI5Version?: string }} data - Object containing the building block title and optional minimum UI5 version.
+ * @param data - Object containing the building block title, template type, and optional minimum UI5 version.
  * @param data.pageBuildingBlockTitle
+ * @param data.pageBuildingBlockTemplateType
  * @param data.minUI5Version
  * @param {string} viewPath - The path to the view XML file.
  * @param {Editor} fs - The memfs editor instance.
@@ -100,7 +102,7 @@ export function getTemplateRoot(ui5Version?: string): string {
  */
 async function handlePageBuildingBlock(
     basePath: string,
-    data: { pageBuildingBlockTitle: string; minUI5Version?: string },
+    data: { pageBuildingBlockTitle: string; pageBuildingBlockTemplateType?: PageTemplateType; minUI5Version?: string },
     viewPath: string,
     fs: Editor,
     generateId: IdGeneratorFunction,
@@ -111,6 +113,15 @@ async function handlePageBuildingBlock(
     if (minVersion && lt(minVersion.version, '1.136.0')) {
         log?.warn(t('minUi5VersionRequirement', { minUI5Version: data.minUI5Version }));
         return;
+    }
+
+    if (
+        data.pageBuildingBlockTemplateType === PAGE_TEMPLATE_TYPE_FULL &&
+        minVersion &&
+        lt(minVersion.version, '1.145.0')
+    ) {
+        log?.warn(t('minUi5VersionRequirementFullLayout', { minUI5Version: data.minUI5Version }));
+        data.pageBuildingBlockTemplateType = PAGE_TEMPLATE_TYPE_BASIC;
     }
 
     const pageId = generateId('Page');
@@ -124,7 +135,8 @@ async function handlePageBuildingBlock(
                 id: pageId,
                 buildingBlockType: BuildingBlockType.Page,
                 generateId,
-                title: data.pageBuildingBlockTitle
+                title: data.pageBuildingBlockTitle,
+                templateType: data.pageBuildingBlockTemplateType
             }
         },
         fs
@@ -181,7 +193,11 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
     if (data.pageBuildingBlockTitle) {
         await handlePageBuildingBlock(
             basePath,
-            { pageBuildingBlockTitle: data.pageBuildingBlockTitle, minUI5Version: data.minUI5Version },
+            {
+                pageBuildingBlockTitle: data.pageBuildingBlockTitle,
+                pageBuildingBlockTemplateType: data.pageBuildingBlockTemplateType,
+                minUI5Version: data.minUI5Version
+            },
             viewPath,
             fs,
             fnGenerateId,

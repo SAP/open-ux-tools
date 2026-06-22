@@ -10,7 +10,7 @@ import type {
     OVPSettings,
     Template as TemplateSettingsFE
 } from '@sap-ux/fiori-elements-writer';
-import { OdataVersion, TemplateType as TemplateTypeFE } from '@sap-ux/fiori-elements-writer';
+import { OdataVersion, TemplateType as TemplateTypeFE, PAGE_TEMPLATE_TYPE_BASIC } from '@sap-ux/fiori-elements-writer';
 import type { FreestyleApp, Template as TemplateSettingsFF, BasicAppSettings } from '@sap-ux/fiori-freestyle-writer';
 import { TemplateType as TemplateTypeFF } from '@sap-ux/fiori-freestyle-writer';
 import { DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
@@ -102,9 +102,12 @@ export function transformTemplateType(
         }
     }
 
-    // Add page title if addPageBuildingBlock is true
+    // Add page building block config if addPageBuildingBlock is true
     const pageBuildingBlockConfig = entityRelatedConfig?.addPageBuildingBlock
-        ? { pageBuildingBlockTitle: entityRelatedConfig.pageBuildingBlockTitle }
+        ? {
+              pageBuildingBlockTitle: entityRelatedConfig.pageBuildingBlockTitle,
+              pageBuildingBlockTemplateType: entityRelatedConfig.pageBuildingBlockLayout ?? PAGE_TEMPLATE_TYPE_BASIC
+          }
         : {};
 
     const templateSettingsMap = {

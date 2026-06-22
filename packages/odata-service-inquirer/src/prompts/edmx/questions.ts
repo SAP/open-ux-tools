@@ -1,6 +1,7 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
+import { PAGE_TEMPLATE_TYPE_FULL, PAGE_TEMPLATE_TYPE_BASIC } from '@sap-ux/fiori-elements-writer';
 import type { ConfirmQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import {
     searchChoices,
@@ -222,7 +223,7 @@ export function getEntitySelectionQuestions(
 }
 
 /**
- * Get the questions for page building block.
+ * Get the questions for the page building block prompts.
  *
  * @returns the page building block questions
  */
@@ -237,14 +238,34 @@ function getPageBuildingBlockQuestions(): Question<PageBuildingBlockAnswers>[] {
         guiOptions: {
             breadcrumb: true,
             hint: t('prompts.pageBuildingBlock.tooltip')
+        }
+    } as ConfirmQuestion<PageBuildingBlockAnswers>);
+
+    pageBuildingBlockQuestions.push({
+        when: (answers: PageBuildingBlockAnswers) => answers.addPageBuildingBlock === true,
+        type: 'confirm',
+        name: EntityPromptNames.pageBuildingBlockLayout,
+        message: t('prompts.pageBuildingBlock.layoutMessage'),
+        default: true,
+        labelTrue: t('prompts.pageBuildingBlock.choiceBasic'),
+        labelFalse: t('prompts.pageBuildingBlock.choiceFull'),
+        filter: (val: boolean) => (val ? PAGE_TEMPLATE_TYPE_BASIC : PAGE_TEMPLATE_TYPE_FULL),
+        guiOptions: {
+            breadcrumb: t('prompts.pageBuildingBlock.layoutMessage')
         },
-        additionalMessages: (addPageBuildingBlock: boolean) => {
-            if (addPageBuildingBlock) {
+        additionalMessages: (input?: unknown) => {
+            // input is true when the user selects Basic layout (default/true = Basic)
+            if (input === true) {
                 return {
-                    message: t('prompts.pageBuildingBlock.warning'),
+                    message: t('prompts.pageBuildingBlock.basicLayoutWarning'),
                     severity: Severity.warning
                 };
             }
+            // input is false when the user selects Full layout
+            return {
+                message: t('prompts.pageBuildingBlock.fullLayoutWarning'),
+                severity: Severity.warning
+            };
         }
     } as ConfirmQuestion<PageBuildingBlockAnswers>);
 

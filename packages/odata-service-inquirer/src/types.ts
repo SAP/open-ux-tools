@@ -6,7 +6,7 @@ import type { BackendSystem } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
 import type { CapService } from '@sap-ux/cap-config-writer';
 import type { EntityAnswer, NavigationEntityAnswer } from './prompts/edmx/entity-helper.js';
-import type { TableSelectionMode, TableType } from '@sap-ux/fiori-elements-writer';
+import type { TableSelectionMode, TableType, PageTemplateType } from '@sap-ux/fiori-elements-writer';
 import type { serviceUrlInternalPromptNames } from './prompts/datasources/service-url/types.js';
 
 /**
@@ -181,6 +181,7 @@ export const EntityPromptNames = {
     navigationEntity: 'navigationEntity',
     filterEntitySet: 'filterEntitySet',
     addPageBuildingBlock: 'addPageBuildingBlock',
+    pageBuildingBlockLayout: 'pageBuildingBlockLayout',
     pageBuildingBlockTitle: 'pageBuildingBlockTitle',
     tableType: 'tableType',
     hierarchyQualifier: 'hierarchyQualifier',
@@ -204,9 +205,9 @@ export interface EntitySelectionAnswers {
  * Answers related to the Page Building Block prompt.
  */
 export interface PageBuildingBlockAnswers {
-    /** Indicates if a Page Building Block should be addedn*/
     [EntityPromptNames.addPageBuildingBlock]?: boolean;
-    /** The title for the Page Building Block, required if addPageBuildingBlock is true */
+    /** The layout type for the page building block. This is only applicable if addPageBuildingBlock is true. */
+    [EntityPromptNames.pageBuildingBlockLayout]?: PageTemplateType;
     [EntityPromptNames.pageBuildingBlockTitle]?: string;
 }
 

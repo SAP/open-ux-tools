@@ -28,7 +28,12 @@ export type { FPMConfig } from './app/index.js';
 export { validateBasePath, validateVersion } from './common/validate.js';
 export { createIdGenerator, type IdGeneratorFunction, getRelativeTemplateComponentPath } from './common/file.js';
 
-export { BuildingBlockType } from './building-block/types.js';
+export {
+    BuildingBlockType,
+    PAGE_TEMPLATE_TYPE_FULL,
+    PAGE_TEMPLATE_TYPE_BASIC,
+    PAGE_AGGREGATIONS
+} from './building-block/types.js';
 export type {
     FilterBar,
     Form,
@@ -46,7 +51,6 @@ export type {
     Action,
     PageTemplateType
 } from './building-block/types.js';
-export { PAGE_TEMPLATE_TYPE_FULL, PAGE_TEMPLATE_TYPE_BASIC, PAGE_AGGREGATIONS } from './building-block/types.js';
 export type { PageAggregationName, GenerateBuildingBlockAggregationConfig } from './building-block/types.js';
 export {
     generateBuildingBlock,

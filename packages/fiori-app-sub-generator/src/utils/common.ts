@@ -5,7 +5,7 @@ import type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';
 import { checkCdsUi5PluginEnabled, getAppLaunchText } from '@sap-ux/cap-config-writer';
 import { parse } from '@sap-ux/edmx-parser';
 import type { TemplateType as FETemplateType } from '@sap-ux/fiori-elements-writer';
-import { TemplateTypeAttributes } from '@sap-ux/fiori-elements-writer';
+import { TemplateTypeAttributes, PAGE_TEMPLATE_TYPE_FULL } from '@sap-ux/fiori-elements-writer';
 import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import { createLaunchConfig } from '@sap-ux/launch-config';
@@ -23,7 +23,13 @@ import type { Editor } from 'mem-fs-editor';
 import { basename, join } from 'node:path';
 import { v4 as uuidV4 } from 'uuid';
 import type { GenerateLaunchConfigOptions, Service } from '../types/index.js';
-import { ApiHubType, SapSystemSourceType, FloorplanFE, minUi5VersionForPageBuildingBlock } from '../types/index.js';
+import {
+    ApiHubType,
+    SapSystemSourceType,
+    FloorplanFE,
+    minUi5VersionForPageBuildingBlock,
+    minUi5VersionForPageBuildingBlockFullLayout
+} from '../types/index.js';
 import { minSupportedUi5Version, minSupportedUi5VersionV4 } from '../types/constants.js';
 import { type Floorplan, FloorplanAttributes, FloorplanFF } from '../types/external.js';
 import { t } from './i18n.js';
@@ -95,7 +101,9 @@ export function getMinSupportedUI5Version(
     entityRelatedConfig?: Partial<EntityRelatedAnswers>
 ): string {
     if (floorplan === FloorplanFE.FE_FPM && entityRelatedConfig?.addPageBuildingBlock) {
-        return minUi5VersionForPageBuildingBlock;
+        return entityRelatedConfig.pageBuildingBlockLayout === PAGE_TEMPLATE_TYPE_FULL
+            ? minUi5VersionForPageBuildingBlockFullLayout
+            : minUi5VersionForPageBuildingBlock;
     }
 
     let minUI5Version: string | undefined;

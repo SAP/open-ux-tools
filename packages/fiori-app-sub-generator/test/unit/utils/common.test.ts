@@ -8,7 +8,12 @@ import type { Editor } from 'mem-fs-editor';
 import memFsEditor from 'mem-fs-editor';
 import { join } from 'node:path';
 import { FloorplanFE, FloorplanFF } from '../../../src/types/index.js';
-import { ApiHubType, SapSystemSourceType, minUi5VersionForPageBuildingBlock } from '../../../src/types/constants.js';
+import {
+    ApiHubType,
+    SapSystemSourceType,
+    minUi5VersionForPageBuildingBlock,
+    minUi5VersionForPageBuildingBlockFullLayout
+} from '../../../src/types/constants.js';
 import type { Logger } from '@sap-ux/logger';
 
 // Pre-import actual modules
@@ -136,6 +141,22 @@ describe('Test utils', () => {
 
     test('getMinSupportedUI5Version - FPM with page building block enabled returns minimum required version', () => {
         const result = getMinSupportedUI5Version(OdataVersion.v4, FloorplanFE.FE_FPM, { addPageBuildingBlock: true });
+        expect(result).toBe(minUi5VersionForPageBuildingBlock);
+    });
+
+    test('getMinSupportedUI5Version - FPM with page building block full layout returns full layout minimum version', () => {
+        const result = getMinSupportedUI5Version(OdataVersion.v4, FloorplanFE.FE_FPM, {
+            addPageBuildingBlock: true,
+            pageBuildingBlockLayout: 'full'
+        });
+        expect(result).toBe(minUi5VersionForPageBuildingBlockFullLayout);
+    });
+
+    test('getMinSupportedUI5Version - FPM with page building block basic layout returns basic minimum version', () => {
+        const result = getMinSupportedUI5Version(OdataVersion.v4, FloorplanFE.FE_FPM, {
+            addPageBuildingBlock: true,
+            pageBuildingBlockLayout: undefined
+        });
         expect(result).toBe(minUi5VersionForPageBuildingBlock);
     });
 
