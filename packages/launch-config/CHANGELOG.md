@@ -2,6 +2,8 @@
 
 ## 1.0.6
 
+*Released: 2026-06-10T09:57:42Z*
+
 ### Patch Changes
 
 - Updated dependencies [c8e8f7e]
@@ -10,6 +12,8 @@
 
 ## 1.0.5
 
+*Released: 2026-06-04T13:54:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [fff7490]
@@ -17,12 +21,16 @@
 
 ## 1.0.4
 
+*Released: 2026-06-04T10:19:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [b326a9a]
     - @sap-ux/project-access@2.1.0
 
 ## 1.0.3
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -34,6 +42,8 @@
 
 ## 1.0.2
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - Updated dependencies [9580241]
@@ -42,12 +52,16 @@
 
 ## 1.0.1
 
+*Released: 2026-06-01T15:15:26Z*
+
 ### Patch Changes
 
 - Updated dependencies [aed799d]
     - @sap-ux/project-access@2.0.1
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -89,6 +103,8 @@
 
 ## 0.11.2
 
+*Released: 2026-05-21T16:21:11Z*
+
 ### Patch Changes
 
 - Updated dependencies [9752c40]
@@ -97,12 +113,16 @@
 
 ## 0.11.1
 
+*Released: 2026-05-19T15:16:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [63e6846]
     - @sap-ux/project-access@1.38.0
 
 ## 0.11.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -117,6 +137,8 @@
 
 ## 0.10.92
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -127,12 +149,16 @@
 
 ## 0.10.91
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
     - @sap-ux/project-access@1.36.4
 
 ## 0.10.90
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -143,11 +169,15 @@
 
 ## 0.10.89
 
+*Released: 2026-04-30T14:23:24Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.36.2
 
 ## 0.10.88
+
+*Released: 2026-04-29T15:24:37Z*
 
 ### Patch Changes
 
@@ -156,12 +186,16 @@
 
 ## 0.10.87
 
+*Released: 2026-04-27T19:47:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
     - @sap-ux/project-access@1.36.0
 
 ## 0.10.86
+
+*Released: 2026-04-23T12:54:21Z*
 
 ### Patch Changes
 
@@ -170,12 +204,16 @@
 
 ## 0.10.85
 
+*Released: 2026-04-22T12:38:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [9a48e63]
     - @sap-ux/ui5-info@0.13.20
 
 ## 0.10.84
+
+*Released: 2026-04-14T12:35:35Z*
 
 ### Patch Changes
 
@@ -186,6 +224,8 @@
 
 ## 0.10.83
 
+*Released: 2026-04-08T13:10:18Z*
+
 ### Patch Changes
 
 - Updated dependencies [f1e4481]
@@ -195,12 +235,16 @@
 
 ## 0.10.82
 
+*Released: 2026-04-01T11:49:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [3291f6c]
     - @sap-ux/project-access@1.35.18
 
 ## 0.10.81
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -211,12 +255,16 @@
 
 ## 0.10.80
 
+*Released: 2026-03-26T20:06:10Z*
+
 ### Patch Changes
 
 - Updated dependencies [b66e827]
     - @sap-ux/project-access@1.35.17
 
 ## 0.10.79
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -229,6 +277,8 @@
     - @sap-ux/ui5-info@0.13.16
 
 ## 0.10.78
+
+*Released: 2026-03-25T12:56:41Z*
 
 ### Patch Changes
 

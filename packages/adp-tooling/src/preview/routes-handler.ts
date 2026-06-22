@@ -1,11 +1,8 @@
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { renderFile } from 'ejs';
 
-import { dirname } from 'node:path';
-const __dirname = dirname(fileURLToPath(import.meta.url));
 import sanitize from 'sanitize-filename';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -21,6 +18,7 @@ import type { DataSources, CodeExtChange } from '../types.js';
 import { ManifestService } from '../base/abap/manifest-service.js';
 import { getVariant, isTypescriptSupported } from '../base/helper.js';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { getTemplatePath } from '../templates.js';
 
 interface WriteControllerBody {
     controllerName: string;
@@ -423,7 +421,7 @@ async function generateControllerFile(rootPath: string, filePath: string, name: 
     const id = (await getVariant(rootPath))?.id;
     const isTsSupported = isTypescriptSupported(rootPath);
     const tmplFileName = isTsSupported ? TemplateFileName.TSController : TemplateFileName.Controller;
-    const tmplPath = path.join(__dirname, '../../templates/rta', tmplFileName);
+    const tmplPath = getTemplatePath(`rta/${tmplFileName}`);
     const extensionPath = `${id}.${name}`;
 
     const templateData = isTsSupported ? { name, ns: id } : { extensionPath };
