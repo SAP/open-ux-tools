@@ -765,12 +765,7 @@ describe('Test entity prompts', () => {
                 }),
                 severity: Severity.warning
             });
-            expect((layoutQuestion as any).additionalMessages(undefined)).toEqual({
-                message: t('prompts.pageBuildingBlock.fullLayoutWarning', {
-                    minUi5VersionForFullLayout: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
-                }),
-                severity: Severity.warning
-            });
+            expect((layoutQuestion as any).additionalMessages(undefined)).toBeUndefined();
         }
     });
 });

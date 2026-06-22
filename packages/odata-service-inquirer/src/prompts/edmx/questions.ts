@@ -271,12 +271,15 @@ function getPageBuildingBlockQuestions(): Question<PageBuildingBlockAnswers>[] {
                 };
             }
             // input is false when the user selects Full layout
-            return {
-                message: t('prompts.pageBuildingBlock.fullLayoutWarning', {
-                    minUi5VersionForFullLayout: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
-                }),
-                severity: Severity.warning
-            };
+            if (input === false) {
+                return {
+                    message: t('prompts.pageBuildingBlock.fullLayoutWarning', {
+                        minUi5VersionForFullLayout: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+                    }),
+                    severity: Severity.warning
+                };
+            }
+            return undefined;
         }
     } as ConfirmQuestion<PageBuildingBlockAnswers>);
 

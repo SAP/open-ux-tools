@@ -129,8 +129,7 @@ async function handlePageBuildingBlock(
     let templateType = data.pageBuildingBlockTemplateType;
     if (
         templateType === PAGE_TEMPLATE_TYPE_FULL &&
-        minVersion &&
-        lt(minVersion.version, MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT)
+        (!minVersion || lt(minVersion.version, MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT))
     ) {
         log?.warn(
             t('minUi5VersionRequirementFullLayout', {

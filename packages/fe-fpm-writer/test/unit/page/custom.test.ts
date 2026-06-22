@@ -389,6 +389,31 @@ describe('CustomPage', () => {
             const viewXmlPath = join(target, 'webapp/ext/view/CustomPage.view.xml');
             expect(fs.read(viewXmlPath)).toMatchSnapshot();
         });
+
+        test('should fall back to basic layout when no ui5 version is specified with full layout page building block', async () => {
+            const target = join(testDir, 'single-page-no-fcl');
+            const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
+            const inputWithFullLayoutNoVersion = {
+                ...input,
+                minUI5Version: undefined,
+                pageBuildingBlockTitle: 'Test Page Title',
+                pageBuildingBlockTemplateType: PAGE_TEMPLATE_TYPE_FULL
+            };
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
+
+            const log = { warn: jest.fn() } as unknown as Logger;
+            await generateCustomPage(target, inputWithFullLayoutNoVersion, fs, log);
+
+            expect(log.warn).toHaveBeenCalledWith(
+                t('minUi5VersionRequirementFullLayout', {
+                    minUI5Version: inputWithFullLayoutNoVersion.minUI5Version,
+                    minUi5VersionForFullLayout: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+                })
+            );
+
+            const viewXmlPath = join(target, 'webapp/ext/view/CustomPage.view.xml');
+            expect(fs.read(viewXmlPath)).toMatchSnapshot();
+        });
     });
 
     describe('Test property custom "tabSizing"', () => {
