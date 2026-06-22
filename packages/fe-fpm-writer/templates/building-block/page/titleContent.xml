@@ -1,0 +1,4 @@
+<<%- macrosPrefix %>titleContent>
+    <!-- Title content aggregation (content next to title) -->
+    <%- mContent %>
+</<%- macrosPrefix %>titleContent>
