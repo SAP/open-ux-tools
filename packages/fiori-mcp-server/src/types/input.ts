@@ -132,6 +132,43 @@ export const AdpControllerExtensionInputSchema = zod.object({
     viewId: zod.string().optional().describe('Optional target view identifier for the controller extension')
 });
 
+export const BuildAdaptationProjectInputSchema = zod.object({
+    appPath: zod
+        .string()
+        .describe(
+            'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant resides).'
+        ),
+    excludeTasks: zod
+        .array(zod.string())
+        .optional()
+        .describe(
+            'UI5 builder tasks to exclude. Defaults to ["generateFlexChangesBundle", "generateComponentPreload", "minify"] (matching the project script).'
+        ),
+    includeTasks: zod
+        .array(zod.string())
+        .optional()
+        .describe('UI5 builder tasks to include in addition to the defaults.'),
+    destPath: zod
+        .string()
+        .optional()
+        .describe('Output directory passed to `ui5 build --dest`. Resolved relative to appPath. Defaults to "dist".'),
+    clean: zod.boolean().optional().describe('Whether to pass --clean-dest to ui5 build. Defaults to true.'),
+    fixYaml: zod
+        .boolean()
+        .optional()
+        .describe(
+            'When true and ui5.yaml does not declare app-variant-bundler-build, append a commented configuration template to ui5.yaml so the user can fill in appName, target, and credentials. The build will not be attempted in that run. Defaults to false (return an error containing the template).'
+        )
+});
+
+export const ValidateManifestChangesInputSchema = zod.object({
+    appPath: zod
+        .string()
+        .describe(
+            'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant resides).'
+        )
+});
+
 export const RunRtaWorkflowStepInputSchema = zod.object({
     step: zod
         .enum(STEPS)

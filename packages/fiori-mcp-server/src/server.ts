@@ -22,6 +22,8 @@ import {
     generateFioriAppCap,
     generateAdaptationProject,
     openAdaptationEditor,
+    buildAdaptationProject,
+    validateManifestChanges,
     adpControllerExtension,
     runRtaWorkflowStep,
     tools
@@ -39,6 +41,8 @@ import type {
     GenerateAdaptationProjectInput,
     OpenAdaptationEditorInput,
     AdpControllerExtensionInput,
+    BuildAdaptationProjectInput,
+    ValidateManifestChangesInput,
     RunRtaWorkflowStepInput
 } from './types/index.js';
 import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
@@ -56,6 +60,8 @@ type ToolArgs =
     | GenerateAdaptationProjectInput
     | OpenAdaptationEditorInput
     | AdpControllerExtensionInput
+    | BuildAdaptationProjectInput
+    | ValidateManifestChangesInput
     | RunRtaWorkflowStepInput
     | Record<string, unknown>;
 
@@ -80,6 +86,7 @@ export class FioriFunctionalityServer {
     private readonly server: Server;
     private mcpClientName = 'unknown-client';
     private mcpClientVersion = 'unknown-version';
+    private connected = false;
 
     /**
      * Initializes a new instance of the FioriFunctionalityServer.
@@ -122,6 +129,7 @@ export class FioriFunctionalityServer {
         process.on('SIGINT', async () => {
             await stopBrowser();
             await this.server.close();
+            this.connected = false;
             process.exit(0);
         });
     }
@@ -225,6 +233,12 @@ export class FioriFunctionalityServer {
                     case 'open_adaptation_editor':
                         result = await openAdaptationEditor(args as OpenAdaptationEditorInput);
                         break;
+                    case 'build_adaptation_project':
+                        result = await buildAdaptationProject(args as BuildAdaptationProjectInput);
+                        break;
+                    case 'validate_manifest_changes':
+                        result = await validateManifestChanges(args as ValidateManifestChangesInput);
+                        break;
                     case 'adp_controller_extension':
                         result = await adpControllerExtension(args as AdpControllerExtensionInput);
                         break;
@@ -244,7 +258,7 @@ export class FioriFunctionalityServer {
                         // Do not pass telemetryProperties to unknownTool
                         await TelemetryHelper.sendTelemetry(unknownTool, {}, (args as any)?.appPath);
                         throw new Error(
-                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, generate_adaptation_project, open_adaptation_editor, adp_controller_extension, run_rta_workflow_step, list_functionality, get_functionality_details, execute_functionality.`
+                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, generate_adaptation_project, open_adaptation_editor, build_adaptation_project, validate_manifest_changes, adp_controller_extension, run_rta_workflow_step, list_functionality, get_functionality_details, execute_functionality.`
                         );
                 }
                 await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
@@ -314,6 +328,7 @@ export class FioriFunctionalityServer {
         TelemetryHelper.initSessionId();
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
+        this.connected = true;
         logger.info(
             `SAP Fiori - Model Context Protocol (MCP) server (@sap-ux/fiori-mcp-server@${PACKAGE_VERSION}) running on stdio`
         );

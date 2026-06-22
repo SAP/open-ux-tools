@@ -11,6 +11,8 @@ import type {
     GenerateAdaptationProjectInputSchema,
     OpenAdaptationEditorInputSchema,
     AdpControllerExtensionInputSchema,
+    BuildAdaptationProjectInputSchema,
+    ValidateManifestChangesInputSchema,
     RunRtaWorkflowStepInputSchema
 } from './input.js';
 import type {
@@ -42,6 +44,8 @@ export type DownloadODataServiceMetadataInput = zod.infer<typeof DownloadODataSe
 export type GenerateAdaptationProjectInput = zod.infer<typeof GenerateAdaptationProjectInputSchema>;
 export type OpenAdaptationEditorInput = zod.infer<typeof OpenAdaptationEditorInputSchema>;
 export type AdpControllerExtensionInput = zod.infer<typeof AdpControllerExtensionInputSchema>;
+export type BuildAdaptationProjectInput = zod.infer<typeof BuildAdaptationProjectInputSchema>;
+export type ValidateManifestChangesInput = zod.infer<typeof ValidateManifestChangesInputSchema>;
 export type RunRtaWorkflowStepInput = zod.infer<typeof RunRtaWorkflowStepInputSchema>;
 
 /**
