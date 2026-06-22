@@ -92,7 +92,8 @@ export function getSystemUrlQuestion<T extends Answers>(
             }
             const valResult = await connectValidator.validateUrl(url, {
                 isSystem: true,
-                odataVersion: convertODataVersionType(requiredOdataVersion)
+                odataVersion: convertODataVersionType(requiredOdataVersion),
+                forceReValidation: true // Always revalidate to return the errors not just the validity of the url
             });
             // If basic auth not required we should have an active connection and be authenticated
             if (valResult === true) {
