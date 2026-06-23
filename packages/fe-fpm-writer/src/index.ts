@@ -46,8 +46,6 @@ export type {
     Action
 } from './building-block/types.js';
 // Re-exported from fiori-generator-shared to preserve backwards compatibility.
-// Cannot define here directly as odata-service-inquirer needs these constants but cannot take
-// fe-fpm-writer as a runtime dep due to a CJS/ESM crash via fiori-annotation-api.
 export {
     PAGE_TEMPLATE_TYPE_FULL,
     PAGE_TEMPLATE_TYPE_BASIC,
