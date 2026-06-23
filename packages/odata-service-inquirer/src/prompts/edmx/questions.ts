@@ -1,12 +1,17 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
-import {
-    PAGE_TEMPLATE_TYPE_FULL,
-    PAGE_TEMPLATE_TYPE_BASIC,
-    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
-    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
-} from '@sap-ux/fiori-generator-shared';
+import type {
+    PageTemplateType,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK as MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_TYPE,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT as MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT_TYPE
+} from '@sap-ux/fe-fpm-writer';
+
+const PAGE_TEMPLATE_TYPE_FULL: PageTemplateType = 'full';
+const PAGE_TEMPLATE_TYPE_BASIC: PageTemplateType = 'basic';
+const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK: typeof MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_TYPE = '1.136.0';
+const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT: typeof MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT_TYPE =
+    '1.145.0';
 import type { ConfirmQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import {
     searchChoices,

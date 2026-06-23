@@ -10,7 +10,7 @@ import {
     PAGE_TEMPLATE_TYPE_FULL,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
-} from '@sap-ux/fiori-generator-shared';
+} from '@sap-ux/fe-fpm-writer';
 import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import { createLaunchConfig } from '@sap-ux/launch-config';

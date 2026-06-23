@@ -26,7 +26,7 @@ import {
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT,
     type PageTemplateType
-} from '@sap-ux/fiori-generator-shared';
+} from '../building-block/types.js';
 import { BuildingBlockType } from '../building-block/types.js';
 import { augmentXpathWithLocalNames } from '../building-block/prompts/utils/index.js';
 import type { Logger } from '@sap-ux/logger';

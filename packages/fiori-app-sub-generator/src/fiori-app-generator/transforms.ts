@@ -18,7 +18,9 @@ import { ServiceType, type OdataService } from '@sap-ux/odata-service-writer';
 import { AuthenticationType } from '@sap-ux/store';
 import { latestVersionString } from '@sap-ux/ui5-info';
 import type { Floorplan, State, Service } from '../types/index.js';
-import { PAGE_TEMPLATE_TYPE_BASIC, hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { PAGE_TEMPLATE_TYPE_BASIC } from '@sap-ux/fe-fpm-writer';
+
 import {
     DEFAULT_HOST,
     DEFAULT_SERVICE_PATH,

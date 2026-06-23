@@ -1,6 +1,20 @@
 import type { IdGeneratorFunction } from '../common/file.js';
 import type { CustomElement, CustomFragment, EventHandler, FragmentContentData, Position } from '../common/types.js';
-import type { PageTemplateType } from '@sap-ux/fiori-generator-shared';
+
+export const PageTemplateType = {
+    Full: 'full',
+    Basic: 'basic'
+} as const;
+
+export type PageTemplateType = (typeof PageTemplateType)[keyof typeof PageTemplateType];
+
+export const PAGE_TEMPLATE_TYPE_FULL = PageTemplateType.Full;
+export const PAGE_TEMPLATE_TYPE_BASIC = PageTemplateType.Basic;
+
+/** Minimum UI5 version required for page building blocks. */
+export const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK = '1.136.0' as const;
+/** Minimum UI5 version required for full layout page building blocks. */
+export const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT = '1.145.0' as const;
 
 /**
  * Building block type.

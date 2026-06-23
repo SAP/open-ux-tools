@@ -56,6 +56,7 @@
     },
     "devDependencies": {
         "@jest/globals": "30.3.0",
+        "@sap-ux/fe-fpm-writer": "workspace:*",
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/fiori-elements-writer": "workspace:*",
         "@sap-ux/fiori-freestyle-writer": "workspace:*",

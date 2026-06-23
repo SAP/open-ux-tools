@@ -28,7 +28,14 @@ export type { FPMConfig } from './app/index.js';
 export { validateBasePath, validateVersion } from './common/validate.js';
 export { createIdGenerator, type IdGeneratorFunction, getRelativeTemplateComponentPath } from './common/file.js';
 
-export { BuildingBlockType, PAGE_AGGREGATIONS } from './building-block/types.js';
+export {
+    BuildingBlockType,
+    PAGE_AGGREGATIONS,
+    PAGE_TEMPLATE_TYPE_FULL,
+    PAGE_TEMPLATE_TYPE_BASIC,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+} from './building-block/types.js';
 export type {
     FilterBar,
     Form,
@@ -43,16 +50,9 @@ export type {
     CustomFormField,
     RichTextEditor,
     ButtonGroupConfig,
-    Action
+    Action,
+    PageTemplateType
 } from './building-block/types.js';
-// Re-exported from fiori-generator-shared to preserve backwards compatibility.
-export {
-    PAGE_TEMPLATE_TYPE_FULL,
-    PAGE_TEMPLATE_TYPE_BASIC,
-    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
-    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
-} from '@sap-ux/fiori-generator-shared';
-export type { PageTemplateType } from '@sap-ux/fiori-generator-shared';
 export type { PageAggregationName, GenerateBuildingBlockAggregationConfig } from './building-block/types.js';
 export {
     generateBuildingBlock,

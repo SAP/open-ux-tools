@@ -1,35 +1,28 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": [
-    "../../types/mem-fs-editor.d.ts",
-    "src",
-    "src/**/*.json"
-  ],
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "isolatedModules": false
-  },
-  "references": [
-    {
-      "path": "../fiori-annotation-api"
+    "extends": "../../tsconfig.json",
+    "include": ["../../types/mem-fs-editor.d.ts", "src", "src/**/*.json"],
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "isolatedModules": false
     },
-    {
-      "path": "../fiori-generator-shared"
-    },
-    {
-      "path": "../i18n"
-    },
-    {
-      "path": "../logger"
-    },
-    {
-      "path": "../project-access"
-    },
-    {
-      "path": "../ui-prompting"
-    }
-  ]
+    "references": [
+        {
+            "path": "../fiori-annotation-api"
+        },
+        {
+            "path": "../i18n"
+        },
+        {
+            "path": "../logger"
+        },
+        {
+            "path": "../project-access"
+        },
+        {
+            "path": "../ui-prompting"
+        }
+    ]
 }

@@ -7,7 +7,7 @@ import type { ListChoiceOptions } from 'inquirer';
 import type { CapService } from '@sap-ux/cap-config-writer';
 import type { EntityAnswer, NavigationEntityAnswer } from './prompts/edmx/entity-helper.js';
 import type { TableSelectionMode, TableType } from '@sap-ux/fiori-elements-writer';
-import type { PageTemplateType } from '@sap-ux/fiori-generator-shared';
+import type { PageTemplateType } from '@sap-ux/fe-fpm-writer';
 import type { serviceUrlInternalPromptNames } from './prompts/datasources/service-url/types.js';
 
 /**

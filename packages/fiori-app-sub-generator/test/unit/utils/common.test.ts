@@ -12,7 +12,7 @@ import { ApiHubType, SapSystemSourceType } from '../../../src/types/constants.js
 import {
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
-} from '@sap-ux/fiori-generator-shared';
+} from '@sap-ux/fe-fpm-writer';
 import type { Logger } from '@sap-ux/logger';
 
 // Pre-import actual modules
