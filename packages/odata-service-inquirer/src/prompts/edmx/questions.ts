@@ -6,12 +6,6 @@ import type {
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK as MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_TYPE,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT as MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT_TYPE
 } from '@sap-ux/fe-fpm-writer';
-
-const PAGE_TEMPLATE_TYPE_FULL: PageTemplateType = 'full';
-const PAGE_TEMPLATE_TYPE_BASIC: PageTemplateType = 'basic';
-const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK: typeof MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_TYPE = '1.136.0';
-const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT: typeof MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT_TYPE =
-    '1.145.0';
 import type { ConfirmQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import {
     searchChoices,
@@ -238,6 +232,11 @@ export function getEntitySelectionQuestions(
  * @returns the page building block questions
  */
 function getPageBuildingBlockQuestions(): Question<PageBuildingBlockAnswers>[] {
+    const PAGE_TEMPLATE_TYPE_FULL: PageTemplateType = 'full';
+    const PAGE_TEMPLATE_TYPE_BASIC: PageTemplateType = 'basic';
+    const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK: typeof MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_TYPE = '1.136.0';
+    const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT: typeof MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT_TYPE =
+        '1.145.0';
     return [
         {
             type: 'confirm',
