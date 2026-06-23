@@ -2489,6 +2489,96 @@ describe('Contact Card extraction', () => {
         expect(subSection?.contactCardFields).toEqual([{ property: '_Customer/Contact' }]);
     });
 
+    test('skips ConnectedFields / FieldGroup wrappers in body sub-section form fields', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: { aggregations: {} } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation,
+                        sections: {
+                            aggregations: {
+                                section1: {
+                                    isTable: false,
+                                    custom: false,
+                                    schema: { keys: [{ name: 'ID', value: 'GeneralInformation' }] },
+                                    aggregations: {
+                                        subSections: {
+                                            aggregations: {
+                                                subSection1: {
+                                                    isTable: false,
+                                                    custom: false,
+                                                    schema: { keys: [{ name: 'ID', value: 'BookingData' }] },
+                                                    aggregations: {
+                                                        form: {
+                                                            schema: { keys: [] },
+                                                            aggregations: {
+                                                                fields: {
+                                                                    aggregations: {
+                                                                        plain: {
+                                                                            name: 'DataField::BookingId',
+                                                                            schema: {
+                                                                                keys: [
+                                                                                    {
+                                                                                        name: 'Value',
+                                                                                        value: 'BookingId'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        } as unknown as TreeAggregation,
+                                                                        connected: {
+                                                                            name: 'DataFieldForAnnotation::ConnectedFields::CountryCity',
+                                                                            schema: {
+                                                                                keys: [
+                                                                                    {
+                                                                                        name: 'Target',
+                                                                                        value: '@UI.ConnectedFields#CountryCity'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        } as unknown as TreeAggregation,
+                                                                        group: {
+                                                                            name: 'DataFieldForAnnotation::FieldGroup::CheckBoxGroup',
+                                                                            schema: {
+                                                                                keys: [
+                                                                                    {
+                                                                                        name: 'Target',
+                                                                                        value: '@UI.FieldGroup#CheckBoxGroup'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        } as unknown as TreeAggregation
+                                                                    }
+                                                                } as unknown as TreeAggregation
+                                                            } as unknown as TreeAggregation
+                                                        } as unknown as TreeAggregation
+                                                    }
+                                                } as unknown as TreeAggregation
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger);
+        const subSection = result[0].bodySections?.[0].subSections?.[0];
+        // Only the plain field remains; ConnectedFields and FieldGroup wrappers are skipped
+        // pending proper inner-property drilling (handled on a separate branch).
+        expect(subSection?.fields).toEqual([{ property: 'BookingId' }]);
+        expect(subSection?.contactCardFields).toEqual([]);
+    });
+
     test('exposes Contact-annotated body-section table columns as contactCardColumns', async () => {
         const objectPage = {
             name: 'objectPage1',
