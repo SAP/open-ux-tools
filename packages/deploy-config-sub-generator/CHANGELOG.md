@@ -1,5 +1,51 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 1.0.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.0.12 → 3.0.13
+
+## 1.0.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-19
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-sub-generator 1.0.19 → 1.0.20
+- @sap-ux/odata-service-inquirer 3.0.12 → 3.0.12
+
+## 1.0.21
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-18
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-sub-generator 1.0.14 → 1.0.15
+- @sap-ux/abap-deploy-config-sub-generator 1.0.18 → 1.0.19
+
+## 1.0.20
+
+### Patch Changes
+
+#### Bug Fixes
+
+- align xs-security.json and XSUAA mta.yaml config with CDS convention [[f17f880](https://github.com/SAP/open-ux-tools/commit/f17f880229efb91320f9740a4f36e15bbccc1e60)]
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-sub-generator 1.0.13 → 1.0.14
+
 ## 1.0.19
 
 ### Patch Changes
@@ -38,6 +84,8 @@
 
 ## 1.0.16
 
+_Released: 2026-06-14T10:40:09Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@1.0.16
@@ -45,12 +93,16 @@
 
 ## 1.0.15
 
+_Released: 2026-06-12T10:49:08Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@1.0.15
 - @sap-ux/odata-service-inquirer@3.0.11
 
 ## 1.0.14
+
+_Released: 2026-06-12T06:53:23Z_
 
 ### Patch Changes
 
@@ -63,12 +115,16 @@
 
 ## 1.0.13
 
+_Released: 2026-06-11T13:37:16Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@1.0.13
 - @sap-ux/odata-service-inquirer@3.0.10
 
 ## 1.0.12
+
+_Released: 2026-06-11T10:54:17Z_
 
 ### Patch Changes
 
@@ -80,6 +136,8 @@
 - @sap-ux/deploy-config-generator-shared@1.0.10
 
 ## 1.0.11
+
+_Released: 2026-06-10T09:57:42Z_
 
 ### Patch Changes
 
@@ -95,6 +153,8 @@
 
 ## 1.0.10
 
+_Released: 2026-06-09T14:35:01Z_
+
 ### Patch Changes
 
 - Updated dependencies [0fa8305]
@@ -108,6 +168,8 @@
 
 ## 1.0.9
 
+_Released: 2026-06-09T13:18:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [a328e14]
@@ -119,6 +181,8 @@
     - @sap-ux/odata-service-inquirer@3.0.7
 
 ## 1.0.8
+
+_Released: 2026-06-04T13:54:21Z_
 
 ### Patch Changes
 
@@ -133,12 +197,16 @@
 
 ## 1.0.7
 
+_Released: 2026-06-04T12:10:05Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@1.0.7
 - @sap-ux/odata-service-inquirer@3.0.5
 
 ## 1.0.6
+
+_Released: 2026-06-04T10:19:37Z_
 
 ### Patch Changes
 
@@ -153,6 +221,8 @@
     - @sap-ux/deploy-config-generator-shared@1.0.5
 
 ## 1.0.5
+
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -171,6 +241,8 @@
 
 ## 1.0.4
 
+_Released: 2026-06-03T13:52:44Z_
+
 ### Patch Changes
 
 - Updated dependencies [9580241]
@@ -185,6 +257,8 @@
 
 ## 1.0.3
 
+_Released: 2026-06-02T11:35:17Z_
+
 ### Patch Changes
 
 - @sap-ux/deploy-config-generator-shared@1.0.2
@@ -196,12 +270,16 @@
 
 ## 1.0.2
 
+_Released: 2026-06-02T08:56:31Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@1.0.2
 - @sap-ux/odata-service-inquirer@3.0.1
 
 ## 1.0.1
+
+_Released: 2026-06-01T15:15:26Z_
 
 ### Patch Changes
 
@@ -215,6 +293,8 @@
     - @sap-ux/deploy-config-generator-shared@1.0.1
 
 ## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -263,6 +343,8 @@
 
 ## 0.6.12
 
+_Released: 2026-05-29T12:50:34Z_
+
 ### Patch Changes
 
 - Updated dependencies [a1c9cd7]
@@ -274,12 +356,16 @@
 
 ## 0.6.11
 
+_Released: 2026-05-29T06:59:27Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@0.4.10
 - @sap-ux/odata-service-inquirer@2.23.3
 
 ## 0.6.10
+
+_Released: 2026-05-27T11:39:21Z_
 
 ### Patch Changes
 
@@ -291,6 +377,8 @@
 - @sap-ux/inquirer-common@0.13.5
 
 ## 0.6.9
+
+_Released: 2026-05-27T10:42:47Z_
 
 ### Patch Changes
 
@@ -306,6 +394,8 @@
 
 ## 0.6.8
 
+_Released: 2026-05-26T16:40:21Z_
+
 ### Patch Changes
 
 - Updated dependencies [01b70ca]
@@ -320,6 +410,8 @@
 
 ## 0.6.7
 
+_Released: 2026-05-25T14:44:33Z_
+
 ### Patch Changes
 
 - Updated dependencies [acb9875]
@@ -327,12 +419,16 @@
 
 ## 0.6.6
 
+_Released: 2026-05-22T13:30:05Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@0.4.6
 - @sap-ux/odata-service-inquirer@2.22.2
 
 ## 0.6.5
+
+_Released: 2026-05-21T16:21:11Z_
 
 ### Patch Changes
 
@@ -348,12 +444,16 @@
 
 ## 0.6.4
 
+_Released: 2026-05-21T14:58:44Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@0.4.4
 - @sap-ux/odata-service-inquirer@2.22.1
 
 ## 0.6.3
+
+_Released: 2026-05-19T15:16:46Z_
 
 ### Patch Changes
 
@@ -368,12 +468,16 @@
 
 ## 0.6.2
 
+_Released: 2026-05-18T08:15:14Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@0.4.2
 - @sap-ux/odata-service-inquirer@2.22.0
 
 ## 0.6.1
+
+_Released: 2026-05-15T13:12:06Z_
 
 ### Patch Changes
 
@@ -390,6 +494,8 @@
     - @sap-ux/deploy-config-generator-shared@0.2.1
 
 ## 0.6.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -411,6 +517,8 @@
 
 ## 0.5.161
 
+_Released: 2026-05-14T21:28:41Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.48
@@ -421,11 +529,15 @@
 
 ## 0.5.160
 
+_Released: 2026-05-14T14:16:50Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@0.3.36
 
 ## 0.5.159
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -444,6 +556,8 @@
 
 ## 0.5.158
 
+_Released: 2026-05-13T09:36:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -457,6 +571,8 @@
 
 ## 0.5.157
 
+_Released: 2026-05-12T18:00:39Z_
+
 ### Patch Changes
 
 - Updated dependencies [9360ea5]
@@ -468,6 +584,8 @@
     - @sap-ux/odata-service-inquirer@2.20.22
 
 ## 0.5.156
+
+_Released: 2026-05-06T23:02:00Z_
 
 ### Patch Changes
 
@@ -485,6 +603,8 @@
 
 ## 0.5.155
 
+_Released: 2026-05-01T15:46:09Z_
+
 ### Patch Changes
 
 - @sap-ux/cf-deploy-config-sub-generator@0.2.178
@@ -492,11 +612,15 @@
 
 ## 0.5.154
 
+_Released: 2026-04-30T19:47:20Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@0.3.30
 
 ## 0.5.153
+
+_Released: 2026-04-30T14:23:24Z_
 
 ### Patch Changes
 
@@ -510,6 +634,8 @@
 
 ## 0.5.152
 
+_Released: 2026-04-30T13:10:33Z_
+
 ### Patch Changes
 
 - @sap-ux/odata-service-inquirer@2.20.19
@@ -517,12 +643,16 @@
 
 ## 0.5.151
 
+_Released: 2026-04-29T16:22:20Z_
+
 ### Patch Changes
 
 - Updated dependencies [8b2c55b]
     - @sap-ux/odata-service-inquirer@2.20.18
 
 ## 0.5.150
+
+_Released: 2026-04-29T15:24:37Z_
 
 ### Patch Changes
 
@@ -537,6 +667,8 @@
 
 ## 0.5.149
 
+_Released: 2026-04-27T19:47:46Z_
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -550,11 +682,15 @@
 
 ## 0.5.148
 
+_Released: 2026-04-27T07:30:24Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@0.3.25
 
 ## 0.5.147
+
+_Released: 2026-04-23T12:54:21Z_
 
 ### Patch Changes
 
@@ -569,6 +705,8 @@
 
 ## 0.5.146
 
+_Released: 2026-04-23T06:48:55Z_
+
 ### Patch Changes
 
 - Updated dependencies [237371b]
@@ -581,6 +719,8 @@
 
 ## 0.5.145
 
+_Released: 2026-04-22T12:38:46Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.38
@@ -591,11 +731,15 @@
 
 ## 0.5.144
 
+_Released: 2026-04-20T12:41:53Z_
+
 ### Patch Changes
 
 - @sap-ux/cf-deploy-config-sub-generator@0.2.171
 
 ## 0.5.143
+
+_Released: 2026-04-15T11:53:17Z_
 
 ### Patch Changes
 
@@ -609,11 +753,15 @@
 
 ## 0.5.142
 
+_Released: 2026-04-15T08:11:32Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@0.3.20
 
 ## 0.5.141
+
+_Released: 2026-04-14T20:26:28Z_
 
 ### Patch Changes
 
@@ -627,6 +775,8 @@
     - @sap-ux/odata-service-inquirer@2.20.11
 
 ## 0.5.140
+
+_Released: 2026-04-14T12:35:35Z_
 
 ### Patch Changes
 
@@ -643,11 +793,15 @@
 
 ## 0.5.139
 
+_Released: 2026-04-14T11:39:16Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@0.3.17
 
 ## 0.5.138
+
+_Released: 2026-04-13T13:57:02Z_
 
 ### Patch Changes
 
@@ -655,17 +809,23 @@
 
 ## 0.5.137
 
+_Released: 2026-04-09T09:57:18Z_
+
 ### Patch Changes
 
 - @sap-ux/cf-deploy-config-sub-generator@0.2.166
 
 ## 0.5.136
 
+_Released: 2026-04-09T07:00:16Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@0.3.16
 
 ## 0.5.135
+
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -683,11 +843,15 @@
 
 ## 0.5.134
 
+_Released: 2026-04-07T11:09:34Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@0.3.14
 
 ## 0.5.133
+
+_Released: 2026-04-02T13:21:06Z_
 
 ### Patch Changes
 
@@ -695,17 +859,23 @@
 
 ## 0.5.132
 
+_Released: 2026-04-02T12:50:13Z_
+
 ### Patch Changes
 
 - @sap-ux/cf-deploy-config-sub-generator@0.2.163
 
 ## 0.5.131
 
+_Released: 2026-04-01T14:51:40Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@0.3.13
 
 ## 0.5.130
+
+_Released: 2026-04-01T11:49:37Z_
 
 ### Patch Changes
 
@@ -720,11 +890,15 @@
 
 ## 0.5.129
 
+_Released: 2026-04-01T06:34:51Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@0.3.11
 
 ## 0.5.128
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -749,6 +923,8 @@
 
 ## 0.5.127
 
+_Released: 2026-03-27T15:37:24Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@0.3.9
@@ -759,6 +935,8 @@
 - @sap-ux/deploy-config-generator-shared@0.1.112
 
 ## 0.5.126
+
+_Released: 2026-03-27T11:58:49Z_
 
 ### Patch Changes
 
@@ -773,6 +951,8 @@
 
 ## 0.5.125
 
+_Released: 2026-03-26T20:06:10Z_
+
 ### Patch Changes
 
 - Updated dependencies [b66e827]
@@ -786,17 +966,23 @@
 
 ## 0.5.124
 
+_Released: 2026-03-26T16:48:32Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@0.3.6
 
 ## 0.5.123
 
+_Released: 2026-03-26T15:15:10Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@0.3.5
 
 ## 0.5.122
+
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -824,6 +1010,8 @@
 
 ## 0.5.121
 
+_Released: 2026-03-25T12:56:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [f384ace]
@@ -837,6 +1025,8 @@
 
 ## 0.5.120
 
+_Released: 2026-03-23T18:25:40Z_
+
 ### Patch Changes
 
 - @sap-ux/abap-deploy-config-sub-generator@0.3.2
@@ -846,11 +1036,15 @@
 
 ## 0.5.119
 
+_Released: 2026-03-23T14:11:51Z_
+
 ### Patch Changes
 
 - @sap-ux/cf-deploy-config-sub-generator@0.2.155
 
 ## 0.5.118
+
+_Released: 2026-03-23T10:51:10Z_
 
 ### Patch Changes
 

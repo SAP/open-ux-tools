@@ -2,11 +2,15 @@
 
 ## 1.0.8
 
+*Released: 2026-06-11T07:16:28Z*
+
 ### Patch Changes
 
 - 3443820: fix: Fixed a bug where pointers were not generated correctly when annotations were applied to targets belonging to different services in the same CDS file.
 
 ## 1.0.7
+
+*Released: 2026-06-10T09:57:42Z*
 
 ### Patch Changes
 
@@ -15,12 +19,16 @@
 
 ## 1.0.6
 
+*Released: 2026-06-09T19:59:54Z*
+
 ### Patch Changes
 
 - Updated dependencies [79047c2]
     - @sap-ux/cds-odata-annotation-converter@1.0.2
 
 ## 1.0.5
+
+*Released: 2026-06-04T13:54:21Z*
 
 ### Patch Changes
 
@@ -30,6 +38,8 @@
 
 ## 1.0.4
 
+*Released: 2026-06-04T10:19:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [b326a9a]
@@ -37,6 +47,8 @@
     - @sap-ux/cds-odata-annotation-converter@1.0.1
 
 ## 1.0.3
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -54,12 +66,16 @@
 
 ## 1.0.2
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@2.0.2
 - @sap-ux/cds-odata-annotation-converter@1.0.0
 
 ## 1.0.1
+
+*Released: 2026-06-01T15:15:26Z*
 
 ### Patch Changes
 
@@ -68,6 +84,8 @@
     - @sap-ux/cds-odata-annotation-converter@1.0.0
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -115,12 +133,16 @@
 
 ## 0.11.1
 
+*Released: 2026-05-21T16:21:11Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.38.1
 - @sap-ux/cds-odata-annotation-converter@0.8.1
 
 ## 0.11.0
+
+*Released: 2026-05-20T13:39:22Z*
 
 ### Minor Changes
 
@@ -140,6 +162,8 @@
 
 ## 0.10.1
 
+*Released: 2026-05-19T15:16:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [63e6846]
@@ -147,6 +171,8 @@
     - @sap-ux/cds-odata-annotation-converter@0.8.0
 
 ## 0.10.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -167,6 +193,8 @@
 
 ## 0.9.50
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -183,6 +211,8 @@
 
 ## 0.9.49
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -191,12 +221,16 @@
 
 ## 0.9.48
 
+*Released: 2026-05-06T23:02:00Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.36.3
 - @sap-ux/cds-odata-annotation-converter@0.7.17
 
 ## 0.9.47
+
+*Released: 2026-04-30T14:23:24Z*
 
 ### Patch Changes
 
@@ -213,6 +247,8 @@
 
 ## 0.9.46
 
+*Released: 2026-04-29T15:24:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [3945459]
@@ -220,6 +256,8 @@
     - @sap-ux/cds-odata-annotation-converter@0.7.16
 
 ## 0.9.45
+
+*Released: 2026-04-27T19:47:46Z*
 
 ### Patch Changes
 
@@ -229,11 +267,15 @@
 
 ## 0.9.44
 
+*Released: 2026-04-24T09:57:47Z*
+
 ### Patch Changes
 
 - 52f6549: Add .cds annotations support to enable linting of CAP apps with the eslint-plugin-fiori-tools.
 
 ## 0.9.43
+
+*Released: 2026-04-23T12:54:21Z*
 
 ### Patch Changes
 
@@ -243,12 +285,16 @@
 
 ## 0.9.42
 
+*Released: 2026-04-14T12:35:35Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.35.20
 - @sap-ux/cds-odata-annotation-converter@0.7.16
 
 ## 0.9.41
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -259,6 +305,8 @@
 
 ## 0.9.40
 
+*Released: 2026-04-01T11:49:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [3291f6c]
@@ -266,6 +314,8 @@
     - @sap-ux/cds-odata-annotation-converter@0.7.16
 
 ## 0.9.39
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -282,6 +332,8 @@
 
 ## 0.9.38
 
+*Released: 2026-03-26T20:06:10Z*
+
 ### Patch Changes
 
 - Updated dependencies [b66e827]
@@ -289,6 +341,8 @@
     - @sap-ux/cds-odata-annotation-converter@0.7.15
 
 ## 0.9.37
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -301,6 +355,8 @@
     - @sap-ux/project-access@1.35.16
 
 ## 0.9.36
+
+*Released: 2026-03-25T12:56:41Z*
 
 ### Patch Changes
 

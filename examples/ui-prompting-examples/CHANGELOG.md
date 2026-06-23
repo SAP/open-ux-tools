@@ -1,5 +1,29 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 1.1.0
+
+### Minor Changes
+
+#### Features
+
+- Add full template support for the Page building block with all 7 aggregations and controller stub generation [[5a4f633](https://github.com/SAP/open-ux-tools/commit/5a4f633fdd1a1c7d5415221c0863089e7e540aca)]
+
+## 1.0.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-18
+
+#### Bug Fixes
+
+- Code preview in Storybook examples was hard to read due to background color [[e3b09f8](https://github.com/SAP/open-ux-tools/commit/e3b09f83d9ea244a4d3b107ed4e50615a1c45367)]
+
+#### Workspace Updates
+
+- @sap-ux/ui-prompting 1.0.3 → 1.0.4
+
 ## 1.0.3
 
 ### Patch Changes

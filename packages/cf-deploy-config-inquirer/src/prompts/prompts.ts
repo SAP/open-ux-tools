@@ -12,7 +12,7 @@ import {
     promptNames
 } from '../types.js';
 import * as validators from './validators.js';
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { isAppStudio, isFullUrlDestination } from '@sap-ux/btp-utils';
 import { getCfSystemChoices, fetchBTPDestinations } from './prompt-helpers.js';
 import type { Logger } from '@sap-ux/logger';
 import { Severity } from '@sap-devx/yeoman-ui-types';
@@ -72,6 +72,17 @@ async function getDestinationNamePrompt(
         message: () => (hint ? t('prompts.directBindingDestinationHint') : t('prompts.destinationNameMessage')),
         validate: (destination: string): string | boolean => {
             return validators.validateDestinationQuestion(destination, !destination && isBAS);
+        },
+        additionalMessages: (selectedDestination: string) => {
+            const choice = destinationList.find((c) => c.value === selectedDestination);
+            const dest = destinations?.[selectedDestination];
+            if (choice?.isFullUrl || (dest && isFullUrlDestination(dest))) {
+                return {
+                    message: t('warning.fullUrlDestination'),
+                    severity: Severity.warning
+                };
+            }
+            return undefined;
         },
         source: (prevAnswers: CfDeployConfigAnswers, input: string) => searchChoices(input, destinationList),
         choices: () => destinationList

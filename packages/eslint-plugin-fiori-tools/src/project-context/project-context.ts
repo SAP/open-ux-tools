@@ -196,8 +196,9 @@ export class ProjectContext {
 
     /**
      * If set to true, forces re-indexing on the first update of a file.
+     * If updated file is not found in cache, forceReindexOnFirstUpdate is set to true.
      */
-    public static forceReindexOnFirstUpdate = false; // NOSONAR - Property must be mutable for test setup
+    private static forceReindexOnFirstUpdate = false;
 
     /**
      * Creates a ProjectContext for the given file path.
@@ -221,6 +222,7 @@ export class ProjectContext {
      * @returns The ProjectContext instance for the file
      */
     public static updateFile(uri: string, content: string): ProjectContext {
+        this.forceReindexOnFirstUpdate = !this.fileCache.get(uri);
         this.fileCache.set(uri, content);
         const numberOfUpdates = this.updateCache.get(uri) ?? 0;
         this.updateCache.set(uri, numberOfUpdates + 1);
@@ -234,7 +236,7 @@ export class ProjectContext {
 
         return context;
     }
-    private static readonly fileCache = new Map<string, string>();
+    public static fileCache = new Map<string, string>(); // NOSONAR - Property must be mutable for test setup
     private static readonly fileCacheProxy = new Proxy(this.fileCache, {
         get: (target, prop: string) => {
             if (prop === 'get') {

@@ -2,11 +2,15 @@
 
 ## 1.0.5
 
+*Released: 2026-06-12T08:50:00Z*
+
 ### Patch Changes
 
 - 0110219: fix regression writing wrong manifest path via the changes created via properties panel and remove unused control-property-editor-common code
 
 ## 1.0.4
+
+*Released: 2026-06-09T09:41:14Z*
 
 ### Patch Changes
 
@@ -14,17 +18,23 @@
 
 ## 1.0.3
 
+*Released: 2026-06-03T14:58:37Z*
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
 
 ## 1.0.2
 
+*Released: 2026-06-02T21:37:28Z*
+
 ### Patch Changes
 
 - 3506d2c: fix: i18n translations not loading after ESM migration
 
 ## 1.0.1
+
+*Released: 2026-05-30T22:14:13Z*
 
 ### Patch Changes
 
@@ -65,11 +75,15 @@
 
 ## 0.8.1
 
+*Released: 2026-05-18T06:18:05Z*
+
 ### Patch Changes
 
 - 676cbe6: Add margins to panel horizontal borders to distinguish them from splitter borders
 
 ## 0.8.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -77,11 +91,15 @@
 
 ## 0.7.26
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
 
 ## 0.7.25
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -89,11 +107,15 @@
 
 ## 0.7.24
 
+*Released: 2026-04-30T14:23:24Z*
+
 ### Patch Changes
 
 - c160401: fix: SONAR issues
 
 ## 0.7.23
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 

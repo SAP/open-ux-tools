@@ -2,11 +2,15 @@
 
 ## 1.0.2
 
+*Released: 2026-06-04T10:19:37Z*
+
 ### Patch Changes
 
 - d2b8d7b: chore: upgrade @playwright/test 1.58.2 → 1.60.0
 
 ## 1.0.1
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -15,6 +19,8 @@
     - @sap-ux/logger@1.0.1
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -54,11 +60,15 @@
 
 ## 0.3.1
 
+*Released: 2026-05-15T20:38:24Z*
+
 ### Patch Changes
 
 - fb00faa: fix(ci): use workspace:\* for internal monorepo dependencies
 
 ## 0.3.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -71,6 +81,8 @@
 
 ## 0.2.16
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -79,6 +91,8 @@
 
 ## 0.2.15
 
+*Released: 2026-04-08T13:10:18Z*
+
 ### Patch Changes
 
 - Updated dependencies [f1e4481]
@@ -86,12 +100,16 @@
 
 ## 0.2.14
 
+*Released: 2026-03-30T22:24:11Z*
+
 ### Patch Changes
 
 - Updated dependencies [c53a4ba]
     - @sap-ux/logger@0.8.4
 
 ## 0.2.13
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 

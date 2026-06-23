@@ -2,11 +2,15 @@
 
 ## 1.0.8
 
+*Released: 2026-06-12T06:53:23Z*
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@2.0.3
 
 ## 1.0.7
+
+*Released: 2026-06-10T09:57:42Z*
 
 ### Patch Changes
 
@@ -17,6 +21,8 @@
 
 ## 1.0.6
 
+*Released: 2026-06-09T14:35:01Z*
+
 ### Patch Changes
 
 - Updated dependencies [0fa8305]
@@ -24,6 +30,8 @@
     - @sap-ux/axios-extension@2.0.2
 
 ## 1.0.5
+
+*Released: 2026-06-04T13:54:21Z*
 
 ### Patch Changes
 
@@ -33,6 +41,8 @@
 
 ## 1.0.4
 
+*Released: 2026-06-04T10:19:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [b326a9a]
@@ -40,6 +50,8 @@
     - @sap-ux/axios-extension@2.0.1
 
 ## 1.0.3
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -54,6 +66,8 @@
 
 ## 1.0.2
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - Updated dependencies [9580241]
@@ -63,6 +77,8 @@
 
 ## 1.0.1
 
+*Released: 2026-06-01T15:15:26Z*
+
 ### Patch Changes
 
 - Updated dependencies [aed799d]
@@ -70,6 +86,8 @@
     - @sap-ux/axios-extension@2.0.0
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -114,6 +132,8 @@
 
 ## 0.19.4
 
+*Released: 2026-05-27T10:42:47Z*
+
 ### Patch Changes
 
 - Updated dependencies [c12420a]
@@ -121,6 +141,8 @@
     - @sap-ux/ui5-config@0.31.1
 
 ## 0.19.3
+
+*Released: 2026-05-26T16:40:21Z*
 
 ### Patch Changes
 
@@ -132,6 +154,8 @@
 
 ## 0.19.2
 
+*Released: 2026-05-21T16:21:11Z*
+
 ### Patch Changes
 
 - Updated dependencies [9752c40]
@@ -141,6 +165,8 @@
 
 ## 0.19.1
 
+*Released: 2026-05-19T15:16:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [63e6846]
@@ -148,6 +174,8 @@
     - @sap-ux/axios-extension@1.26.0
 
 ## 0.19.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -165,6 +193,8 @@
 
 ## 0.18.127
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -178,6 +208,8 @@
 
 ## 0.18.126
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -185,6 +217,8 @@
     - @sap-ux/project-access@1.36.4
 
 ## 0.18.125
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -197,6 +231,8 @@
 
 ## 0.18.124
 
+*Released: 2026-04-30T14:23:24Z*
+
 ### Patch Changes
 
 - Updated dependencies [c160401]
@@ -204,6 +240,8 @@
     - @sap-ux/project-access@1.36.2
 
 ## 0.18.123
+
+*Released: 2026-04-29T15:24:37Z*
 
 ### Patch Changes
 
@@ -214,6 +252,8 @@
 
 ## 0.18.122
 
+*Released: 2026-04-27T19:47:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -221,6 +261,8 @@
     - @sap-ux/axios-extension@1.25.32
 
 ## 0.18.121
+
+*Released: 2026-04-23T12:54:21Z*
 
 ### Patch Changes
 
@@ -230,12 +272,16 @@
 
 ## 0.18.120
 
+*Released: 2026-04-23T06:48:55Z*
+
 ### Patch Changes
 
 - Updated dependencies [237371b]
     - @sap-ux/axios-extension@1.25.32
 
 ## 0.18.119
+
+*Released: 2026-04-14T20:26:28Z*
 
 ### Patch Changes
 
@@ -245,6 +291,8 @@
     - @sap-ux/axios-extension@1.25.31
 
 ## 0.18.118
+
+*Released: 2026-04-14T12:35:35Z*
 
 ### Patch Changes
 
@@ -256,6 +304,8 @@
     - @sap-ux/project-access@1.35.20
 
 ## 0.18.117
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -270,6 +320,8 @@
 
 ## 0.18.116
 
+*Released: 2026-04-01T11:49:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [3291f6c]
@@ -277,6 +329,8 @@
     - @sap-ux/axios-extension@1.25.28
 
 ## 0.18.115
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -293,6 +347,8 @@
 
 ## 0.18.114
 
+*Released: 2026-03-27T11:58:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [2e17a6b]
@@ -301,6 +357,8 @@
 
 ## 0.18.113
 
+*Released: 2026-03-26T20:06:10Z*
+
 ### Patch Changes
 
 - Updated dependencies [b66e827]
@@ -308,6 +366,8 @@
     - @sap-ux/axios-extension@1.25.26
 
 ## 0.18.112
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -327,6 +387,8 @@
 
 ## 0.18.111
 
+*Released: 2026-03-25T12:56:41Z*
+
 ### Patch Changes
 
 - Updated dependencies [f384ace]
@@ -334,6 +396,8 @@
     - @sap-ux/axios-extension@1.25.25
 
 ## 0.18.110
+
+*Released: 2026-03-23T18:25:40Z*
 
 ### Patch Changes
 
