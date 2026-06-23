@@ -24,6 +24,7 @@ import type {
 } from './types.js';
 import { uniformUrl } from '@sap-ux/fiori-annotation-api';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { collectFlexChanges } from '../utils.js';
 
 export interface ParseResult {
     index: ParsedProject;
@@ -83,22 +84,11 @@ export class ApplicationParser {
                 const [parsedManifest, services] = this.parseManifest(webappPath, manifestUri, manifest);
                 const appRootUri = pathToFileURL(app.appRoot).toString();
                 const changes: FlexChange[] = [];
-                if (existsSync(join(app.appRoot, 'webapp', 'changes'))) {
-                    const changeFiles = readdirSync(join(app.appRoot, 'webapp', 'changes'))
+                if (existsSync(join(webappPath, 'changes'))) {
+                    const changeFiles = readdirSync(join(webappPath, 'changes'))
                         .filter((file) => file.endsWith('propertyChange.change'))
-                        .map((file) => normalizePath(join(app.appRoot, 'webapp', 'changes', file)));
-                    for (const changeFile of changeFiles) {
-                        const changeFileUri = pathToFileURL(changeFile).toString();
-                        const fileContent =
-                            fileCache.get(changeFileUri) ?? readFileSync(changeFile, { encoding: 'utf8', flag: 'r' });
-                        const jsonContent = JSON.parse(fileContent);
-                        changes.push({
-                            changeType: jsonContent.changeType,
-                            content: jsonContent.content,
-                            selector: jsonContent.selector,
-                            changeFileUri: pathToFileURL(changeFile).toString()
-                        });
-                    }
+                        .map((file) => normalizePath(join(webappPath, 'changes', file)));
+                    changes.push(...collectFlexChanges(changeFiles));
                 }
                 const parsedApp: ParsedApp = {
                     manifest: parsedManifest,
@@ -214,29 +204,37 @@ export class ApplicationParser {
      * @param fileCache - Map of file URIs to their contents
      */
     private reparseChange(uri: string, index: ParsedProject, fileCache: Map<string, string>): void {
-        const content = fileCache.get(uri) ?? '';
-        const ast = parseJson(content, {
-            mode: 'json',
-            ranges: true,
-            tokens: true,
-            allowTrailingCommas: false
-        });
-        index.documents[uri] = ast;
-        const jsonContent = JSON.parse(content);
-        const change: FlexChange = {
-            changeType: jsonContent.changeType,
-            content: jsonContent.content,
-            selector: jsonContent.selector,
-            changeFileUri: uri
-        };
         for (const key of Object.keys(index.apps)) {
             const app = index.apps[key];
+            // Remove deleted files
+            app.changes = app.changes.filter((change) => {
+                const path = fileURLToPath(change.changeFileUri);
+                return existsSync(path);
+            });
+            const path = fileURLToPath(uri);
+            const content = fileCache.get(uri) ?? readFileSync(path, { encoding: 'utf8', flag: 'r' });
+            // Create and save the ast tree
+            const ast = parseJson(content, {
+                mode: 'json',
+                ranges: true,
+                tokens: true,
+                allowTrailingCommas: false
+            });
+            index.documents[uri] = ast;
+            // Create new change object
+            const jsonContent = JSON.parse(content) as FlexChange;
+            const newChange: FlexChange = {
+                changeType: jsonContent.changeType,
+                content: jsonContent.content,
+                selector: jsonContent.selector,
+                changeFileUri: uri
+            };
             // Replace the existing entry for this URI, or append if new
             const existingIndex = app.changes.findIndex((c) => c.changeFileUri === uri);
             if (existingIndex >= 0) {
-                app.changes[existingIndex] = change;
+                app.changes[existingIndex] = newChange;
             } else {
-                app.changes.push(change);
+                app.changes.push(newChange);
             }
         }
     }

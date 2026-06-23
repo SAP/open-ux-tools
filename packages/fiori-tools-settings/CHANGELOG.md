@@ -2,11 +2,15 @@
 
 ## 1.0.1
 
+*Released: 2026-06-03T14:58:37Z*
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -41,11 +45,15 @@
 
 ## 0.3.0
 
+*Released: 2026-05-15T08:12:20Z*
+
 ### Minor Changes
 
 - 72695e5: chore: drop Node 20 support as it is no longer maintained
 
 ## 0.2.4
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -53,11 +61,15 @@
 
 ## 0.2.3
 
+*Released: 2025-12-15T10:50:50Z*
+
 ### Patch Changes
 
 - 4ecfbe2: Chore - upgrade eslint devDependenies, convert to flat config and fix lint issues.
 
 ## 0.2.2
+
+*Released: 2025-11-05T06:53:42Z*
 
 ### Patch Changes
 
@@ -65,11 +77,15 @@
 
 ## 0.2.1
 
+*Released: 2025-10-06T17:09:01Z*
+
 ### Patch Changes
 
 - 43a2446: chore: fix Sonar issues
 
 ## 0.2.0
+
+*Released: 2025-05-14T22:35:53Z*
 
 ### Minor Changes
 

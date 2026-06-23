@@ -27,33 +27,33 @@ sap.ui.define([
         opaTest("Navigate to <%- name%>ObjectPage", function (Given, When, Then) {
             Given.iStartMyApp();
 <% if (!hideFilterBar) { %>
-            When.onThe<%- navigationParents.parentLRName%>.onFilterBar().iExecuteSearch();
+            When.onThe<%- navigationParents.parentLRName%>Generated.onFilterBar().iExecuteSearch();
 <% } %>
-            Then.onThe<%- navigationParents.parentLRName%>.onTable().iCheckRows();
-            When.onThe<%- navigationParents.parentLRName%>.onTable().iPressRow(0);
+            Then.onThe<%- navigationParents.parentLRName%>Generated.onTable().iCheckRows();
+            When.onThe<%- navigationParents.parentLRName%>Generated.onTable().iPressRow(0);
 <% if(navigationParents.parentOPName) { %>
-            Then.onThe<%- navigationParents.parentOPName%>.iSeeThisPage();
-            Then.onThe<%- navigationParents.parentOPName%>.onTable({ property: "<%- navigationParents.parentOPTableSection %>" }).iCheckRows();
-            When.onThe<%- navigationParents.parentOPName%>.onTable({ property: "<%- navigationParents.parentOPTableSection %>" }).iPressRow(0);
+            Then.onThe<%- navigationParents.parentOPName%>Generated.iSeeThisPage();
+            Then.onThe<%- navigationParents.parentOPName%>Generated.onTable({ property: "<%- navigationParents.parentOPTableSection %>" }).iCheckRows();
+            When.onThe<%- navigationParents.parentOPName%>Generated.onTable({ property: "<%- navigationParents.parentOPTableSection %>" }).iPressRow(0);
 <% } %>
-            Then.onThe<%- name%>.iSeeThisPage();
+            Then.onThe<%- name%>Generated.iSeeThisPage();
         });
 
-<% if (headerActions?.length > 0 && !isStandalone) { -%>
+<% if (headerActions?.length > 0) { -%>
         opaTest("Check header actions of the Object Page", function (Given, When, Then) {
 <% if (editButton?.visible) { -%>
             // Ensure the opened entity is not in Draft state before uncommenting
-            // Then.onThe<%- name%>.onHeader().iCheckEdit({ visible: true });
-            // When.onThe<%- name%>.onHeader().iPressEdit();
+            // Then.onThe<%- name%>Generated.onHeader().iCheckEdit({ visible: true });
+            // When.onThe<%- name%>Generated.onHeader().iPressEdit();
 <% } -%>
 <%     headerActions.forEach(function(action) { -%>
 <%     if (action.visible) { -%>
 <%         if (action.enabled === 'dynamic') { -%>
-            Then.onThe<%- name%>.onHeader().iCheckAction("<%- action.label %>" /* , { enabled: true } */);
+            Then.onThe<%- name%>Generated.onHeader().iCheckAction("<%- action.label %>" /* , { enabled: true } */);
 <%         } else { -%>
-            Then.onThe<%- name%>.onHeader().iCheckAction("<%- action.label %>", { enabled: <%- action.enabled === true %> });
+            Then.onThe<%- name%>Generated.onHeader().iCheckAction("<%- action.label %>", { enabled: <%- action.enabled === true %> });
 <%         } -%>
-            // When.onThe<%- name%>.onHeader().iPressAction("<%- action.label %>");
+            // When.onThe<%- name%>Generated.onHeader().iPressAction("<%- action.label %>");
 <%     } -%>
 <%     }); -%>
         });
@@ -63,13 +63,13 @@ sap.ui.define([
         opaTest("Check header facets of the Object Page", function (Given, When, Then) {
 <% headerSections.forEach(function(section) { -%>
 <% if (section.microChart) { -%>
-            Then.onThe<%- name%>.onHeader().iCheckMicroChart("<%- section.title %>");
+            Then.onThe<%- name%>Generated.onHeader().iCheckMicroChart("<%- section.title %>");
 <% } else { -%>
-            Then.onThe<%- name%>.onHeader().iCheckHeaderFacet({ facetId: "<%- section.facetId %>" });
+            Then.onThe<%- name%>Generated.onHeader().iCheckHeaderFacet({ facetId: "<%- section.facetId %>"<% if (section.custom) { %>, custom: true<% } %> });
 <% if (section.form) { -%>
 <% section.fields.forEach(function(field) { -%>
-            Then.onThe<%- name%>.onHeader().iCheckFieldInFieldGroup({
-                fieldGroup: "FieldGroup::<%- field.fieldGroupQualifier %>",
+            Then.onThe<%- name%>Generated.onHeader().iCheckFieldInFieldGroup({
+                fieldGroup: "<%- field.fieldGroupQualifier %>",
                 field: "<%- field.field %>",
                 targetAnnotation: "<%- field.targetAnnotation %>"
             });
@@ -80,68 +80,68 @@ sap.ui.define([
         });
 <% } -%>
 
-<% if (bodySections?.length > 0 && !isStandalone) { -%>
+<% if (bodySections?.length > 0) { -%>
         opaTest("Check body sections of the Object Page", function (Given, When, Then) {
 <% if (bodySections?.length > 1) { -%>
-            Then.onThe<%- name%>.iCheckNumberOfSections(<%- bodySections.length %>);
+            Then.onThe<%- name%>Generated.iCheckNumberOfSections(<%- bodySections.length %>);
 <% } -%>
 <% bodySections.forEach(function(section) { -%>
 <% if (bodySections.length > 1) { -%>
-            When.onThe<%- name%>.iPressSectionIconTabFilterButton("<%- section.id %>");
+            When.onThe<%- name%>Generated.iPressSectionIconTabFilterButton("<%- section.id %>");
 <% } -%>
-            Then.onThe<%- name%>.iCheckSection({ section: "<%- section.id %>" });
+            Then.onThe<%- name%>Generated.iCheckSection({ section: "<%- section.id %>" });
 <%  if (section.actions && section.actions.length > 0) { -%>
 <%      section.actions.forEach(function(action) { -%>
 <%      if (action.visible) { -%>
 <%          if (section.isTable && section.navigationProperty) { -%>
 <%              if (action.enabled === 'dynamic') { -%>
-            Then.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction("<%- action.label %>" /* , { enabled: true } */);
+            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction("<%- action.label %>" /* , { enabled: true } */);
 <%              } else { -%>
-            Then.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction("<%- action.label %>", { enabled: <%- action.enabled === true %> });
+            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction("<%- action.label %>", { enabled: <%- action.enabled === true %> });
 <%              } -%>
-            // When.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction("<%- action.label %>");
+            // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction("<%- action.label %>");
 <%          } else { -%>
 <%              if (action.enabled === 'dynamic') { -%>
-            Then.onThe<%- name%>.onForm({ section: "<%- section.id %>" }).iCheckAction("<%- action.label %>" /* , { enabled: true } */);
+            Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction("<%- action.label %>" /* , { enabled: true } */);
 <%              } else { -%>
-            Then.onThe<%- name%>.onForm({ section: "<%- section.id %>" }).iCheckAction("<%- action.label %>", { enabled: <%- action.enabled === true %> });
+            Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction("<%- action.label %>", { enabled: <%- action.enabled === true %> });
 <%              } -%>
-            // When.onThe<%- name%>.onForm({ section: "<%- section.id %>" }).iPressAction("<%- action.label %>");
+            // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iPressAction("<%- action.label %>");
 <%          } -%>
 <%      } -%>
 <%      }); -%>
 <%  } -%>
 <% if (section.isTable && section.navigationProperty) { -%>
 <% if (section.createButton?.visible) { -%>
-            Then.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iCheckCreate({ visible: true });
-            // When.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iPressCreate();
+            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckCreate({ visible: true });
+            // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressCreate();
 <% } -%>
 <% if (section.deleteButton?.visible) { -%>
-            Then.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iCheckDelete({ visible: true });
-            // When.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iPressDelete();
+            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckDelete({ visible: true });
+            // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressDelete();
 <% } -%>
 <% } -%>
 <% if (section?.subSections?.length > 0) { -%>
 <% section.subSections.forEach(function(subSection) { -%>
-            //When.onThe<%- name%>.iGoToSection({ section: "<%- section.id %>", subSection: "<%- subSection.id %>" });
-            Then.onThe<%- name%>.iCheckSubSection({ section: "<%- subSection.id %>" });
+            //When.onThe<%- name%>Generated.iGoToSection({ section: "<%- section.id %>", subSection: "<%- subSection.id %>" });
+            Then.onThe<%- name%>Generated.iCheckSubSection({ section: "<%- subSection.id %>" });
 <% if (subSection.fields && subSection.fields.length > 0) { -%>
 <% subSection.fields.forEach(function(field) { -%>
-            Then.onThe<%- name%>.onForm({ section: "<%- subSection.id %>" }).iCheckField({ property: "<%- field.property %>" });
+            Then.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" }).iCheckField({ property: "<%- field.property %>" });
 <% }) -%>
 <% } -%>
 <% if (subSection.tableColumns && Object.keys(subSection.tableColumns).length > 0 && subSection.navigationProperty) { -%>
-            Then.onThe<%- name%>.onTable({ property: "<%- subSection.navigationProperty %>" }).iCheckColumns(<%- JSON.stringify(subSection.tableColumns) %>);
+            Then.onThe<%- name%>Generated.onTable({ property: "<%- subSection.navigationProperty %>" }).iCheckColumns(<%- JSON.stringify(subSection.tableColumns) %>);
 <% } -%>
 <% }) -%>
 <% } else { -%>
 <% if (section.fields && section.fields.length > 0) { -%>
 <% section.fields.forEach(function(field) { -%>
-            Then.onThe<%- name%>.onForm({ section: "<%- section.id %>" }).iCheckField({ property: "<%- field.property %>" });
+            Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckField({ property: "<%- field.property %>" });
 <% }) -%>
 <% } -%>
 <% if (section.tableColumns && Object.keys(section.tableColumns).length > 0 && section.navigationProperty) { -%>
-            Then.onThe<%- name%>.onTable({ property: "<%- section.navigationProperty %>" }).iCheckColumns(<%- JSON.stringify(section.tableColumns) %>);
+            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckColumns(<%- JSON.stringify(section.tableColumns) %>);
 <% } -%>
 <% } -%>
 <% }) -%>

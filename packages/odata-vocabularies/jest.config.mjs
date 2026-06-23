@@ -5,5 +5,5 @@ config.collectCoverageFrom.push('!src/**/index.ts', 'tools/update.ts', '!tools/r
 // debug-update-vocabularies.test.ts is intentionally kept skipped (it's a debug-only helper, not a
 // regular test — see the comment in that file). Stub prettier to prevent the module load error at
 // import time so all other tests in this package can run normally.
-config.moduleNameMapper = { ...config.moduleNameMapper, '^prettier$': '<rootDir>/__mocks__/prettier.js' };
+config.moduleNameMapper = { ...config.moduleNameMapper, '^prettier$': '<rootDir>/__mocks__/prettier.cjs' };
 export default config;

@@ -33,64 +33,64 @@ function journey() {
     opaTest("Start application", function (Given: Given, _When: When, Then: Then) {
         Given.iStartMyApp();
         <%_ startPages.forEach(function(pageName) { %>
-        Then.onThe<%- pageName %>.iSeeThisPage();
+        Then.onThe<%- pageName %>Generated.iSeeThisPage();
         <%_ }); -%>
     });
 
     <%_ if (!hideFilterBar && filterBarItems && filterBarItems.length > 0) { -%>
     opaTest("Check filter bar", function (_Given: Given, _When: When, Then: Then) {
         <%_ filterBarItems.forEach(function(item) { _%>
-        Then.onThe<%- startLR%>.onFilterBar().iCheckFilterField("<%- item %>" as unknown as FilterFieldIdentifier);
+        Then.onThe<%- startLR%>Generated.onFilterBar().iCheckFilterField("<%- item %>" as unknown as FilterFieldIdentifier);
         <%_ }); -%>
     });
 <%_ } -%>
 <%_ if (semanticKey && semanticKey.missingFromFilterBar && semanticKey.missingFromFilterBar.length > 0) { %>
     opaTest("Add semantic key properties to filter bar", function (_Given: Given, When: When, Then: Then) {
-        Then.onThe<%- startLR%>.onFilterBar().iOpenFilterAdaptation();
+        Then.onThe<%- startLR%>Generated.onFilterBar().iOpenFilterAdaptation();
         <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
-        When.onThe<%- startLR%>.onFilterBar().iAddAdaptationFilterField("<%- property %>");
+        When.onThe<%- startLR%>Generated.onFilterBar().iAddAdaptationFilterField("<%- property %>");
         <%_ }); -%>
-        Then.onThe<%- startLR%>.onFilterBar().iConfirmFilterAdaptation();
+        Then.onThe<%- startLR%>Generated.onFilterBar().iConfirmFilterAdaptation();
         <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
-        Then.onThe<%- startLR%>.onFilterBar().iCheckFilterField("<%- property %>" as unknown as FilterFieldIdentifier);
+        Then.onThe<%- startLR%>Generated.onFilterBar().iCheckFilterField("<%- property %>" as unknown as FilterFieldIdentifier);
         <%_ }); -%>
         <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
-        // Then.onThe<%- startLR%>.onFilterBar().iChangeFilterField({ property: "<%- property %>" });
+        // Then.onThe<%- startLR%>Generated.onFilterBar().iChangeFilterField({ property: "<%- property %>" });
         <%_ }); -%>
-        // Then.onThe<%- startLR%>.onFilterBar().iExecuteSearch();
-        // Then.onThe<%- startLR%>.onTable("").iCheckRows();
-        // Then.onThe<%- startLR%>.onTable("").iSelectRows(0);
-        // Then.onThe<%- startLR%>.onTable("").iCheckAction("<Action Name>", { enabled: true });
+        // Then.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
+        // Then.onThe<%- startLR%>Generated.onTable("").iCheckRows();
+        // Then.onThe<%- startLR%>Generated.onTable("").iSelectRows(0);
+        // Then.onThe<%- startLR%>Generated.onTable("").iCheckAction("<Action Name>", { enabled: true });
     });
 <%_ } -%>
 
     // Note: this test will only work if the ListReport page has a search field and shows data that matches the search term. Please ensure that the test data and search term are set up accordingly.
     // opaTest("Perform a global search and check the result", function (Given: Given, When: When, Then: Then) {
-    //     When.onThe<%- startLR%>.onFilterBar().iChangeSearchField("Search Term");
-    //     When.onThe<%- startLR%>.onFilterBar().iExecuteSearch();
-    //     Then.onThe<%- startLR%>.onTable("").iCheckRows();
+    //     When.onThe<%- startLR%>Generated.onFilterBar().iChangeSearchField("Search Term");
+    //     When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
+    //     Then.onThe<%- startLR%>Generated.onTable("").iCheckRows();
     // });
 
 <%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
     opaTest("Check table columns and actions", function (_Given: Given, _When: When, Then: Then) {
         <%_ if (toolBarActions && toolBarActions.length > 0) { -%>
         <%_ if (createButton.visible && !isALP) { _%>
-        Then.onThe<%- startLR%>.onTable("").iCheckCreate({ visible: true });
-        // Then.onthe<%- startLR%>.onTable("").iPressCreate();
+        Then.onThe<%- startLR%>Generated.onTable("").iCheckCreate({ visible: true });
+        // Then.onthe<%- startLR%>Generated.onTable("").iPressCreate();
         <%_ } _%>
         <%_ if (deleteButton.visible) { _%>
-        // Then.onthe<%- startLR%>.onTable("").iPressDelete();
-        Then.onThe<%- startLR%>.onTable("").iCheckDelete({ visible: true });
+        // Then.onthe<%- startLR%>Generated.onTable("").iPressDelete();
+        Then.onThe<%- startLR%>Generated.onTable("").iCheckDelete({ visible: true });
         <%_ } _%>
         <%_ toolBarActions.forEach(function(item) { _%>
         <%_ if (item.visible) { _%>
-        // Then.onThe<%- startLR%>.onTable("").iPressAction("<%- item.label %>");
-        Then.onThe<%- startLR%>.onTable("").iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
+        // Then.onThe<%- startLR%>Generated.onTable("").iPressAction("<%- item.label %>");
+        Then.onThe<%- startLR%>Generated.onTable("").iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
         <%_ } _%>
         <%_ }); -%>
         <%_ } -%>
         <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
-        Then.onThe<%- startLR %>.onTable("").iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
+        Then.onThe<%- startLR %>Generated.onTable("").iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
         <%_ } %>
     });
 <%_ } %>
@@ -99,12 +99,12 @@ function journey() {
     opaTest("Navigate to ObjectPage", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data
         <% if (!hideFilterBar) { %>
-        When.onThe<%- startLR%>.onFilterBar().iExecuteSearch();
+        When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
         <%} %>
-        Then.onThe<%- startLR%>.onTable("").iCheckRows();
+        Then.onThe<%- startLR%>Generated.onTable("").iCheckRows();
 <% if (navigatedOP) { %>
-        When.onThe<%- startLR%>.onTable("").iPressRow(0);
-        Then.onThe<%- navigatedOP%>.iSeeThisPage();
+        When.onThe<%- startLR%>Generated.onTable("").iPressRow(0);
+        Then.onThe<%- navigatedOP%>Generated.iSeeThisPage();
 <%} %>
     });
 <%} %>

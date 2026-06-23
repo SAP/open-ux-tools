@@ -3650,9 +3650,9 @@ importers:
       prettier:
         specifier: 3.8.1
         version: 3.8.1
-      ts-node:
-        specifier: 10.9.2
-        version: 10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)
+      tsx:
+        specifier: ^4.7.0
+        version: 4.21.0
 
   packages/playwright:
     dependencies:
@@ -4565,6 +4565,9 @@ importers:
       '@babel/preset-typescript':
         specifier: 7.28.5
         version: 7.28.5(@babel/core@7.29.0)
+      '@jest/globals':
+        specifier: 30.3.0
+        version: 30.3.0
       '@sap-ux/i18n':
         specifier: workspace:*
         version: link:../i18n
@@ -33509,7 +33512,7 @@ snapshots:
 
   retry-axios@2.6.0(axios@1.16.1):
     dependencies:
-      axios: 1.16.1
+      axios: 1.16.1(debug@4.3.4)
     optional: true
 
   retry@0.12.0: {}

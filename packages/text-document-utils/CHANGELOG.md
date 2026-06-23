@@ -2,11 +2,15 @@
 
 ## 1.0.1
 
+*Released: 2026-06-03T14:58:37Z*
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -41,11 +45,15 @@
 
 ## 0.4.0
 
+*Released: 2026-05-15T08:12:20Z*
+
 ### Minor Changes
 
 - 72695e5: chore: drop Node 20 support as it is no longer maintained
 
 ## 0.3.5
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -53,11 +61,15 @@
 
 ## 0.3.4
 
+*Released: 2026-04-30T14:23:24Z*
+
 ### Patch Changes
 
 - c160401: fix: SONAR issues
 
 ## 0.3.3
+
+*Released: 2025-12-15T10:50:50Z*
 
 ### Patch Changes
 
@@ -65,17 +77,23 @@
 
 ## 0.3.2
 
+*Released: 2025-11-05T06:53:42Z*
+
 ### Patch Changes
 
 - cfe9c13: Add deep link to package and changelog to README.md
 
 ## 0.3.1
 
+*Released: 2025-08-13T10:00:10Z*
+
 ### Patch Changes
 
 - c7db726: feat: add deprecated $value syntax diagnostic message.
 
 ## 0.3.0
+
+*Released: 2025-05-14T22:35:53Z*
 
 ### Minor Changes
 

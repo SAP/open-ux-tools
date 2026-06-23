@@ -161,7 +161,7 @@ The following rules help guide the AI model to use the server correctly. Add the
 ## [Available Tools](#available-tools)
 
 #### `search_docs`
-Searches SAP Fiori elements, Annotations, UI5, SAP Fiori tools documentation for the given query.
+Searches SAP Fiori elements, Annotations, UI5, OPA5 Guides, SAP Fiori tools documentation for the given query.
 
 Note: the results are based on the most recent indexed version of UI5 documentation
 
@@ -170,22 +170,32 @@ Note: the results are based on the most recent indexed version of UI5 documentat
 #### `list_fiori_apps`
 Scans a specified directory to find existing SAP Fiori applications that can be modified.
 
-#### `list_functionalities` (Step 1 of 3)
-Gets the list of supported functionalities to create a new or modify an existing SAP Fiori application.
+#### `list_sap_systems`
+Lists all SAP systems stored in the user's environment (e.g. SAP Fiori tools system store). Use this when the user references a SAP system by name before calling `download_odata_service_metadata` or generating a Fiori application.
 
-The main functionalities are:
+#### `download_odata_service_metadata`
+Downloads the EDMX metadata of a specific OData service from a SAP system and saves it as `metadata.xml`. Use this before calling `generate_fiori_app_odata` when the user provides a SAP system reference or service URL.
 
-- Generating an SAP Fiori elements app within an [SAP Cloud Application Programming Model (CAP)](https://cap.cloud.sap/) project
-- Generating an SAP Fiori elements app for an existing OData service, for example, an [ABAP RESTful Application Programming Model](https://pages.community.sap.com/topics/abap/rap)-based OData service
+#### `generate_fiori_app_odata`
+Generates a new SAP Fiori UI application for OData (non-CAP) projects, for example [ABAP RESTful Application Programming Model](https://pages.community.sap.com/topics/abap/rap)-based OData services.
+
+#### `generate_fiori_app_cap`
+Generates a new SAP Fiori UI application within an existing [SAP Cloud Application Programming Model (CAP)](https://cap.cloud.sap/) project.
+
+#### `list_functionality` (Step 1 of 3)
+Gets the list of supported **modification** functionalities for an existing SAP Fiori application. Requires a valid absolute path to the application.
+
+The supported modifications are:
+
 - Adding and deleting pages from an app
 - Adding and modifying controller extensions
 - Modifying `manifest.json` properties depending on the app, for example, adding a layout based on the flexibility of the programming model or enabling initial load
 
 #### `get_functionality_details` (Step 2 of 3)
-Gets the required parameters and detailed information for a specific functionality to create a new or modify an existing SAP Fiori application.
+Gets the required parameters and detailed information for a specific functionality to modify an existing SAP Fiori application.
 
 #### `execute_functionality` (Step 3 of 3)
-Executes a specific functionality to create a new or modify an existing SAP Fiori application with provided parameters.
+Executes a specific functionality to modify an existing SAP Fiori application with provided parameters.
 
 ## [Logging](#logging)
 
