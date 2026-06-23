@@ -45,9 +45,10 @@ sap.ui.define([
             Then.onTheSalesOrderItemListGenerated.onTable().iCheckAction("View Return Status", { enabled: true });
             // Then.onTheSalesOrderItemListGenerated.onTable().iPressAction("Dummy Bound Action");
             Then.onTheSalesOrderItemListGenerated.onTable().iCheckAction("Dummy Bound Action", { enabled: false });
-            Then.onTheSalesOrderItemListGenerated.onTable().iCheckColumns(undefined, {"10":{"header":"Bound Action"},"11":{"header":"IBN"},"SalesOrderItem":{"header":"Item"},"HigherLevelItem":{"header":"Higher-Level Item"},"Material":{"header":"Material"},"RequestedQuantity":{"header":"Requested Quantity"},"SalesOrderItemCategory":{"header":"Item Category"},"RequestedDeliveryDate":{"header":"Delivery Date"},"NetAmount":{"header":"Net Value"},"_Material/Material":{"header":"Material"},"isVerified":{"header":"Verified Material"},"_ReferencedSalesOrder/SalesOrder":{"header":"Referenced Sales Order"}});
-
+            Then.onTheSalesOrderItemListGenerated.onTable().iCheckColumns(undefined, {"SalesOrderItem":{"header":"Item"},"HigherLevelItem":{"header":"Higher-Level Item"},"Material":{"header":"Material"},"RequestedQuantity":{"header":"Requested Quantity"},"SalesOrderItemCategory":{"header":"Item Category"},"RequestedDeliveryDate":{"header":"Delivery Date"},"NetAmount":{"header":"Net Value"},"_Material/Material":{"header":"Material"},"isVerified":{"header":"Verified Material"},"_ReferencedSalesOrder/SalesOrder":{"header":"Referenced Sales Order"},"DataFieldForAction::com.c_salesordermanage_sd_aggregate.DummyBoundAction":{"header":"Bound Action"},"DataFieldForIntentBasedNavigation::SalesOrder::manageInline::RequiresContext":{"header":"IBN"}});
         });
+
+
 
 
 

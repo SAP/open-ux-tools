@@ -58,8 +58,9 @@ sap.ui.define([
             // Then.onTheTravelListGenerated.onTable().iPressAction("Set Cancel Date to Tomorrow");
             Then.onTheTravelListGenerated.onTable().iCheckAction("Set Cancel Date to Tomorrow", { enabled: false });
             Then.onTheTravelListGenerated.onTable().iCheckColumns(undefined, {"TravelID":{"header":"Travel ID"},"AgencyID":{"header":"Agency ID"},"CustomerID":{"header":"Customer ID"},"BeginDate":{"header":"Starting Date"},"EndDate":{"header":"End Date"},"BookingFee":{"header":"Booking Fee"},"TotalPrice":{"header":"Total Price"},"LatestCancellationDate":{"header":"Latest Cancellation Date"},"Memo":{"header":"Description"},"Status":{"header":"Travel Status"}});
-
         });
+
+
 
 
 
