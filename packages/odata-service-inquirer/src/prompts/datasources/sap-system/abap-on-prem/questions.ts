@@ -3,9 +3,10 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { validateClient } from '@sap-ux/project-input-validator';
 import type { InputQuestion, Question } from 'inquirer';
 import { t } from '../../../../i18n.js';
-import type { OdataServiceAnswers, OdataServicePromptOptions, SystemNamePromptOptions } from '../../../../types.js';
 import type {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- required by TS doc links
+    OdataServiceAnswers,
+    OdataServicePromptOptions,
+    SystemNamePromptOptions,
     ServiceSelectionPromptOptions
 } from '../../../../types.js';
 import { isBackendSystemKeyExisting, PromptState } from '../../../../utils/index.js';
