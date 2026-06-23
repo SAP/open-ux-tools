@@ -5,14 +5,10 @@ import DataType from 'sap/ui/base/DataType';
 import ComponentContainer from 'sap/ui/core/ComponentContainer';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import UIComponent from 'sap/ui/core/UIComponent';
-
 import { getComponent } from '../utils/core.js';
 import { DesigntimeSetting } from 'sap/ui/dt/DesignTimeMetadata';
 import { ChangeService } from './changes/index.js';
 import UI5Element from 'sap/ui/core/Element';
-import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import OverlayUtil from 'sap/ui/dt/OverlayUtil';
-
 
 export interface PropertiesInfo {
     defaultValue: string;
@@ -151,7 +147,9 @@ export function getManifestProperties(
     return manifestProperties;
 }
 
-export const getOverlay = (control: UI5Element): ElementOverlay | undefined => {
+export const getOverlay = async (control: UI5Element): Promise<ElementOverlay | undefined> => {
+    const OverlayRegistry = (await import('sap/ui/dt/OverlayRegistry')).default;
+    const OverlayUtil = (await import('sap/ui/dt/OverlayUtil')).default;
     let controlOverlay = OverlayRegistry.getOverlay(control);
     if (!controlOverlay?.getDomRef()) {
         //look for closest control
