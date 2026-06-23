@@ -201,6 +201,32 @@ describe('config', () => {
                 expect(path.startsWith('/')).toBe(true);
             });
         });
+
+        test('editor and card generator paths are prefixed for component project type', async () => {
+            const componentUtils = {
+                getProject() {
+                    return {
+                        getSourcePath: () => tmpdir(),
+                        getType: () => 'component',
+                        getNamespace: () => 'my/app'
+                    };
+                }
+            } as unknown as MiddlewareUtils;
+            const config = {
+                editors: {
+                    rta: {
+                        layer: 'CUSTOMER_BASE',
+                        endpoints: [{ path: '/editor.html', developerMode: false }]
+                    },
+                    cardGenerator: {
+                        path: '/cardGenerator.html'
+                    }
+                }
+            } as MiddlewareConfig;
+            const previews = getPreviewPaths(config, undefined, componentUtils);
+            expect(previews.find(({ path }) => path === '/test-resources/my/app/editor.html')).toBeDefined();
+            expect(previews.find(({ path }) => path === '/test-resources/my/app/cardGenerator.html')).toBeDefined();
+        });
     });
 
     describe('sanitizeConfig', () => {

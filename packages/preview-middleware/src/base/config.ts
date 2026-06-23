@@ -584,13 +584,14 @@ export function getPreviewPaths(
     urls.push({ path: `${flpConfig.path}#${flpConfig.intent.object}-${flpConfig.intent.action}`, type: 'preview' });
     // add editor urls
     if (config.editors) {
-        config.editors.rta?.endpoints.forEach((endpoint) => {
+        const rta = adjustRtaConfigPaths(config.editors.rta, utils);
+        rta?.endpoints.forEach((endpoint) => {
             urls.push({ path: endpoint.path.startsWith('/') ? endpoint.path : `/${endpoint.path}`, type: 'editor' });
         });
-        if (config.editors.cardGenerator?.path) {
-            const cardGeneratorPath = config.editors.cardGenerator.path;
+        const cardGenerator = adjustCardGeneratorPath(config.editors.cardGenerator, utils);
+        if (cardGenerator?.path) {
             urls.push({
-                path: cardGeneratorPath.startsWith('/') ? cardGeneratorPath : `/${cardGeneratorPath}`,
+                path: cardGenerator.path.startsWith('/') ? cardGenerator.path : `/${cardGenerator.path}`,
                 type: 'editor'
             });
         }
