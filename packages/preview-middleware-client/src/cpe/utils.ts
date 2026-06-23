@@ -1,6 +1,8 @@
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type Control from 'sap/ui/core/Control';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
+import type OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
+import type OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import DataType from 'sap/ui/base/DataType';
 import ComponentContainer from 'sap/ui/core/ComponentContainer';
 import XMLView from 'sap/ui/core/mvc/XMLView';
@@ -147,9 +149,28 @@ export function getManifestProperties(
     return manifestProperties;
 }
 
+// eslint-disable-next-line @sap-ux/fiori-tools/sap-no-global-variable
+let overlayModulesPromise: Promise<{
+    OverlayRegistry: typeof OverlayRegistry;
+    OverlayUtil: typeof OverlayUtil;
+}> | undefined;
+
+/**
+ * Lazily loads and caches the OverlayRegistry and OverlayUtil modules.
+ * The dynamic imports are executed only once; subsequent calls return the same resolved promise.
+ *
+ * @returns Promise resolving to an object containing the OverlayRegistry and OverlayUtil modules.
+ */
+function getOverlayModules() {
+    overlayModulesPromise ??= Promise.all([
+        import('sap/ui/dt/OverlayRegistry'),
+        import('sap/ui/dt/OverlayUtil')
+    ]).then(([{ default: OverlayRegistry }, { default: OverlayUtil }]) => ({ OverlayRegistry, OverlayUtil }));
+    return overlayModulesPromise;
+}
+
 export const getOverlay = async (control: UI5Element): Promise<ElementOverlay | undefined> => {
-    const OverlayRegistry = (await import('sap/ui/dt/OverlayRegistry')).default;
-    const OverlayUtil = (await import('sap/ui/dt/OverlayUtil')).default;
+    const { OverlayRegistry, OverlayUtil } = await getOverlayModules();
     let controlOverlay = OverlayRegistry.getOverlay(control);
     if (!controlOverlay?.getDomRef()) {
         //look for closest control
