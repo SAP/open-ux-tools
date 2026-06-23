@@ -38,7 +38,7 @@ sap.ui.define([
         opaTest("Check header actions of the Object Page", function (Given, When, Then) {
             // Ensure the opened entity is not in Draft state before uncommenting
             // Then.onTheSalesOrderItemObjectPageGenerated.onHeader().iCheckEdit({ visible: true });
-            // When.onTheSalesOrderItemObjectPageGenerated.onHeader().iPressEdit();
+            // When.onTheSalesOrderItemObjectPageGenerated.onHeader().iExecuteEdit();
             Then.onTheSalesOrderItemObjectPageGenerated.onHeader().iCheckAction("Identification Form Action" /* , { enabled: true } */);
             // When.onTheSalesOrderItemObjectPageGenerated.onHeader().iPressAction("Identification Form Action");
         });
@@ -46,7 +46,7 @@ sap.ui.define([
 
         opaTest("Check body sections of the Object Page", function (Given, When, Then) {
             Then.onTheSalesOrderItemObjectPageGenerated.iCheckNumberOfSections(2);
-            When.onTheSalesOrderItemObjectPageGenerated.iPressSectionIconTabFilterButton("Identification");
+            When.onTheSalesOrderItemObjectPageGenerated.iGoToSection({ section: "Identification" });
             Then.onTheSalesOrderItemObjectPageGenerated.iCheckSection({ section: "Identification" });
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "_ReferencedSalesOrder/SalesOrder" });
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "SalesOrderItem" });
@@ -54,7 +54,7 @@ sap.ui.define([
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "RequestedQuantity" });
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "NetAmount" });
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "_ReferencedSalesOrderItem/SalesOrderItem" });
-            When.onTheSalesOrderItemObjectPageGenerated.iPressSectionIconTabFilterButton("MaterialDetailsFacet");
+            When.onTheSalesOrderItemObjectPageGenerated.iGoToSection({ section: "MaterialDetailsFacet" });
             Then.onTheSalesOrderItemObjectPageGenerated.iCheckSection({ section: "MaterialDetailsFacet" });
        });
 

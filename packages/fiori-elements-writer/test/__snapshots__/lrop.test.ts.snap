@@ -19239,18 +19239,11 @@ sap.ui.define([
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -19345,18 +19338,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -23129,7 +23115,7 @@ sap.ui.define([
 
         opaTest(\\"Check body sections of the Object Page\\", function (Given, When, Then) {
             Then.onTheBookingObjectPageGenerated.iCheckNumberOfSections(2);
-            When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Booking\\");
+            When.onTheBookingObjectPageGenerated.iGoToSection({ section: \\"Booking\\" });
             Then.onTheBookingObjectPageGenerated.iCheckSection({ section: \\"Booking\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"BookingID\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"BookingDate\\" });
@@ -23139,7 +23125,7 @@ sap.ui.define([
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"FlightDate\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"FlightPrice\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"DestinationRisk\\" });
-            When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton(\\"BookingSupplement\\");
+            When.onTheBookingObjectPageGenerated.iGoToSection({ section: \\"BookingSupplement\\" });
             Then.onTheBookingObjectPageGenerated.iCheckSection({ section: \\"BookingSupplement\\" });
        });
 
@@ -23287,7 +23273,7 @@ sap.ui.define([
         opaTest(\\"Check header actions of the Object Page\\", function (Given, When, Then) {
             // Ensure the opened entity is not in Draft state before uncommenting
             // Then.onTheTravelObjectPageGenerated.onHeader().iCheckEdit({ visible: true });
-            // When.onTheTravelObjectPageGenerated.onHeader().iPressEdit();
+            // When.onTheTravelObjectPageGenerated.onHeader().iExecuteEdit();
             Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction(\\"Set Cancel Date to Tomorrow\\" /* , { enabled: true } */);
             // When.onTheTravelObjectPageGenerated.onHeader().iPressAction(\\"Set Cancel Date to Tomorrow\\");
             Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction(\\"Set To Booked\\" /* , { enabled: true } */);
@@ -23303,7 +23289,7 @@ sap.ui.define([
 
         opaTest(\\"Check body sections of the Object Page\\", function (Given, When, Then) {
             Then.onTheTravelObjectPageGenerated.iCheckNumberOfSections(2);
-            When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Travel\\");
+            When.onTheTravelObjectPageGenerated.iGoToSection({ section: \\"Travel\\" });
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: \\"Travel\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"TravelID\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"AgencyID\\" });
@@ -23315,7 +23301,7 @@ sap.ui.define([
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"LatestCancellationDate\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"Memo\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"Status\\" });
-            When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Booking\\");
+            When.onTheTravelObjectPageGenerated.iGoToSection({ section: \\"Booking\\" });
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: \\"Booking\\" });
        });
 
@@ -23413,18 +23399,11 @@ sap.ui.require(
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -23519,18 +23498,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -24326,18 +24298,11 @@ sap.ui.require(
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -24432,18 +24397,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -25286,17 +25244,7 @@ sap.ui.require(
     "state": "modified",
   },
   "webapp/test/integration/pages/BookingObjectPage.gen.ts": Object {
-    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
-import Press from \\"sap/ui/test/actions/Press\\";
-
-export const actions = {
-    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
-        return this.waitFor({
-            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-            actions: new Press()
-        });
-    }
-};
+    "contents": "export const actions = {};
 
 export const assertions = {};
 
@@ -25363,17 +25311,7 @@ export default class ListReport {
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelObjectPage.gen.ts": Object {
-    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
-import Press from \\"sap/ui/test/actions/Press\\";
-
-export const actions = {
-    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
-        return this.waitFor({
-            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-            actions: new Press()
-        });
-    }
-};
+    "contents": "export const actions = {};
 
 export const assertions = {};
 
@@ -26883,18 +26821,11 @@ sap.ui.require(
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 
@@ -26989,18 +26920,11 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
-                    actions: new Press()
-                });
-            }
-        },
+        actions: {},
         assertions: {}
     };
 

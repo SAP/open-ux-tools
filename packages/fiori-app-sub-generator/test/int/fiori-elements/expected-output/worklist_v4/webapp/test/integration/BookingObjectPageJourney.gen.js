@@ -41,7 +41,7 @@ sap.ui.define([
 
         opaTest("Check body sections of the Object Page", function (Given, When, Then) {
             Then.onTheBookingObjectPageGenerated.iCheckNumberOfSections(2);
-            When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton("Booking");
+            When.onTheBookingObjectPageGenerated.iGoToSection({ section: "Booking" });
             Then.onTheBookingObjectPageGenerated.iCheckSection({ section: "Booking" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: "Booking" }).iCheckField({ property: "BookingID" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: "Booking" }).iCheckField({ property: "BookingDate" });
@@ -51,7 +51,7 @@ sap.ui.define([
             Then.onTheBookingObjectPageGenerated.onForm({ section: "Booking" }).iCheckField({ property: "FlightDate" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: "Booking" }).iCheckField({ property: "FlightPrice" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: "Booking" }).iCheckField({ property: "DestinationRisk" });
-            When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton("BookingSupplement");
+            When.onTheBookingObjectPageGenerated.iGoToSection({ section: "BookingSupplement" });
             Then.onTheBookingObjectPageGenerated.iCheckSection({ section: "BookingSupplement" });
        });
 

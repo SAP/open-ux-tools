@@ -756,16 +756,16 @@ export type Then = Opa5 & BaseArrangements & {
             expect(bookingObjPageJourneyContent).toContain('iCheckMicroChart("Supplement Price")');
             expect(bookingObjPageJourneyContent).toContain('onHeader().iCheckAction("Activate", { enabled: false })');
             expect(bookingObjPageJourneyContent).toContain('iCheckNumberOfSections(3)');
-            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("BookingDetails")');
+            expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "BookingDetails" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "BookingDetails" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "BookingData" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSubSection({ section: "AdministrativeData" })');
-            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("FlightData")');
+            expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "FlightData" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "FlightData" })');
             expect(bookingObjPageJourneyContent).toContain(
                 '.iCheckAction("Deduct Discount" /* , { enabled: true } */)'
             );
-            expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("PriceData")');
+            expect(bookingObjPageJourneyContent).toContain('iGoToSection({ section: "PriceData" })');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "PriceData" })');
             expect(bookingObjPageJourneyContent).toContain(
                 'onTable({ property: "_BookSupplement" }).iCheckAction("Create Template", { enabled: true })'
@@ -913,13 +913,9 @@ export type Then = Opa5 & BaseArrangements & {
             expect(opPagePath).toBeDefined();
 
             const opContent = dumped[opPagePath!].contents as string;
-            expect(opContent).toContain('import type Opa5 from "sap/ui/test/Opa5"');
-            expect(opContent).toContain('import Press from "sap/ui/test/actions/Press"');
             expect(opContent).toContain('export const actions');
             expect(opContent).toContain('export const assertions');
             expect(opContent).toContain('export default class ObjectPage');
-            expect(opContent).toContain('iPressSectionIconTabFilterButton');
-            expect(opContent).toContain('this: Opa5');
             expect(opContent).not.toContain('sap/fe/test/ObjectPage');
         });
 
@@ -1136,13 +1132,13 @@ export type Then = Opa5 & BaseArrangements & {
 
             // ─── Section navigation ───
             expect(content).toContain('iCheckNumberOfSections(3)');
-            expect(content).toContain('iPressSectionIconTabFilterButton("BookingDetails")');
+            expect(content).toContain('iGoToSection({ section: "BookingDetails" })');
             expect(content).toContain('iCheckSection({ section: "BookingDetails" }, {})');
             expect(content).toContain('iCheckSubSection({ section: "BookingData" })');
             expect(content).toContain('iCheckSubSection({ section: "AdministrativeData" })');
-            expect(content).toContain('iPressSectionIconTabFilterButton("FlightData")');
+            expect(content).toContain('iGoToSection({ section: "FlightData" })');
             expect(content).toContain('iCheckSection({ section: "FlightData" }, {})');
-            expect(content).toContain('iPressSectionIconTabFilterButton("PriceData")');
+            expect(content).toContain('iGoToSection({ section: "PriceData" })');
             expect(content).toContain('iCheckSection({ section: "PriceData" }, {})');
 
             // ─── Section actions (table action with dynamic enabled) ───
