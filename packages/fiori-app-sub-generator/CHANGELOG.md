@@ -1,5 +1,17 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 1.0.35
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-23
+
+#### Features
+
+- pass logger instance to writers [[c25af79](https://github.com/SAP/open-ux-tools/commit/c25af79b4a72d9194572dd17cdc9c5755b964b87)]
+
 ## 1.0.34
 
 ### Patch Changes
