@@ -38,7 +38,7 @@ sap.ui.define([
         opaTest("Check header actions of the Object Page", function (Given, When, Then) {
             // Ensure the opened entity is not in Draft state before uncommenting
             // Then.onTheSalesOrderItemObjectPageGenerated.onHeader().iCheckEdit({ visible: true });
-            // When.onTheSalesOrderItemObjectPageGenerated.onHeader().iExecuteEdit();
+            // When.onTheSalesOrderItemObjectPageGenerated.onHeader().iPressEdit();
             Then.onTheSalesOrderItemObjectPageGenerated.onHeader().iCheckAction("Identification Form Action" /* , { enabled: true } */);
             // When.onTheSalesOrderItemObjectPageGenerated.onHeader().iPressAction("Identification Form Action");
         });
@@ -46,13 +46,13 @@ sap.ui.define([
 
         opaTest("Check body sections of the Object Page", function (Given, When, Then) {
             Then.onTheSalesOrderItemObjectPageGenerated.iCheckNumberOfSections(2);
-            When.onTheSalesOrderItemObjectPageGenerated.iGoToSection({ section: "Identification" });
+            When.onTheSalesOrderItemObjectPageGenerated.iPressSectionIconTabFilterButton("Identification");
             Then.onTheSalesOrderItemObjectPageGenerated.iCheckSection({ section: "Identification" });
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "SalesOrderItem" });
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "Material" });
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "RequestedQuantity" });
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "NetAmount" });
-            When.onTheSalesOrderItemObjectPageGenerated.iGoToSection({ section: "MaterialDetailsFacet" });
+            When.onTheSalesOrderItemObjectPageGenerated.iPressSectionIconTabFilterButton("MaterialDetailsFacet");
             Then.onTheSalesOrderItemObjectPageGenerated.iCheckSection({ section: "MaterialDetailsFacet" });
             Then.onTheSalesOrderItemObjectPageGenerated.onTable({ property: "_MaterialDetails" }).iCheckAction("Material Details Bound Action", { enabled: true });
             // When.onTheSalesOrderItemObjectPageGenerated.onTable({ property: "_MaterialDetails" }).iPressAction("Material Details Bound Action");

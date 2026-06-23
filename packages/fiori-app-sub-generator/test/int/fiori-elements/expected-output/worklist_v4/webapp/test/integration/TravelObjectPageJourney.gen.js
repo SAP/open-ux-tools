@@ -36,7 +36,7 @@ sap.ui.define([
         opaTest("Check header actions of the Object Page", function (Given, When, Then) {
             // Ensure the opened entity is not in Draft state before uncommenting
             // Then.onTheTravelObjectPageGenerated.onHeader().iCheckEdit({ visible: true });
-            // When.onTheTravelObjectPageGenerated.onHeader().iExecuteEdit();
+            // When.onTheTravelObjectPageGenerated.onHeader().iPressEdit();
             Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction("Set Cancel Date to Tomorrow" /* , { enabled: true } */);
             // When.onTheTravelObjectPageGenerated.onHeader().iPressAction("Set Cancel Date to Tomorrow");
             Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction("Set To Booked" /* , { enabled: true } */);
@@ -52,7 +52,7 @@ sap.ui.define([
 
         opaTest("Check body sections of the Object Page", function (Given, When, Then) {
             Then.onTheTravelObjectPageGenerated.iCheckNumberOfSections(2);
-            When.onTheTravelObjectPageGenerated.iGoToSection({ section: "Travel" });
+            When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton("Travel");
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: "Travel" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: "Travel" }).iCheckField({ property: "TravelID" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: "Travel" }).iCheckField({ property: "AgencyID" });
@@ -64,7 +64,7 @@ sap.ui.define([
             Then.onTheTravelObjectPageGenerated.onForm({ section: "Travel" }).iCheckField({ property: "LatestCancellationDate" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: "Travel" }).iCheckField({ property: "Memo" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: "Travel" }).iCheckField({ property: "Status" });
-            When.onTheTravelObjectPageGenerated.iGoToSection({ section: "Booking" });
+            When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton("Booking");
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: "Booking" });
             Then.onTheTravelObjectPageGenerated.onTable({ property: "_Booking" }).iCheckColumns({"BookingID":{"header":"Booking Number"},"BookingDate":{"header":"Booking Date"},"CustomerID":{"header":"Customer ID"},"AirlineID":{"header":"Airline ID"},"ConnectionID":{"header":"Flight Number"},"FlightDate":{"header":"Flight Date"},"FlightPrice":{"header":"Flight Price"},"DestinationRisk":{"header":"Destination Risk"}});
        });

@@ -354,11 +354,18 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -780,11 +787,18 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -1183,11 +1197,18 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -1586,11 +1607,18 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -2255,11 +2283,18 @@ sap.ui.require(
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -2589,11 +2624,18 @@ sap.ui.require(
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -3033,11 +3075,18 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -3097,11 +3146,18 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -3134,11 +3190,18 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -3557,11 +3620,18 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -3621,11 +3691,18 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -3658,11 +3735,18 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -4093,11 +4177,18 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -5946,11 +6037,18 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -7640,11 +7738,18 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -9461,11 +9566,18 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -11288,11 +11400,18 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -11600,11 +11719,18 @@ sap.ui.require(
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -11979,7 +12105,17 @@ export default class ListReport {
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.gen.ts": Object {
-    "contents": "export const actions = {};
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
+import Press from \\"sap/ui/test/actions/Press\\";
+
+export const actions = {
+    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
+        return this.waitFor({
+            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+            actions: new Press()
+        });
+    }
+};
 
 export const assertions = {};
 
@@ -12371,7 +12507,17 @@ export default class ListReport {
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.gen.ts": Object {
-    "contents": "export const actions = {};
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
+import Press from \\"sap/ui/test/actions/Press\\";
+
+export const actions = {
+    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
+        return this.waitFor({
+            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+            actions: new Press()
+        });
+    }
+};
 
 export const assertions = {};
 
@@ -12763,7 +12909,17 @@ export default class ListReport {
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.gen.ts": Object {
-    "contents": "export const actions = {};
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
+import Press from \\"sap/ui/test/actions/Press\\";
+
+export const actions = {
+    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
+        return this.waitFor({
+            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+            actions: new Press()
+        });
+    }
+};
 
 export const assertions = {};
 
@@ -13538,7 +13694,17 @@ export default class ListReport {
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.gen.ts": Object {
-    "contents": "export const actions = {};
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
+import Press from \\"sap/ui/test/actions/Press\\";
+
+export const actions = {
+    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
+        return this.waitFor({
+            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+            actions: new Press()
+        });
+    }
+};
 
 export const assertions = {};
 
@@ -13602,7 +13768,17 @@ export default runner;
     "state": "modified",
   },
   "webapp/test/integration/pages/PositionsObjectPage.gen.ts": Object {
-    "contents": "export const actions = {};
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
+import Press from \\"sap/ui/test/actions/Press\\";
+
+export const actions = {
+    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
+        return this.waitFor({
+            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+            actions: new Press()
+        });
+    }
+};
 
 export const assertions = {};
 
@@ -13614,7 +13790,17 @@ export default class ObjectPage {
     "state": "modified",
   },
   "webapp/test/integration/pages/TrainingsObjectPage.gen.ts": Object {
-    "contents": "export const actions = {};
+    "contents": "import type Opa5 from \\"sap/ui/test/Opa5\\";
+import Press from \\"sap/ui/test/actions/Press\\";
+
+export const actions = {
+    iPressSectionIconTabFilterButton(this: Opa5, section: string) {
+        return this.waitFor({
+            id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+            actions: new Press()
+        });
+    }
+};
 
 export const assertions = {};
 
@@ -15516,11 +15702,18 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -17379,11 +17572,18 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -19236,11 +19436,18 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 
@@ -21357,11 +21564,18 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
     var CustomPageDefinitions = {
-        actions: {},
+        actions: {
+            iPressSectionIconTabFilterButton: function (section) {
+                return this.waitFor({
+                    id: new RegExp(\`.*--fe::FacetSection::\${section}-anchor$\`),
+                    actions: new Press()
+                });
+            }
+        },
         assertions: {}
     };
 

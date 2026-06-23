@@ -42,7 +42,7 @@ sap.ui.define([
         opaTest("Check header actions of the Object Page", function (Given, When, Then) {
             // Ensure the opened entity is not in Draft state before uncommenting
             // Then.onTheMaterialDetailsObjectPageGenerated.onHeader().iCheckEdit({ visible: true });
-            // When.onTheMaterialDetailsObjectPageGenerated.onHeader().iExecuteEdit();
+            // When.onTheMaterialDetailsObjectPageGenerated.onHeader().iPressEdit();
             Then.onTheMaterialDetailsObjectPageGenerated.onHeader().iCheckAction("Change Material Category", { enabled: true });
             // When.onTheMaterialDetailsObjectPageGenerated.onHeader().iPressAction("Change Material Category");
         });
@@ -50,13 +50,13 @@ sap.ui.define([
 
         opaTest("Check body sections of the Object Page", function (Given, When, Then) {
             Then.onTheMaterialDetailsObjectPageGenerated.iCheckNumberOfSections(2);
-            When.onTheMaterialDetailsObjectPageGenerated.iGoToSection({ section: "MaterialDetailsFacet" });
+            When.onTheMaterialDetailsObjectPageGenerated.iPressSectionIconTabFilterButton("MaterialDetailsFacet");
             Then.onTheMaterialDetailsObjectPageGenerated.iCheckSection({ section: "MaterialDetailsFacet" });
             Then.onTheMaterialDetailsObjectPageGenerated.onForm({ section: "MaterialDetailsFacet" }).iCheckField({ property: "ModelYear" });
             Then.onTheMaterialDetailsObjectPageGenerated.onForm({ section: "MaterialDetailsFacet" }).iCheckField({ property: "WarrantyYear" });
             Then.onTheMaterialDetailsObjectPageGenerated.onForm({ section: "MaterialDetailsFacet" }).iCheckField({ property: "BrandCategory" });
             Then.onTheMaterialDetailsObjectPageGenerated.onForm({ section: "MaterialDetailsFacet" }).iCheckField({ property: "FabricationCountry" });
-            When.onTheMaterialDetailsObjectPageGenerated.iGoToSection({ section: "MaterialRatingsFacet" });
+            When.onTheMaterialDetailsObjectPageGenerated.iPressSectionIconTabFilterButton("MaterialRatingsFacet");
             Then.onTheMaterialDetailsObjectPageGenerated.iCheckSection({ section: "MaterialRatingsFacet" });
             Then.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iCheckAction("Material Ratings Bound Action", { enabled: true });
             // When.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iPressAction("Material Ratings Bound Action");
