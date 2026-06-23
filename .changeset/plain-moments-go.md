@@ -2,4 +2,4 @@
 '@sap-ux/fiori-app-sub-generator': patch
 ---
 
-pass logger instance to writers
+FEAT: pass logger instance to writers
