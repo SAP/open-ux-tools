@@ -1,7 +1,6 @@
 import base from '../../eslint.config.mjs';
 import reactPlugin from 'eslint-plugin-react';
 import globals from 'globals';
-const __dirname = import.meta.dirname;
 
 export default [
     ...base,
@@ -11,10 +10,6 @@ export default [
             reactPlugin
         },
         languageOptions: {
-            parserOptions: {
-                project: 'tsconfig.eslint.json',
-                tsconfigRootDir: __dirname
-            },
             globals: {
                 ...globals.browser
             }

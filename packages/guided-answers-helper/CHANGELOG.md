@@ -2,11 +2,15 @@
 
 ## 1.0.1
 
+*Released: 2026-06-03T14:58:37Z*
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -41,11 +45,15 @@
 
 ## 0.5.1
 
+*Released: 2026-05-29T12:50:34Z*
+
 ### Patch Changes
 
 - a1c9cd7: feat: warn when using a full URL destination during preview and deployment
 
 ## 0.5.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -53,11 +61,15 @@
 
 ## 0.4.3
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
 
 ## 0.4.2
+
+*Released: 2025-12-15T10:50:50Z*
 
 ### Patch Changes
 
@@ -65,11 +77,15 @@
 
 ## 0.4.1
 
+*Released: 2025-11-05T06:53:42Z*
+
 ### Patch Changes
 
 - cfe9c13: Add deep link to package and changelog to README.md
 
 ## 0.4.0
+
+*Released: 2025-08-12T14:05:27Z*
 
 ### Minor Changes
 
@@ -77,11 +93,15 @@
 
 ## 0.3.1
 
+*Released: 2025-07-16T12:23:18Z*
+
 ### Patch Changes
 
 - 485ae8d: Resize the guided answers icon.
 
 ## 0.3.0
+
+*Released: 2025-05-14T22:35:53Z*
 
 ### Minor Changes
 
@@ -89,11 +109,15 @@
 
 ## 0.2.2
 
+*Released: 2025-04-17T12:52:13Z*
+
 ### Patch Changes
 
 - e5f4915: Added GA link and moved validate logic to a function
 
 ## 0.2.1
+
+*Released: 2025-01-22T17:11:37Z*
 
 ### Patch Changes
 
@@ -101,11 +125,15 @@
 
 ## 0.2.0
 
+*Released: 2025-01-08T11:51:44Z*
+
 ### Minor Changes
 
 - dac696a: Fix for incorrect error messsages connecting to destinations. Correct incorrect GA node name.
 
 ## 0.1.1
+
+*Released: 2024-12-04T15:30:32Z*
 
 ### Patch Changes
 
@@ -113,11 +141,15 @@
 
 ## 0.1.0
 
+*Released: 2024-11-11T17:55:13Z*
+
 ### Minor Changes
 
 - 3734fe8: Adds system prompting to `@sap-ux/odata-service-inquirer`
 
 ## 0.0.2
+
+*Released: 2024-08-28T13:09:47Z*
 
 ### Patch Changes
 

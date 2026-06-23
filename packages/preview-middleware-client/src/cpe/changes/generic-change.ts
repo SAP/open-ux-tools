@@ -5,7 +5,7 @@ import FlexChange from 'sap/ui/fl/Change';
 import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
 import Log from 'sap/base/Log';
 import { getError } from '../../utils/error.js';
-import { AppComponent } from 'sap/ui/rta/RuntimeAuthoring';
+import type { AppComponent } from 'sap/ui/rta/RuntimeAuthoring';
 import { getConfigMapControlIdMap } from '../../utils/fe-v4.js';
 import { PropertyValue } from '@sap-ux-private/control-property-editor-common';
 
