@@ -115,7 +115,7 @@ describe('listFunctionalities', () => {
         const result = (await listFunctionalities({
             appPath
         })) as ListFunctionalitiesOutput;
-        expect(result.functionalities.length).toEqual(104);
+        expect(result.functionalities.length).toEqual(110);
         expect(result.functionalities).toMatchSnapshot();
         expect(readAppMock).toHaveBeenCalledTimes(1);
         expect(getSpecificationMock).toHaveBeenCalledTimes(1);
@@ -139,7 +139,7 @@ describe('listFunctionalities', () => {
             appPath
         })) as ListFunctionalitiesOutput;
         // Check
-        expect(result.functionalities.length).toEqual(104);
+        expect(result.functionalities.length).toEqual(110);
         expect(readAppMock).toHaveBeenCalledTimes(1);
         expect(getSpecificationMock).toHaveBeenCalledTimes(1);
         expect(mockGetSpecificationModuleFromCache).toHaveBeenCalledTimes(1);
