@@ -18,9 +18,8 @@
 "@sap-ux/generator-adp": patch
 "@sap-ux/generator-odata-downloader": patch
 "@sap-ux/odata-service-writer": patch
-"@sap-ux/playwright": patch
 "@sap-ux/preview-middleware": patch
-"@sap-ux/preview-middleware-client": patch
+"@sap-ux-private/preview-middleware-client": patch
 "@sap-ux/repo-app-import-sub-generator": patch
 "@sap-ux/store": patch
 "@sap-ux/system-access": patch
