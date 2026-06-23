@@ -78,6 +78,9 @@ export const SUPPORTED_VOCABULARIES: SupportedVocabularies = {
     'com.sap.vocabularies.Session.v1': {
         uri: 'https://sap.github.io/odata-vocabularies/vocabularies/Session.json'
     },
+    'com.sap.vocabularies.Support.v1': {
+        uri: 'https://sap.github.io/odata-vocabularies/vocabularies/Support.json'
+    },
     'Org.OData.Repeatability.V1': {
         uri: 'https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Repeatability.V1.json'
     },

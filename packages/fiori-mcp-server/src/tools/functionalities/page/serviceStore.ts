@@ -33,14 +33,3 @@ export async function getService(options: ServiceOptions): Promise<Service> {
     }
     return service;
 }
-
-/**
- * Removes a service from the `serviceStore`.
- *
- * @param options - The configuration object containing details about the service.
- * @returns `true` if the service was removed successfully.
- */
-export function removeService(options: ServiceOptions): boolean {
-    const key = getServiceStorageKey(options);
-    return serviceStore.delete(key);
-}
