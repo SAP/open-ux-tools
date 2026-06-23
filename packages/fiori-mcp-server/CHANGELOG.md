@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.5.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-23
+
+#### Bug Fixes
+
+- Update visual and analytical chart creation with RAP scenario [[46d6081](https://github.com/SAP/open-ux-tools/commit/46d6081f7b6956bc9406c880ea22d6b90ae65262)]
+
 ## 1.5.0
 
 ### Minor Changes
