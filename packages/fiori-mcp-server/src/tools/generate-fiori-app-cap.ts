@@ -1,20 +1,15 @@
-import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types/index.js';
-import type { GeneratorConfigCAP, GeneratorConfigCAPWithAPI } from '../../schemas/index.js';
+import type { GenerateAppOutput } from '../types/index.js';
+import type { GeneratorConfigCAP, GeneratorConfigCAPWithAPI } from './schemas/index.js';
 
 import { promises as FSpromises, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { generatorConfigCAP, PREDEFINED_GENERATOR_VALUES } from '../../schemas/index.js';
-import { GENERATE_FIORI_UI_APPLICATION_CAP_ID } from '../../../constant.js';
-import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../../../utils/index.js';
+import { generatorConfigCAP, PREDEFINED_GENERATOR_VALUES } from './schemas/index.js';
+import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../utils/index.js';
 
-/**
- * Method to generate fiori app.
- *
- * @param params Input parameters for application generation.
- * @returns Application generation execution output.
- */
-export async function command(params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
-    const generatorConfigValidated: GeneratorConfigCAP = validateWithSchema(generatorConfigCAP, params?.parameters);
+type CapResult = GenerateAppOutput;
+
+async function executeCap(validated: GeneratorConfigCAP, appPath: string): Promise<CapResult> {
+    const generatorConfigValidated: GeneratorConfigCAP = validateWithSchema(generatorConfigCAP, validated);
     const generatorConfig: GeneratorConfigCAPWithAPI = {
         ...PREDEFINED_GENERATOR_VALUES,
         ...generatorConfigValidated,
@@ -25,7 +20,7 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
     };
     generatorConfig.project.sapux = generatorConfig.floorplan !== 'FF_SIMPLE';
 
-    const projectPath = generatorConfig?.project?.targetFolder ?? params.appPath;
+    const projectPath = generatorConfig?.project?.targetFolder ?? appPath;
     if (!projectPath || typeof projectPath !== 'string') {
         throw new Error('Please provide a valid path to the CAP project folder.');
     }
@@ -38,7 +33,7 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
     }
 
     const appName = (generatorConfig?.project.name as string) ?? 'default';
-    const appPath = join(projectPath, 'app', appName);
+    const resolvedAppPath = join(projectPath, 'app', appName);
     const targetDir = projectPath;
     const configPath = `${appName}-generator-config.json`;
     const outputPath = join(targetDir, configPath);
@@ -60,28 +55,36 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
     } catch (error) {
         logger.error(`Error generating application: ${error}`);
         return {
-            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
             status: 'Error',
-            message: 'Error generating application: ' + error.message,
-            parameters: params.parameters,
-            appPath,
+            message: 'Error generating application: ' + (error instanceof Error ? error.message : String(error)),
+            parameters: validated,
+            appPath: resolvedAppPath,
             changes: [],
             timestamp: new Date().toISOString()
         };
     } finally {
-        //clean up temp config file used for the headless generator
         if (existsSync(outputPath)) {
             await FSpromises.unlink(outputPath);
         }
     }
 
     return {
-        functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
         status: 'Success',
-        message: `Generation completed successfully: ${appPath}. You must run \`npm install\` in ${targetDir} before trying to run the application.`,
-        parameters: params.parameters,
-        appPath,
+        message: `Generation completed successfully: ${resolvedAppPath}. You must run \`npm install\` in ${targetDir} before trying to run the application.`,
+        parameters: validated,
+        appPath: resolvedAppPath,
         changes: [],
         timestamp: new Date().toISOString()
     };
+}
+
+/**
+ * Generates a new SAP Fiori UI application within an existing CAP project.
+ *
+ * @param args - Input parameters matching the generatorConfigCAP schema.
+ * @returns A promise resolving to the generation execution output.
+ */
+export async function generateFioriAppCap(args: GeneratorConfigCAP): Promise<CapResult> {
+    const validated = generatorConfigCAP.parse(args);
+    return executeCap(validated, validated.project?.targetFolder ?? '');
 }

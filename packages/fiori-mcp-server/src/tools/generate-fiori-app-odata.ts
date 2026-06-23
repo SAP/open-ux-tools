@@ -1,20 +1,15 @@
-import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types/index.js';
-import type { GeneratorConfigOData, GeneratorConfigODataWithAPI } from '../../schemas/index.js';
+import type { GenerateAppOutput } from '../types/index.js';
+import type { GeneratorConfigOData, GeneratorConfigODataWithAPI } from './schemas/index.js';
 
 import { promises as FSpromises, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { generatorConfigOData, PREDEFINED_GENERATOR_VALUES } from '../../schemas/index.js';
-import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../../../utils/index.js';
-import details from './details.js';
+import { generatorConfigOData, PREDEFINED_GENERATOR_VALUES } from './schemas/index.js';
+import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../utils/index.js';
 
-/**
- * Method to generate fiori app.
- *
- * @param params Input parameters for application generation.
- * @returns Application generation execution output.
- */
-export default async function (params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
-    const generatorConfigValidated: GeneratorConfigOData = validateWithSchema(generatorConfigOData, params?.parameters);
+type ODataResult = GenerateAppOutput;
+
+async function executeOData(validated: GeneratorConfigOData, appPath: string): Promise<ODataResult> {
+    const generatorConfigValidated: GeneratorConfigOData = validateWithSchema(generatorConfigOData, validated);
     const generatorConfig: GeneratorConfigODataWithAPI = {
         ...PREDEFINED_GENERATOR_VALUES,
         ...generatorConfigValidated,
@@ -25,13 +20,19 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
     };
     generatorConfig.project.sapux = generatorConfig.floorplan !== 'FF_SIMPLE';
 
-    const projectPath = generatorConfig?.project?.targetFolder ?? params.appPath;
+    if (generatorConfig.entityConfig?.mainEntity?.entityName) {
+        generatorConfig.entityConfig.mainEntity.entityName = generatorConfig.entityConfig.mainEntity.entityName
+            .replace(/^'(.*)'$/, '$1')
+            .trim();
+    }
+
+    const projectPath = generatorConfig?.project?.targetFolder ?? appPath;
     if (!projectPath || typeof projectPath !== 'string') {
         throw new Error('Please provide a valid path to the non-CAP project folder.');
     }
 
     const appName = (generatorConfig?.project.name as string) ?? 'default';
-    const appPath = join(projectPath, appName);
+    const resolvedAppPath = join(projectPath, appName);
     const targetDir = projectPath;
     const configFileName = `${appName}-generator-config.json`;
     const configPath = join(targetDir, configFileName);
@@ -60,16 +61,14 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
     } catch (error) {
         logger.error(`Error generating application: ${error}`);
         return {
-            functionalityId: details.functionalityId,
             status: 'Error',
-            message: 'Error generating application: ' + error.message,
-            parameters: params.parameters,
-            appPath,
+            message: 'Error generating application: ' + (error instanceof Error ? error.message : String(error)),
+            parameters: validated,
+            appPath: resolvedAppPath,
             changes: [],
             timestamp: new Date().toISOString()
         };
     } finally {
-        //clean up temp config files used for the headless generator
         if (existsSync(configPath)) {
             await FSpromises.unlink(configPath);
         }
@@ -79,12 +78,22 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
     }
 
     return {
-        functionalityId: details.functionalityId,
         status: 'Success',
-        message: `Generation completed successfully. You must run \`npm install\` in ${appPath} first, and then run the application using \`npm run start\`.`,
-        parameters: params.parameters,
-        appPath,
+        message: `Generation completed successfully. You must run \`npm install\` in ${resolvedAppPath} first, and then run the application using \`npm run start\`.`,
+        parameters: validated,
+        appPath: resolvedAppPath,
         changes: [],
         timestamp: new Date().toISOString()
     };
+}
+
+/**
+ * Generates a new SAP Fiori UI application for OData (non-CAP) projects.
+ *
+ * @param args - Input parameters matching the generatorConfigOData schema.
+ * @returns A promise resolving to the generation execution output.
+ */
+export async function generateFioriAppOData(args: GeneratorConfigOData): Promise<ODataResult> {
+    const validated = generatorConfigOData.parse(args);
+    return executeOData(validated, validated.project?.targetFolder ?? '');
 }
