@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.6.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-22
+
+#### Features
+
+- update OData V2 table export rule to consider "useExportToExcel" property for applications with minUI5Version lower than 1.145. [[85c2bc5](https://github.com/SAP/open-ux-tools/commit/85c2bc5afd41c610fc51d773ba2564243b36cbee)]
+
 ## 10.6.4
 
 ### Patch Changes
