@@ -2,7 +2,7 @@ import baseConfig from '../../jest.base.mjs';
 const config = { ...baseConfig };
 config.testEnvironment = 'jsdom';
 config.collectCoverageFrom = ['src/**/*.{ts,tsx}'];
-config.setupFilesAfterEnv = ['<rootDir>/test/test-shim.js'];
+config.setupFilesAfterEnv = ['<rootDir>/test/test-shim.mjs'];
 config.extensionsToTreatAsEsm = ['.ts', '.tsx'];
 config.transform = {
     '^.+\\.[jt]sx?$': [

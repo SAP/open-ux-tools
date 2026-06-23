@@ -2,17 +2,23 @@
 
 ## 1.0.11
 
+*Released: 2026-06-12T06:53:23Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@1.0.11
 
 ## 1.0.10
 
+*Released: 2026-06-11T10:54:17Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@1.0.10
 
 ## 1.0.9
+
+*Released: 2026-06-10T09:57:42Z*
 
 ### Patch Changes
 
@@ -21,11 +27,15 @@
 
 ## 1.0.8
 
+*Released: 2026-06-09T14:35:01Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@1.0.8
 
 ## 1.0.7
+
+*Released: 2026-06-09T13:18:16Z*
 
 ### Patch Changes
 
@@ -33,6 +43,8 @@
     - @sap-ux/fiori-generator-shared@1.0.7
 
 ## 1.0.6
+
+*Released: 2026-06-04T13:54:21Z*
 
 ### Patch Changes
 
@@ -43,6 +55,8 @@
 
 ## 1.0.5
 
+*Released: 2026-06-04T10:19:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [b326a9a]
@@ -50,6 +64,8 @@
     - @sap-ux/fiori-generator-shared@1.0.5
 
 ## 1.0.4
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -62,6 +78,8 @@
 
 ## 1.0.3
 
+*Released: 2026-06-03T13:52:44Z*
+
 ### Patch Changes
 
 - @sap-ux/project-access@2.0.2
@@ -69,11 +87,15 @@
 
 ## 1.0.2
 
+*Released: 2026-06-02T11:35:17Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@1.0.2
 
 ## 1.0.1
+
+*Released: 2026-06-01T15:15:26Z*
 
 ### Patch Changes
 
@@ -82,6 +104,8 @@
     - @sap-ux/fiori-generator-shared@1.0.1
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -124,11 +148,15 @@
 
 ## 0.13.6
 
+*Released: 2026-05-27T11:39:21Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.15.6
 
 ## 0.13.5
+
+*Released: 2026-05-27T10:42:47Z*
 
 ### Patch Changes
 
@@ -136,11 +164,15 @@
 
 ## 0.13.4
 
+*Released: 2026-05-26T16:40:21Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.15.4
 
 ## 0.13.3
+
+*Released: 2026-05-21T16:21:11Z*
 
 ### Patch Changes
 
@@ -148,6 +180,8 @@
 - @sap-ux/fiori-generator-shared@0.15.3
 
 ## 0.13.2
+
+*Released: 2026-05-19T15:16:46Z*
 
 ### Patch Changes
 
@@ -157,12 +191,16 @@
 
 ## 0.13.1
 
+*Released: 2026-05-15T13:12:06Z*
+
 ### Patch Changes
 
 - Updated dependencies [2c76f8f]
     - @sap-ux/fiori-generator-shared@0.15.1
 
 ## 0.13.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -178,6 +216,8 @@
 
 ## 0.12.100
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -189,6 +229,8 @@
 
 ## 0.12.99
 
+*Released: 2026-05-13T09:36:59Z*
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -197,12 +239,16 @@
 
 ## 0.12.98
 
+*Released: 2026-05-12T18:00:39Z*
+
 ### Patch Changes
 
 - Updated dependencies [9360ea5]
     - @sap-ux/fiori-generator-shared@0.14.0
 
 ## 0.12.97
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -212,12 +258,16 @@
 
 ## 0.12.96
 
+*Released: 2026-04-30T14:23:24Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.104
 - @sap-ux/project-access@1.36.2
 
 ## 0.12.95
+
+*Released: 2026-04-29T15:24:37Z*
 
 ### Patch Changes
 
@@ -227,6 +277,8 @@
 
 ## 0.12.94
 
+*Released: 2026-04-27T19:47:46Z*
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -234,6 +286,8 @@
     - @sap-ux/fiori-generator-shared@0.13.102
 
 ## 0.12.93
+
+*Released: 2026-04-23T12:54:21Z*
 
 ### Patch Changes
 
@@ -243,6 +297,8 @@
 
 ## 0.12.92
 
+*Released: 2026-04-23T06:48:55Z*
+
 ### Patch Changes
 
 - Updated dependencies [237371b]
@@ -250,11 +306,15 @@
 
 ## 0.12.91
 
+*Released: 2026-04-15T11:53:17Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.99
 
 ## 0.12.90
+
+*Released: 2026-04-14T20:26:28Z*
 
 ### Patch Changes
 
@@ -262,12 +322,16 @@
 
 ## 0.12.89
 
+*Released: 2026-04-14T12:35:35Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.97
 - @sap-ux/project-access@1.35.20
 
 ## 0.12.88
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -279,6 +343,8 @@
 
 ## 0.12.87
 
+*Released: 2026-04-01T11:49:37Z*
+
 ### Patch Changes
 
 - Updated dependencies [3291f6c]
@@ -286,6 +352,8 @@
     - @sap-ux/fiori-generator-shared@0.13.95
 
 ## 0.12.86
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 
@@ -298,17 +366,23 @@
 
 ## 0.12.85
 
+*Released: 2026-03-27T15:37:24Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.93
 
 ## 0.12.84
 
+*Released: 2026-03-27T11:58:49Z*
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.92
 
 ## 0.12.83
+
+*Released: 2026-03-26T20:06:10Z*
 
 ### Patch Changes
 
@@ -317,6 +391,8 @@
     - @sap-ux/fiori-generator-shared@0.13.91
 
 ## 0.12.82
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -331,6 +407,8 @@
     - @sap-ux/yaml@0.17.6
 
 ## 0.12.81
+
+*Released: 2026-03-25T12:56:41Z*
 
 ### Patch Changes
 

@@ -11,7 +11,7 @@ import type { actions as TemplatePageActions, assertions as TemplatePageAssertio
 import type Shell from "sap/fe/test/Shell";
 import type BaseArrangements from "sap/fe/test/BaseArrangements";
 <% pages.filter((p) => p.template === 'ListReport' || p.template === 'ObjectPage').forEach(function(page) { -%>
-import type { actions as <%- page.targetKey %>CustomActions, assertions as <%- page.targetKey %>CustomAssertions } from "../pages/<%- page.targetKey %>";
+import type { actions as <%- page.targetKey %>GeneratedCustomActions, assertions as <%- page.targetKey %>GeneratedCustomAssertions } from "../pages/<%- page.targetKey %>.gen";
 <% }); -%>
 
 export type Given = Opa5 & BaseArrangements & {
@@ -23,9 +23,9 @@ export type Given = Opa5 & BaseArrangements & {
 export type When = Opa5 & BaseArrangements & {
 <% pages.forEach(function(page) { -%>
 <% if (page.template === 'ListReport') { -%>
-    onThe<%- page.targetKey %>: Opa5 & ListReportActions & TemplatePageActions & typeof <%- page.targetKey %>CustomActions;
+    onThe<%- page.targetKey %>Generated: Opa5 & ListReportActions & TemplatePageActions & typeof <%- page.targetKey %>GeneratedCustomActions;
 <% } else if (page.template === 'ObjectPage') { -%>
-    onThe<%- page.targetKey %>: Opa5 & ObjectPageActions & TemplatePageActions & typeof <%- page.targetKey %>CustomActions;
+    onThe<%- page.targetKey %>Generated: Opa5 & ObjectPageActions & TemplatePageActions & typeof <%- page.targetKey %>GeneratedCustomActions;
 <% } -%>
 <% }); -%>
     onTheShell: Shell;
@@ -34,9 +34,9 @@ export type When = Opa5 & BaseArrangements & {
 export type Then = Opa5 & BaseArrangements & {
 <% pages.forEach(function(page) { -%>
 <% if (page.template === 'ListReport') { -%>
-    onThe<%- page.targetKey %>: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof <%- page.targetKey %>CustomAssertions;
+    onThe<%- page.targetKey %>Generated: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof <%- page.targetKey %>GeneratedCustomAssertions;
 <% } else if (page.template === 'ObjectPage') { -%>
-    onThe<%- page.targetKey %>: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof <%- page.targetKey %>CustomAssertions;
+    onThe<%- page.targetKey %>Generated: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof <%- page.targetKey %>GeneratedCustomAssertions;
 <% } -%>
 <% }); -%>
     onTheShell: Shell;
