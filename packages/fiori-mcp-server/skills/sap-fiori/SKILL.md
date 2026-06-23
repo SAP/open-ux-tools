@@ -13,14 +13,10 @@ metadata:
 
 1. **Always ask the user** whether they want to create a Fiori app for **CAP** (Cloud Application Programming) or a **standalone Fiori project** connected to an external OData service before proceeding with implementation, unless the technology stack is explicitly specified in the user's request.
 2. Use the Fiori MCP tools to create the Fiori UI using SAP Fiori Elements.
-3. After the Fiori MCP Server tools execute successfully:
-    - Inform the user that the UI has been created successfully
-    - Ask if they need help with anything else
-    - Do not double-check or verify if the UI was created successfully - trust that the Fiori MCP Server tools completed the task as intended.
+3. After the Fiori MCP Server tools execute successfully, inform the user of completion. Do not verify or double-check - treat successful tool execution as confirmation.
 4. The data model should be suitable for SAP Fiori elements: at minimum one entity type that serves as the main entity for the application. Navigation properties to related entities are optional but enable richer UI patterns.
 5. Each property of an entity must have a proper datatype.
-6. When modifying the SAP Fiori elements application (e.g., adding columns), **do not** use screen personalization.
-7. Before modifying the code directly - first check whether Fiori MCP server provides a suitable function or tool.
+6. Before modifying the code directly - first check whether Fiori MCP server provides a suitable function or tool, or if a specialized skill exists (e.g.`sap-fiori-analytical-chart`).
 
 ### Available Application Templates (Both CAP and Standalone Projects)
 
@@ -67,7 +63,8 @@ The Fiori MCP can add the following page types to existing applications:
 1. For standalone Fiori projects based on external services, the application is created at the root level by Fiori MCP tools.
 2. **Destination or SAP System Name**: If the user doesn't provide a destination name or SAP system name, use the Fiori MCP Server to retrieve and present available destinations/systems for user selection.
 3. **Fetching OData Service Metadata**: Use the Fiori MCP Server to discover and select services from the configured destination or SAP system. If the service metadata cannot be retrieved, try the Service Center MCP Server as an alternative.
-4. **UI Modifications**: For any follow-up requests to change or modify the UI of a standalone Fiori project, modify the local annotation file (e.g., `/webapp/annotations/annotation.xml`) referenced in `manifest.json` with matching `uri` and `localUri` values:
+4. Annotations should primarily be maintained in the backend service, and only app-specific UI customizations or overrides should be placed in local (frontend) annotations.
+5. Use frontend annotations only for app-specific UI tweaks (e.g., `/webapp/annotations/annotation.xml`) referenced in `manifest.json` with matching `uri` and `localUri` values:
    ```json
    "annotation": {
      "type": "ODataAnnotation",
@@ -77,6 +74,18 @@ The Fiori MCP can add the following page types to existing applications:
      }
    }
    ```
-5. Standalone Fiori projects connect to remote OData V2 or V4 services (defined in `manifest.json` dataSources).
-6. **Mock Data Generation**: To generate or manage mock data for standalone Fiori projects based on external services, consult any available skill first; if none is available, fall back to the Fiori MCP Server with the query "generate mock data using data editor".
-7. Metadata is **read-only**
+6. Standalone Fiori projects connect to remote OData V2 or V4 services (defined in `manifest.json` dataSources).
+7. **OData Service Metadata is Read-Only**: The service metadata file (`/webapp/localService/mainService/metadata.xml`) referenced in `manifest.json` must not be edited locally. Any changes to entity definitions, properties, or service structure must be made at the backend source:
+   ```json
+   "dataSources": {
+     "mainService": {
+       "uri": "/path/to/odata/service/",
+       "type": "OData",
+       "settings": {
+         "annotations": ["annotation"],
+         "localUri": "localService/mainService/metadata.xml",
+         "odataVersion": "4.0"
+       }
+     }
+   }
+   ```
