@@ -1,13 +1,15 @@
-import type { Annotations, ServiceProvider, ODataServiceInfo, ExternalService } from '@sap-ux/axios-extension';
+import type { Annotations, ExternalService, ServiceProvider } from '@sap-ux/axios-extension';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- required by TS doc links
+import type { ODataServiceInfo } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
+import type { CapService } from '@sap-ux/cap-config-writer';
+import type { TableSelectionMode, TableType } from '@sap-ux/fiori-elements-writer';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
-import type { CapService } from '@sap-ux/cap-config-writer';
-import type { EntityAnswer, NavigationEntityAnswer } from './prompts/edmx/entity-helper.js';
-import type { TableSelectionMode, TableType } from '@sap-ux/fiori-elements-writer';
 import type { serviceUrlInternalPromptNames } from './prompts/datasources/service-url/types.js';
+import type { EntityAnswer, NavigationEntityAnswer } from './prompts/edmx/entity-helper.js';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.

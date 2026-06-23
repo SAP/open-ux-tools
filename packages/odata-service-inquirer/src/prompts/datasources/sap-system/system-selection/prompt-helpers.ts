@@ -10,7 +10,7 @@ import {
 } from '@sap-ux/btp-utils';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import { type BackendSystemKey, type BackendSystem, ConnectionType } from '@sap-ux/store';
+import { type BackendSystemKey, type BackendSystem } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n.js';
 import type { ConnectedSystem, DestinationFilters } from '../../../../types.js';

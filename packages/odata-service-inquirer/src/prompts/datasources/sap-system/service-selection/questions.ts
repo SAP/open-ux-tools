@@ -20,8 +20,9 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n.js';
-
-import type { OdataServicePromptOptions, ServiceSelectionPromptOptions } from '../../../../types.js';
+import type { ServiceSelectionPromptOptions } from '../../../../types.js';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- required by TS doc links
+import type { OdataServicePromptOptions } from '../../../../types.js';
 import { promptNames } from '../../../../types.js';
 import {
     areArraysEquivalent,
@@ -32,6 +33,7 @@ import {
 import type { ConnectionValidator } from '../../../connectionValidator.js';
 import LoggerHelper from '../../../logger-helper.js';
 import { errorHandler } from '../../../prompt-helpers.js';
+import { getValueHelpDownloadPrompt } from '../external-services/value-help-download.js';
 import {
     getSelectedServiceLabel,
     getSelectedServiceMessage,
@@ -41,7 +43,6 @@ import {
 } from '../service-selection/service-helper.js';
 import type { SystemSelectionAnswers } from '../system-selection/index.js';
 import { type ServiceAnswer } from './types.js';
-import { getValueHelpDownloadPrompt } from '../external-services/value-help-download.js';
 
 const cliServicePromptName = 'cliServiceSelection';
 
