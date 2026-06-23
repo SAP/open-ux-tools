@@ -1,5 +1,13 @@
 # @sap-ux/generator-simple-fe
 
+## 2.0.33
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.32 → 3.0.33
+
 ## 2.0.32
 
 ### Patch Changes
