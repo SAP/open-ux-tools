@@ -1,5 +1,17 @@
 # @sap-ux/ui5-test-writer
 
+## 1.2.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-23
+
+#### Bug Fixes
+
+- Add the `WARNING: AUTO-GENERATED FILE` header banner to the TypeScript page object templates (`ListReport.ts`, `ObjectPage.ts`) and to the journey types template (`OpaJourneyTypes.d.ts`), matching the existing JS variants. [[20bed6c](https://github.com/SAP/open-ux-tools/commit/20bed6cef0000c14d3a886f2b43d3ff268287ea0)]
+
 ## 1.2.0
 
 ### Minor Changes
