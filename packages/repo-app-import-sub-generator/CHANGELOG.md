@@ -1,5 +1,13 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.1.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.0.13 → 3.0.14
+
 ## 1.1.14
 
 ### Patch Changes
