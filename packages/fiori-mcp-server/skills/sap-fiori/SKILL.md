@@ -1,6 +1,6 @@
 ---
 name: sap-fiori
-description: 'Guidelines for creation and development of SAP Fiori UI as part of CAP or standalone Fiori projects using external services. Use this skill for every new Fiori Elements application or when modifying an existing one.'
+description: 'Guidelines for creation and development of SAP Fiori UI as part of CAP or standalone Fiori projects. Use this skill for every new Fiori Elements application or when modifying an existing one.'
 argument-hint: 'fiori elements application creation or modification'
 metadata:
   author: sap-fiori-tools
