@@ -56,8 +56,8 @@
     },
     "devDependencies": {
         "@jest/globals": "30.3.0",
-        "@sap-ux/fiori-elements-writer": "workspace:*",
         "@sap-ux/fiori-generator-shared": "workspace:*",
+        "@sap-ux/fiori-elements-writer": "workspace:*",
         "@sap-ux/fiori-freestyle-writer": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",

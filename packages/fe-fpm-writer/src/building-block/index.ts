@@ -12,7 +12,6 @@ import { getMinimumUI5Version, getAppProgrammingLanguage } from '@sap-ux/project
 import {
     BuildingBlockType,
     PAGE_AGGREGATIONS,
-    PAGE_TEMPLATE_TYPE_FULL,
     type BuildingBlock,
     type BuildingBlockConfig,
     type BuildingBlockMetaPath,
@@ -22,6 +21,7 @@ import {
     bindingContextAbsolute,
     type TemplateConfig
 } from './types.js';
+import { PAGE_TEMPLATE_TYPE_FULL } from '@sap-ux/fiori-generator-shared';
 import type { Manifest } from '../common/types.js';
 import { getErrorMessage, validateBasePath, validateDependenciesLibs } from '../common/validate.js';
 import { getTemplatePath } from '../templates.js';

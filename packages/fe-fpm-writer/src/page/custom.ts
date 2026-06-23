@@ -21,13 +21,13 @@ import { addExtensionTypes, getManifestPath } from '../common/utils.js';
 import { copyTpl, extendJSON, createIdGenerator, type IdGeneratorFunction } from '../common/file.js';
 import { generateBuildingBlock } from '../building-block/index.js';
 import {
-    BuildingBlockType,
     PAGE_TEMPLATE_TYPE_FULL,
     PAGE_TEMPLATE_TYPE_BASIC,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
-    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
-} from '../building-block/types.js';
-import type { PageTemplateType } from '../building-block/types.js';
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT,
+    type PageTemplateType
+} from '@sap-ux/fiori-generator-shared';
+import { BuildingBlockType } from '../building-block/types.js';
 import { augmentXpathWithLocalNames } from '../building-block/prompts/utils/index.js';
 import type { Logger } from '@sap-ux/logger';
 import { i18nNamespaces, translate } from '../i18n.js';

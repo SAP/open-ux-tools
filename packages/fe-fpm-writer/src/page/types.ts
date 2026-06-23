@@ -1,5 +1,5 @@
 import type { CustomElement, InternalCustomElement, WriterConfig } from '../common/types.js';
-import type { PageTemplateType } from '../building-block/types.js';
+import type { PageTemplateType } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Incoming navigation configuration.

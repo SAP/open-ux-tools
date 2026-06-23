@@ -16,7 +16,7 @@ import {
     PAGE_TEMPLATE_TYPE_FULL,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
-} from '../../../src/building-block/types.js';
+} from '@sap-ux/fiori-generator-shared';
 
 describe('CustomPage', () => {
     const testDir = '' + Date.now();

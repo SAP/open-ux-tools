@@ -233,70 +233,62 @@ export function getEntitySelectionQuestions(
  * @returns the page building block questions
  */
 function getPageBuildingBlockQuestions(): Question<PageBuildingBlockAnswers>[] {
-    const pageBuildingBlockQuestions: Question<PageBuildingBlockAnswers>[] = [];
-
-    pageBuildingBlockQuestions.push({
-        type: 'confirm',
-        name: EntityPromptNames.addPageBuildingBlock,
-        message: t('prompts.pageBuildingBlock.message'),
-        default: false,
-        guiOptions: {
-            breadcrumb: true,
-            hint: t('prompts.pageBuildingBlock.tooltip', {
-                minUi5VersionForPageBuildingBlock: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK
-            })
-        }
-    } as ConfirmQuestion<PageBuildingBlockAnswers>);
-
-    pageBuildingBlockQuestions.push({
-        when: (answers: PageBuildingBlockAnswers) => answers.addPageBuildingBlock === true,
-        type: 'confirm',
-        name: EntityPromptNames.pageBuildingBlockLayout,
-        message: t('prompts.pageBuildingBlock.layoutMessage'),
-        default: true,
-        labelTrue: t('prompts.pageBuildingBlock.choiceBasic'),
-        labelFalse: t('prompts.pageBuildingBlock.choiceFull'),
-        filter: (val: boolean) => (val ? PAGE_TEMPLATE_TYPE_BASIC : PAGE_TEMPLATE_TYPE_FULL),
-        guiOptions: {
-            breadcrumb: t('prompts.pageBuildingBlock.layoutMessage')
-        },
-        additionalMessages: (input?: unknown) => {
-            // input is true when the user selects Basic layout (default/true = Basic)
-            if (input === true) {
-                return {
-                    message: t('prompts.pageBuildingBlock.basicLayoutWarning', {
-                        minUi5VersionForPageBuildingBlock: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK
-                    }),
-                    severity: Severity.warning
-                };
+    return [
+        {
+            type: 'confirm',
+            name: EntityPromptNames.addPageBuildingBlock,
+            message: t('prompts.pageBuildingBlock.message'),
+            default: false,
+            guiOptions: {
+                breadcrumb: true,
+                hint: t('prompts.pageBuildingBlock.tooltip', {
+                    minUi5VersionForPageBuildingBlock: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK
+                })
             }
-            // input is false when the user selects Full layout
-            if (input === false) {
-                return {
-                    message: t('prompts.pageBuildingBlock.fullLayoutWarning', {
-                        minUi5VersionForFullLayout: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
-                    }),
-                    severity: Severity.warning
-                };
+        } as ConfirmQuestion<PageBuildingBlockAnswers>,
+        {
+            when: (answers: PageBuildingBlockAnswers) => answers.addPageBuildingBlock === true,
+            type: 'confirm',
+            name: EntityPromptNames.pageBuildingBlockLayout,
+            message: t('prompts.pageBuildingBlock.layoutMessage'),
+            default: true,
+            labelTrue: t('prompts.pageBuildingBlock.choiceBasic'),
+            labelFalse: t('prompts.pageBuildingBlock.choiceFull'),
+            filter: (val: boolean) => (val ? PAGE_TEMPLATE_TYPE_BASIC : PAGE_TEMPLATE_TYPE_FULL),
+            guiOptions: {
+                breadcrumb: t('prompts.pageBuildingBlock.layoutMessage')
+            },
+            additionalMessages: (input?: boolean) => {
+                if (input === true) {
+                    return {
+                        message: t('prompts.pageBuildingBlock.basicLayoutWarning', {
+                            minUi5VersionForPageBuildingBlock: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK
+                        }),
+                        severity: Severity.warning
+                    };
+                }
+                if (input === false) {
+                    return {
+                        message: t('prompts.pageBuildingBlock.fullLayoutWarning', {
+                            minUi5VersionForFullLayout: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+                        }),
+                        severity: Severity.warning
+                    };
+                }
             }
-            return undefined;
-        }
-    } as ConfirmQuestion<PageBuildingBlockAnswers>);
-
-    // If the user wants to add a Page Building Block, ask for the title
-    pageBuildingBlockQuestions.push({
-        when: (answers: EntitySelectionAnswers & PageBuildingBlockAnswers) => answers.addPageBuildingBlock === true,
-        type: 'input',
-        name: EntityPromptNames.pageBuildingBlockTitle,
-        message: t('prompts.pageBuildingBlock.titleMessage'),
-        guiOptions: {
-            breadcrumb: true,
-            mandatory: true
-        },
-        validate: (input: string) => !!input
-    } as InputQuestion<PageBuildingBlockAnswers>);
-
-    return pageBuildingBlockQuestions;
+        } as ConfirmQuestion<PageBuildingBlockAnswers>,
+        {
+            when: (answers: EntitySelectionAnswers & PageBuildingBlockAnswers) => answers.addPageBuildingBlock === true,
+            type: 'input',
+            name: EntityPromptNames.pageBuildingBlockTitle,
+            message: t('prompts.pageBuildingBlock.titleMessage'),
+            guiOptions: {
+                breadcrumb: true,
+                mandatory: true
+            },
+            validate: (input: string) => !!input
+        } as InputQuestion<PageBuildingBlockAnswers>
+    ];
 }
 
 /**

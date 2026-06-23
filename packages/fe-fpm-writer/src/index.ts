@@ -28,14 +28,7 @@ export type { FPMConfig } from './app/index.js';
 export { validateBasePath, validateVersion } from './common/validate.js';
 export { createIdGenerator, type IdGeneratorFunction, getRelativeTemplateComponentPath } from './common/file.js';
 
-export {
-    BuildingBlockType,
-    PAGE_TEMPLATE_TYPE_FULL,
-    PAGE_TEMPLATE_TYPE_BASIC,
-    PAGE_AGGREGATIONS,
-    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
-    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
-} from './building-block/types.js';
+export { BuildingBlockType, PAGE_AGGREGATIONS } from './building-block/types.js';
 export type {
     FilterBar,
     Form,
@@ -50,9 +43,18 @@ export type {
     CustomFormField,
     RichTextEditor,
     ButtonGroupConfig,
-    Action,
-    PageTemplateType
+    Action
 } from './building-block/types.js';
+// Re-exported from fiori-generator-shared to preserve backwards compatibility.
+// Cannot define here directly as odata-service-inquirer needs these constants but cannot take
+// fe-fpm-writer as a runtime dep due to a CJS/ESM crash via fiori-annotation-api.
+export {
+    PAGE_TEMPLATE_TYPE_FULL,
+    PAGE_TEMPLATE_TYPE_BASIC,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+} from '@sap-ux/fiori-generator-shared';
+export type { PageTemplateType } from '@sap-ux/fiori-generator-shared';
 export type { PageAggregationName, GenerateBuildingBlockAggregationConfig } from './building-block/types.js';
 export {
     generateBuildingBlock,
