@@ -25,6 +25,7 @@ import {
     PAGE_TEMPLATE_TYPE_BASIC,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT,
+    PAGE_BB_DEFAULT_AGGREGATIONS,
     type PageTemplateType
 } from '../building-block/types.js';
 import { BuildingBlockType } from '../building-block/types.js';
@@ -141,6 +142,7 @@ async function handlePageBuildingBlock(
     }
 
     const pageId = generateId('Page');
+    const aggregations = templateType === PAGE_TEMPLATE_TYPE_FULL ? PAGE_BB_DEFAULT_AGGREGATIONS : undefined;
     await generateBuildingBlock(
         basePath,
         {
@@ -152,7 +154,8 @@ async function handlePageBuildingBlock(
                 buildingBlockType: BuildingBlockType.Page,
                 generateId,
                 title: data.pageBuildingBlockTitle,
-                templateType: templateType
+                templateType: templateType,
+                aggregations
             }
         },
         fs

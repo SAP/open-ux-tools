@@ -31,6 +31,7 @@ export { createIdGenerator, type IdGeneratorFunction, getRelativeTemplateCompone
 export {
     BuildingBlockType,
     PAGE_AGGREGATIONS,
+    PAGE_BB_DEFAULT_AGGREGATIONS,
     PAGE_TEMPLATE_TYPE_FULL,
     PAGE_TEMPLATE_TYPE_BASIC,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
