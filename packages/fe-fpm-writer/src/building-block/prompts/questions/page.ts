@@ -81,7 +81,7 @@ export async function getPageBuildingBlockPrompts(context: PromptContext): Promi
         initialAnswers: {
             buildingBlockData: {
                 buildingBlockType: BuildingBlockType.Page,
-                ...(context.options?.disableFullPageTemplate && { templateType: PAGE_TEMPLATE_TYPE_BASIC })
+                ...(context.options?.disableFullPageTemplate ? { templateType: PAGE_TEMPLATE_TYPE_BASIC } : {})
             }
         }
     };

@@ -2,4 +2,4 @@
 "@sap-ux/fe-fpm-writer": patch
 ---
 
-FIX: check ui5 version for full layout on page bb
+FIX: hide Page BB templateType prompt and default to basic when disableFullPageTemplate option is set
