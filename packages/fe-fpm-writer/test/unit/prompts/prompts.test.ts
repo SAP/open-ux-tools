@@ -73,9 +73,9 @@ describe('Prompts', () => {
         expect(questionnair).toMatchSnapshot();
     });
 
-    test('getPageBuildingBlockPrompts - templateType question hidden and defaulted to basic when disableFullPageTemplate is true', async () => {
-        const apiWithFlag = await PromptsAPI.init(projectPath, undefined, fs, { disableFullPageTemplate: true });
-        const questionnair = await apiWithFlag.getPrompts(PromptsType.Page);
+    test('getPageBuildingBlockPrompts - templateType question hidden and defaulted to basic when UI5 version < 1.145.0', async () => {
+        mockGetMinimumUI5Version.mockReturnValueOnce('1.144.0');
+        const questionnair = await promptsAPI.getPrompts(PromptsType.Page);
         const templateTypeQuestion = questionnair.questions.find((q) => q.name === 'buildingBlockData.templateType');
         expect(templateTypeQuestion).toBeUndefined();
         expect(questionnair.initialAnswers?.buildingBlockData?.templateType).toBe('basic');

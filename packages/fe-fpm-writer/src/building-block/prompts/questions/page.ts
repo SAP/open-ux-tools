@@ -5,6 +5,9 @@ import type { PromptContext, Prompts } from '../../../prompts/types.js';
 import { BuildingBlockType, PAGE_TEMPLATE_TYPE_BASIC, PAGE_TEMPLATE_TYPE_FULL } from '../../types.js';
 import type { BuildingBlockConfig, Page } from '../../types.js';
 import { SapShortTextType, SapLongTextType } from '@sap-ux/i18n';
+import { getMinimumUI5Version } from '@sap-ux/project-access';
+import { coerce, lt } from 'semver';
+import { getManifest } from '../../../common/utils.js';
 
 export type PagePromptsAnswer = BuildingBlockConfig<Page> & Answers;
 
@@ -17,9 +20,13 @@ export type PagePromptsAnswer = BuildingBlockConfig<Page> & Answers;
 export async function getPageBuildingBlockPrompts(context: PromptContext): Promise<Prompts<PagePromptsAnswer>> {
     const t = translate(i18nNamespaces.buildingBlock, 'prompts.page.');
 
+    const { content: manifest } = await getManifest(context.appPath, context.fs, false);
+    const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
+    const hideTemplateType = !!minUI5Version && lt(minUI5Version, '1.145.0');
+
     return {
         questions: [
-            ...(context.options?.disableFullPageTemplate
+            ...(hideTemplateType
                 ? []
                 : [
                       {
@@ -81,7 +88,7 @@ export async function getPageBuildingBlockPrompts(context: PromptContext): Promi
         initialAnswers: {
             buildingBlockData: {
                 buildingBlockType: BuildingBlockType.Page,
-                ...(context.options?.disableFullPageTemplate ? { templateType: PAGE_TEMPLATE_TYPE_BASIC } : {})
+                ...(hideTemplateType ? { templateType: PAGE_TEMPLATE_TYPE_BASIC } : {})
             }
         }
     };
