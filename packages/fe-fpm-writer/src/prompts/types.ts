@@ -31,9 +31,11 @@ export interface Prompts<T extends Answers = Answers> {
 /**
  * Options for prompt context.
  * - `pageContextEntitySet`: The entity set representing the page context (e.g., for an object page).
+ * - `disableFullPageTemplate`: When true, the "Full" layout option is hidden in the Page BB prompt.
  */
 export interface PromptContextOptions {
     pageContextEntitySet?: string;
+    disableFullPageTemplate?: boolean;
 }
 
 export interface PromptContext {

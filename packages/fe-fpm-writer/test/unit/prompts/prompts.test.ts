@@ -73,6 +73,17 @@ describe('Prompts', () => {
         expect(questionnair).toMatchSnapshot();
     });
 
+    test('getPageBuildingBlockPrompts - Full option hidden when disableFullPageTemplate is true', async () => {
+        const apiWithFlag = await PromptsAPI.init(projectPath, undefined, fs, { disableFullPageTemplate: true });
+        const questionnair = await apiWithFlag.getPrompts(PromptsType.Page);
+        const templateTypeQuestion = questionnair.questions.find((q) => q.name === 'buildingBlockData.templateType');
+        expect(templateTypeQuestion).toBeDefined();
+        const choices = Array.isArray(templateTypeQuestion?.choices) ? templateTypeQuestion.choices : [];
+        const values = choices.map((c: any) => c.value);
+        expect(values).not.toContain('full');
+        expect(values).toContain('basic');
+    });
+
     test('getRichTextEditorBuildingBlockPrompts', async () => {
         const questionnair = await promptsAPI.getPrompts(PromptsType.RichTextEditor);
         expect(questionnair).toMatchSnapshot();
