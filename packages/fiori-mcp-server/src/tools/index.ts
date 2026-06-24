@@ -82,6 +82,8 @@ export const tools = [
                     Use this before calling 'generate_fiori_app_odata' when the user provides a SAP system reference or service URL.
                     - If the user provides a system name or host, use 'list_sap_systems' first to resolve it.
                     - Pass the full URL as sapSystemQuery if a full URL is provided; pass only the path as servicePath.
+                    - If the user provides only a service technical name (e.g. ZMY_SALES_SRV) without a path, pass it as serviceName. A catalog lookup will be performed to resolve the service path. If no matching service is found, the download cannot proceed.
+                    - Either servicePath or serviceName must be provided; if both are given, servicePath takes precedence.
                     - Returns host, servicePath, client, metadataFilePath and destination (on SAP Business Application Studio) inside the result's parameters object.
                     - Pass ALL returned fields directly into the service config of 'generate_fiori_app_odata'. On BAS, destination is mandatory and must be included.
                     **IMPORTANT**: On VSCode, if the service requires authentication and the system is not already stored, ask the user to store it first. Do not ask for credentials directly.`,

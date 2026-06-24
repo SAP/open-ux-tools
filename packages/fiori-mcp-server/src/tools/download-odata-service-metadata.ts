@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
-import { getServiceMetadata, findSystem } from './services/sap-system.js';
+import { getServiceMetadata, findSystem, findService } from './services/sap-system.js';
 
 const EMPTY_PARAMS: DownloadODataServiceMetadataOutput['parameters'] = {
     host: '',
@@ -22,13 +22,14 @@ const EMPTY_PARAMS: DownloadODataServiceMetadataOutput['parameters'] = {
 export async function downloadODataServiceMetadata(
     params: DownloadODataServiceMetadataInput
 ): Promise<DownloadODataServiceMetadataOutput> {
-    const sapSystemQuery = String(params.sapSystemQuery ?? '').trim(); // can be empty
-    const servicePath = String(params.servicePath ?? '').trim();
+    const sapSystemQuery = String(params.sapSystemQuery ?? '').trim();
+    let servicePath = String(params.servicePath ?? '').trim();
+    const serviceName = String(params.serviceName ?? '').trim();
 
-    if (!servicePath) {
+    if (!servicePath && !serviceName) {
         return {
             status: 'Error',
-            message: 'Missing required parameter: servicePath',
+            message: 'Missing required parameter: either servicePath or serviceName must be provided',
             parameters: EMPTY_PARAMS,
             appPath: params.appPath,
             changes: [],
@@ -37,7 +38,7 @@ export async function downloadODataServiceMetadata(
     }
 
     try {
-        const findResult = await findSystem(sapSystemQuery || servicePath);
+        const findResult = await findSystem(sapSystemQuery || servicePath || serviceName);
         if (!findResult.system) {
             return {
                 status: 'Error',
@@ -49,6 +50,25 @@ export async function downloadODataServiceMetadata(
             };
         }
         const foundSystem = findResult.system;
+
+        if (!servicePath && serviceName) {
+            const result = await findService(foundSystem, serviceName);
+            if (!result.found) {
+                const hint =
+                    result.suggestions.length > 0
+                        ? ` Did you mean one of these? ${result.suggestions.map((s) => `${s.name} v${s.serviceVersion} > ${s.path} (OData V${s.odataVersion})`).join(', ')}`
+                        : ' No similar services found.';
+                return {
+                    status: 'Error',
+                    message: `No service named '${serviceName}' found.${hint}`,
+                    parameters: EMPTY_PARAMS,
+                    appPath: params.appPath,
+                    changes: [],
+                    timestamp: new Date().toISOString()
+                };
+            }
+            servicePath = result.service.path;
+        }
 
         const metadata = await getServiceMetadata(foundSystem, servicePath);
         const metadataFilePath = path.join(params.appPath, 'metadata.xml');
