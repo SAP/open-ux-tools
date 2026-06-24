@@ -54,10 +54,12 @@ export async function downloadODataServiceMetadata(
         if (!servicePath && serviceName) {
             const result = await findService(foundSystem, serviceName);
             if (!result.found) {
-                const hint =
-                    result.suggestions.length > 0
-                        ? ` Did you mean one of these? ${result.suggestions.map((s) => `${s.name} v${s.serviceVersion} > ${s.path} (OData V${s.odataVersion})`).join(', ')}`
-                        : ' No similar services found.';
+                const suggestionList = result.suggestions
+                    .map((s) => `${s.name} v${s.serviceVersion} > ${s.path} (OData V${s.odataVersion})`)
+                    .join(', ');
+                const hint = suggestionList
+                    ? ` Did you mean one of these? ${suggestionList}`
+                    : ' No similar services found.';
                 return {
                     status: 'Error',
                     message: `No service named '${serviceName}' found.${hint}`,
