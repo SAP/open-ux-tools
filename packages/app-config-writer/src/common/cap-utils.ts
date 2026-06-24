@@ -1,6 +1,7 @@
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { FileName, type Package } from '@sap-ux/project-access';
+import type { ToolsLogger } from '@sap-ux/logger';
 
 /**
  * Writes a `cds watch` script to the CAP root `package.json`.
@@ -16,9 +17,9 @@ export function writeCdsWatchScript(
     scriptKey: string,
     openPath: string,
     fs: Editor,
-    logger?: { debug: (msg: string) => void }
+    logger?: ToolsLogger
 ): void {
-    const packageJsonPath = join(capRoot, 'package.json');
+    const packageJsonPath = join(capRoot, FileName.Package);
     if (!fs.exists(packageJsonPath)) {
         throw new Error(`package.json not found at CAP root: ${capRoot}`);
     }

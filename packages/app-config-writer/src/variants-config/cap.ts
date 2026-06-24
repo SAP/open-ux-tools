@@ -27,7 +27,7 @@ export async function updateCapRootPackageJsonForVariants(
     yamlPath?: string,
     logger?: ToolsLogger
 ): Promise<void> {
-    const capRootPackageJsonPath = join(capRoot, 'package.json');
+    const capRootPackageJsonPath = join(capRoot, FileName.Package);
     if (!fs.exists(capRootPackageJsonPath)) {
         throw new Error(`package.json not found at CAP root: ${capRoot}`);
     }
@@ -42,11 +42,5 @@ export async function updateCapRootPackageJsonForVariants(
         );
     }
 
-    writeCdsWatchScript(
-        capRoot,
-        `start-variants-management-${appFolderName}`,
-        `${appId}${rtaUrl}`,
-        fs,
-        logger
-    );
+    writeCdsWatchScript(capRoot, `start-variants-management-${appFolderName}`, `${appId}${rtaUrl}`, fs, logger);
 }

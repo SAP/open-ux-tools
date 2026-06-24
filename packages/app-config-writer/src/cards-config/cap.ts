@@ -28,7 +28,7 @@ export async function updateCapRootPackageJsonForCards(
     yamlPath?: string,
     logger?: ToolsLogger
 ): Promise<void> {
-    const capRootPackageJsonPath = join(capRoot, 'package.json');
+    const capRootPackageJsonPath = join(capRoot, FileName.Package);
     if (!fs.exists(capRootPackageJsonPath)) {
         throw new Error(`package.json not found at CAP root: ${capRoot}`);
     }
