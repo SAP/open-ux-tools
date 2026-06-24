@@ -48,10 +48,12 @@ sap.ui.define([
             Then.onTheSalesOrderItemObjectPageGenerated.iCheckNumberOfSections(2);
             When.onTheSalesOrderItemObjectPageGenerated.iPressSectionIconTabFilterButton("Identification");
             Then.onTheSalesOrderItemObjectPageGenerated.iCheckSection({ section: "Identification" });
+            Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "_ReferencedSalesOrder/SalesOrder" });
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "SalesOrderItem" });
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "Material" });
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "RequestedQuantity" });
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "NetAmount" });
+            Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "_ReferencedSalesOrderItem/SalesOrderItem" });
             When.onTheSalesOrderItemObjectPageGenerated.iPressSectionIconTabFilterButton("MaterialDetailsFacet");
             Then.onTheSalesOrderItemObjectPageGenerated.iCheckSection({ section: "MaterialDetailsFacet" });
             Then.onTheSalesOrderItemObjectPageGenerated.onTable({ property: "_MaterialDetails" }).iCheckAction("Material Details Bound Action", { enabled: true });
