@@ -1,9 +1,37 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
+const realProjectAccess = await import('@sap-ux/project-access');
+const realUtils = await import('../../../src/common/utils.js');
+const realUi5Yaml = await import('../../../src/common/ui5-yaml.js');
+
+const mockGetProjectType = jest.fn<typeof realProjectAccess.getProjectType>();
+const mockFindCapProjectRoot = jest.fn<typeof realProjectAccess.findCapProjectRoot>();
+const mockReadManifest = jest.fn<typeof realUtils.readManifest>();
+
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...realProjectAccess,
+    getProjectType: mockGetProjectType,
+    findCapProjectRoot: mockFindCapProjectRoot
+}));
+
+jest.unstable_mockModule('../../../src/common/utils.js', () => ({
+    ...realUtils,
+    readManifest: mockReadManifest
+}));
+
+jest.unstable_mockModule('../../../src/common/ui5-yaml.js', () => ({
+    ...realUi5Yaml,
+    updateMiddlewaresForPreview: jest.fn<typeof realUi5Yaml.updateMiddlewaresForPreview>().mockResolvedValue(undefined)
+}));
+
+const { generateVariantsConfig } = await import('../../../src/variants-config/generateVariantsConfig.js');
 const { updateCapRootPackageJsonForVariants } = await import('../../../src/variants-config/cap.js');
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const CAP_ROOT = '/cap-root';
 const APP_PATH = join(CAP_ROOT, 'app', 'my_app');
@@ -27,12 +55,13 @@ server:
           intent:
             object: hello
             action: world
-        rta:
-          layer: VENDOR
-          editors:
-            - path: /editor.html
-              developerMode: true
-            - path: ${rtaPath}
+        editors:
+          rta:
+            layer: VENDOR
+            endpoints:
+              - path: /editor.html
+                developerMode: true
+              - path: ${rtaPath}
 `
     );
     fs.writeJSON(join(APP_PATH, 'package.json'), {
@@ -116,5 +145,50 @@ server:
         ).rejects.toThrow(
             `Script 'start-variants-management-my_app' cannot be written to package.json. No RTA editor specified in ui5.yaml.`
         );
+    });
+});
+
+describe('generateVariantsConfig - CAP routing', () => {
+    const basePath = join(__dirname, '../../fixtures/variants-config');
+    const yamlPath = join(basePath, 'ui5.yaml');
+    const capRoot = '/test-cap-root';
+
+    beforeEach(() => {
+        jest.resetAllMocks();
+        mockReadManifest.mockResolvedValue({ manifest: { 'sap.app': { id: 'test.app' } } } as unknown as Awaited<
+            ReturnType<typeof realUtils.readManifest>
+        >);
+        mockFindCapProjectRoot.mockResolvedValue(capRoot);
+    });
+
+    test('throws for CAPJava projects', async () => {
+        mockGetProjectType.mockResolvedValue('CAPJava');
+
+        await expect(generateVariantsConfig(basePath, yamlPath)).rejects.toThrow(
+            'The variants-config command is not supported for CAP Java projects.'
+        );
+    });
+
+    test('writes cds watch script to cap root for CAPNodejs', async () => {
+        mockGetProjectType.mockResolvedValue('CAPNodejs');
+        const fs = create(createStorage());
+        fs.writeJSON(join(capRoot, 'package.json'), { name: 'cap-project' });
+
+        await generateVariantsConfig(basePath, yamlPath, undefined, fs);
+
+        const pkg = fs.readJSON(join(capRoot, 'package.json')) as Record<string, unknown>;
+        const scripts = pkg.scripts as Record<string, string>;
+        expect(scripts['start-variants-management-variants-config']).toMatch(/^cds watch --open "/);
+    });
+
+    test('does not write to cap root for EDMXBackend', async () => {
+        mockGetProjectType.mockResolvedValue('EDMXBackend');
+        const fs = create(createStorage());
+        fs.writeJSON(join(capRoot, 'package.json'), { name: 'cap-project' });
+
+        await generateVariantsConfig(basePath, yamlPath, undefined, fs);
+
+        const pkg = fs.readJSON(join(capRoot, 'package.json')) as Record<string, unknown>;
+        expect(pkg.scripts).toBeUndefined();
     });
 });
