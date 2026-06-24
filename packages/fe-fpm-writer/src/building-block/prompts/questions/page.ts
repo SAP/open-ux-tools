@@ -26,9 +26,9 @@ export async function getPageBuildingBlockPrompts(context: PromptContext): Promi
                 default: PAGE_TEMPLATE_TYPE_BASIC,
                 choices: [
                     { value: PAGE_TEMPLATE_TYPE_BASIC, name: t('templateType.basic') as string },
-                    ...(!context.options?.disableFullPageTemplate
-                        ? [{ value: PAGE_TEMPLATE_TYPE_FULL, name: t('templateType.full') as string }]
-                        : [])
+                    ...(context.options?.disableFullPageTemplate
+                        ? []
+                        : [{ value: PAGE_TEMPLATE_TYPE_FULL, name: t('templateType.full') as string }])
                 ],
                 guiOptions: { mandatory: true }
             },

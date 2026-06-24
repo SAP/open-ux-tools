@@ -79,7 +79,7 @@ describe('Prompts', () => {
         const templateTypeQuestion = questionnair.questions.find((q) => q.name === 'buildingBlockData.templateType');
         expect(templateTypeQuestion).toBeDefined();
         const choices = Array.isArray(templateTypeQuestion?.choices) ? templateTypeQuestion.choices : [];
-        const values = choices.map((c: any) => c.value);
+        const values = choices.map((c: { value: string }) => c.value);
         expect(values).not.toContain('full');
         expect(values).toContain('basic');
     });
