@@ -133,8 +133,12 @@ describe('getSecureStore', () => {
             mockRequireForZowe.mockReturnValueOnce({ keyring: mockKeyring });
 
             mockExistsSync.mockImplementation((p) => {
-                if (typeof p === 'string' && p.includes('extensions')) return true;
-                if (typeof p === 'string' && p.includes('package.json')) return true;
+                if (typeof p === 'string' && p.includes('extensions')) {
+                    return true;
+                }
+                if (typeof p === 'string' && p.includes('package.json')) {
+                    return true;
+                }
                 return false;
             });
             mockReaddirSync.mockReturnValue(['sapse.sap-ux-application-modeler-extension-1.14.1']);
