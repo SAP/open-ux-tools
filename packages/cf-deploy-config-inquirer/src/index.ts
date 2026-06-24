@@ -10,7 +10,6 @@ import type {
     CfDeployConfigRouterAnswers,
     CfDeployConfigRouterQuestions
 } from './types.js';
-import { promptNames, appRouterPromptNames, RouterModuleType } from './types.js';
 import { initI18nCfDeployConfigInquirer } from './i18n.js';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
 import autocomplete from 'inquirer-autocomplete-prompt';
@@ -91,12 +90,9 @@ export {
     getPrompts,
     type CfDeployConfigPromptOptions,
     type CfSystemChoice,
-    promptNames,
     prompt,
-    appRouterPromptNames,
     getAppRouterPrompts,
     type CfAppRouterDeployConfigPromptOptions,
-    RouterModuleType,
     type CfDeployConfigQuestions,
     type CfDeployConfigAnswers,
     type CfAppRouterDeployConfigAnswers,
@@ -104,3 +100,4 @@ export {
     type CfDeployConfigRouterAnswers,
     type CfDeployConfigRouterQuestions
 };
+export { promptNames, appRouterPromptNames, RouterModuleType } from './types.js';
