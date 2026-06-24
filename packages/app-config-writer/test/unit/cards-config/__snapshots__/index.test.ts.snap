@@ -34,7 +34,7 @@ server:
       afterMiddleware: compression
       configuration:
         flp:
-          path: test/flpSandbox.html
+          path: /test/flpSandbox.html
         editors:
           cardGenerator:
             path: test/flpGeneratorSandboxTest.html
@@ -59,13 +59,23 @@ server:
 exports[`enableCardGenerator Valid LROP 1`] = `
 "{
   \\"scripts\\": {
-    \\"start-cards-generator\\": \\"fiori run --open \\\\\\"/test/flpCardGeneratorSandbox.html#app-preview\\\\\\"\\"
+    \\"start-cards-generator\\": \\"ui5 serve --open \\\\\\"/test/flpCardGeneratorSandbox.html#app-preview\\\\\\"\\"
   }
 }
 "
 `;
 
-exports[`enableCardGenerator Valid LROP 2`] = `""`;
+exports[`enableCardGenerator Valid LROP 2`] = `
+"server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        editors:
+          cardGenerator:
+            path: /test/flpCardGeneratorSandbox.html
+"
+`;
 
 exports[`enableCardGenerator Valid LROP with deprecated config with cards generator 1`] = `
 "{
@@ -78,7 +88,7 @@ exports[`enableCardGenerator Valid LROP with deprecated config with cards genera
     \\"build\\": \\"ui5 build\\",
     \\"start\\": \\"ui5 serve --open \\\\\\"/test/flpSandbox.html#app-preview\\\\\\"\\",
     \\"yet-another-start\\": \\"ui5 serve --open \\\\\\"/test/flpSandbox.html#app-preview\\\\\\" --config ui5-with-deprecated-config.yaml\\",
-    \\"start-cards-generator\\": \\"fiori run --open \\\\\\"test/flpGeneratorSandboxTest.html#app-preview\\\\\\"\\"
+    \\"start-cards-generator\\": \\"fiori run --open \\\\\\"/test/flpCardGeneratorSandbox.html#app-preview\\\\\\"\\"
   },
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"3.9.0\\",
@@ -100,11 +110,11 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: compression
       configuration:
-        component: v2lrop0909
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
         editors:
           cardGenerator:
-            path: test/flpGeneratorSandboxTest.html
+            path: /test/flpCardGeneratorSandbox.html
     - name: sap-fe-mockserver
       afterMiddleware: compression
       configuration:
@@ -156,8 +166,9 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: compression
       configuration:
-        component: v2lrop0909
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
+          path: /test/flpSandbox.html
         editors:
           cardGenerator:
             path: /test/flpCardGeneratorSandbox.html
@@ -214,11 +225,11 @@ server:
       configuration:
         flp:
           path: test/flpSandbox.html
-        rta:
-          editors:
-            - path: test/editor.html
-              developerMode: true
         editors:
+          rta:
+            endpoints:
+              - path: test/editor.html
+                developerMode: true
           cardGenerator:
             path: /test/flpCardGeneratorSandbox.html
     - name: sap-fe-mockserver
@@ -269,19 +280,26 @@ metadata:
 type: application
 server:
   customMiddleware:
-  - name: sap-fe-mockserver
-    afterMiddleware: compression
-    configuration:
-      services:
-      - urlPath: '/sap/opu/odata4/mock'
-        metadataPath: './webapp/localService/metadata.xml'
-        generateMockData: true
-  - name: fiori-tools-proxy
-    afterMiddleware: sap-fe-mockserver
-    configuration:
-      ui5:
-        path:
-        - /resources
-        - /test-resources
-        url: https://ui5.sap.com"
+    - name: sap-fe-mockserver
+      afterMiddleware: compression
+      configuration:
+        services:
+          - urlPath: '/sap/opu/odata4/mock'
+            metadataPath: './webapp/localService/metadata.xml'
+            generateMockData: true
+    - name: fiori-tools-proxy
+      afterMiddleware: sap-fe-mockserver
+      configuration:
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        editors:
+          cardGenerator:
+            path: /test/flpCardGeneratorSandbox.html
+"
 `;
