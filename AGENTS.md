@@ -443,6 +443,11 @@ Follow the conventions in [docs/Guidelines.md](docs/Guidelines.md):
 - Max 100 characters for commit message
 - Use imperative mood: "Add feature" not "Added feature"
 
+**MCP Tool Naming:**
+- All MCP tool names must use `snake_case` (e.g. `list_sap_systems`, `generate_fiori_app_odata`)
+- Never use `kebab-case` for tool names (`fetch-service-metadata` is wrong; `download_odata_service_metadata` is correct)
+- Tool descriptions that reference other tools by name must also use the snake_case form
+
 ### Code Reusability and Common Libraries
 
 **Always reuse existing functions from common libraries before implementing new ones.**

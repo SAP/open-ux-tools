@@ -317,6 +317,7 @@ it('getComplexType(UI.DataFieldAbstract)', () => {
               "com.sap.vocabularies.UI.v1.Importance",
               "com.sap.vocabularies.UI.v1.PartOfPreview",
               "com.sap.vocabularies.UI.v1.Placeholder",
+              "com.sap.vocabularies.UI.v1.Emphasized",
               "com.sap.vocabularies.HTML5.v1.CssDefaults",
               "com.sap.vocabularies.HTML5.v1.RowSpanForDuplicateValues",
               "com.sap.vocabularies.Common.v1.FieldControl",
@@ -391,6 +392,7 @@ it('getComplexType(UI.DataFieldForAction) derived type', () => {
               "com.sap.vocabularies.UI.v1.Importance",
               "com.sap.vocabularies.UI.v1.PartOfPreview",
               "com.sap.vocabularies.UI.v1.Placeholder",
+              "com.sap.vocabularies.UI.v1.Emphasized",
               "com.sap.vocabularies.HTML5.v1.CssDefaults",
               "com.sap.vocabularies.HTML5.v1.RowSpanForDuplicateValues",
               "com.sap.vocabularies.Common.v1.FieldControl",
@@ -614,6 +616,7 @@ describe('getDocumentation()', () => {
             SAPUI.Importance  
             SAPUI.PartOfPreview  
             SAPUI.Placeholder  
+            SAPUI.Emphasized  
             HTML5.CssDefaults  
             HTML5.RowSpanForDuplicateValues  
             Common.FieldControl 

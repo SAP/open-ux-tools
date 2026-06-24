@@ -12,10 +12,12 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
 }));
 
 const mockAbapServiceProvider = jest.fn<any>();
+const mockCreateForDestination = jest.fn<any>();
 const mockTlsPatchApply = jest.fn();
 const mockTlsPatchIsPatchRequired = jest.fn<(url: string) => boolean>().mockReturnValue(false);
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     AbapServiceProvider: mockAbapServiceProvider,
+    createForDestination: mockCreateForDestination,
     ODataVersion,
     TlsPatch: {
         isPatchRequired: mockTlsPatchIsPatchRequired,
@@ -42,8 +44,19 @@ jest.unstable_mockModule('@sap-ux/edmx-parser', () => ({
 const mockFormatXml = jest.fn<any>((xml: string) => xml);
 jest.unstable_mockModule('xml-formatter', () => ({ default: mockFormatXml }));
 
-const { findSapSystem, getServiceMetadata } =
-    await import('../../../../../src/tools/functionalities/fetch-service-metadata/service-metadata.js');
+const mockIsAppStudio = jest.fn<() => boolean>().mockReturnValue(false);
+const mockListDestinations = jest.fn<any>();
+const mockIsAbapODataDestination = jest.fn<any>().mockReturnValue(true);
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    isAppStudio: mockIsAppStudio,
+    listDestinations: mockListDestinations,
+    isAbapODataDestination: mockIsAbapODataDestination
+}));
+
+const { findSystem, getServiceMetadata, getSystemsOrDestinations } =
+    await import('../../../src/tools/services/sap-system.js');
 
 describe('service-metadata', () => {
     let mockGetAll: jest.Mock;
@@ -86,6 +99,7 @@ describe('service-metadata', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockIsAppStudio.mockReturnValue(false);
 
         // Mock SystemService
         mockGetAll = jest.fn<any>().mockResolvedValue(mockSystems);
@@ -102,41 +116,41 @@ describe('service-metadata', () => {
         // Default: TlsPatch not required
         mockTlsPatchIsPatchRequired.mockReturnValue(false);
     });
-    describe('findSapSystem', () => {
+    describe('findSystem', () => {
         test('should find system by exact name match', async () => {
-            const result = await findSapSystem('TestSystem1');
-            expect(result).toEqual(mockSystems[0]);
+            const result = await findSystem('TestSystem1');
+            expect(result.system).toEqual(mockSystems[0]);
         });
 
         test('should find system by case-insensitive exact name match', async () => {
-            const result = await findSapSystem('testsystem1');
-            expect(result).toEqual(mockSystems[0]);
+            const result = await findSystem('testsystem1');
+            expect(result.system).toEqual(mockSystems[0]);
         });
 
         test('should find system by partial name match anywhere in name', async () => {
-            const result = await findSapSystem('Production');
-            expect(result).toEqual(mockSystems[2]);
+            const result = await findSystem('Production');
+            expect(result.system).toEqual(mockSystems[2]);
         });
 
         test('should find system by URL with client', async () => {
-            const result = await findSapSystem('https://test1.example.com?sap-client=100');
-            expect(result).toEqual(mockSystems[0]);
+            const result = await findSystem('https://test1.example.com?sap-client=100');
+            expect(result.system).toEqual(mockSystems[0]);
         });
 
         test('should find system by URL without client', async () => {
-            const result = await findSapSystem('https://test1.example.com');
-            expect(result).toEqual(mockSystems[0]);
+            const result = await findSystem('https://test1.example.com');
+            expect(result.system).toEqual(mockSystems[0]);
         });
 
         test('should find system by URL with different client (fallback)', async () => {
-            const result = await findSapSystem('https://test1.example.com?sap-client=999');
+            const result = await findSystem('https://test1.example.com?sap-client=999');
             // Should still match by URL only
-            expect(result).toEqual(mockSystems[0]);
+            expect(result.system).toEqual(mockSystems[0]);
         });
 
         test('should return raw system when URL not stored', async () => {
-            const result = await findSapSystem('https://unknown.example.com?sap-client=500');
-            expect(result).toEqual({
+            const result = await findSystem('https://unknown.example.com?sap-client=500');
+            expect(result.system).toEqual({
                 name: 'https://unknown.example.com',
                 url: 'https://unknown.example.com',
                 client: '500'
@@ -148,13 +162,25 @@ describe('service-metadata', () => {
             mockGetAll.mockResolvedValueOnce([]);
 
             // When no match is found, matchSystemByUrl creates a synthetic system
-            const result = await findSapSystem('https://nonexistent.example.com');
-            expect(result.url).toBe('https://nonexistent.example.com');
+            const result = await findSystem('https://nonexistent.example.com');
+            expect(result.system?.url).toBe('https://nonexistent.example.com');
         });
 
         test('should find unique system by case-insensitive partial match', async () => {
-            const result = await findSapSystem('dev');
-            expect(result).toEqual(mockSystems[3]);
+            const result = await findSystem('dev');
+            expect(result.system).toEqual(mockSystems[3]);
+        });
+
+        test('should return undefined system with message when multiple systems match by URL', async () => {
+            // Two systems with the same host → URL-match returns multiple
+            mockGetAll.mockResolvedValueOnce([
+                { ...mockSystems[0], url: 'https://shared.example.com', client: '100', name: 'SharedA' },
+                { ...mockSystems[1], url: 'https://shared.example.com', client: '200', name: 'SharedB' }
+            ]);
+            const result = await findSystem('https://shared.example.com');
+            expect(result.system).toBeUndefined();
+            expect(result.message).toMatch(/Multiple systems found matching/);
+            expect(result.message).toContain('SharedA');
         });
     });
 
@@ -331,7 +357,7 @@ describe('service-metadata', () => {
             };
 
             await expect(getServiceMetadata(sapSystem, '/sap/opu/odata4/service1')).rejects.toThrow(
-                'Multiple ODATA V4 Services found matching path: /sap/opu/odata4/service1'
+                'Multiple OData V4 services found matching path: /sap/opu/odata4/service1'
             );
         });
 
@@ -532,22 +558,168 @@ describe('service-metadata', () => {
 
     describe('URL parsing edge cases', () => {
         test('should handle URL with multiple query parameters', async () => {
-            const result = await findSapSystem('https://test1.example.com?sap-client=100&param=value');
-            expect(result).toEqual(mockSystems[0]);
+            const result = await findSystem('https://test1.example.com?sap-client=100&param=value');
+            expect(result.system).toEqual(mockSystems[0]);
         });
 
         test('should find system when partial query at start matches single system', async () => {
-            const result = await findSapSystem('Dev');
-            expect(result).toEqual(mockSystems[3]);
+            const result = await findSystem('Dev');
+            expect(result.system).toEqual(mockSystems[3]);
         });
 
         test('should create synthetic system from valid URL not in storage', async () => {
             mockGetAll.mockResolvedValueOnce([]);
-            const result = await findSapSystem('https://new-system.example.com?sap-client=999');
-            expect(result).toEqual({
+            const result = await findSystem('https://new-system.example.com?sap-client=999');
+            expect(result.system).toEqual({
                 name: 'https://new-system.example.com',
                 url: 'https://new-system.example.com',
                 client: '999'
+            });
+        });
+
+        test('should return undefined system when URL is not http', async () => {
+            mockGetAll.mockResolvedValueOnce([]);
+            const result = await findSystem('not-a-url');
+            expect(result.system).toBeUndefined();
+        });
+    });
+
+    describe('BAS / AppStudio destination handling', () => {
+        const mockDestinations = {
+            DEST_A: {
+                Name: 'DEST_A',
+                Host: 'https://dest-a.example.com',
+                'sap-client': '100',
+                Authentication: 'BasicAuthentication',
+                Type: 'HTTP'
+            },
+            DEST_B: {
+                Name: 'DEST_B',
+                Host: 'https://dest-b.example.com',
+                'sap-client': '200',
+                Authentication: 'BasicAuthentication',
+                Type: 'HTTP'
+            },
+            DEST_HOST: {
+                Name: 'HostDest',
+                Host: 'https://host-match.example.com',
+                'sap-client': '300',
+                Authentication: 'BasicAuthentication',
+                Type: 'HTTP'
+            }
+        };
+
+        beforeEach(() => {
+            mockIsAppStudio.mockReturnValue(true);
+            mockListDestinations.mockResolvedValue(mockDestinations);
+            mockIsAbapODataDestination.mockReturnValue(true);
+        });
+
+        describe('getSystemsOrDestinations', () => {
+            test('should return filtered destinations in BAS', async () => {
+                const result = await getSystemsOrDestinations();
+                expect(mockListDestinations).toHaveBeenCalledWith({ stripS4HCApiHosts: true });
+                expect(result).toHaveLength(3);
+            });
+
+            test('should filter out non-ABAP destinations', async () => {
+                mockIsAbapODataDestination.mockReturnValue(false);
+                const result = await getSystemsOrDestinations();
+                expect(result).toHaveLength(0);
+            });
+
+            test('should filter out NoAuthentication destinations', async () => {
+                mockListDestinations.mockResolvedValue({
+                    ...mockDestinations,
+                    NO_AUTH_DEST: {
+                        Name: 'NO_AUTH_DEST',
+                        Host: 'https://no-auth.example.com',
+                        Authentication: 'NoAuthentication',
+                        Type: 'HTTP'
+                    }
+                });
+                const result = await getSystemsOrDestinations();
+                expect((result as any[]).find((d: any) => d.Name === 'NO_AUTH_DEST')).toBeUndefined();
+                expect(result).toHaveLength(3);
+            });
+
+            test('should return backend systems when not in BAS', async () => {
+                mockIsAppStudio.mockReturnValue(false);
+                const result = await getSystemsOrDestinations();
+                expect(mockListDestinations).not.toHaveBeenCalled();
+                expect(result).toEqual(mockSystems);
+            });
+        });
+
+        describe('findSystem in BAS', () => {
+            test('should find destination by exact name match', async () => {
+                const result = await findSystem('DEST_A');
+                expect(result.system).toEqual(mockDestinations.DEST_A);
+            });
+
+            test('should find destination by case-insensitive name match', async () => {
+                const result = await findSystem('dest_a');
+                expect(result.system).toEqual(mockDestinations.DEST_A);
+            });
+
+            test('should find destination by partial name (includes)', async () => {
+                const result = await findSystem('DEST');
+                expect(result.system).toEqual(mockDestinations.DEST_A);
+            });
+
+            test('should find destination by host URL', async () => {
+                const result = await findSystem('https://dest-a.example.com');
+                expect(result.system).toEqual(mockDestinations.DEST_A);
+            });
+
+            test('should return undefined system with message when no destination matches', async () => {
+                const result = await findSystem('NONEXISTENT');
+                expect(result.system).toBeUndefined();
+                expect(result.message).toContain('NONEXISTENT');
+            });
+
+            test('should return undefined system with message when listDestinations throws', async () => {
+                mockListDestinations.mockRejectedValue(new Error('BAS API unavailable'));
+                const result = await findSystem('UNKNOWN');
+                expect(result.system).toBeUndefined();
+                expect(result.message).toContain('BAS API unavailable');
+            });
+        });
+
+        describe('getServiceMetadata in BAS', () => {
+            const mockMetadata =
+                '<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">...</edmx:Edmx>';
+            const mockService = { metadata: jest.fn<any>().mockResolvedValue(mockMetadata) };
+            const mockDestServiceProvider = { service: jest.fn<any>().mockReturnValue(mockService) };
+
+            beforeEach(() => {
+                mockCreateForDestination.mockReturnValue(mockDestServiceProvider);
+            });
+
+            test('should use getServiceFromDestination when isAppStudio is true', async () => {
+                const destination = mockDestinations.DEST_A;
+
+                const result = await getServiceMetadata(destination, '/sap/opu/odata4/service1');
+
+                expect(mockCreateForDestination).toHaveBeenCalledWith({}, destination);
+                expect(mockDestServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service1');
+                expect(result).toBe(mockMetadata);
+            });
+
+            test('should strip $metadata suffix from service path', async () => {
+                const destination = mockDestinations.DEST_A;
+
+                await getServiceMetadata(destination, '/sap/opu/odata4/service1/$metadata');
+
+                expect(mockDestServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service1/');
+            });
+
+            test('should not use AbapServiceProvider when isAppStudio is true', async () => {
+                const destination = mockDestinations.DEST_A;
+
+                await getServiceMetadata(destination, '/sap/opu/odata4/service1');
+
+                expect(mockAbapServiceProvider).not.toHaveBeenCalled();
             });
         });
     });
