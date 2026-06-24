@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.7.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Features
+
+- add skill for usage of @sap-ux/create cli [[2733268](https://github.com/SAP/open-ux-tools/commit/2733268fc635cdef7bded697ecafc5237a59e6b7)]
+
 ## 1.6.0
 
 ### Minor Changes
