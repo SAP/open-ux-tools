@@ -1,5 +1,18 @@
 # @sap-ux/create
 
+## 1.0.32
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.25 → 1.0.26
+- @sap-ux/app-config-writer 1.0.11 → 1.0.11
+
 ## 1.0.31
 
 ### Patch Changes

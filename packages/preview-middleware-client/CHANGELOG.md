@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.0.26
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Bug Fixes
+
+- remove static import to avoid eager sap.ui.dt load [[78d79c8](https://github.com/SAP/open-ux-tools/commit/78d79c8836a2a7768b8634ab226f1674b4bd0e78)]
+
 ## 1.0.25
 
 ## 1.0.24
