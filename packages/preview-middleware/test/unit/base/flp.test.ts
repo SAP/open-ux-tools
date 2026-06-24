@@ -1497,7 +1497,6 @@ describe('FlpSandbox', () => {
             expect(mockFindProjectRoot).toHaveBeenCalledWith(process.cwd(), false, true);
         });
 
-
         test('legacy-free label - disables card generator regardless of minor version', async () => {
             const { server, flp } = await setupMiddleware('EDMXBackend');
             mockUi5Version('1.121.0-legacy-free');
