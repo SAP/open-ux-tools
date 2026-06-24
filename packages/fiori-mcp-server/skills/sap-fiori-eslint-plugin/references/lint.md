@@ -1,13 +1,4 @@
----
-name: sap-fiori-eslint-lint
-description: Run ESLint on a SAP Fiori project and report results or auto-fix issues using @sap-ux/eslint-plugin-fiori-tools. Use when the user asks to lint, check code quality, fix ESLint errors, or run code style checks on a SAP Fiori app.
-compatibility: Requires Node.js and an eslint.config.mjs configured with @sap-ux/eslint-plugin-fiori-tools. If not configured, use the sap-fiori-eslint-setup skill first.
-metadata:
-  author: sap-fiori-tools
-  version: "1.0"
----
-
-# Fiori ESLint Lint & Fix
+# Run and Fix ESLint on a Fiori Project
 
 Run ESLint on a SAP Fiori project to check code quality and optionally auto-fix issues.
 
@@ -58,8 +49,8 @@ done
 **Decision tree — what to do next:**
 
 1. **Config found and references `@sap-ux/eslint-plugin-fiori-tools`** → proceed to Step 2.
-2. **Legacy config found** (`.eslintrc`, `.eslintrc.js`, `.eslintrc.cjs`, `.eslintrc.json`, `.eslintrc.yml`) → use the `sap-fiori-eslint-migrate` skill to migrate to flat config first, then return here.
-3. **No config found at all** → use the `sap-fiori-eslint-setup` skill to create a fresh config, then return here.
+2. **Legacy config found** (`.eslintrc`, `.eslintrc.js`, `.eslintrc.cjs`, `.eslintrc.json`, `.eslintrc.yml`) → follow [migrate.md](migrate.md) first, then return here.
+3. **No config found at all** → follow [setup.md](setup.md) to create a fresh config, then return here.
 
 To detect a legacy config:
 ```bash
@@ -204,4 +195,3 @@ If everything is clean:
 - Run `npx eslint . --fix-dry-run` to preview what auto-fixes would change without applying them
 - Use `npx eslint . --rule '@sap-ux/fiori-tools/sap-no-localstorage: error'` to check a single rule
 - Add `// eslint-disable-next-line @sap-ux/fiori-tools/<rule-name>` to suppress a specific rule on one line when a violation is intentional and documented
-
