@@ -118,6 +118,35 @@ describe('getSecureStore', () => {
             expect(getSecureStore(nullLogger)).toBeInstanceOf(KeyStoreManager);
         });
 
+        it('returns KeyStoreManager with functional keyring extracted from fallback module', async () => {
+            const mockKeyring = {
+                setPassword: jest.fn(),
+                getPassword: jest.fn<() => Promise<string | null>>().mockResolvedValue(null),
+                deletePassword: jest.fn(),
+                findCredentials: jest.fn()
+            };
+            // Direct load fails
+            mockRequireForZowe.mockImplementationOnce(() => {
+                throw new Error('Cannot find module @zowe/secrets-for-zowe-sdk');
+            });
+            // Fallback returns full module shape, as the real SDK does on disk
+            mockRequireForZowe.mockReturnValueOnce({ keyring: mockKeyring });
+
+            mockExistsSync.mockImplementation((p) => {
+                if (typeof p === 'string' && p.includes('extensions')) return true;
+                if (typeof p === 'string' && p.includes('package.json')) return true;
+                return false;
+            });
+            mockReaddirSync.mockReturnValue(['sapse.sap-ux-application-modeler-extension-1.14.1']);
+
+            const store = getSecureStore(nullLogger);
+            expect(store).toBeInstanceOf(KeyStoreManager);
+
+            // retrieve() must call getPassword on the actual keyring, not the wrapper module
+            await store.retrieve('service', 'key');
+            expect(mockKeyring.getPassword).toHaveBeenCalledWith('service', 'key');
+        });
+
         it('returns DummyStore if zowe sdk cannot be loaded and no fallback paths exist', () => {
             mockExistsSync.mockReturnValue(false);
             mockReaddirSync.mockReturnValue([]);
