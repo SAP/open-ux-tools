@@ -1,5 +1,21 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.0.13 → 3.0.14
+
+## 0.3.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.0.12 → 3.0.13
+
 ## 0.3.15
 
 ### Patch Changes
@@ -12,7 +28,7 @@
 
 ## 0.3.14
 
-*Released: 2026-06-12T06:53:23Z*
+_Released: 2026-06-12T06:53:23Z_
 
 ### Patch Changes
 
@@ -24,7 +40,7 @@
 
 ## 0.3.13
 
-*Released: 2026-06-11T10:54:17Z*
+_Released: 2026-06-11T10:54:17Z_
 
 ### Patch Changes
 
@@ -36,7 +52,7 @@
 
 ## 0.3.12
 
-*Released: 2026-06-10T17:43:20Z*
+_Released: 2026-06-10T17:43:20Z_
 
 ### Patch Changes
 
@@ -44,7 +60,7 @@
 
 ## 0.3.11
 
-*Released: 2026-06-10T10:53:28Z*
+_Released: 2026-06-10T10:53:28Z_
 
 ### Patch Changes
 
@@ -52,7 +68,7 @@
 
 ## 0.3.10
 
-*Released: 2026-06-10T09:57:42Z*
+_Released: 2026-06-10T09:57:42Z_
 
 ### Patch Changes
 
@@ -69,7 +85,7 @@
 
 ## 0.3.9
 
-*Released: 2026-06-09T14:35:01Z*
+_Released: 2026-06-09T14:35:01Z_
 
 ### Patch Changes
 
@@ -84,7 +100,7 @@
 
 ## 0.3.8
 
-*Released: 2026-06-09T13:18:16Z*
+_Released: 2026-06-09T13:18:16Z_
 
 ### Patch Changes
 
@@ -95,7 +111,7 @@
 
 ## 0.3.7
 
-*Released: 2026-06-04T14:49:00Z*
+_Released: 2026-06-04T14:49:00Z_
 
 ### Patch Changes
 
@@ -103,7 +119,7 @@
 
 ## 0.3.6
 
-*Released: 2026-06-04T13:54:21Z*
+_Released: 2026-06-04T13:54:21Z_
 
 ### Patch Changes
 
@@ -119,7 +135,7 @@
 
 ## 0.3.5
 
-*Released: 2026-06-04T10:19:37Z*
+_Released: 2026-06-04T10:19:37Z_
 
 ### Patch Changes
 
@@ -135,7 +151,7 @@
 
 ## 0.3.4
 
-*Released: 2026-06-03T14:58:37Z*
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -155,7 +171,7 @@
 
 ## 0.3.3
 
-*Released: 2026-06-03T13:52:44Z*
+_Released: 2026-06-03T13:52:44Z_
 
 ### Patch Changes
 
@@ -172,7 +188,7 @@
 
 ## 0.3.2
 
-*Released: 2026-06-02T11:35:17Z*
+_Released: 2026-06-02T11:35:17Z_
 
 ### Patch Changes
 
@@ -183,7 +199,7 @@
 
 ## 0.3.1
 
-*Released: 2026-06-01T15:15:26Z*
+_Released: 2026-06-01T15:15:26Z_
 
 ### Patch Changes
 
@@ -199,7 +215,7 @@
 
 ## 0.3.0
 
-*Released: 2026-05-30T20:54:07Z*
+_Released: 2026-05-30T20:54:07Z_
 
 ### Minor Changes
 
@@ -250,7 +266,7 @@
 
 ## 0.2.0
 
-*Released: 2026-05-15T08:12:20Z*
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -258,7 +274,7 @@
 
 ## 0.1.2
 
-*Released: 2026-05-14T11:45:51Z*
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -266,7 +282,7 @@
 
 ## 0.1.1
 
-*Released: 2026-05-11T16:10:02Z*
+_Released: 2026-05-11T16:10:02Z_
 
 ### Patch Changes
 
@@ -274,7 +290,7 @@
 
 ## 0.1.0
 
-*Released: 2026-05-07T12:44:55Z*
+_Released: 2026-05-07T12:44:55Z_
 
 ### Minor Changes
 
@@ -282,7 +298,7 @@
 
 ## 0.0.10
 
-*Released: 2026-03-30T22:24:11Z*
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -290,7 +306,7 @@
 
 ## 0.0.9
 
-*Released: 2026-03-23T14:11:51Z*
+_Released: 2026-03-23T14:11:51Z_
 
 ### Patch Changes
 
