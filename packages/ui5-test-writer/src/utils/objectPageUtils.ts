@@ -270,7 +270,7 @@ function extractSectionActions(
 ): ActionButtonState[] {
     let actionsAgg: AggregationItem | undefined;
 
-    if (section.isTable) {
+    if (isTableSection(section)) {
         const tableAgg = getAggregations(section)['table'];
         const toolBarAgg = getAggregations(tableAgg)['toolBar'];
         actionsAgg = getAggregations(toolBarAgg)['actions'] as AggregationItem;
