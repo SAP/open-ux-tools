@@ -35,18 +35,29 @@ export async function generateVariantsConfig(
         throw new Error('The variants-config command is not supported for CAP Java projects.');
     }
 
+    if (projectType === 'CAPNodejs' && !capRoot) {
+        throw new Error(`Could not find CAP project root for path '${basePath}'.`);
+    }
+
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
 
     if (projectType === 'CAPNodejs') {
-        if (!capRoot) {
-            throw new Error(`Could not find CAP project root for path '${basePath}'.`);
-        }
         const { manifest } = await readManifest(basePath, fs);
         const appId = manifest['sap.app']?.id;
         if (!appId) {
             throw new Error(`The 'sap.app.id' property is missing in the manifest.json file.`);
         }
-        await updateCapRootPackageJsonForVariants(capRoot, appId, basename(basePath), basePath, fs, yamlPath, logger);
+        // capRoot is non-null here: the early guard above throws when projectType === 'CAPNodejs' && !capRoot.
+        // TypeScript cannot narrow across the intervening function call boundary, so the cast is required.
+        await updateCapRootPackageJsonForVariants(
+            capRoot as string,
+            appId,
+            basename(basePath),
+            basePath,
+            fs,
+            yamlPath,
+            logger
+        );
     } else {
         await addVariantsManagementScript(fs, basePath, yamlPath, logger);
     }

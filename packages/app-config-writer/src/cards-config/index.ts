@@ -135,20 +135,31 @@ export async function enableCardGeneratorConfig(
         throw new Error('The cards-editor command is not supported for CAP Java projects.');
     }
 
+    if (projectType === 'CAPNodejs' && !capRoot) {
+        throw new Error(`Could not find CAP project root for path '${basePath}'.`);
+    }
+
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
     await updateMiddlewareConfigWithGeneratorPath(fs, basePath, yamlPath, logger);
 
     if (updatePackage) {
         if (projectType === 'CAPNodejs') {
-            if (!capRoot) {
-                throw new Error(`Could not find CAP project root for path '${basePath}'.`);
-            }
             const { manifest } = await readManifest(basePath, fs);
             const appId = manifest['sap.app']?.id;
             if (!appId) {
                 throw new Error(`The 'sap.app.id' property is missing in the manifest.json file.`);
             }
-            await updateCapRootPackageJsonForCards(capRoot, appId, basename(basePath), basePath, fs, yamlPath, logger);
+            // capRoot is non-null here: the early guard above throws.
+            // TypeScript cannot narrow across the intervening `if (updatePackage)` boundary, so the cast is required.
+            await updateCapRootPackageJsonForCards(
+                capRoot as string,
+                appId,
+                basename(basePath),
+                basePath,
+                fs,
+                yamlPath,
+                logger
+            );
         } else {
             await updatePackageJson(basePath, fs, yamlPath, logger);
         }

@@ -145,6 +145,15 @@ describe('enableCardGeneratorConfig - CAP routing', () => {
         );
     });
 
+    test('throws early when projectType is CAPNodejs but no CAP root was found', async () => {
+        mockFindCapProjectRoot.mockResolvedValue(null);
+        mockGetProjectType.mockResolvedValue('CAPNodejs');
+
+        await expect(enableCardGeneratorConfig(basePath, yamlPath)).rejects.toThrow(
+            `Could not find CAP project root for path '${basePath}'.`
+        );
+    });
+
     test('writes cds watch script to cap root for CAPNodejs', async () => {
         mockGetProjectType.mockResolvedValue('CAPNodejs');
         const fs = create(createStorage());
