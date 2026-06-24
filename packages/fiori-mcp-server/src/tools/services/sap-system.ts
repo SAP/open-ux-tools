@@ -294,15 +294,15 @@ export type FindServiceResult =
     | { found: false; suggestions: ODataServiceInfo[] };
 
 /**
- * Finds the OData service info for a given service name by performing a catalog lookup.
+ * Finds the OData service info for a given service id by performing a catalog lookup.
  * Fires V4 and V2 catalog requests in parallel.
  *
- * - Exact case-insensitive name match → returns the full ODataServiceInfo.
+ * - Exact case-insensitive id match → returns the full ODataServiceInfo.
  * - No exact match → returns up to 5 suggestions whose name starts with, contains,
  *   or is contained by the query (handles partial input like `ZMY_SALES` → `ZMY_SALES_SRV`).
  *
  * @param system - The BackendSystem or Destination to connect to.
- * @param serviceName - The technical name of the OData service to look up.
+ * @param serviceName - The technical id of the OData service to look up (e.g. `/DMO/SD_TRAVEL_MDSK`).
  * @returns A promise resolving to a found result with the service info, or a not-found result with suggestions.
  */
 export async function findService(

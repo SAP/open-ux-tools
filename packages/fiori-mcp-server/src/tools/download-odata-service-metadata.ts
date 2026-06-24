@@ -38,7 +38,7 @@ export async function downloadODataServiceMetadata(
     }
 
     try {
-        const findResult = await findSystem(sapSystemQuery || servicePath || serviceName);
+        const findResult = await findSystem(sapSystemQuery || servicePath);
         if (!findResult.system) {
             return {
                 status: 'Error',

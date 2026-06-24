@@ -4,9 +4,11 @@ import path from 'node:path';
 
 // Mock dependencies
 const mockFindSystem = jest.fn<any>();
+const mockFindService = jest.fn<any>();
 const mockGetServiceMetadata = jest.fn<any>();
 jest.unstable_mockModule('../../../src/tools/services/sap-system', () => ({
     findSystem: mockFindSystem,
+    findService: mockFindService,
     getServiceMetadata: mockGetServiceMetadata
 }));
 
@@ -54,6 +56,7 @@ describe('downloadODataServiceMetadata', () => {
         jest.clearAllMocks();
         mockIsAppStudio.mockReturnValue(false);
         mockFindSystem.mockResolvedValue({ system: mockSapSystem });
+        mockFindService.mockResolvedValue({ found: true, service: { path: mockServicePath } });
         mockGetServiceMetadata.mockResolvedValue(mockMetadata);
         mockWriteFileSync.mockImplementation(() => {});
     });
@@ -148,7 +151,7 @@ describe('downloadODataServiceMetadata', () => {
 
         const result = await downloadODataServiceMetadata(params);
         expect(result.status).toBe('Error');
-        expect(result.message).toBe('Missing required parameter: servicePath');
+        expect(result.message).toBe('Missing required parameter: either servicePath or serviceName must be provided');
         expect(mockFindSystem).not.toHaveBeenCalled();
         expect(mockGetServiceMetadata).not.toHaveBeenCalled();
         expect(mockWriteFileSync).not.toHaveBeenCalled();
@@ -163,7 +166,7 @@ describe('downloadODataServiceMetadata', () => {
 
         const result = await downloadODataServiceMetadata(params);
         expect(result.status).toBe('Error');
-        expect(result.message).toBe('Missing required parameter: servicePath');
+        expect(result.message).toBe('Missing required parameter: either servicePath or serviceName must be provided');
         expect(mockFindSystem).not.toHaveBeenCalled();
     });
 
@@ -176,7 +179,7 @@ describe('downloadODataServiceMetadata', () => {
 
         const result = await downloadODataServiceMetadata(params);
         expect(result.status).toBe('Error');
-        expect(result.message).toBe('Missing required parameter: servicePath');
+        expect(result.message).toBe('Missing required parameter: either servicePath or serviceName must be provided');
     });
 
     test('should return error response from findSystem failure', async () => {
@@ -277,6 +280,140 @@ describe('downloadODataServiceMetadata', () => {
         const result = await downloadODataServiceMetadata(params);
 
         expect(result.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+    });
+
+    describe('serviceName lookup', () => {
+        const mockResolvedService = {
+            id: 'MY_SRV',
+            name: 'GROUP > MY_SRV',
+            path: '/sap/opu/odata4/my/service/0001/',
+            serviceVersion: '0001',
+            odataVersion: '4'
+        };
+
+        test('should resolve serviceName to path via findService and fetch metadata', async () => {
+            mockFindService.mockResolvedValue({ found: true, service: mockResolvedService });
+
+            const params: DownloadODataServiceMetadataInput = {
+                appPath: mockAppPath,
+                sapSystemQuery: 'TestSystem',
+                serviceName: 'MY_SRV'
+            };
+
+            const result = await downloadODataServiceMetadata(params);
+
+            expect(mockFindService).toHaveBeenCalledWith(mockSapSystem, 'MY_SRV');
+            expect(mockGetServiceMetadata).toHaveBeenCalledWith(mockSapSystem, '/sap/opu/odata4/my/service/0001/');
+            expect(result.status).toBe('Success');
+            expect((result.parameters as any).servicePath).toBe('/sap/opu/odata4/my/service/0001/');
+        });
+
+        test('should use catalog path from findService, not a concatenation', async () => {
+            const catalogPath = '/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/';
+            mockFindService.mockResolvedValue({
+                found: true,
+                service: { ...mockResolvedService, path: catalogPath }
+            });
+
+            const params: DownloadODataServiceMetadataInput = {
+                appPath: mockAppPath,
+                sapSystemQuery: 'TestSystem',
+                serviceName: 'SD_TRAVEL_MDSK'
+            };
+
+            await downloadODataServiceMetadata(params);
+
+            expect(mockGetServiceMetadata).toHaveBeenCalledWith(mockSapSystem, catalogPath);
+        });
+
+        test('should return error with suggestions when serviceName not found', async () => {
+            mockFindService.mockResolvedValue({
+                found: false,
+                suggestions: [
+                    {
+                        id: 'MY_SRV',
+                        name: 'GROUP > MY_SRV',
+                        path: '/sap/opu/odata4/my/service/0001/',
+                        serviceVersion: '0001',
+                        odataVersion: '4'
+                    }
+                ]
+            });
+
+            const params: DownloadODataServiceMetadataInput = {
+                appPath: mockAppPath,
+                sapSystemQuery: 'TestSystem',
+                serviceName: 'UNKNOWN_SRV'
+            };
+
+            const result = await downloadODataServiceMetadata(params);
+
+            expect(result.status).toBe('Error');
+            expect(result.message).toContain("No service named 'UNKNOWN_SRV' found");
+            expect(result.message).toContain('GROUP > MY_SRV');
+            expect(result.message).toContain('v0001');
+            expect(result.message).toContain('/sap/opu/odata4/my/service/0001/');
+            expect(mockGetServiceMetadata).not.toHaveBeenCalled();
+        });
+
+        test('should return error with no-suggestions message when nothing matches', async () => {
+            mockFindService.mockResolvedValue({ found: false, suggestions: [] });
+
+            const params: DownloadODataServiceMetadataInput = {
+                appPath: mockAppPath,
+                sapSystemQuery: 'TestSystem',
+                serviceName: 'TOTALLY_UNKNOWN'
+            };
+
+            const result = await downloadODataServiceMetadata(params);
+
+            expect(result.status).toBe('Error');
+            expect(result.message).toContain('No similar services found');
+        });
+
+        test('should use sapSystemQuery to find system when serviceName provided', async () => {
+            mockFindService.mockResolvedValue({ found: true, service: mockResolvedService });
+
+            const params: DownloadODataServiceMetadataInput = {
+                appPath: mockAppPath,
+                sapSystemQuery: 'TestSystem',
+                serviceName: 'MY_SRV'
+            };
+
+            await downloadODataServiceMetadata(params);
+
+            expect(mockFindSystem).toHaveBeenCalledWith('TestSystem');
+            expect(mockFindSystem).not.toHaveBeenCalledWith('MY_SRV');
+        });
+
+        test('should return error when both servicePath and serviceName are missing', async () => {
+            const params: DownloadODataServiceMetadataInput = {
+                appPath: mockAppPath,
+                sapSystemQuery: 'TestSystem'
+            };
+
+            const result = await downloadODataServiceMetadata(params);
+
+            expect(result.status).toBe('Error');
+            expect(result.message).toBe(
+                'Missing required parameter: either servicePath or serviceName must be provided'
+            );
+            expect(mockFindSystem).not.toHaveBeenCalled();
+        });
+
+        test('should prefer servicePath over serviceName when both provided', async () => {
+            const params: DownloadODataServiceMetadataInput = {
+                appPath: mockAppPath,
+                sapSystemQuery: 'TestSystem',
+                servicePath: mockServicePath,
+                serviceName: 'MY_SRV'
+            };
+
+            await downloadODataServiceMetadata(params);
+
+            expect(mockFindService).not.toHaveBeenCalled();
+            expect(mockGetServiceMetadata).toHaveBeenCalledWith(mockSapSystem, mockServicePath);
+        });
     });
 
     describe('AppStudio (BAS) destination handling', () => {

@@ -55,7 +55,7 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAbapODataDestination: mockIsAbapODataDestination
 }));
 
-const { findSystem, getServiceMetadata, getSystemsOrDestinations } =
+const { findSystem, findService, getServiceMetadata, getSystemsOrDestinations } =
     await import('../../../src/tools/services/sap-system.js');
 
 describe('service-metadata', () => {
@@ -581,6 +581,176 @@ describe('service-metadata', () => {
             mockGetAll.mockResolvedValueOnce([]);
             const result = await findSystem('not-a-url');
             expect(result.system).toBeUndefined();
+        });
+    });
+
+    describe('findService', () => {
+        const v4Services = [
+            {
+                id: '/DMO/SD_TRAVEL_MDSK',
+                name: '/DMO/SB_TRAVEL_MDSK_O4 > /DMO/SD_TRAVEL_MDSK',
+                group: '/DMO/SB_TRAVEL_MDSK_O4',
+                path: '/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/',
+                serviceVersion: '0001',
+                odataVersion: ODataVersion.v4,
+                serviceType: undefined
+            },
+            {
+                id: '/DMO/SD_TRAVEL_MDSK_A',
+                name: '/DMO/SB_TRAVEL_MDSK_A_O4 > /DMO/SD_TRAVEL_MDSK_A',
+                group: '/DMO/SB_TRAVEL_MDSK_A_O4',
+                path: '/sap/opu/odata4/dmo/sb_travel_mdsk_a_o4/srvd/dmo/sd_travel_mdsk_a/0001/',
+                serviceVersion: '0001',
+                odataVersion: ODataVersion.v4,
+                serviceType: undefined
+            }
+        ];
+
+        let mockV4Catalog: { listServices: jest.Mock<any> };
+        let mockV2Catalog: { listServices: jest.Mock<any> };
+        let mockFindServiceProvider: { catalog: jest.Mock<any>; service: jest.Mock<any> };
+
+        beforeEach(() => {
+            mockV4Catalog = { listServices: jest.fn<any>().mockResolvedValue(v4Services) };
+            mockV2Catalog = { listServices: jest.fn<any>().mockResolvedValue([]) };
+            mockFindServiceProvider = {
+                catalog: jest
+                    .fn<any>()
+                    .mockImplementation((version: ODataVersion) =>
+                        version === ODataVersion.v4 ? mockV4Catalog : mockV2Catalog
+                    ),
+                service: jest.fn<any>()
+            };
+            mockAbapServiceProvider.mockImplementation(() => mockFindServiceProvider);
+        });
+
+        test('should find service by exact case-insensitive id match and return full ODataServiceInfo', async () => {
+            const system = mockSystems[0];
+            const result = await findService(system, '/DMO/SD_TRAVEL_MDSK');
+            expect(result.found).toBe(true);
+            if (result.found) {
+                expect(result.service).toEqual(v4Services[0]);
+                expect(result.service.path).toBe('/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/');
+            }
+        });
+
+        test('should match id case-insensitively', async () => {
+            const system = mockSystems[0];
+            const result = await findService(system, '/dmo/sd_travel_mdsk');
+            expect(result.found).toBe(true);
+        });
+
+        test('should return suggestions when no exact match', async () => {
+            const system = mockSystems[0];
+            const result = await findService(system, 'TRAVEL_MDSK');
+            expect(result.found).toBe(false);
+            if (!result.found) {
+                expect(result.suggestions.length).toBeGreaterThan(0);
+                expect(result.suggestions[0]).toHaveProperty('id');
+                expect(result.suggestions[0]).toHaveProperty('path');
+                expect(result.suggestions[0]).toHaveProperty('serviceVersion');
+                expect(result.suggestions[0]).toHaveProperty('odataVersion');
+            }
+        });
+
+        test('should suggest services whose name starts with the query', async () => {
+            const result = await findService(mockSystems[0], '/DMO/SB_TRAVEL');
+            expect(result.found).toBe(false);
+            if (!result.found) {
+                expect(result.suggestions.some((s) => s.name.startsWith('/DMO/SB_TRAVEL'))).toBe(true);
+            }
+        });
+
+        test('should suggest services whose name contains the query', async () => {
+            const result = await findService(mockSystems[0], 'SD_TRAVEL_MDSK');
+            expect(result.found).toBe(false);
+            if (!result.found) {
+                expect(result.suggestions.some((s) => s.name.includes('SD_TRAVEL_MDSK'))).toBe(true);
+            }
+        });
+
+        test('should suggest services when query contains the service name', async () => {
+            // query is longer but contains the service name — e.g. user types the full group path
+            const result = await findService(mockSystems[0], '/DMO/SB_TRAVEL_MDSK_O4 > /DMO/SD_TRAVEL_MDSK');
+            expect(result.found).toBe(false);
+            if (!result.found) {
+                // The name '/DMO/SB_TRAVEL_MDSK_O4 > /DMO/SD_TRAVEL_MDSK' is included in the query (exact case)
+                expect(result.suggestions.length).toBeGreaterThan(0);
+            }
+        });
+
+        test('should return full ODataServiceInfo objects in suggestions', async () => {
+            const result = await findService(mockSystems[0], 'SD_TRAVEL');
+            expect(result.found).toBe(false);
+            if (!result.found) {
+                for (const s of result.suggestions) {
+                    expect(s).toHaveProperty('id');
+                    expect(s).toHaveProperty('name');
+                    expect(s).toHaveProperty('path');
+                    expect(s).toHaveProperty('serviceVersion');
+                    expect(s).toHaveProperty('odataVersion');
+                }
+            }
+        });
+
+        test('should return up to 5 suggestions', async () => {
+            const manyServices = Array.from({ length: 10 }, (_, i) => ({
+                ...v4Services[0],
+                id: `/DMO/SRV_${i}`,
+                name: `/DMO/GRP_${i} > /DMO/SRV_${i}`,
+                path: `/sap/opu/odata4/svc${i}/`
+            }));
+            mockV4Catalog.listServices.mockResolvedValue(manyServices);
+
+            const system = mockSystems[0];
+            const result = await findService(system, 'DMO');
+            expect(result.found).toBe(false);
+            if (!result.found) {
+                expect(result.suggestions.length).toBeLessThanOrEqual(5);
+            }
+        });
+
+        test('should return empty suggestions when no partial match', async () => {
+            const system = mockSystems[0];
+            const result = await findService(system, 'ZZNONEXISTENT_XYZ');
+            expect(result.found).toBe(false);
+            if (!result.found) {
+                expect(result.suggestions).toHaveLength(0);
+            }
+        });
+
+        test('should check v4 and v2 catalogs in parallel', async () => {
+            await findService(mockSystems[0], 'ANYTHING');
+
+            expect(mockFindServiceProvider.catalog).toHaveBeenCalledWith(ODataVersion.v4);
+            expect(mockFindServiceProvider.catalog).toHaveBeenCalledWith(ODataVersion.v2);
+        });
+
+        test('should return found from v2 catalog when v4 has no match', async () => {
+            const v2Service = {
+                id: 'ZMY_SRV',
+                name: 'ZMY_SRV',
+                group: 'DEFAULT',
+                path: '/sap/opu/odata/sap/zmy_srv/',
+                serviceVersion: '1',
+                odataVersion: ODataVersion.v2,
+                serviceType: undefined
+            };
+            mockV4Catalog.listServices.mockResolvedValue([]); // v4 empty
+            mockV2Catalog.listServices.mockResolvedValue([v2Service]);
+
+            const result = await findService(mockSystems[0], 'ZMY_SRV');
+            expect(result.found).toBe(true);
+            if (result.found) {
+                expect(result.service).toEqual(v2Service);
+            }
+        });
+
+        test('should continue when one catalog lookup fails', async () => {
+            mockV2Catalog.listServices.mockRejectedValue(new Error('V2 unavailable'));
+
+            const result = await findService(mockSystems[0], '/DMO/SD_TRAVEL_MDSK');
+            expect(result.found).toBe(true);
         });
     });
 
