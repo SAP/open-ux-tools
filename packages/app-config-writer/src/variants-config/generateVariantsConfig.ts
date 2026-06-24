@@ -4,6 +4,8 @@ import { updateMiddlewaresForPreview } from '../common/ui5-yaml.js';
 import { addVariantsManagementScript } from './package-json.js';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
+import { getCapProjectInfo } from '../common/cap-utils.js';
+import { updateCapRootPackageJsonForVariants } from './cap.js';
 
 /**
  * Add variants configuration to an app or project.
@@ -23,7 +25,28 @@ export async function generateVariantsConfig(
     if (!fs) {
         fs = create(createStorage());
     }
+
+    const projectInfo = await getCapProjectInfo(basePath, fs);
+
+    if (projectInfo.projectType === 'CAPJava') {
+        throw new Error('The variants-config command is not supported for CAP Java projects.');
+    }
+
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
-    await addVariantsManagementScript(fs, basePath, yamlPath, logger);
+
+    if (projectInfo.projectType === 'CAPNodejs') {
+        await updateCapRootPackageJsonForVariants(
+            projectInfo.capRoot,
+            projectInfo.appId,
+            projectInfo.appFolderName,
+            basePath,
+            fs,
+            yamlPath,
+            logger
+        );
+    } else {
+        await addVariantsManagementScript(fs, basePath, yamlPath, logger);
+    }
+
     return fs;
 }

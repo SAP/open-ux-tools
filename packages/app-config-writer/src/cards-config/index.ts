@@ -8,6 +8,8 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName, type Package, readUi5Yaml } from '@sap-ux/project-access';
 import { updateMiddlewaresForPreview } from '../common/ui5-yaml.js';
 import { ensureMinUI5Version } from './prerequisites.js';
+import { getCapProjectInfo } from '../common/cap-utils.js';
+import { updateCapRootPackageJsonForCards } from './cap.js';
 
 const DEPENDENCY_NAME = '@sap-ux/cards-editor-middleware';
 const CARDS_GENERATOR_MIDDLEWARE = 'sap-cards-generator';
@@ -125,8 +127,28 @@ export async function enableCardGeneratorConfig(
     // asserts minimum UI5 version requirement before proceeding
     await ensureMinUI5Version(basePath, fs);
 
+    const projectInfo = await getCapProjectInfo(basePath, fs);
+
+    if (projectInfo.projectType === 'CAPJava') {
+        throw new Error('The cards-editor command is not supported for CAP Java projects.');
+    }
+
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
     await updateMiddlewareConfigWithGeneratorPath(fs, basePath, yamlPath, logger);
-    await updatePackageJson(basePath, fs, yamlPath, logger);
+
+    if (projectInfo.projectType === 'CAPNodejs') {
+        await updateCapRootPackageJsonForCards(
+            projectInfo.capRoot,
+            projectInfo.appId,
+            projectInfo.appFolderName,
+            basePath,
+            fs,
+            yamlPath,
+            logger
+        );
+    } else {
+        await updatePackageJson(basePath, fs, yamlPath, logger);
+    }
+
     return fs;
 }
