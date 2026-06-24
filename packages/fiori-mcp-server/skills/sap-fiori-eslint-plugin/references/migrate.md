@@ -2,10 +2,27 @@
 
 Migrate from legacy ESLint config (`.eslintrc`, `.eslintrc.js`, `eslint@8`, `eslint-plugin-fiori-custom`) to ESLint 10 flat config using `@sap-ux/eslint-plugin-fiori-tools@10`.
 
-## Step 1 — Detect what needs migrating
+## Step 1 — Detect project type and what needs migrating
 
-Scan the project for legacy ESLint artifacts:
+### Detect project type
 
+**1a — Check if this is a CAP project** by looking for `@sap/cds` in `package.json` (most reliable, works regardless of folder layout):
+
+```bash
+grep -q '"@sap/cds"' package.json 2>/dev/null && echo "cap" || echo "standalone"
+```
+
+**1b — If CAP: get the configured app folder** using the CDS CLI (avoids hardcoding `app/`):
+
+```bash
+npx cds env get folders.app 2>/dev/null
+```
+
+If the command fails, fall back to `app/`. Use the resolved path as `<app-folder>` in all steps below.
+
+### Scan for legacy ESLint artifacts
+
+**Standalone Fiori app — check root:**
 ```bash
 # Check for legacy config files
 ls .eslintrc .eslintrc.js .eslintrc.cjs .eslintrc.json .eslintrc.yml .eslintrc.yaml 2>/dev/null
@@ -14,16 +31,16 @@ ls .eslintrc .eslintrc.js .eslintrc.cjs .eslintrc.json .eslintrc.yml .eslintrc.y
 ls .eslintignore 2>/dev/null
 
 # Check current ESLint and plugin versions
-cat package.json | grep -E '"eslint"|"fiori-custom"|"eslint-plugin-fiori"'
+grep -E '"eslint"|"fiori-custom"|"eslint-plugin-fiori"' package.json
 ```
 
-For CAP projects, also check each app subfolder:
+**CAP project — check each app subfolder:**
 ```bash
-find . -name ".eslintrc*" -not -path "*/node_modules/*" 2>/dev/null
-find app -name "package.json" -not -path "*/node_modules/*" | xargs grep -l "eslint" 2>/dev/null
+find <app-folder> -name ".eslintrc*" -not -path "*/node_modules/*" 2>/dev/null
+find <app-folder> -name "package.json" -not -path "*/node_modules/*" | xargs grep -l "eslint" 2>/dev/null
 ```
 
-## Step 1b — Detect the webapp path
+### 1c — Detect the webapp path
 
 Before migrating, determine the actual webapp folder name — it may not be `webapp/`. Check `ui5.yaml` for a custom path mapping, then fall back to finding `manifest.json`:
 
