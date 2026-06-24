@@ -1853,6 +1853,59 @@ describe('Test getObjectPageFeatures()', () => {
         expect(section?.subSections).toHaveLength(0);
     });
 
+    test('should detect table section by presence of table aggregation when isTable flag is not set (real spec shape)', async () => {
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: { aggregations: {} } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation,
+                        sections: {
+                            aggregations: {
+                                '_Booking::@com.sap.vocabularies.UI.v1.LineItem': {
+                                    // isTable intentionally omitted — matches real @sap/ux-specification output
+                                    custom: false,
+                                    order: 1,
+                                    schema: { keys: [] },
+                                    aggregations: {
+                                        subSections: { aggregations: {} } as unknown as TreeAggregation,
+                                        table: {
+                                            schema: { keys: [] },
+                                            aggregations: {
+                                                columns: {
+                                                    aggregations: {
+                                                        col1: {
+                                                            custom: false,
+                                                            description: 'Booking ID',
+                                                            schema: { keys: [{ name: 'Value', value: 'BookingID' }] }
+                                                        } as unknown as TreeAggregation
+                                                    }
+                                                } as unknown as TreeAggregation
+                                            } as unknown as TreeAggregation
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger);
+        const section = result[0].bodySections?.[0];
+        expect(section?.isTable).toBe(true);
+        expect(section?.navigationProperty).toBe('_Booking');
+        expect(section?.fields).toEqual([]);
+        expect(section?.tableColumns).toEqual({ BookingID: { header: 'Booking ID' } });
+    });
+
     test('should return empty fields and tableColumns for custom body sections', async () => {
         const objectPage = {
             name: 'objectPage1',
