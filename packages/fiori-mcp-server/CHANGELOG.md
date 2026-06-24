@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.7.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Bug Fixes
+
+- rename skill name to sap-fiori-app-development [[88f17e9](https://github.com/SAP/open-ux-tools/commit/88f17e9a249caffcd2334a5fd6ac360dc8ab3c57)]
+
 ## 1.7.0
 
 ### Minor Changes
