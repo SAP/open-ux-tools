@@ -157,7 +157,7 @@ export class SelectionService implements Service {
         this.changeService.onStackChange(async (event) => {
             const control = event.detail.controls.find((ctrl) => ctrl === this.currentSelection);
             if (control) {
-                const overlay = getOverlay(control);
+                const overlay = await getOverlay(control);
                 await this.buildProperties(control, sendAction, overlay);
             }
         });

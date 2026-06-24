@@ -2,6 +2,8 @@
 
 ## 1.0.0
 
+*Released: 2026-05-30T20:54:07Z*
+
 ### Major Changes
 
 - 32609a7: # Migration to ECMAScript Modules (ESM)
@@ -35,17 +37,23 @@
 
 ## 0.2.0
 
+*Released: 2026-05-15T08:12:20Z*
+
 ### Minor Changes
 
 - 72695e5: chore: drop Node 20 support as it is no longer maintained
 
 ## 0.1.1
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
 
 ## 0.1.0
+
+*Released: 2026-03-28T09:24:50Z*
 
 ### Minor Changes
 

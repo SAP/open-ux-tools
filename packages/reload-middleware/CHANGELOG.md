@@ -2,12 +2,16 @@
 
 ## 1.0.2
 
+*Released: 2026-06-09T14:35:01Z*
+
 ### Patch Changes
 
 - Updated dependencies [0fa8305]
     - @sap-ux/btp-utils@2.0.2
 
 ## 1.0.1
+
+*Released: 2026-06-03T14:58:37Z*
 
 ### Patch Changes
 
@@ -17,6 +21,8 @@
     - @sap-ux/logger@1.0.1
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -57,12 +63,16 @@
 
 ## 0.4.1
 
+*Released: 2026-05-26T16:40:21Z*
+
 ### Patch Changes
 
 - Updated dependencies [01b70ca]
     - @sap-ux/btp-utils@1.2.1
 
 ## 0.4.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -76,6 +86,8 @@
 
 ## 0.3.27
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -85,12 +97,16 @@
 
 ## 0.3.26
 
+*Released: 2026-05-06T23:02:00Z*
+
 ### Patch Changes
 
 - Updated dependencies [678a08e]
     - @sap-ux/btp-utils@1.1.15
 
 ## 0.3.25
+
+*Released: 2026-04-14T20:26:28Z*
 
 ### Patch Changes
 
@@ -99,12 +115,16 @@
 
 ## 0.3.24
 
+*Released: 2026-04-14T12:35:35Z*
+
 ### Patch Changes
 
 - Updated dependencies [cc4450c]
     - @sap-ux/btp-utils@1.1.13
 
 ## 0.3.23
+
+*Released: 2026-04-08T13:10:18Z*
 
 ### Patch Changes
 
@@ -114,6 +134,8 @@
 
 ## 0.3.22
 
+*Released: 2026-03-30T22:24:11Z*
+
 ### Patch Changes
 
 - Updated dependencies [c53a4ba]
@@ -122,12 +144,16 @@
 
 ## 0.3.21
 
+*Released: 2026-03-27T11:58:49Z*
+
 ### Patch Changes
 
 - Updated dependencies [2e17a6b]
     - @sap-ux/btp-utils@1.1.12
 
 ## 0.3.20
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 
@@ -137,6 +163,8 @@
     - @sap-ux/logger@0.8.3
 
 ## 0.3.19
+
+*Released: 2026-03-25T14:41:35Z*
 
 ### Patch Changes
 

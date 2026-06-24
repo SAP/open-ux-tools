@@ -1,17 +1,17 @@
 sap.ui.define([
     "sap/fe/test/JourneyRunner",
-	"testNameSpace/worklistv4/test/integration/pages/TravelList",
-	"testNameSpace/worklistv4/test/integration/pages/TravelObjectPage",
-	"testNameSpace/worklistv4/test/integration/pages/BookingObjectPage"
-], function (JourneyRunner, TravelList, TravelObjectPage, BookingObjectPage) {
+	"testNameSpace/worklistv4/test/integration/pages/TravelList.gen",
+	"testNameSpace/worklistv4/test/integration/pages/TravelObjectPage.gen",
+	"testNameSpace/worklistv4/test/integration/pages/BookingObjectPage.gen"
+], function (JourneyRunner, TravelListGenerated, TravelObjectPageGenerated, BookingObjectPageGenerated) {
     'use strict';
 
     var runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('testNameSpace/worklistv4') + '/test/flpSandbox.html#testNameSpaceworklistv4-tile',
         pages: {
-			onTheTravelList: TravelList,
-			onTheTravelObjectPage: TravelObjectPage,
-			onTheBookingObjectPage: BookingObjectPage
+			onTheTravelListGenerated: TravelListGenerated,
+			onTheTravelObjectPageGenerated: TravelObjectPageGenerated,
+			onTheBookingObjectPageGenerated: BookingObjectPageGenerated
         },
         async: true
     });

@@ -1,0 +1,4 @@
+<<%- macrosPrefix %>navigationActions>
+    <!-- Navigation actions aggregation -->
+    <%- mContent %>
+</<%- macrosPrefix %>navigationActions>
