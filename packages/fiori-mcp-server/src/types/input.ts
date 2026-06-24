@@ -67,7 +67,16 @@ export const DownloadODataServiceMetadataInputSchema = zod.object({
         .string()
         .optional()
         .describe('The name, host or a URL of the SAP system to fetch service metadata from.'),
-    servicePath: zod.string().describe('The path to the SAP service to fetch metadata for.'),
+    servicePath: zod
+        .string()
+        .optional()
+        .describe('The path to the SAP service to fetch metadata for. Either servicePath or serviceName must be provided.'),
+    serviceName: zod
+        .string()
+        .optional()
+        .describe(
+            'The technical name of the OData service (e.g. ZMY_SALES_SRV). If provided instead of servicePath, a catalog lookup is performed to resolve the service path.'
+        ),
     appPath: zod
         .string()
         .describe('Absolute path to the folder where metadata.xml will be saved. Typically the project target folder.')

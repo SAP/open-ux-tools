@@ -197,6 +197,37 @@ function findSapSystem(
 }
 
 /**
+ * Creates an AbapServiceProvider for a stored backend system.
+ *
+ * @param backendSystem - The backend system to connect to.
+ * @returns A configured AbapServiceProvider instance.
+ */
+function createAbapServiceProvider(backendSystem: BackendSystem): AbapServiceProvider {
+    const providerConfig: AxiosRequestConfig = {
+        baseURL: backendSystem.url,
+        params: { 'sap-client': backendSystem.client }
+    };
+    if (backendSystem.username && backendSystem.password) {
+        providerConfig.auth = { username: backendSystem.username, password: backendSystem.password };
+    }
+    if (TlsPatch.isPatchRequired(providerConfig.baseURL ?? '')) {
+        TlsPatch.apply();
+    }
+    return new AbapServiceProvider(providerConfig);
+}
+
+/**
+ * Creates an AbapServiceProvider for a BTP destination.
+ * ABAP OData destinations always yield an AbapServiceProvider from createForDestination.
+ *
+ * @param destination - The BTP destination to connect to.
+ * @returns A configured AbapServiceProvider instance.
+ */
+function createAbapServiceProviderForDestination(destination: Destination): AbapServiceProvider {
+    return createForDestination({}, destination) as AbapServiceProvider;
+}
+
+/**
  * Creates an ODataService from a BackendSystem.
  *
  * @param backendSystem - The backend system to connect to.
@@ -208,21 +239,11 @@ async function getServiceFromBackendSystem(backendSystem: BackendSystem, service
         ? parseUrl(servicePath).path.replace(/\$metadata$/, '')
         : servicePath.replace(/\$metadata$/, '');
 
-    const providerConfig: AxiosRequestConfig = {
-        baseURL: backendSystem.url,
-        params: { 'sap-client': backendSystem.client }
-    };
-    if (backendSystem.username && backendSystem.password) {
-        providerConfig.auth = { username: backendSystem.username, password: backendSystem.password };
-    }
-    if (TlsPatch.isPatchRequired(providerConfig.baseURL ?? '')) {
-        TlsPatch.apply();
-    }
-    const serviceProvider = new AbapServiceProvider(providerConfig);
+    const provider = createAbapServiceProvider(backendSystem);
 
     let services: ODataServiceInfo[] = [];
     try {
-        services = await serviceProvider.catalog(ODataVersion.v4).listServices();
+        services = await provider.catalog(ODataVersion.v4).listServices();
     } catch {
         // no services found, fall through to direct path
     }
@@ -231,7 +252,7 @@ async function getServiceFromBackendSystem(backendSystem: BackendSystem, service
     if (matched.length > 1) {
         throw new Error(`Multiple OData V4 services found matching path: ${normalizedPath}`);
     }
-    return serviceProvider.service(matched.length === 1 ? matched[0].path : normalizedPath) as ODataService;
+    return provider.service(matched.length === 1 ? matched[0].path : normalizedPath) as ODataService;
 }
 
 /**
@@ -243,8 +264,8 @@ async function getServiceFromBackendSystem(backendSystem: BackendSystem, service
  */
 function getServiceFromDestination(destination: Destination, servicePath: string): ODataService {
     const normalizedPath = servicePath.replace(/\$metadata$/, '');
-    const serviceProvider = createForDestination({}, destination);
-    return serviceProvider.service(normalizedPath) as ODataService;
+    const provider = createAbapServiceProviderForDestination(destination);
+    return provider.service(normalizedPath) as ODataService;
 }
 
 /**
@@ -266,6 +287,62 @@ function checkMetadata(metadata: string): void {
         const detail = parseError instanceof Error ? ` Reason: ${parseError.message}` : '';
         throw new Error(`Failed to parse service metadata. The service may not be a valid OData V4 service. ${detail}`);
     }
+}
+
+export type FindServiceResult =
+    | { found: true; service: ODataServiceInfo }
+    | { found: false; suggestions: ODataServiceInfo[] };
+
+/**
+ * Finds the OData service info for a given service name by performing a catalog lookup.
+ * Fires V4 and V2 catalog requests in parallel.
+ *
+ * - Exact case-insensitive name match → returns the full ODataServiceInfo.
+ * - No exact match → returns up to 5 suggestions whose name starts with, contains,
+ *   or is contained by the query (handles partial input like `ZMY_SALES` → `ZMY_SALES_SRV`).
+ *
+ * @param system - The BackendSystem or Destination to connect to.
+ * @param serviceName - The technical name of the OData service to look up.
+ * @returns A promise resolving to a found result with the service info, or a not-found result with suggestions.
+ */
+export async function findService(
+    system: BackendSystem | Destination,
+    serviceName: string
+): Promise<FindServiceResult> {
+    const provider = isAppStudio()
+        ? createAbapServiceProviderForDestination(system as Destination)
+        : createAbapServiceProvider(system as BackendSystem);
+
+    const nameLower = serviceName.toLocaleLowerCase();
+
+    const results = await Promise.allSettled([
+        provider.catalog(ODataVersion.v4).listServices(),
+        provider.catalog(ODataVersion.v2).listServices()
+    ]);
+
+    const allServices: Array<ODataServiceInfo> = [];
+
+    for (const result of results) {
+        if (result.status === 'rejected') {
+            logger.debug(`Catalog lookup failed: ${result.reason}`);
+            continue;
+        }
+        const exact = result.value.find((s) => s.id.toLocaleLowerCase() === nameLower);
+        if (exact) {
+            return { found: true, service: exact };
+        }
+        allServices.push(...result.value);
+    }
+
+    const suggestions = allServices
+        .filter((s) => {
+            // The ODataServiceInfo.name is a aggregate of the services's `${group.GroupId} > ${service.ServiceAlias || service.ServiceId}` - so looking for any match here is a best-effort approach.
+            const n = s.name.toLocaleLowerCase();
+            return n.startsWith(nameLower) || n.includes(nameLower) || nameLower.includes(n);
+        })
+        .slice(0, 5);
+
+    return { found: false, suggestions };
 }
 
 /**
