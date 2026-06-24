@@ -53,7 +53,7 @@ function loadZoweSecretSdk(log: Logger): typeof zoweKeyring | undefined {
 
         return require('@zowe/secrets-for-zowe-sdk').keyring;
     } catch (primaryError) {
-        log.warn(errorString(primaryError));
+        log.debug(errorString(primaryError));
         log.debug('Attempting to load Zowe secrets SDK from fallback locations.');
 
         try {
