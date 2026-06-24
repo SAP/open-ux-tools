@@ -108,7 +108,7 @@ export async function createManifestPropertyChange(
     propertyChanges: Record<string, string | string[] | boolean | number | object | undefined>,
     propertyPathExtraSegments?: string[]
 ): Promise<FlexCommand | undefined> {
-    const overlay = getOverlay(modifiedControl);
+    const overlay = await getOverlay(modifiedControl);
     if (!overlay) {
         return undefined;
     }
