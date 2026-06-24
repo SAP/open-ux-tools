@@ -31,7 +31,15 @@ For a standalone Fiori app, search from the project root:
 find . -maxdepth 3 -name "manifest.json" 2>/dev/null
 ```
 
-**1d — Determine the webapp path** from the `manifest.json` location. The directory containing `manifest.json` is the webapp root (e.g. `webapp/`, `src/`, or any custom path). Do **not** assume `webapp/`.
+**1d — Determine the webapp path** by checking `ui5.yaml` first (the `resources.configuration.paths.webapp` key), then falling back to `manifest.json` location. The directory containing `manifest.json` is the webapp root (e.g. `webapp/`, `src/`, or any custom path). Do **not** assume `webapp/`.
+
+```bash
+# Check ui5.yaml for a custom webapp path
+grep -A5 "paths:" ui5.yaml 2>/dev/null | grep "webapp:"
+
+# If not set, find manifest.json to locate the webapp root
+find . -maxdepth 4 -name "manifest.json" -not -path "*/node_modules/*" -not -path "*/.git/*" 2>/dev/null
+```
 
 ## Step 2 — Determine the correct config location
 
@@ -63,7 +71,7 @@ If a config already exists, inform the user and offer to:
 
 Ask the user (or infer from project context) which config variant to use:
 
-- **`recommended`** — For most Fiori freestyle and Fiori elements projects. Lints JS/TS in `webapp/`.
+- **`recommended`** — For most Fiori freestyle and Fiori elements projects. Lints JS/TS in the webapp folder (resolved in Step 1d).
 - **`recommended-for-s4hana`** — For S/4HANA Fiori elements apps. Adds annotation validation for `manifest.json`, `*.xml`, and `*.cds` files.
 
 Use `recommended-for-s4hana` if you detect any of these signals:
@@ -182,7 +190,7 @@ npx eslint <webapp-path>/ --max-warnings 9999 2>&1 | head -20
 ## Important notes
 
 - ESLint 10 requires Node.js >= 18.18.0
-- The plugin expects the webapp path relative to the config file location — use the path resolved from `manifest.json` in Step 1d, do not assume `webapp/`
+- The plugin expects the webapp path relative to the config file location — use the path resolved in Step 1d, do not assume `webapp/`
 - Do NOT place the config at the CAP project root if apps have their own `package.json` — ESLint will not resolve the plugin correctly
 - Use `.eslintignore` patterns in the `ignores` array of `eslint.config.mjs` (flat config has no `.eslintignore` support)
 - The `recommended` config already includes ignores for `target/`, `localService/`, `backup/`, and `*.d.ts` files

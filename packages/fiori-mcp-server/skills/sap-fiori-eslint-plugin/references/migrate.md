@@ -23,9 +23,23 @@ find . -name ".eslintrc*" -not -path "*/node_modules/*" 2>/dev/null
 find app -name "package.json" -not -path "*/node_modules/*" | xargs grep -l "eslint" 2>/dev/null
 ```
 
+## Step 1b — Detect the webapp path
+
+Before migrating, determine the actual webapp folder name — it may not be `webapp/`. Check `ui5.yaml` for a custom path mapping, then fall back to finding `manifest.json`:
+
+```bash
+# Check ui5.yaml for a custom webapp path
+grep -A5 "paths:" ui5.yaml 2>/dev/null | grep "webapp:"
+
+# If not configured in ui5.yaml, find manifest.json to locate the webapp root
+find . -maxdepth 4 -name "manifest.json" -not -path "*/node_modules/*" -not -path "*/.git/*" 2>/dev/null
+```
+
+The directory containing `manifest.json` is the webapp root — use that path as `<webapp-path>` in the steps below. Do **not** assume `webapp/`.
+
 ## Step 2 — Use the automatic migration tool (recommended)
 
-The `@sap-ux/create` tool can automatically migrate ESLint config. Run this from the app root (the folder containing `webapp/`):
+The `@sap-ux/create` tool can automatically migrate ESLint config. Run this from the app root (the folder containing the webapp folder):
 
 ```bash
 npx --yes @sap-ux/create@latest convert eslint-config
@@ -49,7 +63,7 @@ If the automatic tool succeeds, jump to Step 5 to verify.
 
 ### 3a. Create eslint.config.mjs
 
-The config file goes at the **app level** (next to `webapp/`):
+The config file goes at the **app level** (next to the webapp folder resolved in Step 1b):
 
 **Basic migration (was using `plugin:@sap-ux/eslint-plugin-fiori-tools/defaultJS`):**
 ```javascript
@@ -99,8 +113,8 @@ export default [
 If source files have ESLint disable comments using the old `fiori-custom/` prefix, update them:
 
 ```bash
-# Find all references to old rule prefix
-grep -r "fiori-custom/" webapp/ --include="*.js" --include="*.ts" -l 2>/dev/null
+# Find all references to old rule prefix (replace <webapp-path> with the path resolved in Step 1b)
+grep -r "fiori-custom/" <webapp-path>/ --include="*.js" --include="*.ts" -l 2>/dev/null
 ```
 
 Replace `fiori-custom/` with `@sap-ux/fiori-tools/`:
@@ -141,14 +155,14 @@ yarn add --dev eslint@^10 @sap-ux/eslint-plugin-fiori-tools@^10
 
 ## Step 5 — Verify the migration
 
-Run ESLint to confirm no configuration errors:
+Run ESLint to confirm no configuration errors (replace `<webapp-path>` with the path resolved in Step 1b):
 
 ```bash
 # Check config is valid (should print config JSON, not an error)
-npx eslint --print-config webapp/Component.js 2>&1 | head -5
+npx eslint --print-config <webapp-path>/Component.js 2>&1 | head -5
 
 # Run lint on the webapp
-npx eslint webapp/ 2>&1 | head -40
+npx eslint <webapp-path>/ 2>&1 | head -40
 ```
 
 If ESLint reports config errors, common fixes:
