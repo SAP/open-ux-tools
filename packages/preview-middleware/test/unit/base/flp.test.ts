@@ -51,6 +51,7 @@ const actualI18n = await import('@sap-ux/i18n');
 
 // Mock functions for @sap-ux/project-access
 const mockFindProjectRoot = jest.fn<() => Promise<string>>().mockResolvedValue(process.cwd());
+const mockFindCapProjectRoot = jest.fn<typeof actualProjectAccess.findCapProjectRoot>().mockResolvedValue(null);
 const mockGetProjectType = jest.fn<() => Promise<string>>().mockResolvedValue('EDMXBackend');
 const mockCreateProjectAccess = jest.fn<typeof actualProjectAccess.createProjectAccess>();
 const mockCreateApplicationAccess = jest.fn<typeof actualProjectAccess.createApplicationAccess>();
@@ -59,6 +60,7 @@ const mockCreateApplicationAccess = jest.fn<typeof actualProjectAccess.createApp
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     ...actualProjectAccess,
     findProjectRoot: mockFindProjectRoot,
+    findCapProjectRoot: mockFindCapProjectRoot,
     getProjectType: mockGetProjectType,
     createProjectAccess: mockCreateProjectAccess,
     createApplicationAccess: mockCreateApplicationAccess
@@ -1426,6 +1428,7 @@ describe('FlpSandbox', () => {
         afterEach(() => {
             fetchMock.mockRestore();
             mockGetProjectType.mockResolvedValue('EDMXBackend');
+            mockFindCapProjectRoot.mockResolvedValue(null);
         });
 
         test('EDMXBackend below 1.121 - disables card generator and warns', async () => {
@@ -1477,6 +1480,20 @@ describe('FlpSandbox', () => {
             expect(logger.warn).toHaveBeenCalledWith(
                 expect.stringContaining("does not meet the minimum required version 1.149.0 for project type 'CAPJava'")
             );
+        });
+
+        test('uses CAP root found by findCapProjectRoot for project type detection', async () => {
+            const capRoot = '/cap-project-root';
+            mockFindCapProjectRoot.mockResolvedValue(capRoot);
+            await setupMiddleware('CAPNodejs');
+            expect(mockFindCapProjectRoot).toHaveBeenCalledWith(process.cwd(), false);
+            expect(mockGetProjectType).toHaveBeenCalledWith(capRoot);
+        });
+
+        test('falls back to findProjectRoot when findCapProjectRoot returns null', async () => {
+            mockFindCapProjectRoot.mockResolvedValue(null);
+            await setupMiddleware('EDMXBackend');
+            expect(mockFindProjectRoot).toHaveBeenCalledWith(process.cwd(), false, true);
         });
 
         test('legacy-free label - disables card generator regardless of minor version', async () => {
