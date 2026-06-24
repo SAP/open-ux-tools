@@ -1,10 +1,14 @@
 ---
 name: sap-fiori-eslint-plugin
 description: >
-  Work with ESLint and @sap-ux/eslint-plugin-fiori-tools for SAP Fiori projects.
-  Handles three scenarios — configure ESLint from scratch, migrate from a legacy
-  ESLint setup, or run/fix lint issues — in standalone Fiori apps and CAP projects.
-  Use when the user asks to set up, migrate, or run ESLint on a Fiori app.
+  Configure, migrate, or run ESLint with @sap-ux/eslint-plugin-fiori-tools in SAP Fiori projects
+  (standalone or CAP). Use when a project is missing ESLint entirely, when an existing .eslintrc
+  or eslint@8 config needs upgrading to ESLint 9 flat config, or when the user wants to run linting,
+  fix lint errors, or troubleshoot ESLint problems. Trigger phrases include: "set up ESLint",
+  "add ESLint", "configure linting", "add code quality checks", "I have lint errors",
+  "lint is failing", "ESLint errors in my code", "fix lint issues", "my linting is broken",
+  "ESLint isn't working", "ESLint not working", "my .eslintrc is outdated", "migrate ESLint",
+  "upgrade ESLint", "update my ESLint config", "convert .eslintrc to flat config".
 compatibility: Requires Node.js with npm, pnpm, or yarn. Designed for SAP Fiori freestyle and Fiori elements projects (standalone or inside a CAP project).
 metadata:
   author: sap-fiori-tools
@@ -36,23 +40,5 @@ ls eslint.config.mjs eslint.config.js .eslintrc .eslintrc.js .eslintrc.cjs .esli
 - **Legacy config found** (`.eslintrc*`) → follow [references/migrate.md](references/migrate.md)
 - **Flat config found** (`eslint.config.mjs`) → follow [references/lint.md](references/lint.md)
 
-For CAP projects, also check each app subfolder:
 
-```bash
-find . -name "eslint.config.mjs" -o -name ".eslintrc*" | grep -v node_modules 2>/dev/null
-```
-
-## Common context: project type detection
-
-All three tasks start by determining whether this is a standalone Fiori app or a CAP project. Run this once and share the result across steps:
-
-```bash
-grep -q '"@sap/cds"' package.json 2>/dev/null && echo "cap" || echo "standalone"
-```
-
-For CAP projects, get the configured app folder:
-
-```bash
-npx cds env get folders.app 2>/dev/null
-# Falls back to 'app/' if not configured
-```
+If the intent is still unclear, ask the user to clarify whether they want to set up ESLint, migrate an existing config, or run linting.

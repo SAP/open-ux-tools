@@ -149,7 +149,21 @@ If the project's `package.json` has a `scripts` section but no `lint` script, of
 }
 ```
 
-For CAP apps where the config is in a subfolder, the script should be run from within that subfolder (e.g., `cd <app-folder>/<app-name> && eslint <webapp-path>/`) or by passing `--config <app-folder>/<app-name>/eslint.config.mjs` from the project root.
+For CAP apps where the config is in a subfolder, choose the approach that fits the project layout:
+
+| Approach | Command | Prerequisite |
+|---|---|---|
+| Change directory | `cd <app-folder>/<app-name> && eslint <webapp-path>/` | None |
+| Explicit config flag | `eslint --config <app-folder>/<app-name>/eslint.config.mjs <app-folder>/<app-name>/<webapp-path>/` | None |
+| npm workspaces | `npm run lint --workspace=<app-folder>/<app-name>` | Root `package.json` must declare the app as a workspace |
+
+Check first:
+
+```bash
+node -e "const p=require('./package.json'); console.log(p.workspaces)"
+```
+
+If this prints the app paths, the `--workspace` flag will work.
 
 ## Step 8 — Verify the setup
 
@@ -167,7 +181,7 @@ npx eslint <webapp-path>/ --max-warnings 9999 2>&1 | head -20
 
 ## Important notes
 
-- ESLint 9+ requires Node.js >= 18.18.0
+- ESLint 10 requires Node.js >= 18.18.0
 - The plugin expects the webapp path relative to the config file location — use the path resolved from `manifest.json` in Step 1d, do not assume `webapp/`
 - Do NOT place the config at the CAP project root if apps have their own `package.json` — ESLint will not resolve the plugin correctly
 - Use `.eslintignore` patterns in the `ignores` array of `eslint.config.mjs` (flat config has no `.eslintignore` support)

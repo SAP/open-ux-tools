@@ -1,6 +1,6 @@
 # Migrate Fiori ESLint to Flat Config
 
-Migrate from legacy ESLint config (`.eslintrc`, `.eslintrc.js`, `eslint@8`, `eslint-plugin-fiori-custom`) to ESLint 9+ flat config using `@sap-ux/eslint-plugin-fiori-tools@9+`.
+Migrate from legacy ESLint config (`.eslintrc`, `.eslintrc.js`, `eslint@8`, `eslint-plugin-fiori-custom`) to ESLint 10 flat config using `@sap-ux/eslint-plugin-fiori-tools@10`.
 
 ## Step 1 — Detect what needs migrating
 
@@ -112,7 +112,7 @@ Examples:
 
 ## Step 4 — Update package.json dependencies
 
-Update `eslint` to version 9+ and `@sap-ux/eslint-plugin-fiori-tools` to version 9+. Remove `eslint-plugin-fiori-custom` if present.
+Update `eslint` to version 10 and `@sap-ux/eslint-plugin-fiori-tools` to version 10+. Remove `eslint-plugin-fiori-custom` if present.
 
 Detect the package manager:
 ```bash
@@ -158,7 +158,7 @@ If ESLint reports config errors, common fixes:
 
 ## What changed between ESLint 8 and 9+
 
-| ESLint 8 (legacy) | ESLint 9+ (flat config) |
+| ESLint 8 (legacy) | ESLint 10 (flat config) |
 |---|---|
 | `.eslintrc` / `.eslintrc.js` | `eslint.config.mjs` |
 | `.eslintignore` | `ignores` array in config |

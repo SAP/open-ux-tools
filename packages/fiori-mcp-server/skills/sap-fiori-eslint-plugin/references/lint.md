@@ -8,14 +8,19 @@ Detect whether this is a standalone Fiori app or a CAP project, then check for a
 
 ### Detect project type
 
+**1a — Check if this is a CAP project** by looking for `@sap/cds` in `package.json` (most reliable, works regardless of folder layout):
+
 ```bash
-# CAP project has a package.json with @sap/cds or a cds section, and an app/ folder
-if ls app/ 2>/dev/null && grep -q '"@sap/cds"' package.json 2>/dev/null; then
-  echo "CAP project"
-else
-  echo "Standalone Fiori app"
-fi
+grep -q '"@sap/cds"' package.json 2>/dev/null && echo "cap" || echo "standalone"
 ```
+
+**1b — If CAP: get the configured app folder** using the CDS CLI (avoids hardcoding `app/`):
+
+```bash
+npx cds env get folders.app 2>/dev/null
+```
+
+If the command fails, fall back to `app/`. Use the resolved path as `<app-folder>` in all steps below.
 
 ### Standalone Fiori app — check root config
 
@@ -31,13 +36,13 @@ grep -l "@sap-ux/eslint-plugin-fiori-tools" eslint.config.mjs eslint.config.js e
 ### CAP project — check app subfolders only (NOT the root)
 
 ```bash
-# Find eslint configs inside app/ subfolders, skipping node_modules
-find app -name "eslint.config.mjs" -not -path "*/node_modules/*" 2>/dev/null
+# Find eslint configs inside <app-folder> subfolders, skipping node_modules
+find <app-folder> -name "eslint.config.mjs" -not -path "*/node_modules/*" 2>/dev/null
 ```
 
 Then verify each found config references `@sap-ux/eslint-plugin-fiori-tools`:
 ```bash
-find app -name "eslint.config.mjs" -not -path "*/node_modules/*" 2>/dev/null | while read config; do
+find <app-folder> -name "eslint.config.mjs" -not -path "*/node_modules/*" 2>/dev/null | while read config; do
   if grep -q "@sap-ux/eslint-plugin-fiori-tools" "$config"; then
     echo "✅ $config — plugin configured"
   else
@@ -59,7 +64,7 @@ ls .eslintrc .eslintrc.js .eslintrc.cjs .eslintrc.json .eslintrc.yml .eslintrc.y
 
 For CAP projects, also check each app subfolder:
 ```bash
-find app -name ".eslintrc*" -not -path "*/node_modules/*" 2>/dev/null
+find <app-folder> -name ".eslintrc*" -not -path "*/node_modules/*" 2>/dev/null
 ```
 
 ## Step 2 — Locate the app to lint
@@ -67,11 +72,11 @@ find app -name ".eslintrc*" -not -path "*/node_modules/*" 2>/dev/null
 Determine the **app-level directory** to lint — this is where `eslint.config.mjs` lives. Running ESLint from there (with `.` as the target) lets the config control which files are linted, covering all source files.
 
 - **Standalone Fiori app**: project root (where `eslint.config.mjs` is)
-- **CAP project**: each `app/<app-name>/` subfolder (where its `eslint.config.mjs` is)
+- **CAP project**: each `<app-folder>/<app-name>/` subfolder (where its `eslint.config.mjs` is)
 
 For CAP projects, list available apps:
 ```bash
-find app -name "eslint.config.mjs" -not -path "*/node_modules/*" 2>/dev/null
+find <app-folder> -name "eslint.config.mjs" -not -path "*/node_modules/*" 2>/dev/null
 ```
 
 If the user specified a particular app or path, use that. Otherwise lint the detected location(s).
@@ -88,13 +93,14 @@ npx eslint .
 ### CAP project — specific app:
 ```bash
 # Run from the app subfolder (where eslint.config.mjs is)
-cd app/<app-name> && npx eslint .
+# Note: cd && ... is for terminal use only — not safe as a package.json script on Windows
+cd <app-folder>/<app-name> && npx eslint .
 ```
 
 ### CAP project — all apps:
 ```bash
 # Find and lint each app that has its own eslint.config.mjs
-find app -name "eslint.config.mjs" -not -path "*/node_modules/*" | while read config; do
+find <app-folder> -name "eslint.config.mjs" -not -path "*/node_modules/*" | while read config; do
   appdir=$(dirname "$config")
   echo "=== Linting $appdir ==="
   (cd "$appdir" && npx eslint . 2>&1)
@@ -140,7 +146,8 @@ npx eslint . --fix
 
 ### CAP — specific app:
 ```bash
-cd app/<app-name> && npx eslint . --fix
+# Note: cd && ... is for terminal use only — not safe as a package.json script on Windows
+cd <app-folder>/<app-name> && npx eslint . --fix
 ```
 
 **IMPORTANT**: The `--fix` flag modifies files in place. Before running:
