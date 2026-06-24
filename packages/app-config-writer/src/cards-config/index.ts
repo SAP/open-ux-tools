@@ -112,6 +112,7 @@ async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string
  * @param {string} [yamlPath] - Optional path to the `ui5.yaml` configuration file.
  * @param {ToolsLogger} [logger] - Optional logger instance for logging messages.
  * @param {Editor} [fs] - Optional `mem-fs-editor` instance for file system operations. If not provided, a new instance will be created.
+ * @param {boolean} [updatePackage] - Optional flag to update the `package.json` file. Defaults to true.
  * @returns {Promise<Editor>} A promise that resolves to the updated `mem-fs-editor` instance.
  * @throws {Error} If minimum UI5 version requirement is not met (EDMX: ≥1.121.0, CAP: ≥1.149.0).
  */
@@ -119,7 +120,8 @@ export async function enableCardGeneratorConfig(
     basePath: string,
     yamlPath?: string,
     logger?: ToolsLogger,
-    fs?: Editor
+    fs?: Editor,
+    updatePackage = true
 ): Promise<Editor> {
     fs = fs ?? create(createStorage());
 
@@ -136,18 +138,20 @@ export async function enableCardGeneratorConfig(
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
     await updateMiddlewareConfigWithGeneratorPath(fs, basePath, yamlPath, logger);
 
-    if (projectType === 'CAPNodejs') {
-        if (!capRoot) {
-            throw new Error(`Could not find CAP project root for path '${basePath}'.`);
+    if (updatePackage) {
+        if (projectType === 'CAPNodejs') {
+            if (!capRoot) {
+                throw new Error(`Could not find CAP project root for path '${basePath}'.`);
+            }
+            const { manifest } = await readManifest(basePath, fs);
+            const appId = manifest['sap.app']?.id;
+            if (!appId) {
+                throw new Error(`The 'sap.app.id' property is missing in the manifest.json file.`);
+            }
+            await updateCapRootPackageJsonForCards(capRoot, appId, basename(basePath), basePath, fs, yamlPath, logger);
+        } else {
+            await updatePackageJson(basePath, fs, yamlPath, logger);
         }
-        const { manifest } = await readManifest(basePath, fs);
-        const appId = manifest['sap.app']?.id;
-        if (!appId) {
-            throw new Error(`The 'sap.app.id' property is missing in the manifest.json file.`);
-        }
-        await updateCapRootPackageJsonForCards(capRoot, appId, basename(basePath), basePath, fs, yamlPath, logger);
-    } else {
-        await updatePackageJson(basePath, fs, yamlPath, logger);
     }
 
     return fs;
