@@ -153,7 +153,7 @@
         },
         "pageBuildingBlock": {
             "message": "Add a Page Building Block to the Application?",
-            "tooltip": "The Page building block is supported from SAPUI5 version {{ minUi5VersionForPageBuildingBlock }}. By choosing this option, you will be restricting the minimum SAPUI5 versions available for the application to be {{ minUi5VersionForPageBuildingBlock }} and above.",
+            "tooltip": "The Page building block is supported from SAPUI5 version {{ minUi5VersionForPageBuildingBlock }}. By choosing this option, you are restricting the minimum SAPUI5 version to {{ minUi5VersionForPageBuildingBlock }} and above.",
             "titleMessage": "Page Title",
             "layoutMessage": "Page Building Block Layout",
             "choiceFull": "Full Layout",
