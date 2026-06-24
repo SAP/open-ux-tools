@@ -19,19 +19,21 @@ export async function getPageBuildingBlockPrompts(context: PromptContext): Promi
 
     return {
         questions: [
-            {
-                type: 'list',
-                name: 'buildingBlockData.templateType',
-                message: t('templateType.message') as string,
-                default: PAGE_TEMPLATE_TYPE_BASIC,
-                choices: [
-                    { value: PAGE_TEMPLATE_TYPE_BASIC, name: t('templateType.basic') as string },
-                    ...(context.options?.disableFullPageTemplate
-                        ? []
-                        : [{ value: PAGE_TEMPLATE_TYPE_FULL, name: t('templateType.full') as string }])
-                ],
-                guiOptions: { mandatory: true }
-            },
+            ...(context.options?.disableFullPageTemplate
+                ? []
+                : [
+                      {
+                          type: 'list' as const,
+                          name: 'buildingBlockData.templateType',
+                          message: t('templateType.message') as string,
+                          default: PAGE_TEMPLATE_TYPE_BASIC,
+                          choices: [
+                              { value: PAGE_TEMPLATE_TYPE_BASIC, name: t('templateType.basic') as string },
+                              { value: PAGE_TEMPLATE_TYPE_FULL, name: t('templateType.full') as string }
+                          ],
+                          guiOptions: { mandatory: true }
+                      }
+                  ]),
             getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate') as string, {
                 message: t('viewOrFragmentPath.message') as string,
                 guiOptions: {
@@ -78,7 +80,8 @@ export async function getPageBuildingBlockPrompts(context: PromptContext): Promi
         ],
         initialAnswers: {
             buildingBlockData: {
-                buildingBlockType: BuildingBlockType.Page
+                buildingBlockType: BuildingBlockType.Page,
+                ...(context.options?.disableFullPageTemplate && { templateType: PAGE_TEMPLATE_TYPE_BASIC })
             }
         }
     };
