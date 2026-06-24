@@ -70,7 +70,9 @@ export const DownloadODataServiceMetadataInputSchema = zod.object({
     servicePath: zod
         .string()
         .optional()
-        .describe('The path to the SAP service to fetch metadata for. Either servicePath or serviceName must be provided.'),
+        .describe(
+            'The path to the SAP service to fetch metadata for. Either servicePath or serviceName must be provided.'
+        ),
     serviceName: zod
         .string()
         .optional()
