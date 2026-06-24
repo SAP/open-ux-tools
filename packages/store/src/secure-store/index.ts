@@ -61,7 +61,7 @@ function loadZoweSecretSdk(log: Logger): typeof zoweKeyring | undefined {
             log.debug(`Discovered fallback directories: ${JSON.stringify(fallbackPaths)}`);
             for (const path of fallbackPaths) {
                 try {
-                    log.debug(`Attempting to load Zowe secrets SDK from: ${path}`);
+                    log.debug(`Attempting to load Zowe secrets SDK .keyring from: ${path}`);
                     return typeof __non_webpack_require__ === 'function'
                         ? __non_webpack_require__(path).keyring
                         : require(path).keyring;
