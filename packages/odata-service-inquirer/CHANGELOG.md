@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-inquirer
 
+## 3.0.14
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-23
+
+#### Bug Fixes
+
+- Explicitly set connect type to abap_catalog when no connection path is provided [[e4a8650](https://github.com/SAP/open-ux-tools/commit/e4a8650c64afc42ab965e2820bbb076fb94ce273)]
+
 ## 3.0.13
 
 ### Patch Changes

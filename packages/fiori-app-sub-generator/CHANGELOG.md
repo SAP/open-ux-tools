@@ -1,5 +1,35 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 1.0.37
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.33 → 3.0.34
+- @sap-ux/fiori-freestyle-writer 3.0.29 → 3.0.30
+- @sap-ux/odata-service-inquirer 3.0.14 → 3.0.14
+
+## 1.0.36
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.0.13 → 3.0.14
+
+## 1.0.35
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-23
+
+#### Features
+
+- pass logger instance to writers [[c25af79](https://github.com/SAP/open-ux-tools/commit/c25af79b4a72d9194572dd17cdc9c5755b964b87)]
+
 ## 1.0.34
 
 ### Patch Changes
