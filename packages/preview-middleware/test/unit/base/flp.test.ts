@@ -1493,8 +1493,10 @@ describe('FlpSandbox', () => {
         test('falls back to findProjectRoot when findCapProjectRoot returns null', async () => {
             mockFindCapProjectRoot.mockResolvedValue(null);
             await setupMiddleware('EDMXBackend');
+            expect(mockFindCapProjectRoot).toHaveBeenCalledWith(process.cwd(), false);
             expect(mockFindProjectRoot).toHaveBeenCalledWith(process.cwd(), false, true);
         });
+
 
         test('legacy-free label - disables card generator regardless of minor version', async () => {
             const { server, flp } = await setupMiddleware('EDMXBackend');
