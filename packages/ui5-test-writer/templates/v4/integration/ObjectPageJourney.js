@@ -127,7 +127,7 @@ sap.ui.define([
             Then.onThe<%- name%>Generated.iCheckSubSection({ section: "<%- subSection.id %>" });
 <% if (subSection.fields && subSection.fields.length > 0) { -%>
 <% subSection.fields.forEach(function(field) { -%>
-            Then.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" }).iCheckField({ property: "<%- field.property %>" });
+            Then.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" }).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });
 <% }) -%>
 <% } -%>
 <% if (subSection.tableColumns && Object.keys(subSection.tableColumns).length > 0 && subSection.navigationProperty) { -%>
@@ -137,7 +137,7 @@ sap.ui.define([
 <% } else { -%>
 <% if (section.fields && section.fields.length > 0) { -%>
 <% section.fields.forEach(function(field) { -%>
-            Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckField({ property: "<%- field.property %>" });
+            Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });
 <% }) -%>
 <% } -%>
 <% if (section.tableColumns && Object.keys(section.tableColumns).length > 0 && section.navigationProperty) { -%>
