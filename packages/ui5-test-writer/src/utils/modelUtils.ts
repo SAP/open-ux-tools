@@ -273,7 +273,7 @@ export function parseDataFieldForAnnotationName(
         return undefined;
     }
     const segments = name.split('::');
-    if (segments.length < 3) {
+    if (segments.length < 3 || segments[0] !== 'DataFieldForAnnotation') {
         return undefined;
     }
     const property = segments[1];

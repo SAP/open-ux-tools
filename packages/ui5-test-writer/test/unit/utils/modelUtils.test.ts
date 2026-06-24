@@ -388,6 +388,11 @@ describe('parseDataFieldForAnnotationName()', () => {
         expect(parseDataFieldForAnnotationName('PlainField')).toBeUndefined();
     });
 
+    test('returns undefined for 3-segment names whose first segment is not DataFieldForAnnotation', () => {
+        expect(parseDataFieldForAnnotationName('DataField::CompanyCode::Foo')).toBeUndefined();
+        expect(parseDataFieldForAnnotationName('SomethingElse::Prop::Annotation')).toBeUndefined();
+    });
+
     test('returns undefined for falsy input', () => {
         expect(parseDataFieldForAnnotationName(undefined)).toBeUndefined();
         expect(parseDataFieldForAnnotationName('')).toBeUndefined();
