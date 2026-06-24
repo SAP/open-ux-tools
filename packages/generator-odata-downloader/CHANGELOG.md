@@ -1,5 +1,13 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.0.13 → 3.0.14
+
 ## 0.3.16
 
 ### Patch Changes

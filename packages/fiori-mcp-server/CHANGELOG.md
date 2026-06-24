@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.6.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Features
+
+- add new skill for fiori elements development [[b021644](https://github.com/SAP/open-ux-tools/commit/b021644a977c70bc4ed5c548e0121ce65975feed)]
+
 ## 1.5.1
 
 ### Patch Changes
