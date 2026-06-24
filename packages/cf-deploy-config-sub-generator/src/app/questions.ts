@@ -81,7 +81,8 @@ export async function getCFQuestions({
             options: JSON.stringify({ ...options, isCap, addOverwrite, cfDestination, isAbapDirectServiceBinding })
         })
     );
-    return getPrompts(options, DeploymentGenerator.logger as unknown as Logger, promptModule);
+    const logger = DeploymentGenerator.logger as unknown as Logger;
+    return promptModule ? getPrompts(options, logger, promptModule) : getPrompts(options, logger);
 }
 
 /**
