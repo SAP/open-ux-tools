@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/app-config-writer",
     "description": "Add or update configuration for SAP Fiori tools application",
-    "version": "1.0.11",
+    "version": "1.1.1",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -13,6 +13,16 @@
     },
     "license": "Apache-2.0",
     "main": "dist/index.js",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./cards-config": {
+            "types": "./dist/cards-config/index.d.ts",
+            "default": "./dist/cards-config/index.js"
+        }
+    },
     "scripts": {
         "build": "tsc --build",
         "watch": "tsc --watch",

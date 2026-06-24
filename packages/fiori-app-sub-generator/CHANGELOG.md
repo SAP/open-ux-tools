@@ -1,5 +1,74 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 1.0.40
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.2 → 2.1.3
+- @sap-ux/fiori-elements-writer 3.0.36 → 3.0.37
+- @sap-ux/fiori-freestyle-writer 3.0.32 → 3.0.33
+- @sap-ux/annotation-generator 1.0.9 → 1.0.10
+- @sap-ux/axios-extension 2.0.3 → 2.0.3
+- @sap-ux/cap-config-writer 1.0.11 → 1.0.12
+- @sap-ux/fiori-generator-shared 1.0.11 → 1.0.12
+- @sap-ux/launch-config 1.0.6 → 1.0.7
+- @sap-ux/odata-service-inquirer 3.0.14 → 3.0.15
+- @sap-ux/odata-service-writer 1.0.7 → 1.0.8
+- @sap-ux/telemetry 1.0.9 → 1.0.10
+- @sap-ux/ui5-application-inquirer 1.0.12 → 1.0.13
+
+## 1.0.39
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.35 → 3.0.36
+- @sap-ux/fiori-freestyle-writer 3.0.31 → 3.0.32
+- @sap-ux/odata-service-inquirer 3.0.14 → 3.0.14
+
+## 1.0.38
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.34 → 3.0.35
+- @sap-ux/fiori-freestyle-writer 3.0.30 → 3.0.31
+- @sap-ux/odata-service-inquirer 3.0.14 → 3.0.14
+
+## 1.0.37
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.33 → 3.0.34
+- @sap-ux/fiori-freestyle-writer 3.0.29 → 3.0.30
+- @sap-ux/odata-service-inquirer 3.0.14 → 3.0.14
+
+## 1.0.36
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.0.13 → 3.0.14
+
+## 1.0.35
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-23
+
+#### Features
+
+- pass logger instance to writers [[c25af79](https://github.com/SAP/open-ux-tools/commit/c25af79b4a72d9194572dd17cdc9c5755b964b87)]
+
 ## 1.0.34
 
 ### Patch Changes
