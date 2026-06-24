@@ -12,7 +12,7 @@ description: >
 compatibility: Requires Node.js with npm, pnpm, or yarn. Designed for SAP Fiori freestyle and Fiori elements projects (standalone or inside a CAP project).
 metadata:
   author: sap-fiori-tools
-  version: "1.0"
+  version: "0.0.1"
 ---
 
 # SAP Fiori ESLint Plugin
