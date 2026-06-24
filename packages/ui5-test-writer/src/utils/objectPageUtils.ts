@@ -193,14 +193,15 @@ function extractObjectPageBodySectionsData(
             const sectionId = getSectionIdentifier(section) ?? sectionKey;
             const subSections = extractBodySubSectionsData(section, sectionId);
             const navigationProperty = getNavigationPropertyFromKey(sectionKey);
+            const isTable = isTableSection(section);
             const sectionData: BodySectionFeatureData = {
                 id: sectionId,
                 navigationProperty,
-                isTable: !!section.isTable,
+                isTable,
                 custom: !!section.custom,
                 order: section?.order ?? -1,
-                fields: section.custom || section.isTable ? [] : extractFormFields(section),
-                tableColumns: section.custom || !section.isTable ? {} : extractTableColumnsFromNode(section),
+                fields: section.custom || isTable ? [] : extractFormFields(section),
+                tableColumns: section.custom || !isTable ? {} : extractTableColumnsFromNode(section),
                 subSections,
                 actions:
                     !section.custom && convertedMetadata && schemaNamespace
@@ -208,7 +209,7 @@ function extractObjectPageBodySectionsData(
                         : []
             };
             // For table sections, resolve Create/Delete visibility from target entity set
-            if (section.isTable && navigationProperty && metadata && convertedMetadata) {
+            if (isTable && navigationProperty && metadata && convertedMetadata) {
                 const targetEntitySet = resolveNavigationTargetEntitySet(
                     convertedMetadata,
                     objectPage.entitySet,
@@ -302,14 +303,15 @@ function extractBodySubSectionsData(section: SectionItem, parentSectionId: strin
     const subSectionItems = getAggregations(subSectionsAggregation) as Record<string, BodySectionItem>;
     Object.entries(subSectionItems).forEach(([subSectionKey, subSection]) => {
         const subSectionId = getSectionIdentifier(subSection) ?? `${parentSectionId}_${subSectionKey}`;
+        const isTable = isTableSection(subSection);
         subSections.push({
             id: subSectionId,
             navigationProperty: getNavigationPropertyFromKey(subSectionKey),
-            isTable: !!subSection.isTable,
+            isTable,
             custom: !!subSection.custom,
             order: subSection?.order ?? -1, // put a negative order number to signal that order was not in spec
-            fields: subSection.custom || subSection.isTable ? [] : extractFormFields(subSection),
-            tableColumns: subSection.custom || !subSection.isTable ? {} : extractTableColumnsFromNode(subSection)
+            fields: subSection.custom || isTable ? [] : extractFormFields(subSection),
+            tableColumns: subSection.custom || !isTable ? {} : extractTableColumnsFromNode(subSection)
         });
     });
     return subSections;
@@ -489,6 +491,19 @@ function getFieldGroupQualifier(formAggregation: AggregationItem): string | unde
  */
 function isSectionMicroChart(section: SectionItem): boolean {
     return section?.schema?.dataType === 'ChartDefinition';
+}
+
+/**
+ * Detects whether a body section represents a table.
+ * The spec model exposes the section-level `isTable` flag inconsistently — for OP body sections
+ * driven by `_<NavProp>/@UI.LineItem` facets the flag is not set, but the section carries a
+ * `table` aggregation. Presence of that aggregation is the authoritative signal.
+ *
+ * @param section - body section or sub-section entry from ux specification
+ * @returns true if the section is a table section
+ */
+function isTableSection(section: BodySectionItem): boolean {
+    return !!section.isTable || !!getAggregations(section).table;
 }
 
 /**
