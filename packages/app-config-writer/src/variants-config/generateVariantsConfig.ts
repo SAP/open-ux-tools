@@ -1,10 +1,12 @@
+import { basename } from 'node:path';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { updateMiddlewaresForPreview } from '../common/ui5-yaml.js';
 import { addVariantsManagementScript } from './package-json.js';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { getCapProjectInfo } from '../common/cap-utils.js';
+import { getProjectType, findCapProjectRoot } from '@sap-ux/project-access';
+import { readManifest } from '../common/utils.js';
 import { updateCapRootPackageJsonForVariants } from './cap.js';
 
 /**
@@ -26,24 +28,25 @@ export async function generateVariantsConfig(
         fs = create(createStorage());
     }
 
-    const projectInfo = await getCapProjectInfo(basePath, fs);
+    const capRoot = await findCapProjectRoot(basePath, false, fs);
+    const projectType = await getProjectType(capRoot ?? basePath);
 
-    if (projectInfo.projectType === 'CAPJava') {
+    if (projectType === 'CAPJava') {
         throw new Error('The variants-config command is not supported for CAP Java projects.');
     }
 
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
 
-    if (projectInfo.projectType === 'CAPNodejs') {
-        await updateCapRootPackageJsonForVariants(
-            projectInfo.capRoot,
-            projectInfo.appId,
-            projectInfo.appFolderName,
-            basePath,
-            fs,
-            yamlPath,
-            logger
-        );
+    if (projectType === 'CAPNodejs') {
+        if (!capRoot) {
+            throw new Error(`Could not find CAP project root for path '${basePath}'.`);
+        }
+        const { manifest } = await readManifest(basePath, fs);
+        const appId = manifest['sap.app']?.id;
+        if (!appId) {
+            throw new Error(`The 'sap.app.id' property is missing in the manifest.json file.`);
+        }
+        await updateCapRootPackageJsonForVariants(capRoot, appId, basename(basePath), basePath, fs, yamlPath, logger);
     } else {
         await addVariantsManagementScript(fs, basePath, yamlPath, logger);
     }

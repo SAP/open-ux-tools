@@ -2,13 +2,12 @@ import { join, basename } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { getPreviewMiddleware, getIntentFromPreviewConfig, getCLIForPreview } from '../common/utils.js';
+import { getPreviewMiddleware, getIntentFromPreviewConfig, getCLIForPreview, readManifest } from '../common/utils.js';
 import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { FileName, type Package, readUi5Yaml } from '@sap-ux/project-access';
+import { FileName, type Package, readUi5Yaml, getProjectType, findCapProjectRoot } from '@sap-ux/project-access';
 import { updateMiddlewaresForPreview } from '../common/ui5-yaml.js';
 import { ensureMinUI5Version } from './prerequisites.js';
-import { getCapProjectInfo } from '../common/cap-utils.js';
 import { updateCapRootPackageJsonForCards } from './cap.js';
 
 const DEPENDENCY_NAME = '@sap-ux/cards-editor-middleware';
@@ -127,25 +126,26 @@ export async function enableCardGeneratorConfig(
     // asserts minimum UI5 version requirement before proceeding
     await ensureMinUI5Version(basePath, fs);
 
-    const projectInfo = await getCapProjectInfo(basePath, fs);
+    const capRoot = await findCapProjectRoot(basePath, false, fs);
+    const projectType = await getProjectType(capRoot ?? basePath);
 
-    if (projectInfo.projectType === 'CAPJava') {
+    if (projectType === 'CAPJava') {
         throw new Error('The cards-editor command is not supported for CAP Java projects.');
     }
 
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
     await updateMiddlewareConfigWithGeneratorPath(fs, basePath, yamlPath, logger);
 
-    if (projectInfo.projectType === 'CAPNodejs') {
-        await updateCapRootPackageJsonForCards(
-            projectInfo.capRoot,
-            projectInfo.appId,
-            projectInfo.appFolderName,
-            basePath,
-            fs,
-            yamlPath,
-            logger
-        );
+    if (projectType === 'CAPNodejs') {
+        if (!capRoot) {
+            throw new Error(`Could not find CAP project root for path '${basePath}'.`);
+        }
+        const { manifest } = await readManifest(basePath, fs);
+        const appId = manifest['sap.app']?.id;
+        if (!appId) {
+            throw new Error(`The 'sap.app.id' property is missing in the manifest.json file.`);
+        }
+        await updateCapRootPackageJsonForCards(capRoot, appId, basename(basePath), basePath, fs, yamlPath, logger);
     } else {
         await updatePackageJson(basePath, fs, yamlPath, logger);
     }

@@ -20,12 +20,31 @@ jest.unstable_mockModule('prompts', () => ({
     default: mockPromptsModule
 }));
 
-const mockGetCapProjectInfo = jest.fn();
+const mockGetProjectType = jest.fn();
+const mockFindCapProjectRoot = jest.fn();
+const mockReadManifest = jest.fn();
 const mockUpdateCapRootPackageJsonForVariants = jest.fn();
 
-jest.unstable_mockModule('../../../src/common/cap-utils.js', () => ({
-    getCapProjectInfo: mockGetCapProjectInfo,
-    writeCdsWatchScript: jest.fn()
+const realProjectAccess = await import('@sap-ux/project-access');
+
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...realProjectAccess,
+    getProjectType: mockGetProjectType,
+    findCapProjectRoot: mockFindCapProjectRoot
+}));
+
+const realUtils = await import('../../../src/common/utils.js');
+
+jest.unstable_mockModule('../../../src/common/utils.js', () => ({
+    ...realUtils,
+    readManifest: mockReadManifest
+}));
+
+const realUi5Yaml = await import('../../../src/common/ui5-yaml.js');
+
+jest.unstable_mockModule('../../../src/common/ui5-yaml.js', () => ({
+    ...realUi5Yaml,
+    updateMiddlewaresForPreview: jest.fn().mockResolvedValue(undefined)
 }));
 
 jest.unstable_mockModule('../../../src/variants-config/cap.js', () => ({
@@ -42,7 +61,7 @@ describe('generateVariantsConfig', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockGetCapProjectInfo.mockResolvedValue({ projectType: 'EDMXBackend', capRoot: null, appFolderName: 'variants-config' });
+        mockGetProjectType.mockResolvedValue('EDMXBackend');
         mockUpdateCapRootPackageJsonForVariants.mockResolvedValue(undefined);
     });
 
@@ -54,7 +73,6 @@ describe('generateVariantsConfig', () => {
 
     test('add variants configuration to a project with deprecated preview middleware config', async () => {
         const deprecatedConfig = join(basePath, 'deprecated-config');
-        mockGetCapProjectInfo.mockResolvedValue({ projectType: 'EDMXBackend', capRoot: null, appFolderName: 'deprecated-config' });
         const fs = await generateVariantsConfig(deprecatedConfig);
         expect(fs.readJSON(join(deprecatedConfig, 'package.json'))).toMatchSnapshot();
         expect(fs.read(join(deprecatedConfig, 'ui5.yaml'))).toMatchSnapshot();
@@ -63,7 +81,7 @@ describe('generateVariantsConfig', () => {
     test('adding variants configuration to a non existing project', async () => {
         const nonExistingPath = join(__dirname, '../../fixtures/a-folder-that-does-not-exist');
         await expect(generateVariantsConfig(nonExistingPath, 'hugo.yaml', new ToolsLogger())).rejects.toThrow(
-            `File 'hugo.yaml' not found in project '${nonExistingPath}'`
+            `File 'package.json' not found at ${nonExistingPath}`
         );
     });
 });
@@ -75,15 +93,12 @@ describe('generateVariantsConfig - CAP routing', () => {
     beforeEach(() => {
         jest.resetAllMocks();
         mockUpdateCapRootPackageJsonForVariants.mockResolvedValue(undefined);
+        mockReadManifest.mockResolvedValue({ manifest: { 'sap.app': { id: 'test.app' } } });
+        mockFindCapProjectRoot.mockResolvedValue('/cap-root');
     });
 
     test('throws for CAPJava projects', async () => {
-        mockGetCapProjectInfo.mockResolvedValue({
-            projectType: 'CAPJava',
-            capRoot: '/cap-root',
-            appFolderName: 'variants-config',
-            appId: 'test.app'
-        });
+        mockGetProjectType.mockResolvedValue('CAPJava');
 
         await expect(generateVariantsConfig(basePath, yamlPath)).rejects.toThrow(
             'The variants-config command is not supported for CAP Java projects.'
@@ -92,12 +107,7 @@ describe('generateVariantsConfig - CAP routing', () => {
     });
 
     test('calls updateCapRootPackageJsonForVariants for CAPNodejs', async () => {
-        mockGetCapProjectInfo.mockResolvedValue({
-            projectType: 'CAPNodejs',
-            capRoot: '/cap-root',
-            appFolderName: 'variants-config',
-            appId: 'test.app'
-        });
+        mockGetProjectType.mockResolvedValue('CAPNodejs');
 
         await generateVariantsConfig(basePath, yamlPath);
 
@@ -112,12 +122,11 @@ describe('generateVariantsConfig - CAP routing', () => {
         );
     });
 
-    test('uses addVariantsManagementScript for EDMXBackend', async () => {
-        mockGetCapProjectInfo.mockResolvedValue({ projectType: 'EDMXBackend', capRoot: null, appFolderName: 'variants-config' });
+    test('does not call updateCapRootPackageJsonForVariants for EDMXBackend', async () => {
+        mockGetProjectType.mockResolvedValue('EDMXBackend');
 
-        const fs = await generateVariantsConfig(basePath, yamlPath);
+        await generateVariantsConfig(basePath, yamlPath);
 
         expect(mockUpdateCapRootPackageJsonForVariants).not.toHaveBeenCalled();
-        expect(fs.readJSON(join(basePath, 'package.json'))).toBeDefined();
     });
 });

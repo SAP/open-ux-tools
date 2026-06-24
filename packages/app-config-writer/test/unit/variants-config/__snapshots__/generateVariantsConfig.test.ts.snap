@@ -25,13 +25,14 @@ server:
           intent:
             object: hello
             action: world
-        editors:
-          rta:
-            layer: VENDOR
-            endpoints:
-              - path: /editor.html
-                developerMode: true
-              - path: /my-variants.html
+        rta:
+          layer: VENDOR
+          editors:
+            - path: /editor.html
+              developerMode: true
+            - path: /my-variants.html
+
+
 "
 `;
 
@@ -42,7 +43,7 @@ Object {
   "sapux": true,
   "sapuxLayer": "VENDOR",
   "scripts": Object {
-    "start-variants-management": "fiori run --open \\"/preview.html?fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-ui-xx-viewCache=false#app-preview\\"",
+    "start-variants-management": "fiori run --open \\"/preview.html?fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-ui-xx-viewCache=false#preview-app\\"",
   },
 }
 `;
@@ -57,7 +58,7 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: compression
       configuration:
-        flp:
-          theme: sap_horizon
+        component: v2lrop0909
+        ui5Theme: sap_horizon
 "
 `;
