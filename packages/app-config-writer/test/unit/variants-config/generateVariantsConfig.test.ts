@@ -20,12 +20,15 @@ jest.unstable_mockModule('prompts', () => ({
     default: mockPromptsModule
 }));
 
-const mockGetProjectType = jest.fn();
-const mockFindCapProjectRoot = jest.fn();
-const mockReadManifest = jest.fn();
-const mockUpdateCapRootPackageJsonForVariants = jest.fn();
-
 const realProjectAccess = await import('@sap-ux/project-access');
+const realUtils = await import('../../../src/common/utils.js');
+const realUi5Yaml = await import('../../../src/common/ui5-yaml.js');
+const realVariantsCap = await import('../../../src/variants-config/cap.js');
+
+const mockGetProjectType = jest.fn<typeof realProjectAccess.getProjectType>();
+const mockFindCapProjectRoot = jest.fn<typeof realProjectAccess.findCapProjectRoot>();
+const mockReadManifest = jest.fn<typeof realUtils.readManifest>();
+const mockUpdateCapRootPackageJsonForVariants = jest.fn<typeof realVariantsCap.updateCapRootPackageJsonForVariants>();
 
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     ...realProjectAccess,
@@ -33,18 +36,14 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     findCapProjectRoot: mockFindCapProjectRoot
 }));
 
-const realUtils = await import('../../../src/common/utils.js');
-
 jest.unstable_mockModule('../../../src/common/utils.js', () => ({
     ...realUtils,
     readManifest: mockReadManifest
 }));
 
-const realUi5Yaml = await import('../../../src/common/ui5-yaml.js');
-
 jest.unstable_mockModule('../../../src/common/ui5-yaml.js', () => ({
     ...realUi5Yaml,
-    updateMiddlewaresForPreview: jest.fn().mockResolvedValue(undefined)
+    updateMiddlewaresForPreview: jest.fn<typeof realUi5Yaml.updateMiddlewaresForPreview>().mockResolvedValue(undefined)
 }));
 
 jest.unstable_mockModule('../../../src/variants-config/cap.js', () => ({
@@ -93,7 +92,9 @@ describe('generateVariantsConfig - CAP routing', () => {
     beforeEach(() => {
         jest.resetAllMocks();
         mockUpdateCapRootPackageJsonForVariants.mockResolvedValue(undefined);
-        mockReadManifest.mockResolvedValue({ manifest: { 'sap.app': { id: 'test.app' } } });
+        mockReadManifest.mockResolvedValue({ manifest: { 'sap.app': { id: 'test.app' } } } as unknown as Awaited<
+            ReturnType<typeof realUtils.readManifest>
+        >);
         mockFindCapProjectRoot.mockResolvedValue('/cap-root');
     });
 

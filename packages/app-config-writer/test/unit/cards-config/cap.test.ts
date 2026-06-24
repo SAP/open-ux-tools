@@ -4,11 +4,14 @@ import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
-const mockGetProjectType = jest.fn();
-const mockFindCapProjectRoot = jest.fn();
-const mockReadManifest = jest.fn();
-
 const realProjectAccess = await import('@sap-ux/project-access');
+const realUtils = await import('../../../src/common/utils.js');
+const realPrerequisites = await import('../../../src/cards-config/prerequisites.js');
+const realUi5Yaml = await import('../../../src/common/ui5-yaml.js');
+
+const mockGetProjectType = jest.fn<typeof realProjectAccess.getProjectType>();
+const mockFindCapProjectRoot = jest.fn<typeof realProjectAccess.findCapProjectRoot>();
+const mockReadManifest = jest.fn<typeof realUtils.readManifest>();
 
 jest.unstable_mockModule('@sap-ux/project-access', () => ({
     ...realProjectAccess,
@@ -16,22 +19,18 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     findCapProjectRoot: mockFindCapProjectRoot
 }));
 
-const realUtils = await import('../../../src/common/utils.js');
-
 jest.unstable_mockModule('../../../src/common/utils.js', () => ({
     ...realUtils,
     readManifest: mockReadManifest
 }));
 
 jest.unstable_mockModule('../../../src/cards-config/prerequisites.js', () => ({
-    ensureMinUI5Version: jest.fn().mockResolvedValue(undefined)
+    ensureMinUI5Version: jest.fn<typeof realPrerequisites.ensureMinUI5Version>().mockResolvedValue(undefined)
 }));
-
-const realUi5Yaml = await import('../../../src/common/ui5-yaml.js');
 
 jest.unstable_mockModule('../../../src/common/ui5-yaml.js', () => ({
     ...realUi5Yaml,
-    updateMiddlewaresForPreview: jest.fn().mockResolvedValue(undefined)
+    updateMiddlewaresForPreview: jest.fn<typeof realUi5Yaml.updateMiddlewaresForPreview>().mockResolvedValue(undefined)
 }));
 
 const { enableCardGeneratorConfig } = await import('../../../src/cards-config/index.js');
@@ -117,9 +116,9 @@ describe('updateCapRootPackageJsonForCards', () => {
     test('throws when CAP root package.json does not exist', async () => {
         const fs = create(createStorage());
 
-        await expect(
-            updateCapRootPackageJsonForCards(CAP_ROOT, APP_ID, APP_FOLDER_NAME, APP_PATH, fs)
-        ).rejects.toThrow(`package.json not found at CAP root: ${CAP_ROOT}`);
+        await expect(updateCapRootPackageJsonForCards(CAP_ROOT, APP_ID, APP_FOLDER_NAME, APP_PATH, fs)).rejects.toThrow(
+            `package.json not found at CAP root: ${CAP_ROOT}`
+        );
     });
 });
 
@@ -130,7 +129,11 @@ describe('enableCardGeneratorConfig - CAP routing', () => {
 
     beforeEach(() => {
         jest.resetAllMocks();
-        mockReadManifest.mockResolvedValue({ manifest: { 'sap.app': { id: 'apps.v4.example' } } });
+        mockReadManifest.mockResolvedValue({
+            manifest: {
+                'sap.app': { id: 'apps.v4.example' }
+            }
+        } as unknown as Awaited<ReturnType<typeof realUtils.readManifest>>);
         mockFindCapProjectRoot.mockResolvedValue(capRoot);
     });
 
