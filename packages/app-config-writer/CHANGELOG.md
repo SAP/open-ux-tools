@@ -1,5 +1,19 @@
 # @sap-ux/app-config-writer
 
+## 1.1.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Features
+
+- skip package updates for enableCardGeneratorConfig and add exports map with cards-config subpath
+
+    Adds an `exports` field to `@sap-ux/app-config-writer`, which previously only declared `main`. Adding an explicit exports map is a potentially breaking change for any consumer that deep-imports an unlisted path — only the root entry point and the new `cards-config` subpath are exposed. A minor bump is used because no existing documented API is removed, but consumers relying on undocumented internal paths will need to update their imports. [[4904060](https://github.com/SAP/open-ux-tools/commit/4904060e83e25bdfcb2b32cb30ebca612e0ea2ca)]
+
 ## 1.0.11
 
 ### Patch Changes
