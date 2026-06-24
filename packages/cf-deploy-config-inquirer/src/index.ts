@@ -16,6 +16,16 @@ import type { InquirerAdapter } from '@sap-ux/inquirer-common';
 import autocomplete from 'inquirer-autocomplete-prompt';
 import type { Logger } from '@sap-ux/logger';
 import LoggerHelper from './logger-helper.js';
+import type { PromptModule } from 'inquirer';
+
+function registerAutocompletePlugin(
+    questions: CfDeployConfigQuestions[],
+    promptModule: PromptModule | undefined
+): void {
+    if (promptModule && questions.some((q) => q.type === 'autocomplete')) {
+        promptModule.registerPrompt('autocomplete', autocomplete);
+    }
+}
 
 /**
  * Retrieves Cloud Foundry deployment configuration prompts.
@@ -24,17 +34,21 @@ import LoggerHelper from './logger-helper.js';
  *
  * @param {CfDeployConfigPromptOptions} promptOptions - The configuration options for prompting during cf target deployment.
  * @param logger - The logger instance to use for logging.
+ * @param promptModule - Optional inquirer prompt module; if provided, the autocomplete plugin is registered automatically.
  * @returns {Promise<CfDeployConfigQuestions[]>} A promise that resolves to an array of questions for cf target prompting.
  */
 async function getPrompts(
     promptOptions: CfDeployConfigPromptOptions,
-    logger?: Logger
+    logger?: Logger,
+    promptModule?: PromptModule
 ): Promise<CfDeployConfigQuestions[]> {
     if (logger) {
         LoggerHelper.logger = logger;
     }
     await initI18nCfDeployConfigInquirer();
-    return getQuestions(promptOptions, LoggerHelper.logger);
+    const questions = await getQuestions(promptOptions, LoggerHelper.logger);
+    registerAutocompletePlugin(questions, promptModule);
+    return questions;
 }
 
 /**
@@ -69,13 +83,8 @@ async function prompt(
     promptOptions: CfDeployConfigPromptOptions,
     logger?: Logger
 ): Promise<CfDeployConfigAnswers> {
-    const cfPrompts = await getPrompts(promptOptions, logger);
-    if (adapter?.promptModule && promptOptions[promptNames.destinationName]?.useAutocomplete) {
-        const pm = adapter.promptModule;
-        pm.registerPrompt('autocomplete', autocomplete);
-    }
-    const answers = await adapter.prompt<CfDeployConfigAnswers>(cfPrompts);
-    return answers;
+    const cfPrompts = await getPrompts(promptOptions, logger, adapter?.promptModule);
+    return await adapter.prompt<CfDeployConfigAnswers>(cfPrompts);
 }
 
 export {

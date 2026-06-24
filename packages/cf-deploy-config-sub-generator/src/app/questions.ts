@@ -15,7 +15,7 @@ import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-sha
 import { destinationQuestionDefaultOption, getCFChoices } from './utils.js';
 import { t } from '../utils/index.js';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
-import type { Answers, Question } from 'inquirer';
+import type { Answers, Question, PromptModule } from 'inquirer';
 import { withCondition } from '@sap-ux/inquirer-common';
 import type { Logger } from '@sap-ux/logger';
 
@@ -30,6 +30,7 @@ import type { Logger } from '@sap-ux/logger';
  * @param options.addOverwrite - whether to add the overwrite prompt.
  * @param options.apiHubConfig - the API Hub configuration.
  * @param options.promptOptions - additional prompt options.
+ * @param options.promptModule - the inquirer prompt module instance used to register plugins.
  * @returns the cf deploy config questions.
  */
 export async function getCFQuestions({
@@ -39,7 +40,8 @@ export async function getCFQuestions({
     isCap,
     addOverwrite,
     apiHubConfig,
-    promptOptions
+    promptOptions,
+    promptModule
 }: {
     projectRoot: string;
     isAbapDirectServiceBinding: boolean;
@@ -48,6 +50,7 @@ export async function getCFQuestions({
     addOverwrite: boolean;
     apiHubConfig?: ApiHubConfig;
     promptOptions?: CfDeployConfigPromptOptions;
+    promptModule?: PromptModule;
 }): Promise<CfDeployConfigQuestions[]> {
     const isBAS = isAppStudio();
     const mtaYamlExists = !!(await getMtaPath(projectRoot));
@@ -78,7 +81,7 @@ export async function getCFQuestions({
             options: JSON.stringify({ ...options, isCap, addOverwrite, cfDestination, isAbapDirectServiceBinding })
         })
     );
-    return getPrompts(options, DeploymentGenerator.logger as unknown as Logger);
+    return getPrompts(options, DeploymentGenerator.logger as unknown as Logger, promptModule);
 }
 
 /**
