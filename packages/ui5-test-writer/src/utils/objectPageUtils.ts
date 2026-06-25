@@ -321,10 +321,7 @@ function extractBodySubSectionsData(
             isTable,
             custom: !!subSection.custom,
             order: subSection?.order ?? -1, // put a negative order number to signal that order was not in spec
-            fields:
-                subSection.custom || isTable
-                    ? []
-                    : extractFormFields(subSection, convertedMetadata, entitySetName),
+            fields: subSection.custom || isTable ? [] : extractFormFields(subSection, convertedMetadata, entitySetName),
             tableColumns: subSection.custom || !isTable ? {} : extractTableColumnsFromNode(subSection)
         });
     });
