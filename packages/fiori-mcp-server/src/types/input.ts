@@ -169,6 +169,14 @@ export const GetMergedManifestInputSchema = zod.object({
         )
 });
 
+export const DonwloadBaseAppResourcesInputSchema = zod.object({
+    appPath: zod
+        .string()
+        .describe(
+            'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant resides).'
+        )
+});
+
 export const RunRtaWorkflowStepInputSchema = zod.object({
     step: zod
         .enum(STEPS)

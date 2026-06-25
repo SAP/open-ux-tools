@@ -41,11 +41,13 @@ import type {
     AdpControllerExtensionInput,
     BuildAdaptationProjectInput,
     GetMergedManifestInput,
-    RunRtaWorkflowStepInput
+    RunRtaWorkflowStepInput,
+    DownloadBaseAppResourcesInput
 } from './types/index.js';
 import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
 import { logger } from './utils/logger.js';
 import { getMergedManifest } from './tools/get-merged-manifest.js';
+import { downloadBaseAppResources } from './tools/download-base-app-resources.js';
 
 type ToolArgs =
     | DocSearchInput
@@ -234,6 +236,9 @@ export class FioriFunctionalityServer {
                         break;
                     case 'get_merged_manifest':
                         result = await getMergedManifest(args as GetMergedManifestInput);
+                        break;
+                    case 'download_base_app_resources':
+                        result = await downloadBaseAppResources(args as DownloadBaseAppResourcesInput);
                         break;
                     case 'adp_controller_extension':
                         result = await adpControllerExtension(args as AdpControllerExtensionInput);

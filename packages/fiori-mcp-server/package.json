@@ -65,6 +65,7 @@
         "@modelcontextprotocol/sdk": "1.29.0",
         "@sap-ai-sdk/foundation-models": "2.9.0",
         "@sap-ai-sdk/langchain": "2.9.0",
+        "@sap-ux/adp-tooling": "workspace:*",
         "@sap-ux/annotation-converter": "0.10.21",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
@@ -87,7 +88,6 @@
         "@types/json-schema": "7.0.15",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
-        "@sap-ux/adp-tooling": "workspace:*",
         "cross-env": "10.1.0",
         "esbuild": "0.27.4",
         "i18next": "25.10.10",
@@ -97,8 +97,8 @@
         "os-name": "4.0.1",
         "playwright-core": "1.58.2",
         "promptfoo": "0.121.12",
-        "xml-formatter": "3.7.0",
         "ts-node": "10.9.2",
+        "xml-formatter": "3.7.0",
         "zod": "4.3.6"
     },
     "engines": {

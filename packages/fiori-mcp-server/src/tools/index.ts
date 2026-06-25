@@ -181,11 +181,13 @@ export const tools = [
         description: `Validates the descriptor (manifest) changes of a SAP UI5 Adaptation Project without running a full build.
 
         This tool:
-        - Validates the directory is an adaptation project (presence of webapp/manifest.appdescr_variant)
+        - Validates if the directory is an adaptation project (presence of webapp/manifest.appdescr_variant)
         - Verifies node_modules/@ui5/task-adaptation and node_modules/@ui5/fs are installed
-        - Reads the manifest.appdescr_variant id and derives the project namespace (dots → slashes)
-        - Calls the in-process validateManifestChanges export of the project's installed @ui5/task-adaptation, mounting webapp/ at /resources/<namespace>/
+        - Reads the manifest.appdescr_variant id and derives the project namespace (dots -> slashes)
+        - Calls the previewManifest function of the project's installed @ui5/task-adaptation
         - Returns the merged manifest on success or the change-handler failure message on error
+        - Can validate manifest changes (which are marked as appDescriptorChange) against a merged manifest
+        - Does not validate UI flex changes (all change files not containing the "appDescriptorChange": true property)
 
         Unlike build_adaptation_project, this contacts no backend, writes nothing to disk, and runs in-process. It is suitable as a fast pre-build / pre-commit / CI check that the project's manifest changes are well-formed and accepted by their change handlers.`,
         annotations: {
@@ -197,6 +199,24 @@ export const tools = [
         },
         inputSchema: convertToSchema(Input.GetMergedManifestInputSchema),
         outputSchema: convertToSchema(Output.ExecuteFunctionalityOutputSchema)
+    },
+    {
+        name: 'download_base_app_resources',
+        description: `Downloads all relevant resources for a given reference (app id). In case the provided app id is an app variant, all relevant app resources along the app variant hierarchy will be downloaded too.
+        
+            This tool:
+            - Verifies node_modules/@ui5/task-adaptation is installed
+            - Downloads resources like manifest changes, i18n models, annotations, OData metadata, media files, along the respective app variant hierarchy (reference -> app variant n-1 -> ... -> original app)
+            - Returns the path where the app resources were downloaded. Under base app folder, the original app is saved. Under the variantHierarchy folder, all app variant related app resources, along the app variant hierarchy are saved.
+            `,
+        annotations: {
+            title: 'Download Base App Resources',
+            readOnlyHint: true,
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.DonwloadBaseAppResourcesInputSchema)
     },
     {
         name: 'adp_controller_extension',

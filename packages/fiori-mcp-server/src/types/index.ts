@@ -13,7 +13,8 @@ import type {
     AdpControllerExtensionInputSchema,
     BuildAdaptationProjectInputSchema,
     GetMergedManifestInputSchema,
-    RunRtaWorkflowStepInputSchema
+    RunRtaWorkflowStepInputSchema,
+    DonwloadBaseAppResourcesInputSchema
 } from './input.js';
 import type {
     ExecuteFunctionalityOutputSchema,
@@ -38,6 +39,8 @@ export type GetFunctionalityDetailsOutput = zod.infer<typeof GetFunctionalityDet
 
 export type ExecuteFunctionalityInput = zod.infer<typeof ExecuteFunctionalityInputSchema>;
 export type ExecuteFunctionalityOutput = zod.infer<typeof ExecuteFunctionalityOutputSchema>;
+
+export type DownloadBaseAppResourcesInput = zod.infer<typeof DonwloadBaseAppResourcesInputSchema>;
 
 export type DocSearchInput = zod.infer<typeof DocSearchInputSchema>;
 export type DownloadODataServiceMetadataInput = zod.infer<typeof DownloadODataServiceMetadataInputSchema>;
