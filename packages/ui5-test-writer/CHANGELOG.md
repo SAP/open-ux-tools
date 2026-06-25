@@ -1,5 +1,40 @@
 # @sap-ux/ui5-test-writer
 
+## 1.2.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.28 → 1.0.29
+
+## 1.2.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Bug Fixes
+
+- Detect Object Page table body sections via the `table` aggregation when the spec model omits the section-level `isTable` flag, so OP table column tests are generated for real Fiori Elements V4 apps. [[6960f90](https://github.com/SAP/open-ux-tools/commit/6960f90c27107a63786530101c535e1c768a4895)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.0.4 → 2.0.5
+- @sap-ux/project-access 2.1.2 → 2.1.3
+- @sap-ux/fiori-generator-shared 1.0.11 → 1.0.12
+- @sap-ux/preview-middleware 1.0.27 → 1.0.28
+
+## 1.2.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.26 → 1.0.27
+
 ## 1.2.2
 
 ### Patch Changes

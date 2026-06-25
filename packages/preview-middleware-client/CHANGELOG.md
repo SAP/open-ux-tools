@@ -1,5 +1,21 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.0.29
+
+## 1.0.28
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Dependency Updates
+
+- Update dependency @ui5/manifest to v1.86.0 [[666a17e](https://github.com/SAP/open-ux-tools/commit/666a17eb6f8cb5f4b414e64b1d66b234ca3a1a57)]
+
+## 1.0.27
+
 ## 1.0.26
 
 ### Patch Changes
