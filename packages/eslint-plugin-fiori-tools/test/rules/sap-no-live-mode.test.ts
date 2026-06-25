@@ -96,7 +96,7 @@ ruleTester.run(TEST_NAME, noLiveModeRule, {
                 ]),
                 errors: [
                     {
-                        message: 'Live mode should not be used as it has a negative impact on performance',
+                        message: 'Live mode must not be used because it has a negative impact on performance.',
                         line: 114,
                         column: 15
                     }

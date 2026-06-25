@@ -12,11 +12,11 @@ const rule: FioriRuleDefinition = createFioriRule({
         docs: {
             recommended: true,
             description:
-                'The rule checks that live mode is not used. When enabled, content area loads automatically and refreshes with every filter value change.',
+                'The rule checks that live mode is not used. When enabled, the content area loads automatically and refreshes with every filter value change.',
             url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-no-live-mode.md'
         },
         messages: {
-            [NO_LIVE_MODE]: 'Live mode should not be used as it has a negative impact on performance'
+            [NO_LIVE_MODE]: 'Live mode must not be used because it has a negative impact on performance.'
         },
         fixable: 'code'
     },
