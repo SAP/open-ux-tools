@@ -81,6 +81,14 @@ describe('Prompts', () => {
         expect(questionnair.initialAnswers?.buildingBlockData?.templateType).toBe('basic');
     });
 
+    test('getPageBuildingBlockPrompts - templateType question shown when UI5 version >= 1.145.0', async () => {
+        mockGetMinimumUI5Version.mockReturnValueOnce('1.145.0');
+        const questionnair = await promptsAPI.getPrompts(PromptsType.Page);
+        const templateTypeQuestion = questionnair.questions.find((q) => q.name === 'buildingBlockData.templateType');
+        expect(templateTypeQuestion).toBeDefined();
+        expect(questionnair.initialAnswers?.buildingBlockData?.templateType).toBeUndefined();
+    });
+
     test('getRichTextEditorBuildingBlockPrompts', async () => {
         const questionnair = await promptsAPI.getPrompts(PromptsType.RichTextEditor);
         expect(questionnair).toMatchSnapshot();

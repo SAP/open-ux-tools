@@ -429,8 +429,9 @@ export const PAGE_TEMPLATE_TYPE_BASIC = 'basic' as const;
 export type PageTemplateType = typeof PAGE_TEMPLATE_TYPE_FULL | typeof PAGE_TEMPLATE_TYPE_BASIC;
 
 /**
- * Default sample mContent for each Page aggregation when generating a full page template.
+ * Default sample mContent for each Page aggregation.
  * Applied automatically when templateType is 'full' and no explicit aggregations are provided.
+ * The 'items' aggregation is not included here — it has a fixed default IconTabBar in its template.
  */
 export const PAGE_BB_DEFAULT_AGGREGATIONS: Partial<Record<PageAggregationName, string>> = {
     breadcrumbs:

@@ -13,7 +13,6 @@ import {
     BuildingBlockType,
     PAGE_AGGREGATIONS,
     PAGE_TEMPLATE_TYPE_FULL,
-    PAGE_TEMPLATE_TYPE_BASIC,
     PAGE_BB_DEFAULT_AGGREGATIONS,
     type PageAggregationName,
     type BuildingBlock,
@@ -68,15 +67,17 @@ function isFullPageTemplate(data: BuildingBlock): boolean {
 }
 
 /**
- * Returns true if the building block data represents a Page building block with the basic template type.
+ * Returns the aggregation names to append for a Page building block, or undefined if not a Page.
+ * Full template appends all PAGE_AGGREGATIONS; basic template appends only 'items'.
  *
  * @param data - the building block data
- * @returns true if basic Page template
+ * @returns aggregation names array, or undefined if not a Page building block
  */
-function isBasicPageTemplate(data: BuildingBlock): boolean {
-    return (
-        data.buildingBlockType === BuildingBlockType.Page && (data as Page).templateType === PAGE_TEMPLATE_TYPE_BASIC
-    );
+function getPageAggregationNames(data: BuildingBlock): readonly PageAggregationName[] | undefined {
+    if (data.buildingBlockType !== BuildingBlockType.Page) {
+        return undefined;
+    }
+    return (data as Page).templateType === PAGE_TEMPLATE_TYPE_FULL ? PAGE_AGGREGATIONS : ['items'];
 }
 
 /**
@@ -129,13 +130,11 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     );
 
     const fullPageTemplate = isFullPageTemplate(buildingBlockData);
+    const pageAggregationNames = getPageAggregationNames(buildingBlockData);
 
-    if (fullPageTemplate) {
+    if (pageAggregationNames) {
         const pageData = buildingBlockData as Page;
-        appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId, pageData);
-    } else if (isBasicPageTemplate(buildingBlockData)) {
-        const pageData = buildingBlockData as Page;
-        appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId, pageData, ['items']);
+        appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId, pageData, pageAggregationNames);
     }
 
     if (
@@ -783,10 +782,9 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
 
     // For Page templates, augment the snippet with aggregations (all 7 for full, just items for basic)
     let viewOrFragmentContent = content;
-    const pageData = buildingBlockData as Page;
-    const isFullPage = isFullPageTemplate(buildingBlockData);
-    const isBasicPage = isBasicPageTemplate(buildingBlockData);
-    if (isFullPage || isBasicPage) {
+    const pageAggNames = getPageAggregationNames(buildingBlockData);
+    if (pageAggNames) {
+        const pageData = buildingBlockData as Page;
         // Use the real view document for namespace resolution if available, otherwise create a minimal fallback
         const nsDoc =
             xmlDocument ??
@@ -808,7 +806,7 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
             snippetContent,
             'text/xml'
         );
-        appendPageAggregations(fs, nsDoc, snippetDoc, fnGenerateId, pageData, isBasicPage ? ['items'] : undefined);
+        appendPageAggregations(fs, nsDoc, snippetDoc, fnGenerateId, pageData, pageAggNames);
         const resultNode = snippetDoc.documentElement;
         viewOrFragmentContent = resultNode ? format(new XMLSerializer().serializeToString(resultNode)) : content;
     }

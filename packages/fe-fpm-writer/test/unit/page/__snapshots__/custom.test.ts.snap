@@ -1095,6 +1095,17 @@ Object {
 
 exports[`CustomPage generateCustomPage: only page, no others should generate a custom page with pageBuildingBlockTitle enabled 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.view.CustomPage\\">
-    <macros:Page id=\\"Page\\" title=\\"Test Page Title\\"/>
+    <macros:Page id=\\"Page\\" title=\\"Test Page Title\\">
+        <!--This is a sample template, event handlers should be added for implementation-->
+        <macros:items id=\\"items\\">
+            <!-- Main content -->
+            <IconTabBar id=\\"iconTabBaritems\\" class=\\"sapUiResponsiveContentPadding\\">
+                <items>
+                    <IconTabFilter id=\\"iconTabFilteritems\\" text=\\"Tab 1\\">
+                    </IconTabFilter>
+                </items>
+            </IconTabBar>
+        </macros:items>
+    </macros:Page>
 </mvc:View>"
 `;

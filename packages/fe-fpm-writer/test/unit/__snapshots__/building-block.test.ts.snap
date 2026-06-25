@@ -1995,7 +1995,18 @@ exports[`Building Blocks generate Page building block with full template inserts
 
 exports[`Building Blocks generate Page building block with replace target locator set: generate-page-block 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
-    <macros:Page id=\\"testPage\\" title=\\"Test Page Title\\" description=\\"Test Page Description\\"/>
+    <macros:Page id=\\"testPage\\" title=\\"Test Page Title\\" description=\\"Test Page Description\\">
+        <!--This is a sample template, event handlers should be added for implementation-->
+        <macros:items id=\\"items\\">
+            <!-- Main content -->
+            <IconTabBar id=\\"iconTabBaritems\\" class=\\"sapUiResponsiveContentPadding\\">
+                <items>
+                    <IconTabFilter id=\\"iconTabFilteritems\\" text=\\"Tab 1\\">
+                    </IconTabFilter>
+                </items>
+            </IconTabBar>
+        </macros:items>
+    </macros:Page>
 </mvc:View>"
 `;
 
