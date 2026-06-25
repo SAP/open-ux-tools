@@ -133,10 +133,13 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     const pageAggregationNames = getPageAggregationNames(buildingBlockData);
 
     if (fullPageTemplate) {
-        const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
-        if (minUI5Version && lt(minUI5Version, '1.145.0')) {
+        const minUI5VersionRaw = manifest ? getMinimumUI5Version(manifest) : undefined;
+        const minUI5Version = minUI5VersionRaw ? coerce(minUI5VersionRaw) : undefined;
+        if (!minUI5Version || lt(minUI5Version, '1.145.0')) {
             const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
-            throw new Error(`${t('fullTemplateMinUi5VersionRequirement', { minUI5Version: minUI5Version.version })}`);
+            throw new Error(
+                `${t('fullTemplateMinUi5VersionRequirement', { minUI5Version: minUI5Version?.version ?? minUI5VersionRaw ?? 'unknown' })}`
+            );
         }
     }
 

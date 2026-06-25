@@ -1331,6 +1331,33 @@ describe('Building Blocks', () => {
         ).rejects.toThrow(t('fullTemplateMinUi5VersionRequirement', { minUI5Version: '1.144.0' }));
     });
 
+    test('generate Page building block with full template throws if UI5 version is missing', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'generate-page-block-full-no-version');
+        const manifestWithNoUi5Version = { ...testManifestContent, 'sap.ui5': { dependencies: { libs: { 'sap.fe.core': {} } } } };
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(manifestWithNoUi5Version));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+        const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
+
+        await expect(
+            generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: {
+                        id: 'testPage',
+                        buildingBlockType: BuildingBlockType.Page,
+                        templateType: 'full',
+                        generateId
+                    },
+                    replace: true
+                },
+                fs
+            )
+        ).rejects.toThrow(t('fullTemplateMinUi5VersionRequirement', { minUI5Version: 'unknown' }));
+    });
+
     test('throws error if aggregationPath not found', async () => {
         const aggregationPath = `/mvc:Test`;
         const basePath = join(testAppPath, 'generate-page-block-error');
