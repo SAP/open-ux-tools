@@ -1,5 +1,17 @@
 # @sap-ux/app-config-writer
 
+## 1.1.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-25
+
+#### Bug Fixes
+
+- Add CAP Node.js support and CAPJava error handling for cards-editor and variants-config commands [[da518f2](https://github.com/SAP/open-ux-tools/commit/da518f2cc5b0d9aff20c05fab2dac8a4b8fa85a4)]
+
 ## 1.1.1
 
 ### Patch Changes

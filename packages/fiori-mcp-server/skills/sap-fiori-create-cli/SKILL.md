@@ -4,7 +4,7 @@ description: Run, invoke, and test the @sap-ux/create CLI — generate, add, con
 argument-hint: command and subcommand (e.g., add mockserver-config, generate adaptation-project)
 metadata:
   author: sap-fiori-tools
-  version: "1.0.37"
+  version: "1.0.36"
 ---
 
 
