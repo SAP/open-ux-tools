@@ -82,7 +82,7 @@ export async function getCFQuestions({
         })
     );
     const logger = DeploymentGenerator.logger as unknown as Logger;
-    return promptModule ? getPrompts(options, logger, promptModule) : getPrompts(options, logger);
+    return getPrompts(options, logger, promptModule);
 }
 
 /**
