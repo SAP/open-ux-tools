@@ -1,5 +1,17 @@
 # @sap-ux/create
 
+## 1.0.39
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-25
+
+#### Bug Fixes
+
+- create cli skill generation only in case of real changes [[6b4e375](https://github.com/SAP/open-ux-tools/commit/6b4e37517739ba4899a8b487d4dabb0dba02b69c)]
+
 ## 1.0.38
 
 ### Patch Changes
