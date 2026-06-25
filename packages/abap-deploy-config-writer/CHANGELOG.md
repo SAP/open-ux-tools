@@ -1,5 +1,18 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 1.0.10
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/system-access 1.0.3 → 1.0.4
+- @sap-ux/ui5-config 1.0.3 → 1.0.3
+
 ## 1.0.9
 
 ### Patch Changes

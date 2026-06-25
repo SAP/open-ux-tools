@@ -1,5 +1,30 @@
 # @sap-ux/create
 
+## 1.0.40
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-writer 1.0.9 → 1.0.10
+- @sap-ux/odata-service-writer 1.0.8 → 1.0.9
+- @sap-ux/preview-middleware 1.0.29 → 1.0.30
+- @sap-ux/app-config-writer 1.1.2 → 1.1.3
+- @sap-ux/axios-extension 2.0.3 → 2.0.4
+- @sap-ux/system-access 1.0.3 → 1.0.4
+- @sap-ux/adp-tooling 1.0.20 → 1.0.21
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/store 2.0.1 → 2.0.2
+- @sap-ux/abap-deploy-config-inquirer 2.0.15 → 2.0.16
+- @sap-ux/flp-config-inquirer 1.0.20 → 1.0.21
+- @sap-ux/nodejs-utils 1.0.3 → 1.0.4
+- @sap-ux/ui5-config 1.0.3 → 1.0.3
+- @sap-ux/cap-config-writer 1.0.12 → 1.0.13
+
 ## 1.0.39
 
 ### Patch Changes
