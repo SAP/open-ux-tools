@@ -1,5 +1,25 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.8.1
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+## 1.8.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-06-25
+
+#### Features
+
+- add ESLint agent skills for Fiori projects (setup, migrate, lint) [[045738d](https://github.com/SAP/open-ux-tools/commit/045738db600206b7a6bf1e28fdf6d344ea6485ca)]
+
 ## 1.7.1
 
 ### Patch Changes
