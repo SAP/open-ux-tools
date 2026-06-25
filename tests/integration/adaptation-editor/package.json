@@ -23,7 +23,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/yaml": "workspace:*",
         "@playwright/test": "1.60.0",
-        "adm-zip": "0.5.16",
+        "adm-zip": "0.5.17",
         "dotenv": "17.4.2",
         "express": "4.22.1",
         "jest-dev-server": "11.0.0",

@@ -52,7 +52,7 @@
         "@types/lodash": "4.17.24",
         "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
-        "fs-extra": "11.3.4",
+        "fs-extra": "11.3.5",
         "@types/semver": "7.7.1"
     }
 }
