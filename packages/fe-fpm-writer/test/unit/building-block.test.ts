@@ -27,7 +27,10 @@ import { BUILDING_BLOCK_CONFIG } from '../../src/building-block/processor.js';
 import testManifestContent from './sample/building-block/webapp/manifest.json';
 const testManifestV145 = {
     ...testManifestContent,
-    'sap.ui5': { ...testManifestContent['sap.ui5'], dependencies: { ...testManifestContent['sap.ui5']?.dependencies, minUI5Version: '1.145.0' } }
+    'sap.ui5': {
+        ...testManifestContent['sap.ui5'],
+        dependencies: { ...testManifestContent['sap.ui5']?.dependencies, minUI5Version: '1.145.0' }
+    }
 };
 import { clearTestOutput, writeFilesForDebugging } from '../common/index.js';
 import { bindingContextAbsolute, type BindingContextType } from '../../src/building-block/types.js';
