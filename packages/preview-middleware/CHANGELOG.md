@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 1.0.29
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-25
+
+#### Bug Fixes
+
+- Use findCapProjectRoot instead of findProjectRoot for reliable CAP project type detection when app is started from a subfolder [[86daa87](https://github.com/SAP/open-ux-tools/commit/86daa87d8f9376ef3e109562caa91cee8572b9e7)]
+
 ## 1.0.28
 
 ### Patch Changes

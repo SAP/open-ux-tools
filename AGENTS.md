@@ -348,11 +348,11 @@ BUMP: Upgrade i18next 25.8.18 → 25.8.20
 
 Every changeset summary **must** start with one of these prefixes (enforced by `pnpm validate:changesets`):
 
-| Prefix | Use for |
-|---|---|
-| `FEAT:` | New features or behaviour additions |
-| `FIX:` | Bug fixes, security patches, CVE upgrades |
-| `BUMP:` | Dependency-only upgrades with no behaviour change |
+| Prefix             | Use for                                           |
+|--------------------|---------------------------------------------------|
+| `FEAT:` or `feat:` | New features or behaviour additions               |
+| `FIX:`  or `fix:`  | Bug fixes, security patches, CVE upgrades         |
+| `BUMP:` or `bump:` | Dependency-only upgrades with no behaviour change |
 
 Do **not** include the package name in the summary — it is already declared in the frontmatter.
 

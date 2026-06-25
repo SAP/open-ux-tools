@@ -1,5 +1,34 @@
 # @sap-ux/create
 
+## 1.0.39
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-25
+
+#### Bug Fixes
+
+- create cli skill generation only in case of real changes [[6b4e375](https://github.com/SAP/open-ux-tools/commit/6b4e37517739ba4899a8b487d4dabb0dba02b69c)]
+
+## 1.0.38
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/app-config-writer 1.1.1 → 1.1.2
+
+## 1.0.37
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.28 → 1.0.29
+- @sap-ux/app-config-writer 1.1.1 → 1.1.1
+
 ## 1.0.36
 
 ### Patch Changes
