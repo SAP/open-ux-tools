@@ -132,6 +132,14 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     const fullPageTemplate = isFullPageTemplate(buildingBlockData);
     const pageAggregationNames = getPageAggregationNames(buildingBlockData);
 
+    if (fullPageTemplate) {
+        const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
+        if (minUI5Version && lt(minUI5Version, '1.145.0')) {
+            const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
+            throw new Error(`${t('fullTemplateMinUi5VersionRequirement', { minUI5Version: minUI5Version.version })}`);
+        }
+    }
+
     if (pageAggregationNames) {
         const pageData = buildingBlockData as Page;
         appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId, pageData, pageAggregationNames);

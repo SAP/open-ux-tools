@@ -25,6 +25,10 @@ import {
 } from '../../src/index.js';
 import { BUILDING_BLOCK_CONFIG } from '../../src/building-block/processor.js';
 import testManifestContent from './sample/building-block/webapp/manifest.json';
+const testManifestV145 = {
+    ...testManifestContent,
+    'sap.ui5': { ...testManifestContent['sap.ui5'], dependencies: { ...testManifestContent['sap.ui5']?.dependencies, minUI5Version: '1.145.0' } }
+};
 import { clearTestOutput, writeFilesForDebugging } from '../common/index.js';
 import { bindingContextAbsolute, type BindingContextType } from '../../src/building-block/types.js';
 import { i18nNamespaces, translate } from '../../src/i18n.js';
@@ -1102,7 +1106,7 @@ describe('Building Blocks', () => {
     test('generate Page building block with full template inserts all 7 aggregations', async () => {
         const aggregationPath = `/mvc:View/*[local-name()='Page']`;
         const basePath = join(testAppPath, 'generate-page-block-full');
-        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
         fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
 
         await generateBuildingBlock(
@@ -1136,7 +1140,7 @@ describe('Building Blocks', () => {
     test('generate Page building block with full template creates JS controller', async () => {
         const aggregationPath = `/mvc:View/*[local-name()='Page']`;
         const basePath = join(testAppPath, 'generate-page-block-full-controller');
-        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
         fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
 
         await generateBuildingBlock(
@@ -1171,7 +1175,7 @@ describe('Building Blocks', () => {
     test('generate Page building block with full template creates TS controller when .controller.ts exists', async () => {
         const aggregationPath = `/mvc:View/*[local-name()='Page']`;
         const basePath = join(testAppPath, 'generate-page-block-full-ts-controller');
-        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
         fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
         fs.write(join(basePath, 'webapp/ext/main/Main.controller.ts'), '// existing ts controller');
 
@@ -1198,7 +1202,7 @@ describe('Building Blocks', () => {
     test('generate Page building block with full template and no aggregations uses default mContent', async () => {
         const aggregationPath = `/mvc:View/*[local-name()='Page']`;
         const basePath = join(testAppPath, 'generate-page-block-full-defaults');
-        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
         fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
 
         await generateBuildingBlock(
@@ -1228,7 +1232,7 @@ describe('Building Blocks', () => {
     test('generate Page building block with full template and explicit aggregations overrides defaults', async () => {
         const aggregationPath = `/mvc:View/*[local-name()='Page']`;
         const basePath = join(testAppPath, 'generate-page-block-full-override');
-        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
         fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
 
         await generateBuildingBlock(
@@ -1289,6 +1293,42 @@ describe('Building Blocks', () => {
         expect(fs.exists(join(basePath, 'webapp/ext/main/Main.controller.js'))).toBe(false);
         expect(fs.exists(join(basePath, 'webapp/ext/main/Main.controller.ts'))).toBe(false);
         expect(viewContent).toMatchSnapshot('generate-page-block-basic');
+    });
+
+    test('generate Page building block with full template throws if UI5 version is below 1.145.0', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'generate-page-block-full-version-gate');
+        const manifestWithLowerUi5Version = {
+            ...testManifestContent,
+            'sap.ui5': {
+                ...testManifestContent['sap.ui5'],
+                dependencies: {
+                    ...testManifestContent['sap.ui5']?.dependencies,
+                    minUI5Version: '1.144.0'
+                }
+            }
+        };
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(manifestWithLowerUi5Version));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+        const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
+
+        await expect(
+            generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: {
+                        id: 'testPage',
+                        buildingBlockType: BuildingBlockType.Page,
+                        templateType: 'full',
+                        generateId
+                    },
+                    replace: true
+                },
+                fs
+            )
+        ).rejects.toThrow(t('fullTemplateMinUi5VersionRequirement', { minUI5Version: '1.144.0' }));
     });
 
     test('throws error if aggregationPath not found', async () => {
