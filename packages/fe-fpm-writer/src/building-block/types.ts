@@ -430,7 +430,7 @@ export type PageTemplateType = typeof PAGE_TEMPLATE_TYPE_FULL | typeof PAGE_TEMP
 
 /**
  * Default sample mContent for each Page aggregation.
- * Applied automatically when templateType is 'full' and no explicit aggregations are provided.
+ * Applied automatically for any missing aggregation mContent when templateType is 'full'.
  * The 'items' aggregation is not included here — it has a fixed default IconTabBar in its template.
  */
 export const PAGE_BB_DEFAULT_AGGREGATIONS: Partial<Record<PageAggregationName, string>> = {

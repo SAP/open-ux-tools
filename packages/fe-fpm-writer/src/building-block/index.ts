@@ -253,10 +253,7 @@ function appendPageAggregations(
     const pageElement = templateDocument.documentElement;
     pageElement.appendChild(templateDocument.createComment(PAGE_TEMPLATE_COMMENT));
     for (const aggName of aggNames) {
-        const mContent =
-            (pageData.aggregations as Record<PageAggregationName, string> | undefined)?.[aggName] ??
-            (PAGE_BB_DEFAULT_AGGREGATIONS as Record<PageAggregationName, string>)[aggName] ??
-            '';
+        const mContent = pageData.aggregations?.[aggName] ?? PAGE_BB_DEFAULT_AGGREGATIONS[aggName] ?? '';
         const aggId = generateId(aggName);
         const aggContext = { macrosPrefix, mContent, aggId };
         const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
