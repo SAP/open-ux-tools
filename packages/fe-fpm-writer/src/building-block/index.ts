@@ -13,6 +13,9 @@ import {
     BuildingBlockType,
     PAGE_AGGREGATIONS,
     PAGE_TEMPLATE_TYPE_FULL,
+    PAGE_TEMPLATE_TYPE_BASIC,
+    PAGE_BB_DEFAULT_AGGREGATIONS,
+    type PageAggregationName,
     type BuildingBlock,
     type BuildingBlockConfig,
     type BuildingBlockMetaPath,
@@ -62,6 +65,18 @@ interface MetadataPath {
  */
 function isFullPageTemplate(data: BuildingBlock): boolean {
     return data.buildingBlockType === BuildingBlockType.Page && (data as Page).templateType === PAGE_TEMPLATE_TYPE_FULL;
+}
+
+/**
+ * Returns true if the building block data represents a Page building block with the basic template type.
+ *
+ * @param data - the building block data
+ * @returns true if basic Page template
+ */
+function isBasicPageTemplate(data: BuildingBlock): boolean {
+    return (
+        data.buildingBlockType === BuildingBlockType.Page && (data as Page).templateType === PAGE_TEMPLATE_TYPE_BASIC
+    );
 }
 
 /**
@@ -118,6 +133,9 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     if (fullPageTemplate) {
         const pageData = buildingBlockData as Page;
         appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId, pageData);
+    } else if (isBasicPageTemplate(buildingBlockData)) {
+        const pageData = buildingBlockData as Page;
+        appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId, pageData, ['items']);
     }
 
     if (
@@ -214,27 +232,32 @@ function buildPageAggregationFragment(
 }
 
 /**
- * Appends the 7 Page building block aggregation fragments as child elements of the templateDocument root.
+ * Appends Page building block aggregation fragments as child elements of the templateDocument root.
  *
  * @param {Editor} fs - the memfs editor instance
  * @param {Document} xmlDocument - the view XML document (used to resolve namespace prefixes)
  * @param {Document} templateDocument - the template document whose root element receives the children
  * @param {IdGeneratorFunction} generateId - function to generate unique IDs
  * @param {Page} pageData - the Page building block data containing optional aggregation mContent
+ * @param {readonly string[]} [aggNames] - aggregation names to append; defaults to all PAGE_AGGREGATIONS
  */
 function appendPageAggregations(
     fs: Editor,
     xmlDocument: Document,
     templateDocument: Document,
     generateId: IdGeneratorFunction,
-    pageData: Page
+    pageData: Page,
+    aggNames: readonly PageAggregationName[] = PAGE_AGGREGATIONS
 ): void {
     const fragMacrosNS = resolveMacrosPrefix(xmlDocument);
     const macrosPrefix = `${fragMacrosNS}:`;
     const pageElement = templateDocument.documentElement;
     pageElement.appendChild(templateDocument.createComment(PAGE_TEMPLATE_COMMENT));
-    for (const aggName of PAGE_AGGREGATIONS) {
-        const mContent = pageData.aggregations?.[aggName] ?? '';
+    for (const aggName of aggNames) {
+        const mContent =
+            (pageData.aggregations as Record<PageAggregationName, string> | undefined)?.[aggName] ??
+            (PAGE_BB_DEFAULT_AGGREGATIONS as Record<PageAggregationName, string>)[aggName] ??
+            '';
         const aggId = generateId(aggName);
         const aggContext = { macrosPrefix, mContent, aggId };
         const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
@@ -758,11 +781,12 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
         true
     );
 
-    // For the full Page template, augment the snippet with all 7 aggregations
+    // For Page templates, augment the snippet with aggregations (all 7 for full, just items for basic)
     let viewOrFragmentContent = content;
     const pageData = buildingBlockData as Page;
     const isFullPage = isFullPageTemplate(buildingBlockData);
-    if (isFullPage) {
+    const isBasicPage = isBasicPageTemplate(buildingBlockData);
+    if (isFullPage || isBasicPage) {
         // Use the real view document for namespace resolution if available, otherwise create a minimal fallback
         const nsDoc =
             xmlDocument ??
@@ -784,7 +808,7 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
             snippetContent,
             'text/xml'
         );
-        appendPageAggregations(fs, nsDoc, snippetDoc, fnGenerateId, pageData);
+        appendPageAggregations(fs, nsDoc, snippetDoc, fnGenerateId, pageData, isBasicPage ? ['items'] : undefined);
         const resultNode = snippetDoc.documentElement;
         viewOrFragmentContent = resultNode ? format(new XMLSerializer().serializeToString(resultNode)) : content;
     }

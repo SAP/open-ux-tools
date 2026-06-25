@@ -1872,6 +1872,75 @@ exports[`Building Blocks RichTextEditorButtonGroups building block multiple Rich
 </core:FragmentDefinition>"
 `;
 
+exports[`Building Blocks generate Page building block with basic template does not insert aggregations or controller: generate-page-block-basic 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <macros:Page id=\\"testPage\\">
+        <!--This is a sample template, event handlers should be added for implementation-->
+        <macros:items id=\\"items\\">
+            <!-- Main content -->
+            <IconTabBar id=\\"iconTabBaritems\\" class=\\"sapUiResponsiveContentPadding\\">
+                <items>
+                    <IconTabFilter id=\\"iconTabFilteritems\\" text=\\"Tab 1\\">
+                    </IconTabFilter>
+                </items>
+            </IconTabBar>
+        </macros:items>
+    </macros:Page>
+</mvc:View>"
+`;
+
+exports[`Building Blocks generate Page building block with full template and no aggregations uses default mContent: generate-page-block-full-defaults 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <macros:Page id=\\"testPage\\" title=\\"Test Page\\" showFooter=\\"true\\">
+        <!--This is a sample template, event handlers should be added for implementation-->
+        <macros:breadcrumbs id=\\"breadcrumbs\\">
+            <!-- Breadcrumbs aggregation -->
+            <Breadcrumbs>
+                <Link text=\\"Home\\" press=\\".onPressHome\\"/>
+                <Link text=\\"Page 1\\" press=\\".onPressPage1\\"/>
+                <Link text=\\"Page 2\\" press=\\".onPressPage2\\"/>
+            </Breadcrumbs>
+        </macros:breadcrumbs>
+        <macros:navigationActions id=\\"navigationActions\\">
+            <!-- Navigation actions aggregation -->
+            <Button icon=\\"sap-icon://full-screen\\" press=\\".onFullScreen\\" type=\\"Transparent\\"/>
+        </macros:navigationActions>
+        <macros:titleContent id=\\"titleContent\\">
+            <!-- Title content aggregation (content next to title) -->
+            <GenericTag text=\\"Status\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
+        </macros:titleContent>
+        <macros:actions id=\\"actions\\">
+            <!-- Actions aggregation -->
+            <Button text=\\"Action 1\\" press=\\".onClickAction1\\" type=\\"Ghost\\"/>
+            <Button text=\\"Action 2\\" press=\\".onClickAction2\\" type=\\"Ghost\\"/>
+        </macros:actions>
+        <macros:headerContent id=\\"headerContent\\">
+            <!-- Header content aggregation (content after avatar) -->
+            <VBox>
+                <Title text=\\"Page Title\\"/>
+            </VBox>
+        </macros:headerContent>
+        <macros:items id=\\"items\\">
+            <!-- Main content -->
+            <IconTabBar id=\\"iconTabBaritems\\" class=\\"sapUiResponsiveContentPadding\\">
+                <items>
+                    <IconTabFilter id=\\"iconTabFilteritems\\" text=\\"Tab 1\\">
+                    </IconTabFilter>
+                </items>
+            </IconTabBar>
+        </macros:items>
+        <macros:footer id=\\"footer\\">
+            <!-- Footer aggregation -->
+            <OverflowToolbar>
+                <ToolbarSpacer/>
+                <Button text=\\"Approve\\" press=\\".onApprove\\" type=\\"Accept\\" icon=\\"\\"/>
+                <Button text=\\"Reject\\" press=\\".onReject\\" type=\\"Reject\\" icon=\\"\\"/>
+            </OverflowToolbar>
+        </macros:footer>
+    </macros:Page>
+</mvc:View>"
+`;
+
 exports[`Building Blocks generate Page building block with full template inserts all 7 aggregations: generate-page-block-full 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <macros:Page id=\\"testPage\\" title=\\"Test Page\\" showFooter=\\"true\\">
@@ -1890,6 +1959,7 @@ exports[`Building Blocks generate Page building block with full template inserts
         </macros:navigationActions>
         <macros:titleContent id=\\"titleContent\\">
             <!-- Title content aggregation (content next to title) -->
+            <GenericTag text=\\"Status\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
         </macros:titleContent>
         <macros:actions id=\\"actions\\">
             <!-- Actions aggregation -->
@@ -1898,6 +1968,9 @@ exports[`Building Blocks generate Page building block with full template inserts
         </macros:actions>
         <macros:headerContent id=\\"headerContent\\">
             <!-- Header content aggregation (content after avatar) -->
+            <VBox>
+                <Title text=\\"Page Title\\"/>
+            </VBox>
         </macros:headerContent>
         <macros:items id=\\"items\\">
             <!-- Main content -->
@@ -1910,6 +1983,11 @@ exports[`Building Blocks generate Page building block with full template inserts
         </macros:items>
         <macros:footer id=\\"footer\\">
             <!-- Footer aggregation -->
+            <OverflowToolbar>
+                <ToolbarSpacer/>
+                <Button text=\\"Approve\\" press=\\".onApprove\\" type=\\"Accept\\" icon=\\"\\"/>
+                <Button text=\\"Reject\\" press=\\".onReject\\" type=\\"Reject\\" icon=\\"\\"/>
+            </OverflowToolbar>
         </macros:footer>
     </macros:Page>
 </mvc:View>"

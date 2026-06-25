@@ -1193,6 +1193,68 @@ describe('Building Blocks', () => {
         expect(fs.exists(join(basePath, 'webapp/ext/main/Main.controller.js'))).toBe(false);
     });
 
+    test('generate Page building block with full template and no aggregations uses default mContent', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'generate-page-block-full-defaults');
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: {
+                    id: 'testPage',
+                    buildingBlockType: BuildingBlockType.Page,
+                    title: 'Test Page',
+                    templateType: 'full',
+                    generateId
+                },
+                replace: true
+            },
+            fs
+        );
+
+        const viewContent = fs.read(join(basePath, xmlViewFilePath));
+        expect(viewContent).toContain('onPressHome');
+        expect(viewContent).toContain('onClickAction1');
+        expect(viewContent).toContain('macros:breadcrumbs');
+        expect(viewContent).toMatchSnapshot('generate-page-block-full-defaults');
+    });
+
+    test('generate Page building block with full template and explicit aggregations overrides defaults', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'generate-page-block-full-override');
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: {
+                    id: 'testPage',
+                    buildingBlockType: BuildingBlockType.Page,
+                    title: 'Test Page',
+                    templateType: 'full',
+                    generateId,
+                    aggregations: {
+                        breadcrumbs: '<Text text="custom-breadcrumb" />'
+                    }
+                },
+                replace: true
+            },
+            fs
+        );
+
+        const viewContent = fs.read(join(basePath, xmlViewFilePath));
+        expect(viewContent).toContain('custom-breadcrumb');
+        expect(viewContent).not.toContain('onPressHome');
+        expect(viewContent).toContain('onClickAction1');
+    });
+
     test('generate Page building block with basic template does not insert aggregations or controller', async () => {
         const aggregationPath = `/mvc:View/*[local-name()='Page']`;
         const basePath = join(testAppPath, 'generate-page-block-blank');
@@ -1219,8 +1281,12 @@ describe('Building Blocks', () => {
         expect(viewContent).not.toContain('showFooter');
         expect(viewContent).not.toContain('macros:breadcrumbs');
         expect(viewContent).not.toContain('macros:footer');
+        expect(viewContent).toContain('macros:items');
+        expect(viewContent).toContain('IconTabBar');
+        expect(viewContent).toContain('IconTabFilter');
         expect(fs.exists(join(basePath, 'webapp/ext/main/Main.controller.js'))).toBe(false);
         expect(fs.exists(join(basePath, 'webapp/ext/main/Main.controller.ts'))).toBe(false);
+        expect(viewContent).toMatchSnapshot('generate-page-block-basic');
     });
 
     test('throws error if aggregationPath not found', async () => {

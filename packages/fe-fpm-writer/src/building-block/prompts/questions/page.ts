@@ -20,9 +20,14 @@ export type PagePromptsAnswer = BuildingBlockConfig<Page> & Answers;
 export async function getPageBuildingBlockPrompts(context: PromptContext): Promise<Prompts<PagePromptsAnswer>> {
     const t = translate(i18nNamespaces.buildingBlock, 'prompts.page.');
 
-    const { content: manifest } = await getManifest(context.appPath, context.fs, false);
-    const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
-    const hideTemplateType = !!minUI5Version && lt(minUI5Version, '1.145.0');
+    let hideTemplateType = false;
+    try {
+        const { content: manifest } = await getManifest(context.appPath, context.fs);
+        const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
+        hideTemplateType = !!minUI5Version && lt(minUI5Version, '1.145.0');
+    } catch {
+        // If manifest cannot be read, show all options (including Full)
+    }
 
     return {
         questions: [

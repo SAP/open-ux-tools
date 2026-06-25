@@ -429,6 +429,21 @@ export const PAGE_TEMPLATE_TYPE_BASIC = 'basic' as const;
 export type PageTemplateType = typeof PAGE_TEMPLATE_TYPE_FULL | typeof PAGE_TEMPLATE_TYPE_BASIC;
 
 /**
+ * Default sample mContent for each Page aggregation when generating a full page template.
+ * Applied automatically when templateType is 'full' and no explicit aggregations are provided.
+ */
+export const PAGE_BB_DEFAULT_AGGREGATIONS: Partial<Record<PageAggregationName, string>> = {
+    breadcrumbs:
+        '<Breadcrumbs>\n    <Link text="Home" press=".onPressHome" />\n    <Link text="Page 1" press=".onPressPage1" />\n    <Link text="Page 2" press=".onPressPage2" />\n</Breadcrumbs>',
+    navigationActions: '<Button icon="sap-icon://full-screen" press=".onFullScreen" type="Transparent" />',
+    titleContent: '<GenericTag text="Status" design="StatusIconHidden" status="Information" />',
+    actions:
+        '<Button text="Action 1" press=".onClickAction1" type="Ghost" />\n    <Button text="Action 2" press=".onClickAction2" type="Ghost" />',
+    headerContent: '<VBox>\n    <Title text="Page Title" />\n</VBox>',
+    footer: '<OverflowToolbar><ToolbarSpacer /><Button text="Approve" press=".onApprove" type="Accept" icon="" /><Button text="Reject" press=".onReject" type="Reject" icon="" /></OverflowToolbar>'
+};
+
+/**
  * A group of XML nodes representing one Page aggregation element and its preceding sibling comments.
  * Used when re-ordering aggregation children under a macros:Page element.
  */
