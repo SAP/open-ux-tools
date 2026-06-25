@@ -27,7 +27,10 @@ import { BUILDING_BLOCK_CONFIG } from '../../src/building-block/processor.js';
 import testManifestContent from './sample/building-block/webapp/manifest.json';
 const testManifestV145 = {
     ...testManifestContent,
-    'sap.ui5': { ...testManifestContent['sap.ui5'], dependencies: { ...testManifestContent['sap.ui5']?.dependencies, minUI5Version: '1.145.0' } }
+    'sap.ui5': {
+        ...testManifestContent['sap.ui5'],
+        dependencies: { ...testManifestContent['sap.ui5']?.dependencies, minUI5Version: '1.145.0' }
+    }
 };
 import { clearTestOutput, writeFilesForDebugging } from '../common/index.js';
 import { bindingContextAbsolute, type BindingContextType } from '../../src/building-block/types.js';
@@ -1334,7 +1337,10 @@ describe('Building Blocks', () => {
     test('generate Page building block with full template throws if UI5 version is missing', async () => {
         const aggregationPath = `/mvc:View/*[local-name()='Page']`;
         const basePath = join(testAppPath, 'generate-page-block-full-no-version');
-        const manifestWithNoUi5Version = { ...testManifestContent, 'sap.ui5': { dependencies: { libs: { 'sap.fe.core': {} } } } };
+        const manifestWithNoUi5Version = {
+            ...testManifestContent,
+            'sap.ui5': { dependencies: { libs: { 'sap.fe.core': {} } } }
+        };
         fs.write(join(basePath, manifestFilePath), JSON.stringify(manifestWithNoUi5Version));
         fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
         const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
