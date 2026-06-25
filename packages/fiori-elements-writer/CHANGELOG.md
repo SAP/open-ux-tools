@@ -1,5 +1,17 @@
 # @sap-ux/fiori-elements-writer
 
+## 3.0.38
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-25
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.2.4 → 1.2.5
+
 ## 3.0.37
 
 ### Patch Changes
