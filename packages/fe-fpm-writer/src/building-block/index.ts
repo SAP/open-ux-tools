@@ -81,6 +81,22 @@ function getPageAggregationNames(data: BuildingBlock): readonly PageAggregationN
 }
 
 /**
+ * Throws if the manifest's minUI5Version does not meet the 1.145.0 requirement for the full Page template.
+ *
+ * @param manifest - the manifest content, or undefined if not available
+ */
+function validateFullPageTemplateVersion(manifest: Manifest | undefined): void {
+    const minUI5VersionRaw = manifest ? getMinimumUI5Version(manifest) : undefined;
+    const minUI5Version = minUI5VersionRaw ? coerce(minUI5VersionRaw) : undefined;
+    if (!minUI5Version || lt(minUI5Version, '1.145.0')) {
+        const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
+        throw new Error(
+            `${t('fullTemplateMinUi5VersionRequirement', { minUI5Version: minUI5Version?.version ?? minUI5VersionRaw ?? 'unknown' })}`
+        );
+    }
+}
+
+/**
  * Generates a building block into the provided xml view file.
  *
  * @param {string} basePath - the base path
@@ -133,14 +149,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     const pageAggregationNames = getPageAggregationNames(buildingBlockData);
 
     if (fullPageTemplate) {
-        const minUI5VersionRaw = manifest ? getMinimumUI5Version(manifest) : undefined;
-        const minUI5Version = minUI5VersionRaw ? coerce(minUI5VersionRaw) : undefined;
-        if (!minUI5Version || lt(minUI5Version, '1.145.0')) {
-            const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
-            throw new Error(
-                `${t('fullTemplateMinUi5VersionRequirement', { minUI5Version: minUI5Version?.version ?? minUI5VersionRaw ?? 'unknown' })}`
-            );
-        }
+        validateFullPageTemplateVersion(manifest);
     }
 
     if (pageAggregationNames) {
