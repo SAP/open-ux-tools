@@ -372,7 +372,8 @@ function extractFormFields(
                     fields.push({ property, fieldGroup: qualifier });
                 });
             }
-            // Unknown annotation pattern: skip
+            // ConnectedFields/FieldGroup without metadata: skip
+            // Unknown annotation wrapper type: skip
         } else {
             fields.push({ property: baseProperty });
         }
