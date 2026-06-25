@@ -189,7 +189,8 @@ describe('questions', () => {
         expect(await (systemUrlQuestion?.validate as Function)(systemUrl)).toBe(true);
         expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith('https://example.com', {
             isSystem: true,
-            odataVersion: undefined
+            odataVersion: undefined,
+            forceReValidation: true
         });
         // Prompt state should be updated with the connected system
         expect(PromptState.odataService.connectedSystem?.serviceProvider).toEqual(serviceProviderMock);

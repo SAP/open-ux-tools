@@ -1,5 +1,87 @@
 # @sap-ux/ui5-test-writer
 
+## 1.2.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.28 → 1.0.29
+
+## 1.2.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Bug Fixes
+
+- Detect Object Page table body sections via the `table` aggregation when the spec model omits the section-level `isTable` flag, so OP table column tests are generated for real Fiori Elements V4 apps. [[6960f90](https://github.com/SAP/open-ux-tools/commit/6960f90c27107a63786530101c535e1c768a4895)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.0.4 → 2.0.5
+- @sap-ux/project-access 2.1.2 → 2.1.3
+- @sap-ux/fiori-generator-shared 1.0.11 → 1.0.12
+- @sap-ux/preview-middleware 1.0.27 → 1.0.28
+
+## 1.2.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.26 → 1.0.27
+
+## 1.2.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.25 → 1.0.26
+
+## 1.2.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-23
+
+#### Bug Fixes
+
+- Add the `WARNING: AUTO-GENERATED FILE` header banner to the TypeScript page object templates (`ListReport.ts`, `ObjectPage.ts`) and to the journey types template (`OpaJourneyTypes.d.ts`), matching the existing JS variants. [[20bed6c](https://github.com/SAP/open-ux-tools/commit/20bed6cef0000c14d3a886f2b43d3ff268287ea0)]
+
+## 1.2.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-06-22
+
+#### Features
+
+- Rework standalone OPA regeneration to preserve user files
+
+    Standalone OPA regeneration (`generateOPAFiles(..., standalone=true)`) no longer relocates an existing `integration/` folder to `integration_old/`. Instead the generator now coexists with the existing setup:
+    - New apps and apps without an `integration/` folder still receive a full test scaffold and a starter `FirstJourney.{js,ts}`.
+    - Apps with a compatible setup (own `pages/JourneyRunner.{js,ts}`) now have generator-owned files written with a `.gen` suffix; user files are preserved and the existing `JourneyRunner`, `opaTests.qunit.js` and `OpaJourneyTypes.d.ts` are spliced rather than rewritten.
+    - Apps with an incompatible setup (no own `JourneyRunner` but `JourneyRunner` references in `opaTests.qunit.js` or an `AllJourneys.json`) only receive `.gen` Page and Journey files; the existing test harness is left untouched and an info log explains why.
+      The same scenario flow now applies to TypeScript projects (`enableTypeScript: true`). `JourneyRunner.ts` is spliced via a new TS-aware splicer, `OpaJourneyTypes.d.ts` is updated through a new `opaJourneyTypesUtils` splicer, and the generator-owned `.gen` page entries always carry a `Generated` variable-name suffix to avoid collisions with hand-authored bindings to the same `targetKey`.
+      Splice helpers (`addPagesToJourneyRunner`, `addPathsToQUnitJs`, `addJourneysToOpaJourneyTypes`) accept an optional logger and warn instead of silently swallowing exceptions when an existing file cannot be updated. [[4a97e9f](https://github.com/SAP/open-ux-tools/commit/4a97e9fb7dcd6b30084e73e0d9b76401f508f6fb)]
+
+## 1.1.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.24 → 1.0.25
+
 ## 1.1.12
 
 ### Patch Changes
@@ -10,7 +92,7 @@
 
 ## 1.1.11
 
-*Released: 2026-06-15T21:05:56Z*
+_Released: 2026-06-15T21:05:56Z_
 
 ### Patch Changes
 
@@ -20,7 +102,7 @@
 
 ## 1.1.10
 
-*Released: 2026-06-14T10:40:09Z*
+_Released: 2026-06-14T10:40:09Z_
 
 ### Patch Changes
 
@@ -29,7 +111,7 @@
 
 ## 1.1.9
 
-*Released: 2026-06-12T19:01:39Z*
+_Released: 2026-06-12T19:01:39Z_
 
 ### Patch Changes
 
@@ -38,7 +120,7 @@
 
 ## 1.1.8
 
-*Released: 2026-06-12T14:48:41Z*
+_Released: 2026-06-12T14:48:41Z_
 
 ### Patch Changes
 
@@ -47,7 +129,7 @@
 
 ## 1.1.7
 
-*Released: 2026-06-12T10:49:08Z*
+_Released: 2026-06-12T10:49:08Z_
 
 ### Patch Changes
 
@@ -56,7 +138,7 @@
 
 ## 1.1.6
 
-*Released: 2026-06-12T08:50:00Z*
+_Released: 2026-06-12T08:50:00Z_
 
 ### Patch Changes
 
@@ -65,7 +147,7 @@
 
 ## 1.1.5
 
-*Released: 2026-06-12T06:53:23Z*
+_Released: 2026-06-12T06:53:23Z_
 
 ### Patch Changes
 
@@ -74,7 +156,7 @@
 
 ## 1.1.4
 
-*Released: 2026-06-11T19:22:44Z*
+_Released: 2026-06-11T19:22:44Z_
 
 ### Patch Changes
 
@@ -82,7 +164,7 @@
 
 ## 1.1.3
 
-*Released: 2026-06-11T13:37:16Z*
+_Released: 2026-06-11T13:37:16Z_
 
 ### Patch Changes
 
@@ -92,7 +174,7 @@
 
 ## 1.1.2
 
-*Released: 2026-06-11T10:54:17Z*
+_Released: 2026-06-11T10:54:17Z_
 
 ### Patch Changes
 
@@ -101,7 +183,7 @@
 
 ## 1.1.1
 
-*Released: 2026-06-10T16:18:03Z*
+_Released: 2026-06-10T16:18:03Z_
 
 ### Patch Changes
 
@@ -109,7 +191,7 @@
 
 ## 1.1.0
 
-*Released: 2026-06-10T12:57:40Z*
+_Released: 2026-06-10T12:57:40Z_
 
 ### Minor Changes
 
@@ -117,7 +199,7 @@
 
 ## 1.0.14
 
-*Released: 2026-06-10T09:57:42Z*
+_Released: 2026-06-10T09:57:42Z_
 
 ### Patch Changes
 
@@ -128,7 +210,7 @@
 
 ## 1.0.13
 
-*Released: 2026-06-09T14:35:01Z*
+_Released: 2026-06-09T14:35:01Z_
 
 ### Patch Changes
 
@@ -137,7 +219,7 @@
 
 ## 1.0.12
 
-*Released: 2026-06-09T13:18:16Z*
+_Released: 2026-06-09T13:18:16Z_
 
 ### Patch Changes
 
@@ -147,7 +229,7 @@
 
 ## 1.0.11
 
-*Released: 2026-06-09T09:41:14Z*
+_Released: 2026-06-09T09:41:14Z_
 
 ### Patch Changes
 
@@ -156,7 +238,7 @@
 
 ## 1.0.10
 
-*Released: 2026-06-04T13:54:21Z*
+_Released: 2026-06-04T13:54:21Z_
 
 ### Patch Changes
 
@@ -168,7 +250,7 @@
 
 ## 1.0.9
 
-*Released: 2026-06-04T12:10:05Z*
+_Released: 2026-06-04T12:10:05Z_
 
 ### Patch Changes
 
@@ -176,7 +258,7 @@
 
 ## 1.0.8
 
-*Released: 2026-06-04T10:19:37Z*
+_Released: 2026-06-04T10:19:37Z_
 
 ### Patch Changes
 
@@ -188,7 +270,7 @@
 
 ## 1.0.7
 
-*Released: 2026-06-03T14:58:37Z*
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -202,7 +284,7 @@
 
 ## 1.0.6
 
-*Released: 2026-06-03T13:52:44Z*
+_Released: 2026-06-03T13:52:44Z_
 
 ### Patch Changes
 
@@ -213,7 +295,7 @@
 
 ## 1.0.5
 
-*Released: 2026-06-02T21:37:28Z*
+_Released: 2026-06-02T21:37:28Z_
 
 ### Patch Changes
 
@@ -222,7 +304,7 @@
 
 ## 1.0.4
 
-*Released: 2026-06-02T11:35:17Z*
+_Released: 2026-06-02T11:35:17Z_
 
 ### Patch Changes
 
@@ -231,7 +313,7 @@
 
 ## 1.0.3
 
-*Released: 2026-06-02T08:56:31Z*
+_Released: 2026-06-02T08:56:31Z_
 
 ### Patch Changes
 
@@ -239,7 +321,7 @@
 
 ## 1.0.2
 
-*Released: 2026-06-01T17:22:37Z*
+_Released: 2026-06-01T17:22:37Z_
 
 ### Patch Changes
 
@@ -248,7 +330,7 @@
 
 ## 1.0.1
 
-*Released: 2026-06-01T15:15:26Z*
+_Released: 2026-06-01T15:15:26Z_
 
 ### Patch Changes
 
@@ -260,7 +342,7 @@
 
 ## 1.0.0
 
-*Released: 2026-05-30T20:54:07Z*
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -304,7 +386,7 @@
 
 ## 0.9.15
 
-*Released: 2026-05-29T12:50:34Z*
+_Released: 2026-05-29T12:50:34Z_
 
 ### Patch Changes
 
@@ -312,7 +394,7 @@
 
 ## 0.9.14
 
-*Released: 2026-05-29T06:59:27Z*
+_Released: 2026-05-29T06:59:27Z_
 
 ### Patch Changes
 
@@ -321,7 +403,7 @@
 
 ## 0.9.13
 
-*Released: 2026-05-27T11:39:21Z*
+_Released: 2026-05-27T11:39:21Z_
 
 ### Patch Changes
 
@@ -330,7 +412,7 @@
 
 ## 0.9.12
 
-*Released: 2026-05-27T10:42:47Z*
+_Released: 2026-05-27T10:42:47Z_
 
 ### Patch Changes
 
@@ -339,7 +421,7 @@
 
 ## 0.9.11
 
-*Released: 2026-05-27T09:55:48Z*
+_Released: 2026-05-27T09:55:48Z_
 
 ### Patch Changes
 
@@ -348,7 +430,7 @@
 
 ## 0.9.10
 
-*Released: 2026-05-26T21:32:06Z*
+_Released: 2026-05-26T21:32:06Z_
 
 ### Patch Changes
 
@@ -356,7 +438,7 @@
 
 ## 0.9.9
 
-*Released: 2026-05-26T16:40:21Z*
+_Released: 2026-05-26T16:40:21Z_
 
 ### Patch Changes
 
@@ -366,7 +448,7 @@
 
 ## 0.9.8
 
-*Released: 2026-05-22T13:30:05Z*
+_Released: 2026-05-22T13:30:05Z_
 
 ### Patch Changes
 
@@ -374,7 +456,7 @@
 
 ## 0.9.7
 
-*Released: 2026-05-21T16:21:11Z*
+_Released: 2026-05-21T16:21:11Z_
 
 ### Patch Changes
 
@@ -385,7 +467,7 @@
 
 ## 0.9.6
 
-*Released: 2026-05-21T14:58:44Z*
+_Released: 2026-05-21T14:58:44Z_
 
 ### Patch Changes
 
@@ -393,7 +475,7 @@
 
 ## 0.9.5
 
-*Released: 2026-05-19T15:16:46Z*
+_Released: 2026-05-19T15:16:46Z_
 
 ### Patch Changes
 
@@ -405,7 +487,7 @@
 
 ## 0.9.4
 
-*Released: 2026-05-19T10:17:18Z*
+_Released: 2026-05-19T10:17:18Z_
 
 ### Patch Changes
 
@@ -413,7 +495,7 @@
 
 ## 0.9.3
 
-*Released: 2026-05-18T08:15:14Z*
+_Released: 2026-05-18T08:15:14Z_
 
 ### Patch Changes
 
@@ -421,7 +503,7 @@
 
 ## 0.9.2
 
-*Released: 2026-05-15T20:38:24Z*
+_Released: 2026-05-15T20:38:24Z_
 
 ### Patch Changes
 
@@ -430,7 +512,7 @@
 
 ## 0.9.1
 
-*Released: 2026-05-15T13:12:06Z*
+_Released: 2026-05-15T13:12:06Z_
 
 ### Patch Changes
 
@@ -440,7 +522,7 @@
 
 ## 0.9.0
 
-*Released: 2026-05-15T12:26:02Z*
+_Released: 2026-05-15T12:26:02Z_
 
 ### Minor Changes
 
@@ -450,7 +532,7 @@
 
 ## 0.8.0
 
-*Released: 2026-05-15T08:12:20Z*
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -466,7 +548,7 @@
 
 ## 0.7.114
 
-*Released: 2026-05-14T11:45:51Z*
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -479,7 +561,7 @@
 
 ## 0.7.113
 
-*Released: 2026-05-13T09:36:59Z*
+_Released: 2026-05-13T09:36:59Z_
 
 ### Patch Changes
 
@@ -490,7 +572,7 @@
 
 ## 0.7.112
 
-*Released: 2026-05-12T18:00:39Z*
+_Released: 2026-05-12T18:00:39Z_
 
 ### Patch Changes
 
@@ -499,7 +581,7 @@
 
 ## 0.7.111
 
-*Released: 2026-05-06T23:02:00Z*
+_Released: 2026-05-06T23:02:00Z_
 
 ### Patch Changes
 
@@ -510,7 +592,7 @@
 
 ## 0.7.110
 
-*Released: 2026-04-30T15:37:27Z*
+_Released: 2026-04-30T15:37:27Z_
 
 ### Patch Changes
 
@@ -518,7 +600,7 @@
 
 ## 0.7.109
 
-*Released: 2026-04-30T14:23:24Z*
+_Released: 2026-04-30T14:23:24Z_
 
 ### Patch Changes
 
@@ -527,7 +609,7 @@
 
 ## 0.7.108
 
-*Released: 2026-04-29T15:24:37Z*
+_Released: 2026-04-29T15:24:37Z_
 
 ### Patch Changes
 
@@ -538,7 +620,7 @@
 
 ## 0.7.107
 
-*Released: 2026-04-27T19:47:46Z*
+_Released: 2026-04-27T19:47:46Z_
 
 ### Patch Changes
 
@@ -548,7 +630,7 @@
 
 ## 0.7.106
 
-*Released: 2026-04-27T15:50:47Z*
+_Released: 2026-04-27T15:50:47Z_
 
 ### Patch Changes
 
@@ -557,7 +639,7 @@
 
 ## 0.7.105
 
-*Released: 2026-04-23T12:54:21Z*
+_Released: 2026-04-23T12:54:21Z_
 
 ### Patch Changes
 
@@ -567,7 +649,7 @@
 
 ## 0.7.104
 
-*Released: 2026-04-22T15:02:56Z*
+_Released: 2026-04-22T15:02:56Z_
 
 ### Patch Changes
 
@@ -575,7 +657,7 @@
 
 ## 0.7.103
 
-*Released: 2026-04-14T21:37:37Z*
+_Released: 2026-04-14T21:37:37Z_
 
 ### Patch Changes
 
@@ -583,7 +665,7 @@
 
 ## 0.7.102
 
-*Released: 2026-04-14T12:35:35Z*
+_Released: 2026-04-14T12:35:35Z_
 
 ### Patch Changes
 
@@ -592,7 +674,7 @@
 
 ## 0.7.101
 
-*Released: 2026-04-09T20:40:49Z*
+_Released: 2026-04-09T20:40:49Z_
 
 ### Patch Changes
 
@@ -600,7 +682,7 @@
 
 ## 0.7.100
 
-*Released: 2026-04-08T13:10:18Z*
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -611,7 +693,7 @@
 
 ## 0.7.99
 
-*Released: 2026-04-01T11:49:37Z*
+_Released: 2026-04-01T11:49:37Z_
 
 ### Patch Changes
 
@@ -621,7 +703,7 @@
 
 ## 0.7.98
 
-*Released: 2026-04-01T09:52:29Z*
+_Released: 2026-04-01T09:52:29Z_
 
 ### Patch Changes
 
@@ -629,7 +711,7 @@
 
 ## 0.7.97
 
-*Released: 2026-03-31T14:07:26Z*
+_Released: 2026-03-31T14:07:26Z_
 
 ### Patch Changes
 
@@ -637,7 +719,7 @@
 
 ## 0.7.96
 
-*Released: 2026-03-30T22:24:11Z*
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -650,7 +732,7 @@
 
 ## 0.7.95
 
-*Released: 2026-03-27T16:43:53Z*
+_Released: 2026-03-27T16:43:53Z_
 
 ### Patch Changes
 
@@ -658,7 +740,7 @@
 
 ## 0.7.94
 
-*Released: 2026-03-26T20:06:10Z*
+_Released: 2026-03-26T20:06:10Z_
 
 ### Patch Changes
 
@@ -668,7 +750,7 @@
 
 ## 0.7.93
 
-*Released: 2026-03-26T12:07:04Z*
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -682,7 +764,7 @@
 
 ## 0.7.92
 
-*Released: 2026-03-25T12:56:41Z*
+_Released: 2026-03-25T12:56:41Z_
 
 ### Patch Changes
 

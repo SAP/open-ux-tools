@@ -7,6 +7,7 @@ import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middlewa
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName, type Package, readUi5Yaml } from '@sap-ux/project-access';
 import { updateMiddlewaresForPreview } from '../common/ui5-yaml.js';
+import { ensureMinUI5Version } from './prerequisites.js';
 
 const DEPENDENCY_NAME = '@sap-ux/cards-editor-middleware';
 const CARDS_GENERATOR_MIDDLEWARE = 'sap-cards-generator';
@@ -102,24 +103,34 @@ async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string
 /**
  * Enables the card generator configuration for the given application.
  *
- * This function updates the `ui5.yaml` file to include the necessary middlewares for the card generator
+ * This function validates that the project meets the minimum UI5 version requirements,
+ * then updates the `ui5.yaml` file to include the necessary middlewares for the card generator
  * and modifies the `package.json` file to add a script for starting the card generator.
  *
  * @param {string} basePath - The path to the project root.
  * @param {string} [yamlPath] - Optional path to the `ui5.yaml` configuration file.
  * @param {ToolsLogger} [logger] - Optional logger instance for logging messages.
  * @param {Editor} [fs] - Optional `mem-fs-editor` instance for file system operations. If not provided, a new instance will be created.
+ * @param {boolean} [updatePackage] - Optional flag to update the `package.json` file. Defaults to true.
  * @returns {Promise<Editor>} A promise that resolves to the updated `mem-fs-editor` instance.
+ * @throws {Error} If minimum UI5 version requirement is not met (EDMX: ≥1.121.0, CAP: ≥1.149.0).
  */
 export async function enableCardGeneratorConfig(
     basePath: string,
     yamlPath?: string,
     logger?: ToolsLogger,
-    fs?: Editor
+    fs?: Editor,
+    updatePackage = true
 ): Promise<Editor> {
     fs = fs ?? create(createStorage());
+
+    // asserts minimum UI5 version requirement before proceeding
+    await ensureMinUI5Version(basePath, fs);
+
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
     await updateMiddlewareConfigWithGeneratorPath(fs, basePath, yamlPath, logger);
-    await updatePackageJson(basePath, fs, yamlPath, logger);
+    if (updatePackage) {
+        await updatePackageJson(basePath, fs, yamlPath, logger);
+    }
     return fs;
 }

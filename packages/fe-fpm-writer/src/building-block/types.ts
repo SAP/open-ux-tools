@@ -387,6 +387,18 @@ export interface Table extends BuildingBlock {
  * <macro:Page title="My Page Title" description="My Page Description" />
  * @extends {BuildingBlock}
  */
+export const PAGE_AGGREGATIONS = [
+    'breadcrumbs',
+    'navigationActions',
+    'titleContent',
+    'actions',
+    'headerContent',
+    'items',
+    'footer'
+] as const;
+
+export type PageAggregationName = (typeof PAGE_AGGREGATIONS)[number];
+
 export interface Page extends BuildingBlock {
     /**
      * The title of the page.
@@ -397,6 +409,43 @@ export interface Page extends BuildingBlock {
      * The description of the page.
      */
     description?: string;
+
+    /**
+     * The template type for the page building block.
+     * 'full' generates a full page template with all aggregations and controller stubs.
+     * 'basic' generates a minimal self-closing tag (default behavior).
+     */
+    templateType?: PageTemplateType;
+
+    /**
+     * Optional mContent strings keyed by aggregation name.
+     * When templateType is 'full', each entry is written as the inner XML of the corresponding aggregation.
+     */
+    aggregations?: Partial<Record<PageAggregationName, string>>;
+}
+
+export const PAGE_TEMPLATE_TYPE_FULL = 'full' as const;
+export const PAGE_TEMPLATE_TYPE_BASIC = 'basic' as const;
+export type PageTemplateType = typeof PAGE_TEMPLATE_TYPE_FULL | typeof PAGE_TEMPLATE_TYPE_BASIC;
+
+/**
+ * A group of XML nodes representing one Page aggregation element and its preceding sibling comments.
+ * Used when re-ordering aggregation children under a macros:Page element.
+ */
+export type XmlAggregationGroup = { comments: Node[]; element: Element; originalIndex: number };
+
+/**
+ * Configuration for appending a named aggregation to an existing building block element in a view XML file.
+ */
+export interface GenerateBuildingBlockAggregationConfig {
+    /** Path to the view XML file, relative to basePath. */
+    viewPath: string;
+    /** Type of the building block whose aggregation should be appended. Currently only 'Page' is supported. */
+    buildingBlockType: BuildingBlockType;
+    /** Name of the aggregation to append. */
+    aggregationName: PageAggregationName;
+    /** Optional inner XML content for the aggregation. */
+    mContent?: string;
 }
 
 /**
