@@ -801,6 +801,9 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
     let viewOrFragmentContent = content;
     const pageAggNames = getPageAggregationNames(buildingBlockData);
     if (pageAggNames) {
+        if (isFullPageTemplate(buildingBlockData)) {
+            validateFullPageTemplateVersion(manifest);
+        }
         const pageData = buildingBlockData as Page;
         // Use the real view document for namespace resolution if available, otherwise create a minimal fallback
         const nsDoc =
