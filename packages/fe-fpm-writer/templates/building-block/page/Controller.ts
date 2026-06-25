@@ -12,3 +12,7 @@ export function onFullScreen(this: ExtensionAPI, _event: Event): void {}
 export function onClickAction1(this: ExtensionAPI, _event: Event): void {}
 
 export function onClickAction2(this: ExtensionAPI, _event: Event): void {}
+
+export function onApprove(this: ExtensionAPI, _event: Event): void {}
+
+export function onReject(this: ExtensionAPI, _event: Event): void {}

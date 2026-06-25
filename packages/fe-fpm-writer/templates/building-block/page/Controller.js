@@ -12,6 +12,10 @@ sap.ui.define([], function () {
 
         onClickAction1: function (_event) {},
 
-        onClickAction2: function (_event) {}
+        onClickAction2: function (_event) {},
+
+        onApprove: function (_event) {},
+
+        onReject: function (_event) {}
     };
 });

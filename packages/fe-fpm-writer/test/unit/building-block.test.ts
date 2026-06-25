@@ -1164,6 +1164,8 @@ describe('Building Blocks', () => {
         expect(controllerContent).toContain('onFullScreen');
         expect(controllerContent).toContain('onClickAction1');
         expect(controllerContent).toContain('onClickAction2');
+        expect(controllerContent).toContain('onApprove');
+        expect(controllerContent).toContain('onReject');
     });
 
     test('generate Page building block with full template creates TS controller when .controller.ts exists', async () => {
