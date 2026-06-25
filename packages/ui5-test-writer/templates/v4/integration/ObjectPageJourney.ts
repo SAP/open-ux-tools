@@ -164,10 +164,12 @@ function journey() {
 <% if (subSection.tableColumns && Object.keys(subSection.tableColumns).length > 0 && subSection.navigationProperty) { -%>
         Then.onThe<%- name%>Generated.onTable({ property: "<%- subSection.navigationProperty %>" }).iCheckColumns(<%- JSON.stringify(subSection.tableColumns) %>);
 <% } -%>
+<% if (subSection.navigationProperty) { -%>
 <% subSection.contactCardColumns.forEach(function(column) { -%>
         When.onThe<%- name%>Generated.onTable({ property: "<%- subSection.navigationProperty %>" }).iClickLink(0, "<%- column.property %>");
         Then.onThe<%- name%>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
 <% }) -%>
+<% } -%>
 <% }) -%>
 <% } else { -%>
 <% if (section.fields && section.fields.length > 0) { -%>
