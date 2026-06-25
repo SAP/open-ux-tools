@@ -1,4 +1,4 @@
-# Ensure Live Mode Is Not enabled (`sap-no-live-mode`)
+# Ensure Live Mode Is Not Enabled (`sap-no-live-mode`)
 
 ## Rule Details
 
