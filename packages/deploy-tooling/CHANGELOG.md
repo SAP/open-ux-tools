@@ -1,5 +1,32 @@
 # @sap-ux/deploy-tooling
 
+## 1.0.15
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.3 → 2.0.4
+- @sap-ux/system-access 1.0.3 → 1.0.4
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/inquirer-common 1.0.13 → 1.0.14
+- @sap-ux/ui5-config 1.0.3 → 1.0.3
+
+## 1.0.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.3 → 2.0.3
+- @sap-ux/inquirer-common 1.0.12 → 1.0.13
+- @sap-ux/project-input-validator 1.0.6 → 1.0.7
+- @sap-ux/system-access 1.0.3 → 1.0.3
+
 ## 1.0.13
 
 ### Patch Changes

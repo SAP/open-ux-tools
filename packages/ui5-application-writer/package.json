@@ -10,7 +10,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-application-writer"
     },
-    "version": "2.0.4",
+    "version": "2.0.6",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -51,7 +51,7 @@
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/semver": "7.7.1",
-        "fs-extra": "11.3.4"
+        "fs-extra": "11.3.5"
     },
     "engines": {
         "node": ">=22.x"
