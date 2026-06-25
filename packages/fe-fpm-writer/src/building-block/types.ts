@@ -413,7 +413,7 @@ export interface Page extends BuildingBlock {
     /**
      * The template type for the page building block.
      * 'full' generates a full page template with all aggregations and controller stubs.
-     * 'basic' generates a minimal self-closing tag (default behavior).
+     * 'basic' generates a page with only the items aggregation (main content area with IconTabBar).
      */
     templateType?: PageTemplateType;
 
