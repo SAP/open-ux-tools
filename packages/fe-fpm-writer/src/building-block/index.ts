@@ -238,7 +238,7 @@ function buildPageAggregationFragment(
  * @param {Document} templateDocument - the template document whose root element receives the children
  * @param {IdGeneratorFunction} generateId - function to generate unique IDs
  * @param {Page} pageData - the Page building block data containing optional aggregation mContent
- * @param {readonly string[]} [aggNames] - aggregation names to append; defaults to all PAGE_AGGREGATIONS
+ * @param {readonly PageAggregationName[]} [aggNames] - aggregation names to append; defaults to all PAGE_AGGREGATIONS
  */
 function appendPageAggregations(
     fs: Editor,
