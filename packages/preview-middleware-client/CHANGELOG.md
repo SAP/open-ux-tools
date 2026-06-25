@@ -1,5 +1,35 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.0.29
+
+## 1.0.28
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Dependency Updates
+
+- Update dependency @ui5/manifest to v1.86.0 [[666a17e](https://github.com/SAP/open-ux-tools/commit/666a17eb6f8cb5f4b414e64b1d66b234ca3a1a57)]
+
+## 1.0.27
+
+## 1.0.26
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Bug Fixes
+
+- remove static import to avoid eager sap.ui.dt load [[78d79c8](https://github.com/SAP/open-ux-tools/commit/78d79c8836a2a7768b8634ab226f1674b4bd0e78)]
+
+## 1.0.25
+
 ## 1.0.24
 
 ### Patch Changes
@@ -14,19 +44,31 @@
 
 ## 1.0.23
 
+_Released: 2026-06-15T21:05:56Z_
+
 ## 1.0.22
+
+_Released: 2026-06-14T10:40:09Z_
 
 ## 1.0.21
 
+_Released: 2026-06-12T19:01:39Z_
+
 ## 1.0.20
 
+_Released: 2026-06-12T14:48:41Z_
+
 ## 1.0.19
+
+_Released: 2026-06-12T10:49:08Z_
 
 ### Patch Changes
 
 - 6f3b596: fix: (Adaptation Editor) FL Variant changes do not appear in the unsaved changes list (history panel).
 
 ## 1.0.18
+
+_Released: 2026-06-12T08:50:00Z_
 
 ### Patch Changes
 
@@ -36,17 +78,31 @@
 
 ## 1.0.17
 
+_Released: 2026-06-12T06:53:23Z_
+
 ## 1.0.16
+
+_Released: 2026-06-11T13:37:16Z_
 
 ## 1.0.15
 
+_Released: 2026-06-11T10:54:17Z_
+
 ## 1.0.14
+
+_Released: 2026-06-10T09:57:42Z_
 
 ## 1.0.13
 
+_Released: 2026-06-09T14:35:01Z_
+
 ## 1.0.12
 
+_Released: 2026-06-09T13:18:16Z_
+
 ## 1.0.11
+
+_Released: 2026-06-09T09:41:14Z_
 
 ### Patch Changes
 
@@ -56,11 +112,19 @@
 
 ## 1.0.10
 
+_Released: 2026-06-04T13:54:21Z_
+
 ## 1.0.9
+
+_Released: 2026-06-04T12:10:05Z_
 
 ## 1.0.8
 
+_Released: 2026-06-04T10:19:37Z_
+
 ## 1.0.7
+
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -70,15 +134,27 @@
 
 ## 1.0.6
 
+_Released: 2026-06-03T13:52:44Z_
+
 ## 1.0.5
+
+_Released: 2026-06-02T21:37:28Z_
 
 ## 1.0.4
 
+_Released: 2026-06-02T11:35:17Z_
+
 ## 1.0.3
+
+_Released: 2026-06-02T08:56:31Z_
 
 ## 1.0.2
 
+_Released: 2026-06-01T17:22:37Z_
+
 ## 1.0.1
+
+_Released: 2026-06-01T15:15:26Z_
 
 ## 1.0.0
 
@@ -120,29 +196,55 @@
 
 ## 0.26.12
 
+_Released: 2026-05-29T12:50:34Z_
+
 ## 0.26.11
+
+_Released: 2026-05-29T06:59:27Z_
 
 ## 0.26.10
 
+_Released: 2026-05-27T11:39:21Z_
+
 ## 0.26.9
+
+_Released: 2026-05-27T10:42:47Z_
 
 ## 0.26.8
 
+_Released: 2026-05-26T16:40:21Z_
+
 ## 0.26.7
+
+_Released: 2026-05-22T13:30:05Z_
 
 ## 0.26.6
 
+_Released: 2026-05-21T16:21:11Z_
+
 ## 0.26.5
+
+_Released: 2026-05-21T14:58:44Z_
 
 ## 0.26.4
 
+_Released: 2026-05-19T15:16:46Z_
+
 ## 0.26.3
+
+_Released: 2026-05-18T08:15:14Z_
 
 ## 0.26.2
 
+_Released: 2026-05-15T20:38:24Z_
+
 ## 0.26.1
 
+_Released: 2026-05-15T13:12:06Z_
+
 ## 0.26.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -155,9 +257,15 @@
 
 ## 0.25.47
 
+_Released: 2026-05-14T21:28:41Z_
+
 ## 0.25.46
 
+_Released: 2026-05-14T14:16:50Z_
+
 ## 0.25.45
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -167,9 +275,15 @@
 
 ## 0.25.44
 
+_Released: 2026-05-13T09:36:59Z_
+
 ## 0.25.43
 
+_Released: 2026-05-12T18:00:39Z_
+
 ## 0.25.42
+
+_Released: 2026-05-12T07:58:27Z_
 
 ### Patch Changes
 
@@ -177,11 +291,15 @@
 
 ## 0.25.41
 
+_Released: 2026-05-11T08:53:48Z_
+
 ### Patch Changes
 
 - 17de742: fix: Add fragment list to model for custom fragments
 
 ## 0.25.40
+
+_Released: 2026-05-07T07:06:42Z_
 
 ### Patch Changes
 
@@ -189,7 +307,11 @@
 
 ## 0.25.39
 
+_Released: 2026-05-06T23:02:00Z_
+
 ## 0.25.38
+
+_Released: 2026-05-04T08:49:55Z_
 
 ### Patch Changes
 
@@ -197,9 +319,15 @@
 
 ## 0.25.37
 
+_Released: 2026-05-01T15:46:09Z_
+
 ## 0.25.36
 
+_Released: 2026-04-30T19:47:20Z_
+
 ## 0.25.35
+
+_Released: 2026-04-30T14:23:24Z_
 
 ### Patch Changes
 
@@ -207,11 +335,19 @@
 
 ## 0.25.34
 
+_Released: 2026-04-30T13:10:33Z_
+
 ## 0.25.33
+
+_Released: 2026-04-29T15:24:37Z_
 
 ## 0.25.32
 
+_Released: 2026-04-27T19:47:46Z_
+
 ## 0.25.31
+
+_Released: 2026-04-27T15:50:47Z_
 
 ### Patch Changes
 
@@ -219,7 +355,11 @@
 
 ## 0.25.30
 
+_Released: 2026-04-27T07:30:24Z_
+
 ## 0.25.29
+
+_Released: 2026-04-23T12:54:21Z_
 
 ### Patch Changes
 
@@ -227,19 +367,35 @@
 
 ## 0.25.28
 
+_Released: 2026-04-23T06:48:55Z_
+
 ## 0.25.27
+
+_Released: 2026-04-22T12:38:46Z_
 
 ## 0.25.26
 
+_Released: 2026-04-15T11:53:17Z_
+
 ## 0.25.25
+
+_Released: 2026-04-15T08:11:32Z_
 
 ## 0.25.24
 
+_Released: 2026-04-14T20:26:28Z_
+
 ## 0.25.23
+
+_Released: 2026-04-14T12:35:35Z_
 
 ## 0.25.22
 
+_Released: 2026-04-14T11:39:16Z_
+
 ## 0.25.21
+
+_Released: 2026-04-09T11:02:11Z_
 
 ### Patch Changes
 
@@ -247,7 +403,11 @@
 
 ## 0.25.20
 
+_Released: 2026-04-09T07:00:16Z_
+
 ## 0.25.19
+
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -255,11 +415,19 @@
 
 ## 0.25.18
 
+_Released: 2026-04-07T11:09:34Z_
+
 ## 0.25.17
+
+_Released: 2026-04-06T06:37:05Z_
 
 ## 0.25.16
 
+_Released: 2026-04-01T14:51:40Z_
+
 ## 0.25.15
+
+_Released: 2026-04-01T13:59:33Z_
 
 ### Patch Changes
 
@@ -267,11 +435,19 @@
 
 ## 0.25.14
 
+_Released: 2026-04-01T11:49:37Z_
+
 ## 0.25.13
+
+_Released: 2026-04-01T06:34:51Z_
 
 ## 0.25.12
 
+_Released: 2026-03-31T06:45:29Z_
+
 ## 0.25.11
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -279,6 +455,8 @@
     - @sap-ux-private/control-property-editor-common@0.7.7
 
 ## 0.25.10
+
+_Released: 2026-03-30T14:18:57Z_
 
 ### Patch Changes
 

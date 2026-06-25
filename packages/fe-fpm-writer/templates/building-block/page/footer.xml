@@ -1,0 +1,4 @@
+<<%- macrosPrefix %>footer>
+    <!-- Footer aggregation -->
+    <%- mContent %>
+</<%- macrosPrefix %>footer>

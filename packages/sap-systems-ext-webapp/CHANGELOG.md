@@ -2,11 +2,15 @@
 
 ## 1.0.1
 
+*Released: 2026-06-03T14:58:37Z*
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -41,11 +45,15 @@
 
 ## 0.4.0
 
+*Released: 2026-05-15T08:12:20Z*
+
 ### Minor Changes
 
 - 72695e5: chore: drop Node 20 support as it is no longer maintained
 
 ## 0.3.2
+
+*Released: 2026-05-14T11:45:51Z*
 
 ### Patch Changes
 
@@ -53,11 +61,15 @@
 
 ## 0.3.1
 
+*Released: 2026-05-12T12:59:14Z*
+
 ### Patch Changes
 
 - ac6381f: remove default selected key for sap systems ext
 
 ## 0.3.0
+
+*Released: 2026-04-30T12:29:22Z*
 
 ### Minor Changes
 
@@ -67,11 +79,15 @@
 
 ## 0.2.1
 
+*Released: 2026-03-30T22:24:11Z*
+
 ### Patch Changes
 
 - c53a4ba: chore(sap-systems-ext-webapp): upgrade shared devDependencies (jest 30, i18next 25)
 
 ## 0.2.0
+
+*Released: 2026-03-28T09:24:50Z*
 
 ### Minor Changes
 

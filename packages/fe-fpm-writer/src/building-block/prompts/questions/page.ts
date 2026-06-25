@@ -2,7 +2,7 @@ import type { Answers } from 'inquirer';
 import { i18nNamespaces, translate } from '../../../i18n.js';
 import { getBuildingBlockIdPrompt, getViewOrFragmentPathPrompt, getAggregationPathPrompt } from '../utils/index.js';
 import type { PromptContext, Prompts } from '../../../prompts/types.js';
-import { BuildingBlockType } from '../../types.js';
+import { BuildingBlockType, PAGE_TEMPLATE_TYPE_BASIC, PAGE_TEMPLATE_TYPE_FULL } from '../../types.js';
 import type { BuildingBlockConfig, Page } from '../../types.js';
 import { SapShortTextType, SapLongTextType } from '@sap-ux/i18n';
 
@@ -19,6 +19,17 @@ export async function getPageBuildingBlockPrompts(context: PromptContext): Promi
 
     return {
         questions: [
+            {
+                type: 'list',
+                name: 'buildingBlockData.templateType',
+                message: t('templateType.message') as string,
+                default: PAGE_TEMPLATE_TYPE_BASIC,
+                choices: [
+                    { value: PAGE_TEMPLATE_TYPE_BASIC, name: t('templateType.basic') as string },
+                    { value: PAGE_TEMPLATE_TYPE_FULL, name: t('templateType.full') as string }
+                ],
+                guiOptions: { mandatory: true }
+            },
             getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate') as string, {
                 message: t('viewOrFragmentPath.message') as string,
                 guiOptions: {

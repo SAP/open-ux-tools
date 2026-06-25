@@ -3,11 +3,11 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { validateClient } from '@sap-ux/project-input-validator';
 import type { InputQuestion, Question } from 'inquirer';
 import { t } from '../../../../i18n.js';
-import {
-    type OdataServiceAnswers,
-    type OdataServicePromptOptions,
-    type ServiceSelectionPromptOptions,
-    type SystemNamePromptOptions
+import type {
+    OdataServiceAnswers,
+    OdataServicePromptOptions,
+    SystemNamePromptOptions,
+    ServiceSelectionPromptOptions
 } from '../../../../types.js';
 import { isBackendSystemKeyExisting, PromptState } from '../../../../utils/index.js';
 import { ConnectionValidator } from '../../../connectionValidator.js';

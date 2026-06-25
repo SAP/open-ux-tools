@@ -2,17 +2,23 @@
 
 ## 2.0.2
 
+*Released: 2026-06-09T14:35:01Z*
+
 ### Patch Changes
 
 - 0fa8305: fix: Patch missing global-agent proxy settings in BAS.
 
 ## 2.0.1
 
+*Released: 2026-06-03T14:58:37Z*
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
 
 ## 2.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -47,11 +53,15 @@
 
 ## 1.2.1
 
+*Released: 2026-05-26T16:40:21Z*
+
 ### Patch Changes
 
 - 01b70ca: chore: upgrade @sap/bas-sdk 3.13.6 → 3.13.7, @sap/approuter ^21.5.0 → ^22.0.0 (security: ws vulnerability)
 
 ## 1.2.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -59,11 +69,15 @@
 
 ## 1.1.16
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
 
 ## 1.1.15
+
+*Released: 2026-05-06T23:02:00Z*
 
 ### Patch Changes
 
@@ -71,17 +85,23 @@
 
 ## 1.1.14
 
+*Released: 2026-04-14T20:26:28Z*
+
 ### Patch Changes
 
 - ee68603: Axios upgrade from bas-sdk
 
 ## 1.1.13
 
+*Released: 2026-04-14T12:35:35Z*
+
 ### Patch Changes
 
 - cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
 
 ## 1.1.12
+
+*Released: 2026-03-27T11:58:49Z*
 
 ### Patch Changes
 
@@ -90,6 +110,8 @@
     isAbapSystem now returns true for destinations with ProxyType=OnPremise, fixing deployments that failed with a cryptic 'bind' error when WebIDEUsage was set to odata_gen. deploy-tooling also now surfaces an actionable error message if a non-ABAP provider is resolved.
 
 ## 1.1.11
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 

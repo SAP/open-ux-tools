@@ -9,12 +9,14 @@ import { t } from '@sap-ux/project-input-validator/src/i18n';
 const mockIsAppStudio = jest.fn<() => boolean>().mockReturnValue(false);
 const mockListDestinations = jest.fn<typeof realBtpUtils.listDestinations>();
 const mockisOnPremiseDestination = jest.fn().mockReturnValue(false);
+const mockIsFullUrlDestination = jest.fn().mockReturnValue(false);
 
 const realBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils,
     isAppStudio: mockIsAppStudio,
     isOnPremiseDestination: mockisOnPremiseDestination,
+    isFullUrlDestination: mockIsFullUrlDestination,
     listDestinations: mockListDestinations,
     Authentication: {
         NO_AUTHENTICATION: 'NoAuthentication',
@@ -25,8 +27,14 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     }
 }));
 
-const { formatSummary, showAdditionalInfoForOnPrem, summaryMessage, validateBeforeDeploy, checkForCredentials } =
-    await import('../../../src/base/validate.js');
+const {
+    formatSummary,
+    showAdditionalInfoForOnPrem,
+    summaryMessage,
+    validateBeforeDeploy,
+    checkForCredentials,
+    warnOnFullUrlDestination
+} = await import('../../../src/base/validate.js');
 const { Authentication } = await import('@sap-ux/btp-utils');
 
 const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -593,6 +601,53 @@ describe('deploy-test validation', () => {
             const output = await validateBeforeDeploy(testConfig, mockedProvider as any, mockLogger as any);
             expect(output.result).toBe(false);
             expect(logMock).toHaveBeenLastCalledWith(mockAxiosError403.message);
+        });
+    });
+
+    describe('warnOnFullUrlDestination', () => {
+        const mockLogger = {
+            warn: jest.fn()
+        };
+        const destinationsMock = { 'FULL_URL_DEST': {}, 'NORMAL_DEST': {} };
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('logs a warning when destination is a full URL destination in App Studio', async () => {
+            mockIsAppStudio.mockReturnValue(true);
+            mockListDestinations.mockResolvedValue(destinationsMock);
+            mockIsFullUrlDestination.mockReturnValue(true);
+
+            await warnOnFullUrlDestination('FULL_URL_DEST', mockLogger as any);
+
+            expect(mockLogger.warn).toHaveBeenCalledWith(expect.stringContaining('full URL destination'));
+        });
+
+        test('does not warn when not in App Studio', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+
+            await warnOnFullUrlDestination('FULL_URL_DEST', mockLogger as any);
+
+            expect(mockLogger.warn).not.toHaveBeenCalled();
+        });
+
+        test('does not warn when destination is not a full URL destination', async () => {
+            mockIsAppStudio.mockReturnValue(true);
+            mockListDestinations.mockResolvedValue(destinationsMock);
+            mockIsFullUrlDestination.mockReturnValue(false);
+
+            await warnOnFullUrlDestination('NORMAL_DEST', mockLogger as any);
+
+            expect(mockLogger.warn).not.toHaveBeenCalled();
+        });
+
+        test('does not warn when destination is undefined', async () => {
+            mockIsAppStudio.mockReturnValue(true);
+
+            await warnOnFullUrlDestination(undefined, mockLogger as any);
+
+            expect(mockLogger.warn).not.toHaveBeenCalled();
         });
     });
 });
