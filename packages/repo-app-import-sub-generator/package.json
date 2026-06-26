@@ -38,6 +38,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/odata-service-inquirer": "workspace:*",
         "@sap-ux/fiori-elements-writer": "workspace:*",
+        "@sap-ux/fiori-freestyle-writer": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/launch-config": "workspace:*",
