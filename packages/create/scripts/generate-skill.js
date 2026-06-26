@@ -76,7 +76,27 @@ try {
     }
     const commandsSection = injectReferencePointers(readme.slice(commandsIndex));
 
-    const frontmatter = `---
+    // Only write if the dynamic commands content changed.
+    // Frontmatter and BEHAVIOR_GUIDANCE are static (defined in this script), so comparing
+    // just commandsSection is sufficient and avoids fragile version-stripping logic.
+    // This prevents a SKILL.md diff — and the MCP review it triggers — on every
+    // @sap-ux/create release where only the package version bumped but no commands changed.
+    const existingSkill = fs.existsSync(SKILL_OUTPUT_PATH)
+        ? fs.readFileSync(SKILL_OUTPUT_PATH, 'utf8')
+        : '';
+
+    // Extract the commands section from the existing file for comparison.
+    // Everything from "# [Commands]" onwards is the dynamic part — frontmatter
+    // and BEHAVIOR_GUIDANCE are static so we don't need to compare them.
+    const existingCommandsIndex = existingSkill.indexOf('# [Commands]');
+    const existingCommandsSection = existingCommandsIndex !== -1
+        ? existingSkill.slice(existingCommandsIndex)
+        : '';
+
+    if (commandsSection === existingCommandsSection) {
+        console.log('ℹ️  SKILL.md content unchanged — skipping write.');
+    } else {
+        const frontmatter = `---
 name: sap-fiori-create-cli
 description: Run, invoke, and test the @sap-ux/create CLI — generate, add, convert, remove, update, change, list, get commands for SAP Fiori projects. Use when asked to run sap-ux, invoke create CLI, add config to a project, generate adaptation-project, or test any sap-ux/create subcommand.
 argument-hint: command and subcommand (e.g., add mockserver-config, generate adaptation-project)
@@ -86,12 +106,11 @@ metadata:
 ---
 
 `;
-
-    const skill = frontmatter + BEHAVIOR_GUIDANCE + '\n---\n\n' + commandsSection;
-
-    fs.mkdirSync(path.dirname(SKILL_OUTPUT_PATH), { recursive: true });
-    fs.writeFileSync(SKILL_OUTPUT_PATH, skill, 'utf8');
-    console.log(`✅ SKILL.md generated successfully at ${SKILL_OUTPUT_PATH}`);
+        const newSkill = frontmatter + BEHAVIOR_GUIDANCE + '\n---\n\n' + commandsSection;
+        fs.mkdirSync(path.dirname(SKILL_OUTPUT_PATH), { recursive: true });
+        fs.writeFileSync(SKILL_OUTPUT_PATH, newSkill, 'utf8');
+        console.log(`✅ SKILL.md generated successfully at ${SKILL_OUTPUT_PATH}`);
+    }
 } catch (error) {
     console.error('❌ Failed to generate SKILL.md:', error.message);
     process.exit(1);
