@@ -1126,11 +1126,11 @@ describe('Building Blocks', () => {
                     generateId,
                     aggregations: {
                         breadcrumbs:
-                            '<m:Breadcrumbs>\n    <m:Link text="Home" press=".onPressHome" />\n    <m:Link text="Page 1" press=".onPressPage1" />\n    <m:Link text="Page 2" press=".onPressPage2" />\n</m:Breadcrumbs>',
+                            '<m:Breadcrumbs>\n    <m:Link text="Home" press=".onBreadcrumbsPressHome" />\n    <m:Link text="Page 1" press=".onBreadcrumbsPressPage1" />\n    <m:Link text="Page 2" press=".onBreadcrumbsPressPage2" />\n</m:Breadcrumbs>',
                         navigationActions:
-                            '<m:Button icon="sap-icon://full-screen" press=".onFullScreen" type="Transparent" />',
+                            '<m:Button icon="sap-icon://full-screen" press=".onNavigationActionsFullScreen" type="Transparent" />',
                         actions:
-                            '<m:Button text="Action 1" press=".onClickAction1" type="Ghost" />\n    <m:Button text="Action 2" press=".onClickAction2" type="Ghost" />'
+                            '<m:Button text="Action 1" press=".onActionsClickAction1" type="Ghost" />\n    <m:Button text="Action 2" press=".onActionsClickAction2" type="Ghost" />'
                     }
                 },
                 replace: true
@@ -1166,14 +1166,14 @@ describe('Building Blocks', () => {
         const controllerPath = join(basePath, 'webapp/ext/main/Main.controller.js');
         expect(fs.exists(controllerPath)).toBe(true);
         const controllerContent = fs.read(controllerPath);
-        expect(controllerContent).toContain('onPressHome');
-        expect(controllerContent).toContain('onPressPage1');
-        expect(controllerContent).toContain('onPressPage2');
-        expect(controllerContent).toContain('onFullScreen');
-        expect(controllerContent).toContain('onClickAction1');
-        expect(controllerContent).toContain('onClickAction2');
-        expect(controllerContent).toContain('onApprove');
-        expect(controllerContent).toContain('onReject');
+        expect(controllerContent).toContain('onBreadcrumbsPressHome');
+        expect(controllerContent).toContain('onBreadcrumbsPressPage1');
+        expect(controllerContent).toContain('onBreadcrumbsPressPage2');
+        expect(controllerContent).toContain('onNavigationActionsFullScreen');
+        expect(controllerContent).toContain('onActionsClickAction1');
+        expect(controllerContent).toContain('onActionsClickAction2');
+        expect(controllerContent).toContain('onFooterApprove');
+        expect(controllerContent).toContain('onFooterReject');
     });
 
     test('generate Page building block with full template creates TS controller when .controller.ts exists', async () => {
@@ -1199,8 +1199,45 @@ describe('Building Blocks', () => {
             fs
         );
 
-        expect(fs.read(join(basePath, 'webapp/ext/main/Main.controller.ts'))).toBe('// existing ts controller');
+        expect(fs.read(join(basePath, 'webapp/ext/main/Main.controller.ts'))).toContain('// existing ts controller');
+        expect(fs.read(join(basePath, 'webapp/ext/main/Main.controller.ts'))).toContain('onFooterApprove');
+        expect(fs.read(join(basePath, 'webapp/ext/main/Main.controller.ts'))).toContain('onBreadcrumbsPressHome');
         expect(fs.exists(join(basePath, 'webapp/ext/main/Main.controller.js'))).toBe(false);
+    });
+
+    test('generate Page building block with full template appends only missing handlers to existing TS controller', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'generate-page-block-full-ts-partial');
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+        fs.write(
+            join(basePath, 'webapp/ext/main/Main.controller.ts'),
+            'export function onBreadcrumbsPressHome() {}\nexport function onBreadcrumbsPressPage1() {}\n'
+        );
+
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: {
+                    id: 'testPage',
+                    buildingBlockType: BuildingBlockType.Page,
+                    templateType: 'full',
+                    generateId
+                },
+                replace: true
+            },
+            fs
+        );
+
+        const controllerContent = fs.read(join(basePath, 'webapp/ext/main/Main.controller.ts'));
+        // Already present — not duplicated
+        expect(controllerContent.split('onBreadcrumbsPressHome').length - 1).toBe(1);
+        // Missing ones are appended
+        expect(controllerContent).toContain('onFooterApprove');
+        expect(controllerContent).toContain('onFooterReject');
+        expect(controllerContent).toContain('onActionsClickAction1');
     });
 
     test('generate Page building block with full template and no aggregations uses default mContent', async () => {
@@ -1227,8 +1264,8 @@ describe('Building Blocks', () => {
         );
 
         const viewContent = fs.read(join(basePath, xmlViewFilePath));
-        expect(viewContent).toContain('onPressHome');
-        expect(viewContent).toContain('onClickAction1');
+        expect(viewContent).toContain('onBreadcrumbsPressHome');
+        expect(viewContent).toContain('onActionsClickAction1');
         expect(viewContent).toContain('macros:breadcrumbs');
         expect(viewContent).toMatchSnapshot('generate-page-block-full-defaults');
     });
@@ -1261,8 +1298,8 @@ describe('Building Blocks', () => {
 
         const viewContent = fs.read(join(basePath, xmlViewFilePath));
         expect(viewContent).toContain('custom-breadcrumb');
-        expect(viewContent).not.toContain('onPressHome');
-        expect(viewContent).toContain('onClickAction1');
+        expect(viewContent).not.toContain('onBreadcrumbsPressHome');
+        expect(viewContent).toContain('onActionsClickAction1');
     });
 
     test('generate Page building block with basic template inserts only items and no controller', async () => {
@@ -4146,6 +4183,99 @@ describe('Building Blocks', () => {
             const commentPos = output.indexOf('This is a sample template');
             const navPos = output.indexOf('macros:navigationActions');
             expect(commentPos).toBeLessThan(navPos);
+        });
+
+        it('injects breadcrumbs handler stubs into controller when breadcrumbs aggregation is added', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-ctrl-breadcrumbs');
+            fs.write(join(basePath, xmlViewFilePath), pageViewContent);
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+
+            await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'breadcrumbs',
+                    mContent: ''
+                },
+                fs
+            );
+
+            const controllerPath = join(basePath, 'webapp/ext/main/Main.controller.js');
+            expect(fs.exists(controllerPath)).toBe(true);
+            const content = fs.read(controllerPath);
+            expect(content).toContain('onBreadcrumbsPressHome');
+            expect(content).toContain('onBreadcrumbsPressPage1');
+            expect(content).toContain('onBreadcrumbsPressPage2');
+        });
+
+        it('injects footer handler stubs into controller when footer aggregation is added', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-ctrl-footer');
+            fs.write(join(basePath, xmlViewFilePath), pageViewContent);
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+
+            await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'footer',
+                    mContent: ''
+                },
+                fs
+            );
+
+            const controllerPath = join(basePath, 'webapp/ext/main/Main.controller.js');
+            expect(fs.exists(controllerPath)).toBe(true);
+            const content = fs.read(controllerPath);
+            expect(content).toContain('onFooterApprove');
+            expect(content).toContain('onFooterReject');
+            expect(content).not.toContain('onBreadcrumbsPressHome');
+        });
+
+        it('does not modify controller for aggregations with no handlers (titleContent)', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-ctrl-no-handler');
+            fs.write(join(basePath, xmlViewFilePath), pageViewContent);
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+
+            await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'titleContent',
+                    mContent: ''
+                },
+                fs
+            );
+
+            const controllerPath = join(basePath, 'webapp/ext/main/Main.controller.js');
+            expect(fs.exists(controllerPath)).toBe(false);
+        });
+
+        it('appends only missing handler stubs to an existing controller', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-ctrl-partial');
+            fs.write(join(basePath, xmlViewFilePath), pageViewContent);
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+            const controllerPath = join(basePath, 'webapp/ext/main/Main.controller.ts');
+            fs.write(controllerPath, '// existing\nexport function onFooterApprove() {}\n');
+
+            await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'footer',
+                    mContent: ''
+                },
+                fs
+            );
+
+            const content = fs.read(controllerPath);
+            // onFooterApprove was already there — not duplicated
+            expect(content.split('onFooterApprove').length - 1).toBe(1);
+            // onFooterReject was missing — appended
+            expect(content).toContain('onFooterReject');
         });
     });
 });

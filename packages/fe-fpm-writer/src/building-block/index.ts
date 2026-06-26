@@ -14,6 +14,7 @@ import {
     PAGE_AGGREGATIONS,
     PAGE_TEMPLATE_TYPE_FULL,
     PAGE_BB_DEFAULT_AGGREGATIONS,
+    PAGE_BB_HANDLERS,
     type PageAggregationName,
     type BuildingBlock,
     type BuildingBlockConfig,
@@ -378,6 +379,11 @@ function sortPageAggregationChildren(pageElement: Node): void {
     }
 }
 
+/** All Page BB handler definitions flattened — used when creating a full controller template. */
+const PAGE_BB_ALL_HANDLERS = (
+    Object.values(PAGE_BB_HANDLERS) as ReadonlyArray<{ name: string; doc: string; log: string }>[]
+).flat();
+
 /**
  * Appends a single Page building block aggregation template to an existing `<macros:Page>` element in a view XML file.
  *
@@ -452,11 +458,52 @@ export async function generateBuildingBlockAggregation(
     const newXmlContent = new XMLSerializer().serializeToString(xmlDocument);
     fs.write(join(basePath, viewPath), format(newXmlContent));
 
+    const aggHandlers = PAGE_BB_HANDLERS[aggName];
+    if (aggHandlers?.length) {
+        await applyHandlersToController(fs, basePath, viewPath, aggHandlers);
+    }
+
     return fs;
 }
 
 /**
+ * Resolves the TS and JS controller paths that sit alongside a view file.
+ *
+ * @param basePath
+ * @param viewOrFragmentPath
+ */
+function resolveControllerPaths(basePath: string, viewOrFragmentPath: string): { tsPath: string; jsPath: string } {
+    const { dir: viewDir, name: viewName } = parse(viewOrFragmentPath);
+    const viewBaseName = viewName.replace(/\.view$/, '');
+    return {
+        tsPath: join(basePath, viewDir, `${viewBaseName}.controller.ts`),
+        jsPath: join(basePath, viewDir, `${viewBaseName}.controller.js`)
+    };
+}
+
+/**
+ * Derives the UI5 controller namespace from the app ID and the relative view path.
+ * Example: appId="my.app", viewPath="webapp/ext/main/Main.view.xml" → "my.app.ext.main.Main"
+ *
+ * @param appId
+ * @param basePath
+ * @param viewOrFragmentPath
+ */
+function deriveControllerNamespace(appId: string, basePath: string, viewOrFragmentPath: string): string {
+    const { dir: viewDir, name: viewName } = parse(viewOrFragmentPath);
+    const viewBaseName = viewName.replace(/\.view$/, '');
+    // Strip leading "webapp/" segment and convert path separators to dots
+    const webappSegment = 'webapp';
+    const relDir = viewDir.startsWith(webappSegment)
+        ? viewDir.slice(webappSegment.length).replace(/^[/\\]/, '')
+        : viewDir;
+    const dotPath = relDir ? `${relDir.replace(/[/\\]/g, '.')}.${viewBaseName}` : viewBaseName;
+    return `${appId}.${dotPath}`;
+}
+
+/**
  * Copies the Page controller template (JS or TS) into the view directory if no controller file exists yet.
+ * If a controller already exists, appends any missing Page BB handler stubs to it.
  * Uses getAppProgrammingLanguage to decide whether to generate a JS or TS controller stub.
  *
  * @param {Editor} fs - the memfs editor instance
@@ -467,19 +514,117 @@ async function applyPageControllerTemplate(fs: Editor, basePath: string, viewOrF
     if (!viewOrFragmentPath.endsWith('.view.xml')) {
         return;
     }
-    const { dir: viewDir, name: viewName } = parse(viewOrFragmentPath);
-    const viewBaseName = viewName.replace(/\.view$/, '');
-    const tsControllerPath = join(basePath, viewDir, `${viewBaseName}.controller.ts`);
-    const jsControllerPath = join(basePath, viewDir, `${viewBaseName}.controller.js`);
-    // Skip if a controller already exists in either language to avoid duplicate stubs
-    if (fs.exists(tsControllerPath) || fs.exists(jsControllerPath)) {
+    const { tsPath, jsPath } = resolveControllerPaths(basePath, viewOrFragmentPath);
+
+    if (fs.exists(tsPath) || fs.exists(jsPath)) {
+        await applyHandlersToController(fs, basePath, viewOrFragmentPath, PAGE_BB_ALL_HANDLERS);
         return;
     }
+
     const detectedLanguage = await getAppProgrammingLanguage(basePath, fs);
     const isTypeScript = detectedLanguage === 'TypeScript';
-    const controllerExt = isTypeScript ? 'ts' : 'js';
-    const controllerPath = isTypeScript ? tsControllerPath : jsControllerPath;
-    copyTpl(fs, getTemplatePath(`/building-block/page/Controller.${controllerExt}`), controllerPath);
+    const controllerPath = isTypeScript ? tsPath : jsPath;
+
+    const { content: manifest } = await getManifest(basePath, fs, false);
+    const appId = manifest?.['sap.app']?.id ?? '';
+    const namespace = deriveControllerNamespace(appId, basePath, viewOrFragmentPath);
+
+    copyTpl(fs, getTemplatePath(`/building-block/page/Controller.${isTypeScript ? 'ts' : 'js'}`), controllerPath, {
+        namespace,
+        handlers: PAGE_BB_ALL_HANDLERS
+    });
+}
+
+/**
+ * Core helper: appends missing handler stubs to an existing controller,
+ * or creates a new minimal controller with only the given stubs.
+ *
+ * @param {Editor} fs - the memfs editor instance
+ * @param {string} basePath - the base path of the application
+ * @param {string} viewOrFragmentPath - the relative path of the view/fragment file
+ * @param {ReadonlyArray<{ name: string; doc: string; log: string }>} handlers - handlers to ensure are present
+ */
+async function applyHandlersToController(
+    fs: Editor,
+    basePath: string,
+    viewOrFragmentPath: string,
+    handlers: ReadonlyArray<{ name: string; doc: string; log: string }>
+): Promise<void> {
+    if (!viewOrFragmentPath.endsWith('.view.xml') || handlers.length === 0) {
+        return;
+    }
+    const { tsPath, jsPath } = resolveControllerPaths(basePath, viewOrFragmentPath);
+
+    const existingIsTs = fs.exists(tsPath);
+    const existingIsJs = !existingIsTs && fs.exists(jsPath);
+
+    const detectedLanguage = await getAppProgrammingLanguage(basePath, fs);
+    const isTypeScript = existingIsTs || (!existingIsJs && detectedLanguage === 'TypeScript');
+    const controllerPath = isTypeScript ? tsPath : jsPath;
+
+    const existingContent = existingIsTs || existingIsJs ? fs.read(controllerPath) : undefined;
+    const missingHandlers = existingContent ? handlers.filter((h) => !existingContent.includes(h.name)) : [...handlers];
+
+    if (missingHandlers.length === 0) {
+        return;
+    }
+
+    if (isTypeScript) {
+        const needsImports = !existingContent?.includes('sap/fe/core/ExtensionAPI');
+        const imports = needsImports
+            ? `import ExtensionAPI from 'sap/fe/core/ExtensionAPI';\nimport Event from 'sap/ui/base/Event';\n\n`
+            : '';
+        const stubs =
+            '\n' +
+            imports +
+            missingHandlers
+                .map((h) => `export function ${h.name}(this: ExtensionAPI, _event: Event): void {}`)
+                .join('\n\n') +
+            '\n';
+        fs.write(controllerPath, (existingContent ?? '') + stubs);
+        return;
+    }
+
+    // JavaScript: inject methods inside the PageController.extend({...}) object block.
+    const methodStubs = missingHandlers
+        .map(
+            ({ name, doc, log }) =>
+                `\n            /**\n             * ${doc}\n             */\n` +
+                `            ${name}: function() {\n                console.log('${log}');\n            }`
+        )
+        .join(',\n');
+
+    if (existingContent) {
+        // Find injection point: the `}` that closes the extend object (immediately before the last `});`).
+        const extendCloseIdx = existingContent.lastIndexOf('});');
+        if (extendCloseIdx === -1) {
+            // Fallback: controller doesn't match expected shape — append as plain functions
+            const fallback = '\n' + missingHandlers.map((h) => `function ${h.name}() {}`).join('\n\n') + '\n';
+            fs.write(controllerPath, existingContent + fallback);
+            return;
+        }
+        let insertPos = extendCloseIdx - 1;
+        while (insertPos > 0 && /\s/.test(existingContent[insertPos])) {
+            insertPos--;
+        }
+        const beforeClose = existingContent.slice(0, insertPos + 1);
+        const afterClose = existingContent.slice(insertPos + 1);
+        const lastChar = beforeClose.trimEnd().at(-1);
+        const needsLeadingComma = lastChar !== '{' && lastChar !== ',';
+        fs.write(
+            controllerPath,
+            beforeClose + (needsLeadingComma ? ',' : '') + methodStubs + '\n\n        ' + afterClose
+        );
+    } else {
+        // No existing controller — use the template with only the requested handlers.
+        const { content: manifest } = await getManifest(basePath, fs, false);
+        const appId = manifest?.['sap.app']?.id ?? '';
+        const namespace = deriveControllerNamespace(appId, basePath, viewOrFragmentPath);
+        copyTpl(fs, getTemplatePath('/building-block/page/Controller.js'), controllerPath, {
+            namespace,
+            handlers: missingHandlers
+        });
+    }
 }
 
 /**

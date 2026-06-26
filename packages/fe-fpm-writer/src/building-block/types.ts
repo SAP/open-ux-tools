@@ -435,13 +435,52 @@ export type PageTemplateType = typeof PAGE_TEMPLATE_TYPE_FULL | typeof PAGE_TEMP
  */
 export const PAGE_BB_DEFAULT_AGGREGATIONS: Partial<Record<PageAggregationName, string>> = {
     breadcrumbs:
-        '<Breadcrumbs>\n    <Link text="Home" press=".onPressHome" />\n    <Link text="Page 1" press=".onPressPage1" />\n    <Link text="Page 2" press=".onPressPage2" />\n</Breadcrumbs>',
-    navigationActions: '<Button icon="sap-icon://full-screen" press=".onFullScreen" type="Transparent" />',
+        '<Breadcrumbs>\n    <Link text="Home" press=".onBreadcrumbsPressHome" />\n    <Link text="Page 1" press=".onBreadcrumbsPressPage1" />\n    <Link text="Page 2" press=".onBreadcrumbsPressPage2" />\n</Breadcrumbs>',
+    navigationActions:
+        '<Button icon="sap-icon://full-screen" press=".onNavigationActionsFullScreen" type="Transparent" />',
     titleContent: '<GenericTag text="Status" design="StatusIconHidden" status="Information" />',
     actions:
-        '<Button text="Action 1" press=".onClickAction1" type="Ghost" />\n    <Button text="Action 2" press=".onClickAction2" type="Ghost" />',
+        '<Button text="Action 1" press=".onActionsClickAction1" type="Ghost" />\n    <Button text="Action 2" press=".onActionsClickAction2" type="Ghost" />',
     headerContent: '<VBox>\n    <Title text="Page Title" />\n</VBox>',
-    footer: '<OverflowToolbar><ToolbarSpacer /><Button text="Approve" press=".onApprove" type="Accept" icon="" /><Button text="Reject" press=".onReject" type="Reject" icon="" /></OverflowToolbar>'
+    footer: '<OverflowToolbar><ToolbarSpacer /><Button text="Approve" press=".onFooterApprove" type="Accept" icon="" /><Button text="Reject" press=".onFooterReject" type="Reject" icon="" /></OverflowToolbar>'
+};
+
+/** Per-aggregation handler definitions — name, JSDoc text, and console.log text for generated controller stubs. */
+export const PAGE_BB_HANDLERS: Partial<
+    Record<PageAggregationName, ReadonlyArray<{ name: string; doc: string; log: string }>>
+> = {
+    breadcrumbs: [
+        {
+            name: 'onBreadcrumbsPressHome',
+            doc: 'Breadcrumbs - event go back home.',
+            log: 'Breadcrumbs - event back home'
+        },
+        {
+            name: 'onBreadcrumbsPressPage1',
+            doc: 'Breadcrumbs - event go Page 1.',
+            log: 'Breadcrumbs - event go to Page1'
+        },
+        {
+            name: 'onBreadcrumbsPressPage2',
+            doc: 'Breadcrumbs - event go Page 2.',
+            log: 'Breadcrumbs - event go to Page2'
+        }
+    ],
+    navigationActions: [
+        {
+            name: 'onNavigationActionsFullScreen',
+            doc: 'Navigation Actions - toggle full screen.',
+            log: 'Navigation Actions - toggle full screen'
+        }
+    ],
+    actions: [
+        { name: 'onActionsClickAction1', doc: 'Actions - click action 1.', log: 'Actions - click action 1' },
+        { name: 'onActionsClickAction2', doc: 'Actions - click action 2.', log: 'Actions - click action 2' }
+    ],
+    footer: [
+        { name: 'onFooterApprove', doc: 'Footer - approve action.', log: 'Footer - approve action' },
+        { name: 'onFooterReject', doc: 'Footer - reject action.', log: 'Footer - reject action' }
+    ]
 };
 
 /**
