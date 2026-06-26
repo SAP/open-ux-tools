@@ -88,7 +88,7 @@ export function processDebugArtifacts(extractedProjectPath: string, fs: Editor):
 export function addPackageJsonIfNotFound(projectPath: string, appConfig: AbapRepoAppConfig, fs: Editor): void {
     const packageJsonPath = join(projectPath, FileName.Package);
     if (!fs.exists(packageJsonPath)) {
-        const packageJson: Record<string, unknown> = { name: appConfig.app.id };
+        const packageJson: { name: string; sapux?: boolean } = { name: appConfig.app.id };
         const freestyleTemplates = new Set<string>(Object.values(FioriFreestyleTemplateType));
         if (!freestyleTemplates.has(appConfig.template.type)) {
             packageJson['sapux'] = true;
