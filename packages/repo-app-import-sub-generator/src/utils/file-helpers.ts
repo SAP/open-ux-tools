@@ -4,7 +4,7 @@ import RepoAppDownloadLogger from './logger.js';
 import type { QfaJsonConfig, AbapRepoAppConfig } from '../app/types.js';
 import { PromptState } from '../prompts/prompt-state.js';
 import { join } from 'node:path';
-import { TemplateType as FioriElemenetsTemplateType } from '@sap-ux/fiori-elements-writer';
+import { TemplateType as FioriElementsTemplateType } from '@sap-ux/fiori-elements-writer';
 import { TemplateType as FioriFreestyleTemplateType } from '@sap-ux/fiori-freestyle-writer';
 import { FileName, type Manifest } from '@sap-ux/project-access';
 
@@ -55,11 +55,12 @@ export function readManifest(manifestFilePath: string, fs: Editor): Manifest {
  * @param {Editor} fs - The file system editor.
  */
 export function processDebugArtifacts(extractedProjectPath: string, fs: Editor): void {
+    const dbgSuffix = '-dbg.';
     PromptState.admZip?.getEntries().forEach((entry) => {
         const name = entry.entryName;
-        if (name.includes('-dbg.')) {
+        if (name.includes(dbgSuffix)) {
             // copies contents of -dbg.js to .js file and removes the -dbg.js file
-            const extractedDebugPath = join(extractedProjectPath, name.replace('-dbg.', '.'));
+            const extractedDebugPath = join(extractedProjectPath, name.replace(dbgSuffix, '.'));
             const debugPath = join(extractedProjectPath, name);
             fs.write(extractedDebugPath, entry.getData().toString('utf8'));
             fs.delete(debugPath);
@@ -109,7 +110,7 @@ export function getTemplateTypeFromManifest(manifest: Manifest): string {
     const fioriGeneratorPrefix = '@sap/generator-fiori:';
     // set of all known @sap/generator-fiori template suffixes for validating sourceTemplate.id in manifest.json.
     const knownTemplates = new Set<string>([
-        ...Object.values(FioriElemenetsTemplateType),
+        ...Object.values(FioriElementsTemplateType),
         ...Object.values(FioriFreestyleTemplateType)
     ]);
 

@@ -171,7 +171,9 @@ export default class extends Generator {
         await extractZip(webappPath, this.fs);
 
         const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
-        await writeServiceMetadata(serviceProvider, webappPath, this.fs);
+        if (serviceProvider) {
+            await writeServiceMetadata(serviceProvider, webappPath, this.fs);
+        }
 
         processDebugArtifacts(webappPath, this.fs);
         const appConfig = getAbapRepoAppConfig(webappPath, this.answers.selectedApp, this.fs);
