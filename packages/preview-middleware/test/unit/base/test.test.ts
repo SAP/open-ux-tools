@@ -12,6 +12,15 @@ const mockUtils = {
     }
 } as unknown as MiddlewareUtils;
 
+const mockComponentUtils = {
+    getProject() {
+        return {
+            getType: () => 'component',
+            getNamespace: () => 'my/fe/v2/app'
+        };
+    }
+} as unknown as MiddlewareUtils;
+
 describe('test', () => {
     describe('merge test configs', () => {
         test('Qunit only base config', () => {
@@ -73,6 +82,42 @@ describe('test', () => {
                 isCustomInit: true
             });
         });
+
+        test('QUnit component type prefixes path, init and pattern with test-resources namespace', () => {
+            const result = mergeTestConfigDefaults({ framework: 'QUnit' }, mockComponentUtils);
+            expect(result).toEqual({
+                framework: 'QUnit',
+                path: '/test-resources/my/fe/v2/app/unitTests.qunit.html',
+                init: '/test-resources/my/fe/v2/app/unitTests.qunit.js',
+                pattern: '/test-resources/my/fe/v2/app/**/*Test.{js,ts}',
+                isCustomInit: false
+            });
+        });
+
+        test('OPA5 component type prefixes path, init and pattern with test-resources namespace', () => {
+            const result = mergeTestConfigDefaults({ framework: 'OPA5' }, mockComponentUtils);
+            expect(result).toEqual({
+                framework: 'OPA5',
+                path: '/test-resources/my/fe/v2/app/opaTests.qunit.html',
+                init: '/test-resources/my/fe/v2/app/opaTests.qunit.js',
+                pattern: '/test-resources/my/fe/v2/app/**/*Journey{,.gen}.{js,ts}',
+                isCustomInit: false
+            });
+        });
+
+        test('QUnit component type with custom pattern prefixes it with test-resources namespace', () => {
+            const result = mergeTestConfigDefaults(
+                { framework: 'QUnit', pattern: 'custom/**/*Test.js' },
+                mockComponentUtils
+            );
+            expect(result).toEqual({
+                framework: 'QUnit',
+                path: '/test-resources/my/fe/v2/app/unitTests.qunit.html',
+                init: '/test-resources/my/fe/v2/app/unitTests.qunit.js',
+                pattern: '/test-resources/my/fe/v2/app/custom/**/*Test.js',
+                isCustomInit: false
+            });
+        });
     });
 
     describe('generate import list', () => {
@@ -85,14 +130,6 @@ describe('test', () => {
             expect(result).toEqual(['ns/test/opaTests.qunit']);
         });
         test('component type strips test path prefix from file paths', () => {
-            const mockComponentUtils = {
-                getProject() {
-                    return {
-                        getType: () => 'component',
-                        getNamespace: () => 'my/fe/v2/app'
-                    };
-                }
-            } as unknown as MiddlewareUtils;
             const result = generateImportList(
                 'my/fe/v2/app',
                 [

@@ -51,7 +51,7 @@ export function mergeTestConfigDefaults(config: TestConfig, utils?: MiddlewareUt
 
     if (testPathPrefix) {
         // Prepend testPathPrefix
-        for (const prop of ['path', 'init'] as const) {
+        for (const prop of ['path', 'init', 'pattern'] as const) {
             merged[prop] = posix.join(testPathPrefix, merged[prop]);
         }
     }
