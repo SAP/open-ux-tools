@@ -591,7 +591,6 @@ async function applyHandlersToController(
         return;
     }
 
-    // JavaScript: inject methods inside the PageController.extend({...}) object block.
     const methodStubs = missingHandlers
         .map(
             ({ name, doc, log }) =>
@@ -601,38 +600,71 @@ async function applyHandlersToController(
         .join(',\n');
 
     if (existingContent) {
-        // Find injection point: the `}` that closes the PageController.extend({...}) object,
-        // anchored to `PageController.extend(` so we don't accidentally match the outer `sap.ui.define(...);`.
-        const extendStartIdx = existingContent.lastIndexOf('PageController.extend(');
-        const extendCloseIdx = extendStartIdx >= 0 ? existingContent.indexOf('});', extendStartIdx) : -1;
-        if (extendCloseIdx === -1) {
-            // Fallback: controller doesn't match expected shape — append as plain functions
-            const fallback = '\n' + missingHandlers.map((h) => `function ${h.name}() {}`).join('\n\n') + '\n';
-            fs.write(controllerPath, existingContent + fallback);
-            return;
-        }
-        let insertPos = extendCloseIdx - 1;
-        while (insertPos > 0 && /\s/.test(existingContent[insertPos])) {
-            insertPos--;
-        }
-        const beforeClose = existingContent.slice(0, insertPos + 1);
-        const afterClose = existingContent.slice(insertPos + 1);
-        const lastChar = beforeClose.trimEnd().at(-1);
-        const needsLeadingComma = lastChar !== '{' && lastChar !== ',';
-        fs.write(
-            controllerPath,
-            beforeClose + (needsLeadingComma ? ',' : '') + methodStubs + '\n\n        ' + afterClose
-        );
+        injectHandlersIntoExistingJsController(fs, controllerPath, existingContent, methodStubs, missingHandlers);
     } else {
-        // No existing controller — use the template with only the requested handlers.
-        const { content: manifest } = await getManifest(basePath, fs, false);
-        const appId = manifest?.['sap.app']?.id ?? '';
-        const namespace = deriveControllerNamespace(appId, basePath, viewOrFragmentPath);
-        copyTpl(fs, getTemplatePath('/building-block/page/Controller.js'), controllerPath, {
-            namespace,
-            handlers: missingHandlers
-        });
+        await createNewJsControllerFromTemplate(fs, basePath, viewOrFragmentPath, controllerPath, missingHandlers);
     }
+}
+
+/**
+ * Injects JS handler method stubs into an existing PageController.extend({...}) object.
+ * Falls back to appending plain functions if the expected controller shape is not found.
+ *
+ * @param fs
+ * @param controllerPath
+ * @param existingContent
+ * @param methodStubs
+ * @param missingHandlers
+ */
+function injectHandlersIntoExistingJsController(
+    fs: Editor,
+    controllerPath: string,
+    existingContent: string,
+    methodStubs: string,
+    missingHandlers: ReadonlyArray<{ name: string }>
+): void {
+    // Anchor to PageController.extend( so we never match the outer sap.ui.define(...); close.
+    const extendStartIdx = existingContent.lastIndexOf('PageController.extend(');
+    const extendCloseIdx = extendStartIdx >= 0 ? existingContent.indexOf('});', extendStartIdx) : -1;
+    if (extendCloseIdx === -1) {
+        const fallback = '\n' + missingHandlers.map((h) => `function ${h.name}() {}`).join('\n\n') + '\n';
+        fs.write(controllerPath, existingContent + fallback);
+        return;
+    }
+    let insertPos = extendCloseIdx - 1;
+    while (insertPos > 0 && /\s/.test(existingContent[insertPos])) {
+        insertPos--;
+    }
+    const beforeClose = existingContent.slice(0, insertPos + 1);
+    const afterClose = existingContent.slice(insertPos + 1);
+    const lastChar = beforeClose.trimEnd().at(-1);
+    const needsLeadingComma = lastChar !== '{' && lastChar !== ',';
+    fs.write(controllerPath, beforeClose + (needsLeadingComma ? ',' : '') + methodStubs + '\n\n        ' + afterClose);
+}
+
+/**
+ * Creates a new minimal JS controller file from the Page BB template, containing only the given handlers.
+ *
+ * @param fs
+ * @param basePath
+ * @param viewOrFragmentPath
+ * @param controllerPath
+ * @param missingHandlers
+ */
+async function createNewJsControllerFromTemplate(
+    fs: Editor,
+    basePath: string,
+    viewOrFragmentPath: string,
+    controllerPath: string,
+    missingHandlers: ReadonlyArray<{ name: string; doc: string; log: string }>
+): Promise<void> {
+    const { content: manifest } = await getManifest(basePath, fs, false);
+    const appId = manifest?.['sap.app']?.id ?? '';
+    const namespace = deriveControllerNamespace(appId, basePath, viewOrFragmentPath);
+    copyTpl(fs, getTemplatePath('/building-block/page/Controller.js'), controllerPath, {
+        namespace,
+        handlers: missingHandlers
+    });
 }
 
 /**
