@@ -1,8 +1,90 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.8.1
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+## 1.8.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-06-25
+
+#### Features
+
+- add ESLint agent skills for Fiori projects (setup, migrate, lint) [[045738d](https://github.com/SAP/open-ux-tools/commit/045738db600206b7a6bf1e28fdf6d344ea6485ca)]
+
+## 1.7.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Bug Fixes
+
+- rename skill name to sap-fiori-app-development [[88f17e9](https://github.com/SAP/open-ux-tools/commit/88f17e9a249caffcd2334a5fd6ac360dc8ab3c57)]
+
+## 1.7.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Features
+
+- add skill for usage of @sap-ux/create cli [[2733268](https://github.com/SAP/open-ux-tools/commit/2733268fc635cdef7bded697ecafc5237a59e6b7)]
+
+## 1.6.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Features
+
+- add new skill for fiori elements development [[b021644](https://github.com/SAP/open-ux-tools/commit/b021644a977c70bc4ed5c548e0121ce65975feed)]
+
+## 1.5.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-23
+
+#### Bug Fixes
+
+- Update visual and analytical chart creation with RAP scenario [[46d6081](https://github.com/SAP/open-ux-tools/commit/46d6081f7b6956bc9406c880ea22d6b90ae65262)]
+
+## 1.5.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-06-22
+
+#### Features
+
+- promote static functionalities to top-level MCP tools
+
+    Promotes generate-fiori-ui-application, generate-fiori-ui-application-cap, fetch-service-metadata, and list-sap-systems to dedicated top-level MCP tools, removing them from the 3-step list/get_details/execute workflow. Reduces round-trips for generation workflows from 3 calls to 1. list_sap_systems and download_odata_service_metadata are environment-aware: on SAP Business Application Studio they use BTP destinations, on VSCode they use the Fiori tools system store. download_odata_service_metadata returns a destination field on BAS which must be passed into the generator service config. Errors from fetch-service-metadata return a structured response instead of propagating as unhandled exceptions. Entity names in generator config are normalised by stripping wrapping single quotes. Generator wrappers use Zod-inferred types instead of Record<string, unknown>. [[fdc185d](https://github.com/SAP/open-ux-tools/commit/fdc185d3db4046847d3d660354f1b371eff88c19)]
+
 ## 1.4.1
 
-*Released: 2026-06-16T21:19:36Z*
+_Released: 2026-06-16T21:19:36Z_
 
 ### Patch Changes
 
@@ -12,7 +94,7 @@
 
 ## 1.4.0
 
-*Released: 2026-06-12T13:04:20Z*
+_Released: 2026-06-12T13:04:20Z_
 
 ### Minor Changes
 
@@ -20,7 +102,7 @@
 
 ## 1.3.0
 
-*Released: 2026-06-11T19:07:40Z*
+_Released: 2026-06-11T19:07:40Z_
 
 ### Minor Changes
 
@@ -28,7 +110,7 @@
 
 ## 1.2.0
 
-*Released: 2026-06-11T16:48:19Z*
+_Released: 2026-06-11T16:48:19Z_
 
 ### Minor Changes
 
@@ -36,7 +118,7 @@
 
 ## 1.1.4
 
-*Released: 2026-06-10T16:48:39Z*
+_Released: 2026-06-10T16:48:39Z_
 
 ### Patch Changes
 
@@ -50,7 +132,7 @@
 
 ## 1.1.3
 
-*Released: 2026-06-08T12:39:24Z*
+_Released: 2026-06-08T12:39:24Z_
 
 ### Patch Changes
 
@@ -58,7 +140,7 @@
 
 ## 1.1.2
 
-*Released: 2026-06-05T20:41:12Z*
+_Released: 2026-06-05T20:41:12Z_
 
 ### Patch Changes
 
@@ -66,7 +148,7 @@
 
 ## 1.1.1
 
-*Released: 2026-06-05T16:17:23Z*
+_Released: 2026-06-05T16:17:23Z_
 
 ### Patch Changes
 
@@ -74,7 +156,7 @@
 
 ## 1.1.0
 
-*Released: 2026-06-05T11:08:04Z*
+_Released: 2026-06-05T11:08:04Z_
 
 ### Minor Changes
 
@@ -83,7 +165,7 @@
 
 ## 1.0.3
 
-*Released: 2026-06-03T14:58:37Z*
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -94,7 +176,7 @@
 
 ## 1.0.2
 
-*Released: 2026-06-01T17:22:37Z*
+_Released: 2026-06-01T17:22:37Z_
 
 ### Patch Changes
 
@@ -103,7 +185,7 @@
 
 ## 1.0.1
 
-*Released: 2026-05-31T21:32:23Z*
+_Released: 2026-05-31T21:32:23Z_
 
 ### Patch Changes
 
@@ -113,7 +195,7 @@
 
 ## 1.0.0
 
-*Released: 2026-05-30T20:54:07Z*
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -154,7 +236,7 @@
 
 ## 0.7.2
 
-*Released: 2026-05-27T10:42:47Z*
+_Released: 2026-05-27T10:42:47Z_
 
 ### Patch Changes
 
@@ -164,7 +246,7 @@
 
 ## 0.7.1
 
-*Released: 2026-05-21T05:46:16Z*
+_Released: 2026-05-21T05:46:16Z_
 
 ### Patch Changes
 
@@ -173,7 +255,7 @@
 
 ## 0.7.0
 
-*Released: 2026-05-15T08:12:20Z*
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -187,7 +269,7 @@
 
 ## 0.6.60
 
-*Released: 2026-05-14T12:51:22Z*
+_Released: 2026-05-14T12:51:22Z_
 
 ### Patch Changes
 
@@ -197,7 +279,7 @@
 
 ## 0.6.59
 
-*Released: 2026-05-14T11:45:51Z*
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -208,7 +290,7 @@
 
 ## 0.6.58
 
-*Released: 2026-05-13T17:45:03Z*
+_Released: 2026-05-13T17:45:03Z_
 
 ### Patch Changes
 
@@ -216,7 +298,7 @@
 
 ## 0.6.57
 
-*Released: 2026-05-12T23:31:37Z*
+_Released: 2026-05-12T23:31:37Z_
 
 ### Patch Changes
 
@@ -224,7 +306,7 @@
 
 ## 0.6.56
 
-*Released: 2026-05-11T09:58:34Z*
+_Released: 2026-05-11T09:58:34Z_
 
 ### Patch Changes
 
@@ -233,7 +315,7 @@
 
 ## 0.6.55
 
-*Released: 2026-05-07T13:23:43Z*
+_Released: 2026-05-07T13:23:43Z_
 
 ### Patch Changes
 
@@ -241,7 +323,7 @@
 
 ## 0.6.54
 
-*Released: 2026-05-07T11:24:28Z*
+_Released: 2026-05-07T11:24:28Z_
 
 ### Patch Changes
 
@@ -249,7 +331,7 @@
 
 ## 0.6.53
 
-*Released: 2026-05-04T15:49:13Z*
+_Released: 2026-05-04T15:49:13Z_
 
 ### Patch Changes
 
@@ -258,7 +340,7 @@
 
 ## 0.6.52
 
-*Released: 2026-04-28T09:04:02Z*
+_Released: 2026-04-28T09:04:02Z_
 
 ### Patch Changes
 
@@ -266,7 +348,7 @@
 
 ## 0.6.51
 
-*Released: 2026-04-23T10:18:53Z*
+_Released: 2026-04-23T10:18:53Z_
 
 ### Patch Changes
 
@@ -274,7 +356,7 @@
 
 ## 0.6.50
 
-*Released: 2026-04-23T09:36:26Z*
+_Released: 2026-04-23T09:36:26Z_
 
 ### Patch Changes
 
@@ -282,7 +364,7 @@
 
 ## 0.6.49
 
-*Released: 2026-04-14T09:46:36Z*
+_Released: 2026-04-14T09:46:36Z_
 
 ### Patch Changes
 
@@ -290,7 +372,7 @@
 
 ## 0.6.48
 
-*Released: 2026-04-08T13:10:18Z*
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -300,7 +382,7 @@
 
 ## 0.6.47
 
-*Released: 2026-03-30T22:24:11Z*
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -311,7 +393,7 @@
 
 ## 0.6.46
 
-*Released: 2026-03-26T12:07:04Z*
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -321,7 +403,7 @@
 
 ## 0.6.45
 
-*Released: 2026-03-23T14:11:51Z*
+_Released: 2026-03-23T14:11:51Z_
 
 ### Patch Changes
 

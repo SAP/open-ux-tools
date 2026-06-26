@@ -1,5 +1,50 @@
 # @sap-ux/generator-adp
 
+## 1.0.22
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.8 → 1.0.9
+- @sap-ux/axios-extension 2.0.3 → 2.0.4
+- @sap-ux/feature-toggle 1.0.2 → 1.0.3
+- @sap-ux/system-access 1.0.3 → 1.0.4
+- @sap-ux/adp-tooling 1.0.20 → 1.0.21
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/store 2.0.1 → 2.0.2
+- @sap-ux/inquirer-common 1.0.13 → 1.0.14
+- @sap-ux/fiori-generator-shared 1.0.12 → 1.0.13
+- @sap-ux/telemetry 1.0.10 → 1.0.11
+
+## 1.0.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.2 → 2.1.3
+- @sap-ux/adp-tooling 1.0.19 → 1.0.20
+- @sap-ux/axios-extension 2.0.3 → 2.0.3
+- @sap-ux/fiori-generator-shared 1.0.11 → 1.0.12
+- @sap-ux/inquirer-common 1.0.12 → 1.0.13
+- @sap-ux/odata-service-writer 1.0.7 → 1.0.8
+- @sap-ux/project-input-validator 1.0.6 → 1.0.7
+- @sap-ux/system-access 1.0.3 → 1.0.3
+- @sap-ux/telemetry 1.0.9 → 1.0.10
+
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.18 → 1.0.19
+
 ## 1.0.19
 
 ### Patch Changes

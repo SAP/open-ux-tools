@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-elements-writer",
     "description": "SAP Fiori elements application writer",
-    "version": "3.0.32",
+    "version": "3.0.39",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -59,7 +59,7 @@
         "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
         "@types/semver": "7.7.1",
-        "fs-extra": "11.3.4"
+        "fs-extra": "11.3.5"
     },
     "engines": {
         "node": ">=22.x"

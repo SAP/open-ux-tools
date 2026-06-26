@@ -391,6 +391,7 @@ describe('AdaptationProject', () => {
 
         afterEach(() => {
             global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+            mockProject.byGlob.mockClear();
         });
 
         test('should return early when cfBuildPath is set', async () => {
@@ -558,6 +559,9 @@ describe('AdaptationProject', () => {
             const app = express();
             app.use(adp.descriptor.url, adp.proxy.bind(adp));
             app.get(`${mockMergedDescriptor.url}/original.file`, next);
+            // Catch i18n .properties pass-throughs so tests can verify proxy() called next()
+            // without redirecting. Mirrors how fiori-tools-proxy would handle them in real runs.
+            app.get(new RegExp(`^${mockMergedDescriptor.url}/i18n/.*\\.properties$`), next);
             app.use((req) => fail(`${req.path} should have been intercepted.`));
 
             server = supertest(app);
@@ -569,6 +573,7 @@ describe('AdaptationProject', () => {
 
         afterEach(() => {
             global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+            mockProject.byGlob.mockClear();
         });
 
         test('/manifest.json with sync', async () => {
@@ -603,6 +608,26 @@ describe('AdaptationProject', () => {
         test('/original.file', async () => {
             await server.get(`${mockMergedDescriptor.url}/original.file`).expect(200);
             expect(next).toHaveBeenCalled();
+        });
+
+        test('/i18n/i18n.properties is passed through (not redirected)', async () => {
+            const response = await server.get(`${mockMergedDescriptor.url}/i18n/i18n.properties`);
+
+            expect(response.status).toBe(200);
+            expect(mockProject.byGlob).not.toHaveBeenCalled();
+        });
+
+        test('/i18n/i18n_de.properties (locale variant) is passed through', async () => {
+            const response = await server.get(`${mockMergedDescriptor.url}/i18n/i18n_de.properties`);
+            expect(response.status).toBe(200);
+            expect(mockProject.byGlob).not.toHaveBeenCalled();
+        });
+
+        test('/i18n/ListReport/Foo/i18n.properties (per-page bundle) is passed through', async () => {
+            const response = await server.get(`${mockMergedDescriptor.url}/i18n/ListReport/Foo/i18n.properties`);
+
+            expect(response.status).toBe(200);
+            expect(mockProject.byGlob).not.toHaveBeenCalled();
         });
     });
 
