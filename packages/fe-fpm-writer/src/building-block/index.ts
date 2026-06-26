@@ -486,10 +486,10 @@ function resolveControllerPaths(basePath: string, viewOrFragmentPath: string): {
  * Example: appId="my.app", viewPath="webapp/ext/main/Main.view.xml" → "my.app.ext.main.Main"
  *
  * @param appId
- * @param basePath
+ * @param _basePath
  * @param viewOrFragmentPath
  */
-function deriveControllerNamespace(appId: string, basePath: string, viewOrFragmentPath: string): string {
+function deriveControllerNamespace(appId: string, _basePath: string, viewOrFragmentPath: string): string {
     const { dir: viewDir, name: viewName } = parse(viewOrFragmentPath);
     const viewBaseName = viewName.replace(/\.view$/, '');
     // Strip leading "webapp/" segment and convert path separators to dots
@@ -498,7 +498,7 @@ function deriveControllerNamespace(appId: string, basePath: string, viewOrFragme
         ? viewDir.slice(webappSegment.length).replace(/^[/\\]/, '')
         : viewDir;
     const dotPath = relDir ? `${relDir.replace(/[/\\]/g, '.')}.${viewBaseName}` : viewBaseName;
-    return `${appId}.${dotPath}`;
+    return appId ? `${appId}.${dotPath}` : dotPath;
 }
 
 /**

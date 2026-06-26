@@ -452,18 +452,18 @@ export const PAGE_BB_HANDLERS: Partial<
     breadcrumbs: [
         {
             name: 'onBreadcrumbsPressHome',
-            doc: 'Breadcrumbs - event go back home.',
-            log: 'Breadcrumbs - event back home'
+            doc: 'Breadcrumbs - navigate to Home.',
+            log: 'Breadcrumbs - navigate to Home'
         },
         {
             name: 'onBreadcrumbsPressPage1',
-            doc: 'Breadcrumbs - event go Page 1.',
-            log: 'Breadcrumbs - event go to Page1'
+            doc: 'Breadcrumbs - navigate to Page 1.',
+            log: 'Breadcrumbs - navigate to Page 1'
         },
         {
             name: 'onBreadcrumbsPressPage2',
-            doc: 'Breadcrumbs - event go Page 2.',
-            log: 'Breadcrumbs - event go to Page2'
+            doc: 'Breadcrumbs - navigate to Page 2.',
+            log: 'Breadcrumbs - navigate to Page 2'
         }
     ],
     navigationActions: [
