@@ -3984,6 +3984,9 @@ importers:
       '@sap-ux/fiori-elements-writer':
         specifier: workspace:*
         version: link:../fiori-elements-writer
+      '@sap-ux/fiori-freestyle-writer':
+        specifier: workspace:*
+        version: link:../fiori-freestyle-writer
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
