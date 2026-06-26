@@ -4335,8 +4335,7 @@ describe('Building Blocks', () => {
             fs.write(join(basePath, xmlViewFilePath), pageViewContent);
             fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
             const controllerPath = join(basePath, 'webapp/ext/main/Main.controller.ts');
-            const existing =
-                '// existing\nexport function onFooterApprove() {}\nexport function onFooterReject() {}\n';
+            const existing = '// existing\nexport function onFooterApprove() {}\nexport function onFooterReject() {}\n';
             fs.write(controllerPath, existing);
             await generateBuildingBlockAggregation(
                 basePath,
