@@ -365,6 +365,47 @@ describe('FlpSandbox', () => {
             expect(flp.templateConfig.apps).toMatchSnapshot();
         });
 
+        test('locate-reuse-libs found for application type uses unscoped glob', async () => {
+            const byGlobMock = jest.fn<(glob: string) => Promise<any[]>>().mockImplementation((glob) =>
+                Promise.resolve(glob.includes('locate-reuse-libs') ? [{}] : [])
+            );
+            const projectWithLocateReuse = {
+                byPath: jest.fn().mockResolvedValue(undefined),
+                byGlob: byGlobMock
+            } as unknown as ReaderCollection;
+            const manifest = { 'sap.app': { id: 'my.id' } } as Manifest;
+            const flp = new FlpSandbox({}, projectWithLocateReuse, mockUtils, logger);
+            await flp.init(manifest);
+            expect(flp.flpConfig.libs).toBe(true);
+            const locateCall = byGlobMock.mock.calls.find(([g]) => g.includes('locate-reuse-libs'));
+            expect(locateCall?.[0]).toBe('/**/locate-reuse-libs.js');
+        });
+
+        test('locate-reuse-libs found for component type uses namespace-scoped glob', async () => {
+            const byGlobMock = jest.fn<(glob: string) => Promise<any[]>>().mockImplementation((glob) =>
+                Promise.resolve(glob.includes('locate-reuse-libs') ? [{}] : [])
+            );
+            const projectWithLocateReuse = {
+                byPath: jest.fn().mockResolvedValue(undefined),
+                byGlob: byGlobMock
+            } as unknown as ReaderCollection;
+            const mockUtilsComponent = {
+                getProject() {
+                    return {
+                        getType: () => 'component',
+                        getNamespace: () => 'my/app/ns',
+                        getSourcePath: () => tmpdir()
+                    };
+                }
+            } as unknown as MiddlewareUtils;
+            const manifest = { 'sap.app': { id: 'my.app.ns' } } as Manifest;
+            const flp = new FlpSandbox({}, projectWithLocateReuse, mockUtilsComponent, logger);
+            await flp.init(manifest);
+            expect(flp.flpConfig.libs).toBe(true);
+            const locateCall = byGlobMock.mock.calls.find(([g]) => g.includes('locate-reuse-libs'));
+            expect(locateCall?.[0]).toBe('/resources/my/app/ns/**/locate-reuse-libs.js');
+        });
+
         test('do not add component to applications multi', async () => {
             const manifest = {
                 'sap.app': { id: 'my.id', type: 'component' }

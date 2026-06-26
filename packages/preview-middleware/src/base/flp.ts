@@ -766,7 +766,8 @@ export class FlpSandbox {
      * @returns the location of the locate-reuse-libs script or undefined.
      */
     private async hasLocateReuseLibsScript(): Promise<boolean | undefined> {
-        const files = await this.project.byGlob('**/locate-reuse-libs.js');
+        const prefix = getResourcesPathPrefix(this.utils) ?? '';
+        const files = await this.project.byGlob(`${prefix}/**/locate-reuse-libs.js`);
         return files.length > 0;
     }
 
