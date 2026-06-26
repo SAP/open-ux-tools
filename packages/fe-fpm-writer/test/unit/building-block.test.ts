@@ -4029,6 +4029,7 @@ describe('Building Blocks', () => {
 
         it('appends aggregation with unique id attribute on wrapper element', async () => {
             const basePath = join(testAppPath, 'page-bb-agg');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
             fs.write(join(basePath, xmlViewFilePath), pageViewContent);
 
             const result = await generateBuildingBlockAggregation(
@@ -4048,6 +4049,7 @@ describe('Building Blocks', () => {
 
         it('does not append duplicate aggregation when it already exists in view', async () => {
             const basePath = join(testAppPath, 'page-bb-agg-dup');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
             const viewWithExistingId = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
     xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
     <macros:Page id="Page" title="pageTitle">
@@ -4076,6 +4078,7 @@ describe('Building Blocks', () => {
         it('reorders existing aggregations into canonical PAGE_AGGREGATIONS order', async () => {
             // Start with aggregations in wrong order: footer, actions, navigationActions
             const basePath = join(testAppPath, 'page-bb-agg-sort');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
             const viewOutOfOrder = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
     xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
     <macros:Page id="Page" title="pageTitle">
@@ -4156,6 +4159,7 @@ describe('Building Blocks', () => {
 
         it('preserves template comment when reordering aggregations', async () => {
             const basePath = join(testAppPath, 'page-bb-agg-sort-comment');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
             const viewWithComment = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
     xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
     <macros:Page id="Page" title="pageTitle">
@@ -4286,35 +4290,27 @@ describe('Building Blocks', () => {
     </macros:Page>
 </mvc:View>`;
 
-        it('skips controller injection when the aggregation path does not end in .view.xml', async () => {
+        it('skips controller injection when viewPath is not a .view.xml file', async () => {
             const basePath = join(testAppPath, 'ctrl-skip-fragment');
+            // Write the view XML so the aggregation XML step succeeds,
+            // then call with a fragment path to exercise the early-return in applyHandlersToController.
+            fs.write(join(basePath, xmlViewFilePath), pageViewContent);
             fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
-            // Write a minimal fragment file for generateBuildingBlockAggregation
-            const fragmentViewContent = `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros">
-    <macros:Page id="Page" title="pageTitle">
-    </macros:Page>
-</mvc:View>`;
-            const fragmentViewPath = 'webapp/ext/main/Main.view.xml';
-            fs.write(join(basePath, fragmentViewPath), fragmentViewContent);
-            // Rename the view to a fragment path on disk — write same content to a fragment path
             const fragmentPath = 'webapp/ext/fragment/custom.fragment.xml';
-            fs.write(join(basePath, fragmentPath), fragmentViewContent);
-            // generateBuildingBlockAggregation only calls applyHandlersToController which
-            // checks !viewPath.endsWith('.view.xml') — use a direct fragment path here
+            fs.write(join(basePath, fragmentPath), pageViewContent);
+
             await generateBuildingBlockAggregation(
                 basePath,
-                // Use the .view.xml path for the XML work, but then test the handler injection
-                // for a fragment by calling with the fragment path directly
                 {
-                    viewPath: fragmentViewPath,
+                    viewPath: fragmentPath, // ends in .fragment.xml → applyHandlersToController returns early
                     buildingBlockType: BuildingBlockType.Page,
                     aggregationName: 'breadcrumbs',
                     mContent: ''
                 },
                 fs
             );
-            // Controller is created because we used .view.xml — proves the normal path works
-            expect(fs.exists(join(basePath, 'webapp/ext/main/Main.controller.js'))).toBe(true);
+            // No controller created because handler injection is skipped for non-.view.xml paths
+            expect(fs.exists(join(basePath, 'webapp/ext/fragment/custom.controller.js'))).toBe(false);
         });
 
         it('skips injection when aggregation has no handlers (titleContent)', async () => {

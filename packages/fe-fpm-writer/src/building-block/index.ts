@@ -455,6 +455,12 @@ export async function generateBuildingBlockAggregation(
     }
     sortPageAggregationChildren(pageElement);
 
+    // All aggregations except 'items' are part of the full Page template which requires UI5 >= 1.145.0.
+    if (aggName !== 'items') {
+        const { content: manifest } = await getManifest(basePath, fs, false);
+        validateFullPageTemplateVersion(manifest);
+    }
+
     const newXmlContent = new XMLSerializer().serializeToString(xmlDocument);
     fs.write(join(basePath, viewPath), format(newXmlContent));
 
@@ -595,8 +601,10 @@ async function applyHandlersToController(
         .join(',\n');
 
     if (existingContent) {
-        // Find injection point: the `}` that closes the extend object (immediately before the last `});`).
-        const extendCloseIdx = existingContent.lastIndexOf('});');
+        // Find injection point: the `}` that closes the PageController.extend({...}) object,
+        // anchored to `PageController.extend(` so we don't accidentally match the outer `sap.ui.define(...);`.
+        const extendStartIdx = existingContent.lastIndexOf('PageController.extend(');
+        const extendCloseIdx = extendStartIdx >= 0 ? existingContent.indexOf('});', extendStartIdx) : -1;
         if (extendCloseIdx === -1) {
             // Fallback: controller doesn't match expected shape — append as plain functions
             const fallback = '\n' + missingHandlers.map((h) => `function ${h.name}() {}`).join('\n\n') + '\n';
