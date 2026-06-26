@@ -366,9 +366,9 @@ describe('FlpSandbox', () => {
         });
 
         test('locate-reuse-libs found for application type uses unscoped glob', async () => {
-            const byGlobMock = jest.fn<(glob: string) => Promise<any[]>>().mockImplementation((glob) =>
-                Promise.resolve(glob.includes('locate-reuse-libs') ? [{}] : [])
-            );
+            const byGlobMock = jest
+                .fn<(glob: string) => Promise<any[]>>()
+                .mockImplementation((glob) => Promise.resolve(glob.includes('locate-reuse-libs') ? [{}] : []));
             const projectWithLocateReuse = {
                 byPath: jest.fn().mockResolvedValue(undefined),
                 byGlob: byGlobMock
@@ -382,9 +382,9 @@ describe('FlpSandbox', () => {
         });
 
         test('locate-reuse-libs found for component type uses namespace-scoped glob', async () => {
-            const byGlobMock = jest.fn<(glob: string) => Promise<any[]>>().mockImplementation((glob) =>
-                Promise.resolve(glob.includes('locate-reuse-libs') ? [{}] : [])
-            );
+            const byGlobMock = jest
+                .fn<(glob: string) => Promise<any[]>>()
+                .mockImplementation((glob) => Promise.resolve(glob.includes('locate-reuse-libs') ? [{}] : []));
             const projectWithLocateReuse = {
                 byPath: jest.fn().mockResolvedValue(undefined),
                 byGlob: byGlobMock
