@@ -82,8 +82,8 @@ export const DownloadODataServiceMetadataInputSchema = zod.object({
         .optional()
         .describe(
             '✅ USE THIS for service names! ' +
-                'The technical name of the OData service (e.g. ZMY_SALES_SRV). ' +
-                'If the user provides just a service name (not a full path), pass it here. ' +
+                'The technical name of the OData service.' +
+                'If the user provides just a service name (not a full path containing forward slashes), pass it here. ' +
                 'A catalog lookup will be performed to resolve the service path automatically. ' +
                 'DO NOT try to construct servicePath yourself - let the tool do the lookup.'
         ),

@@ -291,7 +291,7 @@ function checkMetadata(metadata: string): void {
 
 export type FindServiceResult =
     | { found: true; service: ODataServiceInfo }
-    | { found: false; suggestions: ODataServiceInfo[] };
+    | { found: false; suggestions: ODataServiceInfo[]; catalogErrors?: string[] };
 
 /**
  * Finds the OData service info for a given service id by performing a catalog lookup.
@@ -303,12 +303,13 @@ export type FindServiceResult =
  *
  * @param system - The BackendSystem or Destination to connect to.
  * @param serviceName - The technical id of the OData service to look up (e.g. `/DMO/SD_TRAVEL_MDSK`).
- * @returns A promise resolving to a found result with the service info, or a not-found result with suggestions.
+ * @returns A promise resolving to a found result with the service info, or a not-found result with suggestions and any catalog errors.
  */
 export async function findService(
     system: BackendSystem | Destination,
     serviceName: string
 ): Promise<FindServiceResult> {
+    // safe: isAppStudio() guarantees system matches the runtime environment
     const provider = isAppStudio()
         ? createAbapServiceProviderForDestination(system as Destination)
         : createAbapServiceProvider(system as BackendSystem);
@@ -321,10 +322,13 @@ export async function findService(
     ]);
 
     const allServices: Array<ODataServiceInfo> = [];
+    const catalogErrors: string[] = [];
 
     for (const result of results) {
         if (result.status === 'rejected') {
-            logger.debug(`Catalog lookup failed: ${result.reason}`);
+            const errorMsg = result.reason instanceof Error ? result.reason.message : String(result.reason);
+            logger.debug(`Catalog lookup failed: ${errorMsg}`);
+            catalogErrors.push(errorMsg);
             continue;
         }
         const exact = result.value.find((s) => s.id.toLocaleLowerCase() === nameLower);
@@ -338,11 +342,11 @@ export async function findService(
         .filter((s) => {
             // The ODataServiceInfo.name is a aggregate of the services's `${group.GroupId} > ${service.ServiceAlias || service.ServiceId}` - so looking for any match here is a best-effort approach.
             const n = s.name.toLocaleLowerCase();
-            return n.startsWith(nameLower) || n.includes(nameLower) || nameLower.includes(n);
+            return n.includes(nameLower) || nameLower.includes(n);
         })
         .slice(0, 5);
 
-    return { found: false, suggestions };
+    return { found: false, suggestions, catalogErrors: catalogErrors.length > 0 ? catalogErrors : undefined };
 }
 
 /**
@@ -353,7 +357,7 @@ export async function findService(
  * @returns A promise that resolves to a EDMX metadata XML as string.
  */
 export async function getServiceMetadata(system: BackendSystem | Destination, servicePath: string): Promise<string> {
-    // isAppStudio() is the authoritative discriminant: BAS always yields Destination, VSCode always BackendSystem
+    // safe: isAppStudio() is the authoritative discriminant: BAS always yields Destination, VSCode always BackendSystem
     const service = isAppStudio()
         ? getServiceFromDestination(system as Destination, servicePath)
         : await getServiceFromBackendSystem(system as BackendSystem, servicePath);

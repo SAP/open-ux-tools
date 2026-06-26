@@ -60,9 +60,12 @@ export async function downloadODataServiceMetadata(
                 const hint = suggestionList
                     ? ` Did you mean one of these? ${suggestionList}`
                     : ' No similar services found.';
+                const catalogErrorHint = result.catalogErrors
+                    ? ` Catalog lookup errors: ${result.catalogErrors.join('; ')}`
+                    : '';
                 return {
                     status: 'Error',
-                    message: `No service named '${serviceName}' found.${hint}`,
+                    message: `No service named '${serviceName}' found.${hint}${catalogErrorHint}`,
                     parameters: EMPTY_PARAMS,
                     appPath: params.appPath,
                     changes: [],
