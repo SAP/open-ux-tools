@@ -1,5 +1,33 @@
 # @sap-ux/app-config-writer
 
+## 1.1.3
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.0.5 → 2.0.6
+- @sap-ux/axios-extension 2.0.3 → 2.0.4
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/store 2.0.1 → 2.0.2
+- @sap-ux/ui5-config 1.0.3 → 1.0.3
+
+## 1.1.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-25
+
+#### Bug Fixes
+
+- Add CAP Node.js support and CAPJava error handling for cards-editor and variants-config commands [[da518f2](https://github.com/SAP/open-ux-tools/commit/da518f2cc5b0d9aff20c05fab2dac8a4b8fa85a4)]
+
 ## 1.1.1
 
 ### Patch Changes

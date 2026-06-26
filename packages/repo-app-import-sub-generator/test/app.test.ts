@@ -369,7 +369,8 @@ describe('Repo App Download', () => {
         (getAbapRepoAppConfig as jest.Mock).mockReturnValue({
             app: { id: appId, title: 'App Title', flpAppId: `${appId}-tile` },
             service: { url: 'https://test-url.com', version: OdataVersion.v4 },
-            ui5: { version: '1.145.2' }
+            ui5: { version: '1.145.2' },
+            template: { type: 'lrop' }
         });
     });
 
