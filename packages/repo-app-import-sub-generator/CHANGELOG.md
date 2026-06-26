@@ -1,5 +1,17 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.1.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-26
+
+#### Bug Fixes
+
+- support ABAP repository app download with service metadata, debug artifact cleanup, and sapux detection [[0192436](https://github.com/SAP/open-ux-tools/commit/0192436b65e7dbc08349a9bd3e2971a3fa214e7c)]
+
 ## 1.1.21
 
 ### Patch Changes
