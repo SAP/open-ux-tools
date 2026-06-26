@@ -310,7 +310,7 @@ const ns1 = {
         'minUi5VersionRequirement':
             'The Page building block feature requires SAPUI5 1.136.0 or higher. The current version is {{ minUI5Version }}, so the Page building block will not be added.',
         'fullTemplateMinUi5VersionRequirement':
-            'The full Page building block template requires SAPUI5 1.145.0 or higher. The current version is {{ minUI5Version }}, so the full template will not be added.'
+            'The full Page building block feature requires SAPUI5 1.145.0 or higher. The current version is {{ minUI5Version }}, so the full template will not be added.'
     },
     'richTextEditorBuildingBlock': {
         'minUi5VersionRequirement':
