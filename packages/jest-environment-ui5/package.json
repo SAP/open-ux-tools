@@ -7,6 +7,10 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/jest-environment-ui5"
     },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues"
+    },
+    "homepage": "https://github.com/SAP/open-ux-tools/tree/main/packages/jest-environment-ui5#readme",
     "license": "Apache-2.0",
     "private": false,
     "types": "index.d.ts",
