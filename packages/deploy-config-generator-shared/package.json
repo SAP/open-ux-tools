@@ -37,7 +37,7 @@
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
-        "@jest/globals": "30.3.0",
+        "@jest/globals": "30.4.1",
         "@types/inquirer": "8.2.6",
         "@types/yeoman-generator": "5.2.14",
         "@sap-ux/axios-extension": "workspace:*",

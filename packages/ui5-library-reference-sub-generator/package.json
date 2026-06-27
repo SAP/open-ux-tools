@@ -42,8 +42,8 @@
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
-        "@jest/globals": "30.3.0",
-        "@jest/types": "30.3.0",
+        "@jest/globals": "30.4.1",
+        "@jest/types": "30.4.1",
         "@types/fs-extra": "11.0.4",
         "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-generator": "5.2.14",
