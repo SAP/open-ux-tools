@@ -40,7 +40,7 @@
         "yeoman.png"
     ],
     "devDependencies": {
-        "@jest/globals": "30.3.0"
+        "@jest/globals": "30.4.1"
     },
     "dependencies": {
         "@sap-devx/yeoman-ui-types": "1.25.0",

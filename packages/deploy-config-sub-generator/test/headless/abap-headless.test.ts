@@ -71,6 +71,7 @@ export const ORIGINAL_CWD: string = process.cwd();
 export const OUTPUT_DIR = join(__dirname, '../test-output/abap');
 
 describe('Test ABAP headless generator', () => {
+    jest.setTimeout(60000);
     let originalStdinIsTTY: boolean | undefined;
     beforeAll(async () => {
         rimraf.rimrafSync(OUTPUT_DIR);
@@ -89,7 +90,7 @@ describe('Test ABAP headless generator', () => {
 
     afterAll(() => {
         process.stdin.isTTY = originalStdinIsTTY;
-        process.stdin.unref();
+        (process.stdin as NodeJS.ReadStream & { unref?: () => void }).unref?.();
         try {
             if (readdirSync(OUTPUT_DIR).length === 0) {
                 console.log('Removing test output folder');

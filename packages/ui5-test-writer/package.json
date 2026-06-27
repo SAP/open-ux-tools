@@ -47,7 +47,7 @@
         "@sap-ux/preview-middleware": "workspace:*"
     },
     "devDependencies": {
-        "@jest/globals": "30.3.0",
+        "@jest/globals": "30.4.1",
         "@types/ejs": "3.1.5",
         "@types/fs-extra": "11.0.4",
         "@types/mem-fs": "1.1.2",

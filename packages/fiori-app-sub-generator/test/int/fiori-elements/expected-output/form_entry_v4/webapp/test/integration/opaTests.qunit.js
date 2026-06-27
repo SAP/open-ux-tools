@@ -23,6 +23,8 @@ sap.ui.require(
     "sap/ui/qunit/qunit-junit",
     "sap/ui/qunit/qunit-coverage",
     "testNameSpace/formentryv4/test/integration/FirstJourney",
+    "testNameSpace/formentryv4/test/integration/TravelObjectPageJourney",
+    "testNameSpace/formentryv4/test/integration/BookingObjectPageJourney",
 ], function (QUnit) {
     "use strict";
     QUnit.start();

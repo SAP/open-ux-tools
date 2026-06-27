@@ -91,6 +91,13 @@ Array [
     ],
   },
   Object {
+    "description": "Disables strict filtering. Strict filtering requires users to enter a single value in the unit of measure field when filtering for measure field values.",
+    "functionalityId": Array [
+      "settings",
+      "disableStrictUomFiltering",
+    ],
+  },
+  Object {
     "description": "Defines the title for the application.",
     "functionalityId": Array [
       "settings",
@@ -207,6 +214,47 @@ To ensure a consistent experience, set this and 'Stay On Current Page After Save
     ],
   },
   Object {
+    "description": "Inline edit allows users to directly edit a field or a group of fields in the active version without switching the entire object to draft. Inline edit supports the same features as the regular edit mode.",
+    "functionalityId": Array [
+      "TravelList",
+      "inlineEdit",
+    ],
+  },
+  Object {
+    "description": "inlineEdit",
+    "functionalityId": Array [
+      "TravelList",
+      "inlineEdit",
+    ],
+  },
+  Object {
+    "description": "Array of fields which are inline editable.
+If empty or undefined, all fields within the page are inline editable except for fields specified in 'Disabled Fields'.
+Each string may be a direct property, a navigation property, or a field group.",
+    "functionalityId": Array [
+      "inlineEdit",
+      "enabledFields",
+    ],
+  },
+  Object {
+    "description": "Array of fields which are not inline editable.
+If empty or undefined, all fields within the page are not inline editable except for those specified in 'Enabled Fields'.
+Each string may be a direct property, a navigation property, or a field group.",
+    "functionalityId": Array [
+      "inlineEdit",
+      "disabledFields",
+    ],
+  },
+  Object {
+    "description": "Array of arrays of fields which are edited inline together.
+Fields specified in 'Connected Fields' must not be included in 'Enabled Fields' or 'Disabled Fields'.
+May contain direct properties, navigation properties, or a field group.",
+    "functionalityId": Array [
+      "inlineEdit",
+      "connectedFields",
+    ],
+  },
+  Object {
     "description": "Allows you to hide the filter bar.",
     "functionalityId": Array [
       "TravelList",
@@ -320,7 +368,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
-    "description": "Mass editing allows end users to simultaneously change multiple objects that share the same editable properties.",
+    "description": "Mass edit allows users to simultaneously change multiple objects that share the same editable properties.",
     "functionalityId": Array [
       "TravelList",
       "table",
@@ -400,7 +448,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
-    "description": "Define how the changes using mass edit should be applied. The default mode for mass editing is 'ChangeSet' on the Object Page and 'Isolated' in the List Report.
+    "description": "Define how changes using mass edit are applied. The default mode for mass edit is 'ChangeSet' on object pages and 'Isolated' on list report pages.
 
 - ChangeSet: Grouped for all objects within the same request.
 - Isolated: Separately for each object (as an individual OData change set in the same request).",
@@ -411,7 +459,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
-    "description": "The 'visibleFields' property lets you specify which fields are available in the mass edit dialog.",
+    "description": "The 'visibleFields' property lets you specify which fields are available in the mass edit dialog. If empty or undefined, all fields within the page appear in the edit dialog except for read-only fields and fields specified in 'Disabled Fields'.",
     "functionalityId": Array [
       "table",
       "enableMassEdit",
@@ -419,7 +467,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
-    "description": "The 'ignoredFields' property lets you hide specific fields from the mass edit dialog, even if these fields are displayed in the table.",
+    "description": "The 'ignoredFields' property lets you hide specific fields from the mass edit dialog, even if these fields are displayed in the table. If empty or undefined, all fields within the page appear in the edit dialog except for fields specified in 'Visible Fields'. If 'Visible Fields' are defined, this field is ignored.",
     "functionalityId": Array [
       "table",
       "enableMassEdit",
@@ -587,7 +635,7 @@ If this is not set with a value, the default value is 'NewPage'.",
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::",
+      "DataFieldForAction",
       "enableOnSelect",
     ],
   },
@@ -598,7 +646,7 @@ If this is not set with a value, the default value is 'NewPage'.",
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::",
+      "DataFieldForAction",
       "overflowGroup",
     ],
   },
@@ -609,7 +657,7 @@ If this is not set with a value, the default value is 'NewPage'.",
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::",
+      "DataFieldForAction",
       "priority",
     ],
   },
@@ -620,7 +668,7 @@ If this is not set with a value, the default value is 'NewPage'.",
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::",
+      "DataFieldForAction",
       "afterExecution",
     ],
   },
@@ -630,7 +678,7 @@ If this is not set with a value, the default value is 'NewPage'.",
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::",
+      "DataFieldForAction",
       "afterExecution",
       "navigateToInstance",
     ],
@@ -641,7 +689,7 @@ If this is not set with a value, the default value is 'NewPage'.",
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::",
+      "DataFieldForAction",
       "afterExecution",
       "enableAutoScroll",
     ],
