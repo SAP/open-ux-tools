@@ -41,7 +41,7 @@ export class AddTableCustomColumnQuickAction
         );
     }
     async initialize(): Promise<void> {
-        this.pageId = (this.context.view.getViewData() as ViewDataType)?.stableId.split('::').pop() as string;
+        this.pageId = (this.context.view.getViewData() as ViewDataType)?.stableId.split('::').pop();
         const version = await getUi5Version();
         if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 120 })) {
             return;

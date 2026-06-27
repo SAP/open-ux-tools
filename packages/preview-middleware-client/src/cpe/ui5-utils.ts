@@ -14,7 +14,7 @@ export function getIcons(): IconDetails[] {
                 name: icon.toLowerCase(),
                 content: iconInfo.content,
                 fontFamily: iconInfo.fontFamily
-            } as IconDetails;
+            };
         })
         .sort((item1: IconDetails, item2: IconDetails) => {
             if (item1.name < item2.name) {

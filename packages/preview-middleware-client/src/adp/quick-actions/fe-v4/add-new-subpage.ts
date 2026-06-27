@@ -168,7 +168,7 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
 
         this.appComponent = getV4AppComponent(this.context.view);
 
-        this.pageId = (this.context.view.getViewData() as ViewDataType)?.stableId.split('::').pop() as string;
+        this.pageId = (this.context.view.getViewData() as ViewDataType)?.stableId.split('::').pop();
         // remember current page route pattern (used in dialog controller for new page change)
         const currentPageRoute = (this.context.manifest['sap.ui5'].routing?.routes ?? []).find(
             (r) => r.name === this.pageId
