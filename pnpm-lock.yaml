@@ -615,8 +615,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       semver:
-        specifier: 7.7.4
-        version: 7.7.4
+        specifier: 7.8.4
+        version: 7.8.4
     devDependencies:
       '@types/fs-extra':
         specifier: 11.0.4
@@ -782,8 +782,8 @@ importers:
         specifier: 8.2.7
         version: 8.2.7(@types/node@22.13.14)
       js-yaml:
-        specifier: 4.1.1
-        version: 4.1.1
+        specifier: 4.2.0
+        version: 4.2.0
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -913,8 +913,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       chalk:
-        specifier: 5.3.0
-        version: 5.3.0
+        specifier: 5.6.2
+        version: 5.6.2
       cross-spawn:
         specifier: 7.0.6
         version: 7.0.6
@@ -934,8 +934,8 @@ importers:
         specifier: 2.4.2
         version: 2.4.2
       semver:
-        specifier: 7.7.4
-        version: 7.7.4
+        specifier: 7.8.4
+        version: 7.8.4
     devDependencies:
       '@jest/globals':
         specifier: 30.4.1
@@ -1050,8 +1050,8 @@ importers:
         specifier: workspace:*
         version: link:../store
       chalk:
-        specifier: 5.3.0
-        version: 5.3.0
+        specifier: 5.6.2
+        version: 5.6.2
       dotenv:
         specifier: 17.4.2
         version: 17.4.2
@@ -1200,8 +1200,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       semver:
-        specifier: 7.7.4
-        version: 7.7.4
+        specifier: 7.8.4
+        version: 7.8.4
       xml-js:
         specifier: 1.6.11
         version: 1.6.11
@@ -1379,8 +1379,8 @@ importers:
         specifier: 4.0.6
         version: 4.0.6
       js-yaml:
-        specifier: 4.1.1
-        version: 4.1.1
+        specifier: 4.2.0
+        version: 4.2.0
       memfs:
         specifier: 3.4.13
         version: 3.4.13
@@ -1439,8 +1439,8 @@ importers:
         specifier: ^1.0.8
         version: 1.0.8
       semver:
-        specifier: 7.7.4
-        version: 7.7.4
+        specifier: 7.8.4
+        version: 7.8.4
     devDependencies:
       '@jest/globals':
         specifier: 30.4.1
@@ -1470,8 +1470,8 @@ importers:
         specifier: 11.3.5
         version: 11.3.5
       js-yaml:
-        specifier: 4.1.1
-        version: 4.1.1
+        specifier: 4.2.0
+        version: 4.2.0
       memfs:
         specifier: 3.4.13
         version: 3.4.13
@@ -1671,8 +1671,8 @@ importers:
         specifier: 3.3.1
         version: 3.3.1
       chalk:
-        specifier: 5.3.0
-        version: 5.3.0
+        specifier: 5.6.2
+        version: 5.6.2
       commander:
         specifier: 14.0.3
         version: 14.0.3
@@ -1848,8 +1848,8 @@ importers:
         specifier: 11.3.5
         version: 11.3.5
       js-yaml:
-        specifier: 4.1.1
-        version: 4.1.1
+        specifier: 4.2.0
+        version: 4.2.0
       memfs:
         specifier: 3.4.13
         version: 3.4.13
@@ -1896,8 +1896,8 @@ importers:
         specifier: '>=1.16.0'
         version: 1.16.1(debug@4.3.4)
       chalk:
-        specifier: 5.3.0
-        version: 5.3.0
+        specifier: 5.6.2
+        version: 5.6.2
       commander:
         specifier: 14.0.3
         version: 14.0.3
@@ -2079,8 +2079,8 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0
       semver:
-        specifier: 7.7.4
-        version: 7.7.4
+        specifier: 7.8.4
+        version: 7.8.4
       synckit:
         specifier: 0.11.12
         version: 0.11.12
@@ -2124,8 +2124,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       semver:
-        specifier: 7.7.4
-        version: 7.7.4
+        specifier: 7.8.4
+        version: 7.8.4
       xml-formatter:
         specifier: 3.7.0
         version: 3.7.0
@@ -2475,8 +2475,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       semver:
-        specifier: 7.7.4
-        version: 7.7.4
+        specifier: 7.8.4
+        version: 7.8.4
     devDependencies:
       '@jest/globals':
         specifier: 30.4.1
@@ -2551,8 +2551,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       semver:
-        specifier: 7.7.4
-        version: 7.7.4
+        specifier: 7.8.4
+        version: 7.8.4
     devDependencies:
       '@jest/globals':
         specifier: 30.4.1
@@ -2615,8 +2615,8 @@ importers:
         specifier: 4.0.1
         version: 4.0.1
       semver:
-        specifier: 7.7.4
-        version: 7.7.4
+        specifier: 7.8.4
+        version: 7.8.4
     devDependencies:
       '@jest/globals':
         specifier: 30.4.1
@@ -3191,8 +3191,8 @@ importers:
         specifier: '>=1.16.0'
         version: 1.16.1(debug@4.3.4)
       chalk:
-        specifier: 5.3.0
-        version: 5.3.0
+        specifier: 5.6.2
+        version: 5.6.2
       figures:
         specifier: 3.2.0
         version: 3.2.0
@@ -3209,8 +3209,8 @@ importers:
         specifier: 4.0.1
         version: 4.0.1
       semver:
-        specifier: 7.7.4
-        version: 7.7.4
+        specifier: 7.8.4
+        version: 7.8.4
     devDependencies:
       '@jest/globals':
         specifier: 30.4.1
@@ -3256,8 +3256,8 @@ importers:
   packages/jest-file-matchers:
     dependencies:
       chalk:
-        specifier: 5.3.0
-        version: 5.3.0
+        specifier: 5.6.2
+        version: 5.6.2
       dir-compare:
         specifier: 5.0.0
         version: 5.0.0
@@ -3278,8 +3278,8 @@ importers:
         version: 6.1.3
     devDependencies:
       chalk:
-        specifier: 5.3.0
-        version: 5.3.0
+        specifier: 5.6.2
+        version: 5.6.2
       jest-environment-node:
         specifier: 30.4.1
         version: 30.4.1
@@ -3336,8 +3336,8 @@ importers:
   packages/logger:
     dependencies:
       chalk:
-        specifier: 5.3.0
-        version: 5.3.0
+        specifier: 5.6.2
+        version: 5.6.2
       lodash:
         specifier: 4.18.1
         version: 4.18.1
@@ -3410,8 +3410,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       semver:
-        specifier: 7.7.4
-        version: 7.7.4
+        specifier: 7.8.4
+        version: 7.8.4
     devDependencies:
       '@jest/globals':
         specifier: 30.4.1
@@ -3600,8 +3600,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0
       semver:
-        specifier: 7.7.4
-        version: 7.7.4
+        specifier: 7.8.4
+        version: 7.8.4
     devDependencies:
       '@jest/globals':
         specifier: 30.4.1
@@ -3863,8 +3863,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       semver:
-        specifier: 7.7.4
-        version: 7.7.4
+        specifier: 7.8.4
+        version: 7.8.4
     devDependencies:
       '@jest/globals':
         specifier: 30.4.1
@@ -4852,8 +4852,8 @@ importers:
         specifier: 4.18.1
         version: 4.18.1
       semver:
-        specifier: 7.7.4
-        version: 7.7.4
+        specifier: 7.8.4
+        version: 7.8.4
     devDependencies:
       '@jest/globals':
         specifier: 30.4.1
@@ -4904,8 +4904,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       semver:
-        specifier: 7.7.4
-        version: 7.7.4
+        specifier: 7.8.4
+        version: 7.8.4
     devDependencies:
       '@sap-ux/eslint-plugin-fiori-tools':
         specifier: workspace:*
@@ -4947,14 +4947,14 @@ importers:
         specifier: '>=1.16.0'
         version: 1.16.1(debug@4.3.4)
       js-yaml:
-        specifier: 4.1.1
-        version: 4.1.1
+        specifier: 4.2.0
+        version: 4.2.0
       lodash:
         specifier: 4.18.1
         version: 4.18.1
       semver:
-        specifier: 7.7.4
-        version: 7.7.4
+        specifier: 7.8.4
+        version: 7.8.4
     devDependencies:
       '@sap-ux/store':
         specifier: workspace:*
@@ -4978,8 +4978,8 @@ importers:
         specifier: '>=1.16.0'
         version: 1.16.1(debug@4.3.4)
       semver:
-        specifier: 7.7.4
-        version: 7.7.4
+        specifier: 7.8.4
+        version: 7.8.4
     devDependencies:
       '@jest/globals':
         specifier: 30.4.1
@@ -5239,8 +5239,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       semver:
-        specifier: 7.7.4
-        version: 7.7.4
+        specifier: 7.8.4
+        version: 7.8.4
     devDependencies:
       '@sap-ux/eslint-plugin-fiori-tools':
         specifier: workspace:*
@@ -5487,8 +5487,8 @@ importers:
         specifier: 1.0.38
         version: 1.0.38
       semver:
-        specifier: 7.7.4
-        version: 7.7.4
+        specifier: 7.8.4
+        version: 7.8.4
     devDependencies:
       '@types/adm-zip':
         specifier: 0.5.8
@@ -14460,6 +14460,10 @@ packages:
     resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
     hasBin: true
 
+  js-yaml@4.2.0:
+    resolution: {integrity: sha512-ePWsvanv0DWuDRsW8dnt+R4jQ31SCRCQ7hhNcPXZPsoBZiemuZNYGf7adZdqX2D86j6rvKp3RpCxVTSb8WQlOw==}
+    hasBin: true
+
   js2xmlparser@4.0.2:
     resolution: {integrity: sha512-6n4D8gLlLf1n5mNLQPRfViYzu9RATblzPEtm1SthMX1Pjao0r9YI9nw7ZIfRxQMERS87mcswrg+r/OYrPRX6jA==}
 
@@ -17169,6 +17173,11 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
+  semver@7.8.4:
+    resolution: {integrity: sha512-rUCObTnP32Q08R2uuIrt7r9PlEonuTmtuXYcW6s5kjdlj3xbnwe+21yXptAUYcMAABLkYYTtnmzb3w3EDZfueA==}
+    engines: {node: '>=10'}
+    hasBin: true
+
   semver@7.8.5:
     resolution: {integrity: sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==}
     engines: {node: '>=10'}
@@ -19870,7 +19879,7 @@ snapshots:
       '@babel/helper-validator-option': 8.0.0-rc.6
       browserslist: 4.28.2
       lru-cache: 7.18.3
-      semver: 7.7.4
+      semver: 7.8.4
 
   '@babel/helper-create-class-features-plugin@7.29.7(@babel/core@7.29.0)':
     dependencies:
@@ -21426,7 +21435,7 @@ snapshots:
       outdent: 0.5.0
       prettier: 2.8.8
       resolve-from: 5.0.0
-      semver: 7.7.4
+      semver: 7.8.4
 
   '@changesets/assemble-release-plan@6.0.10':
     dependencies:
@@ -21435,7 +21444,7 @@ snapshots:
       '@changesets/should-skip-package': 0.1.2
       '@changesets/types': 6.1.0
       '@manypkg/get-packages': 1.1.3
-      semver: 7.7.4
+      semver: 7.8.4
 
   '@changesets/changelog-git@0.2.1':
     dependencies:
@@ -21492,7 +21501,7 @@ snapshots:
       '@changesets/types': 6.1.0
       '@manypkg/get-packages': 1.1.3
       picocolors: 1.1.1
-      semver: 7.7.4
+      semver: 7.8.4
 
   '@changesets/get-release-plan@4.0.16':
     dependencies:
@@ -22911,7 +22920,7 @@ snapshots:
       read-package-json-fast: 2.0.3
       readdir-scoped-modules: 1.1.0
       rimraf: 3.0.2
-      semver: 7.7.4
+      semver: 7.8.4
       ssri: 8.0.1
       treeverse: 1.0.4
       walk-up-path: 1.0.0
@@ -22927,21 +22936,21 @@ snapshots:
       ini: 5.0.0
       nopt: 8.1.0
       proc-log: 5.0.0
-      semver: 7.7.4
+      semver: 7.8.4
       walk-up-path: 3.0.1
 
   '@npmcli/fs@1.1.1':
     dependencies:
       '@gar/promisify': 1.1.3
-      semver: 7.7.4
+      semver: 7.8.4
 
   '@npmcli/fs@3.1.1':
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.4
 
   '@npmcli/fs@4.0.0':
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.4
 
   '@npmcli/git@2.1.0':
     dependencies:
@@ -22951,7 +22960,7 @@ snapshots:
       npm-pick-manifest: 6.1.1
       promise-inflight: 1.0.1
       promise-retry: 2.0.1
-      semver: 7.7.4
+      semver: 7.8.4
       which: 2.0.2
     transitivePeerDependencies:
       - bluebird
@@ -22964,7 +22973,7 @@ snapshots:
       proc-log: 3.0.0
       promise-inflight: 1.0.1
       promise-retry: 2.0.1
-      semver: 7.7.4
+      semver: 7.8.4
       which: 3.0.1
     transitivePeerDependencies:
       - bluebird
@@ -22977,7 +22986,7 @@ snapshots:
       npm-pick-manifest: 10.0.0
       proc-log: 5.0.0
       promise-retry: 2.0.1
-      semver: 7.7.4
+      semver: 7.8.4
       which: 5.0.0
 
   '@npmcli/installed-package-contents@1.0.7':
@@ -23014,7 +23023,7 @@ snapshots:
       cacache: 15.3.0
       json-parse-even-better-errors: 2.3.1
       pacote: 12.0.3
-      semver: 7.7.4
+      semver: 7.8.4
     transitivePeerDependencies:
       - bluebird
       - supports-color
@@ -23045,7 +23054,7 @@ snapshots:
       hosted-git-info: 8.1.0
       json-parse-even-better-errors: 4.0.0
       proc-log: 5.0.0
-      semver: 7.7.4
+      semver: 7.8.4
       validate-npm-package-license: 3.0.4
 
   '@npmcli/promise-spawn@1.3.2':
@@ -23717,7 +23726,7 @@ snapshots:
       extract-zip: 2.0.1
       progress: 2.0.3
       proxy-agent: 8.0.1
-      semver: 7.7.4
+      semver: 7.8.4
       tar-fs: 3.1.1
       yargs: 17.7.2
     transitivePeerDependencies:
@@ -25081,7 +25090,7 @@ snapshots:
       react-docgen: 7.1.1
       react-dom: 16.14.0(react@16.14.0)
       resolve: 1.22.11
-      semver: 7.7.4
+      semver: 7.8.4
       storybook: 10.4.0(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@9.3.4)(@types/react@16.14.69)(prettier@3.8.4)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       tsconfig-paths: 4.2.0
       webpack: 5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15)
@@ -25113,7 +25122,7 @@ snapshots:
       react-docgen: 7.1.1
       react-dom: 16.14.0(react@16.14.0)
       resolve: 1.22.11
-      semver: 7.7.4
+      semver: 7.8.4
       storybook: 10.4.6(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@9.3.4)(@types/react@16.14.69)(prettier@3.8.4)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       tsconfig-paths: 4.2.0
       webpack: 5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15)
@@ -26049,7 +26058,7 @@ snapshots:
       debug: 4.4.3(supports-color@7.2.0)
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.7.4
+      semver: 7.8.4
       tsutils: 3.21.0(typescript@5.9.3)
     optionalDependencies:
       typescript: 5.9.3
@@ -26064,7 +26073,7 @@ snapshots:
       '@typescript-eslint/visitor-keys': 8.61.1
       debug: 4.4.3(supports-color@7.2.0)
       minimatch: 10.2.5
-      semver: 7.7.4
+      semver: 7.8.4
       tinyglobby: 0.2.15
       ts-api-utils: 2.5.0(typescript@5.9.3)
       typescript: 5.9.3
@@ -26081,7 +26090,7 @@ snapshots:
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.9.3)
       eslint: 9.39.1
       eslint-scope: 5.1.1
-      semver: 7.7.4
+      semver: 7.8.4
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -26139,7 +26148,7 @@ snapshots:
       jsdoc: 4.0.5
       less-openui5: 0.11.6
       pretty-data: 0.40.0
-      semver: 7.7.4
+      semver: 7.8.4
       terser: 5.46.1
       workerpool: 9.3.4
       xml2js: 0.6.2
@@ -27341,7 +27350,7 @@ snapshots:
     dependencies:
       ansi-align: 3.0.1
       camelcase: 8.0.0
-      chalk: 5.3.0
+      chalk: 5.6.2
       cli-boxes: 3.0.0
       string-width: 7.2.0
       type-fest: 4.41.0
@@ -27410,7 +27419,7 @@ snapshots:
 
   builtins@5.1.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.4
 
   bundle-name@4.1.0:
     dependencies:
@@ -28258,7 +28267,7 @@ snapshots:
 
   diagnostic-channel@1.1.1:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.4
 
   diff@4.0.4: {}
 
@@ -29532,7 +29541,7 @@ snapshots:
       minimatch: 3.1.5
       node-abort-controller: 3.1.1
       schema-utils: 3.3.0
-      semver: 7.7.4
+      semver: 7.8.4
       tapable: 2.3.0
       typescript: 5.9.3
       webpack: 5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15)
@@ -29820,7 +29829,7 @@ snapshots:
       es6-error: 4.1.1
       matcher: 3.0.0
       roarr: 2.15.4
-      semver: 7.7.4
+      semver: 7.8.4
       serialize-error: 7.0.1
 
   global-directory@4.0.1:
@@ -30404,7 +30413,7 @@ snapshots:
 
   is-bun-module@2.0.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.4
 
   is-callable@1.2.7: {}
 
@@ -30618,7 +30627,7 @@ snapshots:
       '@babel/parser': 7.29.7
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.2
-      semver: 7.7.4
+      semver: 7.8.4
     transitivePeerDependencies:
       - supports-color
 
@@ -31011,7 +31020,7 @@ snapshots:
       jest-message-util: 30.4.1
       jest-util: 30.4.1
       pretty-format: 30.4.1
-      semver: 7.7.4
+      semver: 7.8.4
       synckit: 0.11.12
     transitivePeerDependencies:
       - supports-color
@@ -31126,6 +31135,10 @@ snapshots:
       esprima: 4.0.1
 
   js-yaml@4.1.1:
+    dependencies:
+      argparse: 2.0.1
+
+  js-yaml@4.2.0:
     dependencies:
       argparse: 2.0.1
 
@@ -31281,7 +31294,7 @@ snapshots:
       lodash.isstring: 4.0.1
       lodash.once: 4.1.1
       ms: 2.1.3
-      semver: 7.7.4
+      semver: 7.8.4
 
   jsx-ast-utils-x@0.1.0: {}
 
@@ -31579,7 +31592,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.4
 
   make-error@1.3.6: {}
 
@@ -32025,7 +32038,7 @@ snapshots:
 
   node-abi@3.87.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.4
 
   node-abort-controller@3.1.1: {}
 
@@ -32064,7 +32077,7 @@ snapshots:
       make-fetch-happen: 14.0.3
       nopt: 8.1.0
       proc-log: 5.0.0
-      semver: 7.7.4
+      semver: 7.8.4
       tar: 7.5.15
       tinyglobby: 0.2.15
       which: 5.0.0
@@ -32080,7 +32093,7 @@ snapshots:
       nopt: 5.0.0
       npmlog: 6.0.2
       rimraf: 3.0.2
-      semver: 7.7.4
+      semver: 7.8.4
       tar: 7.5.15
       which: 2.0.2
     transitivePeerDependencies:
@@ -32096,7 +32109,7 @@ snapshots:
       nopt: 6.0.0
       npmlog: 6.0.2
       rimraf: 3.0.2
-      semver: 7.7.4
+      semver: 7.8.4
       tar: 7.5.15
       which: 2.0.2
     transitivePeerDependencies:
@@ -32151,13 +32164,13 @@ snapshots:
     dependencies:
       hosted-git-info: 6.1.3
       is-core-module: 2.16.1
-      semver: 7.7.4
+      semver: 7.8.4
       validate-npm-package-license: 3.0.4
 
   normalize-package-data@6.0.2:
     dependencies:
       hosted-git-info: 7.0.2
-      semver: 7.7.4
+      semver: 7.8.4
       validate-npm-package-license: 3.0.4
 
   normalize-path@3.0.0: {}
@@ -32176,15 +32189,15 @@ snapshots:
 
   npm-install-checks@4.0.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.4
 
   npm-install-checks@6.3.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.4
 
   npm-install-checks@7.1.2:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.4
 
   npm-normalize-package-bin@1.0.1: {}
 
@@ -32198,20 +32211,20 @@ snapshots:
     dependencies:
       hosted-git-info: 6.1.3
       proc-log: 3.0.0
-      semver: 7.7.4
+      semver: 7.8.4
       validate-npm-package-name: 5.0.0
 
   npm-package-arg@12.0.2:
     dependencies:
       hosted-git-info: 8.1.0
       proc-log: 5.0.0
-      semver: 7.7.4
+      semver: 7.8.4
       validate-npm-package-name: 6.0.2
 
   npm-package-arg@8.1.5:
     dependencies:
       hosted-git-info: 4.1.0
-      semver: 7.7.4
+      semver: 7.8.4
       validate-npm-package-name: 3.0.0
 
   npm-packlist@3.0.0:
@@ -32234,21 +32247,21 @@ snapshots:
       npm-install-checks: 7.1.2
       npm-normalize-package-bin: 4.0.0
       npm-package-arg: 12.0.2
-      semver: 7.7.4
+      semver: 7.8.4
 
   npm-pick-manifest@6.1.1:
     dependencies:
       npm-install-checks: 4.0.0
       npm-normalize-package-bin: 1.0.1
       npm-package-arg: 8.1.5
-      semver: 7.7.4
+      semver: 7.8.4
 
   npm-pick-manifest@8.0.2:
     dependencies:
       npm-install-checks: 6.3.0
       npm-normalize-package-bin: 3.0.1
       npm-package-arg: 10.1.0
-      semver: 7.7.4
+      semver: 7.8.4
 
   npm-registry-fetch@12.0.2:
     dependencies:
@@ -32831,7 +32844,7 @@ snapshots:
       ky: 1.14.3
       registry-auth-token: 5.1.1
       registry-url: 6.0.1
-      semver: 7.7.4
+      semver: 7.8.4
 
   package-manager-detector@0.2.11:
     dependencies:
@@ -34586,6 +34599,8 @@ snapshots:
 
   semver@7.7.4: {}
 
+  semver@7.8.4: {}
+
   semver@7.8.5: {}
 
   send@0.19.0:
@@ -34708,7 +34723,7 @@ snapshots:
     dependencies:
       '@img/colour': 1.0.0
       detect-libc: 2.1.2
-      semver: 7.7.4
+      semver: 7.8.4
     optionalDependencies:
       '@img/sharp-darwin-arm64': 0.34.5
       '@img/sharp-darwin-x64': 0.34.5
@@ -36041,14 +36056,14 @@ snapshots:
   update-notifier@7.3.1:
     dependencies:
       boxen: 8.0.1
-      chalk: 5.3.0
+      chalk: 5.6.2
       configstore: 7.1.0
       is-in-ci: 1.0.0
       is-installed-globally: 1.0.0
       is-npm: 6.1.0
       latest-version: 9.0.0
       pupa: 3.3.0
-      semver: 7.7.4
+      semver: 7.8.4
       xdg-basedir: 5.1.0
 
   update-ts-references@4.0.0:
