@@ -40,7 +40,7 @@
         "reflect-metadata": "0.2.2"
     },
     "optionalDependencies": {
-        "@zowe/secrets-for-zowe-sdk": "8.29.4"
+        "@zowe/secrets-for-zowe-sdk": "8.32.0"
     },
     "devDependencies": {
         "@jest/globals": "30.4.1",

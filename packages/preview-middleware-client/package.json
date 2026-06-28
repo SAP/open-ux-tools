@@ -42,7 +42,7 @@
         "@jest/globals": "30.4.1",
         "ui5-tooling-transpile": "3.11.3",
         "vscode-languageserver-textdocument": "1.0.12",
-        "@ui5/manifest": "1.86.0"
+        "@ui5/manifest": "1.88.0"
     },
     "browserslist": "defaults"
 }

@@ -229,8 +229,8 @@ importers:
         specifier: 4.0.0
         version: 4.0.0
       yaml:
-        specifier: 2.8.3
-        version: 2.8.3
+        specifier: 2.9.0
+        version: 2.9.0
       yargs-parser:
         specifier: 21.1.1
         version: 21.1.1
@@ -430,11 +430,11 @@ importers:
         specifier: 16.14.0
         version: 16.14.0(react@16.14.0)
       sass:
-        specifier: 1.98.0
-        version: 1.98.0
+        specifier: 1.101.0
+        version: 1.101.0
       sass-loader:
         specifier: 16.0.7
-        version: 16.0.7(sass-embedded@1.97.3)(sass@1.98.0)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
+        version: 16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
       storybook:
         specifier: 10.4.0
         version: 10.4.0(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@9.3.4)(@types/react@16.14.69)(prettier@3.8.4)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
@@ -445,8 +445,8 @@ importers:
         specifier: 4.0.0
         version: 4.0.0(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
       ts-loader:
-        specifier: 9.5.4
-        version: 9.5.4(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
+        specifier: 9.6.2
+        version: 9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)
@@ -695,8 +695,8 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
       '@types/vscode':
-        specifier: 1.110.0
-        version: 1.110.0
+        specifier: 1.125.0
+        version: 1.125.0
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
@@ -1105,8 +1105,8 @@ importers:
         specifier: 7.2.2
         version: 7.2.2
       yaml:
-        specifier: 2.8.3
-        version: 2.8.3
+        specifier: 2.9.0
+        version: 2.9.0
 
   packages/backend-proxy-middleware-cf:
     dependencies:
@@ -1256,8 +1256,8 @@ importers:
         specifier: workspace:*
         version: link:../text-document-utils
       '@sap/ux-cds-compiler-facade':
-        specifier: 1.21.0
-        version: 1.21.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
+        specifier: 1.23.0
+        version: 1.23.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       i18next:
         specifier: 25.10.10
         version: 25.10.10(typescript@5.9.3)
@@ -1982,8 +1982,8 @@ importers:
         specifier: 2.4.9
         version: 2.4.9
       '@types/vscode':
-        specifier: 1.110.0
-        version: 1.110.0
+        specifier: 1.125.0
+        version: 1.125.0
 
   packages/eslint-plugin-fiori-tools:
     dependencies:
@@ -2085,8 +2085,8 @@ importers:
         specifier: 0.11.12
         version: 0.11.12
       yaml:
-        specifier: 2.8.3
-        version: 2.8.3
+        specifier: 2.9.0
+        version: 2.9.0
 
   packages/fe-fpm-writer:
     dependencies:
@@ -2164,8 +2164,8 @@ importers:
         specifier: 30.4.1
         version: 30.4.1
       '@types/vscode':
-        specifier: 1.110.0
-        version: 1.110.0
+        specifier: 1.125.0
+        version: 1.125.0
       jest-when:
         specifier: 4.0.3
         version: 4.0.3(jest@30.4.2(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)))
@@ -2209,8 +2209,8 @@ importers:
         specifier: workspace:*
         version: link:../xml-odata-annotation-converter
       '@sap/ux-cds-compiler-facade':
-        specifier: 1.21.0
-        version: 1.21.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
+        specifier: 1.23.0
+        version: 1.23.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       '@xml-tools/ast':
         specifier: 5.0.5
         version: 5.0.5
@@ -2361,8 +2361,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       '@types/vscode':
-        specifier: 1.110.0
-        version: 1.110.0
+        specifier: 1.125.0
+        version: 1.125.0
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
@@ -2637,8 +2637,8 @@ importers:
         specifier: 7.7.1
         version: 7.7.1
       '@types/vscode':
-        specifier: 1.110.0
-        version: 1.110.0
+        specifier: 1.125.0
+        version: 1.125.0
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
@@ -2998,8 +2998,8 @@ importers:
         specifier: 11.0.0
         version: 11.0.0
       '@types/vscode':
-        specifier: 1.110.0
-        version: 1.110.0
+        specifier: 1.125.0
+        version: 1.125.0
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
@@ -3355,8 +3355,8 @@ importers:
         specifier: 4.17.24
         version: 4.17.24
       '@types/vscode':
-        specifier: 1.110.0
-        version: 1.110.0
+        specifier: 1.125.0
+        version: 1.125.0
       jest-extended:
         specifier: 7.0.0
         version: 7.0.0(jest@30.4.2(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)))(typescript@5.9.3)
@@ -3423,8 +3423,8 @@ importers:
         specifier: 7.7.1
         version: 7.7.1
       '@types/vscode':
-        specifier: 1.110.0
-        version: 1.110.0
+        specifier: 1.125.0
+        version: 1.125.0
       mock-spawn:
         specifier: 0.2.6
         version: 0.2.6
@@ -3818,8 +3818,8 @@ importers:
         specifier: 4.0.50
         version: 4.0.50
       '@ui5/manifest':
-        specifier: 1.86.0
-        version: 1.86.0
+        specifier: 1.88.0
+        version: 1.88.0
       eslint-plugin-jsdoc:
         specifier: 62.8.1
         version: 62.8.1(eslint@10.5.0)
@@ -3845,8 +3845,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@ui5/manifest':
-        specifier: 1.86.0
-        version: 1.86.0
+        specifier: 1.88.0
+        version: 1.88.0
       fast-xml-parser:
         specifier: 5.8.0
         version: 5.8.0
@@ -4144,14 +4144,14 @@ importers:
         specifier: 3.0.2
         version: 3.0.2
       '@types/vscode':
-        specifier: 1.102.0
-        version: 1.102.0
+        specifier: 1.125.0
+        version: 1.125.0
       '@vscode/vsce':
         specifier: 3.7.1
         version: 3.7.1
       '@zowe/secrets-for-zowe-sdk':
-        specifier: 8.29.4
-        version: 8.29.4
+        specifier: 8.32.0
+        version: 8.32.0
       cross-env:
         specifier: 10.1.0
         version: 10.1.0
@@ -4318,8 +4318,8 @@ importers:
         version: 4.6.0
     optionalDependencies:
       '@zowe/secrets-for-zowe-sdk':
-        specifier: 8.29.4
-        version: 8.29.4
+        specifier: 8.32.0
+        version: 8.32.0
 
   packages/system-access:
     dependencies:
@@ -4385,8 +4385,8 @@ importers:
         specifier: 2.1.0
         version: 2.1.0
       yaml:
-        specifier: 2.8.3
-        version: 2.8.3
+        specifier: 2.9.0
+        version: 2.9.0
     devDependencies:
       '@jest/globals':
         specifier: 30.4.1
@@ -4528,11 +4528,11 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       sass:
-        specifier: 1.98.0
-        version: 1.98.0
+        specifier: 1.101.0
+        version: 1.101.0
       sass-loader:
         specifier: 16.0.7
-        version: 16.0.7(sass-embedded@1.97.3)(sass@1.98.0)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
+        version: 16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
       storybook:
         specifier: 10.4.6
         version: 10.4.6(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@9.3.4)(@types/react@16.14.69)(prettier@3.8.4)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
@@ -4543,8 +4543,8 @@ importers:
         specifier: 4.0.0
         version: 4.0.0(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
       ts-loader:
-        specifier: 9.5.4
-        version: 9.5.4(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
+        specifier: 9.6.2
+        version: 9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
 
   packages/ui-prompting:
     dependencies:
@@ -4637,11 +4637,11 @@ importers:
         specifier: 16.14.0
         version: 16.14.0(react@16.14.0)
       sass:
-        specifier: 1.98.0
-        version: 1.98.0
+        specifier: 1.101.0
+        version: 1.101.0
       sass-loader:
         specifier: 16.0.7
-        version: 16.0.7(sass-embedded@1.97.3)(sass@1.98.0)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
+        version: 16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
       storybook:
         specifier: 10.4.6
         version: 10.4.6(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@9.3.4)(@types/react@16.14.69)(prettier@3.8.4)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
@@ -4652,8 +4652,8 @@ importers:
         specifier: 4.0.0
         version: 4.0.0(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
       ts-loader:
-        specifier: 9.5.4
-        version: 9.5.4(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
+        specifier: 9.6.2
+        version: 9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15))
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)
@@ -4886,8 +4886,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@ui5/manifest':
-        specifier: 1.86.0
-        version: 1.86.0
+        specifier: 1.88.0
+        version: 1.88.0
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -5093,8 +5093,8 @@ importers:
         specifier: 11.0.4
         version: 11.0.4
       '@types/vscode':
-        specifier: 1.110.0
-        version: 1.110.0
+        specifier: 1.125.0
+        version: 1.125.0
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
@@ -5316,8 +5316,8 @@ importers:
         specifier: 7.2.2
         version: 7.2.2
       yaml:
-        specifier: 2.8.3
-        version: 2.8.3
+        specifier: 2.9.0
+        version: 2.9.0
 
   packages/ui5-test-writer:
     dependencies:
@@ -5420,8 +5420,8 @@ importers:
         specifier: 4.18.1
         version: 4.18.1
       yaml:
-        specifier: 2.8.3
-        version: 2.8.3
+        specifier: 2.9.0
+        version: 2.9.0
     devDependencies:
       '@types/lodash':
         specifier: 4.17.24
@@ -9181,6 +9181,14 @@ packages:
       '@sap-ux/odata-annotation-core-types': '>=0.5.6'
       '@sap-ux/project-access': '>=1.35.13'
 
+  '@sap/ux-cds-compiler-facade@1.23.0':
+    resolution: {integrity: sha512-kXDc5WtG3jQPSdJRpsefpQkqxXjQFiNjNPkrskJEeCUigOCXtvVCnKFRCnyjUbYkVe3AX1nzy2hnPB2ECBi1ew==}
+    engines: {node: '>=22.13.0'}
+    peerDependencies:
+      '@sap-ux/odata-annotation-core': '>=0.2.17'
+      '@sap-ux/odata-annotation-core-types': '>=0.5.7'
+      '@sap-ux/project-access': '>=1.35.20'
+
   '@sap/ux-specification@1.144.5':
     resolution: {integrity: sha512-I7DM2w8k90L4+abU/cMThhpwXI/Iken3dYyeqC0TERw+m9LRb1l4XHOi74ai8gxfQfnynFd3pVeTNXlGyxxOnA==}
     engines: {node: '>=20.0.0 <21.0.0 || >=22.0.0 <23.0.0 || >=24.0.0 <25.0.0 || >=26.0.0', yarn: '>=1.22.19 < 2'}
@@ -10245,11 +10253,8 @@ packages:
   '@types/vinyl@2.0.12':
     resolution: {integrity: sha512-Sr2fYMBUVGYq8kj3UthXFAu5UN6ZW+rYr4NACjZQJvHvj+c8lYv0CahmZ2P/r7iUkN44gGUBwqxZkrKXYPb7cw==}
 
-  '@types/vscode@1.102.0':
-    resolution: {integrity: sha512-V9sFXmcXz03FtYTSUsYsu5K0Q9wH9w9V25slddcxrh5JgORD14LpnOA7ov0L9ALi+6HrTjskLJ/tY5zeRF3TFA==}
-
-  '@types/vscode@1.110.0':
-    resolution: {integrity: sha512-AGuxUEpU4F4mfuQjxPPaQVyuOMhs+VT/xRok1jiHVBubHK7lBRvCuOMZG0LKUwxncrPorJ5qq/uil3IdZBd5lA==}
+  '@types/vscode@1.125.0':
+    resolution: {integrity: sha512-0icm/ZQAaism87P0ekHqi4/Ju9du+Tm0RUW+y7vqRsxY2cY0FNRX1nAnaW7nT6npPt2tfHiheZ55Zm9UhqonFA==}
 
   '@types/webidl-conversions@7.0.3':
     resolution: {integrity: sha512-CiJJvcRtIgzadHCYXw7dqEnMNRjhGZlYK05Mj9OyktqV8uVT8fD2BFOB7S1uwBE3Kj2Z+4UyPmFw/Ixgw/LAlA==}
@@ -10403,8 +10408,8 @@ packages:
     resolution: {integrity: sha512-uscDCQyHFeenh4r2RbYuffTMn6IQdcNC1tXrQ4BF+apAFjmDGP11IHdAwVCKwxgyPrIC17HT2gub3ZugGM8kpQ==}
     engines: {node: ^20.11.0 || >=22.0.0, npm: '>= 8'}
 
-  '@ui5/manifest@1.86.0':
-    resolution: {integrity: sha512-H3Id5133pOae1TCaXw7Q00alB174old25aRIzCCnvAR1G22FaSHLiTFRUFzowIlawPgwNlTFihJNvdQSwYmw4w==}
+  '@ui5/manifest@1.88.0':
+    resolution: {integrity: sha512-H1qFnigxsXLyLFeSej7gYosB14ksKhDYTEo40Ujm9550bWo5vePpvjKNZT/syqQ0hb+xTg+POOeifkNysdxNVg==}
 
   '@ui5/project@4.0.15':
     resolution: {integrity: sha512-Fo1g1t15NCLb9xKxVVJ4jD7BTGimk2CoE+4nMTg0NEA9DGv0UUWkfVygnNnmur1NJg4HV4sqK/mKO1yszFpCAQ==}
@@ -10677,6 +10682,10 @@ packages:
 
   '@zowe/secrets-for-zowe-sdk@8.29.4':
     resolution: {integrity: sha512-fiRfuEuFNapwhVbN3LJIA2ZgVajNB+QNFN7O7ES/fIYGM612PKcXuvbZUJSlU69IZ8eUF8SP+9OnveK4s+GLgw==}
+    engines: {node: '>=14'}
+
+  '@zowe/secrets-for-zowe-sdk@8.32.0':
+    resolution: {integrity: sha512-nOKlBqvKs0eMJlBVDF2cbb/vlRlXjsu8TUQjf741S4I2XeiovJUh1iuisiI5a5SMnDXmtiGYoei80KrYw/jPZw==}
     engines: {node: '>=14'}
 
   a-sync-waterfall@1.0.1:
@@ -17105,6 +17114,11 @@ packages:
       webpack:
         optional: true
 
+  sass@1.101.0:
+    resolution: {integrity: sha512-OL3GoQyoUdDt843DpVmDO6y2k1sc5IhUDSpu8XucEI+35neq5QivZ1iuegnpraEVTJXlQGK1gl27zKcTLEPbQw==}
+    engines: {node: '>=20.19.0'}
+    hasBin: true
+
   sass@1.97.3:
     resolution: {integrity: sha512-fDz1zJpd5GycprAbu4Q2PV/RprsRtKC/0z82z0JLgdytmcq0+ujJbJ/09bPGDxCLkKY3Np5cRAOcWiVkLXJURg==}
     engines: {node: '>=14.0.0'}
@@ -18013,12 +18027,16 @@ packages:
       jest-util:
         optional: true
 
-  ts-loader@9.5.4:
-    resolution: {integrity: sha512-nCz0rEwunlTZiy6rXFByQU1kVVpCIgUpc/psFiKVrUwrizdnIbRFu8w7bxhUF0X613DYwT4XzrZHpVyMe758hQ==}
+  ts-loader@9.6.2:
+    resolution: {integrity: sha512-R4iuczmtgxvtuI556s+hTZ6/7Ee03VCAk/l/M8LY1OAsUgB7YydsCxkgq9D9pKRaD7GJqUi2u8fp9zZP/ufjKA==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
+      loader-utils: '*'
       typescript: '*'
-      webpack: ^5.0.0
+      webpack: ^4.0.0 || ^5.0.0
+    peerDependenciesMeta:
+      loader-utils:
+        optional: true
 
   ts-node@10.9.2:
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
@@ -24359,7 +24377,7 @@ snapshots:
       '@sap-ux/odata-annotation-core-types': 0.5.8
       '@sap-ux/project-access': 1.36.3
 
-  '@sap/ux-cds-compiler-facade@1.21.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)':
+  '@sap/ux-cds-compiler-facade@1.23.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)':
     dependencies:
       '@sap-ux/odata-annotation-core': link:packages/odata-annotation-core
       '@sap-ux/odata-annotation-core-types': link:packages/odata-annotation-core-types
@@ -25850,9 +25868,7 @@ snapshots:
       '@types/expect': 1.20.4
       '@types/node': 22.13.14
 
-  '@types/vscode@1.102.0': {}
-
-  '@types/vscode@1.110.0': {}
+  '@types/vscode@1.125.0': {}
 
   '@types/webidl-conversions@7.0.3':
     optional: true
@@ -26208,7 +26224,7 @@ snapshots:
       cli-progress: 3.12.0
       figures: 6.1.0
 
-  '@ui5/manifest@1.86.0': {}
+  '@ui5/manifest@1.88.0': {}
 
   '@ui5/project@4.0.15(@ui5/builder@4.1.5)':
     dependencies:
@@ -26542,7 +26558,10 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  '@zowe/secrets-for-zowe-sdk@8.29.4': {}
+  '@zowe/secrets-for-zowe-sdk@8.29.4':
+    optional: true
+
+  '@zowe/secrets-for-zowe-sdk@8.32.0': {}
 
   a-sync-waterfall@1.0.1: {}
 
@@ -27962,7 +27981,7 @@ snapshots:
       import-fresh: 3.3.1
       parse-json: 5.2.0
       path-type: 4.0.0
-      yaml: 2.8.3
+      yaml: 2.9.0
 
   cosmiconfig@8.3.6(typescript@5.9.3):
     dependencies:
@@ -34513,13 +34532,21 @@ snapshots:
       sass-embedded-win32-arm64: 1.97.3
       sass-embedded-win32-x64: 1.97.3
 
-  sass-loader@16.0.7(sass-embedded@1.97.3)(sass@1.98.0)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15)):
+  sass-loader@16.0.7(sass-embedded@1.97.3)(sass@1.101.0)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15)):
     dependencies:
       neo-async: 2.6.2
     optionalDependencies:
-      sass: 1.98.0
+      sass: 1.101.0
       sass-embedded: 1.97.3
       webpack: 5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15)
+
+  sass@1.101.0:
+    dependencies:
+      chokidar: 5.0.0
+      immutable: 5.1.5
+      source-map-js: 1.2.1
+    optionalDependencies:
+      '@parcel/watcher': 2.5.6
 
   sass@1.97.3:
     dependencies:
@@ -35663,15 +35690,15 @@ snapshots:
       esbuild: 0.27.4
       jest-util: 30.4.1
 
-  ts-loader@9.5.4(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15)):
+  ts-loader@9.6.2(loader-utils@3.3.1)(typescript@5.9.3)(webpack@5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15)):
     dependencies:
       chalk: 4.1.2
-      enhanced-resolve: 5.19.0
-      micromatch: 4.0.8
-      semver: 7.7.4
+      picomatch: 4.0.4
       source-map: 0.7.6
       typescript: 5.9.3
       webpack: 5.105.0(@swc/core@1.15.18(@swc/helpers@0.5.19))(esbuild@0.27.4)(postcss@8.5.15)
+    optionalDependencies:
+      loader-utils: 3.3.1
 
   ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3):
     dependencies:

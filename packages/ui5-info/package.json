@@ -30,7 +30,7 @@
         "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global",
-        "update-fallbacks": "node scripts/update-fallbacks.js"
+        "update-fallbacks": "node scripts/update-fallbacks.mjs"
     },
     "files": [
         "LICENSE",
