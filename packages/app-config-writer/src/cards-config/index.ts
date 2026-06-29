@@ -2,12 +2,13 @@ import { join, basename } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { getPreviewMiddleware, getIntentFromPreviewConfig, getCLIForPreview } from '../common/utils.js';
+import { getPreviewMiddleware, getIntentFromPreviewConfig, getCLIForPreview, readManifest } from '../common/utils.js';
 import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { FileName, type Package, readUi5Yaml } from '@sap-ux/project-access';
+import { FileName, type Package, readUi5Yaml, getProjectType, findCapProjectRoot } from '@sap-ux/project-access';
 import { updateMiddlewaresForPreview } from '../common/ui5-yaml.js';
 import { ensureMinUI5Version } from './prerequisites.js';
+import { updateCapRootPackageJsonForCards } from './cap.js';
 
 const DEPENDENCY_NAME = '@sap-ux/cards-editor-middleware';
 const CARDS_GENERATOR_MIDDLEWARE = 'sap-cards-generator';
@@ -127,10 +128,42 @@ export async function enableCardGeneratorConfig(
     // asserts minimum UI5 version requirement before proceeding
     await ensureMinUI5Version(basePath, fs);
 
+    const capRoot = await findCapProjectRoot(basePath, false, fs);
+    const projectType = await getProjectType(capRoot ?? basePath);
+
+    if (projectType === 'CAPJava') {
+        throw new Error('The cards-editor command is not supported for CAP Java projects.');
+    }
+
+    if (projectType === 'CAPNodejs' && !capRoot) {
+        throw new Error(`Could not find CAP project root for path '${basePath}'.`);
+    }
+
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
     await updateMiddlewareConfigWithGeneratorPath(fs, basePath, yamlPath, logger);
+
     if (updatePackage) {
-        await updatePackageJson(basePath, fs, yamlPath, logger);
+        if (projectType === 'CAPNodejs') {
+            const { manifest } = await readManifest(basePath, fs);
+            const appId = manifest['sap.app']?.id;
+            if (!appId) {
+                throw new Error(`The 'sap.app.id' property is missing in the manifest.json file.`);
+            }
+            // capRoot is non-null here: the early guard above throws.
+            // TypeScript cannot narrow across the intervening `if (updatePackage)` boundary, so the cast is required.
+            await updateCapRootPackageJsonForCards(
+                capRoot as string,
+                appId,
+                basename(basePath),
+                basePath,
+                fs,
+                yamlPath,
+                logger
+            );
+        } else {
+            await updatePackageJson(basePath, fs, yamlPath, logger);
+        }
     }
+
     return fs;
 }

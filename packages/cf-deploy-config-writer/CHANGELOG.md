@@ -1,5 +1,19 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 1.0.12
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/nodejs-utils 1.0.3 → 1.0.4
+- @sap-ux/ui5-config 1.0.3 → 1.0.3
+
 ## 1.0.11
 
 ### Patch Changes

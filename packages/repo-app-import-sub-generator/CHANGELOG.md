@@ -1,5 +1,40 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.1.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-26
+
+#### Bug Fixes
+
+- support ABAP repository app download with service metadata, debug artifact cleanup, and sapux detection [[0192436](https://github.com/SAP/open-ux-tools/commit/0192436b65e7dbc08349a9bd3e2971a3fa214e7c)]
+
+## 1.1.21
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-writer 1.0.9 → 1.0.10
+- @sap-ux/fiori-elements-writer 3.0.38 → 3.0.39
+- @sap-ux/axios-extension 2.0.3 → 2.0.4
+- @sap-ux/feature-toggle 1.0.2 → 1.0.3
+- @sap-ux/system-access 1.0.3 → 1.0.4
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/ui5-info 1.0.1 → 1.0.2
+- @sap-ux/store 2.0.1 → 2.0.2
+- @sap-ux/odata-service-inquirer 3.0.15 → 3.0.16
+- @sap-ux/inquirer-common 1.0.13 → 1.0.14
+- @sap-ux/fiori-generator-shared 1.0.12 → 1.0.13
+- @sap-ux/launch-config 1.0.7 → 1.0.8
+
 ## 1.1.20
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.0.30
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
 ## 1.0.29
 
 ## 1.0.28
