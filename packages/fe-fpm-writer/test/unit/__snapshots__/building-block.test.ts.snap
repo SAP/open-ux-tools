@@ -1878,12 +1878,6 @@ exports[`Building Blocks generate Page building block with basic template insert
         <!--This is a sample template, event handlers should be added for implementation-->
         <macros:items id=\\"items\\">
             <!-- Main content -->
-            <IconTabBar id=\\"iconTabBaritems\\" class=\\"sapUiResponsiveContentPadding\\">
-                <items>
-                    <IconTabFilter id=\\"iconTabFilteritems\\" text=\\"Tab 1\\">
-                    </IconTabFilter>
-                </items>
-            </IconTabBar>
         </macros:items>
     </macros:Page>
 </mvc:View>"
@@ -1999,12 +1993,6 @@ exports[`Building Blocks generate Page building block with replace target locato
         <!--This is a sample template, event handlers should be added for implementation-->
         <macros:items id=\\"items\\">
             <!-- Main content -->
-            <IconTabBar id=\\"iconTabBaritems\\" class=\\"sapUiResponsiveContentPadding\\">
-                <items>
-                    <IconTabFilter id=\\"iconTabFilteritems\\" text=\\"Tab 1\\">
-                    </IconTabFilter>
-                </items>
-            </IconTabBar>
         </macros:items>
     </macros:Page>
 </mvc:View>"

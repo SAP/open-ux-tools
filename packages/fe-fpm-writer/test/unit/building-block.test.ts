@@ -1329,8 +1329,8 @@ describe('Building Blocks', () => {
         expect(viewContent).not.toContain('macros:breadcrumbs');
         expect(viewContent).not.toContain('macros:footer');
         expect(viewContent).toContain('macros:items');
-        expect(viewContent).toContain('IconTabBar');
-        expect(viewContent).toContain('IconTabFilter');
+        expect(viewContent).not.toContain('IconTabBar');
+        expect(viewContent).not.toContain('IconTabFilter');
         expect(fs.exists(join(basePath, 'webapp/ext/main/Main.controller.js'))).toBe(false);
         expect(fs.exists(join(basePath, 'webapp/ext/main/Main.controller.ts'))).toBe(false);
         expect(viewContent).toMatchSnapshot('generate-page-block-basic');

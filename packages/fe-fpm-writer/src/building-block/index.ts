@@ -155,7 +155,15 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
 
     if (pageAggregationNames) {
         const pageData = buildingBlockData as Page;
-        appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId, pageData, pageAggregationNames);
+        appendPageAggregations(
+            fs,
+            xmlDocument,
+            templateDocument,
+            fnGenerateId,
+            pageData,
+            pageAggregationNames,
+            fullPageTemplate
+        );
     }
 
     if (
@@ -260,6 +268,7 @@ function buildPageAggregationFragment(
  * @param {IdGeneratorFunction} generateId - function to generate unique IDs
  * @param {Page} pageData - the Page building block data containing optional aggregation mContent
  * @param {readonly PageAggregationName[]} [aggNames] - aggregation names to append; defaults to all PAGE_AGGREGATIONS
+ * @param useDefaults
  */
 function appendPageAggregations(
     fs: Editor,
@@ -267,14 +276,17 @@ function appendPageAggregations(
     templateDocument: Document,
     generateId: IdGeneratorFunction,
     pageData: Page,
-    aggNames: readonly PageAggregationName[] = PAGE_AGGREGATIONS
+    aggNames: readonly PageAggregationName[] = PAGE_AGGREGATIONS,
+    useDefaults = true
 ): void {
     const fragMacrosNS = resolveMacrosPrefix(xmlDocument);
     const macrosPrefix = `${fragMacrosNS}:`;
     const pageElement = templateDocument.documentElement;
     pageElement.appendChild(templateDocument.createComment(PAGE_TEMPLATE_COMMENT));
     for (const aggName of aggNames) {
-        const mContent = pageData.aggregations?.[aggName] ?? PAGE_BB_DEFAULT_AGGREGATIONS[aggName] ?? '';
+        const basicItemsContent = !useDefaults && aggName === 'items' ? 'basic' : undefined;
+        const defaultContent = useDefaults ? PAGE_BB_DEFAULT_AGGREGATIONS[aggName] : basicItemsContent;
+        const mContent = pageData.aggregations?.[aggName] ?? defaultContent ?? '';
         const aggId = generateId(aggName);
         const aggContext = { macrosPrefix, mContent, aggId };
         const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
@@ -1089,7 +1101,15 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
             snippetContent,
             'text/xml'
         );
-        appendPageAggregations(fs, nsDoc, snippetDoc, fnGenerateId, pageData, pageAggNames);
+        appendPageAggregations(
+            fs,
+            nsDoc,
+            snippetDoc,
+            fnGenerateId,
+            pageData,
+            pageAggNames,
+            isFullPageTemplate(buildingBlockData)
+        );
         const resultNode = snippetDoc.documentElement;
         viewOrFragmentContent = resultNode ? format(new XMLSerializer().serializeToString(resultNode)) : content;
     }
