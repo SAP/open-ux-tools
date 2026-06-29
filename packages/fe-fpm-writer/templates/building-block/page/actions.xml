@@ -1,0 +1,4 @@
+<<%- macrosPrefix %>actions>
+    <!-- Actions aggregation -->
+    <%- mContent %>
+</<%- macrosPrefix %>actions>

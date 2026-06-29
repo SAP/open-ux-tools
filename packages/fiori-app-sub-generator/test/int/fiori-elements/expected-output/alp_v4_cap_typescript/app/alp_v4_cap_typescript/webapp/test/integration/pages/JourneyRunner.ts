@@ -1,29 +1,27 @@
 import JourneyRunner from "sap/fe/test/JourneyRunner";
 import ListReport from "sap/fe/test/ListReport";
 import ObjectPage from "sap/fe/test/ObjectPage";
-import CustomBooksList from "./BooksList";
-import CustomBooksObjectPage from "./BooksObjectPage";
+import CustomBooksListGenerated from "./BooksList.gen";
+import CustomBooksObjectPageGenerated from "./BooksObjectPage.gen";
 
 const runner = new JourneyRunner({
     launchUrl: sap.ui.require.toUrl("testNameSpace/alpv4captypescript") + "/test/flp.html#app-preview",
     pages: {
-        onTheBooksList: new ListReport(
+        onTheBooksListGenerated: new ListReport(
             {
                 appId: "testNameSpace.alpv4captypescript",
                 componentId: "BooksList",
-                entitySet: "Books",
-                contextPath: ""
+                entitySet: "Books"
             },
-            CustomBooksList
+            CustomBooksListGenerated
         ),
-        onTheBooksObjectPage: new ObjectPage(
+        onTheBooksObjectPageGenerated: new ObjectPage(
             {
                 appId: "testNameSpace.alpv4captypescript",
                 componentId: "BooksObjectPage",
-                entitySet: "Books",
-                contextPath: ""
+                entitySet: "Books"
             },
-            CustomBooksObjectPage
+            CustomBooksObjectPageGenerated
         )
     },
     async: true
