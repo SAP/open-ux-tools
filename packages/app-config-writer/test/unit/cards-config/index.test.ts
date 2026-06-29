@@ -99,4 +99,15 @@ describe('enableCardGenerator', () => {
         expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();
         expect(fs.read(join(basePath, 'ui5-with-deprecated-config-and-cards-generator.yaml'))).toMatchSnapshot();
     });
+
+    test('updatePackage=false skips package.json update but still updates ui5.yaml', async () => {
+        const basePath = join(__dirname, '../../fixtures/cards-config/lrop-v4');
+        const fs = createTestFs(basePath);
+        const initialPackageJson = fs.read(join(basePath, 'package.json'));
+
+        await enableCardGeneratorConfig(basePath, join(basePath, 'ui5.yaml'), undefined, fs, false);
+
+        expect(fs.read(join(basePath, 'package.json'))).toEqual(initialPackageJson);
+        expect(fs.read(join(basePath, 'ui5.yaml'))).toMatchSnapshot();
+    });
 });

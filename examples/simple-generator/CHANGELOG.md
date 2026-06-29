@@ -1,5 +1,93 @@
 # @sap-ux/generator-simple-fe
 
+## 2.0.39
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-freestyle-writer 3.0.34 → 3.0.35
+- @sap-ux/fiori-elements-writer 3.0.38 → 3.0.39
+- @sap-ux/axios-extension 2.0.3 → 2.0.4
+- @sap-ux/system-access 1.0.3 → 1.0.4
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+
+## 2.0.38
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.37 → 3.0.38
+- @sap-ux/fiori-freestyle-writer 3.0.33 → 3.0.34
+
+## 2.0.37
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.36 → 3.0.37
+- @sap-ux/fiori-freestyle-writer 3.0.32 → 3.0.33
+- @sap-ux/axios-extension 2.0.3 → 2.0.3
+- @sap-ux/system-access 1.0.3 → 1.0.3
+
+## 2.0.36
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.35 → 3.0.36
+- @sap-ux/fiori-freestyle-writer 3.0.31 → 3.0.32
+
+## 2.0.35
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.34 → 3.0.35
+- @sap-ux/fiori-freestyle-writer 3.0.30 → 3.0.31
+
+## 2.0.34
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-23
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.33 → 3.0.34
+- @sap-ux/fiori-freestyle-writer 3.0.29 → 3.0.30
+
+## 2.0.33
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.32 → 3.0.33
+
+## 2.0.32
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-22
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.31 → 3.0.32
+- @sap-ux/fiori-freestyle-writer 3.0.28 → 3.0.29
+
 ## 2.0.31
 
 ### Patch Changes

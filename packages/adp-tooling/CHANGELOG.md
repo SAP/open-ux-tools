@@ -1,5 +1,63 @@
 # @sap-ux/adp-tooling
 
+## 1.0.21
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.8 → 1.0.9
+- @sap-ux/axios-extension 2.0.3 → 2.0.4
+- @sap-ux/system-access 1.0.3 → 1.0.4
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/ui5-info 1.0.1 → 1.0.2
+- @sap-ux/store 2.0.1 → 2.0.2
+- @sap-ux/inquirer-common 1.0.13 → 1.0.14
+- @sap-ux/nodejs-utils 1.0.3 → 1.0.4
+- @sap-ux/ui5-config 1.0.3 → 1.0.3
+
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.2 → 2.1.3
+- @sap-ux/axios-extension 2.0.3 → 2.0.3
+- @sap-ux/inquirer-common 1.0.12 → 1.0.13
+- @sap-ux/odata-service-writer 1.0.7 → 1.0.8
+- @sap-ux/project-input-validator 1.0.6 → 1.0.7
+- @sap-ux/system-access 1.0.3 → 1.0.3
+
+## 1.0.19
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Bug Fixes
+
+- Pass i18n .properties requests through to the base app proxy in ADP preview
+
+    The ADP preview proxy used to 302-redirect any request whose path matched a file
+    in the ADP webapp folder. For i18n .properties files this incorrectly substituted
+    the partial ADP bundle for the base app's complete bundle, hiding all base
+    translations and breaking annotation-side `{@i18n>...}` bindings (e.g. column
+    header labels in `UI.LineItem`). The runtime descriptor merge
+    (`appdescr_ui5_addNewModelEnhanceWith`) already handles ADP enhancement at the
+    model layer; substituting the file at the proxy layer was wrong. Now i18n
+    .properties requests fall through to the next middleware so the base app's
+    complete bundle is loaded, and the ADP's customer-prefixed keys still merge in
+    correctly via the manifest change. Covers default bundles, locale variants
+    (`i18n_de.properties`), and per-page bundles
+    (`/i18n/ListReport/<entity>/i18n.properties`). [[662e3c3](https://github.com/SAP/open-ux-tools/commit/662e3c358e90a6d0a85c2f1840751301347894af)]
+
 ## 1.0.18
 
 ### Patch Changes

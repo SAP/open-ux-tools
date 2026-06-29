@@ -16,6 +16,10 @@ import {
     listFunctionalities,
     getFunctionalityDetails,
     executeFunctionality,
+    listSapSystems,
+    downloadODataServiceMetadata,
+    generateFioriAppOData,
+    generateFioriAppCap,
     tools
 } from './tools/index.js';
 import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry/index.js';
@@ -25,8 +29,10 @@ import type {
     GetFunctionalityDetailsInput,
     DocSearchInput,
     ListFioriAppsInput,
-    ListFunctionalitiesInput
+    ListFunctionalitiesInput,
+    DownloadODataServiceMetadataInput
 } from './types/index.js';
+import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
 import { logger } from './utils/logger.js';
 
 type ToolArgs =
@@ -35,6 +41,9 @@ type ToolArgs =
     | ListFunctionalitiesInput
     | GetFunctionalityDetailsInput
     | ExecuteFunctionalityInput
+    | DownloadODataServiceMetadataInput
+    | GeneratorConfigOData
+    | GeneratorConfigCAP
     | Record<string, unknown>;
 
 const FALLBACK_PROTOCOL_VERSION = '2024-11-05';
@@ -137,7 +146,30 @@ export class FioriFunctionalityServer {
                 serverInfo: {
                     name: 'fiori-mcp',
                     version: PACKAGE_VERSION
-                }
+                },
+                instructions: `You are connected to the SAP Fiori MCP server. Always call tools/list at the start of every session to discover all available tools — never assume which tools exist.
+
+## Modifying an existing SAP Fiori application (3-step workflow)
+
+When the user wants to modify an existing Fiori app, you MUST follow these steps in order:
+
+1. **list_functionality** (Step 1) — Call with the absolute path to the Fiori app. Returns all supported modification operations and their functionalityIds.
+2. **get_functionality_details** (Step 2) — Call with a functionalityId from Step 1. Returns the exact parameters required for the modification.
+3. **execute_functionality** (Step 3) — Call with the parameters from Step 2 to apply the modification.
+
+Never skip steps or guess functionalityIds. Never use a functionalityId as a tool name.
+
+## Generating a new SAP Fiori application
+
+- For OData/non-CAP projects: use \`generate_fiori_app_odata\`
+- For CAP projects: use \`generate_fiori_app_cap\`
+- If a SAP system or service URL is involved, call \`download_odata_service_metadata\` first and pass ALL fields it returns into the generator config.
+
+## Other available tools
+
+- \`list_sap_systems\` — list available SAP backends/destinations
+- \`list_fiori_apps\` — discover existing Fiori apps in a directory
+- \`search_docs\` — search Fiori Elements, SAPUI5, and annotation documentation`
             };
         });
 
@@ -184,6 +216,18 @@ export class FioriFunctionalityServer {
                     case 'list_fiori_apps':
                         result = await listFioriApps(args as ListFioriAppsInput);
                         break;
+                    case 'list_sap_systems':
+                        result = await listSapSystems();
+                        break;
+                    case 'download_odata_service_metadata':
+                        result = await downloadODataServiceMetadata(args as DownloadODataServiceMetadataInput);
+                        break;
+                    case 'generate_fiori_app_odata':
+                        result = await generateFioriAppOData(args as GeneratorConfigOData);
+                        break;
+                    case 'generate_fiori_app_cap':
+                        result = await generateFioriAppCap(args as GeneratorConfigCAP);
+                        break;
                     case 'list_functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);
                         break;
@@ -197,7 +241,7 @@ export class FioriFunctionalityServer {
                         // Do not pass telemetryProperties to unknownTool
                         await TelemetryHelper.sendTelemetry(unknownTool, {}, (args as any)?.appPath);
                         throw new Error(
-                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.`
+                            `Unknown tool: ${name}. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality.`
                         );
                 }
                 await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
