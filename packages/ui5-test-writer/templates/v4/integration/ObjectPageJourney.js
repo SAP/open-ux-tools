@@ -84,7 +84,9 @@ sap.ui.define([
         opaTest("Check body sections of the Object Page", function (Given, When, Then) {
             Then.onThe<%- name%>Generated.iCheckNumberOfSections(<%- bodySections.length %>);
 <% bodySections.forEach(function(section) { -%>
+<% if (bodySections.length > 1) { -%>
             When.onThe<%- name%>Generated.iGoToSection({ section: "<%- section.id %>" });
+<% } -%>
             Then.onThe<%- name%>Generated.iCheckSection({ section: "<%- section.id %>" });
 <%  if (section.actions && section.actions.length > 0) { -%>
 <%      section.actions.forEach(function(action) { -%>

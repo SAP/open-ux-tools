@@ -31,6 +31,9 @@ const usesFormIdentifier = (bodySections || []).some(function(section) {
     });
     return subSectionsHaveForm || sectionHasFormFields || hasFormAction;
 });
+const usesWhenInBody = (bodySections || []).length > 1 || (bodySections || []).some(function(section) {
+    return section.subSections && section.subSections.length > 0;
+});
 -%>
 <% if (usesFieldIdentifier) { -%>
 import type { FieldIdentifier } from "sap/fe/test/api/BaseAPI";
@@ -100,10 +103,12 @@ function journey() {
 <% } -%>
 
 <% if (bodySections?.length > 0) { -%>
-    opaTest("Check body sections of the Object Page", function (_Given: Given, When: When, Then: Then) {
+    opaTest("Check body sections of the Object Page", function (_Given: Given, <% if (usesWhenInBody) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
         Then.onThe<%- name%>Generated.iCheckNumberOfSections(<%- bodySections.length %>);
 <% bodySections.forEach(function(section) { -%>
+<% if (bodySections.length > 1) { -%>
         When.onThe<%- name%>Generated.iGoToSection({ section: "<%- section.id %>" });
+<% } -%>
         Then.onThe<%- name%>Generated.iCheckSection({ section: "<%- section.id %>" }, {});
 <%  if (section.actions && section.actions.length > 0) { -%>
 <%      section.actions.forEach(function(action) { -%>
