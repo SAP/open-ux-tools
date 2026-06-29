@@ -4,7 +4,7 @@ description: Add visual filters (chart-based) to SAP Fiori Elements filter bar/v
 argument-hint: field name (e.g., Category, Status)
 metadata:
   author: sap-fiori-tools
-  version: "0.0.4"
+  version: "0.0.5"
 ---
 
 # SAP Fiori Visual Filter
@@ -29,7 +29,6 @@ Add **chart-based filters (Bar/Line)** to filter bar or value help dialog (OData
 ---
 
 ## CAP Implementation
-
 
 ### Enable Aggregation (MANDATORY)
 ```cds
@@ -85,65 +84,59 @@ Category @Common.ValueList #visualFilter: {
 UI.SelectionFields: [Category]
 ```
 
+### Manifest configuration (MANDATORY)
+refer to the "Manifest Configuration" section below.
+
 ---
 
-## ABAP RAP Implementation
+## ABAP RAP Implementation (4 Steps)
 
-- Aggregation.ApplySupported and Aggregation.CustomAggregate annotations must be available in metadata.xml (RAP). If not, below backend configuration is required.
+### CRITICAL: NEVER EDIT metadata.xml - IT IS READ-ONLY!
 
-### Backend CDS (MANDATORY)
+### 1. Backend CDS (MANDATORY) - Enable Aggregation Support
 ```abap
 @OData.applySupportedForAggregation: #FULL
 define root view entity ZC_ENTITY
-  provider contract analytical_query
-  as projection on ZI_ENTITY
+  provider contract TRANSACTIONAL_QUERY
+  as projection on ZR_ENTITY
 {
-  key EntityID,
-
   @Aggregation.default: #SUM
-  Amount,
-
-  Category
+  Amount;
+  Category;
 }
 ```
 
-### Chart Annotation
-```xml
-<Annotation Term="UI.Chart" Qualifier="visualFilter">
-  <Record Type="UI.ChartDefinitionType">
-    <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Bar"/>
-    <PropertyValue Property="Dimensions">
-      <Collection>
-        <PropertyPath>Category</PropertyPath>
-      </Collection>
-    </PropertyValue>
-    <PropertyValue Property="Measures">
-      <Collection>
-        <PropertyPath>Amount</PropertyPath>
-      </Collection>
-    </PropertyValue>
-  </Record>
-</Annotation>
+### 2. Backend Metadata Extension (MANDATORY) - Add Chart, PresentationVariant, SelectionField Annotations
+```abap
+@UI.chart: [{
+  qualifier: 'visualFilter',
+  chartType: #BAR,
+  dimensions: ['Category'],
+  measures: ['Amount']
+}]
+@UI.presentationVariant: [{
+  qualifier: 'visualFilter',
+  visualizations: [{
+    type: #AS_CHART,
+    qualifier: 'visualFilter'
+  }]
+}]
+
+annotate view ZC_ENTITY with
+{
+  @UI.selectionField: [{ position: 10 }]
+  Category;
+
+  @EndUserText.label: 'Amount'
+  Amount;
+}
 ```
 
-✅ Uses **Measures (not DynamicMeasures)**  
-❌ Metadata is **read-only**
+### 3. Frontend (annotation.xml)
 
-### PresentationVariant Annotation
+**Chart Annotation:**
 ```xml
-<Annotation Term="UI.PresentationVariant" Qualifier="visualFilter">
-  <Record Type="UI.PresentationVariantType">
-    <PropertyValue Property="Visualizations">
-      <Collection>
-        <AnnotationPath>@UI.Chart#visualFilter</AnnotationPath>
-      </Collection>
-    </PropertyValue>
-  </Record>
-</Annotation>
-```
-
-### ValueList Annotation
-```xml
+<Annotations Target="EntityType/Category">
 <Annotation Term="Common.ValueList" Qualifier="visualFilter">
   <Record Type="Common.ValueListType">
     <PropertyValue Property="CollectionPath" String="EntityName"/>
@@ -158,20 +151,16 @@ define root view entity ZC_ENTITY
     </PropertyValue>
   </Record>
 </Annotation>
+</Annotations>
 ```
 
-### SelectionFields Annotation
-```xml
-<Annotation Term="UI.SelectionFields">
-  <Collection>
-    <PropertyPath>Category</PropertyPath>
-  </Collection>
-</Annotation>
-```
+### 4. Manifest configuration (MANDATORY)
+refer to the "Manifest Configuration" section below.
 
 ---
 
-## Manifest Configuration (REQUIRED)
+## Manifest Configuration
+
 ```json
 "@com.sap.vocabularies.UI.v1.SelectionFields": {
   "layout": "CompactVisual",
@@ -185,9 +174,10 @@ define root view entity ZC_ENTITY
   }
 }
 ```
+---
 
-✅ Connects filter field to visual filter chart  
-✅ Sets initial layout to visual mode
+## CRITICAL: Manifest Configuration Structure
+**NEVER nest visualFilter inside a `settings` property!**
 
 ---
 
@@ -212,29 +202,49 @@ npm start          # No refresh needed - fetches metadata from live backend at r
 
 ## Key Differences
 
-- **CAP**: DynamicMeasures + AggregatedProperty defined in CDS
-- **RAP**: Measures + @Aggregation.default in backend CDS only
-- **CAP**: Aggregation and chart defined in same place
-- **RAP**: Metadata is read-only, must be configured in backend CDS.
-- **Qualifier**: Must use same qualifier (#visualFilter) across Chart, ValueList, and manifest
+**CAP:**
+- Aggregation + measures defined in CDS
+- Uses DynamicMeasures
+- Aggregation and chart defined in same place
+
+**RAP:**
+- Aggregation defined in backend CDS only
+- Uses Measures (not DynamicMeasures)
+- Metadata is read-only
 
 ---
 
 ## Common Mistakes
-
-- Missing backend aggregation setup
+- Backend Changes are not activated.
 - Qualifier mismatch between Chart, ValueList, PresentationVariant, and manifest
 - Wrong path in manifest (use full vocabulary path)
-- RAP projects using DynamicMeasures instead of Measures
-- Forgetting PresentationVariantQualifier in ValueList
-- Missing SelectionFields annotation
+- Missing SelectionField annotation
+- Non-numeric measure field
+- Missing compact visual layout configuration in manifest 
+
+**RAP:**
+- Missing backend aggregation support
+- Using DynamicMeasures instead of Measures
+- Adding Common.ValueList in backend instead of frontend (ValueList MUST be in frontend annotation.xml)
+- Adding UI annotations directly in CDS projection view instead of metadata extension
+- Trying to use @Consumption.valueHelpDefinition for visual filters (that's for value help dialogs, not visual filters)
 
 ---
 
 ## Best Practices
 
-- Use **Bar chart** (most common and recommended)
-- Limit to 3–5 visual filters per filter bar
-- Always configure backend aggregation first
-- Use consistent qualifiers throughout
-- Test with real data to verify aggregation works correctly
+- Always activate backend changes in ADT MCP before testing
+- Use 1 dimension + 1 measure per visual filter
+- Prefer Bar charts for better readability
+- Keep qualifier names consistent across all annotations
+- Test with different data volumes
+- Always include layout: "CompactVisual" and initialLayout: "Visual" in manifest
+
+**RAP Specific:**
+- ALWAYS use ADT MCP to modify backend files when available
+- Chart + PresentationVariant → Backend metadata extension (.ddlx.acds)
+- Common.ValueList → Frontend annotation.xml (CANNOT be in backend)
+
+## References
+
+- **ABAP RAP Aggregation support**: https://help.sap.com/docs/abap-cloud/abap-rap/projection-view

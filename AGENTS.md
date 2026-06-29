@@ -348,11 +348,11 @@ BUMP: Upgrade i18next 25.8.18 → 25.8.20
 
 Every changeset summary **must** start with one of these prefixes (enforced by `pnpm validate:changesets`):
 
-| Prefix | Use for |
-|---|---|
-| `FEAT:` | New features or behaviour additions |
-| `FIX:` | Bug fixes, security patches, CVE upgrades |
-| `BUMP:` | Dependency-only upgrades with no behaviour change |
+| Prefix             | Use for                                           |
+|--------------------|---------------------------------------------------|
+| `FEAT:` or `feat:` | New features or behaviour additions               |
+| `FIX:`  or `fix:`  | Bug fixes, security patches, CVE upgrades         |
+| `BUMP:` or `bump:` | Dependency-only upgrades with no behaviour change |
 
 Do **not** include the package name in the summary — it is already declared in the frontmatter.
 
@@ -442,6 +442,11 @@ Follow the conventions in [docs/Guidelines.md](docs/Guidelines.md):
 - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, `revert`, `WIP`
 - Max 100 characters for commit message
 - Use imperative mood: "Add feature" not "Added feature"
+
+**MCP Tool Naming:**
+- All MCP tool names must use `snake_case` (e.g. `list_sap_systems`, `generate_fiori_app_odata`)
+- Never use `kebab-case` for tool names (`fetch-service-metadata` is wrong; `download_odata_service_metadata` is correct)
+- Tool descriptions that reference other tools by name must also use the snake_case form
 
 ### Code Reusability and Common Libraries
 

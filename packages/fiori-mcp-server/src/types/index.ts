@@ -19,7 +19,10 @@ import type {
     ExecuteFunctionalityOutputSchema,
     GetFunctionalityDetailsOutputSchema,
     ListFioriAppsOutputSchema,
-    ListFunctionalitiesOutputSchema
+    ListFunctionalitiesOutputSchema,
+    FetchServiceMetadataOutputSchema,
+    GenerateAppOutputSchema,
+    ListSapSystemsOutputSchema
 } from './output.js';
 
 export type FioriApp = zod.infer<typeof FioriAppSchema>;
@@ -47,6 +50,9 @@ export type AdpControllerExtensionInput = zod.infer<typeof AdpControllerExtensio
 export type RunRtaWorkflowStepInput = zod.infer<typeof RunRtaWorkflowStepInputSchema>;
 export type AdpMetadataInput = zod.infer<typeof AdpMetadataInputSchema>;
 export type ODataServiceInput = zod.infer<typeof ODataServiceInputSchema>;
+export type DownloadODataServiceMetadataOutput = zod.infer<typeof FetchServiceMetadataOutputSchema>;
+export type GenerateAppOutput = zod.infer<typeof GenerateAppOutputSchema>;
+export type ListSapSystemsOutput = zod.infer<typeof ListSapSystemsOutputSchema>;
 
 /**
  * Interface for functionality handlers
