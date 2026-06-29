@@ -10,12 +10,9 @@ import FEObjectPageComponent from 'sap/fe/templates/ObjectPage/Component';
 import FEListReportComponent from 'sap/fe/templates/ListReport/Component';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version.js';
 import { PageDescriptorV4 } from '../../controllers/types.js';
+import { getPageId } from './utils.js';
 
 export const OBJECT_PAGE_COMPONENT_NAME_V4 = 'sap.fe.templates.ObjectPage.ObjectPage';
-
-interface ViewDataType {
-    stableId: string;
-}
 
 /**
  * Quick Action for adding a custom page action.
@@ -168,7 +165,7 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
 
         this.appComponent = getV4AppComponent(this.context.view);
 
-        this.pageId = (this.context.view.getViewData() as ViewDataType)?.stableId.split('::').pop();
+        this.pageId = getPageId(this.context);
         // remember current page route pattern (used in dialog controller for new page change)
         const currentPageRoute = (this.context.manifest['sap.ui5'].routing?.routes ?? []).find(
             (r) => r.name === this.pageId

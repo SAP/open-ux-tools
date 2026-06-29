@@ -9,14 +9,11 @@ import { TableQuickActionDefinitionBase } from '../table-quick-action-base.js';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator.js';
 import Table from 'sap/ui/mdc/Table';
 import { getV4AppComponent, isMacroTable } from '../../../utils/fe-v4.js';
-import { getLineItemAnnotation, getPropertyPath } from './utils.js';
+import { getLineItemAnnotation, getPropertyPath, getPageId } from './utils.js';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version.js';
 import { isA } from '../../../utils/core.js';
 import UI5Element from 'sap/ui/core/Element';
 
-interface ViewDataType {
-    stableId: string;
-}
 export const CREATE_TABLE_CUSTOM_COLUMN = 'create-table-custom-column';
 const regexForAnnotationPath =
     /controlConfiguration\/(?:entity\/)?@com\.sap\.vocabularies\.UI\.v1\.LineItem(?:#[^/]+)?\/columns\//;
@@ -41,7 +38,7 @@ export class AddTableCustomColumnQuickAction
         );
     }
     async initialize(): Promise<void> {
-        this.pageId = (this.context.view.getViewData() as ViewDataType)?.stableId.split('::').pop();
+        this.pageId = getPageId(this.context);
         const version = await getUi5Version();
         if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 120 })) {
             return;

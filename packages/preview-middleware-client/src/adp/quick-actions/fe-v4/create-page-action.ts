@@ -13,12 +13,10 @@ import { isA } from '../../../utils/core.js';
 import DynamicPageTitle from 'sap/f/DynamicPageTitle';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 import ObjectPageDynamicHeaderTitle from 'sap/uxap/ObjectPageDynamicHeaderTitle';
+import { getPageId } from './utils.js';
 
 export const ADD_PAGE_ACTION = 'add-page-action';
 const CONTROL_TYPES = ['sap.f.DynamicPageTitle', 'sap.uxap.ObjectPageLayout'];
-interface ViewDataType {
-    stableId: string;
-}
 /**
  * Quick Action for adding a custom page action.
  */
@@ -31,7 +29,7 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
     }
 
     async initialize(): Promise<void> {
-        this.pageId = (this.context.view.getViewData() as ViewDataType)?.stableId.split('::').pop();
+        this.pageId = getPageId(this.context);
         const version = await getUi5Version();
         if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 120 })) {
             return;

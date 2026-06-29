@@ -14,13 +14,10 @@ import { isA } from '../../../utils/core.js';
 import Table from 'sap/ui/mdc/Table';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import ActionToolbarAction from 'sap/ui/mdc/actiontoolbar/ActionToolbarAction';
-import { getPropertyPath } from './utils.js';
+import { getPropertyPath, getPageId } from './utils.js';
 
 export const CREATE_TABLE_ACTION = 'create-table-action';
 
-interface ViewDataType {
-    stableId: string;
-}
 const regexForAnnotationPath =
     /controlConfiguration\/(?:[^@]+\/)?@com\.sap\.vocabularies\.UI\.v1\.LineItem(?:#[^/]+)?\/actions\//;
 
@@ -36,7 +33,7 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
     }
 
     async initialize(): Promise<void> {
-        this.pageId = (this.context.view.getViewData() as ViewDataType)?.stableId.split('::').pop();
+        this.pageId = getPageId(this.context);
         const version = await getUi5Version();
         if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 120 })) {
             return;

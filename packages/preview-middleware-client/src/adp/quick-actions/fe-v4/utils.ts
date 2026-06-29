@@ -5,6 +5,14 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { getV4AppComponent, getPageName, getReference, isMacroTable } from '../../../utils/fe-v4.js';
 import UI5Element from 'sap/ui/core/Element';
 
+interface ViewDataType {
+    stableId: string;
+}
+
+export function getPageId(context: QuickActionContext): string | undefined {
+    return (context.view.getViewData() as ViewDataType)?.stableId.split('::').pop();
+}
+
 export async function executeToggleAction(
     context: QuickActionContext,
     isButtonEnabled: boolean,
