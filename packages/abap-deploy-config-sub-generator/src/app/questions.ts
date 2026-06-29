@@ -90,6 +90,7 @@ function getAbapTarget(
  * @param params.projectType - the project type
  * @param params.logger - the logger
  * @param params.promptOptions - A set of optional feature flags to prompts behavior.
+ * @param params.promptModule - optional inquirer prompt module instance used to register plugins
  * @returns - the prompts and answers
  */
 export async function getAbapQuestions({

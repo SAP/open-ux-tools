@@ -14,9 +14,7 @@ jest.unstable_mockModule('../src/prompts/index', () => ({
 }));
 
 // Default: delegate to real implementation
-mockGetAbapDeployConfigQuestions.mockImplementation((...args) =>
-    realAbapPrompts.getAbapDeployConfigQuestions(...args)
-);
+mockGetAbapDeployConfigQuestions.mockImplementation((...args) => realAbapPrompts.getAbapDeployConfigQuestions(...args));
 
 const mockGetService = jest.fn<typeof realStore.getService>();
 const realStore = await import('@sap-ux/store');
@@ -110,9 +108,7 @@ describe('registerAutocompletePlugin (via getPrompts)', () => {
         const mockPromptModule = { registerPrompt: mockRegisterPrompt } as unknown as ReturnType<
             typeof inquirer.createPromptModule
         >;
-        mockGetAbapDeployConfigQuestions.mockResolvedValue([
-            { name: 'packageAutocomplete', type: 'autocomplete' }
-        ]);
+        mockGetAbapDeployConfigQuestions.mockResolvedValue([{ name: 'packageAutocomplete', type: 'autocomplete' }]);
         await getPrompts({}, undefined, false, mockPromptModule);
         expect(mockRegisterPrompt).toHaveBeenCalledWith('autocomplete', AutocompletePrompt);
     });
@@ -122,17 +118,13 @@ describe('registerAutocompletePlugin (via getPrompts)', () => {
         const mockPromptModule = { registerPrompt: mockRegisterPrompt } as unknown as ReturnType<
             typeof inquirer.createPromptModule
         >;
-        mockGetAbapDeployConfigQuestions.mockResolvedValue([
-            { name: 'packageAutocomplete', type: 'list' }
-        ]);
+        mockGetAbapDeployConfigQuestions.mockResolvedValue([{ name: 'packageAutocomplete', type: 'list' }]);
         await getPrompts({}, undefined, false, mockPromptModule);
         expect(mockRegisterPrompt).not.toHaveBeenCalled();
     });
 
     test('does not register when promptModule is not provided', async () => {
-        mockGetAbapDeployConfigQuestions.mockResolvedValue([
-            { name: 'packageAutocomplete', type: 'autocomplete' }
-        ]);
+        mockGetAbapDeployConfigQuestions.mockResolvedValue([{ name: 'packageAutocomplete', type: 'autocomplete' }]);
         await expect(getPrompts({}, undefined, false, undefined)).resolves.not.toThrow();
     });
 });
