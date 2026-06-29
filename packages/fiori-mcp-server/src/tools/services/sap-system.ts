@@ -3,7 +3,6 @@ import type { AxiosRequestConfig, ODataService, ODataServiceInfo } from '@sap-ux
 
 import { AbapServiceProvider, ODataVersion, TlsPatch, createForDestination } from '@sap-ux/axios-extension';
 import { getService, getSapToolsDirectory } from '@sap-ux/store';
-import { ToolsLogger } from '@sap-ux/logger';
 import { parse as parseEdmx } from '@sap-ux/edmx-parser';
 import format from 'xml-formatter';
 import { logger } from '../../utils/index.js';
@@ -27,7 +26,6 @@ const SAP_TOOLS_BASE_DIRECTORY = process.env.SAP_TOOLS_DIR || getSapToolsDirecto
  * @returns A promise that resolves to an array of BackendSystem objects.
  */
 export async function getSapSystems(includeSensitiveData = false): Promise<BackendSystem[]> {
-    const logger = new ToolsLogger({ logPrefix: 'fiori-mcp-server' });
     const systemStore = await getService<BackendSystem, BackendSystemKey>({
         logger: logger,
         entityName: 'system',
@@ -100,9 +98,6 @@ function findDestination(destinations: Destination[], query: string): Destinatio
         match = destinations.find((d) => d.Name.toLocaleLowerCase() === queryLower);
     }
     if (!match) {
-        match = destinations.find((d) => d.Name.toLocaleLowerCase().startsWith(queryLower));
-    }
-    if (!match) {
         match = destinations.find((d) => d.Name.toLocaleLowerCase().includes(queryLower));
     }
 
@@ -123,16 +118,17 @@ function findDestination(destinations: Destination[], query: string): Destinatio
  * Returns all available systems or destinations depending on the current platform.
  * In BAS returns filtered Destination[], in VSCode returns BackendSystem[].
  *
+ * @param includeSensitiveData - Whether to include credentials. Defaults to false.
  * @returns A promise resolving to an array of destinations or backend systems.
  */
-export async function getSystemsOrDestinations(): Promise<Destination[] | BackendSystem[]> {
+export async function getSystemsOrDestinations(includeSensitiveData = false): Promise<Destination[] | BackendSystem[]> {
     if (isAppStudio()) {
         const destinations = await listDestinations({ stripS4HCApiHosts: true });
         return Object.values(destinations).filter(
             (d) => isAbapODataDestination(d) && d.Authentication !== Authentication.NO_AUTHENTICATION
         );
     }
-    return getSapSystems();
+    return getSapSystems(includeSensitiveData);
 }
 
 /**
@@ -140,21 +136,34 @@ export async function getSystemsOrDestinations(): Promise<Destination[] | Backen
  * In BAS returns a Destination, in VSCode returns a BackendSystem.
  *
  * @param query - The name, host or URL to match.
- * @returns The matching system if found.
+ * @returns An object with the matched system (or undefined) and an optional diagnostic message.
  */
-export async function findSystem(query: string): Promise<BackendSystem | Destination | undefined> {
+export async function findSystem(
+    query: string
+): Promise<{ system: BackendSystem | Destination | undefined; message?: string }> {
     if (isAppStudio()) {
         try {
-            return findDestination((await getSystemsOrDestinations()) as Destination[], query);
+            const system = findDestination((await getSystemsOrDestinations()) as Destination[], query);
+            const message = system ? undefined : `No matching destination found for: ${query}`;
+            return { system, message };
         } catch (e) {
             logger.error(`Error retrieving destinations: ${e}`);
-            return undefined;
+            return { system: undefined, message: `Error retrieving destinations: ${e}` };
         }
     }
-    return findSapSystem((await getSystemsOrDestinations()) as BackendSystem[], query);
+    try {
+        const result = findSapSystem((await getSystemsOrDestinations(true)) as BackendSystem[], query);
+        return result;
+    } catch (e) {
+        logger.error(`Error retrieving systems: ${e}`);
+        return { system: undefined, message: `Error retrieving systems: ${e}` };
+    }
 }
 
-function findSapSystem(systems: BackendSystem[], query: string): BackendSystem {
+function findSapSystem(
+    systems: BackendSystem[],
+    query: string
+): { system: BackendSystem | undefined; message?: string } {
     let matchingSystems = systems.filter((s) => s.name === query);
 
     const queryLower = query.toLocaleLowerCase();
@@ -172,17 +181,19 @@ function findSapSystem(systems: BackendSystem[], query: string): BackendSystem {
         matchingSystems = matchSystemByUrl(systems, query);
     }
 
-    if (!matchingSystems || !Array.isArray(matchingSystems)) {
-        throw new Error(`No matching system found for: ${query}`);
+    if (!matchingSystems.length) {
+        const message = `No matching system found for: ${query}`;
+        logger.debug(message);
+        return { system: undefined, message };
     }
     if (matchingSystems.length > 1) {
         const names = matchingSystems.map((s) => s.name).join(', ');
-        throw new Error(
-            `Multiple systems found matching: ${query}. Please be more specific. Matched systems: ${names}`
-        );
+        const message = `Multiple systems found matching: ${query}. Please be more specific. Matched systems: ${names}`;
+        logger.debug(message);
+        return { system: undefined, message };
     }
 
-    return matchingSystems[0];
+    return { system: matchingSystems[0] };
 }
 
 /**
@@ -194,8 +205,8 @@ function findSapSystem(systems: BackendSystem[], query: string): BackendSystem {
  */
 async function getServiceFromBackendSystem(backendSystem: BackendSystem, servicePath: string): Promise<ODataService> {
     const normalizedPath = servicePath.startsWith('http')
-        ? parseUrl(servicePath).path.replace(/\/\$metadata$/, '')
-        : servicePath.replace(/\/\$metadata$/, '');
+        ? parseUrl(servicePath).path.replace(/\$metadata$/, '')
+        : servicePath.replace(/\$metadata$/, '');
 
     const providerConfig: AxiosRequestConfig = {
         baseURL: backendSystem.url,
@@ -231,7 +242,7 @@ async function getServiceFromBackendSystem(backendSystem: BackendSystem, service
  * @returns The ODataService instance.
  */
 function getServiceFromDestination(destination: Destination, servicePath: string): ODataService {
-    const normalizedPath = servicePath.replace(/\/\$metadata$/, '');
+    const normalizedPath = servicePath.replace(/\$metadata$/, '');
     const serviceProvider = createForDestination({}, destination);
     return serviceProvider.service(normalizedPath) as ODataService;
 }
@@ -253,7 +264,7 @@ function checkMetadata(metadata: string): void {
     }
     if (!parsedMetadata) {
         const detail = parseError instanceof Error ? ` Reason: ${parseError.message}` : '';
-        throw new Error(`Failed to parse service metadata. The service may not be a valid OData V4 service.${detail}`);
+        throw new Error(`Failed to parse service metadata. The service may not be a valid OData V4 service. ${detail}`);
     }
 }
 

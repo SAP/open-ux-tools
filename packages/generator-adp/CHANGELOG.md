@@ -1,5 +1,58 @@
 # @sap-ux/generator-adp
 
+## 1.0.22
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.8 → 1.0.9
+- @sap-ux/axios-extension 2.0.3 → 2.0.4
+- @sap-ux/feature-toggle 1.0.2 → 1.0.3
+- @sap-ux/system-access 1.0.3 → 1.0.4
+- @sap-ux/adp-tooling 1.0.20 → 1.0.21
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/store 2.0.1 → 2.0.2
+- @sap-ux/inquirer-common 1.0.13 → 1.0.14
+- @sap-ux/fiori-generator-shared 1.0.12 → 1.0.13
+- @sap-ux/telemetry 1.0.10 → 1.0.11
+
+## 1.0.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.2 → 2.1.3
+- @sap-ux/adp-tooling 1.0.19 → 1.0.20
+- @sap-ux/axios-extension 2.0.3 → 2.0.3
+- @sap-ux/fiori-generator-shared 1.0.11 → 1.0.12
+- @sap-ux/inquirer-common 1.0.12 → 1.0.13
+- @sap-ux/odata-service-writer 1.0.7 → 1.0.8
+- @sap-ux/project-input-validator 1.0.6 → 1.0.7
+- @sap-ux/system-access 1.0.3 → 1.0.3
+- @sap-ux/telemetry 1.0.9 → 1.0.10
+
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.18 → 1.0.19
+
+## 1.0.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.17 → 1.0.18
+
 ## 1.0.18
 
 ### Patch Changes
@@ -12,6 +65,8 @@
 
 ## 1.0.17
 
+_Released: 2026-06-14T10:40:09Z_
+
 ### Patch Changes
 
 - Updated dependencies [adae40d]
@@ -19,12 +74,16 @@
 
 ## 1.0.16
 
+_Released: 2026-06-12T10:49:08Z_
+
 ### Patch Changes
 
 - Updated dependencies [6e4a71a]
     - @sap-ux/adp-tooling@1.0.15
 
 ## 1.0.15
+
+_Released: 2026-06-12T06:53:23Z_
 
 ### Patch Changes
 
@@ -39,12 +98,16 @@
 
 ## 1.0.14
 
+_Released: 2026-06-11T13:37:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [e66a8a9]
     - @sap-ux/adp-tooling@1.0.13
 
 ## 1.0.13
+
+_Released: 2026-06-11T10:54:17Z_
 
 ### Patch Changes
 
@@ -55,6 +118,8 @@
     - @sap-ux/adp-tooling@1.0.12
 
 ## 1.0.12
+
+_Released: 2026-06-10T09:57:42Z_
 
 ### Patch Changes
 
@@ -71,6 +136,8 @@
 
 ## 1.0.11
 
+_Released: 2026-06-09T14:35:01Z_
+
 ### Patch Changes
 
 - Updated dependencies [0fa8305]
@@ -85,6 +152,8 @@
 
 ## 1.0.10
 
+_Released: 2026-06-09T13:18:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [a328e14]
@@ -94,11 +163,15 @@
 
 ## 1.0.9
 
+_Released: 2026-06-09T08:38:04Z_
+
 ### Patch Changes
 
 - 604f289: revert generator-adp to cjs
 
 ## 1.0.8
+
+_Released: 2026-06-04T13:54:21Z_
 
 ### Patch Changes
 
@@ -115,12 +188,16 @@
 
 ## 1.0.7
 
+_Released: 2026-06-04T12:10:05Z_
+
 ### Patch Changes
 
 - Updated dependencies [fb84c0e]
     - @sap-ux/adp-tooling@1.0.7
 
 ## 1.0.6
+
+_Released: 2026-06-04T10:19:37Z_
 
 ### Patch Changes
 
@@ -136,6 +213,8 @@
     - @sap-ux/telemetry@1.0.5
 
 ## 1.0.5
+
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -157,6 +236,8 @@
 
 ## 1.0.4
 
+_Released: 2026-06-03T13:52:44Z_
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@1.0.4
@@ -171,6 +252,8 @@
 
 ## 1.0.3
 
+_Released: 2026-06-02T11:35:17Z_
+
 ### Patch Changes
 
 - @sap-ux/adp-tooling@1.0.3
@@ -180,12 +263,16 @@
 
 ## 1.0.2
 
+_Released: 2026-06-02T08:56:31Z_
+
 ### Patch Changes
 
 - Updated dependencies [a8e4cf0]
     - @sap-ux/adp-tooling@1.0.2
 
 ## 1.0.1
+
+_Released: 2026-06-01T15:15:26Z_
 
 ### Patch Changes
 
@@ -201,6 +288,8 @@
     - @sap-ux/telemetry@1.0.1
 
 ## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -252,12 +341,16 @@
 
 ## 0.10.12
 
+_Released: 2026-05-29T12:50:34Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.13.6
 - @sap-ux/adp-tooling@0.19.11
 
 ## 0.10.11
+
+_Released: 2026-05-29T06:59:27Z_
 
 ### Patch Changes
 
@@ -266,11 +359,15 @@
 
 ## 0.10.10
 
+_Released: 2026-05-27T15:51:29Z_
+
 ### Patch Changes
 
 - c1575e0: fix: The business solution name must use lowercase letters, numbers, dots (.), underscores (\_), and hyphens (-) only. The name must contain at least one letter or number.
 
 ## 0.10.9
+
+_Released: 2026-05-27T11:39:21Z_
 
 ### Patch Changes
 
@@ -280,6 +377,8 @@
 - @sap-ux/inquirer-common@0.13.5
 
 ## 0.10.8
+
+_Released: 2026-05-27T10:42:47Z_
 
 ### Patch Changes
 
@@ -292,6 +391,8 @@
     - @sap-ux/inquirer-common@0.13.4
 
 ## 0.10.7
+
+_Released: 2026-05-26T16:40:21Z_
 
 ### Patch Changes
 
@@ -308,6 +409,8 @@
 
 ## 0.10.6
 
+_Released: 2026-05-22T13:30:05Z_
+
 ### Patch Changes
 
 - 758b0d4: fix: show error message when fetching destination fails
@@ -315,6 +418,8 @@
     - @sap-ux/adp-tooling@0.19.6
 
 ## 0.10.5
+
+_Released: 2026-05-21T16:21:11Z_
 
 ### Patch Changes
 
@@ -330,12 +435,16 @@
 
 ## 0.10.4
 
+_Released: 2026-05-21T14:58:44Z_
+
 ### Patch Changes
 
 - Updated dependencies [dab1aa2]
     - @sap-ux/adp-tooling@0.19.4
 
 ## 0.10.3
+
+_Released: 2026-05-19T15:16:46Z_
 
 ### Patch Changes
 
@@ -352,6 +461,8 @@
 
 ## 0.10.2
 
+_Released: 2026-05-18T08:15:14Z_
+
 ### Patch Changes
 
 - 342c544: chore: bump used versions in adaptation project for Cloud Foundry
@@ -359,6 +470,8 @@
     - @sap-ux/adp-tooling@0.19.2
 
 ## 0.10.1
+
+_Released: 2026-05-15T13:12:06Z_
 
 ### Patch Changes
 
@@ -371,6 +484,8 @@
     - @sap-ux/adp-tooling@0.19.1
 
 ## 0.10.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -395,6 +510,8 @@
 
 ## 0.9.73
 
+_Released: 2026-05-14T21:28:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [138246a]
@@ -404,12 +521,16 @@
 
 ## 0.9.72
 
+_Released: 2026-05-14T14:16:50Z_
+
 ### Patch Changes
 
 - Updated dependencies [8c4185a]
     - @sap-ux/adp-tooling@0.18.133
 
 ## 0.9.71
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -431,6 +552,8 @@
 
 ## 0.9.70
 
+_Released: 2026-05-13T09:36:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -446,6 +569,8 @@
 
 ## 0.9.69
 
+_Released: 2026-05-12T18:00:39Z_
+
 ### Patch Changes
 
 - Updated dependencies [9360ea5]
@@ -454,6 +579,8 @@
     - @sap-ux/adp-tooling@0.18.130
 
 ## 0.9.68
+
+_Released: 2026-05-06T23:02:00Z_
 
 ### Patch Changes
 
@@ -474,6 +601,8 @@
 
 ## 0.9.67
 
+_Released: 2026-05-01T15:46:09Z_
+
 ### Patch Changes
 
 - Updated dependencies [b2ffc7e]
@@ -481,12 +610,16 @@
 
 ## 0.9.66
 
+_Released: 2026-04-30T19:47:20Z_
+
 ### Patch Changes
 
 - Updated dependencies [fcaa70c]
     - @sap-ux/adp-tooling@0.18.127
 
 ## 0.9.65
+
+_Released: 2026-04-30T14:23:24Z_
 
 ### Patch Changes
 
@@ -503,6 +636,8 @@
 
 ## 0.9.64
 
+_Released: 2026-04-30T13:10:33Z_
+
 ### Patch Changes
 
 - Updated dependencies [a4b90ca]
@@ -510,6 +645,8 @@
     - @sap-ux/adp-tooling@0.18.125
 
 ## 0.9.63
+
+_Released: 2026-04-29T15:24:37Z_
 
 ### Patch Changes
 
@@ -527,6 +664,8 @@
 
 ## 0.9.62
 
+_Released: 2026-04-27T19:47:46Z_
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -542,6 +681,8 @@
 
 ## 0.9.61
 
+_Released: 2026-04-27T07:30:24Z_
+
 ### Patch Changes
 
 - 10847a1: fix: Translation texts for Add Data Source and SAPUI5 Model title and subtitle
@@ -549,6 +690,8 @@
     - @sap-ux/adp-tooling@0.18.122
 
 ## 0.9.60
+
+_Released: 2026-04-23T12:54:21Z_
 
 ### Patch Changes
 
@@ -565,6 +708,8 @@
 
 ## 0.9.59
 
+_Released: 2026-04-23T06:48:55Z_
+
 ### Patch Changes
 
 - Updated dependencies [237371b]
@@ -577,6 +722,8 @@
 
 ## 0.9.58
 
+_Released: 2026-04-22T12:38:46Z_
+
 ### Patch Changes
 
 - e333607: fix(generator-adp): Change endpoint used for checking user authentication
@@ -584,6 +731,8 @@
     - @sap-ux/inquirer-common@0.11.38
 
 ## 0.9.57
+
+_Released: 2026-04-15T11:53:17Z_
 
 ### Patch Changes
 
@@ -595,6 +744,8 @@
 
 ## 0.9.56
 
+_Released: 2026-04-15T08:11:32Z_
+
 ### Patch Changes
 
 - 8fb08a2: feat: Extend add-new-model generator to support external services for CF projects
@@ -602,6 +753,8 @@
     - @sap-ux/adp-tooling@0.18.117
 
 ## 0.9.55
+
+_Released: 2026-04-14T20:26:28Z_
 
 ### Patch Changes
 
@@ -616,6 +769,8 @@
     - @sap-ux/odata-service-writer@0.31.7
 
 ## 0.9.54
+
+_Released: 2026-04-14T12:35:35Z_
 
 ### Patch Changes
 
@@ -633,12 +788,16 @@
 
 ## 0.9.53
 
+_Released: 2026-04-14T11:39:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [497317c]
     - @sap-ux/adp-tooling@0.18.114
 
 ## 0.9.52
+
+_Released: 2026-04-14T08:32:33Z_
 
 ### Patch Changes
 
@@ -647,12 +806,16 @@
 
 ## 0.9.51
 
+_Released: 2026-04-09T07:00:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [7a8613b]
     - @sap-ux/adp-tooling@0.18.113
 
 ## 0.9.50
+
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -673,6 +836,8 @@
 
 ## 0.9.49
 
+_Released: 2026-04-07T11:09:34Z_
+
 ### Patch Changes
 
 - 1b10e9f: feat: Adapt CF ADP project structure to work with approuter backend middleware
@@ -681,12 +846,16 @@
 
 ## 0.9.48
 
+_Released: 2026-04-01T14:51:40Z_
+
 ### Patch Changes
 
 - Updated dependencies [6b74074]
     - @sap-ux/adp-tooling@0.18.110
 
 ## 0.9.47
+
+_Released: 2026-04-01T11:49:37Z_
 
 ### Patch Changes
 
@@ -703,6 +872,8 @@
 
 ## 0.9.46
 
+_Released: 2026-04-01T06:34:51Z_
+
 ### Patch Changes
 
 - 68b5523: feat: Adjust FLP configuration wizard for CF scenario
@@ -710,6 +881,8 @@
     - @sap-ux/adp-tooling@0.18.108
 
 ## 0.9.45
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -740,6 +913,8 @@
 
 ## 0.9.44
 
+_Released: 2026-03-27T15:37:24Z_
+
 ### Patch Changes
 
 - Updated dependencies [e92850e]
@@ -749,6 +924,8 @@
     - @sap-ux/adp-tooling@0.18.106
 
 ## 0.9.43
+
+_Released: 2026-03-27T11:58:49Z_
 
 ### Patch Changes
 
@@ -763,6 +940,8 @@
     - @sap-ux/odata-service-writer@0.31.3
 
 ## 0.9.42
+
+_Released: 2026-03-26T20:06:10Z_
 
 ### Patch Changes
 
@@ -779,6 +958,8 @@
 
 ## 0.9.41
 
+_Released: 2026-03-26T16:48:32Z_
+
 ### Patch Changes
 
 - 96a689b: fix(ADP): Change prompt's order, first appear applications then projectType if applicable.
@@ -787,12 +968,16 @@
 
 ## 0.9.40
 
+_Released: 2026-03-26T15:15:10Z_
+
 ### Patch Changes
 
 - Updated dependencies [3dcd3f7]
     - @sap-ux/adp-tooling@0.18.102
 
 ## 0.9.39
+
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -822,6 +1007,8 @@
 
 ## 0.9.38
 
+_Released: 2026-03-25T12:56:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [f384ace]
@@ -837,6 +1024,8 @@
 
 ## 0.9.37
 
+_Released: 2026-03-23T18:25:40Z_
+
 ### Patch Changes
 
 - Updated dependencies [c0e05ab]
@@ -847,6 +1036,8 @@
     - @sap-ux/system-access@0.7.1
 
 ## 0.9.36
+
+_Released: 2026-03-23T10:51:10Z_
 
 ### Patch Changes
 

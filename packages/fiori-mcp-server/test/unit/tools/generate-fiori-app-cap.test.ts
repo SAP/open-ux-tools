@@ -1,11 +1,10 @@
 import { jest } from '@jest/globals';
 
-const mockCapCommand = jest.fn<any>();
 const mockParse = jest.fn<any>();
+const mockCheckIfGeneratorInstalled = jest.fn<any>();
+const mockRunCmd = jest.fn<any>();
+const mockValidateWithSchema = jest.fn<any>();
 
-jest.unstable_mockModule('../../../src/tools/generate-fiori-app-cap-impl', () => ({
-    command: mockCapCommand
-}));
 jest.unstable_mockModule('../../../src/tools/schemas/index', () => ({
     generatorConfigOData: { parse: jest.fn() },
     generatorConfigCAP: { parse: mockParse },
@@ -14,20 +13,33 @@ jest.unstable_mockModule('../../../src/tools/schemas/index', () => ({
     PREDEFINED_GENERATOR_VALUES: {}
 }));
 
+const actualUtils = await import('../../../src/utils/index.js');
+jest.unstable_mockModule('../../../src/utils', () => ({
+    ...actualUtils,
+    checkIfGeneratorInstalled: mockCheckIfGeneratorInstalled,
+    runCmd: mockRunCmd,
+    validateWithSchema: mockValidateWithSchema
+}));
+
+const actualFs = await import('node:fs');
+const mockWriteFile = jest.fn<any>().mockResolvedValue(undefined);
+const mockMkdir = jest.fn<any>().mockResolvedValue(undefined);
+const mockUnlink = jest.fn<any>().mockResolvedValue(undefined);
+const mockExistsSync = jest.fn<any>().mockReturnValue(false);
+jest.unstable_mockModule('node:fs', () => ({
+    ...actualFs,
+    default: {
+        ...actualFs,
+        existsSync: mockExistsSync,
+        promises: { mkdir: mockMkdir, writeFile: mockWriteFile, unlink: mockUnlink }
+    },
+    existsSync: mockExistsSync,
+    promises: { mkdir: mockMkdir, writeFile: mockWriteFile, unlink: mockUnlink }
+}));
+
 const { generateFioriAppCap } = await import('../../../src/tools/generate-fiori-app-cap.js');
-const { GENERATE_FIORI_UI_APPLICATION_CAP_ID } = await import('../../../src/constant.js');
 
 describe('generateFioriAppCap', () => {
-    const mockResult = {
-        functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
-        status: 'Success',
-        message: 'Generation completed successfully.',
-        parameters: {},
-        appPath: '/cap-project/app/myapp',
-        changes: [],
-        timestamp: '2024-01-01T00:00:00.000Z'
-    };
-
     const validArgs = {
         floorplan: 'FE_LROP',
         project: { name: 'myapp', description: 'Test app', targetFolder: '/cap-project', ui5Version: '1.120.0' },
@@ -39,43 +51,34 @@ describe('generateFioriAppCap', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockCapCommand.mockResolvedValue(mockResult);
         mockParse.mockReturnValue(validArgs);
+        mockValidateWithSchema.mockImplementation((_schema: any, data: any) => data);
+        mockCheckIfGeneratorInstalled.mockResolvedValue(undefined);
+        mockRunCmd.mockResolvedValue({ stdout: 'ok', stderr: '' });
     });
 
-    test('should parse args with Zod schema before calling command', async () => {
+    test('should parse args with Zod schema before calling execute', async () => {
         const result = await generateFioriAppCap(validArgs);
 
         expect(mockParse).toHaveBeenCalledWith(validArgs);
-        expect(mockCapCommand).toHaveBeenCalledWith({
-            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
-            parameters: validArgs,
-            appPath: '/cap-project'
-        });
-        expect(result).toEqual(mockResult);
+        expect(result.status).toBe('Success');
     });
 
-    test('should use empty string for appPath when project.targetFolder is missing', async () => {
-        const argsNoFolder = { floorplan: 'FF_SIMPLE', project: { name: 'myapp', description: 'Test' } };
-        mockParse.mockReturnValue(argsNoFolder);
-
-        await generateFioriAppCap(argsNoFolder);
-
-        expect(mockCapCommand).toHaveBeenCalledWith(expect.objectContaining({ appPath: '' }));
-    });
-
-    test('should propagate Zod validation errors before calling command', async () => {
+    test('should propagate Zod validation errors before calling execute', async () => {
         mockParse.mockImplementation(() => {
             throw new Error('Invalid input');
         });
 
         await expect(generateFioriAppCap({ floorplan: 'INVALID' })).rejects.toThrow('Invalid input');
-        expect(mockCapCommand).not.toHaveBeenCalled();
     });
 
-    test('should propagate errors from command function', async () => {
-        mockCapCommand.mockRejectedValue(new Error('CAP project not found'));
+    test('should use empty string for appPath when project.targetFolder is missing', async () => {
+        const argsNoFolder = { floorplan: 'FF_SIMPLE', project: { name: 'myapp', description: 'Test' } };
+        mockParse.mockReturnValue(argsNoFolder);
+        mockValidateWithSchema.mockImplementation((_schema: any, data: any) => data);
 
-        await expect(generateFioriAppCap(validArgs)).rejects.toThrow('CAP project not found');
+        await expect(generateFioriAppCap(argsNoFolder)).rejects.toThrow(
+            'Please provide a valid path to the CAP project folder.'
+        );
     });
 });

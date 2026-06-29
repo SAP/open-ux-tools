@@ -1,5 +1,27 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 1.0.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-library-writer 1.0.7 → 1.0.8
+- @sap-ux/ui5-info 1.0.1 → 1.0.2
+- @sap-ux/fiori-generator-shared 1.0.12 → 1.0.13
+- @sap-ux/nodejs-utils 1.0.3 → 1.0.4
+- @sap-ux/ui5-library-inquirer 1.0.13 → 1.0.14
+
+## 1.0.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.11 → 1.0.12
+- @sap-ux/ui5-library-writer 1.0.6 → 1.0.7
+- @sap-ux/ui5-library-inquirer 1.0.12 → 1.0.13
+
 ## 1.0.12
 
 ### Patch Changes
@@ -10,6 +32,8 @@
 
 ## 1.0.11
 
+_Released: 2026-06-12T06:53:23Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@1.0.11
@@ -17,12 +41,16 @@
 
 ## 1.0.10
 
+_Released: 2026-06-11T10:54:17Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@1.0.10
 - @sap-ux/ui5-library-inquirer@1.0.10
 
 ## 1.0.9
+
+_Released: 2026-06-10T09:57:42Z_
 
 ### Patch Changes
 
@@ -32,6 +60,8 @@
 
 ## 1.0.8
 
+_Released: 2026-06-09T14:35:01Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@1.0.8
@@ -39,6 +69,8 @@
 - @sap-ux/ui5-library-inquirer@1.0.8
 
 ## 1.0.7
+
+_Released: 2026-06-09T13:18:16Z_
 
 ### Patch Changes
 
@@ -48,6 +80,8 @@
 
 ## 1.0.6
 
+_Released: 2026-06-04T13:54:21Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@1.0.6
@@ -56,6 +90,8 @@
 
 ## 1.0.5
 
+_Released: 2026-06-04T10:19:37Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@1.0.5
@@ -63,6 +99,8 @@
 - @sap-ux/ui5-library-inquirer@1.0.5
 
 ## 1.0.4
+
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -77,6 +115,8 @@
 
 ## 1.0.3
 
+_Released: 2026-06-03T13:52:44Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-library-writer@1.0.2
@@ -84,6 +124,8 @@
 - @sap-ux/ui5-library-inquirer@1.0.3
 
 ## 1.0.2
+
+_Released: 2026-06-02T11:35:17Z_
 
 ### Patch Changes
 
@@ -94,6 +136,8 @@
 
 ## 1.0.1
 
+_Released: 2026-06-01T15:15:26Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@1.0.1
@@ -101,6 +145,8 @@
 - @sap-ux/ui5-library-inquirer@1.0.1
 
 ## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -145,11 +191,15 @@
 
 ## 0.2.7
 
+_Released: 2026-05-29T12:50:34Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-library-inquirer@0.7.7
 
 ## 0.2.6
+
+_Released: 2026-05-27T11:39:21Z_
 
 ### Patch Changes
 
@@ -160,12 +210,16 @@
 
 ## 0.2.5
 
+_Released: 2026-05-27T10:42:47Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.15.5
 - @sap-ux/ui5-library-inquirer@0.7.5
 
 ## 0.2.4
+
+_Released: 2026-05-26T16:40:21Z_
 
 ### Patch Changes
 
@@ -175,6 +229,8 @@
 
 ## 0.2.3
 
+_Released: 2026-05-21T16:21:11Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-library-writer@0.7.2
@@ -182,6 +238,8 @@
 - @sap-ux/ui5-library-inquirer@0.7.3
 
 ## 0.2.2
+
+_Released: 2026-05-19T15:16:46Z_
 
 ### Patch Changes
 
@@ -191,6 +249,8 @@
 
 ## 0.2.1
 
+_Released: 2026-05-15T13:12:06Z_
+
 ### Patch Changes
 
 - 2c76f8f: chore: upgrade @sap-devx/yeoman-ui-types 1.23.0 → 1.25.0
@@ -199,6 +259,8 @@
     - @sap-ux/ui5-library-inquirer@0.7.1
 
 ## 0.2.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -216,11 +278,15 @@
 
 ## 0.1.170
 
+_Released: 2026-05-14T21:28:41Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-library-inquirer@0.6.108
 
 ## 0.1.169
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -235,6 +301,8 @@
 
 ## 0.1.168
 
+_Released: 2026-05-13T09:36:59Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.14.1
@@ -243,6 +311,8 @@
 
 ## 0.1.167
 
+_Released: 2026-05-12T18:00:39Z_
+
 ### Patch Changes
 
 - Updated dependencies [9360ea5]
@@ -250,6 +320,8 @@
     - @sap-ux/ui5-library-inquirer@0.6.105
 
 ## 0.1.166
+
+_Released: 2026-05-06T23:02:00Z_
 
 ### Patch Changes
 
@@ -263,6 +335,8 @@
 
 ## 0.1.165
 
+_Released: 2026-04-30T14:23:24Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.104
@@ -271,11 +345,15 @@
 
 ## 0.1.164
 
+_Released: 2026-04-30T13:10:33Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-library-inquirer@0.6.102
 
 ## 0.1.163
+
+_Released: 2026-04-29T15:24:37Z_
 
 ### Patch Changes
 
@@ -285,6 +363,8 @@
 
 ## 0.1.162
 
+_Released: 2026-04-27T19:47:46Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.102
@@ -293,12 +373,16 @@
 
 ## 0.1.161
 
+_Released: 2026-04-27T15:50:47Z_
+
 ### Patch Changes
 
 - Updated dependencies [165a6c2]
     - @sap-ux/ui5-library-writer@0.6.80
 
 ## 0.1.160
+
+_Released: 2026-04-23T12:54:21Z_
 
 ### Patch Changes
 
@@ -308,6 +392,8 @@
 
 ## 0.1.159
 
+_Released: 2026-04-23T06:48:55Z_
+
 ### Patch Changes
 
 - Updated dependencies [237371b]
@@ -315,6 +401,8 @@
     - @sap-ux/ui5-library-inquirer@0.6.98
 
 ## 0.1.158
+
+_Released: 2026-04-22T12:38:46Z_
 
 ### Patch Changes
 
@@ -324,12 +412,16 @@
 
 ## 0.1.157
 
+_Released: 2026-04-15T11:53:17Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.99
 - @sap-ux/ui5-library-inquirer@0.6.96
 
 ## 0.1.156
+
+_Released: 2026-04-14T20:26:28Z_
 
 ### Patch Changes
 
@@ -338,6 +430,8 @@
 - @sap-ux/ui5-library-inquirer@0.6.95
 
 ## 0.1.155
+
+_Released: 2026-04-14T12:35:35Z_
 
 ### Patch Changes
 
@@ -350,6 +444,8 @@
 
 ## 0.1.154
 
+_Released: 2026-04-08T13:10:18Z_
+
 ### Patch Changes
 
 - Updated dependencies [f1e4481]
@@ -361,6 +457,8 @@
 
 ## 0.1.153
 
+_Released: 2026-04-01T11:49:37Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.95
@@ -368,6 +466,8 @@
 - @sap-ux/ui5-library-inquirer@0.6.92
 
 ## 0.1.152
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -383,12 +483,16 @@
 
 ## 0.1.151
 
+_Released: 2026-03-27T15:37:24Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.93
 - @sap-ux/ui5-library-inquirer@0.6.90
 
 ## 0.1.150
+
+_Released: 2026-03-27T11:58:49Z_
 
 ### Patch Changes
 
@@ -398,6 +502,8 @@
 
 ## 0.1.149
 
+_Released: 2026-03-26T20:06:10Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.91
@@ -405,6 +511,8 @@
 - @sap-ux/ui5-library-inquirer@0.6.88
 
 ## 0.1.148
+
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -421,6 +529,8 @@
     - @sap-ux/ui5-library-writer@0.6.73
 
 ## 0.1.147
+
+_Released: 2026-03-25T12:56:41Z_
 
 ### Patch Changes
 

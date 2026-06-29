@@ -2,6 +2,8 @@
 
 ## 1.0.1
 
+*Released: 2026-06-03T14:58:37Z*
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
@@ -9,6 +11,8 @@
     - @sap-ux/odata-annotation-core@1.0.1
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -48,6 +52,8 @@
 
 ## 0.6.0
 
+*Released: 2026-05-20T13:39:22Z*
+
 ### Minor Changes
 
 - 2f1ece0: feat: add convertMetadataDocumentV2 API and expose V2Annotation type; getXmlServiceArtifacts now returns [ServiceArtifacts, V2Annotation[]]
@@ -57,6 +63,8 @@
 - @sap-ux/odata-annotation-core@0.3.1
 
 ## 0.5.0
+
+*Released: 2026-05-15T08:12:20Z*
 
 ### Minor Changes
 
@@ -69,6 +77,8 @@
 
 ## 0.4.14
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -77,6 +87,8 @@
 
 ## 0.4.13
 
+*Released: 2026-04-30T14:23:24Z*
+
 ### Patch Changes
 
 - c160401: fix: SONAR issues
@@ -84,6 +96,8 @@
     - @sap-ux/odata-annotation-core@0.2.18
 
 ## 0.4.12
+
+*Released: 2026-03-30T22:24:11Z*
 
 ### Patch Changes
 

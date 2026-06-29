@@ -23,6 +23,7 @@ import ODM from './com.sap.vocabularies.ODM.v1.js';
 import PDF from './com.sap.vocabularies.PDF.v1.js';
 import PersonalData from './com.sap.vocabularies.PersonalData.v1.js';
 import Session from './com.sap.vocabularies.Session.v1.js';
+import Support from './com.sap.vocabularies.Support.v1.js';
 import UI from './com.sap.vocabularies.UI.v1.js';
 import HTML5 from './com.sap.vocabularies.HTML5.v1.js';
 import ObjectModel from './com.sap.cds.vocabularies.ObjectModel.js';
@@ -47,6 +48,7 @@ export type SapVocabularyNamespace =
     | 'com.sap.vocabularies.PDF.v1'
     | 'com.sap.vocabularies.PersonalData.v1'
     | 'com.sap.vocabularies.Session.v1'
+    | 'com.sap.vocabularies.Support.v1'
     | 'com.sap.vocabularies.UI.v1'
     | 'com.sap.vocabularies.HTML5.v1';
 
@@ -65,6 +67,7 @@ export type SapVocabularyAlias =
     | 'PDF'
     | 'PersonalData'
     | 'Session'
+    | 'Support'
     | 'UI'
     | 'HTML5';
 
@@ -119,6 +122,7 @@ export const NAMESPACE_TO_ALIAS: Map<VocabularyNamespace, VocabularyAlias> = new
     ['com.sap.vocabularies.PDF.v1', 'PDF'],
     ['com.sap.vocabularies.PersonalData.v1', 'PersonalData'],
     ['com.sap.vocabularies.Session.v1', 'Session'],
+    ['com.sap.vocabularies.Support.v1', 'Support'],
     ['com.sap.vocabularies.UI.v1', 'UI'],
     ['com.sap.vocabularies.HTML5.v1', 'HTML5'],
     ['com.sap.cds.vocabularies.ObjectModel', 'ObjectModel'],
@@ -149,6 +153,7 @@ export const ALIAS_TO_NAMESPACE: Map<VocabularyAlias, VocabularyNamespace> = new
     ['PDF', 'com.sap.vocabularies.PDF.v1'],
     ['PersonalData', 'com.sap.vocabularies.PersonalData.v1'],
     ['Session', 'com.sap.vocabularies.Session.v1'],
+    ['Support', 'com.sap.vocabularies.Support.v1'],
     ['UI', 'com.sap.vocabularies.UI.v1'],
     ['HTML5', 'com.sap.vocabularies.HTML5.v1'],
     ['ObjectModel', 'com.sap.cds.vocabularies.ObjectModel'],
@@ -179,6 +184,7 @@ const vocabularies: Record<string, CSDL> = {
     'com.sap.vocabularies.PDF.v1': PDF,
     'com.sap.vocabularies.PersonalData.v1': PersonalData,
     'com.sap.vocabularies.Session.v1': Session,
+    'com.sap.vocabularies.Support.v1': Support,
     'com.sap.vocabularies.UI.v1': UI,
     'com.sap.vocabularies.HTML5.v1': HTML5,
     'com.sap.cds.vocabularies.ObjectModel': ObjectModel,

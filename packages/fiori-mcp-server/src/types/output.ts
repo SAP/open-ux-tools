@@ -51,35 +51,52 @@ export const GetFunctionalityDetailsOutputSchema = zod.object({
 });
 
 /**
- * Output interface for the 'fetch-service-metadata' tool
+ * Output schema for the 'list_sap_systems' tool
+ */
+export const ListSapSystemsOutputSchema = zod.object({
+    systems: zod.array(
+        zod.object({
+            name: zod.string().describe('The display name of the SAP system or destination.'),
+            url: zod.string().describe('The host URL of the SAP system.'),
+            client: zod.string().optional().describe('The SAP client')
+        })
+    )
+});
+
+/**
+ * Output interface for the 'download_odata_service_metadata' tool
  */
 export const FetchServiceMetadataOutputSchema = zod.object({
-    functionalityId: FunctionalityIdSchema,
     status: zod.string(),
     message: zod.string(),
     parameters: zod.object({
         host: zod
             .string()
-            .describe('The host URL of the OData service. Pass as service.host to generate-fiori-ui-application.'),
+            .describe('The host URL of the OData service. Pass as service.host to generate_fiori_app_odata.'),
         servicePath: zod
             .string()
-            .describe('The OData endpoint path. Pass as service.servicePath to generate-fiori-ui-application.'),
-        client: zod
-            .string()
-            .optional()
-            .describe('The SAP client. Pass as service.client to generate-fiori-ui-application.'),
+            .describe('The OData endpoint path. Pass as service.servicePath to generate_fiori_app_odata.'),
+        client: zod.string().optional().describe('The SAP client. Pass as service.client to generate_fiori_app_odata.'),
         destination: zod
             .string()
             .optional()
-            .describe(
-                'The BTP destination name (BAS only). Pass as service.destination to generate-fiori-ui-application.'
-            ),
+            .describe('The BTP destination name (BAS only). Pass as service.destination to generate_fiori_app_odata.'),
         metadataFilePath: zod
             .string()
-            .describe(
-                'Path to the saved metadata.xml. Pass as service.metadataFilePath to generate-fiori-ui-application.'
-            )
+            .describe('Path to the saved metadata.xml. Pass as service.metadataFilePath to generate_fiori_app_odata.')
     }),
+    appPath: zod.string(),
+    changes: zod.array(zod.string()),
+    timestamp: zod.string()
+});
+
+/**
+ * Output schema for the 'generate_fiori_app_odata' and 'generate_fiori_app_cap' tools
+ */
+export const GenerateAppOutputSchema = zod.object({
+    status: zod.string(),
+    message: zod.string(),
+    parameters: zod.unknown(),
     appPath: zod.string(),
     changes: zod.array(zod.string()),
     timestamp: zod.string()
