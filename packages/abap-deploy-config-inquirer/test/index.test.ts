@@ -65,6 +65,34 @@ describe('index', () => {
             transport: 'mockTransport'
         });
     });
+
+    it('should forward adapter.promptModule to getPrompts and register autocomplete plugin', async () => {
+        mockGetService.mockResolvedValueOnce({
+            getAll: jest.fn().mockResolvedValueOnce([mockTargetSystems])
+        });
+
+        const answers: AbapDeployConfigAnswersInternal = {
+            url: '',
+            targetSystem: 'https://mock.url.target1.com',
+            client: '000',
+            package: '',
+            ui5AbapRepo: 'mockRepo',
+            packageManual: 'mockPackage',
+            transportManual: 'mockTransport'
+        };
+
+        const mockPromptsModule = inquirer.createPromptModule();
+        const adapterRegisterPromptSpy = jest.spyOn(mockPromptsModule, 'registerPrompt');
+        const adapter = {
+            prompt: jest.fn().mockResolvedValueOnce(answers),
+            promptModule: mockPromptsModule
+        };
+
+        mockGetAbapDeployConfigQuestions.mockResolvedValue([{ name: 'packageAutocomplete', type: 'autocomplete' }]);
+
+        await prompt(adapter);
+        expect(adapterRegisterPromptSpy).toHaveBeenCalledWith('autocomplete', AutocompletePrompt);
+    });
 });
 
 describe('registerAutocompletePlugin (via getPrompts)', () => {
