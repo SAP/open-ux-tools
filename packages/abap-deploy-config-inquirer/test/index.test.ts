@@ -67,10 +67,6 @@ describe('index', () => {
     });
 
     it('should forward adapter.promptModule to getPrompts and register autocomplete plugin', async () => {
-        mockGetService.mockResolvedValueOnce({
-            getAll: jest.fn().mockResolvedValueOnce([mockTargetSystems])
-        });
-
         const answers: AbapDeployConfigAnswersInternal = {
             url: '',
             targetSystem: 'https://mock.url.target1.com',
@@ -90,7 +86,13 @@ describe('index', () => {
 
         mockGetAbapDeployConfigQuestions.mockResolvedValue([{ name: 'packageAutocomplete', type: 'autocomplete' }]);
 
-        await prompt(adapter);
+        expect(await prompt(adapter)).toMatchObject({
+            url: 'https://mock.url.target1.com',
+            client: '000',
+            ui5AbapRepo: 'mockRepo',
+            package: 'mockPackage',
+            transport: 'mockTransport'
+        });
         expect(adapterRegisterPromptSpy).toHaveBeenCalledWith('autocomplete', AutocompletePrompt);
     });
 });
