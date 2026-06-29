@@ -29,7 +29,7 @@ export class AddCustomSectionQuickAction
         )[0] as ObjectPageLayout;
         const sections = objectPageLayout.getSections();
         let anchor: string | null = null;
-        const pageId = getPageId(this.context) as string;
+        const pageId = getPageId(this.context);
         if (sections.length > 0) {
             // Use the first section as the anchor if available
             anchor = (this.context.view.getLocalId(sections[sections.length - 1].getId()) ?? '')

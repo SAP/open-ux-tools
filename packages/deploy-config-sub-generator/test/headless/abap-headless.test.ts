@@ -71,9 +71,9 @@ export const ORIGINAL_CWD: string = process.cwd();
 export const OUTPUT_DIR = join(__dirname, '../test-output/abap');
 
 describe('Test ABAP headless generator', () => {
-    jest.setTimeout(60000);
     let originalStdinIsTTY: boolean | undefined;
     beforeAll(async () => {
+        jest.setTimeout(60000);
         rimraf.rimrafSync(OUTPUT_DIR);
         cpSync(INPUT_APP_DIR_ABAP, OUTPUT_DIR, { recursive: true });
         originalStdinIsTTY = process.stdin.isTTY;
