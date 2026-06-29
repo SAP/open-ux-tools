@@ -8,7 +8,7 @@ import format from 'xml-formatter';
 import * as xpath from 'xpath';
 import type { Editor } from 'mem-fs-editor';
 
-import { getMinimumUI5Version, getAppProgrammingLanguage } from '@sap-ux/project-access';
+import { getMinimumUI5Version, getAppProgrammingLanguage, DirName } from '@sap-ux/project-access';
 import {
     BuildingBlockType,
     PAGE_AGGREGATIONS,
@@ -492,16 +492,14 @@ function resolveControllerPaths(basePath: string, viewOrFragmentPath: string): {
  * Example: appId="my.app", viewPath="webapp/ext/main/Main.view.xml" → "my.app.ext.main.Main"
  *
  * @param appId
- * @param _basePath
  * @param viewOrFragmentPath
  */
-function deriveControllerNamespace(appId: string, _basePath: string, viewOrFragmentPath: string): string {
+function deriveControllerNamespace(appId: string, viewOrFragmentPath: string): string {
     const { dir: viewDir, name: viewName } = parse(viewOrFragmentPath);
     const viewBaseName = viewName.replace(/\.view$/, '');
     // Strip leading "webapp/" segment and convert path separators to dots
-    const webappSegment = 'webapp';
-    const relDir = viewDir.startsWith(webappSegment)
-        ? viewDir.slice(webappSegment.length).replace(/^[/\\]/, '')
+    const relDir = viewDir.startsWith(DirName.Webapp)
+        ? viewDir.slice(DirName.Webapp.length).replace(/^[/\\]/, '')
         : viewDir;
     const dotPath = relDir ? `${relDir.replace(/[/\\]/g, '.')}.${viewBaseName}` : viewBaseName;
     return appId ? `${appId}.${dotPath}` : dotPath;
@@ -533,7 +531,7 @@ async function applyPageControllerTemplate(fs: Editor, basePath: string, viewOrF
 
     const { content: manifest } = await getManifest(basePath, fs, false);
     const appId = manifest?.['sap.app']?.id ?? '';
-    const namespace = deriveControllerNamespace(appId, basePath, viewOrFragmentPath);
+    const namespace = deriveControllerNamespace(appId, viewOrFragmentPath);
 
     copyTpl(fs, getTemplatePath(`/building-block/page/Controller.${isTypeScript ? 'ts' : 'js'}`), controllerPath, {
         namespace,
@@ -660,7 +658,7 @@ async function createNewJsControllerFromTemplate(
 ): Promise<void> {
     const { content: manifest } = await getManifest(basePath, fs, false);
     const appId = manifest?.['sap.app']?.id ?? '';
-    const namespace = deriveControllerNamespace(appId, basePath, viewOrFragmentPath);
+    const namespace = deriveControllerNamespace(appId, viewOrFragmentPath);
     copyTpl(fs, getTemplatePath('/building-block/page/Controller.js'), controllerPath, {
         namespace,
         handlers: missingHandlers
