@@ -1,5 +1,34 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 1.0.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/inquirer-common 1.0.13 → 1.0.14
+
+## 1.0.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.12 → 1.0.13
+
+## 1.0.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-18
+
+#### Features
+
+- show warning when a full URL destination is selected [[d905991](https://github.com/SAP/open-ux-tools/commit/d905991ddc0ac82d5cde833cf4489d8a72bd7ad5)]
+
 ## 1.0.12
 
 ### Patch Changes
@@ -10,11 +39,15 @@
 
 ## 1.0.11
 
+_Released: 2026-06-12T06:53:23Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@1.0.11
 
 ## 1.0.10
+
+_Released: 2026-06-11T10:54:17Z_
 
 ### Patch Changes
 
@@ -22,11 +55,15 @@
 
 ## 1.0.9
 
+_Released: 2026-06-10T09:57:42Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@1.0.9
 
 ## 1.0.8
+
+_Released: 2026-06-09T14:35:01Z_
 
 ### Patch Changes
 
@@ -36,11 +73,15 @@
 
 ## 1.0.7
 
+_Released: 2026-06-09T13:18:16Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@1.0.7
 
 ## 1.0.6
+
+_Released: 2026-06-04T13:54:21Z_
 
 ### Patch Changes
 
@@ -48,11 +89,15 @@
 
 ## 1.0.5
 
+_Released: 2026-06-04T10:19:37Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@1.0.5
 
 ## 1.0.4
+
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -64,11 +109,15 @@
 
 ## 1.0.3
 
+_Released: 2026-06-03T13:52:44Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@1.0.3
 
 ## 1.0.2
+
+_Released: 2026-06-02T11:35:17Z_
 
 ### Patch Changes
 
@@ -76,11 +125,15 @@
 
 ## 1.0.1
 
+_Released: 2026-06-01T15:15:26Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@1.0.1
 
 ## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -122,11 +175,15 @@
 
 ## 0.6.7
 
+_Released: 2026-05-29T12:50:34Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.13.6
 
 ## 0.6.6
+
+_Released: 2026-05-27T11:39:21Z_
 
 ### Patch Changes
 
@@ -134,11 +191,15 @@
 
 ## 0.6.5
 
+_Released: 2026-05-27T10:42:47Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.13.4
 
 ## 0.6.4
+
+_Released: 2026-05-26T16:40:21Z_
 
 ### Patch Changes
 
@@ -148,11 +209,15 @@
 
 ## 0.6.3
 
+_Released: 2026-05-21T16:21:11Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.13.2
 
 ## 0.6.2
+
+_Released: 2026-05-19T15:16:46Z_
 
 ### Patch Changes
 
@@ -160,12 +225,16 @@
 
 ## 0.6.1
 
+_Released: 2026-05-15T13:12:06Z_
+
 ### Patch Changes
 
 - Updated dependencies [2c76f8f]
     - @sap-ux/inquirer-common@0.13.0
 
 ## 0.6.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -180,11 +249,15 @@
 
 ## 0.5.130
 
+_Released: 2026-05-14T21:28:41Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.48
 
 ## 0.5.129
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -196,17 +269,23 @@
 
 ## 0.5.128
 
+_Released: 2026-05-13T09:36:59Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.46
 
 ## 0.5.127
 
+_Released: 2026-05-12T18:00:39Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.45
 
 ## 0.5.126
+
+_Released: 2026-05-06T23:02:00Z_
 
 ### Patch Changes
 
@@ -216,11 +295,15 @@
 
 ## 0.5.125
 
+_Released: 2026-04-30T14:23:24Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.43
 
 ## 0.5.124
+
+_Released: 2026-04-29T15:24:37Z_
 
 ### Patch Changes
 
@@ -228,11 +311,15 @@
 
 ## 0.5.123
 
+_Released: 2026-04-27T19:47:46Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.41
 
 ## 0.5.122
+
+_Released: 2026-04-23T12:54:21Z_
 
 ### Patch Changes
 
@@ -240,11 +327,15 @@
 
 ## 0.5.121
 
+_Released: 2026-04-23T06:48:55Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.39
 
 ## 0.5.120
+
+_Released: 2026-04-22T12:38:46Z_
 
 ### Patch Changes
 
@@ -252,11 +343,15 @@
 
 ## 0.5.119
 
+_Released: 2026-04-15T11:53:17Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.37
 
 ## 0.5.118
+
+_Released: 2026-04-14T20:26:28Z_
 
 ### Patch Changes
 
@@ -266,6 +361,8 @@
 
 ## 0.5.117
 
+_Released: 2026-04-14T12:35:35Z_
+
 ### Patch Changes
 
 - Updated dependencies [cc4450c]
@@ -273,6 +370,8 @@
     - @sap-ux/inquirer-common@0.11.35
 
 ## 0.5.116
+
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -283,11 +382,15 @@
 
 ## 0.5.115
 
+_Released: 2026-04-01T11:49:37Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.33
 
 ## 0.5.114
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -300,11 +403,15 @@
 
 ## 0.5.113
 
+_Released: 2026-03-27T15:37:24Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.31
 
 ## 0.5.112
+
+_Released: 2026-03-27T11:58:49Z_
 
 ### Patch Changes
 
@@ -314,11 +421,15 @@
 
 ## 0.5.111
 
+_Released: 2026-03-26T20:06:10Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.29
 
 ## 0.5.110
+
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -331,6 +442,8 @@
     - @sap-ux/logger@0.8.3
 
 ## 0.5.109
+
+_Released: 2026-03-25T12:56:41Z_
 
 ### Patch Changes
 
