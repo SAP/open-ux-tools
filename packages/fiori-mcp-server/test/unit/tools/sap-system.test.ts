@@ -12,12 +12,10 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
 }));
 
 const mockAbapServiceProvider = jest.fn<any>();
-const mockCreateForDestination = jest.fn<any>();
 const mockTlsPatchApply = jest.fn();
 const mockTlsPatchIsPatchRequired = jest.fn<(url: string) => boolean>().mockReturnValue(false);
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     AbapServiceProvider: mockAbapServiceProvider,
-    createForDestination: mockCreateForDestination,
     ODataVersion,
     TlsPatch: {
         isPatchRequired: mockTlsPatchIsPatchRequired,
@@ -191,11 +189,6 @@ describe('service-metadata', () => {
             metadata: jest.fn<any>().mockResolvedValue(mockMetadata)
         };
         const mockServiceProvider = {
-            catalog: jest.fn<any>().mockReturnValue({
-                listServices: jest
-                    .fn<any>()
-                    .mockResolvedValue([{ path: '/sap/opu/odata4/service1' }, { path: '/sap/opu/odata4/service2' }])
-            }),
             service: jest.fn<any>().mockReturnValue(mockService)
         };
 
@@ -255,7 +248,6 @@ describe('service-metadata', () => {
                     password: 'pass'
                 }
             });
-            expect(mockServiceProvider.catalog).toHaveBeenCalledWith(ODataVersion.v4);
             expect(mockServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service1');
             expect(mockService.metadata).toHaveBeenCalled();
             expect(result).toBe(mockMetadata);
@@ -293,82 +285,7 @@ describe('service-metadata', () => {
             expect(mockServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service1');
         });
 
-        test('should handle service path not in catalog', async () => {
-            const sapSystem: BackendSystem = {
-                name: 'TestSystem',
-                url: 'https://test.example.com',
-                client: '100',
-                ...commonSystemProps
-            };
-
-            await getServiceMetadata(sapSystem, '/sap/opu/odata4/service3');
-
-            expect(mockServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service3');
-        });
-
-        test('should handle when catalog listing fails', async () => {
-            mockServiceProvider.catalog.mockReturnValue({
-                listServices: jest.fn<any>().mockRejectedValue(new Error('Catalog not available'))
-            });
-
-            const sapSystem: BackendSystem = {
-                name: 'TestSystem',
-                url: 'https://test.example.com',
-                client: '100',
-                ...commonSystemProps
-            };
-
-            const result = await getServiceMetadata(sapSystem, '/sap/opu/odata4/service1');
-
-            expect(mockServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service1');
-            expect(result).toBe(mockMetadata);
-        });
-
-        test('should handle when no services found in catalog', async () => {
-            mockServiceProvider.catalog.mockReturnValue({
-                listServices: jest.fn<any>().mockResolvedValue([])
-            });
-
-            const sapSystem: BackendSystem = {
-                name: 'TestSystem',
-                url: 'https://test.example.com',
-                client: '100',
-                ...commonSystemProps
-            };
-
-            const result = await getServiceMetadata(sapSystem, '/sap/opu/odata4/service1');
-
-            expect(mockServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service1');
-            expect(result).toBe(mockMetadata);
-        });
-
-        test('should throw error when multiple services match path', async () => {
-            mockServiceProvider.catalog.mockReturnValue({
-                listServices: jest
-                    .fn<any>()
-                    .mockResolvedValue([{ path: '/sap/opu/odata4/service1' }, { path: '/sap/opu/odata4/service1' }])
-            });
-
-            const sapSystem: BackendSystem = {
-                name: 'TestSystem',
-                url: 'https://test.example.com',
-                client: '100',
-                ...commonSystemProps
-            };
-
-            await expect(getServiceMetadata(sapSystem, '/sap/opu/odata4/service1')).rejects.toThrow(
-                'Multiple OData V4 services found matching path: /sap/opu/odata4/service1'
-            );
-        });
-
         test('should handle service with client parameter', async () => {
-            // Reset mock to original state to avoid duplicate path error
-            mockServiceProvider.catalog.mockReturnValue({
-                listServices: jest
-                    .fn<any>()
-                    .mockResolvedValue([{ path: '/sap/opu/odata4/service1' }, { path: '/sap/opu/odata4/service2' }])
-            });
-
             const sapSystem: BackendSystem = {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
@@ -387,13 +304,6 @@ describe('service-metadata', () => {
         });
 
         test('should handle full URL in servicePath', async () => {
-            // Reset mock to original state
-            mockServiceProvider.catalog.mockReturnValue({
-                listServices: jest
-                    .fn<any>()
-                    .mockResolvedValue([{ path: '/sap/opu/odata4/service1' }, { path: '/sap/opu/odata4/service2' }])
-            });
-
             const sapSystem: BackendSystem = {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
@@ -412,13 +322,6 @@ describe('service-metadata', () => {
                 throw new Error('Invalid XML');
             });
 
-            // Reset catalog mock to avoid duplicate path error
-            mockServiceProvider.catalog.mockReturnValue({
-                listServices: jest
-                    .fn<any>()
-                    .mockResolvedValue([{ path: '/sap/opu/odata4/service1' }, { path: '/sap/opu/odata4/service2' }])
-            });
-
             const sapSystem: BackendSystem = {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
@@ -434,12 +337,6 @@ describe('service-metadata', () => {
 
         test('should throw error when metadata parsing returns undefined', async () => {
             mockParseEdmx.mockReturnValueOnce(undefined);
-
-            mockServiceProvider.catalog.mockReturnValue({
-                listServices: jest
-                    .fn<any>()
-                    .mockResolvedValue([{ path: '/sap/opu/odata4/service1' }, { path: '/sap/opu/odata4/service2' }])
-            });
 
             const sapSystem: BackendSystem = {
                 name: 'TestSystem',
@@ -457,12 +354,6 @@ describe('service-metadata', () => {
         test('should throw error when metadata parsing returns null', async () => {
             mockParseEdmx.mockReturnValueOnce(null);
 
-            mockServiceProvider.catalog.mockReturnValue({
-                listServices: jest
-                    .fn<any>()
-                    .mockResolvedValue([{ path: '/sap/opu/odata4/service1' }, { path: '/sap/opu/odata4/service2' }])
-            });
-
             const sapSystem: BackendSystem = {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
@@ -477,12 +368,6 @@ describe('service-metadata', () => {
         });
 
         test('should validate metadata is parseable before returning', async () => {
-            mockServiceProvider.catalog.mockReturnValue({
-                listServices: jest
-                    .fn<any>()
-                    .mockResolvedValue([{ path: '/sap/opu/odata4/service1' }, { path: '/sap/opu/odata4/service2' }])
-            });
-
             const sapSystem: BackendSystem = {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
@@ -496,10 +381,6 @@ describe('service-metadata', () => {
         });
 
         test('should handle service fetch directly when path has query parameters', async () => {
-            mockServiceProvider.catalog.mockReturnValue({
-                listServices: jest.fn<any>().mockResolvedValue([])
-            });
-
             const sapSystem: BackendSystem = {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
@@ -517,12 +398,6 @@ describe('service-metadata', () => {
             };
             mockServiceProvider.service.mockReturnValueOnce(mockFailingService);
 
-            mockServiceProvider.catalog.mockReturnValue({
-                listServices: jest
-                    .fn<any>()
-                    .mockResolvedValue([{ path: '/sap/opu/odata4/service1' }, { path: '/sap/opu/odata4/service2' }])
-            });
-
             const sapSystem: BackendSystem = {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
@@ -533,12 +408,6 @@ describe('service-metadata', () => {
         });
 
         test('should handle system without client', async () => {
-            mockServiceProvider.catalog.mockReturnValue({
-                listServices: jest
-                    .fn<any>()
-                    .mockResolvedValue([{ path: '/sap/opu/odata4/service1' }, { path: '/sap/opu/odata4/service2' }])
-            });
-
             const sapSystem: BackendSystem = {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
@@ -683,43 +552,6 @@ describe('service-metadata', () => {
                 const result = await findSystem('UNKNOWN');
                 expect(result.system).toBeUndefined();
                 expect(result.message).toContain('BAS API unavailable');
-            });
-        });
-
-        describe('getServiceMetadata in BAS', () => {
-            const mockMetadata =
-                '<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">...</edmx:Edmx>';
-            const mockService = { metadata: jest.fn<any>().mockResolvedValue(mockMetadata) };
-            const mockDestServiceProvider = { service: jest.fn<any>().mockReturnValue(mockService) };
-
-            beforeEach(() => {
-                mockCreateForDestination.mockReturnValue(mockDestServiceProvider);
-            });
-
-            test('should use getServiceFromDestination when isAppStudio is true', async () => {
-                const destination = mockDestinations.DEST_A;
-
-                const result = await getServiceMetadata(destination, '/sap/opu/odata4/service1');
-
-                expect(mockCreateForDestination).toHaveBeenCalledWith({}, destination);
-                expect(mockDestServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service1');
-                expect(result).toBe(mockMetadata);
-            });
-
-            test('should strip $metadata suffix from service path', async () => {
-                const destination = mockDestinations.DEST_A;
-
-                await getServiceMetadata(destination, '/sap/opu/odata4/service1/$metadata');
-
-                expect(mockDestServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service1/');
-            });
-
-            test('should not use AbapServiceProvider when isAppStudio is true', async () => {
-                const destination = mockDestinations.DEST_A;
-
-                await getServiceMetadata(destination, '/sap/opu/odata4/service1');
-
-                expect(mockAbapServiceProvider).not.toHaveBeenCalled();
             });
         });
     });

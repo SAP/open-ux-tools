@@ -26,13 +26,11 @@ const mockServiceFn = jest.fn<any>();
 const mockMetadata = jest.fn<any>();
 const mockTlsIsPatchRequired = jest.fn<any>().mockReturnValue(false);
 const mockTlsApply = jest.fn<any>();
-const mockCreateForDestination = jest.fn<any>();
 
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
     AbapServiceProvider: mockAbapServiceProvider,
     ODataVersion: { v4: 'v4' },
-    TlsPatch: { isPatchRequired: mockTlsIsPatchRequired, apply: mockTlsApply },
-    createForDestination: mockCreateForDestination
+    TlsPatch: { isPatchRequired: mockTlsIsPatchRequired, apply: mockTlsApply }
 }));
 
 const mockParseEdmx = jest.fn<any>();
@@ -302,34 +300,5 @@ describe('getServiceMetadata — VSCode', () => {
             throw new Error('unexpected token');
         });
         await expect(getServiceMetadata(SYSTEM_A, '/sap/svc/')).rejects.toThrow(/unexpected token/);
-    });
-});
-
-describe('getServiceMetadata — BAS', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-        mockIsAppStudio.mockReturnValue(true);
-        mockParseEdmx.mockReturnValue({ schemas: [] });
-        mockXmlFormat.mockReturnValue(SAMPLE_METADATA);
-        mockMetadata.mockResolvedValue(SAMPLE_METADATA);
-        const destServiceProvider = { service: mockServiceFn };
-        mockCreateForDestination.mockReturnValue(destServiceProvider);
-        mockServiceFn.mockReturnValue({ metadata: mockMetadata });
-    });
-
-    test('uses createForDestination instead of AbapServiceProvider', async () => {
-        await getServiceMetadata(DEST_A, '/sap/svc/');
-        expect(mockCreateForDestination).toHaveBeenCalledWith({}, DEST_A);
-        expect(mockAbapServiceProvider).not.toHaveBeenCalled();
-    });
-
-    test('strips $metadata suffix from service path', async () => {
-        await getServiceMetadata(DEST_A, '/sap/opu/odata4/svc/$metadata');
-        expect(mockServiceFn).toHaveBeenCalledWith('/sap/opu/odata4/svc/');
-    });
-
-    test('fetches and returns formatted metadata', async () => {
-        const result = await getServiceMetadata(DEST_A, '/sap/svc/');
-        expect(result).toBe(SAMPLE_METADATA);
     });
 });

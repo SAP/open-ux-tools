@@ -148,7 +148,7 @@ describe('downloadODataServiceMetadata', () => {
 
         const result = await downloadODataServiceMetadata(params);
         expect(result.status).toBe('Error');
-        expect(result.message).toBe('Missing required parameter: servicePath');
+        expect(result.message).toBe('Missing required parameter: servicePath must be provided');
         expect(mockFindSystem).not.toHaveBeenCalled();
         expect(mockGetServiceMetadata).not.toHaveBeenCalled();
         expect(mockWriteFileSync).not.toHaveBeenCalled();
@@ -163,7 +163,7 @@ describe('downloadODataServiceMetadata', () => {
 
         const result = await downloadODataServiceMetadata(params);
         expect(result.status).toBe('Error');
-        expect(result.message).toBe('Missing required parameter: servicePath');
+        expect(result.message).toBe('Missing required parameter: servicePath must be provided');
         expect(mockFindSystem).not.toHaveBeenCalled();
     });
 
@@ -176,7 +176,7 @@ describe('downloadODataServiceMetadata', () => {
 
         const result = await downloadODataServiceMetadata(params);
         expect(result.status).toBe('Error');
-        expect(result.message).toBe('Missing required parameter: servicePath');
+        expect(result.message).toBe('Missing required parameter: servicePath must be provided');
     });
 
     test('should return error response from findSystem failure', async () => {

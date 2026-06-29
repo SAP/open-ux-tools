@@ -59,8 +59,9 @@ export const tools = [
     },
     {
         name: 'list_sap_systems',
-        description: `Lists all SAP systems from the user's environment. This will be SAP Fiori tools system store on VSCode or destinations on Business Application.
-                    Also use this tool when the user asks to 'list destinations', 'list systems', 'list backends', or any equivalent phrasing.
+        description: `Lists all SAP systems from the user's environment. This tool should only be used if the Service Center MCP tool 'list_systems' to retrieve the metadata is unavailable. 
+                    **ALWAYS** use the Service Center MCP tool 'list_systems' first if it is available. This tool is a fallback for environments where the Service Center MCP tool is not available.
+                    Also use this tool when the user asks to 'list systems', 'list backends', or any equivalent phrasing.
                     Use this tool when the user references a SAP system by name or when you need to discover available systems
                     before calling 'download_odata_service_metadata' or generating a Fiori application.`,
         annotations: {
@@ -77,13 +78,17 @@ export const tools = [
     },
     {
         name: 'download_odata_service_metadata',
-        description: `Downloads the metadata (EDMX) of a specific OData service from a SAP system and saves it as metadata.xml.
+        description: `Downloads the metadata (EDMX) of a specific OData service URL from a SAP system and saves it as metadata.xml.
                     Note: this tool replaces the old 'fetch-service-metadata' functionality that was previously available via the 'execute_functionality' workflow — use this tool directly instead.
-                    Use this before calling 'generate_fiori_app_odata' when the user provides a SAP system reference or service URL.
+
+                    Usage guidelines:
+                    - Use this before calling 'generate_fiori_app_odata' when the user provides a SAP system reference and a service path. 
+                    - If a service name or technical id is provided instead of a service path DO NOT USE THIS TOOL. Instead use the Service Center MCP server tool 'get_resource_metadata' to get the service metadata and then pass it to 'generate_fiori_app_odata'.
+                    - If a service path is provided by the user, use it directly via servicePath parameter.
                     - If the user provides a system name or host, use 'list_sap_systems' first to resolve it.
-                    - Pass the full URL as sapSystemQuery if a full URL is provided; pass only the path as servicePath.
+                    - Pass the full URL as sapSystemQuery.
                     - Returns host, servicePath, client, metadataFilePath and destination (on SAP Business Application Studio) inside the result's parameters object.
-                    - Pass ALL returned fields directly into the service config of 'generate_fiori_app_odata'. On BAS, destination is mandatory and must be included.
+                    - Pass ALL returned fields directly into the service config of 'generate_fiori_app_odata'. On BAS, destination is mandatory and must be included. Map the returned properties to the app config service property input to 'generate_fiori_app_odata'.
                     **IMPORTANT**: On VSCode, if the service requires authentication and the system is not already stored, ask the user to store it first. Do not ask for credentials directly.`,
         annotations: {
             title: 'Download OData Service Metadata',
@@ -96,19 +101,56 @@ export const tools = [
     },
     {
         name: 'generate_fiori_app_odata',
-        description: `Creates (generates) a new SAP Fiori UI application within an existing project (RAP or other non-CAP).
+        description: `Creates (generates) a new SAP Fiori UI application either within an existing CAP project or standalone. ALWAYS read ALL of the following instructions carefully before calling this tool.
+
+        🚨 CRITICAL - READ SCHEMA FIRST 🚨
+        Before calling this tool, you MUST:
+        1. Examine the inputSchema below to understand the EXACT structure required
+        2. The input MUST match the schema type 'GeneratorConfigOData' with these TOP-LEVEL properties:
+           - floorplan (must be: 'FE_LROP', 'FE_OVP', 'FE_ALP', 'FE_WORKLIST', 'FE_FEOP', 'FE_FPM', 'FF_SIMPLE', required)
+           - project (object, required)
+           - service (object, optional)
+           - entityConfig (object, optional)
+        3. DO NOT create properties like "config", or any other structure - use ONLY the properties defined in inputSchema
 
         Steps:
-        1. Construct the appGenConfig JSON argument.
-           - If the user provided a SAP system reference or URL, you **MUST** first call 'download_odata_service_metadata'
-             to retrieve the metadata. Use ALL fields it returns (host, servicePath, client, destination, metadataFilePath) directly in the service config.
-           - In SAP Business Application Studio, 'download_odata_service_metadata' returns both host and destination — both **MUST** be passed in the service config.
-           - On VSCode, 'download_odata_service_metadata' returns a host URL — pass it as service.host. If the host is not provided, you **MUST** ask for it.
+        1. Construct the tool arguments.
+           - **IMPORTANT** ALWAYS use the app config schema defined by the type 'GeneratorConfigOData' to create the input structure. NEVER create an input in any other format.
+           - The input MUST use the exact property names defined in the inputSchema: floorplan, project, service, entityConfig.
+           - **ONLY** if the Service Center MCP is NOT available and the user provided a SAP system reference or URL with a **service path**, you **MUST** first call 'download_odata_service_metadata'.
+           - If the Service Center MCP is available and the user provided a **service name or technical service id**, you **MUST** call the Service Center MCP server tool 'get_resource_metadata' to retrieve the metadata and properties required for the service property of the input. 
+           - Use the data returned to provide the required values (host, servicePath, client, destination, metadataFilePath) directly in the service property of the input.
+           - If the Service Center MCP was used both host and destination **MUST** be passed in the service property of the input.
+           - If Fiori MCP 'download_odata_service_metadata' was used and returns a host URL — pass it as service.host. If the host is not provided, you **MUST** ask for it.
            - **IMPORTANT**: On VSCode, if the service requires authentication and is not already stored, ask the user to store it first. Never ask for credentials directly.
 
         2. Parse the metadata.xml to understand the data model (entities, associations).
 
-        3. Generate the application once the config is complete and valid.`,
+        3. Generate the application once the config is complete and valid.
+
+        Example of CORRECT input structure:
+        {
+          "floorplan": "FE_LROP",
+          "project": {
+            "name": "my-travel-app",
+            "title": "My Travel App",
+            "description": "Travel management application",
+            "targetFolder": "/home/user/projects",
+            "ui5Version": "1.136.7"
+          },
+          "service": {
+            "host": "https://my-system.example.com",
+            "servicePath": "<full-odata-service-path>",
+            "client": "000",
+            "metadataFilePath": "/home/user/projects/metadata.xml",
+            "destination": "MY_DESTINATION"
+          },
+          "entityConfig": {
+            "mainEntity": { "entityName": "Travel" },
+            "generateFormAnnotations": true,
+            "generateLROPAnnotations": true
+          }
+        }`,
         annotations: {
             title: 'Generate SAP Fiori App (OData / non-CAP)',
             readOnlyHint: false,

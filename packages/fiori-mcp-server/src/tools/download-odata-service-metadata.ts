@@ -22,13 +22,13 @@ const EMPTY_PARAMS: DownloadODataServiceMetadataOutput['parameters'] = {
 export async function downloadODataServiceMetadata(
     params: DownloadODataServiceMetadataInput
 ): Promise<DownloadODataServiceMetadataOutput> {
-    const sapSystemQuery = String(params.sapSystemQuery ?? '').trim(); // can be empty
+    const sapSystemQuery = String(params.sapSystemQuery ?? '').trim();
     const servicePath = String(params.servicePath ?? '').trim();
 
     if (!servicePath) {
         return {
             status: 'Error',
-            message: 'Missing required parameter: servicePath',
+            message: 'Missing required parameter: servicePath must be provided',
             parameters: EMPTY_PARAMS,
             appPath: params.appPath,
             changes: [],
