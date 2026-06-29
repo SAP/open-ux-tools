@@ -4,6 +4,6 @@
 
 FIX: Revert the `/i18n/...properties` pass-through introduced in #4858.
 
-The pass-through was structurally correct for the bug it targeted (substituting partial ADP bundles for the base app's complete bundle, which broke `{@i18n>...}` annotation lookups like `UI.LineItem` headers) — but it regresses adaptation projects whose `appdescr_variant` does not declare an `appdescr_ui5_addNewModelEnhanceWith` for the `i18n` model. Those projects previously relied on the local `/i18n/i18n.properties` being 302-redirected to surface ADP-local keys, and pass-through silently drops those keys.
+In adaptation projects built on top of Fiori Elements V2 ListReport/ObjectPage base apps, FEV2's `TemplateComponent` rebuilds the `i18n` model on every template view, which shadows the ADP's local `i18n.properties` once requests fall through to the base app. Customer-defined keys are no longer reachable from inside the editor's bindings.
 
-The proper fix requires the backend merger to support `createIfMissing: true` on `appdescr_ui5_addNewModelEnhanceWith` so the generator can layer customer keys onto the FEV2-safe `@i18n` model unconditionally. That work is scoped at the merger side and cannot be safely downported in the current release window. Reverting until it ships and the generator emits the matching change.
+The proper fix requires moving customer keys to the FEV2-safe `@i18n` model (backend merger + generator changes) and cannot be safely downported in this release window. A corrected fix will be reapplied once that support is in place.
