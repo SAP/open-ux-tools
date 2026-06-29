@@ -532,9 +532,12 @@ async function applyPageControllerTemplate(fs: Editor, basePath: string, viewOrF
     const { content: manifest } = await getManifest(basePath, fs, false);
     const appId = manifest?.['sap.app']?.id ?? '';
     const namespace = deriveControllerNamespace(appId, viewOrFragmentPath);
+    const { name: viewName } = parse(viewOrFragmentPath);
+    const viewBaseName = viewName.replace(/\.view$/, '');
 
     copyTpl(fs, getTemplatePath(`/building-block/page/Controller.${isTypeScript ? 'ts' : 'js'}`), controllerPath, {
         namespace,
+        viewName: viewBaseName,
         handlers: PAGE_BB_ALL_HANDLERS
     });
 }
@@ -574,18 +577,11 @@ async function applyHandlersToController(
     }
 
     if (isTypeScript) {
-        const needsImports = !existingContent?.includes('sap/fe/core/ExtensionAPI');
-        const imports = needsImports
-            ? `import ExtensionAPI from 'sap/fe/core/ExtensionAPI';\nimport Event from 'sap/ui/base/Event';\n\n`
-            : '';
-        const stubs =
-            '\n' +
-            imports +
-            missingHandlers
-                .map((h) => `export function ${h.name}(this: ExtensionAPI, _event: Event): void {}`)
-                .join('\n\n') +
-            '\n';
-        fs.write(controllerPath, (existingContent ?? '') + stubs);
+        if (existingContent) {
+            injectHandlersIntoExistingTsController(fs, controllerPath, existingContent, missingHandlers);
+        } else {
+            await createNewTsControllerFromTemplate(fs, basePath, viewOrFragmentPath, controllerPath, missingHandlers);
+        }
         return;
     }
 
@@ -602,6 +598,90 @@ async function applyHandlersToController(
     } else {
         await createNewJsControllerFromTemplate(fs, basePath, viewOrFragmentPath, controllerPath, missingHandlers);
     }
+}
+
+/**
+ * Injects TS handler method stubs into an existing controller.
+ * - If the controller is class-based (`export default class`), injects public methods inside the class body
+ *   and ensures the required Event import is at the top.
+ * - Otherwise falls back to appending standalone `export function` stubs at the end of the file.
+ *
+ * @param fs
+ * @param controllerPath
+ * @param existingContent
+ * @param missingHandlers
+ */
+function injectHandlersIntoExistingTsController(
+    fs: Editor,
+    controllerPath: string,
+    existingContent: string,
+    missingHandlers: ReadonlyArray<{ name: string; doc: string; log: string }>
+): void {
+    const stubs = missingHandlers
+        .map(
+            ({ name, doc, log }) =>
+                `\n    /**\n     * ${doc}\n     */\n` +
+                `    public ${name}(_event: Event): void {\n        console.log('${log}');\n    }`
+        )
+        .join('\n');
+
+    const needsEventImport = !existingContent.includes("from 'sap/ui/base/Event'");
+    const withImport = needsEventImport
+        ? existingContent.replace(/^(import\s)/, `import Event from 'sap/ui/base/Event';\n$1`)
+        : existingContent;
+
+    if (/export\s+default\s+class\b/.test(withImport)) {
+        // The last `}` in the file (after stripping trailing whitespace) is always the class closing brace.
+        const classCloseIdx = withImport.trimEnd().lastIndexOf('}');
+        if (classCloseIdx !== -1) {
+            fs.write(
+                controllerPath,
+                withImport.slice(0, classCloseIdx) + stubs + '\n' + withImport.slice(classCloseIdx)
+            );
+            return;
+        }
+    }
+    // Standalone-function controller — append export functions
+    const needsImports = !existingContent.includes('sap/fe/core/ExtensionAPI');
+    const imports = needsImports
+        ? `import ExtensionAPI from 'sap/fe/core/ExtensionAPI';\nimport Event from 'sap/ui/base/Event';\n\n`
+        : '';
+    const functionStubs =
+        '\n' +
+        imports +
+        missingHandlers
+            .map((h) => `export function ${h.name}(this: ExtensionAPI, _event: Event): void {}`)
+            .join('\n\n') +
+        '\n';
+    fs.write(controllerPath, existingContent + functionStubs);
+}
+
+/**
+ * Creates a new minimal TS controller file from the Page BB template, containing only the given handlers.
+ *
+ * @param fs
+ * @param basePath
+ * @param viewOrFragmentPath
+ * @param controllerPath
+ * @param missingHandlers
+ */
+async function createNewTsControllerFromTemplate(
+    fs: Editor,
+    basePath: string,
+    viewOrFragmentPath: string,
+    controllerPath: string,
+    missingHandlers: ReadonlyArray<{ name: string; doc: string; log: string }>
+): Promise<void> {
+    const { content: manifest } = await getManifest(basePath, fs, false);
+    const appId = manifest?.['sap.app']?.id ?? '';
+    const namespace = deriveControllerNamespace(appId, viewOrFragmentPath);
+    const { name: viewName } = parse(viewOrFragmentPath);
+    const viewBaseName = viewName.replace(/\.view$/, '');
+    copyTpl(fs, getTemplatePath('/building-block/page/Controller.ts'), controllerPath, {
+        namespace,
+        viewName: viewBaseName,
+        handlers: missingHandlers
+    });
 }
 
 /**

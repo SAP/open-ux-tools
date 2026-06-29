@@ -4351,6 +4351,40 @@ describe('Building Blocks', () => {
             expect(fs.read(controllerPath)).toBe(existing);
         });
 
+        it('injects handlers as public class methods inside an existing class-based TS controller', async () => {
+            const basePath = join(testAppPath, 'ctrl-inject-ts-class');
+            fs.write(join(basePath, xmlViewFilePath), pageViewContent);
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+            const controllerPath = join(basePath, 'webapp/ext/main/Main.controller.ts');
+            fs.write(
+                controllerPath,
+                `import PageController from 'sap/fe/core/PageController';\n\nexport default class Main extends PageController {\n    // existing\n}\n`
+            );
+
+            await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'footer',
+                    mContent: ''
+                },
+                fs
+            );
+
+            const content = fs.read(controllerPath);
+            // Methods injected INSIDE the class body
+            expect(content).toContain('public onFooterApprove');
+            expect(content).toContain('public onFooterReject');
+            // Event import added at the top
+            expect(content).toContain("import Event from 'sap/ui/base/Event'");
+            // Class structure still intact
+            expect(content).toMatch(/export default class Main/);
+            const approvePos = content.indexOf('onFooterApprove');
+            const classClosePos = content.lastIndexOf('\n}');
+            expect(approvePos).toBeLessThan(classClosePos);
+        });
+
         it('injects into existing JS controller inside the extend block', async () => {
             const basePath = join(testAppPath, 'ctrl-inject-existing-js');
             fs.write(join(basePath, xmlViewFilePath), pageViewContent);
