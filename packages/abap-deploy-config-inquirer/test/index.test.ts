@@ -125,6 +125,9 @@ describe('registerAutocompletePlugin (via getPrompts)', () => {
 
     test('does not register when promptModule is not provided', async () => {
         mockGetAbapDeployConfigQuestions.mockResolvedValue([{ name: 'packageAutocomplete', type: 'autocomplete' }]);
-        await expect(getPrompts({}, undefined, false, undefined)).resolves.not.toThrow();
+        await expect(getPrompts({}, undefined, false, undefined)).resolves.toMatchObject({
+            prompts: expect.any(Array),
+            answers: expect.any(Object)
+        });
     });
 });
