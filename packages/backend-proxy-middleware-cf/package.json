@@ -36,10 +36,10 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "content-type": "^1.0.5",
-        "dotenv": "^16.4.5",
+        "dotenv": "17.4.2",
         "http-proxy-middleware": "3.0.5",
         "mime-types": "^2.1.35",
-        "portfinder": "^1.0.32"
+        "portfinder": "1.0.38"
     },
     "devDependencies": {
         "@jest/globals": "30.4.1",
