@@ -306,13 +306,15 @@ describe('FE V4 Linker - XML', () => {
                                 'settings',
                                 'controlConfiguration'
                             ],
-                            value: '{}'
+                            value: {
+                                '@com.sap.vocabularies.UI.v1.LineItem#orphanTable': {}
+                            }
                         }
                     ]
                 });
                 const result = runFeV4Linker(context);
                 const page = findListReportPage(result);
-                const table = page.lookup['table'];
+                const table = page.lookup['orphan-table'];
                 expect(table).toHaveLength(1);
                 expect(table![0].configuration).toMatchSnapshot();
             });
@@ -855,13 +857,15 @@ describe('FE V4 Linker - CAP', () => {
                                 'settings',
                                 'controlConfiguration'
                             ],
-                            value: '{}'
+                            value: {
+                                '@com.sap.vocabularies.UI.v1.LineItem#orphanTable': {}
+                            }
                         }
                     ]
                 });
                 const result = runFeV4Linker(context);
                 const page = findListReportPage(result);
-                const table = page.lookup['table'];
+                const table = page.lookup['orphan-table'];
                 expect(table).toHaveLength(1);
                 expect(table![0].configuration).toMatchSnapshot();
             });
