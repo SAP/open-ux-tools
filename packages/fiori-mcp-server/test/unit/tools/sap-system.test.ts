@@ -519,40 +519,5 @@ describe('service-metadata', () => {
                 expect(result).toEqual(mockSystems);
             });
         });
-
-        describe('findSystem in BAS', () => {
-            test('should find destination by exact name match', async () => {
-                const result = await findSystem('DEST_A');
-                expect(result.system).toEqual(mockDestinations.DEST_A);
-            });
-
-            test('should find destination by case-insensitive name match', async () => {
-                const result = await findSystem('dest_a');
-                expect(result.system).toEqual(mockDestinations.DEST_A);
-            });
-
-            test('should find destination by partial name (includes)', async () => {
-                const result = await findSystem('DEST');
-                expect(result.system).toEqual(mockDestinations.DEST_A);
-            });
-
-            test('should find destination by host URL', async () => {
-                const result = await findSystem('https://dest-a.example.com');
-                expect(result.system).toEqual(mockDestinations.DEST_A);
-            });
-
-            test('should return undefined system with message when no destination matches', async () => {
-                const result = await findSystem('NONEXISTENT');
-                expect(result.system).toBeUndefined();
-                expect(result.message).toContain('NONEXISTENT');
-            });
-
-            test('should return undefined system with message when listDestinations throws', async () => {
-                mockListDestinations.mockRejectedValue(new Error('BAS API unavailable'));
-                const result = await findSystem('UNKNOWN');
-                expect(result.system).toBeUndefined();
-                expect(result.message).toContain('BAS API unavailable');
-            });
-        });
     });
 });

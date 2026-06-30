@@ -142,9 +142,9 @@ describe('getSystemsOrDestinations', () => {
     });
 });
 
-// ── findSystem (VSCode path) ─────────────────────────────────────────────────
+// ── findSystem ───────────────────────────────────────────────────────────────
 
-describe('findSystem — VSCode', () => {
+describe('findSystem', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockIsAppStudio.mockReturnValue(false);
@@ -193,50 +193,6 @@ describe('findSystem — VSCode', () => {
         const result = await findSystem(sharedOrigin);
         expect(result.system).toBeUndefined();
         expect(result.message).toMatch(/Multiple systems found/);
-    });
-});
-
-// ── findSystem (BAS path) ────────────────────────────────────────────────────
-
-describe('findSystem — BAS', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-        mockIsAppStudio.mockReturnValue(true);
-        mockIsAbapODataDestination.mockReturnValue(true);
-        mockListDestinations.mockResolvedValue({ DEST_A, DEST_B });
-    });
-
-    test('finds destination by exact name', async () => {
-        const result = await findSystem('DEST_A');
-        expect(result.system).toEqual(DEST_A);
-    });
-
-    test('finds destination by case-insensitive name', async () => {
-        const result = await findSystem('dest_a');
-        expect(result.system).toEqual(DEST_A);
-    });
-
-    test('finds destination by name prefix', async () => {
-        const result = await findSystem('DEST');
-        // prefix matches both — should return one of them (first match wins)
-        expect(result.system).toBeDefined();
-    });
-
-    test('finds destination by host URL', async () => {
-        const result = await findSystem('https://dest-a.example.com');
-        expect(result.system).toEqual(DEST_A);
-    });
-
-    test('returns undefined when no destination matches', async () => {
-        const result = await findSystem('UNKNOWN_DEST');
-        expect(result.system).toBeUndefined();
-    });
-
-    test('returns error message when listDestinations throws', async () => {
-        mockListDestinations.mockRejectedValue(new Error('BTP unavailable'));
-        const result = await findSystem('DEST_A');
-        expect(result.system).toBeUndefined();
-        expect(result.message).toMatch(/Error retrieving destinations/);
     });
 });
 

@@ -90,30 +90,6 @@ function matchSystemByUrl(systems: BackendSystem[], url: string): BackendSystem[
  * @param query - The query string to match against name or host.
  * @returns The matching destination, or undefined if not found.
  */
-function findDestination(destinations: Destination[], query: string): Destination | undefined {
-    const queryLower = query.toLocaleLowerCase();
-
-    let match = destinations.find((d) => d.Name === query);
-    if (!match) {
-        match = destinations.find((d) => d.Name.toLocaleLowerCase() === queryLower);
-    }
-    if (!match) {
-        match = destinations.find((d) => d.Name.toLocaleLowerCase().includes(queryLower));
-    }
-
-    // Fall back to matching by Host
-    if (!match) {
-        const { origin } = parseUrl(query);
-        const hostQuery = origin || queryLower;
-        match = destinations.find((d) => d.Host.toLocaleLowerCase() === hostQuery.toLocaleLowerCase());
-        if (!match) {
-            match = destinations.find((d) => d.Host.toLocaleLowerCase().includes(hostQuery.toLocaleLowerCase()));
-        }
-    }
-
-    return match;
-}
-
 /**
  * Returns all available systems or destinations depending on the current platform.
  * In BAS returns filtered Destination[], in VSCode returns BackendSystem[].
@@ -140,17 +116,7 @@ export async function getSystemsOrDestinations(includeSensitiveData = false): Pr
  */
 export async function findSystem(
     query: string
-): Promise<{ system: BackendSystem | Destination | undefined; message?: string }> {
-    if (isAppStudio()) {
-        try {
-            const system = findDestination((await getSystemsOrDestinations()) as Destination[], query);
-            const message = system ? undefined : `No matching destination found for: ${query}`;
-            return { system, message };
-        } catch (e) {
-            logger.error(`Error retrieving destinations: ${e}`);
-            return { system: undefined, message: `Error retrieving destinations: ${e}` };
-        }
-    }
+): Promise<{ system: BackendSystem | undefined; message?: string }> {
     try {
         const result = findSapSystem((await getSystemsOrDestinations(true)) as BackendSystem[], query);
         return result;
