@@ -458,8 +458,8 @@ function linkListReportTable(
             }
         } else {
             // no annotation definition found for this table, but configuration exists
-            const orphanedSection = createTable(controlKey, pathToPage);
-            controls[`${orphanedSection.type}|${controlKey}`] = orphanedSection;
+            const orphanTable = createTable(controlKey, pathToPage);
+            controls[`${orphanTable.type}|${controlKey}`] = orphanTable;
         }
     }
     for (const control of Object.values(controls)) {
