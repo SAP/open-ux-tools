@@ -224,7 +224,8 @@ describe('Test FioriAppGenerator', () => {
             expect(testFloorplan.generateMockFunc).toHaveBeenCalledWith(
                 appPath,
                 appConfigMocked,
-                expect.objectContaining({ commit: expect.any(Function) })
+                expect.objectContaining({ commit: expect.any(Function) }),
+                expect.objectContaining({ info: expect.any(Function), error: expect.any(Function) })
             );
             expect(TelemetryHelper.createTelemetryData).toHaveBeenCalledWith({
                 Template: t(`floorplans.label.${floorplan}`, {

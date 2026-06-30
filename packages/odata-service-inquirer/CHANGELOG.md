@@ -1,5 +1,44 @@
 # @sap-ux/odata-service-inquirer
 
+## 3.0.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.3 → 2.0.4
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/store 2.0.1 → 2.0.2
+- @sap-ux/inquirer-common 1.0.13 → 1.0.14
+- @sap-ux/fiori-generator-shared 1.0.12 → 1.0.13
+- @sap-ux/nodejs-utils 1.0.3 → 1.0.4
+- @sap-ux/telemetry 1.0.10 → 1.0.11
+
+## 3.0.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.2 → 2.1.3
+- @sap-ux/axios-extension 2.0.3 → 2.0.3
+- @sap-ux/fiori-generator-shared 1.0.11 → 1.0.12
+- @sap-ux/inquirer-common 1.0.12 → 1.0.13
+- @sap-ux/project-input-validator 1.0.6 → 1.0.7
+- @sap-ux/telemetry 1.0.9 → 1.0.10
+
+## 3.0.14
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-23
+
+#### Bug Fixes
+
+- Explicitly set connect type to abap_catalog when no connection path is provided [[e4a8650](https://github.com/SAP/open-ux-tools/commit/e4a8650c64afc42ab965e2820bbb076fb94ce273)]
+
 ## 3.0.13
 
 ### Patch Changes

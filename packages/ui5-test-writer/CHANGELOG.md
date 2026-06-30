@@ -1,5 +1,82 @@
 # @sap-ux/ui5-test-writer
 
+## 1.2.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.30 → 1.0.31
+
+## 1.2.6
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.0.5 → 2.0.6
+- @sap-ux/preview-middleware 1.0.29 → 1.0.30
+- @sap-ux/fiori-generator-shared 1.0.12 → 1.0.13
+
+## 1.2.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.28 → 1.0.29
+
+## 1.2.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Bug Fixes
+
+- Detect Object Page table body sections via the `table` aggregation when the spec model omits the section-level `isTable` flag, so OP table column tests are generated for real Fiori Elements V4 apps. [[6960f90](https://github.com/SAP/open-ux-tools/commit/6960f90c27107a63786530101c535e1c768a4895)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.0.4 → 2.0.5
+- @sap-ux/project-access 2.1.2 → 2.1.3
+- @sap-ux/fiori-generator-shared 1.0.11 → 1.0.12
+- @sap-ux/preview-middleware 1.0.27 → 1.0.28
+
+## 1.2.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.26 → 1.0.27
+
+## 1.2.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.25 → 1.0.26
+
+## 1.2.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-23
+
+#### Bug Fixes
+
+- Add the `WARNING: AUTO-GENERATED FILE` header banner to the TypeScript page object templates (`ListReport.ts`, `ObjectPage.ts`) and to the journey types template (`OpaJourneyTypes.d.ts`), matching the existing JS variants. [[20bed6c](https://github.com/SAP/open-ux-tools/commit/20bed6cef0000c14d3a886f2b43d3ff268287ea0)]
+
 ## 1.2.0
 
 ### Minor Changes

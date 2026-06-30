@@ -1,5 +1,81 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 1.0.29
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-29
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-sub-generator 1.0.23 → 1.0.24
+- @sap-ux/odata-service-inquirer 3.0.16 → 3.0.16
+
+## 1.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-sub-generator 1.0.17 → 1.0.18
+
+## 1.0.27
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/store 2.0.1 → 2.0.2
+- @sap-ux/abap-deploy-config-sub-generator 1.0.22 → 1.0.23
+- @sap-ux/cf-deploy-config-sub-generator 1.0.16 → 1.0.17
+- @sap-ux/odata-service-inquirer 3.0.15 → 3.0.16
+- @sap-ux/inquirer-common 1.0.13 → 1.0.14
+- @sap-ux/deploy-config-generator-shared 1.0.12 → 1.0.13
+- @sap-ux/fiori-generator-shared 1.0.12 → 1.0.13
+- @sap-ux/ui5-config 1.0.3 → 1.0.3
+
+## 1.0.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.2 → 2.1.3
+- @sap-ux/abap-deploy-config-sub-generator 1.0.21 → 1.0.22
+- @sap-ux/cf-deploy-config-sub-generator 1.0.15 → 1.0.16
+- @sap-ux/fiori-generator-shared 1.0.11 → 1.0.12
+- @sap-ux/inquirer-common 1.0.12 → 1.0.13
+- @sap-ux/odata-service-inquirer 3.0.14 → 3.0.15
+- @sap-ux/deploy-config-generator-shared 1.0.11 → 1.0.12
+
+## 1.0.25
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-sub-generator 1.0.20 → 1.0.21
+- @sap-ux/odata-service-inquirer 3.0.14 → 3.0.14
+
+## 1.0.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.0.13 → 3.0.14
+
 ## 1.0.23
 
 ### Patch Changes
