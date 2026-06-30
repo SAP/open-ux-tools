@@ -1,5 +1,17 @@
 # @sap-ux/project-access
 
+## 2.1.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-30
+
+#### Bug Fixes
+
+- node module path resolution [[085ca39](https://github.com/SAP/open-ux-tools/commit/085ca39943b3d3bfe038968049f45d261235cbd3)]
+
 ## 2.1.3
 
 ### Patch Changes
