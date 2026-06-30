@@ -25,13 +25,12 @@ jest.unstable_mockModule('open/ux/preview/client/utils/info-center-message', () 
 }));
 
 import MyHomeController from '../../../src/flp/homepage/controller/MyHome.controller.js';
-const { init } = await import('open/ux/preview/client/flp/sandbox1Init');
+const { init, loadI18nResourceBundle, registerSAPFonts, setI18nTitle } = await import(
+    'open/ux/preview/client/flp/sandbox1Init'
+);
 const {
-    loadI18nResourceBundle,
     registerComponentDependencyPaths,
-    registerSAPFonts,
-    resetAppState,
-    setI18nTitle
+    resetAppState
 } = await import('open/ux/preview/client/flp/common');
 const infoCenterMessage = await import('open/ux/preview/client/utils/info-center-message');
 type ManifestAppdescr = import('../../../src/adp/api-handler.js').ManifestAppdescr;

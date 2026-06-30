@@ -1,14 +1,11 @@
 import Log from 'sap/base/Log';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
-import { MessageBarType, SCENARIO, type Scenario } from '@sap-ux-private/control-property-editor-common';
+import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
-import IconPool from 'sap/ui/core/IconPool';
-import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import type AppState from 'sap/ushell/services/AppState';
 import type Component from 'sap/ui/core/Component';
 import type Extension from 'sap/ushell/services/Extension';
 import type { CardGeneratorType } from 'sap/cards/ap/generator';
-import { getManifestAppdescr } from '../adp/api-handler.js';
 import { getError } from '../utils/error.js';
 import { isLowerThanMinimalUi5Version, type Ui5VersionInfo } from '../utils/version.js';
 import { sendInfoCenterMessage } from '../utils/info-center-message.js';
@@ -233,55 +230,6 @@ export async function registerComponentDependencyPaths(appUrls: string[], urlPar
         } catch (error) {
             Log.error(`Registering of reuse libs failed. Error:${error}`);
         }
-    }
-}
-
-/**
- * Register SAP fonts that are also registered in a productive Fiori launchpad.
- */
-export function registerSAPFonts() {
-    const fioriTheme = {
-        fontFamily: 'SAP-icons-TNT',
-        fontURI: sap.ui.require.toUrl('sap/tnt/themes/base/fonts/')
-    };
-    IconPool.registerFont(fioriTheme);
-    const suiteTheme = {
-        fontFamily: 'BusinessSuiteInAppSymbols',
-        fontURI: sap.ui.require.toUrl('sap/ushell/themes/base/fonts/')
-    };
-    IconPool.registerFont(suiteTheme);
-}
-
-/**
- * Create Resource Bundle based on the scenario.
- *
- * @param scenario to be used for the resource bundle.
- */
-export async function loadI18nResourceBundle(scenario: Scenario): Promise<ResourceBundle> {
-    if (scenario === SCENARIO.AdaptationProject) {
-        const manifest = await getManifestAppdescr();
-        const enhanceWith = (manifest.content as { texts: { i18n: string } }[])
-            .filter((content) => content.texts?.i18n)
-            .map((content) => ({ bundleUrl: `../${content.texts.i18n}` }));
-        return ResourceBundle.create({
-            url: '../i18n/i18n.properties',
-            enhanceWith
-        });
-    }
-    return ResourceBundle.create({
-        url: 'i18n/i18n.properties'
-    });
-}
-
-/**
- * Read the application title from the resource bundle and set it as document title.
- *
- * @param resourceBundle resource bundle to read the title from.
- * @param i18nKey optional parameter to define the i18n key to be used for the title.
- */
-export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle') {
-    if (resourceBundle.hasText(i18nKey)) {
-        document.title = resourceBundle.getText(i18nKey) ?? document.title;
     }
 }
 

@@ -86,7 +86,9 @@ export interface TemplateConfig {
         /**
          * Flexibility service connector configuration.
          *
-         * @remarks Not rendered in sandbox2.ejs — WorkspaceConnector is wired via the fioriSandboxAppConfig.json `restricted.flexibilityServices` instead.
+         * @remarks Rendered in sandbox.ejs as `data-sap-ui-flexibilityServices` for sandbox 1.
+         *          Not used by sandbox 2 — `generateSandboxAppConfig` calls `getFlexSettings()` independently
+         *          to populate `restricted.flexibilityServices` in the fioriSandboxAppConfig.json endpoint.
          */
         flex: (CustomConnector | FlexConnector)[];
         bootstrapOptions: string;
