@@ -1,5 +1,44 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 1.0.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/cf-deploy-config-writer 1.0.12 → 1.0.13
+- @sap-ux/fiori-generator-shared 1.0.13 → 1.0.14
+- @sap-ux/inquirer-common 1.0.14 → 1.0.15
+- @sap-ux/deploy-config-generator-shared 1.0.13 → 1.0.14
+- @sap-ux/cf-deploy-config-inquirer 1.0.16 → 1.0.17
+
+## 1.0.18
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Encapsulate autocomplete plugin registration inside getPrompts; sub-generator passes promptModule so autocomplete works in Yeoman generator flows [[e4dd467](https://github.com/SAP/open-ux-tools/commit/e4dd4675b92f1804b5c111b2ac0c7da8ccc2a545)]
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-inquirer 1.0.15 → 1.0.16
+
+## 1.0.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-writer 1.0.11 → 1.0.12
+- @sap-ux/feature-toggle 1.0.2 → 1.0.3
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/inquirer-common 1.0.13 → 1.0.14
+- @sap-ux/deploy-config-generator-shared 1.0.12 → 1.0.13
+- @sap-ux/fiori-generator-shared 1.0.12 → 1.0.13
+- @sap-ux/cf-deploy-config-inquirer 1.0.14 → 1.0.15
+
 ## 1.0.16
 
 ### Patch Changes

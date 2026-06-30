@@ -10,7 +10,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-library-writer"
     },
-    "version": "1.0.7",
+    "version": "1.0.9",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -52,7 +52,7 @@
         "@types/lodash": "4.17.24",
         "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
-        "fs-extra": "11.3.4",
+        "fs-extra": "11.3.5",
         "@types/semver": "7.7.1"
     }
 }

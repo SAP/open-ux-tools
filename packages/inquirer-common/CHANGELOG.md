@@ -1,5 +1,29 @@
 # @sap-ux/inquirer-common
 
+## 1.0.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/fiori-generator-shared 1.0.13 → 1.0.14
+- @sap-ux/odata-service-writer 1.0.9 → 1.0.10
+- @sap-ux/telemetry 1.0.11 → 1.0.12
+
+## 1.0.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.8 → 1.0.9
+- @sap-ux/feature-toggle 1.0.2 → 1.0.3
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/ui5-info 1.0.1 → 1.0.2
+- @sap-ux/fiori-generator-shared 1.0.12 → 1.0.13
+- @sap-ux/telemetry 1.0.10 → 1.0.11
+
 ## 1.0.13
 
 ### Patch Changes
