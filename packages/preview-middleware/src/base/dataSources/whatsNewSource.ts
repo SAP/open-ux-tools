@@ -276,7 +276,7 @@ export class WhatsNewSource {
         // the heading is the analogue of "Application Modeler"/"Adaptation Project".
         const suppressHeading = groupEntries.length === 1 && this.config.productLabel.includes(groupEntries[0][0]);
 
-        const groupSections = groupEntries
+        let groupSections = groupEntries
             .map(([groupName, typeMap]) => {
                 const heading = suppressHeading ? '' : `<h2>${groupName}</h2>`;
                 const typeSections = [...typeMap.entries()]
@@ -293,6 +293,10 @@ export class WhatsNewSource {
                 return `${heading}${typeSections}`;
             })
             .join('<hr>');
+
+        if (this.config.groupBy === 'title') {
+            groupSections = WhatsNewSource.renderODataUpdateSection(groupEntries, this.config.dropDescriptionLeadIn);
+        }
 
         const description = `<p>${this.getNewsIntroduction(latestVersion, true)}</p>${groupSections}`;
         const title = this.config.titleIcon
@@ -376,6 +380,37 @@ export class WhatsNewSource {
             return (ai === -1 ? order.length : ai) - (bi === -1 ? order.length : bi);
         }
         return a.localeCompare(b);
+    }
+
+    /**
+     * Renders Fiori elements updates under one OData heading instead of separate
+     * OData group and type headings.
+     *
+     * @param groupEntries grouped news results keyed by OData label
+     * @param dropDescriptionLeadIn when true, omit prose that precedes the first inner list
+     * @returns HTML fragment containing a heading and list of update items
+     */
+    private static renderODataUpdateSection(
+        groupEntries: [string, Map<string, WhatsNewResult[]>][],
+        dropDescriptionLeadIn = false
+    ): string {
+        const sortedGroupEntries = [...groupEntries].sort(([a], [b]) =>
+            a.localeCompare(b, undefined, { numeric: true })
+        );
+        const groupLabels = sortedGroupEntries.map(([groupName]) => groupName);
+        const heading = groupLabels.every((label) => /^OData\s+V/i.test(label))
+            ? `Updates for OData ${groupLabels.map((label) => label.replace(/^OData\s+/i, '')).join(' and ')}`
+            : `Updates for ${groupLabels.join(' and ')}`;
+
+        const listItems = sortedGroupEntries
+            .flatMap(([, typeMap]) =>
+                [...typeMap.entries()]
+                    .sort(([a], [b]) => WhatsNewSource.compareTypes(a, b))
+                    .flatMap(([, items]) => items)
+            )
+            .flatMap((item) => WhatsNewSource.descriptionToListItems(item, dropDescriptionLeadIn))
+            .join('');
+        return `<h2>${heading}</h2><ul>${listItems}</ul>`;
     }
 
     /**
