@@ -1,5 +1,14 @@
 # @sap-ux/environment-check
 
+## 1.0.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/axios-extension 2.0.4 → 2.0.4
+
 ## 1.0.10
 
 ### Patch Changes
