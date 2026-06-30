@@ -114,9 +114,7 @@ export async function getSystemsOrDestinations(includeSensitiveData = false): Pr
  * @param query - The name, host or URL to match.
  * @returns An object with the matched system (or undefined) and an optional diagnostic message.
  */
-export async function findSystem(
-    query: string
-): Promise<{ system: BackendSystem | undefined; message?: string }> {
+export async function findSystem(query: string): Promise<{ system: BackendSystem | undefined; message?: string }> {
     try {
         const result = findSapSystem((await getSystemsOrDestinations(true)) as BackendSystem[], query);
         return result;
