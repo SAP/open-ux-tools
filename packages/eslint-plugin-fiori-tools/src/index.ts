@@ -31,9 +31,10 @@ const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 
  * Plugin meta information (required for ESLint 9).
  * Contains the plugin name and version.
  */
-export const meta = {
+const meta = {
     name: packageJson.name,
-    version: packageJson.version
+    version: packageJson.version,
+    namespace: '@sap-ux/fiori-tools'
 };
 
 /**
@@ -52,11 +53,7 @@ const fioriRules = rules as Plugin['rules'];
  * Contains plugin metadata, supported languages, rules, and processors.
  */
 const plugin: Plugin = {
-    meta: {
-        name: packageJson.name,
-        version: '0.0.1',
-        namespace: '@sap-ux/fiori-tools'
-    },
+    meta,
     languages,
     rules: fioriRules,
     processors: {}
