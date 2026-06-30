@@ -1,4 +1,5 @@
 import PageController from 'sap/fe/core/PageController';
+import Event from 'sap/ui/base/Event';
 
 /**
  * @namespace <%- namespace %>

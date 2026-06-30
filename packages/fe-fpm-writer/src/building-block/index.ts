@@ -638,9 +638,16 @@ function injectHandlersIntoExistingTsController(
         .join('\n');
 
     const needsEventImport = !existingContent.includes("from 'sap/ui/base/Event'");
-    const withImport = needsEventImport
-        ? existingContent.replace(/^(import\s)/, `import Event from 'sap/ui/base/Event';\n$1`)
-        : existingContent;
+    let withImport = existingContent;
+    if (needsEventImport) {
+        const firstImportIdx = existingContent.search(/^\s*import\s/m);
+        withImport =
+            firstImportIdx !== -1
+                ? existingContent.slice(0, firstImportIdx) +
+                  `import Event from 'sap/ui/base/Event';\n` +
+                  existingContent.slice(firstImportIdx)
+                : `import Event from 'sap/ui/base/Event';\n` + existingContent;
+    }
 
     if (/export\s+default\s+class\b/.test(withImport)) {
         // The last `}` in the file (after stripping trailing whitespace) is always the class closing brace.
