@@ -1,5 +1,151 @@
 # @sap-ux/fiori-elements-writer
 
+## 3.0.42
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.14 → 1.0.15
+- @sap-ux/cap-config-writer 1.0.14 → 1.0.15
+- @sap-ux/ui5-test-writer 1.2.8 → 1.2.9
+
+## 3.0.41
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-30
+
+#### Workspace Updates
+
+- @sap-ux/annotation-generator 1.0.10 → 1.0.11
+- @sap-ux/cap-config-writer 1.0.13 → 1.0.14
+- @sap-ux/fe-fpm-writer 1.1.2 → 1.1.3
+- @sap-ux/fiori-generator-shared 1.0.13 → 1.0.14
+- @sap-ux/odata-service-writer 1.0.9 → 1.0.10
+- @sap-ux/ui5-application-writer 2.0.6 → 2.0.6
+- @sap-ux/ui5-test-writer 1.2.7 → 1.2.8
+
+## 3.0.40
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.2.6 → 1.2.7
+
+## 3.0.39
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.0.5 → 2.0.6
+- @sap-ux/odata-service-writer 1.0.8 → 1.0.9
+- @sap-ux/ui5-test-writer 1.2.5 → 1.2.6
+- @sap-ux/fiori-generator-shared 1.0.12 → 1.0.13
+- @sap-ux/fe-fpm-writer 1.1.2 → 1.1.2
+- @sap-ux/ui5-config 1.0.3 → 1.0.3
+- @sap-ux/cap-config-writer 1.0.12 → 1.0.13
+
+## 3.0.38
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-25
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.2.4 → 1.2.5
+
+## 3.0.37
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.0.4 → 2.0.5
+- @sap-ux/ui5-test-writer 1.2.3 → 1.2.4
+- @sap-ux/annotation-generator 1.0.9 → 1.0.10
+- @sap-ux/cap-config-writer 1.0.11 → 1.0.12
+- @sap-ux/fe-fpm-writer 1.1.1 → 1.1.2
+- @sap-ux/fiori-generator-shared 1.0.11 → 1.0.12
+- @sap-ux/odata-service-writer 1.0.7 → 1.0.8
+
+## 3.0.36
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.2.2 → 1.2.3
+
+## 3.0.35
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.2.1 → 1.2.2
+
+## 3.0.34
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.2.0 → 1.2.1
+
+## 3.0.33
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/annotation-generator 1.0.8 → 1.0.9
+- @sap-ux/fe-fpm-writer 1.1.0 → 1.1.1
+
+## 3.0.32
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.1.13 → 1.2.0
+
+## 3.0.31
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.1.12 → 1.1.13
+
+## 3.0.30
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fe-fpm-writer 1.0.8 → 1.1.0
+
+## 3.0.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.6 → 1.0.7
+- @sap-ux/ui5-test-writer 1.1.11 → 1.1.12
+
 ## 3.0.28
 
 ### Patch Changes
@@ -14,11 +160,15 @@
 
 ## 3.0.27
 
+_Released: 2026-06-14T10:40:09Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-test-writer@1.1.10
 
 ## 3.0.26
+
+_Released: 2026-06-12T19:01:39Z_
 
 ### Patch Changes
 
@@ -26,11 +176,15 @@
 
 ## 3.0.25
 
+_Released: 2026-06-12T14:48:41Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-test-writer@1.1.8
 
 ## 3.0.24
+
+_Released: 2026-06-12T10:49:08Z_
 
 ### Patch Changes
 
@@ -38,11 +192,15 @@
 
 ## 3.0.23
 
+_Released: 2026-06-12T08:50:00Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-test-writer@1.1.6
 
 ## 3.0.22
+
+_Released: 2026-06-12T06:53:23Z_
 
 ### Patch Changes
 
@@ -53,12 +211,16 @@
 
 ## 3.0.21
 
+_Released: 2026-06-11T19:22:44Z_
+
 ### Patch Changes
 
 - Updated dependencies [f02b950]
     - @sap-ux/ui5-test-writer@1.1.4
 
 ## 3.0.20
+
+_Released: 2026-06-11T13:37:16Z_
 
 ### Patch Changes
 
@@ -68,6 +230,8 @@
 
 ## 3.0.19
 
+_Released: 2026-06-11T10:54:17Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@1.0.10
@@ -76,12 +240,16 @@
 
 ## 3.0.18
 
+_Released: 2026-06-11T07:16:28Z_
+
 ### Patch Changes
 
 - @sap-ux/annotation-generator@1.0.8
 - @sap-ux/fe-fpm-writer@1.0.8
 
 ## 3.0.17
+
+_Released: 2026-06-10T16:18:03Z_
 
 ### Patch Changes
 
@@ -90,12 +258,16 @@
 
 ## 3.0.16
 
+_Released: 2026-06-10T12:57:40Z_
+
 ### Patch Changes
 
 - Updated dependencies [c084184]
     - @sap-ux/ui5-test-writer@1.1.0
 
 ## 3.0.15
+
+_Released: 2026-06-10T09:57:42Z_
 
 ### Patch Changes
 
@@ -111,6 +283,8 @@
 
 ## 3.0.14
 
+_Released: 2026-06-09T19:59:54Z_
+
 ### Patch Changes
 
 - @sap-ux/annotation-generator@1.0.6
@@ -118,6 +292,8 @@
 - @sap-ux/ui5-application-writer@2.0.2
 
 ## 3.0.13
+
+_Released: 2026-06-09T14:35:01Z_
 
 ### Patch Changes
 
@@ -128,6 +304,8 @@
 
 ## 3.0.12
 
+_Released: 2026-06-09T13:18:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [a328e14]
@@ -137,11 +315,15 @@
 
 ## 3.0.11
 
+_Released: 2026-06-09T09:41:14Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-test-writer@1.0.11
 
 ## 3.0.10
+
+_Released: 2026-06-04T13:54:21Z_
 
 ### Patch Changes
 
@@ -156,11 +338,15 @@
 
 ## 3.0.9
 
+_Released: 2026-06-04T12:10:05Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-test-writer@1.0.9
 
 ## 3.0.8
+
+_Released: 2026-06-04T10:19:37Z_
 
 ### Patch Changes
 
@@ -173,6 +359,8 @@
 - @sap-ux/ui5-test-writer@1.0.8
 
 ## 3.0.7
+
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -190,6 +378,8 @@
 
 ## 3.0.6
 
+_Released: 2026-06-03T13:52:44Z_
+
 ### Patch Changes
 
 - Updated dependencies [9580241]
@@ -204,11 +394,15 @@
 
 ## 3.0.5
 
+_Released: 2026-06-02T21:37:28Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-test-writer@1.0.5
 
 ## 3.0.4
+
+_Released: 2026-06-02T11:35:17Z_
 
 ### Patch Changes
 
@@ -218,17 +412,23 @@
 
 ## 3.0.3
 
+_Released: 2026-06-02T08:56:31Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-test-writer@1.0.3
 
 ## 3.0.2
 
+_Released: 2026-06-01T17:22:37Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-test-writer@1.0.2
 
 ## 3.0.1
+
+_Released: 2026-06-01T15:15:26Z_
 
 ### Patch Changes
 
@@ -241,6 +441,8 @@
 - @sap-ux/ui5-test-writer@1.0.1
 
 ## 3.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -288,17 +490,23 @@
 
 ## 2.10.16
 
+_Released: 2026-05-29T12:50:34Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-test-writer@0.9.15
 
 ## 2.10.15
 
+_Released: 2026-05-29T06:59:27Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-test-writer@0.9.14
 
 ## 2.10.14
+
+_Released: 2026-05-27T11:39:21Z_
 
 ### Patch Changes
 
@@ -307,6 +515,8 @@
 - @sap-ux/cap-config-writer@0.13.6
 
 ## 2.10.13
+
+_Released: 2026-05-27T10:42:47Z_
 
 ### Patch Changes
 
@@ -317,6 +527,8 @@
 
 ## 2.10.12
 
+_Released: 2026-05-27T09:55:48Z_
+
 ### Patch Changes
 
 - Updated dependencies [162059e]
@@ -325,12 +537,16 @@
 
 ## 2.10.11
 
+_Released: 2026-05-26T21:32:06Z_
+
 ### Patch Changes
 
 - Updated dependencies [03d1cdd]
     - @sap-ux/ui5-test-writer@0.9.10
 
 ## 2.10.10
+
+_Released: 2026-05-26T16:40:21Z_
 
 ### Patch Changes
 
@@ -342,11 +558,15 @@
 
 ## 2.10.9
 
+_Released: 2026-05-22T13:30:05Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-test-writer@0.9.8
 
 ## 2.10.8
+
+_Released: 2026-05-21T16:21:11Z_
 
 ### Patch Changes
 
@@ -362,11 +582,15 @@
 
 ## 2.10.7
 
+_Released: 2026-05-21T14:58:44Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-test-writer@0.9.6
 
 ## 2.10.6
+
+_Released: 2026-05-20T13:39:22Z_
 
 ### Patch Changes
 
@@ -375,6 +599,8 @@
 - @sap-ux/ui5-application-writer@1.9.0
 
 ## 2.10.5
+
+_Released: 2026-05-19T15:16:46Z_
 
 ### Patch Changes
 
@@ -388,6 +614,8 @@
 
 ## 2.10.4
 
+_Released: 2026-05-19T10:17:18Z_
+
 ### Patch Changes
 
 - Updated dependencies [8d4a8a4]
@@ -395,17 +623,23 @@
 
 ## 2.10.3
 
+_Released: 2026-05-18T08:15:14Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-test-writer@0.9.3
 
 ## 2.10.2
 
+_Released: 2026-05-15T20:38:24Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-test-writer@0.9.2
 
 ## 2.10.1
+
+_Released: 2026-05-15T13:12:06Z_
 
 ### Patch Changes
 
@@ -415,6 +649,8 @@
     - @sap-ux/ui5-test-writer@0.9.1
 
 ## 2.10.0
+
+_Released: 2026-05-15T12:26:02Z_
 
 ### Minor Changes
 
@@ -428,6 +664,8 @@
     - @sap-ux/ui5-test-writer@0.9.0
 
 ## 2.9.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -448,12 +686,16 @@
 
 ## 2.8.140
 
+_Released: 2026-05-14T21:28:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [138246a]
     - @sap-ux/odata-service-writer@0.31.15
 
 ## 2.8.139
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -471,6 +713,8 @@
 
 ## 2.8.138
 
+_Released: 2026-05-13T09:36:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -484,6 +728,8 @@
 
 ## 2.8.137
 
+_Released: 2026-05-12T18:00:39Z_
+
 ### Patch Changes
 
 - Updated dependencies [9360ea5]
@@ -492,6 +738,8 @@
     - @sap-ux/ui5-test-writer@0.7.112
 
 ## 2.8.136
+
+_Released: 2026-05-06T23:02:00Z_
 
 ### Patch Changes
 
@@ -508,12 +756,16 @@
 
 ## 2.8.135
 
+_Released: 2026-04-30T15:37:27Z_
+
 ### Patch Changes
 
 - Updated dependencies [865fb96]
     - @sap-ux/ui5-test-writer@0.7.110
 
 ## 2.8.134
+
+_Released: 2026-04-30T14:23:24Z_
 
 ### Patch Changes
 
@@ -527,6 +779,8 @@
     - @sap-ux/ui5-test-writer@0.7.109
 
 ## 2.8.133
+
+_Released: 2026-04-29T15:24:37Z_
 
 ### Patch Changes
 
@@ -543,12 +797,16 @@
 
 ## 2.8.132
 
+_Released: 2026-04-28T12:02:15Z_
+
 ### Patch Changes
 
 - Updated dependencies [d45b5a4]
     - @sap-ux/fe-fpm-writer@0.43.25
 
 ## 2.8.131
+
+_Released: 2026-04-27T19:47:46Z_
 
 ### Patch Changes
 
@@ -563,6 +821,8 @@
 
 ## 2.8.130
 
+_Released: 2026-04-27T15:50:47Z_
+
 ### Patch Changes
 
 - Updated dependencies [165a6c2]
@@ -571,6 +831,8 @@
 
 ## 2.8.129
 
+_Released: 2026-04-24T09:57:47Z_
+
 ### Patch Changes
 
 - @sap-ux/ui5-application-writer@1.8.6
@@ -578,6 +840,8 @@
 - @sap-ux/fe-fpm-writer@0.43.23
 
 ## 2.8.128
+
+_Released: 2026-04-23T12:54:21Z_
 
 ### Patch Changes
 
@@ -592,6 +856,8 @@
 
 ## 2.8.127
 
+_Released: 2026-04-23T06:48:55Z_
+
 ### Patch Changes
 
 - Updated dependencies [237371b]
@@ -601,6 +867,8 @@
 
 ## 2.8.126
 
+_Released: 2026-04-22T15:02:56Z_
+
 ### Patch Changes
 
 - Updated dependencies [d36d5d7]
@@ -608,12 +876,16 @@
 
 ## 2.8.125
 
+_Released: 2026-04-15T11:53:17Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.99
 - @sap-ux/cap-config-writer@0.12.91
 
 ## 2.8.124
+
+_Released: 2026-04-14T21:37:37Z_
 
 ### Patch Changes
 
@@ -623,6 +895,8 @@
 
 ## 2.8.123
 
+_Released: 2026-04-14T20:26:28Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.98
@@ -630,6 +904,8 @@
 - @sap-ux/cap-config-writer@0.12.90
 
 ## 2.8.122
+
+_Released: 2026-04-14T12:35:35Z_
 
 ### Patch Changes
 
@@ -645,6 +921,8 @@
 
 ## 2.8.121
 
+_Released: 2026-04-13T13:12:49Z_
+
 ### Patch Changes
 
 - Updated dependencies [9700a95]
@@ -652,12 +930,16 @@
 
 ## 2.8.120
 
+_Released: 2026-04-09T20:40:49Z_
+
 ### Patch Changes
 
 - Updated dependencies [17d8e42]
     - @sap-ux/ui5-test-writer@0.7.101
 
 ## 2.8.119
+
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -676,6 +958,8 @@
 
 ## 2.8.118
 
+_Released: 2026-04-01T11:49:37Z_
+
 ### Patch Changes
 
 - @sap-ux/annotation-generator@0.4.47
@@ -688,6 +972,8 @@
 
 ## 2.8.117
 
+_Released: 2026-04-01T09:52:29Z_
+
 ### Patch Changes
 
 - Updated dependencies [9d272d7]
@@ -695,12 +981,16 @@
 
 ## 2.8.116
 
+_Released: 2026-03-31T14:07:26Z_
+
 ### Patch Changes
 
 - Updated dependencies [791e9b9]
     - @sap-ux/ui5-test-writer@0.7.97
 
 ## 2.8.115
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -724,12 +1014,16 @@
 
 ## 2.8.114
 
+_Released: 2026-03-27T16:43:53Z_
+
 ### Patch Changes
 
 - Updated dependencies [aa2baf3]
     - @sap-ux/ui5-test-writer@0.7.95
 
 ## 2.8.113
+
+_Released: 2026-03-27T15:37:24Z_
 
 ### Patch Changes
 
@@ -738,6 +1032,8 @@
 
 ## 2.8.112
 
+_Released: 2026-03-27T11:58:49Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.13.92
@@ -745,6 +1041,8 @@
 - @sap-ux/cap-config-writer@0.12.84
 
 ## 2.8.111
+
+_Released: 2026-03-26T20:06:10Z_
 
 ### Patch Changes
 
@@ -757,6 +1055,8 @@
 - @sap-ux/ui5-test-writer@0.7.94
 
 ## 2.8.110
+
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -781,6 +1081,8 @@
 
 ## 2.8.109
 
+_Released: 2026-03-25T12:56:41Z_
+
 ### Patch Changes
 
 - @sap-ux/annotation-generator@0.4.43
@@ -792,6 +1094,8 @@
 - @sap-ux/ui5-test-writer@0.7.92
 
 ## 2.8.108
+
+_Released: 2026-03-24T08:12:44Z_
 
 ### Patch Changes
 

@@ -3,7 +3,7 @@
     "displayName": "SAPUI5 Adaptation Project",
     "homepage": "https://help.sap.com/viewer/584e0bcbfd4a4aff91c815cefa0bce2d/Cloud/en-US/ada9567b767941aba8d49fdb4fdedea7.html",
     "description": "Adaptation project allows you to create an app variant for an existing SAP Fiori elements-based or SAPUI5 freestyle application, without changing the original application.",
-    "version": "1.0.17",
+    "version": "1.0.25",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -68,8 +68,8 @@
         "@types/yeoman-generator": "5.2.14",
         "@types/yeoman-test": "4.0.6",
         "@types/uuid": "11.0.0",
-        "@vscode-logging/logger": "2.0.8",
-        "fs-extra": "11.3.4",
+        "@vscode-logging/logger": "2.0.9",
+        "fs-extra": "11.3.5",
         "rimraf": "6.1.3",
         "yeoman-test": "6.3.0"
     },

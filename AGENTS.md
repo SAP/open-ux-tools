@@ -5,6 +5,7 @@ This document provides essential guidelines for AI-powered tools working with th
 ## Table of Contents
 
 - [Overview](#overview)
+- [AI Agent Behavior](#ai-agent-behavior)
 - [Critical Requirements](#critical-requirements)
 - [Quality Gates](#quality-gates)
 - [Development Standards](#development-standards)
@@ -24,6 +25,51 @@ The SAP UX Tools is a monorepo for building SAP Fiori applications. All packages
 - **Testing**: Jest for unit tests, Playwright for integration tests
 - **Versioning**: Changesets for automated version management
 - **Publishing**: Automated via GitHub Actions to npmjs.com
+
+## AI Agent Behavior
+
+### Think Before Coding
+
+**Don't assume. Don't hide confusion. Surface tradeoffs.**
+
+Before implementing:
+- State your assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them - don't pick silently.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop. Name what's confusing. Ask.
+- If mid-task you discover the goal was wrong (e.g. the real issue is elsewhere), stop. Restate the correct goal and confirm before continuing — don't finish the wrong task just because you started it.
+
+### Surgical Changes
+
+**Touch only what you must. Clean up only your own mess.**
+
+When editing existing code:
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken.
+- Match existing style, even if you'd do it differently.
+- If you notice unrelated dead code, mention it - don't delete it.
+
+When your changes create orphans:
+- Remove imports/variables/functions that YOUR changes made unused.
+- Don't remove pre-existing dead code unless asked.
+
+The test: Every changed line should trace directly to the user's request.
+
+### Goal-Driven Execution
+
+**Define success criteria. Loop until verified.**
+
+Transform tasks into verifiable goals:
+- "Add validation" → "Write tests for invalid inputs, then make them pass"
+- "Fix the bug" → "Write a test that reproduces it, then make it pass"
+- "Refactor X" → "Ensure tests pass before and after"
+
+For multi-step tasks, state a brief plan:
+```
+1. [Step] → verify: [check]
+2. [Step] → verify: [check]
+3. [Step] → verify: [check]
+```
 
 ## Critical Requirements
 
@@ -196,6 +242,7 @@ pnpm audit
 - Avoid `any` type - use `unknown` or proper types
 - **Avoid TypeScript enums** - prefer union types or const objects for better type safety and tree-shaking
 - Avoid using the non-null assertion operator (!). Use optional chaining (?.), nullish coalescing (??), or explicit type guards to handle potentially null/undefined values.
+- Prefer type guards over `as SomeType` casts. If a cast is unavoidable after a runtime check, add a comment explaining why.
 
 **TypeScript config** (from [tsconfig.json](tsconfig.json)):
 - Strict mode enabled
@@ -243,9 +290,31 @@ pnpm audit
 
 **When NOT to create a changeset:**
 - ❌ Changes only to tests (test files in `test/` directories)
-- ❌ Changes only to `devDependencies` (unless the package uses esbuild for bundling, as bundled devDependencies affect runtime)
+- ❌ Changes only to `devDependencies` (unless the package uses esbuild for bundling — see **Bundled devDependency cascades** below)
 - ❌ Configuration changes (eslint, prettier, jest configs) that don't touch `src/`
 - ❌ CI/CD pipeline updates (.github/workflows)
+
+**Bundled devDependency cascades:**
+
+Some packages use esbuild to inline their dependency graph into the dist bundle at build time. When any workspace package in that graph is released, the bundling consumer **must also have a changeset** — otherwise it will not be re-published and consumers will keep running the old bundled code.
+
+The affected bundling packages are declared in [`scripts/validate-changesets.mjs`](scripts/validate-changesets.mjs) (`ESBUILD_BUNDLING_PACKAGES` array). The set of bundled deps is derived automatically by walking the dependency graph:
+- The bundler's own `devDependencies` are included (esbuild reads them directly)
+- For transitive deps, only their `dependencies` are followed — their `devDependencies` are not installed in the bundler's `node_modules` tree and are never bundled
+
+This is enforced automatically: `pnpm build` and `pnpm cset` both run `pnpm validate:changesets` and will error with an actionable message if a cascade changeset is missing.
+
+**If you release any workspace package** (direct devDep or transitive dep via `dependencies`), check whether it is in the bundle of any `ESBUILD_BUNDLING_PACKAGES` consumer — `pnpm validate:changesets` will tell you. Example cascade changeset:
+
+```markdown
+---
+"@sap-ux/fiori-mcp-server": patch
+---
+
+BUMP: Rebuild bundle with updated @sap-ux/fiori-docs-embeddings
+```
+
+**If you add a new esbuild-bundling package**, add its name to `ESBUILD_BUNDLING_PACKAGES` in `scripts/validate-changesets.mjs` — its bundled dep set is derived automatically from the dependency graph.
 
 **Private packages and changesets:**
 
@@ -301,11 +370,11 @@ BUMP: Upgrade i18next 25.8.18 → 25.8.20
 
 Every changeset summary **must** start with one of these prefixes (enforced by `pnpm validate:changesets`):
 
-| Prefix | Use for |
-|---|---|
-| `FEAT:` | New features or behaviour additions |
-| `FIX:` | Bug fixes, security patches, CVE upgrades |
-| `BUMP:` | Dependency-only upgrades with no behaviour change |
+| Prefix             | Use for                                           |
+|--------------------|---------------------------------------------------|
+| `FEAT:` or `feat:` | New features or behaviour additions               |
+| `FIX:`  or `fix:`  | Bug fixes, security patches, CVE upgrades         |
+| `BUMP:` or `bump:` | Dependency-only upgrades with no behaviour change |
 
 Do **not** include the package name in the summary — it is already declared in the frontmatter.
 
@@ -395,6 +464,11 @@ Follow the conventions in [docs/Guidelines.md](docs/Guidelines.md):
 - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, `revert`, `WIP`
 - Max 100 characters for commit message
 - Use imperative mood: "Add feature" not "Added feature"
+
+**MCP Tool Naming:**
+- All MCP tool names must use `snake_case` (e.g. `list_sap_systems`, `generate_fiori_app_odata`)
+- Never use `kebab-case` for tool names (`fetch-service-metadata` is wrong; `download_odata_service_metadata` is correct)
+- Tool descriptions that reference other tools by name must also use the snake_case form
 
 ### Code Reusability and Common Libraries
 
@@ -547,6 +621,8 @@ pnpm test # Coverage is collected by default
 - Follow given/when/then structure
 - Test edge cases and error conditions
 - Use snapshots for generated files
+- If a snapshot fails after your change, update only the affected snapshots — never bulk-update with `--updateSnapshot` as it silently hides regressions.
+- Don't rewrite or restructure existing tests unrelated to your change. If you spot something improvable, mention it and ask before touching it.
 - Mock external dependencies
 - Keep tests fast and isolated
 
@@ -769,6 +845,7 @@ Before submitting changes, verify:
 - [ ] `pnpm test` passes with ≥80% coverage
 - [ ] `pnpm lint:dependency-versions` passes
 - [ ] Changeset created if source code or runtime dependencies changed
+- [ ] If releasing a bundled workspace devDep, cascade changeset added for each consumer in `scripts/validate-changesets.mjs`
 - [ ] No pnpm audit vulnerabilities introduced
 - [ ] Code follows TypeScript and ESLint standards
 - [ ] Tests follow given/when/then pattern

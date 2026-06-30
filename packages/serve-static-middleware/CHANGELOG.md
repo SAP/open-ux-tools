@@ -2,6 +2,8 @@
 
 ## 1.0.1
 
+*Released: 2026-06-03T14:58:37Z*
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
@@ -9,6 +11,8 @@
     - @sap-ux/logger@1.0.1
 
 ## 1.0.0
+
+*Released: 2026-05-30T20:54:07Z*
 
 ### Major Changes
 
@@ -48,6 +52,8 @@
 
 ## 0.5.0
 
+*Released: 2026-05-15T08:12:20Z*
+
 ### Minor Changes
 
 - 72695e5: chore: drop Node 20 support as it is no longer maintained
@@ -59,6 +65,8 @@
 
 ## 0.4.14
 
+*Released: 2026-05-14T11:45:51Z*
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -67,6 +75,8 @@
 
 ## 0.4.13
 
+*Released: 2026-04-08T13:10:18Z*
+
 ### Patch Changes
 
 - Updated dependencies [f1e4481]
@@ -74,12 +84,16 @@
 
 ## 0.4.12
 
+*Released: 2026-03-30T22:24:11Z*
+
 ### Patch Changes
 
 - Updated dependencies [c53a4ba]
     - @sap-ux/logger@0.8.4
 
 ## 0.4.11
+
+*Released: 2026-03-26T12:07:04Z*
 
 ### Patch Changes
 

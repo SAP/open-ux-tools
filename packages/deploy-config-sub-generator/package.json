@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/deploy-config-sub-generator",
     "description": "Main generator for configuring ABAP or Cloud Foundry deployment configuration",
-    "version": "1.0.16",
+    "version": "1.0.31",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -61,7 +61,7 @@
         "@sap-ux/cf-deploy-config-writer": "workspace:*",
         "@sap-ux/jest-file-matchers": "workspace:*",
         "@sap/mta-lib": "1.7.4",
-        "fs-extra": "11.3.4",
+        "fs-extra": "11.3.5",
         "js-yaml": "4.1.1",
         "memfs": "3.4.13",
         "os-name": "4.0.1",
