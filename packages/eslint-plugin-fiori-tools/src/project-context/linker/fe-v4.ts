@@ -418,14 +418,22 @@ function linkListReportTable(
     configuration: Target
 ): void {
     const controls: Record<string, Table | OrphanTable> = {};
+    const configurations = configuration.options?.settings?.controlConfiguration ?? {};
 
     for (const table of tables) {
-        const configurationKey = table.annotationPath;
+        let configurationKey: string = table.annotationPath;
+        if (!configurations[configurationKey]) {
+            const key = Object.keys(configurations).find((key) => key.endsWith(configurationKey)); // CAP example: /Incidents/@com.sap.vocabularies.UI.v1.LineItem#test
+            if (!key) {
+                continue;
+            }
+            configurationKey = key;
+        }
+
         const linkedTable = createTable(configurationKey, pathToPage, table);
         controls[`${linkedTable.type}|${configurationKey}`] = linkedTable;
     }
 
-    const configurations = configuration.options?.settings?.controlConfiguration ?? {};
     for (const [controlKey, controlConfiguration] of Object.entries(configurations)) {
         const tableControl = controls[`table|${controlKey}`];
         if (tableControl) {
