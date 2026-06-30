@@ -87,8 +87,9 @@ export const tools = [
                     - If a service path is provided by the user, use it directly via servicePath parameter.
                     - If the user provides a system name or host, use 'list_sap_systems' first to resolve it.
                     - Pass the full URL as sapSystemQuery.
-                    - Returns host, servicePath, client, metadataFilePath and destination (on SAP Business Application Studio) inside the result's parameters object.
-                    - Pass ALL returned fields directly into the service config of 'generate_fiori_app_odata'. On BAS, destination is mandatory and must be included. Map the returned properties to the app config service property input to 'generate_fiori_app_odata'.
+                    - Returns host, servicePath, client, and metadataFilePath inside the result's parameters object.
+                    - Pass ALL returned fields directly into the service config of 'generate_fiori_app_odata'. Map the returned properties to the app config service property input to 'generate_fiori_app_odata'.
+                    - **Note:** This tool is only supported in VSCode. For SAP Business Application Studio, use the Service Center MCP server tool 'get_resource_metadata' instead.
                     **IMPORTANT**: On VSCode, if the service requires authentication and the system is not already stored, ask the user to store it first. Do not ask for credentials directly.`,
         annotations: {
             title: 'Download OData Service Metadata',

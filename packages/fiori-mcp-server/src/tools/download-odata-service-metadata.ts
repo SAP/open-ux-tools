@@ -24,6 +24,20 @@ export async function downloadODataServiceMetadata(
     const sapSystemQuery = String(params.sapSystemQuery ?? '').trim();
     const servicePath = String(params.servicePath ?? '').trim();
 
+    // Check if we're in AppStudio - if so, this tool should not be used
+    // Service Center MCP should be used instead for BAS/Destination scenarios
+    if (isAppStudio()) {
+        return {
+            status: 'Error',
+            message:
+                'This tool is not supported in SAP Business Application Studio. Please use the Service Center MCP server tool "get_resource_metadata" to retrieve service metadata when working with destinations.',
+            parameters: EMPTY_PARAMS,
+            appPath: params.appPath,
+            changes: [],
+            timestamp: new Date().toISOString()
+        };
+    }
+
     if (!servicePath) {
         return {
             status: 'Error',
@@ -48,20 +62,6 @@ export async function downloadODataServiceMetadata(
             };
         }
         const foundSystem = findResult.system;
-
-        // Check if we're in AppStudio - if so, this tool should not be used
-        // Service Center MCP should be used instead for BAS/Destination scenarios
-        if (isAppStudio()) {
-            return {
-                status: 'Error',
-                message:
-                    'This tool is not supported in SAP Business Application Studio. Please use the Service Center MCP server tool "get_resource_metadata" to retrieve service metadata when working with destinations.',
-                parameters: EMPTY_PARAMS,
-                appPath: params.appPath,
-                changes: [],
-                timestamp: new Date().toISOString()
-            };
-        }
 
         // At this point, foundSystem should be a BackendSystem (VSCode only)
         const metadata = await getServiceMetadata(foundSystem as BackendSystem, servicePath);

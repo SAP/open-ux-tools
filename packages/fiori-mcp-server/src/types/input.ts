@@ -71,11 +71,9 @@ export const DownloadODataServiceMetadataInputSchema = zod.object({
         .string()
         .optional()
         .describe(
-            '🚨 DO NOT CONSTRUCT THIS - Use serviceName instead! ' +
-                'The path to the SAP service to fetch metadata for. ' +
+            'The path to the SAP service to fetch metadata for. ' +
                 'ONLY use this if the user provides an EXACT path (e.g., "/sap/opu/odata/sap/ZUI_TRAVEL_O4/"). ' +
-                'DO NOT construct paths from service names. ' +
-                'Either servicePath or serviceName must be provided.'
+                'DO NOT construct paths from service names. This parameter is required.'
         ),
     /* serviceName: zod
         .string()
