@@ -90,6 +90,14 @@
     border-bottom: 1px solid #e76500;
 }
 
+.terminalWarningsPopover .sapMMsgView .sapMMsgViewItem {
+    padding-left: 1rem;
+}
+
+.terminalWarningsPopover .sapMMsgViewItem .sapUiIcon {
+    display: none;
+}
+
 .newsListItemContainer {
     gap: 0rem;
 }

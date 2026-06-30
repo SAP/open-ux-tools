@@ -23,10 +23,14 @@ import App from 'sap/cux/home/App';
 import Event from 'sap/ui/base/Event';
 import Control from 'sap/ui/core/Control';
 import Popover from 'sap/m/Popover';
+import ResponsivePopover from 'sap/m/ResponsivePopover';
 import List from 'sap/m/List';
 import StandardListItem from 'sap/m/StandardListItem';
-import HBox from 'sap/m/HBox';
+import MessageView from 'sap/m/MessageView';
+import MessageItem from 'sap/m/MessageItem';
+import Bar from 'sap/m/Bar';
 import Icon from 'sap/ui/core/Icon';
+import MessageType from 'sap/ui/core/message/MessageType';
 import { Button$PressEvent } from 'sap/m/Button';
 
 interface CardConfig {
@@ -71,7 +75,7 @@ export default class MyHomeController extends Controller {
         LargeDesktop: 1440
     };
 
-    private terminalWarningsPopover: Popover | undefined;
+    private terminalWarningsPopover: ResponsivePopover | undefined;
     private insightsActionsPopover: Popover | undefined;
     private useHeroBanner: boolean = false;
     private lastInsightsRefreshTime: Date | undefined;
@@ -398,26 +402,35 @@ export default class MyHomeController extends Controller {
         this.terminalWarningsPopover.openBy(button);
     }
 
-    private createTerminalWarningsPopover(): Popover {
-        const warningsList = new List({
+    private createTerminalWarningsPopover(): ResponsivePopover {
+        const messageView = new MessageView({
+            showDetailsPageHeader: false,
             items: {
                 path: 'view>/warnings',
-                template: new StandardListItem({
-                    title: '{view>message}'
-                })
+                template: new MessageItem({
+                    title: '{view>message}',
+                    type: MessageType.None
+                }),
+                templateShareable: false
             }
         });
 
-        const popover = new Popover({
+        const popover = new ResponsivePopover({
             contentWidth: '528px',
-            customHeader: new HBox({
-                alignItems: 'Center',
-                items: [
-                    new Icon({ src: 'sap-icon://alert', color: '#e76500' }).addStyleClass('sapUiTinyMarginEnd'),
+            contentHeight: {
+                path: 'view>/warnings',
+                formatter: (warnings: { message: string }[] = []) =>
+                    `${Math.min(Math.max(warnings.length, 1) * 2.125, 20)}rem`
+            },
+            horizontalScrolling: false,
+            verticalScrolling: false,
+            customHeader: new Bar({
+                contentLeft: [
+                    new Icon({ src: 'sap-icon://alert', color: '#e76500' }).addStyleClass('sapUiTinyMarginBeginEnd'),
                     new Title({ text: this.getText('terminalMessagesDialogTitle'), level: 'H5' })
                 ]
-            }).addStyleClass('sapUiTinyMargin'),
-            content: [warningsList],
+            }),
+            content: [messageView],
             placement: PlacementType.HorizontalPreferredLeft
         }).addStyleClass('terminalWarningsPopover');
 
