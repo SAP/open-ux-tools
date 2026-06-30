@@ -15,6 +15,8 @@ const REQUEST_TIMEOUT_MS = 10_000; // 10 seconds
 export interface WhatsNewSourceConfig {
     /** Short product label, used in the news title and footer (e.g. "SAP Fiori Tools"). */
     productLabel: string;
+    /** Icon for the news title. */
+    titleIcon?: string;
     /** LOIO of the product's What's New page on the SAP Help Portal. */
     loio: string;
     /** Optional Category filter applied server-side (e.g. ["SAP Fiori Elements"]). */
@@ -131,6 +133,7 @@ interface CacheEntry {
  */
 export const FIORI_TOOLS_WHATSNEW_CONFIG: WhatsNewSourceConfig = {
     productLabel: 'SAP Fiori Tools',
+    titleIcon: '',
     loio: 'd29596a7d7b040d88a20a73dee29a1ec',
     docsUrl: 'https://help.sap.com/docs/SAP_FIORI_tools',
     upgradeHint: 'To use all new features, ensure your Fiori tools extensions and packages are up to date.',
@@ -258,7 +261,7 @@ export class WhatsNewSource {
             const rawKey = this.config.groupBy === 'title' ? result.Title : result.Category[0];
             const normalised = rawKey ?? 'Other';
             const groupKey = this.config.groupLabel ? this.config.groupLabel(normalised) : normalised;
-            const type = result.Type[0] ?? 'Other';
+            const type = WhatsNewSource.getTypeLabel(result.Type[0] ?? 'Other');
             const typeMap = byGroup.get(groupKey) ?? new Map<string, WhatsNewResult[]>();
             const existing = typeMap.get(type) ?? [];
             existing.push(result);
@@ -292,10 +295,13 @@ export class WhatsNewSource {
             .join('<hr>');
 
         const description = `<p>${this.getNewsIntroduction(latestVersion, true)}</p>${groupSections}`;
+        const title = this.config.titleIcon
+            ? `${this.config.titleIcon} What's New for ${this.config.productLabel}`
+            : `What's New for ${this.config.productLabel}`;
 
         return [
             {
-                title: `What's New for ${this.config.productLabel}`,
+                title,
                 subTitle: this.getNewsIntroduction(latestVersion, false),
                 description,
                 footerText: `${this.config.productLabel} ${latestVersion}`,
@@ -370,6 +376,22 @@ export class WhatsNewSource {
             return (ai === -1 ? order.length : ai) - (bi === -1 ? order.length : bi);
         }
         return a.localeCompare(b);
+    }
+
+    /**
+     * Maps API type labels to the section labels shown in the news detail dialog.
+     *
+     * @param type raw type label from the SAP What's New API
+     * @returns display label for the news type section
+     */
+    private static getTypeLabel(type: string): string {
+        if (type === 'Added') {
+            return 'New';
+        }
+        if (type === 'Fixed') {
+            return 'Changed';
+        }
+        return type;
     }
 
     /**
