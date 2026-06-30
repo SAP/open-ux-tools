@@ -103,7 +103,15 @@ export const GenerateAdaptationProjectInputSchema = zod.object({
     applicationTitle: zod.string().optional().describe('Optional title for the application'),
     client: zod.string().optional().describe('Optional SAP client number'),
     username: zod.string().optional().describe('Optional username for authentication'),
-    password: zod.string().optional().describe('Optional password for authentication')
+    password: zod.string().optional().describe('Optional password for authentication'),
+    importKeyUserChanges: zod
+        .boolean()
+        .optional()
+        .describe(
+            "When true, fetches the DEFAULT adaptation's key user changes from LREP using the same system " +
+                'and credentials, and includes them in the generated project. Aborts generation if the fetch ' +
+                'fails or no DEFAULT adaptation exists. Defaults to false.'
+        )
 });
 
 export const OpenAdaptationEditorInputSchema = zod.object({

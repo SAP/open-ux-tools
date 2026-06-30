@@ -148,7 +148,11 @@ export const tools = [
         - system: The name of the SAP system (from list_sap_systems)
         - application: The application ID to adapt
 
-        Optional parameters: targetFolder, projectName, namespace, applicationTitle, client, username, password.
+        Optional parameters: targetFolder, projectName, namespace, applicationTitle, client, username, password, importKeyUserChanges.
+
+        Set importKeyUserChanges to true to automatically fetch the DEFAULT adaptation's key user
+        changes from LREP (using the same system and credentials) and include them in the generated
+        project. Generation aborts if the fetch fails or no DEFAULT adaptation exists.
 
         Use 'list_sap_systems' first to discover available systems.
         The generator will be executed with the provided JSON configuration.`,

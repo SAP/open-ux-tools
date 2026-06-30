@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { existsSync, promises as FSpromises } from 'node:fs';
 import { runCmd, logger } from '../utils/index.js';
 import { GENERATE_ADAPTATION_PROJECT_ID } from '../constant.js';
+import { fetchKeyUserChanges } from './generate-adaptation-project/key-user-changes.js';
 
 /**
  * Generates a new SAP Fiori adaptation project by invoking the @sap-ux/adp Yeoman generator.
@@ -23,7 +24,8 @@ export async function generateAdaptationProject(
         applicationTitle,
         client,
         username,
-        password
+        password,
+        importKeyUserChanges
     } = params;
 
     if (!system || !application) {
@@ -41,17 +43,13 @@ export async function generateAdaptationProject(
     const finalTargetFolder = targetFolder ?? appPath;
 
     try {
-        const jsonInput: Record<string, string> = {
+        const jsonInput: Record<string, unknown> & { projectName: string } = {
             system,
             application,
-            targetFolder: finalTargetFolder
+            targetFolder: finalTargetFolder,
+            projectName: projectName ?? getDefaultProjectName(finalTargetFolder)
         };
 
-        if (projectName) {
-            jsonInput.projectName = projectName;
-        } else {
-            jsonInput.projectName = getDefaultProjectName(finalTargetFolder);
-        }
         if (namespace) {
             jsonInput.namespace = namespace;
         }
@@ -66,6 +64,26 @@ export async function generateAdaptationProject(
         }
         if (password) {
             jsonInput.password = password;
+        }
+
+        if (importKeyUserChanges) {
+            const keyUserChanges = await fetchKeyUserChanges({
+                system,
+                application,
+                client,
+                username,
+                password,
+                logger
+            });
+            // Only attach a payload when we have content so we don't override
+            // the user's intent with an empty array.
+            if (keyUserChanges.length > 0) {
+                jsonInput.keyUserChanges = keyUserChanges;
+            } else {
+                logger.warn(
+                    `importKeyUserChanges was requested but no key user changes were returned for '${application}'.`
+                );
+            }
         }
 
         await FSpromises.mkdir(finalTargetFolder, { recursive: true });
