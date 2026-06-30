@@ -142,16 +142,13 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
     sessionId: zod
         .string()
         .optional()
-        .describe(
-            'Session identifier returned by the "start" step. Required for every step except "start" itself.'
-        ),
+        .describe('Session identifier returned by the "start" step. Required for every step except "start" itself.'),
     payload: zod
         .record(zod.string(), zod.unknown())
         .optional()
         .describe(
             'Step-specific arguments. ' +
                 'start: { site: string, frameId?: string }. ' +
-                'get_actions: { controlId: string }. ' +
                 'get_context: { controlId: string, actionId: string }. ' +
                 'call_action: { controlId: string, actionId: string, actionPayload: object }. ' +
                 'get_overlays / save / stop: omit.'

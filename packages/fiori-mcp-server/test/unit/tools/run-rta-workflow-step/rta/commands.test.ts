@@ -5,7 +5,6 @@ import type {
 import {
     FrontendActionError,
     executeAction,
-    getActions,
     getElementContext,
     getOverlays,
     saveChanges,
@@ -58,7 +57,21 @@ describe('rta/commands', () => {
 
     test('getOverlays calls getOverlaysInformation', async () => {
         transport.callFrontendAction.mockResolvedValueOnce(
-            ok([{ overlayId: 'o1', controlId: 'c1', label: 'L', controlType: 'sap.m.Button' }])
+            ok({
+                overlays: [
+                    {
+                        overlayId: 'o1',
+                        controlId: 'c1',
+                        label: 'L',
+                        controlType: 'sap.m.Button',
+                        parentElementId: null,
+                        parentAggregationName: 'content',
+                        index: 0,
+                        actionIds: ['rename']
+                    }
+                ],
+                actionsCatalog: { rename: { id: 'rename', label: 'Rename', parameters: [] } }
+            })
         );
         const result = await getOverlays(transport, { site: SITE });
         expect(transport.callFrontendAction).toHaveBeenCalledWith(
@@ -67,22 +80,20 @@ describe('rta/commands', () => {
             {},
             undefined
         );
-        expect(result).toHaveLength(1);
-    });
-
-    test('getActions wraps controlId in payload object', async () => {
-        transport.callFrontendAction.mockResolvedValueOnce(ok([{ id: 'rename' }]));
-        await getActions(transport, { site: SITE, frameId: FRAME }, 'control-1');
-        expect(transport.callFrontendAction).toHaveBeenCalledWith(
-            SITE,
-            'com.sap.ui.flex.getActions.v1',
-            { controlId: 'control-1' },
-            FRAME
-        );
+        expect(result.overlays).toHaveLength(1);
+        expect(result.actionsCatalog).toHaveProperty('rename');
     });
 
     test('getElementContext requires controlId and actionId in payload', async () => {
-        transport.callFrontendAction.mockResolvedValueOnce(ok({ defaultChildAggregationName: 'items', content: [] }));
+        transport.callFrontendAction.mockResolvedValueOnce(
+            ok({
+                elementType: 'sap.m.Button',
+                actionParameters: [],
+                aggregationsByClass: [],
+                availableModels: {},
+                actionSpecificContext: {}
+            })
+        );
         await getElementContext(transport, { site: SITE }, 'control-1', 'rename');
         expect(transport.callFrontendAction).toHaveBeenCalledWith(
             SITE,
@@ -128,14 +139,16 @@ describe('rta/commands', () => {
 
     test('an isSuccess=false result throws a FrontendActionError carrying the code', async () => {
         transport.callFrontendAction.mockResolvedValueOnce(fail('CONTROL_NOT_FOUND', 'Control with id x not found'));
-        await expect(getActions(transport, { site: SITE }, 'x')).rejects.toMatchObject({
+        await expect(getElementContext(transport, { site: SITE }, 'x', 'rename')).rejects.toMatchObject({
             name: 'FrontendActionError',
             code: 'CONTROL_NOT_FOUND',
             message: expect.stringContaining('CONTROL_NOT_FOUND')
         });
 
         transport.callFrontendAction.mockResolvedValueOnce(fail('CONTROL_NOT_FOUND', 'Control with id x not found'));
-        await expect(getActions(transport, { site: SITE }, 'x')).rejects.toBeInstanceOf(FrontendActionError);
+        await expect(getElementContext(transport, { site: SITE }, 'x', 'rename')).rejects.toBeInstanceOf(
+            FrontendActionError
+        );
     });
 
     test('stopRta(site) disconnects only that site', async () => {

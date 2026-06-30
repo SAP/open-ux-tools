@@ -1,5 +1,5 @@
 import type { FrontendActionResult, FrontendActionTransport } from '../browser/index.js';
-import type { Action, EditorPage, ElementContext, Overlay } from './types.js';
+import type { ActionsCatalog, EditorPage, ElementContext, Overlay } from './types.js';
 
 const ACTION_PREFIX = 'com.sap.ui.flex';
 const ACTION_VERSION = 'v1';
@@ -60,32 +60,28 @@ export async function startRta(transport: FrontendActionTransport, page: EditorP
 }
 
 /**
- * Returns all editable overlays exposed by the running RTA instance.
+ * Returns all editable overlays exposed by the running RTA instance together
+ * with a deduplicated catalog of the RTA actions referenced by their
+ * `actionIds`.
  *
  * @param transport Transport used to deliver the call.
  * @param page Target editor page.
- * @returns The overlays on the page.
+ * @returns Overlays plus the catalog keyed by action id.
  */
-export async function getOverlays(transport: FrontendActionTransport, page: EditorPage): Promise<Overlay[]> {
-    const name = action('getOverlaysInformation');
-    return unwrap(name, await transport.callFrontendAction<Overlay[]>(page.site, name, {}, page.frameId));
-}
-
-/**
- * Returns the actions available for the given control.
- *
- * @param transport Transport used to deliver the call.
- * @param page Target editor page.
- * @param controlId UI5 control id to inspect.
- * @returns The actions available on `controlId`.
- */
-export async function getActions(
+export async function getOverlays(
     transport: FrontendActionTransport,
-    page: EditorPage,
-    controlId: string
-): Promise<Action[]> {
-    const name = action('getActions');
-    return unwrap(name, await transport.callFrontendAction<Action[]>(page.site, name, { controlId }, page.frameId));
+    page: EditorPage
+): Promise<{ overlays: Overlay[]; actionsCatalog: ActionsCatalog }> {
+    const name = action('getOverlaysInformation');
+    return unwrap(
+        name,
+        await transport.callFrontendAction<{ overlays: Overlay[]; actionsCatalog: ActionsCatalog }>(
+            page.site,
+            name,
+            {},
+            page.frameId
+        )
+    );
 }
 
 /**
@@ -94,7 +90,7 @@ export async function getActions(
  * @param transport Transport used to deliver the call.
  * @param page Target editor page.
  * @param controlId UI5 control id.
- * @param actionId Action id reported by `getActions`.
+ * @param actionId Action id reported by the overlay's `actionIds`.
  * @returns The element context for the action.
  */
 export async function getElementContext(
@@ -116,7 +112,7 @@ export async function getElementContext(
  * @param transport Transport used to deliver the call.
  * @param page Target editor page.
  * @param controlId UI5 control id.
- * @param actionId Action id reported by `getActions`.
+ * @param actionId Action id reported by the overlay's `actionIds`.
  * @param payload Action-specific payload, shape determined by `getElementContext`.
  * @returns `true` if the action was applied.
  */

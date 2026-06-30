@@ -1,7 +1,6 @@
 export {
     FrontendActionError,
     executeAction,
-    getActions,
     getElementContext,
     getOverlays,
     saveChanges,
@@ -9,4 +8,13 @@ export {
     startVisualization,
     stopRta
 } from './commands.js';
-export type { Action, ActionPayloadProperty, EditorPage, ElementContext, Overlay } from './types.js';
+export type {
+    Action,
+    ActionParameter,
+    ActionsCatalog,
+    AggregationsByClass,
+    AvailableModel,
+    EditorPage,
+    ElementContext,
+    Overlay
+} from './types.js';

@@ -1,11 +1,15 @@
-import type { Action, ElementContext, Overlay } from './rta/types.js';
+import type { ActionsCatalog, ElementContext, Overlay } from './rta/types.js';
 
 /**
- * The seven steps run_rta_workflow_step accepts. Single source of truth —
- * the Zod schema in `types/input.ts` derives its enum from this tuple, so
+ * The steps run_rta_workflow_step accepts. Single source of truth — the
+ * Zod schema in `types/input.ts` derives its enum from this tuple, so
  * adding a step here is the only place that needs to change.
+ *
+ * Action lists per control are no longer exposed as a standalone step —
+ * the editor page returns them inline via `get_overlays` (`actionsCatalog`
+ * + each overlay's `actionIds`).
  */
-export const STEPS = ['start', 'get_overlays', 'get_actions', 'get_context', 'call_action', 'save', 'stop'] as const;
+export const STEPS = ['start', 'get_overlays', 'get_context', 'call_action', 'save', 'stop'] as const;
 
 export type Step = (typeof STEPS)[number];
 
@@ -31,10 +35,7 @@ export interface StartStepResult {
 
 export interface GetOverlaysStepResult {
     overlays: Overlay[];
-}
-
-export interface GetActionsStepResult {
-    actions: Action[];
+    actionsCatalog: ActionsCatalog;
 }
 
 export interface GetContextStepResult {
@@ -56,7 +57,6 @@ export interface StopStepResult {
 export type RunRtaWorkflowStepResult =
     | StartStepResult
     | GetOverlaysStepResult
-    | GetActionsStepResult
     | GetContextStepResult
     | CallActionStepResult
     | SaveStepResult

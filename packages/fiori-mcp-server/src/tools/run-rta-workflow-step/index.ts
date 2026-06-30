@@ -3,7 +3,6 @@ import { randomUUID } from 'node:crypto';
 import {
     executeAction,
     FrontendActionError,
-    getActions,
     getElementContext,
     getOverlays,
     saveChanges,
@@ -86,14 +85,8 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             }
             case 'get_overlays': {
                 const { session } = getSession(input.sessionId);
-                const overlays = await getOverlays(defaultTransport, session);
-                return { overlays };
-            }
-            case 'get_actions': {
-                const { session } = getSession(input.sessionId);
-                const controlId = requireString(input.payload, 'controlId');
-                const actions = await getActions(defaultTransport, session, controlId);
-                return { actions };
+                const { overlays, actionsCatalog } = await getOverlays(defaultTransport, session);
+                return { overlays, actionsCatalog };
             }
             case 'get_context': {
                 const { session } = getSession(input.sessionId);
