@@ -31,32 +31,32 @@ export async function execute(): Promise<void> {
         await resetAppState(container);
     }
 
-    // Wire up RTA if flex is configured — renderer is already up so we use AppLifeCycle directly
-    if (flex) {
-        registerForControllerExtensionErrors();
-        const flexSettings = JSON.parse(flex) as FlexSettings;
+    if (flex || enableCardGenerator) {
         const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
-        lifecycleService.attachAppLoaded((event) => {
-            // Prevent starting RTA when the FLP home component fires attachAppLoaded before the user navigates to the actual app
-            if (!globalThis.location.hash || globalThis.location.hash.startsWith('#Shell-home')) {
-                return;
-            }
-            startRtaForAppInstance(event.getParameter('componentInstance'), flexSettings, ui5VersionInfo);
-        });
-    }
-
-    // Wire up card generator if enabled
-    if (enableCardGenerator) {
-        const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
-        lifecycleService.attachAppLoaded((event) => {
-            addCardGenerationUserAction(event.getParameter('componentInstance') as unknown as Component, container);
-        });
+        if (flex) {
+            registerForControllerExtensionErrors();
+            const flexSettings = JSON.parse(flex) as FlexSettings;
+            lifecycleService.attachAppLoaded((event) => {
+                // Prevent starting RTA when the FLP home component fires attachAppLoaded before the user navigates to the actual app
+                if (!globalThis.location.hash || globalThis.location.hash.startsWith('#Shell-home')) {
+                    return;
+                }
+                startRtaForAppInstance(event.getParameter('componentInstance'), flexSettings, ui5VersionInfo);
+            });
+        }
+        if (enableCardGenerator) {
+            lifecycleService.attachAppLoaded((event) => {
+                addCardGenerationUserAction(
+                    event.getParameter('componentInstance') as unknown as Component,
+                    container
+                );
+            });
+        }
     }
 
     // Initialize RTA connectors
     await initConnectors();
 
-    // Enhanced homepage requires an additional Container.init('cdm') call
     if (enhancedHomePage) {
         await container.init('cdm');
     }
