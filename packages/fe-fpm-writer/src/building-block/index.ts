@@ -642,11 +642,11 @@ function injectHandlersIntoExistingTsController(
     if (needsEventImport) {
         const firstImportIdx = existingContent.search(/^import\b/m);
         const eventImportLine = `import Event from 'sap/ui/base/Event';\n`;
-        if (firstImportIdx !== -1) {
+        if (firstImportIdx === -1) {
+            withImport = eventImportLine + existingContent;
+        } else {
             withImport =
                 existingContent.slice(0, firstImportIdx) + eventImportLine + existingContent.slice(firstImportIdx);
-        } else {
-            withImport = eventImportLine + existingContent;
         }
     }
 
