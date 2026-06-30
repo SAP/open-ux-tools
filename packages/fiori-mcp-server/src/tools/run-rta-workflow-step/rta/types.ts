@@ -142,3 +142,50 @@ export interface ElementContext {
  * Keyed by action id; entries deduplicate metadata shared across overlays.
  */
 export type ActionsCatalog = Record<string, Action>;
+
+/**
+ * One entry in the registered-action list returned by `getPageActions`.
+ * `isValid` is evaluated server-side (in the page) before inclusion, so
+ * everything in this list is currently applicable.
+ */
+export interface RegisteredPageAction {
+    /** Stable id of the action. */
+    id: string;
+    /** Contributor layer. */
+    layer: 'framework' | 'app';
+    /** Human-readable label. */
+    label: string;
+    /** Description for the LLM, including parameter docs (PoC: zero-arg). */
+    description: string;
+}
+
+/**
+ * One entry in the interactive-element list returned by `getPageActions`.
+ * Best-effort scan of the live DOM (root view + static area + open dialogs);
+ * the LLM can call `press_interactive` with the `controlId` to trigger it.
+ */
+export interface InteractiveElement {
+    /** UI5 element id where available, otherwise the DOM id. */
+    controlId: string;
+    /** `tagName`, e.g. `BUTTON` or `ui5-button`. */
+    controlType: string;
+    /** Visible label / text / aria-label / placeholder / title. */
+    label: string;
+    /** Coarse classification used by the LLM to decide press vs. type. */
+    kind: 'button' | 'input' | 'listItem' | 'tab' | 'link' | 'other';
+}
+
+/**
+ * Result envelope of `callPageAction` / `pressInteractive`. The page-action
+ * surface uses HITL via `needs_user_action`: if a precondition failed (e.g.
+ * mandatory filter not set) the LLM should surface `reason` to the user.
+ */
+export interface PageActionRunResult {
+    status: 'ok' | 'needs_user_action';
+    /** Set when `status === 'ok'`. PoC: optional informational note (e.g. "no observable state change"). */
+    note?: string;
+    /** Set when `status === 'needs_user_action'`. */
+    reason?: string;
+    /** Set when `status === 'ok'`. PoC actions don't return data; reserved for future use. */
+    data?: unknown;
+}

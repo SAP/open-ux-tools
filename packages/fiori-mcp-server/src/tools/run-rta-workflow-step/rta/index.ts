@@ -1,8 +1,11 @@
 export {
     FrontendActionError,
+    callPageAction,
     executeAction,
     getElementContext,
     getOverlays,
+    getPageActions,
+    pressInteractive,
     saveChanges,
     startRta,
     startVisualization,
@@ -16,5 +19,8 @@ export type {
     AvailableModel,
     EditorPage,
     ElementContext,
-    Overlay
+    InteractiveElement,
+    Overlay,
+    PageActionRunResult,
+    RegisteredPageAction
 } from './types.js';

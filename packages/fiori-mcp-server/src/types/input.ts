@@ -136,8 +136,9 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
     step: zod
         .enum(STEPS)
         .describe(
-            'Which RTA workflow step to run. Each step maps to one Joule frontend action ' +
-                'on the adaptation editor page.'
+            'Which RTA workflow step to run. The first six steps map to the existing Joule RTA frontend ' +
+                'actions. The last three (get_page_actions, call_page_action, press_interactive) drive ' +
+                'pre-RTA navigation via registered high-level page actions and a best-effort interactive scan.'
         ),
     sessionId: zod
         .string()
@@ -151,7 +152,9 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
                 'start: { site: string, frameId?: string }. ' +
                 'get_context: { controlId: string, actionId: string }. ' +
                 'call_action: { controlId: string, actionId: string, actionPayload: object }. ' +
-                'get_overlays / save / stop: omit.'
+                'call_page_action: { id: string }. ' +
+                'press_interactive: { controlId: string }. ' +
+                'get_overlays / save / stop / get_page_actions: omit.'
         )
 });
 

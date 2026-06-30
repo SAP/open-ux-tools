@@ -1,5 +1,13 @@
 import type { FrontendActionResult, FrontendActionTransport } from '../browser/index.js';
-import type { ActionsCatalog, EditorPage, ElementContext, Overlay } from './types.js';
+import type {
+    ActionsCatalog,
+    EditorPage,
+    ElementContext,
+    InteractiveElement,
+    Overlay,
+    PageActionRunResult,
+    RegisteredPageAction
+} from './types.js';
 
 const ACTION_PREFIX = 'com.sap.ui.flex';
 const ACTION_VERSION = 'v1';
@@ -173,4 +181,79 @@ export async function stopRta(transport: FrontendActionTransport, page?: EditorP
     } else {
         await transport.stopBrowser();
     }
+}
+
+/**
+ * Returns currently-applicable registered page actions plus a best-effort
+ * scan of press-able controls in the live view (root view, static area,
+ * open dialogs/popovers).
+ *
+ * `interactiveTruncated` is set to `true` when the scanner hit its internal
+ * cap; in that case some press-able controls were omitted from `interactive`.
+ *
+ * @param transport Transport used to deliver the call.
+ * @param page Target editor page.
+ * @returns Registered actions, interactive elements, and an optional truncation flag.
+ */
+export async function getPageActions(
+    transport: FrontendActionTransport,
+    page: EditorPage
+): Promise<{
+    registered: RegisteredPageAction[];
+    interactive: InteractiveElement[];
+    interactiveTruncated?: true;
+}> {
+    const name = action('getPageActions');
+    return unwrap(
+        name,
+        await transport.callFrontendAction<{
+            registered: RegisteredPageAction[];
+            interactive: InteractiveElement[];
+            interactiveTruncated?: true;
+        }>(page.site, name, {}, page.frameId)
+    );
+}
+
+/**
+ * Invokes a registered page action by id. The action's `isValid` is
+ * re-checked before `run()`; a stale "valid" from a previous
+ * `getPageActions` falls through as `needs_user_action`.
+ *
+ * @param transport Transport used to deliver the call.
+ * @param page Target editor page.
+ * @param id Action id, e.g. `loadData`.
+ * @returns The page-action run result.
+ */
+export async function callPageAction(
+    transport: FrontendActionTransport,
+    page: EditorPage,
+    id: string
+): Promise<PageActionRunResult> {
+    const name = action('callPageAction');
+    return unwrap(name, await transport.callFrontendAction<PageActionRunResult>(page.site, name, { id }, page.frameId));
+}
+
+/**
+ * Triggers a real user-gesture click on the control with `controlId` and
+ * waits best-effort for the page to settle. The page probes a handful of
+ * observable signals (registered-action set, ObjectPage selected section,
+ * focus, open dialogs, location hash) at 200 / 400 / 800 ms after the
+ * click; the result `note` describes the change or reports
+ * `"no observable state change"`.
+ *
+ * @param transport Transport used to deliver the call.
+ * @param page Target editor page.
+ * @param controlId DOM/UI5 id of the element to press.
+ * @returns The page-action run result.
+ */
+export async function pressInteractive(
+    transport: FrontendActionTransport,
+    page: EditorPage,
+    controlId: string
+): Promise<PageActionRunResult> {
+    const name = action('pressInteractive');
+    return unwrap(
+        name,
+        await transport.callFrontendAction<PageActionRunResult>(page.site, name, { controlId }, page.frameId)
+    );
 }

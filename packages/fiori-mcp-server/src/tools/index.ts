@@ -217,7 +217,10 @@ export const tools = [
         - **get_context** — sessionId, payload: \`{ controlId: string, actionId: string }\`. Returns \`{ context }\`.
         - **call_action** — sessionId, payload: \`{ controlId: string, actionId: string, actionPayload: object }\`. Returns \`{ success: boolean }\`.
         - **save** — sessionId only. Returns \`{ saved: boolean }\`.
-        - **stop** — sessionId only. Closes the session; if no sessions remain, the browser shuts down. Returns \`{ stopped: true }\`.`,
+        - **stop** — sessionId only. Closes the session; if no sessions remain, the browser shuts down. Returns \`{ stopped: true }\`.
+        - **get_page_actions** — sessionId only. Returns \`{ registered: RegisteredPageAction[], interactive: InteractiveElement[] }\`. Use BEFORE \`get_overlays\` to drive page-level navigation (Filter Bar search, row press, section scroll, back). \`registered\` is filtered to currently-applicable high-level actions; \`interactive\` is a best-effort scan of press-able controls (root view + static area + open dialogs).
+        - **call_page_action** — sessionId, payload: \`{ id: string }\`. Invokes a registered action; returns \`{ result: PageActionRunResult }\`. Result is \`{ status: "ok" }\` on success or \`{ status: "needs_user_action", reason }\` if a precondition cannot be met.
+        - **press_interactive** — sessionId, payload: \`{ controlId: string }\`. Triggers a real user-gesture click on the named control and waits best-effort for the page to settle. Returns \`{ result: PageActionRunResult }\`.`,
         annotations: {
             title: 'Run RTA Workflow Step (skill-internal)',
             readOnlyHint: false,

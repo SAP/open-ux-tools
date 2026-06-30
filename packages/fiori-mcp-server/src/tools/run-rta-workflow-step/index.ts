@@ -1,10 +1,13 @@
 import { randomUUID } from 'node:crypto';
 
 import {
+    callPageAction,
     executeAction,
     FrontendActionError,
     getElementContext,
     getOverlays,
+    getPageActions,
+    pressInteractive,
     saveChanges,
     startRta,
     type EditorPage
@@ -115,6 +118,30 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                     await defaultTransport.stopBrowser();
                 }
                 return { stopped: true };
+            }
+            case 'get_page_actions': {
+                const { session } = getSession(input.sessionId);
+                const { registered, interactive, interactiveTruncated } = await getPageActions(
+                    defaultTransport,
+                    session
+                );
+                return {
+                    registered,
+                    interactive,
+                    ...(interactiveTruncated && { interactiveTruncated })
+                };
+            }
+            case 'call_page_action': {
+                const { session } = getSession(input.sessionId);
+                const id = requireString(input.payload, 'id');
+                const result = await callPageAction(defaultTransport, session, id);
+                return { result };
+            }
+            case 'press_interactive': {
+                const { session } = getSession(input.sessionId);
+                const controlId = requireString(input.payload, 'controlId');
+                const result = await pressInteractive(defaultTransport, session, controlId);
+                return { result };
             }
             default:
                 throw new Error(`Unknown step: ${String(input.step)}. Valid steps: ${STEPS.join(', ')}`);
