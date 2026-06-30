@@ -1,5 +1,27 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.1.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.39 → 3.0.40
+- @sap-ux/fiori-freestyle-writer 3.0.35 → 3.0.36
+- @sap-ux/odata-service-inquirer 3.0.16 → 3.0.16
+
+## 1.1.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-26
+
+#### Bug Fixes
+
+- support ABAP repository app download with service metadata, debug artifact cleanup, and sapux detection [[0192436](https://github.com/SAP/open-ux-tools/commit/0192436b65e7dbc08349a9bd3e2971a3fa214e7c)]
+
 ## 1.1.21
 
 ### Patch Changes

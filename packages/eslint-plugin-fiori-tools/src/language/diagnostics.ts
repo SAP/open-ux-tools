@@ -21,7 +21,8 @@ export const NO_LIVE_MODE = 'sap-no-live-mode';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
-    manifest: ManifestPropertyDiagnosticData;
+    manifest: Partial<ManifestPropertyDiagnosticData> &
+        Pick<ManifestPropertyDiagnosticData, 'uri' | 'object' | 'propertyPath'>;
     pageName: string;
     pageSectionName?: string;
     annotation: {
@@ -39,7 +40,7 @@ export interface ManifestPropertyDiagnosticData {
     uri: string;
     object: Manifest;
     propertyPath: string[];
-    loc?: SourceLocation;
+    loc: SourceLocation;
 }
 
 export interface FlexEnabled {

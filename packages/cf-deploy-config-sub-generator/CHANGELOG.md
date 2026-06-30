@@ -1,5 +1,17 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 1.0.18
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Encapsulate autocomplete plugin registration inside getPrompts; sub-generator passes promptModule so autocomplete works in Yeoman generator flows [[e4dd467](https://github.com/SAP/open-ux-tools/commit/e4dd4675b92f1804b5c111b2ac0c7da8ccc2a545)]
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-inquirer 1.0.15 → 1.0.16
+
 ## 1.0.17
 
 ### Patch Changes
