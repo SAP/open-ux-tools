@@ -505,16 +505,32 @@ export function generateSandboxAppConfig(
     flpConfig: FlpConfig,
     isAdp = false
 ): SandboxAppConfig {
+    // Build a url→intent map: primary app + additional apps with explicit intent
+    const intentByUrl = new Map<string, Intent>();
+    intentByUrl.set(
+        templateConfig.apps[`${flpConfig.intent.object}-${flpConfig.intent.action}`]?.url ?? '',
+        flpConfig.intent
+    );
+    for (const app of flpConfig.apps) {
+        if (app.intent) {
+            intentByUrl.set(app.target, app.intent);
+        }
+    }
+
     const tiles = Object.entries(templateConfig.apps).map(([appName, app]) => {
-        const dashIndex = appName.indexOf('-');
+        const rootPath = app.url.endsWith('/') ? app.url : `${app.url}/`;
+        const knownIntent = intentByUrl.get(app.url);
+        if (knownIntent) {
+            return { semanticObject: knownIntent.object, action: knownIntent.action, rootPath };
+        }
+        // Fallback for additional apps without explicit intent: appName is built by getAppName() as
+        // "<semanticObject>-<action>" where the fallback action is hardcoded to 'preview' (no dashes).
+        // lastIndexOf('-') is therefore safe — the last dash is always the object/action separator.
+        // If the fallback action ever contained a dash (e.g. 'my-preview'), this split would be wrong.
+        const dashIndex = appName.lastIndexOf('-');
         const semanticObject = dashIndex === -1 ? appName : appName.substring(0, dashIndex);
         const action = dashIndex === -1 ? '' : appName.substring(dashIndex + 1);
-        const rootPath = app.url.endsWith('/') ? app.url : `${app.url}/`;
-        return {
-            semanticObject,
-            action,
-            rootPath
-        };
+        return { semanticObject, action, rootPath };
     });
     return {
         tiles,

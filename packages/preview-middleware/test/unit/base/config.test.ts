@@ -423,7 +423,14 @@ describe('config', () => {
         });
 
         test('generates config with multiple apps', () => {
-            const flpConfig = getFlpConfigWithDefaults({ intent: { object: 'myApp', action: 'start' } });
+            const flpConfig = getFlpConfigWithDefaults({
+                intent: { object: 'myApp', action: 'start' },
+                apps: [
+                    { target: '/app2', intent: { object: 'otherApp', action: 'display' } },
+                    { target: '/app3' }, // no intent — derived from sap.app.id 'myotherapp' → 'myotherapp-preview'
+                    { target: '/app4' } // no intent — sap.app.id with dash 'my-app' → 'my-app-preview', lastIndexOf safe
+                ]
+            });
             const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
             templateConfig.apps['myApp-start'] = {
                 title: 'App One',
@@ -439,12 +446,44 @@ describe('config', () => {
                 applicationType: 'URL',
                 url: '/app2'
             };
+            templateConfig.apps['myotherapp-preview'] = {
+                title: 'App Three',
+                description: '',
+                additionalInformation: 'SAPUI5.Component=my.other.app',
+                applicationType: 'URL',
+                url: '/app3'
+            };
+            // key derived from sap.app.id 'my-app' (dashed, no dots) → 'my-app-preview'
+            // lastIndexOf('-') must split as semanticObject='my-app', action='preview'
+            templateConfig.apps['my-app-preview'] = {
+                title: 'App Four',
+                description: '',
+                additionalInformation: 'SAPUI5.Component=my-app',
+                applicationType: 'URL',
+                url: '/app4'
+            };
             const result = generateSandboxAppConfig(templateConfig, flpConfig);
-            expect(result.tiles).toHaveLength(2);
-            const tile1 = result.tiles.find((t) => t.semanticObject === 'myApp');
-            const tile2 = result.tiles.find((t) => t.semanticObject === 'otherApp');
-            expect(tile1).toEqual({ semanticObject: 'myApp', action: 'start', rootPath: '/app1/' });
-            expect(tile2).toEqual({ semanticObject: 'otherApp', action: 'display', rootPath: '/app2/' });
+            expect(result.tiles).toHaveLength(4);
+            expect(result.tiles.find((t) => t.semanticObject === 'myApp')).toEqual({
+                semanticObject: 'myApp',
+                action: 'start',
+                rootPath: '/app1/'
+            });
+            expect(result.tiles.find((t) => t.semanticObject === 'otherApp')).toEqual({
+                semanticObject: 'otherApp',
+                action: 'display',
+                rootPath: '/app2/'
+            });
+            expect(result.tiles.find((t) => t.semanticObject === 'myotherapp')).toEqual({
+                semanticObject: 'myotherapp',
+                action: 'preview',
+                rootPath: '/app3/'
+            });
+            expect(result.tiles.find((t) => t.semanticObject === 'my-app')).toEqual({
+                semanticObject: 'my-app',
+                action: 'preview',
+                rootPath: '/app4/'
+            });
         });
 
         test('matches snapshot', () => {
