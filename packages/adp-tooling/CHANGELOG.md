@@ -1,5 +1,20 @@
 # @sap-ux/adp-tooling
 
+## 1.0.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-29
+
+#### Bug Fixes
+
+- Revert the `/i18n/...properties` pass-through introduced in #4858.
+
+    In adaptation projects built on top of Fiori Elements V2 ListReport/ObjectPage base apps, FEV2's `TemplateComponent` rebuilds the `i18n` model on every template view, which shadows the ADP's local `i18n.properties` once requests fall through to the base app. Customer-defined keys are no longer reachable from inside the editor's bindings.
+    The proper fix requires moving customer keys to the FEV2-safe `@i18n` model (backend merger + generator changes) and cannot be safely downported in this release window. A corrected fix will be reapplied once that support is in place. [[e2ba3a4](https://github.com/SAP/open-ux-tools/commit/e2ba3a44eb8df65f16187b86a382e9eb34387054)]
+
 ## 1.0.21
 
 ### Patch Changes
