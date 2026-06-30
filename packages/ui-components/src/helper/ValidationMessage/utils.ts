@@ -40,6 +40,7 @@ const getMessageColorStylings = (bgColor: string, borderColor: string): IRawStyl
         backgroundColor: bgColor,
         borderLeft: border,
         borderRight: border,
+        borderTop: border,
         borderBottom: border,
         borderColor: borderColor
     };
