@@ -78,6 +78,11 @@ describe('FE V4 Linker - XML', () => {
                     </Collection>
                 </Annotation>
             </Annotations>`;
+    const secondTableAnnotation = `<Annotations Target="IncidentService.Incidents">
+                <Annotation Term="UI.LineItem" Qualifier="secondTable">
+                    <Collection/>
+                </Annotation>
+            </Annotations>`;
     beforeAll(async () => {
         artifacts = await findFioriArtifacts({
             wsFolders: [root],
@@ -162,6 +167,51 @@ describe('FE V4 Linker - XML', () => {
                 const result = runFeV4Linker(context);
                 const page = findListReportPage(result);
                 expect(page.lookup['table']?.[0].configuration.creationMode).toMatchSnapshot();
+            });
+
+            test('multiple views - gets both tables configuration', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'IncidentsList',
+                                'options',
+                                'settings',
+                                'controlConfiguration',
+                                '@com.sap.vocabularies.UI.v1.LineItem',
+                                'tableSettings',
+                                'enableExport'
+                            ],
+                            value: false
+                        },
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'IncidentsList',
+                                'options',
+                                'settings',
+                                'controlConfiguration',
+                                '@com.sap.vocabularies.UI.v1.LineItem#secondTable',
+                                'tableSettings',
+                                'personalization'
+                            ],
+                            value: { group: false }
+                        }
+                    ],
+                    annotationsChange: secondTableAnnotation
+                });
+                const result = runFeV4Linker(context);
+                const page = findListReportPage(result);
+                expect(page.lookup['table']).toHaveLength(2);
+                expect(page.lookup['table']?.[0].configuration.enableExport.valueInFile).toBe(false);
+                expect(page.lookup['table']?.[1].configuration.personalization.valueInFile).toMatchObject({
+                    group: false
+                });
             });
         });
 
@@ -612,6 +662,17 @@ annotate service.Category with @(
         ID    : 'table_section',
     }, ],
 );`;
+const CAP_SECOND_TABLE_ANNOTATION = `annotate service.Incidents with @(UI.LineItem #secondTable   : [
+        {
+            $Type: 'UI.DataField',
+            Value: title,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: description,
+        },
+    ],
+);`;
 
 describe('FE V4 Linker - CAP', () => {
     let artifacts: FoundFioriArtifacts;
@@ -632,7 +693,8 @@ describe('FE V4 Linker - CAP', () => {
             const absolutePath = normalizePath(join(CAP_PROJECT_PATH, file));
             let content = await readFile(absolutePath, 'utf-8');
             if (file.endsWith('annotations.cds')) {
-                content += CAP_FACETS_ANNOTATIONS + CAP_FACET_NO_ID + CAP_FACET_NO_ANNOTATION;
+                content +=
+                    CAP_FACETS_ANNOTATIONS + CAP_FACET_NO_ID + CAP_FACET_NO_ANNOTATION + CAP_SECOND_TABLE_ANNOTATION;
             }
             const uri = pathToFileURL(absolutePath).toString();
             fileCache.set(uri, content);
@@ -708,6 +770,48 @@ describe('FE V4 Linker - CAP', () => {
                 const result = runFeV4Linker(context);
                 const page = findListReportPage(result);
                 expect(page.lookup['table']?.[0].configuration.creationMode).toMatchSnapshot();
+            });
+
+            test('multiple views - gets both tables configuration', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'IncidentsList',
+                                'options',
+                                'settings',
+                                'controlConfiguration',
+                                '@com.sap.vocabularies.UI.v1.LineItem',
+                                'tableSettings',
+                                'enableExport'
+                            ],
+                            value: false
+                        },
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'IncidentsList',
+                                'options',
+                                'settings',
+                                'controlConfiguration',
+                                '@com.sap.vocabularies.UI.v1.LineItem#secondTable',
+                                'tableSettings',
+                                'disableCopyToClipboard'
+                            ],
+                            value: true
+                        }
+                    ]
+                });
+                const result = runFeV4Linker(context);
+                const page = findListReportPage(result);
+                expect(page.lookup['table']).toHaveLength(2);
+                expect(page.lookup['table']?.[0].configuration.enableExport.valueInFile).toBe(false);
+                expect(page.lookup['table']?.[1].configuration.disableCopyToClipboard.valueInFile).toBe(true);
             });
         });
 
