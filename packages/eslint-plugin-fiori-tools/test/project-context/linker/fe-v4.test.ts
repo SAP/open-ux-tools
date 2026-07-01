@@ -772,6 +772,28 @@ describe('FE V4 Linker - CAP', () => {
                 expect(page.lookup['table']?.[0].configuration.creationMode).toMatchSnapshot();
             });
 
+            test('empty configuration - tables not collected', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui5',
+                                'routing',
+                                'targets',
+                                'IncidentsList',
+                                'options',
+                                'settings',
+                                'controlConfiguration'
+                            ],
+                            value: undefined
+                        }
+                    ]
+                });
+                const result = runFeV4Linker(context);
+                const page = findListReportPage(result);
+                expect(page.lookup['table']).toBeUndefined();
+            });
+
             test('multiple views - gets both tables configuration', async () => {
                 const context = await setup({
                     manifestChanges: [
@@ -799,7 +821,7 @@ describe('FE V4 Linker - CAP', () => {
                                 'options',
                                 'settings',
                                 'controlConfiguration',
-                                '@com.sap.vocabularies.UI.v1.LineItem#secondTable',
+                                '/Incidents/@com.sap.vocabularies.UI.v1.LineItem#secondTable', // config key differs from the table annotation path
                                 'tableSettings',
                                 'disableCopyToClipboard'
                             ],
