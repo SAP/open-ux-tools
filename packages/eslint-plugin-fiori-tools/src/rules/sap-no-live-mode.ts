@@ -38,13 +38,18 @@ const rule: FioriRuleDefinition = createFioriRule({
             for (const page of app.pages) {
                 if (page.type === 'list-report-page') {
                     if (page.liveMode.valueInFile) {
+                        const node = context.sourceCode.getNode(
+                            context.sourceCode.ast.body,
+                            page.liveMode.configurationPath
+                        );
                         problems.push({
                             type: NO_LIVE_MODE,
                             pageName: page.targetName,
                             manifest: {
                                 uri: parsedApp.manifest.manifestUri,
                                 object: parsedApp.manifestObject,
-                                propertyPath: page.liveMode.configurationPath
+                                propertyPath: page.liveMode.configurationPath,
+                                loc: node.loc
                             }
                         });
                     }
