@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/telemetry",
-    "version": "1.0.12",
+    "version": "1.0.13",
     "description": "Library for sending usage telemetry data",
     "type": "module",
     "repository": {
