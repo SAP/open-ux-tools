@@ -1,5 +1,13 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.8.2
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Trigger @sap-ux/fiori-mcp-server release [[17354e0](https://github.com/SAP/open-ux-tools/commit/17354e08c50f44f031ad2bedcbcb6ce01acd96ba)]
+
 ## 1.8.1
 
 ### Patch Changes

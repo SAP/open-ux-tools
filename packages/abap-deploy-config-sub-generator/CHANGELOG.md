@@ -1,5 +1,20 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 1.0.26
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-30
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.14 → 1.0.15
+- @sap-ux/abap-deploy-config-inquirer 2.0.17 → 2.0.18
+- @sap-ux/deploy-config-generator-shared 1.0.14 → 1.0.15
+- @sap-ux/adp-tooling 1.0.23 → 1.0.24
+
 ## 1.0.25
 
 ### Patch Changes

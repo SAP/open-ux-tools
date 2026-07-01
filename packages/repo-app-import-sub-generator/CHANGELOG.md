@@ -1,5 +1,29 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.1.26
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-01
+
+#### Bug Fixes
+
+- Remove injection of sapux property into package.json during app download [[dd67ad4](https://github.com/SAP/open-ux-tools/commit/dd67ad4e35aa2a02672548e240036a7cdb83e752)]
+
+## 1.1.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.14 → 1.0.15
+- @sap-ux/inquirer-common 1.0.15 → 1.0.16
+- @sap-ux/odata-service-inquirer 3.0.17 → 3.0.18
+- @sap-ux/fiori-elements-writer 3.0.41 → 3.0.42
+- @sap-ux/fiori-freestyle-writer 3.0.37 → 3.0.38
+
 ## 1.1.24
 
 ### Patch Changes

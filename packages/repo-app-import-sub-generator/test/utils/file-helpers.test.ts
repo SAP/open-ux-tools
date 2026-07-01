@@ -165,47 +165,11 @@ describe('addPackageJsonIfNotFound', () => {
         jest.clearAllMocks();
     });
 
-    it('should write package.json with sapux:true for an lrop app', () => {
+    it('should write package.json for an app when it does not already exist', () => {
         mockFs.exists.mockReturnValue(false);
         addPackageJsonIfNotFound(
             '/project',
             { app: { id: 'my.app.id' }, template: { type: TemplateType.ListReportObjectPage } } as any,
-            mockFs as unknown as Editor
-        );
-        expect(mockFs.writeJSON).toHaveBeenCalledWith(join('/project', 'package.json'), {
-            name: 'my.app.id',
-            sapux: true
-        });
-    });
-
-    it('should write package.json with sapux:true for an unknown template type', () => {
-        mockFs.exists.mockReturnValue(false);
-        addPackageJsonIfNotFound(
-            '/project',
-            { app: { id: 'my.app.id' }, template: { type: 'unknown' } } as any,
-            mockFs as unknown as Editor
-        );
-        expect(mockFs.writeJSON).toHaveBeenCalledWith(join('/project', 'package.json'), {
-            name: 'my.app.id',
-            sapux: true
-        });
-    });
-
-    it('should write package.json without sapux for a basic freestyle app', () => {
-        mockFs.exists.mockReturnValue(false);
-        addPackageJsonIfNotFound(
-            '/project',
-            { app: { id: 'my.app.id' }, template: { type: FioriFreestyleTemplateType.Basic } } as any,
-            mockFs as unknown as Editor
-        );
-        expect(mockFs.writeJSON).toHaveBeenCalledWith(join('/project', 'package.json'), { name: 'my.app.id' });
-    });
-
-    it('should write package.json without sapux for a listdetail freestyle app', () => {
-        mockFs.exists.mockReturnValue(false);
-        addPackageJsonIfNotFound(
-            '/project',
-            { app: { id: 'my.app.id' }, template: { type: FioriFreestyleTemplateType.ListDetail } } as any,
             mockFs as unknown as Editor
         );
         expect(mockFs.writeJSON).toHaveBeenCalledWith(join('/project', 'package.json'), { name: 'my.app.id' });
