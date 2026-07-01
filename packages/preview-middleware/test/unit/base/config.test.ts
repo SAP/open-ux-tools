@@ -81,6 +81,38 @@ describe('config', () => {
                 .map((c) => c.connector);
             expect(connectorNames).toContain('LocalStorageConnector');
         });
+
+        test('init is converted to UI5 module ID for application type', () => {
+            const flpConfig = getFlpConfigWithDefaults({ init: 'custom-init' }, mockUtils);
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
+            expect(templateConfig.init).toBe('my/app/custom-init');
+        });
+
+        test('init with leading slash is converted to UI5 module ID for application type', () => {
+            const flpConfig = getFlpConfigWithDefaults({ init: '/custom-init' }, mockUtils);
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
+            expect(templateConfig.init).toBe('my/app/custom-init');
+        });
+
+        test('init is converted to UI5 module ID for component type', () => {
+            const mockComponentUtils = {
+                getProject() {
+                    return {
+                        getType: () => 'component',
+                        getNamespace: () => 'my/app'
+                    };
+                }
+            } as unknown as MiddlewareUtils;
+            const flpConfig = getFlpConfigWithDefaults({ init: 'custom-init' }, mockComponentUtils);
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest, {}, false, mockComponentUtils);
+            expect(templateConfig.init).toBe('my/app/custom-init');
+        });
+
+        test('init is undefined when not configured', () => {
+            const flpConfig = getFlpConfigWithDefaults({}, mockUtils);
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
+            expect(templateConfig.init).toBeUndefined();
+        });
     });
 
     describe('createTestTemplateConfig', () => {

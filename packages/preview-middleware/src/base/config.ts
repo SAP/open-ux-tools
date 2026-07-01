@@ -238,7 +238,7 @@ export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}, utils?
         apps: config.apps ?? [],
         libs: config.libs,
         theme: config.theme,
-        init: config.init ? posix.join(sandboxPathPrefix ?? '/', config.init) : undefined,
+        init: config.init,
         enhancedHomePage: config.enhancedHomePage === true
     } satisfies FlpConfig;
 }
@@ -508,14 +508,22 @@ export function createFlpTemplateConfig(
     const flex = getFlexSettings(isAdp);
     const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
     const ui5Theme = config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
+    const namespace = utils?.getProject?.()?.getNamespace?.() ?? manifest['sap.app']?.id?.replace(/\./g, '/');
     const rootBasePath = posix.relative(posix.dirname(config.path), '/') || '.';
     const appBasePath = getResourcesPathPrefix(utils) ?? rootBasePath;
+    // init must be converted to a UI5 module ID here because this is the first point where both
+    // the raw user value (config.init, relative to app root) and the manifest app id are available.
+    // getFlpConfigWithDefaults runs in the constructor before the manifest is loaded.
+    let initPath: string | undefined;
+    if (config.init && namespace) {
+        initPath = posix.join(namespace, config.init);
+    }
     return {
         appBasePath: appBasePath,
         rootBasePath: rootBasePath,
         baseUrl: '',
         apps: {},
-        init: config.init,
+        init: initPath,
         ui5: {
             libs: getUI5Libs(manifest),
             theme: ui5Theme,
