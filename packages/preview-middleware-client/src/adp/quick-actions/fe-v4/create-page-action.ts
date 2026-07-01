@@ -12,7 +12,7 @@ import { isA } from '../../../utils/core.js';
 import DynamicPageTitle from 'sap/f/DynamicPageTitle';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 import ObjectPageDynamicHeaderTitle from 'sap/uxap/ObjectPageDynamicHeaderTitle';
-import { getPageId, getAppDescriptorBase } from './utils.js';
+import { getAppDescriptorBase } from './utils.js';
 
 export const ADD_PAGE_ACTION = 'add-page-action';
 const CONTROL_TYPES = ['sap.f.DynamicPageTitle', 'sap.uxap.ObjectPageLayout'];
@@ -20,7 +20,7 @@ const CONTROL_TYPES = ['sap.f.DynamicPageTitle', 'sap.uxap.ObjectPageLayout'];
  * Quick Action for adding a custom page action.
  */
 export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase implements SimpleQuickActionDefinition {
-    protected pageId: string | undefined;
+    protected appDescriptor: ReturnType<typeof getAppDescriptorBase>;
     constructor(context: QuickActionContext) {
         super(ADD_PAGE_ACTION, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION', context, [
             DIALOG_ENABLEMENT_VALIDATOR
@@ -28,7 +28,7 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
     }
 
     async initialize(): Promise<void> {
-        this.pageId = getPageId(this.context);
+        this.appDescriptor = getAppDescriptorBase(this.context);
         const version = await getUi5Version();
         if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 120 })) {
             return;
@@ -37,8 +37,7 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
     }
 
     async execute(): Promise<FlexCommand[]> {
-        const appDescriptor = getAppDescriptorBase(this.context);
-        if (!appDescriptor) {
+        if (!this.appDescriptor) {
             return [];
         }
         if (this.control) {
@@ -57,7 +56,7 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
                         ? `.extension.${controllerPath}.<REPLACE_WITH_YOUR_HANDLER_NAME>`
                         : '.extension.<ApplicationId.FolderName.ScriptFilename.methodName>',
                     appDescriptor: {
-                        ...appDescriptor,
+                        ...this.appDescriptor,
                         appType: 'fe-v4',
                         projectId: this.context.flexSettings.projectId
                     },

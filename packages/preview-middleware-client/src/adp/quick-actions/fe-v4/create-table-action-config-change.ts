@@ -13,7 +13,7 @@ import { isA } from '../../../utils/core.js';
 import Table from 'sap/ui/mdc/Table';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import ActionToolbarAction from 'sap/ui/mdc/actiontoolbar/ActionToolbarAction';
-import { getPropertyPath, getPageId, getAppDescriptorBase } from './utils.js';
+import { getPropertyPath, getAppDescriptorBase } from './utils.js';
 
 export const CREATE_TABLE_ACTION = 'create-table-action';
 
@@ -24,7 +24,7 @@ const regexForAnnotationPath =
  * Quick Action for adding a custom page action.
  */
 export class AddTableActionQuickAction extends TableQuickActionDefinitionBase implements NestedQuickActionDefinition {
-    protected pageId: string | undefined;
+    protected appDescriptor: ReturnType<typeof getAppDescriptorBase>;
     constructor(context: QuickActionContext) {
         super(CREATE_TABLE_ACTION, [MDC_TABLE_TYPE], 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION', context, undefined, [
             DIALOG_ENABLEMENT_VALIDATOR
@@ -32,7 +32,7 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
     }
 
     async initialize(): Promise<void> {
-        this.pageId = getPageId(this.context);
+        this.appDescriptor = getAppDescriptorBase(this.context);
         const version = await getUi5Version();
         if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 120 })) {
             return;
@@ -41,8 +41,7 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
-        const appDescriptor = getAppDescriptorBase(this.context);
-        if (!appDescriptor) {
+        if (!this.appDescriptor) {
             return [];
         }
         const { table } = this.tableMap[path];
@@ -67,7 +66,7 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
                         : '.extension.<ApplicationId.FolderName.ScriptFilename.methodName>',
                     actionType: 'tableAction',
                     appDescriptor: {
-                        ...appDescriptor,
+                        ...this.appDescriptor,
                         appType: 'fe-v4',
                         projectId: this.context.flexSettings.projectId
                     },
