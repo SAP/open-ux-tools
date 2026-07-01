@@ -38,6 +38,10 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
     }
 
     async execute(): Promise<FlexCommand[]> {
+        const appComponent = getV4AppComponent(this.context.view);
+        if (!appComponent || !this.pageId) {
+            return [];
+        }
         if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];
             const controlInfo = getControllerInfoForControl(this.control);
@@ -54,9 +58,9 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
                         ? `.extension.${controllerPath}.<REPLACE_WITH_YOUR_HANDLER_NAME>`
                         : '.extension.<ApplicationId.FolderName.ScriptFilename.methodName>',
                     appDescriptor: {
-                        appComponent: getV4AppComponent(this.context.view)!,
+                        appComponent,
                         appType: 'fe-v4',
-                        pageId: this.pageId!,
+                        pageId: this.pageId,
                         projectId: this.context.flexSettings.projectId
                     },
                     validateActionId: (actionId) => {

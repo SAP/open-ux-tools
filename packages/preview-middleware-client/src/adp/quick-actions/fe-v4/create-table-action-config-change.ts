@@ -42,6 +42,10 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
+        const appComponent = getV4AppComponent(this.context.view);
+        if (!appComponent || !this.pageId) {
+            return [];
+        }
         const { table } = this.tableMap[path];
         const propertyPath = `${getPropertyPath(table)}`;
         if (!table || !propertyPath) {
@@ -64,9 +68,9 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
                         : '.extension.<ApplicationId.FolderName.ScriptFilename.methodName>',
                     actionType: 'tableAction',
                     appDescriptor: {
-                        appComponent: getV4AppComponent(this.context.view)!,
+                        appComponent,
                         appType: 'fe-v4',
-                        pageId: this.pageId!,
+                        pageId: this.pageId,
                         projectId: this.context.flexSettings.projectId
                     },
                     validateActionId: (actionId) => {

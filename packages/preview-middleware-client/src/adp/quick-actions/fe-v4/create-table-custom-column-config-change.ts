@@ -47,6 +47,10 @@ export class AddTableCustomColumnQuickAction
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
+        const appComponent = getV4AppComponent(this.context.view);
+        if (!appComponent || !this.pageId) {
+            return [];
+        }
         const { table } = this.tableMap[path];
         if (!table) {
             return [];
@@ -64,9 +68,9 @@ export class AddTableCustomColumnQuickAction
                     title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN',
                     type: 'tableColumn',
                     appDescriptor: {
-                        appComponent: getV4AppComponent(this.context.view)!,
+                        appComponent,
                         appType: 'fe-v4',
-                        pageId: this.pageId!,
+                        pageId: this.pageId,
                         projectId: this.context.flexSettings.projectId,
                         anchor
                     },

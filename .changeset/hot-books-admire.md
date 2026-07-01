@@ -44,7 +44,6 @@
 '@sap-ux/ui5-proxy-middleware': patch
 '@sap-ux/flp-config-inquirer': patch
 '@sap-ux/ui-service-inquirer': patch
-'test-project': patch
 '@sap-ux/jest-file-matchers': patch
 '@sap-ux/odata-vocabularies': patch
 '@sap-ux/preview-middleware': patch

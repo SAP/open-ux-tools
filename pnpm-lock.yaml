@@ -1994,7 +1994,7 @@ importers:
         specifier: 8.61.1
         version: 8.61.1(eslint@9.39.1)(typescript@5.9.3)
       typescript-eslint:
-        specifier: ^8.61.1
+        specifier: ^8.57.2
         version: 8.61.1(eslint@9.39.1)(typescript@5.9.3)
     devDependencies:
       '@babel/core':
