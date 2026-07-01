@@ -89,7 +89,7 @@ export const tools = [
                     - Pass the full URL as sapSystemQuery.
                     - Returns host, servicePath, client, and metadataFilePath inside the result's parameters object.
                     - Pass ALL returned fields directly into the service config of 'generate_fiori_app_odata'. Map the returned properties to the app config service property input to 'generate_fiori_app_odata'.
-                    - **Note:** This tool is only supported in VSCode. For SAP Business Application Studio, use the Service Center MCP server tool 'get_resource_metadata' instead.
+                    - **Note:** This tool is only supported in VSCode. For SAP Business Application Studio, use the Service Center MCP server tool to retrieve the service metadata instead.
                     **IMPORTANT**: On VSCode, if the service requires authentication and the system is not already stored, ask the user to store it first. Do not ask for credentials directly.`,
         annotations: {
             title: 'Download OData Service Metadata',
@@ -119,7 +119,7 @@ export const tools = [
            - **IMPORTANT** ALWAYS use the app config schema defined by the type 'GeneratorConfigOData' to create the input structure. NEVER create an input in any other format.
            - The input MUST use the exact property names defined in the inputSchema: floorplan, project, service, entityConfig.
            - **ONLY** if the Service Center MCP is NOT available and the user provided a SAP system reference or URL with a **service path**, you **MUST** first call 'download_odata_service_metadata'.
-           - If the Service Center MCP is available and the user provided a **service name or technical service id**, you **MUST** call the Service Center MCP server tool 'get_resource_metadata' to retrieve the metadata and properties required for the service property of the input. 
+           - If the Service Center MCP is available and the user provided a **service name or technical service id**, you **MUST** call the Service Center MCP server tool to retrieve the metadata and properties required for the service property of the input. 
            - Use the data returned to provide the required values (host, servicePath, client, destination, metadataFilePath) directly in the service property of the input.
            - If the Service Center MCP was used both host and destination **MUST** be passed in the service property of the input.
            - If Fiori MCP 'download_odata_service_metadata' was used and returns a host URL — pass it as service.host. If the host is not provided, you **MUST** ask for it.
