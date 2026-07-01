@@ -7,14 +7,13 @@ import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/vers
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator.js';
 import { getExistingController } from '../../api-handler.js';
 import { getControllerInfoForControl } from '../../utils.js';
-import { getV4AppComponent } from '../../../utils/fe-v4.js';
 import { TableQuickActionDefinitionBase } from '../table-quick-action-base.js';
 import { MDC_TABLE_TYPE } from '../control-types.js';
 import { isA } from '../../../utils/core.js';
 import Table from 'sap/ui/mdc/Table';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import ActionToolbarAction from 'sap/ui/mdc/actiontoolbar/ActionToolbarAction';
-import { getPropertyPath, getPageId } from './utils.js';
+import { getPropertyPath, getPageId, getAppDescriptorBase } from './utils.js';
 
 export const CREATE_TABLE_ACTION = 'create-table-action';
 
@@ -42,8 +41,8 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
-        const appComponent = getV4AppComponent(this.context.view);
-        if (!appComponent || !this.pageId) {
+        const appDescriptor = getAppDescriptorBase(this.context);
+        if (!appDescriptor) {
             return [];
         }
         const { table } = this.tableMap[path];
@@ -68,9 +67,8 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
                         : '.extension.<ApplicationId.FolderName.ScriptFilename.methodName>',
                     actionType: 'tableAction',
                     appDescriptor: {
-                        appComponent,
+                        ...appDescriptor,
                         appType: 'fe-v4',
-                        pageId: this.pageId,
                         projectId: this.context.flexSettings.projectId
                     },
                     validateActionId: (actionId) => {

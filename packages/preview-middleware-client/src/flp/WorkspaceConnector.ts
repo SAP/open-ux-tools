@@ -74,7 +74,7 @@ const connector = merge({}, ObjectStorageConnector, {
                     'content-type': 'application/json'
                 }
             });
-            return await response.json();
+            return response.json();
         }
     } as typeof ObjectStorageConnector.storage,
     loadFeatures: async function () {

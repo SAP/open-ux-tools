@@ -8,12 +8,11 @@ import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/vers
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator.js';
 import { getExistingController } from '../../api-handler.js';
 import { getControllerInfoForControl } from '../../utils.js';
-import { getV4AppComponent } from '../../../utils/fe-v4.js';
 import { isA } from '../../../utils/core.js';
 import DynamicPageTitle from 'sap/f/DynamicPageTitle';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 import ObjectPageDynamicHeaderTitle from 'sap/uxap/ObjectPageDynamicHeaderTitle';
-import { getPageId } from './utils.js';
+import { getPageId, getAppDescriptorBase } from './utils.js';
 
 export const ADD_PAGE_ACTION = 'add-page-action';
 const CONTROL_TYPES = ['sap.f.DynamicPageTitle', 'sap.uxap.ObjectPageLayout'];
@@ -38,8 +37,8 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
     }
 
     async execute(): Promise<FlexCommand[]> {
-        const appComponent = getV4AppComponent(this.context.view);
-        if (!appComponent || !this.pageId) {
+        const appDescriptor = getAppDescriptorBase(this.context);
+        if (!appDescriptor) {
             return [];
         }
         if (this.control) {
@@ -58,9 +57,8 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
                         ? `.extension.${controllerPath}.<REPLACE_WITH_YOUR_HANDLER_NAME>`
                         : '.extension.<ApplicationId.FolderName.ScriptFilename.methodName>',
                     appDescriptor: {
-                        appComponent,
+                        ...appDescriptor,
                         appType: 'fe-v4',
-                        pageId: this.pageId,
                         projectId: this.context.flexSettings.projectId
                     },
                     validateActionId: (actionId) => {

@@ -8,8 +8,8 @@ import { TableQuickActionDefinitionBase } from '../table-quick-action-base.js';
 
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator.js';
 import Table from 'sap/ui/mdc/Table';
-import { getV4AppComponent, isMacroTable } from '../../../utils/fe-v4.js';
-import { getLineItemAnnotation, getPropertyPath, getPageId } from './utils.js';
+import { isMacroTable } from '../../../utils/fe-v4.js';
+import { getLineItemAnnotation, getPropertyPath, getPageId, getAppDescriptorBase } from './utils.js';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version.js';
 import { isA } from '../../../utils/core.js';
 import UI5Element from 'sap/ui/core/Element';
@@ -47,8 +47,8 @@ export class AddTableCustomColumnQuickAction
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
-        const appComponent = getV4AppComponent(this.context.view);
-        if (!appComponent || !this.pageId) {
+        const appDescriptor = getAppDescriptorBase(this.context);
+        if (!appDescriptor) {
             return [];
         }
         const { table } = this.tableMap[path];
@@ -68,9 +68,8 @@ export class AddTableCustomColumnQuickAction
                     title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN',
                     type: 'tableColumn',
                     appDescriptor: {
-                        appComponent,
+                        ...appDescriptor,
                         appType: 'fe-v4',
-                        pageId: this.pageId,
                         projectId: this.context.flexSettings.projectId,
                         anchor
                     },

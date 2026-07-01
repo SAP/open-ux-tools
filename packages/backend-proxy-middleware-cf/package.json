@@ -37,7 +37,7 @@
         "@sap-ux/logger": "workspace:*",
         "content-type": "^1.0.5",
         "dotenv": "17.4.2",
-        "http-proxy-middleware": "3.0.5",
+        "http-proxy-middleware": "3.0.7",
         "mime-types": "^2.1.35",
         "portfinder": "1.0.38"
     },
