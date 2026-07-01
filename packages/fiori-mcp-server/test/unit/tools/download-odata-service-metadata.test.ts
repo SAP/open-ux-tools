@@ -304,7 +304,6 @@ describe('downloadODataServiceMetadata', () => {
 
             expect(result.status).toBe('Error');
             expect(result.message).toContain('Service Center MCP');
-            expect(result.message).toContain('get_resource_metadata');
         });
 
         test('should not call getServiceMetadata when isAppStudio is true', async () => {

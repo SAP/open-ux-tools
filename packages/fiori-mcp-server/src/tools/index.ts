@@ -59,7 +59,7 @@ export const tools = [
     },
     {
         name: 'list_sap_systems',
-        description: `Lists all SAP systems from the user's environment. This tool should only be used if the Service Center MCP tool 'list_systems' to retrieve the metadata is unavailable. 
+        description: `Lists all SAP systems from the user's environment. This tool should only be used if the Service Center MCP tool list systems is unavailable. 
                     **ALWAYS** use the Service Center MCP tool 'list_systems' first if it is available. This tool is a fallback for environments where the Service Center MCP tool is not available.
                     Also use this tool when the user asks to 'list systems', 'list backends', or any equivalent phrasing.
                     Use this tool when the user references a SAP system by name or when you need to discover available systems
@@ -83,7 +83,7 @@ export const tools = [
 
                     Usage guidelines:
                     - Use this before calling 'generate_fiori_app_odata' when the user provides a SAP system reference and a service path. 
-                    - If a service name or technical id is provided instead of a service path DO NOT USE THIS TOOL. Instead use the Service Center MCP server tool 'get_resource_metadata' to get the service metadata and then pass it to 'generate_fiori_app_odata'.
+                    - If a service name or technical id is provided instead of a service path DO NOT USE THIS TOOL. Instead use the Service Center MCP server tool to retrieve the service metadata and then pass it to 'generate_fiori_app_odata'.
                     - If a service path is provided by the user, use it directly via servicePath parameter.
                     - If the user provides a system name or host, use 'list_sap_systems' first to resolve it.
                     - Pass the full URL as sapSystemQuery.

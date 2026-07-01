@@ -30,7 +30,7 @@ export async function downloadODataServiceMetadata(
         return {
             status: 'Error',
             message:
-                'This tool is not supported in SAP Business Application Studio. Please use the Service Center MCP server tool "get_resource_metadata" to retrieve service metadata when working with destinations.',
+                'This tool is not supported in SAP Business Application Studio. Please use the Service Center MCP server tool to retrieve service metadata when working with destinations.',
             parameters: EMPTY_PARAMS,
             appPath: params.appPath,
             changes: [],
