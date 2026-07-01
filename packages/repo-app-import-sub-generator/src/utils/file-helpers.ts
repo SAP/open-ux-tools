@@ -89,10 +89,6 @@ export function addPackageJsonIfNotFound(projectPath: string, appConfig: AbapRep
     const packageJsonPath = join(projectPath, FileName.Package);
     if (!fs.exists(packageJsonPath)) {
         const packageJson: { name: string; sapux?: boolean } = { name: appConfig.app.id };
-        const freestyleTemplates = new Set<string>(Object.values(FioriFreestyleTemplateType));
-        if (!freestyleTemplates.has(appConfig.template.type)) {
-            packageJson['sapux'] = true;
-        }
         fs.writeJSON(packageJsonPath, packageJson);
     }
 }
