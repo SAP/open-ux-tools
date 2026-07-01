@@ -104,12 +104,16 @@ export class AbapServiceProviderManager {
      * 1. If the service provider (created during system selection) is connected to the same system as the backend target.
      * 2. The prompt state system configuration is empty, meaning the system prompts have not been used, then the backend target must be deemed valid.
      *
+     * A non-AbapServiceProvider (e.g. a base ServiceProvider created for a generic OData/full-URL destination)
+     * is rejected so that a proper AbapServiceProvider is created instead, avoiding "isAbapCloud is not a function" errors.
+     *
      * @param backendTarget - backend target from prompt options
      * @returns true if service provider passed with the backend target is valid, otherwise false
      */
     private static isBackendTargetServiceProviderValid(backendTarget?: BackendTarget): boolean {
         if (
             backendTarget?.serviceProvider &&
+            typeof (backendTarget.serviceProvider as AbapServiceProvider).isAbapCloud === 'function' &&
             (isSameSystem(
                 {
                     url: PromptState.abapDeployConfig.url,
