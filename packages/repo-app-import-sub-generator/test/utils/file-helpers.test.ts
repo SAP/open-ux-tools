@@ -172,6 +172,7 @@ describe('addPackageJsonIfNotFound', () => {
             { app: { id: 'my.app.id' }, template: { type: TemplateType.ListReportObjectPage } } as any,
             mockFs as unknown as Editor
         );
+        expect(mockFs.writeJSON).toHaveBeenCalledWith(join('/project', 'package.json'), { name: 'my.app.id' });
     });
 
     it('should not write package.json when it already exists', () => {
