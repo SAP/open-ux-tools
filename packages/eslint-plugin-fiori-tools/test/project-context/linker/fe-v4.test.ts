@@ -21,7 +21,9 @@ import {
     CAP_APP_PATH,
     CAP_FACETS_ANNOTATIONS,
     CAP_PROJECT_PATH,
-    npmInstall
+    CAP_SECOND_TABLE_ANNOTATION,
+    npmInstall,
+    V4_SECOND_TABLE_ANNOTATION
 } from '../../test-helper.js';
 import { collectSections, type AnnotationBasedNode } from '../../../src/project-context/linker/annotations.js';
 import { getParsedServiceByName } from '../../../src/project-context/utils.js';
@@ -78,11 +80,7 @@ describe('FE V4 Linker - XML', () => {
                     </Collection>
                 </Annotation>
             </Annotations>`;
-    const secondTableAnnotation = `<Annotations Target="IncidentService.Incidents">
-                <Annotation Term="UI.LineItem" Qualifier="secondTable">
-                    <Collection/>
-                </Annotation>
-            </Annotations>`;
+
     beforeAll(async () => {
         artifacts = await findFioriArtifacts({
             wsFolders: [root],
@@ -203,7 +201,7 @@ describe('FE V4 Linker - XML', () => {
                             value: { group: false }
                         }
                     ],
-                    annotationsChange: secondTableAnnotation
+                    annotationsChange: V4_SECOND_TABLE_ANNOTATION
                 });
                 const result = runFeV4Linker(context);
                 const page = findListReportPage(result);
@@ -661,17 +659,6 @@ annotate service.Category with @(
         Label : 'table section',
         ID    : 'table_section',
     }, ],
-);`;
-const CAP_SECOND_TABLE_ANNOTATION = `annotate service.Incidents with @(UI.LineItem #secondTable   : [
-        {
-            $Type: 'UI.DataField',
-            Value: title,
-        },
-        {
-            $Type: 'UI.DataField',
-            Value: description,
-        },
-    ],
 );`;
 
 describe('FE V4 Linker - CAP', () => {

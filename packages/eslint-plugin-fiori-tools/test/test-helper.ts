@@ -63,6 +63,11 @@ export const V4_FACETS_ANNOTATIONS = `
                 </Annotation>
             </Annotations>
             `;
+export const V4_SECOND_TABLE_ANNOTATION = `<Annotations Target="IncidentService.Incidents">
+                            <Annotation Term="UI.LineItem" Qualifier="secondTable">
+                                <Collection/>
+                            </Annotation>
+                        </Annotations>`;
 export const V4_METADATA = readFileSync(V4_ANNOTATIONS_PATH, 'utf-8');
 
 // CAP
@@ -96,6 +101,18 @@ annotate service.IncidentFlow with @(UI.LineItem #table_section: [
     }
 ]);
 `;
+
+export const CAP_SECOND_TABLE_ANNOTATION = `annotate service.Incidents with @(UI.LineItem #secondTable   : [
+        {
+            $Type: 'UI.DataField',
+            Value: title,
+        },
+        {
+            $Type: 'UI.DataField',
+            Value: description,
+        },
+    ],
+);`;
 
 // XML V2
 export const V2_PROJECT_PATH = join(ROOT, 'test', 'data', 'v2-xml-start');
