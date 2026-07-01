@@ -50,9 +50,7 @@ class ClientFactory {
         }
 
         // ApplicationInsights v3+ requires InstrumentationKey=<uuid> format
-        const instrumentationKey = key === instrumentationKeyPlaceholder
-            ? '00000000-0000-0000-0000-000000000000'
-            : key;
+        const instrumentationKey = key === instrumentationKeyPlaceholder ? '00000000-0000-0000-0000-000000000000' : key;
 
         return `InstrumentationKey=${instrumentationKey}`;
     }
