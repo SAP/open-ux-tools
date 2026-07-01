@@ -133,7 +133,7 @@ export class FioriFunctionalityServer {
                 mcpClientName: this.mcpClientName,
                 mcpClientVersion: this.mcpClientVersion
             };
-            await TelemetryHelper.sendTelemetry(TELEMETRY_MCP_SERVER_INITIALIZED, telemetryProperties);
+            TelemetryHelper.sendTelemetry(TELEMETRY_MCP_SERVER_INITIALIZED, telemetryProperties);
 
             return {
                 // Echo back the client's requested version if supported; fall back to 2024-11-05
@@ -239,12 +239,12 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                         break;
                     default:
                         // Do not pass telemetryProperties to unknownTool
-                        await TelemetryHelper.sendTelemetry(unknownTool, {}, (args as any)?.appPath);
+                        TelemetryHelper.sendTelemetry(unknownTool, {}, (args as any)?.appPath);
                         throw new Error(
                             `Unknown tool: ${name}. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality.`
                         );
                 }
-                await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
+                TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
                 const convertedResult = this.convertResultToCallToolResult(result);
                 logger.debug(`Tool ${name} executed successfully with result:`);
                 logger.debug(convertedResult);
