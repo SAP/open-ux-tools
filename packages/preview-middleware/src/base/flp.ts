@@ -58,7 +58,8 @@ import type {
     TestConfig,
     CardGeneratorConfig,
     MultiCardsPayload,
-    I18nEntry
+    I18nEntry,
+    Ui5Version
 } from '../types/index.js';
 import {
     getFlpConfigWithDefaults,
@@ -72,7 +73,8 @@ import {
     sanitizeRtaConfig,
     CARD_GENERATOR_DEFAULT,
     remapResourcesForPath,
-    generateSandboxAppConfig
+    generateSandboxAppConfig,
+    qualifiesForNewSandbox
 } from './config.js';
 import { generateCdm } from './cdm.js';
 import { readFileSync } from 'node:fs';
@@ -101,17 +103,6 @@ type OnChangeRequestHandler = (
     logger: Logger,
     extendedChange?: CommonAdditionalChangeInfoProperties
 ) => Promise<void>;
-
-type Ui5Version = {
-    major: number;
-    minor: number;
-    patch: number;
-    label?: string;
-    /**
-     * Indicates if the UI5 version is served from CDN.
-     */
-    isCdn: boolean;
-};
 
 type RtaDeveloperModeTemplateConfig = {
     previewUrl: string;
@@ -760,14 +751,6 @@ export class FlpSandbox {
      * @param ui5Version - the UI5 version
      * @returns true if the version qualifies for the new sandbox
      */
-    private qualifiesForNewSandbox(ui5Version: Ui5Version): boolean {
-        return (
-            ui5Version.major > 1 ||
-            ui5Version.label?.includes('legacy-free') === true ||
-            (ui5Version.major === 1 && ui5Version.minor >= 150)
-        );
-    }
-
     /**
      * Read the sandbox template file based on the given UI5 version.
      *
@@ -780,9 +763,9 @@ export class FlpSandbox {
                 ui5Version.label ? `-${ui5Version.label}` : ''
             }.`
         );
-        const qualifiesForNewSandbox = this.qualifiesForNewSandbox(ui5Version);
-        const useNewSandbox = qualifiesForNewSandbox && this.flpConfig.useNewSandbox !== false;
-        if (qualifiesForNewSandbox && !useNewSandbox) {
+        const qualifies = qualifiesForNewSandbox(ui5Version);
+        const useNewSandbox = qualifies && this.flpConfig.useNewSandbox !== false;
+        if (qualifies && !useNewSandbox) {
             this.logger.info('New FLP Sandbox disabled in configuration.');
         }
         const filePrefix = useNewSandbox ? '2' : '';
@@ -810,7 +793,7 @@ export class FlpSandbox {
      * @private
      */
     private async warnIfLegacySandboxConfigExists(ui5Version: Ui5Version): Promise<void> {
-        if (this.qualifiesForNewSandbox(ui5Version) && this.flpConfig.useNewSandbox !== false) {
+        if (qualifiesForNewSandbox(ui5Version) && this.flpConfig.useNewSandbox !== false) {
             const legacyFile = await this.project.byPath(
                 `${this.templateConfig.baseUrl}/appconfig/fioriSandboxConfig.json`
             );

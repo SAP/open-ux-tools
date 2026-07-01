@@ -8,12 +8,19 @@ import type {
     CompleteTestConfig,
     MiddlewareConfig,
     RtaConfig,
-    TestConfig
+    TestConfig,
+    Ui5Version
 } from '../types/index.js';
 import { render } from 'ejs';
 import { dirname, join, posix, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
+import {
+    createProjectAccess,
+    getWebappPath,
+    getMinimumUI5Version,
+    type Manifest,
+    type UI5FlexLayer
+} from '@sap-ux/project-access';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
@@ -622,6 +629,107 @@ function generateTestRunners(
 }
 
 /**
+ * Generates the sandbox 2 HTML file and the companion fioriSandboxAppConfig.json.
+ * Also sets versionMajor on the template config based on the manifest minUI5Version.
+ *
+ * @param flpPath - absolute path of the FLP HTML file to write
+ * @param flpTemplConfig - the template configuration (mutated: versionMajor is set)
+ * @param flpConfig - the resolved FLP configuration
+ * @param manifest - the app manifest (must contain a valid minUI5Version)
+ * @param isAdp - whether this is an adaptation project
+ * @param fs - file system editor
+ */
+function generateSandbox2Files(
+    flpPath: string,
+    flpTemplConfig: TemplateConfig,
+    flpConfig: FlpConfig,
+    manifest: Manifest,
+    isAdp: boolean,
+    fs: Editor
+): void {
+    const [major] = getMinimumUI5Version(manifest)!.split('.').map(Number);
+    flpTemplConfig.ui5.versionMajor = major;
+    fs.write(
+        join(dirname(flpPath), 'fioriSandboxAppConfig.json'),
+        JSON.stringify(generateSandboxAppConfig(flpTemplConfig, flpConfig, isAdp), null, 4)
+    );
+    fs.write(flpPath, render(readFileSync(join(TEMPLATE_PATH, 'flp/sandbox2.ejs'), 'utf-8'), flpTemplConfig));
+}
+
+/**
+ * Returns true if sandbox 2 should be used for static file generation.
+ * Requires: useNewSandbox not opted out, no legacy fioriSandboxConfig.json, and manifest minUI5Version >= 1.150.
+ *
+ * @param manifest - the app manifest, if available
+ * @param flpConfig - the resolved FLP configuration
+ * @param basePath - path to the application root
+ * @param fs - file system editor
+ * @returns true if sandbox 2 files should be generated
+ */
+function shouldUseSandbox2(
+    manifest: Manifest | undefined,
+    flpConfig: FlpConfig,
+    basePath: string,
+    fs: Editor
+): boolean {
+    if (flpConfig.useNewSandbox === false || !manifest) {
+        return false;
+    }
+    if (fs.exists(join(basePath, 'appconfig/fioriSandboxConfig.json'))) {
+        return false;
+    }
+    const minVersion = getMinimumUI5Version(manifest);
+    if (!minVersion) {
+        return false;
+    }
+    const [major, minor] = minVersion.split('.').map(Number);
+    return qualifiesForNewSandbox({ major, minor, patch: 0, isCdn: false });
+}
+
+/**
+ * Returns true if the given UI5 version qualifies for the new FLP Sandbox (2.0).
+ *
+ * @param ui5Version - the UI5 version to check
+ * @returns true if the version qualifies for the new sandbox
+ */
+export function qualifiesForNewSandbox(ui5Version: Ui5Version): boolean {
+    return (
+        ui5Version.major > 1 ||
+        ui5Version.label?.includes('legacy-free') === true ||
+        (ui5Version.major === 1 && ui5Version.minor >= 150)
+    );
+}
+
+/**
+ * Adds additional apps from flpConfig.apps to the template configuration.
+ *
+ * @param flpConfig - the resolved FLP configuration
+ * @param basePath - path to the application root
+ * @param flpTemplConfig - the template configuration to extend
+ * @param fs - file system editor
+ * @param logger - logger instance
+ */
+async function addAdditionalApps(
+    flpConfig: FlpConfig,
+    basePath: string,
+    flpTemplConfig: TemplateConfig,
+    fs: Editor,
+    logger: Logger
+): Promise<void> {
+    for (const app of flpConfig.apps) {
+        if (app.local) {
+            const appPath = await getWebappPath(join(basePath, app.local), fs);
+            if (fs.exists(join(appPath, 'manifest.json'))) {
+                const appManifest = (await fs.readJSON(join(appPath, 'manifest.json'))) as unknown as Manifest;
+                await addApp(flpTemplConfig, appManifest, app, logger);
+            } else {
+                logger.warn(`Could not add route for ${app}`);
+            }
+        }
+    }
+}
+
+/**
  * Generates the preview files.
  *
  * @param basePath path to the application root
@@ -642,8 +750,6 @@ export async function generatePreviewFiles(
     // create file system if not provided
     fs ??= create(createStorage());
 
-    // generate FLP configuration
-    const flpTemplate = readFileSync(join(TEMPLATE_PATH, 'flp/sandbox.ejs'), 'utf-8');
     const flpConfig = getFlpConfigWithDefaults(config.flp);
 
     const webappPath = await getWebappPath(basePath, fs);
@@ -673,20 +779,13 @@ export async function generatePreviewFiles(
         flpPath = join(basePath, flpConfig.path);
     }
 
-    if (flpConfig.apps.length > 0) {
-        for (const app of flpConfig.apps) {
-            if (app.local) {
-                const appPath = await getWebappPath(join(basePath, app.local), fs);
-                if (fs.exists(join(appPath, 'manifest.json'))) {
-                    const appManifest = (await fs.readJSON(join(appPath, 'manifest.json'))) as unknown as Manifest;
-                    await addApp(flpTemplConfig, appManifest, app, logger);
-                } else {
-                    logger.warn(`Could not add route for ${app}`);
-                }
-            }
-        }
+    await addAdditionalApps(flpConfig, basePath, flpTemplConfig, fs, logger);
+
+    if (shouldUseSandbox2(manifest, flpConfig, basePath, fs)) {
+        generateSandbox2Files(flpPath, flpTemplConfig, flpConfig, manifest!, config.adp !== undefined, fs);
+    } else {
+        fs.write(flpPath, render(readFileSync(join(TEMPLATE_PATH, 'flp/sandbox.ejs'), 'utf-8'), flpTemplConfig));
     }
-    fs.write(flpPath, render(flpTemplate, flpTemplConfig));
 
     return fs;
 }

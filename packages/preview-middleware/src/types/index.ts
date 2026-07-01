@@ -269,6 +269,17 @@ export const FLPHomePageDefaults = {
     sectionId: 'homeAppsSection'
 };
 
+export type Ui5Version = {
+    major: number;
+    minor: number;
+    patch: number;
+    label?: string;
+    /**
+     * Indicates if the UI5 version is served from CDN.
+     */
+    isCdn: boolean;
+};
+
 export interface MultiCardsPayload {
     type: string;
     manifest: CardManifest;

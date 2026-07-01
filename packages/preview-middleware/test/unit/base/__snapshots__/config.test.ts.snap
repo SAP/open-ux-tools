@@ -230,6 +230,111 @@ Object {
 }
 `;
 
+exports[`config generatePreviewFiles sandbox 2 selection minUI5Version 1.150.0 generates sandbox2 HTML and fioriSandboxAppConfig.json 1`] = `
+"<!DOCTYPE HTML>
+<html lang=\\"en\\">
+<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
+
+<head>
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <title>Local FLP Sandbox</title>
+
+    <!-- FLP Sandbox Boot task - registers ConfigurationProvider via xx-bootTask mechanism -->
+    <script src=\\"../resources/sap/ushell/sandbox/SandboxBootTask.js\\"></script>
+
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frame-options=\\"allow\\"' is a NON-SECURE setting for test environments -->
+    <script id=\\"sap-ui-bootstrap\\"
+        src=\\"../resources/sap-ui-core.js\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-theme=\\"sap_horizon\\"
+        data-sap-ui-compat-version=\\"edge\\"
+        data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.app\\":\\"..\\"}'
+        data-sap-ui-frame-options=\\"allow\\"
+        data-open-ux-preview-base-url=''>
+    </script>
+
+</head>
+
+<!-- UI Content -->
+<body class=\\"sapUiBody\\">
+    <div id=\\"canvas\\"></div>
+</body>
+
+</html>
+"
+`;
+
+exports[`config generatePreviewFiles sandbox 2 selection minUI5Version 1.150.0 generates sandbox2 HTML and fioriSandboxAppConfig.json 2`] = `
+"{
+    \\"tiles\\": [
+        {
+            \\"semanticObject\\": \\"app\\",
+            \\"action\\": \\"preview\\",
+            \\"rootPath\\": \\"../\\"
+        }
+    ],
+    \\"beforeFlpStart\\": \\"module:open/ux/preview/client/flp/sandbox2BeforeInit\\",
+    \\"afterFlpStart\\": \\"module:open/ux/preview/client/flp/sandbox2AfterInit\\",
+    \\"restricted\\": {
+        \\"flexibilityServices\\": [
+            {
+                \\"connector\\": \\"LrepConnector\\",
+                \\"layers\\": [],
+                \\"url\\": \\"/sap/bc/lrep\\"
+            },
+            {
+                \\"applyConnector\\": \\"open/ux/preview/client/flp/WorkspaceConnector\\",
+                \\"writeConnector\\": \\"open/ux/preview/client/flp/WorkspaceConnector\\",
+                \\"custom\\": true
+            },
+            {
+                \\"connector\\": \\"LocalStorageConnector\\",
+                \\"layers\\": [
+                    \\"CUSTOMER\\",
+                    \\"USER\\"
+                ]
+            }
+        ]
+    }
+}"
+`;
+
+exports[`config generatePreviewFiles sandbox 2 selection minUI5Version 2.0.0 generates sandbox2 HTML and fioriSandboxAppConfig.json 1`] = `
+"<!DOCTYPE HTML>
+<html lang=\\"en\\">
+<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
+
+<head>
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <title>Local FLP Sandbox</title>
+
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frame-options=\\"allow\\"' is a NON-SECURE setting for test environments -->
+    <script id=\\"sap-ui-bootstrap\\"
+        src=\\"../resources/sap-ui-core.js\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-theme=\\"sap_horizon\\"
+        data-sap-ui-compat-version=\\"edge\\"
+        data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.app\\":\\"..\\"}'
+        data-sap-ui-frame-options=\\"allow\\"
+        data-sap-ui-boot-manifest=\\"sap/ushell/sandbox/sandboxManifest.json\\"
+        data-open-ux-preview-base-url=''>
+    </script>
+
+</head>
+
+<!-- UI Content -->
+<body class=\\"sapUiBody\\">
+    <div id=\\"canvas\\"></div>
+</body>
+
+</html>
+"
+`;
+
 exports[`config generatePreviewFiles tests included and a custom path 1`] = `
 Object {
   "webapp/test/flpSandbox.html": Object {

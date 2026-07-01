@@ -8,6 +8,7 @@ import {
     generateSandboxAppConfig,
     getFlpConfigWithDefaults,
     getPreviewPaths,
+    qualifiesForNewSandbox,
     remapResourcesForPath
 } from '../../../src/base/config.js';
 import { mergeTestConfigDefaults } from '../../../src/base/test.js';
@@ -293,6 +294,106 @@ describe('config', () => {
             } satisfies MiddlewareConfig;
             const fs = await generatePreviewFiles(basePath, config);
             expect(fs.dump(basePath)).toMatchSnapshot();
+        });
+
+        describe('sandbox 2 selection', () => {
+            const basePath = join(__dirname, '../../fixtures/simple-app');
+
+            function manifestWithVersion(minUI5Version: string): string {
+                return JSON.stringify({
+                    'sap.app': { id: 'test.app' },
+                    'sap.ui5': { dependencies: { minUI5Version } }
+                });
+            }
+
+            test('minUI5Version 1.150.0 generates sandbox2 HTML and fioriSandboxAppConfig.json', async () => {
+                const { create: createFs } = await import('mem-fs-editor');
+                const { create: createStorage } = await import('mem-fs');
+                const fs = createFs(createStorage());
+                fs.write(join(basePath, 'webapp/manifest.json'), manifestWithVersion('1.150.0'));
+                const result = await generatePreviewFiles(basePath, {}, fs);
+                const files = result.dump(basePath);
+                const paths = Object.keys(files);
+                expect(paths.some((p) => p.endsWith(DEFAULT_PATH))).toBe(true);
+                expect(paths.some((p) => p.endsWith('fioriSandboxAppConfig.json'))).toBe(true);
+                expect(files[paths.find((p) => p.endsWith(DEFAULT_PATH))!].contents).toMatchSnapshot();
+                expect(files[paths.find((p) => p.endsWith('fioriSandboxAppConfig.json'))!].contents).toMatchSnapshot();
+            });
+
+            test('minUI5Version 2.0.0 generates sandbox2 HTML and fioriSandboxAppConfig.json', async () => {
+                const { create: createFs } = await import('mem-fs-editor');
+                const { create: createStorage } = await import('mem-fs');
+                const fs = createFs(createStorage());
+                fs.write(join(basePath, 'webapp/manifest.json'), manifestWithVersion('2.0.0'));
+                const result = await generatePreviewFiles(basePath, {}, fs);
+                const files = result.dump(basePath);
+                const paths = Object.keys(files);
+                expect(paths.some((p) => p.endsWith('fioriSandboxAppConfig.json'))).toBe(true);
+                const htmlPath = paths.find((p) => p.endsWith(DEFAULT_PATH))!;
+                expect(files[htmlPath].contents).toMatchSnapshot();
+            });
+
+            test('minUI5Version 1.149.0 generates sandbox1 HTML, no fioriSandboxAppConfig.json', async () => {
+                const { create: createFs } = await import('mem-fs-editor');
+                const { create: createStorage } = await import('mem-fs');
+                const fs = createFs(createStorage());
+                fs.write(join(basePath, 'webapp/manifest.json'), manifestWithVersion('1.149.0'));
+                const result = await generatePreviewFiles(basePath, {}, fs);
+                const files = result.dump(basePath);
+                const paths = Object.keys(files);
+                expect(paths.some((p) => p.endsWith('fioriSandboxAppConfig.json'))).toBe(false);
+                expect(paths.some((p) => p.endsWith(DEFAULT_PATH))).toBe(true);
+            });
+
+            test('no minUI5Version in manifest generates sandbox1 HTML, no fioriSandboxAppConfig.json', async () => {
+                const { create: createFs } = await import('mem-fs-editor');
+                const { create: createStorage } = await import('mem-fs');
+                const fs = createFs(createStorage());
+                fs.write(
+                    join(basePath, 'webapp/manifest.json'),
+                    JSON.stringify({ 'sap.app': { id: 'test.app' }, 'sap.ui5': { dependencies: {} } })
+                );
+                const result = await generatePreviewFiles(basePath, {}, fs);
+                const files = result.dump(basePath);
+                const paths = Object.keys(files);
+                expect(paths.some((p) => p.endsWith('fioriSandboxAppConfig.json'))).toBe(false);
+            });
+
+            test('useNewSandbox:false with minUI5Version 1.150.0 generates sandbox1 HTML, no fioriSandboxAppConfig.json', async () => {
+                const { create: createFs } = await import('mem-fs-editor');
+                const { create: createStorage } = await import('mem-fs');
+                const fs = createFs(createStorage());
+                fs.write(join(basePath, 'webapp/manifest.json'), manifestWithVersion('1.150.0'));
+                const result = await generatePreviewFiles(basePath, { flp: { useNewSandbox: false } }, fs);
+                const files = result.dump(basePath);
+                const paths = Object.keys(files);
+                expect(paths.some((p) => p.endsWith('fioriSandboxAppConfig.json'))).toBe(false);
+            });
+
+            test('legacy fioriSandboxConfig.json present with minUI5Version 1.150.0 generates sandbox1 HTML', async () => {
+                const { create: createFs } = await import('mem-fs-editor');
+                const { create: createStorage } = await import('mem-fs');
+                const fs = createFs(createStorage());
+                fs.write(join(basePath, 'webapp/manifest.json'), manifestWithVersion('1.150.0'));
+                fs.write(join(basePath, 'appconfig/fioriSandboxConfig.json'), '{}');
+                const result = await generatePreviewFiles(basePath, {}, fs);
+                const files = result.dump(basePath);
+                const paths = Object.keys(files);
+                expect(paths.some((p) => p.endsWith('fioriSandboxAppConfig.json'))).toBe(false);
+            });
+        });
+    });
+
+    describe('qualifiesForNewSandbox', () => {
+        test.each([
+            { major: 1, minor: 150, patch: 0, isCdn: false, expected: true },
+            { major: 1, minor: 151, patch: 0, isCdn: false, expected: true },
+            { major: 2, minor: 0, patch: 0, isCdn: false, expected: true },
+            { major: 1, minor: 149, patch: 0, isCdn: false, expected: false },
+            { major: 1, minor: 115, patch: 0, isCdn: false, expected: false },
+            { major: 1, minor: 149, patch: 0, label: 'legacy-free', isCdn: true, expected: true }
+        ])('major=$major minor=$minor label=$label => $expected', ({ expected, ...version }) => {
+            expect(qualifiesForNewSandbox(version)).toBe(expected);
         });
     });
 
