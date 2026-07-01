@@ -1,5 +1,17 @@
 # @sap-ux/telemetry
 
+## 1.0.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-30
+
+#### Bug Fixes
+
+- Security - application insights and open telemetry upgrades [[f723d45](https://github.com/SAP/open-ux-tools/commit/f723d452296259ac9b50a63607506af690f7d2f3)]
+
 ## 1.0.12
 
 ### Patch Changes
