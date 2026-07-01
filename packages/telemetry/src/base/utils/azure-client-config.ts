@@ -9,7 +9,11 @@ import type { TelemetryClient as AzureTelemetryClient } from 'applicationinsight
  */
 export function configAzureTelemetryClient(client: AzureTelemetryClient): void {
     if (client.setUseDiskRetryCaching) {
-        client.setUseDiskRetryCaching(true);
+        try {
+            client.setUseDiskRetryCaching(true);
+        } catch {
+            // setUseDiskRetryCaching may throw "Not implemented"
+        }
     }
     client.addTelemetryProcessor((envelope: any /* TelemetryItem */): boolean => {
         envelope.tags ??= {};
