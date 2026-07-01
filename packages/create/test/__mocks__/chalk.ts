@@ -1,7 +1,6 @@
-// ESM shim for chalk 4.x - re-exports CJS chalk with named ESM exports
-// This works around the fact that CJS chalk doesn't expose named exports in ESM mode
-const chalkModule = await import('../../node_modules/chalk/source/index.js');
-const chalk = chalkModule.default;
+// ESM shim for chalk 5.x - re-exports chalk with named ESM exports
+// Uses static import to avoid top-level await, which breaks Jest's require() fallback
+import chalk from '../../node_modules/chalk/source/index.js';
 
 // Force chalk to use color level 1 (basic ANSI colors) for consistent test output
 if (chalk && typeof chalk.level !== 'undefined') {
