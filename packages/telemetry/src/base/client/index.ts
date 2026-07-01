@@ -2,6 +2,7 @@ import type { Client } from './client.js';
 import { ToolsSuiteTelemetryClient } from '../../tooling-telemetry/index.js';
 import { TelemetrySettings } from '../config-state.js';
 
+const instrumentationKeyPlaceholder = 'ApplicationInsightsInstrumentationKeyPLACEH0LDER';
 /**
  * Factory to get telemetry client instance.
  */
@@ -26,16 +27,20 @@ class ClientFactory {
      */
     public static getTelemetryClientByClass<T extends Client>(
         clientConstructor: new (appKey: string, extensionName: string, extensionVersion: string) => T
-    ): T {
+    ): T { 
+        // Only a valid format of Azure Application Insights Instrumentation Key is allowed since ApplicationInsights v3.
+        let instrumentationKey = '';
+        if (TelemetrySettings.azureInstrumentationKey === instrumentationKeyPlaceholder) {
+            instrumentationKey = '00000000-0000-0000-0000-000000000000';
+        }
+
         let client = ClientFactory.clientMap.get(clientConstructor.name) as T;
         if (client) {
             return client;
         }
         const ClientConstructor = clientConstructor;
         client = new ClientConstructor(
-            TelemetrySettings.azureInstrumentationKey
-                ? `InstrumentationKey=${TelemetrySettings.azureInstrumentationKey}`
-                : '',
+            TelemetrySettings.azureInstrumentationKey ? `InstrumentationKey=${instrumentationKey}` : '',
             TelemetrySettings.consumerModuleName,
             TelemetrySettings.consumerModuleVersion
         );
