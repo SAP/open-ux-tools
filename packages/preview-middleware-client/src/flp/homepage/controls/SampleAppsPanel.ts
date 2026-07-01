@@ -30,7 +30,7 @@ export default class SampleAppsPanel extends BaseAppPanel {
     init(): void {
         super.init();
         this.setProperty('key', 'sampleApps');
-        this.setProperty('title', 'Sample Apps');
+        this.setProperty('title', 'Samples');
     }
 
     loadApps(): Promise<void> {

@@ -10,10 +10,10 @@ const DEFAULT_CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes
 const REQUEST_TIMEOUT_MS = 10_000; // 10 seconds
 
 /**
- * Configuration for a single SAP What's New feed (e.g. Fiori Tools, Fiori Elements).
+ * Configuration for a single SAP What's New feed (e.g. Fiori Tools, Fiori elements).
  */
 export interface WhatsNewSourceConfig {
-    /** Short product label, used in the news title and footer (e.g. "SAP Fiori Tools"). */
+    /** Short product label, used in the news title and footer (e.g. "SAP Fiori tools"). */
     productLabel: string;
     /** Icon for the news title. */
     titleIcon?: string;
@@ -37,19 +37,19 @@ export interface WhatsNewSourceConfig {
      * returns multiple Categories per LOIO (e.g. Fiori Tools: Application Modeler,
      * Adaptation Project, Service Modeler). `'title'` uses `result.Title` — appropriate
      * when every row shares one Category and the Title carries the real package
-     * boundary (e.g. Fiori Elements: "SAP Fiori Elements for OData V4").
+     * boundary (e.g. Fiori elements: "SAP Fiori elements for OData V4").
      */
     groupBy: 'category' | 'title';
     /**
      * Optional normaliser for the group key extracted via `groupBy`. Lets us shorten
-     * verbose API titles (e.g. "SAP Fiori Elements for OData V4" → "OData V4") so the
+     * verbose API titles (e.g. "SAP Fiori elements for OData V4" → "OData V4") so the
      * heading stays compact and reads as a sub-package within the product.
      */
     groupLabel?: (rawKey: string) => string;
     /**
      * When true, the lead-in prose that precedes a result's inner `<ul>` is dropped
      * (e.g. "The following changes and new features are available for SAP Fiori
-     * Elements for OData V4:"). Useful when the lead-in is redundant with the group
+     * elements for OData V4:"). Useful when the lead-in is redundant with the group
      * heading we already render above the bullets. Default: false.
      */
     dropDescriptionLeadIn?: boolean;
@@ -129,10 +129,10 @@ interface CacheEntry {
 }
 
 /**
- * Default configuration for the SAP Fiori Tools What's New feed.
+ * Default configuration for the SAP Fiori tools What's New feed.
  */
 export const FIORI_TOOLS_WHATSNEW_CONFIG: WhatsNewSourceConfig = {
-    productLabel: 'SAP Fiori Tools',
+    productLabel: 'SAP Fiori tools',
     titleIcon: '',
     loio: 'd29596a7d7b040d88a20a73dee29a1ec',
     docsUrl: 'https://help.sap.com/docs/SAP_FIORI_tools',
@@ -142,10 +142,10 @@ export const FIORI_TOOLS_WHATSNEW_CONFIG: WhatsNewSourceConfig = {
 };
 
 /**
- * Default configuration for the SAP Fiori Elements What's New feed.
+ * Default configuration for the SAP Fiori elements What's New feed.
  */
 export const FIORI_ELEMENTS_WHATSNEW_CONFIG: WhatsNewSourceConfig = {
-    productLabel: 'SAP Fiori Elements',
+    productLabel: 'SAP Fiori elements',
     loio: '40dc77b604f54b21a2faadc7860dc5d7',
     categoryFilter: ['SAP Fiori Elements'],
     docsUrl: 'https://help.sap.com/docs/SAP_FIORI_ELEMENTS',
@@ -255,7 +255,7 @@ export class WhatsNewSource {
         }
 
         // Group results by the configured key (Category for Fiori Tools, Title for
-        // Fiori Elements), then by type ("New" / "Changed") inside each group.
+        // Fiori elements), then by type ("New" / "Changed") inside each group.
         const byGroup = new Map<string, Map<string, WhatsNewResult[]>>();
         for (const result of latestResults) {
             const rawKey = this.config.groupBy === 'title' ? result.Title : result.Category[0];
@@ -271,8 +271,8 @@ export class WhatsNewSource {
 
         const groupEntries = [...byGroup.entries()];
         // Suppress the per-group <h2> when there's only one group AND its label just
-        // restates the product name (e.g. Fiori Elements feed before any OData split).
-        // In every other case (Fiori Tools' multi-category, Fiori Elements' OData V2/V4),
+        // restates the product name (e.g. Fiori elements feed before any OData split).
+        // In every other case (Fiori Tools' multi-category, Fiori elements' OData V2/V4),
         // the heading is the analogue of "Application Modeler"/"Adaptation Project".
         const suppressHeading = groupEntries.length === 1 && this.config.productLabel.includes(groupEntries[0][0]);
 
@@ -439,7 +439,7 @@ export class WhatsNewSource {
      * falling back to a single bullet when there is no inner list.
      *
      * When `dropLeadIn` is true, the prose preceding the inner `<ul>` (e.g. "The
-     * following changes and new features are available for SAP Fiori Elements for
+     * following changes and new features are available for SAP Fiori elements for
      * OData V4:") is discarded — useful when the parent group heading already
      * conveys that context.
      *

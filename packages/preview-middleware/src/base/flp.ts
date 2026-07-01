@@ -883,7 +883,7 @@ export class FlpSandbox {
 
     /**
      * Fetches news from all registered data sources and merges them into a single list.
-     * Currently fetches from the SAP What's New feeds for Fiori Tools and Fiori Elements.
+     * Currently fetches from the SAP What's New feeds for Fiori tools and Fiori elements.
      * Additional sources can be added here in the future.
      *
      * @returns a combined list of news items from all data sources

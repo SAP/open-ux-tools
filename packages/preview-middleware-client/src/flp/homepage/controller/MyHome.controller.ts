@@ -427,7 +427,7 @@ export default class MyHomeController extends Controller {
             customHeader: new Bar({
                 contentLeft: [
                     new Icon({ src: 'sap-icon://alert', color: '#e76500' }).addStyleClass('sapUiTinyMarginBeginEnd'),
-                    new Title({ text: this.getText('terminalMessagesDialogTitle'), level: 'H5' })
+                    new Title({ text: this.getText('terminalWarningsDialogTitle'), level: 'H5' })
                 ]
             }),
             content: [messageView],
