@@ -1,5 +1,17 @@
 # @sap-ux/telemetry
 
+## 1.0.14
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-01
+
+#### Bug Fixes
+
+- Wrap setUseDiskRetryCaching call in try-catch to handle "Not implemented" error that can be thrown in some environments [[f25db35](https://github.com/SAP/open-ux-tools/commit/f25db35917824f4c91e6f688f6566ffd5298c4f1)]
+
 ## 1.0.13
 
 ### Patch Changes
