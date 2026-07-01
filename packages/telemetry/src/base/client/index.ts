@@ -33,7 +33,7 @@ class ClientFactory {
         }
         const ClientConstructor = clientConstructor;
         client = new ClientConstructor(
-            TelemetrySettings.azureInstrumentationKey,
+            `InstrumentationKey=${TelemetrySettings.azureInstrumentationKey}`,
             TelemetrySettings.consumerModuleName,
             TelemetrySettings.consumerModuleVersion
         );
