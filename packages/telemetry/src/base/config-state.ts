@@ -4,7 +4,7 @@ import packageJson from '../../package.json' with { type: 'json' };
  * Runtime telemetry settings
  */
 export const TelemetrySettings = {
-    // Target Azure apps insight destination, > v3 ApplicationInsightsInstrumentationKey format must be `InstrumentationKey='${key}'`
+    // Target Azure apps insight destination
     azureInstrumentationKey: '',
     // Allow user to opt out from telemetry collection
     telemetryEnabled: true,
