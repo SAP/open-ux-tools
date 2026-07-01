@@ -524,8 +524,25 @@ describe('flp/init', () => {
             };
 
             const controller = new MyHomeController('testController');
+            const homepageController = controller as MyHomeController & {
+                setupSystemInfoBar: () => void;
+                initSalutationBar: () => Promise<void>;
+                initializeInsightsContainer: () => Promise<void>;
+                fetchWarnings: () => Promise<void>;
+            };
+            jest.spyOn(homepageController, 'setupSystemInfoBar').mockImplementation(() => undefined);
+            jest.spyOn(homepageController, 'initSalutationBar').mockResolvedValue(undefined);
+            jest.spyOn(homepageController, 'initializeInsightsContainer').mockResolvedValue(undefined);
+            jest.spyOn(homepageController, 'fetchWarnings').mockResolvedValue(undefined);
             controller.getView = jest.fn().mockReturnValue({
                 getId: jest.fn().mockReturnValue('testView'),
+                createId: jest.fn((id: string) => `testView--${id}`),
+                setModel: jest.fn(),
+                getModel: jest.fn().mockReturnValue({
+                    getResourceBundle: jest.fn().mockReturnValue({ getText: jest.fn().mockReturnValue('') }),
+                    getProperty: jest.fn(),
+                    setProperty: jest.fn()
+                }),
                 byId: jest.fn().mockReturnValue(mockPage)
             });
 
@@ -536,7 +553,7 @@ describe('flp/init', () => {
 
                 // Verify it's an instance of NewsContainer (when available)
                 expect(insertedContainer).toBeInstanceOf(NewsContainer);
-                expect(mockPage.insertContent).toHaveBeenCalledWith(insertedContainer, 0);
+                expect(mockPage.insertContent).toHaveBeenCalledWith(insertedContainer, 1);
                 done();
             });
         });

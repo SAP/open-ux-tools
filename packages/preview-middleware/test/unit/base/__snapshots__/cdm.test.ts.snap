@@ -4,6 +4,48 @@ exports[`cdm generate cdm with additional apps 1`] = `
 Object {
   "_version": "3.1.0",
   "applications": Object {
+    "manage.news": Object {
+      "sap.app": Object {
+        "crossNavigation": Object {
+          "inbounds": Object {
+            "NewsArticle-display": Object {
+              "action": "display",
+              "semanticObject": "NewsArticle",
+              "title": "Manage News",
+            },
+          },
+        },
+        "id": "manage.news",
+        "title": "Manage News",
+      },
+    },
+    "masterDetail-display": Object {
+      "sap.app": Object {
+        "crossNavigation": Object {
+          "inbounds": Object {
+            "masterDetail-display": Object {
+              "action": "display",
+              "semanticObject": "masterDetail",
+              "title": "Manage Products",
+            },
+          },
+        },
+        "id": "sap.ui.demoapps.rta.fe",
+        "subTitle": "UI Adaptation at Runtime for SAP Fiori Elements",
+        "title": "Manage Products",
+      },
+      "sap.platform.runtime": Object {
+        "componentProperties": Object {
+          "url": "/test-resources/sap/ui/demoapps/demokit/rta/fe",
+        },
+      },
+      "sap.ui": Object {
+        "technology": "UI5",
+      },
+      "sap.ui5": Object {
+        "componentName": "sap.ui.demoapps.rta.fe",
+      },
+    },
     "my.app": Object {
       "sap.app": Object {
         "crossNavigation": Object {
@@ -66,6 +108,33 @@ Object {
         "componentName": "my.app2",
       },
     },
+    "product_display": Object {
+      "sap.app": Object {
+        "crossNavigation": Object {
+          "inbounds": Object {
+            "product-display": Object {
+              "action": "display",
+              "semanticObject": "product",
+              "title": "Display Product Catalog",
+            },
+          },
+        },
+        "id": "sap.ui.demoapps.rta.fev4",
+        "subTitle": "Fiori Elements v4",
+        "title": "Display Product Catalog",
+      },
+      "sap.platform.runtime": Object {
+        "componentProperties": Object {
+          "url": "/test-resources/sap/ui/demoapps/demokit/rta/fev4",
+        },
+      },
+      "sap.ui": Object {
+        "technology": "UI5",
+      },
+      "sap.ui5": Object {
+        "componentName": "sap.ui.demoapps.rta.fev4",
+      },
+    },
   },
   "catalogs": Object {
     "homeCatalog": Object {
@@ -125,6 +194,22 @@ Object {
     },
   },
   "visualizations": Object {
+    "VIZ:masterDetail-display": Object {
+      "businessApp": "masterDetail-display",
+      "vizConfig": Object {
+        "sap.app": Object {
+          "subTitle": "UI Adaptation at Runtime for SAP Fiori Elements",
+          "title": "Manage Products",
+        },
+        "sap.flp": Object {
+          "target": Object {
+            "type": "URL",
+            "url": "#masterDetail-display",
+          },
+        },
+      },
+      "vizType": "sap.ushell.StaticAppLauncher",
+    },
     "VIZ:my.app": Object {
       "businessApp": "my.app",
       "vizConfig": Object {
@@ -142,6 +227,11 @@ Object {
                 "value": "UI5",
               },
             ],
+          },
+        },
+        "sap.ui": Object {
+          "icons": Object {
+            "icon": "sap-icon://vds-file",
           },
         },
       },
@@ -166,6 +256,27 @@ Object {
             ],
           },
         },
+        "sap.ui": Object {
+          "icons": Object {
+            "icon": "sap-icon://vds-file",
+          },
+        },
+      },
+      "vizType": "sap.ushell.StaticAppLauncher",
+    },
+    "VIZ:product_display": Object {
+      "businessApp": "product_display",
+      "vizConfig": Object {
+        "sap.app": Object {
+          "subTitle": "Fiori Elements v4",
+          "title": "Display Product Catalog",
+        },
+        "sap.flp": Object {
+          "target": Object {
+            "type": "URL",
+            "url": "#product-display",
+          },
+        },
       },
       "vizType": "sap.ushell.StaticAppLauncher",
     },
@@ -176,7 +287,77 @@ Object {
 exports[`cdm generate cdm without any apps 1`] = `
 Object {
   "_version": "3.1.0",
-  "applications": Object {},
+  "applications": Object {
+    "manage.news": Object {
+      "sap.app": Object {
+        "crossNavigation": Object {
+          "inbounds": Object {
+            "NewsArticle-display": Object {
+              "action": "display",
+              "semanticObject": "NewsArticle",
+              "title": "Manage News",
+            },
+          },
+        },
+        "id": "manage.news",
+        "title": "Manage News",
+      },
+    },
+    "masterDetail-display": Object {
+      "sap.app": Object {
+        "crossNavigation": Object {
+          "inbounds": Object {
+            "masterDetail-display": Object {
+              "action": "display",
+              "semanticObject": "masterDetail",
+              "title": "Manage Products",
+            },
+          },
+        },
+        "id": "sap.ui.demoapps.rta.fe",
+        "subTitle": "UI Adaptation at Runtime for SAP Fiori Elements",
+        "title": "Manage Products",
+      },
+      "sap.platform.runtime": Object {
+        "componentProperties": Object {
+          "url": "/test-resources/sap/ui/demoapps/demokit/rta/fe",
+        },
+      },
+      "sap.ui": Object {
+        "technology": "UI5",
+      },
+      "sap.ui5": Object {
+        "componentName": "sap.ui.demoapps.rta.fe",
+      },
+    },
+    "product_display": Object {
+      "sap.app": Object {
+        "crossNavigation": Object {
+          "inbounds": Object {
+            "product-display": Object {
+              "action": "display",
+              "semanticObject": "product",
+              "title": "Display Product Catalog",
+            },
+          },
+        },
+        "id": "sap.ui.demoapps.rta.fev4",
+        "subTitle": "Fiori Elements v4",
+        "title": "Display Product Catalog",
+      },
+      "sap.platform.runtime": Object {
+        "componentProperties": Object {
+          "url": "/test-resources/sap/ui/demoapps/demokit/rta/fev4",
+        },
+      },
+      "sap.ui": Object {
+        "technology": "UI5",
+      },
+      "sap.ui5": Object {
+        "componentName": "sap.ui.demoapps.rta.fev4",
+      },
+    },
+  },
   "catalogs": Object {
     "homeCatalog": Object {
       "identification": Object {
@@ -219,6 +400,39 @@ Object {
       "groupsOrder": Array [],
     },
   },
-  "visualizations": Object {},
+  "visualizations": Object {
+    "VIZ:masterDetail-display": Object {
+      "businessApp": "masterDetail-display",
+      "vizConfig": Object {
+        "sap.app": Object {
+          "subTitle": "UI Adaptation at Runtime for SAP Fiori Elements",
+          "title": "Manage Products",
+        },
+        "sap.flp": Object {
+          "target": Object {
+            "type": "URL",
+            "url": "#masterDetail-display",
+          },
+        },
+      },
+      "vizType": "sap.ushell.StaticAppLauncher",
+    },
+    "VIZ:product_display": Object {
+      "businessApp": "product_display",
+      "vizConfig": Object {
+        "sap.app": Object {
+          "subTitle": "Fiori Elements v4",
+          "title": "Display Product Catalog",
+        },
+        "sap.flp": Object {
+          "target": Object {
+            "type": "URL",
+            "url": "#product-display",
+          },
+        },
+      },
+      "vizType": "sap.ushell.StaticAppLauncher",
+    },
+  },
 }
 `;

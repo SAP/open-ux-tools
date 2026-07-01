@@ -36,11 +36,11 @@ Object {
         "config": Object {
           "userProfile": Object {
             "defaults": Object {
-              "email": "john.doe@sap.com",
-              "firstName": "John",
-              "fullName": "John Doe",
-              "id": "DOEJ",
-              "lastName": "Doe",
+              "email": "user.name@example.com",
+              "firstName": "User",
+              "fullName": "User Name",
+              "id": "USERNAME",
+              "lastName": "Name",
             },
             "metadata": Object {
               "editablePropterties": Array [

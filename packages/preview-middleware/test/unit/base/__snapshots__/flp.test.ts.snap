@@ -196,6 +196,7 @@ Object {
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "previewAppId": "my.id",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -267,6 +268,7 @@ Object {
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "previewAppId": "my.id",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -332,6 +334,7 @@ Object {
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "previewAppId": "test.fe.v2.app",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -380,6 +383,7 @@ Object {
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "previewAppId": "my.id",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -428,6 +432,7 @@ Object {
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "previewAppId": "my.id",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -476,6 +481,7 @@ Object {
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "previewAppId": "my.id",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -524,6 +530,7 @@ Object {
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "previewAppId": "my.id",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -572,6 +579,7 @@ Object {
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "previewAppId": "test.fe.v2.app",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -622,6 +630,7 @@ Object {
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "previewAppId": "test.fe.v2.app",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -933,7 +942,8 @@ exports[`FlpSandbox router - connect API GET default routes with connect API whe
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-base-url=''
-        data-open-ux-preview-enhanced-homepage='true'>
+        data-open-ux-preview-enhanced-homepage='true'
+        data-open-ux-preview-app-id='test.fe.v2.app'>
     </script>
 
 
@@ -946,7 +956,7 @@ exports[`FlpSandbox router - connect API GET default routes with connect API whe
 </html>"
 `;
 
-exports[`FlpSandbox router - connect API GET default routes with connect API when enhancedHomePage is enabled 2`] = `"{\\"_version\\":\\"3.1.0\\",\\"catalogs\\":{\\"homeCatalog\\":{\\"identification\\":{\\"id\\":\\"homeCatalog\\",\\"title\\":\\"Homepage Apps\\"},\\"payload\\":{\\"viz\\":[\\"VIZ:test.fe.v2.app\\",\\"VIZ:test.fe.v2.other\\"]}}},\\"site\\":{\\"payload\\":{\\"groupsOrder\\":[]}},\\"groups\\":{},\\"visualizations\\":{\\"VIZ:test.fe.v2.app\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.app\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.app\\",\\"inboundId\\":\\"app-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}},\\"VIZ:test.fe.v2.other\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.other\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.other\\",\\"inboundId\\":\\"testfev2other-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}}},\\"applications\\":{\\"test.fe.v2.app\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"title\\":\\"My Simple App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"app-preview\\":{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.app\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"..\\",\\"asyncHints\\":{}}}},\\"test.fe.v2.other\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.other\\",\\"title\\":\\"My Other App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"testfev2other-preview\\":{\\"semanticObject\\":\\"testfev2other\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.other\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"/yet/another/app\\",\\"asyncHints\\":{}}}}},\\"pages\\":{\\"SAP_BASIS_PG_UI_MYHOME\\":{\\"identification\\":{\\"id\\":\\"SAP_BASIS_PG_UI_MYHOME\\"},\\"payload\\":{\\"layout\\":{\\"sectionOrder\\":[\\"homeAppsSection\\"]},\\"sections\\":{\\"homeAppsSection\\":{\\"id\\":\\"homeAppsSection\\",\\"title\\":\\"Recently Added Apps\\",\\"default\\":true,\\"layout\\":{\\"vizOrder\\":[\\"test.fe.v2.app\\",\\"test.fe.v2.other\\"]},\\"viz\\":{\\"test.fe.v2.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"vizId\\":\\"VIZ:test.fe.v2.app\\"},\\"test.fe.v2.other\\":{\\"id\\":\\"test.fe.v2.other\\",\\"vizId\\":\\"VIZ:test.fe.v2.other\\"}}}}}}}}"`;
+exports[`FlpSandbox router - connect API GET default routes with connect API when enhancedHomePage is enabled 2`] = `"{\\"_version\\":\\"3.1.0\\",\\"catalogs\\":{\\"homeCatalog\\":{\\"identification\\":{\\"id\\":\\"homeCatalog\\",\\"title\\":\\"Homepage Apps\\"},\\"payload\\":{\\"viz\\":[\\"VIZ:test.fe.v2.app\\",\\"VIZ:test.fe.v2.app-QUnit\\",\\"VIZ:test.fe.v2.app-OPA5\\",\\"VIZ:test.fe.v2.other\\"]}}},\\"site\\":{\\"payload\\":{\\"groupsOrder\\":[]}},\\"groups\\":{},\\"visualizations\\":{\\"VIZ:product_display\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"product_display\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"Display Product Catalog\\",\\"subTitle\\":\\"Fiori Elements v4\\"},\\"sap.flp\\":{\\"target\\":{\\"type\\":\\"URL\\",\\"url\\":\\"#product-display\\"}}}},\\"VIZ:masterDetail-display\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"masterDetail-display\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"Manage Products\\",\\"subTitle\\":\\"UI Adaptation at Runtime for SAP Fiori Elements\\"},\\"sap.flp\\":{\\"target\\":{\\"type\\":\\"URL\\",\\"url\\":\\"#masterDetail-display\\"}}}},\\"VIZ:test.fe.v2.app\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.app\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.app\\",\\"inboundId\\":\\"app-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}},\\"sap.ui\\":{\\"icons\\":{\\"icon\\":\\"sap-icon://vds-file\\"}}}},\\"VIZ:test.fe.v2.app-QUnit\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.app-QUnit\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"QUnit\\"},\\"sap.flp\\":{\\"target\\":{\\"type\\":\\"URL\\",\\"url\\":\\"/test/unitTests.qunit.html\\"}},\\"sap.ui\\":{\\"icons\\":{\\"icon\\":\\"sap-icon://lab\\"}}}},\\"VIZ:test.fe.v2.app-OPA5\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.app-OPA5\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"OPA5\\"},\\"sap.flp\\":{\\"target\\":{\\"type\\":\\"URL\\",\\"url\\":\\"/test/integration/opaTests.qunit.html\\"}},\\"sap.ui\\":{\\"icons\\":{\\"icon\\":\\"sap-icon://lab\\"}}}},\\"VIZ:test.fe.v2.other\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.other\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.other\\",\\"inboundId\\":\\"testfev2other-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}},\\"sap.ui\\":{\\"icons\\":{\\"icon\\":\\"sap-icon://vds-file\\"}}}}},\\"applications\\":{\\"manage.news\\":{\\"sap.app\\":{\\"id\\":\\"manage.news\\",\\"title\\":\\"Manage News\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"NewsArticle-display\\":{\\"semanticObject\\":\\"NewsArticle\\",\\"action\\":\\"display\\",\\"title\\":\\"Manage News\\"}}}}},\\"product_display\\":{\\"sap.app\\":{\\"id\\":\\"sap.ui.demoapps.rta.fev4\\",\\"title\\":\\"Display Product Catalog\\",\\"subTitle\\":\\"Fiori Elements v4\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"product-display\\":{\\"semanticObject\\":\\"product\\",\\"action\\":\\"display\\",\\"title\\":\\"Display Product Catalog\\"}}}},\\"sap.ui5\\":{\\"componentName\\":\\"sap.ui.demoapps.rta.fev4\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"/test-resources/sap/ui/demoapps/demokit/rta/fev4\\"}}},\\"masterDetail-display\\":{\\"sap.app\\":{\\"id\\":\\"sap.ui.demoapps.rta.fe\\",\\"title\\":\\"Manage Products\\",\\"subTitle\\":\\"UI Adaptation at Runtime for SAP Fiori Elements\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"masterDetail-display\\":{\\"semanticObject\\":\\"masterDetail\\",\\"action\\":\\"display\\",\\"title\\":\\"Manage Products\\"}}}},\\"sap.ui5\\":{\\"componentName\\":\\"sap.ui.demoapps.rta.fe\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"/test-resources/sap/ui/demoapps/demokit/rta/fe\\"}}},\\"test.fe.v2.app\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"title\\":\\"My Simple App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"app-preview\\":{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.app\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"..\\",\\"asyncHints\\":{}}}},\\"test.fe.v2.app-QUnit\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.app-QUnit\\",\\"title\\":\\"My Simple App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"app-preview\\":{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"QUnit\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.app-QUnit\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"..\\",\\"asyncHints\\":{}}}},\\"test.fe.v2.app-OPA5\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.app-OPA5\\",\\"title\\":\\"My Simple App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"app-preview\\":{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"OPA5\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.app-OPA5\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"..\\",\\"asyncHints\\":{}}}},\\"test.fe.v2.other\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.other\\",\\"title\\":\\"My Other App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"testfev2other-preview\\":{\\"semanticObject\\":\\"testfev2other\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.other\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"/yet/another/app\\",\\"asyncHints\\":{}}}}},\\"pages\\":{\\"SAP_BASIS_PG_UI_MYHOME\\":{\\"identification\\":{\\"id\\":\\"SAP_BASIS_PG_UI_MYHOME\\"},\\"payload\\":{\\"layout\\":{\\"sectionOrder\\":[\\"homeAppsSection\\"]},\\"sections\\":{\\"homeAppsSection\\":{\\"id\\":\\"homeAppsSection\\",\\"title\\":\\"Recently Added Apps\\",\\"default\\":true,\\"layout\\":{\\"vizOrder\\":[\\"test.fe.v2.app\\",\\"test.fe.v2.app-QUnit\\",\\"test.fe.v2.app-OPA5\\",\\"test.fe.v2.other\\"]},\\"viz\\":{\\"test.fe.v2.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"vizId\\":\\"VIZ:test.fe.v2.app\\"},\\"test.fe.v2.app-QUnit\\":{\\"id\\":\\"test.fe.v2.app-QUnit\\",\\"vizId\\":\\"VIZ:test.fe.v2.app-QUnit\\"},\\"test.fe.v2.app-OPA5\\":{\\"id\\":\\"test.fe.v2.app-OPA5\\",\\"vizId\\":\\"VIZ:test.fe.v2.app-OPA5\\"},\\"test.fe.v2.other\\":{\\"id\\":\\"test.fe.v2.other\\",\\"vizId\\":\\"VIZ:test.fe.v2.other\\"}}}}}}}}"`;
 
 exports[`FlpSandbox router GET /preview/api/changes 1`] = `"{\\"sap.ui.fl.myid\\":{\\"id\\":\\"myId\\"}}"`;
 
@@ -1588,7 +1598,8 @@ exports[`FlpSandbox router enhanced homepage enabled editor with config 1`] = `
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-base-url=''
-        data-open-ux-preview-enhanced-homepage='true'>
+        data-open-ux-preview-enhanced-homepage='true'
+        data-open-ux-preview-app-id='test.fe.v2.app'>
     </script>
 
 
@@ -1601,7 +1612,7 @@ exports[`FlpSandbox router enhanced homepage enabled editor with config 1`] = `
 </html>"
 `;
 
-exports[`FlpSandbox router enhanced homepage enabled test/cdm.json should return cdm when homepage is enabled 1`] = `"{\\"_version\\":\\"3.1.0\\",\\"catalogs\\":{\\"homeCatalog\\":{\\"identification\\":{\\"id\\":\\"homeCatalog\\",\\"title\\":\\"Homepage Apps\\"},\\"payload\\":{\\"viz\\":[\\"VIZ:test.fe.v2.app\\",\\"VIZ:test.fe.v2.other\\"]}}},\\"site\\":{\\"payload\\":{\\"groupsOrder\\":[]}},\\"groups\\":{},\\"visualizations\\":{\\"VIZ:test.fe.v2.app\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.app\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.app\\",\\"inboundId\\":\\"app-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}},\\"VIZ:test.fe.v2.other\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.other\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.other\\",\\"inboundId\\":\\"testfev2other-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}}},\\"applications\\":{\\"test.fe.v2.app\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"title\\":\\"My Simple App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"app-preview\\":{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.app\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"..\\",\\"asyncHints\\":{}}}},\\"test.fe.v2.other\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.other\\",\\"title\\":\\"My Other App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"testfev2other-preview\\":{\\"semanticObject\\":\\"testfev2other\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.other\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"/yet/another/app\\",\\"asyncHints\\":{}}}}},\\"pages\\":{\\"SAP_BASIS_PG_UI_MYHOME\\":{\\"identification\\":{\\"id\\":\\"SAP_BASIS_PG_UI_MYHOME\\"},\\"payload\\":{\\"layout\\":{\\"sectionOrder\\":[\\"homeAppsSection\\"]},\\"sections\\":{\\"homeAppsSection\\":{\\"id\\":\\"homeAppsSection\\",\\"title\\":\\"Recently Added Apps\\",\\"default\\":true,\\"layout\\":{\\"vizOrder\\":[\\"test.fe.v2.app\\",\\"test.fe.v2.other\\"]},\\"viz\\":{\\"test.fe.v2.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"vizId\\":\\"VIZ:test.fe.v2.app\\"},\\"test.fe.v2.other\\":{\\"id\\":\\"test.fe.v2.other\\",\\"vizId\\":\\"VIZ:test.fe.v2.other\\"}}}}}}}}"`;
+exports[`FlpSandbox router enhanced homepage enabled test/cdm.json should return cdm when homepage is enabled 1`] = `"{\\"_version\\":\\"3.1.0\\",\\"catalogs\\":{\\"homeCatalog\\":{\\"identification\\":{\\"id\\":\\"homeCatalog\\",\\"title\\":\\"Homepage Apps\\"},\\"payload\\":{\\"viz\\":[\\"VIZ:test.fe.v2.app\\",\\"VIZ:test.fe.v2.app-RuntimeAdaptation\\",\\"VIZ:test.fe.v2.app-RuntimeAdaptation\\",\\"VIZ:test.fe.v2.app-RuntimeAdaptation\\",\\"VIZ:test.fe.v2.app-RuntimeAdaptation\\",\\"VIZ:test.fe.v2.app-RuntimeAdaptation\\",\\"VIZ:test.fe.v2.app-QUnit\\",\\"VIZ:test.fe.v2.app-OPA5\\",\\"VIZ:test.fe.v2.other\\"]}}},\\"site\\":{\\"payload\\":{\\"groupsOrder\\":[]}},\\"groups\\":{},\\"visualizations\\":{\\"VIZ:product_display\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"product_display\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"Display Product Catalog\\",\\"subTitle\\":\\"Fiori Elements v4\\"},\\"sap.flp\\":{\\"target\\":{\\"type\\":\\"URL\\",\\"url\\":\\"#product-display\\"}}}},\\"VIZ:masterDetail-display\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"masterDetail-display\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"Manage Products\\",\\"subTitle\\":\\"UI Adaptation at Runtime for SAP Fiori Elements\\"},\\"sap.flp\\":{\\"target\\":{\\"type\\":\\"URL\\",\\"url\\":\\"#masterDetail-display\\"}}}},\\"VIZ:test.fe.v2.app\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.app\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.app\\",\\"inboundId\\":\\"app-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}},\\"sap.ui\\":{\\"icons\\":{\\"icon\\":\\"sap-icon://vds-file\\"}}}},\\"VIZ:test.fe.v2.app-RuntimeAdaptation\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.app-RuntimeAdaptation\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"Runtime Adaptation\\"},\\"sap.flp\\":{\\"target\\":{\\"type\\":\\"URL\\",\\"url\\":\\"/my/editorWithConfig.html#app-preview\\"}},\\"sap.ui\\":{\\"icons\\":{\\"icon\\":\\"sap-icon://edit\\"}}}},\\"VIZ:test.fe.v2.app-QUnit\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.app-QUnit\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"QUnit\\"},\\"sap.flp\\":{\\"target\\":{\\"type\\":\\"URL\\",\\"url\\":\\"/test/unitTests.qunit.html\\"}},\\"sap.ui\\":{\\"icons\\":{\\"icon\\":\\"sap-icon://lab\\"}}}},\\"VIZ:test.fe.v2.app-OPA5\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.app-OPA5\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"OPA5\\"},\\"sap.flp\\":{\\"target\\":{\\"type\\":\\"URL\\",\\"url\\":\\"/test/integration/opaTests.qunit.html\\"}},\\"sap.ui\\":{\\"icons\\":{\\"icon\\":\\"sap-icon://lab\\"}}}},\\"VIZ:test.fe.v2.other\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.other\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.other\\",\\"inboundId\\":\\"testfev2other-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}},\\"sap.ui\\":{\\"icons\\":{\\"icon\\":\\"sap-icon://vds-file\\"}}}}},\\"applications\\":{\\"manage.news\\":{\\"sap.app\\":{\\"id\\":\\"manage.news\\",\\"title\\":\\"Manage News\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"NewsArticle-display\\":{\\"semanticObject\\":\\"NewsArticle\\",\\"action\\":\\"display\\",\\"title\\":\\"Manage News\\"}}}}},\\"product_display\\":{\\"sap.app\\":{\\"id\\":\\"sap.ui.demoapps.rta.fev4\\",\\"title\\":\\"Display Product Catalog\\",\\"subTitle\\":\\"Fiori Elements v4\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"product-display\\":{\\"semanticObject\\":\\"product\\",\\"action\\":\\"display\\",\\"title\\":\\"Display Product Catalog\\"}}}},\\"sap.ui5\\":{\\"componentName\\":\\"sap.ui.demoapps.rta.fev4\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"/test-resources/sap/ui/demoapps/demokit/rta/fev4\\"}}},\\"masterDetail-display\\":{\\"sap.app\\":{\\"id\\":\\"sap.ui.demoapps.rta.fe\\",\\"title\\":\\"Manage Products\\",\\"subTitle\\":\\"UI Adaptation at Runtime for SAP Fiori Elements\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"masterDetail-display\\":{\\"semanticObject\\":\\"masterDetail\\",\\"action\\":\\"display\\",\\"title\\":\\"Manage Products\\"}}}},\\"sap.ui5\\":{\\"componentName\\":\\"sap.ui.demoapps.rta.fe\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"/test-resources/sap/ui/demoapps/demokit/rta/fe\\"}}},\\"test.fe.v2.app\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"title\\":\\"My Simple App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"app-preview\\":{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.app\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"..\\",\\"asyncHints\\":{}}}},\\"test.fe.v2.app-RuntimeAdaptation\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.app-RuntimeAdaptation\\",\\"title\\":\\"My Simple App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"app-preview\\":{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"Runtime Adaptation\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.app-RuntimeAdaptation\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"..\\",\\"asyncHints\\":{}}}},\\"test.fe.v2.app-QUnit\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.app-QUnit\\",\\"title\\":\\"My Simple App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"app-preview\\":{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"QUnit\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.app-QUnit\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"..\\",\\"asyncHints\\":{}}}},\\"test.fe.v2.app-OPA5\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.app-OPA5\\",\\"title\\":\\"My Simple App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"app-preview\\":{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"OPA5\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.app-OPA5\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"..\\",\\"asyncHints\\":{}}}},\\"test.fe.v2.other\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.other\\",\\"title\\":\\"My Other App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"testfev2other-preview\\":{\\"semanticObject\\":\\"testfev2other\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.other\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"/yet/another/app\\",\\"asyncHints\\":{}}}}},\\"pages\\":{\\"SAP_BASIS_PG_UI_MYHOME\\":{\\"identification\\":{\\"id\\":\\"SAP_BASIS_PG_UI_MYHOME\\"},\\"payload\\":{\\"layout\\":{\\"sectionOrder\\":[\\"homeAppsSection\\"]},\\"sections\\":{\\"homeAppsSection\\":{\\"id\\":\\"homeAppsSection\\",\\"title\\":\\"Recently Added Apps\\",\\"default\\":true,\\"layout\\":{\\"vizOrder\\":[\\"test.fe.v2.app\\",\\"test.fe.v2.app-RuntimeAdaptation\\",\\"test.fe.v2.app-RuntimeAdaptation\\",\\"test.fe.v2.app-RuntimeAdaptation\\",\\"test.fe.v2.app-RuntimeAdaptation\\",\\"test.fe.v2.app-RuntimeAdaptation\\",\\"test.fe.v2.app-QUnit\\",\\"test.fe.v2.app-OPA5\\",\\"test.fe.v2.other\\"]},\\"viz\\":{\\"test.fe.v2.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"vizId\\":\\"VIZ:test.fe.v2.app\\"},\\"test.fe.v2.app-RuntimeAdaptation\\":{\\"id\\":\\"test.fe.v2.app-RuntimeAdaptation\\",\\"vizId\\":\\"VIZ:test.fe.v2.app-RuntimeAdaptation\\"},\\"test.fe.v2.app-QUnit\\":{\\"id\\":\\"test.fe.v2.app-QUnit\\",\\"vizId\\":\\"VIZ:test.fe.v2.app-QUnit\\"},\\"test.fe.v2.app-OPA5\\":{\\"id\\":\\"test.fe.v2.app-OPA5\\",\\"vizId\\":\\"VIZ:test.fe.v2.app-OPA5\\"},\\"test.fe.v2.other\\":{\\"id\\":\\"test.fe.v2.other\\",\\"vizId\\":\\"VIZ:test.fe.v2.other\\"}}}}}}}}"`;
 
 exports[`FlpSandbox router enhanced homepage enabled test/flp.html 1`] = `
 "<!DOCTYPE HTML>
@@ -1649,7 +1660,8 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html 1`] = `
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-base-url=''
-        data-open-ux-preview-enhanced-homepage='true'>
+        data-open-ux-preview-enhanced-homepage='true'
+        data-open-ux-preview-app-id='test.fe.v2.app'>
     </script>
 
 
@@ -1920,7 +1932,8 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 snapshot 
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-base-url=''
-        data-open-ux-preview-enhanced-homepage='true'>
+        data-open-ux-preview-enhanced-homepage='true'
+        data-open-ux-preview-app-id='test.fe.v2.app'>
     </script>
 
 
@@ -1981,7 +1994,8 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html sap-ui-xx-vie
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-base-url=''
-        data-open-ux-preview-enhanced-homepage='true'>
+        data-open-ux-preview-enhanced-homepage='true'
+        data-open-ux-preview-app-id='test.fe.v2.app'>
     </script>
 
 
@@ -2092,6 +2106,7 @@ Object {
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "previewAppId": "my.id",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -2215,6 +2230,7 @@ Object {
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "previewAppId": "my.id",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -2680,6 +2696,7 @@ Object {
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
+  "previewAppId": "my.id",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [

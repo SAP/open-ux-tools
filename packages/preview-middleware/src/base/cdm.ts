@@ -121,15 +121,17 @@ function addCdmEntry(
  * Generates a CDM by embedding the provided app tiles into the FLP homepage.
  *
  * @param apps - A list of app to be embedded.
- * @param additionalConfig - Additional CDM configuration for generating configuration-specific tiles
+ * @param additionalConfig - Optional CDM configuration for generating configuration-specific tiles
  * @returns The generated CDM configuration
  */
-export function generateCdm(apps: TemplateConfig['apps'] = {}, additionalConfig: CdmAdditionalConfig): FLPCdmConfig {
+export function generateCdm(apps: TemplateConfig['apps'] = {}, additionalConfig?: CdmAdditionalConfig): FLPCdmConfig {
     const cdm = JSON.parse(readFileSync(join(__dirname, '../../templates/flp/cdm.base.json'), 'utf-8')) as FLPCdmConfig;
 
     Object.keys(apps).forEach((id) => {
         const appId = apps[id].additionalInformation.split('=')[1];
-        const [object, action] = id.split('-');
+        const lastHyphenIndex = id.lastIndexOf('-');
+        const object = id.slice(0, lastHyphenIndex);
+        const action = id.slice(lastHyphenIndex + 1);
         const { title, description, url } = apps[id];
 
         addCdmEntry(cdm, {
@@ -143,7 +145,11 @@ export function generateCdm(apps: TemplateConfig['apps'] = {}, additionalConfig:
             flpTarget: createInboundTarget(appId, `${object}-${action}`)
         });
 
-        if (object === additionalConfig.intent.object && action === additionalConfig.intent.action) {
+        if (
+            additionalConfig &&
+            object === additionalConfig.intent.object &&
+            action === additionalConfig.intent.action
+        ) {
             for (const configPath of additionalConfig.configurationPaths) {
                 const configAppId = `${appId}-${configPath.name.replace(/\s/g, '')}`;
                 const targetUrl =

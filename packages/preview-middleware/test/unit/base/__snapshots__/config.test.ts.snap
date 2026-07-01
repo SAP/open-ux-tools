@@ -9,6 +9,7 @@ Object {
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": undefined,
+  "previewAppId": "my.app",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -48,6 +49,7 @@ Object {
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": undefined,
+  "previewAppId": "my.app",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
