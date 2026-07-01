@@ -1,5 +1,17 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.1.26
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-01
+
+#### Bug Fixes
+
+- Remove injection of sapux property into package.json during app download [[dd67ad4](https://github.com/SAP/open-ux-tools/commit/dd67ad4e35aa2a02672548e240036a7cdb83e752)]
+
 ## 1.1.25
 
 ### Patch Changes
