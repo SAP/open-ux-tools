@@ -15,7 +15,8 @@ import {
     TABLE_COLUMN_VERTICAL_ALIGNMENT,
     TABLE_PERSONALIZATION,
     TEXT_ARRANGEMENT_HIDDEN,
-    STRICT_UOM_FILTERING
+    STRICT_UOM_FILTERING,
+    NO_LIVE_MODE
 } from '../language/diagnostics.js';
 
 // Import all rules
@@ -67,7 +68,6 @@ import sapUi5LegacyFactories from './sap-ui5-legacy-factories.js';
 import sapUi5LegacyJquerysapUsage from './sap-ui5-legacy-jquerysap-usage.js';
 import sapUi5NoPrivateProp from './sap-ui5-no-private-prop.js';
 import sapUsageBasemastercontroller from './sap-usage-basemastercontroller.js';
-
 import anchorBarVisibleRule from './sap-anchor-bar-visible.js';
 import flexEnabledRule from './sap-flex-enabled.js';
 import requireWidthIncludingColumnHeader from './sap-width-including-column-header.js';
@@ -83,6 +83,7 @@ import tableColumnVerticalAlignment from './sap-table-column-vertical-alignment.
 import noDataFieldIntentBasedNavigation from './sap-no-data-field-intent-based-navigation.js';
 import condensedTableLayout from './sap-condensed-table-layout.js';
 import textArrangementHidden from './sap-text-arrangement-hidden.js';
+import noLiveMode from './sap-no-live-mode.js';
 
 import type { Rule } from 'eslint';
 
@@ -149,5 +150,6 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [STRICT_UOM_FILTERING]: strictUomFilteringRule,
     [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment,
     [TABLE_PERSONALIZATION]: tablePersonalization,
-    [TEXT_ARRANGEMENT_HIDDEN]: textArrangementHidden
+    [TEXT_ARRANGEMENT_HIDDEN]: textArrangementHidden,
+    [NO_LIVE_MODE]: noLiveMode
 };

@@ -1,5 +1,17 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-01
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[f25db35](https://github.com/SAP/open-ux-tools/commit/f25db35917824f4c91e6f688f6566ffd5298c4f1)]
+
 ## 1.0.3
 
 ### Patch Changes
@@ -14,7 +26,7 @@
 
 ## 1.0.2
 
-*Released: 2026-06-03T14:58:37Z*
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -22,7 +34,7 @@
 
 ## 1.0.1
 
-*Released: 2026-06-02T12:38:22Z*
+_Released: 2026-06-02T12:38:22Z_
 
 ### Patch Changes
 
@@ -30,7 +42,7 @@
 
 ## 1.0.0
 
-*Released: 2026-05-30T20:54:07Z*
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -65,7 +77,7 @@
 
 ## 0.6.0
 
-*Released: 2026-05-15T08:12:20Z*
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -73,7 +85,7 @@
 
 ## 0.5.3
 
-*Released: 2026-05-14T11:45:51Z*
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -81,7 +93,7 @@
 
 ## 0.5.2
 
-*Released: 2026-05-12T12:59:14Z*
+_Released: 2026-05-12T12:59:14Z_
 
 ### Patch Changes
 
@@ -89,7 +101,7 @@
 
 ## 0.5.1
 
-*Released: 2026-05-11T10:59:15Z*
+_Released: 2026-05-11T10:59:15Z_
 
 ### Patch Changes
 
@@ -97,7 +109,7 @@
 
 ## 0.5.0
 
-*Released: 2026-04-30T12:29:22Z*
+_Released: 2026-04-30T12:29:22Z_
 
 ### Minor Changes
 
@@ -107,7 +119,7 @@
 
 ## 0.4.5
 
-*Released: 2026-04-09T14:24:08Z*
+_Released: 2026-04-09T14:24:08Z_
 
 ### Patch Changes
 
@@ -115,7 +127,7 @@
 
 ## 0.4.4
 
-*Released: 2026-03-31T14:52:03Z*
+_Released: 2026-03-31T14:52:03Z_
 
 ### Patch Changes
 
@@ -123,7 +135,7 @@
 
 ## 0.4.3
 
-*Released: 2026-03-30T22:24:11Z*
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -131,7 +143,7 @@
 
 ## 0.4.2
 
-*Released: 2026-03-30T12:11:57Z*
+_Released: 2026-03-30T12:11:57Z_
 
 ### Patch Changes
 
@@ -139,7 +151,7 @@
 
 ## 0.4.1
 
-*Released: 2026-03-30T09:06:01Z*
+_Released: 2026-03-30T09:06:01Z_
 
 ### Patch Changes
 
@@ -147,7 +159,7 @@
 
 ## 0.4.0
 
-*Released: 2026-03-28T09:24:50Z*
+_Released: 2026-03-28T09:24:50Z_
 
 ### Minor Changes
 

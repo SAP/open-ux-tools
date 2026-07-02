@@ -498,7 +498,8 @@ const fioriLanguageConfig: Linter.Config[] = [
             '@sap-ux/fiori-tools/sap-table-personalization': 'warn',
             '@sap-ux/fiori-tools/sap-table-column-vertical-alignment': 'warn',
             '@sap-ux/fiori-tools/sap-no-data-field-intent-based-navigation': 'warn',
-            '@sap-ux/fiori-tools/sap-text-arrangement-hidden': 'warn'
+            '@sap-ux/fiori-tools/sap-text-arrangement-hidden': 'warn',
+            '@sap-ux/fiori-tools/sap-no-live-mode': 'warn'
         }
     }
 ];
