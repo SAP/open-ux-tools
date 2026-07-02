@@ -432,7 +432,8 @@ function linkListReportTable(
     for (const table of tables) {
         let configurationKey: string = table.annotationPath;
         if (!configurations[configurationKey]) {
-            const key = Object.keys(configurations).find((key) => key.endsWith(configurationKey)); // CAP example: /Incidents/@com.sap.vocabularies.UI.v1.LineItem#test
+            // CAP configurationKey example: /Incidents/@com.sap.vocabularies.UI.v1.LineItem#test
+            const key = Object.keys(configurations).find((key) => key === `${page.contextPath}/${configurationKey}`);
             if (!key) {
                 continue;
             }
