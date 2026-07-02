@@ -1,5 +1,15 @@
 # @sap-ux/odata-service-inquirer
 
+## 3.0.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.13 → 1.0.14
+- @sap-ux/fiori-generator-shared 1.0.15 → 1.0.16
+- @sap-ux/inquirer-common 1.0.16 → 1.0.17
+
 ## 3.0.18
 
 ### Patch Changes
