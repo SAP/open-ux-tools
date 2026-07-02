@@ -72,6 +72,7 @@ describe('FioriFunctionalityServer', () => {
             'generate_adaptation_project',
             'open_adaptation_editor',
             'adp_controller_extension',
+            'read_odata_metadata_adp',
             'list_functionality',
             'get_functionality_details',
             'execute_functionality'
@@ -270,6 +271,7 @@ describe('FioriFunctionalityServer', () => {
                 'generate_adaptation_project',
                 'open_adaptation_editor',
                 'adp_controller_extension',
+                'read_odata_metadata_adp',
                 'list_functionality',
                 'get_functionality_details',
                 'execute_functionality'

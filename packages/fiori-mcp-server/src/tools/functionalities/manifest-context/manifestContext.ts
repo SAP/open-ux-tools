@@ -10,7 +10,7 @@ import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { ODataVersion } from '@sap-ux/axios-extension';
 import type { ODataServiceInfo, AbapServiceProvider, MergedAppDescriptor } from '@sap-ux/axios-extension';
 
-export type systemPath = {
+export type SystemPath = {
     url: string;
     client: string;
 };
@@ -39,6 +39,8 @@ const LIBRARY_WITH_DESCR_FILTER: UI5AppFilter = {
     'fileType': 'appdescr'
 };
 
+const CONTEXT_DIR = path.join('webapp', '.context');
+
 const logger = new ToolsLogger({ logPrefix: 'fiori-mcp-server' });
 
 /**
@@ -62,13 +64,14 @@ export async function readMergedManifest(appPath: string): Promise<MergedAppDesc
 }
 
 /**
- * Resolves OData data sources from the merged manifest and fetches their metadata.
+ * Resolves OData data sources from the merged manifest and fetches their metadata in parallel.
  *
  * @param appPath - Adaptation project root.
- * @param saveLocal - Whether to save fetched metadata locally in the project for agent context.
+ * @param saveLocal - Whether to persist each fetched metadata document as
+ *   `webapp/.context/<dataSource>-metadata.xml` for agent context.
  * @returns OData data source entries with id, url, metadata, and the bound model (if any).
  */
-export async function readAnnotationfromManifest(
+export async function readODataMetadataFromManifest(
     appPath: string,
     saveLocal: boolean = false
 ): Promise<ODataMetadataEntry[]> {
@@ -83,24 +86,23 @@ export async function readAnnotationfromManifest(
     );
 
     const dataSources = mergedManifest.manifest['sap.app'].dataSources ?? {};
-    const entries: ODataMetadataEntry[] = [];
-    for (const [name, dataSource] of Object.entries(dataSources)) {
-        if (dataSource.type !== 'OData') {
-            continue;
-        }
-        const rawMetadata = await abapProvider.service(dataSource.uri).metadata();
-        const formattedMetadata = formatXml(rawMetadata);
-        if (saveLocal) {
-            await writeLocalMetadata(appPath, name, formattedMetadata);
-        }
-        entries.push({
-            id: name,
-            url: dataSource.uri,
-            metadata: formattedMetadata,
-            model: modelsByDataSource.get(name)
-        });
-    }
-    return entries;
+    const odataSources = Object.entries(dataSources).filter(([, ds]) => ds.type === 'OData');
+
+    return Promise.all(
+        odataSources.map(async ([name, dataSource]) => {
+            const rawMetadata = await abapProvider.service(dataSource.uri).metadata();
+            const formattedMetadata = formatXml(rawMetadata);
+            if (saveLocal) {
+                await writeContextFile(appPath, `${name}-metadata.xml`, formattedMetadata);
+            }
+            return {
+                id: name,
+                url: dataSource.uri,
+                metadata: formattedMetadata,
+                model: modelsByDataSource.get(name)
+            };
+        })
+    );
 }
 
 /**
@@ -120,7 +122,8 @@ export async function getAvailableLibraryFromSystem(appPath: string): Promise<Ar
  * Lists OData V2 and V4 services available in the target system's catalog.
  *
  * @param appPath - Adaptation project root.
- * @param filter - Filter string to match service names.
+ * @param filter - Case-insensitive substring matched against service names.
+ *   Empty string returns every service.
  * @returns Combined service catalog entries from the V2 and V4 catalogs.
  */
 export async function getAvailableODataServices(appPath: string, filter: string): Promise<Array<ODataServiceInfo>> {
@@ -131,6 +134,9 @@ export async function getAvailableODataServices(appPath: string, filter: string)
         abapProvider.catalog(ODataVersion.v4)
     ]);
 
+    // Skip the on-prem probe inside listServices() — our supported targets are S/4HANA Cloud.
+    // Without this the V2/V4 catalog calls issue an extra HEAD request that returns 404 on cloud
+    // tenants and adds latency without changing the result.
     serviceCatalogV2.isS4Cloud = Promise.resolve(true);
     serviceCatalogV4.isS4Cloud = Promise.resolve(true);
 
@@ -139,8 +145,27 @@ export async function getAvailableODataServices(appPath: string, filter: string)
         serviceCatalogV4.listServices()
     ]);
 
+    const services = [...v2Services, ...v4Services];
+    if (!filter) {
+        return services;
+    }
     const needle = filter.toUpperCase();
-    return [...v2Services, ...v4Services].filter((service) => service.name.includes(needle));
+    return services.filter((service) => service.name.toUpperCase().includes(needle));
+}
+
+/**
+ * Serializes text (or serialized JSON) to `webapp/.context/<fileName>` for agent consumption.
+ *
+ * @param appPath - Adaptation project root.
+ * @param fileName - Basename to write under `webapp/.context/` (e.g. `libraries.json`).
+ * @param contents - UTF-8 payload to write.
+ * @returns Absolute path of the written file.
+ */
+export async function writeContextFile(appPath: string, fileName: string, contents: string): Promise<string> {
+    const filePath = path.join(appPath, CONTEXT_DIR, fileName);
+    await fs.promises.mkdir(path.dirname(filePath), { recursive: true });
+    await fs.promises.writeFile(filePath, contents, 'utf-8');
+    return filePath;
 }
 
 /**
@@ -148,6 +173,7 @@ export async function getAvailableODataServices(appPath: string, filter: string)
  *
  * @param appPath - Adaptation project root.
  * @returns ABAP service provider for the configured target.
+ * @throws {Error} When `ui5.yaml` has no `fiori-tools-preview` middleware with an ADP target URL.
  */
 async function getProvider(appPath: string): Promise<AbapServiceProvider> {
     const system = await getSystemUrl(appPath);
@@ -159,15 +185,22 @@ async function getProvider(appPath: string): Promise<AbapServiceProvider> {
  * Reads the preview middleware target from `ui5.yaml`.
  *
  * @param appPath - Adaptation project root.
- * @returns System URL and client; empty strings when unconfigured.
+ * @returns System URL and client from the `fiori-tools-preview` ADP target configuration.
+ * @throws {Error} When the middleware or its ADP target URL is missing.
  */
-async function getSystemUrl(appPath: string): Promise<systemPath> {
+async function getSystemUrl(appPath: string): Promise<SystemPath> {
     const ui5Config = await readUi5Config(appPath, 'ui5.yaml');
-    const target = ui5Config.findCustomMiddleware<{ adp?: { target?: Partial<systemPath> } }>('fiori-tools-preview')
+    const target = ui5Config.findCustomMiddleware<{ adp?: { target?: Partial<SystemPath> } }>('fiori-tools-preview')
         ?.configuration?.adp?.target;
+    if (!target?.url) {
+        throw new Error(
+            `No ABAP target configured for ${appPath}. Add a 'fiori-tools-preview' middleware ` +
+                `with 'configuration.adp.target.url' (and optional 'client') to ui5.yaml.`
+        );
+    }
     return {
-        url: target?.url ?? '',
-        client: target?.client ?? ''
+        url: target.url,
+        client: target.client ?? ''
     };
 }
 
@@ -181,19 +214,6 @@ async function readManifest(appPath: string): Promise<AppDescrVariant> {
     const manifestPath = path.join(appPath, 'webapp', 'manifest.appdescr_variant');
     const fileContents = await fs.promises.readFile(manifestPath, 'utf-8');
     return JSON.parse(fileContents) as AppDescrVariant;
-}
-
-/**
- * Writes formatted OData metadata to the project's `webapp/.context` folder for agent consumption.
- *
- * @param appPath - Adaptation project root.
- * @param name - Data source name; used as the file basename.
- * @param metadata - Formatted XML content to persist.
- */
-async function writeLocalMetadata(appPath: string, name: string, metadata: string): Promise<void> {
-    const metadataPath = path.join(appPath, 'webapp', '.context', `${name}-metadata.xml`);
-    await fs.promises.mkdir(path.dirname(metadataPath), { recursive: true });
-    await fs.promises.writeFile(metadataPath, metadata, 'utf-8');
 }
 
 /**
