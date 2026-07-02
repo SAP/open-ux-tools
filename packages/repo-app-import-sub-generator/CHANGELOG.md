@@ -1,5 +1,17 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.1.27
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.15 → 1.0.16
+- @sap-ux/inquirer-common 1.0.16 → 1.0.17
+- @sap-ux/odata-service-inquirer 3.0.18 → 3.0.19
+- @sap-ux/fiori-elements-writer 3.0.42 → 3.0.43
+- @sap-ux/fiori-freestyle-writer 3.0.38 → 3.0.39
+
 ## 1.1.26
 
 ### Patch Changes
