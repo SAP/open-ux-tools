@@ -3,7 +3,9 @@ import { NO_LIVE_MODE, type NoLiveMode } from '../language/diagnostics.js';
 import { createFioriRule } from '../language/rule-factory.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import { createJsonFixer } from '../language/rule-fixer.js';
+import { isV2Page } from '../utils/helpers.js';
 import { FioriJSONSourceCode } from '../language/json/source-code.js';
+import { FioriChangeSourceCode } from '../language/change/source-code.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: NO_LIVE_MODE,
@@ -22,39 +24,43 @@ const rule: FioriRuleDefinition = createFioriRule({
     },
 
     check(context) {
-        if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
+        if (
+            !(context.sourceCode instanceof FioriJSONSourceCode) &&
+            !(context.sourceCode instanceof FioriChangeSourceCode)
+        ) {
             return [];
         }
         const problems: NoLiveMode[] = [];
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
             const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
-            const parsedService = context.sourceCode.projectContext.getIndexedServiceForMainService(parsedApp);
-            if (!parsedService) {
-                continue;
-            }
-            if (app.type !== 'fe-v4') {
-                continue;
-            }
-            for (const page of app.pages) {
-                if (page.type === 'list-report-page') {
-                    if (page.liveMode.valueInFile) {
+            app.pages.forEach((page) => {
+                if (page.type === 'list-report-page' && page.configuration.liveMode?.valueInFile) {
+                    if (isV2Page(page)) {
+                        problems.push({
+                            type: NO_LIVE_MODE,
+                            pageName: page.targetName,
+                            property: 'liveMode',
+                            changeFileUri: page.configuration.liveMode.changeFileUri
+                        });
+                    } else if (context.sourceCode instanceof FioriJSONSourceCode) {
                         const node = context.sourceCode.getNode(
                             context.sourceCode.ast.body,
-                            page.liveMode.configurationPath
+                            page.configuration.liveMode.configurationPath
                         );
                         problems.push({
                             type: NO_LIVE_MODE,
                             pageName: page.targetName,
+                            property: 'liveMode',
                             manifest: {
                                 uri: parsedApp.manifest.manifestUri,
                                 object: parsedApp.manifestObject,
-                                propertyPath: page.liveMode.configurationPath,
+                                propertyPath: page.configuration.liveMode.configurationPath,
                                 loc: node.loc
                             }
                         });
                     }
                 }
-            }
+            });
         }
         return problems;
     },
@@ -70,7 +76,23 @@ const rule: FioriRuleDefinition = createFioriRule({
                     operation: 'delete'
                 })
             });
-        }
+        },
+    createChangeVisitorHandler(context) {
+        return function report(node: MemberNode): void {
+            const deepestPathResult = { validatedPath: ['content', 'newValue'], missingSegments: [] };
+            context.report({
+                node,
+                messageId: NO_LIVE_MODE,
+                fix: createJsonFixer({
+                    context,
+                    deepestPathResult,
+                    node,
+                    operation: 'update',
+                    value: false
+                })
+            });
+        };
+    }
 });
 
 export default rule;
