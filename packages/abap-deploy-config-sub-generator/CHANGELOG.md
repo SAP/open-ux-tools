@@ -1,5 +1,17 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 1.0.28
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Register autocomplete plugin inside getPrompts so CLI renders package autocomplete correctly [[4c34a73](https://github.com/SAP/open-ux-tools/commit/4c34a73ad972fa63eb83cf7ee2f775725e7cca71)]
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.19 → 2.0.20
+
 ## 1.0.27
 
 ### Patch Changes

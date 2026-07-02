@@ -1,5 +1,17 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 2.0.20
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-02
+
+#### Bug Fixes
+
+- Register autocomplete plugin inside getPrompts so CLI renders package autocomplete correctly [[4c34a73](https://github.com/SAP/open-ux-tools/commit/4c34a73ad972fa63eb83cf7ee2f775725e7cca71)]
+
 ## 2.0.19
 
 ### Patch Changes
