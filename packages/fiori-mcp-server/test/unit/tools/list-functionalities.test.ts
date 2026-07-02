@@ -76,7 +76,8 @@ describe('listFunctionalities', () => {
         expect(functionalities.functionalities.map((functionality) => functionality.functionalityId)).toEqual([
             'add-page',
             'delete-page',
-            'create-controller-extension'
+            'create-controller-extension',
+            'list-system-resources'
         ]);
     });
 
@@ -100,7 +101,8 @@ describe('listFunctionalities', () => {
         expect(functionalities.functionalities.map((functionality) => functionality.functionalityId)).toEqual([
             'add-page',
             'delete-page',
-            'create-controller-extension'
+            'create-controller-extension',
+            'list-system-resources'
         ]);
     });
 
@@ -109,7 +111,7 @@ describe('listFunctionalities', () => {
         const result = (await listFunctionalities({
             appPath
         })) as ListFunctionalitiesOutput;
-        expect(result.functionalities.length).toEqual(101);
+        expect(result.functionalities.length).toEqual(102);
         expect(result.functionalities).toMatchSnapshot();
         expect(readAppMock).toHaveBeenCalledTimes(1);
         expect(getSpecificationMock).toHaveBeenCalledTimes(1);
@@ -133,7 +135,7 @@ describe('listFunctionalities', () => {
             appPath
         })) as ListFunctionalitiesOutput;
         // Check
-        expect(result.functionalities.length).toEqual(101);
+        expect(result.functionalities.length).toEqual(102);
         expect(readAppMock).toHaveBeenCalledTimes(1);
         expect(getSpecificationMock).toHaveBeenCalledTimes(1);
         expect(mockGetSpecificationModuleFromCache).toHaveBeenCalledTimes(1);

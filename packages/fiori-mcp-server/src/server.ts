@@ -23,11 +23,9 @@ import {
     generateAdaptationProject,
     openAdaptationEditor,
     adpControllerExtension,
-    listLibrariesFromSystem,
     readODataMetadataAdp,
     runRtaWorkflowStep,
-    tools,
-    listODataServices
+    tools
 } from './tools/index.js';
 import { stopBrowser } from './tools/run-rta-workflow-step/browser/index.js';
 import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry/index.js';
@@ -246,12 +244,6 @@ export class FioriFunctionalityServer {
                         break;
                     case 'adp_controller_extension':
                         result = await adpControllerExtension(args as AdpControllerExtensionInput);
-                        break;
-                    case 'list_libraries_from_system':
-                        result = await listLibrariesFromSystem(args as ListFunctionalitiesInput);
-                        break;
-                    case 'list_odata_services_from_system':
-                        result = await listODataServices(args as ListFunctionalitiesInput);
                         break;
                     case 'read_odata_metadata_adp':
                         result = await readODataMetadataAdp(args as AdpMetadataInput);

@@ -104,6 +104,7 @@ describe('FioriFunctionalityServer', () => {
             'open_adaptation_editor',
             'adp_controller_extension',
             'run_rta_workflow_step',
+            'read_odata_metadata_adp',
             'list_functionality',
             'get_functionality_details',
             'execute_functionality'
@@ -353,6 +354,7 @@ describe('FioriFunctionalityServer', () => {
                 'open_adaptation_editor',
                 'adp_controller_extension',
                 'run_rta_workflow_step',
+                'read_odata_metadata_adp',
                 'list_functionality',
                 'get_functionality_details',
                 'execute_functionality'
