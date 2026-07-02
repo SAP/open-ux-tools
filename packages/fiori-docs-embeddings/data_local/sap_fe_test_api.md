@@ -105,6 +105,17 @@ if passed as an object, the following pattern will be considered:
 
 Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
 
+**STEP**: iCheckContactDialog([mState])
+
+**DESCRIPTION**: Checks a Contact popup dialog.
+
+Parameters:
+- `mState` `{object}` *(optional)* — The expected state of dialog elements.
+Pass <code>visible: false</code> to assert no matching element is shown — this also covers
+controls that are not rendered (e.g. <code>UI.Hidden</code>).
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
 --------------------------------
 
 **TITLE**: sap.fe.test.api.DialogCreateActions
@@ -223,6 +234,17 @@ if passed as an object, the following pattern will be considered:
 }
 </pre></code>
 - `mState` `{object}` *(optional)* — Defines the expected state of the field
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
+**STEP**: iCheckContactDialog([mState])
+
+**DESCRIPTION**: Checks a Contact popup dialog.
+
+Parameters:
+- `mState` `{object}` *(optional)* — The expected state of dialog elements.
+Pass <code>visible: false</code> to assert no matching element is shown — this also covers
+controls that are not rendered (e.g. <code>UI.Hidden</code>).
 
 Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
 
@@ -377,6 +399,17 @@ if passed as an object, the following pattern will be considered:
 }
 </pre></code>
 - `mState` `{object}` *(optional)* — Defines the expected state of the field
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
+**STEP**: iCheckContactDialog([mState])
+
+**DESCRIPTION**: Checks a Contact popup dialog.
+
+Parameters:
+- `mState` `{object}` *(optional)* — The expected state of dialog elements.
+Pass <code>visible: false</code> to assert no matching element is shown — this also covers
+controls that are not rendered (e.g. <code>UI.Hidden</code>).
 
 Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
 
@@ -665,6 +698,17 @@ if passed as an object, the following pattern will be considered:
 
 Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
 
+**STEP**: iCheckContactDialog([mState])
+
+**DESCRIPTION**: Checks a Contact popup dialog.
+
+Parameters:
+- `mState` `{object}` *(optional)* — The expected state of dialog elements.
+Pass <code>visible: false</code> to assert no matching element is shown — this also covers
+controls that are not rendered (e.g. <code>UI.Hidden</code>).
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
 --------------------------------
 
 **TITLE**: sap.fe.test.api.FilterBarActions
@@ -744,6 +788,24 @@ Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function,
 **STEP**: iRemoveAdaptationFilterField(vFieldIdentifier)
 
 **DESCRIPTION**: Removes a field as a filter field.
+
+Parameters:
+- `vFieldIdentifier` `{string|sap.fe.test.api.FilterFieldIdentifier}` — The identifier of the field
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
+**STEP**: iShowAdaptationFilterField(vFieldIdentifier)
+
+**DESCRIPTION**: Shows a field in the filter bar using the filter adaptation dialog.
+
+Parameters:
+- `vFieldIdentifier` `{string|sap.fe.test.api.FilterFieldIdentifier}` — The identifier of the field
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
+**STEP**: iHideAdaptationFilterField(vFieldIdentifier)
+
+**DESCRIPTION**: Hides a field in the filter bar using the filter adaptation dialog.
 
 Parameters:
 - `vFieldIdentifier` `{string|sap.fe.test.api.FilterFieldIdentifier}` — The identifier of the field
@@ -836,12 +898,18 @@ If <code>vConditionValues</code> is <code>undefined</code>, the current conditio
 Only the value of the field itself is considered, i.e. text arrangements are not part of the check.
 
 Parameters:
-- `vFieldIdentifier` `{object|sap.fe.test.api.FilterFieldIdentifier}` — The identifier of the filter field
+- `vFieldIdentifier` `{string|sap.fe.test.api.FilterFieldIdentifier}` — The identifier of the filter field, or its label
 - `vConditionValues` `{string|object|Array}` *(optional)* — The expected value(s) of the filter field
 - `sOperator` `{string}` *(optional)* — The expected operator
 - `mState` `{object}` *(optional)* — Defines the expected state of the filter field
 
 Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
+**STEP**: iSeeFocusOnSearchField()
+
+**DESCRIPTION**: Checks if the focus is on the search field.
+
+Returns: `{object}` The result of the {@link sa p.ui.test.Opa5#waitFor} function, to be used for chained statements
 
 **STEP**: iSeeFocusOnFilterField([sFilterFieldLabel])
 
@@ -900,6 +968,24 @@ Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function,
 Parameters:
 - `vFieldIdentifier` `{string|sap.fe.test.api.FilterFieldIdentifier}` — The identifier of the filter field, or its label
 - `mState` `{object}` *(optional)* — Defines the expected state of the filter field in the adaptation dialog
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
+**STEP**: iCheckAdaptationFilterFieldIsVisible(vFieldIdentifier)
+
+**DESCRIPTION**: Checks a field in the filter adaptation dialog to be visible.
+
+Parameters:
+- `vFieldIdentifier` `{string|sap.fe.test.api.FilterFieldIdentifier}` — The identifier of the filter field, or its label
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
+**STEP**: iCheckAdaptationFilterFieldIsHidden(vFieldIdentifier)
+
+**DESCRIPTION**: Checks a field in the filter adaptation dialog to be hidden.
+
+Parameters:
+- `vFieldIdentifier` `{string|sap.fe.test.api.FilterFieldIdentifier}` — The identifier of the filter field, or its label
 
 Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
 
@@ -1095,12 +1181,22 @@ Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function,
 
 Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
 
-**STEP**: iClickLink(vFieldIdentifier)
+**STEP**: iClickLink(vFieldIdentifier, [bWaitForPopover])
 
 **DESCRIPTION**: Clicks a link within a form.
 
 Parameters:
 - `vFieldIdentifier` `{sap.fe.test.api.FieldIdentifier|string}` — The identifier of the field
+- `bWaitForPopover` `{boolean}` *(optional)* — Whether to wait for a popover to open after clicking. The default value is false. If the link opens a popover, set this to true.
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
+**STEP**: iClickContactLink(linkContent)
+
+**DESCRIPTION**: Clicks a link for a contact-field within a form.
+
+Parameters:
+- `linkContent` `{string}` — The content of the link to be clicked
 
 Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
 
@@ -1301,6 +1397,15 @@ Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function,
 
 Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
 
+**STEP**: iClickLink(vLinkIdentifier)
+
+**DESCRIPTION**: Clicks a link within the object page header.
+
+Parameters:
+- `vLinkIdentifier` `{sap.fe.test.api.HeaderFieldGroupIdentifier|string}` — The identifier of the field or the content of the link to be clicked
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
 --------------------------------
 
 **TITLE**: sap.fe.test.api.HeaderActionsLR
@@ -1377,7 +1482,7 @@ Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function,
 **DESCRIPTION**: Checks a field within a field group in the object page header.
 
 Parameters:
-- `vFieldIdentifier` `{sap.fe.test.api.FieldIdentifier|string}` — The identifier of the field
+- `vFieldIdentifier` `{sap.fe.test.api.HeaderFieldGroupIdentifier}` — The identifier of the field
 - `vValue` `{string|Array|object}` *(optional)* — The value to check. If it is an array, the first entry is considered as
 the value and the second as the description. If it is an object it must follow this pattern:
 <code><pre>
@@ -1390,6 +1495,27 @@ the value and the second as the description. If it is an object it must follow t
 
 Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
 
+**STEP**: iCheckProgressIndicator(Title, PercentValue)
+
+**DESCRIPTION**: Checks a progress indicator data point in the object page header.
+
+Parameters:
+- `Title` `{string}` — The title of the progress indicator
+- `PercentValue` `{number}` — The expected value of the progress indicator
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
+**STEP**: iCheckRatingIndicator(Title, Value, MaxValue)
+
+**DESCRIPTION**: Checks a rating indicator data point in the object page header.
+
+Parameters:
+- `Title` `{string}` — The title of the rating indicator
+- `Value` `{number}` — The expected value of the rating indicator
+- `MaxValue` `{number}` — The expected maximum value of the rating indicator
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
 **STEP**: iCheckTitle([sTitle], [sDescription])
 
 **DESCRIPTION**: Checks the title and description of the object page.
@@ -1399,6 +1525,19 @@ If either title or description is <code>undefined</code>, it will not be checked
 Parameters:
 - `sTitle` `{string}` *(optional)* — Title of the object page header
 - `sDescription` `{string}` *(optional)* — Description of the object page header
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
+**STEP**: iCheckTitlePath([sTitlePath], [sDescriptionPath])
+
+**DESCRIPTION**: Checks the binding path of the title and description of the object page.
+
+Use this method when the title or description is bound to a model path rather than a static value.
+If either path is <code>undefined</code>, it is not checked.
+
+Parameters:
+- `sTitlePath` `{string}` *(optional)* — The binding path of the object page header title
+- `sDescriptionPath` `{string}` *(optional)* — The binding path of the object page header description
 
 Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
 
@@ -1417,6 +1556,16 @@ Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function,
 
 Parameters:
 - `mState` `{object}` — Defines the expected state of the button
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
+**STEP**: iCheckMicroChart(vMicroChartIdentifier, [sUoMLabel])
+
+**DESCRIPTION**: Checks a MicroChart shown in the header of an object page.
+
+Parameters:
+- `vMicroChartIdentifier` `{object|string}` — Id/Type or Title of MicroChart
+- `sUoMLabel` `{string}` *(optional)* — UoM label of the MicroChart. When omitted, the UoM label is not asserted.
 
 Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
 
@@ -1445,6 +1594,16 @@ Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function,
 
 Parameters:
 - `mState` `{object}` *(optional)* — Defines the expected state of the button
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
+**STEP**: iCheckLink(vLinkIdentifier, [mState])
+
+**DESCRIPTION**: Checks the state of a link located in the Object Page header.
+
+Parameters:
+- `vLinkIdentifier` `{sap.fe.test.api.HeaderFieldGroupIdentifier|string}` — The identifier of the field or the link text
+- `mState` `{object}` *(optional)* — Defines the expected state of the link
 
 Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
 
@@ -1505,6 +1664,25 @@ Parameters:
 }
 </pre></code>
 - `vColumn` `{string|number}` — The column name, label or index
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
+**STEP**: iClickLink([mRowValues], vColumn)
+
+**DESCRIPTION**: Clicks a link in a table cell.
+
+Parameters:
+- `mRowValues` `{object|number}` *(optional)* — Specifies the target row by column-value map or 0-based index
+- `vColumn` `{string|number}` — The column name, label, or index
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
+**STEP**: iClickContactLink(linkContent)
+
+**DESCRIPTION**: Clicks a Contact Card link within the table using its link text.
+
+Parameters:
+- `linkContent` `{string}` — The text of the contact link to click
 
 Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
 
@@ -2279,8 +2457,10 @@ Properties:
 **DESCRIPTION**: A field identifier
 
 Properties:
-- `fieldGroup` `{string}` *(optional)* — The name of the field group containing the field
+- `fieldGroup` `{string}` *(optional)* — The name of the field group containing the field. Required when identifying a field inside a header facet form.
 - `property` `{string}` — The name of the field
+- `targetAnnotation` `{string}` *(optional)* — The name of the target annotation, such as a Chart or MicroChart annotation term.
+  When set, a DataFieldForAnnotation is identified instead of a DataField, and the resolved control ID changes accordingly.
 - `connectedFields` `{string}` *(optional)* — The name of the connected field containing the field
 
 **STEP**: SectionIdentifier (sap.fe.test.api.SectionIdentifier)
@@ -2337,7 +2517,7 @@ Properties:
 
 Properties:
 - `section` `{string}` — The facet ID
-- `fieldGroup` `{string}` — The fieldgroup ID
+- `fieldGroup` `{string}` *(optional)* — The fieldgroup ID
 - `isHeaderFacet` `{boolean}` *(optional)* — Is it about the editable header facet
 
 **STEP**: HeaderFacetIdentifier (sap.fe.test.api.HeaderFacetIdentifier)
@@ -2348,6 +2528,19 @@ Properties:
 - `facetId` `{string}` — The identifier of the facet
 - `collection` `{boolean}` *(optional)* — Defines whether the facet is a collection facet (default: <code>false</code>)
 - `custom` `{boolean}` *(optional)* — Defines whether the facet is a custom header facet (default: <code>false</code>)
+
+**STEP**: HeaderFieldGroupIdentifier (sap.fe.test.api.HeaderFieldGroupIdentifier)
+
+**DESCRIPTION**: An identifier for a field within a field group in the Object Page header.
+Used by {@link sap.fe.test.api.HeaderAssertions#iCheckFieldInFieldGroup},
+{@link sap.fe.test.api.HeaderAssertions#iCheckLink}, and
+{@link sap.fe.test.api.HeaderActions#iClickLink}.
+
+Properties:
+- `fieldGroup` `{string}` — The name of the field group containing the field
+- `field` `{string}` — The name of the field within the field group
+- `targetAnnotation` `{string}` *(optional)* — The target annotation path for DataFieldForAnnotation lookups.
+  When present, a DataFieldForAnnotation is identified instead of a DataField.
 
 **STEP**: ColumnIdentifier (sap.fe.test.api.ColumnIdentifier)
 
