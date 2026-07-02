@@ -33,7 +33,8 @@ const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 
  */
 export const meta = {
     name: packageJson.name,
-    version: packageJson.version
+    version: packageJson.version,
+    namespace: '@sap-ux/fiori-tools'
 };
 
 /**
@@ -52,11 +53,7 @@ const fioriRules = rules as Plugin['rules'];
  * Contains plugin metadata, supported languages, rules, and processors.
  */
 const plugin: Plugin = {
-    meta: {
-        name: packageJson.name,
-        version: '0.0.1',
-        namespace: '@sap-ux/fiori-tools'
-    },
+    meta,
     languages,
     rules: fioriRules,
     processors: {}
