@@ -6,7 +6,8 @@
 '@sap-ux/adp-tooling': minor
 '@sap-ux/ui5-config': minor
 '@sap-ux/fiori-mcp-server': patch
-'@sap-ux/sap-systems-ext': minor
+'@sap-ux/eslint-plugin-fiori-tools': patch
+'sap-ux-sap-systems-ext': patch
 '@sap-ux/types': minor
 '@sap-ux/create': minor
 ---
