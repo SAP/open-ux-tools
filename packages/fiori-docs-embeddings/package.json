@@ -14,7 +14,7 @@
         "copy-create-readme": "node -e \"require('fs').copyFileSync('node_modules/@sap-ux/create/README.md', 'data_local/create-README.md')\"",
         "fetch-ux-ui5-tooling-readme": "tsx src/scripts/load-readme-from-npm.ts @sap/ux-ui5-tooling",
         "build-fe-test-api-docs": "tsx src/scripts/build-fe-test-api-docs.ts",
-        "build": "npm-run-all -l -p build-compile copy-create-readme fetch-ux-ui5-tooling-readme build-fe-test-api-docs update-embeddings-script",
+        "build": "npm-run-all -l -p build-compile copy-create-readme fetch-ux-ui5-tooling-readme build-fe-test-api-docs -s update-embeddings-script",
         "update-docs-script": "tsx src/scripts/build-docs.ts",
         "update-docs-opa-guide": "tsx src/scripts/build-docs.ts --source=fiori-tools-opa-guide",
         "update-local-docs": "tsx src/scripts/build-local-docs.ts",
