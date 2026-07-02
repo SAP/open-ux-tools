@@ -50,11 +50,11 @@ function journey() {
 <% } %>
         Then.onThe<%- navigationParents.parentLRName%>Generated.onTable("").iCheckRows();
         When.onThe<%- navigationParents.parentLRName%>Generated.onTable("").iPressRow(0);
-<% if(navigationParents.parentOPName) { %>
-        Then.onThe<%- navigationParents.parentOPName%>Generated.iSeeThisPage();
-        Then.onThe<%- navigationParents.parentOPName%>Generated.onTable({ property: "<%- navigationParents.parentOPTableSection %>" }).iCheckRows();
-        When.onThe<%- navigationParents.parentOPName%>Generated.onTable({ property: "<%- navigationParents.parentOPTableSection %>" }).iPressRow(0);
-<% } %>
+<% navigationParents.parentOPs.forEach(function(parent) { %>
+        Then.onThe<%- parent.name %>Generated.iSeeThisPage();
+        Then.onThe<%- parent.name %>Generated.onTable({ property: "<%- parent.navigationProperty %>" }).iCheckRows();
+        When.onThe<%- parent.name %>Generated.onTable({ property: "<%- parent.navigationProperty %>" }).iPressRow(0);
+<% }); %>
         Then.onThe<%- name%>Generated.iSeeThisPage();
     });
 
