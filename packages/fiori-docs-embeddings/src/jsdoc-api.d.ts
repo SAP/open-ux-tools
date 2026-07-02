@@ -8,5 +8,5 @@ declare module 'jsdoc-api' {
 
     function explain(options: ExplainOptions): Promise<object[]>;
 
-    export default { explain };
+    export = { explain };
 }

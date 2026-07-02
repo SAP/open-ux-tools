@@ -6,9 +6,11 @@ import { fileURLToPath } from 'node:url';
 import jsdocApi from 'jsdoc-api';
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const PACKAGE_ROOT = path.resolve(__dirname, '../../..');
 const API_DIR = 'packages/sap.fe.test/src/sap/fe/test/api';
-const REPO_PATH = path.resolve('./data/git_repos/sap.fe');
-const OUTPUT_PATH = path.resolve('./data_local/sap_fe_test_api.md');
+const REPO_PATH = path.resolve(PACKAGE_ROOT, 'data/git_repos/sap.fe');
+const OUTPUT_PATH = path.resolve(PACKAGE_ROOT, 'data_local/sap_fe_test_api.md');
 
 // jsdoc-api doclet types we care about
 interface JsDoclet {
@@ -49,7 +51,10 @@ interface JsDocProperty {
 }
 
 function isPublic(d: JsDoclet): boolean {
-    return d.access === 'public' && !d.undocumented;
+    if (d.undocumented) return false;
+    // typedefs and enums are public by convention; classes/functions require explicit @public
+    if (d.kind === 'typedef' || d.kind === 'member' || d.kind === 'constant') return true;
+    return d.access === 'public';
 }
 
 function formatType(names: string[] | undefined): string {
@@ -174,14 +179,22 @@ class FeTestApiDocBuilder {
 
     private async getApiFiles(): Promise<string[]> {
         const apiDir = path.join(REPO_PATH, API_DIR);
-        const entries = await fs.readdir(apiDir);
+        const entries = await fs.readdir(apiDir, { withFileTypes: true });
         return entries
-            .filter((e) => e.endsWith('.js') || e.endsWith('.ts'))
-            .map((e) => path.join(apiDir, e));
+            .filter((e) => e.isFile() && (e.name.endsWith('.js') || e.name.endsWith('.ts')))
+            .map((e) => path.join(apiDir, e.name));
     }
 
     async build(): Promise<void> {
         this.logger.info('Building sap.fe.test API documentation...');
+
+        const apiDir = path.join(REPO_PATH, API_DIR);
+        try {
+            await fs.access(apiDir);
+        } catch {
+            this.logger.warn(`sap.fe repo not found at ${REPO_PATH}, skipping sap.fe.test API doc generation.`);
+            return;
+        }
 
         const files = await this.getApiFiles();
         this.logger.info(`Found ${files.length} files in api/`);
