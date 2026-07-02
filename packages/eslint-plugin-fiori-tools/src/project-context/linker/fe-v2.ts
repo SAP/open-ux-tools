@@ -510,12 +510,11 @@ function linkObjectPagePage(
     const sections = collectSections('v2', entityType, mainService);
     const createMode = target.component?.settings?.createMode;
     const componentName = 'sap.suite.ui.generic.template.ObjectPage';
-    const pageChanges = getPageChanges(context.app.changes, { type: 'object-page', componentName, entitySetName });
     const page: FeV2ObjectPage = {
         type: 'object-page',
         targetName: name,
         componentName,
-        configuration: createPageConfiguration(path, name, createMode, undefined, pageChanges),
+        configuration: createPageConfiguration(path, name, createMode, undefined, []), // pageChanges not required for V2 object page config
         entitySetName,
         entity,
         sections: [],
