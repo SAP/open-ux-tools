@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.6.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-30
+
+#### Features
+
+- Enhanced the eslint-plugin-fiori-tools to include precise source location (loc) data in all manifest-related ESLint diagnostics. [[1d0eee4](https://github.com/SAP/open-ux-tools/commit/1d0eee481cedd1fcac882ba55df18e8a7400f4a2)]
+
 ## 10.6.5
 
 ### Patch Changes

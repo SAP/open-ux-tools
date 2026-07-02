@@ -237,16 +237,6 @@ export class AdpPreview {
             res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
         } else if (req.path === '/Component-preload.js') {
             res.status(404).send();
-        } else if (req.path.startsWith('/i18n/') && req.path.endsWith('.properties')) {
-            // i18n .properties files (default, locale variants, and per-page bundles such
-            // as /i18n/ListReport/<entity>/i18n.properties) must always fall through to
-            // the base app's resource server. The ADP webapp may also contain an
-            // i18n.properties file with prefixed customer keys, but those are merged
-            // into the model at runtime via appdescr_ui5_addNewModelEnhanceWith — not
-            // by substituting the entire bundle here. Substituting hides the base app's
-            // translations and breaks {@i18n>...} lookups (e.g. column header labels in
-            // UI.LineItem).
-            next();
         } else {
             // check if the requested file exists in the file system (replace .js with .* for typescript)
             const files = await this.project.byGlob(req.path.replace('.js', '.*'));
