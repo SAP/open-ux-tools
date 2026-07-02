@@ -4,8 +4,8 @@ import { meta, languages } from '../../src/index.js';
 import {
     getManifestAsCode,
     setup,
-    V2_MANIFEST,
-    V2_MANIFEST_PATH,
+    V2_FLEX_CHANGE_CONTENT,
+    V2_FLEX_CHANGE_FILE_PATH,
     V4_MANIFEST,
     V4_MANIFEST_PATH
 } from '../test-helper.js';
@@ -17,6 +17,28 @@ const ruleTester = new RuleTester({
 
 const TEST_NAME = 'sap-no-live-mode';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
+
+const v2FlexChangeLiveModeEnabledLR = {
+    ...V2_FLEX_CHANGE_CONTENT,
+    content: { ...V2_FLEX_CHANGE_CONTENT.content, property: 'liveMode' },
+    selector: {
+        ...V2_FLEX_CHANGE_CONTENT.selector,
+        id: 'v2xmlstart::sap.suite.ui.generic.template.AnalyticalListPage.view.AnalyticalListPage::Z_SEPMRA_SO_SALESORDERANALYSIS--analyticalListPageFilter'
+    }
+};
+
+const v2FlexChangeLiveModeDisabledLR = {
+    ...v2FlexChangeLiveModeEnabledLR,
+    content: { ...v2FlexChangeLiveModeEnabledLR.content, property: 'liveMode', newValue: false }
+};
+
+const v2FlexChangeLiveModeEnabledOP = {
+    ...v2FlexChangeLiveModeEnabledLR,
+    selector: {
+        ...v2FlexChangeLiveModeEnabledLR.selector,
+        id: 'v2xmlstart::sap.suite.ui.generic.template.ObjectPage.view.Details::Z_SEPMRA_SO_SALESORDERANALYSIS--Products::Table'
+    }
+};
 
 ruleTester.run(TEST_NAME, noLiveModeRule, {
     valid: [
@@ -72,14 +94,29 @@ ruleTester.run(TEST_NAME, noLiveModeRule, {
         ),
         createValidTest(
             {
-                name: 'V2 - ODataV2 application is not checked',
-                filename: V2_MANIFEST_PATH,
-                code: JSON.stringify(V2_MANIFEST, undefined, 2)
+                name: 'V2 - liveMode not defined',
+                filename: V2_FLEX_CHANGE_FILE_PATH,
+                code: JSON.stringify(V2_FLEX_CHANGE_CONTENT, undefined, 2)
+            },
+            []
+        ),
+        createValidTest(
+            {
+                name: 'V2 - liveMode is not checked on object page',
+                filename: V2_FLEX_CHANGE_FILE_PATH,
+                code: JSON.stringify(v2FlexChangeLiveModeEnabledOP, undefined, 2)
+            },
+            []
+        ),
+        createValidTest(
+            {
+                name: 'V2 - liveMode is false on list report page',
+                filename: V2_FLEX_CHANGE_FILE_PATH,
+                code: JSON.stringify(v2FlexChangeLiveModeDisabledLR, undefined, 2)
             },
             []
         )
     ],
-
     invalid: [
         createInvalidTest(
             {
@@ -110,6 +147,22 @@ ruleTester.run(TEST_NAME, noLiveModeRule, {
                         }
                     }
                 ])
+            },
+            []
+        ),
+        createInvalidTest(
+            {
+                name: 'V2 - liveMode is true on a list report page',
+                filename: V2_FLEX_CHANGE_FILE_PATH,
+                code: JSON.stringify(v2FlexChangeLiveModeEnabledLR, undefined, 2),
+                errors: [
+                    {
+                        message: 'Live mode must not be used because it has a negative impact on performance.',
+                        line: 10,
+                        column: 5
+                    }
+                ],
+                output: JSON.stringify(v2FlexChangeLiveModeDisabledLR, undefined, 2) // liveMode set to false
             },
             []
         )
