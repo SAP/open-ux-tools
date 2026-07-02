@@ -1872,7 +1872,7 @@ exports[`Building Blocks RichTextEditorButtonGroups building block multiple Rich
 </core:FragmentDefinition>"
 `;
 
-exports[`Building Blocks generate Page building block with basic template inserts only items and no controller: generate-page-block-basic 1`] = `
+exports[`Building Blocks generate Page building block with basic template generates a minimal Page element and no controller: generate-page-block-basic 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <macros:Page id=\\"testPage\\"/>
 </mvc:View>"

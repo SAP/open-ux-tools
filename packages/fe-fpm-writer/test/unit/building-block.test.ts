@@ -1203,7 +1203,7 @@ describe('Building Blocks', () => {
         expect(viewContent).toContain('onActionsClickAction1');
     });
 
-    test('generate Page building block with basic template inserts only items and no controller', async () => {
+    test('generate Page building block with basic template generates a minimal Page element and no controller', async () => {
         const aggregationPath = `/mvc:View/*[local-name()='Page']`;
         const basePath = join(testAppPath, 'generate-page-block-blank');
         fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));

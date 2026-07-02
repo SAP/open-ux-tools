@@ -46,12 +46,7 @@ export type {
     Action,
     PageTemplateType
 } from './building-block/types.js';
-export {
-    PAGE_TEMPLATE_TYPE_FULL,
-    PAGE_TEMPLATE_TYPE_BASIC,
-    PAGE_AGGREGATIONS,
-    PAGE_BB_DEFAULT_AGGREGATIONS
-} from './building-block/types.js';
+export { PAGE_TEMPLATE_TYPE_FULL, PAGE_TEMPLATE_TYPE_BASIC, PAGE_AGGREGATIONS } from './building-block/types.js';
 export type { PageAggregationName, GenerateBuildingBlockAggregationConfig } from './building-block/types.js';
 export {
     generateBuildingBlock,

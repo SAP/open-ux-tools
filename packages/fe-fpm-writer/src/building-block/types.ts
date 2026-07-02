@@ -412,8 +412,8 @@ export interface Page extends BuildingBlock {
 
     /**
      * The template type for the page building block.
-     * 'full' generates a full page template with all aggregations and controller stubs.
-     * 'basic' generates a page with only the items aggregation (empty main content area).
+     * 'full' generates a full page template with all aggregations.
+     * 'basic' generates a minimal self-closing <macros:Page/> with no aggregations.
      */
     templateType?: PageTemplateType;
 
@@ -443,44 +443,6 @@ export const PAGE_BB_DEFAULT_AGGREGATIONS: Partial<Record<PageAggregationName, s
         '<Button text="Action 1" press=".onActionsClickAction1" type="Ghost" />\n    <Button text="Action 2" press=".onActionsClickAction2" type="Ghost" />',
     headerContent: '<VBox>\n    <Title text="Page Title" />\n</VBox>',
     footer: '<OverflowToolbar><ToolbarSpacer /><Button text="Approve" press=".onFooterApprove" type="Accept" icon="" /><Button text="Reject" press=".onFooterReject" type="Reject" icon="" /></OverflowToolbar>'
-};
-
-/** Per-aggregation handler definitions — name, JSDoc text, and console.log text for generated controller stubs. */
-export const PAGE_BB_HANDLERS: Partial<
-    Record<PageAggregationName, ReadonlyArray<{ name: string; doc: string; log: string }>>
-> = {
-    breadcrumbs: [
-        {
-            name: 'onBreadcrumbsPressHome',
-            doc: 'Breadcrumbs - navigate to Home.',
-            log: 'Breadcrumbs - navigate to Home'
-        },
-        {
-            name: 'onBreadcrumbsPressPage1',
-            doc: 'Breadcrumbs - navigate to Page 1.',
-            log: 'Breadcrumbs - navigate to Page 1'
-        },
-        {
-            name: 'onBreadcrumbsPressPage2',
-            doc: 'Breadcrumbs - navigate to Page 2.',
-            log: 'Breadcrumbs - navigate to Page 2'
-        }
-    ],
-    navigationActions: [
-        {
-            name: 'onNavigationActionsFullScreen',
-            doc: 'Navigation Actions - toggle full screen.',
-            log: 'Navigation Actions - toggle full screen'
-        }
-    ],
-    actions: [
-        { name: 'onActionsClickAction1', doc: 'Actions - click action 1.', log: 'Actions - click action 1' },
-        { name: 'onActionsClickAction2', doc: 'Actions - click action 2.', log: 'Actions - click action 2' }
-    ],
-    footer: [
-        { name: 'onFooterApprove', doc: 'Footer - approve action.', log: 'Footer - approve action' },
-        { name: 'onFooterReject', doc: 'Footer - reject action.', log: 'Footer - reject action' }
-    ]
 };
 
 /**

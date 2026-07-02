@@ -67,7 +67,7 @@ function isFullPageTemplate(data: BuildingBlock): boolean {
 
 /**
  * Returns the aggregation names to append for a Page building block, or undefined if not a Page.
- * Full template appends all PAGE_AGGREGATIONS; basic template appends only 'items'.
+ * Full template appends all PAGE_AGGREGATIONS; basic template appends nothing.
  *
  * @param data - the building block data
  * @returns aggregation names array, or undefined if not a Page building block
