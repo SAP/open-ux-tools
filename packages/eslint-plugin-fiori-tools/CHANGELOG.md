@@ -1,5 +1,29 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.7.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-02
+
+#### Bug Fixes
+
+- Streamline plugin meta — remove duplicate inline meta with stale hardcoded version, add namespace to single exported meta constant [[8b75140](https://github.com/SAP/open-ux-tools/commit/8b7514012cb078912875bb12b3a96686fcb8db70)]
+
+## 10.7.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-02
+
+#### Features
+
+- Create a new rule to check live mode is not enabled in the `manifest.json` file of OData V4 applications. [[ad4b0df](https://github.com/SAP/open-ux-tools/commit/ad4b0df880b4ac9ebc75f7d00f010834fdf6f284)]
+
 ## 10.6.6
 
 ### Patch Changes
