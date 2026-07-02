@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.7.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-02
+
+#### Bug Fixes
+
+- Streamline plugin meta — remove duplicate inline meta with stale hardcoded version, add namespace to single exported meta constant [[8b75140](https://github.com/SAP/open-ux-tools/commit/8b7514012cb078912875bb12b3a96686fcb8db70)]
+
 ## 10.7.0
 
 ### Minor Changes
