@@ -1,5 +1,110 @@
 # @sap-ux/flp-config-sub-generator
 
+## 1.0.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.15 → 1.0.16
+- @sap-ux/inquirer-common 1.0.16 → 1.0.17
+- @sap-ux/deploy-config-generator-shared 1.0.15 → 1.0.16
+- @sap-ux/flp-config-inquirer 1.0.24 → 1.0.25
+- @sap-ux/app-config-writer 1.1.4 → 1.1.4
+
+## 1.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.14 → 1.0.15
+- @sap-ux/inquirer-common 1.0.15 → 1.0.16
+- @sap-ux/deploy-config-generator-shared 1.0.14 → 1.0.15
+- @sap-ux/flp-config-inquirer 1.0.23 → 1.0.24
+- @sap-ux/app-config-writer 1.1.4 → 1.1.4
+
+## 1.0.27
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/app-config-writer 1.1.3 → 1.1.4
+- @sap-ux/fiori-generator-shared 1.0.13 → 1.0.14
+- @sap-ux/flp-config-inquirer 1.0.22 → 1.0.23
+- @sap-ux/inquirer-common 1.0.14 → 1.0.15
+- @sap-ux/deploy-config-generator-shared 1.0.13 → 1.0.14
+
+## 1.0.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/flp-config-inquirer 1.0.21 → 1.0.22
+- @sap-ux/app-config-writer 1.1.3 → 1.1.3
+
+## 1.0.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/app-config-writer 1.1.2 → 1.1.3
+- @sap-ux/feature-toggle 1.0.2 → 1.0.3
+- @sap-ux/inquirer-common 1.0.13 → 1.0.14
+- @sap-ux/deploy-config-generator-shared 1.0.12 → 1.0.13
+- @sap-ux/fiori-generator-shared 1.0.12 → 1.0.13
+- @sap-ux/flp-config-inquirer 1.0.20 → 1.0.21
+
+## 1.0.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/app-config-writer 1.1.1 → 1.1.2
+
+## 1.0.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.2 → 2.1.3
+- @sap-ux/app-config-writer 1.1.0 → 1.1.1
+- @sap-ux/fiori-generator-shared 1.0.11 → 1.0.12
+- @sap-ux/flp-config-inquirer 1.0.19 → 1.0.20
+- @sap-ux/inquirer-common 1.0.12 → 1.0.13
+- @sap-ux/deploy-config-generator-shared 1.0.11 → 1.0.12
+
+## 1.0.22
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/flp-config-inquirer 1.0.18 → 1.0.19
+- @sap-ux/app-config-writer 1.1.0 → 1.1.0
+
+## 1.0.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/app-config-writer 1.0.11 → 1.1.0
+
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/app-config-writer 1.0.10 → 1.0.11
+
 ## 1.0.19
 
 ### Patch Changes
