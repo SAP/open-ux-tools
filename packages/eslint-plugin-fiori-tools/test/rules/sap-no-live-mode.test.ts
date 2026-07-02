@@ -36,7 +36,7 @@ const v2FlexChangeLiveModeEnabledOP = {
     ...v2FlexChangeLiveModeEnabledLR,
     selector: {
         ...v2FlexChangeLiveModeEnabledLR.selector,
-        id: 'v2xmlstart::sap.suite.ui.generic.template.ObjectPage.view.Details::Z_SEPMRA_SO_SALESORDERANALYSIS--Products::Table'
+        id: 'v2xmlstart::sap.suite.ui.generic.template.ObjectPage.view.Details::Z_SEPMRA_SO_SALESORDERANALYSIS--Products'
     }
 };
 
