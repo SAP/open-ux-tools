@@ -17,6 +17,7 @@ export const NO_DATA_FIELD_INTENT_BASED_NAVIGATION = 'sap-no-data-field-intent-b
 export const CONDENSED_TABLE_LAYOUT = 'sap-condensed-table-layout';
 export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
 export const DESCRIPTION_COLUMN_LABEL = 'sap-description-column-label';
+export const NO_LIVE_MODE = 'sap-no-live-mode';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -179,6 +180,12 @@ export interface TextArrangementHidden {
     };
 }
 
+export interface NoLiveMode {
+    type: typeof NO_LIVE_MODE;
+    pageName: string;
+    manifest: ManifestPropertyDiagnosticData;
+}
+
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
     | AnchorBarVisible
@@ -194,4 +201,5 @@ export type Diagnostic =
     | CondensedTableLayout
     | TablePersonalization
     | TextArrangementHidden
-    | StrictUomFiltering;
+    | StrictUomFiltering
+    | NoLiveMode;
