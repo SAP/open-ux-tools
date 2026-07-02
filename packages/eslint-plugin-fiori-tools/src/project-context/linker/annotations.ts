@@ -74,7 +74,11 @@ export type NodeLookup = {
 export function collectTables(feVersion: 'v2' | 'v4', entityType: string, service: ParsedService): TableNode[] {
     const tables: TableNode[] = [];
     const lineItemKey = buildAnnotationIndexKey(entityType, UI_LINE_ITEM);
-    const lineItems = Object.values(service.index.annotations[lineItemKey]);
+    const lineItemMap = service.index.annotations[lineItemKey];
+    if (!lineItemMap) {
+        return tables;
+    }
+    const lineItems = Object.values(lineItemMap);
 
     lineItems.forEach((lineItem) => {
         const qualifierString = lineItem.qualifier ? `#${lineItem.qualifier}` : '';
