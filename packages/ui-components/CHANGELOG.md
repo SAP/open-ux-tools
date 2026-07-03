@@ -1,5 +1,13 @@
 # @sap-ux/ui-components
 
+## 3.0.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
 ## 3.0.4
 
 ### Patch Changes
