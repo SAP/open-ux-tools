@@ -1,5 +1,17 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 1.0.20
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-02
+
+#### Bug Fixes
+
+- Update appFrontendServiceRouterChoice warning wording from "need to have" to "must have" [[813f98b](https://github.com/SAP/open-ux-tools/commit/813f98b8d58706e4d0d2c4422c61316e5475bac0)]
+
 ## 1.0.19
 
 ### Patch Changes
