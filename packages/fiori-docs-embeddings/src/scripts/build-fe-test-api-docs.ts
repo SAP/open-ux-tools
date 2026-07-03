@@ -152,6 +152,20 @@ function renderClassChunk(cls: JsDoclet, methods: JsDoclet[]): string {
 }
 
 /**
+ * Renders a list of typedef properties as markdown list items.
+ */
+function renderTypedefProperties(properties: JsDocProperty[]): string {
+    let out = '\nProperties:\n';
+    for (const p of properties) {
+        const type = formatType(p.type?.names);
+        const opt = p.optional ? ' *(optional)*' : '';
+        const desc = p.description ? ` — ${p.description}` : '';
+        out += `- \`${p.name}\` \`{${type}}\`${opt}${desc}\n`;
+    }
+    return out;
+}
+
+/**
  * Renders all typedef doclets as a single markdown chunk.
  */
 function renderTypedefsChunk(typedefs: JsDoclet[]): string {
@@ -167,15 +181,8 @@ function renderTypedefsChunk(typedefs: JsDoclet[]): string {
     for (const td of typedefs) {
         out += `**STEP**: ${td.name} (${td.longname})\n\n`;
         out += `**DESCRIPTION**: ${td.description ?? td.name}\n`;
-
         if (td.properties && td.properties.length > 0) {
-            out += '\nProperties:\n';
-            for (const p of td.properties) {
-                const type = formatType(p.type?.names);
-                const opt = p.optional ? ' *(optional)*' : '';
-                const desc = p.description ? ` — ${p.description}` : '';
-                out += `- \`${p.name}\` \`{${type}}\`${opt}${desc}\n`;
-            }
+            out += renderTypedefProperties(td.properties);
         }
         out += '\n';
     }
