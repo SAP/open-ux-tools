@@ -1,6 +1,6 @@
 import type { i18n, TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from './translations/mockserver-config-writer.i18n.json';
+import translations from './translations/mockserver-config-writer.i18n.json' with { type: 'json' };
 
 const NS = 'mockserver-config-writer';
 let i18nInstance: i18n;
@@ -32,7 +32,7 @@ export async function initI18n(): Promise<void> {
  * @returns {string} localized string stored for the given key
  */
 export function t(key: string, options?: TOptions): string {
-    return i18nInstance.t(key, options);
+    return (i18nInstance.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
 initI18n().catch(() => {

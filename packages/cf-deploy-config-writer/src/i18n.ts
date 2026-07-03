@@ -1,6 +1,6 @@
 import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from './translations/cf-deploy-config-writer.i18n.json';
+import translations from './translations/cf-deploy-config-writer.i18n.json' with { type: 'json' };
 
 const NS = 'cf-deploy-config-writer';
 export const i18n: i18nNext = i18next.createInstance();
@@ -33,11 +33,9 @@ export async function initI18n(): Promise<void> {
  * @returns {string} localized string stored for the given key
  */
 export function t(key: string, options?: TOptions): string {
-    return i18n.t(key, options);
+    return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
 // Initialize i18n on module load
 // Errors are ignored since the writer will still work (fallback strings will be used)
-initI18n().catch(() => {
-    // Ignore any errors since the write will still work
-});
+void initI18n().catch(() => undefined);

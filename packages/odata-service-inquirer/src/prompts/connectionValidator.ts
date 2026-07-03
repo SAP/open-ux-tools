@@ -26,12 +26,12 @@ import {
 } from '@sap-ux/btp-utils';
 import { setGlobalRejectUnauthorized } from '@sap-ux/nodejs-utils';
 import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
-import { t } from '../i18n';
-import type { ConnectedSystem } from '../types';
-import { SAP_CLIENT_KEY } from '../types';
-import LoggerHelper from './logger-helper';
-import { errorHandler } from './prompt-helpers';
-import type { ValidationResult } from './types';
+import { t } from '../i18n.js';
+import type { ConnectedSystem } from '../types.js';
+import { SAP_CLIENT_KEY } from '../types.js';
+import LoggerHelper from './logger-helper.js';
+import { errorHandler } from './prompt-helpers.js';
+import type { ValidationResult } from './types.js';
 
 /**
  * Structure to store validity information about url to be validated.
@@ -235,6 +235,15 @@ export class ConnectionValidator {
      */
     public get destination(): Destination | undefined {
         return this._destination;
+    }
+
+    /**
+     * Get the connection type.
+     *
+     * @returns the connection type, either 'abap_catalog' or 'odata_path'
+     */
+    public get connectType(): ConnectionType {
+        return this._connectType;
     }
 
     /**
@@ -1010,57 +1019,22 @@ export class ConnectionValidator {
     }
 
     /**
-     * Check whether basic auth is required for the given url, or for the previously validated url if none specified.
-     * This will also set the validity state for the url.
+     * Checks if the current connection requires basic authentication
      *
-     * @param urlString the url to validate, if not provided the previously validated url will be used
-     * @param client optional, sap client code, if not provided the previously validated client will be used
-     * @param ignoreCertError ignore some certificate errors
      * @returns true if basic auth is required, false if not
      */
-    public async isAuthRequired(
-        urlString = this._validatedUrl,
-        client = this._validatedClient,
-        ignoreCertError = false
-    ): Promise<boolean | undefined> {
-        if (!urlString) {
+    public async isAuthRequired(): Promise<boolean | undefined> {
+        LoggerHelper.logger.debug(`ConnectionValidator.isAuthRequired() - validity: ${JSON.stringify(this.validity)}`);
+        // No connection attempt yet
+        if (!this._validatedUrl) {
             return false;
         }
-
-        // Dont re-request if we have already determined the auth requirement or we are authenticated
-        if (this._validatedUrl === urlString && this._validatedClient === client) {
-            if (this.validity.authenticated) {
-                return false;
-            }
-            if (this.validity.authRequired !== undefined) {
-                return this.validity.authRequired;
-            }
-            // Not determined yet, continue
+        // Authenticated so auth credentials are not needed (even if authRequired flag is true from a prior unauthenticated probe)
+        if (this.validity.authenticated) {
+            return false;
         }
-
-        // New URL or client so we need to re-request
-        try {
-            const url = new URL(urlString);
-            if (client) {
-                url.searchParams.append(SAP_CLIENT_KEY, client);
-            }
-            const authError =
-                ErrorHandler.getErrorType(await this.checkUrl(url, undefined, undefined, { ignoreCertError })) ===
-                ERROR_TYPE.AUTH;
-
-            // Only if we get the specific auth error so we know that auth is required, otherwise we cannot determine so leave as undefined
-            if (authError) {
-                this.validity.authRequired = true;
-                this.validity.reachable = true;
-            }
-            // Since an exception was not thrown, this is a valid url
-            this.validity.urlFormat = true;
-            this._validatedUrl = urlString;
-            return this.validity.authRequired;
-        } catch (error) {
-            errorHandler.logErrorMsgs(error);
-            return false; // Cannot determine if auth required
-        }
+        // Use the existing state from the last connection attempt
+        return this.validity.authRequired;
     }
 
     /**

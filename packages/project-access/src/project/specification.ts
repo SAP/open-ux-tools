@@ -3,13 +3,14 @@ import { mkdir, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { valid } from 'semver';
 import type { Logger } from '@sap-ux/logger';
-import { deleteModule, getModule, getModulePath, loadModuleFromProject } from './module-loader';
-import { getWebappPath } from './ui5-config';
-import { getMinimumUI5Version } from './info';
-import { FileName, fioriToolsDirectory, moduleCacheRoot } from '../constants';
-import { readJSON, writeFile } from '../file';
-import type { Manifest, Package } from '../types';
-import { execNpmCommand } from '../command';
+import { deleteModule, getModule, loadModuleFromProject } from './module-loader.js';
+import { getWebappPath } from './ui5-config.js';
+import { getNodeModulesPath } from './dependencies.js';
+import { getMinimumUI5Version } from './info.js';
+import { FileName, fioriToolsDirectory, moduleCacheRoot } from '../constants.js';
+import { readJSON, writeFile } from '../file/index.js';
+import type { Manifest, Package } from '../types/index.js';
+import { execNpmCommand } from '../command/index.js';
 
 const specificationDistTagPath = join(fioriToolsDirectory, FileName.SpecificationDistTags);
 
@@ -207,14 +208,20 @@ export async function getSpecificationPath(root: string, options?: { logger?: Lo
     const logger = options?.logger;
     const moduleName = '@sap/ux-specification';
     if (await hasSpecificationDevDependency(root)) {
-        const modulePath = await getModulePath(root, moduleName);
+        const nodeModulesParent = getNodeModulesPath(root, moduleName);
+        if (!nodeModulesParent) {
+            throw new Error(`Module '${moduleName}' not found in node_modules for project '${root}'`);
+        }
         logger?.debug(`Specification root found in project '${root}'`);
-        return modulePath.slice(0, modulePath.lastIndexOf(join(moduleName)) + join(moduleName).length);
+        return join(nodeModulesParent, 'node_modules', moduleName);
     }
     await getSpecificationModuleFromCache(root, { logger });
     const version = await getSpecificationVersion(root, { logger });
     logger?.debug(`Specification not found in project '${root}', using path from cache with version '${version}'`);
     const moduleRoot = join(moduleCacheRoot, moduleName, version);
-    const modulePath = await getModulePath(moduleRoot, moduleName);
-    return modulePath.slice(0, modulePath.lastIndexOf(join(moduleName)) + join(moduleName).length);
+    const nodeModulesParent = getNodeModulesPath(moduleRoot, moduleName);
+    if (!nodeModulesParent) {
+        throw new Error(`Module '${moduleName}' not found in cache at '${moduleRoot}'`);
+    }
+    return join(nodeModulesParent, 'node_modules', moduleName);
 }

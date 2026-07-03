@@ -35,16 +35,16 @@ dist/
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
 	\\"devDependencies\\": {
-		\\"@sap-ux/create\\": \\"^0.15.9\\",
+		\\"@sap-ux/create\\": \\"~0\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0.0.0\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
-		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.4\\",
+		\\"@ui5/task-adaptation\\": \\"^1.6.3\\",
 		\\"bestzip\\": \\"^2.2.1\\",
 		\\"rimraf\\": \\"^6.1.2\\",
-		\\"mbt\\": \\"^1.2.34\\"
+		\\"mbt\\": \\"^1.2.49\\"
 	}
 }
 ",
@@ -73,10 +73,24 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 server:
   customMiddleware:
-    - name: fiori-tools-appreload
+    - name: backend-proxy-middleware-cf
       afterMiddleware: compression
+      configuration:
+        authenticationMethod: route
+        allowServices: true
+        appendAuthRoute: true
+        debug: true
+        xsappJsonPath: .adp/reuse/xs-app.json
+        allowLocalDir: true
+        rewriteContent: false
+    - name: fiori-tools-appreload
+      afterMiddleware: backend-proxy-middleware-cf
       configuration:
         port: 35729
         path: webapp
@@ -178,16 +192,16 @@ dist/
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
 	\\"devDependencies\\": {
-		\\"@sap-ux/create\\": \\"^0.15.9\\",
+		\\"@sap-ux/create\\": \\"~0\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0.0.0\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
-		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.4\\",
+		\\"@ui5/task-adaptation\\": \\"^1.6.3\\",
 		\\"bestzip\\": \\"^2.2.1\\",
 		\\"rimraf\\": \\"^6.1.2\\",
-		\\"mbt\\": \\"^1.2.34\\"
+		\\"mbt\\": \\"^1.2.49\\"
 	}
 }
 ",
@@ -216,10 +230,24 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 server:
   customMiddleware:
-    - name: fiori-tools-appreload
+    - name: backend-proxy-middleware-cf
       afterMiddleware: compression
+      configuration:
+        authenticationMethod: route
+        allowServices: true
+        appendAuthRoute: true
+        debug: true
+        xsappJsonPath: .adp/reuse/xs-app.json
+        allowLocalDir: true
+        rewriteContent: false
+    - name: fiori-tools-appreload
+      afterMiddleware: backend-proxy-middleware-cf
       configuration:
         port: 35729
         path: webapp
@@ -326,16 +354,16 @@ dist/
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
 	\\"devDependencies\\": {
-		\\"@sap-ux/create\\": \\"^0.15.9\\",
+		\\"@sap-ux/create\\": \\"~0\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0.0.0\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
-		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.4\\",
+		\\"@ui5/task-adaptation\\": \\"^1.6.3\\",
 		\\"bestzip\\": \\"^2.2.1\\",
 		\\"rimraf\\": \\"^6.1.2\\",
-		\\"mbt\\": \\"^1.2.34\\"
+		\\"mbt\\": \\"^1.2.49\\"
 	}
 }
 ",
@@ -364,10 +392,24 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 server:
   customMiddleware:
-    - name: fiori-tools-appreload
+    - name: backend-proxy-middleware-cf
       afterMiddleware: compression
+      configuration:
+        authenticationMethod: route
+        allowServices: true
+        appendAuthRoute: true
+        debug: true
+        xsappJsonPath: .adp/reuse/xs-app.json
+        allowLocalDir: true
+        rewriteContent: false
+    - name: fiori-tools-appreload
+      afterMiddleware: backend-proxy-middleware-cf
       configuration:
         port: 35729
         path: webapp
@@ -469,16 +511,16 @@ dist/
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
 	\\"devDependencies\\": {
-		\\"@sap-ux/create\\": \\"^0.15.9\\",
+		\\"@sap-ux/create\\": \\"~0\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0.0.0\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
-		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.4\\",
+		\\"@ui5/task-adaptation\\": \\"^1.6.3\\",
 		\\"bestzip\\": \\"^2.2.1\\",
 		\\"rimraf\\": \\"^6.1.2\\",
-		\\"mbt\\": \\"^1.2.34\\"
+		\\"mbt\\": \\"^1.2.49\\"
 	}
 }
 ",
@@ -507,10 +549,24 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 server:
   customMiddleware:
-    - name: fiori-tools-appreload
+    - name: backend-proxy-middleware-cf
       afterMiddleware: compression
+      configuration:
+        authenticationMethod: route
+        allowServices: true
+        appendAuthRoute: true
+        debug: true
+        xsappJsonPath: .adp/reuse/xs-app.json
+        allowLocalDir: true
+        rewriteContent: false
+    - name: fiori-tools-appreload
+      afterMiddleware: backend-proxy-middleware-cf
       configuration:
         port: 35729
         path: webapp
@@ -584,10 +640,10 @@ test.namespace_sap.app.title=Test CF App",
 	\\"name\\": \\"test-cf-project-approuter\\",
 	\\"description\\": \\"Node.js based application router service for html5-apps\\",
 	\\"engines\\": {
-		\\"node\\": \\"^10.0.0\\"
+		\\"node\\": \\">=22.0.0\\"
 	},
 	\\"dependencies\\": {
-		\\"@sap/approuter\\": \\"^20.8.0\\"
+		\\"@sap/approuter\\": \\"^22.0.0\\"
 	},
 	\\"scripts\\": {
 		\\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\"
@@ -648,16 +704,16 @@ dist/
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
 	\\"devDependencies\\": {
-		\\"@sap-ux/create\\": \\"^0.15.9\\",
+		\\"@sap-ux/create\\": \\"~0\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0.0.0\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
-		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.4\\",
+		\\"@ui5/task-adaptation\\": \\"^1.6.3\\",
 		\\"bestzip\\": \\"^2.2.1\\",
 		\\"rimraf\\": \\"^6.1.2\\",
-		\\"mbt\\": \\"^1.2.34\\"
+		\\"mbt\\": \\"^1.2.49\\"
 	}
 }
 ",
@@ -686,10 +742,24 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 server:
   customMiddleware:
-    - name: fiori-tools-appreload
+    - name: backend-proxy-middleware-cf
       afterMiddleware: compression
+      configuration:
+        authenticationMethod: route
+        allowServices: true
+        appendAuthRoute: true
+        debug: true
+        xsappJsonPath: .adp/reuse/xs-app.json
+        allowLocalDir: true
+        rewriteContent: false
+    - name: fiori-tools-appreload
+      afterMiddleware: backend-proxy-middleware-cf
       configuration:
         port: 35729
         path: webapp
@@ -796,16 +866,16 @@ dist/
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
 	\\"devDependencies\\": {
-		\\"@sap-ux/create\\": \\"^0.15.9\\",
+		\\"@sap-ux/create\\": \\"~0\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0.0.0\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
-		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.4\\",
+		\\"@ui5/task-adaptation\\": \\"^1.6.3\\",
 		\\"bestzip\\": \\"^2.2.1\\",
 		\\"rimraf\\": \\"^6.1.2\\",
-		\\"mbt\\": \\"^1.2.34\\"
+		\\"mbt\\": \\"^1.2.49\\"
 	}
 }
 ",
@@ -834,10 +904,24 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 server:
   customMiddleware:
-    - name: fiori-tools-appreload
+    - name: backend-proxy-middleware-cf
       afterMiddleware: compression
+      configuration:
+        authenticationMethod: route
+        allowServices: true
+        appendAuthRoute: true
+        debug: true
+        xsappJsonPath: .adp/reuse/xs-app.json
+        allowLocalDir: true
+        rewriteContent: false
+    - name: fiori-tools-appreload
+      afterMiddleware: backend-proxy-middleware-cf
       configuration:
         port: 35729
         path: webapp

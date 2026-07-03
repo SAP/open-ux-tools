@@ -1,7 +1,8 @@
 {
     "name": "@sap-ux/telemetry",
-    "version": "0.6.87",
+    "version": "1.0.15",
     "description": "Library for sending usage telemetry data",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -20,8 +21,8 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global",
         "example": "ts-node example/index.ts"
@@ -33,16 +34,17 @@
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
-        "applicationinsights": "2.9.8",
-        "axios": "1.13.5",
+        "applicationinsights": "3.15.0",
+        "axios": "1.18.0",
         "performance-now": "2.1.0",
-        "yaml": "2.8.2"
+        "yaml": "2.9.0"
     },
     "devDependencies": {
-        "jest-extended": "6.0.0",
+        "@jest/globals": "30.4.1",
+        "jest-extended": "7.0.0",
         "memfs": "3.4.13",
-        "unionfs": "4.4.0",
-        "dotenv": "17.3.1"
+        "unionfs": "4.6.0",
+        "dotenv": "17.4.2"
     },
     "files": [
         "dist",
@@ -51,6 +53,6 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

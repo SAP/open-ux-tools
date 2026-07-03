@@ -1,8 +1,53 @@
 import type { CopyOptions, Editor } from 'mem-fs-editor';
-import type { TabInfo } from '../common/types';
+import type { TabInfo } from '../common/types.js';
 import { sep, normalize } from 'node:path';
-import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
-import { isElementIdAvailable } from './utils';
+import { findFilesByExtension } from '@sap-ux/project-access/dist/file/index.js';
+import { isUI5IdUnique } from '@sap-ux/project-access';
+
+/**
+ * Options for creating an ID generator with cached file contents.
+ */
+export interface CreateIdGeneratorWithCacheOptions {
+    basePath?: never;
+    fsEditor?: never;
+    /**
+     *
+     * cache for file contents to optimize ID generation.
+     */
+    fileContentCache: string[];
+}
+
+/**
+ * Options for creating an ID generator with filesystem access.
+ */
+export interface CreateIdGeneratorWithFilesystemOptions {
+    /**
+     * Base path of the project.
+     */
+    basePath: string;
+    /**
+     * mem-fs-editor instance.
+     */
+    fsEditor: Editor;
+    fileContentCache?: string[];
+}
+
+/**
+ * Options for creating an empty ID generator (no validation).
+ */
+export interface CreateIdGeneratorEmptyOptions {
+    basePath?: never;
+    fsEditor?: never;
+    fileContentCache?: never;
+}
+
+/**
+ * Options for creating an ID generator.
+ */
+export type CreateIdGeneratorOptions =
+    | CreateIdGeneratorWithCacheOptions
+    | CreateIdGeneratorWithFilesystemOptions
+    | CreateIdGeneratorEmptyOptions;
 
 const CHAR_SPACE = ' ';
 const CHAR_TAB = '\t';
@@ -115,31 +160,24 @@ export const CONFIG = {
  * Generates a unique element ID that is not already used in any view or fragment file.
  * Uses an incremental counter for predictable, readable IDs.
  *
- * @param fs - The file system object for reading files
  * @param baseId - The base name for the ID (e.g., 'filterBar', 'chart')
- * @param filteredFiles - The list of files to check for ID availability
+ * @param filteredFilesContent - The list of files to check for ID availability
  * @param validatedIds - A list of IDs that have already been validated in the current session to avoid duplicates
  * @returns A unique ID that is available across all view and fragment files
  */
-function generateUniqueElementId(
-    fs: Editor,
-    baseId: string,
-    filteredFiles: string[],
-    validatedIds: string[] = []
-): string {
+function generateUniqueElementId(baseId: string, filteredFilesContent: string[], validatedIds: string[] = []): string {
     const maxAttempts = 1000;
 
-    if (filteredFiles.every((file) => isElementIdAvailable(fs, file, baseId)) && !validatedIds.includes(baseId)) {
+    // Check both in-memory validatedIds and filesystem files
+    if (!validatedIds.includes(baseId) && isUI5IdUnique(baseId, filteredFilesContent)) {
         return baseId;
     }
 
     for (let counter = 1; counter < maxAttempts; counter++) {
         const candidateId = `${baseId}${counter}`;
 
-        if (
-            filteredFiles.every((file) => isElementIdAvailable(fs, file, candidateId)) &&
-            !validatedIds.includes(candidateId)
-        ) {
+        // Check both in-memory validatedIds and filesystem files
+        if (!validatedIds.includes(candidateId) && isUI5IdUnique(candidateId, filteredFilesContent)) {
             return candidateId;
         }
     }
@@ -171,22 +209,32 @@ export async function getFragmentAndViewFiles(appPath: string, fs: Editor): Prom
  * Creates an ID generator function for a given base path and editor.
  * The generator ensures unique IDs across all fragment and view files in the project.
  *
- * @param basePath - Base path of the project
- * @param fsEditor - mem-fs-editor instance
- * @returns A function that generates unique IDs based on a base ID string
+ * @param options - Options for creating the ID generator
+ * @returns A function that generates unique IDs based on a base ID string, or a Promise resolving to such function
  */
-export async function createIdGenerator(
-    basePath: string | undefined,
-    fsEditor: Editor
-): Promise<(baseId: string) => string> {
-    let files: string[] = [];
-    if (basePath) {
-        files = await getFragmentAndViewFiles(basePath, fsEditor);
+export function createIdGenerator(
+    options: CreateIdGeneratorOptions = {}
+): Promise<IdGeneratorFunction> | IdGeneratorFunction {
+    const { basePath, fsEditor, fileContentCache = [] } = options;
+
+    const createGenerator = (fileContents: string[]): IdGeneratorFunction => {
+        return (baseId: string, validatedIds: string[] = []): string => {
+            return generateUniqueElementId(baseId, fileContents, validatedIds);
+        };
+    };
+
+    if (fileContentCache.length > 0) {
+        return createGenerator(fileContentCache);
     }
 
-    return (baseId: string, validatedIds: string[] = []): string => {
-        return generateUniqueElementId(fsEditor, baseId, files, validatedIds);
-    };
+    if (fsEditor && basePath) {
+        return getFragmentAndViewFiles(basePath, fsEditor).then((filePaths) => {
+            const fileContents = filePaths.map((path) => fsEditor.read(path).toString());
+            return createGenerator(fileContents);
+        });
+    }
+
+    return createGenerator([]);
 }
 
 // `noGlob` is supported in `mem-fs-editor` v9,

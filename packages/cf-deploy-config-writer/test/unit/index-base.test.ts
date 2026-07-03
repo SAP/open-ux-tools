@@ -1,44 +1,48 @@
-import { join } from 'node:path';
+import { jest } from '@jest/globals';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fsExtra from 'fs-extra';
-import * as hasbin from 'hasbin';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { apiGetInstanceCredentials } from '@sap/cf-tools';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { type CFBaseConfig, generateBaseConfig } from '../../src';
-import { RouterModuleType } from '../../src/types';
-import { MTABinNotFound } from '../../src/constants';
 import type { Editor } from 'mem-fs-editor';
 import fs from 'node:fs';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn(),
-    listDestinations: jest.fn()
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils
 }));
 
-jest.mock('hasbin', () => ({
-    ...jest.requireActual('hasbin'),
+const realHasbin = await import('hasbin');
+jest.unstable_mockModule('hasbin', () => ({
+    ...realHasbin,
     sync: jest.fn()
 }));
 
-jest.mock('@sap/cf-tools', () => ({
-    ...jest.requireActual('@sap/cf-tools'),
+const realCfTools = await import('@sap/cf-tools');
+jest.unstable_mockModule('@sap/cf-tools', () => ({
+    ...realCfTools,
     apiGetInstanceCredentials: jest.fn()
 }));
 
-jest.mock('@sap/mta-lib', () => {
-    return {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        Mta: require('./mockMta').MockMta
-    };
-});
+const { MockMta } = await import('./mockMta.js');
+jest.unstable_mockModule('@sap/mta-lib', () => ({
+    Mta: MockMta
+}));
 
-let hasSyncMock: jest.SpyInstance;
+const hasbin = await import('hasbin');
+const cfTools = await import('@sap/cf-tools');
+const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
+const { generateBaseConfig } = await import('../../src/index.js');
+const { RouterModuleType } = await import('../../src/types/index.js');
+const { MTABinNotFound } = await import('../../src/constants.js');
+
+import type { CFBaseConfig } from '../../src/index.js';
+
+let hasSyncMock: jest.Mock;
 
 describe('CF Writer Base', () => {
-    jest.setTimeout(10000);
-
     const logger = new ToolsLogger({
         transports: [new NullTransport()]
     });
@@ -48,18 +52,12 @@ describe('CF Writer Base', () => {
     beforeEach(() => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
-        hasSyncMock = jest.spyOn(hasbin, 'sync').mockImplementation(() => true);
+        hasSyncMock = (hasbin.sync as jest.Mock).mockImplementation(() => true);
     });
 
     beforeAll(() => {
         jest.clearAllMocks();
         fsExtra.removeSync(outputDir);
-        jest.mock('hasbin', () => {
-            return {
-                ...(jest.requireActual('hasbin') as {}),
-                sync: hasSyncMock
-            };
-        });
     });
 
     afterAll(() => {
@@ -68,8 +66,7 @@ describe('CF Writer Base', () => {
 
     describe('Generate Base Config - Standalone', () => {
         test('Generate deployment configs - standalone with ABAP service provider', async () => {
-            jest.setTimeout(20_000);
-            const apiGetInstanceCredentialsMock = apiGetInstanceCredentials as jest.Mock;
+            const apiGetInstanceCredentialsMock = cfTools.apiGetInstanceCredentials as jest.Mock;
             apiGetInstanceCredentialsMock.mockResolvedValue({
                 credentials: {
                     endpoints: { TestEndPoint: '' },
@@ -184,7 +181,7 @@ describe('CF Writer Base', () => {
             } as Partial<CFBaseConfig>;
             jest.spyOn(unitTestFs, 'exists').mockReturnValueOnce(true);
             await expect(generateBaseConfig(config as CFBaseConfig, unitTestFs)).rejects.toThrow(
-                'A folder with same name already exists in the target directory'
+                'An `mta.yaml` file already exists in the target directory.'
             );
             delete config.abapServiceProvider?.abapService;
             await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrow(

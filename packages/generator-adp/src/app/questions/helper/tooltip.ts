@@ -1,4 +1,4 @@
-import { t } from '../../../utils/i18n';
+import { t } from '../../../utils/i18n.js';
 
 /**
  * Returns a tooltip message for project name input fields, customized based on the project's user layer.

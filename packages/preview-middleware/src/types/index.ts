@@ -107,7 +107,7 @@ export type TestConfigDefaults = {
     opa5: {
         path: '/test/opaTests.qunit.html';
         init: '/test/opaTests.qunit.js';
-        pattern: '/test/**/*Journey.{js,ts}';
+        pattern: '/test/**/*Journey{,.gen}.{js,ts}';
         framework: 'OPA5';
     };
     testsuite: {
@@ -272,6 +272,19 @@ export interface I18nEntry {
 }
 
 export interface CardManifest {
+    'sap.card'?: {
+        type?: string;
+        header?: Record<string, unknown>;
+        data?: {
+            request?: {
+                url: string;
+            };
+        };
+        configuration?: {
+            parameters?: Record<string, Record<string, unknown>>;
+        };
+        [key: string]: unknown;
+    };
     'sap.insights': {
         versions?: {
             dtpMiddleware?: string;

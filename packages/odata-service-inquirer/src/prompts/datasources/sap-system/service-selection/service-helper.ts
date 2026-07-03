@@ -1,4 +1,5 @@
-import { type IMessageSeverity, Severity } from '@sap-devx/yeoman-ui-types';
+import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 import {
     type Annotations,
     type AxiosRequestConfig,
@@ -16,14 +17,14 @@ import { getTelemPropertyDestinationType, sendTelemetryEvent } from '@sap-ux/inq
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { ListChoiceOptions } from 'inquirer';
-import { t } from '../../../../i18n';
-import { PromptState } from '../../../../utils';
-import type { ConnectionValidator } from '../../../connectionValidator';
-import LoggerHelper from '../../../logger-helper';
-import { errorHandler } from '../../../prompt-helpers';
-import { validateODataVersion } from '../../../validators';
-import { showCollabDraftWarning } from '../../service-helpers/service-helpers';
-import type { ServiceAnswer } from './types';
+import { t } from '../../../../i18n.js';
+import { PromptState } from '../../../../utils/index.js';
+import type { ConnectionValidator } from '../../../connectionValidator.js';
+import LoggerHelper from '../../../logger-helper.js';
+import { errorHandler } from '../../../prompt-helpers.js';
+import { validateODataVersion } from '../../../validators.js';
+import { showCollabDraftWarning } from '../../service-helpers/service-helpers.js';
+import type { ServiceAnswer } from './types.js';
 
 // Service ids continaining these paths should not be offered as UI compatible services
 const nonUIServicePaths = ['/IWBEP/COMMON'];
@@ -245,8 +246,9 @@ async function getServiceMetadataAndValidate(
     } catch (error) {
         const errorText = errorHandler.getErrorMsg(error);
         LoggerHelper.logger.error(t('errors.serviceMetadataErrorLog', { servicePath, errorText }));
+        const errorMsg = t('errors.serviceMetadataErrorUI', { servicePath, errorText });
         return {
-            validationMsg: t('errors.serviceMetadataErrorUI', { servicePath, errorText })
+            validationMsg: errorMsg
         };
     }
 }

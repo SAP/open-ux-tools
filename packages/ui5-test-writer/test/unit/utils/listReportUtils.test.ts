@@ -9,13 +9,26 @@ import {
     checkButtonVisibility,
     getFilterFieldNames,
     checkActionButtonStates,
+    checkActionButtonStatesFromMetadata,
     getToolBarActionNames,
-    getToolBarActionItems
-} from '../../../src/utils/listReportUtils';
-import type { ButtonState } from '../../../src/types';
+    getToolBarActionItems,
+    isALPManifestTarget,
+    isALPFromManifest,
+    getSemanticKeyProperties,
+    getSemanticKeyPropertiesFromMetadata,
+    isSemanticKeyInFilterBar,
+    safeGetSemanticKeyProperties
+} from '../../../src/utils/listReportUtils.js';
+import type { ButtonState, FEV4ManifestTarget } from '../../../src/types.js';
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
+import type { Manifest } from '@sap-ux/project-access';
+import { parse } from '@sap-ux/edmx-parser';
+import { convert } from '@sap-ux/annotation-converter';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('Test buildButtonState()', () => {
     test('should return visible false when buttonState is undefined', () => {
@@ -176,8 +189,7 @@ describe('Test safeCheckActionButtonStates()', () => {
         } as unknown as Logger;
     });
 
-    test('should return action button states when metadata is valid', () => {
-        const validMetadata = `<?xml version="1.0" encoding="utf-8"?>
+    const validMetadataXml = `<?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
     <edmx:DataServices>
         <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
@@ -193,55 +205,32 @@ describe('Test safeCheckActionButtonStates()', () => {
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>`;
-        const result = safeCheckActionButtonStates(validMetadata, 'TestSet', [], mockLogger);
+
+    test('should return action button states when metadata is valid', () => {
+        const result = safeCheckActionButtonStates(convert(parse(validMetadataXml)), 'TestSet', [], mockLogger);
         expect(result).toBeDefined();
         expect(Array.isArray(result)).toBe(true);
     });
 
-    test('should return empty array and log debug when metadata is invalid', () => {
-        const result = safeCheckActionButtonStates('invalid xml', 'TestSet', [], mockLogger);
-        expect(result).toEqual([]);
-        expect(mockLogger.debug).toHaveBeenCalled();
-    });
-
     test('should return empty array and log debug when entity set does not exist', () => {
-        const validMetadata = `<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
-    <edmx:DataServices>
-        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
-            <EntityContainer Name="EntityContainer">
-            </EntityContainer>
-        </Schema>
-    </edmx:DataServices>
-</edmx:Edmx>`;
-        const result = safeCheckActionButtonStates(validMetadata, 'NonExistentEntitySet', [], mockLogger);
+        const result = safeCheckActionButtonStates(
+            convert(parse(validMetadataXml)),
+            'NonExistentEntitySet',
+            [],
+            mockLogger
+        );
         expect(result).toEqual([]);
         expect(mockLogger.debug).toHaveBeenCalled();
     });
 
     test('should handle missing logger gracefully', () => {
-        const result = safeCheckActionButtonStates('invalid xml', 'TestSet', []);
-        expect(result).toEqual([]);
+        expect(() =>
+            safeCheckActionButtonStates(convert(parse(validMetadataXml)), 'NonExistentEntitySet', [])
+        ).not.toThrow();
     });
 
     test('should handle empty action names array', () => {
-        const validMetadata = `<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
-    <edmx:DataServices>
-        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
-            <EntityType Name="TestEntity">
-                <Key>
-                    <PropertyRef Name="ID"/>
-                </Key>
-                <Property Name="ID" Type="Edm.String"/>
-            </EntityType>
-            <EntityContainer Name="EntityContainer">
-                <EntitySet Name="TestSet" EntityType="TestService.TestEntity"/>
-            </EntityContainer>
-        </Schema>
-    </edmx:DataServices>
-</edmx:Edmx>`;
-        const result = safeCheckActionButtonStates(validMetadata, 'TestSet', [], mockLogger);
+        const result = safeCheckActionButtonStates(convert(parse(validMetadataXml)), 'TestSet', [], mockLogger);
         expect(result).toBeDefined();
         expect(Array.isArray(result)).toBe(true);
     });
@@ -1041,6 +1030,68 @@ describe('Test internal helper function coverage through public APIs', () => {
         expect(result.entityType).toBeDefined();
         expect(Array.isArray(result.actions)).toBe(true);
     });
+
+    test('should return enabled:false for bound actions without OperationAvailable annotation', () => {
+        // Single-entity bound actions require row selection — disabled by default (no row selected).
+        // Collection-bound actions operate on the entity set — always enabled.
+        const metadata = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="TestEntity">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+            </EntityType>
+            <Action Name="EntityBoundAction" IsBound="true">
+                <Parameter Name="_it" Type="TestService.TestEntity" Nullable="false"/>
+            </Action>
+            <Action Name="CollectionBoundAction" IsBound="true">
+                <Parameter Name="_it" Type="Collection(TestService.TestEntity)" Nullable="false"/>
+            </Action>
+            <Action Name="UnboundAction" IsBound="false"/>
+            <EntityContainer Name="Container">
+                <EntitySet Name="TestSet" EntityType="TestService.TestEntity"/>
+            </EntityContainer>
+            <Annotations Target="TestService.TestEntity">
+                <Annotation Term="com.sap.vocabularies.UI.v1.LineItem">
+                    <Collection>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataFieldForAction">
+                            <PropertyValue Property="Label" String="Entity Bound Action"/>
+                            <PropertyValue Property="Action" String="TestService.EntityBoundAction(TestService.TestEntity)"/>
+                        </Record>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataFieldForAction">
+                            <PropertyValue Property="Label" String="Collection Bound Action"/>
+                            <PropertyValue Property="Action" String="TestService.CollectionBoundAction(Collection(TestService.TestEntity))"/>
+                        </Record>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataFieldForAction">
+                            <PropertyValue Property="Label" String="Unbound Action"/>
+                            <PropertyValue Property="Action" String="TestService.UnboundAction"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+        const result = checkActionButtonStates(metadata, 'TestSet');
+        expect(result.actions).toBeDefined();
+        expect(Array.isArray(result.actions)).toBe(true);
+
+        const entityBoundAction = result.actions.find((a) => a.label === 'Entity Bound Action');
+        const collectionBoundAction = result.actions.find((a) => a.label === 'Collection Bound Action');
+        const unboundAction = result.actions.find((a) => a.label === 'Unbound Action');
+
+        if (entityBoundAction) {
+            expect(entityBoundAction.enabled).toBe(false);
+        }
+        if (collectionBoundAction) {
+            expect(collectionBoundAction.enabled).toBe(true);
+        }
+        if (unboundAction) {
+            expect(unboundAction.enabled).toBe(true);
+        }
+    });
 });
 
 describe('Test getToolBarActionNames()', () => {
@@ -1484,5 +1535,549 @@ describe('Test getListReportFeatures()', () => {
         expect(result.deleteButton?.visible).toBeDefined();
 
         expect(Array.isArray(result.toolBarActions)).toBe(true);
+    });
+
+    test('should log debug and return partial result when metadata XML is invalid', () => {
+        const pageModel: PageWithModelV4 = {
+            model: {
+                root: { aggregations: {} } as unknown as TreeAggregation
+            } as unknown as TreeModel,
+            name: 'TestList',
+            entitySet: 'TestSet'
+        };
+
+        const result = getListReportFeatures(pageModel, mockLogger, 'not valid xml');
+        expect(result).toBeDefined();
+        expect(result.name).toBe('TestList');
+        expect(result.semanticKey?.semanticKeyProperties).toBeUndefined();
+        expect(result.toolBarActions).toEqual([]);
+        expect(mockLogger.debug).toHaveBeenCalledWith(expect.stringContaining('Failed to parse metadata'));
+    });
+});
+
+/** ALP manifest target with views.paths containing a primary array */
+const ALP_TARGET: FEV4ManifestTarget = {
+    type: 'Component',
+    name: 'sap.fe.templates.ListReport',
+    options: {
+        settings: {
+            contextPath: '/SalesOrderManage',
+            views: {
+                paths: [
+                    {
+                        primary: [{ annotationPath: 'com.sap.vocabularies.UI.v1.PresentationVariant' }],
+                        secondary: [{ annotationPath: 'com.sap.vocabularies.UI.v1.LineItem' }],
+                        defaultPath: 'both'
+                    }
+                ]
+            }
+        }
+    }
+};
+
+/** Non-ALP ListReport target (no views.paths) */
+const LR_TARGET: FEV4ManifestTarget = {
+    type: 'Component',
+    name: 'sap.fe.templates.ListReport',
+    options: { settings: { contextPath: '/Orders' } }
+};
+
+/** Minimal ALP manifest matching the real alpv4 structure */
+const ALP_MANIFEST: Manifest = {
+    'sap.app': { id: 'alpv4test', type: 'application', applicationVersion: { version: '0.0.1' } },
+    'sap.ui5': {
+        routing: {
+            targets: {
+                SalesOrderManageList: ALP_TARGET as any,
+                SalesOrderManageObjectPage: {
+                    type: 'Component',
+                    name: 'sap.fe.templates.ObjectPage'
+                } as any
+            }
+        }
+    }
+} as unknown as Manifest;
+
+/** Manifest with a standard (non-ALP) ListReport */
+const LR_MANIFEST: Manifest = {
+    'sap.app': { id: 'lrtest', type: 'application', applicationVersion: { version: '0.0.1' } },
+    'sap.ui5': {
+        routing: {
+            targets: {
+                OrdersList: LR_TARGET as any
+            }
+        }
+    }
+} as unknown as Manifest;
+
+describe('isALPManifestTarget()', () => {
+    test('returns true when views.paths contains an entry with a non-empty primary array', () => {
+        expect(isALPManifestTarget(ALP_TARGET)).toBe(true);
+    });
+
+    test('returns false when target has no views configuration', () => {
+        expect(isALPManifestTarget(LR_TARGET)).toBe(false);
+    });
+
+    test('returns false when views.paths is an empty array', () => {
+        const target: FEV4ManifestTarget = {
+            name: 'sap.fe.templates.ListReport',
+            options: { settings: { views: { paths: [] } } }
+        };
+        expect(isALPManifestTarget(target)).toBe(false);
+    });
+
+    test('returns false when views.paths entries have no primary array', () => {
+        const target: FEV4ManifestTarget = {
+            name: 'sap.fe.templates.ListReport',
+            options: {
+                settings: {
+                    views: {
+                        paths: [{ secondary: [{ annotationPath: 'com.sap.vocabularies.UI.v1.LineItem' }] }]
+                    }
+                }
+            }
+        };
+        expect(isALPManifestTarget(target)).toBe(false);
+    });
+
+    test('returns false when primary array is empty', () => {
+        const target: FEV4ManifestTarget = {
+            name: 'sap.fe.templates.ListReport',
+            options: { settings: { views: { paths: [{ primary: [] }] } } }
+        };
+        expect(isALPManifestTarget(target)).toBe(false);
+    });
+
+    test('returns true when one of multiple paths entries has a primary array', () => {
+        const target: FEV4ManifestTarget = {
+            name: 'sap.fe.templates.ListReport',
+            options: {
+                settings: {
+                    views: {
+                        paths: [
+                            { secondary: [{ annotationPath: 'com.sap.vocabularies.UI.v1.LineItem' }] },
+                            { primary: [{ annotationPath: 'com.sap.vocabularies.UI.v1.Chart' }] }
+                        ]
+                    }
+                }
+            }
+        };
+        expect(isALPManifestTarget(target)).toBe(true);
+    });
+});
+
+describe('isALPFromManifest()', () => {
+    test('returns true when the specified target is an ALP ListReport', () => {
+        expect(isALPFromManifest(ALP_MANIFEST, 'SalesOrderManageList')).toBe(true);
+    });
+
+    test('returns false when the specified target is an ObjectPage (not ListReport)', () => {
+        expect(isALPFromManifest(ALP_MANIFEST, 'SalesOrderManageObjectPage')).toBe(false);
+    });
+
+    test('returns true when no targetKey given and at least one ListReport target is ALP', () => {
+        expect(isALPFromManifest(ALP_MANIFEST)).toBe(true);
+    });
+
+    test('returns false when the specified target is a non-ALP ListReport', () => {
+        expect(isALPFromManifest(LR_MANIFEST, 'OrdersList')).toBe(false);
+    });
+
+    test('returns false when no targetKey given and no ListReport targets are ALP', () => {
+        expect(isALPFromManifest(LR_MANIFEST)).toBe(false);
+    });
+
+    test('returns false when manifest has no routing targets', () => {
+        const manifest = {
+            'sap.app': { id: 'test', type: 'application', applicationVersion: { version: '0.0.1' } }
+        } as unknown as Manifest;
+        expect(isALPFromManifest(manifest)).toBe(false);
+    });
+
+    test('returns false when specified target key does not exist in manifest', () => {
+        expect(isALPFromManifest(ALP_MANIFEST, 'NonExistentTarget')).toBe(false);
+    });
+});
+
+describe('getListReportFeatures() isALP integration', () => {
+    const minimalPage: PageWithModelV4 = {
+        name: 'SalesOrderManageList',
+        model: {
+            root: {
+                aggregations: {
+                    filterBar: { aggregations: {} } as unknown as TreeAggregation,
+                    table: { aggregations: {} } as unknown as TreeAggregation
+                }
+            } as unknown as TreeAggregation
+        } as unknown as TreeModel
+    };
+
+    test('sets isALP true when manifest identifies the page as ALP', () => {
+        const result = getListReportFeatures(minimalPage, undefined, undefined, ALP_MANIFEST);
+        expect(result.isALP).toBe(true);
+    });
+
+    test('sets isALP false when manifest has no ALP configuration for the page', () => {
+        const page: PageWithModelV4 = { ...minimalPage, name: 'OrdersList' };
+        const result = getListReportFeatures(page, undefined, undefined, LR_MANIFEST);
+        expect(result.isALP).toBe(false);
+    });
+
+    test('sets isALP false when no manifest is provided', () => {
+        const result = getListReportFeatures(minimalPage);
+        expect(result.isALP).toBe(false);
+    });
+});
+
+describe('Test getSemanticKeyProperties()', () => {
+    const metadataWithSemanticKey = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm"
+                xmlns:SAP__common="com.sap.vocabularies.Common.v1"
+                Alias="SAP__self">
+            <EntityType Name="TravelType">
+                <Key><PropertyRef Name="TravelID"/></Key>
+                <Property Name="TravelID" Type="Edm.String"/>
+                <Property Name="Description" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.TravelType">
+                <Annotation Term="com.sap.vocabularies.Common.v1.SemanticKey">
+                    <Collection>
+                        <PropertyPath>TravelID</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    const metadataWithMultipleSemanticKeys = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm"
+                Alias="SAP__self">
+            <EntityType Name="OrderType">
+                <Key><PropertyRef Name="OrderID"/></Key>
+                <Property Name="OrderID" Type="Edm.String"/>
+                <Property Name="CompanyCode" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Order" EntityType="TestService.OrderType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.OrderType">
+                <Annotation Term="com.sap.vocabularies.Common.v1.SemanticKey">
+                    <Collection>
+                        <PropertyPath>OrderID</PropertyPath>
+                        <PropertyPath>CompanyCode</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    const metadataWithoutSemanticKey = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="ItemType">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Item" EntityType="TestService.ItemType"/>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    test('returns PropertyPath value from SemanticKey annotation', () => {
+        const result = getSemanticKeyProperties(metadataWithSemanticKey, 'Travel');
+        expect(result).toEqual(['TravelID']);
+    });
+
+    test('returns all PropertyPath values when SemanticKey has multiple entries', () => {
+        const result = getSemanticKeyProperties(metadataWithMultipleSemanticKeys, 'Order');
+        expect(result).toEqual(['OrderID', 'CompanyCode']);
+    });
+
+    const metadataWithLabels = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="BankType">
+                <Key><PropertyRef Name="BankCountry"/></Key>
+                <Property Name="BankCountry" Type="Edm.String"/>
+                <Property Name="BankInternalID" Type="Edm.String"/>
+                <Property Name="NoLabelProp" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Bank" EntityType="TestService.BankType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.BankType">
+                <Annotation Term="com.sap.vocabularies.Common.v1.SemanticKey">
+                    <Collection>
+                        <PropertyPath>BankCountry</PropertyPath>
+                        <PropertyPath>BankInternalID</PropertyPath>
+                        <PropertyPath>NoLabelProp</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="TestService.BankType/BankCountry">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Label" String="Bank Country"/>
+            </Annotations>
+            <Annotations Target="TestService.BankType/BankInternalID">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Label" String="Bank ID"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    test('resolveLabels=false returns property names (default)', () => {
+        expect(getSemanticKeyProperties(metadataWithLabels, 'Bank', false)).toEqual([
+            'BankCountry',
+            'BankInternalID',
+            'NoLabelProp'
+        ]);
+    });
+
+    test('resolveLabels=true returns Common.Label values, falling back to property name when no label', () => {
+        expect(getSemanticKeyProperties(metadataWithLabels, 'Bank', true)).toEqual([
+            'Bank Country',
+            'Bank ID',
+            'NoLabelProp'
+        ]);
+    });
+
+    test('returns empty array when no SemanticKey annotation exists', () => {
+        const result = getSemanticKeyProperties(metadataWithoutSemanticKey, 'Item');
+        expect(result).toEqual([]);
+    });
+
+    test('returns SemanticKey from the fixture metadata file', () => {
+        const metadataXml = readFileSync(join(__dirname, '../../../test/fixtures/metadata.xml'), 'utf-8');
+        const result = getSemanticKeyProperties(metadataXml, 'Travel');
+        expect(result).toEqual(['TravelID']);
+    });
+
+    test('throws when entity set is not found', () => {
+        expect(() => getSemanticKeyProperties(metadataWithSemanticKey, 'NonExistent')).toThrow(
+            "Entity set 'NonExistent' not found in metadata"
+        );
+    });
+
+    test('throws when metadata XML is invalid', () => {
+        expect(() => getSemanticKeyProperties('not valid xml', 'Travel')).toThrow();
+    });
+});
+
+describe('Test isSemanticKeyInFilterBar()', () => {
+    const makePageModel = (fields: string[]): TreeModel => {
+        const aggregations: Record<string, TreeAggregation> = {};
+        fields.forEach((f) => {
+            aggregations[f] = { description: f } as unknown as TreeAggregation;
+        });
+        return {
+            root: {
+                aggregations: {
+                    filterBar: {
+                        aggregations: {
+                            selectionFields: { aggregations } as unknown as TreeAggregation
+                        }
+                    } as unknown as TreeAggregation
+                }
+            } as unknown as TreeAggregation,
+            name: 'test',
+            schema: {}
+        } as unknown as TreeModel;
+    };
+
+    const metadataSingleKey = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm"
+                xmlns:Common="https://oasis-namespaces.org/odata/4.0/cs02/Common">
+            <EntityType Name="OrderType">
+                <Key><PropertyRef Name="SalesOrder"/></Key>
+                <Property Name="SalesOrder" Type="Edm.String"/>
+                <Property Name="Customer" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Order" EntityType="TestService.OrderType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.OrderType">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection><PropertyPath>SalesOrder</PropertyPath></Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    const metadataCompositeKey = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm"
+                xmlns:Common="https://oasis-namespaces.org/odata/4.0/cs02/Common">
+            <EntityType Name="BankType">
+                <Key><PropertyRef Name="BankCountry"/></Key>
+                <Property Name="BankCountry" Type="Edm.String"/>
+                <Property Name="BankInternalID" Type="Edm.String"/>
+                <Property Name="SWIFTCode" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Bank" EntityType="TestService.BankType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.BankType">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>BankCountry</PropertyPath>
+                        <PropertyPath>BankInternalID</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    const metadataNoSemanticKey = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="ItemType">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+                <Property Name="Name" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Item" EntityType="TestService.ItemType"/>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    test('returns true when single semantic key property is present in filter bar', () => {
+        const pageModel = makePageModel(['SalesOrder', 'Customer', 'Status']);
+        expect(isSemanticKeyInFilterBar(pageModel, metadataSingleKey, 'Order')).toBe(true);
+    });
+
+    test('returns false when single semantic key property is absent from filter bar', () => {
+        const pageModel = makePageModel(['Customer', 'Status']);
+        expect(isSemanticKeyInFilterBar(pageModel, metadataSingleKey, 'Order')).toBe(false);
+    });
+
+    test('returns true when all composite semantic key properties are present in filter bar', () => {
+        const pageModel = makePageModel(['BankCountry', 'BankInternalID', 'SWIFTCode']);
+        expect(isSemanticKeyInFilterBar(pageModel, metadataCompositeKey, 'Bank')).toBe(true);
+    });
+
+    test('returns false when only some composite semantic key properties are present in filter bar', () => {
+        const pageModel = makePageModel(['BankCountry', 'SWIFTCode']);
+        expect(isSemanticKeyInFilterBar(pageModel, metadataCompositeKey, 'Bank')).toBe(false);
+    });
+
+    test('returns false when no composite semantic key properties are present in filter bar', () => {
+        const pageModel = makePageModel(['SWIFTCode']);
+        expect(isSemanticKeyInFilterBar(pageModel, metadataCompositeKey, 'Bank')).toBe(false);
+    });
+
+    test('returns false when entity has no SemanticKey annotation', () => {
+        const pageModel = makePageModel(['ID', 'Name']);
+        expect(isSemanticKeyInFilterBar(pageModel, metadataNoSemanticKey, 'Item')).toBe(false);
+    });
+
+    test('returns false when filter bar has no fields', () => {
+        const pageModel = makePageModel([]);
+        expect(isSemanticKeyInFilterBar(pageModel, metadataSingleKey, 'Order')).toBe(false);
+    });
+
+    test('returns false and logs debug when metadata XML is invalid', () => {
+        const pageModel = makePageModel(['OrderID']);
+        const mockLogger = {
+            debug: jest.fn(),
+            warn: jest.fn(),
+            info: jest.fn(),
+            error: jest.fn()
+        } as unknown as Logger;
+        expect(isSemanticKeyInFilterBar(pageModel, 'not valid xml', 'Order', mockLogger)).toBe(false);
+        expect(mockLogger.debug).toHaveBeenCalledWith(
+            expect.stringContaining('Failed to check semantic key in filter bar')
+        );
+    });
+
+    test('returns false and logs debug when entity set is not found in metadata', () => {
+        const pageModel = makePageModel(['OrderID']);
+        const mockLogger = {
+            debug: jest.fn(),
+            warn: jest.fn(),
+            info: jest.fn(),
+            error: jest.fn()
+        } as unknown as Logger;
+        expect(isSemanticKeyInFilterBar(pageModel, metadataSingleKey, 'NonExistentSet', mockLogger)).toBe(false);
+        expect(mockLogger.debug).toHaveBeenCalledWith(
+            expect.stringContaining('Failed to check semantic key in filter bar')
+        );
+    });
+});
+
+describe('Test safeGetSemanticKeyProperties()', () => {
+    let mockLogger: Logger;
+
+    beforeEach(() => {
+        mockLogger = {
+            warn: jest.fn(),
+            debug: jest.fn(),
+            info: jest.fn(),
+            error: jest.fn()
+        } as unknown as Logger;
+    });
+
+    const validMetadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="TravelType">
+                <Key><PropertyRef Name="TravelID"/></Key>
+                <Property Name="TravelID" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.TravelType">
+                <Annotation Term="com.sap.vocabularies.Common.v1.SemanticKey">
+                    <Collection>
+                        <PropertyPath>TravelID</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    test('returns semantic key properties when metadata and entity set are valid', () => {
+        const result = safeGetSemanticKeyProperties(convert(parse(validMetadataXml)), 'Travel', mockLogger);
+        expect(result).toEqual(['TravelID']);
+        expect(mockLogger.debug).not.toHaveBeenCalled();
+    });
+
+    test('returns undefined and logs debug when entity set does not exist', () => {
+        const result = safeGetSemanticKeyProperties(convert(parse(validMetadataXml)), 'NonExistent', mockLogger);
+        expect(result).toBeUndefined();
+        expect(mockLogger.debug).toHaveBeenCalledWith(expect.stringContaining('Failed to get semantic key properties'));
+    });
+
+    test('returns undefined without throwing when logger is not provided', () => {
+        expect(() => safeGetSemanticKeyProperties(convert(parse(validMetadataXml)), 'NonExistent')).not.toThrow();
+    });
+
+    test('logs the error message when entity set is not found', () => {
+        safeGetSemanticKeyProperties(convert(parse(validMetadataXml)), 'NonExistent', mockLogger);
+        const [loggedMessage] = (mockLogger.debug as jest.Mock).mock.calls[0];
+        expect(loggedMessage).toMatch(/Failed to get semantic key properties: .+/);
     });
 });

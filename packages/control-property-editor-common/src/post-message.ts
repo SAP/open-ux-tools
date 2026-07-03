@@ -1,4 +1,4 @@
-import type { Logger } from './types';
+import type { Logger } from './types.js';
 
 export interface PostMessageCommunication<T> {
     sendAction: (action: T) => void;
@@ -54,7 +54,7 @@ export function startPostMessageCommunication<T>(
      */
     function postMessageListener(event: MessageEvent): void {
         const target = getTarget();
-        if (!target || event.origin !== target.origin || event.source !== target) {
+        if (event.origin !== target?.origin || event.source !== target) {
             // Ignore messages from unknown sources
             return;
         }

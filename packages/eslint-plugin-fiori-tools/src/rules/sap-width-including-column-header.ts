@@ -1,15 +1,17 @@
 import type { Element, AliasInformation } from '@sap-ux/odata-annotation-core';
 import { Edm, elementsWithName, elements } from '@sap-ux/odata-annotation-core';
 import type { MemberNode } from '@humanwhocodes/momoa';
-
-import { createFioriRule } from '../language/rule-factory';
-import type { FioriRuleDefinition } from '../types';
-import type { WidthIncludingColumnHeaderDiagnostic } from '../language/diagnostics';
-import { WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE } from '../language/diagnostics';
-import { getRecordType } from '../project-context/linker/annotations';
-import type { FeV4ObjectPage, FeV4ListReport, Table } from '../project-context/linker/fe-v4';
-import type { ParsedApp, ParsedService } from '../project-context/parser';
-import { createJsonFixer } from '../language/rule-fixer';
+import { createFioriRule } from '../language/rule-factory.js';
+import type { FioriRuleDefinition } from '../types.js';
+import type { WidthIncludingColumnHeaderDiagnostic } from '../language/diagnostics.js';
+import { WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE } from '../language/diagnostics.js';
+import { getRecordType } from '../project-context/linker/annotations.js';
+import type { FeV4ObjectPage, FeV4ListReport, Table } from '../project-context/linker/fe-v4.js';
+import type { ParsedApp, ParsedService } from '../project-context/parser/index.js';
+import { createJsonFixer } from '../language/rule-fixer.js';
+import { isLowerThanMinimalUi5Version } from '../utils/version.js';
+import { FioriJSONSourceCode } from '../language/json/source-code.js';
+import type { FioriSourceCode } from '../language/fiori-language.js';
 
 export type RequireWidthIncludingColumnHeaderOptions = {
     form: string;
@@ -46,41 +48,81 @@ function shouldTableHaveWidthIncludingColumnHeader(table: Table, aliasInfo: Alia
 }
 
 /**
+ * Checks table and adds diagnostic problems for tables that should have widthIncludingColumnHeader set.
+ *
+ * @param page - SAP Fiori elements for OData V4 page to check (object page or list report)
+ * @param table - A table with annotation
+ * @param parsedApp - Parsed application containing manifest.json file data
+ * @param parsedService - Parsed service containing metadata and annotations
+ * @param problems - Array to collect diagnostic problems
+ * @param sourceCode - FioriJSONSourceCode instance
+ * @param tableSectionName - Label of the object page section
+ */
+function checkTable(
+    page: FeV4ListReport | FeV4ObjectPage,
+    table: Table | undefined,
+    parsedApp: ParsedApp,
+    parsedService: ParsedService,
+    problems: WidthIncludingColumnHeaderDiagnostic[],
+    sourceCode: FioriSourceCode,
+    tableSectionName?: string
+): void {
+    if (!table?.annotation) {
+        return;
+    }
+    const aliasInfo = parsedService.artifacts.aliasInfo[table.annotation.annotation.top.uri];
+
+    if (shouldTableHaveWidthIncludingColumnHeader(table, aliasInfo)) {
+        const loc =
+            sourceCode instanceof FioriJSONSourceCode
+                ? sourceCode.getNode(
+                      sourceCode.ast.body,
+                      table.configuration.widthIncludingColumnHeader.configurationPath
+                  ).loc
+                : undefined;
+        problems.push({
+            type: WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
+            pageName: page.targetName,
+            pageSectionName: tableSectionName,
+            manifest: {
+                uri: parsedApp.manifest.manifestUri,
+                object: parsedApp.manifestObject,
+                propertyPath: table.configuration.widthIncludingColumnHeader.configurationPath,
+                loc
+            },
+            annotation: {
+                file: table.annotation.annotation.source,
+                annotationPath: table.annotation.annotationPath,
+                reference: table.annotation.annotation.top
+            }
+        });
+    }
+}
+
+/**
  * Checks tables in a page for widthIncludingColumnHeader configuration issues.
- * Adds diagnostic problems for tables that should have this property set.
  *
  * @param page - SAP Fiori elements for OData V4 page to check (object page or list report)
  * @param parsedApp - Parsed application containing manifest.json file data
  * @param parsedService - Parsed service containing metadata and annotations
+ * @param sourceCode - FioriSourceCode instance
  * @param problems - Array to collect diagnostic problems
  */
 function checkTablesInPage(
-    page: FeV4ObjectPage | FeV4ListReport,
+    page: FeV4ListReport | FeV4ObjectPage,
     parsedApp: ParsedApp,
     parsedService: ParsedService,
+    sourceCode: FioriSourceCode,
     problems: WidthIncludingColumnHeaderDiagnostic[]
 ): void {
-    for (const table of page.lookup['table'] ?? []) {
-        if (!table.annotation) {
-            continue;
+    if (page.type === 'list-report-page') {
+        for (const table of page.lookup['table'] ?? []) {
+            checkTable(page, table, parsedApp, parsedService, problems, sourceCode);
         }
-        const aliasInfo = parsedService.artifacts.aliasInfo[table.annotation.annotation.top.uri];
-
-        if (shouldTableHaveWidthIncludingColumnHeader(table, aliasInfo)) {
-            problems.push({
-                type: WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
-                pageName: page.targetName,
-                manifest: {
-                    uri: parsedApp.manifest.manifestUri,
-                    object: parsedApp.manifestObject,
-                    propertyPath: table.configuration.widthIncludingColumnHeader.configurationPath
-                },
-                annotation: {
-                    file: table.annotation.annotation.source,
-                    annotationPath: table.annotation.annotationPath,
-                    reference: table.annotation.annotation.top
-                }
-            });
+    } else if (page.type === 'object-page') {
+        for (const tableSection of page.sections.filter((section) => section.type === 'table-section')) {
+            const table = tableSection.children.find((element) => element.type === 'table');
+            checkTable(page, table, parsedApp, parsedService, problems, sourceCode, tableSection.annotation?.label);
         }
     }
 }
@@ -97,7 +139,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             ['width-including-column-header-manifest']:
-                'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width. Add it to the control configuration for "{{table}}" table.',
+                'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width. Add it to the control configuration of the {{sectionText}}table.',
             ['width-including-column-header']:
                 'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width.'
         },
@@ -110,14 +152,20 @@ const rule: FioriRuleDefinition = createFioriRule({
             if (app.type !== 'fe-v4') {
                 continue;
             }
+            const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
+            if (
+                !parsedApp.manifest.minUI5Version ||
+                isLowerThanMinimalUi5Version(parsedApp.manifest.minUI5Version, { major: 1, minor: 120 })
+            ) {
+                continue;
+            }
             for (const page of app.pages) {
-                const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
                 const parsedService = context.sourceCode.projectContext.getIndexedServiceForMainService(parsedApp);
                 if (!parsedService) {
                     continue;
                 }
 
-                checkTablesInPage(page, parsedApp, parsedService, problems);
+                checkTablesInPage(page, parsedApp, parsedService, context.sourceCode, problems);
             }
         }
 
@@ -129,7 +177,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                 node,
                 messageId: 'width-including-column-header-manifest',
                 data: {
-                    table: diagnostic.annotation.annotationPath
+                    sectionText: diagnostic.pageSectionName ? `${diagnostic.pageSectionName} ` : ''
                 },
                 fix: createJsonFixer({ context, node, deepestPathResult: paths, value: true })
             });

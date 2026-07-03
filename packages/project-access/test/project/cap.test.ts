@@ -1,19 +1,64 @@
-import path, { join, sep } from 'node:path';
-import * as childProcess from 'node:child_process';
+import { jest } from '@jest/globals';
+import path, { join, sep, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import type * as childProcess from 'node:child_process';
 import { create as createStorage, type Store } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import * as projectModuleMock from '../../src/project/module-loader';
-import type { Package } from '../../src';
-import { FileName } from '../../src/constants';
-import {
+import type * as projectModuleType from '../../src/project/module-loader.js';
+import type * as fileType from '../../src/file/index.js';
+import type { Package } from '../../src/index.js';
+import os from 'node:os';
+import type { Logger } from '@sap-ux/logger';
+import { promises as fs } from 'node:fs';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const mockSpawn = jest.fn<typeof realChildProcess.spawn>();
+const mockLoadModuleFromProject = jest.fn<typeof projectModuleType.loadModuleFromProject>();
+const mockFileExists = jest.fn<typeof fileType.fileExists>();
+const mockReadJSON = jest.fn<typeof fileType.readJSON>();
+const mockReadFile = jest.fn<typeof realFile.readFile>();
+
+// Load real modules first (they become cached)
+const realChildProcess = await import('node:child_process');
+const realProjectModule = await import('../../src/project/module-loader.js');
+const realFile = await import('../../src/file/index.js');
+
+// Register mocks BEFORE loading source modules that use them.
+jest.unstable_mockModule('node:child_process', () => ({
+    ...realChildProcess,
+    default: {
+        ...realChildProcess.default,
+        spawn: mockSpawn
+    },
+    spawn: mockSpawn
+}));
+
+jest.unstable_mockModule('../../src/project/module-loader', () => ({
+    ...realProjectModule,
+    loadModuleFromProject: mockLoadModuleFromProject
+}));
+
+jest.unstable_mockModule('../../src/file', () => ({
+    ...realFile,
+    fileExists: mockFileExists,
+    readJSON: mockReadJSON,
+    readFile: mockReadFile
+}));
+
+// Note: search module is NOT mocked due to circular dependency with cap.ts
+// Tests that need findCapProjectRoot to fail should use non-existent paths instead
+
+const { FileName } = await import('../../src/constants.js');
+const {
     clearCdsModuleCache,
     clearGlobalCdsModulePromiseCache,
     getCapServiceName,
     checkCdsUi5PluginEnabled,
     satisfiesMinCdsVersion,
     hasMinCdsVersion
-} from '../../src/project/cap';
-import {
+} = await import('../../src/project/cap.js');
+const {
     getCapCustomPaths,
     getCapEnvironment,
     getCdsFiles,
@@ -23,21 +68,24 @@ import {
     isCapJavaProject,
     getCapModelAndServices,
     getCapProjectType,
+    processServices,
     readCapServiceMetadataEdmx,
     toReferenceUri,
     isCapProject,
     deleteCapApp,
     getGlobalCdsHomePath
-} from '../../src';
-import * as file from '../../src/file';
-import os from 'node:os';
-import type { Logger } from '@sap-ux/logger';
-import { promises as fs } from 'node:fs';
-import { deleteFile, readFile, readJSON } from '../../src/file';
-import * as search from '../../src/project/search';
+} = await import('../../src/index.js');
+const { deleteFile, readFile, readJSON } = realFile;
 
-jest.mock('child_process');
-const childProcessMock = jest.mocked(childProcess, { shallow: true });
+// Re-establish real implementations as defaults after clearAllMocks/restoreAllMocks resets them
+beforeEach(() => {
+    mockSpawn.mockReset();
+    mockLoadModuleFromProject.mockReset();
+    mockFileExists.mockReset().mockImplementation(realFile.fileExists);
+    mockReadJSON.mockReset().mockImplementation(realFile.readJSON);
+    mockReadFile.mockReset().mockImplementation(realFile.readFile);
+});
+
 const jestEnvForMock = jest.fn().mockImplementation(() => ({
     'for': jestEnvForMock,
     folders: {
@@ -109,7 +157,7 @@ describe('Test getCapProjectType() & isCapProject()', () => {
 
 describe('Test isCapNodeJsProject()', () => {
     test('Test if valid CAP node.js project is recognized', async () => {
-        const packageJson = await file.readJSON<Package>(
+        const packageJson = await readJSON<Package>(
             join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_mix', FileName.Package)
         );
         expect(isCapNodeJsProject(packageJson)).toBeTruthy();
@@ -204,7 +252,7 @@ describe('Test getCapModelAndServices()', () => {
             version: '7.0.0',
             root: '/path/to/cds/root'
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+        mockLoadModuleFromProject.mockImplementation(() => Promise.resolve(cdsMock));
 
         // Test execution
         const capMS = await getCapModelAndServices('PROJECT_ROOT');
@@ -291,7 +339,7 @@ describe('Test getCapModelAndServices()', () => {
             version: '7.0.0',
             root: '/path/to/cds/root'
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+        mockLoadModuleFromProject.mockImplementation(() => Promise.resolve(cdsMock));
 
         // Test execution
         const capMS = await getCapModelAndServices('PROJECT_ROOT');
@@ -347,7 +395,7 @@ describe('Test getCapModelAndServices()', () => {
             version: '7.0.0',
             root: '/path/to/cds/root'
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+        mockLoadModuleFromProject.mockImplementation(() => Promise.resolve(cdsMock));
 
         // Test execution
         const capMS = await getCapModelAndServices('PROJECT_ROOT');
@@ -402,7 +450,7 @@ describe('Test getCapModelAndServices()', () => {
                 }
             }
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+        mockLoadModuleFromProject.mockImplementation(() => Promise.resolve(cdsMock));
 
         // Test execution
         const capMS = await getCapModelAndServices('ROOT_PATH');
@@ -436,7 +484,7 @@ describe('Test getCapModelAndServices()', () => {
                 }
             }
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+        mockLoadModuleFromProject.mockImplementation(() => Promise.resolve(cdsMock));
 
         // Test execution
         const capMS = await getCapModelAndServices('ROOT_PATH');
@@ -473,7 +521,7 @@ describe('Test getCapModelAndServices()', () => {
             home: '/cds/home/path',
             version: '7.4.2'
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+        mockLoadModuleFromProject.mockImplementation(() => Promise.resolve(cdsMock));
 
         const mockLogger: Logger = {
             info: jest.fn().mockImplementation(() => null)
@@ -501,12 +549,8 @@ describe('Test getCapModelAndServices()', () => {
             },
             env: jestMockEnv
         };
-        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(
-            getChildProcessMock('{"_home_cds-dk": "/global/cds"}')
-        );
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject')
-            .mockRejectedValueOnce('ERROR')
-            .mockResolvedValue(cdsMock);
+        mockSpawn.mockReturnValueOnce(getChildProcessMock('{"_home_cds-dk": "/global/cds"}'));
+        mockLoadModuleFromProject.mockRejectedValueOnce('ERROR').mockResolvedValue(cdsMock);
 
         // Test execution with object param
         const projectRoot = '/some/test/path';
@@ -525,12 +569,10 @@ describe('Test getCapModelAndServices()', () => {
             },
             version: '7.0.0'
         };
-        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('{"_home_cds-dk": "/any/path"}'));
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject')
-            .mockRejectedValueOnce('ERROR')
-            .mockResolvedValue(cdsMock);
-        jest.spyOn(file, 'fileExists').mockResolvedValueOnce(true);
-        jest.spyOn(file, 'readJSON').mockResolvedValueOnce({ 'dependencies': { '@sap/cds': '6.0.0' } });
+        mockSpawn.mockReturnValueOnce(getChildProcessMock('{"_home_cds-dk": "/any/path"}'));
+        mockLoadModuleFromProject.mockRejectedValueOnce('ERROR').mockResolvedValue(cdsMock);
+        mockFileExists.mockResolvedValueOnce(true);
+        mockReadJSON.mockResolvedValueOnce({ 'dependencies': { '@sap/cds': '6.0.0' } } as any);
 
         // Test execution with object param
         const projectRoot = '/some/test/path';
@@ -573,7 +615,7 @@ describe('Test readCapServiceMetadataEdmx()', () => {
     test('Convert service to EDMX', async () => {
         // Mock setup
         const cdsMock = getCdsMock();
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue({ default: cdsMock });
+        mockLoadModuleFromProject.mockResolvedValue({ default: cdsMock });
 
         // Test execution
         const result = await readCapServiceMetadataEdmx('root', 'service/two');
@@ -587,7 +629,7 @@ describe('Test readCapServiceMetadataEdmx()', () => {
     test('Convert v2 service with backslash to EDMX', async () => {
         // Mock setup
         const cdsMock = getCdsMock();
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue({ default: cdsMock });
+        mockLoadModuleFromProject.mockResolvedValue({ default: cdsMock });
 
         // Test execution
         const result = await readCapServiceMetadataEdmx('root', '/service\\one/', 'v2');
@@ -600,7 +642,7 @@ describe('Test readCapServiceMetadataEdmx()', () => {
     test('Convert service with leading double backslashes', async () => {
         // Mock setup
         const cdsMock = getCdsMock();
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue({ default: cdsMock });
+        mockLoadModuleFromProject.mockResolvedValue({ default: cdsMock });
 
         // Test execution
         const result = await readCapServiceMetadataEdmx('root', '\\\\serviceone');
@@ -613,7 +655,7 @@ describe('Test readCapServiceMetadataEdmx()', () => {
     test('Convert service with leading windows backslashes', async () => {
         // Mock setup
         const cdsMock = getCdsMock();
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue({ default: cdsMock });
+        mockLoadModuleFromProject.mockResolvedValue({ default: cdsMock });
 
         // Test execution
         const result = await readCapServiceMetadataEdmx('root', 'odata/v4/service/catalog/');
@@ -625,7 +667,7 @@ describe('Test readCapServiceMetadataEdmx()', () => {
     test('Convert none existing service to EDMX, should throw error', async () => {
         // Mock setup
         const cdsMock = getCdsMock();
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue({ default: cdsMock });
+        mockLoadModuleFromProject.mockResolvedValue({ default: cdsMock });
 
         // Test execution and check
         try {
@@ -642,7 +684,7 @@ describe('Test readCapServiceMetadataEdmx()', () => {
         cdsMock.compile.to.edmx = jest.fn().mockImplementationOnce(() => {
             throw 'COMPILE_ERROR';
         });
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue({ default: cdsMock });
+        mockLoadModuleFromProject.mockResolvedValue({ default: cdsMock });
 
         // Test execution and check
         try {
@@ -664,7 +706,7 @@ describe('Test getCapCustomPaths()', () => {
         const cdsMock = {
             env: jestMockEnv
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+        mockLoadModuleFromProject.mockImplementation(() => Promise.resolve(cdsMock));
 
         // Test execution
         const path = await getCapCustomPaths('PROJECT_ROOT');
@@ -685,7 +727,7 @@ describe('Test getCapCustomPaths()', () => {
                 'for': () => null
             }
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+        mockLoadModuleFromProject.mockImplementation(() => Promise.resolve(cdsMock));
 
         // Test execution
         const path = await getCapCustomPaths('PROJECT_ROOT');
@@ -708,7 +750,7 @@ describe('Test getCapEnvironment()', () => {
 
     test('without default property', async () => {
         const forSpy = jestMockEnv.for;
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => {
+        mockLoadModuleFromProject.mockImplementation(() => {
             return Promise.resolve({
                 env: {
                     for: forSpy
@@ -720,7 +762,7 @@ describe('Test getCapEnvironment()', () => {
     });
     test('default export', async () => {
         const forSpy = jestMockEnv.for;
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => {
+        mockLoadModuleFromProject.mockImplementation(() => {
             return Promise.resolve({
                 default: {
                     env: {
@@ -745,9 +787,7 @@ describe('Test getCapEnvironment()', () => {
             version: 2,
             env: jestMockEnv
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject')
-            .mockResolvedValueOnce(cdsV1)
-            .mockResolvedValueOnce(cdsV2);
+        mockLoadModuleFromProject.mockResolvedValueOnce(cdsV1).mockResolvedValueOnce(cdsV2);
 
         await getCapEnvironment('PROJECT');
         expect((global as GlobalCds).cds).toBe(cdsV1);
@@ -757,8 +797,8 @@ describe('Test getCapEnvironment()', () => {
 
     test('failed to load cds from any location', async () => {
         // Mock setup
-        childProcessMock.spawn.mockReturnValueOnce(getChildProcessMock('WRONG'));
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValueOnce('ERROR_LOCAL');
+        mockSpawn.mockReturnValueOnce(getChildProcessMock('WRONG'));
+        mockLoadModuleFromProject.mockRejectedValueOnce('ERROR_LOCAL');
 
         // Test execution
         try {
@@ -772,8 +812,8 @@ describe('Test getCapEnvironment()', () => {
 
     test('call to cds env --json does not contain result', async () => {
         // Mock setup
-        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock(''));
-        const loadSpy = jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValueOnce('ERROR_LOCAL');
+        mockSpawn.mockReturnValueOnce(getChildProcessMock(''));
+        const loadSpy = mockLoadModuleFromProject.mockRejectedValueOnce('ERROR_LOCAL');
 
         // Test execution
         try {
@@ -787,8 +827,8 @@ describe('Test getCapEnvironment()', () => {
 
     test('call to cds env --json throws error', async () => {
         // Mock setup
-        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('', true));
-        const loadSpy = jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValueOnce('ERROR_LOCAL');
+        mockSpawn.mockReturnValueOnce(getChildProcessMock('', true));
+        const loadSpy = mockLoadModuleFromProject.mockRejectedValueOnce('ERROR_LOCAL');
 
         // Test execution
         try {
@@ -802,8 +842,8 @@ describe('Test getCapEnvironment()', () => {
 
     test('call to cds env --json gives empty json', async () => {
         // Mock setup
-        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('{}', true));
-        const loadSpy = jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValueOnce('ERROR_LOCAL');
+        mockSpawn.mockReturnValueOnce(getChildProcessMock('{}', true));
+        const loadSpy = mockLoadModuleFromProject.mockRejectedValueOnce('ERROR_LOCAL');
 
         // Test execution
         try {
@@ -819,8 +859,8 @@ describe('Test getCapEnvironment()', () => {
 
     test('call to cds env --json gives incorrect json', async () => {
         // Mock setup
-        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('error', true));
-        const loadSpy = jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValueOnce('ERROR_LOCAL');
+        mockSpawn.mockReturnValueOnce(getChildProcessMock('error', true));
+        const loadSpy = mockLoadModuleFromProject.mockRejectedValueOnce('ERROR_LOCAL');
 
         // Test execution
         try {
@@ -834,12 +874,11 @@ describe('Test getCapEnvironment()', () => {
 
     test('with cds loaded from other location than project', async () => {
         // Mock setup
-        const spawnSpy = jest
-            .spyOn(childProcessMock, 'spawn')
-            .mockReturnValueOnce(getChildProcessMock('{\n "anyKey": "anyValue",\n "_home_cds-dk": "GLOBAL_ROOT"\n}'));
+        mockSpawn.mockReturnValueOnce(
+            getChildProcessMock('{\n "anyKey": "anyValue",\n "_home_cds-dk": "GLOBAL_ROOT"\n}')
+        );
         const forSpy = jestMockEnv.for;
-        const loadSpy = jest
-            .spyOn(projectModuleMock, 'loadModuleFromProject')
+        mockLoadModuleFromProject
             .mockRejectedValueOnce('ERROR_LOCAL')
             .mockResolvedValueOnce({ default: { env: { for: forSpy } } });
 
@@ -847,9 +886,13 @@ describe('Test getCapEnvironment()', () => {
         await getCapEnvironment('PROJECT_ROOT');
 
         // Result check
-        expect(spawnSpy).toHaveBeenCalledWith('cds', ['env', '--json'], { cwd: undefined, shell: true });
-        expect(loadSpy).toHaveBeenNthCalledWith(1, 'PROJECT_ROOT', '@sap/cds');
-        expect(loadSpy).toHaveBeenNthCalledWith(2, join('GLOBAL_ROOT', 'node_modules', '@sap', 'cds'), '@sap/cds');
+        expect(mockSpawn).toHaveBeenCalledWith('cds', ['env', '--json'], { cwd: undefined, shell: true });
+        expect(mockLoadModuleFromProject).toHaveBeenNthCalledWith(1, 'PROJECT_ROOT', '@sap/cds');
+        expect(mockLoadModuleFromProject).toHaveBeenNthCalledWith(
+            2,
+            join('GLOBAL_ROOT', 'node_modules', '@sap', 'cds'),
+            '@sap/cds'
+        );
         expect(forSpy).toHaveBeenCalledWith('cds', 'PROJECT_ROOT');
     });
 });
@@ -863,9 +906,7 @@ describe('Test getGlobalCdsHomePath()', () => {
 
     test('Expected response from "cds env --json"', async () => {
         // Mock setup
-        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(
-            getChildProcessMock('{"_home_cds-dk": "GLOBAL_ROOT"}')
-        );
+        mockSpawn.mockReturnValueOnce(getChildProcessMock('{"_home_cds-dk": "GLOBAL_ROOT"}'));
 
         // Test execution
         const cdsHomePath = await getGlobalCdsHomePath();
@@ -876,7 +917,7 @@ describe('Test getGlobalCdsHomePath()', () => {
 
     test('Unexpected response from "cds env --json"', async () => {
         // Mock setup
-        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('{}'));
+        mockSpawn.mockReturnValueOnce(getChildProcessMock('{}'));
 
         // Test execution
         const cdsHomePath = await getGlobalCdsHomePath();
@@ -892,7 +933,7 @@ describe('toReferenceUri', () => {
     });
     test('toReferenceUri with refUri starting with "../"', async () => {
         // mock reading of package json in root folder of sibling project
-        jest.spyOn(file, 'readJSON').mockImplementation(async (uri) => {
+        mockReadJSON.mockImplementation(async (uri) => {
             return uri ===
                 (os.platform() === 'win32'
                     ? '\\globalRoot\\monoRepo\\bookshop\\package.json'
@@ -912,9 +953,9 @@ describe('toReferenceUri', () => {
 
     test('toReferenceUri with refUri starting with "../" custom cds paths', async () => {
         // mock reading of package json in root folder of sibling project
-        jest.spyOn(file, 'readFile').mockImplementation(async () => {
+        mockReadFile.mockImplementation((async () => {
             return '';
-        });
+        }) as unknown as typeof realFile.readFile);
         // prepare
         const projectRoot = join(__dirname, '..', 'test-data', 'cap-nodejs-1');
         const relUriFrom = join('sap', 'app', 'admin', 'fiori.cds'); // relative (to project root) uri of file for which the using statement should be generated
@@ -938,7 +979,7 @@ describe('Test getCdsFiles()', () => {
             resolve: jest.fn().mockImplementation((path) => [path]),
             env: jestMockEnv
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+        mockLoadModuleFromProject.mockResolvedValue(cdsMock);
 
         // Test execution
         const cdsFiles = await getCdsFiles('');
@@ -958,7 +999,7 @@ describe('Test getCdsFiles()', () => {
             resolve: jest.fn(),
             env: jestMockEnv
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+        mockLoadModuleFromProject.mockResolvedValue(cdsMock);
 
         // Test execution
         const cdsFiles = await getCdsFiles('');
@@ -975,7 +1016,7 @@ describe('Test getCdsFiles()', () => {
             }),
             env: jestMockEnv
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+        mockLoadModuleFromProject.mockResolvedValue(cdsMock);
 
         // Test execution and result check
         try {
@@ -993,7 +1034,7 @@ describe('Test getCdsFiles()', () => {
                 throw Error();
             })
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+        mockLoadModuleFromProject.mockResolvedValue(cdsMock);
 
         // Test execution and result check
         try {
@@ -1016,7 +1057,7 @@ describe('Test getCdsFiles()', () => {
             }),
             env: jestMockEnv
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+        mockLoadModuleFromProject.mockResolvedValue(cdsMock);
 
         // Test execution
         const cdsFiles = await getCdsFiles('', true, 'envroot');
@@ -1036,7 +1077,7 @@ describe('Test getCdsFiles()', () => {
             }),
             env: jestMockEnv
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+        mockLoadModuleFromProject.mockResolvedValue(cdsMock);
 
         // Test execution
         const cdsFiles = await getCdsFiles('', true, 'envroot');
@@ -1058,7 +1099,7 @@ describe('Test getCdsRoots()', () => {
             env: jestMockEnv,
             resolve: jest.fn().mockImplementation((path) => [path])
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+        mockLoadModuleFromProject.mockResolvedValue(cdsMock);
 
         // Test execution
         const cdsRoots = await getCdsRoots(join('/my/project/root'));
@@ -1087,7 +1128,7 @@ describe('Test getCdsRoots()', () => {
                 { cache: undefined }
             )
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+        mockLoadModuleFromProject.mockResolvedValue(cdsMock);
 
         // Test execution
         const cdsRoots = await getCdsRoots(join('/any/project'), true);
@@ -1121,7 +1162,7 @@ describe('Test getCdsServices()', () => {
             resolve: jest.fn().mockImplementation((path) => [path]),
             env: jestMockEnv
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+        mockLoadModuleFromProject.mockResolvedValue(cdsMock);
 
         // Test execution
         const services = await getCdsServices('any/root');
@@ -1152,7 +1193,7 @@ describe('Test getCdsServices()', () => {
             resolve: jest.fn().mockImplementation((path) => [path]),
             env: jestMockEnv
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+        mockLoadModuleFromProject.mockResolvedValue(cdsMock);
 
         // Test execution
         const services = await getCdsServices('any/root');
@@ -1173,7 +1214,7 @@ describe('Test getCdsServices()', () => {
             resolve: jest.fn().mockImplementation((path) => [path]),
             env: jestMockEnv
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+        mockLoadModuleFromProject.mockResolvedValue(cdsMock);
 
         // Test execution and result check
         try {
@@ -1202,7 +1243,7 @@ describe('clearCdsModuleCache', () => {
             },
             env: jestMockEnv
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+        mockLoadModuleFromProject.mockImplementation(() => Promise.resolve(cdsMock));
 
         // Test execution
         const result = await clearCdsModuleCache(projectRoot);
@@ -1214,7 +1255,7 @@ describe('clearCdsModuleCache', () => {
 
     test('Unresolvable cds module - error is thrown', async () => {
         // Mock setup
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(undefined));
+        mockLoadModuleFromProject.mockImplementation(() => Promise.resolve(undefined));
         // Test execution
         const result = await clearCdsModuleCache(projectRoot);
         expect(result).toEqual(false);
@@ -1222,9 +1263,7 @@ describe('clearCdsModuleCache', () => {
 
     test('Unresolvable cds module - error is not thrown', async () => {
         // Mock setup
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() =>
-            Promise.resolve({ default: undefined })
-        );
+        mockLoadModuleFromProject.mockImplementation(() => Promise.resolve({ default: undefined }));
         // Test execution
         const result = await clearCdsModuleCache(projectRoot);
         expect(result).toEqual(false);
@@ -1238,12 +1277,19 @@ describe('getCapServiceName', () => {
             load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
             compile: {
                 to: {
-                    serviceinfo: jest.fn().mockImplementation(() => [{ name: 'ServiceOne', urlPath: 'service/one' }])
+                    serviceinfo: jest.fn().mockImplementation(() => [
+                        { name: 'ServiceOne', urlPath: 'service/one' },
+                        { name: 'ServiceThree', urlPath: 'odata/v4/three/' },
+                        { name: 'ServiceFour', urlPath: 'odata/v4/four' },
+                        { name: 'ServiceFive', urlPath: 'dummy/odata/v4/three/' },
+                        { name: 'ServiceSix', urlPath: 'odata/v4/dummy/deep/service' },
+                        { name: 'ServiceSeven', urlPath: 'odata/v4/dummy/my.*' }
+                    ])
                 }
             },
             env: jestMockEnv
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+        mockLoadModuleFromProject.mockImplementation(() => Promise.resolve(cdsMock));
     });
 
     test('Return service name', async () => {
@@ -1252,13 +1298,114 @@ describe('getCapServiceName', () => {
     });
 
     test('Service not found error message', async () => {
-        try {
-            await getCapServiceName('/some/test/path', 'service/two');
-        } catch (error) {
-            expect(error.message).toBe(
-                'Service for uri: \'service/two\' not found. Available services: [{"name":"ServiceOne","urlPath":"service/one"}]'
+        await expect(getCapServiceName('/some/test/path', 'service/two')).rejects.toThrow(
+            /Service for uri: 'service\/two' not found\. Available services: \[\{"name":"ServiceOne","urlPath":"service\/one".*/
+        );
+    });
+
+    const servicePrefixValidationTests = [
+        // /<string>.<string>/external-ui/<inbound-service-name>/v<version>/...
+        {
+            name: 'valid service uri 1',
+            datasourceUri: '/external.uri/external-ui/dummy/v1/odata/v4/three/',
+            valid: 'ServiceThree'
+        },
+        {
+            name: 'valid service uri 2',
+            datasourceUri: '/external.uri/external-ui/dummy/v2/odata/v4/three/',
+            valid: 'ServiceThree'
+        },
+        {
+            name: 'invalid service pattern 1',
+            datasourceUri: '/external/external-ui/dummy/v1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 2',
+            datasourceUri: '/external.uri/external/dummy/v1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 3',
+            datasourceUri: '/external-ui/dummy/v1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 4',
+            datasourceUri: '/external.uri/external-ui/v1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 5',
+            datasourceUri: '/external.uri/external-ui/dummy/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 6',
+            datasourceUri: '/external.uri/external-ui/dummy/1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'valid service pattern, but service is not listed',
+            datasourceUri: '/external.uri/external-ui/dummy/v1/odata/v4/two/',
+            valid: undefined
+        },
+        {
+            name: 'valid service uri - deep uri',
+            datasourceUri: '/external.uri/external-ui/dummy/v2/odata/v4/dummy/deep/service/',
+            valid: 'ServiceSix'
+        },
+        {
+            name: 'escape service path - matching path',
+            datasourceUri: '/external.uri/external-ui/dummy/v2/odata/v4/dummy/my.*/',
+            valid: 'ServiceSeven'
+        },
+        {
+            name: 'escape service path - unmatching path',
+            datasourceUri: '/external.uri/external-ui/dummy/v2/odata/v4/dummy/my.test/',
+            valid: undefined
+        },
+        // /ui/<inbound-service-name>/v<version>/...
+        {
+            name: 'valid service uri 3',
+            datasourceUri: '/ui/dummy/v1/odata/v4/three/',
+            valid: 'ServiceThree'
+        },
+        {
+            name: 'valid service pattern, but service is not listed 2',
+            datasourceUri: '/ui/dummy/v1/odata/v4/two/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 7',
+            datasourceUri: '/dummy/v1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 8',
+            datasourceUri: '/ui/v1/odata/v4/three/',
+            valid: undefined
+        },
+        {
+            name: 'invalid service pattern 9',
+            datasourceUri: '/ui/dummy/1/odata/v4/three/',
+            valid: undefined
+        }
+    ];
+    test.each(servicePrefixValidationTests)('Ignore service prefixes - $name', async ({ datasourceUri, valid }) => {
+        if (valid) {
+            const capServiceName = await getCapServiceName('/some/test/path', datasourceUri);
+            expect(capServiceName).toEqual(valid);
+        } else {
+            await expect(getCapServiceName('/some/test/path', datasourceUri)).rejects.toThrow(
+                /Service for uri: .* not found\. Available services:.*/
             );
         }
+    });
+
+    test('Find exact service match', async () => {
+        const capServiceName = await getCapServiceName('/some/test/path', 'dummy/odata/v4/three/');
+        expect(capServiceName).toEqual('ServiceFive');
     });
 });
 
@@ -1279,7 +1426,6 @@ describe('deleteCapApp', () => {
     };
     beforeEach(() => {
         jest.restoreAllMocks();
-        jest.requireActual('mem-fs-editor');
         store = createStorage();
         memFs = create(store);
         memFs.copy(capProject, capProject);
@@ -1407,12 +1553,15 @@ describe('deleteCapApp', () => {
             info: jest.fn(),
             debug: jest.fn()
         } as unknown as Logger;
-        jest.spyOn(search, 'findCapProjectRoot').mockResolvedValueOnce('');
+
+        // Use a path that doesn't have a valid CAP project root
+        // (no package.json with CAP dependencies up the directory tree)
+        const nonCapPath = join(os.tmpdir(), 'non-existing-cap-project', 'apps', 'one');
 
         // Execute test
-        await expect(
-            async () => await deleteCapApp(join(capProject, 'apps', 'one'), memFs, logggerMock)
-        ).rejects.toThrow(/Project root was not found for CAP application/);
+        await expect(async () => await deleteCapApp(nonCapPath, memFs, logggerMock)).rejects.toThrow(
+            /Project root was not found for CAP application/
+        );
         expect(logggerMock.error).toHaveBeenCalled();
     });
 
@@ -1450,7 +1599,7 @@ describe('deleteCapApp', () => {
             debug: jest.fn()
         } as unknown as Logger;
         // Simulate error while deleting cds file
-        jest.spyOn(memFs, 'delete').mockImplementation((path: unknown) => {
+        jest.spyOn(memFs, 'delete').mockImplementation((path) => {
             if (path === join(capProject, 'apps', FileName.IndexCds)) {
                 throw new Error('aaaa');
             }
@@ -1723,11 +1872,99 @@ describe('Test hasMinCdsVersion()', () => {
     });
 });
 
+describe('Test processServices()', () => {
+    test('should return empty array for undefined input', () => {
+        expect(processServices(undefined)).toEqual([]);
+    });
+
+    test('should return empty array for non-array input', () => {
+        expect(processServices({})).toEqual([]);
+    });
+
+    test('should handle services where endpoint path and urlPath are both undefined', () => {
+        const services = [
+            {
+                name: 'TestService',
+                endpoints: [
+                    {
+                        kind: 'odata',
+                        path: undefined
+                    }
+                ],
+                urlPath: undefined
+            }
+        ];
+        const result = processServices(services as any);
+        expect(result).toEqual([
+            {
+                name: 'TestService',
+                urlPath: '',
+                runtime: undefined
+            }
+        ]);
+    });
+
+    test('should use endpoint path when available', () => {
+        const services = [
+            {
+                name: 'TestService',
+                endpoints: [
+                    {
+                        kind: 'odata',
+                        path: 'odata/v4/test'
+                    }
+                ]
+            }
+        ];
+        const result = processServices(services as any);
+        expect(result).toEqual([
+            {
+                name: 'TestService',
+                urlPath: 'odata/v4/test',
+                runtime: undefined
+            }
+        ]);
+    });
+
+    test('should fall back to urlPath when no odata endpoint path', () => {
+        const services = [
+            {
+                name: 'TestService',
+                urlPath: 'service/path'
+            }
+        ];
+        const result = processServices(services as any);
+        expect(result).toEqual([
+            {
+                name: 'TestService',
+                urlPath: 'service/path',
+                runtime: undefined
+            }
+        ]);
+    });
+
+    test('should filter out non-odata services with endpoints', () => {
+        const services = [
+            {
+                name: 'WebSocketService',
+                endpoints: [
+                    {
+                        kind: 'websocket',
+                        path: 'ws/test'
+                    }
+                ]
+            }
+        ];
+        const result = processServices(services as any);
+        expect(result).toEqual([]);
+    });
+});
+
 function fail(message: string) {
     expect(message).toBeFalsy();
 }
 
-function getChildProcessMock(data: any, throwError = false): childProcess.ChildProcess {
+function getChildProcessMock(data: any, throwError = false): any {
     return {
         stdout: {
             on: (type: 'data', cb: (chunk: any) => void) => {

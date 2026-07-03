@@ -1,32 +1,31 @@
-import { ClientFactory } from '../../src/base/client';
-import { TelemetrySettings } from '../../src/base/config-state';
-import { EventName } from '../../src/base/types/event-name';
-import { SampleRate } from '../../src/base/types/sample-rate';
-import type { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
+import { jest } from '@jest/globals';
 
-const spyTrackEvent: jest.Mock = jest.fn();
+const spyTrackEvent = jest.fn();
 
-jest.mock('applicationinsights', () => {
+jest.unstable_mockModule('applicationinsights', () => {
     class TelemetryClient {
         public config: any;
-        public channel: any;
+        public setUseDiskRetryCaching: any;
         public addTelemetryProcessor: any;
         public trackEvent: any;
         constructor() {
             this.config = {
                 samplingPercentage: 0
             };
-            this.channel = {
-                setUseDiskRetryCaching: jest.fn()
-            };
+            this.setUseDiskRetryCaching = jest.fn();
             this.addTelemetryProcessor = (fn: any) => {
                 fn({ tags: {} });
             };
-            this.trackEvent = (event: EventTelemetry) => spyTrackEvent(event);
+            this.trackEvent = (event: any) => spyTrackEvent(event);
         }
     }
     return { TelemetryClient };
 });
+
+const { ClientFactory } = await import('../../src/base/client/index.js');
+const { TelemetrySettings } = await import('../../src/base/config-state.js');
+const { EventName } = await import('../../src/base/types/event-name.js');
+const { SampleRate } = await import('../../src/base/types/sample-rate.js');
 
 describe('ClientFactory Send Report Tests', () => {
     beforeEach(() => {
@@ -39,7 +38,7 @@ describe('ClientFactory Send Report Tests', () => {
     test('Test function getTelemetryClient()', async () => {
         const telemetryClient = ClientFactory.getTelemetryClient();
 
-        const spy = jest.spyOn<any, any>(telemetryClient, 'trackEvent').mockImplementation((): void => {
+        const spy = jest.spyOn<any, any, any>(telemetryClient, 'trackEvent').mockImplementation((): void => {
             return;
         });
         await telemetryClient.report(EventName.Test, {}, {}, SampleRate.NoSampling);

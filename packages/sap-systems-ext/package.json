@@ -1,6 +1,6 @@
 {
     "name": "sap-ux-sap-systems-ext",
-    "version": "0.3.11",
+    "version": "1.0.5",
     "displayName": "Connection Manager for SAP Systems",
     "description": "Enables you to store connection information for remote SAP systems.",
     "main": "./dist/extension.js",
@@ -13,12 +13,12 @@
     },
     "engines": {
         "vscode": "^1.102.0",
-        "node": ">=20.x"
+        "node": ">=22.x"
     },
     "files": [
         "dist/**/*.{js,css}",
-        "resources",
         "prebuilds",
+        "resources",
         "LICENSE"
     ],
     "scripts": {
@@ -57,18 +57,18 @@
         "@sap-ux/sap-systems-ext-types": "workspace:*",
         "@sap-ux/sap-systems-ext-webapp": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
-        "@types/normalize-path": "3.0.0",
-        "@types/vscode": "1.102.0",
-        "@zowe/secrets-for-zowe-sdk": "8.29.4",
+        "@types/normalize-path": "3.0.2",
+        "@types/vscode": "1.125.0",
+        "@zowe/secrets-for-zowe-sdk": "8.32.0",
         "cross-env": "10.1.0",
-        "fast-glob": "3.3.1",
-        "i18next": "25.8.18",
+        "fast-glob": "3.3.3",
+        "i18next": "25.10.10",
         "jsonc-parser": "3.3.1",
         "normalize-path": "3.0.0",
         "npm-run-all2": "8.0.4",
         "os-name": "4.0.1",
         "vscode-uri": "3.1.0",
-        "@vscode/vsce": "3.6.0"
+        "@vscode/vsce": "3.7.1"
     },
     "contributes": {
         "viewsContainers": {
@@ -121,6 +121,11 @@
             },
             {
                 "command": "sap.ux.tools.sapSystems.create",
+                "title": "Add SAP System (External)",
+                "description": "Add a new SAP system by providing connection details such as host, client, and credentials. This allows you to manage and connect to your SAP systems directly from the Connection Manager."
+            },
+            {
+                "command": "sap.ux.tools.sapSystems.createNew",
                 "title": "Add SAP System",
                 "category": "SAP",
                 "icon": {
@@ -161,6 +166,10 @@
                 {
                     "command": "sap.ux.tools.sapSystems.launchAppGen",
                     "when": "false"
+                },
+                {
+                    "command": "sap.ux.tools.sapSystems.create",
+                    "when": "false"
                 }
             ],
             "view/title": [
@@ -170,7 +179,7 @@
                     "group": "navigation@0"
                 },
                 {
-                    "command": "sap.ux.tools.sapSystems.create",
+                    "command": "sap.ux.tools.sapSystems.createNew",
                     "when": "view == sap.ux.tools.sapSystems",
                     "group": "navigation@1"
                 },
@@ -192,12 +201,12 @@
                 },
                 {
                     "command": "sap.ux.tools.sapSystems.launchAppGen",
-                    "when": "view == sap.ux.tools.sapSystems && viewItem == sapSystem-abap_catalog",
+                    "when": "view == sap.ux.tools.sapSystems && (viewItem == sapSystem-abap_catalog || viewItem == sapSystem-odata_service)",
                     "group": "navigation"
                 },
                 {
                     "command": "sap.ux.tools.sapSystems.show",
-                    "when": "view == sap.ux.tools.sapSystems && (viewItem == sapSystem-abap_catalog || viewItem == sapSystem-odata_service)",
+                    "when": "view == sap.ux.tools.sapSystems && (viewItem == sapSystem-abap_catalog || viewItem == sapSystem-odata_service || viewItem == sapSystem-generic_host)",
                     "group": "navigation"
                 }
             ]

@@ -2,13 +2,13 @@ import { createServer } from 'livereload';
 import type { LiveReloadServer } from 'livereload';
 import type { RequestHandler } from 'express';
 import connectLivereload from 'connect-livereload';
-import type { LiveReloadOptions, HttpsOptions, ConnectLivereloadOptions } from './types';
-import { getAvailablePort } from './utils';
+import type { LiveReloadOptions, HttpsOptions, ConnectLivereloadOptions } from './types.js';
+import { getAvailablePort } from './utils.js';
 import { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { promises } from 'node:fs';
 import { extname } from 'node:path';
-import { defaultLiveReloadOpts, defaultConnectLivereloadOpts } from './constants';
+import { defaultLiveReloadOpts, defaultConnectLivereloadOpts } from './constants.js';
 
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
@@ -79,7 +79,8 @@ export function watchManifestChanges(livereload: LiveReloadServer): void {
                 path.endsWith('appdescr_ui_gen_app_changePageConfig.change') ||
                 path.endsWith('appdescr_app_addAnnotationsToOData.change') ||
                 path.endsWith('appdescr_ui_generic_app_addNewObjectPage.change') ||
-                path.endsWith('appdescr_fe_addNewPage.change')
+                path.endsWith('appdescr_fe_addNewPage.change') ||
+                path.endsWith('appdescr_ui5_setFlexExtensionPointEnabled.change')
             ) {
                 global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
             }

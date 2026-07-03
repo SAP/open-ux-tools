@@ -16,7 +16,9 @@ import {
 } from '@sap-ux/odata-annotation-core';
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 
-import { createMetadataCollector, type CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
+import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
+import cdsCompilerFacade from '@sap/ux-cds-compiler-facade';
+const { createMetadataCollector } = cdsCompilerFacade;
 
 import type { Annotation, Collection, Token } from '@sap-ux/cds-annotation-parser';
 import {
@@ -35,15 +37,15 @@ import {
 import type { Target } from '@sap-ux/cds-odata-annotation-converter';
 import { TARGET_TYPE, printPrimitiveValue, indent, print, printTarget } from '@sap-ux/cds-odata-annotation-converter';
 
-import { increaseIndent, compareByRange } from '../utils';
-import { ApiError } from '../error';
+import { increaseIndent, compareByRange } from '../utils/index.js';
+import { ApiError } from '../error.js';
 
-import type { Comment } from './comments';
-import type { AstNode, CDSDocument, ContainerNode } from './document';
-import { CDS_DOCUMENT_TYPE, getChildCount, getItems } from './document';
-import type { DeletionRange } from './deletion';
-import { getTextEditsForDeletionRanges, getDeletionRangeForNode } from './deletion';
-import { getAstNodesFromPointer } from './pointer';
+import type { Comment } from './comments.js';
+import type { AstNode, CDSDocument, ContainerNode } from './document.js';
+import { CDS_DOCUMENT_TYPE, getChildCount, getItems } from './document.js';
+import type { DeletionRange } from './deletion.js';
+import { getTextEditsForDeletionRanges, getDeletionRangeForNode } from './deletion.js';
+import { getAstNodesFromPointer } from './pointer.js';
 
 import type {
     CDSDocumentChange,
@@ -72,7 +74,7 @@ import type {
     ConvertToCompoundAnnotation,
     ElementInserts,
     DeleteAnnotationGroup
-} from './change';
+} from './change.js';
 import {
     INSERT_PRIMITIVE_VALUE_TYPE,
     MOVE_COLLECTION_VALUE_CHANGE_TYPE,
@@ -100,9 +102,9 @@ import {
     DELETE_ANNOTATION_GROUP_CHANGE_TYPE,
     DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE,
     createDeleteAnnotationChange
-} from './change';
-import { createReferenceElement, preprocessChanges } from './preprocessor';
-import type { CompilerToken } from './cds-compiler-tokens';
+} from './change.js';
+import { createReferenceElement, preprocessChanges } from './preprocessor.js';
+import type { CompilerToken } from './cds-compiler-tokens.js';
 import {
     findLastTokenBeforePosition,
     findFirstTokenAfterPosition,
@@ -111,10 +113,18 @@ import {
     isOldToken,
     tokenLine,
     tokenColumn
-} from './cds-compiler-tokens';
-import { getIndentLevelFromPointer, getIndentLevelFromNode } from './indent';
+} from './cds-compiler-tokens.js';
+import { getIndentLevelFromPointer, getIndentLevelFromNode } from './indent.js';
 
 const printOptions: typeof defaultPrintOptions = { ...defaultPrintOptions, useSnippetSyntax: false };
+
+interface WriterContext {
+    textDocument: TextDocument;
+    comments: Comment[];
+    tokens: CompilerToken[];
+    changes: CDSDocumentChange[];
+    cdsDocument: CDSDocument;
+}
 
 const ANNOTATION_START_PATTERN = /^@/i;
 
@@ -686,11 +696,13 @@ export class CDSWriter implements ChangeHandler {
             }
             const ranges = createElementRanges(this.document, this.tokens, change.fromPointers);
             const moveEdits = getTextEditsForMove(
-                this.textDocument,
-                this.comments,
-                this.tokens,
-                this.processedChanges,
-                this.document,
+                {
+                    textDocument: this.textDocument,
+                    comments: this.comments,
+                    tokens: this.tokens,
+                    changes: this.processedChanges,
+                    cdsDocument: this.document
+                },
                 anchor.position,
                 ranges,
                 indentLevel
@@ -755,7 +767,11 @@ export class CDSWriter implements ChangeHandler {
                 level: indentLevel + 1,
                 skipFirstLine: true
             });
-            this.insertText(range, text, indentLevel, firstInsert);
+            if (firstInsert) {
+                this.insertFirstText(range, text, indentLevel);
+            } else {
+                this.insertAdditionalText(range, text);
+            }
         } else {
             const anchor = this.findInsertPosition(content, parent, change.pointer, index ?? -1);
             if (!anchor) {
@@ -781,18 +797,18 @@ export class CDSWriter implements ChangeHandler {
         }
     }
 
-    private insertText(range: Range, text: string, indentLevel: number, firstInsert: boolean): void {
-        if (firstInsert) {
-            this.edits.push(TextEdit.replace(range, text + indent('\n', { level: indentLevel, skipFirstLine: true })));
-        } else {
-            // Multiple inserts will have the same replacement range, we need to group them because
-            // only one text edit with that replacement range can be applied.
-            const edit = this.edits.find((edit) => isRangesEqual(edit.range, range));
-            if (edit) {
-                const lines = edit.newText.split('\n');
-                lines[lines.length - 2] += text;
-                edit.newText = lines.join('\n');
-            }
+    private insertFirstText(range: Range, text: string, indentLevel: number): void {
+        this.edits.push(TextEdit.replace(range, text + indent('\n', { level: indentLevel, skipFirstLine: true })));
+    }
+
+    private insertAdditionalText(range: Range, text: string): void {
+        // Multiple inserts will have the same replacement range, we need to group them because
+        // only one text edit with that replacement range can be applied.
+        const edit = this.edits.find((edit) => isRangesEqual(edit.range, range));
+        if (edit) {
+            const lines = edit.newText.split('\n');
+            lines[lines.length - 2] += text;
+            edit.newText = lines.join('\n');
         }
     }
 
@@ -1253,11 +1269,7 @@ function createElementRanges(document: CDSDocument, tokens: CompilerToken[], poi
 }
 
 function getTextEditsForMove(
-    document: TextDocument,
-    comments: Comment[],
-    tokens: CompilerToken[],
-    changes: CDSDocumentChange[],
-    cdsDocument: CDSDocument,
+    writerContext: WriterContext,
     position: Position,
     ranges: ReturnType<typeof createElementRanges>,
     indentLevel: number
@@ -1265,8 +1277,8 @@ function getTextEditsForMove(
     const edits: TextEdit[] = [];
     const text: string[] = [];
     for (const range of ranges) {
-        const sourceContent = getContainerContent(range.parent, comments, tokens);
-        cutRange(document, changes, cdsDocument, sourceContent, range, indentLevel, text, edits);
+        const sourceContent = getContainerContent(range.parent, writerContext.comments, writerContext.tokens);
+        cutRange(writerContext, sourceContent, range, indentLevel, text, edits);
     }
     edits.push(TextEdit.insert(position, ''.concat(...text)));
     return edits;
@@ -1326,9 +1338,7 @@ function findDeletionChange(document: CDSDocument, changes: CDSDocumentChange[],
 }
 
 function cutRange(
-    textDocument: TextDocument,
-    changes: CDSDocumentChange[],
-    cdsDocument: CDSDocument,
+    writerContext: WriterContext,
     content: ContainerContentBlock[],
     cutRange: CutRange,
     indentLevel: number,
@@ -1360,10 +1370,10 @@ function cutRange(
             //  |        |
             // cut    suffix  range
             const range = copyRange(Range.create(endElement.element.range.end, endElement.trailingComment.range.end));
-            if (!findDeletionChange(cdsDocument, changes, range)) {
+            if (!findDeletionChange(writerContext.cdsDocument, writerContext.changes, range)) {
                 edits.push(TextEdit.del(range));
             }
-            suffix = ',' + textDocument.getText(range);
+            suffix = ',' + writerContext.textDocument.getText(range);
             updatePosition(endPosition, endElement.element.range.end);
         } else if (!endElement.trailingComma) {
             // ...}
@@ -1372,9 +1382,9 @@ function cutRange(
     }
 
     const range = copyRange(Range.create(startPosition, endPosition));
-    const originalText = textDocument.getText(range);
+    const originalText = writerContext.textDocument.getText(range);
     text.push(makeCut(originalText, suffix, cutRange, indentLevel));
-    if (!findDeletionChange(cdsDocument, changes, range)) {
+    if (!findDeletionChange(writerContext.cdsDocument, writerContext.changes, range)) {
         edits.push(TextEdit.del(range));
     }
 }

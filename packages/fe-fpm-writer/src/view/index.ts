@@ -1,16 +1,16 @@
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { CustomView, InternalCustomView } from './types';
+import type { CustomView, InternalCustomView } from './types.js';
 import { join } from 'node:path';
 import { render } from 'ejs';
-import { validateVersion, validateBasePath } from '../common/validate';
-import type { Manifest, Ui5RoutingTarget, Ui5TargetSettings } from '../common/types';
-import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
-import { applyEventHandlerConfiguration } from '../common/event-handler';
-import { copyTpl, extendJSON, type IdGeneratorFunction, createIdGenerator } from '../common/file';
-import { getTemplatePath } from '../templates';
-import { getManifest } from '../common/utils';
+import { validateVersion, validateBasePath } from '../common/validate.js';
+import type { Manifest, Ui5RoutingTarget, Ui5TargetSettings } from '../common/types.js';
+import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults.js';
+import { applyEventHandlerConfiguration } from '../common/event-handler.js';
+import { copyTpl, extendJSON, type IdGeneratorFunction, createIdGenerator } from '../common/file.js';
+import { getTemplatePath } from '../templates.js';
+import { getManifest } from '../common/utils.js';
 
 /**
  * Merge the new view into the list of existing views (if any).
@@ -98,7 +98,7 @@ export async function generateCustomView(basePath: string, customView: CustomVie
     fs ??= create(createStorage());
     await validateBasePath(basePath, fs);
 
-    const fnGenerateId = await createIdGenerator(basePath, fs);
+    const fnGenerateId = await createIdGenerator({ basePath, fsEditor: fs });
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 
     // merge with defaults

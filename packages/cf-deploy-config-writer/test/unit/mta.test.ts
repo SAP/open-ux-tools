@@ -1,29 +1,37 @@
-import { join } from 'node:path';
-import fs from 'node:fs';
+import { jest } from '@jest/globals';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import * as realFs from 'node:fs';
 import * as memfs from 'memfs';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { isMTAFound, useAbapDirectServiceBinding, MtaConfig, getMtaConfig } from '../../src/';
-import { deployMode, SRV_API } from '../../src/constants';
+import { Union } from 'unionfs';
 import type { mta } from '@sap/mta-lib';
 
-jest.mock('fs', () => {
-    const fs1 = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const vol = require('memfs').vol;
-    const memfs = new Union().use(fs1).use(vol as unknown as typeof fs);
-    memfs.realpath = fs1.realpath;
-    memfs.realpathSync = fs1.realpathSync;
-    return memfs;
-});
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-jest.mock('@sap/mta-lib', () => {
-    return {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        Mta: require('./mockMta').MockMta
-    };
-});
+// Create the union filesystem
+const ufs = new Union();
+ufs.use(realFs as any).use(memfs.vol as any);
+(ufs as any).realpath = realFs.realpath;
+(ufs as any).realpathSync = realFs.realpathSync;
+
+jest.unstable_mockModule('node:fs', () => ufs);
+
+const { MockMta } = await import('./mockMta.js');
+jest.unstable_mockModule('@sap/mta-lib', () => ({
+    Mta: MockMta
+}));
+
+const realWaitForMta = await import('../../src/mta-config/wait-for-mta.js');
+const mockWaitForMtaFile = jest.fn().mockImplementation(realWaitForMta.waitForMtaFile);
+jest.unstable_mockModule('../../src/mta-config/wait-for-mta', () => ({
+    ...realWaitForMta,
+    waitForMtaFile: mockWaitForMtaFile
+}));
+
+const fs = await import('node:fs');
+const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
+const { isMTAFound, useAbapDirectServiceBinding, MtaConfig, getMtaConfig } = await import('../../src//index.js');
+const { deployMode, SRV_API } = await import('../../src/constants.js');
 
 describe('Validate common functionality', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -31,7 +39,6 @@ describe('Validate common functionality', () => {
     const abapServiceMta = fs.readFileSync(join(__dirname, 'fixtures/mta-types/abap-service/mta.yaml'), 'utf-8');
 
     beforeEach(() => {
-        jest.resetModules();
         memfs.vol.reset();
     });
 
@@ -97,6 +104,10 @@ describe('Validate MtaConfig Instance', () => {
     );
     const managedRouterConfigCap = fs.readFileSync(join(__dirname, 'fixtures/mta-types/managed-cap/mta.yaml'), 'utf-8');
     const managedRouterConfig = fs.readFileSync(join(__dirname, 'fixtures/mta-types/managed-apps/mta.yaml'), 'utf-8');
+    const managedRouterConfigCapSrvApi = fs.readFileSync(
+        join(__dirname, 'fixtures/mta-types/appfront-cap/mta.yaml'),
+        'utf-8'
+    );
     const appDir = `${OUTPUT_DIR_PREFIX}/app1`;
 
     beforeEach(() => {
@@ -127,6 +138,18 @@ describe('Validate MtaConfig Instance', () => {
               "enable-parallel-deployments": true,
             }
         `);
+    });
+
+    it('hasResource returns true for existing resource and false for missing resource', async () => {
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: managedRouterConfig
+            },
+            '/'
+        );
+        const mtaConfig = await MtaConfig.newInstance(appDir);
+        expect(mtaConfig.hasResource('destination')).toBeTruthy();
+        expect(mtaConfig.hasResource('nonexistent')).toBeFalsy();
     });
 
     it('Validate destinations are retrieved for an mta config missing destinations', async () => {
@@ -160,6 +183,17 @@ describe('Validate MtaConfig Instance', () => {
         `);
     });
 
+    it('(CAP frontend) Validate srv-api destination is not exposed without WebIDEUsage (html5-repo + app-front deployer)', async () => {
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: managedRouterConfigCapSrvApi
+            },
+            '/'
+        );
+        const mtaConfig = await MtaConfig.newInstance(appDir);
+        expect(mtaConfig.getExposedDestinations()).toMatchInlineSnapshot(`Array []`);
+    });
+
     it.each([
         ['%s.-srv-api', 'managedApp_-srv-api'],
         ['%s-srv-api', 'managedApp-srv-api'],
@@ -171,19 +205,27 @@ describe('Validate MtaConfig Instance', () => {
         expect(formattedDestinationName).toEqual(correctDest);
     });
 
-    it('Validate mta config is reloaded if it fails', async () => {
-        const mockMtaConfig = {
-            resources: {},
-            app: {},
-            prefix: 'test-prefix'
-        } as unknown as MtaConfig;
-        // Mocking the failure twice and then success
-        jest.spyOn(MtaConfig, 'newInstance')
-            .mockRejectedValueOnce(new Error('Error'))
-            .mockRejectedValueOnce(new Error('Error'))
-            .mockResolvedValueOnce(mockMtaConfig);
+    it('Validate mta config is loaded when file is ready', async () => {
+        // Given: mta.yaml exists and has content with an ID (via memfs + MockMta)
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: managedRouterConfig
+            },
+            '/'
+        );
+        // When: getMtaConfig is called
         const mtaConfig = await getMtaConfig(appDir);
-        expect(mtaConfig?.prefix).toBe('test-prefix');
+        // Then: returns a valid config with a prefix
+        expect(mtaConfig?.prefix).toBeDefined();
+    });
+
+    it('Validate mta config returns undefined when file is not ready', async () => {
+        // Given: waitForMtaFile times out (file not present)
+        mockWaitForMtaFile.mockRejectedValueOnce(new Error('not ready'));
+        // When
+        const mtaConfig = await getMtaConfig(appDir);
+        // Then: returns undefined
+        expect(mtaConfig).toBeUndefined();
     });
 });
 

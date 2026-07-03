@@ -1,5 +1,5 @@
-import type { Transport, TransportOptions } from '../types';
-import { LogLevel } from '../types';
+import type { Transport, TransportOptions } from '../types.js';
+import { LogLevel } from '../types.js';
 import type WinstonTransport from 'winston-transport';
 import winston, { format } from 'winston';
 import {
@@ -9,9 +9,9 @@ import {
     NullTransport,
     UI5ToolingTransport,
     VSCodeTransport
-} from '../transports';
-import { NullTransport as WinstonNullTransport } from './null-transport';
-import { VSCodeTransport as WinstonVSCodeTransport } from './vscode-output-channel-transport';
+} from '../transports/index.js';
+import { NullTransport as WinstonNullTransport } from './null-transport.js';
+import { VSCodeTransport as WinstonVSCodeTransport } from './vscode-output-channel-transport.js';
 import type { Format } from 'logform';
 import { inspect } from 'node:util';
 import chalk from 'chalk';
@@ -42,9 +42,21 @@ const levelColor: { [level: string]: string } = {
 
 const hasColorSupport = (): boolean => process.stdout.isTTY;
 
-const colorFn = (color: string): chalk.Chalk | undefined => {
+const colorFn = (color: string): ((text: string) => string) | undefined => {
     try {
-        return color ? chalk.keyword(color) : undefined;
+        if (!color) {
+            return undefined;
+        }
+        // Map color names to chalk methods (chalk v5 removed chalk.keyword)
+        const colorMap: Record<string, (text: string) => string> = {
+            green: chalk.green,
+            yellow: chalk.yellow,
+            red: chalk.red,
+            blue: chalk.blue,
+            magenta: chalk.magenta,
+            cyan: chalk.cyan
+        };
+        return colorMap[color];
     } catch {
         return undefined;
     }
@@ -55,9 +67,10 @@ const ui5ToolingFormat = (moduleName: string): Format =>
         format.colorize(),
         format.label({ label: moduleName }),
         format.printf(({ level, message, label }) => {
+            const lbl = label as string | undefined;
             let msg = typeof message === 'string' ? message : inspect(message);
-            msg = msg.split(/\r?\n/).join(`\n${level} ${chalk.magenta(label)} `);
-            return `${level} ${chalk.magenta(label)} ${msg}`;
+            msg = msg.split(/\r?\n/).join(`\n${level} ${chalk.magenta(lbl)} `);
+            return `${level} ${chalk.magenta(lbl)} ${msg}`;
         })
     );
 const decorateLevel = (level: string): string => {
@@ -93,7 +106,7 @@ const consoleFormat = format.combine(
     format.printf(({ timestamp, level, message, label, labelColor, ...meta }) => {
         const msg = typeof message === 'string' ? message : inspect(message);
         const lvl = decorateLevel(level);
-        return `${timestamp} ${lvl} ${decorateLabel(label, labelColor)}: ${msg} ${
+        return `${timestamp} ${lvl} ${decorateLabel(label as string | undefined, labelColor as string | undefined)}: ${msg} ${
             Object.keys(meta).length ? inspect(meta) : ''
         }`;
     })

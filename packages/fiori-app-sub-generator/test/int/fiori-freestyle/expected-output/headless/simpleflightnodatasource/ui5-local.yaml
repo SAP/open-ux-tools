@@ -25,11 +25,12 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: test/flpSandbox.html
-          intent:
-            object: simpleflightnodatasource
-            action: display
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
         ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

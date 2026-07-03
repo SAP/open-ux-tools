@@ -1,1 +1,5 @@
-export { AnnotationServiceParameters, GenerateAnnotationsOptions, generateAnnotations } from './generation';
+export {
+    type AnnotationServiceParameters,
+    type GenerateAnnotationsOptions,
+    generateAnnotations
+} from './generation.js';

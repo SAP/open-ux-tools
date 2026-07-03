@@ -1,10 +1,13 @@
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { join } from 'node:path';
-import { getOrAddNamespace } from '../../../../../src/building-block/prompts/utils/xml';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { getOrAddNamespace } from '../../../../../src/building-block/prompts/utils/xml.js';
 import { DOMParser } from '@xmldom/xmldom';
-import { isElementIdAvailable } from '../../../../../src/common/utils';
+import { isElementIdAvailable } from '../../../../../src/common/utils.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('utils - xml', () => {
     let fs: Editor;

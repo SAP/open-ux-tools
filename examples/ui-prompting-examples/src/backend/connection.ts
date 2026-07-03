@@ -1,4 +1,5 @@
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type {
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,
@@ -12,7 +13,8 @@ import { promisify } from 'node:util';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import WebSocket from 'ws';
+import type WebSocket from 'ws';
+import { WebSocketServer } from 'ws';
 import type { Data } from 'ws';
 import {
     GET_QUESTIONS,
@@ -34,7 +36,7 @@ import {
     CREATE_I18N_ENTRY,
     SET_RICH_TEXT_EDITOR_BUTTON_GROUPS_QUESTIONS,
     SET_FORM_QUESTIONS
-} from '../utils/types';
+} from '../utils/types.js';
 import type {
     Actions,
     ResetAnswers,
@@ -43,15 +45,16 @@ import type {
     UpdateCodeSnippet,
     SetValidationResults,
     ResponseI18n
-} from '../utils/types';
-import type { AddonActions } from '../addons/types';
-import { handleAction as handleAddonAction, testAppPath, getApplication } from '../addons/project';
-import { GET_PROJECT_PATH, SET_PROJECT_PATH, VALIDATE_ANSWERS } from '../addons/project/types';
-import type { ApplicationInformation, SetProjectPath } from '../addons/project/types';
+} from '../utils/types.js';
+import type { AddonActions } from '../addons/types.js';
+import { handleAction as handleAddonAction, testAppPath, getApplication } from '../addons/project/index.js';
+import { GET_PROJECT_PATH, SET_PROJECT_PATH, VALIDATE_ANSWERS } from '../addons/project/types.js';
+import type { ApplicationInformation, SetProjectPath } from '../addons/project/types.js';
 import type { DynamicChoices } from '@sap-ux/ui-prompting';
-import { getPromptApi } from './api';
-import { getI18nBundle, createI18nEntry } from './i18nBundle';
+import { getPromptApi } from './api.js';
+import { getI18nBundle, createI18nEntry } from './i18nBundle.js';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const sampleAppPath = join(__dirname, '../../../fe-fpm-cli/sample/fe-app');
 
 let fsEditor: Editor | undefined;
@@ -78,7 +81,7 @@ export async function getEditor(forceUpdate = false): Promise<Editor> {
 }
 
 export async function createWebSocketConnection(): Promise<void> {
-    const wss = new WebSocket.Server({ port: 8080 });
+    const wss = new WebSocketServer({ port: 8080 });
 
     // Listen for WebSocket connections
     wss.on('connection', async (ws: WebSocket) => {

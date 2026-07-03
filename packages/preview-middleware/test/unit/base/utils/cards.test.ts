@@ -1,6 +1,6 @@
-import { getIntegrationCard } from '../../../../src/base/utils/cards';
+import { getIntegrationCard } from '../../../../src/base/utils/cards.js';
 import packageJson from '../../../../package.json';
-import type { MultiCardsPayload } from '../../../../src/types';
+import type { MultiCardsPayload } from '../../../../src/types/index.js';
 import { create as createMemFsEditor } from 'mem-fs-editor';
 import { create as createMemFs } from 'mem-fs';
 
@@ -60,5 +60,91 @@ describe('Common utilities', () => {
         };
         const integrationCard = getIntegrationCard(aMultipleCards as MultiCardsPayload[]);
         expect(integrationCard.manifest).toMatchObject(expectedIntegrationCard);
+    });
+
+    test('getIntegrationCard - sanitizes double slashes in sap.card.data.request.url', () => {
+        const aMultipleCards = [
+            {
+                type: 'integration',
+                manifest: {
+                    '_version': '1.15.0',
+                    'sap.card': {
+                        'type': 'Object',
+                        'data': {
+                            'request': {
+                                'url': '{{destinations.service}}/odata/v4/CapFeTsSampleService//$batch'
+                            }
+                        }
+                    },
+                    'sap.insights': {
+                        'versions': {},
+                        'templateName': 'ObjectPage',
+                        'parentAppId': 'sales.order.wd20',
+                        'cardType': 'DT'
+                    }
+                },
+                entitySet: 'salesOrderManage'
+            }
+        ];
+
+        const integrationCard = getIntegrationCard(aMultipleCards as MultiCardsPayload[]);
+        expect(integrationCard.manifest['sap.card']?.data?.request?.url).toBe(
+            '{{destinations.service}}/odata/v4/CapFeTsSampleService/$batch'
+        );
+    });
+
+    test('getIntegrationCard - sanitizes multiple consecutive slashes in url', () => {
+        const aMultipleCards = [
+            {
+                type: 'integration',
+                manifest: {
+                    '_version': '1.15.0',
+                    'sap.card': {
+                        'type': 'Object',
+                        'data': {
+                            'request': {
+                                'url': '/odata///v4//Service/$batch'
+                            }
+                        }
+                    },
+                    'sap.insights': {
+                        'versions': {},
+                        'parentAppId': 'test.app',
+                        'cardType': 'DT'
+                    }
+                },
+                entitySet: 'Items'
+            }
+        ];
+
+        const integrationCard = getIntegrationCard(aMultipleCards as MultiCardsPayload[]);
+        expect(integrationCard.manifest['sap.card']?.data?.request?.url).toBe('/odata/v4/Service/$batch');
+    });
+
+    test('getIntegrationCard - does not modify url when no double slashes are present', () => {
+        const url = '{{destinations.service}}/odata/v4/CapFeTsSampleService/$batch';
+        const aMultipleCards = [
+            {
+                type: 'integration',
+                manifest: {
+                    '_version': '1.15.0',
+                    'sap.card': {
+                        'type': 'Object',
+                        'data': {
+                            'request': { 'url': url }
+                        }
+                    },
+                    'sap.insights': {
+                        'versions': {},
+                        'parentAppId': 'test.app',
+                        'cardType': 'DT'
+                    }
+                },
+                entitySet: 'Items'
+            }
+        ];
+
+        const integrationCard = getIntegrationCard(aMultipleCards as MultiCardsPayload[]);
+        expect(integrationCard.manifest['sap.card']?.data?.request?.url).toBe(url);
     });
 });

@@ -1,14 +1,14 @@
-import type { ToolsSuiteTelemetryInitSettings } from './types';
-import { reportRuntimeError, reportEnableTelemetryOnOff } from '../base/utils/reporting';
+import type { ToolsSuiteTelemetryInitSettings } from './types.js';
+import { reportRuntimeError, reportEnableTelemetryOnOff } from '../base/utils/reporting.js';
 import type { Service } from '@sap-ux/store';
 import { getService, Entity, TelemetrySetting, TelemetrySettingKey, getFilesystemWatcherFor } from '@sap-ux/store';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import os from 'node:os';
 import path from 'node:path';
 import fs from 'node:fs';
-import { getCommonProperties } from './data-processor';
-import { TelemetrySettings } from '../base/config-state';
-import { ToolingTelemetrySettings } from './config-state';
+import { getCommonProperties } from './data-processor.js';
+import { TelemetrySettings } from '../base/config-state.js';
+import { ToolingTelemetrySettings } from './config-state.js';
 
 const deprecatedSettingPaths: Record<string, string> = {
     win32: '\\AppData\\Roaming\\Code\\User\\settings.json',

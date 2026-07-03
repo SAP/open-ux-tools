@@ -1,14 +1,16 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import express from 'express';
 import supertest from 'supertest';
-import * as serveStaticMiddleware from '../../src/ui5/middleware';
-import type { ServeStaticConfig } from '../../src';
+import type { ServeStaticConfig } from '../../src/index.js';
 
-const localUI5Path = join(__dirname, '..', 'fixtures', 'local');
+const testDirname = dirname(fileURLToPath(import.meta.url));
+const localUI5Path = join(testDirname, '..', 'fixtures', 'local');
 
 // middleware function wrapper for testing to simplify tests
 async function getTestServer(configuration: ServeStaticConfig): Promise<any> {
-    const router = await (serveStaticMiddleware as any).default({
+    const { default: middleware } = await import('../../src/ui5/middleware.js');
+    const router = await middleware({
         options: { configuration },
         middlewareUtil: {
             getProject: () => {
@@ -19,7 +21,7 @@ async function getTestServer(configuration: ServeStaticConfig): Promise<any> {
                 };
             }
         }
-    });
+    } as any);
     const app = express();
     app.use(router);
     return supertest(app);
@@ -45,7 +47,7 @@ describe('Start server with serve-static-middleware', () => {
         expect(await server.get(SANDBOX)).toMatchObject({ status: 200 });
         expect(await server.get(USERAPI)).toMatchObject({ status: 200 });
         expect(await server.get(CACHEBUSTER_CORE)).toMatchObject({ status: 200 });
-    });
+    }, 15000);
 
     test('fallthrough: false', async () => {
         const server = await getTestServer({

@@ -1,4 +1,4 @@
-import { RtaService } from '../../../src/cpe/rta-service';
+import { RtaService } from '../../../src/cpe/rta-service.js';
 import type { ActionHandler } from '../../../src/cpe/types';
 import { setAppMode, undo, redo, save, reloadApplication } from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
@@ -12,7 +12,7 @@ describe('rta-service', () => {
 
     beforeEach(() => {
         sendActionMock = jest.fn();
-        subscribeMock = jest.fn<void, [ActionHandler]>();
+        subscribeMock = jest.fn<(handler: ActionHandler) => void>();
         fetchMock.mockRestore();
     });
     test('setMode - navigation', async () => {
@@ -89,20 +89,16 @@ describe('rta-service', () => {
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
         const service = new RtaService(rtaMock as unknown as RuntimeAuthoring);
         const reloadSpy = jest.fn();
-        const location = window.location;
-        Object.defineProperty(window, 'location', {
-            value: {
-                reload: reloadSpy
-            }
-        });
+        const locationImpl = (window as any).__locationImpl;
+        const originalReload = (window as any).__locationImplOriginalReload;
+        locationImpl.reload = reloadSpy;
+
         service.init(sendActionMock, subscribeMock);
         expect(rtaMock.attachStop).toHaveBeenCalledTimes(1);
 
         rtaMock.attachStop.mock.calls[0][0]();
         expect(reloadSpy).toHaveBeenCalled();
-        Object.defineProperty(window, 'location', {
-            value: location
-        });
+        locationImpl.reload = originalReload;
     });
 
     test('attach start callback check', async () => {

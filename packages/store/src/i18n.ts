@@ -1,6 +1,6 @@
 import type { TOptions, TOptionsBase, i18n } from 'i18next';
 import i18next from 'i18next';
-import translations from './translations/ux-store.i18n.json';
+import translations from './translations/ux-store.i18n.json' with { type: 'json' };
 
 const NS = 'ux-store';
 let i18nInstance: i18n = i18next.createInstance();
@@ -25,5 +25,8 @@ export async function initI18n(): Promise<void> {
 
 type StringMap = { [key: string]: unknown };
 export function text(key: string, options?: string | TOptions<StringMap & TOptionsBase>): string {
-    return i18nInstance.t(key, typeof options === 'string' ? { defaultValue: options } : options);
+    return (i18nInstance.t as (key: string, opts?: TOptions<StringMap & TOptionsBase>) => string)(
+        key,
+        typeof options === 'string' ? { defaultValue: options } : options
+    );
 }

@@ -1,3 +1,4 @@
+import type { AppWizard as AppWizardType } from '@sap-devx/yeoman-ui-types';
 import { AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
 import {
     DeploymentGenerator,
@@ -13,7 +14,12 @@ import {
     TelemetryHelper,
     setYeomanEnvConflicterForce
 } from '@sap-ux/fiori-generator-shared';
-import { getPackageAnswer, getTransportAnswer, reconcileAnswers } from '@sap-ux/abap-deploy-config-inquirer';
+import {
+    getPackageAnswer,
+    getTransportAnswer,
+    reconcileAnswers,
+    DEFAULT_PACKAGE_ABAP
+} from '@sap-ux/abap-deploy-config-inquirer';
 import { generate as generateAbapDeployConfig } from '@sap-ux/abap-deploy-config-writer';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { FileName, getAppType } from '@sap-ux/project-access';
@@ -25,22 +31,22 @@ import {
     determineScpFromTarget,
     determineUrlFromDestination,
     determineS4HCFromTarget
-} from '../utils';
-import { getAbapQuestions } from './questions';
-import { EventName } from '../telemetryEvents';
-import { DeployProjectType } from './types';
-import { initI18n } from '../utils/i18n';
+} from '../utils/index.js';
+import { getAbapQuestions } from './questions.js';
+import { EventName } from '../telemetryEvents/index.js';
+import { DeployProjectType } from './types.js';
+import { initI18n } from '../utils/i18n.js';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { DEFAULT_PACKAGE_ABAP } from '@sap-ux/abap-deploy-config-inquirer/dist/constants';
 import type { AbapDeployConfig, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import type { AbapDeployConfigOptions } from './types';
+import type { AbapDeployConfigOptions } from './types.js';
 import type {
     AbapDeployConfigAnswersInternal,
     AbapDeployConfigPromptOptions,
-    AbapDeployConfigQuestion
+    AbapDeployConfigQuestion,
+    InquirerAdapter
 } from '@sap-ux/abap-deploy-config-inquirer';
-import { getVariantNamespace } from '../utils/project';
+import { getVariantNamespace } from '../utils/project.js';
 import { getExistingAdpProjectType } from '@sap-ux/adp-tooling';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
@@ -48,7 +54,7 @@ import { AdaptationProjectType } from '@sap-ux/axios-extension';
  * ABAP deploy config generator.
  */
 export default class extends DeploymentGenerator {
-    private readonly appWizard: AppWizard;
+    private readonly appWizard: AppWizardType;
     private readonly vscode: unknown;
     private readonly launchDeployConfigAsSubGenerator: boolean;
     private readonly launchStandaloneFromYui?: boolean;
@@ -214,7 +220,8 @@ export default class extends DeploymentGenerator {
                 ),
                 projectType: this.projectType,
                 logger: DeploymentGenerator.logger,
-                promptOptions
+                promptOptions,
+                promptModule: (this.env?.adapter as InquirerAdapter | undefined)?.promptModule
             });
             const prompAnswers = await this.prompt(abapDeployConfigPrompts);
             this.answers = reconcileAnswers(prompAnswers, abapAnswers);
@@ -226,6 +233,7 @@ export default class extends DeploymentGenerator {
         this.answers.destination = this.options.destination || this.answers.destination;
         this.answers.url =
             this.options.url || this.answers.url || (await determineUrlFromDestination(this.answers.destination));
+        this.answers.connectPath = this.options.connectPath || this.answers.connectPath;
         this.answers.client = this.options.client || this.answers.client;
         this.answers.scp =
             this.options.scp ||
@@ -304,6 +312,7 @@ export default class extends DeploymentGenerator {
             {
                 target: {
                     url: this.answers.url,
+                    connectPath: this.answers.connectPath,
                     client: this.answers.client,
                     scp: this.answers.scp,
                     destination: this.answers.destination,
@@ -375,7 +384,7 @@ export default class extends DeploymentGenerator {
 }
 
 export { AbapDeployConfigQuestion, AbapDeployConfigAnswersInternal };
-export { getAbapQuestions } from './questions';
-export { indexHtmlExists } from '../utils';
-export { AbapDeployConfigOptions, DeployProjectType } from './types';
-export { AbapDeployConfigPromptOptions } from '@sap-ux/abap-deploy-config-inquirer';
+export { getAbapQuestions } from './questions.js';
+export { indexHtmlExists } from '../utils/index.js';
+export { type AbapDeployConfigOptions, DeployProjectType } from './types.js';
+export type { AbapDeployConfigPromptOptions } from '@sap-ux/abap-deploy-config-inquirer';

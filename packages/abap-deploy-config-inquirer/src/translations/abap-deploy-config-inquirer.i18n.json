@@ -110,6 +110,7 @@
         "noTransportReqs": "There are no transport requests for the supplied package. You can choose to create a new one now or during deployment.",
         "noExistingTransportReqList": "The transport request list cannot be fetched. Please enter the transport request manually.",
         "virtualHost": "The destination uses a virtual host. When viewing your deployed application in the browser, replace the host URL with the internal host that is configured with your SAP Cloud Connector.",
+        "fullUrlDestination": "The selected destination is a full URL destination. The URL path is appended to the destination host, which may cause routing issues.",
         "allowingUnauthorizedCertsNode": "Setting the `NODE_TLS_REJECT_UNAUTHORIZED` environment variable to `0` makes TLS connections and HTTPS requests insecure by disabling certificate verification. It is important to understand the security risks when using this setting.",
         "certificateError": "A certificate error occurred when connecting to the host: {{-url}}. Certificate error: {{error}}."
     },
@@ -149,8 +150,10 @@
             "abapInvalidAppNameNamespaceOrStartingPrefix": "The SAPUI5 ABAP Repository and Package must start in the same way. Use either a namespace or capital letters: 'Z', 'Y' or 'SAP'.",
             "invalidCloudPackage": "The provided package is not intended for cloud deployment.",
             "invalidOnPremPackage": "The provided package is not intended for on-premise deployments.",
-            "unsupportedAdpProjectType": "You cannot deploy a {{adpProjectType}} project because the system only supports {{supportedAdpProjectTypes}} projects.",
-            "invalidAdpProjectTypes": "Unable to determine the supported project types."
+            "unsupportedAdpProjectType": "You cannot deploy a {{adpProjectTypeLabel}} project because the system only supports {{supportedAdpProjectTypesList}} projects.",
+            "invalidAdpProjectTypes": "Unable to determine the supported project types.",
+            "adpOnPremProjectType": "Classic",
+            "adpCloudProjectType": "Cloud Ready"
         }
     }
 }

@@ -16,10 +16,10 @@ server:
             - /test-resources
           url: https://ui5.sap.com
         backend:
-          - apiHub: true
-            path: /sap
+          - path: /sap
             url: https://abap.cloud.host
             client: '012'
+            apiHub: true
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -45,3 +45,8 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

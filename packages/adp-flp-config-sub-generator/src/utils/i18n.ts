@@ -1,6 +1,6 @@
 import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from '../translations/adp-flp-config-sub-generator.i18n.json';
+import translations from '../translations/adp-flp-config-sub-generator.i18n.json' with { type: 'json' };
 import { addi18nResourceBundle as addInquirerCommonResourceBundle } from '@sap-ux/inquirer-common';
 import { addi18nResourceBundle as addFlpConfigInquirerResourceBundler } from '@sap-ux/flp-config-inquirer';
 
@@ -32,9 +32,7 @@ export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
         options = Object.assign(options ?? {}, { ns: adpFlpConfigI18nNamespace });
     }
-    return i18n.t(key, options);
+    return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-initI18n().catch(() => {
-    // Needed for lint
-});
+void initI18n().catch(() => undefined);

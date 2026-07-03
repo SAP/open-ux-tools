@@ -1,7 +1,8 @@
 {
     "name": "@sap-ux/logger",
-    "version": "0.8.2",
+    "version": "1.0.2",
     "description": "A simple logging module",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -13,6 +14,13 @@
     "license": "Apache-2.0",
     "private": false,
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
     "scripts": {
         "build": "tsc --build",
         "watch": "tsc --watch",
@@ -20,22 +28,22 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --maxWorkers=1 --colors --silent",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --maxWorkers=1 --colors --silent",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
-        "chalk": "4.1.2",
-        "lodash": "4.17.23",
-        "winston": "3.11.0",
+        "chalk": "5.6.2",
+        "lodash": "4.18.1",
+        "winston": "3.19.0",
         "winston-transport": "4.9.0"
     },
     "devDependencies": {
-        "@types/debug": "4.1.12",
-        "@types/lodash": "4.14.202",
-        "@types/vscode": "1.73.1",
-        "jest-extended": "6.0.0",
-        "logform": "2.6.0"
+        "@types/debug": "4.1.13",
+        "@types/lodash": "4.17.24",
+        "@types/vscode": "1.125.0",
+        "jest-extended": "7.0.0",
+        "logform": "2.7.0"
     },
     "files": [
         "dist",
@@ -44,6 +52,6 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

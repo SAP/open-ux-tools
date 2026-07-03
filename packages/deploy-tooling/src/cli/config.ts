@@ -2,8 +2,11 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import type { AxiosRequestConfig, BspConfig, ServiceInfo } from '@sap-ux/axios-extension';
 import { readFileSync } from 'node:fs';
 import { dirname, isAbsolute, join } from 'node:path';
-import type { AbapDeployConfig, AbapTarget, CliOptions } from '../types';
-import { NAME } from '../types';
+import { fileURLToPath } from 'node:url';
+import type { AbapDeployConfig, AbapTarget, CliOptions } from '../types/index.js';
+import { NAME } from '../types/index.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Tries to read the version of the modules package.json but in case of an error, it returns the manually maintained version matching major.minor of the module.
@@ -122,10 +125,11 @@ function getServiceKey(options: CliOptions, targetUrl: string | undefined): unde
  * @param options additional options
  * @returns merged target object
  */
-function mergeTarget(baseTarget: AbapTarget & { cloud?: boolean }, options: CliOptions) {
+function mergeTarget(baseTarget: AbapTarget & { cloud?: boolean }, options: CliOptions): AbapTarget {
     const targetUrl = options.url ?? baseTarget?.url;
     return {
         url: targetUrl,
+        connectPath: options.connectPath ?? baseTarget?.connectPath,
         client: options.client ?? baseTarget?.client,
         scp: options.cloud !== undefined ? options.cloud : baseTarget?.cloud,
         authenticationType: options.authenticationType ?? baseTarget?.authenticationType,

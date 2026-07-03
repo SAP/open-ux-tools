@@ -11,9 +11,10 @@ import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { randomUUID } from 'node:crypto';
 import osName from 'os-name';
-import i18next from 'i18next';
-import { version } from '../../package.json';
-import { logger } from '../utils/logger';
+import packageJson from '../../package.json' with { type: 'json' };
+const { version } = packageJson;
+import { logger } from '../utils/logger.js';
+import { t } from '../i18n.js';
 
 export const mcpServerName = '@sap-ux/fiori-mcp-server';
 export const unknownTool = 'unknown-tool';
@@ -51,13 +52,23 @@ export abstract class TelemetryHelper {
     }
 
     /**
+     * Generates a new session ID synchronously. Call this before connecting the transport
+     * so that the ID is available when the first telemetry event fires during the MCP handshake.
+     */
+    public static initSessionId(): void {
+        this._sessionId = randomUUID();
+        logger.info(`Telemetry session initialized with ID: ${this._sessionId}`);
+    }
+
+    /**
      * Load telemetry settings.
      *
      * @param options - tools suite telemetry init settings
      */
     public static async initTelemetrySettings(options?: ToolsSuiteTelemetryInitSettings): Promise<void> {
-        this._sessionId = randomUUID();
-        logger.info(`Telemetry session initialized with ID: ${this._sessionId}`);
+        if (!this._sessionId) {
+            this.initSessionId();
+        }
 
         const telemetryOptions: ToolsSuiteTelemetryInitSettings = {
             consumerModule: {
@@ -94,7 +105,7 @@ export abstract class TelemetryHelper {
         }
 
         if (!this._telemetryData) {
-            let osVersionName = i18next.t('telemetry.unknownOs');
+            let osVersionName = t('telemetry.unknownOs');
             try {
                 osVersionName = osName();
             } catch {

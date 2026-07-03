@@ -1,8 +1,9 @@
+import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
 import { promises as fsPromises } from 'node:fs';
 import { create, type Editor } from 'mem-fs-editor';
-import { join } from 'node:path';
-
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type {
     BuildingBlockConfig,
     Chart,
@@ -12,18 +13,26 @@ import type {
     Table,
     CustomColumn,
     CustomFilterField,
+    CustomFormField,
     Action
-} from '../../src';
+} from '../../src/index.js';
 
-import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } from '../../src';
-import { BUILDING_BLOCK_CONFIG } from '../../src/building-block/processor';
-import * as testManifestContent from './sample/building-block/webapp/manifest.json';
-import { clearTestOutput, writeFilesForDebugging } from '../common';
-import { bindingContextAbsolute, type BindingContextType } from '../../src/building-block/types';
-import { i18nNamespaces, translate } from '../../src/i18n';
-import { Placement } from '../../src/common/types';
-import type { IdGeneratorFunction } from '../../src/common/file';
-import * as fileAccess from '@sap-ux/project-access/dist/file';
+import {
+    BuildingBlockType,
+    generateBuildingBlock,
+    getSerializedFileContent,
+    generateBuildingBlockAggregation
+} from '../../src/index.js';
+import { BUILDING_BLOCK_CONFIG } from '../../src/building-block/processor.js';
+import testManifestContent from './sample/building-block/webapp/manifest.json';
+import { clearTestOutput, writeFilesForDebugging } from '../common/index.js';
+import { bindingContextAbsolute, type BindingContextType } from '../../src/building-block/types.js';
+import { i18nNamespaces, translate } from '../../src/i18n.js';
+import { Placement } from '../../src/common/types.js';
+import type { IdGeneratorFunction } from '../../src/common/file.js';
+import { findFilesByExtensionMock } from '../__mocks__/project-access-file.mjs';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('Building Blocks', () => {
     let fs: Editor;
@@ -43,7 +52,7 @@ describe('Building Blocks', () => {
         let item = 0;
         jest.requireActual('mem-fs-editor');
         fs = create(createStorage());
-        jest.spyOn(fileAccess, 'findFilesByExtension').mockResolvedValue([]);
+        findFilesByExtensionMock.mockResolvedValue([]);
         generateId = jest.fn((baseId: string) => {
             if (['Item', 'ButtonGroup'].includes(baseId)) {
                 return `${baseId}${item++}`;
@@ -1090,6 +1099,130 @@ describe('Building Blocks', () => {
         await writeFilesForDebugging(fs);
     });
 
+    test('generate Page building block with full template inserts all 7 aggregations', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'generate-page-block-full');
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: {
+                    id: 'testPage',
+                    buildingBlockType: BuildingBlockType.Page,
+                    title: 'Test Page',
+                    templateType: 'full',
+                    generateId,
+                    aggregations: {
+                        breadcrumbs:
+                            '<m:Breadcrumbs>\n    <m:Link text="Home" press=".onPressHome" />\n    <m:Link text="Page 1" press=".onPressPage1" />\n    <m:Link text="Page 2" press=".onPressPage2" />\n</m:Breadcrumbs>',
+                        navigationActions:
+                            '<m:Button icon="sap-icon://full-screen" press=".onFullScreen" type="Transparent" />',
+                        actions:
+                            '<m:Button text="Action 1" press=".onClickAction1" type="Ghost" />\n    <m:Button text="Action 2" press=".onClickAction2" type="Ghost" />'
+                    }
+                },
+                replace: true
+            },
+            fs
+        );
+
+        expect(fs.read(join(basePath, xmlViewFilePath))).toMatchSnapshot('generate-page-block-full');
+    });
+
+    test('generate Page building block with full template creates JS controller', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'generate-page-block-full-controller');
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: {
+                    id: 'testPage',
+                    buildingBlockType: BuildingBlockType.Page,
+                    templateType: 'full',
+                    generateId
+                },
+                replace: true
+            },
+            fs
+        );
+
+        const controllerPath = join(basePath, 'webapp/ext/main/Main.controller.js');
+        expect(fs.exists(controllerPath)).toBe(true);
+        const controllerContent = fs.read(controllerPath);
+        expect(controllerContent).toContain('onPressHome');
+        expect(controllerContent).toContain('onPressPage1');
+        expect(controllerContent).toContain('onPressPage2');
+        expect(controllerContent).toContain('onFullScreen');
+        expect(controllerContent).toContain('onClickAction1');
+        expect(controllerContent).toContain('onClickAction2');
+    });
+
+    test('generate Page building block with full template creates TS controller when .controller.ts exists', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'generate-page-block-full-ts-controller');
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+        fs.write(join(basePath, 'webapp/ext/main/Main.controller.ts'), '// existing ts controller');
+
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: {
+                    id: 'testPage',
+                    buildingBlockType: BuildingBlockType.Page,
+                    templateType: 'full',
+                    generateId
+                },
+                replace: true
+            },
+            fs
+        );
+
+        expect(fs.read(join(basePath, 'webapp/ext/main/Main.controller.ts'))).toBe('// existing ts controller');
+        expect(fs.exists(join(basePath, 'webapp/ext/main/Main.controller.js'))).toBe(false);
+    });
+
+    test('generate Page building block with basic template does not insert aggregations or controller', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'generate-page-block-blank');
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: {
+                    id: 'testPage',
+                    buildingBlockType: BuildingBlockType.Page,
+                    templateType: 'basic',
+                    generateId
+                },
+                replace: true
+            },
+            fs
+        );
+
+        const viewContent = fs.read(join(basePath, xmlViewFilePath));
+        expect(viewContent).not.toContain('showFooter');
+        expect(viewContent).not.toContain('macros:breadcrumbs');
+        expect(viewContent).not.toContain('macros:footer');
+        expect(fs.exists(join(basePath, 'webapp/ext/main/Main.controller.js'))).toBe(false);
+        expect(fs.exists(join(basePath, 'webapp/ext/main/Main.controller.ts'))).toBe(false);
+    });
+
     test('throws error if aggregationPath not found', async () => {
         const aggregationPath = `/mvc:Test`;
         const basePath = join(testAppPath, 'generate-page-block-error');
@@ -1171,7 +1304,7 @@ describe('Building Blocks', () => {
             // Since the test above may fail due to aggregation path issues, let's test the detection separately
             // by mocking or using the internal functions directly
             const { DOMParser } = await import('@xmldom/xmldom');
-            const xmlDocument = new DOMParser().parseFromString(xmlViewWithColumns);
+            const xmlDocument = new DOMParser().parseFromString(xmlViewWithColumns, 'text/xml');
 
             // Test the getElementsByTagName functionality directly - this is what the code checks
             const hasTableColumn = xmlDocument.getElementsByTagName('macros:columns').length > 0;
@@ -1964,7 +2097,7 @@ describe('Building Blocks', () => {
             fs.write(join(basePath, xmlFragmentFilePath), xmlFragmentWithButtonGroups);
 
             const { DOMParser } = await import('@xmldom/xmldom');
-            const xmlDocument = new DOMParser().parseFromString(xmlFragmentWithButtonGroups);
+            const xmlDocument = new DOMParser().parseFromString(xmlFragmentWithButtonGroups, 'text/xml');
 
             const hasButtonGroups = xmlDocument.getElementsByTagName('macros:buttonGroups').length > 0;
             expect(hasButtonGroups).toBe(true);
@@ -2481,7 +2614,7 @@ describe('Building Blocks', () => {
 
             // Test the getElementsByTagName functionality directly - this is what the code checks
             const { DOMParser } = await import('@xmldom/xmldom');
-            const xmlDocument = new DOMParser().parseFromString(xmlViewWithFilterFields);
+            const xmlDocument = new DOMParser().parseFromString(xmlViewWithFilterFields, 'text/xml');
 
             // Test the getElementsByTagName functionality directly - this is what the code checks
             const hasFilterFields = xmlDocument.getElementsByTagName('macros:filterFields').length > 0;
@@ -2989,6 +3122,262 @@ describe('Building Blocks', () => {
         });
     });
 
+    describe('CustomFormField building block', () => {
+        const testXmlViewContentWithForm = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.test.myApp.ext.main.Main"
+    xmlns:macros="sap.fe.macros">
+    <Page title="Main">
+        <content>
+            <macros:Form id="myForm" metaPath="@com.sap.vocabularies.UI.v1.FieldGroup#General">
+            </macros:Form>
+        </content>
+    </Page>
+</mvc:View>`;
+
+        const testXmlViewContentWithFormFields = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.test.myApp.ext.main.Main"
+    xmlns:macros="sap.fe.macros">
+    <Page title="Main">
+        <content>
+            <macros:Form id="myForm" metaPath="@com.sap.vocabularies.UI.v1.FieldGroup#General">
+                <macros:fields>
+                    <macros:FormElement label="Existing Field" />
+                </macros:fields>
+            </macros:Form>
+        </content>
+    </Page>
+</mvc:View>`;
+
+        test('generate CustomFormField with macros:fields aggregation', async () => {
+            const basePath = join(testAppPath, 'generate-custom-form-field-with-fields');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Form`;
+            const customFormFieldData: CustomFormField = {
+                id: 'testCustomFormField',
+                buildingBlockType: BuildingBlockType.CustomFormField,
+                generateId,
+                label: 'Custom Form Field',
+                position: {
+                    anchor: 'DataField::TestProperty',
+                    placement: Placement.After
+                },
+                embededFragment: {
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Input value="{testProperty}"/></core:FragmentDefinition>',
+                    name: 'CustomFormField1'
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithFormFields);
+
+            await generateBuildingBlock<CustomFormField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: customFormFieldData
+                },
+                fs
+            );
+
+            // Check that fragment file was created
+            const expectedFragmentPath = join(basePath, 'webapp/ext/fragment/CustomFormField1.fragment.xml');
+            expect(fs.exists(expectedFragmentPath)).toBe(true);
+
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toMatchSnapshot('generate-custom-form-field-with-fields');
+            expect(viewContent).toContain('FormElement');
+            expect(viewContent).toContain('Custom Form Field');
+            expect(viewContent).toContain('my.test.App.ext.fragment.CustomFormField1');
+            expect(viewContent).toContain('anchor="DataField::TestProperty"');
+            expect(viewContent).toContain('placement="After"');
+
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate CustomFormField without macros:fields - inserts FormElement directly into Form', async () => {
+            const basePath = join(testAppPath, 'generate-custom-form-field-without-fields');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Form`;
+            const customFormFieldData: CustomFormField = {
+                id: 'testCustomFormField2',
+                buildingBlockType: BuildingBlockType.CustomFormField,
+                generateId,
+                label: 'Custom Form Field 2',
+                position: {
+                    anchor: 'DataField::AnotherProperty',
+                    placement: Placement.Before
+                },
+                embededFragment: {
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Custom"/></core:FragmentDefinition>',
+                    name: 'CustomFormField2'
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithForm);
+
+            await generateBuildingBlock<CustomFormField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: customFormFieldData
+                },
+                fs
+            );
+
+            // Check that fragment file was created
+            const expectedFragmentPath = join(basePath, 'webapp/ext/fragment/CustomFormField2.fragment.xml');
+            expect(fs.exists(expectedFragmentPath)).toBe(true);
+
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toMatchSnapshot('generate-custom-form-field-without-fields');
+            expect(viewContent).not.toMatch(/<macros:fields>[\s\S]*<macros:FormElement/);
+            expect(viewContent).toContain('<macros:FormElement');
+            expect(viewContent).toContain('Custom Form Field 2');
+            expect(viewContent).toContain('anchor="DataField::AnotherProperty"');
+            expect(viewContent).toContain('placement="Before"');
+
+            await writeFilesForDebugging(fs);
+        });
+
+        test('CustomFormField processor with wrong type throws error', () => {
+            const mockFs = create(createStorage());
+
+            const customFormFieldProcessor = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomFormField]!.processor;
+
+            const wrongTypeBuildingBlock = {
+                id: 'wrongType',
+                buildingBlockType: BuildingBlockType.Chart,
+                generateId,
+                title: 'Wrong Type'
+            };
+
+            expect(() => {
+                const context = {
+                    fs: mockFs,
+                    viewPath: '/mock/path'
+                };
+                customFormFieldProcessor(wrongTypeBuildingBlock, context);
+            }).toThrow('Expected CustomFormField building block data');
+        });
+
+        test('CustomFormField processor throws when embededFragment is missing', () => {
+            const mockFs = create(createStorage());
+            const customFormFieldProcessor = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomFormField]!.processor;
+
+            const buildingBlock = {
+                id: 'noFragment',
+                buildingBlockType: BuildingBlockType.CustomFormField,
+                generateId,
+                label: 'Missing Fragment'
+            } as unknown as CustomFormField;
+
+            expect(() => {
+                customFormFieldProcessor(buildingBlock, { fs: mockFs, viewPath: '/mock/path' });
+            }).toThrow('EmbeddedFragment is required for CustomFormField');
+        });
+
+        test('CustomFormField with eventHandler creates handler file', async () => {
+            const basePath = join(testAppPath, 'generate-custom-form-field-event-handler');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Form`;
+            const customFormFieldData: CustomFormField = {
+                id: 'testCustomFormFieldEH',
+                buildingBlockType: BuildingBlockType.CustomFormField,
+                generateId,
+                label: 'Form Field With Handler',
+                position: {
+                    anchor: 'DataField::TestProperty',
+                    placement: Placement.After
+                },
+                embededFragment: {
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content: '',
+                    name: 'CustomFormFieldEH',
+                    eventHandler: true
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithFormFields);
+
+            await generateBuildingBlock<CustomFormField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: customFormFieldData
+                },
+                fs
+            );
+
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toContain('FormElement');
+            expect(viewContent).toContain('Form Field With Handler');
+
+            const handlerFilePath = join(
+                basePath,
+                'webapp',
+                customFormFieldData.embededFragment.folder!,
+                `${customFormFieldData.embededFragment.name}.js`
+            );
+            expect(fs.exists(handlerFilePath)).toBe(true);
+            expect(fs.read(handlerFilePath)).toContain('onPress');
+
+            await writeFilesForDebugging(fs);
+        });
+
+        test('CustomFormField preserves existing fragment content', async () => {
+            const basePath = join(testAppPath, 'generate-custom-form-field-preserve-content');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Form`;
+            const existingContent =
+                '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Input value="{myProp}"/></core:FragmentDefinition>';
+            const customFormFieldData: CustomFormField = {
+                id: 'testCustomFormFieldContent',
+                buildingBlockType: BuildingBlockType.CustomFormField,
+                generateId,
+                label: 'Form Field Preserve Content',
+                position: {
+                    anchor: 'DataField::TestProperty',
+                    placement: Placement.After
+                },
+                embededFragment: {
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content: existingContent,
+                    name: 'CustomFormFieldContent'
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithFormFields);
+
+            await generateBuildingBlock<CustomFormField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: customFormFieldData
+                },
+                fs
+            );
+
+            // Verify fragment file was created with original content, not overwritten with default
+            const expectedFragmentPath = join(basePath, 'webapp/ext/fragment/CustomFormFieldContent.fragment.xml');
+            expect(fs.exists(expectedFragmentPath)).toBe(true);
+            const fragmentContent = fs.read(expectedFragmentPath);
+            expect(fragmentContent).toContain('<Input value="{myProp}"');
+
+            await writeFilesForDebugging(fs);
+        });
+    });
+
     describe('Building Block Configuration and Type Safety', () => {
         test('BUILDING_BLOCK_CONFIG export contains correct configuration', () => {
             // Test CustomColumn configuration
@@ -3010,8 +3399,17 @@ describe('Building Blocks', () => {
             expect(customFilterFieldConfig.templateFile).toBe('filter/fragment.xml');
             expect(customFilterFieldConfig.namespace.uri).toBe('sap.fe.macros.filterBar');
             expect(customFilterFieldConfig.namespace.prefix).toBe('macros');
-            // expect(customFilterFieldConfig.resultPropertyName).toBe('hasFilterFields');
             expect(typeof customFilterFieldConfig.processor).toBe('function');
+
+            // Test CustomFormField configuration
+            const customFormFieldConfig = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomFormField]!;
+            expect(customFormFieldConfig).toBeDefined();
+            expect(customFormFieldConfig.aggregationConfig.aggregationName).toBe('fields');
+            expect(customFormFieldConfig.aggregationConfig.elementName).toBe('FormElement');
+            expect(customFormFieldConfig.templateFile).toBe('common/Fragment.xml');
+            expect(customFormFieldConfig.namespace.uri).toBe('sap.fe.macros');
+            expect(customFormFieldConfig.namespace.prefix).toBe('macros');
+            expect(typeof customFormFieldConfig.processor).toBe('function');
         });
 
         test('processor function type validation - CustomColumn with wrong type throws error', async () => {
@@ -3440,6 +3838,172 @@ describe('Building Blocks', () => {
             const viewContent = fs.read(join(basePath, xmlViewFilePath));
             expect(viewContent).toMatchSnapshot();
             await writeFilesForDebugging(fs);
+        });
+    });
+
+    describe('generateBuildingBlockAggregation', () => {
+        const pageViewContent = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+    </macros:Page>
+</mvc:View>`;
+
+        it('appends aggregation with unique id attribute on wrapper element', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg');
+            fs.write(join(basePath, xmlViewFilePath), pageViewContent);
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'footer',
+                    mContent: ''
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            expect(output).toContain('id="footer"');
+        });
+
+        it('does not append duplicate aggregation when it already exists in view', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-dup');
+            const viewWithExistingId = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+        <macros:footer id="footer"><OverflowToolbar /></macros:footer>
+    </macros:Page>
+</mvc:View>`;
+            fs.write(join(basePath, xmlViewFilePath), viewWithExistingId);
+            findFilesByExtensionMock.mockResolvedValue([join(basePath, xmlViewFilePath)]);
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'footer',
+                    mContent: ''
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            expect((output.match(/<macros:footer\b/g) ?? []).length).toBe(1);
+            expect(output).not.toContain('id="footer1"');
+        });
+
+        it('reorders existing aggregations into canonical PAGE_AGGREGATIONS order', async () => {
+            // Start with aggregations in wrong order: footer, actions, navigationActions
+            const basePath = join(testAppPath, 'page-bb-agg-sort');
+            const viewOutOfOrder = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+        <macros:footer id="footer"><OverflowToolbar /></macros:footer>
+        <macros:actions id="actions"><Button text="Act" /></macros:actions>
+    </macros:Page>
+</mvc:View>`;
+            fs.write(join(basePath, xmlViewFilePath), viewOutOfOrder);
+
+            // Adding navigationActions (index 1) should trigger a full sort
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'navigationActions',
+                    mContent: ''
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            const navPos = output.indexOf('macros:navigationActions');
+            const actPos = output.indexOf('macros:actions');
+            const footPos = output.indexOf('macros:footer');
+            expect(navPos).toBeLessThan(actPos);
+            expect(actPos).toBeLessThan(footPos);
+        });
+
+        it('adds template comment as first child when Page has no existing aggregations', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-comment');
+            fs.write(join(basePath, xmlViewFilePath), pageViewContent);
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'items',
+                    mContent: ''
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            expect(output).toContain('This is a sample template, event handlers should be added for implementation');
+            // Comment should appear before the aggregation element
+            const commentPos = output.indexOf('This is a sample template');
+            const itemsPos = output.indexOf('macros:items');
+            expect(commentPos).toBeLessThan(itemsPos);
+        });
+
+        it('does not add template comment when Page already has aggregation children', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-no-comment');
+            const viewWithExisting = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+        <macros:footer id="footer"><OverflowToolbar /></macros:footer>
+    </macros:Page>
+</mvc:View>`;
+            fs.write(join(basePath, xmlViewFilePath), viewWithExisting);
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'items',
+                    mContent: ''
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            // Comment should not be added again if children already exist
+            expect(output.split('This is a sample template').length - 1).toBeLessThanOrEqual(1);
+        });
+
+        it('preserves template comment when reordering aggregations', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-sort-comment');
+            const viewWithComment = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+        <!--This is a sample template, event handlers should be added for implementation-->
+        <macros:footer id="footer"><OverflowToolbar /></macros:footer>
+        <macros:actions id="actions"><Button text="Act" /></macros:actions>
+    </macros:Page>
+</mvc:View>`;
+            fs.write(join(basePath, xmlViewFilePath), viewWithComment);
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'navigationActions',
+                    mContent: ''
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            expect(output).toContain('This is a sample template, event handlers should be added for implementation');
+            // Comment should remain before all aggregation elements
+            const commentPos = output.indexOf('This is a sample template');
+            const navPos = output.indexOf('macros:navigationActions');
+            expect(commentPos).toBeLessThan(navPos);
         });
     });
 });

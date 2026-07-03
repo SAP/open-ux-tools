@@ -1,4 +1,4 @@
-import type { I18nBundle } from '../../../../src/components/UITranslationInput/UITranslationButton.types';
+import type { I18nBundle } from '../../../../src/components/UITranslationInput/UITranslationButton.types.js';
 
 const defaultEntries = [
     ['dummy', 'dummy text'],

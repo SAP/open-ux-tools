@@ -19,11 +19,11 @@ import type {
     Range
 } from '@sap-ux/odata-annotation-core-types';
 import { ELEMENT_TYPE, Edm, TEXT_TYPE } from '@sap-ux/odata-annotation-core-types';
-import { ApiError } from '../error';
+import { ApiError } from '../error.js';
 
-import { PRIMITIVE_TYPE_NAMES } from '../utils';
+import { PRIMITIVE_TYPE_NAMES } from '../utils/index.js';
 
-import type { CDSDocument, AstNode } from './document';
+import type { CDSDocument, AstNode } from './document.js';
 
 interface ReturnValue {
     pointer: string[];
@@ -44,22 +44,28 @@ class Visitor {
      * @param astNode - CDS document root.
      * @param node - Internal representation root.
      * @param pointer - Pointer segments.
+     * @param cdsTargetMapping
      * @returns Converted pointer.
      */
-    public document(astNode: CDSDocument, node: AnnotationFile, pointer: string[]): ReturnValue {
+    public document(
+        astNode: CDSDocument,
+        node: AnnotationFile,
+        pointer: string[],
+        cdsTargetMapping: number[]
+    ): ReturnValue {
         const [segment, indexSegment, ...segments] = pointer;
         const index = Number.parseInt(indexSegment, 10);
+        const cdsTargetIndex = cdsTargetMapping[index];
         if (!Number.isNaN(index)) {
             if (segment === 'targets') {
                 if (segments.length === 0) {
                     return {
-                        pointer: [segment, indexSegment]
+                        pointer: [segment, cdsTargetIndex.toFixed(0)]
                     };
                 }
-                const result = this.target(astNode.targets[index], node.targets[index], segments);
+                const result = this.target(astNode.targets[cdsTargetIndex], node.targets[index], segments);
                 if (result) {
-                    result.pointer = [segment, indexSegment, ...result.pointer];
-
+                    result.pointer = [segment, cdsTargetIndex.toFixed(0), ...result.pointer];
                     return result;
                 }
             }
@@ -517,12 +523,14 @@ export function getAstNodesFromPointer(document: CDSDocument, pointer: string): 
  * @param annotationFile - Internal representation root.
  * @param pointer - Pointer pointing to a node in the internal representation tree.
  * @param cdsDocument - Internal representation root.
+ * @param cdsTargetMapping
  * @returns Converted pointer.
  */
 export function convertPointer(
     annotationFile: AnnotationFile,
     pointer: string,
-    cdsDocument: CDSDocument
+    cdsDocument: CDSDocument,
+    cdsTargetMapping: number[]
 ): {
     pointer: string;
     containsFlattenedNodes: boolean;
@@ -532,7 +540,7 @@ export function convertPointer(
         throw new ApiError(`Invalid pointer! ${pointer} must be absolute pointer starting with "/".`);
     }
     const visitor = new Visitor();
-    const result = visitor.document(cdsDocument, annotationFile, segments);
+    const result = visitor.document(cdsDocument, annotationFile, segments, cdsTargetMapping);
     if (result.pointer.length === 0) {
         throw new ApiError(`Could not convert pointer! ${pointer} must lead to existing node in annotation file.`);
     }

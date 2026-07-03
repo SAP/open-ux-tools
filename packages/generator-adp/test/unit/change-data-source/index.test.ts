@@ -1,48 +1,54 @@
+import { jest } from '@jest/globals';
 import fs from 'node:fs';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import yeomanTest from 'yeoman-test';
 
-import {
-    ChangeType,
-    generateChange,
-    getAdpConfig,
-    getVariant,
-    ManifestService,
-    ManifestServiceCF,
-    SystemLookup,
-    isCFEnvironment
-} from '@sap-ux/adp-tooling';
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { ChangeDataSourceAnswers, DescriptorVariant } from '@sap-ux/adp-tooling';
 
-import type { Credentials } from '../../../src/types';
-import changeDataSourceGen from '../../../src/change-data-source';
+import type { Credentials } from '../../../src/types.js';
 
-jest.mock('@sap-ux/adp-tooling', () => ({
-    ...jest.requireActual('@sap-ux/adp-tooling'),
-    generateChange: jest.fn(),
-    getVariant: jest.fn(),
-    getAdpConfig: jest.fn(),
+const mockGenerateChange = jest.fn<typeof realAdpTooling.generateChange>();
+const mockGetVariant = jest.fn<typeof realAdpTooling.getVariant>();
+const mockGetAdpConfig = jest.fn<typeof realAdpTooling.getAdpConfig>();
+const mockIsCFEnvironment = jest.fn().mockResolvedValue(false);
+const mockManifestServiceCFInit = jest.fn<typeof realAdpTooling.init>();
+
+const realAdpTooling = await import('@sap-ux/adp-tooling');
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    ...realAdpTooling,
+    generateChange: mockGenerateChange,
+    getVariant: mockGetVariant,
+    getAdpConfig: mockGetAdpConfig,
     getAdpProjectData: jest.fn(),
-    isCFEnvironment: jest.fn().mockResolvedValue(false),
-    ManifestServiceCF: { init: jest.fn() }
+    isCFEnvironment: mockIsCFEnvironment,
+    ManifestServiceCF: { init: mockManifestServiceCFInit }
 }));
 
-jest.mock('@sap-ux/system-access', () => ({
+jest.unstable_mockModule('@sap-ux/system-access', () => ({
     createAbapServiceProvider: jest.fn().mockResolvedValue({})
 }));
 
-const generateChangeMock = generateChange as jest.MockedFunction<typeof generateChange>;
-const getVariantMock = getVariant as jest.MockedFunction<typeof getVariant>;
-const getAdpConfigMock = getAdpConfig as jest.MockedFunction<typeof getAdpConfig>;
-const isCFEnvironmentMock = isCFEnvironment as jest.MockedFunction<typeof isCFEnvironment>;
-const manifestServiceCFInitMock = ManifestServiceCF.init as jest.MockedFunction<typeof ManifestServiceCF.init>;
+const { ManifestService, SystemLookup, ChangeType } = await import('@sap-ux/adp-tooling');
+const { default: changeDataSourceGen } = await import('../../../src/change-data-source/index.js');
 
 const manifest = {
     'sap.app': {
         dataSources: {
-            Z_SRV: { uri: '/sap/opu/odata', type: 'OData', settings: {} }
+            Z_SRV: {
+                uri: '/sap/opu/odata',
+                type: 'OData',
+                settings: { annotations: ['Z_SRV_ANNO'] }
+            },
+            Z_SRV_ANNO: {
+                uri: '/sap/opu/odata/annotation',
+                type: 'ODataAnnotation',
+                settings: {}
+            }
         }
     }
 } as unknown as Manifest;
@@ -72,9 +78,9 @@ const answers: ChangeDataSourceAnswers & Credentials & { errorMessagePrompt: str
 
 jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockResolvedValue(true);
 
-const generatorPath = join(__dirname, '../../src/change-data-source/index.ts');
-const tmpDir = resolve(__dirname, 'test-output');
-const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later
+const generatorPath = join(__dirname, 'src/change-data-source/index.ts');
+const tmpDir = resolve(__dirname, 'test-output-change-data-source');
+const originalCwd: string = process.cwd();
 
 describe('ChangeDataSourceGenerator', () => {
     afterEach(() => {
@@ -93,8 +99,8 @@ describe('ChangeDataSourceGenerator', () => {
             getDataSourceMetadata: jest.fn().mockResolvedValue({ $Version: '4.0' })
         } as unknown as ManifestService);
 
-        getVariantMock.mockResolvedValue(variant);
-        getAdpConfigMock.mockResolvedValue({ target, ignoreCertErrors: false } as any);
+        mockGetVariant.mockResolvedValue(variant);
+        mockGetAdpConfig.mockResolvedValue({ target, ignoreCertErrors: false } as any);
 
         const runContext = yeomanTest
             .create(changeDataSourceGen, { resolved: generatorPath }, { cwd: tmpDir })
@@ -103,7 +109,7 @@ describe('ChangeDataSourceGenerator', () => {
 
         await expect(runContext.run()).resolves.not.toThrow();
 
-        expect(generateChangeMock).toHaveBeenCalledWith(
+        expect(mockGenerateChange).toHaveBeenCalledWith(
             tmpDir,
             ChangeType.CHANGE_DATA_SOURCE,
             expect.objectContaining({
@@ -126,8 +132,8 @@ describe('ChangeDataSourceGenerator', () => {
     });
 
     it('invokes handleRuntimeCrash when manifest merge fails', async () => {
-        getVariantMock.mockResolvedValue(variant);
-        getAdpConfigMock.mockResolvedValue({ target, ignoreCertErrors: false } as any);
+        mockGetVariant.mockResolvedValue(variant);
+        mockGetAdpConfig.mockResolvedValue({ target, ignoreCertErrors: false } as any);
 
         jest.spyOn(ManifestService, 'initMergedManifest').mockRejectedValueOnce(new Error('merge fail'));
 
@@ -153,8 +159,8 @@ describe('ChangeDataSourceGenerator', () => {
     });
 
     it('invokes handleRuntimeCrash when system lookup fails during onInit', async () => {
-        getVariantMock.mockResolvedValue(variant);
-        getAdpConfigMock.mockResolvedValue({ target, ignoreCertErrors: false } as any);
+        mockGetVariant.mockResolvedValue(variant);
+        mockGetAdpConfig.mockResolvedValue({ target, ignoreCertErrors: false } as any);
 
         jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockRejectedValueOnce(
             new Error('system lookup fail')
@@ -182,15 +188,15 @@ describe('ChangeDataSourceGenerator', () => {
     });
 
     it('generates change for CF project using ManifestServiceCF', async () => {
-        isCFEnvironmentMock.mockResolvedValueOnce(true);
+        mockIsCFEnvironment.mockResolvedValueOnce(true);
 
-        manifestServiceCFInitMock.mockResolvedValue({
+        mockManifestServiceCFInit.mockResolvedValue({
             getManifest: jest.fn().mockReturnValue(manifest),
             getManifestDataSources: jest.fn().mockReturnValue(manifest['sap.app']?.dataSources),
             getDataSourceMetadata: jest.fn().mockRejectedValue(new Error('not supported'))
         } as any);
 
-        getVariantMock.mockResolvedValue(variant);
+        mockGetVariant.mockResolvedValue(variant);
 
         const runContext = yeomanTest
             .create(changeDataSourceGen, { resolved: generatorPath }, { cwd: tmpDir })
@@ -199,8 +205,8 @@ describe('ChangeDataSourceGenerator', () => {
 
         await expect(runContext.run()).resolves.not.toThrow();
 
-        expect(manifestServiceCFInitMock).toHaveBeenCalledWith(tmpDir, expect.anything());
-        expect(generateChangeMock).toHaveBeenCalledWith(
+        expect(mockManifestServiceCFInit).toHaveBeenCalledWith(tmpDir, expect.anything());
+        expect(mockGenerateChange).toHaveBeenCalledWith(
             tmpDir,
             ChangeType.CHANGE_DATA_SOURCE,
             expect.objectContaining({

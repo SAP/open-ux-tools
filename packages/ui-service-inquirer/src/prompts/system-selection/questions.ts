@@ -3,10 +3,10 @@ import type { Logger } from '@sap-ux/logger';
 import { getSystemSelectionQuestions, promptNames } from '@sap-ux/odata-service-inquirer';
 import type { ListChoiceOptions, ListQuestion } from 'inquirer';
 import type { Question } from 'yeoman-generator';
-import { t } from '../../i18n';
-import { ObjectType, type UiServiceAnswers } from '../../types';
-import { getAbapCDSViews, getBusinessObjects } from '../prompt-helper';
-import { PromptState } from '../prompt-state';
+import { t } from '../../i18n.js';
+import { ObjectType, type UiServiceAnswers } from '../../types.js';
+import { getAbapCDSViews, getBusinessObjects } from '../prompt-helper.js';
+import { PromptState } from '../prompt-state.js';
 
 /**
  * Get the system questions.

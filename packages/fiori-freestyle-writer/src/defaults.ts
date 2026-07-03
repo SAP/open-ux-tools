@@ -1,8 +1,12 @@
 import readPkgUp from 'read-pkg-up';
-import { TemplateType } from './types';
-import { compareUI5VersionGte, ui5LtsVersion_1_120 } from './utils';
+import { TemplateType } from './types.js';
+import { compareUI5VersionGte, ui5LtsVersion_1_120 } from './utils.js';
 import { getFlpId } from '@sap-ux/fiori-generator-shared';
-import type { BasicAppSettings, FioriApp, FreestyleApp } from './types';
+import type { BasicAppSettings, FioriApp, FreestyleApp } from './types.js';
+
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const defaultVirtualPreviewFile = 'test/flp.html'; // Default virtual preview file name
 const defaultIntent = 'app-preview';

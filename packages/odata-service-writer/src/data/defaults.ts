@@ -1,8 +1,8 @@
 import { join } from 'node:path';
-import type { OdataService, EdmxAnnotationsInfo, DataSources } from '../types';
-import { ServiceType } from '../types';
-import { DEFAULT_DATASOURCE_NAME } from './constants';
-import type { Manifest } from '@sap-ux/project-access';
+import type { OdataService, EdmxAnnotationsInfo, DataSources } from '../types.js';
+import { ServiceType } from '../types.js';
+import { DEFAULT_DATASOURCE_NAME } from './constants.js';
+import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import { UI5Config, type FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
@@ -60,7 +60,9 @@ async function setDefaultServiceName(
     const dataSources = manifest?.['sap.app']?.dataSources;
     if (dataSources) {
         // Filter out ODataAnnotation dataSources and keep only OData ones
-        const oDataSources = Object.values(dataSources).filter((dataSource) => dataSource.type === 'OData');
+        const oDataSources = Object.values(dataSources).filter(
+            (dataSource: ManifestNamespace.DataSource) => dataSource.type === 'OData'
+        );
         if (oDataSources.length === 0) {
             service.name = DEFAULT_DATASOURCE_NAME;
         } else if (service.name && !update) {
@@ -95,7 +97,8 @@ async function setDefaultServiceModel(
         const models = manifest?.['sap.ui5']?.models;
         if (models) {
             // Filter dataSource models by dataSource property
-            const servicesModels = Object.values(models).filter((model) => model.dataSource);
+            const modelValues = Object.values(models) as Record<string, unknown>[];
+            const servicesModels = modelValues.filter((model) => model.dataSource);
             if (
                 servicesModels.length === 0 ||
                 (update &&
@@ -151,20 +154,27 @@ function setDefaultAnnotationsName(service: OdataService): void {
 }
 
 /**
- * Sets client and destination defaults for preview settings.
+ * Returns the preview settings for the app configuration based on the service configuration.
  *
  * @param {OdataService} service - the OData service instance
+ * @returns {FioriToolsProxyConfigBackend} preview settings
  */
-function setClientAndDestinationDefaults(service: OdataService): void {
+function getPreviewSettings(service: OdataService): Partial<FioriToolsProxyConfigBackend> {
+    const previewSettings: FioriToolsProxyConfigBackend = {
+        path: service.previewSettings?.path ?? `/${service.path?.split('/').find((s: string) => s !== '') ?? ''}`,
+        url: service.previewSettings?.url ?? service.url ?? 'http://localhost'
+    };
+
     if (service.client && !service.previewSettings?.client) {
-        service.previewSettings!.client = service.client;
+        previewSettings.client = service.client;
     }
     if (service.destination && !service.previewSettings?.destination) {
-        service.previewSettings!.destination = service.destination.name;
+        previewSettings.destination = service.destination.name;
         if (service.destination.instance) {
-            service.previewSettings!.destinationInstance = service.destination.instance;
+            previewSettings.destinationInstance = service.destination.instance;
         }
     }
+    return previewSettings;
 }
 
 /**
@@ -218,13 +228,13 @@ async function setDefaultPreviewSettings(
     fs: Editor,
     update = false
 ): Promise<void> {
-    service.previewSettings = service.previewSettings ?? {};
-    const explicitPreviewPath = service.previewSettings.path;
-    service.previewSettings.path =
-        service.previewSettings.path ?? `/${service.path?.split('/').find((s: string) => s !== '') ?? ''}`;
-    service.previewSettings.url = service.previewSettings.url ?? service.url ?? 'http://localhost';
+    const previewSettings = getPreviewSettings(service);
+    const explicitPreviewPath = service.previewSettings?.path;
 
-    setClientAndDestinationDefaults(service);
+    service.previewSettings = {
+        ...previewSettings,
+        ...service.previewSettings
+    };
 
     const ui5Yamlpath = join(basePath, FileName.Ui5Yaml);
     if (!fs.exists(ui5Yamlpath)) {

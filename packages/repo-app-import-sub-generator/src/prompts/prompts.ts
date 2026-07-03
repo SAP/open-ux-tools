@@ -1,15 +1,20 @@
 import type { AppIndex } from '@sap-ux/axios-extension';
 import { getSystemSelectionQuestions } from '@sap-ux/odata-service-inquirer';
-import type { RepoAppDownloadAnswers, RepoAppDownloadQuestions, QuickDeployedAppConfig, AppInfo } from '../app/types';
-import { PromptNames } from '../app/types';
-import { t } from '../utils/i18n';
+import type {
+    RepoAppDownloadAnswers,
+    RepoAppDownloadQuestions,
+    QuickDeployedAppConfig,
+    AppInfo
+} from '../app/types.js';
+import { PromptNames, AppDownloadType } from '../app/types.js';
+import { t } from '../utils/i18n.js';
 import { validateFioriAppTargetFolder } from '@sap-ux/project-input-validator';
-import { PromptState } from './prompt-state';
-import { fetchAppListForSelectedSystem, formatAppChoices } from './prompt-helpers';
+import { PromptState } from './prompt-state.js';
+import { fetchAppListForSelectedSystem, formatAppChoices } from './prompt-helpers.js';
 import type { FileBrowserQuestion } from '@sap-ux/inquirer-common';
-import { validateAppSelection } from '../utils/validators';
+import { validateAppSelection } from '../utils/validators.js';
 import type { AppWizard, IValidationLink } from '@sap-devx/yeoman-ui-types';
-import RepoAppDownloadLogger from '../utils/logger';
+import RepoAppDownloadLogger from '../utils/logger.js';
 import { type Question } from 'inquirer';
 
 /**
@@ -51,7 +56,8 @@ const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowse
 const getCliValidatePrompts = (
     appList: AppIndex,
     quickDeployedAppConfig?: QuickDeployedAppConfig,
-    appWizard?: AppWizard
+    appWizard?: AppWizard,
+    downloadType: AppDownloadType = AppDownloadType.ADTQuickDeploy
 ): Question => {
     return {
         type: 'input',
@@ -62,7 +68,8 @@ const getCliValidatePrompts = (
                         answers[PromptNames.selectedApp],
                         appList,
                         quickDeployedAppConfig,
-                        appWizard
+                        appWizard,
+                        downloadType
                     );
                 } catch (error) {
                     if (error instanceof Error) {
@@ -87,13 +94,15 @@ const getCliValidatePrompts = (
  * @param {QuickDeployedAppConfig} [quickDeployedAppConfig] - The quick deployed app configuration.
  * @param {AppWizard} [appWizard] - The app wizard instance.
  * @param {boolean} [isCli] - Indicates if the prompts are being generated for CLI usage.
+ * @param {AppDownloadType} [downloadType] - The download type determining app list filtering behaviour.
  * @returns {Promise<RepoAppDownloadQuestions[]>} A list of prompts for user interaction.
  */
 export async function getPrompts(
     appRootPath?: string,
     quickDeployedAppConfig?: QuickDeployedAppConfig,
     appWizard?: AppWizard,
-    isCli: boolean = false
+    isCli: boolean = false,
+    downloadType: AppDownloadType = AppDownloadType.ADTQuickDeploy
 ): Promise<RepoAppDownloadQuestions[]> {
     try {
         PromptState.reset();
@@ -118,7 +127,8 @@ export async function getPrompts(
                     ) {
                         appList = await fetchAppListForSelectedSystem(
                             systemQuestions.answers.connectedSystem,
-                            quickDeployedAppConfig?.appId
+                            quickDeployedAppConfig?.appId,
+                            downloadType
                         );
                     }
                     return !!systemQuestions.answers.connectedSystem?.serviceProvider;
@@ -134,13 +144,19 @@ export async function getPrompts(
                 message: t('prompts.appSelection.message'),
                 choices: (): { name: string; value: AppInfo }[] => (appList.length ? formatAppChoices(appList) : []),
                 validate: async (answers: AppInfo): Promise<boolean | IValidationLink | string> => {
-                    return await validateAppSelection(answers, appList, quickDeployedAppConfig, appWizard);
+                    return await validateAppSelection(
+                        answers,
+                        appList,
+                        quickDeployedAppConfig,
+                        appWizard,
+                        downloadType
+                    );
                 }
             }
         ];
         // Only for CLI use as `list` prompt validation does not run on CLI unless autocomplete plugin is used
         if (isCli) {
-            appSelectionPrompts?.push(getCliValidatePrompts(appList, quickDeployedAppConfig, appWizard));
+            appSelectionPrompts?.push(getCliValidatePrompts(appList, quickDeployedAppConfig, appWizard, downloadType));
         }
 
         const targetFolderPrompts = getTargetFolderPrompt(appRootPath, quickDeployedAppConfig?.appId);

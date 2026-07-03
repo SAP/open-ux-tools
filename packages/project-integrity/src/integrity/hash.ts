@@ -1,6 +1,6 @@
 import { createReadStream, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import type { Content, ContentIntegrity, FileIntegrity } from '../types';
+import type { Content, ContentIntegrity, FileIntegrity } from '../types.js';
 
 /**
  * Create a md5 hash for a given file.
@@ -13,9 +13,9 @@ async function computeFileIntegrityData(filePath: string): Promise<FileIntegrity
         let content = '';
         const hash = createHash('md5');
         const fileStream = createReadStream(filePath);
-        fileStream.on('data', (chunk: Buffer) => {
-            content += chunk.toString();
-            hash.update(new Uint8Array(chunk));
+        fileStream.on('data', (chunk: Buffer | string) => {
+            content += typeof chunk === 'string' ? chunk : chunk.toString();
+            hash.update(typeof chunk === 'string' ? Buffer.from(chunk) : new Uint8Array(chunk));
         });
         fileStream.on('end', () => resolve({ filePath, hash: hash.digest('hex'), content }));
         fileStream.on('error', (err) => reject(err));

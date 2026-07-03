@@ -1,6 +1,20 @@
-import childProcessMock from 'node:child_process';
+import { jest } from '@jest/globals';
 import type { Logger } from '@sap-ux/logger';
-import { execNpmCommand } from '../../src/command';
+import type childProcess from 'node:child_process';
+
+const mockSpawn = jest.fn<typeof realChildProcess.spawn>();
+
+const realChildProcess = await import('node:child_process');
+jest.unstable_mockModule('node:child_process', () => ({
+    ...realChildProcess,
+    default: {
+        ...realChildProcess.default,
+        spawn: mockSpawn
+    },
+    spawn: mockSpawn
+}));
+
+const { execNpmCommand } = await import('../../src/command/index.js');
 
 const originalPlatform = process.platform;
 
@@ -25,10 +39,10 @@ describe('Test execNpmCommand(), simulate linux/mac', () => {
         // Mock setup
         const processMock = getProcessMock((event, cb) => {
             if (event === 'exit') {
-                cb();
+                cb(0);
             }
         });
-        const spawnMock = jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);
+        const spawnMock = mockSpawn.mockReturnValueOnce(processMock as any);
 
         // Test execution
         const stdout = await execNpmCommand(['install', '@scope/module@1.2.3']);
@@ -42,10 +56,10 @@ describe('Test execNpmCommand(), simulate linux/mac', () => {
         // Mock setup
         const processMock = getProcessMock((event, cb) => {
             if (event === 'exit') {
-                cb();
+                cb(0);
             }
         });
-        const spawnMock = jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);
+        const spawnMock = mockSpawn.mockReturnValueOnce(processMock as any);
         const logger = {
             info: jest.fn(),
             error: jest.fn()
@@ -56,7 +70,7 @@ describe('Test execNpmCommand(), simulate linux/mac', () => {
 
         // Result check
         expect(spawnMock).toHaveBeenCalledWith('npm', ['install', 'mock-module'], { cwd: 'some/path' });
-        expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('data-STDERR_MOCK_DATA'));
+        expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('data-STDERR_MOCK_DATA'));
         expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('data-STDOUT_MOCK_DATA'));
     });
 
@@ -67,7 +81,7 @@ describe('Test execNpmCommand(), simulate linux/mac', () => {
                 cb(Error('ERROR_MOCK'));
             }
         });
-        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);
+        mockSpawn.mockReturnValueOnce(processMock as any);
         const logger = {
             error: jest.fn()
         } as unknown as Logger;
@@ -80,6 +94,66 @@ describe('Test execNpmCommand(), simulate linux/mac', () => {
             expect(error.message).toContain('ERROR_MOCK');
         }
         expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('ERROR_MOCK'));
+    });
+
+    test('Non-zero exit code without throwOnError resolves and logs error', async () => {
+        // Mock setup
+        const processMock = getProcessMock((event, cb) => {
+            if (event === 'exit') {
+                cb(1);
+            }
+        });
+        mockSpawn.mockReturnValueOnce(processMock as any);
+        const logger = {
+            error: jest.fn()
+        } as unknown as Logger;
+
+        // Test execution - should resolve, not throw
+        const stdout = await execNpmCommand(['install', 'bad-module'], { logger });
+
+        // Result check
+        expect(stdout).toBe('data-STDOUT_MOCK_DATA');
+        expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('not successful'));
+        expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('data-STDERR_MOCK_DATA'));
+    });
+
+    test('Non-zero exit code with throwOnError rejects with error', async () => {
+        // Mock setup
+        const processMock = getProcessMock((event, cb) => {
+            if (event === 'exit') {
+                cb(1);
+            }
+        });
+        mockSpawn.mockReturnValueOnce(processMock as any);
+
+        // Test execution
+        try {
+            await execNpmCommand(['install', 'bad-module'], { throwOnError: true });
+            expect('Function execNpmCommand should have thrown exception but did not').toBe('Error');
+        } catch (error) {
+            expect(error.message).toContain('failed with exit code 1');
+            expect(error.message).toContain('data-STDERR_MOCK_DATA');
+        }
+    });
+
+    test('Signal kill (null exit code) resolves and logs warning', async () => {
+        // Mock setup
+        const processMock = getProcessMock((event, cb) => {
+            if (event === 'exit') {
+                cb(null, 'SIGTERM');
+            }
+        });
+        mockSpawn.mockReturnValueOnce(processMock as any);
+        const logger = {
+            warn: jest.fn()
+        } as unknown as Logger;
+
+        // Test execution - should resolve, not throw
+        const stdout = await execNpmCommand(['install', 'some-module'], { logger });
+
+        // Result check
+        expect(stdout).toBe('data-STDOUT_MOCK_DATA');
+        expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('SIGTERM'));
     });
 });
 
@@ -104,10 +178,10 @@ describe('Test execNpmCommand(), simulate windows', () => {
         // Mock setup
         const processMock = getProcessMock((event, cb) => {
             if (event === 'exit') {
-                cb();
+                cb(0);
             }
         });
-        const spawnMock = jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);
+        const spawnMock = mockSpawn.mockReturnValueOnce(processMock as any);
 
         // Test execution
         const stdout = await execNpmCommand(['install', '@scope/module@1.2.3']);
@@ -124,10 +198,10 @@ describe('Test execNpmCommand(), simulate windows', () => {
         // Mock setup
         const processMock = getProcessMock((event, cb) => {
             if (event === 'exit') {
-                cb();
+                cb(0);
             }
         });
-        const spawnMock = jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);
+        const spawnMock = mockSpawn.mockReturnValueOnce(processMock as any);
 
         // Test execution
         const stdout = await execNpmCommand(['install', '@scope/module@1.2.3'], { cwd: 'some/path' });
@@ -148,7 +222,7 @@ describe('Test execNpmCommand(), simulate windows', () => {
                 cb(Error('ERROR_MOCK'));
             }
         });
-        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(processMock);
+        mockSpawn.mockReturnValueOnce(processMock as any);
 
         // Test execution
         try {
@@ -166,7 +240,9 @@ describe('Test execNpmCommand(), simulate windows', () => {
  * @param onHandler - handler for process.on
  * @returns - mock implementation of child_process.ChildProcess
  */
-function getProcessMock(onHandler: (event: string, cb: (data?: any) => void) => void): childProcessMock.ChildProcess {
+function getProcessMock(
+    onHandler: (event: string, cb: (data?: any, data2?: any) => void) => void
+): childProcess.ChildProcess {
     return {
         stdout: {
             on: jest.fn().mockImplementationOnce((event, cb) => cb(`${event}-STDOUT_MOCK_DATA`))

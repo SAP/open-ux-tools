@@ -1,8 +1,8 @@
 import { relative } from 'node:path';
 import type { Command } from 'commander';
 import { enableCdsUi5Plugin } from '@sap-ux/cap-config-writer';
-import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing';
-import { runNpmInstallCommand } from '../../common';
+import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing/index.js';
+import { runNpmInstallCommand } from '../../common/index.js';
 
 /**
  * Add the "add cds-plugin-ui5" command to passed command.
@@ -43,20 +43,19 @@ async function addCdsPluginUi5(basePath: string, simulate: boolean, skipInstall:
         const fs = await enableCdsUi5Plugin(basePath);
         await traceChanges(fs);
         if (!simulate) {
-            fs.commit(() => {
-                logger.info(`Changes to enable cds-plugin-ui5 written`);
-                if (skipInstall) {
-                    logger.warn('To finish enablement of cds-plugin-ui5 run commands:');
-                    const relPath = relative(basePath, process.cwd());
-                    if (relPath) {
-                        logger.info(`cd ${relPath}`);
-                    }
-                    logger.info('npm install');
-                } else {
-                    logger.debug('Running npm install command');
-                    runNpmInstallCommand(basePath);
+            await new Promise<void>((resolve) => fs.commit(resolve));
+            logger.info(`Changes to enable cds-plugin-ui5 written`);
+            if (skipInstall) {
+                logger.warn('To finish enablement of cds-plugin-ui5 run commands:');
+                const relPath = relative(basePath, process.cwd());
+                if (relPath) {
+                    logger.info(`cd ${relPath}`);
                 }
-            });
+                logger.info('npm install');
+            } else {
+                logger.debug('Running npm install command');
+                runNpmInstallCommand(basePath);
+            }
         }
     } catch (error) {
         logger.error(`Error while adding cds-plugin-ui5 '${error?.toString()}'`);

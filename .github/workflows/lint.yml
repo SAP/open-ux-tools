@@ -16,23 +16,25 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node-version: [20.x]
+        node-version: [22.x]
     runs-on: ${{ matrix.os }}
+    environment: ci-secrets
 
     steps:
       - name: Checkout code repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.ACCESS_PAT }}
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
-          run_install: |
-            - args: [--ignore-scripts]
+          node-version: ${{ matrix.node-version }}
+      - name: Setup pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
       - name: Cache pnpm modules
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         env:
           cache-name: cache-pnpm-modules
         with:
@@ -40,10 +42,6 @@ jobs:
           key: ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ matrix.node-version }}
       - name: Install pnpm modules
         run: pnpm install --frozen-lockfile
       - name: Run build

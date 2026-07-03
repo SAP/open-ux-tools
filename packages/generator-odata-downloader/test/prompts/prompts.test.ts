@@ -1,23 +1,96 @@
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { jest } from '@jest/globals';
 import type { CheckBoxQuestion, ConfirmQuestion, InputQuestion } from '@sap-ux/inquirer-common';
-import { getSystemSelectionQuestions, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { ServiceSpecification } from '@sap-ux/project-access';
-import { ApplicationAccess, createApplicationAccess } from '@sap-ux/project-access';
-import {
-    getODataDownloaderPrompts,
-    promptNames,
-    type SelectedEntityAnswer
-} from '../../src/data-download/prompts/prompts';
-import * as promptHelpers from '../../src/data-download/prompts/prompt-helpers';
-import { getEntityModel } from '../../src/data-download/utils';
-import { PromptState } from '../../src/data-download/prompt-state';
-import { ODataDownloadGenerator } from '../../src/data-download/odata-download-generator';
+import { PromptState } from '../../src/data-download/prompt-state.js';
+import { t as realT } from '../../src/utils/i18n.js';
+import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 
-jest.mock('@sap-ux/fiori-generator-shared');
-jest.mock('@sap-ux/odata-service-inquirer');
-jest.mock('@sap-ux/project-access');
-jest.mock('../../src/data-download/prompts/prompt-helpers');
-jest.mock('../../src/data-download/utils');
+const actualAxiosExtension = await import('@sap-ux/axios-extension');
+jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
+    ...actualAxiosExtension,
+    AbapServiceProvider: class MockAbapServiceProvider {}
+}));
+
+const mockGetHostEnvironment = jest.fn();
+const mockHostEnvironment = {
+    cli: 'CLI',
+    vscode: 'vscode'
+};
+
+const actualFioriGeneratorShared = await import('@sap-ux/fiori-generator-shared');
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGeneratorShared,
+    getHostEnvironment: mockGetHostEnvironment,
+    hostEnvironment: mockHostEnvironment
+}));
+
+jest.unstable_mockModule('@sap-ux/odata-service-writer', () => ({
+    writeExternalServiceMetadata: jest.fn()
+}));
+
+jest.unstable_mockModule('@sap-ux/mockserver-config-writer', () => ({
+    generateMockserverConfig: jest.fn()
+}));
+
+const mockGetSystemSelectionQuestions = jest.fn();
+const actualOdataServiceInquirer = await import('@sap-ux/odata-service-inquirer');
+jest.unstable_mockModule('@sap-ux/odata-service-inquirer', () => ({
+    ...actualOdataServiceInquirer,
+    getSystemSelectionQuestions: mockGetSystemSelectionQuestions
+}));
+
+const actualProjectAccess = await import('@sap-ux/project-access');
+const mockCreateApplicationAccess = jest.fn(actualProjectAccess.createApplicationAccess);
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    createApplicationAccess: mockCreateApplicationAccess
+}));
+
+jest.unstable_mockModule('../../src/utils/i18n', () => ({
+    initI18nODataDownloadGenerator: jest.fn().mockResolvedValue(undefined),
+    t: realT
+}));
+
+jest.unstable_mockModule('../../src/telemetry', () => ({
+    TelemetryHelper: {
+        initTelemetrySettings: jest.fn().mockResolvedValue(undefined),
+        sendTelemetry: jest.fn().mockResolvedValue(undefined)
+    }
+}));
+
+const mockGetSpecification = jest.fn();
+const mockGetServiceDetails = jest.fn();
+const mockCreateEntityChoices = jest.fn();
+const mockGetData = jest.fn();
+jest.unstable_mockModule('../../src/data-download/prompts/prompt-helpers', () => ({
+    getSpecification: mockGetSpecification,
+    getServiceDetails: mockGetServiceDetails,
+    createEntityChoices: mockCreateEntityChoices,
+    getData: mockGetData
+}));
+
+const mockGetEntityModel = jest.fn();
+jest.unstable_mockModule('../../src/data-download/utils', () => ({
+    getEntityModel: mockGetEntityModel,
+    createEntitySetData: jest.fn(),
+    getSystemNameFromStore: jest.fn(),
+    buildReferentialConstraintFileContent: jest.fn(),
+    updateReferentialConstraintFileContent: jest.fn()
+}));
+
+jest.unstable_mockModule('../../src/data-download/prompts/value-help-prompts', () => ({
+    getValueHelpSelectionPrompt: jest.fn()
+}));
+
+const { getSystemSelectionQuestions } = await import('@sap-ux/odata-service-inquirer');
+const { getODataDownloaderPrompts, promptNames } = await import('../../src/data-download/prompts/prompts.js');
+const { ODataDownloadGenerator } = await import('../../src/data-download/odata-download-generator.js');
+const { getHostEnvironment, hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
+
+type SelectedEntityAnswer = {
+    fullPath: string;
+    entity: { entityPath: string; entitySetName: string; defaultSelected?: boolean };
+};
 
 // Helper to create mock entity choice
 const createMockChoice = (
@@ -53,8 +126,8 @@ describe('Test prompts', () => {
     describe('getODataDownloaderPrompts', () => {
         it('should return questions and answers structure', async () => {
             // Mock dependencies
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+            mockGetHostEnvironment.mockReturnValue(mockHostEnvironment.vscode);
+            mockGetSystemSelectionQuestions.mockResolvedValue({
                 prompts: [],
                 answers: {}
             });
@@ -70,8 +143,8 @@ describe('Test prompts', () => {
         });
 
         it('should include all required prompts', async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+            mockGetHostEnvironment.mockReturnValue(mockHostEnvironment.vscode);
+            mockGetSystemSelectionQuestions.mockResolvedValue({
                 prompts: [
                     { name: 'datasourceType', type: 'list' },
                     { name: 'serviceSelection', type: 'list' }
@@ -96,15 +169,15 @@ describe('Test prompts', () => {
         });
 
         it('should pass correct options to getSystemSelectionQuestions', async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+            mockGetHostEnvironment.mockReturnValue(mockHostEnvironment.vscode);
+            mockGetSystemSelectionQuestions.mockResolvedValue({
                 prompts: [],
                 answers: {}
             });
 
             await getODataDownloaderPrompts();
 
-            expect(getSystemSelectionQuestions).toHaveBeenCalledWith(
+            expect(mockGetSystemSelectionQuestions).toHaveBeenCalledWith(
                 expect.objectContaining({
                     datasourceType: {
                         includeNone: false
@@ -123,8 +196,8 @@ describe('Test prompts', () => {
         });
 
         it('should generate 5 key prompts', async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+            mockGetHostEnvironment.mockReturnValue(mockHostEnvironment.vscode);
+            mockGetSystemSelectionQuestions.mockResolvedValue({
                 prompts: [],
                 answers: {}
             });
@@ -141,8 +214,8 @@ describe('Test prompts', () => {
         let appSelectionPrompt: InputQuestion;
 
         beforeEach(async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+            mockGetHostEnvironment.mockReturnValue(mockHostEnvironment.vscode);
+            mockGetSystemSelectionQuestions.mockResolvedValue({
                 prompts: [],
                 answers: {}
             });
@@ -161,8 +234,8 @@ describe('Test prompts', () => {
         });
 
         it('should use appPath option as default value when passed to getODataDownloaderPrompts', async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+            mockGetHostEnvironment.mockReturnValue(mockHostEnvironment.vscode);
+            mockGetSystemSelectionQuestions.mockResolvedValue({
                 prompts: [],
                 answers: {}
             });
@@ -177,8 +250,8 @@ describe('Test prompts', () => {
         });
 
         it('should fallback to answers.appSelection when appPath option is not provided', async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+            mockGetHostEnvironment.mockReturnValue(mockHostEnvironment.vscode);
+            mockGetSystemSelectionQuestions.mockResolvedValue({
                 prompts: [],
                 answers: {}
             });
@@ -202,9 +275,9 @@ describe('Test prompts', () => {
             };
             const mockSpec = { getApiVersion: () => ({ version: '24' }) };
 
-            (createApplicationAccess as jest.Mock).mockResolvedValue(mockAppAccess);
-            (promptHelpers.getSpecification as jest.Mock).mockResolvedValue(mockSpec);
-            (promptHelpers.getServiceDetails as jest.Mock).mockResolvedValue({
+            mockCreateApplicationAccess.mockResolvedValue(mockAppAccess);
+            mockGetSpecification.mockResolvedValue(mockSpec);
+            mockGetServiceDetails.mockResolvedValue({
                 servicePath: '/service/path',
                 systemName: 'TestSystem'
             });
@@ -212,7 +285,7 @@ describe('Test prompts', () => {
             const result = await appSelectionPrompt.validate!('/test/app');
 
             expect(result).toBe(true);
-            expect(createApplicationAccess).toHaveBeenCalledWith('/test/app');
+            expect(mockCreateApplicationAccess).toHaveBeenCalledWith('/test/app');
         });
 
         it('should return error message for OData v2 service', async () => {
@@ -224,12 +297,14 @@ describe('Test prompts', () => {
                 }
             };
 
-            (createApplicationAccess as jest.Mock).mockResolvedValue(mockAppAccess);
+            mockCreateApplicationAccess.mockResolvedValue(mockAppAccess);
 
             const result = await appSelectionPrompt.validate!('/test/app');
 
             expect(result).toBe(
-                "The selected apps main service odata version is '2.0'. Please select an app with a main service odata version '4'."
+                realT('prompts.appSelection.validation.appMainServiceOdataVersionNotSupported', {
+                    serviceOdataVersion: '2.0'
+                })
             );
         });
 
@@ -246,9 +321,9 @@ describe('Test prompts', () => {
                 serviceInfo: { name: 'TestService' }
             };
 
-            (createApplicationAccess as jest.Mock).mockResolvedValue(mockAppAccess);
-            (promptHelpers.getSpecification as jest.Mock).mockResolvedValue(mockSpec);
-            (promptHelpers.getServiceDetails as jest.Mock).mockResolvedValue({
+            mockCreateApplicationAccess.mockResolvedValue(mockAppAccess);
+            mockGetSpecification.mockResolvedValue(mockSpec);
+            mockGetServiceDetails.mockResolvedValue({
                 servicePath: '/sap/opu/odata4/service/path',
                 systemName: 'BACKEND_SYSTEM'
             });
@@ -282,12 +357,9 @@ describe('Test prompts', () => {
             expect(appConfig.systemName?.value).toBe('BACKEND_SYSTEM');
 
             // Verify helper functions were called with correct parameters
-            expect(createApplicationAccess).toHaveBeenCalledWith('/test/app');
-            expect(promptHelpers.getSpecification).toHaveBeenCalledWith(mockAppAccess);
-            expect(promptHelpers.getServiceDetails).toHaveBeenCalledWith(
-                '/test/app',
-                mockAppAccess.app.services.mainService
-            );
+            expect(mockCreateApplicationAccess).toHaveBeenCalledWith('/test/app');
+            expect(mockGetSpecification).toHaveBeenCalledWith(mockAppAccess);
+            expect(mockGetServiceDetails).toHaveBeenCalledWith('/test/app', mockAppAccess.app.services.mainService);
         });
 
         it('should return false for empty app path', async () => {
@@ -304,8 +376,8 @@ describe('Test prompts', () => {
                 }
             };
 
-            (createApplicationAccess as jest.Mock).mockResolvedValue(mockAppAccess);
-            (promptHelpers.getSpecification as jest.Mock).mockResolvedValue('Error: Invalid specification');
+            mockCreateApplicationAccess.mockResolvedValue(mockAppAccess);
+            mockGetSpecification.mockResolvedValue('Error: Invalid specification');
 
             const result = await appSelectionPrompt.validate!('/test/app');
 
@@ -314,7 +386,7 @@ describe('Test prompts', () => {
 
         it('should return error message and log error when createApplicationAccess throws an Error', async () => {
             const mockError = new Error('Unable to read manifest.json');
-            (createApplicationAccess as jest.Mock).mockRejectedValue(mockError);
+            mockCreateApplicationAccess.mockRejectedValue(mockError);
 
             const mockLogger = { error: jest.fn() };
             jest.spyOn(ODataDownloadGenerator, 'logger', 'get').mockReturnValue(mockLogger as any);
@@ -322,16 +394,19 @@ describe('Test prompts', () => {
             const result = await appSelectionPrompt.validate!('/invalid/app/path');
 
             expect(result).toBe(
-                'The selected path does not contain a valid application. For more information, view the logs.'
+                realT('prompts.appSelection.validation.selectedPathDoesNotContainValidApp') +
+                    realT('texts.seeLogForDetails')
             );
             expect(mockLogger.error).toHaveBeenCalledWith(
-                'The selected path does not contain a valid application. Unable to read manifest.json'
+                realT('prompts.appSelection.validation.selectedPathDoesNotContainValidApp', {
+                    error: 'Unable to read manifest.json'
+                })
             );
         });
 
         it('should return error message and log error when createApplicationAccess throws a non-Error value', async () => {
             const mockError = 'String error message';
-            (createApplicationAccess as jest.Mock).mockRejectedValue(mockError);
+            mockCreateApplicationAccess.mockRejectedValue(mockError);
 
             const mockLogger = { error: jest.fn() };
             jest.spyOn(ODataDownloadGenerator, 'logger', 'get').mockReturnValue(mockLogger as any);
@@ -339,10 +414,13 @@ describe('Test prompts', () => {
             const result = await appSelectionPrompt.validate!('/invalid/app/path');
 
             expect(result).toBe(
-                'The selected path does not contain a valid application. For more information, view the logs.'
+                realT('prompts.appSelection.validation.selectedPathDoesNotContainValidApp') +
+                    realT('texts.seeLogForDetails')
             );
             expect(mockLogger.error).toHaveBeenCalledWith(
-                'The selected path does not contain a valid application. String error message'
+                realT('prompts.appSelection.validation.selectedPathDoesNotContainValidApp', {
+                    error: 'String error message'
+                })
             );
         });
 
@@ -357,9 +435,9 @@ describe('Test prompts', () => {
             };
             const mockSpec1 = { getApiVersion: () => ({ version: '24' }) };
 
-            (createApplicationAccess as jest.Mock).mockResolvedValue(mockAppAccess1);
-            (promptHelpers.getSpecification as jest.Mock).mockResolvedValue(mockSpec1);
-            (promptHelpers.getServiceDetails as jest.Mock).mockResolvedValue({
+            mockCreateApplicationAccess.mockResolvedValue(mockAppAccess1);
+            mockGetSpecification.mockResolvedValue(mockSpec1);
+            mockGetServiceDetails.mockResolvedValue({
                 servicePath: '/service1/path',
                 systemName: 'System1'
             });
@@ -393,9 +471,9 @@ describe('Test prompts', () => {
             };
             const mockSpec2 = { getApiVersion: () => ({ version: '24' }) };
 
-            (createApplicationAccess as jest.Mock).mockResolvedValue(mockAppAccess2);
-            (promptHelpers.getSpecification as jest.Mock).mockResolvedValue(mockSpec2);
-            (promptHelpers.getServiceDetails as jest.Mock).mockResolvedValue({
+            mockCreateApplicationAccess.mockResolvedValue(mockAppAccess2);
+            mockGetSpecification.mockResolvedValue(mockSpec2);
+            mockGetServiceDetails.mockResolvedValue({
                 servicePath: '/service2/path',
                 systemName: 'System2'
             });
@@ -422,9 +500,9 @@ describe('Test prompts', () => {
             };
             const mockSpec = { getApiVersion: () => ({ version: '24' }) };
 
-            (createApplicationAccess as jest.Mock).mockResolvedValue(mockAppAccess);
-            (promptHelpers.getSpecification as jest.Mock).mockResolvedValue(mockSpec);
-            (promptHelpers.getServiceDetails as jest.Mock).mockResolvedValue({
+            mockCreateApplicationAccess.mockResolvedValue(mockAppAccess);
+            mockGetSpecification.mockResolvedValue(mockSpec);
+            mockGetServiceDetails.mockResolvedValue({
                 servicePath: '/service/path',
                 systemName: 'TestSystem'
             });
@@ -456,7 +534,7 @@ describe('Test prompts', () => {
             expect(appConfig.referencedEntities?.listEntity.entitySetName).toBe('TestSet');
 
             // createApplicationAccess should only be called once (from first validation)
-            expect(createApplicationAccess).toHaveBeenCalledTimes(1);
+            expect(mockCreateApplicationAccess).toHaveBeenCalledTimes(1);
         });
 
         it('should reset PromptState caches when app selection changes', async () => {
@@ -469,9 +547,9 @@ describe('Test prompts', () => {
             };
             const mockSpec1 = { getApiVersion: () => ({ version: '24' }) };
 
-            (createApplicationAccess as jest.Mock).mockResolvedValue(mockAppAccess1);
-            (promptHelpers.getSpecification as jest.Mock).mockResolvedValue(mockSpec1);
-            (promptHelpers.getServiceDetails as jest.Mock).mockResolvedValue({
+            mockCreateApplicationAccess.mockResolvedValue(mockAppAccess1);
+            mockGetSpecification.mockResolvedValue(mockSpec1);
+            mockGetServiceDetails.mockResolvedValue({
                 servicePath: '/service1/path',
                 systemName: 'System1'
             });
@@ -510,11 +588,11 @@ describe('Test prompts', () => {
                 }
             };
 
-            (createApplicationAccess as jest.Mock).mockResolvedValue(mockAppAccess1);
-            (promptHelpers.getSpecification as jest.Mock).mockResolvedValue({
+            mockCreateApplicationAccess.mockResolvedValue(mockAppAccess1);
+            mockGetSpecification.mockResolvedValue({
                 getApiVersion: () => ({ version: '24' })
             });
-            (promptHelpers.getServiceDetails as jest.Mock).mockResolvedValue({
+            mockGetServiceDetails.mockResolvedValue({
                 servicePath: '/service1/path',
                 systemName: 'System1'
             });
@@ -542,8 +620,8 @@ describe('Test prompts', () => {
                 }
             };
 
-            (createApplicationAccess as jest.Mock).mockResolvedValue(mockAppAccess2);
-            (promptHelpers.getServiceDetails as jest.Mock).mockResolvedValue({
+            mockCreateApplicationAccess.mockResolvedValue(mockAppAccess2);
+            mockGetServiceDetails.mockResolvedValue({
                 servicePath: '/service2/path',
                 systemName: 'System2'
             });
@@ -565,11 +643,11 @@ describe('Test prompts', () => {
                 }
             };
 
-            (createApplicationAccess as jest.Mock).mockResolvedValue(mockAppAccess);
-            (promptHelpers.getSpecification as jest.Mock).mockResolvedValue({
+            mockCreateApplicationAccess.mockResolvedValue(mockAppAccess);
+            mockGetSpecification.mockResolvedValue({
                 getApiVersion: () => ({ version: '24' })
             });
-            (promptHelpers.getServiceDetails as jest.Mock).mockResolvedValue({
+            mockGetServiceDetails.mockResolvedValue({
                 servicePath: '/service/path',
                 systemName: 'TestSystem'
             });
@@ -604,8 +682,8 @@ describe('Test prompts', () => {
         let entitySelectionPrompt: CheckBoxQuestion;
 
         beforeEach(async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+            mockGetHostEnvironment.mockReturnValue(mockHostEnvironment.vscode);
+            mockGetSystemSelectionQuestions.mockResolvedValue({
                 prompts: [],
                 answers: {}
             });
@@ -665,10 +743,13 @@ describe('Test prompts', () => {
             jest.useFakeTimers();
             const mockChoices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
             const mockQueryResult = { odataQueryResult: [{ id: 1 }, { id: 2 }] };
-            (promptHelpers.getData as jest.Mock).mockResolvedValue(mockQueryResult);
+            mockGetData.mockResolvedValue(mockQueryResult);
 
             const result = await getODataDownloaderPrompts();
             result.answers.application.relatedEntityChoices.choices = mockChoices;
+            result.answers.application.referencedEntities = {
+                listEntity: createListEntity([{ name: 'TravelID', type: 'Edm.String', value: 'testKey' }])
+            };
 
             const freshEntityPrompt = result.questions.find(
                 (q: any) => q.name === promptNames.relatedEntitySelection
@@ -684,7 +765,7 @@ describe('Test prompts', () => {
             const validateResult = await validatePromise;
 
             expect(validateResult).toBe(true);
-            expect(promptHelpers.getData).toHaveBeenCalled();
+            expect(mockGetData).toHaveBeenCalled();
             expect(result.answers.odataQueryResult.odata).toEqual(mockQueryResult.odataQueryResult);
 
             jest.useRealTimers();
@@ -694,10 +775,13 @@ describe('Test prompts', () => {
             jest.useFakeTimers();
             const mockChoices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
             const errorMessage = 'Connection failed';
-            (promptHelpers.getData as jest.Mock).mockResolvedValue(errorMessage);
+            mockGetData.mockResolvedValue(errorMessage);
 
             const result = await getODataDownloaderPrompts();
             result.answers.application.relatedEntityChoices.choices = mockChoices;
+            result.answers.application.referencedEntities = {
+                listEntity: createListEntity([{ name: 'TravelID', type: 'Edm.String', value: 'testKey' }])
+            };
 
             const freshEntityPrompt = result.questions.find(
                 (q: any) => q.name === promptNames.relatedEntitySelection
@@ -730,10 +814,13 @@ describe('Test prompts', () => {
                 jest.useFakeTimers();
                 const mockChoices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
                 const mockQueryResult = { odataQueryResult: [{ id: 1 }, { id: 2 }, { id: 3 }] };
-                (promptHelpers.getData as jest.Mock).mockResolvedValue(mockQueryResult);
+                mockGetData.mockResolvedValue(mockQueryResult);
 
                 const result = await getODataDownloaderPrompts();
                 result.answers.application.relatedEntityChoices.choices = mockChoices;
+                result.answers.application.referencedEntities = {
+                    listEntity: createListEntity([{ name: 'TravelID', type: 'Edm.String', value: 'testKey' }])
+                };
 
                 const freshEntityPrompt = result.questions.find(
                     (q: any) => q.name === promptNames.relatedEntitySelection
@@ -749,10 +836,51 @@ describe('Test prompts', () => {
 
                 const message = (freshEntityPrompt as any).additionalMessages();
                 expect(message).toBeDefined();
-                expect(message.message).toEqual(
-                    'OData query success. 3 rows returned. For more information, view the logs.'
-                );
+                expect(message.message).toEqual(realT('prompts.skipDataDownload.querySuccess', { count: 3 }));
                 expect(message.severity).toBeDefined();
+
+                jest.useRealTimers();
+            });
+        });
+
+        describe('showOutputTabLink', () => {
+            it('should not show output tab link before validate has produced a result', () => {
+                const showOutputTabLinkFn = (entitySelectionPrompt as any).showOutputTabLink;
+                expect(showOutputTabLinkFn).toBeDefined();
+                expect(showOutputTabLinkFn()).toEqual({
+                    show: false,
+                    linkMessage: realT('prompts.relatedEntitySelection.openLogs')
+                });
+            });
+
+            it('should show output tab link after a successful validate', async () => {
+                jest.useFakeTimers();
+                const mockChoices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
+                const mockQueryResult = { odataQueryResult: [{ id: 1 }] };
+                mockGetData.mockResolvedValue(mockQueryResult);
+
+                const result = await getODataDownloaderPrompts();
+                result.answers.application.relatedEntityChoices.choices = mockChoices;
+                result.answers.application.referencedEntities = {
+                    listEntity: createListEntity([{ name: 'TravelID', type: 'Edm.String', value: 'testKey' }])
+                };
+
+                const freshEntityPrompt = result.questions.find(
+                    (q: any) => q.name === promptNames.relatedEntitySelection
+                ) as CheckBoxQuestion;
+
+                const selectedEntities = [mockChoices[0].value];
+                const validatePromise = freshEntityPrompt.validate!(selectedEntities, {
+                    [promptNames.relatedEntitySelection]: selectedEntities,
+                    'entityKeyIdx:0': 'testKey'
+                });
+                jest.advanceTimersByTime(1000);
+                await validatePromise;
+
+                expect((freshEntityPrompt as any).showOutputTabLink()).toEqual({
+                    show: true,
+                    linkMessage: realT('prompts.relatedEntitySelection.openLogs')
+                });
 
                 jest.useRealTimers();
             });
@@ -763,8 +891,8 @@ describe('Test prompts', () => {
         let resetPrompt: ConfirmQuestion;
 
         beforeEach(async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+            mockGetHostEnvironment.mockReturnValue(mockHostEnvironment.vscode);
+            mockGetSystemSelectionQuestions.mockResolvedValue({
                 prompts: [],
                 answers: {}
             });
@@ -790,7 +918,7 @@ describe('Test prompts', () => {
 
         // Helper to setup reset prompt test with mock choices
         const setupResetPromptTest = async (mockChoices: ReturnType<typeof createMockChoice>[]) => {
-            (promptHelpers.createEntityChoices as jest.Mock).mockReturnValue({
+            mockCreateEntityChoices.mockReturnValue({
                 choices: mockChoices,
                 entitySetsFlat: {}
             });
@@ -888,7 +1016,7 @@ describe('Test prompts', () => {
             // Helper to setup when function test
             const setupWhenTest = async (mockChoices: ReturnType<typeof createMockChoice>[] | null = null) => {
                 if (mockChoices) {
-                    (promptHelpers.createEntityChoices as jest.Mock).mockReturnValue({
+                    mockCreateEntityChoices.mockReturnValue({
                         choices: mockChoices,
                         entitySetsFlat: {}
                     });
@@ -915,7 +1043,7 @@ describe('Test prompts', () => {
                 const { whenFn, appConfig } = await setupWhenTest(mockChoices);
 
                 await whenFn({});
-                expect(promptHelpers.createEntityChoices).toHaveBeenCalledWith(
+                expect(mockCreateEntityChoices).toHaveBeenCalledWith(
                     appConfig.referencedEntities?.listEntity,
                     appConfig.referencedEntities?.pageObjectEntities
                 );
@@ -926,16 +1054,16 @@ describe('Test prompts', () => {
                 const { whenFn } = await setupWhenTest(mockChoices);
 
                 await whenFn({});
-                expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(1);
+                expect(mockCreateEntityChoices).toHaveBeenCalledTimes(1);
 
                 await whenFn({});
-                expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(1);
+                expect(mockCreateEntityChoices).toHaveBeenCalledTimes(1);
             });
 
             it('should reload choices when service path changes', async () => {
                 const mockChoices1 = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
                 const mockChoices2 = [createMockChoice('Entity2', 'to_Entity2', 'Entity2Set')];
-                (promptHelpers.createEntityChoices as jest.Mock)
+                mockCreateEntityChoices
                     .mockReturnValueOnce({ choices: mockChoices1, entitySetsFlat: {} })
                     .mockReturnValueOnce({ choices: mockChoices2, entitySetsFlat: {} });
 
@@ -950,18 +1078,18 @@ describe('Test prompts', () => {
                 const whenFn = freshResetPrompt.when as Function;
 
                 await whenFn({});
-                expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(1);
+                expect(mockCreateEntityChoices).toHaveBeenCalledTimes(1);
 
                 appConfig.servicePath = '/test/service2';
                 await whenFn({});
-                expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(2);
+                expect(mockCreateEntityChoices).toHaveBeenCalledTimes(2);
             });
 
             it('should reload choices when system name changes but not when only service path is unchanged', async () => {
                 const mockChoices1 = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
                 const mockChoices2 = [createMockChoice('Entity2', 'to_Entity2', 'Entity2Set')];
                 const mockChoices3 = [createMockChoice('Entity3', 'to_Entity3', 'Entity3Set')];
-                (promptHelpers.createEntityChoices as jest.Mock)
+                mockCreateEntityChoices
                     .mockReturnValueOnce({ choices: mockChoices1, entitySetsFlat: {} })
                     .mockReturnValueOnce({ choices: mockChoices2, entitySetsFlat: {} })
                     .mockReturnValueOnce({ choices: mockChoices3, entitySetsFlat: {} });
@@ -979,20 +1107,20 @@ describe('Test prompts', () => {
 
                 // First call - should create choices
                 await whenFn({});
-                expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(1);
+                expect(mockCreateEntityChoices).toHaveBeenCalledTimes(1);
 
                 // Same system name and service path - should NOT recreate choices
                 await whenFn({});
-                expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(1);
+                expect(mockCreateEntityChoices).toHaveBeenCalledTimes(1);
 
                 // System name changes (service path unchanged) - SHOULD recreate choices
                 appConfig.systemName.value = 'System2';
                 await whenFn({});
-                expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(2);
+                expect(mockCreateEntityChoices).toHaveBeenCalledTimes(2);
 
                 // Same system name again - should NOT recreate choices
                 await whenFn({});
-                expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(2);
+                expect(mockCreateEntityChoices).toHaveBeenCalledTimes(2);
             });
         });
     });
@@ -1001,8 +1129,8 @@ describe('Test prompts', () => {
         let keyPrompts: InputQuestion[];
 
         beforeEach(async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+            mockGetHostEnvironment.mockReturnValue(mockHostEnvironment.vscode);
+            mockGetSystemSelectionQuestions.mockResolvedValue({
                 prompts: [],
                 answers: {}
             });
@@ -1080,7 +1208,7 @@ describe('Test prompts', () => {
             it('should call getData when keys exist but no entity choices exist', async () => {
                 jest.useFakeTimers();
                 const mockQueryResult = { odataQueryResult: [{ id: 1 }] };
-                (promptHelpers.getData as jest.Mock).mockResolvedValue(mockQueryResult);
+                mockGetData.mockResolvedValue(mockQueryResult);
 
                 const result = await getODataDownloaderPrompts();
                 const appConfig = result.answers.application;
@@ -1109,7 +1237,7 @@ describe('Test prompts', () => {
                 const validateResult = await validatePromise;
 
                 expect(validateResult).toBe(true);
-                expect(promptHelpers.getData).toHaveBeenCalled();
+                expect(mockGetData).toHaveBeenCalled();
                 expect(result.answers.odataQueryResult.odata).toEqual(mockQueryResult.odataQueryResult);
 
                 jest.useRealTimers();
@@ -1117,7 +1245,7 @@ describe('Test prompts', () => {
 
             it('should not call getData when skipDownload is set', async () => {
                 jest.useFakeTimers();
-                (promptHelpers.getData as jest.Mock).mockClear();
+                mockGetData.mockClear();
 
                 const result = await getODataDownloaderPrompts();
                 const appConfig = result.answers.application;
@@ -1146,14 +1274,14 @@ describe('Test prompts', () => {
                 const validateResult = await validatePromise;
 
                 expect(validateResult).toBe(true);
-                expect(promptHelpers.getData).not.toHaveBeenCalled();
+                expect(mockGetData).not.toHaveBeenCalled();
 
                 jest.useRealTimers();
             });
 
             it('should not call getData from key prompt when entity choices exist', async () => {
                 jest.useFakeTimers();
-                (promptHelpers.getData as jest.Mock).mockClear();
+                mockGetData.mockClear();
 
                 const result = await getODataDownloaderPrompts();
                 const appConfig = result.answers.application;
@@ -1184,7 +1312,7 @@ describe('Test prompts', () => {
                 expect(validateResult).toBe(true);
                 // getData should NOT be called from key prompt when entity choices exist
                 // (it will be called from entity selection prompt instead)
-                expect(promptHelpers.getData).not.toHaveBeenCalled();
+                expect(mockGetData).not.toHaveBeenCalled();
 
                 jest.useRealTimers();
             });
@@ -1207,23 +1335,51 @@ describe('Test prompts', () => {
         });
 
         it('should validate range values', async () => {
-            const keyPrompt = keyPrompts[0];
-            const result = await keyPrompt.validate!('1-10');
+            const result = await getODataDownloaderPrompts();
+            const appConfig = result.answers.application;
+            appConfig.referencedEntities = {
+                listEntity: {
+                    entitySetName: 'TestSet',
+                    semanticKeys: [{ name: 'TravelID', type: 'Edm.String', value: undefined }],
+                    entityPath: 'TestSet',
+                    entityType: undefined
+                }
+            };
+            const rangeKeyPrompts = result.questions.filter((q: any) =>
+                q.name?.startsWith('entityKeyIdx:')
+            ) as InputQuestion[];
+            const keyPrompt = rangeKeyPrompts[0];
+            const validateResult = await keyPrompt.validate!('1-10');
 
-            expect(result).toBe(true);
+            expect(validateResult).toBe(true);
         });
 
         it('should reject invalid range specification', async () => {
-            const keyPrompt = keyPrompts[0];
-            const result = await keyPrompt.validate!('1-10-20');
+            const result = await getODataDownloaderPrompts();
+            const appConfig = result.answers.application;
+            appConfig.referencedEntities = {
+                listEntity: {
+                    entitySetName: 'TestSet',
+                    semanticKeys: [{ name: 'TravelID', type: 'Edm.String', value: undefined }],
+                    entityPath: 'TestSet',
+                    entityType: undefined
+                }
+            };
+            const rangeKeyPrompts = result.questions.filter((q: any) =>
+                q.name?.startsWith('entityKeyIdx:')
+            ) as InputQuestion[];
+            const keyPrompt = rangeKeyPrompts[0];
+            const validateResult = await keyPrompt.validate!('1-10-20');
 
-            expect(result).toBe("Invalid range specified, only the lowest and highest values allowed. e.g. '1-10'");
+            expect(validateResult).toBe(
+                "Invalid range specified, only the lowest and highest values allowed. e.g. '1-10'"
+            );
         });
 
         it('should not validate UUIDs as ranges', async () => {
             // UUIDs contain multiple dashes but should not be rejected as invalid ranges
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+            mockGetHostEnvironment.mockReturnValue(mockHostEnvironment.vscode);
+            mockGetSystemSelectionQuestions.mockResolvedValue({
                 prompts: [],
                 answers: {}
             });
@@ -1251,10 +1407,103 @@ describe('Test prompts', () => {
             expect(validateResult).toBe(true);
         });
 
-        it('should validate boolean values', async () => {
-            // Create a mock app config with a boolean key
+        it('should reject invalid GUID format', async () => {
             (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
             (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+                prompts: [],
+                answers: {}
+            });
+
+            const result = await getODataDownloaderPrompts();
+            const appConfig = result.answers.application;
+
+            appConfig.referencedEntities = {
+                listEntity: {
+                    entitySetName: 'TestSet',
+                    semanticKeys: [{ name: 'ID', type: 'Edm.Guid', value: undefined }],
+                    entityPath: 'TestSet',
+                    entityType: undefined
+                }
+            };
+
+            const newKeyPrompts = result.questions.filter((q: any) =>
+                q.name?.startsWith('entityKeyIdx:')
+            ) as InputQuestion[];
+            const keyPrompt = newKeyPrompts[0];
+
+            const validateResult = await keyPrompt.validate!('not-a-valid-guid');
+
+            expect(validateResult).toBe('Invalid GUID format. Expected format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+        });
+
+        it('should accept valid GUID format', async () => {
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+                prompts: [],
+                answers: {}
+            });
+
+            const result = await getODataDownloaderPrompts();
+            const appConfig = result.answers.application;
+
+            appConfig.referencedEntities = {
+                listEntity: {
+                    entitySetName: 'TestSet',
+                    semanticKeys: [{ name: 'ID', type: 'Edm.Guid', value: undefined }],
+                    entityPath: 'TestSet',
+                    entityType: undefined
+                }
+            };
+
+            const newKeyPrompts = result.questions.filter((q: any) =>
+                q.name?.startsWith('entityKeyIdx:')
+            ) as InputQuestion[];
+            const keyPrompt = newKeyPrompts[0];
+
+            const validateResult = await keyPrompt.validate!('550e8400-e29b-41d4-a716-446655440000');
+
+            expect(validateResult).toBe(true);
+        });
+
+        it('should validate comma-separated GUIDs', async () => {
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+                prompts: [],
+                answers: {}
+            });
+
+            const result = await getODataDownloaderPrompts();
+            const appConfig = result.answers.application;
+
+            appConfig.referencedEntities = {
+                listEntity: {
+                    entitySetName: 'TestSet',
+                    semanticKeys: [{ name: 'ID', type: 'Edm.Guid', value: undefined }],
+                    entityPath: 'TestSet',
+                    entityType: undefined
+                }
+            };
+
+            const newKeyPrompts = result.questions.filter((q: any) =>
+                q.name?.startsWith('entityKeyIdx:')
+            ) as InputQuestion[];
+            const keyPrompt = newKeyPrompts[0];
+
+            // Valid comma-separated GUIDs
+            const validResult = await keyPrompt.validate!(
+                '550e8400-e29b-41d4-a716-446655440000,a1b2c3d4-e5f6-7890-abcd-ef1234567890'
+            );
+            expect(validResult).toBe(true);
+
+            // One invalid GUID in comma-separated list
+            const invalidResult = await keyPrompt.validate!('550e8400-e29b-41d4-a716-446655440000,invalid-guid');
+            expect(invalidResult).toBe('Invalid GUID format. Expected format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+        });
+
+        it('should validate boolean values', async () => {
+            // Create a mock app config with a boolean key
+            mockGetHostEnvironment.mockReturnValue(mockHostEnvironment.vscode);
+            mockGetSystemSelectionQuestions.mockResolvedValue({
                 prompts: [],
                 answers: {}
             });
@@ -1284,8 +1533,8 @@ describe('Test prompts', () => {
         });
 
         it('should reject invalid boolean values', async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+            mockGetHostEnvironment.mockReturnValue(mockHostEnvironment.vscode);
+            mockGetSystemSelectionQuestions.mockResolvedValue({
                 prompts: [],
                 answers: {}
             });
@@ -1317,8 +1566,8 @@ describe('Test prompts', () => {
         let skipDownloadPrompt: CheckBoxQuestion;
 
         beforeEach(async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+            mockGetHostEnvironment.mockReturnValue(mockHostEnvironment.vscode);
+            mockGetSystemSelectionQuestions.mockResolvedValue({
                 prompts: [],
                 answers: { metadata: '<metadata></metadata>' }
             });
@@ -1353,7 +1602,7 @@ describe('Test prompts', () => {
         });
 
         it('should not show when metadata is not available', async () => {
-            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+            mockGetSystemSelectionQuestions.mockResolvedValue({
                 prompts: [],
                 answers: {}
             });
@@ -1382,8 +1631,8 @@ describe('Test prompts', () => {
         let updateMetadataPrompt: ConfirmQuestion;
 
         beforeEach(async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+            mockGetHostEnvironment.mockReturnValue(mockHostEnvironment.vscode);
+            mockGetSystemSelectionQuestions.mockResolvedValue({
                 prompts: [],
                 answers: {}
             });
@@ -1416,11 +1665,11 @@ describe('Test prompts', () => {
                 }
             };
 
-            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+            mockGetSystemSelectionQuestions.mockResolvedValue({
                 prompts: [],
                 answers: { metadata: mockMetadata }
             });
-            (getEntityModel as jest.Mock).mockResolvedValue(mockReferencedEntities);
+            mockGetEntityModel.mockResolvedValue(mockReferencedEntities);
 
             const result = await getODataDownloaderPrompts();
             const appConfig = result.answers.application;

@@ -4,9 +4,33 @@ import type { EntityType } from '@sap-ux/vocabularies-types';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
 import type { PageV4 } from '@sap/ux-specification/dist/types/src/v4';
 import type { Answers, CheckboxChoiceOptions } from 'inquirer';
-import type { EntitySetsFlat } from './odata-query';
+import type { EntitySetsFlat } from './odata-query.js';
+import type { Prompts, IPrompt } from '@sap-devx/yeoman-ui-types';
 
-export type SemanticKeyFilter = { name: string; type: string; value: string | undefined };
+export interface YeomanUiStepConfig {
+    activeSteps: Prompts;
+    dependentMap: { [key: string]: IPrompt[] };
+}
+
+export type SemanticKeyFilter = { name: string; keyName?: string; type: string; value: string | undefined };
+
+export type HierarchyEntity = {
+    entitySetName: string;
+    entityTypeName: string;
+    qualifier: string;
+    nodeProperty: string; // From Aggregation.RecursiveHierarchy.NodeProperty
+    parentProperty: string | undefined; // Resolved from ParentNavigationProperty referential constraint
+    parentPropertyType: string | undefined; // EDM type of the parent property (e.g. Edm.Guid, Edm.String)
+    isDraft: boolean; // Entity has IsActiveEntity key — requires ancestors() wrapper
+    entityTypeKeys: string[]; // Key property names of this hierarchy entity's type
+    entityProperties: string[]; // All non-nav property names of this hierarchy entity's type
+    missingReferentialConstraints?: {
+        // Set when the parent nav prop has no referentialConstraint in metadata
+        navPropName: string;
+        // Array of constraints, only the first one is supported as this is a mock server restriction
+        constraints: { sourceProperty: string; targetProperty: string }[];
+    };
+};
 
 export type ReferencedEntities = {
     listEntity: Entity & {
@@ -14,6 +38,7 @@ export type ReferencedEntities = {
     };
     pageObjectEntities?: Entity[];
     navPropEntities?: Map<Entity, Entity[]>;
+    hierarchyEntities?: HierarchyEntity[];
 };
 export type Entity = {
     entitySetName: string;

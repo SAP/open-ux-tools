@@ -9,13 +9,16 @@ import type {
     MiddlewareConfig,
     RtaConfig,
     TestConfig
-} from '../types';
+} from '../types/index.js';
 import { render } from 'ejs';
-import { resolve, join, posix } from 'node:path';
+import { dirname, join, posix, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
 import { readFileSync } from 'node:fs';
-import { mergeTestConfigDefaults } from './test';
+import { mergeTestConfigDefaults } from './test.js';
 import { type Editor, create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
@@ -215,8 +218,10 @@ export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): v
         delete config.rta; //NOSONAR
     }
     if (config.editors?.rta && config.adp === undefined) {
+        const scenario = config.editors.rta.options?.scenario;
+        const developerModeSupported = scenario === 'FE_FROM_SCRATCH' || scenario === 'ADAPTATION_PROJECT';
         config.editors.rta.endpoints = config.editors.rta.endpoints.map((editor) => {
-            if (editor.developerMode) {
+            if (editor.developerMode && !developerModeSupported) {
                 logger.error('developerMode is ONLY supported for SAP UI5 adaptation projects.');
                 logger.warn(`developerMode for ${editor.path} disabled`);
                 editor.developerMode = false;
@@ -247,13 +252,14 @@ export function sanitizeRtaConfig(deprecatedRtaConfig: MiddlewareConfig['rta'], 
 /**
  * Retrieves the configuration settings for UI5 flexibility services.
  *
+ * @param isAdp whether this is an adaptation project - LocalStorageConnector is omitted for ADP
  * @returns An array of flexibility service configurations, each specifying a connector
  *          and its options, such as the layers it applies to and its service URL, if applicable.
  */
-function getFlexSettings(): TemplateConfig['ui5']['flex'] {
+function getFlexSettings(isAdp = false): TemplateConfig['ui5']['flex'] {
     const localConnectorPath = 'open/ux/preview/client/flp/WorkspaceConnector';
 
-    return [
+    const connectors: TemplateConfig['ui5']['flex'] = [
         { connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' },
         {
             applyConnector: localConnectorPath,
@@ -261,6 +267,10 @@ function getFlexSettings(): TemplateConfig['ui5']['flex'] {
             custom: true
         }
     ];
+    if (!isAdp) {
+        connectors.push({ connector: 'LocalStorageConnector', layers: ['CUSTOMER', 'USER'] });
+    }
+    return connectors;
 }
 
 /**
@@ -355,19 +365,51 @@ async function getI18nTextFromProperty(
 }
 
 /**
+ * Remaps all relative resource-root URLs in a TemplateConfig so they are correct
+ * relative to a different HTML page path (e.g. an editor path vs the FLP path).
+ *
+ * Only the entries that are derived from `basePath` are updated:
+ * - the preview-client namespace (`open.ux.preview.client`)
+ * - the primary application namespace (keyed by `appId`)
+ *
+ * Additional applications configured via `flpConfig.apps` use absolute `target`
+ * values and therefore do not need remapping.
+ *
+ * @param config - cloned TemplateConfig already built for the FLP path
+ * @param newPagePath - the path of the HTML page that will serve the resources (e.g. `editor.path`)
+ * @param appId - the `sap.app.id` used as resource-root key for the primary application
+ */
+export function remapResourcesForPath(config: TemplateConfig, newPagePath: string, appId: string): void {
+    const newBasePath = posix.relative(posix.dirname(newPagePath), '/') || '.';
+
+    // Update the well-known client namespace to be relative to the new page path
+    config.ui5.resources[PREVIEW_URL.client.ns] = PREVIEW_URL.client.getUrl(newBasePath);
+
+    // Update the primary app's resource root (was set to basePath for the main app)
+    if (appId && appId in config.ui5.resources) {
+        config.ui5.resources[appId] = newBasePath;
+    }
+
+    // Keep basePath in sync for any other template usage (e.g. basePath/resources/...)
+    config.basePath = newBasePath;
+}
+
+/**
  * Creates the configuration object for the sandbox.html template.
  *
  * @param config FLP configuration
  * @param manifest application manifest
  * @param resources additional resources
+ * @param isAdp whether this is an adaptation project
  * @returns configuration object for the sandbox.html template
  */
 export function createFlpTemplateConfig(
     config: FlpConfig,
     manifest: Partial<Manifest>,
-    resources: Record<string, string> = {}
+    resources: Record<string, string> = {},
+    isAdp = false
 ): TemplateConfig {
-    const flex = getFlexSettings();
+    const flex = getFlexSettings(isAdp);
     const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
     const ui5Theme = config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
     const id = manifest['sap.app']?.id ?? '';

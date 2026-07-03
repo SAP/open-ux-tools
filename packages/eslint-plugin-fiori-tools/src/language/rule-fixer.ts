@@ -1,6 +1,6 @@
-import type { JSONRuleContext } from './rule-factory';
+import type { JSONRuleContext } from './rule-factory.js';
 import type { AnyNode, MemberNode, ObjectNode } from '@humanwhocodes/momoa';
-import { type DeepestExistingPathResult } from '../utils/helpers';
+import { type DeepestExistingPathResult } from '../utils/helpers.js';
 import type { RuleTextEdit, RuleTextEditor } from '@eslint/core';
 
 /**
@@ -230,6 +230,9 @@ function handleInsert(
     if (isEmpty) {
         // Empty object - insert without trailing comma
         textToInsert = `\n${newContent}`;
+        if (newContent.endsWith('}')) {
+            textToInsert += '\n'.padEnd(node.loc.start.column);
+        }
     } else {
         // Has existing properties - insert with trailing comma
         textToInsert = `\n${newContent},`;

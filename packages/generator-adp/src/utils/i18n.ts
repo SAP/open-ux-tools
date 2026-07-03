@@ -35,9 +35,7 @@ export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
         options = Object.assign(options ?? {}, { ns: adpGeneratorI18nNamespace });
     }
-    return i18n.t(key, options);
+    return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-initI18n().catch(() => {
-    // Needed for lint
-});
+void initI18n().catch(() => undefined);

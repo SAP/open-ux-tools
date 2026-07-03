@@ -1,7 +1,7 @@
-import type { Annotations, ODataServiceInfo, ServiceType } from './base';
-import { CatalogService } from './base';
-import { ODataVersion } from '../../base/odata-service';
-import { ODataRequestError } from '../../base/odata-request-error';
+import type { Annotations, ODataServiceInfo, ServiceType } from './base.js';
+import { CatalogService } from './base.js';
+import { ODataVersion } from '../../base/odata-service.js';
+import { ODataRequestError } from '../../base/odata-request-error.js';
 import { type Logger, ToolsLogger } from '@sap-ux/logger';
 
 const V4_RECOMMENDED_ENTITYSET = 'RecommendedServices';
@@ -58,16 +58,18 @@ export class V4CatalogService extends CatalogService {
             .forEach((group) => {
                 services.push(
                     ...(group.DefaultSystem[entitySet] as V4Service[]).flatMap((service) => {
+                        const servicePath = service.ServiceUrl.split('?').shift();
                         if (dedup) {
-                            if (uniqueServiceIds.has(service.ServiceId)) {
+                            const key = `${service.ServiceId}|${servicePath}`;
+                            if (uniqueServiceIds.has(key)) {
                                 return [];
                             }
-                            uniqueServiceIds.add(service.ServiceId);
+                            uniqueServiceIds.add(key);
                         }
                         return {
                             id: service.ServiceId,
                             group: group.GroupId,
-                            path: service.ServiceUrl.split('?').shift(),
+                            path: servicePath,
                             name: `${group.GroupId} > ${service.ServiceAlias || service.ServiceId}`,
                             serviceVersion: service.ServiceVersion,
                             odataVersion: ODataVersion.v4,

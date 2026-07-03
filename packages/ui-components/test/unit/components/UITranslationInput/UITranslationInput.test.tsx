@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { initIcons } from '../../../../src/components';
 import {
     UITranslationInput,
@@ -387,9 +387,9 @@ describe('<UITranslationInput />', () => {
             );
             clickI18nButton();
             expect(document.querySelectorAll(selectors.callout).length).toEqual(1);
-            await new Promise((resolve) => setTimeout(resolve, 1));
-            fireEvent.click(document.body);
-            expect(document.querySelectorAll(selectors.callout).length).toEqual(0);
+            await new Promise((resolve) => setTimeout(resolve, 50));
+            fireEvent.click(document.documentElement);
+            await waitFor(() => expect(document.querySelectorAll(selectors.callout).length).toEqual(0));
         });
     });
 

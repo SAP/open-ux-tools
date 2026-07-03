@@ -8,7 +8,7 @@ import {
     TargetName,
     getExtensionGenPromptOpts
 } from '@sap-ux/deploy-config-generator-shared';
-import { parseTarget, getYUIDetails } from './utils';
+import { parseTarget, getYUIDetails } from './utils.js';
 import {
     getApiHubOptions,
     getEnvApiHubConfig,
@@ -18,12 +18,13 @@ import {
     getSupportedTargets,
     generatorTitle,
     promptNames
-} from '../utils';
+} from '../utils/index.js';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
-import { promptDeployConfigQuestions } from './prompting';
+import type { AppWizard as AppWizardType, Prompts as PromptsType } from '@sap-devx/yeoman-ui-types';
+import { promptDeployConfigQuestions } from './prompting.js';
 import type { Answers } from 'inquirer';
 import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-sub-generator';
-import type { DeployConfigGenerator, DeployConfigOptions, DeployConfigSubGenPromptOptions } from '../types';
+import type { DeployConfigGenerator, DeployConfigOptions, DeployConfigSubGenPromptOptions } from '../types/index.js';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { VSCodeInstance } from '@sap-ux/fiori-generator-shared';
 import type {
@@ -37,8 +38,8 @@ const deployConfigSubGenNamespace = '@sap-ux/deploy-config-sub-generator';
  * The main deployment configuration generator.
  */
 export default class extends DeploymentGenerator implements DeployConfigGenerator {
-    readonly appWizard: AppWizard;
-    readonly prompts: Prompts;
+    readonly appWizard: AppWizardType;
+    readonly prompts: PromptsType;
     readonly genNamespace: string;
     readonly launchStandaloneFromYui: boolean;
     readonly apiHubConfig: ApiHubConfig;
@@ -84,7 +85,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
                 basename(this.options.data.destinationRoot)
             );
             this.options.projectRoot = this.options.data.destinationRoot;
-            dotenv.config({ path: join(this.options.data.destinationRoot, '.env') });
+            dotenv.config({ path: join(this.options.data.destinationRoot, '.env'), quiet: true });
         } else {
             if (this.options.projectPath && this.options.projectName) {
                 this.options.appRootPath = join(this.options.projectPath, this.options.projectName);
@@ -92,7 +93,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
                 this.options.appRootPath = this.destinationRoot(); // probably in a CLI context
             }
             // Load .env file for api hub config
-            dotenv.config();
+            dotenv.config({ quiet: true });
             this.apiHubConfig = this.options.apiHubConfig ?? getEnvApiHubConfig();
             this.launchStandaloneFromYui = false;
         }

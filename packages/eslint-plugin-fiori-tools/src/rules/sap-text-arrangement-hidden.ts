@@ -1,0 +1,314 @@
+import type { Element, AliasInformation } from '@sap-ux/odata-annotation-core';
+import {
+    Edm,
+    getElementAttributeValue,
+    toFullyQualifiedName,
+    parseIdentifier,
+    ELEMENT_TYPE
+} from '@sap-ux/odata-annotation-core';
+
+import { createFioriRule } from '../language/rule-factory.js';
+import type { FioriRuleDefinition } from '../types.js';
+import { TEXT_ARRANGEMENT_HIDDEN, type TextArrangementHidden } from '../language/diagnostics.js';
+import { buildAnnotationIndexKey } from '../project-context/parser/index.js';
+import type { IndexedAnnotation, ParsedService } from '../project-context/parser/index.js';
+import { UI_HIDDEN, UI_TEXT_ARRANGEMENT, COMMON_TEXT_ARRANGEMENT } from '../constants.js';
+import {
+    type AnyPage,
+    resolveTextPropertyPath,
+    collectRelevantEntityTypes,
+    parseCommonTextAnnotationKey,
+    getTextPath,
+    getBoolValue
+} from './utils/common-text-helpers.js';
+
+/**
+ * Checks whether a Common.Text annotation element has a nested UI.TextArrangement inline annotation.
+ *
+ * @param textElement - The Common.Text annotation element
+ * @param aliasInfo - Alias information for the file containing the annotation
+ * @returns True if an inline UI.TextArrangement child annotation was found
+ */
+function hasInlineTextArrangement(textElement: Element, aliasInfo: AliasInformation | undefined): boolean {
+    if (!aliasInfo) {
+        return false;
+    }
+    for (const child of textElement.content) {
+        if (child.type !== ELEMENT_TYPE) {
+            continue;
+        }
+        const childElement = child as Element;
+        if (childElement.name !== Edm.Annotation) {
+            continue;
+        }
+        const childTerm = getElementAttributeValue(childElement, Edm.Term);
+        if (!childTerm) {
+            continue;
+        }
+        const qualifiedTerm = toFullyQualifiedName(
+            aliasInfo.aliasMap,
+            aliasInfo.currentFileNamespace,
+            parseIdentifier(childTerm)
+        );
+        if (qualifiedTerm === 'com.sap.vocabularies.UI.v1.TextArrangement') {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Collects all entity type names that have UI.TextArrangement applied directly at entity-type level.
+ *
+ * @param parsedService - The parsed OData service
+ * @returns Set of fully-qualified entity type names with entity-level UI.TextArrangement
+ */
+function collectEntityTypesWithTextArrangement(parsedService: ParsedService): Set<string> {
+    const entityTypes = new Set<string>();
+    for (const key of Object.keys(parsedService.index.annotations)) {
+        const atIdx = key.indexOf('/@');
+        if (atIdx === -1) {
+            continue;
+        }
+        const targetPath = key.substring(0, atIdx);
+        const term = key.substring(atIdx + 2);
+        if (term === UI_TEXT_ARRANGEMENT && !targetPath.includes('/')) {
+            entityTypes.add(targetPath);
+        }
+    }
+    return entityTypes;
+}
+
+/**
+ * Checks whether UI.Hidden is set on the given property and produces diagnostics if so.
+ *
+ * @param textPropertyTarget - Fully-qualified target path of the text property (e.g. "Service.Entity/prop")
+ * @param targetPath - The annotation target path that has Common.Text and UI.TextArrangement
+ * @param pageNames - Page target names where the annotated entity type is used
+ * @param parsedService - The parsed OData service
+ * @returns Array of diagnostics (empty if the property is not hidden)
+ */
+function checkHiddenProperty(
+    textPropertyTarget: string,
+    targetPath: string,
+    pageNames: string[],
+    parsedService: ParsedService
+): TextArrangementHidden[] {
+    const problems: TextArrangementHidden[] = [];
+    const hiddenKey = buildAnnotationIndexKey(textPropertyTarget, UI_HIDDEN);
+    const hiddenAnnotations = parsedService.index.annotations[hiddenKey];
+    if (!hiddenAnnotations) {
+        return problems;
+    }
+    for (const hiddenAnnotation of Object.values(hiddenAnnotations)) {
+        // Skip only when explicitly set to false.
+        // CDS compiles @UI.Hidden: false as a <Bool>false</Bool> child element (no Bool attribute),
+        // so all layers must be checked for both attribute and child-element forms.
+        // Dynamic path expressions (Path="...") are still warned.
+        const explicitlyFalse = hiddenAnnotation.layers.some((layer) => getBoolValue(layer.value) === 'false');
+        if (explicitlyFalse) {
+            continue;
+        }
+        problems.push({
+            type: TEXT_ARRANGEMENT_HIDDEN,
+            pageNames,
+            annotation: {
+                reference: hiddenAnnotation.top,
+                textPropertyPath: textPropertyTarget,
+                targetWithTextArrangement: targetPath
+            }
+        });
+    }
+    return problems;
+}
+
+/**
+ * Processes a single Common.Text annotation and returns diagnostics if the referenced text property is hidden.
+ *
+ * CDS compiles `@(Common.Text: x, Common.Text.@UI.TextArrangement: y)` into two separate annotation
+ * layers under the same index key. One layer carries the path value, the other carries the inline
+ * UI.TextArrangement child element. Both layers must be inspected to determine whether the full
+ * combination is present.
+ *
+ * Format 1 (`@Common: {Text: x, TextArrangement: y}`) produces a separate
+ * `Common.TextArrangement` annotation entry in the index instead of an inline child element.
+ *
+ * @param textAnnotation - The indexed Common.Text annotation to process
+ * @param entityTypeName - Fully-qualified name of the entity type that owns the annotated property
+ * @param targetPath - The annotation target path (e.g. "Service.Entity/property")
+ * @param pageNames - Page target names where the entity type is used
+ * @param entityTypesWithTextArrangement - Entity types with UI.TextArrangement at entity-type level
+ * @param parsedService - The parsed OData service
+ * @returns Array of diagnostics (empty if no violation found)
+ */
+function processTextAnnotation(
+    textAnnotation: IndexedAnnotation,
+    entityTypeName: string,
+    targetPath: string,
+    pageNames: string[],
+    entityTypesWithTextArrangement: Set<string>,
+    parsedService: ParsedService
+): TextArrangementHidden[] {
+    // Scan all layers: CDS may split path and inline TextArrangement into separate layers
+    let textPath: string | undefined;
+    let hasInlineTA = false;
+    for (const layer of textAnnotation.layers) {
+        textPath ??= getTextPath(layer.value);
+        if (!hasInlineTA) {
+            const aliasInfo = parsedService.artifacts.aliasInfo[layer.uri];
+            hasInlineTA = hasInlineTextArrangement(layer.value, aliasInfo);
+        }
+        if (textPath && hasInlineTA) {
+            break;
+        }
+    }
+    if (!textPath) {
+        return [];
+    }
+
+    // Format 1: @Common:{Text:x, TextArrangement:y} produces a separate Common.TextArrangement
+    // annotation entry rather than an inline child element inside Common.Text.
+    const hasPropertyLevelCommonTA =
+        !!parsedService.index.annotations[buildAnnotationIndexKey(targetPath, COMMON_TEXT_ARRANGEMENT)];
+
+    // UI.TextArrangement may also be applied directly on the entity type as a fallback
+    const hasTextArrangement =
+        hasInlineTA || hasPropertyLevelCommonTA || entityTypesWithTextArrangement.has(entityTypeName);
+    if (!hasTextArrangement) {
+        return [];
+    }
+    const resolved = resolveTextPropertyPath(entityTypeName, textPath, parsedService.artifacts.metadataService);
+    if (!resolved) {
+        return [];
+    }
+    const textPropertyTarget = `${resolved.entityTypeName}/${resolved.propertyName}`;
+    return checkHiddenProperty(textPropertyTarget, targetPath, pageNames, parsedService);
+}
+
+/**
+ * Processes a single annotation index entry and returns any diagnostics found.
+ *
+ * @param annotationKey - The annotation index key (e.g. "Service.Entity/prop/\@Common.Text")
+ * @param qualifiedAnnotations - All qualified annotations for this key, keyed by qualifier
+ * @param entityTypesWithTextArrangement - Entity types with UI.TextArrangement at entity-type level
+ * @param parsedService - The parsed OData service
+ * @param relevantEntityTypes - Map from entity type name to page target names where it is used
+ * @returns Array of diagnostics (empty if no violation found)
+ */
+function processAnnotationEntry(
+    annotationKey: string,
+    qualifiedAnnotations: Record<string, IndexedAnnotation>,
+    entityTypesWithTextArrangement: Set<string>,
+    parsedService: ParsedService,
+    relevantEntityTypes: Map<string, string[]>
+): TextArrangementHidden[] {
+    const parsed = parseCommonTextAnnotationKey(annotationKey, relevantEntityTypes);
+    if (!parsed) {
+        return [];
+    }
+    const { targetPath, entityTypeName, pageNames } = parsed;
+    const problems: TextArrangementHidden[] = [];
+    for (const textAnnotation of Object.values(qualifiedAnnotations)) {
+        problems.push(
+            ...processTextAnnotation(
+                textAnnotation,
+                entityTypeName,
+                targetPath,
+                pageNames,
+                entityTypesWithTextArrangement,
+                parsedService
+            )
+        );
+    }
+    return problems;
+}
+
+/**
+ * Collects all TextArrangementHidden diagnostics for a single parsed OData service.
+ *
+ * @param parsedService - The parsed OData service to check
+ * @param relevantEntityTypes - Map from entity type name to page target names where it is used
+ * @returns Array of diagnostics found in the service
+ */
+function collectProblemsForService(
+    parsedService: ParsedService,
+    relevantEntityTypes: Map<string, string[]>
+): TextArrangementHidden[] {
+    // Pre-pass: collect entity types that have UI.TextArrangement applied directly
+    // (entity-type level acts as a fallback for all Common.Text properties on that type)
+    const entityTypesWithTextArrangement = collectEntityTypesWithTextArrangement(parsedService);
+    const problems: TextArrangementHidden[] = [];
+    for (const [annotationKey, qualifiedAnnotations] of Object.entries(parsedService.index.annotations)) {
+        problems.push(
+            ...processAnnotationEntry(
+                annotationKey,
+                qualifiedAnnotations,
+                entityTypesWithTextArrangement,
+                parsedService,
+                relevantEntityTypes
+            )
+        );
+    }
+    return problems;
+}
+
+const rule: FioriRuleDefinition = createFioriRule({
+    ruleId: TEXT_ARRANGEMENT_HIDDEN,
+    meta: {
+        type: 'problem',
+        docs: {
+            recommended: true,
+            description:
+                'The description (text) property referenced by a UI.TextArrangement annotation must not have UI.Hidden set to true',
+            url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-text-arrangement-hidden.md'
+        },
+        messages: {
+            [TEXT_ARRANGEMENT_HIDDEN]:
+                'The text property "{{textPropertyPath}}" referenced using the Common.Text annotation on "{{targetPath}}" is hidden (UI.Hidden). Remove the UI.Hidden annotation from the text property or set it to false.'
+        }
+    },
+
+    check(context) {
+        const problems: TextArrangementHidden[] = [];
+        for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
+            const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
+            const parsedService = context.sourceCode.projectContext.getIndexedServiceForMainService(parsedApp);
+            if (!parsedService) {
+                continue;
+            }
+            const relevantEntityTypes = collectRelevantEntityTypes(app.pages as AnyPage[], parsedService);
+            problems.push(...collectProblemsForService(parsedService, relevantEntityTypes));
+        }
+        return problems;
+    },
+
+    createAnnotations(context, validationResult) {
+        if (validationResult.length === 0) {
+            return {};
+        }
+
+        const lookup = new Map<Element, TextArrangementHidden>();
+        for (const diagnostic of validationResult) {
+            lookup.set(diagnostic.annotation.reference.value, diagnostic);
+        }
+
+        return {
+            ['target>element[name="Annotation"]'](node: Element): void {
+                const diagnostic = lookup.get(node);
+                if (!diagnostic) {
+                    return;
+                }
+                context.report({
+                    node,
+                    messageId: TEXT_ARRANGEMENT_HIDDEN,
+                    data: {
+                        textPropertyPath: diagnostic.annotation.textPropertyPath,
+                        targetPath: diagnostic.annotation.targetWithTextArrangement
+                    }
+                });
+            }
+        };
+    }
+});
+
+export default rule;

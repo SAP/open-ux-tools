@@ -3,12 +3,12 @@ import { AdaptationProjectType, isAxiosError, type SystemInfo } from '@sap-ux/ax
 import { isAbapEnvironmentOnBtp, isS4HC, type Destinations } from '@sap-ux/btp-utils';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 import { AuthenticationType } from '@sap-ux/store';
-import { DEFAULT_PACKAGE_ABAP } from '../constants';
-import { handleTransportConfigError } from '../error-handler';
-import { t } from '../i18n';
-import LoggerHelper from '../logger-helper';
-import { getTransportListFromService } from '../service-provider-utils';
-import { AbapServiceProviderManager } from '../service-provider-utils/abap-service-provider';
+import { DEFAULT_PACKAGE_ABAP } from '../constants.js';
+import { handleTransportConfigError } from '../error-handler.js';
+import { t } from '../i18n.js';
+import LoggerHelper from '../logger-helper.js';
+import { getTransportListFromService } from '../service-provider-utils/index.js';
+import { AbapServiceProviderManager } from '../service-provider-utils/abap-service-provider.js';
 import {
     ClientChoiceValue,
     PackageInputChoices,
@@ -21,14 +21,14 @@ import {
     type PackagePromptOptions,
     type SystemConfig,
     type UI5AbapRepoPromptOptions
-} from '../types';
+} from '../types.js';
 import {
     findBackendSystemByUrl,
     getPackageAnswer,
     getSystemConfig,
     initTransportConfig,
     queryPackages
-} from '../utils';
+} from '../utils.js';
 import {
     createTransportNumber,
     getTransportList,
@@ -36,8 +36,8 @@ import {
     isEmptyString,
     isValidClient,
     isValidUrl
-} from '../validator-utils';
-import { PromptState } from './prompt-state';
+} from '../validator-utils.js';
+import { PromptState } from './prompt-state.js';
 
 const allowedPackagePrefixes = ['$', 'Z', 'Y', 'SAP'];
 
@@ -59,23 +59,25 @@ export async function validateDestinationQuestion(
     PromptState.resetAbapDeployConfig();
     updateDestinationPromptState(destination, destinations);
 
-    if (adpProjectType) {
-        return validateAdpDestinationQuestion(destination, adpProjectType, backendTarget);
+    if (!destination?.trim()) {
+        return false;
     }
 
-    return !!destination?.trim();
+    if (adpProjectType) {
+        return validateAdpDestinationQuestion(adpProjectType, backendTarget);
+    }
+
+    return true;
 }
 
 /**
  * Validates internally the destination when in ADP workflow.
  *
- * @param destination - The destination.
  * @param adpProjectType - The adaptation project type.
  * @param backendTarget The backend target.
  * @returns Promise<boolean|string>
  */
 async function validateAdpDestinationQuestion(
-    destination: string,
     adpProjectType: AdaptationProjectType,
     backendTarget?: BackendTarget
 ): Promise<boolean | string> {
@@ -84,7 +86,7 @@ async function validateAdpDestinationQuestion(
         return adpProjectTypeValidation;
     }
 
-    return !!destination.trim();
+    return true;
 }
 
 /**
@@ -92,6 +94,7 @@ async function validateAdpDestinationQuestion(
  *
  * @param props - properties to update
  * @param props.url - url
+ * @param props.connectPath - connect path
  * @param props.client - client
  * @param props.isAbapCloud - Cloud based Abap (either Steampunk or Embedded Steampunk)
  * @param props.scp - is SCP
@@ -99,18 +102,21 @@ async function validateAdpDestinationQuestion(
  */
 function updatePromptState({
     url,
+    connectPath,
     client,
     isAbapCloud,
     scp,
     target
 }: {
     url: string;
+    connectPath?: string;
     client?: string;
     isAbapCloud?: boolean;
     scp?: boolean;
     target?: string;
 }): void {
     PromptState.abapDeployConfig.url = url;
+    PromptState.abapDeployConfig.connectPath = connectPath;
     PromptState.abapDeployConfig.client = client;
     PromptState.abapDeployConfig.isAbapCloud = isAbapCloud;
     PromptState.abapDeployConfig.scp = scp;
@@ -162,8 +168,13 @@ export async function validateTargetSystem(
 
     const choice = choices?.find((choice) => choice.value === target);
     if (isValidSystemUrl && choice) {
+        const url = new URL(choice.value);
+        const targetUrl = url.origin;
+        const connectPath = url.pathname === '/' ? undefined : url.pathname;
+
         updatePromptState({
-            url: choice.value,
+            url: targetUrl,
+            connectPath,
             client: choice.client ?? '',
             scp: choice.scp,
             isAbapCloud: choice.isAbapCloud,
@@ -913,13 +924,9 @@ async function validateSystemSupportAdpProjectType(
         if (!adaptationProjectTypes.length) {
             return t('errors.validators.invalidAdpProjectTypes');
         }
-        const supportedAdpProjectTypes = adaptationProjectTypes.join(',');
         return adaptationProjectTypes.includes(adpProjectType)
             ? true
-            : t('errors.validators.unsupportedAdpProjectType', {
-                  adpProjectType,
-                  supportedAdpProjectTypes
-              });
+            : getUnsupportedAdpProjectTypeErrorText(adpProjectType, adaptationProjectTypes);
     } catch (error) {
         if (!isAxiosError(error)) {
             return error.message;
@@ -936,10 +943,7 @@ async function validateSystemSupportAdpProjectType(
         if (status === 404) {
             return adpProjectType === AdaptationProjectType.ON_PREMISE
                 ? true
-                : t('errors.validators.unsupportedAdpProjectType', {
-                      adpProjectType,
-                      supportedAdpProjectTypes: AdaptationProjectType.ON_PREMISE
-                  });
+                : getUnsupportedAdpProjectTypeErrorText(adpProjectType, [AdaptationProjectType.ON_PREMISE]);
         }
 
         return error.message;
@@ -972,4 +976,35 @@ async function getSystemInfo(
     const provider = await AbapServiceProviderManager.getOrCreateServiceProvider(backendTarget, credentials);
     const lrep = provider.getLayeredRepository();
     return lrep.getSystemInfo(undefined, packageName);
+}
+
+/**
+ * Used to retreive the localized label for an Adaptation project type.
+ *
+ * @param {AdaptationProjectType} adpProjectType - The Adaptation project type.
+ * @returns {string} The localized project type.
+ */
+const toAdpProjectTypeLabel = (adpProjectType: AdaptationProjectType): string =>
+    adpProjectType === AdaptationProjectType.CLOUD_READY
+        ? t('errors.validators.adpCloudProjectType')
+        : t('errors.validators.adpOnPremProjectType');
+
+/**
+ * Util method used to localize the unsupported project type error text.
+ *
+ * @param {AdaptationProjectType} adpProjectType - The selected Adaptation project type.
+ * @param {AdaptationProjectType[]} supportedAdpProjectTypes - The supported adaptation project types by the system.
+ * @returns {string} Localized error text explaining to the user that the selected Adaptation project type
+ * is not among the supported project type.
+ */
+function getUnsupportedAdpProjectTypeErrorText(
+    adpProjectType: AdaptationProjectType,
+    supportedAdpProjectTypes: AdaptationProjectType[]
+): string {
+    const adpProjectTypeLabel = toAdpProjectTypeLabel(adpProjectType);
+    const supportedAdpProjectTypesList = supportedAdpProjectTypes.map(toAdpProjectTypeLabel).join(',');
+    return t('errors.validators.unsupportedAdpProjectType', {
+        adpProjectTypeLabel,
+        supportedAdpProjectTypesList
+    });
 }

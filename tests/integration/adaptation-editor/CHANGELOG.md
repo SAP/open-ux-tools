@@ -1,5 +1,296 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 1.0.10
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux-private/playwright 1.0.3 → 1.0.4
+- @sap-ux/ui5-info 1.0.2 → 1.0.3
+- @sap-ux/yaml 1.0.1 → 1.0.2
+
+## 1.0.9
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+
+## 1.0.8
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux-private/playwright 1.0.2 → 1.0.3
+- @sap-ux/ui5-info 1.0.1 → 1.0.2
+
+## 1.0.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.2 → 2.1.3
+
+## 1.0.6
+
+### Patch Changes
+
+- @sap-ux/project-access@2.1.2
+
+## 1.0.5
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+
+## 1.0.4
+
+### Patch Changes
+
+- Updated dependencies [d2b8d7b]
+- Updated dependencies [b326a9a]
+    - @sap-ux-private/playwright@1.0.2
+    - @sap-ux/project-access@2.1.0
+
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies [21a3de7]
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux-private/playwright@1.0.1
+    - @sap-ux/ui5-info@1.0.1
+    - @sap-ux/yaml@1.0.1
+
+## 1.0.2
+
+### Patch Changes
+
+- @sap-ux/project-access@2.0.2
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/project-access@2.0.0
+    - @sap-ux-private/playwright@1.0.0
+    - @sap-ux/ui5-info@1.0.0
+    - @sap-ux/yaml@1.0.0
+
+## 0.0.87
+
+### Patch Changes
+
+- @sap-ux/project-access@1.38.1
+
+## 0.0.86
+
+### Patch Changes
+
+- Updated dependencies [63e6846]
+    - @sap-ux/project-access@1.38.0
+
+## 0.0.85
+
+### Patch Changes
+
+- Updated dependencies [fb00faa]
+    - @sap-ux-private/playwright@0.3.1
+
+## 0.0.84
+
+### Patch Changes
+
+- Updated dependencies [72695e5]
+    - @sap-ux-private/playwright@0.3.0
+    - @sap-ux/project-access@1.37.0
+    - @sap-ux/ui5-info@0.14.0
+    - @sap-ux/yaml@0.18.0
+
+## 0.0.83
+
+### Patch Changes
+
+- Updated dependencies [50a8ba5]
+    - @sap-ux-private/playwright@0.2.16
+    - @sap-ux/project-access@1.36.5
+    - @sap-ux/ui5-info@0.13.22
+    - @sap-ux/yaml@0.17.8
+
+## 0.0.82
+
+### Patch Changes
+
+- Updated dependencies [21abda3]
+    - @sap-ux/project-access@1.36.4
+
+## 0.0.81
+
+### Patch Changes
+
+- Updated dependencies [678a08e]
+    - @sap-ux/ui5-info@0.13.21
+    - @sap-ux/project-access@1.36.3
+
+## 0.0.80
+
+### Patch Changes
+
+- @sap-ux/project-access@1.36.2
+
+## 0.0.79
+
+### Patch Changes
+
+- Updated dependencies [3945459]
+    - @sap-ux/project-access@1.36.1
+
+## 0.0.78
+
+### Patch Changes
+
+- Updated dependencies [1d60871]
+    - @sap-ux/project-access@1.36.0
+
+## 0.0.77
+
+### Patch Changes
+
+- Updated dependencies [03d3ea1]
+    - @sap-ux/project-access@1.35.21
+
+## 0.0.76
+
+### Patch Changes
+
+- Updated dependencies [9a48e63]
+    - @sap-ux/ui5-info@0.13.20
+
+## 0.0.75
+
+### Patch Changes
+
+- 67d1f8b: Bump dotenv and configure "quiet" option
+
+## 0.0.74
+
+### Patch Changes
+
+- Updated dependencies [cc4450c]
+    - @sap-ux/ui5-info@0.13.19
+    - @sap-ux/project-access@1.35.20
+
+## 0.0.73
+
+### Patch Changes
+
+- Updated dependencies [f1e4481]
+    - @sap-ux/yaml@0.17.7
+    - @sap-ux-private/playwright@0.2.15
+    - @sap-ux/project-access@1.35.19
+    - @sap-ux/ui5-info@0.13.18
+
+## 0.0.72
+
+### Patch Changes
+
+- Updated dependencies [3291f6c]
+    - @sap-ux/project-access@1.35.18
+
+## 0.0.71
+
+### Patch Changes
+
+- @sap-ux-private/playwright@0.2.14
+- @sap-ux/project-access@1.35.17
+- @sap-ux/ui5-info@0.13.17
+
+## 0.0.70
+
+### Patch Changes
+
+- Updated dependencies [b66e827]
+    - @sap-ux/project-access@1.35.17
+
+## 0.0.69
+
+### Patch Changes
+
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+- Updated dependencies [a41533f]
+    - @sap-ux-private/playwright@0.2.13
+    - @sap-ux/project-access@1.35.16
+    - @sap-ux/ui5-info@0.13.16
+    - @sap-ux/yaml@0.17.6
+
+## 0.0.68
+
+### Patch Changes
+
+- Updated dependencies [f384ace]
+    - @sap-ux/project-access@1.35.15
+
+## 0.0.67
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.14
+
 ## 0.0.66
 
 ### Patch Changes

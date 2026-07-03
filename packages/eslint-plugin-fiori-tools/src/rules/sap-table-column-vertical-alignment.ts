@@ -1,9 +1,10 @@
-import type { FioriRuleDefinition } from '../types';
-import { TABLE_COLUMN_VERTICAL_ALIGNMENT } from '../language/diagnostics';
-import { createFioriRule } from '../language/rule-factory';
+import type { FioriRuleDefinition } from '../types.js';
+import { TABLE_COLUMN_VERTICAL_ALIGNMENT } from '../language/diagnostics.js';
+import { createFioriRule } from '../language/rule-factory.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
-import { createJsonFixer } from '../language/rule-fixer';
-import { isLowerThanMinimalUi5Version } from '../utils/version';
+import { createJsonFixer } from '../language/rule-fixer.js';
+import { isLowerThanMinimalUi5Version } from '../utils/version.js';
+import { FioriJSONSourceCode } from '../language/json/source-code.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: TABLE_COLUMN_VERTICAL_ALIGNMENT,
@@ -22,6 +23,9 @@ const rule: FioriRuleDefinition = createFioriRule({
     },
 
     check(context) {
+        if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
+            return [];
+        }
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
             if (app.type !== 'fe-v2') {
                 continue;
@@ -45,13 +49,18 @@ const rule: FioriRuleDefinition = createFioriRule({
             if (!responsiveTable) {
                 continue;
             }
+            const node = context.sourceCode.getNode(
+                context.sourceCode.ast.body,
+                app.configuration.tableColumnVerticalAlignment.configurationPath
+            );
             return [
                 {
                     type: TABLE_COLUMN_VERTICAL_ALIGNMENT,
                     manifest: {
                         uri: parsedApp.manifest.manifestUri,
                         object: parsedApp.manifestObject,
-                        propertyPath: app.configuration.tableColumnVerticalAlignment.configurationPath
+                        propertyPath: app.configuration.tableColumnVerticalAlignment.configurationPath,
+                        loc: node.loc
                     }
                 }
             ];

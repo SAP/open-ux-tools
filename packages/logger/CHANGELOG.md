@@ -1,6 +1,101 @@
 # @sap-ux/logger
 
+## 1.0.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+## 1.0.1
+
+_Released: 2026-06-03T14:58:37Z_
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+
+## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+## 0.9.0
+
+_Released: 2026-05-15T08:12:20Z_
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 0.8.6
+
+_Released: 2026-05-14T11:45:51Z_
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
+## 0.8.5
+
+_Released: 2026-04-08T13:10:18Z_
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+
+## 0.8.4
+
+_Released: 2026-03-30T22:24:11Z_
+
+### Patch Changes
+
+- c53a4ba: chore(logger): upgrade shared devDependencies (jest 30)
+
+## 0.8.3
+
+_Released: 2026-03-26T12:07:04Z_
+
+### Patch Changes
+
+- a41533f: fix(logger): upgrade winston dependencies and fix logform type compatibility
+    - Upgrade winston 3.11.0 → 3.19.0 and winston-transport 4.7.0 → 4.9.0
+    - Cast logform TransformableInfo `label` and `labelColor` fields to `string | undefined` for compatibility with logform 2.7.0
+
 ## 0.8.2
+
+_Released: 2026-03-04T22:42:20Z_
 
 ### Patch Changes
 
@@ -8,11 +103,15 @@
 
 ## 0.8.1
 
+_Released: 2026-01-30T16:59:27Z_
+
 ### Patch Changes
 
 - ea7a16c: Fix Extend lodash vulnerability
 
 ## 0.8.0
+
+_Released: 2025-12-19T11:36:13Z_
 
 ### Minor Changes
 
@@ -20,11 +119,15 @@
 
 ## 0.7.3
 
+_Released: 2025-12-18T21:05:02Z_
+
 ### Patch Changes
 
 - a9471d0: fix sonar issues
 
 ## 0.7.2
+
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -32,11 +135,15 @@
 
 ## 0.7.1
 
+_Released: 2025-11-05T06:53:42Z_
+
 ### Patch Changes
 
 - cfe9c13: Add deep link to package and changelog to README.md
 
 ## 0.7.0
+
+_Released: 2025-05-14T22:35:53Z_
 
 ### Minor Changes
 
@@ -44,11 +151,15 @@
 
 ## 0.6.0
 
+_Released: 2024-07-05T15:03:05Z_
+
 ### Minor Changes
 
 - c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
 
 ## 0.5.1
+
+_Released: 2024-02-27T22:07:50Z_
 
 ### Patch Changes
 
@@ -56,11 +167,15 @@
 
 ## 0.5.0
 
+_Released: 2024-02-08T13:37:06Z_
+
 ### Minor Changes
 
 - 2e0b1a6d: Adding ExtensionLogger for convenient VSCode extension logging
 
 ## 0.4.0
+
+_Released: 2023-10-19T12:06:19Z_
 
 ### Minor Changes
 
@@ -68,11 +183,15 @@
 
 ## 0.3.9
 
+_Released: 2023-10-17T08:28:48Z_
+
 ### Patch Changes
 
 - 4052822f: Corrected license reference in package.json (no license change)
 
 ## 0.3.8
+
+_Released: 2023-09-20T13:13:51Z_
 
 ### Patch Changes
 
@@ -80,11 +199,15 @@
 
 ## 0.3.7
 
+_Released: 2023-06-27T14:58:54Z_
+
 ### Patch Changes
 
 - 4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
 
 ## 0.3.6
+
+_Released: 2023-06-12T06:59:29Z_
 
 ### Patch Changes
 
@@ -92,11 +215,15 @@
 
 ## 0.3.5
 
+_Released: 2023-02-23T13:56:23Z_
+
 ### Patch Changes
 
 - d350038: chore - TypeScript 4.9.4 upgrade
 
 ## 0.3.4
+
+_Released: 2023-02-10T14:09:06Z_
 
 ### Patch Changes
 
@@ -104,11 +231,15 @@
 
 ## 0.3.3
 
+_Released: 2022-12-16T11:48:52Z_
+
 ### Patch Changes
 
 - c6f4c8c: chore - update winston deps
 
 ## 0.3.2
+
+_Released: 2022-12-05T07:50:58Z_
 
 ### Patch Changes
 
@@ -116,11 +247,15 @@
 
 ## 0.3.1
 
+_Released: 2022-10-11T14:06:32Z_
+
 ### Patch Changes
 
 - 5b487ef: chore - Apply linting to test folders and linting fixes
 
 ## 0.3.0
+
+_Released: 2022-08-26T23:41:09Z_
 
 ### Minor Changes
 
@@ -128,11 +263,15 @@
 
 ## 0.2.2
 
+_Released: 2022-07-21T14:10:31Z_
+
 ### Patch Changes
 
 - 09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
 
 ## 0.2.1
+
+_Released: 2022-07-04T13:03:56Z_
 
 ### Patch Changes
 
@@ -140,17 +279,23 @@
 
 ## 0.2.0
 
+_Released: 2022-06-13T09:53:27Z_
+
 ### Minor Changes
 
 - 6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
 
 ## 0.1.6
 
+_Released: 2022-05-19T14:38:34Z_
+
 ### Patch Changes
 
 - c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
 
 ## 0.1.5
+
+_Released: 2022-03-29T13:57:37Z_
 
 ### Patch Changes
 
@@ -159,17 +304,23 @@
 
 ## 0.1.4
 
+_Released: 2022-03-24T07:10:57Z_
+
 ### Patch Changes
 
 - 0837ac1: Add missing information to package.json and enforced use of higher version of minimist
 
 ## 0.1.3
 
+_Released: 2022-03-22T19:34:16Z_
+
 ### Patch Changes
 
 - 7107fbc: chore - use import type in TS code.
 
 ## 0.1.2
+
+_Released: 2022-01-21T17:35:11Z_
 
 ### Patch Changes
 

@@ -1,6 +1,9 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import nock from 'nock';
-import { createForAbap, ODataVersion, V4CatalogService } from '../../../src';
+import { createForAbap, ODataVersion, V4CatalogService } from '../../../src/index.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const mockRespPath = join(__dirname, '../mockResponses');
 
@@ -98,7 +101,7 @@ describe('V4CatalogService', () => {
             }
 
             const services = await catalog.listServices(true);
-            expect(services.length).toEqual(32);
+            expect(services.length).toEqual(33);
         });
 
         test('service groups with paging: parallel', async () => {
@@ -124,7 +127,7 @@ describe('V4CatalogService', () => {
             }
 
             const services = await catalog.listServices();
-            expect(services.length).toEqual(31);
+            expect(services.length).toEqual(32);
         });
 
         test('recommended service groups with paging: serial(@nextlink)', async () => {

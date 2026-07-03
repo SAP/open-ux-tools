@@ -1,6 +1,91 @@
 # @sap-ux/yaml
 
+## 1.0.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+## 1.0.1
+
+_Released: 2026-06-03T14:58:37Z_
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+
+## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+## 0.18.0
+
+_Released: 2026-05-15T08:12:20Z_
+
+### Minor Changes
+
+- 72695e5: chore: drop Node 20 support as it is no longer maintained
+
+## 0.17.8
+
+_Released: 2026-05-14T11:45:51Z_
+
+### Patch Changes
+
+- 50a8ba5: chore: fresh release after workflow updates
+
+## 0.17.7
+
+_Released: 2026-04-08T13:10:18Z_
+
+### Patch Changes
+
+- f1e4481: chore: upgrade lodash 4.17.23 → 4.18.1 (CVE security fix, vulnerable range <=4.17.23)
+
+## 0.17.6
+
+_Released: 2026-03-26T12:07:04Z_
+
+### Patch Changes
+
+- a41533f: chore(yaml): upgrade yaml 2.8.2 → 2.8.3
+
 ## 0.17.5
+
+_Released: 2026-03-05T12:30:25Z_
 
 ### Patch Changes
 
@@ -8,11 +93,15 @@
 
 ## 0.17.4
 
+_Released: 2026-01-30T16:59:27Z_
+
 ### Patch Changes
 
 - ea7a16c: Fix Extend lodash vulnerability
 
 ## 0.17.3
+
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -20,11 +109,15 @@
 
 ## 0.17.2
 
+_Released: 2025-11-05T06:53:42Z_
+
 ### Patch Changes
 
 - cfe9c13: Add deep link to package and changelog to README.md
 
 ## 0.17.1
+
+_Released: 2025-10-06T17:09:01Z_
 
 ### Patch Changes
 
@@ -32,11 +125,15 @@
 
 ## 0.17.0
 
+_Released: 2025-05-14T22:35:53Z_
+
 ### Minor Changes
 
 - a28357d: chore - drop node18 support as it is out of maintenance
 
 ## 0.16.0
+
+_Released: 2024-07-05T15:03:05Z_
 
 ### Minor Changes
 
@@ -44,11 +141,15 @@
 
 ## 0.15.1
 
+_Released: 2024-06-25T14:41:22Z_
+
 ### Patch Changes
 
 - 399d2ad8: adds new abap deploy config writer
 
 ## 0.15.0
+
+_Released: 2024-06-07T14:16:07Z_
 
 ### Minor Changes
 
@@ -56,11 +157,15 @@
 
 ## 0.14.2
 
+_Released: 2024-05-27T13:04:53Z_
+
 ### Patch Changes
 
 - 3684195d: adds authenticationType to fiori tools proxy backend and ability to add inline comments to yaml nodes
 
 ## 0.14.1
+
+_Released: 2024-02-27T22:07:50Z_
 
 ### Patch Changes
 
@@ -68,11 +173,15 @@
 
 ## 0.14.0
 
+_Released: 2023-10-19T12:06:19Z_
+
 ### Minor Changes
 
 - 1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
 
 ## 0.13.9
+
+_Released: 2023-10-17T08:28:48Z_
 
 ### Patch Changes
 
@@ -80,11 +189,15 @@
 
 ## 0.13.8
 
+_Released: 2023-09-20T13:13:51Z_
+
 ### Patch Changes
 
 - 63c698a8: chore - fix publishing of modules missed in failed release build
 
 ## 0.13.7
+
+_Released: 2023-06-27T14:58:54Z_
 
 ### Patch Changes
 
@@ -92,11 +205,15 @@
 
 ## 0.13.6
 
+_Released: 2023-06-12T06:59:29Z_
+
 ### Patch Changes
 
 - 25911701: Fix for 'promises must be awaited' sonar issues
 
 ## 0.13.5
+
+_Released: 2023-04-26T14:34:08Z_
 
 ### Patch Changes
 
@@ -104,11 +221,15 @@
 
 ## 0.13.4
 
+_Released: 2023-02-23T13:56:23Z_
+
 ### Patch Changes
 
 - d350038: chore - TypeScript 4.9.4 upgrade
 
 ## 0.13.3
+
+_Released: 2023-02-17T07:56:11Z_
 
 ### Patch Changes
 
@@ -116,11 +237,15 @@
 
 ## 0.13.2
 
+_Released: 2023-02-10T14:09:06Z_
+
 ### Patch Changes
 
 - ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
 
 ## 0.13.1
+
+_Released: 2022-12-05T07:50:58Z_
 
 ### Patch Changes
 
@@ -128,11 +253,15 @@
 
 ## 0.13.0
 
+_Released: 2022-11-04T17:06:16Z_
+
 ### Minor Changes
 
 - d760b69: Additional update mode 'overwrite' for yaml nodes
 
 ## 0.12.4
+
+_Released: 2022-10-21T07:04:47Z_
 
 ### Patch Changes
 
@@ -140,11 +269,15 @@
 
 ## 0.12.3
 
+_Released: 2022-10-04T15:02:00Z_
+
 ### Patch Changes
 
 - 86fc1cd: Fix lint warnings
 
 ## 0.12.2
+
+_Released: 2022-07-21T14:10:31Z_
 
 ### Patch Changes
 
@@ -152,11 +285,15 @@
 
 ## 0.12.1
 
+_Released: 2022-07-04T13:03:56Z_
+
 ### Patch Changes
 
 - cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
 
 ## 0.12.0
+
+_Released: 2022-06-13T09:53:27Z_
 
 ### Minor Changes
 
@@ -164,11 +301,15 @@
 
 ## 0.11.5
 
+_Released: 2022-05-19T14:38:34Z_
+
 ### Patch Changes
 
 - c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
 
 ## 0.11.4
+
+_Released: 2022-03-29T13:57:37Z_
 
 ### Patch Changes
 
@@ -176,11 +317,15 @@
 
 ## 0.11.3
 
+_Released: 2022-03-24T07:10:57Z_
+
 ### Patch Changes
 
 - 0837ac1: Add missing information to package.json and enforced use of higher version of minimist
 
 ## 0.11.2
+
+_Released: 2022-03-22T19:34:16Z_
 
 ### Patch Changes
 
@@ -188,11 +333,15 @@
 
 ## 0.11.1
 
+_Released: 2022-01-17T14:31:10Z_
+
 ### Patch Changes
 
 - 04e4f35: chore(yaml) - update yaml dependency
 
 ## 0.11.0
+
+_Released: 2021-12-14T12:31:46Z_
 
 ### Minor Changes
 
@@ -200,11 +349,15 @@
 
 ## 0.10.3
 
+_Released: 2021-11-03T14:20:52Z_
+
 ### Patch Changes
 
 - b7ee596: port tool-suite change - add delay to appreload middleware
 
 ## 0.10.2
+
+_Released: 2021-11-01T18:18:45Z_
 
 ### Patch Changes
 
@@ -212,17 +365,23 @@
 
 ## 0.10.1
 
+_Released: 2021-10-28T12:12:48Z_
+
 ### Patch Changes
 
 - a7670a0: Update ui5 verison handling for ui5.yaml. Allow setting view name in basic template, enhancements to yaml lib.
 
 ## 0.10.0
 
+_Released: 2021-10-27T16:42:33Z_
+
 ### Minor Changes
 
 - d37c8bd: Added support for selecting a custom view name for Fiori freestyle - Basic template
 
 ## 0.9.2
+
+_Released: 2021-10-22T16:07:57Z_
 
 ### Patch Changes
 
