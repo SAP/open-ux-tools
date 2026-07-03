@@ -434,6 +434,24 @@ function processRichTextEditorButtonGroups(buildingBlockData: BuildingBlock, con
 }
 
 /**
+ * Rewrites an XPath aggregation path so that unprefixed steps match elements in any namespace.
+ * XPath 1.0 with useNamespaces does not support default namespaces: an unprefixed name only
+ * matches no-namespace nodes. Steps like "IconTabBar" or "items" (in the sap.m default ns)
+ * would never match. This converts them to *[local-name()='step'] predicates.
+ *
+ * @param {string} aggregationPath - The original aggregation XPath
+ * @returns {string} The rewritten XPath safe for use with xpath.useNamespaces
+ */
+export function resolveAggregationPath(aggregationPath: string): string {
+    return aggregationPath.replace(/\/([A-Za-z_][A-Za-z0-9_.-]*)(?=\/|$)/g, (_match, step: string) => {
+        if (step.includes(':')) {
+            return `/${step}`;
+        }
+        return `/*[local-name()='${step}']`;
+    });
+}
+
+/**
  * Updates aggregation path based on XML document structure.
  *
  * @param {Document} xmlDocument - The XML document to analyze
@@ -450,10 +468,12 @@ function updateAggregationPath(
     config: { aggregationName: string; elementName: string },
     namespace?: NamespaceConfig
 ): { updatedAggregationPath: string; hasElement: boolean } {
-    const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
+    const nsMap: Record<string, string> = (xmlDocument.firstChild as any)._nsMap ?? {};
+    const xpathSelect = xpath.useNamespaces(nsMap);
+    const resolvedPath = resolveAggregationPath(aggregationPath);
 
     // First, get the target element from the aggregationPath
-    const targetElement = xpathSelect(aggregationPath, xmlDocument);
+    const targetElement = xpathSelect(resolvedPath, xmlDocument);
     if (!targetElement || !Array.isArray(targetElement) || targetElement.length === 0) {
         return { updatedAggregationPath: aggregationPath, hasElement: false };
     }

@@ -40,7 +40,7 @@ import {
 import { getManifest, getManifestPath } from '../common/utils.js';
 import { getOrAddNamespace } from './prompts/utils/xml.js';
 import { i18nNamespaces, translate } from '../i18n.js';
-import { processBuildingBlock } from './processor.js';
+import { processBuildingBlock, resolveAggregationPath } from './processor.js';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
@@ -706,8 +706,12 @@ function updateViewFile(
     const nsMap = (firstChild as any)?._nsMap ?? {};
     const xpathSelect = xpath.useNamespaces(nsMap);
 
+    // XPath 1.0 does not support default namespaces: unprefixed names match only no-namespace
+    // elements. Rewrite each unprefixed step to a *[local-name()='X'] predicate.
+    const resolvedPath = resolveAggregationPath(aggregationPath);
+
     // Find target aggregated element and append template as child
-    const targetNodes = xpathSelect(aggregationPath, viewDocument);
+    const targetNodes = xpathSelect(resolvedPath, viewDocument);
     if (targetNodes && Array.isArray(targetNodes) && targetNodes.length > 0) {
         const targetNode = targetNodes[0] as Node;
         const sourceNode = viewDocument.importNode(templateDocument.documentElement, true);
