@@ -91,7 +91,9 @@ The `personalization` property is set to `true` so every table setting is enable
 }
 ```
 
-Every table `personalization` property is set to `true`. Omitting table personalization from the `manifest.json` table settings is also correct, because all personalization settings are provided by default for all tables.
+Every `personalization` subproperty is set to `true` so all table settings are enabled.
+
+Omitting the `personalization` property from the `manifest.json` file is also correct, because all personalization settings are enabled by default.
 
 ## How to Fix
 
