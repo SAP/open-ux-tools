@@ -52,6 +52,8 @@ interface JsDocProperty {
 
 /**
  * Returns true if the doclet should be included in the public API output.
+ *
+ * @param d
  */
 function isPublic(d: JsDoclet): boolean {
     if (d.undocumented) {
@@ -66,6 +68,8 @@ function isPublic(d: JsDoclet): boolean {
 
 /**
  * Formats a list of JSDoc type names into a union type string.
+ *
+ * @param names
  */
 function formatType(names: string[] | undefined): string {
     if (!names || names.length === 0) {
@@ -76,6 +80,8 @@ function formatType(names: string[] | undefined): string {
 
 /**
  * Renders a single JSDoc parameter as a markdown list item.
+ *
+ * @param p
  */
 function renderParam(p: JsDocParam): string {
     const type = formatType(p.type?.names);
@@ -86,6 +92,8 @@ function renderParam(p: JsDocParam): string {
 
 /**
  * Renders the return type and description for a method.
+ *
+ * @param returns
  */
 function renderReturns(returns: JsDocReturn[] | undefined): string {
     if (!returns || returns.length === 0) {
@@ -99,6 +107,9 @@ function renderReturns(returns: JsDocReturn[] | undefined): string {
 
 /**
  * Renders a class and its public instance methods as a markdown chunk.
+ *
+ * @param cls
+ * @param methods
  */
 function renderClassChunk(cls: JsDoclet, methods: JsDoclet[]): string {
     const shortName = cls.name;
@@ -153,6 +164,8 @@ function renderClassChunk(cls: JsDoclet, methods: JsDoclet[]): string {
 
 /**
  * Renders a list of typedef properties as markdown list items.
+ *
+ * @param properties
  */
 function renderTypedefProperties(properties: JsDocProperty[]): string {
     let out = '\nProperties:\n';
@@ -167,6 +180,8 @@ function renderTypedefProperties(properties: JsDocProperty[]): string {
 
 /**
  * Renders all typedef doclets as a single markdown chunk.
+ *
+ * @param typedefs
  */
 function renderTypedefsChunk(typedefs: JsDoclet[]): string {
     if (typedefs.length === 0) {
@@ -192,6 +207,9 @@ function renderTypedefsChunk(typedefs: JsDoclet[]): string {
 
 /**
  * Renders all enum doclets and their members as a single markdown chunk.
+ *
+ * @param enums
+ * @param members
  */
 function renderEnumsChunk(enums: JsDoclet[], members: JsDoclet[]): string {
     if (enums.length === 0) {
