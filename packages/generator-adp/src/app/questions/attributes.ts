@@ -1,4 +1,4 @@
-import { type Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
+import type { Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 
 import type { ConfirmQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { type AttributesAnswers, FlexLayer, validateUI5VersionExists } from '@sap-ux/adp-tooling';
@@ -21,13 +21,13 @@ import type {
     AddFlpConfigPromptOptions,
     OptionalPromptsConfig,
     ImportKeyUserChangesPromptOptions
-} from '../types';
-import { t } from '../../utils/i18n';
-import { attributePromptNames, SystemType } from '../types';
-import { getProjectNameTooltip } from './helper/tooltip';
-import { getVersionAdditionalMessages } from './helper/additional-messages';
-import { updateWizardSteps, getDeployPage, updateFlpWizardSteps, getKeyUserImportPage } from '../../utils/steps';
-import { getDefaultProjectName, getDefaultNamespace, getDefaultVersion } from './helper/default-values';
+} from '../types.js';
+import { t } from '../../utils/i18n.js';
+import { attributePromptNames, SystemType } from '../types.js';
+import { getProjectNameTooltip } from './helper/tooltip.js';
+import { getVersionAdditionalMessages } from './helper/additional-messages.js';
+import { updateWizardSteps, getDeployPage, updateFlpWizardSteps, getKeyUserImportPage } from '../../utils/steps.js';
+import { getDefaultProjectName, getDefaultNamespace, getDefaultVersion } from './helper/default-values.js';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 /**
@@ -71,7 +71,8 @@ export function getPrompts(
         [attributePromptNames.addFlpConfig]: getFlpConfigPrompt(
             prompts,
             projectType,
-            promptOptions?.[attributePromptNames.addFlpConfig]
+            promptOptions?.[attributePromptNames.addFlpConfig],
+            isCfEnv
         ),
         [attributePromptNames.importKeyUserChanges]: getImportKeyUserChangesPrompt(
             prompts,
@@ -297,14 +298,16 @@ export function getAddDeployConfigPrompt(prompts: YeomanUiSteps, _?: AddDeployCo
  * Creates the Add FLP Config confirm prompt.
  *
  * @param {YeomanUiSteps} prompts - The Yeoman UI pages.
- * @param {boolean} projectType - The project type.
+ * @param {AdaptationProjectType} projectType - The project type.
  * @param {AddFlpConfigPromptOptions} options - Optional prompt options to control visibility.
+ * @param {boolean} isCfEnv - Whether the project targets Cloud Foundry.
  * @returns {AttributesQuestion} The prompt configuration for Add FLP config confirmation.
  */
 export function getFlpConfigPrompt(
     prompts: YeomanUiSteps,
     projectType?: AdaptationProjectType,
-    options?: AddFlpConfigPromptOptions
+    options?: AddFlpConfigPromptOptions,
+    isCfEnv?: boolean
 ): AttributesQuestion {
     return {
         type: 'confirm',
@@ -314,7 +317,7 @@ export function getFlpConfigPrompt(
         guiOptions: {
             breadcrumb: true
         },
-        when: () => projectType === AdaptationProjectType.CLOUD_READY,
+        when: () => isCfEnv || projectType === AdaptationProjectType.CLOUD_READY,
         validate: (value: boolean, answers: AttributesAnswers) => {
             updateFlpWizardSteps(!!options?.hasBaseAppInbounds, prompts, answers.projectName, value);
             return true;

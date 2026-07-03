@@ -1,81 +1,101 @@
+import { jest } from '@jest/globals';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
-import { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { getHostEnvironment, hostEnvironment, LogWrapper } from '@sap-ux/fiori-generator-shared';
-import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
-import { writeExternalServiceMetadata } from '@sap-ux/odata-service-writer';
-import { getMockServerConfig } from '@sap-ux/project-access';
 import { join } from 'node:path';
-import { ODataDownloadGenerator } from '../src/data-download/odata-download-generator';
-import { getODataDownloaderPrompts, promptNames } from '../src/data-download/prompts/prompts';
-import { getValueHelpSelectionPrompt } from '../src/data-download/prompts/value-help-prompts';
-import { createEntitySetData } from '../src/data-download/utils';
-import { wrap } from 'node:module';
+import type { HierarchyEntity } from '../src/data-download/types.js';
 
 // Create a mock AbapServiceProvider class for instanceof checks
-// Defined inside the factory to avoid hoisting issues
-jest.mock('@sap-ux/axios-extension', () => {
-    class MockAbapServiceProvider {
-        get = jest.fn();
-        fetchExternalServices = jest.fn();
-    }
-    return {
-        AbapServiceProvider: MockAbapServiceProvider
-    };
-});
+class MockAbapServiceProvider {
+    get = jest.fn();
+    fetchExternalServices = jest.fn();
+}
 
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
+jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
+    AbapServiceProvider: MockAbapServiceProvider
+}));
+
+const mockGetHostEnvironment = jest.fn();
+const mockHostEnvironment = {
+    cli: 'CLI',
+    vscode: 'vscode'
+};
+const mockLogWrapper = jest.fn().mockImplementation(() => ({
+    info: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
+    warn: jest.fn(),
+    getLogLevel: jest.fn().mockReturnValue('info')
+}));
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     DefaultLogger: {
         info: jest.fn(),
         error: jest.fn(),
         debug: jest.fn(),
         warn: jest.fn()
     },
-    getHostEnvironment: jest.fn(),
-    hostEnvironment: {
-        cli: 'CLI',
-        vscode: 'vscode'
-    },
-    LogWrapper: jest.fn().mockImplementation(() => ({
-        info: jest.fn(),
-        error: jest.fn(),
-        debug: jest.fn(),
-        warn: jest.fn(),
-        getLogLevel: jest.fn().mockReturnValue('info')
-    }))
+    getHostEnvironment: mockGetHostEnvironment,
+    hostEnvironment: mockHostEnvironment,
+    LogWrapper: mockLogWrapper,
+    setYeomanEnvConflicterForce: jest.fn()
 }));
 
-jest.mock('@sap-ux/odata-service-writer', () => ({
-    writeExternalServiceMetadata: jest.fn()
+const mockWriteExternalServiceMetadata = jest.fn();
+jest.unstable_mockModule('@sap-ux/odata-service-writer', () => ({
+    writeExternalServiceMetadata: mockWriteExternalServiceMetadata
 }));
 
-jest.mock('@sap-ux/mockserver-config-writer', () => ({
-    generateMockserverConfig: jest.fn()
+const mockGenerateMockserverConfig = jest.fn();
+jest.unstable_mockModule('@sap-ux/mockserver-config-writer', () => ({
+    generateMockserverConfig: mockGenerateMockserverConfig
 }));
 
-jest.mock('@sap-ux/project-access', () => ({
+const mockGetMockServerConfig = jest.fn();
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
     DirName: {
         Webapp: 'webapp',
         LocalService: 'localService',
         Mockdata: 'mockdata'
     },
-    getMockServerConfig: jest.fn()
+    getMockServerConfig: mockGetMockServerConfig
 }));
 
-jest.mock('../src/data-download/prompts/prompts');
-jest.mock('../src/data-download/prompts/value-help-prompts');
-jest.mock('../src/data-download/utils');
+const mockGetODataDownloaderPrompts = jest.fn();
+const mockPromptNames = {
+    appSelection: 'appSelection',
+    toggleSelection: 'toggleSelection',
+    relatedEntitySelection: 'relatedEntitySelection',
+    skipDataDownload: 'skipDataDownload',
+    updateMainServiceMetadata: 'updateMainServiceMetadata'
+};
+jest.unstable_mockModule('../src/data-download/prompts/prompts', () => ({
+    getODataDownloaderPrompts: mockGetODataDownloaderPrompts,
+    promptNames: mockPromptNames
+}));
+
+const mockGetValueHelpSelectionPrompt = jest.fn();
+jest.unstable_mockModule('../src/data-download/prompts/value-help-prompts', () => ({
+    getValueHelpSelectionPrompt: mockGetValueHelpSelectionPrompt
+}));
+
+const mockCreateEntitySetData = jest.fn();
+const mockBuildReferentialConstraintFileContent = jest.fn();
+const mockUpdateReferentialConstraintFileContent = jest.fn();
+jest.unstable_mockModule('../src/data-download/utils', () => ({
+    createEntitySetData: mockCreateEntitySetData,
+    buildReferentialConstraintFileContent: mockBuildReferentialConstraintFileContent,
+    updateReferentialConstraintFileContent: mockUpdateReferentialConstraintFileContent
+}));
 
 // Mock yeoman-generator
 const mockPrompt = jest.fn();
 const mockWriteDestinationJSON = jest.fn();
 const mockWriteDestination = jest.fn();
 const mockDestinationRoot = jest.fn();
+const mockDestinationPath = jest.fn((p: string) => `/abs/${p}`);
 const mockLog = jest.fn();
-const mockFs = { write: jest.fn() };
+const mockFs = { write: jest.fn(), exists: jest.fn(), read: jest.fn() };
 
-jest.mock('yeoman-generator', () => {
-    return class MockGenerator {
+jest.unstable_mockModule('yeoman-generator', () => {
+    const MockGenerator = class {
         options: any = {};
         env: any = { conflicter: { force: false } };
         fs = mockFs;
@@ -83,6 +103,7 @@ jest.mock('yeoman-generator', () => {
         writeDestinationJSON = mockWriteDestinationJSON;
         writeDestination = mockWriteDestination;
         destinationRoot = mockDestinationRoot;
+        destinationPath = mockDestinationPath;
         log = mockLog;
         rootGeneratorVersion() {
             return '1.0.0';
@@ -94,24 +115,33 @@ jest.mock('yeoman-generator', () => {
             this.options = opts ?? {};
         }
     };
+    return { default: MockGenerator };
 });
 
-jest.mock('../src/utils/i18n', () => ({
+jest.unstable_mockModule('../src/utils/i18n', () => ({
     initI18nODataDownloadGenerator: jest.fn().mockResolvedValue(undefined),
     t: jest.fn((key: string) => key)
 }));
 
-jest.mock('../src/telemetry', () => ({
+jest.unstable_mockModule('../src/telemetry', () => ({
     TelemetryHelper: {
         initTelemetrySettings: jest.fn().mockResolvedValue(undefined),
         sendTelemetry: jest.fn().mockResolvedValue(undefined)
     }
 }));
 
+const { ODataDownloadGenerator } = await import('../src/data-download/odata-download-generator.js');
+const { AbapServiceProvider } = await import('@sap-ux/axios-extension');
+const { createEntitySetData, buildReferentialConstraintFileContent, updateReferentialConstraintFileContent } =
+    await import('../src/data-download/utils.js');
+const { getODataDownloaderPrompts } = await import('../src/data-download/prompts/prompts.js');
+const { getValueHelpSelectionPrompt } = await import('../src/data-download/prompts/value-help-prompts.js');
+const { getMockServerConfig } = await import('@sap-ux/project-access');
+
 describe('ODataDownloadGenerator', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        mockGetHostEnvironment.mockReturnValue(mockHostEnvironment.cli);
     });
 
     describe('static logger', () => {
@@ -126,7 +156,7 @@ describe('ODataDownloadGenerator', () => {
 
             generator._configureLogging('info' as any, undefined as any, undefined);
 
-            expect(LogWrapper).toHaveBeenCalledWith(
+            expect(mockLogWrapper).toHaveBeenCalledWith(
                 'test-generator',
                 expect.any(Function),
                 'info',
@@ -142,7 +172,7 @@ describe('ODataDownloadGenerator', () => {
 
             generator._configureLogging('debug' as any, mockVscLogger as any, mockVscode);
 
-            expect(LogWrapper).toHaveBeenCalledWith(
+            expect(mockLogWrapper).toHaveBeenCalledWith(
                 'test-generator',
                 expect.any(Function),
                 'debug',
@@ -153,7 +183,7 @@ describe('ODataDownloadGenerator', () => {
     });
 
     describe('writing', () => {
-        let generator: ODataDownloadGenerator;
+        let generator: InstanceType<typeof ODataDownloadGenerator>;
 
         beforeEach(() => {
             generator = new ODataDownloadGenerator([], {});
@@ -165,10 +195,10 @@ describe('ODataDownloadGenerator', () => {
                 Booking: [{ BookingID: '100' }]
             };
 
-            (createEntitySetData as jest.Mock).mockReturnValue(mockEntityFileData);
+            mockCreateEntitySetData.mockReturnValue(mockEntityFileData);
 
             // Set up generator state via prompting
-            (getODataDownloaderPrompts as jest.Mock).mockResolvedValue({
+            mockGetODataDownloaderPrompts.mockResolvedValue({
                 answers: {
                     application: {
                         appAccess: {
@@ -193,19 +223,24 @@ describe('ODataDownloadGenerator', () => {
                 questions: []
             });
 
-            (getValueHelpSelectionPrompt as jest.Mock).mockReturnValue({
+            mockGetValueHelpSelectionPrompt.mockReturnValue({
                 questions: [],
                 valueHelpData: undefined
             });
 
-            (getMockServerConfig as jest.Mock).mockResolvedValue(null);
+            mockGetMockServerConfig.mockResolvedValue(null);
             mockPrompt.mockResolvedValue({});
 
             await generator.prompting();
             await generator.writing();
 
             expect(mockDestinationRoot).toHaveBeenCalledWith(join('/test/app'));
-            expect(createEntitySetData).toHaveBeenCalledWith([{ TravelID: '1' }], { Travel: 'Travel' }, 'Travel');
+            expect(createEntitySetData).toHaveBeenCalledWith(
+                [{ TravelID: '1' }],
+                { Travel: 'Travel' },
+                'Travel',
+                undefined
+            );
             expect(mockWriteDestinationJSON).toHaveBeenCalledTimes(2);
             expect(mockWriteDestinationJSON).toHaveBeenCalledWith(
                 join('webapp', 'localService', 'mockdata', 'Travel.json'),
@@ -219,9 +254,9 @@ describe('ODataDownloadGenerator', () => {
 
         it('should use mock server config path when available', async () => {
             const mockEntityFileData = { Travel: [{ TravelID: '1' }] };
-            (createEntitySetData as jest.Mock).mockReturnValue(mockEntityFileData);
+            mockCreateEntitySetData.mockReturnValue(mockEntityFileData);
 
-            (getODataDownloaderPrompts as jest.Mock).mockResolvedValue({
+            mockGetODataDownloaderPrompts.mockResolvedValue({
                 answers: {
                     application: {
                         appAccess: {
@@ -244,13 +279,13 @@ describe('ODataDownloadGenerator', () => {
                 questions: []
             });
 
-            (getValueHelpSelectionPrompt as jest.Mock).mockReturnValue({
+            mockGetValueHelpSelectionPrompt.mockReturnValue({
                 questions: [],
                 valueHelpData: undefined
             });
 
             // Mock server config with custom mockdata path
-            (getMockServerConfig as jest.Mock).mockResolvedValue({
+            mockGetMockServerConfig.mockResolvedValue({
                 services: [
                     {
                         urlPath: '/sap/opu/odata4/sap/travel',
@@ -273,9 +308,9 @@ describe('ODataDownloadGenerator', () => {
             const mockValueHelpData = [{ path: '/sap/opu/odata4/sap/valuehelp', entities: [] }];
             const mockServiceProvider = new AbapServiceProvider({} as any);
 
-            (createEntitySetData as jest.Mock).mockReturnValue({});
+            mockCreateEntitySetData.mockReturnValue({});
 
-            (getODataDownloaderPrompts as jest.Mock).mockResolvedValue({
+            mockGetODataDownloaderPrompts.mockResolvedValue({
                 answers: {
                     application: {
                         appAccess: {
@@ -301,18 +336,18 @@ describe('ODataDownloadGenerator', () => {
                 questions: []
             });
 
-            (getValueHelpSelectionPrompt as jest.Mock).mockReturnValue({
+            mockGetValueHelpSelectionPrompt.mockReturnValue({
                 questions: [],
                 valueHelpData: mockValueHelpData
             });
 
-            (getMockServerConfig as jest.Mock).mockResolvedValue(null);
+            mockGetMockServerConfig.mockResolvedValue(null);
             mockPrompt.mockResolvedValue({});
 
             await generator.prompting();
             await generator.writing();
 
-            expect(writeExternalServiceMetadata).toHaveBeenCalledWith(
+            expect(mockWriteExternalServiceMetadata).toHaveBeenCalledWith(
                 mockFs,
                 join('/test/app', 'webapp'),
                 mockValueHelpData,
@@ -325,9 +360,9 @@ describe('ODataDownloadGenerator', () => {
             const mockValueHelpData = [{ path: '/sap/opu/odata4/sap/valuehelp', entities: [] }];
             const mockServiceProvider = new AbapServiceProvider({} as any);
 
-            (createEntitySetData as jest.Mock).mockReturnValue({});
+            mockCreateEntitySetData.mockReturnValue({});
 
-            (getODataDownloaderPrompts as jest.Mock).mockResolvedValue({
+            mockGetODataDownloaderPrompts.mockResolvedValue({
                 answers: {
                     application: {
                         appAccess: {
@@ -353,12 +388,12 @@ describe('ODataDownloadGenerator', () => {
                 questions: []
             });
 
-            (getValueHelpSelectionPrompt as jest.Mock).mockReturnValue({
+            mockGetValueHelpSelectionPrompt.mockReturnValue({
                 questions: [],
                 valueHelpData: mockValueHelpData
             });
 
-            (getMockServerConfig as jest.Mock).mockResolvedValue({
+            mockGetMockServerConfig.mockResolvedValue({
                 services: [
                     {
                         urlPath: '/sap/opu/odata4/sap/travel',
@@ -371,7 +406,7 @@ describe('ODataDownloadGenerator', () => {
             await generator.prompting();
             await generator.writing();
 
-            expect(generateMockserverConfig).toHaveBeenCalledWith(
+            expect(mockGenerateMockserverConfig).toHaveBeenCalledWith(
                 '/test/app',
                 expect.objectContaining({
                     webappPath: join('/test/app', 'webapp'),
@@ -388,9 +423,9 @@ describe('ODataDownloadGenerator', () => {
         });
 
         it('should update main service metadata when requested', async () => {
-            (createEntitySetData as jest.Mock).mockReturnValue({});
+            mockCreateEntitySetData.mockReturnValue({});
 
-            (getODataDownloaderPrompts as jest.Mock).mockResolvedValue({
+            mockGetODataDownloaderPrompts.mockResolvedValue({
                 answers: {
                     application: {
                         appAccess: {
@@ -413,14 +448,14 @@ describe('ODataDownloadGenerator', () => {
                 questions: []
             });
 
-            (getValueHelpSelectionPrompt as jest.Mock).mockReturnValue({
+            mockGetValueHelpSelectionPrompt.mockReturnValue({
                 questions: [],
                 valueHelpData: undefined
             });
 
-            (getMockServerConfig as jest.Mock).mockResolvedValue(null);
+            mockGetMockServerConfig.mockResolvedValue(null);
             mockPrompt.mockResolvedValue({
-                [promptNames.updateMainServiceMetadata]: true
+                [mockPromptNames.updateMainServiceMetadata]: true
             });
 
             await generator.prompting();
@@ -431,6 +466,163 @@ describe('ODataDownloadGenerator', () => {
                 expect.stringContaining('edmx:Edmx')
             );
         });
+
+        describe('ref-cons file writing', () => {
+            const hierarchyEntity = {
+                entitySetName: 'Items',
+                entityTypeName: 'ItemType',
+                qualifier: 'ItemHierarchy',
+                nodeProperty: 'NodeId',
+                parentProperty: undefined,
+                parentPropertyType: undefined,
+                isDraft: false,
+                entityTypeKeys: ['ItemId'],
+                entityProperties: ['ItemId', 'Name'],
+                missingReferentialConstraints: {
+                    navPropName: '_Parent',
+                    constraints: [{ sourceProperty: 'ItemId', targetProperty: 'ParentId' }]
+                }
+            };
+
+            function setupPromptingMock(hierarchyEntities: HierarchyEntity[]) {
+                (createEntitySetData as jest.Mock).mockReturnValue({ Items: [{ ItemId: '1' }] });
+                (getODataDownloaderPrompts as jest.Mock).mockResolvedValue({
+                    answers: {
+                        application: {
+                            appAccess: {
+                                getAppRoot: () => '/test/app',
+                                app: { mainService: 'mainService' }
+                            },
+                            referencedEntities: {
+                                listEntity: { entitySetName: 'Items', semanticKeys: [], entityPath: 'Items' },
+                                hierarchyEntities
+                            },
+                            relatedEntityChoices: { entitySetsFlat: {} }
+                        },
+                        odataQueryResult: { odata: [{ ItemId: '1' }] },
+                        odataServiceAnswers: { servicePath: '/sap/items', metadata: '<metadata/>' }
+                    },
+                    questions: []
+                });
+                (getValueHelpSelectionPrompt as jest.Mock).mockReturnValue({ questions: [], valueHelpData: undefined });
+                (getMockServerConfig as jest.Mock).mockResolvedValue(null);
+                mockPrompt.mockResolvedValue({});
+            }
+
+            it('should write a new ref-cons file when none exists', async () => {
+                setupPromptingMock([hierarchyEntity]);
+                mockFs.exists.mockReturnValue(false);
+                (buildReferentialConstraintFileContent as jest.Mock).mockReturnValue('new content');
+
+                const generator = new ODataDownloadGenerator([], {});
+                await generator.prompting();
+                await generator.writing();
+
+                expect(buildReferentialConstraintFileContent).toHaveBeenCalledWith('_Parent', [
+                    { sourceProperty: 'ItemId', targetProperty: 'ParentId' }
+                ]);
+                expect(mockWriteDestination).toHaveBeenCalledWith(expect.stringContaining('Items.js'), 'new content');
+            });
+
+            it('should update an existing ref-cons file when the constraint is not yet present', async () => {
+                setupPromptingMock([hierarchyEntity]);
+                mockFs.exists.mockReturnValue(true);
+                mockFs.read.mockReturnValue('existing content');
+                (updateReferentialConstraintFileContent as jest.Mock).mockReturnValue('updated content');
+
+                const generator = new ODataDownloadGenerator([], {});
+                await generator.prompting();
+                await generator.writing();
+
+                expect(updateReferentialConstraintFileContent).toHaveBeenCalledWith('existing content', '_Parent', [
+                    { sourceProperty: 'ItemId', targetProperty: 'ParentId' }
+                ]);
+                expect(mockWriteDestination).toHaveBeenCalledWith(
+                    expect.stringContaining('Items.js'),
+                    'updated content'
+                );
+            });
+
+            it('should skip writing when the existing file already contains the constraint', async () => {
+                setupPromptingMock([hierarchyEntity]);
+                mockFs.exists.mockReturnValue(true);
+                mockFs.read.mockReturnValue('existing content');
+                (updateReferentialConstraintFileContent as jest.Mock).mockReturnValue('existing content');
+
+                const generator = new ODataDownloadGenerator([], {});
+                await generator.prompting();
+                await generator.writing();
+
+                expect(mockWriteDestination).not.toHaveBeenCalledWith(
+                    expect.stringContaining('Items.js'),
+                    expect.anything()
+                );
+            });
+
+            it('should update parentProperty and parentPropertyType on the hierarchy entity when constraints are answered', async () => {
+                const entity: HierarchyEntity = {
+                    ...hierarchyEntity,
+                    parentProperty: undefined,
+                    parentPropertyType: undefined,
+                    missingReferentialConstraints: { navPropName: '_Parent', constraints: [] }
+                };
+                setupPromptingMock([entity]);
+                // Override the listEntity to include a real entityType with property types
+                (getODataDownloaderPrompts as jest.Mock).mockResolvedValue({
+                    answers: {
+                        application: {
+                            appAccess: { getAppRoot: () => '/test/app', app: { mainService: 'mainService' } },
+                            referencedEntities: {
+                                listEntity: {
+                                    entitySetName: 'Items',
+                                    semanticKeys: [],
+                                    entityPath: 'Items',
+                                    entityType: {
+                                        entityProperties: [
+                                            { name: 'ItemId', type: 'Edm.Int32' },
+                                            { name: 'Name', type: 'Edm.String' }
+                                        ]
+                                    }
+                                },
+                                hierarchyEntities: [entity]
+                            },
+                            relatedEntityChoices: { entitySetsFlat: {} }
+                        },
+                        odataQueryResult: { odata: [{ ItemId: '1' }] },
+                        odataServiceAnswers: { servicePath: '/sap/items', metadata: '<metadata/>' }
+                    },
+                    questions: []
+                });
+                mockPrompt
+                    .mockResolvedValueOnce({})
+                    .mockResolvedValueOnce({ 'Items/NodeId/source': 'ItemId', 'Items/NodeId/target': 'ParentId' });
+
+                const generator = new ODataDownloadGenerator([], {});
+                await generator.prompting();
+
+                expect(entity.parentProperty).toBe('ItemId');
+                expect(entity.parentPropertyType).toBe('Edm.Int32');
+            });
+
+            it('should fall back to Edm.String when the source property is not found in the entity type', async () => {
+                const entity: HierarchyEntity = {
+                    ...hierarchyEntity,
+                    parentProperty: undefined,
+                    parentPropertyType: undefined,
+                    missingReferentialConstraints: { navPropName: '_Parent', constraints: [] }
+                };
+                setupPromptingMock([entity]);
+                mockPrompt
+                    .mockResolvedValueOnce({})
+                    .mockResolvedValueOnce({ 'Items/NodeId/source': 'UnknownProp', 'Items/NodeId/target': 'ParentId' });
+
+                const generator = new ODataDownloadGenerator([], {});
+                await generator.prompting();
+
+                expect(entity.parentProperty).toBe('UnknownProp');
+                expect(entity.parentPropertyType).toBe('Edm.String');
+            });
+        });
     });
 
     describe('prompting error handling', () => {
@@ -438,8 +630,8 @@ describe('ODataDownloadGenerator', () => {
             const generator = new ODataDownloadGenerator([], {});
             const testError = new Error('Prompting failed');
 
-            (getODataDownloaderPrompts as jest.Mock).mockRejectedValue(testError);
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+            mockGetODataDownloaderPrompts.mockRejectedValue(testError);
+            mockGetHostEnvironment.mockReturnValue(mockHostEnvironment.cli);
 
             await expect(generator.prompting()).rejects.toThrow();
         });
@@ -451,8 +643,8 @@ describe('ODataDownloadGenerator', () => {
             (generator as any).appWizard = { showError: mockShowError };
 
             const testError = 'Prompting failed';
-            (getODataDownloaderPrompts as jest.Mock).mockRejectedValue(testError);
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+            mockGetODataDownloaderPrompts.mockRejectedValue(testError);
+            mockGetHostEnvironment.mockReturnValue(mockHostEnvironment.vscode);
 
             await expect(generator.prompting()).rejects.toThrow(testError);
             expect(mockShowError).toHaveBeenCalledWith(testError, MessageType.notification);
@@ -463,9 +655,9 @@ describe('ODataDownloadGenerator', () => {
         it('should match service paths ignoring leading/trailing slashes', async () => {
             const generator = new ODataDownloadGenerator([], {});
 
-            (createEntitySetData as jest.Mock).mockReturnValue({ Travel: [] });
+            mockCreateEntitySetData.mockReturnValue({ Travel: [] });
 
-            (getODataDownloaderPrompts as jest.Mock).mockResolvedValue({
+            mockGetODataDownloaderPrompts.mockResolvedValue({
                 answers: {
                     application: {
                         appAccess: {
@@ -489,13 +681,13 @@ describe('ODataDownloadGenerator', () => {
                 questions: []
             });
 
-            (getValueHelpSelectionPrompt as jest.Mock).mockReturnValue({
+            mockGetValueHelpSelectionPrompt.mockReturnValue({
                 questions: [],
                 valueHelpData: undefined
             });
 
             // Mock config has path without trailing slash
-            (getMockServerConfig as jest.Mock).mockResolvedValue({
+            mockGetMockServerConfig.mockResolvedValue({
                 services: [
                     {
                         urlPath: 'sap/opu/odata4/sap/travel',

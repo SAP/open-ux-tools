@@ -10,11 +10,11 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
 import type { AnnotationsData, AddAnnotationsAnswers } from '@sap-ux/adp-tooling';
 
-import { t } from '../utils/i18n';
-import { GeneratorTypes } from '../types';
-import SubGeneratorWithAuthBase from '../base/sub-gen-auth-base';
-import type { GeneratorOpts } from '../utils/opts';
-import { getTemplatesOverwritePath } from '../utils/templates';
+import { t } from '../utils/i18n.js';
+import { GeneratorTypes } from '../types.js';
+import SubGeneratorWithAuthBase from '../base/sub-gen-auth-base.js';
+import type { GeneratorOpts } from '../utils/opts.js';
+import { getTemplatesOverwritePath } from '../utils/templates.js';
 
 /**
  * Generator for adding annotations to OData services.
@@ -66,8 +66,10 @@ class AddAnnotationsToDataGenerator extends SubGeneratorWithAuthBase {
         };
 
         if (!this.answers.filePath) {
-            const metadata = await this.manifestService.getDataSourceMetadata(this.answers.id);
-            changeData.annotation.namespaces = getAnnotationNamespaces({ metadata });
+            if (!this.isCFProject) {
+                const metadata = await this.manifestService.getDataSourceMetadata(this.answers.id);
+                changeData.annotation.namespaces = getAnnotationNamespaces({ metadata });
+            }
         }
 
         await generateChange<ChangeType.ADD_ANNOTATIONS_TO_ODATA>(
@@ -89,4 +91,4 @@ class AddAnnotationsToDataGenerator extends SubGeneratorWithAuthBase {
     }
 }
 
-export = AddAnnotationsToDataGenerator;
+export default AddAnnotationsToDataGenerator;

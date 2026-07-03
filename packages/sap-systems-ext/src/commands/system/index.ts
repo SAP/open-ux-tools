@@ -2,7 +2,7 @@ import type { SapSystemsExtContext, SystemCommandContext, SystemCommandHandler }
 import { commands } from 'vscode';
 import { PanelManager, type SystemPanel } from '../../panel';
 import { SystemCommands } from '../../utils/constants';
-import { createSystemCommandHandler } from './create';
+import { createSystemCommandHandler, createNewSystemCommandHandler } from './create';
 import { showSystemsCommandHandler } from './show';
 import { deleteSystemCommandHandler } from './delete';
 import { refreshSystemsCommandHandler } from './refresh';
@@ -11,6 +11,7 @@ import { launchAppGenCommandHandler } from './launchAppGen';
 
 export const commandHandlers: Record<string, SystemCommandHandler> = {
     create: createSystemCommandHandler,
+    createNew: createNewSystemCommandHandler,
     show: showSystemsCommandHandler,
     import: importSystemCommandHandler,
     delete: deleteSystemCommandHandler,
@@ -33,6 +34,7 @@ export const registerSystemViewCommands = (context: SapSystemsExtContext): void 
 
     const disposables = [
         commands.registerCommand(SystemCommands.Create, commandHandlers.create(systemCommandContext)),
+        commands.registerCommand(SystemCommands.CreateNew, commandHandlers.createNew(systemCommandContext)),
         commands.registerCommand(SystemCommands.Show, commandHandlers.show(systemCommandContext)),
         commands.registerCommand(SystemCommands.Delete, commandHandlers.delete(systemCommandContext)),
         commands.registerCommand(SystemCommands.Import, commandHandlers.import(systemCommandContext)),

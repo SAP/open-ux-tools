@@ -1,7 +1,8 @@
 {
     "name": "@sap-ux/store",
-    "version": "1.5.10",
+    "version": "2.0.3",
     "description": "NPM module for storing persistent data",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -13,6 +14,13 @@
     "license": "Apache-2.0",
     "private": false,
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
     "scripts": {
         "build": "tsc --build",
         "watch": "tsc --watch",
@@ -20,27 +28,28 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors --silent",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors --silent",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
-        "i18next": "25.8.18",
+        "i18next": "25.10.10",
         "pluralize": "8.0.0",
-        "reflect-metadata": "0.1.13"
+        "reflect-metadata": "0.2.2"
     },
     "optionalDependencies": {
-        "@zowe/secrets-for-zowe-sdk": "8.29.4"
+        "@zowe/secrets-for-zowe-sdk": "8.32.0"
     },
     "devDependencies": {
-        "@types/pluralize": "0.0.30",
-        "@types/qs": "6.9.1",
+        "@jest/globals": "30.4.1",
+        "@types/pluralize": "0.0.33",
+        "@types/qs": "6.15.1",
         "fast-check": "2.25.0",
-        "jest-extended": "6.0.0",
-        "memfs": "3.3.0",
-        "unionfs": "4.4.0"
+        "jest-extended": "7.0.0",
+        "memfs": "3.4.13",
+        "unionfs": "4.6.0"
     },
     "files": [
         "dist",
@@ -49,6 +58,6 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

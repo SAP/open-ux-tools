@@ -16,9 +16,9 @@ server:
             - /test-resources
           url: https://ui5.sap.com
         backend:
-          - scp: true
-            path: /sap
+          - path: /sap
             url: https://sap-ux-mock-services-v2-lrop.cfapps.us10.hana.ondemand.com
+            scp: true
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -34,3 +34,8 @@ server:
           intent:
             object: testNameSpaceworklistv2
             action: tile
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

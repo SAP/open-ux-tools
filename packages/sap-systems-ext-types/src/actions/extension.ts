@@ -1,6 +1,6 @@
 import type { BackendSystem } from '@sap-ux/store';
 import type { IActionCalloutDetail } from '@sap-ux/ui-components';
-import type { ConnectionStatus } from '../system';
+import type { ConnectionStatus } from '../system.js';
 
 /**
  * Actions fired from the extension host to the webview.
@@ -24,6 +24,7 @@ export const UPDATE_SYSTEM_STATUS = 'UPDATE_SYSTEM_STATUS' as const;
 
 export interface CreateNewSystem {
     type: typeof CREATE_NEW_SYSTEM;
+    payload?: { systemInfo: BackendSystem };
 }
 
 export interface SystemInfo {
@@ -53,5 +54,9 @@ export interface TestConnectionStatus {
 
 export interface UpdateSystemStatus {
     type: typeof UPDATE_SYSTEM_STATUS;
-    payload: { message: string; updateSuccess: boolean };
+    payload: {
+        message: string;
+        updateSuccess: boolean;
+        existingSystem?: { name: string; url: string; client?: string };
+    };
 }

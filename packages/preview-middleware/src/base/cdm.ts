@@ -1,7 +1,10 @@
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import type { TemplateConfig } from './config';
-import { type FLPCdmConfig, FLPHomePageDefaults } from '../types';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import type { TemplateConfig } from './config.js';
+import { type FLPCdmConfig, FLPHomePageDefaults } from '../types/index.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Generates a CDM by embedding the provided app tiles into the FLP homepage.

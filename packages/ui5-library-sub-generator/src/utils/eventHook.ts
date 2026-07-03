@@ -1,5 +1,5 @@
-import ReuseLibGenLogger from './logger';
-import { t } from './i18n';
+import ReuseLibGenLogger from './logger.js';
+import { t } from './i18n.js';
 import type { VSCodeInstance } from '@sap-ux/fiori-generator-shared';
 
 export interface LibContext {

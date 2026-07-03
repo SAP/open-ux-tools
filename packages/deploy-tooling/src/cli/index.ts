@@ -1,10 +1,10 @@
 import { Option, Command } from 'commander';
 import { ToolsLogger, ConsoleTransport, LogLevel } from '@sap-ux/logger';
-import { deploy, getConfigForLogging, undeploy, validateConfig } from '../base';
-import type { CliOptions, AbapDeployConfig } from '../types';
-import { NAME } from '../types';
-import { getArchive } from './archive';
-import { getDeploymentConfig, getVersion, mergeConfig } from './config';
+import { deploy, getConfigForLogging, undeploy, validateConfig } from '../base/index.js';
+import type { CliOptions, AbapDeployConfig } from '../types/index.js';
+import { NAME } from '../types/index.js';
+import { getArchive } from './archive.js';
+import { getDeploymentConfig, getVersion, mergeConfig } from './config.js';
 import { config as loadEnvConfig } from 'dotenv';
 import { replaceEnvVariables } from '@sap-ux/ui5-config';
 
@@ -29,6 +29,9 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
             )
         )
         .addOption(new Option('--url <target-url>', 'URL of target ABAP system').conflicts('destination'))
+        .addOption(
+            new Option('--connect-path <path>', 'Service URL path used to retrieve credentials from secure storage')
+        )
         .addOption(new Option('--client <sap-client>', 'Client number of target ABAP system').conflicts('destination'))
         .addOption(new Option('--cloud', 'Target is an ABAP Cloud system').conflicts('destination'))
         .addOption(new Option('--service <service-path>', 'Target alias for deployment service'))
@@ -110,7 +113,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
 }
 
 /**
- * Prepare the run of the task based on on the configured command i.e. read and validate configuration and create logger.
+ * Prepare the run of the task based on the configured command i.e. read and validate configuration and create logger.
  *
  * @param cmd - CLI command configuration to be executed
  * @returns a set of objects required for the command execution

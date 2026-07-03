@@ -1,34 +1,48 @@
-import axios from 'axios';
-import AdmZip from 'adm-zip';
+import { jest } from '@jest/globals';
 
+import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
-import { initI18n, t } from '../../../../src/i18n';
-import type { CfAppParams, ServiceInfo, Uaa } from '../../../../src/types';
-import {
-    getServiceNameByTags,
-    createServiceInstance,
-    getOrCreateServiceInstanceKeys
-} from '../../../../src/cf/services/api';
-import { downloadAppContent, downloadZip, getHtml5RepoCredentials, getToken } from '../../../../src/cf/app/html5-repo';
+const mockAxiosGet = jest.fn() as jest.Mock;
+const mockAxiosPost = jest.fn() as jest.Mock;
+const mockGetServiceNameByTags = jest.fn() as jest.Mock;
+const mockCreateServiceInstance = jest.fn() as jest.Mock;
+const mockGetOrCreateServiceInstanceKeys = jest.fn() as jest.Mock;
 
-jest.mock('axios');
-jest.mock('adm-zip');
-jest.mock('../../../../src/cf/services/api', () => ({
-    ...jest.requireActual('../../../../src/cf/services/api'),
-    getServiceNameByTags: jest.fn(),
-    createServiceInstance: jest.fn(),
-    getOrCreateServiceInstanceKeys: jest.fn()
+jest.unstable_mockModule('axios', () => ({
+    default: {
+        get: mockAxiosGet,
+        post: mockAxiosPost,
+        create: jest.fn().mockReturnThis(),
+        interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } }
+    },
+    __esModule: true
 }));
 
-const mockAxios = axios as jest.Mocked<typeof axios>;
-const mockAdmZip = AdmZip as jest.MockedClass<typeof AdmZip>;
-const mockGetServiceNameByTags = getServiceNameByTags as jest.MockedFunction<typeof getServiceNameByTags>;
-const mockCreateServiceInstance = createServiceInstance as jest.MockedFunction<typeof createServiceInstance>;
-const mockGetOrCreateServiceInstanceKeys = getOrCreateServiceInstanceKeys as jest.MockedFunction<
-    typeof getOrCreateServiceInstanceKeys
->;
+const mockAdmZip = jest.fn().mockImplementation(() => ({
+    getEntries: jest.fn().mockReturnValue([]),
+    readAsText: jest.fn(),
+    extractAllTo: jest.fn()
+}));
+
+jest.unstable_mockModule('adm-zip', () => ({
+    default: mockAdmZip,
+    __esModule: true
+}));
+
+jest.unstable_mockModule('../../../../src/cf/services/api', () => ({
+    getServiceNameByTags: mockGetServiceNameByTags,
+    createServiceInstance: mockCreateServiceInstance,
+    getOrCreateServiceInstanceKeys: mockGetOrCreateServiceInstanceKeys
+}));
+
+const { downloadAppContent, downloadZip, getHtml5RepoCredentials } =
+    await import('../../../../src/cf/app/html5-repo.js');
+const { initI18n, t } = await import('../../../../src/i18n.js');
+import type { CfAppParams, ServiceInfo, Uaa } from '../../../../src/types.js';
+
+const mockAxios = { get: mockAxiosGet, post: mockAxiosPost } as any;
 
 describe('HTML5 Repository', () => {
     const mockLogger = {
@@ -87,45 +101,6 @@ describe('HTML5 Repository', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-    });
-
-    describe('getToken', () => {
-        test('should successfully get OAuth token', async () => {
-            const mockResponse = {
-                data: {
-                    access_token: 'test-access-token'
-                }
-            };
-            mockAxios.get.mockResolvedValue(mockResponse);
-
-            const result = await getToken(mockUaa);
-
-            expect(result).toBe('test-access-token');
-            expect(mockAxios.get).toHaveBeenCalledWith('/test-uaa/oauth/token?grant_type=client_credentials', {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Basic ' + Buffer.from('test-client-id:test-client-secret').toString('base64')
-                }
-            });
-        });
-
-        test('should throw error when token request fails', async () => {
-            const error = new Error('Network error');
-            mockAxios.get.mockRejectedValue(error);
-
-            await expect(getToken(mockUaa)).rejects.toThrow(t('error.failedToGetAuthKey', { error: 'Network error' }));
-        });
-
-        test('should handle missing access_token in response', async () => {
-            const mockResponse = {
-                data: {}
-            };
-            mockAxios.get.mockResolvedValue(mockResponse);
-
-            const result = await getToken(mockUaa);
-
-            expect(result).toBeUndefined();
-        });
     });
 
     describe('downloadZip', () => {
@@ -231,15 +206,14 @@ describe('HTML5 Repository', () => {
 
         beforeEach(() => {
             mockGetOrCreateServiceInstanceKeys.mockResolvedValue(mockServiceKeys);
-            mockAxios.get
-                .mockResolvedValueOnce({
-                    data: {
-                        access_token: 'test-token'
-                    }
-                })
-                .mockResolvedValueOnce({
-                    data: Buffer.from('test-zip-content')
-                });
+            mockAxios.post.mockResolvedValueOnce({
+                data: {
+                    access_token: 'test-token'
+                }
+            });
+            mockAxios.get.mockResolvedValueOnce({
+                data: Buffer.from('test-zip-content')
+            });
 
             const mockAdmZipInstance = {
                 getEntries: jest.fn().mockReturnValue(mockZipEntries)
@@ -279,7 +253,7 @@ describe('HTML5 Repository', () => {
         test('should throw error when zip parsing fails', async () => {
             jest.clearAllMocks();
             mockGetOrCreateServiceInstanceKeys.mockResolvedValue(mockServiceKeys);
-            mockAxios.get.mockResolvedValueOnce({
+            mockAxios.post.mockResolvedValueOnce({
                 data: {
                     access_token: 'test-token'
                 }
@@ -304,7 +278,7 @@ describe('HTML5 Repository', () => {
         test('should throw error when zip has no entries', async () => {
             jest.clearAllMocks();
             mockGetOrCreateServiceInstanceKeys.mockResolvedValue(mockServiceKeys);
-            mockAxios.get.mockResolvedValueOnce({
+            mockAxios.post.mockResolvedValueOnce({
                 data: {
                     access_token: 'test-token'
                 }
@@ -330,7 +304,7 @@ describe('HTML5 Repository', () => {
         test('should throw error when manifest.json not found', async () => {
             jest.clearAllMocks();
             mockGetOrCreateServiceInstanceKeys.mockResolvedValue(mockServiceKeys);
-            mockAxios.get.mockResolvedValueOnce({
+            mockAxios.post.mockResolvedValueOnce({
                 data: {
                     access_token: 'test-token'
                 }
@@ -361,7 +335,7 @@ describe('HTML5 Repository', () => {
         test('should throw error when manifest.json parsing fails', async () => {
             jest.clearAllMocks();
             mockGetOrCreateServiceInstanceKeys.mockResolvedValue(mockServiceKeys);
-            mockAxios.get.mockResolvedValueOnce({
+            mockAxios.post.mockResolvedValueOnce({
                 data: {
                     access_token: 'test-token'
                 }

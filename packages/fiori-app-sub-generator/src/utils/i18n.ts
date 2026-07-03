@@ -1,7 +1,7 @@
 import type { OdataVersion } from '@sap-ux/fiori-elements-writer';
 import i18next from 'i18next';
 import type { i18n as i18nNext, TOptions } from 'i18next';
-import i18ntranslations from '../translations/fioriAppSubGenerator.i18n.json';
+import i18ntranslations from '../translations/fioriAppSubGenerator.i18n.json' with { type: 'json' };
 export const i18n: i18nNext = i18next.createInstance();
 
 export const fioriAppSubGeneratorNs = 'fiori-app-sub-generator';
@@ -45,9 +45,9 @@ export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
         options = Object.assign(options ?? {}, { ns: fioriAppSubGeneratorNs });
     }
-    return i18n.t(key, options);
+    return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
 initI18nFioriAppSubGenerator().catch(() => {
-    // Needed for lint
+    // Ignore any errors since the checks will still work
 });

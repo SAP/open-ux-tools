@@ -1,7 +1,7 @@
 import type { Prompts as YeomanUiSteps, IPrompt } from '@sap-devx/yeoman-ui-types';
 
-import { t } from './i18n';
-import { GeneratorTypes } from '../types';
+import { t } from './i18n.js';
+import { GeneratorTypes } from '../types.js';
 
 /**
  * Returns the list of base wizard pages used in the Adaptation Project.

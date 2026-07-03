@@ -1,30 +1,36 @@
-import { getQuestions } from '../src/prompts';
-import { isAppStudio } from '@sap-ux/btp-utils';
-import { t } from '../src/i18n';
-import {
-    type CfDeployConfigPromptOptions,
-    type CfSystemChoice,
-    type CfDeployConfigQuestions,
-    type DestinationNamePromptOptions,
-    RouterModuleType
-} from '../src/types';
-import { promptNames } from '../src';
-import { fetchBTPDestinations } from '../src/prompts/prompt-helpers';
-import { type ListQuestion, type YUIQuestion } from '@sap-ux/inquirer-common';
-import type { Logger } from '@sap-ux/logger';
+import { jest } from '@jest/globals';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn()
-}));
-const mockIsAppStudio = isAppStudio as jest.Mock;
+// Pre-import real modules before mocking
+const realBtpUtils = await import('@sap-ux/btp-utils');
+const realPromptHelpers = await import('../src/prompts/prompt-helpers.js');
 
-jest.mock('../src/prompts/prompt-helpers', () => ({
-    ...jest.requireActual('../src/prompts/prompt-helpers'),
-    fetchBTPDestinations: jest.fn()
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockFetchBTPDestinations = jest.fn<typeof realPromptHelpers.fetchBTPDestinations>();
+
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
 }));
-const mockFetchBTPDestinations = fetchBTPDestinations as jest.Mock;
+
+jest.unstable_mockModule('../src/prompts/prompt-helpers', () => ({
+    ...realPromptHelpers,
+    fetchBTPDestinations: mockFetchBTPDestinations
+}));
+
+const { getQuestions } = await import('../src/prompts/index.js');
+const { t } = await import('../src/i18n.js');
+const { promptNames } = await import('../src/index.js');
+import type {
+    CfDeployConfigPromptOptions,
+    CfSystemChoice,
+    CfDeployConfigQuestions,
+    DestinationNamePromptOptions
+} from '../src/types.js';
+import { RouterModuleType } from '../src/types.js';
+import { type ListQuestion, type YUIQuestion } from '@sap-ux/inquirer-common';
+import type { Logger } from '@sap-ux/logger';
+
 const mockLog = {
     info: jest.fn(),
     warn: jest.fn()
@@ -93,9 +99,15 @@ describe('Prompt Generation Tests', () => {
             expect(destinationNamePrompt?.type).toBe('list');
             expect(destinationNamePrompt?.default()).toBe('defaultDestination');
             // ensure additional choice is added to the BTP destination list
-            expect(((destinationNamePrompt as ListQuestion)?.choices as Function)()).toStrictEqual([
+            expect((destinationNamePrompt as ListQuestion)?.choices).toStrictEqual([
                 ...additionalChoiceList,
-                { name: 'btpTestDest - btpTestDest', value: 'btpTestDest', scp: false, url: 'btpTestDest' }
+                {
+                    name: 'btpTestDest - btpTestDest',
+                    value: 'btpTestDest',
+                    scp: false,
+                    url: 'btpTestDest',
+                    isFullUrl: false
+                }
             ]);
         });
 
@@ -122,7 +134,7 @@ describe('Prompt Generation Tests', () => {
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
             expect(destinationNamePrompt?.type).toBe('input');
             expect((destinationNamePrompt?.message as Function)()).toBe(t('prompts.destinationNameMessage'));
-            expect(((destinationNamePrompt as ListQuestion)?.choices as Function)()).toStrictEqual([]);
+            expect((destinationNamePrompt as ListQuestion)?.choices).toStrictEqual([]);
         });
 
         it('returns list-based prompt when environment is vscode and additionalChoiceList is provided', async () => {
@@ -137,9 +149,7 @@ describe('Prompt Generation Tests', () => {
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
             expect(destinationNamePrompt?.type).toBe('list');
             expect((destinationNamePrompt?.message as Function)()).toBe(t('prompts.destinationNameMessage'));
-            expect(((destinationNamePrompt as ListQuestion)?.choices as Function)()).toStrictEqual(
-                additionalChoiceList
-            );
+            expect((destinationNamePrompt as ListQuestion)?.choices).toStrictEqual(additionalChoiceList);
         });
 
         it('validates destination correctly and shows hint when directBindingDestinationHint is enabled', async () => {
@@ -182,10 +192,71 @@ describe('Prompt Generation Tests', () => {
                 (question: CfDeployConfigQuestions) => question.name === promptNames.destinationName
             );
             expect(destinationNamePrompt?.type).toEqual('autocomplete');
-            expect(((destinationNamePrompt as ListQuestion)?.choices as Function)()).toEqual(additionalChoiceList);
+            expect((destinationNamePrompt as ListQuestion)?.choices).toEqual(additionalChoiceList);
             expect((destinationNamePrompt?.source as Function)()).toEqual(additionalChoiceList);
             // Default should be used
             expect((destinationNamePrompt?.default as Function)()).toEqual(additionalChoiceList[0].name);
+        });
+
+        it('shows warning additionalMessage when selected destination is a full URL destination', async () => {
+            const fullUrlChoice: CfSystemChoice = {
+                name: 'fullUrlDest - https://example.com/sap/opu/odata',
+                value: 'fullUrlDest',
+                scp: false,
+                url: 'https://example.com/sap/opu/odata',
+                isFullUrl: true
+            };
+            promptOptions = {
+                [promptNames.destinationName]: {
+                    ...destinationPrompts,
+                    additionalChoiceList: [fullUrlChoice],
+                    addBTPDestinationList: false
+                }
+            };
+            mockIsAppStudio.mockReturnValueOnce(false);
+            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
+            const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
+            const result = ((destinationNamePrompt as YUIQuestion)?.additionalMessages as Function)('fullUrlDest');
+            expect(result).toEqual({ message: t('warning.fullUrlDestination'), severity: Severity.warning });
+        });
+
+        it('shows warning via raw destinations fallback when destination is filtered from choice list', async () => {
+            // Destination has no Host so it is filtered out by createDestinationChoices,
+            // but the raw destinations map still has it — the fallback lookup fires
+            mockFetchBTPDestinations.mockResolvedValueOnce({
+                btpFullUrlDest: {
+                    Name: 'btpFullUrlDest',
+                    WebIDEAdditionalData: 'full_url',
+                    WebIDEUsage: 'odata_gen'
+                } as any
+            });
+            promptOptions = {
+                [promptNames.destinationName]: {
+                    ...destinationPrompts,
+                    additionalChoiceList: [],
+                    addBTPDestinationList: true
+                }
+            };
+            mockIsAppStudio.mockReturnValueOnce(false);
+            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
+            const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
+            const result = ((destinationNamePrompt as YUIQuestion)?.additionalMessages as Function)('btpFullUrlDest');
+            expect(result).toEqual({ message: t('warning.fullUrlDestination'), severity: Severity.warning });
+        });
+
+        it('returns undefined additionalMessage when selected destination is not a full URL destination', async () => {
+            promptOptions = {
+                [promptNames.destinationName]: {
+                    ...destinationPrompts,
+                    additionalChoiceList,
+                    addBTPDestinationList: false
+                }
+            };
+            mockIsAppStudio.mockReturnValueOnce(false);
+            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
+            const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
+            const result = ((destinationNamePrompt as YUIQuestion)?.additionalMessages as Function)('testValue');
+            expect(result).toBeUndefined();
         });
     });
 

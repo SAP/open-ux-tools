@@ -87,17 +87,21 @@ export async function getCatalogServiceCount(system: BackendSystem): Promise<Cat
 
 /**
  * Tests the connection to the specified service by attempting to retrieve the metadata.
+ * The service path can be provided explicitly via `servicePath`, or derived from the pathname of `system.url`.
  *
  * @param system - the backend system instance
+ * @param servicePath - optional explicit service path; when omitted the pathname of system.url is used
  * @returns - true if the service metadata was successfully retrieved, false otherwise
  */
-export async function hasServiceMetadata(system: BackendSystem): Promise<boolean> {
+export async function hasServiceMetadata(system: BackendSystem, servicePath?: string): Promise<boolean> {
     const abapServiceProvider = getAbapServiceProvider(system);
     const url = new URL(system.url);
-    // auto add trailing '/' to path
-    url.pathname = url.pathname?.endsWith('/') ? url.pathname : `${url.pathname}/`;
 
-    const service = abapServiceProvider.service<ODataService>(url.pathname);
+    const path = servicePath ?? url.pathname;
+    // ensure trailing '/' on service path
+    const normalizedPath = path.endsWith('/') ? path : `${path}/`;
+
+    const service = abapServiceProvider.service<ODataService>(normalizedPath);
     const metadata = await service.metadata();
 
     if (metadata) {

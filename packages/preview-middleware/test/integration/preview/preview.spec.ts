@@ -9,9 +9,12 @@ import {
 } from '@sap-ux-private/playwright';
 import type { Page } from '@sap-ux-private/playwright';
 import { writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { UI5Version } from '@sap-ux/ui5-info';
-import { SERVER_TIMEOUT, TIMEOUT } from '../utils/constant';
+import { SERVER_TIMEOUT, TIMEOUT } from '../utils/constant.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const buildUrl =
     (port = 3000) =>
@@ -108,6 +111,8 @@ const prepare = async (ui5Version: string) => {
 
 const check = async (param: { page: Page }) => {
     const { page } = param;
+    const client = await page.context().newCDPSession(page);
+    await client.send('Network.clearBrowserCache');
     await page.goto(`${getUrl()}/my/custom/path/preview.html#app-preview`);
     await page.getByRole('button', { name: 'Go', exact: true }).click();
     await expect(page.getByText('Product_0', { exact: true })).toBeVisible();

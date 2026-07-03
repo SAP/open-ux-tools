@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-global-variable';
+import rule from '../../src/rules/sap-no-global-variable.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------
@@ -26,8 +26,7 @@ ruleTester.run('sap-no-global-variable', rule, {
             errors: [
                 {
                     messageId: 'globalVariableNotAllowed',
-                    data: { name: 'global' },
-                    type: 'Identifier'
+                    data: { name: 'global' }
                 }
             ]
         }

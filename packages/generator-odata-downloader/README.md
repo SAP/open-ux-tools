@@ -1,4 +1,6 @@
-# @sap-ux/generator-odata-downloader
+[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/generator-odata-downloader/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/generator-odata-downloader)
+
+# [`@sap-ux/generator-odata-downloader`](https://github.com/SAP/open-ux-tools/tree/main/packages/generator-odata-downloader)
 
 Yeoman generator that downloads OData V4 entity data from a backend service for use with the mock data server. This enables developers to work with realistic data during local development without needing a live backend connection.
 

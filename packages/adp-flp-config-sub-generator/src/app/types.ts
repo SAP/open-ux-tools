@@ -3,7 +3,6 @@ import type Generator from 'yeoman-generator';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { ManifestNamespace, UI5FlexLayer } from '@sap-ux/project-access';
-
 export interface FlpConfigOptions extends Generator.GeneratorOptions {
     /**
      * VSCode instance
@@ -40,6 +39,10 @@ export interface FlpConfigOptions extends Generator.GeneratorOptions {
     data?: {
         projectRootPath: string;
     };
+    /**
+     * Flag indicating whether this is a CF environment project
+     */
+    isCfProject?: boolean;
 }
 
 export interface State {

@@ -5,7 +5,7 @@ import type {
     EventHandler,
     CustomFragment,
     FragmentContentData
-} from '../common/types';
+} from '../common/types.js';
 
 export interface CustomSection extends CustomElement, EventHandler, CustomFragment {
     /**
@@ -30,11 +30,7 @@ export interface CustomSection extends CustomElement, EventHandler, CustomFragme
 }
 
 export interface InternalCustomSection
-    extends CustomHeaderSection,
-        CustomSection,
-        CustomSubSection,
-        InternalCustomElement,
-        FragmentContentData {
+    extends CustomHeaderSection, CustomSection, CustomSubSection, InternalCustomElement, FragmentContentData {
     dependencies?: string;
 }
 

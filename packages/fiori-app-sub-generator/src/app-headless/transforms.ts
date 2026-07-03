@@ -5,9 +5,9 @@ import { DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service
 import { promptNames } from '@sap-ux/ui5-application-inquirer';
 import { getDefaultUI5Theme, supportedUi5VersionFallbacks } from '@sap-ux/ui5-info';
 import { join } from 'node:path';
-import type { FEAppConfig, FFAppConfig, Project, Service, State } from '../types';
-import { ApiHubType, FloorplanFE, FloorplanFF, capTypeConversion, defaultPromptValues } from '../types';
-import { getODataVersion, t } from '../utils';
+import type { FEAppConfig, FFAppConfig, Project, Service, State } from '../types/index.js';
+import { ApiHubType, FloorplanFE, FloorplanFF, capTypeConversion, defaultPromptValues } from '../types/index.js';
+import { getODataVersion, t } from '../utils/index.js';
 
 const APP_CONFIG_CURRENT_VERSION = '0.2';
 /**
@@ -111,10 +111,11 @@ function _setProjectDefaults(project: AppConfig['project']): Project {
         ui5Version: ui5Version,
         localUI5Version: project.localUI5Version ?? ui5Version,
         ui5Theme: project.ui5Theme ?? getDefaultUI5Theme(ui5Version),
-        skipAnnotations: project.skipAnnotations || defaultPromptValues[promptNames.skipAnnotations],
-        enableEslint: project.enableEslint || defaultPromptValues[promptNames.enableEslint],
-        enableTypeScript: project.enableTypeScript || defaultPromptValues[promptNames.enableTypeScript],
+        skipAnnotations: project.skipAnnotations ?? defaultPromptValues[promptNames.skipAnnotations],
+        enableEslint: project.enableEslint ?? defaultPromptValues[promptNames.enableEslint],
+        enableTypeScript: project.enableTypeScript ?? defaultPromptValues[promptNames.enableTypeScript],
         sapux: project.sapux || false,
+        enableVirtualEndpoints: project.enableVirtualEndpoints ?? true,
         flpAppId: '' // Mandatory property, will be generated in the writing phase transforms and overwritten
     };
 }
@@ -145,7 +146,8 @@ function _setServiceDefaults(floorplan: AppConfig['floorplan'], service?: AppCon
         servicePath: service?.servicePath,
         client: service?.client,
         edmx: service?.edmx,
-        version
+        version,
+        valueListMetadata: service?.externalServices
     } as Service;
 
     if (service?.destination) {

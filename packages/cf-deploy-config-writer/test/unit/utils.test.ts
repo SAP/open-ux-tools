@@ -1,6 +1,20 @@
-import { validateVersion, toMtaModuleName, runCommand } from '../../src/utils';
-import { MTAVersion } from '../../src/constants';
-import { CommandRunner } from '@sap-ux/nodejs-utils';
+import { jest } from '@jest/globals';
+
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: jest.fn(),
+    listDestinations: jest.fn()
+}));
+
+const btp = await import('@sap-ux/btp-utils');
+const { validateVersion, toMtaModuleName, runCommand, getBTPDestinations, getDestinationProperties } =
+    await import('../../src/utils.js');
+const { MTAVersion } = await import('../../src/constants.js');
+const { CommandRunner } = await import('@sap-ux/nodejs-utils');
+
+const isAppStudioMock = btp.isAppStudio as jest.Mock;
+const listDestinationsMock = btp.listDestinations as jest.Mock;
 
 describe('CF utils', () => {
     beforeAll(async () => {
@@ -28,7 +42,7 @@ describe('CF utils', () => {
         });
 
         test('Validate - runCommand', async () => {
-            const mockRun = jest.fn();
+            const mockRun = jest.fn() as jest.Mock;
             jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(mockRun);
 
             // Test successful command execution
@@ -50,6 +64,147 @@ describe('CF utils', () => {
             );
 
             jest.restoreAllMocks();
+        });
+    });
+
+    describe('getBTPDestinations', () => {
+        beforeEach(() => {
+            listDestinationsMock.mockReset();
+        });
+
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        test('fetches destinations and populates cache', async () => {
+            const mockDestinations = { dest1: { Name: 'dest1' } } as any;
+            listDestinationsMock.mockResolvedValue(mockDestinations);
+
+            const cache: { list?: any } = {};
+            const result = await getBTPDestinations(cache);
+
+            expect(result).toBe(mockDestinations);
+            expect(listDestinationsMock).toHaveBeenCalledTimes(1);
+            expect(cache.list).toBe(mockDestinations);
+        });
+
+        test('returns cached result without calling listDestinations again', async () => {
+            const mockDestinations = { dest1: { Name: 'dest1' } } as any;
+            listDestinationsMock.mockResolvedValue(mockDestinations);
+
+            const cache: { list?: any } = {};
+            await getBTPDestinations(cache);
+            const result = await getBTPDestinations(cache);
+
+            expect(result).toBe(mockDestinations);
+            expect(listDestinationsMock).toHaveBeenCalledTimes(1);
+        });
+
+        test('each independent cache object triggers a fresh fetch', async () => {
+            const first = { dest1: { Name: 'dest1' } } as any;
+            const second = { dest2: { Name: 'dest2' } } as any;
+            listDestinationsMock.mockResolvedValueOnce(first).mockResolvedValueOnce(second);
+
+            const result1 = await getBTPDestinations({});
+            const result2 = await getBTPDestinations({});
+
+            expect(result1).toBe(first);
+            expect(result2).toBe(second);
+            expect(listDestinationsMock).toHaveBeenCalledTimes(2);
+        });
+
+        test('uses empty cache by default (no module-level state)', async () => {
+            const mockDestinations = {} as any;
+            listDestinationsMock.mockResolvedValue(mockDestinations);
+
+            await getBTPDestinations();
+            await getBTPDestinations();
+
+            // Without a shared cache object, each call with default `{}` fetches fresh
+            expect(listDestinationsMock).toHaveBeenCalledTimes(2);
+        });
+    });
+
+    describe('getDestinationProperties', () => {
+        const mockDestinations = {
+            fullUrlDest: {
+                Name: 'fullUrlDest',
+                Authentication: 'OAuth2SAMLBearerAssertion',
+                WebIDEAdditionalData: btp.WebIDEAdditionalData.FULL_URL,
+                WebIDEUsage: btp.WebIDEUsage.ODATA_GENERIC
+            },
+            normalDest: {
+                Name: 'normalDest',
+                Authentication: 'NoAuthentication',
+                WebIDEUsage: btp.WebIDEUsage.ODATA_GENERIC
+            }
+        } as any;
+
+        beforeEach(() => {
+            isAppStudioMock.mockReset();
+            listDestinationsMock.mockReset();
+            listDestinationsMock.mockResolvedValue(mockDestinations);
+        });
+
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        test('returns defaults when not in AppStudio', async () => {
+            isAppStudioMock.mockReturnValue(false);
+
+            const result = await getDestinationProperties('fullUrlDest');
+
+            expect(result.destinationIsFullUrl).toBe(false);
+            expect(result.destinationAuthentication).toBeUndefined();
+            expect(listDestinationsMock).not.toHaveBeenCalled();
+        });
+
+        test('returns defaults when destination is undefined', async () => {
+            isAppStudioMock.mockReturnValue(true);
+
+            const result = await getDestinationProperties(undefined);
+
+            expect(result.destinationIsFullUrl).toBe(false);
+            expect(result.destinationAuthentication).toBeUndefined();
+            expect(listDestinationsMock).not.toHaveBeenCalled();
+        });
+
+        test('resolves full-URL destination in AppStudio', async () => {
+            isAppStudioMock.mockReturnValue(true);
+
+            const result = await getDestinationProperties('fullUrlDest');
+
+            expect(result.destinationIsFullUrl).toBe(true);
+            expect(result.destinationAuthentication).toBe('OAuth2SAMLBearerAssertion');
+        });
+
+        test('resolves non-full-URL destination in AppStudio', async () => {
+            isAppStudioMock.mockReturnValue(true);
+
+            const result = await getDestinationProperties('normalDest');
+
+            expect(result.destinationIsFullUrl).toBe(false);
+            expect(result.destinationAuthentication).toBe('NoAuthentication');
+        });
+
+        test('returns defaults when destination name not found in list', async () => {
+            isAppStudioMock.mockReturnValue(true);
+
+            const result = await getDestinationProperties('unknownDest');
+
+            expect(result.destinationIsFullUrl).toBe(false);
+            expect(result.destinationAuthentication).toBeUndefined();
+        });
+
+        test('shared cache object avoids duplicate listDestinations calls', async () => {
+            isAppStudioMock.mockReturnValue(true);
+
+            const cache: { list?: any } = {};
+            await getDestinationProperties('fullUrlDest', cache);
+            await getDestinationProperties('normalDest', cache);
+
+            expect(listDestinationsMock).toHaveBeenCalledTimes(1);
         });
     });
 });

@@ -48,6 +48,7 @@ exports[`getQuestions getQuestions, no options 1`] = `
   },
   {
     "default": [Function],
+    "filter": [Function],
     "guiOptions": {
       "applyDefaultWhenDirty": true,
       "breadcrumb": "Project Path",
@@ -133,7 +134,7 @@ exports[`getQuestions getQuestions, no options 1`] = `
     "type": "list",
   },
   {
-    "default": false,
+    "default": true,
     "guiOptions": {
       "breadcrumb": "ESLint",
     },

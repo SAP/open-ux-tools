@@ -7,14 +7,21 @@
   ],
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "erasableSyntaxOnly": true
   },
   "references": [
+    {
+      "path": "../fiori-generator-shared"
+    },
     {
       "path": "../jest-file-matchers"
     },
     {
       "path": "../logger"
+    },
+    {
+      "path": "../preview-middleware"
     },
     {
       "path": "../project-access"

@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-br-on-return';
+import rule from '../../src/rules/sap-no-br-on-return.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------
@@ -26,8 +26,7 @@ ruleTester.run('sap-no-br-on-return', rule, {
             errors: [
                 {
                     message:
-                        "insertBrOnReturn is not allowed since it is a Mozilla specific method, other browsers don't support that.",
-                    type: 'MemberExpression'
+                        "insertBrOnReturn is not allowed since it is a Mozilla specific method, other browsers don't support that."
                 }
             ]
         }

@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ReactElement } from 'react';
 import type { ConnectionType, SystemType } from '@sap-ux/store';
-import type { SystemState } from '../../../types';
+import type { SystemState } from '../../../types/index.js';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
@@ -31,7 +31,7 @@ export function SystemHeader(): ReactElement {
     const connectionTypeTitles: Record<ConnectionType, string | undefined> = {
         ['abap_catalog']: t('titles.catalog'),
         ['odata_service']: t('titles.serviceUrl'),
-        ['generic_host']: undefined
+        ['generic_host']: t('titles.genericHost')
     };
 
     const systemTypeTitle = systemInfo?.systemType ? systemTypeTitles[systemInfo.systemType] : undefined;

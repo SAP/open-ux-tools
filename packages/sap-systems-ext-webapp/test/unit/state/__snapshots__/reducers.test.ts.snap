@@ -3,13 +3,22 @@
 exports[`Test the reducer Action CREATE_NEW_SYSTEM 1`] = `
 Object {
   "addNewSapSystem": true,
+  "systemInfo": undefined,
+  "unSaved": true,
+}
+`;
+
+exports[`Test the reducer Action CREATE_NEW_SYSTEM with pre-populated system info 1`] = `
+Object {
+  "addNewSapSystem": true,
   "systemInfo": Object {
-    "client": "",
-    "name": "",
-    "password": "",
-    "url": "",
-    "username": "",
+    "client": "100",
+    "connectionType": "abap_catalog",
+    "name": "mock.url.sap",
+    "systemType": "OnPrem",
+    "url": "http://mock.url.sap:50000",
   },
+  "unSaved": true,
 }
 `;
 
@@ -57,6 +66,7 @@ Object {
   "connectionStatus": Object {
     "connected": true,
     "message": "",
+    "showOutputChannelLink": false,
   },
   "guidedAnswerLink": undefined,
   "systemInfo": Object {

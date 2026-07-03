@@ -8,7 +8,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
 import { fetchMock, sapCoreMock } from 'mock/window';
 
-import ControlUtils from '../../../../src/adp/control-utils';
+import ControlUtils from '../../../../src/adp/control-utils.js';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { ValueState } from 'mock/sap/ui/core/library';
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
@@ -319,7 +319,7 @@ describe('AddActionFragment', () => {
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
             expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(
                 1,
-                "An action with the ''testId''  ID is already defined. Please choose a different ID."
+                'An action with the \'\'testId\'\'  ID is already defined. Please choose a different ID.'
             );
         });
 

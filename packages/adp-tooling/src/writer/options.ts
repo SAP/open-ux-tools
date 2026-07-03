@@ -18,10 +18,10 @@ import type {
     CloudCustomTaskConfigTarget,
     CfAdpWriterConfig,
     CustomConfig
-} from '../types';
-import { UI5_CDN_URL } from '../base/constants';
+} from '../types.js';
+import { UI5_CDN_URL } from '../base/constants/index.js';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import { SupportedProject } from '../source';
+import { SupportedProject } from '../source/index.js';
 
 const VSCODE_URL = 'https://REQUIRED_FOR_VSCODE.example';
 
@@ -290,7 +290,7 @@ function getInboundChangeContentWithNewInboundID(
     const parameters = flpConfiguration?.additionalParameters ? JSON.parse(flpConfiguration.additionalParameters) : {};
 
     const content: InboundChangeContentAddInboundId = {
-        inbound: {
+        inbounds: {
             [flpConfiguration.inboundId]: {
                 action: flpConfiguration.action,
                 semanticObject: flpConfiguration.semanticObject,
@@ -305,7 +305,7 @@ function getInboundChangeContentWithNewInboundID(
     };
 
     if (flpConfiguration.subTitle) {
-        content.inbound[flpConfiguration.inboundId].subTitle =
+        content.inbounds[flpConfiguration.inboundId].subTitle =
             `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.subTitle}}`;
     }
 
@@ -324,32 +324,18 @@ export function enhanceManifestChangeContentWithFlpConfig(
     appId: string,
     manifestChangeContent: Content[] = []
 ): void {
-    for (const [index, flpConfig] of flpConfigurations.entries()) {
+    flpConfigurations.forEach((flpConfig) => {
         const inboundChangeContent = getInboundChangeContentWithNewInboundID(flpConfig, appId);
 
         const addInboundChange = {
-            changeType: 'appdescr_app_addNewInbound',
+            changeType: 'appdescr_app_setInbounds',
             content: inboundChangeContent,
             texts: {
                 'i18n': 'i18n/i18n.properties'
             }
         };
         manifestChangeContent.push(addInboundChange);
-
-        // Remove all inbounds except one should be only after the first inbound is added
-        // This is implemented this way to avoid issues with the merged on ABAP side
-        if (index === 0) {
-            const removeOtherInboundsChange = {
-                changeType: 'appdescr_app_removeAllInboundsExceptOne',
-                content: {
-                    'inboundId': flpConfig.inboundId
-                },
-                texts: {}
-            };
-
-            manifestChangeContent.push(removeOtherInboundsChange);
-        }
-    }
+    });
 }
 
 /**
@@ -381,13 +367,7 @@ export function enhanceUI5YamlWithCfCustomTask(ui5Config: UI5Config, config: CfA
 }
 
 /**
- * Generate custom configuration required for the ui5.yaml.
- *
- * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
- * @param {CfAdpWriterConfig} config - Full project configuration.
- */
-/**
- * Generate custom middleware configuration (fiori-tools-proxy and fiori-tools-preview only).
+ * Generate custom middleware configuration for CF adaptation projects.
  *
  * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
  */
@@ -396,8 +376,35 @@ export function enhanceUI5YamlWithFioriToolsMiddleware(ui5Config: UI5Config): vo
         url: UI5_CDN_URL
     };
 
-    // Add fiori-tools-appreload for live reload during development
-    ui5Config.addFioriToolsAppReloadMiddleware();
+    // Add backend-proxy-middleware-cf as the first middleware (after compression)
+    ui5Config.addCustomMiddleware([
+        {
+            name: 'backend-proxy-middleware-cf',
+            afterMiddleware: 'compression',
+            configuration: {
+                authenticationMethod: 'route',
+                allowServices: true,
+                appendAuthRoute: true,
+                debug: true,
+                xsappJsonPath: '.adp/reuse/xs-app.json',
+                allowLocalDir: true,
+                rewriteContent: false
+            }
+        }
+    ]);
+
+    // Add fiori-tools-appreload for live reload during development (after backend-proxy-middleware-cf)
+    ui5Config.addCustomMiddleware([
+        {
+            name: 'fiori-tools-appreload',
+            afterMiddleware: 'backend-proxy-middleware-cf',
+            configuration: {
+                port: 35729,
+                path: 'webapp',
+                delay: 300
+            }
+        }
+    ]);
 
     // Add fiori-tools-preview (for local preview)
     ui5Config.addCustomMiddleware([

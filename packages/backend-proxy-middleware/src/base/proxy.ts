@@ -15,8 +15,8 @@ import type { Options, RequestHandler } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import i18n from 'i18next';
-import translations from './i18n.json';
-import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
+import translations from './i18n.json' with { type: 'json' };
+import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types.js';
 import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService, BackendSystem } from '@sap-ux/store';
 import { AuthenticationType, BackendSystemKey, getService } from '@sap-ux/store';
 import type connect from 'connect';
@@ -24,8 +24,8 @@ import type { Request } from 'express';
 import type { Socket } from 'node:net';
 import type { Url } from 'node:url';
 import { getProxyForUrl } from 'proxy-from-env';
-import { addOptionsForEmbeddedBSP } from '../ext/bsp';
-import { updateProxyEnv } from './config';
+import { addOptionsForEmbeddedBSP } from '../ext/bsp.js';
+import { updateProxyEnv } from './config.js';
 
 export type EnhancedIncomingMessage = (IncomingMessage & Pick<Request, 'originalUrl'>) | connect.IncomingMessage;
 
@@ -58,10 +58,7 @@ export const ProxyEventHandlers = {
         const header = proxyRes?.headers?.['set-cookie'];
         if (header?.length) {
             for (let i = header.length - 1; i >= 0; i--) {
-                const cookie = header[i].replace(
-                    /\s?Domain=[^\s]*\s?|\s?SameSite=[^\s]*\s?|\s?Secure[^\s]*\s?|\s?Partitioned[^\s]*\s?/gi,
-                    ''
-                );
+                const cookie = header[i].replace(/\s?(?:Domain|SameSite|Secure|Partitioned)[^\s]*\s?/gi, '');
                 header[i] = cookie;
             }
         }
@@ -165,6 +162,24 @@ export const PathRewriters = {
     },
 
     /**
+     * Append additional query parameters to every proxied request path.
+     *
+     * @param params map of query parameter key-value pairs
+     * @returns a path rewrite function
+     */
+    appendParams(params: Record<string, string>): (path: string) => string {
+        const queryString = Object.entries(params)
+            .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+            .join('&');
+        return (path: string) => {
+            if (!queryString) {
+                return path;
+            }
+            return path.includes('?') ? `${path}&${queryString}` : `${path}?${queryString}`;
+        };
+    },
+
+    /**
      * Create a chain of rewrite function calls based on the provided configuration.
      *
      * @param config backend configuration
@@ -182,7 +197,16 @@ export const PathRewriters = {
             functions.push(PathRewriters.replacePrefix(config.path, config.pathReplace));
         }
         if (config.client) {
+            if (!/^\d{1,3}$/.test(config.client)) {
+                log.warn(
+                    `Invalid "client" value "${config.client}": expected a 1-3 digit SAP client number. ` +
+                        `Use the "params" property to append additional query parameters.`
+                );
+            }
             functions.push(PathRewriters.replaceClient(config.client));
+        }
+        if (config.params) {
+            functions.push(PathRewriters.appendParams(config.params));
         }
         if (config.bsp) {
             functions.push(PathRewriters.convertAppDescriptorToManifest(config.bsp));
@@ -234,10 +258,12 @@ export async function initI18n(): Promise<void> {
  *
  * @param proxyOptions reference to a proxy options object that the function will enhance
  * @param backend reference to the backend configuration that the function may enhance
+ * @param logger logger instance
  */
 export async function enhanceConfigsForDestination(
     proxyOptions: Options & { headers: object },
-    backend: DestinationBackendConfig
+    backend: DestinationBackendConfig,
+    logger: ToolsLogger
 ): Promise<void> {
     proxyOptions.target = getDestinationUrlForAppStudio(backend.destination);
     if (backend.destinationInstance) {
@@ -252,6 +278,7 @@ export async function enhanceConfigsForDestination(
             if (isFullUrlDestination(destination)) {
                 backend.path = new URL(destination.Host).pathname.replace(/\/$/, '');
                 backend.pathReplace = backend.pathReplace ?? '/';
+                logger.warn(i18n.t('warn.fullUrlDestination'));
             }
         } else {
             throw new Error('Destination not found. Please check your configuration or user role assignment.');
@@ -344,7 +371,7 @@ export async function generateProxyMiddlewareOptions(
         const destBackend = backend as DestinationBackendConfig;
         destBackend.destination = destBackend.destination ?? process.env.FIORI_TOOLS_DESTINATION;
         if (destBackend.destination) {
-            await enhanceConfigsForDestination(proxyOptions, destBackend);
+            await enhanceConfigsForDestination(proxyOptions, destBackend, logger);
             logger.info('Using destination: ' + destBackend.destination);
         }
     } else {
@@ -412,11 +439,18 @@ async function updateProxyConfigFromStore(
     // check if system credentials are stored in the store
     try {
         const systemStore = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
+        let backendUrl = localBackend.url;
+        if (localBackend.connectPath) {
+            const normalizedPath = localBackend.connectPath.startsWith('/')
+                ? localBackend.connectPath
+                : `/${localBackend.connectPath}`;
+            backendUrl = new URL(normalizedPath, localBackend.url).href;
+        }
         const system =
-            (await systemStore.read(new BackendSystemKey({ url: localBackend.url, client: localBackend.client }))) ??
+            (await systemStore.read(new BackendSystemKey({ url: backendUrl, client: localBackend.client }))) ??
             ({
                 name: '<unknown>',
-                url: localBackend.url,
+                url: backendUrl,
                 authenticationType: validateAuthType(localBackend.authenticationType)
             } as BackendSystem);
         // Auth type is determined from app config as we may have multiple stored systems with the same url/client using different auth types

@@ -1,9 +1,9 @@
 import type { Logger } from '@sap-ux/logger';
 import { getService, BackendSystemKey, BackendSystem, type SystemType, type ConnectionType } from '@sap-ux/store';
-import type { UrlAbapTarget } from '../types';
+import type { UrlAbapTarget } from '../types.js';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import prompts from 'prompts';
-import { questions } from './prompts';
+import { questions } from './prompts.js';
 
 export type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
 export type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name' | 'refreshToken'>>;
@@ -42,10 +42,17 @@ export async function getCredentialsFromStore(
     try {
         if (!isAppStudio()) {
             const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
-            let system = await systemService.read(new BackendSystemKey({ url: target.url, client: target.client }));
+            let url = target.url;
+            if (target.connectPath) {
+                const normalizedPath = target.connectPath.startsWith('/')
+                    ? target.connectPath
+                    : `/${target.connectPath}`;
+                url = new URL(normalizedPath, target.url).href;
+            }
+            let system = await systemService.read(new BackendSystemKey({ url, client: target.client }));
             // check if there are credentials for the default client
             if (!system && target.client) {
-                system = await systemService.read(new BackendSystemKey({ url: target.url }));
+                system = await systemService.read(new BackendSystemKey({ url }));
             }
             return system;
         }

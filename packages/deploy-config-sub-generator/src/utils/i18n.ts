@@ -1,5 +1,5 @@
 import i18next from 'i18next';
-import translations from '../translations/deploy-config-sub-generator.i18n.json';
+import translations from '../translations/deploy-config-sub-generator.i18n.json' with { type: 'json' };
 import { addi18nResourceBundle as addInquirerCommonTexts } from '@sap-ux/inquirer-common';
 import type { i18n as i18nNext, TOptions } from 'i18next';
 
@@ -31,9 +31,7 @@ export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
         options = Object.assign(options ?? {}, { ns: deployConfigSubGen });
     }
-    return i18n.t(key, options);
+    return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-initI18n().catch(() => {
-    // Needed for lint
-});
+void initI18n().catch(() => undefined);

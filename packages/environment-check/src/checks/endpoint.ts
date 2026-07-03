@@ -1,9 +1,9 @@
-import type { ResultMessage, Endpoint, EndpointResults } from '../types';
-import { getLogger } from '../logger';
+import type { ResultMessage, Endpoint, EndpointResults } from '../types.js';
+import { getLogger } from '../logger.js';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { checkBASDestination, checkBASDestinations } from './destination';
-import { checkStoredSystem, checkStoredSystems } from './stored-system';
-import { t } from '../i18n';
+import { checkBASDestination, checkBASDestinations } from './destination.js';
+import { checkStoredSystem, checkStoredSystems } from './stored-system.js';
+import { t } from '../i18n.js';
 
 /**
  * Checks the endpoints (SAP Systems or BAS Destinations) and returns a list.

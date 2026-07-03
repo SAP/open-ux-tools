@@ -7,8 +7,10 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import {
     convertDocument,
     convertMetadataDocument,
+    convertMetadataDocumentV2,
     getNewAnnotationFile,
-    serializeTarget
+    serializeTarget,
+    type V2Annotation
 } from '@sap-ux/xml-odata-annotation-converter';
 import type {
     AnnotationFile,
@@ -61,17 +63,17 @@ import {
     DELETE_ATTRIBUTE,
     INSERT_TARGET,
     REPLACE_TEXT
-} from '../types';
-import { ApiError, ApiErrorCode } from '../error';
+} from '../types/index.js';
+import { ApiError, ApiErrorCode } from '../error.js';
 
-import { XMLWriter } from './writer';
-import { REPLACE_ELEMENT_CONTENT } from './changes';
-import type { Document } from './document';
-import type { Comment } from './comments';
-import { collectUsedNamespaces } from './references';
-import { collectComments } from './comments';
-import { getNodeFromPointer } from './pointer';
-import type { ValueListReference } from '../types/adapter';
+import { XMLWriter } from './writer.js';
+import { REPLACE_ELEMENT_CONTENT } from './changes.js';
+import type { Document } from './document.js';
+import type { Comment } from './comments.js';
+import { collectUsedNamespaces } from './references.js';
+import { collectComments } from './comments.js';
+import { getNodeFromPointer } from './pointer.js';
+import type { ValueListReference } from '../types/adapter.js';
 import { pathToFileURL } from 'node:url';
 
 /**
@@ -81,6 +83,8 @@ import { pathToFileURL } from 'node:url';
 export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     public metadataService = new MetadataService();
     public splitAnnotationSupport = false;
+    public collectV2Annotations = false;
+    public v2annotations: V2Annotation[] = [];
     public fileCache: Map<string, string>;
 
     private readonly externalServices = new Map<
@@ -165,7 +169,14 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
             });
         }
         this.addMissingMetadataReferences();
-        this.metadata = convertMetadataDocument(this.service.metadataFile.uri, metadataDocument);
+        if (this.collectV2Annotations) {
+            [this.metadata, this.v2annotations] = convertMetadataDocumentV2(
+                this.service.metadataFile.uri,
+                metadataDocument
+            );
+        } else {
+            this.metadata = convertMetadataDocument(this.service.metadataFile.uri, metadataDocument);
+        }
         this.metadataService = new MetadataService({
             ODataVersion: this.service.odataVersion,
             isCds: false
@@ -795,7 +806,9 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                     valueListReferences.push({
                         annotation,
                         uris: references,
-                        location: Location.create(annotationFile.uri, annotation.range)
+                        location: Location.create(annotationFile.uri, annotation.range),
+                        namespace: annotationFile.namespace?.name ?? '',
+                        alias: annotationFile.namespace?.alias
                     });
                 }
             }

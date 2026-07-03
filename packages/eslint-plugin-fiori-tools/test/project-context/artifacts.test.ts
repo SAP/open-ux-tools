@@ -1,5 +1,8 @@
-import { join } from 'node:path';
-import { getProjectArtifacts } from '../../src/project-context/artifacts';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { getProjectArtifacts } from '../../src/project-context/artifacts.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('artifacts module', () => {
     describe('getProjectArtifacts', () => {

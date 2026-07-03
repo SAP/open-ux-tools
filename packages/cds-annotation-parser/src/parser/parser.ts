@@ -1,6 +1,6 @@
 import type { IOrAlt, CstNode, TokenType, IToken, SubruleMethodOpts, MismatchedTokenException } from 'chevrotain';
 import { CstParser, EOF } from 'chevrotain';
-import { hasItems, isDefined } from '../utils';
+import { hasItems, isDefined } from '../utils/index.js';
 import type {
     PATH_SEGMENT_SEPARATOR_TOKEN_TYPE,
     COLON_TOKEN_TYPE,
@@ -36,8 +36,8 @@ import type {
     L_PAREN_TOKEN_TYPE,
     R_PAREN_TOKEN_TYPE,
     OPERATOR
-} from './tokens';
-import { IDENTIFIER_TOKEN_TYPE, tokenMap } from './tokens';
+} from './tokens.js';
+import { IDENTIFIER_TOKEN_TYPE, tokenMap } from './tokens.js';
 
 const allTokens = Object.values(tokenMap);
 

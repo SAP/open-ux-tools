@@ -1,6 +1,6 @@
-import { AdtService } from './adt-service';
-import { LocalPackageText } from '../../types';
-import type { AdtCategory, AdtTransportStatus, TransportRequest } from '../../types';
+import { AdtService } from './adt-service.js';
+import { LocalPackageText } from '../../types/index.js';
+import type { AdtCategory, AdtTransportStatus, TransportRequest } from '../../types/index.js';
 import { XMLValidator } from 'fast-xml-parser';
 import * as xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';
@@ -77,7 +77,7 @@ export class TransportChecksService extends AdtService {
             this.log.warn(`Invalid XML: ${xml}`);
             return [];
         }
-        const doc = new DOMParser().parseFromString(xml);
+        const doc = new DOMParser().parseFromString(xml, 'text/xml') as unknown as Document;
 
         const status = xpath.select1('//RESULT/text()', doc)?.toString() as AdtTransportStatus;
         switch (status) {

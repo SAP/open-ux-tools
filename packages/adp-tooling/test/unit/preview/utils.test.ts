@@ -1,5 +1,5 @@
 import { DirName } from '@sap-ux/project-access';
-import { getFragmentPathFromTemplate } from '../../../src/preview/utils';
+import { getFragmentPathFromTemplate } from '../../../src/preview/utils.js';
 import { sep } from 'node:path';
 
 describe('getFragmentPathFromTemplate', () => {

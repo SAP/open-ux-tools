@@ -1,1 +1,1 @@
-export { ODataDownloadGenerator as default } from '../data-download';
+export { ODataDownloadGenerator as default } from '../data-download/index.js';

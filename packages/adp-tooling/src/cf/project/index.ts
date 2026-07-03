@@ -1,3 +1,3 @@
-export * from './yaml';
-export * from './yaml-loader';
-export * from './mta';
+export * from './mta.js';
+export * from './yaml.js';
+export * from './yaml-loader.js';

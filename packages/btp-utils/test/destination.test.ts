@@ -15,7 +15,7 @@ import {
     isHTML5DynamicConfigured,
     ProxyType,
     isAbapODataDestination
-} from '../src';
+} from '../src/index.js';
 import destinations from './mockResponses/destinations.json';
 
 const destination: Destination = destinations.find((destination) => destination.Name === 'NO_ADDITIONAL_PROPERTIES')!;
@@ -38,6 +38,12 @@ describe('destination', () => {
 
         it('sap-platform parameter is set to ABAP', () => {
             expect(isAbapSystem({ ...destination, 'sap-platform': 'abap' })).toBe(true);
+        });
+
+        it('ProxyType is OnPremise', () => {
+            expect(
+                isAbapSystem({ ...destination, ProxyType: 'OnPremise', WebIDEUsage: WebIDEUsage.ODATA_GENERIC })
+            ).toBe(true);
         });
 
         it('not an ABAP system', () => {

@@ -1,7 +1,7 @@
 import { UI5_DEFAULT } from '@sap-ux/ui5-config';
-import { mergeUi5, defaultUI5Libs, mergeApp } from '../src/data/defaults';
-import { mergeWithDefaults } from '../src/data/index';
-import type { App, UI5, Ui5App } from '../src/types';
+import { mergeUi5, defaultUI5Libs, mergeApp } from '../src/data/defaults.js';
+import { mergeWithDefaults } from '../src/data/index.js';
+import type { App, UI5, Ui5App } from '../src/types.js';
 
 const mockSpecVersions = JSON.stringify({ latest: '1.102.3', 'UI5-1.71': '1.71.64', 'UI5-1.92': '1.92.1' });
 jest.mock('child_process', () => ({
@@ -346,6 +346,24 @@ describe('Setting defaults', () => {
             version: '0.0.1'
         };
         expect(mergeWithDefaults(input).package).toEqual(expectedPackage);
+    });
+
+    it('eslint can be explicitly disabled', async () => {
+        const input: Ui5App = {
+            app: {
+                id: 'test_appId',
+                description: 'Test app',
+                projectType: 'EDMXBackend'
+            },
+            appOptions: {
+                eslint: false
+            },
+            'package': {
+                name: 'test-package-name'
+            }
+        };
+        const result = mergeWithDefaults(input);
+        expect(result.appOptions.eslint).toBe(false);
     });
 
     // Test function `mergeApp` sets the correct defaults

@@ -1,14 +1,15 @@
-import { generate, addEslintFeature } from '../src';
+import { generate, addEslintFeature } from '../src/index.js';
 import type { Package } from '@sap-ux/project-access';
-import { join } from 'node:path';
-import { removeSync } from 'fs-extra';
-import type { Ui5App } from '../src';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { rmSync } from 'node:fs';
+import type { Ui5App } from '../src/index.js';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
 describe('UI5 templates', () => {
     const debug = !!process.env['UX_DEBUG'];
-    const outputDir = join(__dirname, '/test-output');
+    const outputDir = join(dirname(fileURLToPath(import.meta.url)), '/test-output');
 
     const baseAppConfig: Ui5App = {
         app: {
@@ -23,7 +24,7 @@ describe('UI5 templates', () => {
     };
 
     beforeAll(() => {
-        removeSync(outputDir); // even for in memory
+        rmSync(outputDir, { recursive: true, force: true }); // even for in memory
     });
 
     it('generates options: `sapux` shouldnt be included for CAP project', async () => {
@@ -178,6 +179,47 @@ describe('UI5 templates', () => {
         });
     });
 
+    it('option: `eslint` enabled generates config with recommended profile', async () => {
+        const projectDir = join(outputDir, 'testapp_eslint_enabled');
+        const fs = await generate(
+            projectDir,
+            Object.assign({}, baseAppConfig, {
+                appOptions: {
+                    eslint: true
+                }
+            })
+        );
+        const eslintConfig = fs.read(join(projectDir, 'eslint.config.mjs'));
+        expect(eslintConfig).toContain('fioriTools.configs.recommended');
+        return new Promise((resolve) => {
+            if (debug) {
+                fs.commit(resolve);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+
+    it('option: `eslint` disabled should not generate config', async () => {
+        const projectDir = join(outputDir, 'testapp_no_eslint');
+        const fs = await generate(
+            projectDir,
+            Object.assign({}, baseAppConfig, {
+                appOptions: {
+                    eslint: false
+                }
+            })
+        );
+        expect(fs.exists(join(projectDir, 'eslint.config.mjs'))).toBe(false);
+        return new Promise((resolve) => {
+            if (debug) {
+                fs.commit(resolve);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+
     it('addEslintFeature: adds eslint configuration to a project', async () => {
         const projectDir = join(outputDir, 'testapp_addEslintFeature');
         const store = createStorage();
@@ -209,8 +251,8 @@ describe('UI5 templates', () => {
         // Verify that package.json was updated with eslint dependencies and script
         const updatedPackageJson = fs.readJSON(packageJsonPath) as Package;
         expect(updatedPackageJson?.scripts?.lint).toBe('eslint ./');
-        expect(updatedPackageJson?.devDependencies?.['@sap-ux/eslint-plugin-fiori-tools']).toBe('^9.0.0');
-        expect(updatedPackageJson?.devDependencies?.['eslint']).toBe('^9');
+        expect(updatedPackageJson?.devDependencies?.['@sap-ux/eslint-plugin-fiori-tools']).toBe('^10.0.0');
+        expect(updatedPackageJson?.devDependencies?.['eslint']).toBe('^10');
         // Verify existing dependencies are preserved
         expect(updatedPackageJson?.devDependencies?.['@ui5/cli']).toBe('^3.0.0');
         expect(updatedPackageJson?.scripts?.start).toBe('fiori run');

@@ -29,10 +29,6 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: test/flpSandbox.html
-          intent:
-            object: testNameSpacelropv2nourl
-            action: tile
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -50,3 +46,8 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

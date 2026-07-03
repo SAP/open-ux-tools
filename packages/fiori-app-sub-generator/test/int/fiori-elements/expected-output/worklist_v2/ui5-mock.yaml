@@ -16,9 +16,9 @@ server:
             - /test-resources
           url: https://ui5.sap.com
         backend:
-          - scp: true
-            path: /sap
+          - path: /sap
             url: https://sap-ux-mock-services-v2-lrop.cfapps.us10.hana.ondemand.com
+            scp: true
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -46,3 +46,8 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

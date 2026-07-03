@@ -1,12 +1,12 @@
 import React from 'react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SystemActionBtns, ExternalActionBtns } from './buttons';
-import { SystemStatus } from './status';
-import { SystemTypes } from './systemTypes';
-import { SystemInfo } from './systemInfo';
-import { LoadingState } from '../../../types';
-import { useSystemMain } from '../../../hooks';
+import { SystemActionBtns, ExternalActionBtns } from './buttons/index.js';
+import { SystemStatus } from './status/index.js';
+import { SystemTypes } from './systemTypes/index.js';
+import { SystemInfo } from './systemInfo/index.js';
+import { LoadingState } from '../../../types/index.js';
+import { useSystemMain } from '../../../hooks/index.js';
 
 import '../../../styles/SystemMain.scss';
 
@@ -35,6 +35,7 @@ export function SystemMain(): ReactElement {
         setName,
         setSystemType,
         setUrl,
+        setServicePath,
         setClient,
         setUsername,
         setPassword,
@@ -61,6 +62,7 @@ export function SystemMain(): ReactElement {
                         setName={setName}
                         setConnectionType={setConnectionType}
                         setUrl={setUrl}
+                        setServicePath={setServicePath}
                         setClient={setClient}
                         setUsername={setUsername}
                         setPassword={setPassword}

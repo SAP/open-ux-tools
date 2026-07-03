@@ -55,3 +55,8 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/GWSAMPLE_BASIC.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

@@ -3,6 +3,7 @@ import type { ReaderCollection } from '@ui5/fs'; // eslint-disable-line sonarjs/
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, isAbsolute, relative, basename, dirname } from 'node:path';
 
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { UI5Config } from '@sap-ux/ui5-config';
 import { type InboundContent, type Inbound, AdaptationProjectType } from '@sap-ux/axios-extension';
 import {
@@ -14,7 +15,7 @@ import {
     getAppType
 } from '@sap-ux/project-access';
 
-import type { DescriptorVariant, AdpPreviewConfig, UI5YamlCustomTaskConfiguration } from '../types';
+import type { DescriptorVariant, AdpPreviewConfig, UI5YamlCustomTaskConfiguration } from '../types.js';
 
 const ADP_CLOUD_PROJECT_BUILD_TASK_NAME = 'app-variant-bundler-build';
 
@@ -47,15 +48,21 @@ export async function updateVariant(basePath: string, variant: DescriptorVariant
 /**
  * Checks if FLP configuration changes exist in the manifest.appdescr_variant.
  *
- * This function determines whether there are changes of type `appdescr_app_changeInbound`
- * or `appdescr_app_addNewInbound` present in the content of the descriptor variant.
+ * This function determines whether there are changes of type `appdescr_app_setInbounds`,
+ * `appdescr_app_changeInbound`, or `appdescr_app_addNewInbound` present in the content of the
+ * descriptor variant. `appdescr_app_setInbounds` is the change type written by the current
+ * cloud-ADP FLP configuration writer; `appdescr_app_changeInbound` and `appdescr_app_addNewInbound`
+ * are retained for variants written by older versions of the tooling.
  *
  * @param {DescriptorVariant} variant - The descriptor variant object to check for FLP configuration changes.
- * @returns {Promise<boolean>} Returns `true` if FLP configuration changes exist, otherwise `false`.
+ * @returns {boolean} Returns `true` if FLP configuration changes exist, otherwise `false`.
  */
 export function flpConfigurationExists(variant: DescriptorVariant): boolean {
     return variant.content?.some(
-        ({ changeType }) => changeType === 'appdescr_app_changeInbound' || changeType === 'appdescr_app_addNewInbound'
+        ({ changeType }) =>
+            changeType === 'appdescr_app_setInbounds' ||
+            changeType === 'appdescr_app_changeInbound' ||
+            changeType === 'appdescr_app_addNewInbound'
     );
 }
 
@@ -111,6 +118,24 @@ export function extractCfBuildTask(ui5Conf: UI5Config): UI5YamlCustomTaskConfigu
     }
 
     return buildTask;
+}
+
+/**
+ * Read space GUID from ui5.yaml customTasks app-variant-bundler-build.space.
+ *
+ * @param {string} rootPath - Project root (where ui5.yaml lives).
+ * @param {ToolsLogger} logger - Optional logger.
+ * @returns {Promise<string | undefined>} Space GUID or undefined if not found.
+ */
+export async function getSpaceGuidFromUi5Yaml(rootPath: string, logger?: ToolsLogger): Promise<string | undefined> {
+    try {
+        const ui5Config = await readUi5Config(rootPath, 'ui5.yaml');
+        const buildTask = extractCfBuildTask(ui5Config);
+        return buildTask?.space;
+    } catch {
+        logger?.warn('Could not read space from ui5.yaml (app-variant-bundler-build).');
+        return undefined;
+    }
 }
 
 /**

@@ -1,8 +1,11 @@
-import path from 'node:path';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import memFs from 'mem-fs';
 import memFsEditor from 'mem-fs-editor';
-import { generateAppGenInfo } from '../../src/app-gen-info';
-import type { AppGenInfo } from '../../src/types';
+import { generateAppGenInfo } from '../../src/app-gen-info.js';
+import type { AppGenInfo } from '../../src/types/index.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 function getLaunchText(): string {
     return (
@@ -68,6 +71,22 @@ describe('Readme file generation tests', () => {
         generateAppGenInfo(__dirname, appGenInfo, editor);
         expect(editor.read(readMePath)).toMatchSnapshot();
         expect(editor.readJSON(path.join(__dirname, '/.appGenInfo.json'))).toMatchSnapshot();
+    });
+
+    it('should generate README.md with enableEslint set to true', () => {
+        const readMePath = path.join(__dirname, '/README.md');
+        const readMe: AppGenInfo = {
+            generatorName: '@sap/generator-fiori-elements',
+            template: 'List Report Page V4',
+            generatorVersion: '2.0.1',
+            appName: 'appName',
+            appTitle: 'appTitle',
+            appDescription: 'Fiori project description',
+            appNamespace: 'appNamespace',
+            enableEslint: true
+        };
+        generateAppGenInfo(__dirname, readMe, editor);
+        expect(editor.read(readMePath)).toMatchSnapshot();
     });
 
     it('should generate README.md with core properties', () => {

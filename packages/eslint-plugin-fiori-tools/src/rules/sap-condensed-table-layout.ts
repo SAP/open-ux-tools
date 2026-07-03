@@ -1,0 +1,162 @@
+import type { FioriRuleDefinition } from '../types.js';
+import { CONDENSED_TABLE_LAYOUT, type CondensedTableLayout } from '../language/diagnostics.js';
+import { createFioriRule } from '../language/rule-factory.js';
+import type { MemberNode } from '@humanwhocodes/momoa';
+import type { ParsedApp } from '../project-context/parser/index.js';
+import type { FeV2PageType, LinkedFeV2App } from '../project-context/linker/fe-v2.js';
+import type { FeV4PageType, LinkedFeV4App, Table, OrphanTable } from '../project-context/linker/fe-v4.js';
+import { createJsonFixer } from '../language/rule-fixer.js';
+import { FioriJSONSourceCode } from '../language/json/source-code.js';
+
+const COMPACT_TABLE_TYPES = new Set(['GridTable', 'AnalyticalTable', 'TreeTable']);
+
+const rule: FioriRuleDefinition = createFioriRule({
+    ruleId: CONDENSED_TABLE_LAYOUT,
+    meta: {
+        type: 'suggestion',
+        docs: {
+            recommended: true,
+            description:
+                'Requires condensedTableLayout to be enabled when using a grid table, analytical table, or tree table.',
+            url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-condensed-table-layout.md'
+        },
+        messages: {
+            [CONDENSED_TABLE_LAYOUT]:
+                '"condensedTableLayout" must be set to true when using a grid table, analytical table, or tree table.'
+        },
+        fixable: 'code'
+    },
+
+    check(context) {
+        if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
+            return [];
+        }
+        const problems: CondensedTableLayout[] = [];
+
+        for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
+            const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
+            const parsedService = context.sourceCode.projectContext.getIndexedServiceForMainService(parsedApp);
+            if (!parsedService) {
+                continue;
+            }
+            if (app.type === 'fe-v4' || app.type === 'fe-v2') {
+                problems.push(...checkCondensedTableLayoutForApp(app, parsedApp, context.sourceCode));
+            }
+        }
+        return problems;
+    },
+    createJsonVisitorHandler: (context, diagnostic, deepestPathResult) =>
+        function report(node: MemberNode): void {
+            context.report({
+                node,
+                messageId: CONDENSED_TABLE_LAYOUT,
+                fix: createJsonFixer({
+                    context,
+                    deepestPathResult,
+                    node,
+                    value: true
+                })
+            });
+        }
+});
+
+/**
+ * Checks all list-report pages of an app and returns condensed table layout problems.
+ *
+ * @param app - linked V4 or V2 app
+ * @param parsedApp - parsed app
+ * @param sourceCode
+ * @returns - CondensedTableLayout issues
+ */
+function checkCondensedTableLayoutForApp(
+    app: LinkedFeV4App | LinkedFeV2App,
+    parsedApp: ParsedApp,
+    sourceCode: FioriJSONSourceCode
+): CondensedTableLayout[] {
+    if (app.type === 'fe-v4') {
+        return app.pages.flatMap((page) =>
+            page.type === 'list-report-page' ? checkCondensedTableLayoutV4(page, parsedApp, sourceCode) : []
+        );
+    }
+    return app.pages.flatMap((page) =>
+        page.type === 'list-report-page' ? checkCondensedTableLayoutV2(page, parsedApp, sourceCode) : []
+    );
+}
+
+/**
+ * Checks V4 page tables and returns problems if a compact table type is used without condensedTableLayout.
+ *
+ * @param page - V4 app page
+ * @param parsedApp - parsed V4 app
+ * @param sourceCode - FioriJSONSourceCode instance
+ * @returns - CondensedTableLayout issues
+ */
+function checkCondensedTableLayoutV4(
+    page: FeV4PageType,
+    parsedApp: ParsedApp,
+    sourceCode: FioriJSONSourceCode
+): CondensedTableLayout[] {
+    const problems: CondensedTableLayout[] = [];
+    for (const table of (page.lookup['table'] ?? []) as (Table | OrphanTable)[]) {
+        const tableType = table.configuration.tableType.valueInFile;
+        if (!tableType || !COMPACT_TABLE_TYPES.has(tableType)) {
+            continue;
+        }
+        if (table.configuration.condensedTableLayout.valueInFile !== true) {
+            const node = sourceCode.getNode(
+                sourceCode.ast.body,
+                table.configuration.condensedTableLayout.configurationPath
+            );
+            problems.push({
+                type: CONDENSED_TABLE_LAYOUT,
+                pageName: page.targetName,
+                manifest: {
+                    uri: parsedApp.manifest.manifestUri,
+                    object: parsedApp.manifestObject,
+                    propertyPath: table.configuration.condensedTableLayout.configurationPath,
+                    loc: node.loc
+                }
+            });
+        }
+    }
+    return problems;
+}
+
+/**
+ * Checks V2 list report page and returns problems if a compact table type is used without condensedTableLayout.
+ *
+ * @param page - V2 list report page
+ * @param parsedApp - parsed V2 app
+ * @param sourceCode
+ * @returns - CondensedTableLayout issues
+ */
+function checkCondensedTableLayoutV2(
+    page: Extract<FeV2PageType, { type: 'list-report-page' }>,
+    parsedApp: ParsedApp,
+    sourceCode: FioriJSONSourceCode
+): CondensedTableLayout[] {
+    const hasCompactTable = (page.lookup['table'] ?? []).some((table) =>
+        COMPACT_TABLE_TYPES.has(table.configuration.tableType.valueInFile ?? '')
+    );
+    if (!hasCompactTable) {
+        return [];
+    }
+    if (page.configuration.condensedTableLayout.valueInFile === true) {
+        return [];
+    }
+    const node = sourceCode.getNode(sourceCode.ast.body, page.configuration.condensedTableLayout.configurationPath);
+    return [
+        {
+            type: CONDENSED_TABLE_LAYOUT,
+            pageName: page.targetName,
+            manifest: {
+                uri: parsedApp.manifest.manifestUri,
+                object: parsedApp.manifestObject,
+                propertyPath: page.configuration.condensedTableLayout.configurationPath,
+                loc: node.loc
+            }
+        }
+    ];
+}
+
+export default rule;

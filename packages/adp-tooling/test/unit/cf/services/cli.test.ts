@@ -1,26 +1,41 @@
-import * as CFLocal from '@sap/cf-tools/out/src/cf-local';
-import * as CFToolsCli from '@sap/cf-tools/out/src/cli';
-import { eFilters } from '@sap/cf-tools/out/src/types';
+import { jest } from '@jest/globals';
+import { eFilters } from '@sap/cf-tools';
+import type { CFResource } from '@sap/cf-tools';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { isCfInstalled, getServiceKeys, createServiceKey, requestCfApi } from '../../../../src/cf/services/cli';
-import { initI18n, t } from '../../../../src/i18n';
-import type { ServiceKeys } from '../../../../src/types';
+const mockCfGetServiceKeys = jest.fn<typeof realCfTools.cfGetServiceKeys>();
+const mockCliExecute = jest.fn<typeof realCfTools.execute>();
 
-jest.mock('@sap/cf-tools/out/src/cf-local', () => ({
-    cfGetInstanceCredentials: jest.fn()
-}));
-
-jest.mock('@sap/cf-tools/out/src/cli', () => ({
+const realCfTools = await import('@sap/cf-tools');
+jest.unstable_mockModule('@sap/cf-tools', () => ({
+    ...realCfTools,
+    cfGetServiceKeys: mockCfGetServiceKeys,
     Cli: {
-        execute: jest.fn()
+        ...realCfTools.Cli,
+        execute: mockCliExecute
     }
 }));
 
-const mockCFLocal = CFLocal as jest.Mocked<typeof CFLocal>;
-const mockCFToolsCli = CFToolsCli as jest.Mocked<typeof CFToolsCli>;
-const mockCFToolsCliExecute = mockCFToolsCli.Cli.execute as jest.MockedFunction<typeof mockCFToolsCli.Cli.execute>;
+const cli = await import('../../../../src/cf/services/cli.js');
+const i18nModule = await import('../../../../src/i18n.js');
+import type { ServiceKeys } from '../../../../src/types.js';
+
+const { isCfInstalled, getServiceKeys, createServiceKey, requestCfApi, updateServiceInstance } = cli;
+const { initI18n, t } = i18nModule;
+
+function createMockResource(overrides: Record<string, unknown>): CFResource {
+    return {
+        guid: '',
+        name: '',
+        description: '',
+        schemas: {},
+        relationships: {},
+        metadata: {},
+        links: {},
+        ...overrides
+    } as CFResource;
+}
 
 describe('CF Services CLI', () => {
     beforeAll(async () => {
@@ -42,12 +57,12 @@ describe('CF Services CLI', () => {
                 stdout: 'cf version 8.0.0',
                 stderr: ''
             };
-            mockCFToolsCliExecute.mockResolvedValue(mockResponse);
+            mockCliExecute.mockResolvedValue(mockResponse);
 
             const result = await isCfInstalled(mockLogger);
 
             expect(result).toBe(true);
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['version'], { env: { 'CF_COLOR': 'false' } });
+            expect(mockCliExecute).toHaveBeenCalledWith(['version'], { env: { 'CF_COLOR': 'false' } });
             expect(mockLogger.error).not.toHaveBeenCalled();
         });
 
@@ -57,78 +72,256 @@ describe('CF Services CLI', () => {
                 stdout: '',
                 stderr: 'cf: command not found'
             };
-            mockCFToolsCliExecute.mockResolvedValue(mockResponse);
+            mockCliExecute.mockResolvedValue(mockResponse);
 
             const result = await isCfInstalled(mockLogger);
 
             expect(result).toBe(false);
             expect(mockLogger.error).toHaveBeenCalledWith(t('error.cfNotInstalled', { error: mockResponse.stderr }));
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['version'], { env: { 'CF_COLOR': 'false' } });
+            expect(mockCliExecute).toHaveBeenCalledWith(['version'], { env: { 'CF_COLOR': 'false' } });
         });
 
         test('should return false and log error when CF version command throws exception', async () => {
             const error = new Error('Network error');
-            mockCFToolsCliExecute.mockRejectedValue(error);
+            mockCliExecute.mockRejectedValue(error);
 
             const result = await isCfInstalled(mockLogger);
 
             expect(result).toBe(false);
             expect(mockLogger.error).toHaveBeenCalledWith(t('error.cfNotInstalled', { error: error.message }));
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['version'], { env: { 'CF_COLOR': 'false' } });
+            expect(mockCliExecute).toHaveBeenCalledWith(['version'], { env: { 'CF_COLOR': 'false' } });
         });
     });
 
     describe('getServiceKeys', () => {
-        test('should return service instance credentials', async () => {
-            const serviceInstanceGuid = 'test-guid-123';
-            const mockCredentials: ServiceKeys[] = [
-                {
-                    credentials: {
-                        name: 'test-service-key',
-                        label: 'test-service',
-                        tags: [],
-                        credentials: {
-                            uri: 'https://test-service.com',
-                            uaa: {
-                                clientid: 'test-client',
-                                clientsecret: 'test-secret',
-                                url: 'https://uaa.test.com'
-                            }
-                        },
-                        uaa: {
-                            clientid: 'test-client',
-                            clientsecret: 'test-secret',
-                            url: 'https://uaa.test.com'
-                        },
-                        uri: 'https://test-service.com',
-                        endpoints: {
-                            'html5-apps-repo': {
-                                'app_host_id': 'test-app-host-id'
-                            }
-                        }
+        const serviceInstanceGuid = 'test-guid-123';
+
+        const mockCredentials: ServiceKeys = {
+            credentials: {
+                name: 'test-service-key',
+                label: 'test-service',
+                tags: [],
+                credentials: {
+                    uri: '/test-service',
+                    uaa: {
+                        clientid: 'test-client',
+                        clientsecret: 'test-secret',
+                        url: '/uaa.test'
+                    }
+                },
+                uaa: {
+                    clientid: 'test-client',
+                    clientsecret: 'test-secret',
+                    url: '/uaa.test'
+                },
+                uri: '/test-service',
+                endpoints: {
+                    'html5-apps-repo': {
+                        'app_host_id': 'test-app-host-id'
                     }
                 }
+            }
+        };
+
+        const expectedFilter = {
+            filters: [
+                {
+                    value: serviceInstanceGuid,
+                    key: eFilters.service_instance_guids
+                }
+            ]
+        };
+
+        test('should return credentials sorted by updated_at descending by default', async () => {
+            const mockLogger = {
+                info: jest.fn(),
+                debug: jest.fn(),
+                warn: jest.fn()
+            } as unknown as ToolsLogger;
+
+            const mockResources = [
+                createMockResource({ guid: 'key-1', name: 'key-old', updated_at: '2026-01-01T00:00:00Z' }),
+                createMockResource({ guid: 'key-2', name: 'key-newest', updated_at: '2026-06-01T00:00:00Z' }),
+                createMockResource({ guid: 'key-3', name: 'key-middle', updated_at: '2026-03-01T00:00:00Z' })
             ];
 
-            mockCFLocal.cfGetInstanceCredentials.mockResolvedValue(mockCredentials);
+            mockCfGetServiceKeys.mockResolvedValue(mockResources);
+            mockCliExecute.mockResolvedValue({
+                exitCode: 0,
+                stdout: JSON.stringify(mockCredentials),
+                stderr: ''
+            });
+
+            const result = await getServiceKeys(serviceInstanceGuid, 'updated_at', mockLogger);
+
+            expect(result).toHaveLength(3);
+            expect(mockCfGetServiceKeys).toHaveBeenCalledWith(expectedFilter);
+            expect(mockLogger.info).toHaveBeenCalledWith(
+                `Found 3 service key(s) for instance '${serviceInstanceGuid}'`
+            );
+            expect(mockLogger.debug).toHaveBeenCalledWith(
+                "Service keys sorted by 'updated_at', using key 'key-newest' as primary"
+            );
+            expect(mockLogger.debug).toHaveBeenCalledWith('Retrieved credentials for 3 of 3 service key(s)');
+            // Verify the order of curl calls matches sorted order (newest first)
+            expect(mockCliExecute).toHaveBeenNthCalledWith(
+                1,
+                ['curl', '/v3/service_credential_bindings/key-2/details'],
+                { env: { 'CF_COLOR': 'false' } }
+            );
+            expect(mockCliExecute).toHaveBeenNthCalledWith(
+                2,
+                ['curl', '/v3/service_credential_bindings/key-3/details'],
+                { env: { 'CF_COLOR': 'false' } }
+            );
+            expect(mockCliExecute).toHaveBeenNthCalledWith(
+                3,
+                ['curl', '/v3/service_credential_bindings/key-1/details'],
+                { env: { 'CF_COLOR': 'false' } }
+            );
+        });
+
+        test('should sort by created_at when specified', async () => {
+            const mockLogger = {
+                info: jest.fn(),
+                debug: jest.fn(),
+                warn: jest.fn()
+            } as unknown as ToolsLogger;
+
+            const mockResources = [
+                createMockResource({
+                    guid: 'key-1',
+                    name: 'key-a',
+                    created_at: '2026-05-01T00:00:00Z',
+                    updated_at: '2026-01-01T00:00:00Z'
+                }),
+                createMockResource({
+                    guid: 'key-2',
+                    name: 'key-b',
+                    created_at: '2026-01-01T00:00:00Z',
+                    updated_at: '2026-06-01T00:00:00Z'
+                })
+            ];
+
+            mockCfGetServiceKeys.mockResolvedValue(mockResources);
+            mockCliExecute.mockResolvedValue({
+                exitCode: 0,
+                stdout: JSON.stringify(mockCredentials),
+                stderr: ''
+            });
+
+            const result = await getServiceKeys(serviceInstanceGuid, 'created_at', mockLogger);
+
+            expect(result).toHaveLength(2);
+            expect(mockLogger.info).toHaveBeenCalledWith(
+                `Found 2 service key(s) for instance '${serviceInstanceGuid}'`
+            );
+            expect(mockLogger.debug).toHaveBeenCalledWith(
+                "Service keys sorted by 'created_at', using key 'key-a' as primary"
+            );
+            // key-1 has newer created_at, so it should be first
+            expect(mockCliExecute).toHaveBeenNthCalledWith(
+                1,
+                ['curl', '/v3/service_credential_bindings/key-1/details'],
+                { env: { 'CF_COLOR': 'false' } }
+            );
+            expect(mockCliExecute).toHaveBeenNthCalledWith(
+                2,
+                ['curl', '/v3/service_credential_bindings/key-2/details'],
+                { env: { 'CF_COLOR': 'false' } }
+            );
+        });
+
+        test('should handle resources without timestamp fields', async () => {
+            const mockResources = [
+                createMockResource({ guid: 'key-1', name: 'key-no-date' }),
+                createMockResource({ guid: 'key-2', name: 'key-with-date', updated_at: '2026-06-01T00:00:00Z' }),
+                createMockResource({ guid: 'key-3', name: 'key-no-date-2' })
+            ];
+
+            mockCfGetServiceKeys.mockResolvedValue(mockResources);
+            mockCliExecute.mockResolvedValue({
+                exitCode: 0,
+                stdout: JSON.stringify(mockCredentials),
+                stderr: ''
+            });
 
             const result = await getServiceKeys(serviceInstanceGuid);
 
-            expect(result).toEqual(mockCredentials);
-            expect(mockCFLocal.cfGetInstanceCredentials).toHaveBeenCalledWith({
-                filters: [
-                    {
-                        value: serviceInstanceGuid,
-                        key: eFilters.service_instance_guids
-                    }
-                ]
-            });
+            expect(result).toHaveLength(3);
+            // key-2 has a date so it sorts first, others without dates come after
+            expect(mockCliExecute).toHaveBeenNthCalledWith(
+                1,
+                ['curl', '/v3/service_credential_bindings/key-2/details'],
+                { env: { 'CF_COLOR': 'false' } }
+            );
         });
 
-        test('should throw error when cfGetInstanceCredentials fails', async () => {
-            const serviceInstanceGuid = 'test-guid-123';
+        test('should filter out resources whose credential fetch fails', async () => {
+            const mockLogger = {
+                info: jest.fn(),
+                debug: jest.fn(),
+                warn: jest.fn()
+            } as unknown as ToolsLogger;
+
+            const mockResources = [
+                createMockResource({ guid: 'key-1', name: 'key-good', updated_at: '2026-06-01T00:00:00Z' }),
+                createMockResource({ guid: 'key-2', name: 'key-bad', updated_at: '2026-01-01T00:00:00Z' })
+            ];
+
+            mockCfGetServiceKeys.mockResolvedValue(mockResources);
+            mockCliExecute
+                .mockResolvedValueOnce({
+                    exitCode: 0,
+                    stdout: JSON.stringify(mockCredentials),
+                    stderr: ''
+                })
+                .mockResolvedValueOnce({
+                    exitCode: 1,
+                    stdout: '',
+                    stderr: 'Not found'
+                });
+
+            const result = await getServiceKeys(serviceInstanceGuid, 'updated_at', mockLogger);
+
+            expect(result).toHaveLength(1);
+            expect(result[0]).toEqual(mockCredentials);
+            expect(mockLogger.warn).toHaveBeenCalledWith(
+                expect.stringContaining("Failed to fetch credentials for service key 'key-bad'")
+            );
+            expect(mockLogger.debug).toHaveBeenCalledWith('Retrieved credentials for 1 of 2 service key(s)');
+        });
+
+        test('should return single credential for single resource', async () => {
+            const mockResources = [
+                createMockResource({ guid: 'key-1', name: 'only-key', updated_at: '2026-06-01T00:00:00Z' })
+            ];
+
+            mockCfGetServiceKeys.mockResolvedValue(mockResources);
+            mockCliExecute.mockResolvedValue({
+                exitCode: 0,
+                stdout: JSON.stringify(mockCredentials),
+                stderr: ''
+            });
+
+            const result = await getServiceKeys(serviceInstanceGuid);
+
+            expect(result).toEqual([mockCredentials]);
+            expect(mockCfGetServiceKeys).toHaveBeenCalledWith(expectedFilter);
+        });
+
+        test('should return empty array when no resources exist', async () => {
+            mockCfGetServiceKeys.mockResolvedValue([]);
+
+            const result = await getServiceKeys(serviceInstanceGuid);
+
+            expect(result).toEqual([]);
+            expect(mockCliExecute).not.toHaveBeenCalled();
+        });
+
+        test('should throw error when cfGetServiceKeys fails', async () => {
             const error = new Error('Service instance not found');
-            mockCFLocal.cfGetInstanceCredentials.mockRejectedValue(error);
+            mockCfGetServiceKeys.mockRejectedValue(error);
 
             await expect(getServiceKeys(serviceInstanceGuid)).rejects.toThrow(
                 t('error.cfGetInstanceCredentialsFailed', {
@@ -136,14 +329,7 @@ describe('CF Services CLI', () => {
                     error: error.message
                 })
             );
-            expect(mockCFLocal.cfGetInstanceCredentials).toHaveBeenCalledWith({
-                filters: [
-                    {
-                        value: serviceInstanceGuid,
-                        key: eFilters.service_instance_guids
-                    }
-                ]
-            });
+            expect(mockCfGetServiceKeys).toHaveBeenCalledWith(expectedFilter);
         });
     });
 
@@ -157,11 +343,11 @@ describe('CF Services CLI', () => {
                 stdout: 'Service key created successfully',
                 stderr: ''
             };
-            mockCFToolsCliExecute.mockResolvedValue(mockResponse);
+            mockCliExecute.mockResolvedValue(mockResponse);
 
             await createServiceKey(serviceInstanceName, serviceKeyName);
 
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
+            expect(mockCliExecute).toHaveBeenCalledWith(
                 ['create-service-key', serviceInstanceName, serviceKeyName, '--wait'],
                 { env: { 'CF_COLOR': 'false' } }
             );
@@ -173,7 +359,7 @@ describe('CF Services CLI', () => {
                 stdout: '',
                 stderr: 'Service instance not found'
             };
-            mockCFToolsCliExecute.mockResolvedValue(mockResponse);
+            mockCliExecute.mockResolvedValue(mockResponse);
 
             await expect(createServiceKey(serviceInstanceName, serviceKeyName)).rejects.toThrow(
                 t('error.createServiceKeyFailed', {
@@ -181,7 +367,7 @@ describe('CF Services CLI', () => {
                     error: mockResponse.stderr
                 })
             );
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
+            expect(mockCliExecute).toHaveBeenCalledWith(
                 ['create-service-key', serviceInstanceName, serviceKeyName, '--wait'],
                 { env: { 'CF_COLOR': 'false' } }
             );
@@ -189,12 +375,12 @@ describe('CF Services CLI', () => {
 
         test('should throw error when create-service-key command throws exception', async () => {
             const error = new Error('Network error');
-            mockCFToolsCliExecute.mockRejectedValue(error);
+            mockCliExecute.mockRejectedValue(error);
 
             await expect(createServiceKey(serviceInstanceName, serviceKeyName)).rejects.toThrow(
                 t('error.createServiceKeyFailed', { serviceInstanceName, error: error.message })
             );
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
+            expect(mockCliExecute).toHaveBeenCalledWith(
                 ['create-service-key', serviceInstanceName, serviceKeyName, '--wait'],
                 { env: { 'CF_COLOR': 'false' } }
             );
@@ -216,12 +402,12 @@ describe('CF Services CLI', () => {
                 stdout: JSON.stringify(mockJsonResponse),
                 stderr: ''
             };
-            mockCFToolsCliExecute.mockResolvedValue(mockResponse);
+            mockCliExecute.mockResolvedValue(mockResponse);
 
             const result = await requestCfApi(url);
 
             expect(result).toEqual(mockJsonResponse);
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
+            expect(mockCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
         });
 
         test('should throw error when response is empty', async () => {
@@ -230,12 +416,12 @@ describe('CF Services CLI', () => {
                 stdout: '',
                 stderr: ''
             };
-            mockCFToolsCliExecute.mockResolvedValue(mockResponse);
+            mockCliExecute.mockResolvedValue(mockResponse);
 
             await expect(requestCfApi(url)).rejects.toThrow(
                 t('error.failedToRequestCFAPI', { error: t('error.emptyCFAPIResponse') })
             );
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
+            expect(mockCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
         });
 
         test('should throw error when curl command fails', async () => {
@@ -244,12 +430,12 @@ describe('CF Services CLI', () => {
                 stdout: '',
                 stderr: 'Unauthorized'
             };
-            mockCFToolsCliExecute.mockResolvedValue(mockResponse);
+            mockCliExecute.mockResolvedValue(mockResponse);
 
             await expect(requestCfApi(url)).rejects.toThrow(
                 t('error.failedToRequestCFAPI', { error: mockResponse.stderr })
             );
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
+            expect(mockCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
         });
 
         test('should throw error when JSON parsing fails', async () => {
@@ -258,7 +444,7 @@ describe('CF Services CLI', () => {
                 stdout: 'invalid json',
                 stderr: ''
             };
-            mockCFToolsCliExecute.mockResolvedValue(mockResponse);
+            mockCliExecute.mockResolvedValue(mockResponse);
 
             await expect(requestCfApi(url)).rejects.toThrow(
                 t('error.failedToRequestCFAPI', {
@@ -267,15 +453,15 @@ describe('CF Services CLI', () => {
                     })
                 })
             );
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
+            expect(mockCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
         });
 
         test('should throw error when curl command throws exception', async () => {
             const error = new Error('Network error');
-            mockCFToolsCliExecute.mockRejectedValue(error);
+            mockCliExecute.mockRejectedValue(error);
 
             await expect(requestCfApi(url)).rejects.toThrow(t('error.failedToRequestCFAPI', { error: error.message }));
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
+            expect(mockCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
         });
 
         test('should handle generic type parameter', async () => {
@@ -291,12 +477,62 @@ describe('CF Services CLI', () => {
                 stdout: JSON.stringify(mockJsonResponse),
                 stderr: ''
             };
-            mockCFToolsCliExecute.mockResolvedValue(mockResponse);
+            mockCliExecute.mockResolvedValue(mockResponse);
 
             const result = await requestCfApi<{ resources: Array<{ name: string; description: string }> }>(url);
 
             expect(result).toEqual(mockJsonResponse);
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
+            expect(mockCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
+        });
+    });
+
+    describe('updateServiceInstance', () => {
+        const serviceInstanceName = 'test-xsuaa-service';
+        const parameters = {
+            xsappname: 'test-app',
+            'tenant-mode': 'dedicated',
+            'oauth2-configuration': { 'redirect-uris': ['https://**.applicationstudio.cloud.sap/**'] }
+        };
+
+        test('should update service instance successfully', async () => {
+            const mockResponse = {
+                exitCode: 0,
+                stdout: 'OK',
+                stderr: ''
+            };
+            mockCliExecute.mockResolvedValue(mockResponse);
+
+            await updateServiceInstance(serviceInstanceName, parameters);
+
+            expect(mockCliExecute).toHaveBeenCalledWith(
+                ['update-service', serviceInstanceName, '-c', JSON.stringify(parameters), '--wait'],
+                { env: { 'CF_COLOR': 'false' } }
+            );
+        });
+
+        test('should throw error when update-service command fails', async () => {
+            const mockResponse = {
+                exitCode: 1,
+                stdout: '',
+                stderr: 'Service instance not found'
+            };
+            mockCliExecute.mockResolvedValue(mockResponse);
+
+            await expect(updateServiceInstance(serviceInstanceName, parameters)).rejects.toThrow(
+                t('error.failedToUpdateServiceInstance', {
+                    serviceInstanceName,
+                    error: mockResponse.stderr
+                })
+            );
+        });
+
+        test('should throw error when update-service command throws exception', async () => {
+            const error = new Error('Network error');
+            mockCliExecute.mockRejectedValue(error);
+
+            await expect(updateServiceInstance(serviceInstanceName, parameters)).rejects.toThrow(
+                t('error.failedToUpdateServiceInstance', { serviceInstanceName, error: error.message })
+            );
         });
     });
 });

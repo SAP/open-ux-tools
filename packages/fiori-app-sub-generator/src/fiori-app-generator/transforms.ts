@@ -11,14 +11,13 @@ import type {
     Template as TemplateSettingsFE
 } from '@sap-ux/fiori-elements-writer';
 import { OdataVersion, TemplateType as TemplateTypeFE } from '@sap-ux/fiori-elements-writer';
-import type { FreestyleApp, Template as TemplateSettingsFF } from '@sap-ux/fiori-freestyle-writer';
+import type { FreestyleApp, Template as TemplateSettingsFF, BasicAppSettings } from '@sap-ux/fiori-freestyle-writer';
 import { TemplateType as TemplateTypeFF } from '@sap-ux/fiori-freestyle-writer';
-import type { BasicAppSettings } from '@sap-ux/fiori-freestyle-writer/dist/types';
 import { DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
-import { ServiceType } from '@sap-ux/odata-service-writer';
+import { ServiceType, type OdataService } from '@sap-ux/odata-service-writer';
 import { AuthenticationType } from '@sap-ux/store';
 import { latestVersionString } from '@sap-ux/ui5-info';
-import type { Floorplan, State } from '../types';
+import type { Floorplan, State, Service } from '../types/index.js';
 import {
     DEFAULT_HOST,
     DEFAULT_SERVICE_PATH,
@@ -28,7 +27,7 @@ import {
     MAIN_DATASOURCE_NAME,
     MAIN_MODEL_NAME,
     UI5_VERSION_PROPS
-} from '../types';
+} from '../types/index.js';
 import {
     assignSapUxLayerValue,
     convertCapRuntimeToCapProjectType,
@@ -36,7 +35,7 @@ import {
     getAnnotations,
     getAppId,
     getMinSupportedUI5Version
-} from '../utils';
+} from '../utils/index.js';
 import type { Package } from '@sap-ux/project-access';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
@@ -185,6 +184,43 @@ function getUI5Uri(): string {
 }
 
 /**
+ * Return the preview settings for the app configuration based on the service configuration.
+ *
+ * @param service - the service config from the state
+ * @returns - preview settings
+ */
+function getPreviewSettings(service: Service): Partial<OdataService['previewSettings']> {
+    let previewSettings: Partial<OdataService['previewSettings']> = {};
+
+    if (
+        service.destinationAuthType === DestinationAuthType.SAML_ASSERTION ||
+        service.connectedSystem?.destination?.Authentication === DestinationAuthType.SAML_ASSERTION ||
+        AuthenticationType.ReentranceTicket === service.connectedSystem?.backendSystem?.authenticationType ||
+        // Apps generated with stored service keys (legacy) will use re-entrance tickets for connectivity
+        // New stored systems will only use re-entrance
+        service.connectedSystem?.backendSystem?.serviceKeys ||
+        // If 'cloud' this will enable preview on VSCode (using re-entrance) for app portability
+        (getHostEnvironment() === hostEnvironment.bas &&
+            service.connectedSystem?.destination &&
+            isAbapEnvironmentOnBtp(service.connectedSystem?.destination))
+    ) {
+        previewSettings = { authenticationType: AuthenticationType.ReentranceTicket };
+    } else if (service.apiHubConfig) {
+        previewSettings = { apiHub: true };
+    }
+
+    if (service.connectedSystem?.backendSystem?.connectionType === 'odata_service') {
+        const url = service.connectedSystem.backendSystem.url;
+        previewSettings = {
+            ...previewSettings,
+            connectPath: url ? new URL(url).pathname : undefined
+        };
+    }
+
+    return previewSettings;
+}
+
+/**
  * Transform Fiori Tools State to the type required by the open source ux-tools module.
  * Process inputs to set correct defaults.
  *
@@ -255,22 +291,10 @@ export async function transformState<T>(
             };
         }
 
-        if (
-            service.destinationAuthType === DestinationAuthType.SAML_ASSERTION ||
-            service.connectedSystem?.destination?.Authentication === DestinationAuthType.SAML_ASSERTION ||
-            AuthenticationType.ReentranceTicket === service.connectedSystem?.backendSystem?.authenticationType ||
-            // Apps generated with stored service keys (legacy) will use re-entrance tickets for connectivity
-            // New stored systems will only use re-entrance
-            service.connectedSystem?.backendSystem?.serviceKeys ||
-            // If 'cloud' this will enable preview on VSCode (using re-entrance) for app portability
-            (getHostEnvironment() === hostEnvironment.bas &&
-                service.connectedSystem?.destination &&
-                isAbapEnvironmentOnBtp(service.connectedSystem?.destination))
-        ) {
-            appConfig.service.previewSettings = { authenticationType: AuthenticationType.ReentranceTicket };
-        } else if (service.apiHubConfig) {
-            appConfig.service.previewSettings = { apiHub: true };
-        }
+        appConfig.service.previewSettings = {
+            ...appConfig.service.previewSettings,
+            ...getPreviewSettings(service)
+        };
     }
 
     return appConfig as T;
@@ -370,7 +394,9 @@ function getBaseAppConfig(
             // Striclty speaking we should not need to guard here. If a template is not supported for OPA test generation then nothing should be generated.
             addTests: canGenerateTests(template.type),
             generateIndex: generateIndexHtml,
-            addAnnotations: entityRelatedConfig?.addFEOPAnnotations || entityRelatedConfig?.addLineItemAnnotations,
+            ...(!(floorplan === FloorplanFF.FF_SIMPLE) && {
+                addAnnotations: entityRelatedConfig?.addFEOPAnnotations || entityRelatedConfig?.addLineItemAnnotations
+            }),
             useVirtualPreviewEndpoints: project.enableVirtualEndpoints,
             addCdsUi5Plugin: project.addCdsUi5Plugin ?? true // Defaults to true
         },

@@ -1,2 +1,2 @@
-export * from './adt-types';
-export * from './external-services';
+export * from './adt-types.js';
+export * from './external-services.js';

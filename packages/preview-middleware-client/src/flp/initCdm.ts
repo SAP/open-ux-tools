@@ -5,7 +5,10 @@ import type { Window } from 'types/global';
  *
  * @returns {void}
  */
-export default function initCdm(): void {
+((): void => {
+    const initScript = document.getElementById('init-cdm');
+    const basePath = initScript?.dataset.basePath ?? '';
+
     (window as unknown as Window)['sap-ushell-config'] = {
         defaultRenderer: 'fiori2',
         renderers: {
@@ -32,7 +35,7 @@ export default function initCdm(): void {
             homeApp: {
                 component: {
                     name: 'open.ux.preview.client.flp.homepage',
-                    url: '/preview/client/flp/homepage'
+                    url: `${basePath}/preview/client/flp/homepage`
                 }
             }
         },
@@ -59,7 +62,7 @@ export default function initCdm(): void {
                 adapter: {
                     config: {
                         ignoreSiteDataPersonalization: true,
-                        siteDataUrl: '/cdm.json'
+                        siteDataUrl: `${basePath}/cdm.json`
                     }
                 }
             },
@@ -108,4 +111,4 @@ export default function initCdm(): void {
             }
         }
     };
-}
+})();

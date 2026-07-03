@@ -1,3 +1,3 @@
-export * from './UISections';
-export * from './UISection';
-export * from './UISplitter';
+export * from './UISections.js';
+export * from './UISection.js';
+export * from './UISplitter.js';

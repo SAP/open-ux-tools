@@ -1,15 +1,15 @@
 sap.ui.define([
     "sap/fe/test/JourneyRunner",
-	"testNameSpace/lropv4cap/test/integration/pages/BooksList",
-	"testNameSpace/lropv4cap/test/integration/pages/BooksObjectPage"
-], function (JourneyRunner, BooksList, BooksObjectPage) {
+	"testNameSpace/lropv4cap/test/integration/pages/BooksList.gen",
+	"testNameSpace/lropv4cap/test/integration/pages/BooksObjectPage.gen"
+], function (JourneyRunner, BooksListGenerated, BooksObjectPageGenerated) {
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('testNameSpace/lropv4cap') + '/test/flpSandbox.html#testNameSpacelropv4cap-tile',
+        launchUrl: sap.ui.require.toUrl('testNameSpace/lropv4cap') + '/test/flp.html#app-preview',
         pages: {
-			onTheBooksList: BooksList,
-			onTheBooksObjectPage: BooksObjectPage
+			onTheBooksListGenerated: BooksListGenerated,
+			onTheBooksObjectPageGenerated: BooksObjectPageGenerated
         },
         async: true
     });

@@ -9,25 +9,35 @@ on:
         types: [opened, synchronize, reopened]
         branches: [main]
 
+permissions:
+    contents: read
+    pull-requests: read
+
 jobs:
     # Job 1: Create changeset for general Renovate dependency PRs (NOT @ui5/manifest)
     create-changeset:
         name: Create Dependency Changeset
         runs-on: ubuntu-latest
-        # All Renovate PRs EXCEPT @ui5/manifest (which has custom handling)
+        environment: ci-secrets
+        permissions:
+            contents: write
+            pull-requests: read
+        # All Renovate PRs EXCEPT @ui5/manifest (which has custom handling).
+        # !head.repo.fork guards against pull_request_target pwn-request attacks.
         if: |
+            !github.event.pull_request.head.repo.fork &&
             github.actor == 'renovate[bot]' &&
             !contains(github.event.pull_request.title, '@ui5/manifest')
         steps:
             - name: Checkout PR branch
-              uses: actions/checkout@v6
+              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
               with:
                   ref: ${{ github.head_ref }}
                   fetch-depth: 0
                   token: ${{ secrets.ACCESS_PAT }}
 
             - name: Create changeset
-              uses: mscharley/dependency-changesets-action@v1.2.3
+              uses: mscharley/dependency-changesets-action@f96232368519695969bea8a8cfff7cca32b1e56a # v1.2.4
               with:
                   token: ${{ secrets.ACCESS_PAT }}
                   author-email: 'github-actions[bot]@users.noreply.github.com'
@@ -37,34 +47,40 @@ jobs:
     update-manifest-fixtures:
         name: Update @ui5/manifest Fixtures & Changeset
         runs-on: ubuntu-latest
+        environment: ci-secrets
+        permissions:
+            contents: write
+            pull-requests: read
+        # !head.repo.fork guards against pull_request_target pwn-request attacks.
         if: |
+            !github.event.pull_request.head.repo.fork &&
             github.actor == 'renovate[bot]' &&
             contains(github.event.pull_request.title, '@ui5/manifest')
         steps:
             - name: Checkout PR branch
-              uses: actions/checkout@v6
+              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
               with:
                   ref: ${{ github.head_ref }}
                   fetch-depth: 0
                   token: ${{ secrets.ACCESS_PAT }}
 
             - name: Setup pnpm
-              uses: pnpm/action-setup@v4.2.0
+              uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
 
             - name: Use Node.js 22.x
-              uses: actions/setup-node@v6
+              uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
               with:
                   node-version: 22.x
                   cache: 'pnpm'
 
             - name: Install pnpm modules
-              run: pnpm install --frozen-lockfile
+              run: pnpm install --frozen-lockfile --ignore-scripts
 
             - name: Build project
               run: pnpm build
 
             - name: Run update script (fixtures & fallbacks)
-              run: node scripts/update-ui5manifest-version.js
+              run: node scripts/update-ui5manifest-version.mjs
 
             - name: Check for changes
               id: check-changes
@@ -85,7 +101,7 @@ jobs:
                   git push --no-verify
 
             - name: Create changeset
-              uses: mscharley/dependency-changesets-action@v1.2.3
+              uses: mscharley/dependency-changesets-action@f96232368519695969bea8a8cfff7cca32b1e56a # v1.2.4
               with:
                   token: ${{ secrets.ACCESS_PAT }}
                   author-email: 'github-actions[bot]@users.noreply.github.com'

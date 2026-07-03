@@ -18,7 +18,7 @@
         }
     }
     &__callout {
-        border-radius: 4px;
+        border-radius: var(--vscode-cornerRadius-small, 4px);
         .ms-Callout-main {
             padding: 0;
         }
@@ -43,6 +43,10 @@
                     margin-right: 0;
                 }
             }
+        }
+        &__text {
+            text-align: left;
+            line-height: 16px;
         }
     }
     &__field {

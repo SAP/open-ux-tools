@@ -1,70 +1,85 @@
-import axios from 'axios';
-import { readFileSync } from 'node:fs';
-import { cfGetAvailableOrgs, Cli } from '@sap/cf-tools';
-
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import {
+const mockAxiosGet = jest.fn() as jest.Mock;
+const mockAxiosPost = jest.fn() as jest.Mock;
+const mockReadFileSync = jest.fn<typeof realFs.readFileSync>();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockIsLoggedInCf = jest.fn() as jest.Mock;
+const mockGetServiceKeys = jest.fn() as jest.Mock;
+const mockCreateServiceKey = jest.fn() as jest.Mock;
+const mockRequestCfApi = jest.fn() as jest.Mock;
+const mockGetProjectNameForXsSecurity = jest.fn() as jest.Mock;
+const mockCfGetServiceKeys = jest.fn<typeof realCfTools.cfGetServiceKeys>();
+const mockCfCreateServiceKey = jest.fn<typeof realCfTools.cfCreateServiceKey>();
+const mockCfGetAvailableOrgs = jest.fn<typeof realCfTools.cfGetAvailableOrgs>();
+const mockCFToolsCliExecute = jest.fn<typeof realCfTools.execute>();
+
+const realFs = await import('node:fs');
+jest.unstable_mockModule('node:fs', () => ({
+    ...realFs,
+    readFileSync: mockReadFileSync,
+    default: { ...realFs.default, readFileSync: mockReadFileSync }
+}));
+
+jest.unstable_mockModule('axios', () => ({
+    default: { get: mockAxiosGet, post: mockAxiosPost },
+    __esModule: true
+}));
+
+const realCfTools = await import('@sap/cf-tools');
+jest.unstable_mockModule('@sap/cf-tools', () => ({
+    ...realCfTools,
+    cfGetServiceKeys: mockCfGetServiceKeys,
+    cfCreateServiceKey: mockCfCreateServiceKey,
+    cfGetAvailableOrgs: mockCfGetAvailableOrgs,
+    Cli: { execute: mockCFToolsCliExecute }
+}));
+
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
+}));
+
+jest.unstable_mockModule('../../../../src/cf/core/auth', () => ({
+    isLoggedInCf: mockIsLoggedInCf
+}));
+
+jest.unstable_mockModule('../../../../src/cf/services/cli', () => ({
+    getServiceKeys: mockGetServiceKeys,
+    createServiceKey: mockCreateServiceKey,
+    requestCfApi: mockRequestCfApi
+}));
+
+jest.unstable_mockModule('../../../../src/cf/project', () => ({
+    getProjectNameForXsSecurity: mockGetProjectNameForXsSecurity
+}));
+
+const {
     getBusinessServiceInfo,
     getFDCApps,
     getCfUi5AppInfo,
+    getCfBaseAppInbounds,
     getFDCRequestArguments,
     createServiceInstance,
     getServiceNameByTags,
     createServices,
+    getServiceTags,
+    getServiceKeyCredentialsWithTags,
     getOrCreateServiceInstanceKeys
-} from '../../../../src/cf/services/api';
-import { initI18n, t } from '../../../../src/i18n';
-import { isLoggedInCf } from '../../../../src/cf/core/auth';
-import { getProjectNameForXsSecurity } from '../../../../src/cf/project';
-import type { CfConfig, ServiceInfo, MtaYaml } from '../../../../src/types';
-import { getServiceKeys, createServiceKey, requestCfApi } from '../../../../src/cf/services/cli';
+} = await import('../../../../src/cf/services/api.js');
+const { initI18n, t } = await import('../../../../src/i18n.js');
+import type { CfConfig, ServiceInfo, MtaYaml } from '../../../../src/types.js';
 
-jest.mock('fs', () => ({
-    readFileSync: jest.fn()
-}));
-jest.mock('axios');
-jest.mock('@sap/cf-tools', () => ({
-    cfGetServiceKeys: jest.fn(),
-    cfCreateServiceKey: jest.fn(),
-    cfGetAvailableOrgs: jest.fn(),
-    Cli: {
-        execute: jest.fn()
-    }
-}));
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
-}));
-jest.mock('../../../../src/cf/core/auth', () => ({
-    isLoggedInCf: jest.fn()
-}));
-jest.mock('../../../../src/cf/services/cli', () => ({
-    getServiceKeys: jest.fn(),
-    createServiceKey: jest.fn(),
-    requestCfApi: jest.fn()
-}));
-jest.mock('../../../../src/cf/project', () => ({
-    getProjectNameForXsSecurity: jest.fn()
-}));
-
-const mockAxios = axios as jest.Mocked<typeof axios>;
-const mockIsAppStudio = isAppStudio as jest.MockedFunction<typeof isAppStudio>;
-const mockRequestCfApi = requestCfApi as jest.MockedFunction<typeof requestCfApi>;
-const mockReadFileSync = readFileSync as jest.MockedFunction<typeof readFileSync>;
-const mockIsLoggedInCf = isLoggedInCf as jest.MockedFunction<typeof isLoggedInCf>;
-const mockGetServiceKeys = getServiceKeys as jest.MockedFunction<typeof getServiceKeys>;
-const mockCreateServiceKey = createServiceKey as jest.MockedFunction<typeof createServiceKey>;
-const mockCFToolsCliExecute = Cli.execute as jest.MockedFunction<typeof Cli.execute>;
-const mockCfGetAvailableOrgs = cfGetAvailableOrgs as jest.MockedFunction<typeof cfGetAvailableOrgs>;
-const mockGetProjectNameForXsSecurity = getProjectNameForXsSecurity as jest.MockedFunction<
-    typeof getProjectNameForXsSecurity
->;
+// Alias mockAxiosGet as mockAxios for compatibility with existing tests
+const mockAxios = { get: mockAxiosGet, post: mockAxiosPost } as any;
 
 describe('CF Services API', () => {
     const mockLogger = {
         log: jest.fn(),
-        error: jest.fn()
+        error: jest.fn(),
+        debug: jest.fn()
     } as unknown as ToolsLogger;
 
     beforeAll(async () => {
@@ -257,9 +272,7 @@ describe('CF Services API', () => {
                     } as Record<string, string>)
                 } as Record<string, unknown>)
             );
-            expect(mockLogger.log).toHaveBeenCalledWith(
-                'Fetching ui5AppInfo.json from FDC: https://ui5-flexibility-design-and-configuration.sapui5flex.cfapps.test.cf.com/api/business-service/ui5appinfo?appId=test-app-id&appHostId=host-1&appHostId=host-2'
-            );
+            expect(mockLogger.log).toHaveBeenCalledWith('Fetching ui5AppInfo.json');
             expect(mockLogger.log).toHaveBeenCalledWith('Successfully retrieved ui5AppInfo.json from FDC');
         });
 
@@ -306,6 +319,138 @@ describe('CF Services API', () => {
                 `Failed to get ui5AppInfo.json from FDC: ${errorMsg}`
             );
             expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('Getting ui5AppInfo.json failed'));
+        });
+    });
+
+    describe('getCfBaseAppInbounds', () => {
+        const config: CfConfig = {
+            org: { GUID: 'test-org-guid', Name: 'test-org' },
+            space: { GUID: 'test-space-guid', Name: 'test-space' },
+            url: 'test.cf.com',
+            token: 'test-token'
+        };
+        const appId = 'test-app-id';
+        const appHostId = 'test-app-host-id';
+
+        test('should return inbounds on 200 with data', async () => {
+            const mockInbounds = {
+                'intent-1': {
+                    semanticObject: 'SalesOrder',
+                    action: 'display',
+                    title: 'Sales Order'
+                }
+            };
+
+            mockIsAppStudio.mockReturnValue(false);
+            mockAxios.get.mockResolvedValue({
+                data: { inbounds: mockInbounds },
+                status: 200
+            });
+
+            const result = await getCfBaseAppInbounds(appId, appHostId, config, mockLogger);
+
+            expect(result).toEqual(mockInbounds);
+            expect(mockAxios.get).toHaveBeenCalledWith(
+                'https://ui5-flexibility-design-and-configuration.sapui5flex.cfapps.test.cf.com/api/business-service/inbounds?appId=test-app-id&appHostId=test-app-host-id&sap-language=en',
+                expect.objectContaining({
+                    headers: expect.objectContaining({
+                        'Authorization': 'Bearer test-token'
+                    } as Record<string, string>)
+                } as Record<string, unknown>)
+            );
+            expect(mockLogger.log).toHaveBeenCalledWith(expect.stringContaining('Fetching inbounds from FDC'));
+            expect(mockLogger.log).toHaveBeenCalledWith('Successfully retrieved inbounds from FDC');
+        });
+
+        test('should return undefined on 200 with empty inbounds', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            mockAxios.get.mockResolvedValue({
+                data: { inbounds: {} },
+                status: 200
+            });
+
+            const result = await getCfBaseAppInbounds(appId, appHostId, config, mockLogger);
+
+            expect(result).toBeUndefined();
+        });
+
+        test('should throw on non-200 status', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            mockAxios.get.mockResolvedValue({
+                data: { inbounds: {} },
+                status: 404
+            });
+
+            await expect(getCfBaseAppInbounds(appId, appHostId, config, mockLogger)).rejects.toThrow(
+                t('error.failedToGetFDCInbounds', {
+                    error: t('error.failedToConnectToFDCService', { status: 404 })
+                })
+            );
+        });
+
+        test('should throw on network error', async () => {
+            const errorMsg = 'Network error';
+            const error = new Error(errorMsg);
+            mockIsAppStudio.mockReturnValue(false);
+            mockAxios.get.mockRejectedValue(error);
+
+            await expect(getCfBaseAppInbounds(appId, appHostId, config, mockLogger)).rejects.toThrow(
+                t('error.failedToGetFDCInbounds', { error: errorMsg })
+            );
+            expect(mockLogger.debug).toHaveBeenCalledWith(error);
+        });
+
+        test('should use custom language param in URL', async () => {
+            const mockInbounds = {
+                'intent-1': {
+                    semanticObject: 'SalesOrder',
+                    action: 'display'
+                }
+            };
+
+            mockIsAppStudio.mockReturnValue(false);
+            mockAxios.get.mockResolvedValue({
+                data: { inbounds: mockInbounds },
+                status: 200
+            });
+
+            await getCfBaseAppInbounds(appId, appHostId, config, mockLogger, 'de');
+
+            expect(mockAxios.get).toHaveBeenCalledWith(expect.stringContaining('sap-language=de'), expect.any(Object));
+        });
+
+        test('should use BAS cert domain when isAppStudio() is true', async () => {
+            const basConfig: CfConfig = {
+                org: { GUID: 'test-org-guid', Name: 'test-org' },
+                space: { GUID: 'test-space-guid', Name: 'test-space' },
+                url: 'us10.hana.ondemand.com',
+                token: 'test-token'
+            };
+            const mockInbounds = {
+                'intent-1': {
+                    semanticObject: 'SalesOrder',
+                    action: 'display'
+                }
+            };
+
+            mockIsAppStudio.mockReturnValue(true);
+            mockAxios.get.mockResolvedValue({
+                data: { inbounds: mockInbounds },
+                status: 200
+            });
+
+            await getCfBaseAppInbounds(appId, appHostId, basConfig, mockLogger);
+
+            expect(mockAxios.get).toHaveBeenCalledWith(
+                expect.stringContaining(
+                    'https://ui5-flexibility-design-and-configuration.cert.cfapps.us10.hana.ondemand.com'
+                ),
+                expect.objectContaining({
+                    headers: expect.not.objectContaining({
+                        'Authorization': expect.any(String)
+                    })
+                })
+            );
         });
     });
 
@@ -596,11 +741,10 @@ describe('CF Services API', () => {
             );
 
             expect(mockRequestCfApi).toHaveBeenCalledWith(expect.stringContaining('service_instances'));
-            expect(mockGetServiceKeys).toHaveBeenCalledWith('test-guid');
+            expect(mockGetServiceKeys).toHaveBeenCalledWith('test-guid', 'updated_at', mockLogger);
         });
 
         test('should create non-xsuaa service without security file path', async () => {
-            const projectPath = '/test/project';
             const yamlContent: MtaYaml = {
                 '_schema-version': '3.2.0',
                 ID: 'test-project',
@@ -639,7 +783,7 @@ describe('CF Services API', () => {
             // Verify that the call does NOT include the -c flag (no security file path)
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(expect.not.arrayContaining(['-c']));
             expect(mockRequestCfApi).toHaveBeenCalledWith(expect.stringContaining('service_instances'));
-            expect(mockGetServiceKeys).toHaveBeenCalledWith('test-guid');
+            expect(mockGetServiceKeys).toHaveBeenCalledWith('test-guid', 'updated_at', mockLogger);
         });
     });
 
@@ -828,6 +972,134 @@ describe('CF Services API', () => {
                         error: 'Failed to create service key'
                     })
                 })
+            );
+        });
+    });
+
+    describe('getServiceTags', () => {
+        const spaceGuid = 'space-guid-123';
+
+        test('should return tags when service offering is found', async () => {
+            const serviceName = 'xsuaa';
+            const mockResources = [
+                {
+                    name: serviceName,
+                    tags: ['tag1', 'tag2']
+                }
+            ];
+
+            mockRequestCfApi.mockResolvedValue({ resources: mockResources });
+
+            const result = await getServiceTags(spaceGuid, serviceName);
+
+            expect(mockRequestCfApi).toHaveBeenCalledWith(
+                `/v3/service_offerings?per_page=1000&space_guids=${spaceGuid}&names=${serviceName}`
+            );
+            expect(result).toEqual(['tag1', 'tag2']);
+        });
+
+        test('should return empty array when service offering has no tags or is not found', async () => {
+            const serviceName = 'unknown';
+
+            mockRequestCfApi.mockResolvedValue({ resources: [{ name: 'other-service', tags: [] }] });
+
+            const result = await getServiceTags(spaceGuid, serviceName);
+
+            expect(result).toEqual([]);
+        });
+
+        test('should return empty array when resources is empty or undefined', async () => {
+            mockRequestCfApi.mockResolvedValue({ resources: [] });
+
+            const result = await getServiceTags('space', 'xsuaa');
+
+            expect(result).toEqual([]);
+        });
+    });
+
+    describe('getServiceKeyCredentialsWithTags', () => {
+        const spaceGuid = 'space-guid-123';
+        const serviceName = 'xsuaa';
+        const serviceInstanceName = 'my-xsuaa';
+        const plan = 'application';
+
+        test('should return credentials with tags when service instance and keys exist', async () => {
+            const mockTags = ['tag1'];
+            const mockCredentials = {
+                clientid: 'client-id',
+                clientsecret: 'secret',
+                url: '/uaa.test',
+                uaa: {
+                    clientid: 'uaa-client',
+                    clientsecret: 'uaa-secret',
+                    url: '/uaa.test'
+                },
+                uri: '/uaa.test',
+                endpoints: {}
+            };
+
+            mockRequestCfApi
+                .mockResolvedValueOnce({ resources: [{ name: serviceName, tags: mockTags }] })
+                .mockResolvedValueOnce({
+                    resources: [{ name: serviceInstanceName, guid: 'instance-guid-123' }]
+                });
+            mockGetServiceKeys.mockResolvedValue([{ credentials: mockCredentials }]);
+
+            const result = await getServiceKeyCredentialsWithTags(
+                spaceGuid,
+                serviceName,
+                serviceInstanceName,
+                plan,
+                mockLogger
+            );
+
+            expect(result).toEqual({
+                label: serviceName,
+                name: serviceInstanceName,
+                tags: mockTags,
+                plan,
+                credentials: mockCredentials
+            });
+            expect(mockRequestCfApi).toHaveBeenCalledTimes(2);
+            expect(mockGetServiceKeys).toHaveBeenCalledWith('instance-guid-123', 'updated_at', mockLogger);
+        });
+
+        test('should return null and log error when service instance is not found', async () => {
+            mockRequestCfApi
+                .mockResolvedValueOnce({ resources: [{ name: serviceName, tags: [] }] })
+                .mockResolvedValueOnce({ resources: [] });
+
+            const result = await getServiceKeyCredentialsWithTags(
+                spaceGuid,
+                serviceName,
+                serviceInstanceName,
+                plan,
+                mockLogger
+            );
+
+            expect(result).toBeNull();
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                `Service instance '${serviceInstanceName}' not found, skipping`
+            );
+            expect(mockGetServiceKeys).not.toHaveBeenCalled();
+        });
+
+        test('should return null and log error when getServiceTags or getServiceInstance throws', async () => {
+            mockRequestCfApi.mockRejectedValue(new Error('CF API error'));
+
+            const result = await getServiceKeyCredentialsWithTags(
+                spaceGuid,
+                serviceName,
+                serviceInstanceName,
+                plan,
+                mockLogger
+            );
+
+            expect(result).toBeNull();
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                expect.stringContaining(
+                    `Failed to get credentials and tags for service '${serviceName}' (instance: '${serviceInstanceName}'): CF API error`
+                )
             );
         });
     });

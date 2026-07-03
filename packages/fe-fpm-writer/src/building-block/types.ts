@@ -1,5 +1,5 @@
-import type { IdGeneratorFunction } from '../common/file';
-import type { CustomElement, CustomFragment, EventHandler, FragmentContentData, Position } from '../common/types';
+import type { IdGeneratorFunction } from '../common/file.js';
+import type { CustomElement, CustomFragment, EventHandler, FragmentContentData, Position } from '../common/types.js';
 
 /**
  * Building block type.
@@ -10,6 +10,7 @@ export enum BuildingBlockType {
     FilterBar = 'filter-bar',
     Chart = 'chart',
     CustomFilterField = 'custom-filter-field',
+    CustomFormField = 'custom-form-field',
     Field = 'field',
     Form = 'form',
     Page = 'page',
@@ -386,6 +387,18 @@ export interface Table extends BuildingBlock {
  * <macro:Page title="My Page Title" description="My Page Description" />
  * @extends {BuildingBlock}
  */
+export const PAGE_AGGREGATIONS = [
+    'breadcrumbs',
+    'navigationActions',
+    'titleContent',
+    'actions',
+    'headerContent',
+    'items',
+    'footer'
+] as const;
+
+export type PageAggregationName = (typeof PAGE_AGGREGATIONS)[number];
+
 export interface Page extends BuildingBlock {
     /**
      * The title of the page.
@@ -396,6 +409,43 @@ export interface Page extends BuildingBlock {
      * The description of the page.
      */
     description?: string;
+
+    /**
+     * The template type for the page building block.
+     * 'full' generates a full page template with all aggregations and controller stubs.
+     * 'basic' generates a minimal self-closing tag (default behavior).
+     */
+    templateType?: PageTemplateType;
+
+    /**
+     * Optional mContent strings keyed by aggregation name.
+     * When templateType is 'full', each entry is written as the inner XML of the corresponding aggregation.
+     */
+    aggregations?: Partial<Record<PageAggregationName, string>>;
+}
+
+export const PAGE_TEMPLATE_TYPE_FULL = 'full' as const;
+export const PAGE_TEMPLATE_TYPE_BASIC = 'basic' as const;
+export type PageTemplateType = typeof PAGE_TEMPLATE_TYPE_FULL | typeof PAGE_TEMPLATE_TYPE_BASIC;
+
+/**
+ * A group of XML nodes representing one Page aggregation element and its preceding sibling comments.
+ * Used when re-ordering aggregation children under a macros:Page element.
+ */
+export type XmlAggregationGroup = { comments: Node[]; element: Element; originalIndex: number };
+
+/**
+ * Configuration for appending a named aggregation to an existing building block element in a view XML file.
+ */
+export interface GenerateBuildingBlockAggregationConfig {
+    /** Path to the view XML file, relative to basePath. */
+    viewPath: string;
+    /** Type of the building block whose aggregation should be appended. Currently only 'Page' is supported. */
+    buildingBlockType: BuildingBlockType;
+    /** Name of the aggregation to append. */
+    aggregationName: PageAggregationName;
+    /** Optional inner XML content for the aggregation. */
+    mContent?: string;
 }
 
 /**
@@ -440,6 +490,49 @@ export interface CustomFilterField extends BuildingBlock {
      * The fragment that contains the template for the custom filter.
      */
     embededFragment?: EmbededFragment;
+}
+
+/**
+ * Represents a custom form field building block.
+ * Custom form fields can be added to Form building blocks using the FormElement control.
+ *
+ * @see https://sapui5.hana.ondemand.com/#/api/sap.fe.macros.FormElement
+ * @example
+ * <macros:Form id="MyForm" metaPath="@com.sap.vocabularies.UI.v1.FieldGroup#General">
+ *   <macros:fields>
+ *     <macros:FormElement
+ *       label="Custom Field"
+ *       placement="After"
+ *       anchor="DataField::ExistingProperty">
+ *       <macros:fields>
+ *         <core:Fragment fragmentName="myApp.ext.CustomField" type="XML" />
+ *       </macros:fields>
+ *     </macros:FormElement>
+ *   </macros:fields>
+ * </macros:Form>
+ * @extends {BuildingBlock}
+ */
+export interface CustomFormField extends BuildingBlock {
+    /**
+     * Optional key for the FormElement.
+     */
+    formElementKey?: string;
+    /**
+     * The text that will be displayed as label for this FormElement.
+     */
+    label: string;
+    /**
+     * Position of the custom form field relative to an anchor element.
+     */
+    position?: Position;
+    /**
+     * The fragment that contains the template for the custom form field.
+     */
+    embededFragment: EmbededFragment;
+    /**
+     * Property used to construct the metaPath for the custom form field, e.g. "EntitySet/targetProperty".
+     */
+    targetProperty?: string;
 }
 
 export interface CustomColumn extends BuildingBlock {

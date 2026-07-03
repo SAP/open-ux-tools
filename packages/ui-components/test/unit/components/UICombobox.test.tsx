@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import Enzyme from 'enzyme';
 import type { UIComboBoxOption, UIComboBoxProps, UIComboBoxState } from '../../../src/components/UIComboBox';
 import { UIComboBox, UIComboBoxLoaderType, UISelectableOptionMenuItemType } from '../../../src/components/UIComboBox';
 import { data as originalData, groupsData as originalGroupsData } from '../../__mock__/select-data';
@@ -79,12 +79,16 @@ describe('<UIComboBox />', () => {
                 "stylesheetKey": "ComboBox",
                 "window": [Window],
               },
+              "callout": Object {
+                "boxShadow": "var(--ui-box-shadow-small)",
+              },
               "errorMessage": Array [
                 Object {
                   "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
                   "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
                   "borderColor": "var(--vscode-inputValidation-errorBorder)",
                   "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
+                  "borderRadius": "var(--vscode-cornerRadius-small)",
                   "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
                   "color": "var(--vscode-input-foreground)",
                   "margin": 0,
@@ -119,12 +123,16 @@ describe('<UIComboBox />', () => {
                 "stylesheetKey": "ComboBox",
                 "window": [Window],
               },
+              "callout": Object {
+                "boxShadow": "var(--ui-box-shadow-small)",
+              },
               "errorMessage": Array [
                 Object {
                   "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
                   "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
                   "borderColor": "var(--vscode-inputValidation-errorBorder)",
                   "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
+                  "borderRadius": "var(--vscode-cornerRadius-small)",
                   "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
                   "color": "var(--vscode-input-foreground)",
                   "margin": 0,

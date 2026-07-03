@@ -5,14 +5,21 @@ import type {
     LayeredRepositoryService
 } from '@sap-ux/axios-extension';
 import { isAxiosError, TransportRequestService } from '@sap-ux/axios-extension';
+import { LogLevel } from '@sap-ux/logger';
 import type { Logger } from '@sap-ux/logger';
 import { writeFileSync } from 'node:fs';
-import type { AbapDeployConfig } from '../types';
-import { getConfigForLogging, isBspConfig, throwConfigMissingError } from './config';
-import { promptConfirmation } from './prompt';
+import type { AbapDeployConfig } from '../types/index.js';
+import { getConfigForLogging, isBspConfig, throwConfigMissingError } from './config.js';
+import { promptConfirmation } from './prompt.js';
 import { createAbapServiceProvider, getCredentialsWithPrompts } from '@sap-ux/system-access';
-import { getAppDescriptorVariant } from './archive';
-import { validateBeforeDeploy, formatSummary, showAdditionalInfoForOnPrem, checkForCredentials } from './validate';
+import { getAppDescriptorVariant } from './archive.js';
+import {
+    validateBeforeDeploy,
+    formatSummary,
+    showAdditionalInfoForOnPrem,
+    checkForCredentials,
+    warnOnFullUrlDestination
+} from './validate.js';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 
 /**
@@ -61,7 +68,7 @@ async function handleError(
     }
     logger.error(`${command === tryDeploy ? 'Deployment' : 'Undeployment'} has failed.`);
     logger.debug(getConfigForLogging(config));
-    if (!config.verbose) {
+    if (!config.verbose && !(config.log !== undefined && config.log >= LogLevel.Debug)) {
         logger.error(
             'Change logging level to debug your issue\n\t(see examples https://github.com/SAP/open-ux-tools/tree/main/packages/deploy-tooling#configuration-with-logging-enabled)'
         );
@@ -173,10 +180,17 @@ async function axiosErrorRetryHandler(
  * @returns service returns the UI5 ABAP Repository service
  */
 function getDeployService<T extends Ui5AbapRepositoryService | LayeredRepositoryService>(
-    factoryFn: (alias?: string) => T,
+    factoryFn: ((alias?: string) => T) | undefined,
     config: AbapDeployConfig,
     logger: Logger
 ): T {
+    if (typeof factoryFn !== 'function') {
+        throw new TypeError(
+            `The '${config.target?.destination}' destination is not recognized as an ABAP system. ` +
+                `Ensure the destination has one of the following properties configured: ` +
+                `WebIDEUsage including 'odata_abap', a 'sap-client' value, 'sap-platform' set to 'abap', or 'ProxyType' set to 'OnPremise'.`
+        );
+    }
     const service = factoryFn(config.target?.service);
     service.log = logger;
     if (!config.strictSsl) {
@@ -302,7 +316,7 @@ async function tryDeploy(
                     )}`
                 );
             }
-            const service = getDeployService(provider.getUi5AbapRepository.bind(provider), config, logger);
+            const service = getDeployService(provider.getUi5AbapRepository?.bind(provider), config, logger);
             await service.deploy({
                 archive,
                 bsp: config.app,
@@ -341,6 +355,7 @@ export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: 
         writeFileSync(`archive.zip`, new Uint8Array(archive));
     }
     const provider = await createProvider(config, logger);
+    await warnOnFullUrlDestination(config.target.destination, logger);
     logger.info(`Starting to deploy${config.test === true ? ' in test mode' : ''}.`);
     await tryDeploy(provider, config, logger, archive);
 }
@@ -365,7 +380,7 @@ async function tryUndeploy(provider: AbapServiceProvider, config: AbapDeployConf
                 transport: config.app.transport
             });
         } else if (isBspConfig(config.app)) {
-            const service = getDeployService(provider.getUi5AbapRepository.bind(provider), config, logger);
+            const service = getDeployService(provider.getUi5AbapRepository?.bind(provider), config, logger);
             await service.undeploy({ bsp: config.app, testMode: config.test });
         } else {
             throwConfigMissingError('app-name');

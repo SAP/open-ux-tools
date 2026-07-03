@@ -3,8 +3,8 @@ import type { ReactElement } from 'react';
 import type { ConnectionStatus, UpdateSystemStatus } from '@sap-ux/sap-systems-ext-types';
 import { UIActionCallout, UIIcon, UILink, UILoader, UiIcons, type IActionCalloutDetail } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
-import { actions } from '../../../../state';
-import { LoadingState } from '../../../../types';
+import { actions } from '../../../../state/index.js';
+import { LoadingState } from '../../../../types/index.js';
 
 import '../../../../styles/SystemStatus.scss';
 
@@ -94,8 +94,11 @@ export function SystemStatus({
                             <UIIcon className="status-icon" iconName={UiIcons.Error} />
                             <label className="system-status-error status-msg">
                                 {connectionStatus.message}
-                                <br />
-                                {outputTabLogMsg(true)}
+                                {connectionStatus?.showOutputChannelLink && (
+                                    <>
+                                        <br /> {outputTabLogMsg(true)}
+                                    </>
+                                )}
                             </label>
                         </div>
                     )}
@@ -123,7 +126,24 @@ export function SystemStatus({
                                         ? 'system-status-info status-msg'
                                         : 'system-status-error status-msg'
                                 }>
-                                {updateSystemStatus.message}
+                                {updateSystemStatus.existingSystem ? (
+                                    <>
+                                        {t('systemStatus.connectionExists.prefix')}
+                                        <UILink
+                                            onClick={() =>
+                                                actions.openExistingSystem(
+                                                    updateSystemStatus.existingSystem!.url,
+                                                    updateSystemStatus.existingSystem?.client
+                                                )
+                                            }
+                                            className="output-link-error">
+                                            {updateSystemStatus.existingSystem.name}
+                                        </UILink>
+                                        {t('systemStatus.connectionExists.suffix')}
+                                    </>
+                                ) : (
+                                    updateSystemStatus.message
+                                )}
                             </label>
                         </div>
                     )}

@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/reload-middleware",
     "description": "Reload middleware",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -9,7 +10,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Areload-middleware"
     },
-    "version": "0.3.18",
+    "version": "1.0.4",
     "author": "@SAP/ux-tools-team",
     "license": "Apache-2.0",
     "main": "dist/index.js",
@@ -20,8 +21,8 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
@@ -43,16 +44,17 @@
         "portfinder": "1.0.38"
     },
     "devDependencies": {
+        "@jest/globals": "30.4.1",
         "@types/connect-livereload": "0.6.3",
         "@types/express": "4.17.21",
         "@types/livereload": "0.9.5",
-        "@types/supertest": "2.0.12",
-        "axios": "1.13.5",
+        "@types/supertest": "7.2.0",
+        "axios": "1.18.0",
         "express": "4.22.1",
         "supertest": "7.2.2"
     },
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
-        "node": ">=20.x"
+        "node": ">=22.x"
     }
 }

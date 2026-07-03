@@ -1,66 +1,71 @@
-import { join } from 'node:path';
+import { jest } from '@jest/globals';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import fsextra from 'fs-extra';
-
 import type { YUIQuestion, CredentialsAnswers } from '@sap-ux/inquirer-common';
 import type { FLPConfigAnswers, TileSettingsAnswers } from '@sap-ux/flp-config-inquirer';
 import type { ToolsLogger } from '@sap-ux/logger';
-import yeomanTest from 'yeoman-test';
-import * as adpTooling from '@sap-ux/adp-tooling';
-import * as btpUtils from '@sap-ux/btp-utils';
-import * as Logger from '@sap-ux/logger';
-import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
-import * as inquirerCommon from '@sap-ux/inquirer-common';
-import * as projectAccess from '@sap-ux/project-access';
-import { AdaptationProjectType, type AbapServiceProvider, type InboundContent } from '@sap-ux/axios-extension';
-import { MessageType } from '@sap-devx/yeoman-ui-types';
+import type { AbapServiceProvider, InboundContent } from '@sap-ux/axios-extension';
+import type * as sysAccessTypes from '@sap-ux/system-access';
 
-import adpFlpConfigGenerator from '../src/app';
-import { rimraf } from 'rimraf';
-import { EventName } from '../src/telemetryEvents';
-import * as sysAccess from '@sap-ux/system-access';
-import { t, initI18n } from '../src/utils/i18n';
-import * as appWizardCache from '../src/utils/appWizardCache';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const originalCwd = process.cwd();
-
-jest.mock('@sap-ux/system-access', () => ({
-    ...jest.requireActual('@sap-ux/system-access'),
+// Register all mocks before dynamic imports
+const realSysAccess = await import('@sap-ux/system-access');
+jest.unstable_mockModule('@sap-ux/system-access', () => ({
+    ...realSysAccess,
     createAbapServiceProvider: jest.fn()
 }));
-jest.mock('../src/utils/appWizardCache', () => ({
+
+jest.unstable_mockModule('../src/utils/appWizardCache', () => ({
     initAppWizardCache: jest.fn(),
     addToCache: jest.fn(),
     getFromCache: jest.fn(),
     deleteCache: jest.fn()
 }));
-jest.mock('@sap-ux/system-access');
-jest.mock('@sap-ux/btp-utils');
-jest.mock('@sap-ux/adp-tooling', () => ({
-    ...jest.requireActual('@sap-ux/adp-tooling'),
+
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: jest.fn(),
+    listDestinations: jest.fn()
+}));
+
+const realAdpTooling = await import('@sap-ux/adp-tooling');
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    ...realAdpTooling,
     isCFEnvironment: jest.fn(),
     getAdpConfig: jest.fn(),
     generateInboundConfig: jest.fn(),
     getBaseAppInbounds: jest.fn(),
+    getCfBaseAppInbounds: jest.fn(),
+    loadCfConfig: jest.fn().mockReturnValue({}),
+    isLoggedInCf: jest.fn().mockResolvedValue(false),
+    getAppParamsFromUI5Yaml: jest.fn().mockReturnValue({ appHostId: '', appName: '', appVersion: '', spaceGuid: '' }),
     SystemLookup: jest.fn().mockImplementation(() => ({
         getSystemByName: jest.fn().mockResolvedValue({
             name: 'testDestination'
-        }) as unknown as sysAccess.AbapTarget
+        }) as unknown as sysAccessTypes.AbapTarget
     })),
     getExistingAdpProjectType: jest.fn()
 }));
-jest.mock('@sap-ux/inquirer-common', () => ({
-    ...jest.requireActual('@sap-ux/inquirer-common'),
+
+const realInquirerCommon = await import('@sap-ux/inquirer-common');
+jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
+    ...realInquirerCommon,
     getCredentialsPrompts: jest.fn(),
     ErrorHandler: jest.fn().mockImplementation(
         () =>
             ({
                 getValidationErrorHelp: () => 'Network Error'
-            }) as unknown as inquirerCommon.ErrorHandler
+            }) as unknown as typeof realInquirerCommon.ErrorHandler
     )
 }));
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
+
+const realFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...realFioriGenShared,
     sendTelemetry: jest.fn().mockReturnValue(new Promise(() => {})),
     TelemetryHelper: {
         initTelemetrySettings: jest.fn(),
@@ -74,6 +79,36 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
     isCli: jest.fn().mockReturnValue(false)
 }));
 
+const mockToolsLogger = jest.fn() as jest.Mock;
+jest.unstable_mockModule('@sap-ux/logger', () => ({
+    ToolsLogger: mockToolsLogger
+}));
+
+const mockGetAppType = jest.fn<typeof realProjectAccess.getAppType>();
+const realProjectAccess = await import('@sap-ux/project-access');
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...realProjectAccess,
+    getAppType: mockGetAppType
+}));
+
+// Dynamic imports after mock registration
+const yeomanTest = (await import('yeoman-test')).default;
+const adpTooling = await import('@sap-ux/adp-tooling');
+const btpUtils = await import('@sap-ux/btp-utils');
+const fioriGenShared = await import('@sap-ux/fiori-generator-shared');
+const inquirerCommon = await import('@sap-ux/inquirer-common');
+const projectAccess = await import('@sap-ux/project-access');
+const { AdaptationProjectType } = await import('@sap-ux/axios-extension');
+const { MessageType } = await import('@sap-devx/yeoman-ui-types');
+const { default: adpFlpConfigGenerator } = await import('../src/app/index.js');
+const { rimraf } = await import('rimraf');
+const { EventName } = await import('../src/telemetryEvents/index.js');
+const sysAccess = await import('@sap-ux/system-access');
+const { t, initI18n } = await import('../src/utils/i18n.js');
+const appWizardCache = await import('../src/utils/appWizardCache.js');
+
+const originalCwd = process.cwd();
+
 const toolsLoggerErrorSpy = jest.fn();
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),
@@ -81,7 +116,7 @@ const loggerMock: ToolsLogger = {
     warn: jest.fn(),
     error: toolsLoggerErrorSpy
 } as Partial<ToolsLogger> as ToolsLogger;
-jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
+mockToolsLogger.mockImplementation(() => loggerMock);
 
 describe('FLPConfigGenerator Integration Tests', () => {
     jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValue(false);
@@ -145,7 +180,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             showErrorMessage: vsCodeMessageSpy
         }
     };
-    jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
+    mockGetAppType.mockResolvedValue('Fiori Adaptation');
     jest.spyOn(adpTooling, 'getBaseAppInbounds').mockResolvedValue(inbounds);
     const generateInboundConfigSpy = jest.spyOn(adpTooling, 'generateInboundConfig');
     const getExistingAdpProjectTypeMock = adpTooling.getExistingAdpProjectType as jest.Mock;
@@ -623,7 +658,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
         await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
     });
 
-    it('Should result in an error message if the project is a CF project', async () => {
+    it('Should result in an error message if the project is a CF project without CF login', async () => {
         jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValueOnce(true);
         jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
             target: {
@@ -652,10 +687,10 @@ describe('FLPConfigGenerator Integration Tests', () => {
 
         await initI18n();
         await runContext.run();
-        expect(vsCodeMessageSpy).toHaveBeenCalledWith(t('error.projectNotSupported'));
+        expect(vsCodeMessageSpy).toHaveBeenCalledWith(t('error.cfLoginRequired'));
     });
 
-    it('Should result in an error message if the project is a CF project and use the logger in case of CLI', async () => {
+    it('Should result in an error message if the project is a CF project without CF login and use the logger in case of CLI', async () => {
         jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValueOnce(true);
         jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
             target: {
@@ -685,7 +720,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
 
         await initI18n();
         await runContext.run();
-        expect(toolsLoggerErrorSpy).toHaveBeenCalledWith(t('error.projectNotSupported'));
+        expect(toolsLoggerErrorSpy).toHaveBeenCalledWith(t('error.cfLoginRequired'));
     });
 
     it('Should result in an error message if the project is not a CloudReady project', async () => {
@@ -1201,5 +1236,200 @@ describe('FLPConfigGenerator Integration Tests', () => {
 
         await runContext.run();
         expect(vsCodeMessageSpy).toHaveBeenCalledWith('Network Error');
+    });
+
+    it('Should work in CF sub-gen mode with pre-fetched inbounds', async () => {
+        const mockPrompts = {
+            items: [
+                {
+                    name: 'Tile settings',
+                    description: 'Configure the tile settings for the application'
+                },
+                {
+                    name: 'SAP Fiori Launchpad Configuration',
+                    description: ''
+                }
+            ],
+            splice: jest.fn()
+        };
+        const testPath = join(testOutputDir, 'test_project_cf_subgen');
+        fs.mkdirSync(testPath, { recursive: true });
+        fsextra.copySync(join(__dirname, 'fixtures/app.variant1'), join(testPath, 'app.variant1'));
+        const testProjectPath = join(testPath, 'app.variant1');
+
+        const sendTelemetrySpy = jest.spyOn(fioriGenShared, 'sendTelemetry');
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                loggerMock,
+                launchAsSubGen: true,
+                inbounds: inbounds,
+                layer: adpTooling.FlexLayer.CUSTOMER_BASE,
+                prompts: mockPrompts,
+                isCfProject: true
+            })
+            .withPrompts(answers);
+
+        await expect(runContext.run()).resolves.not.toThrow();
+        expect(sendTelemetrySpy).toHaveBeenCalledWith(
+            EventName.ADP_FLP_CONFIG_ADDED,
+            expect.objectContaining({
+                OperatingSystem: 'testOS',
+                Platform: 'testPlatform'
+            }),
+            testProjectPath
+        );
+        expect(generateInboundConfigSpy).toHaveBeenCalled();
+    });
+
+    it('Should fetch CF inbounds when CF config is available', async () => {
+        jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValueOnce(true);
+        const mockCfConfig = {
+            org: { GUID: 'test-org-guid', Name: 'test-org' },
+            space: { GUID: 'test-space-guid', Name: 'test-space' },
+            url: '/test.cf',
+            token: 'test-token'
+        };
+        const mockInbounds = { 'inbound-1': { semanticObject: 'SO', action: 'display' } };
+        jest.spyOn(adpTooling, 'loadCfConfig').mockReturnValueOnce(mockCfConfig);
+        jest.spyOn(adpTooling, 'isLoggedInCf').mockResolvedValueOnce(true);
+        jest.spyOn(adpTooling, 'getAppParamsFromUI5Yaml').mockReturnValueOnce({
+            appHostId: 'test-host',
+            appName: 'test-app',
+            appVersion: '1.0.0',
+            spaceGuid: 'test-space-guid'
+        });
+        const getCfBaseAppInboundsSpy = jest
+            .spyOn(adpTooling, 'getCfBaseAppInbounds')
+            .mockResolvedValueOnce(mockInbounds as unknown as projectAccess.ManifestNamespace.Inbound);
+
+        const testProjectPath = join(__dirname, 'fixtures/app.variant1');
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                launchFlpConfigAsSubGenerator: false
+            })
+            .withPrompts(answers);
+
+        await runContext.run();
+        expect(getCfBaseAppInboundsSpy).toHaveBeenCalledWith(
+            'mockReference',
+            'test-host',
+            mockCfConfig,
+            expect.anything()
+        );
+    });
+
+    it('Should abort when CF inbound fetch fails', async () => {
+        jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValueOnce(true);
+        const mockCfConfig = {
+            org: { GUID: 'test-org-guid', Name: 'test-org' },
+            space: { GUID: 'test-space-guid', Name: 'test-space' },
+            url: '/test.cf',
+            token: 'test-token'
+        };
+        jest.spyOn(adpTooling, 'loadCfConfig').mockReturnValueOnce(mockCfConfig);
+        jest.spyOn(adpTooling, 'isLoggedInCf').mockResolvedValueOnce(true);
+        jest.spyOn(adpTooling, 'getAppParamsFromUI5Yaml').mockReturnValueOnce({
+            appHostId: 'test-host',
+            appName: 'test-app',
+            appVersion: '1.0.0',
+            spaceGuid: 'test-space-guid'
+        });
+        jest.spyOn(adpTooling, 'getCfBaseAppInbounds').mockRejectedValueOnce(new Error('Connection failed'));
+
+        const testProjectPath = join(__dirname, 'fixtures/app.variant1');
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                launchFlpConfigAsSubGenerator: false
+            })
+            .withPrompts(answers);
+
+        await initI18n();
+        await runContext.run();
+        expect(vsCodeMessageSpy).toHaveBeenCalledWith(t('error.cfInboundsFetchFailed', { error: 'Connection failed' }));
+    });
+
+    it('Should load CF config from local environment in standalone mode', async () => {
+        jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValueOnce(true);
+        const mockCfConfig = {
+            org: { GUID: 'test-org-guid', Name: 'test-org' },
+            space: { GUID: 'test-space-guid', Name: 'test-space' },
+            url: '/test.cf',
+            token: 'test-token'
+        };
+        jest.spyOn(adpTooling, 'loadCfConfig').mockReturnValueOnce(mockCfConfig);
+        jest.spyOn(adpTooling, 'isLoggedInCf').mockResolvedValueOnce(true);
+        jest.spyOn(adpTooling, 'getAppParamsFromUI5Yaml').mockReturnValueOnce({
+            appHostId: 'auto-detected-host',
+            appName: 'test-app',
+            appVersion: '1.0.0',
+            spaceGuid: 'test-space-guid'
+        });
+        const mockInbounds = { 'inbound-1': { semanticObject: 'SO', action: 'display' } };
+        const getCfBaseAppInboundsSpy = jest
+            .spyOn(adpTooling, 'getCfBaseAppInbounds')
+            .mockResolvedValueOnce(mockInbounds as unknown as projectAccess.ManifestNamespace.Inbound);
+
+        const testProjectPath = join(__dirname, 'fixtures/app.variant1');
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                launchFlpConfigAsSubGenerator: false
+            })
+            .withPrompts(answers);
+
+        await runContext.run();
+        expect(getCfBaseAppInboundsSpy).toHaveBeenCalledWith(
+            'mockReference',
+            'auto-detected-host',
+            mockCfConfig,
+            expect.anything()
+        );
     });
 });

@@ -1,15 +1,100 @@
-import {
-    type AbapServiceProvider,
-    AdaptationProjectType,
-    type LayeredRepositoryService
-} from '@sap-ux/axios-extension';
+import { jest } from '@jest/globals';
+import type { AbapServiceProvider, LayeredRepositoryService } from '@sap-ux/axios-extension';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 import { GUIDED_ANSWERS_ICON, HELP_NODES, HELP_TREE } from '@sap-ux/guided-answers-helper';
 import { AxiosError, type AxiosResponseHeaders } from 'axios';
-import { isAppStudio } from '@sap-ux/btp-utils';
 import { AuthenticationType } from '@sap-ux/store';
-import { initI18n, t } from '../../src/i18n';
-import { PromptState } from '../../src/prompts/prompt-state';
-import {
+import type { AbapSystemChoice, BackendTarget } from '../../src/types.js';
+import { ClientChoiceValue, PackageInputChoices, TargetSystemType, TransportChoices } from '../../src/types.js';
+import { mockDestinations } from '../fixtures/destinations.js';
+
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockGetTransportListFromService = jest.fn<typeof actualServiceProviderUtils.getTransportListFromService>();
+
+const mockFindBackendSystemByUrl = jest.fn<typeof actualUtils.findBackendSystemByUrl>();
+const mockInitTransportConfig = jest.fn<typeof actualUtils.initTransportConfig>();
+const mockQueryPackages = jest.fn<typeof actualUtils.queryPackages>();
+
+const actualUtils = await import('../../src/utils.js');
+jest.unstable_mockModule('../../src/utils', () => ({
+    ...actualUtils,
+    findBackendSystemByUrl: mockFindBackendSystemByUrl,
+    initTransportConfig: mockInitTransportConfig,
+    queryPackages: mockQueryPackages,
+    getPackageAnswer: (previousAnswers?: any, statePackage?: string): string => {
+        return (
+            statePackage ??
+            (previousAnswers?.packageInputChoice === 'ListExistingChoice'
+                ? (previousAnswers?.packageAutocomplete ?? '')
+                : (previousAnswers?.packageManual ?? ''))
+        );
+    },
+    getSystemConfig: (_useStandalone: boolean, abapDeployConfig?: any, _backendTarget?: any) => ({
+        url: abapDeployConfig?.url,
+        client: abapDeployConfig?.client,
+        destination: abapDeployConfig?.destination
+    })
+}));
+
+const mockGetTransportList = jest.fn() as jest.Mock;
+const mockCreateTransportNumber = jest.fn() as jest.Mock;
+
+jest.unstable_mockModule('../../src/validator-utils', () => ({
+    getTransportList: mockGetTransportList,
+    createTransportNumber: mockCreateTransportNumber,
+    listPackages: jest.fn(),
+    isAppNameValid: (name: string): { valid: boolean; errorMessage: string | undefined } | undefined => {
+        const length = name ? name.trim().length : 0;
+        if (!length) {
+            return { valid: false, errorMessage: 'An application name is required.' };
+        }
+        if (!/^[A-Za-z0-9_/]*$/.test(name)) {
+            return { valid: false, errorMessage: 'Only alphanumeric, underscore, and slash characters are allowed.' };
+        }
+        return { valid: true, errorMessage: undefined };
+    },
+    isEmptyString: (urlString: string): boolean => {
+        return !urlString || !/\S/.test(urlString);
+    },
+    isValidUrl: (input: string): boolean => {
+        try {
+            const url = new URL(input);
+            return !!url.protocol && !!url.host;
+        } catch {
+            return false;
+        }
+    },
+    isValidClient: (client: string): boolean => {
+        const regex = /^\d{3}$/;
+        return !!regex.exec(client);
+    }
+}));
+
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
+}));
+
+const actualServiceProviderUtils = await import('../../src/service-provider-utils/index.js');
+jest.unstable_mockModule('../../src/service-provider-utils', () => ({
+    ...actualServiceProviderUtils,
+    getTransportListFromService: mockGetTransportListFromService
+}));
+
+jest.unstable_mockModule('../../src/service-provider-utils/abap-service-provider', () => ({
+    AbapServiceProviderManager: {
+        getOrCreateServiceProvider: jest.fn(),
+        isConnected: jest.fn(),
+        deleteExistingServiceProvider: jest.fn(),
+        getIsDefaultProviderAbapCloud: jest.fn(),
+        resetIsDefaultProviderAbapCloud: jest.fn()
+    }
+}));
+
+const { initI18n, t } = await import('../../src/i18n.js');
+const { PromptState } = await import('../../src/prompts/prompt-state.js');
+const {
     validateAppDescription,
     validateClient,
     validateClientChoiceQuestion,
@@ -25,28 +110,9 @@ import {
     validateTransportQuestion,
     validateUi5AbapRepoName,
     validateUrl
-} from '../../src/prompts/validators';
-import * as serviceProviderUtils from '../../src/service-provider-utils';
-import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
-import type { AbapSystemChoice, BackendTarget } from '../../src/types';
-import { ClientChoiceValue, PackageInputChoices, TargetSystemType, TransportChoices } from '../../src/types';
-import * as utils from '../../src/utils';
-import * as validatorUtils from '../../src/validator-utils';
-import { mockDestinations } from '../fixtures/destinations';
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn(),
-    isS4HC: jest.fn(),
-    isAbapEnvironmentOnBtp: jest.fn()
-}));
-
-jest.mock('../../src/service-provider-utils', () => ({
-    getTransportListFromService: jest.fn()
-}));
-
-jest.mock('../../src/service-provider-utils/abap-service-provider');
-
-const mockIsAppStudio = isAppStudio as jest.Mock;
+} = await import('../../src/prompts/validators.js');
+const serviceProviderUtils = await import('../../src/service-provider-utils/index.js');
+const { AbapServiceProviderManager } = await import('../../src/service-provider-utils/abap-service-provider.js');
 
 describe('Test validators', () => {
     const previousAnswers = {
@@ -87,8 +153,8 @@ describe('Test validators', () => {
 
             expect(result).toBe(
                 t('errors.validators.unsupportedAdpProjectType', {
-                    adpProjectType,
-                    supportedAdpProjectTypes
+                    adpProjectTypeLabel: t('errors.validators.adpOnPremProjectType'),
+                    supportedAdpProjectTypesList: t('errors.validators.adpCloudProjectType')
                 })
             );
         });
@@ -102,8 +168,8 @@ describe('Test validators', () => {
 
             expect(result).toBe(
                 t('errors.validators.unsupportedAdpProjectType', {
-                    adpProjectType,
-                    supportedAdpProjectTypes
+                    adpProjectTypeLabel: t('errors.validators.adpCloudProjectType'),
+                    supportedAdpProjectTypesList: t('errors.validators.adpOnPremProjectType')
                 })
             );
         });
@@ -127,8 +193,8 @@ describe('Test validators', () => {
 
             expect(result).toBe(
                 t('errors.validators.unsupportedAdpProjectType', {
-                    adpProjectType,
-                    supportedAdpProjectTypes: AdaptationProjectType.ON_PREMISE
+                    adpProjectTypeLabel: t('errors.validators.adpCloudProjectType'),
+                    supportedAdpProjectTypesList: t('errors.validators.adpOnPremProjectType')
                 })
             );
         });
@@ -141,6 +207,28 @@ describe('Test validators', () => {
             const result = await validateDestinationQuestion('Dest2', mockDestinations, undefined, adpProjectType);
 
             expect(result).toBe(true);
+        });
+
+        it('[ADP] should return false when the destination is empty even if the ADP project type is onPrem', async () => {
+            const adpProjectType = AdaptationProjectType.ON_PREMISE;
+            mockResolvedSystemInfo([AdaptationProjectType.ON_PREMISE]);
+
+            const result = await validateDestinationQuestion('', mockDestinations, undefined, adpProjectType);
+
+            expect(PromptState.abapDeployConfig.destination).toBe(undefined);
+            expect(PromptState.abapDeployConfig.url).toBe(undefined);
+            expect(result).toBe(false);
+        });
+
+        it('[ADP] should return false when the destination is only whitespace even if the ADP project type is onPrem', async () => {
+            const adpProjectType = AdaptationProjectType.ON_PREMISE;
+            mockResolvedSystemInfo([AdaptationProjectType.ON_PREMISE]);
+
+            const result = await validateDestinationQuestion('   ', mockDestinations, undefined, adpProjectType);
+
+            expect(PromptState.abapDeployConfig.destination).toBe(undefined);
+            expect(PromptState.abapDeployConfig.url).toBe(undefined);
+            expect(result).toBe(false);
         });
     });
 
@@ -173,6 +261,7 @@ describe('Test validators', () => {
             expect(PromptState.abapDeployConfig).toStrictEqual({
                 url: 'https://mock.url.target1.com',
                 client: '001',
+                connectPath: undefined,
                 isAbapCloud: false,
                 scp: false,
                 targetSystem: 'https://mock.url.target1.com'
@@ -221,8 +310,8 @@ describe('Test validators', () => {
             );
             expect(result).toBe(
                 t('errors.validators.unsupportedAdpProjectType', {
-                    adpProjectType: AdaptationProjectType.CLOUD_READY,
-                    supportedAdpProjectTypes: [AdaptationProjectType.ON_PREMISE]
+                    adpProjectTypeLabel: t('errors.validators.adpCloudProjectType'),
+                    supportedAdpProjectTypesList: t('errors.validators.adpOnPremProjectType')
                 })
             );
         });
@@ -230,7 +319,7 @@ describe('Test validators', () => {
 
     describe('validateUrl', () => {
         it('should return true for valid URL found in backend', () => {
-            jest.spyOn(utils, 'findBackendSystemByUrl').mockReturnValue({
+            mockFindBackendSystemByUrl.mockReturnValue({
                 name: 'Target1',
                 url: 'https://mock.url.target1.com',
                 client: '001',
@@ -243,6 +332,7 @@ describe('Test validators', () => {
             expect(result).toBe(true);
             expect(PromptState.abapDeployConfig).toStrictEqual({
                 url: 'https://mock.url.target1.com',
+                connectPath: undefined,
                 client: '001',
                 isAbapCloud: true,
                 scp: true,
@@ -251,11 +341,12 @@ describe('Test validators', () => {
         });
 
         it('should return true for valid URL not found in backend', () => {
-            jest.spyOn(utils, 'findBackendSystemByUrl').mockReturnValue(undefined);
+            mockFindBackendSystemByUrl.mockReturnValue(undefined);
             const result = validateUrl('https://mock.notfound.url.target1.com');
             expect(result).toBe(true);
             expect(PromptState.abapDeployConfig).toStrictEqual({
                 url: 'https://mock.notfound.url.target1.com',
+                connectPath: undefined,
                 isAbapCloud: false,
                 scp: false,
                 targetSystem: undefined,
@@ -352,7 +443,7 @@ describe('Test validators', () => {
         });
 
         it('should return true for valid credentials', async () => {
-            jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
+            mockInitTransportConfig.mockResolvedValueOnce({
                 transportConfig: {} as any,
                 transportConfigNeedsCreds: false
             });
@@ -360,7 +451,7 @@ describe('Test validators', () => {
         });
 
         it('should return error message for invalid credentials', async () => {
-            jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
+            mockInitTransportConfig.mockResolvedValueOnce({
                 transportConfig: {} as any,
                 transportConfigNeedsCreds: true
             });
@@ -370,7 +461,7 @@ describe('Test validators', () => {
         });
 
         it('[ADP] should return true for valid credentials and supported ADP project type', async () => {
-            jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
+            mockInitTransportConfig.mockResolvedValueOnce({
                 transportConfig: {} as any,
                 transportConfigNeedsCreds: false
             });
@@ -385,7 +476,7 @@ describe('Test validators', () => {
         });
 
         it('[ADP] should return an error for valid credentials and NOT supported ADP project type', async () => {
-            jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
+            mockInitTransportConfig.mockResolvedValueOnce({
                 transportConfig: {} as any,
                 transportConfigNeedsCreds: false
             });
@@ -398,8 +489,8 @@ describe('Test validators', () => {
                 await validateCredentials('pass1', { ...previousAnswers, username: 'user1' }, undefined, adpProjectType)
             ).toBe(
                 t('errors.validators.unsupportedAdpProjectType', {
-                    adpProjectType,
-                    supportedAdpProjectTypes
+                    adpProjectTypeLabel: t('errors.validators.adpCloudProjectType'),
+                    supportedAdpProjectTypesList: t('errors.validators.adpOnPremProjectType')
                 })
             );
         });
@@ -451,21 +542,19 @@ describe('Test validators', () => {
         });
 
         it('should return true when list packages is selected and querying packages is succesful', async () => {
-            jest.spyOn(utils, 'queryPackages').mockResolvedValueOnce(['ZPACKAGE1', 'ZPACKAGE2']);
+            mockQueryPackages.mockResolvedValueOnce(['ZPACKAGE1', 'ZPACKAGE2']);
             const result = await validatePackageChoiceInput(PackageInputChoices.ListExistingChoice, {});
             expect(result).toBe(true);
         });
 
         it('should return error when list packages is selected and querying packages fails', async () => {
-            jest.spyOn(utils, 'queryPackages').mockResolvedValueOnce([]);
+            mockQueryPackages.mockResolvedValueOnce([]);
             const result = await validatePackageChoiceInput(PackageInputChoices.ListExistingChoice, {});
             expect(result).toBe(t('warnings.packageNotFound'));
         });
 
         it('should return a GA link when list packages is selected and querying packages fails due to cert error', async () => {
-            jest.spyOn(utils, 'queryPackages').mockRejectedValueOnce(
-                new AxiosError('Expired certificate', 'CERT_HAS_EXPIRED')
-            );
+            mockQueryPackages.mockRejectedValueOnce(new AxiosError('Expired certificate', 'CERT_HAS_EXPIRED'));
             const result = await validatePackageChoiceInput(PackageInputChoices.ListExistingChoice, {});
             expect(result).toEqual({
                 link: {
@@ -480,7 +569,7 @@ describe('Test validators', () => {
 
     describe('validatePackageChoiceInputForCli', () => {
         it('should throw error for invalid package choice input', async () => {
-            jest.spyOn(utils, 'queryPackages').mockResolvedValueOnce([]);
+            mockQueryPackages.mockResolvedValueOnce([]);
             try {
                 await validatePackageChoiceInputForCli({}, PackageInputChoices.ListExistingChoice);
             } catch (e) {
@@ -691,7 +780,7 @@ describe('Test validators', () => {
         });
 
         it('should return true for listing transport when transport request found for given config', async () => {
-            jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce([
+            mockGetTransportList.mockResolvedValueOnce([
                 { transportReqNumber: 'K123456', transportReqDescription: 'Mock transport request' }
             ]);
             const result = await validateTransportChoiceInput({
@@ -708,7 +797,7 @@ describe('Test validators', () => {
         });
 
         it('should return errors messages for listing transport when transport request empty or undefined', async () => {
-            jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce([]);
+            mockGetTransportList.mockResolvedValueOnce([]);
 
             let result = await validateTransportChoiceInput({
                 useStandalone: false,
@@ -721,7 +810,7 @@ describe('Test validators', () => {
             });
             expect(result).toBe(t('warnings.noTransportReqs'));
 
-            jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce(undefined);
+            mockGetTransportList.mockResolvedValueOnce(undefined);
             result = await validateTransportChoiceInput({
                 useStandalone: false,
                 input: TransportChoices.ListExistingChoice,
@@ -746,7 +835,7 @@ describe('Test validators', () => {
         });
 
         it('should return true if previous choice is undefined', async () => {
-            jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce([
+            mockGetTransportList.mockResolvedValueOnce([
                 { transportReqNumber: 'K123456', transportReqDescription: 'Mock transport request' }
             ]);
 
@@ -761,9 +850,7 @@ describe('Test validators', () => {
         });
 
         it('should return true if creating a new transport request is successful', async () => {
-            const createTransportNumberSpy = jest
-                .spyOn(validatorUtils, 'createTransportNumber')
-                .mockResolvedValueOnce('TR1234');
+            mockCreateTransportNumber.mockResolvedValueOnce('TR1234');
 
             const result = await validateTransportChoiceInput({
                 useStandalone: false,
@@ -777,7 +864,7 @@ describe('Test validators', () => {
                 transportDescription: 'Mock description for new TR'
             });
             expect(PromptState.transportAnswers.newTransportNumber).toBe('TR1234');
-            expect(createTransportNumberSpy.mock.calls[0][0]).toStrictEqual({
+            expect(mockCreateTransportNumber.mock.calls[0][0]).toStrictEqual({
                 packageName: 'ZPACKAGE',
                 ui5AppName: 'ZUI5REPO',
                 description: 'Mock description for new TR'
@@ -786,7 +873,7 @@ describe('Test validators', () => {
         });
 
         it('should return error if creating a new transport request returns undefined', async () => {
-            jest.spyOn(validatorUtils, 'createTransportNumber').mockResolvedValueOnce(undefined);
+            mockCreateTransportNumber.mockResolvedValueOnce(undefined);
 
             const result = await validateTransportChoiceInput({
                 useStandalone: false,
@@ -809,7 +896,7 @@ describe('Test validators', () => {
         });
 
         it('should handle cert error when listing transports', async () => {
-            jest.spyOn(validatorUtils, 'getTransportList').mockRejectedValueOnce(
+            mockGetTransportList.mockRejectedValueOnce(
                 new AxiosError('Unable to verify signature in chain', 'UNABLE_TO_VERIFY_LEAF_SIGNATURE')
             );
 

@@ -1,4 +1,4 @@
-import type { CustomElement, InternalCustomElement } from '../common/types';
+import type { CustomElement, InternalCustomElement } from '../common/types.js';
 
 /**
  * Controller extension's associated page type.
@@ -54,9 +54,7 @@ export interface ManifestControllerExtension {
 }
 
 export interface InternalControllerExtension
-    extends ControllerExtension,
-        ManifestControllerExtension,
-        InternalCustomElement {
+    extends ControllerExtension, ManifestControllerExtension, InternalCustomElement {
     /**
      * Derived full extension key/id in manifest "sap.ui.controllerExtensions" object.
      */

@@ -1,8 +1,11 @@
-import type { AbapDeployConfig, CliOptions } from '../../../src/types';
-import { getDeploymentConfig, mergeConfig } from '../../../src/cli/config';
-import { join } from 'node:path';
+import type { AbapDeployConfig, CliOptions } from '../../../src/types/index.js';
+import { getDeploymentConfig, mergeConfig } from '../../../src/cli/config.js';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 import ProcessEnv = NodeJS.ProcessEnv;
+
+const __testdirname = dirname(fileURLToPath(import.meta.url));
 
 describe('cli/config', () => {
     let env: ProcessEnv;
@@ -16,7 +19,7 @@ describe('cli/config', () => {
     });
 
     describe('getDeploymentConfig', () => {
-        const fixture = join(__dirname, '../../fixtures/simple-app');
+        const fixture = join(__testdirname, '../../fixtures/simple-app');
         test('valid config path', async () => {
             expect(await getDeploymentConfig(join(fixture, 'ui5-deploy.yaml'))).toBeDefined();
         });
@@ -33,7 +36,7 @@ describe('cli/config', () => {
             app: {
                 name: '~name',
                 description: '~description',
-                package: '~package',
+                package: '~PACKAGE',
                 transport: '~transport'
             },
             target: {
@@ -73,7 +76,7 @@ describe('cli/config', () => {
         });
 
         test('service keys merged correctly', async () => {
-            const cloudServiceKey = join(__dirname, '../../fixtures/service-keys.json');
+            const cloudServiceKey = join(__testdirname, '../../fixtures/service-keys.json');
             const merged = await mergeConfig(config, {
                 cloud: true,
                 cloudServiceKey
@@ -131,6 +134,28 @@ describe('cli/config', () => {
                 username: 'env:DotEnvMyUsername',
                 password: 'env:DotEnvMyPassword'
             });
+        });
+    });
+
+    describe('mergeConfig package name normalization', () => {
+        const baseConfig: AbapDeployConfig = {
+            app: { name: 'ZAPP', description: '', package: '', transport: '' },
+            target: { url: 'http://target.example' }
+        };
+
+        test('lowercase package is preserved as-is after merge (normalization happens in validateConfig)', async () => {
+            const merged = await mergeConfig({ ...baseConfig, app: { ...baseConfig.app, package: '$tmp' } }, {});
+            expect(merged.app.package).toBe('$tmp');
+        });
+
+        test('uppercase package is preserved as-is after merge', async () => {
+            const merged = await mergeConfig({ ...baseConfig, app: { ...baseConfig.app, package: '$TMP' } }, {});
+            expect(merged.app.package).toBe('$TMP');
+        });
+
+        test('package from CLI option is used as-is after merge', async () => {
+            const merged = await mergeConfig(baseConfig, { package: '$tmp' } as CliOptions);
+            expect(merged.app.package).toBe('$tmp');
         });
     });
 });

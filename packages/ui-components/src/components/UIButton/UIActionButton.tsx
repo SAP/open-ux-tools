@@ -2,8 +2,9 @@ import React from 'react';
 import type { IButtonProps, IButtonStyles } from '@fluentui/react';
 import { ActionButton } from '@fluentui/react';
 
-import { UIContextualMenu } from '../UIContextualMenu';
-import type { UIIContextualMenuProps } from '../UIContextualMenu';
+import { UIContextualMenu } from '../UIContextualMenu/index.js';
+import type { UIIContextualMenuProps } from '../UIContextualMenu/index.js';
+import { BASE_STYLES } from './UIDefaultButton.js';
 
 interface UIButtonProps extends IButtonProps {
     menuProps?: UIIContextualMenuProps;
@@ -31,7 +32,8 @@ export class UIActionButton extends React.Component<UIButtonProps, {}> {
         return {
             root: {
                 minWidth: 'initial',
-                height: 22,
+                minHeight: BASE_STYLES.height,
+                height: BASE_STYLES.height,
                 fontSize: '13px',
                 fontWeight: 400,
                 color: 'var(--vscode-foreground)',
@@ -65,7 +67,7 @@ export class UIActionButton extends React.Component<UIButtonProps, {}> {
                 color: 'var(--vscode-foreground)',
                 backgroundColor: 'var(--vscode-menubar-selectionBackground)',
                 outline: '1px solid var(--vscode-contrastActiveBorder)',
-                borderRadius: 3,
+                borderRadius: 'var(--vscode-cornerRadius-small, 4px)',
                 textDecoration: 'none',
                 selectors: {
                     color: 'var(--vscode-foreground)'

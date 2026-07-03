@@ -1,33 +1,15 @@
+import { jest } from '@jest/globals';
 import type { AbapServiceProvider, ServiceProvider, V2CatalogService, V4CatalogService } from '@sap-ux/axios-extension';
 import { ODataVersion } from '@sap-ux/axios-extension';
 import type { Destination, Destinations } from '@sap-ux/btp-utils';
-import { WebIDEAdditionalData, WebIDEUsage } from '@sap-ux/btp-utils';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
-import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { SystemService, BackendSystem } from '@sap-ux/store';
 import type { ListChoiceOptions, Question } from 'inquirer';
-import { ERROR_TYPE } from '../../../../../src';
-import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
-import type { ValidationResult } from '../../../../../src/prompts/types';
-import { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
-import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
-import * as promptHelpers from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
-import type { SystemSelectionAnswerType } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
-import { NewSystemChoice } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
-import type { SystemSelectionAnswers } from '../../../../../src/prompts/datasources/sap-system/system-selection/questions';
-import {
-    getSystemConnectionQuestions,
-    getSystemSelectionQuestions
-} from '../../../../../src/prompts/datasources/sap-system/system-selection/questions';
-import LoggerHelper from '../../../../../src/prompts/logger-helper';
-import type { ConnectedSystem } from '../../../../../src/types';
-import { promptNames } from '../../../../../src/types';
-import { getPromptHostEnvironment, PromptState } from '../../../../../src/utils';
-
-jest.mock('../../../../../src/utils', () => ({
-    ...jest.requireActual('../../../../../src/utils'),
-    getPromptHostEnvironment: jest.fn()
-}));
+import type { ValidationResult } from '../../../../../src/prompts/types.js';
+import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator.js';
+import type { SystemSelectionAnswerType } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers.js';
+import type { SystemSelectionAnswers } from '../../../../../src/prompts/datasources/sap-system/system-selection/questions.js';
+import type { ConnectedSystem } from '../../../../../src/types.js';
 
 const backendSystemBasic: BackendSystem = {
     name: 'http://abap.on.prem:1234',
@@ -60,6 +42,16 @@ const backendSystemServiceKeys: BackendSystem = {
     systemType: 'AbapCloud',
     connectionType: 'abap_catalog'
 };
+const backendSystemODataService: BackendSystem = {
+    name: 'http://odata.service:1234',
+    url: 'http://odata.service:1234/sap/opu/odata/sap/TEST_SRV',
+    client: '100',
+    authenticationType: 'basic',
+    systemType: 'OnPrem',
+    connectionType: 'odata_service',
+    username: 'user1',
+    password: 'password1'
+};
 
 const backendSystems: BackendSystem[] = [backendSystemBasic];
 let mockIsAppStudio = false;
@@ -72,15 +64,33 @@ const systemServiceMock = {
     read: systemServiceReadMock
 } as Partial<SystemService>;
 
-jest.mock('@sap-ux/store', () => ({
-    __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
-    ...jest.requireActual('@sap-ux/store'),
-    // Mock store access
+// Mock utils/store FIRST to intercept getAllBackendSystems before any source module loads it
+jest.unstable_mockModule('../../../../../src/utils/store', () => ({
+    getBackendSystemService: jest.fn().mockImplementation(async () => systemServiceMock),
+    getAllBackendSystems: jest.fn().mockImplementation(async () => {
+        return systemServiceMock.getAll!();
+    })
+}));
+
+// Mock @sap-ux/store to prevent real store access
+const actualStore = await import('@sap-ux/store');
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...actualStore,
     getService: jest.fn().mockImplementation(() => systemServiceMock)
 }));
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
+// Mock utils (for getPromptHostEnvironment)
+const actualUtils = await import('../../../../../src/utils/index.js');
+const mockGetPromptHostEnvironment = jest.fn<any>();
+jest.unstable_mockModule('../../../../../src/utils', () => ({
+    ...actualUtils,
+    getPromptHostEnvironment: mockGetPromptHostEnvironment
+}));
+
+// Mock @sap-ux/btp-utils
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
     isAppStudio: jest.fn().mockImplementation(() => mockIsAppStudio),
     listDestinations: jest.fn().mockImplementation(() => destinations)
 }));
@@ -153,11 +163,40 @@ const connectionValidatorMock = {
     validateServiceInfo: validateServiceInfoMock,
     setConnectedSystem: jest.fn()
 };
-jest.mock('../../../../../src/prompts/connectionValidator', () => {
-    return {
-        ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
-    };
-});
+jest.unstable_mockModule('../../../../../src/prompts/connectionValidator', () => ({
+    ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
+}));
+
+// Mock prompt-helpers to allow spying on connectWithBackendSystem/connectWithDestination
+const mockConnectWithBackendSystem = jest.fn<any>();
+const mockConnectWithDestination = jest.fn<any>();
+// Register the mock before any import. After all mocks are registered, we'll import the actual module
+// and set the mock implementations in beforeEach.
+
+// Dynamic imports after mocks - order matters: import prompt-helpers first to get actual, then register its mock
+const actualPromptHelpers =
+    await import('../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers.js');
+// Now register the prompt-helpers mock with actual exports spread + spy functions
+jest.unstable_mockModule('../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers', () => ({
+    ...actualPromptHelpers,
+    connectWithBackendSystem: mockConnectWithBackendSystem,
+    connectWithDestination: mockConnectWithDestination
+}));
+
+const { initI18nOdataServiceInquirer, t } = await import('../../../../../src/i18n.js');
+const { ConnectionValidator: ConnectionValidatorClass } =
+    await import('../../../../../src/prompts/connectionValidator.js');
+const { newSystemPromptNames } = await import('../../../../../src/prompts/datasources/sap-system/new-system/types.js');
+const { NewSystemChoice } =
+    await import('../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers.js');
+const { getSystemConnectionQuestions, getSystemSelectionQuestions } =
+    await import('../../../../../src/prompts/datasources/sap-system/system-selection/questions.js');
+const LoggerHelper = (await import('../../../../../src/prompts/logger-helper.js')).default;
+const { promptNames } = await import('../../../../../src/types.js');
+const { PromptState } = await import('../../../../../src/utils/index.js');
+const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
+const { ERROR_TYPE } = await import('../../../../../src/index.js');
+const { WebIDEAdditionalData, WebIDEUsage } = await import('@sap-ux/btp-utils');
 
 describe('Test system selection prompts', () => {
     beforeAll(async () => {
@@ -166,6 +205,9 @@ describe('Test system selection prompts', () => {
     });
 
     beforeEach(() => {
+        jest.clearAllMocks();
+        mockConnectWithBackendSystem.mockImplementation(actualPromptHelpers.connectWithBackendSystem);
+        mockConnectWithDestination.mockImplementation(actualPromptHelpers.connectWithDestination);
         mockIsAppStudio = false;
         isAuthRequiredMock.mockResolvedValue(false);
         validateServiceInfoResultMock = true;
@@ -234,8 +276,8 @@ describe('Test system selection prompts', () => {
     });
 
     test('getSystemConnectionQuestions: BAS (Destination)', async () => {
-        const connectValidator = new ConnectionValidator();
-        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        const connectValidator = new ConnectionValidatorClass();
+        mockGetPromptHostEnvironment.mockReturnValue(hostEnvironment.cli);
         mockIsAppStudio = true;
         const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
         expect(systemConnectionQuestions).toHaveLength(5);
@@ -249,7 +291,6 @@ describe('Test system selection prompts', () => {
         expect(await systemSelectionPrompt.validate?.('')).toBe(false);
         // valid destination selection
         validateDestinationResultMock = { valResult: true };
-        const connectWithDestinationSpy = jest.spyOn(promptHelpers, 'connectWithDestination');
         expect(
             await systemSelectionPrompt.validate?.({
                 type: 'destination',
@@ -257,13 +298,13 @@ describe('Test system selection prompts', () => {
             } as SystemSelectionAnswerType)
         ).toBe(true);
         expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined();
-        expect(connectWithDestinationSpy).toHaveBeenCalledWith(
+        expect(mockConnectWithDestination).toHaveBeenCalledWith(
             destination1,
             connectionValidatorMock,
             undefined,
             undefined
         );
-        connectWithDestinationSpy.mockClear();
+        mockConnectWithDestination.mockClear();
         // valid partial url destination selection, prompt state should not be updated yet, since the service path is not provided
         const partialUrlDest = {
             Name: 'dest2',
@@ -276,7 +317,7 @@ describe('Test system selection prompts', () => {
                 system: partialUrlDest
             } as SystemSelectionAnswerType)
         ).toBe(true); // true because we defer the validation to the (destination) service url path prompt
-        expect(connectWithDestinationSpy).not.toHaveBeenCalled();
+        expect(mockConnectWithDestination).not.toHaveBeenCalled();
 
         // prompt for service path
         const destServicePathPrompt = systemConnectionQuestions[1];
@@ -328,7 +369,7 @@ describe('Test system selection prompts', () => {
                 }
             })
         ).toBe(true);
-        expect(connectWithDestinationSpy).toHaveBeenCalledWith(
+        expect(mockConnectWithDestination).toHaveBeenCalledWith(
             partialUrlDest,
             connectionValidatorMock,
             undefined,
@@ -337,8 +378,8 @@ describe('Test system selection prompts', () => {
     });
 
     test('Should reset the connection state when the source system `cfAbapEnvService` or `newSystemChoice`', async () => {
-        const connectValidator = new ConnectionValidator();
-        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        const connectValidator = new ConnectionValidatorClass();
+        mockGetPromptHostEnvironment.mockReturnValue(hostEnvironment.cli);
         mockIsAppStudio = true;
         let systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
         let systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
@@ -364,8 +405,8 @@ describe('Test system selection prompts', () => {
 
     test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: basic)', async () => {
         mockIsAppStudio = false;
-        const connectValidator = new ConnectionValidator();
-        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        const connectValidator = new ConnectionValidatorClass();
+        mockGetPromptHostEnvironment.mockReturnValue(hostEnvironment.cli);
         const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
         expect(systemConnectionQuestions).toHaveLength(5);
         expect(systemConnectionQuestions[0].name).toBe('systemSelection');
@@ -378,7 +419,6 @@ describe('Test system selection prompts', () => {
 
         // validate backend system selection
         validateAuthResultMock = { valResult: true };
-        const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
         systemServiceReadMock.mockResolvedValueOnce(backendSystemBasic);
         expect(
             await systemSelectionPrompt.validate?.({
@@ -387,15 +427,29 @@ describe('Test system selection prompts', () => {
             } as SystemSelectionAnswerType)
         ).toBe(true);
         expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined();
-        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+        expect(mockConnectWithBackendSystem).toHaveBeenCalledWith(
             { url: backendSystemBasic.url, client: backendSystemBasic.client },
             connectionValidatorMock,
             undefined,
             undefined,
             undefined
         );
-        connectWithBackendSystemSpy.mockClear();
-
+        mockConnectWithBackendSystem.mockClear();
+        systemServiceReadMock.mockResolvedValueOnce(backendSystemODataService);
+        expect(
+            await systemSelectionPrompt.validate?.({
+                type: 'backendSystem',
+                system: backendSystemODataService
+            } as SystemSelectionAnswerType)
+        ).toBe(true);
+        expect(mockConnectWithBackendSystem).toHaveBeenCalledWith(
+            { url: backendSystemODataService.url, client: backendSystemODataService.client },
+            connectionValidatorMock,
+            undefined,
+            undefined,
+            'http://odata.service:1234/sap/opu/odata/sap/TEST_SRV'
+        );
+        mockConnectWithBackendSystem.mockClear();
         // If auth failed using creds from BackendSystem, the creds prompts should be displayed and the user notified that the backend system creds will be updated
         validateAuthResultMock = { valResult: t('errors.authenticationFailed'), errorType: ERROR_TYPE.AUTH };
         const loggerErrorSpy = jest.spyOn(LoggerHelper.logger, 'error');
@@ -411,7 +465,7 @@ describe('Test system selection prompts', () => {
             } as SystemSelectionAnswerType)
         ).toBe(true);
         expect(PromptState.odataService.connectedSystem?.serviceProvider).not.toBeDefined();
-        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+        expect(mockConnectWithBackendSystem).toHaveBeenCalledWith(
             { url: backendSystemBasic.url, client: backendSystemBasic.client },
             connectionValidatorMock,
             undefined,
@@ -448,9 +502,8 @@ describe('Test system selection prompts', () => {
 
     test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: reentranceTicket)', async () => {
         mockIsAppStudio = false;
-        const connectValidator = new ConnectionValidator();
-        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
-        const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
+        const connectValidator = new ConnectionValidatorClass();
+        mockGetPromptHostEnvironment.mockReturnValue(hostEnvironment.cli);
         backendSystems.push(backendSystemReentrance);
 
         systemServiceMock.read = jest.fn().mockResolvedValue(backendSystemReentrance);
@@ -463,14 +516,14 @@ describe('Test system selection prompts', () => {
             } as SystemSelectionAnswerType)
         ).toBe(true);
         expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined();
-        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+        expect(mockConnectWithBackendSystem).toHaveBeenCalledWith(
             { url: backendSystemReentrance.url, client: backendSystemReentrance.client },
             connectionValidatorMock,
             undefined,
             undefined,
             undefined
         );
-        connectWithBackendSystemSpy.mockClear();
+        mockConnectWithBackendSystem.mockClear();
         // Handles a failed reentrance ticket validation
         validateUrlResultMock = 'Something went wrong';
         expect(
@@ -480,7 +533,7 @@ describe('Test system selection prompts', () => {
             } as SystemSelectionAnswerType)
         ).toBe('Something went wrong');
         expect(PromptState.odataService.connectedSystem?.serviceProvider).not.toBeDefined();
-        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+        expect(mockConnectWithBackendSystem).toHaveBeenCalledWith(
             { url: backendSystemReentrance.url, client: backendSystemReentrance.client },
             connectionValidatorMock,
             undefined,
@@ -491,10 +544,8 @@ describe('Test system selection prompts', () => {
 
     test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: reentranceTicket) - should support cached connections', async () => {
         mockIsAppStudio = false;
-        const connectValidator = new ConnectionValidator();
-        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
-        const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
-        // backendSystems.push(backendSystemReentrance);
+        const connectValidator = new ConnectionValidatorClass();
+        mockGetPromptHostEnvironment.mockReturnValue(hostEnvironment.cli);
         const cachedConnectedSystem: ConnectedSystem = {
             serviceProvider: {
                 catalog: {}
@@ -516,7 +567,7 @@ describe('Test system selection prompts', () => {
             } as SystemSelectionAnswerType)
         ).toBe(true);
         expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined();
-        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+        expect(mockConnectWithBackendSystem).toHaveBeenCalledWith(
             { url: backendSystemReentrance.url, client: backendSystemReentrance.client },
             connectionValidatorMock,
             undefined,
@@ -527,9 +578,8 @@ describe('Test system selection prompts', () => {
 
     test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: serviceKeys)', async () => {
         mockIsAppStudio = false;
-        const connectValidator = new ConnectionValidator();
-        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
-        const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
+        const connectValidator = new ConnectionValidatorClass();
+        mockGetPromptHostEnvironment.mockReturnValue(hostEnvironment.cli);
         backendSystems.push(backendSystemServiceKeys);
 
         systemServiceMock.read = jest.fn().mockResolvedValue(backendSystemServiceKeys);
@@ -542,14 +592,14 @@ describe('Test system selection prompts', () => {
             } as SystemSelectionAnswerType)
         ).toBe(true);
         expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined();
-        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+        expect(mockConnectWithBackendSystem).toHaveBeenCalledWith(
             { url: backendSystemServiceKeys.url, client: backendSystemServiceKeys.client },
             connectionValidatorMock,
             undefined,
             undefined,
             undefined
         );
-        connectWithBackendSystemSpy.mockClear();
+        mockConnectWithBackendSystem.mockClear();
         // Handles a failed service info validation
         validateServiceInfoResultMock = 'Something went wrong';
         expect(
@@ -559,7 +609,7 @@ describe('Test system selection prompts', () => {
             } as SystemSelectionAnswerType)
         ).toBe('Something went wrong');
         expect(PromptState.odataService.connectedSystem?.serviceProvider).not.toBeDefined();
-        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+        expect(mockConnectWithBackendSystem).toHaveBeenCalledWith(
             { url: backendSystemServiceKeys.url, client: backendSystemServiceKeys.client },
             connectionValidatorMock,
             undefined,
@@ -570,9 +620,8 @@ describe('Test system selection prompts', () => {
 
     test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: serviceKeys) - should support cached connections', async () => {
         mockIsAppStudio = false;
-        const connectValidator = new ConnectionValidator();
-        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
-        const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
+        const connectValidator = new ConnectionValidatorClass();
+        mockGetPromptHostEnvironment.mockReturnValue(hostEnvironment.cli);
         const cachedConnectedSystem: ConnectedSystem = {
             serviceProvider: {
                 catalog: {}
@@ -594,7 +643,7 @@ describe('Test system selection prompts', () => {
             } as SystemSelectionAnswerType)
         ).toBe(true);
         expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined();
-        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+        expect(mockConnectWithBackendSystem).toHaveBeenCalledWith(
             { url: backendSystemServiceKeys.url, client: backendSystemServiceKeys.client },
             connectionValidatorMock,
             undefined,
@@ -605,8 +654,8 @@ describe('Test system selection prompts', () => {
 
     test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: serviceKeys)', async () => {
         mockIsAppStudio = false;
-        const connectValidator = new ConnectionValidator();
-        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        const connectValidator = new ConnectionValidatorClass();
+        mockGetPromptHostEnvironment.mockReturnValue(hostEnvironment.cli);
         const validateServiceInfoSpy = jest.spyOn(connectValidator, 'validateServiceInfo');
         const backendSystemServiceKeysClone = { ...backendSystemServiceKeys };
         backendSystems.push(backendSystemServiceKeysClone);
@@ -625,9 +674,8 @@ describe('Test system selection prompts', () => {
 
     test('should execute additional prompt on CLI (if autocomplete is not used) to handle YUI validate function', async () => {
         mockIsAppStudio = false;
-        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
-        const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
-        const systemConnectionQuestions = await getSystemConnectionQuestions(new ConnectionValidator());
+        mockGetPromptHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        const systemConnectionQuestions = await getSystemConnectionQuestions(new ConnectionValidatorClass());
         const validateSystemSelectionCliPrompt = systemConnectionQuestions.find(
             (question) => question.name === 'systemSelectionCli'
         );
@@ -643,20 +691,20 @@ describe('Test system selection prompts', () => {
         systemServiceMock.read = jest.fn().mockResolvedValue(backendSystemBasic);
         validateAuthResultMock = { valResult: true };
         expect(await (validateSystemSelectionCliPrompt!.when as Function)(answers)).toBe(false); // Always false as its a functional only prompt
-        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+        expect(mockConnectWithBackendSystem).toHaveBeenCalledWith(
             { url: backendSystemBasic.url, client: backendSystemBasic.client },
             connectionValidatorMock,
             undefined,
             undefined,
             undefined
         );
-        connectWithBackendSystemSpy.mockClear();
+        mockConnectWithBackendSystem.mockClear();
         // Should prompt for credentials if the system selection is a backend system and an auth error is returned
         validateAuthResultMock = { valResult: 'A connection error occurred.' };
         await expect((validateSystemSelectionCliPrompt!.when as Function)(answers)).rejects.toThrow(
             'A connection error occurred.'
         );
-        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+        expect(mockConnectWithBackendSystem).toHaveBeenCalledWith(
             { url: backendSystemBasic.url, client: backendSystemBasic.client },
             connectionValidatorMock,
             undefined,
@@ -718,9 +766,8 @@ describe('Test system selection prompts', () => {
 
     test('Should use connectUrl from defaultChoice when validating system selection', async () => {
         mockIsAppStudio = false;
-        const connectValidator = new ConnectionValidator();
-        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
-        const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
+        const connectValidator = new ConnectionValidatorClass();
+        mockGetPromptHostEnvironment.mockReturnValue(hostEnvironment.cli);
 
         backendSystems.push(backendSystemReentrance);
 
@@ -750,21 +797,20 @@ describe('Test system selection prompts', () => {
             } as SystemSelectionAnswerType)
         ).toBe(true);
 
-        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+        expect(mockConnectWithBackendSystem).toHaveBeenCalledWith(
             { url: backendSystemReentrance.url, client: backendSystemReentrance.client },
             connectionValidatorMock,
             undefined,
             undefined,
             connectPath
         );
-        connectWithBackendSystemSpy.mockClear();
+        mockConnectWithBackendSystem.mockClear();
     });
 
     test('Should use connectUrl from defaultChoice for CLI system validation prompt', async () => {
         mockIsAppStudio = false;
-        const connectValidator = new ConnectionValidator();
-        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
-        const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
+        const connectValidator = new ConnectionValidatorClass();
+        mockGetPromptHostEnvironment.mockReturnValue(hostEnvironment.cli);
 
         backendSystems.push(backendSystemReentrance);
 
@@ -798,14 +844,14 @@ describe('Test system selection prompts', () => {
 
         // The CLI when function should use connectPath
         await expect((validateSystemSelectionCliPrompt!.when as Function)(answers)).resolves.toBe(false);
-        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+        expect(mockConnectWithBackendSystem).toHaveBeenCalledWith(
             { url: backendSystemReentrance.url, client: backendSystemReentrance.client },
             connectionValidatorMock,
             undefined,
             undefined,
             connectPath
         );
-        connectWithBackendSystemSpy.mockClear();
+        mockConnectWithBackendSystem.mockClear();
     });
 
     test('Should provide only one choice for the system selection based on onlyDefaultChoice option and defaultChoice', async () => {
