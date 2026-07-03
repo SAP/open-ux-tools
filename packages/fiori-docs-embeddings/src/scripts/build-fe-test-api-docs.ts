@@ -50,18 +50,33 @@ interface JsDocProperty {
     optional?: boolean;
 }
 
+/**
+ * Returns true if the doclet should be included in the public API output.
+ */
 function isPublic(d: JsDoclet): boolean {
-    if (d.undocumented) return false;
+    if (d.undocumented) {
+        return false;
+    }
     // typedefs and enums are public by convention; classes/functions require explicit @public
-    if (d.kind === 'typedef' || d.kind === 'member' || d.kind === 'constant') return true;
+    if (d.kind === 'typedef' || d.kind === 'member' || d.kind === 'constant') {
+        return true;
+    }
     return d.access === 'public';
 }
 
+/**
+ * Formats a list of JSDoc type names into a union type string.
+ */
 function formatType(names: string[] | undefined): string {
-    if (!names || names.length === 0) return 'any';
+    if (!names || names.length === 0) {
+        return 'any';
+    }
     return names.join('|');
 }
 
+/**
+ * Renders a single JSDoc parameter as a markdown list item.
+ */
 function renderParam(p: JsDocParam): string {
     const type = formatType(p.type?.names);
     const opt = p.optional ? ' *(optional)*' : '';
@@ -69,25 +84,42 @@ function renderParam(p: JsDocParam): string {
     return `- \`${p.name}\` \`{${type}}\`${opt}${desc}`;
 }
 
+/**
+ * Renders the return type and description for a method.
+ */
 function renderReturns(returns: JsDocReturn[] | undefined): string {
-    if (!returns || returns.length === 0) return '';
+    if (!returns || returns.length === 0) {
+        return '';
+    }
     const r = returns[0];
     const type = formatType(r.type?.names);
     const desc = r.description ? ` ${r.description}` : '';
     return `\`{${type}}\`${desc}`;
 }
 
+/**
+ * Renders a class and its public instance methods as a markdown chunk.
+ */
 function renderClassChunk(cls: JsDoclet, methods: JsDoclet[]): string {
     const shortName = cls.name;
     const alias = cls.longname;
     const namespace = cls.memberof ?? 'sap.fe.test.api';
     const isActions = shortName.endsWith('Actions');
     const isAssertions = shortName.endsWith('Assertions');
-    const kind = isActions ? 'Actions' : isAssertions ? 'Assertions' : 'API';
+    let kind: string;
+    if (isActions) {
+        kind = 'Actions';
+    } else if (isAssertions) {
+        kind = 'Assertions';
+    } else {
+        kind = 'API';
+    }
 
     const extendsStr = cls.augments?.length ? cls.augments[0] : undefined;
     let intro = cls.description ?? `OPA5 ${kind} API for ${shortName}.`;
-    if (extendsStr) intro += ` Extends ${extendsStr}.`;
+    if (extendsStr) {
+        intro += ` Extends ${extendsStr}.`;
+    }
 
     const tags = ['sap.fe.test', 'OPA5', 'testing', shortName.toLowerCase(), kind.toLowerCase(), namespace].join(', ');
 
@@ -109,7 +141,9 @@ function renderClassChunk(cls: JsDoclet, methods: JsDoclet[]): string {
         }
 
         const ret = renderReturns(method.returns);
-        if (ret) out += `\nReturns: ${ret}\n`;
+        if (ret) {
+            out += `\nReturns: ${ret}\n`;
+        }
 
         out += '\n';
     }
@@ -117,8 +151,13 @@ function renderClassChunk(cls: JsDoclet, methods: JsDoclet[]): string {
     return out;
 }
 
+/**
+ * Renders all typedef doclets as a single markdown chunk.
+ */
 function renderTypedefsChunk(typedefs: JsDoclet[]): string {
-    if (typedefs.length === 0) return '';
+    if (typedefs.length === 0) {
+        return '';
+    }
 
     let out = '--------------------------------\n\n';
     out += `**TITLE**: sap.fe.test.api Type Definitions\n\n`;
@@ -144,8 +183,13 @@ function renderTypedefsChunk(typedefs: JsDoclet[]): string {
     return out;
 }
 
+/**
+ * Renders all enum doclets and their members as a single markdown chunk.
+ */
 function renderEnumsChunk(enums: JsDoclet[], members: JsDoclet[]): string {
-    if (enums.length === 0) return '';
+    if (enums.length === 0) {
+        return '';
+    }
 
     let out = '--------------------------------\n\n';
     out += `**TITLE**: sap.fe.test.api Enumerations\n\n`;
@@ -177,6 +221,9 @@ class FeTestApiDocBuilder {
         this.logger = new ToolsLogger();
     }
 
+    /**
+     * Returns paths to all JS/TS files directly under the API directory.
+     */
     private async getApiFiles(): Promise<string[]> {
         const apiDir = path.join(REPO_PATH, API_DIR);
         const entries = await fs.readdir(apiDir, { withFileTypes: true });
@@ -185,6 +232,10 @@ class FeTestApiDocBuilder {
             .map((e) => path.join(apiDir, e.name));
     }
 
+    /**
+     * Parses the sap.fe.test API source files and writes a markdown output file.
+     * Skips silently if the sap.fe git repository has not been cloned locally.
+     */
     async build(): Promise<void> {
         this.logger.info('Building sap.fe.test API documentation...');
 
@@ -226,7 +277,9 @@ class FeTestApiDocBuilder {
 
         for (const cls of classes) {
             const classMethods = methods.filter((m) => m.memberof === cls.longname);
-            if (classMethods.length === 0) continue;
+            if (classMethods.length === 0) {
+                continue;
+            }
             markdown += renderClassChunk(cls, classMethods);
             classChunks++;
         }
@@ -250,7 +303,7 @@ if (isMainModule) {
         await builder.build();
     } catch (error) {
         const msg = error instanceof Error ? error.message : String(error);
-        console.error(`Build failed: ${msg}`);
+        process.stderr.write(`Build failed: ${msg}\n`);
         process.exit(1);
     }
 }
