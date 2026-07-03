@@ -23,7 +23,7 @@ import {
     getSerializedFileContent,
     generateBuildingBlockAggregation
 } from '../../src/index.js';
-import { BUILDING_BLOCK_CONFIG } from '../../src/building-block/processor.js';
+import { BUILDING_BLOCK_CONFIG, resolveAggregationPath } from '../../src/building-block/processor.js';
 import testManifestContent from './sample/building-block/webapp/manifest.json';
 import { clearTestOutput, writeFilesForDebugging } from '../common/index.js';
 import { bindingContextAbsolute, type BindingContextType } from '../../src/building-block/types.js';
@@ -4090,5 +4090,40 @@ describe('Building Blocks', () => {
             const navPos = output.indexOf('macros:navigationActions');
             expect(commentPos).toBeLessThan(navPos);
         });
+    });
+});
+
+describe('resolveAggregationPath', () => {
+    test('leaves prefixed steps unchanged', () => {
+        expect(resolveAggregationPath('/mvc:View/macros:Page/macros:items')).toBe('/mvc:View/macros:Page/macros:items');
+    });
+
+    test('rewrites unprefixed steps to local-name() predicates', () => {
+        expect(resolveAggregationPath('/mvc:View/macros:Page/macros:items/IconTabBar/items/IconTabFilter')).toBe(
+            "/mvc:View/macros:Page/macros:items/*[local-name()='IconTabBar']/*[local-name()='items']/*[local-name()='IconTabFilter']"
+        );
+    });
+
+    test('handles mixed prefixed and unprefixed steps', () => {
+        expect(resolveAggregationPath('/mvc:View/Toolbar/macros:Table')).toBe(
+            "/mvc:View/*[local-name()='Toolbar']/macros:Table"
+        );
+    });
+
+    test('handles a single unprefixed step', () => {
+        expect(resolveAggregationPath('/View')).toBe("/*[local-name()='View']");
+    });
+
+    test('returns empty string unchanged', () => {
+        expect(resolveAggregationPath('')).toBe('');
+    });
+
+    test('is idempotent on already-rewritten paths', () => {
+        const path = "/mvc:View/*[local-name()='IconTabBar']";
+        expect(resolveAggregationPath(path)).toBe(path);
+    });
+
+    test('handles steps with hyphens and dots (valid XPath names)', () => {
+        expect(resolveAggregationPath('/mvc:View/my-element.1')).toBe("/mvc:View/*[local-name()='my-element.1']");
     });
 });

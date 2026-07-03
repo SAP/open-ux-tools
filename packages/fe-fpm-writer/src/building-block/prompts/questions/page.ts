@@ -25,7 +25,7 @@ export async function getPageBuildingBlockPrompts(context: PromptContext): Promi
         const { content: manifest } = await getManifest(context.appPath, context.fs);
         const minUI5VersionRaw = manifest ? getMinimumUI5Version(manifest) : undefined;
         const minUI5Version = minUI5VersionRaw ? coerce(minUI5VersionRaw) : null;
-        hideTemplateType = !!(minUI5Version && lt(minUI5Version, '1.145.0'));
+        hideTemplateType = !minUI5Version || lt(minUI5Version, '1.145.0');
     } catch {
         // If manifest cannot be read, fall back to the safe option (Basic only)
         hideTemplateType = true;

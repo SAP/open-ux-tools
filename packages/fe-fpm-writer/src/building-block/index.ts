@@ -229,6 +229,7 @@ function resolveMacrosPrefix(xmlDocument: Document): string {
  * @param aggContext.macrosPrefix - the namespace prefix string (e.g. 'macros:')
  * @param aggContext.mContent - optional inner XML content for the aggregation
  * @param aggContext.aggId - the generated unique ID for the aggregation element
+ * @param aggContext.showDefaultContent - when true, the items template renders the default IconTabBar
  * @param fragMacrosNS - the namespace prefix resolved for sap.fe.macros
  * @param xmlDocument - the view XML document (used to inherit namespace declarations)
  * @returns parsed XML document whose documentElement contains the aggregation child nodes
@@ -236,7 +237,7 @@ function resolveMacrosPrefix(xmlDocument: Document): string {
 function buildPageAggregationFragment(
     fs: Editor,
     aggName: string,
-    aggContext: { macrosPrefix: string; mContent: string; aggId: string },
+    aggContext: { macrosPrefix: string; mContent: string; aggId: string; showDefaultContent: boolean },
     fragMacrosNS: string,
     xmlDocument: Document
 ): Document {
@@ -278,11 +279,13 @@ function appendPageAggregations(
     const pageElement = templateDocument.documentElement;
     pageElement.appendChild(templateDocument.createComment(PAGE_TEMPLATE_COMMENT));
     for (const aggName of aggNames) {
-        const basicItemsContent = !useDefaults && aggName === 'items' ? 'basic' : undefined;
-        const defaultContent = useDefaults ? PAGE_BB_DEFAULT_AGGREGATIONS[aggName] : basicItemsContent;
+        const defaultContent = useDefaults ? PAGE_BB_DEFAULT_AGGREGATIONS[aggName] : undefined;
         const mContent = pageData.aggregations?.[aggName] ?? defaultContent ?? '';
         const aggId = generateId(aggName);
-        const aggContext = { macrosPrefix, mContent, aggId };
+        // showDefaultContent: render the default IconTabBar in the items template when no custom
+        // content is provided and defaults are active (i.e. full-page template, items aggregation).
+        const showDefaultContent = aggName === 'items' && !mContent && useDefaults;
+        const aggContext = { macrosPrefix, mContent, aggId, showDefaultContent };
         const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
         for (const node of Array.from(aggDoc.documentElement.childNodes)) {
             if (node.nodeType === 1 /* Element */) {
@@ -411,7 +414,7 @@ export async function generateBuildingBlockAggregation(
 
     const fragMacrosNS = resolveMacrosPrefix(xmlDocument);
     const macrosPrefix = `${fragMacrosNS}:`;
-    const aggContext = { macrosPrefix, mContent, aggId };
+    const aggContext = { macrosPrefix, mContent, aggId, showDefaultContent: false };
     const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
 
     const nsMap = (xmlDocument.documentElement as any)?._nsMap ?? {};
@@ -779,7 +782,7 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
         true
     );
 
-    // For Page templates, augment the snippet with aggregations (all 7 for full, just items for basic)
+    // For full Page templates, augment the snippet with all PAGE_AGGREGATIONS
     let viewOrFragmentContent = content;
     const pageAggNames = getPageAggregationNames(buildingBlockData);
     if (pageAggNames) {
