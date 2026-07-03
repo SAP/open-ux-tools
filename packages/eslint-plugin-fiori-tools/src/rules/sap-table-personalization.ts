@@ -47,7 +47,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             [TABLE_PERSONALIZATION_FILTER]: 'Table data filtering must be enabled.',
             [TABLE_PERSONALIZATION_SORT]: 'Table data sorting must be enabled.',
             [TABLE_PERSONALIZATION_GROUP]:
-                'Table data grouping must be enabled for analytical and responsive type tables.',
+                'Table data grouping must be enabled for analytical and responsive tables.',
             [MISSING_PERSONALIZATION_PROPERTIES]:
                 'When using the personalization object, omitting a property is treated as false. {{undefinedPropertiesString}}.'
         },
