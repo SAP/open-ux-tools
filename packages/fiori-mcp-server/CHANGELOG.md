@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.8.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-03
+
+#### Bug Fixes
+
+- Adds service lookup. Improve MCP server instructions and schema descriptions to prevent AI clients from constructing invalid parameters. Enhanced tool descriptions with explicit DO/DON'T guidance, removed misleading examples that were being treated as templates, added catalog error reporting in service lookup failures, and strengthened server-level instructions with visual markers and consequence warnings. [[13f8400](https://github.com/SAP/open-ux-tools/commit/13f8400cea408fc68db50077a66aa52fc118c086)]
+
 ## 1.8.3
 
 ### Patch Changes
