@@ -68,8 +68,8 @@
         "inquirer": "8.2.7",
         "odata-query": "8.0.5",
         "os-name": "4.0.1",
-        "prettify-xml": "1.2.0",
         "rimraf": "6.1.3",
+        "xml-formatter": "3.7.0",
         "yeoman-generator": "5.10.0"
     },
     "engines": {
