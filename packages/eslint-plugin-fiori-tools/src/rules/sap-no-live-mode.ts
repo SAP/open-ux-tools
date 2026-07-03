@@ -3,7 +3,7 @@ import { NO_LIVE_MODE, type NoLiveMode } from '../language/diagnostics.js';
 import { createFioriRule } from '../language/rule-factory.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import { createJsonFixer } from '../language/rule-fixer.js';
-import { isV2Page } from '../utils/helpers.js';
+import { FLEX_CHANGE_NEW_VALUE_PATH_RESULT, isV2Page } from '../utils/helpers.js';
 import { FioriJSONSourceCode } from '../language/json/source-code.js';
 import { FioriChangeSourceCode } from '../language/change/source-code.js';
 
@@ -79,13 +79,12 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
     createChangeVisitorHandler(context) {
         return function report(node: MemberNode): void {
-            const deepestPathResult = { validatedPath: ['content', 'newValue'], missingSegments: [] };
             context.report({
                 node,
                 messageId: NO_LIVE_MODE,
                 fix: createJsonFixer({
                     context,
-                    deepestPathResult,
+                    deepestPathResult: FLEX_CHANGE_NEW_VALUE_PATH_RESULT,
                     node,
                     operation: 'update',
                     value: false
