@@ -128,16 +128,16 @@ The output is picked up automatically by the embeddings build — no further reg
 
 ### Prerequisites
 
-Clone the `sap.fe` repository into the expected location:
+Clone the `sap.fe` repository into the expected location relative to this package:
 
 ```bash
-git clone <sap.fe-repo-url> data/git_repos/sap.fe
+git clone <sap.fe-repo-url> packages/fiori-docs-embeddings/data/git_repos/sap.fe
 ```
 
 The script looks for API source files at:
 
 ```
-data/git_repos/sap.fe/packages/sap.fe.test/src/sap/fe/test/api/
+packages/fiori-docs-embeddings/data/git_repos/sap.fe/packages/sap.fe.test/src/sap/fe/test/api/
 ```
 
 ### Command

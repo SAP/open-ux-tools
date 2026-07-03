@@ -7,7 +7,7 @@ import jsdocApi from 'jsdoc-api';
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PACKAGE_ROOT = path.resolve(__dirname, '../../..');
+const PACKAGE_ROOT = path.resolve(__dirname, '../..');
 const API_DIR = 'packages/sap.fe.test/src/sap/fe/test/api';
 const REPO_PATH = path.resolve(PACKAGE_ROOT, 'data/git_repos/sap.fe');
 const OUTPUT_PATH = path.resolve(PACKAGE_ROOT, 'data_local/sap_fe_test_api.md');
