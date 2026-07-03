@@ -211,7 +211,18 @@ const rule: FioriRuleDefinition = createFioriRule({
             const pageProblems = collectProblemsForService(parsedService, relevantEntityTypes);
             problems.push(...pageProblems);
         }
-        return problems;
+        // Multiple entities may reference the same text property, producing diagnostics that
+        // point to the same Common.Label annotation element. Deduplicate so each annotation
+        // is reported once — fixing the label once resolves the issue for all referencing entities.
+        const seen = new Set<Element>();
+        return problems.filter((p) => {
+            const key = p.annotation.reference.value;
+            if (seen.has(key)) {
+                return false;
+            }
+            seen.add(key);
+            return true;
+        });
     },
 
     createAnnotations(context, validationResult) {
