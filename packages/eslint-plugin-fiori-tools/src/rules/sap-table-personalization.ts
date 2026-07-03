@@ -49,7 +49,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             [TABLE_PERSONALIZATION_GROUP]:
                 'Table data grouping must be enabled for analytical and responsive type tables.',
             [MISSING_PERSONALIZATION_PROPERTIES]:
-                'When using an object, omitting a setting is treated as false. {{undefinedPropertiesString}}.'
+                'When using the personalization object, omitting a property is treated as false. {{undefinedPropertiesString}}.'
         },
         fixable: 'code'
     },
