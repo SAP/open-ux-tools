@@ -1,5 +1,13 @@
 # @sap-ux/ui5-info
 
+## 1.0.4
+
+### Patch Changes
+
+#### Dependency Updates
+
+- upgrade axios dependency [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
 ## 1.0.3
 
 ### Patch Changes

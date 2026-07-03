@@ -1,5 +1,14 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 1.0.22
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.18 → 1.0.19
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+
 ## 1.0.21
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.8.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-03
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension, @sap-ux/btp-utils, @sap-ux/odata-vocabularies, @sap-ux/ui5-config, @sap-ux/telemetry [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
 ## 1.8.5
 
 ### Patch Changes

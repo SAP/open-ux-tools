@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.7.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-03
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/odata-vocabularies, @sap-ux/ui5-config [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
 ## 10.7.2
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # @sap-ux/preview-middleware
 
+## 1.0.36
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.26 → 1.0.27
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+- @sap-ux/system-access 1.0.5 → 1.0.6
+- @sap-ux/project-access 2.1.5 → 2.1.6
+
 ## 1.0.35
 
 ### Patch Changes
