@@ -69,14 +69,14 @@ const connector = merge({}, ObjectStorageConnector, {
         getItem: function (_key: string) {
             // not implemented
         },
-        getItems: async function () {
+        getItems: async function (): Promise<FlexChange[]> {
             const response = await fetch(getChangesApiPath(), {
                 method: 'GET',
                 headers: {
                     'content-type': 'application/json'
                 }
             });
-            return (await response.json()) as unknown as FlexChange[];
+            return response.json();
         }
     } as typeof ObjectStorageConnector.storage,
     loadFeatures: async function () {

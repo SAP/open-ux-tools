@@ -3,6 +3,8 @@ import type { Editor } from 'mem-fs-editor';
 import { t } from '../../src/utils/i18n.js';
 import { join } from 'node:path';
 import { PromptState } from '../../src/prompts/prompt-state.js';
+import { TemplateType } from '@sap-ux/fiori-elements-writer';
+import { TemplateType as FioriFreestyleTemplateType } from '@sap-ux/fiori-freestyle-writer';
 
 jest.mock('adm-zip');
 
@@ -14,7 +16,7 @@ jest.unstable_mockModule('../../src/utils/logger', () => {
     return { default: mock, ...mock };
 });
 
-const { readManifest, makeValidJson, addPackageJsonIfNotFound, processDebugArtifacts } =
+const { readManifest, makeValidJson, addPackageJsonIfNotFound, processDebugArtifacts, getTemplateTypeFromManifest } =
     await import('../../src/utils/file-helpers.js');
 const RepoAppDownloadLogger = (await import('../../src/utils/logger.js')).default;
 
@@ -96,10 +98,28 @@ describe('processDebugArtifacts', () => {
         expect(mockFs.delete).toHaveBeenCalledWith(join('/webapp', 'Component-dbg.js'));
     });
 
-    it('should delete preload and source map files', () => {
+    it('should copy -dbg.controller.js content to corresponding .controller.js file and delete debug file', () => {
+        const dbgContent = 'unminified controller content';
+        const entries = [
+            {
+                entryName: 'ext/view/Main-dbg.controller.js',
+                getData: jest.fn(() => Buffer.from(dbgContent))
+            }
+        ];
+        const mockAdmZip = { getEntries: jest.fn(() => entries) };
+        (PromptState as any)['_admZipInstance'] = mockAdmZip;
+
+        processDebugArtifacts('/webapp', mockFs as any);
+
+        expect(mockFs.write).toHaveBeenCalledWith(join('/webapp', 'ext/view/Main.controller.js'), dbgContent);
+        expect(mockFs.delete).toHaveBeenCalledWith(join('/webapp', 'ext/view/Main-dbg.controller.js'));
+    });
+
+    it('should delete preload, source map, and controller map files', () => {
         const entries = [
             { entryName: 'Component-preload.js' },
             { entryName: 'Component.js.map' },
+            { entryName: 'ext/view/Main.controller.js.map' },
             { entryName: 'Component.js' }
         ];
         const mockAdmZip = { getEntries: jest.fn(() => entries) };
@@ -110,6 +130,7 @@ describe('processDebugArtifacts', () => {
 
         expect(mockFs.delete).toHaveBeenCalledWith(join('/webapp', 'Component-preload.js'));
         expect(mockFs.delete).toHaveBeenCalledWith(join('/webapp', 'Component.js.map'));
+        expect(mockFs.delete).toHaveBeenCalledWith(join('/webapp', 'ext/view/Main.controller.js.map'));
         expect(mockFs.delete).not.toHaveBeenCalledWith(join('/webapp', 'Component.js'));
     });
 
@@ -144,19 +165,58 @@ describe('addPackageJsonIfNotFound', () => {
         jest.clearAllMocks();
     });
 
-    it('should write package.json when it does not exist', () => {
+    it('should write package.json for an app when it does not already exist', () => {
         mockFs.exists.mockReturnValue(false);
-
-        addPackageJsonIfNotFound('/project', 'my.app.id', mockFs as unknown as Editor);
-
+        addPackageJsonIfNotFound(
+            '/project',
+            { app: { id: 'my.app.id' }, template: { type: TemplateType.ListReportObjectPage } } as any,
+            mockFs as unknown as Editor
+        );
         expect(mockFs.writeJSON).toHaveBeenCalledWith(join('/project', 'package.json'), { name: 'my.app.id' });
     });
 
     it('should not write package.json when it already exists', () => {
         mockFs.exists.mockReturnValue(true);
-
-        addPackageJsonIfNotFound('/project', 'my.app.id', mockFs as unknown as Editor);
-
+        addPackageJsonIfNotFound(
+            '/project',
+            { app: { id: 'my.app.id' }, template: { type: TemplateType.ListReportObjectPage } } as any,
+            mockFs as unknown as Editor
+        );
         expect(mockFs.writeJSON).not.toHaveBeenCalled();
+    });
+});
+
+describe('getTemplateTypeFromManifest', () => {
+    it.each([
+        [TemplateType.ListReportObjectPage, '@sap/generator-fiori:lrop'],
+        [TemplateType.FlexibleProgrammingModel, '@sap/generator-fiori:fpm'],
+        [TemplateType.Worklist, '@sap/generator-fiori:worklist'],
+        [TemplateType.AnalyticalListPage, '@sap/generator-fiori:alp'],
+        [TemplateType.OverviewPage, '@sap/generator-fiori:ovp'],
+        [TemplateType.FormEntryObjectPage, '@sap/generator-fiori:feop'],
+        [FioriFreestyleTemplateType.Basic, '@sap/generator-fiori:basic'],
+        [FioriFreestyleTemplateType.ListDetail, '@sap/generator-fiori:listdetail']
+    ])('should return "%s" for sourceTemplate id "%s"', (expected, sourceTemplateId) => {
+        const manifest = { 'sap.app': { sourceTemplate: { id: sourceTemplateId } } } as any;
+        expect(getTemplateTypeFromManifest(manifest)).toBe(expected);
+    });
+
+    it('should return "unknown" when sourceTemplate id has unknown suffix', () => {
+        const manifest = { 'sap.app': { sourceTemplate: { id: '@sap/generator-fiori:custom' } } } as any;
+        expect(getTemplateTypeFromManifest(manifest)).toBe('unknown');
+    });
+
+    it('should return "unknown" when sourceTemplate id does not start with the fiori prefix', () => {
+        const manifest = { 'sap.app': { sourceTemplate: { id: '@sap/generator-other:lrop' } } } as any;
+        expect(getTemplateTypeFromManifest(manifest)).toBe('unknown');
+    });
+
+    it('should return "unknown" when sourceTemplate is absent', () => {
+        const manifest = { 'sap.app': {} } as any;
+        expect(getTemplateTypeFromManifest(manifest)).toBe('unknown');
+    });
+
+    it('should return "unknown" when manifest is undefined', () => {
+        expect(getTemplateTypeFromManifest(undefined as any)).toBe('unknown');
     });
 });

@@ -2,7 +2,9 @@ import { join } from 'node:path';
 import { join as joinPosix } from 'node:path/posix';
 
 import type { Editor } from 'mem-fs-editor';
-import prettifyXml from 'prettify-xml';
+// xml-formatter types are not callable under NodeNext; cast to function type once so call sites are clean
+import _fmt from 'xml-formatter';
+const xmlFormatter = _fmt as unknown as (xml: string, options?: object) => string;
 
 import type {
     AnnotationList,
@@ -64,7 +66,15 @@ export function writeExternalServiceMetadata(
         const path = join(...filePathSegments);
 
         if (reference.metadata) {
-            fs.write(path, prettifyXml(reference.metadata, { indent: INDENT_SIZE }));
+            fs.write(
+                path,
+                xmlFormatter(reference.metadata, {
+                    indentation: '    ',
+                    lineSeparator: '\n',
+                    collapseContent: true,
+                    throwOnFailure: false
+                })
+            );
         }
     }
 }

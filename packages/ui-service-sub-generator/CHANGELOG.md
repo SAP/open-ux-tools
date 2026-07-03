@@ -1,5 +1,108 @@
 # @sap-ux/ui-service-sub-generator
 
+## 1.0.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-02
+
+#### Workspace Updates
+
+- @sap-ux/ui-service-inquirer 1.0.21 → 1.0.22
+
+## 1.0.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.13 → 1.0.14
+- @sap-ux/fiori-generator-shared 1.0.15 → 1.0.16
+- @sap-ux/inquirer-common 1.0.16 → 1.0.17
+- @sap-ux/ui-service-inquirer 1.0.20 → 1.0.21
+
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.12 → 1.0.13
+- @sap-ux/fiori-generator-shared 1.0.14 → 1.0.15
+- @sap-ux/inquirer-common 1.0.15 → 1.0.16
+- @sap-ux/ui-service-inquirer 1.0.19 → 1.0.20
+
+## 1.0.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.4 → 2.0.4
+- @sap-ux/fiori-generator-shared 1.0.13 → 1.0.14
+- @sap-ux/inquirer-common 1.0.14 → 1.0.15
+- @sap-ux/system-access 1.0.4 → 1.0.4
+- @sap-ux/telemetry 1.0.11 → 1.0.12
+- @sap-ux/ui-service-inquirer 1.0.18 → 1.0.19
+
+## 1.0.18
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/ui-service-inquirer 1.0.17 → 1.0.18
+- @sap-ux/axios-extension 2.0.3 → 2.0.4
+- @sap-ux/feature-toggle 1.0.2 → 1.0.3
+- @sap-ux/system-access 1.0.3 → 1.0.4
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/inquirer-common 1.0.13 → 1.0.14
+- @sap-ux/fiori-generator-shared 1.0.12 → 1.0.13
+- @sap-ux/telemetry 1.0.10 → 1.0.11
+
+## 1.0.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.3 → 2.0.3
+- @sap-ux/fiori-generator-shared 1.0.11 → 1.0.12
+- @sap-ux/inquirer-common 1.0.12 → 1.0.13
+- @sap-ux/system-access 1.0.3 → 1.0.3
+- @sap-ux/telemetry 1.0.9 → 1.0.10
+- @sap-ux/ui-service-inquirer 1.0.16 → 1.0.17
+
+## 1.0.16
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-23
+
+#### Workspace Updates
+
+- @sap-ux/ui-service-inquirer 1.0.15 → 1.0.16
+
+## 1.0.15
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-22
+
+#### Workspace Updates
+
+- @sap-ux/ui-service-inquirer 1.0.14 → 1.0.15
+
 ## 1.0.14
 
 ### Patch Changes
@@ -19,7 +122,7 @@
 
 ## 1.0.12
 
-*Released: 2026-06-16T21:19:36Z*
+_Released: 2026-06-16T21:19:36Z_
 
 ### Patch Changes
 
@@ -29,7 +132,7 @@
 
 ## 1.0.11
 
-*Released: 2026-06-12T06:53:23Z*
+_Released: 2026-06-12T06:53:23Z_
 
 ### Patch Changes
 
@@ -43,7 +146,7 @@
 
 ## 1.0.10
 
-*Released: 2026-06-11T10:54:17Z*
+_Released: 2026-06-11T10:54:17Z_
 
 ### Patch Changes
 
@@ -55,7 +158,7 @@
 
 ## 1.0.9
 
-*Released: 2026-06-10T09:57:42Z*
+_Released: 2026-06-10T09:57:42Z_
 
 ### Patch Changes
 
@@ -68,7 +171,7 @@
 
 ## 1.0.8
 
-*Released: 2026-06-09T14:35:01Z*
+_Released: 2026-06-09T14:35:01Z_
 
 ### Patch Changes
 
@@ -83,7 +186,7 @@
 
 ## 1.0.7
 
-*Released: 2026-06-09T13:18:16Z*
+_Released: 2026-06-09T13:18:16Z_
 
 ### Patch Changes
 
@@ -94,7 +197,7 @@
 
 ## 1.0.6
 
-*Released: 2026-06-04T13:54:21Z*
+_Released: 2026-06-04T13:54:21Z_
 
 ### Patch Changes
 
@@ -107,7 +210,7 @@
 
 ## 1.0.5
 
-*Released: 2026-06-04T10:19:37Z*
+_Released: 2026-06-04T10:19:37Z_
 
 ### Patch Changes
 
@@ -120,7 +223,7 @@
 
 ## 1.0.4
 
-*Released: 2026-06-03T14:58:37Z*
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -138,7 +241,7 @@
 
 ## 1.0.3
 
-*Released: 2026-06-03T13:52:44Z*
+_Released: 2026-06-03T13:52:44Z_
 
 ### Patch Changes
 
@@ -151,7 +254,7 @@
 
 ## 1.0.2
 
-*Released: 2026-06-02T11:35:17Z*
+_Released: 2026-06-02T11:35:17Z_
 
 ### Patch Changes
 
@@ -162,7 +265,7 @@
 
 ## 1.0.1
 
-*Released: 2026-06-01T15:15:26Z*
+_Released: 2026-06-01T15:15:26Z_
 
 ### Patch Changes
 
@@ -175,7 +278,7 @@
 
 ## 1.0.0
 
-*Released: 2026-05-30T20:54:07Z*
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -223,7 +326,7 @@
 
 ## 0.2.8
 
-*Released: 2026-05-29T12:50:34Z*
+_Released: 2026-05-29T12:50:34Z_
 
 ### Patch Changes
 
@@ -232,7 +335,7 @@
 
 ## 0.2.7
 
-*Released: 2026-05-27T11:39:21Z*
+_Released: 2026-05-27T11:39:21Z_
 
 ### Patch Changes
 
@@ -243,7 +346,7 @@
 
 ## 0.2.6
 
-*Released: 2026-05-27T10:42:47Z*
+_Released: 2026-05-27T10:42:47Z_
 
 ### Patch Changes
 
@@ -255,7 +358,7 @@
 
 ## 0.2.5
 
-*Released: 2026-05-26T16:40:21Z*
+_Released: 2026-05-26T16:40:21Z_
 
 ### Patch Changes
 
@@ -272,7 +375,7 @@
 
 ## 0.2.4
 
-*Released: 2026-05-25T14:44:33Z*
+_Released: 2026-05-25T14:44:33Z_
 
 ### Patch Changes
 
@@ -280,7 +383,7 @@
 
 ## 0.2.3
 
-*Released: 2026-05-21T16:21:11Z*
+_Released: 2026-05-21T16:21:11Z_
 
 ### Patch Changes
 
@@ -293,7 +396,7 @@
 
 ## 0.2.2
 
-*Released: 2026-05-19T15:16:46Z*
+_Released: 2026-05-19T15:16:46Z_
 
 ### Patch Changes
 
@@ -306,7 +409,7 @@
 
 ## 0.2.1
 
-*Released: 2026-05-15T13:12:06Z*
+_Released: 2026-05-15T13:12:06Z_
 
 ### Patch Changes
 
@@ -320,7 +423,7 @@
 
 ## 0.2.0
 
-*Released: 2026-05-15T08:12:20Z*
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -341,7 +444,7 @@
 
 ## 0.1.237
 
-*Released: 2026-05-14T21:28:41Z*
+_Released: 2026-05-14T21:28:41Z_
 
 ### Patch Changes
 
@@ -350,7 +453,7 @@
 
 ## 0.1.236
 
-*Released: 2026-05-14T11:45:51Z*
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -368,7 +471,7 @@
 
 ## 0.1.235
 
-*Released: 2026-05-13T09:36:59Z*
+_Released: 2026-05-13T09:36:59Z_
 
 ### Patch Changes
 
@@ -382,7 +485,7 @@
 
 ## 0.1.234
 
-*Released: 2026-05-12T18:00:39Z*
+_Released: 2026-05-12T18:00:39Z_
 
 ### Patch Changes
 
@@ -393,7 +496,7 @@
 
 ## 0.1.233
 
-*Released: 2026-05-06T23:02:00Z*
+_Released: 2026-05-06T23:02:00Z_
 
 ### Patch Changes
 
@@ -409,7 +512,7 @@
 
 ## 0.1.232
 
-*Released: 2026-04-30T14:23:24Z*
+_Released: 2026-04-30T14:23:24Z_
 
 ### Patch Changes
 
@@ -423,7 +526,7 @@
 
 ## 0.1.231
 
-*Released: 2026-04-30T13:10:33Z*
+_Released: 2026-04-30T13:10:33Z_
 
 ### Patch Changes
 
@@ -431,7 +534,7 @@
 
 ## 0.1.230
 
-*Released: 2026-04-29T16:22:20Z*
+_Released: 2026-04-29T16:22:20Z_
 
 ### Patch Changes
 
@@ -439,7 +542,7 @@
 
 ## 0.1.229
 
-*Released: 2026-04-29T15:24:37Z*
+_Released: 2026-04-29T15:24:37Z_
 
 ### Patch Changes
 
@@ -454,7 +557,7 @@
 
 ## 0.1.228
 
-*Released: 2026-04-27T19:47:46Z*
+_Released: 2026-04-27T19:47:46Z_
 
 ### Patch Changes
 
@@ -467,7 +570,7 @@
 
 ## 0.1.227
 
-*Released: 2026-04-23T12:54:21Z*
+_Released: 2026-04-23T12:54:21Z_
 
 ### Patch Changes
 
@@ -480,7 +583,7 @@
 
 ## 0.1.226
 
-*Released: 2026-04-23T06:48:55Z*
+_Released: 2026-04-23T06:48:55Z_
 
 ### Patch Changes
 
@@ -493,7 +596,7 @@
 
 ## 0.1.225
 
-*Released: 2026-04-22T12:38:46Z*
+_Released: 2026-04-22T12:38:46Z_
 
 ### Patch Changes
 
@@ -502,7 +605,7 @@
 
 ## 0.1.224
 
-*Released: 2026-04-15T11:53:17Z*
+_Released: 2026-04-15T11:53:17Z_
 
 ### Patch Changes
 
@@ -514,7 +617,7 @@
 
 ## 0.1.223
 
-*Released: 2026-04-14T20:26:28Z*
+_Released: 2026-04-14T20:26:28Z_
 
 ### Patch Changes
 
@@ -529,7 +632,7 @@
 
 ## 0.1.222
 
-*Released: 2026-04-14T12:35:35Z*
+_Released: 2026-04-14T12:35:35Z_
 
 ### Patch Changes
 
@@ -544,7 +647,7 @@
 
 ## 0.1.221
 
-*Released: 2026-04-08T13:10:18Z*
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -561,7 +664,7 @@
 
 ## 0.1.220
 
-*Released: 2026-04-01T11:49:37Z*
+_Released: 2026-04-01T11:49:37Z_
 
 ### Patch Changes
 
@@ -574,7 +677,7 @@
 
 ## 0.1.219
 
-*Released: 2026-03-30T22:24:11Z*
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -598,7 +701,7 @@
 
 ## 0.1.218
 
-*Released: 2026-03-27T15:37:24Z*
+_Released: 2026-03-27T15:37:24Z_
 
 ### Patch Changes
 
@@ -610,7 +713,7 @@
 
 ## 0.1.217
 
-*Released: 2026-03-27T11:58:49Z*
+_Released: 2026-03-27T11:58:49Z_
 
 ### Patch Changes
 
@@ -625,7 +728,7 @@
 
 ## 0.1.216
 
-*Released: 2026-03-26T20:06:10Z*
+_Released: 2026-03-26T20:06:10Z_
 
 ### Patch Changes
 
@@ -638,7 +741,7 @@
 
 ## 0.1.215
 
-*Released: 2026-03-26T12:07:04Z*
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -660,7 +763,7 @@
 
 ## 0.1.214
 
-*Released: 2026-03-25T12:56:41Z*
+_Released: 2026-03-25T12:56:41Z_
 
 ### Patch Changes
 
@@ -673,7 +776,7 @@
 
 ## 0.1.213
 
-*Released: 2026-03-23T18:25:40Z*
+_Released: 2026-03-23T18:25:40Z_
 
 ### Patch Changes
 

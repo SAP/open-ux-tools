@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/fiori-docs-embeddings",
-    "version": "1.2.3",
+    "version": "1.2.4",
     "description": "SAP Fiori documentation indexing",
     "type": "module",
     "repository": {
@@ -31,7 +31,7 @@
     },
     "dependencies": {},
     "devDependencies": {
-        "@jest/globals": "30.3.0",
+        "@jest/globals": "30.4.1",
         "@npm/types": "2.1.0",
         "@types/node": "22.13.14",
         "@sap-ux/logger": "workspace:*",

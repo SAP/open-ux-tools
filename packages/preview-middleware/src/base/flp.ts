@@ -23,6 +23,7 @@ import {
     getProjectType,
     type ProjectType,
     findProjectRoot,
+    findCapProjectRoot,
     type Manifest,
     FileName,
     type ManifestNamespace,
@@ -178,7 +179,8 @@ export class FlpSandbox {
         resources: Record<string, string> = {},
         adp?: AdpPreview
     ): Promise<void> {
-        const projectRoot = await findProjectRoot(process.cwd(), false, true);
+        const projectRoot =
+            (await findCapProjectRoot(process.cwd(), false)) ?? (await findProjectRoot(process.cwd(), false, true));
         this.projectType = await getProjectType(projectRoot);
         this.createFlexHandler();
         this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
