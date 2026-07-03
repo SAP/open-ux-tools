@@ -181,7 +181,7 @@
             "breadcrumb": "Generate Annotations"
         },
         "addLineItemAnnotations": {
-            "message": "Add Table Columns to the List Report Page and a Section to the Object Page",
+            "message": "Add Table Columns to the List Report Page and a Section to the Object Page If None Exist",
             "hint": "Choose the annotation generation method.",
             "breadcrumb": "Generate Annotations",
             "valueHelpsAnnotationsInfoMessage": "Basic value help is also be created."
@@ -211,7 +211,7 @@
             "hint": "Enables page level variant."
         },
         "valueHelpDownload": {
-            "message": "Download Associated Metadata",
+            "message": "Download Associated Metadata for Value Help",
             "hint": "Download metadata for value help to improve the user experience with dropdowns and search."
         }
     },
