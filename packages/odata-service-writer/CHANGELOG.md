@@ -1,5 +1,35 @@
 # @sap-ux/odata-service-writer
 
+## 1.0.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/mockserver-config-writer 1.0.7 → 1.0.8
+
+## 1.0.9
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.3 → 1.0.3
+
+## 1.0.8
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.2 → 2.1.3
+- @sap-ux/mockserver-config-writer 1.0.6 → 1.0.7
+
 ## 1.0.7
 
 ### Patch Changes
@@ -10,6 +40,8 @@
 
 ## 1.0.6
 
+_Released: 2026-06-10T09:57:42Z_
+
 ### Patch Changes
 
 - Updated dependencies [c8e8f7e]
@@ -19,6 +51,8 @@
 
 ## 1.0.5
 
+_Released: 2026-06-04T13:54:21Z_
+
 ### Patch Changes
 
 - Updated dependencies [fff7490]
@@ -27,6 +61,8 @@
 
 ## 1.0.4
 
+_Released: 2026-06-04T10:19:37Z_
+
 ### Patch Changes
 
 - Updated dependencies [b326a9a]
@@ -34,6 +70,8 @@
     - @sap-ux/mockserver-config-writer@1.0.4
 
 ## 1.0.3
+
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -45,6 +83,8 @@
 
 ## 1.0.2
 
+_Released: 2026-06-03T13:52:44Z_
+
 ### Patch Changes
 
 - Updated dependencies [9580241]
@@ -54,6 +94,8 @@
 
 ## 1.0.1
 
+_Released: 2026-06-01T15:15:26Z_
+
 ### Patch Changes
 
 - Updated dependencies [aed799d]
@@ -61,6 +103,8 @@
     - @sap-ux/mockserver-config-writer@1.0.1
 
 ## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -102,6 +146,8 @@
 
 ## 0.32.2
 
+_Released: 2026-05-21T16:21:11Z_
+
 ### Patch Changes
 
 - Updated dependencies [9752c40]
@@ -111,6 +157,8 @@
 
 ## 0.32.1
 
+_Released: 2026-05-19T15:16:46Z_
+
 ### Patch Changes
 
 - Updated dependencies [63e6846]
@@ -118,6 +166,8 @@
     - @sap-ux/mockserver-config-writer@0.10.1
 
 ## 0.32.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -132,11 +182,15 @@
 
 ## 0.31.15
 
+_Released: 2026-05-14T21:28:41Z_
+
 ### Patch Changes
 
 - 138246a: fix(odata-service-writer): derive manifest odataVersion from EDMX metadata instead of minUI5Version
 
 ## 0.31.14
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -148,6 +202,8 @@
 
 ## 0.31.13
 
+_Released: 2026-05-13T09:36:59Z_
+
 ### Patch Changes
 
 - 21abda3: chore: upgrade fast-xml-parser 5.7.2 → 5.8.0 (fixes fast-xml-builder CVE-2025-47916)
@@ -156,6 +212,8 @@
     - @sap-ux/mockserver-config-writer@0.9.77
 
 ## 0.31.12
+
+_Released: 2026-05-06T23:02:00Z_
 
 ### Patch Changes
 
@@ -166,12 +224,16 @@
 
 ## 0.31.11
 
+_Released: 2026-04-30T14:23:24Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.36.2
 - @sap-ux/mockserver-config-writer@0.9.75
 
 ## 0.31.10
+
+_Released: 2026-04-29T15:24:37Z_
 
 ### Patch Changes
 
@@ -182,6 +244,8 @@
 
 ## 0.31.9
 
+_Released: 2026-04-27T19:47:46Z_
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -190,6 +254,8 @@
 
 ## 0.31.8
 
+_Released: 2026-04-23T12:54:21Z_
+
 ### Patch Changes
 
 - Updated dependencies [03d3ea1]
@@ -197,6 +263,8 @@
     - @sap-ux/mockserver-config-writer@0.9.72
 
 ## 0.31.7
+
+_Released: 2026-04-14T12:35:35Z_
 
 ### Patch Changes
 
@@ -207,6 +275,8 @@
 
 ## 0.31.6
 
+_Released: 2026-04-08T13:10:18Z_
+
 ### Patch Changes
 
 - Updated dependencies [f1e4481]
@@ -216,6 +286,8 @@
 
 ## 0.31.5
 
+_Released: 2026-04-01T11:49:37Z_
+
 ### Patch Changes
 
 - Updated dependencies [3291f6c]
@@ -223,6 +295,8 @@
     - @sap-ux/mockserver-config-writer@0.9.69
 
 ## 0.31.4
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -234,6 +308,8 @@
 
 ## 0.31.3
 
+_Released: 2026-03-26T20:06:10Z_
+
 ### Patch Changes
 
 - Updated dependencies [b66e827]
@@ -241,6 +317,8 @@
     - @sap-ux/mockserver-config-writer@0.9.67
 
 ## 0.31.2
+
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -253,6 +331,8 @@
     - @sap-ux/ui5-config@0.30.1
 
 ## 0.31.1
+
+_Released: 2026-03-25T12:56:41Z_
 
 ### Patch Changes
 

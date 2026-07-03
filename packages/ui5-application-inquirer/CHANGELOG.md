@@ -1,5 +1,50 @@
 # @sap-ux/ui5-application-inquirer
 
+## 1.0.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.16 → 1.0.17
+
+## 1.0.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.15 → 1.0.16
+
+## 1.0.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/inquirer-common 1.0.14 → 1.0.15
+- @sap-ux/project-input-validator 1.0.7 → 1.0.8
+
+## 1.0.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-info 1.0.1 → 1.0.2
+- @sap-ux/inquirer-common 1.0.13 → 1.0.14
+
+## 1.0.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.2 → 2.1.3
+- @sap-ux/inquirer-common 1.0.12 → 1.0.13
+- @sap-ux/project-input-validator 1.0.6 → 1.0.7
+
 ## 1.0.12
 
 ### Patch Changes
@@ -10,17 +55,23 @@
 
 ## 1.0.11
 
+_Released: 2026-06-12T06:53:23Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@1.0.11
 
 ## 1.0.10
 
+_Released: 2026-06-11T10:54:17Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@1.0.10
 
 ## 1.0.9
+
+_Released: 2026-06-10T09:57:42Z_
 
 ### Patch Changes
 
@@ -30,17 +81,23 @@
 
 ## 1.0.8
 
+_Released: 2026-06-09T14:35:01Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@1.0.8
 
 ## 1.0.7
 
+_Released: 2026-06-09T13:18:16Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@1.0.7
 
 ## 1.0.6
+
+_Released: 2026-06-04T13:54:21Z_
 
 ### Patch Changes
 
@@ -51,6 +108,8 @@
 
 ## 1.0.5
 
+_Released: 2026-06-04T10:19:37Z_
+
 ### Patch Changes
 
 - Updated dependencies [b326a9a]
@@ -59,6 +118,8 @@
     - @sap-ux/project-input-validator@1.0.4
 
 ## 1.0.4
+
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -71,6 +132,8 @@
 
 ## 1.0.3
 
+_Released: 2026-06-03T13:52:44Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@2.0.2
@@ -79,11 +142,15 @@
 
 ## 1.0.2
 
+_Released: 2026-06-02T11:35:17Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@1.0.2
 
 ## 1.0.1
+
+_Released: 2026-06-01T15:15:26Z_
 
 ### Patch Changes
 
@@ -93,6 +160,8 @@
     - @sap-ux/project-input-validator@1.0.1
 
 ## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -135,11 +204,15 @@
 
 ## 0.19.5
 
+_Released: 2026-05-29T12:50:34Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.13.6
 
 ## 0.19.4
+
+_Released: 2026-05-27T11:39:21Z_
 
 ### Patch Changes
 
@@ -147,11 +220,15 @@
 
 ## 0.19.3
 
+_Released: 2026-05-27T10:42:47Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.13.4
 
 ## 0.19.2
+
+_Released: 2026-05-27T08:23:20Z_
 
 ### Patch Changes
 
@@ -166,11 +243,15 @@
 
 ## 0.19.1
 
+_Released: 2026-05-26T16:40:21Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.13.3
 
 ## 0.19.0
+
+_Released: 2026-05-25T14:44:33Z_
 
 ### Minor Changes
 
@@ -178,11 +259,15 @@
 
 ## 0.18.5
 
+_Released: 2026-05-25T11:58:02Z_
+
 ### Patch Changes
 
 - f6af206: feat: add CLI commands for managing saved backend systems (#37734)
 
 ## 0.18.4
+
+_Released: 2026-05-21T16:21:11Z_
 
 ### Patch Changes
 
@@ -192,11 +277,15 @@
 
 ## 0.18.3
 
+_Released: 2026-05-21T06:20:29Z_
+
 ### Patch Changes
 
 - eda2ce4: Adds support for default name generation export. Adds default support for `title` prompt
 
 ## 0.18.2
+
+_Released: 2026-05-19T15:16:46Z_
 
 ### Patch Changes
 
@@ -207,12 +296,16 @@
 
 ## 0.18.1
 
+_Released: 2026-05-15T13:12:06Z_
+
 ### Patch Changes
 
 - Updated dependencies [2c76f8f]
     - @sap-ux/inquirer-common@0.13.0
 
 ## 0.18.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -228,11 +321,15 @@
 
 ## 0.17.25
 
+_Released: 2026-05-14T21:28:41Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.48
 
 ## 0.17.24
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -245,6 +342,8 @@
 
 ## 0.17.23
 
+_Released: 2026-05-13T09:36:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -254,11 +353,15 @@
 
 ## 0.17.22
 
+_Released: 2026-05-12T18:00:39Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.45
 
 ## 0.17.21
+
+_Released: 2026-05-06T23:02:00Z_
 
 ### Patch Changes
 
@@ -270,6 +373,8 @@
 
 ## 0.17.20
 
+_Released: 2026-04-30T14:23:24Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.43
@@ -278,12 +383,16 @@
 
 ## 0.17.19
 
+_Released: 2026-04-30T13:10:33Z_
+
 ### Patch Changes
 
 - Updated dependencies [a4b90ca]
     - @sap-ux/project-input-validator@0.6.80
 
 ## 0.17.18
+
+_Released: 2026-04-29T15:24:37Z_
 
 ### Patch Changes
 
@@ -294,6 +403,8 @@
 
 ## 0.17.17
 
+_Released: 2026-04-27T19:47:46Z_
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -302,6 +413,8 @@
     - @sap-ux/project-input-validator@0.6.78
 
 ## 0.17.16
+
+_Released: 2026-04-23T12:54:21Z_
 
 ### Patch Changes
 
@@ -312,11 +425,15 @@
 
 ## 0.17.15
 
+_Released: 2026-04-23T06:48:55Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.39
 
 ## 0.17.14
+
+_Released: 2026-04-22T12:38:46Z_
 
 ### Patch Changes
 
@@ -326,17 +443,23 @@
 
 ## 0.17.13
 
+_Released: 2026-04-15T11:53:17Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.37
 
 ## 0.17.12
 
+_Released: 2026-04-14T20:26:28Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.36
 
 ## 0.17.11
+
+_Released: 2026-04-14T12:35:35Z_
 
 ### Patch Changes
 
@@ -347,6 +470,8 @@
     - @sap-ux/project-input-validator@0.6.76
 
 ## 0.17.10
+
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -359,6 +484,8 @@
 
 ## 0.17.9
 
+_Released: 2026-04-01T11:49:37Z_
+
 ### Patch Changes
 
 - Updated dependencies [3291f6c]
@@ -367,6 +494,8 @@
     - @sap-ux/project-input-validator@0.6.74
 
 ## 0.17.8
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -380,17 +509,23 @@
 
 ## 0.17.7
 
+_Released: 2026-03-27T15:37:24Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.31
 
 ## 0.17.6
 
+_Released: 2026-03-27T11:58:49Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.30
 
 ## 0.17.5
+
+_Released: 2026-03-26T20:06:10Z_
 
 ### Patch Changes
 
@@ -400,6 +535,8 @@
     - @sap-ux/project-input-validator@0.6.72
 
 ## 0.17.4
+
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -414,6 +551,8 @@
     - @sap-ux/ui5-info@0.13.16
 
 ## 0.17.3
+
+_Released: 2026-03-25T12:56:41Z_
 
 ### Patch Changes
 

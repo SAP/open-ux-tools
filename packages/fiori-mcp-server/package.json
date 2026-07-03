@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-mcp-server",
     "description": "SAP Fiori - Model Context Protocol (MCP) server",
-    "version": "1.4.1",
+    "version": "1.8.4",
     "mcpName": "io.github.SAP/fiori-mcp-server",
     "keywords": [
         "SAP Fiori tools",
@@ -27,9 +27,8 @@
         "build-compile": "tsc --noEmit",
         "build": "npm-run-all build-compile build-bundle",
         "watch": "tsc --watch",
-        "bundle": "npm-run-all build tgz:package tgz:rename",
+        "bundle": "npm-run-all build tgz:package",
         "tgz:package": "pnpm pack",
-        "tgz:rename": "node -e \"const fs=require('fs'), p=require('./package.json'), d=new Date().toISOString().split('T')[0], oldName=p.name.startsWith('@') ? `${p.name.replace('@', '').replace('/', '-')}-${p.version}.tgz` : `${p.name}-${p.version}.tgz`; fs.renameSync(oldName, `${oldName.replace('.tgz','')}-${d}.tgz`)\"",
         "clean": "rimraf --glob dist test/test-output *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
@@ -56,7 +55,7 @@
     "devDependencies": {
         "@huggingface/transformers": "4.2.0",
         "@jest/globals": "30.3.0",
-        "@langchain/core": "1.1.40",
+        "@langchain/core": "1.1.49",
         "@langchain/mcp-adapters": "1.1.3",
         "@modelcontextprotocol/sdk": "1.29.0",
         "@sap-ai-sdk/foundation-models": "2.9.0",
@@ -79,7 +78,7 @@
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/text-document-utils": "workspace:*",
         "@sap-ux/vocabularies-types": "0.15.0",
-        "@sap/ux-specification": "1.144.0",
+        "@sap/ux-specification": "1.144.5",
         "@types/json-schema": "7.0.15",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
@@ -90,7 +89,7 @@
         "mem-fs-editor": "9.4.0",
         "npm-run-all2": "8.0.4",
         "os-name": "4.0.1",
-        "promptfoo": "0.121.12",
+        "promptfoo": "0.121.15",
         "xml-formatter": "3.7.0",
         "ts-node": "10.9.2",
         "zod": "4.3.6"

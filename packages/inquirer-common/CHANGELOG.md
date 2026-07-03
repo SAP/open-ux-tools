@@ -1,5 +1,58 @@
 # @sap-ux/inquirer-common
 
+## 1.0.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.13 → 1.0.14
+- @sap-ux/fiori-generator-shared 1.0.15 → 1.0.16
+
+## 1.0.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.12 → 1.0.13
+- @sap-ux/fiori-generator-shared 1.0.14 → 1.0.15
+
+## 1.0.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/fiori-generator-shared 1.0.13 → 1.0.14
+- @sap-ux/odata-service-writer 1.0.9 → 1.0.10
+- @sap-ux/telemetry 1.0.11 → 1.0.12
+
+## 1.0.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.8 → 1.0.9
+- @sap-ux/feature-toggle 1.0.2 → 1.0.3
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/ui5-info 1.0.1 → 1.0.2
+- @sap-ux/fiori-generator-shared 1.0.12 → 1.0.13
+- @sap-ux/telemetry 1.0.10 → 1.0.11
+
+## 1.0.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.2 → 2.1.3
+- @sap-ux/fiori-generator-shared 1.0.11 → 1.0.12
+- @sap-ux/odata-service-writer 1.0.7 → 1.0.8
+- @sap-ux/telemetry 1.0.9 → 1.0.10
+
 ## 1.0.12
 
 ### Patch Changes
@@ -10,6 +63,8 @@
 
 ## 1.0.11
 
+_Released: 2026-06-12T06:53:23Z_
+
 ### Patch Changes
 
 - Updated dependencies [41b3908]
@@ -19,6 +74,8 @@
 
 ## 1.0.10
 
+_Released: 2026-06-11T10:54:17Z_
+
 ### Patch Changes
 
 - Updated dependencies [7bfa518]
@@ -26,6 +83,8 @@
     - @sap-ux/fiori-generator-shared@1.0.10
 
 ## 1.0.9
+
+_Released: 2026-06-10T09:57:42Z_
 
 ### Patch Changes
 
@@ -35,6 +94,8 @@
 - @sap-ux/fiori-generator-shared@1.0.9
 
 ## 1.0.8
+
+_Released: 2026-06-09T14:35:01Z_
 
 ### Patch Changes
 
@@ -46,12 +107,16 @@
 
 ## 1.0.7
 
+_Released: 2026-06-09T13:18:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [a328e14]
     - @sap-ux/fiori-generator-shared@1.0.7
 
 ## 1.0.6
+
+_Released: 2026-06-04T13:54:21Z_
 
 ### Patch Changes
 
@@ -63,6 +128,8 @@
 
 ## 1.0.5
 
+_Released: 2026-06-04T10:19:37Z_
+
 ### Patch Changes
 
 - Updated dependencies [b326a9a]
@@ -72,6 +139,8 @@
     - @sap-ux/telemetry@1.0.5
 
 ## 1.0.4
+
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -89,6 +158,8 @@
 
 ## 1.0.3
 
+_Released: 2026-06-03T13:52:44Z_
+
 ### Patch Changes
 
 - @sap-ux/odata-service-writer@1.0.2
@@ -98,12 +169,16 @@
 
 ## 1.0.2
 
+_Released: 2026-06-02T11:35:17Z_
+
 ### Patch Changes
 
 - @sap-ux/telemetry@1.0.2
 - @sap-ux/fiori-generator-shared@1.0.2
 
 ## 1.0.1
+
+_Released: 2026-06-01T15:15:26Z_
 
 ### Patch Changes
 
@@ -114,6 +189,8 @@
     - @sap-ux/telemetry@1.0.1
 
 ## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -161,12 +238,16 @@
 
 ## 0.13.6
 
+_Released: 2026-05-29T12:50:34Z_
+
 ### Patch Changes
 
 - Updated dependencies [a1c9cd7]
     - @sap-ux/guided-answers-helper@0.5.1
 
 ## 0.13.5
+
+_Released: 2026-05-27T11:39:21Z_
 
 ### Patch Changes
 
@@ -175,12 +256,16 @@
 
 ## 0.13.4
 
+_Released: 2026-05-27T10:42:47Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-generator-shared@0.15.5
 - @sap-ux/telemetry@0.7.4
 
 ## 0.13.3
+
+_Released: 2026-05-26T16:40:21Z_
 
 ### Patch Changes
 
@@ -192,6 +277,8 @@
 
 ## 0.13.2
 
+_Released: 2026-05-21T16:21:11Z_
+
 ### Patch Changes
 
 - @sap-ux/odata-service-writer@0.32.2
@@ -200,6 +287,8 @@
 - @sap-ux/fiori-generator-shared@0.15.3
 
 ## 0.13.1
+
+_Released: 2026-05-19T15:16:46Z_
 
 ### Patch Changes
 
@@ -211,6 +300,8 @@
 
 ## 0.13.0
 
+_Released: 2026-05-15T13:12:06Z_
+
 ### Minor Changes
 
 - 2c76f8f: feat(inquirer-common): add ShowOutputTabLink and OutputTabLinkResult types; add showOutputTabLink property to YUIQuestion, InputQuestion, ListQuestion, ConfirmQuestion, CheckBoxQuestion
@@ -221,6 +312,8 @@
     - @sap-ux/fiori-generator-shared@0.15.1
 
 ## 0.12.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -241,12 +334,16 @@
 
 ## 0.11.48
 
+_Released: 2026-05-14T21:28:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [138246a]
     - @sap-ux/odata-service-writer@0.31.15
 
 ## 0.11.47
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -264,6 +361,8 @@
 
 ## 0.11.46
 
+_Released: 2026-05-13T09:36:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -274,12 +373,16 @@
 
 ## 0.11.45
 
+_Released: 2026-05-12T18:00:39Z_
+
 ### Patch Changes
 
 - Updated dependencies [9360ea5]
     - @sap-ux/fiori-generator-shared@0.14.0
 
 ## 0.11.44
+
+_Released: 2026-05-06T23:02:00Z_
 
 ### Patch Changes
 
@@ -295,6 +398,8 @@
 
 ## 0.11.43
 
+_Released: 2026-04-30T14:23:24Z_
+
 ### Patch Changes
 
 - Updated dependencies [c160401]
@@ -304,6 +409,8 @@
     - @sap-ux/project-access@1.36.2
 
 ## 0.11.42
+
+_Released: 2026-04-29T15:24:37Z_
 
 ### Patch Changes
 
@@ -315,6 +422,8 @@
 
 ## 0.11.41
 
+_Released: 2026-04-27T19:47:46Z_
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -324,6 +433,8 @@
     - @sap-ux/telemetry@0.6.101
 
 ## 0.11.40
+
+_Released: 2026-04-23T12:54:21Z_
 
 ### Patch Changes
 
@@ -335,6 +446,8 @@
 
 ## 0.11.39
 
+_Released: 2026-04-23T06:48:55Z_
+
 ### Patch Changes
 
 - Updated dependencies [237371b]
@@ -343,12 +456,16 @@
 
 ## 0.11.38
 
+_Released: 2026-04-22T12:38:46Z_
+
 ### Patch Changes
 
 - Updated dependencies [9a48e63]
     - @sap-ux/ui5-info@0.13.20
 
 ## 0.11.37
+
+_Released: 2026-04-15T11:53:17Z_
 
 ### Patch Changes
 
@@ -357,6 +474,8 @@
     - @sap-ux/fiori-generator-shared@0.13.99
 
 ## 0.11.36
+
+_Released: 2026-04-14T20:26:28Z_
 
 ### Patch Changes
 
@@ -367,6 +486,8 @@
     - @sap-ux/odata-service-writer@0.31.7
 
 ## 0.11.35
+
+_Released: 2026-04-14T12:35:35Z_
 
 ### Patch Changes
 
@@ -380,6 +501,8 @@
     - @sap-ux/project-access@1.35.20
 
 ## 0.11.34
+
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -395,6 +518,8 @@
 
 ## 0.11.33
 
+_Released: 2026-04-01T11:49:37Z_
+
 ### Patch Changes
 
 - Updated dependencies [3291f6c]
@@ -404,6 +529,8 @@
     - @sap-ux/telemetry@0.6.95
 
 ## 0.11.32
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -424,6 +551,8 @@
 
 ## 0.11.31
 
+_Released: 2026-03-27T15:37:24Z_
+
 ### Patch Changes
 
 - Updated dependencies [e92850e]
@@ -431,6 +560,8 @@
     - @sap-ux/fiori-generator-shared@0.13.93
 
 ## 0.11.30
+
+_Released: 2026-03-27T11:58:49Z_
 
 ### Patch Changes
 
@@ -442,6 +573,8 @@
 
 ## 0.11.29
 
+_Released: 2026-03-26T20:06:10Z_
+
 ### Patch Changes
 
 - Updated dependencies [b66e827]
@@ -451,6 +584,8 @@
     - @sap-ux/telemetry@0.6.91
 
 ## 0.11.28
+
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -470,6 +605,8 @@
     - @sap-ux/telemetry@0.6.90
 
 ## 0.11.27
+
+_Released: 2026-03-25T12:56:41Z_
 
 ### Patch Changes
 

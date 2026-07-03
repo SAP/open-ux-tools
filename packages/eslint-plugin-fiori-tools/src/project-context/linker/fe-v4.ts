@@ -22,6 +22,7 @@ export interface FeV4ListReport extends ConfigurationBase<'list-report-page'> {
     entity: MetadataElement;
     tables: (Table | OrphanTable)[];
     lookup: NodeLookup<Table | OrphanTable | FieldGroup>;
+    liveMode: ConfigurationProperty<boolean>;
 }
 
 export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
@@ -323,7 +324,6 @@ interface Target {
         settings?: {
             entitySet?: string;
             contextPath?: string;
-
             controlConfiguration?: { [key: string]: TableConfiguration };
             content?: {
                 header?: {
@@ -331,6 +331,7 @@ interface Target {
                     visible?: boolean;
                 };
             };
+            liveMode?: boolean;
         };
     };
 }
@@ -387,6 +388,9 @@ function linkListReport(
     if (!mainService) {
         return;
     }
+    const liveMode = target.options?.settings?.liveMode;
+    const liveModePath = ['sap.ui5', 'routing', 'targets', name, 'options', 'settings', 'liveMode'];
+
     const tables = collectTables('v4', entityType, mainService);
 
     const page: FeV4ListReport = {
@@ -395,6 +399,11 @@ function linkListReport(
         componentName: 'sap.fe.templates.ListReport',
         contextPath,
         entity: entity,
+        liveMode: {
+            configurationPath: liveModePath,
+            values: [true, false],
+            valueInFile: liveMode
+        },
         configuration: {},
         tables: [],
         lookup: {}
