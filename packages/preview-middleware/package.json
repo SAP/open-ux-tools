@@ -56,7 +56,7 @@
         "@sap/bas-sdk": "3.13.9"
     },
     "devDependencies": {
-        "@jest/globals": "30.3.0",
+        "@jest/globals": "30.4.1",
         "@private/preview-middleware-client": "workspace:@sap-ux-private/preview-middleware-client@*",
         "@sap-ux-private/playwright": "workspace:*",
         "@sap-ux/axios-extension": "workspace:*",

@@ -45,8 +45,8 @@
         "inquirer-autocomplete-prompt": "2.0.1"
     },
     "devDependencies": {
-        "@jest/globals": "30.3.0",
-        "axios": "1.16.0",
+        "@jest/globals": "30.4.1",
+        "axios": "1.18.0",
         "@types/inquirer": "8.2.6",
         "@types/inquirer-autocomplete-prompt": "2.0.2"
     }

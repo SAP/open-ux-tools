@@ -30,7 +30,7 @@
         "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global",
-        "update-fallbacks": "node scripts/update-fallbacks.js"
+        "update-fallbacks": "node scripts/update-fallbacks.mjs"
     },
     "files": [
         "LICENSE",
@@ -41,11 +41,11 @@
     ],
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
-        "axios": "1.16.0",
-        "semver": "7.7.4"
+        "axios": "1.18.0",
+        "semver": "7.8.4"
     },
     "devDependencies": {
-        "@jest/globals": "30.3.0",
+        "@jest/globals": "30.4.1",
         "@types/semver": "7.7.1",
         "mock-spawn": "0.2.6",
         "nock": "14.0.15"

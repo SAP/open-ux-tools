@@ -38,7 +38,7 @@
         "inquirer-autocomplete-prompt": "2.0.1"
     },
     "devDependencies": {
-        "@jest/globals": "30.3.0",
+        "@jest/globals": "30.4.1",
         "@sap-devx/yeoman-ui-types": "1.25.0",
         "@sap-ux/project-input-validator": "workspace:*",
         "@types/inquirer-autocomplete-prompt": "2.0.2",
