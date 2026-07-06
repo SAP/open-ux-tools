@@ -2457,4 +2457,45 @@ describe('FlpSandbox fioriSandboxAppConfig.json route', () => {
         expect(response.text).not.toContain('SandboxBootTask.js');
         expect(response.text).toContain('data-sap-ui-boot-manifest');
     });
+
+    test('passes through (next) when a real HTML file exists at the FLP path', async () => {
+        const realFile = { getString: () => Promise.resolve('<html>real</html>') };
+        const byPathMock = jest.fn().mockImplementation((p: string) => {
+            if (p === '/test/flp.html') {
+                return Promise.resolve(realFile);
+            }
+            return Promise.resolve(undefined);
+        });
+        await setupServer(byPathMock, { useNewSandbox: true });
+        // When a real HTML file exists at the FLP path, the config handler calls next() — no JSON served
+        await server.get('/test/fioriSandboxAppConfig.json').expect(404);
+        expect(logger.info).toHaveBeenCalledWith(expect.stringContaining("HTML file returned at '/test/flp.html'"));
+    });
+
+    test('registers fioriSandboxAppConfig.json route for each RTA editor and card generator directory', async () => {
+        (mockProject as unknown as { byPath: jest.Mock }).byPath = jest.fn().mockResolvedValue(undefined);
+        const flp = new FlpSandbox(
+            {
+                flp: { useNewSandbox: true },
+                rta: {
+                    layer: 'CUSTOMER_BASE',
+                    editors: [{ path: '/my/rta.html' }, { path: '/other/editor.html' }]
+                },
+                editors: { cardGenerator: { path: '/cards/sandbox.html' } }
+            },
+            mockProject as unknown as ReaderCollection,
+            mockUtils,
+            logger
+        );
+        const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+        await flp.init(manifest);
+        const app = express();
+        app.use(flp.router);
+        const srv = supertest(app);
+        // FLP dir + /my + /other + /cards → all four paths must respond
+        await srv.get('/test/fioriSandboxAppConfig.json').expect(200);
+        await srv.get('/my/fioriSandboxAppConfig.json').expect(200);
+        await srv.get('/other/fioriSandboxAppConfig.json').expect(200);
+        await srv.get('/cards/fioriSandboxAppConfig.json').expect(200);
+    });
 });

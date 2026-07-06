@@ -30,7 +30,8 @@ const { init, loadI18nResourceBundle, registerSAPFonts, setI18nTitle } = await i
 );
 const {
     registerComponentDependencyPaths,
-    resetAppState
+    resetAppState,
+    addCardGenerationUserAction
 } = await import('open/ux/preview/client/flp/common');
 const infoCenterMessage = await import('open/ux/preview/client/utils/info-center-message');
 type ManifestAppdescr = import('../../../src/adp/api-handler.js').ManifestAppdescr;
@@ -256,6 +257,63 @@ describe('flp/sandbox1Init', () => {
             await resetAppState(Container);
             expect(mockService.deleteAppState).toHaveBeenCalled();
             expect(mockService.deleteAppState).toHaveBeenCalledWith('dummyHash5678');
+        });
+    });
+
+    describe('addCardGenerationUserAction', () => {
+        const mockComponentInstance = {} as unknown as import('sap/ui/core/Component').default;
+
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('loads CardGenerator and wires press handler to initializeAsync', async () => {
+            const initializeAsyncMock = jest.fn();
+            const showForCurrentAppMock = jest.fn();
+            const createUserActionMock = jest.fn().mockResolvedValue({ showForCurrentApp: showForCurrentAppMock });
+            const extensionServiceMock = { createUserAction: createUserActionMock };
+            sapMock.ushell.Container.getServiceAsync.mockResolvedValue(extensionServiceMock);
+
+            (sapMock.ui.require as jest.Mock).mockImplementation((_libs: string[], cb: Function) => {
+                cb({ initializeAsync: initializeAsyncMock });
+            });
+
+            addCardGenerationUserAction(mockComponentInstance, sap.ushell.Container);
+            // addCardGenerationUserAction returns void; the sap.ui.require callback is fired
+            // synchronously by the mock but contains two awaits internally. Yielding via
+            // setTimeout(0) drains the microtask queue so those awaits resolve before asserting.
+            await new Promise((resolve) => setTimeout(resolve, 0));
+
+            expect(sapMock.ui.require).toHaveBeenCalledWith(
+                ['sap/cards/ap/generator/CardGenerator'],
+                expect.any(Function)
+            );
+            expect(createUserActionMock).toHaveBeenCalledWith(
+                expect.objectContaining({ id: 'generate_card', text: 'Generate Card' }),
+                expect.objectContaining({ controlType: 'sap.ushell.ui.launchpad.ActionItem' })
+            );
+            expect(showForCurrentAppMock).toHaveBeenCalled();
+        });
+
+        test('calls CardGenerator.initializeAsync with component instance on press', async () => {
+            const initializeAsyncMock = jest.fn();
+            const showForCurrentAppMock = jest.fn();
+            const createUserActionMock = jest.fn().mockResolvedValue({ showForCurrentApp: showForCurrentAppMock });
+            const extensionServiceMock = { createUserAction: createUserActionMock };
+            sapMock.ushell.Container.getServiceAsync.mockResolvedValue(extensionServiceMock);
+
+            (sapMock.ui.require as jest.Mock).mockImplementation((_libs: string[], cb: Function) => {
+                cb({ initializeAsync: initializeAsyncMock });
+            });
+
+            addCardGenerationUserAction(mockComponentInstance, sap.ushell.Container);
+            // same flush as above — wait for the internal awaits to resolve
+            await new Promise((resolve) => setTimeout(resolve, 0));
+
+            // simulate press
+            const pressHandler = createUserActionMock.mock.calls[0][0].press as () => void;
+            pressHandler();
+            expect(initializeAsyncMock).toHaveBeenCalledWith(mockComponentInstance);
         });
     });
 
