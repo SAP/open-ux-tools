@@ -269,7 +269,7 @@ server:
 
 #### Static Mock Data Files
 
-Static mock data lives in `webapp/localService/mockdata/` as JSON files - one per OData entity set, named to match the entity set (e.g., `Travel.json`, `Booking.json`). Format is an array of objects whose properties match the OData entity type.
+Static mock data lives in the folder configured as `mockdataPath` in `ui5-mock.yaml` - one JSON file per OData entity set, named to match the entity set (e.g., `Travel.json`, `Booking.json`). The generator default is `./webapp/localService/mainService/data/`, but always check the actual `mockdataPath` value in your project's `ui5-mock.yaml` - the path and the config must match. Format is an array of objects whose properties match the OData entity type.
 
 Once your JSON files are in place, set `generateMockData: false` in `ui5-mock.yaml` to ensure the same data is used on every run.
 

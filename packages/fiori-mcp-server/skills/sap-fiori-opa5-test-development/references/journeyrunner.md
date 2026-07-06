@@ -48,7 +48,7 @@ If not explicitly configured, the middleware derives it from the app's `sap.app.
               action: preview      # tile name = "travellist-preview"
 ```
 
-If no intent is configured, the default tile name is app-preview.
+If no intent is configured, the middleware defaults to `app-preview`. If a custom intent is configured, the tile name is `<object>-<action>` from that config.
 
 ### Physical flpSandbox.html (classic setup):
 
@@ -81,7 +81,7 @@ sap.ui.define([
         QUnit.module("Feature Name Journey");
 
         opaTest("Start application", function (Given, When, Then) {
-            Given.iStartMyApp("myapp-tile");
+            Given.iStartMyApp("<object>-<action>");
             Then.onTheEntityNameList.iSeeThisPage();
         });
 
