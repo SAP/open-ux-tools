@@ -127,7 +127,7 @@ describe('questions', () => {
                 "guiOptions": {
                   "breadcrumb": "Store Credentials",
                 },
-                "message": "Do you want to store the system credentials?",
+                "message": "Store Credentials",
                 "name": "abapOnPrem:storeSystemCredentials",
                 "type": "confirm",
                 "validate": [Function],
@@ -138,10 +138,10 @@ describe('questions', () => {
                 "guiOptions": {
                   "applyDefaultWhenDirty": true,
                   "breadcrumb": true,
-                  "hint": "Entering a system name will save the connection for re-use.",
+                  "hint": "Entering a system name saves the connection for re-use.",
                   "mandatory": true,
                 },
-                "message": "System name",
+                "message": "System Name",
                 "name": "abapOnPrem:userSystemName",
                 "type": "input",
                 "validate": [Function],

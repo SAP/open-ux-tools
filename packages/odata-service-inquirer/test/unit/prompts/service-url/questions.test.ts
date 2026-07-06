@@ -94,7 +94,7 @@ describe('Service URL prompts', () => {
                 "guiOptions": {
                   "mandatory": true,
                 },
-                "message": "Service username",
+                "message": "Service Username",
                 "name": "username",
                 "type": "input",
                 "validate": [Function],
@@ -108,7 +108,7 @@ describe('Service URL prompts', () => {
                 },
                 "guiType": "login",
                 "mask": "*",
-                "message": "Service password",
+                "message": "Service Password",
                 "name": "serviceUrlPassword",
                 "type": "password",
                 "validate": [Function],

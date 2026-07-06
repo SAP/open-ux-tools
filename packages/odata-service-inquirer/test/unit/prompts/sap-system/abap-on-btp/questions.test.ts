@@ -176,10 +176,10 @@ describe('questions', () => {
                 "guiOptions": {
                   "applyDefaultWhenDirty": true,
                   "breadcrumb": true,
-                  "hint": "Entering a system name will save the connection for re-use.",
+                  "hint": "Entering a system name saves the connection for re-use.",
                   "mandatory": true,
                 },
-                "message": "System name",
+                "message": "System Name",
                 "name": "abapOnBtp:userSystemName",
                 "type": "input",
                 "validate": [Function],
