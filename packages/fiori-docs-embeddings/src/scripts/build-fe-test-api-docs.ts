@@ -10,6 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PACKAGE_ROOT = path.resolve(__dirname, '../..');
 const API_DIR = 'packages/sap.fe.test/src/sap/fe/test/api';
 const REPO_PATH = path.resolve(PACKAGE_ROOT, 'data/git_repos/sap.fe');
+const SECTION_SEPARATOR = '--------------------------------\n\n';
 const OUTPUT_PATH = path.resolve(PACKAGE_ROOT, 'data_local/sap_fe_test_api.md');
 
 // jsdoc-api doclet types we care about
@@ -134,7 +135,7 @@ function renderClassChunk(cls: JsDoclet, methods: JsDoclet[]): string {
 
     const tags = ['sap.fe.test', 'OPA5', 'testing', shortName.toLowerCase(), kind.toLowerCase(), namespace].join(', ');
 
-    let out = '--------------------------------\n\n';
+    let out = SECTION_SEPARATOR;
     out += `**TITLE**: ${alias}\n\n`;
     out += `**INTRODUCTION**: ${intro}\n\n`;
     out += `**TAGS**: ${tags}\n\n`;
@@ -188,7 +189,7 @@ function renderTypedefsChunk(typedefs: JsDoclet[]): string {
         return '';
     }
 
-    let out = '--------------------------------\n\n';
+    let out = SECTION_SEPARATOR;
     out += `**TITLE**: sap.fe.test.api Type Definitions\n\n`;
     out += `**INTRODUCTION**: TypeScript/JSDoc type definitions used as identifiers and parameters across the sap.fe.test OPA5 API.\n\n`;
     out += `**TAGS**: sap.fe.test, OPA5, testing, types, identifiers, typescript\n\n`;
@@ -216,7 +217,7 @@ function renderEnumsChunk(enums: JsDoclet[], members: JsDoclet[]): string {
         return '';
     }
 
-    let out = '--------------------------------\n\n';
+    let out = SECTION_SEPARATOR;
     out += `**TITLE**: sap.fe.test.api Enumerations\n\n`;
     out += `**INTRODUCTION**: Enumeration types used in the sap.fe.test OPA5 API, such as dialog types and edit states.\n\n`;
     out += `**TAGS**: sap.fe.test, OPA5, testing, enum, constants\n\n`;
@@ -249,8 +250,7 @@ class FeTestApiDocBuilder {
     /**
      * Returns paths to all JS/TS files directly under the API directory.
      */
-    private async getApiFiles(): Promise<string[]> {
-        const apiDir = path.join(REPO_PATH, API_DIR);
+    private async getApiFiles(apiDir: string): Promise<string[]> {
         const entries = await fs.readdir(apiDir, { withFileTypes: true });
         return entries
             .filter((e) => e.isFile() && (e.name.endsWith('.js') || e.name.endsWith('.ts')))
@@ -272,7 +272,7 @@ class FeTestApiDocBuilder {
             return;
         }
 
-        const files = await this.getApiFiles();
+        const files = await this.getApiFiles(apiDir);
         this.logger.info(`Found ${files.length} files in api/`);
 
         const doclets = (await jsdocApi.explain({ files, cache: false })) as JsDoclet[];
@@ -303,6 +303,7 @@ class FeTestApiDocBuilder {
         for (const cls of classes) {
             const classMethods = methods.filter((m) => m.memberof === cls.longname);
             if (classMethods.length === 0) {
+                this.logger.warn(`Skipping ${cls.longname}: no public instance methods found (static-only or empty)`);
                 continue;
             }
             markdown += renderClassChunk(cls, classMethods);

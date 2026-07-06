@@ -180,7 +180,7 @@ describe('FeTestApiDocBuilder', () => {
             expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('1 classes'));
         });
 
-        it('should skip class chunks with no public methods', async () => {
+        it('should skip class chunks with no public methods and log a warning', async () => {
             // Class with no matching instance methods
             mockExplain.mockResolvedValue([classDoclet]);
 
@@ -189,16 +189,19 @@ describe('FeTestApiDocBuilder', () => {
 
             const written = (mockFs.writeFile as jest.Mock).mock.calls[0][1] as string;
             expect(written).not.toContain('sap.fe.test.api.TableActions');
+            expect(mockLogger.warn).toHaveBeenCalledWith(expect.stringContaining('sap.fe.test.api.TableActions'));
         });
     });
 
     describe('isPublic', () => {
-        it('should include typedef doclets without explicit access field', async () => {
+        beforeEach(() => {
             mockFs.access.mockResolvedValue(undefined);
             mockFs.readdir.mockResolvedValue([]);
             mockFs.mkdir.mockResolvedValue(undefined);
             mockFs.writeFile.mockResolvedValue(undefined);
+        });
 
+        it('should include typedef doclets without explicit access field', async () => {
             const typedefNoAccess = {
                 kind: 'typedef',
                 name: 'MyType',
@@ -215,11 +218,6 @@ describe('FeTestApiDocBuilder', () => {
         });
 
         it('should exclude undocumented typedefs', async () => {
-            mockFs.access.mockResolvedValue(undefined);
-            mockFs.readdir.mockResolvedValue([]);
-            mockFs.mkdir.mockResolvedValue(undefined);
-            mockFs.writeFile.mockResolvedValue(undefined);
-
             const undocumentedTypedef = {
                 kind: 'typedef',
                 name: 'HiddenType',
