@@ -379,7 +379,13 @@ describe('generateInboundConfig with legacy change types', () => {
             }
         );
 
-        await generateInboundConfig(basePath, config, mockFs as unknown as import('mem-fs-editor').Editor, '1.142.0', false);
+        await generateInboundConfig(
+            basePath,
+            config,
+            mockFs as unknown as import('mem-fs-editor').Editor,
+            '1.142.0',
+            false
+        );
 
         expect(writeJsonSpy).toHaveBeenCalledTimes(1);
         const [, writtenData] = writeJsonSpy.mock.calls[0] as [string, DescriptorVariant];
@@ -404,7 +410,13 @@ describe('generateInboundConfig with legacy change types', () => {
             }
         );
 
-        await generateInboundConfig(basePath, config, mockFs as unknown as import('mem-fs-editor').Editor, '1.143.0', false);
+        await generateInboundConfig(
+            basePath,
+            config,
+            mockFs as unknown as import('mem-fs-editor').Editor,
+            '1.143.0',
+            false
+        );
 
         expect(writeJsonSpy).toHaveBeenCalledTimes(1);
         const [, writtenData] = writeJsonSpy.mock.calls[0] as [string, DescriptorVariant];
@@ -428,12 +440,61 @@ describe('generateInboundConfig with legacy change types', () => {
             }
         );
 
-        await generateInboundConfig(basePath, config, mockFs as unknown as import('mem-fs-editor').Editor, '1.142.0', true);
+        await generateInboundConfig(
+            basePath,
+            config,
+            mockFs as unknown as import('mem-fs-editor').Editor,
+            '1.142.0',
+            true
+        );
 
         expect(writeJsonSpy).toHaveBeenCalledTimes(1);
         const [, writtenData] = writeJsonSpy.mock.calls[0] as [string, DescriptorVariant];
         const changeTypes = writtenData.content.map((c) => c.changeType);
         expect(changeTypes).toContain('appdescr_app_setInbounds');
         expect(changeTypes).not.toContain('appdescr_app_addNewInbound');
+    });
+
+    it('should emit addNewInbound for every inbound and removeAllInboundsExceptOne only once (first) on legacy systems', async () => {
+        const { getVariant, updateVariant } = await import('../../../src/base/helper.js');
+        (getVariant as jest.Mock).mockReturnValue({
+            id: 'testVariant',
+            content: [],
+            layer: 'CUSTOMER_BASE',
+            reference: 'test.app',
+            namespace: 'apps/test.app/changes/'
+        });
+        (updateVariant as unknown as jest.Mock).mockImplementation(
+            async (_basePath: string, variant: unknown, fs: { writeJSON: jest.Mock }) => {
+                fs.writeJSON('/test/path/webapp/manifest.appdescr_variant', variant);
+            }
+        );
+
+        const multi: InternalInboundNavigation[] = [
+            { ...config[0], inboundId: 'displayBank' },
+            { ...config[0], inboundId: 'displayVendor', semanticObject: 'Vendor', action: 'display' }
+        ] as InternalInboundNavigation[];
+
+        await generateInboundConfig(
+            basePath,
+            multi,
+            mockFs as unknown as import('mem-fs-editor').Editor,
+            '1.142.0',
+            false
+        );
+
+        expect(writeJsonSpy).toHaveBeenCalledTimes(1);
+        const [, writtenData] = writeJsonSpy.mock.calls[0] as [string, DescriptorVariant];
+        const changeTypes = writtenData.content.map((c) => c.changeType);
+        // Expected exact order: add #1, remove-all-except #1, add #2
+        expect(changeTypes).toEqual([
+            'appdescr_app_addNewInbound',
+            'appdescr_app_removeAllInboundsExceptOne',
+            'appdescr_app_addNewInbound'
+        ]);
+        const removeChange = writtenData.content.find(
+            (c) => c.changeType === 'appdescr_app_removeAllInboundsExceptOne'
+        );
+        expect((removeChange?.content as { inboundId: string }).inboundId).toBe('displayBank');
     });
 });

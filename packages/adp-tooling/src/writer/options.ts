@@ -24,6 +24,11 @@ import { AdaptationProjectType } from '@sap-ux/axios-extension';
 import { SupportedProject } from '../source/index.js';
 import { isFeatureSupportedVersion } from '../ui5/format.js';
 
+/**
+ * ABAP added support for 'appdescr_app_setInbounds' in UI5 1.143. On older systems we must fall back
+ * to the legacy 'appdescr_app_addNewInbound' + 'appdescr_app_removeAllInboundsExceptOne' pair.
+ * CF projects always use the new type.
+ */
 const MIN_VERSION_FOR_SET_INBOUNDS = '1.143.0';
 
 const VSCODE_URL = 'https://REQUIRED_FOR_VSCODE.example';
@@ -358,7 +363,11 @@ function appendLegacyInboundChanges(
             'i18n': 'i18n/i18n.properties'
         }
     });
-    // Only add 'removeAllInboundsExceptOne' after the first inbound is added
+    // Only emit 'removeAllInboundsExceptOne' after the first inbound is added.
+    // This change type wipes any inbounds inherited from the base app, keeping only
+    // the one just added. Subsequent inbounds in this loop are then stacked on top
+    // via additional 'appdescr_app_addNewInbound' entries. Emitting it later would
+    // race with the merge on the ABAP side.
     if (isFirst) {
         manifestChangeContent.push({
             changeType: 'appdescr_app_removeAllInboundsExceptOne',

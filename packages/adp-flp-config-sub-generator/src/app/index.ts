@@ -259,8 +259,10 @@ export default class AdpFlpConfigGenerator extends Generator {
             }
         ]);
         await this.prompt(prompts);
-        if (this.provider) {
+        try {
             this.systemUI5Version = await getSystemUI5Version(this.provider, this.toolsLogger);
+        } catch (error) {
+            this.toolsLogger.debug(`Could not fetch system UI5 version: ${error}`);
         }
     }
 

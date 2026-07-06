@@ -1,5 +1,5 @@
 ---
-"@sap-ux/adp-tooling": minor
+"@sap-ux/adp-tooling": patch
 "@sap-ux/adp-flp-config-sub-generator": patch
 "@sap-ux/create": patch
 ---
