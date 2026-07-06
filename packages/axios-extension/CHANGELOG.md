@@ -1,5 +1,17 @@
 # @sap-ux/axios-extension
 
+## 2.0.6
+
+### Patch Changes
+
+#### Dependency Updates
+
+- upgrade axios dependency [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+
 ## 2.0.5
 
 ### Patch Changes
