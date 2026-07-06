@@ -433,43 +433,40 @@ function linkListReportTable(
         let configurationKey: string = table.annotationPath;
         if (!configurations[configurationKey]) {
             // CAP configurationKey example: /Incidents/@com.sap.vocabularies.UI.v1.LineItem#test
-            const key = Object.keys(configurations).find((key) => key === `${page.contextPath}/${configurationKey}`);
-            if (!key) {
-                continue;
+            const key = `${page.contextPath}/${configurationKey}`;
+            if (configurations[key]) {
+                configurationKey = key;
             }
-            configurationKey = key;
         }
-
-        const linkedTable = createTable(configurationKey, pathToPage, table);
+        const linkedTable = createTable(
+            configurationKey,
+            pathToPage,
+            configurations[configurationKey] ? table : undefined
+        );
         controls[`${linkedTable.type}|${configurationKey}`] = linkedTable;
     }
 
     for (const [controlKey, controlConfiguration] of Object.entries(configurations)) {
         const tableControl = controls[`table|${controlKey}`];
         if (tableControl) {
-            if (tableControl.type === 'table') {
-                const tableType = controlConfiguration.tableSettings?.type;
-                tableControl.configuration.tableType.valueInFile = tableType;
-                const columnHeaderValue = controlConfiguration.tableSettings?.widthIncludingColumnHeader;
-                tableControl.configuration.widthIncludingColumnHeader.valueInFile = columnHeaderValue;
-                const disableCopyValue = controlConfiguration.tableSettings?.disableCopyToClipboard;
-                tableControl.configuration.disableCopyToClipboard.valueInFile = disableCopyValue;
-                const enableExportValue = controlConfiguration.tableSettings?.enableExport;
-                tableControl.configuration.enableExport.valueInFile = enableExportValue;
-                const enablePasteValue = controlConfiguration.tableSettings?.enablePaste;
-                tableControl.configuration.enablePaste.valueInFile = enablePasteValue;
-                const condensedTableLayoutValue = controlConfiguration.tableSettings?.condensedTableLayout;
-                tableControl.configuration.condensedTableLayout.valueInFile = condensedTableLayoutValue;
-                const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
-                tableControl.configuration.creationMode.valueInFile = creationModeValue;
-                tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
-                const personalization = controlConfiguration.tableSettings?.personalization;
-                tableControl.configuration.personalization.valueInFile = personalization;
-            }
-        } else {
-            // no annotation definition found for this table, but configuration exists
-            const orphanTable = createTable(controlKey, pathToPage);
-            controls[`${orphanTable.type}|${controlKey}`] = orphanTable;
+            // get properties valueInFile from manifest table config
+            const tableType = controlConfiguration.tableSettings?.type;
+            tableControl.configuration.tableType.valueInFile = tableType;
+            const columnHeaderValue = controlConfiguration.tableSettings?.widthIncludingColumnHeader;
+            tableControl.configuration.widthIncludingColumnHeader.valueInFile = columnHeaderValue;
+            const disableCopyValue = controlConfiguration.tableSettings?.disableCopyToClipboard;
+            tableControl.configuration.disableCopyToClipboard.valueInFile = disableCopyValue;
+            const enableExportValue = controlConfiguration.tableSettings?.enableExport;
+            tableControl.configuration.enableExport.valueInFile = enableExportValue;
+            const enablePasteValue = controlConfiguration.tableSettings?.enablePaste;
+            tableControl.configuration.enablePaste.valueInFile = enablePasteValue;
+            const condensedTableLayoutValue = controlConfiguration.tableSettings?.condensedTableLayout;
+            tableControl.configuration.condensedTableLayout.valueInFile = condensedTableLayoutValue;
+            const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
+            tableControl.configuration.creationMode.valueInFile = creationModeValue;
+            tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
+            const personalization = controlConfiguration.tableSettings?.personalization;
+            tableControl.configuration.personalization.valueInFile = personalization;
         }
     }
     for (const control of Object.values(controls)) {
