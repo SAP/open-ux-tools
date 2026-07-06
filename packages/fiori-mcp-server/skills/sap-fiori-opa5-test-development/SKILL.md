@@ -157,7 +157,7 @@ Overview Page has no `sap.fe.test` support. FCL (Flexible Column Layout) has no 
 sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -178,7 +178,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };

@@ -16,7 +16,7 @@ sap.ui.define([
 ], function (JourneyRunner, EntityNameList, EntityNameObjectPage) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('com/myorg/myapp') + '/test/flp.html#<tile-name>',
         pages: {
             onTheEntityNameList: EntityNameList,
