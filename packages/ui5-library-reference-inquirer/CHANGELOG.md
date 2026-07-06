@@ -1,5 +1,35 @@
 # @sap-ux/ui5-library-reference-inquirer
 
+## 1.0.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.19 → 1.0.20
+
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.18 → 1.0.19
+- @sap-ux/project-access 2.1.5 → 2.1.6
+
+## 1.0.19
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.17 → 1.0.18
+- @sap-ux/project-access 2.1.4 → 2.1.5
+
 ## 1.0.18
 
 ### Patch Changes

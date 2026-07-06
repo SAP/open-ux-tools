@@ -1,5 +1,65 @@
 # @sap-ux/generator-adp
 
+## 1.0.29
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-06
+
+#### Features
+
+- Officially publish CF workflow in the ADP generator. [[58e9645](https://github.com/SAP/open-ux-tools/commit/58e9645465b48c7832d9da548df3d609c5c0d590)]
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.16 → 1.0.17
+- @sap-ux/fiori-generator-shared 1.0.18 → 1.0.19
+- @sap-ux/inquirer-common 1.0.19 → 1.0.20
+- @sap-ux/adp-tooling 1.0.27 → 1.0.28
+
+## 1.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.5 → 2.0.6
+- @sap-ux/inquirer-common 1.0.18 → 1.0.19
+- @sap-ux/adp-tooling 1.0.26 → 1.0.27
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+- @sap-ux/telemetry 1.0.15 → 1.0.16
+- @sap-ux/fiori-generator-shared 1.0.17 → 1.0.18
+- @sap-ux/odata-service-writer 1.0.11 → 1.0.12
+- @sap-ux/system-access 1.0.5 → 1.0.6
+- @sap-ux/project-access 2.1.5 → 2.1.6
+- @sap-ux/project-input-validator 1.0.9 → 1.0.10
+
+## 1.0.27
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.10 → 1.0.11
+- @sap-ux/project-input-validator 1.0.8 → 1.0.9
+- @sap-ux/fiori-generator-shared 1.0.16 → 1.0.17
+- @sap-ux/axios-extension 2.0.4 → 2.0.5
+- @sap-ux/inquirer-common 1.0.17 → 1.0.18
+- @sap-ux/feature-toggle 1.0.3 → 1.0.4
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/system-access 1.0.4 → 1.0.5
+- @sap-ux/adp-tooling 1.0.25 → 1.0.26
+- @sap-ux/btp-utils 2.0.3 → 2.0.4
+- @sap-ux/telemetry 1.0.14 → 1.0.15
+- @sap-ux/logger 1.0.1 → 1.0.2
+- @sap-ux/store 2.0.2 → 2.0.3
+
 ## 1.0.26
 
 ### Patch Changes

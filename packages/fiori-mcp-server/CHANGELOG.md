@@ -1,5 +1,45 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.8.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/cds-odata-annotation-converter [[5b2a7f2](https://github.com/SAP/open-ux-tools/commit/5b2a7f2fce7f0faa43e2ab083ec25b80ea204503)]
+
+## 1.8.7
+
+### Patch Changes
+
+#### Features
+
+- Officially publish CF workflow in the ADP generator. [[58e9645](https://github.com/SAP/open-ux-tools/commit/58e9645465b48c7832d9da548df3d609c5c0d590)]
+
+## 1.8.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-03
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension, @sap-ux/btp-utils, @sap-ux/odata-vocabularies, @sap-ux/ui5-config, @sap-ux/telemetry [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
+## 1.8.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
 ## 1.8.4
 
 ### Patch Changes

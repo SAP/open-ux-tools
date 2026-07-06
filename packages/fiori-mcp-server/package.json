@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-mcp-server",
     "description": "SAP Fiori - Model Context Protocol (MCP) server",
-    "version": "1.8.4",
+    "version": "1.8.8",
     "mcpName": "io.github.SAP/fiori-mcp-server",
     "keywords": [
         "SAP Fiori tools",
@@ -54,7 +54,7 @@
     },
     "devDependencies": {
         "@huggingface/transformers": "4.2.0",
-        "@jest/globals": "30.3.0",
+        "@jest/globals": "30.4.1",
         "@langchain/core": "1.1.49",
         "@langchain/mcp-adapters": "1.1.3",
         "@modelcontextprotocol/sdk": "1.29.0",

@@ -1,5 +1,37 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.1.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.13 → 1.0.14
+
+## 1.1.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.12 → 1.0.13
+- @sap-ux/project-access 2.1.5 → 2.1.6
+
+## 1.1.4
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.11 → 1.0.12
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/logger 1.0.1 → 1.0.2
+- @sap-ux/i18n 1.0.1 → 1.0.2
+
 ## 1.1.3
 
 ### Patch Changes

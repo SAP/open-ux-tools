@@ -1,5 +1,37 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.7.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/cds-odata-annotation-converter [[5b2a7f2](https://github.com/SAP/open-ux-tools/commit/5b2a7f2fce7f0faa43e2ab083ec25b80ea204503)]
+
+## 10.7.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-03
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/odata-vocabularies, @sap-ux/ui5-config [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
+## 10.7.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
 ## 10.7.1
 
 ### Patch Changes
