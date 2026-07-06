@@ -58,7 +58,8 @@ import {
     initI18nFioriAppSubGenerator,
     restoreServiceProviderLoggers,
     t,
-    updateDependentStep
+    updateDependentStep,
+    getFloorplanLabel
 } from '../utils/index.js';
 import { runPostGenerationTasks } from './end.js';
 import type { FioriAppGeneratorOptions } from './fioriAppGeneratorOptions.js';
@@ -398,9 +399,7 @@ export class FioriAppGenerator extends Generator {
             );
 
             TelemetryHelper.createTelemetryData({
-                Template: t(`floorplans.label.${floorplan}`, {
-                    odataVersion: service.version
-                }),
+                Template: getFloorplanLabel(floorplan, service.version),
                 DataSource: service.source,
                 UI5Version: project.ui5Version || latestVersionString,
                 Theme: project.ui5Theme,
