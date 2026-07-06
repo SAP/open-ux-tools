@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/project-input-validator",
-    "version": "1.0.7",
+    "version": "1.0.10",
     "description": "Library to validate Fiori project input formats",
     "type": "module",
     "repository": {
@@ -32,7 +32,7 @@
         "@sap-ux/project-access": "workspace:*"
     },
     "devDependencies": {
-        "@jest/globals": "30.3.0",
+        "@jest/globals": "30.4.1",
         "@types/validate-npm-package-name": "4.0.2",
         "jest-extended": "7.0.0"
     },

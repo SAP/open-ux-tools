@@ -5,16 +5,14 @@ const spyTrackEvent = jest.fn();
 jest.unstable_mockModule('applicationinsights', () => {
     class TelemetryClient {
         public config: any;
-        public channel: any;
+        public setUseDiskRetryCaching: any;
         public addTelemetryProcessor: any;
         public trackEvent: any;
         constructor() {
             this.config = {
                 samplingPercentage: 0
             };
-            this.channel = {
-                setUseDiskRetryCaching: jest.fn()
-            };
+            this.setUseDiskRetryCaching = jest.fn();
             this.addTelemetryProcessor = (fn: any) => {
                 fn({ tags: {} });
             };

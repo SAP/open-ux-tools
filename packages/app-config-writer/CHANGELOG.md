@@ -1,5 +1,65 @@
 # @sap-ux/app-config-writer
 
+## 1.1.6
+
+### Patch Changes
+
+#### Dependency Updates
+
+- upgrade axios dependency [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.5 → 2.0.6
+- @sap-ux/ui5-config 1.0.4 → 1.0.5
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+- @sap-ux/ui5-application-writer 2.0.7 → 2.0.8
+- @sap-ux/project-access 2.1.5 → 2.1.6
+
+## 1.1.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.0.6 → 2.0.7
+- @sap-ux/axios-extension 2.0.4 → 2.0.5
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/ui5-config 1.0.3 → 1.0.4
+- @sap-ux/btp-utils 2.0.3 → 2.0.4
+- @sap-ux/logger 1.0.1 → 1.0.2
+- @sap-ux/store 2.0.2 → 2.0.3
+
+## 1.1.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/axios-extension 2.0.4 → 2.0.4
+- @sap-ux/ui5-application-writer 2.0.6 → 2.0.6
+
+## 1.1.3
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.0.5 → 2.0.6
+- @sap-ux/axios-extension 2.0.3 → 2.0.4
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/store 2.0.1 → 2.0.2
+- @sap-ux/ui5-config 1.0.3 → 1.0.3
+
 ## 1.1.2
 
 ### Patch Changes

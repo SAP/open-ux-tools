@@ -1,5 +1,37 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.0.37
+
+## 1.0.36
+
+## 1.0.35
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux-private/control-property-editor-common 1.0.3 → 1.0.4
+
+## 1.0.34
+
+## 1.0.33
+
+## 1.0.32
+
+## 1.0.31
+
+## 1.0.30
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
 ## 1.0.29
 
 ## 1.0.28

@@ -1,5 +1,91 @@
 # @sap-ux/preview-middleware
 
+## 1.0.37
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.27 → 1.0.28
+
+## 1.0.36
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.26 → 1.0.27
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+- @sap-ux/system-access 1.0.5 → 1.0.6
+- @sap-ux/project-access 2.1.5 → 2.1.6
+
+## 1.0.35
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/feature-toggle 1.0.3 → 1.0.4
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/system-access 1.0.4 → 1.0.5
+- @sap-ux/adp-tooling 1.0.25 → 1.0.26
+- @sap-ux/btp-utils 2.0.3 → 2.0.4
+- @sap-ux/logger 1.0.1 → 1.0.2
+- @sap-ux/i18n 1.0.1 → 1.0.2
+
+## 1.0.34
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.24 → 1.0.25
+
+## 1.0.33
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.23 → 1.0.24
+
+## 1.0.32
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/adp-tooling 1.0.22 → 1.0.23
+- @sap-ux/system-access 1.0.4 → 1.0.4
+
+## 1.0.31
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.21 → 1.0.22
+
+## 1.0.30
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/feature-toggle 1.0.2 → 1.0.3
+- @sap-ux/system-access 1.0.3 → 1.0.4
+- @sap-ux/adp-tooling 1.0.20 → 1.0.21
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+
 ## 1.0.29
 
 ### Patch Changes
