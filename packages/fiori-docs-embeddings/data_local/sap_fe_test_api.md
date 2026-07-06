@@ -2504,36 +2504,6 @@ In case of a create dialog, the concatenation of the entity and fieldname has to
 Properties:
 - `key` `{string}` — The name of the view as defined in the manifest file
 
-**STEP**: MassEditFieldIdentifier (sap.fe.test.api.MassEditFieldIdentifier)
-
-**DESCRIPTION**: A mass edit field identifier
-
-Properties:
-- `property` `{string}` — The name of the property
-
-**STEP**: MassEditValue (sap.fe.test.api.MassEditValue)
-
-**DESCRIPTION**: A mass edit field value
-
-Properties:
-- `dropDownText` `{string}` — The dropdown text for the selection
-- `rawText` `{string}` — The raw text for the selection
-
-**STEP**: MassEditFieldIdentifier (sap.fe.test.api.MassEditFieldIdentifier)
-
-**DESCRIPTION**: A mass edit field identifier
-
-Properties:
-- `property` `{string}` — The name of the property
-
-**STEP**: MassEditValue (sap.fe.test.api.MassEditValue)
-
-**DESCRIPTION**: A mass edit field value
-
-Properties:
-- `dropDownText` `{string}` — The dropdown text for the selection
-- `rawText` `{string}` — The raw text for the selection
-
 **STEP**: FilterFieldIdentifier (sap.fe.test.api.FilterFieldIdentifier)
 
 **DESCRIPTION**: A filter field identifier
@@ -2598,7 +2568,6 @@ Values:
 - `Error` — A dialog used for showing an error message
 - `Action` — A default dialog for action parameters
 - `Create` — A dialog used for creating a new object
-- `MassEdit` — A dialog used for mass edit
 
 **STEP**: EditState (sap.fe.test.api.EditState)
 
@@ -2613,3 +2582,4 @@ Values:
 - `UnsavedChanges` — Unsaved Changes by Another User
 
 --------------------------------
+

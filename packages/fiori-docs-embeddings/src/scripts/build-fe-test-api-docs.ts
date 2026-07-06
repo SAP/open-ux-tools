@@ -60,9 +60,9 @@ function isPublic(d: JsDoclet): boolean {
     if (d.undocumented) {
         return false;
     }
-    // typedefs and enums are public by convention; classes/functions require explicit @public
+    // typedefs and enums are public by convention, but still respect explicit @private/@protected
     if (d.kind === 'typedef' || d.kind === 'member' || d.kind === 'constant') {
-        return true;
+        return d.access !== 'private' && d.access !== 'protected';
     }
     return d.access === 'public';
 }
@@ -267,15 +267,26 @@ class FeTestApiDocBuilder {
         const apiDir = path.join(REPO_PATH, API_DIR);
         try {
             await fs.access(apiDir);
-        } catch {
-            this.logger.warn(`sap.fe repo not found at ${REPO_PATH}, skipping sap.fe.test API doc generation.`);
-            return;
+        } catch (err) {
+            const code = (err as NodeJS.ErrnoException).code;
+            if (code === 'ENOENT') {
+                this.logger.warn(`sap.fe repo not found at ${REPO_PATH}, skipping sap.fe.test API doc generation.`);
+                return;
+            }
+            throw err;
         }
 
         const files = await this.getApiFiles(apiDir);
         this.logger.info(`Found ${files.length} files in api/`);
 
-        const doclets = (await jsdocApi.explain({ files, cache: false })) as JsDoclet[];
+        if (files.length === 0) {
+            this.logger.warn(`No .js/.ts files found in ${apiDir}, skipping sap.fe.test API doc generation.`);
+            return;
+        }
+
+        // jsdoc-api returns untyped object[]; we narrow to our interface after filtering by kind
+        const rawDoclets = (await jsdocApi.explain({ files, cache: false })) as unknown[];
+        const doclets = rawDoclets.filter((d): d is JsDoclet => typeof d === 'object' && d !== null && 'kind' in d);
         const publicDoclets = doclets.filter(isPublic);
 
         // Group by kind
@@ -297,11 +308,21 @@ class FeTestApiDocBuilder {
         // Sort classes by longname for stable output
         classes.sort((a, b) => a.longname.localeCompare(b.longname));
 
+        // Pre-group methods by class longname to avoid O(classes × methods) scanning
+        const methodsByClass = new Map<string, JsDoclet[]>();
+        for (const m of methods) {
+            if (m.memberof) {
+                const list = methodsByClass.get(m.memberof) ?? [];
+                list.push(m);
+                methodsByClass.set(m.memberof, list);
+            }
+        }
+
         let markdown = '\n';
         let classChunks = 0;
 
         for (const cls of classes) {
-            const classMethods = methods.filter((m) => m.memberof === cls.longname);
+            const classMethods = methodsByClass.get(cls.longname) ?? [];
             if (classMethods.length === 0) {
                 this.logger.warn(`Skipping ${cls.longname}: no public instance methods found (static-only or empty)`);
                 continue;
@@ -312,7 +333,7 @@ class FeTestApiDocBuilder {
 
         markdown += renderTypedefsChunk(typedefs);
         markdown += renderEnumsChunk(enums, enumMembers);
-        markdown += '--------------------------------\n';
+        markdown += '--------------------------------\n\n';
 
         await fs.mkdir(path.dirname(OUTPUT_PATH), { recursive: true });
         await fs.writeFile(OUTPUT_PATH, markdown, 'utf-8');

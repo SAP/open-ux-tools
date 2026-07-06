@@ -37,12 +37,33 @@ describe('FeTestApiDocBuilder', () => {
 
     describe('build - missing repo', () => {
         it('should warn and return early when sap.fe repo directory does not exist', async () => {
-            mockFs.access.mockRejectedValue(new Error('ENOENT'));
+            const enoent = Object.assign(new Error('ENOENT'), { code: 'ENOENT' });
+            mockFs.access.mockRejectedValue(enoent);
 
             const builder = new FeTestApiDocBuilder();
             await builder.build();
 
             expect(mockLogger.warn).toHaveBeenCalledWith(expect.stringContaining('skipping'));
+            expect(mockExplain).not.toHaveBeenCalled();
+            expect(mockFs.writeFile).not.toHaveBeenCalled();
+        });
+
+        it('should rethrow non-ENOENT access errors', async () => {
+            const eacces = Object.assign(new Error('EACCES'), { code: 'EACCES' });
+            mockFs.access.mockRejectedValue(eacces);
+
+            const builder = new FeTestApiDocBuilder();
+            await expect(builder.build()).rejects.toThrow('EACCES');
+        });
+
+        it('should warn and return early when api directory exists but contains no source files', async () => {
+            mockFs.access.mockResolvedValue(undefined);
+            mockFs.readdir.mockResolvedValue([]); // empty directory
+
+            const builder = new FeTestApiDocBuilder();
+            await builder.build();
+
+            expect(mockLogger.warn).toHaveBeenCalledWith(expect.stringContaining('No .js/.ts files found'));
             expect(mockExplain).not.toHaveBeenCalled();
             expect(mockFs.writeFile).not.toHaveBeenCalled();
         });
@@ -194,9 +215,11 @@ describe('FeTestApiDocBuilder', () => {
     });
 
     describe('isPublic', () => {
+        const makeEntry = (name: string, isFile = true) => ({ name, isFile: () => isFile });
+
         beforeEach(() => {
             mockFs.access.mockResolvedValue(undefined);
-            mockFs.readdir.mockResolvedValue([]);
+            mockFs.readdir.mockResolvedValue([makeEntry('types.js')]);
             mockFs.mkdir.mockResolvedValue(undefined);
             mockFs.writeFile.mockResolvedValue(undefined);
         });
@@ -231,6 +254,48 @@ describe('FeTestApiDocBuilder', () => {
 
             const written = (mockFs.writeFile as jest.Mock).mock.calls[0][1] as string;
             expect(written).not.toContain('HiddenType');
+        });
+
+        it('should exclude @private constants even without undocumented flag', async () => {
+            const privateEnumMember = {
+                kind: 'constant',
+                name: 'MassEdit',
+                longname: 'sap.fe.test.api.DialogType.MassEdit',
+                memberof: 'sap.fe.test.api.DialogType',
+                description: 'Internal mass-edit mode',
+                access: 'private'
+            };
+            const enumContainer = {
+                kind: 'member',
+                name: 'DialogType',
+                longname: 'sap.fe.test.api.DialogType',
+                description: 'Dialog type enum.',
+                isEnum: true
+            };
+            mockExplain.mockResolvedValue([enumContainer, privateEnumMember]);
+
+            const builder = new FeTestApiDocBuilder();
+            await builder.build();
+
+            const written = (mockFs.writeFile as jest.Mock).mock.calls[0][1] as string;
+            expect(written).not.toContain('MassEdit');
+        });
+
+        it('should exclude @protected typedefs', async () => {
+            const protectedTypedef = {
+                kind: 'typedef',
+                name: 'InternalConfig',
+                longname: 'sap.fe.test.api.InternalConfig',
+                description: 'Internal config type',
+                access: 'protected'
+            };
+            mockExplain.mockResolvedValue([protectedTypedef]);
+
+            const builder = new FeTestApiDocBuilder();
+            await builder.build();
+
+            const written = (mockFs.writeFile as jest.Mock).mock.calls[0][1] as string;
+            expect(written).not.toContain('InternalConfig');
         });
     });
 });
