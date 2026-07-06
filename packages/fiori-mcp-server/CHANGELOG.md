@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.8.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/cds-odata-annotation-converter [[5b2a7f2](https://github.com/SAP/open-ux-tools/commit/5b2a7f2fce7f0faa43e2ab083ec25b80ea204503)]
+
 ## 1.8.7
 
 ### Patch Changes
