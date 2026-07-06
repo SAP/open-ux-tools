@@ -79,7 +79,7 @@ describe('FLP Configuration Functions', () => {
             const originalVariant = JSON.parse(JSON.stringify(variant)) as DescriptorVariant;
             mockGetVariant.mockReturnValue(variant);
 
-            await generateInboundConfig(basePath, config, mockFs as unknown as Editor);
+            await generateInboundConfig(basePath, config, mockFs as unknown as Editor, '1.143.0', false);
 
             expect(mockGetVariant).toHaveBeenCalledWith(basePath, expect.any(Object));
 
@@ -142,7 +142,7 @@ describe('FLP Configuration Functions', () => {
                     action: 'AnotherAction'
                 }
             ] as InternalInboundNavigation[];
-            await generateInboundConfig(basePath, configs, mockFs as unknown as Editor);
+            await generateInboundConfig(basePath, configs, mockFs as unknown as Editor, '1.143.0', false);
 
             expect(mockGetVariant).toHaveBeenCalledWith(basePath, expect.any(Object));
             expect(writeJsonSpy).toHaveBeenCalledTimes(1);
@@ -321,8 +321,8 @@ describe('shouldUseLegacyInboundChangeTypes', () => {
         expect(shouldUseLegacyInboundChangeTypes(undefined, true)).toBe(false);
     });
 
-    it('should return false when no version is provided', () => {
-        expect(shouldUseLegacyInboundChangeTypes(undefined, false)).toBe(false);
+    it('should return true when no version is provided (safe legacy default for ABAP)', () => {
+        expect(shouldUseLegacyInboundChangeTypes(undefined, false)).toBe(true);
     });
 
     it('should return true when minor version is 142 or lower', () => {

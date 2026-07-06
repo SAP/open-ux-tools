@@ -324,14 +324,19 @@ function getInboundChangeContentWithNewInboundID(
  * Determines whether the legacy inbound change types should be used based on the system UI5 version.
  * Legacy change types ('appdescr_app_addNewInbound' + 'appdescr_app_removeAllInboundsExceptOne') are
  * used for ABAP systems on UI5 1.142 or lower. CF projects always use the new type regardless of version.
+ * When the version cannot be determined on an ABAP system, legacy change types are used as a safe default
+ * since systems too old to expose a version service are almost certainly too old for 'appdescr_app_setInbounds'.
  *
  * @param systemUI5Version - The UI5 version string reported by the system (e.g. '1.142.0').
  * @param isCfProject - Whether this is a Cloud Foundry adaptation project.
  * @returns True when the legacy change types must be used.
  */
 export function shouldUseLegacyInboundChangeTypes(systemUI5Version: string | undefined, isCfProject: boolean): boolean {
-    if (isCfProject || !systemUI5Version) {
+    if (isCfProject) {
         return false;
+    }
+    if (!systemUI5Version) {
+        return true;
     }
     return !isFeatureSupportedVersion(MIN_VERSION_FOR_SET_INBOUNDS, systemUI5Version);
 }
