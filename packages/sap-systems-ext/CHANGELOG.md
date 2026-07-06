@@ -1,5 +1,25 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.7
+
+### Patch Changes
+
+#### Features
+
+- Officially publish CF workflow in the ADP generator. [[58e9645](https://github.com/SAP/open-ux-tools/commit/58e9645465b48c7832d9da548df3d609c5c0d590)]
+
+## 1.0.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-03
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension, @sap-ux/btp-utils, @sap-ux/ui5-config, @sap-ux/telemetry [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
 ## 1.0.5
 
 ### Patch Changes

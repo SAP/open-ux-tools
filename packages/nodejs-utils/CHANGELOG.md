@@ -1,5 +1,13 @@
 # @sap-ux/nodejs-utils
 
+## 1.0.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+
 ## 1.0.5
 
 ### Patch Changes
