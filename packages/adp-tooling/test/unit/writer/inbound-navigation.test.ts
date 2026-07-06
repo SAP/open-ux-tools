@@ -379,13 +379,7 @@ describe('generateInboundConfig with legacy change types', () => {
             }
         );
 
-        await generateInboundConfig(
-            basePath,
-            config,
-            mockFs as unknown as import('mem-fs-editor').Editor,
-            '1.142.0',
-            false
-        );
+        await generateInboundConfig(basePath, config, mockFs as unknown as Editor, '1.142.0', false);
 
         expect(writeJsonSpy).toHaveBeenCalledTimes(1);
         const [, writtenData] = writeJsonSpy.mock.calls[0] as [string, DescriptorVariant];
@@ -410,13 +404,7 @@ describe('generateInboundConfig with legacy change types', () => {
             }
         );
 
-        await generateInboundConfig(
-            basePath,
-            config,
-            mockFs as unknown as import('mem-fs-editor').Editor,
-            '1.143.0',
-            false
-        );
+        await generateInboundConfig(basePath, config, mockFs as unknown as Editor, '1.143.0', false);
 
         expect(writeJsonSpy).toHaveBeenCalledTimes(1);
         const [, writtenData] = writeJsonSpy.mock.calls[0] as [string, DescriptorVariant];
@@ -440,13 +428,7 @@ describe('generateInboundConfig with legacy change types', () => {
             }
         );
 
-        await generateInboundConfig(
-            basePath,
-            config,
-            mockFs as unknown as import('mem-fs-editor').Editor,
-            '1.142.0',
-            true
-        );
+        await generateInboundConfig(basePath, config, mockFs as unknown as Editor, '1.142.0', true);
 
         expect(writeJsonSpy).toHaveBeenCalledTimes(1);
         const [, writtenData] = writeJsonSpy.mock.calls[0] as [string, DescriptorVariant];
@@ -475,13 +457,7 @@ describe('generateInboundConfig with legacy change types', () => {
             { ...config[0], inboundId: 'displayVendor', semanticObject: 'Vendor', action: 'display' }
         ] as InternalInboundNavigation[];
 
-        await generateInboundConfig(
-            basePath,
-            multi,
-            mockFs as unknown as import('mem-fs-editor').Editor,
-            '1.142.0',
-            false
-        );
+        await generateInboundConfig(basePath, multi, mockFs as unknown as Editor, '1.142.0', false);
 
         expect(writeJsonSpy).toHaveBeenCalledTimes(1);
         const [, writtenData] = writeJsonSpy.mock.calls[0] as [string, DescriptorVariant];
