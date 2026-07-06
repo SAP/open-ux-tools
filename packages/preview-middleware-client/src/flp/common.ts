@@ -14,6 +14,13 @@ type GlobalErrorEvent = ErrorEvent | PromiseRejectionEvent;
 
 const CONTROLLER_EXTENSION_PATH_REGEX = /\/changes\/coding\/.+\.(js|ts)/;
 
+/**
+ * Extracts an Error object from a global error event.
+ * Handles both synchronous errors (ErrorEvent) and unhandled promise rejections (PromiseRejectionEvent).
+ *
+ * @param {GlobalErrorEvent} event - The global error or unhandled rejection event.
+ * @returns {Error | undefined} The extracted Error instance, or undefined if no Error could be extracted.
+ */
 function extractError(event: GlobalErrorEvent): Error | undefined {
     if ('error' in event && event.error instanceof Error) {
         return event.error;
@@ -24,6 +31,13 @@ function extractError(event: GlobalErrorEvent): Error | undefined {
     return undefined;
 }
 
+/**
+ * Reports controller extension errors to the Info Center.
+ * Filters events by checking if the stack trace contains 'ControllerExtension',
+ * and sends matching errors as error-level messages to the Info Center panel.
+ *
+ * @param {GlobalErrorEvent} event - The global error or unhandled rejection event.
+ */
 const reportControllerExtensionErrorToInfoCenter: (event: GlobalErrorEvent) => void = (event) => {
     const error = extractError(event);
     const stackTrace = error?.stack ?? '';
@@ -107,6 +121,12 @@ type AppIndexData = Record<
     }
 >;
 
+/**
+ * Check whether a specific dependency is a custom library, and if yes, add it to the map.
+ *
+ * @param dependency dependency from the manifest
+ * @param customLibs map containing the required custom libraries
+ */
 function addKeys(dependency: Record<string, unknown>, customLibs: Record<string, true>): void {
     Object.keys(dependency).forEach(function (key) {
         if (
@@ -119,6 +139,12 @@ function addKeys(dependency: Record<string, unknown>, customLibs: Record<string,
     });
 }
 
+/**
+ * Check whether a specific ComponentUsage is a custom component, and if yes, add it to the map.
+ *
+ * @param compUsages ComponentUsage from the manifest
+ * @param customLibs map containing the required custom libraries
+ */
 function getComponentUsageNames(compUsages: Record<string, { name: string }>, customLibs: Record<string, true>): void {
     const compNames = Object.keys(compUsages).map(function (compUsageKey: string) {
         return compUsages[compUsageKey].name;
@@ -134,6 +160,12 @@ function getComponentUsageNames(compUsages: Record<string, { name: string }>, cu
     });
 }
 
+/**
+ * Fetch the manifest for all the given application urls and generate a string containing all required custom library ids.
+ *
+ * @param appUrls urls pointing to included applications
+ * @returns Promise of a comma separated list of all required libraries.
+ */
 async function getManifestLibs(appUrls: string[]): Promise<string> {
     const result = {} as Record<string, true>;
     const promises = [];
@@ -160,6 +192,11 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
     return Promise.all(promises).then(() => Object.keys(result).join(','));
 }
 
+/**
+ * Register the custom libraries and their url with the UI5 loader.
+ *
+ * @param dataFromAppIndex data returned from the app index service
+ */
 function registerModules(dataFromAppIndex: AppIndexData) {
     Object.keys(dataFromAppIndex).forEach(function (moduleDefinitionKey) {
         const moduleDefinition = dataFromAppIndex[moduleDefinitionKey];
