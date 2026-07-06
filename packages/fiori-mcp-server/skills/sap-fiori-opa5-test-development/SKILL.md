@@ -76,7 +76,7 @@ The test suite entry point (`opaTests.qunit.html` and `OpaTests.qunit.js`) may o
 
 ### Virtual Test Endpoint (fiori-tools-preview or preview-middleware)
 
-When virtual endpoints (via `@sap-ux/ui5-tooling` or `@sap-ux/preview-middleware`) are configured with a `test` block in `ui5.yaml` (or `ui5-mock.yaml` or the ui5 yaml config file relevant for test execution),
+When virtual endpoints (via `@sap/ux-ui5-tooling` or `@sap-ux/preview-middleware`) are configured with a `test` block in `ui5.yaml` (or `ui5-mock.yaml` or the ui5 yaml config file relevant for test execution),
 the HTML and JS entry point files are **generated on the fly** - no physical `opaTests.qunit.html` or `OpaTests.qunit.js` are needed on disk.
 
 The middleware scans for journey files matching the configured glob pattern and dynamically builds the import list.
