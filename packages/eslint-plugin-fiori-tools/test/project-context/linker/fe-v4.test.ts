@@ -341,7 +341,7 @@ describe('FE V4 Linker - XML', () => {
                 expect(orphanSections![0].configuration).toMatchSnapshot();
             });
 
-            test('orphan-table', async () => {
+            test('orphan-table - has manifest config, no annotation', async () => {
                 const context = await setup({
                     manifestChanges: [
                         {
@@ -957,7 +957,7 @@ describe('FE V4 Linker - CAP', () => {
                 expect(orphanSections![0].configuration).toMatchSnapshot();
             });
 
-            test('orphan-table', async () => {
+            test('orphan-table - has manifest config, no annotation', async () => {
                 const context = await setup({
                     manifestChanges: [
                         {
@@ -968,11 +968,10 @@ describe('FE V4 Linker - CAP', () => {
                                 'IncidentsList',
                                 'options',
                                 'settings',
-                                'controlConfiguration'
+                                'controlConfiguration',
+                                '@com.sap.vocabularies.UI.v1.LineItem#orphanTable'
                             ],
-                            value: {
-                                '@com.sap.vocabularies.UI.v1.LineItem#orphanTable': {}
-                            }
+                            value: {}
                         }
                     ]
                 });

@@ -45,6 +45,12 @@ const XML_FACET_NO_ANNOTATION = `<Annotations Target="TECHED_ALP_SOA_SRV.SEPMRA_
                 </Annotation>
             </Annotations`;
 
+export const V2_SECOND_TABLE_ANNOTATION = `<Annotations Target="TECHED_ALP_SOA_SRV.Z_SEPMRA_SO_SALESORDERANALYSISType">
+                <Annotation Term="UI.LineItem" Qualifier="secondTable">
+                    <Collection/>
+                </Annotation>
+            </Annotations>`;
+
 describe('FE V2 Linker', () => {
     let artifacts: FoundFioriArtifacts;
     const fileCache = new Map<string, string>();
@@ -90,6 +96,23 @@ describe('FE V2 Linker', () => {
             diagnostics: []
         };
     }
+
+    function findLRorALPPage(app: LinkedFeV2App, index = 0): FeV2ListReport {
+        let i = 0;
+        for (const page of app.pages) {
+            if (
+                page.componentName === 'sap.suite.ui.generic.template.ListReport' ||
+                page.componentName === 'sap.suite.ui.generic.template.AnalyticalListPage'
+            ) {
+                if (i === index) {
+                    return page;
+                }
+                i++;
+            }
+        }
+        throw new Error('No ListReport or AnalyticalList page found');
+    }
+
     function findObjectPage(app: LinkedFeV2App, index = 0): FeV2ObjectPage {
         let i = 0;
         for (const page of app.pages) {
@@ -104,6 +127,23 @@ describe('FE V2 Linker', () => {
     }
 
     describe('linkTableSettings', () => {
+        describe('page level - listReport page', () => {
+            test('orphan-table - second table annotation', async () => {
+                const context = await setup({
+                    annotationsChange: V2_SECOND_TABLE_ANNOTATION
+                });
+                const result = runFeV2Linker(context);
+                const page = findLRorALPPage(result);
+                const table = page.lookup['table'];
+                expect(table).toHaveLength(1);
+                expect(table![0].configuration).toMatchSnapshot();
+                const orphanTable = page.lookup['orphan-table'];
+                expect(orphanTable).toHaveLength(1);
+                expect(
+                    (orphanTable![0].annotation as { annotation: { qualifier: string } }).annotation?.qualifier
+                ).toBe('secondTable');
+            });
+        });
         describe('application level', () => {
             test('createMode', async () => {
                 const context = await setup({
@@ -196,7 +236,7 @@ describe('FE V2 Linker', () => {
                 expect(table).toHaveLength(1);
                 expect(table![0].configuration.createMode).toMatchSnapshot();
             });
-            test('orphan-node', async () => {
+            test('orphan-section', async () => {
                 const context = await setup({
                     manifestChanges: [
                         {
