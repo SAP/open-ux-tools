@@ -357,7 +357,7 @@ export class FlpSandbox {
         const appId = this.manifest['sap.app']?.id ?? '';
         remapResourcesForPath(config, editor.path, appId);
 
-        return render(this.getSandboxTemplate(ui5Version), config);
+        return render(await this.getSandboxTemplate(ui5Version), config);
     }
 
     /**
@@ -527,9 +527,8 @@ export class FlpSandbox {
             if (ui5Version.major === 1 && ui5Version.minor < 120) {
                 this.removeFlexExtensionPointEnabled();
             }
-            await this.checkLegacySandboxConfig(ui5Version, this.templateConfig.baseUrl);
             //for consistency reasons, we also add the baseUrl to the HTML here, although it is only used in editor mode
-            const html = render(this.getSandboxTemplate(ui5Version), this.templateConfig);
+            const html = render(await this.getSandboxTemplate(ui5Version), this.templateConfig);
             this.sendResponse(res, 'text/html', 200, html);
         }
     }
@@ -766,18 +765,22 @@ export class FlpSandbox {
 
     /**
      * Read the sandbox template file based on the given UI5 version.
+     * Also checks for a legacy 'appconfig/fioriSandboxConfig.json' and falls back to Sandbox 1 if found.
      *
      * @param ui5Version - the UI5 version
      * @returns the template for the sandbox HTML file
      */
-    private getSandboxTemplate(ui5Version: Ui5Version): string {
+    private async getSandboxTemplate(ui5Version: Ui5Version): Promise<string> {
         this.logger.info(
             `Using sandbox template for UI5 version: ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch}${
                 ui5Version.label ? `-${ui5Version.label}` : ''
             }.`
         );
         const qualifies = qualifiesForNewSandbox(ui5Version);
-        const useNewSandbox = qualifies && this.flpConfig.useNewSandbox === true;
+        const legacyConfigPresent = qualifies
+            ? await this.hasLegacySandboxConfig(ui5Version, this.templateConfig.baseUrl)
+            : false;
+        const useNewSandbox = qualifies && this.flpConfig.useNewSandbox === true && !legacyConfigPresent;
         if (qualifies && !useNewSandbox && !this.flpConfig.enhancedHomePage) {
             this.logger.info('New FLP Sandbox disabled in configuration.');
         }
@@ -800,23 +803,26 @@ export class FlpSandbox {
     }
 
     /**
-     * Checks if a legacy 'fioriSandboxConfig.json' file is present when using the new FLP Sandbox.
-     * If found, falls back to Sandbox 1 and warns the user to migrate.
+     * Checks if a legacy 'appconfig/fioriSandboxConfig.json' file is present when using the new FLP Sandbox.
+     * If found, warns the user to migrate and returns true so the caller can fall back to the classic Sandbox
+     * for this request.
      *
      * @param ui5Version - the resolved UI5 version
      * @param baseUrl - the base URL of the current request
+     * @returns true if the legacy file is present and sandbox 2 should be suppressed
      * @private
      */
-    private async checkLegacySandboxConfig(ui5Version: Ui5Version, baseUrl: string): Promise<void> {
+    private async hasLegacySandboxConfig(ui5Version: Ui5Version, baseUrl: string): Promise<boolean> {
         if (qualifiesForNewSandbox(ui5Version) && this.flpConfig.useNewSandbox === true) {
             const legacyFile = await this.project.byPath(`${baseUrl}/appconfig/fioriSandboxConfig.json`);
             if (legacyFile) {
-                this.flpConfig.useNewSandbox = false;
                 this.logger.warn(
-                    `Found legacy file at 'appconfig/fioriSandboxConfig.json'. Falling back to Sandbox 1. Please migrate your application configuration: https://pages.github.tools.sap/UI5/sandbox-2.0/#/consumer/migration-guide?id=step-2-convert-application-configuration`
+                    `Found legacy file at 'appconfig/fioriSandboxConfig.json'. Falling back to the classic Sandbox. Please migrate your application configuration first.`
                 );
+                return true;
             }
         }
+        return false;
     }
 
     /**
