@@ -1,5 +1,25 @@
 # @sap-ux/fe-fpm-cli
 
+## 1.0.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fe-fpm-writer 1.1.4 → 1.1.5
+
+## 1.0.13
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/fe-fpm-writer 1.1.3 → 1.1.4
+
 ## 1.0.12
 
 ### Patch Changes
