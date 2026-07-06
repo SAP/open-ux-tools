@@ -23,7 +23,7 @@ This skill depends on the **SAP UI5 OPA5 skill** (`ui5-best-practices-opa5`) for
    ```bash
    npx skills add https://github.com/ui5/plugins-coding-agents --skill ui5-best-practices-opa5
    ```
-3. If terminal access is unavailable, notify the user and provide the install command above.
+3. If terminal access is unavailable, notify the user and provide the install command above. Fall back to the remote URL in "Base Prerequisites & Dependencies" below as a reference and continue.
 
 ---
 
