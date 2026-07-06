@@ -245,8 +245,8 @@ describe('flp/sandbox1Init', () => {
             expect(mockService.deleteAppState).not.toHaveBeenCalled();
         });
 
-        test('hash key equals "sap-iapp-state" with leading hash stripped', async () => {
-            window.location.hash = '#preview-app&sap-iapp-state=dummyHash1234';
+        test('hash key equals "/?sap-iapp-state"', async () => {
+            window.location.hash = 'preview-app&/?sap-iapp-state=dummyHash1234';
             await resetAppState(Container);
             expect(mockService.deleteAppState).toHaveBeenCalled();
             expect(mockService.deleteAppState).toHaveBeenCalledWith('dummyHash1234');

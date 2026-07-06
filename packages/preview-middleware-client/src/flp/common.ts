@@ -238,8 +238,8 @@ export function getFlexSettings(): FlexSettings | undefined {
  * @param container the UShell container
  */
 export async function resetAppState(container: typeof sap.ushell.Container): Promise<void> {
-    const urlParams = new URLSearchParams(globalThis.location.hash.slice(1));
-    const appStateValue = urlParams.get('sap-iapp-state');
+    const urlParams = new URLSearchParams(globalThis.location.hash);
+    const appStateValue = urlParams.get('sap-iapp-state') ?? urlParams.get('/?sap-iapp-state');
     if (appStateValue) {
         const appStateService = await container.getServiceAsync<AppState>('AppState');
         appStateService.deleteAppState(appStateValue);
