@@ -1,5 +1,49 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 1.0.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.18 → 1.0.19
+- @sap-ux/inquirer-common 1.0.19 → 1.0.20
+- @sap-ux/deploy-config-generator-shared 1.0.18 → 1.0.19
+- @sap-ux/cf-deploy-config-inquirer 1.0.22 → 1.0.23
+
+## 1.0.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.18 → 1.0.19
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+- @sap-ux/deploy-config-generator-shared 1.0.17 → 1.0.18
+- @sap-ux/fiori-generator-shared 1.0.17 → 1.0.18
+- @sap-ux/cf-deploy-config-inquirer 1.0.21 → 1.0.22
+- @sap-ux/cf-deploy-config-writer 1.0.14 → 1.0.15
+- @sap-ux/project-access 2.1.5 → 2.1.6
+
+## 1.0.23
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/deploy-config-generator-shared 1.0.16 → 1.0.17
+- @sap-ux/cf-deploy-config-inquirer 1.0.20 → 1.0.21
+- @sap-ux/cf-deploy-config-writer 1.0.13 → 1.0.14
+- @sap-ux/fiori-generator-shared 1.0.16 → 1.0.17
+- @sap-ux/inquirer-common 1.0.17 → 1.0.18
+- @sap-ux/feature-toggle 1.0.3 → 1.0.4
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/btp-utils 2.0.3 → 2.0.4
+
 ## 1.0.22
 
 ### Patch Changes
