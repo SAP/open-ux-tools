@@ -6,8 +6,6 @@ declare module 'jsdoc-api' {
         configure?: string;
     }
 
-    function explain(options: ExplainOptions): Promise<unknown[]>;
-
-    const jsdoc: { explain: typeof explain };
+    const jsdoc: { explain(options: ExplainOptions): Promise<unknown[]> };
     export default jsdoc;
 }
