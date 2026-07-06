@@ -1,5 +1,24 @@
 # @sap-ux/generator-adp
 
+## 1.0.29
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-06
+
+#### Features
+
+- Officially publish CF workflow in the ADP generator. [[58e9645](https://github.com/SAP/open-ux-tools/commit/58e9645465b48c7832d9da548df3d609c5c0d590)]
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.16 → 1.0.17
+- @sap-ux/fiori-generator-shared 1.0.18 → 1.0.19
+- @sap-ux/inquirer-common 1.0.19 → 1.0.20
+- @sap-ux/adp-tooling 1.0.27 → 1.0.28
+
 ## 1.0.28
 
 ### Patch Changes

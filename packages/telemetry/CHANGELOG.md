@@ -1,5 +1,13 @@
 # @sap-ux/telemetry
 
+## 1.0.17
+
+### Patch Changes
+
+#### Features
+
+- Officially publish CF workflow in the ADP generator. [[58e9645](https://github.com/SAP/open-ux-tools/commit/58e9645465b48c7832d9da548df3d609c5c0d590)]
+
 ## 1.0.16
 
 ### Patch Changes
