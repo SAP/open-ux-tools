@@ -216,11 +216,11 @@ const rule: FioriRuleDefinition = createFioriRule({
         // is reported once — fixing the label once resolves the issue for all referencing entities.
         const seen = new Set<Element>();
         return problems.filter((p) => {
-            const key = p.annotation.reference.value;
-            if (seen.has(key)) {
+            const element = p.annotation.reference.value;
+            if (seen.has(element)) {
                 return false;
             }
-            seen.add(key);
+            seen.add(element);
             return true;
         });
     },
