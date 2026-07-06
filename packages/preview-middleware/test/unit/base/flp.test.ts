@@ -2328,7 +2328,7 @@ describe('FlpSandbox fioriSandboxAppConfig.json route', () => {
     });
 
     test('returns generated fioriSandboxAppConfig.json when no real file exists', async () => {
-        await setupServer();
+        await setupServer(jest.fn().mockResolvedValue(undefined), { useNewSandbox: true });
         const response = await server.get('/test/fioriSandboxAppConfig.json').expect(200);
         const body = JSON.parse(response.text) as Record<string, unknown>;
         expect(body.beforeFlpStart).toBe('module:open/ux/preview/client/flp/sandbox2BeforeInit');
@@ -2353,7 +2353,7 @@ describe('FlpSandbox fioriSandboxAppConfig.json route', () => {
             }
             return Promise.resolve(undefined);
         });
-        await setupServer(byPathMock);
+        await setupServer(byPathMock, { useNewSandbox: true });
         const response = await server.get('/test/fioriSandboxAppConfig.json').expect(200);
         const body = JSON.parse(response.text) as Record<string, unknown>;
         expect(body.beforeFlpStart).toBe('module:open/ux/preview/client/flp/sandbox2BeforeInit');
@@ -2361,7 +2361,7 @@ describe('FlpSandbox fioriSandboxAppConfig.json route', () => {
         expect(body.customProp).toBe('userValue');
     });
 
-    test('emits legacy warning when appconfig/fioriSandboxConfig.json exists with UI5 2.x', async () => {
+    test('falls back to sandbox 1 and warns when appconfig/fioriSandboxConfig.json exists with UI5 2.x', async () => {
         const legacyFile = { getString: () => Promise.resolve('{}') };
         const byPathMock = jest.fn().mockImplementation((p: string) => {
             if (p === '/appconfig/fioriSandboxConfig.json') {
@@ -2369,7 +2369,7 @@ describe('FlpSandbox fioriSandboxAppConfig.json route', () => {
             }
             return Promise.resolve(undefined);
         });
-        await setupServer(byPathMock);
+        await setupServer(byPathMock, { useNewSandbox: true });
         fetchMock.mockResolvedValue({
             json: () =>
                 Promise.resolve({
@@ -2379,8 +2379,11 @@ describe('FlpSandbox fioriSandboxAppConfig.json route', () => {
             text: jest.fn(),
             ok: true
         });
-        await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+        const htmlResponse = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+        expect(htmlResponse.text).not.toContain('sandbox2BeforeInit');
         expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('fioriSandboxConfig.json'));
+        // config handler should pass through (next()) since sandbox 2 is now disabled
+        await server.get('/test/fioriSandboxAppConfig.json').expect(404);
     });
 
     test('useNewSandbox:false uses sandbox1 template for UI5 2.x and suppresses legacy warning', async () => {
@@ -2424,7 +2427,7 @@ describe('FlpSandbox fioriSandboxAppConfig.json route', () => {
     });
 
     test('sandbox2 template for UI5 1.x includes SandboxBootTask.js but not data-sap-ui-boot-manifest', async () => {
-        await setupServer(jest.fn().mockResolvedValue(undefined));
+        await setupServer(jest.fn().mockResolvedValue(undefined), { useNewSandbox: true });
         fetchMock.mockResolvedValue({
             json: () =>
                 Promise.resolve({
@@ -2440,7 +2443,7 @@ describe('FlpSandbox fioriSandboxAppConfig.json route', () => {
     });
 
     test('sandbox2 template for UI5 2.x includes data-sap-ui-boot-manifest but not SandboxBootTask.js', async () => {
-        await setupServer(jest.fn().mockResolvedValue(undefined));
+        await setupServer(jest.fn().mockResolvedValue(undefined), { useNewSandbox: true });
         fetchMock.mockResolvedValue({
             json: () =>
                 Promise.resolve({

@@ -234,7 +234,7 @@ export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}): FlpCo
         theme: config.theme,
         init: config.init,
         enhancedHomePage: config.enhancedHomePage === true,
-        useNewSandbox: config.useNewSandbox !== false,
+        useNewSandbox: config.useNewSandbox === true,
         navigateToApp: config.navigateToApp === true
     } satisfies FlpConfig;
     if (!flpConfig.path.startsWith('/')) {
@@ -292,14 +292,15 @@ export function sanitizeRtaConfig(deprecatedRtaConfig: MiddlewareConfig['rta'], 
  * Retrieves the configuration settings for UI5 flexibility services.
  *
  * @param isAdp whether this is an adaptation project - LocalStorageConnector is omitted for ADP
+ * @param isCap whether this is a CAP project - LrepConnector is omitted for CAP
  * @returns An array of flexibility service configurations, each specifying a connector
  *          and its options, such as the layers it applies to and its service URL, if applicable.
  */
-function getFlexSettings(isAdp = false): TemplateConfig['ui5']['flex'] {
+function getFlexSettings(isAdp = false, isCap = false): TemplateConfig['ui5']['flex'] {
     const localConnectorPath = 'open/ux/preview/client/flp/WorkspaceConnector';
 
     const connectors: TemplateConfig['ui5']['flex'] = [
-        { connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' },
+        ...(!isCap ? [{ connector: 'LrepConnector', layers: [] as string[], url: '/sap/bc/lrep' }] : []),
         {
             applyConnector: localConnectorPath,
             writeConnector: localConnectorPath,
@@ -505,12 +506,14 @@ export function createTestTemplateConfig(config: CompleteTestConfig, id: string,
  * @param templateConfig the current template configuration containing apps
  * @param flpConfig the FLP configuration containing the intent
  * @param isAdp whether this is an adaptation project - LocalStorageConnector is omitted for ADP
+ * @param isCap whether this is a CAP project - LrepConnector is omitted for CAP
  * @returns the sandbox app config object
  */
 export function generateSandboxAppConfig(
     templateConfig: TemplateConfig,
     flpConfig: FlpConfig,
-    isAdp = false
+    isAdp = false,
+    isCap = false
 ): SandboxAppConfig {
     // Build a url→intent map: primary app + additional apps with explicit intent
     const intentByUrl = new Map<string, Intent>();
@@ -547,7 +550,7 @@ export function generateSandboxAppConfig(
         beforeFlpStart: 'module:open/ux/preview/client/flp/sandbox2BeforeInit',
         afterFlpStart: 'module:open/ux/preview/client/flp/sandbox2AfterInit',
         restricted: {
-            flexibilityServices: getFlexSettings(isAdp)
+            flexibilityServices: getFlexSettings(isAdp, isCap)
         }
     };
 }
@@ -658,7 +661,7 @@ function generateSandbox2Files(
 
 /**
  * Returns true if sandbox 2 should be used for static file generation.
- * Requires: useNewSandbox not opted out, no legacy fioriSandboxConfig.json, and manifest minUI5Version >= 1.150.
+ * Requires: useNewSandbox opted in, no legacy fioriSandboxConfig.json, enhancedHomePage not set, and manifest minUI5Version >= 1.150.
  *
  * @param manifest - the app manifest, if available
  * @param flpConfig - the resolved FLP configuration
@@ -672,7 +675,7 @@ function shouldUseSandbox2(
     basePath: string,
     fs: Editor
 ): boolean {
-    if (flpConfig.useNewSandbox === false || !manifest) {
+    if (flpConfig.useNewSandbox !== true || flpConfig.enhancedHomePage || !manifest) {
         return false;
     }
     if (fs.exists(join(basePath, 'appconfig/fioriSandboxConfig.json'))) {

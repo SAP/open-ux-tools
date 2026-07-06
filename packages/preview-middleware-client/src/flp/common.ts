@@ -201,8 +201,8 @@ export function getFlexSettings(): FlexSettings | undefined {
  * @param container the UShell container
  */
 export async function resetAppState(container: typeof sap.ushell.Container): Promise<void> {
-    const urlParams = new URLSearchParams(globalThis.location.hash);
-    const appStateValue = urlParams.get('sap-iapp-state') ?? urlParams.get('/?sap-iapp-state');
+    const urlParams = new URLSearchParams(globalThis.location.hash.slice(1));
+    const appStateValue = urlParams.get('sap-iapp-state');
     if (appStateValue) {
         const appStateService = await container.getServiceAsync<AppState>('AppState');
         appStateService.deleteAppState(appStateValue);
@@ -268,7 +268,7 @@ export function startRtaForAppInstance(
     flexSettings: FlexSettings,
     ui5VersionInfo: Ui5VersionInfo
 ): void {
-    const pluginScript = flexSettings.pluginScript ?? '';
+    const { pluginScript, ...flexSettingsWithoutPlugin } = flexSettings;
     const libs: string[] = [];
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 72 })) {
@@ -277,15 +277,14 @@ export function startRtaForAppInstance(
         libs.push('sap/ui/rta/api/startAdaptation');
     }
 
-    if (flexSettings.pluginScript) {
+    if (pluginScript) {
         libs.push(pluginScript as string);
-        delete flexSettings.pluginScript;
     }
 
     const options: RTAOptions = {
         rootControl: view,
         validateAppVersion: false,
-        flexSettings
+        flexSettings: flexSettingsWithoutPlugin
     };
 
     sap.ui.require(

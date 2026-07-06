@@ -39,8 +39,8 @@ describe('config', () => {
             const flpConfig = getFlpConfigWithDefaults({ path, intent });
             expect(flpConfig).toMatchObject({ path, intent });
         });
-        test('useNewSandbox defaults to true when not set', () => {
-            expect(getFlpConfigWithDefaults({}).useNewSandbox).toBe(true);
+        test('useNewSandbox defaults to false when not set', () => {
+            expect(getFlpConfigWithDefaults({}).useNewSandbox).toBe(false);
         });
         test('useNewSandbox:false is preserved', () => {
             expect(getFlpConfigWithDefaults({ useNewSandbox: false }).useNewSandbox).toBe(false);
@@ -311,7 +311,7 @@ describe('config', () => {
                 const { create: createStorage } = await import('mem-fs');
                 const fs = createFs(createStorage());
                 fs.write(join(basePath, 'webapp/manifest.json'), manifestWithVersion('1.150.0'));
-                const result = await generatePreviewFiles(basePath, {}, fs);
+                const result = await generatePreviewFiles(basePath, { flp: { useNewSandbox: true } }, fs);
                 const files = result.dump(basePath);
                 const paths = Object.keys(files);
                 expect(paths.some((p) => p.endsWith(DEFAULT_PATH))).toBe(true);
@@ -325,7 +325,7 @@ describe('config', () => {
                 const { create: createStorage } = await import('mem-fs');
                 const fs = createFs(createStorage());
                 fs.write(join(basePath, 'webapp/manifest.json'), manifestWithVersion('2.0.0'));
-                const result = await generatePreviewFiles(basePath, {}, fs);
+                const result = await generatePreviewFiles(basePath, { flp: { useNewSandbox: true } }, fs);
                 const files = result.dump(basePath);
                 const paths = Object.keys(files);
                 expect(paths.some((p) => p.endsWith('fioriSandboxAppConfig.json'))).toBe(true);
