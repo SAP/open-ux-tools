@@ -96,7 +96,7 @@ sap.ui.define([
 });
 ```
 
-**`iStartMyApp("<tile-name>")`** is the Fiori Elements equivalent of the base OPA5 `iStartMyAppInAFrame`. The tile name must match the hash fragment of the FLP sandbox URL (see "Finding the tile name" above).
+**`iStartMyApp("<object>-<action>")`** is the Fiori Elements equivalent of the base OPA5 `iStartMyAppInAFrame`. The argument is the FLP intent (`<object>-<action>`) - see "Finding the tile name" above for how to determine the correct value.
 
 ---
 

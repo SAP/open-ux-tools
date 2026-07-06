@@ -232,7 +232,7 @@ The SAP Fiori Elements mock server (`@sap-ux/ui5-middleware-fe-mockserver`) runs
 
 It supports two data modes - choose based on what your tests assert:
 
-- **Static mock data** (`generateMockData: false`) - JSON files you maintain in `webapp/localService/mockdata/`. Use when tests assert **specific values** (exact row counts, field contents, IDs). Every run uses the same data, so assertions are deterministic.
+- **Static mock data** (`generateMockData: false`) - JSON files you maintain in the folder configured as `mockdataPath` in `ui5-mock.yaml` (generator default: `./webapp/localService/mainService/data/`). Use when tests assert **specific values** (exact row counts, field contents, IDs). Every run uses the same data, so assertions are deterministic.
 - **Dynamic mock data** (`generateMockData: true`) - the mock server generates random data from the OData metadata at startup. Use when tests only assert **structure** (a field is visible, a table has rows, a button is enabled). No JSON files to maintain, but you cannot assert exact values.
 
 > If a journey deletes a record (e.g., via `iExecuteDelete()`), restart the server before re-running. With static data, JSON files are restored on restart. With dynamic data, new data is generated automatically.
