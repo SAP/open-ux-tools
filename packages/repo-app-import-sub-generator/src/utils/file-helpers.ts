@@ -57,7 +57,9 @@ export function readManifest(manifestFilePath: string, fs: Editor): Manifest {
 export function cleanupArtifacts(extractedProjectPath: string, fs: Editor): void {
     const dbgSuffix = '-dbg.';
     const entries = PromptState.admZip?.getEntries() ?? [];
-    const tsEntryNames = new Set(entries.filter((e) => e.entryName.endsWith('.ts')).map((e) => e.entryName));
+    const tsEntryNames = new Set(
+        entries.filter((e) => e.entryName.endsWith('.ts') && !e.entryName.endsWith('.d.ts')).map((e) => e.entryName)
+    );
 
     entries.forEach((entry) => {
         const name = entry.entryName;

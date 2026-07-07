@@ -161,6 +161,16 @@ describe('cleanupArtifacts', () => {
         expect(mockFs.delete).toHaveBeenCalledWith(join('/webapp', 'ext/view/Main.controller.js'));
     });
 
+    it('should not treat .d.ts declaration files as TypeScript source files', () => {
+        const entries = [{ entryName: 'ui5.d.ts' }, { entryName: 'Component.js' }];
+        (PromptState as any)['_admZipInstance'] = { getEntries: jest.fn(() => entries) };
+        mockFs.exists.mockReturnValue(true);
+
+        cleanupArtifacts('/webapp', mockFs as any);
+
+        expect(mockFs.delete).not.toHaveBeenCalled();
+    });
+
     it('should not remove .js file when no corresponding .ts file exists', () => {
         const entries = [{ entryName: 'Component.js' }];
         (PromptState as any)['_admZipInstance'] = { getEntries: jest.fn(() => entries) };
