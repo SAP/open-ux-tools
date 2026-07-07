@@ -340,6 +340,15 @@ describe('splicePageIntoJourneyRunnerTs()', () => {
         expect(result).toContain('entitySet: ""');
         expect(result).toContain('contextPath: "/Travel"');
     });
+
+    test('emits empty entitySet and contextPath when both are undefined on the page', () => {
+        const page = makeTsPage('TravelObjectPage', 'ObjectPage');
+        page.entitySet = undefined;
+        page.contextPath = undefined;
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [page]);
+        expect(result).toContain('entitySet: ""');
+        expect(result).toContain('contextPath: ""');
+    });
 });
 
 describe('addPagesToJourneyRunner() — TS dispatch', () => {
