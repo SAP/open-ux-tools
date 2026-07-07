@@ -779,7 +779,7 @@ describe('FE V4 Linker - CAP', () => {
                 const result = runFeV4Linker(context);
                 const page = findListReportPage(result);
                 expect(page.lookup['table']?.length).toBe(2);
-                expect(page.lookup['table']?.[0].annotation?.annotation.qualifier).toBe(undefined);
+                expect(page.lookup['table']?.[0].annotation?.annotation.qualifier).toBeUndefined();
                 expect(page.lookup['table']?.[1].annotation?.annotation.qualifier).toBe('secondTable');
             });
 

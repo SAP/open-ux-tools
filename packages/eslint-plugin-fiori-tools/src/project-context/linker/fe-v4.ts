@@ -465,7 +465,7 @@ function linkListReportTable(
             tableControl.configuration.personalization.valueInFile = personalization;
         } else {
             // no annotation definition found for this table, but configuration exists
-            const orphanTable = createTable(controlKey, pathToPage, undefined);
+            const orphanTable = createTable(controlKey, pathToPage);
             controls[`${orphanTable.type}|${controlKey}`] = orphanTable;
         }
     }

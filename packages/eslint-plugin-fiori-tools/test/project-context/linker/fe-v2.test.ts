@@ -139,9 +139,9 @@ describe('FE V2 Linker', () => {
                 expect(orphanTable).toBeUndefined();
                 const table = page.lookup['table'];
                 expect(table).toHaveLength(1);
-                expect((table![0].annotation as { annotation: { qualifier?: string } }).annotation?.qualifier).toBe(
-                    undefined
-                );
+                expect(
+                    (table![0].annotation as { annotation: { qualifier?: string } }).annotation?.qualifier
+                ).toBeUndefined();
             });
         });
         describe('application level', () => {
