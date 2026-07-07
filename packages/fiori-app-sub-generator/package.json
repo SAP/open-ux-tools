@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-app-sub-generator",
     "description": "A yeoman (sub) generator that can generate Fiori applications. Not for standalone use.",
-    "version": "1.0.46",
+    "version": "1.1.1",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -60,7 +60,7 @@
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
-        "@jest/globals": "30.3.0",
+        "@jest/globals": "30.4.1",
         "@sap-devx/yeoman-ui-types": "1.25.0",
         "@sap-ux/deploy-config-sub-generator": "workspace:*",
         "@sap-ux/flp-config-sub-generator": "workspace:*",
@@ -71,12 +71,12 @@
         "@types/lodash": "4.17.24",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
-        "@types/vscode": "1.110.0",
+        "@types/vscode": "1.106.1",
         "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-generator": "5.2.14",
         "@types/yeoman-test": "4.0.6",
         "jest-extended": "7.0.0",
-        "jest-mock": "30.2.0",
+        "jest-mock": "30.4.1",
         "mock-spawn": "0.2.6",
         "rimraf": "6.1.3",
         "yeoman-test": "6.3.0"
