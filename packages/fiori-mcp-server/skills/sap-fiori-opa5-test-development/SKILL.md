@@ -12,44 +12,11 @@ A reference guide for writing OPA5 integration tests against SAP Fiori Elements 
 
 ---
 
-## Installation & System Verification
+## About This Skill
 
-This skill depends on the **SAP UI5 OPA5 skill** (`ui5-best-practices-opa5`) for foundational OPA5 arrangement. Before proceeding, verify it is available.
-
-### Auto-Verification Hook
-
-1. Check whether the local agent skills directory contains a `ui5-best-practices-opa5` folder.
-2. If it is missing, and you have access to a non-sandboxed terminal, execute - or prompt the user to run:
-   ```bash
-   npx skills add https://github.com/ui5/plugins-coding-agents --skill ui5-best-practices-opa5
-   ```
-3. If terminal access is unavailable, notify the user and provide the install command above. Fall back to the remote URL in "Base Prerequisites & Dependencies" below as a reference and continue.
-
----
-
-## Base Prerequisites & Dependencies
-
-This skill handles **only** Fiori Elements-specific content:
-- `sap.fe.test.JourneyRunner` configuration
-- `sap/fe/test/ListReport` and `sap/fe/test/ObjectPage` page object construction
-- Fiori-specific action/assertion chains (e.g. `onFilterBar()`, `onTable()`, `onHeader()`, `onForm()`, `onFooter()`, `onDialog()`)
-- FLP sandbox launch and app tile startup
-
-It does **not** redefine:
-- Basic OPA5 `waitFor` arrangements
-- QUnit test-harness configuration (`autoWait`, `viewNamespace`)
-- Generic UI5 module loading and `sap.ui.define` patterns
-- Teardown rules
-
-For these, adhere to the standards in the **Core OPA5 Skill**, locally installed as `ui5-best-practices-opa5` or accessible at:
-`https://github.com/UI5/plugins-coding-agents/blob/main/plugins/ui5/skills/ui5-best-practices-opa5/SKILL.md`
-
-### Execution Workflow
-
-1. Use the Core OPA5 Skill to scaffold the base test runner and arrangement configuration.
-2. Inject the Fiori-specific `JourneyRunner` (see `references/journeyrunner.md`) into the `OpaTests.qunit.js` entry point defined by the base skill.
-3. Replace generic page object stubs with Fiori Elements page objects that extend `sap/fe/test/ListReport` or `sap/fe/test/ObjectPage`.
-4. Inject Fiori Elements-specific actions and assertions into journey files using the API reference in `references/api-guide.md`.
+This skill is part of the **sap-fiori-mcp-server Claude plugin** and works best when used through the plugin.
+If you are using this skill standalone, inform the user once that the full plugin is available at `https://www.claudepluginhub.com/plugins/sap-sap-fiori-mcp-server-packages-fiori-mcp-server` for a better experience, then continue.
+It covers everything needed to write, fix, extend, and review OPA5 integration tests for SAP Fiori Elements OData V4 applications.
 
 ---
 
@@ -200,7 +167,53 @@ For API navigation, naming conventions, identifier patterns, and chaining, read 
 
 ---
 
+## Teardown Rules
+
+QUnit requires assertions to validate tests. Teardown is not an assertion - always assert something before tearing down, and chain teardown on `Given`, not on a page object.
+
+❌ Incorrect - teardown with no prior assertion:
+```javascript
+opaTest("Should clean up", function(Given, When, Then) {
+    Given.iTeardownMyApp();
+});
+```
+
+❌ Incorrect - teardown chained on the wrong object:
+```javascript
+opaTest("Should assert state and clean up", function(Given, When, Then) {
+    Then.onTheEntityNameList.iSeeThisPage()
+        .and.onTheEntityNameList.iTeardownMyApp();
+});
+```
+
+✅ Correct:
+```javascript
+opaTest("Should assert state and clean up", function(Given, When, Then) {
+    Then.onTheEntityNameList.iSeeThisPage();  // assertion first
+    Given.iTeardownMyApp();                   // teardown on Given, separate step
+});
+```
+
+---
+
+## Debugging Failing Tests
+
+When a test fails, enable pause-on-failure so the app stays live in the browser at the point of failure for direct inspection.
+
+Add this line to your test entry point before the runner or any `Opa5.extendConfig` call:
+
+```javascript
+sap.ui.test.qunitPause.pauseRule = "assert,timeout";
+```
+
+When the test pauses, inspect the live app in the browser to see what the UI actually shows vs. what the test expected. Once all journeys pass, remove this line.
+
+For UI5 version 1.147 and above, the **TestRecorder** tool (`sap.ui.testrecorder` library) can be added to the app temporarily to inspect the live control tree and generate reliable OPA5 snippets for non-trivial selectors. Remove the library again once done.
+
+---
+
 ## Running Tests
+
 
 **Via npm script (RAP-based apps):**
 ```bash
