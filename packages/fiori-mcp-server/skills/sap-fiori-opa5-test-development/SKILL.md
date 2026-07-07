@@ -19,7 +19,7 @@ This skill depends on the **SAP UI5 OPA5 skill** (`ui5-best-practices-opa5`) for
 ### Auto-Verification Hook
 
 1. Check whether the local agent skills directory contains a `ui5-best-practices-opa5` folder.
-2. If it is missing, and you have terminal access, execute (or prompt the user to run):
+2. If it is missing, and you have access to a non-sandboxed terminal, execute - or prompt the user to run:
    ```bash
    npx skills add https://github.com/ui5/plugins-coding-agents --skill ui5-best-practices-opa5
    ```
