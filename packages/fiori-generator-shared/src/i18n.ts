@@ -21,8 +21,11 @@ export async function initI18n(): Promise<void> {
         ns: [NS],
         showSupportNotice: false,
         interpolation: {
-            format: function odataVersionFormatter(odataVersion: string) {
-                return odataVersion ? ` V${odataVersion}` : '';
+            format: function (value: string, format?: string) {
+                if (format === 'odataVersionFormatter') {
+                    return value ? ` V${value}` : '';
+                }
+                return value;
             }
         },
         missingInterpolationHandler: () => ''

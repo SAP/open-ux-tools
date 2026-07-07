@@ -126,7 +126,8 @@ describe('getFloorplanLabel', () => {
         expect(getFloorplanLabel('alp', '4')).toBe('Analytical List Page V4');
     });
 
-    test('should return templateType as fallback for unknown template', () => {
+    test('should return templateType as fallback for unknown template without version suffix', () => {
+        // defaultValue has no interpolation token so version suffix is never appended for unknown templates
         expect(getFloorplanLabel('unknown-template')).toBe('unknown-template');
         expect(getFloorplanLabel('unknown-template', '4')).toBe('unknown-template');
     });
