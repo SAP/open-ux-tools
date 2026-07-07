@@ -1,5 +1,14 @@
 # @sap-ux/fiori-annotation-api
 
+## 1.0.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/project-access 2.1.6 → 2.1.6
+
 ## 1.0.14
 
 ### Patch Changes
