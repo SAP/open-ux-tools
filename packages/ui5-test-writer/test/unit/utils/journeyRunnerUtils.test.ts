@@ -335,6 +335,10 @@ describe('splicePageIntoJourneyRunnerTs()', () => {
         ]);
         expect(result).toContain('onTheTravelObjectPageGenerated: new ObjectPage(');
         expect(result).toContain('CustomTravelObjectPageGenerated');
+        // Both entitySet and contextPath must be emitted unconditionally so splicer output
+        // matches the fresh-write template shape (see JourneyRunner.ts template).
+        expect(result).toContain('entitySet: ""');
+        expect(result).toContain('contextPath: "/Travel"');
     });
 });
 
