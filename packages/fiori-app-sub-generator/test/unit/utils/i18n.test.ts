@@ -6,7 +6,9 @@ describe('Test i18n', () => {
     });
     // Undefined interpolation properties should output as empty strings
     test('Undefined interpolation properties', () => {
-        expect(t('floorplans.label.basic')).toEqual(`Basic`);
-        expect(t('floorplans.label.basic', { odataVersion: '4' })).toEqual(`Basic V4`);
+        expect(t('steps.flpConfig.description')).toEqual(`Configure SAP Fiori launchpad settings .`);
+        expect(t('steps.flpConfig.description', { appFolderName: 'myApp' })).toEqual(
+            `Configure SAP Fiori launchpad settings myApp.`
+        );
     });
 });

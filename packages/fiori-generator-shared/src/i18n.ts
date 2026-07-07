@@ -19,7 +19,13 @@ export async function initI18n(): Promise<void> {
         fallbackLng: 'en',
         defaultNS: NS,
         ns: [NS],
-        showSupportNotice: false
+        showSupportNotice: false,
+        interpolation: {
+            format: function odataVersionFormatter(odataVersion: string) {
+                return odataVersion ? ` V${odataVersion}` : '';
+            }
+        },
+        missingInterpolationHandler: () => ''
     });
 }
 

@@ -228,9 +228,7 @@ describe('Test FioriAppGenerator', () => {
                 expect.objectContaining({ info: expect.any(Function), error: expect.any(Function) })
             );
             expect(TelemetryHelper.createTelemetryData).toHaveBeenCalledWith({
-                Template: t(`floorplans.label.${floorplan}`, {
-                    odataVersion: mockState.service.version
-                }),
+                Template: actualFioriGenShared.getFloorplanLabel(floorplan, mockState.service.version),
                 DataSource: mockState.service.source,
                 UI5Version: mockState.project.ui5Version,
                 Theme: mockState.project.ui5Theme,

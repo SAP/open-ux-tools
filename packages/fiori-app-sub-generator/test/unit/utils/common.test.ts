@@ -67,12 +67,12 @@ const {
     getAnnotations,
     getAppId,
     getCdsAnnotations,
-    getFloorplanLabel,
     getMinSupportedUI5Version,
     getODataVersion,
     getReadMeDataSourceLabel,
     getRequiredOdataVersion
 } = await import('../../../src/utils/common.js');
+const { getFloorplanLabel } = await import('@sap-ux/fiori-generator-shared');
 
 describe('Test utils', () => {
     beforeAll(async () => {
