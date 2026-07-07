@@ -1,5 +1,34 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.1.32
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-07
+
+#### Bug Fixes
+
+- Set up TypeScript development environment after downloading a TypeScript app from ABAP repository [[c32b85f](https://github.com/SAP/open-ux-tools/commit/c32b85f9522b87950397682e6adfc48ca3174ece)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-app-sub-generator 1.0.50 → 1.1.0
+- @sap-ux/fiori-elements-writer 3.0.47 → 3.0.48
+- @sap-ux/fiori-freestyle-writer 3.0.42 → 3.0.43
+- @sap-ux/odata-service-inquirer 3.0.22 → 3.0.22
+
+## 1.1.31
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.46 → 3.0.47
+- @sap-ux/fiori-freestyle-writer 3.0.42 → 3.0.42
+- @sap-ux/odata-service-inquirer 3.0.22 → 3.0.22
+
 ## 1.1.30
 
 ### Patch Changes
