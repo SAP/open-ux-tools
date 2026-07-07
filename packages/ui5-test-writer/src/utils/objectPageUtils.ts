@@ -117,11 +117,10 @@ function getObjectPageNavigationParents(
     listReportPageKey?: string
 ): ObjectPageNavigationParents {
     const parentOPs: ObjectPageNavigationParent[] = [];
-    const visited = new Set<string>(); // guard against infinite loop in case of invalid manifest entries
+    const visited = new Set<string>([targetObjectPageKey]); // guard against infinite loop in case of invalid manifest entries
     let cursor = targetObjectPageKey;
 
-    while (!visited.has(cursor)) {
-        visited.add(cursor);
+    while (true) {
         const childKey = cursor;
         let parent: PageWithModelV4 | undefined;
         let parentNavigationProperty: string | undefined;
@@ -133,9 +132,10 @@ function getObjectPageNavigationParents(
                 break;
             }
         }
-        if (!parent?.name || !parentNavigationProperty) {
+        if (!parent?.name || !parentNavigationProperty || visited.has(parent.name)) {
             break;
         }
+        visited.add(parent.name);
         parentOPs.unshift({ name: parent.name, navigationProperty: parentNavigationProperty });
         cursor = parent.name;
     }
