@@ -438,11 +438,7 @@ function linkListReportTable(
                 configurationKey = key;
             }
         }
-        const linkedTable = createTable(
-            configurationKey,
-            pathToPage,
-            configurations[configurationKey] ? table : undefined
-        );
+        const linkedTable = createTable(configurationKey, pathToPage, table);
         controls[`${linkedTable.type}|${configurationKey}`] = linkedTable;
     }
 
@@ -467,6 +463,10 @@ function linkListReportTable(
             tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
             const personalization = controlConfiguration.tableSettings?.personalization;
             tableControl.configuration.personalization.valueInFile = personalization;
+        } else {
+            // no annotation definition found for this table, but configuration exists
+            const orphanTable = createTable(controlKey, pathToPage, undefined);
+            controls[`${orphanTable.type}|${controlKey}`] = orphanTable;
         }
     }
     for (const control of Object.values(controls)) {
