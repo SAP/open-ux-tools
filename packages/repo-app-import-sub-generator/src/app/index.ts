@@ -20,9 +20,9 @@ import {
     sendTelemetry,
     TelemetryHelper,
     isCli,
-    setYeomanEnvConflicterForce
+    setYeomanEnvConflicterForce,
+    getFloorplanLabel
 } from '@sap-ux/fiori-generator-shared';
-import { getFloorplanLabel } from '@sap-ux/fiori-app-sub-generator';
 import type {
     RepoAppDownloadOptions,
     RepoAppDownloadAnswers,

@@ -2,7 +2,8 @@ import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import memFs from 'mem-fs';
 import memFsEditor from 'mem-fs-editor';
-import { generateAppGenInfo } from '../../src/app-gen-info.js';
+import { generateAppGenInfo, getFloorplanLabel } from '../../src/app-gen-info.js';
+import { initI18n } from '../../src/i18n.js';
 import type { AppGenInfo } from '../../src/types/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -105,5 +106,28 @@ describe('Readme file generation tests', () => {
         };
         generateAppGenInfo(__dirname, readMe, editor);
         expect(editor.read(readMePath)).toMatchSnapshot();
+    });
+});
+
+describe('getFloorplanLabel', () => {
+    beforeAll(async () => {
+        await initI18n();
+    });
+
+    test('should return label without version suffix when no odataVersion provided', () => {
+        expect(getFloorplanLabel('lrop')).toBe('List Report Page');
+        expect(getFloorplanLabel('basic')).toBe('Basic');
+        expect(getFloorplanLabel('fpm')).toBe('Custom Page');
+    });
+
+    test('should return label with version suffix when odataVersion provided', () => {
+        expect(getFloorplanLabel('lrop', '4')).toBe('List Report Page V4');
+        expect(getFloorplanLabel('lrop', '2')).toBe('List Report Page V2');
+        expect(getFloorplanLabel('alp', '4')).toBe('Analytical List Page V4');
+    });
+
+    test('should return templateType as fallback for unknown template', () => {
+        expect(getFloorplanLabel('unknown-template')).toBe('unknown-template');
+        expect(getFloorplanLabel('unknown-template', '4')).toBe('unknown-template');
     });
 });
