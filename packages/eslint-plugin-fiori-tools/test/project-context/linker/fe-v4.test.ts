@@ -759,7 +759,7 @@ describe('FE V4 Linker - CAP', () => {
                 expect(page.lookup['table']?.[0].configuration.creationMode).toMatchSnapshot();
             });
 
-            test('empty configuration - tables not collected', async () => {
+            test('empty configuration - but 2 tables are collected from annotations', async () => {
                 const context = await setup({
                     manifestChanges: [
                         {
@@ -778,7 +778,9 @@ describe('FE V4 Linker - CAP', () => {
                 });
                 const result = runFeV4Linker(context);
                 const page = findListReportPage(result);
-                expect(page.lookup['table']).toBeUndefined();
+                expect(page.lookup['table']?.length).toBe(2);
+                expect(page.lookup['table']?.[0].annotation?.annotation.qualifier).toBe(undefined);
+                expect(page.lookup['table']?.[1].annotation?.annotation.qualifier).toBe('secondTable');
             });
 
             test('multiple views - gets both tables configuration', async () => {

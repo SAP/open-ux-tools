@@ -128,20 +128,20 @@ describe('FE V2 Linker', () => {
 
     describe('linkTableSettings', () => {
         describe('page level - listReport page', () => {
-            test('orphan-table - second table annotation', async () => {
+            test('table - only default table config collected', async () => {
                 const context = await setup({
                     annotationsChange: V2_SECOND_TABLE_ANNOTATION
                 });
                 const result = runFeV2Linker(context);
                 const page = findLRorALPPage(result);
+                // Second table config not collected
+                const orphanTable = page.lookup['orphan-table'];
+                expect(orphanTable).toBeUndefined();
                 const table = page.lookup['table'];
                 expect(table).toHaveLength(1);
-                expect(table![0].configuration).toMatchSnapshot();
-                const orphanTable = page.lookup['orphan-table'];
-                expect(orphanTable).toHaveLength(1);
-                expect(
-                    (orphanTable![0].annotation as { annotation: { qualifier: string } }).annotation?.qualifier
-                ).toBe('secondTable');
+                expect((table![0].annotation as { annotation: { qualifier?: string } }).annotation?.qualifier).toBe(
+                    undefined
+                );
             });
         });
         describe('application level', () => {
