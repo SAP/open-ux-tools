@@ -589,45 +589,33 @@ function linkListReportTable(
     configuration: ManifestPageSettings,
     app: ParsedApp
 ): void {
-    const controls: Record<string, Table | OrphanTable> = {};
-
-    for (const table of tables) {
-        const configurationKey = getConfigurationKey(table.annotationPath);
-        let linkedTable: Table | OrphanTable;
-        if (table.annotation.qualifier) {
-            linkedTable = {
-                type: 'orphan-table',
-                annotation: table,
-                configuration: createTableConfiguration(pathToPage, [])
-            };
-        } else {
-            const tableSettingsConfig = configuration.component?.settings?.tableSettings ?? {};
-            const createMode = tableSettingsConfig.createMode;
-            const tableType = tableSettingsConfig.type;
-            const copy = tableSettingsConfig.copy;
-            const pageTableChanges = getPageTableChanges(app.changes, page);
-            const minUI5Version = app.manifest.minUI5Version;
-            linkedTable = {
-                type: 'table',
-                annotation: table,
-                configuration: createTableConfiguration(
-                    pathToPage,
-                    pageTableChanges,
-                    minUI5Version,
-                    createMode,
-                    tableType,
-                    copy
-                ),
-                children: []
-            };
-        }
-        controls[`${linkedTable.type}|${configurationKey}`] = linkedTable;
+    const listReportTable = tables.find((table) => table.annotation.qualifier === undefined);
+    if (!listReportTable) {
+        return;
     }
-
-    for (const control of Object.values(controls)) {
-        page.lookup[control.type] ??= [];
-        (page.lookup[control.type]! as Extract<Table | OrphanTable, { type: typeof control.type }>[]).push(control);
-    }
+    const tableSettingsConfig = configuration.component?.settings?.tableSettings ?? {};
+    const createMode = tableSettingsConfig.createMode;
+    const tableType = tableSettingsConfig.type;
+    const copy = tableSettingsConfig.copy;
+    const pageTableChanges = getPageTableChanges(app.changes, page);
+    const minUI5Version = app.manifest.minUI5Version;
+    const linkedTable: Table = {
+        type: 'table',
+        annotation: listReportTable,
+        configuration: createTableConfiguration(
+            pathToPage,
+            pageTableChanges,
+            minUI5Version,
+            createMode,
+            tableType,
+            copy
+        ),
+        children: []
+    };
+    page.lookup[linkedTable.type] ??= [];
+    (page.lookup[linkedTable.type]! as Extract<Table | OrphanTable, { type: typeof linkedTable.type }>[]).push(
+        linkedTable
+    );
 }
 
 /**
