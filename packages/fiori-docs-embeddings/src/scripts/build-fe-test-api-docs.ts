@@ -249,6 +249,8 @@ class FeTestApiDocBuilder {
 
     /**
      * Returns paths to all JS/TS files directly under the API directory.
+     *
+     * @param apiDir
      */
     private async getApiFiles(apiDir: string): Promise<string[]> {
         const entries = await fs.readdir(apiDir, { withFileTypes: true });
