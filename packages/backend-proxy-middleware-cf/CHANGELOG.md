@@ -1,5 +1,15 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.3.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/adp-tooling 1.0.28 → 1.0.29
+- @sap-ux/btp-utils 2.0.5 → 2.0.5
+
 ## 0.3.28
 
 ### Patch Changes
