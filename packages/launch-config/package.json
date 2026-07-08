@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/launch-config",
-    "version": "1.0.9",
+    "version": "1.0.12",
     "description": "SAP Fiori tools launch config administration",
     "type": "module",
     "repository": {
@@ -42,7 +42,7 @@
         "yargs-parser": "21.1.1"
     },
     "devDependencies": {
-        "@jest/globals": "30.3.0",
+        "@jest/globals": "30.4.1",
         "@sap-ux/logger": "workspace:*",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",

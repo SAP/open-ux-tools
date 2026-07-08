@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-generator-shared",
     "description": "Commonly used shared functionality and types to support the fiori generator.",
-    "version": "1.0.16",
+    "version": "1.0.20",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -39,14 +39,14 @@
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "os-name": "4.0.1",
-        "semver": "7.7.4"
+        "semver": "7.8.4"
     },
     "devDependencies": {
-        "@jest/globals": "30.3.0",
+        "@jest/globals": "30.4.1",
         "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
         "@types/semver": "7.7.1",
-        "@types/vscode": "1.110.0",
+        "@types/vscode": "1.106.1",
         "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-generator": "5.2.14",
         "@sap-ux/logger": "workspace:*",

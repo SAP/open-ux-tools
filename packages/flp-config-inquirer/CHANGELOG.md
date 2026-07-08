@@ -1,5 +1,68 @@
 # @sap-ux/flp-config-inquirer
 
+## 1.0.30
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.29 → 1.0.30
+
+## 1.0.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.19 → 1.0.20
+- @sap-ux/inquirer-common 1.0.20 → 1.0.21
+- @sap-ux/axios-extension 2.0.6 → 2.0.7
+- @sap-ux/adp-tooling 1.0.28 → 1.0.29
+- @sap-ux/btp-utils 2.0.5 → 2.0.5
+- @sap-ux/project-access 2.1.6 → 2.1.6
+
+## 1.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.18 → 1.0.19
+- @sap-ux/inquirer-common 1.0.19 → 1.0.20
+- @sap-ux/adp-tooling 1.0.27 → 1.0.28
+
+## 1.0.27
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.5 → 2.0.6
+- @sap-ux/inquirer-common 1.0.18 → 1.0.19
+- @sap-ux/adp-tooling 1.0.26 → 1.0.27
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+- @sap-ux/fiori-generator-shared 1.0.17 → 1.0.18
+- @sap-ux/project-access 2.1.5 → 2.1.6
+- @sap-ux/project-input-validator 1.0.9 → 1.0.10
+
+## 1.0.26
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/project-input-validator 1.0.8 → 1.0.9
+- @sap-ux/fiori-generator-shared 1.0.16 → 1.0.17
+- @sap-ux/axios-extension 2.0.4 → 2.0.5
+- @sap-ux/inquirer-common 1.0.17 → 1.0.18
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/adp-tooling 1.0.25 → 1.0.26
+- @sap-ux/btp-utils 2.0.3 → 2.0.4
+
 ## 1.0.25
 
 ### Patch Changes

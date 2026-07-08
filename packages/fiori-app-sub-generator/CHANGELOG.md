@@ -1,5 +1,139 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 1.1.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.49 → 3.0.50
+- @sap-ux/fiori-freestyle-writer 3.0.44 → 3.0.45
+- @sap-ux/odata-service-inquirer 3.0.23 → 3.0.23
+
+## 1.1.1
+
+### Patch Changes
+
+#### Dependency Updates
+
+- align vscode and types with fiori tools extensions [[369c494](https://github.com/SAP/open-ux-tools/commit/369c49497073e99fda01bad7dfda1840e68c029a)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.19 → 1.0.20
+- @sap-ux/feature-toggle 1.0.4 → 1.0.5
+- @sap-ux/cap-config-writer 1.0.19 → 1.0.20
+- @sap-ux/fiori-elements-writer 3.0.48 → 3.0.49
+- @sap-ux/fiori-freestyle-writer 3.0.43 → 3.0.44
+- @sap-ux/odata-service-inquirer 3.0.22 → 3.0.23
+- @sap-ux/axios-extension 2.0.6 → 2.0.7
+- @sap-ux/telemetry 1.0.17 → 1.0.18
+- @sap-ux/btp-utils 2.0.5 → 2.0.5
+- @sap-ux/launch-config 1.0.11 → 1.0.12
+- @sap-ux/project-access 2.1.6 → 2.1.6
+- @sap-ux/store 2.0.3 → 2.0.4
+- @sap-ux/ui5-info 1.0.4 → 1.0.5
+- @sap-ux/ui5-application-inquirer 1.0.20 → 1.0.21
+- @sap-ux/odata-service-writer 1.0.12 → 1.0.12
+- @sap-ux/annotation-generator 1.0.14 → 1.0.15
+
+## 1.1.0
+
+### Minor Changes
+
+#### Bug Fixes
+
+- Set up TypeScript development environment after downloading a TypeScript app from ABAP repository [[c32b85f](https://github.com/SAP/open-ux-tools/commit/c32b85f9522b87950397682e6adfc48ca3174ece)]
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-07
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.47 → 3.0.48
+- @sap-ux/fiori-freestyle-writer 3.0.42 → 3.0.43
+- @sap-ux/odata-service-inquirer 3.0.22 → 3.0.22
+
+## 1.0.50
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.46 → 3.0.47
+- @sap-ux/fiori-freestyle-writer 3.0.42 → 3.0.42
+- @sap-ux/annotation-generator 1.0.13 → 1.0.14
+- @sap-ux/odata-service-inquirer 3.0.22 → 3.0.22
+
+## 1.0.49
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.16 → 1.0.17
+- @sap-ux/fiori-generator-shared 1.0.18 → 1.0.19
+- @sap-ux/odata-service-inquirer 3.0.21 → 3.0.22
+- @sap-ux/cap-config-writer 1.0.18 → 1.0.19
+- @sap-ux/fiori-elements-writer 3.0.45 → 3.0.46
+- @sap-ux/fiori-freestyle-writer 3.0.41 → 3.0.42
+- @sap-ux/ui5-application-inquirer 1.0.19 → 1.0.20
+
+## 1.0.48
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.0.20 → 3.0.21
+- @sap-ux/axios-extension 2.0.5 → 2.0.6
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+- @sap-ux/telemetry 1.0.15 → 1.0.16
+- @sap-ux/ui5-info 1.0.3 → 1.0.4
+- @sap-ux/fiori-elements-writer 3.0.44 → 3.0.45
+- @sap-ux/fiori-freestyle-writer 3.0.40 → 3.0.41
+- @sap-ux/fiori-generator-shared 1.0.17 → 1.0.18
+- @sap-ux/odata-service-writer 1.0.11 → 1.0.12
+- @sap-ux/ui5-application-inquirer 1.0.18 → 1.0.19
+- @sap-ux/launch-config 1.0.10 → 1.0.11
+- @sap-ux/project-access 2.1.5 → 2.1.6
+- @sap-ux/annotation-generator 1.0.12 → 1.0.13
+- @sap-ux/cap-config-writer 1.0.17 → 1.0.18
+
+## 1.0.47
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Replace unmaintained prettify-xml with xml-formatter [[7717377](https://github.com/SAP/open-ux-tools/commit/7717377a60beb8c331bd11e0f41fa387fe3d9284)]
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-freestyle-writer 3.0.39 → 3.0.40
+- @sap-ux/fiori-elements-writer 3.0.43 → 3.0.44
+- @sap-ux/odata-service-writer 1.0.10 → 1.0.11
+- @sap-ux/ui5-application-inquirer 1.0.17 → 1.0.18
+- @sap-ux/fiori-generator-shared 1.0.16 → 1.0.17
+- @sap-ux/odata-service-inquirer 3.0.19 → 3.0.20
+- @sap-ux/cap-config-writer 1.0.16 → 1.0.17
+- @sap-ux/axios-extension 2.0.4 → 2.0.5
+- @sap-ux/feature-toggle 1.0.3 → 1.0.4
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/launch-config 1.0.9 → 1.0.10
+- @sap-ux/btp-utils 2.0.3 → 2.0.4
+- @sap-ux/telemetry 1.0.14 → 1.0.15
+- @sap-ux/ui5-info 1.0.2 → 1.0.3
+- @sap-ux/store 2.0.2 → 2.0.3
+- @sap-ux/annotation-generator 1.0.11 → 1.0.12
+
 ## 1.0.46
 
 ### Patch Changes
