@@ -141,6 +141,11 @@ it('getVocabularies()', () => {
             "defaultUri": "https://sap.github.io/odata-vocabularies/vocabularies/Session.xml",
             "namespace": "com.sap.vocabularies.Session.v1",
           },
+          "com.sap.vocabularies.Support.v1" => Object {
+            "defaultAlias": "Support",
+            "defaultUri": "https://sap.github.io/odata-vocabularies/vocabularies/Support.xml",
+            "namespace": "com.sap.vocabularies.Support.v1",
+          },
           "com.sap.vocabularies.UI.v1" => Object {
             "defaultAlias": "UI",
             "defaultUri": "https://sap.github.io/odata-vocabularies/vocabularies/UI.xml",
