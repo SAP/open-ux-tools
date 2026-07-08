@@ -122,6 +122,8 @@ sap.ui.require(
 
 When the virtual endpoint is active (see SKILL.md "Generated Test Structure"), this file does not exist on disk - the middleware generates it automatically by scanning for journey files matching the configured pattern.
 
+> If the entry point does not set `QUnit.config.autostart = false` before loading journey modules, tests may start before all modules are fully loaded, causing intermittent failures. If you encounter this, fix it by adding `window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } })` before the `sap.ui.require` call and ensuring `QUnit.start()` is called inside the require callback.
+
 ---
 
 ## Adding a New Journey
