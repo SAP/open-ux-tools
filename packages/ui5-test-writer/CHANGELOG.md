@@ -1,5 +1,17 @@
 # @sap-ux/ui5-test-writer
 
+## 1.2.19
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Bug Fixes
+
+- Handle `@UI.ConnectedFields` and `@UI.FieldGroup` wrappers in body sub-section form fields and emit one `iCheckField` per inner property with the `connectedFields` / `fieldGroup` qualifier on the `FieldIdentifier`. [[4fb839f](https://github.com/SAP/open-ux-tools/commit/4fb839f183299d93ca3ed2c601cff14ced8435d8)]
+
 ## 1.2.18
 
 ### Patch Changes
