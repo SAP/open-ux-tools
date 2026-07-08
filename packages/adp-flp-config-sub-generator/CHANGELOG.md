@@ -1,5 +1,18 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 1.0.30
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Use legacy inbound change types for ABAP systems on UI5 1.142 or lower; CF projects always use the new 'appdescr_app_setInbounds' change type [[56fe433](https://github.com/SAP/open-ux-tools/commit/56fe433aebc72d91f2ad5f702ed0125c590f226c)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.29 → 1.0.30
+- @sap-ux/flp-config-inquirer 1.0.29 → 1.0.30
+
 ## 1.0.29
 
 ### Patch Changes
