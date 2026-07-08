@@ -284,6 +284,49 @@ export function ensureMissingAggregation(xmlDocument: Document, aggregationPath:
 }
 
 /**
+ * Wraps any direct sap.fe.macros children of pageElement that are not named Page aggregations
+ * (i.e. loose building blocks like macros:Form, macros:Table) inside a <macros:items> element.
+ * Called before inserting a new named aggregation so the DOM stays well-formed.
+ *
+ * @param pageElement - the macros:Page DOM element
+ * @param xmlDocument - the owner document
+ * @param macrosNS - the sap.fe.macros namespace URI
+ * @param macrosPrefix - the resolved prefix string (e.g. 'macros')
+ */
+function wrapLooseBuildingBlocksInItems(
+    pageElement: Element,
+    xmlDocument: Document,
+    macrosNS: string,
+    macrosPrefix: string
+): void {
+    const aggregationSet = new Set<string>(PAGE_AGGREGATIONS);
+    const looseChildren = Array.from(pageElement.childNodes).filter(
+        (n) =>
+            n.nodeType === 1 /* Element */ &&
+            (n as Element).namespaceURI === macrosNS &&
+            !aggregationSet.has((n as Element).localName)
+    ) as Element[];
+
+    if (looseChildren.length === 0) {
+        return;
+    }
+
+    const itemsName = `${macrosPrefix}:items`;
+    let itemsEl = Array.from(pageElement.childNodes).find(
+        (n) => n.nodeType === 1 && (n as Element).namespaceURI === macrosNS && (n as Element).localName === 'items'
+    ) as Element | undefined;
+
+    if (!itemsEl) {
+        itemsEl = xmlDocument.createElementNS(macrosNS, itemsName) as Element;
+        pageElement.insertBefore(itemsEl, looseChildren[0]);
+    }
+
+    for (const child of looseChildren) {
+        itemsEl.appendChild(child);
+    }
+}
+
+/**
  * Appends a single Page building block aggregation template to an existing `<macros:Page>` element in a view XML file.
  *
  * @param {string} basePath - the base path of the application
@@ -343,6 +386,10 @@ export async function generateBuildingBlockAggregation(
     const hasTemplateComment = childNodes.some(
         (n) => n.nodeType === 8 /* Comment */ && (n as Comment).data?.includes(PAGE_TEMPLATE_COMMENT)
     );
+
+    // Move any loose macros building blocks (e.g. macros:Form, macros:Table) into macros:items
+    // before inserting the new named aggregation so the Page DOM stays well-formed.
+    wrapLooseBuildingBlocksInItems(pageElement as Element, xmlDocument, 'sap.fe.macros', fragMacrosNS);
     if (!hasExistingElementChildren && !hasTemplateComment) {
         pageElement.appendChild(xmlDocument.createComment(PAGE_TEMPLATE_COMMENT));
     }

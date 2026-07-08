@@ -60,6 +60,20 @@ export function getXPathStringsForXmlFile(
                 result[`${parentNode}/${node.nodeName}`] = augmentXpathWithLocalNames(`${parentNode}/${node.nodeName}`);
             }
 
+            // When visiting a macros:Page node that has no macros:items child yet, synthesize
+            // the macros:items path as a choice so callers can target it. ensureMissingAggregation
+            // in generateBuildingBlock will create the element in the DOM before writing.
+            if (node.nodeName === pageMacroDefinition) {
+                const macrosItemsName = `${macrosNamespace ?? 'macros'}:items`;
+                const hasItemsChild = Array.from(node.childNodes).some(
+                    (child) => child.nodeType === child.ELEMENT_NODE && (child as Element).nodeName === macrosItemsName
+                );
+                if (!hasItemsChild) {
+                    const itemsPath = `${parentNode}/${node.nodeName}/${macrosItemsName}`;
+                    result[itemsPath] = augmentXpathWithLocalNames(itemsPath);
+                }
+            }
+
             const childNodes = Array.from(node.childNodes);
             for (const childNode of childNodes) {
                 if (childNode.nodeType === childNode.ELEMENT_NODE) {

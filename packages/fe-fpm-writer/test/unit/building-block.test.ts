@@ -1299,6 +1299,41 @@ describe('Building Blocks', () => {
         ).rejects.toThrow(t('fullTemplateMinUi5VersionRequirement', { minUI5Version: 'unknown' }));
     });
 
+    test('generateBuildingBlock creates missing macros:items aggregation before inserting content', async () => {
+        // View has <macros:Page> but no <macros:items> — ensureMissingAggregation must create it
+        const viewWithPageNoItems = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.test.myApp.ext.main.Main"
+    xmlns:macros="sap.fe.macros">
+    <Page title="Main">
+        <content>
+            <macros:Page id="Page" title="cp" description="cp">
+            </macros:Page>
+        </content>
+    </Page>
+</mvc:View>`;
+        const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Page/macros:items`;
+        const basePath = join(testAppPath, 'generate-bb-creates-missing-items');
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, xmlViewFilePath), viewWithPageNoItems);
+
+        await generateBuildingBlock<FilterBar>(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: {
+                    id: 'FilterBar1',
+                    generateId,
+                    buildingBlockType: BuildingBlockType.FilterBar
+                }
+            },
+            fs
+        );
+
+        const viewContent = fs.read(join(basePath, xmlViewFilePath));
+        expect(viewContent).toMatchSnapshot('generate-bb-creates-missing-items');
+    });
+
     test('throws error if aggregationPath not found', async () => {
         const aggregationPath = `/mvc:Test`;
         const basePath = join(testAppPath, 'generate-page-block-error');
@@ -4085,6 +4120,36 @@ describe('Building Blocks', () => {
             const commentPos = output.indexOf('This is a sample template');
             const navPos = output.indexOf('macros:navigationActions');
             expect(commentPos).toBeLessThan(navPos);
+        });
+
+        it('wraps loose building blocks into macros:items when adding a named aggregation', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-wrap-loose');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+            // View has a bare macros:Form under macros:Page — no macros:items wrapper yet
+            fs.write(
+                join(basePath, xmlViewFilePath),
+                `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="cp" description="cp">
+        <macros:Form id="Form" metaPath="@com.sap.vocabularies.UI.v1.FieldGroup#formMacro" title="ff"/>
+    </macros:Page>
+</mvc:View>`
+            );
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'breadcrumbs',
+                    mContent: '<Breadcrumbs><Link text="Home" /></Breadcrumbs>'
+                },
+                fs
+            );
+
+            expect(result.read(join(basePath, xmlViewFilePath))).toMatchSnapshot(
+                'page-bb-agg-wraps-loose-into-items'
+            );
         });
     });
 });

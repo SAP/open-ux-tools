@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { getOrAddNamespace } from '../../../../../src/building-block/prompts/utils/xml.js';
+import { getOrAddNamespace, getXPathStringsForXmlFile } from '../../../../../src/building-block/prompts/utils/xml.js';
 import { DOMParser } from '@xmldom/xmldom';
 import { isElementIdAvailable } from '../../../../../src/common/utils.js';
 
@@ -179,5 +179,53 @@ describe('getOrAddNamespace', () => {
         const xmlDoc = new DOMParser().parseFromString(xml, 'application/xml');
         expect(getOrAddNamespace(xmlDoc, 'sap.fe.macros', 'macros')).toBe('');
         expect(xmlDoc.documentElement.getAttribute('xmlns')).toBe('sap.fe.macros');
+    });
+});
+
+describe('getXPathStringsForXmlFile', () => {
+    let fs: Editor;
+
+    beforeAll(() => {
+        fs = create(createStorage());
+    });
+
+    it('synthesizes macros:items path when macros:Page exists but has no macros:items child', () => {
+        const viewPath = '/test/Cp.view.xml';
+        fs.write(
+            viewPath,
+            `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns="sap.m">
+    <Page title="Main">
+        <content>
+            <macros:Page id="Page" title="cp" description="cp">
+            </macros:Page>
+        </content>
+    </Page>
+</mvc:View>`
+        );
+        const { inputChoices } = getXPathStringsForXmlFile(viewPath, fs);
+        const keys = Object.keys(inputChoices);
+        expect(keys.some((k) => k.endsWith('macros:Page/macros:items'))).toBe(true);
+    });
+
+    it('does not synthesize macros:items path when macros:items already exists', () => {
+        const viewPath = '/test/CpWithItems.view.xml';
+        fs.write(
+            viewPath,
+            `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns="sap.m">
+    <Page title="Main">
+        <content>
+            <macros:Page id="Page" title="cp">
+                <macros:items>
+                </macros:items>
+            </macros:Page>
+        </content>
+    </Page>
+</mvc:View>`
+        );
+        const { inputChoices } = getXPathStringsForXmlFile(viewPath, fs);
+        const keys = Object.keys(inputChoices);
+        // macros:items is a real element in the DOM — it will appear as a real choice, not a duplicate
+        const macrosItemsKeys = keys.filter((k) => k.endsWith('macros:Page/macros:items'));
+        expect(macrosItemsKeys.length).toBe(1); // exactly one, the real one from DOM traversal
     });
 });

@@ -2061,6 +2061,36 @@ exports[`Building Blocks generate building block, no fs 1`] = `
 </mvc:View>"
 `;
 
+exports[`Building Blocks generateBuildingBlock creates missing macros:items aggregation before inserting content: generate-bb-creates-missing-items 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Page id=\\"Page\\" title=\\"cp\\" description=\\"cp\\">
+                <macros:items>
+                    <macros:FilterBar id=\\"FilterBar1\\"/>
+                </macros:items>
+            </macros:Page>
+        </content>
+    </Page>
+</mvc:View>"
+`;
+
+exports[`Building Blocks generateBuildingBlockAggregation wraps loose building blocks into macros:items when adding a named aggregation: page-bb-agg-wraps-loose-into-items 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" controllerName=\\"com.test.myApp.ext.main.Main\\">
+    <macros:Page id=\\"Page\\" title=\\"cp\\" description=\\"cp\\">
+        <macros:breadcrumbs>
+            <!-- Breadcrumbs aggregation -->
+            <Breadcrumbs>
+                <Link text=\\"Home\\"/>
+            </Breadcrumbs>
+        </macros:breadcrumbs>
+        <macros:items>
+            <macros:Form id=\\"Form\\" metaPath=\\"@com.sap.vocabularies.UI.v1.FieldGroup#formMacro\\" title=\\"ff\\"/>
+        </macros:items>
+    </macros:Page>
+</mvc:View>"
+`;
+
 exports[`Building Blocks generates Rich Text Editor building block with absolute binding context: generate-rich-text-editor-block 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
     <VBox>
