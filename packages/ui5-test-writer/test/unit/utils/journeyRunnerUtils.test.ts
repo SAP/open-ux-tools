@@ -42,7 +42,7 @@ const JOURNEY_RUNNER_FILE = `sap.ui.define([
 ], function (JourneyRunner, TravelListGenerated, TravelObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('myApp') + '/test/flp.html#app-preview',
         pages: {
 \t\t\tonTheTravelListGenerated: TravelListGenerated,

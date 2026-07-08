@@ -6,7 +6,7 @@ sap.ui.define([
 ], function (JourneyRunner, SalesOrderItemListGenerated, SalesOrderItemObjectPageGenerated, MaterialDetailsObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('testNameSpace/alpv4') + '/test/flpSandbox.html#testNameSpacealpv4-tile',
         pages: {
 			onTheSalesOrderItemListGenerated: SalesOrderItemListGenerated,
