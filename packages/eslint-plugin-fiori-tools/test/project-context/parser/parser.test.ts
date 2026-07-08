@@ -1,8 +1,9 @@
-import { dirname } from 'node:path';
+import { dirname, join } from 'node:path';
 import { ApplicationParser } from '../../../src/project-context/parser/parser.js';
 import { V2_FLEX_CHANGE_FILE_PATH, V2_MANIFEST, V2_MANIFEST_PATH, V2_PROJECT_PATH } from '../../test-helper.js';
-import type { ParsedProject, ParsedService } from '../../../src/project-context/parser/types.js';
+import type { FlexChange, ParsedProject, ParsedService } from '../../../src/project-context/parser/types.js';
 import { pathToFileURL } from 'node:url';
+import type { DocumentNode } from '@humanwhocodes/momoa';
 
 describe('Flex change', () => {
     const parser = new ApplicationParser();
@@ -23,7 +24,7 @@ describe('Flex change', () => {
         changeFileUri
     };
 
-    beforeAll(() => {
+    beforeEach(() => {
         parsedProject = {
             projectType: 'EDMXBackend',
             apps: {
@@ -44,21 +45,47 @@ describe('Flex change', () => {
             },
             documents: {}
         };
+        fileCache.clear();
     });
 
     test('reparse: adds new .change file', () => {
         const reparsed = parser.reparse(changeFileUri, parsedProject, fileCache);
         expect(reparsed.index.documents[changeFileUri]).toBeDefined();
-        expect(parsedProject.apps[''].changes).toHaveLength(1);
-        expect(parsedProject.apps[''].changes[0]).toStrictEqual(propertyChange);
+        expect(reparsed.index.apps[''].changes).toHaveLength(1);
+        expect(reparsed.index.apps[''].changes[0]).toStrictEqual(propertyChange);
     });
 
     test('reparse: removes changes from deleted .change file', () => {
-        const existinPropertyChange = { ...propertyChange, changeFileUri: changeFileUri + 'non-existent-file' };
-        parsedProject.apps[''].changes = [existinPropertyChange];
+        const nonExistentChangeFileUri = pathToFileURL(
+            join(dirname(changeFileUri), 'non-existent-file.change')
+        ).toString();
+        const existingPropertyChange = {
+            ...propertyChange,
+            changeFileUri: nonExistentChangeFileUri
+        };
+        fileCache.set(nonExistentChangeFileUri, JSON.stringify(existingPropertyChange));
+        parsedProject.apps[''].changes = [existingPropertyChange];
+        const reparsed = parser.reparse(changeFileUri, parsedProject, fileCache); // reparse new change file
+        expect(reparsed.index.documents[changeFileUri]).toBeDefined();
+        expect(reparsed.index.apps[''].changes).toHaveLength(1); // non-existent-file change was deleted
+        expect(reparsed.index.apps[''].changes[0].changeFileUri).toStrictEqual(changeFileUri);
+    });
+
+    test('reparse: applies change in a .change file', () => {
+        const newChange = Object.assign(propertyChange) as FlexChange;
+        newChange.content.newValue = false;
+        fileCache.set(changeFileUri, JSON.stringify(newChange));
         const reparsed = parser.reparse(changeFileUri, parsedProject, fileCache);
         expect(reparsed.index.documents[changeFileUri]).toBeDefined();
-        expect(parsedProject.apps[''].changes).toHaveLength(1);
-        expect(parsedProject.apps[''].changes[0].changeFileUri).toStrictEqual(changeFileUri);
+        expect(reparsed.index.apps[''].changes).toHaveLength(1);
+        expect(reparsed.index.apps[''].changes[0].content.newValue).toBe(false);
+    });
+
+    test('reparse: deletes .change file with empty object content', () => {
+        fileCache.set(changeFileUri, '{}');
+        const reparsed = parser.reparse(changeFileUri, parsedProject, fileCache);
+        expect(reparsed.index.documents[changeFileUri]).toBeDefined();
+        expect((reparsed.index.documents[changeFileUri] as DocumentNode).range).toStrictEqual([0, 2]); // Value '{}' saved
+        expect(reparsed.index.apps[''].changes).toHaveLength(0);
     });
 });
