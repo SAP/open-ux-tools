@@ -26,7 +26,6 @@ sap.ui.define([
 
         opaTest("Navigate to BookingObjectPageObjectPage", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheTravelListGenerated.onTable().iCheckRows();
             When.onTheTravelListGenerated.onTable().iPressRow(0);
 
@@ -53,7 +52,7 @@ sap.ui.define([
             Then.onTheBookingObjectPageGenerated.onForm({ section: "Booking" }).iCheckField({ property: "DestinationRisk" });
             When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton("BookingSupplement");
             Then.onTheBookingObjectPageGenerated.iCheckSection({ section: "BookingSupplement" });
-            Then.onTheBookingObjectPageGenerated.onTable({ property: "_BookSupplement" }).iCheckColumns({"BookingSupplementID":{"header":"Book. Supp. Number"},"SupplementID":{"header":"Product ID"},"Price":{"header":"Product Price"}});
+            Then.onTheBookingObjectPageGenerated.onTable({ property: "_BookSupplement" }).iCheckColumns(undefined, {"BookingSupplementID":{"header":"Book. Supp. Number"},"SupplementID":{"header":"Product ID"},"Price":{"header":"Product Price"}});
        });
 
         opaTest("Teardown", function (Given, When, Then) { 

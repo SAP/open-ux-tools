@@ -22,6 +22,9 @@
       "path": "../feature-toggle"
     },
     {
+      "path": "../fiori-app-sub-generator"
+    },
+    {
       "path": "../fiori-elements-writer"
     },
     {
