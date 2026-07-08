@@ -1,5 +1,13 @@
 # @sap-ux/store
 
+## 2.0.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/logger 1.0.2 → 1.0.3
+
 ## 2.0.3
 
 ### Patch Changes

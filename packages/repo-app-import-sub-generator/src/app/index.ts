@@ -22,6 +22,7 @@ import {
     isCli,
     setYeomanEnvConflicterForce
 } from '@sap-ux/fiori-generator-shared';
+import { getFloorplanLabel } from '@sap-ux/fiori-app-sub-generator';
 import type {
     RepoAppDownloadOptions,
     RepoAppDownloadAnswers,
@@ -47,7 +48,7 @@ import { PromptState } from '../prompts/prompt-state.js';
 import { getAppConfig, getAdtDeployConfig } from './app-config-quick-deploy.js';
 import { getAbapRepoAppConfig, getAbapRepoDeployConfig, writeServiceMetadata } from './app-config-abap-repo.js';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
-import { makeValidJson, processDebugArtifacts, addPackageJsonIfNotFound } from '../utils/file-helpers.js';
+import { makeValidJson, cleanupArtifacts, addPackageJsonIfNotFound } from '../utils/file-helpers.js';
 import { replaceWebappFiles, validateAndUpdateManifestUI5Version } from '../utils/updates.js';
 import { getYUIDetails } from '../prompts/prompt-helpers.js';
 import { isValidPromptState, validateQfaJsonFile } from '../utils/validators.js';
@@ -175,7 +176,7 @@ export default class extends Generator {
             await writeServiceMetadata(serviceProvider, webappPath, this.fs);
         }
 
-        processDebugArtifacts(webappPath, this.fs);
+        cleanupArtifacts(webappPath, this.fs);
         const appConfig = getAbapRepoAppConfig(webappPath, this.answers.selectedApp, this.fs);
 
         // If package.json does not exist in the extracted app, add a minimal one with the appId as the package name.
@@ -277,7 +278,7 @@ export default class extends Generator {
             generatorName: generatorName,
             generatorVersion: this.rootGeneratorVersion(),
             ui5Version: config.ui5?.version ?? '',
-            template: config.template.type,
+            template: getFloorplanLabel(config.template.type, config.service.version),
             serviceUrl: config.service.url,
             launchText: t('readMe.launchText')
         };
