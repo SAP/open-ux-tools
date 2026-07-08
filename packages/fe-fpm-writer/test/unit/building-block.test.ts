@@ -1266,7 +1266,7 @@ describe('Building Blocks', () => {
                 },
                 fs
             )
-        ).rejects.toThrow(t('fullTemplateMinUi5VersionRequirement', { minUI5Version: '1.144.0' }));
+        ).rejects.toThrow(String(t('fullTemplateMinUi5VersionRequirement', { minUI5Version: '1.144.0' })));
     });
 
     test('generate Page building block with full template throws if UI5 version is missing', async () => {
@@ -1296,7 +1296,7 @@ describe('Building Blocks', () => {
                 },
                 fs
             )
-        ).rejects.toThrow(t('fullTemplateMinUi5VersionRequirement', { minUI5Version: 'unknown' }));
+        ).rejects.toThrow(String(t('fullTemplateMinUi5VersionRequirement', { minUI5Version: 'unknown' })));
     });
 
     test('generateBuildingBlock creates missing macros:items aggregation before inserting content', async () => {
@@ -4147,9 +4147,7 @@ describe('Building Blocks', () => {
                 fs
             );
 
-            expect(result.read(join(basePath, xmlViewFilePath))).toMatchSnapshot(
-                'page-bb-agg-wraps-loose-into-items'
-            );
+            expect(result.read(join(basePath, xmlViewFilePath))).toMatchSnapshot('page-bb-agg-wraps-loose-into-items');
         });
     });
 });
