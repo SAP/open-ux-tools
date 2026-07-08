@@ -31,7 +31,7 @@ Enabling `liveMode` makes the content area load automatically during the initial
 ```
 `liveMode` is set to `true` in the settings of the list report page.
 
-#### Incorrect Property `.change` File for OData V2 Applications
+#### Incorrect `.change` File for OData V2 Applications
 
 ```json
 "content": {
