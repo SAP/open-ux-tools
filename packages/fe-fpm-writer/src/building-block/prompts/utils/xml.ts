@@ -18,27 +18,18 @@ export const augmentXpathWithLocalNames = (path: string): string => {
 };
 
 /**
- * Returns a list of xpath strings for each element of the xml file provided.
- *
- * @param xmlFilePath - the xml file path
- * @param fs - the file system object for reading files
- * @returns the list of xpath strings & page macro definition if page macro has been added by user.
- */
-/**
  * If the given node is a macros:Page element that has no macros:items child, adds a synthesized
  * macros:items path to the result map so callers can target it as an aggregation path.
  * ensureMissingAggregation in generateBuildingBlock will create the DOM element when needed.
  *
  * @param node - the current DOM node being visited
  * @param parentNode - accumulated XPath prefix up to (but not including) this node
- * @param pageMacroDefinition - the qualified name of the macros:Page element (e.g. 'macros:Page')
  * @param macrosNamespace - the resolved macros namespace prefix (e.g. 'macros')
  * @param result - mutable map of XPath choices to augment
  */
 function synthesizeMacrosItemsIfMissing(
     node: Node,
     parentNode: string,
-    pageMacroDefinition: string,
     macrosNamespace: string,
     result: Record<string, string>
 ): void {
@@ -56,6 +47,13 @@ function synthesizeMacrosItemsIfMissing(
     }
 }
 
+/**
+ * Returns a list of xpath strings for each element of the xml file provided.
+ *
+ * @param xmlFilePath - the xml file path
+ * @param fs - the file system object for reading files
+ * @returns the list of xpath strings & page macro definition if page macro has been added by user.
+ */
 export function getXPathStringsForXmlFile(
     xmlFilePath: string,
     fs: Editor
@@ -92,7 +90,7 @@ export function getXPathStringsForXmlFile(
                 result[`${parentNode}/${node.nodeName}`] = augmentXpathWithLocalNames(`${parentNode}/${node.nodeName}`);
             }
 
-            synthesizeMacrosItemsIfMissing(node, parentNode, pageMacroDefinition, macrosNamespace || 'macros', result);
+            synthesizeMacrosItemsIfMissing(node, parentNode, macrosNamespace || 'macros', result);
 
             const childNodes = Array.from(node.childNodes);
             for (const childNode of childNodes) {
