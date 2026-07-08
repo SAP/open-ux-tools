@@ -42,12 +42,13 @@ function synthesizeMacrosItemsIfMissing(
     macrosNamespace: string,
     result: Record<string, string>
 ): void {
-    if (node.nodeName !== pageMacroDefinition) {
+    if ((node as Element).localName !== 'Page' || (node as Element).namespaceURI !== 'sap.fe.macros') {
         return;
     }
-    const macrosItemsName = `${macrosNamespace}:items`;
+    const resolvedPrefix = macrosNamespace || 'macros';
+    const macrosItemsName = `${resolvedPrefix}:items`;
     const hasItemsChild = Array.from(node.childNodes).some(
-        (child) => child.nodeType === child.ELEMENT_NODE && (child as Element).nodeName === macrosItemsName
+        (child) => child.nodeType === child.ELEMENT_NODE && (child as Element).localName === 'items'
     );
     if (!hasItemsChild) {
         const itemsPath = `${parentNode}/${node.nodeName}/${macrosItemsName}`;
@@ -85,13 +86,13 @@ export function getXPathStringsForXmlFile(
                 (child) =>
                     child.nodeType === child.ELEMENT_NODE &&
                     (child as Element).localName === 'Page' &&
-                    child.nodeName === pageMacroDefinition
+                    (child as Element).namespaceURI === 'sap.fe.macros'
             );
             if (!hasPageMacroChild) {
                 result[`${parentNode}/${node.nodeName}`] = augmentXpathWithLocalNames(`${parentNode}/${node.nodeName}`);
             }
 
-            synthesizeMacrosItemsIfMissing(node, parentNode, pageMacroDefinition, macrosNamespace ?? 'macros', result);
+            synthesizeMacrosItemsIfMissing(node, parentNode, pageMacroDefinition, macrosNamespace || 'macros', result);
 
             const childNodes = Array.from(node.childNodes);
             for (const childNode of childNodes) {

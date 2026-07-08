@@ -266,14 +266,22 @@ export function ensureMissingAggregation(xmlDocument: Document, aggregationPath:
     }
     const prefix = lastSegment.slice(0, colonIdx);
     const localName = lastSegment.slice(colonIdx + 1);
-    // getOrAddNamespace resolves the URI from the document and declares it if missing
-    const namespaceUri = nsMap[prefix];
+    // getOrAddNamespace resolves the URI from the document and declares it if missing.
+    // Fall back to 'sap.fe.macros' for the 'macros' prefix in case it's declared as a default
+    // namespace (xmlns="sap.fe.macros") and therefore absent from the prefix→URI nsMap.
+    let namespaceUri = nsMap[prefix];
+    if (!namespaceUri && prefix === 'macros') {
+        namespaceUri = 'sap.fe.macros';
+    }
     if (!namespaceUri) {
         return;
     }
     getOrAddNamespace(xmlDocument, namespaceUri, prefix);
 
-    const parentNodes = xpathSelect(
+    // Rebuild xpathSelect with the prefix explicitly mapped so XPath resolves prefixed steps
+    // correctly even when the document uses sap.fe.macros as its default namespace.
+    const xpathSelectWithPrefix = xpath.useNamespaces({ ...nsMap, [prefix]: namespaceUri });
+    const parentNodes = xpathSelectWithPrefix(
         resolveAggregationPath(aggregationPath.slice(0, lastSlash)),
         xmlDocument
     ) as Element[];
