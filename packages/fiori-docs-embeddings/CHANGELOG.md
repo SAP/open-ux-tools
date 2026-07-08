@@ -1,5 +1,17 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 1.2.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Features
+
+- Add sap.fe.test JSDoc API as a new embedded data source [[d54fc9a](https://github.com/SAP/open-ux-tools/commit/d54fc9a6937632e19e5b50dbf79ba50f279b3a39)]
+
 ## 1.2.5
 
 ### Patch Changes
