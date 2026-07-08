@@ -1,5 +1,100 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.1.34
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-app-sub-generator 1.1.1 → 1.1.2
+- @sap-ux/fiori-elements-writer 3.0.49 → 3.0.50
+- @sap-ux/fiori-freestyle-writer 3.0.44 → 3.0.45
+- @sap-ux/odata-service-inquirer 3.0.23 → 3.0.23
+
+## 1.1.33
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-app-sub-generator 1.1.0 → 1.1.1
+- @sap-ux/fiori-generator-shared 1.0.19 → 1.0.20
+- @sap-ux/feature-toggle 1.0.4 → 1.0.5
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/fiori-elements-writer 3.0.48 → 3.0.49
+- @sap-ux/fiori-freestyle-writer 3.0.43 → 3.0.44
+- @sap-ux/inquirer-common 1.0.20 → 1.0.21
+- @sap-ux/odata-service-inquirer 3.0.22 → 3.0.23
+- @sap-ux/axios-extension 2.0.6 → 2.0.7
+- @sap-ux/btp-utils 2.0.5 → 2.0.5
+- @sap-ux/launch-config 1.0.11 → 1.0.12
+- @sap-ux/project-access 2.1.6 → 2.1.6
+- @sap-ux/store 2.0.3 → 2.0.4
+- @sap-ux/system-access 1.0.6 → 1.0.7
+- @sap-ux/ui5-info 1.0.4 → 1.0.5
+- @sap-ux/abap-deploy-config-writer 1.0.13 → 1.0.14
+
+## 1.1.32
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-07
+
+#### Bug Fixes
+
+- Set up TypeScript development environment after downloading a TypeScript app from ABAP repository [[c32b85f](https://github.com/SAP/open-ux-tools/commit/c32b85f9522b87950397682e6adfc48ca3174ece)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-app-sub-generator 1.0.50 → 1.1.0
+- @sap-ux/fiori-elements-writer 3.0.47 → 3.0.48
+- @sap-ux/fiori-freestyle-writer 3.0.42 → 3.0.43
+- @sap-ux/odata-service-inquirer 3.0.22 → 3.0.22
+
+## 1.1.31
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.46 → 3.0.47
+- @sap-ux/fiori-freestyle-writer 3.0.42 → 3.0.42
+- @sap-ux/odata-service-inquirer 3.0.22 → 3.0.22
+
+## 1.1.30
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.18 → 1.0.19
+- @sap-ux/inquirer-common 1.0.19 → 1.0.20
+- @sap-ux/odata-service-inquirer 3.0.21 → 3.0.22
+- @sap-ux/fiori-elements-writer 3.0.45 → 3.0.46
+- @sap-ux/fiori-freestyle-writer 3.0.41 → 3.0.42
+
+## 1.1.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.0.20 → 3.0.21
+- @sap-ux/axios-extension 2.0.5 → 2.0.6
+- @sap-ux/inquirer-common 1.0.18 → 1.0.19
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+- @sap-ux/ui5-info 1.0.3 → 1.0.4
+- @sap-ux/fiori-elements-writer 3.0.44 → 3.0.45
+- @sap-ux/fiori-freestyle-writer 3.0.40 → 3.0.41
+- @sap-ux/fiori-generator-shared 1.0.17 → 1.0.18
+- @sap-ux/system-access 1.0.5 → 1.0.6
+- @sap-ux/abap-deploy-config-writer 1.0.12 → 1.0.13
+- @sap-ux/launch-config 1.0.10 → 1.0.11
+- @sap-ux/project-access 2.1.5 → 2.1.6
+- @sap-ux/project-input-validator 1.0.9 → 1.0.10
+
 ## 1.1.28
 
 ### Patch Changes

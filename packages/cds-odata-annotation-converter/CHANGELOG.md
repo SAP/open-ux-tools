@@ -1,5 +1,28 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 1.0.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-06
+
+#### Bug Fixes
+
+- Minor update to texts to align with the larger text review
+
+    Changed did to do in Did you mean? [[5b2a7f2](https://github.com/SAP/open-ux-tools/commit/5b2a7f2fce7f0faa43e2ab083ec25b80ea204503)]
+
+## 1.0.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-vocabularies 1.0.3 → 1.0.4
+- @sap-ux/cds-annotation-parser 1.0.3 → 1.0.4
+
 ## 1.0.4
 
 ### Patch Changes

@@ -1,5 +1,22 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 2.0.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 2.0.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.4 → 1.0.5
+
 ## 2.0.5
 
 ### Patch Changes

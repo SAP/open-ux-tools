@@ -1,5 +1,21 @@
 # @sap-ux/ui5-application-writer
 
+## 2.1.0
+
+### Minor Changes
+
+#### Bug Fixes
+
+- Set up TypeScript development environment after downloading a TypeScript app from ABAP repository [[c32b85f](https://github.com/SAP/open-ux-tools/commit/c32b85f9522b87950397682e6adfc48ca3174ece)]
+
+## 2.0.8
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.4 → 1.0.5
+
 ## 2.0.7
 
 ### Patch Changes

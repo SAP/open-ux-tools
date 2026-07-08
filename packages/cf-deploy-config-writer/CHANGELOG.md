@@ -1,5 +1,28 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 1.0.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/nodejs-utils 1.0.6 → 1.0.7
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/btp-utils 2.0.5 → 2.0.5
+- @sap-ux/project-access 2.1.6 → 2.1.6
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 1.0.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.4 → 1.0.5
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+- @sap-ux/project-access 2.1.5 → 2.1.6
+- @sap-ux/nodejs-utils 1.0.5 → 1.0.6
+
 ## 1.0.14
 
 ### Patch Changes
