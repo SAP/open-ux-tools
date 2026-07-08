@@ -226,20 +226,25 @@ export class ApplicationParser {
             // Create new change object
             const jsonContent = JSON.parse(content) as FlexChange;
             if (!jsonContent.changeType || !jsonContent.content || !jsonContent.selector) {
-                continue;
-            }
-            const newChange: FlexChange = {
-                changeType: jsonContent.changeType,
-                content: jsonContent.content,
-                selector: jsonContent.selector,
-                changeFileUri: uri
-            };
-            // Replace the existing entry for this URI, or append if new
-            const existingIndex = app.changes.findIndex((c) => c.changeFileUri === uri);
-            if (existingIndex >= 0) {
-                app.changes[existingIndex] = newChange;
+                // Remove existing change object for updated file
+                const existingIndex = app.changes.findIndex((c) => c.changeFileUri === uri);
+                if (existingIndex >= 0) {
+                    app.changes.splice(existingIndex, 1);
+                }
             } else {
-                app.changes.push(newChange);
+                const newChange: FlexChange = {
+                    changeType: jsonContent.changeType,
+                    content: jsonContent.content,
+                    selector: jsonContent.selector,
+                    changeFileUri: uri
+                };
+                // Replace the existing entry for this URI, or append if new
+                const existingIndex = app.changes.findIndex((c) => c.changeFileUri === uri);
+                if (existingIndex >= 0) {
+                    app.changes[existingIndex] = newChange;
+                } else {
+                    app.changes.push(newChange);
+                }
             }
         }
     }
