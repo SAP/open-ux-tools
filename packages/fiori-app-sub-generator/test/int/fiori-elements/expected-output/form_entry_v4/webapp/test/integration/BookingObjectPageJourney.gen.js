@@ -27,11 +27,6 @@ sap.ui.define([
         opaTest("Navigate to BookingObjectPageObjectPage", function (Given, When, Then) {
             Given.iStartMyApp();
 
-            When.onTheGenerated.onFilterBar().iExecuteSearch();
-
-            Then.onTheGenerated.onTable().iCheckRows();
-            When.onTheGenerated.onTable().iPressRow(0);
-
             Then.onTheTravelObjectPageGenerated.iSeeThisPage();
             Then.onTheTravelObjectPageGenerated.onTable({ property: "_Booking" }).iCheckRows();
             When.onTheTravelObjectPageGenerated.onTable({ property: "_Booking" }).iPressRow(0);

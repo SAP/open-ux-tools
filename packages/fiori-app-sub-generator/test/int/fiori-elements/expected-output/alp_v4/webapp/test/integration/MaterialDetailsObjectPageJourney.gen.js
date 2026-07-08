@@ -26,9 +26,7 @@ sap.ui.define([
 
         opaTest("Navigate to MaterialDetailsObjectPageObjectPage", function (Given, When, Then) {
             Given.iStartMyApp();
-
             When.onTheSalesOrderItemListGenerated.onFilterBar().iExecuteSearch();
-
             Then.onTheSalesOrderItemListGenerated.onTable().iCheckRows();
             When.onTheSalesOrderItemListGenerated.onTable().iPressRow(0);
 

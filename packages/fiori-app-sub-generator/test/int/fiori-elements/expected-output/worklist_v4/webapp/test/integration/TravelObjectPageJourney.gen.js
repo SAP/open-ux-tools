@@ -26,7 +26,6 @@ sap.ui.define([
 
         opaTest("Navigate to TravelObjectPageObjectPage", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheTravelListGenerated.onTable().iCheckRows();
             When.onTheTravelListGenerated.onTable().iPressRow(0);
 
