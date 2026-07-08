@@ -698,8 +698,8 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
       '@types/vscode':
-        specifier: 1.125.0
-        version: 1.125.0
+        specifier: 1.106.1
+        version: 1.106.1
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
@@ -1985,8 +1985,8 @@ importers:
         specifier: 2.4.9
         version: 2.4.9
       '@types/vscode':
-        specifier: 1.125.0
-        version: 1.125.0
+        specifier: 1.106.1
+        version: 1.106.1
 
   packages/eslint-plugin-fiori-tools:
     dependencies:
@@ -2167,8 +2167,8 @@ importers:
         specifier: 30.4.1
         version: 30.4.1
       '@types/vscode':
-        specifier: 1.125.0
-        version: 1.125.0
+        specifier: 1.106.1
+        version: 1.106.1
       jest-when:
         specifier: 4.0.3
         version: 4.0.3(jest@30.4.2(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)))
@@ -2364,8 +2364,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       '@types/vscode':
-        specifier: 1.125.0
-        version: 1.125.0
+        specifier: 1.106.1
+        version: 1.106.1
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
@@ -2640,8 +2640,8 @@ importers:
         specifier: 7.7.1
         version: 7.7.1
       '@types/vscode':
-        specifier: 1.125.0
-        version: 1.125.0
+        specifier: 1.106.1
+        version: 1.106.1
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
@@ -3001,8 +3001,8 @@ importers:
         specifier: 11.0.0
         version: 11.0.0
       '@types/vscode':
-        specifier: 1.125.0
-        version: 1.125.0
+        specifier: 1.106.1
+        version: 1.106.1
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
@@ -3358,8 +3358,8 @@ importers:
         specifier: 4.17.24
         version: 4.17.24
       '@types/vscode':
-        specifier: 1.125.0
-        version: 1.125.0
+        specifier: 1.106.1
+        version: 1.106.1
       jest-extended:
         specifier: 7.0.0
         version: 7.0.0(jest@30.4.2(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.19))(@types/node@22.13.14)(typescript@5.9.3)))(typescript@5.9.3)
@@ -3426,8 +3426,8 @@ importers:
         specifier: 7.7.1
         version: 7.7.1
       '@types/vscode':
-        specifier: 1.125.0
-        version: 1.125.0
+        specifier: 1.106.1
+        version: 1.106.1
       mock-spawn:
         specifier: 0.2.6
         version: 0.2.6
@@ -3986,6 +3986,9 @@ importers:
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
+      '@sap-ux/fiori-app-sub-generator':
+        specifier: workspace:*
+        version: link:../fiori-app-sub-generator
       '@sap-ux/fiori-elements-writer':
         specifier: workspace:*
         version: link:../fiori-elements-writer
@@ -4147,8 +4150,8 @@ importers:
         specifier: 3.0.2
         version: 3.0.2
       '@types/vscode':
-        specifier: 1.125.0
-        version: 1.125.0
+        specifier: 1.106.1
+        version: 1.106.1
       '@vscode/vsce':
         specifier: 3.7.1
         version: 3.7.1
@@ -5096,8 +5099,8 @@ importers:
         specifier: 11.0.4
         version: 11.0.4
       '@types/vscode':
-        specifier: 1.125.0
-        version: 1.125.0
+        specifier: 1.106.1
+        version: 1.106.1
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
@@ -10476,8 +10479,8 @@ packages:
   '@types/vinyl@2.0.12':
     resolution: {integrity: sha512-Sr2fYMBUVGYq8kj3UthXFAu5UN6ZW+rYr4NACjZQJvHvj+c8lYv0CahmZ2P/r7iUkN44gGUBwqxZkrKXYPb7cw==}
 
-  '@types/vscode@1.125.0':
-    resolution: {integrity: sha512-0icm/ZQAaism87P0ekHqi4/Ju9du+Tm0RUW+y7vqRsxY2cY0FNRX1nAnaW7nT6npPt2tfHiheZ55Zm9UhqonFA==}
+  '@types/vscode@1.106.1':
+    resolution: {integrity: sha512-R/HV8u2h8CAddSbX8cjpdd7B8/GnE4UjgjpuGuHcbp1xV6yh4OeqU4L1pKjlwujCrSFS0MOpwJAIs/NexMB1fQ==}
 
   '@types/webidl-conversions@7.0.3':
     resolution: {integrity: sha512-CiJJvcRtIgzadHCYXw7dqEnMNRjhGZlYK05Mj9OyktqV8uVT8fD2BFOB7S1uwBE3Kj2Z+4UyPmFw/Ixgw/LAlA==}
@@ -26389,7 +26392,7 @@ snapshots:
       '@types/expect': 1.20.4
       '@types/node': 22.13.14
 
-  '@types/vscode@1.125.0': {}
+  '@types/vscode@1.106.1': {}
 
   '@types/webidl-conversions@7.0.3':
     optional: true
