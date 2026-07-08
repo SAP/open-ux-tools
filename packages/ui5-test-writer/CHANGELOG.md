@@ -1,5 +1,41 @@
 # @sap-ux/ui5-test-writer
 
+## 1.2.17
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Use const in JS templates instead of var [[824ed4d](https://github.com/SAP/open-ux-tools/commit/824ed4dbb03ac46752e5d2ba6dca5bfcb7675a09)]
+
+## 1.2.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.38 → 1.0.39
+
+## 1.2.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.19 → 1.0.20
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/preview-middleware 1.0.37 → 1.0.38
+- @sap-ux/project-access 2.1.6 → 2.1.6
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.0
+
+## 1.2.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.0.8 → 2.1.0
+
 ## 1.2.13
 
 ### Patch Changes

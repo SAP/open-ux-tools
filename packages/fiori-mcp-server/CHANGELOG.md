@@ -1,5 +1,25 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.9.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Features
+
+- add skill for opa5 test development for fiori apps [[f189d25](https://github.com/SAP/open-ux-tools/commit/f189d253808541f2f58fa950e28b7e14679c80a5)]
+
+## 1.8.9
+
+### Patch Changes
+
+#### Dependency Updates
+
+- align vscode and types with fiori tools extensions [[369c494](https://github.com/SAP/open-ux-tools/commit/369c49497073e99fda01bad7dfda1840e68c029a)]
+
 ## 1.8.8
 
 ### Patch Changes
