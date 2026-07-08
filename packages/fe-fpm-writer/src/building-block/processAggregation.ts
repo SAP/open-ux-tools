@@ -373,7 +373,7 @@ export async function generateBuildingBlockAggregation(
         (node) =>
             node.nodeType === 1 /* Element */ &&
             (node as Element).localName === aggName &&
-            (node as Element).namespaceURI === 'sap.fe.macros'
+            (node as Element).namespaceURI === (nsMap[fragMacrosNS] ?? 'sap.fe.macros')
     );
     if (hasExistingAggregation) {
         sortPageAggregationChildren(pageElement);
@@ -389,7 +389,8 @@ export async function generateBuildingBlockAggregation(
 
     // Move any loose macros building blocks (e.g. macros:Form, macros:Table) into macros:items
     // before inserting the new named aggregation so the Page DOM stays well-formed.
-    wrapLooseBuildingBlocksInItems(pageElement as Element, xmlDocument, 'sap.fe.macros', fragMacrosNS);
+    const macrosNsUri = nsMap[fragMacrosNS] ?? 'sap.fe.macros';
+    wrapLooseBuildingBlocksInItems(pageElement as Element, xmlDocument, macrosNsUri, fragMacrosNS);
     if (!hasExistingElementChildren && !hasTemplateComment) {
         pageElement.appendChild(xmlDocument.createComment(PAGE_TEMPLATE_COMMENT));
     }
