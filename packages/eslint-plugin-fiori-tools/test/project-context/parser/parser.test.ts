@@ -81,11 +81,20 @@ describe('Flex change', () => {
         expect(reparsed.index.apps[''].changes[0].content.newValue).toBe(false);
     });
 
-    test('reparse: deletes .change file with empty object content', () => {
+    test('reparse: empty .change file with empty object content not collected to app changes', () => {
         fileCache.set(changeFileUri, '{}');
         const reparsed = parser.reparse(changeFileUri, parsedProject, fileCache);
         expect(reparsed.index.documents[changeFileUri]).toBeDefined();
         expect((reparsed.index.documents[changeFileUri] as DocumentNode).range).toStrictEqual([0, 2]); // Value '{}' saved
-        expect(reparsed.index.apps[''].changes).toHaveLength(0);
+        expect(reparsed.index.apps[''].changes).toHaveLength(0); // change not collected
+    });
+
+    test('reparse: updated .change file with empty object content is deleted from app changes', () => {
+        parsedProject.apps[''].changes = [propertyChange];
+        fileCache.set(changeFileUri, '{}');
+        const reparsed = parser.reparse(changeFileUri, parsedProject, fileCache);
+        expect(reparsed.index.documents[changeFileUri]).toBeDefined();
+        expect((reparsed.index.documents[changeFileUri] as DocumentNode).range).toStrictEqual([0, 2]);
+        expect(reparsed.index.apps[''].changes).toHaveLength(0); // change removed
     });
 });
