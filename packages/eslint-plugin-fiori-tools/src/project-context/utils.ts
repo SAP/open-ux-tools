@@ -27,12 +27,14 @@ export function collectFlexChanges(changeFiles: string[]): FlexChange[] {
         try {
             const fileContent = readFileSync(changeFile, { encoding: 'utf8', flag: 'r' });
             const jsonContent = JSON.parse(fileContent) as FlexChange;
-            changes.push({
-                changeType: jsonContent.changeType,
-                content: jsonContent.content,
-                selector: jsonContent.selector,
-                changeFileUri: pathToFileURL(changeFile).toString()
-            });
+            if (jsonContent.changeType && jsonContent.content && jsonContent.selector) {
+                changes.push({
+                    changeType: jsonContent.changeType,
+                    content: jsonContent.content,
+                    selector: jsonContent.selector,
+                    changeFileUri: pathToFileURL(changeFile).toString()
+                });
+            }
         } catch {
             // skip unreadable or malformed change files
         }

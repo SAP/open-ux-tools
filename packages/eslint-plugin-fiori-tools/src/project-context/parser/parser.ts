@@ -84,7 +84,9 @@ export class ApplicationParser {
                 const [parsedManifest, services] = this.parseManifest(webappPath, manifestUri, manifest);
                 const appRootUri = pathToFileURL(app.appRoot).toString();
                 const changes: FlexChange[] = [];
-                if (existsSync(join(webappPath, 'changes'))) {
+                const mainServiceName = getMainService(manifest) ?? '';
+                const mainService = services.find((service) => service.name === mainServiceName);
+                if (mainService?.version === '2.0' && existsSync(join(webappPath, 'changes'))) {
                     const changeFiles = readdirSync(join(webappPath, 'changes'))
                         .filter((file) => file.endsWith('propertyChange.change'))
                         .map((file) => normalizePath(join(webappPath, 'changes', file)));
@@ -223,6 +225,9 @@ export class ApplicationParser {
             index.documents[uri] = ast;
             // Create new change object
             const jsonContent = JSON.parse(content) as FlexChange;
+            if (!jsonContent.changeType || !jsonContent.content || !jsonContent.selector) {
+                continue;
+            }
             const newChange: FlexChange = {
                 changeType: jsonContent.changeType,
                 content: jsonContent.content,
