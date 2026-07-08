@@ -53,6 +53,7 @@ sap.ui.define([
             Then.onTheBookingObjectPageGenerated.onForm({ section: "Booking" }).iCheckField({ property: "DestinationRisk" });
             When.onTheBookingObjectPageGenerated.iGoToSection({ section: "BookingSupplement" });
             Then.onTheBookingObjectPageGenerated.iCheckSection({ section: "BookingSupplement" });
+            Then.onTheBookingObjectPageGenerated.onTable({ property: "_BookSupplement" }).iCheckColumns({"BookingSupplementID":{"header":"Book. Supp. Number"},"SupplementID":{"header":"Product ID"},"Price":{"header":"Product Price"}});
        });
 
         opaTest("Teardown", function (Given, When, Then) { 

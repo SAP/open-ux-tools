@@ -56,6 +56,9 @@ sap.ui.define([
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "_ReferencedSalesOrderItem/SalesOrderItem" });
             When.onTheSalesOrderItemObjectPageGenerated.iGoToSection({ section: "MaterialDetailsFacet" });
             Then.onTheSalesOrderItemObjectPageGenerated.iCheckSection({ section: "MaterialDetailsFacet" });
+            Then.onTheSalesOrderItemObjectPageGenerated.onTable({ property: "_MaterialDetails" }).iCheckAction("Material Details Bound Action", { enabled: true });
+            // When.onTheSalesOrderItemObjectPageGenerated.onTable({ property: "_MaterialDetails" }).iPressAction("Material Details Bound Action");
+            Then.onTheSalesOrderItemObjectPageGenerated.onTable({ property: "_MaterialDetails" }).iCheckColumns({"ModelYear":{"header":"Model Year"},"WarrantyYear":{"header":"Warranty Expiration"},"BrandCategory":{"header":"Material Category"},"FabricationCountry":{"header":"Fabrication Country"}});
        });
 
         opaTest("Teardown", function (Given, When, Then) { 

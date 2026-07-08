@@ -85,7 +85,7 @@ async function getDestinationNamePrompt(
             return undefined;
         },
         source: (prevAnswers: CfDeployConfigAnswers, input: string) => searchChoices(input, destinationList),
-        choices: () => destinationList
+        choices: destinationList
     } as InputQuestion<CfDeployConfigAnswers>;
 }
 

@@ -43,7 +43,8 @@ import type { AbapDeployConfigOptions } from './types.js';
 import type {
     AbapDeployConfigAnswersInternal,
     AbapDeployConfigPromptOptions,
-    AbapDeployConfigQuestion
+    AbapDeployConfigQuestion,
+    InquirerAdapter
 } from '@sap-ux/abap-deploy-config-inquirer';
 import { getVariantNamespace } from '../utils/project.js';
 import { getExistingAdpProjectType } from '@sap-ux/adp-tooling';
@@ -219,7 +220,8 @@ export default class extends DeploymentGenerator {
                 ),
                 projectType: this.projectType,
                 logger: DeploymentGenerator.logger,
-                promptOptions
+                promptOptions,
+                promptModule: (this.env?.adapter as InquirerAdapter | undefined)?.promptModule
             });
             const prompAnswers = await this.prompt(abapDeployConfigPrompts);
             this.answers = reconcileAnswers(prompAnswers, abapAnswers);

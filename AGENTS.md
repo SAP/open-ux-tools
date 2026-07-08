@@ -290,9 +290,31 @@ pnpm audit
 
 **When NOT to create a changeset:**
 - ❌ Changes only to tests (test files in `test/` directories)
-- ❌ Changes only to `devDependencies` (unless the package uses esbuild for bundling, as bundled devDependencies affect runtime)
+- ❌ Changes only to `devDependencies` (unless the package uses esbuild for bundling — see **Bundled devDependency cascades** below)
 - ❌ Configuration changes (eslint, prettier, jest configs) that don't touch `src/`
 - ❌ CI/CD pipeline updates (.github/workflows)
+
+**Bundled devDependency cascades:**
+
+Some packages use esbuild to inline their dependency graph into the dist bundle at build time. When any workspace package in that graph is released, the bundling consumer **must also have a changeset** — otherwise it will not be re-published and consumers will keep running the old bundled code.
+
+The affected bundling packages are declared in [`scripts/validate-changesets.mjs`](scripts/validate-changesets.mjs) (`ESBUILD_BUNDLING_PACKAGES` array). The set of bundled deps is derived automatically by walking the dependency graph:
+- The bundler's own `devDependencies` are included (esbuild reads them directly)
+- For transitive deps, only their `dependencies` are followed — their `devDependencies` are not installed in the bundler's `node_modules` tree and are never bundled
+
+This is enforced automatically: `pnpm build` and `pnpm cset` both run `pnpm validate:changesets` and will error with an actionable message if a cascade changeset is missing.
+
+**If you release any workspace package** (direct devDep or transitive dep via `dependencies`), check whether it is in the bundle of any `ESBUILD_BUNDLING_PACKAGES` consumer — `pnpm validate:changesets` will tell you. Example cascade changeset:
+
+```markdown
+---
+"@sap-ux/fiori-mcp-server": patch
+---
+
+BUMP: Rebuild bundle with updated @sap-ux/fiori-docs-embeddings
+```
+
+**If you add a new esbuild-bundling package**, add its name to `ESBUILD_BUNDLING_PACKAGES` in `scripts/validate-changesets.mjs` — its bundled dep set is derived automatically from the dependency graph.
 
 **Private packages and changesets:**
 
@@ -348,11 +370,11 @@ BUMP: Upgrade i18next 25.8.18 → 25.8.20
 
 Every changeset summary **must** start with one of these prefixes (enforced by `pnpm validate:changesets`):
 
-| Prefix | Use for |
-|---|---|
-| `FEAT:` | New features or behaviour additions |
-| `FIX:` | Bug fixes, security patches, CVE upgrades |
-| `BUMP:` | Dependency-only upgrades with no behaviour change |
+| Prefix             | Use for                                           |
+|--------------------|---------------------------------------------------|
+| `FEAT:` or `feat:` | New features or behaviour additions               |
+| `FIX:`  or `fix:`  | Bug fixes, security patches, CVE upgrades         |
+| `BUMP:` or `bump:` | Dependency-only upgrades with no behaviour change |
 
 Do **not** include the package name in the summary — it is already declared in the frontmatter.
 
@@ -823,6 +845,7 @@ Before submitting changes, verify:
 - [ ] `pnpm test` passes with ≥80% coverage
 - [ ] `pnpm lint:dependency-versions` passes
 - [ ] Changeset created if source code or runtime dependencies changed
+- [ ] If releasing a bundled workspace devDep, cascade changeset added for each consumer in `scripts/validate-changesets.mjs`
 - [ ] No pnpm audit vulnerabilities introduced
 - [ ] Code follows TypeScript and ESLint standards
 - [ ] Tests follow given/when/then pattern
