@@ -63,7 +63,7 @@ function getPropertyDocument(
               propertyName: property.name,
               type: ui5Type ?? '-',
               propertyType: ui5Type ?? '-'
-          } as PropertiesInfo);
+          });
 }
 
 async function addDocumentationForProperties(control: ManagedObject, controlData: Control): Promise<void> {

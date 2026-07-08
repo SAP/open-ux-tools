@@ -1,5 +1,13 @@
 # @sap-ux/control-property-editor
 
+## 1.0.7
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
 ## 1.0.6
 
 ### Patch Changes
