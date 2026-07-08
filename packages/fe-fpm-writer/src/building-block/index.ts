@@ -37,14 +37,9 @@ import { getManifest, getManifestPath } from '../common/utils.js';
 import { getOrAddNamespace } from './prompts/utils/xml.js';
 import { i18nNamespaces, translate } from '../i18n.js';
 import { processBuildingBlock, resolveAggregationPath } from './processor.js';
-import {
-    appendPageAggregations,
-    ensureMissingAggregation,
-    getUI5XmlDocument,
-    generateBuildingBlockAggregation
-} from './processAggregation.js';
+import { appendPageAggregations, ensureMissingAggregation, getUI5XmlDocument } from './processAggregation.js';
 
-export { generateBuildingBlockAggregation, getUI5XmlDocument };
+export { generateBuildingBlockAggregation, getUI5XmlDocument } from './processAggregation.js';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
