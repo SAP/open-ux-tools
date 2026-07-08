@@ -1,5 +1,13 @@
 # @sap-ux/ui5-test-writer
 
+## 1.2.17
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Use const in JS templates instead of var [[824ed4d](https://github.com/SAP/open-ux-tools/commit/824ed4dbb03ac46752e5d2ba6dca5bfcb7675a09)]
+
 ## 1.2.16
 
 ### Patch Changes

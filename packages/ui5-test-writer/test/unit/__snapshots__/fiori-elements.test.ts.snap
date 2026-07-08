@@ -320,7 +320,7 @@ sap.ui.require(
 sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -357,7 +357,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -388,7 +388,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 ], function (JourneyRunner, EmployeesListGenerated, EmployeesObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html',
         pages: {
 			onTheEmployeesListGenerated: EmployeesListGenerated,
@@ -753,7 +753,7 @@ sap.ui.require(
 sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -790,7 +790,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -821,7 +821,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 ], function (JourneyRunner, EmployeesListGenerated, EmployeesObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html',
         pages: {
 			onTheEmployeesListGenerated: EmployeesListGenerated,
@@ -1163,7 +1163,7 @@ sap.ui.require(
 sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -1200,7 +1200,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -1231,7 +1231,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 ], function (JourneyRunner, EmployeesListGenerated, EmployeesObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html',
         pages: {
 			onTheEmployeesListGenerated: EmployeesListGenerated,
@@ -1573,7 +1573,7 @@ sap.ui.require(
 sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -1610,7 +1610,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -1641,7 +1641,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 ], function (JourneyRunner, EmployeesListGenerated, EmployeesObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html',
         pages: {
 			onTheEmployeesListGenerated: EmployeesListGenerated,
@@ -1957,7 +1957,7 @@ sap.ui.require(
 sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -1980,7 +1980,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 ], function (JourneyRunner, EmployeesListGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html',
         pages: {
 			onTheEmployeesListGenerated: EmployeesListGenerated
@@ -2286,7 +2286,7 @@ sap.ui.require(
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -2316,7 +2316,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 ], function (JourneyRunner, EmployeesObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html',
         pages: {
 			onTheEmployeesObjectPageGenerated: EmployeesObjectPageGenerated
@@ -2627,7 +2627,7 @@ sap.ui.require(
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -2657,7 +2657,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 ], function (JourneyRunner, EmployeesObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html',
         pages: {
 			onTheEmployeesObjectPageGenerated: EmployeesObjectPageGenerated
@@ -3041,7 +3041,7 @@ sap.ui.require(
 sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -3078,7 +3078,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -3111,7 +3111,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 ], function (JourneyRunner, EmployeesListGenerated, EmployeesObjectPageGenerated, PositionsObjectPageGenerated, TrainingsObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('vesc/demo/employee/project2') + '/index.html',
         pages: {
 			onTheEmployeesListGenerated: EmployeesListGenerated,
@@ -3149,7 +3149,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -3193,7 +3193,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -3586,7 +3586,7 @@ sap.ui.require(
 sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -3623,7 +3623,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -3656,7 +3656,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 ], function (JourneyRunner, EmployeesListGenerated, EmployeesObjectPageGenerated, PositionsObjectPageGenerated, TrainingsObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('vesc/demo/employee/project2') + '/index.html',
         pages: {
 			onTheEmployeesListGenerated: EmployeesListGenerated,
@@ -3694,7 +3694,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -3738,7 +3738,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -4110,7 +4110,7 @@ sap.ui.require(
 sap.ui.define(['sap/fe/test/TemplatePage'], function(TemplatePage) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -4143,7 +4143,7 @@ sap.ui.define(['sap/fe/test/TemplatePage'], function(TemplatePage) {
 sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -4180,7 +4180,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -4212,7 +4212,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 ], function (JourneyRunner, EmployeesListTargetGenerated, EmployeesObjectPageTargetGenerated, EmployeesCustomPageTargetGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('projectservice') + '/index.html',
         pages: {
 			onTheEmployeesListTargetGenerated: EmployeesListTargetGenerated,
@@ -5967,7 +5967,7 @@ sap.ui.require(
 ], function (JourneyRunner, TravelListGenerated, TravelObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('project1') + '/index.html',
         pages: {
 			onTheTravelListGenerated: TravelListGenerated,
@@ -6003,7 +6003,7 @@ sap.ui.require(
 sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -6040,7 +6040,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -7668,7 +7668,7 @@ sap.ui.require(
 ], function (JourneyRunner, TravelListGenerated, TravelObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('project1') + '/index.html',
         pages: {
 			onTheTravelListGenerated: TravelListGenerated,
@@ -7704,7 +7704,7 @@ sap.ui.require(
 sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -7741,7 +7741,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -9496,7 +9496,7 @@ sap.ui.require(
 ], function (JourneyRunner, TravelListGenerated, TravelObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('project1') + '/index.html',
         pages: {
 			onTheTravelListGenerated: TravelListGenerated,
@@ -9532,7 +9532,7 @@ sap.ui.require(
 sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -9569,7 +9569,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -11330,7 +11330,7 @@ sap.ui.require(
 ], function (JourneyRunner, TravelListGenerated, TravelObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('project1') + '/index.html',
         pages: {
 			onTheTravelListGenerated: TravelListGenerated,
@@ -11366,7 +11366,7 @@ sap.ui.require(
 sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -11403,7 +11403,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -11722,7 +11722,7 @@ sap.ui.require(
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -11752,7 +11752,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 ], function (JourneyRunner, EmployeesObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('test/ui5-test-writer') + '/index.html',
         pages: {
 			onTheEmployeesObjectPageGenerated: EmployeesObjectPageGenerated
@@ -15882,7 +15882,7 @@ sap.ui.require(
 ], function (JourneyRunner, TravelListGenerated, TravelObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('project1') + '/index.html',
         pages: {
 			onTheTravelListGenerated: TravelListGenerated,
@@ -15918,7 +15918,7 @@ sap.ui.require(
 sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -15955,7 +15955,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -17750,7 +17750,7 @@ sap.ui.require(
 ], function (JourneyRunner, TravelListGenerated, TravelObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('project1') + '/index.html',
         pages: {
 			onTheTravelListGenerated: TravelListGenerated,
@@ -17786,7 +17786,7 @@ sap.ui.require(
 sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -17823,7 +17823,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -19612,7 +19612,7 @@ sap.ui.require(
 ], function (JourneyRunner, TravelListGenerated, TravelObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('project1') + '/index.html',
         pages: {
 			onTheTravelListGenerated: TravelListGenerated,
@@ -19648,7 +19648,7 @@ sap.ui.require(
 sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -19685,7 +19685,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -21756,7 +21756,7 @@ sap.ui.define([
 sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -21813,7 +21813,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
