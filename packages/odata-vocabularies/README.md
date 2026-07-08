@@ -18,6 +18,7 @@ Library that contains the most recent copies of the OData vocabularies authored 
 
 [SAP Vocabularies](https://sap.github.io/odata-vocabularies) 
 * Analytics
+* Auditing
 * CodeList
 * Common
 * Communication
@@ -30,7 +31,34 @@ Library that contains the most recent copies of the OData vocabularies authored 
 * PDF
 * PersonalData
 * Session
+* Support
 * UI
+
+## Maintaining Vocabularies
+
+Both operations are handled by the `odata-vocabularies-sync` skill (`.claude/skills/odata-vocabularies-sync/SKILL.md`).
+
+**Claude Code CLI** — start Claude from the package directory and use the slash command:
+```bash
+cd packages/odata-vocabularies
+claude
+```
+Then type:
+- `/odata-vocabularies-sync` — update all vocabularies
+- `/odata-vocabularies-sync https://...` — add a new vocabulary
+
+**VSCode extension** — ask Claude Code in natural language:
+- *"sync the odata vocabularies"*
+- *"add a new vocabulary: https://..."*
+
+The skill will:
+1. *(When adding)* Register the vocabulary in `tools/update.ts`, `src/resources/index.ts`, `src/loader.ts`, and `README.md`
+2. Download and regenerate all vocabulary resource files
+3. Run tests and update snapshots
+
+After completing, create a changeset with `pnpm cset`.
+
+> **Note:** `com.sap.cds.vocabularies.*` files (ObjectModel, AnalyticsDetails) are hand-crafted and cannot be added this way.
 
 ## Installation
 Npm
