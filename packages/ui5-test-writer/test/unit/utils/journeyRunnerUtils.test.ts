@@ -335,6 +335,19 @@ describe('splicePageIntoJourneyRunnerTs()', () => {
         ]);
         expect(result).toContain('onTheTravelObjectPageGenerated: new ObjectPage(');
         expect(result).toContain('CustomTravelObjectPageGenerated');
+        // Both entitySet and contextPath must be emitted unconditionally so splicer output
+        // matches the fresh-write template shape (see JourneyRunner.ts template).
+        expect(result).toContain('entitySet: ""');
+        expect(result).toContain('contextPath: "/Travel"');
+    });
+
+    test('emits empty entitySet and contextPath when both are undefined on the page', () => {
+        const page = makeTsPage('TravelObjectPage', 'ObjectPage');
+        page.entitySet = undefined;
+        page.contextPath = undefined;
+        const result = splicePageIntoJourneyRunnerTs(JOURNEY_RUNNER_TS_FILE, [page]);
+        expect(result).toContain('entitySet: ""');
+        expect(result).toContain('contextPath: ""');
     });
 });
 
