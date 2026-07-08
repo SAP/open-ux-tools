@@ -72,23 +72,20 @@ export type NodeLookup = {
  * @returns Entity table node array
  */
 export function collectTables(feVersion: 'v2' | 'v4', entityType: string, service: ParsedService): TableNode[] {
-    const tables: TableNode[] = [];
     const lineItemKey = buildAnnotationIndexKey(entityType, UI_LINE_ITEM);
     const lineItemMap = service.index.annotations[lineItemKey];
     if (!lineItemMap) {
-        return tables;
+        return [];
     }
-    Object.values(lineItemMap).forEach((lineItem) => {
+    return Object.values(lineItemMap).map((lineItem) => {
         const qualifierString = lineItem.qualifier ? `#${lineItem.qualifier}` : '';
-        const table: TableNode = {
+        return {
             type: 'table',
             annotation: lineItem,
             annotationPath: `@${UI_LINE_ITEM}${qualifierString}`,
             children: []
         };
-        tables.push(table);
     });
-    return tables;
 }
 
 /**
