@@ -226,6 +226,6 @@ describe('getXPathStringsForXmlFile', () => {
         const keys = Object.keys(inputChoices);
         // macros:items is a real element in the DOM — it will appear as a real choice, not a duplicate
         const macrosItemsKeys = keys.filter((k) => k.endsWith('macros:Page/macros:items'));
-        expect(macrosItemsKeys.length).toBe(1); // exactly one, the real one from DOM traversal
+        expect(macrosItemsKeys).toHaveLength(1);
     });
 });

@@ -24,6 +24,37 @@ export const augmentXpathWithLocalNames = (path: string): string => {
  * @param fs - the file system object for reading files
  * @returns the list of xpath strings & page macro definition if page macro has been added by user.
  */
+/**
+ * If the given node is a macros:Page element that has no macros:items child, adds a synthesized
+ * macros:items path to the result map so callers can target it as an aggregation path.
+ * ensureMissingAggregation in generateBuildingBlock will create the DOM element when needed.
+ *
+ * @param node - the current DOM node being visited
+ * @param parentNode - accumulated XPath prefix up to (but not including) this node
+ * @param pageMacroDefinition - the qualified name of the macros:Page element (e.g. 'macros:Page')
+ * @param macrosNamespace - the resolved macros namespace prefix (e.g. 'macros')
+ * @param result - mutable map of XPath choices to augment
+ */
+function synthesizeMacrosItemsIfMissing(
+    node: Node,
+    parentNode: string,
+    pageMacroDefinition: string,
+    macrosNamespace: string,
+    result: Record<string, string>
+): void {
+    if (node.nodeName !== pageMacroDefinition) {
+        return;
+    }
+    const macrosItemsName = `${macrosNamespace}:items`;
+    const hasItemsChild = Array.from(node.childNodes).some(
+        (child) => child.nodeType === child.ELEMENT_NODE && (child as Element).nodeName === macrosItemsName
+    );
+    if (!hasItemsChild) {
+        const itemsPath = `${parentNode}/${node.nodeName}/${macrosItemsName}`;
+        result[itemsPath] = augmentXpathWithLocalNames(itemsPath);
+    }
+}
+
 export function getXPathStringsForXmlFile(
     xmlFilePath: string,
     fs: Editor
@@ -60,19 +91,7 @@ export function getXPathStringsForXmlFile(
                 result[`${parentNode}/${node.nodeName}`] = augmentXpathWithLocalNames(`${parentNode}/${node.nodeName}`);
             }
 
-            // When visiting a macros:Page node that has no macros:items child yet, synthesize
-            // the macros:items path as a choice so callers can target it. ensureMissingAggregation
-            // in generateBuildingBlock will create the element in the DOM before writing.
-            if (node.nodeName === pageMacroDefinition) {
-                const macrosItemsName = `${macrosNamespace ?? 'macros'}:items`;
-                const hasItemsChild = Array.from(node.childNodes).some(
-                    (child) => child.nodeType === child.ELEMENT_NODE && (child as Element).nodeName === macrosItemsName
-                );
-                if (!hasItemsChild) {
-                    const itemsPath = `${parentNode}/${node.nodeName}/${macrosItemsName}`;
-                    result[itemsPath] = augmentXpathWithLocalNames(itemsPath);
-                }
-            }
+            synthesizeMacrosItemsIfMissing(node, parentNode, pageMacroDefinition, macrosNamespace ?? 'macros', result);
 
             const childNodes = Array.from(node.childNodes);
             for (const childNode of childNodes) {
