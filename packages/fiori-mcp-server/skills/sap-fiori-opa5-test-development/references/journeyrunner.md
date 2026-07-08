@@ -144,11 +144,24 @@ In both cases, no changes to `JourneyRunner.js` or page object files are needed 
 | `launchUrl` | string | Full URL to the FLP sandbox HTML including the `#tile-name` hash (default path: `/test/flp.html`) |
 | `pages` | object | Map of accessor name (e.g., `onTheList`) to page object instance |
 | `async` | boolean | Set to `true` for async OPA execution (required for OData V4) |
+| `opaConfig` | object | OPA5 configuration passed to the test runner - use instead of `Opa5.extendConfig`. Recommended: `{ autoWait: true }` |
 
 For full API documentation: `https://sapui5.hana.ondemand.com/#/api/sap.fe.test.JourneyRunner`
 
 ---
 
-## Difference from Base OPA5 Skill
+## Important: Use opaConfig Instead of Opa5.extendConfig
 
-The `ui5-best-practices-opa5` base skill uses `Opa5.extendConfig({ autoWait: true, viewNamespace: "..." })` in `opaTests.qunit.js`. Fiori Elements apps replace this with `JourneyRunner` - do not set `autoWait` or `viewNamespace` manually, as the `JourneyRunner` handles test execution configuration for Fiori Elements internals.
+Generic OPA5 projects set `autoWait` and `viewNamespace` via `Opa5.extendConfig(...)` in `opaTests.qunit.js`. In Fiori Elements projects, do not call `Opa5.extendConfig` directly - pass these settings through the `opaConfig` property of the `JourneyRunner` constructor instead:
+
+```javascript
+const runner = new JourneyRunner({
+    launchUrl: ...,
+    pages: { ... },
+    opaConfig: {
+        autoWait: true
+    }
+});
+```
+
+`autoWait: true` is strongly recommended - it stabilizes tests by waiting for pending XHR requests, promises, and UI navigation before executing assertions.
