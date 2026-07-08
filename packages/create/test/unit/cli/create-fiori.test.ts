@@ -70,6 +70,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getCfBaseAppInbounds: jest.fn(),
     loadCfConfig: jest.fn(),
     getAppParamsFromUI5Yaml: jest.fn(),
+    getSystemUI5Version: jest.fn().mockResolvedValue(undefined),
     generateChange: jest.fn(),
     ChangeType: {},
     getPromptsForNewModel: jest.fn(),
