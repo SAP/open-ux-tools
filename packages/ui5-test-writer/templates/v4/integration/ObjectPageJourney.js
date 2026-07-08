@@ -26,11 +26,13 @@ sap.ui.define([
 
         opaTest("Navigate to <%- name%>ObjectPage", function (Given, When, Then) {
             Given.iStartMyApp();
-<% if (!hideFilterBar) { %>
+<% if(navigationParents.parentLRName) { -%>
+<% if (!hideFilterBar) { -%>
             When.onThe<%- navigationParents.parentLRName%>Generated.onFilterBar().iExecuteSearch();
-<% } %>
+<% } -%>
             Then.onThe<%- navigationParents.parentLRName%>Generated.onTable().iCheckRows();
             When.onThe<%- navigationParents.parentLRName%>Generated.onTable().iPressRow(0);
+<% } -%>
 <% if(navigationParents.parentOPName) { %>
             Then.onThe<%- navigationParents.parentOPName%>Generated.iSeeThisPage();
             Then.onThe<%- navigationParents.parentOPName%>Generated.onTable({ property: "<%- navigationParents.parentOPTableSection %>" }).iCheckRows();
@@ -129,7 +131,7 @@ sap.ui.define([
 <% }) -%>
 <% } -%>
 <% if (subSection.tableColumns && Object.keys(subSection.tableColumns).length > 0 && subSection.navigationProperty) { -%>
-            Then.onThe<%- name%>Generated.onTable({ property: "<%- subSection.navigationProperty %>" }).iCheckColumns(<%- JSON.stringify(subSection.tableColumns) %>);
+            Then.onThe<%- name%>Generated.onTable({ property: "<%- subSection.navigationProperty %>" }).iCheckColumns(undefined, <%- JSON.stringify(subSection.tableColumns) %>);
 <% } -%>
 <% }) -%>
 <% } else { -%>
@@ -139,7 +141,7 @@ sap.ui.define([
 <% }) -%>
 <% } -%>
 <% if (section.tableColumns && Object.keys(section.tableColumns).length > 0 && section.navigationProperty) { -%>
-            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckColumns(<%- JSON.stringify(section.tableColumns) %>);
+            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckColumns(undefined, <%- JSON.stringify(section.tableColumns) %>);
 <% } -%>
 <% } -%>
 <% }) -%>

@@ -26,7 +26,6 @@ sap.ui.define([
 
         opaTest("Navigate to TravelObjectPageObjectPage", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheTravelListGenerated.onTable().iCheckRows();
             When.onTheTravelListGenerated.onTable().iPressRow(0);
 
@@ -66,7 +65,7 @@ sap.ui.define([
             Then.onTheTravelObjectPageGenerated.onForm({ section: "Travel" }).iCheckField({ property: "Status" });
             When.onTheTravelObjectPageGenerated.iGoToSection({ section: "Booking" });
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: "Booking" });
-            Then.onTheTravelObjectPageGenerated.onTable({ property: "_Booking" }).iCheckColumns({"BookingID":{"header":"Booking Number"},"BookingDate":{"header":"Booking Date"},"CustomerID":{"header":"Customer ID"},"AirlineID":{"header":"Airline ID"},"ConnectionID":{"header":"Flight Number"},"FlightDate":{"header":"Flight Date"},"FlightPrice":{"header":"Flight Price"},"DestinationRisk":{"header":"Destination Risk"}});
+            Then.onTheTravelObjectPageGenerated.onTable({ property: "_Booking" }).iCheckColumns(undefined, {"BookingID":{"header":"Booking Number"},"BookingDate":{"header":"Booking Date"},"CustomerID":{"header":"Customer ID"},"AirlineID":{"header":"Airline ID"},"ConnectionID":{"header":"Flight Number"},"FlightDate":{"header":"Flight Date"},"FlightPrice":{"header":"Flight Price"},"DestinationRisk":{"header":"Destination Risk"}});
        });
 
         opaTest("Teardown", function (Given, When, Then) { 
