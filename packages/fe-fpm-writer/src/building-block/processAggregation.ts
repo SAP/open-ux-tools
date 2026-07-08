@@ -249,7 +249,7 @@ export function sortPageAggregationChildren(pageElement: Node): void {
  * @param {string} aggregationPath - Full XPath to the target aggregation (e.g. '/mvc:View/macros:Page/macros:items')
  */
 export function ensureMissingAggregation(xmlDocument: Document, aggregationPath: string): void {
-    const nsMap: Record<string, string> = (xmlDocument.firstChild as any)?._nsMap ?? {};
+    const nsMap: Record<string, string> = (xmlDocument.documentElement as any)?._nsMap ?? {};
     const xpathSelect = xpath.useNamespaces(nsMap);
 
     if ((xpathSelect(resolveAggregationPath(aggregationPath), xmlDocument) as Element[]).length > 0) {

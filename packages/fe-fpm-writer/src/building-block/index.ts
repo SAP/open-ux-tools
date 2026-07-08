@@ -410,11 +410,11 @@ function updateViewFile(
     fs: Editor,
     replace: boolean = false
 ): Editor {
-    const firstChild = viewDocument.firstChild;
-    if (!firstChild) {
+    const root = viewDocument.documentElement ?? viewDocument.firstChild;
+    if (!root) {
         throw new Error(`Unable to read namespace map from view ${viewPath}.`);
     }
-    const nsMap = (firstChild as any)?._nsMap ?? {};
+    const nsMap = (root as any)?._nsMap ?? {};
     const xpathSelect = xpath.useNamespaces(nsMap);
 
     // XPath 1.0 does not support default namespaces: unprefixed names match only no-namespace

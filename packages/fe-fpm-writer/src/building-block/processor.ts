@@ -400,7 +400,7 @@ function processRichTextEditorButtonGroups(buildingBlockData: BuildingBlock, con
     const existingButtonGroupsMap = new Map<string, ButtonGroupConfig>();
 
     if (hasAggregation && xmlDocument && updatedAggregationPath) {
-        const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
+        const xpathSelect = xpath.useNamespaces((xmlDocument.documentElement as any)?._nsMap ?? {});
         // Example: [<Element: richtexteditor:buttonGroups>] containing all ButtonGroup children
         const buttonGroupsElements = xpathSelect(updatedAggregationPath, xmlDocument) as Element[];
 
@@ -464,7 +464,7 @@ function updateAggregationPath(
     config: { aggregationName: string; elementName: string },
     namespace?: NamespaceConfig
 ): { updatedAggregationPath: string; hasElement: boolean } {
-    const nsMap: Record<string, string> = (xmlDocument.firstChild as any)._nsMap ?? {};
+    const nsMap: Record<string, string> = (xmlDocument.documentElement as any)?._nsMap ?? {};
     const xpathSelect = xpath.useNamespaces(nsMap);
     const resolvedPath = resolveAggregationPath(aggregationPath);
 
