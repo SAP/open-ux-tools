@@ -282,6 +282,10 @@ function extractButtonGroupConfig(element: Element): ButtonGroupConfig | undefin
         buttons
     };
 
+    if (buttons) {
+        buttonGroupConfig.buttons = buttons;
+    }
+
     const visible = element.getAttribute('visible');
     if (visible) {
         buttonGroupConfig.visible = visible === 'true';

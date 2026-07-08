@@ -427,6 +427,7 @@ export interface Page extends BuildingBlock {
 export const PAGE_TEMPLATE_TYPE_FULL = 'full' as const;
 export const PAGE_TEMPLATE_TYPE_BASIC = 'basic' as const;
 export type PageTemplateType = typeof PAGE_TEMPLATE_TYPE_FULL | typeof PAGE_TEMPLATE_TYPE_BASIC;
+export const PAGE_FULL_TEMPLATE_MIN_UI5_VERSION = '1.145.0';
 
 /**
  * Default sample mContent for each Page aggregation.

@@ -13,6 +13,7 @@ import {
     BuildingBlockType,
     PAGE_AGGREGATIONS,
     PAGE_TEMPLATE_TYPE_FULL,
+    PAGE_FULL_TEMPLATE_MIN_UI5_VERSION,
     type PageAggregationName,
     type BuildingBlock,
     type BuildingBlockConfig,
@@ -82,13 +83,10 @@ function getPageAggregationNames(data: BuildingBlock): readonly PageAggregationN
  * @param manifest - the manifest content, or undefined if not available
  */
 function validateFullPageTemplateVersion(manifest: Manifest | undefined): void {
-    const minUI5VersionRaw = manifest ? getMinimumUI5Version(manifest) : undefined;
-    const minUI5Version = minUI5VersionRaw ? coerce(minUI5VersionRaw) : undefined;
-    if (!minUI5Version || lt(minUI5Version, '1.145.0')) {
+    const minUI5Version = manifest ? getMinimumUI5Version(manifest) : undefined;
+    if (!minUI5Version || lt(minUI5Version, PAGE_FULL_TEMPLATE_MIN_UI5_VERSION)) {
         const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
-        throw new Error(
-            `${t('fullTemplateMinUi5VersionRequirement', { minUI5Version: minUI5Version?.version ?? minUI5VersionRaw ?? 'unknown' })}`
-        );
+        throw new Error(`${t('fullTemplateMinUi5VersionRequirement', { minUI5Version: minUI5Version ?? 'unknown' })}`);
     }
 }
 

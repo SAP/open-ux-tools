@@ -1164,11 +1164,7 @@ describe('Building Blocks', () => {
             fs
         );
 
-        const viewContent = fs.read(join(basePath, xmlViewFilePath));
-        expect(viewContent).toContain('onBreadcrumbsPressHome');
-        expect(viewContent).toContain('onActionsClickAction1');
-        expect(viewContent).toContain('macros:breadcrumbs');
-        expect(viewContent).toMatchSnapshot('generate-page-block-full-defaults');
+        expect(fs.read(join(basePath, xmlViewFilePath))).toMatchSnapshot('generate-page-block-full-defaults');
     });
 
     test('generate Page building block with full template and explicit aggregations overrides defaults', async () => {
