@@ -1,6 +1,6 @@
 # JourneyRunner Configuration
 
-`sap.fe.test.JourneyRunner` is the Fiori Elements replacement for raw `Opa5.extendConfig`. It provides a shared, pre-configured runner that all OPA5 journey files in the project import and reuse.
+`sap.fe.test.JourneyRunner` is the SAP Fiori elements replacement for raw `Opa5.extendConfig`. It provides a shared, pre-configured runner that all OPA5 journey files in the project import and reuse.
 
 ---
 
@@ -96,7 +96,7 @@ sap.ui.define([
 });
 ```
 
-**`iStartMyApp("<object>-<action>")`** is the Fiori Elements equivalent of the base OPA5 `iStartMyAppInAFrame`. The argument is the FLP intent (`<object>-<action>`) - see "Finding the tile name" above for how to determine the correct value.
+**`iStartMyApp("<object>-<action>")`** is the SAP Fiori elements equivalent of the base OPA5 `iStartMyAppInAFrame`. The argument is the FLP intent (`<object>-<action>`) - see "Finding the tile name" above for how to determine the correct value.
 
 ---
 
@@ -152,7 +152,7 @@ For full API documentation: `https://sapui5.hana.ondemand.com/#/api/sap.fe.test.
 
 ## Important: Use opaConfig Instead of Opa5.extendConfig
 
-Generic OPA5 projects set `autoWait` and `viewNamespace` via `Opa5.extendConfig(...)` in `opaTests.qunit.js`. In Fiori Elements projects, do not call `Opa5.extendConfig` directly - pass these settings through the `opaConfig` property of the `JourneyRunner` constructor instead:
+Generic OPA5 projects set `autoWait` and `viewNamespace` via `Opa5.extendConfig(...)` in `opaTests.qunit.js`. In SAP Fiori elements projects, do not call `Opa5.extendConfig` directly - pass these settings through the `opaConfig` property of the `JourneyRunner` constructor instead:
 
 ```javascript
 const runner = new JourneyRunner({
