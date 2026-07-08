@@ -78,14 +78,12 @@ export function collectTables(feVersion: 'v2' | 'v4', entityType: string, servic
     if (!lineItemMap) {
         return tables;
     }
-    const lineItems = Object.values(lineItemMap);
-
-    lineItems.forEach((lineItem) => {
+    Object.values(lineItemMap).forEach((lineItem) => {
         const qualifierString = lineItem.qualifier ? `#${lineItem.qualifier}` : '';
         const table: TableNode = {
             type: 'table',
             annotation: lineItem,
-            annotationPath: `@com.sap.vocabularies.UI.v1.LineItem${qualifierString}`,
+            annotationPath: `@${UI_LINE_ITEM}${qualifierString}`,
             children: []
         };
         tables.push(table);
