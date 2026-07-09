@@ -52,11 +52,11 @@ function journey() {
         Then.onThe<%- navigationParents.parentLRName%>Generated.onTable("").iCheckRows();
         When.onThe<%- navigationParents.parentLRName%>Generated.onTable("").iPressRow(0);
 <% } -%>
-<% navigationParents.parentOPs.forEach(function(parent) { -%>
+<% navigationParents.parentOPs.forEach(function(parent) { %>
         Then.onThe<%- parent.name %>Generated.iSeeThisPage();
         Then.onThe<%- parent.name %>Generated.onTable({ property: "<%- parent.navigationProperty %>" }).iCheckRows();
         When.onThe<%- parent.name %>Generated.onTable({ property: "<%- parent.navigationProperty %>" }).iPressRow(0);
-<% }); -%>
+<% }); %>
         Then.onThe<%- name%>Generated.iSeeThisPage();
     });
 
