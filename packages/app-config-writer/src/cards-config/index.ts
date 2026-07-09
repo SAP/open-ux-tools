@@ -135,12 +135,11 @@ export async function enableCardGeneratorConfig(
         throw new Error('The cards-editor command is not supported for CAP Java projects.');
     }
 
-    if (projectType === 'CAPNodejs' && !capRoot) {
-        throw new Error(`Could not find CAP project root for path '${basePath}'.`);
-    }
-
     if (projectType === 'CAPNodejs') {
-        await ensureCdsPluginUi5(capRoot as string, fs);
+        if (!capRoot) {
+            throw new Error(`Could not find CAP project root for path '${basePath}'.`);
+        }
+        await ensureCdsPluginUi5(capRoot, fs);
     }
 
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
