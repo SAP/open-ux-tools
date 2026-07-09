@@ -24,7 +24,7 @@ import type {
 } from './types.js';
 import { uniformUrl } from '@sap-ux/fiori-annotation-api';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { collectFlexChanges } from '../utils.js';
+import { collectFlexChanges, getAppForPath, isFlexChange } from '../utils.js';
 
 export interface ParseResult {
     index: ParsedProject;
@@ -206,45 +206,41 @@ export class ApplicationParser {
      * @param fileCache - Map of file URIs to their contents
      */
     private reparseChange(uri: string, index: ParsedProject, fileCache: Map<string, string>): void {
-        for (const key of Object.keys(index.apps)) {
-            const app = index.apps[key];
-            // Remove deleted files
-            app.changes = app.changes.filter((change) => {
-                const path = fileURLToPath(change.changeFileUri);
-                return existsSync(path);
-            });
-            const existingChangeIndex = app.changes.findIndex((change) => change.changeFileUri === uri);
-            const path = fileURLToPath(uri);
-            const content = fileCache.get(uri) ?? readFileSync(path, { encoding: 'utf8', flag: 'r' });
-            // Create and save the ast tree
-            const ast = parseJson(content, {
-                mode: 'json',
-                ranges: true,
-                tokens: true,
-                allowTrailingCommas: false
-            });
-            index.documents[uri] = ast;
-            // Create new change object
-            const jsonContent = JSON.parse(content) as FlexChange;
-            if (!jsonContent.changeType || !jsonContent.content || !jsonContent.selector) {
-                if (existingChangeIndex >= 0) {
-                    // Remove existing change object for updated file
-                    app.changes.splice(existingChangeIndex, 1);
-                }
+        const path = fileURLToPath(uri);
+        const app = getAppForPath(index.apps, path);
+        if (!app) {
+            return;
+        }
+        // Remove deleted files
+        app.changes = app.changes.filter((change) => existsSync(fileURLToPath(change.changeFileUri)));
+        const existingChangeIndex = app.changes.findIndex((change) => change.changeFileUri === uri);
+        const content = fileCache.get(uri) ?? readFileSync(path, { encoding: 'utf8', flag: 'r' });
+        // Create and save the ast tree
+        const ast = parseJson(content, {
+            mode: 'json',
+            ranges: true,
+            tokens: true,
+            allowTrailingCommas: false
+        });
+        index.documents[uri] = ast;
+        // Create new change object
+        const jsonContent = JSON.parse(content);
+        if (isFlexChange(jsonContent)) {
+            const newChange: FlexChange = {
+                changeType: jsonContent.changeType,
+                content: jsonContent.content,
+                selector: jsonContent.selector,
+                changeFileUri: uri
+            };
+            // Replace the existing entry for this URI, or append if new
+            if (existingChangeIndex >= 0) {
+                app.changes[existingChangeIndex] = newChange;
             } else {
-                const newChange: FlexChange = {
-                    changeType: jsonContent.changeType,
-                    content: jsonContent.content,
-                    selector: jsonContent.selector,
-                    changeFileUri: uri
-                };
-                // Replace the existing entry for this URI, or append if new
-                if (existingChangeIndex >= 0) {
-                    app.changes[existingChangeIndex] = newChange;
-                } else {
-                    app.changes.push(newChange);
-                }
+                app.changes.push(newChange);
             }
+        } else if (existingChangeIndex >= 0) {
+            // Remove existing change object for updated file
+            app.changes.splice(existingChangeIndex, 1);
         }
     }
 
