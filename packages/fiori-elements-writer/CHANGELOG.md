@@ -1,5 +1,41 @@
 # @sap-ux/fiori-elements-writer
 
+## 3.0.53
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.2.18 → 1.2.19
+
+## 3.0.52
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Bug Fixes
+
+- Incorrect types of arguments passed in TS test code [[8e1ad51](https://github.com/SAP/open-ux-tools/commit/8e1ad51c656e719607d801495d06f75130fe24d0)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.2.17 → 1.2.18
+
+## 3.0.51
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Use const in JS templates instead of var [[824ed4d](https://github.com/SAP/open-ux-tools/commit/824ed4dbb03ac46752e5d2ba6dca5bfcb7675a09)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.2.16 → 1.2.17
+
 ## 3.0.50
 
 ### Patch Changes

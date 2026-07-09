@@ -5,7 +5,7 @@ sap.ui.define([
 ], function (JourneyRunner, BooksListGenerated, BooksObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('testNameSpace/lropv4versionnotspecified') + '/test/flpSandbox.html#testNameSpacelropv4versionnots-tile',
         pages: {
 			onTheBooksListGenerated: BooksListGenerated,
