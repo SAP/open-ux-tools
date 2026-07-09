@@ -213,6 +213,7 @@ export class ApplicationParser {
                 const path = fileURLToPath(change.changeFileUri);
                 return existsSync(path);
             });
+            const existingChangeIndex = app.changes.findIndex((change) => change.changeFileUri === uri);
             const path = fileURLToPath(uri);
             const content = fileCache.get(uri) ?? readFileSync(path, { encoding: 'utf8', flag: 'r' });
             // Create and save the ast tree
@@ -226,10 +227,9 @@ export class ApplicationParser {
             // Create new change object
             const jsonContent = JSON.parse(content) as FlexChange;
             if (!jsonContent.changeType || !jsonContent.content || !jsonContent.selector) {
-                // Remove existing change object for updated file
-                const existingIndex = app.changes.findIndex((c) => c.changeFileUri === uri);
-                if (existingIndex >= 0) {
-                    app.changes.splice(existingIndex, 1);
+                if (existingChangeIndex >= 0) {
+                    // Remove existing change object for updated file
+                    app.changes.splice(existingChangeIndex, 1);
                 }
             } else {
                 const newChange: FlexChange = {
@@ -239,9 +239,8 @@ export class ApplicationParser {
                     changeFileUri: uri
                 };
                 // Replace the existing entry for this URI, or append if new
-                const existingIndex = app.changes.findIndex((c) => c.changeFileUri === uri);
-                if (existingIndex >= 0) {
-                    app.changes[existingIndex] = newChange;
+                if (existingChangeIndex >= 0) {
+                    app.changes[existingChangeIndex] = newChange;
                 } else {
                     app.changes.push(newChange);
                 }
