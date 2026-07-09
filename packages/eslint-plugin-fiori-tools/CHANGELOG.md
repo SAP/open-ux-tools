@@ -1,5 +1,25 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.7.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Features
+
+- Extend the sap-no-live-mode rule to detect and report liveMode usage in OData V2 applications. [[718643b](https://github.com/SAP/open-ux-tools/commit/718643b02e3e6d3611697df8fbbf4908cb71d42f)]
+
+## 10.7.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- align vscode and types with fiori tools extensions [[369c494](https://github.com/SAP/open-ux-tools/commit/369c49497073e99fda01bad7dfda1840e68c029a)]
+
 ## 10.7.4
 
 ### Patch Changes

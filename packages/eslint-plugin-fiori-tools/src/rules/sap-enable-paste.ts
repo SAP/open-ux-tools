@@ -6,7 +6,7 @@ import type { ParsedApp } from '../project-context/parser/index.js';
 import type { FeV4PageType, Table as TableV4 } from '../project-context/linker/fe-v4.js';
 import { createJsonFixer } from '../language/rule-fixer.js';
 import { FioriJSONSourceCode } from '../language/json/source-code.js';
-import { checkAppTablesConfiguration, isV2Table } from '../utils/helpers.js';
+import { checkAppTablesConfiguration, FLEX_CHANGE_NEW_VALUE_PATH_RESULT, isV2Table } from '../utils/helpers.js';
 import type { FeV2PageType, Table as TableV2 } from '../project-context/linker/fe-v2.js';
 import { FioriChangeSourceCode } from '../language/change/source-code.js';
 
@@ -69,14 +69,13 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
     createChangeVisitorHandler(context, diagnostic) {
         return function report(node: MemberNode): void {
-            const deepestPathResult = { validatedPath: ['content', 'newValue'], missingSegments: [] };
             context.report({
                 node,
                 messageId: ENABLE_PASTE,
                 data: { sectionText: `${diagnostic.pageSectionName} ` },
                 fix: createJsonFixer({
                     context,
-                    deepestPathResult,
+                    deepestPathResult: FLEX_CHANGE_NEW_VALUE_PATH_RESULT,
                     node,
                     operation: 'update',
                     value: true

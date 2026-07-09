@@ -183,7 +183,9 @@ export interface TextArrangementHidden {
 export interface NoLiveMode {
     type: typeof NO_LIVE_MODE;
     pageName: string;
-    manifest: ManifestPropertyDiagnosticData;
+    property: string;
+    manifest?: ManifestPropertyDiagnosticData; // ODataV4 - manifest property
+    changeFileUri?: string; // ODataV2 - flex change property
 }
 
 export type Diagnostic =

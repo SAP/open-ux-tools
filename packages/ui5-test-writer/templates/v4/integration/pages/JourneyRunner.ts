@@ -10,26 +10,17 @@ import ObjectPage from "sap/fe/test/ObjectPage";
 const runner = new JourneyRunner({
     launchUrl: sap.ui.require.toUrl("<%- appPath %>") + "/<%- htmlTarget %>",
     pages: {
-<%- pages.map((page) => {
-    const innerProps = [
-        '                appId: "' + page.appID + '"',
-        '                componentId: "' + page.componentID + '"'
-    ];
-    if (page.entitySet) {
-        innerProps.push('                entitySet: "' + page.entitySet + '"');
-    }
-    if (page.contextPath) {
-        innerProps.push('                contextPath: "' + page.contextPath + '"');
-    }
-    return (
-        '        onThe' + page.targetKey + 'Generated: new ' + page.template + '(\n' +
-        '            {\n' +
-        innerProps.join(',\n') + '\n' +
-        '            },\n' +
-        '            Custom' + page.targetKey + 'Generated\n' +
-        '        )'
-    );
-}).join(',\n') %>
+<%- pages.map((page) =>
+'        onThe' + page.targetKey + 'Generated: new ' + page.template + '(\n' +
+'            {\n' +
+'                appId: "' + page.appID + '",\n' +
+'                componentId: "' + page.componentID + '",\n' +
+'                entitySet: "' + (page.entitySet || '') + '",\n' +
+'                contextPath: "' + (page.contextPath || '') + '"\n' +
+'            },\n' +
+'            Custom' + page.targetKey + 'Generated\n' +
+'        )'
+).join(',\n') %>
     },
     async: true
 });
