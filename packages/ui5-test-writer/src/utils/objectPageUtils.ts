@@ -199,9 +199,7 @@ function extractObjectPageBodySectionsData(
             const navigationProperty = getNavigationPropertyFromKey(sectionKey);
             const isTable = isTableSection(section);
             const fields =
-                section.custom || isTable
-                    ? []
-                    : extractFormFields(section, convertedMetadata, objectPage.entitySet);
+                section.custom || isTable ? [] : extractFormFields(section, convertedMetadata, objectPage.entitySet);
             const tableColumns = section.custom || !isTable ? {} : extractTableColumnsFromNode(section);
             const contactCardColumns = section.custom || !isTable ? [] : extractContactCardColumnsFromNode(section);
             const sectionData: BodySectionFeatureData = {
@@ -210,11 +208,8 @@ function extractObjectPageBodySectionsData(
                 isTable,
                 custom: !!section.custom,
                 order: section?.order ?? -1,
-                fields:
-                    section.custom || isTable
-                        ? []
-                        : extractFormFields(section, convertedMetadata, objectPage.entitySet),
-                tableColumns: section.custom || !isTable ? {} : extractTableColumnsFromNode(section),
+                fields,
+                tableColumns,
                 contactCardFields: pickContactCardFields(fields),
                 contactCardColumns,
                 subSections,
@@ -330,18 +325,18 @@ function extractBodySubSectionsData(
         const fields =
             subSection.custom || isTable ? [] : extractFormFields(subSection, convertedMetadata, entitySetName);
         const tableColumns = subSection.custom || !isTable ? {} : extractTableColumnsFromNode(subSection);
-        const contactCardColumns =
-            subSection.custom || !isTable ? [] : extractContactCardColumnsFromNode(subSection);
+        const contactCardColumns = subSection.custom || !isTable ? [] : extractContactCardColumnsFromNode(subSection);
         subSections.push({
             id: subSectionId,
             navigationProperty: getNavigationPropertyFromKey(subSectionKey),
             isTable,
             custom: !!subSection.custom,
             order: subSection?.order ?? -1, // put a negative order number to signal that order was not in spec
+            // Contact-card fields are kept in `fields` too so the test also asserts `iCheckField` alongside `iClickLink` / `iCheckContactDialog` (dual diagnostic).
             contactCardFields: pickContactCardFields(fields),
-            contactCardColumns
-            fields: subSection.custom || isTable ? [] : extractFormFields(subSection, convertedMetadata, entitySetName),
-            tableColumns: subSection.custom || !isTable ? {} : extractTableColumnsFromNode(subSection)
+            contactCardColumns,
+            fields,
+            tableColumns
         });
     });
     return subSections;
