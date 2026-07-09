@@ -186,12 +186,12 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
 
     if (allowAutoAddDependencyLib && manifest && !validateDependenciesLibs(manifest, ['sap.fe.macros'])) {
         // "sap.fe.macros" is missing - enhance manifest.json for missing "sap.fe.macros"
-        const manifestPath = await getManifestPath(basePath, fs);
+        const dependencyManifestPath = await getManifestPath(basePath, fs);
         const manifestContent = await getManifestContent(fs);
-        const content = fs.read(manifestPath);
+        const content = fs.read(dependencyManifestPath);
         const tabInfo = detectTabSpacing(content);
         extendJSON(fs, {
-            filepath: manifestPath,
+            filepath: dependencyManifestPath,
             content: manifestContent,
             tabInfo: tabInfo
         });
