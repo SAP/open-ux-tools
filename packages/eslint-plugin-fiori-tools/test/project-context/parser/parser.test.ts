@@ -72,7 +72,7 @@ describe('Flex change', () => {
     });
 
     test('reparse: applies change in a .change file', () => {
-        const newChange = Object.assign(propertyChange) as FlexChange;
+        const newChange = structuredClone(propertyChange) as FlexChange;
         newChange.content.newValue = false;
         fileCache.set(changeFileUri, JSON.stringify(newChange));
         const reparsed = parser.reparse(changeFileUri, parsedProject, fileCache);
