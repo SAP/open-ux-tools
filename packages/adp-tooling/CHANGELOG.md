@@ -1,5 +1,152 @@
 # @sap-ux/adp-tooling
 
+## 1.0.30
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Bug Fixes
+
+- Use legacy inbound change types for ABAP systems on UI5 1.142 or lower; CF projects always use the new 'appdescr_app_setInbounds' change type [[56fe433](https://github.com/SAP/open-ux-tools/commit/56fe433aebc72d91f2ad5f702ed0125c590f226c)]
+
+## 1.0.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/nodejs-utils 1.0.6 → 1.0.7
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/inquirer-common 1.0.20 → 1.0.21
+- @sap-ux/axios-extension 2.0.6 → 2.0.7
+- @sap-ux/btp-utils 2.0.5 → 2.0.5
+- @sap-ux/project-access 2.1.6 → 2.1.6
+- @sap-ux/store 2.0.3 → 2.0.4
+- @sap-ux/system-access 1.0.6 → 1.0.7
+- @sap-ux/ui5-info 1.0.4 → 1.0.5
+- @sap-ux/odata-service-writer 1.0.12 → 1.0.12
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 1.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.19 → 1.0.20
+
+## 1.0.27
+
+### Patch Changes
+
+#### Dependency Updates
+
+- upgrade axios dependency [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.5 → 2.0.6
+- @sap-ux/inquirer-common 1.0.18 → 1.0.19
+- @sap-ux/ui5-config 1.0.4 → 1.0.5
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+- @sap-ux/ui5-info 1.0.3 → 1.0.4
+- @sap-ux/odata-service-writer 1.0.11 → 1.0.12
+- @sap-ux/system-access 1.0.5 → 1.0.6
+- @sap-ux/project-access 2.1.5 → 2.1.6
+- @sap-ux/nodejs-utils 1.0.5 → 1.0.6
+- @sap-ux/project-input-validator 1.0.9 → 1.0.10
+
+## 1.0.26
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.10 → 1.0.11
+- @sap-ux/project-input-validator 1.0.8 → 1.0.9
+- @sap-ux/axios-extension 2.0.4 → 2.0.5
+- @sap-ux/inquirer-common 1.0.17 → 1.0.18
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/system-access 1.0.4 → 1.0.5
+- @sap-ux/nodejs-utils 1.0.4 → 1.0.5
+- @sap-ux/ui5-config 1.0.3 → 1.0.4
+- @sap-ux/btp-utils 2.0.3 → 2.0.4
+- @sap-ux/ui5-info 1.0.2 → 1.0.3
+- @sap-ux/logger 1.0.1 → 1.0.2
+- @sap-ux/store 2.0.2 → 2.0.3
+- @sap-ux/i18n 1.0.1 → 1.0.2
+
+## 1.0.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.16 → 1.0.17
+
+## 1.0.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.15 → 1.0.16
+
+## 1.0.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/axios-extension 2.0.4 → 2.0.4
+- @sap-ux/inquirer-common 1.0.14 → 1.0.15
+- @sap-ux/odata-service-writer 1.0.9 → 1.0.10
+- @sap-ux/project-input-validator 1.0.7 → 1.0.8
+- @sap-ux/system-access 1.0.4 → 1.0.4
+
+## 1.0.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-29
+
+#### Bug Fixes
+
+- Revert the `/i18n/...properties` pass-through introduced in #4858.
+
+    In adaptation projects built on top of Fiori Elements V2 ListReport/ObjectPage base apps, FEV2's `TemplateComponent` rebuilds the `i18n` model on every template view, which shadows the ADP's local `i18n.properties` once requests fall through to the base app. Customer-defined keys are no longer reachable from inside the editor's bindings.
+    The proper fix requires moving customer keys to the FEV2-safe `@i18n` model (backend merger + generator changes) and cannot be safely downported in this release window. A corrected fix will be reapplied once that support is in place. [[e2ba3a4](https://github.com/SAP/open-ux-tools/commit/e2ba3a44eb8df65f16187b86a382e9eb34387054)]
+
+## 1.0.21
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.8 → 1.0.9
+- @sap-ux/axios-extension 2.0.3 → 2.0.4
+- @sap-ux/system-access 1.0.3 → 1.0.4
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/ui5-info 1.0.1 → 1.0.2
+- @sap-ux/store 2.0.1 → 2.0.2
+- @sap-ux/inquirer-common 1.0.13 → 1.0.14
+- @sap-ux/nodejs-utils 1.0.3 → 1.0.4
+- @sap-ux/ui5-config 1.0.3 → 1.0.3
+
 ## 1.0.20
 
 ### Patch Changes

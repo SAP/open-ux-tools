@@ -117,7 +117,7 @@ jest.unstable_mockModule('../src/prompts/prompts', () => ({
 
 jest.unstable_mockModule('../src/utils/file-helpers', () => ({
     ...actualFileHelpers,
-    processDebugArtifacts: jest.fn(),
+    cleanupArtifacts: jest.fn(),
     addPackageJsonIfNotFound: jest.fn()
 }));
 
@@ -369,7 +369,8 @@ describe('Repo App Download', () => {
         (getAbapRepoAppConfig as jest.Mock).mockReturnValue({
             app: { id: appId, title: 'App Title', flpAppId: `${appId}-tile` },
             service: { url: 'https://test-url.com', version: OdataVersion.v4 },
-            ui5: { version: '1.145.2' }
+            ui5: { version: '1.145.2' },
+            template: { type: 'lrop' }
         });
     });
 
@@ -777,7 +778,7 @@ describe('Repo App Download', () => {
         ).resolves.not.toThrow();
 
         expect(downloadUtils.extractZip).toHaveBeenCalled();
-        expect(fileHelpers.processDebugArtifacts).toHaveBeenCalled();
+        expect(fileHelpers.cleanupArtifacts).toHaveBeenCalled();
         expect(getAbapRepoDeployConfig).toHaveBeenCalled();
     });
 
@@ -809,6 +810,8 @@ describe('Repo App Download', () => {
         expect(fs.existsSync(readMePath)).toBe(true);
         const readMeContent = fs.readFileSync(readMePath, 'utf-8');
         expect(readMeContent).toContain(appId);
+        expect(readMeContent).toContain('List Report Page');
+        expect(readMeContent).not.toContain('lrop');
     });
 
     it('should generate launch config for AbapRepository download type when vscode is provided', async () => {

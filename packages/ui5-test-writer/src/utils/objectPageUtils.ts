@@ -210,9 +210,12 @@ function extractObjectPageBodySectionsData(
                 isTable,
                 custom: !!section.custom,
                 order: section?.order ?? -1,
-                fields,
+                fields:
+                    section.custom || isTable
+                        ? []
+                        : extractFormFields(section, convertedMetadata, objectPage.entitySet),
+                tableColumns: section.custom || !isTable ? {} : extractTableColumnsFromNode(section),
                 contactCardFields: pickContactCardFields(fields),
-                tableColumns,
                 contactCardColumns,
                 subSections,
                 actions:
@@ -335,10 +338,10 @@ function extractBodySubSectionsData(
             isTable,
             custom: !!subSection.custom,
             order: subSection?.order ?? -1, // put a negative order number to signal that order was not in spec
-            fields,
             contactCardFields: pickContactCardFields(fields),
-            tableColumns,
             contactCardColumns
+            fields: subSection.custom || isTable ? [] : extractFormFields(subSection, convertedMetadata, entitySetName),
+            tableColumns: subSection.custom || !isTable ? {} : extractTableColumnsFromNode(subSection)
         });
     });
     return subSections;

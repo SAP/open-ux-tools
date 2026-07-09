@@ -2,9 +2,31 @@ import type Generator from 'yeoman-generator';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { VSCodeInstance, TelemetryData, LogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { AppIndex, AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
+import type { OdataServiceAnswers, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+
+/**
+ * App configuration derived from the downloaded manifest for the ABAP repository flow.
+ * Used for README generation, launch config creation, and adding a minimal package.json.
+ */
+export interface AbapRepoAppConfig {
+    app: {
+        id: string;
+        title: string;
+        flpAppId: string;
+    };
+    service: {
+        url: string | undefined;
+        version: OdataVersion;
+    };
+    ui5: {
+        version: string;
+    };
+    template: {
+        type: string;
+    };
+}
 
 /**
  * Identifies which download flow is active.

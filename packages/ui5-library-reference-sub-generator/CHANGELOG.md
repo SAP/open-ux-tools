@@ -1,5 +1,116 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 1.0.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-07
+
+#### Dependency Updates
+
+- align vscode and types with fiori tools extensions [[369c494](https://github.com/SAP/open-ux-tools/commit/369c49497073e99fda01bad7dfda1840e68c029a)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.19 → 1.0.20
+- @sap-ux/feature-toggle 1.0.4 → 1.0.5
+- @sap-ux/telemetry 1.0.17 → 1.0.18
+- @sap-ux/project-access 2.1.6 → 2.1.6
+- @sap-ux/ui5-library-reference-inquirer 1.0.21 → 1.0.22
+
+## 1.0.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.16 → 1.0.17
+- @sap-ux/fiori-generator-shared 1.0.18 → 1.0.19
+- @sap-ux/ui5-library-reference-inquirer 1.0.20 → 1.0.21
+
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.15 → 1.0.16
+- @sap-ux/fiori-generator-shared 1.0.17 → 1.0.18
+- @sap-ux/ui5-library-reference-inquirer 1.0.19 → 1.0.20
+- @sap-ux/project-access 2.1.5 → 2.1.6
+- @sap-ux/ui5-library-reference-writer 1.0.10 → 1.0.11
+
+## 1.0.19
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-library-reference-inquirer 1.0.18 → 1.0.19
+- @sap-ux/fiori-generator-shared 1.0.16 → 1.0.17
+- @sap-ux/feature-toggle 1.0.3 → 1.0.4
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/telemetry 1.0.14 → 1.0.15
+- @sap-ux/ui5-library-reference-writer 1.0.9 → 1.0.10
+
+## 1.0.18
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.13 → 1.0.14
+- @sap-ux/fiori-generator-shared 1.0.15 → 1.0.16
+- @sap-ux/ui5-library-reference-inquirer 1.0.17 → 1.0.18
+
+## 1.0.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.12 → 1.0.13
+- @sap-ux/fiori-generator-shared 1.0.14 → 1.0.15
+- @sap-ux/ui5-library-reference-inquirer 1.0.16 → 1.0.17
+
+## 1.0.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/fiori-generator-shared 1.0.13 → 1.0.14
+- @sap-ux/telemetry 1.0.11 → 1.0.12
+- @sap-ux/ui5-library-reference-inquirer 1.0.15 → 1.0.16
+- @sap-ux/ui5-library-reference-writer 1.0.8 → 1.0.9
+
+## 1.0.15
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-25
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-library-reference-writer 1.0.7 → 1.0.8
+- @sap-ux/feature-toggle 1.0.2 → 1.0.3
+- @sap-ux/fiori-generator-shared 1.0.12 → 1.0.13
+- @sap-ux/telemetry 1.0.10 → 1.0.11
+- @sap-ux/ui5-library-reference-inquirer 1.0.14 → 1.0.15
+
 ## 1.0.14
 
 ### Patch Changes
