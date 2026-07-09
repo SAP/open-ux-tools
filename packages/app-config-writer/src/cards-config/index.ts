@@ -7,7 +7,7 @@ import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middlewa
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName, type Package, readUi5Yaml, getProjectType, findCapProjectRoot } from '@sap-ux/project-access';
 import { updateMiddlewaresForPreview } from '../common/ui5-yaml.js';
-import { ensureMinUI5Version } from './prerequisites.js';
+import { ensureMinUI5Version, ensureCdsPluginUi5 } from './prerequisites.js';
 import { updateCapRootPackageJsonForCards } from './cap.js';
 
 const DEPENDENCY_NAME = '@sap-ux/cards-editor-middleware';
@@ -137,6 +137,10 @@ export async function enableCardGeneratorConfig(
 
     if (projectType === 'CAPNodejs' && !capRoot) {
         throw new Error(`Could not find CAP project root for path '${basePath}'.`);
+    }
+
+    if (projectType === 'CAPNodejs') {
+        await ensureCdsPluginUi5(capRoot as string, fs);
     }
 
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
