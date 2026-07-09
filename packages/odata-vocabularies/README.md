@@ -45,11 +45,11 @@ claude
 ```
 Then type:
 - `/odata-vocabularies-sync` — update all vocabularies
-- `/odata-vocabularies-sync https://...` — add a new vocabulary
+- `/odata-vocabularies-sync https://...` — add a new vocabulary (URL must end in `.json`, XML is not supported)
 
 **VSCode extension** — ask Claude Code in natural language:
 - *"sync the odata vocabularies"*
-- *"add a new vocabulary: https://..."*
+- *"add a new vocabulary: https://... (URL must end in `.json`, XML is not supported)"*
 
 The skill will:
 1. *(When adding)* Register the vocabulary in `tools/update.ts`, `src/resources/index.ts`, `src/loader.ts`, and `README.md`

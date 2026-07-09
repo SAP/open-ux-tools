@@ -1,7 +1,7 @@
 ---
 name: odata-vocabularies-sync
 description: Sync odata-vocabularies package — update all vocabulary resource files to their latest published versions, and optionally add a new vocabulary given its JSON URL. Use when asked to update vocabularies, refresh vocabulary resources, or add a new vocabulary to @sap-ux/odata-vocabularies.
-argument-hint: (optional) URL of the new vocabulary JSON, e.g. https://sap.github.io/odata-vocabularies/vocabularies/SomeNew.json
+argument-hint: (optional) URL of the new vocabulary in JSON format (ending in .json), e.g. https://sap.github.io/odata-vocabularies/vocabularies/SomeNew.json — XML URLs are not supported
 metadata:
   author: sap-ux
   version: "1.0.0"
@@ -24,7 +24,7 @@ All file edits are relative to `packages/odata-vocabularies/`.
 
 ### 1a. Fetch and inspect the vocabulary JSON
 
-Fetch the JSON at the provided URL. Extract:
+Fetch the JSON at the provided URL (must end in `.json` — XML URLs are not supported by the update tool). Extract:
 - `namespace` — the key of the top-level schema object (e.g. `Org.OData.NewThing.V1` or `com.sap.vocabularies.NewThing.v1`)
 - `alias` — the value of `$Alias` inside that schema object (e.g. `NewThing`)
 
