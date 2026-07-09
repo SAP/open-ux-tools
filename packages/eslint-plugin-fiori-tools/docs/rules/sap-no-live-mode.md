@@ -31,9 +31,23 @@ Enabling `liveMode` makes the content area load automatically during the initial
 ```
 `liveMode` is set to `true` in the settings of the list report page.
 
-### Correct
+#### Incorrect `.change` File for OData V2 Applications
+
+```json
+"content": {
+    "property": "liveMode",
+    "newValue": true
+}
+```
+The `newValue` property for `liveMode` is set to `true`.
+
+### Correct `manifest.json` File for OData V4 Applications
 
 Set the `liveMode` property to `false` or remove it from the `manifest.json` file to restore the default settings.
+
+### Correct `.change` File for OData V2 Applications
+
+To fix the warning, there are two options: either delete the corresponding `.change` file, which restores the default setting, or set `newValue` in the property change file to `false`.
 
 ## Bug Report
 

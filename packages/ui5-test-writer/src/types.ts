@@ -125,6 +125,8 @@ export type ObjectPageNavigationParents = {
 
 export type SectionFormField = {
     property: string;
+    connectedFields?: string;
+    fieldGroup?: string;
 };
 
 export type TableColumn = {

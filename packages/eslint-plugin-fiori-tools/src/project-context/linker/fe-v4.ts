@@ -15,14 +15,17 @@ export interface LinkedFeV4App extends ConfigurationBase<'fe-v4', ApplicationSet
     pages: FeV4PageType[];
 }
 
-export interface FeV4ListReport extends ConfigurationBase<'list-report-page'> {
+export interface PageConfiguration {
+    liveMode?: boolean;
+}
+
+export interface FeV4ListReport extends ConfigurationBase<'list-report-page', PageConfiguration> {
     targetName: string;
     componentName: 'sap.fe.templates.ListReport';
     contextPath: string;
     entity: MetadataElement;
     tables: (Table | OrphanTable)[];
     lookup: NodeLookup<Table | OrphanTable | FieldGroup>;
-    liveMode: ConfigurationProperty<boolean>;
 }
 
 export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
@@ -399,12 +402,13 @@ function linkListReport(
         componentName: 'sap.fe.templates.ListReport',
         contextPath,
         entity: entity,
-        liveMode: {
-            configurationPath: liveModePath,
-            values: [true, false],
-            valueInFile: liveMode
+        configuration: {
+            liveMode: {
+                configurationPath: liveModePath,
+                values: [true, false],
+                valueInFile: liveMode
+            }
         },
-        configuration: {},
         tables: [],
         lookup: {}
     };

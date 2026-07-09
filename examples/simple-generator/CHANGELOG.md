@@ -1,5 +1,114 @@
 # @sap-ux/generator-simple-fe
 
+## 2.0.53
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.52 → 3.0.53
+- @sap-ux/fiori-freestyle-writer 3.0.47 → 3.0.48
+
+## 2.0.52
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.51 → 3.0.52
+- @sap-ux/fiori-freestyle-writer 3.0.46 → 3.0.47
+
+## 2.0.51
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.50 → 3.0.51
+- @sap-ux/fiori-freestyle-writer 3.0.45 → 3.0.46
+
+## 2.0.50
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.49 → 3.0.50
+- @sap-ux/fiori-freestyle-writer 3.0.44 → 3.0.45
+
+## 2.0.49
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/fiori-elements-writer 3.0.48 → 3.0.49
+- @sap-ux/fiori-freestyle-writer 3.0.43 → 3.0.44
+- @sap-ux/axios-extension 2.0.6 → 2.0.7
+- @sap-ux/btp-utils 2.0.5 → 2.0.5
+- @sap-ux/system-access 1.0.6 → 1.0.7
+
+## 2.0.48
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.47 → 3.0.48
+- @sap-ux/fiori-freestyle-writer 3.0.42 → 3.0.43
+
+## 2.0.47
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.46 → 3.0.47
+- @sap-ux/fiori-freestyle-writer 3.0.42 → 3.0.42
+
+## 2.0.46
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.45 → 3.0.46
+- @sap-ux/fiori-freestyle-writer 3.0.41 → 3.0.42
+
+## 2.0.45
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.5 → 2.0.6
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+- @sap-ux/fiori-elements-writer 3.0.44 → 3.0.45
+- @sap-ux/fiori-freestyle-writer 3.0.40 → 3.0.41
+- @sap-ux/system-access 1.0.5 → 1.0.6
+
+## 2.0.44
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-freestyle-writer 3.0.39 → 3.0.40
+- @sap-ux/fiori-elements-writer 3.0.43 → 3.0.44
+- @sap-ux/axios-extension 2.0.4 → 2.0.5
+- @sap-ux/system-access 1.0.4 → 1.0.5
+- @sap-ux/btp-utils 2.0.3 → 2.0.4
+- @sap-ux/logger 1.0.1 → 1.0.2
+
 ## 2.0.43
 
 ### Patch Changes

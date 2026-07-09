@@ -1195,7 +1195,7 @@ sap.ui.require(
 ], function (JourneyRunner, RestaurantList, RestaurantObjectPage) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('restaurantapp') + '/index.html',
         pages: {
 			onTheRestaurantList: RestaurantList,
@@ -1214,7 +1214,7 @@ sap.ui.require(
     "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -1234,7 +1234,7 @@ sap.ui.require(
     "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -1824,7 +1824,7 @@ sap.ui.require(
 ], function (JourneyRunner, RestaurantList, RestaurantObjectPage) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('restaurantapp') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#restaurantApp-tile',
         pages: {
 			onTheRestaurantList: RestaurantList,
@@ -1843,7 +1843,7 @@ sap.ui.require(
     "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -1863,7 +1863,7 @@ sap.ui.require(
     "contents": "sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
