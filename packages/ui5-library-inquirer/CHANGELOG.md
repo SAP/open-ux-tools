@@ -1,5 +1,15 @@
 # @sap-ux/ui5-library-inquirer
 
+## 1.0.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/inquirer-common 1.0.20 → 1.0.21
+- @sap-ux/ui5-info 1.0.4 → 1.0.5
+
 ## 1.0.20
 
 ### Patch Changes
