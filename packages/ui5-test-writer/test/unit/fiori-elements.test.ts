@@ -1018,10 +1018,10 @@ export type Then = Opa5 & BaseArrangements & {
             expect(runnerPath).toBeDefined();
 
             const content = dumped[runnerPath!].contents as string;
-            // The page-definition object passed to `new ListReport(...)` should set contextPath
-            // and skip entitySet entirely (only emit the field that actually applies).
+            // The page-definition object passed to `new ListReport(...)` should set contextPath;
+            // entitySet is emitted as an empty string because the runtime type marks both as required.
             expect(content).toContain('contextPath: "/');
-            expect(content).not.toContain('entitySet: ""');
+            expect(content).toContain('entitySet: ""');
         });
 
         it('generates TypeScript filter tests for LROPv4 app', async () => {

@@ -1,5 +1,25 @@
 # @sap-ux/ui-components
 
+## 3.0.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-07
+
+#### Features
+
+- use new vscode variable '--vscode-button-secondaryBorder' for secondary buttons [[647b8d2](https://github.com/SAP/open-ux-tools/commit/647b8d2ad5560f78f85bb146b9cae7549536bb81)]
+
+## 3.0.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
 ## 3.0.4
 
 ### Patch Changes

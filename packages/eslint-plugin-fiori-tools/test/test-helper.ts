@@ -11,6 +11,7 @@ import { getNodeModulesPath, normalizePath } from '@sap-ux/project-access';
 import { ProjectContext } from '../src/project-context/project-context.js';
 import { platform } from 'node:os';
 import { spawnSync } from 'node:child_process';
+import type { FlexChange } from '../src/project-context/parser/types.js';
 
 export interface FileChange {
     filename: string;
@@ -123,7 +124,9 @@ export const V2_FLEX_CHANGE_FILE_PATH = join(
     'changes',
     'id_1779179176282_0_propertyChange.change'
 );
-export const V2_FLEX_CHANGE_CONTENT = Object.freeze(JSON.parse(readFileSync(V2_FLEX_CHANGE_FILE_PATH, 'utf-8')));
+export const V2_FLEX_CHANGE_CONTENT = Object.freeze(
+    JSON.parse(readFileSync(V2_FLEX_CHANGE_FILE_PATH, 'utf-8'))
+) as FlexChange;
 
 const cdsModuleInstalled = (root: string): boolean => {
     const modulePath = join(root, 'node_modules');

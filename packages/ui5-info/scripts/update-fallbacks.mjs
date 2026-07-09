@@ -2,9 +2,12 @@
 /**
  * Updates ui5-version-fallback.ts with the latest UI5 version data from ui5.sap.com.
  */
-const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
+import axios from 'axios';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const OFFICIAL_URL = 'https://ui5.sap.com';
 const VERSION_OVERVIEW_FILE = 'versionoverview.json';

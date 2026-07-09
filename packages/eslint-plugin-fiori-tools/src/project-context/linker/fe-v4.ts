@@ -15,7 +15,11 @@ export interface LinkedFeV4App extends ConfigurationBase<'fe-v4', ApplicationSet
     pages: FeV4PageType[];
 }
 
-export interface FeV4ListReport extends ConfigurationBase<'list-report-page'> {
+export interface PageConfiguration {
+    liveMode?: boolean;
+}
+
+export interface FeV4ListReport extends ConfigurationBase<'list-report-page', PageConfiguration> {
     targetName: string;
     componentName: 'sap.fe.templates.ListReport';
     contextPath: string;
@@ -323,7 +327,6 @@ interface Target {
         settings?: {
             entitySet?: string;
             contextPath?: string;
-
             controlConfiguration?: { [key: string]: TableConfiguration };
             content?: {
                 header?: {
@@ -331,6 +334,7 @@ interface Target {
                     visible?: boolean;
                 };
             };
+            liveMode?: boolean;
         };
     };
 }
@@ -387,6 +391,9 @@ function linkListReport(
     if (!mainService) {
         return;
     }
+    const liveMode = target.options?.settings?.liveMode;
+    const liveModePath = ['sap.ui5', 'routing', 'targets', name, 'options', 'settings', 'liveMode'];
+
     const tables = collectTables('v4', entityType, mainService);
 
     const page: FeV4ListReport = {
@@ -395,7 +402,13 @@ function linkListReport(
         componentName: 'sap.fe.templates.ListReport',
         contextPath,
         entity: entity,
-        configuration: {},
+        configuration: {
+            liveMode: {
+                configurationPath: liveModePath,
+                values: [true, false],
+                valueInFile: liveMode
+            }
+        },
         tables: [],
         lookup: {}
     };
