@@ -213,8 +213,9 @@ describe('Test getObjectPageFeatures()', () => {
         const objectPage2Data = result.find((page) => page.name === 'objectPage2');
         expect(objectPage2Data?.navigationParents).toBeDefined();
         expect(objectPage2Data?.navigationParents?.parentLRName).toBe('listReportPage');
-        expect(objectPage2Data?.navigationParents?.parentOPName).toBe('objectPage1');
-        expect(objectPage2Data?.navigationParents?.parentOPTableSection).toBe('tableSection1');
+        expect(objectPage2Data?.navigationParents?.parentOPs).toEqual([
+            { name: 'objectPage1', navigationProperty: 'tableSection1' }
+        ]);
     });
 
     test('should handle navigation with route object', async () => {
@@ -284,8 +285,9 @@ describe('Test getObjectPageFeatures()', () => {
             mockLogger
         );
         const objectPage2Data = result.find((page) => page.name === 'objectPage2');
-        expect(objectPage2Data?.navigationParents?.parentOPName).toBe('objectPage1');
-        expect(objectPage2Data?.navigationParents?.parentOPTableSection).toBe('tableSection1');
+        expect(objectPage2Data?.navigationParents?.parentOPs).toEqual([
+            { name: 'objectPage1', navigationProperty: 'tableSection1' }
+        ]);
     });
 
     test('should extract header sections with facetId from Key', async () => {
@@ -958,8 +960,8 @@ describe('Test getObjectPageFeatures()', () => {
             model: {}
         } as unknown as ApplicationModel;
         const result = await getObjectPageFeatures([objectPage1] as PageWithModelV4[], 'listReportPage', mockLogger);
-        const objectPage2Data = result.find((page) => page.name === 'objectPage2');
-        expect(objectPage2Data?.navigationParents?.parentOPName).toBeUndefined();
+        const objectPage1Data = result.find((page) => page.name === 'objectPage1');
+        expect(objectPage1Data?.navigationParents?.parentOPs).toEqual([]);
     });
 
     test('should handle form fields without name property', async () => {
@@ -1073,7 +1075,7 @@ describe('Test getObjectPageFeatures()', () => {
         } as unknown as ApplicationModel;
         const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], 'listReportPage', mockLogger);
         expect(result[0].navigationParents?.parentLRName).toBe('listReportPage');
-        expect(result[0].navigationParents?.parentOPName).toBeUndefined();
+        expect(result[0].navigationParents?.parentOPs).toEqual([]);
     });
 
     test('should handle application without ListReport page', async () => {
