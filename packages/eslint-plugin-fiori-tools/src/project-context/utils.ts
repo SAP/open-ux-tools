@@ -77,7 +77,7 @@ export function collectFlexChanges(changeFiles: string[]): FlexChange[] {
                 });
             }
         } catch {
-            throw new Error(`Failed to parse "${changeFile}" file content`);
+            // skip unreadable or malformed change files
         }
     }
     return changes;
