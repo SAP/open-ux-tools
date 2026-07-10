@@ -1,4 +1,5 @@
 import { generateAppGenInfo, getHostEnvironment, getFloorplanLabel } from '@sap-ux/fiori-generator-shared';
+import type { AppGenInfo } from '@sap-ux/fiori-generator-shared';
 import type { Editor } from 'mem-fs-editor';
 import { basename, join } from 'node:path';
 import type { ApiHubConfig, State } from '../types/index.js';
