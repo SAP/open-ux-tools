@@ -91,7 +91,7 @@ export function getErrorMessage(error: Error | unknown): string {
  * This prevents security issues where malicious paths like '../../../etc' could write files outside the project.
  *
  * @param {string} folder - the folder path to validate
- * @param {string} [paramName='folder'] - optional parameter name for error messages
+ * @param {string} [paramName] - optional parameter name for error messages
  * @throws {Error} if the path is absolute or contains '..'
  */
 export function validateRelativePath(folder: string, paramName = 'folder'): void {
