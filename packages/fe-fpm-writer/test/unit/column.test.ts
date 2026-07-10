@@ -3,7 +3,7 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { generateCustomColumn } from '../../src/index.js';
+import { generateCustomColumn, generateFragment } from '../../src/index.js';
 import { getManifestRoot } from '../../src/column/index.js';
 import type { CustomTableColumn } from '../../src/column/types.js';
 import { Availability, HorizontalAlign } from '../../src/column/types.js';
@@ -359,7 +359,6 @@ describe('CustomAction', () => {
         });
 
         test('generate fragment with default options', async () => {
-            const { generateFragment } = await import('../../src/index.js');
             const fragment = {
                 name: 'MyFragment'
             };
@@ -372,7 +371,6 @@ describe('CustomAction', () => {
         });
 
         test('generate fragment with custom folder', async () => {
-            const { generateFragment } = await import('../../src/index.js');
             const fragment = {
                 name: 'CustomFragment',
                 folder: 'extensions/fragments'
@@ -386,7 +384,6 @@ describe('CustomAction', () => {
         });
 
         test('generate fragment with custom content', async () => {
-            const { generateFragment } = await import('../../src/index.js');
             const fragment = {
                 name: 'ContentFragment',
                 content: '<Label text="Custom Content" />'
@@ -402,7 +399,6 @@ describe('CustomAction', () => {
         });
 
         test('generate fragment without fs parameter', async () => {
-            const { generateFragment } = await import('../../src/index.js');
             const fragment = {
                 name: 'NoFsFragment'
             };
@@ -414,7 +410,6 @@ describe('CustomAction', () => {
         });
 
         test('do not overwrite existing fragment', async () => {
-            const { generateFragment } = await import('../../src/index.js');
             const fragment = {
                 name: 'ExistingFragment'
             };
