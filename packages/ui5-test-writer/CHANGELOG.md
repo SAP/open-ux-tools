@@ -1,5 +1,17 @@
 # @sap-ux/ui5-test-writer
 
+## 1.2.20
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-10
+
+#### Bug Fixes
+
+- Emit full ancestor cascade when navigating to deeply-nested Object Pages [[65b4b19](https://github.com/SAP/open-ux-tools/commit/65b4b1915767fafe5e8a9d197ac32be7dd9a0333)]
+
 ## 1.2.19
 
 ### Patch Changes
