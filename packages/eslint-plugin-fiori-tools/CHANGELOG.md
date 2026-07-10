@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.7.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-10
+
+#### Bug Fixes
+
+- Deduplicate sap-description-column-label diagnostics when multiple entities share the same text property annotation [[949ade6](https://github.com/SAP/open-ux-tools/commit/949ade6264d223cd7e50e29725c42fe89072249e)]
+
 ## 10.7.6
 
 ### Patch Changes
