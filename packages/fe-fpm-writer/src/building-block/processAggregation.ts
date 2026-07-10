@@ -5,24 +5,30 @@ import { join } from 'node:path';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import format from 'xml-formatter';
 import * as xpath from 'xpath';
+import { lt } from 'semver';
 import type { Editor } from 'mem-fs-editor';
 
+import { getMinimumUI5Version } from '@sap-ux/project-access';
 import {
     BuildingBlockType,
     PAGE_AGGREGATIONS,
     PAGE_BB_DEFAULT_AGGREGATIONS,
+    PAGE_FULL_TEMPLATE_MIN_UI5_VERSION,
+    PAGE_TEMPLATE_COMMENT,
+    PAGE_TEMPLATE_TYPE_FULL,
+    type BuildingBlock,
     type PageAggregationName,
     type Page,
     type XmlAggregationGroup,
     type GenerateBuildingBlockAggregationConfig
 } from './types.js';
+import type { Manifest } from '../common/types.js';
 import { getTemplatePath } from '../templates.js';
 import { type IdGeneratorFunction, createIdGenerator } from '../common/file.js';
 import { getErrorMessage } from '../common/validate.js';
+import { i18nNamespaces, translate } from '../i18n.js';
 import { getOrAddNamespace } from './prompts/utils/xml.js';
 import { resolveAggregationPath } from './processor.js';
-
-const PAGE_TEMPLATE_COMMENT = 'This is a sample template, event handlers should be added for implementation';
 
 /**
  * Returns the UI5 xml file document (view/fragment).
@@ -52,6 +58,33 @@ export function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor
     }
 
     return viewDocument;
+}
+
+/**
+ * Returns the aggregation names to append for a Page building block, or undefined if not a Page.
+ * Full template appends all PAGE_AGGREGATIONS; basic template appends nothing.
+ *
+ * @param data - the building block data
+ * @returns aggregation names array, or undefined if not a Page building block
+ */
+export function getPageAggregationNames(data: BuildingBlock): readonly PageAggregationName[] | undefined {
+    if (data.buildingBlockType !== BuildingBlockType.Page) {
+        return undefined;
+    }
+    return (data as Page).templateType === PAGE_TEMPLATE_TYPE_FULL ? PAGE_AGGREGATIONS : undefined;
+}
+
+/**
+ * Throws if the manifest's minUI5Version does not meet the 1.145.0 requirement for the full Page template.
+ *
+ * @param manifest - the manifest content, or undefined if not available
+ */
+export function validateFullPageTemplateVersion(manifest: Manifest | undefined): void {
+    const minUI5Version = manifest ? getMinimumUI5Version(manifest) : undefined;
+    if (!minUI5Version || lt(minUI5Version, PAGE_FULL_TEMPLATE_MIN_UI5_VERSION)) {
+        const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
+        throw new Error(`${t('fullTemplateMinUi5VersionRequirement', { minUI5Version: minUI5Version ?? 'unknown' })}`);
+    }
 }
 
 /**

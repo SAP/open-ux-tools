@@ -1,6 +1,7 @@
 import { DOMParser } from '@xmldom/xmldom';
 import type { Editor } from 'mem-fs-editor';
 import * as xpath from 'xpath';
+import { MACROS_NAMESPACE_URI } from '../../types.js';
 
 /**
  * Converts the provided xpath string from `/mvc:View/Page/content` to
@@ -27,13 +28,13 @@ export const augmentXpathWithLocalNames = (path: string): string => {
  * @param macrosNamespace - the resolved macros namespace prefix (e.g. 'macros')
  * @param result - mutable map of XPath choices to augment
  */
-function synthesizeMacrosItemsIfMissing(
+function addMacrosItemsPathIfMissing(
     node: Node,
     parentNode: string,
     macrosNamespace: string,
     result: Record<string, string>
 ): void {
-    if ((node as Element).localName !== 'Page' || (node as Element).namespaceURI !== 'sap.fe.macros') {
+    if ((node as Element).localName !== 'Page' || (node as Element).namespaceURI !== MACROS_NAMESPACE_URI) {
         return;
     }
     const resolvedPrefix = macrosNamespace || 'macros';
@@ -90,7 +91,7 @@ export function getXPathStringsForXmlFile(
                 result[`${parentNode}/${node.nodeName}`] = augmentXpathWithLocalNames(`${parentNode}/${node.nodeName}`);
             }
 
-            synthesizeMacrosItemsIfMissing(node, parentNode, macrosNamespace || 'macros', result);
+            addMacrosItemsPathIfMissing(node, parentNode, macrosNamespace || 'macros', result);
 
             const childNodes = Array.from(node.childNodes);
             for (const childNode of childNodes) {

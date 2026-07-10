@@ -11,10 +11,7 @@ import type { Editor } from 'mem-fs-editor';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import {
     BuildingBlockType,
-    PAGE_AGGREGATIONS,
     PAGE_TEMPLATE_TYPE_FULL,
-    PAGE_FULL_TEMPLATE_MIN_UI5_VERSION,
-    type PageAggregationName,
     type BuildingBlock,
     type BuildingBlockConfig,
     type BuildingBlockMetaPath,
@@ -38,7 +35,13 @@ import { getManifest, getManifestPath } from '../common/utils.js';
 import { getOrAddNamespace } from './prompts/utils/xml.js';
 import { i18nNamespaces, translate } from '../i18n.js';
 import { processBuildingBlock, resolveAggregationPath } from './processor.js';
-import { appendPageAggregations, ensureMissingAggregation, getUI5XmlDocument } from './processAggregation.js';
+import {
+    appendPageAggregations,
+    ensureMissingAggregation,
+    getPageAggregationNames,
+    getUI5XmlDocument,
+    validateFullPageTemplateVersion
+} from './processAggregation.js';
 
 export { generateBuildingBlockAggregation, getUI5XmlDocument } from './processAggregation.js';
 
@@ -61,33 +64,6 @@ interface MetadataPath {
  */
 function isFullPageTemplate(data: BuildingBlock): boolean {
     return data.buildingBlockType === BuildingBlockType.Page && (data as Page).templateType === PAGE_TEMPLATE_TYPE_FULL;
-}
-
-/**
- * Returns the aggregation names to append for a Page building block, or undefined if not a Page.
- * Full template appends all PAGE_AGGREGATIONS; basic template appends nothing.
- *
- * @param data - the building block data
- * @returns aggregation names array, or undefined if not a Page building block
- */
-function getPageAggregationNames(data: BuildingBlock): readonly PageAggregationName[] | undefined {
-    if (data.buildingBlockType !== BuildingBlockType.Page) {
-        return undefined;
-    }
-    return (data as Page).templateType === PAGE_TEMPLATE_TYPE_FULL ? PAGE_AGGREGATIONS : undefined;
-}
-
-/**
- * Throws if the manifest's minUI5Version does not meet the 1.145.0 requirement for the full Page template.
- *
- * @param manifest - the manifest content, or undefined if not available
- */
-function validateFullPageTemplateVersion(manifest: Manifest | undefined): void {
-    const minUI5Version = manifest ? getMinimumUI5Version(manifest) : undefined;
-    if (!minUI5Version || lt(minUI5Version, PAGE_FULL_TEMPLATE_MIN_UI5_VERSION)) {
-        const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
-        throw new Error(`${t('fullTemplateMinUi5VersionRequirement', { minUI5Version: minUI5Version ?? 'unknown' })}`);
-    }
 }
 
 /**
@@ -186,12 +162,12 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
 
     if (allowAutoAddDependencyLib && manifest && !validateDependenciesLibs(manifest, ['sap.fe.macros'])) {
         // "sap.fe.macros" is missing - enhance manifest.json for missing "sap.fe.macros"
-        const dependencyManifestPath = await getManifestPath(basePath, fs);
+        const manifestPath = await getManifestPath(basePath, fs);
         const manifestContent = await getManifestContent(fs);
-        const content = fs.read(dependencyManifestPath);
+        const content = fs.read(manifestPath);
         const tabInfo = detectTabSpacing(content);
         extendJSON(fs, {
-            filepath: dependencyManifestPath,
+            filepath: manifestPath,
             content: manifestContent,
             tabInfo: tabInfo
         });
