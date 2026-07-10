@@ -40,7 +40,7 @@ import {
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
-import { isInternalFeaturesSettingEnabled, isFeatureEnabled } from '@sap-ux/feature-toggle';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import type { CfConfig, CfServicesAnswers, AttributesAnswers, ConfigAnswers, UI5Version } from '@sap-ux/adp-tooling';
 
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache.js';
@@ -188,10 +188,6 @@ export default class extends Generator {
      */
     private cfInstalled: boolean;
     /**
-     * Indicates if the CF feature is enabled.
-     */
-    private readonly isCfFeatureEnabled: boolean;
-    /**
      * Tools ID.
      */
     private toolsId: string;
@@ -220,9 +216,6 @@ export default class extends Generator {
         this.options = opts;
 
         this.isMtaYamlFound = isMtaProject(process.cwd()) as boolean;
-
-        this.isCfFeatureEnabled = isFeatureEnabled('sap.ux.appGenerator.testBetaFeatures.adpCfExperimental');
-        this.logger.debug(`isCfFeatureEnabled: ${this.isCfFeatureEnabled}`);
 
         const jsonInputString = getFirstArgAsString(args);
         this.jsonInput = parseJsonInput(jsonInputString, this.logger);
@@ -268,8 +261,7 @@ export default class extends Generator {
         });
         this.telemetryCollector = new TelemetryCollector();
         if (!this.jsonInput) {
-            const shouldShowTargetEnv = this.cfInstalled && this.isCfFeatureEnabled;
-            this.prompts.splice(0, 0, getWizardPages(shouldShowTargetEnv));
+            this.prompts.splice(0, 0, getWizardPages(this.cfInstalled));
             this.prompter = this._getOrCreatePrompter();
             this.cfPrompter = new CFServicesPrompter(isInternalUsage, this.isCfLoggedIn, this.logger);
         }
@@ -543,9 +535,7 @@ export default class extends Generator {
      * Sets the target environment and updates related state accordingly.
      */
     private async _determineTargetEnv(): Promise<void> {
-        const hasRequiredExtensions = this.isCfFeatureEnabled && this.cfInstalled;
-
-        if (hasRequiredExtensions) {
+        if (this.cfInstalled) {
             await this._promptForTargetEnvironment();
         } else {
             this.targetEnv = TargetEnv.ABAP;

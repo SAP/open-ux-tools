@@ -6,7 +6,7 @@ import type { FeV2PageType, Table as TableV2 } from '../project-context/linker/f
 import type { ParsedApp } from '../project-context/parser/index.js';
 import type { FeV4PageType, Table as TableV4 } from '../project-context/linker/fe-v4.js';
 import { createJsonFixer } from '../language/rule-fixer.js';
-import { checkAppTablesConfiguration } from '../utils/helpers.js';
+import { checkAppTablesConfiguration, isV2Table } from '../utils/helpers.js';
 import { FioriJSONSourceCode } from '../language/json/source-code.js';
 import type { FioriChangeSourceCode } from '../language/change/source-code.js';
 
@@ -65,15 +65,6 @@ const rule: FioriRuleDefinition = createFioriRule({
             });
         }
 });
-
-/**
- *
- * @param table
- * @returns
- */
-function isV2Table(table: TableV2 | TableV4): table is TableV2 {
-    return 'copy' in (table as TableV2).configuration;
-}
 
 /**
  *

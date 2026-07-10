@@ -142,7 +142,7 @@ export class ODataHealthChecker {
 
     private getServices(): ODataServiceInfo[] {
         const rootControl = this.rta.getRootControlInstance();
-        const manifest: Manifest = rootControl.getManifest() as unknown as Manifest;
+        const manifest: Manifest = rootControl.getManifest();
         const dataSources = manifest?.['sap.app']?.dataSources;
         const odataServices = Object.values(dataSources ?? {}).filter(this.isOdataService);
 
