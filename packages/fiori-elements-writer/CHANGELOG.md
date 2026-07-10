@@ -1,5 +1,37 @@
 # @sap-ux/fiori-elements-writer
 
+## 3.0.54
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.2.19 → 1.2.20
+
+## 3.0.53
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.2.18 → 1.2.19
+
+## 3.0.52
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Bug Fixes
+
+- Incorrect types of arguments passed in TS test code [[8e1ad51](https://github.com/SAP/open-ux-tools/commit/8e1ad51c656e719607d801495d06f75130fe24d0)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.2.17 → 1.2.18
+
 ## 3.0.51
 
 ### Patch Changes
