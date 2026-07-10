@@ -87,6 +87,19 @@ const TEXT_PROPERTY_DUPLICATE_LABEL = `
         <Annotation Term="Common.Label" String="Category"/>
     </Annotations>`;
 
+// Invalid (trivialLabel, deduplicated): two ID properties reference the same text property with the
+// same trivial label — the Common.Label annotation must be reported exactly once, not twice.
+const TEXT_PROPERTY_TRIVIAL_LABEL_SHARED_BY_TWO_IDS = `
+    <Annotations Target="IncidentService.Incidents/category_code">
+        <Annotation Term="Common.Text" Path="category/name"/>
+    </Annotations>
+    <Annotations Target="IncidentService.Incidents/status_code">
+        <Annotation Term="Common.Text" Path="category/name"/>
+    </Annotations>
+    <Annotations Target="IncidentService.Category/name">
+        <Annotation Term="Common.Label" String="Name"/>
+    </Annotations>`;
+
 // ─── Test suite ──────────────────────────────────────────────────────────────
 
 ruleTester.run(TEST_NAME, descriptionColumnLabelRule, {
@@ -159,6 +172,15 @@ ruleTester.run(TEST_NAME, descriptionColumnLabelRule, {
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_PROPERTY_DUPLICATE_LABEL),
                 errors: [{ messageId: 'duplicateLabel' }]
+            },
+            []
+        ),
+        createInvalidTest(
+            {
+                name: 'two ID properties share the same text property with trivial label - reported exactly once',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, TEXT_PROPERTY_TRIVIAL_LABEL_SHARED_BY_TWO_IDS),
+                errors: [{ messageId: 'trivialLabel' }]
             },
             []
         )
