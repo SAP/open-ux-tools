@@ -85,7 +85,7 @@ export function getXPathStringsForXmlFile(
                 (child) =>
                     child.nodeType === child.ELEMENT_NODE &&
                     (child as Element).localName === 'Page' &&
-                    (child as Element).namespaceURI === 'sap.fe.macros'
+                    (child as Element).namespaceURI === MACROS_NAMESPACE_URI
             );
             if (!hasPageMacroChild) {
                 result[`${parentNode}/${node.nodeName}`] = augmentXpathWithLocalNames(`${parentNode}/${node.nodeName}`);
