@@ -2,7 +2,7 @@ import { render } from 'ejs';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { join, dirname } from 'node:path';
+import { join } from 'node:path';
 import type { CustomTableColumn, InternalCustomTableColumn } from './types.js';
 import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults.js';
 import type { Manifest } from '../common/types.js';
