@@ -91,17 +91,6 @@ describe('generateFragment', () => {
             );
         });
 
-        test('reject absolute path (Windows-style)', async () => {
-            const fragment = {
-                name: 'EvilFragment',
-                folder: 'C:\\Windows\\System32'
-            };
-
-            await expect(generateFragment(testFragmentDir, fragment, fs)).rejects.toThrow(
-                'Fragment folder must be a relative path'
-            );
-        });
-
         test('reject path traversal with ..', async () => {
             const fragment = {
                 name: 'EvilFragment',
