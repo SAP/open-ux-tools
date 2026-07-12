@@ -8,8 +8,8 @@ import type { AbapTarget } from '@sap-ux/ui5-config';
 import { t } from '../i18n.js';
 import LoggerHelper from '../logger-helper.js';
 import { PromptState } from '../prompts/prompt-state.js';
+import { areSystemConfigEquals, isValidSystemConfig } from '../system-utils.js';
 import type { BackendTarget, Credentials, SystemConfig } from '../types.js';
-import { isSameSystem } from '../utils.js';
 
 /**
  * Class to manage the ABAP service provider used during prompting.
@@ -86,15 +86,10 @@ export class AbapServiceProviderManager {
     private static getSystemConfig(backendTarget?: BackendTarget): SystemConfig {
         // PromptState.abapDeployConfig is always an object but could lack url and destination both,
         // in that case we use the backendTarget.
-        const { url, destination, client } = PromptState.abapDeployConfig;
-        const targetConfig = backendTarget?.abapTarget;
-        return url || destination
-            ? { url, destination, client }
-            : {
-                  url: targetConfig?.url,
-                  destination: targetConfig?.destination,
-                  client: targetConfig?.client
-              };
+        const { url, destination, client } = isValidSystemConfig(PromptState.abapDeployConfig)
+            ? PromptState.abapDeployConfig
+            : (backendTarget?.abapTarget ?? {});
+        return { url, destination, client };
     }
 
     /**
@@ -105,10 +100,7 @@ export class AbapServiceProviderManager {
      */
     private static isExistingServiceProviderValid(backendTarget?: BackendTarget): boolean {
         const systemConfig = this.getSystemConfig(backendTarget);
-        if (
-            this.abapServiceProvider &&
-            isSameSystem(systemConfig, this.system?.url, this.system?.client, this.system?.destination)
-        ) {
+        if (this.abapServiceProvider && areSystemConfigEquals(systemConfig, this.system)) {
             this.system = systemConfig;
             return true;
         }
@@ -126,17 +118,8 @@ export class AbapServiceProviderManager {
     private static isBackendTargetServiceProviderValid(backendTarget?: BackendTarget): boolean {
         if (
             backendTarget?.serviceProvider &&
-            (isSameSystem(
-                {
-                    url: PromptState.abapDeployConfig.url,
-                    client: PromptState.abapDeployConfig.client,
-                    destination: PromptState.abapDeployConfig.destination
-                },
-                backendTarget?.abapTarget.url,
-                backendTarget?.abapTarget.client,
-                backendTarget?.abapTarget.destination
-            ) ||
-                (!PromptState.abapDeployConfig.url && !PromptState.abapDeployConfig.destination))
+            (areSystemConfigEquals(PromptState.abapDeployConfig, backendTarget?.abapTarget) ||
+                !isValidSystemConfig(PromptState.abapDeployConfig))
         ) {
             this.system = backendTarget?.abapTarget;
             return true;
