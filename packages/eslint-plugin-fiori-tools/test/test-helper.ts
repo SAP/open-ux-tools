@@ -11,6 +11,7 @@ import { getNodeModulesPath, normalizePath } from '@sap-ux/project-access';
 import { ProjectContext } from '../src/project-context/project-context.js';
 import { platform } from 'node:os';
 import { spawnSync } from 'node:child_process';
+import type { FlexChange } from '../src/project-context/parser/types.js';
 
 export interface FileChange {
     filename: string;
@@ -123,7 +124,9 @@ export const V2_FLEX_CHANGE_FILE_PATH = join(
     'changes',
     'id_1779179176282_0_propertyChange.change'
 );
-export const V2_FLEX_CHANGE_CONTENT = Object.freeze(JSON.parse(readFileSync(V2_FLEX_CHANGE_FILE_PATH, 'utf-8')));
+export const V2_FLEX_CHANGE_CONTENT = Object.freeze(
+    JSON.parse(readFileSync(V2_FLEX_CHANGE_FILE_PATH, 'utf-8'))
+) as FlexChange;
 
 const cdsModuleInstalled = (root: string): boolean => {
     const modulePath = join(root, 'node_modules');
@@ -192,6 +195,7 @@ export function setup(name: string, capAppPath?: string) {
         const projectCwdXml = filename?.includes(V4_PROJECT_PATH) ? V4_PROJECT_PATH : V2_PROJECT_PATH;
         const cwd = projectCwdCap ?? projectCwdXml;
         jest.spyOn(process, 'cwd').mockReturnValue(cwd);
+        ProjectContext.fileCache = new Map<string, string>(); // to force file reindex
         for (const change of changes) {
             const path = normalizePath(change.filename);
             const uri = pathToFileURL(path).toString();

@@ -1,6 +1,92 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 1.2.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Features
+
+- Add sap.fe.test JSDoc API as a new embedded data source [[d54fc9a](https://github.com/SAP/open-ux-tools/commit/d54fc9a6937632e19e5b50dbf79ba50f279b3a39)]
+
+## 1.2.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+## 1.2.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-30
+
+#### Bug Fixes
+
+- Trigger @sap-ux/fiori-mcp-server release [[17354e0](https://github.com/SAP/open-ux-tools/commit/17354e08c50f44f031ad2bedcbcb6ce01acd96ba)]
+
+## 1.2.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-18
+
+#### Bug Fixes
+
+- Validate GitHub host/token inputs to prevent argument injection; validate output path to prevent path traversal [[74a9959](https://github.com/SAP/open-ux-tools/commit/74a9959edf34f8f9ef99ca125fa71524c741aabd)]
+
+## 1.2.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-18
+
+#### Bug Fixes
+
+- Update opa5_docu.md: clear filter fields [[6776415](https://github.com/SAP/open-ux-tools/commit/6776415f52f25bbbf29728bec85e026a868e8687)]
+
+## 1.2.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-16
+
+#### Bug Fixes
+
+- OPA5 embeddings chunk formatting [[70f934e](https://github.com/SAP/open-ux-tools/commit/70f934e20e2e91aabccc02fc6e3d8f25940edc95)]
+
+## 1.2.0
+
+_Released: 2026-06-12T08:20:17Z_
+
+### Minor Changes
+
+- 08fb7a1: Add opa5_docu.md
+
+## 1.1.1
+
+_Released: 2026-06-11T15:27:53Z_
+
+### Patch Changes
+
+- 4124656: Add OPA mock server testing guide as github-raw doc source and --source CLI flag for single-source builds
+
 ## 1.1.0
+
+_Released: 2026-06-05T11:08:04Z_
 
 ### Minor Changes
 
@@ -8,11 +94,15 @@
 
 ## 1.0.1
 
+_Released: 2026-06-03T14:58:37Z_
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
 
 ## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -47,11 +137,15 @@
 
 ## 0.5.1
 
+_Released: 2026-05-21T05:46:16Z_
+
 ### Patch Changes
 
 - 12137f6: update doc for fiori extension
 
 ## 0.5.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -59,11 +153,15 @@
 
 ## 0.4.20
 
+_Released: 2026-05-14T12:51:22Z_
+
 ### Patch Changes
 
 - 59537d3: chore: override sharp to >=0.33.5 to fix CI build on darwin-arm64
 
 ## 0.4.19
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -71,17 +169,23 @@
 
 ## 0.4.18
 
+_Released: 2026-05-11T09:58:34Z_
+
 ### Patch Changes
 
 - a5c05a8: Add additional guidance on the adding of extension in fiori
 
 ## 0.4.17
 
+_Released: 2026-05-04T15:49:13Z_
+
 ### Patch Changes
 
 - e4a2488: feat - docs - how to add extensions to odata v4 fiori elements
 
 ## 0.4.16
+
+_Released: 2026-02-27T15:42:39Z_
 
 ### Patch Changes
 
@@ -91,11 +195,15 @@
 
 ## 0.4.15
 
+_Released: 2026-02-18T21:45:35Z_
+
 ### Patch Changes
 
 - d57cc47: Update fast-xml-parser
 
 ## 0.4.14
+
+_Released: 2026-02-10T21:03:43Z_
 
 ### Patch Changes
 
@@ -103,11 +211,15 @@
 
 ## 0.4.13
 
+_Released: 2026-02-03T15:42:23Z_
+
 ### Patch Changes
 
 - c3a1e07: fix: add documentation sources
 
 ## 0.4.12
+
+_Released: 2026-01-30T16:18:20Z_
 
 ### Patch Changes
 
@@ -115,11 +227,15 @@
 
 ## 0.4.11
 
+_Released: 2026-01-28T10:59:00Z_
+
 ### Patch Changes
 
 - a686522: feat: add Fiori Tools commands and update total document count
 
 ## 0.4.10
+
+_Released: 2026-01-23T17:12:38Z_
 
 ### Patch Changes
 
@@ -127,11 +243,15 @@
 
 ## 0.4.9
 
+_Released: 2026-01-12T09:10:27Z_
+
 ### Patch Changes
 
 - d667a5e: fix: add repository field to package.json
 
 ## 0.4.8
+
+_Released: 2026-01-09T11:35:48Z_
 
 ### Patch Changes
 
@@ -139,11 +259,15 @@
 
 ## 0.4.7
 
+_Released: 2025-12-18T21:05:02Z_
+
 ### Patch Changes
 
 - a9471d0: fix sonar issues
 
 ## 0.4.6
+
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -151,11 +275,15 @@
 
 ## 0.4.5
 
+_Released: 2025-12-01T17:31:14Z_
+
 ### Patch Changes
 
 - 7cb3db2: feat: enhance downloaded readme content for better chunking
 
 ## 0.4.4
+
+_Released: 2025-11-13T12:25:56Z_
 
 ### Patch Changes
 
@@ -163,11 +291,15 @@
 
 ## 0.4.3
 
+_Released: 2025-11-11T19:29:27Z_
+
 ### Patch Changes
 
 - a990ed6: feat: add @sap-ux/create/README.md as resource
 
 ## 0.4.2
+
+_Released: 2025-11-05T06:53:42Z_
 
 ### Patch Changes
 
@@ -175,11 +307,15 @@
 
 ## 0.4.1
 
+_Released: 2025-10-22T18:56:41Z_
+
 ### Patch Changes
 
 - fa9580c: chore - Rimraf upgrade
 
 ## 0.4.0
+
+_Released: 2025-10-20T15:41:39Z_
 
 ### Minor Changes
 
@@ -187,11 +323,15 @@
 
 ## 0.3.0
 
+_Released: 2025-10-15T11:11:41Z_
+
 ### Minor Changes
 
 - e75b594: Add Fiori Development portal documentation to embeddings
 
 ## 0.2.0
+
+_Released: 2025-10-09T12:00:16Z_
 
 ### Minor Changes
 
@@ -199,11 +339,15 @@
 
 ## 0.1.1
 
+_Released: 2025-10-06T17:09:01Z_
+
 ### Patch Changes
 
 - 43a2446: chore: fix Sonar issues
 
 ## 0.1.0
+
+_Released: 2025-10-06T11:26:22Z_
 
 ### Minor Changes
 
@@ -211,11 +355,15 @@
 
 ## 0.0.2
 
+_Released: 2025-09-18T23:50:28Z_
+
 ### Patch Changes
 
 - 306561e: Fix publishing of embeddings package
 
 ## 0.0.1
+
+_Released: 2025-09-17T14:22:31Z_
 
 ### Patch Changes
 

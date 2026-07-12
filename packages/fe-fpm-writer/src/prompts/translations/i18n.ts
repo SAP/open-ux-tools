@@ -280,6 +280,11 @@ const ns1 = {
                 'Adding button groups replaces the default button groups in the Rich Text Editor with your chosen configuration.'
         },
         'page': {
+            'templateType': {
+                'message': 'Page Layout',
+                'basic': 'Basic',
+                'full': 'Full'
+            },
             'id': {
                 'message': 'Building Block ID',
                 'validation': 'An ID is required to generate the page building block.'

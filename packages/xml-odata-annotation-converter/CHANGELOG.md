@@ -1,6 +1,16 @@
 # @sap-ux/xml-odata-annotation-converter
 
+## 1.0.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
 ## 1.0.1
+
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -9,6 +19,8 @@
     - @sap-ux/odata-annotation-core@1.0.1
 
 ## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -48,6 +60,8 @@
 
 ## 0.6.0
 
+_Released: 2026-05-20T13:39:22Z_
+
 ### Minor Changes
 
 - 2f1ece0: feat: add convertMetadataDocumentV2 API and expose V2Annotation type; getXmlServiceArtifacts now returns [ServiceArtifacts, V2Annotation[]]
@@ -57,6 +71,8 @@
 - @sap-ux/odata-annotation-core@0.3.1
 
 ## 0.5.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -69,6 +85,8 @@
 
 ## 0.4.14
 
+_Released: 2026-05-14T11:45:51Z_
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -76,6 +94,8 @@
     - @sap-ux/odata-annotation-core@0.2.19
 
 ## 0.4.13
+
+_Released: 2026-04-30T14:23:24Z_
 
 ### Patch Changes
 
@@ -85,11 +105,15 @@
 
 ## 0.4.12
 
+_Released: 2026-03-30T22:24:11Z_
+
 ### Patch Changes
 
 - c53a4ba: chore(xml-odata-annotation-converter): upgrade prettier 2.5.1 → 3.8.1; remove @types/prettier (types now bundled in prettier 3.x)
 
 ## 0.4.11
+
+_Released: 2026-03-16T17:06:45Z_
 
 ### Patch Changes
 
@@ -97,12 +121,16 @@
 
 ## 0.4.10
 
+_Released: 2026-03-04T09:03:38Z_
+
 ### Patch Changes
 
 - a2cbf4e: Include `Partner` and `ContainsTarget` attributes from `NavigationProperty` to converted object of `MetadataElementProperties`
     - @sap-ux/odata-annotation-core@0.2.16
 
 ## 0.4.9
+
+_Released: 2026-02-23T19:07:48Z_
 
 ### Patch Changes
 
@@ -112,6 +140,8 @@
 
 ## 0.4.8
 
+_Released: 2026-02-10T21:03:43Z_
+
 ### Patch Changes
 
 - 3795bb2: Add Node.js engine requirement (>=20.x)
@@ -120,11 +150,15 @@
 
 ## 0.4.7
 
+_Released: 2026-01-29T14:02:02Z_
+
 ### Patch Changes
 
 - @sap-ux/odata-annotation-core@0.2.13
 
 ## 0.4.6
+
+_Released: 2026-01-12T09:10:27Z_
 
 ### Patch Changes
 
@@ -133,6 +167,8 @@
 
 ## 0.4.5
 
+_Released: 2026-01-09T11:35:48Z_
+
 ### Patch Changes
 
 - Updated dependencies [e111d0d]
@@ -140,11 +176,15 @@
 
 ## 0.4.4
 
+_Released: 2025-12-18T21:05:02Z_
+
 ### Patch Changes
 
 - a9471d0: fix sonar issues
 
 ## 0.4.3
+
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -154,6 +194,8 @@
 
 ## 0.4.2
 
+_Released: 2025-11-05T06:53:42Z_
+
 ### Patch Changes
 
 - cfe9c13: Add deep link to package and changelog to README.md
@@ -162,6 +204,8 @@
 
 ## 0.4.1
 
+_Released: 2025-10-06T17:09:01Z_
+
 ### Patch Changes
 
 - 43a2446: chore: fix Sonar issues
@@ -169,6 +213,8 @@
     - @sap-ux/odata-annotation-core@0.2.9
 
 ## 0.4.0
+
+_Released: 2025-09-23T16:06:33Z_
 
 ### Minor Changes
 
@@ -181,11 +227,15 @@
 
 ## 0.3.7
 
+_Released: 2025-09-16T20:04:56Z_
+
 ### Patch Changes
 
 - @sap-ux/odata-annotation-core@0.2.7
 
 ## 0.3.6
+
+_Released: 2025-08-13T10:00:10Z_
 
 ### Patch Changes
 
@@ -193,11 +243,15 @@
 
 ## 0.3.5
 
+_Released: 2025-06-10T10:19:01Z_
+
 ### Patch Changes
 
 - @sap-ux/odata-annotation-core@0.2.5
 
 ## 0.3.4
+
+_Released: 2025-05-14T22:35:53Z_
 
 ### Patch Changes
 
@@ -205,12 +259,16 @@
 
 ## 0.3.3
 
+_Released: 2025-04-28T07:24:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [2a16531]
     - @sap-ux/odata-annotation-core@0.2.3
 
 ## 0.3.2
+
+_Released: 2024-10-04T15:21:13Z_
 
 ### Patch Changes
 
@@ -220,11 +278,15 @@
 
 ## 0.3.1
 
+_Released: 2024-08-07T11:06:05Z_
+
 ### Patch Changes
 
 - @sap-ux/odata-annotation-core@0.2.1
 
 ## 0.3.0
+
+_Released: 2024-07-05T15:03:05Z_
 
 ### Minor Changes
 
@@ -237,11 +299,15 @@
 
 ## 0.2.2
 
+_Released: 2024-03-22T08:51:54Z_
+
 ### Patch Changes
 
 - 61b46bc8: Security upgrade fixes
 
 ## 0.2.1
+
+_Released: 2024-02-07T11:10:48Z_
 
 ### Patch Changes
 
@@ -249,6 +315,8 @@
     - @sap-ux/odata-annotation-core@0.1.8
 
 ## 0.2.0
+
+_Released: 2024-01-09T09:27:13Z_
 
 ### Minor Changes
 
@@ -260,11 +328,15 @@
 
 ## 0.1.3
 
+_Released: 2023-12-12T07:54:42Z_
+
 ### Patch Changes
 
 - @sap-ux/odata-annotation-core@0.1.6
 
 ## 0.1.2
+
+_Released: 2023-12-07T12:16:28Z_
 
 ### Patch Changes
 

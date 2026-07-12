@@ -326,7 +326,8 @@ function buildPropertyEntry(
         selectedControlName !== 'sap.m.Image' &&
         analyzedType.ui5Type === 'sap.ui.core.URI';
     const ui5Type = analyzedType.ui5Type || undefined;
-    const readableName = convertCamelCaseToPascalCase(property.name);
+    const readableName =
+        'configuration' in property ? property.readableName : convertCamelCaseToPascalCase(property.name);
     const docuSpread = docu ? { documentation: docu } : {};
 
     switch (analyzedType.primitiveType) {

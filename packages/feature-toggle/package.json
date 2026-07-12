@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/feature-toggle",
-    "version": "1.0.1",
+    "version": "1.0.5",
     "description": "Feature toggle manager for Fiori tools",
     "type": "module",
     "repository": {
@@ -35,10 +35,10 @@
         "src"
     ],
     "devDependencies": {
-        "@jest/globals": "30.3.0",
-        "jest-when": "4.0.1",
+        "@jest/globals": "30.4.1",
+        "jest-when": "4.0.3",
         "rimraf": "6.1.3",
-        "@types/vscode": "1.110.0"
+        "@types/vscode": "1.106.1"
     },
     "engines": {
         "node": ">=22.x"

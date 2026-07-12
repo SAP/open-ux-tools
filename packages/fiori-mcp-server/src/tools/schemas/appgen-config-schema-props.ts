@@ -42,17 +42,24 @@ export const serviceOdata = z.object({
     servicePath: z
         .string()
         .describe(
-            'The odata endpoint. Required for all floorplans except FF_SIMPLE. If the parameter is not provided, the agent should ask the user for it.'
-        )
-        .meta({
-            examples: ['/sap/opu/odata/sap/<servicename>/', '/<servicename>/']
-        }),
+            '🚨 DO NOT CONSTRUCT - This is provided by download_odata_service_metadata tool! ' +
+                'The odata endpoint path returned from the metadata download tool. ' +
+                'NEVER construct this yourself - always get it from download_odata_service_metadata output. ' +
+                'Required for all floorplans except FF_SIMPLE.'
+        ),
     host: z
         .url()
         .describe(
             'The host of the OData service. Must be an HTTPS endpoint. If the parameter is not provided, the agent should ask the user for it.'
         ),
     client: z.optional(z.string().describe('The client to be used for the OData service.')),
+    destination: z.optional(
+        z
+            .string()
+            .describe(
+                'The BTP destination name to be used for the OData service. This must be provided on SAP Business Application Studio.'
+            )
+    ),
     metadataFilePath: z.optional(z.string().describe('Path to a local metadata.xml file.'))
 });
 
@@ -98,7 +105,7 @@ export const entityConfig = z.object({
             .describe(
                 'The name of the main entity. EntitySet Name attribute in OData Metadata. Required for all floorplans except FF_SIMPLE.'
             )
-            .meta({ examples: ["'SalesOrder'", "'PurchaseOrderHeader'", "'MyEntity'"] })
+            .meta({ examples: ['SalesOrder', 'PurchaseOrderHeader', 'MyEntity'] })
     }),
     generateFormAnnotations: z
         .boolean()

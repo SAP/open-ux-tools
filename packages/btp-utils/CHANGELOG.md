@@ -1,6 +1,32 @@
 # @sap-ux/btp-utils
 
+## 2.0.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- upgrade axios dependency [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
+## 2.0.4
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+## 2.0.3
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
 ## 2.0.2
+
+_Released: 2026-06-09T14:35:01Z_
 
 ### Patch Changes
 
@@ -8,11 +34,15 @@
 
 ## 2.0.1
 
+_Released: 2026-06-03T14:58:37Z_
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
 
 ## 2.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -47,11 +77,15 @@
 
 ## 1.2.1
 
+_Released: 2026-05-26T16:40:21Z_
+
 ### Patch Changes
 
 - 01b70ca: chore: upgrade @sap/bas-sdk 3.13.6 → 3.13.7, @sap/approuter ^21.5.0 → ^22.0.0 (security: ws vulnerability)
 
 ## 1.2.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -59,11 +93,15 @@
 
 ## 1.1.16
 
+_Released: 2026-05-14T11:45:51Z_
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
 
 ## 1.1.15
+
+_Released: 2026-05-06T23:02:00Z_
 
 ### Patch Changes
 
@@ -71,17 +109,23 @@
 
 ## 1.1.14
 
+_Released: 2026-04-14T20:26:28Z_
+
 ### Patch Changes
 
 - ee68603: Axios upgrade from bas-sdk
 
 ## 1.1.13
 
+_Released: 2026-04-14T12:35:35Z_
+
 ### Patch Changes
 
 - cc4450c: chore: upgrade axios 1.13.6 → 1.15.0 (security fix GHSA-3p68-rc4w-qgx5, GHSA-fvcv-3m26-pcqx)
 
 ## 1.1.12
+
+_Released: 2026-03-27T11:58:49Z_
 
 ### Patch Changes
 
@@ -91,11 +135,15 @@
 
 ## 1.1.11
 
+_Released: 2026-03-26T12:07:04Z_
+
 ### Patch Changes
 
 - a41533f: chore(btp-utils): fix indentation in boolean expressions (Prettier upgrade autofix)
 
 ## 1.1.10
+
+_Released: 2026-03-17T01:04:22Z_
 
 ### Patch Changes
 
@@ -103,11 +151,15 @@
 
 ## 1.1.9
 
+_Released: 2026-02-16T18:48:13Z_
+
 ### Patch Changes
 
 - dd2131c: Axios upgrade from bas-sdk
 
 ## 1.1.8
+
+_Released: 2026-02-10T23:50:15Z_
 
 ### Patch Changes
 
@@ -115,11 +167,15 @@
 
 ## 1.1.7
 
+_Released: 2026-02-04T22:31:27Z_
+
 ### Patch Changes
 
 - 9f11dd2: chore - address audit issues
 
 ## 1.1.6
+
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -127,11 +183,15 @@
 
 ## 1.1.5
 
+_Released: 2025-11-05T06:53:42Z_
+
 ### Patch Changes
 
 - cfe9c13: Add deep link to package and changelog to README.md
 
 ## 1.1.4
+
+_Released: 2025-10-06T17:09:01Z_
 
 ### Patch Changes
 
@@ -139,11 +199,15 @@
 
 ## 1.1.3
 
+_Released: 2025-09-23T20:14:56Z_
+
 ### Patch Changes
 
 - 998954b: Upgrade bas-sdk to get axios updates
 
 ## 1.1.2
+
+_Released: 2025-09-19T16:36:41Z_
 
 ### Patch Changes
 
@@ -151,11 +215,15 @@
 
 ## 1.1.1
 
+_Released: 2025-08-28T13:37:07Z_
+
 ### Patch Changes
 
 - 4cfebaf: Update axios module
 
 ## 1.1.0
+
+_Released: 2025-05-14T22:35:53Z_
 
 ### Minor Changes
 
@@ -163,11 +231,15 @@
 
 ## 1.0.3
 
+_Released: 2025-04-14T22:24:07Z_
+
 ### Patch Changes
 
 - d638daa: Update @sap/bas-sdk dependency
 
 ## 1.0.2
+
+_Released: 2025-03-10T20:40:35Z_
 
 ### Patch Changes
 
@@ -175,11 +247,15 @@
 
 ## 1.0.1
 
+_Released: 2025-02-05T14:44:29Z_
+
 ### Patch Changes
 
 - 65f15d9: Fix for btp-utils create dest api mapping. Adds feature CF Abap prompts for BAS.
 
 ## 1.0.0
+
+_Released: 2025-02-04T14:25:43Z_
 
 ### Major Changes
 
@@ -187,11 +263,15 @@
 
 ## 0.18.0
 
+_Released: 2025-01-29T13:31:31Z_
+
 ### Minor Changes
 
 - df2d965: new functionality to generate OAuth2TokenExchange BTP destination using cf-tools
 
 ## 0.17.2
+
+_Released: 2024-12-17T13:32:02Z_
 
 ### Patch Changes
 
@@ -199,11 +279,15 @@
 
 ## 0.17.1
 
+_Released: 2024-12-04T12:27:41Z_
+
 ### Patch Changes
 
 - 2359524: align versions of cf-tools
 
 ## 0.17.0
+
+_Released: 2024-11-18T22:28:16Z_
 
 ### Minor Changes
 
@@ -211,11 +295,15 @@
 
 ## 0.16.0
 
+_Released: 2024-11-11T17:55:13Z_
+
 ### Minor Changes
 
 - 3734fe8: Adds system prompting to `@sap-ux/odata-service-inquirer`
 
 ## 0.15.2
+
+_Released: 2024-08-23T10:57:41Z_
 
 ### Patch Changes
 
@@ -223,11 +311,15 @@
 
 ## 0.15.1
 
+_Released: 2024-08-19T09:48:14Z_
+
 ### Patch Changes
 
 - 9c8dc5c: fix: update `axios` to `1.7.4`
 
 ## 0.15.0
+
+_Released: 2024-07-05T15:03:05Z_
 
 ### Minor Changes
 
@@ -235,11 +327,15 @@
 
 ## 0.14.4
 
+_Released: 2024-05-06T12:14:11Z_
+
 ### Patch Changes
 
 - 9a32e102: fix preview reload on SBAS, by exposing livereload server port over url
 
 ## 0.14.3
+
+_Released: 2024-03-22T08:51:54Z_
 
 ### Patch Changes
 
@@ -247,17 +343,23 @@
 
 ## 0.14.2
 
+_Released: 2024-02-28T11:01:55Z_
+
 ### Patch Changes
 
 - 811c4324: Expose types and introduce missing functionality
 
 ## 0.14.1
 
+_Released: 2024-02-27T22:07:50Z_
+
 ### Patch Changes
 
 - c15435b6: fix: remove engines pnpm from package.json
 
 ## 0.14.0
+
+_Released: 2024-02-21T13:16:24Z_
 
 ### Minor Changes
 
@@ -267,6 +369,8 @@
 
 ## 0.13.0
 
+_Released: 2024-02-06T09:17:39Z_
+
 ### Minor Changes
 
 - de8a4878: Checks if an ABAP target system is on premise to log additional info when deploying.
@@ -275,11 +379,15 @@
 
 ## 0.12.1
 
+_Released: 2023-11-13T08:06:13Z_
+
 ### Patch Changes
 
 - 286883cb: fix(deps): update dependency axios to v1.6.0 [security]
 
 ## 0.12.0
+
+_Released: 2023-10-19T12:06:19Z_
 
 ### Minor Changes
 
@@ -287,11 +395,15 @@
 
 ## 0.11.9
 
+_Released: 2023-09-20T13:13:51Z_
+
 ### Patch Changes
 
 - 63c698a8: chore - fix publishing of modules missed in failed release build
 
 ## 0.11.8
+
+_Released: 2023-08-10T12:54:14Z_
 
 ### Patch Changes
 
@@ -299,11 +411,15 @@
 
 ## 0.11.7
 
+_Released: 2023-06-27T14:58:54Z_
+
 ### Patch Changes
 
 - 4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
 
 ## 0.11.6
+
+_Released: 2023-06-12T06:59:29Z_
 
 ### Patch Changes
 
@@ -311,11 +427,15 @@
 
 ## 0.11.5
 
+_Released: 2023-02-23T13:56:23Z_
+
 ### Patch Changes
 
 - d350038: chore - TypeScript 4.9.4 upgrade
 
 ## 0.11.4
+
+_Released: 2023-02-10T14:09:06Z_
 
 ### Patch Changes
 
@@ -323,11 +443,15 @@
 
 ## 0.11.3
 
+_Released: 2022-12-05T07:50:58Z_
+
 ### Patch Changes
 
 - 070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
 
 ## 0.11.2
+
+_Released: 2022-10-11T14:06:32Z_
 
 ### Patch Changes
 
@@ -335,11 +459,15 @@
 
 ## 0.11.1
 
+_Released: 2022-09-08T17:04:29Z_
+
 ### Patch Changes
 
 - b8d5315: Relaxing interfaces when working with destinations.
 
 ## 0.11.0
+
+_Released: 2022-08-26T23:41:09Z_
 
 ### Minor Changes
 
@@ -347,11 +475,15 @@
 
 ## 0.10.4
 
+_Released: 2022-08-02T14:32:30Z_
+
 ### Patch Changes
 
 - 5710cfa: fix handling of full url destinations
 
 ## 0.10.3
+
+_Released: 2022-07-21T14:10:31Z_
 
 ### Patch Changes
 
@@ -359,11 +491,15 @@
 
 ## 0.10.2
 
+_Released: 2022-07-04T13:03:56Z_
+
 ### Patch Changes
 
 - cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
 
 ## 0.10.1
+
+_Released: 2022-06-23T12:02:11Z_
 
 ### Patch Changes
 
@@ -371,17 +507,23 @@
 
 ## 0.10.0
 
+_Released: 2022-06-13T09:53:27Z_
+
 ### Minor Changes
 
 - 6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
 
 ## 0.9.2
 
+_Released: 2022-05-19T14:38:34Z_
+
 ### Patch Changes
 
 - c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
 
 ## 0.9.1
+
+_Released: 2022-05-16T16:22:38Z_
 
 ### Patch Changes
 

@@ -1,9 +1,10 @@
-const path = require('path');
-
-const rootDir = path.resolve(__dirname, '..');
-
 module.exports = {
-    /** resolves from test to snapshot path */
+    /**
+     * resolves from test to snapshot path
+     * @param {string}testPath - the test path
+     * @param {string}snapshotExtension - the snapshot extension
+     * @returns {string} snapshot path
+     */
     resolveSnapshotPath: (testPath, snapshotExtension) => {
         return (
             testPath
@@ -12,7 +13,12 @@ module.exports = {
         );
     },
 
-    /** resolves from snapshot to test path */
+    /**
+     * resolves from snapshot to test path
+     * @param {string}snapshotFilePath - the snapshot path
+     * @param {string}snapshotExtension - the snapshot extension
+     * @returns {string} test path
+     */
     resolveTestPath: (snapshotFilePath, snapshotExtension) => {
         return snapshotFilePath
             .replace('test/__snapshots__/', 'test/unit/components/')

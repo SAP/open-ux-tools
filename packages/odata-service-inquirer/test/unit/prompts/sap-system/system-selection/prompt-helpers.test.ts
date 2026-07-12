@@ -304,4 +304,53 @@ describe('connectWithBackendSystem', () => {
 
         loggerWarnSpy.mockRestore();
     });
+
+    test('should pass connectType abap_catalog when no connectPath is given and odata_path when connectPath is given', async () => {
+        // Given a reentrance ticket backend system
+        const backendSystem: BackendSystem = {
+            name: 'Cloud System',
+            url: 'https://cloud.system.com',
+            authenticationType: 'reentranceTicket',
+            systemType: 'AbapCloud',
+            connectionType: 'abap_catalog'
+        };
+        mockGetService.mockImplementation(() => ({
+            read: jest.fn().mockResolvedValue(backendSystem)
+        }));
+
+        const validateUrlMock = jest.fn().mockResolvedValue(true);
+        const mockConnectionValidator = {
+            validateUrl: validateUrlMock,
+            serviceProvider: { name: 'mockProvider' },
+            setConnectedSystem: jest.fn()
+        } as unknown as ConnectionValidator;
+
+        const backendKey = BackendSystemKey.from(backendSystem);
+
+        // When connectWithBackendSystem is called without a connectPath
+        await connectWithBackendSystem(backendKey, mockConnectionValidator);
+
+        // Then connectType should be abap_catalog
+        expect(validateUrlMock).toHaveBeenCalledWith(
+            'https://cloud.system.com',
+            expect.objectContaining({ connectType: 'abap_catalog' })
+        );
+
+        validateUrlMock.mockClear();
+
+        // When connectWithBackendSystem is called with a connectPath
+        await connectWithBackendSystem(
+            backendKey,
+            mockConnectionValidator,
+            undefined,
+            undefined,
+            '/sap/opu/odata/sap/MY_SERVICE'
+        );
+
+        // Then connectType should be odata_path
+        expect(validateUrlMock).toHaveBeenCalledWith(
+            'https://cloud.system.com/sap/opu/odata/sap/MY_SERVICE',
+            expect.objectContaining({ connectType: 'odata_path' })
+        );
+    });
 });

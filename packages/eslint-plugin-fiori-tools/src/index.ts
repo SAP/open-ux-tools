@@ -33,7 +33,8 @@ const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 
  */
 export const meta = {
     name: packageJson.name,
-    version: packageJson.version
+    version: packageJson.version,
+    namespace: '@sap-ux/fiori-tools'
 };
 
 /**
@@ -52,11 +53,7 @@ const fioriRules = rules as Plugin['rules'];
  * Contains plugin metadata, supported languages, rules, and processors.
  */
 const plugin: Plugin = {
-    meta: {
-        name: packageJson.name,
-        version: '0.0.1',
-        namespace: '@sap-ux/fiori-tools'
-    },
+    meta,
     languages,
     rules: fioriRules,
     processors: {}
@@ -389,8 +386,15 @@ const prodConfig: Linter.Config[] = [
 
         languageOptions: {
             parser: babelParser,
+            sourceType: 'module',
+            ecmaVersion: 'latest',
             parserOptions: {
-                requireConfigFile: false
+                requireConfigFile: false,
+                babelOptions: {
+                    parserOpts: {
+                        plugins: ['typescript']
+                    }
+                }
             },
             globals: globalsConfig
         },
@@ -408,8 +412,15 @@ const testConfig: Linter.Config[] = [
 
         languageOptions: {
             parser: babelParser,
+            sourceType: 'module',
+            ecmaVersion: 'latest',
             parserOptions: {
-                requireConfigFile: false
+                requireConfigFile: false,
+                babelOptions: {
+                    parserOpts: {
+                        plugins: ['typescript']
+                    }
+                }
             },
             globals: globalsConfig
         },
@@ -487,7 +498,8 @@ const fioriLanguageConfig: Linter.Config[] = [
             '@sap-ux/fiori-tools/sap-table-personalization': 'warn',
             '@sap-ux/fiori-tools/sap-table-column-vertical-alignment': 'warn',
             '@sap-ux/fiori-tools/sap-no-data-field-intent-based-navigation': 'warn',
-            '@sap-ux/fiori-tools/sap-text-arrangement-hidden': 'warn'
+            '@sap-ux/fiori-tools/sap-text-arrangement-hidden': 'warn',
+            '@sap-ux/fiori-tools/sap-no-live-mode': 'warn'
         }
     }
 ];
@@ -504,9 +516,9 @@ export const configs: Record<string, Linter.Config[]> = {
                 }
             }
         },
-        ...typescriptConfig,
         ...prodConfig,
-        ...testConfig
+        ...testConfig,
+        ...typescriptConfig
     ],
     'recommended-for-s4hana': [
         {
@@ -518,9 +530,9 @@ export const configs: Record<string, Linter.Config[]> = {
                 }
             }
         },
-        ...typescriptConfig,
         ...prodConfig,
         ...testConfig,
+        ...typescriptConfig,
         ...fioriLanguageConfig
     ]
 };

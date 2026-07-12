@@ -1,10 +1,9 @@
-import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
+import { getTemplatePath } from '../templates.js';
 import type { CloudApp, AdpWriterConfig, TypesConfig, CfAdpWriterConfig, DescriptorVariant } from '../types.js';
 import {
     enhanceUI5DeployYaml,
@@ -19,6 +18,8 @@ import {
 
 import type { Package } from '@sap-ux/project-access';
 import { UI5Config, UI5_DEFAULT, getEsmTypesVersion, getTypesPackage, getTypesVersion } from '@sap-ux/ui5-config';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Retrieves the package name and version from the package.json file located two levels up the directory tree.
@@ -155,6 +156,7 @@ export async function writeUI5Yaml(projectPath: string, data: AdpWriterConfig, f
         enhanceUI5YamlWithTranspileMiddleware(ui5Config, data);
         enhanceUI5Yaml(ui5Config, data);
         enhanceUI5YamlWithCustomTask(ui5Config, data as AdpWriterConfig & { app: CloudApp });
+        ui5Config.addBuilderResourceExcludes();
 
         fs.write(ui5ConfigPath, ui5Config.toString());
     } catch (e) {
@@ -181,6 +183,7 @@ export async function writeCfUI5Yaml(projectPath: string, data: CfAdpWriterConfi
         enhanceUI5YamlWithCfCustomTask(ui5Config, data);
         /** Middlewares */
         enhanceUI5YamlWithFioriToolsMiddleware(ui5Config);
+        ui5Config.addBuilderResourceExcludes();
 
         fs.write(ui5ConfigPath, ui5Config.toString());
     } catch (e) {
@@ -225,8 +228,7 @@ export async function writeCfTemplates(
     config: CfAdpWriterConfig,
     fs: Editor
 ): Promise<void> {
-    const baseTmplPath = join(__dirname, '../../templates');
-    const templatePath = config.options?.templatePathOverwrite ?? baseTmplPath;
+    const templatePath = config.options?.templatePathOverwrite ?? getTemplatePath();
     const { app, project, options } = config;
 
     fs.copyTpl(

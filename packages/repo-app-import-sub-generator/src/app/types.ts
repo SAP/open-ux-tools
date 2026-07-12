@@ -1,10 +1,66 @@
 import type Generator from 'yeoman-generator';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { VSCodeInstance, TelemetryData, LogWrapper } from '@sap-ux/fiori-generator-shared';
-import type { AppIndex } from '@sap-ux/axios-extension';
-import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
+import type { AppIndex, AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { OdataServiceAnswers, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+
+/**
+ * App configuration derived from the downloaded manifest for the ABAP repository flow.
+ * Used for README generation, launch config creation, and adding a minimal package.json.
+ */
+export interface AbapRepoAppConfig {
+    app: {
+        id: string;
+        title: string;
+        flpAppId: string;
+    };
+    service: {
+        url: string | undefined;
+        version: OdataVersion;
+    };
+    ui5: {
+        version: string;
+    };
+    template: {
+        type: string;
+    };
+}
+
+/**
+ * Identifies which download flow is active.
+ * ADTQuickDeploy: app was quick-deployed via ADT; uses qfa.json for config.
+ * AbapRepository: app lives in ABAP UI5 repository; config is read from manifest.
+ */
+export const AppDownloadType = {
+    ADTQuickDeploy: 'adtQuickDeploy',
+    AbapRepository: 'abapRepository'
+};
+
+export type AppDownloadType = (typeof AppDownloadType)[keyof typeof AppDownloadType];
+
+/**
+ * Context for the ADT Quick Deploy download flow.
+ */
+export interface AdtQuickDeployContext {
+    appDownloadType: typeof AppDownloadType.ADTQuickDeploy;
+    qfaJson: QfaJsonConfig;
+    serviceProvider?: AbapServiceProvider;
+}
+
+/**
+ * Context for the ABAP Repository download flow.
+ */
+export interface AbapRepositoryContext {
+    appDownloadType: typeof AppDownloadType.AbapRepository;
+    serviceProvider?: AbapServiceProvider;
+}
+
+/**
+ * Union of download contexts.
+ */
+export type AppDownloadContext = AdtQuickDeployContext | AbapRepositoryContext;
 
 /**
  * Quick deploy app config are applicable only in scenarios where an application
@@ -51,6 +107,9 @@ export interface RepoAppDownloadOptions extends Generator.GeneratorOptions {
 
     /** Logger instance for logging operations. */
     logWrapper?: LogWrapper;
+
+    /** The type of app download. */
+    appDownloadType?: AppDownloadType;
 }
 
 /**
