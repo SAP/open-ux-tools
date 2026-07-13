@@ -37,7 +37,7 @@ describe('<UIDropdown />', () => {
     it('Existence', () => {
         render(<UIContextualMenu items={defaultItems} />);
         // Fluent UI ContextualMenu renders into a portal in document.body
-        expect(document.body.querySelectorAll('div.ts-ContextualMenu').length).toEqual(1);
+        expect(document.body.querySelectorAll('div.ts-ContextualMenu')).toHaveLength(1);
     });
 
     it('Test className property', () => {
@@ -102,7 +102,7 @@ describe('<UIDropdown />', () => {
         render(<UIContextualMenu items={items} />);
 
         // Check if icon is rendered
-        expect(document.body.querySelectorAll(`i[data-icon-name="${UiIcons.GuidedDevelopment}"]`).length).toEqual(1);
+        expect(document.body.querySelectorAll(`i[data-icon-name="${UiIcons.GuidedDevelopment}"]`)).toHaveLength(1);
         // Check icon is on right side (text first, then icon)
         const containerElement = document.body.querySelector('.ms-ContextualMenu-linkContent') as HTMLElement;
         const textElement = document.body.querySelector('.ms-ContextualMenu-itemText') as HTMLElement;
@@ -124,9 +124,9 @@ describe('<UIDropdown />', () => {
         render(<UIContextualMenu items={items} />);
 
         // Check if only one icon is rendered
-        expect(document.body.querySelectorAll(`i[data-icon-name="${UiIcons.GuidedDevelopment}"]`).length).toEqual(1);
+        expect(document.body.querySelectorAll(`i[data-icon-name="${UiIcons.GuidedDevelopment}"]`)).toHaveLength(1);
         // Check if two menu items are rendered
-        expect(document.body.querySelectorAll('.ms-ContextualMenu-linkContent').length).toEqual(2);
+        expect(document.body.querySelectorAll('.ms-ContextualMenu-linkContent')).toHaveLength(2);
     });
 
     it('getUIContextualMenuItemStyles - call without params', () => {

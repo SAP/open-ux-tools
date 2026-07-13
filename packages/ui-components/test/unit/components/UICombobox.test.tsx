@@ -74,17 +74,17 @@ describe('<UIComboBox />', () => {
     });
 
     it('Test css selectors which are used in scss - main', () => {
-        expect(container.querySelectorAll('.ms-ComboBox').length).toEqual(1);
-        expect(container.querySelectorAll('.ms-ComboBox .ms-Button--icon i svg').length).toEqual(1);
+        expect(container.querySelectorAll('.ms-ComboBox')).toHaveLength(1);
+        expect(container.querySelectorAll('.ms-ComboBox .ms-Button--icon i svg')).toHaveLength(1);
         openDropdown();
-        expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(1);
+        expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(1);
         expect(document.querySelectorAll(`${menuDropdownSelector} .ms-Callout-main`).length).toBeGreaterThan(0);
         expect(
             document.querySelectorAll(`${menuDropdownSelector} .ms-ComboBox-optionsContainer .ms-Button--command`)
                 .length
         ).toBeGreaterThan(0);
         expect(document.querySelectorAll(nonHighlighttItemSelector).length).toBeGreaterThan(0);
-        expect(document.querySelectorAll(highlightItemSelector).length).toEqual(0);
+        expect(document.querySelectorAll(highlightItemSelector)).toHaveLength(0);
     });
 
     it('Styles - default', () => {
@@ -185,7 +185,7 @@ describe('<UIComboBox />', () => {
         it('Test css selectors which are used in scss - with highlight', () => {
             openDropdown();
             expect(document.querySelectorAll(highlightItemSelector).length).toBeGreaterThan(0);
-            expect(document.querySelectorAll(nonHighlighttItemSelector).length).toEqual(0);
+            expect(document.querySelectorAll(nonHighlighttItemSelector)).toHaveLength(0);
         });
 
         describe('Test on "Keydown"', () => {
@@ -201,18 +201,18 @@ describe('<UIComboBox />', () => {
                         />
                     );
                     const input = container.querySelector('input') as HTMLInputElement;
-                    expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(0);
+                    expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
                     fireEvent.keyDown(input, {});
-                    expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(1);
+                    expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(1);
                 });
             }
 
             it('Test on "Keydown" - test arrow Cycling', () => {
                 const input = container.querySelector('input') as HTMLInputElement;
-                expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(0);
+                expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
                 // Open callout
                 fireEvent.keyDown(input, { which: KeyCodes.down, keyCode: KeyCodes.down });
-                expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(1);
+                expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(1);
                 // First empty option
                 expect(document.querySelector('.ts-ComboBox--selected .ts-Menu-option')?.textContent).toEqual('');
                 // Test cycling UP - last item should be selected
@@ -232,15 +232,15 @@ describe('<UIComboBox />', () => {
                 const ignoredOpenKeys = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
                 const input = container.querySelector('input') as HTMLInputElement;
 
-                expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(0);
+                expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
                 for (const ignoredKey of ignoredOpenKeys) {
                     fireEvent.keyDown(input, { key: ignoredKey });
                 }
                 // None of previously pressed keys should not trigger open for dropdown menu
-                expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(0);
+                expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
                 // Trigger with valid key
                 fireEvent.keyDown(input, { key: 'a' });
-                expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(1);
+                expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(1);
             });
         });
 
@@ -248,7 +248,7 @@ describe('<UIComboBox />', () => {
             const input = container.querySelector('input') as HTMLInputElement;
             fireEvent.keyDown(input, {});
             triggerSearch('Lat');
-            expect(document.querySelectorAll('.ts-Menu-option--highlighted').length).toEqual(1);
+            expect(document.querySelectorAll('.ts-Menu-option--highlighted')).toHaveLength(1);
             expect(document.querySelector('.ts-Menu-option--highlighted')?.textContent).toEqual('Lat');
         });
 
@@ -297,14 +297,14 @@ describe('<UIComboBox />', () => {
             const input = container.querySelector('input') as HTMLInputElement;
             openDropdown();
             triggerSearch('Au');
-            expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(1);
+            expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(1);
             let hiddenItemsExist = comboboxRef.current?.props.options.some((option) => {
                 return option.hidden;
             });
             expect(hiddenItemsExist).toEqual(true);
             // Close callout
             fireEvent.keyDown(input, { which: KeyCodes.escape });
-            expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(0);
+            expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
             hiddenItemsExist = comboboxRef.current?.props.options.some((option) => {
                 return option.hidden;
             });
@@ -338,12 +338,12 @@ describe('<UIComboBox />', () => {
             const input = container.querySelector('input') as HTMLInputElement;
             fireEvent.keyDown(input, {});
             triggerSearch('Est');
-            expect(document.querySelectorAll('.ts-Menu-option--highlighted').length).toEqual(0);
+            expect(document.querySelectorAll('.ts-Menu-option--highlighted')).toHaveLength(0);
         });
     });
 
     it('Test "useComboBoxAsMenuMinWidth"', () => {
-        expect(comboboxRef.current?.state.minWidth).toEqual(undefined);
+        expect(comboboxRef.current?.state.minWidth).toBeUndefined();
         const newRef = React.createRef<UIComboBox>();
         const { container: c2 } = render(
             <UIComboBox ref={newRef} {...defaultProps} useComboBoxAsMenuMinWidth={true} />
@@ -359,15 +359,15 @@ describe('<UIComboBox />', () => {
         const { container: c2 } = render(
             <UIComboBox ref={newRef} {...defaultProps} highlight={true} useComboBoxAsMenuMinWidth={true} />
         );
-        expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(0);
+        expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
         // Open callout
         const btn = c2.querySelector('.ms-ComboBox .ms-Button--icon') as HTMLElement;
         fireEvent.click(btn, document.createEvent('Events'));
-        expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(1);
+        expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(1);
         act(() => {
             newRef.current?.dismissMenu();
         });
-        expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(0);
+        expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
     });
 
     describe('Multiselect', () => {
@@ -391,11 +391,11 @@ describe('<UIComboBox />', () => {
                     onChange={onChange}
                 />
             );
-            expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(0);
+            expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
             // Open callout
             const btn = c2.querySelector('.ms-ComboBox .ms-Button--icon') as HTMLElement;
             fireEvent.click(btn, document.createEvent('Events'));
-            expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(1);
+            expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(1);
             // select some options - fire change on the inner checkbox input elements
             const options = document.querySelectorAll('.ms-Checkbox.is-enabled.ms-ComboBox-option');
             expect(options.length).toBeGreaterThan(0);
@@ -449,14 +449,14 @@ describe('<UIComboBox />', () => {
                 />
             );
 
-            expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(0);
+            expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
             const query = 'Lat';
             const input = c2.querySelector('input') as HTMLInputElement;
             fireEvent.keyDown(input, {});
             fireEvent.input(input, {
                 target: getInputTarget(query)
             });
-            expect(document.querySelectorAll('.ts-Menu-option--highlighted').length).toEqual(1);
+            expect(document.querySelectorAll('.ts-Menu-option--highlighted')).toHaveLength(1);
             expect(document.querySelector('.ts-Menu-option--highlighted')?.textContent).toEqual(query);
 
             // select some options - fire change on the inner checkbox input element
@@ -584,23 +584,23 @@ describe('<UIComboBox />', () => {
     describe('Error message', () => {
         it('Error', () => {
             rerender(<UIComboBox ref={comboboxRef} {...defaultProps} errorMessage="dummy" />);
-            expect(container.querySelectorAll('.ts-ComboBox--error').length).toEqual(1);
-            expect(container.querySelectorAll('.ts-ComboBox--warning').length).toEqual(0);
-            expect(container.querySelectorAll('.ts-ComboBox--info').length).toEqual(0);
+            expect(container.querySelectorAll('.ts-ComboBox--error')).toHaveLength(1);
+            expect(container.querySelectorAll('.ts-ComboBox--warning')).toHaveLength(0);
+            expect(container.querySelectorAll('.ts-ComboBox--info')).toHaveLength(0);
         });
 
         it('Warning', () => {
             rerender(<UIComboBox ref={comboboxRef} {...defaultProps} warningMessage="dummy" />);
-            expect(container.querySelectorAll('.ts-ComboBox--error').length).toEqual(0);
-            expect(container.querySelectorAll('.ts-ComboBox--warning').length).toEqual(1);
-            expect(container.querySelectorAll('.ts-ComboBox--info').length).toEqual(0);
+            expect(container.querySelectorAll('.ts-ComboBox--error')).toHaveLength(0);
+            expect(container.querySelectorAll('.ts-ComboBox--warning')).toHaveLength(1);
+            expect(container.querySelectorAll('.ts-ComboBox--info')).toHaveLength(0);
         });
 
         it('Info', () => {
             rerender(<UIComboBox ref={comboboxRef} {...defaultProps} infoMessage="dummy" />);
-            expect(container.querySelectorAll('.ts-ComboBox--error').length).toEqual(0);
-            expect(container.querySelectorAll('.ts-ComboBox--warning').length).toEqual(0);
-            expect(container.querySelectorAll('.ts-ComboBox--info').length).toEqual(1);
+            expect(container.querySelectorAll('.ts-ComboBox--error')).toHaveLength(0);
+            expect(container.querySelectorAll('.ts-ComboBox--warning')).toHaveLength(0);
+            expect(container.querySelectorAll('.ts-ComboBox--info')).toHaveLength(1);
         });
     });
 
@@ -629,7 +629,7 @@ describe('<UIComboBox />', () => {
             rerender(<UIComboBox ref={comboboxRef} {...defaultProps} highlight={true} options={dataTemp} />);
             openDropdown();
             const buttons = document.querySelectorAll(buttonSelector);
-            expect(buttons[buttons.length - 1].getAttribute('title')).toEqual(null);
+            expect(buttons[buttons.length - 1].getAttribute('title')).toBeNull();
         });
     });
 
@@ -652,9 +652,9 @@ describe('<UIComboBox />', () => {
             it(`Click on input, "openMenuOnClick=${testCase.value}"`, () => {
                 rerender(<UIComboBox ref={comboboxRef} {...defaultProps} openMenuOnClick={testCase.value} />);
                 const input = container.querySelector('input') as HTMLInputElement;
-                expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(0);
+                expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
                 fireEvent.click(input);
-                expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(testCase.expectOpen ? 1 : 0);
+                expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(testCase.expectOpen ? 1 : 0);
             });
         }
     });
@@ -676,7 +676,7 @@ describe('<UIComboBox />', () => {
         // disabled prop maps to readOnly=true and aria-disabled=true (not actual HTML disabled)
         expect(input.disabled).toBeFalsy();
         expect(input.readOnly).toEqual(true);
-        expect(input.getAttribute('tabindex')).toEqual(null);
+        expect(input.getAttribute('tabindex')).toBeNull();
         expect(input.getAttribute('aria-disabled')).toEqual('true');
     });
 
@@ -765,7 +765,7 @@ describe('<UIComboBox />', () => {
                     // When readOnly is set: aria-readonly=true, aria-disabled is explicitly undefined (not rendered)
                     expect(input.getAttribute('aria-readonly')).toEqual('true');
                     // aria-disabled is set to undefined in props - React does not render it as a DOM attribute
-                    expect(input.getAttribute('aria-disabled')).toEqual(null);
+                    expect(input.getAttribute('aria-disabled')).toBeNull();
                 } else {
                     expect(input.hasAttribute('aria-readonly')).toEqual(false);
                     expect(input.getAttribute('aria-disabled')).toEqual(testCase.disabled ? 'true' : 'false');
@@ -814,7 +814,7 @@ describe('<UIComboBox />', () => {
                         selectedKey={testCase.selectedKey as UIComboBoxProps['selectedKey']}
                     />
                 );
-                expect(container.querySelectorAll('div.ts-ComboBox--empty').length).toEqual(testCase.expected ? 1 : 0);
+                expect(container.querySelectorAll('div.ts-ComboBox--empty')).toHaveLength(testCase.expected ? 1 : 0);
             });
         }
     });
@@ -826,30 +826,30 @@ describe('<UIComboBox />', () => {
 
         it('Test css selectors which are used in scss - with highlight', () => {
             openDropdown();
-            expect(document.querySelectorAll(headerItemSelector).length).toEqual(7);
+            expect(document.querySelectorAll(headerItemSelector)).toHaveLength(7);
             // Search items and hide group header if no matching children
             const input = container.querySelector('input') as HTMLInputElement;
             fireEvent.keyDown(input, {});
             triggerSearch('Est');
-            expect(document.querySelectorAll(headerItemSelector).length).toEqual(1);
+            expect(document.querySelectorAll(headerItemSelector)).toHaveLength(1);
             expect(document.querySelector(headerItemSelector)?.textContent).toEqual('Europe');
             // Search and match first group
             triggerSearch('gypt');
-            expect(document.querySelectorAll(headerItemSelector).length).toEqual(1);
+            expect(document.querySelectorAll(headerItemSelector)).toHaveLength(1);
             expect(document.querySelector(headerItemSelector)?.textContent).toEqual('Africa');
             // Search and match last group
             triggerSearch('dumy');
-            expect(document.querySelectorAll(headerItemSelector).length).toEqual(1);
+            expect(document.querySelectorAll(headerItemSelector)).toHaveLength(1);
             expect(document.querySelector(headerItemSelector)?.textContent).toEqual('Unknown');
             // Search and match multiple groups
             triggerSearch('la');
-            expect(document.querySelectorAll(headerItemSelector).length).toEqual(3);
+            expect(document.querySelectorAll(headerItemSelector)).toHaveLength(3);
             // Search without matching
             triggerSearch('404');
-            expect(document.querySelectorAll(headerItemSelector).length).toEqual(0);
+            expect(document.querySelectorAll(headerItemSelector)).toHaveLength(0);
             // Reset search
             triggerSearch('');
-            expect(document.querySelectorAll(headerItemSelector).length).toEqual(7);
+            expect(document.querySelectorAll(headerItemSelector)).toHaveLength(7);
         });
     });
 
@@ -867,7 +867,7 @@ describe('<UIComboBox />', () => {
                 onPendingValueChanged={onPendingValueChanged}
             />
         );
-        expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(0);
+        expect(document.querySelectorAll(menuDropdownSelector)).toHaveLength(0);
         // Open callout
         expect(onPendingValueChanged).not.toHaveBeenCalled();
         const input = container.querySelector('input') as HTMLInputElement;
@@ -1068,7 +1068,7 @@ describe('<UIComboBox />', () => {
             />
         );
         openDropdown();
-        expect(document.querySelectorAll('div.dummy').length).toEqual(1);
+        expect(document.querySelectorAll('div.dummy')).toHaveLength(1);
     });
 
     describe('Test "searchByKeyEnabled" property', () => {
@@ -1133,7 +1133,7 @@ describe('<UIComboBox />', () => {
                 const input = container.querySelector('input') as HTMLInputElement;
                 fireEvent.keyDown(input, {});
                 triggerSearch(query);
-                expect(document.querySelectorAll('.ms-Button').length).toEqual(expectedCount);
+                expect(document.querySelectorAll('.ms-Button')).toHaveLength(expectedCount);
             });
         }
     });
@@ -1184,7 +1184,7 @@ describe('<UIComboBox />', () => {
                 const input = container.querySelector('input') as HTMLInputElement;
                 fireEvent.keyDown(input, {});
                 triggerSearch(query);
-                expect(document.querySelectorAll('.ms-Button--action').length).toEqual(expectedCountBefore);
+                expect(document.querySelectorAll('.ms-Button--action')).toHaveLength(expectedCountBefore);
                 // Apply custom filter and check result for same query
                 rerender(
                     <UIComboBox
@@ -1210,7 +1210,7 @@ describe('<UIComboBox />', () => {
                 openDropdown();
                 fireEvent.keyDown(input, {});
                 triggerSearch(query);
-                expect(document.querySelectorAll('.ms-Button--action').length).toEqual(expectedCountAfter);
+                expect(document.querySelectorAll('.ms-Button--action')).toHaveLength(expectedCountAfter);
             });
         }
     });
@@ -1238,7 +1238,7 @@ describe('<UIComboBox />', () => {
                 />
             );
             openDropdown();
-            expect(document.querySelectorAll(selectors.noDataText).length).toEqual(1);
+            expect(document.querySelectorAll(selectors.noDataText)).toHaveLength(1);
             expect(document.querySelector(selectors.noDataText)?.textContent).toEqual(noDataLabel);
         });
 

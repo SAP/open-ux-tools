@@ -27,10 +27,10 @@ describe('<UIMessageBar />', () => {
 
     it('Should render a UIMessageBar component - default state', () => {
         const { container } = render(<UIMessageBar />);
-        expect(container.querySelectorAll('.ms-MessageBar').length).toEqual(1);
+        expect(container.querySelectorAll('.ms-MessageBar')).toHaveLength(1);
         expect(capturedProps?.messageBarIconProps?.iconName).toEqual(UiIcons.Success);
         const styles = capturedProps?.styles as IMessageBarStyles;
-        expect(styles?.root?.['backgroundColor']).toEqual(undefined);
+        expect(styles?.root?.['backgroundColor']).toBeUndefined();
     });
 
     it('Test property "messageBarType" - error', () => {

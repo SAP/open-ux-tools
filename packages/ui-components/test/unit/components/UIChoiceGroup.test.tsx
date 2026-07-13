@@ -6,7 +6,7 @@ import { UIChoiceGroup } from '../../../src/components/UIChoiceGroup/UIChoiceGro
 describe('<UIToggle />', () => {
     it('Should render a UIChoiceGroup component', () => {
         const { container } = render(<UIChoiceGroup />);
-        expect(container.querySelectorAll('.ms-ChoiceFieldGroup').length).toEqual(1);
+        expect(container.querySelectorAll('.ms-ChoiceFieldGroup')).toHaveLength(1);
     });
 
     it('Styles - default', () => {

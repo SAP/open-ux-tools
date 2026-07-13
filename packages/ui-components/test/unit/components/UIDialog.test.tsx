@@ -100,7 +100,7 @@ describe('<UIDialog />', () => {
     });
 
     it('Should render dialog content', () => {
-        expect(document.body.querySelectorAll('.dummy').length).toEqual(1);
+        expect(document.body.querySelectorAll('.dummy')).toHaveLength(1);
     });
 
     it('On Accept', () => {
@@ -152,7 +152,7 @@ describe('<UIDialog />', () => {
             capturedFooterProps = undefined;
             rerenderWith({ footer: <div className="dummyFooter"></div> });
             expect(capturedFooterProps).toBeDefined();
-            expect(document.body.querySelectorAll('.dummyFooter').length).toEqual(1);
+            expect(document.body.querySelectorAll('.dummyFooter')).toHaveLength(1);
         });
 
         it('Custom footer with multiple elements', () => {
@@ -165,7 +165,7 @@ describe('<UIDialog />', () => {
                 ]
             });
             expect(capturedFooterProps).toBeDefined();
-            expect(document.body.querySelectorAll('button.dummyButton').length).toEqual(3);
+            expect(document.body.querySelectorAll('button.dummyButton')).toHaveLength(3);
         });
     });
 
@@ -539,7 +539,7 @@ describe('<UIDialog />', () => {
                     );
                 });
                 styles = getRootStyles();
-                expect(styles.opacity).toEqual(undefined);
+                expect(styles.opacity).toBeUndefined();
             });
         }
     });

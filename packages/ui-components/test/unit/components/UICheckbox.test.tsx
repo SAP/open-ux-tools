@@ -14,7 +14,7 @@ describe('<UIToggle />', () => {
 
     it('Should render a UIToggle component', () => {
         const { container } = render(<UICheckbox />);
-        expect(container.querySelectorAll(`.${globalClassNames.root}`).length).toEqual(1);
+        expect(container.querySelectorAll(`.${globalClassNames.root}`)).toHaveLength(1);
     });
 
     describe('Styles - validation message', () => {
@@ -24,8 +24,8 @@ describe('<UIToggle />', () => {
             const instance = ref.current as any;
             const styles = instance.setStyle({ message: undefined }, {}) as ICheckboxStyles;
             const rootStyles = styles.root as IRawStyle;
-            expect(rootStyles[2]).toEqual(undefined);
-            expect(container.querySelectorAll(`.${globalClassNames.error}`).length).toEqual(0);
+            expect(rootStyles[2]).toBeUndefined();
+            expect(container.querySelectorAll(`.${globalClassNames.error}`)).toHaveLength(0);
         });
 
         it('Error', () => {
@@ -36,7 +36,7 @@ describe('<UIToggle />', () => {
             const styles = instance.setStyle({ message: 'dummy' }, {}) as ICheckboxStyles;
             const rootStyles = styles.root as IRawStyle;
             expect(rootStyles[2].marginBottom).toEqual(2);
-            expect(container.querySelectorAll(`.${globalClassNames.error}`).length).toEqual(1);
+            expect(container.querySelectorAll(`.${globalClassNames.error}`)).toHaveLength(1);
         });
     });
 
@@ -64,7 +64,7 @@ describe('<UIToggle />', () => {
             const styles = getStyles({ checked: true });
             const rootStyles = styles.root as IRawStyle;
             // Check hover opacity
-            expect(rootStyles[0][0][`:hover .${globalClassNames.checkmark}`]).toEqual(undefined);
+            expect(rootStyles[0][0][`:hover .${globalClassNames.checkmark}`]).toBeUndefined();
         });
 
         it('Disabled', () => {

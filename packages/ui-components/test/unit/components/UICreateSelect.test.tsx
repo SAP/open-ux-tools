@@ -73,7 +73,7 @@ describe('<UICreateSelect />', () => {
         expect(value.className).toContain('ui-create-select__single-value');
 
         // we should have a clear icon
-        expect(container.querySelectorAll('.ui-create-select-indicator-clear').length).toEqual(1);
+        expect(container.querySelectorAll('.ui-create-select-indicator-clear')).toHaveLength(1);
     });
 
     it('Render a UICreateSelect component with default value and loading', () => {
@@ -95,7 +95,7 @@ describe('<UICreateSelect />', () => {
         expect(value.className).toContain('ui-create-select__single-value');
 
         // we should have a loading icon
-        expect(container.querySelectorAll('.ui-create-select-indicator-loading').length).toEqual(1);
+        expect(container.querySelectorAll('.ui-create-select-indicator-loading')).toHaveLength(1);
     });
 
     it('Render a UICreateSelect component and open the menu', () => {

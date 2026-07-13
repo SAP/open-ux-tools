@@ -32,7 +32,7 @@ describe('<UILink />', () => {
 
     it('Should render a UILink component', () => {
         const { container } = render(<UILink>Dummy</UILink>);
-        expect(container.querySelectorAll('.ms-Link').length).toEqual(1);
+        expect(container.querySelectorAll('.ms-Link')).toHaveLength(1);
     });
 
     it('Styles - primary', () => {

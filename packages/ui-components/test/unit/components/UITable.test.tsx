@@ -122,7 +122,7 @@ describe('<UITable />', () => {
 
     it('Should render a UITable component', () => {
         const { container } = render(<UITable {...defaultProps} />);
-        expect(container.querySelectorAll('.ms-DetailsList').length).toEqual(1);
+        expect(container.querySelectorAll('.ms-DetailsList')).toHaveLength(1);
     });
 
     it('Render table with data', () => {
@@ -156,18 +156,18 @@ describe('<UITable />', () => {
     it('Toggle cell for editing', () => {
         const { container } = render(<UITable {...defaultProps} columns={[columnText]} items={[{ text: 'apple' }]} />);
 
-        expect(container.querySelectorAll('.ms-DetailsRow-cell span').length).toEqual(1);
-        expect(container.querySelectorAll('.ms-DetailsRow-cell input.ms-TextField-field').length).toEqual(0);
+        expect(container.querySelectorAll('.ms-DetailsRow-cell span')).toHaveLength(1);
+        expect(container.querySelectorAll('.ms-DetailsRow-cell input.ms-TextField-field')).toHaveLength(0);
 
         const span = container.querySelector('.ms-DetailsRow-cell span') as HTMLElement;
         fireEvent.click(span);
-        expect(container.querySelectorAll('.ms-DetailsRow-cell span').length).toEqual(0);
-        expect(container.querySelectorAll('.ms-DetailsRow-cell input.ms-TextField-field').length).toEqual(1);
+        expect(container.querySelectorAll('.ms-DetailsRow-cell span')).toHaveLength(0);
+        expect(container.querySelectorAll('.ms-DetailsRow-cell input.ms-TextField-field')).toHaveLength(1);
 
         const input = container.querySelector('.ms-DetailsRow-cell input.ms-TextField-field') as HTMLElement;
         fireEvent.mouseDown(input);
-        expect(container.querySelectorAll('.ms-DetailsRow-cell span').length).toEqual(0);
-        expect(container.querySelectorAll('.ms-DetailsRow-cell input.ms-TextField-field').length).toEqual(1);
+        expect(container.querySelectorAll('.ms-DetailsRow-cell span')).toHaveLength(0);
+        expect(container.querySelectorAll('.ms-DetailsRow-cell input.ms-TextField-field')).toHaveLength(1);
     });
 
     it('Cell navigation in edit mode', () => {

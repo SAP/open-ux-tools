@@ -23,7 +23,7 @@ function getStyles(
 describe('<UIToggle />', () => {
     it('Should render a UITextInput component', () => {
         const { container } = render(<UITextInput />);
-        expect(container.querySelectorAll('.ms-TextField').length).toEqual(1);
+        expect(container.querySelectorAll('.ms-TextField')).toHaveLength(1);
     });
 
     it('Styles - default', () => {
@@ -125,7 +125,7 @@ describe('<UIToggle />', () => {
             const { container, rerender } = render(<UITextInput />);
             rerender(<UITextInput errorMessage={<div className="dummyError">TEST</div>} />);
             await new Promise((resolve) => setTimeout(resolve, 100));
-            expect(container.querySelectorAll('.dummyError').length).toEqual(1);
+            expect(container.querySelectorAll('.dummyError')).toHaveLength(1);
         });
     });
 
@@ -141,7 +141,7 @@ describe('<UIToggle />', () => {
                     }}
                 />
             );
-            expect(container.querySelectorAll('.custom-render-option').length).toEqual(1);
+            expect(container.querySelectorAll('.custom-render-option')).toHaveLength(1);
             const input = container.querySelector('input.ms-TextField-field') as HTMLInputElement | null;
             expect(input?.disabled).toEqual(false);
             expect(input?.readOnly).toEqual(false);
@@ -159,7 +159,7 @@ describe('<UIToggle />', () => {
                     }}
                 />
             );
-            expect(container.querySelectorAll('.custom-render-option').length).toEqual(1);
+            expect(container.querySelectorAll('.custom-render-option')).toHaveLength(1);
             const input = container.querySelector('input.ms-TextField-field') as HTMLInputElement | null;
             expect(input?.disabled).toEqual(false);
             expect(input?.readOnly).toEqual(true);

@@ -29,15 +29,15 @@ describe('<Splitter />', () => {
     it('Should render a PropertiesPanel component', () => {
         const { container } = render(<UISplitter type={UISplitterType.Resize} onResize={onResize} />);
         expect(container.querySelector('.splitter')).toBeTruthy();
-        expect(container.querySelectorAll('.splitter--horizontal').length).toEqual(1);
-        expect(container.querySelectorAll('.splitter--vertical').length).toEqual(0);
+        expect(container.querySelectorAll('.splitter--horizontal')).toHaveLength(1);
+        expect(container.querySelectorAll('.splitter--vertical')).toHaveLength(0);
     });
 
     it('Should render as vertical splitter', () => {
         const { container, rerender } = render(<UISplitter type={UISplitterType.Resize} onResize={onResize} />);
         rerender(<UISplitter type={UISplitterType.Resize} onResize={onResize} vertical={true} />);
-        expect(container.querySelectorAll('.splitter--horizontal').length).toEqual(0);
-        expect(container.querySelectorAll('.splitter--vertical').length).toEqual(1);
+        expect(container.querySelectorAll('.splitter--horizontal')).toHaveLength(0);
+        expect(container.querySelectorAll('.splitter--vertical')).toHaveLength(1);
     });
 
     const orientations = [true, false];
@@ -60,15 +60,15 @@ describe('<Splitter />', () => {
             );
             const splitter = container.querySelector('.splitter') as HTMLElement;
             // Check if there no 'splitter--active' before resizing
-            expect(container.querySelectorAll('.splitter--active').length).toEqual(0);
+            expect(container.querySelectorAll('.splitter--active')).toHaveLength(0);
             fireEvent.mouseDown(splitter, { clientX: mouseStartCoordinate, button: 0, clientY: mouseStartCoordinate });
             simulateMouseEvent('mousemove', mouseMoveCoordinate1, mouseMoveCoordinate1);
             simulateMouseEvent('mousemove', mouseMoveCoordinate2, mouseMoveCoordinate2);
             // Check if there is 'splitter--active' during resize
-            expect(container.querySelectorAll('.splitter--active').length).toEqual(1);
+            expect(container.querySelectorAll('.splitter--active')).toHaveLength(1);
             simulateMouseEvent('mouseup', mouseMoveCoordinate2, mouseMoveCoordinate2);
             // Check if there no 'splitter--active' after resizing
-            expect(container.querySelectorAll('.splitter--active').length).toEqual(0);
+            expect(container.querySelectorAll('.splitter--active')).toHaveLength(0);
             // Another 'simulateMouseEvent' with 'mousemove' to detect is removeEventListener called
             simulateMouseEvent('mousemove', 300, 300);
             expect(onResizeStart).toHaveBeenCalledTimes(1);
@@ -188,9 +188,9 @@ describe('<Splitter />', () => {
 
     it('Test "hidden" property', () => {
         const { container, rerender } = render(<UISplitter type={UISplitterType.Resize} onResize={onResize} />);
-        expect(container.querySelectorAll('.splitter--hidden').length).toEqual(0);
+        expect(container.querySelectorAll('.splitter--hidden')).toHaveLength(0);
         rerender(<UISplitter type={UISplitterType.Resize} onResize={onResize} hidden={true} />);
-        expect(container.querySelectorAll('.splitter--hidden').length).toEqual(1);
+        expect(container.querySelectorAll('.splitter--hidden')).toHaveLength(1);
     });
 
     describe('Splitter icon', () => {
@@ -267,20 +267,18 @@ describe('<Splitter />', () => {
                     onResize
                 };
                 const { container } = render(<UISplitter {...props} />);
-                expect(container.querySelectorAll('.splitter--hidden').length).toEqual(0);
-                expect(container.querySelectorAll('.splitter--standard').length).toEqual(
+                expect(container.querySelectorAll('.splitter--hidden')).toHaveLength(0);
+                expect(container.querySelectorAll('.splitter--standard')).toHaveLength(
                     testCase.expect.standard ? 1 : 0
                 );
-                expect(container.querySelectorAll('.splitter--compact').length).toEqual(
-                    testCase.expect.compact ? 1 : 0
-                );
-                expect(container.querySelectorAll('.splitter--vertical').length).toEqual(
+                expect(container.querySelectorAll('.splitter--compact')).toHaveLength(testCase.expect.compact ? 1 : 0);
+                expect(container.querySelectorAll('.splitter--vertical')).toHaveLength(
                     testCase.expect.vertical ? 1 : 0
                 );
-                expect(container.querySelectorAll('.splitter--horizontal').length).toEqual(
+                expect(container.querySelectorAll('.splitter--horizontal')).toHaveLength(
                     testCase.expect.horizontal ? 1 : 0
                 );
-                expect(container.querySelectorAll('.splitter__grip').length).toEqual(1);
+                expect(container.querySelectorAll('.splitter__grip')).toHaveLength(1);
                 const icons = container.querySelectorAll(`i[data-icon-name]`);
                 expect(icons.length).toEqual(testCase.expect.icon ? 1 : 0);
                 if (testCase.expect.icon) {

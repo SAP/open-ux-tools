@@ -38,7 +38,7 @@ describe('<UICallout />', () => {
     it('Property "contentPadding"', () => {
         // Default - None
         let style = getCalloutStyle({}) as ICalloutContentStyles;
-        expect(style.calloutMain?.['padding']).toEqual(undefined);
+        expect(style.calloutMain?.['padding']).toBeUndefined();
         // Standard
         style = getCalloutStyle({ contentPadding: UICalloutContentPadding.Standard }) as ICalloutContentStyles;
         expect(style.calloutMain?.['padding']).toEqual(8);

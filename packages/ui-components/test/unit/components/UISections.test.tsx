@@ -115,12 +115,12 @@ describe('<Sections />', () => {
 
     it('Should render a Shell component', () => {
         expect(container.querySelector('.sections')).toBeTruthy();
-        expect(container.querySelectorAll('.sections').length).toEqual(1);
-        expect(container.querySelectorAll('.section').length).toEqual(2);
-        expect(container.querySelectorAll('.sections--vertical').length).toEqual(0);
-        expect(container.querySelectorAll('.sections--horizontal').length).toEqual(1);
-        expect(container.querySelectorAll('.sections--animated').length).toEqual(0);
-        expect(container.querySelectorAll('.sections--full').length).toEqual(0);
+        expect(container.querySelectorAll('.sections')).toHaveLength(1);
+        expect(container.querySelectorAll('.section')).toHaveLength(2);
+        expect(container.querySelectorAll('.sections--vertical')).toHaveLength(0);
+        expect(container.querySelectorAll('.sections--horizontal')).toHaveLength(1);
+        expect(container.querySelectorAll('.sections--animated')).toHaveLength(0);
+        expect(container.querySelectorAll('.sections--full')).toHaveLength(0);
     });
 
     it('Test "vertical" property', () => {
@@ -142,8 +142,8 @@ describe('<Sections />', () => {
                 </UISections.Section>
             </UISections>
         );
-        expect(container.querySelectorAll('.sections--vertical').length).toEqual(1);
-        expect(container.querySelectorAll('.sections--horizontal').length).toEqual(0);
+        expect(container.querySelectorAll('.sections--vertical')).toHaveLength(1);
+        expect(container.querySelectorAll('.sections--horizontal')).toHaveLength(0);
     });
 
     it('Test "animation" property', () => {
@@ -165,7 +165,7 @@ describe('<Sections />', () => {
                 </UISections.Section>
             </UISections>
         );
-        expect(container.querySelectorAll('.sections--animated').length).toEqual(1);
+        expect(container.querySelectorAll('.sections--animated')).toHaveLength(1);
     });
 
     it('Test "height" property', () => {
@@ -229,8 +229,8 @@ describe('<Sections />', () => {
                     </UISections.Section>
                 </UISections>
             );
-            expect(container.querySelectorAll('.splitter--compact').length).toEqual(isCompact ? 1 : 0);
-            expect(container.querySelectorAll('.splitter--standard').length).toEqual(isCompact ? 0 : 1);
+            expect(container.querySelectorAll('.splitter--compact')).toHaveLength(isCompact ? 1 : 0);
+            expect(container.querySelectorAll('.splitter--standard')).toHaveLength(isCompact ? 0 : 1);
         });
     });
 
@@ -245,8 +245,8 @@ describe('<Sections />', () => {
                 </UISections.Section>
             </UISections>
         );
-        expect(hiddenContainer.querySelectorAll('.sections__item--hidden').length).toEqual(1);
-        expect(hiddenContainer.querySelectorAll('.sections--full').length).toEqual(1);
+        expect(hiddenContainer.querySelectorAll('.sections__item--hidden')).toHaveLength(1);
+        expect(hiddenContainer.querySelectorAll('.sections--full')).toHaveLength(1);
         hiddenUnmount();
     });
 
@@ -287,7 +287,7 @@ describe('<Sections />', () => {
         });
 
         it('Test "splitter" visibility', () => {
-            expect(container.querySelectorAll('.splitter').length).toEqual(1);
+            expect(container.querySelectorAll('.splitter')).toHaveLength(1);
         });
 
         it('Test "splitter" resize', () => {
@@ -1298,7 +1298,7 @@ describe('<Sections />', () => {
                 </UISections.Section>
             </UISections>
         );
-        expect(hiddenContainer.querySelectorAll('.sections__item').length).toEqual(2);
+        expect(hiddenContainer.querySelectorAll('.sections__item')).toHaveLength(2);
         hiddenUnmount();
     });
 

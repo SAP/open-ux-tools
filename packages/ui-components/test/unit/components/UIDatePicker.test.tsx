@@ -19,14 +19,14 @@ describe('<UIDatePicker />', () => {
 
     it('Should render a UIDatePicker component', () => {
         const { container } = render(<UIDatePicker {...defaultProps} />);
-        expect(container.querySelectorAll('.ui-DatePicker').length).toEqual(1);
-        expect(container.querySelectorAll('input[type="datetime-local"]').length).toEqual(1);
+        expect(container.querySelectorAll('.ui-DatePicker')).toHaveLength(1);
+        expect(container.querySelectorAll('input[type="datetime-local"]')).toHaveLength(1);
     });
 
     it('Should render a UIDatePicker component, date only', () => {
         const { container } = render(<UIDatePicker {...defaultProps} dateOnly />);
-        expect(container.querySelectorAll('.ui-DatePicker').length).toEqual(1);
-        expect(container.querySelectorAll('input[type="date"]').length).toEqual(1);
+        expect(container.querySelectorAll('.ui-DatePicker')).toHaveLength(1);
+        expect(container.querySelectorAll('input[type="date"]')).toHaveLength(1);
     });
 
     it('onInputChange', () => {

@@ -30,7 +30,7 @@ describe('<UISplitButton />', () => {
 
     it('Should render a UISplitButton component', () => {
         const { container } = render(<UISplitButton {...splitButtonProps} />);
-        expect(container.querySelectorAll('button.ui-split-button').length).toEqual(1);
+        expect(container.querySelectorAll('button.ui-split-button')).toHaveLength(1);
     });
 
     it('Should render a UISplitButton component - click options', () => {

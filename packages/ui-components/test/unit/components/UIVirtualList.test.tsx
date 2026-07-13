@@ -18,7 +18,7 @@ describe('<UIVirtualList />', () => {
         const { container } = render(
             <UIVirtualList width={100} height={100} rowHeight={25} rowCount={10} rowRenderer={renderRow} />
         );
-        expect(container.querySelectorAll('div.ReactVirtualized__List').length).toEqual(1);
+        expect(container.querySelectorAll('div.ReactVirtualized__List')).toHaveLength(1);
     });
 
     it('Public method "recomputeRowHeights"', () => {

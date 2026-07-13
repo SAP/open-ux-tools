@@ -14,7 +14,7 @@ describe('<Section />', () => {
             </UISection>
         );
         expect(container.querySelector('.section')).not.toBeNull();
-        expect(container.querySelectorAll('.section').length).toEqual(1);
+        expect(container.querySelectorAll('.section')).toHaveLength(1);
     });
 
     it('Test "height" property', () => {
@@ -74,7 +74,7 @@ describe('<Section />', () => {
                 <div>Dummy Content</div>
             </UISection>
         );
-        expect(container.querySelectorAll('.section--extended').length).toEqual(1);
+        expect(container.querySelectorAll('.section--extended')).toHaveLength(1);
     });
 
     it('Test "onScroll" event', () => {
@@ -101,13 +101,13 @@ describe('<Section />', () => {
                 <div>Dummy Content</div>
             </UISection>
         );
-        expect(container.querySelectorAll('.section--hidden').length).toEqual(0);
+        expect(container.querySelectorAll('.section--hidden')).toHaveLength(0);
         rerender(
             <UISection hidden={true}>
                 <div>Dummy Content</div>
             </UISection>
         );
-        expect(container.querySelectorAll('.section--hidden').length).toEqual(1);
+        expect(container.querySelectorAll('.section--hidden')).toHaveLength(1);
     });
 
     it('Test data property', () => {

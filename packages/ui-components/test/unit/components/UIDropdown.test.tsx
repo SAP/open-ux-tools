@@ -149,22 +149,22 @@ describe('<UIDropdown />', () => {
 
     it('Test css selectors which are used in scss - main', () => {
         const { container } = renderResult;
-        expect(container.querySelectorAll('div.ts-SelectBox').length).toEqual(1);
-        expect(container.querySelectorAll('.ts-SelectBox .ms-Dropdown-title').length).toEqual(1);
-        expect(container.querySelectorAll('.ts-SelectBox .ms-Dropdown-caretDownWrapper i svg').length).toEqual(1);
+        expect(container.querySelectorAll('div.ts-SelectBox')).toHaveLength(1);
+        expect(container.querySelectorAll('.ts-SelectBox .ms-Dropdown-title')).toHaveLength(1);
+        expect(container.querySelectorAll('.ts-SelectBox .ms-Dropdown-caretDownWrapper i svg')).toHaveLength(1);
         openDropdown(container);
         expect(document.querySelectorAll('.ts-Callout-Dropdown').length).toBeGreaterThan(0);
         expect(document.querySelectorAll('.ts-Callout-Dropdown .ms-Callout-main').length).toBeGreaterThan(0);
         expect(
             document.querySelectorAll('.ts-Callout-Dropdown .ms-Dropdown-items .ms-Button--command').length
         ).toBeGreaterThan(0);
-        expect(document.querySelectorAll('.ms-Dropdown-header').length).toEqual(0);
+        expect(document.querySelectorAll('.ms-Dropdown-header')).toHaveLength(0);
     });
 
     it('Test "disabled" property', () => {
         const { container } = renderResult;
         renderResult.rerender(<UIDropdown options={data} selectedKey="EE" disabled={true} />);
-        expect(container.querySelectorAll('.ts-SelectBox .ms-Dropdown.is-disabled').length).toEqual(1);
+        expect(container.querySelectorAll('.ts-SelectBox .ms-Dropdown.is-disabled')).toHaveLength(1);
         const dropdownProps = getInnerDropdownProps({ options: data, selectedKey: 'EE', disabled: true });
         expect(dropdownProps.disabled).toEqual(true);
         expect(dropdownProps.tabIndex).toEqual(0);
@@ -183,25 +183,25 @@ describe('<UIDropdown />', () => {
         it('Error', () => {
             const { container } = renderResult;
             renderResult.rerender(<UIDropdown options={data} selectedKey="EE" errorMessage="dummy" />);
-            expect(container.querySelectorAll('div.ts-SelectBox--error').length).toEqual(1);
-            expect(container.querySelectorAll('div.ts-SelectBox--warning').length).toEqual(0);
-            expect(container.querySelectorAll('div.ts-SelectBox--info').length).toEqual(0);
+            expect(container.querySelectorAll('div.ts-SelectBox--error')).toHaveLength(1);
+            expect(container.querySelectorAll('div.ts-SelectBox--warning')).toHaveLength(0);
+            expect(container.querySelectorAll('div.ts-SelectBox--info')).toHaveLength(0);
         });
 
         it('Warning', () => {
             const { container } = renderResult;
             renderResult.rerender(<UIDropdown options={data} selectedKey="EE" warningMessage="dummy" />);
-            expect(container.querySelectorAll('div.ts-SelectBox--error').length).toEqual(0);
-            expect(container.querySelectorAll('div.ts-SelectBox--warning').length).toEqual(1);
-            expect(container.querySelectorAll('div.ts-SelectBox--info').length).toEqual(0);
+            expect(container.querySelectorAll('div.ts-SelectBox--error')).toHaveLength(0);
+            expect(container.querySelectorAll('div.ts-SelectBox--warning')).toHaveLength(1);
+            expect(container.querySelectorAll('div.ts-SelectBox--info')).toHaveLength(0);
         });
 
         it('Info', () => {
             const { container } = renderResult;
             renderResult.rerender(<UIDropdown options={data} selectedKey="EE" infoMessage="dummy" />);
-            expect(container.querySelectorAll('div.ts-SelectBox--error').length).toEqual(0);
-            expect(container.querySelectorAll('div.ts-SelectBox--warning').length).toEqual(0);
-            expect(container.querySelectorAll('div.ts-SelectBox--info').length).toEqual(1);
+            expect(container.querySelectorAll('div.ts-SelectBox--error')).toHaveLength(0);
+            expect(container.querySelectorAll('div.ts-SelectBox--warning')).toHaveLength(0);
+            expect(container.querySelectorAll('div.ts-SelectBox--info')).toHaveLength(1);
         });
     });
 
@@ -222,7 +222,7 @@ describe('<UIDropdown />', () => {
                 { options: data, selectedKey: 'EE', useDropdownAsMenuMinWidth: false },
                 100
             );
-            expect(styles).toEqual(undefined);
+            expect(styles).toBeUndefined();
         });
 
         it('False', () => {
@@ -230,7 +230,7 @@ describe('<UIDropdown />', () => {
                 { options: data, selectedKey: 'EE', useDropdownAsMenuMinWidth: false },
                 100
             );
-            expect(styles).toEqual(undefined);
+            expect(styles).toBeUndefined();
         });
 
         const widths = [100, 500, undefined];
@@ -279,7 +279,7 @@ describe('<UIDropdown />', () => {
             renderResult.rerender(<UIDropdown options={dataTemp} selectedKey="EE" />);
             openDropdown(container);
             const buttons = document.querySelectorAll(buttonSelector);
-            expect(buttons[buttons.length - 1].getAttribute('title')).toEqual(null);
+            expect(buttons[buttons.length - 1].getAttribute('title')).toBeNull();
         });
     });
 
@@ -339,7 +339,7 @@ describe('<UIDropdown />', () => {
                     expect(dropdownProps['data-is-focusable']).toEqual(true);
                     expect(dropdownProps['aria-readonly']).toEqual(true);
                     expect('aria-disabled' in dropdownProps).toEqual(true);
-                    expect(dropdownProps['aria-disabled']).toEqual(undefined);
+                    expect(dropdownProps['aria-disabled']).toBeUndefined();
                 } else if (testCase.disabled) {
                     expect(dropdownProps.tabIndex).toEqual(0);
                     expect('data-is-focusable' in dropdownProps).toEqual(true);
@@ -392,7 +392,7 @@ describe('<UIDropdown />', () => {
                         selectedKeys={testCase.selectedKeys as UIDropdownProps['selectedKeys']}
                     />
                 );
-                expect(container.querySelectorAll('div.ts-SelectBox--empty').length).toEqual(testCase.expected ? 1 : 0);
+                expect(container.querySelectorAll('div.ts-SelectBox--empty')).toHaveLength(testCase.expected ? 1 : 0);
             });
         }
     });
@@ -401,8 +401,8 @@ describe('<UIDropdown />', () => {
         const { container } = renderResult;
         renderResult.rerender(<UIDropdown options={groupsData} selectedKey="EE" />);
         openDropdown(container);
-        expect(document.querySelectorAll('.ms-Dropdown-header').length).toEqual(7);
-        expect(document.querySelectorAll('.ms-Dropdown-header .ts-dropdown-item-blocker').length).toEqual(0);
+        expect(document.querySelectorAll('.ms-Dropdown-header')).toHaveLength(7);
+        expect(document.querySelectorAll('.ms-Dropdown-header .ts-dropdown-item-blocker')).toHaveLength(0);
     });
 
     describe('Test "calloutCollisionTransformation" property', () => {
@@ -536,7 +536,7 @@ describe('<UIDropdown />', () => {
             />
         );
         openDropdown(container);
-        expect(document.querySelectorAll('div.dummy').length).toEqual(1);
+        expect(document.querySelectorAll('div.dummy')).toHaveLength(1);
     });
 });
 

@@ -35,7 +35,7 @@ describe('<UITranslationInput />', () => {
     const clickI18nButton = (expectCallout = true) => {
         const openBtn = document.querySelector(selectors.button) as HTMLElement;
         fireEvent.click(openBtn);
-        expect(document.querySelectorAll(selectors.callout).length).toEqual(expectCallout ? 1 : 0);
+        expect(document.querySelectorAll(selectors.callout)).toHaveLength(expectCallout ? 1 : 0);
     };
 
     const acceptCallout = (id: string): void => {
@@ -68,11 +68,11 @@ describe('<UITranslationInput />', () => {
                 value={'dummy'}
             />
         );
-        expect(container.querySelectorAll(selectors.input).length).toEqual(1);
-        expect(container.querySelectorAll(selectors.button).length).toEqual(1);
-        expect(container.querySelectorAll(getButtonIdSelector(id, false)).length).toEqual(1);
-        expect(container.querySelectorAll(getButtonIdSelector(id, true)).length).toEqual(0);
-        expect(container.querySelectorAll(`.${customClassName}`).length).toEqual(0);
+        expect(container.querySelectorAll(selectors.input)).toHaveLength(1);
+        expect(container.querySelectorAll(selectors.button)).toHaveLength(1);
+        expect(container.querySelectorAll(getButtonIdSelector(id, false))).toHaveLength(1);
+        expect(container.querySelectorAll(getButtonIdSelector(id, true))).toHaveLength(0);
+        expect(container.querySelectorAll(`.${customClassName}`)).toHaveLength(0);
 
         rerender(
             <UITranslationInput
@@ -84,7 +84,7 @@ describe('<UITranslationInput />', () => {
                 i18nPrefix={''}
             />
         );
-        expect(container.querySelectorAll(`.${customClassName}`).length).toEqual(1);
+        expect(container.querySelectorAll(`.${customClassName}`)).toHaveLength(1);
     });
 
     const testCases = [
@@ -178,7 +178,7 @@ describe('<UITranslationInput />', () => {
             clickI18nButton();
             acceptCallout(id);
             // Check if callout closed
-            expect(document.querySelectorAll(selectors.callout).length).toEqual(0);
+            expect(document.querySelectorAll(selectors.callout)).toHaveLength(0);
             // Check if callbacks executed
             if (result.create) {
                 expect(onCreateNewEntryMock).toHaveBeenCalledTimes(1);
@@ -259,15 +259,15 @@ describe('<UITranslationInput />', () => {
             expect(onCreateNewEntryMock).toHaveBeenCalledTimes(0);
             expect(onChangeMock).toHaveBeenCalledTimes(0);
             expect(onUpdateValueMock).toHaveBeenCalledTimes(0);
-            expect(container.querySelectorAll(getButtonIdSelector(id, false)).length).toEqual(0);
-            expect(container.querySelectorAll(getButtonIdSelector(id, true)).length).toEqual(1);
+            expect(container.querySelectorAll(getButtonIdSelector(id, false))).toHaveLength(0);
+            expect(container.querySelectorAll(getButtonIdSelector(id, true))).toHaveLength(1);
             expect(onShowExistingEntryMock).toHaveBeenCalledTimes(1);
             expect(onShowExistingEntryMock).toHaveBeenCalledWith({
                 'key': { 'value': result.entry.key },
                 'value': { 'value': result.entry.value }
             });
             // Check title
-            expect(container.querySelector(`${selectors.input} input`)?.getAttribute('title')).toEqual(null);
+            expect(container.querySelector(`${selectors.input} input`)?.getAttribute('title')).toBeNull();
             expect(
                 container.querySelector(`${selectors.input} ${selectors.inputField}`)?.getAttribute('title')
             ).toEqual(result.title);
@@ -285,8 +285,8 @@ describe('<UITranslationInput />', () => {
                 value={' '}
             />
         );
-        expect(container.querySelectorAll(selectors.input).length).toEqual(1);
-        expect(container.querySelectorAll(selectors.button).length).toEqual(0);
+        expect(container.querySelectorAll(selectors.input)).toHaveLength(1);
+        expect(container.querySelectorAll(selectors.button)).toHaveLength(0);
     });
 
     test('Test "disabled" property', () => {
@@ -369,9 +369,9 @@ describe('<UITranslationInput />', () => {
                 />
             );
             clickI18nButton();
-            expect(document.querySelectorAll(selectors.callout).length).toEqual(1);
+            expect(document.querySelectorAll(selectors.callout)).toHaveLength(1);
             rejectCallout(id);
-            expect(document.querySelectorAll(selectors.callout).length).toEqual(0);
+            expect(document.querySelectorAll(selectors.callout)).toHaveLength(0);
         });
 
         test('Click outside of callout', async () => {
@@ -388,14 +388,14 @@ describe('<UITranslationInput />', () => {
                     />
                 );
                 clickI18nButton();
-                expect(document.querySelectorAll(selectors.callout).length).toEqual(1);
+                expect(document.querySelectorAll(selectors.callout)).toHaveLength(1);
                 // Advance timers so FluentUI Callout registers its dismiss listener (setTimeout 0)
                 jest.runAllTimers();
                 const outsideEl = document.createElement('div');
                 document.body.appendChild(outsideEl);
                 outsideEl.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
                 jest.runAllTimers();
-                await waitFor(() => expect(document.querySelectorAll(selectors.callout).length).toEqual(0));
+                await waitFor(() => expect(document.querySelectorAll(selectors.callout)).toHaveLength(0));
             } finally {
                 jest.useRealTimers();
                 document.body.querySelector('div:not([id]):not([class])')?.remove();
@@ -483,10 +483,10 @@ describe('<UITranslationInput />', () => {
             );
 
             clickI18nButton();
-            expect(document.querySelectorAll(selectors.invertedCalloutThemeInput).length).toEqual(
+            expect(document.querySelectorAll(selectors.invertedCalloutThemeInput)).toHaveLength(
                 expectedInverted ? 1 : 0
             );
-            expect(document.querySelectorAll(selectors.invertedCalloutThemeCallout).length).toEqual(
+            expect(document.querySelectorAll(selectors.invertedCalloutThemeCallout)).toHaveLength(
                 expectedInverted ? 1 : 0
             );
         }

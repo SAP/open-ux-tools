@@ -34,12 +34,12 @@ describe('<UIToggle />', () => {
 
     it('Should render a UIToggle component', () => {
         const { container } = render(<UIToggle onChange={handleChangeMock} checked={false} />);
-        expect(container.querySelectorAll('.ms-Toggle').length).toEqual(1);
+        expect(container.querySelectorAll('.ms-Toggle')).toHaveLength(1);
     });
 
     it('Should toggle the checked state correctly', () => {
         const { container, rerender } = render(<UIToggle onChange={handleChangeMock} checked={false} />);
-        expect(container.querySelectorAll('.ms-Toggle.is-checked').length).toEqual(0);
+        expect(container.querySelectorAll('.ms-Toggle.is-checked')).toHaveLength(0);
 
         const button = container.querySelector('button') as HTMLButtonElement;
         fireEvent.click(button);
@@ -50,7 +50,7 @@ describe('<UIToggle />', () => {
             rerender(<UIToggle onChange={handleChangeMock} checked={true} />);
         });
 
-        expect(container.querySelectorAll('.ms-Toggle.is-checked').length).toEqual(1);
+        expect(container.querySelectorAll('.ms-Toggle.is-checked')).toHaveLength(1);
     });
 
     describe('Styles', () => {
@@ -245,7 +245,7 @@ describe('<UIToggle />', () => {
             const styles = getStyles({ checked: false, errorMessage: 'dummy', inlineLabel: false });
             const rootStyles = styles.root as IRawStyle;
             expect(rootStyles.marginBottom).toEqual(4);
-            expect(container.querySelectorAll('.ts-message-wrapper--error').length).toEqual(1);
+            expect(container.querySelectorAll('.ts-message-wrapper--error')).toHaveLength(1);
         });
 
         it('Error - inline', () => {
@@ -259,7 +259,7 @@ describe('<UIToggle />', () => {
             const styles = getStyles({ checked: false, errorMessage: 'dummy', inlineLabel: true });
             const rootStyles = styles.root as IRawStyle;
             expect(rootStyles.marginBottom).toEqual(0);
-            expect(container.querySelectorAll('.ts-message-wrapper--error').length).toEqual(1);
+            expect(container.querySelectorAll('.ts-message-wrapper--error')).toHaveLength(1);
         });
 
         it('Warning', () => {
@@ -267,7 +267,7 @@ describe('<UIToggle />', () => {
             act(() => {
                 rerender(<UIToggle onChange={handleChangeMock} checked={false} warningMessage="dummy" />);
             });
-            expect(container.querySelectorAll('.ts-message-wrapper--warning').length).toEqual(1);
+            expect(container.querySelectorAll('.ts-message-wrapper--warning')).toHaveLength(1);
         });
 
         it('Info', () => {
@@ -275,7 +275,7 @@ describe('<UIToggle />', () => {
             act(() => {
                 rerender(<UIToggle onChange={handleChangeMock} checked={false} infoMessage="dummy" />);
             });
-            expect(container.querySelectorAll('.ts-message-wrapper--info').length).toEqual(1);
+            expect(container.querySelectorAll('.ts-message-wrapper--info')).toHaveLength(1);
         });
     });
 });

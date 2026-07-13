@@ -25,7 +25,7 @@ describe('<UISmallButton />', () => {
 
     it('Should render a UISmallButton component', () => {
         const { container } = render(<UISmallButton>Dummy</UISmallButton>);
-        expect(container.querySelectorAll('.ms-Button').length).toEqual(1);
+        expect(container.querySelectorAll('.ms-Button')).toHaveLength(1);
     });
 
     it('Styles - primary', () => {

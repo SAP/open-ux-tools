@@ -109,11 +109,11 @@ describe('<UIFlexibleTable />', () => {
 
         it('Render default', () => {
             expect(container.querySelector(selectors.tableRoot)).toBeTruthy();
-            expect(container.querySelectorAll(selectors.content).length).toEqual(1);
-            expect(container.querySelectorAll(selectors.addButton).length).toEqual(0);
+            expect(container.querySelectorAll(selectors.content)).toHaveLength(1);
+            expect(container.querySelectorAll(selectors.addButton)).toHaveLength(0);
             const rowObjects = container.querySelectorAll(selectors.row);
             expect(rowObjects.length).toEqual(3);
-            expect(container.querySelectorAll(selectors.titleRow).length).toEqual(0);
+            expect(container.querySelectorAll(selectors.titleRow)).toHaveLength(0);
 
             // check content
             rowObjects.forEach((row, rowIndex) => {
@@ -127,14 +127,14 @@ describe('<UIFlexibleTable />', () => {
                     }
                 });
             });
-            expect(container.querySelectorAll(selectors.reverseBackground).length).toEqual(0);
+            expect(container.querySelectorAll(selectors.reverseBackground)).toHaveLength(0);
         });
 
         it('Render table (no rows)', () => {
             setProps({ noDataText: 'No data.', rows: [] });
             expect(container.querySelector(selectors.tableRoot)).toBeTruthy();
-            expect(container.querySelectorAll(selectors.content).length).toEqual(1);
-            expect(container.querySelectorAll(selectors.row).length).toEqual(0);
+            expect(container.querySelectorAll(selectors.content)).toHaveLength(1);
+            expect(container.querySelectorAll(selectors.row)).toHaveLength(0);
             const noData = container.querySelector(selectors.noData);
             expect(noData).toBeTruthy();
             expect((noData as HTMLElement).style.cursor).toBe('default');
@@ -264,7 +264,7 @@ describe('<UIFlexibleTable />', () => {
 
             const rowObjects = container.querySelectorAll(selectors.row);
             expect(rowObjects.length).toEqual(3);
-            expect(container.querySelectorAll(selectors.titleRow).length).toEqual(0);
+            expect(container.querySelectorAll(selectors.titleRow)).toHaveLength(0);
 
             // check content
             rowObjects.forEach((row, rowIndex) => {
@@ -319,9 +319,9 @@ describe('<UIFlexibleTable />', () => {
 
         it('Property "reverseBackground"', () => {
             setProps({ reverseBackground: true });
-            expect(container.querySelectorAll(selectors.reverseBackground).length).toEqual(3);
+            expect(container.querySelectorAll(selectors.reverseBackground)).toHaveLength(3);
             setProps({ reverseBackground: false });
-            expect(container.querySelectorAll(selectors.reverseBackground).length).toEqual(0);
+            expect(container.querySelectorAll(selectors.reverseBackground)).toHaveLength(0);
         });
 
         describe('Add button', () => {
@@ -330,7 +330,7 @@ describe('<UIFlexibleTable />', () => {
                 Element.prototype.scrollIntoView = jest.fn();
                 const scrollSpy = jest.spyOn(Element.prototype, 'scrollIntoView');
                 setProps({ addRowButton: { label: 'Add New Item', onClick: onAddClick } });
-                expect(container.querySelectorAll(selectors.addButton).length).toEqual(1);
+                expect(container.querySelectorAll(selectors.addButton)).toHaveLength(1);
                 expect(container.querySelector(selectors.addButton)?.getAttribute('aria-label')).toBe('Add New Item');
                 fireEvent.click(container.querySelector(selectors.addButton)!);
                 expect(onAddClick.mock.calls.length).toEqual(1);
@@ -411,7 +411,7 @@ describe('<UIFlexibleTable />', () => {
                     addRowButton: { label: 'Add New Item', onClick: onAddClick },
                     onDeleteRow: onDeleteClick
                 });
-                expect(container.querySelectorAll(selectors.deleteButton).length).toEqual(3);
+                expect(container.querySelectorAll(selectors.deleteButton)).toHaveLength(3);
                 const deleteButtons = container.querySelectorAll(selectors.deleteButton);
                 fireEvent.click(deleteButtons[deleteButtons.length - 1]);
                 expect(onDeleteClick.mock.calls.length).toEqual(1);
@@ -440,7 +440,7 @@ describe('<UIFlexibleTable />', () => {
                     onDeleteRow: onDeleteClick,
                     readonly: true
                 });
-                expect(container.querySelectorAll(selectors.deleteButton).length).toEqual(0);
+                expect(container.querySelectorAll(selectors.deleteButton)).toHaveLength(0);
             });
             it('disabled', () => {
                 setProps({
@@ -739,14 +739,14 @@ describe('<UIFlexibleTable />', () => {
 
         it('Render default', () => {
             expect(container.querySelector(selectors.tableRoot)).toBeTruthy();
-            expect(container.querySelectorAll(selectors.tableWrappingLayout).length).toEqual(1);
-            expect(container.querySelectorAll(selectors.content).length).toEqual(1);
-            expect(container.querySelectorAll(selectors.addButton).length).toEqual(0);
+            expect(container.querySelectorAll(selectors.tableWrappingLayout)).toHaveLength(1);
+            expect(container.querySelectorAll(selectors.content)).toHaveLength(1);
+            expect(container.querySelectorAll(selectors.addButton)).toHaveLength(0);
             const rowObjects = container.querySelectorAll(selectors.row);
             expect(rowObjects.length).toEqual(3);
             const rowHeaderObjects = container.querySelectorAll(selectors.rowHeader);
             expect(rowHeaderObjects.length).toEqual(3);
-            expect(container.querySelectorAll(selectors.titleRow).length).toEqual(0);
+            expect(container.querySelectorAll(selectors.titleRow)).toHaveLength(0);
 
             // check content
             rowObjects.forEach((row, rowIndex) => {
@@ -813,7 +813,7 @@ describe('<UIFlexibleTable />', () => {
             Element.prototype.scrollIntoView = jest.fn();
             const scrollSpy = jest.spyOn(Element.prototype, 'scrollIntoView');
             setProps({ addRowButton: { label: 'Add', onClick: onAddClick, ariaLabel: 'Add Button' } });
-            expect(container.querySelectorAll(selectors.addButton).length).toEqual(1);
+            expect(container.querySelectorAll(selectors.addButton)).toHaveLength(1);
             expect(container.querySelector(selectors.addButton)?.getAttribute('aria-label')).toBe('Add Button');
             fireEvent.click(container.querySelector(selectors.addButton)!);
             expect(onAddClick.mock.calls.length).toEqual(1);
@@ -936,7 +936,7 @@ describe('<UIFlexibleTable />', () => {
             const noDataText = 'dummy no data';
             setProps({ noDataText });
             const noData = container.querySelector(selectors.noData);
-            expect(container.querySelectorAll(selectors.noData).length).toEqual(1);
+            expect(container.querySelectorAll(selectors.noData)).toHaveLength(1);
             expect(noData?.textContent).toEqual(noDataText);
         });
 
@@ -949,13 +949,13 @@ describe('<UIFlexibleTable />', () => {
         it('"noRowBackground"', () => {
             const noDataText = 'dummy no data';
             setProps({ noRowBackground: true, noDataText });
-            expect(container.querySelectorAll(`${selectors.noData}.no-background`).length).toEqual(1);
+            expect(container.querySelectorAll(`${selectors.noData}.no-background`)).toHaveLength(1);
         });
 
         it('"reverseBackground" ', () => {
             const noDataText = 'dummy no data';
             setProps({ reverseBackground: true, noDataText });
-            expect(container.querySelectorAll(`${selectors.noData}.reverse-background`).length).toEqual(1);
+            expect(container.querySelectorAll(`${selectors.noData}.reverse-background`)).toHaveLength(1);
         });
     });
 });

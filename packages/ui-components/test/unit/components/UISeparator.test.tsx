@@ -6,6 +6,6 @@ import { UISeparator } from '../../../src/components/UISeparator';
 describe('<UISeparator />', () => {
     it('Should render a UISeparator component', () => {
         const { getAllByRole } = render(<UISeparator />);
-        expect(getAllByRole('separator').length).toEqual(1);
+        expect(getAllByRole('separator')).toHaveLength(1);
     });
 });

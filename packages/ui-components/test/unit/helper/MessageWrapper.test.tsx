@@ -13,9 +13,9 @@ describe('<MessageWrapper />', () => {
                 <div className="dummyInput"></div>
             </MessageWrapper>
         );
-        expect(container.querySelectorAll('.dummyInput').length).toEqual(1);
-        expect(container.querySelectorAll('.ts-message-wrapper').length).toEqual(1);
-        expect(container.querySelectorAll('.ts-message-wrapper--warning').length).toEqual(1);
+        expect(container.querySelectorAll('.dummyInput')).toHaveLength(1);
+        expect(container.querySelectorAll('.ts-message-wrapper')).toHaveLength(1);
+        expect(container.querySelectorAll('.ts-message-wrapper--warning')).toHaveLength(1);
     });
 
     it('Default message - error', () => {
@@ -31,7 +31,7 @@ describe('<MessageWrapper />', () => {
                 <div className="dummyInput"></div>
             </MessageWrapper>
         );
-        expect(container.querySelectorAll('.ts-message-wrapper--error').length).toEqual(1);
+        expect(container.querySelectorAll('.ts-message-wrapper--error')).toHaveLength(1);
     });
 
     it('Info message', () => {
@@ -48,6 +48,6 @@ describe('<MessageWrapper />', () => {
                 <div className="dummyInput"></div>
             </MessageWrapper>
         );
-        expect(container.querySelectorAll('.ts-message-wrapper--info').length).toEqual(1);
+        expect(container.querySelectorAll('.ts-message-wrapper--info')).toHaveLength(1);
     });
 });

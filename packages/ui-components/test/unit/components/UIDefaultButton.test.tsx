@@ -20,7 +20,7 @@ describe('<UIDefaultButton />', () => {
 
     it('Should render a UIDefaultButton component', () => {
         const { container } = render(<UIDefaultButton>Dummy</UIDefaultButton>);
-        expect(container.querySelectorAll('.ms-Button').length).toEqual(1);
+        expect(container.querySelectorAll('.ms-Button')).toHaveLength(1);
     });
 
     it('Styles - primary', () => {
@@ -659,25 +659,25 @@ describe('<UIDefaultButton />', () => {
 
         it('Default render without icon', () => {
             const { container } = render(<UIDefaultButton>Dummy</UIDefaultButton>);
-            expect(container.querySelectorAll('[data-icon-name="ArrowDown"]').length).toEqual(0);
+            expect(container.querySelectorAll('[data-icon-name="ArrowDown"]')).toHaveLength(0);
         });
 
         it('Render without icon', () => {
             const { container } = render(<UIDefaultButton menuProps={undefined}>Dummy</UIDefaultButton>);
-            expect(container.querySelectorAll('[data-icon-name="ArrowDown"]').length).toEqual(0);
+            expect(container.querySelectorAll('[data-icon-name="ArrowDown"]')).toHaveLength(0);
         });
 
         it('Render with default icon', () => {
             const { container } = render(<UIDefaultButton menuProps={{ items: [] }}>Dummy</UIDefaultButton>);
-            expect(container.querySelectorAll('[data-icon-name="ArrowDown"]').length).toEqual(1);
+            expect(container.querySelectorAll('[data-icon-name="ArrowDown"]')).toHaveLength(1);
         });
 
         it('Render with custom icon', () => {
             const { container } = render(
                 <UIDefaultButton menuIconProps={{ iconName: UiIcons.ArrowUp }}>Dummy</UIDefaultButton>
             );
-            expect(container.querySelectorAll('[data-icon-name="ArrowDown"]').length).toEqual(0);
-            expect(container.querySelectorAll('[data-icon-name="ArrowUp"]').length).toEqual(1);
+            expect(container.querySelectorAll('[data-icon-name="ArrowDown"]')).toHaveLength(0);
+            expect(container.querySelectorAll('[data-icon-name="ArrowUp"]')).toHaveLength(1);
         });
     });
 });

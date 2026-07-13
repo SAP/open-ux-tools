@@ -157,9 +157,9 @@ describe('<UITreeDropdown />', () => {
     it('Open', () => {
         const { container } = renderResult;
         // Initial state
-        expect(container.querySelectorAll(selectors.wrapper.disabled).length).toEqual(0);
-        expect(container.querySelectorAll(selectors.wrapper.closed).length).toEqual(1);
-        expect(container.querySelectorAll(selectors.wrapper.open).length).toEqual(0);
+        expect(container.querySelectorAll(selectors.wrapper.disabled)).toHaveLength(0);
+        expect(container.querySelectorAll(selectors.wrapper.closed)).toHaveLength(1);
+        expect(container.querySelectorAll(selectors.wrapper.open)).toHaveLength(0);
         // Open dropdown
         const focusSpy = jest.spyOn(HTMLElement.prototype, 'focus');
         // Click on caret
@@ -169,9 +169,9 @@ describe('<UITreeDropdown />', () => {
         // Focus should be called for input
         expect(focusSpy).toHaveBeenCalledTimes(1);
         // Check wrapper
-        expect(container.querySelectorAll(selectors.wrapper.disabled).length).toEqual(0);
-        expect(container.querySelectorAll(selectors.wrapper.closed).length).toEqual(0);
-        expect(container.querySelectorAll(selectors.wrapper.open).length).toEqual(1);
+        expect(container.querySelectorAll(selectors.wrapper.disabled)).toHaveLength(0);
+        expect(container.querySelectorAll(selectors.wrapper.closed)).toHaveLength(0);
+        expect(container.querySelectorAll(selectors.wrapper.open)).toHaveLength(1);
     });
 
     it('Focus of input should select text', () => {
@@ -205,7 +205,7 @@ describe('<UITreeDropdown />', () => {
 
     it('Additional properties are set', () => {
         const { container } = renderResult;
-        expect(container.querySelectorAll(selectors.wrapper.readonly).length).toEqual(0);
+        expect(container.querySelectorAll(selectors.wrapper.readonly)).toHaveLength(0);
         const input = container.querySelector('input') as HTMLInputElement;
         expect(input).not.toBeNull();
         // The original test verified that UITreeDropdown forwards extra props to UITextInput.
@@ -290,7 +290,7 @@ describe('<UITreeDropdown />', () => {
 
         it('Test on "Keydown" - open context menu', async () => {
             const { container } = renderResult;
-            expect(queryAllContextMenus().length).toEqual(0);
+            expect(queryAllContextMenus()).toHaveLength(0);
             await triggerWindowKeydownWithFocus(container, 'Title');
             expect(queryAllContextMenus().length).toBeGreaterThan(0);
             const inputEl = container.querySelector('input') as HTMLInputElement;
@@ -303,7 +303,7 @@ describe('<UITreeDropdown />', () => {
             const input = container.querySelector('input') as HTMLInputElement;
             simulateInputChange(input, query);
 
-            expect(queryHighlightItems().length).toEqual(1);
+            expect(queryHighlightItems()).toHaveLength(1);
             expect(document.querySelector('.ts-Menu-option--highlighted')!.textContent).toEqual(query);
         });
 
@@ -350,7 +350,7 @@ describe('<UITreeDropdown />', () => {
             openDropdown(container);
             const input = container.querySelector('input') as HTMLElement;
             fireEvent.keyDown(input, { key: 'Tab' });
-            expect(queryAllContextMenus().length).toEqual(0);
+            expect(queryAllContextMenus()).toHaveLength(0);
         });
 
         it('Test input click to open context menu', async () => {
@@ -369,7 +369,7 @@ describe('<UITreeDropdown />', () => {
             if (splitMenuButton) {
                 fireEvent.click(splitMenuButton, document.createEvent('Events'));
             }
-            expect(document.querySelectorAll(`div.ui-treeDropDown-context-menu`).length).toEqual(2);
+            expect(document.querySelectorAll(`div.ui-treeDropDown-context-menu`)).toHaveLength(2);
             const inputEl = container.querySelector('input') as HTMLInputElement;
             expect(inputEl.value).toEqual('Title');
         });
@@ -463,15 +463,15 @@ describe('<UITreeDropdown />', () => {
                 // Open dropdown menu to trigger scroll calculation
                 openDropdown(container);
                 // Menu is rendered in a portal
-                expect(document.querySelectorAll('.ms-ContextualMenu-container').length).toEqual(1);
-                expect(queryCallouts().length).toEqual(1);
+                expect(document.querySelectorAll('.ms-ContextualMenu-container')).toHaveLength(1);
+                expect(queryCallouts()).toHaveLength(1);
                 // Trigger submenu expand
                 const splitMenuButton = querySplitMenuButton();
                 if (splitMenuButton) {
                     fireEvent.click(splitMenuButton, document.createEvent('Events'));
                 }
                 // Check submenu offset - two callouts rendered
-                expect(queryCallouts().length).toEqual(2);
+                expect(queryCallouts()).toHaveLength(2);
             });
         }
     });
@@ -817,9 +817,9 @@ describe('<UITreeDropdown />', () => {
 
     it('Disabled state', () => {
         const { container } = renderResult;
-        expect(container.querySelectorAll(selectors.wrapper.disabled).length).toEqual(0);
+        expect(container.querySelectorAll(selectors.wrapper.disabled)).toHaveLength(0);
         renderResult.rerender(<UITreeDropdown {...defaultProps} items={[]} />);
-        expect(container.querySelectorAll(selectors.wrapper.disabled).length).toEqual(1);
+        expect(container.querySelectorAll(selectors.wrapper.disabled)).toHaveLength(1);
         const input = container.querySelector('input.ms-TextField-field') as HTMLInputElement;
         expect(input?.disabled).toEqual(false);
         expect(input?.readOnly).toEqual(true);
@@ -828,13 +828,13 @@ describe('<UITreeDropdown />', () => {
 
     it('ReadOnly state', () => {
         const { container } = renderResult;
-        expect(container.querySelectorAll(selectors.wrapper.readonly).length).toEqual(0);
+        expect(container.querySelectorAll(selectors.wrapper.readonly)).toHaveLength(0);
         renderResult.rerender(<UITreeDropdown {...defaultProps} readOnly={true} />);
         const input = container.querySelector('input') as HTMLInputElement;
         expect(input?.readOnly).toEqual(true);
         // Dropdown menu should not be opened
         openDropdown(container);
-        expect(queryAllContextMenus().length).toEqual(0);
-        expect(container.querySelectorAll(selectors.wrapper.readonly).length).toEqual(1);
+        expect(queryAllContextMenus()).toHaveLength(0);
+        expect(container.querySelectorAll(selectors.wrapper.readonly)).toHaveLength(1);
     });
 });

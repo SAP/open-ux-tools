@@ -34,7 +34,7 @@ describe('<UITooltip />', () => {
 
     it('Should render a UITooltip component', () => {
         const { container } = render(<UITooltip />);
-        expect(container.querySelectorAll('.ms-TooltipHost').length).toEqual(1);
+        expect(container.querySelectorAll('.ms-TooltipHost')).toHaveLength(1);
     });
 
     it('Property "maxWidth" - default', () => {

@@ -6,7 +6,7 @@ import { labelGlobalStyle, UILabel } from '../../../src/components/UILabel';
 describe('<UILabel />', () => {
     it('Should render a UIToggle component', () => {
         const { container } = render(<UILabel>Dummy</UILabel>);
-        expect(container.querySelectorAll('.ms-Label').length).toEqual(1);
+        expect(container.querySelectorAll('.ms-Label')).toHaveLength(1);
     });
 
     it('Styles', () => {
