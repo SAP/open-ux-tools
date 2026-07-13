@@ -18,7 +18,7 @@
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({

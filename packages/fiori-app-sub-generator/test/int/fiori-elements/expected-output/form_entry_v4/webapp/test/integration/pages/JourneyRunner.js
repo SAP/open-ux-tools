@@ -5,7 +5,7 @@ sap.ui.define([
 ], function (JourneyRunner, TravelObjectPageGenerated, BookingObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('testNameSpace/formentryv4') + '/test/flpSandbox.html#testNameSpaceformentryv4-tile',
         pages: {
 			onTheTravelObjectPageGenerated: TravelObjectPageGenerated,

@@ -213,8 +213,9 @@ describe('Test getObjectPageFeatures()', () => {
         const objectPage2Data = result.find((page) => page.name === 'objectPage2');
         expect(objectPage2Data?.navigationParents).toBeDefined();
         expect(objectPage2Data?.navigationParents?.parentLRName).toBe('listReportPage');
-        expect(objectPage2Data?.navigationParents?.parentOPName).toBe('objectPage1');
-        expect(objectPage2Data?.navigationParents?.parentOPTableSection).toBe('tableSection1');
+        expect(objectPage2Data?.navigationParents?.parentOPs).toEqual([
+            { name: 'objectPage1', navigationProperty: 'tableSection1' }
+        ]);
     });
 
     test('should handle navigation with route object', async () => {
@@ -284,8 +285,9 @@ describe('Test getObjectPageFeatures()', () => {
             mockLogger
         );
         const objectPage2Data = result.find((page) => page.name === 'objectPage2');
-        expect(objectPage2Data?.navigationParents?.parentOPName).toBe('objectPage1');
-        expect(objectPage2Data?.navigationParents?.parentOPTableSection).toBe('tableSection1');
+        expect(objectPage2Data?.navigationParents?.parentOPs).toEqual([
+            { name: 'objectPage1', navigationProperty: 'tableSection1' }
+        ]);
     });
 
     test('should extract header sections with facetId from Key', async () => {
@@ -958,8 +960,8 @@ describe('Test getObjectPageFeatures()', () => {
             model: {}
         } as unknown as ApplicationModel;
         const result = await getObjectPageFeatures([objectPage1] as PageWithModelV4[], 'listReportPage', mockLogger);
-        const objectPage2Data = result.find((page) => page.name === 'objectPage2');
-        expect(objectPage2Data?.navigationParents?.parentOPName).toBeUndefined();
+        const objectPage1Data = result.find((page) => page.name === 'objectPage1');
+        expect(objectPage1Data?.navigationParents?.parentOPs).toEqual([]);
     });
 
     test('should handle form fields without name property', async () => {
@@ -1073,7 +1075,7 @@ describe('Test getObjectPageFeatures()', () => {
         } as unknown as ApplicationModel;
         const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], 'listReportPage', mockLogger);
         expect(result[0].navigationParents?.parentLRName).toBe('listReportPage');
-        expect(result[0].navigationParents?.parentOPName).toBeUndefined();
+        expect(result[0].navigationParents?.parentOPs).toEqual([]);
     });
 
     test('should handle application without ListReport page', async () => {
@@ -1480,6 +1482,141 @@ describe('Test getObjectPageFeatures()', () => {
         };
         const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger);
         expect(result[0].bodySections?.[0].subSections?.[0].fields).toEqual([]);
+    });
+
+    test('drills ConnectedFields and FieldGroup wrappers when metadata is supplied', async () => {
+        const metadata = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+    <edmx:DataServices>
+        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="test.svc">
+            <EntityType Name="BookingType">
+                <Key><PropertyRef Name="BookingId"/></Key>
+                <Property Name="BookingId" Type="Edm.String"/>
+                <Property Name="Country" Type="Edm.String"/>
+                <Property Name="CityName" Type="Edm.String"/>
+                <Property Name="PostingIsBlocked" Type="Edm.Boolean"/>
+                <Property Name="BusinessPartnerIsBlocked" Type="Edm.Boolean"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Bookings" EntityType="test.svc.BookingType"/>
+            </EntityContainer>
+            <Annotations Target="test.svc.BookingType">
+                <Annotation Term="com.sap.vocabularies.UI.v1.ConnectedFields" Qualifier="CountryCity">
+                    <Record Type="com.sap.vocabularies.UI.v1.ConnectedFieldsType">
+                        <PropertyValue Property="Template" String="{Country} - {CityName}"/>
+                        <PropertyValue Property="Data">
+                            <Record Type="Org.OData.Core.V1.Dictionary">
+                                <PropertyValue Property="Country">
+                                    <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                                        <PropertyValue Property="Value" Path="Country"/>
+                                    </Record>
+                                </PropertyValue>
+                                <PropertyValue Property="CityName">
+                                    <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                                        <PropertyValue Property="Value" Path="CityName"/>
+                                    </Record>
+                                </PropertyValue>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="com.sap.vocabularies.UI.v1.FieldGroup" Qualifier="CheckBoxGroup">
+                    <Record>
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                                    <PropertyValue Property="Value" Path="PostingIsBlocked"/>
+                                </Record>
+                                <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                                    <PropertyValue Property="Value" Path="BusinessPartnerIsBlocked"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            entitySet: 'Bookings',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: { aggregations: {} } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation,
+                        sections: {
+                            aggregations: {
+                                section1: {
+                                    isTable: false,
+                                    custom: false,
+                                    schema: { keys: [{ name: 'ID', value: 'GeneralInformation' }] },
+                                    aggregations: {
+                                        subSections: {
+                                            aggregations: {
+                                                subSection1: {
+                                                    isTable: false,
+                                                    custom: false,
+                                                    schema: { keys: [{ name: 'ID', value: 'BookingData' }] },
+                                                    aggregations: {
+                                                        form: {
+                                                            schema: { keys: [] },
+                                                            aggregations: {
+                                                                fields: {
+                                                                    aggregations: {
+                                                                        connected: {
+                                                                            name: 'DataFieldForAnnotation::ConnectedFields::CountryCity',
+                                                                            schema: {
+                                                                                keys: [
+                                                                                    {
+                                                                                        name: 'Target',
+                                                                                        value: '@UI.ConnectedFields#CountryCity'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        } as unknown as TreeAggregation,
+                                                                        group: {
+                                                                            name: 'DataFieldForAnnotation::FieldGroup::CheckBoxGroup',
+                                                                            schema: {
+                                                                                keys: [
+                                                                                    {
+                                                                                        name: 'Target',
+                                                                                        value: '@UI.FieldGroup#CheckBoxGroup'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        } as unknown as TreeAggregation
+                                                                    }
+                                                                } as unknown as TreeAggregation
+                                                            } as unknown as TreeAggregation
+                                                        } as unknown as TreeAggregation
+                                                    }
+                                                } as unknown as TreeAggregation
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger, metadata);
+        const subSection = result[0].bodySections?.[0].subSections?.[0];
+        expect(subSection?.fields).toEqual([
+            { property: 'Country', connectedFields: 'CountryCity' },
+            { property: 'CityName', connectedFields: 'CountryCity' },
+            { property: 'PostingIsBlocked', fieldGroup: 'CheckBoxGroup' },
+            { property: 'BusinessPartnerIsBlocked', fieldGroup: 'CheckBoxGroup' }
+        ]);
     });
 
     test('should extract table columns from a table sub-section', async () => {
