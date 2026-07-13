@@ -1,5 +1,65 @@
 # @sap-ux/ui5-test-writer
 
+## 1.2.20
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-10
+
+#### Bug Fixes
+
+- Emit full ancestor cascade when navigating to deeply-nested Object Pages [[65b4b19](https://github.com/SAP/open-ux-tools/commit/65b4b1915767fafe5e8a9d197ac32be7dd9a0333)]
+
+## 1.2.19
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Bug Fixes
+
+- Handle `@UI.ConnectedFields` and `@UI.FieldGroup` wrappers in body sub-section form fields and emit one `iCheckField` per inner property with the `connectedFields` / `fieldGroup` qualifier on the `FieldIdentifier`. [[4fb839f](https://github.com/SAP/open-ux-tools/commit/4fb839f183299d93ca3ed2c601cff14ced8435d8)]
+
+## 1.2.18
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Incorrect types of arguments passed in TS test code [[8e1ad51](https://github.com/SAP/open-ux-tools/commit/8e1ad51c656e719607d801495d06f75130fe24d0)]
+
+## 1.2.17
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Use const in JS templates instead of var [[824ed4d](https://github.com/SAP/open-ux-tools/commit/824ed4dbb03ac46752e5d2ba6dca5bfcb7675a09)]
+
+## 1.2.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.0.38 → 1.0.39
+
+## 1.2.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.19 → 1.0.20
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/preview-middleware 1.0.37 → 1.0.38
+- @sap-ux/project-access 2.1.6 → 2.1.6
+- @sap-ux/ui5-application-writer 2.1.0 → 2.1.0
+
 ## 1.2.14
 
 ### Patch Changes

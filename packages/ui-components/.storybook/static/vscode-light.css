@@ -115,6 +115,7 @@
     --vscode-button-hoverBackground: #0062a3;
     --vscode-button-secondaryForeground: #ffffff;
     --vscode-button-secondaryBackground: #5f6a79;
+    --vscode-button-secondaryBorder: rgba(97, 97, 97, 0.15);
     --vscode-button-secondaryHoverBackground: #4c5561;
     --vscode-checkbox-background: #ffffff;
     --vscode-checkbox-selectBackground: #f3f3f3;
