@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.7.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-13
+
+#### Features
+
+- Enable linting applications with multiple views. [[c325423](https://github.com/SAP/open-ux-tools/commit/c32542308410ce93ea7e6eea8186b82963f8144c)]
+
 ## 10.7.7
 
 ### Patch Changes
