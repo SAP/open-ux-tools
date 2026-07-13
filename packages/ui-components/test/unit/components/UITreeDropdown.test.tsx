@@ -12,8 +12,10 @@ import { mockDomEventListener } from '../../utils/utils';
  * returning the first class component instance matching componentClass.
  */
 function getReactInstance<T>(domNode: Element, componentClass: new (...args: any[]) => T): T | null {
-    const fiberKey = Object.keys(domNode).find(k => k.startsWith('__reactInternalInstance'));
-    if (!fiberKey) return null;
+    const fiberKey = Object.keys(domNode).find((k) => k.startsWith('__reactInternalInstance'));
+    if (!fiberKey) {
+        return null;
+    }
     let fiber: any = (domNode as any)[fiberKey];
     while (fiber) {
         if (fiber.stateNode instanceof componentClass) {
@@ -62,7 +64,7 @@ describe('<UITreeDropdown />', () => {
     // fireEvent.change/input do not reliably trigger Fluent UI's internal onChange handler,
     // so we invoke the React event handler stored on the element directly.
     const simulateInputChange = (input: HTMLInputElement, value: string): void => {
-        const reactHandlersKey = Object.keys(input).find(k => k.startsWith('__reactEventHandlers'));
+        const reactHandlersKey = Object.keys(input).find((k) => k.startsWith('__reactEventHandlers'));
         const handlers = reactHandlersKey ? (input as any)[reactHandlersKey] : null;
         Object.defineProperty(input, 'value', { writable: true, configurable: true, value });
         if (handlers?.onChange) {
@@ -76,7 +78,8 @@ describe('<UITreeDropdown />', () => {
     const queryAllContextMenus = () => document.querySelectorAll('.ui-treeDropDown-context-menu');
     const queryHighlightItems = () => document.querySelectorAll('.ts-Menu-option--highlighted');
     const queryMenuLinks = () => document.querySelectorAll('button.ms-ContextualMenu-link');
-    const querySplitMenuButton = () => document.querySelector('button.ms-ContextualMenu-splitMenu') as HTMLElement | null;
+    const querySplitMenuButton = () =>
+        document.querySelector('button.ms-ContextualMenu-splitMenu') as HTMLElement | null;
     const queryCallouts = () => document.querySelectorAll('div.ms-Callout');
     const queryMenuList = () => document.querySelector('.ms-ContextualMenu-list') as HTMLElement | null;
 
@@ -128,9 +131,7 @@ describe('<UITreeDropdown />', () => {
         const focusEvent = getFocusEvent(value);
         windowEventMock.simulateEvent('focus', focusEvent);
         await new Promise((resolve) => setTimeout(resolve, 100));
-        jest.spyOn(document, 'getElementsByClassName').mockImplementation((name: string) =>
-            originalHandler(name)
-        );
+        jest.spyOn(document, 'getElementsByClassName').mockImplementation((name: string) => originalHandler(name));
         getElementsByClassNameSpy.mockClear();
     };
 
@@ -817,9 +818,7 @@ describe('<UITreeDropdown />', () => {
     it('Disabled state', () => {
         const { container } = renderResult;
         expect(container.querySelectorAll(selectors.wrapper.disabled).length).toEqual(0);
-        renderResult.rerender(
-            <UITreeDropdown {...defaultProps} items={[]} />
-        );
+        renderResult.rerender(<UITreeDropdown {...defaultProps} items={[]} />);
         expect(container.querySelectorAll(selectors.wrapper.disabled).length).toEqual(1);
         const input = container.querySelector('input.ms-TextField-field') as HTMLInputElement;
         expect(input?.disabled).toEqual(false);
@@ -830,9 +829,7 @@ describe('<UITreeDropdown />', () => {
     it('ReadOnly state', () => {
         const { container } = renderResult;
         expect(container.querySelectorAll(selectors.wrapper.readonly).length).toEqual(0);
-        renderResult.rerender(
-            <UITreeDropdown {...defaultProps} readOnly={true} />
-        );
+        renderResult.rerender(<UITreeDropdown {...defaultProps} readOnly={true} />);
         const input = container.querySelector('input') as HTMLInputElement;
         expect(input?.readOnly).toEqual(true);
         // Dropdown menu should not be opened

@@ -23,12 +23,7 @@ describe('<Sections />', () => {
         document.body.dispatchEvent(event);
     };
 
-    const simulateSplitterResize = (
-        cont: HTMLElement,
-        start: number,
-        end: number,
-        splitterIndex = 0
-    ): void => {
+    const simulateSplitterResize = (cont: HTMLElement, start: number, end: number, splitterIndex = 0): void => {
         const splitters = cont.querySelectorAll('.splitter');
         const splitter = splitters[splitterIndex] as HTMLElement;
         const mousedownEvent = new MouseEvent('mousedown', {
@@ -217,11 +212,7 @@ describe('<Sections />', () => {
         ];
         test.each(testCases)('$name', ({ splitterLayoutType, isCompact }) => {
             rerender(
-                <UISections
-                    ref={sectionsRef}
-                    vertical={false}
-                    splitter={true}
-                    splitterLayoutType={splitterLayoutType}>
+                <UISections ref={sectionsRef} vertical={false} splitter={true} splitterLayoutType={splitterLayoutType}>
                     <UISections.Section
                         layout={UISectionLayout.Standard}
                         className="dummy-left-section"
@@ -1241,7 +1232,12 @@ describe('<Sections />', () => {
 
         const localRef = React.createRef<UISections>();
         const { container: localContainer, unmount: localUnmount } = render(
-            <UISections ref={localRef} vertical={false} splitter={true} sizes={[450, undefined]} minSectionSize={[200, 190]}>
+            <UISections
+                ref={localRef}
+                vertical={false}
+                splitter={true}
+                sizes={[450, undefined]}
+                minSectionSize={[200, 190]}>
                 <UISections.Section>
                     <div>Left</div>
                 </UISections.Section>

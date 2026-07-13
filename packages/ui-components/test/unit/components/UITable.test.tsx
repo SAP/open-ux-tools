@@ -154,9 +154,7 @@ describe('<UITable />', () => {
     });
 
     it('Toggle cell for editing', () => {
-        const { container } = render(
-            <UITable {...defaultProps} columns={[columnText]} items={[{ text: 'apple' }]} />
-        );
+        const { container } = render(<UITable {...defaultProps} columns={[columnText]} items={[{ text: 'apple' }]} />);
 
         expect(container.querySelectorAll('.ms-DetailsRow-cell span').length).toEqual(1);
         expect(container.querySelectorAll('.ms-DetailsRow-cell input.ms-TextField-field').length).toEqual(0);
@@ -203,9 +201,7 @@ describe('<UITable />', () => {
     });
 
     it('Text input', () => {
-        const { container } = render(
-            <UITable {...defaultProps} columns={[columnText]} items={[{ text: 'apple' }]} />
-        );
+        const { container } = render(<UITable {...defaultProps} columns={[columnText]} items={[{ text: 'apple' }]} />);
 
         const span = container.querySelector('.ms-DetailsRow-cell span') as HTMLElement;
         fireEvent.click(span);
@@ -218,9 +214,7 @@ describe('<UITable />', () => {
     });
 
     it('Text input - cancel edit', () => {
-        const { container } = render(
-            <UITable {...defaultProps} columns={[columnText]} items={[{ text: 'apple' }]} />
-        );
+        const { container } = render(<UITable {...defaultProps} columns={[columnText]} items={[{ text: 'apple' }]} />);
 
         const span = container.querySelector('.ms-DetailsRow-cell span') as HTMLElement;
         fireEvent.click(span);
@@ -247,9 +241,7 @@ describe('<UITable />', () => {
     });
 
     it('Boolean selector', () => {
-        const { container } = render(
-            <UITable {...defaultProps} columns={[columnBool]} items={[{ bool: 'true' }]} />
-        );
+        const { container } = render(<UITable {...defaultProps} columns={[columnBool]} items={[{ bool: 'true' }]} />);
 
         const span = container.querySelector('.ms-DetailsRow-cell span') as HTMLElement;
         fireEvent.click(span);
@@ -266,9 +258,7 @@ describe('<UITable />', () => {
     });
 
     it('Boolean selector - typed', () => {
-        const { container } = render(
-            <UITable {...defaultProps} columns={[columnBool]} items={[{ bool: 'true' }]} />
-        );
+        const { container } = render(<UITable {...defaultProps} columns={[columnBool]} items={[{ bool: 'true' }]} />);
 
         const span = container.querySelector('.ms-DetailsRow-cell span') as HTMLElement;
         fireEvent.click(span);
