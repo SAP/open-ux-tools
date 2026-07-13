@@ -31,8 +31,8 @@ jobs:
             - name: Install pnpm modules
               run: pnpm install
             - name: Run build
-              run: pnpm --filter @sap-ux/ui5-info... build
-            - name: Cache UI5 maintenance versions
+              run: pnpm --filter @sap-ux/ui5-info... build 
+            - name: Cache UI5 maintenance versions 
               id: cache-ui5-versions
               uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
               with:
@@ -41,11 +41,11 @@ jobs:
             - name: List previously cached UI5 maintenance versions
               id: previous-ui5-versions
               run: |
-                  if [[ -f tests/integration/adaptation-editor/versions.json ]]; then
-                    cat tests/integration/adaptation-editor/versions.json
-                  else
-                    echo "No previous versions found."
-                  fi
+                if [[ -f tests/integration/adaptation-editor/versions.json ]]; then
+                  cat tests/integration/adaptation-editor/versions.json
+                else
+                  echo "No previous versions found."
+                fi
             - name: Load UI5 maintenance versions
               id: current-ui5-versions
               run: |
