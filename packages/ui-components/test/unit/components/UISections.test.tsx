@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
+import { render, rerender as rtlRerender } from '@testing-library/react';
 import { UISections } from '../../../src/components/UISection/UISections';
 import { UISectionLayout } from '../../../src/components/UISection/UISection';
 import { UISplitterLayoutType, UISplitterType } from '../../../src/components/UISection/UISplitter';
@@ -11,7 +11,10 @@ initIcons();
 mockResizeObserver();
 
 describe('<Sections />', () => {
-    let wrapper: Enzyme.ReactWrapper<UISectionsProps, UISectionsState>;
+    let container: HTMLElement;
+    let unmount: () => void;
+    let rerender: (ui: React.ReactElement) => void;
+    let sectionsRef: React.RefObject<UISections>;
     let windowEventListenerMock = mockDomEventListener(window);
 
     const simulateMouseEvent = (type: string, x = 0, y = 0): void => {
@@ -21,13 +24,21 @@ describe('<Sections />', () => {
     };
 
     const simulateSplitterResize = (
-        wrapper: Enzyme.ReactWrapper<UISectionsProps, UISectionsState>,
+        cont: HTMLElement,
         start: number,
         end: number,
         splitterIndex = 0
     ): void => {
-        const splitter = wrapper.find('.splitter').at(splitterIndex);
-        splitter.simulate('mousedown', { clientX: start, button: 0, clientY: start });
+        const splitters = cont.querySelectorAll('.splitter');
+        const splitter = splitters[splitterIndex] as HTMLElement;
+        const mousedownEvent = new MouseEvent('mousedown', {
+            bubbles: true,
+            cancelable: true,
+            clientX: start,
+            clientY: start,
+            button: 0
+        });
+        splitter.dispatchEvent(mousedownEvent);
         simulateMouseEvent('mousemove', end, end);
         simulateMouseEvent('mouseup', end, end);
     };
@@ -75,8 +86,9 @@ describe('<Sections />', () => {
     };
 
     beforeEach(() => {
-        wrapper = Enzyme.mount(
-            <UISections vertical={false}>
+        sectionsRef = React.createRef<UISections>();
+        const result = render(
+            <UISections ref={sectionsRef} vertical={false}>
                 <UISections.Section
                     layout={UISectionLayout.Standard}
                     className="dummy-left-section"
@@ -93,6 +105,9 @@ describe('<Sections />', () => {
                 </UISections.Section>
             </UISections>
         );
+        container = result.container;
+        unmount = result.unmount;
+        rerender = result.rerender;
 
         windowEventListenerMock.cleanDomEventListeners();
         windowEventListenerMock = mockDomEventListener(window);
@@ -100,40 +115,85 @@ describe('<Sections />', () => {
 
     afterEach(() => {
         jest.clearAllMocks();
-        wrapper.unmount();
+        unmount();
     });
 
     it('Should render a Shell component', () => {
-        expect(wrapper.exists()).toEqual(true);
-        expect(wrapper.find('.sections').length).toEqual(1);
-        expect(wrapper.find('.section').length).toEqual(2);
-        expect(wrapper.find('.sections--vertical').length).toEqual(0);
-        expect(wrapper.find('.sections--horizontal').length).toEqual(1);
-        expect(wrapper.find('.sections--animated').length).toEqual(0);
-        expect(wrapper.find('.sections--full').length).toEqual(0);
+        expect(container.querySelector('.sections')).toBeTruthy();
+        expect(container.querySelectorAll('.sections').length).toEqual(1);
+        expect(container.querySelectorAll('.section').length).toEqual(2);
+        expect(container.querySelectorAll('.sections--vertical').length).toEqual(0);
+        expect(container.querySelectorAll('.sections--horizontal').length).toEqual(1);
+        expect(container.querySelectorAll('.sections--animated').length).toEqual(0);
+        expect(container.querySelectorAll('.sections--full').length).toEqual(0);
     });
 
     it('Test "vertical" property', () => {
-        wrapper.setProps({
-            vertical: true
-        });
-        expect(wrapper.find('.sections--vertical').length).toEqual(1);
-        expect(wrapper.find('.sections--horizontal').length).toEqual(0);
+        rerender(
+            <UISections ref={sectionsRef} vertical={true}>
+                <UISections.Section
+                    layout={UISectionLayout.Standard}
+                    className="dummy-left-section"
+                    title="Left Title"
+                    height="100%">
+                    <div>Left</div>
+                </UISections.Section>
+                <UISections.Section
+                    layout={UISectionLayout.Extended}
+                    className="dummy-right-section"
+                    title="Right Title"
+                    height="100%">
+                    <div>Right</div>
+                </UISections.Section>
+            </UISections>
+        );
+        expect(container.querySelectorAll('.sections--vertical').length).toEqual(1);
+        expect(container.querySelectorAll('.sections--horizontal').length).toEqual(0);
     });
 
     it('Test "animation" property', () => {
-        wrapper.setProps({
-            animation: true
-        });
-        expect(wrapper.find('.sections--animated').length).toEqual(1);
+        rerender(
+            <UISections ref={sectionsRef} vertical={false} animation={true}>
+                <UISections.Section
+                    layout={UISectionLayout.Standard}
+                    className="dummy-left-section"
+                    title="Left Title"
+                    height="100%">
+                    <div>Left</div>
+                </UISections.Section>
+                <UISections.Section
+                    layout={UISectionLayout.Extended}
+                    className="dummy-right-section"
+                    title="Right Title"
+                    height="100%">
+                    <div>Right</div>
+                </UISections.Section>
+            </UISections>
+        );
+        expect(container.querySelectorAll('.sections--animated').length).toEqual(1);
     });
 
     it('Test "height" property', () => {
         const height = '500px';
-        wrapper.setProps({
-            height
-        });
-        const dom: HTMLElement = wrapper.getDOMNode();
+        rerender(
+            <UISections ref={sectionsRef} vertical={false} height={height}>
+                <UISections.Section
+                    layout={UISectionLayout.Standard}
+                    className="dummy-left-section"
+                    title="Left Title"
+                    height="100%">
+                    <div>Left</div>
+                </UISections.Section>
+                <UISections.Section
+                    layout={UISectionLayout.Extended}
+                    className="dummy-right-section"
+                    title="Right Title"
+                    height="100%">
+                    <div>Right</div>
+                </UISections.Section>
+            </UISections>
+        );
+        const dom = container.querySelector('.sections') as HTMLElement;
         expect(dom.style.height).toEqual(height);
     });
 
@@ -156,65 +216,12 @@ describe('<Sections />', () => {
             }
         ];
         test.each(testCases)('$name', ({ splitterLayoutType, isCompact }) => {
-            wrapper.setProps({
-                splitter: true,
-                splitterLayoutType
-            });
-            expect(wrapper.find('.splitter--compact').length).toEqual(isCompact ? 1 : 0);
-            expect(wrapper.find('.splitter--standard').length).toEqual(isCompact ? 0 : 1);
-        });
-    });
-
-    it('Test "hidden" section', () => {
-        const hiddenWrapper = Enzyme.mount(
-            <UISections vertical={false} splitter={true} minSectionSize={6}>
-                <UISections.Section>
-                    <div>Left</div>
-                </UISections.Section>
-                <UISections.Section hidden={true}>
-                    <div>Right</div>
-                </UISections.Section>
-            </UISections>
-        );
-        expect(hiddenWrapper.find('.sections__item--hidden').length).toEqual(1);
-        expect(hiddenWrapper.find('.sections--full').length).toEqual(1);
-    });
-
-    // There would need additional tests, but it would take some time to mock DOM values for multiple cases
-    describe('Test splitter', () => {
-        beforeEach(() => {
-            wrapper.setProps({
-                splitter: true
-            });
-            const rect = {
-                top: 0,
-                height: 1000,
-                width: 1000,
-                left: 0
-            } as DOMRect;
-            jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(() => rect);
-            mockClientWidth(1000, { sections: 2000 });
-            mockClientHeight(1000, { sections: 2000 });
-            jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb: any) => {
-                cb(1);
-                return 1;
-            });
-        });
-
-        it('Test "splitter" visibility', () => {
-            expect(wrapper.find('.splitter').length).toEqual(1);
-        });
-
-        it('Test "splitter" resize', () => {
-            simulateSplitterResize(wrapper, 100, 50);
-            const section: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
-            expect(section.style.left).toEqual('0px');
-            expect(section.style.right).toEqual('1050px');
-        });
-
-        it('Test "splitter" resize', () => {
-            const verticalWrapper = Enzyme.mount(
-                <UISections vertical={true} splitter={true}>
+            rerender(
+                <UISections
+                    ref={sectionsRef}
+                    vertical={false}
+                    splitter={true}
+                    splitterLayoutType={splitterLayoutType}>
                     <UISections.Section
                         layout={UISectionLayout.Standard}
                         className="dummy-left-section"
@@ -231,54 +238,154 @@ describe('<Sections />', () => {
                     </UISections.Section>
                 </UISections>
             );
-            simulateSplitterResize(verticalWrapper, 100, 50);
-            const section: HTMLElement = verticalWrapper.find('.sections__item').first().getDOMNode();
+            expect(container.querySelectorAll('.splitter--compact').length).toEqual(isCompact ? 1 : 0);
+            expect(container.querySelectorAll('.splitter--standard').length).toEqual(isCompact ? 0 : 1);
+        });
+    });
+
+    it('Test "hidden" section', () => {
+        const { container: hiddenContainer, unmount: hiddenUnmount } = render(
+            <UISections vertical={false} splitter={true} minSectionSize={6}>
+                <UISections.Section>
+                    <div>Left</div>
+                </UISections.Section>
+                <UISections.Section hidden={true}>
+                    <div>Right</div>
+                </UISections.Section>
+            </UISections>
+        );
+        expect(hiddenContainer.querySelectorAll('.sections__item--hidden').length).toEqual(1);
+        expect(hiddenContainer.querySelectorAll('.sections--full').length).toEqual(1);
+        hiddenUnmount();
+    });
+
+    // There would need additional tests, but it would take some time to mock DOM values for multiple cases
+    describe('Test splitter', () => {
+        beforeEach(() => {
+            rerender(
+                <UISections ref={sectionsRef} vertical={false} splitter={true}>
+                    <UISections.Section
+                        layout={UISectionLayout.Standard}
+                        className="dummy-left-section"
+                        title="Left Title"
+                        height="100%">
+                        <div>Left</div>
+                    </UISections.Section>
+                    <UISections.Section
+                        layout={UISectionLayout.Extended}
+                        className="dummy-right-section"
+                        title="Right Title"
+                        height="100%">
+                        <div>Right</div>
+                    </UISections.Section>
+                </UISections>
+            );
+            const rect = {
+                top: 0,
+                height: 1000,
+                width: 1000,
+                left: 0
+            } as DOMRect;
+            jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(() => rect);
+            mockClientWidth(1000, { sections: 2000 });
+            mockClientHeight(1000, { sections: 2000 });
+            jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb: any) => {
+                cb(1);
+                return 1;
+            });
+        });
+
+        it('Test "splitter" visibility', () => {
+            expect(container.querySelectorAll('.splitter').length).toEqual(1);
+        });
+
+        it('Test "splitter" resize', () => {
+            simulateSplitterResize(container, 100, 50);
+            const section = container.querySelector('.sections__item') as HTMLElement;
+            expect(section.style.left).toEqual('0px');
+            expect(section.style.right).toEqual('1050px');
+        });
+
+        it('Test "splitter" resize', () => {
+            const verticalRef = React.createRef<UISections>();
+            const { container: verticalContainer, unmount: verticalUnmount } = render(
+                <UISections ref={verticalRef} vertical={true} splitter={true}>
+                    <UISections.Section
+                        layout={UISectionLayout.Standard}
+                        className="dummy-left-section"
+                        title="Left Title"
+                        height="100%">
+                        <div>Left</div>
+                    </UISections.Section>
+                    <UISections.Section
+                        layout={UISectionLayout.Extended}
+                        className="dummy-right-section"
+                        title="Right Title"
+                        height="100%">
+                        <div>Right</div>
+                    </UISections.Section>
+                </UISections>
+            );
+            simulateSplitterResize(verticalContainer, 100, 50);
+            const section = verticalContainer.querySelector('.sections__item') as HTMLElement;
             expect(section.style.top).toEqual('0px');
             expect(section.style.bottom).toEqual('1050px');
+            verticalUnmount();
         });
 
         describe('Test 3 columns splitter resize', () => {
-            const renderSections = (
-                visible = [true, true, true]
-            ): Enzyme.ReactWrapper<UISectionsProps, UISectionsState, React.Component> => {
-                return Enzyme.mount(
-                    <UISections
-                        vertical={false}
-                        splitterType={UISplitterType.Resize}
-                        splitter={true}
-                        sizes={[1000, 1000, 1000]}
-                        minSectionSize={[200, 100, 300]}>
-                        <UISections.Section
-                            className="dummy-left-section"
-                            title="Left Title"
-                            height="100%"
-                            hidden={!visible[0]}>
-                            <div>Left</div>
-                        </UISections.Section>
-                        <UISections.Section
-                            className="dummy-middle-section"
-                            title="Middle Title"
-                            height="100%"
-                            hidden={!visible[1]}>
-                            <div>Middle</div>
-                        </UISections.Section>
-                        <UISections.Section
-                            className="dummy-right-section"
-                            title="Right Title"
-                            height="100%"
-                            hidden={!visible[2]}>
-                            <div>Right</div>
-                        </UISections.Section>
-                    </UISections>
-                );
-            };
+            let threeColContainer: HTMLElement;
+            let threeColUnmount: () => void;
+            let threeColRerender: (ui: React.ReactElement) => void;
+            let threeColRef: React.RefObject<UISections>;
+
+            const buildThreeColJsx = (visible = [true, true, true], extraProps: Partial<UISectionsProps> = {}) => (
+                <UISections
+                    ref={threeColRef}
+                    vertical={false}
+                    splitterType={UISplitterType.Resize}
+                    splitter={true}
+                    sizes={[1000, 1000, 1000]}
+                    minSectionSize={[200, 100, 300]}
+                    {...extraProps}>
+                    <UISections.Section
+                        className="dummy-left-section"
+                        title="Left Title"
+                        height="100%"
+                        hidden={!visible[0]}>
+                        <div>Left</div>
+                    </UISections.Section>
+                    <UISections.Section
+                        className="dummy-middle-section"
+                        title="Middle Title"
+                        height="100%"
+                        hidden={!visible[1]}>
+                        <div>Middle</div>
+                    </UISections.Section>
+                    <UISections.Section
+                        className="dummy-right-section"
+                        title="Right Title"
+                        height="100%"
+                        hidden={!visible[2]}>
+                        <div>Right</div>
+                    </UISections.Section>
+                </UISections>
+            );
 
             beforeEach(() => {
                 mockClientWidth(1000, { sections: 3000 });
-                wrapper = renderSections();
+                threeColRef = React.createRef<UISections>();
+                const result = render(buildThreeColJsx());
+                threeColContainer = result.container;
+                threeColUnmount = result.unmount;
+                threeColRerender = result.rerender;
 
                 windowEventListenerMock.cleanDomEventListeners();
                 windowEventListenerMock = mockDomEventListener(window);
+            });
+
+            afterEach(() => {
+                threeColUnmount();
             });
 
             const testCases = [
@@ -487,15 +594,18 @@ describe('<Sections />', () => {
             ];
             test.each(testCases)('$name', ({ move, result, sizes }) => {
                 if (sizes) {
-                    wrapper.setProps({
-                        sizes: [1000, 1000, 1000],
-                        minSectionSize: [200, 1000, 1000]
-                    });
+                    threeColRerender(
+                        buildThreeColJsx([true, true, true], {
+                            sizes: [1000, 1000, 1000] as Array<number | undefined>,
+                            minSectionSize: [200, 1000, 1000]
+                        })
+                    );
                 }
-                simulateSplitterResize(wrapper, move.start, move.end, move.index);
-                const firstSection: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
-                const middleSection: HTMLElement = wrapper.find('.sections__item').at(1).getDOMNode();
-                const lastSection: HTMLElement = wrapper.find('.sections__item').last().getDOMNode();
+                simulateSplitterResize(threeColContainer, move.start, move.end, move.index);
+                const items = threeColContainer.querySelectorAll('.sections__item');
+                const firstSection = items[0] as HTMLElement;
+                const middleSection = items[1] as HTMLElement;
+                const lastSection = items[items.length - 1] as HTMLElement;
                 expect({
                     first: {
                         left: firstSection.style.left,
@@ -513,9 +623,10 @@ describe('<Sections />', () => {
             });
 
             const getSizes = () => {
-                const firstSection: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
-                const middleSection: HTMLElement = wrapper.find('.sections__item').at(1).getDOMNode();
-                const lastSection: HTMLElement = wrapper.find('.sections__item').last().getDOMNode();
+                const items = threeColContainer.querySelectorAll('.sections__item');
+                const firstSection = items[0] as HTMLElement;
+                const middleSection = items[1] as HTMLElement;
+                const lastSection = items[items.length - 1] as HTMLElement;
                 return {
                     first: {
                         left: firstSection.style.left,
@@ -595,11 +706,13 @@ describe('<Sections />', () => {
                     start: 100,
                     end: 50
                 };
-                wrapper.setProps({
-                    sizes: [1000, 1000, 1000],
-                    minSectionSize: [200, 1000, 1000]
-                });
-                simulateSplitterResize(wrapper, move.start, move.end, move.index);
+                threeColRerender(
+                    buildThreeColJsx([true, true, true], {
+                        sizes: [1000, 1000, 1000] as Array<number | undefined>,
+                        minSectionSize: [200, 1000, 1000]
+                    })
+                );
+                simulateSplitterResize(threeColContainer, move.start, move.end, move.index);
                 expect(getSizes()).toEqual({
                     first: {
                         left: '0px',
@@ -616,9 +729,12 @@ describe('<Sections />', () => {
                 });
 
                 // Reset sizes
-                wrapper.setProps({
-                    sizes: resetSizes
-                });
+                threeColRerender(
+                    buildThreeColJsx([true, true, true], {
+                        sizes: resetSizes as Array<number | undefined>,
+                        minSectionSize: [200, 1000, 1000]
+                    })
+                );
                 expect(getSizes()).toEqual(expectedResult);
             });
 
@@ -771,13 +887,17 @@ describe('<Sections />', () => {
                 }
             ];
             test.each(hiddenTestCases)('Handle hidden sections. $name', ({ visibility, expectedResult, move }) => {
-                wrapper = renderSections(visibility);
+                const localRef = React.createRef<UISections>();
+                const { container: localContainer, unmount: localUnmount } = render(
+                    buildThreeColJsx(visibility as [boolean, boolean, boolean])
+                );
                 if (move) {
-                    simulateSplitterResize(wrapper, move.start, move.end, move.index);
+                    simulateSplitterResize(localContainer, move.start, move.end, move.index);
                 }
-                const firstSection: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
-                const middleSection: HTMLElement = wrapper.find('.sections__item').at(1).getDOMNode();
-                const lastSection: HTMLElement = wrapper.find('.sections__item').last().getDOMNode();
+                const items = localContainer.querySelectorAll('.sections__item');
+                const firstSection = items[0] as HTMLElement;
+                const middleSection = items[1] as HTMLElement;
+                const lastSection = items[items.length - 1] as HTMLElement;
 
                 expect({
                     first: {
@@ -793,14 +913,16 @@ describe('<Sections />', () => {
                         right: lastSection.style.right
                     }
                 }).toEqual(expectedResult);
+                localUnmount();
             });
         });
     });
 
     it('Test "minSectionSize"', () => {
         mockClientWidth(1000, { sections: 2000 });
-        wrapper = Enzyme.mount(
-            <UISections vertical={false} splitter={true} minSectionSize={[200, 100]}>
+        const localRef = React.createRef<UISections>();
+        const { container: localContainer, unmount: localUnmount } = render(
+            <UISections ref={localRef} vertical={false} splitter={true} minSectionSize={[200, 100]}>
                 <UISections.Section>
                     <div>Left</div>
                 </UISections.Section>
@@ -809,24 +931,27 @@ describe('<Sections />', () => {
                 </UISections.Section>
             </UISections>
         );
-        simulateSplitterResize(wrapper, 1000, 50);
-        const firstSection: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
+        simulateSplitterResize(localContainer, 1000, 50);
+        const firstSection = localContainer.querySelector('.sections__item') as HTMLElement;
         expect(firstSection.style.left).toEqual('0px');
         // 2000 - 200(min of first section) = 1800px
         expect(firstSection.style.right).toEqual('1800px');
         // Reverse move
-        simulateSplitterResize(wrapper, 1000, 3000);
-        const lastSection: HTMLElement = wrapper.find('.sections__item').last().getDOMNode();
+        simulateSplitterResize(localContainer, 1000, 3000);
+        const items = localContainer.querySelectorAll('.sections__item');
+        const lastSection = items[items.length - 1] as HTMLElement;
         // 2000 - 100(min of second section) = 1900px
         expect(lastSection.style.left).toEqual('1900px');
         expect(lastSection.style.right).toEqual('0px');
         expect(lastSection.style.width).toEqual('');
+        localUnmount();
     });
 
     it('Test "minSectionSize" - avoid resize when no place', () => {
         mockClientWidth(1000);
-        wrapper = Enzyme.mount(
-            <UISections vertical={false} splitter={true} minSectionSize={[800, 700]}>
+        const localRef = React.createRef<UISections>();
+        const { container: localContainer, unmount: localUnmount } = render(
+            <UISections ref={localRef} vertical={false} splitter={true} minSectionSize={[800, 700]}>
                 <UISections.Section>
                     <div>Left</div>
                 </UISections.Section>
@@ -835,16 +960,18 @@ describe('<Sections />', () => {
                 </UISections.Section>
             </UISections>
         );
-        simulateSplitterResize(wrapper, 1000, 50);
-        const firstSection: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
+        simulateSplitterResize(localContainer, 1000, 50);
+        const firstSection = localContainer.querySelector('.sections__item') as HTMLElement;
         expect(firstSection.style.left).toEqual('0%');
         expect(firstSection.style.right).toEqual('50%');
+        localUnmount();
     });
 
     it('Test property "onResize"', () => {
         const resizeFn = jest.fn();
-        wrapper = Enzyme.mount(
-            <UISections vertical={false} splitter={true} minSectionSize={[800, 700]} onResize={resizeFn}>
+        const localRef = React.createRef<UISections>();
+        const { container: localContainer, unmount: localUnmount } = render(
+            <UISections ref={localRef} vertical={false} splitter={true} minSectionSize={[800, 700]} onResize={resizeFn}>
                 <UISections.Section>
                     <div>Left</div>
                 </UISections.Section>
@@ -853,8 +980,9 @@ describe('<Sections />', () => {
                 </UISections.Section>
             </UISections>
         );
-        simulateSplitterResize(wrapper, 1000, 50);
+        simulateSplitterResize(localContainer, 1000, 50);
         expect(resizeFn).toHaveBeenCalledTimes(1);
+        localUnmount();
     });
 
     it('Test window resize', () => {
@@ -874,8 +1002,10 @@ describe('<Sections />', () => {
 
         const onToggleFullscreen = jest.fn();
         mockWidth(1000);
-        wrapper = Enzyme.mount(
+        const localRef = React.createRef<UISections>();
+        const { rerender: localRerender, unmount: localUnmount } = render(
             <UISections
+                ref={localRef}
                 vertical={false}
                 splitter={true}
                 sizes={[450, undefined]}
@@ -894,7 +1024,7 @@ describe('<Sections />', () => {
         mockWidth(970);
         windowEventListenerMock.simulateEvent('resize', {});
         expect(onToggleFullscreen).toHaveBeenCalledTimes(0);
-        expect(wrapper.state().sizes).toEqual([
+        expect(localRef.current!.state.sizes).toEqual([
             { end: 530, percentage: false, start: 0 },
             { end: 0, percentage: false, size: 530, start: undefined }
         ]);
@@ -903,7 +1033,7 @@ describe('<Sections />', () => {
         mockWidth(800);
         windowEventListenerMock.simulateEvent('resize', {});
         expect(onToggleFullscreen).toHaveBeenCalledTimes(1);
-        expect(wrapper.state().sizes).toEqual([
+        expect(localRef.current!.state.sizes).toEqual([
             {
                 end: 360,
                 percentage: false,
@@ -923,7 +1053,7 @@ describe('<Sections />', () => {
 
         windowEventListenerMock.simulateEvent('resize', {});
         expect(onToggleFullscreen).toHaveBeenCalledTimes(1);
-        expect(wrapper.state().sizes).toEqual([
+        expect(localRef.current!.state.sizes).toEqual([
             {
                 end: 560,
                 percentage: false,
@@ -937,6 +1067,7 @@ describe('<Sections />', () => {
                 start: 440
             }
         ]);
+        localUnmount();
     });
 
     describe('Test property "sizes"', () => {
@@ -1048,7 +1179,7 @@ describe('<Sections />', () => {
 
         for (const testCase of testCases) {
             it(testCase.name, () => {
-                const wrapper = Enzyme.mount(
+                const { container: localContainer, unmount: localUnmount } = render(
                     <UISections vertical={false} splitter={true} {...testCase.props}>
                         <UISections.Section>
                             <div>Left</div>
@@ -1058,8 +1189,9 @@ describe('<Sections />', () => {
                         </UISections.Section>
                     </UISections>
                 );
-                const firstSection: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
-                const secondSection: HTMLElement = wrapper.find('.sections__item').last().getDOMNode();
+                const items = localContainer.querySelectorAll('.sections__item');
+                const firstSection = items[0] as HTMLElement;
+                const secondSection = items[items.length - 1] as HTMLElement;
                 expect({
                     first: {
                         left: firstSection.style.left,
@@ -1078,13 +1210,14 @@ describe('<Sections />', () => {
                 expect(secondSection.getAttribute('class')?.includes('sections__item--hidden')).toEqual(
                     !!testCase.secondProps?.hidden
                 );
+                localUnmount();
             });
         }
     });
 
     it('Test data property', () => {
         const testValue = 'test value';
-        wrapper = Enzyme.mount(
+        const { container: localContainer, unmount: localUnmount } = render(
             <UISections data-test={testValue}>
                 <UISections.Section>
                     <div />
@@ -1094,9 +1227,9 @@ describe('<Sections />', () => {
                 </UISections.Section>
             </UISections>
         );
-        expect(wrapper.find('.sections[data-test="test value"]').getDOMNode().getAttribute('data-test')).toEqual(
-            testValue
-        );
+        const el = localContainer.querySelector(`.sections[data-test="test value"]`) as HTMLElement;
+        expect(el.getAttribute('data-test')).toEqual(testValue);
+        localUnmount();
     });
 
     it('Resize with splitter and apply window resize', () => {
@@ -1106,8 +1239,9 @@ describe('<Sections />', () => {
         });
         mockClientWidth(1000, { sections: 2000 });
 
-        wrapper = Enzyme.mount(
-            <UISections vertical={false} splitter={true} sizes={[450, undefined]} minSectionSize={[200, 190]}>
+        const localRef = React.createRef<UISections>();
+        const { container: localContainer, unmount: localUnmount } = render(
+            <UISections ref={localRef} vertical={false} splitter={true} sizes={[450, undefined]} minSectionSize={[200, 190]}>
                 <UISections.Section>
                     <div>Left</div>
                 </UISections.Section>
@@ -1117,27 +1251,29 @@ describe('<Sections />', () => {
             </UISections>
         );
 
-        simulateSplitterResize(wrapper, 2000, 100);
+        simulateSplitterResize(localContainer, 2000, 100);
         // Simulate restore for min size
         mockClientWidth(650, { sections: 650 });
         windowEventListenerMock.simulateEvent('resize', {});
-        expect(wrapper.state().sizes).toEqual([
+        expect(localRef.current!.state.sizes).toEqual([
             { end: 450, percentage: false, size: 200, start: 0 },
             { end: 0, percentage: false, size: 450, start: 200 }
         ]);
-        simulateSplitterResize(wrapper, 0, 0);
-        const section: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
+        simulateSplitterResize(localContainer, 0, 0);
+        const section = localContainer.querySelector('.sections__item') as HTMLElement;
         expect(section.style.left).toEqual('0px');
         expect(section.style.right).toEqual('450px');
-        expect(wrapper.state().sizes).toEqual([
+        expect(localRef.current!.state.sizes).toEqual([
             { end: 450, percentage: false, size: 200, start: 0 },
             { end: 0, percentage: false, size: 450, start: 200 }
         ]);
+        localUnmount();
     });
 
     it('Test "hidden" section - restore visibility', () => {
-        const hiddenWrapper = Enzyme.mount(
-            <UISections vertical={false} splitter={true} minSectionSize={6}>
+        const hiddenRef = React.createRef<UISections>();
+        const { rerender: hiddenRerender, unmount: hiddenUnmount } = render(
+            <UISections ref={hiddenRef} vertical={false} splitter={true} minSectionSize={6}>
                 <UISections.Section>
                     <div>Left</div>
                 </UISections.Section>
@@ -1147,10 +1283,28 @@ describe('<Sections />', () => {
             </UISections>
         );
         jest.spyOn(UISections, 'getVisibleSections').mockReturnValueOnce([]);
-        hiddenWrapper.setProps({
-            minSectionSize: 100
-        });
-        expect(hiddenWrapper.find('.sections__item').length).toEqual(2);
+        hiddenRerender(
+            <UISections ref={hiddenRef} vertical={false} splitter={true} minSectionSize={100}>
+                <UISections.Section>
+                    <div>Left</div>
+                </UISections.Section>
+                <UISections.Section hidden={true}>
+                    <div>Right</div>
+                </UISections.Section>
+            </UISections>
+        );
+        const { container: hiddenContainer } = render(
+            <UISections ref={hiddenRef} vertical={false} splitter={true} minSectionSize={100}>
+                <UISections.Section>
+                    <div>Left</div>
+                </UISections.Section>
+                <UISections.Section hidden={true}>
+                    <div>Right</div>
+                </UISections.Section>
+            </UISections>
+        );
+        expect(hiddenContainer.querySelectorAll('.sections__item').length).toEqual(2);
+        hiddenUnmount();
     });
 
     it('Test window resize and ToggleFullscreen', () => {
@@ -1172,8 +1326,10 @@ describe('<Sections />', () => {
             jest.spyOn(UISections, 'getVisibleSections').mockReturnValueOnce([0]);
         });
         mockWidth(1000);
-        wrapper = Enzyme.mount(
+        const localRef = React.createRef<UISections>();
+        const { unmount: localUnmount } = render(
             <UISections
+                ref={localRef}
                 vertical={false}
                 splitter={true}
                 sizes={[450, undefined]}
@@ -1193,9 +1349,10 @@ describe('<Sections />', () => {
 
         windowEventListenerMock.simulateEvent('resize', {});
         expect(onToggleFullscreen).toHaveBeenCalledTimes(1);
-        expect(wrapper.state().sizes).toEqual([
+        expect(localRef.current!.state.sizes).toEqual([
             { end: 220, percentage: false, size: 450, start: 0 },
             { end: 0, percentage: false, size: 220, start: 450 }
         ]);
+        localUnmount();
     });
 });

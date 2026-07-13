@@ -1,29 +1,36 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
-import type { IButtonProps } from '@fluentui/react';
-import { DefaultButton } from '@fluentui/react';
-import { UISmallButton } from '../../../src/components/UIButton/UISmallButton';
+import { render } from '@testing-library/react';
+import type { IButtonProps, IButtonStyles } from '@fluentui/react';
+
+// Capture props that UISmallButton passes down to DefaultButton
+let capturedProps: IButtonProps | undefined;
+
+const actual = await import('@fluentui/react');
+const OriginalDefaultButton = actual.DefaultButton;
+const mocked = {
+    ...actual,
+    DefaultButton: (props: IButtonProps) => {
+        capturedProps = props;
+        return React.createElement(OriginalDefaultButton as React.ComponentType<IButtonProps>, props);
+    }
+};
+jest.unstable_mockModule('@fluentui/react', () => mocked);
+
+const { UISmallButton } = await import('../../../src/components/UIButton/UISmallButton');
 
 describe('<UISmallButton />', () => {
-    let wrapper: Enzyme.ReactWrapper<IButtonProps>;
-
     beforeEach(() => {
-        wrapper = Enzyme.mount(<UISmallButton>Dummy</UISmallButton>);
-    });
-
-    afterEach(() => {
-        wrapper.unmount();
+        capturedProps = undefined;
     });
 
     it('Should render a UISmallButton component', () => {
-        expect(wrapper.find('.ms-Button').length).toEqual(1);
+        const { container } = render(<UISmallButton>Dummy</UISmallButton>);
+        expect(container.querySelectorAll('.ms-Button').length).toEqual(1);
     });
 
     it('Styles - primary', () => {
-        wrapper.setProps({
-            primary: true
-        });
-        const styles = wrapper.find(DefaultButton).props().styles;
+        render(<UISmallButton primary={true}>Dummy</UISmallButton>);
+        const styles = capturedProps?.styles as IButtonStyles;
         expect(styles?.root).toMatchInlineSnapshot(
             {},
             `
@@ -50,10 +57,8 @@ describe('<UISmallButton />', () => {
     });
 
     it('Styles - secondary', () => {
-        wrapper.setProps({
-            primary: false
-        });
-        const styles = wrapper.find(DefaultButton).props().styles;
+        render(<UISmallButton primary={false}>Dummy</UISmallButton>);
+        const styles = capturedProps?.styles as IButtonStyles;
         expect(styles?.root).toMatchInlineSnapshot(
             {},
             `

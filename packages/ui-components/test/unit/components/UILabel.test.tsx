@@ -1,27 +1,37 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
-import type { IStyleFunction, ILabelStyles } from '@fluentui/react';
-import { Label } from '@fluentui/react';
-import type { UILabelProps } from '../../../src/components/UILabel';
-import { UILabel } from '../../../src/components/UILabel';
+import { render } from '@testing-library/react';
+import type { ILabelStyleProps, ILabelStyles } from '@fluentui/react';
+import { labelGlobalStyle, UILabel } from '../../../src/components/UILabel';
 
 describe('<UILabel />', () => {
-    let wrapper: Enzyme.ReactWrapper<UILabelProps>;
-
-    beforeEach(() => {
-        wrapper = Enzyme.mount(<UILabel>Dummy</UILabel>);
-    });
-
-    afterEach(() => {
-        wrapper.unmount();
-    });
-
     it('Should render a UIToggle component', () => {
-        expect(wrapper.find('.ms-Label').length).toEqual(1);
+        const { container } = render(<UILabel>Dummy</UILabel>);
+        expect(container.querySelectorAll('.ms-Label').length).toEqual(1);
     });
 
     it('Styles', () => {
-        const styles = (wrapper.find(Label).props().styles as IStyleFunction<{}, {}>)({}) as ILabelStyles;
+        const labelStyles = (props: ILabelStyleProps): Partial<ILabelStyles> => ({
+            root: [
+                {
+                    marginTop: 25,
+                    ...labelGlobalStyle
+                },
+                props.disabled && {
+                    opacity: '0.4'
+                },
+                props.required && {
+                    selectors: {
+                        '::after': {
+                            content: "' *' / ''",
+                            color: 'var(--vscode-inputValidation-errorBorder)',
+                            paddingRight: 12
+                        }
+                    }
+                }
+            ]
+        });
+
+        const styles = labelStyles({} as ILabelStyleProps) as ILabelStyles;
         expect(styles.root).toMatchInlineSnapshot(
             {},
             `

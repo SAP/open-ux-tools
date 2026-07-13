@@ -1,30 +1,42 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
-import type { IStyleFunction, ILinkStyles } from '@fluentui/react';
-import { Link } from '@fluentui/react';
-import type { UILinkProps } from '../../../src/components/UILink';
-import { UILink } from '../../../src/components/UILink';
+import { render } from '@testing-library/react';
+import type { ILinkStyles } from '@fluentui/react';
+
+let capturedStyles: (() => Partial<ILinkStyles>) | undefined;
+
+// In ESM mode (--experimental-vm-modules + ts-jest useESM), jest.mock() is NOT
+// hoisted. Use jest.unstable_mockModule so the mock is registered before the
+// module under test is dynamically imported below.
+jest.unstable_mockModule('@fluentui/react', () => {
+    const actual = jest.requireActual('@fluentui/react') as Record<string, unknown>;
+    return {
+        ...actual,
+        Link: (props: React.PropsWithChildren<{ styles?: () => Partial<ILinkStyles> }>) => {
+            capturedStyles = props.styles;
+            return <a className="ms-Link">{props.children}</a>;
+        }
+    };
+});
+
+// Dynamic import AFTER mock registration — required in ESM mode.
+const { UILink } = await import('../../../src/components/UILink');
 
 describe('<UILink />', () => {
-    let wrapper: Enzyme.ReactWrapper<UILinkProps>;
+    beforeEach(() => {
+        capturedStyles = undefined;
+    });
 
     const getStyles = (): ILinkStyles => {
-        return (wrapper.find(Link).props().styles as IStyleFunction<{}, {}>)({}) as ILinkStyles;
+        return capturedStyles!() as ILinkStyles;
     };
 
-    beforeEach(() => {
-        wrapper = Enzyme.mount(<UILink>Dummy</UILink>);
-    });
-
-    afterEach(() => {
-        wrapper.unmount();
-    });
-
     it('Should render a UILink component', () => {
-        expect(wrapper.find('.ms-Link').length).toEqual(1);
+        const { container } = render(<UILink>Dummy</UILink>);
+        expect(container.querySelectorAll('.ms-Link').length).toEqual(1);
     });
 
     it('Styles - primary', () => {
+        render(<UILink>Dummy</UILink>);
         const styles = getStyles();
         expect(styles.root).toMatchInlineSnapshot(`
             Object {
@@ -52,9 +64,8 @@ describe('<UILink />', () => {
     });
 
     it('Styles - secondary', () => {
-        wrapper.setProps({
-            secondary: true
-        });
+        const { rerender } = render(<UILink>Dummy</UILink>);
+        rerender(<UILink secondary={true}>Dummy</UILink>);
         const styles = getStyles();
         expect(styles.root).toMatchInlineSnapshot(`
             Object {
@@ -82,9 +93,8 @@ describe('<UILink />', () => {
     });
 
     it('Styles - primary with no underline', () => {
-        wrapper.setProps({
-            underline: false
-        });
+        const { rerender } = render(<UILink>Dummy</UILink>);
+        rerender(<UILink underline={false}>Dummy</UILink>);
         const styles = getStyles();
         expect(styles.root).toMatchInlineSnapshot(`
             Object {
@@ -112,9 +122,8 @@ describe('<UILink />', () => {
     });
 
     it('Styles - disabled', () => {
-        wrapper.setProps({
-            disabled: true
-        });
+        const { rerender } = render(<UILink>Dummy</UILink>);
+        rerender(<UILink disabled={true}>Dummy</UILink>);
         const styles = getStyles();
         expect(styles.root).toMatchInlineSnapshot(`
             Object {

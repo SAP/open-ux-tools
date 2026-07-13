@@ -1,9 +1,9 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 import type { UIDropdownProps } from '../../../src/components/UIDropdown';
 import { UIDropdown, getCalloutCollisionTransformationProps } from '../../../src/components/UIDropdown';
-import type { IStyleFunction, ICalloutContentStyles, IDropdownStyleProps } from '@fluentui/react';
-import { Dropdown, ResponsiveMode } from '@fluentui/react';
+import type { IStyleFunction, ICalloutContentStyles, IDropdownStyleProps, IDropdownProps } from '@fluentui/react';
+import { ResponsiveMode } from '@fluentui/react';
 import { data as originalData, groupsData as originalGroupsData } from '../../__mock__/select-data';
 import { initIcons } from '../../../src/components/Icons';
 import { CalloutCollisionTransform } from '../../../src/components';
@@ -12,12 +12,26 @@ import type { UISelectableOption } from '../../../src/components';
 const data = JSON.parse(JSON.stringify(originalData));
 const groupsData = JSON.parse(JSON.stringify(originalGroupsData));
 
+/**
+ * Create a UIDropdown class instance and call render() to get the inner Dropdown's props.
+ * This avoids any need to spy on React.createElement and works with ESM modules.
+ */
+const getInnerDropdownProps = (props: UIDropdownProps): IDropdownProps => {
+    const instance = new UIDropdown(props);
+    const jsx = instance.render() as React.ReactElement;
+    return jsx.props as IDropdownProps;
+};
+
 describe('<UIDropdown />', () => {
-    let wrapper: Enzyme.ReactWrapper<UIDropdownProps>;
     initIcons();
 
-    const openDropdown = (): void => {
-        wrapper.find('.ms-Dropdown .ms-Dropdown-caretDownWrapper').simulate('click', document.createEvent('Events'));
+    let renderResult: ReturnType<typeof render>;
+
+    const openDropdown = (container: HTMLElement): void => {
+        const trigger = container.querySelector('.ms-Dropdown .ms-Dropdown-caretDownWrapper');
+        if (trigger) {
+            fireEvent.click(trigger, document.createEvent('Events'));
+        }
     };
 
     let CalloutCollisionTransformSpy: {
@@ -32,21 +46,25 @@ describe('<UIDropdown />', () => {
             applyTransformation: jest.spyOn(CalloutCollisionTransform.prototype, 'applyTransformation'),
             resetTransformation: jest.spyOn(CalloutCollisionTransform.prototype, 'resetTransformation')
         };
-        wrapper = Enzyme.mount(<UIDropdown options={data} selectedKey="EE" />);
+        renderResult = render(<UIDropdown options={data} selectedKey="EE" />);
     });
 
     afterEach(() => {
         jest.clearAllMocks();
-        wrapper.unmount();
+        renderResult.unmount();
     });
 
     it('Test responsive mode - default value', () => {
-        expect(wrapper.find(Dropdown).prop('responsiveMode')).toEqual(ResponsiveMode.xxxLarge);
-        expect(wrapper.find('div.ts-SelectBox').prop('className')).toEqual('ms-Dropdown-container ts-SelectBox');
+        const dropdownProps = getInnerDropdownProps({ options: data, selectedKey: 'EE' });
+        expect(dropdownProps.responsiveMode).toEqual(ResponsiveMode.xxxLarge);
+        expect(renderResult.container.querySelector('div.ts-SelectBox')?.className).toEqual(
+            'ms-Dropdown-container ts-SelectBox'
+        );
     });
 
     it('Styles - default', () => {
-        const styles = (wrapper.find(Dropdown).props().styles as IStyleFunction<{}, {}>)({}) as IDropdownStyleProps;
+        const dropdownProps = getInnerDropdownProps({ options: data, selectedKey: 'EE' });
+        const styles = (dropdownProps.styles as IStyleFunction<{}, {}>)({}) as IDropdownStyleProps;
         expect(styles).toMatchInlineSnapshot(
             {},
             `
@@ -81,10 +99,8 @@ describe('<UIDropdown />', () => {
     });
 
     it('Styles - required', () => {
-        wrapper.setProps({
-            required: true
-        });
-        const styles = (wrapper.find(Dropdown).props().styles as IStyleFunction<{}, {}>)({}) as IDropdownStyleProps;
+        const dropdownProps = getInnerDropdownProps({ options: data, selectedKey: 'EE', required: true });
+        const styles = (dropdownProps.styles as IStyleFunction<{}, {}>)({}) as IDropdownStyleProps;
         expect(styles).toMatchInlineSnapshot(`
             Object {
               "callout": Object {
@@ -123,105 +139,107 @@ describe('<UIDropdown />', () => {
     });
 
     it('Test responsive mode - custom value', () => {
-        wrapper.setProps({
+        const dropdownProps = getInnerDropdownProps({
+            options: data,
+            selectedKey: 'EE',
             responsiveMode: ResponsiveMode.small
         });
-        expect(wrapper.find(Dropdown).prop('responsiveMode')).toEqual(ResponsiveMode.small);
+        expect(dropdownProps.responsiveMode).toEqual(ResponsiveMode.small);
     });
 
     it('Test css selectors which are used in scss - main', () => {
-        expect(wrapper.find('div.ts-SelectBox').length).toEqual(1);
-        expect(wrapper.find('.ts-SelectBox .ms-Dropdown-title').length).toEqual(1);
-        expect(wrapper.find('.ts-SelectBox .ms-Dropdown-caretDownWrapper i svg').length).toEqual(1);
-        openDropdown();
-        expect(wrapper.find('.ts-Callout-Dropdown').length).toBeGreaterThan(0);
-        expect(wrapper.find('.ts-Callout-Dropdown .ms-Callout-main').length).toBeGreaterThan(0);
-        expect(wrapper.find('.ts-Callout-Dropdown .ms-Dropdown-items .ms-Button--command').length).toBeGreaterThan(0);
-        expect(wrapper.find('.ms-Dropdown-header').length).toEqual(0);
+        const { container } = renderResult;
+        expect(container.querySelectorAll('div.ts-SelectBox').length).toEqual(1);
+        expect(container.querySelectorAll('.ts-SelectBox .ms-Dropdown-title').length).toEqual(1);
+        expect(container.querySelectorAll('.ts-SelectBox .ms-Dropdown-caretDownWrapper i svg').length).toEqual(1);
+        openDropdown(container);
+        expect(document.querySelectorAll('.ts-Callout-Dropdown').length).toBeGreaterThan(0);
+        expect(document.querySelectorAll('.ts-Callout-Dropdown .ms-Callout-main').length).toBeGreaterThan(0);
+        expect(
+            document.querySelectorAll('.ts-Callout-Dropdown .ms-Dropdown-items .ms-Button--command').length
+        ).toBeGreaterThan(0);
+        expect(document.querySelectorAll('.ms-Dropdown-header').length).toEqual(0);
     });
 
     it('Test "disabled" property', () => {
-        wrapper.setProps({
-            disabled: true
-        });
-        expect(wrapper.find('.ts-SelectBox .ms-Dropdown.is-disabled').length).toEqual(1);
-        const dropdownProps = wrapper.find(Dropdown)?.props();
-        expect(dropdownProps?.disabled).toEqual(true);
-        expect(dropdownProps?.tabIndex).toEqual(0);
-        expect(dropdownProps?.['data-is-focusable']).toEqual(true);
+        const { container } = renderResult;
+        renderResult.rerender(<UIDropdown options={data} selectedKey="EE" disabled={true} />);
+        expect(container.querySelectorAll('.ts-SelectBox .ms-Dropdown.is-disabled').length).toEqual(1);
+        const dropdownProps = getInnerDropdownProps({ options: data, selectedKey: 'EE', disabled: true });
+        expect(dropdownProps.disabled).toEqual(true);
+        expect(dropdownProps.tabIndex).toEqual(0);
+        expect(dropdownProps['data-is-focusable']).toEqual(true);
     });
 
     it('Test className property', () => {
-        wrapper.setProps({
-            className: 'dummy'
-        });
-        expect(wrapper.find('div.ts-SelectBox').prop('className')).toEqual('ms-Dropdown-container ts-SelectBox dummy');
+        const { container } = renderResult;
+        renderResult.rerender(<UIDropdown options={data} selectedKey="EE" className="dummy" />);
+        expect(container.querySelector('div.ts-SelectBox')?.className).toEqual(
+            'ms-Dropdown-container ts-SelectBox dummy'
+        );
     });
 
     describe('Error message', () => {
         it('Error', () => {
-            wrapper.setProps({
-                errorMessage: 'dummy'
-            });
-            expect(wrapper.find('div.ts-SelectBox--error').length).toEqual(1);
-            expect(wrapper.find('div.ts-SelectBox--warning').length).toEqual(0);
-            expect(wrapper.find('div.ts-SelectBox--info').length).toEqual(0);
+            const { container } = renderResult;
+            renderResult.rerender(<UIDropdown options={data} selectedKey="EE" errorMessage="dummy" />);
+            expect(container.querySelectorAll('div.ts-SelectBox--error').length).toEqual(1);
+            expect(container.querySelectorAll('div.ts-SelectBox--warning').length).toEqual(0);
+            expect(container.querySelectorAll('div.ts-SelectBox--info').length).toEqual(0);
         });
 
         it('Warning', () => {
-            wrapper.setProps({
-                warningMessage: 'dummy'
-            });
-            expect(wrapper.find('div.ts-SelectBox--error').length).toEqual(0);
-            expect(wrapper.find('div.ts-SelectBox--warning').length).toEqual(1);
-            expect(wrapper.find('div.ts-SelectBox--info').length).toEqual(0);
+            const { container } = renderResult;
+            renderResult.rerender(<UIDropdown options={data} selectedKey="EE" warningMessage="dummy" />);
+            expect(container.querySelectorAll('div.ts-SelectBox--error').length).toEqual(0);
+            expect(container.querySelectorAll('div.ts-SelectBox--warning').length).toEqual(1);
+            expect(container.querySelectorAll('div.ts-SelectBox--info').length).toEqual(0);
         });
 
         it('Info', () => {
-            wrapper.setProps({
-                infoMessage: 'dummy'
-            });
-            expect(wrapper.find('div.ts-SelectBox--error').length).toEqual(0);
-            expect(wrapper.find('div.ts-SelectBox--warning').length).toEqual(0);
-            expect(wrapper.find('div.ts-SelectBox--info').length).toEqual(1);
+            const { container } = renderResult;
+            renderResult.rerender(<UIDropdown options={data} selectedKey="EE" infoMessage="dummy" />);
+            expect(container.querySelectorAll('div.ts-SelectBox--error').length).toEqual(0);
+            expect(container.querySelectorAll('div.ts-SelectBox--warning').length).toEqual(0);
+            expect(container.querySelectorAll('div.ts-SelectBox--info').length).toEqual(1);
         });
     });
 
     describe('Test "useDropdownAsMenuMinWidth" property', () => {
-        const getCalloutStyles = (width: number): Partial<ICalloutContentStyles> | undefined => {
-            const calloutProps = wrapper.find(Dropdown).prop('calloutProps');
-            let calloutStyles;
-            if (calloutProps.styles) {
-                calloutStyles = (calloutProps.styles as IStyleFunction<{}, {}>)({
-                    calloutWidth: width
-                });
+        const getCalloutStyles = (
+            props: UIDropdownProps,
+            width: number
+        ): Partial<ICalloutContentStyles> | undefined => {
+            const calloutProps = getInnerDropdownProps(props).calloutProps;
+            if (calloutProps?.styles) {
+                return (calloutProps.styles as IStyleFunction<{}, {}>)({ calloutWidth: width });
             }
-            return calloutStyles;
+            return undefined;
         };
 
         it('Default', () => {
-            wrapper.setProps({
-                useDropdownAsMenuMinWidth: false
-            });
-            const styles = getCalloutStyles(100);
+            const styles = getCalloutStyles(
+                { options: data, selectedKey: 'EE', useDropdownAsMenuMinWidth: false },
+                100
+            );
             expect(styles).toEqual(undefined);
         });
 
         it('False', () => {
-            wrapper.setProps({
-                useDropdownAsMenuMinWidth: false
-            });
-            const styles = getCalloutStyles(100);
+            const styles = getCalloutStyles(
+                { options: data, selectedKey: 'EE', useDropdownAsMenuMinWidth: false },
+                100
+            );
             expect(styles).toEqual(undefined);
         });
 
         const widths = [100, 500, undefined];
         for (const width of widths) {
             it(`True - width ${width}`, () => {
-                wrapper.setProps({
-                    useDropdownAsMenuMinWidth: true
-                });
-                const styles = getCalloutStyles(width);
+                const styles = getCalloutStyles(
+                    { options: data, selectedKey: 'EE', useDropdownAsMenuMinWidth: true },
+                    width
+                );
                 expect(styles).toEqual({
                     root: {
                         maxWidth: 'calc(100% - 10px)',
@@ -236,32 +254,32 @@ describe('<UIDropdown />', () => {
     describe('Behavior of title/tooltip for options', () => {
         const buttonSelector = '.ts-Callout-Dropdown .ms-Button--command';
         it('Default - inherit from text', () => {
-            wrapper.setProps({
-                options: originalData
-            });
-            openDropdown();
-            expect(wrapper.find(buttonSelector).last().getDOMNode().getAttribute('title')).toEqual('Yemen');
+            const { container } = renderResult;
+            renderResult.rerender(<UIDropdown options={originalData} selectedKey="EE" />);
+            openDropdown(container);
+            const buttons = document.querySelectorAll(buttonSelector);
+            expect(buttons[buttons.length - 1].getAttribute('title')).toEqual('Yemen');
         });
 
         it('Custom title', () => {
+            const { container } = renderResult;
             const expectTitle = 'dummy';
             const dataTemp = JSON.parse(JSON.stringify(originalData));
             dataTemp[dataTemp.length - 1].title = expectTitle;
-            wrapper.setProps({
-                options: dataTemp
-            });
-            openDropdown();
-            expect(wrapper.find(buttonSelector).last().getDOMNode().getAttribute('title')).toEqual(expectTitle);
+            renderResult.rerender(<UIDropdown options={dataTemp} selectedKey="EE" />);
+            openDropdown(container);
+            const buttons = document.querySelectorAll(buttonSelector);
+            expect(buttons[buttons.length - 1].getAttribute('title')).toEqual(expectTitle);
         });
 
         it('No title', () => {
+            const { container } = renderResult;
             const dataTemp = JSON.parse(JSON.stringify(originalData));
             dataTemp[dataTemp.length - 1].title = null;
-            wrapper.setProps({
-                options: dataTemp
-            });
-            openDropdown();
-            expect(wrapper.find(buttonSelector).last().getDOMNode().getAttribute('title')).toEqual(null);
+            renderResult.rerender(<UIDropdown options={dataTemp} selectedKey="EE" />);
+            openDropdown(container);
+            const buttons = document.querySelectorAll(buttonSelector);
+            expect(buttons[buttons.length - 1].getAttribute('title')).toEqual(null);
         });
     });
 
@@ -302,13 +320,13 @@ describe('<UIDropdown />', () => {
         for (const testCase of testCases) {
             it(`"readOnly=${testCase.readOnly}", "disabled=${testCase.disabled}"`, () => {
                 const { expected } = testCase;
-                wrapper.setProps({
+                const props: UIDropdownProps = {
+                    options: data,
+                    selectedKey: 'EE',
                     readOnly: testCase.readOnly,
                     ...(testCase.disabled && { disabled: testCase.disabled })
-                });
-                const dropdown = wrapper.find(Dropdown);
-                expect(dropdown.length).toEqual(1);
-                const dropdownProps = dropdown.props();
+                };
+                const dropdownProps = getInnerDropdownProps(props);
                 expect(dropdownProps.disabled).toEqual(expected.readOnly);
                 const className = dropdownProps.className;
                 expect(className?.includes('ts-SelectBox--readonly')).toEqual(
@@ -366,23 +384,25 @@ describe('<UIDropdown />', () => {
         ];
         for (const testCase of testCases) {
             it(`"selectedKey=${testCase.selectedKey}","selectedKeys=${JSON.stringify(testCase.selectedKeys)}"`, () => {
-                wrapper.setProps({
-                    selectedKey: testCase.selectedKey,
-                    selectedKeys: testCase.selectedKeys
-                });
-                expect(wrapper.find('div.ts-SelectBox--empty').length).toEqual(testCase.expected ? 1 : 0);
+                const { container } = renderResult;
+                renderResult.rerender(
+                    <UIDropdown
+                        options={data}
+                        selectedKey={testCase.selectedKey as UIDropdownProps['selectedKey']}
+                        selectedKeys={testCase.selectedKeys as UIDropdownProps['selectedKeys']}
+                    />
+                );
+                expect(container.querySelectorAll('div.ts-SelectBox--empty').length).toEqual(testCase.expected ? 1 : 0);
             });
         }
     });
 
     it('Dropdown items with group headers', () => {
-        wrapper.setProps({
-            options: groupsData
-        });
-        wrapper.update();
-        openDropdown();
-        expect(wrapper.find('.ms-Dropdown-header').length).toEqual(7);
-        expect(wrapper.find('.ms-Dropdown-header .ts-dropdown-item-blocker').length).toEqual(0);
+        const { container } = renderResult;
+        renderResult.rerender(<UIDropdown options={groupsData} selectedKey="EE" />);
+        openDropdown(container);
+        expect(document.querySelectorAll('.ms-Dropdown-header').length).toEqual(7);
+        expect(document.querySelectorAll('.ms-Dropdown-header .ts-dropdown-item-blocker').length).toEqual(0);
     });
 
     describe('Test "calloutCollisionTransformation" property', () => {
@@ -406,13 +426,13 @@ describe('<UIDropdown />', () => {
         for (const testCase of testCases) {
             const { multiSelect, enabled, expected } = testCase;
             it(`calloutCollisionTransformation=${enabled}, multiSelect=${multiSelect}`, () => {
-                wrapper.setProps({
+                const dropdownProps = getInnerDropdownProps({
+                    options: data,
+                    selectedKey: 'EE',
                     multiSelect: testCase.multiSelect,
                     calloutCollisionTransformation: testCase.enabled
                 });
-                const dropdown = wrapper.find(Dropdown);
-                expect(dropdown.length).toEqual(1);
-                const calloutProps = dropdown.prop('calloutProps');
+                const calloutProps = dropdownProps.calloutProps;
 
                 if (expected) {
                     expect(calloutProps?.preventDismissOnEvent).toBeDefined();
@@ -443,14 +463,14 @@ describe('<UIDropdown />', () => {
                     }
                 }
             };
-            wrapper.setProps({
+            const dropdownProps = getInnerDropdownProps({
+                options: data,
+                selectedKey: 'EE',
                 multiSelect: true,
                 calloutCollisionTransformation: true,
                 ...externalListeners
             });
-            const dropdown = wrapper.find(Dropdown);
-            expect(dropdown.length).toEqual(1);
-            const calloutProps = dropdown.prop('calloutProps');
+            const calloutProps = dropdownProps.calloutProps;
             expect(calloutProps?.preventDismissOnEvent).toBeDefined();
             expect(calloutProps?.layerProps?.onLayerDidMount).toBeDefined();
             expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeDefined();
@@ -468,40 +488,55 @@ describe('<UIDropdown />', () => {
     });
 
     it('Custom renderers for "onRenderOption"', () => {
-        wrapper.setProps({
-            onRenderOption: (
-                props?: UISelectableOption,
-                defaultRender?: (props?: UISelectableOption) => JSX.Element | null
-            ) => {
-                return <div className="custom-render-option">{defaultRender?.(props)}</div>;
-            }
-        });
-        openDropdown();
-        expect(wrapper.find('.custom-render-option').length).toBeGreaterThan(0);
-        expect(wrapper.find('.ts-dropdown-item-blocker').length).toBeGreaterThan(0);
+        const { container } = renderResult;
+        renderResult.rerender(
+            <UIDropdown
+                options={data}
+                selectedKey="EE"
+                onRenderOption={(
+                    props?: UISelectableOption,
+                    defaultRender?: (props?: UISelectableOption) => JSX.Element | null
+                ) => {
+                    return <div className="custom-render-option">{defaultRender?.(props)}</div>;
+                }}
+            />
+        );
+        openDropdown(container);
+        expect(document.querySelectorAll('.custom-render-option').length).toBeGreaterThan(0);
+        expect(document.querySelectorAll('.ts-dropdown-item-blocker').length).toBeGreaterThan(0);
     });
 
     it('Custom renderers for "onRenderItem"', () => {
-        wrapper.setProps({
-            onRenderItem: (
-                props?: UISelectableOption,
-                defaultRender?: (props?: UISelectableOption) => JSX.Element | null
-            ) => {
-                return <div className="custom-render-item">{defaultRender?.(props)}</div>;
-            }
-        });
-        openDropdown();
-        expect(wrapper.find('.custom-render-item').length).toBeGreaterThan(0);
+        const { container } = renderResult;
+        renderResult.rerender(
+            <UIDropdown
+                options={data}
+                selectedKey="EE"
+                onRenderItem={(
+                    props?: UISelectableOption,
+                    defaultRender?: (props?: UISelectableOption) => JSX.Element | null
+                ) => {
+                    return <div className="custom-render-item">{defaultRender?.(props)}</div>;
+                }}
+            />
+        );
+        openDropdown(container);
+        expect(document.querySelectorAll('.custom-render-item').length).toBeGreaterThan(0);
     });
 
     it('Test "calloutProps"', () => {
-        wrapper.setProps({
-            calloutProps: {
-                className: 'dummy'
-            }
-        });
-        openDropdown();
-        expect(wrapper.find('div.dummy').length).toEqual(1);
+        const { container } = renderResult;
+        renderResult.rerender(
+            <UIDropdown
+                options={data}
+                selectedKey="EE"
+                calloutProps={{
+                    className: 'dummy'
+                }}
+            />
+        );
+        openDropdown(container);
+        expect(document.querySelectorAll('div.dummy').length).toEqual(1);
     });
 });
 

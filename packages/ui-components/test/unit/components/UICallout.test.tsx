@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 import type { ICalloutContentStyles } from '@fluentui/react';
 
 const { getNextElement: mockGetNextElement, getPreviousElement: mockGetPreviousElement } = await (async () => {
@@ -13,32 +13,22 @@ const { getNextElement: mockGetNextElement, getPreviousElement: mockGetPreviousE
     return mocked;
 })();
 
-const { Callout } = await import('@fluentui/react');
-const { UICallout, UICalloutContentPadding } = await import('../../../src/components/UICallout');
+const { UICallout, UICalloutContentPadding, getCalloutStyle } = await import('../../../src/components/UICallout');
 import type { UICalloutProps } from '../../../src/components/UICallout';
 
 describe('<UICallout />', () => {
-    let wrapper: Enzyme.ReactWrapper<UICalloutProps>;
-    const getCalloutStyles = (): ICalloutContentStyles => {
-        return wrapper.find(Callout).props().styles as ICalloutContentStyles;
-    };
-
     beforeEach(() => {
         jest.clearAllMocks();
-        wrapper = Enzyme.mount(
+    });
+
+    it('Should render a UITooltip component', () => {
+        render(
             <UICallout>
                 <div className="dummy"></div>
             </UICallout>
         );
-    });
-
-    afterEach(() => {
-        wrapper.unmount();
-    });
-
-    it('Should render a UITooltip component', () => {
-        expect(wrapper.find('.ms-Callout').length).toEqual(1);
-        const style = getCalloutStyles();
+        expect(document.querySelector('.ms-Callout')).toBeTruthy();
+        const style = getCalloutStyle({}) as ICalloutContentStyles;
         expect(style.root?.['borderRadius']).toEqual('var(--vscode-cornerRadius-small, 4px)');
         expect(style.beakCurtain?.['borderRadius']).toEqual('var(--vscode-cornerRadius-small, 4px)');
         expect(style.calloutMain?.['borderRadius']).toEqual('var(--vscode-cornerRadius-small, 4px)');
@@ -47,13 +37,10 @@ describe('<UICallout />', () => {
 
     it('Property "contentPadding"', () => {
         // Default - None
-        let style = getCalloutStyles();
+        let style = getCalloutStyle({}) as ICalloutContentStyles;
         expect(style.calloutMain?.['padding']).toEqual(undefined);
         // Standard
-        wrapper.setProps({
-            contentPadding: UICalloutContentPadding.Standard
-        });
-        style = getCalloutStyles();
+        style = getCalloutStyle({ contentPadding: UICalloutContentPadding.Standard }) as ICalloutContentStyles;
         expect(style.calloutMain?.['padding']).toEqual(8);
     });
 
@@ -76,10 +63,7 @@ describe('<UICallout />', () => {
                 [property]: 'green'
             }
         };
-        wrapper.setProps({
-            styles: expectStyles
-        });
-        const style = getCalloutStyles();
+        const style = getCalloutStyle({ styles: expectStyles }) as ICalloutContentStyles;
         expect(style.root?.[property]).toEqual(expectStyles.root[property]);
         expect(style.beak?.[property]).toEqual(expectStyles.beak[property]);
         expect(style.beakCurtain?.[property]).toEqual(expectStyles.beakCurtain[property]);
@@ -138,11 +122,14 @@ describe('<UICallout />', () => {
         for (const testCase of testCases) {
             const { name, target, focusTargetSiblingOnTabPress, focusNext, focusPrevious, key, shiftKey } = testCase;
             it(name, () => {
-                wrapper.setProps({
-                    focusTargetSiblingOnTabPress,
-                    target
-                });
-                wrapper.find('.dummy').simulate('keydown', { key, shiftKey });
+                const props: UICalloutProps = { focusTargetSiblingOnTabPress, target };
+                render(
+                    <UICallout {...props}>
+                        <div className="dummy"></div>
+                    </UICallout>
+                );
+                const dummy = document.querySelector('.dummy') as HTMLElement;
+                fireEvent.keyDown(dummy, { key, shiftKey });
                 expect(mockGetNextElement).toHaveBeenCalledTimes(focusNext ? 1 : 0);
                 expect(mockGetPreviousElement).toHaveBeenCalledTimes(focusPrevious ? 1 : 0);
             });

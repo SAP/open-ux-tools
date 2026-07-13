@@ -1,50 +1,51 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
+import { render, unmountComponentAtNode } from 'react-dom';
+import { act } from 'react-dom/test-utils';
 import type { UILoaderProps } from '../../../src/components/UILoader/UILoader';
 import { UILoader } from '../../../src/components/UILoader/UILoader';
-import { Overlay } from '@fluentui/react';
 
 describe('<UILoader />', () => {
-    let wrapper: Enzyme.ReactWrapper<UILoaderProps>;
+    let container: HTMLDivElement;
 
     beforeEach(() => {
-        wrapper = Enzyme.mount(<UILoader />);
+        container = document.createElement('div');
+        document.body.appendChild(container);
     });
 
     afterEach(() => {
-        wrapper.unmount();
+        unmountComponentAtNode(container);
+        container.remove();
     });
 
+    const renderLoader = (props: UILoaderProps = {}): void => {
+        act(() => {
+            render(<UILoader {...props} />, container);
+        });
+    };
+
     it('Should render a UILoader component', () => {
-        expect(wrapper.find('.ms-Spinner-circle').length).toEqual(1);
-        expect(wrapper.find(Overlay).length).toEqual(0);
+        renderLoader();
+        expect(container.querySelectorAll('.ms-Spinner-circle').length).toEqual(1);
+        expect(container.querySelectorAll('.ms-Overlay').length).toEqual(0);
     });
 
     it('Block DOM', () => {
-        wrapper.setProps({
-            blockDOM: true
-        });
-        expect(wrapper.find('div.ui-loader-blocker').length).toEqual(1);
-        expect(wrapper.find(Overlay).length).toEqual(1);
+        renderLoader({ blockDOM: true });
+        expect(container.querySelectorAll('div.ui-loader-blocker').length).toEqual(1);
+        expect(container.querySelectorAll('.ms-Overlay').length).toEqual(1);
     });
 
     describe('<UILoader />', () => {
         it('Property "delayed" with block', () => {
-            wrapper.setProps({
-                blockDOM: true,
-                delayed: true
-            });
-            expect(wrapper.find('div.ui-loader--delayed').length).toEqual(1);
-            expect(wrapper.find(Overlay).length).toEqual(1);
+            renderLoader({ blockDOM: true, delayed: true });
+            expect(container.querySelectorAll('div.ui-loader--delayed').length).toEqual(1);
+            expect(container.querySelectorAll('.ms-Overlay').length).toEqual(1);
         });
 
         it('Property "delayed" without block', () => {
-            wrapper.setProps({
-                blockDOM: false,
-                delayed: true
-            });
-            expect(wrapper.find('div.ui-loader--delayed').length).toEqual(0);
-            expect(wrapper.find(Overlay).length).toEqual(0);
+            renderLoader({ blockDOM: false, delayed: true });
+            expect(container.querySelectorAll('div.ui-loader--delayed').length).toEqual(0);
+            expect(container.querySelectorAll('.ms-Overlay').length).toEqual(0);
         });
     });
 });

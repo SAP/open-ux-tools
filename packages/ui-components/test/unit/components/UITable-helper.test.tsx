@@ -397,18 +397,6 @@ describe('scrollToRow', () => {
             focusIndex: jest.fn()
         };
 
-        const mockRowElement = {
-            setAttribute: jest.fn(),
-            click: jest.fn(),
-            focus: jest.fn()
-        };
-
-        // Mock waitFor to resolve immediately
-        jest.doMock('../../../src/components/UITable/UITable-helper', () => ({
-            ...jest.requireActual('../../../src/components/UITable/UITable-helper'),
-            waitFor: jest.fn().mockResolvedValue(mockRowElement)
-        }));
-
         scrollToRow(5, mockTable as any);
 
         expect(mockTable.focusIndex).toHaveBeenCalledWith(5, false);

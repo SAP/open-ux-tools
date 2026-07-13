@@ -1,45 +1,33 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 import { UISearchBox } from '../../../src/components/UISearchBox/UISearchBox';
-import type { ISearchBoxProps } from '@fluentui/react';
 
 describe('<UISearchBox />', () => {
-    let wrapper: Enzyme.ReactWrapper<ISearchBoxProps>;
-
-    beforeEach(() => {
-        wrapper = Enzyme.mount(<UISearchBox />);
-    });
-
-    afterEach(() => {
-        wrapper.unmount();
-    });
-
     it('Existence', () => {
-        expect(wrapper.find(UISearchBox).length).toEqual(1);
+        const { container } = render(<UISearchBox />);
+        expect(container.querySelector('.ms-SearchBox')).not.toBeNull();
     });
 
     it('Test callbacks - onChange and onClear', () => {
         const expectQuery = 'dummy';
         const onChange = jest.fn();
         const onClear = jest.fn();
-        wrapper.setProps({
-            onChange,
-            onClear
-        });
-        wrapper.find('UISearchBox input').simulate('change', {
-            target: {
-                value: expectQuery
-            }
-        });
+
+        const { container, rerender } = render(<UISearchBox />);
+
+        rerender(<UISearchBox onChange={onChange} onClear={onClear} />);
+
+        const input = container.querySelector('input') as HTMLInputElement;
+        fireEvent.change(input, { target: { value: expectQuery } });
         expect(onChange).toHaveBeenCalledTimes(1);
         expect(onChange.mock.calls[0][1]).toEqual(expectQuery);
 
         // Check reset
         onChange.mockClear();
-        const resetButton = wrapper.find('UISearchBox button.ms-Button');
-        expect(resetButton.length).toEqual(1);
+        const resetButton = container.querySelector('button.ms-Button') as HTMLButtonElement;
+        expect(resetButton).not.toBeNull();
 
-        resetButton.simulate('click', {});
+        fireEvent.click(resetButton);
         expect(onChange).toHaveBeenCalledTimes(1);
         expect(onChange.mock.calls[0][1]).toEqual('');
         expect(onClear).toHaveBeenCalledTimes(1);
