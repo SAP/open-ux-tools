@@ -147,7 +147,10 @@ export const getExtendControllerItemText = (
  * @param rta Runtime Authoring
  * @param ui5VersionInfo UI5 version information
  */
-export const initDialogs = async (rta: RuntimeAuthoring, ui5VersionInfo: Ui5VersionInfo): Promise<void> => {
+export const initDialogs = async (
+    rta: RuntimeAuthoring,
+    ui5VersionInfo: Ui5VersionInfo
+): Promise<void> => {
     const contextMenu = rta.getDefaultPlugins().contextMenu;
     const isCloud = rta.getFlexSettings().isCloud;
     const resources = await getTextBundle();

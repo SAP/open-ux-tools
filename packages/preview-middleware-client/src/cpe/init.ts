@@ -92,13 +92,11 @@ export default function init(
 
     try {
         loadDefaultLibraries();
-        const allPromises = services
-            .map((service) => {
-                return service.init(CommunicationService.sendAction, subscribe)?.catch((error) => {
-                    Log.error('Service Initialization Failed: ', getError(error));
-                });
-            })
-            .filter((p): p is Promise<void> => p !== undefined);
+        const allPromises = services.map((service) => {
+            return service.init(CommunicationService.sendAction, subscribe)?.catch((error) => {
+                Log.error('Service Initialization Failed: ', getError(error));
+            });
+        }).filter((p): p is Promise<void> => p !== undefined);
         Promise.all(allPromises)
             .then(() => {
                 CommunicationService.sendAction(appLoaded());

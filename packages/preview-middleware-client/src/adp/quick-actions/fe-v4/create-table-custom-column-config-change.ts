@@ -105,11 +105,11 @@ function findAnchor(table: UI5Element): string {
         const metaPath = macroTable.metaPath.includes('LineItem')
             ? macroTable.metaPath
             : (() => {
-                  const segments = macroTable.metaPath.split('/');
-                  segments.pop();
-                  const path = segments.join('/');
-                  return `${path}/${getLineItemAnnotation(macroTable)}`;
-              })();
+            const segments = macroTable.metaPath.split('/');
+            segments.pop();
+            const path = segments.join('/');
+                return `${path}/${getLineItemAnnotation(macroTable)}`;
+            })();
         if (!metaPath) {
             return '';
         }
@@ -154,15 +154,15 @@ function buildColumnAnchor(column: {
     if (column.$Type === 'com.sap.vocabularies.UI.v1.DataFieldForAction') {
         return `DataFieldForAction::${column.Action}`;
     }
-
+    
     if (column.$Type === 'com.sap.vocabularies.UI.v1.DataField') {
         return `DataField::${column.Value?.$Path}`;
     }
-
+    
     if (column.$Type === 'com.sap.vocabularies.UI.v1.DataFieldForIntentBasedNavigation') {
         return `DataFieldForIntentBasedNavigation::${column.SemanticObject}::${column.Action}`;
     }
-
+    
     if (column.$Type === 'com.sap.vocabularies.UI.v1.DataFieldForAnnotation') {
         const annotationPath = column.Target?.$AnnotationPath;
         if (!annotationPath) {
@@ -171,6 +171,6 @@ function buildColumnAnchor(column: {
         const annotation = annotationPath.split('.').pop();
         return `DataFieldForAnnotation::${annotation?.split('#').join('::')}`;
     }
-
+    
     return '';
 }

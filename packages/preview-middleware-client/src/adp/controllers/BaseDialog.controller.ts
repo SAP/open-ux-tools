@@ -58,10 +58,7 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
 
     abstract buildDialogData(): Promise<void> | void;
 
-    constructor(
-        name: string,
-        private readonly telemetryData?: QuickActionTelemetryData | undefined
-    ) {
+    constructor(name: string, private readonly telemetryData?: QuickActionTelemetryData | undefined) {
         super(name);
     }
     public async onCreateBtnPressHandler(): Promise<void> {

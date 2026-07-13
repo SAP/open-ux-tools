@@ -160,6 +160,23 @@
             description: 'express v5 has significant API changes; upgrade requires explicit decision'
         },
         {
+            matchPackageNames: ['enzyme{/,}**', '@types/enzyme{/,}**'],
+            groupName: 'dev dependencies [enzyme]',
+            matchDepTypes: ['devDependencies']
+        },
+        {
+            // jest-environment-jsdom v30 bundles jsdom 26: hangs with enzyme-adapter-react-16 and
+            // infinite-recurse in performance.now() with UI5 Core
+            matchPackageNames: ['jest-environment-jsdom'],
+            matchFileNames: [
+                'packages/ui-components/package.json',
+                'packages/ui-prompting/package.json',
+                'packages/jest-environment-ui5/package.json'
+            ],
+            allowedVersions: '<30.0.0',
+            description: 'jsdom 26 (bundled in jest-environment-jsdom v30) breaks enzyme and UI5 Core (performance.now infinite recursion)'
+        },
+        {
             matchPackageNames: ['lodash{/,}**', '@types/lodash{/,}**'],
             groupName: 'dependencies [lodash]'
         },

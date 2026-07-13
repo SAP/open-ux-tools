@@ -404,7 +404,7 @@ describe('AddSubpage controller', () => {
                 ({
                     setProperty: jest.fn(),
                     getProperty: jest.fn()
-                }) as unknown as JSONModel;
+                } as unknown as JSONModel);
 
             let beginBtnSetEnabledMock: jest.Mock<any, any, any>;
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);

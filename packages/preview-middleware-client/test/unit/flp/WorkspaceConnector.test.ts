@@ -194,7 +194,7 @@ describe('flp/WorkspaceConnector', () => {
                 libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
             });
             documentMock.getElementById.mockReturnValueOnce({
-                dataset: {
+                dataset:{
                     openUxPreviewFlexSettings: JSON.stringify({ developerMode: true })
                 }
             });

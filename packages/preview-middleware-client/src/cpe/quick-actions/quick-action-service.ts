@@ -72,9 +72,8 @@ export class QuickActionService implements Service {
 
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (executeQuickAction.match(action)) {
-                const actionInstance = this.actions.findLast(
-                    (quickActionDefinition) => quickActionDefinition.id === action.payload.id
-                );
+                const actionInstance = this.actions
+                    .findLast((quickActionDefinition) => quickActionDefinition.id === action.payload.id);
                 if (!actionInstance) {
                     return;
                 }

@@ -64,8 +64,8 @@ interface QuickActionDefinitionBase {
     readonly forceRefreshAfterExecution?: boolean;
     /**
      * Indicates the number of user steps involved in the Quick Action flow.
-     * This value helps distinguish between single-step and multi-step quick actions for telemetry
-     */
+     * This value helps distinguish between single-step and multi-step quick actions for telemetry 
+    */
     quickActionSteps?: number;
     /**
      * Indicates that the Quick Action is applicable to the given context and should be displayed.

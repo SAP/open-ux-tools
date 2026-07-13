@@ -179,10 +179,7 @@ export function getV4ApplicationPages(manifest: Manifest): { id: string; entityS
  * @returns Table instance if the control is inside a table, otherwise undefined.
  */
 export function isMacroTable(table: ManagedObject | null): table is MacroTable {
-    if (
-        table &&
-        (isA<MacroTable>('sap.fe.macros.Table', table) || isA<MacroTable>('sap.fe.macros.table.TableAPI', table))
-    ) {
+    if (table && (isA<MacroTable>('sap.fe.macros.Table', table) || isA<MacroTable>('sap.fe.macros.table.TableAPI', table))) {
         return true;
     }
     return false;

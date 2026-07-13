@@ -17,7 +17,7 @@
             "path": "../odata-vocabularies"
         },
         {
-            "path": "../text-document-utils"
+          "path": "../text-document-utils"
         }
     ]
 }

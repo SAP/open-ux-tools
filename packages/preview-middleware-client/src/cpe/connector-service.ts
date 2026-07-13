@@ -64,11 +64,7 @@ export class WorkspaceConnectorService {
         ) {
             this.sendAction(storageFileChanged(fileName?.replace('sap.ui.fl.', '')));
         }
-        if (
-            changeType === 'addXML' &&
-            (additionalChangeInfo as AdditionalChangeInfo)?.templateName &&
-            content?.fragmentPath
-        ) {
+        if (changeType === 'addXML' && (additionalChangeInfo as AdditionalChangeInfo )?.templateName && content?.fragmentPath) {
             // If there is template available, then we save and reload right away,
             // so we should ignore the first file change event that comes for the fragment.
             // (We don't want to show "Reload" button)

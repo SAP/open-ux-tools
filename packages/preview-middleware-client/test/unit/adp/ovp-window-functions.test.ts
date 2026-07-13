@@ -160,7 +160,10 @@ describe('OVP Bridge Functions', () => {
             });
             initOvpWindowFunctions();
 
-            const result = await window.getMetaModelForNewDataSource([{ ID: '1', Title: 'T' }], 'appId');
+            const result = await window.getMetaModelForNewDataSource(
+                [{ ID: '1', Title: 'T' }],
+                'appId'
+            );
             expect(result).toBeUndefined();
             expect(ODataModelMock).not.toHaveBeenCalled();
         });
@@ -169,9 +172,9 @@ describe('OVP Bridge Functions', () => {
             fetchMock.mockResolvedValue({ ok: false, status: 404 });
             initOvpWindowFunctions();
 
-            await expect(window.getMetaModelForNewDataSource([{ ID: '1', Title: 'T' }], 'appId')).rejects.toThrow(
-                'Failed to fetch metamodel: 404'
-            );
+            await expect(
+                window.getMetaModelForNewDataSource([{ ID: '1', Title: 'T' }], 'appId')
+            ).rejects.toThrow('Failed to fetch metamodel: 404');
         });
     });
 });

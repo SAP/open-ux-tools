@@ -56,7 +56,7 @@ describe('getAppDescriptorBase', () => {
 
 describe('getActionsPropertyPath', () => {
     let mockTable: MacroTable;
-    let mdcTable: UI5Element;
+    let mdcTable: UI5Element
     let mockMetaModel: any;
 
     beforeEach(() => {

@@ -46,12 +46,7 @@ export async function create(changes: FlexChange | FlexChange[]): Promise<void> 
 
             if (typeof FakeLrepConnector.fileChangeRequestNotifier === 'function' && change.fileName) {
                 try {
-                    FakeLrepConnector.fileChangeRequestNotifier(
-                        change.fileName,
-                        'create',
-                        change,
-                        additionalChangeInfo
-                    );
+                    FakeLrepConnector.fileChangeRequestNotifier(change.fileName, 'create', change, additionalChangeInfo);
                 } catch {
                     // exceptions in the listener call are ignored
                 }
@@ -61,6 +56,7 @@ export async function create(changes: FlexChange | FlexChange[]): Promise<void> 
                 change,
                 additionalChangeInfo
             };
+
 
             return fetch(changesApiPath, {
                 method: 'POST',

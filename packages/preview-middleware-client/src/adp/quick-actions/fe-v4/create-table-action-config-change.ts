@@ -80,15 +80,13 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
                         }
                         if (
                             isA(MDC_TABLE_TYPE, table) &&
-                            (table as Table)
-                                .getActions()
-                                .every(
-                                    (action) =>
-                                        !(action as ActionToolbarAction)
-                                            .getAction()
-                                            .getId()
-                                            .endsWith(`CustomAction::${actionId}`)
-                                )
+                            (table as Table).getActions().every(
+                                (action) =>
+                                    !(action as ActionToolbarAction)
+                                        .getAction()
+                                        .getId()
+                                        .endsWith(`CustomAction::${actionId}`)
+                            )
                         ) {
                             return true;
                         }

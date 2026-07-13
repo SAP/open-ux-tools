@@ -3,10 +3,11 @@ import Log from 'sap/base/Log';
 import { sendInfoCenterMessage } from './info-center-message.js';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
-type SingleVersionInfo = {
-    name: string;
-    version: string;
-};
+type SingleVersionInfo =
+    | {
+          name: string;
+          version: string;
+      };
 
 export type Ui5VersionInfo = {
     major: number;
@@ -54,7 +55,7 @@ function checkVersionInfo(versionInfo: Ui5VersionInfo): void {
  * @returns Ui5VersionInfo
  */
 export async function getUi5Version(library: string = 'sap.ui.core'): Promise<Ui5VersionInfo> {
-    const versionInfo = (await VersionInfo.load()) as { name: string; libraries: SingleVersionInfo[] } | undefined;
+    const versionInfo = await VersionInfo.load() as { name: string; libraries: SingleVersionInfo[] } | undefined;
     let version = versionInfo?.libraries?.find((lib) => lib.name === library)?.version;
     const isCdn = versionInfo?.name === 'SAPUI5 Distribution';
     if (!version) {

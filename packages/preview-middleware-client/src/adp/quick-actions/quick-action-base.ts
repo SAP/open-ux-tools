@@ -21,9 +21,11 @@ export abstract class QuickActionDefinitionBase<T extends string> {
     }
 
     public get quickActionSteps(): number {
-        return this.enablementValidators.find((item) => item === DIALOG_ENABLEMENT_VALIDATOR) ? 2 : 1;
+        return this.enablementValidators.find((item) => item === DIALOG_ENABLEMENT_VALIDATOR) 
+            ? 2
+            : 1;
     }
-
+    
     /**
      * Quick Actions tooltip.
      */
