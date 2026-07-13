@@ -69,22 +69,23 @@ export type NodeLookup = {
  * @param feVersion - The Fiori Elements version ('v2' or 'v4')
  * @param entityType - The entity type name
  * @param service - The parsed OData service
+ * @returns Entity table node array
  */
 export function collectTables(feVersion: 'v2' | 'v4', entityType: string, service: ParsedService): TableNode[] {
-    const tables: TableNode[] = [];
     const lineItemKey = buildAnnotationIndexKey(entityType, UI_LINE_ITEM);
-    const lineItems = service.index.annotations[lineItemKey]?.['undefined'];
-
-    if (lineItems) {
-        const table: TableNode = {
+    const lineItemMap = service.index.annotations[lineItemKey];
+    if (!lineItemMap) {
+        return [];
+    }
+    return Object.values(lineItemMap).map((lineItem) => {
+        const qualifierString = lineItem.qualifier ? `#${lineItem.qualifier}` : '';
+        return {
             type: 'table',
-            annotation: lineItems,
-            annotationPath: `@com.sap.vocabularies.UI.v1.LineItem`,
+            annotation: lineItem,
+            annotationPath: `@${UI_LINE_ITEM}${qualifierString}`,
             children: []
         };
-        tables.push(table);
-    }
-    return tables;
+    });
 }
 
 /**
