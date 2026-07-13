@@ -17,5 +17,17 @@
         "systemTypeLabel": {
             "abapCloud": "ABAP Cloud"
         }
+    },
+    "floorplans": {
+        "label": {
+            "basic": "Basic{{odataVersion, odataVersionFormatter}}",
+            "fpm": "Custom Page{{odataVersion, odataVersionFormatter}}",
+            "lrop": "List Report Page{{odataVersion, odataVersionFormatter}}",
+            "worklist": "Worklist Page{{odataVersion, odataVersionFormatter}}",
+            "alp": "Analytical List Page{{odataVersion, odataVersionFormatter}}",
+            "ovp": "Overview Page{{odataVersion, odataVersionFormatter}}",
+            "feop": "Form Entry Object Page{{odataVersion, odataVersionFormatter}}",
+            "listdetail": "List Detail{{odataVersion, odataVersionFormatter}}"
+        }
     }
 }
