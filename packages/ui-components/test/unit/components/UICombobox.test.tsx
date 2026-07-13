@@ -346,14 +346,7 @@ describe('<UIComboBox />', () => {
         expect(comboboxRef.current?.state.minWidth).toEqual(undefined);
         const newRef = React.createRef<UIComboBox>();
         const { container: c2 } = render(
-            <UIComboBox
-                ref={newRef}
-                options={data}
-                highlight={false}
-                allowFreeform={true}
-                autoComplete="on"
-                useComboBoxAsMenuMinWidth={true}
-            />
+            <UIComboBox ref={newRef} {...defaultProps} useComboBoxAsMenuMinWidth={true} />
         );
         const btn = c2.querySelector('.ms-ComboBox .ms-Button--icon') as HTMLElement;
         fireEvent.click(btn, document.createEvent('Events'));
@@ -364,14 +357,7 @@ describe('<UIComboBox />', () => {
     it('Test menu close method', () => {
         const newRef = React.createRef<UIComboBox>();
         const { container: c2 } = render(
-            <UIComboBox
-                ref={newRef}
-                options={data}
-                highlight={true}
-                allowFreeform={true}
-                autoComplete="on"
-                useComboBoxAsMenuMinWidth={true}
-            />
+            <UIComboBox ref={newRef} {...defaultProps} highlight={true} useComboBoxAsMenuMinWidth={true} />
         );
         expect(document.querySelectorAll(menuDropdownSelector).length).toEqual(0);
         // Open callout
@@ -397,11 +383,9 @@ describe('<UIComboBox />', () => {
             const { container: c2, rerender: rerenderMulti } = render(
                 <UIComboBox
                     ref={newRef}
-                    options={data}
+                    {...defaultProps}
                     highlight={true}
-                    allowFreeform={true}
                     multiSelect={true}
-                    autoComplete="on"
                     useComboBoxAsMenuMinWidth={true}
                     selectedKey={keys}
                     onChange={onChange}
@@ -423,11 +407,9 @@ describe('<UIComboBox />', () => {
             rerenderMulti(
                 <UIComboBox
                     ref={newRef}
-                    options={data}
+                    {...defaultProps}
                     highlight={true}
-                    allowFreeform={true}
                     multiSelect={true}
-                    autoComplete="on"
                     useComboBoxAsMenuMinWidth={true}
                     selectedKey={keys}
                     onChange={onChange}
@@ -458,11 +440,9 @@ describe('<UIComboBox />', () => {
             const { container: c2, rerender: rerenderMulti } = render(
                 <UIComboBox
                     ref={newRef}
-                    options={data}
+                    {...defaultProps}
                     highlight={true}
-                    allowFreeform={true}
                     multiSelect={true}
-                    autoComplete="on"
                     useComboBoxAsMenuMinWidth={true}
                     selectedKey={keys}
                     onChange={onChange}
@@ -488,11 +468,10 @@ describe('<UIComboBox />', () => {
             rerenderMulti(
                 <UIComboBox
                     ref={newRef}
+                    {...defaultProps}
                     options={[...data]}
                     highlight={true}
-                    allowFreeform={true}
                     multiSelect={true}
-                    autoComplete="on"
                     useComboBoxAsMenuMinWidth={true}
                     selectedKey={keys}
                     onChange={onChange}
