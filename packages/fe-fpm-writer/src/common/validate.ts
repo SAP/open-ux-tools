@@ -94,15 +94,15 @@ export function getErrorMessage(error: Error | unknown): string {
  * @param {string} [paramName] - optional parameter name for error messages
  * @throws {Error} if the path is absolute or contains '..'
  */
-export function validateRelativePath(folder: string, paramName = 'folder'): void {
+export function validateRelativePath(folder: string, paramName = 'Path'): void {
     // Check for absolute paths
     if (isAbsolute(folder)) {
-        throw new Error(`${paramName} must be a relative path, got: ${folder}`);
+        throw new Error(`${paramName} must not be an absolute path, got: ${folder}`);
     }
 
     // Check for path traversal attempts by examining path segments
     const segments = folder.split(/[/\\]/);
-    if (segments.some((segment) => segment === '..')) {
+    if (segments.includes('..')) {
         throw new Error(`${paramName} must not contain '..' (path traversal), got: ${folder}`);
     }
 }

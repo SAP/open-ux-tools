@@ -17,6 +17,10 @@ import { getManifest } from '../common/utils.js';
  * @param {Fragment} fragment - fragment generation configuration
  * @param {Editor} [fs] - the mem-fs editor instance
  * @returns {Promise<Editor>} the updated mem-fs editor instance
+ * @throws {Error} if the project folder is invalid or manifest.json cannot be found
+ * @throws {Error} if sap.fe.templates is missing from manifest.json dependencies (only FPM projects are supported)
+ * @throws {Error} if fragment.folder is an absolute path or contains path traversal sequences (..)
+ * @throws {Error} if fragment.name is an absolute path or contains path traversal sequences (..)
  */
 export async function generateFragment(basePath: string, fragment: Fragment, fs?: Editor): Promise<Editor> {
     fs ??= create(createStorage());
@@ -28,6 +32,7 @@ export async function generateFragment(basePath: string, fragment: Fragment, fs?
     // Calculate path for fragment with validation
     const folder = fragment.folder ?? 'ext/fragment';
     validateRelativePath(folder, 'Fragment folder');
+    validateRelativePath(fragment.name, 'Fragment name');
     const path = join(dirname(manifestPath), folder);
 
     // Generate default content if not provided

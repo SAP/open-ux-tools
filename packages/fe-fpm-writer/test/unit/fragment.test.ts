@@ -80,20 +80,40 @@ describe('generateFragment', () => {
     });
 
     describe('path validation', () => {
-        test('reject absolute path (Unix-style)', async () => {
+        test('reject path traversal in fragment name', async () => {
             const fragment = {
-                name: 'EvilFragment',
-                folder: '/etc/passwd'
+                name: '../../../etc/malicious'
             };
 
             await expect(generateFragment(testFragmentDir, fragment, fs)).rejects.toThrow(
-                'Fragment folder must be a relative path'
+                "Fragment name must not contain '..'"
             );
         });
 
-        test('reject path traversal with ..', async () => {
+        test('reject path traversal via combined folder and name', async () => {
             const fragment = {
-                name: 'EvilFragment',
+                name: '../../malicious',
+                folder: 'ext'
+            };
+
+            await expect(generateFragment(testFragmentDir, fragment, fs)).rejects.toThrow(
+                "Fragment name must not contain '..'"
+            );
+        });
+
+        test('reject absolute path in fragment name (Unix-style)', async () => {
+            const fragment = {
+                name: '/etc/malicious'
+            };
+
+            await expect(generateFragment(testFragmentDir, fragment, fs)).rejects.toThrow(
+                'Fragment name must not be an absolute path'
+            );
+        });
+
+        test('reject path traversal in folder', async () => {
+            const fragment = {
+                name: 'TestFragment',
                 folder: '../../../etc'
             };
 
@@ -102,15 +122,24 @@ describe('generateFragment', () => {
             );
         });
 
-        test('reject path traversal in middle of path', async () => {
+        test('reject absolute path in folder (Unix-style)', async () => {
             const fragment = {
-                name: 'EvilFragment',
-                folder: 'ext/../../../etc'
+                name: 'TestFragment',
+                folder: '/etc/passwd'
             };
 
             await expect(generateFragment(testFragmentDir, fragment, fs)).rejects.toThrow(
-                "Fragment folder must not contain '..'"
+                'Fragment folder must not be an absolute path'
             );
+        });
+
+        test('accept single dots in paths', async () => {
+            const fragment = {
+                name: './GoodFragment',
+                folder: 'ext/./custom'
+            };
+
+            await expect(generateFragment(testFragmentDir, fragment, fs)).resolves.toBeDefined();
         });
 
         test('accept valid relative path', async () => {
