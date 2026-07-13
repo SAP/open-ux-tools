@@ -104,13 +104,30 @@ function resolveMacrosPrefix(xmlDocument: Document): string {
 }
 
 /** IDs needed per aggregation template, keyed by the variable name used in the EJS template. */
-const AGGREGATION_ID_KEYS: Partial<Record<PageAggregationName, string[]>> = {
-    breadcrumbs: ['Breadcrumbs', 'Link', 'Link1', 'Link2'],
-    navigationActions: ['Button'],
-    titleContent: ['GenericTag'],
-    actions: ['Button', 'Button1'],
-    headerContent: ['VBox', 'Title'],
-    footer: ['OverflowToolbar', 'ToolbarSpacer', 'Button', 'Button1']
+/** Controls to generate IDs for per aggregation. `key` is the EJS template variable name, `base` is passed to generateId. */
+const AGGREGATION_ID_KEYS: Partial<Record<PageAggregationName, { key: string; base: string }[]>> = {
+    breadcrumbs: [
+        { key: 'Breadcrumbs', base: 'Breadcrumbs' },
+        { key: 'Link', base: 'Link' },
+        { key: 'Link1', base: 'Link' },
+        { key: 'Link2', base: 'Link' }
+    ],
+    navigationActions: [{ key: 'Button', base: 'Button' }],
+    titleContent: [{ key: 'GenericTag', base: 'GenericTag' }],
+    actions: [
+        { key: 'Button', base: 'Button' },
+        { key: 'Button1', base: 'Button' }
+    ],
+    headerContent: [
+        { key: 'VBox', base: 'VBox' },
+        { key: 'Title', base: 'Title' }
+    ],
+    footer: [
+        { key: 'OverflowToolbar', base: 'OverflowToolbar' },
+        { key: 'ToolbarSpacer', base: 'ToolbarSpacer' },
+        { key: 'Button', base: 'Button' },
+        { key: 'Button1', base: 'Button' }
+    ]
 };
 
 /**
@@ -122,12 +139,11 @@ const AGGREGATION_ID_KEYS: Partial<Record<PageAggregationName, string[]>> = {
  * @returns an object mapping each template variable name to a unique ID string
  */
 function buildAggregationIds(aggName: PageAggregationName, generateId: IdGeneratorFunction): Record<string, string> {
-    const keys = AGGREGATION_ID_KEYS[aggName] ?? [];
+    const entries = AGGREGATION_ID_KEYS[aggName] ?? [];
     const validatedIds: string[] = [];
     const ids: Record<string, string> = {};
-    for (const key of keys) {
-        const baseId = key.replace(/\d*$/, ''); // strip trailing number to get the base (e.g. 'Button1' → 'Button')
-        const id = generateId(baseId, validatedIds);
+    for (const { key, base } of entries) {
+        const id = generateId(base, validatedIds);
         ids[key] = id;
         validatedIds.push(id);
     }
