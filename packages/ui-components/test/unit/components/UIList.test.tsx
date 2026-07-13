@@ -14,7 +14,7 @@ const expandedGroups: IGroup[] = [
     { key: 'group2', name: 'Group 2', startIndex: 2, count: 1, isCollapsed: false }
 ];
 
-const items: unknown[] = [
+const items: any[] = [
     { id: 1, name: 'Item 1', description: 'First item' },
     { id: 2, name: 'Item 2', description: 'Second item' },
     { id: 3, name: 'Item 3', description: 'Third item' }
