@@ -54,20 +54,12 @@ describe('system-utils', () => {
             expect(areSystemConfigEquals(config, { ...config })).toBe(true);
         });
 
-        it('should return true when urls differ only by trailing slash', () => {
-            const configA = { url: 'https://example.com/' };
-            const configB = { url: 'https://example.com' };
-            expect(areSystemConfigEquals(configA, configB)).toBe(true);
-        });
-
-        it('should return true when urls differ only by whitespace', () => {
-            const configA = { url: '  https://example.com  ' };
-            const configB = { url: 'https://example.com' };
-            expect(areSystemConfigEquals(configA, configB)).toBe(true);
-        });
-
-        it('should return true when urls differ by whitespace and trailing slash', () => {
-            const configA = { url: ' https://example.com/ ' };
+        it.each([
+            ['trailing slash', 'https://example.com/'],
+            ['whitespace', '  https://example.com  '],
+            ['whitespace and trailing slash', ' https://example.com/ ']
+        ])('should return true when urls differ only by %s', (_label, url) => {
+            const configA = { url };
             const configB = { url: 'https://example.com' };
             expect(areSystemConfigEquals(configA, configB)).toBe(true);
         });
