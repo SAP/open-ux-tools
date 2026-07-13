@@ -126,7 +126,7 @@ function buildAggregationIds(aggName: PageAggregationName, generateId: IdGenerat
     const validatedIds: string[] = [];
     const ids: Record<string, string> = {};
     for (const key of keys) {
-        const baseId = key.replace(/\d+$/, ''); // strip trailing number to get the base (e.g. 'Button1' → 'Button')
+        const baseId = key.replace(/\d*$/, ''); // strip trailing number to get the base (e.g. 'Button1' → 'Button')
         const id = generateId(baseId, validatedIds);
         ids[key] = id;
         validatedIds.push(id);
