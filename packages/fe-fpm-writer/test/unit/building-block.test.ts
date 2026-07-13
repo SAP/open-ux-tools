@@ -1141,7 +1141,7 @@ describe('Building Blocks', () => {
         expect(fs.read(join(basePath, xmlViewFilePath))).toMatchSnapshot('generate-page-block-full');
     });
 
-    test('generate Page building block with full template and no aggregations uses default mContent', async () => {
+    test('generate Page building block with full template uses default content with IDs', async () => {
         const aggregationPath = `/mvc:View/*[local-name()='Page']`;
         const basePath = join(testAppPath, 'generate-page-block-full-defaults');
         fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
@@ -1167,7 +1167,7 @@ describe('Building Blocks', () => {
         expect(fs.read(join(basePath, xmlViewFilePath))).toMatchSnapshot('generate-page-block-full-defaults');
     });
 
-    test('generate Page building block with full template and explicit aggregations overrides defaults', async () => {
+    test('generate Page building block with full template generates default content with IDs for all aggregations', async () => {
         const aggregationPath = `/mvc:View/*[local-name()='Page']`;
         const basePath = join(testAppPath, 'generate-page-block-full-override');
         fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
@@ -1183,10 +1183,7 @@ describe('Building Blocks', () => {
                     buildingBlockType: BuildingBlockType.Page,
                     title: 'Test Page',
                     templateType: 'full',
-                    generateId,
-                    aggregations: {
-                        breadcrumbs: '<Text text="custom-breadcrumb" />'
-                    }
+                    generateId
                 },
                 replace: true
             },
@@ -1194,8 +1191,7 @@ describe('Building Blocks', () => {
         );
 
         const viewContent = fs.read(join(basePath, xmlViewFilePath));
-        expect(viewContent).toContain('custom-breadcrumb');
-        expect(viewContent).not.toContain('onBreadcrumbsPressHome');
+        expect(viewContent).toContain('onBreadcrumbsPressHome');
         expect(viewContent).toContain('onActionsClickAction1');
     });
 
@@ -3969,8 +3965,7 @@ describe('Building Blocks', () => {
                 {
                     viewPath: xmlViewFilePath,
                     buildingBlockType: BuildingBlockType.Page,
-                    aggregationName: 'footer',
-                    mContent: ''
+                    aggregationName: 'footer'
                 },
                 fs
             );
@@ -3997,8 +3992,7 @@ describe('Building Blocks', () => {
                 {
                     viewPath: xmlViewFilePath,
                     buildingBlockType: BuildingBlockType.Page,
-                    aggregationName: 'footer',
-                    mContent: ''
+                    aggregationName: 'footer'
                 },
                 fs
             );
@@ -4027,8 +4021,7 @@ describe('Building Blocks', () => {
                 {
                     viewPath: xmlViewFilePath,
                     buildingBlockType: BuildingBlockType.Page,
-                    aggregationName: 'navigationActions',
-                    mContent: ''
+                    aggregationName: 'navigationActions'
                 },
                 fs
             );
@@ -4050,8 +4043,7 @@ describe('Building Blocks', () => {
                 {
                     viewPath: xmlViewFilePath,
                     buildingBlockType: BuildingBlockType.Page,
-                    aggregationName: 'items',
-                    mContent: ''
+                    aggregationName: 'items'
                 },
                 fs
             );
@@ -4079,8 +4071,7 @@ describe('Building Blocks', () => {
                 {
                     viewPath: xmlViewFilePath,
                     buildingBlockType: BuildingBlockType.Page,
-                    aggregationName: 'items',
-                    mContent: ''
+                    aggregationName: 'items'
                 },
                 fs
             );
@@ -4108,8 +4099,7 @@ describe('Building Blocks', () => {
                 {
                     viewPath: xmlViewFilePath,
                     buildingBlockType: BuildingBlockType.Page,
-                    aggregationName: 'navigationActions',
-                    mContent: ''
+                    aggregationName: 'navigationActions'
                 },
                 fs
             );
@@ -4141,8 +4131,7 @@ describe('Building Blocks', () => {
                 {
                     viewPath: xmlViewFilePath,
                     buildingBlockType: BuildingBlockType.Page,
-                    aggregationName: 'breadcrumbs',
-                    mContent: '<Breadcrumbs><Link text="Home" /></Breadcrumbs>'
+                    aggregationName: 'breadcrumbs'
                 },
                 fs
             );

@@ -7,7 +7,5 @@
             </IconTabFilter>
         </items>
     </IconTabBar>
-<% } else { -%>
-    <%- mContent %>
 <% } -%>
 </<%- macrosPrefix %>items>

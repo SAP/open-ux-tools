@@ -1878,87 +1878,35 @@ exports[`Building Blocks generate Page building block with basic template genera
 </mvc:View>"
 `;
 
-exports[`Building Blocks generate Page building block with full template and no aggregations uses default mContent: generate-page-block-full-defaults 1`] = `
-"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
-    <macros:Page id=\\"testPage\\" title=\\"Test Page\\" showFooter=\\"true\\">
-        <!--This is a sample template, event handlers should be added for implementation-->
-        <macros:breadcrumbs>
-            <!-- Breadcrumbs aggregation -->
-            <Breadcrumbs>
-                <Link text=\\"Home\\" press=\\".onBreadcrumbsPressHome\\"/>
-                <Link text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
-                <Link text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
-            </Breadcrumbs>
-        </macros:breadcrumbs>
-        <macros:navigationActions>
-            <!-- Navigation actions aggregation -->
-            <Button icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen\\" type=\\"Transparent\\"/>
-        </macros:navigationActions>
-        <macros:titleContent>
-            <!-- Title content aggregation (content next to title) -->
-            <GenericTag text=\\"Status\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
-        </macros:titleContent>
-        <macros:actions>
-            <!-- Actions aggregation -->
-            <Button text=\\"Action 1\\" press=\\".onActionsClickAction1\\" type=\\"Ghost\\"/>
-            <Button text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\"/>
-        </macros:actions>
-        <macros:headerContent>
-            <!-- Header content aggregation (content after avatar) -->
-            <VBox>
-                <Title text=\\"Page Title\\"/>
-            </VBox>
-        </macros:headerContent>
-        <macros:items>
-            <!-- Main content -->
-            <IconTabBar id=\\"iconTabBaritems\\" class=\\"sapUiResponsiveContentPadding\\">
-                <items>
-                    <IconTabFilter id=\\"iconTabFilteritems\\" text=\\"Tab 1\\">
-                    </IconTabFilter>
-                </items>
-            </IconTabBar>
-        </macros:items>
-        <macros:footer>
-            <!-- Footer aggregation -->
-            <OverflowToolbar>
-                <ToolbarSpacer/>
-                <Button text=\\"Approve\\" press=\\".onFooterApprove\\" type=\\"Accept\\" icon=\\"\\"/>
-                <Button text=\\"Reject\\" press=\\".onFooterReject\\" type=\\"Reject\\" icon=\\"\\"/>
-            </OverflowToolbar>
-        </macros:footer>
-    </macros:Page>
-</mvc:View>"
-`;
-
 exports[`Building Blocks generate Page building block with full template inserts all 7 aggregations: generate-page-block-full 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <macros:Page id=\\"testPage\\" title=\\"Test Page\\" showFooter=\\"true\\">
         <!--This is a sample template, event handlers should be added for implementation-->
         <macros:breadcrumbs>
             <!-- Breadcrumbs aggregation -->
-            <m:Breadcrumbs xmlns:m=\\"sap.m\\">
-                <m:Link text=\\"Home\\" press=\\".onBreadcrumbsPressHome\\"/>
-                <m:Link text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
-                <m:Link text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
-            </m:Breadcrumbs>
+            <Breadcrumbs id=\\"Breadcrumbs\\">
+                <Link id=\\"Link\\" text=\\"Home\\" press=\\".onBreadcrumbsPressHome\\"/>
+                <Link id=\\"Link\\" text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
+                <Link id=\\"Link\\" text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
+            </Breadcrumbs>
         </macros:breadcrumbs>
         <macros:navigationActions>
             <!-- Navigation actions aggregation -->
-            <m:Button icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen\\" type=\\"Transparent\\" xmlns:m=\\"sap.m\\"/>
+            <Button id=\\"Button\\" icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen\\" type=\\"Transparent\\"/>
         </macros:navigationActions>
         <macros:titleContent>
             <!-- Title content aggregation (content next to title) -->
-            <GenericTag text=\\"Status\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
+            <GenericTag id=\\"GenericTag\\" text=\\"Status\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
         </macros:titleContent>
         <macros:actions>
             <!-- Actions aggregation -->
-            <m:Button text=\\"Action 1\\" press=\\".onActionsClickAction1\\" type=\\"Ghost\\" xmlns:m=\\"sap.m\\"/>
-            <m:Button text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\" xmlns:m=\\"sap.m\\"/>
+            <Button id=\\"Button\\" text=\\"Action 1\\" press=\\".onActionsClickAction1\\" type=\\"Ghost\\"/>
+            <Button id=\\"Button\\" text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\"/>
         </macros:actions>
         <macros:headerContent>
             <!-- Header content aggregation (content after avatar) -->
-            <VBox>
-                <Title text=\\"Page Title\\"/>
+            <VBox id=\\"VBox\\">
+                <Title id=\\"Title\\" text=\\"Page Title\\"/>
             </VBox>
         </macros:headerContent>
         <macros:items>
@@ -1972,10 +1920,62 @@ exports[`Building Blocks generate Page building block with full template inserts
         </macros:items>
         <macros:footer>
             <!-- Footer aggregation -->
-            <OverflowToolbar>
-                <ToolbarSpacer/>
-                <Button text=\\"Approve\\" press=\\".onFooterApprove\\" type=\\"Accept\\" icon=\\"\\"/>
-                <Button text=\\"Reject\\" press=\\".onFooterReject\\" type=\\"Reject\\" icon=\\"\\"/>
+            <OverflowToolbar id=\\"OverflowToolbar\\">
+                <ToolbarSpacer id=\\"ToolbarSpacer\\"/>
+                <Button id=\\"Button\\" text=\\"Approve\\" press=\\".onFooterApprove\\" type=\\"Accept\\" icon=\\"\\"/>
+                <Button id=\\"Button\\" text=\\"Reject\\" press=\\".onFooterReject\\" type=\\"Reject\\" icon=\\"\\"/>
+            </OverflowToolbar>
+        </macros:footer>
+    </macros:Page>
+</mvc:View>"
+`;
+
+exports[`Building Blocks generate Page building block with full template uses default content with IDs: generate-page-block-full-defaults 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <macros:Page id=\\"testPage\\" title=\\"Test Page\\" showFooter=\\"true\\">
+        <!--This is a sample template, event handlers should be added for implementation-->
+        <macros:breadcrumbs>
+            <!-- Breadcrumbs aggregation -->
+            <Breadcrumbs id=\\"Breadcrumbs\\">
+                <Link id=\\"Link\\" text=\\"Home\\" press=\\".onBreadcrumbsPressHome\\"/>
+                <Link id=\\"Link\\" text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
+                <Link id=\\"Link\\" text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
+            </Breadcrumbs>
+        </macros:breadcrumbs>
+        <macros:navigationActions>
+            <!-- Navigation actions aggregation -->
+            <Button id=\\"Button\\" icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen\\" type=\\"Transparent\\"/>
+        </macros:navigationActions>
+        <macros:titleContent>
+            <!-- Title content aggregation (content next to title) -->
+            <GenericTag id=\\"GenericTag\\" text=\\"Status\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
+        </macros:titleContent>
+        <macros:actions>
+            <!-- Actions aggregation -->
+            <Button id=\\"Button\\" text=\\"Action 1\\" press=\\".onActionsClickAction1\\" type=\\"Ghost\\"/>
+            <Button id=\\"Button\\" text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\"/>
+        </macros:actions>
+        <macros:headerContent>
+            <!-- Header content aggregation (content after avatar) -->
+            <VBox id=\\"VBox\\">
+                <Title id=\\"Title\\" text=\\"Page Title\\"/>
+            </VBox>
+        </macros:headerContent>
+        <macros:items>
+            <!-- Main content -->
+            <IconTabBar id=\\"iconTabBaritems\\" class=\\"sapUiResponsiveContentPadding\\">
+                <items>
+                    <IconTabFilter id=\\"iconTabFilteritems\\" text=\\"Tab 1\\">
+                    </IconTabFilter>
+                </items>
+            </IconTabBar>
+        </macros:items>
+        <macros:footer>
+            <!-- Footer aggregation -->
+            <OverflowToolbar id=\\"OverflowToolbar\\">
+                <ToolbarSpacer id=\\"ToolbarSpacer\\"/>
+                <Button id=\\"Button\\" text=\\"Approve\\" press=\\".onFooterApprove\\" type=\\"Accept\\" icon=\\"\\"/>
+                <Button id=\\"Button\\" text=\\"Reject\\" press=\\".onFooterReject\\" type=\\"Reject\\" icon=\\"\\"/>
             </OverflowToolbar>
         </macros:footer>
     </macros:Page>
@@ -2080,8 +2080,10 @@ exports[`Building Blocks generateBuildingBlockAggregation wraps loose building b
     <macros:Page id=\\"Page\\" title=\\"cp\\" description=\\"cp\\">
         <macros:breadcrumbs>
             <!-- Breadcrumbs aggregation -->
-            <Breadcrumbs>
-                <Link text=\\"Home\\"/>
+            <Breadcrumbs id=\\"Breadcrumbs\\">
+                <Link id=\\"Link\\" text=\\"Home\\" press=\\".onBreadcrumbsPressHome\\"/>
+                <Link id=\\"Link1\\" text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
+                <Link id=\\"Link2\\" text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
             </Breadcrumbs>
         </macros:breadcrumbs>
         <macros:items>

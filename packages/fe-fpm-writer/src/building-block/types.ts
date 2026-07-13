@@ -432,23 +432,6 @@ export const PAGE_TEMPLATE_COMMENT = 'This is a sample template, event handlers 
 export const MACROS_NAMESPACE_URI = 'sap.fe.macros';
 
 /**
- * Default sample mContent for each Page aggregation.
- * Applied automatically for any missing aggregation mContent when templateType is 'full'.
- * The 'items' aggregation is not included here — it has a fixed default IconTabBar in its template.
- */
-export const PAGE_BB_DEFAULT_AGGREGATIONS: Partial<Record<PageAggregationName, string>> = {
-    breadcrumbs:
-        '<Breadcrumbs>\n    <Link text="Home" press=".onBreadcrumbsPressHome" />\n    <Link text="Page 1" press=".onBreadcrumbsPressPage1" />\n    <Link text="Page 2" press=".onBreadcrumbsPressPage2" />\n</Breadcrumbs>',
-    navigationActions:
-        '<Button icon="sap-icon://full-screen" press=".onNavigationActionsFullScreen" type="Transparent" />',
-    titleContent: '<GenericTag text="Status" design="StatusIconHidden" status="Information" />',
-    actions:
-        '<Button text="Action 1" press=".onActionsClickAction1" type="Ghost" />\n    <Button text="Action 2" press=".onActionsClickAction2" type="Ghost" />',
-    headerContent: '<VBox>\n    <Title text="Page Title" />\n</VBox>',
-    footer: '<OverflowToolbar><ToolbarSpacer /><Button text="Approve" press=".onFooterApprove" type="Accept" icon="" /><Button text="Reject" press=".onFooterReject" type="Reject" icon="" /></OverflowToolbar>'
-};
-
-/**
  * A group of XML nodes representing one Page aggregation element and its preceding sibling comments.
  * Used when re-ordering aggregation children under a macros:Page element.
  */
@@ -464,8 +447,6 @@ export interface GenerateBuildingBlockAggregationConfig {
     buildingBlockType: BuildingBlockType;
     /** Name of the aggregation to append. */
     aggregationName: PageAggregationName;
-    /** Optional inner XML content for the aggregation. */
-    mContent?: string;
 }
 
 /**

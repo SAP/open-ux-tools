@@ -126,16 +126,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     }
 
     if (pageAggregationNames) {
-        const pageData = buildingBlockData as Page;
-        appendPageAggregations(
-            fs,
-            xmlDocument,
-            templateDocument,
-            fnGenerateId,
-            pageData,
-            pageAggregationNames,
-            fullPageTemplate
-        );
+        appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId, pageAggregationNames, fullPageTemplate);
     }
 
     if (
@@ -471,7 +462,6 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
         if (isFullPageTemplate(buildingBlockData)) {
             validateFullPageTemplateVersion(manifest);
         }
-        const pageData = buildingBlockData as Page;
         // Use the real view document for namespace resolution if available, otherwise create a minimal fallback
         const nsDoc =
             xmlDocument ??
@@ -498,7 +488,6 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
             nsDoc,
             snippetDoc,
             fnGenerateId,
-            pageData,
             pageAggNames,
             isFullPageTemplate(buildingBlockData)
         );

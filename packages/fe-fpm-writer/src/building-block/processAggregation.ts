@@ -12,7 +12,6 @@ import { getMinimumUI5Version } from '@sap-ux/project-access';
 import {
     BuildingBlockType,
     PAGE_AGGREGATIONS,
-    PAGE_BB_DEFAULT_AGGREGATIONS,
     PAGE_FULL_TEMPLATE_MIN_UI5_VERSION,
     PAGE_TEMPLATE_COMMENT,
     PAGE_TEMPLATE_TYPE_FULL,
@@ -104,6 +103,37 @@ function resolveMacrosPrefix(xmlDocument: Document): string {
     return prefix;
 }
 
+/** IDs needed per aggregation template, keyed by the variable name used in the EJS template. */
+const AGGREGATION_ID_KEYS: Partial<Record<PageAggregationName, string[]>> = {
+    breadcrumbs: ['Breadcrumbs', 'Link', 'Link1', 'Link2'],
+    navigationActions: ['Button'],
+    titleContent: ['GenericTag'],
+    actions: ['Button', 'Button1'],
+    headerContent: ['VBox', 'Title'],
+    footer: ['OverflowToolbar', 'ToolbarSpacer', 'Button', 'Button1']
+};
+
+/**
+ * Generates a map of unique IDs for all controls in a given Page aggregation template.
+ * Keys match the `ids.*` variable names referenced in the EJS templates.
+ *
+ * @param aggName - the aggregation name
+ * @param generateId - the project-aware ID generator
+ * @returns an object mapping each template variable name to a unique ID string
+ */
+function buildAggregationIds(aggName: PageAggregationName, generateId: IdGeneratorFunction): Record<string, string> {
+    const keys = AGGREGATION_ID_KEYS[aggName] ?? [];
+    const validatedIds: string[] = [];
+    const ids: Record<string, string> = {};
+    for (const key of keys) {
+        const baseId = key.replace(/\d+$/, ''); // strip trailing number to get the base (e.g. 'Button1' → 'Button')
+        const id = generateId(baseId, validatedIds);
+        ids[key] = id;
+        validatedIds.push(id);
+    }
+    return ids;
+}
+
 /**
  * Renders a Page aggregation EJS template and parses it as an XML fragment document.
  * Inherits all xmlns:* declarations from the view root so inner content can use any view-declared prefix.
@@ -112,9 +142,9 @@ function resolveMacrosPrefix(xmlDocument: Document): string {
  * @param aggName - the aggregation name (e.g. 'footer', 'items')
  * @param aggContext - the EJS template context
  * @param aggContext.macrosPrefix - the namespace prefix string (e.g. 'macros:')
- * @param aggContext.mContent - optional inner XML content for the aggregation
  * @param aggContext.aggId - the generated unique ID for the aggregation element
  * @param aggContext.showDefaultContent - when true, the items template renders the default IconTabBar
+ * @param aggContext.ids - map of unique IDs for named controls in the template (e.g. ids.Button, ids.Link)
  * @param fragMacrosNS - the namespace prefix resolved for sap.fe.macros
  * @param xmlDocument - the view XML document (used to inherit namespace declarations)
  * @returns parsed XML document whose documentElement contains the aggregation child nodes
@@ -122,7 +152,12 @@ function resolveMacrosPrefix(xmlDocument: Document): string {
 function buildPageAggregationFragment(
     fs: Editor,
     aggName: string,
-    aggContext: { macrosPrefix: string; mContent: string; aggId: string; showDefaultContent: boolean },
+    aggContext: {
+        macrosPrefix: string;
+        aggId: string;
+        showDefaultContent: boolean;
+        ids: Record<string, string>;
+    },
     fragMacrosNS: string,
     xmlDocument: Document
 ): Document {
@@ -140,22 +175,19 @@ function buildPageAggregationFragment(
 }
 
 /**
- * Appends Page building block aggregation fragments as child elements of the templateDocument root.
  *
  * @param {Editor} fs - the memfs editor instance
  * @param {Document} xmlDocument - the view XML document (used to resolve namespace prefixes)
  * @param {Document} templateDocument - the template document whose root element receives the children
  * @param {IdGeneratorFunction} generateId - function to generate unique IDs
- * @param {Page} pageData - the Page building block data containing optional aggregation mContent
  * @param {readonly PageAggregationName[]} [aggNames] - aggregation names to append; defaults to all PAGE_AGGREGATIONS
- * @param useDefaults - when true, default content is used for aggregations without explicit content
+ * @param useDefaults - when true, the items aggregation renders its default IconTabBar content
  */
 export function appendPageAggregations(
     fs: Editor,
     xmlDocument: Document,
     templateDocument: Document,
     generateId: IdGeneratorFunction,
-    pageData: Page,
     aggNames: readonly PageAggregationName[] = PAGE_AGGREGATIONS,
     useDefaults = true
 ): void {
@@ -164,13 +196,10 @@ export function appendPageAggregations(
     const pageElement = templateDocument.documentElement;
     pageElement.appendChild(templateDocument.createComment(PAGE_TEMPLATE_COMMENT));
     for (const aggName of aggNames) {
-        const defaultContent = useDefaults ? PAGE_BB_DEFAULT_AGGREGATIONS[aggName] : undefined;
-        const mContent = pageData.aggregations?.[aggName] ?? defaultContent ?? '';
         const aggId = generateId(aggName);
-        // showDefaultContent: render the default IconTabBar in the items template when no custom
-        // content is provided and defaults are active (i.e. full-page template, items aggregation).
-        const showDefaultContent = aggName === 'items' && !mContent && useDefaults;
-        const aggContext = { macrosPrefix, mContent, aggId, showDefaultContent };
+        const showDefaultContent = aggName === 'items' && useDefaults;
+        const ids = buildAggregationIds(aggName, generateId);
+        const aggContext = { macrosPrefix, aggId, showDefaultContent, ids };
         const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
         for (const node of Array.from(aggDoc.documentElement.childNodes)) {
             if (node.nodeType === 1 /* Element */) {
@@ -371,7 +400,7 @@ function wrapLooseBuildingBlocksInItems(
  * Appends a single Page building block aggregation template to an existing `<macros:Page>` element in a view XML file.
  *
  * @param {string} basePath - the base path of the application
- * @param {GenerateBuildingBlockAggregationConfig} config - the aggregation configuration containing aggregationName and mContent
+ * @param {GenerateBuildingBlockAggregationConfig} config - the aggregation configuration containing aggregationName
  * @param {Editor} [fs] - the memfs editor instance
  * @returns {Editor} the updated memfs editor instance
  */
@@ -380,7 +409,7 @@ export async function generateBuildingBlockAggregation(
     config: GenerateBuildingBlockAggregationConfig,
     fs?: Editor
 ): Promise<Editor> {
-    const { viewPath, buildingBlockType, aggregationName: aggName, mContent = '' } = config;
+    const { viewPath, buildingBlockType, aggregationName: aggName } = config;
     fs ??= create(createStorage());
     if (buildingBlockType !== BuildingBlockType.Page) {
         throw new Error(
@@ -394,7 +423,8 @@ export async function generateBuildingBlockAggregation(
 
     const fragMacrosNS = resolveMacrosPrefix(xmlDocument);
     const macrosPrefix = `${fragMacrosNS}:`;
-    const aggContext = { macrosPrefix, mContent, aggId, showDefaultContent: false };
+    const ids = buildAggregationIds(aggName, generateId);
+    const aggContext = { macrosPrefix, aggId, showDefaultContent: false, ids };
     const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
 
     const nsMap = (xmlDocument.documentElement as any)?._nsMap ?? {};
