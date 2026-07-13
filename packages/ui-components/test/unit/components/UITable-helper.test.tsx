@@ -17,7 +17,6 @@ import {
     getComboBoxInput
 } from '../../../src/components/UITable/UITable-helper';
 import type { UIColumn, EditedCell, UITableProps, UITableState } from '../../../src/components/UITable/types';
-import { ColumnControlType } from '../../../src/components/UITable/types';
 
 describe('waitFor', () => {
     it('should resolve with the element when it is found', async () => {

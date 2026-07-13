@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { render, rerender as globalRerender } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import type { ITextFieldStyleProps, ITextFieldStyles } from '@fluentui/react';
 import type { InputRenderProps, UITextInputProps } from '../../../src/components/UIInput';
 import { UITextInput } from '../../../src/components/UIInput';

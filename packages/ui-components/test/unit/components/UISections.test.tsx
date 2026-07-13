@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { render, rerender as rtlRerender } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { UISections } from '../../../src/components/UISection/UISections';
 import { UISectionLayout } from '../../../src/components/UISection/UISection';
 import { UISplitterLayoutType, UISplitterType } from '../../../src/components/UISection/UISplitter';
-import type { UISectionsProps, UISectionsState } from '../../../src/components/UISection/UISections';
+import type { UISectionsProps } from '../../../src/components/UISection/UISections';
 import { mockResizeObserver, mockDomEventListener } from '../../utils/utils';
 import { initIcons } from '../../../src/components/Icons';
 
@@ -878,7 +878,6 @@ describe('<Sections />', () => {
                 }
             ];
             test.each(hiddenTestCases)('Handle hidden sections. $name', ({ visibility, expectedResult, move }) => {
-                const localRef = React.createRef<UISections>();
                 const { container: localContainer, unmount: localUnmount } = render(
                     buildThreeColJsx(visibility as [boolean, boolean, boolean])
                 );
@@ -994,7 +993,7 @@ describe('<Sections />', () => {
         const onToggleFullscreen = jest.fn();
         mockWidth(1000);
         const localRef = React.createRef<UISections>();
-        const { rerender: localRerender, unmount: localUnmount } = render(
+        const { unmount: localUnmount } = render(
             <UISections
                 ref={localRef}
                 vertical={false}

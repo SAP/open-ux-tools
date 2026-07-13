@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { render, rerender, fireEvent } from '@testing-library/react';
-import type { UISectionProps } from '../../../src/components/UISection/UISection';
+import { render, fireEvent } from '@testing-library/react';
 import { UISection, UISectionLayout } from '../../../src/components/UISection/UISection';
 
 describe('<Section />', () => {

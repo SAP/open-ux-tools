@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { render, act } from '@testing-library/react';
-import type { IStyleFunction, IChoiceGroupStyleProps, IChoiceGroupStyles } from '@fluentui/react';
-import type { ChoiceGroupProps } from '../../../src/components/UIChoiceGroup/UIChoiceGroup';
+import { render } from '@testing-library/react';
+import type { IChoiceGroupStyleProps, IChoiceGroupStyles } from '@fluentui/react';
 import { UIChoiceGroup } from '../../../src/components/UIChoiceGroup/UIChoiceGroup';
 
 describe('<UIToggle />', () => {

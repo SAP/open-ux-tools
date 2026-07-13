@@ -5,7 +5,7 @@ import { UIComboBox, UIComboBoxLoaderType, UISelectableOptionMenuItemType } from
 import { data as originalData, groupsData as originalGroupsData } from '../../__mock__/select-data';
 import { initIcons } from '../../../src/components/Icons';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
-import { KeyCodes, ComboBox } from '@fluentui/react';
+import { KeyCodes } from '@fluentui/react';
 import { CalloutCollisionTransform } from '../../../src/components/UICallout/CalloutCollisionTransform';
 
 let data: UIComboBoxOption[] = JSON.parse(JSON.stringify(originalData));

@@ -20,7 +20,6 @@ jest.unstable_mockModule('@fluentui/react', async () => {
 const { render, cleanup } = await import('@testing-library/react');
 const { getUIcontextualMenuCalloutStyles, getUIContextualMenuItemStyles, UIContextualMenu } =
     await import('../../../src/components/UIContextualMenu');
-import type { UIIContextualMenuProps } from '../../../src/components/UIContextualMenu';
 const { UiIcons, initIcons } = await import('../../../src/components/Icons');
 
 describe('<UIDropdown />', () => {

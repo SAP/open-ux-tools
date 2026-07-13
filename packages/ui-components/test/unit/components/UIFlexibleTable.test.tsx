@@ -890,11 +890,6 @@ describe('<UIFlexibleTable />', () => {
                     // by checking the number of calls on the real nativeEvent mock via low-level dispatch
                     const touchStartStopSpy = jest.fn();
                     const touchEndStopSpy = jest.fn();
-                    const createTouchEventWithSpy = (spy: jest.Mock) => {
-                        const event = new TouchEvent('touchstart', { bubbles: true, cancelable: true });
-                        Object.defineProperty(event, 'stopImmediatePropagation', { value: spy });
-                        return event;
-                    };
                     const touchStartEvent = new TouchEvent('touchstart', { bubbles: true, cancelable: true });
                     Object.defineProperty(touchStartEvent, 'stopImmediatePropagation', {
                         value: touchStartStopSpy

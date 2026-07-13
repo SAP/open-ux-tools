@@ -51,8 +51,6 @@ describe('<UIDialog />', () => {
     let currentProps: DialogProps;
     /** RTL rerender function from the shared beforeEach render. */
     let rerenderFn: (ui: React.ReactElement) => void;
-    /** RTL container from the shared beforeEach render. */
-    let container: HTMLElement;
     /** Ref to the UIDialog class instance. */
     let dialogRef: React.RefObject<UIDialog>;
 
@@ -95,7 +93,6 @@ describe('<UIDialog />', () => {
             </UIDialog>
         );
         rerenderFn = result.rerender;
-        container = result.container;
     });
 
     afterEach(() => {

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
-import type { ICheckboxStyles, IRawStyle, IStyleFunction } from '@fluentui/react';
-import type { UICheckboxProps } from '../../../src/components/UICheckbox';
+import type { ICheckboxStyles, IRawStyle } from '@fluentui/react';
 import { UICheckbox } from '../../../src/components/UICheckbox';
 
 describe('<UIToggle />', () => {

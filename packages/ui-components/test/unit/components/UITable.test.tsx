@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { render, fireEvent, act } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import { KeyCodes } from '@fluentui/react';
 import { ColumnControlType, UITable } from '../../../src/components/UITable';
 
