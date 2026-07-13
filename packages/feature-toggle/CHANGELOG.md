@@ -1,6 +1,32 @@
 # @sap-ux/feature-toggle
 
+## 1.0.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- align vscode and types with fiori tools extensions [[369c494](https://github.com/SAP/open-ux-tools/commit/369c49497073e99fda01bad7dfda1840e68c029a)]
+
+## 1.0.4
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+## 1.0.3
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
 ## 1.0.2
+
+_Released: 2026-06-12T06:53:23Z_
 
 ### Patch Changes
 
@@ -12,11 +38,15 @@
 
 ## 1.0.1
 
+_Released: 2026-06-03T14:58:37Z_
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
 
 ## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -51,11 +81,15 @@
 
 ## 0.4.0
 
+_Released: 2026-05-15T08:12:20Z_
+
 ### Minor Changes
 
 - 72695e5: chore: drop Node 20 support as it is no longer maintained
 
 ## 0.3.9
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -63,13 +97,15 @@
 
 ## 0.3.8
 
+_Released: 2026-03-30T22:24:11Z_
+
 ### Patch Changes
 
 - c53a4ba: chore(feature-toggle): upgrade jest-when 3.x → 4.x; upgrade shared devDependencies (jest 30)
 
 ## 0.3.7
 
-*Released: 2026-02-20T20:20:17Z*
+_Released: 2026-02-20T20:20:17Z_
 
 ### Patch Changes
 
@@ -77,7 +113,7 @@
 
 ## 0.3.6
 
-*Released: 2026-02-04T22:31:27Z*
+_Released: 2026-02-04T22:31:27Z_
 
 ### Patch Changes
 
@@ -85,7 +121,7 @@
 
 ## 0.3.5
 
-*Released: 2025-12-15T10:50:50Z*
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -93,7 +129,7 @@
 
 ## 0.3.4
 
-*Released: 2025-11-05T06:53:42Z*
+_Released: 2025-11-05T06:53:42Z_
 
 ### Patch Changes
 
@@ -101,7 +137,7 @@
 
 ## 0.3.3
 
-*Released: 2025-10-22T18:56:41Z*
+_Released: 2025-10-22T18:56:41Z_
 
 ### Patch Changes
 
@@ -109,7 +145,7 @@
 
 ## 0.3.2
 
-*Released: 2025-10-14T13:22:30Z*
+_Released: 2025-10-14T13:22:30Z_
 
 ### Patch Changes
 
@@ -117,7 +153,7 @@
 
 ## 0.3.1
 
-*Released: 2025-09-02T13:22:05Z*
+_Released: 2025-09-02T13:22:05Z_
 
 ### Patch Changes
 
@@ -125,7 +161,7 @@
 
 ## 0.3.0
 
-*Released: 2025-05-14T22:35:53Z*
+_Released: 2025-05-14T22:35:53Z_
 
 ### Minor Changes
 
@@ -133,7 +169,7 @@
 
 ## 0.2.4
 
-*Released: 2025-05-13T10:46:10Z*
+_Released: 2025-05-13T10:46:10Z_
 
 ### Patch Changes
 
@@ -141,7 +177,7 @@
 
 ## 0.2.3
 
-*Released: 2024-12-04T11:05:53Z*
+_Released: 2024-12-04T11:05:53Z_
 
 ### Patch Changes
 
@@ -149,7 +185,7 @@
 
 ## 0.2.2
 
-*Released: 2024-10-16T14:50:28Z*
+_Released: 2024-10-16T14:50:28Z_
 
 ### Patch Changes
 
@@ -157,7 +193,7 @@
 
 ## 0.2.1
 
-*Released: 2024-10-04T15:21:13Z*
+_Released: 2024-10-04T15:21:13Z_
 
 ### Patch Changes
 
@@ -165,7 +201,7 @@
 
 ## 0.2.0
 
-*Released: 2024-07-05T15:03:05Z*
+_Released: 2024-07-05T15:03:05Z_
 
 ### Minor Changes
 
@@ -173,7 +209,7 @@
 
 ## 0.1.1
 
-*Released: 2024-02-27T22:07:50Z*
+_Released: 2024-02-27T22:07:50Z_
 
 ### Patch Changes
 
@@ -181,7 +217,7 @@
 
 ## 0.1.0
 
-*Released: 2024-02-27T14:50:39Z*
+_Released: 2024-02-27T14:50:39Z_
 
 ### Minor Changes
 

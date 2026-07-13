@@ -1,6 +1,28 @@
 # @sap-ux/serve-static-middleware
 
+## 1.0.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/logger 1.0.2 → 1.0.3
+
+## 1.0.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/logger 1.0.1 → 1.0.2
+
 ## 1.0.1
+
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -9,6 +31,8 @@
     - @sap-ux/logger@1.0.1
 
 ## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -48,6 +72,8 @@
 
 ## 0.5.0
 
+_Released: 2026-05-15T08:12:20Z_
+
 ### Minor Changes
 
 - 72695e5: chore: drop Node 20 support as it is no longer maintained
@@ -59,6 +85,8 @@
 
 ## 0.4.14
 
+_Released: 2026-05-14T11:45:51Z_
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -67,12 +95,16 @@
 
 ## 0.4.13
 
+_Released: 2026-04-08T13:10:18Z_
+
 ### Patch Changes
 
 - Updated dependencies [f1e4481]
     - @sap-ux/logger@0.8.5
 
 ## 0.4.12
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -81,6 +113,8 @@
 
 ## 0.4.11
 
+_Released: 2026-03-26T12:07:04Z_
+
 ### Patch Changes
 
 - Updated dependencies [a41533f]
@@ -88,7 +122,7 @@
 
 ## 0.4.10
 
-*Released: 2026-03-04T22:42:20Z*
+_Released: 2026-03-04T22:42:20Z_
 
 ### Patch Changes
 
@@ -97,7 +131,7 @@
 
 ## 0.4.9
 
-*Released: 2026-02-23T22:35:31Z*
+_Released: 2026-02-23T22:35:31Z_
 
 ### Patch Changes
 
@@ -105,7 +139,7 @@
 
 ## 0.4.8
 
-*Released: 2026-01-30T16:59:27Z*
+_Released: 2026-01-30T16:59:27Z_
 
 ### Patch Changes
 
@@ -114,7 +148,7 @@
 
 ## 0.4.7
 
-*Released: 2026-01-14T13:30:42Z*
+_Released: 2026-01-14T13:30:42Z_
 
 ### Patch Changes
 
@@ -122,7 +156,7 @@
 
 ## 0.4.6
 
-*Released: 2026-01-09T11:35:48Z*
+_Released: 2026-01-09T11:35:48Z_
 
 ### Patch Changes
 
@@ -130,7 +164,7 @@
 
 ## 0.4.5
 
-*Released: 2025-12-19T11:36:13Z*
+_Released: 2025-12-19T11:36:13Z_
 
 ### Patch Changes
 
@@ -139,7 +173,7 @@
 
 ## 0.4.4
 
-*Released: 2025-12-18T21:05:02Z*
+_Released: 2025-12-18T21:05:02Z_
 
 ### Patch Changes
 
@@ -148,7 +182,7 @@
 
 ## 0.4.3
 
-*Released: 2025-12-15T10:50:50Z*
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -158,7 +192,7 @@
 
 ## 0.4.2
 
-*Released: 2025-11-05T06:53:42Z*
+_Released: 2025-11-05T06:53:42Z_
 
 ### Patch Changes
 
@@ -168,7 +202,7 @@
 
 ## 0.4.1
 
-*Released: 2025-10-06T17:09:01Z*
+_Released: 2025-10-06T17:09:01Z_
 
 ### Patch Changes
 
@@ -176,7 +210,7 @@
 
 ## 0.4.0
 
-*Released: 2025-09-03T07:32:57Z*
+_Released: 2025-09-03T07:32:57Z_
 
 ### Minor Changes
 
@@ -184,7 +218,7 @@
 
 ## 0.3.0
 
-*Released: 2025-05-14T22:35:53Z*
+_Released: 2025-05-14T22:35:53Z_
 
 ### Minor Changes
 
@@ -197,7 +231,7 @@
 
 ## 0.2.3
 
-*Released: 2025-02-06T22:08:41Z*
+_Released: 2025-02-06T22:08:41Z_
 
 ### Patch Changes
 
@@ -205,7 +239,7 @@
 
 ## 0.2.2
 
-*Released: 2024-11-25T12:18:22Z*
+_Released: 2024-11-25T12:18:22Z_
 
 ### Patch Changes
 
@@ -213,7 +247,7 @@
 
 ## 0.2.1
 
-*Released: 2024-11-19T15:25:45Z*
+_Released: 2024-11-19T15:25:45Z_
 
 ### Patch Changes
 
@@ -221,7 +255,7 @@
 
 ## 0.2.0
 
-*Released: 2024-07-05T15:03:05Z*
+_Released: 2024-07-05T15:03:05Z_
 
 ### Minor Changes
 
@@ -234,7 +268,7 @@
 
 ## 0.1.2
 
-*Released: 2024-04-16T06:40:59Z*
+_Released: 2024-04-16T06:40:59Z_
 
 ### Patch Changes
 
@@ -242,7 +276,7 @@
 
 ## 0.1.1
 
-*Released: 2024-02-27T22:07:50Z*
+_Released: 2024-02-27T22:07:50Z_
 
 ### Patch Changes
 

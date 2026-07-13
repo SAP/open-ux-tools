@@ -1,5 +1,61 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 1.2.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Features
+
+- Add sap.fe.test JSDoc API as a new embedded data source [[d54fc9a](https://github.com/SAP/open-ux-tools/commit/d54fc9a6937632e19e5b50dbf79ba50f279b3a39)]
+
+## 1.2.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+## 1.2.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-30
+
+#### Bug Fixes
+
+- Trigger @sap-ux/fiori-mcp-server release [[17354e0](https://github.com/SAP/open-ux-tools/commit/17354e08c50f44f031ad2bedcbcb6ce01acd96ba)]
+
+## 1.2.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-18
+
+#### Bug Fixes
+
+- Validate GitHub host/token inputs to prevent argument injection; validate output path to prevent path traversal [[74a9959](https://github.com/SAP/open-ux-tools/commit/74a9959edf34f8f9ef99ca125fa71524c741aabd)]
+
+## 1.2.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-18
+
+#### Bug Fixes
+
+- Update opa5_docu.md: clear filter fields [[6776415](https://github.com/SAP/open-ux-tools/commit/6776415f52f25bbbf29728bec85e026a868e8687)]
+
 ## 1.2.1
 
 ### Patch Changes
@@ -14,11 +70,15 @@
 
 ## 1.2.0
 
+_Released: 2026-06-12T08:20:17Z_
+
 ### Minor Changes
 
 - 08fb7a1: Add opa5_docu.md
 
 ## 1.1.1
+
+_Released: 2026-06-11T15:27:53Z_
 
 ### Patch Changes
 
@@ -26,17 +86,23 @@
 
 ## 1.1.0
 
+_Released: 2026-06-05T11:08:04Z_
+
 ### Minor Changes
 
 - 9f33150: Replace @xenova/transformers with @huggingface/transformers 4.2.0.
 
 ## 1.0.1
 
+_Released: 2026-06-03T14:58:37Z_
+
 ### Patch Changes
 
 - 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
 
 ## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -71,11 +137,15 @@
 
 ## 0.5.1
 
+_Released: 2026-05-21T05:46:16Z_
+
 ### Patch Changes
 
 - 12137f6: update doc for fiori extension
 
 ## 0.5.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -83,11 +153,15 @@
 
 ## 0.4.20
 
+_Released: 2026-05-14T12:51:22Z_
+
 ### Patch Changes
 
 - 59537d3: chore: override sharp to >=0.33.5 to fix CI build on darwin-arm64
 
 ## 0.4.19
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -95,11 +169,15 @@
 
 ## 0.4.18
 
+_Released: 2026-05-11T09:58:34Z_
+
 ### Patch Changes
 
 - a5c05a8: Add additional guidance on the adding of extension in fiori
 
 ## 0.4.17
+
+_Released: 2026-05-04T15:49:13Z_
 
 ### Patch Changes
 

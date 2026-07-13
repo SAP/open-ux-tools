@@ -1,6 +1,16 @@
 # @sap-ux/i18n
 
+## 1.0.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
 ## 1.0.1
+
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -9,6 +19,8 @@
     - @sap-ux/text-document-utils@1.0.1
 
 ## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -48,6 +60,8 @@
 
 ## 0.4.0
 
+_Released: 2026-05-15T08:12:20Z_
+
 ### Minor Changes
 
 - 72695e5: chore: drop Node 20 support as it is no longer maintained
@@ -59,6 +73,8 @@
 
 ## 0.3.12
 
+_Released: 2026-05-14T11:45:51Z_
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -67,6 +83,8 @@
 
 ## 0.3.11
 
+_Released: 2026-04-30T14:23:24Z_
+
 ### Patch Changes
 
 - Updated dependencies [c160401]
@@ -74,13 +92,15 @@
 
 ## 0.3.10
 
+_Released: 2026-03-26T12:07:04Z_
+
 ### Patch Changes
 
 - a41533f: chore(i18n): upgrade vscode-languageserver-textdocument 1.0.11 → 1.0.12
 
 ## 0.3.9
 
-*Released: 2026-02-23T22:35:31Z*
+_Released: 2026-02-23T22:35:31Z_
 
 ### Patch Changes
 
@@ -88,7 +108,7 @@
 
 ## 0.3.8
 
-*Released: 2026-02-23T19:07:48Z*
+_Released: 2026-02-23T19:07:48Z_
 
 ### Patch Changes
 
@@ -96,7 +116,7 @@
 
 ## 0.3.7
 
-*Released: 2025-12-18T21:05:02Z*
+_Released: 2025-12-18T21:05:02Z_
 
 ### Patch Changes
 
@@ -104,7 +124,7 @@
 
 ## 0.3.6
 
-*Released: 2025-12-15T10:50:50Z*
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -114,7 +134,7 @@
 
 ## 0.3.5
 
-*Released: 2025-11-05T06:53:42Z*
+_Released: 2025-11-05T06:53:42Z_
 
 ### Patch Changes
 
@@ -124,7 +144,7 @@
 
 ## 0.3.4
 
-*Released: 2025-10-06T17:09:01Z*
+_Released: 2025-10-06T17:09:01Z_
 
 ### Patch Changes
 
@@ -132,7 +152,7 @@
 
 ## 0.3.3
 
-*Released: 2025-08-13T10:00:10Z*
+_Released: 2025-08-13T10:00:10Z_
 
 ### Patch Changes
 
@@ -141,7 +161,7 @@
 
 ## 0.3.2
 
-*Released: 2025-07-30T19:33:46Z*
+_Released: 2025-07-30T19:33:46Z_
 
 ### Patch Changes
 
@@ -149,7 +169,7 @@
 
 ## 0.3.1
 
-*Released: 2025-06-24T07:18:46Z*
+_Released: 2025-06-24T07:18:46Z_
 
 ### Patch Changes
 
@@ -157,7 +177,7 @@
 
 ## 0.3.0
 
-*Released: 2025-05-14T22:35:53Z*
+_Released: 2025-05-14T22:35:53Z_
 
 ### Minor Changes
 
@@ -170,7 +190,7 @@
 
 ## 0.2.3
 
-*Released: 2025-03-04T08:55:15Z*
+_Released: 2025-03-04T08:55:15Z_
 
 ### Patch Changes
 
@@ -178,7 +198,7 @@
 
 ## 0.2.2
 
-*Released: 2025-02-27T14:15:03Z*
+_Released: 2025-02-27T14:15:03Z_
 
 ### Patch Changes
 
@@ -186,7 +206,7 @@
 
 ## 0.2.1
 
-*Released: 2025-02-05T17:08:20Z*
+_Released: 2025-02-05T17:08:20Z_
 
 ### Patch Changes
 
@@ -194,7 +214,7 @@
 
 ## 0.2.0
 
-*Released: 2024-08-30T06:05:30Z*
+_Released: 2024-08-30T06:05:30Z_
 
 ### Minor Changes
 
@@ -202,7 +222,7 @@
 
 ## 0.1.1
 
-*Released: 2024-08-07T11:06:05Z*
+_Released: 2024-08-07T11:06:05Z_
 
 ### Patch Changes
 
@@ -212,7 +232,7 @@
 
 ## 0.1.0
 
-*Released: 2024-07-05T15:03:05Z*
+_Released: 2024-07-05T15:03:05Z_
 
 ### Minor Changes
 
@@ -220,7 +240,7 @@
 
 ## 0.0.7
 
-*Released: 2024-05-31T13:42:35Z*
+_Released: 2024-05-31T13:42:35Z_
 
 ### Patch Changes
 
@@ -228,7 +248,7 @@
 
 ## 0.0.6
 
-*Released: 2024-04-15T19:27:29Z*
+_Released: 2024-04-15T19:27:29Z_
 
 ### Patch Changes
 
@@ -236,7 +256,7 @@
 
 ## 0.0.5
 
-*Released: 2024-03-18T10:40:39Z*
+_Released: 2024-03-18T10:40:39Z_
 
 ### Patch Changes
 
@@ -244,7 +264,7 @@
 
 ## 0.0.4
 
-*Released: 2024-02-27T22:07:50Z*
+_Released: 2024-02-27T22:07:50Z_
 
 ### Patch Changes
 
@@ -252,7 +272,7 @@
 
 ## 0.0.3
 
-*Released: 2024-02-19T10:29:40Z*
+_Released: 2024-02-19T10:29:40Z_
 
 ### Patch Changes
 

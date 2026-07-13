@@ -99,9 +99,15 @@ describe('Prompt Generation Tests', () => {
             expect(destinationNamePrompt?.type).toBe('list');
             expect(destinationNamePrompt?.default()).toBe('defaultDestination');
             // ensure additional choice is added to the BTP destination list
-            expect(((destinationNamePrompt as ListQuestion)?.choices as Function)()).toStrictEqual([
+            expect((destinationNamePrompt as ListQuestion)?.choices).toStrictEqual([
                 ...additionalChoiceList,
-                { name: 'btpTestDest - btpTestDest', value: 'btpTestDest', scp: false, url: 'btpTestDest' }
+                {
+                    name: 'btpTestDest - btpTestDest',
+                    value: 'btpTestDest',
+                    scp: false,
+                    url: 'btpTestDest',
+                    isFullUrl: false
+                }
             ]);
         });
 
@@ -128,7 +134,7 @@ describe('Prompt Generation Tests', () => {
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
             expect(destinationNamePrompt?.type).toBe('input');
             expect((destinationNamePrompt?.message as Function)()).toBe(t('prompts.destinationNameMessage'));
-            expect(((destinationNamePrompt as ListQuestion)?.choices as Function)()).toStrictEqual([]);
+            expect((destinationNamePrompt as ListQuestion)?.choices).toStrictEqual([]);
         });
 
         it('returns list-based prompt when environment is vscode and additionalChoiceList is provided', async () => {
@@ -143,9 +149,7 @@ describe('Prompt Generation Tests', () => {
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
             expect(destinationNamePrompt?.type).toBe('list');
             expect((destinationNamePrompt?.message as Function)()).toBe(t('prompts.destinationNameMessage'));
-            expect(((destinationNamePrompt as ListQuestion)?.choices as Function)()).toStrictEqual(
-                additionalChoiceList
-            );
+            expect((destinationNamePrompt as ListQuestion)?.choices).toStrictEqual(additionalChoiceList);
         });
 
         it('validates destination correctly and shows hint when directBindingDestinationHint is enabled', async () => {
@@ -188,10 +192,71 @@ describe('Prompt Generation Tests', () => {
                 (question: CfDeployConfigQuestions) => question.name === promptNames.destinationName
             );
             expect(destinationNamePrompt?.type).toEqual('autocomplete');
-            expect(((destinationNamePrompt as ListQuestion)?.choices as Function)()).toEqual(additionalChoiceList);
+            expect((destinationNamePrompt as ListQuestion)?.choices).toEqual(additionalChoiceList);
             expect((destinationNamePrompt?.source as Function)()).toEqual(additionalChoiceList);
             // Default should be used
             expect((destinationNamePrompt?.default as Function)()).toEqual(additionalChoiceList[0].name);
+        });
+
+        it('shows warning additionalMessage when selected destination is a full URL destination', async () => {
+            const fullUrlChoice: CfSystemChoice = {
+                name: 'fullUrlDest - https://example.com/sap/opu/odata',
+                value: 'fullUrlDest',
+                scp: false,
+                url: 'https://example.com/sap/opu/odata',
+                isFullUrl: true
+            };
+            promptOptions = {
+                [promptNames.destinationName]: {
+                    ...destinationPrompts,
+                    additionalChoiceList: [fullUrlChoice],
+                    addBTPDestinationList: false
+                }
+            };
+            mockIsAppStudio.mockReturnValueOnce(false);
+            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
+            const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
+            const result = ((destinationNamePrompt as YUIQuestion)?.additionalMessages as Function)('fullUrlDest');
+            expect(result).toEqual({ message: t('warning.fullUrlDestination'), severity: Severity.warning });
+        });
+
+        it('shows warning via raw destinations fallback when destination is filtered from choice list', async () => {
+            // Destination has no Host so it is filtered out by createDestinationChoices,
+            // but the raw destinations map still has it — the fallback lookup fires
+            mockFetchBTPDestinations.mockResolvedValueOnce({
+                btpFullUrlDest: {
+                    Name: 'btpFullUrlDest',
+                    WebIDEAdditionalData: 'full_url',
+                    WebIDEUsage: 'odata_gen'
+                } as any
+            });
+            promptOptions = {
+                [promptNames.destinationName]: {
+                    ...destinationPrompts,
+                    additionalChoiceList: [],
+                    addBTPDestinationList: true
+                }
+            };
+            mockIsAppStudio.mockReturnValueOnce(false);
+            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
+            const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
+            const result = ((destinationNamePrompt as YUIQuestion)?.additionalMessages as Function)('btpFullUrlDest');
+            expect(result).toEqual({ message: t('warning.fullUrlDestination'), severity: Severity.warning });
+        });
+
+        it('returns undefined additionalMessage when selected destination is not a full URL destination', async () => {
+            promptOptions = {
+                [promptNames.destinationName]: {
+                    ...destinationPrompts,
+                    additionalChoiceList,
+                    addBTPDestinationList: false
+                }
+            };
+            mockIsAppStudio.mockReturnValueOnce(false);
+            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
+            const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
+            const result = ((destinationNamePrompt as YUIQuestion)?.additionalMessages as Function)('testValue');
+            expect(result).toBeUndefined();
         });
     });
 

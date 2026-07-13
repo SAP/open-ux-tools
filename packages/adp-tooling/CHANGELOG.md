@@ -1,5 +1,202 @@
 # @sap-ux/adp-tooling
 
+## 1.0.30
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Bug Fixes
+
+- Use legacy inbound change types for ABAP systems on UI5 1.142 or lower; CF projects always use the new 'appdescr_app_setInbounds' change type [[56fe433](https://github.com/SAP/open-ux-tools/commit/56fe433aebc72d91f2ad5f702ed0125c590f226c)]
+
+## 1.0.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/nodejs-utils 1.0.6 → 1.0.7
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/inquirer-common 1.0.20 → 1.0.21
+- @sap-ux/axios-extension 2.0.6 → 2.0.7
+- @sap-ux/btp-utils 2.0.5 → 2.0.5
+- @sap-ux/project-access 2.1.6 → 2.1.6
+- @sap-ux/store 2.0.3 → 2.0.4
+- @sap-ux/system-access 1.0.6 → 1.0.7
+- @sap-ux/ui5-info 1.0.4 → 1.0.5
+- @sap-ux/odata-service-writer 1.0.12 → 1.0.12
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 1.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.19 → 1.0.20
+
+## 1.0.27
+
+### Patch Changes
+
+#### Dependency Updates
+
+- upgrade axios dependency [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.5 → 2.0.6
+- @sap-ux/inquirer-common 1.0.18 → 1.0.19
+- @sap-ux/ui5-config 1.0.4 → 1.0.5
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+- @sap-ux/ui5-info 1.0.3 → 1.0.4
+- @sap-ux/odata-service-writer 1.0.11 → 1.0.12
+- @sap-ux/system-access 1.0.5 → 1.0.6
+- @sap-ux/project-access 2.1.5 → 2.1.6
+- @sap-ux/nodejs-utils 1.0.5 → 1.0.6
+- @sap-ux/project-input-validator 1.0.9 → 1.0.10
+
+## 1.0.26
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.10 → 1.0.11
+- @sap-ux/project-input-validator 1.0.8 → 1.0.9
+- @sap-ux/axios-extension 2.0.4 → 2.0.5
+- @sap-ux/inquirer-common 1.0.17 → 1.0.18
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/system-access 1.0.4 → 1.0.5
+- @sap-ux/nodejs-utils 1.0.4 → 1.0.5
+- @sap-ux/ui5-config 1.0.3 → 1.0.4
+- @sap-ux/btp-utils 2.0.3 → 2.0.4
+- @sap-ux/ui5-info 1.0.2 → 1.0.3
+- @sap-ux/logger 1.0.1 → 1.0.2
+- @sap-ux/store 2.0.2 → 2.0.3
+- @sap-ux/i18n 1.0.1 → 1.0.2
+
+## 1.0.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.16 → 1.0.17
+
+## 1.0.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.15 → 1.0.16
+
+## 1.0.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/axios-extension 2.0.4 → 2.0.4
+- @sap-ux/inquirer-common 1.0.14 → 1.0.15
+- @sap-ux/odata-service-writer 1.0.9 → 1.0.10
+- @sap-ux/project-input-validator 1.0.7 → 1.0.8
+- @sap-ux/system-access 1.0.4 → 1.0.4
+
+## 1.0.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-29
+
+#### Bug Fixes
+
+- Revert the `/i18n/...properties` pass-through introduced in #4858.
+
+    In adaptation projects built on top of Fiori Elements V2 ListReport/ObjectPage base apps, FEV2's `TemplateComponent` rebuilds the `i18n` model on every template view, which shadows the ADP's local `i18n.properties` once requests fall through to the base app. Customer-defined keys are no longer reachable from inside the editor's bindings.
+    The proper fix requires moving customer keys to the FEV2-safe `@i18n` model (backend merger + generator changes) and cannot be safely downported in this release window. A corrected fix will be reapplied once that support is in place. [[e2ba3a4](https://github.com/SAP/open-ux-tools/commit/e2ba3a44eb8df65f16187b86a382e9eb34387054)]
+
+## 1.0.21
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.8 → 1.0.9
+- @sap-ux/axios-extension 2.0.3 → 2.0.4
+- @sap-ux/system-access 1.0.3 → 1.0.4
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/ui5-info 1.0.1 → 1.0.2
+- @sap-ux/store 2.0.1 → 2.0.2
+- @sap-ux/inquirer-common 1.0.13 → 1.0.14
+- @sap-ux/nodejs-utils 1.0.3 → 1.0.4
+- @sap-ux/ui5-config 1.0.3 → 1.0.3
+
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.2 → 2.1.3
+- @sap-ux/axios-extension 2.0.3 → 2.0.3
+- @sap-ux/inquirer-common 1.0.12 → 1.0.13
+- @sap-ux/odata-service-writer 1.0.7 → 1.0.8
+- @sap-ux/project-input-validator 1.0.6 → 1.0.7
+- @sap-ux/system-access 1.0.3 → 1.0.3
+
+## 1.0.19
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Bug Fixes
+
+- Pass i18n .properties requests through to the base app proxy in ADP preview
+
+    The ADP preview proxy used to 302-redirect any request whose path matched a file
+    in the ADP webapp folder. For i18n .properties files this incorrectly substituted
+    the partial ADP bundle for the base app's complete bundle, hiding all base
+    translations and breaking annotation-side `{@i18n>...}` bindings (e.g. column
+    header labels in `UI.LineItem`). The runtime descriptor merge
+    (`appdescr_ui5_addNewModelEnhanceWith`) already handles ADP enhancement at the
+    model layer; substituting the file at the proxy layer was wrong. Now i18n
+    .properties requests fall through to the next middleware so the base app's
+    complete bundle is loaded, and the ADP's customer-prefixed keys still merge in
+    correctly via the manifest change. Covers default bundles, locale variants
+    (`i18n_de.properties`), and per-page bundles
+    (`/i18n/ListReport/<entity>/i18n.properties`). [[662e3c3](https://github.com/SAP/open-ux-tools/commit/662e3c358e90a6d0a85c2f1840751301347894af)]
+
+## 1.0.18
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-19
+
+#### Bug Fixes
+
+- Revert getPackageJSONInfo to previous approach, removing getTemplatePath dependency [[2020302](https://github.com/SAP/open-ux-tools/commit/2020302469fc97a6aa25eab85b59f9ff9d2d52f8)]
+
 ## 1.0.17
 
 ### Patch Changes
@@ -27,6 +224,8 @@
 
 ## 1.0.16
 
+_Released: 2026-06-14T10:40:09Z_
+
 ### Patch Changes
 
 - adae40d: fix: restore LocalStorageConnector for non-ADP projects
@@ -35,11 +234,15 @@
 
 ## 1.0.15
 
+_Released: 2026-06-12T10:49:08Z_
+
 ### Patch Changes
 
 - 6e4a71a: fix: detect `appdescr_app_setInbounds` in `flpConfigurationExists` so the FLP configuration sub-generator shows the existing-FLP-config info text for cloud ADP projects (regression from #4633).
 
 ## 1.0.14
+
+_Released: 2026-06-12T06:53:23Z_
 
 ### Patch Changes
 
@@ -50,17 +253,23 @@
 
 ## 1.0.13
 
+_Released: 2026-06-11T13:37:16Z_
+
 ### Patch Changes
 
 - e66a8a9: fix: append builder.resources.excludes to generated ui5.yaml
 
 ## 1.0.12
 
+_Released: 2026-06-11T10:54:17Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@1.0.10
 
 ## 1.0.11
+
+_Released: 2026-06-10T09:57:42Z_
 
 ### Patch Changes
 
@@ -76,6 +285,8 @@
 
 ## 1.0.10
 
+_Released: 2026-06-09T14:35:01Z_
+
 ### Patch Changes
 
 - Updated dependencies [0fa8305]
@@ -88,11 +299,15 @@
 
 ## 1.0.9
 
+_Released: 2026-06-09T13:18:16Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@1.0.7
 
 ## 1.0.8
+
+_Released: 2026-06-04T13:54:21Z_
 
 ### Patch Changes
 
@@ -106,11 +321,15 @@
 
 ## 1.0.7
 
+_Released: 2026-06-04T12:10:05Z_
+
 ### Patch Changes
 
 - fb84c0e: chore: enhance incomplete destination service key credentials error message
 
 ## 1.0.6
+
+_Released: 2026-06-04T10:19:37Z_
 
 ### Patch Changes
 
@@ -123,6 +342,8 @@
     - @sap-ux/system-access@1.0.1
 
 ## 1.0.5
+
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -144,6 +365,8 @@
 
 ## 1.0.4
 
+_Released: 2026-06-03T13:52:44Z_
+
 ### Patch Changes
 
 - Updated dependencies [9580241]
@@ -157,6 +380,8 @@
 
 ## 1.0.3
 
+_Released: 2026-06-02T11:35:17Z_
+
 ### Patch Changes
 
 - Updated dependencies [41f327a]
@@ -165,11 +390,15 @@
 
 ## 1.0.2
 
+_Released: 2026-06-02T08:56:31Z_
+
 ### Patch Changes
 
 - a8e4cf0: fix: handle both nested (`{ uaa: {...} }`) and flat destination-service credential shapes when fetching BTP destinations and when checking for OnPremise destinations during adaptation-project startup. A new `getDestinationServiceUaa` helper in `@sap-ux/adp-tooling` is reused by `@sap-ux/backend-proxy-middleware-cf` to avoid duplicate shape-handling logic.
 
 ## 1.0.1
+
+_Released: 2026-06-01T15:15:26Z_
 
 ### Patch Changes
 
@@ -182,6 +411,8 @@
     - @sap-ux/system-access@1.0.0
 
 ## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -233,11 +464,15 @@
 
 ## 0.19.11
 
+_Released: 2026-05-29T12:50:34Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.13.6
 
 ## 0.19.10
+
+_Released: 2026-05-29T06:59:27Z_
 
 ### Patch Changes
 
@@ -247,6 +482,8 @@
 
 ## 0.19.9
 
+_Released: 2026-05-27T11:39:21Z_
+
 ### Patch Changes
 
 - Updated dependencies [ea9cbb1]
@@ -254,6 +491,8 @@
     - @sap-ux/inquirer-common@0.13.5
 
 ## 0.19.8
+
+_Released: 2026-05-27T10:42:47Z_
 
 ### Patch Changes
 
@@ -264,6 +503,8 @@
     - @sap-ux/inquirer-common@0.13.4
 
 ## 0.19.7
+
+_Released: 2026-05-26T16:40:21Z_
 
 ### Patch Changes
 
@@ -279,11 +520,15 @@
 
 ## 0.19.6
 
+_Released: 2026-05-22T13:30:05Z_
+
 ### Patch Changes
 
 - 758b0d4: fix: show error message when fetching destination fails
 
 ## 0.19.5
+
+_Released: 2026-05-21T16:21:11Z_
 
 ### Patch Changes
 
@@ -298,11 +543,15 @@
 
 ## 0.19.4
 
+_Released: 2026-05-21T14:58:44Z_
+
 ### Patch Changes
 
 - dab1aa2: fix: When we get the service uri from the ui5.yaml > adp > target object we use the context to determine whether to use the destination in the target or the url.
 
 ## 0.19.3
+
+_Released: 2026-05-19T15:16:46Z_
 
 ### Patch Changes
 
@@ -316,11 +565,15 @@
 
 ## 0.19.2
 
+_Released: 2026-05-18T08:15:14Z_
+
 ### Patch Changes
 
 - 342c544: chore: bump used versions in adaptation project for Cloud Foundry
 
 ## 0.19.1
+
+_Released: 2026-05-15T13:12:06Z_
 
 ### Patch Changes
 
@@ -329,6 +582,8 @@
     - @sap-ux/inquirer-common@0.13.0
 
 ## 0.19.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -353,6 +608,8 @@
 
 ## 0.18.134
 
+_Released: 2026-05-14T21:28:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [138246a]
@@ -361,11 +618,15 @@
 
 ## 0.18.133
 
+_Released: 2026-05-14T14:16:50Z_
+
 ### Patch Changes
 
 - 8c4185a: fix: change used change type for inbounds
 
 ## 0.18.132
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -387,6 +648,8 @@
 
 ## 0.18.131
 
+_Released: 2026-05-13T09:36:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -399,11 +662,15 @@
 
 ## 0.18.130
 
+_Released: 2026-05-12T18:00:39Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.45
 
 ## 0.18.129
+
+_Released: 2026-05-06T23:02:00Z_
 
 ### Patch Changes
 
@@ -423,17 +690,23 @@
 
 ## 0.18.128
 
+_Released: 2026-05-01T15:46:09Z_
+
 ### Patch Changes
 
 - b2ffc7e: fix(mbt): bump mbt to ^1.2.49 to avoid suspicious 1.2.48 release (#4616)
 
 ## 0.18.127
 
+_Released: 2026-04-30T19:47:20Z_
+
 ### Patch Changes
 
 - fcaa70c: fix(adp-tooling): Improve logging for Cloud Foundry setup
 
 ## 0.18.126
+
+_Released: 2026-04-30T14:23:24Z_
 
 ### Patch Changes
 
@@ -448,12 +721,16 @@
 
 ## 0.18.125
 
+_Released: 2026-04-30T13:10:33Z_
+
 ### Patch Changes
 
 - Updated dependencies [a4b90ca]
     - @sap-ux/project-input-validator@0.6.80
 
 ## 0.18.124
+
+_Released: 2026-04-29T15:24:37Z_
 
 ### Patch Changes
 
@@ -468,6 +745,8 @@
 
 ## 0.18.123
 
+_Released: 2026-04-27T19:47:46Z_
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -480,11 +759,15 @@
 
 ## 0.18.122
 
+_Released: 2026-04-27T07:30:24Z_
+
 ### Patch Changes
 
 - 10847a1: fix: Translation texts for Add Data Source and SAPUI5 Model title and subtitle
 
 ## 0.18.121
+
+_Released: 2026-04-23T12:54:21Z_
 
 ### Patch Changes
 
@@ -498,6 +781,8 @@
 
 ## 0.18.120
 
+_Released: 2026-04-23T06:48:55Z_
+
 ### Patch Changes
 
 - Updated dependencies [237371b]
@@ -508,6 +793,8 @@
 
 ## 0.18.119
 
+_Released: 2026-04-22T12:38:46Z_
+
 ### Patch Changes
 
 - Updated dependencies [9a48e63]
@@ -516,6 +803,8 @@
 
 ## 0.18.118
 
+_Released: 2026-04-15T11:53:17Z_
+
 ### Patch Changes
 
 - 67d1f8b: Bump dotenv and configure "quiet" option
@@ -523,11 +812,15 @@
 
 ## 0.18.117
 
+_Released: 2026-04-15T08:11:32Z_
+
 ### Patch Changes
 
 - 8fb08a2: feat: Extend add-new-model generator to support external services for CF projects
 
 ## 0.18.116
+
+_Released: 2026-04-14T20:26:28Z_
 
 ### Patch Changes
 
@@ -540,6 +833,8 @@
     - @sap-ux/odata-service-writer@0.31.7
 
 ## 0.18.115
+
+_Released: 2026-04-14T12:35:35Z_
 
 ### Patch Changes
 
@@ -558,17 +853,23 @@
 
 ## 0.18.114
 
+_Released: 2026-04-14T11:39:16Z_
+
 ### Patch Changes
 
 - 497317c: feat: Adjust deployment wizard behavior for CF scenario
 
 ## 0.18.113
 
+_Released: 2026-04-09T07:00:16Z_
+
 ### Patch Changes
 
 - 7a8613b: feat: Enable SSH tunnel in CF backend middleware for OnPremise destinations
 
 ## 0.18.112
+
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -589,17 +890,23 @@
 
 ## 0.18.111
 
+_Released: 2026-04-07T11:09:34Z_
+
 ### Patch Changes
 
 - 1b10e9f: feat: Adapt CF ADP project structure to work with approuter backend middleware
 
 ## 0.18.110
 
+_Released: 2026-04-01T14:51:40Z_
+
 ### Patch Changes
 
 - 6b74074: feat: Change `backend-proxy-middleware-cf` to use `approuter` instead of token exchange
 
 ## 0.18.109
+
+_Released: 2026-04-01T11:49:37Z_
 
 ### Patch Changes
 
@@ -613,11 +920,15 @@
 
 ## 0.18.108
 
+_Released: 2026-04-01T06:34:51Z_
+
 ### Patch Changes
 
 - 68b5523: feat: Adjust FLP configuration wizard for CF scenario
 
 ## 0.18.107
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -643,11 +954,15 @@
 
 ## 0.18.106
 
+_Released: 2026-03-27T15:37:24Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.31
 
 ## 0.18.105
+
+_Released: 2026-03-27T11:58:49Z_
 
 ### Patch Changes
 
@@ -661,6 +976,8 @@
 
 ## 0.18.104
 
+_Released: 2026-03-26T20:06:10Z_
+
 ### Patch Changes
 
 - Updated dependencies [b66e827]
@@ -673,17 +990,23 @@
 
 ## 0.18.103
 
+_Released: 2026-03-26T16:48:32Z_
+
 ### Patch Changes
 
 - 96a689b: fix(ADP): Change prompt's order, first appear applications then projectType if applicable.
 
 ## 0.18.102
 
+_Released: 2026-03-26T15:15:10Z_
+
 ### Patch Changes
 
 - 3dcd3f7: Annotation changes are not generated from Replace OData
 
 ## 0.18.101
+
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -716,6 +1039,8 @@
 
 ## 0.18.100
 
+_Released: 2026-03-25T12:56:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [f384ace]
@@ -728,6 +1053,8 @@
 
 ## 0.18.99
 
+_Released: 2026-03-23T18:25:40Z_
+
 ### Patch Changes
 
 - Updated dependencies [c0e05ab]
@@ -736,6 +1063,8 @@
     - @sap-ux/system-access@0.7.1
 
 ## 0.18.98
+
+_Released: 2026-03-23T10:51:10Z_
 
 ### Patch Changes
 

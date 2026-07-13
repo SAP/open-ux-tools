@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux-private/ui-prompting-examples",
-    "version": "1.0.3",
+    "version": "1.1.3",
     "description": "This project contains UI storybook stories with exampleS with prompt ui and FPM based building blocks.",
     "license": "Apache-2.0",
     "private": true,
@@ -24,7 +24,7 @@
         "@sap-ux/ui-components": "workspace:*",
         "@sap-ux/ui-prompting": "workspace:*",
         "react-markdown": "5.0.3",
-        "sanitize-html": "2.17.4"
+        "sanitize-html": "2.17.5"
     },
     "peerDependencies": {
         "react": ">=16.14.0",
@@ -39,8 +39,8 @@
         "@sap-ux/fe-fpm-writer": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@storybook/react": "10.4.0",
-        "@storybook/react-webpack5": "10.4.0",
+        "@storybook/react": "10.4.6",
+        "@storybook/react-webpack5": "10.4.6",
         "@types/inquirer": "8.2.6",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
@@ -60,12 +60,12 @@
         "npm-run-all2": "8.0.4",
         "react": "16.14.0",
         "react-dom": "16.14.0",
-        "sass": "1.98.0",
+        "sass": "1.101.0",
         "sass-loader": "16.0.7",
-        "storybook": "10.4.0",
+        "storybook": "10.4.6",
         "storybook-addon-turbo-build": "2.0.1",
         "style-loader": "4.0.0",
-        "ts-loader": "9.5.4",
+        "ts-loader": "9.6.2",
         "ts-node": "10.9.2",
         "typescript": "5.9.3",
         "ws": "8.21.0"

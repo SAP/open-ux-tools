@@ -22,7 +22,13 @@
       "path": "../feature-toggle"
     },
     {
+      "path": "../fiori-app-sub-generator"
+    },
+    {
       "path": "../fiori-elements-writer"
+    },
+    {
+      "path": "../fiori-freestyle-writer"
     },
     {
       "path": "../fiori-generator-shared"

@@ -46,9 +46,16 @@ export type {
     CustomFormField,
     RichTextEditor,
     ButtonGroupConfig,
-    Action
+    Action,
+    PageTemplateType
 } from './building-block/types.js';
-export { generateBuildingBlock, getSerializedFileContent } from './building-block/index.js';
+export { PAGE_TEMPLATE_TYPE_FULL, PAGE_TEMPLATE_TYPE_BASIC, PAGE_AGGREGATIONS } from './building-block/types.js';
+export type { PageAggregationName, GenerateBuildingBlockAggregationConfig } from './building-block/types.js';
+export {
+    generateBuildingBlock,
+    getSerializedFileContent,
+    generateBuildingBlockAggregation
+} from './building-block/index.js';
 export type {
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,

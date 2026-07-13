@@ -8,6 +8,7 @@ import type {
     BodySubSectionFeatureData,
     HeaderSectionFeatureData,
     ObjectPageFeatures,
+    ObjectPageNavigationParent,
     ObjectPageNavigationParents
 } from '../types.js';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
@@ -17,13 +18,14 @@ import {
     type FieldItem,
     type HeaderSectionItem,
     type SectionItem,
-    getAggregations
+    getAggregations,
+    parseDataFieldForAnnotationName
 } from './modelUtils.js';
 import { extractTableColumnsFromNode } from './tableUtils.js';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page.js';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
-import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
+import type { ConvertedMetadata, EntityType } from '@sap-ux/vocabularies-types';
 import { buildActionStateFromSpecModelKey, safeCheckButtonVisibility, safeCheckEditVisibility } from './actionUtils.js';
 
 /**
@@ -103,33 +105,46 @@ export function getObjectPages(applicationModel: ApplicationModel): PageWithMode
 }
 
 /**
- * Finds parent pages for the object page, and returns their identifiers.
+ * Finds the chain of parent Object Pages leading from the List Report down to the target page.
  *
  * @param targetObjectPageKey - key of the target object page
  * @param objectPages - the array of object pages extracted from the application model
  * @param listReportPageKey - the key of the List Report page in the application model, used to find navigation routes to object pages
- * @returns navigation data including parent page identifiers
+ * @returns navigation data including the ordered ancestor Object Page chain
  */
 function getObjectPageNavigationParents(
     targetObjectPageKey: string,
     objectPages: PageWithModelV4[],
     listReportPageKey?: string
 ): ObjectPageNavigationParents {
-    const navigationParents: ObjectPageNavigationParents = {
-        parentLRName: listReportPageKey ?? '' // app is possibly malformed if no LR found
-    };
+    const parentOPs: ObjectPageNavigationParent[] = [];
+    const visited = new Set<string>([targetObjectPageKey]); // guard against infinite loop in case of invalid manifest entries
+    let cursor = targetObjectPageKey;
 
-    objectPages.forEach((objectPage) => {
-        const navigationRoutes = getNavigationRoutes(objectPage);
-        const routeToTargetOP = navigationRoutes.find((nav) => nav.route === targetObjectPageKey);
-        if (routeToTargetOP) {
-            navigationParents.parentOPName = objectPage.name;
-
-            navigationParents.parentOPTableSection = routeToTargetOP.identifier;
+    while (true) {
+        const childKey = cursor;
+        let parent: PageWithModelV4 | undefined;
+        let parentNavigationProperty: string | undefined;
+        for (const objectPage of objectPages) {
+            const route = getNavigationRoutes(objectPage).find((navigation) => navigation.route === childKey);
+            if (route) {
+                parent = objectPage;
+                parentNavigationProperty = route.identifier;
+                break;
+            }
         }
-    });
+        if (!parent?.name || !parentNavigationProperty || visited.has(parent.name)) {
+            break;
+        }
+        visited.add(parent.name);
+        parentOPs.unshift({ name: parent.name, navigationProperty: parentNavigationProperty });
+        cursor = parent.name;
+    }
 
-    return navigationParents;
+    return {
+        parentLRName: listReportPageKey ?? '', // app is possibly malformed if no LR found
+        parentOPs
+    };
 }
 
 /**
@@ -191,16 +206,20 @@ function extractObjectPageBodySectionsData(
         const sections = getAggregations(sectionsAggregation) as Record<string, BodySectionItem>;
         Object.entries(sections).forEach(([sectionKey, section]) => {
             const sectionId = getSectionIdentifier(section) ?? sectionKey;
-            const subSections = extractBodySubSectionsData(section, sectionId);
+            const subSections = extractBodySubSectionsData(section, sectionId, convertedMetadata, objectPage.entitySet);
             const navigationProperty = getNavigationPropertyFromKey(sectionKey);
+            const isTable = isTableSection(section);
             const sectionData: BodySectionFeatureData = {
                 id: sectionId,
                 navigationProperty,
-                isTable: !!section.isTable,
+                isTable,
                 custom: !!section.custom,
                 order: section?.order ?? -1,
-                fields: section.custom || section.isTable ? [] : extractFormFields(section),
-                tableColumns: section.custom || !section.isTable ? {} : extractTableColumnsFromNode(section),
+                fields:
+                    section.custom || isTable
+                        ? []
+                        : extractFormFields(section, convertedMetadata, objectPage.entitySet),
+                tableColumns: section.custom || !isTable ? {} : extractTableColumnsFromNode(section),
                 subSections,
                 actions:
                     !section.custom && convertedMetadata && schemaNamespace
@@ -208,7 +227,7 @@ function extractObjectPageBodySectionsData(
                         : []
             };
             // For table sections, resolve Create/Delete visibility from target entity set
-            if (section.isTable && navigationProperty && metadata && convertedMetadata) {
+            if (isTable && navigationProperty && metadata && convertedMetadata) {
                 const targetEntitySet = resolveNavigationTargetEntitySet(
                     convertedMetadata,
                     objectPage.entitySet,
@@ -269,7 +288,7 @@ function extractSectionActions(
 ): ActionButtonState[] {
     let actionsAgg: AggregationItem | undefined;
 
-    if (section.isTable) {
+    if (isTableSection(section)) {
         const tableAgg = getAggregations(section)['table'];
         const toolBarAgg = getAggregations(tableAgg)['toolBar'];
         actionsAgg = getAggregations(toolBarAgg)['actions'] as AggregationItem;
@@ -294,22 +313,30 @@ function extractSectionActions(
  *
  * @param section - body section entry from the application model
  * @param parentSectionId - identifier of the parent section (used as fallback key prefix)
+ * @param convertedMetadata - optional converted OData metadata for drilling into ConnectedFields / FieldGroup wrappers
+ * @param entitySetName - the entity set the section is bound to (used to locate the entity type)
  * @returns array of sub-section feature data
  */
-function extractBodySubSectionsData(section: SectionItem, parentSectionId: string): BodySubSectionFeatureData[] {
+function extractBodySubSectionsData(
+    section: SectionItem,
+    parentSectionId: string,
+    convertedMetadata?: ConvertedMetadata,
+    entitySetName?: string
+): BodySubSectionFeatureData[] {
     const subSections: BodySubSectionFeatureData[] = [];
     const subSectionsAggregation = getAggregations(section)['subSections'];
     const subSectionItems = getAggregations(subSectionsAggregation) as Record<string, BodySectionItem>;
     Object.entries(subSectionItems).forEach(([subSectionKey, subSection]) => {
         const subSectionId = getSectionIdentifier(subSection) ?? `${parentSectionId}_${subSectionKey}`;
+        const isTable = isTableSection(subSection);
         subSections.push({
             id: subSectionId,
             navigationProperty: getNavigationPropertyFromKey(subSectionKey),
-            isTable: !!subSection.isTable,
+            isTable,
             custom: !!subSection.custom,
             order: subSection?.order ?? -1, // put a negative order number to signal that order was not in spec
-            fields: subSection.custom || subSection.isTable ? [] : extractFormFields(subSection),
-            tableColumns: subSection.custom || !subSection.isTable ? {} : extractTableColumnsFromNode(subSection)
+            fields: subSection.custom || isTable ? [] : extractFormFields(subSection, convertedMetadata, entitySetName),
+            tableColumns: subSection.custom || !isTable ? {} : extractTableColumnsFromNode(subSection)
         });
     });
     return subSections;
@@ -319,9 +346,15 @@ function extractBodySubSectionsData(section: SectionItem, parentSectionId: strin
  * Extracts form field property paths from a body sub-section's form aggregation.
  *
  * @param subSection - body sub-section entry from the application model
+ * @param convertedMetadata - optional converted OData metadata for drilling into ConnectedFields / FieldGroup wrappers
+ * @param entitySetName - the entity set the sub-section is bound to (used to locate the entity type)
  * @returns array of form field property paths for use with iCheckField({ property })
  */
-function extractFormFields(subSection: BodySectionItem): SectionFormField[] {
+function extractFormFields(
+    subSection: BodySectionItem,
+    convertedMetadata?: ConvertedMetadata,
+    entitySetName?: string
+): SectionFormField[] {
     const fields: SectionFormField[] = [];
     const formAggregation = getAggregations(subSection)['form'] as AggregationItem;
     if (!formAggregation) {
@@ -329,13 +362,77 @@ function extractFormFields(subSection: BodySectionItem): SectionFormField[] {
     }
     const fieldsAggregation = getAggregations(formAggregation)['fields'] as AggregationItem;
     const fieldItems = getAggregations(fieldsAggregation) as Record<string, FieldItem>;
-    Object.values(fieldItems).forEach((field) => {
-        const property = field.schema?.keys?.find((key) => key.name === 'Value')?.value;
-        if (property) {
-            fields.push({ property });
+    const entityType =
+        convertedMetadata && entitySetName ? resolveEntityType(convertedMetadata, entitySetName) : undefined;
+    Object.values(fieldItems).forEach((fieldItem) => {
+        const annotationParts = parseDataFieldForAnnotationName(fieldItem.name);
+        const valueProperty = fieldItem.schema?.keys?.find((key) => key.name === 'Value')?.value;
+        const baseProperty = valueProperty ?? annotationParts?.property;
+        if (!baseProperty) {
+            return;
+        }
+
+        if (annotationParts) {
+            const qualifier = annotationParts.targetAnnotation;
+            if (annotationParts.property === 'ConnectedFields' && entityType) {
+                resolveConnectedFieldsInnerProperties(entityType, qualifier).forEach((property) => {
+                    fields.push({ property, connectedFields: qualifier });
+                });
+            } else if (annotationParts.property === 'FieldGroup' && entityType) {
+                resolveFieldGroupInnerProperties(entityType, qualifier).forEach((property) => {
+                    fields.push({ property, fieldGroup: qualifier });
+                });
+            }
+            // ConnectedFields/FieldGroup without metadata: skip
+            // Unknown annotation wrapper type: skip
+        } else {
+            fields.push({ property: baseProperty });
         }
     });
     return fields;
+}
+
+/**
+ * Resolves the inner `Value` paths of a `@UI.ConnectedFields#<qualifier>` annotation.
+ *
+ * @param entityType - the entity type carrying the annotation
+ * @param qualifier - the annotation qualifier
+ * @returns the inner DataField property paths
+ */
+function resolveConnectedFieldsInnerProperties(entityType: EntityType, qualifier: string): string[] {
+    const annotation = entityType.annotations?.UI?.[
+        `ConnectedFields#${qualifier}` as keyof typeof entityType.annotations.UI
+    ] as { Data?: Record<string, { Value?: { path?: string } }> } | undefined;
+    const dictionary = annotation?.Data ?? {};
+    return Object.values(dictionary)
+        .map((dataField) => dataField?.Value?.path)
+        .filter((path): path is string => Boolean(path));
+}
+
+/**
+ * Resolves the inner `Value` paths of a `@UI.FieldGroup#<qualifier>` annotation.
+ *
+ * @param entityType - the entity type carrying the annotation
+ * @param qualifier - the annotation qualifier
+ * @returns the inner DataField property paths
+ */
+function resolveFieldGroupInnerProperties(entityType: EntityType, qualifier: string): string[] {
+    const annotation = entityType.annotations?.UI?.[
+        `FieldGroup#${qualifier}` as keyof typeof entityType.annotations.UI
+    ] as { Data?: { Value?: { path?: string } }[] } | undefined;
+    const dataFields = annotation?.Data ?? [];
+    return dataFields.map((dataField) => dataField?.Value?.path).filter((path): path is string => Boolean(path));
+}
+
+/**
+ * Looks up the entity type for the given entity set name in the converted metadata.
+ *
+ * @param convertedMetadata - the converted OData metadata
+ * @param entitySetName - the entity set name
+ * @returns the entity type, or undefined if not found
+ */
+function resolveEntityType(convertedMetadata: ConvertedMetadata, entitySetName: string): EntityType | undefined {
+    return convertedMetadata.entitySets.find((es) => es.name === entitySetName)?.entityType;
 }
 
 /**
@@ -489,6 +586,19 @@ function getFieldGroupQualifier(formAggregation: AggregationItem): string | unde
  */
 function isSectionMicroChart(section: SectionItem): boolean {
     return section?.schema?.dataType === 'ChartDefinition';
+}
+
+/**
+ * Detects whether a body section represents a table.
+ * The spec model exposes the section-level `isTable` flag inconsistently — for OP body sections
+ * driven by `_<NavProp>/@UI.LineItem` facets the flag is not set, but the section carries a
+ * `table` aggregation. Presence of that aggregation is the authoritative signal.
+ *
+ * @param section - body section or sub-section entry from ux specification
+ * @returns true if the section is a table section
+ */
+function isTableSection(section: BodySectionItem): boolean {
+    return !!section.isTable || !!getAggregations(section).table;
 }
 
 /**

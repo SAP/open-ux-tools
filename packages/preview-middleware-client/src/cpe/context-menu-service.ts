@@ -5,8 +5,8 @@ import {
     requestControlContextMenu
 } from '@sap-ux-private/control-property-editor-common';
 import { ActionSenderFunction, SubscribeFunction } from './types.js';
-import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import { ActionService } from 'sap/ui/rta/service/Action';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import type { ActionService } from 'sap/ui/rta/service/Action';
 import { DialogFactory } from '../adp/dialog-factory.js';
 import { getTextBundle } from '../i18n.js';
 import Log from 'sap/base/Log';
