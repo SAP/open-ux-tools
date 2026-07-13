@@ -375,21 +375,31 @@ describe('<UITranslationInput />', () => {
         });
 
         test('Click outside of callout', async () => {
-            render(
-                <UITranslationInput
-                    id={id}
-                    entries={entries}
-                    allowedPatterns={[TranslationTextPattern.SingleBracketBinding]}
-                    defaultPattern={TranslationTextPattern.SingleBracketBinding}
-                    i18nPrefix={'i18n'}
-                    value={'new value'}
-                />
-            );
-            clickI18nButton();
-            expect(document.querySelectorAll(selectors.callout).length).toEqual(1);
-            await new Promise((resolve) => setTimeout(resolve, 50));
-            fireEvent.click(document.documentElement);
-            await waitFor(() => expect(document.querySelectorAll(selectors.callout).length).toEqual(0));
+            jest.useFakeTimers();
+            try {
+                render(
+                    <UITranslationInput
+                        id={id}
+                        entries={entries}
+                        allowedPatterns={[TranslationTextPattern.SingleBracketBinding]}
+                        defaultPattern={TranslationTextPattern.SingleBracketBinding}
+                        i18nPrefix={'i18n'}
+                        value={'new value'}
+                    />
+                );
+                clickI18nButton();
+                expect(document.querySelectorAll(selectors.callout).length).toEqual(1);
+                // Advance timers so FluentUI Callout registers its dismiss listener (setTimeout 0)
+                jest.runAllTimers();
+                const outsideEl = document.createElement('div');
+                document.body.appendChild(outsideEl);
+                outsideEl.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+                jest.runAllTimers();
+                await waitFor(() => expect(document.querySelectorAll(selectors.callout).length).toEqual(0));
+            } finally {
+                jest.useRealTimers();
+                document.body.querySelector('div:not([id]):not([class])')?.remove();
+            }
         });
     });
 
