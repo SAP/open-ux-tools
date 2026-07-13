@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import memFs from 'mem-fs';
 import memFsEditor from 'mem-fs-editor';
 import { generateAppGenInfo, getFloorplanLabel } from '../../src/app-gen-info.js';
-import { initI18n } from '../../src/i18n.js';
+import { initI18n, t } from '../../src/i18n.js';
 import type { AppGenInfo } from '../../src/types/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -127,8 +127,14 @@ describe('getFloorplanLabel', () => {
     });
 
     test('should return templateType as fallback for unknown template without version suffix', () => {
-        // defaultValue has no interpolation token so version suffix is never appended for unknown templates
         expect(getFloorplanLabel('unknown-template')).toBe('unknown-template');
         expect(getFloorplanLabel('unknown-template', '4')).toBe('unknown-template');
+    });
+
+    test('should handle missing interpolation values and non-formatter interpolation', () => {
+        expect(t('logMessages.debug.loggingConfigured')).toBe('Logging has been configured at log level: .');
+        expect(t('logMessages.debug.loggingConfigured', { logLevel: 'info' })).toBe(
+            'Logging has been configured at log level: info.'
+        );
     });
 });
