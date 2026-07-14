@@ -1,5 +1,29 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.9
+
+### Patch Changes
+
+#### Features
+
+- use new vscode variable '--vscode-button-secondaryBorder' for secondary buttons [[647b8d2](https://github.com/SAP/open-ux-tools/commit/647b8d2ad5560f78f85bb146b9cae7549536bb81)]
+
+## 1.0.8
+
+### Patch Changes
+
+#### Dependency Updates
+
+- align vscode and types with fiori tools extensions [[369c494](https://github.com/SAP/open-ux-tools/commit/369c49497073e99fda01bad7dfda1840e68c029a)]
+
+## 1.0.7
+
+### Patch Changes
+
+#### Features
+
+- Officially publish CF workflow in the ADP generator. [[58e9645](https://github.com/SAP/open-ux-tools/commit/58e9645465b48c7832d9da548df3d609c5c0d590)]
+
 ## 1.0.6
 
 ### Patch Changes

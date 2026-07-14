@@ -780,6 +780,55 @@ export type Then = Opa5 & BaseArrangements & {
             expect(bookingObjPageJourneyContent).toContain('"ConnectionId":{"header":"Connection"}');
             expect(bookingObjPageJourneyContent).toContain('"AirportCode":{"header":"Airport"}');
         });
+
+        it('generates navigation cascade for v4 application with deeply-nested sub object page', async () => {
+            // Extend V4_WITH_SUB_OBJECT_PAGE by hanging a third-level OP off BookingObjectPage.
+            const deepAppModel = JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE);
+            deepAppModel.applicationModel.pages.BookingObjectPage.navigation = {
+                _BookSupplement: { route: 'BookingSupplementObjectPage' }
+            };
+            deepAppModel.applicationModel.pages.BookingSupplementObjectPage = {
+                pageType: 'ObjectPage',
+                entitySet: 'BookingSupplement',
+                contextPath: '/BookingSupplement',
+                template: 'sap.fe.templates.ObjectPage',
+                model: { root: { aggregations: {} } }
+            };
+            readAppMock.mockResolvedValueOnce(deepAppModel);
+            const projectDir = prepareTestFiles('LROPv4');
+            const subOPMetadata =
+                fs?.read(join(__dirname, '../test-input/LROPv4/webapp/localService/mainService/metadata.xml')) ?? '';
+            fs = await generateOPAFiles(projectDir, {}, subOPMetadata, fs);
+
+            const deepJourneyContent =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/BookingSupplementObjectPageJourney.gen.js']
+                    .contents;
+            // Cascade must include both intermediate hops (Travel and Booking) in order
+            const travelSee = deepJourneyContent.indexOf('Then.onTheTravelObjectPageGenerated.iSeeThisPage();');
+            const travelCheckBooking = deepJourneyContent.indexOf(
+                'onTheTravelObjectPageGenerated.onTable({ property: "_Booking" }).iCheckRows()'
+            );
+            const travelPressBooking = deepJourneyContent.indexOf(
+                'onTheTravelObjectPageGenerated.onTable({ property: "_Booking" }).iPressRow(0)'
+            );
+            const bookingSee = deepJourneyContent.indexOf('Then.onTheBookingObjectPageGenerated.iSeeThisPage();');
+            const bookingCheckSupplement = deepJourneyContent.indexOf(
+                'onTheBookingObjectPageGenerated.onTable({ property: "_BookSupplement" }).iCheckRows()'
+            );
+            const bookingPressSupplement = deepJourneyContent.indexOf(
+                'onTheBookingObjectPageGenerated.onTable({ property: "_BookSupplement" }).iPressRow(0)'
+            );
+            const targetSee = deepJourneyContent.indexOf(
+                'Then.onTheBookingSupplementObjectPageGenerated.iSeeThisPage();'
+            );
+            expect(travelSee).toBeGreaterThan(-1);
+            expect(travelCheckBooking).toBeGreaterThan(travelSee);
+            expect(travelPressBooking).toBeGreaterThan(travelCheckBooking);
+            expect(bookingSee).toBeGreaterThan(travelPressBooking);
+            expect(bookingCheckSupplement).toBeGreaterThan(bookingSee);
+            expect(bookingPressSupplement).toBeGreaterThan(bookingCheckSupplement);
+            expect(targetSee).toBeGreaterThan(bookingPressSupplement);
+        });
     });
 
     describe('generateOPAFiles TypeScript', () => {
@@ -969,10 +1018,10 @@ export type Then = Opa5 & BaseArrangements & {
             expect(runnerPath).toBeDefined();
 
             const content = dumped[runnerPath!].contents as string;
-            // The page-definition object passed to `new ListReport(...)` should set contextPath
-            // and skip entitySet entirely (only emit the field that actually applies).
+            // The page-definition object passed to `new ListReport(...)` should set contextPath;
+            // entitySet is emitted as an empty string because the runtime type marks both as required.
             expect(content).toContain('contextPath: "/');
-            expect(content).not.toContain('entitySet: ""');
+            expect(content).toContain('entitySet: ""');
         });
 
         it('generates TypeScript filter tests for LROPv4 app', async () => {

@@ -14198,7 +14198,6 @@ sap.ui.define([
 
         opaTest(\\"Navigate to BookingObjectPageObjectPage\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheTravelListGenerated.onTable().iCheckRows();
             When.onTheTravelListGenerated.onTable().iPressRow(0);
 
@@ -14225,7 +14224,7 @@ sap.ui.define([
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"DestinationRisk\\" });
             When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton(\\"BookingSupplement\\");
             Then.onTheBookingObjectPageGenerated.iCheckSection({ section: \\"BookingSupplement\\" });
-            Then.onTheBookingObjectPageGenerated.onTable({ property: \\"_BookSupplement\\" }).iCheckColumns({\\"BookingSupplementID\\":{\\"header\\":\\"Book. Supp. Number\\"},\\"SupplementID\\":{\\"header\\":\\"Product ID\\"},\\"Price\\":{\\"header\\":\\"Product Price\\"}});
+            Then.onTheBookingObjectPageGenerated.onTable({ property: \\"_BookSupplement\\" }).iCheckColumns(undefined, {\\"BookingSupplementID\\":{\\"header\\":\\"Book. Supp. Number\\"},\\"SupplementID\\":{\\"header\\":\\"Product ID\\"},\\"Price\\":{\\"header\\":\\"Product Price\\"}});
        });
 
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
@@ -14353,7 +14352,6 @@ sap.ui.define([
 
         opaTest(\\"Navigate to TravelObjectPageObjectPage\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheTravelListGenerated.onTable().iCheckRows();
             When.onTheTravelListGenerated.onTable().iPressRow(0);
 
@@ -14393,7 +14391,7 @@ sap.ui.define([
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"Status\\" });
             When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Booking\\");
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: \\"Booking\\" });
-            Then.onTheTravelObjectPageGenerated.onTable({ property: \\"_Booking\\" }).iCheckColumns({\\"BookingID\\":{\\"header\\":\\"Booking Number\\"},\\"BookingDate\\":{\\"header\\":\\"Booking Date\\"},\\"CustomerID\\":{\\"header\\":\\"Customer ID\\"},\\"AirlineID\\":{\\"header\\":\\"Airline ID\\"},\\"ConnectionID\\":{\\"header\\":\\"Flight Number\\"},\\"FlightDate\\":{\\"header\\":\\"Flight Date\\"},\\"FlightPrice\\":{\\"header\\":\\"Flight Price\\"},\\"DestinationRisk\\":{\\"header\\":\\"Destination Risk\\"}});
+            Then.onTheTravelObjectPageGenerated.onTable({ property: \\"_Booking\\" }).iCheckColumns(undefined, {\\"BookingID\\":{\\"header\\":\\"Booking Number\\"},\\"BookingDate\\":{\\"header\\":\\"Booking Date\\"},\\"CustomerID\\":{\\"header\\":\\"Customer ID\\"},\\"AirlineID\\":{\\"header\\":\\"Airline ID\\"},\\"ConnectionID\\":{\\"header\\":\\"Flight Number\\"},\\"FlightDate\\":{\\"header\\":\\"Flight Date\\"},\\"FlightPrice\\":{\\"header\\":\\"Flight Price\\"},\\"DestinationRisk\\":{\\"header\\":\\"Destination Risk\\"}});
        });
 
         opaTest(\\"Teardown\\", function (Given, When, Then) { 
@@ -14493,7 +14491,7 @@ sap.ui.require(
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({
@@ -14525,7 +14523,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 ], function (JourneyRunner, TravelListGenerated, TravelObjectPageGenerated, BookingObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
+    const runner = new JourneyRunner({
         launchUrl: sap.ui.require.toUrl('fewrk2') + '/test/flpSandbox.html#fewrk2-tile',
         pages: {
 			onTheTravelListGenerated: TravelListGenerated,
@@ -14562,7 +14560,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {},
         assertions: {}
     };
@@ -14599,7 +14597,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
     'use strict';
 
-    var CustomPageDefinitions = {
+    const CustomPageDefinitions = {
         actions: {
             iPressSectionIconTabFilterButton: function (section) {
                 return this.waitFor({

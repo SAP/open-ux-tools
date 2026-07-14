@@ -1,5 +1,13 @@
 # @sap-ux-private/playwright
 
+## 1.0.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/logger 1.0.2 → 1.0.3
+
 ## 1.0.4
 
 ### Patch Changes

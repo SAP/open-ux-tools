@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.0.39
+
+## 1.0.38
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux-private/control-property-editor-common 1.0.4 → 1.0.4
+
+## 1.0.37
+
 ## 1.0.36
 
 ## 1.0.35

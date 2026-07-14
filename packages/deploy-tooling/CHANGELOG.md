@@ -1,5 +1,26 @@
 # @sap-ux/deploy-tooling
 
+## 1.0.22
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/inquirer-common 1.0.20 → 1.0.21
+- @sap-ux/axios-extension 2.0.6 → 2.0.7
+- @sap-ux/btp-utils 2.0.5 → 2.0.5
+- @sap-ux/system-access 1.0.6 → 1.0.7
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 1.0.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.19 → 1.0.20
+
 ## 1.0.20
 
 ### Patch Changes
