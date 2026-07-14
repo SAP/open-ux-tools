@@ -214,33 +214,40 @@ export class ApplicationParser {
         // Remove deleted files
         app.changes = app.changes.filter((change) => existsSync(fileURLToPath(change.changeFileUri)));
         const existingChangeIndex = app.changes.findIndex((change) => change.changeFileUri === uri);
-        const content = fileCache.get(uri) ?? readFileSync(path, { encoding: 'utf8', flag: 'r' });
-        // Create and save the ast tree
-        const ast = parseJson(content, {
-            mode: 'json',
-            ranges: true,
-            tokens: true,
-            allowTrailingCommas: false
-        });
-        index.documents[uri] = ast;
-        // Create new change object
-        const jsonContent = JSON.parse(content);
-        if (isFlexChange(jsonContent)) {
-            const newChange: FlexChange = {
-                changeType: jsonContent.changeType,
-                content: jsonContent.content,
-                selector: jsonContent.selector,
-                changeFileUri: uri
-            };
-            // Replace the existing entry for this URI, or append if new
-            if (existingChangeIndex >= 0) {
-                app.changes[existingChangeIndex] = newChange;
-            } else {
-                app.changes.push(newChange);
+        try {
+            const content = fileCache.get(uri) ?? readFileSync(path, { encoding: 'utf8', flag: 'r' });
+            // Create and save the ast tree
+            const ast = parseJson(content, {
+                mode: 'json',
+                ranges: true,
+                tokens: true,
+                allowTrailingCommas: false
+            });
+            index.documents[uri] = ast;
+            // Create new change object
+            const jsonContent = JSON.parse(content);
+            if (isFlexChange(jsonContent)) {
+                const newChange: FlexChange = {
+                    changeType: jsonContent.changeType,
+                    content: jsonContent.content,
+                    selector: jsonContent.selector,
+                    changeFileUri: uri
+                };
+                // Replace the existing entry for this URI, or append if new
+                if (existingChangeIndex >= 0) {
+                    app.changes[existingChangeIndex] = newChange;
+                } else {
+                    app.changes.push(newChange);
+                }
+            } else if (existingChangeIndex >= 0) {
+                // Remove existing change object for updated file
+                app.changes.splice(existingChangeIndex, 1);
             }
-        } else if (existingChangeIndex >= 0) {
-            // Remove existing change object for updated file
-            app.changes.splice(existingChangeIndex, 1);
+        } catch {
+            // Remove existing change object for unreadable or malformed change file
+            if (existingChangeIndex >= 0) {
+                app.changes.splice(existingChangeIndex, 1);
+            }
         }
     }
 
