@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import format from 'xml-formatter';
 import * as xpath from 'xpath';
-import { lt } from 'semver';
+import { coerce, lt } from 'semver';
 import type { Editor } from 'mem-fs-editor';
 
 import { getMinimumUI5Version } from '@sap-ux/project-access';
@@ -74,15 +74,16 @@ export function getPageAggregationNames(data: BuildingBlock): readonly PageAggre
 }
 
 /**
- * Throws if the manifest's minUI5Version does not meet the 1.145.0 requirement for the full Page template.
+ * Throws if the manifest's minUI5Version is set and does not meet the 1.145.0 requirement for the full Page template.
+ * If minUI5Version is not set, it is treated as latest and passes the check.
  *
  * @param manifest - the manifest content, or undefined if not available
  */
 export function validateFullPageTemplateVersion(manifest: Manifest | undefined): void {
-    const minUI5Version = manifest ? getMinimumUI5Version(manifest) : undefined;
-    if (!minUI5Version || lt(minUI5Version, PAGE_FULL_TEMPLATE_MIN_UI5_VERSION)) {
+    const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
+    if (minUI5Version && lt(minUI5Version, PAGE_FULL_TEMPLATE_MIN_UI5_VERSION)) {
         const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
-        throw new Error(`${t('fullTemplateMinUi5VersionRequirement', { minUI5Version: minUI5Version ?? 'unknown' })}`);
+        throw new Error(`${t('fullTemplateMinUi5VersionRequirement', { minUI5Version: minUI5Version.version })}`);
     }
 }
 

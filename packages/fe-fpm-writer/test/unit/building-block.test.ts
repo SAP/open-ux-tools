@@ -1269,7 +1269,7 @@ describe('Building Blocks', () => {
         ).rejects.toThrow(String(t('fullTemplateMinUi5VersionRequirement', { minUI5Version: '1.144.0' })));
     });
 
-    test('generate Page building block with full template throws if UI5 version is missing', async () => {
+    test('generate Page building block with full template succeeds if UI5 version is missing (treated as latest)', async () => {
         const aggregationPath = `/mvc:View/*[local-name()='Page']`;
         const basePath = join(testAppPath, 'generate-page-block-full-no-version');
         const manifestWithNoUi5Version = {
@@ -1278,7 +1278,6 @@ describe('Building Blocks', () => {
         };
         fs.write(join(basePath, manifestFilePath), JSON.stringify(manifestWithNoUi5Version));
         fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
-        const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
 
         await expect(
             generateBuildingBlock(
@@ -1296,7 +1295,7 @@ describe('Building Blocks', () => {
                 },
                 fs
             )
-        ).rejects.toThrow(String(t('fullTemplateMinUi5VersionRequirement', { minUI5Version: 'unknown' })));
+        ).resolves.not.toThrow();
     });
 
     test('generateBuildingBlock creates missing macros:items aggregation before inserting content', async () => {
