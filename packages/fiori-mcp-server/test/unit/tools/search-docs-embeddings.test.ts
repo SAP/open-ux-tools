@@ -29,10 +29,15 @@ beforeAll(async () => {
         }
     });
     tools = await client.getTools();
+    if (tools.length === 0) {
+        throw new Error(
+            `No tools loaded from MCP server at ${DIST_SERVER}. Ensure the package is built before running these tests.`
+        );
+    }
 }, 60000);
 
 afterAll(async () => {
-    await client.close();
+    await client?.close();
 });
 
 async function searchDocs(query: string, maxResults = 5): Promise<string> {
