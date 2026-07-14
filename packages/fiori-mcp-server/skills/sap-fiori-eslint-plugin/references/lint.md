@@ -2,6 +2,121 @@
 
 Run ESLint on a SAP Fiori project to check code quality and optionally auto-fix issues.
 
+## App-scope mode — show only application issues (consistent with Application Information / Page Map)
+
+Use this mode when the user says things like:
+- "show all application issues for my app"
+- "show UX consistency issues"
+- "issues for app xyz"
+- "same issues as Application Information" / "same issues as Page Map"
+
+### Exact file scope used by Application Information / Page Map
+
+The Application Information panel and Page Map do **not** lint all files in `webapp/`. They lint a precise, curated
+set of files — nothing more. Running `npx eslint .` or `npx eslint webapp/` will produce a higher,
+inconsistent count because it picks up JavaScript/TypeScript source files, test files, and other
+files that the tooling never checks.
+
+**Files linted by Application Information / Page Map (derived from the IDE extension source):**
+
+| File | Standalone | CAP |
+|---|:---:|:---:|
+| `webapp/manifest.json` | ✅ | ✅ |
+| `webapp/changes/**/*propertyChange.change` | ✅ | ✅ |
+| XML annotation files listed in the manifest (`webapp/annotations/*.xml`, etc.) | ✅ | ❌ |
+| `<app-folder>/<app-name>/**/*.cds` (app-level only) | ❌ | ✅ |
+
+Key rules:
+- Only `*propertyChange.change` files are included from the `changes/` folder — not all `.change` files
+- For CAP projects, only `.cds` files within the specific app directory are linted — not the project root, `db/`, `srv/`, or sibling apps
+- For CAP projects, XML annotation files are **not** linted — the annotations live in `.cds` files instead
+- For standalone projects, `.cds` files are **not** linted — only the manifest, XML annotations, and change files
+
+### Why counts differ without this scoping
+
+Running `npx eslint .` or `npx eslint webapp/` picks up `.js`, `.ts`, controller files, test files,
+and more — none of which Application Information or Page Map ever checks. This produces more issues and a higher
+count than what the tooling shows.
+
+### App-scope lint commands
+
+Always target the exact file set explicitly. Substitute real paths where shown.
+
+**Standalone Fiori app:**
+```bash
+# From the app root (where eslint.config.mjs and webapp/ are)
+
+# 1. manifest.json
+npx eslint webapp/manifest.json
+
+# 2. propertyChange files (if any exist)
+find webapp/changes -name "*propertyChange.change" 2>/dev/null | xargs npx eslint --no-warn-ignored
+
+# 3. XML annotation files (paths come from manifest.json sap.app/dataSources)
+#    Typical location — adjust to your manifest's annotation file paths:
+npx eslint webapp/annotations/*.xml 2>/dev/null
+
+# Or combine all three in one pass (use shell glob expansion):
+npx eslint webapp/manifest.json \
+  $(find webapp/changes -name "*propertyChange.change" 2>/dev/null) \
+  webapp/annotations/*.xml 2>/dev/null
+```
+
+**CAP project — specific app:**
+```bash
+# From the CAP project root
+APP=app/incidents   # replace with your app folder
+
+# 1. manifest.json
+npx eslint $APP/webapp/manifest.json
+
+# 2. propertyChange files
+find $APP/webapp/changes -name "*propertyChange.change" 2>/dev/null | xargs npx eslint --no-warn-ignored
+
+# 3. CDS files (app-level only)
+npx eslint "$APP/**/*.cds"
+```
+
+### Identifying the app name and annotation files
+
+```bash
+# Find webapp/ locations (CAP)
+find app -maxdepth 2 -type d -name "webapp" -not -path "*/node_modules/*"
+
+# Extract annotation file paths from manifest (dataSources with type Annotation)
+node -e "
+const m = require('./webapp/manifest.json');
+const ds = m['sap.app']?.dataSources ?? {};
+Object.values(ds).filter(d => d.type === 'ODataAnnotation').forEach(d => console.log(d.uri));
+"
+```
+
+If the user names a specific app, match by the parent folder of `webapp/`. If ambiguous, list found
+apps and ask the user to confirm.
+
+### Reporting app-scope results
+
+Present results with a clear scope label so the user knows the count matches the tooling:
+
+```
+Application Issues (Application Information / Page Map scope):
+  Standalone: manifest.json + XML annotation files + *propertyChange.change files
+  CAP:        manifest.json + <app>/**/*.cds + *propertyChange.change files
+
+- X errors
+- Y warnings
+- Files affected: [list]
+- Most common rules: [top 3]
+```
+
+If the count still differs from what the user sees in Application Information or Page Map, check:
+1. **Missing annotation files** — the manifest may reference annotation URIs not covered by the glob above; extract them with the node snippet above
+2. **ESLint config `files` glob** — the config may restrict which file types are checked (e.g. only `*.xml` but not `*.json`)
+3. **Rule set variant** — confirm the config uses `recommended-for-s4hana` vs `recommended` to match what the tooling expects
+4. **Plugin version** — Application Information and Page Map each load the plugin from the project's own `node_modules`; make sure `@sap-ux/eslint-plugin-fiori-tools` is installed there
+
+
+
 ## Step 1 — Verify ESLint is configured
 
 Detect whether this is a standalone Fiori app or a CAP project, then check for a valid ESLint config.
