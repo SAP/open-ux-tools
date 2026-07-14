@@ -4,7 +4,7 @@ import { isJsonInput, isString } from './type-guards.js';
 
 /**
  * Returns the first argument from a list of CLI arguments. If the first argument
- * is not a string returns empty string.
+ * is not a string and not an array, returns empty string.
  *
  * @param {T | T[]} args - The list of CLI command arguments.
  * @returns {T | string} The first parameter in the argument's list, or empty string if the format is unexpected.
