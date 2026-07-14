@@ -6,9 +6,7 @@ import { dirname, join } from 'node:path';
 import { generatorConfigOData, PREDEFINED_GENERATOR_VALUES } from './schemas/index.js';
 import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../utils/index.js';
 
-type ODataResult = GenerateAppOutput;
-
-async function executeOData(validated: GeneratorConfigOData, appPath: string): Promise<ODataResult> {
+async function executeOData(validated: GeneratorConfigOData, appPath: string): Promise<GenerateAppOutput> {
     const generatorConfigValidated: GeneratorConfigOData = validateWithSchema(generatorConfigOData, validated);
     const generatorConfig: GeneratorConfigODataWithAPI = {
         ...PREDEFINED_GENERATOR_VALUES,
@@ -93,7 +91,7 @@ async function executeOData(validated: GeneratorConfigOData, appPath: string): P
  * @param args - Input parameters matching the generatorConfigOData schema.
  * @returns A promise resolving to the generation execution output.
  */
-export async function generateFioriAppOData(args: GeneratorConfigOData): Promise<ODataResult> {
+export async function generateFioriAppOData(args: GeneratorConfigOData): Promise<GenerateAppOutput> {
     const validated = generatorConfigOData.parse(args);
     return executeOData(validated, validated.project?.targetFolder ?? '');
 }

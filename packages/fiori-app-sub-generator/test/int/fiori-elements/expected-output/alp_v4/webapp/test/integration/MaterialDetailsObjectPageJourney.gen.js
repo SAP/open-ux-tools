@@ -26,9 +26,7 @@ sap.ui.define([
 
         opaTest("Navigate to MaterialDetailsObjectPageObjectPage", function (Given, When, Then) {
             Given.iStartMyApp();
-
             When.onTheSalesOrderItemListGenerated.onFilterBar().iExecuteSearch();
-
             Then.onTheSalesOrderItemListGenerated.onTable().iCheckRows();
             When.onTheSalesOrderItemListGenerated.onTable().iPressRow(0);
 
@@ -58,6 +56,9 @@ sap.ui.define([
             Then.onTheMaterialDetailsObjectPageGenerated.onForm({ section: "MaterialDetailsFacet" }).iCheckField({ property: "FabricationCountry" });
             When.onTheMaterialDetailsObjectPageGenerated.iPressSectionIconTabFilterButton("MaterialRatingsFacet");
             Then.onTheMaterialDetailsObjectPageGenerated.iCheckSection({ section: "MaterialRatingsFacet" });
+            Then.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iCheckAction("Material Ratings Bound Action", { enabled: true });
+            // When.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iPressAction("Material Ratings Bound Action");
+            Then.onTheMaterialDetailsObjectPageGenerated.onTable({ property: "_MaterialRatings" }).iCheckColumns(undefined, {"0":{"header":"Rating"},"Title":{"header":"Title"}});
        });
 
         opaTest("Teardown", function (Given, When, Then) { 

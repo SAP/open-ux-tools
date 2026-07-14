@@ -4,7 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import { basename, join } from 'node:path';
 import type { ApiHubConfig, State } from '../types/index.js';
 import { DEFAULT_CAP_HOST } from '../types/index.js';
-import { getLaunchText, getReadMeDataSourceLabel, isAbapCloud, t } from '../utils/index.js';
+import { getLaunchText, getReadMeDataSourceLabel, isAbapCloud, t, getFloorplanLabel } from '../utils/index.js';
 
 /**
  * Writes app related information files - README.md & .appGenInfo.json.
@@ -30,9 +30,7 @@ export async function writeAppGenInfoFiles(
     fs: Editor,
     existingAppGenInfo?: Partial<AppGenInfo>
 ): Promise<void> {
-    const templateLabel = t(`floorplans.label.${floorplan}`, {
-        odataVersion: service.version
-    });
+    const templateLabel = getFloorplanLabel(floorplan, service.version);
 
     const datasourceLabel = getReadMeDataSourceLabel(
         service.source,

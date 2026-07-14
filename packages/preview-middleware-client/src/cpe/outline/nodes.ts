@@ -101,10 +101,10 @@ function indexNode(controlIndex: ControlTreeIndex, node: OutlineNode): void {
     }
 }
 
-function addToPropertyIdMap(node: OutlineNode, propertyIdMap: Map<string, string[]>): void {
+async function addToPropertyIdMap(node: OutlineNode, propertyIdMap: Map<string, string[]>): Promise<void> {
     const control = getControlById(node.controlId);
     if (control) {
-        const overlay = getOverlay(control);
+        const overlay = await getOverlay(control);
         const overlayData = overlay?.getDesignTimeMetadata().getData();
         if (!overlayData?.manifestPropertyPath) {
             return;
@@ -170,7 +170,7 @@ export async function transformNodes(
                 };
 
                 indexNode(controlIndex, node);
-                addToPropertyIdMap(node, propertyIdMap);
+                await addToPropertyIdMap(node, propertyIdMap);
 
                 items.push(node);
             }

@@ -116,6 +116,15 @@ describe('UI5 templates', () => {
         await expect(enableTypescript(projectDir, fs)).rejects.toThrow();
     });
 
+    it('enableTypescript does not throw when Component.js does not exist (TypeScript project)', async () => {
+        const projectDir = join(outputDir, 'testapp-ts-no-component');
+        await generate(projectDir, { ...ui5AppConfig, ui5: { minUI5Version: '1.96.1' } }, fs);
+        fs.delete(join(projectDir, 'webapp/Component.js'));
+        await expect(enableTypescript(projectDir, fs)).resolves.not.toThrow();
+        expect(fs.exists(join(projectDir, 'webapp/Component.js'))).toBe(false);
+        expect(fs.exists(join(projectDir, 'webapp/Component.js.old'))).toBe(false);
+    });
+
     it('Check webapp/index.html templates are generated correctly for CAP application with ui5 version ', async () => {
         const projectDir = join(outputDir, 'testapp-cap');
         ui5AppConfig.app.projectType = 'CAPNodejs';

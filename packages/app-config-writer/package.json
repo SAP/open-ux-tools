@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/app-config-writer",
     "description": "Add or update configuration for SAP Fiori tools application",
-    "version": "1.0.11",
+    "version": "1.1.9",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -13,6 +13,16 @@
     },
     "license": "Apache-2.0",
     "main": "dist/index.js",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./cards-config": {
+            "types": "./dist/cards-config/index.d.ts",
+            "default": "./dist/cards-config/index.js"
+        }
+    },
     "scripts": {
         "build": "tsc --build",
         "watch": "tsc --watch",
@@ -37,17 +47,17 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "chalk": "5.3.0",
+        "chalk": "5.6.2",
         "ejs": "3.1.10",
         "i18next": "25.10.10",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "prompts": "2.4.2",
-        "semver": "7.7.4",
+        "semver": "7.8.4",
         "cross-spawn": "7.0.6"
     },
     "devDependencies": {
-        "@jest/globals": "30.3.0",
+        "@jest/globals": "30.4.1",
         "@sap-ux/preview-middleware": "workspace:*",
         "@types/ejs": "3.1.5",
         "@types/mem-fs": "1.1.2",
@@ -55,8 +65,8 @@
         "@types/prompts": "2.4.9",
         "@types/semver": "7.7.1",
         "@types/cross-spawn": "6.0.6",
-        "axios": "1.16.0",
-        "nock": "14.0.11"
+        "axios": "1.18.1",
+        "nock": "14.0.15"
     },
     "engines": {
         "node": ">=22.x"

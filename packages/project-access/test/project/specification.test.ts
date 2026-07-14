@@ -6,7 +6,6 @@ import type * as fsPromisesType from 'node:fs/promises';
 import type { Logger } from '@sap-ux/logger';
 import type * as commandType from '../../src/command/index.js';
 import type * as moduleType from '../../src/project/module-loader.js';
-import type * as fileType from '../../src/file/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -57,6 +56,13 @@ const realFsPromises = await import('node:fs/promises');
 jest.unstable_mockModule('node:fs/promises', () => ({
     ...realFsPromises,
     mkdir: mockMkdir
+}));
+
+const realDependencies = await import('../../src/project/dependencies.js');
+const mockGetNodeModulesPath = jest.fn<typeof realDependencies.getNodeModulesPath>(realDependencies.getNodeModulesPath);
+jest.unstable_mockModule('../../src/project/dependencies', () => ({
+    ...realDependencies,
+    getNodeModulesPath: mockGetNodeModulesPath
 }));
 
 const { FileName, fioriToolsDirectory, getSpecification, getSpecificationPath, refreshSpecificationDistTags } =
@@ -150,6 +156,25 @@ describe('Test getSpecification', () => {
         } catch (error) {
             expect(error.message).toContain('Failed to load specification');
         }
+    });
+
+    test('Get specification path from project when @sap/ux-specification is a workspace symlink', async () => {
+        const root = join(__dirname, '../test-data/module-loader/@sap/ux-specification/0.1.2');
+        const expectedPath = join(root, 'node_modules', '@sap/ux-specification');
+        const logger = getMockLogger();
+        mockGetNodeModulesPath.mockReturnValueOnce(root);
+        const path = await getSpecificationPath(root, { logger });
+        expect(path).toBe(expectedPath);
+        expect(logger.debug).toHaveBeenCalledWith(`Specification root found in project '${root}'`);
+    });
+
+    test('Get specification path throws when @sap/ux-specification not found in node_modules', async () => {
+        const root = join(__dirname, '../test-data/module-loader/@sap/ux-specification/0.1.2');
+        const logger = getMockLogger();
+        mockGetNodeModulesPath.mockReturnValueOnce(undefined);
+        await expect(getSpecificationPath(root, { logger })).rejects.toThrow(
+            `Module '@sap/ux-specification' not found in node_modules for project '${root}'`
+        );
     });
 
     test('Get specification path from project', async () => {

@@ -26,9 +26,7 @@ sap.ui.define([
 
         opaTest("Navigate to SalesOrderItemObjectPageObjectPage", function (Given, When, Then) {
             Given.iStartMyApp();
-
             When.onTheSalesOrderItemListGenerated.onFilterBar().iExecuteSearch();
-
             Then.onTheSalesOrderItemListGenerated.onTable().iCheckRows();
             When.onTheSalesOrderItemListGenerated.onTable().iPressRow(0);
 
@@ -56,6 +54,9 @@ sap.ui.define([
             Then.onTheSalesOrderItemObjectPageGenerated.onForm({ section: "Identification" }).iCheckField({ property: "_ReferencedSalesOrderItem/SalesOrderItem" });
             When.onTheSalesOrderItemObjectPageGenerated.iPressSectionIconTabFilterButton("MaterialDetailsFacet");
             Then.onTheSalesOrderItemObjectPageGenerated.iCheckSection({ section: "MaterialDetailsFacet" });
+            Then.onTheSalesOrderItemObjectPageGenerated.onTable({ property: "_MaterialDetails" }).iCheckAction("Material Details Bound Action", { enabled: true });
+            // When.onTheSalesOrderItemObjectPageGenerated.onTable({ property: "_MaterialDetails" }).iPressAction("Material Details Bound Action");
+            Then.onTheSalesOrderItemObjectPageGenerated.onTable({ property: "_MaterialDetails" }).iCheckColumns(undefined, {"ModelYear":{"header":"Model Year"},"WarrantyYear":{"header":"Warranty Expiration"},"BrandCategory":{"header":"Material Category"},"FabricationCountry":{"header":"Fabrication Country"}});
        });
 
         opaTest("Teardown", function (Given, When, Then) { 
