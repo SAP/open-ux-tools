@@ -23,12 +23,13 @@ describe('Flex change', () => {
         },
         changeFileUri
     };
+    const appUri = pathToFileURL(V2_PROJECT_PATH).toString();
 
     beforeEach(() => {
         parsedProject = {
             projectType: 'EDMXBackend',
             apps: {
-                '': {
+                [appUri]: {
                     manifest: {
                         webappPath: dirname(V2_MANIFEST_PATH),
                         manifestUri: pathToFileURL(V2_MANIFEST_PATH).toString(),
@@ -51,8 +52,8 @@ describe('Flex change', () => {
     test('reparse: adds new .change file', () => {
         const reparsed = parser.reparse(changeFileUri, parsedProject, fileCache);
         expect(reparsed.index.documents[changeFileUri]).toBeDefined();
-        expect(reparsed.index.apps[''].changes).toHaveLength(1);
-        expect(reparsed.index.apps[''].changes[0]).toStrictEqual(propertyChange);
+        expect(reparsed.index.apps[appUri].changes).toHaveLength(1);
+        expect(reparsed.index.apps[appUri].changes[0]).toStrictEqual(propertyChange);
     });
 
     test('reparse: removes changes from deleted .change file', () => {
@@ -64,11 +65,11 @@ describe('Flex change', () => {
             changeFileUri: nonExistentChangeFileUri
         };
         fileCache.set(nonExistentChangeFileUri, JSON.stringify(existingPropertyChange));
-        parsedProject.apps[''].changes = [existingPropertyChange];
+        parsedProject.apps[appUri].changes = [existingPropertyChange];
         const reparsed = parser.reparse(changeFileUri, parsedProject, fileCache); // reparse new change file
         expect(reparsed.index.documents[changeFileUri]).toBeDefined();
-        expect(reparsed.index.apps[''].changes).toHaveLength(1); // non-existent-file change was deleted
-        expect(reparsed.index.apps[''].changes[0].changeFileUri).toStrictEqual(changeFileUri);
+        expect(reparsed.index.apps[appUri].changes).toHaveLength(1); // non-existent-file change was deleted
+        expect(reparsed.index.apps[appUri].changes[0].changeFileUri).toStrictEqual(changeFileUri);
     });
 
     test('reparse: applies change in a .change file', () => {
@@ -77,8 +78,8 @@ describe('Flex change', () => {
         fileCache.set(changeFileUri, JSON.stringify(newChange));
         const reparsed = parser.reparse(changeFileUri, parsedProject, fileCache);
         expect(reparsed.index.documents[changeFileUri]).toBeDefined();
-        expect(reparsed.index.apps[''].changes).toHaveLength(1);
-        expect(reparsed.index.apps[''].changes[0].content.newValue).toBe(false);
+        expect(reparsed.index.apps[appUri].changes).toHaveLength(1);
+        expect(reparsed.index.apps[appUri].changes[0].content.newValue).toBe(false);
     });
 
     test('reparse: empty .change file with empty object content not collected to app changes', () => {
@@ -86,23 +87,23 @@ describe('Flex change', () => {
         const reparsed = parser.reparse(changeFileUri, parsedProject, fileCache);
         expect(reparsed.index.documents[changeFileUri]).toBeDefined();
         expect((reparsed.index.documents[changeFileUri] as DocumentNode).range).toStrictEqual([0, 2]); // Value '{}' saved
-        expect(reparsed.index.apps[''].changes).toHaveLength(0); // change not collected
+        expect(reparsed.index.apps[appUri].changes).toHaveLength(0); // change not collected
     });
 
     test('reparse: updated .change file with empty object content is deleted from app changes', () => {
-        parsedProject.apps[''].changes = [propertyChange];
+        parsedProject.apps[appUri].changes = [propertyChange];
         fileCache.set(changeFileUri, '{}');
         const reparsed = parser.reparse(changeFileUri, parsedProject, fileCache);
         expect(reparsed.index.documents[changeFileUri]).toBeDefined();
         expect((reparsed.index.documents[changeFileUri] as DocumentNode).range).toStrictEqual([0, 2]);
-        expect(reparsed.index.apps[''].changes).toHaveLength(0); // change removed
+        expect(reparsed.index.apps[appUri].changes).toHaveLength(0); // change removed
     });
 
     test('reparse: updated malformed .change file is deleted from app changes', () => {
-        parsedProject.apps[''].changes = [propertyChange];
+        parsedProject.apps[appUri].changes = [propertyChange];
         fileCache.set(changeFileUri, '{');
         const reparsed = parser.reparse(changeFileUri, parsedProject, fileCache);
         expect(reparsed.index.documents[changeFileUri]).toBeUndefined();
-        expect(reparsed.index.apps[''].changes).toHaveLength(0); // change removed
+        expect(reparsed.index.apps[appUri].changes).toHaveLength(0); // change removed
     });
 });

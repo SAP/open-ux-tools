@@ -1,19 +1,24 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { getAppForPath } from '../../src/project-context/utils.js';
 import type { ParsedApp } from '../../src/project-context/parser/types.js';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 describe('Utils', () => {
     describe('getAppForPath', () => {
-        const project = { projectRootPath: join('test', 'project', 'root', 'path') } as ParsedApp;
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = dirname(__filename);
+        const project = { projectRootPath: join(__dirname, 'test', 'project', 'root', 'path') } as ParsedApp;
         const firstApp: ParsedApp = { ...project, manifest: { ...project.manifest, appId: 'firstApp' } };
         const secondApp: ParsedApp = { ...project, manifest: { ...project.manifest, appId: 'secondApp' } };
+        const firstAppUri = pathToFileURL(join(project.projectRootPath, 'firstApp')).toString();
+        const secondAppUri = pathToFileURL(join(project.projectRootPath, 'secondApp')).toString();
 
         it('gets the first app if only one available', () => {
             const app = getAppForPath(
                 {
-                    ['firstApp']: firstApp
+                    [firstAppUri]: firstApp
                 },
-                join('dummy', 'non-existent', 'path', 'someFile.json') // path is not checked
+                join(project.projectRootPath, 'firstApp', 'someFile.json')
             );
             expect(app?.manifest.appId).toBe('firstApp');
         });
@@ -21,8 +26,8 @@ describe('Utils', () => {
         it('finds app from multiple apps available', () => {
             const app = getAppForPath(
                 {
-                    ['firstApp']: firstApp,
-                    ['secondApp']: secondApp
+                    [firstAppUri]: firstApp,
+                    [secondAppUri]: secondApp
                 },
                 join(project.projectRootPath, 'firstApp', 'someFile.json')
             );
@@ -32,8 +37,8 @@ describe('Utils', () => {
         it('does not find app from multiple apps available', () => {
             const app = getAppForPath(
                 {
-                    ['firstApp']: firstApp,
-                    ['secondApp']: secondApp
+                    [firstAppUri]: firstApp,
+                    [secondAppUri]: secondApp
                 },
                 join(project.projectRootPath, 'thirdApp', 'someFile.json')
             );
