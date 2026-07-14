@@ -49,8 +49,8 @@ function journey() {
 <% if (!hideFilterBar) { -%>
         When.onThe<%- navigationParents.parentLRName%>Generated.onFilterBar().iExecuteSearch();
 <% } -%>
-        Then.onThe<%- navigationParents.parentLRName%>Generated.onTable("").iCheckRows();
-        When.onThe<%- navigationParents.parentLRName%>Generated.onTable("").iPressRow(0);
+        Then.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- navigationParents.parentLRTableIdentifier ? '"' + navigationParents.parentLRTableIdentifier + '"' : '""' %>).iCheckRows();
+        When.onThe<%- navigationParents.parentLRName%>Generated.onTable(<%- navigationParents.parentLRTableIdentifier ? '"' + navigationParents.parentLRTableIdentifier + '"' : '""' %>).iPressRow(0);
 <% } -%>
 <% navigationParents.parentOPs.forEach(function(parent) { %>
         Then.onThe<%- parent.name %>Generated.iSeeThisPage();

@@ -124,6 +124,7 @@ export type ObjectPageNavigationParent = {
 
 export type ObjectPageNavigationParents = {
     parentLRName?: string;
+    parentLRTableIdentifier?: string;
     parentOPs: ObjectPageNavigationParent[];
 };
 
@@ -174,6 +175,20 @@ export type ObjectPageFeatures = {
     editButton?: ButtonState;
 };
 
+/**
+ * Filter bar item as consumed by the List Report journey template.
+ * `property` is the OData property name (stable identifier).
+ * `description` is the (translatable) label — used only for `iCheckFilterField(<label>)`
+ * fallback on custom filter fields, where the object form does not work at runtime.
+ * `custom` is true when the manifest declares a `template` for the field under
+ * `controlConfiguration["@com.sap.vocabularies.UI.v1.SelectionFields"].filterFields`.
+ */
+export type FilterBarItem = {
+    property: string;
+    description: string;
+    custom: boolean;
+};
+
 export type ListReportFeatures = {
     name?: string;
     createButton?: {
@@ -186,10 +201,26 @@ export type ListReportFeatures = {
         visible?: boolean;
         dynamicPath?: string;
     };
-    filterBarItems?: string[];
+    filterBarItems?: FilterBarItem[];
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
     toolBarActions?: ActionButtonState[];
     isALP?: boolean;
+    /**
+     * Non-custom tab keys for multi-tab List Reports.
+     *
+     * Multi-tab LRs declare their tabs under
+     * `sap.ui5.routing.targets[<targetKey>].options.settings.views.paths[]`. Each entry
+     * has a `key` used by the runtime as the tab id. `onTable("<key>")` targets the table
+     * on a specific tab; `onTable()` cannot resolve a table when there is more than one.
+     *
+     * When populated, the first entry is used as the "primary" tab identifier for
+     * assertions that only make sense once (Create/Delete visibility, row navigation to
+     * the Object Page, action list). Row-existence assertions can be emitted per tab.
+     *
+     * Undefined for single-table List Reports (existing behavior — template emits
+     * `onTable()` in JS and `onTable("")` in TS).
+     */
+    tableIdentifiers?: string[];
     semanticKey?: {
         semanticKeyProperties?: string[];
         missingFromFilterBar?: string[];
@@ -199,8 +230,8 @@ export type ListReportFeatures = {
 export interface ActionButtonState {
     label: string;
     /**
-     * For List Report actions: the full OData binding path (e.g. "namespace.ActionName(entityType=@odata.context)").
-     * For Object Page actions extracted from the spec model: the method name only (e.g. "Copy").
+     * Action method name only (e.g. `"SetToBooked"`). Used as the `action` field of
+     * `ActionIdentifier` in `iCheckAction({ service, action, unbound })`.
      */
     action: string;
     visible: boolean;
@@ -222,12 +253,12 @@ export interface ActionButtonState {
     invocationGrouping?: string;
     /**
      * OData schema namespace used as the `service` parameter in iCheckAction({ service, action, unbound }).
-     * Populated for Object Page actions extracted via the spec model + metadata.
+     * Populated for both List Report and Object Page actions extracted via metadata.
      */
     service?: string;
     /**
      * Whether the action is unbound (not bound to a specific entity instance).
-     * Populated for Object Page actions extracted via the spec model + metadata.
+     * Populated for both List Report and Object Page actions extracted via metadata.
      */
     unbound?: boolean;
 }

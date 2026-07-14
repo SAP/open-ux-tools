@@ -5,11 +5,13 @@ import type {
     ActionButtonState,
     ButtonState,
     FEV4ManifestTarget,
+    FilterBarItem,
     ListReportFeatures
 } from '../types.js';
 import {
     getFilterFields,
     getSelectionFieldItems,
+    getSelectionFieldItemsWithLabels,
     getTableColumnData,
     type AggregationItem,
     getAggregations
@@ -85,7 +87,7 @@ export function safeGetSemanticKeyProperties(
     log?: Logger
 ): string[] | undefined {
     try {
-        return getSemanticKeyPropertiesFromMetadata(convertedMetadata, entitySetName, true);
+        return getSemanticKeyPropertiesFromMetadata(convertedMetadata, entitySetName, false);
     } catch (error) {
         log?.debug(`Failed to get semantic key properties: ${error instanceof Error ? error.message : String(error)}`);
         return undefined;
@@ -143,16 +145,18 @@ export function getListReportFeatures(
     manifest?: Manifest
 ): ListReportFeatures {
     const toolbarActions = getToolBarActionNames(listReportPage.model, log);
-    const filterBarItems = getFilterFieldNames(listReportPage.model, log);
+    const filterFieldEntries = getFilterFieldItems(listReportPage.model, log);
+    const customFilterFieldProperties = getCustomFilterFieldProperties(manifest, listReportPage.name);
 
     let buttonVisibility: ReturnType<typeof safeCheckButtonVisibility> | undefined;
     let semanticKeyProperties: string[] | undefined;
     let toolBarActions: ReturnType<typeof safeCheckActionButtonStates> = [];
+    let convertedMetadata: ConvertedMetadata | undefined;
 
     if (metadata && listReportPage.entitySet) {
         const entitySetName = listReportPage.entitySet;
         try {
-            const convertedMetadata = convert(parse(metadata));
+            convertedMetadata = convert(parse(metadata));
             buttonVisibility = safeCheckButtonVisibilityFromMetadata(convertedMetadata, entitySetName, log);
             semanticKeyProperties = safeGetSemanticKeyProperties(convertedMetadata, entitySetName, log);
             toolBarActions = safeCheckActionButtonStates(convertedMetadata, entitySetName, toolbarActions, log);
@@ -161,9 +165,41 @@ export function getListReportFeatures(
         }
     }
 
+    // Resolve unresolved i18n placeholders on custom filter field labels using the
+    // property's OData `@Common.Label`. The spec model returns `filterFields[<p>].label`
+    // verbatim for custom filter fields (e.g. `{i18n>Foo}`), even when the same key
+    // resolves at runtime. `iCheckFilterField(<label>)` matches by the rendered label,
+    // so we need the resolved string. The OData label is the closest stable substitute.
+    const filterBarItems: FilterBarItem[] = filterFieldEntries.map((entry) => {
+        const custom = customFilterFieldProperties.has(entry.property);
+        let description = entry.description;
+        if (
+            custom &&
+            typeof description === 'string' &&
+            description.startsWith('{i18n>') &&
+            convertedMetadata &&
+            listReportPage.entitySet
+        ) {
+            const resolved = getPropertyLabelFromMetadata(convertedMetadata, listReportPage.entitySet, entry.property);
+            if (resolved) {
+                description = resolved;
+            }
+        }
+        return { property: entry.property, description, custom };
+    });
+
+    const filterBarProperties = filterBarItems.map((item) => item.property);
     const missingKeys =
-        semanticKeyProperties?.length && filterBarItems.length
-            ? semanticKeyProperties.filter((key) => !filterBarItems.includes(key))
+        semanticKeyProperties?.length && filterBarProperties.length
+            ? semanticKeyProperties
+                  .filter((key) => !filterBarProperties.includes(key))
+                  // Exclude properties annotated with `@UI.HiddenFilter` — these are hidden
+                  // from the user's filter adaptation dialog, so trying to add them at runtime
+                  // via `iAddAdaptationFilterField({ property })` produces a "field not found"
+                  // failure.
+                  .filter(
+                      (key) => !convertedMetadata || !isHiddenFilter(convertedMetadata, listReportPage.entitySet, key)
+                  )
             : undefined;
 
     return {
@@ -174,6 +210,7 @@ export function getListReportFeatures(
         tableColumns: getTableColumnData(listReportPage.model, log),
         toolBarActions,
         isALP: manifest ? isALPFromManifest(manifest, listReportPage.name) : false,
+        tableIdentifiers: getTableIdentifiers(manifest, listReportPage.name),
         semanticKey: {
             semanticKeyProperties,
             missingFromFilterBar: missingKeys?.length ? missingKeys : undefined
@@ -221,6 +258,180 @@ export function getFilterFieldNames(pageModel: TreeModel, log?: Logger): string[
     }
 
     return filterBarItems;
+}
+
+/**
+ * Retrieves filter field property names paired with their translated labels from the page model.
+ *
+ * Used by the List Report path where custom filter fields must be identified by label because
+ * `iCheckFilterField({ property })` cannot match their control ids (rendered as
+ * `…::CustomFilterField::<property>` rather than the standard `…::FilterField::<property>`).
+ *
+ * @param pageModel - the tree model containing filter bar definitions
+ * @param log - optional logger instance
+ * @returns - an array of `{ property, description }` entries
+ */
+export function getFilterFieldItems(pageModel: TreeModel, log?: Logger): { property: string; description: string }[] {
+    let filterBarItems: { property: string; description: string }[] = [];
+
+    try {
+        const filterBarAggregations = getFilterFields(pageModel);
+        filterBarItems = getSelectionFieldItemsWithLabels(filterBarAggregations);
+    } catch (error) {
+        log?.debug(error);
+    }
+
+    if (!filterBarItems.length) {
+        log?.warn(
+            'Unable to extract filter fields from project model using specification. No filter field tests will be generated.'
+        );
+    }
+
+    return filterBarItems;
+}
+
+/**
+ * Extracts the property names of custom filter fields declared in the manifest.
+ *
+ * A custom filter field is declared under
+ * `sap.ui5.routing.targets[<targetKey>].options.settings.controlConfiguration["@com.sap.vocabularies.UI.v1.SelectionFields"].filterFields[<property>]`
+ * with a `template` value pointing at an app-provided fragment. At runtime such fields
+ * render with control id `…::CustomFilterField::<property>` and cannot be matched by
+ * `iCheckFilterField({ property })` (which builds a regex against `::FilterField::<property>$`).
+ *
+ * @param manifest - the application manifest (may be undefined)
+ * @param targetKey - routing target key of the List Report page
+ * @returns set of custom filter field property names, empty if none or manifest missing
+ */
+export function getCustomFilterFieldProperties(
+    manifest: Manifest | undefined,
+    targetKey: string | undefined
+): Set<string> {
+    const custom = new Set<string>();
+    if (!manifest || !targetKey) {
+        return custom;
+    }
+    const target = manifest['sap.ui5']?.routing?.targets?.[targetKey] as
+        | {
+              options?: {
+                  settings?: {
+                      controlConfiguration?: Record<string, unknown>;
+                  };
+              };
+          }
+        | undefined;
+    const cc = target?.options?.settings?.controlConfiguration;
+    if (!cc || typeof cc !== 'object') {
+        return custom;
+    }
+    const selectionFieldsConfig = cc['@com.sap.vocabularies.UI.v1.SelectionFields'] as
+        | { filterFields?: Record<string, { template?: string }> }
+        | undefined;
+    const filterFields = selectionFieldsConfig?.filterFields;
+    if (!filterFields || typeof filterFields !== 'object') {
+        return custom;
+    }
+    for (const [property, config] of Object.entries(filterFields)) {
+        if (config && typeof config === 'object' && typeof config.template === 'string' && config.template.length > 0) {
+            custom.add(property);
+        }
+    }
+    return custom;
+}
+
+/**
+ * Determines the non-custom tab keys for a List Report page.
+ *
+ * A multi-tab List Report declares its tabs under
+ * `sap.ui5.routing.targets[<targetKey>].options.settings.views.paths[]`. Each entry has
+ * a `key` used by the runtime as the tab id. `onTable("<key>")` targets the table on a
+ * specific tab; `onTable()` cannot resolve a table when there is more than one.
+ *
+ * Custom tabs (with a `template` property pointing at an app-provided fragment) are
+ * skipped — they typically do not host a queryable table.
+ *
+ * Returns an empty array for single-table List Reports; callers should use `onTable()`
+ * (JS) or `onTable("")` (TS) as before.
+ *
+ * @param manifest - the application manifest (may be undefined)
+ * @param targetKey - routing target key of the List Report page
+ * @returns array of non-custom tab keys in manifest order, empty for single-table LRs
+ */
+export function getTableIdentifiers(manifest: Manifest | undefined, targetKey: string | undefined): string[] {
+    if (!manifest || !targetKey) {
+        return [];
+    }
+    const target = manifest['sap.ui5']?.routing?.targets?.[targetKey] as
+        | {
+              options?: {
+                  settings?: {
+                      views?: {
+                          paths?: Array<{ key?: string; template?: string } | undefined>;
+                      };
+                  };
+              };
+          }
+        | undefined;
+    const paths = target?.options?.settings?.views?.paths;
+    if (!Array.isArray(paths) || paths.length === 0) {
+        return [];
+    }
+    const identifiers: string[] = [];
+    for (const path of paths) {
+        if (path && typeof path.key === 'string' && path.key.length > 0 && typeof path.template !== 'string') {
+            identifiers.push(path.key);
+        }
+    }
+    return identifiers;
+}
+
+/**
+ * Retrieves the value of `@com.sap.vocabularies.Common.v1.Label` for a specific property
+ * of the given entity set.
+ *
+ * Used as a fallback label source for custom filter fields whose manifest-declared label
+ * is an unresolved i18n placeholder (e.g. `{i18n>Foo}`).
+ *
+ * @param convertedMetadata - already-converted OData metadata
+ * @param entitySetName - name of the entity set that owns the property
+ * @param propertyName - name of the property whose label should be read
+ * @returns the label string, or undefined if not found
+ */
+export function getPropertyLabelFromMetadata(
+    convertedMetadata: ConvertedMetadata,
+    entitySetName: string,
+    propertyName: string
+): string | undefined {
+    const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
+    const property = entitySet?.entityType?.entityProperties?.find((p) => p.name === propertyName);
+    const label = property?.annotations?.Common?.Label;
+    const labelStr = label !== undefined && label !== null ? String(label) : '';
+    return labelStr.length > 0 ? labelStr : undefined;
+}
+
+/**
+ * Returns true if the property is annotated with `@com.sap.vocabularies.UI.v1.HiddenFilter`.
+ *
+ * Properties with this annotation are excluded from the user's filter adaptation dialog.
+ * Attempting to add them at runtime via `iAddAdaptationFilterField({ property })` fails
+ * because the field is never offered by the dialog.
+ *
+ * @param convertedMetadata - already-converted OData metadata
+ * @param entitySetName - name of the entity set that owns the property (undefined → false)
+ * @param propertyName - name of the property to inspect
+ * @returns true if the property is hidden from the filter adaptation dialog
+ */
+export function isHiddenFilter(
+    convertedMetadata: ConvertedMetadata,
+    entitySetName: string | undefined,
+    propertyName: string
+): boolean {
+    if (!entitySetName) {
+        return false;
+    }
+    const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
+    const property = entitySet?.entityType?.entityProperties?.find((p) => p.name === propertyName);
+    return property?.annotations?.UI?.HiddenFilter !== undefined;
 }
 
 /**
@@ -398,7 +609,7 @@ export function isSemanticKeyInFilterBar(
     log?: Logger
 ): boolean {
     try {
-        const semanticKeys = getSemanticKeyProperties(metadataXml, entitySetName, true);
+        const semanticKeys = getSemanticKeyProperties(metadataXml, entitySetName, false);
         if (!semanticKeys.length) {
             return false;
         }
@@ -417,7 +628,7 @@ export function isSemanticKeyInFilterBar(
  *
  * @param convertedMetadata - The already-converted OData metadata
  * @param entitySetName - The name of the entity set to inspect
- * @param resolveLabels - when true, each property name is replaced with its Common.Label value (falls back to the property name when no label is defined). Use this when comparing against getFilterFieldNames(), which also returns labels.
+ * @param resolveLabels - when true, each property name is replaced with its Common.Label value (falls back to the property name when no label is defined). Default false. Translatable labels should be avoided in stable test identifiers; prefer property names.
  * @returns An array of PropertyPath string values (or their labels) from the SemanticKey annotation, or an empty array if not found
  * @throws {Error} If the entity set is not found
  */
@@ -457,7 +668,7 @@ export function getSemanticKeyPropertiesFromMetadata(
  *
  * @param metadataXml - The OData metadata XML content as a string
  * @param entitySetName - The name of the entity set to inspect
- * @param resolveLabels - when true, each property name is replaced with its Common.Label value (falls back to the property name when no label is defined). Use this when comparing against getFilterFieldNames(), which also returns labels.
+ * @param resolveLabels - when true, each property name is replaced with its Common.Label value (falls back to the property name when no label is defined). Default false. Translatable labels should be avoided in stable test identifiers; prefer property names.
  * @returns An array of PropertyPath string values (or their labels) from the SemanticKey annotation, or an empty array if not found
  * @throws {Error} If the metadata cannot be parsed or the entity set is not found
  */

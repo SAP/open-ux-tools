@@ -1034,11 +1034,10 @@ export type Then = Opa5 & BaseArrangements & {
             expect(lrJourneyPath).toBeDefined();
             const lrContent = dumped[lrJourneyPath!].contents as string;
 
-            // TS-shape filter assertions: plain string identifier (matches JS template) cast to
-            // FilterFieldIdentifier to satisfy `@sapui5/types` which mistypes the parameter.
-            expect(lrContent).toContain('iCheckFilterField("TravelID" as unknown as FilterFieldIdentifier)');
-            expect(lrContent).toContain('iCheckFilterField("AgencyID" as unknown as FilterFieldIdentifier)');
-            expect(lrContent).toContain('iCheckFilterField("Kunden ID" as unknown as FilterFieldIdentifier)');
+            // Standard filter fields use the stable property object form (no cast needed).
+            expect(lrContent).toContain('iCheckFilterField({ property: "TravelID" })');
+            expect(lrContent).toContain('iCheckFilterField({ property: "AgencyID" })');
+            expect(lrContent).toContain('iCheckFilterField({ property: "CustomerID" })');
 
             // TS adaptation: onTable("") instead of onTable()
             expect(lrContent).toContain('onTable("")');
@@ -1063,12 +1062,12 @@ export type Then = Opa5 & BaseArrangements & {
             expect(lrJourneyPath).toBeDefined();
             const content = dumped[lrJourneyPath!].contents as string;
 
-            // The semantic-key adaptation block is emitted with TS-shape calls
+            // The semantic-key adaptation block is emitted with the stable property object form
             expect(content).toContain('Add semantic key properties to filter bar');
             expect(content).toContain('iOpenFilterAdaptation()');
-            expect(content).toContain('iAddAdaptationFilterField("TravelID")');
+            expect(content).toContain('iAddAdaptationFilterField({ property: "TravelID" })');
             expect(content).toContain('iConfirmFilterAdaptation()');
-            expect(content).toContain('iCheckFilterField("TravelID" as unknown as FilterFieldIdentifier)');
+            expect(content).toContain('iCheckFilterField({ property: "TravelID" })');
             // Commented-out global search example uses the typed function signature
             expect(content).toContain('function (Given: Given, When: When, Then: Then)');
         });
