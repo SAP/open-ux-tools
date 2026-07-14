@@ -2,7 +2,8 @@ import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import memFs from 'mem-fs';
 import memFsEditor from 'mem-fs-editor';
-import { generateAppGenInfo } from '../../src/app-gen-info.js';
+import { generateAppGenInfo, getFloorplanLabel } from '../../src/app-gen-info.js';
+import { initI18n } from '../../src/i18n.js';
 import type { AppGenInfo } from '../../src/types/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -105,5 +106,30 @@ describe('Readme file generation tests', () => {
         };
         generateAppGenInfo(__dirname, readMe, editor);
         expect(editor.read(readMePath)).toMatchSnapshot();
+    });
+});
+
+describe('getFloorplanLabel', () => {
+    beforeAll(async () => {
+        await initI18n();
+    });
+    test('returns translated label for known template types', () => {
+        expect(getFloorplanLabel('lrop')).toBe('List Report Page');
+        expect(getFloorplanLabel('fpm')).toBe('Custom Page');
+        expect(getFloorplanLabel('worklist')).toBe('Worklist Page');
+        expect(getFloorplanLabel('alp')).toBe('Analytical List Page');
+        expect(getFloorplanLabel('ovp')).toBe('Overview Page');
+        expect(getFloorplanLabel('feop')).toBe('Form Entry Object Page');
+        expect(getFloorplanLabel('basic')).toBe('Basic');
+    });
+
+    test('returns the templateType as fallback for unknown types', () => {
+        expect(getFloorplanLabel('unknown-type')).toBe('unknown-type');
+    });
+
+    test('appends odata version when provided', () => {
+        expect(getFloorplanLabel('lrop', '4')).toBe('List Report Page V4');
+        expect(getFloorplanLabel('lrop', '2')).toBe('List Report Page V2');
+        expect(getFloorplanLabel('lrop', undefined)).toBe('List Report Page');
     });
 });
