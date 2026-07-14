@@ -6,10 +6,10 @@ import { isJsonInput, isString } from './type-guards.js';
  * Returns the first argument from a list of CLI arguments. If the first argument
  * is not a string returns empty string.
  *
- * @param {string | string[]} args - The list of CLI command arguments.
- * @returns {string} The first parameter in the argument's list as string.
+ * @param {T | T[]} args - The list of CLI command arguments.
+ * @returns {T | string} The first parameter in the argument's list, or empty string if the format is unexpected.
  */
-export function getFirstArgAsString(args: string | string[]): string {
+export function getFirstArgAsString<T>(args: T | T[]): T | string {
     if (isString(args)) {
         return args;
     }

@@ -13,7 +13,7 @@ describe('getFirstArgAsString', () => {
 
     it('should return the first element in case of an array with arguments', () => {
         expect(getFirstArgAsString(['arg1', 'arg2'])).toEqual('arg1');
-        expect(getFirstArgAsString([1, 2] as unknown as string[])).toEqual(1);
+        expect(getFirstArgAsString([1, 2])).toEqual(1);
     });
 
     it('should return empty string if the arguments parameter is not in the expected format', () => {
