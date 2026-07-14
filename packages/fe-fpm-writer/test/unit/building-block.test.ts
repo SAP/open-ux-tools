@@ -24,6 +24,7 @@ import {
     generateBuildingBlockAggregation
 } from '../../src/index.js';
 import { BUILDING_BLOCK_CONFIG, resolveAggregationPath } from '../../src/building-block/processor.js';
+import { AGGREGATION_ID_KEYS, buildAggregationIds } from '../../src/building-block/processAggregation.js';
 import testManifestContent from './sample/building-block/webapp/manifest.json';
 import { clearTestOutput, writeFilesForDebugging } from '../common/index.js';
 import { bindingContextAbsolute, type BindingContextType } from '../../src/building-block/types.js';
@@ -57,15 +58,18 @@ describe('Building Blocks', () => {
     });
 
     beforeEach(async () => {
-        let item = 0;
         jest.requireActual('mem-fs-editor');
         fs = create(createStorage());
         findFilesByExtensionMock.mockResolvedValue([]);
-        generateId = jest.fn((baseId: string) => {
-            if (['Item', 'ButtonGroup'].includes(baseId)) {
-                return `${baseId}${item++}`;
+        generateId = jest.fn((baseId: string, validatedIds: string[] = []) => {
+            if (!validatedIds.includes(baseId)) {
+                return baseId;
             }
-            return `${baseId}`;
+            let counter = 1;
+            while (validatedIds.includes(`${baseId}${counter}`)) {
+                counter++;
+            }
+            return `${baseId}${counter}`;
         });
         testAppPath = join(testOutputRoot, `${Date.now()}`);
         fs.delete(testAppPath);

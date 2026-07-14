@@ -105,28 +105,28 @@ function resolveMacrosPrefix(xmlDocument: Document): string {
 
 /** IDs needed per aggregation template, keyed by the variable name used in the EJS template. */
 /** Controls to generate IDs for per aggregation. `key` is the EJS template variable name, `base` is passed to generateId. */
-const AGGREGATION_ID_KEYS: Partial<Record<PageAggregationName, { key: string; base: string }[]>> = {
+export const AGGREGATION_ID_KEYS: Partial<Record<PageAggregationName, { key: string; base: string }[]>> = {
     breadcrumbs: [
-        { key: 'Breadcrumbs', base: 'Breadcrumbs' },
-        { key: 'Link', base: 'Link' },
-        { key: 'Link1', base: 'Link' },
-        { key: 'Link2', base: 'Link' }
+        { key: 'Breadcrumbs', base: 'breadcrumbs_breadcrumbs' },
+        { key: 'Link', base: 'breadcrumbs_link' },
+        { key: 'Link1', base: 'breadcrumbs_link_1' },
+        { key: 'Link2', base: 'breadcrumbs_link_2' }
     ],
-    navigationActions: [{ key: 'Button', base: 'Button' }],
-    titleContent: [{ key: 'GenericTag', base: 'GenericTag' }],
+    navigationActions: [{ key: 'Button', base: 'navigationActions_button' }],
+    titleContent: [{ key: 'GenericTag', base: 'titleContent_genericTag' }],
     actions: [
-        { key: 'Button', base: 'Button' },
-        { key: 'Button1', base: 'Button' }
+        { key: 'Button', base: 'actions_button' },
+        { key: 'Button1', base: 'actions_button_1' }
     ],
     headerContent: [
-        { key: 'VBox', base: 'VBox' },
-        { key: 'Title', base: 'Title' }
+        { key: 'VBox', base: 'headerContent_vbox' },
+        { key: 'Title', base: 'headerContent_title' }
     ],
     footer: [
-        { key: 'OverflowToolbar', base: 'OverflowToolbar' },
-        { key: 'ToolbarSpacer', base: 'ToolbarSpacer' },
-        { key: 'Button', base: 'Button' },
-        { key: 'Button1', base: 'Button' }
+        { key: 'OverflowToolbar', base: 'footer_overflowToolbar' },
+        { key: 'ToolbarSpacer', base: 'footer_toolbarSpacer' },
+        { key: 'Button', base: 'footer_button' },
+        { key: 'Button1', base: 'footer_button_1' }
     ]
 };
 
@@ -138,7 +138,10 @@ const AGGREGATION_ID_KEYS: Partial<Record<PageAggregationName, { key: string; ba
  * @param generateId - the project-aware ID generator
  * @returns an object mapping each template variable name to a unique ID string
  */
-function buildAggregationIds(aggName: PageAggregationName, generateId: IdGeneratorFunction): Record<string, string> {
+export function buildAggregationIds(
+    aggName: PageAggregationName,
+    generateId: IdGeneratorFunction
+): Record<string, string> {
     const entries = AGGREGATION_ID_KEYS[aggName] ?? [];
     const validatedIds: string[] = [];
     const ids: Record<string, string> = {};
