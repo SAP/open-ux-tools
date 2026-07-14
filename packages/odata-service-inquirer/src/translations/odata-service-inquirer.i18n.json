@@ -85,7 +85,7 @@
             "message": "Password"
         },
         "storeSystemCredentials": {
-            "message": "Store Credentials",
+            "message": "Store System Credentials",
             "breadcrumb": "Store Credentials"
         },
         "systemService": {
@@ -211,7 +211,7 @@
             "hint": "Enables page level variant."
         },
         "valueHelpDownload": {
-            "message": "Download Associated Metadata for Value Help",
+            "message": "Download Associated Metadata for Value Help Services",
             "hint": "Download metadata for value help to improve the user experience with dropdowns and search."
         }
     },
