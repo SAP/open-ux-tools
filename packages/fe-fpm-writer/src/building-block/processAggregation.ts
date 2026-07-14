@@ -358,7 +358,10 @@ export function ensureMissingAggregation(xmlDocument: Document, aggregationPath:
     if (!namespaceUri) {
         return;
     }
-    getOrAddNamespace(xmlDocument, namespaceUri, prefix);
+    const resolvedPrefix = getOrAddNamespace(xmlDocument, namespaceUri, prefix);
+    if (resolvedPrefix === '' && prefix) {
+        xmlDocument.documentElement.setAttributeNS('http://www.w3.org/2000/xmlns/', `xmlns:${prefix}`, namespaceUri);
+    }
 
     // Rebuild xpathSelect with the prefix explicitly mapped so XPath resolves prefixed steps
     // correctly even when the document uses sap.fe.macros as its default namespace.

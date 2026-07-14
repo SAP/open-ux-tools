@@ -11,7 +11,7 @@ import {
 import type { BuildingBlockConfig, Page } from '../../types.js';
 import { SapShortTextType, SapLongTextType } from '@sap-ux/i18n';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
-import { lt } from 'semver';
+import { coerce, lt } from 'semver';
 import { getManifest } from '../../../common/utils.js';
 
 export type PagePromptsAnswer = BuildingBlockConfig<Page> & Answers;
@@ -26,8 +26,8 @@ export async function getPageBuildingBlockPrompts(context: PromptContext): Promi
     const t = translate(i18nNamespaces.buildingBlock, 'prompts.page.');
 
     const { content: manifest } = await getManifest(context.appPath, context.fs, false);
-    const minUI5Version = manifest ? getMinimumUI5Version(manifest) : undefined;
-    const hideTemplateType = !minUI5Version || lt(minUI5Version, PAGE_FULL_TEMPLATE_MIN_UI5_VERSION);
+    const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
+    const hideTemplateType = !!minUI5Version && lt(minUI5Version, PAGE_FULL_TEMPLATE_MIN_UI5_VERSION);
 
     return {
         questions: [

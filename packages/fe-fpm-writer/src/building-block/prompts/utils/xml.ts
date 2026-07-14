@@ -43,7 +43,8 @@ function addMacrosItemsPathIfMissing(
         (child) => child.nodeType === child.ELEMENT_NODE && (child as Element).localName === 'items'
     );
     if (!hasItemsChild) {
-        const itemsPath = `${parentNode}/${node.nodeName}/${macrosItemsName}`;
+        const pageStep = (node as Element).prefix ? node.nodeName : `${resolvedPrefix}:Page`;
+        const itemsPath = `${parentNode}/${pageStep}/${macrosItemsName}`;
         result[itemsPath] = augmentXpathWithLocalNames(itemsPath);
     }
 }
