@@ -164,7 +164,9 @@ export default class extends Generator {
                 await this._generateAdtQuickDeployApp();
             }
         } catch (error) {
-            RepoAppDownloadLogger.logger?.error(t('error.writingPhase', { error: (error as Error).message }));
+            RepoAppDownloadLogger.logger?.error(
+                t('error.writingPhase', { error: error instanceof Error ? error.message : String(error) })
+            );
             const failEvent =
                 this.downloadType === AppDownloadType.AbapRepository
                     ? EventName.ABAP_REPO_DOWNLOAD_FAIL

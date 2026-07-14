@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import memFs from 'mem-fs';
 import memFsEditor from 'mem-fs-editor';
 import { generateAppGenInfo, getFloorplanLabel } from '../../src/app-gen-info.js';
+import { initI18n } from '../../src/i18n.js';
 import type { AppGenInfo } from '../../src/types/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -109,6 +110,9 @@ describe('Readme file generation tests', () => {
 });
 
 describe('getFloorplanLabel', () => {
+    beforeAll(async () => {
+        await initI18n();
+    });
     test('returns translated label for known template types', () => {
         expect(getFloorplanLabel('lrop')).toBe('List Report Page');
         expect(getFloorplanLabel('fpm')).toBe('Custom Page');
