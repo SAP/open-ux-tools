@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.2.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-14
+
+#### Features
+
+- Add standalone fragment generation support [[5d0eb12](https://github.com/SAP/open-ux-tools/commit/5d0eb12b95f71b9ee7556564c639b19e04ada60f)]
+
 ## 1.1.7
 
 ### Patch Changes
