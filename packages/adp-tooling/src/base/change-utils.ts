@@ -19,6 +19,7 @@ import {
 } from '../types.js';
 import { renderFile } from 'ejs';
 import { replaceTextsWithI18nBindings, writeKeyUserTranslations } from '../writer/i18n/key-user-translations.js';
+import { ensureAnnotationI18nModelRegistered } from '../writer/manifest/ensure-annotation-i18n-model.js';
 
 export type ChangeMetadata = Pick<DescriptorVariant, 'id' | 'layer' | 'namespace'>;
 
@@ -109,6 +110,8 @@ export async function writeKeyUserChanges(projectPath: string, config: AdpWriter
         return;
     }
 
+    let translationsWritten = false;
+
     for (const entry of changes) {
         if (!entry?.content) {
             continue;
@@ -127,11 +130,19 @@ export async function writeKeyUserChanges(projectPath: string, config: AdpWriter
         if (contentTexts && topLevelTexts && Object.keys(topLevelTexts).length > 0) {
             change['texts'] = replaceTextsWithI18nBindings(contentTexts, fileName);
             await writeKeyUserTranslations(projectPath, fileName, topLevelTexts, fs);
+            translationsWritten = true;
         }
 
         const transformedChange = transformKeyUserChangeForAdp(change, config.app.id, config.app.layer);
 
         await writeChangeToFolder(projectPath, transformedChange as unknown as ManifestChangeProperties, fs);
+    }
+
+    // Annotation-change bindings ({@i18n>KEY}) require the @i18n model. New projects
+    // already have it from the generator scaffold; this ensures it for projects that
+    // predate that change. No-op when the model is already registered correctly.
+    if (translationsWritten) {
+        await ensureAnnotationI18nModelRegistered(projectPath, fs);
     }
 }
 

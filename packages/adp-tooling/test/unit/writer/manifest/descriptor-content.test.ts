@@ -117,4 +117,42 @@ describe('getManifestContent', () => {
         const types = result.map((c) => c.changeType);
         expect(types).not.toContain('appdescr_ui5_setMinUI5Version');
     });
+
+    it('should register exactly one @i18n model when the base app has none', () => {
+        const result = getManifestContent(baseConfig);
+        const i18nModelChanges = result.filter(
+            (c) =>
+                c.changeType === 'appdescr_ui5_addNewModelEnhanceWith' &&
+                (c.content as { modelId?: string }).modelId === '@i18n'
+        );
+
+        expect(i18nModelChanges).toHaveLength(1);
+        expect(i18nModelChanges[0]).toEqual({
+            changeType: 'appdescr_ui5_addNewModelEnhanceWith',
+            content: { modelId: '@i18n', createIfMissing: true },
+            texts: { i18n: 'i18n/i18n.properties' }
+        });
+    });
+
+    it('should not add a duplicate @i18n model when the base app already declares it', () => {
+        const config = {
+            ...baseConfig,
+            app: {
+                ...baseConfig.app,
+                i18nModels: [
+                    { key: 'i18n', path: 'i18n/i18n.properties' },
+                    { key: '@i18n', path: 'i18n/i18n.properties' }
+                ]
+            }
+        } as AdpWriterConfig;
+        const result = getManifestContent(config);
+        const i18nModelChanges = result.filter(
+            (c) =>
+                c.changeType === 'appdescr_ui5_addNewModelEnhanceWith' &&
+                (c.content as { modelId?: string }).modelId === '@i18n'
+        );
+
+        expect(i18nModelChanges).toHaveLength(1);
+        expect((i18nModelChanges[0].content as { createIfMissing?: boolean }).createIfMissing).toBe(true);
+    });
 });

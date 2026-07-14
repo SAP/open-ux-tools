@@ -546,6 +546,16 @@ my.test.app_sap.app.title=Adaptation of the.original.app
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
+    },
+    {
+      \\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
+      \\"content\\": {
+        \\"modelId\\": \\"@i18n\\",
+        \\"createIfMissing\\": true
+      },
+      \\"texts\\": {
+        \\"i18n\\": \\"i18n/i18n.properties\\"
+      }
     }
   ]
 }
@@ -916,6 +926,16 @@ my.test.app_sap.app.title=Adaptation of the.original.app
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
+    },
+    {
+      \\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
+      \\"content\\": {
+        \\"modelId\\": \\"@i18n\\",
+        \\"createIfMissing\\": true
+      },
+      \\"texts\\": {
+        \\"i18n\\": \\"i18n/i18n.properties\\"
+      }
     }
   ]
 }
@@ -1032,6 +1052,16 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     {
       \\"changeType\\": \\"appdescr_app_setTitle\\",
       \\"content\\": {},
+      \\"texts\\": {
+        \\"i18n\\": \\"i18n/i18n.properties\\"
+      }
+    },
+    {
+      \\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
+      \\"content\\": {
+        \\"modelId\\": \\"@i18n\\",
+        \\"createIfMissing\\": true
+      },
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
@@ -1183,6 +1213,16 @@ my.test.app_sap.app.title=Adaptation of the.original.app
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
+    },
+    {
+      \\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
+      \\"content\\": {
+        \\"modelId\\": \\"@i18n\\",
+        \\"createIfMissing\\": true
+      },
+      \\"texts\\": {
+        \\"i18n\\": \\"i18n/i18n.properties\\"
+      }
     }
   ]
 }
@@ -1321,6 +1361,16 @@ my.test.app_sap.app.title=Adaptation of the.original.app
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
+    },
+    {
+      \\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
+      \\"content\\": {
+        \\"modelId\\": \\"@i18n\\",
+        \\"createIfMissing\\": true
+      },
+      \\"texts\\": {
+        \\"i18n\\": \\"i18n/i18n.properties\\"
+      }
     }
   ]
 }
@@ -1432,6 +1482,16 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     {
       \\"changeType\\": \\"appdescr_app_setTitle\\",
       \\"content\\": {},
+      \\"texts\\": {
+        \\"i18n\\": \\"i18n/i18n.properties\\"
+      }
+    },
+    {
+      \\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
+      \\"content\\": {
+        \\"modelId\\": \\"@i18n\\",
+        \\"createIfMissing\\": true
+      },
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
@@ -1589,6 +1649,16 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     {
       \\"changeType\\": \\"appdescr_app_setTitle\\",
       \\"content\\": {},
+      \\"texts\\": {
+        \\"i18n\\": \\"i18n/i18n.properties\\"
+      }
+    },
+    {
+      \\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
+      \\"content\\": {
+        \\"modelId\\": \\"@i18n\\",
+        \\"createIfMissing\\": true
+      },
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
@@ -1750,6 +1820,16 @@ my.test.app_sap.app.title=Adaptation of the.original.app
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
+    },
+    {
+      \\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
+      \\"content\\": {
+        \\"modelId\\": \\"@i18n\\",
+        \\"createIfMissing\\": true
+      },
+      \\"texts\\": {
+        \\"i18n\\": \\"i18n/i18n.properties\\"
+      }
     }
   ]
 }
@@ -1904,6 +1984,16 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     {
       \\"changeType\\": \\"appdescr_app_setTitle\\",
       \\"content\\": {},
+      \\"texts\\": {
+        \\"i18n\\": \\"i18n/i18n.properties\\"
+      }
+    },
+    {
+      \\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
+      \\"content\\": {
+        \\"modelId\\": \\"@i18n\\",
+        \\"createIfMissing\\": true
+      },
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
@@ -2083,6 +2173,16 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     {
       \\"changeType\\": \\"appdescr_app_setTitle\\",
       \\"content\\": {},
+      \\"texts\\": {
+        \\"i18n\\": \\"i18n/i18n.properties\\"
+      }
+    },
+    {
+      \\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
+      \\"content\\": {
+        \\"modelId\\": \\"@i18n\\",
+        \\"createIfMissing\\": true
+      },
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
