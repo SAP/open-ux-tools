@@ -20,9 +20,9 @@ import {
     sendTelemetry,
     TelemetryHelper,
     isCli,
-    setYeomanEnvConflicterForce
+    setYeomanEnvConflicterForce,
+    getFloorplanLabel
 } from '@sap-ux/fiori-generator-shared';
-import { getFloorplanLabel } from '@sap-ux/fiori-app-sub-generator';
 import type {
     RepoAppDownloadOptions,
     RepoAppDownloadAnswers,
@@ -157,10 +157,28 @@ export default class extends Generator {
      * Writes the configuration files for the project, including deployment config, and README.
      */
     public async writing(): Promise<void> {
-        if (this.downloadType === AppDownloadType.AbapRepository) {
-            await this._generateAbapRepositoryApp();
-        } else {
-            await this._generateAdtQuickDeployApp();
+        try {
+            if (this.downloadType === AppDownloadType.AbapRepository) {
+                await this._generateAbapRepositoryApp();
+            } else {
+                await this._generateAdtQuickDeployApp();
+            }
+        } catch (error) {
+            RepoAppDownloadLogger.logger?.error(t('error.writingPhase', { error: (error as Error).message }));
+            const failEvent =
+                this.downloadType === AppDownloadType.AbapRepository
+                    ? EventName.ABAP_REPO_DOWNLOAD_FAIL
+                    : EventName.ADT_QUICK_DEPLOY_DOWNLOAD_FAIL;
+            await sendTelemetry(
+                failEvent,
+                TelemetryHelper.createTelemetryData({
+                    appType: generatorName,
+                    ...this.options.telemetryData
+                }) ?? {}
+            ).catch(() => {
+                // telemetry errors are non-fatal
+            });
+            throw error;
         }
     }
 
@@ -405,10 +423,14 @@ export default class extends Generator {
                 MessageType.notification
             );
             await this._handlePostAppGeneration();
+            const successEvent =
+                this.downloadType === AppDownloadType.AbapRepository
+                    ? EventName.ABAP_REPO_DOWNLOAD_SUCCESS
+                    : EventName.ADT_QUICK_DEPLOY_DOWNLOAD_SUCCESS;
             await sendTelemetry(
-                EventName.GENERATION_SUCCESS,
+                successEvent,
                 TelemetryHelper.createTelemetryData({
-                    appType: 'repo-app-import-sub-generator',
+                    appType: generatorName,
                     ...this.options.telemetryData
                 }) ?? {}
             ).catch((error) => {

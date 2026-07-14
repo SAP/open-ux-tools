@@ -395,19 +395,3 @@ describe('Test utils', () => {
         });
     });
 });
-
-describe('getFloorplanLabel', () => {
-    test('returns translated label for known template types', () => {
-        expect(getFloorplanLabel('lrop')).toBe('List Report Page');
-        expect(getFloorplanLabel('fpm')).toBe('Custom Page');
-        expect(getFloorplanLabel('worklist')).toBe('Worklist Page');
-        expect(getFloorplanLabel('alp')).toBe('Analytical List Page');
-        expect(getFloorplanLabel('ovp')).toBe('Overview Page');
-        expect(getFloorplanLabel('feop')).toBe('Form Entry Object Page');
-        expect(getFloorplanLabel('basic')).toBe('Basic');
-    });
-
-    test('returns the templateType as fallback for unknown types', () => {
-        expect(getFloorplanLabel('unknown-type')).toBe('unknown-type');
-    });
-});
