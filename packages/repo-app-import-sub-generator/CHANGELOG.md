@@ -1,5 +1,42 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.1.41
+
+### Patch Changes
+
+#### Features
+
+- Move getFloorplanLabel and floorplans translations from fiori-app-sub-generator to fiori-generator-shared. Add flow-specific telemetry events for ABAP repository download and ADT quick deploy flows. [[f14486c](https://github.com/SAP/open-ux-tools/commit/f14486c70e455b042c6bb4c009a717b615cbf06f)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.20 → 1.1.0
+- @sap-ux/fiori-elements-writer 3.0.56 → 3.0.57
+- @sap-ux/fiori-freestyle-writer 3.0.50 → 3.0.51
+- @sap-ux/inquirer-common 1.0.21 → 1.0.22
+- @sap-ux/odata-service-inquirer 3.0.23 → 3.0.24
+
+## 1.1.40
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.55 → 3.0.56
+- @sap-ux/fiori-app-sub-generator 1.1.7 → 1.1.8
+- @sap-ux/odata-service-inquirer 3.0.23 → 3.0.23
+
+## 1.1.39
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-app-sub-generator 1.1.6 → 1.1.7
+- @sap-ux/fiori-elements-writer 3.0.54 → 3.0.55
+- @sap-ux/fiori-freestyle-writer 3.0.49 → 3.0.50
+- @sap-ux/odata-service-inquirer 3.0.23 → 3.0.23
+
 ## 1.1.38
 
 ### Patch Changes
