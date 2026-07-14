@@ -1159,7 +1159,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
         });
         jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
         const testProjectPath = join(__dirname, 'fixtures/app.variant1');
-        let callbackResult: boolean | undefined = undefined;
+        let callbackResult: boolean | undefined;
         jest.spyOn(inquirerCommon, 'getCredentialsPrompts').mockImplementationOnce(
             async (
                 callback?: inquirerCommon.AdditionalValidation
