@@ -1159,12 +1159,12 @@ describe('FLPConfigGenerator Integration Tests', () => {
         });
         jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
         const testProjectPath = join(__dirname, 'fixtures/app.variant1');
-        let callbackResult: string = '';
+        let callbackResult: boolean | undefined = undefined;
         jest.spyOn(inquirerCommon, 'getCredentialsPrompts').mockImplementationOnce(
             async (
                 callback?: inquirerCommon.AdditionalValidation
             ): Promise<inquirerCommon.YUIQuestion<inquirerCommon.CredentialsAnswers>[]> => {
-                callbackResult = (await callback?.({ username: 'testUsername', password: 'testPassword' })) as string;
+                callbackResult = await callback?.({ username: 'testUsername', password: 'testPassword' });
                 return Promise.resolve([
                     {
                         username: 'testUsername'
