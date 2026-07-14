@@ -35,8 +35,7 @@
             "worklist": "Create an SAP Fiori elements application containing a worklist and an object page.",
             "alp": "Create an SAP Fiori elements application containing an analytical list and an object page.",
             "ovp": "Create an SAP Fiori elements application containing an overview page.",
-            "feop": "Create an SAP Fiori elements application containing an object page optimized for data entry.",
-            "listdetail": "Create an SAP Fiori elements application containing a list and a detail page."
+            "feop": "Create an SAP Fiori elements application containing an object page optimized for data entry."
         }
     }
 }
