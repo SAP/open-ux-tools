@@ -97,4 +97,12 @@ describe('Flex change', () => {
         expect((reparsed.index.documents[changeFileUri] as DocumentNode).range).toStrictEqual([0, 2]);
         expect(reparsed.index.apps[''].changes).toHaveLength(0); // change removed
     });
+
+    test('reparse: updated malformed .change file is deleted from app changes', () => {
+        parsedProject.apps[''].changes = [propertyChange];
+        fileCache.set(changeFileUri, '{');
+        const reparsed = parser.reparse(changeFileUri, parsedProject, fileCache);
+        expect(reparsed.index.documents[changeFileUri]).toBeUndefined();
+        expect(reparsed.index.apps[''].changes).toHaveLength(0); // change removed
+    });
 });
