@@ -1,8 +1,7 @@
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import type { ParsedApp, ParsedService } from './parser/index.js';
 import { readFileSync } from 'node:fs';
 import type { FlexChange } from './parser/types.js';
-import { join } from 'node:path';
 
 /**
  * Get parsed service by name from parsed application.
@@ -25,15 +24,15 @@ export function getParsedServiceByName(parsedApp: ParsedApp, serviceName?: strin
  * @param path - File path
  * @returns Parsed app if found
  */
-export function getAppForPath(apps: { [appName: string]: ParsedApp }, path: string): ParsedApp | undefined {
-    const appNames = Object.keys(apps);
-    if (appNames.length === 1) {
-        return apps[appNames[0]];
+export function getAppForPath(apps: { [appUri: string]: ParsedApp }, path: string): ParsedApp | undefined {
+    const appUris = Object.keys(apps);
+    if (appUris.length === 1 && path.includes(fileURLToPath(appUris[0]))) {
+        return apps[appUris[0]];
     }
-    if (appNames.length > 1) {
-        const appName = appNames.find((appName) => path.includes(join(apps[appName].projectRootPath, appName)));
-        if (appName !== undefined) {
-            return apps[appName];
+    if (appUris.length > 1) {
+        const appUri = appUris.find((appName) => path.includes(fileURLToPath(appName)));
+        if (appUri !== undefined) {
+            return apps[appUri];
         }
     }
     return undefined;
@@ -49,9 +48,11 @@ export function getAppForPath(apps: { [appName: string]: ParsedApp }, path: stri
 export function isFlexChange(changeObject: Partial<FlexChange>): changeObject is FlexChange {
     return (
         'changeType' in changeObject &&
+        changeObject.changeType === 'propertyChange' &&
         'content' in changeObject &&
         typeof changeObject.content?.property === 'string' &&
         'newValue' in changeObject.content &&
+        typeof changeObject.selector?.type === 'string' &&
         typeof changeObject.selector?.id === 'string'
     );
 }
