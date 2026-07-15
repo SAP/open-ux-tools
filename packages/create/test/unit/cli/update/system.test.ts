@@ -130,8 +130,8 @@ describe('system/update (update command group)', () => {
             unknown,
             { username?: string; password?: string }
         ];
-        expect(patch.username).toBeUndefined();
-        expect(patch.password).toBeUndefined();
+        expect(patch.username).toBe('');
+        expect(patch.password).toBe('');
         expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('updated'));
     });
 
