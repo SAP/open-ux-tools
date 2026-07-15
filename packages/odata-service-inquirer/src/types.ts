@@ -343,7 +343,7 @@ export type SystemSelectionPromptOptions = {
      */
     hideNewSystem?: boolean;
     /**
-     * Include systems specified by the backendSystemFilter see @link  {@link BackendSystemFilter}.
+     * Include systems specified by the backendSystemFilter see {@link BackendSystemFilter}.
      * Defaults to { connectionType: ['abap_catalog', 'odata_service'] } if not provided.
      */
     backendSystemFilter?: BackendSystemFilter;
