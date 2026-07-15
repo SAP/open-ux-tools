@@ -22,15 +22,32 @@ files that the tooling never checks.
 | File | Standalone | CAP |
 |---|:---:|:---:|
 | `webapp/manifest.json` | ✅ | ✅ |
-| `webapp/changes/**/*propertyChange.change` | ✅ | ✅ |
+| `webapp/changes/**/*propertyChange.change` (OData V2 only) | ✅ | ✅ |
 | XML annotation files listed in the manifest (`webapp/annotations/*.xml`, etc.) | ✅ | ❌ |
 | `<app-folder>/<app-name>/**/*.cds` (app-level only) | ❌ | ✅ |
 
 Key rules:
-- Only `*propertyChange.change` files are included from the `changes/` folder — not all `.change` files
+- Only `*propertyChange.change` files are included from the `changes/` folder — not all `.change` files; these only exist in OData V2 projects
 - For CAP projects, only `.cds` files within the specific app directory are linted — not the project root, `db/`, `srv/`, or sibling apps
 - For CAP projects, XML annotation files are **not** linted — the annotations live in `.cds` files instead
 - For standalone projects, `.cds` files are **not** linted — only the manifest, XML annotations, and change files
+
+### Detecting OData version
+
+The OData version is declared explicitly in `manifest.json` under `sap.app.dataSources[*].settings.odataVersion`. A V4 project will have `"odataVersion": "4.0"` on its main data source; V2 projects either have `"2.0"` or omit the field entirely.
+
+```bash
+# Returns "v4" if any dataSource declares odataVersion 4.x, otherwise "v2"
+node -e "
+const m = require('./webapp/manifest.json');
+const ds = Object.values(m['sap.app']?.dataSources ?? {});
+const isV4 = ds.some(d => (d.settings?.odataVersion ?? '').startsWith('4'));
+console.log(isV4 ? 'v4' : 'v2');
+"
+```
+
+- Result `v4` → **OData V4** — skip `.change` files
+- Result `v2` → **OData V2** — include `*propertyChange.change` files
 
 ### Why counts differ without this scoping
 
@@ -49,7 +66,7 @@ Always target the exact file set explicitly. Substitute real paths where shown.
 # 1. manifest.json
 npx eslint webapp/manifest.json
 
-# 2. propertyChange files (if any exist)
+# 2. propertyChange files — OData V2 projects only (skip if V4)
 find webapp/changes -name "*propertyChange.change" 2>/dev/null | xargs npx eslint --no-warn-ignored
 
 # 3. XML annotation files (paths come from manifest.json sap.app/dataSources)
@@ -70,7 +87,7 @@ APP=app/incidents   # replace with your app folder
 # 1. manifest.json
 npx eslint $APP/webapp/manifest.json
 
-# 2. propertyChange files
+# 2. propertyChange files — OData V2 projects only (skip if V4)
 find $APP/webapp/changes -name "*propertyChange.change" 2>/dev/null | xargs npx eslint --no-warn-ignored
 
 # 3. CDS files (app-level only)
@@ -100,8 +117,8 @@ Present results with a clear scope label so the user knows the count matches the
 
 ```
 Application Issues (Application Information / Page Map scope):
-  Standalone: manifest.json + XML annotation files + *propertyChange.change files
-  CAP:        manifest.json + <app>/**/*.cds + *propertyChange.change files
+  Standalone: manifest.json + XML annotation files + *propertyChange.change files (V2 only)
+  CAP:        manifest.json + <app>/**/*.cds + *propertyChange.change files (V2 only)
 
 - X errors
 - Y warnings
