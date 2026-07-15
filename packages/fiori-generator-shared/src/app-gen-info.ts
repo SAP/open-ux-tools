@@ -94,3 +94,13 @@ export function generateAppGenInfo(destPath: string, appGenInfo: AppGenInfo, fs:
 export function getFloorplanLabel(templateType: string, odataVersion?: string): string {
     return t(`floorplans.label.${templateType}`, { defaultValue: templateType, odataVersion });
 }
+
+/**
+ * Returns the description for a given floorplan template type.
+ *
+ * @param templateType - the template type key (e.g. 'lrop', 'fpm')
+ * @returns the description string
+ */
+export function getFloorplanDescription(templateType: string): string {
+    return t(`floorplans.description.${templateType}`, { defaultValue: '' });
+}
