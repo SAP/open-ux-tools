@@ -200,4 +200,3 @@ dist-cjs/
 
 # Test fixture lock files
 packages/cds-odata-annotation-converter/test/data/bookshop/package-lock.json
-MANUAL_TESTING.md
