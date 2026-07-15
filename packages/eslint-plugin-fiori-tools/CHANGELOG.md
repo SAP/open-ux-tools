@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.7.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-15
+
+#### Bug Fixes
+
+- Validate required fields are defined in the .change file when creating a FlexChange object. [[81e386d](https://github.com/SAP/open-ux-tools/commit/81e386dec63839016e43cd3b48889134ccac48f9)]
+
 ## 10.7.8
 
 ### Patch Changes
