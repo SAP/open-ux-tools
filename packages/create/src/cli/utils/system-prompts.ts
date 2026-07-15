@@ -96,7 +96,7 @@ export async function promptForSystemConfig(partial: {
         });
     }
 
-    const answers = questions.length > 0 ? await prompts(questions) : {};
+    const answers = questions.length > 0 ? await prompts(questions as any) : {};
 
     return {
         name: partial.name || answers.name,
@@ -141,7 +141,7 @@ export async function promptForSystemIdentifier(partial: {
         });
     }
 
-    const answers = questions.length > 0 ? await prompts(questions) : {};
+    const answers = questions.length > 0 ? await prompts(questions as any) : {};
 
     return {
         url: partial.url || answers.url,
