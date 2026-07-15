@@ -14,6 +14,19 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: isAppStudioMock
 }));
 
+// Mock prompts - return empty object (no interactive prompting)
+const mockPrompts = jest.fn().mockResolvedValue({});
+jest.unstable_mockModule('prompts', () => ({
+    default: mockPrompts
+}));
+
+// Mock connection check to always succeed and not prompt
+const mockCheckConnectionOrPrompt = jest.fn().mockResolvedValue(true);
+jest.unstable_mockModule('../../../../src/cli/utils/system-connection', () => ({
+    checkConnectionOrPrompt: mockCheckConnectionOrPrompt,
+    checkSystemConnection: jest.fn().mockResolvedValue({ success: true })
+}));
+
 const mockedService = {
     read: jest.fn<any>().mockResolvedValue(undefined),
     write: jest.fn<any>().mockResolvedValue(undefined),
@@ -48,6 +61,8 @@ describe('system/update (update command group)', () => {
         mockedService.partialUpdate.mockResolvedValue(undefined);
         // Default: system exists
         mockedService.read.mockResolvedValue({ name: 'My System' });
+        mockCheckConnectionOrPrompt.mockResolvedValue(true);
+        mockPrompts.mockResolvedValue({});
     });
 
     test('should update system name', async () => {
@@ -122,14 +137,15 @@ describe('system/update (update command group)', () => {
 
     test('should log error when no fields to update', async () => {
         // Given
+        mockPrompts.mockResolvedValueOnce({ fields: [] }); // User selects nothing in multi-select
         const command = new Command('update');
         addSystemUpdateCommand(command);
 
         // When
-        await command.parseAsync(getArgv(['system', '--url', 'https://example.com']));
+        await command.parseAsync(getArgv(['system', '--url', 'https://example.com', '--client', '']));
 
         // Then
-        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('No fields to update'));
+        expect(loggerMock.error).toHaveBeenCalledWith('At least one field must be selected');
         expect(mockedService.partialUpdate).not.toHaveBeenCalled();
     });
 

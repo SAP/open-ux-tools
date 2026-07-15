@@ -15,6 +15,12 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: isAppStudioMock
 }));
 
+// Mock prompts - default to confirming removal
+const mockPrompts = jest.fn().mockResolvedValue({ confirm: true });
+jest.unstable_mockModule('prompts', () => ({
+    default: mockPrompts
+}));
+
 const mockedService = {
     read: jest.fn<any>().mockResolvedValue(undefined),
     write: jest.fn<any>().mockResolvedValue(undefined),
@@ -56,9 +62,26 @@ describe('system/remove', () => {
         isAppStudioMock.mockReturnValue(false);
         mockedService.read.mockResolvedValue(mockSystem);
         mockedService.delete.mockResolvedValue(true);
+        mockPrompts.mockResolvedValue({ confirm: true });
     });
 
-    test('should remove an existing system', async () => {
+    test('should remove an existing system with --force (no confirmation)', async () => {
+        // Given
+        const command = new Command('remove');
+        addSystemRemoveCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['system', '--url', 'https://my-sap.example.com', '--client', '', '--force']));
+
+        // Then
+        expect(mockedService.read).toHaveBeenCalledTimes(1);
+        expect(mockedService.delete).toHaveBeenCalledWith(mockSystem);
+        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('removed'));
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(mockPrompts).not.toHaveBeenCalled(); // No confirmation prompt with --force
+    });
+
+    test('should prompt for confirmation when --force not provided', async () => {
         // Given
         const command = new Command('remove');
         addSystemRemoveCommand(command);
@@ -67,10 +90,28 @@ describe('system/remove', () => {
         await command.parseAsync(getArgv(['system', '--url', 'https://my-sap.example.com']));
 
         // Then
-        expect(mockedService.read).toHaveBeenCalledTimes(1);
-        expect(mockedService.delete).toHaveBeenCalledWith(mockSystem);
-        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('removed'));
-        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(mockPrompts).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: 'select',
+                message: expect.stringContaining('Remove system')
+            })
+        );
+        expect(mockedService.delete).toHaveBeenCalled();
+    });
+
+    test('should not remove system when user declines confirmation', async () => {
+        // Given
+        mockPrompts.mockResolvedValue({ confirm: false }); // User says No
+        const command = new Command('remove');
+        addSystemRemoveCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['system', '--url', 'https://my-sap.example.com']));
+
+        // Then
+        expect(mockPrompts).toHaveBeenCalled();
+        expect(mockedService.delete).not.toHaveBeenCalled();
+        expect(loggerMock.info).toHaveBeenCalledWith('Remove cancelled.');
     });
 
     test('should log error when system not found', async () => {
