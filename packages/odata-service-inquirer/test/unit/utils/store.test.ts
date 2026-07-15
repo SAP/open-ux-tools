@@ -52,7 +52,7 @@ describe('Test utils related to the store', () => {
         );
     });
 
-    it('should call getAll with default connectionTypes when none provided', async () => {
+    it('should call getAll with default backendSystemFilter when none provided', async () => {
         mockGetAll.mockResolvedValueOnce([]);
         await getAllBackendSystems();
         expect(mockGetAll).toHaveBeenCalledWith(

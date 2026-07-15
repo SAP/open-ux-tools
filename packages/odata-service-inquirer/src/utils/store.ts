@@ -24,19 +24,19 @@ export async function getBackendSystemService(): Promise<Service<BackendSystem, 
  * Fetch all backend systems.
  *
  * @param includeSensitiveData - whether to include sensitive data
- * @param backendSystemFilter - optional filter to apply when retrieving backend systems
+ * @param backendSystemFilter - store filter for backend systems. Defaults to { connectionType: ['abap_catalog', 'odata_service'] } if not provided.
  * @returns backend systems
  */
 export async function getAllBackendSystems(
     includeSensitiveData = false,
-    backendSystemFilter: BackendSystemFilter = { connectionType: ['abap_catalog', 'odata_service'] }
+    backendSystemFilter?: BackendSystemFilter
 ): Promise<BackendSystem[] | []> {
     let backendSystems: BackendSystem[] | [] = [];
     try {
         const backendService = await getBackendSystemService();
         backendSystems = await backendService.getAll({
             includeSensitiveData,
-            backendSystemFilter
+            backendSystemFilter: backendSystemFilter ?? { connectionType: ['abap_catalog', 'odata_service'] }
         });
     } catch (error) {
         LoggerHelper.logger.error(t('errors.backendSystemRetrieval', { error: error.message }));
