@@ -19,10 +19,11 @@ export const getFlpId = (appId: string, action?: string | undefined): string => 
 
 /**
  * Returns the display label for a given floorplan template type.
+ * Falls back to the templateType value itself if no translation is found.
  *
- * @param {Floorplan} templateType - the template type (e.g. 'lrop', 'fpm')
- * @param odataVersion - optional OData version (e.g. '2', '4')
- * @returns the display label (e.g. 'List Report Page V4')
+ * @param templateType - the floorplan template type (e.g. `FloorplanFE.FE_LROP`)
+ * @param odataVersion - optional OData version suffix (e.g. `'2'` or `'4'`)
+ * @returns the display label (e.g. `'List Report Page V4'`)
  */
 export function getFloorplanLabel(templateType: Floorplan, odataVersion?: string): string {
     return t(`floorplans.label.${templateType}`, { defaultValue: templateType, odataVersion });
