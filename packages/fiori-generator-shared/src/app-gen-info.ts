@@ -2,6 +2,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
 import type { AbapCSN, AppGenInfo, ExternalParameters } from './types/index.js';
+import { t } from './i18n.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -81,4 +82,15 @@ export function generateAppGenInfo(destPath: string, appGenInfo: AppGenInfo, fs:
     fs.writeJSON(`${destPath}/.appGenInfo.json`, appGenInfoJson);
 
     return fs;
+}
+
+/**
+ * Returns the display label for a given floorplan template type.
+ *
+ * @param templateType - the template type key (e.g. 'lrop', 'fpm')
+ * @param odataVersion - optional OData version (e.g. '2', '4')
+ * @returns the display label (e.g. 'List Report Page V4')
+ */
+export function getFloorplanLabel(templateType: string, odataVersion?: string): string {
+    return t(`floorplans.label.${templateType}`, { defaultValue: templateType, odataVersion });
 }
