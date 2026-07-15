@@ -2189,6 +2189,15 @@ describe('Test getTableIdentifiers()', () => {
         ]);
         expect(getTableIdentifiers(manifest, 'MyLR')).toEqual(['1', '2', '6']);
     });
+
+    test('returns empty array for a single-path views.paths (treated as single-table LR)', () => {
+        expect(getTableIdentifiers(makeManifest([{ key: '1' }]), 'MyLR')).toEqual([]);
+    });
+
+    test('returns empty array when only one non-custom tab survives filtering', () => {
+        const manifest = makeManifest([{ key: '1' }, { key: '5', template: 'my.app.ext.CustomTab' }]);
+        expect(getTableIdentifiers(manifest, 'MyLR')).toEqual([]);
+    });
 });
 
 describe('Test getPropertyLabelFromMetadata() and isHiddenFilter()', () => {

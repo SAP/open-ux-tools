@@ -19,7 +19,7 @@ import opaTest from "sap/ui/test/opaQunit";
 import type { Given, When, Then } from "./types/OpaJourneyTypes";
 <%_
 const usesFilterFieldIdentifier =
-    !hideFilterBar && filterBarItems && filterBarItems.some(function(item) { return item.custom; });
+    filterBarItems && filterBarItems.some(function(item) { return item.custom; });
 -%>
 <% if (usesFilterFieldIdentifier) { -%>
 import type { FilterFieldIdentifier } from "sap/fe/test/api/FilterBarAPI";
@@ -106,7 +106,7 @@ function journey() {
         <%_ } -%>
         <%_ if (tableIdentifiers && tableIdentifiers.length > 0) { -%>
         <%_ tableIdentifiers.forEach(function(tabId) { _%>
-        <%_ if (tableIdentifiers.length > 1) { _%>
+        <%_ if (tableIdentifiers.length > 0) { _%>
         When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tabId %>" });
         <%_ } _%>
         Then.onThe<%- startLR%>Generated.onTable("<%- tabId %>").iCheckRows();
@@ -115,7 +115,7 @@ function journey() {
         Then.onThe<%- startLR%>Generated.onTable("").iCheckRows();
         <%_ } -%>
         <%_ if (navigatedOP) { -%>
-        <%_ if (tableIdentifiers && tableIdentifiers.length > 1) { _%>
+        <%_ if (tableIdentifiers && tableIdentifiers.length > 0) { _%>
         When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tableIdentifiers[0] %>" });
         <%_ } _%>
         When.onThe<%- startLR%>Generated.onTable(<%- tableIdentifiers && tableIdentifiers.length > 0 ? '"' + tableIdentifiers[0] + '"' : '""' %>).iPressRow(0);

@@ -196,7 +196,8 @@ export function getListReportFeatures(
                   // Exclude properties annotated with `@UI.HiddenFilter` — these are hidden
                   // from the user's filter adaptation dialog, so trying to add them at runtime
                   // via `iAddAdaptationFilterField({ property })` produces a "field not found"
-                  // failure.
+                  // failure. When metadata is unavailable the check is skipped (graceful
+                  // degradation — the property is kept rather than dropped).
                   .filter(
                       (key) => !convertedMetadata || !isHiddenFilter(convertedMetadata, listReportPage.entitySet, key)
                   )
@@ -381,6 +382,12 @@ export function getTableIdentifiers(manifest: Manifest | undefined, targetKey: s
         if (path && typeof path.key === 'string' && path.key.length > 0 && typeof path.template !== 'string') {
             identifiers.push(path.key);
         }
+    }
+    // A single non-custom tab behaves like a single-table List Report: `onTable()` resolves
+    // it without a tab id, so no tab-targeting or switching is needed. Return identifiers
+    // only when there are genuinely multiple tabs.
+    if (identifiers.length <= 1) {
+        return [];
     }
     return identifiers;
 }
