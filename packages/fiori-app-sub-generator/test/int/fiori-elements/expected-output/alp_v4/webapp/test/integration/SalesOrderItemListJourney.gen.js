@@ -39,31 +39,24 @@ sap.ui.define([
         // });
 
         opaTest("Check table columns and actions", function (Given, When, Then) {
-            // Then.onTheSalesOrderItemListGenerated.onTable().iPressDelete();
+            // When.onTheSalesOrderItemListGenerated.onTable().iPressDelete();
             Then.onTheSalesOrderItemListGenerated.onTable().iCheckDelete({ visible: true });
-            // Then.onTheSalesOrderItemListGenerated.onTable().iPressAction("View Return Status");
-            Then.onTheSalesOrderItemListGenerated.onTable().iCheckAction("View Return Status", { enabled: true });
-            // Then.onTheSalesOrderItemListGenerated.onTable().iPressAction("Dummy Bound Action");
-            Then.onTheSalesOrderItemListGenerated.onTable().iCheckAction("Dummy Bound Action", { enabled: false });
+            // When.onTheSalesOrderItemListGenerated.onTable().iPressAction({ service: "com.c_salesordermanage_sd_aggregate", action: "c_salesordermanage_sd_aggregate/ReturnInProcess", unbound: true });
+            Then.onTheSalesOrderItemListGenerated.onTable().iCheckAction({ service: "com.c_salesordermanage_sd_aggregate", action: "c_salesordermanage_sd_aggregate/ReturnInProcess", unbound: true }, { enabled: true });
+            // When.onTheSalesOrderItemListGenerated.onTable().iPressAction({ service: "com.c_salesordermanage_sd_aggregate", action: "DummyBoundAction", unbound: false });
+            Then.onTheSalesOrderItemListGenerated.onTable().iCheckAction({ service: "com.c_salesordermanage_sd_aggregate", action: "DummyBoundAction", unbound: false }, { enabled: false });
             Then.onTheSalesOrderItemListGenerated.onTable().iCheckColumns(undefined, {"10":{"header":"Bound Action"},"11":{"header":"IBN"},"SalesOrderItem":{"header":"Item"},"HigherLevelItem":{"header":"Higher-Level Item"},"Material":{"header":"Material"},"RequestedQuantity":{"header":"Requested Quantity"},"SalesOrderItemCategory":{"header":"Item Category"},"RequestedDeliveryDate":{"header":"Delivery Date"},"NetAmount":{"header":"Net Value"},"_Material/Material":{"header":"Material"},"isVerified":{"header":"Verified Material"},"_ReferencedSalesOrder/SalesOrder":{"header":"Referenced Sales Order"}});
-
         });
-
-
 
         opaTest("Navigate to ObjectPage", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
-            
             When.onTheSalesOrderItemListGenerated.onFilterBar().iExecuteSearch();
-            
             Then.onTheSalesOrderItemListGenerated.onTable().iCheckRows();
-
             When.onTheSalesOrderItemListGenerated.onTable().iPressRow(0);
             Then.onTheSalesOrderItemObjectPageGenerated.iSeeThisPage();
-
         });
 
-        opaTest("Teardown", function (Given, When, Then) { 
+        opaTest("Teardown", function (Given, When, Then) {
             // Cleanup
             Given.iTearDownMyApp();
         });
