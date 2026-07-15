@@ -102,7 +102,7 @@ describe('getPrompts', () => {
                     defaultChoice: undefined,
                     hideNewSystem: true,
                     destinationFilters: { odata_abap: true },
-                    backendSystemConnectionTypes: ['abap_catalog']
+                    backendSystemFilter: { connectionType: ['abap_catalog'] }
                 }
             },
             false

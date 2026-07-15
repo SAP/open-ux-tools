@@ -62,9 +62,9 @@ describe('Test utils related to the store', () => {
         );
     });
 
-    it('should call getAll with provided connectionTypes', async () => {
+    it('should call getAll with provided backendSystemFilter', async () => {
         mockGetAll.mockResolvedValueOnce([]);
-        await getAllBackendSystems(false, ['abap_catalog']);
+        await getAllBackendSystems(false, { connectionType: ['abap_catalog'] });
         expect(mockGetAll).toHaveBeenCalledWith(
             expect.objectContaining({
                 backendSystemFilter: { connectionType: ['abap_catalog'] }

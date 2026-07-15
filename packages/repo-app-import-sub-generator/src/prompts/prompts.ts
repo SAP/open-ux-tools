@@ -114,7 +114,7 @@ export async function getPrompts(
                     defaultChoice: quickDeployedAppConfig?.serviceProviderInfo?.name,
                     hideNewSystem: true,
                     destinationFilters: { odata_abap: true },
-                    backendSystemConnectionTypes: ['abap_catalog']
+                    backendSystemFilter: { connectionType: ['abap_catalog'] }
                 }
             },
             !isCli

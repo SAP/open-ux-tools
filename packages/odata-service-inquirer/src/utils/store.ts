@@ -2,7 +2,7 @@ import {
     getService,
     type BackendSystem,
     type BackendSystemKey,
-    type ConnectionType,
+    type BackendSystemFilter,
     type Service
 } from '@sap-ux/store';
 import LoggerHelper from '../prompts/logger-helper.js';
@@ -24,21 +24,19 @@ export async function getBackendSystemService(): Promise<Service<BackendSystem, 
  * Fetch all backend systems.
  *
  * @param includeSensitiveData - whether to include sensitive data
- * @param connectionTypes - optional list of connection types to filter backend systems
+ * @param backendSystemFilter - optional filter to apply when retrieving backend systems
  * @returns backend systems
  */
 export async function getAllBackendSystems(
     includeSensitiveData = false,
-    connectionTypes: ConnectionType[] = ['abap_catalog', 'odata_service']
+    backendSystemFilter: BackendSystemFilter = { connectionType: ['abap_catalog', 'odata_service'] }
 ): Promise<BackendSystem[] | []> {
     let backendSystems: BackendSystem[] | [] = [];
     try {
         const backendService = await getBackendSystemService();
         backendSystems = await backendService.getAll({
             includeSensitiveData,
-            backendSystemFilter: {
-                connectionType: connectionTypes
-            }
+            backendSystemFilter
         });
     } catch (error) {
         LoggerHelper.logger.error(t('errors.backendSystemRetrieval', { error: error.message }));

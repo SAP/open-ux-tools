@@ -5,7 +5,7 @@ import type { CapService } from '@sap-ux/cap-config-writer';
 import type { TableSelectionMode, TableType } from '@sap-ux/fiori-elements-writer';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { BackendSystem, ConnectionType } from '@sap-ux/store';
+import type { BackendSystem, BackendSystemFilter } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
 import type { serviceUrlInternalPromptNames } from './prompts/datasources/service-url/types.js';
 import type { EntityAnswer, NavigationEntityAnswer } from './prompts/edmx/entity-helper.js';
@@ -343,11 +343,11 @@ export type SystemSelectionPromptOptions = {
      */
     hideNewSystem?: boolean;
     /**
-     * Filter backend systems by connection type. Only systems whose connection type is included in this list will be shown.
+     * Filter backend systems using the store's BackendSystemFilter type. Only systems matching the filter will be shown.
      * If not specified, all supported connection types are included.
-     * e.g. pass ['abap_catalog'] to include only ABAP catalog systems (full service URL / odata_service systems will be excluded).
+     * e.g. pass { connectionType: ['abap_catalog'] } to include only ABAP catalog systems (full service URL / odata_service systems will be excluded).
      */
-    backendSystemConnectionTypes?: ConnectionType[];
+    backendSystemFilter?: BackendSystemFilter;
 };
 
 export type MetadataPromptOptions = {

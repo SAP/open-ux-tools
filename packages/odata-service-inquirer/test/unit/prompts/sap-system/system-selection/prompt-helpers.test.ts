@@ -125,11 +125,11 @@ describe('Test system selection prompt helpers', () => {
             ]);
         });
 
-        test('Should call getAll with backendSystemConnectionTypes filter', async () => {
+        test('Should call getAll with backendSystemFilter', async () => {
             const mockGetAll = jest.fn().mockResolvedValue(backendSystems);
             mockGetService.mockImplementationOnce(() => ({ getAll: mockGetAll }));
 
-            await createSystemChoices(undefined, false, true, ['abap_catalog']);
+            await createSystemChoices(undefined, false, true, { connectionType: ['abap_catalog'] });
 
             expect(mockGetAll).toHaveBeenCalledWith(
                 expect.objectContaining({
