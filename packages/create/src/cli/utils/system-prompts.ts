@@ -27,7 +27,7 @@ export async function promptForSystemConfig(partial: {
     username?: string;
     password?: string;
 }> {
-    const questions = [];
+    const questions: prompts.PromptObject[] = [];
 
     if (!partial.name) {
         questions.push({
@@ -123,7 +123,7 @@ export async function promptForSystemIdentifier(partial: {
     url: string;
     client?: string;
 }> {
-    const questions = [];
+    const questions: prompts.PromptObject[] = [];
 
     if (!partial.url) {
         questions.push({
