@@ -37,6 +37,7 @@ import {
     isV4DescriptorChange
 } from './change-handler.js';
 import { addCustomFragment } from './descriptor-change-handler.js';
+import { isRenameChange, processRenameChangeI18n } from './rename-i18n-preprocessor.js';
 import { getExistingAdpProjectType } from '../base/helper.js';
 import path from 'node:path';
 declare global {
@@ -326,6 +327,9 @@ export class AdpPreview {
                 }
                 break;
             case 'write':
+                if (isRenameChange(change)) {
+                    await processRenameChangeI18n(this.util.getProject().getRootPath(), change, fs, logger);
+                }
                 if (isAddXMLChange(change)) {
                     addXmlFragment(this.util.getProject().getSourcePath(), change, fs, logger, additionalChangeInfo);
                 }

@@ -69,11 +69,13 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 // Mock @sap-ux/adp-tooling
 const mockAdpPreviewConstructor = jest.fn<typeof actualAdpTooling.AdpPreview>();
 const mockReadManifestFromBuildPath = jest.fn<typeof actualAdpTooling.readManifestFromBuildPath>();
+const mockEnsureAnnotationI18nModelRegistered = jest.fn<typeof actualAdpTooling.ensureAnnotationI18nModelRegistered>();
 
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     ...actualAdpTooling,
     AdpPreview: mockAdpPreviewConstructor,
-    readManifestFromBuildPath: mockReadManifestFromBuildPath
+    readManifestFromBuildPath: mockReadManifestFromBuildPath,
+    ensureAnnotationI18nModelRegistered: mockEnsureAnnotationI18nModelRegistered
 }));
 
 // Mock @sap-ux/i18n
@@ -118,7 +120,7 @@ describe('FlpSandbox', () => {
             };
         }
         // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-    } as unknown as import('@ui5/server').MiddlewareUtils;
+    } as unknown as MiddlewareUtils;
     const logger = { debug: jest.fn(), warn: jest.fn(), error: jest.fn(), info: jest.fn() } as unknown as Logger & {
         warn: ReturnType<typeof jest.fn>;
         info: ReturnType<typeof jest.fn>;
@@ -1318,7 +1320,7 @@ describe('FlpSandbox', () => {
                 return { getSourcePath: () => webappPath };
             }
             // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-        } as unknown as import('@ui5/server').MiddlewareUtils;
+        } as unknown as MiddlewareUtils;
         const mockConfig = { editors: { cardGenerator: { path: '/test/flpCardGeneratorSandbox.html' } } };
 
         let mockFsPromisesWriteFile: ReturnType<typeof jest.fn>;
@@ -1815,6 +1817,8 @@ describe('initAdp', () => {
     const syncSpy = jest.fn();
 
     beforeEach(() => {
+        mockEnsureAnnotationI18nModelRegistered.mockReset();
+        mockEnsureAnnotationI18nModelRegistered.mockResolvedValue(false);
         mockAdpPreviewConstructor.mockImplementation((): adpTooling.AdpPreview => {
             return {
                 init: () => {
@@ -1887,6 +1891,46 @@ describe('initAdp', () => {
         await flp.initAdp(config.adp);
         expect(mockAdpPreviewConstructor).toHaveBeenCalled();
         expect(flpInitMock).toHaveBeenCalled();
+    });
+
+    test('initAdp ensures the @i18n model in the descriptor before merge', async () => {
+        mockEnsureAnnotationI18nModelRegistered.mockResolvedValue(true);
+        const commitSpy = jest.fn((cb: () => void) => cb());
+        const utils = {
+            getProject: () => ({ getSourcePath: () => '/adp.project/webapp' })
+        } as unknown as MiddlewareUtils;
+
+        const flp = new FlpSandbox({ adp: { target: { url } } }, mockAdpProject, utils, logger);
+        (flp as unknown as { fs: { commit: typeof commitSpy } }).fs.commit = commitSpy;
+        jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
+            jest.fn();
+        });
+
+        await flp.initAdp({ target: { url } } as AdpPreviewConfig);
+
+        // projectRoot is dirname(webappPath)
+        expect(mockEnsureAnnotationI18nModelRegistered).toHaveBeenCalledWith('/adp.project', expect.anything());
+        // commit runs because registration reported a change, before AdpPreview is constructed/merged
+        expect(commitSpy).toHaveBeenCalled();
+    });
+
+    test('initAdp does not commit when the descriptor already has the @i18n model', async () => {
+        mockEnsureAnnotationI18nModelRegistered.mockResolvedValue(false);
+        const commitSpy = jest.fn((cb: () => void) => cb());
+        const utils = {
+            getProject: () => ({ getSourcePath: () => '/adp.project/webapp' })
+        } as unknown as MiddlewareUtils;
+
+        const flp = new FlpSandbox({ adp: { target: { url } } }, mockAdpProject, utils, logger);
+        (flp as unknown as { fs: { commit: typeof commitSpy } }).fs.commit = commitSpy;
+        jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
+            jest.fn();
+        });
+
+        await flp.initAdp({ target: { url } } as AdpPreviewConfig);
+
+        expect(mockEnsureAnnotationI18nModelRegistered).toHaveBeenCalled();
+        expect(commitSpy).not.toHaveBeenCalled();
     });
 
     test('initAdp - cloud scenario', async () => {
