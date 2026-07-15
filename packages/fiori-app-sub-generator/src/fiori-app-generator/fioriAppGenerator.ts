@@ -19,7 +19,8 @@ import {
     type ILogWrapper,
     sendTelemetry,
     TelemetryHelper,
-    getFlpId
+    getFlpId,
+    getFloorplanLabel
 } from '@sap-ux/fiori-generator-shared';
 import type { Logger } from '@sap-ux/logger';
 import type { EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
@@ -58,8 +59,7 @@ import {
     initI18nFioriAppSubGenerator,
     restoreServiceProviderLoggers,
     t,
-    updateDependentStep,
-    getFloorplanLabel
+    updateDependentStep
 } from '../utils/index.js';
 import { runPostGenerationTasks } from './end.js';
 import type { FioriAppGeneratorOptions } from './fioriAppGeneratorOptions.js';
