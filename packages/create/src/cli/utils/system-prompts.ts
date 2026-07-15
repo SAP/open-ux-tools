@@ -45,7 +45,7 @@ export async function promptForSystemConfig(partial: {
         });
     }
 
-    if (!partial.client) {
+    if (partial.client === undefined) {
         questions.push({
             type: 'text',
             name: 'client',
@@ -80,7 +80,7 @@ export async function promptForSystemConfig(partial: {
         });
     }
 
-    if (!partial.username) {
+    if (partial.username === undefined) {
         questions.push({
             type: 'text',
             name: 'username',
@@ -88,7 +88,7 @@ export async function promptForSystemConfig(partial: {
         });
     }
 
-    if (!partial.password) {
+    if (partial.password === undefined) {
         questions.push({
             type: 'password',
             name: 'password',
@@ -101,12 +101,12 @@ export async function promptForSystemConfig(partial: {
     return {
         name: partial.name || answers.name,
         url: partial.url || answers.url,
-        client: partial.client || answers.client || undefined,
+        client: partial.client !== undefined ? partial.client : (answers.client || undefined),
         systemType: partial.systemType || answers.systemType,
         authenticationType: partial.authenticationType || answers.authenticationType,
         connectionType: partial.connectionType || answers.connectionType,
-        username: partial.username || answers.username || undefined,
-        password: partial.password || answers.password || undefined
+        username: partial.username !== undefined ? partial.username : (answers.username || undefined),
+        password: partial.password !== undefined ? partial.password : (answers.password || undefined)
     };
 }
 
@@ -133,7 +133,7 @@ export async function promptForSystemIdentifier(partial: {
         });
     }
 
-    if (!partial.client) {
+    if (partial.client === undefined) {
         questions.push({
             type: 'text',
             name: 'client',
@@ -145,7 +145,7 @@ export async function promptForSystemIdentifier(partial: {
 
     return {
         url: partial.url || answers.url,
-        client: partial.client || answers.client || undefined
+        client: partial.client !== undefined ? partial.client : (answers.client || undefined)
     };
 }
 
