@@ -5,6 +5,8 @@ import { getService, BackendSystemKey } from '@sap-ux/store';
 import { replaceEnvVariables } from '@sap-ux/ui5-config';
 import { config as loadEnvConfig } from 'dotenv';
 import { getLogger } from '../../tracing/index.js';
+import { promptForSystemIdentifier, promptForUpdateFields, promptForFieldUpdates } from '../utils/system-prompts.js';
+import { checkConnectionOrPrompt } from '../utils/system-connection.js';
 
 /**
  * Add the "update system" subcommand to a passed command.
@@ -20,9 +22,10 @@ export function addSystemUpdateCommand(cmd: Command): void {
 
 Example:
     \`npx --yes @sap-ux/create@latest update system --url https://my-sap.example.com --name "New Name"\`
-    \`npx --yes @sap-ux/create@latest update system --url https://my-sap.example.com --client 100 --username newuser\``
+    \`npx --yes @sap-ux/create@latest update system --url https://my-sap.example.com --client 100 --username newuser\`
+    \`npx --yes @sap-ux/create@latest update system\` (interactive mode)`
         )
-        .requiredOption('--url <string>', 'URL of the backend system to update')
+        .option('--url <string>', 'URL of the backend system to update')
         .option('--client <string>', 'SAP client number to identify the system (optional)')
         .option('--name <string>', 'New display name for the system')
         .option('--username <string>', 'New username')
@@ -31,6 +34,7 @@ Example:
             "To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR"
         )
         .option('--clear-credentials', 'Remove stored credentials from the system')
+        .option('--skip-check', 'Skip connection verification before saving')
         .action(async (options) => {
             loadEnvConfig();
             await updateSystem({
@@ -39,7 +43,8 @@ Example:
                 name: options.name,
                 username: options.username,
                 password: options.password,
-                clearCredentials: !!options.clearCredentials
+                clearCredentials: !!options.clearCredentials,
+                skipCheck: !!options.skipCheck
             });
         });
 }
@@ -54,14 +59,16 @@ Example:
  * @param params.username - optional new username
  * @param params.password - optional new password
  * @param params.clearCredentials - if true, clears stored credentials
+ * @param params.skipCheck - skip connection verification
  */
 async function updateSystem(params: {
-    url: string;
+    url?: string;
     client?: string;
     name?: string;
     username?: string;
     password?: string;
     clearCredentials: boolean;
+    skipCheck?: boolean;
 }): Promise<void> {
     const logger = getLogger();
     try {
@@ -72,25 +79,53 @@ async function updateSystem(params: {
             return;
         }
 
-        const patchRecord: Record<string, unknown> = {};
+        // Prompt for system identifier if not provided
+        const identifier = await promptForSystemIdentifier({
+            url: params.url,
+            client: params.client
+        });
 
-        replaceEnvVariables(params);
-
-        if (params.name !== undefined) {
-            patchRecord.name = params.name;
+        const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
+        const key = new BackendSystemKey({ url: identifier.url, client: identifier.client });
+        const existing = await service.read(key);
+        if (!existing) {
+            logger.error(`System not found: ${key.getId()}`);
+            return;
         }
 
-        if (params.clearCredentials) {
-            patchRecord.username = undefined;
-            patchRecord.password = undefined;
-        } else if (params.username !== undefined || params.password !== undefined) {
-            if (params.username !== undefined) {
-                patchRecord.username = params.username;
+        // Determine which fields to update
+        const hasExplicitUpdates =
+            params.name !== undefined ||
+            params.username !== undefined ||
+            params.password !== undefined ||
+            params.clearCredentials;
+
+        let patchRecord: Record<string, unknown>;
+
+        if (hasExplicitUpdates) {
+            // Use provided flags
+            patchRecord = {};
+            if (params.name !== undefined) {
+                patchRecord.name = params.name;
             }
-            if (params.password !== undefined) {
-                patchRecord.password = params.password;
+            if (params.clearCredentials) {
+                patchRecord.username = undefined;
+                patchRecord.password = undefined;
+            } else if (params.username !== undefined || params.password !== undefined) {
+                if (params.username !== undefined) {
+                    patchRecord.username = params.username;
+                }
+                if (params.password !== undefined) {
+                    patchRecord.password = params.password;
+                }
             }
+        } else {
+            // No flags provided - prompt interactively
+            const fieldsToUpdate = await promptForUpdateFields(existing);
+            patchRecord = await promptForFieldUpdates(fieldsToUpdate, existing);
         }
+
+        replaceEnvVariables(patchRecord);
 
         const patch = patchRecord as Partial<BackendSystem>;
 
@@ -101,13 +136,27 @@ async function updateSystem(params: {
             return;
         }
 
-        const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
-        const key = new BackendSystemKey({ url: params.url, client: params.client });
-        const existing = await service.read(key);
-        if (!existing) {
-            logger.error(`System not found: ${key.getId()}`);
-            return;
+        // Check connection if credentials are being updated (unless --skip-check)
+        const updatingCredentials = patch.username !== undefined || patch.password !== undefined;
+        if (updatingCredentials && !params.clearCredentials) {
+            const shouldSave = await checkConnectionOrPrompt(
+                {
+                    url: existing.url,
+                    client: existing.client,
+                    systemType: existing.systemType,
+                    authenticationType: existing.authenticationType || 'basic',
+                    username: (patch.username as string) || existing.username,
+                    password: (patch.password as string) || existing.password
+                },
+                params.skipCheck || false
+            );
+
+            if (!shouldSave) {
+                logger.info('System was not updated.');
+                return;
+            }
         }
+
         await service.partialUpdate(key, patch);
         logger.info(`System '${key.getId()}' updated.`);
     } catch (error) {
