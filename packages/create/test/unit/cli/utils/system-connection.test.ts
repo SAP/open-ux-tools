@@ -13,9 +13,8 @@ jest.unstable_mockModule('../../../../src/tracing/index.js', () => ({
     })
 }));
 
-const { checkSystemConnection, checkConnectionOrPrompt } = await import(
-    '../../../../src/cli/utils/system-connection.js'
-);
+const { checkSystemConnection, checkConnectionOrPrompt } =
+    await import('../../../../src/cli/utils/system-connection.js');
 
 describe('system-connection', () => {
     beforeEach(() => {

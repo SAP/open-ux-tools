@@ -445,9 +445,7 @@ describe('system-prompts', () => {
 
             expect(mockPrompts).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    choices: expect.arrayContaining([
-                        expect.objectContaining({ title: 'Username (current: (none))' })
-                    ])
+                    choices: expect.arrayContaining([expect.objectContaining({ title: 'Username (current: (none))' })])
                 })
             );
         });
@@ -455,17 +453,13 @@ describe('system-prompts', () => {
         test('should throw error if no fields selected', async () => {
             mockPrompts.mockResolvedValueOnce({ fields: [] });
 
-            await expect(promptForUpdateFields(mockSystem)).rejects.toThrow(
-                'At least one field must be selected'
-            );
+            await expect(promptForUpdateFields(mockSystem)).rejects.toThrow('At least one field must be selected');
         });
 
         test('should throw error if user cancels prompt', async () => {
             mockPrompts.mockResolvedValueOnce({});
 
-            await expect(promptForUpdateFields(mockSystem)).rejects.toThrow(
-                'At least one field must be selected'
-            );
+            await expect(promptForUpdateFields(mockSystem)).rejects.toThrow('At least one field must be selected');
         });
     });
 
@@ -487,9 +481,7 @@ describe('system-prompts', () => {
             expect(result.name).toBe('NewName');
             const calls = mockPrompts.mock.calls;
             const promptsCall = calls[0][0];
-            const namePrompt = Array.isArray(promptsCall)
-                ? promptsCall.find((p: any) => p.name === 'name')
-                : undefined;
+            const namePrompt = Array.isArray(promptsCall) ? promptsCall.find((p: any) => p.name === 'name') : undefined;
 
             expect(namePrompt).toBeDefined();
             expect(namePrompt.type).toBe('text');
@@ -572,9 +564,7 @@ describe('system-prompts', () => {
             const promptsCall = calls[0][0];
             const prompts = Array.isArray(promptsCall) ? promptsCall : [];
 
-            expect(prompts).toEqual(
-                expect.arrayContaining([expect.objectContaining({ name: 'name' })])
-            );
+            expect(prompts).toEqual(expect.arrayContaining([expect.objectContaining({ name: 'name' })]));
             expect(prompts.find((p: any) => p.name === 'unknown-field')).toBeUndefined();
         });
 
