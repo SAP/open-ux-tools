@@ -8,8 +8,6 @@ const CHANGE_TYPE = {
     codeExt: 'codeExt'
 };
 
-type FlexChangeType = (typeof CHANGE_TYPE)[keyof typeof CHANGE_TYPE];
-
 interface ChangeContent {
     fragmentPath?: string;
     codeRef?: string;
@@ -24,14 +22,8 @@ interface Change {
     content?: ChangeContent;
 }
 
-interface OrphanedChangeEntry {
-    changeFileName: string;
-    filePath: string;
-    changeType: FlexChangeType;
-}
-
 interface RelevantChange extends Change {
-    changeType: FlexChangeType;
+    changeType: (typeof CHANGE_TYPE)[keyof typeof CHANGE_TYPE];
     reference: string;
 }
 
@@ -50,14 +42,14 @@ function isFragmentOrCodeExtChange(change: Change): change is RelevantChange {
 }
 
 /**
- * Builds a lookup map from module name patterns to change metadata
- * for addXML and codeExt changes.
+ * Builds the set of module name patterns to watch for in error messages,
+ * derived from addXML and codeExt changes.
  *
  * @param changes record of change objects keyed by flex key
- * @returns map from module name substring to orphaned change entry
+ * @returns set of module name substrings identifying orphaned-change error messages
  */
-function buildModuleNameMap(changes: Record<string, Change>): Map<string, OrphanedChangeEntry> {
-    const map = new Map<string, OrphanedChangeEntry>();
+function buildModuleNameSet(changes: Record<string, Change>): Set<string> {
+    const moduleNames = new Set<string>();
 
     for (const change of Object.values(changes)) {
         if (!isFragmentOrCodeExtChange(change)) {
@@ -65,43 +57,47 @@ function buildModuleNameMap(changes: Record<string, Change>): Map<string, Orphan
         }
 
         const prefix = change.reference.replaceAll('.', '/');
-        const path = change.changeType === CHANGE_TYPE.addXML ? change.content?.fragmentPath ?? '' : change.content?.codeRef ?? '';
-        const changeFileName = `${change.fileName}.${change.fileType ?? 'change'}`;
-        const key = change.moduleName ?? `${prefix}/changes/${path}`;
-
-        map.set(key, { changeFileName, filePath: path, changeType: change.changeType });
+        const path =
+            change.changeType === CHANGE_TYPE.addXML
+                ? change.content?.fragmentPath ?? ''
+                : change.content?.codeRef ?? '';
+        moduleNames.add(change.moduleName || `${prefix}/changes/${path}`);
     }
 
-    return map;
+    return moduleNames;
 }
 
 /**
+ * UI5's `sap/base/Log` prefixes every message with a timestamp
+ * (`YYYY-MM-DD HH:MM:SS.mmmmmm `). Strip it so the InfoCenter shows just the error text.
+ */
+const UI5_LOG_TIMESTAMP = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+\s+/;
+
+/**
  * Creates an error handler that matches error messages against known module names
- * and sends InfoCenter errors for orphaned change files.
+ * and forwards the original browser error to the InfoCenter.
  *
- * @param moduleNameMap map from module name substring to orphaned change entry
+ * @param moduleNames set of module name substrings to watch for
+ * @param onAllMatched callback invoked once every watched module name has been matched
  * @returns error handler function
  */
 function createErrorHandler(
-    moduleNameMap: Map<string, OrphanedChangeEntry>,
-    restoreConsole: () => void
+    moduleNames: Set<string>,
+    onAllMatched: () => void
 ): (message: string) => void {
     return (message: string) => {
-        for (const [moduleName, entry] of moduleNameMap) {
+        for (const moduleName of moduleNames) {
             if (message.includes(moduleName)) {
                 sendInfoCenterMessage({
-                    title: { key: 'ADP_ORPHANED_CHANGE_ERROR_TITLE' },
-                    description: {
-                        key: 'ADP_ORPHANED_FILE_DESCRIPTION',
-                        params: [entry.filePath, entry.changeFileName]
-                    },
+                    title: { key: 'ADP_CHANGE_ERROR_TITLE' },
+                    description: message.replace(UI5_LOG_TIMESTAMP, ''),
                     type: MessageBarType.error
                 }).catch((error) => {
                     log.error('Failed to send orphaned change InfoCenter message', error);
                 });
-                moduleNameMap.delete(moduleName);
-                if (moduleNameMap.size === 0) {
-                    restoreConsole();
+                moduleNames.delete(moduleName);
+                if (moduleNames.size === 0) {
+                    onAllMatched();
                 }
                 break;
             }
@@ -112,47 +108,101 @@ function createErrorHandler(
 /**
  * Initializes orphaned change file detection.
  *
- * Fetches loaded flex changes, builds a lookup map of module names for addXML and codeExt changes,
- * and wraps console.error to intercept UI5 flex change application errors. When UI5 fails to load
- * a fragment or controller extension referenced by a change file, the error is intercepted and an
- * actionable message is shown in the InfoCenter advising the user to delete the orphaned change file.
+ * Wraps `console.error` synchronously so early errors (emitted during app bootstrap, before
+ * the changes list has been fetched) are captured in a buffer. Once the changes are loaded,
+ * the buffered messages are replayed against the set of module names derived from addXML and
+ * codeExt changes. Subsequent errors are matched live. When UI5 fails to load a fragment or
+ * controller extension referenced by a change file, the original error is forwarded to the
+ * InfoCenter so the user sees the exact browser message.
+ *
+ * @returns a cancel function — call it to stop detection and immediately restore console.error.
  */
-export async function initOrphanedChangeDetection(): Promise<void> {
-    const baseUrl = document.getElementById('sap-ui-bootstrap')?.dataset.openUxPreviewBaseUrl ?? '';
-    const response = await fetch(`${baseUrl}/preview/api/changes`, {
-        method: 'GET',
-        headers: { 'content-type': 'application/json' }
-    });
-
-    if (!response.ok) {
-        log.error(`Failed to fetch changes for orphaned change detection: ${response.status}`);
-        return;
-    }
-
-    const changes = (await response.json()) as Record<string, Change>;
-    const moduleNameMap = buildModuleNameMap(changes);
-
-    if (moduleNameMap.size === 0) {
-        return;
-    }
-
+export function initOrphanedChangeDetection(): () => void {
     const consoleRef = globalThis.console;
     const originalConsoleError = consoleRef.error;
+
+    const BUFFER_LIMIT = 200;
+    const buffer: string[] = [];
+    let moduleNames: Set<string> | undefined;
+    let handler: ((message: string) => void) | undefined;
+    let cancelled = false;
 
     const restore = (): void => {
         consoleRef.error = originalConsoleError;
     };
 
-    const handler = createErrorHandler(moduleNameMap, restore);
+    const cancel = (): void => {
+        cancelled = true;
+        restore();
+        clearTimeout(safetyTimeout);
+    };
 
-    const safetyTimeout = setTimeout(restore, 60_000);
+    const safetyTimeout = setTimeout(cancel, 60_000);
 
     consoleRef.error = (...args: unknown[]) => {
         originalConsoleError.apply(consoleRef, args);
+        if (cancelled) {
+            return;
+        }
         const message = args.filter((arg): arg is string => typeof arg === 'string').join('');
-        handler(message);
-        if (moduleNameMap.size === 0) {
-            clearTimeout(safetyTimeout);
+        if (handler) {
+            handler(message);
+            if (moduleNames && moduleNames.size === 0) {
+                clearTimeout(safetyTimeout);
+            }
+        } else if (buffer.length < BUFFER_LIMIT) {
+            buffer.push(message);
         }
     };
+
+    void loadModuleNamesAndReplay();
+
+    async function loadModuleNamesAndReplay(): Promise<void> {
+        try {
+            const baseUrl = document.getElementById('sap-ui-bootstrap')?.dataset.openUxPreviewBaseUrl ?? '';
+            const response = await fetch(`${baseUrl}/preview/api/changes`, {
+                method: 'GET',
+                headers: { 'content-type': 'application/json' }
+            });
+
+            if (cancelled) {
+                return;
+            }
+
+            if (!response.ok) {
+                log.error(`Failed to fetch changes for orphaned change detection: ${response.status}`);
+                cancel();
+                return;
+            }
+
+            const changes = (await response.json()) as Record<string, Change>;
+
+            if (cancelled) {
+                return;
+            }
+
+            moduleNames = buildModuleNameSet(changes);
+
+            if (moduleNames.size === 0) {
+                cancel();
+                return;
+            }
+
+            handler = createErrorHandler(moduleNames, cancel);
+
+            // Replay any errors emitted before the changes list was loaded.
+            for (const message of buffer) {
+                handler(message);
+                if (moduleNames.size === 0) {
+                    break;
+                }
+            }
+            buffer.length = 0;
+        } catch (error) {
+            log.error('Failed to run orphaned change detection', error as Error);
+            cancel();
+        }
+    }
+
+    return cancel;
 }

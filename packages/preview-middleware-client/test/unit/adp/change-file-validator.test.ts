@@ -26,6 +26,16 @@ function flushPromises(): Promise<void> {
     });
 }
 
+/**
+ * Flushes pending microtasks without touching timers — usable while fake timers are active.
+ * Two ticks cover a fetch → response.json() await chain.
+ */
+async function flushMicrotasks(): Promise<void> {
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+}
+
 describe('change-file-validator', () => {
     const originalConsoleError = console.error;
 
@@ -97,7 +107,8 @@ describe('change-file-validator', () => {
             }
         });
 
-        await initOrphanedChangeDetection();
+        initOrphanedChangeDetection();
+        await flushPromises();
 
         expect(console.error).toBe(originalConsoleError);
     });
@@ -105,7 +116,8 @@ describe('change-file-validator', () => {
     test('does not wrap console.error when changes are empty', async () => {
         mockChangesResponse({});
 
-        await initOrphanedChangeDetection();
+        initOrphanedChangeDetection();
+        await flushPromises();
 
         expect(console.error).toBe(originalConsoleError);
     });
@@ -144,16 +156,15 @@ describe('change-file-validator', () => {
 
         await initOrphanedChangeDetection();
 
-        console.error(
-            'Change \'id_addXML_1\' could not be applied. Error: resource com/sap/app/changes/fragments/MyFragment.fragment.xml could not be loaded'
-        );
+        const browserError =
+            'Change \'id_addXML_1\' could not be applied. Error: resource com/sap/app/changes/fragments/MyFragment.fragment.xml could not be loaded';
+        console.error(browserError);
         await flushPromises();
 
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(
             showInfoCenterMessage({
-                title: 'ADP_ORPHANED_CHANGE_ERROR_TITLE',
-                description:
-                    'ADP_ORPHANED_FILE_DESCRIPTION - fragments/MyFragment.fragment.xml, id_addXML_1.change',
+                title: 'ADP_CHANGE_ERROR_TITLE',
+                description: browserError,
                 type: MessageBarType.error
             })
         );
@@ -172,15 +183,15 @@ describe('change-file-validator', () => {
 
         await initOrphanedChangeDetection();
 
-        console.error(
-            'Change \'id_codeExt_1\' could not be applied. Error: resource com/sap/app/changes/coding/MyController.js could not be loaded'
-        );
+        const browserError =
+            'Change \'id_codeExt_1\' could not be applied. Error: resource com/sap/app/changes/coding/MyController.js could not be loaded';
+        console.error(browserError);
         await flushPromises();
 
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(
             showInfoCenterMessage({
-                title: 'ADP_ORPHANED_CHANGE_ERROR_TITLE',
-                description: 'ADP_ORPHANED_FILE_DESCRIPTION - coding/MyController.js, id_codeExt_1.change',
+                title: 'ADP_CHANGE_ERROR_TITLE',
+                description: browserError,
                 type: MessageBarType.error
             })
         );
@@ -267,14 +278,14 @@ describe('change-file-validator', () => {
 
         await initOrphanedChangeDetection();
 
-        console.error('resource custom/module/path/fragments/Custom.fragment.xml could not be loaded');
+        const browserError = 'resource custom/module/path/fragments/Custom.fragment.xml could not be loaded';
+        console.error(browserError);
         await flushPromises();
 
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(
             showInfoCenterMessage({
-                title: 'ADP_ORPHANED_CHANGE_ERROR_TITLE',
-                description:
-                    'ADP_ORPHANED_FILE_DESCRIPTION - fragments/Custom.fragment.xml, id_addXML_1.change',
+                title: 'ADP_CHANGE_ERROR_TITLE',
+                description: browserError,
                 type: MessageBarType.error
             })
         );
@@ -300,14 +311,14 @@ describe('change-file-validator', () => {
 
         await initOrphanedChangeDetection();
 
-        console.error('resource com/sap/app/changes/fragments/B.fragment.xml could not be loaded');
+        const browserError = 'resource com/sap/app/changes/fragments/B.fragment.xml could not be loaded';
+        console.error(browserError);
         await flushPromises();
 
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(
             showInfoCenterMessage({
-                title: 'ADP_ORPHANED_CHANGE_ERROR_TITLE',
-                description:
-                    'ADP_ORPHANED_FILE_DESCRIPTION - fragments/B.fragment.xml, id_addXML_2.change',
+                title: 'ADP_CHANGE_ERROR_TITLE',
+                description: browserError,
                 type: MessageBarType.error
             })
         );
@@ -329,7 +340,8 @@ describe('change-file-validator', () => {
             }
         });
 
-        await initOrphanedChangeDetection();
+        initOrphanedChangeDetection();
+        await flushPromises();
 
         expect(console.error).toBe(originalConsoleError);
     });
@@ -340,7 +352,8 @@ describe('change-file-validator', () => {
             status: 500
         });
 
-        await initOrphanedChangeDetection();
+        initOrphanedChangeDetection();
+        await flushPromises();
 
         expect(console.error).toBe(originalConsoleError);
     });
@@ -395,9 +408,9 @@ describe('change-file-validator', () => {
             }
         });
 
-        await initOrphanedChangeDetection();
-
+        initOrphanedChangeDetection();
         expect(console.error).not.toBe(originalConsoleError);
+        await flushMicrotasks();
 
         jest.advanceTimersByTime(60_000);
 
@@ -419,19 +432,208 @@ describe('change-file-validator', () => {
 
         await initOrphanedChangeDetection();
 
-        console.error(
-            'Change \'id_addXML_1\' could not be applied.',
-            'resource com/sap/app/changes/fragments/Multi.fragment.xml could not be loaded'
-        );
+        const arg1 = 'Change \'id_addXML_1\' could not be applied.';
+        const arg2 = 'resource com/sap/app/changes/fragments/Multi.fragment.xml could not be loaded';
+        console.error(arg1, arg2);
         await flushPromises();
 
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(
             showInfoCenterMessage({
-                title: 'ADP_ORPHANED_CHANGE_ERROR_TITLE',
-                description:
-                    'ADP_ORPHANED_FILE_DESCRIPTION - fragments/Multi.fragment.xml, id_addXML_1.change',
+                title: 'ADP_CHANGE_ERROR_TITLE',
+                description: `${arg1}${arg2}`,
                 type: MessageBarType.error
             })
         );
+    });
+
+    test('replays errors buffered before the changes list is loaded', async () => {
+        let resolveFetch: (value: { ok: true; json: () => Promise<unknown> }) => void = () => undefined;
+        fetchMock.mockReturnValueOnce(
+            new Promise((resolve) => {
+                resolveFetch = resolve;
+            })
+        );
+
+        initOrphanedChangeDetection();
+
+        expect(console.error).not.toBe(originalConsoleError);
+        const browserError =
+            'Error: resource com/sap/app/changes/fragments/Early.fragment.xml could not be loaded';
+        console.error(browserError);
+
+        resolveFetch({
+            ok: true,
+            json: () =>
+                Promise.resolve({
+                    'sap.ui.fl.id_addXML_1': {
+                        changeType: 'addXML',
+                        fileName: 'id_addXML_1',
+                        fileType: 'change',
+                        reference: 'com.sap.app',
+                        content: { fragmentPath: 'fragments/Early.fragment.xml' }
+                    }
+                })
+        });
+        await flushPromises();
+
+        expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+            showInfoCenterMessage({
+                title: 'ADP_CHANGE_ERROR_TITLE',
+                description: browserError,
+                type: MessageBarType.error
+            })
+        );
+    });
+
+    test('strips the UI5 log timestamp prefix from the description', async () => {
+        mockChangesResponse({
+            'sap.ui.fl.id_addXML_1': {
+                changeType: 'addXML',
+                fileName: 'id_addXML_1',
+                fileType: 'change',
+                reference: 'com.sap.app',
+                content: { fragmentPath: 'fragments/Ts.fragment.xml' }
+            }
+        });
+
+        initOrphanedChangeDetection();
+        await flushPromises();
+
+        const rawErrorText = 'Error: resource com/sap/app/changes/fragments/Ts.fragment.xml could not be loaded';
+        console.error(`2026-07-07 11:35:16.516500 ${rawErrorText}`);
+        await flushPromises();
+
+        expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+            showInfoCenterMessage({
+                title: 'ADP_CHANGE_ERROR_TITLE',
+                description: rawErrorText,
+                type: MessageBarType.error
+            })
+        );
+    });
+
+    test('returned cancel function immediately restores console.error', async () => {
+        mockChangesResponse({
+            'sap.ui.fl.id_addXML_1': {
+                changeType: 'addXML',
+                fileName: 'id_addXML_1',
+                fileType: 'change',
+                reference: 'com.sap.app',
+                content: { fragmentPath: 'fragments/Cancel.fragment.xml' }
+            }
+        });
+
+        const cancel = initOrphanedChangeDetection();
+
+        expect(console.error).not.toBe(originalConsoleError);
+
+        cancel();
+
+        expect(console.error).toBe(originalConsoleError);
+    });
+
+    test('cancel prevents buffered-replay from sending InfoCenter messages', async () => {
+        let resolveFetch: (value: { ok: true; json: () => Promise<unknown> }) => void = () => undefined;
+        fetchMock.mockReturnValueOnce(
+            new Promise((resolve) => {
+                resolveFetch = resolve;
+            })
+        );
+
+        const cancel = initOrphanedChangeDetection();
+
+        const browserError =
+            'Error: resource com/sap/app/changes/fragments/CancelReplay.fragment.xml could not be loaded';
+        console.error(browserError);
+
+        cancel();
+
+        resolveFetch({
+            ok: true,
+            json: () =>
+                Promise.resolve({
+                    'sap.ui.fl.id_addXML_1': {
+                        changeType: 'addXML',
+                        fileName: 'id_addXML_1',
+                        fileType: 'change',
+                        reference: 'com.sap.app',
+                        content: { fragmentPath: 'fragments/CancelReplay.fragment.xml' }
+                    }
+                })
+        });
+        await flushPromises();
+
+        const matchingCalls = (CommunicationService.sendAction as jest.Mock).mock.calls.filter(
+            (call) => (call[0] as { type?: string })?.type === '[ext] show-info-center-message'
+        );
+        expect(matchingCalls).toHaveLength(0);
+    });
+
+    test('does not fire spurious InfoCenter message for empty moduleName', async () => {
+        mockChangesResponse({
+            'sap.ui.fl.id_addXML_1': {
+                changeType: 'addXML',
+                fileName: 'id_addXML_1',
+                fileType: 'change',
+                reference: 'com.sap.app',
+                moduleName: '',
+                content: { fragmentPath: 'fragments/Empty.fragment.xml' }
+            }
+        });
+
+        initOrphanedChangeDetection();
+        await flushPromises();
+
+        console.error('some completely unrelated error');
+        await flushPromises();
+
+        const matchingCalls = (CommunicationService.sendAction as jest.Mock).mock.calls.filter(
+            (call) => (call[0] as { type?: string })?.type === '[ext] show-info-center-message'
+        );
+        expect(matchingCalls).toHaveLength(0);
+        // Wrapper should still be active — not prematurely cancelled.
+        expect(console.error).not.toBe(originalConsoleError);
+    });
+
+    test('caps the buffer at 200 entries and does not buffer further', async () => {
+        let resolveFetch: (value: { ok: true; json: () => Promise<unknown> }) => void = () => undefined;
+        fetchMock.mockReturnValueOnce(
+            new Promise((resolve) => {
+                resolveFetch = resolve;
+            })
+        );
+
+        initOrphanedChangeDetection();
+
+        // Push 250 errors before the fetch resolves.
+        for (let i = 0; i < 250; i++) {
+            console.error(`unrelated error ${i}`);
+        }
+        // The orphaned-change error arrives after the buffer is capped.
+        const targetError =
+            'Error: resource com/sap/app/changes/fragments/Late.fragment.xml could not be loaded';
+        console.error(targetError);
+
+        resolveFetch({
+            ok: true,
+            json: () =>
+                Promise.resolve({
+                    'sap.ui.fl.id_addXML_1': {
+                        changeType: 'addXML',
+                        fileName: 'id_addXML_1',
+                        fileType: 'change',
+                        reference: 'com.sap.app',
+                        content: { fragmentPath: 'fragments/Late.fragment.xml' }
+                    }
+                })
+        });
+        await flushPromises();
+
+        // The target error arrived after the 200-entry cap, so it was not buffered
+        // and no InfoCenter message should be sent.
+        const matchingCalls = (CommunicationService.sendAction as jest.Mock).mock.calls.filter(
+            (call) => (call[0] as { type?: string })?.type === '[ext] show-info-center-message'
+        );
+        expect(matchingCalls).toHaveLength(0);
     });
 });
