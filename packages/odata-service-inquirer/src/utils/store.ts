@@ -25,7 +25,7 @@ export async function getBackendSystemService(): Promise<Service<BackendSystem, 
  *
  * @param includeSensitiveData - whether to include sensitive data
  * @param connectionTypes - optional list of connection types to filter backend systems
- * @returns backened systems
+ * @returns backend systems
  */
 export async function getAllBackendSystems(
     includeSensitiveData = false,

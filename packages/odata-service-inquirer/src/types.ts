@@ -343,8 +343,9 @@ export type SystemSelectionPromptOptions = {
      */
     hideNewSystem?: boolean;
     /**
-     * Filter backend systems by connection type. If not specified, all supported connection types are included.
-     * Use to exclude specific types, e.g. pass ['abap_catalog'] to include only ABAP catalog systems, excluding full service URL (odata_service) systems.
+     * Filter backend systems by connection type. Only systems whose connection type is included in this list will be shown.
+     * If not specified, all supported connection types are included.
+     * e.g. pass ['abap_catalog'] to include only ABAP catalog systems (full service URL / odata_service systems will be excluded).
      */
     backendSystemConnectionTypes?: ConnectionType[];
 };
