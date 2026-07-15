@@ -6,6 +6,14 @@ import { SystemType, AuthenticationType, ConnectionType } from '@sap-ux/store';
  * Prompts for complete system configuration, filling in any missing fields.
  *
  * @param partial - Partial system configuration with some fields already provided
+ * @param partial.name
+ * @param partial.url
+ * @param partial.client
+ * @param partial.systemType
+ * @param partial.authenticationType
+ * @param partial.connectionType
+ * @param partial.username
+ * @param partial.password
  * @returns Complete system configuration with all required fields
  */
 export async function promptForSystemConfig(partial: {
@@ -101,12 +109,12 @@ export async function promptForSystemConfig(partial: {
     return {
         name: partial.name || answers.name,
         url: partial.url || answers.url,
-        client: partial.client !== undefined ? partial.client : (answers.client || undefined),
+        client: partial.client !== undefined ? partial.client : answers.client || undefined,
         systemType: partial.systemType || answers.systemType,
         authenticationType: partial.authenticationType || answers.authenticationType,
         connectionType: partial.connectionType || answers.connectionType,
-        username: partial.username !== undefined ? partial.username : (answers.username || undefined),
-        password: partial.password !== undefined ? partial.password : (answers.password || undefined)
+        username: partial.username !== undefined ? partial.username : answers.username || undefined,
+        password: partial.password !== undefined ? partial.password : answers.password || undefined
     };
 }
 
@@ -114,12 +122,11 @@ export async function promptForSystemConfig(partial: {
  * Prompts for system identifier (URL and optional client).
  *
  * @param partial - Partial identifier with some fields already provided
+ * @param partial.url
+ * @param partial.client
  * @returns System identifier with URL and optional client
  */
-export async function promptForSystemIdentifier(partial: {
-    url?: string;
-    client?: string;
-}): Promise<{
+export async function promptForSystemIdentifier(partial: { url?: string; client?: string }): Promise<{
     url: string;
     client?: string;
 }> {
@@ -145,7 +152,7 @@ export async function promptForSystemIdentifier(partial: {
 
     return {
         url: partial.url || answers.url,
-        client: partial.client !== undefined ? partial.client : (answers.client || undefined)
+        client: partial.client !== undefined ? partial.client : answers.client || undefined
     };
 }
 
@@ -186,32 +193,34 @@ export async function promptForFieldUpdates(
     fields: string[],
     existing: BackendSystem
 ): Promise<Record<string, unknown>> {
-    const questions = fields.map((field) => {
-        switch (field) {
-            case 'name':
-                return {
-                    type: 'text',
-                    name: 'name',
-                    message: 'New system name:',
-                    initial: existing.name
-                };
-            case 'username':
-                return {
-                    type: 'text',
-                    name: 'username',
-                    message: 'New username:',
-                    initial: existing.username || ''
-                };
-            case 'password':
-                return {
-                    type: 'password',
-                    name: 'password',
-                    message: 'New password:'
-                };
-            default:
-                return null;
-        }
-    }).filter((q) => q !== null);
+    const questions = fields
+        .map((field) => {
+            switch (field) {
+                case 'name':
+                    return {
+                        type: 'text',
+                        name: 'name',
+                        message: 'New system name:',
+                        initial: existing.name
+                    };
+                case 'username':
+                    return {
+                        type: 'text',
+                        name: 'username',
+                        message: 'New username:',
+                        initial: existing.username || ''
+                    };
+                case 'password':
+                    return {
+                        type: 'password',
+                        name: 'password',
+                        message: 'New password:'
+                    };
+                default:
+                    return null;
+            }
+        })
+        .filter((q) => q !== null);
 
     return await prompts(questions as any);
 }

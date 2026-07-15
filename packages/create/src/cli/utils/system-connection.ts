@@ -5,6 +5,12 @@ import { getLogger } from '../../tracing/index.js';
  * Checks connection to a backend system.
  *
  * @param config - System configuration to test
+ * @param config.url
+ * @param config.client
+ * @param config.systemType
+ * @param config.authenticationType
+ * @param config.username
+ * @param config.password
  * @returns Connection check result with success status and optional error message
  */
 export async function checkSystemConnection(config: {
@@ -34,6 +40,12 @@ export async function checkSystemConnection(config: {
  * If skipCheck is true, always returns true without checking.
  *
  * @param config - System configuration to test
+ * @param config.url
+ * @param config.client
+ * @param config.systemType
+ * @param config.authenticationType
+ * @param config.username
+ * @param config.password
  * @param skipCheck - If true, skip the connection check
  * @returns True if connection succeeded or user chose to save anyway, false if user chose not to save
  */
