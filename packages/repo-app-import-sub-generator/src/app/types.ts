@@ -1,6 +1,6 @@
 import type Generator from 'yeoman-generator';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
-import type { VSCodeInstance, TelemetryData, LogWrapper } from '@sap-ux/fiori-generator-shared';
+import type { VSCodeInstance, TelemetryData, LogWrapper, Floorplan } from '@sap-ux/fiori-generator-shared';
 import type { AppIndex, AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { OdataServiceAnswers, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
@@ -24,7 +24,7 @@ export interface AbapRepoAppConfig {
         version: string;
     };
     template: {
-        type: string;
+        type: Floorplan | 'unknown';
     };
 }
 

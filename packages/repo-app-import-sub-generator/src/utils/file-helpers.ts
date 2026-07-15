@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import { TemplateType as FioriElementsTemplateType } from '@sap-ux/fiori-elements-writer';
 import { TemplateType as FioriFreestyleTemplateType } from '@sap-ux/fiori-freestyle-writer';
 import { FileName, type Manifest } from '@sap-ux/project-access';
+import type { Floorplan } from '@sap-ux/fiori-generator-shared';
 
 /**
  *
@@ -120,7 +121,7 @@ export function addPackageJsonIfNotFound(projectPath: string, appConfig: AbapRep
  * @param {Manifest} manifest - The parsed manifest object.
  * @returns {string} The template type string.
  */
-export function getTemplateTypeFromManifest(manifest: Manifest): string {
+export function getTemplateTypeFromManifest(manifest: Manifest): Floorplan | 'unknown' {
     const sourceTemplateId: string = manifest?.['sap.app']?.sourceTemplate?.id ?? '';
     const fioriGeneratorPrefix = '@sap/generator-fiori:';
     // set of all known @sap/generator-fiori template suffixes for validating sourceTemplate.id in manifest.json.
@@ -132,6 +133,6 @@ export function getTemplateTypeFromManifest(manifest: Manifest): string {
     if (!sourceTemplateId.startsWith(fioriGeneratorPrefix)) {
         return 'unknown';
     }
-    const suffix = sourceTemplateId.slice(fioriGeneratorPrefix.length);
+    const suffix = sourceTemplateId.slice(fioriGeneratorPrefix.length) as Floorplan;
     return knownTemplates.has(suffix) ? suffix : 'unknown';
 }

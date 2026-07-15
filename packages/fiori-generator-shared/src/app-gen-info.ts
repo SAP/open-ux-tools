@@ -3,7 +3,6 @@ import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
 import type { AbapCSN, AppGenInfo, ExternalParameters } from './types/index.js';
 
-
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
