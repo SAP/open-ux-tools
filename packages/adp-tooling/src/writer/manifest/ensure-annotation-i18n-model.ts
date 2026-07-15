@@ -36,7 +36,11 @@ interface AppDescriptorVariant {
  * content it builds; the disk-based `ensureAnnotationI18nModelRegistered` delegates here
  * after reading the descriptor.
  *
- * @param {Content[]} content - The descriptor content array to inspect and, if needed, extend.
+ * Mutates in place: when an existing `@i18n` entry is enhanced, its nested `content`
+ * object is modified directly (not just the array). Callers reusing the same `Content[]`
+ * (or a shared change object within it) will observe the added `createIfMissing` flag.
+ *
+ * @param {Content[]} content - The descriptor content array to inspect and, if needed, extend or mutate in place.
  * @returns {boolean} `true` if the content was modified, `false` if it was already correct.
  */
 export function ensureAnnotationI18nModelContent(content: Content[]): boolean {
@@ -86,7 +90,8 @@ export async function ensureAnnotationI18nModelRegistered(projectPath: string, f
     const webappPath = await getWebappPath(projectPath, fs);
     const descriptorPath = path.join(webappPath, 'manifest.appdescr_variant');
 
-    const descriptor = fs.readJSON(descriptorPath) as AppDescriptorVariant | undefined;
+    // mem-fs-editor's readJSON returns null (not undefined) for a missing file.
+    const descriptor = fs.readJSON(descriptorPath) as AppDescriptorVariant | null;
     if (!descriptor || !Array.isArray(descriptor.content)) {
         return false;
     }

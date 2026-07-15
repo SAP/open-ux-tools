@@ -110,7 +110,7 @@ export async function writeKeyUserChanges(projectPath: string, config: AdpWriter
         return;
     }
 
-    let translationsWritten = false;
+    let bindingsWritten = false;
 
     for (const entry of changes) {
         if (!entry?.content) {
@@ -126,11 +126,13 @@ export async function writeKeyUserChanges(projectPath: string, config: AdpWriter
         const contentTexts = change['texts'] as Record<string, Record<string, unknown>> | undefined;
         const topLevelTexts = entry.texts;
 
-        // Replace content.texts values with i18n bindings and write translations to .properties files
+        // Replace content.texts values with {@i18n>...} bindings and write translations to
+        // .properties files. The binding rewrite and the translation write are inseparable:
+        // both require the paired content.texts + top-level texts the backend delivers together.
         if (contentTexts && topLevelTexts && Object.keys(topLevelTexts).length > 0) {
             change['texts'] = replaceTextsWithI18nBindings(contentTexts, fileName);
             await writeKeyUserTranslations(projectPath, fileName, topLevelTexts, fs);
-            translationsWritten = true;
+            bindingsWritten = true;
         }
 
         const transformedChange = transformKeyUserChangeForAdp(change, config.app.id, config.app.layer);
@@ -138,10 +140,10 @@ export async function writeKeyUserChanges(projectPath: string, config: AdpWriter
         await writeChangeToFolder(projectPath, transformedChange as unknown as ManifestChangeProperties, fs);
     }
 
-    // Annotation-change bindings ({@i18n>KEY}) require the @i18n model. New projects
-    // already have it from the generator scaffold; this ensures it for projects that
-    // predate that change. No-op when the model is already registered correctly.
-    if (translationsWritten) {
+    // Whenever we emitted an {@i18n>...} binding, the @i18n model must be registered so it
+    // resolves. New projects already have it from the generator scaffold; this ensures it for
+    // projects that predate that change. No-op when the model is already registered correctly.
+    if (bindingsWritten) {
         await ensureAnnotationI18nModelRegistered(projectPath, fs);
     }
 }
