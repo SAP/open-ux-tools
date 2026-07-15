@@ -450,7 +450,6 @@ export interface Page extends BuildingBlock {
     aggregations?: Partial<Record<PageAggregationName, string>>;
 }
 
-export const PAGE_FULL_TEMPLATE_MIN_UI5_VERSION = '1.145.0';
 export const PAGE_TEMPLATE_COMMENT = 'This is a sample template, event handlers should be added for implementation';
 export const MACROS_NAMESPACE_URI = 'sap.fe.macros';
 

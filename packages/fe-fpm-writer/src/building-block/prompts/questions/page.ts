@@ -2,7 +2,7 @@ import type { Answers } from 'inquirer';
 import { i18nNamespaces, translate } from '../../../i18n.js';
 import { getBuildingBlockIdPrompt, getViewOrFragmentPathPrompt, getAggregationPathPrompt } from '../utils/index.js';
 import type { PromptContext, Prompts } from '../../../prompts/types.js';
-import { BuildingBlockType, PAGE_FULL_TEMPLATE_MIN_UI5_VERSION, PageTemplateType } from '../../types.js';
+import { BuildingBlockType, MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT, PageTemplateType } from '../../types.js';
 import type { BuildingBlockConfig, Page } from '../../types.js';
 import { SapShortTextType, SapLongTextType } from '@sap-ux/i18n';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
@@ -22,7 +22,7 @@ export async function getPageBuildingBlockPrompts(context: PromptContext): Promi
 
     const { content: manifest } = await getManifest(context.appPath, context.fs, false);
     const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
-    const hideTemplateType = !!minUI5Version && lt(minUI5Version, PAGE_FULL_TEMPLATE_MIN_UI5_VERSION);
+    const hideTemplateType = !!minUI5Version && lt(minUI5Version, MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT);
 
     return {
         questions: [

@@ -206,7 +206,6 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
             copyTpl(fs, i18TemplatePath, i18nPath, config);
         }
     }
-
     if (data.pageBuildingBlockTitle) {
         await handlePageBuildingBlock(
             basePath,
