@@ -109,8 +109,8 @@ async function updateSystem(params: {
                 patchRecord.name = params.name;
             }
             if (params.clearCredentials) {
-                patchRecord.username = undefined;
-                patchRecord.password = undefined;
+                patchRecord.username = '';
+                patchRecord.password = '';
             } else if (params.username !== undefined || params.password !== undefined) {
                 if (params.username !== undefined) {
                     patchRecord.username = params.username;
@@ -145,8 +145,8 @@ async function updateSystem(params: {
                     client: existing.client,
                     systemType: existing.systemType,
                     authenticationType: existing.authenticationType || 'basic',
-                    username: (patch.username as string) || existing.username,
-                    password: (patch.password as string) || existing.password
+                    username: (patch.username as string) ?? existing.username,
+                    password: (patch.password as string) ?? existing.password
                 },
                 params.skipCheck || false
             );

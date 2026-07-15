@@ -121,6 +121,9 @@ async function addSystem(params: {
             return;
         }
 
+        // Replace env variables early so validation and duplicate check work with resolved values
+        replaceEnvVariables(config);
+
         try {
             new URL(config.url);
         } catch {
@@ -156,8 +159,6 @@ async function addSystem(params: {
             logger.error(`System '${config.url}'${clientSuffix} already exists. Use 'update system' to update it.`);
             return;
         }
-
-        replaceEnvVariables(config);
 
         // Check connection before saving (unless --skip-check)
         const shouldSave = await checkConnectionOrPrompt(

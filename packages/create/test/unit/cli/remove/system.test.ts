@@ -92,8 +92,8 @@ describe('system/remove', () => {
         // Then
         expect(mockPrompts).toHaveBeenCalledWith(
             expect.objectContaining({
-                type: 'select',
-                message: expect.stringContaining('Remove system')
+                type: 'confirm',
+                message: expect.stringContaining('remove system')
             })
         );
         expect(mockedService.delete).toHaveBeenCalled();
