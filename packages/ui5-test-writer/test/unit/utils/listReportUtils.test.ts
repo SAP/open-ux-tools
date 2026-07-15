@@ -2198,6 +2198,14 @@ describe('Test getTableIdentifiers()', () => {
         const manifest = makeManifest([{ key: '1' }, { key: '5', template: 'my.app.ext.CustomTab' }]);
         expect(getTableIdentifiers(manifest, 'MyLR')).toEqual([]);
     });
+
+    test('treats an empty-string template as a standard (non-custom) tab', () => {
+        const manifest = makeManifest([
+            { key: '1', template: '' },
+            { key: '2', template: '' }
+        ]);
+        expect(getTableIdentifiers(manifest, 'MyLR')).toEqual(['1', '2']);
+    });
 });
 
 describe('Test getPropertyLabelFromMetadata() and isHiddenFilter()', () => {
@@ -2211,6 +2219,7 @@ describe('Test getPropertyLabelFromMetadata() and isHiddenFilter()', () => {
                 <Property Name="Labelled" Type="Edm.String"/>
                 <Property Name="Plain" Type="Edm.String"/>
                 <Property Name="Secret" Type="Edm.String"/>
+                <Property Name="NotHidden" Type="Edm.String"/>
             </EntityType>
             <EntityContainer Name="EntityContainer">
                 <EntitySet Name="Items" EntityType="TestService.ItemType"/>
@@ -2220,6 +2229,9 @@ describe('Test getPropertyLabelFromMetadata() and isHiddenFilter()', () => {
             </Annotations>
             <Annotations Target="TestService.ItemType/Secret">
                 <Annotation Term="com.sap.vocabularies.UI.v1.HiddenFilter" Bool="true"/>
+            </Annotations>
+            <Annotations Target="TestService.ItemType/NotHidden">
+                <Annotation Term="com.sap.vocabularies.UI.v1.HiddenFilter" Bool="false"/>
             </Annotations>
         </Schema>
     </edmx:DataServices>
@@ -2247,8 +2259,17 @@ describe('Test getPropertyLabelFromMetadata() and isHiddenFilter()', () => {
         expect(isHiddenFilter(metadata, 'Items', 'Plain')).toBe(false);
     });
 
+    test('isHiddenFilter returns false when HiddenFilter is explicitly false', () => {
+        expect(isHiddenFilter(metadata, 'Items', 'NotHidden')).toBe(false);
+    });
+
     test('isHiddenFilter returns false when entity set name is undefined', () => {
         expect(isHiddenFilter(metadata, undefined, 'Secret')).toBe(false);
+    });
+
+    test('isHiddenFilter returns false for an unknown entity set or property', () => {
+        expect(isHiddenFilter(metadata, 'Unknown', 'Secret')).toBe(false);
+        expect(isHiddenFilter(metadata, 'Items', 'Unknown')).toBe(false);
     });
 });
 
@@ -2347,5 +2368,69 @@ describe('Test getListReportFeatures() custom filter field i18n label resolution
             description: 'Item Type',
             custom: true
         });
+    });
+});
+
+describe('Test getListReportFeatures() semantic-key HiddenFilter exclusion', () => {
+    const mockLogger = { debug: jest.fn(), warn: jest.fn(), info: jest.fn(), error: jest.fn() } as unknown as Logger;
+
+    // Two semantic keys (TravelID, BookingID). BookingID is @UI.HiddenFilter, so it must be
+    // dropped from missingFromFilterBar. Neither key is present in the filter bar (which holds
+    // an unrelated field), so both would otherwise be "missing".
+    const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="TravelType">
+                <Key><PropertyRef Name="TravelID"/></Key>
+                <Property Name="TravelID" Type="Edm.String"/>
+                <Property Name="BookingID" Type="Edm.String"/>
+                <Property Name="AgencyID" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.TravelType">
+                <Annotation Term="com.sap.vocabularies.Common.v1.SemanticKey">
+                    <Collection>
+                        <PropertyPath>TravelID</PropertyPath>
+                        <PropertyPath>BookingID</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="TestService.TravelType/BookingID">
+                <Annotation Term="com.sap.vocabularies.UI.v1.HiddenFilter" Bool="true"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    const pageModel: PageWithModelV4 = {
+        name: 'TravelLR',
+        entitySet: 'Travel',
+        model: {
+            root: {
+                aggregations: {
+                    filterBar: {
+                        aggregations: {
+                            selectionFields: {
+                                aggregations: {
+                                    AgencyID: {
+                                        description: 'Agency',
+                                        schema: { keys: [{ name: 'Value', value: 'AgencyID' }] }
+                                    } as unknown as TreeAggregation
+                                }
+                            } as unknown as TreeAggregation
+                        }
+                    } as unknown as TreeAggregation
+                }
+            } as unknown as TreeAggregation
+        } as unknown as TreeModel
+    } as unknown as PageWithModelV4;
+
+    test('drops a @UI.HiddenFilter semantic key from missingFromFilterBar', () => {
+        const result = getListReportFeatures(pageModel, mockLogger, metadataXml);
+        // TravelID is missing and not hidden → kept; BookingID is hidden → dropped
+        expect(result.semanticKey?.missingFromFilterBar).toEqual(['TravelID']);
     });
 });

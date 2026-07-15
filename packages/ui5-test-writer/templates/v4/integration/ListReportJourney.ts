@@ -106,9 +106,7 @@ function journey() {
         <%_ } -%>
         <%_ if (tableIdentifiers && tableIdentifiers.length > 0) { -%>
         <%_ tableIdentifiers.forEach(function(tabId) { _%>
-        <%_ if (tableIdentifiers.length > 0) { _%>
         When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tabId %>" });
-        <%_ } _%>
         Then.onThe<%- startLR%>Generated.onTable("<%- tabId %>").iCheckRows();
         <%_ }); -%>
         <%_ } else { -%>

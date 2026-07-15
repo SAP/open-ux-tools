@@ -379,7 +379,12 @@ export function getTableIdentifiers(manifest: Manifest | undefined, targetKey: s
     }
     const identifiers: string[] = [];
     for (const path of paths) {
-        if (path && typeof path.key === 'string' && path.key.length > 0 && typeof path.template !== 'string') {
+        if (
+            path &&
+            typeof path.key === 'string' &&
+            path.key.length > 0 &&
+            !(typeof path.template === 'string' && path.template.length > 0)
+        ) {
             identifiers.push(path.key);
         }
     }
@@ -438,7 +443,10 @@ export function isHiddenFilter(
     }
     const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
     const property = entitySet?.entityType?.entityProperties?.find((p) => p.name === propertyName);
-    return property?.annotations?.UI?.HiddenFilter !== undefined;
+    // The converted `@UI.HiddenFilter` value is a Boolean wrapper object (it carries annotation
+    // metadata), so it is always truthy — `Boolean(x)` / `!== undefined` would treat an explicit
+    // `HiddenFilter: false` as hidden. Coerce via `valueOf()` to read the underlying boolean.
+    return property?.annotations?.UI?.HiddenFilter?.valueOf() === true;
 }
 
 /**
