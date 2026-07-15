@@ -112,7 +112,9 @@ export async function getPrompts(
                 serviceSelection: { hide: true, useAutoComplete: isCli },
                 systemSelection: {
                     defaultChoice: quickDeployedAppConfig?.serviceProviderInfo?.name,
-                    hideNewSystem: true
+                    hideNewSystem: true,
+                    destinationFilters: { odata_abap: true },
+                    backendSystemConnectionTypes: ['abap_catalog']
                 }
             },
             !isCli

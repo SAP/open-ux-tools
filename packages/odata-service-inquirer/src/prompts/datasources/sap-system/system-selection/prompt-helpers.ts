@@ -10,7 +10,7 @@ import {
 } from '@sap-ux/btp-utils';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import { type BackendSystemKey, type BackendSystem } from '@sap-ux/store';
+import { type BackendSystemKey, type BackendSystem, type ConnectionType } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n.js';
 import type { ConnectedSystem, DestinationFilters } from '../../../../types.js';
@@ -213,12 +213,14 @@ function matchesFilters(destination: Destination, filters?: Partial<DestinationF
  * @param destinationFilters the filters to apply to the destination choices
  * @param includeCloudFoundryAbapEnvChoice whether to include the Cloud Foundry ABAP environment choice in the list
  * @param hideNewSystem - if true it will prevent adding the 'New System' option to the list
+ * @param backendSystemConnectionTypes - optional list of connection types to filter backend systems
  * @returns a list of choices for the system selection prompt
  */
 export async function createSystemChoices(
     destinationFilters?: Partial<DestinationFilters>,
     includeCloudFoundryAbapEnvChoice = false,
-    hideNewSystem = false
+    hideNewSystem = false,
+    backendSystemConnectionTypes?: ConnectionType[]
 ): Promise<ListChoiceOptions<SystemSelectionAnswerType>[]> {
     let systemChoices: ListChoiceOptions<SystemSelectionAnswerType>[] = [];
     let newSystemChoice: ListChoiceOptions<SystemSelectionAnswerType> | undefined;
@@ -258,7 +260,7 @@ export async function createSystemChoices(
             };
         }
     } else {
-        const backendSystems = await getAllBackendSystems(false);
+        const backendSystems = await getAllBackendSystems(false, backendSystemConnectionTypes);
 
         // Cache the backend systems
         PromptState.backendSystemsCache = backendSystems;
