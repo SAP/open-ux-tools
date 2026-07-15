@@ -2,5 +2,5 @@
 '@sap-ux/generator-adp': patch
 ---
 
-FIX: Make `getFirstArgAsString` generic to correctly reflect its runtime return type
+FIX: Make `getFirstArgAsString` generic to correctly reflect its runtime return type and rename to `getFirstArg`
 
