@@ -3995,9 +3995,6 @@ importers:
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
-      '@sap-ux/fiori-app-sub-generator':
-        specifier: workspace:*
-        version: link:../fiori-app-sub-generator
       '@sap-ux/fiori-elements-writer':
         specifier: workspace:*
         version: link:../fiori-elements-writer

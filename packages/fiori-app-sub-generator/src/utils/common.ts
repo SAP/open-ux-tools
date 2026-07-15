@@ -325,14 +325,3 @@ export async function getAnnotations(
 
 /** @deprecated Import directly from `@sap-ux/fiori-generator-shared` instead. */
 export { restoreServiceProviderLoggers } from '@sap-ux/fiori-generator-shared';
-
-/**
- * Returns the human-readable display label for a given floorplan/template type.
- *
- * @param templateType - the template type string (e.g. 'lrop', 'fpm')
- * @param odataVersion - the OData version string (e.g. 'v2', 'v4')
- * @returns the display label (e.g. 'List Report Page V4', 'Custom Page V4')
- */
-export function getFloorplanLabel(templateType: string, odataVersion?: string): string {
-    return t(`floorplans.label.${templateType}`, { defaultValue: templateType, odataVersion });
-}

@@ -1,5 +1,27 @@
 # @sap-ux/ui-service-sub-generator
 
+## 1.0.28
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-15
+
+#### Workspace Updates
+
+- @sap-ux/ui-service-inquirer 1.0.27 → 1.0.28
+
+## 1.0.27
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.20 → 1.1.0
+- @sap-ux/inquirer-common 1.0.21 → 1.0.22
+- @sap-ux/ui-service-inquirer 1.0.26 → 1.0.27
+
 ## 1.0.26
 
 ### Patch Changes

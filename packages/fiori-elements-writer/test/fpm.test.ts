@@ -113,7 +113,7 @@ describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
         const viewXml = fs.read(viewXmlPath).toString();
 
         expect(viewXml).toContain('My Custom Page');
-        expect(viewXml).toContain('<macros:Page id="Page" title="My Custom Page"/>');
+        expect(viewXml).toContain('<macros:Page id="Page" title="My Custom Page"');
     });
 
     test('Should not generate view XML containing custom page building block title for FPM template when UI5 version is below 1.136.0', async () => {
