@@ -2,8 +2,7 @@ import { jest } from '@jest/globals';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { TableType } from '@sap-ux/fiori-elements-writer';
 import {
-    PAGE_TEMPLATE_TYPE_FULL,
-    PAGE_TEMPLATE_TYPE_BASIC,
+    PageTemplateType,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
 } from '@sap-ux/fe-fpm-writer';
@@ -749,8 +748,8 @@ describe('Test entity prompts', () => {
             expect(layoutQuestion.when({ addPageBuildingBlock: false } as PageBuildingBlockAnswers)).toBe(false);
         }
         if (typeof (layoutQuestion as any)?.filter === 'function') {
-            expect((layoutQuestion as any).filter(true)).toBe(PAGE_TEMPLATE_TYPE_BASIC);
-            expect((layoutQuestion as any).filter(false)).toBe(PAGE_TEMPLATE_TYPE_FULL);
+            expect((layoutQuestion as any).filter(true)).toBe(PageTemplateType.Basic);
+            expect((layoutQuestion as any).filter(false)).toBe(PageTemplateType.Full);
         }
         if (typeof (layoutQuestion as any)?.additionalMessages === 'function') {
             expect((layoutQuestion as any).additionalMessages(true)).toEqual({

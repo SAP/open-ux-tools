@@ -13,7 +13,7 @@ import type { Logger } from '@sap-ux/logger';
 import { i18nNamespaces, translate } from '../../../src/i18n.js';
 import { findFilesByExtensionMock } from '../../__mocks__/project-access-file.mjs';
 import {
-    PAGE_TEMPLATE_TYPE_FULL,
+    PageTemplateType,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
 } from '../../../src/building-block/types.js';
@@ -356,7 +356,7 @@ describe('CustomPage', () => {
                 ...input,
                 minUI5Version: '1.145',
                 pageBuildingBlockTitle: 'Test Page Title',
-                pageBuildingBlockTemplateType: PAGE_TEMPLATE_TYPE_FULL
+                pageBuildingBlockTemplateType: PageTemplateType.Full
             };
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
             await generateCustomPage(target, inputWithFullLayout, fs);
@@ -372,7 +372,7 @@ describe('CustomPage', () => {
                 ...input,
                 minUI5Version: '1.136',
                 pageBuildingBlockTitle: 'Test Page Title',
-                pageBuildingBlockTemplateType: PAGE_TEMPLATE_TYPE_FULL
+                pageBuildingBlockTemplateType: PageTemplateType.Full
             };
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
 
@@ -397,7 +397,7 @@ describe('CustomPage', () => {
                 ...input,
                 minUI5Version: undefined,
                 pageBuildingBlockTitle: 'Test Page Title',
-                pageBuildingBlockTemplateType: PAGE_TEMPLATE_TYPE_FULL
+                pageBuildingBlockTemplateType: PageTemplateType.Full
             };
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
 

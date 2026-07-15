@@ -8,9 +8,6 @@ export const PageTemplateType = {
 
 export type PageTemplateType = (typeof PageTemplateType)[keyof typeof PageTemplateType];
 
-export const PAGE_TEMPLATE_TYPE_FULL = PageTemplateType.Full;
-export const PAGE_TEMPLATE_TYPE_BASIC = PageTemplateType.Basic;
-
 /** Minimum UI5 version required for page building blocks. */
 export const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK = '1.136.0' as const;
 /** Minimum UI5 version required for full layout page building blocks. */

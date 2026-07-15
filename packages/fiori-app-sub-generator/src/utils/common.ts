@@ -7,7 +7,7 @@ import { parse } from '@sap-ux/edmx-parser';
 import type { TemplateType as FETemplateType } from '@sap-ux/fiori-elements-writer';
 import { TemplateTypeAttributes } from '@sap-ux/fiori-elements-writer';
 import {
-    PAGE_TEMPLATE_TYPE_FULL,
+    PageTemplateType,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
 } from '@sap-ux/fe-fpm-writer';
@@ -100,7 +100,7 @@ export function getMinSupportedUI5Version(
     entityRelatedConfig?: Partial<EntityRelatedAnswers>
 ): string {
     if (floorplan === FloorplanFE.FE_FPM && entityRelatedConfig?.addPageBuildingBlock) {
-        return entityRelatedConfig.pageBuildingBlockLayout === PAGE_TEMPLATE_TYPE_FULL
+        return entityRelatedConfig.pageBuildingBlockLayout === PageTemplateType.Full
             ? MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
             : MIN_UI5_VERSION_PAGE_BUILDING_BLOCK;
     }

@@ -1,10 +1,10 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
-import type {
+import {
     PageTemplateType,
-    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK as MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_TYPE,
-    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT as MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT_TYPE
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
 } from '@sap-ux/fe-fpm-writer';
 import type { ConfirmQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import {
@@ -232,11 +232,6 @@ export function getEntitySelectionQuestions(
  * @returns the page building block questions
  */
 function getPageBuildingBlockQuestions(): Question<PageBuildingBlockAnswers>[] {
-    const PAGE_TEMPLATE_TYPE_FULL: PageTemplateType = 'full';
-    const PAGE_TEMPLATE_TYPE_BASIC: PageTemplateType = 'basic';
-    const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK: typeof MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_TYPE = '1.136.0';
-    const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT: typeof MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT_TYPE =
-        '1.145.0';
     return [
         {
             type: 'confirm',
@@ -258,7 +253,7 @@ function getPageBuildingBlockQuestions(): Question<PageBuildingBlockAnswers>[] {
             default: true,
             labelTrue: t('prompts.pageBuildingBlock.choiceBasic'),
             labelFalse: t('prompts.pageBuildingBlock.choiceFull'),
-            filter: (val: boolean) => (val ? PAGE_TEMPLATE_TYPE_BASIC : PAGE_TEMPLATE_TYPE_FULL),
+            filter: (val: boolean) => (val ? PageTemplateType.Basic : PageTemplateType.Full),
             guiOptions: {
                 breadcrumb: t('prompts.pageBuildingBlock.layoutMessage')
             },

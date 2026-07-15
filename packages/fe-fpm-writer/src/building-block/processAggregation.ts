@@ -14,7 +14,7 @@ import {
     PAGE_AGGREGATIONS,
     PAGE_FULL_TEMPLATE_MIN_UI5_VERSION,
     PAGE_TEMPLATE_COMMENT,
-    PAGE_TEMPLATE_TYPE_FULL,
+    PageTemplateType,
     type BuildingBlock,
     type PageAggregationName,
     type Page,
@@ -70,7 +70,7 @@ export function getPageAggregationNames(data: BuildingBlock): readonly PageAggre
     if (data.buildingBlockType !== BuildingBlockType.Page) {
         return undefined;
     }
-    return (data as Page).templateType === PAGE_TEMPLATE_TYPE_FULL ? PAGE_AGGREGATIONS : undefined;
+    return (data as Page).templateType === PageTemplateType.Full ? PAGE_AGGREGATIONS : undefined;
 }
 
 /**

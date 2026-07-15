@@ -33,10 +33,9 @@ export { createIdGenerator, type IdGeneratorFunction, getRelativeTemplateCompone
 
 export {
     BuildingBlockType,
+    PageTemplateType,
     PAGE_AGGREGATIONS,
     PAGE_BB_DEFAULT_AGGREGATIONS,
-    PAGE_TEMPLATE_TYPE_FULL,
-    PAGE_TEMPLATE_TYPE_BASIC,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
 } from './building-block/types.js';
@@ -54,8 +53,7 @@ export type {
     CustomFormField,
     RichTextEditor,
     ButtonGroupConfig,
-    Action,
-    PageTemplateType
+    Action
 } from './building-block/types.js';
 export type { PageAggregationName, GenerateBuildingBlockAggregationConfig } from './building-block/types.js';
 export {

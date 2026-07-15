@@ -19,7 +19,7 @@ import { AuthenticationType } from '@sap-ux/store';
 import { latestVersionString } from '@sap-ux/ui5-info';
 import type { Floorplan, State, Service } from '../types/index.js';
 import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { PAGE_TEMPLATE_TYPE_BASIC } from '@sap-ux/fe-fpm-writer';
+import { PageTemplateType } from '@sap-ux/fe-fpm-writer';
 
 import {
     DEFAULT_HOST,
@@ -108,7 +108,7 @@ export function transformTemplateType(
     const pageBuildingBlockConfig = entityRelatedConfig?.addPageBuildingBlock
         ? {
               pageBuildingBlockTitle: entityRelatedConfig.pageBuildingBlockTitle,
-              pageBuildingBlockTemplateType: entityRelatedConfig.pageBuildingBlockLayout ?? PAGE_TEMPLATE_TYPE_BASIC
+              pageBuildingBlockTemplateType: entityRelatedConfig.pageBuildingBlockLayout ?? PageTemplateType.Basic
           }
         : {};
 

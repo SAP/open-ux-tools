@@ -2,12 +2,7 @@ import type { Answers } from 'inquirer';
 import { i18nNamespaces, translate } from '../../../i18n.js';
 import { getBuildingBlockIdPrompt, getViewOrFragmentPathPrompt, getAggregationPathPrompt } from '../utils/index.js';
 import type { PromptContext, Prompts } from '../../../prompts/types.js';
-import {
-    BuildingBlockType,
-    PAGE_FULL_TEMPLATE_MIN_UI5_VERSION,
-    PAGE_TEMPLATE_TYPE_BASIC,
-    PAGE_TEMPLATE_TYPE_FULL
-} from '../../types.js';
+import { BuildingBlockType, PAGE_FULL_TEMPLATE_MIN_UI5_VERSION, PageTemplateType } from '../../types.js';
 import type { BuildingBlockConfig, Page } from '../../types.js';
 import { SapShortTextType, SapLongTextType } from '@sap-ux/i18n';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
@@ -38,10 +33,10 @@ export async function getPageBuildingBlockPrompts(context: PromptContext): Promi
                           type: 'list' as const,
                           name: 'buildingBlockData.templateType',
                           message: t('templateType.message') as string,
-                          default: PAGE_TEMPLATE_TYPE_BASIC,
+                          default: PageTemplateType.Basic,
                           choices: [
-                              { value: PAGE_TEMPLATE_TYPE_BASIC, name: t('templateType.basic') as string },
-                              { value: PAGE_TEMPLATE_TYPE_FULL, name: t('templateType.full') as string }
+                              { value: PageTemplateType.Basic, name: t('templateType.basic') as string },
+                              { value: PageTemplateType.Full, name: t('templateType.full') as string }
                           ],
                           guiOptions: { mandatory: true }
                       }
@@ -93,7 +88,7 @@ export async function getPageBuildingBlockPrompts(context: PromptContext): Promi
         initialAnswers: {
             buildingBlockData: {
                 buildingBlockType: BuildingBlockType.Page,
-                ...(hideTemplateType ? { templateType: PAGE_TEMPLATE_TYPE_BASIC } : {})
+                ...(hideTemplateType ? { templateType: PageTemplateType.Basic } : {})
             }
         }
     };

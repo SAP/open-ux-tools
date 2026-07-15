@@ -21,14 +21,12 @@ import { addExtensionTypes, getManifestPath } from '../common/utils.js';
 import { copyTpl, extendJSON, createIdGenerator, type IdGeneratorFunction } from '../common/file.js';
 import { generateBuildingBlock } from '../building-block/index.js';
 import {
-    PAGE_TEMPLATE_TYPE_FULL,
-    PAGE_TEMPLATE_TYPE_BASIC,
+    BuildingBlockType,
+    PageTemplateType,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT,
-    PAGE_BB_DEFAULT_AGGREGATIONS,
-    type PageTemplateType
+    PAGE_BB_DEFAULT_AGGREGATIONS
 } from '../building-block/types.js';
-import { BuildingBlockType } from '../building-block/types.js';
 import { augmentXpathWithLocalNames } from '../building-block/prompts/utils/index.js';
 import type { Logger } from '@sap-ux/logger';
 import { i18nNamespaces, translate } from '../i18n.js';
@@ -129,7 +127,7 @@ async function handlePageBuildingBlock(
 
     let templateType = data.pageBuildingBlockTemplateType;
     if (
-        templateType === PAGE_TEMPLATE_TYPE_FULL &&
+        templateType === PageTemplateType.Full &&
         (!minVersion || lt(minVersion.version, MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT))
     ) {
         log?.warn(
@@ -138,11 +136,11 @@ async function handlePageBuildingBlock(
                 minUi5VersionForFullLayout: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
             })
         );
-        templateType = PAGE_TEMPLATE_TYPE_BASIC;
+        templateType = PageTemplateType.Basic;
     }
 
     const pageId = generateId('Page');
-    const aggregations = templateType === PAGE_TEMPLATE_TYPE_FULL ? PAGE_BB_DEFAULT_AGGREGATIONS : undefined;
+    const aggregations = templateType === PageTemplateType.Full ? PAGE_BB_DEFAULT_AGGREGATIONS : undefined;
     await generateBuildingBlock(
         basePath,
         {
