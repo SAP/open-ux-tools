@@ -24,7 +24,7 @@ export interface AbapRepoAppConfig {
         version: string;
     };
     template: {
-        type: Floorplan | 'unknown';
+        type: Floorplan | undefined;
     };
 }
 

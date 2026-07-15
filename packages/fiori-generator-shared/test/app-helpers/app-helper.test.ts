@@ -1,5 +1,6 @@
 import { getFlpId, getSemanticObject, getFloorplanLabel } from '../../src/app-helpers/app-helpers.js';
 import { initI18n } from '../../src/i18n.js';
+import { FloorplanFE, FloorplanFF } from '../../src/types/index.js';
 
 describe('app-helper tests', () => {
     test('should return flp id', () => {
@@ -24,22 +25,22 @@ describe('getFloorplanLabel', () => {
         await initI18n();
     });
     test('returns translated label for known template types', () => {
-        expect(getFloorplanLabel('lrop')).toBe('List Report Page');
-        expect(getFloorplanLabel('fpm')).toBe('Custom Page');
-        expect(getFloorplanLabel('worklist')).toBe('Worklist Page');
-        expect(getFloorplanLabel('alp')).toBe('Analytical List Page');
-        expect(getFloorplanLabel('ovp')).toBe('Overview Page');
-        expect(getFloorplanLabel('feop')).toBe('Form Entry Object Page');
-        expect(getFloorplanLabel('basic')).toBe('Basic');
+        expect(getFloorplanLabel(FloorplanFE.FE_LROP)).toBe('List Report Page');
+        expect(getFloorplanLabel(FloorplanFE.FE_FPM)).toBe('Custom Page');
+        expect(getFloorplanLabel(FloorplanFE.FE_WORKLIST)).toBe('Worklist Page');
+        expect(getFloorplanLabel(FloorplanFE.FE_ALP)).toBe('Analytical List Page');
+        expect(getFloorplanLabel(FloorplanFE.FE_OVP)).toBe('Overview Page');
+        expect(getFloorplanLabel(FloorplanFE.FE_FEOP)).toBe('Form Entry Object Page');
+        expect(getFloorplanLabel(FloorplanFF.FF_SIMPLE)).toBe('Basic');
     });
 
     test('returns the templateType as fallback for unknown types', () => {
-        expect(getFloorplanLabel('unknown-type')).toBe('unknown-type');
+        expect(getFloorplanLabel('unknown-type' as any)).toBe('unknown-type');
     });
 
     test('appends odata version when provided', () => {
-        expect(getFloorplanLabel('lrop', '4')).toBe('List Report Page V4');
-        expect(getFloorplanLabel('lrop', '2')).toBe('List Report Page V2');
-        expect(getFloorplanLabel('lrop', undefined)).toBe('List Report Page');
+        expect(getFloorplanLabel(FloorplanFE.FE_LROP, '4')).toBe('List Report Page V4');
+        expect(getFloorplanLabel(FloorplanFE.FE_LROP, '2')).toBe('List Report Page V2');
+        expect(getFloorplanLabel(FloorplanFE.FE_LROP, undefined)).toBe('List Report Page');
     });
 });
