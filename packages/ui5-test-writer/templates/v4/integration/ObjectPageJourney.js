@@ -51,11 +51,11 @@ sap.ui.define([
 <%     headerActions.forEach(function(action) { -%>
 <%     if (action.visible) { -%>
 <%         if (action.enabled === 'dynamic') { -%>
-            Then.onThe<%- name%>Generated.onHeader().iCheckAction("<%- action.label %>" /* , { enabled: true } */);
+            Then.onThe<%- name%>Generated.onHeader().iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
 <%         } else { -%>
-            Then.onThe<%- name%>Generated.onHeader().iCheckAction("<%- action.label %>", { enabled: <%- action.enabled === true %> });
+            Then.onThe<%- name%>Generated.onHeader().iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
 <%         } -%>
-            // When.onThe<%- name%>Generated.onHeader().iPressAction("<%- action.label %>");
+            // When.onThe<%- name%>Generated.onHeader().iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%     } -%>
 <%     }); -%>
         });
@@ -97,18 +97,18 @@ sap.ui.define([
 <%      if (action.visible) { -%>
 <%          if (section.isTable && section.navigationProperty) { -%>
 <%              if (action.enabled === 'dynamic') { -%>
-            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction("<%- action.label %>" /* , { enabled: true } */);
+            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
 <%              } else { -%>
-            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction("<%- action.label %>", { enabled: <%- action.enabled === true %> });
+            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
 <%              } -%>
-            // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction("<%- action.label %>");
+            // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%          } else { -%>
 <%              if (action.enabled === 'dynamic') { -%>
-            Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction("<%- action.label %>" /* , { enabled: true } */);
+            Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
 <%              } else { -%>
-            Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction("<%- action.label %>", { enabled: <%- action.enabled === true %> });
+            Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
 <%              } -%>
-            // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iPressAction("<%- action.label %>");
+            // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%          } -%>
 <%      } -%>
 <%      }); -%>

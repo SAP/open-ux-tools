@@ -754,7 +754,9 @@ export type Then = Opa5 & BaseArrangements & {
             expect(bookingObjPageJourneyContent).toContain('field: "carrier"');
             expect(bookingObjPageJourneyContent).toContain('targetAnnotation: "Contact"');
             expect(bookingObjPageJourneyContent).toContain('iCheckMicroChart("Supplement Price")');
-            expect(bookingObjPageJourneyContent).toContain('onHeader().iCheckAction("Activate", { enabled: false })');
+            expect(bookingObjPageJourneyContent).toContain(
+                'onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "Activate", unbound: false }, { enabled: false })'
+            );
             expect(bookingObjPageJourneyContent).toContain('iCheckNumberOfSections(3)');
             expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("BookingDetails")');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "BookingDetails" })');
@@ -763,12 +765,12 @@ export type Then = Opa5 & BaseArrangements & {
             expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("FlightData")');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "FlightData" })');
             expect(bookingObjPageJourneyContent).toContain(
-                '.iCheckAction("Deduct Discount" /* , { enabled: true } */)'
+                '.iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "deductDiscount", unbound: false } /* , { enabled: true } */)'
             );
             expect(bookingObjPageJourneyContent).toContain('iPressSectionIconTabFilterButton("PriceData")');
             expect(bookingObjPageJourneyContent).toContain('iCheckSection({ section: "PriceData" })');
             expect(bookingObjPageJourneyContent).toContain(
-                'onTable({ property: "_BookSupplement" }).iCheckAction("Create Template", { enabled: true })'
+                'onTable({ property: "_BookSupplement" }).iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "createActiveTemplate", unbound: true }, { enabled: true })'
             );
             expect(bookingObjPageJourneyContent).toContain(
                 'onForm({ section: "BookingData" }).iCheckField({ property: "BookingId" })'
@@ -1180,7 +1182,9 @@ export type Then = Opa5 & BaseArrangements & {
             expect(content).toContain('iCheckMicroChart("Supplement Price", "")');
 
             // ─── Header actions (from PR #4632) ───
-            expect(content).toContain('onHeader().iCheckAction("Activate", { enabled: false })');
+            expect(content).toContain(
+                'onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "Activate", unbound: false }, { enabled: false })'
+            );
 
             // ─── Section navigation ───
             expect(content).toContain('iCheckNumberOfSections(3)');
@@ -1194,9 +1198,11 @@ export type Then = Opa5 & BaseArrangements & {
             expect(content).toContain('iCheckSection({ section: "PriceData" }, {})');
 
             // ─── Section actions (table action with dynamic enabled) ───
-            expect(content).toContain('.iCheckAction("Deduct Discount" /* , { enabled: true } */)');
             expect(content).toContain(
-                'onTable({ property: "_BookSupplement" }).iCheckAction("Create Template", { enabled: true })'
+                '.iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "deductDiscount", unbound: false } /* , { enabled: true } */)'
+            );
+            expect(content).toContain(
+                'onTable({ property: "_BookSupplement" }).iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "createActiveTemplate", unbound: true }, { enabled: true })'
             );
 
             // ─── onForm with FormIdentifier cast (TS adaptation) ───
