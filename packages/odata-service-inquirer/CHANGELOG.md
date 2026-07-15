@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-inquirer
 
+## 3.0.25
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-15
+
+#### Bug Fixes
+
+- Enable TreeTable for CAP services with hierarchy annotations [[27a2803](https://github.com/SAP/open-ux-tools/commit/27a280315f2f7eda132778db2caff6fc00301dba)]
+
 ## 3.0.24
 
 ### Patch Changes
