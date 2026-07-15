@@ -59,7 +59,6 @@ describe('isRenameChange', () => {
 describe('processRenameChangeI18n', () => {
     const projectRoot = '/mock/project';
     const webappPath = join(projectRoot, 'webapp');
-    const descriptorPath = join(webappPath, 'manifest.appdescr_variant');
     let fs: Editor;
 
     beforeEach(() => {
@@ -67,20 +66,9 @@ describe('processRenameChangeI18n', () => {
         mockGetWebappPath.mockResolvedValue(webappPath);
         mockCreatePropertiesI18nEntries.mockResolvedValue(true);
         fs = create(createStorage());
-        // A descriptor without @i18n so the model-registration step has something to enhance.
-        fs.writeJSON(descriptorPath, { content: [{ changeType: 'appdescr_app_setTitle', content: {} }] });
     });
 
-    const i18nModelCount = (): number => {
-        const descriptor = fs.readJSON(descriptorPath) as {
-            content: { changeType: string; content: { modelId?: string } }[];
-        };
-        return descriptor.content.filter(
-            (c) => c.changeType === 'appdescr_ui5_addNewModelEnhanceWith' && c.content?.modelId === '@i18n'
-        ).length;
-    };
-
-    it('extracts a literal rename text, rewrites to @i18n binding, registers the model', async () => {
+    it('extracts a literal rename text and rewrites to an @i18n binding', async () => {
         const change = makeChange({
             fileName: 'id_1_rename',
             texts: { newText: { value: 'Supplier Name', type: 'XGRP' } }
@@ -96,7 +84,6 @@ describe('processRenameChangeI18n', () => {
             undefined,
             fs
         );
-        expect(i18nModelCount()).toBe(1);
     });
 
     it('re-points a legacy {i18n>} binding to {@i18n>} without re-extracting', async () => {
@@ -113,7 +100,6 @@ describe('processRenameChangeI18n', () => {
             '{@i18n>id_2_annotationRename_annotationText}'
         );
         expect(mockCreatePropertiesI18nEntries).not.toHaveBeenCalled();
-        expect(i18nModelCount()).toBe(1);
     });
 
     it('is a no-op when the value is already an @i18n binding', async () => {
@@ -125,7 +111,6 @@ describe('processRenameChangeI18n', () => {
 
         expect(modified).toBe(false);
         expect(mockCreatePropertiesI18nEntries).not.toHaveBeenCalled();
-        expect(i18nModelCount()).toBe(0);
     });
 
     it('returns false when the change has no texts', async () => {

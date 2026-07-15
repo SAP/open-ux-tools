@@ -19,7 +19,6 @@ import {
 } from '../types.js';
 import { renderFile } from 'ejs';
 import { replaceTextsWithI18nBindings, writeKeyUserTranslations } from '../writer/i18n/key-user-translations.js';
-import { ensureAnnotationI18nModelRegistered } from '../writer/manifest/ensure-annotation-i18n-model.js';
 
 export type ChangeMetadata = Pick<DescriptorVariant, 'id' | 'layer' | 'namespace'>;
 
@@ -110,8 +109,6 @@ export async function writeKeyUserChanges(projectPath: string, config: AdpWriter
         return;
     }
 
-    let bindingsWritten = false;
-
     for (const entry of changes) {
         if (!entry?.content) {
             continue;
@@ -129,22 +126,16 @@ export async function writeKeyUserChanges(projectPath: string, config: AdpWriter
         // Replace content.texts values with {@i18n>...} bindings and write translations to
         // .properties files. The binding rewrite and the translation write are inseparable:
         // both require the paired content.texts + top-level texts the backend delivers together.
+        // The @i18n model itself is registered by the generator scaffold (getManifestContent),
+        // which always runs during the same generation, so no per-change registration is needed here.
         if (contentTexts && topLevelTexts && Object.keys(topLevelTexts).length > 0) {
             change['texts'] = replaceTextsWithI18nBindings(contentTexts, fileName);
             await writeKeyUserTranslations(projectPath, fileName, topLevelTexts, fs);
-            bindingsWritten = true;
         }
 
         const transformedChange = transformKeyUserChangeForAdp(change, config.app.id, config.app.layer);
 
         await writeChangeToFolder(projectPath, transformedChange as unknown as ManifestChangeProperties, fs);
-    }
-
-    // Whenever we emitted an {@i18n>...} binding, the @i18n model must be registered so it
-    // resolves. New projects already have it from the generator scaffold; this ensures it for
-    // projects that predate that change. No-op when the model is already registered correctly.
-    if (bindingsWritten) {
-        await ensureAnnotationI18nModelRegistered(projectPath, fs);
     }
 }
 

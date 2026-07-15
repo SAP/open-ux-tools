@@ -7,7 +7,6 @@ import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 import type { NewI18nEntry, SapTextType } from '@sap-ux/i18n';
 
 import type { CommonChangeProperties } from '../types.js';
-import { ensureAnnotationI18nModelRegistered } from '../writer/manifest/ensure-annotation-i18n-model.js';
 
 /**
  * Change types whose translatable text is authored in the adaptation editor and must be
@@ -42,15 +41,16 @@ export function isRenameChange(change: CommonChangeProperties): boolean {
  * - literal strings are extracted into `webapp/i18n/i18n.properties` under the collision-safe
  *   key `<fileName>_<textId>`, and the value is replaced with `{@i18n>KEY}`.
  *
- * When any text was rewritten, the `@i18n` model is ensured in `manifest.appdescr_variant`
- * (reusing {@link ensureAnnotationI18nModelRegistered}). The `change` object is mutated in
+ * The `@i18n` model registration itself is handled once at editor startup (see
+ * `initAdp` in preview-middleware) and by the generator scaffold — not per change — so this
+ * function only rewrites bindings and writes translations. The `change` object is mutated in
  * place so the caller persists the rewritten bindings; `fs` is committed by the caller.
  *
  * @param projectRoot - The adaptation project root path.
  * @param change - The change being written (mutated in place).
  * @param fs - The `mem-fs-editor` instance shared with the change writer.
  * @param logger - Logger instance.
- * @returns {Promise<boolean>} `true` if the change or descriptor was modified.
+ * @returns {Promise<boolean>} `true` if any text binding was rewritten.
  */
 export async function processRenameChangeI18n(
     projectRoot: string,
@@ -100,10 +100,6 @@ export async function processRenameChangeI18n(
         const i18nFilePath = join(webappPath, 'i18n', 'i18n.properties');
         await createPropertiesI18nEntries(i18nFilePath, entries, undefined, fs);
         logger.debug(`Extracted ${entries.length} rename text(s) into ${i18nFilePath}`);
-    }
-
-    if (modified) {
-        await ensureAnnotationI18nModelRegistered(projectRoot, fs);
     }
 
     return modified;
