@@ -2,7 +2,7 @@
 "@sap-ux/create": minor
 ---
 
-feat(create): add interactive prompting and connection checking for system management commands
+FEAT: Add interactive prompting and connection checking for system management commands
 
 - Added interactive prompts for `add system`, `update system`, and `remove system` commands when flags are not provided
 - Added connection verification for `add system` and `update system` before saving (with `--skip-check` flag to bypass)
