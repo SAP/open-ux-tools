@@ -64,7 +64,7 @@ describe('change-file-validator', () => {
         });
     }
 
-    test('wraps console.error when addXML changes exist', async () => {
+    test('wraps console.error when addXML changes exist', () => {
         mockChangesResponse({
             'sap.ui.fl.id_addXML_1': {
                 changeType: 'addXML',
@@ -75,12 +75,12 @@ describe('change-file-validator', () => {
             }
         });
 
-        await initOrphanedChangeDetection();
+        initOrphanedChangeDetection();
 
         expect(console.error).not.toBe(originalConsoleError);
     });
 
-    test('wraps console.error when codeExt changes exist', async () => {
+    test('wraps console.error when codeExt changes exist', () => {
         mockChangesResponse({
             'sap.ui.fl.id_codeExt_1': {
                 changeType: 'codeExt',
@@ -91,7 +91,7 @@ describe('change-file-validator', () => {
             }
         });
 
-        await initOrphanedChangeDetection();
+        initOrphanedChangeDetection();
 
         expect(console.error).not.toBe(originalConsoleError);
     });

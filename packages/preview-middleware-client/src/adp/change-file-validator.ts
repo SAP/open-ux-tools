@@ -61,7 +61,7 @@ function buildModuleNameSet(changes: Record<string, Change>): Set<string> {
             change.changeType === CHANGE_TYPE.addXML
                 ? change.content?.fragmentPath ?? ''
                 : change.content?.codeRef ?? '';
-        moduleNames.add(change.moduleName || `${prefix}/changes/${path}`);
+        moduleNames.add(change.moduleName || `${prefix}/changes/${path}`); // || not ?? — empty string is falsy, fall back to computed path
     }
 
     return moduleNames;
@@ -133,6 +133,7 @@ export function initOrphanedChangeDetection(): () => void {
 
     const cancel = (): void => {
         cancelled = true;
+        buffer.length = 0;
         restore();
         clearTimeout(safetyTimeout);
     };
@@ -147,7 +148,7 @@ export function initOrphanedChangeDetection(): () => void {
         const message = args.filter((arg): arg is string => typeof arg === 'string').join('');
         if (handler) {
             handler(message);
-            if (moduleNames && moduleNames.size === 0) {
+            if (moduleNames?.size === 0) {
                 clearTimeout(safetyTimeout);
             }
         } else if (buffer.length < BUFFER_LIMIT) {
