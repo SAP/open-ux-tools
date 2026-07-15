@@ -35,7 +35,6 @@ export {
     BuildingBlockType,
     PageTemplateType,
     PAGE_AGGREGATIONS,
-    PAGE_BB_DEFAULT_AGGREGATIONS,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
 } from './building-block/types.js';

@@ -411,20 +411,6 @@ export const PAGE_AGGREGATIONS = [
 
 export type PageAggregationName = (typeof PAGE_AGGREGATIONS)[number];
 
-/**
- * Default placeholder mContent for Page building block aggregation.
- */
-export const PAGE_BB_DEFAULT_AGGREGATIONS = {
-    breadcrumbs:
-        '<Breadcrumbs>\n    <Link text="Home" press=".onPressHome" />\n    <Link text="Page 1" press=".onPressPage1" />\n    <Link text="Page 2" press=".onPressPage2" />\n</Breadcrumbs>',
-    navigationActions: '<Button icon="sap-icon://full-screen" press=".onFullScreen" type="Transparent" />',
-    titleContent: '<GenericTag text="Status" design="StatusIconHidden" status="Information" />',
-    actions:
-        '<Button text="Action 1" press=".onClickAction1" type="Ghost" />\n    <Button text="Action 2" press=".onClickAction2" type="Ghost" />',
-    headerContent: '<VBox>\n    <Title text="Page Title" />\n</VBox>',
-    footer: '<OverflowToolbar><ToolbarSpacer /><Button text="Approve" press=".onApprove" type="Accept" icon="" /><Button text="Reject" press=".onReject" type="Reject" icon="" /></OverflowToolbar>'
-} as const satisfies Partial<Record<PageAggregationName, string>>;
-
 export interface Page extends BuildingBlock {
     /**
      * The title of the page.

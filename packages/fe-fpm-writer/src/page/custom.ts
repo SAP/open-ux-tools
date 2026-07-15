@@ -24,8 +24,7 @@ import {
     BuildingBlockType,
     PageTemplateType,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
-    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT,
-    PAGE_BB_DEFAULT_AGGREGATIONS
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
 } from '../building-block/types.js';
 import { augmentXpathWithLocalNames } from '../building-block/prompts/utils/index.js';
 import type { Logger } from '@sap-ux/logger';
@@ -140,7 +139,6 @@ async function handlePageBuildingBlock(
     }
 
     const pageId = generateId('Page');
-    const aggregations = templateType === PageTemplateType.Full ? PAGE_BB_DEFAULT_AGGREGATIONS : undefined;
     await generateBuildingBlock(
         basePath,
         {
@@ -152,8 +150,7 @@ async function handlePageBuildingBlock(
                 buildingBlockType: BuildingBlockType.Page,
                 generateId,
                 title: data.pageBuildingBlockTitle,
-                templateType: templateType,
-                aggregations
+                templateType: templateType
             }
         },
         fs

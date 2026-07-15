@@ -1103,34 +1103,34 @@ exports[`CustomPage generateCustomPage: only page, no others should generate a c
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.view.CustomPage\\">
     <macros:Page id=\\"Page\\" title=\\"Test Page Title\\" showFooter=\\"true\\">
         <!--This is a sample template, event handlers should be added for implementation-->
-        <macros:breadcrumbs id=\\"breadcrumbs\\">
+        <macros:breadcrumbs>
             <!-- Breadcrumbs aggregation -->
-            <Breadcrumbs>
-                <Link text=\\"Home\\" press=\\".onPressHome\\"/>
-                <Link text=\\"Page 1\\" press=\\".onPressPage1\\"/>
-                <Link text=\\"Page 2\\" press=\\".onPressPage2\\"/>
+            <Breadcrumbs id=\\"breadcrumbs_breadcrumbs\\">
+                <Link id=\\"breadcrumbs_link\\" text=\\"Home\\" press=\\".onBreadcrumbsPressHome\\"/>
+                <Link id=\\"breadcrumbs_link_1\\" text=\\"Page 1\\" press=\\".onBreadcrumbsPressPage1\\"/>
+                <Link id=\\"breadcrumbs_link_2\\" text=\\"Page 2\\" press=\\".onBreadcrumbsPressPage2\\"/>
             </Breadcrumbs>
         </macros:breadcrumbs>
-        <macros:navigationActions id=\\"navigationActions\\">
+        <macros:navigationActions>
             <!-- Navigation actions aggregation -->
-            <Button icon=\\"sap-icon://full-screen\\" press=\\".onFullScreen\\" type=\\"Transparent\\"/>
+            <Button id=\\"navigationActions_button\\" icon=\\"sap-icon://full-screen\\" press=\\".onNavigationActionsFullScreen\\" type=\\"Transparent\\"/>
         </macros:navigationActions>
-        <macros:titleContent id=\\"titleContent\\">
+        <macros:titleContent>
             <!-- Title content aggregation (content next to title) -->
-            <GenericTag text=\\"Status\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
+            <GenericTag id=\\"titleContent_genericTag\\" text=\\"Status\\" design=\\"StatusIconHidden\\" status=\\"Information\\"/>
         </macros:titleContent>
-        <macros:actions id=\\"actions\\">
+        <macros:actions>
             <!-- Actions aggregation -->
-            <Button text=\\"Action 1\\" press=\\".onClickAction1\\" type=\\"Ghost\\"/>
-            <Button text=\\"Action 2\\" press=\\".onClickAction2\\" type=\\"Ghost\\"/>
+            <Button id=\\"actions_button\\" text=\\"Action 1\\" press=\\".onActionsClickAction1\\" type=\\"Ghost\\"/>
+            <Button id=\\"actions_button_1\\" text=\\"Action 2\\" press=\\".onActionsClickAction2\\" type=\\"Ghost\\"/>
         </macros:actions>
-        <macros:headerContent id=\\"headerContent\\">
+        <macros:headerContent>
             <!-- Header content aggregation (content after avatar) -->
-            <VBox>
-                <Title text=\\"Page Title\\"/>
+            <VBox id=\\"headerContent_vbox\\">
+                <Title id=\\"headerContent_title\\" text=\\"Page Title\\"/>
             </VBox>
         </macros:headerContent>
-        <macros:items id=\\"items\\">
+        <macros:items>
             <!-- Main content -->
             <IconTabBar id=\\"iconTabBaritems\\" class=\\"sapUiResponsiveContentPadding\\">
                 <items>
@@ -1139,12 +1139,12 @@ exports[`CustomPage generateCustomPage: only page, no others should generate a c
                 </items>
             </IconTabBar>
         </macros:items>
-        <macros:footer id=\\"footer\\">
+        <macros:footer>
             <!-- Footer aggregation -->
-            <OverflowToolbar>
-                <ToolbarSpacer/>
-                <Button text=\\"Approve\\" press=\\".onApprove\\" type=\\"Accept\\" icon=\\"\\"/>
-                <Button text=\\"Reject\\" press=\\".onReject\\" type=\\"Reject\\" icon=\\"\\"/>
+            <OverflowToolbar id=\\"footer_overflowToolbar\\">
+                <ToolbarSpacer id=\\"footer_toolbarSpacer\\"/>
+                <Button id=\\"footer_button\\" text=\\"Approve\\" press=\\".onFooterApprove\\" type=\\"Accept\\" icon=\\"\\"/>
+                <Button id=\\"footer_button_1\\" text=\\"Reject\\" press=\\".onFooterReject\\" type=\\"Reject\\" icon=\\"\\"/>
             </OverflowToolbar>
         </macros:footer>
     </macros:Page>
