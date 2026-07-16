@@ -106,6 +106,11 @@ async function updateSystem(params: {
             // Use provided flags
             patchRecord = {};
             if (params.name !== undefined) {
+                // Validate name is not empty or whitespace-only
+                if (params.name.trim().length === 0) {
+                    logger.error('System name cannot be empty or whitespace-only.');
+                    return;
+                }
                 // Validate name uniqueness when updating via flag
                 const allSystems = await service.getAll();
                 const nameExists = allSystems.some(

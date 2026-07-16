@@ -121,6 +121,12 @@ async function addSystem(params: {
             return;
         }
 
+        // Validate name is not empty or whitespace-only
+        if (config.name.trim().length === 0) {
+            logger.error('System name cannot be empty or whitespace-only.');
+            return;
+        }
+
         // Replace env variables early so validation and duplicate check work with resolved values
         replaceEnvVariables(config);
 
