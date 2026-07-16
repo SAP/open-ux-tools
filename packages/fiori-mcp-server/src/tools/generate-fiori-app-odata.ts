@@ -5,6 +5,10 @@ import { promises as FSpromises, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { generatorConfigOData, PREDEFINED_GENERATOR_VALUES } from './schemas/index.js';
 import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../utils/index.js';
+import { getExternalServiceReferences } from '@sap-ux/odata-service-writer';
+import { AbapServiceProvider, createForDestination } from '@sap-ux/axios-extension';
+import type { ExternalService, ServiceProvider } from '@sap-ux/axios-extension';
+import { createAbapServiceProvider, findSystem } from './services/sap-system.js';
 
 async function executeOData(validated: GeneratorConfigOData, appPath: string): Promise<GenerateAppOutput> {
     const generatorConfigValidated: GeneratorConfigOData = validateWithSchema(generatorConfigOData, validated);
@@ -43,6 +47,13 @@ async function executeOData(validated: GeneratorConfigOData, appPath: string): P
         if (generatorConfig.service) {
             const metadata = await FSpromises.readFile(metadataPath, { encoding: 'utf8' });
             generatorConfig.service.edmx = metadata;
+            generatorConfig.service.externalServices = await getExternalServiceMetadata(
+                generatorConfig.service.servicePath,
+                generatorConfig.service.edmx,
+                generatorConfig.service.host,
+                generatorConfig.service.client,
+                generatorConfig.service.destination
+            );
         }
 
         const content = JSON.stringify(generatorConfig, null, 4);
@@ -92,6 +103,102 @@ async function executeOData(validated: GeneratorConfigOData, appPath: string): P
  * @returns A promise resolving to the generation execution output.
  */
 export async function generateFioriAppOData(args: GeneratorConfigOData): Promise<GenerateAppOutput> {
-    const validated = generatorConfigOData.parse(args);
-    return executeOData(validated, validated.project?.targetFolder ?? '');
+    const validAppConfig = generatorConfigOData.parse(args);
+    return executeOData(validAppConfig, validAppConfig.project?.targetFolder ?? '');
+}
+
+/**
+ * Fetches external service metadata (value help and code lists) for the OData service.
+ *
+ * External services enhance the generated Fiori application with:
+ * - Value help annotations for dropdowns and input fields
+ * - Code list annotations for enumeration values
+ *
+ * @param servicePath - The OData service path (e.g., '/sap/opu/odata/sap/MY_SERVICE/')
+ * @param metadata - The OData service metadata (EDMX)
+ * @param hostName - The SAP system host URL
+ * @param client - Optional SAP client number (e.g., '100')
+ * @param destinationName - Optional BTP destination name (used instead of host+client in BAS)
+ * @returns Array of external services with metadata, or undefined if fetching fails or no external services are found
+ */
+async function getExternalServiceMetadata(
+    servicePath: string,
+    metadata: string,
+    hostName: string,
+    client?: string,
+    destinationName?: string
+): Promise<ExternalService[] | undefined> {
+    const startTime = performance.now();
+    try {
+        const externalServiceRefs = getExternalServiceReferences(servicePath, metadata, []);
+
+        if (externalServiceRefs.length === 0) {
+            logger.info('No external service references found in metadata');
+            return undefined;
+        }
+
+        logger.info(`Found ${externalServiceRefs.length} external service reference(s), fetching metadata...`);
+
+        // Create an AbapServiceProvider instance to fetch external service metadata
+        const serviceProvider = await getAbapServiceProvider(hostName, client, destinationName);
+        if (serviceProvider) {
+            const extServiceData = await serviceProvider.fetchExternalServices(externalServiceRefs);
+            const duration = (performance.now() - startTime).toFixed(0);
+            logger.info(`Successfully fetched ${extServiceData.length} external service(s) in ${duration}ms`);
+            return extServiceData;
+        } else {
+            logger.error(
+                'Failed to create AbapServiceProvider. External service (value help or code list) metadata cannot be fetched.'
+            );
+            return undefined;
+        }
+    } catch (error) {
+        const duration = (performance.now() - startTime).toFixed(0);
+        logger.error(
+            `Error fetching external service metadata after ${duration}ms: ${error instanceof Error ? error.message : String(error)}`
+        );
+        logger.warn('App will be generated without external service metadata (value help and code lists)');
+        return undefined;
+    }
+}
+
+/**
+ * Creates an AbapServiceProvider for fetching external service metadata.
+ *
+ * @param host - The SAP system host URL
+ * @param client - Optional SAP client number
+ * @param destinationName - Optional BTP destination name (takes precedence over host+client)
+ * @returns AbapServiceProvider instance, or undefined if creation fails or provider is not ABAP-based
+ */
+async function getAbapServiceProvider(
+    host: string,
+    client?: string,
+    destinationName?: string
+): Promise<AbapServiceProvider | undefined> {
+    let serviceProvider: ServiceProvider | undefined;
+    if (destinationName) {
+        serviceProvider = await createForDestination({}, { Name: destinationName });
+    } else {
+        // Create full URL with client for findSystem to work correctly
+        const url = new URL(host);
+        if (client) {
+            url.searchParams.set('sap-client', client);
+        }
+        const fullUrl = url.toString();
+
+        const { system } = await findSystem(fullUrl);
+        if (system) {
+            serviceProvider = createAbapServiceProvider(system);
+        } else {
+            logger.error(`Failed to find system for host: ${host}${client ? ` and client: ${client}` : ''}`);
+            return undefined;
+        }
+    }
+
+    if (!(serviceProvider instanceof AbapServiceProvider)) {
+        logger.error('Value Help and Code List metadata is only available from ABAP backends');
+        return undefined;
+    }
+
+    return serviceProvider;
 }
