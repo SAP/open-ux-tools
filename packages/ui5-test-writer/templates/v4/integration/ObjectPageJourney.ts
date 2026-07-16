@@ -145,7 +145,7 @@ function journey() {
 <% if (section?.subSections?.length > 0) { -%>
 <% section.subSections.forEach(function(subSection) { -%>
         //When.onThe<%- name%>Generated.iGoToSection({ section: "<%- section.id %>", subSection: "<%- subSection.id %>" });
-        Then.onThe<%- name%>Generated.iCheckSubSection({ section: "<%- subSection.id %>" });
+        Then.onThe<%- name%>Generated.iCheckSubSection({ section: "<%- subSection.id %>" }, {});
 <% if (subSection.fields && subSection.fields.length > 0) { -%>
 <% subSection.fields.forEach(function(field) { -%>
         Then.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" } as unknown as FormIdentifier).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });

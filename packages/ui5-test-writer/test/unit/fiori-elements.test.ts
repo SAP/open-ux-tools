@@ -1191,8 +1191,8 @@ export type Then = Opa5 & BaseArrangements & {
             expect(content).toContain('iCheckNumberOfSections(3)');
             expect(content).toContain('iPressSectionIconTabFilterButton("BookingDetails")');
             expect(content).toContain('iCheckSection({ section: "BookingDetails" }, {})');
-            expect(content).toContain('iCheckSubSection({ section: "BookingData" })');
-            expect(content).toContain('iCheckSubSection({ section: "AdministrativeData" })');
+            expect(content).toContain('iCheckSubSection({ section: "BookingData" }, {})');
+            expect(content).toContain('iCheckSubSection({ section: "AdministrativeData" }, {})');
             expect(content).toContain('iPressSectionIconTabFilterButton("FlightData")');
             expect(content).toContain('iCheckSection({ section: "FlightData" }, {})');
             expect(content).toContain('iPressSectionIconTabFilterButton("PriceData")');
