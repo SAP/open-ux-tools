@@ -2,7 +2,7 @@ import prompts from 'prompts';
 import type { BackendSystem } from '@sap-ux/store';
 import { SystemType, AuthenticationType, ConnectionType } from '@sap-ux/store';
 import { validateClient } from '@sap-ux/project-input-validator';
-import { isSystemNameTaken, type SystemNameValidationOptions } from '@sap-ux/inquirer-common';
+import { isSystemNameTaken } from '@sap-ux/inquirer-common';
 
 /**
  * Checks if a string is empty or contains only whitespace.

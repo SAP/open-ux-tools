@@ -1,7 +1,7 @@
 import { t } from '../../../i18n.js';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import { readFileSync } from 'node:fs';
-import { isSystemNameTaken, type SystemNameValidationOptions } from '@sap-ux/inquirer-common';
+import { isSystemNameTaken } from '@sap-ux/inquirer-common';
 
 /**
  * Validates that the system name does not exist yet.
