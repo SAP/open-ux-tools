@@ -6,6 +6,8 @@ import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 const mockPrompts = jest.fn() as unknown as typeof prompts;
 const mockGetService = jest.fn();
 const mockGetAll = jest.fn();
+const mockIsSystemNameTaken = jest.fn();
+const mockValidateClient = jest.fn();
 
 jest.unstable_mockModule('prompts', () => ({ default: mockPrompts }));
 jest.unstable_mockModule('@sap-ux/store', () => ({
@@ -13,6 +15,12 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     AuthenticationType,
     ConnectionType,
     getService: mockGetService
+}));
+jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
+    isSystemNameTaken: mockIsSystemNameTaken
+}));
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    validateClient: mockValidateClient
 }));
 
 const {
@@ -28,6 +36,12 @@ describe('system-prompts', () => {
         mockPrompts.mockReset();
         mockGetService.mockReset();
         mockGetAll.mockReset();
+        mockIsSystemNameTaken.mockReset();
+        mockValidateClient.mockReset();
+
+        // Default mock implementations
+        mockIsSystemNameTaken.mockResolvedValue(false);
+        mockValidateClient.mockReturnValue(true);
     });
 
     describe('promptForSystemConfig', () => {
@@ -406,6 +420,7 @@ describe('system-prompts', () => {
 
                 mockGetService.mockResolvedValue({ getAll: mockGetAll });
                 mockGetAll.mockResolvedValue(existingSystems);
+                mockIsSystemNameTaken.mockResolvedValue(true); // Mock that name is taken
                 mockPrompts.mockResolvedValueOnce({ name: 'New System' });
 
                 await promptForSystemConfig({
@@ -589,6 +604,7 @@ describe('system-prompts', () => {
 
                 mockGetService.mockResolvedValue({ getAll: mockGetAll });
                 mockGetAll.mockResolvedValue(allSystems);
+                mockIsSystemNameTaken.mockResolvedValue(false); // Same name is allowed for current system
                 mockPrompts.mockResolvedValueOnce({ name: 'Current System' });
 
                 await promptForFieldUpdates(['name'], currentSystem);
@@ -630,6 +646,7 @@ describe('system-prompts', () => {
 
                 mockGetService.mockResolvedValue({ getAll: mockGetAll });
                 mockGetAll.mockResolvedValue(allSystems);
+                mockIsSystemNameTaken.mockResolvedValue(true); // Other System name is taken
                 mockPrompts.mockResolvedValueOnce({ name: 'Updated Name' });
 
                 await promptForFieldUpdates(['name'], currentSystem);
@@ -658,6 +675,7 @@ describe('system-prompts', () => {
 
                 mockGetService.mockResolvedValue({ getAll: mockGetAll });
                 mockGetAll.mockResolvedValue([currentSystem]);
+                mockIsSystemNameTaken.mockResolvedValue(false); // Allow new unique name
                 mockPrompts.mockResolvedValueOnce({ name: 'New Unique Name' });
 
                 await promptForFieldUpdates(['name'], currentSystem);

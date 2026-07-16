@@ -1,6 +1,33 @@
 import prompts from 'prompts';
-import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
-import { SystemType, AuthenticationType, ConnectionType, getService } from '@sap-ux/store';
+import type { BackendSystem } from '@sap-ux/store';
+import { SystemType, AuthenticationType, ConnectionType } from '@sap-ux/store';
+import { validateClient } from '@sap-ux/project-input-validator';
+import { isSystemNameTaken } from '@sap-ux/inquirer-common';
+
+/**
+ * Checks if a string is empty or contains only whitespace.
+ *
+ * @param value - The value to check
+ * @returns true if empty, false otherwise
+ */
+function isEmptyString(value: string): boolean {
+    return !value || !/\S/.test(value);
+}
+
+/**
+ * Checks if a string is a valid URL.
+ *
+ * @param value - The value to check
+ * @returns true if valid URL, false otherwise
+ */
+function isValidUrl(value: string): boolean {
+    try {
+        const url = new URL(value);
+        return !!url.protocol && !!url.host;
+    } catch {
+        return false;
+    }
+}
 
 /**
  * Validates that a string is not empty after trimming whitespace.
@@ -9,10 +36,7 @@ import { SystemType, AuthenticationType, ConnectionType, getService } from '@sap
  * @returns True if valid, error message otherwise
  */
 function validateNonEmpty(value: string): true | string {
-    if (!value || value.trim().length === 0) {
-        return 'This field is required and cannot be empty';
-    }
-    return true;
+    return isEmptyString(value) ? 'This field is required and cannot be empty' : true;
 }
 
 /**
@@ -21,68 +45,48 @@ function validateNonEmpty(value: string): true | string {
  * @param value - The URL to validate
  * @returns True if valid, error message otherwise
  */
-function validateUrl(value: string): true | string {
+function validateUrlField(value: string): true | string {
     const nonEmptyCheck = validateNonEmpty(value);
     if (nonEmptyCheck !== true) {
         return nonEmptyCheck;
     }
 
-    try {
-        new URL(value);
-        return true;
-    } catch {
-        return 'Please enter a valid URL (e.g., https://my-system.example.com)';
-    }
+    return isValidUrl(value) ? true : 'Please enter a valid URL (e.g., https://my-system.example.com)';
 }
 
 /**
- * Helper function to check if a system name already exists.
+ * Validates that a client number is in correct format (empty or 3-digit number).
  *
- * @param value - The system name to check
- * @param excludeSystem - Optional system to exclude from the check (for updates)
+ * @param value - The client number to validate
  * @returns True if valid, error message otherwise
  */
-async function checkSystemNameUniqueness(value: string, excludeSystem?: BackendSystem): Promise<true | string> {
-    try {
-        const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
-        const allSystems = await service.getAll();
-
-        const nameExists = allSystems.some((system) => {
-            const sameNameIgnoreCase = system.name.toLowerCase() === value.trim().toLowerCase();
-            if (!sameNameIgnoreCase) {
-                return false;
-            }
-            // If we're updating, exclude the current system from the check
-            if (excludeSystem) {
-                return !(system.url === excludeSystem.url && system.client === excludeSystem.client);
-            }
-            return true;
-        });
-
-        if (nameExists) {
-            return `A system with the name '${value}' already exists. Please choose a different name.`;
-        }
-
-        return true;
-    } catch (error) {
-        // If we can't check uniqueness, allow it through
-        // (better to let the user proceed than block on a check failure)
-        return true;
-    }
+function validateClientField(value: string): true | string {
+    const result = validateClient(value);
+    // validateClient returns true | string
+    return result === true ? true : String(result);
 }
 
 /**
  * Validates that a system name is unique (not already in use).
  *
  * @param value - The system name to validate
+ * @param excludeSystem - Optional system to exclude from check (for updates)
  * @returns True if valid, error message otherwise
  */
-async function validateSystemNameUniqueness(value: string): Promise<true | string> {
+async function validateSystemNameUniqueness(
+    value: string,
+    excludeSystem?: BackendSystem
+): Promise<true | string> {
     const nonEmptyCheck = validateNonEmpty(value);
     if (nonEmptyCheck !== true) {
         return nonEmptyCheck;
     }
-    return checkSystemNameUniqueness(value);
+
+    const isTaken = await isSystemNameTaken(value, excludeSystem);
+    if (isTaken) {
+        return `A system with the name '${value}' already exists. Please choose a different name.`;
+    }
+    return true;
 }
 
 /**
@@ -100,7 +104,12 @@ async function validateSystemNameUniquenessForUpdate(
     if (nonEmptyCheck !== true) {
         return nonEmptyCheck;
     }
-    return checkSystemNameUniqueness(value, currentSystem);
+
+    const isTaken = await isSystemNameTaken(value, currentSystem);
+    if (isTaken) {
+        return `A system with the name '${value}' already exists. Please choose a different name.`;
+    }
+    return true;
 }
 
 /**
@@ -143,7 +152,7 @@ export async function promptForSystemConfig(partial: {
             type: 'text',
             name: 'name',
             message: 'System name (display name):',
-            validate: validateSystemNameUniqueness
+            validate: (value: string) => validateSystemNameUniqueness(value)
         });
     }
 
@@ -152,7 +161,7 @@ export async function promptForSystemConfig(partial: {
             type: 'text',
             name: 'url',
             message: 'System URL:',
-            validate: validateUrl
+            validate: validateUrlField
         });
     }
 
@@ -160,7 +169,8 @@ export async function promptForSystemConfig(partial: {
         questions.push({
             type: 'text',
             name: 'client',
-            message: 'SAP client (optional, press Enter to skip):'
+            message: 'SAP client (optional, press Enter to skip):',
+            validate: validateClientField
         });
     }
 
@@ -240,7 +250,7 @@ export async function promptForSystemIdentifier(partial: { url?: string; client?
             type: 'text',
             name: 'url',
             message: 'System URL:',
-            validate: validateUrl
+            validate: validateUrlField
         });
     }
 
@@ -248,7 +258,8 @@ export async function promptForSystemIdentifier(partial: { url?: string; client?
         questions.push({
             type: 'text',
             name: 'client',
-            message: 'SAP client (optional, press Enter to skip):'
+            message: 'SAP client (optional, press Enter to skip):',
+            validate: validateClientField
         });
     }
 
