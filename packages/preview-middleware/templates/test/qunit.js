@@ -17,13 +17,16 @@ sap.ui.loader.config({
 
 window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
 
+const journeyParam = new URLSearchParams(window.location.search).get("journey");
+const journeysToRequire = journeyParam ? [journeyParam] : <%- JSON.stringify(tests) %>;
+
 sap.ui.require([
     "sap/ui/thirdparty/qunit-2",
     "sap/ui/qunit/qunit-junit",
     "sap/ui/qunit/qunit-coverage"
 ], function (QUnit) {
     'use strict';
-    sap.ui.require(<%- JSON.stringify(tests) %>, function() {
+    sap.ui.require(journeysToRequire, function() {
         QUnit.start();
     });
 });

@@ -4,5 +4,10 @@ window.suite = function () {
 <% for (const path of locals.testPaths) { %>
     oSuite.addTestPage(sContextPath + "<%- path %>");
 <% } %>
+<% if (locals.opa5Path && locals.journeyNames && locals.journeyNames.length > 0) { %>
+<% for (const name of locals.journeyNames) { %>
+    oSuite.addTestPage(sContextPath + "<%- opa5Path %>?journey=<%- name %>");
+<% } %>
+<% } %>
     return oSuite;
 }
