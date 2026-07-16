@@ -89,7 +89,7 @@ const DEFAULT_LIVERELOAD_PORT = 35729;
  * @returns namespace string (e.g. 'test/fe/v2/app')
  */
 function toNamespace(id: string): string {
-    return id.replace(/\./g, '/');
+    return id.replaceAll('.', '/');
 }
 
 /**
