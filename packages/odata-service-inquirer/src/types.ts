@@ -5,7 +5,7 @@ import type { CapService } from '@sap-ux/cap-config-writer';
 import type { TableSelectionMode, TableType } from '@sap-ux/fiori-elements-writer';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { BackendSystem } from '@sap-ux/store';
+import type { BackendSystem, BackendSystemFilter } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
 import type { serviceUrlInternalPromptNames } from './prompts/datasources/service-url/types.js';
 import type { EntityAnswer, NavigationEntityAnswer } from './prompts/edmx/entity-helper.js';
@@ -342,6 +342,11 @@ export type SystemSelectionPromptOptions = {
      * If true, the 'New System' option is not added to the system selection list. Default is false - the 'New System' option will be available.
      */
     hideNewSystem?: boolean;
+    /**
+     * Include systems specified by the backendSystemFilter see {@link BackendSystemFilter}.
+     * Defaults to { connectionType: ['abap_catalog', 'odata_service'] } if not provided.
+     */
+    backendSystemFilter?: BackendSystemFilter;
 };
 
 export type MetadataPromptOptions = {

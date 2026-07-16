@@ -1,5 +1,27 @@
 # @sap-ux/generator-adp
 
+## 1.0.35
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.1.0 → 1.2.0
+- @sap-ux/inquirer-common 1.0.22 → 1.0.23
+- @sap-ux/adp-tooling 1.0.32 → 1.0.33
+
+## 1.0.34
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-15
+
+#### Bug Fixes
+
+- Make `getFirstArgAsString` generic to correctly reflect its runtime return type and rename to `getFirstArg` [[b37366e](https://github.com/SAP/open-ux-tools/commit/b37366e8a4bb76b4d30416cb3bcfdd2ccfa63cf5)]
+
 ## 1.0.33
 
 ### Patch Changes
