@@ -3,6 +3,7 @@ const config = { ...baseConfig };
 config.moduleNameMapper = {
     ...baseConfig.moduleNameMapper,
     '^@vscode-logging/logger$': '<rootDir>/test/__mocks__/vscode-logging-logger.mjs',
+    '^@sap/ux-cds-compiler-facade$': '<rootDir>/test/__mocks__/@sap/ux-cds-compiler-facade.ts'
 };
 config.transformIgnorePatterns = [
     'node_modules/(?!(?:.*?/)?(@sap-ux|@sap-ux-private|@sap/ux-cds-compiler-facade|@vscode-logging|@sap-devx[+/]yeoman-ui-types)/)'
