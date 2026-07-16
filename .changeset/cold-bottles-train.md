@@ -1,5 +1,5 @@
 ---
-'@sap-ux/ui-components': patch
+'sap-ux-sap-systems-ext': patch
 ---
 
-FIX: added border top for errors messages in inputs
+BUMP: `ui-components` dependency Update
