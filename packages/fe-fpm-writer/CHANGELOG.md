@@ -1,5 +1,80 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.2.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-15
+
+#### Bug Fixes
+
+- hide Page BB templateType prompt and default to basic when UI5 version is < 1.145.0 [[37a342f](https://github.com/SAP/open-ux-tools/commit/37a342f1995602638173bd358ba7b98e54f3d1d9)]
+
+## 1.2.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-14
+
+#### Features
+
+- Add standalone fragment generation support [[5d0eb12](https://github.com/SAP/open-ux-tools/commit/5d0eb12b95f71b9ee7556564c639b19e04ada60f)]
+
+## 1.1.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/fiori-annotation-api 1.0.14 → 1.0.15
+- @sap-ux/project-access 2.1.6 → 2.1.6
+
+## 1.1.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.13 → 1.0.14
+
+## 1.1.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.12 → 1.0.13
+- @sap-ux/project-access 2.1.5 → 2.1.6
+
+## 1.1.4
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.11 → 1.0.12
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/logger 1.0.1 → 1.0.2
+- @sap-ux/i18n 1.0.1 → 1.0.2
+
+## 1.1.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/fiori-annotation-api 1.0.10 → 1.0.11
+
 ## 1.1.2
 
 ### Patch Changes

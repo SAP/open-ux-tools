@@ -1,5 +1,125 @@
 # @sap-ux/odata-service-inquirer
 
+## 3.0.25
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-15
+
+#### Bug Fixes
+
+- Enable TreeTable for CAP services with hierarchy annotations [[27a2803](https://github.com/SAP/open-ux-tools/commit/27a280315f2f7eda132778db2caff6fc00301dba)]
+
+## 3.0.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.20 → 1.1.0
+- @sap-ux/inquirer-common 1.0.21 → 1.0.22
+
+## 3.0.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.19 → 1.0.20
+- @sap-ux/nodejs-utils 1.0.6 → 1.0.7
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/inquirer-common 1.0.20 → 1.0.21
+- @sap-ux/axios-extension 2.0.6 → 2.0.7
+- @sap-ux/telemetry 1.0.17 → 1.0.18
+- @sap-ux/btp-utils 2.0.5 → 2.0.5
+- @sap-ux/project-access 2.1.6 → 2.1.6
+- @sap-ux/store 2.0.3 → 2.0.4
+
+## 3.0.22
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.16 → 1.0.17
+- @sap-ux/fiori-generator-shared 1.0.18 → 1.0.19
+- @sap-ux/inquirer-common 1.0.19 → 1.0.20
+
+## 3.0.21
+
+### Patch Changes
+
+#### Dependency Updates
+
+- upgrade axios dependency [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.5 → 2.0.6
+- @sap-ux/inquirer-common 1.0.18 → 1.0.19
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+- @sap-ux/telemetry 1.0.15 → 1.0.16
+- @sap-ux/fiori-generator-shared 1.0.17 → 1.0.18
+- @sap-ux/project-access 2.1.5 → 2.1.6
+- @sap-ux/nodejs-utils 1.0.5 → 1.0.6
+- @sap-ux/project-input-validator 1.0.9 → 1.0.10
+
+## 3.0.20
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/project-input-validator 1.0.8 → 1.0.9
+- @sap-ux/fiori-generator-shared 1.0.16 → 1.0.17
+- @sap-ux/axios-extension 2.0.4 → 2.0.5
+- @sap-ux/inquirer-common 1.0.17 → 1.0.18
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/nodejs-utils 1.0.4 → 1.0.5
+- @sap-ux/btp-utils 2.0.3 → 2.0.4
+- @sap-ux/telemetry 1.0.14 → 1.0.15
+- @sap-ux/logger 1.0.1 → 1.0.2
+- @sap-ux/store 2.0.2 → 2.0.3
+
+## 3.0.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.13 → 1.0.14
+- @sap-ux/fiori-generator-shared 1.0.15 → 1.0.16
+- @sap-ux/inquirer-common 1.0.16 → 1.0.17
+
+## 3.0.18
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.12 → 1.0.13
+- @sap-ux/fiori-generator-shared 1.0.14 → 1.0.15
+- @sap-ux/inquirer-common 1.0.15 → 1.0.16
+
+## 3.0.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/axios-extension 2.0.4 → 2.0.4
+- @sap-ux/fiori-generator-shared 1.0.13 → 1.0.14
+- @sap-ux/inquirer-common 1.0.14 → 1.0.15
+- @sap-ux/project-input-validator 1.0.7 → 1.0.8
+- @sap-ux/telemetry 1.0.11 → 1.0.12
+
 ## 3.0.16
 
 ### Patch Changes

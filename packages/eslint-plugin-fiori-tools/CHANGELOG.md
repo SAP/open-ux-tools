@@ -1,5 +1,129 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.7.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-15
+
+#### Bug Fixes
+
+- Validate required fields are defined in the .change file when creating a FlexChange object. [[81e386d](https://github.com/SAP/open-ux-tools/commit/81e386dec63839016e43cd3b48889134ccac48f9)]
+
+## 10.7.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-13
+
+#### Features
+
+- Enable linting applications with multiple views. [[c325423](https://github.com/SAP/open-ux-tools/commit/c32542308410ce93ea7e6eea8186b82963f8144c)]
+
+## 10.7.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-10
+
+#### Bug Fixes
+
+- Deduplicate sap-description-column-label diagnostics when multiple entities share the same text property annotation [[949ade6](https://github.com/SAP/open-ux-tools/commit/949ade6264d223cd7e50e29725c42fe89072249e)]
+
+## 10.7.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Features
+
+- Extend the sap-no-live-mode rule to detect and report liveMode usage in OData V2 applications. [[718643b](https://github.com/SAP/open-ux-tools/commit/718643b02e3e6d3611697df8fbbf4908cb71d42f)]
+
+## 10.7.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- align vscode and types with fiori tools extensions [[369c494](https://github.com/SAP/open-ux-tools/commit/369c49497073e99fda01bad7dfda1840e68c029a)]
+
+## 10.7.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/cds-odata-annotation-converter [[5b2a7f2](https://github.com/SAP/open-ux-tools/commit/5b2a7f2fce7f0faa43e2ab083ec25b80ea204503)]
+
+## 10.7.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-03
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/odata-vocabularies, @sap-ux/ui5-config [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
+## 10.7.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+## 10.7.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-02
+
+#### Bug Fixes
+
+- Streamline plugin meta — remove duplicate inline meta with stale hardcoded version, add namespace to single exported meta constant [[8b75140](https://github.com/SAP/open-ux-tools/commit/8b7514012cb078912875bb12b3a96686fcb8db70)]
+
+## 10.7.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-02
+
+#### Features
+
+- Create a new rule to check live mode is not enabled in the `manifest.json` file of OData V4 applications. [[ad4b0df](https://github.com/SAP/open-ux-tools/commit/ad4b0df880b4ac9ebc75f7d00f010834fdf6f284)]
+
+## 10.6.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-30
+
+#### Features
+
+- Enhanced the eslint-plugin-fiori-tools to include precise source location (loc) data in all manifest-related ESLint diagnostics. [[1d0eee4](https://github.com/SAP/open-ux-tools/commit/1d0eee481cedd1fcac882ba55df18e8a7400f4a2)]
+
 ## 10.6.5
 
 ### Patch Changes
