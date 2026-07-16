@@ -9,10 +9,7 @@ import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
  * @param excludeSystem - Optional system to exclude from check (for updates)
  * @returns true if name is already taken, false otherwise
  */
-export async function isSystemNameTaken(
-    systemName: string,
-    excludeSystem?: BackendSystem
-): Promise<boolean> {
+export async function isSystemNameTaken(systemName: string, excludeSystem?: BackendSystem): Promise<boolean> {
     try {
         const service = await getService<BackendSystem, BackendSystemKey>({
             entityName: 'system'

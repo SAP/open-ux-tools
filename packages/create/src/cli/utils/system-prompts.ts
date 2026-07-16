@@ -73,10 +73,7 @@ function validateClientField(value: string): true | string {
  * @param excludeSystem - Optional system to exclude from check (for updates)
  * @returns True if valid, error message otherwise
  */
-async function validateSystemNameUniqueness(
-    value: string,
-    excludeSystem?: BackendSystem
-): Promise<true | string> {
+async function validateSystemNameUniqueness(value: string, excludeSystem?: BackendSystem): Promise<true | string> {
     const nonEmptyCheck = validateNonEmpty(value);
     if (nonEmptyCheck !== true) {
         return nonEmptyCheck;
