@@ -92,10 +92,12 @@ export async function generateOPAFiles(
         modifiedFiles: []
     };
 
-    if (standalone) {
-        await generateOPAFilesForExistingApp(writeContext, appFeatures);
-    } else {
-        await generateOPAFilesForNewApp(writeContext, appFeatures);
+    if (LROP || appFeatures.fpm) {
+        if (standalone) {
+            await generateOPAFilesForExistingApp(writeContext, appFeatures);
+        } else {
+            await generateOPAFilesForNewApp(writeContext, appFeatures);
+        }
     }
 
     return editor;
@@ -418,6 +420,10 @@ function createPageConfig(manifest: Manifest, targetKey: string, forcedAppID?: s
             isStartup: false,
             fileName: targetKey + '.gen'
         };
+
+        if (target.options?.settings?.views) {
+            pageConfig.template = 'AnalyticalListPage';
+        }
 
         if (target.options.settings.contextPath) {
             pageConfig.contextPath = target.options.settings.contextPath;
