@@ -1,6 +1,107 @@
 import prompts from 'prompts';
-import type { BackendSystem } from '@sap-ux/store';
-import { SystemType, AuthenticationType, ConnectionType } from '@sap-ux/store';
+import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
+import { SystemType, AuthenticationType, ConnectionType, getService } from '@sap-ux/store';
+
+/**
+ * Validates that a string is not empty after trimming whitespace.
+ *
+ * @param value - The value to validate
+ * @returns True if valid, error message otherwise
+ */
+function validateNonEmpty(value: string): true | string {
+    if (!value || value.trim().length === 0) {
+        return 'This field is required and cannot be empty';
+    }
+    return true;
+}
+
+/**
+ * Validates that a URL is in correct format.
+ *
+ * @param value - The URL to validate
+ * @returns True if valid, error message otherwise
+ */
+function validateUrl(value: string): true | string {
+    const nonEmptyCheck = validateNonEmpty(value);
+    if (nonEmptyCheck !== true) {
+        return nonEmptyCheck;
+    }
+
+    try {
+        new URL(value);
+        return true;
+    } catch {
+        return 'Please enter a valid URL (e.g., https://my-system.example.com)';
+    }
+}
+
+/**
+ * Validates that a system name is unique (not already in use).
+ *
+ * @param value - The system name to validate
+ * @returns True if valid, error message otherwise
+ */
+async function validateSystemNameUniqueness(value: string): Promise<true | string> {
+    const nonEmptyCheck = validateNonEmpty(value);
+    if (nonEmptyCheck !== true) {
+        return nonEmptyCheck;
+    }
+
+    try {
+        const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
+        const allSystems = await service.getAll();
+
+        const nameExists = allSystems.some((system) => system.name.toLowerCase() === value.trim().toLowerCase());
+
+        if (nameExists) {
+            return `A system with the name '${value}' already exists. Please choose a different name.`;
+        }
+
+        return true;
+    } catch (error) {
+        // If we can't check uniqueness, allow it through
+        // (better to let the user proceed than block on a check failure)
+        return true;
+    }
+}
+
+/**
+ * Validates that a system name is unique when updating (excluding the current system).
+ *
+ * @param value - The system name to validate
+ * @param currentSystem - The system being updated (to exclude from uniqueness check)
+ * @returns True if valid, error message otherwise
+ */
+async function validateSystemNameUniquenessForUpdate(
+    value: string,
+    currentSystem: BackendSystem
+): Promise<true | string> {
+    const nonEmptyCheck = validateNonEmpty(value);
+    if (nonEmptyCheck !== true) {
+        return nonEmptyCheck;
+    }
+
+    try {
+        const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
+        const allSystems = await service.getAll();
+
+        // Check if name exists, excluding the current system being updated
+        const nameExists = allSystems.some(
+            (system) =>
+                system.name.toLowerCase() === value.trim().toLowerCase() &&
+                !(system.url === currentSystem.url && system.client === currentSystem.client)
+        );
+
+        if (nameExists) {
+            return `A system with the name '${value}' already exists. Please choose a different name.`;
+        }
+
+        return true;
+    } catch (error) {
+        // If we can't check uniqueness, allow it through
+        return true;
+    }
+}
 
 /**
  * Prompts for complete system configuration, filling in any missing fields.
@@ -41,7 +142,8 @@ export async function promptForSystemConfig(partial: {
         questions.push({
             type: 'text',
             name: 'name',
-            message: 'System name (display name):'
+            message: 'System name (display name):',
+            validate: validateSystemNameUniqueness
         });
     }
 
@@ -49,7 +151,8 @@ export async function promptForSystemConfig(partial: {
         questions.push({
             type: 'text',
             name: 'url',
-            message: 'System URL:'
+            message: 'System URL:',
+            validate: validateUrl
         });
     }
 
@@ -136,7 +239,8 @@ export async function promptForSystemIdentifier(partial: { url?: string; client?
         questions.push({
             type: 'text',
             name: 'url',
-            message: 'System URL:'
+            message: 'System URL:',
+            validate: validateUrl
         });
     }
 
@@ -201,20 +305,23 @@ export async function promptForFieldUpdates(
                         type: 'text',
                         name: 'name',
                         message: 'New system name:',
-                        initial: existing.name
+                        initial: existing.name,
+                        validate: (value: string) => validateSystemNameUniquenessForUpdate(value, existing)
                     };
                 case 'username':
                     return {
                         type: 'text',
                         name: 'username',
                         message: 'New username:',
-                        initial: existing.username || ''
+                        initial: existing.username || '',
+                        validate: validateNonEmpty
                     };
                 case 'password':
                     return {
                         type: 'password',
                         name: 'password',
-                        message: 'New password:'
+                        message: 'New password:',
+                        validate: validateNonEmpty
                     };
                 default:
                     return null;

@@ -153,10 +153,19 @@ async function addSystem(params: {
 
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
 
+        // Check for duplicate URL+client
         const existingSystem = await service.read(new BackendSystemKey({ url: config.url, client: config.client }));
         if (existingSystem) {
             const clientSuffix = config.client ? ` (client ${config.client})` : '';
             logger.error(`System '${config.url}'${clientSuffix} already exists. Use 'update system' to update it.`);
+            return;
+        }
+
+        // Check for duplicate name
+        const allSystems = await service.getAll();
+        const nameExists = allSystems.some((system) => system.name.toLowerCase() === config.name.toLowerCase());
+        if (nameExists) {
+            logger.error(`A system with the name '${config.name}' already exists. Please choose a different name.`);
             return;
         }
 
