@@ -43,6 +43,14 @@ export function t(key: string, options?: TOptions): string {
     return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-initI18n().catch(() => {
+const _initPromise = initI18n().catch(() => {
     // Ignore any errors since the write will still work
 });
+
+/**
+ * Returns a promise that resolves when the module-level i18n initialization completes.
+ * Safe to call multiple times — always returns the same underlying promise.
+ */
+export function waitForI18n(): Promise<void> {
+    return _initPromise;
+}
