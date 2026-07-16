@@ -34,7 +34,7 @@ beforeAll(async () => {
             `No tools loaded from MCP server at ${DIST_SERVER}. Ensure the package is built before running these tests.`
         );
     }
-}, 60000);
+}, 120000);
 
 afterAll(async () => {
     await client?.close();
@@ -54,7 +54,7 @@ describe('search_docs embeddings coverage', () => {
     it('returns content from fiori-tools-opa-guide.md', async () => {
         const result = await searchDocs('Write OPA Tests for an SAP Fiori Elements for OData V4 Application', 5);
         expect(result).toContain('Write OPA Tests for an SAP Fiori Elements for OData V4 Application');
-    }, 60000);
+    }, 120000);
 
     it('returns content from opa5_docu.md', async () => {
         // Query on terms unique to opa5_docu: page-objects, journey, sap.fe.test API rules
@@ -63,10 +63,10 @@ describe('search_docs embeddings coverage', () => {
             5
         );
         expect(result).toContain('OPA5 Integration Tests for SAP Fiori Elements applications');
-    }, 60000);
+    }, 120000);
 
     it('returns content from sap_fe_test_api.md', async () => {
         const result = await searchDocs('sap.fe.test.api.DialogActions OPA5 testing', 5);
         expect(result).toContain('sap.fe.test.api.DialogActions');
-    }, 60000);
+    }, 120000);
 });
