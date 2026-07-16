@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { AbapServiceProvider, ServiceProvider } from '@sap-ux/axios-extension';
 import { AuthenticationType } from '@sap-ux/store';
 import { t } from '../../src/i18n.js';
 
@@ -131,6 +131,29 @@ describe('getOrCreateServiceProvider', () => {
         jest.spyOn(abapServiceProvider, 'isAbapCloud').mockResolvedValueOnce(true);
         await AbapServiceProviderManager.getOrCreateServiceProvider(undefined, credentials);
         expect(AbapServiceProviderManager.getIsDefaultProviderAbapCloud()).toBe(true);
+    });
+
+    it('should create a new AbapServiceProvider when the passed serviceProvider is not an AbapServiceProvider (e.g. generic OData/full-URL destination)', async () => {
+        // Simulate a base ServiceProvider (no isAbapCloud method) — returned by createForDestination
+        // when the destination is not an ABAP destination (e.g. full_url + odata_gen)
+        const nonAbapProvider = Object.create(ServiceProvider.prototype) as ServiceProvider;
+        const abapServiceProvider = new AbapServiceProvider();
+        mockIsAppStudio.mockReturnValueOnce(true);
+        mockCreateAbapServiceProvider.mockResolvedValueOnce(abapServiceProvider);
+        PromptState.abapDeployConfig = {
+            destination: 'MOCK_DESTINATION'
+        };
+
+        const backendTarget = {
+            abapTarget: { destination: 'MOCK_DESTINATION' },
+            serviceProvider: nonAbapProvider
+        };
+
+        const serviceProvider = await AbapServiceProviderManager.getOrCreateServiceProvider(backendTarget);
+
+        // Should fall through to createNewServiceProvider, not use the non-AbapServiceProvider
+        expect(serviceProvider).toBe(abapServiceProvider);
+        expect(mockCreateAbapServiceProvider).toHaveBeenCalled();
     });
 
     it('should apply node setting `NODE_TLS_REJECT_UNAUTHORIZED=0` if set', async () => {
