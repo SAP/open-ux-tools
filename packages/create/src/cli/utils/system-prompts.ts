@@ -86,7 +86,8 @@ async function validateSystemNameUniqueness(value: string, excludeSystem?: Backe
         }
         return true;
     } catch (error) {
-        // If we can't check uniqueness, return error to prevent potentially duplicate names
+        // Catch and convert service errors to validation messages to prevent duplicate names
+        console.error('Error checking system name uniqueness:', error);
         return 'Unable to check system name uniqueness. Please try again.';
     }
 }
@@ -114,7 +115,8 @@ async function validateSystemNameUniquenessForUpdate(
         }
         return true;
     } catch (error) {
-        // If we can't check uniqueness, return error to prevent potentially duplicate names
+        // Catch and convert service errors to validation messages to prevent duplicate names
+        console.error('Error checking system name uniqueness:', error);
         return 'Unable to check system name uniqueness. Please try again.';
     }
 }

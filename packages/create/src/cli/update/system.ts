@@ -51,6 +51,124 @@ Example:
 }
 
 /**
+ * Validates and builds patch record from explicit parameters.
+ *
+ * @param params - update parameters
+ * @param params.name - new display name
+ * @param params.username - new username
+ * @param params.password - new password
+ * @param params.clearCredentials - whether to clear credentials
+ * @param existing - existing system
+ * @param logger - logger instance
+ * @returns patch record or null if validation fails
+ */
+async function buildPatchFromParams(
+    params: { name?: string; username?: string; password?: string; clearCredentials: boolean },
+    existing: BackendSystem,
+    logger: ReturnType<typeof getLogger>
+): Promise<Record<string, unknown> | null> {
+    const patchRecord: Record<string, unknown> = {};
+
+    if (params.name !== undefined) {
+        if (params.name.trim().length === 0) {
+            logger.error('System name cannot be empty or whitespace-only.');
+            return null;
+        }
+
+        const nameExists = await isSystemNameTaken(params.name, { excludeSystem: existing });
+        if (nameExists) {
+            logger.error(`A system with the name '${params.name}' already exists. Please choose a different name.`);
+            return null;
+        }
+        patchRecord.name = params.name;
+    }
+
+    if (params.clearCredentials) {
+        patchRecord.username = '';
+        patchRecord.password = '';
+    } else {
+        if (params.username !== undefined) {
+            patchRecord.username = params.username;
+        }
+        if (params.password !== undefined) {
+            patchRecord.password = params.password;
+        }
+    }
+
+    return patchRecord;
+}
+
+/**
+ * Determines the patch to apply to the system.
+ *
+ * @param params - update parameters
+ * @param params.name - new display name
+ * @param params.username - new username
+ * @param params.password - new password
+ * @param params.clearCredentials - whether to clear credentials
+ * @param existing - existing system
+ * @param logger - logger instance
+ * @returns patch record or null if cancelled/failed
+ */
+async function determinePatch(
+    params: {
+        name?: string;
+        username?: string;
+        password?: string;
+        clearCredentials: boolean;
+    },
+    existing: BackendSystem,
+    logger: ReturnType<typeof getLogger>
+): Promise<Record<string, unknown> | null> {
+    const hasExplicitUpdates =
+        params.name !== undefined ||
+        params.username !== undefined ||
+        params.password !== undefined ||
+        params.clearCredentials;
+
+    if (hasExplicitUpdates) {
+        return await buildPatchFromParams(params, existing, logger);
+    }
+
+    const fieldsToUpdate = await promptForUpdateFields(existing);
+    return await promptForFieldUpdates(fieldsToUpdate, existing);
+}
+
+/**
+ * Verifies connection if credentials are being updated.
+ *
+ * @param patch - patch to apply
+ * @param existing - existing system
+ * @param params - update parameters
+ * @param params.clearCredentials - whether credentials are being cleared
+ * @param params.skipCheck - whether to skip connection check
+ * @returns true if should proceed, false otherwise
+ */
+async function verifyCredentialsUpdate(
+    patch: Partial<BackendSystem>,
+    existing: BackendSystem,
+    params: { clearCredentials: boolean; skipCheck?: boolean }
+): Promise<boolean> {
+    const updatingCredentials = patch.username !== undefined || patch.password !== undefined;
+
+    if (!updatingCredentials || params.clearCredentials) {
+        return true;
+    }
+
+    return await checkConnectionOrPrompt(
+        {
+            url: existing.url,
+            client: existing.client,
+            systemType: existing.systemType,
+            authenticationType: existing.authenticationType || 'basic',
+            username: (patch.username as string) ?? existing.username,
+            password: (patch.password as string) ?? existing.password
+        },
+        params.skipCheck || false
+    );
+}
+
+/**
  * Updates a backend system in the saved systems store.
  *
  * @param params - update parameters
@@ -80,7 +198,6 @@ async function updateSystem(params: {
             return;
         }
 
-        // Prompt for system identifier if not provided
         const identifier = await promptForSystemIdentifier({
             url: params.url,
             client: params.client
@@ -89,59 +206,19 @@ async function updateSystem(params: {
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
         const key = new BackendSystemKey({ url: identifier.url, client: identifier.client });
         const existing = await service.read(key);
+
         if (!existing) {
             logger.error(`System not found: ${key.getId()}`);
             return;
         }
 
-        // Determine which fields to update
-        const hasExplicitUpdates =
-            params.name !== undefined ||
-            params.username !== undefined ||
-            params.password !== undefined ||
-            params.clearCredentials;
+        const patchRecord = await determinePatch(params, existing, logger);
 
-        let patchRecord: Record<string, unknown>;
-
-        if (hasExplicitUpdates) {
-            // Use provided flags
-            patchRecord = {};
-            if (params.name !== undefined) {
-                // Validate name is not empty or whitespace-only
-                if (params.name.trim().length === 0) {
-                    logger.error('System name cannot be empty or whitespace-only.');
-                    return;
-                }
-                // Validate name uniqueness when updating via flag
-                const nameExists = await isSystemNameTaken(params.name, { excludeSystem: existing });
-                if (nameExists) {
-                    logger.error(
-                        `A system with the name '${params.name}' already exists. Please choose a different name.`
-                    );
-                    return;
-                }
-                patchRecord.name = params.name;
-            }
-            if (params.clearCredentials) {
-                patchRecord.username = '';
-                patchRecord.password = '';
-            } else if (params.username !== undefined || params.password !== undefined) {
-                if (params.username !== undefined) {
-                    patchRecord.username = params.username;
-                }
-                if (params.password !== undefined) {
-                    patchRecord.password = params.password;
-                }
-            }
-        } else {
-            // No flags provided - prompt interactively
-            const fieldsToUpdate = await promptForUpdateFields(existing);
-            patchRecord = await promptForFieldUpdates(fieldsToUpdate, existing);
+        if (!patchRecord) {
+            return;
         }
 
         replaceEnvVariables(patchRecord);
-
-        const patch = patchRecord as Partial<BackendSystem>;
 
         if (!Object.keys(patchRecord).length) {
             logger.error(
@@ -150,33 +227,17 @@ async function updateSystem(params: {
             return;
         }
 
-        // Check connection if credentials are being updated (unless --skip-check)
-        const updatingCredentials = patch.username !== undefined || patch.password !== undefined;
-        if (updatingCredentials && !params.clearCredentials) {
-            const shouldSave = await checkConnectionOrPrompt(
-                {
-                    url: existing.url,
-                    client: existing.client,
-                    systemType: existing.systemType,
-                    authenticationType: existing.authenticationType || 'basic',
-                    username: (patch.username as string) ?? existing.username,
-                    password: (patch.password as string) ?? existing.password
-                },
-                params.skipCheck || false
-            );
+        const patch = patchRecord as Partial<BackendSystem>;
 
-            if (!shouldSave) {
-                logger.info('System was not updated.');
-                return;
-            }
+        if (!(await verifyCredentialsUpdate(patch, existing, params))) {
+            logger.info('System was not updated.');
+            return;
         }
 
         await service.partialUpdate(key, patch);
         logger.info(`System '${key.getId()}' updated.`);
     } catch (error) {
         logger.error((error as Error).message);
-        // Log the full error object (including stack trace) at debug level so it
-        // is visible when --verbose / debug logging is enabled.
         logger.debug(error);
     }
 }

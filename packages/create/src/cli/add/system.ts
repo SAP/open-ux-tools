@@ -72,6 +72,110 @@ Example:
 }
 
 /**
+ * Validates the system configuration fields.
+ *
+ * @param config - system configuration to validate
+ * @param config.name - display name
+ * @param config.url - URL of the backend system
+ * @param config.client - optional SAP client
+ * @param config.systemType - system type
+ * @param config.authenticationType - authentication type
+ * @param config.connectionType - connection type
+ * @param logger - logger instance
+ * @returns true if valid, false otherwise
+ */
+function validateSystemConfig(
+    config: {
+        name: string;
+        url: string;
+        client?: string;
+        systemType: string;
+        authenticationType: string;
+        connectionType: string;
+    },
+    logger: ReturnType<typeof getLogger>
+): boolean {
+    if (!config.name || !config.url || !config.systemType || !config.authenticationType || !config.connectionType) {
+        logger.error('Missing required fields. System was not added.');
+        return false;
+    }
+
+    if (config.name.trim().length === 0) {
+        logger.error('System name cannot be empty or whitespace-only.');
+        return false;
+    }
+
+    try {
+        new URL(config.url);
+    } catch {
+        logger.error(`Invalid URL: '${config.url}'`);
+        return false;
+    }
+
+    if (config.client !== undefined && config.client !== '') {
+        const clientValidation = validateClient(config.client);
+        if (clientValidation !== true) {
+            logger.error(`Invalid client '${config.client}'. Leave this field empty or enter a value between 000-999.`);
+            return false;
+        }
+    }
+
+    const validSystemTypes = Object.values(SystemType) as string[];
+    if (!validSystemTypes.includes(config.systemType)) {
+        logger.error(`Invalid system type '${config.systemType}'. Valid values: ${validSystemTypes.join(', ')}`);
+        return false;
+    }
+
+    const validAuthTypes = Object.values(AuthenticationType) as string[];
+    if (!validAuthTypes.includes(config.authenticationType)) {
+        logger.error(`Invalid auth type '${config.authenticationType}'. Valid values: ${validAuthTypes.join(', ')}`);
+        return false;
+    }
+
+    const validConnectionTypes = Object.values(ConnectionType) as string[];
+    if (!validConnectionTypes.includes(config.connectionType)) {
+        logger.error(
+            `Invalid connection type '${config.connectionType}'. Valid values: ${validConnectionTypes.join(', ')}`
+        );
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Checks for duplicate systems in the store.
+ *
+ * @param config - system configuration
+ * @param config.name - system display name
+ * @param config.url - system URL
+ * @param config.client - optional SAP client
+ * @param service - backend system service
+ * @param logger - logger instance
+ * @returns true if no duplicates found, false otherwise
+ */
+async function checkForDuplicates(
+    config: { name: string; url: string; client?: string },
+    service: Awaited<ReturnType<typeof getService<BackendSystem, BackendSystemKey>>>,
+    logger: ReturnType<typeof getLogger>
+): Promise<boolean> {
+    const existingSystem = await service.read(new BackendSystemKey({ url: config.url, client: config.client }));
+    if (existingSystem) {
+        const clientSuffix = config.client ? ` (client ${config.client})` : '';
+        logger.error(`System '${config.url}'${clientSuffix} already exists. Use 'update system' to update it.`);
+        return false;
+    }
+
+    const nameExists = await isSystemNameTaken(config.name);
+    if (nameExists) {
+        logger.error(`A system with the name '${config.name}' already exists. Please choose a different name.`);
+        return false;
+    }
+
+    return true;
+}
+
+/**
  * Adds a backend system to the saved systems store.
  *
  * @param params - system parameters
@@ -105,7 +209,6 @@ async function addSystem(params: {
             return;
         }
 
-        // Prompt for missing fields interactively
         const config = await promptForSystemConfig({
             name: params.name,
             url: params.url,
@@ -117,77 +220,18 @@ async function addSystem(params: {
             password: params.password
         });
 
-        // Validate required fields
-        if (!config.name || !config.url || !config.systemType || !config.authenticationType || !config.connectionType) {
-            logger.error('Missing required fields. System was not added.');
-            return;
-        }
-
-        // Validate name is not empty or whitespace-only
-        if (config.name.trim().length === 0) {
-            logger.error('System name cannot be empty or whitespace-only.');
-            return;
-        }
-
-        // Replace env variables early so validation and duplicate check work with resolved values
         replaceEnvVariables(config);
 
-        try {
-            new URL(config.url);
-        } catch {
-            logger.error(`Invalid URL: '${config.url}'`);
-            return;
-        }
-
-        // Validate client format if provided (must be empty or 3 digits)
-        if (config.client !== undefined && config.client !== '') {
-            const clientValidation = validateClient(config.client);
-            if (clientValidation !== true) {
-                logger.error(
-                    `Invalid client '${config.client}'. Leave this field empty or enter a value between 000-999.`
-                );
-                return;
-            }
-        }
-
-        const validSystemTypes = Object.values(SystemType) as string[];
-        if (!validSystemTypes.includes(config.systemType)) {
-            logger.error(`Invalid system type '${config.systemType}'. Valid values: ${validSystemTypes.join(', ')}`);
-            return;
-        }
-        const validAuthTypes = Object.values(AuthenticationType) as string[];
-        if (!validAuthTypes.includes(config.authenticationType)) {
-            logger.error(
-                `Invalid auth type '${config.authenticationType}'. Valid values: ${validAuthTypes.join(', ')}`
-            );
-            return;
-        }
-        const validConnectionTypes = Object.values(ConnectionType) as string[];
-        if (!validConnectionTypes.includes(config.connectionType)) {
-            logger.error(
-                `Invalid connection type '${config.connectionType}'. Valid values: ${validConnectionTypes.join(', ')}`
-            );
+        if (!validateSystemConfig(config, logger)) {
             return;
         }
 
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
 
-        // Check for duplicate URL+client
-        const existingSystem = await service.read(new BackendSystemKey({ url: config.url, client: config.client }));
-        if (existingSystem) {
-            const clientSuffix = config.client ? ` (client ${config.client})` : '';
-            logger.error(`System '${config.url}'${clientSuffix} already exists. Use 'update system' to update it.`);
+        if (!(await checkForDuplicates(config, service, logger))) {
             return;
         }
 
-        // Check for duplicate name
-        const nameExists = await isSystemNameTaken(config.name);
-        if (nameExists) {
-            logger.error(`A system with the name '${config.name}' already exists. Please choose a different name.`);
-            return;
-        }
-
-        // Check connection before saving (unless --skip-check)
         const shouldSave = await checkConnectionOrPrompt(
             {
                 url: config.url,
