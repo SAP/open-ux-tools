@@ -6,7 +6,8 @@ import type {
     IButtonProps,
     ISelectableDroppableTextProps,
     IComboBox,
-    IComboBoxOption
+    IComboBoxOption,
+    IRawStyle
 } from '@fluentui/react';
 import { ComboBox, initializeComponentRef, KeyCodes, SelectableOptionMenuItemType } from '@fluentui/react';
 import { UIHighlightMenuOption } from '../UIContextualMenu/UIHighlightMenuOption.js';
@@ -21,6 +22,12 @@ import { isDropdownEmpty, getCalloutCollisionTransformationPropsForDropdown } fr
 import { CalloutCollisionTransform } from '../UICallout/index.js';
 import { isHTMLInputElement, debounce } from '../../utilities/index.js';
 import { REQUIRED_LABEL_INDICATOR } from '../types.js';
+
+const COMBOBOX_ERROR_MESSAGE_STYLE: IRawStyle = {
+    marginTop: -1,
+    borderRadius: 0,
+    animation: 'none'
+};
 
 export {
     type IComboBoxOption as UIComboBoxOption,
@@ -902,7 +909,17 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                             })
                         },
 
-                        errorMessage: [messageInfo.style]
+                        errorMessage: [
+                            messageInfo.style,
+                            ...(messageInfo.message
+                                ? [
+                                      {
+                                          ...COMBOBOX_ERROR_MESSAGE_STYLE,
+                                          borderTop: `1px solid ${messageInfo.style.borderColor || 'var(--vscode-inputValidation-errorBorder)'}`
+                                      }
+                                  ]
+                                : [])
+                        ]
                     }}
                     {...this.props}
                     calloutProps={{
