@@ -73,6 +73,68 @@ V2 apps typically use the SAP mock server configured via `localService/mockserve
 
 ---
 
+## V2 Gotchas
+
+These are the most common V2-specific mistakes. Check here first when a test times out or behaves unexpectedly.
+
+**Message toast requires `autoWait: false`**
+
+Toast elements exist temporarily outside the standard control hierarchy. `autoWait: true` interferes with toast detection. The library's `iShouldSeeTheMessageToastWithText` handles this internally, but any custom toast assertion must set `autoWait: false`:
+
+```javascript
+// ✅ Using the library method (handles autoWait internally)
+Then.onTheGenericListReport.iShouldSeeTheMessageToastWithText("Item saved");
+
+// ✅ Custom toast check - must disable autoWait manually
+Then.waitFor({
+    autoWait: false,
+    check: function() {
+        return sap.m.MessageToast._current &&
+               sap.m.MessageToast._current.getText() === "Item saved";
+    }
+});
+```
+
+**`iNavigateFromListItemByLineNo` uses a 0-based index**
+
+```javascript
+When.onTheGenericListReport.iNavigateFromListItemByLineNo(0);  // first row
+When.onTheGenericListReport.iNavigateFromListItemByLineNo(2);  // third row
+
+// With a specific table ID:
+When.onTheGenericListReport.iNavigateFromListItemByLineNo(2, "responsiveTable");
+```
+
+**`iSaveTheDraft` - pass `true` for non-draft apps**
+
+```javascript
+When.onTheGenericObjectPage.iSaveTheDraft();       // draft-enabled apps
+When.onTheGenericObjectPage.iSaveTheDraft(true);   // non-draft apps
+```
+
+**Sub-table navigation uses the OData navigation property name, not the section label**
+
+The first argument to `iNavigateFromObjectPageTableByLineNo` is the OData navigation property from `metadata.xml`, not the UI section title shown on screen.
+
+```javascript
+// ❌ Wrong - "Items" is the section label, not the navigation property
+When.onTheGenericObjectPage.iNavigateFromObjectPageTableByLineNo("Items", 0);
+
+// ✅ Fixed - "to_Item" is the navigation property name from metadata.xml
+When.onTheGenericObjectPage.iNavigateFromObjectPageTableByLineNo("to_Item", 0, "SalesOrder");
+```
+
+**`iClickTheEditButton` - older library versions use a longer alias**
+
+```javascript
+When.onTheGenericObjectPage.iClickTheEditButton();                   // current
+When.onTheGenericObjectPage.iClickTheEditButtonOnTheObjectPage();    // older versions
+```
+
+**Never mix V4 and V2 APIs in the same test file.** `sap.fe.test` and `fioriElementsTestLibrary` are completely separate - using methods from both in one journey will produce silent failures or unexpected behaviour.
+
+---
+
 ## Full API Reference
 
 For full API reference, method signatures, common pitfalls, and a complete example, read `references/fiori-elements-v2-test-library.md`.
