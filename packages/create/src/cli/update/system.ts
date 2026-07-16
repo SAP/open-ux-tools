@@ -106,6 +106,19 @@ async function updateSystem(params: {
             // Use provided flags
             patchRecord = {};
             if (params.name !== undefined) {
+                // Validate name uniqueness when updating via flag
+                const allSystems = await service.getAll();
+                const nameExists = allSystems.some(
+                    (system) =>
+                        system.name.toLowerCase() === params.name!.toLowerCase() &&
+                        !(system.url === existing.url && system.client === existing.client)
+                );
+                if (nameExists) {
+                    logger.error(
+                        `A system with the name '${params.name}' already exists. Please choose a different name.`
+                    );
+                    return;
+                }
                 patchRecord.name = params.name;
             }
             if (params.clearCredentials) {
