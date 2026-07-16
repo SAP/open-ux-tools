@@ -10,6 +10,7 @@ import {
 } from '@sap-ux/store';
 import { replaceEnvVariables } from '@sap-ux/ui5-config';
 import { config as loadEnvConfig } from 'dotenv';
+import { validateClient } from '@sap-ux/project-input-validator';
 import { getLogger } from '../../tracing/index.js';
 import { promptForSystemConfig } from '../utils/system-prompts.js';
 import { checkConnectionOrPrompt } from '../utils/system-connection.js';
@@ -135,6 +136,17 @@ async function addSystem(params: {
         } catch {
             logger.error(`Invalid URL: '${config.url}'`);
             return;
+        }
+
+        // Validate client format if provided (must be empty or 3 digits)
+        if (config.client !== undefined && config.client !== '') {
+            const clientValidation = validateClient(config.client);
+            if (clientValidation !== true) {
+                logger.error(
+                    `Invalid client '${config.client}'. Leave this field empty or enter a value between 000-999.`
+                );
+                return;
+            }
         }
 
         const validSystemTypes = Object.values(SystemType) as string[];

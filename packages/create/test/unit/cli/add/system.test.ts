@@ -301,6 +301,52 @@ describe('system/add', () => {
         expect(mockedService.write).not.toHaveBeenCalled();
     });
 
+    test('should log error for invalid client format', async () => {
+        // Given
+        const command = new Command('add');
+        addSystemAddCommand(command);
+
+        // When - test with 2-digit client (invalid)
+        await command.parseAsync(
+            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--client', '12', '--skip-check'])
+        );
+
+        // Then
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('Invalid client'));
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('000-999'));
+        expect(mockedService.write).not.toHaveBeenCalled();
+    });
+
+    test('should accept valid 3-digit client', async () => {
+        // Given
+        const command = new Command('add');
+        addSystemAddCommand(command);
+
+        // When - test with valid 3-digit client
+        await command.parseAsync(
+            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--client', '100', '--skip-check'])
+        );
+
+        // Then
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(mockedService.write).toHaveBeenCalled();
+    });
+
+    test('should accept empty client', async () => {
+        // Given
+        const command = new Command('add');
+        addSystemAddCommand(command);
+
+        // When - test with empty client
+        await command.parseAsync(
+            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--client', '', '--skip-check'])
+        );
+
+        // Then
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(mockedService.write).toHaveBeenCalled();
+    });
+
     test('should log error when system already exists', async () => {
         // Given
         mockedService.read.mockResolvedValueOnce({ name: 'Existing System' });
