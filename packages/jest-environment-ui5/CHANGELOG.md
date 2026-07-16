@@ -1,6 +1,16 @@
 # Change Log
 
+## 6.0.1
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
 ## 6.0.0
+
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -35,11 +45,15 @@
 
 ## 5.4.1
 
+_Released: 2026-05-29T15:48:29Z_
+
 ### Patch Changes
 
 - 1b19ed5: Bump jsdom environment
 
 ## 5.4.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -47,11 +61,15 @@
 
 ## 5.3.21
 
+_Released: 2026-05-14T11:45:51Z_
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
 
 ## 5.3.20
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -59,7 +77,7 @@
 
 ## 5.3.19
 
-*Released: 2026-03-05T12:30:25Z*
+_Released: 2026-03-05T12:30:25Z_
 
 ### Patch Changes
 
@@ -67,7 +85,7 @@
 
 ## 5.3.18
 
-*Released: 2026-03-02T19:30:12Z*
+_Released: 2026-03-02T19:30:12Z_
 
 ### Patch Changes
 
@@ -77,7 +95,7 @@
 
 ## 5.3.17
 
-*Released: 2026-02-19T22:23:51Z*
+_Released: 2026-02-19T22:23:51Z_
 
 ### Patch Changes
 
@@ -85,7 +103,7 @@
 
 ## 5.3.16
 
-*Released: 2026-02-10T21:03:43Z*
+_Released: 2026-02-10T21:03:43Z_
 
 ### Patch Changes
 
@@ -93,7 +111,7 @@
 
 ## 5.3.15
 
-*Released: 2026-01-09T11:35:48Z*
+_Released: 2026-01-09T11:35:48Z_
 
 ### Patch Changes
 
@@ -101,7 +119,7 @@
 
 ## 5.3.14
 
-*Released: 2025-12-18T21:05:02Z*
+_Released: 2025-12-18T21:05:02Z_
 
 ### Patch Changes
 
@@ -109,7 +127,7 @@
 
 ## 5.3.13
 
-*Released: 2025-12-15T10:50:50Z*
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -117,7 +135,7 @@
 
 ## 5.3.12
 
-*Released: 2025-11-12T16:47:06Z*
+_Released: 2025-11-12T16:47:06Z_
 
 ### Patch Changes
 
@@ -125,7 +143,7 @@
 
 ## 5.3.11
 
-*Released: 2025-11-05T06:53:42Z*
+_Released: 2025-11-05T06:53:42Z_
 
 ### Patch Changes
 
@@ -133,7 +151,7 @@
 
 ## 5.3.10
 
-*Released: 2025-08-28T13:37:07Z*
+_Released: 2025-08-28T13:37:07Z_
 
 ### Patch Changes
 
@@ -141,7 +159,7 @@
 
 ## 5.3.9
 
-*Released: 2025-08-22T10:10:41Z*
+_Released: 2025-08-22T10:10:41Z_
 
 ### Patch Changes
 
@@ -149,7 +167,7 @@
 
 ## 5.3.8
 
-*Released: 2025-07-30T06:34:41Z*
+_Released: 2025-07-30T06:34:41Z_
 
 ### Patch Changes
 
@@ -157,7 +175,7 @@
 
 ## 5.3.7
 
-*Released: 2025-01-28T15:13:21Z*
+_Released: 2025-01-28T15:13:21Z_
 
 ### Patch Changes
 
@@ -165,7 +183,7 @@
 
 ## 5.3.6
 
-*Released: 2025-01-24T10:35:19Z*
+_Released: 2025-01-24T10:35:19Z_
 
 ### Patch Changes
 
@@ -173,7 +191,7 @@
 
 ## 5.3.5
 
-*Released: 2025-01-08T14:39:24Z*
+_Released: 2025-01-08T14:39:24Z_
 
 ### Patch Changes
 
@@ -181,7 +199,7 @@
 
 ## 5.3.4
 
-*Released: 2024-12-11T14:54:19Z*
+_Released: 2024-12-11T14:54:19Z_
 
 ### Patch Changes
 
@@ -189,7 +207,7 @@
 
 ## 5.3.3
 
-*Released: 2024-12-06T10:22:57Z*
+_Released: 2024-12-06T10:22:57Z_
 
 ### Patch Changes
 
@@ -197,7 +215,7 @@
 
 ## 5.3.2
 
-*Released: 2024-12-06T08:51:59Z*
+_Released: 2024-12-06T08:51:59Z_
 
 ### Patch Changes
 
@@ -205,7 +223,7 @@
 
 ## 5.3.1
 
-*Released: 2024-11-28T15:00:20Z*
+_Released: 2024-11-28T15:00:20Z_
 
 ### Patch Changes
 

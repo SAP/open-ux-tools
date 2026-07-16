@@ -360,10 +360,9 @@ describe('App router generator tests', () => {
         expect(mtaConfig).toEqual(expectMtaConfig);
         expect(mockedFs.readFileSync(`${appRouterDir}/xs-security.json`, 'utf-8')).toMatchInlineSnapshot(`
             "{
-              "xsappname": "sap-ux-test",
-              "tenant-mode": "dedicated",
               "description": "Security profile of called application",
               "scopes": [],
+              "attributes": [],
               "role-templates": []
             }
             "

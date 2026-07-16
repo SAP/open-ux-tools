@@ -67,6 +67,7 @@ const {
     getAnnotations,
     getAppId,
     getCdsAnnotations,
+    getFloorplanLabel,
     getMinSupportedUI5Version,
     getODataVersion,
     getReadMeDataSourceLabel,

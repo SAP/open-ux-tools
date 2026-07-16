@@ -1,6 +1,6 @@
 {
     "name": "sap-ux-sap-systems-ext",
-    "version": "1.0.2",
+    "version": "1.0.9",
     "displayName": "Connection Manager for SAP Systems",
     "description": "Enables you to store connection information for remote SAP systems.",
     "main": "./dist/extension.js",
@@ -12,7 +12,7 @@
         "directory": "packages/sap-systems-ext"
     },
     "engines": {
-        "vscode": "^1.102.0",
+        "vscode": "^1.106.3",
         "node": ">=22.x"
     },
     "files": [
@@ -58,8 +58,8 @@
         "@sap-ux/sap-systems-ext-webapp": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
         "@types/normalize-path": "3.0.2",
-        "@types/vscode": "1.102.0",
-        "@zowe/secrets-for-zowe-sdk": "8.29.4",
+        "@types/vscode": "1.106.1",
+        "@zowe/secrets-for-zowe-sdk": "8.32.0",
         "cross-env": "10.1.0",
         "fast-glob": "3.3.3",
         "i18next": "25.10.10",

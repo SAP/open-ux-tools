@@ -11,9 +11,11 @@ import type { Editor } from 'mem-fs-editor';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import {
     BuildingBlockType,
+    PAGE_TEMPLATE_TYPE_FULL,
     type BuildingBlock,
     type BuildingBlockConfig,
     type BuildingBlockMetaPath,
+    type Page,
     bindingContextAbsolute,
     type TemplateConfig
 } from './types.js';
@@ -32,7 +34,16 @@ import {
 import { getManifest, getManifestPath } from '../common/utils.js';
 import { getOrAddNamespace } from './prompts/utils/xml.js';
 import { i18nNamespaces, translate } from '../i18n.js';
-import { processBuildingBlock } from './processor.js';
+import { processBuildingBlock, resolveAggregationPath } from './processor.js';
+import {
+    appendPageAggregations,
+    ensureMissingAggregation,
+    getPageAggregationNames,
+    getUI5XmlDocument,
+    validateFullPageTemplateVersion
+} from './processAggregation.js';
+
+export { generateBuildingBlockAggregation, getUI5XmlDocument } from './processAggregation.js';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
@@ -43,6 +54,16 @@ const PLACEHOLDERS = {
 interface MetadataPath {
     contextPath?: string;
     metaPath: string;
+}
+
+/**
+ * Returns true if the building block data represents a Page building block with the full template type.
+ *
+ * @param data - the building block data
+ * @returns true if full Page template
+ */
+function isFullPageTemplate(data: BuildingBlock): boolean {
+    return data.buildingBlockType === BuildingBlockType.Page && (data as Page).templateType === PAGE_TEMPLATE_TYPE_FULL;
 }
 
 /**
@@ -72,6 +93,9 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
 
     // Read the view xml and template files and update contents of the view xml file
     const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
+    if (aggregationPath) {
+        ensureMissingAggregation(xmlDocument, aggregationPath);
+    }
     const { updatedAggregationPath, processedBuildingBlockData, hasAggregation, aggregationNamespace } =
         processBuildingBlock(
             { ...buildingBlockData, generateId: fnGenerateId },
@@ -93,6 +117,17 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         manifest,
         templateConfig
     );
+
+    const fullPageTemplate = isFullPageTemplate(buildingBlockData);
+    const pageAggregationNames = getPageAggregationNames(buildingBlockData);
+
+    if (fullPageTemplate) {
+        validateFullPageTemplateVersion(manifest);
+    }
+
+    if (pageAggregationNames) {
+        appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId, pageAggregationNames, fullPageTemplate);
+    }
 
     if (
         buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor ||
@@ -130,37 +165,6 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     }
 
     return fs;
-}
-
-/**
- * Returns the UI5 xml file document (view/fragment).
- *
- * @param {string} basePath - the base path
- * @param {string} viewPath - the path of the xml view relative to the base path
- * @param {Editor} fs - the memfs editor instance
- * @returns {Document} the view xml file document
- */
-function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor): Document {
-    let viewContent: string;
-    try {
-        viewContent = fs.read(join(basePath, viewPath));
-    } catch (error) {
-        throw new Error(`Unable to read xml view file. Details: ${getErrorMessage(error)}`);
-    }
-
-    const errorHandler = (level: string, message: string) => {
-        throw new Error(`Unable to parse xml view file. Details: [${level}] - ${message}`);
-    };
-
-    // Parse the xml view content
-    let viewDocument: Document;
-    try {
-        viewDocument = new DOMParser({ errorHandler }).parseFromString(viewContent, 'text/xml');
-    } catch (error) {
-        throw new Error(`Unable to parse xml view file. Details: ${getErrorMessage(error)}`);
-    }
-
-    return viewDocument;
 }
 
 /**
@@ -371,10 +375,19 @@ function updateViewFile(
     fs: Editor,
     replace: boolean = false
 ): Editor {
-    const xpathSelect = xpath.useNamespaces((viewDocument.firstChild as any)._nsMap);
+    const root = viewDocument.documentElement ?? viewDocument.firstChild;
+    if (!root) {
+        throw new Error(`Unable to read namespace map from view ${viewPath}.`);
+    }
+    const nsMap = (root as any)?._nsMap ?? {};
+    const xpathSelect = xpath.useNamespaces(nsMap);
+
+    // XPath 1.0 does not support default namespaces: unprefixed names match only no-namespace
+    // elements. Rewrite each unprefixed step to a *[local-name()='X'] predicate.
+    const resolvedPath = resolveAggregationPath(aggregationPath);
 
     // Find target aggregated element and append template as child
-    const targetNodes = xpathSelect(aggregationPath, viewDocument);
+    const targetNodes = xpathSelect(resolvedPath, viewDocument);
     if (targetNodes && Array.isArray(targetNodes) && targetNodes.length > 0) {
         const targetNode = targetNodes[0] as Node;
         const sourceNode = viewDocument.importNode(templateDocument.documentElement, true);
@@ -433,11 +446,58 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
     // Read the view xml and template files and get content of the view xml file
     const xmlDocument = viewOrFragmentPath ? getUI5XmlDocument(basePath, viewOrFragmentPath, fs) : undefined;
     const { content: manifest, path: manifestPath } = await getManifest(basePath, fs, false);
-    const content = getTemplateContent(buildingBlockData, xmlDocument, manifest, fs, true);
+    const fnGenerateId = buildingBlockData.generateId ?? (await createIdGenerator({ basePath, fsEditor: fs }));
+    const content = getTemplateContent(
+        { ...buildingBlockData, generateId: fnGenerateId },
+        xmlDocument,
+        manifest,
+        fs,
+        true
+    );
+
+    // For full Page templates, augment the snippet with all PAGE_AGGREGATIONS
+    let viewOrFragmentContent = content;
+    const pageAggNames = getPageAggregationNames(buildingBlockData);
+    if (pageAggNames) {
+        if (isFullPageTemplate(buildingBlockData)) {
+            validateFullPageTemplateVersion(manifest);
+        }
+        // Use the real view document for namespace resolution if available, otherwise create a minimal fallback
+        const nsDoc =
+            xmlDocument ??
+            new DOMParser().parseFromString(
+                '<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns="sap.m"/>',
+                'text/xml'
+            );
+        // Parse content directly so documentElement IS the <macros:Page> element,
+        // matching what appendPageAggregations expects as templateDocument.documentElement.
+        const snippetErrorHandler = (level: string, message: string): never => {
+            throw new Error(`Unable to parse Page building block snippet. Details: [${level}] - ${message}`);
+        };
+        const snippetMacrosNS = getOrAddNamespace(nsDoc, 'sap.fe.macros', 'macros') || 'macros';
+        const snippetContent = `${content}`.replace(
+            new RegExp(`^<(${snippetMacrosNS}:Page)`),
+            `<$1 xmlns:${snippetMacrosNS}="sap.fe.macros"`
+        );
+        const snippetDoc = new DOMParser({ errorHandler: snippetErrorHandler }).parseFromString(
+            snippetContent,
+            'text/xml'
+        );
+        appendPageAggregations(
+            fs,
+            nsDoc,
+            snippetDoc,
+            fnGenerateId,
+            pageAggNames,
+            isFullPageTemplate(buildingBlockData)
+        );
+        const resultNode = snippetDoc.documentElement;
+        viewOrFragmentContent = resultNode ? format(new XMLSerializer().serializeToString(resultNode)) : content;
+    }
     const filePathProps = getFilePathProps(basePath, viewOrFragmentPath);
     // Snippet for fragment xml
     snippets['viewOrFragmentPath'] = {
-        content,
+        content: viewOrFragmentContent,
         language: CodeSnippetLanguage.XML,
         filePathProps
     };

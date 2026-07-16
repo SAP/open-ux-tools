@@ -1,12 +1,10 @@
 import type { Dirent } from 'node:fs';
-import path, { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
 import { DirName, getWebappPath } from '@sap-ux/project-access';
+import { getTemplatePath } from '../templates.js';
 import {
     FlexLayer,
     TemplateFileName,
@@ -27,6 +25,22 @@ export type ChangeMetadata = Pick<DescriptorVariant, 'id' | 'layer' | 'namespace
 type InboundChangeData = { filePath: string; changeWithInboundId: InboundChange | undefined };
 interface InboundChange extends ManifestChangeProperties {
     content: InboundContent;
+}
+
+/**
+ * Returns the change file extension matching the change's `fileType` (e.g. `.ctrl_variant`,
+ * `.annotation_change`, `.change`). Falls back to `.change` when `fileType` is missing or
+ * empty so malformed or legacy payloads do not produce extension-less files.
+ *
+ * The UI5 Flex frontend routes change files by their suffix; the suffix must match the
+ * embedded `fileType`, otherwise non-`change` types (e.g. `ctrl_variant`, `annotation_change`)
+ * are misclassified at runtime.
+ *
+ * @param fileType - The change's `fileType` value, if present.
+ * @returns The file extension, including the leading dot.
+ */
+function getChangeFileExtension(fileType: string | undefined): string {
+    return fileType ? `.${fileType}` : '.change';
 }
 
 /**
@@ -54,7 +68,7 @@ export async function writeAnnotationChange(
         const annotationsFolderPath = path.join(changesFolderPath, DirName.Annotations);
 
         if (change) {
-            const changeFileName = `${change.fileName}.change`;
+            const changeFileName = `${change.fileName}${getChangeFileExtension(change.fileType)}`;
             const changeFilePath = path.join(changesFolderPath, changeFileName);
             writeChangeToFile(changeFilePath, change, fs);
         }
@@ -62,7 +76,7 @@ export async function writeAnnotationChange(
         if (!annotation.filePath) {
             const annotationsTemplate = templatesPath
                 ? path.join(templatesPath, 'changes', TemplateFileName.Annotation)
-                : path.join(__dirname, '..', '..', 'templates', 'changes', TemplateFileName.Annotation);
+                : getTemplatePath(`changes/${TemplateFileName.Annotation}`);
             const { namespaces, serviceUrl } = annotation;
             const schemaNamespace = `local_${timestamp}`;
             renderFile(annotationsTemplate, { namespaces, path: serviceUrl, schemaNamespace }, {}, (err, str) => {
@@ -178,7 +192,7 @@ export async function writeChangeToFolder(
             targetFolderPath = path.join(targetFolderPath, dir);
         }
 
-        const fileName = `${change.fileName}.change`;
+        const fileName = `${change.fileName}${getChangeFileExtension(change.fileType)}`;
         const filePath = path.join(targetFolderPath, fileName);
         writeChangeToFile(filePath, change, fs);
     } catch (e) {

@@ -259,3 +259,27 @@ export function getFilterFields(pageModel: TreeModel): TreeAggregations {
     const selectionFieldsAggregations = getAggregations(selectionFields);
     return selectionFieldsAggregations;
 }
+
+/**
+ * Parses a `DataFieldForAnnotation::<property>::<targetAnnotation>` style identifier.
+ *
+ * @param name - aggregation key or `field.name` from the spec model
+ * @returns the parsed property and target annotation, or undefined for non-annotation entries
+ */
+export function parseDataFieldForAnnotationName(
+    name: string | undefined
+): { property: string; targetAnnotation: string } | undefined {
+    if (!name) {
+        return undefined;
+    }
+    const segments = name.split('::');
+    if (segments.length < 3 || segments[0] !== 'DataFieldForAnnotation') {
+        return undefined;
+    }
+    const property = segments[1];
+    const targetAnnotation = segments[2];
+    if (!property || !targetAnnotation) {
+        return undefined;
+    }
+    return { property, targetAnnotation };
+}

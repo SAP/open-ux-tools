@@ -12,6 +12,9 @@ export { generateActionMenu } from './action-menu/index.js';
 export type { CustomTableColumn } from './column/types.js';
 export { generateCustomColumn } from './column/index.js';
 
+export type { Fragment } from './fragment/types.js';
+export { generateFragment } from './fragment/index.js';
+
 export type { CustomHeaderSection, CustomSection, CustomSubSection } from './section/types.js';
 export { RequestGroupId, DesignTime } from './section/types.js';
 export { generateCustomSection, generateCustomSubSection, generateCustomHeaderSection } from './section/index.js';
@@ -43,9 +46,16 @@ export type {
     CustomFormField,
     RichTextEditor,
     ButtonGroupConfig,
-    Action
+    Action,
+    PageTemplateType
 } from './building-block/types.js';
-export { generateBuildingBlock, getSerializedFileContent } from './building-block/index.js';
+export { PAGE_TEMPLATE_TYPE_FULL, PAGE_TEMPLATE_TYPE_BASIC, PAGE_AGGREGATIONS } from './building-block/types.js';
+export type { PageAggregationName, GenerateBuildingBlockAggregationConfig } from './building-block/types.js';
+export {
+    generateBuildingBlock,
+    getSerializedFileContent,
+    generateBuildingBlockAggregation
+} from './building-block/index.js';
 export type {
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,

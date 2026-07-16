@@ -25,7 +25,6 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 // ─── Mock functions (declared before jest.unstable_mockModule) ───
 
 const mockIsInternalFeaturesSettingEnabled = jest.fn<typeof realFeatureToggle.isInternalFeaturesSettingEnabled>();
-const mockIsFeatureEnabled = jest.fn<typeof realFeatureToggle.isFeatureEnabled>();
 const mockGetDefaultProjectName = jest.fn<typeof realDefaultValues.getDefaultProjectName>();
 const mockValidateExtensibilityGenerator = jest.fn().mockReturnValue(true);
 const mockResolveNodeModuleGenerator = jest.fn().mockReturnValue('my-generator-path');
@@ -86,8 +85,7 @@ const mockGetTemplatesOverwritePath = jest.fn<typeof realTemplates.getTemplatesO
 const realFeatureToggle = await import('@sap-ux/feature-toggle');
 jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
     ...realFeatureToggle,
-    isInternalFeaturesSettingEnabled: mockIsInternalFeaturesSettingEnabled,
-    isFeatureEnabled: mockIsFeatureEnabled
+    isInternalFeaturesSettingEnabled: mockIsInternalFeaturesSettingEnabled
 }));
 
 const realDefaultValues = await import('../src/app/questions/helper/default-values.js');
@@ -417,7 +415,6 @@ describe('Adaptation Project Generator Integration Test', () => {
         beforeEach(() => {
             fs.mkdirSync(testOutputDir, { recursive: true });
             mockIsInternalFeaturesSettingEnabled.mockReturnValue(false);
-            mockIsFeatureEnabled.mockReturnValue(false);
             mockIsExtensionInstalled.mockReturnValueOnce(true);
             mockLoadApps.mockResolvedValue(apps);
             jest.spyOn(ConfigPrompter.prototype, 'provider', 'get').mockReturnValue(dummyProvider);
@@ -734,7 +731,7 @@ describe('Adaptation Project Generator Integration Test', () => {
             const changesDir = join(projectFolder, 'webapp', 'changes');
             expect(fs.existsSync(changesDir)).toBe(true);
 
-            const changeFiles = fs.readdirSync(changesDir).filter((file) => file.endsWith('.change'));
+            const changeFiles = fs.readdirSync(changesDir).filter((file) => file.endsWith('.annotation_change'));
             expect(changeFiles.length).toBeGreaterThan(0);
 
             // Verify the change file content
@@ -834,7 +831,6 @@ describe('Adaptation Project Generator Integration Test', () => {
             mockIsAppStudio.mockReturnValue(true);
             jest.spyOn(Date, 'now').mockReturnValue(1234567890);
             mockIsInternalFeaturesSettingEnabled.mockReturnValue(false);
-            mockIsFeatureEnabled.mockReturnValue(true);
             mockIsCfInstalled.mockResolvedValue(true);
             mockIsLoggedInCf.mockResolvedValue(true);
             mockLoadApps.mockResolvedValue(apps);

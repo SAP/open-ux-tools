@@ -6,7 +6,9 @@ import type { FeV2PageType, Table as TableV2 } from '../project-context/linker/f
 import type { ParsedApp } from '../project-context/parser/index.js';
 import type { FeV4PageType, Table as TableV4 } from '../project-context/linker/fe-v4.js';
 import { createJsonFixer } from '../language/rule-fixer.js';
-import { checkAppTablesConfiguration } from '../utils/helpers.js';
+import { checkAppTablesConfiguration, isV2Table } from '../utils/helpers.js';
+import { FioriJSONSourceCode } from '../language/json/source-code.js';
+import type { FioriChangeSourceCode } from '../language/change/source-code.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: COPY_TO_CLIPBOARD,
@@ -25,6 +27,9 @@ const rule: FioriRuleDefinition = createFioriRule({
     },
 
     check(context) {
+        if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
+            return [];
+        }
         const problems: CopyToClipboard[] = [];
 
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
@@ -34,7 +39,11 @@ const rule: FioriRuleDefinition = createFioriRule({
                 continue;
             }
             for (const page of app.pages) {
-                problems.push(...(<CopyToClipboard[]>checkAppTablesConfiguration(page, parsedApp, checkConfiguration)));
+                problems.push(
+                    ...(<CopyToClipboard[]>(
+                        checkAppTablesConfiguration(page, parsedApp, context.sourceCode, checkConfiguration)
+                    ))
+                );
             }
         }
         return problems;
@@ -59,18 +68,10 @@ const rule: FioriRuleDefinition = createFioriRule({
 
 /**
  *
- * @param table
- * @returns
- */
-function isV2Table(table: TableV2 | TableV4): table is TableV2 {
-    return 'copy' in (table as TableV2).configuration;
-}
-
-/**
- *
  * @param page
  * @param table
  * @param parsedApp
+ * @param sourceCode
  * @param problems
  * @param pageSectionName
  */
@@ -78,6 +79,7 @@ function checkConfiguration(
     page: FeV4PageType | FeV2PageType,
     table: TableV4 | TableV2,
     parsedApp: ParsedApp,
+    sourceCode: FioriJSONSourceCode | FioriChangeSourceCode,
     problems: CopyToClipboard[],
     pageSectionName?: string
 ): void {
@@ -90,6 +92,10 @@ function checkConfiguration(
         wrongValue = true;
     }
     if (config?.valueInFile === wrongValue) {
+        if (!(sourceCode instanceof FioriJSONSourceCode)) {
+            return;
+        }
+        const node = sourceCode.getNode(sourceCode.ast.body, config.configurationPath);
         const copyIssue: CopyToClipboard | undefined = {
             type: COPY_TO_CLIPBOARD,
             pageName: page.targetName,
@@ -97,7 +103,8 @@ function checkConfiguration(
             manifest: {
                 uri: parsedApp.manifest.manifestUri,
                 object: parsedApp.manifestObject,
-                propertyPath: config.configurationPath
+                propertyPath: config.configurationPath,
+                loc: node.loc
             }
         };
         problems.push(copyIssue);

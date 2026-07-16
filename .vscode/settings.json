@@ -1,1 +1,6 @@
-{}
+{
+    "sonarlint.connectedMode.project": {
+        "connectionId": "sap-1",
+        "projectKey": "SAP_open-ux-tools"
+    }
+}
