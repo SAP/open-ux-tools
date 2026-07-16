@@ -221,11 +221,12 @@ export class UITextInput extends React.Component<UITextInputProps> {
                 },
                 errorMessage: [
                     messageInfo.style,
+                errorMessage: [
+                    messageInfo.style,
                     ...(messageInfo.message
-                        ? [
-                              {
-                                  ...TEXT_FIELD_ERROR_MESSAGE_STYLE,
-                                  borderTop: `1px solid ${messageInfo.style.borderColor || 'var(--vscode-inputValidation-errorBorder)'}`
+                        ? [TEXT_FIELD_ERROR_MESSAGE_STYLE]
+                        : [])
+                ],
                               }
                           ]
                         : [])
