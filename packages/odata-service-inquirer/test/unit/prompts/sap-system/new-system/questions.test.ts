@@ -43,10 +43,10 @@ describe('Test new system prompt', () => {
               "guiOptions": {
                 "applyDefaultWhenDirty": true,
                 "breadcrumb": true,
-                "hint": "Entering a system name will save the connection for re-use.",
+                "hint": "Entering a system name saves the connection for re-use.",
                 "mandatory": true,
               },
-              "message": "System name",
+              "message": "System Name",
               "name": "userSystemName",
               "type": "input",
               "validate": [Function],

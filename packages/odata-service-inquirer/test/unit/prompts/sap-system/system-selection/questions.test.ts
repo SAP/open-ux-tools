@@ -486,7 +486,7 @@ describe('Test system selection prompts', () => {
             } as SystemSelectionAnswerType)
         ).toMatchInlineSnapshot(`
             {
-              "message": "Authentication failed. Please try updating the credentials.",
+              "message": "Authentication failed. Ensure your credentials are correct and try again.",
               "severity": 2,
             }
         `);
