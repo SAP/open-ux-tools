@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.2.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-15
+
+#### Bug Fixes
+
+- hide Page BB templateType prompt and default to basic when UI5 version is < 1.145.0 [[37a342f](https://github.com/SAP/open-ux-tools/commit/37a342f1995602638173bd358ba7b98e54f3d1d9)]
+
 ## 1.2.0
 
 ### Minor Changes
