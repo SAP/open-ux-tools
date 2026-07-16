@@ -42,9 +42,13 @@ When.onTheListReport.onFilterBar()
     .and.iChangeFilterField("CategoryId", "Electronics")
     .and.iExecuteSearch();
 
-// Clear a filter field (pass null + true as third argument)
+// Clear a filter field - pass null or empty string as value, true as third argument
 When.onTheListReport.onFilterBar()
     .iChangeFilterField("Status", null, true)
+    .and.iExecuteSearch();
+// empty string also works:
+When.onTheListReport.onFilterBar()
+    .iChangeFilterField("Status", "", true)
     .and.iExecuteSearch();
 
 // Filter adaptation panel
@@ -63,6 +67,7 @@ When.onTheListReport.onTable().iPressRow(0);                          // by inde
 When.onTheListReport.onTable().iPressRow({ProductID: "HT-1000"});     // by field value
 
 // Assert row count
+Then.onTheListReport.onTable().iCheckRows();                          // just checks table has rows (no count assertion)
 Then.onTheListReport.onTable().iCheckRows(5);                         // exact count
 Then.onTheListReport.onTable().iCheckRows({Status: "Active"}, 3);     // filtered count
 

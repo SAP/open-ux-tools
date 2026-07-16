@@ -169,7 +169,7 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
 });
 ```
 
-> **V4 uses `contextPath`, not `entitySet`**, in the page object config. Use `contextPath: '/EntityName'` (leading slash, entity set name). Wrong values here cause `iSeeThisPage()` to time out immediately.
+> **V4 uses `contextPath` or `entitySet`** in the page object config - both are accepted. `contextPath: '/EntityName'` (leading slash + entity set name) is the modern form; `entitySet: 'EntityName'` (no leading slash) also works. Wrong values cause `iSeeThisPage()` to time out immediately.
 
 Custom application-specific test functions go into `CustomPageDefinitions.actions` or `CustomPageDefinitions.assertions`.
 
