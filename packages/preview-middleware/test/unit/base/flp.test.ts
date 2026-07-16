@@ -1814,24 +1814,24 @@ describe('FlpSandbox', () => {
 
         const mockProjectWithJourneys = {
             byPath: jest.fn().mockResolvedValue(undefined),
-            byGlob: jest.fn().mockImplementation((glob: string) =>
-                Promise.resolve(
-                    glob.includes('changes')
-                        ? [
-                              {
-                                  getPath: () => 'test/changes/myid.change',
-                                  getName: () => 'myid.change',
-                                  getString: () => Promise.resolve(JSON.stringify({ id: 'myId' }))
-                              }
-                          ]
-                        : glob.includes('Journey')
-                        ? [
-                              { getPath: () => '/test/integration/NavigationJourney.js' },
-                              { getPath: () => '/test/integration/SortingJourney.js' }
-                          ]
-                        : []
-                )
-            )
+            byGlob: jest.fn().mockImplementation((glob: string) => {
+                if (glob.includes('changes')) {
+                    return Promise.resolve([
+                        {
+                            getPath: () => 'test/changes/myid.change',
+                            getName: () => 'myid.change',
+                            getString: () => Promise.resolve(JSON.stringify({ id: 'myId' }))
+                        }
+                    ]);
+                }
+                if (glob.includes('Journey')) {
+                    return Promise.resolve([
+                        { getPath: () => '/test/integration/NavigationJourney.js' },
+                        { getPath: () => '/test/integration/SortingJourney.js' }
+                    ]);
+                }
+                return Promise.resolve([]);
+            })
         } as unknown as typeof mockProject;
 
         beforeAll(async () => {
