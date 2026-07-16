@@ -36,22 +36,28 @@ function validateUrl(value: string): true | string {
 }
 
 /**
- * Validates that a system name is unique (not already in use).
+ * Helper function to check if a system name already exists.
  *
- * @param value - The system name to validate
+ * @param value - The system name to check
+ * @param excludeSystem - Optional system to exclude from the check (for updates)
  * @returns True if valid, error message otherwise
  */
-async function validateSystemNameUniqueness(value: string): Promise<true | string> {
-    const nonEmptyCheck = validateNonEmpty(value);
-    if (nonEmptyCheck !== true) {
-        return nonEmptyCheck;
-    }
-
+async function checkSystemNameUniqueness(value: string, excludeSystem?: BackendSystem): Promise<true | string> {
     try {
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
         const allSystems = await service.getAll();
 
-        const nameExists = allSystems.some((system) => system.name.toLowerCase() === value.trim().toLowerCase());
+        const nameExists = allSystems.some((system) => {
+            const sameNameIgnoreCase = system.name.toLowerCase() === value.trim().toLowerCase();
+            if (!sameNameIgnoreCase) {
+                return false;
+            }
+            // If we're updating, exclude the current system from the check
+            if (excludeSystem) {
+                return !(system.url === excludeSystem.url && system.client === excludeSystem.client);
+            }
+            return true;
+        });
 
         if (nameExists) {
             return `A system with the name '${value}' already exists. Please choose a different name.`;
@@ -63,6 +69,20 @@ async function validateSystemNameUniqueness(value: string): Promise<true | strin
         // (better to let the user proceed than block on a check failure)
         return true;
     }
+}
+
+/**
+ * Validates that a system name is unique (not already in use).
+ *
+ * @param value - The system name to validate
+ * @returns True if valid, error message otherwise
+ */
+async function validateSystemNameUniqueness(value: string): Promise<true | string> {
+    const nonEmptyCheck = validateNonEmpty(value);
+    if (nonEmptyCheck !== true) {
+        return nonEmptyCheck;
+    }
+    return checkSystemNameUniqueness(value);
 }
 
 /**
@@ -80,27 +100,7 @@ async function validateSystemNameUniquenessForUpdate(
     if (nonEmptyCheck !== true) {
         return nonEmptyCheck;
     }
-
-    try {
-        const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
-        const allSystems = await service.getAll();
-
-        // Check if name exists, excluding the current system being updated
-        const nameExists = allSystems.some(
-            (system) =>
-                system.name.toLowerCase() === value.trim().toLowerCase() &&
-                !(system.url === currentSystem.url && system.client === currentSystem.client)
-        );
-
-        if (nameExists) {
-            return `A system with the name '${value}' already exists. Please choose a different name.`;
-        }
-
-        return true;
-    } catch (error) {
-        // If we can't check uniqueness, allow it through
-        return true;
-    }
+    return checkSystemNameUniqueness(value, currentSystem);
 }
 
 /**
