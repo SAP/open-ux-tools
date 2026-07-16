@@ -10,7 +10,9 @@ jest.unstable_mockModule('../../../../src/tracing/logger', () => ({
 }));
 
 const isAppStudioMock = jest.fn().mockReturnValue(false);
+const actualBtpUtils = await import('@sap-ux/btp-utils');
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
     isAppStudio: isAppStudioMock
 }));
 
