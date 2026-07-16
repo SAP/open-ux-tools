@@ -1,6 +1,7 @@
 import { DOMParser } from '@xmldom/xmldom';
 import type { Editor } from 'mem-fs-editor';
 import * as xpath from 'xpath';
+import { MACROS_NAMESPACE_URI } from '../../types.js';
 
 /**
  * Converts the provided xpath string from `/mvc:View/Page/content` to
@@ -16,6 +17,37 @@ export const augmentXpathWithLocalNames = (path: string): string => {
     }
     return result.join('/');
 };
+
+/**
+ * If the given node is a macros:Page element that has no macros:items child, adds a synthesized
+ * macros:items path to the result map so callers can target it as an aggregation path.
+ * ensureMissingAggregation in generateBuildingBlock will create the DOM element when needed.
+ *
+ * @param node - the current DOM node being visited
+ * @param parentNode - accumulated XPath prefix up to (but not including) this node
+ * @param macrosNamespace - the resolved macros namespace prefix (e.g. 'macros')
+ * @param result - mutable map of XPath choices to augment
+ */
+function addMacrosItemsPathIfMissing(
+    node: Node,
+    parentNode: string,
+    macrosNamespace: string,
+    result: Record<string, string>
+): void {
+    if ((node as Element).localName !== 'Page' || (node as Element).namespaceURI !== MACROS_NAMESPACE_URI) {
+        return;
+    }
+    const resolvedPrefix = macrosNamespace || 'macros';
+    const macrosItemsName = `${resolvedPrefix}:items`;
+    const hasItemsChild = Array.from(node.childNodes).some(
+        (child) => child.nodeType === child.ELEMENT_NODE && (child as Element).localName === 'items'
+    );
+    if (!hasItemsChild) {
+        const pageStep = (node as Element).prefix ? node.nodeName : `${resolvedPrefix}:Page`;
+        const itemsPath = `${parentNode}/${pageStep}/${macrosItemsName}`;
+        result[itemsPath] = augmentXpathWithLocalNames(itemsPath);
+    }
+}
 
 /**
  * Returns a list of xpath strings for each element of the xml file provided.
@@ -54,11 +86,13 @@ export function getXPathStringsForXmlFile(
                 (child) =>
                     child.nodeType === child.ELEMENT_NODE &&
                     (child as Element).localName === 'Page' &&
-                    child.nodeName === pageMacroDefinition
+                    (child as Element).namespaceURI === MACROS_NAMESPACE_URI
             );
             if (!hasPageMacroChild) {
                 result[`${parentNode}/${node.nodeName}`] = augmentXpathWithLocalNames(`${parentNode}/${node.nodeName}`);
             }
+
+            addMacrosItemsPathIfMissing(node, parentNode, macrosNamespace || 'macros', result);
 
             const childNodes = Array.from(node.childNodes);
             for (const childNode of childNodes) {

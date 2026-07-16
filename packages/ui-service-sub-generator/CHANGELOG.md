@@ -1,5 +1,17 @@
 # @sap-ux/ui-service-sub-generator
 
+## 1.0.28
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-15
+
+#### Workspace Updates
+
+- @sap-ux/ui-service-inquirer 1.0.27 → 1.0.28
+
 ## 1.0.27
 
 ### Patch Changes
