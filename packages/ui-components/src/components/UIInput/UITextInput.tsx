@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { ITextFieldProps, ITextFieldStyleProps, ITextFieldStyles } from '@fluentui/react';
+import type { ITextFieldProps, ITextFieldStyleProps, ITextFieldStyles, IRawStyle } from '@fluentui/react';
 import { TextField } from '@fluentui/react';
 import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage/index.js';
 import { getMessageInfo } from '../../helper/ValidationMessage/index.js';
@@ -36,6 +36,12 @@ const COLOR_STYLES = {
     focus: {
         borderColor: 'var(--vscode-focusBorder)'
     }
+};
+
+const TEXT_FIELD_ERROR_MESSAGE_STYLE: IRawStyle = {
+    marginTop: -1,
+    borderRadius: 0,
+    animation: 'none'
 };
 
 export type InputRenderProps = React.InputHTMLAttributes<HTMLInputElement> & React.RefAttributes<HTMLInputElement>;
@@ -213,7 +219,17 @@ export class UITextInput extends React.Component<UITextInputProps> {
                         ]
                     }
                 },
-                errorMessage: [messageInfo.style],
+                errorMessage: [
+                    messageInfo.style,
+                    ...(messageInfo.message
+                        ? [
+                              {
+                                  ...TEXT_FIELD_ERROR_MESSAGE_STYLE,
+                                  borderTop: `1px solid ${messageInfo.style.borderColor || 'var(--vscode-inputValidation-errorBorder)'}`
+                              }
+                          ]
+                        : [])
+                ],
                 icon: [
                     {
                         bottom: 2
