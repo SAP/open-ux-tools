@@ -23,7 +23,8 @@ export async function generateFpmConfig<T extends {}>(
             name: config.pageName,
             minUI5Version: feApp.ui5?.minUI5Version,
             typescript: feApp.appOptions?.typescript,
-            pageBuildingBlockTitle: config.pageBuildingBlockTitle
+            pageBuildingBlockTitle: config.pageBuildingBlockTitle,
+            pageBuildingBlockTemplateType: config.pageBuildingBlockTemplateType
         },
         fs
     );
