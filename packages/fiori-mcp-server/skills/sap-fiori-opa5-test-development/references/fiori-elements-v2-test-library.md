@@ -1,17 +1,3 @@
----
-name: fiori-elements-v2-test-library
-description: >
-  Write OPA5 integration tests for SAP Fiori Elements OData v2 applications using the
-  sap/suite/ui/generic/template/integration/testLibrary (module paths:
-  sap/suite/ui/generic/template/integration/testLibrary/ListReport/pages/ListReport and
-  sap/suite/ui/generic/template/integration/testLibrary/ObjectPage/pages/ObjectPage).
-  Use this skill whenever the user pastes or mentions any of those module paths, wants to
-  write, fix, or extend OPA5 tests for a Fiori Elements v2 List Report or Object Page app,
-  asks about the testLibrary page objects (onTheGenericListReport / onTheGenericObjectPage),
-  asks which action or assertion method to use, or needs to set up the test library in their
-  project. The library is stable/maintenance-only - its API will not change.
----
-
 # Fiori Elements OData v2 OPA5 Test Library
 
 This library provides ready-made OPA5 page objects for integration-testing Fiori Elements
