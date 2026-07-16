@@ -269,7 +269,7 @@ function getPageBuildingBlockQuestions(): Question<PageBuildingBlockAnswers>[] {
  *
  * @param templateType used to determine if the tree table option should be included
  * @param odataVersion used to determine if the hierarchy qualifier is required when the selected table type is TreeTable
- * @param isCapService used to determine if the tree table option should be included
+ * @param isCapService used to determine analytical table requirements (CAP doesn't require all 8 transformations)
  * @param metadata the metadata (edmx) string of the service
  * @returns the table layout questions
  */
@@ -285,7 +285,9 @@ function getTableLayoutQuestions(
         { name: t('prompts.tableType.choiceResponsive'), value: 'ResponsiveTable' }
     ];
 
-    if (templateType !== 'alp' && !isCapService) {
+    // TreeTable is supported for LROP and Worklist templates (not ALP)
+    // CAP now supports tree tables via @hierarchy annotation (GA July 2025)
+    if (templateType !== 'alp') {
         tableTypeChoices.push({ name: t('prompts.tableType.choiceTree'), value: 'TreeTable' });
     }
     const tableLayoutQuestions: Question<TableConfigAnswers>[] = [];

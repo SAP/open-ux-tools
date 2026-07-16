@@ -48,7 +48,7 @@ import { getPackageInfo, installDependencies } from '../utils/deps.js';
 import { initI18n, t } from '../utils/i18n.js';
 import AdpGeneratorLogger from '../utils/logger.js';
 import { setHeaderTitle } from '../utils/opts.js';
-import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input.js';
+import { getFirstArg, parseJsonInput } from '../utils/parse-json-input.js';
 import { TelemetryCollector, EventName } from '../telemetry/index.js';
 import {
     getDeployPage,
@@ -217,7 +217,7 @@ export default class extends Generator {
 
         this.isMtaYamlFound = isMtaProject(process.cwd()) as boolean;
 
-        const jsonInputString = getFirstArgAsString(args);
+        const jsonInputString = getFirstArg(args);
         this.jsonInput = parseJsonInput(jsonInputString, this.logger);
 
         if (!this.jsonInput) {

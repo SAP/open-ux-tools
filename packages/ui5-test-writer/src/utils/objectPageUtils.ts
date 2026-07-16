@@ -9,6 +9,7 @@ import type {
     BodySubSectionFeatureData,
     HeaderSectionFeatureData,
     ObjectPageFeatures,
+    ObjectPageNavigationParent,
     ObjectPageNavigationParents
 } from '../types.js';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
@@ -105,33 +106,46 @@ export function getObjectPages(applicationModel: ApplicationModel): PageWithMode
 }
 
 /**
- * Finds parent pages for the object page, and returns their identifiers.
+ * Finds the chain of parent Object Pages leading from the List Report down to the target page.
  *
  * @param targetObjectPageKey - key of the target object page
  * @param objectPages - the array of object pages extracted from the application model
  * @param listReportPageKey - the key of the List Report page in the application model, used to find navigation routes to object pages
- * @returns navigation data including parent page identifiers
+ * @returns navigation data including the ordered ancestor Object Page chain
  */
 function getObjectPageNavigationParents(
     targetObjectPageKey: string,
     objectPages: PageWithModelV4[],
     listReportPageKey?: string
 ): ObjectPageNavigationParents {
-    const navigationParents: ObjectPageNavigationParents = {
-        parentLRName: listReportPageKey ?? '' // app is possibly malformed if no LR found
-    };
+    const parentOPs: ObjectPageNavigationParent[] = [];
+    const visited = new Set<string>([targetObjectPageKey]); // guard against infinite loop in case of invalid manifest entries
+    let cursor = targetObjectPageKey;
 
-    objectPages.forEach((objectPage) => {
-        const navigationRoutes = getNavigationRoutes(objectPage);
-        const routeToTargetOP = navigationRoutes.find((nav) => nav.route === targetObjectPageKey);
-        if (routeToTargetOP) {
-            navigationParents.parentOPName = objectPage.name;
-
-            navigationParents.parentOPTableSection = routeToTargetOP.identifier;
+    while (true) {
+        const childKey = cursor;
+        let parent: PageWithModelV4 | undefined;
+        let parentNavigationProperty: string | undefined;
+        for (const objectPage of objectPages) {
+            const route = getNavigationRoutes(objectPage).find((navigation) => navigation.route === childKey);
+            if (route) {
+                parent = objectPage;
+                parentNavigationProperty = route.identifier;
+                break;
+            }
         }
-    });
+        if (!parent?.name || !parentNavigationProperty || visited.has(parent.name)) {
+            break;
+        }
+        visited.add(parent.name);
+        parentOPs.unshift({ name: parent.name, navigationProperty: parentNavigationProperty });
+        cursor = parent.name;
+    }
 
-    return navigationParents;
+    return {
+        parentLRName: listReportPageKey ?? '', // app is possibly malformed if no LR found
+        parentOPs
+    };
 }
 
 /**

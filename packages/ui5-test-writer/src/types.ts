@@ -117,10 +117,14 @@ export interface FFOPAConfig {
     useVirtualPreviewEndpoints?: boolean;
 }
 
+export type ObjectPageNavigationParent = {
+    name: string;
+    navigationProperty: string;
+};
+
 export type ObjectPageNavigationParents = {
     parentLRName?: string;
-    parentOPName?: string;
-    parentOPTableSection?: string;
+    parentOPs: ObjectPageNavigationParent[];
 };
 
 export type SectionFormField = {
