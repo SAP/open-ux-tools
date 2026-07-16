@@ -489,8 +489,8 @@ describe('system-prompts', () => {
                 expect(whitespaceResult).toBe('This field is required and cannot be empty');
             });
 
-            test('should allow through on service error (graceful degradation)', async () => {
-                mockGetService.mockRejectedValue(new Error('Service unavailable'));
+            test('should reject on service error (prevent duplicate names)', async () => {
+                mockIsSystemNameTaken.mockRejectedValue(new Error('Service unavailable'));
                 mockPrompts.mockResolvedValueOnce({ name: 'System Name' });
 
                 await promptForSystemConfig({
@@ -506,9 +506,10 @@ describe('system-prompts', () => {
                     ? promptsCall.find((p: any) => p.name === 'name')
                     : undefined;
 
-                // Should allow through if service is unavailable (graceful degradation)
+                // Should return error message if service is unavailable (prevent duplicate names)
                 const result = await namePrompt.validate('System Name');
-                expect(result).toBe(true);
+                expect(typeof result).toBe('string');
+                expect(result).toContain('Unable to check system name uniqueness');
             });
         });
 

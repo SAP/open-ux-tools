@@ -79,11 +79,16 @@ async function validateSystemNameUniqueness(value: string, excludeSystem?: Backe
         return nonEmptyCheck;
     }
 
-    const isTaken = await isSystemNameTaken(value, excludeSystem);
-    if (isTaken) {
-        return `A system with the name '${value}' already exists. Please choose a different name.`;
+    try {
+        const isTaken = await isSystemNameTaken(value, excludeSystem);
+        if (isTaken) {
+            return `A system with the name '${value}' already exists. Please choose a different name.`;
+        }
+        return true;
+    } catch (error) {
+        // If we can't check uniqueness, return error to prevent potentially duplicate names
+        return 'Unable to check system name uniqueness. Please try again.';
     }
-    return true;
 }
 
 /**
@@ -102,11 +107,16 @@ async function validateSystemNameUniquenessForUpdate(
         return nonEmptyCheck;
     }
 
-    const isTaken = await isSystemNameTaken(value, currentSystem);
-    if (isTaken) {
-        return `A system with the name '${value}' already exists. Please choose a different name.`;
+    try {
+        const isTaken = await isSystemNameTaken(value, currentSystem);
+        if (isTaken) {
+            return `A system with the name '${value}' already exists. Please choose a different name.`;
+        }
+        return true;
+    } catch (error) {
+        // If we can't check uniqueness, return error to prevent potentially duplicate names
+        return 'Unable to check system name uniqueness. Please try again.';
     }
-    return true;
 }
 
 /**
