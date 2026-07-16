@@ -1,11 +1,19 @@
 import { jest, describe, test, expect, beforeEach } from '@jest/globals';
 import type prompts from 'prompts';
 import { SystemType, AuthenticationType, ConnectionType } from '@sap-ux/store';
-import type { BackendSystem } from '@sap-ux/store';
+import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 
 const mockPrompts = jest.fn() as unknown as typeof prompts;
+const mockGetService = jest.fn();
+const mockGetAll = jest.fn();
 
 jest.unstable_mockModule('prompts', () => ({ default: mockPrompts }));
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    SystemType,
+    AuthenticationType,
+    ConnectionType,
+    getService: mockGetService
+}));
 
 const {
     promptForSystemConfig,
@@ -18,6 +26,8 @@ const {
 describe('system-prompts', () => {
     beforeEach(() => {
         mockPrompts.mockReset();
+        mockGetService.mockReset();
+        mockGetAll.mockReset();
     });
 
     describe('promptForSystemConfig', () => {
@@ -341,6 +351,421 @@ describe('system-prompts', () => {
             });
 
             expect(result.password).toBe('');
+        });
+    });
+
+    describe('validation functions', () => {
+        describe('name validation with uniqueness check', () => {
+            test('should validate name uniqueness when prompting for new system name', async () => {
+                const existingSystems: BackendSystem[] = [
+                    {
+                        name: 'Existing System',
+                        url: 'https://existing.com',
+                        client: '100',
+                        systemType: SystemType.OnPrem,
+                        authenticationType: AuthenticationType.Basic,
+                        connectionType: ConnectionType.AbapCatalog
+                    }
+                ];
+
+                mockGetService.mockResolvedValue({ getAll: mockGetAll });
+                mockGetAll.mockResolvedValue(existingSystems);
+                mockPrompts.mockResolvedValueOnce({ name: 'New System' });
+
+                await promptForSystemConfig({
+                    url: 'https://test.com',
+                    systemType: 'OnPrem',
+                    authenticationType: 'basic',
+                    connectionType: 'abap_catalog'
+                });
+
+                const calls = mockPrompts.mock.calls;
+                const promptsCall = calls[0][0];
+                const namePrompt = Array.isArray(promptsCall)
+                    ? promptsCall.find((p: any) => p.name === 'name')
+                    : undefined;
+
+                expect(namePrompt).toBeDefined();
+                expect(namePrompt.validate).toBeDefined();
+
+                // Test the validate function allows unique names
+                const validResult = await namePrompt.validate('New System');
+                expect(validResult).toBe(true);
+            });
+
+            test('should reject duplicate system name (case-insensitive)', async () => {
+                const existingSystems: BackendSystem[] = [
+                    {
+                        name: 'Existing System',
+                        url: 'https://existing.com',
+                        systemType: SystemType.OnPrem,
+                        authenticationType: AuthenticationType.Basic,
+                        connectionType: ConnectionType.AbapCatalog
+                    }
+                ];
+
+                mockGetService.mockResolvedValue({ getAll: mockGetAll });
+                mockGetAll.mockResolvedValue(existingSystems);
+                mockPrompts.mockResolvedValueOnce({ name: 'New System' });
+
+                await promptForSystemConfig({
+                    url: 'https://test.com',
+                    systemType: 'OnPrem',
+                    authenticationType: 'basic',
+                    connectionType: 'abap_catalog'
+                });
+
+                const calls = mockPrompts.mock.calls;
+                const promptsCall = calls[0][0];
+                const namePrompt = Array.isArray(promptsCall)
+                    ? promptsCall.find((p: any) => p.name === 'name')
+                    : undefined;
+
+                // Test the validate function rejects duplicate names
+                const duplicateResult = await namePrompt.validate('existing system');
+                expect(duplicateResult).toBe(
+                    "A system with the name 'existing system' already exists. Please choose a different name."
+                );
+            });
+
+            test('should reject empty system name', async () => {
+                mockGetService.mockResolvedValue({ getAll: mockGetAll });
+                mockGetAll.mockResolvedValue([]);
+                mockPrompts.mockResolvedValueOnce({ name: 'Valid Name' });
+
+                await promptForSystemConfig({
+                    url: 'https://test.com',
+                    systemType: 'OnPrem',
+                    authenticationType: 'basic',
+                    connectionType: 'abap_catalog'
+                });
+
+                const calls = mockPrompts.mock.calls;
+                const promptsCall = calls[0][0];
+                const namePrompt = Array.isArray(promptsCall)
+                    ? promptsCall.find((p: any) => p.name === 'name')
+                    : undefined;
+
+                // Test empty name rejection
+                const emptyResult = await namePrompt.validate('');
+                expect(emptyResult).toBe('This field is required and cannot be empty');
+            });
+
+            test('should reject whitespace-only system name', async () => {
+                mockGetService.mockResolvedValue({ getAll: mockGetAll });
+                mockGetAll.mockResolvedValue([]);
+                mockPrompts.mockResolvedValueOnce({ name: 'Valid Name' });
+
+                await promptForSystemConfig({
+                    url: 'https://test.com',
+                    systemType: 'OnPrem',
+                    authenticationType: 'basic',
+                    connectionType: 'abap_catalog'
+                });
+
+                const calls = mockPrompts.mock.calls;
+                const promptsCall = calls[0][0];
+                const namePrompt = Array.isArray(promptsCall)
+                    ? promptsCall.find((p: any) => p.name === 'name')
+                    : undefined;
+
+                // Test whitespace-only name rejection
+                const whitespaceResult = await namePrompt.validate('   ');
+                expect(whitespaceResult).toBe('This field is required and cannot be empty');
+            });
+
+            test('should allow through on service error (graceful degradation)', async () => {
+                mockGetService.mockRejectedValue(new Error('Service unavailable'));
+                mockPrompts.mockResolvedValueOnce({ name: 'System Name' });
+
+                await promptForSystemConfig({
+                    url: 'https://test.com',
+                    systemType: 'OnPrem',
+                    authenticationType: 'basic',
+                    connectionType: 'abap_catalog'
+                });
+
+                const calls = mockPrompts.mock.calls;
+                const promptsCall = calls[0][0];
+                const namePrompt = Array.isArray(promptsCall)
+                    ? promptsCall.find((p: any) => p.name === 'name')
+                    : undefined;
+
+                // Should allow through if service is unavailable (graceful degradation)
+                const result = await namePrompt.validate('System Name');
+                expect(result).toBe(true);
+            });
+        });
+
+        describe('URL validation', () => {
+            test('should validate URL format when prompting for URL', async () => {
+                mockPrompts.mockResolvedValueOnce({ url: 'https://valid.com' });
+
+                await promptForSystemConfig({
+                    name: 'Test',
+                    systemType: 'OnPrem',
+                    authenticationType: 'basic',
+                    connectionType: 'abap_catalog'
+                });
+
+                const calls = mockPrompts.mock.calls;
+                const promptsCall = calls[0][0];
+                const urlPrompt = Array.isArray(promptsCall)
+                    ? promptsCall.find((p: any) => p.name === 'url')
+                    : undefined;
+
+                expect(urlPrompt).toBeDefined();
+                expect(urlPrompt.validate).toBeDefined();
+
+                // Test valid URL
+                const validResult = urlPrompt.validate('https://valid-url.com');
+                expect(validResult).toBe(true);
+            });
+
+            test('should reject invalid URL format', async () => {
+                mockPrompts.mockResolvedValueOnce({ url: 'https://valid.com' });
+
+                await promptForSystemConfig({
+                    name: 'Test',
+                    systemType: 'OnPrem',
+                    authenticationType: 'basic',
+                    connectionType: 'abap_catalog'
+                });
+
+                const calls = mockPrompts.mock.calls;
+                const promptsCall = calls[0][0];
+                const urlPrompt = Array.isArray(promptsCall)
+                    ? promptsCall.find((p: any) => p.name === 'url')
+                    : undefined;
+
+                // Test invalid URL
+                const invalidResult = urlPrompt.validate('not-a-valid-url');
+                expect(invalidResult).toBe('Please enter a valid URL (e.g., https://my-system.example.com)');
+            });
+
+            test('should reject empty URL', async () => {
+                mockPrompts.mockResolvedValueOnce({ url: 'https://valid.com' });
+
+                await promptForSystemConfig({
+                    name: 'Test',
+                    systemType: 'OnPrem',
+                    authenticationType: 'basic',
+                    connectionType: 'abap_catalog'
+                });
+
+                const calls = mockPrompts.mock.calls;
+                const promptsCall = calls[0][0];
+                const urlPrompt = Array.isArray(promptsCall)
+                    ? promptsCall.find((p: any) => p.name === 'url')
+                    : undefined;
+
+                // Test empty URL
+                const emptyResult = urlPrompt.validate('');
+                expect(emptyResult).toBe('This field is required and cannot be empty');
+            });
+        });
+
+        describe('update name validation with uniqueness check', () => {
+            test('should allow updating to same name (excluding current system)', async () => {
+                const currentSystem: BackendSystem = {
+                    name: 'Current System',
+                    url: 'https://current.com',
+                    client: '100',
+                    systemType: SystemType.OnPrem,
+                    authenticationType: AuthenticationType.Basic,
+                    connectionType: ConnectionType.AbapCatalog
+                };
+
+                const allSystems: BackendSystem[] = [
+                    currentSystem,
+                    {
+                        name: 'Other System',
+                        url: 'https://other.com',
+                        systemType: SystemType.OnPrem,
+                        authenticationType: AuthenticationType.Basic,
+                        connectionType: ConnectionType.AbapCatalog
+                    }
+                ];
+
+                mockGetService.mockResolvedValue({ getAll: mockGetAll });
+                mockGetAll.mockResolvedValue(allSystems);
+                mockPrompts.mockResolvedValueOnce({ name: 'Current System' });
+
+                await promptForFieldUpdates(['name'], currentSystem);
+
+                const calls = mockPrompts.mock.calls;
+                const promptsCall = calls[0][0];
+                const namePrompt = Array.isArray(promptsCall)
+                    ? promptsCall.find((p: any) => p.name === 'name')
+                    : undefined;
+
+                expect(namePrompt).toBeDefined();
+                expect(namePrompt.validate).toBeDefined();
+
+                // Should allow keeping the same name
+                const sameNameResult = await namePrompt.validate('Current System');
+                expect(sameNameResult).toBe(true);
+            });
+
+            test('should reject updating to another existing system name', async () => {
+                const currentSystem: BackendSystem = {
+                    name: 'Current System',
+                    url: 'https://current.com',
+                    client: '100',
+                    systemType: SystemType.OnPrem,
+                    authenticationType: AuthenticationType.Basic,
+                    connectionType: ConnectionType.AbapCatalog
+                };
+
+                const allSystems: BackendSystem[] = [
+                    currentSystem,
+                    {
+                        name: 'Other System',
+                        url: 'https://other.com',
+                        systemType: SystemType.OnPrem,
+                        authenticationType: AuthenticationType.Basic,
+                        connectionType: ConnectionType.AbapCatalog
+                    }
+                ];
+
+                mockGetService.mockResolvedValue({ getAll: mockGetAll });
+                mockGetAll.mockResolvedValue(allSystems);
+                mockPrompts.mockResolvedValueOnce({ name: 'Updated Name' });
+
+                await promptForFieldUpdates(['name'], currentSystem);
+
+                const calls = mockPrompts.mock.calls;
+                const promptsCall = calls[0][0];
+                const namePrompt = Array.isArray(promptsCall)
+                    ? promptsCall.find((p: any) => p.name === 'name')
+                    : undefined;
+
+                // Should reject duplicate name
+                const duplicateResult = await namePrompt.validate('Other System');
+                expect(duplicateResult).toBe(
+                    "A system with the name 'Other System' already exists. Please choose a different name."
+                );
+            });
+
+            test('should allow updating to a new unique name', async () => {
+                const currentSystem: BackendSystem = {
+                    name: 'Current System',
+                    url: 'https://current.com',
+                    systemType: SystemType.OnPrem,
+                    authenticationType: AuthenticationType.Basic,
+                    connectionType: ConnectionType.AbapCatalog
+                };
+
+                mockGetService.mockResolvedValue({ getAll: mockGetAll });
+                mockGetAll.mockResolvedValue([currentSystem]);
+                mockPrompts.mockResolvedValueOnce({ name: 'New Unique Name' });
+
+                await promptForFieldUpdates(['name'], currentSystem);
+
+                const calls = mockPrompts.mock.calls;
+                const promptsCall = calls[0][0];
+                const namePrompt = Array.isArray(promptsCall)
+                    ? promptsCall.find((p: any) => p.name === 'name')
+                    : undefined;
+
+                // Should allow new unique name
+                const uniqueResult = await namePrompt.validate('New Unique Name');
+                expect(uniqueResult).toBe(true);
+            });
+        });
+
+        describe('username and password validation', () => {
+            test('should validate non-empty username when updating', async () => {
+                const currentSystem: BackendSystem = {
+                    name: 'Test System',
+                    url: 'https://test.com',
+                    systemType: SystemType.OnPrem,
+                    authenticationType: AuthenticationType.Basic,
+                    connectionType: ConnectionType.AbapCatalog,
+                    username: 'olduser'
+                };
+
+                mockPrompts.mockResolvedValueOnce({ username: 'newuser' });
+
+                await promptForFieldUpdates(['username'], currentSystem);
+
+                const calls = mockPrompts.mock.calls;
+                const promptsCall = calls[0][0];
+                const usernamePrompt = Array.isArray(promptsCall)
+                    ? promptsCall.find((p: any) => p.name === 'username')
+                    : undefined;
+
+                expect(usernamePrompt).toBeDefined();
+                expect(usernamePrompt.validate).toBeDefined();
+
+                // Test valid username
+                const validResult = usernamePrompt.validate('newuser');
+                expect(validResult).toBe(true);
+
+                // Test empty username
+                const emptyResult = usernamePrompt.validate('');
+                expect(emptyResult).toBe('This field is required and cannot be empty');
+
+                // Test whitespace-only username
+                const whitespaceResult = usernamePrompt.validate('   ');
+                expect(whitespaceResult).toBe('This field is required and cannot be empty');
+            });
+
+            test('should validate non-empty password when updating', async () => {
+                const currentSystem: BackendSystem = {
+                    name: 'Test System',
+                    url: 'https://test.com',
+                    systemType: SystemType.OnPrem,
+                    authenticationType: AuthenticationType.Basic,
+                    connectionType: ConnectionType.AbapCatalog
+                };
+
+                mockPrompts.mockResolvedValueOnce({ password: 'newpass' });
+
+                await promptForFieldUpdates(['password'], currentSystem);
+
+                const calls = mockPrompts.mock.calls;
+                const promptsCall = calls[0][0];
+                const passwordPrompt = Array.isArray(promptsCall)
+                    ? promptsCall.find((p: any) => p.name === 'password')
+                    : undefined;
+
+                expect(passwordPrompt).toBeDefined();
+                expect(passwordPrompt.validate).toBeDefined();
+
+                // Test valid password
+                const validResult = passwordPrompt.validate('newpass');
+                expect(validResult).toBe(true);
+
+                // Test empty password
+                const emptyResult = passwordPrompt.validate('');
+                expect(emptyResult).toBe('This field is required and cannot be empty');
+            });
+        });
+
+        describe('URL validation in system identifier', () => {
+            test('should validate URL when prompting for system identifier', async () => {
+                mockPrompts.mockResolvedValueOnce({ url: 'https://test.com' });
+
+                await promptForSystemIdentifier({ client: '100' });
+
+                const calls = mockPrompts.mock.calls;
+                const promptsCall = calls[0][0];
+                const urlPrompt = Array.isArray(promptsCall)
+                    ? promptsCall.find((p: any) => p.name === 'url')
+                    : undefined;
+
+                expect(urlPrompt).toBeDefined();
+                expect(urlPrompt.validate).toBeDefined();
+
+                // Test valid URL
+                const validResult = urlPrompt.validate('https://valid.com');
+                expect(validResult).toBe(true);
+
+                // Test invalid URL
+                const invalidResult = urlPrompt.validate('invalid');
+                expect(invalidResult).toBe('Please enter a valid URL (e.g., https://my-system.example.com)');
+            });
         });
     });
 
