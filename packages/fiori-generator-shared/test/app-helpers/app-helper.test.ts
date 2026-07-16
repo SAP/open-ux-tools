@@ -1,5 +1,10 @@
-import { getFlpId, getSemanticObject, getFloorplanLabel } from '../../src/app-helpers/app-helpers.js';
-import { initI18n } from '../../src/i18n.js';
+import {
+    getFlpId,
+    getSemanticObject,
+    getFloorplanLabel,
+    getFloorplanDescription
+} from '../../src/app-helpers/app-helpers.js';
+import { initI18n, t } from '../../src/i18n.js';
 import { FloorplanFE, FloorplanFF } from '../../src/types/index.js';
 
 describe('app-helper tests', () => {
@@ -25,13 +30,13 @@ describe('getFloorplanLabel', () => {
         await initI18n();
     });
     test('returns translated label for known template types', () => {
-        expect(getFloorplanLabel(FloorplanFE.FE_LROP)).toBe('List Report Page');
-        expect(getFloorplanLabel(FloorplanFE.FE_FPM)).toBe('Custom Page');
-        expect(getFloorplanLabel(FloorplanFE.FE_WORKLIST)).toBe('Worklist Page');
-        expect(getFloorplanLabel(FloorplanFE.FE_ALP)).toBe('Analytical List Page');
-        expect(getFloorplanLabel(FloorplanFE.FE_OVP)).toBe('Overview Page');
-        expect(getFloorplanLabel(FloorplanFE.FE_FEOP)).toBe('Form Entry Object Page');
-        expect(getFloorplanLabel(FloorplanFF.FF_SIMPLE)).toBe('Basic');
+        expect(getFloorplanLabel(FloorplanFE.FE_LROP)).toBe(t('floorplans.label.lrop'));
+        expect(getFloorplanLabel(FloorplanFE.FE_FPM)).toBe(t('floorplans.label.fpm'));
+        expect(getFloorplanLabel(FloorplanFE.FE_WORKLIST)).toBe(t('floorplans.label.worklist'));
+        expect(getFloorplanLabel(FloorplanFE.FE_ALP)).toBe(t('floorplans.label.alp'));
+        expect(getFloorplanLabel(FloorplanFE.FE_OVP)).toBe(t('floorplans.label.ovp'));
+        expect(getFloorplanLabel(FloorplanFE.FE_FEOP)).toBe(t('floorplans.label.feop'));
+        expect(getFloorplanLabel(FloorplanFF.FF_SIMPLE)).toBe(t('floorplans.label.basic'));
     });
 
     test('returns the templateType as fallback for unknown types', () => {
@@ -39,8 +44,28 @@ describe('getFloorplanLabel', () => {
     });
 
     test('appends odata version when provided', () => {
-        expect(getFloorplanLabel(FloorplanFE.FE_LROP, '4')).toBe('List Report Page V4');
-        expect(getFloorplanLabel(FloorplanFE.FE_LROP, '2')).toBe('List Report Page V2');
-        expect(getFloorplanLabel(FloorplanFE.FE_LROP, undefined)).toBe('List Report Page');
+        expect(getFloorplanLabel(FloorplanFE.FE_LROP, '4')).toBe(t('floorplans.label.lrop', { odataVersion: '4' }));
+        expect(getFloorplanLabel(FloorplanFE.FE_LROP, '2')).toBe(t('floorplans.label.lrop', { odataVersion: '2' }));
+        expect(getFloorplanLabel(FloorplanFE.FE_LROP, undefined)).toBe(t('floorplans.label.lrop'));
+    });
+});
+
+describe('getFloorplanDescription', () => {
+    beforeAll(async () => {
+        await initI18n();
+    });
+
+    test('returns translated description for known template types', () => {
+        expect(getFloorplanDescription(FloorplanFF.FF_SIMPLE)).toBe(t('floorplans.description.basic'));
+        expect(getFloorplanDescription(FloorplanFE.FE_LROP)).toBe(t('floorplans.description.lrop'));
+        expect(getFloorplanDescription(FloorplanFE.FE_FPM)).toBe(t('floorplans.description.fpm'));
+        expect(getFloorplanDescription(FloorplanFE.FE_WORKLIST)).toBe(t('floorplans.description.worklist'));
+        expect(getFloorplanDescription(FloorplanFE.FE_ALP)).toBe(t('floorplans.description.alp'));
+        expect(getFloorplanDescription(FloorplanFE.FE_OVP)).toBe(t('floorplans.description.ovp'));
+        expect(getFloorplanDescription(FloorplanFE.FE_FEOP)).toBe(t('floorplans.description.feop'));
+    });
+
+    test('returns empty string for unknown template type', () => {
+        expect(getFloorplanDescription('unknown-type' as any)).toBe('');
     });
 });

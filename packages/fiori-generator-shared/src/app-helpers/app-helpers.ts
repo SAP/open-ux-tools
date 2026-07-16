@@ -28,3 +28,13 @@ export const getFlpId = (appId: string, action?: string | undefined): string => 
 export function getFloorplanLabel(templateType: Floorplan, odataVersion?: string): string {
     return t(`floorplans.label.${templateType}`, { defaultValue: templateType, odataVersion });
 }
+
+/**
+ * Returns the description for a given floorplan template type.
+ *
+ * @param templateType - the floorplan template type (e.g. `FloorplanFE.FE_LROP`)
+ * @returns the description string
+ */
+export function getFloorplanDescription(templateType: Floorplan): string {
+    return t(`floorplans.description.${templateType}`, { defaultValue: '' });
+}
