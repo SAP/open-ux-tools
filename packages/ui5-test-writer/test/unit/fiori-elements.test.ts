@@ -1041,8 +1041,9 @@ export type Then = Opa5 & BaseArrangements & {
             expect(lrContent).toContain('iCheckFilterField({ property: "AgencyID" })');
             expect(lrContent).toContain('iCheckFilterField({ property: "CustomerID" })');
 
-            // TS adaptation: onTable("") instead of onTable()
-            expect(lrContent).toContain('onTable("")');
+            // TS adaptation: single default-table id via the defaultTableId const, no bare onTable()
+            expect(lrContent).toContain('const defaultTableId = "";');
+            expect(lrContent).toContain('onTable(defaultTableId)');
             expect(lrContent).not.toContain('onTable()');
 
             // The TS journey is typed, no AMD wrapper. Start application uses Given + Then (When prefixed with _ as unused).
@@ -1085,8 +1086,8 @@ export type Then = Opa5 & BaseArrangements & {
             const content = dumped[lrJourneyPath!].contents as string;
 
             expect(content).toContain('iCheckColumns');
-            // TS adaptation: onTable("") on the column-check call
-            expect(content).toMatch(/onTable\(""\)\.iCheckColumns/);
+            // TS adaptation: default-table column-check call uses the defaultTableId const
+            expect(content).toMatch(/onTable\(defaultTableId\)\.iCheckColumns/);
         });
 
         it('generates TypeScript tests for LROPv4 app that has no filters in filter bar', async () => {

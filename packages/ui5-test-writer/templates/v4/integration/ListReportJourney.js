@@ -24,6 +24,8 @@ sap.ui.define([
     function journey() {
         QUnit.module("<%- name%>ListReport journey");
 
+        const defaultTableId = <%- tableIdentifiers && tableIdentifiers.length > 0 ? '"' + tableIdentifiers[0] + '"' : '""' %>;
+
         opaTest("Start application", function (Given, When, Then) {
             Given.iStartMyApp();
             <%_ startPages.forEach(function(pageName) { %>
@@ -56,9 +58,9 @@ sap.ui.define([
             // When.onThe<%- startLR%>Generated.onFilterBar().iChangeFilterField({ property: "<%- property %>" }, "<value to filter>", false);
             <%_ }); -%>
             // When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
-            // Then.onThe<%- startLR%>Generated.onTable(<%- tableIdentifiers && tableIdentifiers.length > 0 ? '"' + tableIdentifiers[0] + '"' : '' %>).iCheckRows();
-            // When.onThe<%- startLR%>Generated.onTable(<%- tableIdentifiers && tableIdentifiers.length > 0 ? '"' + tableIdentifiers[0] + '"' : '' %>).iSelectRows(0);
-            // Then.onThe<%- startLR%>Generated.onTable(<%- tableIdentifiers && tableIdentifiers.length > 0 ? '"' + tableIdentifiers[0] + '"' : '' %>).iCheckAction({ service: "<service>", action: "<ActionName>", unbound: false }, { enabled: true });
+            // Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckRows();
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
+            // Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction({ service: "<service>", action: "<ActionName>", unbound: false }, { enabled: true });
         });
 <%_ } -%>
 
@@ -66,29 +68,29 @@ sap.ui.define([
         // opaTest("Perform a global search and check the result", function (Given, When, Then) {
         //     When.onThe<%- startLR%>Generated.onFilterBar().iChangeSearchField("Search Term");
         //     When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
-        //     Then.onThe<%- startLR%>Generated.onTable(<%- tableIdentifiers && tableIdentifiers.length > 0 ? '"' + tableIdentifiers[0] + '"' : '' %>).iCheckRows();
+        //     Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckRows();
         // });
 
 <%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
         opaTest("Check table columns and actions", function (Given, When, Then) {
             <%_ if (toolBarActions && toolBarActions.length > 0) { -%>
             <%_ if (createButton.visible && !isALP) { _%>
-            Then.onThe<%- startLR%>Generated.onTable(<%- tableIdentifiers && tableIdentifiers.length > 0 ? '"' + tableIdentifiers[0] + '"' : '' %>).iCheckCreate({ visible: true });
-            // When.onThe<%- startLR%>Generated.onTable(<%- tableIdentifiers && tableIdentifiers.length > 0 ? '"' + tableIdentifiers[0] + '"' : '' %>).iPressCreate();
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckCreate({ visible: true });
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressCreate();
             <%_ } _%>
             <%_ if (deleteButton.visible) { _%>
-            // When.onThe<%- startLR%>Generated.onTable(<%- tableIdentifiers && tableIdentifiers.length > 0 ? '"' + tableIdentifiers[0] + '"' : '' %>).iPressDelete();
-            Then.onThe<%- startLR%>Generated.onTable(<%- tableIdentifiers && tableIdentifiers.length > 0 ? '"' + tableIdentifiers[0] + '"' : '' %>).iCheckDelete({ visible: true });
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressDelete();
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckDelete({ visible: true });
             <%_ } _%>
             <%_ toolBarActions.forEach(function(item) { _%>
             <%_ if (item.visible) { _%>
-            // When.onThe<%- startLR%>Generated.onTable(<%- tableIdentifiers && tableIdentifiers.length > 0 ? '"' + tableIdentifiers[0] + '"' : '' %>).iPressAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> });
-            Then.onThe<%- startLR%>Generated.onTable(<%- tableIdentifiers && tableIdentifiers.length > 0 ? '"' + tableIdentifiers[0] + '"' : '' %>).iCheckAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> }, { enabled: <%- item.enabled === true %> });
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> });
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> }, { enabled: <%- item.enabled === true %> });
             <%_ } _%>
             <%_ }); -%>
             <%_ } -%>
             <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
-            Then.onThe<%- startLR %>Generated.onTable(<%- tableIdentifiers && tableIdentifiers.length > 0 ? '"' + tableIdentifiers[0] + '"' : '' %>).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
+            Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
             <%_ } -%>
         });
 <%_ } -%>
@@ -105,13 +107,13 @@ sap.ui.define([
             Then.onThe<%- startLR%>Generated.onTable("<%- tabId %>").iCheckRows();
             <%_ }); -%>
             <%_ } else { -%>
-            Then.onThe<%- startLR%>Generated.onTable().iCheckRows();
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckRows();
             <%_ } -%>
             <%_ if (navigatedOP) { -%>
             <%_ if (tableIdentifiers && tableIdentifiers.length > 0) { _%>
-            When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tableIdentifiers[0] %>" });
+            When.onThe<%- startLR%>Generated.iGoToView({ key: defaultTableId });
             <%_ } _%>
-            When.onThe<%- startLR%>Generated.onTable(<%- tableIdentifiers && tableIdentifiers.length > 0 ? '"' + tableIdentifiers[0] + '"' : '' %>).iPressRow(0);
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressRow(0);
             Then.onThe<%- navigatedOP%>Generated.iSeeThisPage();
             <%_ } -%>
         });

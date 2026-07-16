@@ -14264,6 +14264,8 @@ sap.ui.define([
     function journey() {
         QUnit.module(\\"TravelListListReport journey\\");
 
+        const defaultTableId = \\"\\";
+
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
@@ -14275,35 +14277,35 @@ sap.ui.define([
         // opaTest(\\"Perform a global search and check the result\\", function (Given, When, Then) {
         //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(\\"Search Term\\");
         //     When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
-        //     Then.onTheTravelListGenerated.onTable().iCheckRows();
+        //     Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
         // });
 
         opaTest(\\"Check table columns and actions\\", function (Given, When, Then) {
-            Then.onTheTravelListGenerated.onTable().iCheckCreate({ visible: true });
-            // When.onTheTravelListGenerated.onTable().iPressCreate();
-            // When.onTheTravelListGenerated.onTable().iPressDelete();
-            Then.onTheTravelListGenerated.onTable().iCheckDelete({ visible: true });
-            // When.onTheTravelListGenerated.onTable().iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"createDraftTemplate\\", unbound: true });
-            Then.onTheTravelListGenerated.onTable().iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"createDraftTemplate\\", unbound: true }, { enabled: true });
-            // When.onTheTravelListGenerated.onTable().iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"createActiveTemplate\\", unbound: true });
-            Then.onTheTravelListGenerated.onTable().iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"createActiveTemplate\\", unbound: true }, { enabled: true });
-            // When.onTheTravelListGenerated.onTable().iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"deductDiscount\\", unbound: false });
-            Then.onTheTravelListGenerated.onTable().iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"deductDiscount\\", unbound: false }, { enabled: false });
-            // When.onTheTravelListGenerated.onTable().iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"Check\\", unbound: false });
-            Then.onTheTravelListGenerated.onTable().iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"Check\\", unbound: false }, { enabled: false });
-            // When.onTheTravelListGenerated.onTable().iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setToNew\\", unbound: false });
-            Then.onTheTravelListGenerated.onTable().iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setToNew\\", unbound: false }, { enabled: false });
-            // When.onTheTravelListGenerated.onTable().iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setToBooked\\", unbound: false });
-            Then.onTheTravelListGenerated.onTable().iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setToBooked\\", unbound: false }, { enabled: false });
-            // When.onTheTravelListGenerated.onTable().iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setCancellationDateToTomorrow\\", unbound: false });
-            Then.onTheTravelListGenerated.onTable().iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setCancellationDateToTomorrow\\", unbound: false }, { enabled: false });
-            Then.onTheTravelListGenerated.onTable().iCheckColumns(undefined, {\\"TravelID\\":{\\"header\\":\\"Travel ID\\"},\\"AgencyID\\":{\\"header\\":\\"Agency ID\\"},\\"CustomerID\\":{\\"header\\":\\"Customer ID\\"},\\"BeginDate\\":{\\"header\\":\\"Starting Date\\"},\\"EndDate\\":{\\"header\\":\\"End Date\\"},\\"BookingFee\\":{\\"header\\":\\"Booking Fee\\"},\\"TotalPrice\\":{\\"header\\":\\"Total Price\\"},\\"LatestCancellationDate\\":{\\"header\\":\\"Latest Cancellation Date\\"},\\"Memo\\":{\\"header\\":\\"Description\\"},\\"Status\\":{\\"header\\":\\"Travel Status\\"}});
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckCreate({ visible: true });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iPressCreate();
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iPressDelete();
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckDelete({ visible: true });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"createDraftTemplate\\", unbound: true });
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"createDraftTemplate\\", unbound: true }, { enabled: true });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"createActiveTemplate\\", unbound: true });
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"createActiveTemplate\\", unbound: true }, { enabled: true });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"deductDiscount\\", unbound: false });
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"deductDiscount\\", unbound: false }, { enabled: false });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"Check\\", unbound: false });
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"Check\\", unbound: false }, { enabled: false });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setToNew\\", unbound: false });
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setToNew\\", unbound: false }, { enabled: false });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setToBooked\\", unbound: false });
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setToBooked\\", unbound: false }, { enabled: false });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setCancellationDateToTomorrow\\", unbound: false });
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction({ service: \\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\", action: \\"setCancellationDateToTomorrow\\", unbound: false }, { enabled: false });
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckColumns(undefined, {\\"TravelID\\":{\\"header\\":\\"Travel ID\\"},\\"AgencyID\\":{\\"header\\":\\"Agency ID\\"},\\"CustomerID\\":{\\"header\\":\\"Customer ID\\"},\\"BeginDate\\":{\\"header\\":\\"Starting Date\\"},\\"EndDate\\":{\\"header\\":\\"End Date\\"},\\"BookingFee\\":{\\"header\\":\\"Booking Fee\\"},\\"TotalPrice\\":{\\"header\\":\\"Total Price\\"},\\"LatestCancellationDate\\":{\\"header\\":\\"Latest Cancellation Date\\"},\\"Memo\\":{\\"header\\":\\"Description\\"},\\"Status\\":{\\"header\\":\\"Travel Status\\"}});
         });
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
-            Then.onTheTravelListGenerated.onTable().iCheckRows();
-            When.onTheTravelListGenerated.onTable().iPressRow(0);
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
+            When.onTheTravelListGenerated.onTable(defaultTableId).iPressRow(0);
             Then.onTheTravelObjectPageGenerated.iSeeThisPage();
         });
 
