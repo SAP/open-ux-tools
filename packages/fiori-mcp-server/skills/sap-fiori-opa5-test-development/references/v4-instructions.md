@@ -62,7 +62,7 @@ webapp/test/integration/
     └── ...
 ```
 
-In this setup, registering a new journey requires adding its module path to the sap.ui.require array in `OpaTests.qunit.js`. See `references/journeyrunner.md` for details.
+In this setup, registering a new journey requires adding its module path to the sap.ui.require array in `OpaTests.qunit.js`. See `references/v4-journeyrunner.md` for details.
 
 ### Regenerating Test Files
 
@@ -90,7 +90,7 @@ const runner = new JourneyRunner({
 });
 ```
 
-Read `references/journeyrunner.md` for the full configuration reference, including:
+Read `references/v4-journeyrunner.md` for the full configuration reference, including:
 - How to determine the tile name for `iStartMyApp()` - from config or manifest
 - The `pages` map and page object registration
 - The portable journey pattern (`runner.run([journey])`)
@@ -173,7 +173,7 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
 
 Custom application-specific test functions go into `CustomPageDefinitions.actions` or `CustomPageDefinitions.assertions`.
 
-For API navigation, naming conventions, identifier patterns, and chaining, read `references/sap-fe-test-api-guide.md`.
+For API navigation, naming conventions, identifier patterns, and chaining, read `references/v4-sap-fe-test-api-guide.md`.
 
 ---
 
@@ -331,7 +331,7 @@ To browse the API for a specific UI5 version, add the version before the hash:
 
 Check the UI5 version your app uses in `ui5.yaml` under `framework.version`, or in `manifest.json` under `sap.ui5.dependencies.minUI5Version`.
 
-Read `references/sap-fe-test-api-guide.md` for guidance on how to navigate the docs, understand the API structure, and look up specific functions.
+Read `references/v4-sap-fe-test-api-guide.md` for guidance on how to navigate the docs, understand the API structure, and look up specific functions.
 
 ---
 

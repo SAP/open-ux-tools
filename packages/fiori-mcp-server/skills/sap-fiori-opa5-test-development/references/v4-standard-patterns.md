@@ -3,7 +3,7 @@
 Quick-reference example catalogue for the `sap.fe.test` API organized by UI area.
 One snippet per pattern - enough to know what exists and how to call it.
 
-For full method signatures and parameter details, read `references/sap-fe-test-api-guide.md`.
+For full method signatures and parameter details, read `references/v4-sap-fe-test-api-guide.md`.
 
 ---
 

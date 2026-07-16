@@ -93,7 +93,7 @@ pages: { onTheListReport: ListReportPage }
 | `references/v4-instructions.md` | V4 app: test structure, JourneyRunner, page objects, anti-patterns, mock data, debugging, patterns and fixes by UI area |
 | `references/v4-standard-patterns.md` | V4: quick-reference example catalogue by UI area (FilterBar, Table, Header, Form, Footer, Dialog, Section, Value Help, Chart) |
 | `references/v2-instructions.md` | V2 app: setup, page objects, teardown rules, mock data, V2 gotchas |
-| `references/journeyrunner.md` | V4: full JourneyRunner config reference, tile name lookup, portable journey pattern |
-| `references/sap-fe-test-api-guide.md` | V4: how to navigate the sap.fe.test API docs, naming conventions, identifier patterns |
+| `references/v4-journeyrunner.md` | V4: full JourneyRunner config reference, tile name lookup, portable journey pattern |
+| `references/v4-sap-fe-test-api-guide.md` | V4: how to navigate the sap.fe.test API docs, naming conventions, identifier patterns |
 | `references/v4-custom-selectors.md` | V4: custom selectors (last resort), OpaBuilder, CustomFilterField IDs, ComboBox, suffix pitfalls |
 | `references/fiori-elements-v2-test-library.md` | V2: full API reference, method signatures, common pitfalls, complete example |

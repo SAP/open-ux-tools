@@ -21,7 +21,7 @@ The namespace is organized into folders. Understanding the structure lets you fi
 | `sap.fe.test.ObjectPage` | Access points for Object Page UI areas (`onHeader()`, `onForm()`, `onTable()`, `onFooter()`) | `onTheObjectPage` in journey |
 | `sap.fe.test.TemplatePage` | Access points for FPM/custom pages | `onTheCustomPage` in journey |
 | `sap.fe.test.api` | The actual action and assertion functions, organized by UI area | chained after an access point |
-| `sap.fe.test.JourneyRunner` | Runner configuration | `references/journeyrunner.md` |
+| `sap.fe.test.JourneyRunner` | Runner configuration | `references/v4-journeyrunner.md` |
 
 The pattern is always: **page object** → **area accessor** → **action or assertion**.
 
