@@ -1,5 +1,26 @@
 # @sap-ux/ui5-test-writer
 
+## 1.2.23
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-16
+
+#### Bug Fixes
+
+- Generate form field checks for Object Page standard form sections. The generator read the spec-model aggregation under the key `subSections`, but `@sap/ux-specification` emits it as `subsections`, so sections structured as CollectionFacet → ReferenceFacet (e.g. GeneralInformation) produced only a shallow `iCheckSection` with no `iCheckSubSection`/`iCheckField` checks. [[5b5c4c6](https://github.com/SAP/open-ux-tools/commit/5b5c4c6869234e4635ce1b0faf0730a024837122)]
+
+## 1.2.22
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.20 → 1.1.0
+- @sap-ux/preview-middleware 1.0.40 → 1.0.41
+
 ## 1.2.21
 
 ### Patch Changes

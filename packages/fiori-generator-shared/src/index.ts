@@ -9,6 +9,6 @@ export * from './types/index.js';
 export { getPackageScripts } from './npm-package-scripts/getPackageScripts.js';
 export { getBootstrapResourceUrls } from './ui5/ui5.js';
 export { getDefaultTargetFolder, isExtensionInstalled, isCommandRegistered } from './vscode-helpers/vscode-helpers.js';
-export { generateAppGenInfo } from './app-gen-info.js';
+export { generateAppGenInfo, getFloorplanLabel } from './app-gen-info.js';
 export { getFlpId, getSemanticObject } from './app-helpers/app-helpers.js';
 export { setYeomanEnvConflicterForce } from './yeoman.js';

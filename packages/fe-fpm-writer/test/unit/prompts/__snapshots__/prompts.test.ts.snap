@@ -1824,28 +1824,10 @@ Object {
   "initialAnswers": Object {
     "buildingBlockData": Object {
       "buildingBlockType": "page",
+      "templateType": "basic",
     },
   },
   "questions": Array [
-    Object {
-      "choices": Array [
-        Object {
-          "name": "Basic",
-          "value": "basic",
-        },
-        Object {
-          "name": "Full",
-          "value": "full",
-        },
-      ],
-      "default": "basic",
-      "guiOptions": Object {
-        "mandatory": true,
-      },
-      "message": "Page Layout",
-      "name": "buildingBlockData.templateType",
-      "type": "list",
-    },
     Object {
       "choices": [Function],
       "guiOptions": Object {

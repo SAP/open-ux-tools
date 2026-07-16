@@ -335,7 +335,7 @@ function extractBodySubSectionsData(
     entitySetName?: string
 ): BodySubSectionFeatureData[] {
     const subSections: BodySubSectionFeatureData[] = [];
-    const subSectionsAggregation = getAggregations(section)['subSections'];
+    const subSectionsAggregation = getAggregations(section)['subsections'];
     const subSectionItems = getAggregations(subSectionsAggregation) as Record<string, BodySectionItem>;
     Object.entries(subSectionItems).forEach(([subSectionKey, subSection]) => {
         const subSectionId = getSectionIdentifier(subSection) ?? `${parentSectionId}_${subSectionKey}`;
