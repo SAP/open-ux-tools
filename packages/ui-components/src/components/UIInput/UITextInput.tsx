@@ -219,18 +219,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
                         ]
                     }
                 },
-                errorMessage: [
-                    messageInfo.style,
-                errorMessage: [
-                    messageInfo.style,
-                    ...(messageInfo.message
-                        ? [TEXT_FIELD_ERROR_MESSAGE_STYLE]
-                        : [])
-                ],
-                              }
-                          ]
-                        : [])
-                ],
+                errorMessage: [messageInfo.style, ...(messageInfo.message ? [TEXT_FIELD_ERROR_MESSAGE_STYLE] : [])],
                 icon: [
                     {
                         bottom: 2

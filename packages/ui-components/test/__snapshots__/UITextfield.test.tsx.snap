@@ -20,7 +20,6 @@ Object {
     Object {
       "animation": "none",
       "borderRadius": 0,
-      "borderTop": "1px solid var(--vscode-inputValidation-errorBorder)",
       "marginTop": -1,
     },
   ],
@@ -435,7 +434,6 @@ Object {
     Object {
       "animation": "none",
       "borderRadius": 0,
-      "borderTop": "1px solid var(--vscode-inputValidation-errorBorder)",
       "marginTop": -1,
     },
   ],
@@ -538,7 +536,6 @@ Object {
     Object {
       "animation": "none",
       "borderRadius": 0,
-      "borderTop": "1px solid var(--vscode-inputValidation-infoBorder)",
       "marginTop": -1,
     },
   ],
@@ -641,7 +638,6 @@ Object {
     Object {
       "animation": "none",
       "borderRadius": 0,
-      "borderTop": "1px solid var(--vscode-inputValidation-warningBorder)",
       "marginTop": -1,
     },
   ],
