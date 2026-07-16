@@ -21,7 +21,7 @@ describe('Test FPM features using a pre-generated Fiori Custom Page app', () => 
         return writeFilesForDebugging(fs);
     });
 
-    describe('generate building blocks', async () => {
+    describe('generate building blocks', () => {
         const basicConfig = {
             path: join(testOutput, 'js')
         };
