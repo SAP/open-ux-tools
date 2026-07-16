@@ -12,3 +12,4 @@ export { getDefaultTargetFolder, isExtensionInstalled, isCommandRegistered } fro
 export { generateAppGenInfo } from './app-gen-info.js';
 export { getFlpId, getSemanticObject, getFloorplanLabel } from './app-helpers/app-helpers.js';
 export { setYeomanEnvConflicterForce } from './yeoman.js';
+export { initI18n as initI18nFioriGeneratorShared, t as tFioriGeneratorShared } from './i18n.js';
