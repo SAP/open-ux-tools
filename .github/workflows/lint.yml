@@ -18,7 +18,7 @@ jobs:
         os: [ubuntu-latest]
         node-version: [22.x]
     runs-on: ${{ matrix.os }}
-    environment: release
+    environment: ci-secrets
     permissions:
       contents: write
       id-token: write
