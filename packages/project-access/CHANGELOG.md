@@ -1,5 +1,38 @@
 # @sap-ux/project-access
 
+## 2.1.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.4 → 1.0.5
+
+## 2.1.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.3 → 1.0.4
+- @sap-ux/i18n 1.0.1 → 1.0.2
+
+## 2.1.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-30
+
+#### Bug Fixes
+
+- node module path resolution [[085ca39](https://github.com/SAP/open-ux-tools/commit/085ca39943b3d3bfe038968049f45d261235cbd3)]
+
 ## 2.1.3
 
 ### Patch Changes

@@ -19,7 +19,8 @@ import {
     type ILogWrapper,
     sendTelemetry,
     TelemetryHelper,
-    getFlpId
+    getFlpId,
+    getFloorplanLabel
 } from '@sap-ux/fiori-generator-shared';
 import type { Logger } from '@sap-ux/logger';
 import type { EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
@@ -398,9 +399,7 @@ export class FioriAppGenerator extends Generator {
             );
 
             TelemetryHelper.createTelemetryData({
-                Template: t(`floorplans.label.${floorplan}`, {
-                    odataVersion: service.version
-                }),
+                Template: getFloorplanLabel(floorplan, service.version),
                 DataSource: service.source,
                 UI5Version: project.ui5Version || latestVersionString,
                 Theme: project.ui5Theme,

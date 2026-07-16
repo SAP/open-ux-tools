@@ -16,7 +16,7 @@ jest.unstable_mockModule('../../src/utils/logger', () => {
     return { default: mock, ...mock };
 });
 
-const { readManifest, makeValidJson, addPackageJsonIfNotFound, processDebugArtifacts, getTemplateTypeFromManifest } =
+const { readManifest, makeValidJson, addPackageJsonIfNotFound, cleanupArtifacts, getTemplateTypeFromManifest } =
     await import('../../src/utils/file-helpers.js');
 const RepoAppDownloadLogger = (await import('../../src/utils/logger.js')).default;
 
@@ -75,7 +75,7 @@ describe('makeValidJson', () => {
     });
 });
 
-describe('processDebugArtifacts', () => {
+describe('cleanupArtifacts', () => {
     const mockFs = {
         exists: jest.fn(),
         delete: jest.fn(),
@@ -92,7 +92,7 @@ describe('processDebugArtifacts', () => {
         const mockAdmZip = { getEntries: jest.fn(() => entries) };
         (PromptState as any)['_admZipInstance'] = mockAdmZip;
 
-        processDebugArtifacts('/webapp', mockFs as any);
+        cleanupArtifacts('/webapp', mockFs as any);
 
         expect(mockFs.write).toHaveBeenCalledWith(join('/webapp', 'Component.js'), dbgContent);
         expect(mockFs.delete).toHaveBeenCalledWith(join('/webapp', 'Component-dbg.js'));
@@ -109,7 +109,7 @@ describe('processDebugArtifacts', () => {
         const mockAdmZip = { getEntries: jest.fn(() => entries) };
         (PromptState as any)['_admZipInstance'] = mockAdmZip;
 
-        processDebugArtifacts('/webapp', mockFs as any);
+        cleanupArtifacts('/webapp', mockFs as any);
 
         expect(mockFs.write).toHaveBeenCalledWith(join('/webapp', 'ext/view/Main.controller.js'), dbgContent);
         expect(mockFs.delete).toHaveBeenCalledWith(join('/webapp', 'ext/view/Main-dbg.controller.js'));
@@ -126,7 +126,7 @@ describe('processDebugArtifacts', () => {
         (PromptState as any)['_admZipInstance'] = mockAdmZip;
         mockFs.exists.mockReturnValue(true);
 
-        processDebugArtifacts('/webapp', mockFs as any);
+        cleanupArtifacts('/webapp', mockFs as any);
 
         expect(mockFs.delete).toHaveBeenCalledWith(join('/webapp', 'Component-preload.js'));
         expect(mockFs.delete).toHaveBeenCalledWith(join('/webapp', 'Component.js.map'));
@@ -140,7 +140,53 @@ describe('processDebugArtifacts', () => {
         (PromptState as any)['_admZipInstance'] = mockAdmZip;
         mockFs.exists.mockReturnValue(false);
 
-        processDebugArtifacts('/webapp', mockFs as any);
+        cleanupArtifacts('/webapp', mockFs as any);
+
+        expect(mockFs.delete).not.toHaveBeenCalled();
+    });
+
+    it('should remove transpiled .js file when a corresponding .ts file exists', () => {
+        const entries = [
+            { entryName: 'Component.ts' },
+            { entryName: 'Component.js' },
+            { entryName: 'ext/view/Main.controller.ts' },
+            { entryName: 'ext/view/Main.controller.js' }
+        ];
+        (PromptState as any)['_admZipInstance'] = { getEntries: jest.fn(() => entries) };
+        mockFs.exists.mockReturnValue(true);
+
+        cleanupArtifacts('/webapp', mockFs as any);
+
+        expect(mockFs.delete).toHaveBeenCalledWith(join('/webapp', 'Component.js'));
+        expect(mockFs.delete).toHaveBeenCalledWith(join('/webapp', 'ext/view/Main.controller.js'));
+    });
+
+    it('should not treat .d.ts declaration files as TypeScript source files', () => {
+        const entries = [{ entryName: 'ui5.d.ts' }, { entryName: 'Component.js' }];
+        (PromptState as any)['_admZipInstance'] = { getEntries: jest.fn(() => entries) };
+        mockFs.exists.mockReturnValue(true);
+
+        cleanupArtifacts('/webapp', mockFs as any);
+
+        expect(mockFs.delete).not.toHaveBeenCalled();
+    });
+
+    it('should not remove .js file when no corresponding .ts file exists', () => {
+        const entries = [{ entryName: 'Component.js' }];
+        (PromptState as any)['_admZipInstance'] = { getEntries: jest.fn(() => entries) };
+        mockFs.exists.mockReturnValue(true);
+
+        cleanupArtifacts('/webapp', mockFs as any);
+
+        expect(mockFs.delete).not.toHaveBeenCalled();
+    });
+
+    it('should not delete transpiled .js file if it does not exist in mem-fs', () => {
+        const entries = [{ entryName: 'Component.ts' }, { entryName: 'Component.js' }];
+        (PromptState as any)['_admZipInstance'] = { getEntries: jest.fn(() => entries) };
+        mockFs.exists.mockReturnValue(false);
+
+        cleanupArtifacts('/webapp', mockFs as any);
 
         expect(mockFs.delete).not.toHaveBeenCalled();
     });
@@ -148,7 +194,7 @@ describe('processDebugArtifacts', () => {
     it('should do nothing when admZip is not set', () => {
         PromptState.reset();
 
-        processDebugArtifacts('/webapp', mockFs as any);
+        cleanupArtifacts('/webapp', mockFs as any);
 
         expect(mockFs.delete).not.toHaveBeenCalled();
         expect(mockFs.write).not.toHaveBeenCalled();
@@ -165,47 +211,11 @@ describe('addPackageJsonIfNotFound', () => {
         jest.clearAllMocks();
     });
 
-    it('should write package.json with sapux:true for an lrop app', () => {
+    it('should write package.json for an app when it does not already exist', () => {
         mockFs.exists.mockReturnValue(false);
         addPackageJsonIfNotFound(
             '/project',
             { app: { id: 'my.app.id' }, template: { type: TemplateType.ListReportObjectPage } } as any,
-            mockFs as unknown as Editor
-        );
-        expect(mockFs.writeJSON).toHaveBeenCalledWith(join('/project', 'package.json'), {
-            name: 'my.app.id',
-            sapux: true
-        });
-    });
-
-    it('should write package.json with sapux:true for an unknown template type', () => {
-        mockFs.exists.mockReturnValue(false);
-        addPackageJsonIfNotFound(
-            '/project',
-            { app: { id: 'my.app.id' }, template: { type: 'unknown' } } as any,
-            mockFs as unknown as Editor
-        );
-        expect(mockFs.writeJSON).toHaveBeenCalledWith(join('/project', 'package.json'), {
-            name: 'my.app.id',
-            sapux: true
-        });
-    });
-
-    it('should write package.json without sapux for a basic freestyle app', () => {
-        mockFs.exists.mockReturnValue(false);
-        addPackageJsonIfNotFound(
-            '/project',
-            { app: { id: 'my.app.id' }, template: { type: FioriFreestyleTemplateType.Basic } } as any,
-            mockFs as unknown as Editor
-        );
-        expect(mockFs.writeJSON).toHaveBeenCalledWith(join('/project', 'package.json'), { name: 'my.app.id' });
-    });
-
-    it('should write package.json without sapux for a listdetail freestyle app', () => {
-        mockFs.exists.mockReturnValue(false);
-        addPackageJsonIfNotFound(
-            '/project',
-            { app: { id: 'my.app.id' }, template: { type: FioriFreestyleTemplateType.ListDetail } } as any,
             mockFs as unknown as Editor
         );
         expect(mockFs.writeJSON).toHaveBeenCalledWith(join('/project', 'package.json'), { name: 'my.app.id' });

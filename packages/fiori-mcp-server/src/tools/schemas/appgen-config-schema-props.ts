@@ -42,11 +42,11 @@ export const serviceOdata = z.object({
     servicePath: z
         .string()
         .describe(
-            'The odata endpoint. Required for all floorplans except FF_SIMPLE. If the parameter is not provided, the agent should ask the user for it.'
-        )
-        .meta({
-            examples: ['/sap/opu/odata/sap/<servicename>/', '/<servicename>/']
-        }),
+            '🚨 DO NOT CONSTRUCT - This is provided by download_odata_service_metadata tool! ' +
+                'The odata endpoint path returned from the metadata download tool. ' +
+                'NEVER construct this yourself - always get it from download_odata_service_metadata output. ' +
+                'Required for all floorplans except FF_SIMPLE.'
+        ),
     host: z
         .url()
         .describe(

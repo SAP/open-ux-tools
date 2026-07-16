@@ -34,7 +34,7 @@ sap.ui.define([
                 <%_ }); -%>
             <%_ } -%>
             <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { _%>
-            Then.onThe<%- pageName %>Generated.onTable().iCheckColumns(<%- Object.keys(tableColumns).length %>, <%- JSON.stringify(tableColumns) %>);
+            Then.onThe<%- pageName %>Generated.onTable().iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
             <%_ } %>
             <%_ }); -%>
         });

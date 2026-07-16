@@ -73,6 +73,30 @@ describe('Prompts', () => {
         expect(questionnair).toMatchSnapshot();
     });
 
+    test('getPageBuildingBlockPrompts - templateType question hidden and defaulted to basic when UI5 version < 1.145.0', async () => {
+        mockGetMinimumUI5Version.mockReturnValueOnce('1.144.0');
+        const questionnair = await promptsAPI.getPrompts(PromptsType.Page);
+        const templateTypeQuestion = questionnair.questions.find((q) => q.name === 'buildingBlockData.templateType');
+        expect(templateTypeQuestion).toBeUndefined();
+        expect(questionnair.initialAnswers?.buildingBlockData?.templateType).toBe('basic');
+    });
+
+    test('getPageBuildingBlockPrompts - templateType question shown when UI5 version >= 1.145.0', async () => {
+        mockGetMinimumUI5Version.mockReturnValueOnce('1.145.0');
+        const questionnair = await promptsAPI.getPrompts(PromptsType.Page);
+        const templateTypeQuestion = questionnair.questions.find((q) => q.name === 'buildingBlockData.templateType');
+        expect(templateTypeQuestion).toBeDefined();
+        expect(questionnair.initialAnswers?.buildingBlockData?.templateType).toBeUndefined();
+    });
+
+    test('getPageBuildingBlockPrompts - templateType question shown when UI5 version is missing (treated as latest)', async () => {
+        mockGetMinimumUI5Version.mockReturnValueOnce(undefined as unknown as string);
+        const questionnair = await promptsAPI.getPrompts(PromptsType.Page);
+        const templateTypeQuestion = questionnair.questions.find((q) => q.name === 'buildingBlockData.templateType');
+        expect(templateTypeQuestion).toBeDefined();
+        expect(questionnair.initialAnswers?.buildingBlockData?.templateType).toBeUndefined();
+    });
+
     test('getRichTextEditorBuildingBlockPrompts', async () => {
         const questionnair = await promptsAPI.getPrompts(PromptsType.RichTextEditor);
         expect(questionnair).toMatchSnapshot();
