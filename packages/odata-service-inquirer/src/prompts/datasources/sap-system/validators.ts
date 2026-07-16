@@ -1,18 +1,7 @@
 import { t } from '../../../i18n.js';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import { readFileSync } from 'node:fs';
-import { getAllBackendSystems } from '../../../utils/store.js';
-
-/**
- * Check if the system name is already in use.
- *
- * @param systemName a system name to check
- * @returns true if the system name is already in use, otherwise false
- */
-async function isSystemNameInUse(systemName: string): Promise<boolean> {
-    const backendSystems = await getAllBackendSystems(false);
-    return !!backendSystems.find((system) => system.name === systemName);
-}
+import { isSystemNameTaken, type SystemNameValidationOptions } from '@sap-ux/inquirer-common';
 
 /**
  * Validates that the system name does not exist yet.
@@ -24,7 +13,9 @@ export async function validateSystemName(systemName: string): Promise<boolean | 
     if (!systemName) {
         return t('prompts.systemName.emptySystemNameWarning');
     }
-    const systemExists = await isSystemNameInUse(systemName);
+    const systemExists = await isSystemNameTaken(systemName, {
+        connectionTypes: ['abap_catalog', 'odata_service']
+    });
     if (systemExists) {
         return t('prompts.systemName.systemNameExistsWarning');
     } else {

@@ -4,6 +4,7 @@ import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
 import { replaceEnvVariables } from '@sap-ux/ui5-config';
 import { config as loadEnvConfig } from 'dotenv';
+import { isSystemNameTaken, type SystemNameValidationOptions } from '@sap-ux/inquirer-common';
 import { getLogger } from '../../tracing/index.js';
 import { promptForSystemIdentifier, promptForUpdateFields, promptForFieldUpdates } from '../utils/system-prompts.js';
 import { checkConnectionOrPrompt } from '../utils/system-connection.js';
@@ -112,12 +113,7 @@ async function updateSystem(params: {
                     return;
                 }
                 // Validate name uniqueness when updating via flag
-                const allSystems = await service.getAll();
-                const nameExists = allSystems.some(
-                    (system) =>
-                        system.name.toLowerCase() === params.name!.toLowerCase() &&
-                        !(system.url === existing.url && system.client === existing.client)
-                );
+                const nameExists = await isSystemNameTaken(params.name, { excludeSystem: existing });
                 if (nameExists) {
                     logger.error(
                         `A system with the name '${params.name}' already exists. Please choose a different name.`
