@@ -37,6 +37,7 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/cap-config-writer": "workspace:*",
         "@sap-ux/edmx-parser": "0.10.0",
+        "@sap-ux/fe-fpm-writer": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/fiori-elements-writer": "workspace:*",
         "@sap-ux/fiori-freestyle-writer": "workspace:*",

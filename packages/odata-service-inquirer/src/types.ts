@@ -9,6 +9,7 @@ import type { BackendSystem, BackendSystemFilter } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
 import type { serviceUrlInternalPromptNames } from './prompts/datasources/service-url/types.js';
 import type { EntityAnswer, NavigationEntityAnswer } from './prompts/edmx/entity-helper.js';
+import type { PageTemplateType } from '@sap-ux/fe-fpm-writer';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
@@ -182,6 +183,7 @@ export const EntityPromptNames = {
     navigationEntity: 'navigationEntity',
     filterEntitySet: 'filterEntitySet',
     addPageBuildingBlock: 'addPageBuildingBlock',
+    pageBuildingBlockLayout: 'pageBuildingBlockLayout',
     pageBuildingBlockTitle: 'pageBuildingBlockTitle',
     tableType: 'tableType',
     hierarchyQualifier: 'hierarchyQualifier',
@@ -205,9 +207,9 @@ export interface EntitySelectionAnswers {
  * Answers related to the Page Building Block prompt.
  */
 export interface PageBuildingBlockAnswers {
-    /** Indicates if a Page Building Block should be addedn*/
     [EntityPromptNames.addPageBuildingBlock]?: boolean;
-    /** The title for the Page Building Block, required if addPageBuildingBlock is true */
+    /** The layout type for the page building block. This is only applicable if addPageBuildingBlock is true. */
+    [EntityPromptNames.pageBuildingBlockLayout]?: PageTemplateType;
     [EntityPromptNames.pageBuildingBlockTitle]?: string;
 }
 

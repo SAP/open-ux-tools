@@ -14,7 +14,7 @@ import 'jest-extended';
 import { join } from 'node:path';
 import type { Adapter } from 'yeoman-environment';
 import { type Service, FloorplanFE } from '../../../src/types/index.js';
-import { minUi5VersionForPageBuildingBlock } from '../../../src/types/constants.js';
+import { MIN_UI5_VERSION_PAGE_BUILDING_BLOCK } from '@sap-ux/fe-fpm-writer';
 
 // Pre-import actuals
 const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
@@ -369,7 +369,7 @@ describe('prompting.ts', () => {
                     default: 'sap.com'
                 }
             });
-            expect(promptOptions.ui5Version?.minUI5Version).toBe(minUi5VersionForPageBuildingBlock);
+            expect(promptOptions.ui5Version?.minUI5Version).toBe(MIN_UI5_VERSION_PAGE_BUILDING_BLOCK);
         });
 
         test('createUI5ApplicationPromptOptions - extension minUI5Version takes precendence when provided with page building block', async () => {
