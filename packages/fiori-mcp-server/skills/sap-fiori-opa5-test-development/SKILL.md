@@ -56,6 +56,29 @@ Once the version is confirmed, read the corresponding reference file and follow 
 
 ---
 
+## General Anti-Patterns (V4 and V2)
+
+These apply regardless of OData version or test library.
+
+**Every `opaTest` must have at least one `Then` assertion.** A test with only `Given`/`When` steps reports 0 assertions and fails silently.
+
+**OPA5 state carries over between `opaTest` blocks within a journey.** Tests run sequentially and share the same browser session - do not assume the app is in a clean state at the start of each `opaTest`. Always navigate and assert explicitly rather than relying on state left by the previous test block.
+
+**The `pages` map key in JourneyRunner (V4) or `Opa5.createPageObjects` (V2) must exactly match the accessor name used in journeys.** A mismatch causes a silent runtime error - the page object is simply undefined when the journey tries to call it.
+
+```javascript
+// ❌ Wrong - key is "onTheList" but journey calls "onTheListReport"
+pages: { onTheList: ListReportPage }
+// journey: When.onTheListReport.onTable()... → undefined
+
+// ✅ Fixed - key matches accessor name exactly
+pages: { onTheListReport: ListReportPage }
+```
+
+**Keep journeys focused - split at around 10 `opaTest` blocks.** Large journey files are slow to debug and hard to maintain. One journey file per feature or user flow is a good rule of thumb. Do not add tests for standard Fiori Elements behavior already covered by the test library itself.
+
+---
+
 ## Reference Files
 
 | File | When to read |

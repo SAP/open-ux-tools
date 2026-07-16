@@ -2,6 +2,8 @@
 
 Custom selectors are a last resort. Always try the standard `sap.fe.test` API first (`onFilterBar()`, `onTable()`, `onHeader()`, `onForm()`, `onFooter()`, `onDialog()`). Only write a custom selector when the standard API genuinely cannot cover the scenario.
 
+> **TypeScript note:** All examples below use `sap.ui.define` (JavaScript). The same patterns apply in TypeScript - replace `sap.ui.define([...], function(...) {})` with ES module imports, e.g. `import OpaBuilder from "sap/ui/test/OpaBuilder"` and `import Press from "sap/ui/test/actions/Press"`. The selector logic itself is identical.
+
 ---
 
 ## OpaBuilder vs Raw `waitFor`

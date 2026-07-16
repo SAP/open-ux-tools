@@ -174,7 +174,7 @@ does this for you internally.
 
 | Method | Parameters | Description |
 |---|---|---|
-| `iSetTheObjectPageDataField(sSection, sFieldGroup, sField, sValue)` | section title, field group title, field name, value | Set a SmartField inside a specific FieldGroup. Requires edit mode. |
+| `iSetTheObjectPageDataField(sFieldGroup, sFieldName, sValue, sFieldGroupID)` | `sFieldGroup` (string) - FieldGroup name from facet annotation target; `sFieldName` (string) - field name from metadata; `sValue` (string) - new value; `sFieldGroupID` (optional string) - unique FieldGroup ID, overrides `sFieldGroup` if provided | Set a SmartField inside a specific FieldGroup. Requires edit mode. |
 | `iSetTheInputFieldWithId(sId, sValue)` | short id, value string | Enter text into an editable input field by id. |
 
 #### Navigation
@@ -208,7 +208,7 @@ does this for you internally.
 
 | Method | Parameters | Description |
 |---|---|---|
-| `iSelectSectionOrSubSectionByName(sSectionName)` | section title string | Scroll to and select a section/subsection by its i18n title. |
+| `iSelectSectionOrSubSectionByName(sSectionText, sSubSectionText, iNthOP)` | `sSectionText` (string), optional `sSubSectionText` (string), optional `iNthOP` (1-based int, FCL only) | Select a section by title. Pass `sSubSectionText` to select a sub-section within it. Pass `iNthOP` when in FCL to target the Nth ObjectPage (e.g. `2` for the second OP). |
 | `iSelectSectionOrSubSectionByIndex(iIndex, sEntitySet)` | 0-based index, optional entitySet | Select section by position. |
 | `iClickOnSegmentedButton(sKey)` | manifest variant key | Switch view via segmented button on OP. |
 | `iClickTheShowDetailsButtonOnTheTableToolBar(sTableId, sEntitySet)` | short table id, optional entitySet | Click Show Details button on a sub-table toolbar. |
@@ -283,6 +283,105 @@ onTheGenericObjectPage.theFCLHasLayout("TwoColumnsMidExpanded");
 
 ---
 
+## Analytical List Page page object - `onTheGenericAnalyticalListPage`
+
+For ALP floorplans, load the dedicated page object module:
+
+```javascript
+sap.ui.define([
+  "sap/suite/ui/generic/template/integration/testLibrary/AnalyticalListPage/pages/AnalyticalListPage"
+], function() { "use strict"; });
+```
+
+This registers `onTheGenericAnalyticalListPage` globally on the OPA5 runtime.
+
+### Actions
+
+#### Filter and search
+
+| Method | Parameters | Description |
+|---|---|---|
+| `iExecuteTheSearch()` | - | Press the Go button on the Smart Filter Bar. |
+| `iSetTheFilter(oItem)` | `oItem.Field` (string), `oItem.Value` (string or number) | Set a Smart Filter Bar field by metadata property name. Handles MultiInput, ComboBox, DynamicDateRange, Input. |
+
+#### Visual Filter
+
+| Method | Parameters | Description |
+|---|---|---|
+| `iSelectVFChart(sChartType, value, bSearchOpenDialogs, sFieldName)` | `sChartType`: `"Bar"`, `"Line"`, or `"Donut"`; `value`: value to select; `bSearchOpenDialogs` (bool): search within open dialog if true; `sFieldName` (optional): OData property/dimension to disambiguate when multiple VF charts of same type are shown | Select a value in a Visual Filter chart. |
+| `iDeselectVFChart(sChartType, value, bSearchOpenDialogs, sFieldName)` | same as above | Deselect a value in a Visual Filter chart. |
+
+#### Navigation and selection
+
+| Method | Parameters | Description |
+|---|---|---|
+| `iNavigateFromListItemByLineNo(iIndex)` | `iIndex` (0-based int) | Click a table row by index to navigate to the Object Page. |
+| `iSelectListItemsByLineNo(aItemIndex, bSelect, sTabKey)` | int array, bool (default true), optional tab key | Select/deselect rows by index. Pass `sTabKey` when using TableTabs or MultipleViews. |
+| `iClickOnIconTabFilter(sKey)` | manifest variant key | Switch tab in Icon Tab Bar (`quickVariantSelectionX.variants`). |
+| `iClickOnFilterSwitchButton(sKey)` | manifest variant key | Switch view via segmented button (`defaultContentView`). |
+
+#### Buttons and links
+
+| Method | Parameters | Description |
+|---|---|---|
+| `iClickTheButtonWithId(sId)` | short id (part after `--`) | Click a button by its short DOM id. |
+| `iClickTheButtonWithIcon(sIcon)` | SAP icon URI | Click a button by its icon. |
+| `iClickTheButtonHavingLabel(sLabelText)` | label string | Click a button by visible label text. |
+| `iClickTheButtonOnTheDialogWithLabel(sText)` | label string | Click a dialog button by label. |
+| `iClickTheOverflowToolbarButton(sButtonName)` | button text | Click an OverflowToolbarButton by text. |
+| `iClickTheLink(sText, index)` | link text, optional 1-based index | Click a link by its text. |
+| `iClickTheBackButtonOnFLP()` | - | Click the FLP Shell back button. |
+| `iClickOnItemFromTheShellNavigationMenu(sText)` | item title | Open Shell nav menu and click item. |
+| `iChoosetheItemInComboBox(sItem, sLabel)` | item text, optional label | Select from a ComboBox. |
+
+### Assertions
+
+| Method | Parameters | Description |
+|---|---|---|
+| `theTableIsVisible()` | - | Assert the SmartTable is rendered. |
+| `checkButtonEnablement(sId, bEnabled)` | short id, bool | Assert a button is enabled or disabled by its short id. |
+| `iShouldSeeTheDialogWithTitle(sTitle)` | title string | Assert a dialog is open with the given title. |
+| `iShouldSeeTheDialogWithContent(sContent)` | content string | Assert a dialog shows specific message text. |
+| `iShouldSeeTheButtonWithLabel(sLabel)` | label | Assert a button is visible by label. |
+| `iShouldSeeTheButtonWithId(sId)` | short id | Assert a button is visible by short id. |
+| `iShouldSeeTheButtonWithIcon(sIcon)` | icon URI | Assert a button with the given icon is visible. |
+| `iShouldNotSeeTheButtonWithIdInToolbar(sToolBarId, sButtonId)` | short toolbar id, short button id | Assert a button is NOT in a toolbar. |
+| `theCountInTheIconTabBarHasTheCorrectValue(iTabIndex, iItems)` | 1-based tab index, expected count | Assert the item count shown in an Icon Tab Bar tab. |
+| `iShouldSeeTheMessageToastWithText(sExpectedText)` | text | Assert message toast is displayed with the given text. |
+| `iSeeShellHeaderWithTitle(sTitle)` | title string | Assert the Shell header app title. |
+
+---
+
+## FCL page object - `onTheGenericFCLApp`
+
+For apps using Flexible Column Layout, load the dedicated FCL page object module:
+
+```javascript
+sap.ui.define([
+  "sap/suite/ui/generic/template/integration/testLibrary/FCL/pages/FCL"
+], function() { "use strict"; });
+```
+
+This registers `onTheGenericFCLApp` globally on the OPA5 runtime.
+
+### Actions
+
+| Method | Parameters | Description |
+|---|---|---|
+| `iSetTheFCLLayout(sLayout)` | `sLayout` (string) | Programmatically set the FCL layout by calling `setLayout()` on the `FlexibleColumnLayout` control. |
+| `iClickTheFCLActionButton(sButtonId)` | `"fullScreen"`, `"exitFullScreen"`, or `"closeColumn"` | Click one of the three standard FCL column action buttons. Asserts the button is both visible and enabled before pressing. |
+
+### Assertions
+
+| Method | Parameters | Description |
+|---|---|---|
+| `iCheckFCLLayout(sLayout)` | `sLayout` (string) | Assert the current FCL layout matches the given value. |
+| `iCheckFCLActionButtonsVisibility(bVisible, sEntitySet)` | `bVisible` (bool), optional `sEntitySet` for sub-ObjectPage | If `true`: assert at least one FCL action button is visible. If `false`: assert all FCL action buttons are hidden. |
+| `iCheckFCLHeaderActionButtonsVisibility(oButton, sEntitySet)` | `oButton` object mapping button ids to expected visibility bools, optional `sEntitySet` | Assert visibility of individual FCL header action buttons. Example: `{fullScreen: true, exitFullScreen: false, closeColumn: false}` |
+| `iCheckForFCLLayoutAppStateInUrl(sValue)` | optional `sValue` (string) | Assert that `FCLLayout=<sValue>` is present in the app URL. If `sValue` is omitted, asserts that no `FCLLayout` parameter is in the URL. |
+
+---
+
 ## Complete example
 
 ```javascript
@@ -304,7 +403,7 @@ opaTest("Create an item and verify it on the Object Page", function(Given, When,
 
   When.onTheGenericObjectPage
     .iClickTheEditButton()
-    .and.iSetTheObjectPageDataField("GeneralSection", "MainGroup", "Description", "Updated")
+    .and.iSetTheObjectPageDataField("MainGroup", "Description", "Updated")
     .and.iSaveTheDraft();
 
   Then.onTheGenericObjectPage

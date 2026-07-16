@@ -147,6 +147,7 @@ In both cases, no changes to `JourneyRunner.js` or page object files are needed 
 | `pages` | object | Map of accessor name (e.g., `onTheList`) to page object instance |
 | `async` | boolean | Set to `true` for async OPA execution (required for OData V4) |
 | `opaConfig` | object | OPA5 configuration passed to the test runner - use instead of `Opa5.extendConfig`. Recommended: `{ autoWait: true }` |
+| `launchParameters` | object | Optional. URL query parameters appended to the launch URL. Common keys: `serverDelay` (int, ms - slow down mock server responses), `responderOn` (bool - toggle mock server), `demoApp` (string - select demo app in multi-app sandboxes), `"sap-ui-language"` (string - set UI language). Example: `{ serverDelay: 0, responderOn: true, "sap-ui-language": "EN" }` |
 
 For full API documentation: `https://sapui5.hana.ondemand.com/#/api/sap.fe.test.JourneyRunner`
 
