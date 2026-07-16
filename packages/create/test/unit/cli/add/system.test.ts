@@ -324,7 +324,16 @@ describe('system/add', () => {
 
         // When - test with valid 3-digit client
         await command.parseAsync(
-            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--client', '100', '--skip-check'])
+            getArgv([
+                'system',
+                '--name',
+                'My System',
+                '--url',
+                'https://example.com',
+                '--client',
+                '100',
+                '--skip-check'
+            ])
         );
 
         // Then
