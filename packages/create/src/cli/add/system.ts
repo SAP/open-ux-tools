@@ -11,7 +11,7 @@ import {
 import { replaceEnvVariables } from '@sap-ux/ui5-config';
 import { config as loadEnvConfig } from 'dotenv';
 import { validateClient } from '@sap-ux/project-input-validator';
-import { isSystemNameTaken } from '@sap-ux/inquirer-common';
+import { systemNameExists } from '@sap-ux/inquirer-common';
 import { getLogger } from '../../tracing/index.js';
 import { promptForSystemConfig } from '../utils/system-prompts.js';
 import { checkConnectionOrPrompt } from '../utils/system-connection.js';
@@ -166,7 +166,7 @@ async function checkForDuplicates(
         return false;
     }
 
-    const nameExists = await isSystemNameTaken(config.name);
+    const nameExists = await systemNameExists(config.name);
     if (nameExists) {
         logger.error(`A system with the name '${config.name}' already exists. Please choose a different name.`);
         return false;

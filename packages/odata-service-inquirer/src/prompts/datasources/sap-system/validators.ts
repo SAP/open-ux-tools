@@ -1,7 +1,7 @@
 import { t } from '../../../i18n.js';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import { readFileSync } from 'node:fs';
-import { isSystemNameTaken } from '@sap-ux/inquirer-common';
+import { systemNameExists } from '@sap-ux/inquirer-common';
 
 /**
  * Validates that the system name does not exist yet.
@@ -13,9 +13,7 @@ export async function validateSystemName(systemName: string): Promise<boolean | 
     if (!systemName) {
         return t('prompts.systemName.emptySystemNameWarning');
     }
-    const systemExists = await isSystemNameTaken(systemName, {
-        connectionTypes: ['abap_catalog', 'odata_service']
-    });
+    const systemExists = await systemNameExists(systemName);
     if (systemExists) {
         return t('prompts.systemName.systemNameExistsWarning');
     } else {
