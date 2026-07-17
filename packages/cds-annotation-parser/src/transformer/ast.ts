@@ -68,6 +68,7 @@ import type {
     MultiLineStringStripIndentChildren,
     ExpressionChildren
 } from '../parser/parser.js';
+import type { CdsVocabulary } from '@sap-ux/odata-vocabularies';
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
 import { FlattenedPathConverter } from './flattened-path-converter.js';
 import { tokenMap } from '../parser/tokens.js';
@@ -142,6 +143,7 @@ interface BaseParams {
 
 interface GroupParams extends BaseParams {
     groupName: string;
+    groupAssignmentPath: Path;
 }
 
 /**
@@ -315,7 +317,11 @@ class CstToAstVisitor extends Visitor {
     ): AnnotationGroup {
         const items = (assignment.children.value?.[0].children.struct?.[0].children.assignment ?? []).map(
             (childAssignment, index, childAssignments) => {
-                const annotation = this.visit(childAssignment, { groupName: path.value, location }) as Annotation;
+                const annotation = this.visit(childAssignment, {
+                    groupName: path.value,
+                    location,
+                    groupAssignmentPath: path
+                }) as Annotation;
                 // check for specific situation where current child has no value and separating comma to next child is missing
                 // then: current child value is represented by a path and next child path is empty
                 const nextChildAssignment = index < childAssignments.length - 1 ? childAssignments[index + 1] : null;
@@ -338,9 +344,14 @@ class CstToAstVisitor extends Visitor {
             }
         );
         const commas: Token[] = this.getCommaToken(assignment.children.value?.[0].children?.struct?.[0].children.Comma);
+
+        const name = path.segments[0];
+        if (vocabularyService.cdsVocabulary.groupNames.has(name.value)) {
+            name.value = vocabularyService.cdsVocabulary.alias;
+        }
         const ast: AnnotationGroup = {
             type: ANNOTATION_GROUP_TYPE,
-            name: path.segments[0],
+            name,
             items: {
                 type: ANNOTATION_GROUP_ITEMS_TYPE,
                 items,
@@ -365,6 +376,7 @@ class CstToAstVisitor extends Visitor {
                 ast.items.closeToken = this.createToken(struct.children.RCurly[0]);
             }
         }
+
         return ast;
     }
 
@@ -403,7 +415,8 @@ class CstToAstVisitor extends Visitor {
                 assignment.children,
                 location,
                 path,
-                minFlattenedSegmentCount
+                minFlattenedSegmentCount,
+                vocabularyService
             );
             const value = hasItems(assignment.children.value)
                 ? (this.visit(assignment.children.value[0]) as AnnotationValue)
@@ -413,7 +426,7 @@ class CstToAstVisitor extends Visitor {
                 flattenedExpression.value = value;
                 return flattenedExpression;
             }
-            console.log('bbad');
+
             const ast: Annotation = {
                 type: ANNOTATION_TYPE,
                 term: path,
@@ -427,9 +440,9 @@ class CstToAstVisitor extends Visitor {
             if (value) {
                 ast.value = value;
             }
+            adjustCdsTermNames(ast, vocabularyService.cdsVocabulary);
             return ast;
         } else if (path.segments.length === 1 && pathIsVocabularyGroup) {
-            console.log('bbb');
             return this.toTopLevelAnnotationPathGroup(path, assignment, location);
         }
 
@@ -443,31 +456,89 @@ class CstToAstVisitor extends Visitor {
      * @param location  CstNodeLocation
      * @param path Path node to convert
      * @param minFlattenedSegmentCount Minimum number of segments for the path to be considered flattened
+     * @param vocabularyService Vocabulary service instance
+     * @param groupName Name of an annotation group
      * @returns FlattenedExpression node or undefined if the path does not meet the criteria
      */
     private flattenedExpression(
         assignmentChildren: AssignmentChildren,
         location: CstNodeLocation,
         path: Path,
-        minFlattenedSegmentCount: number
-    ): FlattenedExpression | undefined {
-        if (path.segments.length >= minFlattenedSegmentCount) {
-            const lastSegmentQualifier = this.getQualifier(assignmentChildren);
-            const flattenedPath = flattenedPathConverter.convert(true, path, lastSegmentQualifier);
-            const ast: FlattenedExpression = {
-                type: FLATTENED_EXPRESSION_TYPE,
-                path: flattenedPath,
+        minFlattenedSegmentCount: number,
+        vocabularyService: VocabularyService,
+        groupName?: string
+    ): Annotation | FlattenedExpression | undefined {
+        if (path.segments.length < minFlattenedSegmentCount) {
+            return undefined;
+        }
+        const lastSegmentQualifier = this.getQualifier(assignmentChildren);
+        const vocabularyName = groupName ?? path.segments[0].value;
+        if (vocabularyService.cdsVocabulary.nameMap && vocabularyService.cdsVocabulary.groupNames.has(vocabularyName)) {
+            const cdsTerm = path.segments.map((segment) => segment.value).join('.');
+            const fullName = (groupName ? groupName + '.' : '') + cdsTerm;
+            const ast: Annotation = {
+                type: ANNOTATION_TYPE,
+                qualifier: lastSegmentQualifier,
+                term: {
+                    segments: path.segments,
+                    separators: path.separators,
+                    type: PATH_TYPE,
+                    value: fullName,
+                    range: path.range
+                },
+                originalTerm: {
+                    segments: path.segments,
+                    separators: path.separators,
+                    type: PATH_TYPE,
+                    value: cdsTerm,
+                    range: path.range
+                },
                 range: this.locationToRange(location)
             };
-            ast.colon = this.getColon(assignmentChildren);
-
+            let fullNameConverted = vocabularyService.cdsVocabulary.nameMap.get(fullName);
+            if (!fullNameConverted) {
+                // some terms may not exist in the map (like cds.odata.bindingparameter.name)
+                const adaptedSegments = path.segments.map(
+                    (segment) => segment.value.slice(0, 1).toUpperCase() + segment.value.slice(1)
+                );
+                fullNameConverted = vocabularyService.cdsVocabulary.alias + '.' + adaptedSegments.join('');
+            }
+            if (groupName) {
+                fullNameConverted = fullNameConverted.slice(vocabularyService.cdsVocabulary.alias.length + 1);
+            }
+            const segmentValues = fullNameConverted.split('.');
+            const segments: Identifier[] = segmentValues.map((value) => ({ type: IDENTIFIER_TYPE, value }));
+            const separators: Separator[] = [];
+            for (let index = 0; index < segments.length - 1; index++) {
+                separators.push({ type: SEPARATOR_TYPE, escaped: false, value: '.' });
+            }
+            ast.term = {
+                segments,
+                separators,
+                type: PATH_TYPE,
+                value: fullNameConverted,
+                range: path.range
+            };
             if (hasItems(assignmentChildren.value)) {
                 ast.value = this.visit(assignmentChildren.value[0]) as AnnotationValue;
             }
-
+            ast.colon = this.getColon(assignmentChildren);
             return ast;
         }
-        return undefined;
+
+        const flattenedPath = flattenedPathConverter.convert(true, path, lastSegmentQualifier);
+        const ast: FlattenedExpression = {
+            type: FLATTENED_EXPRESSION_TYPE,
+            path: flattenedPath,
+            range: this.locationToRange(location)
+        };
+        ast.colon = this.getColon(assignmentChildren);
+
+        if (hasItems(assignmentChildren.value)) {
+            ast.value = this.visit(assignmentChildren.value[0]) as AnnotationValue;
+        }
+
+        return ast;
     }
 
     /**
@@ -1408,7 +1479,15 @@ class CstToAstVisitor extends Visitor {
         const minFlattenedSegmentCount = groupName ? 2 : 3;
         const range = this.locationToRange(location);
         const path = this.getAssignmentKey(context, range);
-        const flattenedExpression = this.flattenedExpression(context, location, path, minFlattenedSegmentCount);
+
+        const flattenedExpression = this.flattenedExpression(
+            context,
+            location,
+            path,
+            minFlattenedSegmentCount,
+            vocabularyService,
+            groupName
+        );
         if (flattenedExpression) {
             if (hasItems(context.value) && !hasNaNOrUndefined(context.value[0]?.location?.startOffset)) {
                 flattenedExpression.value = this.visit(context.value[0]) as AnnotationValue;
@@ -1420,7 +1499,7 @@ class CstToAstVisitor extends Visitor {
 
         const ast: Annotation = {
             type: ANNOTATION_TYPE,
-            term: this.getAssignmentKey(context, range),
+            term: this.getAssignmentKey(context, range), //path,
             range
         };
 
@@ -1434,6 +1513,7 @@ class CstToAstVisitor extends Visitor {
         } else if (hasItems(context.Colon)) {
             this.recoverFromMissingValue(context.Colon[0], ast);
         }
+        adjustCdsTermNames(ast, vocabularyService.cdsVocabulary, groupName);
         return ast;
     }
 
@@ -1504,3 +1584,58 @@ export const buildAst = (cst: CstNode, tokenVector: IToken[], startPosition?: Po
 
     return undefined;
 };
+
+/**
+ * Adapts the segments of an array of Identifiers based on a new name.
+ *
+ * @param segments - The array of Identifier segments to adapt.
+ * @param newName - The new name to use for adaptation.
+ * If undefined, the segments will be cleared.
+ */
+function adaptSegments(segments: Identifier[], newName: string | undefined): void {
+    const newSegments = newName ? newName.split('.') : [];
+    newSegments.forEach((internalSegment, index) => {
+        if (segments[index]) {
+            segments[index].value = internalSegment;
+        }
+    });
+    // TODO adapt ranges ?
+    if (newSegments.length > segments.length) {
+        newSegments.slice(segments.length).forEach((newSegment) => {
+            segments.push({ type: 'identifier', value: newSegment });
+        });
+    } else if (newSegments.length < segments.length) {
+        segments.splice(newSegments.length, segments.length - newSegments.length);
+    }
+}
+
+/**
+ * Converts cds specific term names into internal representation suitable for generic file format.
+ *
+ * @param assignment - annotation assignment
+ * @param cdsVocabulary - cds vocabulary instance
+ * @param groupName - annotation group name
+ */
+function adjustCdsTermNames(assignment: Annotation, cdsVocabulary: CdsVocabulary, groupName?: string): void {
+    if (cdsVocabulary.nameMap.has(assignment.term.value)) {
+        const internalTermName = cdsVocabulary.nameMap.get(assignment.term.value);
+        assignment.term.value = internalTermName ?? '';
+        adaptSegments(assignment.term.segments, internalTermName);
+    } else if (
+        (assignment.term.segments.length > 2 && cdsVocabulary.groupNames.has(assignment.term.segments[0].value)) ||
+        cdsVocabulary.groupNames.has(groupName ?? '')
+    ) {
+        // value help e.g. for @cds.persistence.ex| - avoid flattening logic later on by replacing this with truncated CDS term
+        // (use name convention for building internal cds term names i.e. cds.persistence.exists => CDS.CdsPersistenceExists)
+        const allSegments = [...assignment.term.segments];
+        if (groupName) {
+            allSegments.unshift({ type: IDENTIFIER_TYPE, value: groupName });
+        }
+        const adaptedSegments = allSegments.map(
+            (segment) => segment.value.slice(0, 1).toUpperCase() + segment.value.slice(1)
+        );
+        const internalTermName = (groupName ? '' : cdsVocabulary.alias + '.') + adaptedSegments.join('');
+        assignment.term.value = internalTermName;
+        adaptSegments(assignment.term.segments, internalTermName);
+    }
+}

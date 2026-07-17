@@ -36,7 +36,8 @@ export function convertAnnotation(assignment: Assignment, options: ToTermsOption
 
     if (assignment.type === 'annotation-group') {
         state.pushContext({
-            groupName: assignment.name.value
+            groupName: assignment.name.value,
+            groupNameRange: assignment.name.range
         });
     }
     const nodes =

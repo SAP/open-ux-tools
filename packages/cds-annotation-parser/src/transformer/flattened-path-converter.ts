@@ -118,7 +118,7 @@ export class FlattenedPathConverter {
      */
     private convertIdentifier(identifier: Identifier): void {
         const isFirstSegment = this.index === 0;
-        const isVocabulary = this.supportedVocabularyAliases.has(identifier.value.replace('@', ''));
+        const isVocabulary = this.supportedVocabularyAliases.has(identifier.value.replace('@', '')) || identifier.value === '@';
 
         const range = structuredClone(identifier.range); // this needs to be called before `convertVocabulary`, because it may consume another token
         const [vocabulary, prefix, current] = isVocabulary
@@ -208,6 +208,13 @@ export class FlattenedPathConverter {
         }
         if (next?.type === IDENTIFIER_TYPE) {
             current = next;
+        }
+        if (next === undefined) {
+            current = {
+                type: 'identifier',
+                value: '',
+                range: current.range ? { start: current.range.end, end: current.range.end } : undefined
+            };
         }
         return [vocabulary, prefix, current];
     }

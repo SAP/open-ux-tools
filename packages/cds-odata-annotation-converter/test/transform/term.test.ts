@@ -240,6 +240,35 @@ describe('ast to generic format', () => {
                 });
             });
         });
+        test('diagnostic when first flattened segment has vocabulary inside group', async () => {
+            await initI18n();
+            // UI is the group name (line 0); UI.Chart inside the group specifies a vocabulary on the first segment
+            const ast = parse(`UI : {\n    UI.Chart : #Column\n}`);
+            const { diagnostics } = toTerms(ast as Assignment, { vocabularyService });
+            expect(diagnostics).toHaveLength(1);
+            expect(diagnostics[0].message).toStrictEqual(
+                'Vocabulary `UI` is already specified in annotation group (line 1).'
+            );
+            expect(diagnostics[0].range).toEqual(Range.create(1, 4, 1, 6));
+        });
+        test('diagnostic also fires when first segment vocabulary differs from group name', async () => {
+            await initI18n();
+            // Common ≠ UI group name — any vocabulary on the first segment triggers the warning
+            const ast = parse(`UI : {\n    Common.Text : 'hello'\n}`);
+            const { diagnostics } = toTerms(ast as Assignment, { vocabularyService });
+            expect(diagnostics).toHaveLength(1);
+            expect(diagnostics[0].message).toStrictEqual(
+                'Vocabulary `UI` is already specified in annotation group (line 1).'
+            );
+            expect(diagnostics[0].range).toEqual(Range.create(1, 4, 1, 10));
+        });
+        test('no diagnostic for embedded annotation segment with vocabulary inside group', async () => {
+            await initI18n();
+            // Text (no vocabulary) is the first segment — @UI.TextArrangement is embedded (i > 0), exempt
+            const ast = parse(`UI : {\n    Text.@UI.TextArrangement : #TextFirst\n}`);
+            const { diagnostics } = toTerms(ast as Assignment, { vocabularyService });
+            expect(diagnostics).toHaveLength(0);
+        });
     });
     describe('flatten embedded annotation - Common.Text', () => {
         testConversion('flatten-embedded-annotation');

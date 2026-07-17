@@ -60,13 +60,13 @@ class PositionVisitor {
         this.createNodeHandler(ANNOTATION_GROUP_TYPE, ['name', 'items'], []);
         this.createNodeHandler(ANNOTATION_GROUP_ITEMS_TYPE, [], ['items']);
         this.createNodeHandler(ANNOTATION_TYPE, ['term', 'value'], []);
-        this.createNodeHandler(RECORD_TYPE, [], ['properties', 'annotations']);
+        this.createNodeHandler(RECORD_TYPE, [], ['properties', 'annotations', 'flattenedExpressions']);
         this.createNodeHandler(RECORD_PROPERTY_TYPE, ['name', 'value'], []);
         this.createNodeHandler(COLLECTION_TYPE, [], ['items']);
         this.createNodeHandler(CORRECT_EXPRESSION_TYPE, [], ['operators', 'operands']);
         this.createNodeHandler(INCORRECT_EXPRESSION_TYPE, [], ['operators', 'operands']);
         this.createNodeHandler(UNSUPPORTED_OPERATOR_EXPRESSION_TYPE, [], ['operators', 'operands']);
-        this.createNodeHandler(FLATTENED_EXPRESSION_TYPE, [], ['value']);
+        this.createNodeHandler(FLATTENED_EXPRESSION_TYPE, ['value'], ['value']);
     }
 
     /**
@@ -110,6 +110,9 @@ class PositionVisitor {
             segment = ''
         ): VisitorReturnValue => {
             for (const propertyName of scalarProperties) {
+                if (!(node as unknown as { [key: string]: AnnotationNode })[propertyName]) {
+                    continue;
+                }
                 const children = this.visit(
                     (node as unknown as { [key: string]: AnnotationNode })[propertyName],
                     options,

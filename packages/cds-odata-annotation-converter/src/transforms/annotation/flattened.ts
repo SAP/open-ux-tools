@@ -4,7 +4,9 @@ import type {
     Annotation,
     FlattenedPathSegment,
     FlattenedPropertySegment,
-    FlattenedExpression
+    FlattenedExpression,
+    AnnotationNode,
+    FlattenedAnnotationSegment
 } from '@sap-ux/cds-annotation-parser';
 import {
     FLATTENED_ANNOTATION_SEGMENT_TYPE,
@@ -220,10 +222,14 @@ function convertToExpandedStructure(
             // handle embedded annotation syntax (supported starting with cds-compiler v3)
             // e.g. @Common.Text.@UI.TextArrangement : #TextFirst
             const vocabulary = segment.vocabulary?.value ?? state.context.groupName;
-            if (!vocabulary) {
-                console.warn(`No vocabulary found for segment: ${segment.term.value}. This should not happen.`);
-                i++;
-                continue;
+            // if (!vocabulary) {
+            //     console.warn(`No vocabulary found for segment: ${segment.term.value}. This should not happen.`);
+            //     i++;
+            //     continue;
+            // }
+            if (i === 0 && segment.vocabulary?.value && state.context.groupName) {
+                // first segment specifies a vocabulary while inside an annotation group — warn once (embedded annotations at i > 0 are exempt)
+                addDiagnosticForGroupNameAndTermVocabulary(state, segment);
             }
             const termName = vocabulary ? `${vocabulary}.${segment.term.value}` : segment.term.value;
             const termValueRange = createRange(segment.range?.start, segment.term.range?.end);
@@ -248,7 +254,7 @@ function convertToExpandedStructure(
             expandedStructure.push({
                 kind: 'annotation',
                 name: termName,
-                vocabularyObject: getTerm(state.vocabularyService, vocabulary, segment.term.value),
+                vocabularyObject: getTerm(state.vocabularyService, vocabulary ?? '', segment.term.value),
                 element: embeddedAnnotation
             });
         } else if (segment.type === FLATTENED_PROPERTY_SEGMENT_TYPE) {
@@ -370,6 +376,26 @@ function addDiagnosticForNonStringLiteralType(
             range: segmentRange,
             severity: DiagnosticSeverity.Error,
             message: i18n.t('Value_must_be_provided')
+        });
+    }
+}
+/**
+ * Adds a diagnostic for term segments having vocabulary within annotation group.
+ *
+ * @param state VisitorSate for which context will be updated with the inferred value types.
+ * @param segment Flattened annotation segment.
+ */
+function addDiagnosticForGroupNameAndTermVocabulary(state: VisitorState, segment: FlattenedAnnotationSegment): void {
+    const message = i18n.t('Vocabulary_0_is_already_specified_in_line_1', {
+        vocabulary: state.context.groupName,
+        line: state.context.groupNameRange!.start.line + 1
+    });
+
+    if (segment.vocabulary?.range) {
+        state.addDiagnostic({
+            range: segment.vocabulary.range,
+            severity: DiagnosticSeverity.Error,
+            message
         });
     }
 }

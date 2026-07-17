@@ -2,7 +2,7 @@
     "type": "flattened-expression",
     "path": {
         "type": "flattened-path",
-        "value": "Common.Text#first.@UI.TextArrangement",
+        "value": "Common.Text#first.@UI.TextArrangement#second",
         "segments": [
             {
                 "type": "flattened-annotation-segment",
@@ -57,7 +57,7 @@
                 "escaped": false
             }
         ],
-        "range": "[(0,0)..(0,40)]"
+        "range": "[(0,0)..(0,48)]"
     },
     "range": "[(0,0)..(0,60)]",
     "colon": {

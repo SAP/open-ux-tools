@@ -200,6 +200,10 @@ export const ANNOTATION_TYPE = 'annotation';
 export interface Annotation extends Node {
     type: typeof ANNOTATION_TYPE;
     term: Path;
+    /**
+     * CDS original term name (as it is in the file)
+     */
+    originalTerm?: Path;
     qualifier?: Qualifier;
     value?: AnnotationValue;
     colon?: Token;
