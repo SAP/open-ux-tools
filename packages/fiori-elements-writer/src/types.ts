@@ -1,6 +1,7 @@
 import type { Ui5App, App, AppOptions } from '@sap-ux/ui5-application-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
+import type { PageTemplateType } from '@sap-ux/fe-fpm-writer';
 
 export const TemplateType = {
     Worklist: 'worklist',
@@ -107,6 +108,11 @@ export interface FPMSettings {
      * This value will be displayed as the title of the generated custom page.
      */
     pageBuildingBlockTitle?: string;
+    /**
+     * The template type for the page building block ('full' or 'basic').
+     * 'full' generates an enhanced layout with all aggregations; 'basic' generates a minimal layout with page title and description.
+     */
+    pageBuildingBlockTemplateType?: PageTemplateType;
     /**
      * Name of the custom page.
      */
