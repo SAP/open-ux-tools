@@ -231,12 +231,12 @@ export async function promptForSystemConfig(partial: {
     return {
         name: partial.name || answers.name,
         url: partial.url || answers.url,
-        client: partial.client !== undefined ? partial.client : answers.client || undefined,
+        client: partial.client ?? (answers.client || undefined),
         systemType: partial.systemType || answers.systemType,
         authenticationType: partial.authenticationType || answers.authenticationType,
         connectionType: partial.connectionType || answers.connectionType,
-        username: partial.username !== undefined ? partial.username : answers.username || undefined,
-        password: partial.password !== undefined ? partial.password : answers.password || undefined
+        username: partial.username ?? (answers.username || undefined),
+        password: partial.password ?? (answers.password || undefined)
     };
 }
 
@@ -276,7 +276,7 @@ export async function promptForSystemIdentifier(partial: { url?: string; client?
 
     return {
         url: partial.url || answers.url,
-        client: partial.client !== undefined ? partial.client : answers.client || undefined
+        client: partial.client ?? (answers.client || undefined)
     };
 }
 
