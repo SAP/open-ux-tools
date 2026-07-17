@@ -32,7 +32,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-devx/yeoman-ui-types": "1.25.0",
+        "@sap-devx/yeoman-ui-types": "1.25.1",
         "@sap-ux/abap-deploy-config-inquirer": "workspace:*",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
@@ -56,7 +56,7 @@
         "@types/yeoman-test": "4.0.6",
         "jest-extended": "7.0.0",
         "inquirer": "8.2.7",
-        "nock": "14.0.15",
+        "nock": "14.0.16",
         "rimraf": "6.1.3",
         "yeoman-test": "6.3.0"
     },

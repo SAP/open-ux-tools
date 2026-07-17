@@ -27,19 +27,19 @@
         "tgz:package": "pnpm pack"
     },
     "dependencies": {
-        "@typescript-eslint/eslint-plugin": "8.61.1",
-        "@typescript-eslint/parser": "8.61.1"
+        "@typescript-eslint/eslint-plugin": "8.64.0",
+        "@typescript-eslint/parser": "8.64.0"
     },
     "devDependencies": {
         "@babel/core": "8.0.0-rc.6",
-        "@babel/eslint-parser": "8.0.0-rc.6",
-        "@babel/parser": "8.0.0-rc.6",
+        "@babel/eslint-parser": "8.0.1",
+        "@babel/parser": "8.0.4",
         "@eslint/js": "10.0.1",
         "@eslint/json": "0.14.0",
         "@eslint/core": "1.1.1",
         "@eslint/config-helpers": "0.5.3",
         "@eslint/plugin-kit": "0.6.1",
-        "@humanwhocodes/momoa": "^3.3.9",
+        "@humanwhocodes/momoa": "3.3.10",
         "@jest/globals": "30.4.1",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/odata-annotation-core": "workspace:*",
@@ -47,7 +47,7 @@
         "@sap-ux/odata-entity-model": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/vocabularies-types": "0.15.0",
-        "@typescript-eslint/rule-tester": "8.61.1",
+        "@typescript-eslint/rule-tester": "8.64.0",
         "@types/semver": "7.7.1",
         "@xml-tools/ast": "5.0.5",
         "@xml-tools/parser": "1.0.11",
@@ -58,8 +58,8 @@
         "globals": "17.6.0",
         "lodash": "4.18.1",
         "requireindex": "^1.2.0",
-        "semver": "7.8.4",
-        "synckit": "0.11.12",
+        "semver": "7.8.5",
+        "synckit": "0.11.13",
         "yaml": "2.9.0"
     },
     "peerDependencies": {

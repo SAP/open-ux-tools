@@ -38,7 +38,7 @@
     "devDependencies": {
         "@jest/globals": "30.4.1",
         "inquirer": "8.2.7",
-        "@sap-devx/yeoman-ui-types": "1.25.0",
+        "@sap-devx/yeoman-ui-types": "1.25.1",
         "@types/inquirer": "8.2.6"
     },
     "engines": {

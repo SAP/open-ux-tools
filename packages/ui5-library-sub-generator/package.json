@@ -31,7 +31,7 @@
         "!generators/**/*.map"
     ],
     "dependencies": {
-        "@sap-devx/yeoman-ui-types": "1.25.0",
+        "@sap-devx/yeoman-ui-types": "1.25.1",
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/fiori-tools-settings": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",

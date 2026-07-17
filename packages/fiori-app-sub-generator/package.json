@@ -61,7 +61,7 @@
     },
     "devDependencies": {
         "@jest/globals": "30.4.1",
-        "@sap-devx/yeoman-ui-types": "1.25.0",
+        "@sap-devx/yeoman-ui-types": "1.25.1",
         "@sap-ux/deploy-config-sub-generator": "workspace:*",
         "@sap-ux/flp-config-sub-generator": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",

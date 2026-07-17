@@ -52,7 +52,7 @@
         "i18next": "25.10.10",
         "inquirer-autocomplete-prompt": "2.0.1",
         "os-name": "4.0.1",
-        "@sap-devx/yeoman-ui-types": "1.25.0"
+        "@sap-devx/yeoman-ui-types": "1.25.1"
     },
     "devDependencies": {
         "@jest/globals": "30.4.1",
