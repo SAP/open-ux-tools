@@ -5,7 +5,11 @@ import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
  * Options for checking system name uniqueness
  */
 export interface SystemNameValidationOptions {
-    /** Optional system to exclude from check (for updates) */
+    /**
+     * Optional system to exclude from check (for update operations).
+     * When updating a system, we need to allow it to keep its own name,
+     * so we exclude the current system from the uniqueness check.
+     */
     excludeSystem?: BackendSystem;
 }
 

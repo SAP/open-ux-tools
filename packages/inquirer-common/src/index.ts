@@ -8,4 +8,3 @@ export * from './telemetry/telemetry.js';
 export * from './prompts/credentials.js';
 export * from './metadata/index.js';
 export { addi18nResourceBundle } from './i18n.js';
-export { systemNameExists, type SystemNameValidationOptions } from './validators/system-name-validator.js';
