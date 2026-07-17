@@ -10,7 +10,6 @@ import {
 } from '@sap-ux/btp-utils';
 import { ToolsLogger, UI5ToolingTransport, type Logger } from '@sap-ux/logger';
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'node:http';
-import type { ServerOptions } from 'http-proxy';
 import type { Options, RequestHandler } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { HttpsProxyAgent } from 'https-proxy-agent';
@@ -41,7 +40,7 @@ export const ProxyEventHandlers = {
      * @param _res (not used)
      * @param _options (not used)
      */
-    proxyReq(proxyReq: ClientRequest, _req?: IncomingMessage, _res?: ServerResponse, _options?: ServerOptions): void {
+    proxyReq(proxyReq: ClientRequest, _req?: IncomingMessage, _res?: ServerResponse, _options?: Options): void {
         if (proxyReq.path?.includes('Fiorilaunchpad.html') && !proxyReq.headersSent) {
             proxyReq.setHeader('accept-encoding', '*');
         }
