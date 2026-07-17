@@ -189,6 +189,23 @@ describe('getXPathStringsForXmlFile', () => {
         fs = create(createStorage());
     });
 
+    it('does not throw and returns choices when DOMParser fires warning-level deprecation through errorHandler', () => {
+        // @xmldom/xmldom 0.9.x calls errorHandler('warning', ...) during DOMParser construction.
+        // The handler must not throw on warning level or all XML parsing would break.
+        const viewPath = '/test/Warning.view.xml';
+        fs.write(
+            viewPath,
+            `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:macros="sap.fe.macros">
+    <Page title="Main"><content /></Page>
+</mvc:View>`
+        );
+        let result: ReturnType<typeof getXPathStringsForXmlFile> | undefined;
+        expect(() => {
+            result = getXPathStringsForXmlFile(viewPath, fs);
+        }).not.toThrow();
+        expect(Object.keys(result!.inputChoices).length).toBeGreaterThan(0);
+    });
+
     it('synthesizes macros:items path when macros:Page exists but has no macros:items child', () => {
         const viewPath = '/test/Cp.view.xml';
         fs.write(

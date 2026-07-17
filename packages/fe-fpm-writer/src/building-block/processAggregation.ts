@@ -26,7 +26,7 @@ import { getTemplatePath } from '../templates.js';
 import { type IdGeneratorFunction, createIdGenerator } from '../common/file.js';
 import { getErrorMessage } from '../common/validate.js';
 import { i18nNamespaces, translate } from '../i18n.js';
-import { getOrAddNamespace } from './prompts/utils/xml.js';
+import { getOrAddNamespace, xmlParseErrorHandler } from './prompts/utils/xml.js';
 import { resolveAggregationPath } from './processor.js';
 
 /**
@@ -46,7 +46,10 @@ export function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor
     }
 
     const errorHandler = (level: string, message: string): never => {
-        throw new Error(`Unable to parse xml view file. Details: [${level}] - ${message}`);
+        if (level === 'error' || level === 'fatalError') {
+            throw new Error(`Unable to parse xml view file. Details: [${level}] - ${message}`);
+        }
+        return undefined as never;
     };
 
     let viewDocument: Document;
@@ -188,8 +191,10 @@ function buildPageAggregationFragment(
         .map((a) => `${a.name}="${a.value}"`)
         .join(' ');
     const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" xmlns="sap.m" xmlns:m="sap.m" ${extraNamespaces}>${aggContent}</root>`;
-    const errorHandler = (level: string, message: string): never => {
-        throw new Error(`Unable to parse page aggregation fragment '${aggName}'. Details: [${level}] - ${message}`);
+    const errorHandler = (level: string, message: string): void => {
+        if (level === 'error' || level === 'fatalError') {
+            throw new Error(`Unable to parse page aggregation fragment '${aggName}'. Details: [${level}] - ${message}`);
+        }
     };
     return new DOMParser({ errorHandler }).parseFromString(wrapped, 'text/xml');
 }
@@ -198,7 +203,7 @@ function buildPageAggregationFragment(
  *
  * @param {Editor} fs - the memfs editor instance
  * @param {Document} xmlDocument - the view XML document (used to resolve namespace prefixes)
- * @param {Document} templateDocument - the template document whose root element receives the children
+ * @param {Element} templateElement - the root element of the building block template that receives the children
  * @param {IdGeneratorFunction} generateId - function to generate unique IDs
  * @param {readonly PageAggregationName[]} [aggNames] - aggregation names to append; defaults to all PAGE_AGGREGATIONS
  * @param useDefaults - when true, the items aggregation renders its default IconTabBar content
@@ -206,15 +211,16 @@ function buildPageAggregationFragment(
 export function appendPageAggregations(
     fs: Editor,
     xmlDocument: Document,
-    templateDocument: Document,
+    templateElement: Element,
     generateId: IdGeneratorFunction,
     aggNames: readonly PageAggregationName[] = PAGE_AGGREGATIONS,
     useDefaults = true
 ): void {
     const fragMacrosNS = resolveMacrosPrefix(xmlDocument);
     const macrosPrefix = `${fragMacrosNS}:`;
-    const pageElement = templateDocument.documentElement;
-    pageElement.appendChild(templateDocument.createComment(PAGE_TEMPLATE_COMMENT));
+    const pageElement = templateElement;
+    const ownerDoc = templateElement.ownerDocument;
+    pageElement.appendChild(ownerDoc.createComment(PAGE_TEMPLATE_COMMENT));
     for (const aggName of aggNames) {
         const aggId = generateId(aggName);
         const showDefaultContent = aggName === 'items' && useDefaults;
@@ -223,7 +229,7 @@ export function appendPageAggregations(
         const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
         for (const node of Array.from(aggDoc.documentElement.childNodes)) {
             if (node.nodeType === 1 /* Element */) {
-                pageElement.appendChild(templateDocument.importNode(node, true));
+                pageElement.appendChild(ownerDoc.importNode(node, true));
             }
         }
     }

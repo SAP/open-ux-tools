@@ -110,7 +110,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         hasAggregation,
         aggregationNamespace
     };
-    const templateDocument = getTemplateDocument(
+    const templateElement = getTemplateElement(
         { ...processedBuildingBlockData, generateId: fnGenerateId },
         xmlDocument,
         fs,
@@ -126,7 +126,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     }
 
     if (pageAggregationNames) {
-        appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId, pageAggregationNames, fullPageTemplate);
+        appendPageAggregations(fs, xmlDocument, templateElement, fnGenerateId, pageAggregationNames, fullPageTemplate);
     }
 
     if (
@@ -146,7 +146,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         viewOrFragmentPath,
         updatedAggregationPath,
         xmlDocument,
-        templateDocument,
+        templateElement,
         fs,
         config.replace
     );
@@ -314,22 +314,27 @@ export async function getManifestContent(fs: Editor, library = 'sap.fe.macros'):
 }
 
 /**
- * Returns the template xml file document.
+ * Returns the root element of the rendered building block template.
+ *
+ * @xmldom/xmldom 0.9.x (used in the specification bundle) enforces strict namespace validation
+ * and throws NamespaceError when parsing bare prefixed elements like `<macros:Table .../>` that
+ * have no xmlns declaration. We wrap the snippet in a namespace-aware container so the parser can
+ * resolve all prefixes; the real BB element is the first element child of that wrapper.
  *
  * @param {BuildingBlock} buildingBlockData - the building block data
  * @param {Document} viewDocument - the view xml file document
  * @param {Editor} fs - the memfs editor instance
  * @param  {Manifest} manifest - the manifest content
- * @param {Record<string, unknown>} templateConfig - additional template configuration
- * @returns {Document} the template xml file document
+ * @param {TemplateConfig} templateConfig - additional template configuration
+ * @returns {Element} the root element of the rendered building block template
  */
-function getTemplateDocument<T extends BuildingBlock>(
+function getTemplateElement<T extends BuildingBlock>(
     buildingBlockData: T,
     viewDocument: Document | undefined,
     fs: Editor,
     manifest: Manifest | undefined,
     templateConfig: TemplateConfig
-): Document {
+): Element {
     const templateContent = getTemplateContent(
         buildingBlockData,
         viewDocument,
@@ -339,18 +344,31 @@ function getTemplateDocument<T extends BuildingBlock>(
         templateConfig
     );
     const errorHandler = (level: string, message: string) => {
-        throw new Error(`Unable to parse template file with building block data. Details: [${level}] - ${message}`);
+        if (level === 'error' || level === 'fatalError') {
+            throw new Error(`Unable to parse template file with building block data. Details: [${level}] - ${message}`);
+        }
     };
 
-    // Parse the rendered template content
-    let templateDocument: Document;
+    const nsAttrs = viewDocument
+        ? Array.from(viewDocument.documentElement?.attributes ?? [])
+              .filter((a) => a.name === 'xmlns' || a.name.startsWith('xmlns:'))
+              .map((a) => `${a.name}="${a.value}"`)
+              .join(' ')
+        : 'xmlns:macros="sap.fe.macros"';
+    const wrappedContent = `<_root_ ${nsAttrs}>${templateContent}</_root_>`;
+
     try {
-        templateDocument = new DOMParser({ errorHandler }).parseFromString(templateContent, 'text/xml');
+        const wrappedDoc = new DOMParser({ errorHandler }).parseFromString(wrappedContent, 'text/xml');
+        const bbElement = Array.from(wrappedDoc.documentElement.childNodes).find(
+            (n) => n.nodeType === n.ELEMENT_NODE
+        ) as Element | undefined;
+        if (!bbElement) {
+            throw new Error('Template content produced no root element');
+        }
+        return bbElement;
     } catch (error) {
         throw new Error(`Unable to parse template file with building block data. Details: ${getErrorMessage(error)}`);
     }
-
-    return templateDocument;
 }
 
 /**
@@ -360,7 +378,7 @@ function getTemplateDocument<T extends BuildingBlock>(
  * @param {string} viewPath - the path of the xml view relative to the base path
  * @param {string} aggregationPath - the aggregation xpath
  * @param {Document} viewDocument - the view xml document
- * @param {Document} templateDocument - the template xml document
+ * @param {Element} templateElement - the root element of the rendered building block template
  * @param {Editor} [fs] - the memfs editor instance
  * @param {boolean} [replace] - If true, replaces the target element with the template xml document;
  * if false, appends the source node.
@@ -371,7 +389,7 @@ function updateViewFile(
     viewPath: string,
     aggregationPath: string,
     viewDocument: Document,
-    templateDocument: Document,
+    templateElement: Element,
     fs: Editor,
     replace: boolean = false
 ): Editor {
@@ -390,7 +408,7 @@ function updateViewFile(
     const targetNodes = xpathSelect(resolvedPath, viewDocument);
     if (targetNodes && Array.isArray(targetNodes) && targetNodes.length > 0) {
         const targetNode = targetNodes[0] as Node;
-        const sourceNode = viewDocument.importNode(templateDocument.documentElement, true);
+        const sourceNode = viewDocument.importNode(templateElement, true);
         if (replace) {
             targetNode.parentNode?.replaceChild(sourceNode, targetNode);
         } else {
@@ -486,7 +504,7 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
         appendPageAggregations(
             fs,
             nsDoc,
-            snippetDoc,
+            snippetDoc.documentElement,
             fnGenerateId,
             pageAggNames,
             isFullPageTemplate(buildingBlockData)

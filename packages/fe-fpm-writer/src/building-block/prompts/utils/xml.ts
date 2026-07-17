@@ -50,6 +50,21 @@ function addMacrosItemsPathIfMissing(
 }
 
 /**
+ * Error handler for DOMParser that only throws on actual errors, ignoring warnings.
+ * @xmldom/xmldom 0.9.x fires a warning-level callback during DOMParser construction to
+ * announce that the `errorHandler` option is deprecated — throwing on warnings would
+ * prevent any XML from being parsed.
+ *
+ * @param level - the error level: 'warning', 'error', or 'fatalError'
+ * @param message - the error message
+ */
+export const xmlParseErrorHandler = (level: string, message: string): void => {
+    if (level === 'error' || level === 'fatalError') {
+        throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
+    }
+};
+
+/**
  * Returns a list of xpath strings for each element of the xml file provided.
  *
  * @param xmlFilePath - the xml file path
@@ -64,10 +79,10 @@ export function getXPathStringsForXmlFile(
     let pageMacroDefinition: string | undefined;
     try {
         const xmlContent = fs.read(xmlFilePath);
-        const errorHandler = (level: string, message: string) => {
-            throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
-        };
-        const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent, 'text/xml');
+        const xmlDocument = new DOMParser({ errorHandler: xmlParseErrorHandler }).parseFromString(
+            xmlContent,
+            'text/xml'
+        );
         const nodes = [{ parentNode: '', node: xmlDocument.firstChild }];
 
         // check macros namespace and page macro definition
@@ -131,10 +146,7 @@ export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Edit
     const ids: string[] = [];
     const buildingBlockSelector = 'macros:FilterBar';
     const xmlContent = fs.read(viewOrFragmentPath);
-    const errorHandler = (level: string, message: string): void => {
-        throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
-    };
-    const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent, 'text/xml');
+    const xmlDocument = new DOMParser({ errorHandler: xmlParseErrorHandler }).parseFromString(xmlContent, 'text/xml');
     const elements = Array.from(xmlDocument.getElementsByTagName(buildingBlockSelector));
     for (const element of elements) {
         const id = element.getAttributeNode('id')?.value;
@@ -162,10 +174,10 @@ export async function getExistingButtonGroups(
 
     try {
         const xmlContent = fs.read(xmlFilePath);
-        const errorHandler = (level: string, message: string): void => {
-            throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
-        };
-        const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent, 'text/xml');
+        const xmlDocument = new DOMParser({ errorHandler: xmlParseErrorHandler }).parseFromString(
+            xmlContent,
+            'text/xml'
+        );
 
         // Get namespace map and create xpath selector
         const nsMap = (xmlDocument.firstChild as any)?._nsMap || {};

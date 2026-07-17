@@ -137,7 +137,7 @@ describe('Prompts', () => {
             expect(result).toEqual(new Set(['formatting', 'alignment', 'lists']));
         });
 
-        it('should throw error ButtonGroup elements without name attribute is present', async () => {
+        it('should return only named button groups when some ButtonGroup elements have no name attribute', async () => {
             const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
                 <core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:macros="sap.fe.macros" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
                     <macros:RichTextEditor id="rte1">
@@ -146,17 +146,16 @@ describe('Prompts', () => {
                             <macros:ButtonGroup />
                             <macros:ButtonGroup name="alignment" />
                         </macros:buttonGroups>
-                    </uxap:RichTextEditor>
+                    </macros:RichTextEditor>
                 </core:FragmentDefinition>`;
             (mockFs.read as jest.Mock).mockReturnValue(xmlContent);
 
-            await expect(
-                getExistingButtonGroups(
-                    '/path/to/view.xml',
-                    '/*[local-name()="FragmentDefinition"]/*[local-name()="RichTextEditor"]',
-                    mockFs
-                )
-            ).rejects.toThrow('An error occurred while reading button groups');
+            const result = await getExistingButtonGroups(
+                '/path/to/view.xml',
+                '/*[local-name()="FragmentDefinition"]/*[local-name()="RichTextEditor"]',
+                mockFs
+            );
+            expect(result).toEqual(new Set(['formatting', 'alignment']));
         });
     });
 });

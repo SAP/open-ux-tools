@@ -293,6 +293,7 @@ export function getAggregationPathPrompt(
             ? (answers: Answers) => {
                   const { viewOrFragmentPath } = answers;
                   if (viewOrFragmentPath) {
+                    debugger;
                       const { inputChoices, pageMacroDefinition } = getXPathStringsForXmlFile(
                           join(appPath, viewOrFragmentPath),
                           fs
