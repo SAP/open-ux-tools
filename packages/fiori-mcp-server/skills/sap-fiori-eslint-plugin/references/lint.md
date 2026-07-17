@@ -23,14 +23,14 @@ files that the tooling never checks.
 |---|:---:|:---:|
 | `webapp/manifest.json` | ✅ | ✅ |
 | `webapp/changes/**/*propertyChange.change` (OData V2 only) | ✅ | ✅ |
-| XML annotation files listed in the manifest (`webapp/annotations/*.xml`, etc.) | ✅ | ❌ |
+| All local XML files listed in the manifest via `localUri` (`ODataAnnotation`, `OData`, etc.) | ✅ | ❌ |
 | `<app-folder>/<app-name>/**/*.cds` (app-level only) | ❌ | ✅ |
 
 Key rules:
 - Only `*propertyChange.change` files are included from the `changes/` folder — not all `.change` files; these only exist in OData V2 projects
 - For CAP projects, only `.cds` files within the specific app directory are linted — not the project root, `db/`, `srv/`, or sibling apps
 - For CAP projects, XML annotation files are **not** linted — the annotations live in `.cds` files instead
-- For standalone projects, `.cds` files are **not** linted — only the manifest, XML annotations, and change files
+- For standalone projects, `.cds` files are **not** linted — only the manifest, all localUri XML files from manifest dataSources, and change files
 
 ### Detecting OData version
 
@@ -69,14 +69,23 @@ npx eslint webapp/manifest.json
 # 2. propertyChange files — OData V2 projects only (skip if V4)
 find webapp/changes -name "*propertyChange.change" 2>/dev/null | xargs npx eslint --no-warn-ignored
 
-# 3. XML annotation files (paths come from manifest.json sap.app/dataSources)
-#    Typical location — adjust to your manifest's annotation file paths:
-npx eslint webapp/annotations/*.xml 2>/dev/null
+# 3. All local XML files declared in manifest dataSources via localUri
+#    (covers annotation files, metadata.xml, service.xml, etc.)
+LOCAL_URIS=$(node -e "
+const m = require('./webapp/manifest.json');
+const ds = Object.values(m['sap.app']?.dataSources ?? {});
+ds.filter(d => d.settings?.localUri).forEach(d => console.log('webapp/' + d.settings.localUri));
+")
+npx eslint $LOCAL_URIS 2>/dev/null
 
-# Or combine all three in one pass (use shell glob expansion):
+# Or combine all three in one pass:
 npx eslint webapp/manifest.json \
   $(find webapp/changes -name "*propertyChange.change" 2>/dev/null) \
-  webapp/annotations/*.xml 2>/dev/null
+  $(node -e "
+const m = require('./webapp/manifest.json');
+const ds = Object.values(m['sap.app']?.dataSources ?? {});
+ds.filter(d => d.settings?.localUri).forEach(d => console.log('webapp/' + d.settings.localUri));
+") 2>/dev/null
 ```
 
 **CAP project — specific app:**
@@ -94,17 +103,17 @@ find $APP/webapp/changes -name "*propertyChange.change" 2>/dev/null | xargs npx 
 npx eslint "$APP/**/*.cds"
 ```
 
-### Identifying the app name and annotation files
+### Identifying the app name and local XML files
 
 ```bash
 # Find webapp/ locations (CAP)
 find app -maxdepth 2 -type d -name "webapp" -not -path "*/node_modules/*"
 
-# Extract annotation file paths from manifest (dataSources with type Annotation)
+# Extract all local XML file paths from manifest (any dataSource with a localUri)
 node -e "
 const m = require('./webapp/manifest.json');
 const ds = m['sap.app']?.dataSources ?? {};
-Object.values(ds).filter(d => d.type === 'ODataAnnotation').forEach(d => console.log(d.uri));
+Object.values(ds).filter(d => d.settings?.localUri).forEach(d => console.log('webapp/' + d.settings.localUri));
 "
 ```
 
@@ -117,7 +126,7 @@ Present results with a clear scope label so the user knows the count matches the
 
 ```
 Application Issues (Application Information / Page Map scope):
-  Standalone: manifest.json + XML annotation files + *propertyChange.change files (V2 only)
+  Standalone: manifest.json + all localUri XML files from manifest dataSources + *propertyChange.change files (V2 only)
   CAP:        manifest.json + <app>/**/*.cds + *propertyChange.change files (V2 only)
 
 - X errors
@@ -125,6 +134,17 @@ Application Issues (Application Information / Page Map scope):
 - Files affected: [list]
 - Most common rules: [top 3]
 ```
+
+When presenting issues as a table, always include the source file as the first column and a separate Line column. Put the file path as a bare inline-code string in the form `` `file:///absolute/path:line` `` — VS Code terminal detects and makes bare `file://` URIs with `:line` clickable, but markdown link syntax `[label](url)` breaks this because the renderer interferes with the `:line` suffix before VS Code can parse it.
+
+```
+| File | Line | Rule | Issue |
+|---|---|---|---|
+| `file:///abs/path/webapp/localService/metadata.xml:3983` | 3983 | sap-description-column-label | AccountingDocumentCategory_Text has generic label |
+| `file:///abs/path/webapp/annotations/annotation.xml:4763` | 4763 | sap-text-arrangement-hidden  | CompanyCodeName is referenced via Common.Text … |
+```
+
+Always use the full absolute `file:///` URI with `:line` appended. Keep the bare `Line` column as well for scannability.
 
 If the count still differs from what the user sees in Application Information or Page Map, check:
 1. **Missing annotation files** — the manifest may reference annotation URIs not covered by the glob above; extract them with the node snippet above
@@ -322,6 +342,14 @@ ESLint Results:
 - Y warnings found (P auto-fixed, Q require manual fix)
 - Files with issues: [list key files]
 - Most common violations: [top 3 rules]
+```
+
+When listing individual issues in a table, always include the source file as the first column and a separate Line column. Put the path as bare inline code `` `file:///absolute/path:line` `` — markdown link syntax breaks the `:line` suffix before VS Code's terminal link detector can parse it:
+
+```
+| File | Line | Rule | Issue |
+|---|---|---|---|
+| `file:///abs/path/webapp/localService/metadata.xml:123` | 123 | sap-description-column-label | MyField has generic label … |
 ```
 
 If everything is clean:
