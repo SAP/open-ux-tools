@@ -190,7 +190,8 @@ async function getAbapServiceProvider(
         if (system) {
             serviceProvider = createAbapServiceProvider(system);
         } else {
-            logger.error(`Failed to find system for host: ${host}${client ? ` and client: ${client}` : ''}`);
+            const clientInfo = client ? ` and client: ${client}` : '';
+            logger.error(`Failed to find system for host: ${host}${clientInfo}`);
             return undefined;
         }
     }
