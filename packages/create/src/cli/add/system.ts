@@ -6,12 +6,12 @@ import {
     BackendSystemKey,
     SystemType,
     AuthenticationType,
-    ConnectionType
+    ConnectionType,
+    isSystemNameInUse
 } from '@sap-ux/store';
 import { replaceEnvVariables } from '@sap-ux/ui5-config';
 import { config as loadEnvConfig } from 'dotenv';
 import { validateClient } from '@sap-ux/project-input-validator';
-import { isSystemNameInUse } from '@sap-ux/store';
 import { getLogger } from '../../tracing/index.js';
 import { promptForSystemConfig } from '../utils/system-prompts.js';
 import { checkConnectionOrPrompt } from '../utils/system-connection.js';

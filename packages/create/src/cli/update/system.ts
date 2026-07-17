@@ -1,10 +1,9 @@
 import type { Command } from 'commander';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
-import { getService, BackendSystemKey } from '@sap-ux/store';
+import { getService, BackendSystemKey, isSystemNameInUse } from '@sap-ux/store';
 import { replaceEnvVariables } from '@sap-ux/ui5-config';
 import { config as loadEnvConfig } from 'dotenv';
-import { isSystemNameInUse } from '@sap-ux/store';
 import { getLogger } from '../../tracing/index.js';
 import { promptForSystemIdentifier, promptForUpdateFields, promptForFieldUpdates } from '../utils/system-prompts.js';
 import { checkConnectionOrPrompt } from '../utils/system-connection.js';
