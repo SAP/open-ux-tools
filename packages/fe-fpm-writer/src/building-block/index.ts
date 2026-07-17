@@ -11,7 +11,7 @@ import type { Editor } from 'mem-fs-editor';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import {
     BuildingBlockType,
-    PAGE_TEMPLATE_TYPE_FULL,
+    PageTemplateType,
     type BuildingBlock,
     type BuildingBlockConfig,
     type BuildingBlockMetaPath,
@@ -63,7 +63,7 @@ interface MetadataPath {
  * @returns true if full Page template
  */
 function isFullPageTemplate(data: BuildingBlock): boolean {
-    return data.buildingBlockType === BuildingBlockType.Page && (data as Page).templateType === PAGE_TEMPLATE_TYPE_FULL;
+    return data.buildingBlockType === BuildingBlockType.Page && (data as Page).templateType === PageTemplateType.Full;
 }
 
 /**
