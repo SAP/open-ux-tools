@@ -1,5 +1,75 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.2.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.1.0 → 3.2.0
+- @sap-ux/fiori-elements-writer 3.0.60 → 3.1.0
+
+## 1.2.0
+
+### Minor Changes
+
+#### Features
+
+- Add backendSystemFilter option to system selection and filter full-service-URL systems in repo app import; move getFloorplanLabel and floorplan label/description translations to fiori-generator-shared and export tFioriGeneratorShared [[22c974b](https://github.com/SAP/open-ux-tools/commit/22c974bbd38773e62e87aa34b60481ee6a3da62f)]
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.0.25 → 3.1.0
+- @sap-ux/fiori-generator-shared 1.1.0 → 1.2.0
+- @sap-ux/fiori-elements-writer 3.0.59 → 3.0.60
+- @sap-ux/fiori-freestyle-writer 3.0.52 → 3.0.53
+- @sap-ux/inquirer-common 1.0.22 → 1.0.23
+
+## 1.1.44
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.58 → 3.0.59
+- @sap-ux/fiori-freestyle-writer 3.0.51 → 3.0.52
+- @sap-ux/odata-service-inquirer 3.0.25 → 3.0.25
+
+## 1.1.43
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.0.57 → 3.0.58
+- @sap-ux/odata-service-inquirer 3.0.25 → 3.0.25
+
+## 1.1.42
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.0.24 → 3.0.25
+
+## 1.1.41
+
+### Patch Changes
+
+#### Features
+
+- Move getFloorplanLabel and floorplans translations from fiori-app-sub-generator to fiori-generator-shared. Add flow-specific telemetry events for ABAP repository download and ADT quick deploy flows. [[f14486c](https://github.com/SAP/open-ux-tools/commit/f14486c70e455b042c6bb4c009a717b615cbf06f)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.0.20 → 1.1.0
+- @sap-ux/fiori-elements-writer 3.0.56 → 3.0.57
+- @sap-ux/fiori-freestyle-writer 3.0.50 → 3.0.51
+- @sap-ux/inquirer-common 1.0.21 → 1.0.22
+- @sap-ux/odata-service-inquirer 3.0.23 → 3.0.24
+
 ## 1.1.40
 
 ### Patch Changes
