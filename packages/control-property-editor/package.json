@@ -41,7 +41,6 @@
         "@types/react": "16.14.69",
         "eslint": "9.39.1",
         "eslint-plugin-react": "7.37.5",
-        "http-proxy-middleware": "4.2.0",
         "i18next": "25.10.10",
         "jest-scss-transform": "1.0.4",
         "npm-run-all2": "8.0.4",
