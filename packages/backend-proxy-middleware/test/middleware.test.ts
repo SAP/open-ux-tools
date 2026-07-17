@@ -156,6 +156,7 @@ describe('backend-proxy-middleware', () => {
 
                 // request that is proxied
                 expect(await server.get('/my/service/manifest.json')).toMatchObject({ status: 200 });
+                expect(receivedUrl).toBeDefined();
                 expect(receivedUrl).toBe('/my/service/manifest.json?sap-client=012');
 
                 // request that is not handled
@@ -180,6 +181,7 @@ describe('backend-proxy-middleware', () => {
 
                 // request that is proxied
                 expect(await server.get('/my/service/manifest.json')).toMatchObject({ status: 200 });
+                expect(receivedUrl).toBeDefined();
                 expect(receivedUrl).toBe('/new/path/manifest.json');
 
                 // request that is not handled
@@ -255,6 +257,7 @@ describe('backend-proxy-middleware with connect', () => {
 
                 // request that is proxied
                 expect(await server.get('/my/service/manifest.json')).toMatchObject({ status: 200 });
+                expect(receivedUrl).toBeDefined();
                 expect(receivedUrl).toBe('/my/service/manifest.json?sap-client=012');
 
                 // request that is not handled
@@ -279,6 +282,7 @@ describe('backend-proxy-middleware with connect', () => {
 
                 // request that is proxied
                 expect(await server.get('/my/service/manifest.json')).toMatchObject({ status: 200 });
+                expect(receivedUrl).toBeDefined();
                 expect(receivedUrl).toBe('/new/path/manifest.json');
 
                 // request that is not handled
