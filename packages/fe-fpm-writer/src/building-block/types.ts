@@ -1,6 +1,18 @@
 import type { IdGeneratorFunction } from '../common/file.js';
 import type { CustomElement, CustomFragment, EventHandler, FragmentContentData, Position } from '../common/types.js';
 
+export const PageTemplateType = {
+    Full: 'full',
+    Basic: 'basic'
+} as const;
+
+export type PageTemplateType = (typeof PageTemplateType)[keyof typeof PageTemplateType];
+
+/** Minimum UI5 version required for page building blocks. */
+export const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK = '1.136.0' as const;
+/** Minimum UI5 version required for full layout page building blocks. */
+export const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT = '1.145.0' as const;
+
 /**
  * Building block type.
  *
@@ -412,8 +424,8 @@ export interface Page extends BuildingBlock {
 
     /**
      * The template type for the page building block.
-     * 'full' generates a full page template with all aggregations and controller stubs.
-     * 'basic' generates a minimal self-closing tag (default behavior).
+     * 'full' generates a full page template with all aggregations.
+     * 'basic' generates a minimal self-closing <macros:Page/> with no aggregations.
      */
     templateType?: PageTemplateType;
 
@@ -424,9 +436,8 @@ export interface Page extends BuildingBlock {
     aggregations?: Partial<Record<PageAggregationName, string>>;
 }
 
-export const PAGE_TEMPLATE_TYPE_FULL = 'full' as const;
-export const PAGE_TEMPLATE_TYPE_BASIC = 'basic' as const;
-export type PageTemplateType = typeof PAGE_TEMPLATE_TYPE_FULL | typeof PAGE_TEMPLATE_TYPE_BASIC;
+export const PAGE_TEMPLATE_COMMENT = 'This is a sample template, event handlers should be added for implementation';
+export const MACROS_NAMESPACE_URI = 'sap.fe.macros';
 
 /**
  * A group of XML nodes representing one Page aggregation element and its preceding sibling comments.
@@ -444,8 +455,6 @@ export interface GenerateBuildingBlockAggregationConfig {
     buildingBlockType: BuildingBlockType;
     /** Name of the aggregation to append. */
     aggregationName: PageAggregationName;
-    /** Optional inner XML content for the aggregation. */
-    mContent?: string;
 }
 
 /**

@@ -1,5 +1,29 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.3.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-16
+
+#### Features
+
+- Add option to create Page Building Block with full layout during app generation [[85b88aa](https://github.com/SAP/open-ux-tools/commit/85b88aa64241d65d7a0618222221281bae2e3e45)]
+
+## 1.2.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-15
+
+#### Bug Fixes
+
+- hide Page BB templateType prompt and default to basic when UI5 version is < 1.145.0 [[37a342f](https://github.com/SAP/open-ux-tools/commit/37a342f1995602638173bd358ba7b98e54f3d1d9)]
+
 ## 1.2.0
 
 ### Minor Changes

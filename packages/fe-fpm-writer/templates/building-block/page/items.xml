@@ -1,9 +1,11 @@
 <<%- macrosPrefix %>items>
     <!-- Main content -->
+<% if (showDefaultContent) { -%>
     <IconTabBar id="iconTabBar<%- aggId %>" class="sapUiResponsiveContentPadding">
         <items>
             <IconTabFilter id="iconTabFilter<%- aggId %>" text="Tab 1">
             </IconTabFilter>
         </items>
     </IconTabBar>
+<% } -%>
 </<%- macrosPrefix %>items>
