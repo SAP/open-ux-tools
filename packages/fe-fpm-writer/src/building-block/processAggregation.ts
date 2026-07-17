@@ -12,9 +12,9 @@ import { getMinimumUI5Version } from '@sap-ux/project-access';
 import {
     BuildingBlockType,
     PAGE_AGGREGATIONS,
-    PAGE_FULL_TEMPLATE_MIN_UI5_VERSION,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT,
     PAGE_TEMPLATE_COMMENT,
-    PAGE_TEMPLATE_TYPE_FULL,
+    PageTemplateType,
     type BuildingBlock,
     type PageAggregationName,
     type Page,
@@ -70,7 +70,7 @@ export function getPageAggregationNames(data: BuildingBlock): readonly PageAggre
     if (data.buildingBlockType !== BuildingBlockType.Page) {
         return undefined;
     }
-    return (data as Page).templateType === PAGE_TEMPLATE_TYPE_FULL ? PAGE_AGGREGATIONS : undefined;
+    return (data as Page).templateType === PageTemplateType.Full ? PAGE_AGGREGATIONS : undefined;
 }
 
 /**
@@ -81,7 +81,7 @@ export function getPageAggregationNames(data: BuildingBlock): readonly PageAggre
  */
 export function validateFullPageTemplateVersion(manifest: Manifest | undefined): void {
     const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
-    if (minUI5Version && lt(minUI5Version, PAGE_FULL_TEMPLATE_MIN_UI5_VERSION)) {
+    if (minUI5Version && lt(minUI5Version, MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT)) {
         const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
         throw new Error(`${t('fullTemplateMinUi5VersionRequirement', { minUI5Version: minUI5Version.version })}`);
     }

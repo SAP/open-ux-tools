@@ -1,5 +1,13 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 1.0.44
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.1.0 → 3.2.0
+
 ## 1.0.43
 
 ### Patch Changes
