@@ -1,5 +1,17 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 2.0.27
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-17
+
+#### Bug Fixes
+
+- [BAS][Deploy] Password field in the deploy page disappears when the user edits the username. [[ff7fc25](https://github.com/SAP/open-ux-tools/commit/ff7fc25829f6b29a5083a56c8899e646d3c8569d)]
+
 ## 2.0.26
 
 ### Patch Changes
