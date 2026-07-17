@@ -2736,8 +2736,8 @@ importers:
         specifier: 0.15.0
         version: 0.15.0
       '@sap/ux-specification':
-        specifier: 1.144.7
-        version: 1.144.7
+        specifier: 1.144.5
+        version: 1.144.5(typescript@5.9.3)
       '@types/json-schema':
         specifier: 7.0.15
         version: 7.0.15
@@ -3085,8 +3085,8 @@ importers:
         specifier: 0.15.0
         version: 0.15.0
       '@sap/ux-specification':
-        specifier: 1.144.7
-        version: 1.144.7
+        specifier: 1.144.5
+        version: 1.144.5(typescript@5.9.3)
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -5358,8 +5358,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-application-writer
       '@sap/ux-specification':
-        specifier: 1.144.7
-        version: 1.144.7
+        specifier: 1.144.5
+        version: 1.144.5(typescript@5.9.3)
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -9477,8 +9477,20 @@ packages:
   '@sap-ux/annotation-converter@0.10.21':
     resolution: {integrity: sha512-k6C8DNlDTqYb0OrKUwurDPV2G3KLGOhfMEtXl8WJOgd3mdf+qpA4vCRfmEtXlGB357X6bsMfxZw5CQHUt2WauQ==}
 
+  '@sap-ux/cds-annotation-parser@0.2.36':
+    resolution: {integrity: sha512-bwcKzyHsGpwoJO4B7JrWFf0nbi2W6EJ1C/gs7t1oc0Y1rH5GY87se0cwTDtq1O/6NAetPa4FD3JmnR9R5C2ERg==}
+    engines: {node: '>=20.x'}
+
+  '@sap-ux/cds-odata-annotation-converter@0.7.17':
+    resolution: {integrity: sha512-n6mnrZo/O2ob8GOui5D7KdYfuUGpJjuWBZ4K40xIX5Uu2ofAGMnsqmOEo5pKE8JZibkcSnr7ygD1blKOPdsjWA==}
+    engines: {node: '>=20.x'}
+
   '@sap-ux/edmx-parser@0.10.0':
     resolution: {integrity: sha512-kjOHHpI6ymxb3BLLUKMLpYwhTFC5d0KEGw+xzxNmI7YPnSmY5Qbb5b1Io/LV35jFgyUeRZYNPsxg1PVtYnTdhw==}
+
+  '@sap-ux/fe-fpm-writer@0.43.28':
+    resolution: {integrity: sha512-3u4WC0A/nRIl3XL1Aigfx2AEI8B2x3zyW0qyo44d85JjziCu8jJd5zIvzEG0gk2S0J2V6o9oeRc/yWQ+rPAENA==}
+    engines: {node: '>=20.x'}
 
   '@sap-ux/fe-mockserver-core@1.7.10':
     resolution: {integrity: sha512-DafpJ/Kbo+PcZVnbF19HxBbdM+CcxbnxzznhqCqVeNKGQIg//KqYEiFHJMeuOOK93+xDwCBHiuHZyalllgd2RQ==}
@@ -9488,12 +9500,52 @@ packages:
     peerDependencies:
       '@sap/cds-compiler': ^4.8 || ^5.4
 
+  '@sap-ux/fiori-annotation-api@0.9.48':
+    resolution: {integrity: sha512-S26+JjJb+VjwUz0qVAtA6rzNecKJkN+Ask10JdHc0jLS3H7LH+VEajNr7qqr0m0jkvW55Bv3icO/enGnVTGLsA==}
+    engines: {node: '>=20.x'}
+
+  '@sap-ux/i18n@0.3.11':
+    resolution: {integrity: sha512-vmx/gb7a+IBCzAJovWPJ2Oi1mtW+0iZFqGiq6j55IbW4SOVX87Vvnm0s/Jl9YKPdSYf1S0MTAZzn3TaQTIItSQ==}
+    engines: {node: '>=20.x'}
+
   '@sap-ux/logger@0.8.1':
     resolution: {integrity: sha512-BPS8/ZODQ7s7r1K4+eo0ynXGk85nio2CBZlT3HdWUT75MwwNAwUeUEpC+SUq/IWVrwBpxHApkyYH+NZYqMRmMw==}
     engines: {node: '>=20.x'}
 
+  '@sap-ux/logger@0.8.5':
+    resolution: {integrity: sha512-TU6HIsW2ydx+On+RBXXiWlgrs2CXRasBmZBcKHTM57IiORYIHBv27e7x5OUX++EAONQZVZbIWND4HcCSCBJNBA==}
+    engines: {node: '>=20.x'}
+
+  '@sap-ux/odata-annotation-core-types@0.5.8':
+    resolution: {integrity: sha512-30shevnH2OCLsG0yKPNtLv41yl4PL2+WQZfR/X25XLbgRvuFq34zXtRYOhVGBKTC8v5xC4jUhy0cXyeHSSUdHg==}
+    engines: {node: '>=20.x'}
+
+  '@sap-ux/odata-annotation-core@0.2.18':
+    resolution: {integrity: sha512-Ycd0Wwq/ElM+JPR8vzm2yr/odHuTiM3BFD4rWpXOh6f5abKjaekZzLw+kEt2N+cU/vj2zrgYayzzgNDSDkKaYA==}
+    engines: {node: '>=20.x'}
+
+  '@sap-ux/odata-entity-model@0.3.7':
+    resolution: {integrity: sha512-43KHLUCK/5IMAKqyD68UqeEpJWD3vbHxaqdym5pNGJYmfYddD0RIuBs7lkik1GhgOVaiD/fgvvbHBi9qDyf3nQ==}
+    engines: {node: '>=20.x'}
+
+  '@sap-ux/odata-vocabularies@0.4.31':
+    resolution: {integrity: sha512-s7iAK4OPV/4FFYS72EJQi1YKyJWJZXM16XVGPJYWUz3XZF7fl1ID7rcQWnYMq/cmyS/37KXnIK31Ski/QbCTFQ==}
+    engines: {node: '>=20.x'}
+
+  '@sap-ux/project-access@1.36.3':
+    resolution: {integrity: sha512-VxaIKEG3lPshZTuWIrbq8WVaYxPAkNUhh5PVRkfqhf04mCVCXxcTgQrD3m/bLo9sViJcE4q/hz7tNpRvByPjxw==}
+    engines: {node: '>=20.x'}
+
   '@sap-ux/store@1.5.8':
     resolution: {integrity: sha512-DtwX9AmBzg08cHAqoeh8kf+vsOWg08lk4HtYBi7en8rsDSMWh/nsp3gcV2clovR1wdG9GEgM8YvoQgHwzdao6g==}
+    engines: {node: '>=20.x'}
+
+  '@sap-ux/text-document-utils@0.3.4':
+    resolution: {integrity: sha512-U1FhTLUKKKKXiyb1PtOJn2cmODmD88SPvrFXAaCsdnT0/irEoXD2sRcOxWOOvdsdyRE6FRkBB15w7fueOc0kSQ==}
+    engines: {node: '>=20.x'}
+
+  '@sap-ux/ui5-config@0.30.4':
+    resolution: {integrity: sha512-qu+JNOQiphaTuDlX6/5rfUA36P6v28K1DoEjpWI0/nFUNAiUvmgxqUyNGqFGALLMO60DbwMTXep7IEhH7Zz86A==}
     engines: {node: '>=20.x'}
 
   '@sap-ux/ui5-middleware-fe-mockserver@2.4.10':
@@ -9502,6 +9554,14 @@ packages:
   '@sap-ux/vocabularies-types@0.15.0':
     resolution: {integrity: sha512-H/xKp65xSUMSOulqd+vNzxIOLwupnVDwHTJaQL9xf+/AVPY0bJzUgFy+OOUU7gtqm8NFPgv+06Hz6DyyMRCflA==}
     engines: {node: '>=18.x'}
+
+  '@sap-ux/xml-odata-annotation-converter@0.4.13':
+    resolution: {integrity: sha512-FgW7b8JIRIwi7oyW+cxryPVk/GHlbwbwMlt9psTNDGEUAfr1r5HrN2KxGd7duxrtV9YsHQtw3fid/+HBT50s+w==}
+    engines: {node: '>=20.x'}
+
+  '@sap-ux/yaml@0.17.7':
+    resolution: {integrity: sha512-nvyb4NbP8tpBPOjOG0et7R0/XhCWVPstzRCgNHXbCtJYC+Mzyz1Ky2kZB8Mztyqvu6BgnzntRRe/txChVQH1MQ==}
+    engines: {node: '>=20.x'}
 
   '@sap/approuter@22.0.3':
     resolution: {integrity: sha512-hjtf23npfT+9qNVZ6URHnhWT2sER8YZfjaxQKSwRl+P7Npu/ySSNSQWnqZvdtiH8PsrB5eBd7tTSNmfxy/n/vA==}
@@ -9545,6 +9605,14 @@ packages:
   '@sap/subaccount-destination-service-provider@2.16.0':
     resolution: {integrity: sha512-y0kcSoGH4FRot1bcdd1pH1aZFwb0SepXNK3opOkaaBCallnI7NGMFoasXBnmOqRasAGc8IPVcgwsi7DrOXJmIg==}
 
+  '@sap/ux-cds-compiler-facade@1.21.0':
+    resolution: {integrity: sha512-oo2QlVPV4ZAcWjqflLsqzp8fBL2Fy0TW9Hco1Gjr8yj2AlW+/x2/Qd2QDMw5CRSNFawVsB+GAaCqknqhPk8EXA==}
+    engines: {node: '>=20.0.0'}
+    peerDependencies:
+      '@sap-ux/odata-annotation-core': '>=0.2.16'
+      '@sap-ux/odata-annotation-core-types': '>=0.5.6'
+      '@sap-ux/project-access': '>=1.35.13'
+
   '@sap/ux-cds-compiler-facade@1.23.0':
     resolution: {integrity: sha512-kXDc5WtG3jQPSdJRpsefpQkqxXjQFiNjNPkrskJEeCUigOCXtvVCnKFRCnyjUbYkVe3AX1nzy2hnPB2ECBi1ew==}
     engines: {node: '>=22.13.0'}
@@ -9553,9 +9621,9 @@ packages:
       '@sap-ux/odata-annotation-core-types': '>=0.5.7'
       '@sap-ux/project-access': '>=1.35.20'
 
-  '@sap/ux-specification@1.144.7':
-    resolution: {integrity: sha512-FCHaIIFNYqf3iGg1J31adJ53a9V0zWJAlxnotRvs+r5/wCDoW0UBHOh9dXCnJrtvkcXGTzgG4uG2e1Xve5MDHw==}
-    engines: {node: '>=22.13.0 <23.0.0 || >=24.0.0 <25.0.0 || >=26.0.0', yarn: '>=1.22.22 < 2'}
+  '@sap/ux-specification@1.144.5':
+    resolution: {integrity: sha512-I7DM2w8k90L4+abU/cMThhpwXI/Iken3dYyeqC0TERw+m9LRb1l4XHOi74ai8gxfQfnynFd3pVeTNXlGyxxOnA==}
+    engines: {node: '>=20.0.0 <21.0.0 || >=22.0.0 <23.0.0 || >=24.0.0 <25.0.0 || >=26.0.0', yarn: '>=1.22.19 < 2'}
 
   '@sap/xsenv@6.0.0':
     resolution: {integrity: sha512-9bNpJXmxndWn5JbRCPPtbeMqldXOn2Od17ybS92PHd1rNkZ80IMmOURHNct5YSVQ1MKBIDAyC+ck6VL7cVAfUA==}
@@ -24953,9 +25021,51 @@ snapshots:
     dependencies:
       '@sap-ux/vocabularies-types': 0.15.0
 
+  '@sap-ux/cds-annotation-parser@0.2.36':
+    dependencies:
+      '@sap-ux/odata-annotation-core': 0.2.18
+      '@sap-ux/odata-entity-model': 0.3.7
+      '@sap-ux/odata-vocabularies': 0.4.31
+      '@sap-ux/text-document-utils': 0.3.4
+      chevrotain: 7.1.1
+
+  '@sap-ux/cds-odata-annotation-converter@0.7.17(@sap-ux/odata-annotation-core-types@0.5.8)(@sap-ux/project-access@1.36.3)(typescript@5.9.3)':
+    dependencies:
+      '@sap-ux/cds-annotation-parser': 0.2.36
+      '@sap-ux/odata-annotation-core': 0.2.18
+      '@sap-ux/odata-vocabularies': 0.4.31
+      '@sap-ux/text-document-utils': 0.3.4
+      '@sap/ux-cds-compiler-facade': 1.21.0(@sap-ux/odata-annotation-core-types@0.5.8)(@sap-ux/odata-annotation-core@0.2.18)(@sap-ux/project-access@1.36.3)
+      i18next: 25.10.10(typescript@5.9.3)
+    transitivePeerDependencies:
+      - '@sap-ux/odata-annotation-core-types'
+      - '@sap-ux/project-access'
+      - typescript
+
   '@sap-ux/edmx-parser@0.10.0':
     dependencies:
       xml-js: 1.6.11
+
+  '@sap-ux/fe-fpm-writer@0.43.28(typescript@5.9.3)':
+    dependencies:
+      '@sap-ux/annotation-converter': 0.10.21
+      '@sap-ux/fiori-annotation-api': 0.9.48(typescript@5.9.3)
+      '@sap-ux/i18n': 0.3.11
+      '@sap-ux/logger': 0.8.5
+      '@sap-ux/project-access': 1.36.3
+      '@sap-ux/vocabularies-types': 0.15.0
+      '@xmldom/xmldom': 0.8.13
+      ejs: 3.1.10
+      i18next: 25.10.10(typescript@5.9.3)
+      mem-fs: 2.1.0
+      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
+      semver: 7.7.4
+      xml-formatter: 3.7.0
+      xpath: 0.0.34
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+      - typescript
 
   '@sap-ux/fe-mockserver-core@1.7.10':
     dependencies:
@@ -24979,12 +25089,78 @@ snapshots:
     dependencies:
       '@sap/cds-compiler': 4.8.0
 
+  '@sap-ux/fiori-annotation-api@0.9.48(typescript@5.9.3)':
+    dependencies:
+      '@sap-ux/annotation-converter': 0.10.21
+      '@sap-ux/cds-annotation-parser': 0.2.36
+      '@sap-ux/cds-odata-annotation-converter': 0.7.17(@sap-ux/odata-annotation-core-types@0.5.8)(@sap-ux/project-access@1.36.3)(typescript@5.9.3)
+      '@sap-ux/logger': 0.8.5
+      '@sap-ux/odata-annotation-core': 0.2.18
+      '@sap-ux/odata-annotation-core-types': 0.5.8
+      '@sap-ux/odata-entity-model': 0.3.7
+      '@sap-ux/odata-vocabularies': 0.4.31
+      '@sap-ux/project-access': 1.36.3
+      '@sap-ux/vocabularies-types': 0.15.0
+      '@sap-ux/xml-odata-annotation-converter': 0.4.13
+      '@sap/ux-cds-compiler-facade': 1.21.0(@sap-ux/odata-annotation-core-types@0.5.8)(@sap-ux/odata-annotation-core@0.2.18)(@sap-ux/project-access@1.36.3)
+      '@xml-tools/ast': 5.0.5
+      '@xml-tools/parser': 1.0.11
+      mem-fs: 2.1.0
+      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
+      vscode-languageserver-textdocument: 1.0.12
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+      - typescript
+
+  '@sap-ux/i18n@0.3.11':
+    dependencies:
+      '@sap-ux/text-document-utils': 0.3.4
+      jsonc-parser: 3.3.1
+      vscode-languageserver-textdocument: 1.0.12
+
   '@sap-ux/logger@0.8.1':
     dependencies:
       chalk: 4.1.2
       lodash: 4.18.1
       winston: 3.11.0
       winston-transport: 4.7.0
+
+  '@sap-ux/logger@0.8.5':
+    dependencies:
+      chalk: 4.1.2
+      lodash: 4.18.1
+      winston: 3.19.0
+      winston-transport: 4.9.0
+
+  '@sap-ux/odata-annotation-core-types@0.5.8':
+    dependencies:
+      '@sap-ux/text-document-utils': 0.3.4
+
+  '@sap-ux/odata-annotation-core@0.2.18':
+    dependencies:
+      '@sap-ux/odata-annotation-core-types': 0.5.8
+      '@sap-ux/text-document-utils': 0.3.4
+
+  '@sap-ux/odata-entity-model@0.3.7': {}
+
+  '@sap-ux/odata-vocabularies@0.4.31':
+    dependencies:
+      '@sap-ux/odata-annotation-core-types': 0.5.8
+
+  '@sap-ux/project-access@1.36.3':
+    dependencies:
+      '@sap-ux/i18n': 0.3.11
+      '@sap-ux/ui5-config': 0.30.4
+      fast-xml-parser: 5.8.0
+      findit2: 2.2.3
+      json-parse-even-better-errors: 5.0.0
+      mem-fs: 2.1.0
+      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
+      semver: 7.7.4
+    transitivePeerDependencies:
+      - debug
+      - supports-color
 
   '@sap-ux/store@1.5.8(typescript@5.9.3)':
     dependencies:
@@ -24997,6 +25173,22 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
+  '@sap-ux/text-document-utils@0.3.4':
+    dependencies:
+      vscode-languageserver-types: 3.17.5
+
+  '@sap-ux/ui5-config@0.30.4':
+    dependencies:
+      '@sap-ux/yaml': 0.17.7
+      ajv: 8.18.0
+      axios: 1.16.1(debug@4.3.4)
+      js-yaml: 4.1.1
+      lodash: 4.18.1
+      semver: 7.7.4
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+
   '@sap-ux/ui5-middleware-fe-mockserver@2.4.10':
     dependencies:
       '@sap-ux/fe-mockserver-core': 1.7.10
@@ -25004,6 +25196,15 @@ snapshots:
       - supports-color
 
   '@sap-ux/vocabularies-types@0.15.0': {}
+
+  '@sap-ux/xml-odata-annotation-converter@0.4.13':
+    dependencies:
+      '@sap-ux/odata-annotation-core': 0.2.18
+
+  '@sap-ux/yaml@0.17.7':
+    dependencies:
+      lodash: 4.18.1
+      yaml: 2.8.3
 
   '@sap/approuter@22.0.3(undici@6.24.1)':
     dependencies:
@@ -25144,13 +25345,26 @@ snapshots:
       - typescript
       - utf-8-validate
 
+  '@sap/ux-cds-compiler-facade@1.21.0(@sap-ux/odata-annotation-core-types@0.5.8)(@sap-ux/odata-annotation-core@0.2.18)(@sap-ux/project-access@1.36.3)':
+    dependencies:
+      '@sap-ux/odata-annotation-core': 0.2.18
+      '@sap-ux/odata-annotation-core-types': 0.5.8
+      '@sap-ux/project-access': 1.36.3
+
   '@sap/ux-cds-compiler-facade@1.23.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)':
     dependencies:
       '@sap-ux/odata-annotation-core': link:packages/odata-annotation-core
       '@sap-ux/odata-annotation-core-types': link:packages/odata-annotation-core-types
       '@sap-ux/project-access': link:packages/project-access
 
-  '@sap/ux-specification@1.144.7': {}
+  '@sap/ux-specification@1.144.5(typescript@5.9.3)':
+    dependencies:
+      '@sap-ux/fe-fpm-writer': 0.43.28(typescript@5.9.3)
+      '@sap-ux/vocabularies-types': 0.15.0
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+      - typescript
 
   '@sap/xsenv@6.0.0':
     dependencies:

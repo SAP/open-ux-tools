@@ -42,7 +42,7 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@sap/ux-specification": "1.144.7",
+        "@sap/ux-specification": "1.144.5",
         "@sap-ux/edmx-parser": "0.10.0",
         "@sap-ux/annotation-converter": "0.10.21",
         "@sap-ux/preview-middleware": "workspace:*"

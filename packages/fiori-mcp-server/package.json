@@ -78,7 +78,7 @@
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/text-document-utils": "workspace:*",
         "@sap-ux/vocabularies-types": "0.15.0",
-        "@sap/ux-specification": "1.144.7",
+        "@sap/ux-specification": "1.144.5",
         "@types/json-schema": "7.0.15",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
