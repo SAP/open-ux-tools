@@ -976,7 +976,7 @@ export class FlpSandbox {
             }
         }
 
-        const initTemplate = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.js'), 'utf-8');
+        const initTemplate = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit-init.ejs'), 'utf-8');
         this.logger.debug(`Add route for ${config.init}`);
         this.router.get(
             config.init,
@@ -1070,7 +1070,10 @@ export class FlpSandbox {
             next();
         } else {
             const testFiles = await this.project.byGlob(config.pattern);
-            const templateConfig = { tests: generateImportList(ns, testFiles) };
+            const templateConfig = {
+                tests: generateImportList(ns, testFiles),
+                isolateJourneys: config.isolateJourneys === true
+            };
             const js = render(initTemplate, templateConfig);
             this.sendResponse(res, 'application/javascript', 200, js);
         }
@@ -1104,7 +1107,7 @@ export class FlpSandbox {
                 continue;
             }
             // add route for the init file
-            const initTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.js'), 'utf-8');
+            const initTemplate = readFileSync(join(__dirname, '../../templates/test/qunit-init.ejs'), 'utf-8');
             this.logger.debug(`Add route for ${config.init}`);
             this.router.get(
                 config.init,

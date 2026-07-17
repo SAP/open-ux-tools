@@ -774,8 +774,8 @@ exports[`FlpSandbox router - connect API GET default routes with connect API (us
 
 window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
 
-const journeyParam = new URLSearchParams(window.location.search).get(\\"journey\\");
-const journeysToRequire = journeyParam ? [journeyParam] : [];
+
+const modulesToRequire = [];
 
 sap.ui.require([
     \\"sap/ui/thirdparty/qunit-2\\",
@@ -783,7 +783,7 @@ sap.ui.require([
     \\"sap/ui/qunit/qunit-coverage\\"
 ], function (QUnit) {
     'use strict';
-    sap.ui.require(journeysToRequire, function() {
+    sap.ui.require(modulesToRequire, function() {
         QUnit.start();
     });
 });
@@ -1003,8 +1003,8 @@ exports[`FlpSandbox router default Qunit init test/unitTests.qunit.js 1`] = `
 
 window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
 
-const journeyParam = new URLSearchParams(window.location.search).get(\\"journey\\");
-const journeysToRequire = journeyParam ? [journeyParam] : [];
+
+const modulesToRequire = [];
 
 sap.ui.require([
     \\"sap/ui/thirdparty/qunit-2\\",
@@ -1012,7 +1012,7 @@ sap.ui.require([
     \\"sap/ui/qunit/qunit-coverage\\"
 ], function (QUnit) {
     'use strict';
-    sap.ui.require(journeysToRequire, function() {
+    sap.ui.require(modulesToRequire, function() {
         QUnit.start();
     });
 });
@@ -2855,8 +2855,9 @@ exports[`FlpSandbox router with isolateJourneys OPA5 OPA5 init JS contains URL p
 
 window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
 
+
 const journeyParam = new URLSearchParams(window.location.search).get(\\"journey\\");
-const journeysToRequire = journeyParam ? [journeyParam] : [\\"test/fe/v2/app/test/integration/NavigationJourney\\",\\"test/fe/v2/app/test/integration/SortingJourney\\"];
+const modulesToRequire = journeyParam ? [journeyParam] : [\\"test/fe/v2/app/test/integration/NavigationJourney\\",\\"test/fe/v2/app/test/integration/SortingJourney\\"];
 
 sap.ui.require([
     \\"sap/ui/thirdparty/qunit-2\\",
@@ -2864,7 +2865,7 @@ sap.ui.require([
     \\"sap/ui/qunit/qunit-coverage\\"
 ], function (QUnit) {
     'use strict';
-    sap.ui.require(journeysToRequire, function() {
+    sap.ui.require(modulesToRequire, function() {
         QUnit.start();
     });
 });

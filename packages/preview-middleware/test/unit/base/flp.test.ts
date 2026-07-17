@@ -1863,7 +1863,7 @@ describe('FlpSandbox', () => {
             const response = await server.get('/test/opaTests.qunit.js').expect(200);
             expect(response.text).toMatchSnapshot();
             expect(response.text).toContain('journeyParam');
-            expect(response.text).toContain('journeysToRequire');
+            expect(response.text).toContain('modulesToRequire');
         });
 
         test('testsuite JS renders one addTestPage per journey with ?journey= param', async () => {
@@ -1875,7 +1875,7 @@ describe('FlpSandbox', () => {
 
         test('QUnit init is not affected by isolateJourneys', async () => {
             const response = await server.get('/test/unitTests.qunit.js').expect(200);
-            expect(response.text).toContain('journeyParam');
+            expect(response.text).not.toContain('journeyParam');
             expect(response.text).not.toContain('NavigationJourney');
         });
     });
