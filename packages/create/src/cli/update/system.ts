@@ -4,7 +4,7 @@ import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
 import { replaceEnvVariables } from '@sap-ux/ui5-config';
 import { config as loadEnvConfig } from 'dotenv';
-import { systemNameExists } from '../utils/system-name-validation.js';
+import { isSystemNameInUse } from '@sap-ux/store';
 import { getLogger } from '../../tracing/index.js';
 import { promptForSystemIdentifier, promptForUpdateFields, promptForFieldUpdates } from '../utils/system-prompts.js';
 import { checkConnectionOrPrompt } from '../utils/system-connection.js';
@@ -75,8 +75,10 @@ async function buildPatchFromParams(
             return null;
         }
 
-        const nameExists = await systemNameExists(params.name, { excludeSystem: existing });
-        if (nameExists) {
+        const nameExists = await isSystemNameInUse(params.name);
+        // Allow keeping the same name (case-insensitive comparison)
+        const isSameName = existing.name.trim().toLowerCase() === params.name.trim().toLowerCase();
+        if (nameExists && !isSameName) {
             logger.error(`A system with the name '${params.name}' already exists. Please choose a different name.`);
             return null;
         }

@@ -14,10 +14,8 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     SystemType,
     AuthenticationType,
     ConnectionType,
-    getService: mockGetService
-}));
-jest.unstable_mockModule('../../../../src/cli/utils/system-name-validation.js', () => ({
-    systemNameExists: mockSystemNameExists
+    getService: mockGetService,
+    isSystemNameInUse: mockSystemNameExists
 }));
 jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     validateClient: mockValidateClient
