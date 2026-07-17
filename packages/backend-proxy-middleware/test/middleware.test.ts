@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import * as http from 'node:http';
-import * as net from 'node:net';
+import type * as net from 'node:net';
 import type { BackendMiddlewareConfig } from '../src/base/types.js';
 import type { Options } from 'http-proxy-middleware';
 
