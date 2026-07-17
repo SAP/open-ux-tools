@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-inquirer
 
+## 3.2.0
+
+### Minor Changes
+
+#### Features
+
+- Add option to create Page Building Block with full layout during app generation [[85b88aa](https://github.com/SAP/open-ux-tools/commit/85b88aa64241d65d7a0618222221281bae2e3e45)]
+
 ## 3.1.0
 
 ### Minor Changes
