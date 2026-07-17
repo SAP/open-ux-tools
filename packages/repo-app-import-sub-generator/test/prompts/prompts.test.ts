@@ -100,7 +100,9 @@ describe('getPrompts', () => {
                 serviceSelection: { hide: true, useAutoComplete: true },
                 systemSelection: {
                     defaultChoice: undefined,
-                    hideNewSystem: true
+                    hideNewSystem: true,
+                    destinationFilters: { odata_abap: true },
+                    backendSystemFilter: { connectionType: ['abap_catalog'] }
                 }
             },
             false
