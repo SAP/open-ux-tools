@@ -44,7 +44,7 @@
     },
     "devDependencies": {
         "@ui5/cli": "4.0.57",
-        "@ui5/project": "4.0.17",
+        "@ui5/project": "4.0.15",
         "cross-env": "10.1.0"
     },
     "engines": {
