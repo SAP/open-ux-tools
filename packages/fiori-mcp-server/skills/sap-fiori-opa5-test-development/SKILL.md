@@ -71,7 +71,8 @@ These apply regardless of OData version or test library.
 
 **OPA5 state carries over between `opaTest` blocks within a journey.** Tests run sequentially and share the same browser session - do not assume the app is in a clean state at the start of each `opaTest`. Always navigate and assert explicitly rather than relying on state left by the previous test block.
 
-**The `pages` map key in JourneyRunner (V4) or `Opa5.createPageObjects` (V2) must exactly match the accessor name used in journeys.** A mismatch causes a silent runtime error - the page object is simply undefined when the journey tries to call it.
+**The `pages` map key in JourneyRunner (V4) must exactly match the accessor name used in journeys.** A mismatch causes a silent runtime error - the page object is simply undefined when the journey tries to call it. (V2 registers page objects globally via module loading and has no `pages` map.)
+
 
 ```javascript
 // ❌ Wrong - key is "onTheList" but journey calls "onTheListReport"
