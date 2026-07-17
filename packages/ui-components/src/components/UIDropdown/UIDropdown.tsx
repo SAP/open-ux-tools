@@ -4,8 +4,7 @@ import type {
     IDropdownStyles,
     ICalloutContentStyleProps,
     ICalloutContentStyles,
-    IDropdownOption,
-    IRawStyle
+    IDropdownOption
 } from '@fluentui/react';
 import { Dropdown, DropdownMenuItemType, ResponsiveMode } from '@fluentui/react';
 
@@ -54,12 +53,6 @@ export interface UIDropdownState {
 type AccessibilityProps = Partial<IDropdownProps & { ['data-is-focusable']?: boolean }>;
 
 const ERROR_BORDER_COLOR = 'var(--vscode-inputValidation-errorBorder)';
-
-const DROPDOWN_ERROR_MESSAGE_STYLE: IRawStyle = {
-    marginTop: -1,
-    borderRadius: 0,
-    animation: 'none'
-};
 
 /**
  * UIDropdown component
@@ -315,17 +308,7 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
                     })
                 },
 
-                errorMessage: [
-                    messageInfo.style,
-                    ...(messageInfo.message
-                        ? [
-                              {
-                                  ...DROPDOWN_ERROR_MESSAGE_STYLE,
-                                  borderTop: `1px solid ${messageInfo.style.borderColor || 'var(--vscode-inputValidation-errorBorder)'}`
-                              }
-                          ]
-                        : [])
-                ],
+                errorMessage: [messageInfo.style],
 
                 callout: {
                     boxShadow: 'var(--ui-box-shadow-small)'

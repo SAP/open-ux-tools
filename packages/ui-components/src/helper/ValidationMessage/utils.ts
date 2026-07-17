@@ -53,11 +53,13 @@ const messagesStyles: InputErrorMessageStyles = {
             'var(--vscode-inputValidation-errorBackground)',
             'var(--vscode-inputValidation-errorBorder)'
         ),
+        marginTop: -1,
         paddingTop: 4,
         paddingBottom: 5,
         paddingLeft: 8,
         margin: 0,
-        borderRadius: 'var(--vscode-cornerRadius-small)'
+        borderRadius: 0,
+        animation: 'none'
     },
     warning: {},
     info: {}

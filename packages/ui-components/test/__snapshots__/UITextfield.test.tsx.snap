@@ -4,23 +4,20 @@ exports[`<UIToggle /> Focus styles, "errorMessage=[object Object]" 1`] = `
 Object {
   "errorMessage": Array [
     Object {
+      "animation": "none",
       "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
       "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderColor": "var(--vscode-inputValidation-errorBorder)",
       "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRadius": "var(--vscode-cornerRadius-small)",
+      "borderRadius": 0,
       "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderTop": "1px solid var(--vscode-inputValidation-errorBorder)",
       "color": "var(--vscode-input-foreground)",
       "margin": 0,
+      "marginTop": -1,
       "paddingBottom": 5,
       "paddingLeft": 8,
       "paddingTop": 4,
-    },
-    Object {
-      "animation": "none",
-      "borderRadius": 0,
-      "marginTop": -1,
     },
   ],
   "field": Array [
@@ -113,15 +110,17 @@ exports[`<UIToggle /> Focus styles, "errorMessage=[object Object]" 2`] = `
 Object {
   "errorMessage": Array [
     Object {
+      "animation": "none",
       "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
       "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderColor": "var(--vscode-inputValidation-errorBorder)",
       "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRadius": "var(--vscode-cornerRadius-small)",
+      "borderRadius": 0,
       "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderTop": "1px solid var(--vscode-inputValidation-errorBorder)",
       "color": "var(--vscode-input-foreground)",
       "margin": 0,
+      "marginTop": -1,
       "paddingBottom": 5,
       "paddingLeft": 8,
       "paddingTop": 4,
@@ -217,15 +216,17 @@ exports[`<UIToggle /> Readonly input field with value 1`] = `
 Object {
   "errorMessage": Array [
     Object {
+      "animation": "none",
       "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
       "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderColor": "var(--vscode-inputValidation-errorBorder)",
       "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRadius": "var(--vscode-cornerRadius-small)",
+      "borderRadius": 0,
       "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderTop": "1px solid var(--vscode-inputValidation-errorBorder)",
       "color": "var(--vscode-input-foreground)",
       "margin": 0,
+      "marginTop": -1,
       "paddingBottom": 5,
       "paddingLeft": 8,
       "paddingTop": 4,
@@ -321,15 +322,17 @@ exports[`<UIToggle /> Styles - default 1`] = `
 Object {
   "errorMessage": Array [
     Object {
+      "animation": "none",
       "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
       "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderColor": "var(--vscode-inputValidation-errorBorder)",
       "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRadius": "var(--vscode-cornerRadius-small)",
+      "borderRadius": 0,
       "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderTop": "1px solid var(--vscode-inputValidation-errorBorder)",
       "color": "var(--vscode-input-foreground)",
       "margin": 0,
+      "marginTop": -1,
       "paddingBottom": 5,
       "paddingLeft": 8,
       "paddingTop": 4,
@@ -418,23 +421,20 @@ exports[`<UIToggle /> Styles - error message Error 1`] = `
 Object {
   "errorMessage": Array [
     Object {
+      "animation": "none",
       "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
       "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderColor": "var(--vscode-inputValidation-errorBorder)",
       "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRadius": "var(--vscode-cornerRadius-small)",
+      "borderRadius": 0,
       "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderTop": "1px solid var(--vscode-inputValidation-errorBorder)",
       "color": "var(--vscode-input-foreground)",
       "margin": 0,
+      "marginTop": -1,
       "paddingBottom": 5,
       "paddingLeft": 8,
       "paddingTop": 4,
-    },
-    Object {
-      "animation": "none",
-      "borderRadius": 0,
-      "marginTop": -1,
     },
   ],
   "field": Array [
@@ -520,23 +520,20 @@ exports[`<UIToggle /> Styles - error message Info 1`] = `
 Object {
   "errorMessage": Array [
     Object {
+      "animation": "none",
       "backgroundColor": "var(--vscode-inputValidation-infoBackground)",
       "borderBottom": "1px solid var(--vscode-inputValidation-infoBorder)",
       "borderColor": "var(--vscode-inputValidation-infoBorder)",
       "borderLeft": "1px solid var(--vscode-inputValidation-infoBorder)",
-      "borderRadius": "var(--vscode-cornerRadius-small)",
+      "borderRadius": 0,
       "borderRight": "1px solid var(--vscode-inputValidation-infoBorder)",
       "borderTop": "1px solid var(--vscode-inputValidation-infoBorder)",
       "color": "var(--vscode-input-foreground)",
       "margin": 0,
+      "marginTop": -1,
       "paddingBottom": 5,
       "paddingLeft": 8,
       "paddingTop": 4,
-    },
-    Object {
-      "animation": "none",
-      "borderRadius": 0,
-      "marginTop": -1,
     },
   ],
   "field": Array [
@@ -622,23 +619,20 @@ exports[`<UIToggle /> Styles - error message Warning 1`] = `
 Object {
   "errorMessage": Array [
     Object {
+      "animation": "none",
       "backgroundColor": "var(--vscode-inputValidation-warningBackground)",
       "borderBottom": "1px solid var(--vscode-inputValidation-warningBorder)",
       "borderColor": "var(--vscode-inputValidation-warningBorder)",
       "borderLeft": "1px solid var(--vscode-inputValidation-warningBorder)",
-      "borderRadius": "var(--vscode-cornerRadius-small)",
+      "borderRadius": 0,
       "borderRight": "1px solid var(--vscode-inputValidation-warningBorder)",
       "borderTop": "1px solid var(--vscode-inputValidation-warningBorder)",
       "color": "var(--vscode-input-foreground)",
       "margin": 0,
+      "marginTop": -1,
       "paddingBottom": 5,
       "paddingLeft": 8,
       "paddingTop": 4,
-    },
-    Object {
-      "animation": "none",
-      "borderRadius": 0,
-      "marginTop": -1,
     },
   ],
   "field": Array [
@@ -724,15 +718,17 @@ exports[`<UIToggle /> Styles - multiline=false, disabled=true, readOnly=undefine
 Object {
   "errorMessage": Array [
     Object {
+      "animation": "none",
       "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
       "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderColor": "var(--vscode-inputValidation-errorBorder)",
       "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRadius": "var(--vscode-cornerRadius-small)",
+      "borderRadius": 0,
       "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderTop": "1px solid var(--vscode-inputValidation-errorBorder)",
       "color": "var(--vscode-input-foreground)",
       "margin": 0,
+      "marginTop": -1,
       "paddingBottom": 5,
       "paddingLeft": 8,
       "paddingTop": 4,
@@ -823,15 +819,17 @@ exports[`<UIToggle /> Styles - multiline=false, disabled=undefined, readOnly=tru
 Object {
   "errorMessage": Array [
     Object {
+      "animation": "none",
       "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
       "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderColor": "var(--vscode-inputValidation-errorBorder)",
       "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRadius": "var(--vscode-cornerRadius-small)",
+      "borderRadius": 0,
       "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderTop": "1px solid var(--vscode-inputValidation-errorBorder)",
       "color": "var(--vscode-input-foreground)",
       "margin": 0,
+      "marginTop": -1,
       "paddingBottom": 5,
       "paddingLeft": 8,
       "paddingTop": 4,
@@ -931,15 +929,17 @@ exports[`<UIToggle /> Styles - multiline=false, disabled=undefined, readOnly=und
 Object {
   "errorMessage": Array [
     Object {
+      "animation": "none",
       "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
       "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderColor": "var(--vscode-inputValidation-errorBorder)",
       "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRadius": "var(--vscode-cornerRadius-small)",
+      "borderRadius": 0,
       "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderTop": "1px solid var(--vscode-inputValidation-errorBorder)",
       "color": "var(--vscode-input-foreground)",
       "margin": 0,
+      "marginTop": -1,
       "paddingBottom": 5,
       "paddingLeft": 8,
       "paddingTop": 4,
@@ -1028,15 +1028,17 @@ exports[`<UIToggle /> Styles - multiline=true, disabled=true, readOnly=undefined
 Object {
   "errorMessage": Array [
     Object {
+      "animation": "none",
       "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
       "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderColor": "var(--vscode-inputValidation-errorBorder)",
       "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRadius": "var(--vscode-cornerRadius-small)",
+      "borderRadius": 0,
       "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderTop": "1px solid var(--vscode-inputValidation-errorBorder)",
       "color": "var(--vscode-input-foreground)",
       "margin": 0,
+      "marginTop": -1,
       "paddingBottom": 5,
       "paddingLeft": 8,
       "paddingTop": 4,
@@ -1125,15 +1127,17 @@ exports[`<UIToggle /> Styles - multiline=true, disabled=undefined, readOnly=true
 Object {
   "errorMessage": Array [
     Object {
+      "animation": "none",
       "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
       "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderColor": "var(--vscode-inputValidation-errorBorder)",
       "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRadius": "var(--vscode-cornerRadius-small)",
+      "borderRadius": 0,
       "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderTop": "1px solid var(--vscode-inputValidation-errorBorder)",
       "color": "var(--vscode-input-foreground)",
       "margin": 0,
+      "marginTop": -1,
       "paddingBottom": 5,
       "paddingLeft": 8,
       "paddingTop": 4,
@@ -1231,15 +1235,17 @@ exports[`<UIToggle /> Styles - multiline=true, disabled=undefined, readOnly=unde
 Object {
   "errorMessage": Array [
     Object {
+      "animation": "none",
       "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
       "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderColor": "var(--vscode-inputValidation-errorBorder)",
       "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRadius": "var(--vscode-cornerRadius-small)",
+      "borderRadius": 0,
       "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderTop": "1px solid var(--vscode-inputValidation-errorBorder)",
       "color": "var(--vscode-input-foreground)",
       "margin": 0,
+      "marginTop": -1,
       "paddingBottom": 5,
       "paddingLeft": 8,
       "paddingTop": 4,
@@ -1326,15 +1332,17 @@ exports[`<UIToggle /> Styles - required 1`] = `
 Object {
   "errorMessage": Array [
     Object {
+      "animation": "none",
       "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
       "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderColor": "var(--vscode-inputValidation-errorBorder)",
       "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRadius": "var(--vscode-cornerRadius-small)",
+      "borderRadius": 0,
       "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
       "borderTop": "1px solid var(--vscode-inputValidation-errorBorder)",
       "color": "var(--vscode-input-foreground)",
       "margin": 0,
+      "marginTop": -1,
       "paddingBottom": 5,
       "paddingLeft": 8,
       "paddingTop": 4,
