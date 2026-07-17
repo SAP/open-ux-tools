@@ -3190,9 +3190,6 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
-      '@sap-ux/store':
-        specifier: workspace:*
-        version: link:../store
       '@sap-ux/telemetry':
         specifier: workspace:*
         version: link:../telemetry
