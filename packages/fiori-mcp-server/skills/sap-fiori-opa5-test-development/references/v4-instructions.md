@@ -16,60 +16,13 @@ webapp/test/integration/
 
 Journey and page object files can be JavaScript (`.js`) or TypeScript (`.ts`) - both are supported. When the project uses TypeScript, generate `.ts` files and import them accordingly.
 
-The test suite entry point (`opaTests.qunit.html` and `OpaTests.qunit.js`) may or may not be physically present depending on whether the project uses the **virtual test endpoint** feature of `@sap/ux-ui5-tooling` or `@sap-ux/preview-middleware`.
-
-### Virtual Test Endpoint (fiori-tools-preview or preview-middleware)
-
-When virtual endpoints (via `@sap/ux-ui5-tooling` or `@sap-ux/preview-middleware`) are configured with a `test` block in `ui5.yaml` (or `ui5-mock.yaml` or the ui5 yaml config file relevant for test execution),
-the HTML and JS entry point files are **generated on the fly** - no physical `opaTests.qunit.html` or `OpaTests.qunit.js` are needed on disk.
-
-The middleware scans for journey files matching the configured glob pattern and dynamically builds the import list.
-Example `ui5-mock.yaml` configuration:
-
-```yaml
-server:
-   customMiddleware:
-      - name: fiori-tools-preview
-        configuration:
-           test:
-              - framework: OPA5
-                path: /test/opaTests.qunit.html
-                init: /test/opaTests.qunit.js
-                pattern: /test/**/*Journey{,.gen}.{js,ts}
-```
-
-Default values when test is configured but individual properties are omitted:
-- path: `/test/opaTests.qunit.html`
-- init: `/test/opaTests.qunit.js`
-- pattern: `/test/**/*Journey{,.gen}.{js,ts}`
-
-If a physical file already exists at the configured path, the middleware serves that file instead (with a warning).
-The virtual endpoint is only active when no physical file is found.
-
-Implication for test development: When working in a virtual-endpoint project, do not create `opaTests.qunit.html` or `OpaTests.qunit.js` manually.
-New journey files are picked up automatically as long as their filename matches the configured pattern (default: ends in `Journey.js` or `Journey.ts`).
-
-### Physical Files (classic setup)
-
-Without the virtual endpoint, the full structure is present on disk:
-
-```
-webapp/test/integration/
-├── opaTests.qunit.html     <- test suite entry point (opened in browser)
-├── OpaTests.qunit.js       <- imports journeys and calls QUnit.start()
-├── FirstJourney.js
-└── pages/
-    └── ...
-```
-
-In this setup, registering a new journey requires adding its module path to the sap.ui.require array in `OpaTests.qunit.js`. See `references/v4-journeyrunner.md` for details.
+The test suite entry point (`opaTests.qunit.html` and `OpaTests.qunit.js`) may or may not be physically present - see `SKILL.md` "Test Endpoint and Running Tests" section for details on virtual vs. physical setup.
 
 ### Regenerating Test Files
 
-Use the **Application Info** command in SAP Fiori tools extension for Visual Studio Code or SAP Business Application Studio to regenerate journey files.
-The tooling inspects the project's OData annotations via `@sap/ux-specification` to produce tests that reflect the actual features (filter bars, tables, actions, navigation) at generation time.
+Use the **Application Info** command in SAP Fiori tools (VS Code extension or SAP Business Application Studio) to regenerate journey files. The tooling inspects the project's OData annotations via `@sap/ux-specification` to produce tests reflecting the actual features (filter bars, tables, actions, navigation) at generation time.
 
-> Regeneration overwrites existing generated files. Do not add custom logic to generated files.
+> Regeneration overwrites existing generated files. Always keep custom test logic in separate journey files to avoid it being overwritten.
 
 ---
 
@@ -177,51 +130,7 @@ For API navigation, naming conventions, identifier patterns, and chaining, read 
 
 ---
 
-## Teardown Rules
-
-QUnit requires assertions to validate tests. Teardown is not an assertion - always assert something before tearing down, and chain teardown on `Given`, not on a page object.
-
-❌ Incorrect - teardown with no prior assertion:
-```javascript
-opaTest("Should clean up", function(Given, When, Then) {
-    Given.iTeardownMyApp();
-});
-```
-
-❌ Incorrect - teardown chained on the wrong object:
-```javascript
-opaTest("Should assert state and clean up", function(Given, When, Then) {
-    Then.onTheEntityNameList.iSeeThisPage()
-        .and.onTheEntityNameList.iTeardownMyApp();
-});
-```
-
-✅ Correct:
-```javascript
-opaTest("Should assert state and clean up", function(Given, When, Then) {
-    Then.onTheEntityNameList.iSeeThisPage();  // assertion first
-    Given.iTeardownMyApp();                   // teardown on Given, separate step
-});
-```
-
----
-
 ## Common Anti-Patterns
-
-**Every `opaTest` must have at least one `Then` assertion.** A test with only `When` steps reports 0 assertions and fails.
-
-```javascript
-// ❌ No Then = no assertions, test fails
-opaTest("Click button", function(Given, When, Then) {
-    When.onThePage.iClickButton();
-});
-
-// ✅ Always end with at least one Then
-opaTest("Click button", function(Given, When, Then) {
-    When.onThePage.iClickButton();
-    Then.onThePage.iSeeThisPage();
-});
-```
 
 **Cancel and Delete actions may trigger a confirmation dialog - always handle it.**
 
@@ -249,75 +158,6 @@ Then.onTheObjectPage.iSeeThisPage();
 When.onTheObjectPage.onHeader().iExecuteEdit();
 Then.onTheObjectPage.iSeeObjectPageInEditMode();
 ```
-
-**OData property names are case-sensitive** - always match the exact casing from `metadata.xml`. Wrong casing causes a timeout, not an error message.
-
----
-
-## Debugging Failing Tests
-
-When a test fails, enable pause-on-failure so the app stays live in the browser at the point of failure for direct inspection.
-
-Add this line to your test entry point before the runner or any `Opa5.extendConfig` call:
-
-```javascript
-sap.ui.test.qunitPause.pauseRule = "assert,timeout";
-```
-
-When the test pauses, inspect the live app in the browser to see what the UI actually shows vs. what the test expected. Once all journeys pass, remove this line.
-
-For UI5 version 1.147 and above, the **TestRecorder** tool (`sap.ui.testrecorder` library) can be added to the app temporarily to inspect the live control tree and generate reliable OPA5 snippets for non-trivial selectors.
-Remove the library again once done.
-
----
-
-## Running Tests
-
-**Via npm script (RAP-based apps):**
-```bash
-npm run int-test
-```
-This runs `fiori run --config ./ui5-mock.yaml --open 'test/integration/opaTests.qunit.html'`. Check `package.json` for the exact script name.
-
-**Via Preview Application:** Right-click `webapp/` in SAP Fiori tools, select **Preview Application**, then choose the `int-test` option.
-
-**Manually (CAP-based apps, using CAP backend as data source):**
-```bash
-npm start
-# or
-cds watch
-```
-Then open in a separate browser tab:
-```
-http://localhost:<port>/<app-name>/webapp/test/integration/opaTests.qunit.html
-```
-
----
-
-## Mock Data
-
-OPA5 tests must run against a data source. Choose the option that matches what your tests need to assert:
-
-| | Option A: fe-mockserver | Option B: CAP backend |
-|---|---|---|
-| **Use when** | Tests assert specific values OR only structure - covers both cases | CAP project and you want tests against real CAP logic |
-| **Setup** | `npx --yes @sap-ux/create@latest add mockserver-config` | `npm start` / `cds watch` already running |
-| **Data control** | Full control via static JSON files or generated random data | Driven by CAP seed data |
-| **Speed** | Fast - runs in UI5 tooling layer, no backend process | Slower - requires CAP server |
-| **Isolation** | High - UI-only, reproducible | Lower - depends on CAP state |
-
-**Prefer Option A for OPA5 tests.** Reserve Option B for dedicated integration or end-to-end suites that need to test CAP logic.
-
-### Option A: `@sap-ux/ui5-middleware-fe-mockserver`
-
-Two data modes:
-
-- **Static mock data** (`generateMockData: false`) - JSON files in the folder configured as `mockdataPath` in `ui5-mock.yaml` (default: `./webapp/localService/mainService/data/`). Use when tests assert **specific values** (exact row counts, field contents, IDs). Deterministic across runs.
-- **Dynamic mock data** (`generateMockData: true`) - random data generated from OData metadata at startup. Use when tests only assert **structure** (a field is visible, a table has rows, a button is enabled). No JSON files to maintain, but you cannot assert exact values.
-
-> If a journey deletes a record (e.g., via `iExecuteDelete()`), restart the server before re-running to restore the data.
-
-For full documentation: `https://www.npmjs.com/package/@sap-ux/ui5-middleware-fe-mockserver`
 
 ---
 
@@ -467,7 +307,9 @@ Then.onTheObjectPage.iSeeThisPage();
 
 ### Custom selectors
 
-When the standard `sap.fe.test` API cannot cover a scenario, use custom selectors. Read `references/v4-custom-selectors.md` for the full guide including OpaBuilder syntax, CustomFilterField runtime ID patterns, ComboBox item selection, and common suffix pitfalls.
+When the standard `sap.fe.test` API cannot cover a scenario, use custom selectors as a last resort. A good signal that you need one: the standard `onFilterBar()`, `onTable()`, `onHeader()`, `onForm()`, `onFooter()`, or `onDialog()` chain has no method matching your UI element, or the element is a custom extension control not generated by Fiori Elements. Read `references/v4-custom-selectors.md` for the full guide including OpaBuilder syntax, CustomFilterField runtime ID patterns, ComboBox item selection, and common suffix pitfalls.
+
+For ready-made snippets without the debugging context, see `references/v4-standard-patterns.md`.
 
 ---
 

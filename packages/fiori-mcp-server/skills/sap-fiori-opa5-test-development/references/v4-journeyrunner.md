@@ -87,7 +87,8 @@ sap.ui.define([
 
         // ... additional test steps ...
 
-        opaTest("Teardown", function (Given, When, Then) {
+        opaTest("Should display the list report", function (Given, When, Then) {
+            Then.onTheEntityNameList.iSeeThisPage();
             Given.iTearDownMyApp();
         });
     }
